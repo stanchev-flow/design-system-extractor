@@ -1,0 +1,33 @@
+{
+  "name": "fieldnote-design-system",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Maintainable, handoff-ready design system generated from the v301-mine extraction (grounded_service_growth_system). Tokens -> Tailwind v4 theme -> shadcn-style React components.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "build:nocheck": "vite build",
+    "preview": "vite preview",
+    "tokens": "style-dictionary build --config ./style-dictionary.config.mjs"
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.469.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^2.6.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "style-dictionary": "^4.3.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7",
+    "vite-plugin-singlefile": "^2.1.0"
+  }
+}

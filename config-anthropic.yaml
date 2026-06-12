@@ -1,0 +1,21 @@
+# Override config: route the design-system extraction + section detection
+# through Anthropic Claude Opus 4.8 (best model, and avoids the gpt-5.5
+# reasoning-effort=high empty-output bug on design synthesis).
+# Site output is framework-first (React/Tailwind). Vanilla HTML is off unless
+# vanilla-site-generation-enabled: true or --vanilla-sites on the CLI.
+provider: anthropic
+model: claude-opus-4-8
+reasoning-effort: high
+
+section-detection-provider: anthropic
+section-detection-model: claude-opus-4-8
+section-detection-reasoning-effort: high
+
+site-asset-generation-enabled: false
+surface-map-mode: contract
+run-reviews: false
+
+framework-generation-enabled: true
+vanilla-site-generation-enabled: false
+
+# Per-project brand assets are set in runs/.studio/{version}.config.yaml by Studio.

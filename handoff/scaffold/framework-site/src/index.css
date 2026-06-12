@@ -1,0 +1,213 @@
+@import "tailwindcss";
+
+/*
+  Tailwind v4 theme layer — generated 1:1 from tokens/tokens.json.
+  Every value here is an extracted design token, NOT a Tailwind default. These
+  @theme entries become real utilities: --color-surface-primary -> bg-surface-primary,
+  --text-h1 -> text-h1, --radius-panel -> rounded-panel, etc.
+*/
+@theme {
+  /* ---- color: surface (values read from Hatch source CSS) ---- */
+  --color-surface-primary: #ffffff;
+  --color-surface-secondary: #f5f7f6; /* --_theme---background-slate */
+  --color-surface-inverse: #0f281b; /* brand deep green */
+  --color-surface-soft: #d7e2dd; /* sage tint */
+  --color-surface-media: #20211f;
+
+  /* ---- color: text ---- */
+  --color-text-primary: #212d3a; /* rgb(33,45,58) */
+  --color-text-muted: #5b665d;
+  --color-text-on-inverse: #f4f6f3;
+  --color-text-on-inverse-muted: #9ab7b2; /* sage */
+  --color-text-on-media: #ffffff;
+  --color-text-accent-on-inverse: #9ab7b2;
+
+  /* ---- color: border ---- */
+  --color-border-hairline: #e3e2dc;
+  --color-border-on-inverse: rgba(255, 255, 255, 0.16);
+  --color-border-field: #d9ddd6;
+
+  /* ---- color: accent / graphic ---- */
+  --color-accent: #0f281b; /* --_button-style---text */
+  --color-accent-foreground: #ffffff;
+  --color-accent-secondary: #2b4539; /* --_theme---button-secondary--background */
+  --color-accent-highlight: #9ab7b2; /* play-footer sage */
+  --color-graphic-star: #faae7a; /* --_theme---border--orange */
+  --color-graphic-blue: #c1d7ff; /* --_theme---border--blue */
+  --color-graphic-logo: #959494; /* rgb(149,148,148) */
+
+  /* ---- typography families (real @font-face: Instrument Sans) ---- */
+  --font-heading: "Instrument Sans", Georgia, system-ui, sans-serif;
+  --font-body: "Instrument Sans", Georgia, system-ui, sans-serif;
+
+  /* ---- role type scale (size / line-height / tracking / weight) ---- */
+  --text-h1: 56px;
+  --text-h1--line-height: 1.02;
+  --text-h1--letter-spacing: -0.01em;
+  --text-h1--font-weight: 700;
+
+  --text-h2: 40px;
+  --text-h2--line-height: 1.05;
+  --text-h2--letter-spacing: -0.01em;
+  --text-h2--font-weight: 700;
+
+  --text-h3: 24px;
+  --text-h3--line-height: 1.15;
+  --text-h3--letter-spacing: -0.005em;
+  --text-h3--font-weight: 700;
+
+  --text-metric: 52px;
+  --text-metric--line-height: 1;
+  --text-metric--letter-spacing: -0.01em;
+  --text-metric--font-weight: 700;
+
+  --text-quote: 22px;
+  --text-quote--line-height: 1.25;
+  --text-quote--letter-spacing: -0.005em;
+  --text-quote--font-weight: 700;
+
+  --text-lead: 16px;
+  --text-lead--line-height: 1.5;
+
+  --text-body: 15px;
+  --text-body--line-height: 1.55;
+
+  --text-eyebrow: 12px;
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: 0.08em;
+  --text-eyebrow--font-weight: 500;
+
+  --text-meta: 13px;
+  --text-meta--line-height: 1.4;
+
+  --text-control: 15px;
+  --text-control--line-height: 1.2;
+  --text-control--font-weight: 500;
+
+  /* ---- radius ---- */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-panel: 20px;
+  --radius-pill: 999px;
+
+  /* ---- elevation ---- */
+  --shadow-card: 0 8px 24px rgba(20, 30, 24, 0.12);
+
+  /* ---- spacing roles (section rhythm + controls) ---- */
+  --spacing-section: 96px;
+  --spacing-section-tight: 64px;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    font-family: var(--font-body);
+    /* Hatch ships Instrument Sans SemiCondensed; approximate the width axis. */
+    font-stretch: 87.5%;
+    background-color: var(--color-surface-primary);
+    color: var(--color-text-primary);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  /* Headings derive from page/section heading evidence only (typography rule). */
+  h1, h2, h3 {
+    font-family: var(--font-heading);
+    font-stretch: 82%;
+  }
+  ::selection {
+    background: var(--color-accent-highlight);
+    color: var(--color-accent);
+  }
+}
+
+/* Subtle grain run used by the `textured_run` surface (gradient: subtle grain/noise,
+   fading to/from white at run edges). Implemented as a tokenized utility. */
+@utility surface-grain {
+  background-color: var(--color-surface-secondary);
+  background-image: radial-gradient(rgba(28, 42, 33, 0.04) 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+
+/*
+  Semantic, self-describing button. The element carries its props as
+  data-attributes (data-variant / data-size / data-icon) instead of a wall of
+  utilities — so a controls panel or AI can read AND write the current state by
+  inspecting the DOM. Styling lives here once, bound to design tokens.
+  In @layer components so passed Tailwind utilities (e.g. w-full) still override.
+*/
+@layer components {
+  .btn {
+    display: inline-flex;
+    width: fit-content;
+    max-width: 100%;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    font-family: var(--font-body);
+    font-stretch: 87.5%;
+    font-weight: 500;
+    font-size: var(--text-control);
+    line-height: 1.2;
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease,
+      border-color 0.2s ease;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  .btn:disabled { pointer-events: none; opacity: 0.5; }
+
+  /* size layer */
+  .btn[data-size="sm"] { padding: 6px 14px; font-size: 13px; }
+  .btn[data-size="md"] { padding: 10px 20px; }
+  .btn[data-size="lg"] { padding: 14px 26px; font-size: 16px; }
+
+  /* variant layer */
+  .btn[data-variant="primary"],
+  .btn[data-variant="onMedia"] {
+    background: var(--color-accent);
+    color: var(--color-accent-foreground);
+  }
+  .btn[data-variant="primary"]:hover,
+  .btn[data-variant="onMedia"]:hover { background: #16201a; }
+  .btn[data-variant="secondary"] {
+    background: transparent;
+    border-color: var(--color-border-hairline);
+    color: var(--color-text-primary);
+  }
+  .btn[data-variant="secondary"]:hover { background: var(--color-surface-secondary); }
+  .btn[data-variant="ghost"] { background: transparent; color: var(--color-text-primary); }
+  .btn[data-variant="ghost"]:hover { background: var(--color-surface-secondary); }
+
+  /* icon layer — chip is always in the DOM; visibility is data-driven so the
+     panel/AI can toggle it by flipping one attribute (no re-render needed). */
+  .btn-icon {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    flex: 0 0 auto;
+    border-radius: var(--radius-pill);
+  }
+  .btn[data-variant="primary"] .btn-icon,
+  .btn[data-variant="onMedia"] .btn-icon {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--color-accent-foreground);
+  }
+  .btn[data-variant="secondary"] .btn-icon,
+  .btn[data-variant="ghost"] .btn-icon { color: var(--color-accent); }
+  .btn[data-icon="none"] .btn-icon { display: none; }
+  .btn[data-icon="trailing"] { padding-right: 8px; }
+  .btn[data-size="sm"][data-icon="trailing"] { padding-right: 6px; }
+  .btn[data-size="lg"][data-icon="trailing"] { padding-right: 10px; }
+
+  /* selection affordance for the editor */
+  .btn[data-selected="true"] { outline: 2px dashed var(--color-accent); outline-offset: 3px; }
+}

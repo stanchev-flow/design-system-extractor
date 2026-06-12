@@ -1,0 +1,12 @@
+Metadata-Version: 2.4
+Name: screenshot-to-template
+Version: 0.1.0
+Summary: Convert website screenshots into text-based design systems
+Requires-Python: >=3.10
+Requires-Dist: Pillow>=10.0
+Requires-Dist: openai>=1.0
+Requires-Dist: anthropic>=0.30
+Requires-Dist: google-genai>=1.0
+Requires-Dist: PyYAML>=6.0
+Requires-Dist: requests>=2.31
+Requires-Dist: beautifulsoup4>=4.12

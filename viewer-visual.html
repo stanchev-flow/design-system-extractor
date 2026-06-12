@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Visual — Pipeline Viewer</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+      colors: {
+        border: 'hsl(240 3.7% 15.9%)',
+        background: 'hsl(240 10% 3.9%)',
+        foreground: 'hsl(0 0% 98%)',
+        muted: { DEFAULT: 'hsl(240 3.7% 15.9%)', foreground: 'hsl(240 5% 64.9%)' },
+        accent: { DEFAULT: 'hsl(217 91% 60%)', foreground: 'hsl(0 0% 98%)' },
+        card: { DEFAULT: 'hsl(240 6% 8%)', foreground: 'hsl(0 0% 98%)' },
+      },
+    },
+  },
+};
+</script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: Inter, system-ui, sans-serif;
+    background: hsl(240 10% 3.9%);
+    color: hsl(0 0% 98%);
+    min-height: 100vh;
+    padding-top: 56px;
+  }
+
+  /* Frost top bar identical to viewer.html */
+  .top-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: hsl(240 10% 2% / 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid hsl(240 3.7% 15.9%);
+  }
+
+  /* Embedded (iframe) mode: hide chrome and tighten everything for narrow cells. */
+  body.embed { padding-top: 0; }
+  body.embed .top-bar { display: none; }
+  body.embed .section { padding: 16px 14px 8px; }
+  body.embed .panel { padding: 10px; border-radius: 6px; }
+  body.embed .surface-card .preview { padding: 20px 16px; min-height: 140px; }
+  body.embed .surface-card .preview .title { font-size: 16px; }
+  body.embed .surface-card .preview .body { font-size: 12px; }
+  body.embed .vignette .band { padding: 36px 20px; }
+  body.embed .type-row { grid-template-columns: 140px 1fr; gap: 12px; padding: 12px 0; }
+  body.embed .spacing-row { grid-template-columns: 80px 1fr 70px; gap: 8px; }
+  body.embed .swatch .chip { height: 44px; }
+
+  .section { padding: 32px 32px 12px; }
+  .section-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: hsl(240 5% 64.9%);
+    margin-bottom: 16px;
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  .section-title .hint {
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: hsl(240 5% 50%);
+    font-size: 11px;
+  }
+
+  .panel {
+    background: hsl(240 6% 8%);
+    border: 1px solid hsl(240 3.7% 15.9%);
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  /* Color swatch */
+  .swatch {
+    display: flex; flex-direction: column;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid hsl(240 3.7% 15.9%);
+    background: hsl(240 6% 8%);
+  }
+  .swatch .chip {
+    height: 56px;
+    border-bottom: 1px solid hsl(240 3.7% 15.9%);
+    background-image:
+      linear-gradient(45deg, hsl(240 3.7% 12%) 25%, transparent 25%),
+      linear-gradient(-45deg, hsl(240 3.7% 12%) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, hsl(240 3.7% 12%) 75%),
+      linear-gradient(-45deg, transparent 75%, hsl(240 3.7% 12%) 75%);
+    background-size: 12px 12px;
+    background-position: 0 0, 0 6px, 6px -6px, -6px 0px;
+    position: relative;
+  }
+  .swatch .chip-fill { position: absolute; inset: 0; }
+  .swatch .meta { padding: 8px 10px; }
+  .swatch .meta .name { font-size: 11px; font-weight: 500; color: hsl(0 0% 98%); }
+  .swatch .meta .value { font-size: 10px; color: hsl(240 5% 64.9%); font-family: ui-monospace, monospace; margin-top: 2px; }
+  .swatch .meta .path { font-size: 10px; color: hsl(240 5% 50%); font-family: ui-monospace, monospace; }
+
+  /* Tile (for radius/shadow) */
+  .tile {
+    background: hsl(240 6% 8%);
+    border: 1px solid hsl(240 3.7% 15.9%);
+    padding: 16px;
+    text-align: center;
+  }
+  .tile .preview {
+    background: hsl(0 0% 98%);
+    height: 56px;
+    margin: 0 auto 10px;
+    width: 80%;
+  }
+  .tile .name { font-size: 11px; font-weight: 500; color: hsl(0 0% 98%); }
+  .tile .value { font-size: 10px; color: hsl(240 5% 64.9%); font-family: ui-monospace, monospace; margin-top: 2px; }
+
+  /* Surface preview */
+  .surface-card {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid hsl(240 3.7% 15.9%);
+    background: hsl(240 6% 8%);
+    display: flex;
+    flex-direction: column;
+  }
+  .surface-card .preview { padding: 32px 24px; min-height: 180px; display: flex; flex-direction: column; justify-content: space-between; gap: 16px; }
+  .surface-card .preview .title { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+  .surface-card .preview .body { font-size: 14px; line-height: 1.5; }
+  .surface-card .preview .muted { font-size: 12px; }
+  .surface-card .preview .accent-row { display: inline-flex; align-items: center; gap: 8px; }
+  .surface-card .preview .accent-dot { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+  .surface-card .meta { padding: 12px 16px; background: hsl(240 6% 8%); border-top: 1px solid hsl(240 3.7% 15.9%); }
+  .surface-card .meta .row { display: flex; justify-content: space-between; align-items: baseline; }
+  .surface-card .meta .name { font-size: 12px; font-weight: 600; color: hsl(0 0% 98%); }
+  .surface-card .meta .role { font-size: 10px; color: hsl(240 5% 64.9%); text-transform: uppercase; letter-spacing: 0.08em; }
+  .surface-card .meta .usage { font-size: 11px; color: hsl(240 5% 64.9%); margin-top: 6px; line-height: 1.4; }
+  .surface-card .meta .value { font-family: ui-monospace, monospace; font-size: 10px; color: hsl(240 5% 50%); margin-top: 4px; }
+
+  /* Typography sample */
+  .type-row {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 24px;
+    padding: 20px 0;
+    border-top: 1px solid hsl(240 3.7% 15.9%);
+    align-items: baseline;
+  }
+  .type-row:first-child { border-top: none; padding-top: 0; }
+  .type-row .meta .name { font-size: 13px; font-weight: 600; color: hsl(0 0% 98%); }
+  .type-row .meta .specs { margin-top: 6px; font-family: ui-monospace, monospace; font-size: 11px; color: hsl(240 5% 64.9%); line-height: 1.5; }
+  .type-row .meta .role { margin-top: 6px; font-size: 11px; color: hsl(217 91% 75%); }
+  .type-row .sample { min-width: 0; overflow: hidden; color: hsl(0 0% 95%); }
+
+  /* Spacing ruler */
+  .spacing-row { display: grid; grid-template-columns: 120px 1fr 100px; gap: 16px; align-items: center; padding: 8px 0; border-top: 1px solid hsl(240 3.7% 15.9%); }
+  .spacing-row:first-child { border-top: none; }
+  .spacing-row .name { font-size: 12px; font-weight: 500; color: hsl(0 0% 98%); }
+  .spacing-row .bar-track { background: hsl(240 3.7% 12%); height: 12px; border-radius: 4px; position: relative; }
+  .spacing-row .bar-fill { background: hsl(217 91% 60%); height: 100%; border-radius: 4px; min-width: 2px; }
+  .spacing-row .value { font-family: ui-monospace, monospace; font-size: 11px; color: hsl(240 5% 64.9%); text-align: right; }
+
+  /* Component spectrum */
+  .component-card {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid hsl(240 3.7% 15.9%);
+    background: hsl(240 6% 8%);
+  }
+  .component-card .stage {
+    padding: 28px;
+    min-height: 140px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .component-card .meta { padding: 12px 16px; border-top: 1px solid hsl(240 3.7% 15.9%); }
+  .component-card .meta .name { font-size: 12px; font-weight: 600; }
+  .component-card .meta .kind { font-size: 10px; color: hsl(240 5% 64.9%); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+  .component-card .meta .variant { font-size: 11px; color: hsl(240 5% 64.9%); margin-top: 6px; font-family: ui-monospace, monospace; }
+  .component-card .meta .anatomy { font-size: 10px; color: hsl(240 5% 50%); margin-top: 4px; }
+
+  /* Composition vignette */
+  .vignette { border-radius: 12px; overflow: hidden; border: 1px solid hsl(240 3.7% 15.9%); }
+  .vignette .band { padding: 32px 24px; }
+  .vignette .band .h { font-size: 20px; font-weight: 600; }
+  .vignette .band .p { font-size: 13px; line-height: 1.5; margin-top: 8px; max-width: 60ch; opacity: 0.9; }
+
+  /* Pattern lists */
+  .pattern-block { padding: 14px 16px; border-bottom: 1px solid hsl(240 3.7% 15.9%); }
+  .pattern-block:last-child { border-bottom: none; }
+  .pattern-block .label { font-size: 11px; font-weight: 600; color: hsl(217 91% 75%); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .pattern-block ul { list-style: disc inside; color: hsl(240 5% 80%); font-size: 12px; line-height: 1.6; padding-left: 8px; }
+
+  /* Empty state */
+  .empty { padding: 48px; text-align: center; color: hsl(240 5% 50%); font-size: 13px; }
+
+  .input-pill {
+    background: hsl(240 6% 8%);
+    border: 1px solid hsl(240 3.7% 15.9%);
+    color: hsl(0 0% 98%);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    min-width: 160px;
+  }
+  .input-pill:focus { outline: 1px solid hsl(217 91% 60%); }
+
+  .btn {
+    background: hsl(0 0% 98%);
+    color: hsl(240 5.9% 10%);
+    border: none;
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .btn:hover { background: hsl(0 0% 88%); }
+  .btn.ghost { background: transparent; color: hsl(0 0% 98%); border: 1px solid hsl(240 3.7% 15.9%); }
+  .btn.ghost:hover { background: hsl(240 3.7% 15.9%); }
+
+  /* Confidence badge */
+  .conf {
+    display: inline-block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+  .conf-high { background: hsl(142 71% 16%); color: hsl(142 71% 75%); }
+  .conf-medium { background: hsl(45 71% 16%); color: hsl(45 91% 75%); }
+  .conf-low { background: hsl(0 71% 16%); color: hsl(0 91% 75%); }
+
+  details summary { cursor: pointer; user-select: none; }
+  details summary::-webkit-details-marker { display: none; }
+  details summary .chev { display: inline-block; transition: transform 0.15s; margin-right: 6px; opacity: 0.5; }
+  details[open] summary .chev { transform: rotate(90deg); }
+
+  a { color: hsl(217 91% 75%); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+</style>
+</head>
+<body class="antialiased">
+
+<div class="top-bar">
+  <div class="flex items-center gap-3 px-4 py-2">
+    <h1 class="text-sm font-semibold tracking-tight whitespace-nowrap">Design System Visual</h1>
+    <span class="text-xs text-muted-foreground">·</span>
+    <label class="text-xs text-muted-foreground" for="run-select">Run</label>
+    <select id="run-select" class="input-pill"></select>
+    <label class="text-xs text-muted-foreground" for="item-select">Item</label>
+    <select id="item-select" class="input-pill"></select>
+    <span class="ml-auto flex items-center gap-2">
+      <a id="raw-link" class="text-xs" href="#" target="_blank">view .md</a>
+      <a class="text-xs" href="viewer.html">← markdown viewer</a>
+    </span>
+  </div>
+</div>
+
+<main id="root"></main>
+
+<script>
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+const el = (tag, props = {}, children = []) => {
+  const node = document.createElement(tag);
+  for (const [k, v] of Object.entries(props)) {
+    if (k === 'style' && typeof v === 'object') Object.assign(node.style, v);
+    else if (k === 'class') node.className = v;
+    else if (k === 'dataset') Object.assign(node.dataset, v);
+    else if (k === 'html') node.innerHTML = v;
+    else if (k.startsWith('on') && typeof v === 'function') node.addEventListener(k.slice(2).toLowerCase(), v);
+    else node.setAttribute(k, v);
+  }
+  for (const c of [].concat(children)) {
+    if (c == null) continue;
+    node.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+  }
+  return node;
+};
+
+// -- token reference resolution -----------------------------------------------
+
+function getByPath(obj, path) {
+  return path.split('.').reduce((acc, key) => (acc && key in acc ? acc[key] : undefined), obj);
+}
+
+const REF_RE = /\{([a-zA-Z0-9_.]+)\}/g;
+
+// Reference convention used by design-system.md:
+//   {color.surface.brand_dark}  --> tokens.color.surface.brand_dark   (token, prefix elided)
+//   {typography.body_default}    --> typography.body_default          (top-level object)
+//   {shadow.sm}, {radius.pill}, {spacing.xl}  --> all under tokens.*
+// Lookup order: top-level first, then tokens.<path>.
+function lookupRef(root, path) {
+  const direct = getByPath(root, path);
+  if (direct !== undefined) return direct;
+  if (root && root.tokens) {
+    const viaTokens = getByPath(root.tokens, path);
+    if (viaTokens !== undefined) return viaTokens;
+  }
+  return undefined;
+}
+
+function resolveRef(value, root, depth = 0) {
+  if (value == null || depth > 8) return value;
+  if (typeof value === 'string') {
+    return value.replace(REF_RE, (match, path) => {
+      const resolved = lookupRef(root, path);
+      if (resolved == null || (typeof resolved === 'object')) return match;
+      return String(resolveRef(resolved, root, depth + 1));
+    });
+  }
+  return value;
+}
+
+function resolveRefDeep(value, root) {
+  // For typography style references like "{typography.body_default}" that point at OBJECTS.
+  if (typeof value === 'string') {
+    const m = value.match(/^\{([a-zA-Z0-9_.]+)\}$/);
+    if (m) {
+      const resolved = lookupRef(root, m[1]);
+      if (resolved && typeof resolved === 'object') return resolved;
+    }
+    return resolveRef(value, root);
+  }
+  return value;
+}
+
+// -- normalize / clean fetched markdown payload -------------------------------
+
+function stripMarkdownYamlFence(text) {
+  // The pipeline writes YAML preceded by a literal "yaml\n" line (no fence).
+  // Also handle ```yaml ... ``` fenced blocks just in case.
+  const trimmed = text.trim();
+  if (trimmed.startsWith('```yaml') || trimmed.startsWith('```yml')) {
+    const m = trimmed.match(/^```ya?ml\n([\s\S]*?)\n```/);
+    return m ? m[1] : trimmed;
+  }
+  // YAML frontmatter form (Claude Opus 4.8 output): "---\n<yaml>\n---\n# Markdown body".
+  // Extract just the frontmatter between the first pair of "---" fences so the
+  // trailing Markdown prose isn't fed to the YAML parser.
+  if (trimmed.startsWith('---')) {
+    const m = trimmed.match(/^---\s*\n([\s\S]*?)\n---\s*(?:\n|$)/);
+    if (m) return m[1];
+  }
+  // Strip leading "yaml" word on its own line if present.
+  if (/^yaml\b/i.test(trimmed)) {
+    return trimmed.replace(/^yaml\s*\n/, '');
+  }
+  return trimmed;
+}
+
+// -- run / item discovery -----------------------------------------------------
+
+async function fetchHtmlListing(url) {
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText} fetching ${url}`);
+  const html = await res.text();
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  return $$('a', doc).map(a => a.getAttribute('href')).filter(h => h && !h.startsWith('?') && !h.startsWith('/'));
+}
+
+async function discoverRuns() {
+  try {
+    const hrefs = await fetchHtmlListing('runs/');
+    return hrefs
+      .filter(h => h.endsWith('/'))
+      .map(h => h.replace(/\/$/, ''))
+      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  } catch (e) {
+    console.warn('discoverRuns failed:', e);
+    return [];
+  }
+}
+
+async function discoverItems(run) {
+  try {
+    const hrefs = await fetchHtmlListing(`runs/${run}/`);
+    return hrefs
+      .filter(h => h.endsWith('/'))
+      .map(h => h.replace(/\/$/, ''))
+      .filter(name => !name.startsWith('.') && name !== 'viewer-data');
+  } catch (e) {
+    console.warn('discoverItems failed:', e);
+    return [];
+  }
+}
+
+// -- main render --------------------------------------------------------------
+
+const state = {
+  run: new URLSearchParams(location.search).get('run') || 'v300-mine',
+  item: new URLSearchParams(location.search).get('item') || 'hatch',
+  variant: new URLSearchParams(location.search).get('variant') || 'single',
+  embed: new URLSearchParams(location.search).get('embed') === '1',
+  data: null,
+  rawPath: null,
+};
+
+if (state.embed) document.body.classList.add('embed');
+
+function dsPath() {
+  return `runs/${state.run}/${state.item}/${state.variant}/design-system.md`;
+}
+
+async function loadData() {
+  const path = dsPath();
+  state.rawPath = path;
+  const link = $('#raw-link');
+  link.href = path;
+  try {
+    const res = await fetch(path, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+    const text = await res.text();
+    const yamlText = stripMarkdownYamlFence(text);
+    const data = jsyaml.load(yamlText);
+    state.data = data;
+    render();
+  } catch (e) {
+    state.data = null;
+    renderError(e);
+  }
+}
+
+function renderError(e) {
+  $('#root').innerHTML = '';
+  $('#root').appendChild(el('div', { class: 'empty', html: `
+    <div style="font-size:14px;color:hsl(0 91% 75%);margin-bottom:8px;">Could not load design system</div>
+    <div style="font-family:ui-monospace, monospace;font-size:11px;">${dsPath()}</div>
+    <div style="margin-top:12px;font-size:12px;">${e.message || e}</div>
+  ` }));
+}
+
+function pushUrl() {
+  const p = new URLSearchParams({ run: state.run, item: state.item, variant: state.variant });
+  history.replaceState(null, '', `?${p}`);
+}
+
+// -- section renderers --------------------------------------------------------
+
+function renderHeader(data) {
+  const meta = data.metadata || {};
+  const conf = meta.confidence || 'unknown';
+  const confClass = `conf conf-${conf}`;
+  return el('div', { class: 'section' }, [
+    el('div', { style: { display: 'flex', alignItems: 'baseline', gap: '12px', marginBottom: '8px' } }, [
+      el('h2', { style: { fontSize: '20px', fontWeight: '600' } }, meta.name || '(unnamed system)'),
+      el('span', { class: confClass }, conf),
+      el('span', { style: { color: 'hsl(240 5% 64.9%)', fontSize: '11px', fontFamily: 'ui-monospace, monospace' } }, data.schema_version || ''),
+    ]),
+    meta.description ? el('p', { style: { color: 'hsl(240 5% 80%)', fontSize: '13px', maxWidth: '80ch' } }, meta.description) : null,
+  ]);
+}
+
+function flattenColors(colorTree, prefix = '') {
+  const out = [];
+  for (const [k, v] of Object.entries(colorTree || {})) {
+    const path = prefix ? `${prefix}.${k}` : k;
+    if (v && typeof v === 'object') {
+      out.push(...flattenColors(v, path));
+    } else {
+      out.push({ path, value: String(v) });
+    }
+  }
+  return out;
+}
+
+function renderColorTokens(data) {
+  const colorRoot = data.tokens?.color;
+  if (!colorRoot) return null;
+  const section = el('section', { class: 'section' }, [
+    el('div', { class: 'section-title' }, [
+      'Color Tokens',
+      el('span', { class: 'hint' }, 'tokens.color')
+    ])
+  ]);
+  for (const [group, sub] of Object.entries(colorRoot)) {
+    if (!sub || typeof sub !== 'object') continue;
+    const entries = Object.entries(sub);
+    const grid = el('div', { class: 'panel', style: { marginBottom: '12px' } }, [
+      el('div', { class: 'section-title', style: { padding: 0, marginBottom: '12px' } }, [
+        group,
+        el('span', { class: 'hint' }, `${entries.length} token${entries.length === 1 ? '' : 's'}`)
+      ]),
+      el('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '10px' } },
+        entries.map(([name, val]) => {
+          const resolved = resolveRef(val, data);
+          return el('div', { class: 'swatch' }, [
+            el('div', { class: 'chip' }, [
+              el('div', { class: 'chip-fill', style: { background: resolved } })
+            ]),
+            el('div', { class: 'meta' }, [
+              el('div', { class: 'name' }, name),
+              el('div', { class: 'value' }, resolved),
+              el('div', { class: 'path' }, `color.${group}.${name}`),
+            ])
+          ]);
+        }))
+    ]);
+    section.appendChild(grid);
+  }
+  return section;
+}
+
+function renderSurfaceSystem(data) {
+  const surfaces = data.surfaces;
+  if (!surfaces || typeof surfaces !== 'object') return null;
+  const section = el('section', { class: 'section' }, [
+    el('div', { class: 'section-title' }, [
+      'Surface System',
+      el('span', { class: 'hint' }, `${Object.keys(surfaces).length} surfaces, hosts + child contrast`)
+    ])
+  ]);
+  const grid = el('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '12px' } });
+  for (const [name, surface] of Object.entries(surfaces)) {
+    const bg = resolveRef(surface.value, data);
+    const textDefault = resolveRef(surface.text?.default, data);
+    const textMuted = resolveRef(surface.text?.muted, data);
+    const textAccent = resolveRef(surface.text?.accent, data);
+    const border = resolveRef(surface.border, data);
+    const usage = Array.isArray(surface.usage) ? surface.usage : [];
+    const card = el('div', { class: 'surface-card' }, [
+      el('div', { class: 'preview', style: {
+        background: bg,
+        color: textDefault,
+        boxShadow: surface.shadow && surface.shadow !== 'none' ? resolveRef(surface.shadow, data) : 'none',
+        borderTop: border && border !== 'none' && border !== 'transparent' ? `1px solid ${border}` : 'none',
+      } }, [
+        el('div', {}, [
+          el('div', { class: 'title' }, name.replace(/_/g, ' ')),
+          el('div', { class: 'body', style: { marginTop: '6px' } }, 'Body copy reads naturally on this surface with the default text color from the contract.'),
+        ]),
+        el('div', {}, [
+          el('div', { class: 'muted', style: { color: textMuted, marginBottom: '6px' } }, 'Muted secondary text sample.'),
+          el('div', { class: 'accent-row' }, [
+            el('span', { class: 'accent-dot', style: { background: textAccent } }),
+            el('span', { style: { color: textAccent, fontSize: '13px', fontWeight: '500' } }, 'Accent label / link'),
+          ]),
+        ])
+      ]),
+      el('div', { class: 'meta' }, [
+        el('div', { class: 'row' }, [
+          el('span', { class: 'name' }, name),
+          el('span', { class: 'role' }, surface.role || ''),
+        ]),
+        el('div', { class: 'value' }, `${bg}${surface.gradient && surface.gradient !== 'none' ? `  · gradient: ${surface.gradient}` : ''}`),
+        usage.length ? el('div', { class: 'usage' }, usage.map(u => `· ${u}`).join('\n')) : null,
+      ])
+    ]);
+    grid.appendChild(card);
+  }
+  section.appendChild(grid);
+  return section;
+}
+
+function pxNum(value) {
+  if (typeof value !== 'string') return 0;
+  const m = value.match(/(-?\d+(?:\.\d+)?)/);
+  return m ? Number(m[1]) : 0;
+}
+
+function renderTypography(data) {
+  const typo = data.typography;
+  if (!typo || typeof typo !== 'object') return null;
+  const styles = Object.entries(typo).filter(([, v]) => v && typeof v === 'object' && v.fontSize);
+  if (!styles.length) return null;
+  const sorted = styles.sort((a, b) => pxNum(resolveRef(b[1].fontSize, data)) - pxNum(resolveRef(a[1].fontSize, data)));
+  const panel = el('div', { class: 'panel' });
+  for (const [name, style] of sorted) {
+    const fontSize = resolveRef(style.fontSize, data);
+    const weight = style.fontWeight ?? 'normal';
+    const tracking = style.letterSpacing ?? '0';
+    const lh = style.lineHeight ?? 'normal';
+    const family = style.fontFamily || 'inherit';
+    const transform = style.textTransform || 'none';
+    const sampleText = name.includes('display') || name.includes('hero') ? 'The quick brown fox'
+      : name.includes('section') ? 'Section heading sample'
+      : name.includes('statistic') ? '3,250'
+      : name.includes('label') || name.includes('meta') ? 'Label or metadata'
+      : 'Generated body text demonstrating real reading rhythm with several words to show line height behavior.';
+    panel.appendChild(el('div', { class: 'type-row' }, [
+      el('div', { class: 'meta' }, [
+        el('div', { class: 'name' }, name),
+        el('div', { class: 'specs' }, [
+          `${fontSize} / ${weight}`,
+          el('br'),
+          `line-height: ${lh}`,
+          el('br'),
+          `letter-spacing: ${tracking}`,
+          el('br'),
+          `family: ${String(family).split(',')[0]}`,
+        ]),
+        style.role ? el('div', { class: 'role' }, style.role) : null,
+      ]),
+      el('div', { class: 'sample', style: {
+        fontSize, fontWeight: String(weight), letterSpacing: tracking, lineHeight: lh,
+        fontFamily: family, textTransform: transform,
+      } }, sampleText)
+    ]));
+  }
+  return el('section', { class: 'section' }, [
+    el('div', { class: 'section-title' }, [
+      'Typography',
+      el('span', { class: 'hint' }, `${styles.length} styles, sorted by size`)
+    ]),
+    panel
+  ]);
+}
+
+function renderScale(data) {
+  const scale = data.tokens?.typography?.scale;
+  if (!scale || typeof scale !== 'object') return null;
+  const items = Object.entries(scale);
+  return el('section', { class: 'section' }, [
+    el('div', { class: 'section-title' }, [
+      'Type Scale',
+      el('span', { class: 'hint' }, 'tokens.typography.scale')
+    ]),
+    el('div', { class: 'panel' }, [
+      el('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '12px', alignItems: 'baseline' } },
+        items.map(([k, v]) => el('div', { style: { display: 'flex', flexDirection: 'column', gap: '4px' } }, [
+          el('div', { style: { fontSize: v, fontWeight: '500', lineHeight: '1', color: 'hsl(0 0% 98%)' } }, 'Aa'),
+          el('div', { style: { fontSize: '11px', color: 'hsl(0 0% 98%)', fontWeight: '500' } }, k),
+          el('div', { style: { fontSize: '10px', fontFamily: 'ui-monospace, monospace', color: 'hsl(240 5% 64.9%)' } }, v),
+        ])))
+    ])
+  ]);
+}
+
+function renderSpacing(data) {
+  const spacing = data.tokens?.spacing;
+  if (!spacing || typeof spacing !== 'object') return null;
+  const entries = Object.entries(spacing);
+  const numeric = entries.map(([k, v]) => [k, v, pxNum(resolveRef(v, data))]);
+  const max = Math.max(...numeric.map(n => n[2]), 1);
+  return el('section', { class: 'section' }, [
+    el('div', { class: 'section-title' }, [
+      'Spacing',
+      el('span', { class: 'hint' }, 'tokens.spacing')
+    ]),
+    el('div', { class: 'panel' }, numeric.map(([k, v, n]) =>
+      el('div', { class: 'spacing-row' }, [
+        el('div', { class: 'name' }, k),
+        el('div', { class: 'bar-track' }, [
+          el('div', { class: 'bar-fill', style: { width: `${(n / max) * 100}%` } })
+        ]),
+        el('div', { class: 'value' }, String(v)),
+      ])
+    ))
+  ]);
+}
+
+function renderRadius(data) {
+  const radius = data.tokens?.radius;
+  if (!radius || typeof radius !== 'object') return null;
+  return el('section', { class: 'section' }, [
+    el('div', { class: 'section-title' }, [
+      'Radius',
+      el('span', { class: 'hint' }, 'tokens.radius')
+    ]),
+    el('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '12px' } },
+      Object.entries(radius).map(([k, v]) => el('div', { class: 'tile' }, [
+        el('div', { class: 'preview', style: { borderRadius: v } }),
+        el('div', { class: 'name' }, k),
+        el('div', { class: 'value' }, String(v)),
+      ])))
+  ]);
+}
+
+function renderShadow(data) {
+  const shadow = data.tokens?.shadow;
+  if (!shadow || typeof shadow !== 'object') return null;
+  return el('section', { class: 'section' }, [
+    el('div', { class: 'section-title' }, [
+      'Shadow / Elevation',
+      el('span', { class: 'hint' }, 'tokens.shadow')
+    ]),
+    el('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '16px' } },
+      Object.entries(shadow).map(([k, v]) => el('div', { class: 'tile', style: { background: 'hsl(240 5% 14%)' } }, [
+        el('div', { class: 'preview', style: { boxShadow: v === 'none' ? 'none' : v, borderRadius: '6px' } }),
+        el('div', { class: 'name' }, k),
+        el('div', { class: 'value' }, String(v)),
+      ])))
+  ]);
+}
+
+function renderComponents(data) {
+  const components = data.components;
+  if (!components || typeof components !== 'object') return null;
+  const surfaces = data.surfaces || {};
+  const entries = Object.entries(components);
+  const grid = el('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '12px' } });
+  for (const [name, comp] of entries) {
+    const base = comp.base || {};
+    const baseTypo = resolveRefDeep(base.typography, data) || {};
+    const baseFont = typeof baseTypo === 'object' ? baseTypo : {};
+    const variants = comp.variants && typeof comp.variants === 'object' ? comp.variants : {};
+    const variantEntries = Object.entries(variants);
+    if (!variantEntries.length) variantEntries.push(['default', {}]);
+    for (const [vname, variant] of variantEntries) {
+      const surface = surfaces[variant.surface] || surfaces.light_canvas || {};
+      const surfaceBg = resolveRef(surface.value, data) || '#fff';
+      const surfaceTextDefault = resolveRef(surface.text?.default, data) || '#000';
+      const bg = variant.backgroundColor ? resolveRef(variant.backgroundColor, data) : 'transparent';
+      const color = variant.textColor ? resolveRef(variant.textColor, data) : surfaceTextDefault;
+      const borderColor = variant.borderColor ? resolveRef(variant.borderColor, data) : 'transparent';
+      const shadow = variant.shadow && variant.shadow !== 'none' ? resolveRef(variant.shadow, data) : 'none';
+      const radius = base.radius ? resolveRef(base.radius, data) : '0';
+      const padding = base.padding ? resolveRef(base.padding, data) : '0';
+      const fontSize = resolveRef(baseFont.fontSize, data) || '14px';
+      const fontWeight = baseFont.fontWeight || '500';
+      const tracking = baseFont.letterSpacing || '0';
+      const transform = baseFont.textTransform || 'none';
+
+      const kind = comp.kind || 'component';
+      const anatomy = Array.isArray(comp.anatomy) ? comp.anatomy.join(' · ') : '';
+      let preview;
+      if (kind === 'button' || kind === 'link') {
+        preview = el('button', { style: {
+          background: bg, color, borderRadius: radius, padding,
+          fontSize, fontWeight: String(fontWeight), letterSpacing: tracking,
+          textTransform: transform,
+          border: borderColor && borderColor !== 'transparent' && borderColor !== 'none' ? `1px solid ${borderColor}` : 'none',
+          boxShadow: shadow, cursor: 'pointer',
+        } }, name.replace(/_/g, ' '));
+      } else if (kind === 'input') {
+        preview = el('div', { style: { width: '90%' } }, [
+          el('div', { style: { fontSize: '11px', color: 'rgba(0,0,0,0.65)', marginBottom: '6px', fontWeight: '500' } }, 'Label'),
+          el('input', { type: 'text', value: 'placeholder@example.com', style: {
+            width: '100%', background: bg, color, borderRadius: radius, padding,
+            fontSize, fontWeight: String(fontWeight), letterSpacing: tracking,
+            border: borderColor && borderColor !== 'transparent' && borderColor !== 'none' ? `1px solid ${borderColor}` : 'none',
+            boxShadow: shadow,
+          } })
+        ]);
+      } else if (kind === 'card' || kind === 'panel') {
+        const isStat = name.includes('statistic') || name.includes('stat');
+        preview = el('div', { style: {
+          background: bg !== 'transparent' ? bg : surfaceBg, color,
+          borderRadius: radius, padding: padding && padding !== '0' ? padding : '20px',
+          border: borderColor && borderColor !== 'none' && borderColor !== 'transparent' ? `1px solid ${borderColor}` : 'none',
+          boxShadow: shadow, width: '85%', display: 'flex', flexDirection: 'column', gap: '8px',
+        } }, isStat ? [
+          el('div', { style: { fontSize: '40px', fontWeight: '700', letterSpacing: '-0.03em', lineHeight: '1' } }, '3,250'),
+          el('div', { style: { fontSize: '12px', opacity: '0.85' } }, 'active customers'),
+        ] : [
+          el('div', { style: { width: '100%', aspectRatio: '4/3', background: 'rgba(0,0,0,0.08)', borderRadius: 'inherit' } }),
+          el('div', { style: { fontSize, fontWeight: String(fontWeight) } }, 'Caption text'),
+          el('div', { style: { fontSize: '11px', opacity: '0.7' } }, anatomy || 'card body'),
+        ]);
+      } else {
+        preview = el('div', { style: { color, background: bg, padding, borderRadius: radius, boxShadow: shadow, border: borderColor && borderColor !== 'none' && borderColor !== 'transparent' ? `1px solid ${borderColor}` : 'none', fontSize, fontWeight: String(fontWeight) } }, name);
+      }
+
+      grid.appendChild(el('div', { class: 'component-card' }, [
+        el('div', { class: 'stage', style: { background: surfaceBg } }, [preview]),
+        el('div', { class: 'meta' }, [
+          el('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' } }, [
+            el('span', { class: 'name' }, name),
+            el('span', { class: 'kind' }, kind),
+          ]),
+          el('div', { class: 'variant' }, `variant: ${vname} · on ${variant.surface || 'default'}`),
+          anatomy ? el('div', { class: 'anatomy' }, anatomy) : null,
+        ])
+      ]));
+    }
+  }
+  return el('section', { class: 'section' }, [
+    el('div', { class: 'section-title' }, [
+      'Component Spectrum',
+      el('span', { class: 'hint' }, `${entries.length} component${entries.length === 1 ? '' : 's'}`)
+    ]),
+    grid
+  ]);
+}
+
+function renderComposition(data) {
+  // Render each surface as a real marketing section: eyebrow → title → description → primary + secondary CTAs.
+  // Typography is taken from data.typography (matched by role hint), buttons are taken from data.components
+  // (primary_button variant matched to the surface). This proves the extracted system actually composes.
+  const surfaces = data.surfaces;
+  if (!surfaces) return null;
+  const entries = Object.entries(surfaces);
+  if (entries.length < 1) return null;
+
+  // Pull the best typography style for a role hint, e.g. "label", "section", "hero", "body".
+  function pickType(...hints) {
+    const typo = data.typography || {};
+    for (const hint of hints) {
+      for (const [name, style] of Object.entries(typo)) {
+        if (!style || typeof style !== 'object') continue;
+        if (name.includes(hint) || (style.role && style.role.includes(hint))) return style;
+      }
+    }
+    return null;
+  }
+
+  const eyebrowStyle = pickType('label', 'meta');
+  const titleStyle = pickType('section', 'hero', 'display');
+  const bodyStyle = pickType('body', 'paragraph');
+
+  function styleToCss(style, capFontSize) {
+    if (!style) return {};
+    let fontSize = resolveRef(style.fontSize, data);
+    if (capFontSize && typeof fontSize === 'string') {
+      const n = pxNum(fontSize);
+      if (n > capFontSize) fontSize = `${capFontSize}px`;
+    }
+    return {
+      fontFamily: style.fontFamily || 'inherit',
+      fontSize,
+      fontWeight: String(style.fontWeight ?? 'normal'),
+      lineHeight: String(style.lineHeight ?? 'normal'),
+      letterSpacing: style.letterSpacing ?? '0',
+      textTransform: style.textTransform || 'none',
+    };
+  }
+
+  // Find a primary_button-style component variant for this surface name. Falls back to the first button variant.
+  function getButtonVariantForSurface(surfaceName) {
+    const comps = data.components || {};
+    for (const [, comp] of Object.entries(comps)) {
+      if (comp?.kind !== 'button') continue;
+      for (const [vname, variant] of Object.entries(comp.variants || {})) {
+        if (variant.surface === surfaceName) return { comp, variant, vname };
+      }
+    }
+    for (const [, comp] of Object.entries(comps)) {
+      if (comp?.kind === 'button') {
+        const first = Object.entries(comp.variants || {})[0];
+        if (first) return { comp, variant: first[1], vname: first[0] };
+      }
+    }
+    return null;
+  }
+
+  // Generic role-aware sample copy. Stays useful across any extracted system because it speaks to the role,
+  // not to a specific brand.
+  const COPY_BY_ROLE = {
+    page_canvas:   { eyebrow: 'Main content', title: 'Where the story unfolds.',           body: 'Body copy on the page canvas reads at the body_default typography style with comfortable contrast. Long-form sections live here.' },
+    inverse_run:   { eyebrow: 'Brand moment', title: 'A loud, branded interruption.',      body: 'Inverse runs flip the contrast for CTAs and emphasis bands. Accent and on-brand text colors carry the same intent across surfaces.' },
+    media_host:    { eyebrow: 'Visual hero',  title: 'Photography first.',                  body: 'Media host surfaces sit on top of imagery with a scrim overlay for legibility. Text reads as light-on-dark using the on_overlay text color.' },
+    section_run:   { eyebrow: 'Section break', title: 'Rhythm between content blocks.',    body: 'Section runs create breathing room between content without changing the page-level palette.' },
+    inset_panel:   { eyebrow: 'Focused interaction', title: 'For forms and detail panels.', body: 'Inset panels narrow the focus with a subtle tonal shift, signaling a different interaction context.' },
+  };
+  function copyFor(name, role) {
+    return COPY_BY_ROLE[role] || COPY_BY_ROLE[name] || {
+      eyebrow: (role || name).replace(/_/g, ' ').toUpperCase(),
+      title: 'A composable surface.',
+      body: 'Body copy reads naturally on this surface using the default text color from the contract.',
+    };
+  }
+
+  return el('section', { class: 'section' }, [
+    el('div', { class: 'section-title' }, [
+      'Composition Rules',
+      el('span', { class: 'hint' }, 'each surface rendered as a real marketing section'),
+    ]),
+    el('div', { class: 'vignette' }, entries.map(([name, s]) => {
+      const bg = resolveRef(s.value, data);
+      const textDefault = resolveRef(s.text?.default, data);
+      const textMuted = resolveRef(s.text?.muted, data);
+      const textAccent = resolveRef(s.text?.accent, data);
+      const copy = copyFor(name, s.role);
+
+      // Resolve the primary CTA from the component contract; derive a matching secondary as an outline.
+      const btn = getButtonVariantForSurface(name);
+      let primaryBtnStyle, secondaryBtnStyle;
+      if (btn) {
+        const v = btn.variant;
+        const base = btn.comp.base || {};
+        const baseTypo = resolveRefDeep(base.typography, data) || {};
+        primaryBtnStyle = {
+          background: resolveRef(v.backgroundColor, data) || textAccent,
+          color: resolveRef(v.textColor, data) || bg,
+          borderRadius: resolveRef(base.radius, data) || '999px',
+          padding: resolveRef(base.padding, data) || '12px 28px',
+          border: v.borderColor && v.borderColor !== 'transparent' && v.borderColor !== 'none'
+            ? `1px solid ${resolveRef(v.borderColor, data)}` : 'none',
+          boxShadow: v.shadow && v.shadow !== 'none' ? resolveRef(v.shadow, data) : 'none',
+          fontSize: resolveRef(baseTypo.fontSize, data) || '14px',
+          fontWeight: String(baseTypo.fontWeight || '500'),
+          letterSpacing: baseTypo.letterSpacing || '0',
+          textTransform: baseTypo.textTransform || 'none',
+          cursor: 'pointer',
+        };
+        secondaryBtnStyle = {
+          ...primaryBtnStyle,
+          background: 'transparent',
+          color: textDefault,
+          border: `1px solid ${textDefault}`,
+          boxShadow: 'none',
+        };
+      } else {
+        primaryBtnStyle = {
+          background: textAccent, color: bg,
+          borderRadius: '999px', padding: '12px 28px',
+          fontSize: '14px', fontWeight: '500', border: 'none', cursor: 'pointer',
+        };
+        secondaryBtnStyle = {
+          background: 'transparent', color: textDefault,
+          borderRadius: '999px', padding: '12px 28px',
+          fontSize: '14px', fontWeight: '500',
+          border: `1px solid ${textDefault}`, cursor: 'pointer',
+        };
+      }
+
+      return el('div', { class: 'band', style: {
+        background: bg, color: textDefault,
+        padding: '64px 48px',
+        borderTop: s.border && s.border !== 'none' && s.border !== 'transparent'
+          ? `1px solid ${resolveRef(s.border, data)}` : 'none',
+      } }, [
+        el('div', { style: {
+          ...styleToCss(eyebrowStyle),
+          color: textMuted,
+          marginBottom: '14px',
+          opacity: '0.85',
+        } }, copy.eyebrow),
+        el('div', { style: {
+          ...styleToCss(titleStyle, 56),
+          color: textDefault,
+          maxWidth: '24ch',
+          marginBottom: '14px',
+          textWrap: 'balance',
+        } }, copy.title),
+        el('div', { style: {
+          ...styleToCss(bodyStyle),
+          color: textMuted,
+          maxWidth: '60ch',
+          marginBottom: '24px',
+        } }, copy.body),
+        el('div', { style: { display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' } }, [
+          el('button', { style: primaryBtnStyle }, 'Get a demo'),
+          el('button', { style: secondaryBtnStyle }, 'See pricing'),
+        ]),
+        el('div', { style: {
+          fontSize: '10px', color: textMuted, marginTop: '24px',
+          opacity: '0.55', fontFamily: 'ui-monospace, monospace', letterSpacing: '0.05em',
+        } },
+          `${name} · role: ${s.role || 'unknown'}${Array.isArray(s.usage) && s.usage.length ? ' · ' + s.usage.join(' · ') : ''}${btn ? ` · primary: ${btn.vname}` : ''}`
+        ),
+      ]);
+    })),
+  ]);
+}
+
+function renderListPanel(title, hint, listOrObj) {
+  if (!listOrObj) return null;
+  const panel = el('div', { class: 'panel', style: { padding: 0 } });
+  if (Array.isArray(listOrObj)) {
+    panel.appendChild(el('div', { class: 'pattern-block' }, [
+      el('ul', {}, listOrObj.map(item => el('li', {}, String(item))))
+    ]));
+  } else {
+    for (const [k, v] of Object.entries(listOrObj)) {
+      const items = Array.isArray(v) ? v : [String(v)];
+      panel.appendChild(el('div', { class: 'pattern-block' }, [
+        el('div', { class: 'label' }, k.replace(/_/g, ' ')),
+        el('ul', {}, items.map(item => el('li', {}, String(item))))
+      ]));
+    }
+  }
+  return el('section', { class: 'section' }, [
+    el('details', { open: '' }, [
+      el('summary', { class: 'section-title' }, [
+        el('span', { class: 'chev' }, '▸'),
+        title,
+        el('span', { class: 'hint' }, hint || ''),
+      ]),
+      panel
+    ])
+  ]);
+}
+
+function renderImagery(data) {
+  if (!data.imagery) return null;
+  const panel = el('div', { class: 'panel', style: { padding: 0 } });
+  for (const [k, v] of Object.entries(data.imagery)) {
+    if (!v || typeof v !== 'object') continue;
+    const observed = v.observed === true;
+    panel.appendChild(el('div', { class: 'pattern-block' }, [
+      el('div', { style: { display: 'flex', alignItems: 'baseline', gap: '8px' } }, [
+        el('div', { class: 'label', style: { marginBottom: 0 } }, k),
+        el('span', { class: `conf ${observed ? 'conf-high' : 'conf-low'}` }, observed ? 'observed' : 'not observed'),
+      ]),
+      el('div', { style: { fontSize: '12px', color: 'hsl(240 5% 80%)', marginTop: '6px', lineHeight: '1.5' } }, v.creativeDirection || ''),
+      v.rendering ? el('div', { style: { fontSize: '11px', color: 'hsl(240 5% 64.9%)', marginTop: '4px', fontFamily: 'ui-monospace, monospace' } }, `rendering: ${v.rendering}`) : null,
+    ]));
+  }
+  return el('section', { class: 'section' }, [
+    el('details', { open: '' }, [
+      el('summary', { class: 'section-title' }, [
+        el('span', { class: 'chev' }, '▸'),
+        'Imagery',
+        el('span', { class: 'hint' }, 'icons · illustrations · interfaces · photography'),
+      ]),
+      panel
+    ])
+  ]);
+}
+
+function render() {
+  const root = $('#root');
+  root.innerHTML = '';
+  const data = state.data;
+  if (!data) return;
+
+  root.appendChild(renderHeader(data));
+  const colors = renderColorTokens(data); if (colors) root.appendChild(colors);
+  const surfaces = renderSurfaceSystem(data); if (surfaces) root.appendChild(surfaces);
+  const scale = renderScale(data); if (scale) root.appendChild(scale);
+  const typo = renderTypography(data); if (typo) root.appendChild(typo);
+  const spacing = renderSpacing(data); if (spacing) root.appendChild(spacing);
+  const radius = renderRadius(data); if (radius) root.appendChild(radius);
+  const shadow = renderShadow(data); if (shadow) root.appendChild(shadow);
+  const comps = renderComponents(data); if (comps) root.appendChild(comps);
+  const comp = renderComposition(data); if (comp) root.appendChild(comp);
+  const patterns = renderListPanel('Patterns', 'layout · page_moments · adjacency · responsive', data.patterns); if (patterns) root.appendChild(patterns);
+  const rules = renderListPanel('Rules', 'color · typography · spacing · containers · components · accessibility', data.rules); if (rules) root.appendChild(rules);
+  const imagery = renderImagery(data); if (imagery) root.appendChild(imagery);
+  if (Array.isArray(data.do_not_generalize) && data.do_not_generalize.length) {
+    root.appendChild(renderListPanel('Do not generalize', 'site-specific decisions', data.do_not_generalize));
+  }
+  if (Array.isArray(data.open_questions) && data.open_questions.length) {
+    root.appendChild(renderListPanel('Open questions', 'unobserved or ambiguous', data.open_questions));
+  }
+
+  // Footer spacer
+  root.appendChild(el('div', { style: { height: '64px' } }));
+}
+
+// -- selector wiring ----------------------------------------------------------
+
+async function populateRunSelect() {
+  const sel = $('#run-select');
+  sel.innerHTML = '';
+  const runs = await discoverRuns();
+  if (!runs.includes(state.run)) runs.unshift(state.run);
+  for (const r of runs) sel.appendChild(el('option', { value: r }, r));
+  sel.value = state.run;
+  sel.addEventListener('change', async () => {
+    state.run = sel.value;
+    await populateItemSelect();
+    pushUrl();
+    await loadData();
+  });
+}
+
+async function populateItemSelect() {
+  const sel = $('#item-select');
+  sel.innerHTML = '';
+  const items = await discoverItems(state.run);
+  if (!items.includes(state.item)) items.unshift(state.item);
+  for (const i of items) sel.appendChild(el('option', { value: i }, i));
+  sel.value = state.item;
+  sel.onchange = async () => {
+    state.item = sel.value;
+    pushUrl();
+    await loadData();
+  };
+}
+
+(async function init() {
+  await populateRunSelect();
+  await populateItemSelect();
+  await loadData();
+})();
+</script>
+</body>
+</html>

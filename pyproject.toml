@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "screenshot-to-template"
+version = "0.1.0"
+description = "Convert website screenshots into text-based design systems"
+requires-python = ">=3.10"
+dependencies = [
+    "Pillow>=10.0",
+    "openai>=1.0",
+    "anthropic>=0.30",
+    "google-genai>=1.0",
+    "PyYAML>=6.0",
+    "requests>=2.31",
+    "beautifulsoup4>=4.12",
+]
+
+[project.scripts]
+screenshot-to-template = "screenshot_to_template.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

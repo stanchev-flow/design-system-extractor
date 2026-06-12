@@ -1,0 +1,45 @@
+# Screenshot to Template - Default Configuration
+# Override any of these in your own config file passed via --config
+
+provider: openai
+model: gpt-5.5
+reasoning-effort: high
+site-asset-generation-enabled: true
+# Framework-first: React + Tailwind v4 + shadcn-style per run item → site-*-framework.html
+framework-generation-enabled: true
+# Vanilla one-shot HTML (site-claude.html / site-gpt55.html). Off by default; use --vanilla-sites to enable.
+vanilla-site-generation-enabled: false
+site-asset-image-model: gpt-image-2
+site-asset-generation-workers: 3
+surface-map-mode: auto
+run-reviews: false
+section-detection-provider: openai
+section-detection-model: gpt-5.5
+section-detection-reasoning-effort: high
+
+max-image-dimension: 2048
+auto-chunk-tall-section-detection: true
+auto-two-chunk-threshold-height: 22000
+auto-three-chunk-threshold-height: 999999
+auto-chunk-overlap: 1600
+use-local-inventory-per-chunk: false
+chunked-section-detection: false
+section-detection-chunk-height: 2400
+section-detection-chunk-overlap: 400
+section-detection-chunk-trigger-height: 3200
+chunk-ruler-major-step: 50
+chunk-ruler-minor-step: 25
+chunk-boundary-cluster-tolerance: 90
+max-tokens: 4096
+
+# Override the system prompt to change output structure:
+# system-prompt: |
+#   Your custom prompt here...
+
+# Override the structural analysis prompt (used in both modes before synthesis):
+# structural-analysis-prompt: |
+#   Your custom prompt here...
+
+# Override the merge prompt (used in sectioned mode):
+# merge-prompt: |
+#   Your custom merge prompt here...

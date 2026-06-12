@@ -1,0 +1,18 @@
+venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+tmp/
+temp/
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Large generated artifacts (runs, screenshots, viewer data) — regenerate locally
+runs/
+screenshots/
+viewer-data/
+handoff/v302-fieldnote/
