@@ -1,0 +1,132 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "woodwave-hero-density-lean",
+    "name": "WoodWave hero \u2014 lean density variation",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/woodwave/brand/brand.yaml"
+  },
+  "style": {
+    "id": "editorial-luxury"
+  },
+  "sections": [
+    {
+      "id": "opening-bookend",
+      "useCase": "hero",
+      "archetype": "stack",
+      "surfaceIntent": "inverse",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-display-over-staggered-media"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Est. 2019 \u2014 Portland, Oregon"
+        },
+        {
+          "name": "title",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "width": "stretch",
+          "z": "front",
+          "copy": "WOODWAVE GALLERY"
+        },
+        {
+          "name": "lede",
+          "role": "subheading",
+          "contract": "subheading",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Woodgrain, light, geometry."
+        },
+        {
+          "name": "action",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Buy Tickets \u2014 plan your visit"
+        },
+        {
+          "name": "media-primary",
+          "role": "media-landscape",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "landscape",
+          "z": "mid",
+          "asset": null
+        },
+        {
+          "name": "media-secondary",
+          "role": "media-portrait",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "z": "mid",
+          "asset": null
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "overlap",
+          "pair": [
+            "media-landscape",
+            "media-portrait"
+          ],
+          "zOrder": [
+            "media-landscape",
+            "media-portrait"
+          ],
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "stagger",
+          "target": "media-portrait",
+          "axis": "horizontal",
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "text-on-media",
+          "target": "display-title",
+          "over": "media-landscape",
+          "amount": {
+            "class": "medium"
+          },
+          "sanctioned": true
+        }
+      ],
+      "knobs": {
+        "align": "center",
+        "titleOverlap": "medium",
+        "overlapMediaSide": "right"
+      }
+    }
+  ],
+  "rationale": "Single sanctioned hero bookend reusing the seeded project pattern hero-display-over-staggered-media verbatim in structure: centered colossal Melodrama display title over two hard-edged photos, the offset portrait crossing the landscape's lower edge (media-over-media overlap + stagger), sanctioned text-on-media title, dark inverse surface carrying the sole gold accent on the display title. Only the DENSITY axis is varied per directive \u2014 the lede collapses to a terse 3-word imperative fragment ('Woodgrain, light, geometry.') and the CTA becomes the action pair 'Buy Tickets \u2014 plan your visit'. Eyebrow and headline are kept verbatim, asset:null defers to brand photography, nothing repositions. novelty:'adapt', seededFrom the project hero pattern."
+}

@@ -1,0 +1,16 @@
+{
+  "attempts": 1,
+  "telemetry": [
+    {
+      "attempt": 0,
+      "latency_s": 0.0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "temperature": null,
+      "stage": "neverdo-fail"
+    }
+  ],
+  "model": "stub-deterministic",
+  "ok": false,
+  "offGridExpansion": false
+}

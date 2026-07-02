@@ -1,0 +1,22 @@
+WoodWave HYBRID experiment — PART B (off-grid expansion)
+  fairness brand.yaml           00024b73ccb1625cfb1e87b25200a2dc [DRIFT]
+  fairness signup-launch.md     68ea09f261fa58707acdbddbfde8475d [OK]
+  fairness editorial-luxury.md  4bb79e0a4d6f4c81e5ca4d17b66723c9 [OK]
+
+=== GUARDRAIL 1 (deterministic) :: repair loop catch → fix / reject ===
+  neverDo prefilter caught: [('adversary', 'no-text-on-photos')]
+  offgrid prefilter (flag off) caught: [('adversary', "novelty:'novel' is locked (offGridExpansion=false) — reuse/adapt a captured pattern instead"), ('adversary', "off-grid treatment(s) ['stagger'] locked (offGridExpansion=false) — remove them / keep the section aligned to the captured pattern")]
+  offGridExpansion=False (forced False)
+  [attempt 0] 0.0s  in=0 out=0
+    neverDo prefilter: [('adversary', 'no-text-on-photos')]
+  [attempt 1] 0.0s  in=0 out=0
+    gate: PASS
+  catch→fix:    attempts=2 stages=['neverdo-fail', 'gated'] shipped_ok=True
+  offGridExpansion=False (forced False)
+  [attempt 0] 0.0s  in=0 out=0
+    neverDo prefilter: [('adversary', 'no-text-on-photos')]
+  catch→reject: attempts=1 stages=['neverdo-fail'] shipped_ok=False
+  verdict: PASS — loop caught the violation, FIXED on a corrected retry, and REJECTED it when no retry remained
+
+=== GUARDRAIL 2 :: promotion loop (novel gate-green → layout-library.yaml) ===
+  promoted 'value-props-promoted' → project library (0→1 patterns); retrieval now hits it: True (kind=reuse, score=5.35)

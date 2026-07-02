@@ -1,0 +1,704 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "woodwave-gallery-landing",
+    "name": "Woodwave Gallery \u2014 Space As Muse",
+    "useCasesRequested": [
+      "hero",
+      "about",
+      "gallery",
+      "features",
+      "testimonial",
+      "cta",
+      "footer"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/woodwave/brand/brand.yaml"
+  },
+  "style": {
+    "id": "editorial-luxury"
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "stack",
+      "surfaceIntent": "inverse",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-display-over-staggered-media"
+      },
+      "slots": [
+        {
+          "name": "backdrop",
+          "role": "background-media",
+          "contract": "image",
+          "width": "full-bleed",
+          "mediaAspect": "wide",
+          "z": "back",
+          "colStart": 1,
+          "colSpan": 12,
+          "asset": {
+            "src": "Web-gallery-1.jpg",
+            "alt": "Warm timber gallery interior bathed in north light",
+            "ratio": "landscape"
+          }
+        },
+        {
+          "name": "eyebrow",
+          "role": "kicker",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "colStart": 2,
+          "colSpan": 6,
+          "copy": "Contemporary Art \u00b7 Est. 1941"
+        },
+        {
+          "name": "title",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "colossal",
+          "width": "stretch",
+          "z": "front",
+          "colStart": 2,
+          "colSpan": 10,
+          "copy": "Space As Muse"
+        },
+        {
+          "name": "offsetMedia",
+          "role": "secondary-media",
+          "contract": "image",
+          "mediaAspect": "portrait",
+          "width": "media",
+          "z": "mid",
+          "colStart": 8,
+          "colSpan": 4,
+          "registration": {
+            "toSlot": "backdrop",
+            "edge": "bottom",
+            "depthBaselines": 4,
+            "z": "mid"
+          },
+          "asset": {
+            "src": "About-img-3.jpg",
+            "alt": "Detail of the landmark timber facade",
+            "ratio": "portrait"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "text-on-media",
+          "target": "display-title",
+          "over": "background-media",
+          "sanctioned": true,
+          "amount": {
+            "class": "light"
+          }
+        },
+        {
+          "kind": "overlap",
+          "pair": [
+            "background-media",
+            "secondary-media"
+          ],
+          "zOrder": [
+            "background-media",
+            "secondary-media"
+          ],
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "stagger",
+          "target": "secondary-media",
+          "axis": "horizontal",
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "titleOverlap": "medium",
+        "overlapMediaSide": "right"
+      },
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "about",
+      "useCase": "about",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "about-anchored-statement"
+      },
+      "slots": [
+        {
+          "name": "statement",
+          "role": "anchored-statement",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "stretch",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": {
+            "eyebrow": "About",
+            "heading": "A landmark in timber, a home for contemporary art.",
+            "text": "Housed in a century-old timber hall, Woodwave Gallery frames the work of our time within the warmth of its architecture. We believe the room is the first thing a visitor reads \u2014 and so we treat space itself as a muse.",
+            "cta": "Read our philosophy"
+          }
+        },
+        {
+          "name": "media",
+          "role": "feature-media",
+          "contract": "image",
+          "mediaAspect": "landscape",
+          "width": "media",
+          "colStart": 8,
+          "colSpan": 5,
+          "asset": {
+            "src": "About-img-4.jpg",
+            "alt": "Sunlit gallery hall with exposed timber beams",
+            "ratio": "landscape"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "stagger",
+          "target": "feature-media",
+          "axis": "vertical",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "mediaSide": "right"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "media"
+      }
+    },
+    {
+      "id": "gallery",
+      "useCase": "gallery",
+      "archetype": "stack-fullbleed",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "gallery-fullbleed-counter-band"
+      },
+      "slots": [
+        {
+          "name": "interior",
+          "role": "fullbleed-media",
+          "contract": "image",
+          "mediaAspect": "pano",
+          "width": "full-bleed",
+          "colStart": 1,
+          "colSpan": 12,
+          "asset": {
+            "src": "About-img-2.jpg",
+            "alt": "Interior view of the main exhibition gallery",
+            "ratio": "landscape"
+          }
+        },
+        {
+          "name": "sectionLabel",
+          "role": "utility-eyebrow",
+          "contract": "eyebrow",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "colStart": 1,
+          "colSpan": 4,
+          "copy": "Gallery"
+        },
+        {
+          "name": "counter",
+          "role": "static-counter",
+          "contract": "label",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "colStart": 11,
+          "colSpan": 2,
+          "copy": "01 / 12"
+        },
+        {
+          "name": "caption",
+          "role": "margin-caption",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "colStart": 1,
+          "colSpan": 5,
+          "copy": "The Main Hall \u2014 north-light gallery, upper timber gallery."
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "fullbleed-media",
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "marginal-caption",
+          "target": "margin-caption",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "counterFormat": "01 / 12"
+      },
+      "alignment": {
+        "anchor": "left"
+      }
+    },
+    {
+      "id": "mission",
+      "useCase": "about",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "about-anchored-statement"
+      },
+      "slots": [
+        {
+          "name": "ghost",
+          "role": "ghost-word",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "width": "full-bleed",
+          "z": "back",
+          "colStart": 1,
+          "colSpan": 12,
+          "copy": "MUSE"
+        },
+        {
+          "name": "statement",
+          "role": "anchored-statement",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "mid",
+          "colStart": 6,
+          "colSpan": 7,
+          "copy": {
+            "eyebrow": "Mission",
+            "heading": "We treat space as the first work in the collection.",
+            "text": "Every wall, every fall of daylight, every quiet interval between pieces is composed with intent. Our mission is to let art and architecture hold a conversation the visitor can feel before they can name it."
+          }
+        },
+        {
+          "name": "media",
+          "role": "feature-media",
+          "contract": "image",
+          "mediaAspect": "portrait",
+          "width": "media",
+          "z": "mid",
+          "colStart": 1,
+          "colSpan": 4,
+          "asset": {
+            "src": "About-img-5.jpg",
+            "alt": "A single artwork lit against a timber wall",
+            "ratio": "portrait"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "ghost-word",
+          "target": "ghost-word",
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "stagger",
+          "target": "feature-media",
+          "axis": "vertical",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "mediaSide": "left"
+      },
+      "alignment": {
+        "anchor": "right",
+        "counterweight": "media"
+      }
+    },
+    {
+      "id": "heritage",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "features-icon-label-grid"
+      },
+      "slots": [
+        {
+          "name": "header",
+          "role": "section-header",
+          "contract": "header",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "stretch",
+          "colStart": 1,
+          "colSpan": 8,
+          "copy": {
+            "eyebrow": "Heritage",
+            "heading": "From 1941 to the present day."
+          }
+        },
+        {
+          "name": "ghostYears",
+          "role": "ghost-word",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "width": "full-bleed",
+          "z": "back",
+          "colStart": 1,
+          "colSpan": 12,
+          "copy": "1941 / 2023"
+        },
+        {
+          "name": "timeline",
+          "role": "milestone",
+          "contract": "feature-item",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "mid",
+          "copy": [
+            {
+              "heading": "1941",
+              "text": "The timber hall opens as a civic reading room, its beams milled from local woodwave pine."
+            },
+            {
+              "heading": "1970",
+              "text": "Reborn as an exhibition space, hosting the first survey of post-war regional painters."
+            },
+            {
+              "heading": "2000",
+              "text": "The collection expands into sculpture, film, and site-responsive installation."
+            },
+            {
+              "heading": "2023",
+              "text": "A restored light-well and a growing contemporary programme carry the hall into its ninth decade."
+            }
+          ]
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "ghost-word",
+          "target": "ghost-word",
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "stagger",
+          "target": "milestone",
+          "axis": "vertical",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "columns": "4"
+      },
+      "alignment": {
+        "anchor": "left"
+      }
+    },
+    {
+      "id": "curator-quote",
+      "useCase": "testimonial",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "curator-quote-portrait-collage"
+      },
+      "slots": [
+        {
+          "name": "quote",
+          "role": "curator-quote",
+          "contract": "quote",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "stretch",
+          "colStart": 1,
+          "colSpan": 7,
+          "copy": {
+            "quote": "The building was already an artwork. My task is simply to make room for the conversations it wants to have.",
+            "attribution": "Elena Marchetti, Chief Curator"
+          }
+        },
+        {
+          "name": "portrait",
+          "role": "portrait-media",
+          "contract": "image",
+          "mediaAspect": "portrait",
+          "width": "media",
+          "colStart": 9,
+          "colSpan": 4,
+          "asset": {
+            "src": "About-img-3.jpg",
+            "alt": "Portrait of the chief curator in the gallery hall",
+            "ratio": "portrait"
+          }
+        },
+        {
+          "name": "caption",
+          "role": "margin-caption",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "colStart": 9,
+          "colSpan": 4,
+          "copy": "\u2014 Elena Marchetti, Chief Curator since 2016"
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "marginal-caption",
+          "target": "margin-caption",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "portraitSide": "right"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "portrait"
+      }
+    },
+    {
+      "id": "visit",
+      "useCase": "about",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "about-anchored-statement"
+      },
+      "slots": [
+        {
+          "name": "info",
+          "role": "anchored-statement",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "stretch",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": {
+            "eyebrow": "Visit",
+            "heading": "Come see the light.",
+            "text": "12 Timber Row, Riverside District. Open Tuesday to Sunday, 10:00\u201318:00. Closed Mondays and public holidays. Free entry to the permanent collection; timed tickets for special exhibitions.",
+            "cta": "Buy tickets"
+          }
+        },
+        {
+          "name": "map",
+          "role": "map-media",
+          "contract": "image",
+          "mediaAspect": "landscape",
+          "width": "media",
+          "colStart": 8,
+          "colSpan": 5,
+          "asset": {
+            "src": "Map.jpg",
+            "alt": "Map showing the gallery location on Timber Row",
+            "ratio": "landscape"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "stagger",
+          "target": "map-media",
+          "axis": "vertical",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "mediaSide": "right"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "map"
+      }
+    },
+    {
+      "id": "newsletter",
+      "useCase": "cta",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "kicker",
+          "contract": "eyebrow",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "colStart": 3,
+          "colSpan": 4,
+          "copy": "Newsletter"
+        },
+        {
+          "name": "heading",
+          "role": "cta-heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "stretch",
+          "colStart": 3,
+          "colSpan": 8,
+          "copy": "Stay in the light."
+        },
+        {
+          "name": "email",
+          "role": "email-field",
+          "contract": "form-field",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "stretch",
+          "colStart": 3,
+          "colSpan": 6,
+          "copy": "Email address"
+        },
+        {
+          "name": "submit",
+          "role": "submit",
+          "contract": "cta",
+          "textLen": "word",
+          "sizeClass": "body",
+          "width": "hug",
+          "colStart": 9,
+          "colSpan": 2,
+          "copy": "Subscribe \u2192"
+        },
+        {
+          "name": "note",
+          "role": "form-note",
+          "contract": "label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "colStart": 3,
+          "colSpan": 6,
+          "copy": "One quiet email each season. Exhibitions, openings, and hours."
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "footer",
+      "useCase": "footer",
+      "archetype": "collage",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "logo",
+          "role": "wordmark",
+          "contract": "logo",
+          "textLen": "word",
+          "sizeClass": "title",
+          "width": "hug",
+          "colStart": 1,
+          "colSpan": 5,
+          "copy": "Woodwave Gallery"
+        },
+        {
+          "name": "slashnav",
+          "role": "slash-nav",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "stretch",
+          "colStart": 1,
+          "colSpan": 7,
+          "copy": "About / Gallery / Exhibition / Visit"
+        },
+        {
+          "name": "social",
+          "role": "social-links",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "colStart": 9,
+          "colSpan": 4,
+          "copy": "Instagram \u00b7 Twitter \u00b7 Journal"
+        },
+        {
+          "name": "legal",
+          "role": "legal",
+          "contract": "label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "colStart": 1,
+          "colSpan": 8,
+          "copy": "\u00a9 2024 Woodwave Gallery \u2014 12 Timber Row, Riverside District."
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "left"
+      }
+    }
+  ],
+  "rationale": "Repair note: replaced all content-block slots (source of the render KeyError 'body') with header blocks, feature-item runs, and flat primitive slots \u2014 no block in the page carries a 'body' slot. Order follows the brief's one-scroll narrative: an inverse hero bookend (the ONLY inverse surface and ONLY accent, sanctioned display-title-over-media with a media-over-media overlap + stagger), then an all-primary editorial run. About and Mission reuse/adapt the anchored-statement split (Mission adds a heavy 'MUSE' ghost word for the brief's outline typography). The gallery band reuses the full-bleed counter pattern with a static counter and marginal caption. Heritage adapts the feature grid into a 1941\u21922023 milestone run behind a '1941 / 2023' ghost word. The curator quote reuses the portrait-collage with a margin caption. Visit pairs address/hours with the real Map.jpg and a typographic 'Buy tickets' link (no button). Newsletter uses an underline form-field with an inline arrow CTA, and the footer is open slash-nav collage on cream. Every non-hero section stays on primary with no accent to satisfy the single-accent rule; only real brand asset filenames are referenced."
+}

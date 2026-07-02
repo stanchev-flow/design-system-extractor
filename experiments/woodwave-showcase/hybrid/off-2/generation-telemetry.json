@@ -1,0 +1,32 @@
+{
+  "attempts": 3,
+  "telemetry": [
+    {
+      "attempt": 0,
+      "latency_s": 143.87,
+      "input_tokens": 16118,
+      "output_tokens": 12997,
+      "temperature": null,
+      "stage": "render-fail"
+    },
+    {
+      "attempt": 1,
+      "latency_s": 113.26,
+      "input_tokens": 16211,
+      "output_tokens": 10559,
+      "temperature": null,
+      "stage": "render-fail"
+    },
+    {
+      "attempt": 2,
+      "latency_s": 182.4,
+      "input_tokens": 16211,
+      "output_tokens": 15619,
+      "temperature": null,
+      "stage": "render-fail"
+    }
+  ],
+  "model": "claude-opus-4-8",
+  "ok": false,
+  "offGridExpansion": false
+}

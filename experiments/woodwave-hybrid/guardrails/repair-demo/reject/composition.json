@@ -1,0 +1,100 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "adversarial-inject",
+    "useCasesRequested": [
+      "hero",
+      "features"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-ab/inputs/brand/brand.yaml"
+  },
+  "style": {
+    "id": "editorial-luxury"
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "split",
+      "surfaceIntent": "inverse",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      },
+      "slots": [
+        {
+          "name": "t",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "copy": "Everything in one place"
+        }
+      ],
+      "treatments": [],
+      "knobs": {}
+    },
+    {
+      "id": "adversary",
+      "useCase": "features",
+      "archetype": "collage",
+      "surfaceIntent": "primary",
+      "novelty": "novel",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "para",
+          "role": "body-over-photo",
+          "contract": "paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": "Running body text laid directly on the photograph."
+        },
+        {
+          "name": "media",
+          "role": "feature-media",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "landscape",
+          "z": "back",
+          "asset": null
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "text-on-media",
+          "target": "para",
+          "over": "media",
+          "pair": [
+            "para",
+            "media"
+          ],
+          "zOrder": [
+            "media",
+            "para"
+          ],
+          "sanctioned": false
+        },
+        {
+          "kind": "stagger",
+          "target": "para",
+          "axis": "vertical",
+          "amount": {
+            "class": "heavy"
+          }
+        }
+      ],
+      "knobs": {}
+    }
+  ],
+  "rationale": "adversarial injection"
+}

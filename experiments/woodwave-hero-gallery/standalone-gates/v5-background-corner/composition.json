@@ -1,0 +1,134 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "woodwave-hero-anchored-standalone-v5-background-corner",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/woodwave/brand/brand.yaml"
+  },
+  "style": {
+    "id": "editorial-luxury"
+  },
+  "sections": [
+    {
+      "id": "hero-v5",
+      "useCase": "hero",
+      "archetype": "stack",
+      "surfaceIntent": "inverse",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-display-over-staggered-media"
+      },
+      "slots": [
+        {
+          "name": "hero-media",
+          "role": "background photography",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "full-bleed",
+          "mediaAspect": "wide",
+          "z": "back",
+          "asset": null
+        },
+        {
+          "name": "eyebrow",
+          "role": "kicker",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Est. 2019 \u2014 Portland, Oregon"
+        },
+        {
+          "name": "headline",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "copy": "WOODWAVE GALLERY"
+        },
+        {
+          "name": "support",
+          "role": "lede",
+          "contract": "subheading",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade."
+        },
+        {
+          "name": "cta",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "word",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Buy Tickets"
+        },
+        {
+          "name": "corner-accent",
+          "role": "corner photography",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "z": "front",
+          "colSpan": 3,
+          "alignTo": {
+            "corner": "br"
+          },
+          "asset": null
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "text-on-media",
+          "over": "background photography",
+          "sanctioned": true
+        },
+        {
+          "kind": "overlap",
+          "pair": [
+            "display-title",
+            "corner photography"
+          ],
+          "zOrder": [
+            "background photography",
+            "corner photography",
+            "display-title"
+          ],
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "stagger",
+          "target": "corner photography",
+          "axis": "vertical",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "align": "center"
+      },
+      "alignment": {
+        "anchor": "centered",
+        "counterweight": "corner-accent"
+      }
+    }
+  ],
+  "rationale": "standalone single-bookend gate for the comparison gallery: hero 'v5-background-corner' in the original's inverse+accent treatment"
+}

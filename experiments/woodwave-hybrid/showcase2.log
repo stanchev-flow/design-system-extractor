@@ -1,0 +1,14 @@
+WoodWave HYBRID experiment — PART B (off-grid expansion)
+  fairness brand.yaml           00024b73ccb1625cfb1e87b25200a2dc [DRIFT]
+  fairness signup-launch.md     68ea09f261fa58707acdbddbfde8475d [OK]
+  fairness editorial-luxury.md  4bb79e0a4d6f4c81e5ca4d17b66723c9 [OK]
+
+=== SHOWCASE :: reusing existing generation /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hybrid/showcase/_gen/composition.json (no model call) ===
+  classified: hero=True standard=4 expanded(novel)=2 footer=False
+  rendering stitched showcase page …
+  showcase gate: FAIL [('Brand assets present (not placeholder)', "15 local asset(s), missing=['assets/assets/overlap-vase.jpg']"), ('All brand image assets present', "local images=15; missing=['assets/assets/overlap-vase.jpg']")]
+    screenshot failed (rc=1): node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+browserType.launch: Executable doesn't exist at /var/folders/8v/xcrfwvnn6ksf4pmhz2fzpfth0000gp/T/cursor-sandbox-cache/c757641f76

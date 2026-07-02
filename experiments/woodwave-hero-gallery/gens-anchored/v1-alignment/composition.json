@@ -1,0 +1,108 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "woodwave-hero-anchored-interlock",
+    "name": "WoodWave hero \u2014 left-anchored interlock variation",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/woodwave/brand/brand.yaml"
+  },
+  "style": {
+    "id": "editorial-luxury"
+  },
+  "sections": [
+    {
+      "id": "opening-bookend",
+      "useCase": "hero",
+      "archetype": "interlock",
+      "surfaceIntent": "inverse",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-display-over-staggered-media"
+      },
+      "slots": [
+        {
+          "name": "caption",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Est. 2019 \u2014\nPortland, Oregon"
+        },
+        {
+          "name": "statement",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "colossal",
+          "width": "stretch",
+          "z": "front",
+          "copy": "WOODWAVE GALLERY"
+        },
+        {
+          "name": "media",
+          "role": "media",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "landscape",
+          "z": "mid",
+          "asset": null
+        },
+        {
+          "name": "support",
+          "role": "subheading",
+          "contract": "subheading",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade."
+        },
+        {
+          "name": "cta",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "word",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Buy Tickets"
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "float-wrap",
+          "target": "statement",
+          "pair": [
+            "statement",
+            "media"
+          ],
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "inset",
+          "target": "media",
+          "over": "media",
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "align": "left",
+        "columns": "1.6:1"
+      }
+    }
+  ],
+  "rationale": "Single sanctioned opening bookend re-expressed on the ALIGNMENT axis only: the seeded centered display-over-staggered-media becomes the brand's left-anchored interlock. A long didone display STATEMENT ('WOODWAVE GALLERY') wraps around ONE landscape hero photograph floated right (float-wrap + inset register the image edge to the text block so nothing free-floats), with the measured eyebrow split into a two-line tracked caption pinned top-left. Dark inverse surface carries the page's single gold accent on the display title only; measured support line and typographic 'Buy Tickets' link (no button, per neverDo) preserve the original copy verbatim. novelty:'adapt', seededFrom the project hero pattern; palette/type tiers/spacing identical to the seed."
+}

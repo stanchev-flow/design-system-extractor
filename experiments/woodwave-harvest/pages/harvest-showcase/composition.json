@@ -1,0 +1,1032 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "woodwave-harvest-showcase",
+    "useCasesRequested": [
+      "hero",
+      "gallery",
+      "about"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/woodwave/brand/brand.yaml"
+  },
+  "style": {
+    "id": "editorial-luxury"
+  },
+  "sections": [
+    {
+      "id": "hv-hero",
+      "useCase": "hero",
+      "archetype": "stack",
+      "surfaceIntent": "inverse",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-display-over-staggered-media"
+      },
+      "slots": [
+        {
+          "name": "wordmark",
+          "role": "nav wordmark",
+          "contract": "logo",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front"
+        },
+        {
+          "name": "title",
+          "role": "display title over media",
+          "contract": "heading",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "heading": "WOODWAVE GALLERY"
+          }
+        },
+        {
+          "name": "hero-media",
+          "role": "hero photography",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "z": "mid",
+          "mediaAspect": "landscape",
+          "asset": null
+        },
+        {
+          "name": "overlap-media",
+          "role": "overlap photography",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "z": "front",
+          "mediaAspect": "portrait",
+          "asset": null
+        },
+        {
+          "name": "subhead",
+          "role": "supporting lede",
+          "contract": "paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "text": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade."
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "overlap",
+          "pair": [
+            "title",
+            "hero-media"
+          ],
+          "zOrder": [
+            "hero-media",
+            "overlap-media",
+            "title"
+          ],
+          "amount": {
+            "class": "heavy"
+          },
+          "sanctioned": true
+        },
+        {
+          "kind": "overlap",
+          "pair": [
+            "overlap-media",
+            "hero-media"
+          ],
+          "zOrder": [
+            "hero-media",
+            "overlap-media"
+          ],
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "stagger",
+          "target": "overlap-media",
+          "axis": "vertical",
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "titleOverlap": "heavy",
+        "overlapMediaSide": "right"
+      }
+    },
+    {
+      "id": "hv-panel-on-media",
+      "useCase": "hero",
+      "archetype": "overlay",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "card-over-portrait-statement"
+      },
+      "slots": [
+        {
+          "name": "canvas",
+          "role": "full-bleed portrait canvas",
+          "contract": "image",
+          "width": "full-bleed",
+          "mediaAspect": "portrait",
+          "z": "back",
+          "asset": {
+            "src": "assets/About-img-3.jpg",
+            "alt": "full-bleed portrait canvas"
+          }
+        },
+        {
+          "name": "card",
+          "role": "statement panel",
+          "contract": "heading",
+          "width": "fixed",
+          "z": "front",
+          "colStart": 4,
+          "colSpan": 6
+        },
+        {
+          "name": "wordmark",
+          "role": "tracked wordmark",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "text": "WOODWAVE"
+          }
+        },
+        {
+          "name": "statement",
+          "role": "condensed statement",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "heading": "Space as\na muse"
+          }
+        },
+        {
+          "name": "caption",
+          "role": "closing caption lines",
+          "contract": "caption",
+          "textLen": "medium",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "text": "Vault detail"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "canvas",
+          "edge": "all"
+        },
+        {
+          "kind": "panel-on-media",
+          "target": "card",
+          "over": "canvas",
+          "registration": {
+            "toSlot": "canvas",
+            "edge": "top",
+            "depthBaselines": 0,
+            "z": "front"
+          },
+          "distribute": "space-between"
+        }
+      ],
+      "knobs": {
+        "cardSpan": 6,
+        "align": "center"
+      }
+    },
+    {
+      "id": "hv-straddle-scrim",
+      "useCase": "hero",
+      "archetype": "overlay",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "boundary-straddle-headline"
+      },
+      "slots": [
+        {
+          "name": "rail",
+          "role": "sidebar rail panel",
+          "contract": "paragraph",
+          "width": "stretch",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 3
+        },
+        {
+          "name": "rail-eyebrow",
+          "role": "tracked eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "text": "Plan your visit"
+          }
+        },
+        {
+          "name": "rail-body",
+          "role": "short support body",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "text": "Elin Marsh, curator since 2011, on hanging work in the timber hall. Every placement is tested against the light at three hours of the day before it stays."
+          }
+        },
+        {
+          "name": "rail-meta",
+          "role": "bottom meta",
+          "contract": "caption",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "text": "Vault detail"
+          }
+        },
+        {
+          "name": "photo",
+          "role": "full-bleed atmosphere photo",
+          "contract": "image",
+          "width": "full-bleed",
+          "mediaAspect": "landscape",
+          "z": "back",
+          "colStart": 4,
+          "colSpan": 9,
+          "asset": {
+            "src": "assets/Web-gallery-1.jpg",
+            "alt": "full-bleed atmosphere photo"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "seam-straddling display title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "colStart": 4,
+          "colSpan": 9,
+          "copy": {
+            "heading": "The building is the first work on view"
+          }
+        },
+        {
+          "name": "keywords",
+          "role": "scrim keyword columns",
+          "contract": "paragraph",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "label": "Adults",
+              "text": "12 \u20ac"
+            },
+            {
+              "label": "Reduced",
+              "text": "8 \u20ac"
+            },
+            {
+              "label": "Under 18",
+              "text": "Free"
+            }
+          ]
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "photo",
+          "edge": "right"
+        },
+        {
+          "kind": "text-on-media",
+          "target": "heading",
+          "over": "photo",
+          "sanctioned": true
+        },
+        {
+          "kind": "straddle",
+          "target": "heading",
+          "registration": {
+            "toSlot": "rail",
+            "edge": "right",
+            "depthCols": 0,
+            "z": "front"
+          },
+          "sanctioned": true
+        },
+        {
+          "kind": "scrim-band",
+          "target": "keywords",
+          "over": "photo",
+          "band": {
+            "rowStart": 0.55,
+            "rowSpan": 0.2
+          },
+          "fill": {
+            "opacityClass": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "railSide": "left",
+        "keywordCount": 3
+      }
+    },
+    {
+      "id": "hv-framed-monument",
+      "useCase": "hero",
+      "archetype": "overlay",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "framed-inset-monument"
+      },
+      "slots": [
+        {
+          "name": "frame",
+          "role": "framed hero photography",
+          "contract": "image",
+          "width": "framed",
+          "mediaAspect": "landscape",
+          "z": "mid",
+          "colStart": 1,
+          "colSpan": 12,
+          "asset": {
+            "src": "assets/hero-staircase.jpg",
+            "alt": "framed hero photography"
+          }
+        },
+        {
+          "name": "monument",
+          "role": "monumental display word",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 8,
+          "copy": {
+            "heading": "WOODWAVE"
+          }
+        },
+        {
+          "name": "annotation",
+          "role": "in-frame margin annotation",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "colStart": 10,
+          "colSpan": 2,
+          "copy": {
+            "text": "Vault detail"
+          }
+        },
+        {
+          "name": "cue",
+          "role": "scroll cue",
+          "contract": "paragraph",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "alignTo": {
+            "slot": "frame",
+            "corner": "br"
+          },
+          "copy": {
+            "text": "1/6"
+          }
+        },
+        {
+          "name": "deco",
+          "role": "corner decoration media",
+          "contract": "image",
+          "mediaAspect": "square",
+          "width": "media",
+          "colSpan": 2,
+          "alignTo": {
+            "corner": "tr"
+          },
+          "z": "front",
+          "asset": null
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "framed",
+          "target": "frame",
+          "widthRel": {
+            "to": "container",
+            "ratio": 0.86
+          }
+        },
+        {
+          "kind": "straddle",
+          "target": "monument",
+          "registration": {
+            "toSlot": "frame",
+            "edge": "bottom",
+            "depthBaselines": 0,
+            "z": "front"
+          },
+          "sanctioned": true
+        },
+        {
+          "kind": "break-frame",
+          "target": "deco",
+          "salience": "decorative",
+          "registration": {
+            "toSlot": "frame",
+            "edge": "top",
+            "depthBaselines": 3,
+            "z": "front"
+          }
+        }
+      ],
+      "knobs": {
+        "straddleDepth": "flush",
+        "monumentSpan": 8,
+        "decoCount": 2
+      }
+    },
+    {
+      "id": "hv-stepped-statement",
+      "useCase": "hero",
+      "archetype": "overlay",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "stepped-overlay-statement"
+      },
+      "slots": [
+        {
+          "name": "canvas",
+          "role": "full-bleed hero photography",
+          "contract": "image",
+          "width": "full-bleed",
+          "mediaAspect": "landscape",
+          "z": "back",
+          "asset": {
+            "src": "assets/About-img-5.jpg",
+            "alt": "full-bleed hero photography"
+          }
+        },
+        {
+          "name": "statement",
+          "role": "stepped display statement",
+          "contract": "heading",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 8,
+          "copy": {
+            "heading": "Space as\na muse"
+          }
+        },
+        {
+          "name": "support",
+          "role": "right-aligned support copy",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "colStart": 11,
+          "colSpan": 2,
+          "alignTo": {
+            "corner": "br"
+          },
+          "copy": {
+            "text": "Vault detail"
+          }
+        },
+        {
+          "name": "action",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "alignTo": {
+            "slot": "support",
+            "edge": "bottom"
+          },
+          "copy": {
+            "label": "The collection"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "canvas",
+          "edge": "all"
+        },
+        {
+          "kind": "text-on-media",
+          "target": "statement",
+          "over": "canvas",
+          "sanctioned": true
+        },
+        {
+          "kind": "stepped-lines",
+          "target": "statement",
+          "direction": "right",
+          "steps": [
+            0,
+            1,
+            6
+          ],
+          "amount": {
+            "class": "heavy"
+          }
+        }
+      ],
+      "knobs": {
+        "stepProgression": "accelerating",
+        "lineCount": 3,
+        "supportCorner": "bottom-right"
+      }
+    },
+    {
+      "id": "hv-type-behind-media",
+      "useCase": "hero",
+      "archetype": "overlay",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "type-behind-media-masthead"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "centered tracked eyebrow lines",
+          "contract": "eyebrow",
+          "textLen": "medium",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "text": "About the gallery"
+          }
+        },
+        {
+          "name": "monument",
+          "role": "two-line display wordmark (occluded)",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "colossal",
+          "width": "full-bleed",
+          "z": "back",
+          "colStart": 1,
+          "colSpan": 12,
+          "copy": {
+            "heading": "WOODWAVE GALLERY"
+          }
+        },
+        {
+          "name": "media-main",
+          "role": "primary portrait photography",
+          "contract": "image",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "z": "mid",
+          "colStart": 5,
+          "colSpan": 5,
+          "asset": {
+            "src": "assets/About-img-2.jpg",
+            "alt": "primary portrait photography"
+          }
+        },
+        {
+          "name": "media-detail",
+          "role": "overlapping detail photography",
+          "contract": "image",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "z": "front",
+          "colStart": 8,
+          "colSpan": 3,
+          "asset": {
+            "src": "assets/About-img-4.jpg",
+            "alt": "overlapping detail photography"
+          }
+        },
+        {
+          "name": "caption-left",
+          "role": "flanking margin caption",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 2,
+          "copy": {
+            "text": "Vault detail"
+          }
+        },
+        {
+          "name": "caption-right",
+          "role": "flanking margin caption (date)",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "colStart": 11,
+          "colSpan": 2,
+          "alignTo": {
+            "slot": "caption-left",
+            "edge": "top"
+          },
+          "copy": {
+            "text": "1/6"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "type-behind-media",
+          "target": "monument",
+          "over": "media-main",
+          "maxOcclusion": {
+            "class": "medium"
+          },
+          "endsVisible": true,
+          "sanctioned": true
+        },
+        {
+          "kind": "overlap",
+          "pair": [
+            "media-detail",
+            "media-main"
+          ],
+          "zOrder": [
+            "media-main",
+            "media-detail"
+          ],
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "marginal-caption",
+          "target": "caption-left",
+          "side": "left"
+        },
+        {
+          "kind": "marginal-caption",
+          "target": "caption-right",
+          "side": "right"
+        }
+      ],
+      "knobs": {
+        "occlusion": "medium",
+        "detailCorner": "bottom-right"
+      }
+    },
+    {
+      "id": "hv-tucked-panorama",
+      "useCase": "hero",
+      "archetype": "overlay",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "tucked-headline-panorama"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "tucked display heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "back",
+          "colStart": 1,
+          "colSpan": 5,
+          "copy": {
+            "heading": "Space as\na muse",
+            "lead": "Space",
+            "emphasis": "as a muse"
+          }
+        },
+        {
+          "name": "support",
+          "role": "support paragraph",
+          "contract": "paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "colStart": 7,
+          "colSpan": 4,
+          "alignTo": {
+            "slot": "heading",
+            "edge": "top"
+          },
+          "copy": {
+            "text": "We collect work that listens to its room. From the late twentieth century to the present day, the holdings favour pieces shaped by material, scale and place \u2014 art that stands differently here than anywhere else."
+          }
+        },
+        {
+          "name": "panorama",
+          "role": "panoramic portrait photography",
+          "contract": "image",
+          "width": "framed",
+          "mediaAspect": "wide",
+          "z": "mid",
+          "colStart": 1,
+          "colSpan": 12,
+          "asset": {
+            "src": "assets/Web-gallery-1.jpg",
+            "alt": "panoramic portrait photography"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "framed",
+          "target": "panorama",
+          "widthRel": {
+            "to": "container",
+            "ratio": 0.92
+          }
+        },
+        {
+          "kind": "straddle",
+          "target": "heading",
+          "registration": {
+            "toSlot": "panorama",
+            "edge": "top",
+            "depthBaselines": 4,
+            "z": "back"
+          },
+          "maxOcclusion": {
+            "class": "medium"
+          },
+          "endsVisible": true,
+          "sanctioned": true
+        },
+        {
+          "kind": "mixed-face",
+          "target": "heading",
+          "spans": [
+            {
+              "part": "lead",
+              "face": "roman"
+            },
+            {
+              "part": "emphasis",
+              "face": "italic"
+            }
+          ]
+        }
+      ],
+      "knobs": {
+        "tuckDepth": "medium",
+        "headingSide": "left"
+      }
+    },
+    {
+      "id": "hv-staggered-columns",
+      "useCase": "gallery",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "staggered-caption-columns-3"
+      },
+      "slots": [
+        {
+          "name": "intro",
+          "role": "section-title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "On view now",
+            "heading": "Rooms that\nhold the light"
+          }
+        },
+        {
+          "name": "modules",
+          "role": "module run",
+          "contract": "feature-item",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "heading": "Panorama viewpoint",
+              "text": "The seamless blend of contemporary design with the organic \u2014 a distinctive environment where the architecture and the collection answer each other, hour by hour.",
+              "link": "See the room"
+            },
+            {
+              "heading": "At the heart of the haven",
+              "text": "A cutting-edge sphere housing the future of interactive contemporary art, set quietly into the timber hall's oldest and most weathered corner."
+            },
+            {
+              "heading": "Central nave",
+              "text": "We collect work that listens to its room. From the late twentieth century to the present day, the holdings favour pieces shaped by material, scale and place \u2014 art that stands differently here than anywhere else."
+            }
+          ]
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "stagger",
+          "target": "column-image",
+          "axis": "vertical",
+          "amount": {
+            "class": "heavy"
+          },
+          "perColumn": [
+            {
+              "colStart": 1,
+              "colSpan": 3,
+              "rowOffset": 1
+            },
+            {
+              "colStart": 4,
+              "colSpan": 4,
+              "rowOffset": 0
+            },
+            {
+              "colStart": 9,
+              "colSpan": 4,
+              "rowOffset": 3
+            }
+          ]
+        },
+        {
+          "kind": "mixed-face",
+          "target": "masthead",
+          "spans": [
+            {
+              "part": "lead",
+              "face": "roman"
+            },
+            {
+              "part": "emphasis",
+              "face": "italic"
+            }
+          ]
+        }
+      ],
+      "knobs": {
+        "columnCount": 3,
+        "offsetProgression": "mid-high",
+        "captionFace": "brand-caption"
+      }
+    },
+    {
+      "id": "hv-seam-straddle",
+      "useCase": "about",
+      "archetype": "banded",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "seam-straddle-portrait"
+      },
+      "slots": [
+        {
+          "name": "photo-band",
+          "role": "full-bleed atmosphere photography",
+          "contract": "image",
+          "width": "full-bleed",
+          "mediaAspect": "landscape",
+          "z": "back",
+          "asset": {
+            "src": "assets/Web-gallery-1.jpg",
+            "alt": "full-bleed atmosphere photography"
+          }
+        },
+        {
+          "name": "band-caption",
+          "role": "tracked caption on photo",
+          "contract": "image",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "text": "Vault detail"
+          },
+          "asset": null
+        },
+        {
+          "name": "inset",
+          "role": "seam-straddling portrait",
+          "contract": "image",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "z": "mid",
+          "colStart": 4,
+          "colSpan": 6,
+          "asset": {
+            "src": "assets/About-img-4.jpg",
+            "alt": "seam-straddling portrait"
+          }
+        },
+        {
+          "name": "body",
+          "role": "closing paragraph",
+          "contract": "paragraph",
+          "textLen": "long",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "colStart": 3,
+          "colSpan": 8,
+          "copy": {
+            "text": "We collect work that listens to its room. From the late twentieth century to the present day, the holdings favour pieces shaped by material, scale and place \u2014 art that stands differently here than anywhere else."
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "photo-band",
+          "edge": "all"
+        },
+        {
+          "kind": "straddle",
+          "target": "inset",
+          "registration": {
+            "toSlot": "seam",
+            "edge": "top",
+            "depthBaselines": 12,
+            "z": "mid"
+          }
+        }
+      ],
+      "knobs": {
+        "bandSplit": 0.5,
+        "straddleBalance": "third-above",
+        "align": "left"
+      },
+      "bands": {
+        "split": 0.5,
+        "surfaces": [
+          "inverse",
+          "panel"
+        ]
+      }
+    }
+  ],
+  "rationale": "Editorial-harvest showcase: the measured opening bookend, then one section per harvested reference pattern (G1-G9 devices), derived deterministically from the standard-tier pattern contentShapes with brand-authored copy."
+}

@@ -1,0 +1,72 @@
+Model: claude-opus-4-8  (reasoning=adaptive)
+Seed patterns: hero-split-media-copy, gallery-mosaic-with-overflow, features-split-feature
+
+=== GEN Hero option 1 :: Centered monumental statement ===
+  offGridExpansion=True (from style)
+  [attempt 0] 17.31s  in=13221 out=1419
+    gate: FAIL ['Surface = brand surface/inverse (#3A2F23)']
+  [attempt 1] 17.44s  in=13341 out=1456
+    gate: FAIL ['Surface = brand surface/inverse (#3A2F23)']
+  [attempt 2] 19.28s  in=13341 out=1574
+    gate: FAIL ['Surface = brand surface/inverse (#3A2F23)']
+  ok=False attempts=3 archetype=stack novelty=adapt treatments=[] offgrid=[] wall=56.3s
+
+=== GEN Hero option 2 :: Asymmetric split with image ===
+  offGridExpansion=True (from style)
+  [attempt 0] 32.1s  in=13186 out=2874
+    gate: PASS
+  ok=True attempts=1 archetype=split novelty=adapt treatments=['bleed', 'overlap'] offgrid=['bleed', 'overlap'] wall=33.1s
+
+=== GEN Hero option 3 :: Offset multi-image collage ===
+  offGridExpansion=True (from style)
+  [attempt 0] 22.66s  in=13194 out=1983
+    gate: FAIL ['single-accent']
+  [attempt 1] 19.52s  in=13311 out=1853
+    gate: FAIL ['single-accent']
+  [attempt 2] 18.24s  in=13311 out=1679
+    gate: FAIL ['single-accent']
+  ok=False attempts=3 archetype=collage novelty=novel treatments=['ghost-word', 'overlap', 'stagger', 'text-on-media'] offgrid=['overlap', 'stagger'] wall=62.3s
+
+=== GEN Hero option 4 :: Full-bleed image, overlaid heading ===
+  offGridExpansion=True (from style)
+  [attempt 0] 18.52s  in=13222 out=1563
+    gate: PASS
+  ok=True attempts=1 archetype=stack-fullbleed novelty=adapt treatments=['bleed', 'overlap', 'text-on-media'] offgrid=['bleed', 'overlap'] wall=19.3s
+
+=== GEN Hero option 5 :: Off-grid overlap / editorial layering ===
+  offGridExpansion=True (from style)
+  [attempt 0] 27.95s  in=13254 out=2572
+    gate: FAIL ['single-accent']
+  [attempt 1] 19.41s  in=13371 out=1734
+    gate: FAIL ['single-accent']
+  [attempt 2] 19.98s  in=13371 out=1828
+    gate: FAIL ['single-accent']
+  ok=False attempts=3 archetype=collage novelty=novel treatments=['bleed', 'ghost-word', 'marginal-caption', 'overlap', 'stagger', 'text-on-media'] offgrid=['bleed', 'overlap', 'stagger'] wall=69.2s
+
+WARNING: not all heroes generated OK — assembling the ones that did.
+
+=== ASSEMBLE :: render stitched 5-hero page ===
+  gate (--composition): PASS
+  hoisted page-nav present: True   accent-class count: 1
+  screenshot → /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/page/screenshot.png
+
+================ SUMMARY ================
+  option 1: Centered monumental statement
+      archetype=stack novelty=adapt surface=inverse-strong treatments=[] offgrid=[]
+      attempts=3 repair_fired=True wall=56.3s out_tok=4449
+  option 2: Asymmetric split with image
+      archetype=split novelty=adapt surface=inverse treatments=['bleed', 'overlap'] offgrid=['bleed', 'overlap']
+      attempts=1 repair_fired=False wall=33.1s out_tok=2874
+  option 3: Offset multi-image collage
+      archetype=collage novelty=novel surface=inverse treatments=['ghost-word', 'overlap', 'stagger', 'text-on-media'] offgrid=['overlap', 'stagger']
+      attempts=3 repair_fired=True wall=62.3s out_tok=5515
+  option 4: Full-bleed image, overlaid heading
+      archetype=stack-fullbleed novelty=adapt surface=inverse treatments=['bleed', 'overlap', 'text-on-media'] offgrid=['bleed', 'overlap']
+      attempts=1 repair_fired=False wall=19.3s out_tok=1563
+  option 5: Off-grid overlap / editorial layering
+      archetype=collage novelty=novel surface=inverse treatments=['bleed', 'ghost-word', 'marginal-caption', 'overlap', 'stagger', 'text-on-media'] offgrid=['bleed', 'overlap', 'stagger']
+      attempts=3 repair_fired=True wall=69.2s out_tok=6134
+
+  gate PASS: True   hoisted nav: True   accent-class count: 1
+  page: /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/page/index.html
+  screenshot: /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/page/screenshot.png

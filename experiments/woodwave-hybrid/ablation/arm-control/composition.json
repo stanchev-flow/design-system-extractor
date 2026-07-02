@@ -1,0 +1,346 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "new-offering-launch",
+    "name": "New offering launch",
+    "useCasesRequested": [
+      "hero",
+      "features",
+      "gallery",
+      "testimonial",
+      "cta"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-ab/inputs/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "hero-bookend",
+      "useCase": "hero",
+      "archetype": "split",
+      "surfaceIntent": "inverse",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "copy": "Introducing"
+        },
+        {
+          "name": "title",
+          "role": "heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "copy": "Everything in one place"
+        },
+        {
+          "name": "subhead",
+          "role": "subheading",
+          "contract": "subheading",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "stretch",
+          "copy": "A simpler way to get started \u2014 built for how you actually work."
+        },
+        {
+          "name": "primary-cta",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "copy": "Start free"
+        },
+        {
+          "name": "secondary-cta",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "copy": "See how it works"
+        },
+        {
+          "name": "hero-media",
+          "role": "media",
+          "contract": "image",
+          "mediaAspect": "landscape",
+          "width": "media",
+          "z": "back",
+          "asset": {
+            "src": "hero-staircase.jpg",
+            "alt": "Sweeping architectural staircase",
+            "ratio": "landscape"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "text-on-media",
+          "target": "title",
+          "over": "media",
+          "sanctioned": true
+        },
+        {
+          "kind": "overlap",
+          "pair": [
+            "title",
+            "media"
+          ],
+          "zOrder": [
+            "media",
+            "title"
+          ],
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "mediaSide": "right",
+        "align": "left"
+      }
+    },
+    {
+      "id": "value-props",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "features-split-feature"
+      },
+      "slots": [
+        {
+          "name": "section-head",
+          "role": "heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "stretch",
+          "copy": "Built for how you actually work"
+        },
+        {
+          "name": "feature-run",
+          "role": "feature",
+          "contract": "feature-item",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "stretch",
+          "copy": [
+            {
+              "heading": "Set up in minutes",
+              "text": "No manual wiring \u2014 you're live the same day."
+            },
+            {
+              "heading": "One source of truth",
+              "text": "Everyone sees the same thing, always up to date."
+            },
+            {
+              "heading": "Scales with you",
+              "text": "From your first project to your thousandth."
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "columns": "3",
+        "align": "left"
+      }
+    },
+    {
+      "id": "gallery-mosaic",
+      "useCase": "gallery",
+      "archetype": "collage",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "gallery-mosaic-with-overflow"
+      },
+      "slots": [
+        {
+          "name": "ghost",
+          "role": "ghost",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "width": "full-bleed",
+          "z": "back",
+          "copy": "WORK"
+        },
+        {
+          "name": "media-tall",
+          "role": "media",
+          "contract": "image",
+          "mediaAspect": "portrait",
+          "width": "media",
+          "z": "mid",
+          "asset": {
+            "src": "overlap-vase.jpg",
+            "alt": "Sculptural vase detail",
+            "ratio": "portrait"
+          }
+        },
+        {
+          "name": "media-wide",
+          "role": "media",
+          "contract": "image",
+          "mediaAspect": "landscape",
+          "width": "media",
+          "z": "mid",
+          "asset": {
+            "src": "hero-staircase.jpg",
+            "alt": "Architectural staircase gallery frame",
+            "ratio": "landscape"
+          }
+        },
+        {
+          "name": "gallery-caption",
+          "role": "caption",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Trusted by 10,000+ teams"
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "ghost-word",
+          "target": "ghost",
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "marginal-caption",
+          "target": "gallery-caption",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "align": "left"
+      }
+    },
+    {
+      "id": "social-proof",
+      "useCase": "testimonial",
+      "archetype": "split",
+      "surfaceIntent": "panel",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "features-split-feature"
+      },
+      "slots": [
+        {
+          "name": "quote",
+          "role": "quote",
+          "contract": "quote",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "stretch",
+          "copy": "We replaced three tools in a week and never looked back."
+        },
+        {
+          "name": "attribution",
+          "role": "label",
+          "contract": "label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "copy": "Operations lead, mid-market team"
+        },
+        {
+          "name": "proof-stat",
+          "role": "stat",
+          "contract": "stat",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "copy": "10,000+ teams"
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "mediaSide": "right",
+        "align": "left"
+      }
+    },
+    {
+      "id": "conversion-stack",
+      "useCase": "cta",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      },
+      "slots": [
+        {
+          "name": "cta-heading",
+          "role": "heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "stretch",
+          "copy": "Everything in one place"
+        },
+        {
+          "name": "cta-sub",
+          "role": "subheading",
+          "contract": "subheading",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "stretch",
+          "copy": "Get started the same day \u2014 no manual wiring, no lock-in."
+        },
+        {
+          "name": "cta-primary",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "copy": "Start free"
+        },
+        {
+          "name": "cta-secondary",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "copy": "See how it works"
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "align": "center"
+      }
+    }
+  ],
+  "rationale": "The base style is corporate-saas-clean with offGridExpansion LOCKED, so every section is reuse/adapt against the three seeded captured patterns \u2014 no novel, and off-grid treatments (stagger/overlap/bleed) stay on the sanctioned hero bookend only. Order sells the offering top-down: (1) an inverse hero bookend reuses hero-split-media-copy and is the sole accent-carrying, sole text-on-media (sanctioned display-title-over-media) section; (2) the three value_props render as ONE feature-item run of three open modules on cream (feature-item keeps it open collage, honoring no-cards-on-cream) adapted from features-split-feature; (3) a gallery-mosaic adapted from gallery-mosaic-with-overflow shows the work with a ghost-word watermark and a margin caption carrying the '10,000+ teams' proof \u2014 both baseline treatments legal under the lock; (4) WoodWave has no logo-wall, so social_proof maps onto an editorial testimonial split on a panel surface (quote + stat), flagging that gap rather than inventing a logo grid; (5) a centered conversion-stack (centering sanctioned for CTA) closes with the primary/secondary typographic links. All CTAs are links (no-buttons), radius 0, no shadows/gradients/hairlines, and only the hero display-title carries the accent."
+}

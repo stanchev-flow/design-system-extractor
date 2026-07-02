@@ -1,0 +1,1440 @@
+# brand.yaml — canonical, library-AGNOSTIC design language for WoodWave Gallery
+# Authored by the Layout Analyst (brand-layout-analyst), owned by the Art Director
+# (brand-art-director). source: creation. This file is CANONICAL; brand.md is a rendered
+# projection — run render_brand_md.py. (SIGN-OFF #6) This file INDEXES the existing build
+# artifacts under `indexes`; it references them and does NOT supersede or replace them.
+#
+# v0 schema (brand-schema.md): tokens carry INTENT + value only (library-agnostic);
+# all Webflow-specific ids live under the optional, non-canonical `targetMappings:` block,
+# consumed later only by the DEFERRED Webflow Assembler. The build target NOW is
+# Tailwind/shadcn (intent -> classes). Rules are three lists: do[] / avoid[] / neverDo[].
+
+version: "2.0"
+
+brand:
+  name: "WoodWave Gallery"
+  sourceUrl: "https://woodwavegallery.webflow.io"
+  snapshot:
+    value: >-
+      A warm, two-tone editorial system for a photography gallery. Signature motifs:
+      a single high-contrast didone serif set uppercase at every display tier; a cream
+      canvas with deep warm-brown bookend bands; enormous ghost watermark words behind
+      content; a staggered photographic collage with marginal micro-captions; and a
+      muted gold accent reserved for dark surfaces.
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-06-12T00:26:00Z", action: created, from: null,
+          to: "editorial two-tone didone system", by: creation, signalId: null,
+          note: "first-pass extraction from live site" }
+
+# Shared universal vocabulary (defined ONCE, never redefined per-brand).
+contracts:
+  primitives: "../../../brand_pipeline/contracts/primitives.yaml"
+  blocks:     "../../../brand_pipeline/contracts/blocks.yaml"
+
+# (SIGN-OFF #6) brand.yaml sits ABOVE these artifacts as a referencing index.
+indexes:
+  variableMapping:  "./variable-mapping.md"      # token -> Webflow variable bridge (authoritative ids)
+  sectionRecipe:    "./section-recipe.md"         # validated per-section build recipe + role map
+  webflowVariables: "./webflow-variables.json"    # proposed brand variables (pre-bridge)
+  voice:            "./voice.md"                   # canonical voice doc
+  sourceScreenshot: "../../../screenshots/woodwave/woodwave.webp"
+
+# ── CANONICAL TOKENS — intent + value only (library-agnostic). Webflow ids: targetMappings.
+tokens:
+  colors:
+    surface/primary:        { value: "#FAF0E8", role: "cream canvas background", provenance: [opening-bookend, about-run, conversion] }
+    surface/panel:          { value: "#F7EFE6", role: "slightly warmer cream panel (child of inverse only)", provenance: [info-band, map-composite] }
+    surface/inverse:        { value: "#3A2F23", role: "deep warm-brown bookend/band background", provenance: [opening-bookend, info-band] }
+    surface/inverse-strong: { value: "#1B150F", role: "near-black strong footer band", provenance: [closing-bookend] }
+    accent/highlight:       { value: "#edd580", role: "muted gold accent — dark surfaces only (aligned to the measured link-hover gold)", provenance: [opening-bookend, closing-bookend] }
+    text/on-primary:        { value: "#1F1A14", role: "body/display text on cream", provenance: [about-run] }
+    text/on-inverse:        { value: "#F5EDE2", role: "text on dark bands", provenance: [opening-bookend] }
+    text/on-primary-muted:  { value: "#4A4239", role: "secondary/muted text on cream", provenance: [about-run] }
+    text/on-inverse-muted:  { value: "#C9BFB2", role: "secondary/muted text on dark", provenance: [info-band] }
+    text/ghost-on-primary:  { value: "rgba(31, 26, 20, 0.06)", role: "ghost watermark wordmark on cream", provenance: [about-run] }
+    border/hairline-on-primary: { value: "rgba(31, 26, 20, 0.30)", role: "underline-input hairline on cream", provenance: [conversion] }
+  type:
+    display-hero:        { family: "Melodrama", renderProxy: "Playfair Display", sizeRem: { base: 6, tablet: 4.5, mobileL: 3.5, mobile: 3 }, lineHeight: "1.05em", weight: 500, letterSpacing: "0rem", case: uppercase }
+    h1:                  { family: "Melodrama", renderProxy: "Playfair Display", sizeRem: { base: 3.5, tablet: 3, mobileL: 2.5, mobile: 2.25 }, lineHeight: "1.15em", weight: 400, letterSpacing: "0rem", case: uppercase }
+    h2:                  { family: "Melodrama", renderProxy: "Playfair Display", sizeRem: { base: 2.25, tablet: 2, mobileL: 1.875, mobile: 1.75 }, lineHeight: "1.3em", weight: 400, letterSpacing: "0rem", case: uppercase }
+    h3:                  { family: "Melodrama", renderProxy: "Playfair Display", sizeRem: { base: 1.625, tablet: 1.625, mobileL: 1.5, mobile: 1.5 }, lineHeight: "1.3em", weight: 400, letterSpacing: "0rem", case: uppercase }
+    eyebrow:             { family: "Inter", sizeRem: { base: 0.6875 }, lineHeight: "1.2em", weight: 400, letterSpacing: "0.08em", case: uppercase }
+    body:                { family: "Inter", sizeRem: { base: 0.875 }, lineHeight: "1.55em", weight: 400, case: sentence }
+    control-text:        { family: "Inter", sizeRem: { base: 0.875 }, lineHeight: "1.2em", weight: 400, letterSpacing: "0.08em", case: uppercase }
+    counter-display:     { family: "Melodrama", renderProxy: "Playfair Display", sizeRem: { base: 2 }, lineHeight: "1.0", weight: 400, case: none }
+    ghost-watermark:     { family: "Melodrama", renderProxy: "Playfair Display", sizeRem: { base: 26.25, tablet: 17.5, mobileL: 14, mobile: 12.5 }, lineHeight: "1.0", weight: 400, case: uppercase }
+    footer-sitemap-link: { family: "Melodrama", renderProxy: "Playfair Display", sizeRem: { base: 2.5 }, lineHeight: "1.4em", weight: 400, case: uppercase }
+  spacing:
+    section-padding-light: { value: "6.875rem", role: "vertical section padding on cream", modeLadder: { base: "6.875rem", tablet: "5rem", mobileL: "4rem", mobile: "4rem" } }
+    section-padding-dark:  { value: "6.25rem",  role: "vertical section padding on dark bands (shares light tier; minor deviation accepted)" }
+    module-gap-editorial:  { value: "7.5rem",   role: "gap between collage modules" }
+    caption-to-media:      { value: "0.75rem",  role: "gap between a micro-caption and its media" }
+    eyebrow-to-heading:    { value: "1.5rem",   role: "gap between eyebrow and heading" }
+    panel-padding:         { value: "1.75rem",  role: "inner padding of cream panels" }
+    radius-global:         { value: "0rem",     role: "global corner radius — all radii zeroed" }
+  surfaces:
+    surface/primary:        { bg: "#FAF0E8", intent: "default cream canvas", textPrimary: text/on-primary, textAccent: null, provenance: [about-run] }
+    surface/panel:          { bg: "#F7EFE6", intent: "cream panel, child of inverse only", textPrimary: text/on-primary, textAccent: null, provenance: [info-band] }
+    surface/inverse:        { bg: "#3A2F23", intent: "dark bookend/band", textPrimary: text/on-inverse, textAccent: accent/highlight, provenance: [opening-bookend] }
+    surface/inverse-strong: { bg: "#1B150F", intent: "strong near-black footer", textPrimary: text/on-inverse, textAccent: accent/highlight, provenance: [closing-bookend] }
+
+surfaceGrammar:
+  roles: [ surface/primary, surface/inverse, surface/inverse-strong, surface/panel ]
+  pageRhythm:
+    value: [ surface/inverse, surface/primary, surface/primary, surface/inverse, surface/primary, surface/inverse-strong ]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-06-12T00:26:00Z", action: created, from: null, to: "inverse-primary-band-primary-inverse-primary-inverse-strong", by: creation, signalId: null, note: "observed page rhythm" }
+  transition:
+    value: "hard-cut"
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-06-12T00:26:00Z", action: created, from: null, to: "hard-cut", by: creation, signalId: null, note: "no gradients/fades/divider rules at seams" }
+  nesting:
+    - { child: surface/panel, allowedParents: [ surface/inverse ], confidence: high, source: creation, scope: design-language,
+        changelog: [ { ts: "2026-06-12T00:26:00Z", action: created, from: null, to: "panel only as child of inverse", by: creation, signalId: null, note: "panel never floats on primary" } ] }
+
+# ── BRAND PRIMITIVE OVERRIDES — FULL universal catalog (36 primitives), each marked
+#    origin: extracted (observed on the WoodWave page) or designed (synthesized to be
+#    brand-consistent). Each references a universal contract in contracts/primitives.yaml;
+#    a brand NEVER redefines a contract — it records only this brand's usage stance.
+#    extracted REQUIRES provenance[]; designed REQUIRES designedFrom{} + overridable: true.
+primitives:
+
+  # ---- EXTRACTED (observed on the page, incl. prohibition-as-signal) ----------
+  heading:
+    origin: extracted
+    use: always
+    refs: [ neverDo.no-default-fonts ]   # display tiers use the didone serif, uppercase (type tokens + neverDo)
+    provenance: [opening-bookend, about-run, info-band, conversion]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "heading override", by: creation, signalId: null, note: "v0 split: hero primitive" }
+      - { ts: "2026-06-29T00:00:00Z", action: updated, from: null, to: "origin: extracted (+provenance)", by: creation, signalId: null, note: "stage-2 catalog expansion" }
+  eyebrow:
+    origin: extracted
+    use: always
+    rules: [ "micro-captions live in the margin beside media, never over photos" ]
+    provenance: [about-run, info-band, conversion]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "eyebrow override", by: creation, signalId: null, note: "v0 split: hero primitive" }
+      - { ts: "2026-06-29T00:00:00Z", action: updated, from: null, to: "origin: extracted (+provenance)", by: creation, signalId: null, note: "stage-2 catalog expansion" }
+  image:
+    origin: extracted
+    use: always
+    variant: null
+    refs: [ neverDo.no-radius, neverDo.no-shadows ]   # hard-edged photography: radius 0, no shadow/border/mat
+    provenance: [opening-bookend, about-run, info-band]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "image override", by: creation, signalId: null, note: "v0 split: hero primitive" }
+      - { ts: "2026-06-29T00:00:00Z", action: updated, from: null, to: "origin: extracted (+provenance)", by: creation, signalId: null, note: "stage-2 catalog expansion" }
+  link:
+    origin: extracted
+    use: always
+    variant: arrow            # the brand's chosen shape from the link contract's variants
+    remapFrom: cta            # WoodWave expresses the CTA role as an arrow/slash link, never a button
+    refs: [ neverDo.no-buttons ]   # CTA realized as a typographic arrow/slash link (variant/remapFrom convey it); slash nav/sitemap
+    provenance: [opening-bookend, info-band, conversion, closing-bookend]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "link=arrow (remap of cta)", by: creation, signalId: null, note: "v0 split: WoodWave Button -> arrow-link, never filled" }
+      - { ts: "2026-06-29T00:00:00Z", action: updated, from: null, to: "origin: extracted (+provenance)", by: creation, signalId: null, note: "stage-2 catalog expansion: also observed in navbar/footer slash links" }
+  logo:
+    origin: extracted
+    use: always
+    variant: inverse
+    refs: [ neverDo.no-accent-on-light ]   # wordmark only; gold-on-dark (variant: inverse), never on cream
+    provenance: [opening-bookend, closing-bookend]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog: [ { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "logo override", by: creation, signalId: null, note: "stage-2: wordmark observed in navbar + footer" } ]
+  paragraph:
+    origin: extracted
+    use: always
+    rules: [ "body copy set narrow (~1/3 container), offset from its media; Inter, sentence case" ]
+    provenance: [about-run]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog: [ { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "paragraph override", by: creation, signalId: null, note: "stage-2: offset Rich Text body in editorial run" } ]
+  caption:
+    origin: extracted
+    use: optional
+    rules: [ "figure/footnote captions are muted uppercase margin micro-text, never over media" ]
+    provenance: [about-run]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog: [ { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "caption override", by: creation, signalId: null, note: "stage-2: margin micro-caption pattern beside collage media" } ]
+  input:
+    origin: extracted
+    use: when-form
+    variant: underline
+    rules: [ "single underline rule only; inline text submit; no box or fill" ]
+    provenance: [conversion]
+    confidence: high
+    source: creation
+    scope: design-language
+    conflictsWith: neverDo.no-boxed-inputs
+    changelog: [ { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "input=underline", by: creation, signalId: null, note: "stage-2: ENTER YOUR EMAIL underline Lead form" } ]
+  form-field:
+    origin: extracted
+    use: when-form
+    rules: [ "label as uppercase eyebrow; underline control; no boxed rows" ]
+    provenance: [conversion]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog: [ { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "form-field override", by: creation, signalId: null, note: "stage-2: underline labelled row in newsletter form" } ]
+  divider:
+    origin: extracted
+    use: optional
+    value: "only as the 1px ruled action-row bar inside panels; never as a section seam"
+    rules: [ "1px ruled bars separate action/price rows inside panels; never between sections" ]
+    provenance: [info-band]
+    confidence: high
+    source: creation
+    scope: design-language
+    conflictsWith: neverDo.no-section-hairlines
+    changelog: [ { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "divider=ruled-action-row only", by: creation, signalId: null, note: "stage-2: ruled rows in TICKET PRICES / OPEN HOURS panel" } ]
+  cta:
+    origin: extracted
+    use: always
+    refs: [ neverDo.no-buttons ]   # CTA role always realized by the link primitive (arrow/slash), never a button
+    provenance: [opening-bookend, info-band, conversion]
+    confidence: high
+    source: creation
+    scope: design-language
+    conflictsWith: neverDo.no-buttons
+    changelog: [ { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "cta realized as link", by: creation, signalId: null, note: "stage-2: BUY TICKETS / SUBSCRIBE realized as arrow links" } ]
+  button:
+    origin: extracted              # prohibition-as-signal: the absence is a deliberate, observed brand decision
+    use: never
+    value: "never filled/outlined/pill; CTA role remaps to link variant=arrow"
+    refs: [ neverDo.no-buttons ]   # no filled/outlined/pill buttons (use: never + value convey it)
+    provenance: [opening-bookend, info-band, conversion]
+    confidence: high
+    source: creation
+    scope: design-language
+    conflictsWith: neverDo.no-buttons
+    changelog:
+      - { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "button=never", by: creation, signalId: null, note: "v0 split: hero prohibition" }
+      - { ts: "2026-06-29T00:00:00Z", action: updated, from: null, to: "origin: extracted (prohibition-as-signal)", by: creation, signalId: null, note: "stage-2: no button anywhere on page; typographic action used instead" }
+
+  # ---- DESIGNED (not on the page; synthesized brand-consistent from rules+tokens) --
+  subheading:
+    origin: designed
+    use: optional
+    designedFrom:
+      do:      [ uppercase-didone-display, surface-flip-hierarchy ]
+      neverDo: [ no-default-fonts ]
+      tokens:  [ h3, text/on-primary-muted ]
+      note: "no lede observed; synthesize as a smaller didone line under the heading (muted), never a generic sans sub-deck"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  label:
+    origin: designed
+    use: optional
+    designedFrom:
+      do:      [ margin-captions ]
+      neverDo: [ no-default-fonts ]
+      tokens:  [ eyebrow, control-text, text/on-primary-muted ]
+      note: "inline labels as Inter uppercase micro-text matching the eyebrow / control-text roles"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  quote:
+    origin: designed
+    use: optional
+    designedFrom:
+      do:      [ uppercase-didone-display, surface-flip-hierarchy ]
+      neverDo: [ no-cards-on-cream, no-radius, no-shadows ]
+      tokens:  [ h2, text/on-primary ]
+      note: "pull quote as large didone type open on the canvas; attribution as a margin eyebrow; never a boxed/quoted card"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  stat:
+    origin: designed
+    use: optional
+    designedFrom:
+      do:      [ surface-flip-hierarchy, uppercase-didone-display ]
+      neverDo: [ no-cards-on-cream, no-radius ]
+      tokens:  [ counter-display, ghost-watermark, text/on-primary ]
+      note: "metric as a big didone numeral (counter-display) with an uppercase eyebrow label; echoes the ghost-numeral motif; open, never boxed"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  list:
+    origin: designed
+    use: optional
+    designedFrom:
+      do:      [ margin-captions ]
+      neverDo: [ no-radius ]
+      tokens:  [ body, border/hairline-on-primary ]
+      note: "feature list as plain rows separated by 1px ruled bars (like the action rows); marker none/slash, never decorative bullets in colored chips"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  code:
+    origin: designed
+    use: rare
+    designedFrom:
+      neverDo: [ no-radius, no-shadows ]
+      tokens:  [ surface/inverse-strong, text/on-inverse ]
+      note: "monospace snippet on the near-black inverse-strong surface, radius 0, no border; off-brand for a gallery, so rare"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  icon-button:
+    origin: designed
+    use: never
+    designedFrom:
+      do:      [ typographic-actions ]
+      neverDo: [ no-buttons, no-radius, no-shadows ]
+      tokens:  [ text/on-primary ]
+      note: "no icon buttons; an icon action remaps to a typographic arrow/slash link, consistent with no-buttons"
+    overridable: true
+    confidence: medium
+    source: creation
+    scope: design-language
+    changelog: []
+  video:
+    origin: designed
+    use: optional
+    designedFrom:
+      do:      [ overlap-as-ornament ]
+      neverDo: [ no-radius, no-shadows ]
+      tokens:  [ surface/inverse ]
+      note: "treated exactly like image — hard-edged rectangle, radius 0, no chrome; landscape ratio"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  icon:
+    origin: designed
+    use: rare
+    designedFrom:
+      avoid:   [ accent-sparingly ]
+      neverDo: [ no-accent-on-light ]
+      tokens:  [ text/on-primary, text/on-inverse ]
+      note: "thin monoline glyphs inheriting text color; no accent fills on light; used only where a slash/arrow can't stand in"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  avatar:
+    origin: designed
+    use: optional
+    designedFrom:
+      neverDo: [ no-radius ]
+      tokens:  [ text/on-primary ]
+      note: "person image as a hard-edged rectangle crop (radius 0) — the contract's round/circle default is overridden by no-radius"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  illustration:
+    origin: designed
+    use: rare
+    designedFrom:
+      do:      [ overlap-as-ornament ]
+      neverDo: [ no-gradients ]
+      tokens:  [ text/ghost-on-primary ]
+      note: "brand uses photography + ghost-watermark type, not illustration; if needed, a flat ghost-tone graphic with no gradients"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  pill:
+    origin: designed
+    use: never
+    designedFrom:
+      neverDo: [ no-radius, no-cards-on-cream ]
+      tokens:  [ eyebrow ]
+      note: "no rounded chips; a tag/keyword remaps to an uppercase eyebrow label, never a pill"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  badge:
+    origin: designed
+    use: rare
+    designedFrom:
+      do:      [ surface-flip-hierarchy ]
+      avoid:   [ accent-sparingly ]
+      neverDo: [ no-radius, no-shadows, no-accent-on-light ]
+      tokens:  [ accent/highlight, text/on-inverse ]
+      note: "flat square accent-on-dark marker (gold only on dark surfaces); never rounded or shadowed"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  rating:
+    origin: designed
+    use: rare
+    designedFrom:
+      neverDo: [ no-accent-on-light, no-radius ]
+      tokens:  [ counter-display, text/on-primary ]
+      note: "score as small monoline glyphs or a fraction numeral (echoing the observed 1/6 counter); no colored stars on cream"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  progress:
+    origin: designed
+    use: rare
+    designedFrom:
+      neverDo: [ no-radius, no-gradients ]
+      tokens:  [ border/hairline-on-primary, text/on-primary ]
+      note: "thin square 1px bar with a solid fill, no rounding/gradient; spinner avoided (low motion)"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  tooltip:
+    origin: designed
+    use: rare
+    designedFrom:
+      neverDo: [ no-radius, no-shadows ]
+      tokens:  [ surface/inverse, text/on-inverse ]
+      note: "square dark panel, no shadow/radius, Inter micro-text; fade-free appearance (low motion)"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  spacer:
+    origin: designed
+    use: optional
+    designedFrom:
+      do:     [ overlap-as-ornament ]
+      tokens: [ module-gap-editorial, section-padding-light ]
+      note: "explicit gaps use the editorial module-gap ladder; whitespace is structural and generous (low density)"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  textarea:
+    origin: designed
+    use: when-form
+    variant: underline
+    designedFrom:
+      neverDo: [ no-boxed-inputs, no-radius ]
+      tokens:  [ border/hairline-on-primary ]
+      note: "multi-line entry as a single underline rule, no box/fill, matching the Lead-form input"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  select:
+    origin: designed
+    use: when-form
+    variant: underline
+    designedFrom:
+      neverDo: [ no-boxed-inputs, no-radius, no-shadows ]
+      tokens:  [ border/hairline-on-primary, control-text ]
+      note: "dropdown as an underline trigger with uppercase control-text; menu is a flat square panel, no rounding"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  checkbox:
+    origin: designed
+    use: when-form
+    designedFrom:
+      neverDo: [ no-radius ]
+      tokens:  [ text/on-primary, border/hairline-on-primary ]
+      note: "hard square box (radius 0), 1px hairline, solid check on select; no accent fill on cream"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  radio:
+    origin: designed
+    use: when-form
+    designedFrom:
+      neverDo: [ no-radius ]
+      tokens:  [ text/on-primary, border/hairline-on-primary ]
+      note: "rendered as a small SQUARE selector (radius 0 overrides the round default); hairline + solid fill"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  toggle:
+    origin: designed
+    use: when-form
+    designedFrom:
+      neverDo: [ no-radius, no-accent-on-light ]
+      tokens:  [ surface/inverse, text/on-primary ]
+      note: "square sliding switch, no pill/rounding; on-state uses a flat dark fill, accent only on dark"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  slider:
+    origin: designed
+    use: rare
+    designedFrom:
+      neverDo: [ no-radius, no-gradients ]
+      tokens:  [ border/hairline-on-primary, text/on-primary ]
+      note: "1px square track with a square handle; no rounded thumb, no gradient track"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  file-upload:
+    origin: designed
+    use: when-form
+    designedFrom:
+      neverDo: [ no-boxed-inputs, no-radius, no-shadows ]
+      tokens:  [ border/hairline-on-primary, control-text ]
+      note: "underline-style trigger with an uppercase control-text label; no dashed rounded dropzone box"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+
+# ── BRAND BLOCK OVERRIDES — FULL universal catalog (25 blocks), each marked
+#    origin: extracted or designed (same discipline as primitives above).
+blocks:
+
+  # ---- EXTRACTED (observed on the page, incl. prohibition-as-signal) ----------
+  header:
+    origin: extracted
+    slots:
+      eyebrow:    { use: optional, note: "margin micro-caption style when present" }
+      heading:    { use: require,  note: "didone serif, uppercase display tier" }
+      subheading: { use: optional }
+      text:       { use: optional }
+      cta:        { use: optional, note: "arrow link only (see primitives.link); never a button" }
+    refs: [ neverDo.no-centered-everything ]   # centered only in bookend/conversion; editorial runs anchored/asymmetric
+    provenance: [opening-bookend, about-run, info-band, conversion]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "header block override", by: creation, signalId: null, note: "v0 split: hero block" }
+      - { ts: "2026-06-29T00:00:00Z", action: updated, from: null, to: "origin: extracted (+provenance)", by: creation, signalId: null, note: "stage-2 catalog expansion" }
+  navbar:
+    origin: extracted
+    slots:
+      logo:    { use: require,  note: "wordmark, gold-on-dark" }
+      links:   { use: require,  note: "slash-separated uppercase links (ABOUT / GALLERY / EXHIBITION / VISIT)" }
+      actions: { use: optional, note: "BUY TICKETS as an arrow/plain link, never a button" }
+    refs: [ neverDo.no-buttons ]   # zero-chrome bar: no fill/border/button; slash typographic nav (see slot notes)
+    provenance: [opening-bookend]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog: [ { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "navbar block override", by: creation, signalId: null, note: "stage-2: zero-chrome slash nav observed in header" } ]
+  footer:
+    origin: extracted
+    slots:
+      logo:    { use: require,  note: "wordmark, gold-on-near-black" }
+      columns: { use: optional, note: "oversized didone slash sitemap (ABOUT / GALLERY / ...)" }
+      social:  { use: optional, note: "slash-separated uppercase social links" }
+      legal:   { use: optional, note: "muted Inter micro-text row" }
+    rules: [ "closing bookend on surface/inverse-strong; sitemap as oversized didone slash links; no boxes" ]
+    provenance: [closing-bookend]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog: [ { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "footer block override", by: creation, signalId: null, note: "stage-2: closing-bookend sitemap footer observed" } ]
+  media-text:
+    origin: extracted
+    slots:
+      media:   { use: require, note: "flush hard-edged photo, radius 0" }
+      content: { use: require, note: "cream panel (child of inverse) with didone title + ruled action rows" }
+    rules: [ "two flush halves, gap 0, hard cut; panel is the only cream-on-dark surface" ]
+    provenance: [info-band]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog: [ { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "media-text block override", by: creation, signalId: null, note: "stage-2: info-band split (map + cream panel)" } ]
+  content-block:
+    origin: extracted
+    slots:
+      header: { use: optional, note: "didone heading, optional" }
+      body:   { use: require,  note: "narrow (~1/3) offset paragraph" }
+      media:  { use: require,  note: "hard-edged image with margin micro-caption" }
+      cta:    { use: optional, note: "arrow link only" }
+    rules: [ "loose single-column collage module: media + margin caption + offset body; alternating anchors over ghost watermark" ]
+    provenance: [about-run]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog: [ { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "content-block override", by: creation, signalId: null, note: "stage-2: editorial collage modules observed" } ]
+  cta-block:
+    origin: extracted
+    slots:
+      header:  { use: require, note: "eyebrow + didone heading, centered" }
+      actions: { use: require, note: "arrow link / inline submit, never a button" }
+      media:   { use: omit,    note: "no media in the conversion stack" }
+    rules: [ "narrow centered stack; action is a typographic arrow link or inline form submit" ]
+    provenance: [conversion]
+    confidence: high
+    source: creation
+    scope: design-language
+    conflictsWith: neverDo.no-buttons
+    changelog: [ { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "cta-block override", by: creation, signalId: null, note: "stage-2: conversion stack observed" } ]
+  form:
+    origin: extracted
+    slots:
+      header: { use: optional, note: "eyebrow + heading above" }
+      fields: { use: require,  note: "underline inputs only" }
+      submit: { use: require,  note: "inline arrow link (SUBSCRIBE ->), not a button" }
+      note:   { use: optional }
+    refs: [ neverDo.no-boxed-inputs, neverDo.no-buttons ]   # underline-only fields, inline typographic submit (see slot notes)
+    provenance: [conversion]
+    confidence: high
+    source: creation
+    scope: design-language
+    conflictsWith: neverDo.no-boxed-inputs
+    changelog: [ { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "form block override", by: creation, signalId: null, note: "stage-2: underline newsletter form observed" } ]
+  card:
+    origin: extracted              # prohibition-as-signal: open collage is used everywhere a card would be
+    value: "never used on cream; light-canvas content is open editorial collage, never boxed"
+    slots:
+      media:   { use: omit }
+      heading: { use: omit }
+      text:    { use: omit }
+    refs: [ neverDo.no-cards-on-cream ]   # no cards on cream; bounded unit only as the cream panel child of a dark band (see media-text)
+    provenance: [about-run, info-band]
+    confidence: high
+    source: creation
+    scope: design-language
+    conflictsWith: neverDo.no-cards-on-cream
+    changelog: [ { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "card=never-on-cream (prohibition-as-signal)", by: creation, signalId: null, note: "stage-2: collage used in place of cards on the canvas" } ]
+
+  # ---- DESIGNED (not on the page; synthesized brand-consistent from rules+tokens) --
+  testimonial:
+    origin: designed
+    designedFrom:
+      do:      [ uppercase-didone-display, margin-captions ]
+      neverDo: [ no-cards-on-cream, no-radius, no-shadows ]
+      tokens:  [ h2, text/on-primary, eyebrow ]
+      note: "quote as large didone type open on the canvas; name/role as margin eyebrow; avatar a hard rectangle crop; never a boxed/shadowed testimonial card"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  stat-block:
+    origin: designed
+    designedFrom:
+      do:      [ surface-flip-hierarchy ]
+      neverDo: [ no-cards-on-cream, no-radius ]
+      tokens:  [ counter-display, ghost-watermark, eyebrow ]
+      note: "row of big didone numerals with uppercase eyebrow labels; echoes the ghost-numeral motif; open, no boxes or dividers between"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  accordion:
+    origin: designed
+    designedFrom:
+      do:      [ typographic-actions ]
+      neverDo: [ no-radius, no-shadows, no-section-hairlines ]
+      tokens:  [ border/hairline-on-primary, h3 ]
+      note: "stacked didone triggers separated by 1px ruled bars (the action-row rule); no rounded panels; low-motion expand"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  accordion-item:
+    origin: designed
+    designedFrom:
+      do:      [ typographic-actions ]
+      neverDo: [ no-radius ]
+      tokens:  [ h3, body ]
+      note: "didone uppercase trigger + Inter body; slash/arrow indicator instead of a chevron chip"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  tabs:
+    origin: designed
+    designedFrom:
+      do:      [ typographic-actions, surface-flip-hierarchy ]
+      neverDo: [ no-radius, no-buttons ]
+      tokens:  [ control-text, border/hairline-on-primary ]
+      note: "triggers as uppercase typographic links with an underline active state; never pill/boxed tabs"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  logo-bar:
+    origin: designed
+    designedFrom:
+      do:      [ margin-captions ]
+      neverDo: [ no-radius, no-cards-on-cream ]
+      tokens:  [ eyebrow, text/on-primary ]
+      note: "monochrome wordmarks in a flush row with an uppercase eyebrow caption; no card tiles or rounded frames"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  feature-item:
+    origin: designed
+    designedFrom:
+      do:      [ margin-captions, surface-flip-hierarchy ]
+      neverDo: [ no-cards-on-cream, no-radius ]
+      tokens:  [ h3, body, eyebrow ]
+      note: "open grid cell: optional hard-edged image / thin icon + didone heading + body + arrow link; never a boxed feature card"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  pricing-card:
+    origin: designed
+    designedFrom:
+      do:      [ typographic-actions ]
+      neverDo: [ no-cards-on-cream, no-radius, no-shadows ]
+      tokens:  [ counter-display, border/hairline-on-primary, eyebrow ]
+      note: "plan as a ruled action row (price numeral + uppercase label + arrow link), mirroring the observed TICKET PRICES rows; never a boxed pricing tile"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  banner:
+    origin: designed
+    designedFrom:
+      do:      [ typographic-actions ]
+      neverDo: [ no-radius, no-gradients, no-accent-on-light ]
+      tokens:  [ surface/inverse, text/on-inverse, accent/highlight ]
+      note: "slim full-width strip on a dark band; uppercase text + arrow link; dismiss as a typographic x/slash; no rounded pill, no accent on light"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  modal:
+    origin: designed
+    designedFrom:
+      do:      [ surface-flip-hierarchy ]
+      neverDo: [ no-radius, no-shadows, no-gradients ]
+      tokens:  [ surface/primary, surface/inverse, text/on-primary ]
+      note: "hard-edged square panel (radius 0, no shadow); flat scrim with no blur/gradient; close as a typographic x; low motion"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  dropdown-menu:
+    origin: designed
+    designedFrom:
+      do:      [ typographic-actions ]
+      neverDo: [ no-radius, no-shadows ]
+      tokens:  [ surface/inverse, text/on-inverse ]
+      note: "flat square menu panel, no rounding/shadow; items as uppercase typographic links; trigger is a slash/arrow link"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  breadcrumb:
+    origin: designed
+    designedFrom:
+      do:      [ typographic-actions ]
+      neverDo: [ no-default-fonts ]
+      tokens:  [ eyebrow, text/on-primary-muted ]
+      note: "uppercase Inter trail with the brand's slash separator (the ABOUT / GALLERY pattern); muted, typographic"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  pagination:
+    origin: designed
+    designedFrom:
+      do:      [ typographic-actions ]
+      neverDo: [ no-buttons, no-radius ]
+      tokens:  [ counter-display, text/on-primary ]
+      note: "fraction-counter style (echoes the observed 1/6) with prev/next arrow links; no numbered button chips"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  table:
+    origin: designed
+    designedFrom:
+      do:      [ margin-captions ]
+      neverDo: [ no-radius, no-shadows ]
+      tokens:  [ body, eyebrow, border/hairline-on-primary ]
+      note: "rows separated by 1px ruled bars (like the OPEN HOURS rows), uppercase eyebrow column headers; no zebra fills, boxed borders, or rounding"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  carousel:
+    origin: designed
+    designedFrom:
+      do:      [ overlap-as-ornament ]
+      avoid:   [ prefer-asymmetry ]
+      neverDo: [ no-radius, no-shadows ]
+      tokens:  [ counter-display, text/on-primary ]
+      note: "hard-edged image track with a fraction counter (1/6) and arrow links for controls; low motion, no rounded dots/cards"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  steps:
+    origin: designed
+    designedFrom:
+      do:      [ surface-flip-hierarchy ]
+      neverDo: [ no-radius, no-cards-on-cream ]
+      tokens:  [ counter-display, h3, eyebrow ]
+      note: "ordered stages as big didone numerals + uppercase headings, separated by ruled bars; open, never boxed step cards"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+  step-item:
+    origin: designed
+    designedFrom:
+      neverDo: [ no-radius ]
+      tokens:  [ counter-display, h3, body ]
+      note: "number as a didone numeral, didone heading, Inter body; no circular numbered badge"
+    overridable: true
+    confidence: low
+    source: creation
+    scope: design-language
+    changelog: []
+
+# ── CANONICAL LAYOUTS — archetype + surface intent + slots (blocks/media) + intent blockMapping.
+#    Webflow scaffold/component ids live under targetMappings.webflow.layouts.<id>.
+layouts:
+  - id: opening-bookend
+    archetype: stack          # composite hero: display-text-over-media + media-over-media via absolute offsets (SIGN-OFF #5)
+    surfaceIntent: surface/inverse
+    slots:
+      - { name: "main", role: "display title over layered photo collage", fill: [logo, header, image] }
+    gridRules:   { columns: 1, stagger: true, overlap: true, gap: { value: "module" }, confidence: high, source: creation, scope: design-language, changelog: [] }
+    widthRules:  { container: "full-bleed", measure: "centered display title; media wide", confidence: high, source: creation, scope: design-language, changelog: [] }
+    overlapRules: { types: [ display-text-over-media, media-over-media ], zOrder: [ media, text ], offsets: { titleOverMediaTop: "~-2.75rem", secondMediaAnchor: "center-right", secondMediaCrossesBottom: "~50%" }, confidence: high, source: creation, scope: design-language, changelog: [] }
+    blockMapping:
+      - { slot: "main", role: "wordmark (nav)",      contract: "logo",    usage: { variant: inverse } }
+      - { slot: "main", role: "display title",       contract: "header",  usage: { heading: "WOODWAVE GALLERY", level: display, case: upper } }
+      - { slot: "main", role: "hero photography",    contract: "image",   usage: { ratio: landscape, radius: "0" } }
+      - { slot: "main", role: "overlap photography", contract: "image",   usage: { ratio: portrait, radius: "0" } }
+    patternRef: { lib: project, id: hero-display-over-staggered-media }   # -> layout-library.yaml (§4.4)
+    confidence: high
+    provenance: [opening-bookend]
+  - id: editorial-collage
+    archetype: collage          # composite — no single scaffold; compose from primitives + absolute offsets
+    surfaceIntent: surface/primary
+    slots:
+      - { name: "main", role: "loose single-column field of [media + micro-caption + offset paragraph] modules", fill: [content-block] }
+    gridRules:   { columns: 1, stagger: "alternating-anchors", overlap: "ghost-watermark-behind", gap: { value: "7.5rem" }, confidence: high, source: creation, scope: design-language, changelog: [] }
+    widthRules:  { container: "wide", measure: "~1/3 container for body", confidence: high, source: creation, scope: design-language, changelog: [] }
+    overlapRules: { types: [ text-over-ghost-watermark ], zOrder: [ ghost-watermark, media, text ], confidence: high, source: creation, scope: design-language, changelog: [] }
+    blockMapping:
+      - { slot: "main", role: "module media",     contract: "image",     usage: { radius: "0" } }
+      - { slot: "main", role: "micro-caption",    contract: "eyebrow",   usage: { case: upper } }
+      - { slot: "main", role: "offset paragraph", contract: "paragraph", usage: { measure: "~1/3 container" } }
+    patternRef: { lib: project, id: editorial-ghostword-collage }   # -> layout-library.yaml (§4.4)
+    confidence: high
+    provenance: [about-run]
+  - id: info-band
+    archetype: split
+    surfaceIntent: surface/inverse
+    slots:
+      - { name: "media", role: "flush hard-edged photo", fill: [image] }
+      - { name: "panel", role: "cream panel with title + ruled action rows", fill: [header, link] }
+    gridRules:   { columns: 2, stagger: false, overlap: false, gap: { value: "0" }, confidence: high, source: creation, scope: design-language, changelog: [] }
+    widthRules:  { container: "standard", measure: "split halves", confidence: high, source: creation, scope: design-language, changelog: [] }
+    overlapRules: { types: [], zOrder: [ media, panel, text ], confidence: medium, source: creation, scope: design-language, changelog: [] }
+    blockMapping:
+      - { slot: "media", role: "photo",       contract: "image",  usage: { radius: "0" } }
+      - { slot: "panel", role: "panel title", contract: "header", usage: { level: h3 } }
+      - { slot: "panel", role: "action row",  contract: "link",   usage: { label: "Buy Tickets", variant: arrow } }
+    patternRef: { lib: project, id: features-flush-split-panel }   # -> layout-library.yaml (§4.4)
+    confidence: high
+    provenance: [info-band]
+  - id: conversion-stack
+    archetype: stack
+    surfaceIntent: surface/primary
+    slots:
+      - { name: "main", role: "centered narrow column: eyebrow -> heading -> underline input", fill: [header, form] }
+    gridRules:   { columns: 1, stagger: false, overlap: false, gap: { value: "1.5rem" }, confidence: high, source: creation, scope: design-language, changelog: [] }
+    widthRules:  { container: "narrow", measure: "narrow centered", confidence: high, source: creation, scope: design-language, changelog: [] }
+    overlapRules: { types: [], zOrder: [ text ], confidence: high, source: creation, scope: design-language, changelog: [] }
+    blockMapping:
+      - { slot: "main", role: "eyebrow", contract: "eyebrow", usage: {} }
+      - { slot: "main", role: "heading", contract: "header",  usage: { level: h2 } }
+      - { slot: "main", role: "newsletter form (underline only)", contract: "form", usage: { variant: underline } }
+    patternRef: { lib: project, id: cta-underline-conversion-stack }   # -> layout-library.yaml (§4.4)
+    confidence: high
+    provenance: [conversion]
+
+compositionRules:
+  - id: overlap-primary-ornament
+    statement: "Overlap is the brand's primary ornament. Sanctioned types only: display-text-over-media, media-over-media, panel-over-media, media-over-seam."
+    value: { sanctioned: [ display-text-over-media, media-over-media, panel-over-media, media-over-seam ] }
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog: [ { ts: "2026-06-12T00:26:00Z", action: created, from: null, to: "4 sanctioned overlap types", by: creation, signalId: null, note: "" } ]
+  - id: z-order
+    statement: "ghost watermark (back, aria-hidden) -> media rectangles -> panels -> text. Text never trapped beneath media."
+    value: [ ghost-watermark, media, panels, text ]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog: [ { ts: "2026-06-12T00:26:00Z", action: created, from: null, to: "z-order ladder", by: creation, signalId: null, note: "" } ]
+  - id: stagger-anchors
+    statement: "Consecutive collage modules alternate horizontal anchors (far-left -> center-right -> left); offsets ~1/3 of container, not subtle."
+    value: { pattern: alternating, offset: "~1/3 container" }
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog: [ { ts: "2026-06-12T00:26:00Z", action: created, from: null, to: "alternating anchors", by: creation, signalId: null, note: "" } ]
+  - id: composite-via-offsets
+    statement: "Composite archetypes (collage/overlay/band) are realized with absolute offsets inside the nearest scaffold slot; no dedicated composite components are created."
+    value: { mechanism: "absolute-offset-in-stack", newComponents: false }
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog: [ { ts: "2026-06-15T00:00:00Z", action: created, from: null, to: "offsets-in-stack, no new components", by: creation, signalId: null, note: "SIGN-OFF #5" } ]
+  - id: seam-bridging-photo
+    statement: "A small foreground photo may straddle a dark->light seam. Optional device, not default; never on every seam."
+    value: { default: false }
+    confidence: low
+    source: creation
+    scope: one-off
+    changelog: [ { ts: "2026-06-12T00:26:00Z", action: created, from: null, to: "optional seam bridge", by: creation, signalId: null, note: "observed once; low confidence as repeatable pattern" } ]
+
+# ── THREE RULE LISTS: do[] (positive house style) / avoid[] (soft) / neverDo[] (hard).
+# do[]: POSITIVE house style only. Rows that merely INVERT a neverDo (e.g. the former
+# `typographic-actions` = no-buttons, `uppercase-didone-display` = no-default-fonts) were
+# removed as redundant — the neverDo (+ primitive use/variant/remapFrom bindings) are the
+# single source of truth. Primitive/block `designedFrom.do` tags may still name those ids
+# descriptively.
+do:
+  - { id: margin-captions,       statement: "Photo captions live in the margin as uppercase eyebrows.", value: true, confidence: high, source: creation, scope: design-language,
+      changelog: [ { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "margin captions", by: creation, signalId: null, note: "v0 split: implied by no-text-on-photos + snapshot" } ] }
+  - { id: overlap-as-ornament,   statement: "Use overlap as the primary ornament (sanctioned types only).", value: true, confidence: high, source: creation, scope: design-language,
+      changelog: [ { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "overlap as ornament", by: creation, signalId: null, note: "v0 split: from compositionRules.overlap-primary-ornament" } ] }
+  - { id: surface-flip-hierarchy, statement: "Carry hierarchy with type size, surface flips, and overlap — not interface chrome.", value: true, confidence: high, source: creation, scope: design-language,
+      changelog: [ { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "surface-flip hierarchy", by: creation, signalId: null, note: "v0 split: from snapshot" } ] }
+
+avoid:
+  # `prefer-asymmetry` is KEPT: it is the soft form of no-centered-everything AND the brand
+  # corroboration the gate reads to bless the hero #sec-0 centered override
+  # (onbrand_check.detect_brand_overrides). `accent-sparingly` was removed as redundant —
+  # it is fully covered by neverDo.no-accent-on-light.
+  - { id: prefer-asymmetry,      statement: "Prefer anchored/asymmetric editorial runs; reserve centering for bookend/conversion stacks.", value: true, confidence: medium, source: creation, scope: design-language,
+      changelog: [ { ts: "2026-06-29T00:00:00Z", action: created, from: null, to: "prefer asymmetry", by: creation, signalId: null, note: "v0 split: soft form of no-centered-everything" } ] }
+
+neverDo:
+  - { id: no-buttons,           statement: "No filled, outlined, or pill buttons - all actions are typographic with arrows/slashes.", value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  - { id: no-radius,            statement: "No rounded corners anywhere (radius globally 0).", value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  - { id: no-shadows,           statement: "No drop shadows, borders, or mats on media or panels - separation is fill contrast only.", value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  - { id: no-gradients,         statement: "No gradients, tints, or fade transitions between sections - hard cuts only.", value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  - { id: no-cards-on-cream,    statement: "No cards on the cream canvas - light-canvas content is open collage, never boxed.", value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  - { id: no-accent-on-light,   statement: "No accent color on light surfaces; no accent-colored links or icons.", value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  - { id: no-boxed-inputs,      statement: "No boxed/filled form inputs - underline only, inline text submit.", value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  - { id: no-text-on-photos,    statement: "No text overlaid directly on photographs (captions live in the margin). Display title over media in the bookend is the sanctioned exception.", value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  - { id: no-section-hairlines, statement: "No hairline rules between sections.", value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  - { id: no-default-fonts,     statement: "No default/system or generic sans for display - all display tiers use the self-hosted didone display face (Melodrama; Playfair Display / serif fallback).", value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  - { id: no-centered-everything, statement: "Centering is reserved for conversion and bookend stacks; editorial runs are anchored/asymmetric.", value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+
+voice:
+  ref: "./voice.md"
+  # ── MOTION spec (authored, DEFINED) — calm/editorial, NO playful bounce. Concrete values
+  #    are consumed by the composer (component_render.motion_vars_css -> --c-* vars) and
+  #    projected into brand.md (render_brand_md §Motion). Inspired by Claude's design guide.
+  motionSpec:
+    state: defined
+    easing:
+      primary: "cubic-bezier(.22, 1, .36, 1)"   # expressive ease-out; no overshoot/spring
+    durations:
+      fast: "320ms"   # micro-interactions (arrow nudge, small-link underline draw)
+      base: "480ms"   # default link underline draw-in / hover transitions
+      slow: "620ms"   # scroll-reveal fade + translateY
+    # link/scrollReveal carry VALUES only; the behavioral description of each (and the
+    # forbidden bounce/spring/overshoot/snap list) lives in the base style Motion section —
+    # not restated here (single source of truth).
+    link:
+      mode: color-shift                       # measured: nav/footer links swap to the gold link-hover (#edd580)
+      value: "color-shift-to-gold"
+    scrollReveal:
+      value: "fade-translateY"
+      translateY: "16px"   # within the authored ~12-24px range
+    reducedMotion: "respect"   # honor prefers-reduced-motion: reduce — disable transitions/reveals
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null,
+          to: "authored motion spec (ease + 320/480/620ms + draw-in underline + fade-translateY reveal; reduced-motion respected)",
+          by: creation, signalId: null, note: "borrowed concrete motion spec (inspired by Claude's design guide); calm/editorial, no bounce" }
+  dials:
+    variance: { value: high, confidence: high, source: creation, scope: design-language, changelog: [] }
+    motion:   { value: low,  confidence: high, state: defined, source: creation, scope: design-language, changelog: [ { ts: "2026-06-12T00:26:00Z", action: created, from: null, to: low, by: creation, signalId: null, note: "hover behavior inferred, not observed" }, { ts: "2026-07-01T00:00:00Z", action: updated, from: "low (medium confidence, inferred)", to: "low (high confidence, DEFINED)", by: creation, signalId: null, note: "intensity stays calm/low but is now an authored spec (voice.motionSpec), not inferred" } ] }
+    density:  { value: low,  confidence: high, source: creation, scope: design-language, changelog: [] }
+
+recipePolicy:
+  scaffoldFirst:         { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  reuseBeforeCreate:     { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  composeFromPrimitives: { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  themeViaModes:         { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  slotsTakeInstancesOnly: { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  magicTrick:
+    wildcardScope:       { value: hero-only, note: "WILDCARD variant (C) may relax exactly one neverDo (scope:one-off) on HERO sections only (archetype hero / opening-bookend); every non-hero section enforces all neverDo.", confidence: high, source: creation, scope: design-language, changelog: [] }
+
+# ── OPTIONAL, NON-CANONICAL — substrate annotations consumed only by the DEFERRED Webflow Assembler.
+#    Keys back-reference canonical nodes (tokens.colors.<role>, layouts.<id>). The Tailwind/shadcn
+#    renderer ignores this block entirely.
+targetMappings:
+  webflow:
+    site: { name: "AISB v2 - test 1", siteId: "6a2b244f98ab655811c13cc2" }
+    tokens:
+      colors:
+        surface/primary:        { mapsTo: "Core Neutral/Neutral Primary",   variableId: "variable-a52cdc97", collection: "Brand colors", mode: null, modeId: null, status: mapped }
+        surface/panel:          { mapsTo: "Core Neutral/Neutral Secondary", variableId: "variable-9c327ea7-256b-ed90-355b-320cc9e061d0", collection: "Brand colors", mode: null, modeId: null, status: mapped }
+        surface/inverse:        { mapsTo: "Core Neutral/Neutral Inverse",   variableId: "variable-fb18c5a3", collection: "Brand colors", mode: null, modeId: null, status: mapped }
+        surface/inverse-strong: { mapsTo: "Core Accent/Accent Secondary",   variableId: "variable-d28565c1-2776-fcbc-54e5-90889a07e8db", collection: "Brand colors", mode: null, modeId: null, status: mapped }
+        accent/highlight:       { mapsTo: "Core Accent/Accent Primary",     variableId: "variable-737d0293-2c72-7b85-e513-e4e3ba7a79df", collection: "Brand colors", mode: null, modeId: null, status: mapped }
+        text/on-primary:        { mapsTo: "Core Text Color/Text Primary",   variableId: "variable-b87c7d2d-2621-2582-d38d-ae4e4fc5ce35", collection: "Brand colors", mode: null, modeId: null, status: mapped }
+        text/on-inverse:        { mapsTo: "Core Text Color/Text On Inverse", variableId: "variable-42d08694-054d-f37b-a600-bfa4a9ffbc11", collection: "Brand colors", mode: null, modeId: null, status: mapped }
+        text/on-primary-muted:  { mapsTo: "Text Color/Text Secondary",      variableId: "variable-0ff2a8c1-e645-7b02-6566-9603d7c0059a", collection: "Color schemes", mode: "Secondary", modeId: "mode-3b03e886-51ec-4aab-ea68-c2e83697b050", status: mapped }
+        text/on-inverse-muted:  { mapsTo: "Text Color/Text Secondary",      variableId: "variable-0ff2a8c1-e645-7b02-6566-9603d7c0059a", collection: "Color schemes", mode: "Inverse", modeId: "mode-abd1040c-54d0-3fe0-9a11-6840f7051e5a", status: mapped }
+        text/ghost-on-primary:  { mapsTo: "Woodwave/Ghost On Primary",      variableId: "variable-99ceeaed-a13a-e874-0c62-866ab663ad73", collection: "Brand colors", mode: null, modeId: null, status: created }
+        border/hairline-on-primary: { mapsTo: "Border Color/Border Primary", variableId: "variable-Border-Primary", collection: "Color schemes", mode: "base", modeId: null, status: mapped }
+      type:
+        display-hero:        { mapsTo: "Font/Heading Font", variableId: "variable-Font-Heading", sizeVar: "H0 Heading/H0 Size" }
+        h1:                  { mapsTo: "Font/Heading Font", sizeVar: "H1 Heading/H1 Size" }
+        h2:                  { mapsTo: "Font/Heading Font", sizeVar: "H2 Heading/H2 Size" }
+        h3:                  { mapsTo: "Font/Heading Font", sizeVar: "H3 Heading/H3 Size" }
+        eyebrow:             { mapsTo: "Font/Body Font", sizeVar: "Eyebrow/Eyebrow Size" }
+        body:                { mapsTo: "Font/Body Font", sizeVar: "Text SM/SM Text Size" }
+        control-text:        { mapsTo: "Font/Button Font" }
+        counter-display:     { mapsTo: "Font/Heading Font", sizeVar: "Text XXL/XXL Text Size" }
+        ghost-watermark:     { mapsTo: "Font/Heading Font", sizeVar: "Woodwave/Ghost Watermark Size" }
+        footer-sitemap-link: { mapsTo: "Font/Heading Font", sizeVar: "Woodwave/Footer Sitemap Link Size" }
+      spacing:
+        section-padding-light: { mapsTo: "Section/Section Padding Vertical", variableId: "variable-Section-Padding-Vertical", status: mapped }
+        section-padding-dark:  { mapsTo: "Section/Section Padding Vertical", status: mapped }
+        module-gap-editorial:  { mapsTo: "Spacing/8x", status: mapped }
+        caption-to-media:      { mapsTo: "Spacing/0.75x", status: mapped }
+        eyebrow-to-heading:    { mapsTo: "Spacing/1.5x", status: mapped }
+        panel-padding:         { mapsTo: "Spacing/1.75x", status: mapped }
+        radius-global:         { mapsTo: "Image/Button/Input/Card Radius", status: mapped }
+      surfaces:
+        surface/primary:        { schemeMode: "base (Primary)",   schemeModeId: null }
+        surface/panel:          { schemeMode: "Secondary",        schemeModeId: "mode-3b03e886-51ec-4aab-ea68-c2e83697b050" }
+        surface/inverse:        { schemeMode: "Inverse",          schemeModeId: "mode-abd1040c-54d0-3fe0-9a11-6840f7051e5a" }
+        surface/inverse-strong: { schemeMode: "Accent Secondary", schemeModeId: "mode-43a7c08c-f614-cb6b-23ec-118e1a39efc6" }
+    layouts:
+      opening-bookend:
+        scaffold:    { component: "Section / Stack", componentId: "185a3d3a-0806-d61b-7c06-c5fdd636b093" }
+        surfaceMode: { mode: "Inverse", modeId: "mode-abd1040c-54d0-3fe0-9a11-6840f7051e5a" }
+        gap:         { var: "Spacing/8x" }
+        components:
+          - { slot: "main", role: "wordmark (nav)",      component: "Logo",    componentId: "1f142114-d0bc-50f6-98b5-e2a46fb70d44", props: { Color: "accent" } }
+          - { slot: "main", role: "display title",       component: "Heading", componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h1", Style: "display", Text: "WOODWAVE GALLERY" } }
+          - { slot: "main", role: "hero photography",    component: "Image",   componentId: "abb0f607-d4f3-9dbd-b285-a92cf7e61685", props: { Radius: false, "Aspect ratio": "landscape" } }
+          - { slot: "main", role: "overlap photography", component: "Image",   componentId: "abb0f607-d4f3-9dbd-b285-a92cf7e61685", props: { Radius: false, "Aspect ratio": "portrait" } }
+      editorial-collage:
+        scaffold:    { component: "Section / Stack", componentId: "185a3d3a-0806-d61b-7c06-c5fdd636b093" }
+        surfaceMode: { mode: "base (Primary)", modeId: null }
+        gap:         { var: "Spacing/8x" }
+        components:
+          - { slot: "main", role: "module media",     component: "Image",     componentId: "abb0f607-d4f3-9dbd-b285-a92cf7e61685", props: { Radius: false } }
+          - { slot: "main", role: "micro-caption",    component: "Eyebrow",   componentId: "0add895d-ff42-8ef4-91cb-0eff2e60b2f6", props: { Style: "muted" } }
+          - { slot: "main", role: "offset paragraph", component: "Rich Text", componentId: "168eb097-8c4f-7053-ad79-34bc90c5d144", props: {} }
+      info-band:
+        scaffold:    { component: "Section / Split / Content and media", componentId: "464eadea-7e5a-f915-2967-4a8d53b13c44" }
+        surfaceMode: { mode: "Inverse", modeId: "mode-abd1040c-54d0-3fe0-9a11-6840f7051e5a" }
+        slotMap:     { media: "Slot", panel: "Slot 2" }
+        components:
+          - { slot: "media", role: "photo",       component: "Image",            componentId: "abb0f607-d4f3-9dbd-b285-a92cf7e61685", props: { Radius: false } }
+          - { slot: "panel", role: "panel title", component: "Heading",          componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h3" } }
+          - { slot: "panel", role: "action row",  component: "Link / Secondary", componentId: "75c4556a-b7c2-b1f3-2d05-0ea2dbee7fc8", props: { Label: "Buy Tickets", Style: "arrow" } }
+      conversion-stack:
+        scaffold:    { component: "Section / Stack", componentId: "185a3d3a-0806-d61b-7c06-c5fdd636b093" }
+        surfaceMode: { mode: "base (Primary)", modeId: null }
+        gap:         { var: "Spacing/1.5x" }
+        components:
+          - { slot: "main", role: "eyebrow", component: "Eyebrow", componentId: "0add895d-ff42-8ef4-91cb-0eff2e60b2f6", props: {} }
+          - { slot: "main", role: "heading", component: "Heading", componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h2" } }
+          - { slot: "main", role: "newsletter form (underline only)", component: "Form / Webflow / Lead", componentId: "f5fc0862-ff04-59e0-1011-79aa7d4c39db", props: { Style: "underline" } }
+
+provenanceIndex:
+  opening-bookend: { url: "https://woodwavegallery.webflow.io", node: "section:nth-of-type(1)", screenshot: "../../../screenshots/woodwave/woodwave.webp#0-1900" }
+  about-run:       { url: "https://woodwavegallery.webflow.io", node: "section:nth-of-type(2..4)", screenshot: "../../../screenshots/woodwave/woodwave.webp#about" }
+  info-band:       { url: "https://woodwavegallery.webflow.io", node: "section:nth-of-type(5)", screenshot: "../../../screenshots/woodwave/woodwave.webp#info" }
+  conversion:      { url: "https://woodwavegallery.webflow.io", node: "section:nth-of-type(6)", screenshot: "../../../screenshots/woodwave/woodwave.webp#conv" }
+  closing-bookend: { url: "https://woodwavegallery.webflow.io", node: "footer", screenshot: "../../../screenshots/woodwave/woodwave.webp#footer" }
+navbar:
+  origin: extracted
+  source: extracted
+  scope: site-chrome
+  confidence: high
+  archetype: nav
+  twoTier: false
+  sticky: false
+  surface:
+    bg: rgba(255, 255, 255, 0)
+    color: rgb(51, 51, 51)
+    height: 102
+  logo:
+    kind: img
+    alt: ''
+    href: https://woodwavegallery.webflow.io/
+    width: 175
+    height: 26
+    srcContract: ../assets/source-chrome.v2.json#nav.logo.src
+  utility: []
+  primary:
+  - label: about
+    href: https://woodwavegallery.webflow.io/#about
+  - label: gallery
+    href: https://woodwavegallery.webflow.io/#gallery
+  - label: exhibition
+    href: https://woodwavegallery.webflow.io/#exhibition
+  - label: visit
+    href: https://woodwavegallery.webflow.io/#visit
+  - label: buy tickets
+    href: https://webflow.com/templates/html/woodwave-photography-website-template
+  links:
+  - label: about
+    href: https://woodwavegallery.webflow.io/#about
+  - label: gallery
+    href: https://woodwavegallery.webflow.io/#gallery
+  - label: exhibition
+    href: https://woodwavegallery.webflow.io/#exhibition
+  - label: visit
+    href: https://woodwavegallery.webflow.io/#visit
+  - label: buy tickets
+    href: https://webflow.com/templates/html/woodwave-photography-website-template
+  ctas: []
+  measured:
+    _provenance: getComputedStyle (rendered px / CSS strings) from saved DOM
+    bar:
+      bg: rgba(255, 255, 255, 0)
+      height: 102
+      paddingTop: 20
+      paddingBottom: 20
+      paddingLeft: 50
+      paddingRight: 50
+    utilityBarHeight: 0
+    primaryBarHeight: 102
+    contentMaxWidth: 1300
+    logo:
+      width: 175
+      height: 26
+    link:
+      fontSize: 18
+      fontWeight: '400'
+      color: rgb(255, 255, 255)
+      lineHeight: 21.6px
+    linkGap: 20
+  rules:
+    layout: split
+    tiers: single
+    justify: space-between
+    align: center
+    anyButtonHasIcon: false
+  changelog:
+  - ts: '2026-06-30T18:38:01Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 0 utility + 5 primary links (0 with mega-menu), 0 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-06-30T21:48:48Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 0 utility + 5 primary links (0 with mega-menu), 0 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-06-30T21:50:47Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 0 utility + 5 primary links (0 with mega-menu), 0 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-06-30T22:08:50Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 0 utility + 5 primary links (0 with mega-menu), 0 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-06-30T22:12:17Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 0 utility + 5 primary links (0 with mega-menu), 0 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-06-30T22:13:38Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 0 utility + 5 primary links (0 with mega-menu), 0 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-06-30T22:15:51Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 0 utility + 5 primary links (0 with mega-menu), 0 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-06-30T22:30:28Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 0 utility + 5 primary links (0 with mega-menu), 0 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+footer:
+  origin: extracted
+  source: extracted
+  scope: site-chrome
+  confidence: high
+  archetype: grid
+  surface:
+    bg: rgb(24, 19, 19)
+    color: rgb(51, 51, 51)
+  logo:
+    kind: img
+    alt: ''
+    href: https://woodwavegallery.webflow.io/
+    width: 175
+    height: 26
+    srcContract: ../assets/source-chrome.v2.json#footer.logo.src
+  columns:
+  - heading: ''
+    links:
+    - label: about
+      href: https://woodwavegallery.webflow.io/#about
+    - label: gallery
+      href: https://woodwavegallery.webflow.io/#gallery
+    - label: exhibition
+      href: https://woodwavegallery.webflow.io/#exhibition
+    - label: visit
+      href: https://woodwavegallery.webflow.io/#visit
+  - heading: ''
+    links:
+    - label: buy tickets
+      href: https://woodwavegallery.webflow.io/#buy-tickets
+    - label: instagram
+      href: https://instagram.com
+    - label: facebook
+      href: https://facebook.com
+    - label: youtube
+      href: https://youtube.com
+  - heading: ''
+    links:
+    - label: twitter
+      href: https://twitter.com
+    - label: Privacy Policy
+      href: https://woodwavegallery.webflow.io/privacy-policy
+    - label: Changelog
+      href: https://woodwavegallery.webflow.io/template-info/changelog
+    - label: Licenses
+      href: https://woodwavegallery.webflow.io/template-info/licenses
+  - heading: ''
+    links:
+    - label: webflow
+      href: https://webflow.com
+    - label: unroot.design
+      href: https://webflow.com/templates/designers/unroot-design
+  social:
+  - network: instagram
+    kind: text
+    href: https://instagram.com
+  - network: facebook
+    kind: text
+    href: https://facebook.com
+  - network: youtube
+    kind: text
+    href: https://youtube.com
+  - network: twitter
+    kind: text
+    href: https://twitter.com
+  legal:
+    text: © 2023. woodwave gallery template
+    links:
+    - label: Privacy Policy
+      href: https://woodwavegallery.webflow.io/privacy-policy
+    - label: Changelog
+      href: https://woodwavegallery.webflow.io/template-info/changelog
+    - label: Licenses
+      href: https://woodwavegallery.webflow.io/template-info/licenses
+    - label: webflow
+      href: https://webflow.com
+    - label: unroot.design
+      href: https://webflow.com/templates/designers/unroot-design
+  newsletter:
+    present: false
+  measured:
+    _provenance: getComputedStyle (rendered px / CSS strings) from saved DOM
+    bg: rgb(24, 19, 19)
+    color: rgb(51, 51, 51)
+    padding:
+      top: 0
+      bottom: 0
+      left: 0
+      right: 0
+    contentMaxWidth: 0
+    grid:
+      display: ''
+      templateColumns: ''
+      columnGap: 0
+      rowGap: 0
+      columnCount: 4
+    link:
+      fontSize: 80
+      fontWeight: '400'
+      lineHeight: 96px
+      color: rgb(255, 255, 255)
+    linkHoverColor: '#edd580'
+    logo:
+      width: 175
+      height: 26
+    social:
+      kind: text
+      size: 0
+      fontSize: 18
+      fontWeight: '400'
+      color: rgba(255, 255, 255, 0.8)
+      letterSpacing: 1px
+      textTransform: uppercase
+    bottom:
+      textAlign: start
+    legal:
+      fontSize: 14
+      fontWeight: '400'
+      lineHeight: 21px
+      color: rgba(255, 255, 255, 0.5)
+  rules:
+    columns: 4
+    layout: centered
+    hasColumnHeadings: false
+    align: center-bottom
+    darkInverse: true
+    socialStyle: text
+  changelog:
+  - ts: '2026-06-30T18:38:01Z'
+    action: updated
+    from: null
+    to: footer 4 cols (max 4 links/col), 4 social, 5 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-06-30T21:48:48Z'
+    action: updated
+    from: null
+    to: footer 4 cols (max 4 links/col), 4 social, 5 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-06-30T21:50:47Z'
+    action: updated
+    from: null
+    to: footer 4 cols (max 4 links/col), 4 social, 5 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-06-30T22:08:50Z'
+    action: updated
+    from: null
+    to: footer 4 cols (max 4 links/col), 4 social, 5 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-06-30T22:12:17Z'
+    action: updated
+    from: null
+    to: footer 4 cols (max 4 links/col), 4 social, 5 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-06-30T22:13:38Z'
+    action: updated
+    from: null
+    to: footer 4 cols (max 4 links/col), 4 social, 5 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-06-30T22:15:51Z'
+    action: updated
+    from: null
+    to: footer 4 cols (max 4 links/col), 4 social, 5 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-06-30T22:30:28Z'
+    action: updated
+    from: null
+    to: footer 4 cols (max 4 links/col), 4 social, 5 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)

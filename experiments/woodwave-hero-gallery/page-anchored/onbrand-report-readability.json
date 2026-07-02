@@ -1,0 +1,59 @@
+{
+  "layout": "opening-bookend",
+  "brand": "WoodWave Gallery",
+  "composition_mode": true,
+  "neverDo": {
+    "no-buttons": true,
+    "no-radius": true,
+    "no-shadows": true,
+    "no-gradients": true,
+    "no-cards-on-cream": true,
+    "no-accent-on-light": true,
+    "no-boxed-inputs": true,
+    "no-text-on-photos": true,
+    "no-section-hairlines": true,
+    "no-default-fonts": true,
+    "no-centered-everything": true
+  },
+  "neverDo_allowed": [],
+  "fidelity": {
+    "pass": true,
+    "checks": {
+      "Surface = brand surface/inverse (#3A2F23)": true,
+      "Display family present (Melodrama)": true,
+      "Heading copy from source present": true,
+      "Brand accent surfaced (#edd580)": true,
+      "Brand media present (expect ~2)": true,
+      "Brand assets present (not placeholder)": true
+    }
+  },
+  "slop": {
+    "pass": true,
+    "checks": {
+      "No default/system display font": true,
+      "No off-palette hex colors": true,
+      "No lorem/placeholder copy": true,
+      "All brand image assets present": true,
+      "Rounding matches brand radius scale": true,
+      "Webfonts loaded (no silent system fallback)": true
+    }
+  },
+  "invariants": {
+    "mode": "hard",
+    "pass": false,
+    "checks": {
+      "single-accent": false,
+      "primitive-only": true,
+      "rhythm": true,
+      "data-composition": true,
+      "slot-resolution": true,
+      "text-contrast": true,
+      "decoration-salience": false
+    },
+    "details": {
+      "text-contrast": "48 text elements measured against their effective background (surface + decoration layer); worst = sec-8/c-caption('Woodgrain study \u2116 1 \u2014 Po') at 5.72 (floor 4.5); skipped=0",
+      "decoration-salience": "1/1 decoration layers exceed the salience ceiling (ratio <= 1.19 vs surface): sec-8/cs-ghost('WOODWAVE') composite #493e32 vs surface #3a2f23: ratio 1.256 / luminance delta 0.0206"
+    }
+  },
+  "overall": false
+}

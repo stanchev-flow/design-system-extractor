@@ -1,0 +1,183 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "woodwave-hero-asymmetric-split",
+    "name": "WoodWave opening bookend \u2014 asymmetric split with tall hero photograph",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-ab/inputs/brand/brand.yaml"
+  },
+  "style": {
+    "id": "editorial-luxury"
+  },
+  "sections": [
+    {
+      "id": "hero-opening-bookend",
+      "useCase": "hero",
+      "archetype": "split",
+      "surfaceIntent": "inverse",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "WoodWave Gallery"
+        },
+        {
+          "name": "headline",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "colossal",
+          "width": "stretch",
+          "z": "front",
+          "copy": "Everything in one place"
+        },
+        {
+          "name": "subhead",
+          "role": "subheading",
+          "contract": "subheading",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "A simpler way to see the collection \u2014 built for how you actually look."
+        },
+        {
+          "name": "primary-cta",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "word",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Start free"
+        },
+        {
+          "name": "secondary-cta",
+          "role": "cta-secondary",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "See how it works"
+        },
+        {
+          "name": "hero-media",
+          "role": "media",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "hero",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "z": "mid",
+          "asset": {
+            "src": "hero-staircase.jpg",
+            "alt": "Tall gallery staircase framed in raw wood, one continuous vertical view",
+            "ratio": "portrait"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "overlap",
+          "pair": [
+            "display-title",
+            "media"
+          ],
+          "zOrder": [
+            "media",
+            "display-title"
+          ],
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "bleed",
+          "target": "media",
+          "over": "media",
+          "amount": {
+            "class": "heavy"
+          }
+        }
+      ],
+      "knobs": {
+        "mediaSide": "right",
+        "ratio": "1.6:1",
+        "align": "left"
+      }
+    },
+    {
+      "id": "closing-footer",
+      "useCase": "footer",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "logo",
+          "role": "logo",
+          "contract": "logo",
+          "textLen": "word",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": "WoodWave Gallery"
+        },
+        {
+          "name": "sitemap",
+          "role": "columns",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": [
+            {
+              "heading": "Collection"
+            },
+            {
+              "heading": "How it works"
+            },
+            {
+              "heading": "Pricing"
+            },
+            {
+              "heading": "Contact"
+            }
+          ]
+        },
+        {
+          "name": "legal",
+          "role": "legal",
+          "contract": "label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "\u00a9 WoodWave Gallery \u2014 See the collection, simply."
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "align": "left"
+      }
+    }
+  ],
+  "rationale": "The brief and variety directive call for a single monumental hero built as an ASYMMETRIC SPLIT with one tall photograph. I reused the hero-split-media-copy seed (archetype split, overlap treatment) and tuned it: a 1.6:1 uneven ratio with copy anchored hard-left and a single portrait hero-staircase.jpg bleeding heavy off the right edge for editorial tension. The hero is the ONE sanctioned inverse surface and the ONLY carrier of the brand accent (on the colossal display title, well above the 8rem floor). A medium overlap lets the display title kiss the media seam \u2014 the brand's primary ornament \u2014 without overlaying text on the photo body, so no-text-on-photos holds. CTAs are typographic links (arrow/slash), never buttons. A minimal reuse footer on the cream primary surface with no accent closes the page as a complete bookend while respecting single-accent and no-cards-on-cream (open stack, no boxed units)."
+}

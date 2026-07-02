@@ -1,0 +1,23 @@
+WoodWave HYBRID experiment — PART B (off-grid expansion)
+  fairness brand.yaml           00024b73ccb1625cfb1e87b25200a2dc [DRIFT]
+  fairness signup-launch.md     68ea09f261fa58707acdbddbfde8475d [OK]
+  fairness editorial-luxury.md  4bb79e0a4d6f4c81e5ca4d17b66723c9 [OK]
+Model: claude-opus-4-8
+Seed patterns: hero-split-media-copy, gallery-mosaic-with-overflow, features-split-feature
+
+=== SHOWCASE :: generate the two-act editorial composition (flag ON) ===
+  offGridExpansion=True (from style)
+  [attempt 0] 59.34s  in=13710 out=5724
+    gate: FAIL ['Brand assets present (not placeholder)', 'All brand image assets present']
+  [attempt 1] 49.17s  in=13874 out=5161
+    gate: FAIL ['Brand assets present (not placeholder)', 'All brand image assets present']
+  [attempt 2] 73.75s  in=13874 out=7070
+    schema: 2 error(s)
+  classified: hero=True standard=4 expanded(novel)=2 footer=False
+  rendering stitched showcase page …
+  showcase gate: FAIL [('Brand assets present (not placeholder)', "15 local asset(s), missing=['assets/assets/overlap-vase.jpg']"), ('All brand image assets present', "local images=15; missing=['assets/assets/overlap-vase.jpg']")]
+    screenshot failed (rc=1): node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+browserType.launch: Executable doesn't exist at /var/folders/8v/xcrfwvnn6ksf4pmhz2fzpfth0000gp/T/cursor-sandbox-cache/c757641f76

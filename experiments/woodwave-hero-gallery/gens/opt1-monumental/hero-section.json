@@ -1,0 +1,67 @@
+{
+  "id": "hero-monument",
+  "useCase": "hero",
+  "archetype": "stack",
+  "surfaceIntent": "inverse-strong",
+  "novelty": "adapt",
+  "seededFrom": {
+    "lib": "standard",
+    "id": "hero-split-media-copy"
+  },
+  "slots": [
+    {
+      "name": "eyebrow",
+      "role": "eyebrow",
+      "contract": "eyebrow",
+      "textLen": "short",
+      "sizeClass": "caption",
+      "width": "hug",
+      "z": "front",
+      "copy": "WoodWave Gallery"
+    },
+    {
+      "name": "headline",
+      "role": "display-title",
+      "contract": "heading",
+      "textLen": "short",
+      "sizeClass": "colossal",
+      "width": "stretch",
+      "z": "front",
+      "copy": "Everything in one place"
+    },
+    {
+      "name": "subhead",
+      "role": "subheading",
+      "contract": "subheading",
+      "textLen": "medium",
+      "sizeClass": "body",
+      "width": "hug",
+      "z": "front",
+      "copy": "A simpler way to see the collection \u2014 built for how you actually look."
+    },
+    {
+      "name": "primary-cta",
+      "role": "cta",
+      "contract": "link",
+      "textLen": "word",
+      "sizeClass": "body",
+      "width": "hug",
+      "z": "front",
+      "copy": "Start free"
+    },
+    {
+      "name": "secondary-cta",
+      "role": "cta-secondary",
+      "contract": "link",
+      "textLen": "short",
+      "sizeClass": "body",
+      "width": "hug",
+      "z": "front",
+      "copy": "See how it works"
+    }
+  ],
+  "treatments": [],
+  "knobs": {
+    "align": "center"
+  }
+}

@@ -1,0 +1,687 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "woodwave-gallery",
+    "name": "Woodwave Gallery \u2014 one long scroll",
+    "useCasesRequested": [
+      "hero",
+      "about",
+      "gallery",
+      "testimonial",
+      "features",
+      "cta",
+      "footer"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/woodwave/brand/brand.yaml"
+  },
+  "style": {
+    "id": "editorial-luxury"
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "overlay",
+      "surfaceIntent": "inverse",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "stepped-overlay-statement"
+      },
+      "slots": [
+        {
+          "name": "backdrop",
+          "role": "background-media",
+          "contract": "image",
+          "textLen": "none",
+          "width": "full-bleed",
+          "mediaAspect": "wide",
+          "z": "back",
+          "colStart": 1,
+          "colSpan": 12,
+          "asset": {
+            "src": "Web-gallery-1.jpg",
+            "alt": "Warm timber-framed gallery interior in daylight",
+            "ratio": "landscape"
+          }
+        },
+        {
+          "name": "eyebrow",
+          "role": "kicker",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": "Woodwave Gallery"
+        },
+        {
+          "name": "title",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "medium",
+          "sizeClass": "colossal",
+          "width": "stretch",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 11,
+          "copy": "Space is the muse"
+        },
+        {
+          "name": "support",
+          "role": "support",
+          "contract": "paragraph",
+          "textLen": "short",
+          "sizeClass": "body",
+          "z": "front",
+          "colStart": 9,
+          "colSpan": 4,
+          "copy": "A landmark timber building holding art from the late twentieth century to the present day."
+        },
+        {
+          "name": "cta",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "z": "front",
+          "colStart": 11,
+          "colSpan": 2,
+          "copy": "Plan your visit"
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "backdrop",
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "stepped-lines",
+          "target": "title",
+          "steps": [
+            0,
+            1,
+            6
+          ],
+          "direction": "right"
+        },
+        {
+          "kind": "text-on-media",
+          "target": "title",
+          "over": "backdrop",
+          "sanctioned": true,
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "stepProgression": "0/0.5/3",
+        "lineCount": "3",
+        "supportCorner": "br"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "backdrop"
+      }
+    },
+    {
+      "id": "about",
+      "useCase": "about",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "about-anchored-statement"
+      },
+      "slots": [
+        {
+          "name": "statement",
+          "role": "statement",
+          "contract": "header",
+          "textLen": "long",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": {
+            "eyebrow": "About",
+            "heading": "A house built of light and timber",
+            "text": "Woodwave began with a conviction that architecture can hold art the way a room holds silence. Our galleries move through warm wood and quiet daylight, letting each work breathe.",
+            "cta": "Read the philosophy"
+          }
+        },
+        {
+          "name": "media",
+          "role": "media",
+          "contract": "image",
+          "textLen": "none",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "z": "front",
+          "colStart": 8,
+          "colSpan": 5,
+          "asset": {
+            "src": "About-img-2.jpg",
+            "alt": "Timber staircase rising through the gallery",
+            "ratio": "portrait"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "stagger",
+          "target": "statement",
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "mediaSide": "right"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "media"
+      }
+    },
+    {
+      "id": "gallery",
+      "useCase": "gallery",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "staggered-caption-columns-3"
+      },
+      "slots": [
+        {
+          "name": "masthead",
+          "role": "masthead",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 10,
+          "copy": {
+            "lead": "Interior",
+            "emphasis": "spaces"
+          }
+        },
+        {
+          "name": "caption-lead",
+          "role": "micro-caption",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 4,
+          "copy": "Selected views from the permanent collection"
+        },
+        {
+          "name": "columns",
+          "role": "gallery-columns",
+          "contract": "card",
+          "textLen": "medium",
+          "z": "front",
+          "copy": [
+            {
+              "heading": "Upper hall",
+              "text": "Daylight galleries, floor two",
+              "meta": "01",
+              "cta": "View"
+            },
+            {
+              "heading": "The timber nave",
+              "text": "Central atrium under the eaves",
+              "meta": "02",
+              "cta": "View"
+            },
+            {
+              "heading": "Lower rooms",
+              "text": "Late-century works in shadow",
+              "meta": "03",
+              "cta": "View"
+            }
+          ]
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "mixed-face",
+          "target": "masthead",
+          "spans": [
+            {
+              "part": "lead",
+              "face": "roman"
+            },
+            {
+              "part": "emphasis",
+              "face": "italic"
+            }
+          ]
+        },
+        {
+          "kind": "stagger",
+          "target": "columns",
+          "amount": {
+            "class": "heavy"
+          }
+        }
+      ],
+      "knobs": {
+        "columnCount": "3",
+        "offsetProgression": "middle-high-right-low",
+        "captionFace": "roman"
+      }
+    },
+    {
+      "id": "mission",
+      "useCase": "about",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "about-anchored-statement"
+      },
+      "slots": [
+        {
+          "name": "ghost",
+          "role": "ghost-word",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "width": "full-bleed",
+          "z": "back",
+          "colStart": 1,
+          "colSpan": 12,
+          "copy": "MISSION"
+        },
+        {
+          "name": "statement",
+          "role": "statement",
+          "contract": "header",
+          "textLen": "long",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": {
+            "eyebrow": "Mission",
+            "heading": "To keep space open for looking",
+            "text": "We collect and show work that rewards slow attention. Admission stays free on weekday mornings so that looking remains a public act, not a private privilege.",
+            "cta": "Our commitments"
+          }
+        },
+        {
+          "name": "media",
+          "role": "media",
+          "contract": "image",
+          "textLen": "none",
+          "width": "media",
+          "mediaAspect": "landscape",
+          "z": "front",
+          "colStart": 8,
+          "colSpan": 5,
+          "asset": {
+            "src": "About-img-3.jpg",
+            "alt": "Gallery room with hung works and warm floors",
+            "ratio": "landscape"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "ghost-word",
+          "target": "ghost",
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "stagger",
+          "target": "statement",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "media"
+      }
+    },
+    {
+      "id": "heritage",
+      "useCase": "features",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "novel",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "ghost",
+          "role": "ghost-word",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "width": "full-bleed",
+          "z": "back",
+          "colStart": 1,
+          "colSpan": 12,
+          "copy": "1941 \u2014 2023"
+        },
+        {
+          "name": "head",
+          "role": "header",
+          "contract": "header",
+          "textLen": "medium",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 7,
+          "copy": {
+            "eyebrow": "Heritage",
+            "heading": "Eight decades of collecting",
+            "text": "From a single donated timber hall to a collection spanning the late twentieth century to the present day."
+          }
+        },
+        {
+          "name": "timeline",
+          "role": "eras",
+          "contract": "stat-block",
+          "textLen": "medium",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 12,
+          "copy": [
+            {
+              "value": "1941",
+              "label": "The timber hall is given to the city"
+            },
+            {
+              "value": "1978",
+              "label": "First contemporary acquisitions enter the collection"
+            },
+            {
+              "value": "2004",
+              "label": "West wing daylight galleries open"
+            },
+            {
+              "value": "2023",
+              "label": "The collection reaches the present day"
+            }
+          ]
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "ghost-word",
+          "target": "ghost",
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "stagger",
+          "target": "timeline",
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ]
+    },
+    {
+      "id": "curator",
+      "useCase": "testimonial",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "curator-quote-portrait-collage"
+      },
+      "slots": [
+        {
+          "name": "quote",
+          "role": "quote",
+          "contract": "quote",
+          "textLen": "long",
+          "sizeClass": "title",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 7,
+          "copy": "A building can be a collaborator. Ours gives the work its weather \u2014 light in the morning, shadow by dusk."
+        },
+        {
+          "name": "portrait",
+          "role": "portrait",
+          "contract": "image",
+          "textLen": "none",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "z": "front",
+          "colStart": 9,
+          "colSpan": 4,
+          "asset": {
+            "src": "About-img-4.jpg",
+            "alt": "Portrait of the chief curator",
+            "ratio": "portrait"
+          }
+        },
+        {
+          "name": "attribution",
+          "role": "caption",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "z": "front",
+          "colStart": 9,
+          "colSpan": 4,
+          "copy": "Marguerite Vahl \u2014 Chief Curator"
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "marginal-caption",
+          "target": "attribution",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "portraitSide": "right"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "portrait"
+      }
+    },
+    {
+      "id": "visit",
+      "useCase": "features",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "features-icon-label-grid"
+      },
+      "slots": [
+        {
+          "name": "head",
+          "role": "header",
+          "contract": "header",
+          "textLen": "medium",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 5,
+          "copy": {
+            "eyebrow": "Visit",
+            "heading": "Find us in the old timber yard",
+            "text": "12 Kiln Wharf, Riverside. Open Tuesday to Sunday.",
+            "cta": "Buy tickets"
+          }
+        },
+        {
+          "name": "hours",
+          "role": "hours",
+          "contract": "list",
+          "textLen": "medium",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 5,
+          "copy": [
+            "Tue\u2013Fri \u00b7 10:00\u201318:00",
+            "Sat\u2013Sun \u00b7 09:00\u201319:00",
+            "Monday \u00b7 Closed",
+            "Free weekday mornings"
+          ]
+        },
+        {
+          "name": "map",
+          "role": "map",
+          "contract": "image",
+          "textLen": "none",
+          "width": "media",
+          "mediaAspect": "landscape",
+          "z": "front",
+          "colStart": 7,
+          "colSpan": 6,
+          "asset": {
+            "src": "Map.jpg",
+            "alt": "Map showing the route to Woodwave Gallery",
+            "ratio": "landscape"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "marginal-caption",
+          "target": "hours",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "map"
+      }
+    },
+    {
+      "id": "newsletter",
+      "useCase": "cta",
+      "archetype": "stack",
+      "surfaceIntent": "panel",
+      "novelty": "novel",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "head",
+          "role": "header",
+          "contract": "header",
+          "textLen": "medium",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": {
+            "eyebrow": "Newsletter",
+            "heading": "Notes from the timber hall",
+            "text": "Exhibition news and visiting hours, a few times each season."
+          }
+        },
+        {
+          "name": "form",
+          "role": "subscribe",
+          "contract": "form",
+          "textLen": "short",
+          "z": "front",
+          "colStart": 7,
+          "colSpan": 6,
+          "copy": {
+            "field": "Email address",
+            "submit": "Subscribe"
+          }
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "form"
+      }
+    },
+    {
+      "id": "footer",
+      "useCase": "footer",
+      "archetype": "stack",
+      "surfaceIntent": "panel",
+      "novelty": "novel",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "brand",
+          "role": "logo",
+          "contract": "logo",
+          "textLen": "word",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 4,
+          "copy": "Woodwave"
+        },
+        {
+          "name": "nav",
+          "role": "nav",
+          "contract": "list",
+          "textLen": "short",
+          "z": "front",
+          "colStart": 5,
+          "colSpan": 4,
+          "copy": [
+            "About",
+            "Gallery",
+            "Exhibition",
+            "Visit"
+          ]
+        },
+        {
+          "name": "social",
+          "role": "social",
+          "contract": "list",
+          "textLen": "short",
+          "z": "front",
+          "colStart": 9,
+          "colSpan": 4,
+          "copy": [
+            "Instagram",
+            "Newsletter",
+            "Contact"
+          ]
+        },
+        {
+          "name": "legal",
+          "role": "legal",
+          "contract": "label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 12,
+          "copy": "\u00a9 2024 Woodwave Gallery. All rights reserved."
+        }
+      ],
+      "treatments": []
+    }
+  ],
+  "rationale": "REPAIR: the mission section previously overlaid text on a photograph (no-text-on-photos). It is re-authored as a light-canvas split where the display copy sits on the cream surface with a heavy 'MISSION' ghost-word behind it (text/ghost-on-primary, never on the photo) and a separate flush media panel that carries no text \u2014 resolving the neverDo without changing the rest of the page. Order follows the brief's scroll: an inverse hero bookend (the ONLY inverse section and the ONLY accent carrier) reusing stepped-overlay-statement with its stepped-lines + sanctioned display-title-over-media; about (anchored statement); gallery reusing staggered-caption-columns-3 with the mixed-face {lead/emphasis} masthead and per-column stagger; mission (ghost-word statement, repaired); heritage as a ghost-word era-year timeline (1941\u20132023) via a stat-block run; curator quote-portrait collage; visit info with the Map.jpg panel and a typographic Buy-tickets link; an underline-only newsletter form on a dark panel; and a slash-nav footer. Every non-hero section is primary/panel with no accent, honoring the single-accent and single-inverse fidelity rules; all actions are typographic links (no buttons), no radius/shadow/gradient/hairline devices used."
+}

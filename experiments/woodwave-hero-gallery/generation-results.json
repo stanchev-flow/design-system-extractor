@@ -1,0 +1,153 @@
+{
+  "model": "claude-opus-4-8",
+  "heroes": [
+    {
+      "n": 1,
+      "id": "opt1-monumental",
+      "name": "Centered monumental statement",
+      "ok": false,
+      "attempts": 3,
+      "repair_fired": true,
+      "wall_s": 56.3,
+      "stages": [
+        "gated",
+        "gated",
+        "gated"
+      ],
+      "hero_archetype": "stack",
+      "hero_novelty": "adapt",
+      "hero_surfaceIntent": "inverse-strong",
+      "hero_treatments": [],
+      "offgrid_treatments": [],
+      "tokens": {
+        "input": 39903,
+        "output": 4449
+      },
+      "gen_dir": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/gens/opt1-monumental"
+    },
+    {
+      "n": 2,
+      "id": "opt2-split",
+      "name": "Asymmetric split with image",
+      "ok": true,
+      "attempts": 1,
+      "repair_fired": false,
+      "wall_s": 33.1,
+      "stages": [
+        "gated"
+      ],
+      "hero_archetype": "split",
+      "hero_novelty": "adapt",
+      "hero_surfaceIntent": "inverse",
+      "hero_treatments": [
+        "bleed",
+        "overlap"
+      ],
+      "offgrid_treatments": [
+        "bleed",
+        "overlap"
+      ],
+      "tokens": {
+        "input": 13186,
+        "output": 2874
+      },
+      "gen_dir": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/gens/opt2-split"
+    },
+    {
+      "n": 3,
+      "id": "opt3-collage",
+      "name": "Offset multi-image collage",
+      "ok": false,
+      "attempts": 3,
+      "repair_fired": true,
+      "wall_s": 62.3,
+      "stages": [
+        "gated",
+        "gated",
+        "gated"
+      ],
+      "hero_archetype": "collage",
+      "hero_novelty": "novel",
+      "hero_surfaceIntent": "inverse",
+      "hero_treatments": [
+        "ghost-word",
+        "overlap",
+        "stagger",
+        "text-on-media"
+      ],
+      "offgrid_treatments": [
+        "overlap",
+        "stagger"
+      ],
+      "tokens": {
+        "input": 39816,
+        "output": 5515
+      },
+      "gen_dir": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/gens/opt3-collage"
+    },
+    {
+      "n": 4,
+      "id": "opt4-fullbleed",
+      "name": "Full-bleed image, overlaid heading",
+      "ok": true,
+      "attempts": 1,
+      "repair_fired": false,
+      "wall_s": 19.3,
+      "stages": [
+        "gated"
+      ],
+      "hero_archetype": "stack-fullbleed",
+      "hero_novelty": "adapt",
+      "hero_surfaceIntent": "inverse",
+      "hero_treatments": [
+        "bleed",
+        "overlap",
+        "text-on-media"
+      ],
+      "offgrid_treatments": [
+        "bleed",
+        "overlap"
+      ],
+      "tokens": {
+        "input": 13222,
+        "output": 1563
+      },
+      "gen_dir": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/gens/opt4-fullbleed"
+    },
+    {
+      "n": 5,
+      "id": "opt5-offgrid",
+      "name": "Off-grid overlap / editorial layering",
+      "ok": false,
+      "attempts": 3,
+      "repair_fired": true,
+      "wall_s": 69.2,
+      "stages": [
+        "gated",
+        "gated",
+        "gated"
+      ],
+      "hero_archetype": "collage",
+      "hero_novelty": "novel",
+      "hero_surfaceIntent": "inverse",
+      "hero_treatments": [
+        "bleed",
+        "ghost-word",
+        "marginal-caption",
+        "overlap",
+        "stagger",
+        "text-on-media"
+      ],
+      "offgrid_treatments": [
+        "bleed",
+        "overlap",
+        "stagger"
+      ],
+      "tokens": {
+        "input": 39996,
+        "output": 6134
+      },
+      "gen_dir": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/gens/opt5-offgrid"
+    }
+  ]
+}

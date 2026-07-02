@@ -1,0 +1,135 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "woodwave-hero-layering-variation",
+    "name": "WoodWave hero \u2014 layering axis variation (background + corner)",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/woodwave/brand/brand.yaml"
+  },
+  "style": {
+    "id": "editorial-luxury"
+  },
+  "sections": [
+    {
+      "id": "opening-bookend",
+      "useCase": "hero",
+      "archetype": "stack",
+      "surfaceIntent": "inverse",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-display-over-staggered-media"
+      },
+      "slots": [
+        {
+          "name": "hero-media",
+          "role": "background photography",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "full-bleed",
+          "mediaAspect": "wide",
+          "z": "back",
+          "asset": null
+        },
+        {
+          "name": "eyebrow",
+          "role": "kicker",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Est. 2019 \u2014 Portland, Oregon"
+        },
+        {
+          "name": "headline",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "copy": "WOODWAVE GALLERY"
+        },
+        {
+          "name": "support",
+          "role": "lede",
+          "contract": "subheading",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade."
+        },
+        {
+          "name": "cta",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "word",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Buy Tickets"
+        },
+        {
+          "name": "corner-accent",
+          "role": "corner photography",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "z": "front",
+          "colSpan": 3,
+          "alignTo": {
+            "corner": "br"
+          },
+          "asset": null
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "text-on-media",
+          "over": "background photography",
+          "sanctioned": true
+        },
+        {
+          "kind": "overlap",
+          "pair": [
+            "display-title",
+            "corner photography"
+          ],
+          "zOrder": [
+            "background photography",
+            "corner photography",
+            "display-title"
+          ],
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "stagger",
+          "target": "corner photography",
+          "axis": "vertical",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "align": "center"
+      },
+      "alignment": {
+        "anchor": "centered",
+        "counterweight": "corner-accent"
+      }
+    }
+  ],
+  "rationale": "Single sanctioned hero bookend reusing the seeded hero-display-over-staggered-media pattern (stack archetype, inverse surface, centered didone display title carrying the sole gold accent, measured copy verbatim). The ONE varied axis is layering: the main image is re-registered as a full-bleed z:back background behind the copy (declared as the sanctioned text-on-media treatment so the renderer scrims it for AA contrast), and the second photo becomes a colSpan:3 z:front accent pinned to the bottom-right corner (alignTo corner br) as the composition's counterweight. The pattern's overlap+stagger treatments and centered alignment are preserved; palette, Melodrama display tier, and named spacing steps are identical to the seed; novelty is adapt with seededFrom pointing at the project hero pattern."
+}

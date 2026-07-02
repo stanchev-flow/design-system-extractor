@@ -1,0 +1,15 @@
+WoodWave HYBRID experiment — PART B (off-grid expansion)
+  fairness brand.yaml           00024b73ccb1625cfb1e87b25200a2dc [DRIFT]
+  fairness signup-launch.md     68ea09f261fa58707acdbddbfde8475d [OK]
+  fairness editorial-luxury.md  4bb79e0a4d6f4c81e5ca4d17b66723c9 [OK]
+Model: claude-opus-4-8
+Seed patterns: hero-split-media-copy, gallery-mosaic-with-overflow, features-split-feature
+
+=== GUARDRAIL 1 :: adversarial expansion (neverDo repair loop) ===
+  offGridExpansion=True (from style)
+  [attempt 0] 56.13s  in=13597 out=5219
+    gate: PASS
+  attempts=1 stages=['gated'] caught=False → fixed (repaired to gate-green)
+
+=== GUARDRAIL 2 :: promotion loop (novel gate-green → layout-library.yaml) ===
+  promoted 'value-props-promoted' → project library (0→1 patterns); retrieval now hits it: True (kind=reuse, score=5.35)

@@ -1,0 +1,85 @@
+# STANDARD (brand-agnostic) layout patterns for the FOOTER use-case.
+# origin: designed — general generalizations of the harvest clusters. Sizes are classes, never px.
+schemaVersion: layout-patterns.v1
+useCase: footer
+patterns:
+
+  - id: footer-link-column-grid
+    useCase: footer
+    archetypeRef: grid
+    surfaceIntent: inverse
+    intent: "Full-width footer band — brand group beside a wide grid of link columns with headings and stacked links."
+    contentShape:
+      alignment: { value: left, counterweight: links, inheritance: per-slot-override }
+      slots:
+        - { name: brand, role: brand-group, mediaAspect: freeform, mediaScale: { of: container, fraction: 0.15 }, width: hug, z: front }
+        - { name: blurb, role: brand-blurb, textLen: long, sizeClass: caption, width: hug, z: front }
+        - { name: colHeading, role: column-heading, textLen: short, sizeClass: caption, width: stretch, z: front }
+        - { name: links, role: link-list, textLen: long, sizeClass: caption, width: stretch, z: front }
+    specialTreatments:
+      - { kind: stagger, target: links, axis: horizontal, amount: { class: light } }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      columns: { type: enum, values: ["3", "4", "5"], default: "4" }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters footer_link_column_grid x6, wide_grid_of_link_columns_with_headings_and_stacked_links", sources: [harvest-9-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "link-column-grid", by: creation, signalId: null, note: "hand-blessed from harvest report (footer: ghost-word x11)" }
+
+  - id: footer-inverse-closing-oversized-wordmark
+    useCase: footer
+    archetypeRef: stack-fullbleed
+    surfaceIntent: inverse-strong
+    intent: "Inverse closing footer with a small brand group over an oversized low-contrast wordmark bleeding to the edges."
+    contentShape:
+      alignment: { value: centered, inheritance: block-inherits }
+      slots:
+        - { name: wordmark, role: watermark, textLen: word, sizeClass: colossal, width: full-bleed, opacityClass: ghost, z: back }
+        - { name: brand, role: brand-group, mediaAspect: freeform, mediaScale: { of: container, fraction: 0.12 }, width: hug, z: front }
+        - { name: links, role: link-row, textLen: short, sizeClass: caption, width: stretch, z: front }
+        - { name: legal, role: legal-copy, textLen: long, sizeClass: caption, width: hug, z: front }
+    specialTreatments:
+      - { kind: ghost-word, target: wordmark, anchor: full-bleed, bleed: full }
+      - { kind: overlap, pair: [wordmark, brand], zOrder: [wordmark, brand], amount: { class: heavy } }
+      - { kind: bleed, target: wordmark, edge: bottom }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      wordmarkAnchor: { type: enum, values: [full-bleed, margin], default: full-bleed }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters inverse_footer_closing_system x4, small_brand_group_plus_oversized_low_contrast_wordmark (footer ghost-word x11)", sources: [harvest-9-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "inverse-closing-oversized-wordmark", by: creation, signalId: null, note: "hand-blessed from harvest report" }
+
+  - id: footer-compact-utility-bar
+    useCase: footer
+    archetypeRef: band
+    surfaceIntent: panel
+    intent: "Compact full-width utility bar on a continuing surface — left link group, centered legal/identity, right policy link and payment badges."
+    contentShape:
+      alignment: { value: space-between, inheritance: per-slot-override }
+      slots:
+        - { name: leftLinks, role: link-group, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: legal, role: legal-copy, textLen: long, sizeClass: caption, width: hug, z: front }
+        - { name: badges, role: payment-badges, mediaAspect: freeform, mediaScale: { of: slot, fraction: 0.1 }, width: hug, z: front }
+        - { name: policy, role: policy-link, textLen: short, sizeClass: caption, width: hug, z: front }
+    specialTreatments:
+      - { kind: bleed, target: legal, edge: all }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      align: { type: enum, values: [space-between, center], default: space-between }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters terminal_utility_bar x5, compact_footer_link_row, full_width_internal_light_sub_band_with_legal_text_payment_badges_address", sources: [harvest-9-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "compact-utility-bar", by: creation, signalId: null, note: "hand-blessed from harvest report" }

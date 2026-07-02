@@ -1,0 +1,114 @@
+{
+  "id": "opening-bookend",
+  "useCase": "hero",
+  "archetype": "stack",
+  "surfaceIntent": "inverse",
+  "novelty": "adapt",
+  "seededFrom": {
+    "lib": "project",
+    "id": "hero-display-over-staggered-media"
+  },
+  "slots": [
+    {
+      "name": "eyebrow",
+      "role": "eyebrow",
+      "contract": "eyebrow",
+      "textLen": "short",
+      "sizeClass": "caption",
+      "width": "hug",
+      "z": "front",
+      "copy": "Est. 2019 \u2014 Portland, Oregon"
+    },
+    {
+      "name": "headline",
+      "role": "display-title",
+      "contract": "heading",
+      "textLen": "word",
+      "sizeClass": "colossal",
+      "width": "stretch",
+      "z": "front",
+      "copy": "WOODWAVE"
+    },
+    {
+      "name": "lede",
+      "role": "support",
+      "contract": "paragraph",
+      "textLen": "short",
+      "sizeClass": "caption",
+      "width": "hug",
+      "z": "front",
+      "copy": "Woodgrain, light, and quiet geometry."
+    },
+    {
+      "name": "media-primary",
+      "role": "media-a",
+      "contract": "image",
+      "textLen": "none",
+      "sizeClass": "body",
+      "width": "media",
+      "mediaAspect": "landscape",
+      "z": "mid",
+      "asset": null
+    },
+    {
+      "name": "media-secondary",
+      "role": "media-b",
+      "contract": "image",
+      "textLen": "none",
+      "sizeClass": "body",
+      "width": "media",
+      "mediaAspect": "portrait",
+      "z": "back",
+      "asset": null
+    },
+    {
+      "name": "cta",
+      "role": "cta",
+      "contract": "link",
+      "textLen": "short",
+      "sizeClass": "body",
+      "width": "hug",
+      "z": "front",
+      "copy": "Buy Tickets"
+    }
+  ],
+  "treatments": [
+    {
+      "kind": "text-on-media",
+      "target": "display-title",
+      "over": "media-a",
+      "sanctioned": true,
+      "amount": {
+        "class": "heavy"
+      }
+    },
+    {
+      "kind": "overlap",
+      "pair": [
+        "media-a",
+        "media-b"
+      ],
+      "zOrder": [
+        "media-b",
+        "media-a",
+        "display-title"
+      ],
+      "amount": {
+        "class": "medium"
+      }
+    },
+    {
+      "kind": "stagger",
+      "target": "media-b",
+      "axis": "horizontal",
+      "amount": {
+        "class": "medium"
+      }
+    }
+  ],
+  "knobs": {
+    "align": "center",
+    "titleOverlap": "heavy",
+    "overlapMediaSide": "right"
+  }
+}

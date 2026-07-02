@@ -1,0 +1,396 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "new-offering-launch",
+    "name": "New offering launch",
+    "useCasesRequested": [
+      "hero",
+      "gallery",
+      "features",
+      "cta"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-ab/inputs/brand/brand.yaml"
+  },
+  "style": {
+    "id": "editorial-luxury"
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "split",
+      "surfaceIntent": "inverse",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Introducing"
+        },
+        {
+          "name": "title",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "colossal",
+          "width": "stretch",
+          "z": "front",
+          "copy": "Everything in one place"
+        },
+        {
+          "name": "subhead",
+          "role": "subheading",
+          "contract": "subheading",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": "A simpler way to get started \u2014 built for how you actually work."
+        },
+        {
+          "name": "primary-action",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Start free"
+        },
+        {
+          "name": "hero-media",
+          "role": "media",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "z": "back",
+          "asset": {
+            "src": "hero-staircase.jpg",
+            "alt": "Sculptural timber staircase",
+            "ratio": "portrait"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "text-on-media",
+          "target": "display-title",
+          "over": "media",
+          "amount": {
+            "class": "medium"
+          },
+          "sanctioned": true
+        },
+        {
+          "kind": "overlap",
+          "pair": [
+            "display-title",
+            "media"
+          ],
+          "zOrder": [
+            "media",
+            "display-title"
+          ],
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "align": "center",
+        "mediaSide": "right"
+      }
+    },
+    {
+      "id": "gallery",
+      "useCase": "gallery",
+      "archetype": "collage",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "gallery-mosaic-with-overflow"
+      },
+      "slots": [
+        {
+          "name": "ghost",
+          "role": "ghost-word",
+          "contract": "label",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "width": "full-bleed",
+          "z": "back",
+          "copy": "Craft"
+        },
+        {
+          "name": "gallery-media",
+          "role": "media",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "landscape",
+          "z": "mid",
+          "asset": {
+            "src": "overlap-vase.jpg",
+            "alt": "Turned vessel in raked light",
+            "ratio": "landscape"
+          }
+        },
+        {
+          "name": "gallery-media-2",
+          "role": "media-secondary",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "z": "mid",
+          "asset": null
+        },
+        {
+          "name": "caption",
+          "role": "marginal-caption",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "One source of truth \u2014 everything you make, in one considered place."
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "ghost-word",
+          "target": "ghost-word",
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "bleed",
+          "target": "media",
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "stagger",
+          "pair": [
+            "media",
+            "media-secondary"
+          ],
+          "axis": "vertical",
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "marginal-caption",
+          "target": "marginal-caption",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "overflowEdge": "right",
+        "align": "left"
+      }
+    },
+    {
+      "id": "features",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "features-split-feature"
+      },
+      "slots": [
+        {
+          "name": "section-header",
+          "role": "header",
+          "contract": "header",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "copy": {
+            "eyebrow": "Why WoodWave",
+            "heading": "Built for how you actually work"
+          }
+        },
+        {
+          "name": "feature-run",
+          "role": "feature-modules",
+          "contract": "feature-item",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "heading": "Set up in minutes",
+              "text": "No manual wiring \u2014 you're live the same day."
+            },
+            {
+              "heading": "One source of truth",
+              "text": "Everyone sees the same thing, always up to date."
+            },
+            {
+              "heading": "Scales with you",
+              "text": "From your first project to your thousandth."
+            }
+          ]
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "stagger",
+          "target": "feature-modules",
+          "axis": "vertical",
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "columns": "3",
+        "align": "left"
+      }
+    },
+    {
+      "id": "social-proof",
+      "useCase": "testimonial",
+      "archetype": "interlock",
+      "surfaceIntent": "panel",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "proof-stat",
+          "role": "stat",
+          "contract": "stat",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "copy": "Trusted by 10,000+ teams"
+        },
+        {
+          "name": "proof-quote",
+          "role": "quote",
+          "contract": "quote",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "stretch",
+          "z": "front",
+          "copy": "We replaced three tools in a week and never looked back."
+        },
+        {
+          "name": "proof-attr",
+          "role": "attribution",
+          "contract": "label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Operations lead, mid-market team"
+        },
+        {
+          "name": "proof-media",
+          "role": "media",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "square",
+          "z": "back",
+          "asset": null
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "float-wrap",
+          "target": "quote",
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "inset",
+          "target": "media",
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "align": "left"
+      }
+    },
+    {
+      "id": "cta",
+      "useCase": "cta",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "cta-header",
+          "role": "header",
+          "contract": "header",
+          "textLen": "short",
+          "sizeClass": "hero",
+          "width": "stretch",
+          "z": "front",
+          "copy": {
+            "eyebrow": "Get started",
+            "heading": "Everything in one place"
+          }
+        },
+        {
+          "name": "cta-primary",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Start free"
+        },
+        {
+          "name": "cta-secondary",
+          "role": "cta-secondary",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "See how it works"
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "align": "center"
+      }
+    }
+  ],
+  "rationale": "WoodWave lacks a logo-wall and feature-grid, so the brief's social proof and value props are mapped onto editorial vocabulary. The hero bookend is the only inverse, accent-bearing section, using the sanctioned display-title-over-media plus overlap. Gallery (collage) reuses the mosaic-with-overflow pattern with ghost-word + bleed + marginal-caption to answer no-text-on-photos. The three value_props render as one cards run of feature-items (staggered, asymmetric) rather than a boxed grid to respect no-cards-on-cream. Social proof adapts to an interlock float-wrap with the stat as headline and quote wrapping an inset image on a dark panel \u2014 the only place a bounded unit is legal. The conversion stack closes centered, per the centering exception. Each section is a distinct archetype (split, collage, cards, interlock, stack) for maximum structural contrast."
+}

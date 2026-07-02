@@ -1,0 +1,88 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "signup-launch",
+    "name": "WoodWave — signup launch (Phase 2 smoke)",
+    "text": "Drive sign-ups for a new offering. Hero + three value props + conversion.",
+    "useCasesRequested": ["hero", "features", "cta"]
+  },
+  "brand": { "ref": "experiments/woodwave-ab/inputs/brand/brand.yaml", "name": "WoodWave Gallery" },
+  "style": { "id": "editorial-luxury" },
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "stack",
+      "surfaceIntent": "inverse",
+      "seededFrom": { "lib": "project", "id": "hero-display-over-staggered-media" },
+      "novelty": "reuse",
+      "slots": [
+        { "name": "main", "role": "wordmark", "contract": "logo", "width": "hug", "z": "front",
+          "copy": { "variant": "inverse" } },
+        { "name": "main", "role": "display-title", "contract": "header", "textLen": "medium",
+          "sizeClass": "display", "width": "hug", "z": "front",
+          "copy": { "eyebrow": "Introducing", "heading": "Everything in one place" } },
+        { "name": "main", "role": "hero-photo", "contract": "image", "mediaAspect": "landscape",
+          "width": "full-bleed", "z": "back", "asset": { "ratio": "landscape" } },
+        { "name": "main", "role": "overlap-photo", "contract": "image", "mediaAspect": "portrait",
+          "width": "media", "z": "mid", "asset": { "ratio": "portrait" } },
+        { "name": "main", "role": "subhead", "contract": "paragraph", "textLen": "medium",
+          "width": "hug", "z": "front",
+          "copy": { "text": "A simpler way to get started — built for how you actually work." } },
+        { "name": "main", "role": "hero-action", "contract": "link", "textLen": "short",
+          "width": "hug", "z": "front", "copy": { "label": "Start free" } }
+      ],
+      "treatments": [
+        { "kind": "text-on-media", "target": "display-title", "over": "hero-photo", "sanctioned": true },
+        { "kind": "overlap", "pair": ["hero-photo", "overlap-photo"],
+          "zOrder": ["hero-photo", "overlap-photo"], "amount": { "class": "medium" } }
+      ],
+      "knobs": { "align": "center" }
+    },
+    {
+      "id": "features",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "seededFrom": { "lib": "project", "id": "features-staggered-caption-cards" },
+      "novelty": "adapt",
+      "slots": [
+        { "name": "intro", "role": "section-title", "contract": "header", "textLen": "short",
+          "sizeClass": "title", "width": "hug", "z": "front",
+          "copy": { "eyebrow": "Why teams switch", "heading": "Three ways in" } },
+        { "name": "modules", "role": "value-prop-module", "contract": "feature-item",
+          "textLen": "long", "sizeClass": "body", "width": "stretch", "z": "front",
+          "copy": [
+            { "heading": "Set up in minutes", "text": "No manual wiring — you're live the same day." },
+            { "heading": "One source of truth", "text": "Everyone sees the same thing, always up to date." },
+            { "heading": "Scales with you", "text": "From your first project to your thousandth." }
+          ] },
+        { "name": "cta", "role": "section-action", "contract": "link", "textLen": "short",
+          "width": "hug", "z": "front", "copy": { "label": "See how it works" } }
+      ],
+      "treatments": [
+        { "kind": "stagger", "target": "modules", "axis": "vertical", "amount": { "class": "medium" } }
+      ],
+      "knobs": { "columns": "3", "railSide": "none" }
+    },
+    {
+      "id": "cta",
+      "useCase": "cta",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "seededFrom": { "lib": "project", "id": "cta-underline-conversion-stack" },
+      "novelty": "reuse",
+      "slots": [
+        { "name": "main", "role": "heading", "contract": "header", "textLen": "short",
+          "sizeClass": "title", "width": "hug", "z": "front",
+          "copy": { "eyebrow": "Introducing", "heading": "Everything in one place",
+                    "body": "A simpler way to get started — built for how you actually work." } },
+        { "name": "main", "role": "signup", "contract": "form", "width": "hug", "z": "front",
+          "copy": { "placeholder": "you@company.com", "submit": "Start free" } }
+      ],
+      "treatments": [],
+      "knobs": { "align": "center" }
+    }
+  ],
+  "rationale": "Hero reuses the project bookend (sanctioned display overlap). Features ADAPTS the single-module library seed into a 3-module staggered-caption-cards run so each of the brief's three value_props renders as its own module (the Arm-A ceiling). CTA reuses the underline conversion stack."
+}

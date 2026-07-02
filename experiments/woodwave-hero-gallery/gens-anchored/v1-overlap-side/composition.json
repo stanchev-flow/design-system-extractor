@@ -1,0 +1,143 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "woodwave-hero-overlap-right",
+    "name": "WoodWave hero \u2014 overlap-side variation",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/woodwave/brand/brand.yaml"
+  },
+  "style": {
+    "id": "editorial-luxury"
+  },
+  "sections": [
+    {
+      "id": "opening-bookend",
+      "useCase": "hero",
+      "archetype": "stack",
+      "surfaceIntent": "inverse",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-display-over-staggered-media"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Est. 2019 \u2014 Portland, Oregon"
+        },
+        {
+          "name": "title",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "width": "stretch",
+          "z": "front",
+          "copy": "WOODWAVE GALLERY"
+        },
+        {
+          "name": "subhead",
+          "role": "subheading",
+          "contract": "subheading",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade."
+        },
+        {
+          "name": "hero-media",
+          "role": "hero-media",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "landscape",
+          "z": "mid",
+          "colStart": 3,
+          "colSpan": 8,
+          "asset": null
+        },
+        {
+          "name": "overlap-media",
+          "role": "overlap-media",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "z": "front",
+          "colSpan": 4,
+          "registration": {
+            "toSlot": "hero-media",
+            "edge": "right",
+            "depthCols": 1,
+            "z": "front"
+          },
+          "asset": null
+        },
+        {
+          "name": "cta",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Buy Tickets"
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "overlap",
+          "pair": [
+            "hero-media",
+            "overlap-media"
+          ],
+          "zOrder": [
+            "hero-media",
+            "overlap-media"
+          ],
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "stagger",
+          "target": "overlap-media",
+          "axis": "vertical",
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "text-on-media",
+          "target": "display-title",
+          "over": "hero-media",
+          "amount": {
+            "class": "medium"
+          },
+          "sanctioned": true
+        }
+      ],
+      "knobs": {
+        "titleOverlap": "medium",
+        "overlapMediaSide": "right"
+      },
+      "alignment": {
+        "anchor": "centered"
+      }
+    }
+  ],
+  "rationale": "Single sanctioned hero bookend reproducing the measured opening-bookend on the dark inverse surface: centered oversized Melodrama display title over two hard-edged photos, gold accent living only on this hero's display-title, verbatim measured copy, brand named spacing rhythm, asset:null everywhere for measured photography. The ONE varied axis is overlap-side \u2014 the small portrait crosses the landscape's RIGHT edge (colSpan 4, registration edge:right depthCols 1, z:front), the mirror of the original's inset side. novelty:adapt seeded from hero-display-over-staggered-media; overlap + stagger treatments and centered alignment preserved."
+}

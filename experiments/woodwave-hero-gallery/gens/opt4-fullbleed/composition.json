@@ -1,0 +1,136 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "woodwave-hero-fullbleed",
+    "name": "WoodWave opening bookend",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-ab/inputs/brand/brand.yaml"
+  },
+  "style": {
+    "id": "editorial-luxury"
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "stack-fullbleed",
+      "surfaceIntent": "inverse",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      },
+      "slots": [
+        {
+          "name": "media",
+          "role": "hero-media",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "hero",
+          "width": "full-bleed",
+          "mediaAspect": "landscape",
+          "z": "back",
+          "asset": {
+            "src": "hero-staircase.jpg",
+            "alt": "Sweeping architectural staircase of the WoodWave gallery",
+            "ratio": "landscape"
+          }
+        },
+        {
+          "name": "eyebrow",
+          "role": "kicker",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "WoodWave Gallery"
+        },
+        {
+          "name": "title",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "colossal",
+          "width": "stretch",
+          "z": "front",
+          "copy": "Everything in one place"
+        },
+        {
+          "name": "subhead",
+          "role": "lede",
+          "contract": "subheading",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "A simpler way to see the collection \u2014 built for how you actually look."
+        },
+        {
+          "name": "actions",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": [
+            {
+              "label": "Start free",
+              "variant": "arrow"
+            },
+            {
+              "label": "See how it works",
+              "variant": "slash"
+            }
+          ]
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "text-on-media",
+          "target": "display-title",
+          "over": "hero-media",
+          "zOrder": [
+            "hero-media",
+            "display-title"
+          ],
+          "amount": {
+            "class": "heavy"
+          },
+          "sanctioned": true
+        },
+        {
+          "kind": "bleed",
+          "target": "hero-media",
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "overlap",
+          "pair": [
+            "display-title",
+            "hero-media"
+          ],
+          "zOrder": [
+            "hero-media",
+            "display-title"
+          ],
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "align": "left",
+        "overflowEdge": "bottom"
+      }
+    }
+  ],
+  "rationale": "A single cinematic stack-fullbleed hero: one edge-to-edge staircase photograph on the sanctioned inverse surface, with the didone colossal display title 'Everything in one place' overlaid as the ONE legal text-on-media (marked sanctioned) \u2014 the hero bookend's sole exception to no-text-on-photos. The lone brand accent rides the display title on this inverse band; the two CTAs are typographic arrow/slash links (never buttons). Eyebrow, lede and actions anchor left/asymmetric per no-centered-everything's editorial exception while the poster-scale title carries the monumental first impression. Adapted from hero-split-media-copy but recomposed to a full-bleed single-image treatment as the variety directive requires; no footer added to keep the opening bookend singular and striking."
+}

@@ -1,0 +1,796 @@
+{
+  "patterns": [
+    {
+      "page": "all-project-radical-editorial",
+      "style": "radical-editorial",
+      "tier": "project",
+      "sections": 15,
+      "patterns": [
+        "hero-display-over-staggered-media",
+        "editorial-ghostword-collage",
+        "about-anchored-statement",
+        "gallery-fullbleed-counter-band",
+        "heritage-ghost-numerals-timeline",
+        "curator-quote-portrait-collage",
+        "features-flush-split-panel",
+        "visit-dual-panel-map",
+        "features-staggered-caption-cards",
+        "editorial-interlocking-inset",
+        "schedule-ruled-list-panel",
+        "pricing-ruled-list-panel",
+        "faq-accordion-list",
+        "cta-underline-conversion-stack"
+      ],
+      "gate_pass": true,
+      "failures": [],
+      "index_html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/pages/all-project-radical-editorial/index.html",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "page": "all-standard-radical-editorial",
+      "style": "radical-editorial",
+      "tier": "standard",
+      "sections": 28,
+      "patterns": [
+        "hero-centered-stack-on-media",
+        "hero-split-media-copy",
+        "hero-ghostword-atmospheric",
+        "hero-fullbleed-scrimmed-overlay",
+        "about-two-column-media-copy",
+        "about-split-editorial-grid",
+        "about-ghostword-editorial-run",
+        "features-split-feature",
+        "features-shared-light-run",
+        "features-icon-label-grid",
+        "features-media-card-overlay",
+        "gallery-editorial-card-grid",
+        "gallery-square-card-run",
+        "gallery-logo-strip",
+        "gallery-mosaic-with-overflow",
+        "testimonial-centered-quote-stack",
+        "testimonial-horizontal-card-rail-carousel",
+        "pricing-two-card-row",
+        "pricing-toggle-intro-plan-cards",
+        "pricing-editorial-two-column",
+        "cta-centered-inverse-cta",
+        "cta-split-copy-cta",
+        "cta-fullbleed-scrimmed-media",
+        "cta-inline-form-pill",
+        "footer-link-column-grid",
+        "footer-inverse-closing-oversized-wordmark",
+        "footer-compact-utility-bar"
+      ],
+      "drawable": [
+        "hero-centered-stack-on-media",
+        "hero-split-media-copy",
+        "hero-fullbleed-scrimmed-overlay",
+        "about-two-column-media-copy",
+        "features-split-feature",
+        "features-shared-light-run",
+        "testimonial-centered-quote-stack",
+        "pricing-toggle-intro-plan-cards",
+        "pricing-editorial-two-column",
+        "cta-centered-inverse-cta",
+        "cta-split-copy-cta",
+        "cta-fullbleed-scrimmed-media",
+        "footer-inverse-closing-oversized-wordmark"
+      ],
+      "generic_flow": [
+        "hero-ghostword-atmospheric",
+        "about-split-editorial-grid",
+        "about-ghostword-editorial-run",
+        "features-icon-label-grid",
+        "features-media-card-overlay",
+        "gallery-editorial-card-grid",
+        "gallery-square-card-run",
+        "gallery-logo-strip",
+        "gallery-mosaic-with-overflow",
+        "testimonial-horizontal-card-rail-carousel",
+        "pricing-two-card-row",
+        "cta-inline-form-pill",
+        "footer-link-column-grid",
+        "footer-compact-utility-bar"
+      ],
+      "excluded": [],
+      "gate_pass": true,
+      "failures": [],
+      "index_html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/pages/all-standard-radical-editorial/index.html",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "page": "all-project-editorial-luxury",
+      "style": "editorial-luxury",
+      "tier": "project",
+      "sections": 15,
+      "patterns": [
+        "hero-display-over-staggered-media",
+        "editorial-ghostword-collage",
+        "about-anchored-statement",
+        "gallery-fullbleed-counter-band",
+        "heritage-ghost-numerals-timeline",
+        "curator-quote-portrait-collage",
+        "features-flush-split-panel",
+        "visit-dual-panel-map",
+        "features-staggered-caption-cards",
+        "editorial-interlocking-inset",
+        "schedule-ruled-list-panel",
+        "pricing-ruled-list-panel",
+        "faq-accordion-list",
+        "cta-underline-conversion-stack"
+      ],
+      "gate_pass": true,
+      "failures": [],
+      "index_html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/pages/all-project-editorial-luxury/index.html",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "page": "all-standard-editorial-luxury",
+      "style": "editorial-luxury",
+      "tier": "standard",
+      "sections": 28,
+      "patterns": [
+        "hero-centered-stack-on-media",
+        "hero-split-media-copy",
+        "hero-ghostword-atmospheric",
+        "hero-fullbleed-scrimmed-overlay",
+        "about-two-column-media-copy",
+        "about-split-editorial-grid",
+        "about-ghostword-editorial-run",
+        "features-split-feature",
+        "features-shared-light-run",
+        "features-icon-label-grid",
+        "features-media-card-overlay",
+        "gallery-editorial-card-grid",
+        "gallery-square-card-run",
+        "gallery-logo-strip",
+        "gallery-mosaic-with-overflow",
+        "testimonial-centered-quote-stack",
+        "testimonial-horizontal-card-rail-carousel",
+        "pricing-two-card-row",
+        "pricing-toggle-intro-plan-cards",
+        "pricing-editorial-two-column",
+        "cta-centered-inverse-cta",
+        "cta-split-copy-cta",
+        "cta-fullbleed-scrimmed-media",
+        "cta-inline-form-pill",
+        "footer-link-column-grid",
+        "footer-inverse-closing-oversized-wordmark",
+        "footer-compact-utility-bar"
+      ],
+      "drawable": [
+        "hero-centered-stack-on-media",
+        "hero-split-media-copy",
+        "hero-fullbleed-scrimmed-overlay",
+        "about-two-column-media-copy",
+        "features-split-feature",
+        "features-shared-light-run",
+        "testimonial-centered-quote-stack",
+        "pricing-toggle-intro-plan-cards",
+        "pricing-editorial-two-column",
+        "cta-centered-inverse-cta",
+        "cta-split-copy-cta",
+        "cta-fullbleed-scrimmed-media",
+        "footer-inverse-closing-oversized-wordmark"
+      ],
+      "generic_flow": [
+        "hero-ghostword-atmospheric",
+        "about-split-editorial-grid",
+        "about-ghostword-editorial-run",
+        "features-icon-label-grid",
+        "features-media-card-overlay",
+        "gallery-editorial-card-grid",
+        "gallery-square-card-run",
+        "gallery-logo-strip",
+        "gallery-mosaic-with-overflow",
+        "testimonial-horizontal-card-rail-carousel",
+        "pricing-two-card-row",
+        "cta-inline-form-pill",
+        "footer-link-column-grid",
+        "footer-compact-utility-bar"
+      ],
+      "excluded": [],
+      "gate_pass": true,
+      "failures": [],
+      "index_html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/pages/all-standard-editorial-luxury/index.html",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    }
+  ],
+  "sampler": {
+    "page": "archetype-sampler",
+    "style": "editorial-luxury",
+    "sections": [
+      "smp-hero",
+      "smp-conversion-center",
+      "smp-conversion-left",
+      "smp-collage-ghostword",
+      "smp-collage-numerals",
+      "smp-split-infoband",
+      "smp-gallery-band",
+      "smp-cards-2",
+      "smp-cards-3",
+      "smp-interlock-right",
+      "smp-interlock-left"
+    ],
+    "gate_pass": true,
+    "failures": [],
+    "index_html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/pages/archetype-sampler/index.html",
+    "fonts": {
+      "melodrama_font_face": true,
+      "face_400": true,
+      "face_500": true,
+      "display_weight_500": true,
+      "woff2_on_disk": true
+    }
+  },
+  "anchored": {
+    "rc": 0,
+    "assembled_gate_pass": false,
+    "assembled_failures": [
+      [
+        "single-accent",
+        "accent-role elements applied=6 (<=1 expected per brand no-accent-* rule)"
+      ]
+    ],
+    "standalone_pass": 6,
+    "standalone_total": 6,
+    "index_html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/page-anchored/index.html",
+    "fonts": {
+      "melodrama_font_face": true,
+      "face_400": true,
+      "face_500": true,
+      "display_weight_500": true,
+      "woff2_on_disk": true
+    }
+  },
+  "lanes": {
+    "published": [
+      {
+        "lane": "showcase-project-radical-editorial",
+        "label": "WoodWave \u2014 all patterns \u00b7 project tier (radical-editorial)",
+        "url": "/runs/woodwave/brand/variants/showcase-project-radical-editorial/index.html",
+        "http": "200"
+      },
+      {
+        "lane": "showcase-standard-radical-editorial",
+        "label": "WoodWave \u2014 all patterns \u00b7 standard tier (radical-editorial)",
+        "url": "/runs/woodwave/brand/variants/showcase-standard-radical-editorial/index.html",
+        "http": "200"
+      },
+      {
+        "lane": "showcase-project-editorial-luxury",
+        "label": "WoodWave \u2014 all patterns \u00b7 project tier (editorial-luxury)",
+        "url": "/runs/woodwave/brand/variants/showcase-project-editorial-luxury/index.html",
+        "http": "200"
+      },
+      {
+        "lane": "showcase-standard-editorial-luxury",
+        "label": "WoodWave \u2014 all patterns \u00b7 standard tier (editorial-luxury)",
+        "url": "/runs/woodwave/brand/variants/showcase-standard-editorial-luxury/index.html",
+        "http": "200"
+      },
+      {
+        "lane": "showcase-archetype-sampler",
+        "label": "WoodWave \u2014 archetype \u00d7 treatment sampler (editorial-luxury)",
+        "url": "/runs/woodwave/brand/variants/showcase-archetype-sampler/index.html",
+        "http": "200"
+      },
+      {
+        "lane": "showcase-hybrid-off-2",
+        "label": "WoodWave \u2014 hybrid live seed off-2 (off-grid OFF (contrast))",
+        "url": "/runs/woodwave/brand/variants/showcase-hybrid-off-2/index.html",
+        "http": "200"
+      },
+      {
+        "lane": "showcase-hybrid-on-1",
+        "label": "WoodWave \u2014 hybrid live seed on-1 (off-grid ON)",
+        "url": "/runs/woodwave/brand/variants/showcase-hybrid-on-1/index.html",
+        "http": "200"
+      },
+      {
+        "lane": "showcase-hybrid-on-3",
+        "label": "WoodWave \u2014 hybrid live seed on-3 (off-grid ON)",
+        "url": "/runs/woodwave/brand/variants/showcase-hybrid-on-3/index.html",
+        "http": "200"
+      },
+      {
+        "lane": "showcase-hybrid-on-4",
+        "label": "WoodWave \u2014 hybrid live seed on-4 (off-grid ON)",
+        "url": "/runs/woodwave/brand/variants/showcase-hybrid-on-4/index.html",
+        "http": "200"
+      },
+      {
+        "lane": "showcase-hybrid-on-5",
+        "label": "WoodWave \u2014 hybrid live seed on-5 (off-grid ON)",
+        "url": "/runs/woodwave/brand/variants/showcase-hybrid-on-5/index.html",
+        "http": "200"
+      },
+      {
+        "lane": "showcase-hybrid-on-2",
+        "label": "WoodWave \u2014 hybrid live seed on-2 (off-grid ON)",
+        "url": "/runs/woodwave/brand/variants/showcase-hybrid-on-2/index.html",
+        "http": "200"
+      },
+      {
+        "lane": "showcase-hybrid-off-1",
+        "label": "WoodWave \u2014 hybrid live seed off-1 (off-grid OFF (contrast))",
+        "url": "/runs/woodwave/brand/variants/showcase-hybrid-off-1/index.html",
+        "http": "200"
+      },
+      {
+        "lane": "(built-in) hero_gallery_lanes",
+        "label": "WoodWave \u2014 anchored hero variants (live)",
+        "url": "/experiments/woodwave-hero-gallery/page-anchored/index.html",
+        "http": "200"
+      }
+    ],
+    "skipped": []
+  },
+  "shots": [
+    {
+      "lane": "showcase-project-radical-editorial",
+      "screenshot": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/shots/showcase-project-radical-editorial.png",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "lane": "showcase-standard-radical-editorial",
+      "screenshot": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/shots/showcase-standard-radical-editorial.png",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "lane": "showcase-project-editorial-luxury",
+      "screenshot": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/shots/showcase-project-editorial-luxury.png",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "lane": "showcase-standard-editorial-luxury",
+      "screenshot": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/shots/showcase-standard-editorial-luxury.png",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "lane": "showcase-archetype-sampler",
+      "screenshot": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/shots/showcase-archetype-sampler.png",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "lane": "showcase-hybrid-off-2",
+      "screenshot": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/shots/showcase-hybrid-off-2.png",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "lane": "showcase-hybrid-on-1",
+      "screenshot": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/shots/showcase-hybrid-on-1.png",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "lane": "showcase-hybrid-on-3",
+      "screenshot": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/shots/showcase-hybrid-on-3.png",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "lane": "showcase-hybrid-on-4",
+      "screenshot": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/shots/showcase-hybrid-on-4.png",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "lane": "showcase-hybrid-on-5",
+      "screenshot": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/shots/showcase-hybrid-on-5.png",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "lane": "showcase-hybrid-on-2",
+      "screenshot": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/shots/showcase-hybrid-on-2.png",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "lane": "showcase-hybrid-off-1",
+      "screenshot": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/shots/showcase-hybrid-off-1.png",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "lane": "(built-in) hero_gallery_lanes",
+      "screenshot": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/shots/hero_gallery_lanes.png",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    }
+  ],
+  "hybrid": [
+    {
+      "id": "off-2",
+      "off_grid": false,
+      "directive": "Propose AT LEAST ONE novelty:novel OFF-GRID section (seededFrom:null, stagger / overlap / bleed) that the library lacks but the brief implies. Keep the rest reuse/adapt.",
+      "ok": true,
+      "attempts": 3,
+      "wall_s": 440.5,
+      "rerendered": true,
+      "archetypes": [
+        "stack",
+        "split",
+        "stack-fullbleed",
+        "split",
+        "cards",
+        "split",
+        "split",
+        "stack",
+        "stack"
+      ],
+      "novelties": [
+        "reuse",
+        "adapt",
+        "adapt",
+        "adapt",
+        "adapt",
+        "reuse",
+        "adapt",
+        "adapt",
+        "adapt"
+      ],
+      "n_sections": 9,
+      "has_novel": false,
+      "failures": [],
+      "screenshot": true,
+      "index_html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/hybrid/off-2/index.html",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "id": "on-1",
+      "off_grid": true,
+      "directive": "Favor LIBRARY SEEDS: reuse the seeded patterns as-is (novelty:reuse) wherever they fit. A clean, confident, conventional gallery landing page.",
+      "ok": true,
+      "attempts": 3,
+      "wall_s": 427.9,
+      "rerendered": true,
+      "archetypes": [
+        "stack",
+        "split",
+        "stack-fullbleed",
+        "split",
+        "cards",
+        "split",
+        "split",
+        "stack",
+        "collage"
+      ],
+      "novelties": [
+        "reuse",
+        "reuse",
+        "reuse",
+        "adapt",
+        "adapt",
+        "reuse",
+        "adapt",
+        "adapt",
+        "reuse"
+      ],
+      "n_sections": 9,
+      "has_novel": false,
+      "failures": [],
+      "screenshot": true,
+      "index_html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/hybrid/on-1/index.html",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "id": "on-3",
+      "off_grid": true,
+      "directive": "Propose AT LEAST ONE novelty:novel OFF-GRID section (seededFrom:null, stagger / overlap / bleed) that the library lacks but the brief implies. Keep the rest reuse/adapt.",
+      "ok": true,
+      "attempts": 3,
+      "wall_s": 327.2,
+      "rerendered": true,
+      "archetypes": [
+        "stack",
+        "split",
+        "stack-fullbleed",
+        "collage",
+        "split",
+        "split",
+        "stack",
+        "stack"
+      ],
+      "novelties": [
+        "reuse",
+        "adapt",
+        "reuse",
+        "novel",
+        "reuse",
+        "adapt",
+        "adapt",
+        "reuse"
+      ],
+      "n_sections": 8,
+      "has_novel": true,
+      "failures": [],
+      "screenshot": true,
+      "index_html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/hybrid/on-3/index.html",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "id": "on-4",
+      "off_grid": true,
+      "directive": "REORDER for a different narrative rhythm and alternate surfaces (primary/panel/inverse) section-to-section; use interlock or collage for the visit info instead of a plain split.",
+      "ok": true,
+      "attempts": 3,
+      "wall_s": 330.4,
+      "rerendered": true,
+      "archetypes": [
+        "stack",
+        "split",
+        "stack-fullbleed",
+        "interlock",
+        "stack",
+        "split",
+        "collage",
+        "stack",
+        "stack"
+      ],
+      "novelties": [
+        "reuse",
+        "reuse",
+        "reuse",
+        "adapt",
+        "adapt",
+        "reuse",
+        "adapt",
+        "adapt",
+        "reuse"
+      ],
+      "n_sections": 9,
+      "has_novel": false,
+      "failures": [],
+      "screenshot": true,
+      "index_html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/hybrid/on-4/index.html",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "id": "on-5",
+      "off_grid": true,
+      "directive": "MAXIMIZE STRUCTURAL CONTRAST: make each section a DIFFERENT archetype (split, collage, cards, interlock, stack-fullbleed, stack) and include at least one novelty:novel off-grid section. Push editorial variety while staying gate-legal.",
+      "ok": true,
+      "attempts": 3,
+      "wall_s": 375.4,
+      "rerendered": true,
+      "archetypes": [
+        "stack",
+        "split",
+        "stack-fullbleed",
+        "interlock",
+        "collage",
+        "split",
+        "cards",
+        "split",
+        "stack"
+      ],
+      "novelties": [
+        "reuse",
+        "reuse",
+        "reuse",
+        "novel",
+        "novel",
+        "reuse",
+        "adapt",
+        "adapt",
+        "adapt"
+      ],
+      "n_sections": 9,
+      "has_novel": true,
+      "failures": [],
+      "screenshot": true,
+      "index_html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/hybrid/on-5/index.html",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "id": "on-2",
+      "off_grid": true,
+      "directive": "ADAPT the seeded patterns: keep their shape but tune variantKnobs and swap a slot or two (novelty:adapt) to fit the brief tighter. Still library-grounded.",
+      "ok": true,
+      "attempts": 2,
+      "wall_s": 149.3,
+      "archetypes": [
+        "stack",
+        "split",
+        "stack-fullbleed",
+        "split",
+        "stack",
+        "split",
+        "split",
+        "stack",
+        "stack"
+      ],
+      "novelties": [
+        "adapt",
+        "adapt",
+        "reuse",
+        "adapt",
+        "novel",
+        "reuse",
+        "adapt",
+        "adapt",
+        "reuse"
+      ],
+      "n_sections": 9,
+      "has_novel": true,
+      "failures": [],
+      "screenshot": true,
+      "index_html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/hybrid/on-2/index.html",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "id": "off-1",
+      "off_grid": false,
+      "directive": "Favor LIBRARY SEEDS: reuse the seeded patterns as-is (novelty:reuse) wherever they fit. A clean, confident, conventional gallery landing page.",
+      "ok": true,
+      "attempts": 1,
+      "wall_s": 134.8,
+      "archetypes": [
+        "stack",
+        "split",
+        "stack-fullbleed",
+        "split",
+        "cards",
+        "split",
+        "split",
+        "split",
+        "stack"
+      ],
+      "novelties": [
+        "reuse",
+        "adapt",
+        "adapt",
+        "adapt",
+        "adapt",
+        "reuse",
+        "adapt",
+        "adapt",
+        "adapt"
+      ],
+      "n_sections": 9,
+      "has_novel": false,
+      "failures": [],
+      "screenshot": true,
+      "index_html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-showcase/hybrid/off-1/index.html",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    }
+  ]
+}

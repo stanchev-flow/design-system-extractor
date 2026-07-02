@@ -1,0 +1,601 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "new-offering-launch",
+    "name": "New offering launch",
+    "useCasesRequested": [
+      "hero",
+      "features",
+      "gallery",
+      "testimonial",
+      "cta"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-ab/inputs/brand/brand.yaml"
+  },
+  "style": {
+    "id": "editorial-luxury"
+  },
+  "sections": [
+    {
+      "id": "hero-bookend",
+      "useCase": "hero",
+      "archetype": "split",
+      "surfaceIntent": "inverse",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Introducing"
+        },
+        {
+          "name": "title",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "colossal",
+          "width": "stretch",
+          "z": "front",
+          "copy": "Everything in one place"
+        },
+        {
+          "name": "lede",
+          "role": "subheading",
+          "contract": "subheading",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "A simpler way to get started \u2014 built for how you actually work."
+        },
+        {
+          "name": "hero-media",
+          "role": "media",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "z": "mid",
+          "asset": {
+            "src": "hero-staircase.jpg",
+            "alt": "Sunlit sculptural staircase",
+            "ratio": "portrait"
+          }
+        },
+        {
+          "name": "actions",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": [
+            {
+              "label": "Start free",
+              "variant": "arrow"
+            },
+            {
+              "label": "See how it works",
+              "variant": "slash"
+            }
+          ]
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "text-on-media",
+          "target": "display-title",
+          "over": "media",
+          "sanctioned": true
+        },
+        {
+          "kind": "overlap",
+          "pair": [
+            "display-title",
+            "media"
+          ],
+          "zOrder": [
+            "media",
+            "display-title"
+          ],
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "mediaSide": "right",
+        "align": "left"
+      }
+    },
+    {
+      "id": "divider-standard",
+      "useCase": "about",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "divider-header",
+          "role": "header",
+          "contract": "header",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "stretch",
+          "z": "front",
+          "copy": {
+            "eyebrow": "The library",
+            "heading": "Standard captured layouts"
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "align": "left"
+      }
+    },
+    {
+      "id": "value-props",
+      "useCase": "features",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "features-split-feature"
+      },
+      "slots": [
+        {
+          "name": "section-header",
+          "role": "header",
+          "contract": "header",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "Why it works",
+            "heading": "Built to move at your pace"
+          }
+        },
+        {
+          "name": "props",
+          "role": "feature-run",
+          "contract": "feature-item",
+          "textLen": "medium",
+          "sizeClass": "h3",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "heading": "Set up in minutes",
+              "text": "No manual wiring \u2014 you're live the same day."
+            },
+            {
+              "heading": "One source of truth",
+              "text": "Everyone sees the same thing, always up to date."
+            },
+            {
+              "heading": "Scales with you",
+              "text": "From your first project to your thousandth."
+            }
+          ]
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "stagger",
+          "target": "feature-run",
+          "axis": "vertical",
+          "amount": {
+            "class": "heavy"
+          }
+        }
+      ],
+      "knobs": {
+        "align": "left"
+      }
+    },
+    {
+      "id": "gallery-mosaic",
+      "useCase": "gallery",
+      "archetype": "collage",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "gallery-mosaic-with-overflow"
+      },
+      "slots": [
+        {
+          "name": "ghost",
+          "role": "ghost-word",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "width": "full-bleed",
+          "z": "back",
+          "copy": "PLACE"
+        },
+        {
+          "name": "mosaic-a",
+          "role": "media",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "landscape",
+          "z": "mid",
+          "asset": null
+        },
+        {
+          "name": "mosaic-b",
+          "role": "media",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "z": "mid",
+          "asset": null
+        },
+        {
+          "name": "mosaic-c",
+          "role": "media",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "full-bleed",
+          "mediaAspect": "landscape",
+          "z": "mid",
+          "asset": null
+        },
+        {
+          "name": "gallery-caption",
+          "role": "caption",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Everything you make, held in one calm, ordered surface."
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "ghost-word",
+          "target": "ghost-word",
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "bleed",
+          "target": "media",
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "stagger",
+          "target": "media",
+          "axis": "vertical",
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "marginal-caption",
+          "target": "caption",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "overflowEdge": "right",
+        "align": "left"
+      }
+    },
+    {
+      "id": "social-proof",
+      "useCase": "testimonial",
+      "archetype": "split",
+      "surfaceIntent": "panel",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "features-split-feature"
+      },
+      "slots": [
+        {
+          "name": "proof-stat",
+          "role": "stat",
+          "contract": "stat",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "value": "10,000+",
+            "label": "Trusted by teams"
+          }
+        },
+        {
+          "name": "proof-quote",
+          "role": "quote",
+          "contract": "quote",
+          "textLen": "medium",
+          "sizeClass": "h3",
+          "width": "stretch",
+          "z": "front",
+          "copy": {
+            "quote": "We replaced three tools in a week and never looked back.",
+            "attribution": "Operations lead, mid-market team"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "overlap",
+          "pair": [
+            "stat",
+            "quote"
+          ],
+          "zOrder": [
+            "stat",
+            "quote"
+          ],
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "mediaSide": "left",
+        "align": "left"
+      }
+    },
+    {
+      "id": "cta-close",
+      "useCase": "cta",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "cta-header",
+          "role": "header",
+          "contract": "header",
+          "textLen": "short",
+          "sizeClass": "hero",
+          "width": "stretch",
+          "z": "front",
+          "copy": {
+            "eyebrow": "Get started",
+            "heading": "Everything in one place",
+            "subheading": "A simpler way to get started \u2014 live the same day."
+          }
+        },
+        {
+          "name": "cta-actions",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": [
+            {
+              "label": "Start free",
+              "variant": "arrow"
+            },
+            {
+              "label": "See how it works",
+              "variant": "slash"
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "align": "center"
+      }
+    },
+    {
+      "id": "divider-expanded",
+      "useCase": "about",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "divider-header",
+          "role": "header",
+          "contract": "header",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "stretch",
+          "z": "front",
+          "copy": {
+            "eyebrow": "Beyond the library",
+            "heading": "Expanded (off-grid) layouts"
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "align": "left"
+      }
+    },
+    {
+      "id": "novel-truth-interlock",
+      "useCase": "features",
+      "archetype": "interlock",
+      "surfaceIntent": "primary",
+      "novelty": "novel",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "statement",
+          "role": "statement",
+          "contract": "heading",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "copy": "One source of truth \u2014 the same picture, for everyone, always current."
+        },
+        {
+          "name": "statement-body",
+          "role": "paragraph",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": "No stale exports, no version guessing. The instant your team updates something, everyone else is already looking at it."
+        },
+        {
+          "name": "inset-media",
+          "role": "media",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "z": "mid",
+          "asset": null
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "float-wrap",
+          "target": "paragraph",
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "inset",
+          "target": "media",
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "overlap",
+          "pair": [
+            "statement",
+            "media"
+          ],
+          "zOrder": [
+            "media",
+            "statement"
+          ],
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "align": "left"
+      }
+    },
+    {
+      "id": "novel-scale-bleed",
+      "useCase": "features",
+      "archetype": "collage",
+      "surfaceIntent": "primary",
+      "novelty": "novel",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "scale-title",
+          "role": "statement",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "colossal",
+          "width": "stretch",
+          "z": "front",
+          "copy": "Scales with you"
+        },
+        {
+          "name": "scale-body",
+          "role": "paragraph",
+          "contract": "paragraph",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "From your first project to your thousandth \u2014 the same simple surface, however far you take it."
+        },
+        {
+          "name": "scale-media",
+          "role": "media",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "full-bleed",
+          "mediaAspect": "landscape",
+          "z": "mid",
+          "asset": null
+        },
+        {
+          "name": "scale-caption",
+          "role": "caption",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "One room, or a whole gallery \u2014 it holds the same."
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "media",
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "stagger",
+          "target": "statement",
+          "axis": "horizontal",
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "marginal-caption",
+          "target": "caption",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "align": "left"
+      }
+    }
+  ],
+  "rationale": "SHOWCASE (Part B): Act 1 reuses/adapts the captured WoodWave patterns; Act 2 expands the library with gate-green novel off-grid sections (offGridExpansion=true). WoodWave has no logo-wall or feature-grid, so social proof and value-props map onto editorial vocabulary. ACT 1 reuses/adapts the three seeded captured patterns: the inverse hero bookend (the ONLY accent + sanctioned display-title-over-media with overlap), a three-module value_props run adapted from features-split-feature into an open staggered stack (no boxed cards on cream), the gallery-mosaic-with-overflow with ghost-word + bleed + stagger + marginal-caption, and a stat/quote social-proof split on panel. ACT 2 expands the library with two novel off-grid sections the seed set lacks: an interlock statement float-wrapping the inset overlap-vase image, and a colossal 'Scales with you' collage with a heavy full-bleed image and staggered title. The page ends on a centered conversion stack. Exactly one inverse accent hero; every other section is primary/panel and accent-free; all actions are typographic arrow/slash links (no buttons), radius 0, no shadows, no gradients, captions in the margin."
+}

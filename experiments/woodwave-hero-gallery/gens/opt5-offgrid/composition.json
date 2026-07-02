@@ -1,0 +1,183 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "woodwave-hero-overlap",
+    "name": "WoodWave opening bookend \u2014 off-grid overlap",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-ab/inputs/brand/brand.yaml"
+  },
+  "style": {
+    "id": "editorial-luxury"
+  },
+  "sections": [
+    {
+      "id": "hero-overlap-bookend",
+      "useCase": "hero",
+      "archetype": "collage",
+      "surfaceIntent": "inverse",
+      "novelty": "novel",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "ghost",
+          "role": "ghost-word",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "width": "full-bleed",
+          "z": "back",
+          "copy": "SEE"
+        },
+        {
+          "name": "hero-plate",
+          "role": "media",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "hero",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "z": "mid",
+          "asset": {
+            "src": "hero-staircase.jpg",
+            "alt": "WoodWave gallery staircase, tonal architectural photograph",
+            "ratio": "portrait"
+          }
+        },
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "WoodWave Gallery"
+        },
+        {
+          "name": "headline",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "colossal",
+          "width": "stretch",
+          "z": "front",
+          "copy": "Everything in one place"
+        },
+        {
+          "name": "subhead",
+          "role": "subheading",
+          "contract": "subheading",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": "A simpler way to see the collection \u2014 built for how you actually look."
+        },
+        {
+          "name": "actions",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": [
+            {
+              "label": "Start free",
+              "variant": "arrow"
+            },
+            {
+              "label": "See how it works",
+              "variant": "slash"
+            }
+          ]
+        },
+        {
+          "name": "plate-caption",
+          "role": "caption",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "The Ascent Hall, WoodWave permanent collection"
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "ghost-word",
+          "target": "ghost-word",
+          "amount": {
+            "class": "heavy"
+          },
+          "axis": "horizontal"
+        },
+        {
+          "kind": "text-on-media",
+          "target": "display-title",
+          "over": "media",
+          "pair": [
+            "display-title",
+            "media"
+          ],
+          "zOrder": [
+            "ghost-word",
+            "media",
+            "display-title"
+          ],
+          "amount": {
+            "class": "medium"
+          },
+          "sanctioned": true
+        },
+        {
+          "kind": "overlap",
+          "target": "display-title",
+          "pair": [
+            "display-title",
+            "media"
+          ],
+          "zOrder": [
+            "media",
+            "display-title"
+          ],
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "bleed",
+          "target": "media",
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "stagger",
+          "target": "subheading",
+          "amount": {
+            "class": "medium"
+          },
+          "axis": "vertical"
+        },
+        {
+          "kind": "marginal-caption",
+          "target": "caption",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "align": "left",
+        "mediaSide": "right",
+        "overflowEdge": "right"
+      }
+    }
+  ],
+  "rationale": "A single novel hero bookend on the sanctioned inverse surface using the collage archetype for the most adventurous off-grid layering. A colossal ghost word 'SEE' sits behind the frame; the portrait staircase plate bleeds off the right edge; the didone display title overlaps the plate as the sanctioned text-on-media, staggered against the eyebrow/subhead run to break the baseline. The single brand accent is carried by ONE element only \u2014 the display-title (repaired from two accent elements): the eyebrow, links, and caption are neutral on-inverse text, and the CTAs are typographic arrow/slash links (no buttons). No radius, shadows, gradients, hairlines, or boxed inputs. Only the two real brand assets are referenced. One closing footer was omitted to keep the impression singular and monumental."
+}

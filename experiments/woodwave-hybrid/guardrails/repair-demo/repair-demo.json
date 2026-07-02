@@ -1,0 +1,42 @@
+{
+  "prefilter_neverdo_hits": [
+    [
+      "adversary",
+      "no-text-on-photos"
+    ]
+  ],
+  "prefilter_offgrid_hits": [
+    [
+      "adversary",
+      "novelty:'novel' is locked (offGridExpansion=false) \u2014 reuse/adapt a captured pattern instead"
+    ],
+    [
+      "adversary",
+      "off-grid treatment(s) ['stagger'] locked (offGridExpansion=false) \u2014 remove them / keep the section aligned to the captured pattern"
+    ]
+  ],
+  "repair_note": "# REPAIR \u2014 your previous composition FAILED these checks. Fix ONLY these,\n# keep everything that passed, and re-emit ONE corrected composition.v1 object.\n\n## off-grid EXPANSION capability violations (HARD \u2014 this style is offGridExpansion=false, reuse/adapt only):\n- section `adversary`: novelty:'novel' is locked (offGridExpansion=false) \u2014 reuse/adapt a captured pattern instead\n- section `adversary`: off-grid treatment(s) ['stagger'] locked (offGridExpansion=false) \u2014 remove them / keep the section aligned to the captured pattern\n\n## brand neverDo violations (HARD):\n- section `adversary` trips neverDo `no-text-on-photos` \u2014 remove/replace that device",
+  "fix": {
+    "attempts": 2,
+    "stages": [
+      "neverdo-fail",
+      "gated"
+    ],
+    "shipped_ok": true
+  },
+  "reject": {
+    "attempts": 1,
+    "stages": [
+      "neverdo-fail"
+    ],
+    "shipped_ok": false,
+    "final_offgrid_hits": [],
+    "final_neverdo_hits": [
+      [
+        "adversary",
+        "no-text-on-photos"
+      ]
+    ]
+  },
+  "verdict": "PASS \u2014 loop caught the violation, FIXED on a corrected retry, and REJECTED it when no retry remained"
+}

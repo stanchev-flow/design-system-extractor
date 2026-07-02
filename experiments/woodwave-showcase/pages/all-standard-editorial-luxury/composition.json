@@ -1,0 +1,2336 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "woodwave-standard-patterns-editorial-luxury",
+    "useCasesRequested": [
+      "hero",
+      "about",
+      "features",
+      "gallery",
+      "testimonial",
+      "pricing",
+      "cta",
+      "footer"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/woodwave/brand/brand.yaml"
+  },
+  "style": {
+    "id": "editorial-luxury"
+  },
+  "sections": [
+    {
+      "id": "hero-original",
+      "useCase": "hero",
+      "archetype": "stack",
+      "surfaceIntent": "inverse",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-display-over-staggered-media"
+      },
+      "slots": [
+        {
+          "name": "wordmark",
+          "role": "nav wordmark",
+          "contract": "logo",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front"
+        },
+        {
+          "name": "title",
+          "role": "display title over media",
+          "contract": "heading",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "heading": "WOODWAVE GALLERY"
+          }
+        },
+        {
+          "name": "hero-media",
+          "role": "hero photography",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "z": "mid",
+          "mediaAspect": "landscape",
+          "asset": null
+        },
+        {
+          "name": "overlap-media",
+          "role": "overlap photography",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "z": "front",
+          "mediaAspect": "portrait",
+          "asset": null
+        },
+        {
+          "name": "subhead",
+          "role": "supporting lede",
+          "contract": "paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "text": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade."
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "overlap",
+          "pair": [
+            "title",
+            "hero-media"
+          ],
+          "zOrder": [
+            "hero-media",
+            "overlap-media",
+            "title"
+          ],
+          "amount": {
+            "class": "heavy"
+          },
+          "sanctioned": true
+        },
+        {
+          "kind": "overlap",
+          "pair": [
+            "overlap-media",
+            "hero-media"
+          ],
+          "zOrder": [
+            "hero-media",
+            "overlap-media"
+          ],
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "stagger",
+          "target": "overlap-media",
+          "axis": "vertical",
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "titleOverlap": "heavy",
+        "overlapMediaSide": "right"
+      }
+    },
+    {
+      "id": "hero-centered-stack-on-media",
+      "useCase": "hero",
+      "archetype": "stack-fullbleed",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-centered-stack-on-media"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "overline",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "eyebrow",
+          "copy": {
+            "text": "Est. 2019 \u2014 Portland, Oregon"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "display-title",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "Est. 2019 \u2014 Portland, Oregon",
+            "heading": "WOODWAVE GALLERY"
+          }
+        },
+        {
+          "name": "body",
+          "role": "lede",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade."
+          }
+        },
+        {
+          "name": "actions",
+          "role": "cta-group",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "Buy Tickets"
+          }
+        },
+        {
+          "name": "media",
+          "role": "hero-photo",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "full-bleed",
+          "z": "back",
+          "contract": "image",
+          "mediaAspect": "landscape",
+          "asset": null
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "media",
+          "edge": "all"
+        }
+      ],
+      "knobs": {
+        "scrim": "tint",
+        "align": "center"
+      }
+    },
+    {
+      "id": "hero-split-media-copy",
+      "useCase": "hero",
+      "archetype": "split",
+      "surfaceIntent": "any",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "overline",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "eyebrow",
+          "copy": {
+            "text": "Est. 2019 \u2014 Portland, Oregon"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "display-title",
+          "textLen": "medium",
+          "sizeClass": "hero",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "Est. 2019 \u2014 Portland, Oregon",
+            "heading": "WOODWAVE GALLERY"
+          }
+        },
+        {
+          "name": "body",
+          "role": "lede",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade."
+          }
+        },
+        {
+          "name": "actions",
+          "role": "cta-group",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "Buy Tickets"
+          }
+        },
+        {
+          "name": "media",
+          "role": "hero-photo",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "z": "mid",
+          "contract": "image",
+          "mediaAspect": "portrait",
+          "asset": null
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "overlap",
+          "pair": [
+            "heading",
+            "media"
+          ],
+          "zOrder": [
+            "media",
+            "heading"
+          ],
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "mediaSide": "right"
+      }
+    },
+    {
+      "id": "hero-ghostword-atmospheric",
+      "useCase": "hero",
+      "archetype": "overlay",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-ghostword-atmospheric"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "overline",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "eyebrow",
+          "copy": {
+            "text": "Est. 2019 \u2014 Portland, Oregon"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "display-title",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "Est. 2019 \u2014 Portland, Oregon",
+            "heading": "WOODWAVE GALLERY"
+          }
+        },
+        {
+          "name": "body",
+          "role": "lede",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade."
+          }
+        },
+        {
+          "name": "media",
+          "role": "hero-photo",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "z": "mid",
+          "contract": "image",
+          "mediaAspect": "landscape",
+          "asset": null
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "ghost-word",
+          "target": "ghostword",
+          "anchor": "straddle-media",
+          "bleed": "partial"
+        },
+        {
+          "kind": "overlap",
+          "pair": [
+            "ghostword",
+            "media"
+          ],
+          "zOrder": [
+            "ghostword",
+            "media"
+          ],
+          "amount": {
+            "class": "heavy"
+          }
+        }
+      ],
+      "knobs": {
+        "ghostAnchor": "straddle-media"
+      }
+    },
+    {
+      "id": "hero-fullbleed-scrimmed-overlay",
+      "useCase": "hero",
+      "archetype": "stack-fullbleed",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-fullbleed-scrimmed-overlay"
+      },
+      "slots": [
+        {
+          "name": "utility",
+          "role": "nav-overlay",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "stretch",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "Central nave"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "display-title",
+          "textLen": "medium",
+          "sizeClass": "hero",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "Est. 2019 \u2014 Portland, Oregon",
+            "heading": "WOODWAVE GALLERY"
+          }
+        },
+        {
+          "name": "body",
+          "role": "lede",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade."
+          }
+        },
+        {
+          "name": "actions",
+          "role": "cta-group",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "Buy Tickets"
+          }
+        },
+        {
+          "name": "media",
+          "role": "hero-photo",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "full-bleed",
+          "z": "back",
+          "contract": "image",
+          "mediaAspect": "landscape",
+          "asset": null
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "media",
+          "edge": "all"
+        },
+        {
+          "kind": "overlap",
+          "pair": [
+            "utility",
+            "media"
+          ],
+          "zOrder": [
+            "media",
+            "utility"
+          ],
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "copyAnchor": "bottom-left"
+      }
+    },
+    {
+      "id": "about-two-column-media-copy",
+      "useCase": "about",
+      "archetype": "split",
+      "surfaceIntent": "panel",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "about-two-column-media-copy"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "section-title",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "What we hold",
+            "heading": "Space as\na muse"
+          }
+        },
+        {
+          "name": "body",
+          "role": "body-copy",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "We collect work that listens to its room. From the late twentieth century to the present day, the holdings favour pieces shaped by material, scale and place \u2014 art that stands differently here than anywhere else."
+          }
+        },
+        {
+          "name": "action",
+          "role": "cta",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "The collection"
+          }
+        },
+        {
+          "name": "media",
+          "role": "showcase-image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "z": "mid",
+          "contract": "image",
+          "mediaAspect": "portrait",
+          "asset": null
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "stagger",
+          "target": "body",
+          "axis": "vertical",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "mediaSide": "left"
+      }
+    },
+    {
+      "id": "about-split-editorial-grid",
+      "useCase": "about",
+      "archetype": "grid",
+      "surfaceIntent": "any",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "about-split-editorial-grid"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "overline",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "eyebrow",
+          "copy": {
+            "text": "What we hold"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "section-title",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "What we hold",
+            "heading": "Space as\na muse"
+          }
+        },
+        {
+          "name": "body",
+          "role": "body-copy",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "We collect work that listens to its room. From the late twentieth century to the present day, the holdings favour pieces shaped by material, scale and place \u2014 art that stands differently here than anywhere else."
+          }
+        },
+        {
+          "name": "cards",
+          "role": "info-card",
+          "textLen": "long",
+          "sizeClass": "caption",
+          "width": "stretch",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "We collect work that listens to its room. From the late twentieth century to the present day, the holdings favour pieces shaped by material, scale and place \u2014 art that stands differently here than anywhere else."
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "stagger",
+          "target": "cards",
+          "axis": "horizontal",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "columns": "3"
+      }
+    },
+    {
+      "id": "about-ghostword-editorial-run",
+      "useCase": "about",
+      "archetype": "overlay",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "about-ghostword-editorial-run"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "section-title",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "What we hold",
+            "heading": "Space as\na muse"
+          }
+        },
+        {
+          "name": "body",
+          "role": "body-copy",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "We collect work that listens to its room. From the late twentieth century to the present day, the holdings favour pieces shaped by material, scale and place \u2014 art that stands differently here than anywhere else."
+          }
+        },
+        {
+          "name": "media",
+          "role": "blended-graphic",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "full-bleed",
+          "z": "back",
+          "contract": "image",
+          "mediaAspect": "landscape",
+          "asset": null
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "ghost-word",
+          "target": "ghostword",
+          "anchor": "straddle-media",
+          "bleed": "partial"
+        },
+        {
+          "kind": "overlap",
+          "pair": [
+            "ghostword",
+            "heading"
+          ],
+          "zOrder": [
+            "ghostword",
+            "heading"
+          ],
+          "amount": {
+            "class": "heavy"
+          }
+        }
+      ],
+      "knobs": {
+        "ghostAnchor": "straddle-media"
+      }
+    },
+    {
+      "id": "features-split-feature",
+      "useCase": "features",
+      "archetype": "split",
+      "surfaceIntent": "any",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "features-split-feature"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "overline",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "eyebrow",
+          "copy": {
+            "text": "Plan your visit"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "section-title",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "Plan your visit",
+            "heading": "Come stand in the hall"
+          }
+        },
+        {
+          "name": "body",
+          "role": "body-copy",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": [
+            {
+              "label": "Adults",
+              "value": "12 \u20ac"
+            },
+            {
+              "label": "Reduced",
+              "value": "8 \u20ac"
+            },
+            {
+              "label": "Under 18",
+              "value": "Free"
+            }
+          ]
+        },
+        {
+          "name": "actions",
+          "role": "cta-group",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "Buy tickets"
+          }
+        },
+        {
+          "name": "media",
+          "role": "product-shot",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "z": "mid",
+          "contract": "image",
+          "mediaAspect": "landscape",
+          "asset": null
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "overlap",
+          "pair": [
+            "heading",
+            "media"
+          ],
+          "zOrder": [
+            "media",
+            "heading"
+          ],
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "mediaSide": "right"
+      }
+    },
+    {
+      "id": "features-shared-light-run",
+      "useCase": "features",
+      "archetype": "stack",
+      "surfaceIntent": "panel",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "features-shared-light-run"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "overline",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "eyebrow",
+          "copy": {
+            "text": "Plan your visit"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "section-title",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "Plan your visit",
+            "heading": "Come stand in the hall"
+          }
+        },
+        {
+          "name": "body",
+          "role": "body-copy",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "We collect work that listens to its room. From the late twentieth century to the present day, the holdings favour pieces shaped by material, scale and place \u2014 art that stands differently here than anywhere else."
+          }
+        },
+        {
+          "name": "label",
+          "role": "vertical-rail-label",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "mid",
+          "contract": "caption",
+          "copy": {
+            "text": "Harbour quarter"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "stagger",
+          "target": "body",
+          "axis": "vertical",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "railSide": "left"
+      }
+    },
+    {
+      "id": "features-icon-label-grid",
+      "useCase": "features",
+      "archetype": "grid",
+      "surfaceIntent": "any",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "features-icon-label-grid"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "section-title",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "Plan your visit",
+            "heading": "Come stand in the hall"
+          }
+        },
+        {
+          "name": "icon",
+          "role": "feature-icon",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "image",
+          "mediaAspect": "square",
+          "asset": null
+        },
+        {
+          "name": "label",
+          "role": "feature-label",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "Harbour quarter"
+          }
+        },
+        {
+          "name": "body",
+          "role": "feature-body",
+          "textLen": "long",
+          "sizeClass": "caption",
+          "width": "stretch",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "We collect work that listens to its room. From the late twentieth century to the present day, the holdings favour pieces shaped by material, scale and place \u2014 art that stands differently here than anywhere else."
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "stagger",
+          "target": "body",
+          "axis": "horizontal",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "columns": "3"
+      }
+    },
+    {
+      "id": "features-media-card-overlay",
+      "useCase": "features",
+      "archetype": "bento",
+      "surfaceIntent": "any",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "features-media-card-overlay"
+      },
+      "slots": [
+        {
+          "name": "badge",
+          "role": "badge",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "Harbour quarter"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "card-title",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "Plan your visit",
+            "heading": "Come stand in the hall"
+          }
+        },
+        {
+          "name": "body",
+          "role": "card-body",
+          "textLen": "long",
+          "sizeClass": "caption",
+          "width": "stretch",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "We collect work that listens to its room. From the late twentieth century to the present day, the holdings favour pieces shaped by material, scale and place \u2014 art that stands differently here than anywhere else."
+          }
+        },
+        {
+          "name": "media",
+          "role": "card-media",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "z": "mid",
+          "contract": "image",
+          "mediaAspect": "portrait",
+          "asset": null
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "ghost-word",
+          "target": "ghostword",
+          "anchor": "behind-media",
+          "bleed": "partial"
+        },
+        {
+          "kind": "overlap",
+          "pair": [
+            "heading",
+            "media"
+          ],
+          "zOrder": [
+            "media",
+            "heading"
+          ],
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "badgePos": "top-left"
+      }
+    },
+    {
+      "id": "gallery-editorial-card-grid",
+      "useCase": "gallery",
+      "archetype": "grid",
+      "surfaceIntent": "panel",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "gallery-editorial-card-grid"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "section-intro",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "Inside the hall",
+            "heading": "Space as\na muse"
+          }
+        },
+        {
+          "name": "support",
+          "role": "support-copy",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "We collect work that listens to its room. From the late twentieth century to the present day, the holdings favour pieces shaped by material, scale and place \u2014 art that stands differently here than anywhere else."
+          }
+        },
+        {
+          "name": "media",
+          "role": "card-media",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "z": "mid",
+          "contract": "image",
+          "mediaAspect": "landscape",
+          "asset": null
+        },
+        {
+          "name": "caption",
+          "role": "card-caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "stretch",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "Central nave"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "stagger",
+          "target": "media",
+          "axis": "vertical",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "columns": "3"
+      }
+    },
+    {
+      "id": "gallery-square-card-run",
+      "useCase": "gallery",
+      "archetype": "row",
+      "surfaceIntent": "any",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "gallery-square-card-run"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "section-intro",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "Inside the hall",
+            "heading": "Space as\na muse"
+          }
+        },
+        {
+          "name": "media",
+          "role": "square-card",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "z": "mid",
+          "contract": "image",
+          "mediaAspect": "square",
+          "asset": null
+        },
+        {
+          "name": "caption",
+          "role": "marginal-caption",
+          "textLen": "long",
+          "sizeClass": "caption",
+          "width": "stretch",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "Central nave"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "marginal-caption",
+          "target": "caption",
+          "side": "right"
+        },
+        {
+          "kind": "stagger",
+          "target": "media",
+          "axis": "horizontal",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "captionSide": "right"
+      }
+    },
+    {
+      "id": "gallery-logo-strip",
+      "useCase": "gallery",
+      "archetype": "band",
+      "surfaceIntent": "panel",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "gallery-logo-strip"
+      },
+      "slots": [
+        {
+          "name": "label",
+          "role": "strip-label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "Central nave"
+          }
+        },
+        {
+          "name": "logos",
+          "role": "logo-row",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "contract": "image",
+          "mediaAspect": "freeform",
+          "asset": null
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "logos",
+          "edge": "all"
+        }
+      ],
+      "knobs": {
+        "logoCount": "5"
+      }
+    },
+    {
+      "id": "gallery-mosaic-with-overflow",
+      "useCase": "gallery",
+      "archetype": "bento",
+      "surfaceIntent": "any",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "gallery-mosaic-with-overflow"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "section-intro",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "Inside the hall",
+            "heading": "Space as\na muse"
+          }
+        },
+        {
+          "name": "media",
+          "role": "mosaic-frame",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "z": "mid",
+          "contract": "image",
+          "mediaAspect": "freeform",
+          "asset": null
+        },
+        {
+          "name": "caption",
+          "role": "frame-caption",
+          "textLen": "long",
+          "sizeClass": "caption",
+          "width": "stretch",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "Central nave"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "ghost-word",
+          "target": "ghostword",
+          "anchor": "behind-media",
+          "bleed": "partial"
+        },
+        {
+          "kind": "bleed",
+          "target": "media",
+          "edge": "right"
+        },
+        {
+          "kind": "stagger",
+          "target": "media",
+          "axis": "vertical",
+          "amount": {
+            "class": "heavy"
+          }
+        }
+      ],
+      "knobs": {
+        "overflowEdge": "right"
+      }
+    },
+    {
+      "id": "testimonial-centered-quote-stack",
+      "useCase": "testimonial",
+      "archetype": "stack",
+      "surfaceIntent": "panel",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "testimonial-centered-quote-stack"
+      },
+      "slots": [
+        {
+          "name": "marker",
+          "role": "decorative-marker",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "image",
+          "mediaAspect": "square",
+          "asset": null
+        },
+        {
+          "name": "quote",
+          "role": "quote",
+          "textLen": "long",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "From the curator",
+            "heading": "\u201cA room this\nhonest forgives\nnothing\u201d"
+          }
+        },
+        {
+          "name": "attribution",
+          "role": "metadata",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "Elin Marsh"
+          }
+        },
+        {
+          "name": "controls",
+          "role": "carousel-controls",
+          "textLen": "none",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "Elin Marsh, curator since 2011, on hanging work in the timber hall. Every placement is tested against the light at three hours of the day before it stays."
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "overlap",
+          "pair": [
+            "marker",
+            "quote"
+          ],
+          "zOrder": [
+            "marker",
+            "quote"
+          ],
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "markerStyle": "glyph"
+      }
+    },
+    {
+      "id": "testimonial-horizontal-card-rail-carousel",
+      "useCase": "testimonial",
+      "archetype": "row",
+      "surfaceIntent": "any",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "testimonial-horizontal-card-rail-carousel"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "section-intro",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "From the curator",
+            "heading": "\u201cA room this\nhonest forgives\nnothing\u201d"
+          }
+        },
+        {
+          "name": "rating",
+          "role": "rating",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "fixed",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "Elin Marsh, curator since 2011, on hanging work in the timber hall. Every placement is tested against the light at three hours of the day before it stays."
+          }
+        },
+        {
+          "name": "quote",
+          "role": "card-quote",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "fixed",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "From the curator",
+            "heading": "\u201cA room this\nhonest forgives\nnothing\u201d"
+          }
+        },
+        {
+          "name": "attribution",
+          "role": "card-metadata",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "fixed",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "Elin Marsh"
+          }
+        },
+        {
+          "name": "progress",
+          "role": "progress-rule",
+          "textLen": "none",
+          "sizeClass": "caption",
+          "width": "stretch",
+          "z": "mid",
+          "contract": "paragraph",
+          "copy": {
+            "text": "Elin Marsh, curator since 2011, on hanging work in the timber hall. Every placement is tested against the light at three hours of the day before it stays."
+          }
+        },
+        {
+          "name": "controls",
+          "role": "carousel-controls",
+          "textLen": "none",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "Elin Marsh, curator since 2011, on hanging work in the timber hall. Every placement is tested against the light at three hours of the day before it stays."
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "stagger",
+          "target": "quote",
+          "axis": "horizontal",
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "bleed",
+          "target": "quote",
+          "edge": "right"
+        }
+      ],
+      "knobs": {
+        "cardsInView": "2"
+      }
+    },
+    {
+      "id": "pricing-two-card-row",
+      "useCase": "pricing",
+      "archetype": "row",
+      "surfaceIntent": "any",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "pricing-two-card-row"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "section-title",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "Tickets",
+            "heading": "Come stand\nwith the work"
+          }
+        },
+        {
+          "name": "planLabel",
+          "role": "plan-label",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "Harbour quarter"
+          }
+        },
+        {
+          "name": "price",
+          "role": "price",
+          "textLen": "word",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "Included with general admission \u2014 no separate booking for the show itself."
+          }
+        },
+        {
+          "name": "features",
+          "role": "feature-list",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": [
+            {
+              "label": "General",
+              "value": "14 \u20ac"
+            },
+            {
+              "label": "Concession",
+              "value": "9 \u20ac"
+            },
+            {
+              "label": "Under 18",
+              "value": "Free"
+            },
+            {
+              "label": "Members",
+              "value": "Free"
+            },
+            {
+              "label": "Preview evening",
+              "value": "22 \u20ac"
+            }
+          ]
+        },
+        {
+          "name": "action",
+          "role": "cta",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "Buy tickets"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "overlap",
+          "pair": [
+            "price",
+            "planLabel"
+          ],
+          "zOrder": [
+            "planLabel",
+            "price"
+          ],
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "elevatedCard": "second"
+      }
+    },
+    {
+      "id": "pricing-toggle-intro-plan-cards",
+      "useCase": "pricing",
+      "archetype": "stack",
+      "surfaceIntent": "any",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "pricing-toggle-intro-plan-cards"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "section-title",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "Tickets",
+            "heading": "Come stand\nwith the work"
+          }
+        },
+        {
+          "name": "support",
+          "role": "support-copy",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "Included with general admission \u2014 no separate booking for the show itself."
+          }
+        },
+        {
+          "name": "toggle",
+          "role": "segmented-control",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "Included with general admission \u2014 no separate booking for the show itself."
+          }
+        },
+        {
+          "name": "cards",
+          "role": "plan-card-row",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "Included with general admission \u2014 no separate booking for the show itself."
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "stagger",
+          "target": "cards",
+          "axis": "horizontal",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "toggleSegments": "2"
+      }
+    },
+    {
+      "id": "pricing-editorial-two-column",
+      "useCase": "pricing",
+      "archetype": "split",
+      "surfaceIntent": "panel",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "pricing-editorial-two-column"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "section-title",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "Tickets",
+            "heading": "Come stand\nwith the work"
+          }
+        },
+        {
+          "name": "body",
+          "role": "body-copy",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": [
+            {
+              "label": "General",
+              "value": "14 \u20ac"
+            },
+            {
+              "label": "Concession",
+              "value": "9 \u20ac"
+            },
+            {
+              "label": "Under 18",
+              "value": "Free"
+            },
+            {
+              "label": "Members",
+              "value": "Free"
+            },
+            {
+              "label": "Preview evening",
+              "value": "22 \u20ac"
+            }
+          ]
+        },
+        {
+          "name": "offer",
+          "role": "offer-card",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": [
+            {
+              "label": "General",
+              "value": "14 \u20ac"
+            },
+            {
+              "label": "Concession",
+              "value": "9 \u20ac"
+            },
+            {
+              "label": "Under 18",
+              "value": "Free"
+            },
+            {
+              "label": "Members",
+              "value": "Free"
+            },
+            {
+              "label": "Preview evening",
+              "value": "22 \u20ac"
+            }
+          ]
+        },
+        {
+          "name": "action",
+          "role": "cta",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "Buy tickets"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "offer",
+          "edge": "right"
+        }
+      ],
+      "knobs": {
+        "offerSide": "right"
+      }
+    },
+    {
+      "id": "cta-centered-inverse-cta",
+      "useCase": "cta",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "cta-centered-inverse-cta"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "cta-title",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "Subscribe"
+          }
+        },
+        {
+          "name": "support",
+          "role": "support-copy",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "One letter a season \u2014 new works, new hours, nothing else."
+          }
+        },
+        {
+          "name": "actions",
+          "role": "cta-group",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "Subscribe"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "overlap",
+          "pair": [
+            "heading",
+            "support"
+          ],
+          "zOrder": [
+            "support",
+            "heading"
+          ],
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "buttonCount": "2"
+      }
+    },
+    {
+      "id": "cta-split-copy-cta",
+      "useCase": "cta",
+      "archetype": "split",
+      "surfaceIntent": "any",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "cta-split-copy-cta"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "cta-title",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "Subscribe"
+          }
+        },
+        {
+          "name": "support",
+          "role": "support-copy",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "One letter a season \u2014 new works, new hours, nothing else."
+          }
+        },
+        {
+          "name": "actions",
+          "role": "cta-group",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "Subscribe"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "overlap",
+          "pair": [
+            "heading",
+            "actions"
+          ],
+          "zOrder": [
+            "heading",
+            "actions"
+          ],
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "actionSide": "right"
+      }
+    },
+    {
+      "id": "cta-fullbleed-scrimmed-media",
+      "useCase": "cta",
+      "archetype": "stack-fullbleed",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "cta-fullbleed-scrimmed-media"
+      },
+      "slots": [
+        {
+          "name": "ghostword",
+          "role": "watermark",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "width": "full-bleed",
+          "z": "back",
+          "contract": "heading",
+          "copy": {
+            "text": ""
+          }
+        },
+        {
+          "name": "heading",
+          "role": "cta-title",
+          "textLen": "short",
+          "sizeClass": "hero",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "Subscribe"
+          }
+        },
+        {
+          "name": "support",
+          "role": "support-copy",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "One letter a season \u2014 new works, new hours, nothing else."
+          }
+        },
+        {
+          "name": "actions",
+          "role": "cta-group",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "Subscribe"
+          }
+        },
+        {
+          "name": "media",
+          "role": "cta-media",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "full-bleed",
+          "z": "back",
+          "contract": "image",
+          "mediaAspect": "landscape",
+          "asset": null
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "media",
+          "edge": "all"
+        },
+        {
+          "kind": "ghost-word",
+          "target": "ghostword",
+          "anchor": "full-bleed",
+          "bleed": "full"
+        }
+      ],
+      "knobs": {
+        "scrim": "gradient"
+      }
+    },
+    {
+      "id": "cta-inline-form-pill",
+      "useCase": "cta",
+      "archetype": "row",
+      "surfaceIntent": "any",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "cta-inline-form-pill"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "cta-title",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "Subscribe"
+          }
+        },
+        {
+          "name": "helper",
+          "role": "helper-copy",
+          "textLen": "long",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "One letter a season \u2014 new works, new hours, nothing else."
+          }
+        },
+        {
+          "name": "input",
+          "role": "form-input",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "contract": "form",
+          "copy": {
+            "placeholder": "Your email",
+            "submit": "Subscribe"
+          }
+        },
+        {
+          "name": "submit",
+          "role": "submit-pill",
+          "textLen": "word",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "One letter a season \u2014 new works, new hours, nothing else."
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "overlap",
+          "pair": [
+            "input",
+            "submit"
+          ],
+          "zOrder": [
+            "input",
+            "submit"
+          ],
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "submitSide": "inline"
+      }
+    },
+    {
+      "id": "footer-link-column-grid",
+      "useCase": "footer",
+      "archetype": "grid",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "footer-link-column-grid"
+      },
+      "slots": [
+        {
+          "name": "brand",
+          "role": "brand-group",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "image",
+          "mediaAspect": "freeform",
+          "asset": null
+        },
+        {
+          "name": "blurb",
+          "role": "brand-blurb",
+          "textLen": "long",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade."
+          }
+        },
+        {
+          "name": "colHeading",
+          "role": "column-heading",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "stretch",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "WoodWave",
+            "heading": "WOODWAVE"
+          }
+        },
+        {
+          "name": "links",
+          "role": "link-list",
+          "textLen": "long",
+          "sizeClass": "caption",
+          "width": "stretch",
+          "z": "front",
+          "contract": "link",
+          "copy": []
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "stagger",
+          "target": "links",
+          "axis": "horizontal",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "columns": "4"
+      }
+    },
+    {
+      "id": "footer-inverse-closing-oversized-wordmark",
+      "useCase": "footer",
+      "archetype": "stack-fullbleed",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "footer-inverse-closing-oversized-wordmark"
+      },
+      "slots": [
+        {
+          "name": "wordmark",
+          "role": "watermark",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "width": "full-bleed",
+          "z": "back",
+          "contract": "heading",
+          "copy": {
+            "text": "WOODWAVE"
+          }
+        },
+        {
+          "name": "brand",
+          "role": "brand-group",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "image",
+          "mediaAspect": "freeform",
+          "asset": null
+        },
+        {
+          "name": "links",
+          "role": "link-row",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "stretch",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "Buy Tickets"
+          }
+        },
+        {
+          "name": "legal",
+          "role": "legal-copy",
+          "textLen": "long",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade."
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "ghost-word",
+          "target": "wordmark",
+          "anchor": "full-bleed",
+          "bleed": "full"
+        },
+        {
+          "kind": "overlap",
+          "pair": [
+            "wordmark",
+            "brand"
+          ],
+          "zOrder": [
+            "wordmark",
+            "brand"
+          ],
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "bleed",
+          "target": "wordmark",
+          "edge": "bottom"
+        }
+      ],
+      "knobs": {
+        "wordmarkAnchor": "full-bleed"
+      }
+    },
+    {
+      "id": "footer-compact-utility-bar",
+      "useCase": "footer",
+      "archetype": "band",
+      "surfaceIntent": "panel",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "footer-compact-utility-bar"
+      },
+      "slots": [
+        {
+          "name": "leftLinks",
+          "role": "link-group",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "Buy Tickets"
+          }
+        },
+        {
+          "name": "legal",
+          "role": "legal-copy",
+          "textLen": "long",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade."
+          }
+        },
+        {
+          "name": "badges",
+          "role": "payment-badges",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "image",
+          "mediaAspect": "freeform",
+          "asset": null
+        },
+        {
+          "name": "policy",
+          "role": "policy-link",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "Buy Tickets"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "legal",
+          "edge": "all"
+        }
+      ],
+      "knobs": {
+        "align": "space-between"
+      }
+    }
+  ],
+  "rationale": "Standard-tier layout-pattern showcase: the measured opening bookend, then every contracts/layout-patterns/ pattern derived deterministically from its contentShape; non-drawable archetypes (row/grid/bento/band/overlay) degrade to the generic-flow safety net pending the harvest/contract work."
+}

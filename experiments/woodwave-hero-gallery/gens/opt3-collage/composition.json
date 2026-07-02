@@ -1,0 +1,155 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "woodwave-hero-offset-collage",
+    "name": "WoodWave opening bookend",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-ab/inputs/brand/brand.yaml"
+  },
+  "style": {
+    "id": "editorial-luxury"
+  },
+  "sections": [
+    {
+      "id": "hero-offset-collage",
+      "useCase": "hero",
+      "archetype": "collage",
+      "surfaceIntent": "inverse",
+      "novelty": "novel",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "ghost",
+          "role": "ghost-word",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "width": "full-bleed",
+          "z": "back",
+          "copy": "SEE"
+        },
+        {
+          "name": "media-primary",
+          "role": "media",
+          "contract": "image",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "z": "mid",
+          "asset": {
+            "src": "hero-staircase.jpg",
+            "alt": "The WoodWave gallery staircase in raking light",
+            "ratio": "portrait"
+          }
+        },
+        {
+          "name": "media-secondary",
+          "role": "media-2",
+          "contract": "image",
+          "width": "media",
+          "mediaAspect": "landscape",
+          "z": "mid",
+          "asset": {
+            "src": "overlap-vase.jpg",
+            "alt": "A single vessel from the WoodWave collection",
+            "ratio": "landscape"
+          }
+        },
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "WoodWave Gallery"
+        },
+        {
+          "name": "display-title",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "colossal",
+          "width": "stretch",
+          "z": "front",
+          "copy": "Everything in one place"
+        },
+        {
+          "name": "subhead",
+          "role": "subheading",
+          "contract": "subheading",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "A simpler way to see the collection \u2014 built for how you actually look."
+        },
+        {
+          "name": "primary-cta",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Start free"
+        },
+        {
+          "name": "secondary-cta",
+          "role": "cta-secondary",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "See how it works"
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "ghost-word",
+          "target": "ghost-word",
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "text-on-media",
+          "over": "media",
+          "target": "display-title",
+          "sanctioned": true
+        },
+        {
+          "kind": "overlap",
+          "pair": [
+            "media",
+            "media-2"
+          ],
+          "zOrder": [
+            "media-2",
+            "media"
+          ],
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "stagger",
+          "target": "media-2",
+          "axis": "vertical",
+          "amount": {
+            "class": "heavy"
+          }
+        }
+      ],
+      "knobs": {
+        "align": "left"
+      }
+    }
+  ],
+  "rationale": "A single novel hero collage delivers the OFFSET MULTI-IMAGE directive: two brand photographs (portrait staircase + landscape vessel) placed at different sizes, overlapped and vertically staggered off the baseline behind a poster-scale didone display title, with an oversized ghost 'SEE' watermark for depth. It sits on the sanctioned inverse surface and is the ONLY section carrying the brand accent \u2014 applied to exactly ONE element, the display-title (repair fix: reduced accent-role elements from 2 to 1; the secondary CTA is now a plain typographic link with no accent). Both CTAs are typographic links (no-buttons), captions/labels stay off the photos except the sanctioned display-title-over-media."
+}

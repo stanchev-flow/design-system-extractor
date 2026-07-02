@@ -1,0 +1,355 @@
+{
+  "nav": {
+    "found": true,
+    "sticky": false,
+    "twoTier": false,
+    "bg": "rgba(255, 255, 255, 0)",
+    "color": "rgb(51, 51, 51)",
+    "height": 102,
+    "logo": {
+      "kind": "img",
+      "href": "https://woodwavegallery.webflow.io/",
+      "src": "https://cdn.prod.website-files.com/657acd8d782ab334f6b2e5a6/657acd8d782ab334f6b2e5f3_Logo.svg",
+      "alt": "",
+      "width": 175,
+      "height": 26
+    },
+    "links": [
+      {
+        "label": "about",
+        "href": "https://woodwavegallery.webflow.io/#about",
+        "color": "rgb(255, 255, 255)",
+        "fontFamily": "Satoshi, sans-serif",
+        "fontSize": 18,
+        "fontWeight": "400",
+        "tier": "primary"
+      },
+      {
+        "label": "gallery",
+        "href": "https://woodwavegallery.webflow.io/#gallery",
+        "color": "rgb(255, 255, 255)",
+        "fontFamily": "Satoshi, sans-serif",
+        "fontSize": 18,
+        "fontWeight": "400",
+        "tier": "primary"
+      },
+      {
+        "label": "exhibition",
+        "href": "https://woodwavegallery.webflow.io/#exhibition",
+        "color": "rgb(255, 255, 255)",
+        "fontFamily": "Satoshi, sans-serif",
+        "fontSize": 18,
+        "fontWeight": "400",
+        "tier": "primary"
+      },
+      {
+        "label": "visit",
+        "href": "https://woodwavegallery.webflow.io/#visit",
+        "color": "rgb(255, 255, 255)",
+        "fontFamily": "Satoshi, sans-serif",
+        "fontSize": 18,
+        "fontWeight": "400",
+        "tier": "primary"
+      },
+      {
+        "label": "buy tickets",
+        "href": "https://webflow.com/templates/html/woodwave-photography-website-template",
+        "color": "rgb(237, 213, 128)",
+        "fontFamily": "Satoshi, sans-serif",
+        "fontSize": 18,
+        "fontWeight": "400",
+        "tier": "primary"
+      }
+    ],
+    "utility": [],
+    "primary": [
+      {
+        "label": "about",
+        "href": "https://woodwavegallery.webflow.io/#about",
+        "color": "rgb(255, 255, 255)",
+        "fontFamily": "Satoshi, sans-serif",
+        "fontSize": 18,
+        "fontWeight": "400",
+        "tier": "primary"
+      },
+      {
+        "label": "gallery",
+        "href": "https://woodwavegallery.webflow.io/#gallery",
+        "color": "rgb(255, 255, 255)",
+        "fontFamily": "Satoshi, sans-serif",
+        "fontSize": 18,
+        "fontWeight": "400",
+        "tier": "primary"
+      },
+      {
+        "label": "exhibition",
+        "href": "https://woodwavegallery.webflow.io/#exhibition",
+        "color": "rgb(255, 255, 255)",
+        "fontFamily": "Satoshi, sans-serif",
+        "fontSize": 18,
+        "fontWeight": "400",
+        "tier": "primary"
+      },
+      {
+        "label": "visit",
+        "href": "https://woodwavegallery.webflow.io/#visit",
+        "color": "rgb(255, 255, 255)",
+        "fontFamily": "Satoshi, sans-serif",
+        "fontSize": 18,
+        "fontWeight": "400",
+        "tier": "primary"
+      },
+      {
+        "label": "buy tickets",
+        "href": "https://webflow.com/templates/html/woodwave-photography-website-template",
+        "color": "rgb(237, 213, 128)",
+        "fontFamily": "Satoshi, sans-serif",
+        "fontSize": 18,
+        "fontWeight": "400",
+        "tier": "primary"
+      }
+    ],
+    "ctas": [],
+    "anyButtonHasIcon": false,
+    "measured": {
+      "_provenance": "getComputedStyle (rendered px / CSS strings) from saved DOM",
+      "bar": {
+        "bg": "rgba(255, 255, 255, 0)",
+        "height": 102,
+        "paddingTop": 20,
+        "paddingBottom": 20,
+        "paddingLeft": 50,
+        "paddingRight": 50
+      },
+      "utilityBarHeight": 0,
+      "primaryBarHeight": 102,
+      "contentMaxWidth": 1300,
+      "logo": {
+        "width": 175,
+        "height": 26
+      },
+      "link": {
+        "fontSize": 18,
+        "fontWeight": "400",
+        "color": "rgb(255, 255, 255)",
+        "lineHeight": "21.6px"
+      },
+      "linkGap": 20
+    }
+  },
+  "footer": {
+    "found": true,
+    "bg": "rgb(24, 19, 19)",
+    "color": "rgb(51, 51, 51)",
+    "logo": {
+      "kind": "img",
+      "href": "https://woodwavegallery.webflow.io/",
+      "src": "https://cdn.prod.website-files.com/657acd8d782ab334f6b2e5a6/657acd8d782ab334f6b2e5f3_Logo.svg",
+      "alt": "",
+      "width": 175,
+      "height": 26
+    },
+    "columns": [
+      {
+        "heading": "",
+        "links": [
+          {
+            "label": "about",
+            "href": "https://woodwavegallery.webflow.io/#about",
+            "color": "rgb(255, 255, 255)"
+          },
+          {
+            "label": "gallery",
+            "href": "https://woodwavegallery.webflow.io/#gallery",
+            "color": "rgb(255, 255, 255)"
+          },
+          {
+            "label": "exhibition",
+            "href": "https://woodwavegallery.webflow.io/#exhibition",
+            "color": "rgb(255, 255, 255)"
+          },
+          {
+            "label": "visit",
+            "href": "https://woodwavegallery.webflow.io/#visit",
+            "color": "rgb(255, 255, 255)"
+          }
+        ]
+      },
+      {
+        "heading": "",
+        "links": [
+          {
+            "label": "buy tickets",
+            "href": "https://woodwavegallery.webflow.io/#buy-tickets",
+            "color": "rgb(255, 255, 255)"
+          },
+          {
+            "label": "instagram",
+            "href": "https://instagram.com",
+            "color": "rgba(255, 255, 255, 0.8)"
+          },
+          {
+            "label": "facebook",
+            "href": "https://facebook.com",
+            "color": "rgba(255, 255, 255, 0.8)"
+          },
+          {
+            "label": "youtube",
+            "href": "https://youtube.com",
+            "color": "rgba(255, 255, 255, 0.8)"
+          }
+        ]
+      },
+      {
+        "heading": "",
+        "links": [
+          {
+            "label": "twitter",
+            "href": "https://twitter.com",
+            "color": "rgba(255, 255, 255, 0.8)"
+          },
+          {
+            "label": "Privacy Policy",
+            "href": "https://woodwavegallery.webflow.io/privacy-policy",
+            "color": "rgba(255, 255, 255, 0.7)"
+          },
+          {
+            "label": "Changelog",
+            "href": "https://woodwavegallery.webflow.io/template-info/changelog",
+            "color": "rgba(255, 255, 255, 0.7)"
+          },
+          {
+            "label": "Licenses",
+            "href": "https://woodwavegallery.webflow.io/template-info/licenses",
+            "color": "rgba(255, 255, 255, 0.7)"
+          }
+        ]
+      },
+      {
+        "heading": "",
+        "links": [
+          {
+            "label": "webflow",
+            "href": "https://webflow.com",
+            "color": "rgba(255, 255, 255, 0.5)"
+          },
+          {
+            "label": "unroot.design",
+            "href": "https://webflow.com/templates/designers/unroot-design",
+            "color": "rgba(255, 255, 255, 0.5)"
+          }
+        ]
+      }
+    ],
+    "social": [
+      {
+        "network": "instagram",
+        "kind": "text",
+        "href": "https://instagram.com",
+        "label": "instagram"
+      },
+      {
+        "network": "facebook",
+        "kind": "text",
+        "href": "https://facebook.com",
+        "label": "facebook"
+      },
+      {
+        "network": "youtube",
+        "kind": "text",
+        "href": "https://youtube.com",
+        "label": "youtube"
+      },
+      {
+        "network": "twitter",
+        "kind": "text",
+        "href": "https://twitter.com",
+        "label": "twitter"
+      }
+    ],
+    "legal": {
+      "text": "\u00a9 2023. woodwave gallery template",
+      "links": [
+        {
+          "label": "Privacy Policy",
+          "href": "https://woodwavegallery.webflow.io/privacy-policy"
+        },
+        {
+          "label": "Changelog",
+          "href": "https://woodwavegallery.webflow.io/template-info/changelog"
+        },
+        {
+          "label": "Licenses",
+          "href": "https://woodwavegallery.webflow.io/template-info/licenses"
+        },
+        {
+          "label": "webflow",
+          "href": "https://webflow.com"
+        },
+        {
+          "label": "unroot.design",
+          "href": "https://webflow.com/templates/designers/unroot-design"
+        }
+      ]
+    },
+    "newsletter": null,
+    "measured": {
+      "_provenance": "getComputedStyle (rendered px / CSS strings) from saved DOM",
+      "bg": "rgb(24, 19, 19)",
+      "color": "rgb(51, 51, 51)",
+      "padding": {
+        "top": 0,
+        "bottom": 0,
+        "left": 0,
+        "right": 0
+      },
+      "contentMaxWidth": 0,
+      "grid": {
+        "display": "",
+        "templateColumns": "",
+        "columnGap": 0,
+        "rowGap": 0,
+        "columnCount": 4
+      },
+      "link": {
+        "fontSize": 80,
+        "fontWeight": "400",
+        "lineHeight": "96px",
+        "color": "rgb(255, 255, 255)"
+      },
+      "linkHoverColor": "#edd580",
+      "logo": {
+        "width": 175,
+        "height": 26
+      },
+      "social": {
+        "kind": "text",
+        "size": 0,
+        "fontSize": 18,
+        "fontWeight": "400",
+        "color": "rgba(255, 255, 255, 0.8)",
+        "letterSpacing": "1px",
+        "textTransform": "uppercase"
+      },
+      "bottom": {
+        "textAlign": "start"
+      },
+      "legal": {
+        "fontSize": 14,
+        "fontWeight": "400",
+        "lineHeight": "21px",
+        "color": "rgba(255, 255, 255, 0.5)"
+      }
+    }
+  },
+  "type": {
+    "bodyFont": "Satoshi, sans-serif",
+    "bodySize": 24,
+    "bodyColor": "rgb(51, 51, 51)",
+    "headingFont": "Melodrama, sans-serif",
+    "linkColor": "rgb(51, 51, 51)"
+  },
+  "schema_version": "source_chrome.v2",
+  "source_url": "https://woodwavegallery.webflow.io",
+  "saved_page": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/woodwave/assets/source_complete/source.html"
+}

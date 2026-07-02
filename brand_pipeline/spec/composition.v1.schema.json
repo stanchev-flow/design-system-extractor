@@ -1,0 +1,436 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://webflow.dev/brand-pipeline/composition.v1.schema.json",
+  "title": "composition.v1",
+  "description": "The STRUCTURED generation contract the AI emits (brand-schema.md \u00a74.6). The AI does NOT author raw HTML/CSS; it emits an ordered list of SECTIONS, each = archetype + slots (primitive/block refs) + treatments + inline copy. A deterministic renderer (compose_page/compose_section + component_render) draws it and the on-brand gate (onbrand_check.py) validates it. Every field round-trips 1:1 onto an existing brand.yaml layouts[]-shaped dict + renderer input, so the AI gets layout freedom WITHOUT re-authoring primitives or bypassing the gate. Vocabulary is reused verbatim from layout-patterns.v1 (\u00a74.4) so the round-trip is lossless.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "brief", "brand", "style", "sections"],
+  "properties": {
+    "schemaVersion": {
+      "const": "composition.v1"
+    },
+    "brief": {
+      "description": "What the page is for. Drives SELECT + ORDER + BIND. Copy the AI binds into slots comes from here (never hardcoded).",
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string", "description": "brief slug, e.g. 'signup-launch'" },
+        "name": { "type": "string" },
+        "text": { "type": "string", "description": "raw brief copy the AI drew inline copy from" },
+        "useCasesRequested": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/useCase" },
+          "description": "the use-cases the brief asked for, in intent order"
+        }
+      }
+    },
+    "brand": {
+      "description": "Which brand.yaml this composition targets. The renderer resolves tokens/neverDo/type-tiers from it; the composition only references token ROLES, never raw values.",
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["ref"],
+      "properties": {
+        "ref": { "type": "string", "description": "path to the canonical brand.yaml, e.g. runs/woodwave/brand/brand.yaml" },
+        "name": { "type": "string" }
+      }
+    },
+    "style": {
+      "description": "The active STYLE layer (styles/<id>.md) merged under the brand (Appendix B). Structure/defaults only; brand wins on any token it sets.",
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string", "description": "style id, e.g. 'editorial-luxury'" }
+      }
+    },
+    "sections": {
+      "description": "Ordered list of sections = the page. Order is authored by the AI (SELECT + ORDER) and consumed by compose_page in list order (replaces the hardcoded DEFAULT_ORDER).",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/section" }
+    },
+    "rationale": {
+      "type": "string",
+      "description": "Free-text: why these sections/this order/these novel departures. Advisory; not rendered."
+    }
+  },
+
+  "$defs": {
+    "useCase": {
+      "description": "Canonical use-case key (layout_library.USE_CASES).",
+      "type": "string",
+      "enum": ["hero", "features", "pricing", "testimonial", "gallery", "cta", "about", "faq", "logos", "footer"]
+    },
+
+    "archetype": {
+      "description": "The structural shape. MUST be a key in compose_section.ARCHETYPE_COMPOSERS so the renderer can draw it. The eight drawable archetypes: 'stack', 'collage', 'split', 'stack-fullbleed', 'cards', 'interlock', plus (editorial-harvest-2026-07) 'overlay' — front slots grid-placed over a z:back/mid media inside ONE positioning context (panel-on-media, framed media, scrim bands, straddles, type-behind-media) — and 'banded' — a dual-surface section: two stacked full-width surface bands with a hard horizontal SEAM at section.bands.split, elements may straddle the seam via registration.toSlot:'seam'. (An AI may still set novelty:'novel' and recompose slots/treatments WITHIN one of these archetypes; it may not invent an archetype the renderer cannot draw.)",
+      "type": "string",
+      "enum": ["stack", "collage", "split", "stack-fullbleed", "cards", "interlock", "overlay", "banded"]
+    },
+
+    "surfaceIntent": {
+      "description": "Which surface role this section defaults to (\u00a74.4 surfaceIntent). Resolves to a tokens.surfaces role.",
+      "type": "string",
+      "enum": ["any", "primary", "inverse", "inverse-strong", "panel"]
+    },
+
+    "novelty": {
+      "description": "How far this section departs from the seeded library pattern. reuse = keep the pattern's shape (fill slots + tune knobs only); adapt = nearest pattern + tuned variantKnobs / minor slot changes; novel = a structure the library lacks (still must validate against this schema + brand neverDo; if it gates green it is eligible for promotion into the project layout-library).",
+      "type": "string",
+      "enum": ["reuse", "adapt", "novel"]
+    },
+
+    "seededFrom": {
+      "description": "Back-ref to the layout PATTERN this section was seeded from (\u00a74.4 patternRef). null when novelty=novel and no pattern was used.",
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["lib", "id"],
+          "properties": {
+            "lib": { "type": "string", "enum": ["project", "standard"] },
+            "id": { "type": "string", "description": "pattern id, e.g. hero-split-media-copy" }
+          }
+        }
+      ]
+    },
+
+    "textLen": {
+      "description": "Text-length class (\u00a74.4). short\u2248eyebrow(\u22646w) \u00b7 long\u2248body(>40w). Resolves to a type tier at render time; never a px size.",
+      "type": "string",
+      "enum": ["none", "word", "short", "medium", "long"]
+    },
+
+    "sizeClass": {
+      "description": "Type-size tier class (\u00a74.4). Resolves against the brand's measured type tiers + style display floor; never a raw rem.",
+      "type": "string",
+      "enum": ["colossal", "hero", "display", "title", "body", "caption"]
+    },
+
+    "width": {
+      "description": "Harvest width class (\u00a74.4). Resolves against the container measure; never a raw width. 'framed' (editorial-harvest-2026-07, G4): media inset with page margins visible on ALL sides (between 'media' and 'full-bleed'); the frame margin snaps to whole shared-grid columns and child slots may register INSIDE the frame via alignTo {slot: <frame slot>, edge|corner}.",
+      "type": "string",
+      "enum": ["hug", "stretch", "fixed", "media", "full-bleed", "framed"]
+    },
+
+    "mediaAspect": {
+      "description": "Media aspect class for media slots (\u00a74.4). Honored by the renderer as a real aspect-ratio: portrait 3/4 \u00b7 landscape (variant default) \u00b7 square 1/1 \u00b7 wide 21/9 \u00b7 pano 3/1 \u00b7 freeform (intrinsic).",
+      "type": "string",
+      "enum": ["portrait", "landscape", "square", "wide", "pano", "freeform"]
+    },
+
+    "grid": {
+      "description": "OPTIONAL section-level grid declaration (grid/overlap contract). Declares the registration grid this section's colStart/colSpan/offsetCols values are expressed against. Omitted = the shared page grid (12 columns, the :root --grid-gutter). columns/gutter re-scope the section's --grid-cols/--grid-gutter vars only \u2014 the page-level shared grid is unchanged.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "columns": {
+          "type": "integer", "minimum": 1, "maximum": 24, "default": 12,
+          "description": "column count of the section's registration grid (default 12 = the shared page grid)"
+        },
+        "gutter": {
+          "type": "string",
+          "description": "gutter as a rem/named length (never px-literal ad-hoc); omitted = the shared --grid-gutter"
+        }
+      }
+    },
+
+    "alignment": {
+      "description": "OPTIONAL per-section alignment knob. Replaces the old #sec-0-only centering exception: ANY section may declare its anchor. 'centered' mirrors the sanctioned hero/cta centering; 'left'/'right' anchor the text column to one side \u2014 an asymmetric anchor SHOULD name a counterweight slot (media/ghost/panel) that fills the opposite side so the section never reads as crammed against a dead half.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["anchor"],
+      "properties": {
+        "anchor": { "type": "string", "enum": ["centered", "left", "right", "space-between", "edge-to-edge"] },
+        "counterweight": {
+          "type": "string",
+          "description": "slot NAME expected to visually balance an asymmetric anchor (advisory; the renderer stamps it for review, the model must supply a real slot)"
+        }
+      }
+    },
+
+    "edge": {
+      "description": "An edge of a slot's rendered box.",
+      "type": "string",
+      "enum": ["left", "right", "top", "bottom"]
+    },
+
+    "corner": {
+      "description": "A corner of a slot's (or the section's) rendered box: top-left, top-right, bottom-left, bottom-right.",
+      "type": "string",
+      "enum": ["tl", "tr", "bl", "br"]
+    },
+
+    "alignTo": {
+      "description": "OPTIONAL slot-level alignment reference: pin THIS slot to another slot's edge or corner (or to the SECTION frame when slot is omitted/'section'). Non-overlapping registration \u2014 for overlaps that CROSS an edge use `registration` instead.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "slot": { "type": "string", "description": "target slot NAME ('section' or omitted = the section frame)" },
+        "edge": { "$ref": "#/$defs/edge" },
+        "corner": { "$ref": "#/$defs/corner" }
+      }
+    },
+
+    "registration": {
+      "description": "OPTIONAL overlap registration (replaces magic % offsets): THIS slot overlaps `toSlot`, pinned to and CROSSING its `edge` by an explicit depth in shared grid units \u2014 depthCols (columns+gutters, horizontal edges) or depthBaselines (--baseline multiples, vertical edges). `z` declares the layer relative to the base media (back = behind it, mid = between media, front = topmost media layer; text stays above per the brand z-ladder).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["toSlot", "edge"],
+      "properties": {
+        "toSlot": { "type": "string", "description": "slot NAME of the base element this overlay registers to" },
+        "edge": { "$ref": "#/$defs/edge" },
+        "depthCols": { "type": "number", "minimum": 0, "description": "how far the overlay crosses the edge, in whole/fractional shared-grid columns (horizontal edges)" },
+        "depthBaselines": { "type": "number", "minimum": 0, "description": "how far the overlay crosses the edge, in --baseline multiples (vertical edges)" },
+        "z": { "$ref": "#/$defs/z" }
+      }
+    },
+
+    "z": {
+      "description": "Z-layer (\u00a74.4). Must respect brand z-order (ghost-watermark \u2192 media \u2192 panels \u2192 text).",
+      "type": "string",
+      "enum": ["back", "mid", "front"]
+    },
+
+    "amountClass": {
+      "description": "Treatment intensity class (\u00a74.4 amount.class). Never a px offset.",
+      "type": "string",
+      "enum": ["light", "medium", "heavy"]
+    },
+
+    "slot": {
+      "description": "One filled hole in the section. name/role/contract are required; the rest are the layout-patterns.v1 slot signature (\u00a74.4) plus optional bound copy/asset. contract MUST be a key in contracts/primitives.yaml or contracts/blocks.yaml (respect the block's accepts/optional/repeatable grammar).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "role", "contract"],
+      "properties": {
+        "name": { "type": "string", "description": "slot name, e.g. heading, media, body" },
+        "role": { "type": "string", "description": "semantic role, e.g. display-title, hero-photo, lede" },
+        "contract": { "type": "string", "description": "primitive OR block contract key (contracts/primitives.yaml | contracts/blocks.yaml), e.g. header, image, link, paragraph" },
+        "textLen": { "$ref": "#/$defs/textLen" },
+        "sizeClass": { "$ref": "#/$defs/sizeClass" },
+        "width": { "$ref": "#/$defs/width" },
+        "mediaAspect": { "$ref": "#/$defs/mediaAspect" },
+        "z": { "$ref": "#/$defs/z" },
+        "colStart": {
+          "type": "integer", "minimum": 1, "maximum": 24,
+          "description": "OPTIONAL 1-based start column on the section's registration grid (grid-column start)"
+        },
+        "colSpan": {
+          "type": "integer", "minimum": 1, "maximum": 24,
+          "description": "OPTIONAL column span on the section's registration grid; the renderer resolves it to calc(N*var(--col) + (N-1)*var(--grid-gutter)) so the slot's edges land on shared column lines"
+        },
+        "rowSpan": {
+          "type": "integer", "minimum": 1,
+          "description": "OPTIONAL row span (multi-row scaffolds); advisory where an archetype has no explicit rows"
+        },
+        "offsetCols": {
+          "type": "number",
+          "description": "OPTIONAL horizontal nudge in shared-grid columns (may be fractional/negative); a deliberate registered offset, never a free % scalar"
+        },
+        "offsetBaselines": {
+          "type": "number",
+          "description": "OPTIONAL vertical nudge in --baseline multiples (may be fractional/negative)"
+        },
+        "alignTo": { "$ref": "#/$defs/alignTo" },
+        "registration": { "$ref": "#/$defs/registration" },
+        "copy": {
+          "description": "Inline copy bound from the brief. String for a single text slot, or an object for multi-field blocks (e.g. {eyebrow, heading, subheading, cta}). Repeatable blocks (block.accepts.repeatable) carry an array.",
+          "oneOf": [
+            { "type": "string" },
+            { "type": "object", "additionalProperties": true },
+            { "type": "array", "items": { "type": ["string", "object"] } }
+          ]
+        },
+        "asset": {
+          "description": "Bound media asset for media slots. null when the renderer should use a placeholder.",
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "src": { "type": "string" },
+                "alt": { "type": "string" },
+                "ratio": { "type": "string" }
+              }
+            }
+          ]
+        }
+      }
+    },
+
+    "treatment": {
+      "description": "A signature composition device. Reuses the layout-patterns.v1 specialTreatments shape verbatim (\u00a74.4) so it round-trips into gridRules/overlapRules. kind-specific fields are used per kind; unused fields omitted. 'sanctioned' marks a device that is only legal because a brand compositionRule/neverDo blesses it (e.g. WoodWave display-title-over-media).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "description": "Device kind (layout_library.TREATMENT_KINDS). 'text-on-media' is illegal for WoodWave EXCEPT the sanctioned display-title-over-media in a hero bookend (mark sanctioned:true). editorial-harvest-2026-07 additions: 'straddle' = target crosses another slot's edge by registration.depth (z:front rides over, z:back tucks UNDER \u2014 a z:back straddle carries the G8 occlusion contract maxOcclusion+endsVisible and, when it meets a photo, sanctioned:true); 'panel-on-media' = a solid-surface panel (target) grid-placed over a media slot ('over'), internal stack distributed by 'distribute' \u2014 the sanctioned panel-over-media pair; 'scrim-band' = a flat translucent band (NEVER a gradient) crossing the media at band.rowStart/rowSpan carrying the target slot's content; 'framed' = the target media renders at width:framed (margins on all sides, widthRel.ratio of the container snapped to whole columns); 'type-behind-media' = the target HEADING renders z:back with the 'over' media on top \u2014 real copy at full opacity (NOT a ghost-word); requires maxOcclusion + endsVisible (G8) and counts as a text-on-media-family device (sanctioned where the brand requires it); 'mixed-face' = per-span face contrast inside one heading (copy carries {lead, emphasis}; falls back to case/weight contrast when the brand has no italic cut); 'stepped-lines' = per-line progressive indents on an authored multi-line statement (steps in half-column units); 'break-frame' = corner-anchored decorative media crossing a frame edge (salience-capped, decoration only).",
+          "type": "string",
+          "enum": ["ghost-word", "overlap", "stagger", "bleed", "marginal-caption", "text-on-media", "counter-rotate", "float-wrap", "inset", "straddle", "panel-on-media", "scrim-band", "framed", "type-behind-media", "mixed-face", "stepped-lines", "break-frame"]
+        },
+        "target": { "type": "string", "description": "the slot this device applies to (ghost-word/stagger/bleed/marginal-caption/text-on-media)" },
+        "pair": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "the two slots that overlap (kind=overlap)"
+        },
+        "zOrder": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "layer order back\u2192front for overlap/ghost-word (must respect brand z-order ladder)"
+        },
+        "amount": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["class"],
+          "properties": { "class": { "$ref": "#/$defs/amountClass" } }
+        },
+        "side": { "type": "string", "enum": ["left", "right"], "description": "marginal-caption / float-wrap side" },
+        "edge": { "type": "string", "enum": ["left", "right", "top", "bottom", "all"], "description": "bleed edge" },
+        "anchor": {
+          "type": "string",
+          "enum": ["behind-media", "straddle-media", "margin", "full-bleed"],
+          "description": "ghost-word anchor"
+        },
+        "over": { "type": "string", "description": "media slot a text-on-media title sits over (sanctioned hero exception only)" },
+        "bleed": { "type": "string", "enum": ["none", "partial", "full"], "description": "ghost-word bleed" },
+        "axis": { "type": "string", "enum": ["vertical", "horizontal"], "description": "stagger axis" },
+        "registration": {
+          "$ref": "#/$defs/registration",
+          "description": "straddle/panel-on-media/break-frame: the overlap registration this device rides on (toSlot + crossed edge + depth in shared grid units + z). For a straddle inside a 'banded' section, toSlot may be the reserved name 'seam' (the band boundary)."
+        },
+        "band": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "scrim-band geometry: where the band crosses the media, as fractions of the media's height (rowStart 0..1, rowSpan 0..1). Snapped to --baseline at render time.",
+          "properties": {
+            "rowStart": { "type": "number", "minimum": 0, "maximum": 1 },
+            "rowSpan": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        },
+        "fill": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "scrim-band fill: a FLAT translucent wash of the section's inverse surface (never a gradient). opacityClass light\u22480.35 / medium\u22480.55 / heavy\u22480.75 \u2014 the floor is derived from the text-contrast requirement.",
+          "properties": {
+            "opacityClass": { "type": "string", "enum": ["light", "medium", "heavy"] }
+          }
+        },
+        "distribute": {
+          "type": "string",
+          "enum": ["start", "center", "space-between"],
+          "description": "panel-on-media: how the panel's internal stack distributes vertically"
+        },
+        "widthRel": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "framed/inset: target width as a ratio of the container (snapped to whole shared-grid columns), e.g. {to: container, ratio: 0.86}",
+          "properties": {
+            "to": { "type": "string" },
+            "ratio": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
+          }
+        },
+        "maxOcclusion": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["class"],
+          "description": "G8 occlusion budget for type-behind-media AND a z:back straddle: the fraction of the occluded heading's glyph area media may cover \u2014 light\u22480.25 / medium\u22480.4 / heavy\u22480.55. Above the cap the gate demands reclassification to ghost-word (decorative + readable heading elsewhere).",
+          "properties": { "class": { "$ref": "#/$defs/amountClass" } }
+        },
+        "endsVisible": {
+          "type": "boolean",
+          "description": "G8: the occluded word's FIRST and LAST letterforms must stay clear of the media (why an occluded masthead still reads). Required true for type-behind-media / z:back straddle on real heading copy."
+        },
+        "steps": {
+          "type": "array",
+          "items": { "type": "number", "minimum": 0 },
+          "description": "stepped-lines: per-line left indents in HALF-COLUMN units of the shared grid (e.g. [0, 1, 6] = 0 / +0.5col / +3col)"
+        },
+        "direction": {
+          "type": "string",
+          "enum": ["left", "right"],
+          "description": "stepped-lines: which way successive lines step"
+        },
+        "spans": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "part": { "type": "string", "enum": ["lead", "emphasis"] },
+              "face": { "type": "string", "enum": ["roman", "italic", "display", "body"] }
+            }
+          },
+          "description": "mixed-face: which copy part renders in which face (copy carries {lead, emphasis}); degrades to case/weight contrast when the brand ships no alternate cut"
+        },
+        "salience": {
+          "type": "string",
+          "enum": ["decorative"],
+          "description": "break-frame: the element is decoration \u2014 area-capped, pointer-events none, must never cover a text slot (decoration-salience applies)"
+        },
+        "sanctioned": {
+          "type": "boolean",
+          "default": false,
+          "description": "true when a normally-forbidden device is blessed by a brand compositionRule/neverDo exception (e.g. WoodWave sanctioned display-title-over-media). false/absent = must be a legal device."
+        }
+      }
+    },
+
+    "bands": {
+      "description": "OPTIONAL dual-surface declaration for the 'banded' archetype (G9, editorial-harvest-2026-07): the section is TWO stacked full-width surface bands with a hard horizontal SEAM (a hard cut, never a gradient). 'split' is the seam's position as a fraction of section height (snapped to --baseline); 'surfaces' names the top and bottom band surface roles. Slots may straddle the seam via registration {toSlot: 'seam', edge: top|bottom, depthBaselines}. Content is surface-attributed to the band it sits on; straddlers to both. This is a SINGLE section \u2014 cross-SECTION straddling is deliberately unsupported.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["surfaces"],
+      "properties": {
+        "split": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1, "default": 0.5 },
+        "surfaces": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "$ref": "#/$defs/surfaceIntent" },
+          "description": "[top band, bottom band] surface roles"
+        }
+      }
+    },
+
+    "section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "useCase", "archetype", "surfaceIntent", "novelty", "slots"],
+      "properties": {
+        "id": { "type": "string", "description": "section slug, unique within the composition, e.g. hero, features, cta" },
+        "useCase": { "$ref": "#/$defs/useCase" },
+        "archetype": { "$ref": "#/$defs/archetype" },
+        "surfaceIntent": { "$ref": "#/$defs/surfaceIntent" },
+        "seededFrom": { "$ref": "#/$defs/seededFrom" },
+        "novelty": { "$ref": "#/$defs/novelty" },
+        "grid": { "$ref": "#/$defs/grid" },
+        "alignment": { "$ref": "#/$defs/alignment" },
+        "bands": { "$ref": "#/$defs/bands" },
+        "slots": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/slot" }
+        },
+        "treatments": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/treatment" },
+          "default": []
+        },
+        "knobs": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "variantKnob values the AI tuned (\u00a74.4 variantKnobs), e.g. {mediaSide: left, columns: '3', align: left}. Round-trips into the renderer's --c-* vars / archetype options. Only knobs the seeded pattern (or archetype) exposes."
+        }
+      }
+    }
+  }
+}

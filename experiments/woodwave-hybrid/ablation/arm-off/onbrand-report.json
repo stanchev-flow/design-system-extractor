@@ -1,0 +1,61 @@
+{
+  "layout": "opening-bookend",
+  "brand": "WoodWave Gallery",
+  "composition_mode": true,
+  "neverDo": {
+    "no-buttons": true,
+    "no-radius": true,
+    "no-shadows": true,
+    "no-gradients": true,
+    "no-cards-on-cream": true,
+    "no-accent-on-light": true,
+    "no-boxed-inputs": true,
+    "no-text-on-photos": true,
+    "no-section-hairlines": true,
+    "no-default-fonts": true,
+    "no-centered-everything": true
+  },
+  "neverDo_allowed": [],
+  "fidelity": {
+    "pass": true,
+    "checks": {
+      "Surface = brand surface/inverse (#3A2F23)": true,
+      "Display family present (Melodrama)": true,
+      "Heading copy from source present": true,
+      "Brand accent surfaced (#edd580)": true,
+      "Brand media present (expect ~2)": true,
+      "Brand assets present (not placeholder)": true
+    }
+  },
+  "slop": {
+    "pass": true,
+    "checks": {
+      "No default/system display font": true,
+      "No off-palette hex colors": true,
+      "No lorem/placeholder copy": true,
+      "All brand image assets present": true,
+      "Rounding matches brand radius scale": true,
+      "Webfonts loaded (no silent system fallback)": true
+    }
+  },
+  "invariants": {
+    "mode": "hard",
+    "pass": true,
+    "checks": {
+      "single-accent": true,
+      "primitive-only": true,
+      "rhythm": true,
+      "data-composition": true,
+      "slot-resolution": true,
+      "text-contrast": true,
+      "decoration-salience": true,
+      "occlusion": true,
+      "band-attribution": true
+    },
+    "details": {
+      "text-contrast": "32 text elements measured against their effective background (surface + decoration layer); worst = sec-2/c-caption('One place for every proj') at 7.81 (floor 4.5); skipped=0",
+      "decoration-salience": "1 decoration layer(s) all within the salience ceiling (<= 1.19); loudest = sec-2/cs-ghost('Spaces') at ratio 1.124 (luminance delta 0.1033)"
+    }
+  },
+  "overall": true
+}

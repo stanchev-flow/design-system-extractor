@@ -1,0 +1,213 @@
+{
+  "model": "claude-opus-4-8",
+  "seed": {
+    "id": "hero-display-over-staggered-media",
+    "lib": "project",
+    "provenance": [
+      "opening-bookend"
+    ]
+  },
+  "variants": [
+    {
+      "n": 1,
+      "id": "v1-overlap-side",
+      "axis": "overlap side \u2014 small image registered to the RIGHT edge",
+      "expressibility": "fully expressible: registration {toSlot, edge:\"right\", depthCols, z} on the overlap slot (new \u00a74.6.5 contract field; previously the overlap side was a hardcoded composer offset)",
+      "gen_gate_ok": true,
+      "attempts": 1,
+      "repair_fired": false,
+      "drift": {
+        "score": 5.15,
+        "band_low": 2.5,
+        "anchored": true,
+        "varied": true,
+        "deltas": [
+          "treatments ['overlap', 'stagger']\u2192['overlap', 'stagger', 'text-on-media']",
+          "knobs changed",
+          "placement changed (cta, eyebrow, hero-media, overlap-media, title, wordmark)",
+          "slot count 5\u21926",
+          "copy changed"
+        ],
+        "ok": true,
+        "reason": ""
+      },
+      "hero_archetype": "stack",
+      "hero_novelty": "adapt",
+      "hero_seededFrom": {
+        "lib": "project",
+        "id": "hero-display-over-staggered-media"
+      },
+      "hero_treatments": [
+        "overlap",
+        "stagger",
+        "text-on-media"
+      ],
+      "tokens": {
+        "input": 16371,
+        "output": 1473
+      },
+      "gen_dir": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/gens-anchored/v1-overlap-side"
+    },
+    {
+      "n": 2,
+      "id": "v2-media-width",
+      "axis": "media max-width \u2014 centered media at colSpan 9 (vs ~6), overlap preserved",
+      "expressibility": "fully expressible: colSpan on the hero-media slot (new \u00a74.6.5 contract field; previously the collage width was a fixed 80rem cap)",
+      "gen_gate_ok": true,
+      "attempts": 1,
+      "repair_fired": false,
+      "drift": {
+        "score": 5.15,
+        "band_low": 2.5,
+        "anchored": true,
+        "varied": true,
+        "deltas": [
+          "treatments ['overlap', 'stagger']\u2192['overlap', 'stagger', 'text-on-media']",
+          "knobs changed",
+          "placement changed (cta, eyebrow, headline, hero-media, overlap-media, subhead, support, title, wordmark)",
+          "slot count 5\u21926",
+          "copy changed"
+        ],
+        "ok": true,
+        "reason": ""
+      },
+      "hero_archetype": "stack",
+      "hero_novelty": "adapt",
+      "hero_seededFrom": {
+        "lib": "project",
+        "id": "hero-display-over-staggered-media"
+      },
+      "hero_treatments": [
+        "overlap",
+        "stagger",
+        "text-on-media"
+      ],
+      "tokens": {
+        "input": 16379,
+        "output": 1583
+      },
+      "gen_dir": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/gens-anchored/v2-media-width"
+    },
+    {
+      "n": 3,
+      "id": "v3-aspect",
+      "axis": "aspect ratio \u2014 pano main media, portrait inset, same placement",
+      "expressibility": "fully expressible: mediaAspect \"pano\"/\"portrait\" now resolves to a REAL aspect-ratio (new \u00a74.6.5 semantics; previously mediaAspect was recorded but the variant ratio always won)",
+      "gen_gate_ok": true,
+      "attempts": 1,
+      "repair_fired": false,
+      "drift": {
+        "score": 5.15,
+        "band_low": 2.5,
+        "anchored": true,
+        "varied": true,
+        "deltas": [
+          "treatments ['overlap', 'stagger']\u2192['overlap', 'stagger', 'text-on-media']",
+          "knobs changed",
+          "placement changed (cta, eyebrow, headline, hero-media, overlap-media, subhead, support, title, wordmark)",
+          "slot count 5\u21926",
+          "copy changed"
+        ],
+        "ok": true,
+        "reason": ""
+      },
+      "hero_archetype": "stack",
+      "hero_novelty": "adapt",
+      "hero_seededFrom": {
+        "lib": "project",
+        "id": "hero-display-over-staggered-media"
+      },
+      "hero_treatments": [
+        "overlap",
+        "stagger",
+        "text-on-media"
+      ],
+      "tokens": {
+        "input": 16446,
+        "output": 1586
+      },
+      "gen_dir": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/gens-anchored/v3-aspect"
+    },
+    {
+      "n": 4,
+      "id": "v4-image-count",
+      "axis": "image count \u2014 three overlapping images, declared registration + z-order",
+      "expressibility": "fully expressible: MULTIPLE media slots with distinct registration + z (new \u00a74.6.5 multi-layer semantics; previously the stack composer drew exactly the hero/overlap pair)",
+      "gen_gate_ok": true,
+      "attempts": 1,
+      "repair_fired": false,
+      "drift": {
+        "score": 5.15,
+        "band_low": 2.5,
+        "anchored": true,
+        "varied": true,
+        "deltas": [
+          "treatments ['overlap', 'stagger']\u2192['overlap', 'stagger', 'text-on-media']",
+          "knobs changed",
+          "placement changed (counter-media, cta, eyebrow, headline, hero-media, overlap-media, subhead, support, title, wordmark)",
+          "slot count 5\u21927",
+          "copy changed",
+          "assets [measured defaults]\u2192['About-img-2.jpg']"
+        ],
+        "ok": true,
+        "reason": ""
+      },
+      "hero_archetype": "stack",
+      "hero_novelty": "adapt",
+      "hero_seededFrom": {
+        "lib": "project",
+        "id": "hero-display-over-staggered-media"
+      },
+      "hero_treatments": [
+        "overlap",
+        "stagger",
+        "text-on-media"
+      ],
+      "tokens": {
+        "input": 16481,
+        "output": 1891
+      },
+      "gen_dir": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/gens-anchored/v4-image-count"
+    },
+    {
+      "n": 5,
+      "id": "v5-background-corner",
+      "axis": "background + corner \u2014 z:back full-bleed photo behind the heading, small z:front corner image",
+      "expressibility": "fully expressible: z:\"back\" + width:\"full-bleed\" renders a true background layer (sanctioned text-on-media w/ scrim) and alignTo {corner} pins a z:\"front\" image to the section frame (new \u00a74.6.5 semantics; previously no background/corner layer existed)",
+      "gen_gate_ok": true,
+      "attempts": 1,
+      "repair_fired": false,
+      "drift": {
+        "score": 5.62,
+        "band_low": 2.5,
+        "anchored": true,
+        "varied": true,
+        "deltas": [
+          "treatments ['overlap', 'stagger']\u2192['overlap', 'stagger', 'text-on-media']",
+          "knobs changed",
+          "placement changed (corner-accent, cta, eyebrow, headline, hero-media, overlap-media, subhead, support, title, wordmark)",
+          "slot count 5\u21926",
+          "copy changed"
+        ],
+        "ok": true,
+        "reason": ""
+      },
+      "hero_archetype": "stack",
+      "hero_novelty": "adapt",
+      "hero_seededFrom": {
+        "lib": "project",
+        "id": "hero-display-over-staggered-media"
+      },
+      "hero_treatments": [
+        "overlap",
+        "stagger",
+        "text-on-media"
+      ],
+      "tokens": {
+        "input": 16419,
+        "output": 1567
+      },
+      "gen_dir": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/gens-anchored/v5-background-corner"
+    }
+  ]
+}

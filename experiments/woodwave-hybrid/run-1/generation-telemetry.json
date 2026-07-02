@@ -1,0 +1,15 @@
+{
+  "attempts": 1,
+  "telemetry": [
+    {
+      "attempt": 0,
+      "latency_s": 69.24,
+      "input_tokens": 12265,
+      "output_tokens": 6267,
+      "temperature": null,
+      "stage": "gated",
+      "gate_pass": true
+    }
+  ],
+  "model": "claude-opus-4-8"
+}

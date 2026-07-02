@@ -1,0 +1,563 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "woodwave-gallery",
+    "name": "Woodwave Gallery \u2014 one long scroll",
+    "useCasesRequested": [
+      "hero",
+      "about",
+      "gallery",
+      "testimonial",
+      "cta",
+      "footer"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/woodwave/brand/brand.yaml"
+  },
+  "style": {
+    "id": "editorial-luxury"
+  },
+  "sections": [
+    {
+      "id": "hero-masthead",
+      "useCase": "hero",
+      "archetype": "overlay",
+      "surfaceIntent": "inverse",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "type-behind-media-masthead"
+      },
+      "grid": {
+        "columns": 12,
+        "gutter": "1.5rem"
+      },
+      "alignment": {
+        "anchor": "centered"
+      },
+      "slots": [
+        {
+          "name": "kicker",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 12,
+          "copy": "CONTEMPORARY ART \u00b7 SINCE 1941"
+        },
+        {
+          "name": "masthead",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "width": "full-bleed",
+          "z": "back",
+          "colStart": 1,
+          "colSpan": 12,
+          "copy": "WOODWAVE"
+        },
+        {
+          "name": "portrait-main",
+          "role": "media",
+          "contract": "image",
+          "mediaAspect": "portrait",
+          "width": "media",
+          "z": "front",
+          "colStart": 5,
+          "colSpan": 4,
+          "registration": {
+            "toSlot": "masthead",
+            "edge": "top",
+            "depthBaselines": 3,
+            "z": "front"
+          },
+          "asset": {
+            "src": "About-img-2.jpg",
+            "alt": "Timber hall interior, west atrium",
+            "ratio": "portrait"
+          }
+        },
+        {
+          "name": "portrait-detail",
+          "role": "media",
+          "contract": "image",
+          "mediaAspect": "portrait",
+          "width": "media",
+          "z": "front",
+          "colStart": 7,
+          "colSpan": 3,
+          "alignTo": {
+            "slot": "portrait-main",
+            "corner": "br"
+          },
+          "registration": {
+            "toSlot": "portrait-main",
+            "edge": "bottom",
+            "depthCols": 1,
+            "z": "front"
+          },
+          "asset": {
+            "src": "About-img-3.jpg",
+            "alt": "Detail of the timber structure",
+            "ratio": "portrait"
+          }
+        },
+        {
+          "name": "caption-pair",
+          "role": "caption",
+          "contract": "label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "z": "front",
+          "copy": [
+            "Timber Hall, West Atrium",
+            "Est. 1941 \u2014 Reimagined 2023"
+          ]
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "type-behind-media",
+          "target": "masthead",
+          "over": "portrait-main",
+          "maxOcclusion": {
+            "class": "medium"
+          },
+          "endsVisible": true,
+          "sanctioned": true
+        },
+        {
+          "kind": "overlap",
+          "target": "portrait-detail",
+          "pair": [
+            "media",
+            "media"
+          ],
+          "zOrder": [
+            "portrait-main",
+            "portrait-detail"
+          ],
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "marginal-caption",
+          "target": "caption-pair",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "occlusion": "medium",
+        "detailCorner": "br"
+      }
+    },
+    {
+      "id": "about-manifesto",
+      "useCase": "about",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "about-anchored-statement"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "about-media"
+      },
+      "slots": [
+        {
+          "name": "ghost-about",
+          "role": "ghost",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "width": "full-bleed",
+          "z": "back",
+          "copy": "ABOUT"
+        },
+        {
+          "name": "about-header",
+          "role": "statement",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "z": "front",
+          "copy": {
+            "eyebrow": "MANIFESTO",
+            "heading": "Space as a muse",
+            "text": "Our landmark timber building is not a backdrop but a collaborator \u2014 warm light, long grain and quiet volume shaping how each work is met.",
+            "cta": "Read our philosophy"
+          }
+        },
+        {
+          "name": "about-media",
+          "role": "media",
+          "contract": "image",
+          "mediaAspect": "portrait",
+          "width": "media",
+          "z": "mid",
+          "asset": {
+            "src": "About-img-4.jpg",
+            "alt": "Gallery interior with warm wood",
+            "ratio": "portrait"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "ghost-word",
+          "target": "ghost-about",
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "stagger",
+          "target": "about-media",
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "mediaSide": "right"
+      }
+    },
+    {
+      "id": "gallery-showcase",
+      "useCase": "gallery",
+      "archetype": "stack-fullbleed",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "gallery-fullbleed-counter-band"
+      },
+      "slots": [
+        {
+          "name": "gallery-eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "colStart": 1,
+          "copy": "GALLERY / INTERIOR"
+        },
+        {
+          "name": "gallery-counter",
+          "role": "counter",
+          "contract": "label",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "colStart": 11,
+          "colSpan": 2,
+          "copy": "01 / 12"
+        },
+        {
+          "name": "gallery-media",
+          "role": "media",
+          "contract": "image",
+          "mediaAspect": "wide",
+          "width": "full-bleed",
+          "z": "back",
+          "asset": {
+            "src": "About-img-5.jpg",
+            "alt": "Gallery interior under morning light",
+            "ratio": "landscape"
+          }
+        },
+        {
+          "name": "gallery-caption",
+          "role": "caption",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "copy": "The West Atrium under morning light \u2014 late-century works in dialogue with the timber frame."
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "gallery-media",
+          "axis": "horizontal",
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "marginal-caption",
+          "target": "gallery-caption",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "counterFormat": "01 / 12"
+      }
+    },
+    {
+      "id": "heritage-monument",
+      "useCase": "hero",
+      "archetype": "overlay",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "framed-inset-monument"
+      },
+      "grid": {
+        "columns": 12,
+        "gutter": "1.5rem"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "heritage-media"
+      },
+      "slots": [
+        {
+          "name": "heritage-eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "z": "front",
+          "colStart": 1,
+          "copy": "HERITAGE / COLLECTION"
+        },
+        {
+          "name": "heritage-media",
+          "role": "media",
+          "contract": "image",
+          "mediaAspect": "landscape",
+          "width": "framed",
+          "z": "mid",
+          "colStart": 2,
+          "colSpan": 10,
+          "asset": {
+            "src": "Web-gallery-1.jpg",
+            "alt": "Archival gallery interior",
+            "ratio": "landscape"
+          }
+        },
+        {
+          "name": "heritage-monument",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "width": "stretch",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 8,
+          "registration": {
+            "toSlot": "heritage-media",
+            "edge": "bottom",
+            "depthBaselines": 2,
+            "z": "front"
+          },
+          "copy": "1941 \u2014 2023"
+        },
+        {
+          "name": "heritage-note",
+          "role": "annotation",
+          "contract": "label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "z": "front",
+          "colStart": 10,
+          "colSpan": 2,
+          "copy": "Eight decades of collecting \u2014 from postwar canvases to living practice."
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "framed",
+          "target": "heritage-media",
+          "widthRel": {
+            "to": "container",
+            "ratio": 0.83
+          }
+        },
+        {
+          "kind": "straddle",
+          "target": "heritage-monument",
+          "registration": {
+            "toSlot": "heritage-media",
+            "edge": "bottom",
+            "depthBaselines": 2,
+            "z": "front"
+          },
+          "sanctioned": true,
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "straddleDepth": "half",
+        "monumentSpan": "8",
+        "decoCount": "0"
+      }
+    },
+    {
+      "id": "curator-quote",
+      "useCase": "testimonial",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "curator-quote-portrait-collage"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "curator-portrait"
+      },
+      "slots": [
+        {
+          "name": "curator-quote",
+          "role": "quote",
+          "contract": "quote",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "z": "front",
+          "copy": "\u201cWe don\u2019t hang the work on the walls \u2014 we let the building hold it, and the light decide the hour.\u201d"
+        },
+        {
+          "name": "curator-portrait",
+          "role": "media",
+          "contract": "image",
+          "mediaAspect": "portrait",
+          "width": "media",
+          "z": "mid",
+          "asset": {
+            "src": "About-img-3.jpg",
+            "alt": "Portrait of the chief curator",
+            "ratio": "portrait"
+          }
+        },
+        {
+          "name": "curator-name",
+          "role": "caption",
+          "contract": "label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "copy": "\u2014 Elena Varga, Chief Curator"
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "marginal-caption",
+          "target": "curator-name",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "portraitSide": "right"
+      }
+    },
+    {
+      "id": "visit-close",
+      "useCase": "cta",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "visit-map"
+      },
+      "slots": [
+        {
+          "name": "visit-header",
+          "role": "statement",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "z": "front",
+          "copy": {
+            "eyebrow": "VISIT",
+            "heading": "Plan your visit",
+            "text": "45 Timber Row, Old Harbour District. Open Tue\u2013Sun, 10:00\u201318:00. Free entry to the permanent collection.",
+            "cta": "Buy tickets"
+          }
+        },
+        {
+          "name": "visit-map",
+          "role": "media",
+          "contract": "image",
+          "mediaAspect": "landscape",
+          "width": "media",
+          "z": "mid",
+          "asset": {
+            "src": "Map.jpg",
+            "alt": "Map to Woodwave Gallery",
+            "ratio": "landscape"
+          }
+        },
+        {
+          "name": "newsletter",
+          "role": "form",
+          "contract": "form",
+          "textLen": "short",
+          "sizeClass": "body",
+          "z": "front",
+          "copy": {
+            "header": {
+              "eyebrow": "NEWSLETTER",
+              "heading": "Stay in the loop"
+            },
+            "fields": [
+              {
+                "label": "Email address"
+              }
+            ],
+            "submit": "Subscribe",
+            "note": "Exhibition openings and quiet-hour invitations, a few times a year."
+          }
+        },
+        {
+          "name": "site-footer",
+          "role": "footer",
+          "contract": "footer",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "z": "front",
+          "copy": {
+            "logo": "WOODWAVE",
+            "columns": [
+              "About / Gallery / Exhibition / Visit"
+            ],
+            "social": [
+              "Instagram",
+              "Twitter",
+              "Contact"
+            ],
+            "legal": "\u00a9 2024 Woodwave Gallery. Space as a muse."
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "stagger",
+          "target": "visit-map",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ]
+    }
+  ],
+  "rationale": "Six lean sections. Opens with the sanctioned bookend: an inverse masthead adapting type-behind-media-masthead \u2014 'WOODWAVE' at colossal scale sits z:back at full opacity, two portraits inside its span occlude it at medium budget with endsVisible, and it is the ONLY inverse/accent section. About, gallery, curator and visit run on cream/primary with no accent, staggered and photography-led. Heritage adapts framed-inset-monument as a second hero-family moment: the '1941 \u2014 2023' monument straddles the framed photo's bottom edge (sanctioned text-on-media, primary, no accent). Newsletter and slash-nav footer fold into the closing visit/cta to hold the page at six. Ghost 'ABOUT', marginal captions and the static gallery counter carry the brand's editorial signature; every input is underline, every action typographic \u2014 no buttons, cards on cream, shadows or hairline seams."
+}

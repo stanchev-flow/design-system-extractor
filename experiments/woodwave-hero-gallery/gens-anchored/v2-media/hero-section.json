@@ -1,0 +1,112 @@
+{
+  "id": "opening-bookend",
+  "useCase": "hero",
+  "archetype": "stack",
+  "surfaceIntent": "inverse",
+  "novelty": "adapt",
+  "seededFrom": {
+    "lib": "project",
+    "id": "hero-display-over-staggered-media"
+  },
+  "slots": [
+    {
+      "name": "eyebrow",
+      "role": "eyebrow",
+      "contract": "eyebrow",
+      "textLen": "short",
+      "sizeClass": "caption",
+      "width": "hug",
+      "z": "front",
+      "copy": "Est. 2019 \u2014 Portland, Oregon"
+    },
+    {
+      "name": "headline",
+      "role": "display-title",
+      "contract": "heading",
+      "textLen": "short",
+      "sizeClass": "colossal",
+      "width": "stretch",
+      "z": "front",
+      "copy": "WOODWAVE GALLERY"
+    },
+    {
+      "name": "support",
+      "role": "subheading",
+      "contract": "subheading",
+      "textLen": "medium",
+      "sizeClass": "body",
+      "width": "hug",
+      "z": "front",
+      "copy": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade."
+    },
+    {
+      "name": "cta",
+      "role": "cta",
+      "contract": "link",
+      "textLen": "word",
+      "sizeClass": "body",
+      "width": "hug",
+      "z": "front",
+      "copy": "Buy Tickets"
+    },
+    {
+      "name": "hero-media",
+      "role": "hero-media",
+      "contract": "image",
+      "textLen": "none",
+      "width": "media",
+      "mediaAspect": "landscape",
+      "z": "mid",
+      "asset": {
+        "src": "Web-gallery-1.jpg",
+        "alt": "WoodWave gallery interior, woodgrain and light",
+        "ratio": "landscape"
+      }
+    },
+    {
+      "name": "overlap-media",
+      "role": "overlap-media",
+      "contract": "image",
+      "textLen": "none",
+      "width": "media",
+      "mediaAspect": "portrait",
+      "z": "front",
+      "asset": null
+    }
+  ],
+  "treatments": [
+    {
+      "kind": "text-on-media",
+      "target": "display-title",
+      "over": "hero-media",
+      "sanctioned": true
+    },
+    {
+      "kind": "overlap",
+      "pair": [
+        "overlap-media",
+        "hero-media"
+      ],
+      "zOrder": [
+        "hero-media",
+        "overlap-media"
+      ],
+      "amount": {
+        "class": "medium"
+      }
+    },
+    {
+      "kind": "stagger",
+      "target": "overlap-media",
+      "axis": "vertical",
+      "amount": {
+        "class": "medium"
+      }
+    }
+  ],
+  "knobs": {
+    "align": "center",
+    "titleOverlap": "medium",
+    "overlapMediaSide": "right"
+  }
+}

@@ -1,0 +1,84 @@
+Seed: [project] hero-display-over-staggered-media (archetype stack, surface inverse) — provenance: ['opening-bookend']
+Model: claude-opus-4-8
+
+=== GEN Variant 1 :: overlap side — small image registered to the RIGHT edge ===
+  offGridExpansion=True (from style)
+  [attempt 0] 15.91s  in=16371 out=1473
+    gate: PASS
+  gen ok=True attempts=1 wall=16.9s | drift score=5.15 anchored=True deltas=["treatments ['overlap', 'stagger']→['overlap', 'stagger', 'text-on-media']", 'knobs changed', 'placement changed (cta, eyebrow, hero-media, overlap-media, title, wordmark)', 'slot count 5→6', 'copy changed']
+
+=== GEN Variant 2 :: media max-width — centered media at colSpan 9 (vs ~6), overlap preserved ===
+  offGridExpansion=True (from style)
+  [attempt 0] 16.17s  in=16379 out=1583
+    gate: PASS
+  gen ok=True attempts=1 wall=17.1s | drift score=5.15 anchored=True deltas=["treatments ['overlap', 'stagger']→['overlap', 'stagger', 'text-on-media']", 'knobs changed', 'placement changed (cta, eyebrow, headline, hero-media, overlap-media, subhead, support, title, wordmark)', 'slot count 5→6', 'copy changed']
+
+=== GEN Variant 3 :: aspect ratio — pano main media, portrait inset, same placement ===
+  offGridExpansion=True (from style)
+  [attempt 0] 16.86s  in=16386 out=1602
+    gate: PASS
+  gen ok=True attempts=1 wall=17.8s | drift score=5.15 anchored=True deltas=["treatments ['overlap', 'stagger']→['overlap', 'stagger', 'text-on-media']", 'knobs changed', 'placement changed (cta, eyebrow, headline, hero-media, overlap-media, subhead, support, title, wordmark)', 'slot count 5→6', 'copy changed']
+
+=== GEN Variant 4 :: image count — three overlapping images, declared registration + z-order ===
+  offGridExpansion=True (from style)
+  [attempt 0] 20.94s  in=16481 out=1891
+    gate: PASS
+  gen ok=True attempts=1 wall=21.9s | drift score=5.15 anchored=True deltas=["treatments ['overlap', 'stagger']→['overlap', 'stagger', 'text-on-media']", 'knobs changed', 'placement changed (counter-media, cta, eyebrow, headline, hero-media, overlap-media, subhead, support, title, wordmark)', 'slot count 5→7', 'copy changed', "assets [measured defaults]→['About-img-2.jpg']"]
+
+=== GEN Variant 5 :: background + corner — z:back full-bleed photo behind the heading, small z:front corner image ===
+  offGridExpansion=True (from style)
+  [attempt 0] 18.43s  in=16419 out=1567
+    gate: PASS
+  gen ok=True attempts=1 wall=19.3s | drift score=5.62 anchored=True deltas=["treatments ['overlap', 'stagger']→['overlap', 'stagger', 'text-on-media']", 'knobs changed', 'placement changed (corner-accent, cta, eyebrow, headline, hero-media, overlap-media, subhead, support, title, wordmark)', 'slot count 5→6', 'copy changed']
+
+=== ASSEMBLE :: original + 5 anchored variants (all dark+gold) ===
+  gate (--composition, comparison artifact): FAIL [('single-accent', 'accent-role elements applied=6 (<=1 expected per brand no-accent-* rule)')]
+  hoisted nav=True  heroes-inverse=True (6 heroes)  accent-classes=6  gold-hover=True  melodrama-500=True  shim=True
+  screenshot → /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/page-anchored/screenshot.png
+
+=== STANDALONE GATES (one inverse bookend per page) ===
+  screenshot → /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/anchored-shots/original-dark.png
+  standalone original: gate=PASS inverse=True accents=1
+  screenshot → /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/anchored-shots/v1-overlap-side-dark.png
+  standalone v1-overlap-side: gate=PASS inverse=True accents=1
+  screenshot → /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/anchored-shots/v2-media-width-dark.png
+  standalone v2-media-width: gate=PASS inverse=True accents=1
+  screenshot → /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/anchored-shots/v3-aspect-dark.png
+  standalone v3-aspect: gate=PASS inverse=True accents=1
+  screenshot → /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/anchored-shots/v4-image-count-dark.png
+  standalone v4-image-count: gate=PASS inverse=True accents=1
+  screenshot → /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/anchored-shots/v5-background-corner-dark.png
+  standalone v5-background-corner: gate=PASS inverse=True accents=1
+
+================ SUMMARY ================
+  V1: overlap side — small image registered to the RIGHT edge
+      archetype=stack novelty=adapt seededFrom={'lib': 'project', 'id': 'hero-display-over-staggered-media'}
+      drift score=5.15 (floor 2.5) anchored=True deltas=["treatments ['overlap', 'stagger']→['overlap', 'stagger', 'text-on-media']", 'knobs changed', 'placement changed (cta, eyebrow, hero-media, overlap-media, title, wordmark)', 'slot count 5→6', 'copy changed']
+      gen gate ok=True attempts=1 repair_fired=False out_tok=1473
+  V2: media max-width — centered media at colSpan 9 (vs ~6), overlap preserved
+      archetype=stack novelty=adapt seededFrom={'lib': 'project', 'id': 'hero-display-over-staggered-media'}
+      drift score=5.15 (floor 2.5) anchored=True deltas=["treatments ['overlap', 'stagger']→['overlap', 'stagger', 'text-on-media']", 'knobs changed', 'placement changed (cta, eyebrow, headline, hero-media, overlap-media, subhead, support, title, wordmark)', 'slot count 5→6', 'copy changed']
+      gen gate ok=True attempts=1 repair_fired=False out_tok=1583
+  V3: aspect ratio — pano main media, portrait inset, same placement
+      archetype=stack novelty=adapt seededFrom={'lib': 'project', 'id': 'hero-display-over-staggered-media'}
+      drift score=5.15 (floor 2.5) anchored=True deltas=["treatments ['overlap', 'stagger']→['overlap', 'stagger', 'text-on-media']", 'knobs changed', 'placement changed (cta, eyebrow, headline, hero-media, overlap-media, subhead, support, title, wordmark)', 'slot count 5→6', 'copy changed']
+      gen gate ok=True attempts=1 repair_fired=False out_tok=1602
+  V4: image count — three overlapping images, declared registration + z-order
+      archetype=stack novelty=adapt seededFrom={'lib': 'project', 'id': 'hero-display-over-staggered-media'}
+      drift score=5.15 (floor 2.5) anchored=True deltas=["treatments ['overlap', 'stagger']→['overlap', 'stagger', 'text-on-media']", 'knobs changed', 'placement changed (counter-media, cta, eyebrow, headline, hero-media, overlap-media, subhead, support, title, wordmark)', 'slot count 5→7', 'copy changed', "assets [measured defaults]→['About-img-2.jpg']"]
+      gen gate ok=True attempts=1 repair_fired=False out_tok=1891
+  V5: background + corner — z:back full-bleed photo behind the heading, small z:front corner image
+      archetype=stack novelty=adapt seededFrom={'lib': 'project', 'id': 'hero-display-over-staggered-media'}
+      drift score=5.62 (floor 2.5) anchored=True deltas=["treatments ['overlap', 'stagger']→['overlap', 'stagger', 'text-on-media']", 'knobs changed', 'placement changed (corner-accent, cta, eyebrow, headline, hero-media, overlap-media, subhead, support, title, wordmark)', 'slot count 5→6', 'copy changed']
+      gen gate ok=True attempts=1 repair_fired=False out_tok=1567
+
+  assembled page gate: FAIL [('single-accent', 'accent-role elements applied=6 (<=1 expected per brand no-accent-* rule)')] (comparison artifact)  nav: True  heroes-inverse: True  accents: 6  gold-hover: True  melodrama-500: True
+  standalone gates: 6/6 PASS
+    original: PASS (inverse=True, accents=1)
+    v1-overlap-side: PASS (inverse=True, accents=1)
+    v2-media-width: PASS (inverse=True, accents=1)
+    v3-aspect: PASS (inverse=True, accents=1)
+    v4-image-count: PASS (inverse=True, accents=1)
+    v5-background-corner: PASS (inverse=True, accents=1)
+  page: /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/page-anchored/index.html
+  screenshot: /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/page-anchored/screenshot.png

@@ -1,0 +1,22 @@
+{
+  "attempts": 1,
+  "stages": [
+    "gated"
+  ],
+  "caught": false,
+  "shipped_ok": true,
+  "verdict": "fixed (repaired to gate-green)",
+  "neverdo_hits": [],
+  "final_failures": [],
+  "telemetry": [
+    {
+      "attempt": 0,
+      "latency_s": 56.13,
+      "input_tokens": 13597,
+      "output_tokens": 5219,
+      "temperature": null,
+      "stage": "gated",
+      "gate_pass": true
+    }
+  ]
+}

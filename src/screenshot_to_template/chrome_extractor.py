@@ -95,8 +95,41 @@ def _pick_nav_block(html: str) -> tuple[str, str]:
     return "", ""
 
 
+FOOTER_CLASS_OPEN_RE = re.compile(
+    r"<(div|section|aside)\b[^>]*\bclass\s*=\s*([\"'])(?:(?!\2).)*?footer(?:(?!\2).)*?\2",
+    re.IGNORECASE,
+)
+
+
+def _pick_footer_class_block(html: str) -> tuple[str, str]:
+    """Fallback: outermost, bottom-most ``class*="footer"`` container.
+
+    Mirrors the v2 browser extractor's div.footer-* fallback so static-only runs
+    also catch non-semantic footers (e.g. Webflow ``div.footer-*``) instead of
+    returning nothing when no semantic ``<footer>`` exists.
+    """
+    blocks: list[tuple[str, int, int]] = []
+    for m in FOOTER_CLASS_OPEN_RE.finditer(html):
+        tag = m.group(1)
+        block = extract_balanced_block(html, tag, m.start())
+        if block and block[1] == m.start():
+            blocks.append(block)
+    if not blocks:
+        return "", ""
+    # Drop blocks fully contained inside another candidate (keep outermost).
+    outer = [
+        b for b in blocks
+        if not any(o is not b and o[1] <= b[1] and b[2] <= o[2] for o in blocks)
+    ]
+    outer.sort(key=lambda b: b[1])
+    fragment = outer[-1][0]
+    if len(fragment) > MAX_BLOCK_CHARS:
+        fragment = fragment[:MAX_BLOCK_CHARS]
+    return fragment, "div.footer"
+
+
 def _pick_footer_block(html: str) -> tuple[str, str]:
-    """Last <footer> in the document."""
+    """Last semantic <footer>; else fall back to a ``class*="footer"`` block."""
     last: tuple[str, int, int] | None = None
     pos = 0
     while pos < len(html):
@@ -106,7 +139,7 @@ def _pick_footer_block(html: str) -> tuple[str, str]:
         last = block
         pos = block[2]
     if not last:
-        return "", ""
+        return _pick_footer_class_block(html)
     fragment = last[0]
     if len(fragment) > MAX_BLOCK_CHARS:
         fragment = fragment[:MAX_BLOCK_CHARS]
@@ -272,6 +305,143 @@ def _footer_columns(fragment: str, base_url: str) -> list[dict[str, Any]]:
     return cols[:6]
 
 
+SOCIAL_NET_PATTERNS = [
+    (re.compile(r"facebook|fb\.com|fb\.me", re.I), "facebook"),
+    (re.compile(r"twitter\.com|x\.com", re.I), "twitter"),
+    (re.compile(r"linkedin", re.I), "linkedin"),
+    (re.compile(r"youtube|youtu\.be", re.I), "youtube"),
+    (re.compile(r"instagram|instagr\.am", re.I), "instagram"),
+    (re.compile(r"tiktok", re.I), "tiktok"),
+    (re.compile(r"github\.com", re.I), "github"),
+    (re.compile(r"threads\.net", re.I), "threads"),
+    (re.compile(r"pinterest", re.I), "pinterest"),
+    (re.compile(r"glassdoor", re.I), "glassdoor"),
+    (re.compile(r"discord", re.I), "discord"),
+    (re.compile(r"twitch\.tv", re.I), "twitch"),
+    (re.compile(r"reddit", re.I), "reddit"),
+    (re.compile(r"medium\.com", re.I), "medium"),
+    (re.compile(r"dribbble", re.I), "dribbble"),
+    (re.compile(r"vimeo", re.I), "vimeo"),
+    (re.compile(r"wa\.me|whatsapp", re.I), "whatsapp"),
+    (re.compile(r"t\.me|telegram", re.I), "telegram"),
+    (re.compile(r"mastodon", re.I), "mastodon"),
+    (re.compile(r"spotify\.com", re.I), "spotify"),
+]
+LEGAL_LINK_RE = re.compile(
+    r"privacy|terms|cookie|legal|accessib|gdpr|ccpa|do not sell|trademark|compliance|imprint|disclaimer",
+    re.I,
+)
+COPYRIGHT_RE = re.compile(r"(©|&copy;|\(c\)|copyright|all rights reserved)", re.I)
+
+
+def _social_network(haystack: str) -> str:
+    for pat, name in SOCIAL_NET_PATTERNS:
+        if pat.search(haystack or ""):
+            return name
+    return ""
+
+
+def _footer_social(fragment: str, base_url: str) -> list[dict[str, Any]]:
+    """Icon links / rel=me / known social hosts inside the footer."""
+    social: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for m in A_TAG_RE.finditer(fragment):
+        attrs = "<a " + m.group(1) + ">"
+        href = get_attr(attrs, "href")
+        if not href or href.startswith("#") or href.lower().startswith("javascript:"):
+            continue
+        rel = get_attr(attrs, "rel")
+        aria = get_attr(attrs, "aria-label") + " " + get_attr(attrs, "title")
+        cls = get_attr(attrs, "class")
+        inner = m.group(2)
+        img_alt = ""
+        im = IMG_TAG_RE.search(inner)
+        if im:
+            img_alt = get_attr(im.group(0), "alt") + " " + get_attr(im.group(0), "src")
+        net = _social_network(" ".join([href, aria, cls, img_alt]))
+        is_me = bool(re.search(r"(^|\s)me(\s|$)", rel))
+        if not net and not is_me:
+            continue
+        key = (net or href).lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        label = _visible_text(inner)
+        social.append(
+            {
+                "network": net or "link",
+                "href": _to_abs(href, base_url),
+                "label": label or aria.strip() or net,
+            }
+        )
+        if len(social) >= 12:
+            break
+    return social
+
+
+def _footer_legal(fragment: str, base_url: str) -> dict[str, Any]:
+    """Copyright line + legal nav links (privacy/terms/cookies/...)."""
+    text = ""
+    # Scan small text containers for a copyright line; keep the shortest match.
+    for m in re.finditer(r"<(p|span|small|div|li|address)\b[^>]*>(.*?)</\1>", fragment, re.I | re.S):
+        candidate = _visible_text(m.group(2))
+        if candidate and COPYRIGHT_RE.search(candidate) and len(candidate) <= 240:
+            if not text or len(candidate) < len(text):
+                text = candidate
+    links: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for m in A_TAG_RE.finditer(fragment):
+        label = _visible_text(m.group(2))
+        if not label or not LEGAL_LINK_RE.search(label):
+            continue
+        k = label.lower()
+        if k in seen:
+            continue
+        seen.add(k)
+        href = get_attr("<a " + m.group(1) + ">", "href")
+        links.append({"label": label, "href": _to_abs(href, base_url) if href else "#"})
+        if len(links) >= 8:
+            break
+    return {"text": text, "links": links}
+
+
+def _footer_newsletter(fragment: str, base_url: str) -> dict[str, Any] | None:
+    """An email input + submit living in the footer, if present."""
+    email_tag = ""
+    for im in re.finditer(r"<input\b[^>]*>", fragment, re.I):
+        tag = im.group(0)
+        ty = get_attr(tag, "type").lower()
+        meta = " ".join(
+            get_attr(tag, a) for a in ("name", "id", "placeholder", "aria-label")
+        ).lower()
+        if ty == "email" or (ty not in ("checkbox", "radio", "hidden") and re.search(r"e-?mail|newsletter|subscribe", meta)):
+            email_tag = tag
+            break
+    if not email_tag:
+        return None
+    submit_label = ""
+    bm = BUTTON_TAG_RE.search(fragment)
+    if bm:
+        submit_label = _visible_text(bm.group(2))
+    if not submit_label:
+        sm = re.search(r"<input\b[^>]*type\s*=\s*([\"'])(submit|button)\1[^>]*>", fragment, re.I)
+        if sm:
+            submit_label = get_attr(sm.group(0), "value")
+    action = ""
+    fm = re.search(r"<form\b[^>]*>", fragment, re.I)
+    if fm:
+        action = get_attr(fm.group(0), "action")
+    return {
+        "present": True,
+        "heading": "",
+        "placeholder": get_attr(email_tag, "placeholder"),
+        "emailName": get_attr(email_tag, "name"),
+        "action": _to_abs(action, base_url) if action else "",
+        "method": get_attr(fm.group(0), "method").lower() if fm else "",
+        "submitLabel": submit_label or "Subscribe",
+    }
+
+
 def extract_chrome_from_html(html: str, base_url: str, *, source_url: str = "") -> dict[str, Any]:
     nav_fragment, nav_tag = _pick_nav_block(html)
     footer_fragment, footer_tag = _pick_footer_block(html)
@@ -286,6 +456,9 @@ def extract_chrome_from_html(html: str, base_url: str, *, source_url: str = "") 
 
     footer_columns = _footer_columns(footer_fragment, base_url) if footer_fragment else []
     footer_logo = _parse_logo(footer_fragment, base_url) if footer_fragment else None
+    footer_social = _footer_social(footer_fragment, base_url) if footer_fragment else []
+    footer_legal = _footer_legal(footer_fragment, base_url) if footer_fragment else {"text": "", "links": []}
+    footer_newsletter = _footer_newsletter(footer_fragment, base_url) if footer_fragment else None
 
     return {
         "schema_version": CHROME_SCHEMA,
@@ -304,6 +477,9 @@ def extract_chrome_from_html(html: str, base_url: str, *, source_url: str = "") 
             "tag": footer_tag,
             "logo": footer_logo,
             "columns": footer_columns,
+            "social": footer_social,
+            "legal": footer_legal,
+            "newsletter": footer_newsletter,
         },
     }
 

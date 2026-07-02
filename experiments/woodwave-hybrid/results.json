@@ -1,0 +1,763 @@
+{
+  "inputs_md5": {
+    "brand.yaml": "7eab6632ea03522e811f1b777c05a549",
+    "signup-launch.md": "68ea09f261fa58707acdbddbfde8475d",
+    "editorial-luxury.md": "4bb79e0a4d6f4c81e5ca4d17b66723c9"
+  },
+  "model": "claude-opus-4-8",
+  "runs": [
+    {
+      "id": "run-1",
+      "temperature": null,
+      "directive": "Favor LIBRARY SEEDS: reuse the seeded patterns as-is (novelty:reuse) wherever they fit. A clean, confident, conventional signup page. Minimize novelty.",
+      "ok": true,
+      "attempts": 1,
+      "wall_s": 70.5,
+      "sections": [
+        {
+          "id": "hero",
+          "useCase": "hero",
+          "archetype": "split",
+          "novelty": "reuse",
+          "surfaceIntent": "inverse",
+          "seededFrom": {
+            "lib": "standard",
+            "id": "hero-split-media-copy"
+          }
+        },
+        {
+          "id": "gallery",
+          "useCase": "gallery",
+          "archetype": "collage",
+          "novelty": "adapt",
+          "surfaceIntent": "primary",
+          "seededFrom": {
+            "lib": "standard",
+            "id": "gallery-mosaic-with-overflow"
+          }
+        },
+        {
+          "id": "features",
+          "useCase": "features",
+          "archetype": "collage",
+          "novelty": "adapt",
+          "surfaceIntent": "primary",
+          "seededFrom": {
+            "lib": "standard",
+            "id": "features-split-feature"
+          }
+        },
+        {
+          "id": "social-proof",
+          "useCase": "testimonial",
+          "archetype": "split",
+          "novelty": "adapt",
+          "surfaceIntent": "panel",
+          "seededFrom": {
+            "lib": "standard",
+            "id": "features-split-feature"
+          }
+        },
+        {
+          "id": "cta",
+          "useCase": "cta",
+          "archetype": "stack",
+          "novelty": "novel",
+          "surfaceIntent": "primary",
+          "seededFrom": null
+        }
+      ],
+      "archetypes": [
+        "split",
+        "collage",
+        "collage",
+        "split",
+        "stack"
+      ],
+      "novelties": [
+        "reuse",
+        "adapt",
+        "adapt",
+        "adapt",
+        "novel"
+      ],
+      "distinct_archetypes": [
+        "collage",
+        "split",
+        "stack"
+      ],
+      "has_novel": true,
+      "scorecard": {
+        "layout": "opening-bookend",
+        "brand": "WoodWave Gallery",
+        "composition_mode": true,
+        "neverDo": {
+          "no-buttons": true,
+          "no-radius": true,
+          "no-shadows": true,
+          "no-gradients": true,
+          "no-cards-on-cream": true,
+          "no-accent-on-light": true,
+          "no-boxed-inputs": true,
+          "no-text-on-photos": true,
+          "no-section-hairlines": true,
+          "no-default-fonts": true,
+          "no-centered-everything": true
+        },
+        "neverDo_allowed": [],
+        "fidelity": {
+          "pass": true,
+          "checks": {
+            "Surface = brand surface/inverse (#3A2F23)": true,
+            "Display family present (Melodrama)": true,
+            "Heading copy from source present": true,
+            "Brand accent surfaced (#E9DC8C)": true,
+            "Brand media present (expect ~2)": true,
+            "Brand assets present (not placeholder)": true
+          }
+        },
+        "slop": {
+          "pass": true,
+          "checks": {
+            "No default/system display font": true,
+            "No off-palette hex colors": true,
+            "No lorem/placeholder copy": true,
+            "All brand image assets present": true,
+            "Rounding matches brand radius scale": true,
+            "Webfonts loaded (no silent system fallback)": true
+          }
+        },
+        "invariants": {
+          "mode": "hard",
+          "pass": true,
+          "checks": {
+            "single-accent": true,
+            "primitive-only": true,
+            "rhythm": true,
+            "data-composition": true,
+            "slot-resolution": true
+          }
+        },
+        "overall": true
+      },
+      "invariants": {
+        "single-accent": true,
+        "primitive-only": true,
+        "rhythm": true,
+        "data-composition": true,
+        "slot-resolution": true
+      },
+      "failures": [],
+      "schema_errors": [],
+      "neverdo_hits": [],
+      "screenshot": true,
+      "tokens": {
+        "input": 12265,
+        "output": 6267
+      },
+      "value_props_rendered": 3
+    },
+    {
+      "id": "run-2",
+      "temperature": null,
+      "directive": "ADAPT the seeded patterns: keep their shape but tune variantKnobs and swap a slot or two (novelty:adapt) to fit the brief tighter. Still library-grounded. Render the three value_props as a 3-module cards section.",
+      "ok": true,
+      "attempts": 1,
+      "wall_s": 57.4,
+      "sections": [
+        {
+          "id": "hero-bookend",
+          "useCase": "hero",
+          "archetype": "split",
+          "novelty": "adapt",
+          "surfaceIntent": "inverse",
+          "seededFrom": {
+            "lib": "standard",
+            "id": "hero-split-media-copy"
+          }
+        },
+        {
+          "id": "gallery-mosaic",
+          "useCase": "gallery",
+          "archetype": "collage",
+          "novelty": "adapt",
+          "surfaceIntent": "primary",
+          "seededFrom": {
+            "lib": "standard",
+            "id": "gallery-mosaic-with-overflow"
+          }
+        },
+        {
+          "id": "value-props",
+          "useCase": "features",
+          "archetype": "cards",
+          "novelty": "adapt",
+          "surfaceIntent": "primary",
+          "seededFrom": {
+            "lib": "standard",
+            "id": "features-split-feature"
+          }
+        },
+        {
+          "id": "social-proof",
+          "useCase": "testimonial",
+          "archetype": "split",
+          "novelty": "adapt",
+          "surfaceIntent": "panel",
+          "seededFrom": {
+            "lib": "standard",
+            "id": "features-split-feature"
+          }
+        },
+        {
+          "id": "conversion-stack",
+          "useCase": "cta",
+          "archetype": "stack",
+          "novelty": "adapt",
+          "surfaceIntent": "primary",
+          "seededFrom": null
+        }
+      ],
+      "archetypes": [
+        "split",
+        "collage",
+        "cards",
+        "split",
+        "stack"
+      ],
+      "novelties": [
+        "adapt",
+        "adapt",
+        "adapt",
+        "adapt",
+        "adapt"
+      ],
+      "distinct_archetypes": [
+        "cards",
+        "collage",
+        "split",
+        "stack"
+      ],
+      "has_novel": false,
+      "scorecard": {
+        "layout": "opening-bookend",
+        "brand": "WoodWave Gallery",
+        "composition_mode": true,
+        "neverDo": {
+          "no-buttons": true,
+          "no-radius": true,
+          "no-shadows": true,
+          "no-gradients": true,
+          "no-cards-on-cream": true,
+          "no-accent-on-light": true,
+          "no-boxed-inputs": true,
+          "no-text-on-photos": true,
+          "no-section-hairlines": true,
+          "no-default-fonts": true,
+          "no-centered-everything": true
+        },
+        "neverDo_allowed": [],
+        "fidelity": {
+          "pass": true,
+          "checks": {
+            "Surface = brand surface/inverse (#3A2F23)": true,
+            "Display family present (Melodrama)": true,
+            "Heading copy from source present": true,
+            "Brand accent surfaced (#E9DC8C)": true,
+            "Brand media present (expect ~2)": true,
+            "Brand assets present (not placeholder)": true
+          }
+        },
+        "slop": {
+          "pass": true,
+          "checks": {
+            "No default/system display font": true,
+            "No off-palette hex colors": true,
+            "No lorem/placeholder copy": true,
+            "All brand image assets present": true,
+            "Rounding matches brand radius scale": true,
+            "Webfonts loaded (no silent system fallback)": true
+          }
+        },
+        "invariants": {
+          "mode": "hard",
+          "pass": true,
+          "checks": {
+            "single-accent": true,
+            "primitive-only": true,
+            "rhythm": true,
+            "data-composition": true,
+            "slot-resolution": true
+          }
+        },
+        "overall": true
+      },
+      "invariants": {
+        "single-accent": true,
+        "primitive-only": true,
+        "rhythm": true,
+        "data-composition": true,
+        "slot-resolution": true
+      },
+      "failures": [],
+      "schema_errors": [],
+      "neverdo_hits": [],
+      "screenshot": true,
+      "tokens": {
+        "input": 12278,
+        "output": 4908
+      },
+      "value_props_rendered": 3
+    },
+    {
+      "id": "run-3",
+      "temperature": null,
+      "directive": "Propose AT LEAST ONE novelty:novel section (seededFrom:null) that the library lacks but the brief implies \u2014 recomposed within a drawable archetype and still obeying every neverDo. Keep the rest reuse/adapt.",
+      "ok": true,
+      "attempts": 1,
+      "wall_s": 63.9,
+      "sections": [
+        {
+          "id": "hero-bookend",
+          "useCase": "hero",
+          "archetype": "split",
+          "novelty": "reuse",
+          "surfaceIntent": "inverse",
+          "seededFrom": {
+            "lib": "standard",
+            "id": "hero-split-media-copy"
+          }
+        },
+        {
+          "id": "value-props-run",
+          "useCase": "features",
+          "archetype": "collage",
+          "novelty": "novel",
+          "surfaceIntent": "primary",
+          "seededFrom": null
+        },
+        {
+          "id": "gallery-mosaic",
+          "useCase": "gallery",
+          "archetype": "collage",
+          "novelty": "adapt",
+          "surfaceIntent": "primary",
+          "seededFrom": {
+            "lib": "standard",
+            "id": "gallery-mosaic-with-overflow"
+          }
+        },
+        {
+          "id": "social-proof",
+          "useCase": "testimonial",
+          "archetype": "split",
+          "novelty": "adapt",
+          "surfaceIntent": "panel",
+          "seededFrom": {
+            "lib": "standard",
+            "id": "features-split-feature"
+          }
+        },
+        {
+          "id": "conversion-stack",
+          "useCase": "cta",
+          "archetype": "stack",
+          "novelty": "adapt",
+          "surfaceIntent": "primary",
+          "seededFrom": null
+        }
+      ],
+      "archetypes": [
+        "split",
+        "collage",
+        "collage",
+        "split",
+        "stack"
+      ],
+      "novelties": [
+        "reuse",
+        "novel",
+        "adapt",
+        "adapt",
+        "adapt"
+      ],
+      "distinct_archetypes": [
+        "collage",
+        "split",
+        "stack"
+      ],
+      "has_novel": true,
+      "scorecard": {
+        "layout": "opening-bookend",
+        "brand": "WoodWave Gallery",
+        "composition_mode": true,
+        "neverDo": {
+          "no-buttons": true,
+          "no-radius": true,
+          "no-shadows": true,
+          "no-gradients": true,
+          "no-cards-on-cream": true,
+          "no-accent-on-light": true,
+          "no-boxed-inputs": true,
+          "no-text-on-photos": true,
+          "no-section-hairlines": true,
+          "no-default-fonts": true,
+          "no-centered-everything": true
+        },
+        "neverDo_allowed": [],
+        "fidelity": {
+          "pass": true,
+          "checks": {
+            "Surface = brand surface/inverse (#3A2F23)": true,
+            "Display family present (Melodrama)": true,
+            "Heading copy from source present": true,
+            "Brand accent surfaced (#E9DC8C)": true,
+            "Brand media present (expect ~2)": true,
+            "Brand assets present (not placeholder)": true
+          }
+        },
+        "slop": {
+          "pass": true,
+          "checks": {
+            "No default/system display font": true,
+            "No off-palette hex colors": true,
+            "No lorem/placeholder copy": true,
+            "All brand image assets present": true,
+            "Rounding matches brand radius scale": true,
+            "Webfonts loaded (no silent system fallback)": true
+          }
+        },
+        "invariants": {
+          "mode": "hard",
+          "pass": true,
+          "checks": {
+            "single-accent": true,
+            "primitive-only": true,
+            "rhythm": true,
+            "data-composition": true,
+            "slot-resolution": true
+          }
+        },
+        "overall": true
+      },
+      "invariants": {
+        "single-accent": true,
+        "primitive-only": true,
+        "rhythm": true,
+        "data-composition": true,
+        "slot-resolution": true
+      },
+      "failures": [],
+      "schema_errors": [],
+      "neverdo_hits": [],
+      "screenshot": true,
+      "tokens": {
+        "input": 12277,
+        "output": 5847
+      },
+      "value_props_rendered": 3
+    },
+    {
+      "id": "run-4",
+      "temperature": null,
+      "directive": "REORDER for a different narrative rhythm and alternate surfaces (primary/panel/inverse) section-to-section. Use a different archetype for the value_props than a plain card grid (e.g. interlock or collage).",
+      "ok": true,
+      "attempts": 2,
+      "wall_s": 95.5,
+      "sections": [
+        {
+          "id": "hero-bookend",
+          "useCase": "hero",
+          "archetype": "split",
+          "novelty": "reuse",
+          "surfaceIntent": "inverse",
+          "seededFrom": {
+            "lib": "standard",
+            "id": "hero-split-media-copy"
+          }
+        },
+        {
+          "id": "gallery-run",
+          "useCase": "gallery",
+          "archetype": "collage",
+          "novelty": "adapt",
+          "surfaceIntent": "primary",
+          "seededFrom": {
+            "lib": "standard",
+            "id": "gallery-mosaic-with-overflow"
+          }
+        },
+        {
+          "id": "value-props",
+          "useCase": "features",
+          "archetype": "interlock",
+          "novelty": "adapt",
+          "surfaceIntent": "panel",
+          "seededFrom": {
+            "lib": "standard",
+            "id": "features-split-feature"
+          }
+        },
+        {
+          "id": "social-proof",
+          "useCase": "testimonial",
+          "archetype": "split",
+          "novelty": "adapt",
+          "surfaceIntent": "primary",
+          "seededFrom": {
+            "lib": "standard",
+            "id": "features-split-feature"
+          }
+        },
+        {
+          "id": "conversion-stack",
+          "useCase": "cta",
+          "archetype": "stack",
+          "novelty": "reuse",
+          "surfaceIntent": "panel",
+          "seededFrom": null
+        }
+      ],
+      "archetypes": [
+        "split",
+        "collage",
+        "interlock",
+        "split",
+        "stack"
+      ],
+      "novelties": [
+        "reuse",
+        "adapt",
+        "adapt",
+        "adapt",
+        "reuse"
+      ],
+      "distinct_archetypes": [
+        "collage",
+        "interlock",
+        "split",
+        "stack"
+      ],
+      "has_novel": false,
+      "scorecard": {
+        "layout": "opening-bookend",
+        "brand": "WoodWave Gallery",
+        "composition_mode": true,
+        "neverDo": {
+          "no-buttons": true,
+          "no-radius": true,
+          "no-shadows": true,
+          "no-gradients": true,
+          "no-cards-on-cream": true,
+          "no-accent-on-light": true,
+          "no-boxed-inputs": true,
+          "no-text-on-photos": true,
+          "no-section-hairlines": true,
+          "no-default-fonts": true,
+          "no-centered-everything": true
+        },
+        "neverDo_allowed": [],
+        "fidelity": {
+          "pass": true,
+          "checks": {
+            "Surface = brand surface/inverse (#3A2F23)": true,
+            "Display family present (Melodrama)": true,
+            "Heading copy from source present": true,
+            "Brand accent surfaced (#E9DC8C)": true,
+            "Brand media present (expect ~2)": true,
+            "Brand assets present (not placeholder)": true
+          }
+        },
+        "slop": {
+          "pass": true,
+          "checks": {
+            "No default/system display font": true,
+            "No off-palette hex colors": true,
+            "No lorem/placeholder copy": true,
+            "All brand image assets present": true,
+            "Rounding matches brand radius scale": true,
+            "Webfonts loaded (no silent system fallback)": true
+          }
+        },
+        "invariants": {
+          "mode": "hard",
+          "pass": true,
+          "checks": {
+            "single-accent": true,
+            "primitive-only": true,
+            "rhythm": true,
+            "data-composition": true,
+            "slot-resolution": true
+          }
+        },
+        "overall": true
+      },
+      "invariants": {
+        "single-accent": true,
+        "primitive-only": true,
+        "rhythm": true,
+        "data-composition": true,
+        "slot-resolution": true
+      },
+      "failures": [],
+      "schema_errors": [],
+      "neverdo_hits": [],
+      "screenshot": true,
+      "tokens": {
+        "input": 24702,
+        "output": 9141
+      },
+      "value_props_rendered": 3
+    },
+    {
+      "id": "run-5",
+      "temperature": null,
+      "directive": "MAXIMIZE STRUCTURAL CONTRAST: make each section a DIFFERENT archetype (e.g. split, collage, cards, interlock, stack) so no two sections share a shape. Push editorial variety while staying on-brand and gate-legal.",
+      "ok": true,
+      "attempts": 3,
+      "wall_s": 125.7,
+      "sections": [
+        {
+          "id": "hero",
+          "useCase": "hero",
+          "archetype": "split",
+          "novelty": "reuse",
+          "surfaceIntent": "inverse",
+          "seededFrom": {
+            "lib": "standard",
+            "id": "hero-split-media-copy"
+          }
+        },
+        {
+          "id": "gallery",
+          "useCase": "gallery",
+          "archetype": "collage",
+          "novelty": "adapt",
+          "surfaceIntent": "primary",
+          "seededFrom": {
+            "lib": "standard",
+            "id": "gallery-mosaic-with-overflow"
+          }
+        },
+        {
+          "id": "features",
+          "useCase": "features",
+          "archetype": "cards",
+          "novelty": "adapt",
+          "surfaceIntent": "primary",
+          "seededFrom": {
+            "lib": "standard",
+            "id": "features-split-feature"
+          }
+        },
+        {
+          "id": "social-proof",
+          "useCase": "testimonial",
+          "archetype": "interlock",
+          "novelty": "adapt",
+          "surfaceIntent": "panel",
+          "seededFrom": null
+        },
+        {
+          "id": "cta",
+          "useCase": "cta",
+          "archetype": "stack",
+          "novelty": "reuse",
+          "surfaceIntent": "primary",
+          "seededFrom": null
+        }
+      ],
+      "archetypes": [
+        "split",
+        "collage",
+        "cards",
+        "interlock",
+        "stack"
+      ],
+      "novelties": [
+        "reuse",
+        "adapt",
+        "adapt",
+        "adapt",
+        "reuse"
+      ],
+      "distinct_archetypes": [
+        "cards",
+        "collage",
+        "interlock",
+        "split",
+        "stack"
+      ],
+      "has_novel": false,
+      "scorecard": {
+        "layout": "opening-bookend",
+        "brand": "WoodWave Gallery",
+        "composition_mode": true,
+        "neverDo": {
+          "no-buttons": true,
+          "no-radius": true,
+          "no-shadows": true,
+          "no-gradients": true,
+          "no-cards-on-cream": true,
+          "no-accent-on-light": true,
+          "no-boxed-inputs": true,
+          "no-text-on-photos": true,
+          "no-section-hairlines": true,
+          "no-default-fonts": true,
+          "no-centered-everything": true
+        },
+        "neverDo_allowed": [],
+        "fidelity": {
+          "pass": true,
+          "checks": {
+            "Surface = brand surface/inverse (#3A2F23)": true,
+            "Display family present (Melodrama)": true,
+            "Heading copy from source present": true,
+            "Brand accent surfaced (#E9DC8C)": true,
+            "Brand media present (expect ~2)": true,
+            "Brand assets present (not placeholder)": true
+          }
+        },
+        "slop": {
+          "pass": true,
+          "checks": {
+            "No default/system display font": true,
+            "No off-palette hex colors": true,
+            "No lorem/placeholder copy": true,
+            "All brand image assets present": true,
+            "Rounding matches brand radius scale": true,
+            "Webfonts loaded (no silent system fallback)": true
+          }
+        },
+        "invariants": {
+          "mode": "hard",
+          "pass": true,
+          "checks": {
+            "single-accent": true,
+            "primitive-only": true,
+            "rhythm": true,
+            "data-composition": true,
+            "slot-resolution": true
+          }
+        },
+        "overall": true
+      },
+      "invariants": {
+        "single-accent": true,
+        "primitive-only": true,
+        "rhythm": true,
+        "data-composition": true,
+        "slot-resolution": true
+      },
+      "failures": [],
+      "schema_errors": [],
+      "neverdo_hits": [],
+      "screenshot": true,
+      "tokens": {
+        "input": 37133,
+        "output": 12443
+      },
+      "value_props_rendered": 3
+    }
+  ]
+}

@@ -1,0 +1,275 @@
+{
+  "showcase": {
+    "page": "harvest-showcase",
+    "style": "editorial-luxury",
+    "sections": [
+      "hv-panel-on-media",
+      "hv-straddle-scrim",
+      "hv-framed-monument",
+      "hv-stepped-statement",
+      "hv-type-behind-media",
+      "hv-tucked-panorama",
+      "hv-staggered-columns",
+      "hv-seam-straddle"
+    ],
+    "devices": {
+      "card-over-portrait-statement": "G1 panel-on-media",
+      "boundary-straddle-headline": "G2 straddle (z:front) + G3 scrim-band",
+      "framed-inset-monument": "G4 framed + straddle bottom edge + G6 break-frame",
+      "stepped-overlay-statement": "G7 stepped-lines",
+      "type-behind-media-masthead": "G8 type-behind-media (occlusion contract)",
+      "tucked-headline-panorama": "G2 straddle z:back tuck + G5 mixed-face",
+      "staggered-caption-columns-3": "P1 per-column registered stagger",
+      "seam-straddle-portrait": "G9 banded seam + media-over-seam"
+    },
+    "gate_pass": true,
+    "failures": [],
+    "screenshot": true,
+    "index_html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-harvest/pages/harvest-showcase/index.html",
+    "fonts": {
+      "melodrama_font_face": true,
+      "face_400": true,
+      "face_500": true,
+      "display_weight_500": true,
+      "woff2_on_disk": true
+    }
+  },
+  "live": [
+    {
+      "id": "harvest-1",
+      "directive": "USE THE HARVESTED OVERLAY DEVICES. Seed the hero from `card-over-portrait-statement` or `boundary-straddle-headline` (novelty:adapt) and keep its panel-on-media / straddle + scrim-band treatments. Include ONE `banded` section seeded from `seam-straddle-portrait` (bands + a media straddle registered to the seam). Everything else reuse/adapt from the seed list.",
+      "ok": true,
+      "attempts": 1,
+      "wall_s": 154.7,
+      "archetypes": [
+        "overlay",
+        "split",
+        "stack-fullbleed",
+        "banded",
+        "stack",
+        "split",
+        "split",
+        "stack",
+        "stack"
+      ],
+      "harvest_seeded": [
+        "boundary-straddle-headline",
+        "seam-straddle-portrait"
+      ],
+      "new_treatments_used": [
+        "scrim-band",
+        "straddle"
+      ],
+      "n_sections": 9,
+      "failures": [],
+      "screenshot": false,
+      "index_html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-harvest/live/harvest-1/index.html",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "id": "harvest-3",
+      "directive": "USE THE TYPOGRAPHIC DEVICES. Include a hero seeded from `stepped-overlay-statement` keeping its stepped-lines treatment, and a gallery seeded from `staggered-caption-columns-3` (keep the per-column stagger; you may carry its mixed-face masthead with copy {lead, emphasis}). Everything else reuse/adapt from the seed list.",
+      "ok": true,
+      "attempts": 2,
+      "wall_s": 255.9,
+      "archetypes": [
+        "overlay",
+        "split",
+        "cards",
+        "split",
+        "stack",
+        "split",
+        "split",
+        "stack",
+        "stack"
+      ],
+      "harvest_seeded": [
+        "staggered-caption-columns-3",
+        "stepped-overlay-statement"
+      ],
+      "new_treatments_used": [
+        "mixed-face",
+        "stepped-lines"
+      ],
+      "n_sections": 9,
+      "failures": [],
+      "screenshot": false,
+      "index_html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-harvest/live/harvest-3/index.html",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "id": "harvest-2",
+      "directive": "USE THE OCCLUSION-CONTRACT DEVICES. Open with a hero seeded from `type-behind-media-masthead` (novelty:adapt): keep the type-behind-media treatment with maxOcclusion + endsVisible:true and the media span strictly inside the heading span; the hero's surfaceIntent MUST be exactly \"inverse\" (NOT inverse-strong). Include one section seeded from `tucked-headline-panorama` (z:back straddle tuck) or `framed-inset-monument` (framed width + bottom-edge straddle). EVERY text-target straddle / type-behind-media / text-on-media treatment MUST carry \"sanctioned\": true and live in the hero-family sections only. Keep the page LEAN \u2014 at most 6 sections, terse rationale, short copy \u2014 and everything else reuse/adapt.",
+      "ok": true,
+      "attempts": 1,
+      "wall_s": 148.0,
+      "archetypes": [
+        "overlay",
+        "split",
+        "stack-fullbleed",
+        "overlay",
+        "split",
+        "stack"
+      ],
+      "harvest_seeded": [
+        "framed-inset-monument",
+        "type-behind-media-masthead"
+      ],
+      "new_treatments_used": [
+        "framed",
+        "straddle",
+        "type-behind-media"
+      ],
+      "n_sections": 6,
+      "failures": [],
+      "screenshot": false,
+      "index_html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-harvest/live/harvest-2/index.html",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "id": "harvest-4",
+      "directive": "USE THE PANEL + TUCK DEVICES. Open with a hero seeded from `card-over-portrait-statement` (novelty:adapt): keep the panel-on-media treatment (solid panel over the full-bleed canvas, distribute space-between); the hero's surfaceIntent MUST be exactly \"inverse\". Include one section seeded from `tucked-headline-panorama`: keep its z:back straddle tuck with maxOcclusion {class: medium} + endsVisible:true, marked \"sanctioned\": true. You MAY add a break-frame treatment (salience \"decorative\", a small media slot with alignTo corner) on a framed section. Keep the page LEAN \u2014 at most 6 sections, terse rationale, short copy \u2014 everything else reuse/adapt.",
+      "ok": true,
+      "attempts": 1,
+      "wall_s": 119.2,
+      "archetypes": [
+        "overlay",
+        "split",
+        "stack-fullbleed",
+        "overlay",
+        "split",
+        "stack"
+      ],
+      "harvest_seeded": [
+        "card-over-portrait-statement",
+        "tucked-headline-panorama"
+      ],
+      "new_treatments_used": [
+        "framed",
+        "panel-on-media",
+        "straddle"
+      ],
+      "n_sections": 6,
+      "failures": [],
+      "screenshot": false,
+      "index_html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-harvest/live/harvest-4/index.html",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    }
+  ],
+  "lane": {
+    "published": [
+      {
+        "lane": "harvested-reference-patterns",
+        "label": "WoodWave \u2014 harvested reference patterns",
+        "url": "/runs/woodwave/brand/variants/harvested-reference-patterns/index.html",
+        "http": "200"
+      },
+      {
+        "lane": "harvested-reference-patterns-harvest-1",
+        "label": "WoodWave \u2014 harvested reference patterns \u00b7 live seed harvest-1",
+        "url": "/runs/woodwave/brand/variants/harvested-reference-patterns-harvest-1/index.html",
+        "http": "200"
+      },
+      {
+        "lane": "harvested-reference-patterns-harvest-3",
+        "label": "WoodWave \u2014 harvested reference patterns \u00b7 live seed harvest-3",
+        "url": "/runs/woodwave/brand/variants/harvested-reference-patterns-harvest-3/index.html",
+        "http": "200"
+      },
+      {
+        "lane": "harvested-reference-patterns-harvest-2",
+        "label": "WoodWave \u2014 harvested reference patterns \u00b7 live seed harvest-2",
+        "url": "/runs/woodwave/brand/variants/harvested-reference-patterns-harvest-2/index.html",
+        "http": "200"
+      },
+      {
+        "lane": "harvested-reference-patterns-harvest-4",
+        "label": "WoodWave \u2014 harvested reference patterns \u00b7 live seed harvest-4",
+        "url": "/runs/woodwave/brand/variants/harvested-reference-patterns-harvest-4/index.html",
+        "http": "200"
+      }
+    ],
+    "skipped": []
+  },
+  "shots": [
+    {
+      "lane": "harvested-reference-patterns",
+      "screenshot": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-harvest/shots/harvested-reference-patterns.png",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "lane": "harvested-reference-patterns-harvest-1",
+      "screenshot": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-harvest/shots/harvested-reference-patterns-harvest-1.png",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "lane": "harvested-reference-patterns-harvest-3",
+      "screenshot": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-harvest/shots/harvested-reference-patterns-harvest-3.png",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "lane": "harvested-reference-patterns-harvest-2",
+      "screenshot": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-harvest/shots/harvested-reference-patterns-harvest-2.png",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    },
+    {
+      "lane": "harvested-reference-patterns-harvest-4",
+      "screenshot": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-harvest/shots/harvested-reference-patterns-harvest-4.png",
+      "fonts": {
+        "melodrama_font_face": true,
+        "face_400": true,
+        "face_500": true,
+        "display_weight_500": true,
+        "woff2_on_disk": true
+      }
+    }
+  ]
+}

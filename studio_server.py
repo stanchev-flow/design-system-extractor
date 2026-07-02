@@ -50,6 +50,7 @@ PY = sys.executable
 
 sys.path.insert(0, str(PROJECT_DIR / "tools"))
 sys.path.insert(0, str(PROJECT_DIR / "src"))
+sys.path.insert(0, str(PROJECT_DIR / "brand_pipeline"))
 
 # In-memory job registry (also mirrored to disk for resilience across restarts).
 JOBS: dict[str, dict] = {}
@@ -151,6 +152,24 @@ def project_meta(version: str) -> dict:
             if shot and not thumb:
                 thumb = "/" + str(shot.relative_to(PROJECT_DIR)).replace("\\", "/")
             items.append({"name": item_dir.name, "has_shot": bool(shot)})
+    # Fall back to the local-folder input (screenshots/<version>/) when no run
+    # item had a screenshot.* — mirrors the project_detail left-lane fix.
+    if not thumb:
+        shots = SCREENSHOTS_DIR / version
+        if shots.is_dir():
+            imgs = [
+                p
+                for p in sorted(shots.iterdir())
+                if p.is_file()
+                and p.suffix.lower() in {".png", ".jpg", ".jpeg", ".webp", ".gif", ".avif"}
+            ]
+            vkey = version.lower().replace("-", "").replace("_", "")
+            pick = next(
+                (p for p in imgs if vkey in p.stem.lower().replace("-", "").replace("_", "")),
+                None,
+            ) or (imgs[0] if imgs else None)
+            if pick:
+                thumb = "/" + str(pick.relative_to(PROJECT_DIR)).replace("\\", "/")
     has_site = any((RUNS_DIR / version).glob("*/single/site-*.html"))
     created = meta.get("created", "")
     return {
@@ -163,6 +182,8 @@ def project_meta(version: str) -> dict:
         "thumb": thumb,
         "has_site": bool(has_site),
         "pipeline_status": pipeline_status(version, has_site=bool(has_site), created=created),
+        "brand_review": brand_review_summary(brand_renders(version)),
+        "catalog": catalog_summary(version),
     }
 
 
@@ -218,6 +239,191 @@ def site_rel(version: str, item: str, provider: str, *, framework: bool = False)
     if not chosen:
         return ""
     return "/" + str(chosen.relative_to(PROJECT_DIR)).replace("\\", "/")
+
+
+def compose_pages(version: str) -> list[dict]:
+    """Composed campaign pages for the lane dropdown.
+
+    Discovers every `runs/<version>/brand/compose/<brief>/index.html` (the AD-2
+    page composer output) and returns selectable lane options pointing at the HTML
+    via the existing runs/** static route. Generic over brand + brief: any project
+    with a composed page auto-appears; degrades to [] when none exist.
+    """
+    compose_dir = RUNS_DIR / version / "brand" / "compose"
+    if not compose_dir.is_dir():
+        return []
+    out: list[dict] = []
+    for brief_dir in sorted(p for p in compose_dir.iterdir() if p.is_dir()):
+        index = brief_dir / "index.html"
+        if not index.exists():
+            continue
+        out.append(
+            {
+                "label": f"Composed: {brief_dir.name}",
+                "url": "/" + str(index.relative_to(PROJECT_DIR)).replace("\\", "/"),
+            }
+        )
+    return out
+
+
+# Friendly labels for the variance-dial hero variants (render_hero_variants.py).
+_VARIANT_LABELS = {
+    "a": "Variant A — Safe",
+    "b": "Variant B — Bold",
+    "c": "Variant C — Wildcard",
+}
+
+
+def variant_pages(version: str) -> list[dict]:
+    """Hero variance-dial variants for the lane dropdown.
+
+    Discovers `runs/<version>/brand/variants/<name>/index.html` (e.g. the
+    render_hero_variants.py output, or any other variant dir) and returns selectable
+    lane options pointing at the HTML via the existing runs/** static route. Mirrors
+    compose_pages(): generic over brand, degrades to [] when no variants exist.
+
+    Labels: a `label.txt` file inside a variant dir (first non-empty line) wins, so
+    arbitrary-named variant dirs can carry a human name; otherwise the a|b|c friendly
+    names are used, falling back to `Variant <NAME>`. Follows symlinked variant dirs.
+    """
+    variants_dir = RUNS_DIR / version / "brand" / "variants"
+    if not variants_dir.is_dir():
+        return []
+    out: list[dict] = []
+    for sub in sorted(p for p in variants_dir.iterdir() if p.is_dir()):
+        index = sub / "index.html"
+        if not index.exists():
+            continue
+        label = _VARIANT_LABELS.get(sub.name.lower(), f"Variant {sub.name.upper()}")
+        label_file = sub / "label.txt"
+        if label_file.is_file():
+            custom = next((ln.strip() for ln in read_text(label_file).splitlines() if ln.strip()), "")
+            if custom:
+                label = custom
+        out.append(
+            {
+                "label": label,
+                "url": "/" + str(index.relative_to(PROJECT_DIR)).replace("\\", "/"),
+            }
+        )
+    return out
+
+
+def hero_gallery_lanes(version: str) -> list[dict]:
+    """Experiment lane: the WoodWave ANCHORED hero-variants page — the measured original
+    hero first ("Original (measured)"), then 5 single-axis variations of it, each generated
+    live via brand_pipeline/generate_composition.py SEEDED with the measured project pattern
+    `hero-display-over-staggered-media` (novelty:adapt) and passed through the drift-band +
+    onbrand_check --composition gates. SUPERSEDES the earlier free-invention hero gallery
+    (experiments/woodwave-hero-gallery/page/), which is deliberately not surfaced.
+
+    Lives in a self-contained experiment dir (experiments/woodwave-hero-gallery/
+    page-anchored/) rather than under runs/, and is served by the static handler
+    (PROJECT_DIR root). Scoped to the woodwave project; degrades to [] when the page hasn't
+    been built yet. The vNN · MM-DD HH:MM version prefix is applied dynamically by
+    versioned_lanes() from the output mtime.
+    """
+    if version != "woodwave":
+        return []
+    index = PROJECT_DIR / "experiments" / "woodwave-hero-gallery" / "page-anchored" / "index.html"
+    if not index.exists():
+        return []
+    return [{
+        "label": "WoodWave — anchored hero variants (live)",
+        "url": "/" + str(index.relative_to(PROJECT_DIR)).replace("\\", "/"),
+    }]
+
+
+def static_brand_lanes(version: str) -> list[dict]:
+    """Static brand-level preview lanes for the lane dropdown.
+
+    Mirrors compose_pages()/variant_pages() but points at fixed per-brand artifacts
+    under runs/<version>/brand/. Generic over brand/version (never hardcodes one):
+
+      - "Components preview" -> brand/components-preview/index.html
+        (render_components_preview.py output); listed only when present.
+      - "Exact nav/footer" -> brand/chrome/index.html
+        (produced by a separate stage). Always listed so the lane exists; if that
+        index.html is not present yet the URL 404s cleanly via the static handler
+        (graceful, no crash) and the lane simply shows the 404 placeholder.
+    """
+    brand_dir = RUNS_DIR / version / "brand"
+
+    def rel(p: Path) -> str:
+        return "/" + str(p.relative_to(PROJECT_DIR)).replace("\\", "/")
+
+    out: list[dict] = []
+    preview = brand_dir / "components-preview" / "index.html"
+    if preview.exists():
+        out.append({"label": "Components preview", "url": rel(preview)})
+    # Always expose the chrome lane; it degrades to a clean 404 when its file is
+    # absent (the other worker produces it), rather than disappearing or crashing.
+    chrome = brand_dir / "chrome" / "index.html"
+    out.append({"label": "Exact nav/footer", "url": rel(chrome)})
+    return out
+
+
+# Matches a previously-applied version prefix so relabeling is idempotent:
+# "v07 · 07-01 20:08 · <name>" → strips back to "<name>" before re-prefixing.
+_VERSION_PREFIX_RE = re.compile(r"^v\d+\s·\s\d{2}-\d{2}\s\d{2}:\d{2}\s·\s")
+
+
+def _strip_version_prefix(label: str) -> str:
+    """Remove an existing `vNN · MM-DD HH:MM · ` prefix (idempotent relabeling)."""
+    return _VERSION_PREFIX_RE.sub("", label or "").strip()
+
+
+def _lane_mtime(url: str) -> float:
+    """Recency signal for a lane: mtime of its rendered output file.
+
+    `url` is a site-relative path (e.g. "/runs/woodwave/brand/.../index.html").
+    Returns 0.0 when the file is missing so absent lanes sort as oldest and never
+    crash the payload.
+    """
+    if not url:
+        return 0.0
+    try:
+        return (PROJECT_DIR / url.lstrip("/")).stat().st_mtime
+    except OSError:
+        return 0.0
+
+
+def versioned_lanes(raw: list[dict]) -> list[dict]:
+    """Attach a recency version prefix to every lane and return them newest-first.
+
+    Each input lane is `{"label", "url"}`. We rank all lanes by the mtime of their
+    rendered output (oldest→newest) and assign a zero-padded sequential vNN so the
+    HIGHEST vNN is the MOST CURRENT run. Labels become:
+
+        vNN · MM-DD HH:MM · <existing descriptive name>
+
+    Ordering is made newest-first by sorting on mtime descending here (server-side),
+    so it does not depend on alphabetical label order. Idempotent: any existing
+    `vNN · … · ` prefix on the incoming label is stripped before re-prefixing, so
+    re-running never stacks prefixes.
+    """
+    lanes = [
+        {"label": _strip_version_prefix(l["label"]), "url": l["url"], "mtime": _lane_mtime(l["url"])}
+        for l in raw
+        if l.get("url")
+    ]
+    total = len(lanes)
+    pad = max(2, len(str(total)))
+    # Ascending by recency → oldest gets v01, newest gets the highest number. The
+    # `url` tiebreaker gives a deterministic total order when two outputs share an
+    # mtime (e.g. a batch regeneration writes several files in the same instant).
+    ranked = sorted(lanes, key=lambda x: (x["mtime"], x["url"]))
+    for i, lane in enumerate(ranked):
+        n = i + 1
+        if lane["mtime"] > 0:
+            ts = time.strftime("%m-%d %H:%M", time.localtime(lane["mtime"]))
+        else:
+            ts = "--??"
+        lane["label"] = f"v{n:0{pad}d} · {ts} · {lane['label']}"
+    # Newest-first for the dropdown: reverse the SAME ranked list so display order is
+    # the exact inverse of the vNN assignment (highest vNN always at top). A second
+    # independent descending sort would NOT reverse tied-mtime groups, so we reverse.
+    return [{"label": l["label"], "url": l["url"]} for l in reversed(ranked)]
 
 
 _HEX_RE = re.compile(r"^#?[0-9a-fA-F]{3,8}$")
@@ -343,6 +549,25 @@ def project_detail(version: str) -> dict:
     item = item_dir.name if item_dir else (m["items"][0]["name"] if m["items"] else "")
     single = (item_dir / "single") if item_dir else None
     shot = next(iter(sorted(item_dir.glob("screenshot.*"))), None) if item_dir else None
+    # Fall back to the local-folder input (screenshots/<version>/) when the run
+    # item has no screenshot.* — this is the case for brands captured via the
+    # "Save Page As" folder contract rather than the legacy run pipeline.
+    if not shot:
+        shots = SCREENSHOTS_DIR / version
+        if shots.is_dir():
+            imgs = [
+                p
+                for p in sorted(shots.iterdir())
+                if p.is_file()
+                and p.suffix.lower() in {".png", ".jpg", ".jpeg", ".webp", ".gif", ".avif"}
+            ]
+            # Prefer a file whose name matches the brand (e.g. woodwave.webp) over
+            # any other captured image (e.g. an unrelated catalog screenshot).
+            vkey = version.lower().replace("-", "").replace("_", "")
+            shot = next(
+                (p for p in imgs if vkey in p.stem.lower().replace("-", "").replace("_", "")),
+                None,
+            ) or (imgs[0] if imgs else None)
 
     def doc(name: str) -> str:
         return read_text(single / name) if single else ""
@@ -396,15 +621,51 @@ def project_detail(version: str) -> dict:
         docs["grounding"] = docs["structural"]
 
     assets = load_assets(version)
+
+    # Unified, recency-sorted lane list for the preview dropdowns. Every lane (the
+    # framework/vanilla site outputs, hero variants, composed pages, and the static
+    # brand lanes) is gathered here so a single global sort by output mtime can drive
+    # both the version prefix (vNN) and the newest-first ordering. Built server-side
+    # because compose/static/framework lanes have no label.txt to carry a prefix.
+    _raw_site_lanes = [
+        ("Claude · Framework", site_rel(version, item, "claude", framework=True) if item else ""),
+        ("GPT-5.5 · Framework", site_rel(version, item, "gpt55", framework=True) if item else ""),
+        ("Claude · Vanilla HTML", site_rel(version, item, "claude") if item else ""),
+        ("GPT-5.5 · Vanilla HTML", site_rel(version, item, "gpt55") if item else ""),
+        ("Gemini · Vanilla HTML", site_rel(version, item, "gemini") if item else ""),
+    ]
+    _raw_lanes = [{"label": lbl, "url": url} for lbl, url in _raw_site_lanes if url]
+    _raw_lanes += variant_pages(version)
+    _raw_lanes += compose_pages(version)
+    _raw_lanes += static_brand_lanes(version)
+    _raw_lanes += hero_gallery_lanes(version)
+    lanes = versioned_lanes(_raw_lanes)
+
+    # On-brand review: per-section renders + links to the canonical brand docs.
+    renders = brand_renders(version)
+    brand_dir = vdir / "brand"
+
+    def brand_doc_url(name: str) -> str:
+        p = brand_dir / name
+        return ("/" + str(p.relative_to(PROJECT_DIR)).replace("\\", "/")) if p.exists() else ""
+
     return {
         **m,
         "item": item,
+        "brand_renders": renders,
+        "brand_yaml_url": brand_doc_url("brand.yaml"),
+        "brand_md_url": brand_doc_url("brand.md"),
+        "catalog": load_catalog(version),
         "screenshot": ("/" + str(shot.relative_to(PROJECT_DIR)).replace("\\", "/")) if shot else "",
         "site_claude": site_rel(version, item, "claude") if item else "",
         "site_gpt55": site_rel(version, item, "gpt55") if item else "",
         "site_claude_framework": site_rel(version, item, "claude", framework=True) if item else "",
         "site_gpt55_framework": site_rel(version, item, "gpt55", framework=True) if item else "",
         "site_gemini": site_rel(version, item, "gemini") if item else "",
+        "composed_pages": compose_pages(version),
+        "variant_pages": variant_pages(version),
+        "static_lanes": static_brand_lanes(version),
+        "lanes": lanes,
         # Back-compat keys
         "contract": docs["contract"],
         "contract_audit": docs["contract_audit"],
@@ -438,6 +699,196 @@ def load_assets(version: str) -> dict:
         )
     roles = sorted(by_role, key=lambda k: -len(by_role[k]))
     return {"total": data.get("total_logical_assets", 0), "by_role": by_role, "roles": roles}
+
+
+# ── on-brand render review (brand thin-spine outputs) ──────────────────────────
+def _verdict_in(pattern: str, text: str) -> str:
+    """First PASS/FAIL token following `pattern` on the same line (tolerant)."""
+    m = re.search(pattern + r"[^\n]*?\b(PASS|FAIL)\b", text, re.IGNORECASE)
+    return m.group(1).upper() if m else ""
+
+
+def parse_onbrand_report(md_path: Path) -> dict:
+    """Tolerant parse of an onbrand-report.md → overall verdict + 3 sub-criteria.
+
+    Degrades gracefully: a missing/empty report yields empty verdicts. Sub-criteria
+    are matched by their section heading keywords (neverDo / Fidelity / Slop); the
+    overall verdict falls back to the worst sub-criterion when no OVERALL line exists.
+    """
+    text = read_text(md_path)
+    if not text.strip():
+        return {"verdict": "", "criteria": {"neverDo": "", "fidelity": "", "slop": ""}}
+    criteria = {
+        "neverDo": _verdict_in(r"neverDo\b", text),
+        "fidelity": _verdict_in(r"Fidelity\b", text),
+        "slop": _verdict_in(r"Slop\b", text),
+    }
+    overall = _verdict_in(r"OVERALL\b", text)
+    if not overall:
+        present = [v for v in criteria.values() if v]
+        if present:
+            overall = "FAIL" if "FAIL" in present else "PASS"
+    return {"verdict": overall, "criteria": criteria}
+
+
+def brand_renders(version: str) -> list[dict]:
+    """Discover per-section brand renders for the on-brand review panel.
+
+    Globs runs/<version>/brand/render/section-*/ generically, so a run shows up
+    automatically once its render files exist. Resolves the generated preview and
+    the source crop from each section's assets/ dir (by glob), and the verdict from
+    onbrand-report.md. Returns [] when no render dir is present.
+    """
+    render_dir = RUNS_DIR / version / "brand" / "render"
+    if not render_dir.is_dir():
+        return []
+
+    def rel(p: Path) -> str:
+        return "/" + str(p.relative_to(PROJECT_DIR)).replace("\\", "/")
+
+    out: list[dict] = []
+    for sect in sorted(render_dir.glob("section-*")):
+        if not sect.is_dir():
+            continue
+        assets = sect / "assets"
+
+        def first_glob(*patterns: str) -> str:
+            if not assets.is_dir():
+                return ""
+            for pat in patterns:
+                hits = sorted(p for p in assets.glob(pat) if p.is_file())
+                if hits:
+                    return rel(hits[0])
+            return ""
+
+        index = sect / "index.html"
+        preview = first_glob("_preview-render*", "_preview*", "*preview*.png")
+        source = first_glob("_source*crop*", "_source*", "*source*crop*")
+        report = parse_onbrand_report(sect / "onbrand-report.md")
+        out.append(
+            {
+                "name": sect.name[len("section-"):] or sect.name,
+                "html_url": rel(index) if index.exists() else "",
+                "preview_png_url": preview,
+                "source_crop_url": source,
+                "report_summary": report["verdict"] or "no report",
+                "verdict": report["verdict"],
+                "criteria": report["criteria"],
+            }
+        )
+    return out
+
+
+def brand_review_summary(renders: list[dict]) -> dict:
+    """Roll up discovered renders into a dashboard badge: {count, verdict}."""
+    if not renders:
+        return {"count": 0, "verdict": ""}
+    verdicts = [r["verdict"] for r in renders if r["verdict"]]
+    overall = ("FAIL" if "FAIL" in verdicts else "PASS") if verdicts else ""
+    return {"count": len(renders), "verdict": overall}
+
+
+# ── studio catalog (slot-contract catalog from render_catalog.py) ──────────────
+def load_origin_catalog(version: str) -> dict:
+    """Build the tier-grouped extracted-vs-designed origin catalog LIVE from a
+    project's brand.yaml (not the possibly-stale catalog.json), so it works for any
+    brand whose brand.yaml carries `origin` fields (WoodWave now, HubSpot later).
+
+    Reuses render_catalog.build_origin_catalog as the single source of truth and
+    degrades gracefully ({"hasOrigin": False, "tiers": []}) on any missing file,
+    parse error, or brand.yaml without `origin` tagging.
+    """
+    empty = {"hasOrigin": False, "tiers": []}
+    path = RUNS_DIR / version / "brand" / "brand.yaml"
+    if not path.is_file():
+        return empty
+    try:
+        doc = yaml.safe_load(path.read_text()) or {}
+    except Exception:
+        return empty
+    if not isinstance(doc, dict):
+        return empty
+    try:
+        import render_catalog  # brand_pipeline/render_catalog.py (on sys.path)
+
+        oc = render_catalog.build_origin_catalog(doc)
+        return oc if isinstance(oc, dict) else empty
+    except Exception:
+        return empty
+
+
+def load_catalog(version: str) -> dict:
+    """Discover + parse a brand's slot-contract catalog for the project detail.
+
+    Globs runs/<version>/brand/catalog/catalog.json generically, so any brand's
+    catalog auto-appears once render_catalog.py has emitted it. Returns the parsed
+    contract plus server-relative URLs for the self-contained HTML + JSON, and the
+    tier-grouped origin catalog (extracted vs designed) read live from brand.yaml.
+    Degrades to {} when neither a slot-contract catalog nor origin data exists.
+    """
+    brand_dir = RUNS_DIR / version / "brand"
+    if not brand_dir.is_dir():
+        return {}
+    origin_catalog = load_origin_catalog(version)
+    matches = sorted(brand_dir.glob("catalog/catalog.json"))
+    if not matches:
+        # No slot-contract catalog yet — still surface the origin catalog if the
+        # brand.yaml carries `origin` data, so the badges appear without a rebuild.
+        if origin_catalog.get("hasOrigin"):
+            return {
+                "brand": version,
+                "index_url": "",
+                "json_url": "",
+                "components": [],
+                "sections": [],
+                "ambiguousSlots": [],
+                "typeInference": {},
+                "counts": {"components": 0, "sections": 0, "media": 0, "content": 0},
+                "originCatalog": origin_catalog,
+            }
+        return {}
+    json_path = matches[0]
+    catalog_dir = json_path.parent
+    try:
+        data = json.loads(json_path.read_text())
+    except Exception:
+        return {}
+
+    def rel(p: Path) -> str:
+        return "/" + str(p.relative_to(PROJECT_DIR)).replace("\\", "/")
+
+    index_html = catalog_dir / "index.html"
+    components = data.get("components", []) or []
+    sections = data.get("sections", []) or []
+    return {
+        "brand": data.get("brand", version),
+        "index_url": rel(index_html) if index_html.exists() else "",
+        "json_url": rel(json_path),
+        "components": components,
+        "sections": sections,
+        "ambiguousSlots": data.get("ambiguousSlots", []) or [],
+        "typeInference": data.get("typeInference", {}) or {},
+        "counts": {
+            "components": len(components),
+            "sections": len(sections),
+            "media": sum(1 for c in components if c.get("type") == "media"),
+            "content": sum(1 for c in components if c.get("type") == "content"),
+        },
+        # Tier-grouped extracted-vs-designed catalog, read live from brand.yaml.
+        "originCatalog": origin_catalog,
+    }
+
+
+def catalog_summary(version: str) -> dict:
+    """Lightweight dashboard badge: {sections, components, has}."""
+    cat = load_catalog(version)
+    if not cat:
+        return {"has": False, "sections": 0, "components": 0}
+    return {
+        "has": True,
+        "sections": cat["counts"]["sections"],
+        "components": cat["counts"]["components"],
+    }
 
 
 # ── asset harvesting from the live URL (best-effort, no headless browser) ──────
@@ -703,6 +1154,15 @@ class StudioHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(PROJECT_DIR), **kwargs)
 
+    def end_headers(self):
+        # STATIC runs/** files (composed pages, variants) are regenerated in place many
+        # times per session; without this the browser serves STALE copies — twice now a
+        # reviewer flagged "slop" that was already fixed on disk (a phantom bug hunt each
+        # time). The API/HTML handlers already send no-store; this covers the default
+        # SimpleHTTPRequestHandler file-serving path too.
+        self.send_header("Cache-Control", "no-store")
+        super().end_headers()
+
     def log_message(self, fmt, *args):  # quieter console
         pass
 
@@ -724,6 +1184,31 @@ class StudioHandler(SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def _send_text(self, text: str, status: int = 200) -> None:
+        body = text.encode("utf-8")
+        self.send_response(status)
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Cache-Control", "no-store")
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _send_brandfile(self, version: str, which: str) -> None:
+        """Serve runs/<version>/brand/brand.{yaml,md} as raw text for inline viewing.
+
+        Generic over brand/version: any run with the files works. Resolves under
+        RUNS_DIR and refuses paths that escape it; a missing file yields 404 so the
+        client shows a graceful "not generated yet" placeholder.
+        """
+        fname = {"yaml": "brand.yaml", "md": "brand.md"}.get(which, "")
+        if not fname:
+            return self._send_text("unknown file", status=400)
+        runs_root = RUNS_DIR.resolve()
+        target = (RUNS_DIR / version / "brand" / fname).resolve()
+        if runs_root not in target.parents or not target.is_file():
+            return self._send_text("not generated yet", status=404)
+        return self._send_text(read_text(target))
+
     def do_GET(self):  # noqa: N802
         path = urlparse(self.path).path
         if path in ("/", "/studio", "/studio/"):
@@ -738,6 +1223,11 @@ class StudioHandler(SimpleHTTPRequestHandler):
                 job = {"status": "unknown"}
             job["output"] = tail(job.get("log", str(STUDIO_DIR / f"{job_id}.log")))
             return self._send_json(job)
+        if path == "/api/brandfile":
+            qs = parse_qs(urlparse(self.path).query)
+            version = unquote((qs.get("version") or [""])[0])
+            which = (qs.get("which") or [""])[0]
+            return self._send_brandfile(version, which)
         if path.startswith("/api/project/"):
             version = unquote(path.rsplit("/", 1)[-1])
             return self._send_json(project_detail(version))
@@ -855,6 +1345,9 @@ PAGE_HEAD = """<!doctype html><html lang="en"><head><meta charset="utf-8">
   .b-err  { background: hsl(0 72% 51% / .16); color: hsl(0 80% 75%); }
   .b-idle { background: hsl(240 5% 30% / .35); color: hsl(240 5% 70%); }
   .b-fail { background: hsl(0 72% 51% / .16); color: hsl(0 80% 75%); }
+  /* origin pills: extracted = solid green ("from page"); designed = dashed outline ("synthesized, overridable") */
+  .b-extracted { background: hsl(152 60% 45% / .18); color: hsl(152 70% 72%); border:1px solid hsl(152 60% 45% / .55); }
+  .b-designed  { background: transparent; color: hsl(210 90% 74%); border:1px dashed hsl(210 85% 65% / .75); }
   .drop { border:2px dashed hsl(240 3.7% 22%); border-radius:12px; padding:22px; text-align:center; cursor:pointer; transition:.15s; }
   .drop.over { border-color: hsl(152 60% 45%); background: hsl(152 60% 45% / .06); }
   a { color: inherit; }
@@ -979,24 +1472,18 @@ function pollJob(jobId, version) {
   tick();
 }
 
-async function rerunProject(version, e) {
-  if (e) { e.preventDefault(); e.stopPropagation(); }
-  const res = await fetch("/api/projects/" + encodeURIComponent(version) + "/rerun", { method: "POST" });
-  const data = await res.json();
-  if (data.error) { alert(data.error); return; }
-  pollJob(data.job_id, data.version);
-}
-
 async function loadProjects() {
   const r = await fetch("/api/projects"); const { projects } = await r.json();
   $("projects").innerHTML = projects.map(p => {
     const st = statusBadge(p.pipeline_status);
     const shot = p.thumb || "";
-    const rerun = p.created ? `<button type="button" class="btn btn-ghost text-xs h-8 px-2 rerun-btn" data-v="${p.version}">Re-run</button>` : "";
+    const br = p.brand_review || {};
+    const brCls = br.verdict === "PASS" ? "b-done" : br.verdict === "FAIL" ? "b-fail" : "b-idle";
+    const brBadge = br.count ? `<span class="badge ${brCls}" title="${br.count} on-brand render(s)">on-brand: ${br.verdict || ("×" + br.count)}</span>` : "";
     return `<a href="/project/${p.version}" class="card p-4 block hover:border-emerald-500/40 transition-colors">
       <div class="flex items-center justify-between gap-2 mb-2">
         <div class="font-semibold truncate">${p.title || p.version}</div>
-        <div class="flex items-center gap-2 shrink-0">${st}${rerun}</div>
+        <div class="flex items-center gap-2 shrink-0">${brBadge}${st}</div>
       </div>
       <div class="text-xs text-zinc-500 truncate mb-3">${p.url || p.version}</div>
       <div class="rounded-lg overflow-hidden bg-black/30 h-32 flex items-center justify-center">
@@ -1004,7 +1491,6 @@ async function loadProjects() {
       </div>
     </a>`;
   }).join("") || '<div class="text-zinc-500 text-sm">No projects yet. Click “New project”.</div>';
-  document.querySelectorAll(".rerun-btn").forEach(b => b.onclick = (e) => rerunProject(b.dataset.v, e));
 }
 loadProjects();
 </script></body></html>"""
@@ -1033,16 +1519,8 @@ def render_detail(version: str) -> str:
     <div class="flex items-center gap-2 shrink-0">
       <select id="proj-switch" title="Switch project"></select>
       <span id="t-status" class="badge b-idle"></span>
-      <button id="rerun-btn" type="button" class="btn btn-primary">Re-run pipeline</button>
       <button id="info-toggle" type="button" class="btn btn-ghost">Info ◂</button>
     </div>
-  </div>
-
-  <div id="job-card" class="card m-4 p-4" style="display:none">
-    <div class="flex items-center justify-between mb-2">
-      <h2 class="font-semibold text-sm">Run log <span id="job-status" class="badge b-run">running</span></h2>
-    </div>
-    <pre id="job-log" class="text-xs text-zinc-300 bg-black/40 rounded-lg p-3 max-h-60 overflow-auto"></pre>
   </div>
 
   <div class="flex-1 flex min-h-0">
@@ -1059,8 +1537,8 @@ def render_detail(version: str) -> str:
       </section>
       <section class="lane card overflow-hidden flex flex-col min-w-[320px] flex-1">
         <div class="px-2 border-b border-zinc-800 flex items-center gap-2 shrink-0" style="height:46px">
-          <select data-lane="a" class="max-w-full"></select>
-          <a data-lane="a" class="lane-open ml-auto text-[11px] text-emerald-400 hover:underline" target="_blank" style="display:none">open ↗</a>
+          <select data-lane="a" class="min-w-0 flex-1 truncate"></select>
+          <a data-lane="a" class="lane-open ml-auto shrink-0 whitespace-nowrap text-[11px] text-emerald-400 hover:underline" target="_blank" style="display:none">open ↗</a>
         </div>
         <div class="lane-body flex-1 min-h-0 bg-white">
           <div class="lane-sizer" data-lane="a"><iframe data-lane="a" class="lane-frame" style="border:0"></iframe></div>
@@ -1069,8 +1547,8 @@ def render_detail(version: str) -> str:
       </section>
       <section class="lane card overflow-hidden flex flex-col min-w-[320px] flex-1">
         <div class="px-2 border-b border-zinc-800 flex items-center gap-2 shrink-0" style="height:46px">
-          <select data-lane="b" class="max-w-full"></select>
-          <a data-lane="b" class="lane-open ml-auto text-[11px] text-emerald-400 hover:underline" target="_blank" style="display:none">open ↗</a>
+          <select data-lane="b" class="min-w-0 flex-1 truncate"></select>
+          <a data-lane="b" class="lane-open ml-auto shrink-0 whitespace-nowrap text-[11px] text-emerald-400 hover:underline" target="_blank" style="display:none">open ↗</a>
         </div>
         <div class="lane-body flex-1 min-h-0 bg-white">
           <div class="lane-sizer" data-lane="b"><iframe data-lane="b" class="lane-frame" style="border:0"></iframe></div>
@@ -1099,32 +1577,6 @@ function statusBadgeEl(ps) {
 }
 statusBadgeEl(D.pipeline_status);
 
-function pollJob(jobId) {
-  $("job-card").style.display = "block";
-  const tick = async () => {
-    const r = await fetch("/api/jobs/" + jobId); const j = await r.json();
-    const log = $("job-log"); log.textContent = j.output || "(waiting for output…)"; log.scrollTop = log.scrollHeight;
-    const st = $("job-status");
-    st.textContent = j.status || "running";
-    st.className = "badge " + (j.status==="done" ? "b-done" : j.status==="error" ? "b-err" : "b-run");
-    if (j.status === "done" || j.status === "error") {
-      if (j.status === "done") location.reload();
-      return;
-    }
-    setTimeout(tick, 1500);
-  };
-  tick();
-}
-
-$("rerun-btn").onclick = async () => {
-  $("rerun-btn").disabled = true;
-  const res = await fetch("/api/projects/" + encodeURIComponent(D.version) + "/rerun", { method: "POST" });
-  const data = await res.json();
-  $("rerun-btn").disabled = false;
-  if (data.error) { alert(data.error); return; }
-  pollJob(data.job_id);
-};
-
 // ---- project switcher (this is the single canvas) ----
 (function(){
   const sw = $("proj-switch");
@@ -1139,13 +1591,21 @@ if (D.screenshot) { $("o-shot").src = D.screenshot; $("o-shot").style.display="b
 if (D.url) { const ol=$("orig-link"); ol.href=D.url; ol.style.display="inline"; }
 
 // ---- lanes 2 & 3: any approach via dropdown, rendered at desktop width and scaled ----
-const OUTPUTS = [
-  ["Claude · Framework", D.site_claude_framework],
-  ["GPT-5.5 · Framework", D.site_gpt55_framework],
-  ["Claude · Vanilla HTML", D.site_claude],
-  ["GPT-5.5 · Vanilla HTML", D.site_gpt55],
-  ["Gemini · Vanilla HTML", D.site_gemini],
-].filter(o => o[1]);
+// Prefer the server's unified, recency-sorted + version-prefixed lane list
+// (newest-first, highest vNN at top). Fall back to the legacy client-side
+// assembly only if an older payload without `lanes` is served.
+const OUTPUTS = (Array.isArray(D.lanes) && D.lanes.length)
+  ? D.lanes.map(c => [c.label, c.url])
+  : [
+      ["Claude · Framework", D.site_claude_framework],
+      ["GPT-5.5 · Framework", D.site_gpt55_framework],
+      ["Claude · Vanilla HTML", D.site_claude],
+      ["GPT-5.5 · Vanilla HTML", D.site_gpt55],
+      ["Gemini · Vanilla HTML", D.site_gemini],
+    ].filter(o => o[1])
+     .concat((D.variant_pages || []).map(c => [c.label, c.url]))
+     .concat((D.composed_pages || []).map(c => [c.label, c.url]))
+     .concat((D.static_lanes || []).map(c => [c.label, c.url]));
 
 const bust = (src) => src + (src.includes("?") ? "&" : "?") + "t=" + Date.now();
 
@@ -1224,7 +1684,17 @@ if (hasVisual) {
   const dsIdx = sideTabsBase.findIndex(t => t[0] === "design_system");
   sideTabsBase.splice(dsIdx >= 0 ? dsIdx + 1 : 0, 0, ["visual","Visual"]);
 }
-const sideTabs = sideTabsBase.concat([["assets","Assets (" + (D.assets.total||0) + ")"]]);
+const onbrandTabs = (D.brand_renders && D.brand_renders.length) ? [["onbrand","On-brand (" + D.brand_renders.length + ")"]] : [];
+const C = D.catalog || {};
+const OC = C.originCatalog || {};
+const hasOrigin = !!(OC.hasOrigin && OC.tiers && OC.tiers.length);
+const hasCatalog = !!(C.index_url || (C.sections && C.sections.length) || (C.components && C.components.length) || hasOrigin);
+const catalogTabs = hasCatalog ? [["catalog","Catalog (" + ((C.counts && C.counts.sections) || 0) + ")"]] : [];
+// brand.yaml / brand.md as inline, scrollable tabs (hidden when the file is absent).
+const brandFileTabs = [];
+if (D.brand_yaml_url) brandFileTabs.push(["brandyaml","brand.yaml"]);
+if (D.brand_md_url) brandFileTabs.push(["brandmd","brand.md"]);
+const sideTabs = catalogTabs.concat(onbrandTabs).concat(brandFileTabs).concat(sideTabsBase).concat([["assets","Assets (" + (D.assets.total||0) + ")"]]);
 
 function renderAssets() {
   const A = D.assets;
@@ -1239,6 +1709,168 @@ function renderAssets() {
     }).join("");
     return `<section class="mb-6"><h3 class="text-xs uppercase tracking-wider text-zinc-400 mb-2">${role} <span class="badge b-done">${items.length}</span></h3><div class="grid grid-cols-2 gap-2">${cells}</div></section>`;
   }).join("");
+}
+
+// ---- catalog: origin (extracted vs designed) + components + slot contracts ----
+function catTypeBadge(t) {
+  const cls = t === "media" ? "b-fail" : "b-done";
+  return `<span class="badge ${cls}">${esc(t || "?")}</span>`;
+}
+function originBadge(o) {
+  if (o === "extracted") return '<span class="badge b-extracted" title="observed on the live page">extracted</span>';
+  if (o === "designed")  return '<span class="badge b-designed" title="synthesized brand-consistent, overridable">designed</span>';
+  return `<span class="badge b-idle">${esc(o || "?")}</span>`;
+}
+function originDetail(it) {
+  if (it.origin === "extracted") {
+    const prov = (it.provenance || []).join(", ");
+    const conf = it.conflictsWith || [];
+    return `<div class="text-[10px] text-zinc-500 truncate" title="${esc(prov)}">from: ${esc(prov || "—")}</div>`
+      + (conf.length ? `<div class="text-[10px] text-amber-400/90 truncate" title="${esc(conf.join(", "))}">⚠ conflictsWith: ${esc(conf.join(", "))}</div>` : "");
+  }
+  if (it.origin === "designed") {
+    const note = it.designedFrom || "synthesized from brand rules + tokens";
+    return `<div class="text-[10px] text-zinc-500 leading-snug" title="${esc(note)}">${esc(note)}</div>`
+      + (it.overridable ? `<div class="text-[10px] uppercase tracking-wider text-sky-400/80 mt-0.5">overridable</div>` : "");
+  }
+  return "";
+}
+function renderOriginCatalog(OC) {
+  if (!OC || !OC.tiers || !OC.tiers.length) return "";
+  const legend = `<div class="flex items-center gap-3 mb-3 flex-wrap text-[10px] text-zinc-500">
+    <span class="inline-flex items-center gap-1.5">${originBadge("extracted")} observed on the page</span>
+    <span class="inline-flex items-center gap-1.5">${originBadge("designed")} synthesized · overridable</span>
+  </div>`;
+  const tiers = OC.tiers.map(t => {
+    const items = (t.items || []).map(it => {
+      const meta = [it.variant ? esc(it.variant) : "", it.use ? "(" + esc(it.use) + ")" : ""].filter(Boolean).join(" · ");
+      return `<div class="card p-2 flex items-start justify-between gap-2 mb-1.5">
+        <div class="min-w-0">
+          <div class="text-xs font-semibold text-zinc-100 truncate" title="${esc(it.name)}">${esc(it.name)}${meta ? ` <span class="text-[10px] text-zinc-600 font-normal">${meta}</span>` : ""}</div>
+          ${originDetail(it)}
+        </div>
+        ${originBadge(it.origin)}
+      </div>`;
+    }).join("");
+    return `<section class="mb-4">
+      <h3 class="text-xs uppercase tracking-wider text-zinc-400 mb-2">
+        Tier ${t.tier} · ${esc(t.label)}
+        <span class="text-zinc-500 normal-case tracking-normal">— ${t.extracted} extracted / ${t.designed} designed</span>
+      </h3>
+      ${items}
+    </section>`;
+  }).join("");
+  return `<section class="mb-5">
+    <h3 class="text-xs uppercase tracking-wider text-zinc-300 mb-2 font-semibold">Catalog by tier — origin</h3>
+    ${legend}${tiers}
+  </section>`;
+}
+function renderCatalog() {
+  const cat = D.catalog || {};
+  if (!hasCatalog) {
+    return '<div class="card p-6 text-sm text-zinc-500">No catalog found. It appears automatically once <code>runs/' + esc(D.version) + '/brand/catalog/catalog.json</code> exists (run <code>render_catalog.py</code>), or once the brand.yaml carries <code>origin</code> fields.</div>';
+  }
+  const cnt = cat.counts || {};
+  const head = `<div class="flex items-center gap-1.5 mb-3 flex-wrap">
+    ${cat.index_url ? `<a href="${cat.index_url}" target="_blank" class="btn btn-primary" style="height:28px;padding:0 10px;font-size:11px">Open catalog ↗</a>` : ""}
+    ${cat.json_url ? `<a href="${cat.json_url}" target="_blank" class="btn btn-ghost" style="height:28px;padding:0 10px;font-size:11px">catalog.json ↗</a>` : ""}
+    <span class="badge b-idle">${cnt.components||0} components</span>
+    <span class="badge b-idle">${cnt.sections||0} sections</span>
+  </div>`;
+
+  // origin catalog (extracted vs designed), grouped by tier — the new headline view
+  const originSection = renderOriginCatalog(cat.originCatalog);
+
+  // components
+  const comps = (cat.components || []).map(c => {
+    const used = (c.usedInSlots || []).join(", ");
+    return `<div class="card p-2 flex items-center justify-between gap-2 mb-1.5">
+      <div class="min-w-0">
+        <div class="text-xs font-semibold text-zinc-100 truncate" title="${esc(c.name)}">${esc(c.name)}</div>
+        <div class="text-[10px] text-zinc-500 truncate" title="${esc(used)}">${esc(c.group||"")} · ${esc(used)}</div>
+      </div>
+      ${catTypeBadge(c.type)}
+    </div>`;
+  }).join("");
+  const compSection = (cat.components||[]).length ? `<section class="mb-5"><h3 class="text-xs uppercase tracking-wider text-zinc-400 mb-2">Components <span class="badge b-done">${(cat.components||[]).length}</span></h3>${comps}</section>` : "";
+
+  // sections as slot contracts
+  const sects = (cat.sections || []).map(s => {
+    const surf = s.surface || {};
+    const slots = (s.slots || []).map(sl => `
+      <div class="flex items-start gap-2 mb-1">
+        ${catTypeBadge(sl.type)}
+        <div class="min-w-0">
+          <div class="text-[11px] text-zinc-200 truncate" title="${esc(sl.name)}">${esc(sl.name)}</div>
+          <div class="text-[10px] text-zinc-500 truncate" title="${esc(sl.useCase||"")}">→ ${esc(sl.mappedComponent||"")}</div>
+        </div>
+      </div>`).join("");
+    const swatch = surf.bg ? `<span class="inline-block w-3 h-3 rounded-full ring-1 ring-white/20 align-middle" style="background:${esc(surf.bg)}"></span>` : "";
+    return `<section class="card p-3 mb-3">
+      <div class="flex items-center justify-between gap-2 mb-1.5">
+        <div class="text-sm font-semibold text-zinc-100 truncate" title="${esc(s.name)}">${esc(s.name)}</div>
+        <span class="text-[10px] text-zinc-500">${(s.slots||[]).length} slots</span>
+      </div>
+      <div class="flex flex-wrap gap-1 mb-2">
+        <span class="badge b-idle">${swatch} mode: ${esc(s.mode||"")}</span>
+        <span class="badge b-idle">layout: ${esc(s.layoutArchetype||"n/a")}</span>
+        <span class="badge b-idle">${esc(s.scaffold||"")}</span>
+      </div>
+      ${slots}
+    </section>`;
+  }).join("");
+  const sectSection = (cat.sections||[]).length ? `<section class="mb-4"><h3 class="text-xs uppercase tracking-wider text-zinc-400 mb-2">Sections — slot contracts <span class="badge b-done">${(cat.sections||[]).length}</span></h3>${sects}</section>` : "";
+
+  const amb = cat.ambiguousSlots || [];
+  const ambSection = (cat.sections||[]).length
+    ? (amb.length
+        ? `<div class="card p-3 text-[11px] text-zinc-400"><b>Ambiguous slots (${amb.length}):</b> ${amb.map(a => esc(a.section + " · " + a.slot)).join(", ")}</div>`
+        : `<div class="card p-3 text-[11px] text-zinc-500">No ambiguous slots — all resolved via component/role keywords.</div>`)
+    : "";
+
+  return head + originSection + compSection + sectSection + ambSection;
+}
+
+// ---- on-brand review: source crop vs generated preview, side-by-side ----
+function obVerdictBadge(v) {
+  const cls = v === "PASS" ? "b-done" : v === "FAIL" ? "b-fail" : "b-idle";
+  return `<span class="badge ${cls}">${esc(v || "no report")}</span>`;
+}
+function obCritBadge(label, v) {
+  const cls = v === "PASS" ? "b-done" : v === "FAIL" ? "b-fail" : "b-idle";
+  return `<span class="badge ${cls}">${label}: ${esc(v || "n/a")}</span>`;
+}
+function obFigure(label, url, missing) {
+  if (!url) return `<div class="grid place-items-center bg-black/30 rounded-lg h-24 text-zinc-600 text-[11px]">${missing}</div>`;
+  return `<figure class="m-0">
+    <figcaption class="text-[10px] uppercase tracking-[0.14em] text-zinc-500 mb-1">${label}</figcaption>
+    <div class="bg-black/30 rounded-lg overflow-hidden ring-1 ring-white/10"><img src="${url}" loading="lazy" class="w-full block" onerror="this.parentElement.innerHTML='<span class=\\'text-zinc-600 text-[11px] p-2 block\\'>load failed</span>'"></div>
+  </figure>`;
+}
+function renderOnbrand() {
+  const R = D.brand_renders || [];
+  if (!R.length) return '<div class="card p-6 text-sm text-zinc-500">No brand renders found. They appear automatically once <code>runs/' + esc(D.version) + '/brand/render/section-*/</code> exists.</div>';
+  const links = [];
+  if (D.brand_yaml_url) links.push(`<a href="${D.brand_yaml_url}" target="_blank" class="btn btn-ghost" style="height:28px;padding:0 10px;font-size:11px">brand.yaml ↗</a>`);
+  if (D.brand_md_url) links.push(`<a href="${D.brand_md_url}" target="_blank" class="btn btn-ghost" style="height:28px;padding:0 10px;font-size:11px">brand.md ↗</a>`);
+  const head = links.length ? `<div class="flex items-center gap-1.5 mb-3 flex-wrap">${links.join("")}</div>` : "";
+  const cards = R.map(r => {
+    const c = r.criteria || {};
+    const open = r.html_url ? `<a href="${r.html_url}" target="_blank" class="btn btn-primary" style="height:28px;padding:0 10px;font-size:11px">Open render ↗</a>` : "";
+    return `<section class="card p-3 mb-4">
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <div class="text-sm font-semibold text-zinc-100 truncate" title="${esc(r.name)}">${esc(r.name)}</div>
+        ${obVerdictBadge(r.verdict)}
+      </div>
+      <div class="grid grid-cols-2 gap-2 mb-2">
+        ${obFigure("Source brand", r.source_crop_url, "no source crop")}
+        ${obFigure("Generated", r.preview_png_url, "no preview")}
+      </div>
+      <div class="flex flex-wrap gap-1 mb-2">${obCritBadge("neverDo", c.neverDo)}${obCritBadge("fidelity", c.fidelity)}${obCritBadge("slop", c.slop)}</div>
+      ${open ? `<div class="flex flex-wrap gap-1">${open}</div>` : ""}
+    </section>`;
+  }).join("");
+  return head + cards;
 }
 
 // ---- visual design-system gallery (parsed server-side into D.design_tokens) ----
@@ -1389,11 +2021,130 @@ function renderVisual() {
   return out.join("") || '<div class="card p-6 text-sm text-zinc-500">No design tokens parsed for this run.</div>';
 }
 
+// ---- brand.yaml / brand.md inline viewers (fetched on demand, scrollable) ----
+// Tiny dependency-free markdown → HTML renderer (headings, lists, code fences,
+// blockquotes, rules, and inline bold/italic/code/links). Everything is escaped
+// first so file text can never inject HTML into the page.
+// Append a small color swatch right after each hex token in VISIBLE text only.
+// Walks the already-built inline HTML, leaving tag markup (attributes) and the
+// contents of <code> spans untouched so we never corrupt emitted hex values.
+function hexSwatches(html) {
+  const hex = /#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\\b/g;
+  const swatch = (m) => m + '<span style="display:inline-block;width:0.85em;height:0.85em;border-radius:3px;border:1px solid rgba(255,255,255,.25);background:' + m + ';vertical-align:middle;margin-left:4px"></span>';
+  let inCode = false;
+  return html.split(/(<[^>]+>)/).map(part => {
+    if (!part) return part;
+    if (part[0] === "<") {
+      if (/^<code[\\s>]/i.test(part)) inCode = true;
+      else if (/^<\\/code>/i.test(part)) inCode = false;
+      return part;
+    }
+    return inCode ? part : part.replace(hex, swatch);
+  }).join("");
+}
+function inlineMd(s) {
+  s = esc(s);
+  s = s.replace(/`([^`]+)`/g, '<code style="background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px;font-size:.9em">$1</code>');
+  s = s.replace(/\\*\\*([^*]+)\\*\\*/g, '<strong>$1</strong>');
+  s = s.replace(/(^|[^*])\\*([^*\\s][^*]*)\\*/g, '$1<em>$2</em>');
+  s = s.replace(/\\[([^\\]]+)\\]\\(([^)]+)\\)/g, '<a href="$2" target="_blank" class="text-emerald-400 hover:underline">$1</a>');
+  return hexSwatches(s);
+}
+function mdToHtml(src) {
+  const lines = String(src || "").replace(/\\r\\n?/g, "\\n").split("\\n");
+  const out = [];
+  let para = [], listType = null, listItems = [], i = 0;
+  const flushPara = () => { if (para.length) { out.push('<p style="margin:0 0 10px">' + para.map(inlineMd).join("<br>") + '</p>'); para = []; } };
+  const flushList = () => {
+    if (listItems.length) {
+      out.push('<' + listType + ' style="margin:0 0 10px;padding-left:20px">' + listItems.map(li => '<li style="margin:2px 0">' + inlineMd(li) + '</li>').join("") + '</' + listType + '>');
+      listItems = []; listType = null;
+    }
+  };
+  while (i < lines.length) {
+    const line = lines[i];
+    if (/^```/.test(line.trim())) {
+      flushPara(); flushList();
+      const buf = []; i++;
+      while (i < lines.length && !/^```/.test(lines[i].trim())) { buf.push(lines[i]); i++; }
+      i++;
+      out.push('<pre style="white-space:pre;overflow:auto;background:rgba(0,0,0,.25);border-radius:8px;padding:8px;margin:0 0 10px;font-size:.85em">' + esc(buf.join("\\n")) + '</pre>');
+      continue;
+    }
+    const hm = line.match(/^(#{1,6})\\s+(.*)$/);
+    if (hm) {
+      flushPara(); flushList();
+      const sizes = {1:"1.25rem",2:"1.1rem",3:"1rem",4:".95rem",5:".9rem",6:".85rem"};
+      out.push('<div style="font-weight:700;color:#fafafa;margin:14px 0 6px;font-size:' + (sizes[hm[1].length] || "1rem") + '">' + inlineMd(hm[2]) + '</div>');
+      i++; continue;
+    }
+    if (/^(---+|\\*\\*\\*+|___+)\\s*$/.test(line.trim())) {
+      flushPara(); flushList();
+      out.push('<hr style="border:0;border-top:1px solid rgba(255,255,255,.12);margin:12px 0">');
+      i++; continue;
+    }
+    if (/^>\\s?/.test(line)) {
+      flushPara(); flushList();
+      const buf = [];
+      while (i < lines.length && /^>\\s?/.test(lines[i])) { buf.push(lines[i].replace(/^>\\s?/, "")); i++; }
+      out.push('<blockquote style="border-left:3px solid rgba(255,255,255,.18);padding-left:10px;margin:0 0 10px;color:#a1a1aa">' + buf.map(inlineMd).join("<br>") + '</blockquote>');
+      continue;
+    }
+    const um = line.match(/^\\s*[-*+]\\s+(.*)$/);
+    if (um) { flushPara(); if (listType && listType !== "ul") flushList(); listType = "ul"; listItems.push(um[1]); i++; continue; }
+    const om = line.match(/^\\s*\\d+\\.\\s+(.*)$/);
+    if (om) { flushPara(); if (listType && listType !== "ol") flushList(); listType = "ol"; listItems.push(om[1]); i++; continue; }
+    if (!line.trim()) { flushPara(); flushList(); i++; continue; }
+    flushList(); para.push(line); i++;
+  }
+  flushPara(); flushList();
+  return out.join("");
+}
+
+const SCROLL_MAX = "max-height:calc(100vh - 170px);overflow:auto";
+const brandFileCache = {};
+let currentSideTab = "";
+async function renderBrandFile(which) {
+  const isYaml = which === "yaml";
+  const tabKey = isYaml ? "brandyaml" : "brandmd";
+  const label = isYaml ? "brand.yaml" : "brand.md";
+  const rawUrl = isYaml ? D.brand_yaml_url : D.brand_md_url;
+  const body = $("side-body");
+  const rawLink = rawUrl ? `<a href="${rawUrl}" target="_blank" class="btn btn-ghost" style="height:26px;padding:0 9px;font-size:11px">open raw ↗</a>` : "";
+  const head = `<div class="flex items-center justify-between gap-2 mb-2"><span class="text-xs font-semibold text-zinc-300">${label}</span>${rawLink}</div>`;
+  if (brandFileCache[which] === undefined) {
+    body.innerHTML = head + '<div class="text-xs text-zinc-500">Loading…</div>';
+    try {
+      const r = await fetch("/api/brandfile?version=" + encodeURIComponent(D.version) + "&which=" + which);
+      if (!r.ok) throw new Error("status " + r.status);
+      brandFileCache[which] = await r.text();
+    } catch (e) {
+      brandFileCache[which] = null;
+    }
+  }
+  if (currentSideTab !== tabKey) return;  // user switched tabs while we awaited
+  const text = brandFileCache[which];
+  if (text == null || !text.trim()) {
+    body.innerHTML = head + '<div class="card p-6 text-sm text-zinc-500">Not generated yet.</div>';
+    return;
+  }
+  if (isYaml) {
+    body.innerHTML = head + `<pre class="text-xs text-zinc-200 font-mono leading-relaxed" style="white-space:pre;margin:0;padding:10px;background:rgba(0,0,0,.25);border-radius:8px;${SCROLL_MAX}">${esc(text)}</pre>`;
+  } else {
+    body.innerHTML = head + `<div class="text-sm text-zinc-200 leading-relaxed" style="word-break:break-word;${SCROLL_MAX}">${mdToHtml(text)}</div>`;
+  }
+}
+
 function paintSideTab(active) {
+  currentSideTab = active;
   $("side-tabs").querySelectorAll("button").forEach(x => x.classList.toggle("on", x.dataset.s === active));
   const body = $("side-body");
   if (active === "assets") { body.innerHTML = renderAssets(); return; }
+  if (active === "catalog") { body.innerHTML = renderCatalog(); return; }
+  if (active === "onbrand") { body.innerHTML = renderOnbrand(); return; }
   if (active === "visual") { body.innerHTML = renderVisual(); return; }
+  if (active === "brandyaml") { renderBrandFile("yaml"); return; }
+  if (active === "brandmd") { renderBrandFile("md"); return; }
   body.innerHTML = `<pre class="text-xs text-zinc-200 whitespace-pre-wrap leading-relaxed">${esc(docs[active] || "Not produced for this run.")}</pre>`;
 }
 $("side-tabs").innerHTML = sideTabs.map(t => `<button data-s="${t[0]}" class="btn btn-ghost" style="height:28px;padding:0 9px;font-size:11px">${t[1]}</button>`).join("");

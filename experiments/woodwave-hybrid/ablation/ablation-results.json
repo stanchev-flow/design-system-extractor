@@ -1,0 +1,280 @@
+[
+  {
+    "id": "arm-on",
+    "label": "ON \u2014 editorial, flag TRUE (by identity)",
+    "style": "editorial-luxury",
+    "force_off_grid": null,
+    "offGridExpansion": true,
+    "ok": true,
+    "attempts": 1,
+    "wall_s": 67.1,
+    "sections": [
+      {
+        "id": "hero-bookend",
+        "useCase": "hero",
+        "archetype": "split",
+        "novelty": "reuse",
+        "surfaceIntent": "inverse"
+      },
+      {
+        "id": "value-props",
+        "useCase": "features",
+        "archetype": "collage",
+        "novelty": "novel",
+        "surfaceIntent": "primary"
+      },
+      {
+        "id": "gallery-mosaic",
+        "useCase": "gallery",
+        "archetype": "collage",
+        "novelty": "adapt",
+        "surfaceIntent": "primary"
+      },
+      {
+        "id": "social-proof",
+        "useCase": "testimonial",
+        "archetype": "split",
+        "novelty": "adapt",
+        "surfaceIntent": "panel"
+      },
+      {
+        "id": "cta-close",
+        "useCase": "cta",
+        "archetype": "stack",
+        "novelty": "adapt",
+        "surfaceIntent": "primary"
+      }
+    ],
+    "metrics": {
+      "expansion_rate": 1,
+      "offgrid_usage": 3,
+      "offgrid_sections": [
+        {
+          "id": "value-props",
+          "useCase": "features",
+          "novelty": "novel",
+          "offgrid": [
+            "stagger"
+          ]
+        },
+        {
+          "id": "gallery-mosaic",
+          "useCase": "gallery",
+          "novelty": "adapt",
+          "offgrid": [
+            "bleed",
+            "stagger"
+          ]
+        },
+        {
+          "id": "social-proof",
+          "useCase": "testimonial",
+          "novelty": "adapt",
+          "offgrid": [
+            "stagger"
+          ]
+        }
+      ],
+      "novel_offgrid": 1,
+      "onbrand_retention_pct": 100.0,
+      "gate_pass": true,
+      "capability_legal": true,
+      "concept_fidelity": [
+        {
+          "id": "value-props",
+          "useCase": "features",
+          "nearest_seed": null,
+          "nearest_score": 2.1,
+          "match_kind": "miss",
+          "on_concept": true
+        }
+      ],
+      "variety": {
+        "distinct_archetypes": [
+          "collage",
+          "split",
+          "stack"
+        ],
+        "n_distinct_archetypes": 3,
+        "distinct_treatments": [
+          "bleed",
+          "ghost-word",
+          "marginal-caption",
+          "overlap",
+          "stagger",
+          "text-on-media"
+        ],
+        "n_distinct_treatments": 6
+      },
+      "novelty_breakdown": {
+        "reuse": 1,
+        "adapt": 3,
+        "novel": 1
+      }
+    },
+    "screenshot": false,
+    "neverdo_hits": [],
+    "offgrid_hits": []
+  },
+  {
+    "id": "arm-off",
+    "label": "OFF \u2014 SAME editorial style, flag FORCED false (isolates the flag)",
+    "style": "editorial-luxury",
+    "force_off_grid": false,
+    "offGridExpansion": false,
+    "ok": true,
+    "attempts": 1,
+    "wall_s": 88.7,
+    "sections": [
+      {
+        "id": "hero-bookend",
+        "useCase": "hero",
+        "archetype": "split",
+        "novelty": "reuse",
+        "surfaceIntent": "inverse"
+      },
+      {
+        "id": "value-props",
+        "useCase": "features",
+        "archetype": "split",
+        "novelty": "adapt",
+        "surfaceIntent": "primary"
+      },
+      {
+        "id": "gallery-mosaic",
+        "useCase": "gallery",
+        "archetype": "collage",
+        "novelty": "adapt",
+        "surfaceIntent": "primary"
+      },
+      {
+        "id": "social-proof",
+        "useCase": "testimonial",
+        "archetype": "split",
+        "novelty": "adapt",
+        "surfaceIntent": "panel"
+      },
+      {
+        "id": "closing-cta",
+        "useCase": "cta",
+        "archetype": "stack",
+        "novelty": "adapt",
+        "surfaceIntent": "primary"
+      }
+    ],
+    "metrics": {
+      "expansion_rate": 0,
+      "offgrid_usage": 0,
+      "offgrid_sections": [],
+      "novel_offgrid": 0,
+      "onbrand_retention_pct": 100.0,
+      "gate_pass": true,
+      "capability_legal": true,
+      "concept_fidelity": [],
+      "variety": {
+        "distinct_archetypes": [
+          "collage",
+          "split",
+          "stack"
+        ],
+        "n_distinct_archetypes": 3,
+        "distinct_treatments": [
+          "ghost-word",
+          "marginal-caption",
+          "overlap",
+          "text-on-media"
+        ],
+        "n_distinct_treatments": 4
+      },
+      "novelty_breakdown": {
+        "reuse": 1,
+        "adapt": 4,
+        "novel": 0
+      }
+    },
+    "screenshot": false,
+    "neverdo_hits": [],
+    "offgrid_hits": []
+  },
+  {
+    "id": "arm-control",
+    "label": "CONTROL \u2014 clean style, flag false by identity",
+    "style": "corporate-saas-clean",
+    "force_off_grid": null,
+    "offGridExpansion": false,
+    "ok": true,
+    "attempts": 1,
+    "wall_s": 73.6,
+    "sections": [
+      {
+        "id": "hero-bookend",
+        "useCase": "hero",
+        "archetype": "split",
+        "novelty": "reuse",
+        "surfaceIntent": "inverse"
+      },
+      {
+        "id": "value-props",
+        "useCase": "features",
+        "archetype": "cards",
+        "novelty": "adapt",
+        "surfaceIntent": "primary"
+      },
+      {
+        "id": "gallery-mosaic",
+        "useCase": "gallery",
+        "archetype": "collage",
+        "novelty": "adapt",
+        "surfaceIntent": "primary"
+      },
+      {
+        "id": "social-proof",
+        "useCase": "testimonial",
+        "archetype": "split",
+        "novelty": "adapt",
+        "surfaceIntent": "panel"
+      },
+      {
+        "id": "conversion-stack",
+        "useCase": "cta",
+        "archetype": "stack",
+        "novelty": "adapt",
+        "surfaceIntent": "primary"
+      }
+    ],
+    "metrics": {
+      "expansion_rate": 0,
+      "offgrid_usage": 0,
+      "offgrid_sections": [],
+      "novel_offgrid": 0,
+      "onbrand_retention_pct": 100.0,
+      "gate_pass": true,
+      "capability_legal": true,
+      "concept_fidelity": [],
+      "variety": {
+        "distinct_archetypes": [
+          "cards",
+          "collage",
+          "split",
+          "stack"
+        ],
+        "n_distinct_archetypes": 4,
+        "distinct_treatments": [
+          "ghost-word",
+          "marginal-caption",
+          "overlap",
+          "text-on-media"
+        ],
+        "n_distinct_treatments": 4
+      },
+      "novelty_breakdown": {
+        "reuse": 1,
+        "adapt": 4,
+        "novel": 0
+      }
+    },
+    "screenshot": false,
+    "neverdo_hits": [],
+    "offgrid_hits": []
+  }
+]

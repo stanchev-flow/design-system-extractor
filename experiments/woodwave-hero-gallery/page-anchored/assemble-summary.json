@@ -1,0 +1,58 @@
+{
+  "gate_pass": false,
+  "failures": [
+    [
+      "single-accent",
+      "accent-role elements applied=6 (<=1 expected per brand no-accent-* rule)"
+    ]
+  ],
+  "hero_sections": [
+    {
+      "layout": "hero-original",
+      "surface": "surface/inverse"
+    },
+    {
+      "layout": "hero-v1",
+      "surface": "surface/inverse"
+    },
+    {
+      "layout": "hero-v2",
+      "surface": "surface/inverse"
+    },
+    {
+      "layout": "hero-v3",
+      "surface": "surface/inverse"
+    },
+    {
+      "layout": "hero-v4",
+      "surface": "surface/inverse"
+    },
+    {
+      "layout": "hero-v5",
+      "surface": "surface/inverse"
+    }
+  ],
+  "all_heroes_inverse": true,
+  "accent_class_count": 6,
+  "shim": true,
+  "hoisted_nav": true,
+  "gold_hover": true,
+  "melodrama_500": true,
+  "gold_heading_rule": true,
+  "screenshot": true,
+  "index_html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/page-anchored/index.html",
+  "screenshot_path": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/page-anchored/screenshot.png",
+  "order": [
+    "hero-original",
+    "divider-v1",
+    "hero-v1",
+    "divider-v2",
+    "hero-v2",
+    "divider-v3",
+    "hero-v3",
+    "divider-v4",
+    "hero-v4",
+    "divider-v5",
+    "hero-v5"
+  ]
+}

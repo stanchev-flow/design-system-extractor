@@ -1,0 +1,49 @@
+schemaVersion: layout-patterns.v1
+patterns:
+- id: value-props-promoted
+  useCase: features
+  archetypeRef: collage
+  surfaceIntent: primary
+  intent: promoted novel features pattern
+  contentShape:
+    slots:
+    - name: ghost
+      role: ghost-word
+      contract: heading
+      textLen: word
+      sizeClass: colossal
+      width: full-bleed
+      z: back
+    - name: intro
+      role: header
+      contract: header
+      textLen: short
+      sizeClass: title
+      width: stretch
+      z: mid
+    - name: props
+      role: features
+      contract: feature-item
+      textLen: short
+      sizeClass: title
+      width: stretch
+      z: front
+  specialTreatments:
+  - kind: stagger
+    target: props
+    axis: vertical
+    amount:
+      class: heavy
+  - kind: ghost-word
+    target: ghost
+    amount:
+      class: medium
+  responsive: {}
+  variantKnobs:
+    align: left
+  origin: extracted
+  confidence: medium
+  scope: design-language
+  provenance:
+  - 'source: composition.json'
+  - promoted from composition.v1 section 'value-props' (brief signup-launch)

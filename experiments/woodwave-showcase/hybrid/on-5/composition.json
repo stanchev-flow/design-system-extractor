@@ -1,0 +1,694 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "woodwave-gallery",
+    "name": "Woodwave Gallery \u2014 one long scroll",
+    "useCasesRequested": [
+      "hero",
+      "about",
+      "gallery",
+      "features",
+      "testimonial",
+      "pricing",
+      "cta",
+      "footer"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/woodwave/brand/brand.yaml"
+  },
+  "style": {
+    "id": "editorial-luxury"
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "stack",
+      "surfaceIntent": "inverse",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-display-over-staggered-media"
+      },
+      "slots": [
+        {
+          "name": "bg",
+          "role": "background-media",
+          "contract": "image",
+          "width": "full-bleed",
+          "z": "back",
+          "mediaAspect": "wide",
+          "asset": {
+            "src": "Web-gallery-1.jpg",
+            "alt": "Timber gallery interior, warm light",
+            "ratio": "landscape"
+          }
+        },
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "copy": "Contemporary Art \u00b7 A Landmark Timber Building"
+        },
+        {
+          "name": "title",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "z": "front",
+          "copy": "WOODWAVE"
+        },
+        {
+          "name": "sub",
+          "role": "subheading",
+          "contract": "subheading",
+          "textLen": "short",
+          "sizeClass": "title",
+          "z": "front",
+          "copy": "Space as a muse \u2014 a collection from the late 20th century to the present."
+        },
+        {
+          "name": "offset",
+          "role": "secondary-media",
+          "contract": "image",
+          "width": "media",
+          "z": "mid",
+          "mediaAspect": "portrait",
+          "asset": {
+            "src": "About-img-2.jpg",
+            "alt": "Gallery corridor detail"
+          },
+          "registration": {
+            "toSlot": "bg",
+            "edge": "bottom",
+            "depthBaselines": 3,
+            "z": "mid"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "text-on-media",
+          "target": "display-title",
+          "over": "background-media",
+          "sanctioned": true
+        },
+        {
+          "kind": "overlap",
+          "pair": [
+            "secondary-media",
+            "background-media"
+          ],
+          "zOrder": [
+            "background-media",
+            "secondary-media"
+          ],
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "stagger",
+          "target": "secondary-media",
+          "axis": "vertical",
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "align": "center",
+        "titleOverlap": "medium",
+        "overlapMediaSide": "right"
+      },
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "about",
+      "useCase": "about",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "about-anchored-statement"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "copy": "About"
+        },
+        {
+          "name": "heading",
+          "role": "heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "copy": "A Building That Listens"
+        },
+        {
+          "name": "body",
+          "role": "body",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "copy": "Housed in a landmark timber structure, Woodwave treats space as a muse. Warm wood, generous light, and quiet proportion frame every work \u2014 the architecture is as much a part of the exhibition as the art it holds."
+        },
+        {
+          "name": "action",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "copy": "Read our philosophy"
+        },
+        {
+          "name": "media",
+          "role": "media",
+          "contract": "image",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "asset": {
+            "src": "About-img-3.jpg",
+            "alt": "Timber interior detail"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "stagger",
+          "target": "media",
+          "axis": "vertical",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "align": "left",
+        "mediaSide": "right"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "media"
+      }
+    },
+    {
+      "id": "gallery",
+      "useCase": "gallery",
+      "archetype": "stack-fullbleed",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "gallery-fullbleed-counter-band"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "copy": "Gallery"
+        },
+        {
+          "name": "counter",
+          "role": "counter",
+          "contract": "label",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "copy": "01 / 06"
+        },
+        {
+          "name": "media",
+          "role": "media",
+          "contract": "image",
+          "width": "full-bleed",
+          "mediaAspect": "pano",
+          "z": "back",
+          "asset": {
+            "src": "About-img-4.jpg",
+            "alt": "Main gallery hall in west light"
+          }
+        },
+        {
+          "name": "caption",
+          "role": "caption",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "copy": "Main hall, west light \u2014 permanent collection wing."
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "media",
+          "axis": "horizontal",
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "marginal-caption",
+          "target": "caption",
+          "axis": "horizontal",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "counterFormat": "01 / 06"
+      }
+    },
+    {
+      "id": "mission",
+      "useCase": "about",
+      "archetype": "interlock",
+      "surfaceIntent": "primary",
+      "novelty": "novel",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "ghost",
+          "role": "ghost-word",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "z": "back",
+          "copy": "MISSION"
+        },
+        {
+          "name": "heading",
+          "role": "heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "copy": "To Keep Looking Slow"
+        },
+        {
+          "name": "body",
+          "role": "body",
+          "contract": "paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "copy": "We collect and exhibit work that rewards attention. Our mission is to protect the pause \u2014 to give each piece the room, the light, and the silence it needs, so that seeing becomes an act of return rather than a glance in passing."
+        },
+        {
+          "name": "inset",
+          "role": "inset-media",
+          "contract": "image",
+          "width": "media",
+          "mediaAspect": "square",
+          "z": "mid",
+          "asset": {
+            "src": "About-img-5.jpg",
+            "alt": "Detail of a hung work"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "ghost-word",
+          "target": "ghost-word",
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "float-wrap",
+          "pair": [
+            "body",
+            "inset-media"
+          ],
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "inset",
+          "target": "inset-media",
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "align": "left"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "inset-media"
+      }
+    },
+    {
+      "id": "heritage",
+      "useCase": "features",
+      "archetype": "collage",
+      "surfaceIntent": "primary",
+      "novelty": "novel",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "ghost-start",
+          "role": "ghost-word",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "z": "back",
+          "copy": "1941"
+        },
+        {
+          "name": "ghost-end",
+          "role": "ghost-word",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "z": "back",
+          "copy": "2023"
+        },
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "copy": "Heritage"
+        },
+        {
+          "name": "heading",
+          "role": "heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "copy": "1941 \u2014 2023"
+        },
+        {
+          "name": "timeline",
+          "role": "timeline-items",
+          "contract": "feature-item",
+          "textLen": "short",
+          "sizeClass": "body",
+          "copy": [
+            {
+              "heading": "1941",
+              "text": "The timber hall is built as a civic market \u2014 its trusses still frame the galleries today."
+            },
+            {
+              "heading": "1978",
+              "text": "Reopened as an artists' cooperative; the first contemporary shows take root."
+            },
+            {
+              "heading": "1999",
+              "text": "The permanent collection is founded, spanning late-century movements."
+            },
+            {
+              "heading": "2023",
+              "text": "Woodwave becomes a public gallery \u2014 space, at last, as a muse."
+            }
+          ]
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "ghost-word",
+          "target": "ghost-word",
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "stagger",
+          "target": "timeline-items",
+          "axis": "vertical",
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "align": "left",
+        "columns": "2"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "ghost-end"
+      }
+    },
+    {
+      "id": "curator",
+      "useCase": "testimonial",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "curator-quote-portrait-collage"
+      },
+      "slots": [
+        {
+          "name": "quote",
+          "role": "quote",
+          "contract": "quote",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "copy": "\u201cA room can hold a silence the way a frame holds a painting. Here, we curate both.\u201d"
+        },
+        {
+          "name": "portrait",
+          "role": "portrait",
+          "contract": "image",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "asset": {
+            "src": "About-img-2.jpg",
+            "alt": "Curator portrait"
+          }
+        },
+        {
+          "name": "name",
+          "role": "attribution",
+          "contract": "label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "copy": "Elin Marchetti \u2014 Chief Curator"
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "marginal-caption",
+          "target": "attribution",
+          "axis": "horizontal",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "portraitSide": "left",
+        "align": "left"
+      },
+      "alignment": {
+        "anchor": "right",
+        "counterweight": "portrait"
+      }
+    },
+    {
+      "id": "visit",
+      "useCase": "pricing",
+      "archetype": "cards",
+      "surfaceIntent": "panel",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "copy": "Visit"
+        },
+        {
+          "name": "heading",
+          "role": "heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "copy": "Plan Your Visit"
+        },
+        {
+          "name": "cards",
+          "role": "info-cards",
+          "contract": "card",
+          "textLen": "short",
+          "sizeClass": "body",
+          "copy": [
+            {
+              "eyebrow": "Location",
+              "heading": "14 Timber Row",
+              "text": "Old Wharf District, open to the river. Enter beneath the west trusses."
+            },
+            {
+              "eyebrow": "Hours",
+              "heading": "Tue \u2014 Sun",
+              "text": "10:00 \u2013 18:00. Late opening Thursdays until 21:00. Closed Mondays."
+            },
+            {
+              "eyebrow": "Tickets",
+              "heading": "\u00a312 \u00b7 Free under 18",
+              "text": "Members enter free. Timed entry recommended on weekends.",
+              "cta": "Buy tickets"
+            }
+          ]
+        },
+        {
+          "name": "map",
+          "role": "media",
+          "contract": "image",
+          "width": "media",
+          "mediaAspect": "landscape",
+          "asset": {
+            "src": "Map.jpg",
+            "alt": "Map to Woodwave Gallery"
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "columns": "3",
+        "align": "left"
+      }
+    },
+    {
+      "id": "newsletter",
+      "useCase": "cta",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "copy": "Newsletter"
+        },
+        {
+          "name": "heading",
+          "role": "heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "copy": "Stay in the Light"
+        },
+        {
+          "name": "body",
+          "role": "body",
+          "contract": "paragraph",
+          "textLen": "short",
+          "sizeClass": "body",
+          "copy": "Exhibition openings, curator notes, and quiet mornings before the doors open \u2014 a few times a year."
+        },
+        {
+          "name": "email",
+          "role": "input",
+          "contract": "input",
+          "textLen": "short",
+          "sizeClass": "body",
+          "copy": "Your email address"
+        },
+        {
+          "name": "submit",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "word",
+          "sizeClass": "body",
+          "copy": "Subscribe"
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "align": "left"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "body"
+      }
+    },
+    {
+      "id": "footer",
+      "useCase": "footer",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "logo",
+          "role": "logo",
+          "contract": "logo",
+          "textLen": "word",
+          "sizeClass": "title",
+          "copy": "WOODWAVE"
+        },
+        {
+          "name": "nav",
+          "role": "nav-links",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "copy": [
+            "About",
+            "Gallery",
+            "Exhibition",
+            "Visit"
+          ]
+        },
+        {
+          "name": "social",
+          "role": "social-links",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "copy": [
+            "Instagram",
+            "Newsletter",
+            "Press"
+          ]
+        },
+        {
+          "name": "legal",
+          "role": "legal",
+          "contract": "label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "copy": "\u00a9 2024 Woodwave Gallery \u00b7 14 Timber Row"
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "align": "left"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "nav"
+      }
+    }
+  ],
+  "rationale": "Repair note: removed block contracts that triggered the 'body' KeyError (header/content-block/form/footer) and rebuilt those sections from primitives + card/feature-item blocks whose copy dicts carry no required 'body' key. Order follows the one-scroll narrative: an inverse hero bookend (the sole accent + sanctioned display-over-media with a media-over-media overlap), then primary/panel editorial runs. Structural contrast is maximized: stack (hero), split (about, curator, newsletter), stack-fullbleed (gallery), interlock (mission, novel float-wrap+ghost), collage (heritage, novel with 1941/2023 ghost years + staggered timeline), cards on panel (visit info with the ticketing CTA and map), and stack (footer). Off-grid expansion is used deliberately in the two novel primary sections; every other section stays on grid, single-accent, radius-0, no cards on cream."
+}

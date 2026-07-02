@@ -1,0 +1,428 @@
+<!doctype html>
+<!--
+  ARM B — HTML-FIRST. Authored directly by the model (no structured contract, no
+  deterministic renderer) from the SNAPSHOTTED WoodWave brand.yaml tokens +
+  editorial-luxury style guidance + the signup-launch brief. Self-contained + offline:
+  fonts and images are self-hosted under ./assets (no external CDN). Iframe-safe:
+  container-query units only (cqw/cqh/cqi), never viewport units. All colours are the
+  brand's own token hexes; radius 0; no shadows/borders/gradients; typographic arrow
+  links (no buttons); underline-only field; accent gold on dark surfaces only.
+-->
+<html lang="en" data-style="editorial-luxury">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WoodWave Gallery — Everything in one place</title>
+<style>
+/* ── self-hosted brand webfonts (offline; no CDN) ─────────────────────────── */
+/* Real WoodWave display face: Melodrama, self-hosted as per-weight masters so the
+   hero (weight 500 -> Medium) renders lighter than section headings (weight 400 ->
+   Regular), matching the source. Files copied from runs/woodwave/brand/assets/fonts. */
+@font-face { font-family: 'Melodrama'; src: url('assets/fonts/Melodrama-Light.woff2') format('woff2'), url('assets/fonts/Melodrama-Light.ttf') format('truetype'); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Melodrama'; src: url('assets/fonts/Melodrama-Regular.woff2') format('woff2'), url('assets/fonts/Melodrama-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Melodrama'; src: url('assets/fonts/Melodrama-Medium.woff2') format('woff2'), url('assets/fonts/Melodrama-Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Melodrama'; src: url('assets/fonts/Melodrama-Semibold.woff2') format('woff2'), url('assets/fonts/Melodrama-Semibold.ttf') format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Melodrama'; src: url('assets/fonts/Melodrama-Bold.woff2') format('woff2'), url('assets/fonts/Melodrama-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face {
+  font-family: 'Inter';
+  font-style: normal; font-weight: 400 600; font-display: swap;
+  src: url('assets/fonts/inter-var.woff2') format('woff2');
+}
+
+/* ── brand tokens (verbatim from the snapshotted brand.yaml) ───────────────── */
+:root {
+  /* colours — WoodWave palette only */
+  --paper: #FAF0E8;              /* surface/primary  — cream canvas            */
+  --panel: #F7EFE6;             /* surface/panel    — warm cream panel        */
+  --inverse: #3A2F23;           /* surface/inverse  — deep warm-brown band     */
+  --inverse-strong: #1B150F;    /* surface/inverse-strong — near-black footer  */
+  --accent: #edd580;            /* accent/highlight — muted gold (dark only)   */
+  --ink: #1F1A14;               /* text/on-primary                             */
+  --ink-muted: #4A4239;         /* text/on-primary-muted                       */
+  --on-inverse: #F5EDE2;        /* text/on-inverse                             */
+  --on-inverse-muted: #C9BFB2;  /* text/on-inverse-muted                       */
+  --ghost: rgba(31, 26, 20, 0.06);        /* ghost watermark on cream          */
+  --hairline: rgba(31, 26, 20, 0.30);     /* underline / ruled-row on cream     */
+  --hairline-dark: rgba(245, 237, 226, 0.22); /* rule on dark surfaces          */
+
+  /* gate-readable brand vars (page opens on the inverse hero surface) */
+  --bg: #3A2F23;
+  --radius: 0rem;
+
+  /* type — brand families (self-hosted above): real Melodrama display, Playfair fallback */
+  --font-heading: 'Melodrama', 'Playfair Display', serif;
+  --font-body: 'Inter';
+  /* editorial-luxury: display at genuine poster scale (>=8rem, ~11% frame width -> cqw) */
+  --display-size: clamp(8rem, 13cqw, 14.4rem);
+  --h1: clamp(2.75rem, 6cqw, 4.5rem);
+  --h2: clamp(2rem, 4.2cqw, 3.25rem);
+  --h3: clamp(1.4rem, 2.4cqw, 1.9rem);
+  --counter: clamp(2.25rem, 5cqw, 3.75rem);
+  --ghost-size: clamp(7rem, 34cqw, 26rem);
+  --footer-link: clamp(2.25rem, 7cqw, 5rem);
+
+  /* rhythm — brand spacing tokens, symmetric vertical padding */
+  --pad-light: 6.875rem;
+  --pad-dark: 6.25rem;
+  --module-gap: 7.5rem;
+  --gutter: 2.5rem;
+
+  /* motion — brand voice.motionSpec */
+  --ease: cubic-bezier(.22, 1, .36, 1);
+  --dur-fast: 320ms;
+  --dur-base: 480ms;
+  --dur-slow: 620ms;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+img { display: block; max-width: 100%; }
+
+html { background: var(--bg); height: 100%; }
+html, body {
+  background: var(--bg); color: var(--on-inverse);
+  font-family: var(--font-body); -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+/* iframe-safe container context: cq* units resolve against this sized box. */
+body { min-height: 100%; container-type: size; container-name: frame; }
+
+/* ── shared typographic primitives ────────────────────────────────────────── */
+.eyebrow {
+  font-family: var(--font-body); font-size: 0.6875rem; font-weight: 500;
+  letter-spacing: 0.18em; text-transform: uppercase; line-height: 1.2;
+}
+.heading { font-family: var(--font-heading); font-weight: 400; letter-spacing: -0.01em;
+  text-transform: uppercase; line-height: 1.05; }
+.is-display { font-size: var(--display-size); line-height: 0.944; }
+.body { font-family: var(--font-body); font-size: 0.9375rem; line-height: 1.62;
+  font-weight: 400; }
+.measure { max-width: 34ch; }
+
+/* typographic action — arrow link with a draw-in underline (no button, no fill). */
+.arrow {
+  position: relative; display: inline-flex; align-items: baseline; gap: 0.5rem;
+  font-family: var(--font-body); font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.16em; text-transform: uppercase; text-decoration: none;
+  color: inherit; padding-bottom: 0.25rem; width: max-content;
+}
+.arrow .tip { transition: transform var(--dur-fast) var(--ease); }
+.arrow::after {
+  content: ""; position: absolute; left: 0; bottom: 0; height: 1px; width: 100%;
+  background: currentColor; transform: scaleX(0); transform-origin: left;
+  transition: transform var(--dur-base) var(--ease);
+}
+.arrow:hover::after, .arrow:focus-visible::after { transform: scaleX(1); }
+.arrow:hover .tip { transform: translateX(0.4rem); }
+.arrow.gold { color: var(--accent); }              /* only used on dark surfaces */
+
+/* ── nav (zero-chrome slash bar, part of the hero) ────────────────────────── */
+.nav { display: flex; align-items: center; justify-content: space-between;
+  gap: 2rem; padding: 1.75rem var(--gutter); }
+.nav-logo { display: inline-flex; }
+.nav-logo img { width: 175px; height: auto; }
+.nav-links { display: flex; align-items: center; gap: 0.6rem;
+  font-family: var(--font-body); font-size: 0.75rem; font-weight: 500;
+  letter-spacing: 0.16em; text-transform: uppercase; }
+.nav-links a { color: var(--on-inverse); text-decoration: none;
+  position: relative; padding-bottom: 0.15rem; }
+.nav-links a::after { content: ""; position: absolute; left: 0; bottom: 0; height: 1px;
+  width: 100%; background: currentColor; transform: scaleX(0); transform-origin: left;
+  transition: transform var(--dur-base) var(--ease); }
+.nav-links a:hover::after, .nav-links a:focus-visible::after { transform: scaleX(1); }
+.nav-sep { opacity: 0.5; }
+
+/* ── hero (surface/inverse) — sanctioned centered bookend ─────────────────── */
+.hero { background: var(--inverse); color: var(--on-inverse);
+  min-height: 100cqh; display: flex; flex-direction: column;
+  padding-bottom: var(--pad-dark); }
+.hero-inner { flex: 1; display: flex; flex-direction: column; align-items: center;
+  text-align: center; padding: 3rem var(--gutter) 0; }
+.hero .eyebrow { color: var(--accent); margin-bottom: 1.5rem; }   /* single jewel accent */
+/* hero display renders at the display-hero weight (Melodrama Medium 500); every other
+   .heading inherits the section heading weight (Melodrama Regular 400). */
+.hero-title { color: var(--on-inverse); max-width: 16ch; margin: 0 auto; font-weight: 500; }
+.hero-collage { position: relative; width: 100%; max-width: 62rem;
+  margin: 3.5rem auto 0; aspect-ratio: 16 / 9; }
+.hero-collage .plate-main { width: 82%; height: 100%; object-fit: cover;
+  filter: saturate(.94) contrast(1.02); }
+.hero-collage .plate-over { position: absolute; right: 0; bottom: -12%;
+  width: 34%; aspect-ratio: 3 / 4; object-fit: cover;
+  filter: saturate(.94) contrast(1.02); }   /* media-over-media overlap, radius 0 */
+.hero-foot { display: flex; flex-direction: column; align-items: center;
+  gap: 1.75rem; margin-top: 6rem; padding: 0 var(--gutter); }
+.hero-sub { color: var(--on-inverse-muted); max-width: 46ch; text-align: center; }
+.hero-actions { display: flex; gap: 2.5rem; flex-wrap: wrap; justify-content: center; }
+
+/* ── value props (surface/primary cream) — asymmetric editorial collage ───── */
+.values { position: relative; background: var(--paper); color: var(--ink);
+  padding: var(--pad-light) var(--gutter); overflow: hidden; }
+.values .ghost { position: absolute; top: 8%; left: -3%; z-index: 0;
+  font-family: var(--font-heading); font-weight: 400; text-transform: uppercase;
+  font-size: var(--ghost-size); line-height: 1; color: var(--ghost);
+  pointer-events: none; user-select: none; letter-spacing: -0.02em; }
+.values-inner { position: relative; z-index: 1; max-width: 74rem; margin: 0 auto; }
+.values-head { max-width: 40ch; margin-bottom: var(--module-gap); }
+.values-head .eyebrow { color: var(--ink-muted); margin-bottom: 1.25rem; }
+.values-head .heading { color: var(--ink); font-size: var(--h1); line-height: 1.08;
+  max-width: 18ch; }
+
+.vp { position: relative; display: grid; grid-template-columns: 1fr; gap: 1rem;
+  padding-top: 2.75rem; margin-top: 2.75rem; max-width: 46ch; }
+.vp::before { content: ""; position: absolute; top: 0; left: 0; width: 100%;
+  height: 1px; background: var(--hairline); }   /* ruled bar, not a section seam */
+.vp:first-of-type { margin-top: 0; }
+/* alternating anchors — asymmetric, never centered */
+.vp.anchor-left  { margin-right: auto; }
+.vp.anchor-mid   { margin-left: 22%; }
+.vp.anchor-right { margin-left: auto; }
+.vp .counter { font-family: var(--font-heading); font-size: var(--counter);
+  line-height: 1; color: var(--ink); }
+.vp .vp-title { font-family: var(--font-heading); font-weight: 400;
+  text-transform: uppercase; letter-spacing: -0.01em; font-size: var(--h3);
+  color: var(--ink); }
+.vp .body { color: var(--ink-muted); }
+
+/* ── social proof (surface/inverse) — split info-band ─────────────────────── */
+.proof { background: var(--inverse); color: var(--on-inverse);
+  padding: var(--pad-dark) 0 0; }
+.proof-intro { max-width: 74rem; margin: 0 auto; padding: 0 var(--gutter) var(--pad-dark); }
+.proof-intro .eyebrow { color: var(--accent); margin-bottom: 1.75rem; }
+.proof-quote { font-family: var(--font-heading); font-weight: 400;
+  text-transform: uppercase; letter-spacing: -0.01em; line-height: 1.06;
+  font-size: var(--h1); color: var(--on-inverse); max-width: 20ch; }
+.proof-attr { display: block; margin-top: 2rem; font-family: var(--font-body);
+  font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--on-inverse-muted); }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.split-media img { width: 100%; height: 100%; object-fit: cover;
+  filter: saturate(.94) contrast(1.02); }   /* flush hard-edged half, radius 0 */
+.panel { background: var(--panel); color: var(--ink); padding: 3.5rem 3rem; }
+.panel-title { font-family: var(--font-heading); font-weight: 400;
+  text-transform: uppercase; letter-spacing: -0.01em; font-size: var(--h3);
+  color: var(--ink); margin-bottom: 2rem; }
+.rows { display: flex; flex-direction: column; }
+.row { position: relative; display: flex; align-items: baseline;
+  justify-content: space-between; gap: 1.5rem; padding: 1.1rem 0; }
+.row::before { content: ""; position: absolute; top: 0; left: 0; width: 100%;
+  height: 1px; background: var(--hairline); }   /* ruled action row (pseudo, not border) */
+.row-label { font-family: var(--font-body); font-size: 0.75rem; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); }
+.row-value { font-family: var(--font-heading); font-size: 1.15rem; color: var(--ink); }
+.panel-foot { margin-top: 2.5rem; }
+.panel-foot .arrow { color: var(--ink); }   /* cream panel is light -> ink, no accent */
+
+/* ── conversion (surface/primary cream) — narrow centered signup stack ────── */
+.convert { background: var(--paper); color: var(--ink);
+  padding: var(--pad-light) var(--gutter); }
+.convert-inner { max-width: 34rem; margin: 0 auto; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+.convert .eyebrow { color: var(--ink-muted); }
+.convert-title { font-family: var(--font-heading); font-weight: 400;
+  text-transform: uppercase; letter-spacing: -0.01em; line-height: 1.1;
+  font-size: var(--h2); color: var(--ink); }
+.convert .body { color: var(--ink-muted); max-width: 42ch; }
+/* underline-only field: NO box/fill/border — a single 1px rule via pseudo-element */
+.field { position: relative; display: flex; align-items: baseline;
+  justify-content: space-between; gap: 1.5rem; width: 100%; margin-top: 1rem;
+  padding-bottom: 0.75rem; }
+.field::after { content: ""; position: absolute; left: 0; bottom: 0; width: 100%;
+  height: 1px; background: var(--hairline); }
+.field input { flex: 1; border: none; background: transparent; outline: none;
+  font-family: var(--font-body); font-size: 1rem; color: var(--ink);
+  letter-spacing: 0.02em; padding: 0; }
+.field input::placeholder { color: var(--ink-muted); opacity: 0.7; }
+.field .arrow { color: var(--ink); }
+.convert-note { font-family: var(--font-body); font-size: 0.6875rem; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted);
+  opacity: 0.8; }
+
+/* ── footer (surface/inverse-strong) — closing bookend ────────────────────── */
+.footer { background: var(--inverse-strong); color: var(--on-inverse);
+  padding: var(--pad-dark) var(--gutter); text-align: center; }
+.footer-logo { display: inline-flex; margin-bottom: 3rem; }
+.footer-logo img { width: 210px; height: auto; }
+.footer-sitemap { display: flex; flex-wrap: wrap; align-items: center;
+  justify-content: center; gap: 0.75rem; margin-bottom: 3rem; }
+.footer-sitemap a { font-family: var(--font-heading); font-weight: 400;
+  text-transform: uppercase; letter-spacing: -0.01em; font-size: var(--footer-link);
+  line-height: 1.2; color: var(--on-inverse); text-decoration: none;
+  transition: color var(--dur-base) var(--ease); }
+.footer-sitemap a:hover { color: var(--accent); }
+.footer-sitemap .sep { color: var(--on-inverse-muted); opacity: 0.4;
+  font-size: var(--footer-link); font-family: var(--font-heading); }
+.footer-social { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem;
+  font-family: var(--font-body); font-size: 0.75rem; font-weight: 500;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--on-inverse-muted);
+  margin-bottom: 2.5rem; }
+.footer-social a { color: var(--on-inverse-muted); text-decoration: none; }
+.footer-social a:hover { color: var(--accent); }
+.footer-social .sep { opacity: 0.4; }
+.footer-legal { font-family: var(--font-body); font-size: 0.75rem; line-height: 1.6;
+  color: var(--on-inverse-muted); opacity: 0.7; }
+
+/* ── motion: calm scroll reveal (gated; content visible without JS / reduced) ─ */
+.cs-motion-ready .reveal { opacity: 0; transform: translateY(16px);
+  transition: opacity var(--dur-slow) var(--ease), transform var(--dur-slow) var(--ease); }
+.cs-motion-ready .reveal.is-in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
+
+/* ── responsive: collapse the asymmetric grids on small frames ────────────── */
+@media (max-width: 48rem) {
+  .split { grid-template-columns: 1fr; }
+  .split-media { aspect-ratio: 4 / 3; }
+  .vp.anchor-mid, .vp.anchor-right { margin-left: 0; }
+  .nav-links { display: none; }
+  .hero-collage .plate-main { width: 100%; }
+  .hero-collage .plate-over { width: 42%; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================ HERO (inverse) ============================ -->
+<header class="hero" id="hero">
+  <nav class="nav">
+    <a class="nav-logo" href="#hero" aria-label="WoodWave Gallery">
+      <img src="assets/logo.svg" alt="WoodWave Gallery" width="175" height="26">
+    </a>
+    <span class="nav-links">
+      <a href="#values">About</a><span class="nav-sep" aria-hidden="true">/</span>
+      <a href="#values">Gallery</a><span class="nav-sep" aria-hidden="true">/</span>
+      <a href="#proof">Exhibition</a><span class="nav-sep" aria-hidden="true">/</span>
+      <a href="#convert">Visit</a>
+    </span>
+    <a class="arrow gold" href="#convert">Start free <span class="tip" aria-hidden="true">&rarr;</span></a>
+  </nav>
+
+  <div class="hero-inner">
+    <p class="eyebrow reveal">Introducing</p>
+    <h1 class="heading is-display hero-title reveal">Everything in one place</h1>
+    <figure class="hero-collage reveal">
+      <img class="plate-main" src="assets/hero-staircase.jpg" alt="WoodWave editorial photography">
+      <img class="plate-over" src="assets/overlap-vase.jpg" alt="WoodWave detail photography">
+    </figure>
+    <div class="hero-foot">
+      <p class="body hero-sub reveal">A simpler way to get started — built for how you actually work.</p>
+      <div class="hero-actions reveal">
+        <a class="arrow gold" href="#convert">Start free <span class="tip" aria-hidden="true">&rarr;</span></a>
+        <a class="arrow" href="#values">See how it works <span class="tip" aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ======================= VALUE PROPS (cream) =========================== -->
+<section class="values" id="values">
+  <div class="ghost" aria-hidden="true">EVERYTHING</div>
+  <div class="values-inner">
+    <div class="values-head reveal">
+      <p class="eyebrow">Why teams switch</p>
+      <h2 class="heading">One place for how you actually work</h2>
+    </div>
+
+    <div class="vp anchor-left reveal">
+      <span class="counter">01</span>
+      <h3 class="vp-title">Set up in minutes</h3>
+      <p class="body">No manual wiring — you're live the same day. Nothing to stitch together,
+        nothing to schedule; you start where you already are.</p>
+    </div>
+
+    <div class="vp anchor-mid reveal">
+      <span class="counter">02</span>
+      <h3 class="vp-title">One source of truth</h3>
+      <p class="body">Everyone sees the same thing, always up to date. No conflicting copies,
+        no stale exports — one record the whole team reads from.</p>
+    </div>
+
+    <div class="vp anchor-right reveal">
+      <span class="counter">03</span>
+      <h3 class="vp-title">Scales with you</h3>
+      <p class="body">From your first project to your thousandth. The system holds its shape
+        as the work grows — the same calm surface at every size.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= SOCIAL PROOF (inverse split) ================== -->
+<section class="proof" id="proof">
+  <div class="proof-intro reveal">
+    <p class="eyebrow">Trusted by 10,000+ teams</p>
+    <blockquote class="proof-quote">We replaced three tools in a week and never looked back
+      <cite class="proof-attr">Operations lead, mid-market team</cite>
+    </blockquote>
+  </div>
+  <div class="split">
+    <div class="split-media reveal">
+      <img src="assets/hero-staircase.jpg" alt="WoodWave editorial photography">
+    </div>
+    <div class="panel reveal">
+      <h3 class="panel-title">Why teams switch</h3>
+      <div class="rows">
+        <div class="row"><span class="row-label">Set up in minutes</span><span class="row-value">Live the same day</span></div>
+        <div class="row"><span class="row-label">One source of truth</span><span class="row-value">Always up to date</span></div>
+        <div class="row"><span class="row-label">Scales with you</span><span class="row-value">1 → 1,000+ projects</span></div>
+      </div>
+      <div class="panel-foot">
+        <a class="arrow" href="#convert">Start free <span class="tip" aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= CONVERSION (cream stack) ====================== -->
+<section class="convert" id="convert">
+  <div class="convert-inner reveal">
+    <p class="eyebrow">Introducing</p>
+    <h2 class="convert-title">Everything in one place</h2>
+    <p class="body">A simpler way to get started — built for how you actually work.</p>
+    <form class="field" action="#" method="post" aria-label="Start free">
+      <input type="email" name="email" placeholder="you@company.com" autocomplete="email" required>
+      <a class="arrow" href="#convert">Start free <span class="tip" aria-hidden="true">&rarr;</span></a>
+    </form>
+    <p class="convert-note">No credit card — you're live the same day</p>
+  </div>
+</section>
+
+<!-- ======================= FOOTER (inverse-strong) ======================= -->
+<footer class="footer">
+  <a class="footer-logo" href="#hero" aria-label="WoodWave Gallery">
+    <img src="assets/logo.svg" alt="WoodWave Gallery" width="210" height="31">
+  </a>
+  <nav class="footer-sitemap" aria-label="Sitemap">
+    <a href="#values">About</a><span class="sep" aria-hidden="true">/</span>
+    <a href="#values">Gallery</a><span class="sep" aria-hidden="true">/</span>
+    <a href="#proof">Exhibition</a><span class="sep" aria-hidden="true">/</span>
+    <a href="#convert">Visit</a>
+  </nav>
+  <nav class="footer-social" aria-label="Social">
+    <a href="#">Instagram</a><span class="sep" aria-hidden="true">/</span>
+    <a href="#">Facebook</a><span class="sep" aria-hidden="true">/</span>
+    <a href="#">Youtube</a><span class="sep" aria-hidden="true">/</span>
+    <a href="#">Twitter</a>
+  </nav>
+  <p class="footer-legal">© 2023. woodwave gallery template</p>
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var mq = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (mq && mq.matches) return;                      // reduced motion: all visible, no reveal
+  if (!('IntersectionObserver' in window)) return;   // no IO: leave content visible
+  var nodes = [].slice.call(document.querySelectorAll('.reveal'));
+  if (!nodes.length) return;
+  root.classList.add('cs-motion-ready');             // gate: hidden initial state now applies
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+  nodes.forEach(function (n) { io.observe(n); });
+})();
+</script>
+</body>
+</html>

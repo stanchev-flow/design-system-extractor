@@ -1,0 +1,373 @@
+# STANDARD (brand-agnostic) layout patterns for the HERO use-case.
+# origin: designed — deliberately general generalizations of the harvest clusters,
+# not literal copies of any one source page. All sizes are RELATIONSHIPS/CLASSES, never px.
+schemaVersion: layout-patterns.v1
+useCase: hero
+patterns:
+
+  - id: hero-centered-stack-on-media
+    useCase: hero
+    archetypeRef: stack-fullbleed
+    surfaceIntent: inverse
+    intent: "Narrow centered copy stack floating over a full-bleed atmospheric media canvas."
+    contentShape:
+      alignment: { value: centered, inheritance: block-inherits }
+      slots:
+        - { name: eyebrow, role: overline, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: heading, role: display-title, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { name: body, role: lede, textLen: long, sizeClass: body, width: hug, sizeRel: { to: heading, ratio: 0.4, axis: width }, z: front }
+        - { name: actions, role: cta-group, textLen: short, sizeClass: body, width: hug, z: front }
+        - { name: media, role: hero-photo, mediaAspect: landscape, mediaScale: { of: container, fraction: 1.0 }, width: full-bleed, z: back }
+    specialTreatments:
+      - { kind: bleed, target: media, edge: all }
+      - { kind: text-on-media, target: heading, over: media }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      scrim: { type: enum, values: [none, tint, gradient], default: tint }
+      align: { type: enum, values: [center, left], default: center }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters narrow_centered_stack_on_full_bleed_media, full_bleed_scrimmed_media_background, mixed_display_heading_on_media", sources: [harvest-9-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "centered-stack-on-media", by: creation, signalId: null, note: "hand-blessed from harvest report (hero: overlap x20, bleed x19)" }
+
+  - id: hero-split-media-copy
+    useCase: hero
+    archetypeRef: split
+    surfaceIntent: any
+    intent: "Two-region hero — typographic copy column beside a contained hero image."
+    contentShape:
+      alignment: { value: left, counterweight: media, inheritance: per-slot-override }
+      slots:
+        - { name: eyebrow, role: overline, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: heading, role: display-title, textLen: medium, sizeClass: hero, width: hug, z: front }
+        - { name: body, role: lede, textLen: long, sizeClass: body, width: hug, sizeRel: { to: media, ratio: 0.5, axis: width }, z: front }
+        - { name: actions, role: cta-group, textLen: short, sizeClass: body, width: hug, z: front }
+        - { name: media, role: hero-photo, mediaAspect: portrait, mediaScale: { of: container, fraction: 0.5 }, width: media, z: mid }
+    specialTreatments:
+      - { kind: overlap, pair: [heading, media], zOrder: [media, heading], amount: { class: light } }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      mediaSide: { type: enum, values: [left, right], default: right }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters split_feature-adjacent hero splits and foreground_graphic media", sources: [harvest-9-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "split-media-copy", by: creation, signalId: null, note: "hand-blessed from harvest report" }
+
+  - id: hero-ghostword-atmospheric
+    useCase: hero
+    archetypeRef: overlay
+    surfaceIntent: inverse-strong
+    intent: "Oversized low-contrast ghost wordmark straddling the media behind a compact centered stage."
+    contentShape:
+      alignment: { value: left, counterweight: ghostword, inheritance: per-slot-override }
+      slots:
+        - { name: ghostword, role: watermark, textLen: word, sizeClass: colossal, width: full-bleed, opacityClass: ghost, z: back }
+        - { name: eyebrow, role: overline, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: heading, role: display-title, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { name: body, role: lede, textLen: long, sizeClass: body, width: hug, sizeRel: { to: ghostword, ratio: 0.3, axis: width }, z: front }
+        - { name: media, role: hero-photo, mediaAspect: landscape, mediaScale: { of: container, fraction: 0.7 }, width: media, z: mid }
+    specialTreatments:
+      - { kind: ghost-word, target: ghostword, anchor: straddle-media, bleed: partial }
+      - { kind: overlap, pair: [ghostword, media], zOrder: [ghostword, media], amount: { class: heavy } }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      ghostAnchor: { type: enum, values: [behind-media, straddle-media, margin], default: straddle-media }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters oversized_atmospheric_wordmark, dark_atmospheric_section_run (hero ghost-word x5)", sources: [harvest-9-projects] }
+    overridable: true
+    confidence: medium
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "ghostword-atmospheric", by: creation, signalId: null, note: "hand-blessed from harvest report" }
+
+  # ── editorial-harvest-2026-07 additions (8 reference images; see
+  #    experiments/woodwave-harvest/REPORT.md). All origin:designed, standard tier. ──
+
+  - id: card-over-portrait-statement
+    useCase: hero
+    archetypeRef: overlay
+    surfaceIntent: inverse               # media canvas reads dark; panel keeps its own surface
+    intent: >-
+      A full-bleed portrait photograph as the entire canvas; a solid content card
+      (~half the container, centered both axes, aspect echoing the canvas) floats over
+      it carrying a space-between stack: wordmark top, condensed statement center,
+      caption bottom. The card occludes the media focal center on purpose.
+    contentShape:
+      alignment: { value: centered, inheritance: block-inherits }
+      slots:
+        - { name: canvas, role: full-bleed portrait canvas, mediaAspect: portrait,
+            mediaScale: { of: container, fraction: 1.0 }, width: full-bleed, z: back }
+        - { name: card, role: statement panel, contract: media-text, width: fixed,
+            colStart: 4, colSpan: 6, z: front }
+        - { name: wordmark, role: tracked wordmark, textLen: word, sizeClass: caption, width: hug, z: front }
+        - { name: statement, role: condensed statement, textLen: short, sizeClass: display, width: hug, z: front }
+        - { name: caption, role: closing caption lines, textLen: medium, sizeClass: caption, width: hug, z: front }
+    specialTreatments:
+      - { kind: bleed, target: canvas, edge: all }
+      - { kind: panel-on-media, target: card, over: canvas,
+          registration: { toSlot: canvas, edge: top, depthBaselines: 0, z: front },
+          distribute: space-between }
+    responsive: { collapse: stack-below-tablet, mediaFirst: true }
+    variantKnobs:
+      cardSpan: { type: enum, values: [5, 6, 7], default: 6 }
+      align: { type: enum, values: [center], default: center }   # hero/cta centering exception
+    origin: designed
+    designedFrom: { note: "harvested from reference #1 (Borcelle poster) — solid panel over full-bleed portrait, card cols 4–9 centered, space-between internal stack", sources: [editorial-harvest-2026-07] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-02T00:00:00Z", action: created, from: null, to: "card-over-portrait-statement", by: creation, signalId: null, note: "editorial harvest ref #1 (P2 panel-on-media)" }
+
+  - id: boundary-straddle-headline
+    useCase: hero
+    archetypeRef: overlay
+    surfaceIntent: inverse
+    intent: >-
+      A narrow full-height rail (cols 1–3, panel surface; eyebrow top, short body mid,
+      meta bottom) beside a full-bleed photo (cols 4–12, hard seam). A poster display
+      heading registers to the seam and straddles onto the photo, top-anchored. A flat
+      translucent scrim band crosses the photo at ~55–75% height carrying three keyword
+      columns.
+    contentShape:
+      alignment: { value: left, counterweight: photo, inheritance: per-slot-override }
+      slots:
+        - { name: rail, role: sidebar rail panel, width: stretch, colStart: 1, colSpan: 3, z: front }
+        - { name: rail-eyebrow, role: tracked eyebrow, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: rail-body, role: short support body, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { name: rail-meta, role: bottom meta, textLen: word, sizeClass: caption, width: hug, z: front }
+        - { name: photo, role: full-bleed atmosphere photo, mediaAspect: landscape,
+            mediaScale: { of: container, fraction: 0.75 }, width: full-bleed,
+            colStart: 4, colSpan: 9, z: back }
+        - { name: heading, role: seam-straddling display title, textLen: short,
+            sizeClass: display, width: stretch, colStart: 4, colSpan: 9, z: front }
+        - { name: keywords, role: scrim keyword columns, contract: feature-item,
+            textLen: short, sizeClass: caption, width: stretch, z: front }
+    specialTreatments:
+      - { kind: bleed, target: photo, edge: right }
+      - { kind: text-on-media, target: heading, over: photo, sanctioned: true }
+      - { kind: straddle, target: heading,
+          registration: { toSlot: rail, edge: right, depthCols: 0, z: front },
+          sanctioned: true }
+      - { kind: scrim-band, target: keywords, over: photo,
+          band: { rowStart: 0.55, rowSpan: 0.2 }, fill: { opacityClass: medium } }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      railSide: { type: enum, values: [left, right], default: left }
+      keywordCount: { type: enum, values: [2, 3], default: 3 }
+    origin: designed
+    designedFrom: { note: "harvested from reference #3 ('Design Philosophy') — 3/9 rail+photo split, seam-registered display heading, translucent keyword scrim at 55–76% height", sources: [editorial-harvest-2026-07] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-02T00:00:00Z", action: created, from: null, to: "boundary-straddle-headline", by: creation, signalId: null, note: "editorial harvest ref #3 (P2 straddle + scrim-band)" }
+
+  - id: framed-inset-monument
+    useCase: hero
+    archetypeRef: overlay
+    surfaceIntent: primary               # the PAGE is light; the framed photo is the dark object
+    intent: >-
+      A framed inset photograph (page margins visible on all sides, ~1 col left/right)
+      with a monumental display word (cols 1–8) registered to the image's BOTTOM edge —
+      flush to half-straddling — and a small annotation cluster inside the frame at
+      cols 10–11. Corner-anchored decorative media may break the frame edges at z:front.
+    contentShape:
+      alignment: { value: left, counterweight: annotation, inheritance: per-slot-override }
+      slots:
+        - { name: frame, role: framed hero photography, mediaAspect: landscape,
+            mediaScale: { of: container, fraction: 0.86 }, width: framed,
+            colStart: 1, colSpan: 12, z: mid }
+        - { name: monument, role: monumental display word, textLen: word,
+            sizeClass: colossal, width: hug, colStart: 1, colSpan: 8, z: front }
+        - { name: annotation, role: in-frame margin annotation, textLen: medium,
+            sizeClass: caption, width: hug, colStart: 10, colSpan: 2, z: front }
+        - { name: cue, role: scroll cue, textLen: short, sizeClass: caption,
+            width: hug, alignTo: { slot: frame, corner: br }, z: front }
+    specialTreatments:
+      - { kind: framed, target: frame, widthRel: { to: container, ratio: 0.86 } }
+      - { kind: straddle, target: monument,
+          registration: { toSlot: frame, edge: bottom, depthBaselines: 0, z: front },
+          sanctioned: true }
+    responsive: { collapse: stack-below-tablet, mediaFirst: true }
+    variantKnobs:
+      straddleDepth: { type: enum, values: [flush, light, half], default: flush }
+      monumentSpan: { type: enum, values: [6, 7, 8], default: 8 }
+      decoCount: { type: enum, values: [0, 2, 3], default: 0 }    # break-frame default OFF (slop risk)
+    origin: designed
+    designedFrom: { note: "harvested from reference #4 (SAISEI) — framed inset (7.7%/6.4% side margins), colossal word cols 1–8 registered to the image bottom edge, corner-anchored break-frame botanicals (knob-gated, default off)", sources: [editorial-harvest-2026-07] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-02T00:00:00Z", action: created, from: null, to: "framed-inset-monument", by: creation, signalId: null, note: "editorial harvest ref #4 (P2 framed + straddle; P3 break-frame)" }
+
+  - id: stepped-overlay-statement
+    useCase: hero
+    archetypeRef: overlay
+    surfaceIntent: inverse
+    intent: >-
+      A full-bleed photograph carries the entire section; the display statement breaks
+      into 3 fixed lines whose left edges step progressively rightward (0 / +0.5 col /
+      +3 cols). A small right-aligned support cluster + typographic CTA anchor to the
+      bottom-right corner (cols 11–12).
+    contentShape:
+      alignment: { value: left, counterweight: support, inheritance: per-slot-override }
+      slots:
+        - { name: canvas, role: full-bleed hero photography, mediaAspect: landscape,
+            mediaScale: { of: container, fraction: 1.0 }, width: full-bleed, z: back }
+        - { name: statement, role: stepped display statement, textLen: medium,
+            sizeClass: display, width: stretch, colStart: 1, colSpan: 8, z: front }
+        - { name: support, role: right-aligned support copy, textLen: medium,
+            sizeClass: caption, width: hug, colStart: 11, colSpan: 2,
+            alignTo: { corner: br }, z: front }
+        - { name: action, role: cta, contract: link, textLen: short, sizeClass: caption,
+            width: hug, alignTo: { slot: support, edge: bottom }, z: front }
+    specialTreatments:
+      - { kind: bleed, target: canvas, edge: all }
+      - { kind: text-on-media, target: statement, over: canvas, sanctioned: true }
+      - { kind: stepped-lines, target: statement, direction: right, steps: [0, 1, 6],
+          amount: { class: heavy } }
+    responsive: { collapse: stack-below-tablet, mediaFirst: true }
+    variantKnobs:
+      stepProgression: { type: enum, values: [linear, accelerating], default: accelerating }
+      lineCount: { type: enum, values: [2, 3], default: 3 }
+      supportCorner: { type: enum, values: [bottom-right, bottom-left], default: bottom-right }
+    origin: designed
+    designedFrom: { note: "harvested from reference #5 ('We design the feeling of you') — 3-line staircase (indents 0/+0.5col/+3col), cols 11–12 corner support + CTA", sources: [editorial-harvest-2026-07] }
+    overridable: true
+    confidence: medium
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-02T00:00:00Z", action: created, from: null, to: "stepped-overlay-statement", by: creation, signalId: null, note: "editorial harvest ref #5 (P3 stepped-lines)" }
+
+  - id: type-behind-media-masthead
+    useCase: hero
+    archetypeRef: overlay
+    surfaceIntent: primary
+    intent: >-
+      A light page opened by a two-line monumental display wordmark spanning near-full
+      width, with TWO portrait images stacked centrally ON TOP of the type — the heading
+      sits z:back and is partially occluded (word ends stay visible). The second, smaller
+      image registers to the first's bottom-right corner. A row-registered pair of
+      marginal captions flanks the media at mid-height.
+    contentShape:
+      alignment: { value: centered, inheritance: block-inherits }
+      slots:
+        - { name: eyebrow, role: centered tracked eyebrow lines, textLen: medium,
+            sizeClass: caption, width: hug, z: front }
+        - { name: monument, role: two-line display wordmark (occluded), textLen: short,
+            sizeClass: colossal, width: full-bleed, colStart: 1, colSpan: 12, z: back }
+        - { name: media-main, role: primary portrait photography, mediaAspect: portrait,
+            mediaScale: { of: container, fraction: 0.38 }, width: media,
+            colStart: 5, colSpan: 5, z: mid }
+        - { name: media-detail, role: overlapping detail photography, mediaAspect: portrait,
+            mediaScale: { of: container, fraction: 0.25 }, width: media,
+            colStart: 8, colSpan: 3, z: front }
+        - { name: caption-left, role: flanking margin caption, textLen: short,
+            sizeClass: caption, width: hug, colStart: 1, colSpan: 2, z: front }
+        - { name: caption-right, role: flanking margin caption (date), textLen: short,
+            sizeClass: caption, width: hug, colStart: 11, colSpan: 2,
+            alignTo: { slot: caption-left, edge: top }, z: front }
+    specialTreatments:
+      - { kind: type-behind-media, target: monument, over: media-main,
+          maxOcclusion: { class: medium }, endsVisible: true, sanctioned: true }
+      - { kind: overlap, pair: [media-detail, media-main],
+          zOrder: [media-main, media-detail],
+          amount: { class: medium } }
+      - { kind: marginal-caption, target: caption-left, side: left }
+      - { kind: marginal-caption, target: caption-right, side: right }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      occlusion: { type: enum, values: [light, medium], default: medium }
+      detailCorner: { type: enum, values: [bottom-right, bottom-left], default: bottom-right }
+    origin: designed
+    designedFrom: { note: "harvested from reference #6 (ÆBELE Interiors) — full-width 2-line display z:back, portrait cols 5–9 + corner-registered detail cols 8–10 on top, row-registered flanking captions cols 1–2 / 11–12", sources: [editorial-harvest-2026-07] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-02T00:00:00Z", action: created, from: null, to: "type-behind-media-masthead", by: creation, signalId: null, note: "editorial harvest ref #6 (P2 type-behind-media, G8 occlusion contract)" }
+
+  - id: tucked-headline-panorama
+    useCase: hero
+    archetypeRef: overlay
+    surfaceIntent: inverse
+    intent: >-
+      Dark-surface opener: a two-line display heading top-left (cols 1–5) whose bottom
+      line tucks BEHIND the top edge of a framed panoramic photograph below (media in
+      front, ~40% of the line height submerged); a short support paragraph top-right
+      (cols 7–10) shares the heading's first row. The photo is near-full-bleed with
+      slim visible margins on both sides and below.
+    contentShape:
+      alignment: { value: left, counterweight: support, inheritance: per-slot-override }
+      slots:
+        - { name: heading, role: tucked display heading, textLen: short,
+            sizeClass: display, width: hug, colStart: 1, colSpan: 5, z: back }
+        - { name: support, role: support paragraph, textLen: long, sizeClass: body,
+            width: hug, colStart: 7, colSpan: 4,
+            alignTo: { slot: heading, edge: top }, z: front }
+        - { name: panorama, role: panoramic portrait photography, mediaAspect: wide,
+            mediaScale: { of: container, fraction: 0.92 }, width: framed,
+            colStart: 1, colSpan: 12, z: mid }
+    specialTreatments:
+      - { kind: framed, target: panorama, widthRel: { to: container, ratio: 0.92 } }
+      - { kind: straddle, target: heading,
+          registration: { toSlot: panorama, edge: top, depthBaselines: 4, z: back },
+          maxOcclusion: { class: medium }, endsVisible: true,
+          sanctioned: true }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      tuckDepth: { type: enum, values: [light, medium, heavy], default: medium }
+      headingSide: { type: enum, values: [left, right], default: left }
+    origin: designed
+    designedFrom: { note: "harvested from reference #7 (HELLO THERE) — heading cols 1–5 with line 2 sinking ~40% behind a 2.25:1 framed panorama (4%/4% side margins), support cols 7–10", sources: [editorial-harvest-2026-07] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-02T00:00:00Z", action: created, from: null, to: "tucked-headline-panorama", by: creation, signalId: null, note: "editorial harvest ref #7 (P2 straddle z:back + G8 occlusion params)" }
+
+  - id: hero-fullbleed-scrimmed-overlay
+    useCase: hero
+    archetypeRef: stack-fullbleed
+    surfaceIntent: inverse-strong
+    intent: "Viewport-width media canvas with a scrim and a floating utility overlay plus bottom-anchored copy."
+    contentShape:
+      alignment: { value: left, counterweight: media, inheritance: per-slot-override }
+      slots:
+        - { name: utility, role: nav-overlay, textLen: short, sizeClass: caption, width: stretch, z: front }
+        - { name: heading, role: display-title, textLen: medium, sizeClass: hero, width: hug, z: front }
+        - { name: body, role: lede, textLen: long, sizeClass: body, width: hug, sizeRel: { to: media, ratio: 0.4, axis: width }, z: front }
+        - { name: actions, role: cta-group, textLen: short, sizeClass: body, width: hug, z: front }
+        - { name: media, role: hero-photo, mediaAspect: landscape, mediaScale: { of: container, fraction: 1.0 }, width: full-bleed, z: back }
+    specialTreatments:
+      - { kind: bleed, target: media, edge: all }
+      - { kind: text-on-media, target: heading, over: media }
+      - { kind: overlap, pair: [utility, media], zOrder: [media, utility], amount: { class: light } }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      copyAnchor: { type: enum, values: [bottom-left, center, bottom-center], default: bottom-left }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters full_bleed_scrimmed_media_background, floating_utility_overlay, viewport_width_media_canvas", sources: [harvest-9-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "fullbleed-scrimmed-overlay", by: creation, signalId: null, note: "hand-blessed from harvest report" }

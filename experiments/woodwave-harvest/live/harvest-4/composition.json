@@ -1,0 +1,469 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "woodwave-gallery",
+    "name": "Woodwave Gallery \u2014 one-page",
+    "useCasesRequested": [
+      "hero",
+      "about",
+      "gallery",
+      "about",
+      "cta",
+      "footer"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/woodwave/brand/brand.yaml"
+  },
+  "style": {
+    "id": "editorial-luxury"
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "overlay",
+      "surfaceIntent": "inverse",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "card-over-portrait-statement"
+      },
+      "slots": [
+        {
+          "name": "canvas",
+          "role": "background-media",
+          "contract": "image",
+          "textLen": "none",
+          "width": "full-bleed",
+          "mediaAspect": "portrait",
+          "z": "back",
+          "colStart": 1,
+          "colSpan": 12,
+          "asset": {
+            "src": "Web-gallery-1.jpg",
+            "alt": "Warm timber gallery interior",
+            "ratio": "portrait"
+          }
+        },
+        {
+          "name": "statement-card",
+          "role": "panel",
+          "contract": "content-block",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "media",
+          "z": "front",
+          "colStart": 4,
+          "colSpan": 6,
+          "copy": {
+            "eyebrow": "Woodwave Gallery",
+            "heading": "Space as a muse",
+            "text": "Contemporary art in a landmark timber building \u2014 from the late 20th century to today.",
+            "caption": "About / Gallery / Exhibition / Visit"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "canvas",
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "panel-on-media",
+          "target": "statement-card",
+          "over": "canvas",
+          "distribute": "space-between"
+        }
+      ],
+      "alignment": {
+        "anchor": "centered",
+        "counterweight": "canvas"
+      }
+    },
+    {
+      "id": "about",
+      "useCase": "about",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "about-anchored-statement"
+      },
+      "grid": {
+        "columns": 12,
+        "gutter": "2rem"
+      },
+      "slots": [
+        {
+          "name": "ghost",
+          "role": "watermark",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "width": "hug",
+          "z": "back",
+          "colStart": 1,
+          "copy": "ABOUT"
+        },
+        {
+          "name": "statement",
+          "role": "header",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": {
+            "eyebrow": "About",
+            "heading": "The building is the first artwork",
+            "text": "A restored timber landmark whose grain, light and volume frame every work we show. Space is not a container here \u2014 it is the muse.",
+            "cta": "Read the manifesto"
+          }
+        },
+        {
+          "name": "about-media",
+          "role": "media",
+          "contract": "image",
+          "textLen": "none",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "z": "mid",
+          "colStart": 8,
+          "colSpan": 5,
+          "asset": {
+            "src": "About-img-2.jpg",
+            "alt": "Timber architecture detail"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "ghost-word",
+          "target": "ghost",
+          "amount": {
+            "class": "light"
+          }
+        },
+        {
+          "kind": "stagger",
+          "target": "about-media",
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "mediaSide": "right"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "about-media"
+      }
+    },
+    {
+      "id": "gallery",
+      "useCase": "gallery",
+      "archetype": "stack-fullbleed",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "gallery-fullbleed-counter-band"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "kicker",
+          "contract": "eyebrow",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "copy": "Gallery Interior"
+        },
+        {
+          "name": "counter",
+          "role": "counter",
+          "contract": "label",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "colStart": 11,
+          "copy": "01 / 06"
+        },
+        {
+          "name": "gallery-media",
+          "role": "media",
+          "contract": "image",
+          "textLen": "none",
+          "width": "full-bleed",
+          "mediaAspect": "wide",
+          "z": "back",
+          "colStart": 1,
+          "colSpan": 12,
+          "asset": {
+            "src": "About-img-3.jpg",
+            "alt": "Gallery interior with hanging works"
+          }
+        },
+        {
+          "name": "gallery-caption",
+          "role": "caption",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "copy": "Main hall \u2014 permanent collection, natural top-light."
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "gallery-media",
+          "amount": {
+            "class": "heavy"
+          }
+        },
+        {
+          "kind": "marginal-caption",
+          "target": "gallery-caption"
+        }
+      ],
+      "knobs": {
+        "counterFormat": "01 / 06"
+      }
+    },
+    {
+      "id": "heritage",
+      "useCase": "about",
+      "archetype": "overlay",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "tucked-headline-panorama"
+      },
+      "grid": {
+        "columns": 12,
+        "gutter": "2rem"
+      },
+      "slots": [
+        {
+          "name": "heritage-heading",
+          "role": "heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "back",
+          "colStart": 1,
+          "colSpan": 5,
+          "copy": "Heritage 1941\u20142023"
+        },
+        {
+          "name": "heritage-support",
+          "role": "supporting-text",
+          "contract": "paragraph",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "colStart": 7,
+          "colSpan": 4,
+          "copy": "Eight decades of collecting \u2014 modern masters through living artists, held under one timber roof."
+        },
+        {
+          "name": "panorama",
+          "role": "media",
+          "contract": "image",
+          "textLen": "none",
+          "width": "framed",
+          "mediaAspect": "pano",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 12,
+          "asset": {
+            "src": "About-img-4.jpg",
+            "alt": "Panoramic view of the collection wing"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "framed",
+          "target": "panorama",
+          "widthRel": {
+            "to": "container",
+            "ratio": 0.9
+          }
+        },
+        {
+          "kind": "straddle",
+          "target": "heritage-heading",
+          "registration": {
+            "toSlot": "panorama",
+            "edge": "top",
+            "depthBaselines": 2,
+            "z": "back"
+          },
+          "maxOcclusion": {
+            "class": "medium"
+          },
+          "endsVisible": true,
+          "sanctioned": true
+        }
+      ],
+      "knobs": {
+        "tuckDepth": "medium",
+        "headingSide": "left"
+      }
+    },
+    {
+      "id": "visit",
+      "useCase": "cta",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "novel",
+      "seededFrom": null,
+      "grid": {
+        "columns": 12,
+        "gutter": "2rem"
+      },
+      "slots": [
+        {
+          "name": "visit-info",
+          "role": "header",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "stretch",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 5,
+          "copy": {
+            "eyebrow": "Visit",
+            "heading": "Plan your visit",
+            "text": "12 Timber Row, Riverside District. Open Tue\u2013Sun, 10:00\u201318:00 \u2014 Thursdays until 21:00.",
+            "cta": "Buy tickets"
+          }
+        },
+        {
+          "name": "visit-map",
+          "role": "media",
+          "contract": "image",
+          "textLen": "none",
+          "width": "media",
+          "mediaAspect": "landscape",
+          "z": "mid",
+          "colStart": 7,
+          "colSpan": 6,
+          "asset": {
+            "src": "Map.jpg",
+            "alt": "Map of the gallery location"
+          }
+        },
+        {
+          "name": "newsletter",
+          "role": "form",
+          "contract": "form",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 5,
+          "copy": {
+            "heading": "Exhibition news",
+            "note": "Underline email, inline submit.",
+            "submit": "Subscribe"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "stagger",
+          "target": "visit-map",
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "visit-map"
+      }
+    },
+    {
+      "id": "footer",
+      "useCase": "footer",
+      "archetype": "stack",
+      "surfaceIntent": "panel",
+      "novelty": "reuse",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "footer-logo",
+          "role": "logo",
+          "contract": "logo",
+          "textLen": "word",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": "Woodwave"
+        },
+        {
+          "name": "footer-nav",
+          "role": "links",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": [
+            "About",
+            "Gallery",
+            "Exhibition",
+            "Visit"
+          ]
+        },
+        {
+          "name": "footer-social",
+          "role": "social",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": [
+            "Instagram",
+            "Twitter",
+            "Contact"
+          ]
+        },
+        {
+          "name": "footer-legal",
+          "role": "legal",
+          "contract": "label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "\u00a9 2024 Woodwave Gallery. A landmark timber building."
+        }
+      ],
+      "treatments": []
+    }
+  ],
+  "rationale": "Lean 6-section scroll. Hero adapts card-over-portrait-statement on the only inverse surface, keeping the sanctioned panel-on-media (space-between) and carrying the single accent on its display statement. About reuses the anchored statement, adding a low-opacity ABOUT ghost word for brand flavor. Gallery reuses the full-bleed counter-band. Heritage adapts tucked-headline-panorama to primary (hero stays the sole inverse), keeping the z:back straddle tuck with medium occlusion + endsVisible, sanctioned. Visit is a novel split cta pairing info + map + underline newsletter; footer closes with slash-nav and socials. Mission and curator folded to stay under the 6-section ceiling."
+}

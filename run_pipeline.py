@@ -131,7 +131,7 @@ Requirements:
 - For every non-icon visual placeholder, use an <img> element with a blank data URI or empty inline SVG placeholder source, size it correctly in the layout, keep an accessible plain-language `alt`, and include a `data-stt-asset-brief` attribute that describes what the final generated image should contain and how it should look in terms of subject matter, composition, and design-system style
 - The `data-stt-asset-brief` should be concise but specific enough for downstream image generation, for example the content, mood, framing, material/texture, color treatment, and whether it should feel photographic, illustrative, diagrammatic, abstract, or collage-like
 - Prefer `<img data-stt-asset-brief="...">` placeholders over CSS `background-image: url(...)` for major generated visuals unless the layout absolutely requires a background-image treatment
-- IMPORTANT: Do NOT use viewport units (100vh, 100svh, min-height: 100vh) on sections or containers. Sections should size naturally based on their content. Only the hero section may optionally use a max-height but never min-height: 100vh.
+- IMPORTANT: Do NOT use viewport units (vh/svh/dvh/vw) anywhere — the output is rendered inside an iframe. Use container-query units (cqw/cqh/cqi) against a `container-type: size` ancestor; the root wrapper must set the container context.
 - Keep the CSS concise — avoid overly verbose or redundant styles
 
 Output ONLY the HTML code, no explanations or markdown fences.\

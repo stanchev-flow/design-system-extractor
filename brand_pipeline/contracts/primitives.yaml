@@ -1,0 +1,326 @@
+# contracts/primitives.yaml — UNIVERSAL atomic vocabulary (defined ONCE, shared by every brand)
+#
+# This is the canonical catalog of leaf primitives. It is NOT per-brand: completeness
+# here is desirable. A brand NEVER redefines a contract — `brand.yaml.primitives[]`
+# only records THIS brand's usage rules, chosen variants, remaps, and prohibitions
+# AGAINST these contracts (exactly the token model: universal contract + brand override).
+#
+# LIBRARY-AGNOSTIC by design. Every entry describes INTENT only:
+#   - `intent` : what the primitive is for (one line)
+#   - `props`  : intent-level properties (NEVER shadcn/Webflow attribute names)
+#   - `slots`  : named child holes this primitive exposes (filled by other primitives);
+#                most leaves have `slots: []`
+#   - `variants` (optional): the named shapes a brand may pick from / prohibit
+#
+# Render substrates project the SAME intent differently:
+#   - Tailwind/shadcn renderer  : intent -> utility classes + shadcn markup (build target NOW)
+#   - Webflow assembler (DEFERRED): intent -> library components + variables
+# The contract itself stays substrate-free; substrate names live only in render code /
+# the optional brand.yaml `targetMappings:` annotation block, never here.
+
+version: "0.1"
+
+primitives:
+
+  heading:
+    intent: "Primary titling text at a hierarchy tier."
+    props:
+      level:  { type: enum, values: [display, h1, h2, h3, h4], desc: "semantic + size tier" }
+      text:   { type: string }
+      align:  { type: enum, values: [start, center, end], default: start }
+      case:   { type: enum, values: [as-is, upper, sentence], default: as-is }
+    slots: []
+
+  subheading:
+    intent: "Secondary supporting line directly under a heading (a.k.a. lede)."
+    props:
+      text:  { type: string }
+      align: { type: enum, values: [start, center, end], default: start }
+    slots: []
+
+  eyebrow:
+    intent: "Short overline / kicker label above a heading. (aliases: kicker, overline)"
+    aliases: [kicker, overline]
+    props:
+      text:  { type: string }
+      case:  { type: enum, values: [as-is, upper, sentence], default: upper }
+    slots: []
+
+  paragraph:
+    intent: "A block of body copy. (aliases: text, body, rich-text)"
+    aliases: [text, body, rich-text]
+    props:
+      text:    { type: string }
+      measure: { type: string, desc: "max reading width, e.g. ch or fraction-of-container" }
+      align:   { type: enum, values: [start, center, end], default: start }
+    slots: []
+
+  label:
+    intent: "Inline caption / micro-label / field label text."
+    props:
+      text:  { type: string }
+      case:  { type: enum, values: [as-is, upper, sentence], default: as-is }
+    slots: []
+
+  button:
+    intent: "A pressable control with a surface (filled / outline / ghost)."
+    props:
+      label:   { type: string }
+      action:  { type: string, desc: "intent target (href or handler), substrate-resolved" }
+      emphasis: { type: enum, values: [primary, secondary, tertiary], default: primary }
+    variants: [filled, outline, ghost, pill]
+    slots:
+      icon: { accepts: [icon], optional: true, desc: "leading/trailing icon" }
+
+  link:
+    intent: "A textual navigational/action link (no button surface)."
+    props:
+      label:  { type: string }
+      action: { type: string }
+    variants: [plain, underline, arrow, slash]
+    slots:
+      icon: { accepts: [icon], optional: true }
+
+  cta:
+    intent: "A call-to-action role — realized by a button OR a link depending on brand style."
+    props:
+      label:  { type: string }
+      action: { type: string }
+      style:  { type: enum, values: [button, link], desc: "which primitive realizes the CTA" }
+    slots:
+      icon: { accepts: [icon], optional: true }
+
+  image:
+    intent: "A raster/vector photograph or graphic."
+    props:
+      src:     { type: string }
+      alt:     { type: string }
+      ratio:   { type: enum, values: [square, portrait, landscape, wide, auto], default: auto }
+      radius:  { type: string, desc: "corner radius intent (token ref or 0)" }
+    slots: []
+
+  icon:
+    intent: "A small pictographic glyph."
+    props:
+      name: { type: string, desc: "icon identifier in the active icon set" }
+      size: { type: string }
+    slots: []
+
+  logo:
+    intent: "Brand wordmark / mark."
+    props:
+      src:     { type: string }
+      alt:     { type: string }
+      variant: { type: enum, values: [primary, inverse, mark-only], default: primary }
+    slots: []
+
+  pill:
+    intent: "A small rounded chip / tag for a keyword or filter. (alias: tag)"
+    aliases: [tag, chip]
+    props:
+      text: { type: string }
+    slots: []
+
+  badge:
+    intent: "A status/count marker (e.g. 'New', '3')."
+    props:
+      text:    { type: string }
+      tone:    { type: enum, values: [neutral, accent, success, warning, danger], default: neutral }
+    slots: []
+
+  input:
+    intent: "A single-line text entry control."
+    props:
+      placeholder: { type: string }
+      kind:        { type: enum, values: [text, email, search, password, number], default: text }
+    variants: [boxed, underline, filled]
+    slots: []
+
+  form-field:
+    intent: "A labelled input row: label + control + optional help/error message."
+    props:
+      required: { type: bool, default: false }
+    slots:
+      label:   { accepts: [label] }
+      control: { accepts: [input, select, checkbox, radio, toggle] }
+      message: { accepts: [label], optional: true, desc: "help or error text" }
+
+  toggle:
+    intent: "A binary on/off switch."
+    props:
+      on: { type: bool, default: false }
+    slots: []
+
+  select:
+    intent: "A dropdown picker of one option from many. (alias: dropdown)"
+    aliases: [dropdown]
+    props:
+      placeholder: { type: string }
+      options:     { type: list, desc: "option labels" }
+    slots: []
+
+  checkbox:
+    intent: "A multi-select boolean box."
+    props:
+      checked: { type: bool, default: false }
+    slots: []
+
+  radio:
+    intent: "A single-select option within a radio group."
+    props:
+      checked: { type: bool, default: false }
+      group:   { type: string }
+    slots: []
+
+  quote:
+    intent: "A pulled quotation with optional attribution."
+    props:
+      text: { type: string }
+    slots:
+      cite: { accepts: [label], optional: true, desc: "attribution (name/role)" }
+
+  avatar:
+    intent: "A small circular/round person or entity image."
+    props:
+      src: { type: string }
+      alt: { type: string }
+    slots: []
+
+  rating:
+    intent: "A visual score (stars/dots) out of a max."
+    props:
+      value: { type: number }
+      max:   { type: number, default: 5 }
+    slots: []
+
+  video:
+    intent: "An embedded or hosted video player."
+    props:
+      src:     { type: string }
+      poster:  { type: string, optional: true }
+      ratio:   { type: enum, values: [square, landscape, wide, auto], default: landscape }
+    slots: []
+
+  divider:
+    intent: "A visual separator rule (line/space)."
+    props:
+      orientation: { type: enum, values: [horizontal, vertical], default: horizontal }
+    slots: []
+
+  stat:
+    intent: "A single metric: a big value with a supporting label. (alias: metric)"
+    aliases: [metric]
+    props:
+      value:    { type: string }
+      label:    { type: string, optional: true }
+      prefix:   { type: string, optional: true, desc: "leading glyph/sign, e.g. $ or +" }
+      suffix:   { type: string, optional: true, desc: "trailing unit, e.g. % or k" }
+      emphasis: { type: enum, values: [low, medium, high], default: high }
+    slots: []
+
+  # --- Text (completing Tier-1 Text group) -----------------------------------
+
+  caption:
+    intent: "Image/figure caption or footnote — small, muted supporting text."
+    props:
+      text: { type: string }
+      tone: { type: enum, values: [default, muted], default: muted }
+      size: { type: string, optional: true }
+    slots: []
+
+  list:
+    intent: "An ordered/unordered/feature list of items."
+    props:
+      items:  { type: list, desc: "the list item strings (or rich items)" }
+      marker: { type: enum, values: [bullet, number, check, none], default: bullet }
+      gap:    { type: string, optional: true, desc: "spacing between items (token ref)" }
+    slots: []
+
+  code:
+    intent: "Inline or block source code / monospace snippet."
+    props:
+      code:     { type: string }
+      language: { type: string, optional: true }
+      inline:   { type: bool, default: false }
+    slots: []
+
+  # --- Action (completing Tier-1 Action group) -------------------------------
+
+  icon-button:
+    intent: "An icon-only pressable control (no text label)."
+    props:
+      icon:      { type: string, desc: "icon identifier in the active icon set" }
+      ariaLabel: { type: string, desc: "accessible name (required, since no visible label)" }
+      action:    { type: string, desc: "intent target (href or handler), substrate-resolved" }
+    variants: [filled, outline, ghost, pill]
+    slots: []
+
+  # --- Media (completing Tier-1 Media group) ---------------------------------
+
+  illustration:
+    intent: "A vector/decorative graphic or illustration asset. (alias: graphic)"
+    aliases: [graphic]
+    props:
+      src:      { type: string }
+      size:     { type: string, optional: true }
+      position: { type: string, optional: true, desc: "placement intent within its slot" }
+      bleed:    { type: bool, default: false }
+    slots: []
+
+  # --- Indicators & utility (completing Tier-1 group) ------------------------
+
+  progress:
+    intent: "A progress bar or loading spinner."
+    props:
+      value:         { type: number, optional: true }
+      max:           { type: number, default: 100 }
+      style:         { type: enum, values: [bar, spinner], default: bar }
+      indeterminate: { type: bool, default: false }
+    slots: []
+
+  tooltip:
+    intent: "A hover/focus hint that wraps a trigger element."
+    props:
+      text:      { type: string }
+      placement: { type: enum, values: [top, right, bottom, left], default: top }
+    slots:
+      trigger: { accepts: [button, icon-button, link, icon, label], desc: "the element the tooltip annotates" }
+
+  spacer:
+    intent: "An explicit empty space token (deliberate gap)."
+    props:
+      size: { type: string, desc: "space amount (token ref)" }
+      axis: { type: enum, values: [vertical, horizontal], default: vertical }
+    slots: []
+
+  # --- Form (completing Tier-1 Form group) -----------------------------------
+
+  textarea:
+    intent: "A multi-line text entry control."
+    props:
+      placeholder: { type: string, optional: true }
+      rows:        { type: number, optional: true }
+      required:    { type: bool, default: false }
+    variants: [boxed, underline, filled]
+    slots: []
+
+  slider:
+    intent: "A value selected within a range. (alias: range)"
+    aliases: [range]
+    props:
+      value: { type: number }
+      min:   { type: number, default: 0 }
+      max:   { type: number, default: 100 }
+      step:  { type: number, optional: true }
+    slots: []
+
+  file-upload:
+    intent: "A file input / dropzone control."
+    props:
+      accept:   { type: string, optional: true, desc: "accepted file types" }
+      multiple: { type: bool, default: false }
+      required: { type: bool, default: false }
+    slots:
+      label: { accepts: [label], optional: true }
+      hint:  { accepts: [label, caption], optional: true }
+      error: { accepts: [label], optional: true }

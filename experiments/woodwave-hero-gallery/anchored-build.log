@@ -1,0 +1,67 @@
+Seed: [project] hero-display-over-staggered-media (archetype stack, surface inverse) — provenance: ['opening-bookend']
+Model: claude-opus-4-8
+
+=== GEN Variant 1 :: alignment — left-anchored, media counterweight right ===
+  offGridExpansion=True (from style)
+  [attempt 0] 18.98s  in=13519 out=1677
+    gate: PASS
+  gen ok=True attempts=1 wall=19.8s | drift score=2.82 anchored=True deltas=['archetype stack→interlock', "treatments ['overlap', 'stagger']→['float-wrap', 'inset']", 'knobs changed', 'copy changed']
+
+=== GEN Variant 2 :: media — different measured photograph as the quiet backdrop ===
+  offGridExpansion=True (from style)
+  [attempt 0] 17.64s  in=13469 out=1550
+    gate: PASS
+  gen ok=True attempts=1 wall=18.6s | drift score=5.15 anchored=True deltas=["treatments ['overlap', 'stagger']→['overlap', 'stagger', 'text-on-media']", 'knobs changed', 'copy changed', "assets [measured defaults]→['Web-gallery-1.jpg']"]
+
+=== GEN Variant 3 :: scale — monumental one-word headline, support a tier down ===
+  offGridExpansion=True (from style)
+  [attempt 0] 16.95s  in=13459 out=1470
+    gate: PASS
+  gen ok=True attempts=1 wall=17.9s | drift score=5.62 anchored=True deltas=["treatments ['overlap', 'stagger']→['overlap', 'stagger', 'text-on-media']", 'knobs changed', 'copy changed']
+
+=== GEN Variant 4 :: layering — ghost watermark word behind the heading ===
+  offGridExpansion=True (from style)
+  [attempt 0] 36.79s  in=13481 out=2823
+    gate: FAIL ['Surface = brand surface/inverse (#3A2F23)', 'Brand accent surfaced (#edd580)']
+  [attempt 1] 33.2s  in=13634 out=2742
+    gate: FAIL ['Surface = brand surface/inverse (#3A2F23)', 'Brand accent surfaced (#edd580)']
+  [attempt 2] 31.74s  in=13634 out=2596
+    gate: FAIL ['Surface = brand surface/inverse (#3A2F23)', 'Brand accent surfaced (#edd580)']
+  gen ok=False attempts=3 wall=104.1s | drift score=3.15 anchored=True deltas=['archetype stack→collage', "treatments ['overlap', 'stagger']→['ghost-word', 'marginal-caption', 'overlap']", 'knobs changed', 'copy changed']
+
+=== GEN Variant 5 :: density — lean: terse support, action-led ===
+  offGridExpansion=True (from style)
+  [attempt 0] 16.59s  in=13415 out=1586
+    gate: PASS
+  gen ok=True attempts=1 wall=17.5s | drift score=5.15 anchored=True deltas=["treatments ['overlap', 'stagger']→['overlap', 'stagger', 'text-on-media']", 'knobs changed', 'copy changed']
+
+=== ASSEMBLE :: original + 5 anchored variants ===
+  gate (--composition): PASS
+  hoisted nav=True  accent-classes=1  gold-hover=True  melodrama-500=True
+  screenshot → /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/page-anchored/screenshot.png
+
+================ SUMMARY ================
+  V1: alignment — left-anchored, media counterweight right
+      archetype=interlock novelty=adapt seededFrom={'lib': 'project', 'id': 'hero-display-over-staggered-media'}
+      drift score=2.82 (floor 2.5) anchored=True deltas=['archetype stack→interlock', "treatments ['overlap', 'stagger']→['float-wrap', 'inset']", 'knobs changed', 'copy changed']
+      gen gate ok=True attempts=1 repair_fired=False out_tok=1677
+  V2: media — different measured photograph as the quiet backdrop
+      archetype=stack novelty=adapt seededFrom={'lib': 'project', 'id': 'hero-display-over-staggered-media'}
+      drift score=5.15 (floor 2.5) anchored=True deltas=["treatments ['overlap', 'stagger']→['overlap', 'stagger', 'text-on-media']", 'knobs changed', 'copy changed', "assets [measured defaults]→['Web-gallery-1.jpg']"]
+      gen gate ok=True attempts=1 repair_fired=False out_tok=1550
+  V3: scale — monumental one-word headline, support a tier down
+      archetype=stack novelty=adapt seededFrom={'lib': 'project', 'id': 'hero-display-over-staggered-media'}
+      drift score=5.62 (floor 2.5) anchored=True deltas=["treatments ['overlap', 'stagger']→['overlap', 'stagger', 'text-on-media']", 'knobs changed', 'copy changed']
+      gen gate ok=True attempts=1 repair_fired=False out_tok=1470
+  V4: layering — ghost watermark word behind the heading
+      archetype=collage novelty=adapt seededFrom={'lib': 'project', 'id': 'hero-display-over-staggered-media'}
+      drift score=3.15 (floor 2.5) anchored=True deltas=['archetype stack→collage', "treatments ['overlap', 'stagger']→['ghost-word', 'marginal-caption', 'overlap']", 'knobs changed', 'copy changed']
+      gen gate ok=False attempts=3 repair_fired=True out_tok=8161
+  V5: density — lean: terse support, action-led
+      archetype=stack novelty=adapt seededFrom={'lib': 'project', 'id': 'hero-display-over-staggered-media'}
+      drift score=5.15 (floor 2.5) anchored=True deltas=["treatments ['overlap', 'stagger']→['overlap', 'stagger', 'text-on-media']", 'knobs changed', 'copy changed']
+      gen gate ok=True attempts=1 repair_fired=False out_tok=1586
+
+  page gate PASS: True  nav: True  accents: 1  gold-hover: True  melodrama-500: True
+  page: /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/page-anchored/index.html
+  screenshot: /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/woodwave-hero-gallery/page-anchored/screenshot.png
