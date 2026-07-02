@@ -13,7 +13,7 @@ Create motion that expresses the provided design system's energy without changin
 
 - Use GSAP as the only animation framework. Small plain JavaScript for selectors, guards, and event wiring is allowed.
 - Include GSAP from a CDN in the single HTML file when animation is implemented.
-- Use GSAP plugins only when they are part of the public GSAP distribution, such as ScrollTrigger. Do not rely on paid Club GSAP plugins.
+- Use GSAP plugins to optimize the work.
 - Respect `prefers-reduced-motion: reduce`: disable timeline motion, scroll-triggered movement, and looping ambient effects while preserving readable final states.
 - Do not animate layout-critical properties that cause reflow. Prefer `opacity`, `transform`, CSS variables, and shader/canvas uniforms.
 - Keep motion subtle enough that the page remains inspectable in a pipeline iframe screenshot.
@@ -22,10 +22,10 @@ Create motion that expresses the provided design system's energy without changin
 
 1. Read the design system's stated rhythm, density, visual tension, and surface behavior.
 2. Choose one motion attitude:
-   - Calm systems: short fades, low-distance y movement, slow ambient drift.
-   - Editorial or premium systems: staggered reveals, restrained parallax, text/image timing offsets.
-   - Technical or futuristic systems: measured scan, orbit, grid, or data-flow motifs.
-   - Playful systems: snappier easing, small overshoot, responsive hover/tap feedback.
+  - Calm systems: short fades, low-distance y movement, slow ambient drift.
+  - Editorial or premium systems: staggered reveals, restrained parallax, text/image timing offsets.
+  - Technical or futuristic systems: measured scan, orbit, grid, or data-flow motifs.
+  - Playful systems: snappier easing, small overshoot, responsive hover/tap feedback.
 3. Apply motion to recurring site structures, not every element.
 
 ## Required Patterns
@@ -148,3 +148,4 @@ Before outputting HTML:
 - Motion reinforces the design system instead of adding a new aesthetic.
 - There is no first-paint blink: animated elements are not visible in their final state before their entrance begins.
 - Every entrance target has exactly one tween or timeline that owns its initial `opacity`/`visibility`/`transform` values.
+

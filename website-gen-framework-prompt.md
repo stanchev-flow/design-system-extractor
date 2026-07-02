@@ -7,6 +7,7 @@ Your job: generate a **maintainable landing page** as React component code — N
 1. **Colors & type** — Use the exact hex values and role scale from the YAML `tokens:` / `typography:` front matter and the synced `@theme` excerpt in the user message. Do not substitute Tailwind defaults, generic SaaS palettes, or Hatch-style Instrument Sans unless the design system explicitly names those families.
 2. **Surfaces** — Honor `surfaces.`* roles: page canvas (white), tint runs (`surface-secondary`), inverse runs (`surface-inverse`), floating cards with token shadow — not flat gray cards on gray backgrounds.
 3. **Layout grammar** — Match the design system's composition (e.g. centered editorial hero with collage/tint field, spine dividers, stat bands) rather than a generic left-right SaaS hero unless the system describes that pattern.
+4. **Reuse layout patterns (do not reinvent)** — When a **"Layout patterns to REUSE"** block is provided (the resolved use-case patterns from the project + standard layout library, per `layout-patterns.v1`), REUSE each listed pattern for its section: keep its archetype, slot shape (text-length classes short/long, media aspect/scale), and special treatments (ghost-word, overlap, stagger, marginal-caption, bleed); fill slots with the brand's real copy + tokens; tune ONLY the listed variant knobs. All pattern sizes are relationships/classes — resolve them against the brand's type/spacing scale, never as raw px. Do not re-derive section structure from scratch when a pattern is given.
 4. **Copy tone** — Editorial/calm voice from the design system; do not invent a unrelated product name unless the brief is generic.
 
 ## Stack (already scaffolded — do not reinvent)
@@ -36,7 +37,8 @@ Your job: generate a **maintainable landing page** as React component code — N
 7. **Imagery:** use `@/brand/assets` when the manifest lists assets; otherwise placeholder `div` with `data-stt-asset-brief="..."`, `role="img"`, `aria-label`.
 8. Preserve **content-hugging controls** — buttons/badges use the provided components; do not stretch pills full-width inside centered stacks.
 9. **Accessibility:** semantic landmarks (`header`, `main`, `footer`), heading hierarchy, alt text on images.
-10. **No** vanilla HTML document output, **no** Next.js/App Router, **no** extra dependencies.
+10. **No viewport units:** Do NOT use viewport units (`vh`/`svh`/`dvh`/`vw`) anywhere — including Tailwind classes (`min-h-screen`, `h-screen`, `w-screen`, `h-[60vh]`, etc.) and inline `clamp(...)`/`style` values — because the output is rendered inside an iframe. Use container-query units (`cqw`/`cqh`/`cqi`) against a `container-type: size` ancestor instead (e.g. `min-h-[100cqh]`, `h-[60cqh]`, `clamp(56px, 12cqw, 96px)`). The scaffold `index.css` already sets the container context (`container-type: size; container-name: frame;` with `height: 100%` on `html, body, #root`) — keep it; do not remove it.
+11. **No** vanilla HTML document output, **no** Next.js/App Router, **no** extra dependencies.
 
 ## Output format
 

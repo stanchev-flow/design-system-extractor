@@ -1,5 +1,10 @@
 # Changes
 
+## 2026-07-01
+
+- Added systematic READABILITY + DECORATION-SALIENCE checks to the on-brand gate: new `brand_pipeline/readability.py` computes static WCAG-style contrast from the emitted CSS custom properties, inline styles, and class structure (DOM-lite + CSS-cascade-lite + var resolution; conservative — unresolvable elements are skipped, never failed), and `onbrand_check.py` wires two new composition invariants (`text-contrast`: real text >= 3.0 display / >= 4.5 body against its effective background including any decoration layer composited behind it; `decoration-salience`: ghost-word/watermark layers must stay within a composite-vs-surface contrast ratio of 1.19 — the known-good 6%-ink-on-cream ghost measures 1.124, the v4 dark-hero bright-cream ghost measures 1.256). Advisory by default, HARD under `--composition`, with measured values recorded in the `onbrand-report.json` scorecard (`invariants.details`).
+- Added fixture-based unit tests (`brand_pipeline/tests/test_readability_checks.py`, 19 tests) covering the contrast math, rgba-over-surface compositing, ghost salience pass/fail fixtures, panel var re-scoping, and shim specificity; validated the updated gate across the full corpus (full-* composed pages, A/B arms, hybrid runs + smoke, showcase, ablation arms, hero-gallery standalone gates + assembled page) — only the v4 ghost hero and the assembled anchored gallery fail the new checks (`decoration-salience`), the entire pre-existing PASS matrix is unregressed.
+
 ## 2026-05-08
 
 - Moved local API-key loading to repo-local `.env.local`, added `.env.example`, ignored `.env` / `.env.*` secrets, and removed hard-coded references to the previous personal env-file path.

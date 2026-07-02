@@ -1,0 +1,150 @@
+# STANDARD (brand-agnostic) layout patterns for the GALLERY use-case.
+# origin: designed — general generalizations of the harvest clusters. Sizes are classes, never px.
+schemaVersion: layout-patterns.v1
+useCase: gallery
+patterns:
+
+  - id: gallery-editorial-card-grid
+    useCase: gallery
+    archetypeRef: grid
+    surfaceIntent: panel
+    intent: "Editorial card grid on a shared light canvas — wide intro row above evenly sized media cards with captions."
+    contentShape:
+      alignment: { value: left, counterweight: media, inheritance: per-slot-override }
+      slots:
+        - { name: heading, role: section-intro, textLen: short, sizeClass: title, width: hug, z: front }
+        - { name: support, role: support-copy, textLen: long, sizeClass: body, width: stretch, z: front }
+        - { name: media, role: card-media, mediaAspect: landscape, mediaScale: { of: slot, fraction: 1.0 }, width: media, z: mid }
+        - { name: caption, role: card-caption, textLen: short, sizeClass: caption, width: stretch, z: front }
+    specialTreatments:
+      - { kind: stagger, target: media, axis: vertical, amount: { class: light } }
+    responsive: { collapse: reflow, mediaFirst: false }
+    variantKnobs:
+      columns: { type: enum, values: ["2", "3", "4"], default: "3" }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters editorial_card_grid x5, shared_light_content_run, wide_editorial_intro_row", sources: [harvest-11-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "editorial-card-grid", by: creation, signalId: null, note: "hand-blessed from harvest report (gallery: stagger x11, ghost-word x7)" }
+
+  - id: gallery-square-card-run
+    useCase: gallery
+    archetypeRef: row
+    surfaceIntent: any
+    intent: "Continuous warm-canvas rail of square editorial cards with marginal captions."
+    contentShape:
+      alignment: { value: left, counterweight: media, inheritance: per-slot-override }
+      slots:
+        - { name: heading, role: section-intro, textLen: short, sizeClass: title, width: hug, z: front }
+        - { name: media, role: square-card, mediaAspect: square, mediaScale: { of: slot, fraction: 1.0 }, width: media, z: mid }
+        - { name: caption, role: marginal-caption, textLen: long, sizeClass: caption, width: stretch, z: front }
+    specialTreatments:
+      - { kind: marginal-caption, target: caption, side: right }
+      - { kind: stagger, target: media, axis: horizontal, amount: { class: light } }
+    responsive: { collapse: reflow, mediaFirst: false }
+    variantKnobs:
+      captionSide: { type: enum, values: [left, right], default: right }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters square_editorial_card x6, primary_rail_on_continuous_warm_canvas", sources: [harvest-11-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "square-card-run", by: creation, signalId: null, note: "hand-blessed from harvest report" }
+
+  - id: gallery-logo-strip
+    useCase: gallery
+    archetypeRef: band
+    surfaceIntent: panel
+    intent: "Full-width solid band with a wide edge-gutter row of evenly spaced logos and a short label."
+    contentShape:
+      alignment: { value: space-between, inheritance: per-slot-override }
+      slots:
+        - { name: label, role: strip-label, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: logos, role: logo-row, mediaAspect: freeform, mediaScale: { of: slot, fraction: 0.12 }, width: stretch, z: front }
+    specialTreatments:
+      - { kind: bleed, target: logos, edge: all }
+    responsive: { collapse: reflow, mediaFirst: false }
+    variantKnobs:
+      logoCount: { type: enum, values: ["4", "5", "6"], default: "5" }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters logo_strip x5, full_width_solid_band_with_wide_edge_gutter_content", sources: [harvest-11-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "logo-strip", by: creation, signalId: null, note: "hand-blessed from harvest report" }
+
+  - id: staggered-caption-columns-3
+    useCase: gallery
+    archetypeRef: cards
+    surfaceIntent: primary
+    intent: >-
+      Editorial index: an oversized display masthead (cols 1–10) with a micro-caption,
+      then three grid-registered image columns at different colStarts, widths, heights
+      AND vertical offsets (middle column highest, right column lowest) — each with an
+      editorial caption + tracked arrow link whose baselines follow their own image,
+      never a shared row.
+    contentShape:
+      alignment: { value: left, counterweight: column-image, inheritance: per-slot-override }
+      slots:
+        - { name: masthead, role: display masthead, contract: header,
+            textLen: short, sizeClass: display, width: stretch, colStart: 1, colSpan: 10, z: front }
+        - { name: masthead-caption, role: tracked micro caption, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: column-image, role: column photography, mediaAspect: portrait,
+            mediaScale: { of: slot, fraction: 1.0 }, width: media, z: mid }
+        - { name: column-caption, role: editorial caption, textLen: medium, sizeClass: caption, width: hug, z: front }
+        - { name: column-link, role: arrow link, contract: link, textLen: short, sizeClass: caption, width: hug, z: front }
+    specialTreatments:
+      - { kind: stagger, target: column-image, axis: vertical, amount: { class: heavy },
+          perColumn: [ { colStart: 1, colSpan: 3, rowOffset: 1 },
+                       { colStart: 4, colSpan: 4, rowOffset: 0 },
+                       { colStart: 9, colSpan: 4, rowOffset: 3 } ] }
+      - { kind: mixed-face, target: masthead,
+          spans: [ { part: lead, face: roman }, { part: emphasis, face: italic } ] }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      columnCount: { type: enum, values: [2, 3], default: 3 }
+      offsetProgression: { type: enum, values: [mid-high, left-high, descending], default: mid-high }
+      captionFace: { type: enum, values: [italic-serif, brand-caption], default: brand-caption }
+    origin: designed
+    designedFrom: { note: "harvested from reference #2 ('the highlights') — 3 columns at colStart 1/4/9, spans 3/4/4, top offsets −1/0/+3 rows, per-image caption+arrow; mixed-face masthead degrades to case/weight contrast when the brand ships no italic cut", sources: [editorial-harvest-2026-07] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-02T00:00:00Z", action: created, from: null, to: "staggered-caption-columns-3", by: creation, signalId: null, note: "editorial harvest ref #2 (P1 perCard placement; P3 mixed-face)" }
+
+  - id: gallery-mosaic-with-overflow
+    useCase: gallery
+    archetypeRef: bento
+    surfaceIntent: any
+    intent: "Wide mixed-size gallery mosaic with right-edge overflow and an oversized ghost accent word behind the frames."
+    contentShape:
+      alignment: { value: left, counterweight: media, inheritance: per-slot-override }
+      slots:
+        - { name: ghostword, role: watermark, textLen: word, sizeClass: colossal, width: full-bleed, opacityClass: ghost, z: back }
+        - { name: heading, role: section-intro, textLen: short, sizeClass: title, width: hug, z: front }
+        - { name: media, role: mosaic-frame, mediaAspect: freeform, mediaScale: { of: container, fraction: 0.4 }, width: media, z: mid }
+        - { name: caption, role: frame-caption, textLen: long, sizeClass: caption, width: stretch, z: front }
+    specialTreatments:
+      - { kind: ghost-word, target: ghostword, anchor: behind-media, bleed: partial }
+      - { kind: bleed, target: media, edge: right }
+      - { kind: stagger, target: media, axis: vertical, amount: { class: heavy } }
+    responsive: { collapse: reflow, mediaFirst: false }
+    variantKnobs:
+      overflowEdge: { type: enum, values: [left, right], default: right }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters wide_gallery_mosaic_with_mixed_frame_sizes_and_right_edge_overflow, checkerboard_item_listing", sources: [harvest-11-projects] }
+    overridable: true
+    confidence: medium
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "mosaic-with-overflow", by: creation, signalId: null, note: "hand-blessed from harvest report" }

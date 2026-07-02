@@ -66,7 +66,7 @@ Critical rules:
 - Do not use external stock-photo URLs. For major imagery, use intentionally sized <img> placeholders with blank SVG/data URI sources and concise data-stt-asset-brief attributes that describe the needed visual.
 - Icons may be simple inline SVG.
 - Do not use JavaScript frameworks.
-- Avoid viewport-height section sizing such as min-height: 100vh; sections should size naturally from content.
+- Do NOT use viewport units (vh/svh/dvh/vw) anywhere — the output is rendered inside an iframe. Use container-query units (cqw/cqh/cqi) against a `container-type: size` ancestor; the root wrapper must set the container context.
 - Return only the HTML code, no markdown fences or explanations.
 """
 

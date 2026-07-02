@@ -1,0 +1,60 @@
+# STANDARD (brand-agnostic) layout patterns for the TESTIMONIAL use-case.
+# origin: designed — general generalizations of the harvest clusters. Sizes are classes, never px.
+schemaVersion: layout-patterns.v1
+useCase: testimonial
+patterns:
+
+  - id: testimonial-centered-quote-stack
+    useCase: testimonial
+    archetypeRef: stack
+    surfaceIntent: panel
+    intent: "Centered testimonial stack — small media marker, large quote, attribution metadata, bare arrows."
+    contentShape:
+      alignment: { value: centered, inheritance: block-inherits }
+      slots:
+        - { name: marker, role: decorative-marker, mediaAspect: square, mediaScale: { of: container, fraction: 0.08 }, width: hug, z: front }
+        - { name: quote, role: quote, textLen: long, sizeClass: title, width: hug, z: front }
+        - { name: attribution, role: metadata, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: controls, role: carousel-controls, textLen: none, sizeClass: caption, width: hug, z: front }
+    specialTreatments:
+      - { kind: overlap, pair: [marker, quote], zOrder: [marker, quote], amount: { class: light } }
+    responsive: { collapse: reflow, mediaFirst: false }
+    variantKnobs:
+      markerStyle: { type: enum, values: [avatar, glyph, none], default: glyph }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters centered_testimonial_stack x6, decorative_media_marker, centered_section_intro", sources: [harvest-6-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "centered-quote-stack", by: creation, signalId: null, note: "hand-blessed from harvest report (testimonial: overlap x4, stagger x4)" }
+
+  - id: testimonial-horizontal-card-rail-carousel
+    useCase: testimonial
+    archetypeRef: row
+    surfaceIntent: any
+    intent: "Overflowing horizontal rail of fixed-size review cards with a partial next card, progress rule and compact controls."
+    contentShape:
+      alignment: { value: left, counterweight: quote, inheritance: per-slot-override }
+      slots:
+        - { name: heading, role: section-intro, textLen: short, sizeClass: title, width: hug, z: front }
+        - { name: rating, role: rating, textLen: word, sizeClass: caption, width: fixed, z: front }
+        - { name: quote, role: card-quote, textLen: long, sizeClass: body, width: fixed, z: front }
+        - { name: attribution, role: card-metadata, textLen: short, sizeClass: caption, width: fixed, z: front }
+        - { name: progress, role: progress-rule, textLen: none, sizeClass: caption, width: stretch, z: mid }
+        - { name: controls, role: carousel-controls, textLen: none, sizeClass: caption, width: hug, z: front }
+    specialTreatments:
+      - { kind: stagger, target: quote, axis: horizontal, amount: { class: medium } }
+      - { kind: bleed, target: quote, edge: right }
+    responsive: { collapse: reflow, mediaFirst: false }
+    variantKnobs:
+      cardsInView: { type: enum, values: ["1", "2", "3"], default: "2" }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters overflowing_horizontal_rail x4, text_card_with_rating, carousel_progress_rule, wide_edge_gutter_horizontal_card_track_with_partial_next_card", sources: [harvest-6-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "horizontal-card-rail-carousel", by: creation, signalId: null, note: "hand-blessed from harvest report" }

@@ -100,7 +100,19 @@
 }
 
 @layer base {
+  /*
+    Studio renders this output inside an iframe, so viewport units (vh/dvh/vw/svh)
+    are disallowed. Establish an explicit size container here so cq* units
+    (cqw/cqh/cqi) used in layout sizing resolve against the iframe frame.
+  */
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
   html {
+    container-type: size;
+    container-name: frame;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }

@@ -1,0 +1,125 @@
+# STANDARD (brand-agnostic) layout patterns for the ABOUT use-case.
+# origin: designed — general generalizations of the harvest clusters. Sizes are classes, never px.
+schemaVersion: layout-patterns.v1
+useCase: about
+patterns:
+
+  - id: about-two-column-media-copy
+    useCase: about
+    archetypeRef: split
+    surfaceIntent: panel
+    intent: "Wide two-column rail on a shared light canvas — rectangular image column beside a headline + body + action column."
+    contentShape:
+      alignment: { value: left, counterweight: media, inheritance: per-slot-override }
+      slots:
+        - { name: heading, role: section-title, textLen: short, sizeClass: title, width: hug, z: front }
+        - { name: body, role: body-copy, textLen: long, sizeClass: body, width: stretch, sizeRel: { to: media, ratio: 0.6, axis: width }, z: front }
+        - { name: action, role: cta, textLen: short, sizeClass: body, width: hug, z: front }
+        - { name: media, role: showcase-image, mediaAspect: portrait, mediaScale: { of: container, fraction: 0.5 }, width: media, z: mid }
+    specialTreatments:
+      - { kind: stagger, target: body, axis: vertical, amount: { class: light } }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      mediaSide: { type: enum, values: [left, right], default: left }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters two_column_media_copy_on_light x4, wide_rail_two_column, rectangular_image_showcase_left_column", sources: [harvest-9-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "two-column-media-copy", by: creation, signalId: null, note: "hand-blessed from harvest report (about: ghost-word x5, stagger x5)" }
+
+  - id: about-split-editorial-grid
+    useCase: about
+    archetypeRef: grid
+    surfaceIntent: any
+    intent: "Split editorial intro over a supporting grid of cards — narrative copy above evenly sized info cards."
+    contentShape:
+      alignment: { value: left, counterweight: cards, inheritance: per-slot-override }
+      slots:
+        - { name: eyebrow, role: overline, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: heading, role: section-title, textLen: short, sizeClass: title, width: hug, z: front }
+        - { name: body, role: body-copy, textLen: long, sizeClass: body, width: stretch, z: front }
+        - { name: cards, role: info-card, textLen: long, sizeClass: caption, width: stretch, z: front }
+    specialTreatments:
+      - { kind: stagger, target: cards, axis: horizontal, amount: { class: light } }
+    responsive: { collapse: reflow, mediaFirst: false }
+    variantKnobs:
+      columns: { type: enum, values: ["2", "3"], default: "3" }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters split_editorial_grid x3, split_editorial_with_cards, shared_light_canvas_module", sources: [harvest-9-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "split-editorial-grid", by: creation, signalId: null, note: "hand-blessed from harvest report" }
+
+  - id: seam-straddle-portrait
+    useCase: about
+    archetypeRef: banded
+    surfaceIntent: inverse               # primary surface of the section = the photo band
+    intent: >-
+      A calm two-surface section: a full-bleed monochrome photo band (top ~50%) over a
+      light panel band (bottom ~50%), hard seam. An inset portrait (cols 4–9) STRADDLES
+      the seam — roughly a third on the photo, two thirds on the panel. A small tracked
+      caption sits on the photo band; a short closing paragraph closes the panel band.
+      The symmetric, quiet cousin of the straddle family (realizes the sanctioned
+      media-over-seam pair).
+    contentShape:
+      alignment: { value: centered, inheritance: block-inherits }
+      slots:
+        - { name: photo-band, role: full-bleed atmosphere photography, mediaAspect: landscape,
+            mediaScale: { of: container, fraction: 1.0 }, width: full-bleed, z: back }
+        - { name: band-caption, role: tracked caption on photo, textLen: short,
+            sizeClass: caption, width: hug, z: front }
+        - { name: inset, role: seam-straddling portrait, mediaAspect: portrait,
+            mediaScale: { of: container, fraction: 0.5 }, width: media,
+            colStart: 4, colSpan: 6, z: mid }
+        - { name: body, role: closing paragraph, textLen: long,
+            sizeClass: caption, width: hug, colStart: 3, colSpan: 8, z: front }
+    specialTreatments:
+      - { kind: bleed, target: photo-band, edge: all }
+      - { kind: straddle, target: inset,
+          registration: { toSlot: seam, edge: top, depthBaselines: 12, z: mid } }
+    responsive: { collapse: stack-below-tablet, mediaFirst: true }
+    variantKnobs:
+      bandSplit: { type: enum, values: [0.45, 0.5, 0.55], default: 0.5 }
+      straddleBalance: { type: enum, values: [third-above, half, third-below], default: third-above }
+      align: { type: enum, values: [center, left], default: left }
+    origin: designed
+    designedFrom: { note: "harvested from reference #8 (KOJA) — photo band 0–51% / panel band 51–100%, portrait cols 4–9 crossing the seam at depth ~0.33, caption + closing paragraph; realizes the already-sanctioned WoodWave media-over-seam pair", sources: [editorial-harvest-2026-07] }
+    overridable: true
+    confidence: medium
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-02T00:00:00Z", action: created, from: null, to: "seam-straddle-portrait", by: creation, signalId: null, note: "editorial harvest ref #8 (P2 banded archetype + seam anchor, G9)" }
+
+  - id: about-ghostword-editorial-run
+    useCase: about
+    archetypeRef: overlay
+    surfaceIntent: inverse
+    intent: "Centered editorial copy stack over a wide blended graphic with an oversized low-contrast ghost word."
+    contentShape:
+      alignment: { value: left, counterweight: ghostword, inheritance: per-slot-override }
+      slots:
+        - { name: ghostword, role: watermark, textLen: word, sizeClass: colossal, width: full-bleed, opacityClass: ghost, z: back }
+        - { name: heading, role: section-title, textLen: short, sizeClass: display, width: hug, z: front }
+        - { name: body, role: body-copy, textLen: long, sizeClass: body, width: stretch, sizeRel: { to: ghostword, ratio: 0.3, axis: width }, z: front }
+        - { name: media, role: blended-graphic, mediaAspect: landscape, mediaScale: { of: container, fraction: 0.9 }, width: full-bleed, z: back }
+    specialTreatments:
+      - { kind: ghost-word, target: ghostword, anchor: straddle-media, bleed: partial }
+      - { kind: overlap, pair: [ghostword, heading], zOrder: [ghostword, heading], amount: { class: heavy } }
+    responsive: { collapse: reflow, mediaFirst: false }
+    variantKnobs:
+      ghostAnchor: { type: enum, values: [behind-media, straddle-media, margin], default: straddle-media }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters centered_copy_stack_over_wide_blended_graphic, full_bleed_media_poster (about ghost-word x5)", sources: [harvest-9-projects] }
+    overridable: true
+    confidence: medium
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "ghostword-editorial-run", by: creation, signalId: null, note: "hand-blessed from harvest report" }
