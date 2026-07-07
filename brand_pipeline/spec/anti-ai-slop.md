@@ -1209,6 +1209,125 @@ brand's lanes pixel-identical with its devices re-declared as ITS brand data
 
 ---
 
+## AS-40 — Multi-open disclosure systems (menus/accordions that stack open states)
+
+**Rule**: A disclosure SYSTEM (accordion, nav mega-menu, dropdown family) opens ONE
+member at a time unless the brand's evidence shows stacked open states. Prefer
+platform-enforced exclusivity (`<details name="…">` shares one exclusivity group per
+system; hover/focus-scoped panels that close when the pointer leaves) over JS
+bookkeeping. The OPEN member is evidence-driven: compose the item the capture shows
+expanded (its inversion/surface from the brand's own token roles); with no open-state
+evidence, all-closed is the degrade — never "open them all so the content is visible".
+
+**Why it happens**: generators optimize for "show everything" — an accordion with
+every panel expanded screenshots as richer content, and hand-rolled open/close JS
+defaults to independent toggles because exclusive groups need shared state. Real
+design systems treat disclosure as focus management: one open panel is the resting
+grammar users see in the capture.
+
+**Caught here**: P2 replica gate (2026-07-07) — the source's feature accordion renders
+exactly one ACTIVE item (deep-accent inset inversion, white ink); the composed replica
+drew all rows idle/closed (capability gap), and the naive alternative (all-open) would
+have mis-stated the brand's grammar. Fixed with the `<details name=…>` accordion device
+in `compose_section._compose_accordion_split` — one `open` item max, platform-exclusive.
+
+**Verify**: unit — `tests/test_p2_interaction_devices.py` (composed accordion carries
+exactly one `open` item, all items share one `name` group). Manual — click a second
+trigger in the composed page: the first closes without any script.
+
+---
+
+## AS-41 — Scroll-reveal without a failsafe (IntersectionObserver strands content)
+
+**Rule**: Any reveal choreography that HIDES content until an observer callback fires
+must carry redundant failsafes: (a) the hidden initial state applies only under a
+JS-added gate class (no JS ⇒ nothing is ever hidden), (b) reduced-motion and
+missing-IntersectionObserver paths return early BEFORE the gate class is added, and
+(c) a timed fallback force-reveals everything after a deadline (seconds, not
+minutes) — a mis-rooted observer, iframe quirk, or never-firing callback must cost
+motion polish, never content. The reveal is an enhancement, not a gate.
+
+**Why it happens**: reveal-on-scroll is written against the happy path (observer
+fires as you scroll), and the hidden pre-state is baked into the stylesheet because
+that is the easy place to put it. Every local test scrolls, so the strand only
+surfaces in embedded/headless/print contexts — exactly where screenshots and gates
+run.
+
+**Caught here**: Phase D screenshot pass — full-page captures shot before the scroll
+pass showed sections stuck invisible (`opacity: 0`) because the IO reveal had not
+fired for below-fold targets; the replica gate now scroll-passes before shooting, and
+`compose_page.REVEAL_SCRIPT` adds the 4s timed force-reveal on top of its existing
+no-JS/no-IO/reduced-motion early-outs.
+
+**Verify**: unit — `tests/test_p2_interaction_devices.py` (REVEAL_SCRIPT carries the
+gate class, the early-outs, and the timed failsafe). Manual — load a composed page
+with JS disabled: all content visible.
+
+---
+
+## AS-42 — Marquee seam math (loops that jump, drift, or change speed per content)
+
+**Rule**: An endless marquee is TWO IDENTICAL halves inside one `max-content` track,
+looped by a single `translateX(0 → -50%)` keyframe — the wrap lands exactly on the
+second half's start, so the seam is invisible by construction (each half carries a
+trailing copy of the inter-item gap; the aria-hidden duplicate half is presentation,
+not content). Duration is px/s-CONSTANT: derived from the measured half width (one
+shared surface speed across marquees), never a fixed time per marquee (which makes
+long tracks sprint and short tracks crawl). Reduced-motion pauses at the resting
+offset; the static row (= the animation's t=0 frame) is the degrade for brands whose
+evidence declares no marquee.
+
+**Why it happens**: the naive marquee animates `translateX(0 → -100%)` on a single
+copy (hard jump at wrap), pads with a hand-tuned duplicate ("looks seamless at my
+viewport"), and picks `30s` because it looked right for twelve logos — all three
+break the moment content, gap, or viewport changes.
+
+**Caught here**: P2 replica gate (2026-07-07) — the source logo strip is a
+continuously translating JS-timed track (`motion-audit jsTimingNotes`: duration set
+per-content at runtime); the composed replica rendered a static spaced row. Fixed
+with the seam-correct device in `compose_section.compose_generic_flow` +
+`compose_page.MARQUEE_SCRIPT` (half-width ÷ 90px/s), item-count fallback duration
+for JS-off renders.
+
+**Verify**: unit — `tests/test_p2_interaction_devices.py` (two byte-identical halves,
+-50% keyframe, reduced-motion pause rule ships with the device). Manual — let the
+composed strip run one full loop: no visible jump at the wrap point.
+
+---
+
+## AS-43 — Disabled/inactive states faked with opacity (or filters) instead of colors
+
+**Rule**: A control's disabled/inactive state renders with the brand's own DISABLED
+COLOR tokens (measured `bgDisabled`/`fgDisabled` fills and inks) — never
+`opacity: 0.5`, `filter: grayscale(…)`, or blend tricks on the enabled state.
+Opacity ghosting composites against whatever sits behind the control (unpredictable
+contrast on image/dark/panel surfaces, text bleeding through), inherits onto children
+(icon + label wash out together regardless of their own tokens), and misstates the
+brand (the measured disabled gray is a DESIGNED color, not 50% of the primary).
+Absent disabled-color evidence, don't invent the state at all — render the enabled
+resting state.
+
+**Why it happens**: opacity is one property, works on any button family without new
+tokens, and pattern-matches every CSS tutorial. Extracting the real disabled pair
+takes a measurement pass, so generators reach for the shortcut exactly where evidence
+is thinnest.
+
+**Caught here**: P2 rule-hardening (2026-07-07) — the preview's measured button
+families already do this right: a family with measured `bgDisabled`/`fgDisabled`
+emits a COLOR disabled rule that explicitly resets the harness dim (`opacity: 1`,
+`render_components_preview` button-family CSS). The gallery's generic state-row
+exhibits keep a dimmed HARNESS fallback for evidence-less demo chips — that is a
+gallery exhibit device, not brand grammar, and it must never migrate into composed
+pages or generated kits (the competing kit faded disabled buttons to 40% opacity —
+unreadable on its dark surface bands).
+
+**Verify**: unit — `tests/test_p2_interaction_devices.py` (a measured-disabled
+family's preview CSS carries the color rule with the `opacity: 1` reset; composed
+page CSS carries no opacity-based disabled rules). Review — any new state CSS
+touching `disabled` in composers/kits greps clean of `opacity`/`grayscale`.
+
+---
+
 ## Adding a new entry
 
 Copy this shape: **Rule** (the imperative, one or two sentences) / **Why it happens** (the

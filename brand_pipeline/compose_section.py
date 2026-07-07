@@ -455,6 +455,44 @@ def resolve_pattern(doc, layout, brand_yaml):
         return None, "none"
 
 
+# ── pattern INTERACTION DEVICES (P2 renderer capabilities, replica-gate punch list) ──
+#
+# A pattern's sanctioned specialTreatments can declare an INTERACTION DEVICE the static
+# composers must draw (the capture shows its resting state; the treatment carries the
+# evidence): a `marquee` logo track, an `inset-emphasis` accordion active state, an
+# `edge-cut` carousel presentation. The treatments reference the brand's own token
+# ROLES (surface/color roles), never literals — composers resolve them through the
+# generated layer-1 vars, so a brand without the role degrades to the idle presentation.
+
+def _token_var_slug(role) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", str(role or "").lower()).strip("-")
+
+
+def stamp_pattern_devices(doc, layout, brand_yaml) -> None:
+    """Stamp the resolved pattern's sanctioned interaction-device treatments onto the
+    layout as private hints the archetype composers read (same private-key discipline
+    as the adapter's ``_mediaLayers``/``_grid``). Idempotent; a layout already carrying
+    a hint (e.g. set by a future composition adapter) keeps it. No pattern / no
+    sanctioned device treatments ⇒ no stamp (all composers keep the static render)."""
+    if not isinstance(layout, dict):
+        return
+    pattern, _kind = resolve_pattern(doc, layout, brand_yaml)
+    if pattern is None:
+        return
+    for t in (pattern.special_treatments or []):
+        if not isinstance(t, dict) or not t.get("sanctioned"):
+            continue
+        kind = str(t.get("kind") or "").lower()
+        if kind == "marquee":
+            layout.setdefault("_marquee", {"target": t.get("target")})
+        elif kind == "inset-emphasis":
+            layout.setdefault("_accordion", {
+                "surfaceRole": t.get("surfaceRole"),
+                "hoverWash": t.get("hoverWash")})
+        elif kind == "edge-cut":
+            layout.setdefault("_edgeCut", True)
+
+
 # amount-class -> concrete relative magnitude (resolved as container-query units, never px).
 # The captured pattern's treatment ``amount.class`` drives the geometry, so the ghost word /
 # stagger scale come FROM the reused pattern instead of a hardcoded literal.
@@ -1564,6 +1602,17 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
     if str(copy["body"]).strip():
         band_body = "\n    " + cr.render_paragraph(
             doc, ctx, {"text": copy["body"], "measure": "50ch"})
+    # ACCORDION OPEN-STATE (P2, replica-gate punch list): a split whose reused pattern
+    # declares the sanctioned `inset-emphasis` list treatment composes its rows as a
+    # native single-open accordion (<details name=…> — exclusive by the platform, no
+    # JS) with the EVIDENCED item expanded: the first row carrying body copy opens and
+    # inverts onto the treatment's declared surface ROLE (resolved through the brand's
+    # own layer-1 vars). No row carries body copy ⇒ all-idle collapsed (the degrade);
+    # no stamped device ⇒ the classic panel/split branches below render unchanged.
+    row_pairs = list(copy.get("rows", []))
+    if row_pairs and isinstance(layout.get("_accordion"), dict):
+        return _compose_accordion_split(doc, layout, ctx, copy, row_pairs,
+                                        media_html, band_body, actions_html)
     # PANEL EVIDENCE gate (sysfix 2026-07, punch-list item 9 completion): the cream
     # panel is REAL only when the brand declared panel furniture — a title or ruled
     # rows. Without them the panel ELIDES (degrade-to-absent; the old markup shipped
@@ -1604,6 +1653,66 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
       <div class="c-rows">{rows}</div>
       {cta_html}
     </div>
+  </div>
+</section>"""
+
+
+def _compose_accordion_split(doc, layout, ctx, copy, row_pairs, media_html,
+                             band_body, actions_html):
+    """The split's ACCORDION presentation (P2 device; see compose_info_band). List
+    column first (the declared reading order for this device), media column as the
+    counterweight. Exclusive-open rides the platform (<details name=…>); the active
+    item's inversion resolves the treatment's surface/hoverWash ROLES to layer-1 vars
+    scoped inline on the list — unknown/missing roles leave the vars unset and the
+    CSS fallbacks keep the idle (non-inverted) presentation."""
+    acc = layout.get("_accordion") or {}
+    group = f"acc-{_token_var_slug(layout.get('id') or 'section')}"
+    scope_vars = []
+    surf_role = str(acc.get("surfaceRole") or "")
+    surf_spec = ((doc.get("tokens") or {}).get("surfaces") or {}).get(surf_role)
+    if isinstance(surf_spec, dict) and surf_spec.get("bg"):
+        scope_vars.append(f"--acc-active-bg: var(--surface-{_token_var_slug(surf_role)})")
+        ink_role = str(surf_spec.get("textPrimary") or "")
+        if ink_role:
+            scope_vars.append(f"--acc-active-ink: var(--color-{_token_var_slug(ink_role)})")
+    wash_role = str(acc.get("hoverWash") or "")
+    if wash_role and wash_role in (((doc.get("tokens") or {}).get("colors")) or {}):
+        scope_vars.append(f"--acc-hover-bg: var(--color-{_token_var_slug(wash_role)})")
+    style_attr = f' style="{"; ".join(scope_vars)};"' if scope_vars else ""
+    # the EVIDENCED active item: the first row whose authored copy carries a body
+    # (the capture shows exactly one expanded item; rows without body copy are the
+    # collapsed idle items). None carries one ⇒ no `open` anywhere (degrade).
+    active_idx = next((i for i, (_l, v) in enumerate(row_pairs) if str(v).strip()), None)
+    chev = ('<span class="c-acc-chev" aria-hidden="true"><svg viewBox="0 0 10 6" '
+            'width="10" height="6" fill="none" stroke="currentColor" '
+            'stroke-width="1.5"><path d="M1 1l4 4 4-4"/></svg></span>')
+    items = []
+    for i, (label, val) in enumerate(row_pairs):
+        is_open = " open" if i == active_idx else ""
+        panel = ""
+        if str(val).strip():
+            panel = ('\n        <div class="c-acc-panel">'
+                     + cr.render_paragraph(doc, ctx, {"text": val, "measure": "44ch"})
+                     + "</div>")
+        items.append(
+            f'      <details class="c-acc-item" name="{group}"{is_open}>\n'
+            f'        <summary class="c-acc-trigger"><span class="c-acc-label">'
+            f'{cr.esc(label)}</span>{chev}</summary>{panel}\n'
+            f'      </details>')
+    header_html = cr.render_header(doc, ctx, {
+        "eyebrow": copy["eyebrow"], "heading": copy["heading"], "level": "h2",
+        "accent": False})
+    return f"""<section class="cs-section cs-split-sec cs-acc-sec">
+  <div class="cs-split-intro">
+    {header_html}{band_body}{actions_html}
+  </div>
+  <div class="cs-split cs-acc-split">
+    <div class="cs-acc-col">
+      <div class="c-acc"{style_attr}>
+{chr(10).join(items)}
+      </div>
+    </div>
+    <div class="cs-split-media"><div class="c-image-mask">{media_html}</div></div>
   </div>
 </section>"""
 
@@ -1898,6 +2007,16 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
                _brand_art(doc, "detail", *brand_default_art_names(doc, "detail"))]
     _default_aspect = "16 / 10"
     brand_name = (doc.get("brand") or {}).get("name") or "Brand"
+    # EDGE-CUT CAROUSEL STATICS (P2, replica-gate punch list): a cards section whose
+    # reused pattern declares the sanctioned `edge-cut` treatment presents its modules
+    # as the cut-at-viewport horizontal track — fixed-basis card plates on a native
+    # overflow-x scroller that bleeds past the section's right padding, so the edge
+    # card clips at the viewport (the carousel affordance the capture shows). Cards
+    # ride the brand's own panel surface + card radius vars; mark media (company
+    # logos) renders at mark height instead of a full media frame, and the quote
+    # body leads the caption (card anatomy reading order). No treatment ⇒ the
+    # contained grid renders unchanged.
+    edgecut = bool(layout.get("_edgeCut"))
     modules = []
     for i, card in enumerate(cards):
         # asset may be a bare name, an already-prefixed path, or a sanitized {src, alt}
@@ -1923,15 +2042,26 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
         # wordmark — same filename discipline as the AS-33 logo strip) must render
         # CONTAINED inside the module frame, never cover-cropped/stretched to the
         # photo aspect. Generic per-asset classification, no brand names.
-        contain = " cs-module-media--contain" if _is_mark_asset(src) else ""
+        is_mark = _is_mark_asset(src)
+        contain = " cs-module-media--contain" if is_mark else ""
         img_html = cr.render_image(doc, ctx, {"src": src, "alt": alt})
         caption_html = cr.render_caption(doc, ctx, {"text": card.get("caption", "")})
         body_html = cr.render_paragraph(doc, ctx, {"text": card.get("body", ""), "measure": "44ch"})
         link_html = cr.render_arrow_link(doc, ctx, {"label": card["link"]}) if card.get("link") else ""
+        if edgecut and is_mark:
+            # card-plate anatomy: the company mark sits at MARK height (device frame
+            # geometry, same discipline as the logo strip), quote leads, caption
+            # (name/role) closes the card.
+            figure = (f'      <figure class="cs-module-media cs-module-media--mark">'
+                      f'{img_html}</figure>\n')
+            inner = f'{figure}      {body_html}\n      {caption_html}\n      {link_html}'
+        else:
+            figure = (f'      <figure class="cs-module-media{contain}" '
+                      f'style="aspect-ratio: {cr.esc(aspect)};">{img_html}</figure>\n')
+            inner = f'{figure}      {caption_html}\n      {body_html}\n      {link_html}'
+        plate = " cs-module--plate" if edgecut else ""
         modules.append(
-            f'    <article class="cs-module">\n'
-            f'      <figure class="cs-module-media{contain}" style="aspect-ratio: {cr.esc(aspect)};">{img_html}</figure>\n'
-            f'      {caption_html}\n      {body_html}\n      {link_html}\n    </article>')
+            f'    <article class="cs-module{plate}">\n{inner}\n    </article>')
     intro = ""
     if copy.get("heading"):
         header_html = cr.render_header(doc, ctx, {
@@ -1948,10 +2078,26 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
             cols_cls = " cs-modules--cols"
     except (TypeError, ValueError):
         pass
-    return f"""<section class="cs-section cs-modules-sec">
-  {intro}<div class="cs-modules{cols_cls}">
+    # bound `button` contract slots (B5 parity with the split/hero routes, P2): a
+    # cards section closed by a real action slot renders it as one action row under
+    # the modules — the old path silently DROPPED it (the testimonial band's closing
+    # pill never rendered). Present only when the section binds one; centered rides
+    # the section's resolved alignment stamp ([data-align] scaffold rule).
+    action_frags = [r["html"] for r in rendered
+                    if r.get("contract") == "button" and (r.get("html") or "").strip()]
+    actions_html = ""
+    if action_frags:
+        actions_html = ('\n  <div class="cs-modules-actions">'
+                        + "".join(action_frags) + "</div>")
+    track_cls = f"cs-modules{cols_cls}" + (" cs-modules--edgecut" if edgecut else "")
+    track = f"""<div class="{track_cls}">
 {chr(10).join(modules)}
-  </div>
+  </div>"""
+    if edgecut:
+        track = f'<div class="cs-edgecut">{track}</div>'
+    edge_cls = " cs-modules-sec--edgecut" if edgecut else ""
+    return f"""<section class="cs-section cs-modules-sec{edge_cls}">
+  {intro}{track}{actions_html}
 </section>"""
 
 
@@ -2048,9 +2194,31 @@ def compose_generic_flow(doc, layout, ctx, rendered, style_ctx):
             k in role for k in ("photo", "media", "image"))
         cls = "cs-flow-media" if is_media else "cs-flow-item"
         parts.append(f'    <div class="{cls}">{frag}</div>')
-    for g in strip_groups.values():
-        parts[g["pos"]] = ('    <div class="cs-logo-strip">\n'
-                           + "\n".join(g["items"]) + "\n    </div>")
+    # MARQUEE DEVICE (P2, replica-gate punch list): a strip group whose reused pattern
+    # declares the sanctioned `marquee` treatment renders the seam-correct track — TWO
+    # IDENTICAL halves inside one max-content flex track, looped by a translateX(-50%)
+    # keyframe, so the wrap point is mathematically invisible (AS-42). The px/s-constant
+    # duration is set by the page script from the measured half width; the inline
+    # fallback derives from the item count (~2s of travel per mark) so a JS-off render
+    # still animates at approximately the same speed. Brands whose pattern declares no
+    # marquee keep the static wrapping row (the degrade, byte-identical).
+    mq = layout.get("_marquee") if isinstance(layout.get("_marquee"), dict) else None
+    for group, g in strip_groups.items():
+        is_marquee = bool(g["items"]) and mq is not None and (
+            str(mq.get("target") or "") in (group, "") or len(strip_groups) == 1)
+        if is_marquee:
+            half = "\n".join(g["items"])
+            dur = max(6, 2 * len(g["items"]))
+            parts[g["pos"]] = (
+                f'    <div class="cs-logo-strip cs-marquee" '
+                f'style="--cs-marquee-duration: {dur}s">\n'
+                f'      <div class="cs-marquee-track">\n'
+                f'      <div class="cs-marquee-half">\n{half}\n      </div>\n'
+                f'      <div class="cs-marquee-half" aria-hidden="true">\n{half}\n'
+                f'      </div>\n      </div>\n    </div>')
+        else:
+            parts[g["pos"]] = ('    <div class="cs-logo-strip">\n'
+                               + "\n".join(g["items"]) + "\n    </div>")
     any_strip_items = any(g["items"] for g in strip_groups.values())
     body = "\n".join(p for p in parts if p is not None) \
         or '    <!-- generic-flow: no renderable slots -->'
@@ -3307,6 +3475,13 @@ SCAFFOLD_CARDS_CSS = """.cs-modules-sec { position: relative; }
    as the logo-strip device (structural frame behavior, not a brand magnitude). */
 .cs-module-media--contain { display: flex; align-items: center; justify-content: center; }
 .cs-module-media--contain .c-image { width: 100%; height: 100%; object-fit: contain; }
+/* bound action slots (P2 parity with the split/hero routes): one action row under the
+   modules — present only when the section binds a real button slot; centered rides the
+   section's resolved alignment stamp. */
+.cs-modules-actions { display: flex; flex-wrap: wrap; align-items: center;
+  gap: var(--c-block-gap); margin-block-start: clamp(2rem, 5cqw, 3.5rem);
+  max-width: var(--content-measure, 86rem); margin-inline: auto; }
+[data-align="centered"] .cs-modules-actions { justify-content: center; }
 @media (max-width: 767px) { .cs-modules { grid-template-columns: 1fr; gap: 2.5rem; }
   .cs-modules > .cs-module:nth-child(odd), .cs-modules > .cs-module:nth-child(even) {
     grid-column: 1; margin-block-start: 0; } }"""
@@ -3500,6 +3675,89 @@ SCAFFOLD_FLOW_CSS = """.cs-flow { display: flex; flex-direction: column;
 .cs-logo-strip .c-logo-img { height: var(--c-logo-strip-h, 2.25rem); width: auto;
   max-width: 10rem; object-fit: contain; }
 @media (max-width: 767px) { .cs-flow { gap: clamp(1.25rem, 6cqw, 1.75rem); } }"""
+
+
+# ── INTERACTION-DEVICE scaffolds (P2). Shipped ONLY on pages/sections that render the
+# device (AS-37 discipline — gated in scaffold_css / compose_page.build_page on the
+# stamped layout hints, so dormant selectors never ride along on other brands' pages).
+
+# Seam-correct marquee (AS-42): two IDENTICAL halves in one max-content flex track;
+# the -50% keyframe endpoint lands exactly on the second half's start (each half
+# carries a trailing inline gap so the seam spacing equals the inter-item gap). The
+# duration var is px/s-constant when the page script measures the half width; the
+# inline item-count fallback keeps JS-off renders animating. Reduced-motion pauses at
+# the resting offset — the static row IS the animation's t=0 frame.
+SCAFFOLD_MARQUEE_CSS = """.cs-marquee { display: block; overflow: hidden; max-width: none;
+  /* pin the viewport box to its column (a flex item would otherwise size to the
+     max-content track and overflow the page horizontally) */
+  width: 100%; min-width: 0; }
+.cs-marquee .cs-marquee-track { display: flex; width: max-content;
+  animation: cs-marquee-scroll var(--cs-marquee-duration, 30s) linear infinite; }
+.cs-marquee .cs-marquee-half { display: flex; flex-wrap: nowrap; align-items: center;
+  gap: var(--c-block-gap); padding-inline-end: var(--c-block-gap); }
+.cs-marquee .cs-marquee-half .cs-logo-strip-item { flex: none; }
+@keyframes cs-marquee-scroll { from { transform: translateX(0); }
+  to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .cs-marquee .cs-marquee-track { animation: none; } }"""
+
+# Accordion open-state (P2): native exclusive disclosure (<details name=…>, AS-40 —
+# the platform enforces single-open; no JS). The ACTIVE item inverts onto the
+# treatment's declared surface role via the --acc-* vars scoped inline on .c-acc;
+# unset vars keep the idle presentation (transparent, inherited ink). State/chevron
+# transitions ride the brand's motion aliases (--c-motion-*).
+SCAFFOLD_ACCORDION_CSS = """.cs-acc-split .cs-acc-col { grid-column: 1 / span 6;
+  display: flex; flex-direction: column; justify-content: center; }
+.cs-acc-split .cs-split-media { grid-column: 8 / -1; }
+.c-acc { display: flex; flex-direction: column; width: 100%; }
+.c-acc-item { border-bottom: 1px solid var(--c-hairline); }
+.c-acc-trigger { display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; padding: calc(3 * var(--baseline)) calc(3 * var(--baseline));
+  cursor: pointer; list-style: none;
+  /* family/weight/size ride the section-scoped brand vars — a bare <summary> would
+     otherwise inherit the UA default (the var only resolves inside #sec-N scopes) */
+  font-family: var(--c-font-body); font-weight: 500;
+  font-size: var(--c-control-size, 1rem);
+  transition: background-color var(--c-motion-fast, 150ms) var(--c-ease, ease); }
+.c-acc-trigger::-webkit-details-marker { display: none; }
+.c-acc-chev { display: inline-flex; flex: none;
+  transition: transform var(--c-motion-base, 200ms) var(--c-ease, ease); }
+.c-acc-item[open] > .c-acc-trigger .c-acc-chev { transform: rotate(180deg); }
+.c-acc-item:not([open]):hover { background: var(--acc-hover-bg, transparent); }
+.c-acc-item[open] { background: var(--acc-active-bg, transparent);
+  color: var(--acc-active-ink, inherit); --c-ink: var(--acc-active-ink, inherit);
+  border-radius: var(--radius-card, 0); border-color: transparent; }
+.c-acc-panel { padding: 0 calc(3 * var(--baseline)) calc(3 * var(--baseline)); }
+.c-acc-panel .c-paragraph { color: inherit; }
+@media (max-width: 767px) {
+  .cs-acc-split .cs-acc-col, .cs-acc-split .cs-split-media { grid-column: 1; } }"""
+
+# Edge-cut carousel statics (P2): the module track becomes a native horizontal
+# scroller whose right edge bleeds past the section padding to the viewport edge, so
+# the last visible card CLIPS (the capture's carousel affordance). The left content
+# edge stays registered to the shared measure. Cards take the plate anatomy (brand
+# panel surface + card radius vars — no literals).
+SCAFFOLD_EDGECUT_CSS = """.cs-edgecut { overflow-x: auto; scrollbar-width: none;
+  margin-inline-end: calc(-1 * var(--c-section-pad-x, 0rem));
+  padding-inline-start: max(0rem, calc((100% - var(--content-measure, 86rem)) / 2)); }
+.cs-edgecut::-webkit-scrollbar { display: none; }
+.cs-modules--edgecut { display: flex; flex-wrap: nowrap; align-items: stretch;
+  max-width: none; margin-inline: 0; column-gap: normal;
+  gap: calc(4 * var(--baseline)); }
+.cs-modules--edgecut > .cs-module, .cs-modules--edgecut > .cs-module:nth-child(odd),
+.cs-modules--edgecut > .cs-module:nth-child(even) {
+  flex: 0 0 clamp(20rem, 32cqw, 30rem); grid-column: auto; margin-block-start: 0; }
+.cs-module--plate { background: var(--c-panel); color: var(--c-panel-ink);
+  --c-ink: var(--c-panel-ink); --c-accent: var(--c-panel-ink);
+  --c-hairline: var(--c-panel-hairline);
+  border-radius: var(--radius-card, 0); padding: calc(4 * var(--baseline)); }
+.cs-modules--edgecut .cs-module-media--mark { display: flex; align-items: center;
+  justify-content: flex-start; height: 2.25rem; }
+.cs-modules--edgecut .cs-module-media--mark .c-image { width: auto; height: 100%;
+  max-width: 12rem; object-fit: contain; }
+@media (max-width: 767px) {
+  .cs-modules--edgecut { gap: 1.25rem; }
+  .cs-modules--edgecut > .cs-module { flex-basis: min(86cqw, 24rem); } }"""
 
 
 _ARCHETYPE_SCAFFOLD = {
@@ -3824,7 +4082,27 @@ def scaffold_css(doc, layout, style_ctx=None) -> str:
     # so no-radius brand pages never carry its rounded-panel rule (see the blob note).
     if (layout or {}).get("_artPanel") is not None:
         arch_css = arch_css + "\n" + SCAFFOLD_ART_PANEL_CSS
+    # P2 interaction devices: same conditional-shipping discipline as the art panel —
+    # each device's CSS rides only with a layout stamped for it (stamp_pattern_devices).
+    arch_css = arch_css + device_scaffold_css([layout])
     return rhythm_vars_css(doc, style_ctx, role) + "\n" + SCAFFOLD_BASE_CSS + "\n" + arch_css
+
+
+def device_scaffold_css(layouts) -> str:
+    """The P2 interaction-device scaffolds needed by ANY of ``layouts`` (marquee /
+    accordion open-state / edge-cut carousel), concatenated — "" when none is stamped,
+    so pages without the devices ship byte-identical CSS (AS-37 discipline).
+    ``is not None`` (not truthiness): an EMPTY hint dict is a valid stamp — a device
+    treatment with no role refs still composes the device (idle presentation)."""
+    ls = [l for l in (layouts or []) if isinstance(l, dict)]
+    parts = []
+    if any(l.get("_marquee") is not None for l in ls):
+        parts.append(SCAFFOLD_MARQUEE_CSS)
+    if any(l.get("_accordion") is not None for l in ls):
+        parts.append(SCAFFOLD_ACCORDION_CSS)
+    if any(l.get("_edgeCut") for l in ls):
+        parts.append(SCAFFOLD_EDGECUT_CSS)
+    return ("\n" + "\n".join(parts)) if parts else ""
 
 
 def root_vars(doc, surf, *, display_size, title_overlap, surface_role=None) -> str:
@@ -3985,6 +4263,11 @@ def build_document(doc, layout, brand_yaml, style_ctx: RenderContext) -> str:
     ctx.style_id = style_ctx.style_id if ctx.style_active else ""
     # style-aware cta-shape (B5) — same resolution as the full-page path.
     ctx.cta = cr.cta_shape(doc, style_ctx.structure if ctx.style_active else None)
+
+    # pattern INTERACTION DEVICES (P2): stamp sanctioned treatment devices (marquee /
+    # accordion open-state / edge-cut) BEFORE composing so the archetype composers
+    # see the hints; the same resolve_pattern below keeps driving treatment CSS.
+    stamp_pattern_devices(doc, layout, brand_yaml)
 
     rendered = render_slots(doc, layout, ctx)
     archetype = (layout.get("archetype") or "stack").lower()

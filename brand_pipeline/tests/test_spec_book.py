@@ -202,8 +202,31 @@ class TestMotionChapter(unittest.TestCase):
         self.assertIn(".btn .icon", html)        # sourceSelectors citation
         self.assertIn("live timing demos", html)
         self.assertIn("durations.state", html)
-        self.assertIn("pending (P2 renderer work)", html)
+        self.assertIn("pending (P2+ renderer work)", html)
         self.assertIn("prefers-reduced-motion", html)
+        # no marquee-family signature move ⇒ no live marquee demo (P2 gate)
+        self.assertNotIn("spec-marquee", html)
+
+    def test_marquee_move_gates_live_marquee_demo(self):
+        # a marquee-family signature move switches the live demo ON — seam-correct
+        # two-half track riding the move's own name (P2, AS-42).
+        motion = copy.deepcopy(_MOTION)
+        motion["signatureMoves"].append(
+            {"name": "logo-marquee", "move": "track loops via translateX(-50%)",
+             "timing": "JS-timed on source", "sourceSelectors": [".strip"]})
+        doc = _tokens(_doc(), "motion", motion)
+        html = rcp.spec_motion_chapter(doc)
+        self.assertIn("spec-marquee", html)
+        self.assertEqual(html.count('<div class="spec-marquee-half"'), 2)
+        self.assertIn('aria-hidden="true"', html)
+        self.assertIn("signatureMoves.logo-marquee", html)
+        css = rcp.spec_motion_css(doc)
+        self.assertIn("translateX(-50%)", css)
+        self.assertIn("prefers-reduced-motion: reduce", css)
+        # move-less brands ship no marquee demo CSS
+        css_plain = rcp.spec_motion_css(_tokens(_doc(), "motion",
+                                                copy.deepcopy(_MOTION)))
+        self.assertNotIn("spec-marquee", css_plain)
 
     def test_demo_css_carries_brand_values_verbatim(self):
         doc = _tokens(_doc(), "motion", copy.deepcopy(_MOTION))

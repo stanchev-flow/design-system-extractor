@@ -214,6 +214,17 @@ def shoot_replica(out_dir: Path, viewport: tuple[int, int] = (1440, 900)) -> dic
         page.wait_for_timeout(400)
         page.evaluate("window.scrollTo(0, 0)")
         page.wait_for_timeout(500)
+        # Freeze any marquee track at its t=0 resting offset before the shot: the
+        # SOURCE capture renders its marquee paused at offset 0 (the JS-set duration
+        # never ran under static capture), so pausing ours at the same frame keeps
+        # the band diff apples-to-apples. Scoped to the marquee keyframe only —
+        # reveal transitions have already settled and are not touched.
+        page.evaluate("""document.getAnimations().forEach(a => {
+          if (a.animationName === 'cs-marquee-scroll') {
+            try { a.currentTime = 0; a.pause(); } catch (e) {}
+          }
+        })""")
+        page.wait_for_timeout(100)
         rects = page.evaluate("""() => {
           const grab = el => { const r = el.getBoundingClientRect();
             return { x: r.x, y: r.y + window.scrollY, w: r.width, h: r.height }; };
@@ -233,6 +244,45 @@ def shoot_replica(out_dir: Path, viewport: tuple[int, int] = (1440, 900)) -> dic
     rects["schemaVersion"] = "replica-rects.v1"
     (out_dir / "replica-rects.json").write_text(json.dumps(rects, indent=1) + "\n")
     return rects
+
+
+def shoot_chrome_mega(brand_dir: Path, out_dir: Path,
+                      viewport: tuple[int, int] = (1440, 900)) -> Path | None:
+    """DIAGNOSTIC (P2): if the brand's chrome preview exists and renders hover/focus
+    mega-panels, capture ONE open-panel state into ``diff/chrome-mega-open.png``.
+    Not scored — the source full-page shot has no open panel to diff against; this
+    exercises the open-panel capability the closed-bar diff can't see. Returns the
+    shot path, or None when the preview / panel markup is absent (degrade, never
+    fails the gate)."""
+    chrome_index = brand_dir / "chrome" / "index.html"
+    if not chrome_index.is_file():
+        return None
+    try:
+        if "mega-panel" not in chrome_index.read_text(errors="replace"):
+            return None
+        from playwright.sync_api import sync_playwright
+        shot = out_dir / "diff" / "chrome-mega-open.png"
+        shot.parent.mkdir(parents=True, exist_ok=True)
+        with sync_playwright() as pw:
+            browser = pw.chromium.launch()
+            page = browser.new_page(viewport={"width": viewport[0],
+                                              "height": viewport[1]},
+                                    device_scale_factor=1)
+            page.goto(chrome_index.resolve().as_uri(), wait_until="load",
+                      timeout=30000)
+            page.wait_for_timeout(400)
+            tab = page.locator(".nav-tab.has-menu").first
+            if tab.count() == 0:
+                browser.close()
+                return None
+            tab.hover()
+            page.wait_for_timeout(300)
+            page.screenshot(path=str(shot))  # viewport shot: bar + open panel
+            browser.close()
+        return shot
+    except Exception as exc:  # diagnostic only — never take the gate down
+        print(f"[replica] chrome mega-menu shot skipped: {type(exc).__name__}: {exc}")
+        return None
 
 
 # ── 3) per-section diff vs the source screenshot ──────────────────────────────────
@@ -348,25 +398,31 @@ def build_strip(pair_paths: list[Path], out_path: Path, width: int = 1200) -> No
 
 # ── 4) renderer-gap punch list + report ────────────────────────────────────────────
 
-def _known_gaps(doc: dict, layout: dict | None, pat: dict | None) -> list[str]:
+def _known_gaps(doc: dict, layout: dict | None, pat: dict | None,
+                replica_html: str = "") -> list[str]:
     """Named capability gaps this band is EXPECTED to show in a static rebuild —
     detected from the brand's own evidence (generic capability vocabulary; the
-    per-run measurements ride in the report rows, not here)."""
+    per-run measurements ride in the report rows, not here). RESOLUTION-AWARE (P2):
+    a capability whose device markup is present in the composed page no longer
+    reports as a gap — the punch list names only what the renderer still can't do."""
     probe = " ".join([
         str((layout or {}).get("useCase") or ""), str((layout or {}).get("id") or ""),
         str((pat or {}).get("id") or ""), str((pat or {}).get("useCase") or ""),
         json.dumps((pat or {}).get("specialTreatments") or []),
     ]).lower()
     gaps: list[str] = []
-    if "marquee" in probe or "auto-scroll" in probe:
+    if ("marquee" in probe or "auto-scroll" in probe) \
+            and "cs-marquee-track" not in replica_html:
         gaps.append("marquee animation — the source strip is a continuously "
                      "translating track (JS-timed; see motion-audit jsTimingNotes); "
                      "the composer renders a static spaced row")
-    if "accordion" in probe:
+    if "accordion" in probe and not ("c-acc-item" in replica_html
+                                     and " open>" in replica_html):
         gaps.append("accordion open-state — the source renders one ACTIVE item "
                      "expanded on its inverted inset panel; the composed accordion "
                      "draws all rows idle/closed")
-    if "carousel" in probe or "edge cards cut" in probe or "viewport" in probe:
+    if ("carousel" in probe or "edge cards cut" in probe or "viewport" in probe) \
+            and "cs-modules--edgecut" not in replica_html:
         gaps.append("carousel statics — the source is an edge-cut sliding track "
                      "(cards clipped at the viewport); the composer renders a "
                      "contained grid")
@@ -386,10 +442,15 @@ def _chrome_gaps(doc: dict, brand_dir: Path, replica_html: str) -> list[dict]:
     out: list[dict] = []
     nav = doc.get("navbar") or {}
     if any(isinstance(i, dict) and i.get("menu") for i in (nav.get("primary") or [])):
+        mega_shot = brand_dir / "compose" / "replica" / "diff" / "chrome-mega-open.png"
+        note = ("the brand declares mega-menu columns; the replica (and the source "
+                "shot) render the closed bar only — open-panel fidelity is "
+                "unexercised by this gate")
+        if mega_shot.is_file():
+            note += (" (diagnostic open-panel capture from the chrome preview: "
+                     "diff/chrome-mega-open.png)")
         out.append({"section": "navbar", "capability": "mega-menu open panels",
-                    "note": "the brand declares mega-menu columns; the replica (and "
-                            "the source shot) render the closed bar only — open-panel "
-                            "fidelity is unexercised by this gate"})
+                    "note": note})
     ub = nav.get("utilityBanner")
     if isinstance(ub, dict) and ub:
         probe = str(ub.get("text") or ub.get("copy") or "")[:40]
@@ -518,7 +579,7 @@ def run_diff(brand_dir: Path, out_dir: Path, doc: dict,
     for row in rows:
         lid = row["label"].split(" — ")[0]
         layout, pat = layout_by_id.get(lid, (None, None))
-        gaps = _known_gaps(doc, layout, pat) if layout else []
+        gaps = _known_gaps(doc, layout, pat, replica_html) if layout else []
         low = row["score"] < PUNCH_THRESHOLD
         for g in gaps:
             cap = g.split(" — ")[0]
@@ -586,6 +647,11 @@ def main(argv=None) -> int:
     rects = shoot_replica(out_dir, (w, h))
     print(f"[replica] screenshot + {len(rects.get('bands') or [])} live bands -> "
           f"replica-fullpage.png")
+
+    mega_shot = shoot_chrome_mega(brand_dir, out_dir, (w, h))
+    if mega_shot:
+        print(f"[replica] chrome mega-menu open-panel diagnostic -> "
+              f"{mega_shot.relative_to(out_dir)}")
 
     doc = built["doc"]
     patterns = rp.load_layout_library(brand_yaml)

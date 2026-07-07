@@ -181,8 +181,49 @@ REVEAL_SCRIPT = """<script>
     n.style.setProperty('--cs-reveal-i', String(i % 6));  // small per-target stagger
     io.observe(n);
   });
+  // TIMED FAILSAFE (AS-41): whatever IO does or fails to do, no content stays hidden
+  // past this deadline — a mis-rooted observer / iframe quirk / never-fired callback
+  // can strand `.cs-reveal` targets invisible; the reveal is an enhancement, never a
+  // gate on content.
+  setTimeout(function () {
+    nodes.forEach(function (n) { n.classList.add('is-in'); });
+  }, 4000);
 })();
 </script>"""
+
+# Marquee px/s-constant duration (AS-42, P2): duration = measured half width / SPEED,
+# so every marquee travels at the same surface speed regardless of item count. The
+# CSS animation itself never depends on this (the inline item-count fallback keeps
+# JS-off renders animating); reduced-motion is honored by the CSS media query.
+MARQUEE_PX_PER_S = 90
+MARQUEE_SCRIPT = """<script>
+(function () {
+  var speed = %d; /* px per second — constant surface speed across marquees */
+  [].forEach.call(document.querySelectorAll('.cs-marquee-track'), function (t) {
+    var half = t.querySelector('.cs-marquee-half');
+    if (half && half.scrollWidth > 0) {
+      t.style.setProperty('--cs-marquee-duration', (half.scrollWidth / speed).toFixed(2) + 's');
+    }
+  });
+})();
+</script>""" % MARQUEE_PX_PER_S
+
+
+# Utility banner (P2, evidence-gated chrome): a slim centered promo line above the nav.
+# Structural geometry only — colors ride the #page-banner surface scope (section_vars);
+# the close affordance is the extracted dismissible fact. Shipped only on pages that
+# render the banner (see build_page), so banner-less brands keep byte-identical CSS.
+UTILITY_BANNER_CSS = """#page-banner { background: var(--c-paper); color: var(--c-ink); }
+#page-banner .cs-utility-banner { position: relative; display: flex; align-items: center;
+  justify-content: center; gap: 0.75rem; text-align: center;
+  padding: calc(2 * var(--baseline)) var(--c-section-pad-x);
+  font-family: var(--c-font-body); font-size: var(--c-control-size, 0.9375rem); }
+#page-banner .cs-utility-banner-text { margin: 0; }
+#page-banner .cs-utility-banner-close { position: absolute;
+  right: var(--c-section-pad-x); top: 50%; transform: translateY(-50%);
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.5rem; height: 1.5rem; background: none; border: 0; color: inherit;
+  font-size: 1rem; line-height: 1; cursor: pointer; }"""
 
 
 def load_doc(brand_yaml: Path) -> dict:
@@ -428,6 +469,10 @@ def compose_section_block(doc, layout, idx, style_ctx, brand_yaml=None, accent_i
     # style's primaryAction soft-option default fills the gap for law-silent brands.
     ctx.cta = cr.cta_shape(doc, style_ctx.structure if ctx.style_active else None)
 
+    # pattern INTERACTION DEVICES (P2): stamp sanctioned treatment devices (marquee /
+    # accordion open-state / edge-cut) BEFORE composing so the composers see the hints.
+    cs.stamp_pattern_devices(doc, layout, brand_yaml)
+
     rendered = cs.render_slots(doc, layout, ctx)
     archetype = (layout.get("archetype") or "stack").lower()
     composer = cs.ARCHETYPE_COMPOSERS.get(archetype, cs.compose_stack_hero)
@@ -530,6 +575,39 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
                                        accent_on=nav_accent_on, surf_role=nav_role,
                                        style_ctx=style_ctx))
 
+    # UTILITY BANNER above the nav (P2, evidence-gated): rendered ONLY when the brand's
+    # extracted chrome declares navbar.utilityBanner with observed text — absent/empty
+    # ⇒ no banner, byte-identical page. Surface = the banner's declared surface ROLE
+    # resolved from the brand's own tokens (never a literal); an unknown/undeclared
+    # role degrades to no banner (fail-quiet chrome, same discipline as the nav).
+    banner_block = ""
+    ub = (doc.get("navbar") or {}).get("utilityBanner")
+    if nav_block and isinstance(ub, dict) and ub.get("observed") \
+            and str(ub.get("text") or "").strip():
+        b_role = str(ub.get("surface") or "")
+        b_surf = (doc.get("tokens", {}).get("surfaces") or {}).get(b_role)
+        if isinstance(b_surf, dict) and b_surf.get("bg"):
+            b_ctx = cr.make_context(doc, b_role, b_surf)
+            b_ctx.style_active = bool(style_ctx and style_ctx.active)
+            b_ctx.style_id = style_ctx.style_id if b_ctx.style_active else ""
+            cta = ub.get("cta")
+            cta_html = ""
+            if isinstance(cta, dict) and str(cta.get("label") or "").strip():
+                cta_html = " " + cr.render_arrow_link(
+                    doc, b_ctx, {"label": cta["label"], "href": cta.get("href", "#")})
+            dismiss_html = ""
+            if ub.get("dismissible"):
+                dismiss_html = ('<button class="cs-utility-banner-close" type="button" '
+                                'aria-label="Dismiss">&#215;</button>')
+            banner_block = (
+                f'<div id="page-banner" class="cs-surface" data-surface="{cr.esc(b_role)}">\n'
+                f'<div class="cs-utility-banner"><p class="cs-utility-banner-text">'
+                f'{cr.esc(str(ub["text"]).strip())}</p>{cta_html}{dismiss_html}</div>\n'
+                f'</div>')
+            var_blocks.append(section_vars(doc, "#page-banner", b_surf, display_size=None,
+                                           accent_on=False, surf_role=b_role,
+                                           style_ctx=style_ctx))
+
     # Closing-bookend FOOTER as the final section — composed via the SHARED component
     # renderer (component_render.render_footer), the SAME renderer the gallery uses, NOT
     # the chrome generator. Surface = the brand's MEASURED chrome-footer surface resolved
@@ -585,6 +663,14 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
     # brands whose neverDo forbids radius (the static no-radius check reads page text).
     if any((l or {}).get("_artPanel") is not None for l in chosen):
         css_parts.append(cs.SCAFFOLD_ART_PANEL_CSS)
+    # P2 interaction devices (marquee / accordion / edge-cut): same conditional-shipping
+    # discipline — "" when no section on this page is stamped for one.
+    device_css = cs.device_scaffold_css(chosen)
+    if device_css:
+        css_parts.append(device_css)
+    # utility-banner chrome CSS ships only when THIS page renders the banner.
+    if banner_block:
+        css_parts.append(UTILITY_BANNER_CSS)
     css_parts.append("\n".join(var_blocks))
     if style_ctx and style_ctx.active:
         css_parts.append(page_style_override(style_ctx, poster=poster))
@@ -613,6 +699,8 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
         html_attr += f' data-align-stance="{stance}"'
     parallax_attr = ' data-parallax-images="true"' if cr.image_parallax_spec(doc)["enabled"] else ""
     sections = "\n".join(blocks)
+    # marquee duration script rides ONLY on pages that render a marquee track.
+    marquee_script = MARQUEE_SCRIPT if "cs-marquee-track" in sections else ""
     return f"""<!doctype html>
 <html lang="en"{html_attr}{parallax_attr}>
 <head>
@@ -639,9 +727,11 @@ body {{ min-height: 100%; container-type: size; container-name: frame; }}
      component rendered by component_render.py (the SAME renderers the gallery uses),
      arranged by its archetype assembler in compose_section.py. STYLE=radical-editorial
      structure layered over per-section brand hues/fonts. -->
+{banner_block}
 {nav_block}
 {sections}
 {REVEAL_SCRIPT}
+{marquee_script}
 {cr.parallax_script_tags(doc)}
 </body>
 </html>
