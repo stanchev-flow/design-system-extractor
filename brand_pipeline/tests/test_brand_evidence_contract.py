@@ -39,17 +39,72 @@ FIXTURE_CONTRACTS = {
     }
 }
 
+# tokens + motion voice: the MINIMAL complete set the layer-1 generator requires —
+# the C11 composed-demo smoke runs the real composers, which fail loud without it.
+FIXTURE_TOKENS = {
+    "colors": {
+        "text/default": {"value": "#101828"},
+        "text/muted": {"value": "#475467"},
+        "text/on-primary": {"value": "#101828"},
+        "text/on-primary-muted": {"value": "#475467"},
+        "text/on-inverse": {"value": "#ffffff"},
+        "text/on-inverse-muted": {"value": "#d0d5dd"},
+        "text/ghost-on-primary": {"value": "#e4e7ec"},
+        "border/hairline-on-primary": {"value": "#e4e7ec"},
+        "surface/primary": {"value": "#ffffff"},
+        "surface/panel": {"value": "#f2f4f7"},
+        "surface/inverse": {"value": "#101828"},
+        "action/primary": {"value": "#101828"},
+        "action/primary-fg": {"value": "#ffffff"},
+    },
+    "surfaces": {
+        "surface/primary": {"bg": "#ffffff", "textPrimary": "text/on-primary"},
+        "surface/panel": {"bg": "#f2f4f7", "textPrimary": "text/on-primary"},
+        "surface/inverse": {"bg": "#101828", "textPrimary": "text/on-inverse"},
+        "surface/inverse-strong": {"bg": "#0c111d", "textPrimary": "text/on-inverse"},
+    },
+    "type": {
+        "display-hero": {"family": "Georgia", "sizeRem": {"base": 3.0}, "weight": 700},
+        "h1": {"family": "Georgia", "sizeRem": {"base": 2.5}, "weight": 700},
+        "h2": {"family": "Georgia", "sizeRem": {"base": 2.0}, "weight": 700},
+        "h3": {"family": "Georgia", "sizeRem": {"base": 1.5}, "weight": 600},
+        "body": {"family": "Helvetica", "sizeRem": {"base": 1.0}, "weight": 400},
+        "small": {"family": "Helvetica", "sizeRem": {"base": 0.875}, "weight": 400},
+        "eyebrow": {"family": "Helvetica", "sizeRem": {"base": 0.8125}, "weight": 600},
+        "control-text": {"family": "Helvetica", "sizeRem": {"base": 0.9375},
+                         "weight": 500},
+    },
+    "spacing": {
+        "section-padding-light": {"value": "5rem"},
+        "eyebrow-to-heading": {"value": "1rem"},
+        "panel-padding": {"value": "2rem"},
+        "radius-global": {"value": "12px"},
+        "radius-card": {"value": "12px"},
+    },
+}
+
+FIXTURE_VOICE = {
+    "motionSpec": {"durations": {"fast": "120ms", "base": "200ms", "slow": "320ms"},
+                   "easing": {"primary": "cubic-bezier(0.2, 0, 0, 1)"}},
+}
+
 FIXTURE_BRAND = {
     "brand": {"name": "Fixture"},
+    "tokens": FIXTURE_TOKENS,
+    "voice": FIXTURE_VOICE,
     "blocks": {
         "header": {"origin": "extracted"},
-        "card": {"origin": "extracted", "slots": ["media", "heading"]},
+        "card": {"origin": "extracted", "slots": ["media", "heading"],
+                 # C10: variant coverage is part of complete card evidence
+                 "variants": [{"id": "media-top"}, {"id": "text-only"}]},
         "button": {"origin": "extracted"},
         "form": {"notObserved": True},
     },
     "buttons": {
-        "primary": {"bg": "#101828", "fg": "#ffffff", "radius": "12px",
-                    "bgHover": "#243040"},
+        # C3-strict: filled family carries the full state + geometry matrix
+        "primary": {"style": "filled", "bg": "#101828", "fg": "#ffffff",
+                    "radius": "12px", "bgHover": "#243040", "fgHover": "#ffffff",
+                    "height": "2.75rem", "padding": "0 1.25rem"},
         "outlined": {"fg": "#101828", "border": "1px solid #101828",
                      "radius": "12px", "decoration": "underline"},
     },
@@ -69,7 +124,7 @@ FIXTURE_BRAND = {
          "patternRef": {"id": "fx-hero"},
          "slots": [{"name": "copy", "type": "content"},
                    {"name": "art", "type": "image"}]},
-        {"id": "logo-strip", "archetype": "strip",
+        {"id": "logo-strip", "archetype": "stack",
          "useCase": "customer-proof-strip",
          "patternRef": {"id": "fx-logos"},
          "slots": [{"name": "logo-wall", "type": "image"}]},
@@ -89,9 +144,13 @@ FIXTURE_COPY = {
     "sectionCopy": {"wordmark": "Fixture", "eyebrow": "SYNTHETIC"},
     "layoutCopy": {"hero-split": {"heading": "A real heading",
                                   "body": "Real fixture body copy."}},
+    # the hero split's media slot binds REAL on-disk art (C11: srcless media slots
+    # compose placeholder plates, which the smoke check rejects)
+    "defaultArt": {"hero": ["art-hero.webp"]},
 }
 
 LOGO_FILES = ("logo-alpha.svg", "logo-beta.svg", "logo-gamma.svg")
+ART_FILES = ("art-hero.webp",)
 
 
 class BrandEvidenceContractTests(unittest.TestCase):
@@ -119,6 +178,8 @@ class BrandEvidenceContractTests(unittest.TestCase):
         assets.mkdir()
         for name in LOGO_FILES:
             (assets / name).write_text("<svg xmlns='http://www.w3.org/2000/svg'/>")
+        for name in ART_FILES:
+            (assets / name).write_bytes(b"RIFF\x00\x00\x00\x00WEBP")
         (self.brand_dir / "assets-tagged.json").write_text(json.dumps({
             "schemaVersion": 2,
             "assets": [{"filename": n, "useCase": "logo-wall-logo"}
@@ -139,6 +200,9 @@ class BrandEvidenceContractTests(unittest.TestCase):
 
     def _validate(self, **kw):
         kw.setdefault("contracts_path", self.contracts)
+        # most tests target one specific check — skip the (real-composer) C11
+        # smoke unless a test opts in, so the suite stays fast and focused.
+        kw.setdefault("smoke", False)
         return vbe.validate_brand_dir(self.brand_dir, **kw)
 
     @staticmethod
@@ -148,7 +212,9 @@ class BrandEvidenceContractTests(unittest.TestCase):
     # ── the complete fixture passes ──────────────────────────────────────────
 
     def test_complete_fixture_passes(self):
-        rep = self._validate()
+        # smoke ON: the complete fixture must also compose cleanly through the
+        # real archetype composers (C11) and carry clean generated-html hygiene.
+        rep = self._validate(smoke=True)
         self.assertEqual(rep.errors, [], f"expected clean pass, got: {rep.errors}")
         self.assertTrue(rep.ok)
 
@@ -197,10 +263,35 @@ class BrandEvidenceContractTests(unittest.TestCase):
     def test_button_family_without_state_fact_fails(self):
         def strip_hover(d):
             d["buttons"]["primary"].pop("bgHover")
+            d["buttons"]["primary"].pop("fgHover")
         self._mutate_brand(strip_hover)
         rep = self._validate()
         self.assertFalse(rep.ok)
         self.assertIn("buttons.primary", self._joined(rep.errors))
+
+    # ── C3-strict: hover pairing + filled-family geometry ────────────────────
+
+    def test_bghover_without_fghover_fails(self):
+        self._mutate_brand(lambda d: d["buttons"]["primary"].pop("fgHover"))
+        rep = self._validate()
+        self.assertFalse(rep.ok)
+        self.assertIn("fgHover", self._joined(rep.errors))
+
+    def test_filled_family_without_geometry_fails(self):
+        def strip_geom(d):
+            d["buttons"]["primary"].pop("height")
+            d["buttons"]["primary"].pop("padding")
+        self._mutate_brand(strip_geom)
+        rep = self._validate()
+        self.assertFalse(rep.ok)
+        msg = self._joined(rep.errors)
+        self.assertIn("height", msg)
+        self.assertIn("padding", msg)
+
+    def test_outline_family_needs_no_geometry(self):
+        # the outlined fixture family has no bg fill — geometry is not demanded
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors if "outlined" in e], [])
 
     # ── block coverage (incl. card) ──────────────────────────────────────────
 
@@ -256,6 +347,81 @@ class BrandEvidenceContractTests(unittest.TestCase):
         rep = self._validate()
         self.assertEqual(rep.errors, [], rep.errors)
 
+    # ── C7 range + integrity (sysfix 2026-07) ────────────────────────────────
+
+    def test_content_max_width_out_of_range_fails(self):
+        self._mutate_brand(lambda d: d["navbar"].__setitem__(
+            "measured", {"link": {"fontSize": "14px"}, "contentMaxWidth": 4000}))
+        rep = self._validate()
+        self.assertFalse(rep.ok)
+        self.assertIn("contentMaxWidth", self._joined(rep.errors))
+
+    def test_content_max_width_in_range_passes(self):
+        self._mutate_brand(lambda d: d["navbar"].__setitem__(
+            "measured", {"link": {"fontSize": "14px"}, "contentMaxWidth": 1216}))
+        rep = self._validate()
+        self.assertEqual(rep.errors, [], rep.errors)
+
+    def test_footer_zero_content_max_width_is_tolerated(self):
+        # 0 = "could not measure" (e.g. %-based container) — allowed, not an error
+        self._mutate_brand(lambda d: d["footer"].__setitem__(
+            "measured", {"contentMaxWidth": 0}))
+        rep = self._validate()
+        self.assertEqual(rep.errors, [], rep.errors)
+
+    def test_grid_footer_without_headings_fails(self):
+        def strip_heads(d):
+            d["footer"]["rules"] = {"layout": "grid"}
+            for col in d["footer"]["columns"]:
+                col.pop("heading", None)
+        self._mutate_brand(strip_heads)
+        rep = self._validate()
+        self.assertFalse(rep.ok)
+        self.assertIn("heading", self._joined(rep.errors))
+
+    def test_unrenderable_nav_logo_fails(self):
+        self._mutate_brand(lambda d: d["navbar"].__setitem__(
+            "logo", {"kind": "img", "alt": "Fixture"}))
+        rep = self._validate()
+        self.assertFalse(rep.ok)
+        self.assertIn("logo", self._joined(rep.errors))
+
+    def test_svg_nav_logo_passes(self):
+        self._mutate_brand(lambda d: d["navbar"].__setitem__(
+            "logo", {"kind": "svg", "alt": "Fixture",
+                     "srcContract": "../assets/source-chrome.v2.json#nav.logo.src"}))
+        rep = self._validate()
+        self.assertEqual(rep.errors, [], rep.errors)
+
+    def test_app_badge_footer_logo_fails(self):
+        self._mutate_brand(lambda d: d["footer"].__setitem__(
+            "logo", {"kind": "img", "src": "app-store-badge.svg", "alt": "store"}))
+        rep = self._validate()
+        self.assertFalse(rep.ok)
+        self.assertIn("badge", self._joined(rep.errors).lower())
+
+    def test_mega_menu_heading_prefix_of_first_link_fails(self):
+        self._mutate_brand(lambda d: d["navbar"].__setitem__(
+            "primary",
+            [{"label": "Products",
+              "menu": {"columns": [
+                  {"heading": "Global Employment",
+                   "links": [{"label": "Global Employment Payroll Run compliant "
+                                       "payroll everywhere"}]}]}}]))
+        rep = self._validate()
+        self.assertFalse(rep.ok)
+        self.assertIn("prefix", self._joined(rep.errors))
+
+    def test_mega_menu_clean_heading_passes(self):
+        self._mutate_brand(lambda d: d["navbar"].__setitem__(
+            "primary",
+            [{"label": "Products",
+              "menu": {"columns": [
+                  {"heading": "Global Employment",
+                   "links": [{"label": "Payroll Run"}]}]}}]))
+        rep = self._validate()
+        self.assertEqual(rep.errors, [], rep.errors)
+
     # ── asset manifest matches disk ──────────────────────────────────────────
 
     def test_tagged_asset_missing_on_disk_fails(self):
@@ -304,6 +470,111 @@ class BrandEvidenceContractTests(unittest.TestCase):
         rep = self._validate()
         self.assertFalse(rep.ok)
         self.assertTrue(any(e.startswith("C1") for e in rep.errors))
+
+    # ── C10 card variant coverage ────────────────────────────────────────────
+
+    def test_card_without_variant_coverage_fails(self):
+        self._mutate_brand(lambda d: d["blocks"]["card"].pop("variants"))
+        rep = self._validate()
+        self.assertFalse(rep.ok)
+        self.assertTrue(any(e.startswith("C10") for e in rep.errors), rep.errors)
+
+    def test_card_single_variant_confirmed_passes(self):
+        def confirm(d):
+            d["blocks"]["card"].pop("variants")
+            d["blocks"]["card"]["singleVariantConfirmed"] = True
+        self._mutate_brand(confirm)
+        rep = self._validate()
+        self.assertEqual(rep.errors, [], rep.errors)
+
+    def test_not_observed_card_needs_no_variants(self):
+        self._mutate_brand(lambda d: d["blocks"].__setitem__(
+            "card", {"notObserved": True}))
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors if e.startswith("C10")], [])
+
+    # ── C11 composed-demo smoke ──────────────────────────────────────────────
+
+    def test_srcless_media_placeholder_fails_smoke(self):
+        # remove the hero art + its defaultArt binding: the split hero's media
+        # slot now composes the c-image-ph placeholder plate.
+        for name in ART_FILES:
+            (self.brand_dir / "assets" / name).unlink()
+        copy = dict(FIXTURE_COPY)
+        copy.pop("defaultArt")
+        (self.brand_dir / "section-copy.yaml").write_text(yaml.safe_dump(copy))
+        rep = self._validate(smoke=True)
+        self.assertFalse(rep.ok)
+        self.assertTrue(any(e.startswith("C11") and "c-image-ph" in e
+                            for e in rep.errors), rep.errors)
+
+    def test_uncomposable_pattern_fails_smoke(self):
+        # a brand whose token set cannot drive the layer-1 generator must fail
+        # C11 loudly (the composer refuses) instead of silently skipping.
+        self._mutate_brand(lambda d: d.pop("voice"))
+        rep = self._validate(smoke=True)
+        joined = self._joined(rep.errors)
+        self.assertFalse(rep.ok)
+        self.assertTrue(any(e.startswith("C11") for e in rep.errors), rep.errors)
+        self.assertIn("fx-hero", joined)
+
+    def _center_aligned_library(self):
+        # the alignment probe only runs on the hydration path — remove the
+        # authored copy file so the harness hydrates the patterns (same gating
+        # as compose_pattern_docs), then declare centered alignment on fx-hero.
+        (self.brand_dir / "section-copy.yaml").unlink()
+        lib = {"patterns": [
+            {"id": "fx-hero", "useCase": "hero",
+             "contentShape": {"alignment": {"value": "center"}}},
+            {"id": "fx-logos", "useCase": "logos"},
+        ]}
+        (self.brand_dir / "layout-library.yaml").write_text(yaml.safe_dump(lib))
+
+    def test_dropped_center_alignment_fails_smoke(self):
+        # the pattern DECLARES centered alignment; if the demo-hydration path stops
+        # stamping it onto the composition, C11 must catch the drop.
+        self._center_aligned_library()
+        import render_components_preview as rp  # brand_pipeline on sys.path via vbe
+        real = rp._demo_section_for_pattern
+
+        def dropping(doc, pat, layout):
+            sec = real(doc, pat, layout)
+            sec.pop("alignment", None)   # simulate the pre-fix regression
+            return sec
+
+        rp._demo_section_for_pattern = dropping
+        try:
+            rep = self._validate(smoke=True)
+        finally:
+            rp._demo_section_for_pattern = real
+        self.assertFalse(rep.ok)
+        self.assertTrue(any(e.startswith("C11") and "alignment" in e
+                            for e in rep.errors), rep.errors)
+
+    def test_declared_center_alignment_passes_smoke(self):
+        self._center_aligned_library()
+        rep = self._validate(smoke=True)
+        self.assertEqual([e for e in rep.errors if "alignment" in e], [],
+                         rep.errors)
+
+    # ── C12 escape hygiene ───────────────────────────────────────────────────
+
+    def test_double_escaped_entity_in_generated_html_fails(self):
+        gen = self.brand_dir / "components-preview"
+        gen.mkdir()
+        (gen / "index.html").write_text(
+            "<html><body>Global payroll &amp;mdash; everywhere</body></html>")
+        rep = self._validate()
+        self.assertFalse(rep.ok)
+        self.assertTrue(any(e.startswith("C12") for e in rep.errors), rep.errors)
+
+    def test_clean_generated_html_passes(self):
+        gen = self.brand_dir / "components-preview"
+        gen.mkdir()
+        (gen / "index.html").write_text(
+            "<html><body>Global payroll — everywhere &rarr;</body></html>")
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors if e.startswith("C12")], [])
 
 
 if __name__ == "__main__":

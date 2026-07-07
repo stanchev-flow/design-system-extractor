@@ -1132,7 +1132,7 @@ Precedence rules (the only hard gate is still the brand's own `neverDo`, like Ap
 ## 10. Extraction OUTPUT CONTRACT — validator conventions (Path-2, 2026-07)
 
 A brand evidence folder (`runs/<brand>/brand/`) is DONE only when
-`tools/extract/validate_brand_evidence.py` passes (checks C1–C9). The validator encodes
+`tools/extract/validate_brand_evidence.py` passes (checks C1–C12). The validator encodes
 repo-observed failure shapes (a missing `section-copy.yaml` rendering every section as
 wordmark+arrow; a single stretched button variant; a logo wall with zero logo files; a
 `legal.copyright` key the composers cannot see) as hard contract errors. This section
@@ -1171,9 +1171,22 @@ buttons:
                                     # one-family matrix — sites almost always have ≥ 2)
 ```
 
+C3-STRICT pairing + geometry (sysfix 2026-07):
+
+- A family measuring `bgHover` MUST also measure `fgHover` — the label's hover ink is a
+  state fact, not a default. When the label truly does not change, record the same hex
+  (or an explicit "unchanged" note); silence leaves the renderer guessing mid-state
+  contrast.
+- A FILLED family (`style: filled*`, or an opaque `bg`) MUST measure `height` and
+  `padding` — control geometry is brand identity (pill h48 vs squat h36), never a
+  renderer default.
+
 Layer 1 (`tokens_css.py`) emits `--button[-<family>]-*` custom properties from the
 `primary`/`secondary`/`tertiary` families; `textCta`-style families drive the arrow-link
 device. Absence of `buttons:` entirely = the typographic-CTA structural variant.
+A composition slot whose evidence prose names an outline/ghost/quiet treatment selects
+the family whose `style:` fact matches (component_render.button_family_for_style) — the
+`style:` word is therefore normative vocabulary, not a free-text note.
 
 ### 10.3 `footer.legal.text` — the normative legal-line key (C7)
 
@@ -1181,6 +1194,54 @@ The composers read the footer legal line from `footer.legal.text`
 (`component_render.footer_content`). `text:` is the NORMATIVE key; synonyms
 (`copyright:`, `line:`, …) are invisible to the renderer and fail validation. Social
 entries need `{network, href}` shapes; columns pass through verbatim.
+
+### 10.3b Chrome range + integrity checks (C7, sysfix 2026-07)
+
+- `navbar.measured.contentMaxWidth` / `footer.measured.contentMaxWidth`: when present
+  and non-zero, the value must sit in **[480, 2200] px**. `0`/absent means "could not
+  measure" (e.g. a %-based container) and is allowed — the bridge then falls back to an
+  agent-verified measure or the structural default. Out-of-range values are viewport
+  artifacts, not content columns.
+- A GRID-grammar footer (`footer.archetype: grid`, `rules.layout: grid`, or
+  `rules.hasColumnHeadings: true`) must carry at least one headed column — losing every
+  heading is the heading-in-link DOM-nesting capture bug, not real IA.
+- A declared `navbar.logo` dict must be RENDERABLE: an on-disk `src`, `kind: svg` (with
+  markup or a `srcContract` pointer), or a text fallback. Otherwise drop the dict and
+  let the wordmark device render.
+- `footer.logo` must be the brand's own mark — src/alt/href matching store/review badge
+  vocabulary (`app-store`, `google-play`, `badge`, `rating`) fails; those files belong
+  to content sections and asset tags.
+- Mega-menu integrity: a `navbar.primary[].menu.columns[]` heading must not be a strict
+  PREFIX of its first link's label — that shape is the label-concatenation capture bug
+  (heading text swallowed into the link at extraction).
+
+### 10.3c `blocks.card.variants` — card variant coverage (C10, sysfix 2026-07)
+
+A usable `blocks.card` (declared, not `notObserved`, `use` ≠ never) must either
+enumerate the OBSERVED card registers under `variants:` (e.g.
+`[{ id: media-well, … }, { id: text-only, … }]` — generic register names, never
+section-/content-specific ones) or carry `singleVariantConfirmed: true` after
+re-checking the grounding crops. One measured card is a claim about the whole site's
+card grammar; the claim must be explicit.
+
+### 10.3d Composed-demo smoke + escape hygiene (C11–C12, sysfix 2026-07)
+
+C11 composes every referenced layout-library pattern through the REAL preview harness
+(`render_components_preview.compose_pattern_docs`) into a temp dir and rejects:
+
+- patterns that fail to compose at all (token-generation errors surface here);
+- srcless `c-image-ph` placeholder markup — every content media slot binds a real
+  on-disk asset or is dropped;
+- empty module captions when the brand AUTHORED per-module items (item copy must reach
+  the modules);
+- a pattern declaring centered alignment whose composed layout carries no anchor (the
+  declared alignment was dropped on the way to the composer — checked on the
+  demo-hydration path).
+
+C12 scans generated HTML (`components-preview/`, `chrome/` under the brand dir, plus
+the C11 smoke renders) for double-escaped entity text (`&amp;mdash;` etc.) — author
+literal characters (`—`) in copy fed to renderers, never entity strings.
+`--no-smoke` skips C11 for environments without the harness.
 
 ### 10.4 Required sibling outputs (C4–C6, C8–C9)
 

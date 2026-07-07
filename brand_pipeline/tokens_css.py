@@ -458,9 +458,16 @@ def emit_layer1(doc: dict) -> tuple[list[str], dict[str, list[str]], dict, list,
             if not isinstance(b, dict):
                 continue
             prefix = "--button" if variant == "primary" else f"--button-{variant}"
+            # full measured state surface (sysfix 2026-07): fgHover (label swap on
+            # hover, e.g. outline→filled families), bgDisabled (measured disabled
+            # fill) and the explicit control height are brand facts — dropping them
+            # here silently downgraded every consumer to structural fallbacks.
             pairs = (("bg", "bg"), ("fg", "fg"), ("bgHover", "bg-hover"),
-                     ("bgPressed", "bg-pressed"), ("border", "border"),
-                     ("padding", "pad"), ("radius", "radius"), ("weight", "weight"))
+                     ("fgHover", "fg-hover"), ("bgPressed", "bg-pressed"),
+                     ("bgDisabled", "bg-disabled"), ("fgDisabled", "fg-disabled"),
+                     ("border", "border"),
+                     ("padding", "pad"), ("radius", "radius"), ("weight", "weight"),
+                     ("height", "height"))
             for src, suffix in pairs:
                 if b.get(src) is not None:
                     lines.append(f"  {prefix}-{suffix}: {b[src]};")

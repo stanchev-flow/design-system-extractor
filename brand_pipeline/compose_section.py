@@ -933,9 +933,13 @@ def _props_for(doc, layout, role, usage, ctx):
     if "eyebrow" in r:
         return {"text": usage.get("Text") or sc["eyebrow"]}
     if "action" in r or "cta" in r or "link" in r or "button" in r:
+        # slot evidence prose rides along as a family hint (declared outline/quiet
+        # treatments select the brand's matching measured family; else primary).
         return {"label": usage.get("Label")
                 or (usage["label"] if "label" in usage else sc["cta"]),
-                "accent": ctx.is_dark}
+                "accent": ctx.is_dark,
+                "family": usage.get("family"),
+                "familyHint": f"{role or ''} {usage.get('styleHint') or ''}".strip()}
     # generic image / media fallback
     if "photo" in r or "image" in r or "media" in r:
         return {"src": _brand_art(doc, "hero", *brand_default_art_names(doc, "hero")),
@@ -985,8 +989,12 @@ def _inline_props(contract, role, usage, ctx):
     if c == "button":
         # real action slot (B5): render_button dispatches on the brand's cta-shape
         # (filled button vs typographic downgrade); accent stays neutral by default.
+        # The slot's evidence prose (role + styleHint) rides along as a family hint
+        # so a declared outline/quiet treatment selects the brand's matching family.
         return {"label": u.get("label") or u.get("text") or u.get("cta") or "Get started",
-                "href": u.get("href", "#"), "accent": u.get("accent", False)}
+                "href": u.get("href", "#"), "accent": u.get("accent", False),
+                "family": u.get("family"),
+                "familyHint": f"{role or ''} {u.get('styleHint') or ''}".strip()}
     if c == "image":
         return {"src": u.get("src"), "alt": u.get("alt", ""),
                 "variant": u.get("variant", ""), "absolute": bool(u.get("absolute")),
@@ -1064,6 +1072,7 @@ def render_slots(doc, layout, ctx):
         rendered.append({
             "slot": m.get("slot"), "role": m.get("role") or "", "contract": contract,
             "origin": (entry or {}).get("origin"), "html": frag,
+            "group": m.get("group"),
         })
     return rendered
 
@@ -1500,14 +1509,29 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
         doc, ctx, {"src": _composer_art(doc, layout, "hero"),
                    "variant": "hero",
                    "alt": f"{_brand_name} editorial photography"})
-    title_html = cr.render_heading(doc, ctx, {
-        "text": copy["panelTitle"], "level": "h3"})
+    # sysfix 2026-07: panel title / cta ELIDE when the section authored none — the
+    # adapter no longer invents "Details"/"Learn more", so an empty string here must
+    # not render an empty <h3>/bare arrow (fail-visible was wrong for OPTIONAL slots).
+    title_html = ""
+    if str(copy["panelTitle"]).strip():
+        title_html = "<div class=\"cs-panel-title\">" + cr.render_heading(doc, ctx, {
+            "text": copy["panelTitle"], "level": "h3"}) + "</div>"
     rows = "".join(
         f'<div class="c-row"><span class="c-row-label">{cr.esc(lbl)}</span>'
         f'<span class="c-row-value">{cr.esc(val)}</span></div>'
         for lbl, val in copy.get("rows", []))
-    cta_html = cr.render_arrow_link(doc, ctx, {"label": copy["cta"]})
+    cta_html = ""
+    if str(copy["cta"]).strip():
+        cta_html = ('<div class="cs-panel-foot">'
+                    + cr.render_arrow_link(doc, ctx, {"label": copy["cta"]}) + "</div>")
     eyebrow_html = cr.render_eyebrow(doc, ctx, {"text": copy["eyebrow"]})
+    # supporting body (sysfix 2026-07): an authored info-band body used to be silently
+    # DROPPED (copy["body"] was never read on this route); render it under the band
+    # heading. Sections without one render byte-identically (the block elides).
+    band_body = ""
+    if str(copy["body"]).strip():
+        band_body = "\n    " + cr.render_paragraph(
+            doc, ctx, {"text": copy["body"], "measure": "50ch"})
     # The dark info-band heading uses the brand's DIDONE DISPLAY tier (same family/scale
     # logic as the hero + collage headings), NOT a small h2 — on the dark inverse surface
     # it reads in paper/white (var(--c-ink) = text/on-inverse), accent reserved for the
@@ -1517,14 +1541,14 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
     return f"""<section class="cs-section cs-split-sec">
   <div class="cs-split-intro">
     <div class="cs-eyebrow-wrap">{eyebrow_html}</div>
-    {band_heading}
+    {band_heading}{band_body}
   </div>
   <div class="cs-split">
     <div class="cs-split-media"><div class="c-image-mask">{media_html}</div></div>
     <div class="cs-panel">
-      <div class="cs-panel-title">{title_html}</div>
+      {title_html}
       <div class="c-rows">{rows}</div>
-      <div class="cs-panel-foot">{cta_html}</div>
+      {cta_html}
     </div>
   </div>
 </section>"""
@@ -1751,7 +1775,11 @@ def compose_conversion_stack(doc, layout, ctx, rendered, style_ctx):
     header_html = cr.render_header(doc, ctx, {
         "eyebrow": copy["eyebrow"], "heading": copy["heading"], "level": "display",
         "accent": ctx.is_dark})
-    body_html = cr.render_paragraph(doc, ctx, {"text": copy["body"], "measure": "40ch"})
+    # sysfix 2026-07: a body-less conversion (e.g. a heading+pill inline banner) must
+    # not render an empty <p> — the paragraph elides exactly like the header's
+    # optional eyebrow slot does.
+    body_html = cr.render_paragraph(doc, ctx, {"text": copy["body"], "measure": "40ch"}) \
+        if str(copy["body"]).strip() else ""
     action_frags = [r["html"] for r in rendered
                     if r.get("contract") == "button" and (r.get("html") or "").strip()]
     if action_frags:
@@ -1774,6 +1802,26 @@ def compose_conversion_stack(doc, layout, ctx, rendered, style_ctx):
 
 # ── archetype: cards (staggered caption cards — features-staggered-caption-cards) ──
 
+# MARK-vs-PHOTO asset classification (sysfix 2026-07): filename KIND vocabulary only
+# (logo/badge/rating/icon families + any vector) — the same generic discipline as the
+# AS-33 logo-strip device; never brand names or per-brand lists.
+_MARK_FILE_RX = re.compile(
+    r"(?:^|[-_./])(logos?|marks?|badges?|wordmarks?|glyphs?|stamps?|seals?|awards?|"
+    r"ratings?|chips?|icons?)(?=$|[-_.\d])", re.I)
+
+
+def _is_mark_asset(path) -> bool:
+    """True when an asset file reads as a graphic MARK (logo/badge/rating/icon or any
+    vector) — media that must render CONTAINED in its frame, never cover-cropped or
+    stretched like a photograph."""
+    name = Path(str(path or "")).name
+    if not name:
+        return False
+    if name.lower().endswith(".svg"):
+        return True
+    return bool(_MARK_FILE_RX.search(Path(name).stem))
+
+
 def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
     """Assemble the multi-module STAGGERED CAPTION CARDS section (Claude Design #04,
     harvested as `features-staggered-caption-cards`). Renders an optional eyebrow+heading
@@ -1786,13 +1834,15 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
     radius/shadow, cq/rem units only, brand tokens + the style spacing scale for rhythm."""
     copy = copy_for(layout, doc)
     cards = copy.get("cards") or []
-    # default assets + alternating aspect ratios: the pattern says "vary aspect between
-    # cards"; the harvested 16/10 · 4/3 render as landscape/cover aspect-ratio boxes.
-    # Defaults are EVIDENCE-CHECKED against the ACTIVE brand's inventory (AS-34): a
+    # default assets: EVIDENCE-CHECKED against the ACTIVE brand's inventory (AS-34) — a
     # brand without matching art renders the srcless placeholder, never foreign art.
+    # UNIFORM default aspect (sysfix 2026-07): modules that declare no aspect all get
+    # the SAME landscape frame — aspect VARIATION is pattern data (each authored card's
+    # own `aspect:`, e.g. the staggered-caption pattern's 16/10 · 4/3 pair), never a
+    # composer-invented alternation that leaves undeclared card rows ragged.
     _assets = [_brand_art(doc, "hero", *brand_default_art_names(doc, "hero")),
                _brand_art(doc, "detail", *brand_default_art_names(doc, "detail"))]
-    _aspects = ["16 / 10", "4 / 3"]
+    _default_aspect = "16 / 10"
     brand_name = (doc.get("brand") or {}).get("name") or "Brand"
     modules = []
     for i, card in enumerate(cards):
@@ -1814,14 +1864,19 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
         if not alt:
             cap = (card.get("caption") or "").strip()
             alt = f"{brand_name} — {cap}" if cap else f"{brand_name} photography"
-        aspect = card.get("aspect") or _aspects[i % len(_aspects)]
+        aspect = card.get("aspect") or _default_aspect
+        # MARK media (sysfix 2026-07): a vector/mark asset (logo, badge, avatar-less
+        # wordmark — same filename discipline as the AS-33 logo strip) must render
+        # CONTAINED inside the module frame, never cover-cropped/stretched to the
+        # photo aspect. Generic per-asset classification, no brand names.
+        contain = " cs-module-media--contain" if _is_mark_asset(src) else ""
         img_html = cr.render_image(doc, ctx, {"src": src, "alt": alt})
         caption_html = cr.render_caption(doc, ctx, {"text": card.get("caption", "")})
         body_html = cr.render_paragraph(doc, ctx, {"text": card.get("body", ""), "measure": "44ch"})
         link_html = cr.render_arrow_link(doc, ctx, {"label": card["link"]}) if card.get("link") else ""
         modules.append(
             f'    <article class="cs-module">\n'
-            f'      <figure class="cs-module-media" style="aspect-ratio: {cr.esc(aspect)};">{img_html}</figure>\n'
+            f'      <figure class="cs-module-media{contain}" style="aspect-ratio: {cr.esc(aspect)};">{img_html}</figure>\n'
             f'      {caption_html}\n      {body_html}\n      {link_html}\n    </article>')
     intro = ""
     if copy.get("heading"):
@@ -1829,8 +1884,18 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
             "eyebrow": copy.get("eyebrow"), "heading": copy["heading"], "level": "display",
             "accent": ctx.is_dark, "splitTwoLines": False})
         intro = f'<div class="cs-modules-intro">{header_html}</div>\n  '
+    # DECLARED module grid (sysfix 2026-07): a section whose composition carries
+    # §4.6.5 grid columns (adapter: brand gridRules.columns → layout['_grid']) flows
+    # one module per track instead of the staggered 7/5 registration spans — the
+    # brand's own N-up card grid, not the harvested editorial stagger.
+    cols_cls = ""
+    try:
+        if int((layout.get("_grid") or {}).get("columns") or 0) >= 2:
+            cols_cls = " cs-modules--cols"
+    except (TypeError, ValueError):
+        pass
     return f"""<section class="cs-section cs-modules-sec">
-  {intro}<div class="cs-modules">
+  {intro}<div class="cs-modules{cols_cls}">
 {chr(10).join(modules)}
   </div>
 </section>"""
@@ -1904,8 +1969,11 @@ def compose_generic_flow(doc, layout, ctx, rendered, style_ctx):
     section element (``data-logo-device="image|text|empty"``) so the gate can verify the
     section carries either real images or real text — never an empty frame."""
     parts: list[str | None] = []
-    strip_items: list[str] = []
-    strip_pos: int | None = None
+    # PER-GROUP strips (sysfix 2026-07): logo entries carry the AUTHORED source-slot
+    # name as `group` — each declared slot group (e.g. badges vs ratings) renders as
+    # its OWN horizontal row at its first entry's position, in declared slot order.
+    # The old single-strip fold merged every mark on the page into one row.
+    strip_groups: dict[str, dict] = {}     # group -> {"pos": int, "items": [html]}
     logo_text_items = 0
     for r in rendered:
         frag = r.get("html") or ""
@@ -1913,10 +1981,12 @@ def compose_generic_flow(doc, layout, ctx, rendered, style_ctx):
             continue
         role = (r.get("role") or "").lower()
         if r.get("slot") == "logo-strip" and r.get("contract") == "logo":
-            if strip_pos is None:
-                strip_pos = len(parts)
-                parts.append(None)  # placeholder — replaced by the grouped strip below
-            strip_items.append(f'      <div class="cs-logo-strip-item">{frag}</div>')
+            group = str(r.get("group") or "logo-strip")
+            g = strip_groups.get(group)
+            if g is None:
+                g = strip_groups[group] = {"pos": len(parts), "items": []}
+                parts.append(None)  # placeholder — replaced by this group's strip below
+            g["items"].append(f'      <div class="cs-logo-strip-item">{frag}</div>')
             continue
         if role == "logo item":
             logo_text_items += 1
@@ -1924,14 +1994,15 @@ def compose_generic_flow(doc, layout, ctx, rendered, style_ctx):
             k in role for k in ("photo", "media", "image"))
         cls = "cs-flow-media" if is_media else "cs-flow-item"
         parts.append(f'    <div class="{cls}">{frag}</div>')
-    if strip_pos is not None:
-        parts[strip_pos] = ('    <div class="cs-logo-strip">\n'
-                            + "\n".join(strip_items) + "\n    </div>")
+    for g in strip_groups.values():
+        parts[g["pos"]] = ('    <div class="cs-logo-strip">\n'
+                           + "\n".join(g["items"]) + "\n    </div>")
+    any_strip_items = any(g["items"] for g in strip_groups.values())
     body = "\n".join(p for p in parts if p is not None) \
         or '    <!-- generic-flow: no renderable slots -->'
     device_attr = ""
     if layout.get("_logoWall"):
-        mode = "image" if strip_items else ("text" if logo_text_items else "empty")
+        mode = "image" if any_strip_items else ("text" if logo_text_items else "empty")
         device_attr = f' data-logo-device="{mode}"'
     return f"""<section class="cs-section cs-flow-sec"{device_attr}>
   <div class="cs-flow">
@@ -3155,6 +3226,18 @@ SCAFFOLD_CARDS_CSS = """.cs-modules-sec { position: relative; }
   margin-block-start: var(--c-drop-3, 0); }
 .cs-module-media { margin: 0; width: 100%; overflow: hidden; border-radius: 0; }
 .cs-module-media .c-image { width: 100%; height: 100%; }
+/* DECLARED module grid (sysfix 2026-07: brand gridRules.columns → _grid → --grid-cols):
+   one module per track, no stagger — overrides the nth-child registration spans above
+   for sections whose composition declares an N-up card grid. */
+.cs-modules--cols > .cs-module, .cs-modules--cols > .cs-module:nth-child(odd),
+.cs-modules--cols > .cs-module:nth-child(even), .cs-modules--cols > .cs-module:nth-child(1),
+.cs-modules--cols > .cs-module:nth-child(2), .cs-modules--cols > .cs-module:nth-child(3) {
+  grid-column: auto; margin-block-start: 0; }
+/* MARK media (sysfix 2026-07: logo/badge/rating/vector module media): contained inside
+   the module frame — never cover-cropped/stretched; the same mark-geometry discipline
+   as the logo-strip device (structural frame behavior, not a brand magnitude). */
+.cs-module-media--contain { display: flex; align-items: center; justify-content: center; }
+.cs-module-media--contain .c-image { width: 100%; height: 100%; object-fit: contain; }
 @media (max-width: 767px) { .cs-modules { grid-template-columns: 1fr; gap: 2.5rem; }
   .cs-modules > .cs-module:nth-child(odd), .cs-modules > .cs-module:nth-child(even) {
     grid-column: 1; margin-block-start: 0; } }"""
@@ -3427,10 +3510,12 @@ def _align_role_keys(layout, pattern=None) -> list[str]:
     if pattern is not None and pattern.use_case:
         keys.append(str(pattern.use_case).lower())
     archetype = ((layout or {}).get("archetype") or "").lower()
-    contracts = {m.get("contract") for m in ((layout or {}).get("blockMapping") or [])}
     if archetype == "stack":
-        # the `stack` dispatcher serves BOTH the hero bookend and the conversion CTA
-        keys.append("conversion" if "form" in contracts else "hero")
+        # the `stack` dispatcher serves BOTH the hero bookend and the conversion CTA —
+        # disambiguate through scaffold_key so this stays in lockstep with the composer
+        # dispatch (sysfix 2026-07: a button-bound conversion resolved "hero" here
+        # while compose_stack routed it to the conversion composer).
+        keys.append("conversion" if scaffold_key(layout) == "conversion" else "hero")
     if archetype:
         keys.append(archetype)
     if pattern is not None and pattern.archetype_ref:
@@ -3561,10 +3646,15 @@ def _anchor_css(sel: str, anchor: str) -> str:
     ]
     if anchor == "centered":
         parts += [
-            # conversion/ruled-list stacks are centered by their own scaffold; a
-            # centered anchor is consistent (no-op). Statement/quote splits collapse
-            # to SYMMETRIC spans (AS-19: 'What we hold' media no longer sits 6/-1
-            # under centered text) and the text column centers.
+            # conversion/ruled-list stacks are centered by their own scaffold, but a
+            # resolved centered anchor ALSO declares it here (sysfix 2026-07): the
+            # anchor must cover `.cs-conversion` markup even when a dispatch gap ships
+            # a different scaffold (AS-18 — an anchor never silently no-ops on an
+            # archetype's markup). Statement/quote splits collapse to SYMMETRIC spans
+            # (AS-19: media no longer sits 6/-1 under centered text) and the text
+            # column centers.
+            f"{sel} .cs-conversion {{ align-items: center; text-align: center; }}",
+            f"{sel} .cs-conversion-sec {{ justify-content: center; }}",
             f"{sel} {{ --c-statement-text-col: 3 / -3; --c-statement-media-col: 4 / -4;"
             f" --c-quote-text-col: 3 / -3; --c-quote-media-col: 4 / -4; }}",
             f"{sel} .cs-statement-text, {sel} .cs-quote-text {{ align-items: center;"
@@ -3643,11 +3733,15 @@ def scaffold_css(doc, layout, style_ctx=None) -> str:
     active style's spacing scale."""
     role, _surf = resolve_surface_intent(doc, layout)
     archetype = (layout.get("archetype") or "stack").lower()
-    contracts = {m.get("contract") for m in (layout.get("blockMapping") or [])}
     primary = _primary_scaffold_for(layout)
     if primary:
         arch_css = primary
-    elif archetype == "stack" and "form" in contracts:
+    elif archetype == "stack" and scaffold_key(layout) == "conversion":
+        # DISPATCH PARITY (sysfix 2026-07): scaffold_key mirrors compose_stack exactly
+        # (patternRef/id, hero useCase, then form OR button contracts). The old
+        # form-only check here shipped the HERO scaffold under a button-bound
+        # conversion's `.cs-conversion` markup — correct markup, zero matching CSS,
+        # so the centered narrow column never happened.
         arch_css = SCAFFOLD_CONVERSION_CSS
     else:
         arch_css = _ARCHETYPE_SCAFFOLD.get(archetype, SCAFFOLD_HERO_CSS)
