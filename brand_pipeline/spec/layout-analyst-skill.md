@@ -6,7 +6,7 @@ description: >-
   (DOM/CSS mining, computed measurement, section crops, vision grounding).
   Use after the extraction tools have produced runs/<brand>/brand/evidence/;
   the authoring pass is DONE only when tools/extract/validate_brand_evidence.py
-  passes (C1–C9). Invoke for first-pass brand authoring, for re-authoring after
+  passes (C1–C15). Invoke for first-pass brand authoring, for re-authoring after
   new evidence, or to repair a specific validator failure.
 ---
 
@@ -21,7 +21,7 @@ description: >-
 > **The contract is explicit: you owe exactly what the validator checks.** A brand
 > folder is not "done" when the YAML looks plausible — it is done when
 > `./venv/bin/python tools/extract/validate_brand_evidence.py --brand <brand>` exits
-> clean. Every check (C1–C9, below) encodes a real failure this repo has already
+> clean. Every check (C1–C15, below) encodes a real failure this repo has already
 > shipped once; treat a validator error as a missed observation, not red tape.
 >
 > **Worked examples are illustrative of the method only.** Never copy another brand's
@@ -38,7 +38,7 @@ extraction tools; read them section-by-section, never all at once:
 | `dom-sections.json` | `tools/extract/mine_dom.py` | section census: order, wrappers, per-section tag/class/text/img inventory, repeated-module counts |
 | `css-rules.json` / `css-facts.json` | `tools/extract/mine_css.py` | authored CSS: hover rules, transitions, radii, shadows, chrome-presentation devices (casing, separators), motion evidence |
 | `motion-audit.json` | `tools/extract/mine_motion.py` | per-selector transition/animation/@keyframes table (property, duration, easing, delay), keyframes definitions, resolved timing custom-properties, duration/easing censuses — the evidence `tokens.motion` is authored from |
-| `computed-styles.json` | `tools/extract/measure_computed.py` | browser-computed styles per sampled element — the BUTTON VARIANT-MATRIX evidence and the real type/spacing/surface numbers |
+| `computed-styles.json` | `tools/extract/measure_computed.py` | browser-computed styles per sampled element — the BUTTON VARIANT-MATRIX evidence and the real type/spacing/surface numbers; `tiers` = the CANONICAL-TIER LADDER (the page re-measured at 1920/1440/960/375, every block stamped with its tier: type registers, container width facts, heading-emphasis facts) |
 | `section-rects.json` | `tools/extract/measure_computed.py` | section y-ranges (drives cropping) |
 | `crops/` + `crops-manifest.json` | `tools/extract/slice_sections.py` | per-section screenshots |
 | `grounding/*.yaml` | `tools/extract/ground_sections_vision.py` | per-section VISION grounding (`section-grounding.v1`): creative direction, component anatomy, verbatim copy, surface relationships |
@@ -49,11 +49,18 @@ Plus: existing canonical files when re-authoring, `contracts/primitives.yaml` /
 `contracts/blocks.yaml`, and the standard pattern library
 (`brand_pipeline/layout_library.py`).
 
-## Outputs — the mandatory set (what the validator C1–C13 verifies)
+## Outputs — the mandatory set (what the validator C1–C15 verifies)
 
 1. **`brand.yaml`** (schema: `spec/brand-schema.md`) — tokens (colors/type/spacing/
    surfaces/motion, every type tier with measured `weight` and `case`;
-   `tokens.motion` derived from `evidence/motion-audit.json`), `surfaceGrammar`
+   `tokens.motion` derived from `evidence/motion-audit.json`), **`meta.canonicalTier`**
+   declaring which measured breakpoint every canonical value refers to (C14), **per-tier
+   type ladders** — every sized role carries ≥ 2 breakpoints in its `sizeRem` ladder
+   (base/tablet/mobileL/mobile, grounded in the measure stage's tier samples, h1–h6
+   where evidenced) or an explicit `singleTierConfirmed: true` — and the **relational
+   spacing ladder** as named `<role>-to-<role>` tokens (eyebrow-to-heading,
+   heading-to-body, body-to-cta, … — or `relationalLadder: {notObserved, reason}`,
+   C15), `surfaceGrammar`
    (incl. `pageRhythm`), `buttons:` with the **FULL measured variant matrix** — every
    observed action family (primary/secondary/tertiary/textCta…), each with `radius`,
    fill/ink facts and at least one state fact; one family only with
@@ -168,6 +175,27 @@ incremental save discipline applies through every phase.
    undeclared) and `case`, spacing tiers with real section padding / module gaps,
    `tokens.surfaces` with `textPrimary`/`textAccent` per role, imagery
    `aspectPalette` from real image dimensions.
+   - **Canonical tier + per-tier ladders (C14).** Declare `meta.canonicalTier`
+     (`{viewport, label, note}`) — the measured breakpoint every canonical value
+     (`sizeRem.base`, spacing `value:`) refers to. Author every sized type role's
+     responsive ladder from the measure stage's tier samples (`computed-styles.json
+     tiers` at 1920/1440/960/375 by default): ≥ 2 breakpoints in `sizeRem`, per-tier
+     evidence stamps under `tiers: {w<viewport>: {px, source}}`, h1–h6 coverage where
+     evidenced (a register that exists only as a class ladder in the source CSS is
+     authored with `source: saved-css` and a no-on-page-instance note). A size that
+     genuinely holds across the ladder carries `singleTierConfirmed: true` — measured
+     constancy, never an unchecked default. Record the heading-emphasis law from the
+     tier samples' `headingEmphasis` facts (`<strong>/<b>` weight inside headings, or
+     its explicit absence) and container width facts (declared %/max/min beside used
+     px per tier) where a container token is authored.
+   - **Relational spacing ladder (C15).** The gaps BETWEEN content roles are brand
+     rhythm: author the observed rungs as named `<role>-to-<role>` spacing tokens
+     (`eyebrow-to-heading`, `heading-to-body`, `body-to-cta`, …) with measured values
+     (+ `modeLadder` when the source swaps them by breakpoint — spacing
+     custom-property ladders and measured margins are the evidence). A source whose
+     rhythm truly exposes no such ladder records
+     `tokens.spacing.relationalLadder: {notObserved: true, reason: …}` — never
+     silence.
 2. **Buttons — the full variant matrix.** Enumerate EVERY observed action style from
    computed samples + css-facts hoverRules into `buttons.<family>` (generic tier
    names: primary/secondary/tertiary/textCta). Each family: `style`, fill/ink,
@@ -257,7 +285,12 @@ For each section, from its grounding YAML + DOM entry + crop:
    - C9 vision grounding exists (`--allow-no-vision` only for explicitly
      DOM-only salvage runs);
    - C13 `tokens.motion` present with ≥ 1 evidenced duration + easing (or explicit
-     `notObserved` + reason), and interactive blocks carry a timing fact.
+     `notObserved` + reason), and interactive blocks carry a timing fact;
+   - C14 `meta.canonicalTier` declared and every sized type role carries ≥ 2
+     breakpoints (or `singleTierConfirmed: true` after verifying against the
+     measured tier ladder);
+   - C15 relational spacing ladder present as named `<role>-to-<role>` tokens
+     (or `relationalLadder: {notObserved, reason}`).
    Fix and re-run until clean — a validator error means a missed observation.
 5. **Anti-slop checks** before calling any composed render done:
    `node brand_pipeline/contrast_audit.mjs <index.html>` and

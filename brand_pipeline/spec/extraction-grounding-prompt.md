@@ -88,6 +88,14 @@ typography:
     trackingApprox: normal|tight|wide
     colorApprox: "#rrggbb"
     familyClass: geometric-sans|grotesque-sans|humanist-sans|serif|didone|slab|mono|script
+relationalSpacingPx:   # OMIT when the crop shows no such stack. The measured gaps
+  # BETWEEN adjacent content roles in a text stack (the relational rhythm ladder the
+  # brand's spacing tokens formalize). Report only pairs actually visible in THIS
+  # crop, approximate px, named generically role-to-role — never section names.
+  eyebrowToHeading: <n or omit>
+  headingToBody: <n or omit>
+  bodyToCta: <n or omit>
+  headingToSubheading: <n or omit>
 components:
   - kind: one of [button, link, input, card, badge, logo-item, avatar, icon,
       accordion-item, tab, pill, rating, stat, list-item, media-frame, other]

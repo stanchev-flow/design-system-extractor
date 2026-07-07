@@ -62,6 +62,9 @@ def parse_args(argv=None) -> argparse.Namespace:
     ap.add_argument("--viewport", default="1440x900")
     ap.add_argument("--pick", action="append", default=[], metavar="NAME=SELECTOR",
                     help="measure: extra nodes to measure (repeatable)")
+    ap.add_argument("--tiers", default=None, metavar="W,W,…",
+                    help="measure: canonical-tier ladder viewports "
+                         "(default 1920,1440,960,375; empty string skips)")
     # slice
     ap.add_argument("--slices", type=int, default=0,
                     help="slice: fallback N equal slices when rects are unusable")
@@ -152,6 +155,8 @@ def main(argv=None) -> int:
             tool_argv.append("--js")
         for p in args.pick:
             tool_argv += ["--pick", p]
+        if args.tiers is not None:
+            tool_argv += ["--tiers", args.tiers]
         run_stage("measure", "measure_computed", tool_argv)
 
     # 4) slice — screenshot -> per-section crops

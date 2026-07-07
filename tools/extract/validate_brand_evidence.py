@@ -50,6 +50,18 @@ Checks (E = error, W = warning):
         must name a timing fact (any `Nms`/`N.Ns` value or a `motion:` note) or
         declare their motion `notObserved`. Authored from
         evidence/motion-audit.json (mine_motion.py stage)
+  C14 E canonical-tier discipline: when tokens.type carries sized roles the
+        brand declares `meta.canonicalTier` (which measured breakpoint every
+        canonical value refers to), and every sized type role carries a
+        responsive ladder of >= 2 breakpoints OR an explicit
+        `singleTierConfirmed: true` (measured constant across the tier ladder).
+        Authored from the measure stage's per-tier samples (computed-styles
+        `tiers` — measure_computed.py)
+  C15 E relational spacing ladder: tokens.spacing carries >= 2 named RELATIONAL
+        rungs (`<role>-to-<role>`: eyebrow-to-heading, heading-to-body,
+        body-to-cta, …), each with a value — or an explicit
+        `tokens.spacing.relationalLadder: {notObserved: true, reason: …}`
+        marker when the source's rhythm genuinely exposes no such ladder
 
 Importable API (used by brand_pipeline/tests/test_brand_evidence_contract.py):
     report = validate_brand_dir(brand_dir, contracts_path=..., ...)
@@ -92,6 +104,9 @@ EASING_LITERAL = re.compile(r"\bease(?:-in|-out|-in-out)?\b|\blinear\b"
 # entries owe a timing fact (C13)
 INTERACTIVE_BLOCK_TYPES = ("accordion", "tabs", "modal", "dropdown-menu",
                            "carousel")
+# a RELATIONAL spacing token names the gap between two content roles (C15):
+# eyebrow-to-heading, heading-to-body, body-to-cta, label-to-field, …
+RELATIONAL_KEY = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*-to-[a-z0-9]+(?:-[a-z0-9]+)*$")
 CHROME_LAYOUT_ARCHETYPES = {"nav"}
 CHROME_LAYOUT_IDS = {"navbar", "footer"}
 IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".svg", ".webp", ".gif")
@@ -136,6 +151,19 @@ def _is_chrome_layout(layout: dict) -> bool:
 def _has_content_slot(layout: dict) -> bool:
     return any(str(s.get("type") or "") == "content"
                for s in layout.get("slots") or [] if isinstance(s, dict))
+
+
+def _sized_type_roles(tokens: dict) -> list[tuple[str, dict]]:
+    """(role, node) pairs that carry a size — C14's subjects. Handles BOTH token
+    shapes: flat roles (role -> spec) and families+scale (tokens.type.scale)."""
+    types = tokens.get("type") if isinstance(tokens.get("type"), dict) else {}
+    scale = types.get("scale")
+    if isinstance(scale, dict):
+        items = scale.items()
+    else:
+        items = types.items()
+    return [(str(k), v) for k, v in items
+            if isinstance(v, dict) and v.get("sizeRem") is not None]
 
 
 def _mentions_logos(doc: dict, patterns: list[dict]) -> bool:
@@ -592,6 +620,63 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
                              "a timing fact — name its observed duration/easing "
                              "(motion-audit.json per-selector table) or record "
                              "`motion: {notObserved: true, reason: …}`.")
+
+    # C14 — canonical-tier discipline (P1.1): a sized type role is a claim about ONE
+    # breakpoint unless it carries its measured ladder. The brand must say which
+    # measured tier its canonical values refer to (meta.canonicalTier) and every
+    # sized role must ship >= 2 ladder stops or confirm single-tier explicitly.
+    tokens = doc.get("tokens") if isinstance(doc.get("tokens"), dict) else {}
+    sized_roles = _sized_type_roles(tokens)
+    if sized_roles:
+        meta = doc.get("meta") if isinstance(doc.get("meta"), dict) else {}
+        canon = meta.get("canonicalTier")
+        if not isinstance(canon, dict) or not canon.get("viewport"):
+            rep.error("C14", "meta.canonicalTier missing — the brand must declare "
+                             "which measured breakpoint its canonical values refer "
+                             "to (e.g. {viewport: 1440, note: …}); the measure "
+                             "stage's tier ladder (computed-styles.json `tiers`) "
+                             "is the evidence source.")
+        undersized = []
+        for role, node in sized_roles:
+            size = node.get("sizeRem")
+            n_stops = len([v for v in size.values() if v is not None]) \
+                if isinstance(size, dict) else 1
+            if n_stops >= 2:
+                continue
+            if node.get("singleTierConfirmed") is True:
+                continue
+            undersized.append(role)
+        if undersized:
+            rep.error("C14", f"tokens.type role(s) with a single-breakpoint size and "
+                             f"no confirmation: {', '.join(undersized)} — author the "
+                             "measured per-tier ladder (sizeRem base/tablet/mobileL/"
+                             "mobile from the measure stage's tier samples) or set "
+                             "`singleTierConfirmed: true` after verifying the size "
+                             "holds across the measured tiers.")
+
+    # C15 — relational spacing ladder (P1.1): the gaps BETWEEN content roles are
+    # brand rhythm (eyebrow-to-heading, heading-to-body, body-to-cta, …) and must be
+    # authored as named relational tokens, or their absence declared with a reason.
+    spacing = tokens.get("spacing") if isinstance(tokens.get("spacing"), dict) else {}
+    if spacing:
+        marker = spacing.get("relationalLadder")
+        declared_absent = isinstance(marker, dict) and marker.get("notObserved")
+        rungs = [k for k, v in spacing.items()
+                 if RELATIONAL_KEY.match(str(k))
+                 and isinstance(v, dict) and v.get("value")]
+        if declared_absent:
+            if not str(marker.get("reason") or "").strip():
+                rep.error("C15", "tokens.spacing.relationalLadder.notObserved "
+                                 "requires a `reason` naming where you looked "
+                                 "(measured margins? spacing custom-property "
+                                 "ladders?).")
+        elif len(rungs) < 2:
+            have = f" (found only: {', '.join(rungs)})" if rungs else ""
+            rep.error("C15", "tokens.spacing: no relational spacing ladder — author "
+                             "the observed `<role>-to-<role>` rungs (eyebrow-to-"
+                             "heading, heading-to-body, body-to-cta, …) as named "
+                             f"tokens with measured values{have}, or record "
+                             "`relationalLadder: {notObserved: true, reason: …}`.")
 
     return rep
 

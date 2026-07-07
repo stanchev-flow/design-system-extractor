@@ -17,6 +17,15 @@ instead of one brand's selectors:
                  screenshot slicing stage
   picks          extra --pick name=selector nodes (site-specific additions
                  WITHOUT editing this script)
+  tiers          CANONICAL-TIER LADDER (P1.1, additive): the same page re-measured
+                 at four viewport tiers (default 1920/1440/960/375), each block
+                 stamped with its tier — headings h1..h6 + p per tier, root/body
+                 font sizes, CONTAINER WIDTH facts (declared max/min/% resolved
+                 to used px per tier), and HEADING-EMPHASIS facts (<strong>/<b>
+                 weight inside headings — the emphasis-inside-heading law).
+                 The authored brand.yaml declares which tier its canonical values
+                 refer to (meta.canonicalTier) and per-tier type ladders; the
+                 validator gates them (C14). --tiers "" skips the ladder pass.
 
 CAVEAT: with JS disabled the static layout's y-coordinates can diverge from a
 live full-page screenshot (JS-injected content, lazy sections). slice_sections.py
@@ -26,7 +35,8 @@ when the capture tolerates it.
 
 Usage:
     ./venv/bin/python tools/extract/measure_computed.py --capture screenshots/<brand>/ \
-        --out-dir runs/<brand>/brand/evidence/ [--js] [--pick heroPanel=.hero-mod]
+        --out-dir runs/<brand>/brand/evidence/ [--js] [--pick heroPanel=.hero-mod] \
+        [--tiers 1920,1440,960,375]
 """
 from __future__ import annotations
 
@@ -35,7 +45,14 @@ import json
 import sys
 from pathlib import Path
 
-SCHEMA = "computed-measure.v1"
+SCHEMA = "computed-measure.v1"          # section-rects.json (shape unchanged)
+STYLES_SCHEMA = "computed-measure.v2"   # computed-styles.json (v1 + additive tier keys)
+
+# the canonical measurement ladder: desktop-xl / desktop / tablet / mobile.
+# The AUTHORED ladder convention (brand.yaml sizeRem base/tablet/mobileL/mobile)
+# maps onto these measured tiers; meta.canonicalTier names which one is canonical.
+DEFAULT_TIERS = (1920, 1440, 960, 375)
+_TIER_HEIGHT = {1920: 1080, 1440: 900, 960: 720, 375: 812}
 
 
 def find_saved_html(capture: Path) -> Path:
@@ -184,8 +201,111 @@ JS = r"""
 """
 
 
+# ── canonical-tier ladder measurement (P1.1) ─────────────────────────────────────
+# One lean evaluation per tier viewport: type registers, container width facts and
+# heading-emphasis facts, every block stamped with the tier it was measured at.
+TIER_JS = r"""
+(tier) => {
+  const TXT_PROPS = ['color','font-family','font-size','font-weight','line-height',
+    'letter-spacing','text-transform'];
+  const pick = (el, props) => {
+    if (!el) return null;
+    const cs = getComputedStyle(el);
+    const out = {};
+    for (const p of props) out[p] = cs.getPropertyValue(p);
+    const r = el.getBoundingClientRect();
+    out._rect = { x: r.x, y: r.y + window.scrollY, w: r.width, h: r.height };
+    out.tier = tier;
+    return out;
+  };
+  const q = (sel) => { try { return document.querySelector(sel); } catch (e) { return null; } };
+
+  // type registers per tier (h1..h6 coverage where evidenced + body paragraph)
+  const headings = {};
+  for (const tag of ['h1','h2','h3','h4','h5','h6','p']) {
+    headings[tag] = pick(q(tag), TXT_PROPS);
+  }
+
+  // CONTAINER WIDTH FACTS: ancestors of the main content that declare a max-width,
+  // plus the header/footer content wrappers — the declared %/max/min beside the
+  // USED px at this tier (the resolution the authored container tokens cite).
+  const containerFacts = [];
+  const seen = new Set();
+  const describe = (el, owner) => {
+    if (!el || seen.has(el)) return;
+    seen.add(el);
+    const cs = getComputedStyle(el);
+    if (cs.maxWidth === 'none' && owner === 'content') return;
+    const r = el.getBoundingClientRect();
+    if (r.width < 200) return;               // controls/chips are not containers
+    const cls = String((el.className && el.className.baseVal !== undefined)
+      ? el.className.baseVal : (el.className || ''));
+    containerFacts.push({
+      tier, owner,
+      tag: el.tagName.toLowerCase(), classes: cls.slice(0, 110),
+      cssMaxWidth: cs.maxWidth, cssMinWidth: cs.minWidth,
+      usedWidthPx: Math.round(r.width * 100) / 100,
+      viewportFraction: Math.round((r.width / window.innerWidth) * 1000) / 1000,
+      paddingLeft: cs.paddingLeft, paddingRight: cs.paddingRight,
+    });
+  };
+  const h1 = q('h1');
+  let node = h1 ? h1.parentElement : null;
+  while (node && node !== document.body && containerFacts.length < 6) {
+    describe(node, 'content');
+    node = node.parentElement;
+  }
+  const header = q('header') || q('[class*="header"]');
+  const footers = document.querySelectorAll('footer');
+  const footer = footers.length ? footers[footers.length - 1] : q('[class*="footer"]');
+  for (const [owner, root] of [['header', header], ['footer', footer]]) {
+    if (!root) continue;
+    let best = null;
+    for (const el of root.querySelectorAll('*')) {
+      const cs = getComputedStyle(el);
+      if (cs.maxWidth === 'none') continue;
+      const r = el.getBoundingClientRect();
+      if (r.width < 200) continue;
+      if (!best || r.width > best.getBoundingClientRect().width) best = el;
+      if (containerFacts.length > 24) break;
+    }
+    if (best) describe(best, owner);
+    else describe(root, owner + '-root');
+  }
+
+  // HEADING-EMPHASIS FACTS: <strong>/<b> inside h1..h6 — is emphasis a weight
+  // step, a family swap, or inert (the emphasis-inside-heading law)?
+  const headingEmphasis = [];
+  for (const tag of ['h1','h2','h3','h4','h5','h6']) {
+    const hits = document.querySelectorAll(tag + ' strong, ' + tag + ' b');
+    if (!hits.length) continue;
+    const em = hits[0];
+    const h = em.closest(tag);
+    const hcs = h ? getComputedStyle(h) : null;
+    const ecs = getComputedStyle(em);
+    headingEmphasis.push({
+      tier, tag, count: hits.length,
+      headingWeight: hcs ? hcs.fontWeight : null,
+      emphasisWeight: ecs.fontWeight,
+      sameFamily: hcs ? (hcs.fontFamily === ecs.fontFamily) : null,
+      emphasisFamily: ecs.fontFamily.split(',')[0].trim().slice(0, 60),
+      sample: (em.textContent || '').trim().slice(0, 60),
+    });
+  }
+
+  return {
+    tier,
+    viewport: { w: window.innerWidth, h: window.innerHeight },
+    htmlFontSize: getComputedStyle(document.documentElement).fontSize,
+    bodyFontSize: getComputedStyle(document.body).fontSize,
+    headings, containerFacts, headingEmphasis,
+  };
+}
+"""
+
+
 def measure(html_path: Path, viewport: tuple[int, int], js_enabled: bool,
-            picks: dict[str, str]) -> dict:
+            picks: dict[str, str], tiers: tuple[int, ...] = ()) -> dict:
     from playwright.sync_api import sync_playwright
     with sync_playwright() as pw:
         b = pw.chromium.launch()
@@ -193,6 +313,19 @@ def measure(html_path: Path, viewport: tuple[int, int], js_enabled: bool,
                           java_script_enabled=js_enabled)
         page.goto(html_path.resolve().as_uri(), wait_until="load", timeout=60000)
         facts = page.evaluate(JS, picks)
+        # tier ladder: SAME loaded page re-measured per viewport (JS-off static CSS
+        # reflows deterministically on resize; media queries re-apply per tier).
+        if tiers:
+            tier_facts: dict[str, dict] = {}
+            for w in tiers:
+                page.set_viewport_size(
+                    {"width": w, "height": _TIER_HEIGHT.get(w, 900)})
+                page.wait_for_timeout(80)
+                tier_facts[str(w)] = page.evaluate(TIER_JS, str(w))
+            # restore the primary viewport so any later evaluation sees it
+            page.set_viewport_size({"width": viewport[0], "height": viewport[1]})
+            facts["tierViewports"] = list(tiers)
+            facts["tiers"] = tier_facts
         b.close()
     return facts
 
@@ -208,6 +341,10 @@ def build_parser() -> argparse.ArgumentParser:
                     help="enable JavaScript (default OFF — static CSS only)")
     ap.add_argument("--pick", action="append", default=[], metavar="NAME=SELECTOR",
                     help="extra node to measure (repeatable)")
+    ap.add_argument("--tiers", default=",".join(str(t) for t in DEFAULT_TIERS),
+                    help="csv viewport widths for the canonical-tier ladder "
+                         f"(default {','.join(str(t) for t in DEFAULT_TIERS)}; "
+                         "empty string skips the ladder pass)")
     return ap
 
 
@@ -226,8 +363,12 @@ def main(argv=None) -> int:
         if not name or not sel:
             raise SystemExit(f"bad --pick {p!r} (expected NAME=SELECTOR)")
         picks[name] = sel
+    try:
+        tiers = tuple(int(t) for t in args.tiers.split(",") if t.strip())
+    except ValueError:
+        raise SystemExit(f"bad --tiers {args.tiers!r} (expected csv widths)")
 
-    facts = measure(html_path, (w, h), args.js, picks)
+    facts = measure(html_path, (w, h), args.js, picks, tiers=tiers)
     sections = facts.pop("sections", [])
     chrome_rects = facts.pop("chromeRects", [])
     doc_height = facts.pop("docHeight", None)
@@ -236,7 +377,7 @@ def main(argv=None) -> int:
     styles_path = args.out_dir / "computed-styles.json"
     rects_path = args.out_dir / "section-rects.json"
     styles_path.write_text(json.dumps(
-        {"schemaVersion": SCHEMA, "source": str(html_path),
+        {"schemaVersion": STYLES_SCHEMA, "source": str(html_path),
          "viewport": {"w": w, "h": h}, "jsEnabled": args.js, **facts}, indent=1))
     rects_path.write_text(json.dumps(
         {"schemaVersion": SCHEMA, "source": str(html_path),
@@ -244,7 +385,8 @@ def main(argv=None) -> int:
          "docHeight": doc_height, "chrome": chrome_rects,
          "sections": sections}, indent=1))
     print(f"[done] measure: {len(facts.get('actionGroups') or [])} action families, "
-          f"{len(sections)} section rects (doc {doc_height}px) -> "
+          f"{len(sections)} section rects (doc {doc_height}px), "
+          f"{len(facts.get('tiers') or {})} tier ladders -> "
           f"{styles_path.name} + {rects_path.name}")
     return 0
 

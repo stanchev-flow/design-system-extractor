@@ -6,6 +6,13 @@ universal contracts (contracts/{primitives,blocks}.yaml) and renders a single,
 self-contained gallery page that shows EVERY primitive and block in the brand's
 catalog as a real, on-brand rendered example.
 
+The page opens with a SPEC BOOK tier (P1.2): color families as chip rows, the type
+scale with per-tier px/line-height/weight/tracking annotations (+ measured tier
+stamps), the relational spacing ladder as true-size gap bars, radius exhibits, the
+motion duration/easing ladder with live timing demos, and every button family's
+state row on every declared surface band — each exhibit citing (monospace) the
+brand.yaml key it renders from. Chapters self-omit when a brand lacks the axis.
+
 For each catalog item the gallery renders a labeled card carrying:
   - the item NAME + an origin BADGE
       extracted -> solid badge
@@ -1956,6 +1963,557 @@ def build_layouts_section(patterns, composed, standard):
   </div>{std_html}"""
 
 
+# ── Tier 0: SPEC-BOOK chapters (P1.2) ────────────────────────────────────────────
+# Reference-grade specification chapters rendered PURELY from brand data: color
+# families, the type scale with per-tier annotations, the relational spacing ladder,
+# radius exhibits, the motion ladder (+ live timing demos), and every button family
+# on every declared surface band. Every exhibit carries a monospace citation of the
+# brand.yaml key it renders from; a brand lacking an axis degrades to a note (or the
+# chapter is omitted) — no invented values, ever.
+
+# harness chrome for the spec book (neutral, hairline-ruled — never brand output)
+SPEC_BOOK_CSS = """
+/* provenance: preview-chrome — spec-book chapter harness (P1.2). */
+.spec-chapter { margin: 3rem 0 0; }
+.spec-chapter-name { font-family: var(--font-heading); font-size: var(--h3-size);
+  text-transform: var(--case-h2, none); color: var(--ink); line-height: 1.2em; }
+.spec-chapter-sub { font-size: var(--eyebrow-size); letter-spacing: var(--eyebrow-ls);
+  text-transform: var(--case-eyebrow, none); color: var(--ink-muted); margin-top: 0.4rem; }
+.spec-chapter-rule { height: 1px; background: var(--hairline); margin: 1rem 0 1.5rem; }
+.spec-cite { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.6875rem; letter-spacing: 0.01em; color: var(--ink-muted);
+  word-break: break-all; }
+.spec-note { font-size: var(--body-size); color: var(--ink-muted); max-width: 52rem; }
+
+/* color chapter: family rows of chips */
+.spec-fam { display: grid; grid-template-columns: 11rem 1fr; column-gap: 2rem;
+  padding: 1.1rem 0; border-top: 1px solid var(--hairline); align-items: start; }
+.spec-fam-name { font-family: var(--font-heading); font-size: 1rem; color: var(--ink);
+  text-transform: var(--case-h3, none); padding-top: 0.2rem; }
+.spec-chips { display: flex; flex-wrap: wrap; gap: 1rem 1.25rem; }
+.spec-chip { width: 8.25rem; }
+.spec-chip .sw { height: 3.25rem; border: 1px solid var(--hairline); }
+.spec-chip .nm { font-size: 0.75rem; color: var(--ink); margin-top: 0.4rem; }
+.spec-chip .hx { font-family: ui-monospace, Menlo, monospace; font-size: 0.6875rem;
+  color: var(--ink-muted); }
+
+/* type chapter: scale table */
+.spec-type-row { display: grid; grid-template-columns: minmax(16rem, 2fr) 3fr;
+  column-gap: 2.5rem; row-gap: 0.6rem; padding: 1.25rem 0;
+  border-top: 1px solid var(--hairline); align-items: center; }
+.spec-type-spec { overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  color: var(--ink); }
+.spec-type-facts { display: flex; flex-direction: column; gap: 0.3rem; }
+.spec-type-tiers { font-family: ui-monospace, Menlo, monospace; font-size: 0.6875rem;
+  color: var(--ink); }
+.spec-type-tiers .mut { color: var(--ink-muted); }
+
+/* spacing chapter: true-size gap bars */
+.spec-gap { display: grid; grid-template-columns: minmax(16rem, 1fr) 2fr;
+  column-gap: 2.5rem; padding: 1.1rem 0; border-top: 1px solid var(--hairline);
+  align-items: center; }
+.spec-gap-demo { border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink);
+  max-width: 26rem; }
+.spec-gap-demo .void { background: repeating-linear-gradient(45deg, var(--hairline) 0,
+  var(--hairline) 1px, transparent 1px, transparent 5px); }
+
+/* radius chapter */
+.spec-radius-grid { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+.spec-radius-tile { width: 12rem; }
+.spec-radius-tile .rx { height: 5rem; border: 1px solid var(--ink);
+  background: var(--surface-panel); }
+.spec-radius-tile .nm { font-size: 0.8125rem; color: var(--ink); margin-top: 0.5rem; }
+
+/* motion chapter */
+.spec-motion-table { display: flex; flex-direction: column; }
+.spec-motion-row { display: grid; grid-template-columns: 9rem 7rem 1fr;
+  column-gap: 1.5rem; padding: 0.6rem 0; border-top: 1px solid var(--hairline);
+  align-items: baseline; font-size: 0.8125rem; color: var(--ink); }
+.spec-motion-row .val { font-family: ui-monospace, Menlo, monospace; }
+.spec-motion-row .use { color: var(--ink-muted); font-size: 0.75rem; }
+.spec-ease-row { display: grid; grid-template-columns: 3.5rem 1fr;
+  column-gap: 1.25rem; padding: 0.6rem 0; border-top: 1px solid var(--hairline);
+  align-items: center; }
+.spec-ease-curve { width: 3.25rem; height: 3.25rem; border: 1px solid var(--hairline); }
+.spec-ease-curve path { stroke: var(--ink); stroke-width: 3; fill: none; }
+.spec-move { padding: 0.75rem 0; border-top: 1px solid var(--hairline); }
+.spec-move .nm { font-size: 0.875rem; color: var(--ink); }
+.spec-move .mv { font-size: 0.8125rem; color: var(--ink-muted); max-width: 52rem;
+  margin-top: 0.2rem; }
+.spec-demos { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 1.25rem; }
+.spec-demo { border: 1px solid var(--hairline); padding: 1.25rem; width: 15rem;
+  display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-start; }
+
+/* buttons-on-surfaces chapter: one band per declared surface role */
+.spec-band { background: var(--c-paper); color: var(--c-ink); padding: 1.75rem;
+  margin-top: 1rem; display: flex; flex-direction: column; gap: 1.25rem; }
+.spec-band .spec-cite { color: var(--c-ink-muted); }
+.spec-band .states-label, .spec-band .state-name { color: var(--c-ink-muted); }
+.spec-band .state-row { background: transparent; gap: 0; }
+.spec-band .state-col { background: transparent; padding-left: 0; }
+.spec-band .state-live .hint { color: var(--c-ink-muted); }
+.spec-band .act { color: var(--c-ink); }
+.spec-band-head { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+.spec-band-role { font-family: var(--font-heading), inherit; font-size: 1rem; }
+"""
+
+
+def _cite(*keys) -> str:
+    """Monospace annotation caption citing the brand.yaml key(s) an exhibit renders
+    from — the spec-book provenance device (P1.2)."""
+    return f'<div class="spec-cite">{esc(" · ".join(str(k) for k in keys))}</div>'
+
+
+def _rem_px(value) -> str:
+    """'2.875rem = 46px' annotation for a rem-bearing value (16px root)."""
+    try:
+        rem = float(str(value).replace("rem", "").strip())
+        return f"{value if 'rem' in str(value) else f'{value}rem'} = {rem * 16:g}px"
+    except (TypeError, ValueError):
+        return str(value)
+
+
+def _spec_chapter(anchor: str, name: str, sub: str, body: str) -> str:
+    return (f'<section class="spec-chapter" id="{esc(anchor)}">'
+            f'<div class="spec-chapter-name">{esc(name)}</div>'
+            f'<div class="spec-chapter-sub">{esc(sub)}</div>'
+            f'<div class="spec-chapter-rule"></div>{body}</section>')
+
+
+def spec_color_chapter(doc) -> str:
+    """Color chapter: chip rows grouped by the FAMILY the brand's own token roles
+    imply (the `<family>/<name>` prefix — ink/, action/, accent/, …); each chip
+    carries hex + role label + the source key citation."""
+    colors = (doc.get("tokens", {}) or {}).get("colors", {}) or {}
+    families: dict[str, list[tuple[str, str, str]]] = {}
+    for key, node in colors.items():
+        val = node.get("value") if isinstance(node, dict) else node
+        if not val or not str(val).strip():
+            continue
+        fam, _, name = str(key).partition("/")
+        fam = fam if name else "unfamilied"
+        role = str((node or {}).get("role") or "") if isinstance(node, dict) else ""
+        families.setdefault(fam, []).append((name or str(key), str(val), role))
+    if not families:
+        return ""
+    rows = []
+    for fam, chips in families.items():
+        chip_html = "".join(
+            f'<div class="spec-chip" title="{esc(role)}">'
+            f'<div class="sw" style="background:{esc(val)}"></div>'
+            f'<div class="nm">{esc(name)}</div><div class="hx">{esc(val)}</div></div>'
+            for name, val, role in chips)
+        rows.append(f'<div class="spec-fam"><div class="spec-fam-name">{esc(fam)}'
+                    f'<div class="spec-cite">tokens.colors.{esc(fam)}/*</div></div>'
+                    f'<div class="spec-chips">{chip_html}</div></div>')
+    n = sum(len(v) for v in families.values())
+    return _spec_chapter("spec-color", "Color",
+                         f"{n} color tokens in {len(families)} families — grouped by "
+                         "the brand's own role prefixes", "".join(rows))
+
+
+_TIER_ORDER = ("base", "tablet", "mobileL", "mobile")
+
+
+def _native_type_roles(doc) -> list[tuple[str, dict]]:
+    """The brand's sized/faced type roles in declaration order (both token shapes;
+    marker entries like headingEmphasis carry neither family nor sizeRem and skip)."""
+    types = (doc.get("tokens", {}) or {}).get("type", {}) or {}
+    scale = types.get("scale")
+    if isinstance(scale, dict):
+        fams = types.get("families") or {}
+        return [(k, tokens_css._normalize_scale_entry(v, fams))
+                for k, v in scale.items() if isinstance(v, dict)]
+    return [(k, v) for k, v in types.items()
+            if isinstance(v, dict) and (v.get("family") or v.get("sizeRem") is not None)]
+
+
+def spec_type_chapter(doc) -> str:
+    """Type chapter: the scale table — a live specimen per role (rendered through the
+    layer-1 vars) beside exact px/line-height/weight/tracking annotations per authored
+    tier, plus the measured tier stamps where the brand carries them."""
+    roles = _native_type_roles(doc)
+    if not roles:
+        return ""
+    meta = doc.get("meta") if isinstance(doc.get("meta"), dict) else {}
+    canon = meta.get("canonicalTier") if isinstance(meta.get("canonicalTier"), dict) else {}
+    sample = _specimen(doc)["headline"]
+    rows = []
+    for role, t in roles:
+        slug = tokens_css._slug(role)
+        size = t.get("sizeRem")
+        ladder = size if isinstance(size, dict) else ({"base": size} if size else {})
+        base = ladder.get("base")
+        # authored ladder annotation: every tier stop with rem = px
+        stops = " · ".join(
+            f'{bp} {_rem_px(ladder[bp])}' for bp in _TIER_ORDER
+            if ladder.get(bp) is not None) or "no size (faced role)"
+        single = ' · <span class="mut">singleTierConfirmed</span>' \
+            if t.get("singleTierConfirmed") else ""
+        # measured tier stamps (P1.1 evidence: tokens.type.<role>.tiers)
+        tiers = t.get("tiers") if isinstance(t.get("tiers"), dict) else {}
+        measured = ""
+        if tiers:
+            cells = " · ".join(
+                f'{k.lstrip("w")}px→{(v or {}).get("px")}px'
+                for k, v in tiers.items() if isinstance(v, dict))
+            srcs = sorted({str((v or {}).get("source")) for v in tiers.values()
+                           if isinstance(v, dict) and v.get("source")})
+            measured = (f'<div class="spec-type-tiers"><span class="mut">measured</span> '
+                        f'{esc(cells)} <span class="mut">({esc("/".join(srcs))})</span></div>')
+        facts = " · ".join(x for x in (
+            f"lh {t['lineHeight']}" if t.get("lineHeight") else "",
+            f"weight {t['weight']}" if t.get("weight") is not None else "",
+            f"tracking {t['letterSpacing']}" if t.get("letterSpacing") else "",
+            f"case {t['case']}" if t.get("case") else "") if x)
+        style = (f"font-family: var(--font-{slug}, var(--font-heading));"
+                 f" font-size: var(--size-{slug}, {base or 1}rem);"
+                 f" font-weight: var(--weight-{slug}, 400);"
+                 f" line-height: 1.15; text-transform: var(--case-{slug}, none);"
+                 f" letter-spacing: var(--tracking-{slug}, 0em);")
+        rows.append(
+            f'<div class="spec-type-row"><div class="spec-type-spec" style="{style}">'
+            f'{esc(sample)}</div><div class="spec-type-facts">'
+            f'<div class="spec-type-tiers">{esc(role)} — {esc(stops)}{single}</div>'
+            f'{measured}'
+            f'<div class="spec-cite">tokens.type.{esc(role)} · {esc(facts)}</div>'
+            f'</div></div>')
+    canon_note = ""
+    if canon:
+        canon_note = (f'<div class="spec-cite" style="margin-bottom:0.75rem">'
+                      f'meta.canonicalTier · base == measured @{esc(canon.get("viewport"))}px'
+                      f'</div>')
+    return _spec_chapter("spec-type", "Type scale",
+                         f"{len(rows)} type roles — authored tier ladders + measured "
+                         "tier stamps, specimen set in each role's own register",
+                         canon_note + "".join(rows))
+
+
+_RELATIONAL_KEY_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*-to-[a-z0-9]+(?:-[a-z0-9]+)*$")
+
+
+def spec_spacing_chapter(doc) -> str:
+    """Spacing chapter: the relational ladder (X-to-Y rungs) rendered as TRUE-SIZE
+    labeled gap bars — the hatched void between the rules IS the token value."""
+    spacing = (doc.get("tokens", {}) or {}).get("spacing", {}) or {}
+    marker = spacing.get("relationalLadder")
+    rungs = [(k, v) for k, v in spacing.items()
+             if _RELATIONAL_KEY_RE.match(str(k)) and isinstance(v, dict) and v.get("value")]
+    if not rungs:
+        if isinstance(marker, dict) and marker.get("notObserved"):
+            return _spec_chapter(
+                "spec-spacing", "Spacing — relational ladder", "not observed",
+                f'<div class="spec-note">relational ladder not observed — '
+                f'{esc(marker.get("reason"))}</div>'
+                + _cite("tokens.spacing.relationalLadder"))
+        return ""
+    rows = []
+    for key, node in rungs:
+        val = str(node.get("value"))
+        ladder = node.get("modeLadder") if isinstance(node.get("modeLadder"), dict) else {}
+        ladder_note = " · ".join(f"{bp} {_rem_px(ladder[bp])}" for bp in _TIER_ORDER
+                                 if ladder.get(bp) is not None)
+        slug = tokens_css._slug(key)
+        rows.append(
+            f'<div class="spec-gap"><div class="spec-type-facts">'
+            f'<div class="spec-type-tiers">{esc(key)} — {esc(_rem_px(val))}'
+            f'{(" · " + esc(ladder_note)) if ladder_note else ""}</div>'
+            f'<div class="spec-cite">tokens.spacing.{esc(key)}'
+            f'{esc(" · " + str(node.get("role"))) if node.get("role") else ""}</div>'
+            f'</div><div class="spec-gap-demo">'
+            f'<div class="void" style="height: var(--space-{slug}, {esc(val)})"></div>'
+            f'</div></div>')
+    return _spec_chapter("spec-spacing", "Spacing — relational ladder",
+                         f"{len(rows)} relational rungs (role-to-role gaps) at true "
+                         "size — the hatched band IS the gap", "".join(rows))
+
+
+def spec_radius_chapter(doc) -> str:
+    """Shape/radius chapter: one true-size exhibit tile per radius tier."""
+    radius = (doc.get("tokens", {}) or {}).get("radius", {}) or {}
+    tiles = []
+    for role, node in radius.items():
+        val = node.get("value") if isinstance(node, dict) else node
+        if not val:
+            continue
+        var_note = str(node.get("var") or "") if isinstance(node, dict) else ""
+        tiles.append(
+            f'<div class="spec-radius-tile">'
+            f'<div class="rx" style="border-radius:{esc(val)}"></div>'
+            f'<div class="nm">{esc(role)} — {esc(_rem_px(val))}</div>'
+            f'{_cite(f"tokens.radius.{role}" + (f" · {var_note}" if var_note else ""))}'
+            f'</div>')
+    if not tiles:
+        rg = (doc.get("tokens", {}) or {}).get("spacing", {}).get("radius-global")
+        val = rg.get("value") if isinstance(rg, dict) else rg
+        if not val:
+            return ""
+        tiles = [f'<div class="spec-radius-tile">'
+                 f'<div class="rx" style="border-radius:{esc(val)}"></div>'
+                 f'<div class="nm">global — {esc(_rem_px(val))}</div>'
+                 f'{_cite("tokens.spacing.radius-global")}</div>']
+    return _spec_chapter("spec-radius", "Shape / radius",
+                         f"{len(tiles)} radius tiers at true size",
+                         f'<div class="spec-radius-grid">{"".join(tiles)}</div>')
+
+
+# standard CSS keyword curves (CSS spec definitions, for the curve preview only)
+_KEYWORD_BEZIER = {"ease": (0.25, 0.1, 0.25, 1.0), "ease-in": (0.42, 0.0, 1.0, 1.0),
+                   "ease-out": (0.0, 0.0, 0.58, 1.0),
+                   "ease-in-out": (0.42, 0.0, 0.58, 1.0),
+                   "linear": (0.0, 0.0, 1.0, 1.0)}
+
+
+def _easing_curve_svg(value: str) -> str:
+    """A small SVG preview of a timing curve (cubic-bezier(...) or CSS keyword)."""
+    v = str(value).strip().lower()
+    pts = _KEYWORD_BEZIER.get(v)
+    if pts is None and v.startswith("cubic-bezier("):
+        try:
+            nums = [float(x) for x in v[len("cubic-bezier("):].rstrip(")").split(",")]
+            pts = tuple(nums[:4]) if len(nums) >= 4 else None
+        except ValueError:
+            pts = None
+    if pts is None:
+        return ""
+    a, b, c, d = pts
+    path = (f"M0,100 C{a * 100:.0f},{100 - b * 100:.0f} "
+            f"{c * 100:.0f},{100 - d * 100:.0f} 100,0")
+    return (f'<svg class="spec-ease-curve" viewBox="-6 -6 112 112" '
+            f'aria-hidden="true"><path d="{path}"/></svg>')
+
+
+def _duration_entries(motion: dict) -> list[tuple[str, str, dict]]:
+    """(name, value, node) per duration, sorted by ms; tolerates scalar values."""
+    out = []
+    for name, node in (motion.get("durations") or {}).items():
+        val = node.get("value") if isinstance(node, dict) else node
+        if not val:
+            continue
+        out.append((str(name), str(val), node if isinstance(node, dict) else {}))
+
+    def _ms(v: str) -> float:
+        m = re.match(r"([\d.]+)\s*(ms|s)", v.strip())
+        if not m:
+            return 1e9
+        return float(m.group(1)) * (1000 if m.group(2) == "s" else 1)
+    return sorted(out, key=lambda e: _ms(e[1]))
+
+
+def _demo_timing(motion: dict) -> dict:
+    """The duration/easing values the LIVE demos ride — named brand tiers when carried
+    (state/reveal/elevation are the ladder's conventional role names), else the
+    shortest/middle/longest observed. Returns {} when the brand has no durations."""
+    entries = _duration_entries(motion)
+    if not entries:
+        return {}
+    by_name = {n: v for n, v, _ in entries}
+    state = ("state", by_name["state"]) if "state" in by_name else \
+        (entries[0][0], entries[0][1])
+    reveal = ("reveal", by_name["reveal"]) if "reveal" in by_name else \
+        (entries[len(entries) // 2][0], entries[len(entries) // 2][1])
+    wash = ("elevation", by_name["elevation"]) if "elevation" in by_name else \
+        (entries[-1][0], entries[-1][1])
+    ease = None
+    for e in (motion.get("easings") or []):
+        val = e.get("value") if isinstance(e, dict) else e
+        if val:
+            ease = str(val)
+            break
+    return {"state": state, "reveal": reveal, "wash": wash, "ease": ease or "ease"}
+
+
+def spec_motion_css(doc) -> str:
+    """Generated CSS for the motion chapter's LIVE demos — every timing literal is the
+    brand's own tokens.motion value (nothing emitted for motion-less brands)."""
+    motion = (doc.get("tokens", {}) or {}).get("motion")
+    if not isinstance(motion, dict) or motion.get("notObserved"):
+        return ""
+    t = _demo_timing(motion)
+    if not t:
+        return ""
+    ease = t["ease"]
+    shadow = "0 12px 24px rgba(0,0,0,0.12)"
+    return f"""/* spec-book motion demos — timings are tokens.motion values verbatim */
+.spec-demo .btnf, .spec-demo .act {{ transition-duration: {t['state'][1]}; }}
+.spec-state-chip {{ display: inline-block; padding: 0.45rem 1rem;
+  border: 1px solid var(--ink); color: var(--ink); background: transparent;
+  transition: background {t['state'][1]} {ease}, color {t['state'][1]} {ease}; }}
+.spec-demo:hover .spec-state-chip {{ background: var(--ink);
+  color: var(--surface-primary); }}
+.spec-reveal-chip {{ display: inline-block; opacity: 0; transform: translateY(0.75rem);
+  transition: opacity {t['reveal'][1]} {ease}, transform {t['reveal'][1]} {ease}; }}
+.spec-demo:hover .spec-reveal-chip {{ opacity: 1; transform: none; }}
+.spec-wash-demo {{ transition: box-shadow {t['wash'][1]} {ease},
+  background {t['wash'][1]} {ease}; }}
+.spec-wash-demo:hover {{ box-shadow: {shadow}; background: var(--surface-panel); }}"""
+
+
+def spec_motion_chapter(doc) -> str:
+    """Motion chapter: the duration/easing ladder from tokens.motion + signature
+    moves + live timing demos (state shift / reveal / elevation wash — the timings
+    are the brand's own values; marquee/accordion live demos are P2 renderer work)."""
+    motion = (doc.get("tokens", {}) or {}).get("motion")
+    if not isinstance(motion, dict) or not motion:
+        return ""
+    if motion.get("notObserved"):
+        return _spec_chapter(
+            "spec-motion", "Motion", "not observed",
+            f'<div class="spec-note">motion not observed — '
+            f'{esc(motion.get("reason"))}</div>' + _cite("tokens.motion"))
+    parts = []
+    durations = _duration_entries(motion)
+    if durations:
+        rows = "".join(
+            f'<div class="spec-motion-row"><div>{esc(name)}</div>'
+            f'<div class="val">{esc(val)}'
+            f'{(" ·" + str(node.get("census")) + "×") if node.get("census") else ""}</div>'
+            f'<div class="use">{esc(node.get("role") or "")}</div></div>'
+            for name, val, node in durations)
+        parts.append(f'<div class="spec-type-tiers" style="margin-bottom:0.25rem">'
+                     f'duration ladder ({len(durations)} tiers)</div>'
+                     f'<div class="spec-motion-table">{rows}</div>'
+                     + _cite("tokens.motion.durations"))
+    easings = [e for e in (motion.get("easings") or [])
+               if (e.get("value") if isinstance(e, dict) else e)]
+    if easings:
+        rows = []
+        for e in easings:
+            node = e if isinstance(e, dict) else {}
+            val = str(node.get("value") or e)
+            census = f' ·{node.get("census")}×' if node.get("census") else ""
+            rows.append(
+                f'<div class="spec-ease-row">{_easing_curve_svg(val)}'
+                f'<div class="spec-type-facts"><div class="val spec-type-tiers">'
+                f'{esc(val)}{esc(census)}</div>'
+                f'<div class="use spec-cite">{esc(node.get("use") or "")}</div>'
+                f'</div></div>')
+        parts.append(f'<div class="spec-type-tiers" style="margin:1.5rem 0 0.25rem">'
+                     f'easing curves ({len(rows)})</div>{"".join(rows)}'
+                     + _cite("tokens.motion.easings"))
+    moves = [m for m in (motion.get("signatureMoves") or []) if isinstance(m, dict)]
+    if moves:
+        rows = "".join(
+            f'<div class="spec-move"><div class="nm">{esc(m.get("name"))}'
+            f'{(" — " + esc(str(m.get("timing")))) if m.get("timing") else ""}</div>'
+            f'<div class="mv">{esc(m.get("move") or "")}</div>'
+            f'{_cite(*(m.get("sourceSelectors") or ["tokens.motion.signatureMoves"]))}'
+            f'</div>'
+            for m in moves)
+        parts.append(f'<div class="spec-type-tiers" style="margin:1.5rem 0 0.25rem">'
+                     f'signature moves ({len(moves)})</div>{rows}')
+    t = _demo_timing(motion)
+    if t:
+        demos = (
+            f'<div class="spec-demo"><span class="spec-state-chip">State shift</span>'
+            f'<div class="spec-cite">hover · durations.{esc(t["state"][0])} = '
+            f'{esc(t["state"][1])} · {esc(t["ease"])}</div></div>'
+            f'<div class="spec-demo"><span class="ex-eyebrow">Reveal</span>'
+            f'<span class="spec-reveal-chip ex-label">Enters on hover</span>'
+            f'<div class="spec-cite">hover · durations.{esc(t["reveal"][0])} = '
+            f'{esc(t["reveal"][1])}</div></div>'
+            f'<div class="spec-demo spec-wash-demo"><span class="ex-label">Elevation wash</span>'
+            f'<div class="spec-cite">hover · durations.{esc(t["wash"][0])} = '
+            f'{esc(t["wash"][1])}</div></div>')
+        parts.append(
+            f'<div class="spec-type-tiers" style="margin:1.5rem 0 0.25rem">live timing '
+            f'demos (button state rows in Tier 1 ride the same tokens)</div>'
+            f'<div class="spec-demos">{demos}</div>'
+            f'<div class="spec-note" style="margin-top:0.75rem">pending (P2 renderer '
+            f'work): live marquee-scroll, accordion-reveal, mega-menu and carousel '
+            f'demos — the timing facts above already carry their measured values.</div>')
+    reduced = motion.get("reducedMotion")
+    if isinstance(reduced, dict) and reduced.get("value"):
+        parts.append(f'<div class="spec-cite" style="margin-top:1rem">'
+                     f'prefers-reduced-motion: {esc(reduced.get("value"))} — '
+                     f'{esc(reduced.get("role") or "")}</div>')
+    if not parts:
+        return ""
+    n_d, n_e = len(durations), len(easings)
+    return _spec_chapter("spec-motion", "Motion",
+                         f"{n_d} duration tiers · {n_e} easings · "
+                         f"{len(moves)} signature moves — from the mined motion audit",
+                         "".join(parts))
+
+
+def spec_buttons_surfaces_chapter(doc) -> str:
+    """Buttons × surfaces chapter: every measured button family's five-state row
+    rendered on EVERY surface role band the brand declares (the per-surface alias
+    scopes re-resolve interaction tokens per band — AS-20 made reviewable for the
+    full action × surface matrix)."""
+    surfaces = (doc.get("tokens", {}) or {}).get("surfaces", {}) or {}
+    if not surfaces:
+        return ""
+    fams = _button_families(doc)
+    filled_ctas = cr.cta_shape(doc) == "filled"
+    bands = []
+    for role, surf in surfaces.items():
+        ctx = cr.make_context(doc, role, surf)
+        rows = []
+        for name, fam in fams.items():
+            style_word = esc(fam.get("style") or ("filled" if filled_ctas else "text"))
+            if filled_ctas and not _is_text_button_family(fam):
+                slug = _fam_slug(name)
+
+                def _sw(cls, slug=slug):
+                    return (f'<a class="btnf btnf-{slug} {cls}" href="#" tabindex="-1">'
+                            f'{esc(_SPEC_CTA)}</a>')
+                live = (f'<a class="btnf btnf-{slug} live" href="#">{esc(_SPEC_CTA)}</a>')
+                rows.append(
+                    f'<div><div class="spec-cite" style="margin-bottom:0.5rem">'
+                    f'buttons.{esc(name)} · {style_word} · on tokens.surfaces.{esc(role)}</div>'
+                    + _state_matrix(_sw, live, label=f"{name} · live hover/press inside "
+                                                     "the iframe"))
+            else:
+                # text-link family (or typographic-CTA brand): the arrow-link device,
+                # rendered through the shared per-surface renderer for correct ink
+                link = cr.render_arrow_link(doc, ctx, {"label": _SPEC_CTA,
+                                                       "accent": ctx.is_dark})
+                rows.append(
+                    f'<div><div class="spec-cite" style="margin-bottom:0.5rem">'
+                    f'buttons.{esc(name)} · {style_word} · on tokens.surfaces.{esc(role)}'
+                    f'</div>{link}</div>')
+        if not rows:
+            # button-less brand: the surface band still shows its action device
+            rows = [cr.render_arrow_link(doc, ctx, {"label": _SPEC_CTA,
+                                                    "accent": ctx.is_dark})]
+        bg = str(surf.get("bg") or "") if isinstance(surf, dict) else ""
+        bands.append(
+            f'<div class="spec-band" data-surface-frame="{esc(role)}">'
+            f'<div class="spec-band-head"><span class="spec-band-role">{esc(role)}'
+            f'{" · dark" if ctx.is_dark else ""}</span>'
+            f'<span class="spec-cite">tokens.surfaces.{esc(role)}'
+            f'{esc(" · " + bg) if bg else ""}</span></div>'
+            + "".join(rows) + '</div>')
+    fam_note = f"{len(fams)} button families" if fams else "typographic actions"
+    return _spec_chapter("spec-buttons-surfaces", "Buttons on surface bands",
+                         f"{fam_note} × {len(surfaces)} declared surface roles — "
+                         "state rows re-scoped per band",
+                         "".join(bands))
+
+
+def build_spec_book(doc) -> str:
+    """Tier 0 — the spec-book chapter group (additive; chapters self-omit when the
+    brand lacks their axis)."""
+    chapters = "".join(x for x in (
+        spec_color_chapter(doc),
+        spec_type_chapter(doc),
+        spec_spacing_chapter(doc),
+        spec_radius_chapter(doc),
+        spec_motion_chapter(doc),
+        spec_buttons_surfaces_chapter(doc)) if x)
+    if not chapters:
+        return ""
+    return f"""
+<section class="tier" id="tier-specbook">
+  <div class="tier-num">Tier 0</div>
+  <div class="tier-name">Spec book</div>
+  <div class="tier-sub">the design system as a specification &mdash; every exhibit cites the brand.yaml key it renders from</div>
+  <div class="tier-rule"></div>
+</section>
+{chapters}"""
+
+
 # ── card + page assembly ────────────────────────────────────────────────────────
 
 def _origin_badge(item):
@@ -2098,6 +2656,7 @@ def build_page(doc, prim_items, prim_contracts, block_items, block_contracts, br
         block_items, block_contracts, BLOCK_RENDERERS, anchor="tier-blocks")
 
     surfaces_section = build_surfaces_section(doc)
+    spec_book = build_spec_book(doc)
 
     layouts_section = ""
     toc_layouts = ""
@@ -2105,7 +2664,8 @@ def build_page(doc, prim_items, prim_contracts, block_items, block_contracts, br
         layouts_section = "\n" + build_layouts_section(
             layout_patterns, composed or {}, standard_patterns or [])
         toc_layouts = '<a href="#tier-layouts">Extracted layouts</a>'
-    toc = (f'<nav class="toc"><a href="#tier-primitives">Primitives</a>'
+    toc_spec = '<a href="#tier-specbook">Spec book</a>' if spec_book else ""
+    toc = (f'<nav class="toc">{toc_spec}<a href="#tier-primitives">Primitives</a>'
            f'<a href="#tier-blocks">Blocks</a><a href="#tier-surfaces">Surfaces</a>'
            f'{toc_layouts}</nav>')
 
@@ -2123,6 +2683,8 @@ def build_page(doc, prim_items, prim_contracts, block_items, block_contracts, br
 {component_alias_css(doc)}
 {button_family_css(doc)}
 {BASE_CSS}
+{SPEC_BOOK_CSS}
+{spec_motion_css(doc)}
 {cr.COMPONENT_CSS}
 {cr.structural_variant_css(doc, include_all=True)}
 {cr.motion_vars_css(doc)}
@@ -2143,6 +2705,7 @@ def build_page(doc, prim_items, prim_contracts, block_items, block_contracts, br
     </div>
     {toc}
   </header>
+{spec_book}
 {prim_section}
 {block_section}
 {surfaces_section}{layouts_section}
@@ -2299,7 +2862,13 @@ def main():
     cs.copy_fonts(args.brand_yaml.parent, args.out / "assets", doc)
 
     n_actions = sum(1 for k in prim_items if k in ACTION_KINDS)
+    n_chapters = sum(1 for fn in (spec_color_chapter, spec_type_chapter,
+                                  spec_spacing_chapter, spec_radius_chapter,
+                                  spec_motion_chapter, spec_buttons_surfaces_chapter)
+                     if fn(doc))
     print(f"Wrote {out_file}")
+    print(f"  spec book:  {n_chapters}/6 chapters (color/type/spacing/radius/motion/"
+          f"buttons-on-surfaces)")
     print(f"  primitives: {len(prim_items)} (rendered)")
     print(f"  blocks:     {len(block_items)} (rendered)")
     print(f"  action elements with state matrices: {n_actions} "
