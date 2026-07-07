@@ -148,6 +148,34 @@ def _font_stack(name: str, *, serif: bool) -> str:
 
 
 # ── nav/footer merge into existing brand.yaml dicts (preserve curation) ──────
+def _deep_merge_measured(existing: Any, fresh: Any) -> Any:
+    """Per-key deep merge of a re-extracted ``measured`` block into the existing one.
+
+    FRESH extractor facts win key-by-key; agent-enriched keys the extractor does not
+    measure (e.g. ``link.hoverBg``, ``cta.height``, ``bar.effectiveBg`` curation)
+    SURVIVE a re-bridge (sysfix 2026-07: the old whole-dict replacement clobbered
+    every enrichment on each re-run)."""
+    if not isinstance(existing, dict) or not isinstance(fresh, dict):
+        return fresh
+    out = dict(existing)
+    for k, v in fresh.items():
+        if isinstance(v, dict):
+            out[k] = _deep_merge_measured(out.get(k), v)
+        elif v in (0, "", None) and out.get(k) not in (0, "", None):
+            # a zero/empty re-measure never overwrites a real existing measure
+            # (e.g. contentMaxWidth: 0 when the source page uses only %-based
+            # containers must not clobber an agent-verified 1216)
+            continue
+        else:
+            out[k] = v
+    return out
+
+
+def _transparent(color: Any) -> bool:
+    c = str(color or "").strip().lower().replace(" ", "")
+    return (not c) or c == "transparent" or c in ("rgba(0,0,0,0)", "rgb(0,0,0,0)")
+
+
 def _strip_nav_link(link: dict[str, Any]) -> dict[str, Any]:
     out: dict[str, Any] = {"label": link.get("label") or ""}
     out["href"] = link.get("href") or ""
@@ -188,14 +216,15 @@ def _merge_navbar(existing: dict[str, Any] | None, nav: dict[str, Any]) -> dict[
     }
     if isinstance(nav.get("logo"), dict):
         lg = nav["logo"]
-        out["logo"] = {
+        # falsy-preserving merge: curated keys (e.g. a local ``src`` asset) survive
+        out["logo"] = _deep_merge_measured(out.get("logo"), {
             "kind": lg.get("kind") or "img",
             "alt": lg.get("alt") or "",
             "href": lg.get("href") or "/",
             "width": lg.get("width") or 0,
             "height": lg.get("height") or 0,
             "srcContract": "../assets/source-chrome.v2.json#nav.logo.src",
-        }
+        })
     out["utility"] = [_strip_nav_link(l) for l in (nav.get("utility") or [])]
     out["primary"] = [_strip_nav_link(l) for l in (nav.get("primary") or [])]
     out["links"] = [_strip_nav_link(l) for l in (nav.get("links") or [])]
@@ -212,7 +241,7 @@ def _merge_navbar(existing: dict[str, Any] | None, nav: dict[str, Any]) -> dict[
         for c in (nav.get("ctas") or [])
     ]
     if isinstance(nav.get("measured"), dict):
-        out["measured"] = nav["measured"]
+        out["measured"] = _deep_merge_measured(out.get("measured"), nav["measured"])
     out["rules"] = {
         "layout": "split",
         "tiers": "utility-over-primary" if nav.get("twoTier") else "single",
@@ -251,14 +280,14 @@ def _merge_footer(existing: dict[str, Any] | None, footer: dict[str, Any]) -> di
     out["surface"] = {"bg": footer.get("bg") or "", "color": footer.get("color") or ""}
     if isinstance(footer.get("logo"), dict):
         lg = footer["logo"]
-        out["logo"] = {
+        out["logo"] = _deep_merge_measured(out.get("logo"), {
             "kind": lg.get("kind") or "img",
             "alt": lg.get("alt") or "",
             "href": lg.get("href") or "/",
             "width": lg.get("width") or 0,
             "height": lg.get("height") or 0,
             "srcContract": "../assets/source-chrome.v2.json#footer.logo.src",
-        }
+        })
     out["columns"] = [
         {
             "heading": col.get("heading") or "",
@@ -278,17 +307,19 @@ def _merge_footer(existing: dict[str, Any] | None, footer: dict[str, Any]) -> di
         for s in (footer.get("social") or [])
     ]
     legal = footer.get("legal") or {}
-    out["legal"] = {
-        "text": legal.get("text") or "",
-        "links": [
-            {"label": l.get("label") or "", "href": l.get("href") or ""}
-            for l in (legal.get("links") or [])
-        ],
-    }
+    # keep agent-authored legal enrichments (e.g. compliance ``disclaimer``) —
+    # only the extractor-owned keys are replaced (sysfix 2026-07)
+    out_legal = dict(out.get("legal") or {})
+    out_legal["text"] = legal.get("text") or out_legal.get("text") or ""
+    out_legal["links"] = [
+        {"label": l.get("label") or "", "href": l.get("href") or ""}
+        for l in (legal.get("links") or [])
+    ]
+    out["legal"] = out_legal
     nl = footer.get("newsletter")
     out["newsletter"] = nl if isinstance(nl, dict) else {"present": False}
     if isinstance(footer.get("measured"), dict):
-        out["measured"] = footer["measured"]
+        out["measured"] = _deep_merge_measured(out.get("measured"), footer["measured"])
     # ── layout shape + social style driven by the ACTUAL extracted structure ──
     # grid (HubSpot-style multi-column with headings) vs centered flat link list
     # (WoodWave). socialStyle reflects whether the SOURCE socials were icon glyphs
@@ -443,6 +474,22 @@ def _nav_link_row(links: list[dict[str, Any]], cls: str) -> str:
     return "\n".join(out)
 
 
+def _logo_inner_html(logo: dict[str, Any], alt_text: str, brand: str) -> str:
+    """The renderable INNER markup for an extracted logo (sysfix 2026-07): an inline
+    <svg> logo (kind=svg) embeds its captured markup verbatim — the old
+    unconditional <img src=""> rendered svg-logo brands as an empty broken image.
+    Precedence: captured svg markup → src img → text wordmark (the brand name; real
+    text, never a fabricated mark)."""
+    logo = logo if isinstance(logo, dict) else {}
+    svg_markup = str(logo.get("svg") or "")
+    if (logo.get("kind") == "svg" or not logo.get("src")) and svg_markup.lstrip().startswith("<svg"):
+        return svg_markup
+    src = logo.get("src") or ""
+    if src:
+        return f'<img src="{_esc(src)}" alt="{_esc(alt_text)}" />'
+    return f'<span class="logo-wordmark">{_esc(alt_text or brand)}</span>'
+
+
 # ── measured-value access (safe nested get with default) ─────────────────────
 def _mget(node: Any, *path: str, default: Any = None) -> Any:
     cur = node
@@ -459,6 +506,15 @@ def _px(value: Any, default: int) -> int:
         return n if n > 0 else default
     except (TypeError, ValueError):
         return default
+
+
+def _content_px(value: Any, default: int) -> int:
+    """A CONTENT-MEASURE px value with a plausibility floor (sysfix 2026-07): a
+    measured content max-width below 480px is capture noise (e.g. a percentage
+    max-width mis-parsed as px upstream), never a real page measure — fall back
+    instead of rendering 100px-wide chrome."""
+    n = _px(value, default)
+    return n if n >= 480 else default
 
 
 def _mega_panel_html(menu: dict[str, Any]) -> str:
@@ -559,7 +615,14 @@ def render_chrome_index_html(
     font_sans = _font_stack(_font(doc, "sans", "Inter"), serif=False)
     font_display = _font_stack(_font(doc, "display", _font(doc, "sans", "Inter")), serif=True)
 
-    nav_bg = _mget(nm, "bar", "bg", default=nav.get("bg")) or "#ffffff"
+    # nav surface: a TRANSPARENT bar paints as its ancestor's fill — prefer the
+    # captured effectiveBg, then the page surface; never render rgba(0,0,0,0) as
+    # if it were a surface (sysfix 2026-07).
+    nav_bg = _mget(nm, "bar", "bg", default=nav.get("bg"))
+    if _transparent(nav_bg):
+        nav_bg = _mget(nm, "bar", "effectiveBg", default="")
+    if _transparent(nav_bg):
+        nav_bg = surface_base
     nav_color = _mget(nm, "link", "color", default=nav.get("color")) or text_default
     footer_bg = fm.get("bg") or footer.get("bg") or "#1f1f1f"
     # primary inverted text: prefer the measured heading color, then the measured
@@ -595,7 +658,10 @@ def render_chrome_index_html(
     footer_link_hover = footer_hover_measured or brand_accent or text_inverted
 
     # ---- MEASURED nav metrics (rendered px; px is allowed, only vh/vw/dvh banned)
-    nav_content_max = _px(nm.get("contentMaxWidth"), 1080)
+    # content width: extractor measure wins when real; an agent-verified measure in
+    # brand.yaml fills the gap (e.g. %-based containers measure as 0); floor+default last.
+    doc_nav_max = _mget((doc.get("navbar") or {}), "measured", "contentMaxWidth", default=0)
+    nav_content_max = _content_px(nm.get("contentMaxWidth") or doc_nav_max, 1080)
     util_bar_h = _px(nm.get("utilityBarHeight"), 40)
     prim_bar_h = _px(nm.get("primaryBarHeight"), 64)
     nav_logo_w = _px(_mget(nm, "logo", "width"), 120)
@@ -617,11 +683,15 @@ def render_chrome_index_html(
     cta_radius = _px(_mget(nm, "cta", "radius"), 8)
 
     # ---- MEASURED footer metrics
-    foot_content_max = _px(fm.get("contentMaxWidth"), 1080)
+    doc_foot_max = _mget((doc.get("footer") or {}), "measured", "contentMaxWidth", default=0)
+    foot_content_max = _content_px(fm.get("contentMaxWidth") or doc_foot_max, 1080)
     foot_pad_top = _px(_mget(fm, "padding", "top"), 48)
     foot_pad_bottom = _px(_mget(fm, "padding", "bottom"), 48)
     foot_head_fs = _px(_mget(fm, "heading", "fontSize"), 18)
     foot_head_fw = _mget(fm, "heading", "fontWeight", default="500")
+    # measured heading family wins (a UI-font group label must not restyle into the
+    # display serif just because the preview's display var defaults that way)
+    foot_head_ff = _mget(fm, "heading", "fontFamily", default="") or "var(--font-display)"
     foot_link_fs = _px(_mget(fm, "link", "fontSize"), 14)
     foot_link_fw = _mget(fm, "link", "fontWeight", default="400")
     foot_link_lh = _px(_mget(fm, "link", "lineHeight"), foot_link_fs + 16)
@@ -646,9 +716,9 @@ def render_chrome_index_html(
 
     # nav content
     nav_logo = nav.get("logo") or {}
-    logo_src = nav_logo.get("src") or ""
     logo_href = nav_logo.get("href") or "/"
     logo_alt = nav_logo.get("alt") or brand
+    logo_inner = _logo_inner_html(nav_logo, logo_alt, brand)
     utility = nav.get("utility") or []
     primary = nav.get("primary") or (nav.get("links") or [])
     ctas = nav.get("ctas") or []
@@ -672,6 +742,8 @@ def render_chrome_index_html(
     f_logo_src = f_logo.get("src") or ""
     f_logo_href = f_logo.get("href") or "/"
     f_logo_alt = f_logo.get("alt") or brand
+    f_logo_renderable = bool(f_logo_src) or str(f_logo.get("svg") or "").lstrip().startswith("<svg")
+    f_logo_inner = _logo_inner_html(f_logo, f_logo_alt, brand) if f_logo_renderable else ""
     columns = footer.get("columns") or []
     social = footer.get("social") or []
     legal = footer.get("legal") or {}
@@ -703,35 +775,76 @@ def render_chrome_index_html(
     grid_template = "1fr"
 
     if footer_layout == "grid":
-        # column layout: widen the link-heavy first column, give the next two their
-        # own cells, and stack any trailing columns together. (HubSpot.)
-        wide = columns[:1]
-        solo = columns[1:3]
-        stacked = columns[3:]
-        track = []
-        if wide:
-            track.append("1.7fr")
-        track.extend(["1fr"] * len(solo))
-        if stacked:
-            track.append("1fr")
-        grid_template = " ".join(track) or "1fr"
-
+        # ── MEASURED grid tracks win (sysfix 2026-07): when the extraction measured
+        # the footer's real column geometry (grid templateColumns, else the counted
+        # physical column wrappers), chunk the headed groups evenly into that many
+        # cells (an 8-group / 4-column footer stacks two groups per column — the
+        # source geometry). Only fall back to the legacy heuristic (widen link-heavy
+        # first column, stack the tail) when nothing was measured.
+        m_template = str(_mget(fm, "grid", "templateColumns", default="") or "")
+        m_tracks = len([t for t in m_template.split() if t and "(" not in t])
+        if not (2 <= m_tracks <= 8):
+            m_tracks = _px(_mget(fm, "grid", "wrapperCount"), 0)
+        # measured per-wrapper distribution (e.g. [1,2,1,2,1,1]) reproduces the
+        # source stacking exactly; fall back to even chunking when absent/stale.
+        m_sizes = _mget(fm, "grid", "wrapperSizes", default=None)
+        if not (isinstance(m_sizes, list) and all(isinstance(n, int) and n > 0 for n in m_sizes)
+                and sum(m_sizes) == len(columns) and 2 <= len(m_sizes) <= 8):
+            m_sizes = None
         col_parts = []
-        if wide:
-            col_parts.append(
-                '      <div class="footer-cell cell-wide">\n'
-                + _footer_col_html(wide[0])
-                + "\n      </div>"
-            )
-        for col in solo:
-            col_parts.append(
-                '      <div class="footer-cell">\n' + _footer_col_html(col) + "\n      </div>"
-            )
-        if stacked:
-            inner = "\n".join(_footer_col_html(c) for c in stacked)
-            col_parts.append('      <div class="footer-cell footer-cell-stack">\n' + inner + "\n      </div>")
+        if m_sizes:
+            cells, pos = [], 0
+            for n in m_sizes:
+                cells.append(columns[pos:pos + n])
+                pos += n
+            grid_template = " ".join(["1fr"] * len(cells))
+            for cell in cells:
+                inner = "\n".join(_footer_col_html(c) for c in cell)
+                cls = "footer-cell footer-cell-stack" if len(cell) > 1 else "footer-cell"
+                col_parts.append(f'      <div class="{cls}">\n' + inner + "\n      </div>")
+        elif 2 <= m_tracks <= 8 and len(columns) >= m_tracks:
+            per = -(-len(columns) // m_tracks)  # ceil
+            cells = [columns[i:i + per] for i in range(0, len(columns), per)]
+            grid_template = " ".join(["1fr"] * len(cells))
+            for cell in cells:
+                inner = "\n".join(_footer_col_html(c) for c in cell)
+                cls = "footer-cell footer-cell-stack" if len(cell) > 1 else "footer-cell"
+                col_parts.append(f'      <div class="{cls}">\n' + inner + "\n      </div>")
+        else:
+            wide = columns[:1]
+            solo = columns[1:3]
+            stacked = columns[3:]
+            track = []
+            if wide:
+                track.append("1.7fr")
+            track.extend(["1fr"] * len(solo))
+            if stacked:
+                track.append("1fr")
+            grid_template = " ".join(track) or "1fr"
+            if wide:
+                col_parts.append(
+                    '      <div class="footer-cell cell-wide">\n'
+                    + _footer_col_html(wide[0])
+                    + "\n      </div>"
+                )
+            for col in solo:
+                col_parts.append(
+                    '      <div class="footer-cell">\n' + _footer_col_html(col) + "\n      </div>"
+                )
+            if stacked:
+                inner = "\n".join(_footer_col_html(c) for c in stacked)
+                col_parts.append('      <div class="footer-cell footer-cell-stack">\n' + inner + "\n      </div>")
         cols_html = "\n".join(col_parts)
         social_html = _social_row_html(social, social_style, indent="        ")
+        # brand mark only when the extraction found a RENDERABLE one (sysfix
+        # 2026-07): no empty <img>, and never a third-party badge stand-in.
+        f_logo_block = (
+            f'          <a class="footer-brand" href="{_esc(f_logo_href)}" aria-label="{_esc(f_logo_alt)}">\n'
+            f"            {f_logo_inner}\n"
+            f"          </a>\n"
+            if f_logo_inner
+            else ""
+        )
 
         footer_html = f"""  <footer class="footer">
     <div class="inner">
@@ -743,10 +856,7 @@ def render_chrome_index_html(
           <div class="social-row">
 {social_html}
           </div>
-          <a class="footer-brand" href="{_esc(f_logo_href)}">
-            <img src="{_esc(f_logo_src)}" alt="{_esc(f_logo_alt)}" />
-          </a>
-        </div>
+{f_logo_block}        </div>
         <div class="footer-legal">
           <span class="copyright">{legal_copy}</span>
 {legal_links_html}
@@ -789,10 +899,10 @@ def render_chrome_index_html(
         )
         social_html = _social_row_html(social, social_style, indent="          ")
         logo_html = (
-            f'      <a class="footer-brand" href="{_esc(f_logo_href)}">\n'
-            f'        <img src="{_esc(f_logo_src)}" alt="{_esc(f_logo_alt)}" />\n'
+            f'      <a class="footer-brand" href="{_esc(f_logo_href)}" aria-label="{_esc(f_logo_alt)}">\n'
+            f"        {f_logo_inner}\n"
             f"      </a>\n"
-            if f_logo_src
+            if f_logo_inner
             else ""
         )
         sitemap_block = (
@@ -909,8 +1019,9 @@ def render_chrome_index_html(
     gap: 3cqi;
     min-height: {prim_bar_h}px;
   }}
-  .nav-logo {{ display: inline-flex; align-items: center; }}
-  .nav-logo img {{ height: {nav_logo_h}px; width: auto; max-width: {nav_logo_w}px; display: block; }}
+  .nav-logo {{ display: inline-flex; align-items: center; color: var(--nav-color); }}
+  .nav-logo img, .nav-logo svg {{ height: {nav_logo_h}px; width: auto; max-width: {nav_logo_w}px; display: block; }}
+  .logo-wordmark {{ font-family: var(--font-display); font-size: {max(nav_logo_h - 8, 16)}px; font-weight: 600; white-space: nowrap; }}
   .nav-links {{
     display: flex;
     align-items: center;
@@ -1013,7 +1124,7 @@ def render_chrome_index_html(
   /* the link-heavy first column flows into two sub-columns */
   .cell-wide .footer-col ul {{ columns: 2; column-gap: {foot_col_gap}px; }}
   .footer-col .col-head {{
-    font-family: var(--font-display);
+    font-family: {foot_head_ff};
     font-size: {foot_head_fs}px;
     font-weight: {foot_head_fw};
     margin: 0 0 1.4cqh;
@@ -1047,7 +1158,8 @@ def render_chrome_index_html(
   }}
   .social svg {{ width: {foot_social_size}px; height: {foot_social_size}px; fill: currentColor; }}
   .social:hover {{ color: var(--text-inverted); }}
-  .footer-brand img {{ height: {foot_logo_h}px; width: auto; max-width: {foot_logo_w}px; display: block; }}
+  .footer-brand {{ color: var(--text-inverted); }}
+  .footer-brand img, .footer-brand svg {{ height: {foot_logo_h}px; width: auto; max-width: {foot_logo_w}px; display: block; }}
   .footer-legal {{
     display: flex;
     align-items: center;
@@ -1143,8 +1255,8 @@ def render_chrome_index_html(
        (source_chrome.v2 offline extraction); proportions from measured computed styles. -->
   <header class="nav">
 {utility_block}  <div class="nav-primary"><div class="inner nav-inner">
-      <a class="nav-logo" href="{_esc(logo_href)}">
-        <img src="{_esc(logo_src)}" alt="{_esc(logo_alt)}" />
+      <a class="nav-logo" href="{_esc(logo_href)}" aria-label="{_esc(logo_alt)}">
+        {logo_inner}
       </a>
       <nav class="nav-links">
 {primary_html}
@@ -1189,6 +1301,9 @@ def main() -> None:
     print(f"  nav: utility={len(navbar['utility'])} primary={len(navbar['primary'])} ctas={len(navbar['ctas'])}")
     print(f"  footer: columns={len(footer['columns'])} social={len(footer['social'])} legal={len(footer['legal']['links'])}")
 
+    # render with the MERGED chrome visible so agent-verified measures
+    # (contentMaxWidth etc.) can backfill gaps the extractor could not measure
+    doc["navbar"], doc["footer"] = navbar, footer
     out_html.parent.mkdir(parents=True, exist_ok=True)
     out_html.write_text(render_chrome_index_html(brand, contract, doc), encoding="utf-8")
     print(f"[bridge] preview regenerated: {out_html}")

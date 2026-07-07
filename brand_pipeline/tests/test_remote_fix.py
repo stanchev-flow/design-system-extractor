@@ -171,9 +171,20 @@ class LawFirstHeroCta(unittest.TestCase):
         self.assertNotIn('class="c-button"', html)
 
     def test_no_bound_action_keeps_legacy_arrow(self):
-        html = self._hero(copy.deepcopy(FIXTURE), [])
+        # legacy path (no actions wrap) still renders the arrow device when the
+        # brand actually authored cta copy for the section.
+        doc = copy.deepcopy(FIXTURE)
+        doc["_brandCopy"] = {"section": {"cta": "Explore"}}
+        html = self._hero(doc, [])
         self.assertNotIn("cs-hero-actions", html)
         self.assertIn("c-arrow-link", html)
+
+    def test_no_authored_cta_elides_bare_arrow(self):
+        # sysfix 2026-07: no bound action AND no authored cta copy must not leave
+        # a label-less "→" artifact (triage items 7/9 — invented action devices).
+        html = self._hero(copy.deepcopy(FIXTURE), [])
+        self.assertNotIn("cs-hero-actions", html)
+        self.assertNotIn("c-arrow-link", html)
 
 
 class StructuralScaffoldPads(unittest.TestCase):

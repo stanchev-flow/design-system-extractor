@@ -181,6 +181,18 @@ def component_vars(doc, surf, *, selector=":root", display_size=None,
     # (incl. re-scoping panels/cards); every light surface hovers in its own ink.
     link_hover = ("var(--chrome-link-hover)"
                   if (surf.get("textAccent") and link_hover_color(doc)) else text)
+    # BRAND LINK TOKENS win when carried (sysfix 2026-07): a brand with an authored
+    # text/link(+hover) pair binds its typographic-action color per surface — idle
+    # `--c-action-color` + hover `--c-link-hover` — from ITS OWN tokens (the on-inverse
+    # twins on dark surfaces). Token-less brands keep the resolutions above unchanged.
+    _link_tok, _link_hover_tok = (("text/link-on-inverse", "text/link-hover-on-inverse")
+                                  if surf.get("textAccent")
+                                  else ("text/link", "text/link-hover"))
+    action_color = (f"var(--color-{_slug(_link_tok)})"
+                    if _link_tok in colors else None)
+    if _link_hover_tok in colors:
+        link_hover = f"var(--color-{_slug(_link_hover_tok)})"
+    action_css = f"\n  --c-action-color: {action_color};" if action_color else ""
     eyebrow_gap = eyebrow_gap or (
         "var(--space-eyebrow-to-heading)"
         if "eyebrow-to-heading" in ((doc.get("tokens", {}) or {}).get("spacing", {}) or {})
@@ -200,8 +212,9 @@ def component_vars(doc, surf, *, selector=":root", display_size=None,
     if isinstance((doc.get("buttons") or {}).get("primary"), dict):
         b = doc["buttons"]["primary"]
         _btn = {"bg": "--button-bg", "fg": "--button-fg", "bgHover": "--button-bg-hover",
-                "border": "--button-border", "padding": "--button-pad",
-                "radius": "--button-radius", "weight": "--button-weight"}
+                "fgHover": "--button-fg-hover", "border": "--button-border",
+                "padding": "--button-pad", "radius": "--button-radius",
+                "weight": "--button-weight", "height": "--button-height"}
         parts = [f"\n  --c-button-{suffix.removeprefix('--button-')}: var({suffix});"
                  for src, suffix in _btn.items() if b.get(src) is not None]
         if b.get("sizeRem") is not None:
@@ -244,7 +257,7 @@ def component_vars(doc, surf, *, selector=":root", display_size=None,
   --c-ink-muted: {muted};
   --c-accent: {accent};
   --c-hairline: {hairline};
-  --c-link-hover: {link_hover};
+  --c-link-hover: {link_hover};{action_css}
   --c-font-heading: {_font_ref(doc, 'display-hero', 'Georgia, serif')};
   --c-font-body: {_font_ref(doc, 'body', 'system-ui, sans-serif')};
   --c-display-size: {display_size or _size_ref(doc, 'display-hero', 4)};
@@ -569,6 +582,10 @@ p { text-wrap-style: balance; }
   color: var(--c-action-color, currentColor); display: inline-flex; align-items: center;
   gap: 0.5rem; background: none; border: none; cursor: pointer; padding: 0; }
 .c-arrow-link--accent { color: var(--c-accent); }
+/* CHROME register pin (sysfix 2026-07): NAV links are chrome, not in-flow text
+   actions — they read the surface ink (their measured --chrome-* registers own any
+   deviation), never the page's typographic-action color (--c-action-color). */
+.cs-navlinks .c-arrow-link { color: currentColor; }
 
 .c-arrow { transition: transform var(--c-motion-fast) var(--c-ease); }
 .c-arrow-link:hover .c-arrow { transform: translateX(0.35rem); }
@@ -706,7 +723,7 @@ p { text-wrap-style: balance; }
 # --c-button-* aliases (component_vars emits them only when the brand carries a button
 # family). The control tier is the var-chained fallback SHAPE for harness specimens.
 _BUTTON_VARIANT_CSS = """
-.c-button { display: inline-block;
+.c-button { display: inline-flex; align-items: center; justify-content: center;
   background: var(--c-button-bg, var(--c-accent));
   color: var(--c-button-fg, var(--c-button-ink, var(--c-paper)));
   font-family: var(--c-button-font, var(--c-font-body));
@@ -714,16 +731,57 @@ _BUTTON_VARIANT_CSS = """
   font-weight: var(--c-button-weight, var(--c-heading-weight));
   letter-spacing: var(--c-button-ls, var(--c-control-ls));
   text-decoration: none;
+  /* measured control height (sysfix 2026-07): brands measuring an explicit pill
+     height get it verbatim; the inline-flex centering keeps the label vertical-
+     centered when the measured padding is horizontal-only (e.g. "0 1.5rem"). */
+  height: var(--c-button-height, auto);
   padding: var(--c-button-pad, 0.8em 1.6em); /* provenance: structural — em-relative
      control inset fallback (shape, not magnitude: scales with the button's own size) */
   border-radius: var(--c-button-radius, var(--radius)); border: none;
   transition: background var(--c-motion-fast) var(--c-ease),
+              color var(--c-motion-fast) var(--c-ease),
               transform var(--c-motion-fast) var(--c-ease); }
-/* hover = the brand's MEASURED bg swap (--c-button-bg-hover); the old universal
+/* hover = the brand's MEASURED bg swap (--c-button-bg-hover) + measured label swap
+   (--c-button-fg-hover, e.g. an outline family filling on hover); the old universal
    brightness-filter was a motion-language assumption (one brand's hover mechanic). */
 .c-button:hover, .c-button:focus-visible {
   background: var(--c-button-bg-hover, var(--c-button-bg, var(--c-accent)));
+  color: var(--c-button-fg-hover, var(--c-button-fg, var(--c-button-ink, var(--c-paper))));
   transform: translateY(-1px); }
+"""
+
+# CARD variant (structural flag: the brand DECLARES a usable `blocks.card` device) —
+# a bounded content unit on the brand's PANEL surface role, radius from the brand's
+# own card/global radius tokens, optional INSET media well on the brand's inverse
+# surface (blocks.card.slots.media). Every magnitude is a brand token reference;
+# layout mechanics (column stack, media-well geometry) are structural. Brands without
+# a card device (or with `use: never`) ship NONE of this rule text (AS-22/AS-24).
+_CARD_VARIANT_CSS = """
+.c-card { display: flex; flex-direction: column; align-items: stretch; overflow: hidden;
+  background: var(--c-card-bg, var(--surface-panel, var(--c-paper)));
+  border-radius: var(--c-card-radius, var(--radius-card, var(--radius, 0))); }
+/* inset media well (blocks.card.slots.media): an INVERSE-surface inset frame; art is
+   contained, never cover-cropped (product shots/marks keep their geometry). */
+.c-card-media { display: flex; align-items: center; justify-content: center;
+  background: var(--c-card-media-bg, var(--surface-inverse, var(--c-ink)));
+  border-radius: var(--c-card-media-radius, var(--radius-media, 0)); overflow: hidden; }
+.c-card-media .c-image, .c-card-media .c-image-ph { width: 100%; height: 100%;
+  border-radius: 0; object-fit: contain; }
+.c-card-body { display: flex; flex-direction: column; align-items: flex-start;
+  gap: 0.75rem; padding: var(--c-card-pad, var(--panel-pad, 1.75rem)); }
+.c-card-body .c-heading { max-width: none; }
+.c-card-body .c-paragraph { max-width: none; }
+"""
+
+# CONTENT-BLOCK variant (structural flag: a usable `blocks.content-block` device) —
+# the brand's eyebrow → heading → body → actions stack. Rhythm rides the shared
+# --c-* aliases; the action row is the same non-stretch flex-row discipline as the
+# hero/conversion action clusters (AGENTS.md flex-column mechanic).
+_CONTENT_BLOCK_VARIANT_CSS = """
+.c-content-block { display: flex; flex-direction: column; align-items: flex-start;
+  gap: var(--c-eyebrow-gap, 1.5rem); }
+.c-content-block .c-actions { display: flex; flex-wrap: wrap; align-items: center;
+  gap: 0.75rem 1rem; margin-top: 0.5rem; }
 """
 
 # BOXED input variant (structural flag `input-shape: boxed`) — for brands whose forms
@@ -955,6 +1013,82 @@ def footer_content(doc) -> dict:
     return {"sitemap": sitemap, "social": social, "legal": legal}
 
 
+def block_device(doc, key: str) -> dict | None:
+    """The brand's declared ``blocks.<key>`` evidence dict when the device is USABLE
+    (declared, not ``notObserved``, ``use`` != never); None otherwise. The §C.3 gate
+    for block-level structural variants (card / content-block): their CSS and
+    renderers never ship dormant grammar for brands that don't carry the device."""
+    blk = ((doc or {}).get("blocks") or {}).get(key)
+    if not isinstance(blk, dict) or blk.get("notObserved"):
+        return None
+    if str(blk.get("use") or "").strip().lower() == "never":
+        return None
+    return blk
+
+
+_BTN_FAMILY_VAR_KEYS = (
+    ("bg", "--c-button-bg", "bg"),
+    ("fg", "--c-button-fg", "fg"),
+    ("bgHover", "--c-button-bg-hover", "bg-hover"),
+    ("fgHover", "--c-button-fg-hover", "fg-hover"),
+    ("padding", "--c-button-pad", "pad"),
+    ("radius", "--c-button-radius", "radius"),
+    ("weight", "--c-button-weight", "weight"),
+    ("height", "--c-button-height", "height"),
+)
+
+
+def _button_families(doc) -> dict:
+    """The brand's declared non-text button families beyond primary (fact dicts only)."""
+    fams = {}
+    for name, facts in ((doc or {}).get("buttons") or {}).items():
+        if name == "primary" or not isinstance(facts, dict):
+            continue
+        style = str(facts.get("style") or "").lower()
+        if "text" in style:            # text-link families ride the arrow-link device
+            continue
+        if facts.get("bg") or facts.get("border") or facts.get("fg"):
+            fams[name] = facts
+    return fams
+
+
+def button_family_for_style(doc, hint: str) -> str | None:
+    """Resolve a declared secondary button FAMILY from style prose: a slot role /
+    evidence styleHint naming an outline/ghost (or other declared style word)
+    treatment selects the brand family whose measured ``style`` fact matches.
+    Palette-agnostic — the match is between the slot's declared treatment and the
+    brand's OWN declared family styles; no family name is ever assumed."""
+    def _norm(text: str) -> set[str]:
+        canon = {"outlined": "outline", "ghosted": "ghost"}
+        return {canon.get(w, w)
+                for w in str(text or "").lower().replace("-", " ").split()}
+
+    words = _norm(hint)
+    if not words:
+        return None
+    for name, facts in _button_families(doc).items():
+        if _norm(facts.get("style")) & words & {"outline", "ghost", "quiet", "neutral"}:
+            return name
+    return None
+
+
+def _button_family_override_css(doc) -> str:
+    """Per-family `.c-button--<family>` override rules for the brand's declared extra
+    button families: every declaration re-points the shared `--c-button-*` consumption
+    vars at that family's OWN Layer-1 tokens (only keys the family measured emit).
+    An outline family also gets its measured border (the base rule is border: none)."""
+    rules = []
+    for name, facts in sorted(_button_families(doc).items()):
+        sel = f".c-button--{_slug(name)}"
+        decls = [f"{var}: var(--button-{_slug(name)}-{suffix});"
+                 for key, var, suffix in _BTN_FAMILY_VAR_KEYS if facts.get(key)]
+        if facts.get("border"):
+            decls.append(f"border: var(--button-{_slug(name)}-border);")
+        if decls:
+            rules.append(sel + " { " + " ".join(decls) + " }")
+    return ("\n" + "\n".join(rules) + "\n") if rules else ""
+
+
 def structural_variant_css(doc, include_all: bool = False) -> str:
     """The §C.3 variant rules THIS brand's structural flags select (appended after
     COMPONENT_CSS by both composers). ``include_all=True`` is the gallery/harness mode:
@@ -963,8 +1097,14 @@ def structural_variant_css(doc, include_all: bool = False) -> str:
     parts = []
     if include_all or cta_shape(doc) == "filled":
         parts.append(_BUTTON_VARIANT_CSS)
+        parts.append(_button_family_override_css(doc))
     if include_all or input_shape(doc) == "boxed":
         parts.append(_BOXED_FIELD_VARIANT_CSS)
+    # block-device variants (sysfix 2026-07): gated on the brand DECLARING the device.
+    if include_all or block_device(doc, "card"):
+        parts.append(_CARD_VARIANT_CSS)
+    if include_all or block_device(doc, "content-block"):
+        parts.append(_CONTENT_BLOCK_VARIANT_CSS)
     grammar = footer_grammar(doc)
     if include_all or grammar == "display-links":
         parts.append(_FOOT_DISPLAY_LINKS_CSS)
@@ -1043,11 +1183,19 @@ def render_image(doc, ctx: ComponentContext, props=None) -> str:
 
 def render_arrow_link(doc, ctx: ComponentContext, props=None) -> str:
     """link primitive == cta role (WoodWave remaps cta -> arrow link, never a button).
-    props: label, href, accent. Always a typographic <a>, NEVER a <button>."""
+    props: label, href, accent. Always a typographic <a>, NEVER a <button>.
+    An EXPLICITLY EMPTY label elides the device (sysfix 2026-07): a label-less action
+    is no action — the adapter no longer invents "Learn more"-style fallback copy, so
+    a copy-less slot must not render a bare floating arrow glyph. The "Learn more"
+    default still applies only when the caller passes no label key at all (harness
+    specimen shorthand)."""
     props = props or {}
+    label = props.get("label", "Learn more")
+    if not str(label or "").strip():
+        return ""
     accent = " c-arrow-link--accent" if props.get("accent") else ""
     href = esc(props.get("href", "#"))
-    return (f'<a class="c-arrow-link{accent}" href="{href}">{esc(props.get("label", "Learn more"))} '
+    return (f'<a class="c-arrow-link{accent}" href="{href}">{esc(label)} '
             f'<span class="c-arrow" aria-hidden="true">&rarr;</span></a>')
 
 
@@ -1067,8 +1215,15 @@ def render_button(doc, ctx: ComponentContext, props=None) -> str:
             "label": props.get("label", "Get started"),
             "href": props.get("href", "#"),
             "accent": props.get("accent", False)})
+    # FAMILY dispatch (sysfix 2026-07): an explicit declared family wins; else a
+    # style HINT from the slot's evidence prose (e.g. "outlined pill") resolves to
+    # the brand family whose measured `style` fact matches. Unknown → primary.
+    family = props.get("family")
+    if family not in _button_families(doc):
+        family = button_family_for_style(doc, props.get("familyHint", ""))
+    fam_cls = f" c-button--{_slug(family)}" if family else ""
     href = esc(props.get("href", "#"))
-    return (f'<a class="c-button" href="{href}" role="button">'
+    return (f'<a class="c-button{fam_cls}" href="{href}" role="button">'
             f'{esc(props.get("label", "Get started"))}</a>')
 
 
@@ -1292,6 +1447,93 @@ def render_footer(doc, ctx: ComponentContext, props=None) -> str:
     return f'<div class="c-footer">{"".join(parts)}</div>'
 
 
+def _render_action_row(doc, ctx: ComponentContext, actions) -> str:
+    """A `.c-actions` row from a list of action props ({label, href, kind?}) — each
+    action dispatches through render_button's law-first cta-shape (a filled brand gets
+    its pill, a typographic brand the arrow link); `kind: "link"` forces the
+    typographic arrow device (e.g. a card's measured text-link action). Label-less
+    entries elide (render_arrow_link's empty-label rule). "" when nothing renders."""
+    frags = []
+    for a in actions or []:
+        if isinstance(a, str):
+            a = {"label": a}
+        if not isinstance(a, dict) or not str(a.get("label") or "").strip():
+            continue
+        renderer = render_arrow_link if str(a.get("kind") or "").lower() == "link" \
+            else render_button
+        frags.append(renderer(doc, ctx, {"label": a["label"],
+                                         "href": a.get("href", "#"),
+                                         "accent": a.get("accent", False)}))
+    frags = [f for f in frags if f]
+    return f'<div class="c-actions">{"".join(frags)}</div>' if frags else ""
+
+
+def render_content_block(doc, ctx: ComponentContext, props=None) -> str:
+    """content-block block — the brand's eyebrow → heading → body → actions stack
+    (blocks.content-block slot grammar), composed ENTIRELY from the shared primitives
+    (sysfix 2026-07: this contract had no shared renderer — composed sections emitted
+    an unresolved-slot comment and the gallery a photo stub). Only slots the caller
+    passes render (optional slots elide; nothing is invented): props: eyebrow,
+    heading, level (default h2), body, actions [{label, href, kind?}] or cta str."""
+    props = props or {}
+    parts = []
+    if props.get("eyebrow"):
+        parts.append(render_eyebrow(doc, ctx, {"text": props["eyebrow"]}))
+    parts.append(render_heading(doc, ctx, {
+        "text": props.get("heading", "Heading"), "level": props.get("level", "h2"),
+        "accent": props.get("accent")}))
+    if props.get("body"):
+        parts.append(render_paragraph(doc, ctx, {"text": props["body"],
+                                                 "measure": props.get("measure", "52ch")}))
+    actions = props.get("actions") or ([{"label": props["cta"]}] if props.get("cta") else [])
+    row = _render_action_row(doc, ctx, actions)
+    if row:
+        parts.append(row)
+    return f'<div class="c-content-block">{"".join(parts)}</div>'
+
+
+def render_card(doc, ctx: ComponentContext, props=None) -> str:
+    """card block — a bounded content unit per the brand's ``blocks.card`` anatomy
+    (sysfix 2026-07: previously renderer-less). Slot grammar (media? → eyebrow? →
+    heading → body? → action?) follows blocks.card.slots; the INSET media well renders
+    only when the caller binds media AND the brand's card anatomy declares a media
+    slot (a media-less card grammar can't inherit one). The action defaults to the
+    typographic arrow link (kind: "link") — the measured card-action grammar — unless
+    the caller passes kind: "button". props: media {src, alt, aspect} | True (srcless
+    well), eyebrow, heading, level (default h3), body, action {label, href, kind?} or
+    cta str."""
+    props = props or {}
+    parts = []
+    card_slots = (block_device(doc, "card") or {}).get("slots") or {}
+    media = props.get("media")
+    if media and ("media" in card_slots or not card_slots):
+        mprops = dict(media) if isinstance(media, dict) else {}
+        mprops.setdefault("placeholder", "MEDIA")
+        aspect = mprops.pop("aspectRatio", None) or mprops.get("aspect")
+        style = f' style="aspect-ratio: {esc(str(aspect))}"' if aspect else ""
+        mprops.pop("aspect", None)
+        parts.append(f'<div class="c-card-media"{style}>'
+                     f'{render_image(doc, ctx, mprops)}</div>')
+    body_parts = []
+    if props.get("eyebrow"):
+        body_parts.append(render_eyebrow(doc, ctx, {"text": props["eyebrow"]}))
+    body_parts.append(render_heading(doc, ctx, {
+        "text": props.get("heading", "Heading"), "level": props.get("level", "h3")}))
+    if props.get("body"):
+        body_parts.append(render_paragraph(doc, ctx, {"text": props["body"],
+                                                      "measure": props.get("measure", "44ch")}))
+    action = props.get("action") or ({"label": props["cta"]} if props.get("cta") else None)
+    if action:
+        if isinstance(action, str):
+            action = {"label": action}
+        action.setdefault("kind", "link")
+        row = _render_action_row(doc, ctx, [action])
+        if row:
+            body_parts.append(row)
+    parts.append(f'<div class="c-card-body">{"".join(body_parts)}</div>')
+    return f'<article class="c-card">{"".join(parts)}</article>'
+
+
 def render_navbar(doc, ctx: ComponentContext, props=None) -> str:
     """navbar block - zero-chrome: logo + links + a single trailing cta. Composes the
     logo + action primitives.
@@ -1353,6 +1595,10 @@ BLOCK_RENDERERS = {
     "navbar": render_navbar,
     "form": render_form,
     "footer": render_footer,
+    # sysfix 2026-07: real card / content-block anatomy renderers (previously the
+    # composed path emitted an unresolved-slot comment for these contracts).
+    "card": render_card,
+    "content-block": render_content_block,
 }
 
 

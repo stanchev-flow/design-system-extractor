@@ -148,6 +148,30 @@ def _button_families(doc) -> dict:
 _TOKENIZED_FAMILIES = ("primary", "secondary", "tertiary")
 
 
+def link_device_css(doc) -> str:
+    """Harness `.act` interaction skin from the brand's OWN link grammar (sysfix
+    2026-07): the static BASE_CSS underline-on-hover was one link language hardcoded
+    into every brand's action specimens. Idle color binds the brand's authored
+    ``text/link`` token when carried; a ``color-shift`` brand swaps to its measured
+    hover color and DROPS the underline; underline-draw brands keep the BASE_CSS
+    behavior byte-identically (this returns only overrides, never restates)."""
+    colors = (doc.get("tokens", {}) or {}).get("colors", {}) or {}
+    parts = []
+    if "text/link" in colors:
+        parts.append(".act { color: var(--color-text-link); }")
+    if cr.link_mode(doc) == "color-shift":
+        hover = ("var(--color-text-link-hover)" if "text/link-hover" in colors
+                 else "var(--ink)")
+        parts.append(".act { transition: color var(--ease) ease, "
+                     "transform var(--ease) ease, opacity var(--ease) ease; }\n"
+                     ".act.is-hover, .act.live:hover { text-decoration: none; "
+                     f"color: {hover}; }}")
+    if not parts:
+        return ""
+    return ("/* typographic-action skin — the brand's own link tokens/mode (.act) */\n"
+            + "\n".join(parts))
+
+
 def button_family_css(doc) -> str:
     """Per-family specimen classes (`.btnf-<family>`) for a filled-CTA brand's measured
     button families. Families layer 1 tokenizes ride var() references; any additional
@@ -163,17 +187,32 @@ def button_family_css(doc) -> str:
         slug = _fam_slug(name)
         if name in _TOKENIZED_FAMILIES:
             p = "--button" if name == "primary" else f"--button-{name}"
+            # measured control height (sysfix 2026-07): brands measuring an explicit
+            # pill height render it verbatim (auto when unmeasured).
             base = (f"background: var({p}-bg, transparent); "
                     f"color: var({p}-fg, var(--button-fg)); "
                     f"border: var({p}-border, 0); "
                     f"border-radius: var({p}-radius, var(--button-radius, 0)); "
+                    f"height: var({p}-height, auto); "
                     f"padding: var({p}-pad, var(--button-pad, 0.7rem 1.4rem)); "
                     f"font-family: var({p}-font, var(--button-font, var(--font-body))); "
                     f"font-size: var({p}-size, var(--button-size, var(--control-size))); "
                     f"font-weight: var({p}-weight, var(--button-weight, 400));")
-            hover = f"background: var({p}-bg-hover, var({p}-bg, transparent));"
+            # hover/pressed carry the measured LABEL swap too (fgHover — e.g. an
+            # outline family filling on hover); unmeasured families resolve back to
+            # their idle fg, so this is inert for them (sysfix 2026-07).
+            hover = (f"background: var({p}-bg-hover, var({p}-bg, transparent)); "
+                     f"color: var({p}-fg-hover, var({p}-fg, var(--button-fg)));")
             press = (f"background: var({p}-bg-pressed, "
-                     f"var({p}-bg-hover, var({p}-bg, transparent)));")
+                     f"var({p}-bg-hover, var({p}-bg, transparent))); "
+                     f"color: var({p}-fg-hover, var({p}-fg, var(--button-fg)));")
+            disabled = ""
+            if fam.get("bgDisabled") is not None:
+                # the brand MEASURED a disabled fill: render it (with the measured
+                # disabled label when carried) instead of the harness opacity dim.
+                dis_fg = f" color: var({p}-fg-disabled);" if fam.get("fgDisabled") else ""
+                disabled = (f"\n.btnf-{slug}.is-disabled, .btnf-{slug}.live:disabled {{ "
+                            f"background: var({p}-bg-disabled);{dis_fg} opacity: 1; }}")
         else:
             def _v(key, default):
                 v = fam.get(key)
@@ -183,6 +222,7 @@ def button_family_css(doc) -> str:
                     f"color: {_v('fg', 'var(--ink)')}; "
                     f"border: {_v('border', '0')}; "
                     f"border-radius: {_v('radius', '0')}; "
+                    f"height: {_v('height', 'auto')}; "
                     f"padding: {_v('padding', '0.7rem 1.4rem')}; "
                     f"font-family: var(--font-body); font-size: {size}; "
                     f"font-weight: {_v('weight', '400')};")
@@ -190,9 +230,16 @@ def button_family_css(doc) -> str:
             press = f"background: {_v('bgPressed', _v('bgHover', _v('bg', 'transparent')))};"
             if fam.get("fgHover"):
                 hover += f" color: {fam['fgHover']};"
+                press += f" color: {fam['fgHover']};"
+            disabled = ""
+            if fam.get("bgDisabled") is not None:
+                dis_fg = f" color: {fam['fgDisabled']};" if fam.get("fgDisabled") else ""
+                disabled = (f"\n.btnf-{slug}.is-disabled, .btnf-{slug}.live:disabled {{ "
+                            f"background: {_v('bgDisabled', 'transparent')};{dis_fg} opacity: 1; }}")
         out.append(f".btnf-{slug} {{ {base} }}\n"
                    f".btnf-{slug}.is-hover, .btnf-{slug}.live:hover {{ {hover} }}\n"
-                   f".btnf-{slug}.is-active, .btnf-{slug}.live:active {{ {press} }}")
+                   f".btnf-{slug}.is-active, .btnf-{slug}.live:active {{ {press} }}"
+                   f"{disabled}")
     if not out:
         return ""
     return ("/* measured button families — values via layer-1 --button[-<family>]-* refs */\n"
@@ -307,14 +354,18 @@ body {
   line-height: 1.5;
 }
 
-.page { width: 100%; max-width: 96rem; margin: 0 auto; padding: 4cqh 5cqw 8cqh; }
+/* PAGE-CHROME spacing in rem (sysfix 2026-07): cq* units resolve against the VIEWPORT
+   box here (body is the container), so page/masthead/tier rhythm silently rescaled
+   with the window — harness chrome rhythm is fixed document rhythm, not responsive
+   brand geometry. Specimen-internal cq* (inside sized frames) is unaffected. */
+.page { width: 100%; max-width: 96rem; margin: 0 auto; padding: 2.5rem 3.5rem 5rem; }
 
 /* Masthead on the dark bookend surface (gold accent permitted here). */
 .masthead {
   background: var(--surface-inverse);
   color: var(--ink-inverse);
-  padding: 5cqh 5cqw;
-  margin-bottom: 5cqh;
+  padding: 3.5rem 3.5rem;
+  margin-bottom: 3.5rem;
 }
 .masthead .eyebrow { color: var(--ink-inverse-muted); }
 .masthead h1 {
@@ -333,7 +384,7 @@ body {
   text-transform: var(--case-eyebrow, none); color: var(--ink-inverse-muted); }
 
 /* Tier headers. */
-.tier { margin: 6cqh 0 2.5cqh; }
+.tier { margin: 4.5rem 0 2rem; }
 .tier-num { font-family: var(--font-heading); font-size: var(--counter-size);
   color: var(--ink); line-height: 1; }
 .tier-name { font-family: var(--font-heading); text-transform: var(--case-h2, none);
@@ -394,6 +445,7 @@ body {
 .cmp-stage > div:not([class]), .cmp-stage > .states, .cmp-stage > .ex-rows,
 .cmp-stage > .ex-list, .cmp-stage > .ex-illus, .cmp-stage > .ex-spacer,
 .cmp-stage > .surface-dark, .cmp-stage > .surface-darkest, .cmp-stage > .surface-panel,
+.cmp-stage > .cmp-banner-demo,
 .cmp-stage > .cmp-chrome-demo, .cmp-stage > .cmp-footer-demo,
 .cmp-stage > .c-header, .cmp-stage > .c-form, .cmp-stage > .c-field,
 .cmp-stage > .layout-frame, .cmp-stage > iframe { align-self: stretch; }
@@ -410,6 +462,12 @@ body {
   padding: 1.25rem; }
 .surface-panel { background: var(--surface-panel); color: var(--ink);
   padding: var(--panel-pad); }
+/* conversion-moment banner demo frame (Tier-2 `banner`): inset panel at the brand
+   radius; the content inside is the shared content-block anatomy. */
+.cmp-banner-demo { background: var(--surface-panel); color: var(--ink);
+  border-radius: var(--radius-panel, var(--radius, 0));
+  padding: 2.5rem 3rem; }
+.cmp-banner-demo .c-content-block { align-items: center; text-align: center; }
 /* chrome demos (navbar / logo / footer): the wrapper carries data-surface-frame for
    the RESOLVED brand chrome surface role (nav_surface_role / footer_surface_role) —
    the per-surface alias block scopes the --c-* vars, so a light-chrome brand demos
@@ -636,6 +694,9 @@ body {
    build_document output) in an iframe: composed sections carry their own scoped
    surface/scaffold CSS, so the iframe keeps them faithful without any mockup. */
 .cmp--layout .cmp-example { max-width: none; }
+/* 42rem is only the PRE-SCRIPT fallback: each frame is content-fit onload (sysfix
+   2026-07 — the fixed height left short sections with dead scroll zones and clipped
+   tall ones), capped so a 100cqh hero can't recurse the fit taller each measure. */
 .layout-frame { display: block; width: 100%; height: 42rem; border: 1px solid var(--hairline);
   background: var(--surface-primary); }
 
@@ -1136,12 +1197,18 @@ def render_b_media_text(doc, key, item):
 
 
 def render_b_content_block(doc, key, item):
+    # SSOT (sysfix 2026-07): the SAME render_content_block the composers dispatch —
+    # eyebrow → heading → body → action stack; the action rides the brand's law-first
+    # CTA shape (filled pill vs typographic arrow), not a hardcoded photo stub.
     sp = _specimen(doc)
-    return ('<div class="ex-photo" style="aspect-ratio:16/9">PHOTO</div>'
-            f'<div class="ex-caption">Fig. 02 &mdash; {esc(sp["name"])}</div>'
-            f'<div class="ex-h3" style="margin-top:0.5rem">{esc(sp["headline"])}</div>'
-            '<p class="ex-body">Narrow offset body, roughly a third of the container.</p>'
-            f'{_arrow("Read more")}')
+    block = cr.render_content_block(doc, _GALLERY_CTX, {
+        "eyebrow": cr.eyebrow_prefix(doc) + str(sp["links"][0]),
+        "heading": sp["headline"], "level": "h2",
+        "body": "Supporting body copy in the brand's own measure and register.",
+        "actions": [{"label": sp["cta"]}]})
+    return (block
+            + '<div class="ex-caption">Shared content-block anatomy &mdash; '
+              'eyebrow / heading / body / action, CTA in the brand\'s resolved shape</div>')
 
 
 def render_b_cta_block(doc, key, item):
@@ -1164,11 +1231,25 @@ def render_b_form(doc, key, item):
 
 
 def render_b_card(doc, key, item):
-    return ('<div class="ex-caption"><strong>Card treatment follows the brand law.</strong></div>'
-            '<div class="ex-photo" style="aspect-ratio:16/9">PHOTO</div>'
-            f'<div class="ex-caption">Fig. 03 &mdash; {esc(_specimen(doc)["name"])}</div>'
-            '<div class="ex-rule"></div>'
-            '<div class="ex-caption">Bounded units appear only where the brand\'s surface rules allow.</div>')
+    # SSOT (sysfix 2026-07): the SAME render_card the composers dispatch — the brand's
+    # own blocks.card anatomy (media well → eyebrow → heading → body → text action)
+    # instead of the old photo-plus-rule stub. Brands without a usable card device
+    # keep the law caption (the bounded-unit rule) with no invented anatomy.
+    sp = _specimen(doc)
+    if not cr.block_device(doc, "card"):
+        return ('<div class="ex-caption"><strong>Card treatment follows the brand law.'
+                '</strong></div><div class="ex-rule"></div>'
+                '<div class="ex-caption">Bounded units appear only where the brand\'s '
+                'surface rules allow &mdash; no card device declared.</div>')
+    card = cr.render_card(doc, _GALLERY_CTX, {
+        "media": {"aspect": "16 / 9", "placeholder": "MEDIA"},
+        "eyebrow": cr.eyebrow_prefix(doc) + str(sp["links"][0]),
+        "heading": sp["headline"], "level": "h3",
+        "body": "Card body copy in the brand's own register.",
+        "action": {"label": sp["cta"], "kind": "link"}})
+    return (f'<div style="max-width:26rem;align-self:stretch">{card}</div>'
+            '<div class="ex-caption">Shared card anatomy &mdash; inset media well on '
+            'the brand\'s inverse surface, body on the panel surface, text action</div>')
 
 
 def render_b_testimonial(doc, key, item):
@@ -1246,13 +1327,16 @@ def render_b_pricing_card(doc, key, item):
 
 
 def render_b_banner(doc, key, item):
+    # conversion-moment banner (sysfix 2026-07): heading + ONE action in the brand's
+    # law-first CTA shape, centered on an inset panel at the brand radius — the shared
+    # content-block anatomy, not the old hardcoded dark strip + accent link + dismiss
+    # glyph (one brand's notification-bar grammar baked into every gallery).
     sp = _specimen(doc)
-    return ('<div class="surface-dark" style="display:flex;align-items:center;justify-content:space-between;gap:1rem">'
-            f'<span class="ex-label" style="color:var(--ink-inverse)">{esc(sp["headline"])}</span>'
-            '<span style="display:flex;gap:1.25rem;align-items:center">'
-            '<a class="act" href="#" style="color:var(--accent)">Details <span class="arrow">&rarr;</span></a>'
-            '<span style="color:var(--ink-inverse-muted);font-family:var(--font-heading)">&times;</span></span></div>'
-            '<div class="ex-caption">Slim strip on the brand chrome surface; text + link action; typographic dismiss</div>')
+    block = cr.render_content_block(doc, _GALLERY_CTX, {
+        "heading": sp["headline"], "level": "h2", "actions": [{"label": sp["cta"]}]})
+    return (f'<div class="cmp-banner-demo">{block}</div>'
+            '<div class="ex-caption">Conversion-moment banner &mdash; centered heading '
+            '+ one action in the brand\'s CTA shape on an inset panel</div>')
 
 
 def render_b_modal(doc, key, item):
@@ -1453,6 +1537,26 @@ def _demo_text(role_text: str, kind: str, sp: dict, use: str,
     return f"{use} {kind} specimen"
 
 
+def _rules_grid_columns(layout) -> int | None:
+    """Integer module-grid track count from the brand layout's extracted
+    ``gridRules.columns`` prose — "repeat(3)" / "3-up carousel" / "4" resolve; track
+    lists count their fr tokens ("1fr 1fr" → 2); non-modular vocabulary ("single",
+    "logo row", "auto") resolves None. Bounded 2..6: outside that this is not a
+    module grid the cards scaffold should re-track."""
+    raw = str(((layout or {}).get("gridRules") or {}).get("columns") or "").strip().lower()
+    if not raw:
+        return None
+    m = re.search(r"repeat\(\s*(\d+)", raw)
+    if m:
+        n = int(m.group(1))
+    elif "fr" in raw:
+        n = len(re.findall(r"[\d.]*fr", raw))
+    else:
+        m = re.search(r"\d+", raw)
+        n = int(m.group(0)) if m else 0
+    return n if 2 <= n <= 6 else None
+
+
 def _demo_section_for_pattern(doc, pat, layout) -> dict:
     """Build a composition.v1-shaped demo SECTION for one pattern + its referencing
     brand layout, so the PROVEN composition adapter (compose_from_composition.
@@ -1494,23 +1598,48 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
                 entry[k] = shape[k]
         assets = [str(a) for a in (ls.get("assets") or []) if a]
         is_media = (ls.get("type") == "media") or bool(shape.get("mediaAspect"))
-        if (is_media or assets) and ("logo" in lower or len(assets) >= 6):
+        # LOGO-STRIP classification is per-asset KIND, not count (sysfix 2026-07): a
+        # slot whose files ALL read as marks (logo/badge/rating/vector — the shared
+        # composer classifier) is a strip; the old `>= 6 assets` heuristic mislabeled
+        # a 7-asset testimonial-card run (avatars + company marks) as a logo wall.
+        all_marks = bool(assets) and all(cs._is_mark_asset(a) for a in assets)
+        if (is_media or assets) and ("logo" in lower or all_marks):
             entry["contract"] = "logo"
             entry["copy"] = list(assets)  # coerced to asset items by _sanitize_assets
         elif len(assets) >= 2:
-            # a multi-asset slot is a repeatable MODULE run (cards / avatars): one
-            # module per real asset, labeled from the brand's own filenames — or
-            # from the authored per-module items when the counts line up.
+            # a multi-asset slot is a repeatable MODULE run (cards / testimonials).
+            # AUTHORED per-module items drive the module count and copy when present
+            # (sysfix 2026-07: the key ladder covers the testimonial quote/caption
+            # pair and the per-card cta, which the old heading/body-only read dropped);
+            # asset-less brands fall back to one module per real asset, labeled from
+            # the brand's own filenames. A slot mixing MARK assets (company logos)
+            # with photos pairs the marks with the modules first — the card anatomy's
+            # mark-on-card grammar (the composer renders marks contained).
             entry["contract"] = "card"
-            entry["copy"] = [
-                {"heading": ((authored_items[i].get("heading") or _asset_label(a))
-                             if authored_items and i < len(authored_items)
-                             else _asset_label(a)),
-                 "text": ((authored_items[i].get("body") or "")
-                          if authored_items and i < len(authored_items)
-                          else _demo_text(role, "body", sp, use, authored)),
-                 "asset": a, "alt": _asset_label(a)}
-                for i, a in enumerate(assets)]
+            if authored_items:
+                marks = [a for a in assets if cs._is_mark_asset(a)]
+                photos = [a for a in assets if not cs._is_mark_asset(a)]
+                cand = (marks + photos) if (marks and photos) else assets
+                mods = []
+                for i, it in enumerate(authored_items):
+                    a = cand[i] if i < len(cand) else None
+                    mod = {"heading": it.get("heading") or it.get("caption")
+                           or it.get("label") or (_asset_label(a) if a else ""),
+                           "text": it.get("body") or it.get("text")
+                           or it.get("quote") or ""}
+                    if it.get("cta"):
+                        mod["link"] = it["cta"]
+                    if a:
+                        mod["asset"] = a
+                        mod["alt"] = _asset_label(a)
+                    mods.append(mod)
+                entry["copy"] = mods
+            else:
+                entry["copy"] = [
+                    {"heading": _asset_label(a),
+                     "text": _demo_text(role, "body", sp, use, authored),
+                     "asset": a, "alt": _asset_label(a)}
+                    for a in assets]
         elif is_media or assets:
             entry["contract"] = "image"
             if assets:
@@ -1585,8 +1714,13 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
         for k in ("textLen", "sizeClass", "width", "z", "mediaAspect"):
             if shape.get(k):
                 entry[k] = shape[k]
-        if shape.get("mediaAspect") or shape.get("z") == "back":
-            entry["contract"] = "image"
+        if shape.get("z") == "back":
+            entry["contract"] = "image"  # structural backdrop: the classifiers read it
+        elif shape.get("mediaAspect"):
+            # CONTENT media the brand binds no asset to has nothing to show — a
+            # srcless slot renders the placeholder plate (sysfix 2026-07: the black
+            # plate rows). Structural z:back layers above are the only exception.
+            continue
         else:
             entry["contract"] = "paragraph"
             entry["copy"] = {"text": _demo_text(str(shape.get("role") or ""), "body", sp,
@@ -1604,19 +1738,36 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
     treatments = [dict(t) for t in (pat.get("specialTreatments") or [])
                   if isinstance(t, dict) and str(t.get("kind")) in known_kinds]
 
-    return {
+    archetype = str(layout.get("archetype") or pat.get("archetypeRef") or "stack")
+    section = {
         "id": layout.get("id") or pid,
         "useCase": use,
         # the LAYOUT's archetype is renderer vocabulary (build_document dispatches on
         # it); the pattern's archetypeRef is extraction vocabulary (e.g. `grid`) and
         # only backstops layouts that don't declare one.
-        "archetype": str(layout.get("archetype") or pat.get("archetypeRef") or "stack"),
+        "archetype": archetype,
         "surfaceIntent": str(pat.get("surfaceIntent") or "any"),
         "novelty": "reuse",
         "seededFrom": {"lib": "project", "id": pid},
         "slots": slots,
         "treatments": treatments,
     }
+    # the brand's DECLARED module-grid track count rides §4.6.5 (sysfix 2026-07:
+    # gridRules.columns was extracted but never consumed — a measured 3-up card grid
+    # demoed as the harvested 7/5 stagger). Cards archetype only: split "1fr 1fr" and
+    # footer directory counts describe other grids the cards scaffold must not eat.
+    if archetype == "cards":
+        n = _rules_grid_columns(layout)
+        if n:
+            section["grid"] = {"columns": n}
+    # declared pattern alignment rides into the composition (sysfix 2026-07): a
+    # contentShape alignment of center becomes the section anchor the adapter
+    # normalizes — without this the declared alignment silently dropped.
+    align_val = str((((pat.get("contentShape") or {}).get("alignment") or {})
+                     .get("value") or "")).lower()
+    if align_val in ("center", "centered"):
+        section["alignment"] = {"anchor": "centered"}
+    return section
 
 
 def compose_pattern_docs(doc, patterns, brand_yaml: Path, out_dir: Path) -> dict:
@@ -1919,13 +2070,16 @@ def build_page(doc, prim_items, prim_contracts, block_items, block_contracts, br
 
     n_actions = sum(1 for k in prim_items if k in ACTION_KINDS)
 
+    # literal em dash, NOT the &mdash; entity: build_section html-escapes the subtitle,
+    # so an entity here double-escapes and renders as the raw text "&mdash;" (sysfix
+    # 2026-07 — escape hygiene: exactly one escaping layer between author and page).
     prim_section = build_section(
         doc, "Tier 1", "Primitives",
-        f"{len(prim_items)} atomic primitives &mdash; {n_actions} action elements carry an interactive state matrix",
+        f"{len(prim_items)} atomic primitives — {n_actions} action elements carry an interactive state matrix",
         prim_items, prim_contracts, PRIMITIVE_RENDERERS, anchor="tier-primitives")
     block_section = build_section(
         doc, "Tier 2", "Blocks",
-        f"{len(block_items)} composed clusters &mdash; faithful mini-renders honoring the brand's slot grammar",
+        f"{len(block_items)} composed clusters — faithful mini-renders honoring the brand's slot grammar",
         block_items, block_contracts, BLOCK_RENDERERS, anchor="tier-blocks")
 
     surfaces_section = build_surfaces_section(doc)
@@ -1958,6 +2112,7 @@ def build_page(doc, prim_items, prim_contracts, block_items, block_contracts, br
 {cr.structural_variant_css(doc, include_all=True)}
 {cr.motion_vars_css(doc)}
 {cr.link_hover_css(doc)}
+{link_device_css(doc)}
 </style>
 </head>
 <body>
@@ -1977,6 +2132,27 @@ def build_page(doc, prim_items, prim_contracts, block_items, block_contracts, br
 {block_section}
 {surfaces_section}{layouts_section}
 </div>
+<script>
+/* provenance: preview-chrome — content-fit each composed-layout iframe onload (sysfix
+   2026-07): the fixed 42rem left short sections with dead scroll zones and clipped
+   tall ones. Same-origin file:// document; min/max clamps keep 100cqh hero sections
+   (whose height tracks the frame itself) from ratcheting the fit on each measure. */
+(function () {{
+  var MIN = 240, MAX = 1400;
+  function fit(f) {{
+    try {{
+      var d = f.contentDocument;
+      if (!d || !d.documentElement) return;
+      var h = Math.max(d.documentElement.scrollHeight, d.body ? d.body.scrollHeight : 0);
+      if (h > 0) f.style.height = Math.min(MAX, Math.max(MIN, h)) + "px";
+    }} catch (e) {{ /* cross-origin embed: keep the CSS fallback height */ }}
+  }}
+  document.querySelectorAll("iframe.layout-frame").forEach(function (f) {{
+    f.addEventListener("load", function () {{ fit(f); }});
+    fit(f);
+  }});
+}})();
+</script>
 </body>
 </html>
 """

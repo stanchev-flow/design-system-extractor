@@ -66,11 +66,20 @@ composers (`compose_section.py` `copy["…"]` reads):
   `visitTitle`, `visitRows`, `visitCta`
 - form/conversion: `placeholder`
 - counters/meta: `counter`
+- repeatable modules: `items` (list of `{heading|label|caption, body|text|quote,
+  cta}` dicts) — per-module copy for card grids / testimonial runs / accordion
+  rows. When a layout authors `items`, the composed modules must carry them (the
+  C11 composed-demo smoke rejects empty module captions over authored items).
 
 Multi-line headings use YAML block/quoted scalars with `\n` line breaks
 (composers honor explicit breaks). A key a composer needs but the layer lacks
 renders as empty copy for that device — list every content slot's copy for
 every content-bearing layout (validator C4 checks coverage).
+
+Copy values are LITERAL text: author real characters (`—`, `→`), never HTML
+entity strings (`&mdash;`, `&rarr;`) — renderers escape copy, so an entity
+string double-escapes into visible `&mdash;` text (validator C12 scans
+generated HTML for this).
 
 ## 5. `layoutImages` — per-layout photography
 

@@ -386,7 +386,8 @@ def _slot_to_mapping(slot: dict) -> dict:
     elif isinstance(copyval, dict):
         # fold recognized copy fields directly so _inline_props can consume them
         for k in ("eyebrow", "heading", "subheading", "body", "text", "caption",
-                  "label", "cta", "placeholder", "submit", "level"):
+                  "label", "cta", "placeholder", "submit", "level",
+                  "family", "styleHint"):
             if k in copyval:
                 usage[k] = copyval[k]
     asset = slot.get("asset")
@@ -572,8 +573,11 @@ def _cta_copy(section: dict) -> dict:
     body = _slot_text(_by_role(slots, "body", "sub", "lede"), "text", "body") \
         or _text((header or {}).get("copy"), "body", "text") or ""
     return {
+        # NO invented eyebrow (sysfix 2026-07): a conversion that authored none renders
+        # none — the render_header eyebrow slot is OPTIONAL and elides on empty; the
+        # old "Introducing" default was fabricated copy on every button-only banner.
         "eyebrow": _slot_text(_by_role(slots, "eyebrow"), "eyebrow", "text")
-        or _text((header or {}).get("copy"), "eyebrow") or "Introducing",
+        or _text((header or {}).get("copy"), "eyebrow") or "",
         "heading": _slot_text(header, "heading", "text") or "Start today",
         "body": body,
         "placeholder": (formcopy or {}).get("placeholder", "you@company.com"),
@@ -755,10 +759,15 @@ def _split_copy(section: dict) -> dict:
     out = {
         "eyebrow": _slot_text(_by_role(slots, "eyebrow"), "eyebrow", "text")
         or _text((header or {}).get("copy"), "eyebrow") or "",
+        # the section's own display heading (sysfix 2026-07: the key union was
+        # missing it — out["heading"] below raised KeyError on quote-less splits)
         "heading": _slot_text(header, "heading", "text") or "",
-        "panelTitle": _slot_text(panel, "heading", "title") or "Details",
+        # NO invented panel title / cta (sysfix 2026-07): "Details" / "Learn more" were
+        # fabricated copy on any split that authored neither; the split composers now
+        # elide the empty panel-title/action devices instead.
+        "panelTitle": _slot_text(panel, "heading", "title") or "",
         "rows": rows,
-        "cta": _slot_text(_by_role(slots, "action", "cta", "link"), "label", "cta") or "Learn more",
+        "cta": _slot_text(_by_role(slots, "action", "cta", "link"), "label", "cta") or "",
         "caption": _slot_text(_by_role(slots, "caption"), "caption", "text") or "",
     }
     # about-statement / curator-quote keys: surface the section's own slot copy.
@@ -1091,6 +1100,10 @@ def composition_to_layout(section: dict) -> dict:
                     for it in (copyval if isinstance(copyval, list) else items):
                         entry = _logo_item_mapping(it)
                         if entry:
+                            # source-slot GROUP rides along so the flow composer
+                            # renders each authored slot (badges / ratings / logos)
+                            # as its OWN strip row, never one merged strip.
+                            entry["group"] = str(s.get("name") or "logo-strip")
                             mapping.append(entry)
                 elif c_low in ("link", "cta"):
                     for it in items:

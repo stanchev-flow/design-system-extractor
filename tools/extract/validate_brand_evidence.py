@@ -13,7 +13,10 @@ Checks (E = error, W = warning):
   C2 E  every contract block type ATTEMPTED: present in brand.yaml `blocks:`
         with evidence, or explicitly `notObserved: true` (card called out)
   C3 E  button variant matrix: >= 1 family, each with radius + surface + a
-        state fact; a single family requires `singleVariantConfirmed: true`
+        state fact; a single family requires `singleVariantConfirmed: true`.
+        STRICT state pairing (sysfix 2026-07): a family measuring `bgHover`
+        must also measure `fgHover` (any value, incl. "unchanged"); a FILLED
+        family (style filled* or opaque bg) must measure `height` + `padding`
   C4 E  section-copy.yaml present, schema-conformant, wordmark set; every
         content-bearing non-chrome layout has a layoutCopy entry
   C5 E/W layout<->pattern coverage: non-chrome layouts carry patternRef (or
@@ -21,10 +24,26 @@ Checks (E = error, W = warning):
   C6 E  logo evidence: a logos use-case requires >= --min-logo-assets on-disk
         logo files (or assets tagged logo-wall-logo)
   C7 E/W chrome: navbar links + surface + presentation/measured facts; footer
-        columns/social; `legal.copyright` without `legal.text` is an error
+        columns/social; `legal.copyright` without `legal.text` is an error.
+        RANGE + INTEGRITY (sysfix 2026-07): measured contentMaxWidth must be
+        480–2200px when present; a grid-grammar footer needs headed columns;
+        a declared nav logo must be renderable (src / svg / wordmark text);
+        a footer logo must not be a third-party app/badge/rating asset;
+        mega-menu column headings must not be a prefix of their first link
+        label (the label-concatenation capture bug)
   C8 E/W assets-tagged.json exists; every tagged file exists under assets/
   C9 E  vision evidence: >= 1 evidence/grounding/*.yaml (--allow-no-vision
         downgrades to warning)
+  C10 E card variant coverage: a usable blocks.card must enumerate observed
+        `variants:` or carry `singleVariantConfirmed: true`
+  C11 E composed-demo smoke (needs the brand_pipeline harness; --no-smoke
+        skips): every referenced layout-library pattern composes with no
+        srcless `c-image-ph` placeholder markup and no empty module captions
+        when authored items exist; a pattern declaring centered alignment
+        must stamp an anchor through the composition adapter
+  C12 E escape hygiene: generated preview/chrome HTML under the brand dir
+        (and the C11 smoke renders) must not contain double-escaped entity
+        text such as `&amp;mdash;`
 
 Importable API (used by brand_pipeline/tests/test_brand_evidence_contract.py):
     report = validate_brand_dir(brand_dir, contracts_path=..., ...)
@@ -37,7 +56,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
+import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -45,6 +66,14 @@ import yaml
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 DEFAULT_CONTRACTS = REPO_ROOT / "brand_pipeline" / "contracts" / "blocks.yaml"
+
+# a literal double-escaped HTML entity in GENERATED html (e.g. "&amp;mdash;")
+# renders as visible "&mdash;" text — always an escaping bug, never content.
+DOUBLE_ESCAPED_ENTITY = re.compile(r"&amp;[a-zA-Z]+;")
+# third-party store/review badge art masquerading as the brand's footer logo
+APP_BADGE_PATTERN = re.compile(r"app.?store|google.?play|play.?store|badge|rating",
+                               re.IGNORECASE)
+CONTENT_MAX_WIDTH_RANGE = (480, 2200)
 
 ALLOWED_COPY_KEYS = {"sectionCopy", "layoutCopy", "layoutImages", "defaultArt",
                      "wildcardCopy"}
@@ -106,7 +135,8 @@ def _mentions_logos(doc: dict, patterns: list[dict]) -> bool:
 
 def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = None,
                        allow_no_vision: bool = False,
-                       min_logo_assets: int = 3) -> Report:
+                       min_logo_assets: int = 3,
+                       smoke: bool = True) -> Report:
     brand_dir = Path(brand_dir)
     rep = Report(brand_dir)
     contracts_path = contracts_path or DEFAULT_CONTRACTS
@@ -170,6 +200,22 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
                 missing.append("bg/fg/style")
             if not any(fam.get(k) for k in state_keys):
                 missing.append("a state fact (bgHover/fgHover/decoration/focus)")
+            # C3-strict (sysfix 2026-07): a measured bg swap without the label's
+            # hover fact leaves the renderer guessing label contrast mid-state —
+            # measure fgHover too (an explicit "unchanged" marker counts).
+            if fam.get("bgHover") and not fam.get("fgHover"):
+                missing.append("fgHover (bgHover measured — record the hover label "
+                               "color, or an explicit 'unchanged')")
+            style = str(fam.get("style") or "").lower()
+            bg = str(fam.get("bg") or "").lower()
+            filled = style.startswith("filled") or (
+                bg and bg not in ("transparent", "none")
+                and not bg.startswith("rgba(0, 0, 0, 0"))
+            if filled:
+                for geom in ("height", "padding"):
+                    if not fam.get(geom):
+                        missing.append(f"{geom} (filled family — control geometry "
+                                       "is measured, not defaulted)")
             if missing:
                 rep.error("C3", f"buttons.{name}: missing {', '.join(missing)} — "
                                 "each family ships a usable state matrix "
@@ -298,6 +344,21 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
                             "inline-SVG pass) and tag them logo-wall-logo.")
 
     # C7 — chrome content + presentation evidence
+    def _check_content_max(owner: str, measured: dict) -> None:
+        raw = measured.get("contentMaxWidth")
+        if raw in (None, "", 0):
+            return                       # unmeasured (e.g. %-based container) — allowed
+        try:
+            px = float(raw)
+        except (TypeError, ValueError):
+            rep.error("C7", f"{owner}.measured.contentMaxWidth is not numeric: {raw!r}")
+            return
+        lo, hi = CONTENT_MAX_WIDTH_RANGE
+        if not (lo <= px <= hi):
+            rep.error("C7", f"{owner}.measured.contentMaxWidth={px:g}px outside "
+                            f"[{lo}, {hi}] — a value in this range is a % / viewport "
+                            "artifact or a mis-measure, not a content column.")
+
     nav = doc.get("navbar") if isinstance(doc.get("navbar"), dict) else {}
     if not nav:
         rep.error("C7", "brand.yaml navbar: missing — measure_computed chrome facts "
@@ -316,6 +377,41 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
                             "separators/CTA treatment must come from the source "
                             "(grounding `chrome` block + computed styles), or the "
                             "renderer's habits leak in.")
+        _check_content_max("navbar", measured)
+        # renderable nav logo (sysfix 2026-07): a declared logo dict must resolve to
+        # something the chrome renderer can draw — an image src, inline svg (kind/
+        # markup/contract pointer), or the wordmark text device as a last resort.
+        logo = nav.get("logo")
+        if isinstance(logo, dict):
+            renderable = (logo.get("src") or logo.get("svg")
+                          or str(logo.get("kind") or "").lower() == "svg"
+                          or logo.get("srcContract") or logo.get("text"))
+            if not renderable:
+                rep.error("C7", "navbar.logo declared but not renderable — carry "
+                                "`src` (on-disk asset), `kind: svg` + markup/"
+                                "srcContract pointer, or drop the dict so the "
+                                "wordmark text device renders.")
+        # mega-menu integrity (sysfix 2026-07): a column heading that PREFIXES its
+        # first link's label is the label-concatenation capture bug (heading text
+        # swallowed into the link), not real information architecture.
+        for item in (nav.get("primary") or []):
+            if not isinstance(item, dict):
+                continue
+            menu = item.get("menu") if isinstance(item.get("menu"), dict) else {}
+            for col in (menu.get("columns") or []):
+                if not isinstance(col, dict):
+                    continue
+                heading = str(col.get("heading") or "").strip()
+                links = [l for l in (col.get("links") or []) if isinstance(l, dict)]
+                first = str((links[0].get("label") if links else "") or "").strip()
+                if heading and first and len(heading) > 3 \
+                        and first.lower().startswith(heading.lower()) \
+                        and first.lower() != heading.lower():
+                    rep.error("C7", f"navbar mega-menu '{item.get('label')}' column "
+                                    f"heading {heading!r} is a prefix of its first "
+                                    f"link {first!r} — heading text was concatenated "
+                                    "into the link label at capture; re-extract the "
+                                    "menu with heading/link separation.")
     foot = doc.get("footer") if isinstance(doc.get("footer"), dict) else {}
     if not foot:
         rep.error("C7", "brand.yaml footer: missing.")
@@ -338,6 +434,30 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
         if bad_social:
             rep.error("C7", "footer.social entries need {network, href} shapes "
                             f"({len(bad_social)} malformed).")
+        f_measured = foot.get("measured") if isinstance(foot.get("measured"), dict) else {}
+        _check_content_max("footer", f_measured)
+        # grid-grammar footers need HEADED columns (sysfix 2026-07): a columns
+        # footer whose headings were all lost renders as an anonymous link soup.
+        grammar_grid = (
+            str(foot.get("archetype") or "").lower() == "grid"
+            or str((foot.get("rules") or {}).get("layout") or "").lower() == "grid"
+            or bool((foot.get("rules") or {}).get("hasColumnHeadings")))
+        columns = [c for c in (foot.get("columns") or []) if isinstance(c, dict)]
+        if grammar_grid and columns \
+                and not any(str(c.get("heading") or "").strip() for c in columns):
+            rep.error("C7", "footer grammar is columns/grid but no column carries a "
+                            "heading — headings are part of the measured grammar; "
+                            "re-extract them (heading-in-link DOM nesting is the "
+                            "usual cause).")
+        # footer logo must be the BRAND mark, not a store/review badge asset
+        f_logo = foot.get("logo")
+        if isinstance(f_logo, dict):
+            probe = " ".join(str(f_logo.get(k) or "") for k in ("src", "alt", "href"))
+            if APP_BADGE_PATTERN.search(probe):
+                rep.error("C7", f"footer.logo looks like a store/review badge asset "
+                                f"({probe.strip()!r}) — the footer logo slot carries "
+                                "the brand's own mark; badges belong to content "
+                                "sections/asset tags.")
 
     # C8 — assets-tagged manifest matches disk
     tagged_path = brand_dir / "assets-tagged.json"
@@ -381,7 +501,133 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
         else:
             rep.error("C9", msg + " (--allow-no-vision downgrades this to a warning)")
 
+    # C10 — card variant coverage (sysfix 2026-07): one measured card is a claim
+    # about the WHOLE site's card grammar; enumerate the observed variants or
+    # confirm the single variant explicitly after re-checking the grounding.
+    card = blocks.get("card")
+    if isinstance(card, dict) and not card.get("notObserved") \
+            and str(card.get("use") or "").lower() != "never":
+        variants = card.get("variants")
+        has_variants = isinstance(variants, list) and len(variants) >= 1
+        if not has_variants and card.get("singleVariantConfirmed") is not True:
+            rep.error("C10", "blocks.card: usable card evidence without variant "
+                             "coverage — enumerate the observed `variants:` (e.g. "
+                             "media-well vs text-only) or set "
+                             "`singleVariantConfirmed: true` after re-checking the "
+                             "grounding crops.")
+
+    # C11 — composed-demo smoke (sysfix 2026-07): compose every referenced pattern
+    # through the REAL preview harness; structural render bugs (srcless placeholder
+    # plates, empty module captions over authored items, dropped alignment) fail
+    # here instead of surfacing as visual regressions.
+    if smoke:
+        _smoke_compose(rep, brand_dir, doc, patterns)
+
+    # C12 — escape hygiene in generated artifacts already living in the brand dir
+    for gen in ("components-preview", "chrome"):
+        gen_dir = brand_dir / gen
+        if not gen_dir.is_dir():
+            continue
+        for f in sorted(gen_dir.rglob("*.html")):
+            hits = DOUBLE_ESCAPED_ENTITY.findall(f.read_text(errors="replace"))
+            if hits:
+                rep.error("C12", f"{f.relative_to(brand_dir)}: double-escaped "
+                                 f"entity text {sorted(set(hits))} — an entity was "
+                                 "escaped again (author literal characters, e.g. "
+                                 "'—', not '&mdash;', in copy fed to renderers).")
+
     return rep
+
+
+def _smoke_compose(rep: Report, brand_dir: Path, doc: dict,
+                   patterns: list[dict]) -> None:
+    """C11 body: hydrate + compose every referenced pattern into a temp dir via the
+    preview harness (the same path the components preview uses) and check the
+    rendered documents. Import failures fail loud — the smoke check is part of the
+    evidence contract, not an optional extra."""
+    referenced = [p for p in patterns if isinstance(p, dict) and p.get("id")]
+    if not referenced or not (brand_dir / "brand.yaml").is_file():
+        return
+    bp_dir = REPO_ROOT / "brand_pipeline"
+    if str(bp_dir) not in sys.path:
+        sys.path.insert(0, str(bp_dir))
+    try:
+        import compose_from_composition as cfc
+        import compose_section as cs
+        import render_components_preview as rp
+    except Exception as exc:                    # pragma: no cover - env specific
+        rep.error("C11", f"composed-demo smoke could not import the harness: {exc} "
+                         "(run with --no-smoke to skip deliberately)")
+        return
+
+    cdoc = yaml.safe_load((brand_dir / "brand.yaml").read_text()) or {}
+    cs.attach_brand_copy(cdoc, brand_dir)
+    cs.attach_asset_inventory(cdoc, brand_dir)
+    authored_copy = cs.brand_layout_copy(cdoc)
+
+    # alignment stamping (structural): a pattern declaring centered alignment must
+    # survive the demo-hydration + adapter path with an anchor on the layout. Only
+    # probed for patterns the harness would actually hydrate (same gating as
+    # compose_pattern_docs) — plain-composer layouts carry their own alignment.
+    hydrate_all = rp._demo_hydration_active(cdoc)
+    for pat in referenced:
+        align = str((((pat.get("contentShape") or {}).get("alignment") or {})
+                     .get("value") or "")).lower()
+        if align not in ("center", "centered"):
+            continue
+        layout = rp.layout_for_pattern(cdoc, pat.get("id"))
+        if layout is None:
+            continue
+        if not (hydrate_all or rp._layout_needs_asset_hydration(cdoc, layout)):
+            continue
+        try:
+            sec = rp._demo_section_for_pattern(cdoc, pat, layout)
+            comp = cfc._sanitize_assets({"sections": [sec]}, brand_dir)
+            adapted = cfc.composition_to_layout(comp["sections"][0])
+        except Exception as exc:
+            rep.error("C11", f"pattern '{pat.get('id')}' failed to adapt for the "
+                             f"alignment smoke: {exc}")
+            continue
+        anchor = str(((adapted.get("alignment") or {}).get("anchor") or "")).lower()
+        if anchor not in ("center", "centered"):
+            rep.error("C11", f"pattern '{pat.get('id')}' declares centered "
+                             "alignment but the composed layout carries no anchor "
+                             "— the declared alignment was dropped on the way to "
+                             "the composer.")
+
+    with tempfile.TemporaryDirectory(prefix="evidence-smoke-") as tmp:
+        out_dir = Path(tmp)
+        try:
+            results = rp.compose_pattern_docs(cdoc, referenced,
+                                              brand_dir / "brand.yaml", out_dir)
+        except Exception as exc:
+            rep.error("C11", f"composed-demo smoke crashed: {exc}")
+            return
+        for pid, res in sorted(results.items()):
+            err = (res or {}).get("error")
+            if err:
+                rep.error("C11", f"pattern '{pid}' did not compose: {err}")
+                continue
+            html_path = out_dir / "layouts" / f"{pid}.html"
+            if not html_path.is_file():
+                rep.error("C11", f"pattern '{pid}' composed but wrote no document.")
+                continue
+            html = html_path.read_text(errors="replace")
+            if 'class="c-image-ph' in html:
+                rep.error("C11", f"pattern '{pid}' composes a srcless placeholder "
+                                 "plate (c-image-ph markup) — bind a real asset to "
+                                 "the media slot or drop the slot.")
+            layout = rp.layout_for_pattern(cdoc, pid) or {}
+            authored = authored_copy.get(layout.get("id")) or {}
+            if isinstance(authored.get("items"), list) and authored["items"]:
+                if re.search(r'class="cs-module-title"\s*>\s*<', html):
+                    rep.error("C11", f"pattern '{pid}' renders empty module "
+                                     "caption(s) while the brand authored items — "
+                                     "the item copy is not reaching the modules.")
+            hits = DOUBLE_ESCAPED_ENTITY.findall(html)
+            if hits:
+                rep.error("C12", f"pattern '{pid}' demo contains double-escaped "
+                                 f"entity text {sorted(set(hits))}.")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -393,6 +639,8 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--allow-no-vision", action="store_true",
                     help="downgrade the missing-grounding error to a warning")
     ap.add_argument("--min-logo-assets", type=int, default=3)
+    ap.add_argument("--no-smoke", action="store_true",
+                    help="skip the C11 composed-demo smoke check")
     ap.add_argument("--report", type=Path, help="write a JSON report here")
     return ap
 
@@ -405,7 +653,8 @@ def main(argv=None) -> int:
         raise SystemExit("provide --brand-dir or --brand")
     rep = validate_brand_dir(brand_dir, contracts_path=args.contracts,
                              allow_no_vision=args.allow_no_vision,
-                             min_logo_assets=args.min_logo_assets)
+                             min_logo_assets=args.min_logo_assets,
+                             smoke=not args.no_smoke)
     for w in rep.warnings:
         print(f"WARN  {w}")
     for e in rep.errors:

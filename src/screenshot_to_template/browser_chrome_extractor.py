@@ -176,14 +176,27 @@ _EXTRACT_JS = r"""
       }
     }
 
-    // columns: group links by nearest preceding LEAF heading
+    // columns: group links by nearest preceding LEAF heading.
+    // A title-classed node INSIDE a link is that LINK's own label (menu-card
+    // title), never a column heading — promoting card titles to headings shifted
+    // every column off by one card (sysfix 2026-07).
     const heads0 = Array.from(
       panel.querySelectorAll("h1,h2,h3,h4,h5,h6,[class*='title' i],[class*='heading' i]")
-    );
+    ).filter((h) => !h.closest("a[href]"));
     const heads = heads0.filter((h) => !heads0.some((o) => o !== h && h.contains(o)));
     const allLinks = Array.from(panel.querySelectorAll("a[href]")).filter(
       (a) => !featuredSet.has(a)
     );
+    // A menu-card link labels itself by its own TITLE node when it carries one;
+    // anyLabel() on the whole card concatenated title+description into one string
+    // ("Global Payroll RunRun compliant payroll easily", sysfix 2026-07).
+    const menuLinkLabel = (a) => {
+      const t = a.querySelector(
+        "h1,h2,h3,h4,h5,h6,[class*='title' i]:not([class*='subtitle' i]),[class*='label' i],strong,b"
+      );
+      const own = t ? anyLabel(t) : "";
+      return own || anyLabel(a);
+    };
     const columns = [];
     if (heads.length) {
       for (let i = 0; i < heads.length; i++) {
@@ -198,7 +211,7 @@ _EXTRACT_JS = r"""
             const p2 = next.compareDocumentPosition(a);
             if (!(p2 & Node.DOCUMENT_POSITION_PRECEDING)) continue;
           }
-          const t = anyLabel(a);
+          const t = menuLinkLabel(a);
           if (!t) continue;
           const href = a.getAttribute("href") || "";
           const k = (t + "|" + href).toLowerCase();
@@ -213,7 +226,7 @@ _EXTRACT_JS = r"""
       const items = [];
       const seenL = new Set();
       for (const a of allLinks) {
-        const t = anyLabel(a);
+        const t = menuLinkLabel(a);
         if (!t) continue;
         const href = a.getAttribute("href") || "";
         const k = (t + "|" + href).toLowerCase();
@@ -232,12 +245,19 @@ _EXTRACT_JS = r"""
     return Number.isFinite(n) ? Math.round(n) : 0;
   };
 
-  // max-width inherited up the ancestor chain (content container width)
+  // max-width inherited up the ancestor chain (content container width).
+  // PX LITERALS ONLY (sysfix 2026-07): a percentage/vw max-width is relative to its
+  // own container, not a content measure — parsing `max-width: 100%` as 100(px)
+  // shipped a 100px chrome container. Implausibly narrow px caps (< 320) are
+  // treated as local element constraints, not the page content measure.
   const maxWidthUp = (el) => {
     let n = el;
     while (n && n !== document.body && n !== document.documentElement) {
       const mw = getComputedStyle(n).maxWidth;
-      if (mw && mw !== "none") return px(mw);
+      if (mw && mw !== "none" && /px$/.test(mw)) {
+        const v = px(mw);
+        if (v >= 320) return v;
+      }
       n = n.parentElement;
     }
     return 0;
@@ -275,7 +295,13 @@ _EXTRACT_JS = r"""
     hay = (hay || "").toLowerCase();
     if (/logo|wordmark|brandmark|brand\b/.test(hay)) s += 4;
     if (SOCIAL.test(hay)) s -= 6;
+    // third-party marks are NEVER the site logo (sysfix 2026-07): app/play-store
+    // badges, review-platform award/rating chips (a footer full of G2 badges
+    // outscored the real wordmark), payment marks.
+    if (/app-?store|play-?store|google-?play|apps\.apple|play\.google|badge|award|rating|trustpilot|capterra|\bg2\b/.test(hay)) s -= 6;
     if (href === "/" || href === origin || href === origin + "/" || href === "") s += 3;
+    // an OFFSITE store/marketplace destination is not the brand home link
+    if (/^https?:\/\//.test(href) && href.indexOf(origin) !== 0) s -= 2;
     if (/\/(content|blog|topic|news|press|career|product|platform|resource|demo|pricing|sign)/.test(href)) s -= 3;
     if (w && h) { const ar = w / h; if (ar >= 1.6 && ar <= 9) s += 2; else if (ar < 1.1) s -= 1; }
     if (rect && rect.left < 240) s += 1;
@@ -327,6 +353,20 @@ _EXTRACT_JS = r"""
 
   const transparent = (c) =>
     !c || c === "transparent" || c === "rgba(0, 0, 0, 0)" || c === "rgba(0,0,0,0)";
+
+  // Effective painted background: walk up until a non-transparent backgroundColor
+  // (a transparent nav bar PAINTS as its ancestor's fill — capture that fact so the
+  // generator never renders `rgba(0,0,0,0)` as if it were a surface, sysfix 2026-07).
+  const effectiveBg = (el) => {
+    let n = el;
+    while (n && n !== document.documentElement) {
+      const bg = getComputedStyle(n).backgroundColor;
+      if (!transparent(bg)) return bg;
+      n = n.parentElement;
+    }
+    const rootBg = getComputedStyle(document.documentElement).backgroundColor;
+    return transparent(rootBg) ? "" : rootBg;
+  };
 
   const hasIconChild = (el) => {
     const svg = el.querySelector("svg");
@@ -471,7 +511,16 @@ _EXTRACT_JS = r"""
       if (el.querySelector("svg, img") && !/[A-Za-z]{2,}/.test(text)) continue;
       const s = getComputedStyle(el);
       const href = el.tagName === "A" ? (el.getAttribute("href") || "") : "";
-      const bg = s.backgroundColor;
+      // pill fill painted on a pseudo-element (sysfix 2026-07): buttons whose own
+      // background is transparent but whose ::before/::after carries the fill are
+      // still filled CTAs — read the pseudo layer before declaring "not a button".
+      let bg = s.backgroundColor;
+      if (transparent(bg)) {
+        for (const pe of ["::before", "::after"]) {
+          const ps = getComputedStyle(el, pe);
+          if (ps.content !== "none" && !transparent(ps.backgroundColor)) { bg = ps.backgroundColor; break; }
+        }
+      }
       const borderW = px(s.borderTopWidth) + px(s.borderBottomWidth) + px(s.borderLeftWidth) + px(s.borderRightWidth);
       const filled = !transparent(bg) && bg !== hs.backgroundColor;
       const bordered = borderW > 0 && !transparent(s.borderTopColor);
@@ -560,6 +609,8 @@ _EXTRACT_JS = r"""
       _provenance: "getComputedStyle (rendered px / CSS strings) from saved DOM",
       bar: {
         bg: hs.backgroundColor,
+        // the PAINTED bar fill (ancestor fill when the bar itself is transparent)
+        effectiveBg: effectiveBg(header),
         height: px(hs.height) || Math.round(hr.height),
         paddingTop: px(hs.paddingTop),
         paddingBottom: px(hs.paddingBottom),
@@ -593,8 +644,16 @@ _EXTRACT_JS = r"""
     }
     if (fcta) {
       const s = getComputedStyle(fcta);
+      // pseudo-element pill fill (same rule as the classifier above)
+      let ctaBg = s.backgroundColor;
+      if (transparent(ctaBg)) {
+        for (const pe of ["::before", "::after"]) {
+          const ps = getComputedStyle(fcta, pe);
+          if (ps.content !== "none" && !transparent(ps.backgroundColor)) { ctaBg = ps.backgroundColor; break; }
+        }
+      }
       measured.cta = {
-        bg: s.backgroundColor,
+        bg: ctaBg,
         color: s.color,
         fontSize: px(s.fontSize),
         fontWeight: s.fontWeight,
@@ -648,18 +707,30 @@ _EXTRACT_JS = r"""
     const flogo = pickLogo(footer).logo;
 
     // columns: group visible links by nearest preceding heading-ish element.
+    // Heading candidates INSIDE a link are link labels, not group headings
+    // (same discipline as the mega-menu splitter, sysfix 2026-07).
     const headingEls = Array.from(
       footer.querySelectorAll("h2, h3, h4, h5, h6, [class*='title' i], [class*='heading' i]")
-    ).filter(isVisible);
+    ).filter(isVisible).filter((h) => !h.closest("a[href]"));
 
     const columns = [];
+    const colHeads = [];  // headings that actually produced a linked column
     if (headingEls.length >= 2) {
       for (let i = 0; i < headingEls.length; i++) {
         const head = headingEls[i];
         const headLabel = label(head);
-        // collect links that come after this heading but before the next heading
+        // collect links that come after this heading but before the next heading.
+        // WALK UP from the heading to the nearest ancestor that actually contains
+        // links (sysfix 2026-07): accordion-style footers wrap the group title in
+        // its own <button> — head.parentElement held zero links, so every heading
+        // produced an empty column and the extraction fell back to heading-less
+        // grid columns.
         const next = headingEls[i + 1] || null;
-        const container = head.parentElement || footer;
+        let container = head.parentElement || footer;
+        while (container && container !== footer && !container.querySelector("a[href]")) {
+          container = container.parentElement;
+        }
+        container = container || footer;
         const links = Array.from(container.querySelectorAll("a[href]")).filter((a) => {
           if (!isVisible(a)) return false;
           const pos = head.compareDocumentPosition(a);
@@ -683,7 +754,7 @@ _EXTRACT_JS = r"""
           items.push({ label: t, href: a.getAttribute("href") || "#", color: getComputedStyle(a).color });
         }
         // no per-column cap: capture ALL links under each heading
-        if (items.length) columns.push({ heading: headLabel, links: items });
+        if (items.length) { columns.push({ heading: headLabel, links: items }); colHeads.push(head); }
       }
     }
     if (!columns.length) {
@@ -848,26 +919,39 @@ _EXTRACT_JS = r"""
       contentMaxWidth: maxWidthUp(headingEls.length ? headingEls[0] : footer),
     };
     // column grid: locate the grid/flex container holding the columns (LCA of
-    // first & last heading) and read its real track/gap geometry.
+    // first & last COLUMN-PRODUCING heading — decorative titles elsewhere in the
+    // footer must not widen the scope) and read its real track/gap geometry.
+    const gridHeads = colHeads.length >= 2 ? colHeads : headingEls;
     let colsContainer = null;
-    if (headingEls.length >= 2) {
-      colsContainer = lca(headingEls[0], headingEls[headingEls.length - 1]);
+    if (gridHeads.length >= 2) {
+      colsContainer = lca(gridHeads[0], gridHeads[gridHeads.length - 1]);
     }
     if (colsContainer) {
       const cs = getComputedStyle(colsContainer);
+      // physical column WRAPPERS (sysfix 2026-07): direct children that hold the
+      // headed groups — a flex/columns footer (no grid tracks) still reports its
+      // real column count AND the per-wrapper group distribution (e.g. 8 groups
+      // over 6 columns as [1,2,1,2,1,1]), so the generator reproduces the source
+      // stacking instead of guessing.
+      const kids = Array.from(colsContainer.children);
+      const wrapperSizes = kids
+        .map((ch) => gridHeads.filter((h) => ch.contains(h)).length)
+        .filter((n) => n > 0);
       fmeasured.grid = {
         display: cs.display,
         templateColumns: cs.gridTemplateColumns && cs.gridTemplateColumns !== "none" ? cs.gridTemplateColumns : "",
         columnGap: px((cs.columnGap && cs.columnGap !== "normal") ? cs.columnGap : cs.gap),
         rowGap: px((cs.rowGap && cs.rowGap !== "normal") ? cs.rowGap : cs.gap),
         columnCount: columns.length,
+        wrapperCount: wrapperSizes.length,
+        wrapperSizes: wrapperSizes,
       };
     } else {
       fmeasured.grid = { display: "", templateColumns: "", columnGap: 0, rowGap: 0, columnCount: columns.length };
     }
     if (headingEls.length) {
       const s = getComputedStyle(headingEls[0]);
-      fmeasured.heading = { fontSize: px(s.fontSize), fontWeight: s.fontWeight, lineHeight: s.lineHeight, color: s.color };
+      fmeasured.heading = { fontSize: px(s.fontSize), fontWeight: s.fontWeight, lineHeight: s.lineHeight, color: s.color, fontFamily: s.fontFamily };
     }
     // first real column link (skip the logo anchor) for link typography
     let flinkEl = null;
