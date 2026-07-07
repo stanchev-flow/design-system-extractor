@@ -1,0 +1,81 @@
+  offGridExpansion=False (from style)
+  [attempt 0] 151.99s  in=22795 out=12365
+    gate: FAIL ['Surface = brand surface/primary (#eff0f0)']
+  [attempt 1] 99.22s  in=22914 out=8039
+    gate: FAIL ['Surface = brand surface/primary (#eff0f0)']
+  [attempt 2] 89.85s  in=22914 out=7411
+    gate: FAIL ['Surface = brand surface/primary (#eff0f0)']
+{
+  "ok": false,
+  "attempts": 3,
+  "wall_s": 352.7,
+  "style": "corporate-saas-clean",
+  "out_dir": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/remote/brand/compose/signup-launch-v2",
+  "offGridExpansion": false,
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "split",
+      "novelty": "reuse",
+      "surfaceIntent": "panel",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-inset-noise-panel"
+      }
+    },
+    {
+      "id": "logos",
+      "useCase": "logos",
+      "archetype": "stack",
+      "novelty": "reuse",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "partner-proof-row"
+      }
+    },
+    {
+      "id": "features",
+      "useCase": "features",
+      "archetype": "split",
+      "novelty": "reuse",
+      "surfaceIntent": "panel",
+      "seededFrom": {
+        "lib": "project",
+        "id": "infra-proof-split"
+      }
+    },
+    {
+      "id": "testimonial",
+      "useCase": "testimonial",
+      "archetype": "cards",
+      "novelty": "adapt",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "testimonial-card-row"
+      }
+    },
+    {
+      "id": "cta",
+      "useCase": "cta",
+      "archetype": "stack",
+      "novelty": "reuse",
+      "surfaceIntent": "panel",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-inline-banner"
+      }
+    }
+  ],
+  "failures": [
+    [
+      "Surface = brand surface/primary (#eff0f0)",
+      "section renders on the brand surface bg #eff0f0"
+    ]
+  ],
+  "schema_errors": [],
+  "neverdo_hits": [],
+  "scorecard_overall": null
+}

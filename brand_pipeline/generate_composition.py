@@ -268,6 +268,22 @@ def _surface_rhythm_profile(doc: dict) -> dict:
     }
 
 
+# `surfaceIntent` names the SECTION BAND's paint, not a device inside it. A seeded
+# pattern that carries its own inset panel / art-surface treatment (panel-on-media,
+# art-surface, inset) already paints that panel INSIDE the section — the section
+# itself stays on the page canvas. Emitting "panel" there repaints the whole band
+# and erases the canvas the source shows around the device. Brand-agnostic: the
+# mechanic holds for any brand whose patterns carry inset panel devices.
+_PANEL_INTENT_RULE = (
+    "- SURFACE INTENT NAMES THE BAND, NOT A DEVICE: `surfaceIntent` paints the whole\n"
+    "  section band. A section seeded from a pattern whose intent/treatments carry an\n"
+    "  INSET panel or art surface (panel-on-media, inset, art-panel heroes) already\n"
+    "  renders that panel inside the section — keep such a section's `surfaceIntent`\n"
+    "  on the page canvas (\"primary\"/\"any\"); do NOT set \"panel\" for it. Reserve\n"
+    "  `surfaceIntent: \"panel\"` for sections the source really renders as a full\n"
+    "  panel-toned band edge-to-edge.\n")
+
+
 def _brand_fidelity_rules(doc: dict, single_accent: bool) -> str:
     """The BRAND FIDELITY rule block, derived from the brand's extracted surface
     grammar instead of asserting one grammar for every brand (the old hardcoded
@@ -301,7 +317,7 @@ def _brand_fidelity_rules(doc: dict, single_accent: bool) -> str:
             "  \"inverse\" or \"inverse-strong\" for this brand. The hero realizes its impact\n"
             "  through the brand's own extracted hero pattern (panel/art surface, display-scale\n"
             "  type, placed media), not through a dark band the source never shows.\n"
-            + accent_light)
+            + _PANEL_INTENT_RULE + accent_light)
     if prof["has_rhythm"] and not prof["opens_dark"]:
         return (
             "- BRAND FIDELITY (HARD — derived from the brand's extracted surface rhythm): the\n"
@@ -310,13 +326,13 @@ def _brand_fidelity_rules(doc: dict, single_accent: bool) -> str:
             "  band). The hero uses `surfaceIntent` \"primary\", \"panel\" or \"any\"; at most\n"
             f"  {prof['dark_count']} section(s) may use \"inverse\"/\"inverse-strong\", placed\n"
             "  where the extracted rhythm shows them (never the opener).\n"
-            + accent_light)
+            + _PANEL_INTENT_RULE + accent_light)
     if not prof["has_rhythm"] and not prof["has_dark_surface"]:
         return (
             "- BRAND FIDELITY (HARD): this brand declares no dark/inverse surface, so no section\n"
             "  may use `surfaceIntent` \"inverse\" or \"inverse-strong\" — every section uses\n"
             "  \"primary\", \"panel\" or \"any\".\n"
-            + accent_light)
+            + _PANEL_INTENT_RULE + accent_light)
     # opens-dark rhythm, or no rhythm evidence but a dark surface exists (historical default).
     return (
         "- BRAND FIDELITY (HARD — derived from the brand's extracted surface rhythm): the\n"

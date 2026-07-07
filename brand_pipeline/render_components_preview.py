@@ -1398,17 +1398,48 @@ _ROLE_QUOTE_RX = re.compile(r"[\u2018\u201c'\"]([^\u2019\u201d'\"]{4,90})[\u2019
 
 
 def _demo_hydration_active(doc) -> bool:
-    """Demo copy only when the brand authored NO section-copy layers at all."""
+    """Full specimen-copy hydration only when the brand authored NO section-copy
+    layers at all (the pre-authoring gallery state)."""
     return not cs.brand_section_copy(doc) and not cs.brand_layout_copy(doc)
 
 
-def _demo_text(role_text: str, kind: str, sp: dict, use: str) -> str:
-    """Specimen text for one demo slot: a quoted literal from the analyst's slot role
-    when present (real captured copy), else register-appropriate structural prose
-    derived from the ACTIVE brand (name / cta) — never another brand's voice."""
+def _layout_needs_asset_hydration(doc, layout) -> bool:
+    """A brand layout WITHOUT a blockMapping renders zero slot fragments through
+    the plain composer path (the composers then degrade to wordmark fallbacks),
+    so its demo can only realize slot ``assets:`` bindings (logo strips, card/
+    badge runs, placed media) and authored copy through the composition adapter.
+    It takes the demo path when it declares slot assets OR the brand authored a
+    layoutCopy entry for it. Layouts WITH a blockMapping render their full
+    anatomy directly (e.g. WoodWave's) and never take the demo path. A v1
+    ``componentMapping`` layout still hydrates: its mapping's Text props are the
+    v1 schema's partial copy, and the adapter path is how its pattern demos
+    rendered before the brand's copy layers were authored."""
+    if not isinstance(layout, dict) or layout.get("blockMapping"):
+        return False
+    if any(isinstance(s, dict) and s.get("assets") for s in (layout.get("slots") or [])):
+        return True
+    return bool(cs.brand_layout_copy(doc).get(layout.get("id")))
+
+
+def _demo_text(role_text: str, kind: str, sp: dict, use: str,
+               authored: dict | None = None) -> str:
+    """Text for one demo slot. Preference order: the brand's AUTHORED copy layer for
+    this layout (section-copy.yaml — real site voice), then a quoted literal from the
+    analyst's slot role (real captured copy), then register-appropriate structural
+    prose derived from the ACTIVE brand (name / cta) — never another brand's voice.
+    A brand that authored copy layers but no value for this register renders EMPTY
+    copy (the device elides), matching the real section's anatomy."""
+    authored = authored or {}
+    keymap = {"eyebrow": ("eyebrow", "caption"), "heading": ("heading",),
+              "body": ("body", "text", "subhead"), "cta": ("cta",)}
+    for k in keymap.get(kind, ()):
+        if authored.get(k):
+            return str(authored[k])
     m = _ROLE_QUOTE_RX.search(role_text or "")
     if m:
         return m.group(1).strip()
+    if authored:
+        return ""  # authored voice exists; don't blend specimen prose into it
     if kind == "eyebrow":
         return f"{sp['name']} {use} specimen"
     if kind == "heading":
@@ -1426,10 +1457,15 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
     """Build a composition.v1-shaped demo SECTION for one pattern + its referencing
     brand layout, so the PROVEN composition adapter (compose_from_composition.
     composition_to_layout) does the slot→blockMapping/copy binding — logo walls,
-    hero copy, split translators and placement all reuse the tested path."""
+    hero copy, split translators and placement all reuse the tested path. When the
+    brand authored copy layers (section-copy.yaml), the layout's authored entry
+    feeds every text slot so the demo carries the REAL site voice over the same
+    asset-bound structure."""
     sp = _specimen(doc)
     pid = pat.get("id", "")
     use = str(pat.get("useCase") or "section")
+    authored = dict(cs.brand_layout_copy(doc).get(layout.get("id")) or {})
+    authored_items = authored.get("items") if isinstance(authored.get("items"), list) else None
     shape_slots = {s.get("name"): s for s in ((pat.get("contentShape") or {}).get("slots") or [])
                    if isinstance(s, dict) and s.get("name")}
     lay_slots = [s for s in (layout.get("slots") or []) if isinstance(s, dict)]
@@ -1463,47 +1499,81 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
             entry["copy"] = list(assets)  # coerced to asset items by _sanitize_assets
         elif len(assets) >= 2:
             # a multi-asset slot is a repeatable MODULE run (cards / avatars): one
-            # module per real asset, labeled from the brand's own filenames.
+            # module per real asset, labeled from the brand's own filenames — or
+            # from the authored per-module items when the counts line up.
             entry["contract"] = "card"
-            entry["copy"] = [{"heading": _asset_label(a),
-                              "text": _demo_text(role, "body", sp, use),
-                              "asset": a, "alt": _asset_label(a)} for a in assets]
+            entry["copy"] = [
+                {"heading": ((authored_items[i].get("heading") or _asset_label(a))
+                             if authored_items and i < len(authored_items)
+                             else _asset_label(a)),
+                 "text": ((authored_items[i].get("body") or "")
+                          if authored_items and i < len(authored_items)
+                          else _demo_text(role, "body", sp, use, authored)),
+                 "asset": a, "alt": _asset_label(a)}
+                for i, a in enumerate(assets)]
         elif is_media or assets:
             entry["contract"] = "image"
             if assets:
                 entry["asset"] = {"src": assets[0], "alt": f"{sp['name']} {name}"}
+        elif authored_items and any(k in lower for k in ("card", "module", "prop", "hub")) \
+                and not any(k in lower for k in ("cta", "button", "link", "icon")):
+            # an asset-less repeatable module slot with AUTHORED per-module items
+            # (e.g. a product-card grid whose icons live in a sibling slot)
+            entry["contract"] = "card"
+            entry["copy"] = [{"heading": it.get("heading") or it.get("label") or "",
+                              "text": it.get("body") or it.get("text") or "",
+                              **({"link": it["cta"]} if it.get("cta") else {})}
+                             for it in authored_items]
         elif any(k in lower for k in ("eyebrow", "microlabel", "caption", "label")):
             # single-key copy: a `text` twin here would echo into the translators'
             # lede/body fallbacks (a v1 header dict carries its lede under `text`).
             entry["contract"] = "eyebrow"
-            entry["copy"] = {"eyebrow": _demo_text(role, "eyebrow", sp, use)}
-        elif any(k in lower for k in ("heading", "title", "display", "h1", "h2")):
+            entry["copy"] = {"eyebrow": _demo_text(role, "eyebrow", sp, use, authored)}
+        elif any(k in lower for k in ("heading", "title", "display", "h1", "h2", "header")):
             entry["contract"] = "heading"
-            entry["copy"] = {"heading": _demo_text(role, "heading", sp, use)}
+            entry["copy"] = {"heading": _demo_text(role, "heading", sp, use, authored)}
+            # roles like "section header" miss _props_for's heading keywords
+            # ("title"/"heading"), so the flow composer would drop the copy; a
+            # `text` twin would echo into conversion-lede fallbacks instead,
+            # so surface the keyword in the role text itself.
+            if "heading" not in lower and "title" not in lower:
+                entry["role"] += " heading"
         elif any(k in lower for k in ("action", "cta", "button", "pill")):
             entry["contract"] = "button"
-            entry["copy"] = {"label": _demo_text(role, "cta", sp, use)}
+            entry["copy"] = {"label": _demo_text(role, "cta", sp, use, authored) or sp["cta"]}
             slots.append(entry)
             # a role naming BOTH a primary and a secondary action gets two demo buttons
             if ("primary" in lower or "filled" in lower) and \
                     ("secondary" in lower or "outlined" in lower):
                 slots.append({"name": f"{name}-secondary", "role": "secondary action",
-                              "contract": "button", "copy": {"label": sp["cta"]}})
+                              "contract": "button",
+                              "copy": {"label": authored.get("secondaryCta") or sp["cta"]}})
             continue
         elif any(k in lower for k in ("quote", "testimonial")):
             entry["contract"] = "testimonial"
-            entry["copy"] = {"quote": _demo_text(role, "body", sp, use),
-                             "name": sp["name"], "role": f"{use} specimen"}
+            entry["copy"] = {"quote": authored.get("quote")
+                             or _demo_text(role, "body", sp, use, authored),
+                             "name": authored.get("caption") or sp["name"],
+                             "role": "" if authored.get("caption") else f"{use} specimen"}
         elif any(k in lower for k in ("list", "accordion", "faq", "rows", "items")):
-            # ruled-row / accordion runs read label(+text) module lists
-            entry["contract"] = "list"
-            entry["copy"] = [{"label": f"{use} item {i + 1}", "title": f"{use} item {i + 1}",
-                              "text": _demo_text(role, "body", sp, use)}
-                             for i in range(3)]
+            # ruled-row / accordion runs read label(+text) module lists — authored
+            # per-module items win over synthesized placeholders.
+            if authored_items:
+                entry["contract"] = "list"
+                entry["copy"] = [{"label": it.get("heading") or it.get("label") or "",
+                                  "title": it.get("heading") or it.get("label") or "",
+                                  "text": it.get("body") or it.get("text") or ""}
+                                 for it in authored_items]
+            else:
+                entry["contract"] = "list"
+                entry["copy"] = [{"label": f"{use} item {i + 1}",
+                                  "title": f"{use} item {i + 1}",
+                                  "text": _demo_text(role, "body", sp, use, authored)}
+                                 for i in range(3)]
         else:
+            body_text = _demo_text(role, "body", sp, use, authored)
             entry["contract"] = "paragraph"
-            entry["copy"] = {"text": _demo_text(role, "body", sp, use), "body":
-                             _demo_text(role, "body", sp, use)}
+            entry["copy"] = {"text": body_text, "body": body_text}
         slots.append(entry)
 
     # contentShape-only slots the brand layout doesn't list (e.g. a z:back panel
@@ -1519,7 +1589,8 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
             entry["contract"] = "image"
         else:
             entry["contract"] = "paragraph"
-            entry["copy"] = {"text": _demo_text(str(shape.get("role") or ""), "body", sp, use)}
+            entry["copy"] = {"text": _demo_text(str(shape.get("role") or ""), "body", sp,
+                                                use, authored)}
         slots.append(entry)
 
     # pattern treatments pass through where they use the composition vocabulary
@@ -1582,14 +1653,20 @@ def compose_pattern_docs(doc, patterns, brand_yaml: Path, out_dir: Path) -> dict
                                          "(listed without a composed render)"}
                 continue
             use_layout, demo = layout, False
-            if hydrate:
+            # Adapter-composed demo when (a) the brand has no authored copy at all
+            # (full specimen hydration), or (b) this layout binds slot assets or
+            # authored copy that only the adapter realizes (logo strips / card
+            # runs / placed media / mapped copy) — authored layers ride the same
+            # structure.
+            if hydrate or _layout_needs_asset_hydration(cdoc, layout):
                 try:
                     sec = _demo_section_for_pattern(cdoc, pat, layout)
                     comp = cfc._sanitize_assets({"sections": [sec]}, brand_yaml.parent)
                     adapted = cfc.composition_to_layout(comp["sections"][0])
                     composer_copy = adapted.pop("_composerCopy", {}) or {}
                     sect_copy = adapted.pop("_sectionCopy", None) or {}
-                    merged = {**sect_copy, **composer_copy}
+                    authored = dict(cs.brand_layout_copy(cdoc).get(layout.get("id")) or {})
+                    merged = {**sect_copy, **composer_copy, **authored}
                     if merged:
                         cs.LAYOUT_COPY = {**cs.LAYOUT_COPY, adapted["id"]: merged}
                     use_layout, demo = adapted, True

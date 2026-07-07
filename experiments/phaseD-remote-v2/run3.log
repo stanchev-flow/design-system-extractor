@@ -1,0 +1,78 @@
+  offGridExpansion=False (from style)
+  [attempt 0] 79.52s  in=23473 out=6622
+    schema: 1 error(s)
+  [attempt 1] 39.85s  in=23606 out=3896
+    schema: 2 error(s)
+  [attempt 2] 39.76s  in=23662 out=3681
+    schema: 1 error(s)
+{
+  "ok": false,
+  "attempts": 3,
+  "wall_s": 161.0,
+  "style": "corporate-saas-clean",
+  "out_dir": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/remote/brand/compose/signup-launch-v2",
+  "offGridExpansion": false,
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "split",
+      "novelty": "reuse",
+      "surfaceIntent": "any",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-inset-noise-panel"
+      }
+    },
+    {
+      "id": "logos",
+      "useCase": "logos",
+      "archetype": "stack",
+      "novelty": "reuse",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "partner-proof-row"
+      }
+    },
+    {
+      "id": "features",
+      "useCase": "features",
+      "archetype": "split",
+      "novelty": "adapt",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "infra-proof-split"
+      }
+    },
+    {
+      "id": "testimonial",
+      "useCase": "testimonial",
+      "archetype": "cards",
+      "novelty": "reuse",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "testimonial-card-row"
+      }
+    },
+    {
+      "id": "cta",
+      "useCase": "cta",
+      "archetype": "stack",
+      "novelty": "reuse",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-inline-banner"
+      }
+    }
+  ],
+  "failures": [],
+  "schema_errors": [
+    "sections/3/slots/1/width: 'full' is not one of ['hug', 'stretch', 'fixed', 'media', 'full-bleed', 'framed']"
+  ],
+  "neverdo_hits": [],
+  "scorecard_overall": null
+}

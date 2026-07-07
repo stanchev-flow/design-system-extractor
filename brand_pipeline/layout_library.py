@@ -537,13 +537,48 @@ def render_pattern_constraint(patterns: list[Pattern]) -> str:
            "For each section below, reuse the given pattern: keep its archetype, slot shape "
            "(text lengths, media aspect/scale), and special treatments; fill slots with the "
            "brand's real copy + tokens; tune ONLY the listed variant knobs. All sizes are "
-           "relationships/classes — resolve them against the brand's type/spacing scale.", ""]
+           "relationships/classes — resolve them against the brand's type/spacing scale.",
+           "A pattern slot listed with z 'back' (a background/art surface, usually width "
+           "full-bleed) is part of the pattern's IDENTITY: bind it in your section (same "
+           "z/width, its listed asset) — dropping it silently changes the section's surface "
+           "grammar. Slots listing assets bind those real files.", ""]
     for p in patterns:
         treatments = ", ".join(sorted(p.treatment_kinds())) or "none"
         knobs = ", ".join(p.variant_knobs.keys()) or "none"
         out.append(f"- **{p.use_case} → `{p.id}`** [{p.lib}] (archetype `{p.archetype_ref}`, "
                    f"surface `{p.surface_intent}`): {p.intent}")
         out.append(f"    - special treatments: {treatments}; tunable knobs: {knobs}")
+        # structural slot lines: the shape the composition must keep. Background/art
+        # (z:back) slots and asset-bearing slots are called out with their binding
+        # so the generator reproduces the pattern's surface devices, not just its text.
+        # extraction-side width vocabulary → composition width enum (the seed line
+        # must only show values the schema accepts, or the model copies e.g. `full`
+        # verbatim into an invalid composition).
+        width_map = {"full": "stretch", "half": "media", "hug": "hug",
+                     "full-bleed": "full-bleed", "stretch": "stretch",
+                     "media": "media", "fixed": "fixed", "framed": "framed"}
+        slot_bits = []
+        for s in p.slots:
+            if not isinstance(s, dict) or not s.get("name"):
+                continue
+            bits = [str(s["name"])]
+            meta = []
+            if s.get("z"):
+                meta.append(f"z:{s['z']}")
+            w = width_map.get(str(s.get("width") or "").lower())
+            if w:
+                meta.append(f"width:{w}")
+            if s.get("mediaAspect"):
+                meta.append(f"aspect:{s['mediaAspect']}")
+            assets = [str(a) for a in (s.get("assets") or []) if a]
+            if assets:
+                meta.append(f"asset:{assets[0]}" if len(assets) == 1
+                            else f"assets:{len(assets)} incl {assets[0]}")
+            if meta:
+                bits.append(f"({', '.join(meta)})")
+            slot_bits.append(" ".join(bits))
+        if slot_bits:
+            out.append(f"    - slot shape to keep: {'; '.join(slot_bits)}")
     out.append("")
     return "\n".join(out)
 
