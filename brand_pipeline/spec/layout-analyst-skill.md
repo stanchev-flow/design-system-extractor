@@ -37,6 +37,7 @@ extraction tools; read them section-by-section, never all at once:
 |---|---|---|
 | `dom-sections.json` | `tools/extract/mine_dom.py` | section census: order, wrappers, per-section tag/class/text/img inventory, repeated-module counts |
 | `css-rules.json` / `css-facts.json` | `tools/extract/mine_css.py` | authored CSS: hover rules, transitions, radii, shadows, chrome-presentation devices (casing, separators), motion evidence |
+| `motion-audit.json` | `tools/extract/mine_motion.py` | per-selector transition/animation/@keyframes table (property, duration, easing, delay), keyframes definitions, resolved timing custom-properties, duration/easing censuses — the evidence `tokens.motion` is authored from |
 | `computed-styles.json` | `tools/extract/measure_computed.py` | browser-computed styles per sampled element — the BUTTON VARIANT-MATRIX evidence and the real type/spacing/surface numbers |
 | `section-rects.json` | `tools/extract/measure_computed.py` | section y-ranges (drives cropping) |
 | `crops/` + `crops-manifest.json` | `tools/extract/slice_sections.py` | per-section screenshots |
@@ -48,10 +49,11 @@ Plus: existing canonical files when re-authoring, `contracts/primitives.yaml` /
 `contracts/blocks.yaml`, and the standard pattern library
 (`brand_pipeline/layout_library.py`).
 
-## Outputs — the mandatory set (what C1–C9 verify)
+## Outputs — the mandatory set (what the validator C1–C13 verifies)
 
 1. **`brand.yaml`** (schema: `spec/brand-schema.md`) — tokens (colors/type/spacing/
-   surfaces, every type tier with measured `weight` and `case`), `surfaceGrammar`
+   surfaces/motion, every type tier with measured `weight` and `case`;
+   `tokens.motion` derived from `evidence/motion-audit.json`), `surfaceGrammar`
    (incl. `pageRhythm`), `buttons:` with the **FULL measured variant matrix** — every
    observed action family (primary/secondary/tertiary/textCta…), each with `radius`,
    fill/ink facts and at least one state fact; one family only with
@@ -177,6 +179,25 @@ incremental save discipline applies through every phase.
    `notObserved: true` with a note of where you looked. Card anatomy (media-well,
    radius, hover elevation, link affordance) is extracted as a card COMPONENT entry,
    not left as layout prose.
+4. **Motion — `tokens.motion` from `motion-audit.json`.** The audit is the evidence;
+   the token block is the derived contract:
+   - `durations`: the observed duration LADDER (census-ranked, named by role —
+     e.g. micro/state/reveal/expressive — never by section), each value carrying
+     the census count or source selector as provenance.
+   - `easings`: every distinct easing function observed (keyword or cubic-bezier),
+     with its dominant use (enter vs exit vs decorative) when the selectors make
+     that legible.
+   - `signatureMoves[]`: the NAMED moves that make the brand's motion recognizable —
+     each with `name` (generic vocabulary: icon-slide, marquee-scroll,
+     accordion-reveal, modal-pop…), the observed timing facts, and `sourceSelectors`
+     pointing at the audit rows/keyframes that evidence it. JS-driven timings CSS
+     cannot see (autoplay intervals, scroll-triggered reveals) are recorded in the
+     audit's `jsTimingNotes` and cited from here.
+   - A brand whose audit shows NO authored motion records
+     `tokens.motion: {notObserved: true, reason: …}` — validator C13 accepts that,
+     but never silence.
+   Interactive block entries (accordion/carousel/tabs/modal…) name their observed
+   timing (or `notObserved`) so the component contract carries its own motion fact.
 
 ### Phase 3 — Per-section layout + pattern authoring
 
@@ -234,7 +255,9 @@ For each section, from its grounding YAML + DOM entry + crop:
    - C6 logo walls have real logo assets; C7 navbar/footer complete incl.
      `legal.text` and presentation evidence; C8 tagged assets exist on disk;
    - C9 vision grounding exists (`--allow-no-vision` only for explicitly
-     DOM-only salvage runs).
+     DOM-only salvage runs);
+   - C13 `tokens.motion` present with ≥ 1 evidenced duration + easing (or explicit
+     `notObserved` + reason), and interactive blocks carry a timing fact.
    Fix and re-run until clean — a validator error means a missed observation.
 5. **Anti-slop checks** before calling any composed render done:
    `node brand_pipeline/contrast_audit.mjs <index.html>` and

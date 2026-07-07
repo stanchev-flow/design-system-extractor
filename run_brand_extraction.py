@@ -10,6 +10,7 @@ gates the authored brand data behind a fail-loud output contract:
       evidence/dom-sections.json      DOM census (sections, buttons, chrome, eyebrows)
       evidence/css-rules.json         raw parsed rules (@media/:hover aware)
       evidence/css-facts.json         hover pairs + radius/font/color/tracking censuses
+      evidence/motion-audit.json      per-selector transition/animation/keyframes audit
       evidence/computed-styles.json   JS-off computed styles (chrome, action families)
       evidence/section-rects.json     per-section bounding boxes
       evidence/crops/                 per-section screenshot crops (+ manifest)
@@ -41,8 +42,8 @@ RUNS_DIR = PROJECT_DIR / "runs"
 SPEC_DIR = PROJECT_DIR / "brand_pipeline" / "spec"
 sys.path.insert(0, str(TOOLS_EXTRACT))
 
-ALL_STAGES = ("mine-dom", "mine-css", "measure", "slice", "ground", "curate",
-              "author", "validate")
+ALL_STAGES = ("mine-dom", "mine-css", "mine-motion", "measure", "slice", "ground",
+              "curate", "author", "validate")
 
 
 def parse_args(argv=None) -> argparse.Namespace:
@@ -133,6 +134,14 @@ def main(argv=None) -> int:
     if should_run("mine-css", css_out):
         run_stage("mine-css", "mine_css",
                   ["--capture", str(capture), "--out-dir", str(evidence)])
+
+    # 2b) mine-motion — per-selector transition/animation/keyframes audit from
+    # the mine-css corpus (the motion fidelity contract tokens.motion is
+    # authored from; validator C13 enforces the authored result).
+    motion_out = evidence / "motion-audit.json"
+    if should_run("mine-motion", motion_out):
+        run_stage("mine-motion", "mine_motion",
+                  ["--evidence", str(evidence), "--out", str(motion_out)])
 
     # 3) measure — JS-off computed styles + section rects
     measured_out = evidence / "computed-styles.json"

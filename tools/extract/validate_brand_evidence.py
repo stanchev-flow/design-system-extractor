@@ -44,6 +44,12 @@ Checks (E = error, W = warning):
   C12 E escape hygiene: generated preview/chrome HTML under the brand dir
         (and the C11 smoke renders) must not contain double-escaped entity
         text such as `&amp;mdash;`
+  C13 E motion evidence: `tokens.motion` present with >= 1 evidenced duration
+        AND >= 1 easing (or explicit `notObserved: true` + reason). Interactive
+        blocks (accordion/tabs/modal/dropdown-menu/carousel) that are evidenced
+        must name a timing fact (any `Nms`/`N.Ns` value or a `motion:` note) or
+        declare their motion `notObserved`. Authored from
+        evidence/motion-audit.json (mine_motion.py stage)
 
 Importable API (used by brand_pipeline/tests/test_brand_evidence_contract.py):
     report = validate_brand_dir(brand_dir, contracts_path=..., ...)
@@ -77,6 +83,15 @@ CONTENT_MAX_WIDTH_RANGE = (480, 2200)
 
 ALLOWED_COPY_KEYS = {"sectionCopy", "layoutCopy", "layoutImages", "defaultArt",
                      "wildcardCopy"}
+# a CSS time literal ("150ms", ".3s", "0.25s") anywhere in a serialized value
+TIME_LITERAL = re.compile(r"\b\d*\.?\d+m?s\b")
+# an easing fact: keyword family or a functional timing curve
+EASING_LITERAL = re.compile(r"\bease(?:-in|-out|-in-out)?\b|\blinear\b"
+                            r"|cubic-bezier\(|steps\(")
+# contract block types whose real-world behavior is animated: their evidenced
+# entries owe a timing fact (C13)
+INTERACTIVE_BLOCK_TYPES = ("accordion", "tabs", "modal", "dropdown-menu",
+                           "carousel")
 CHROME_LAYOUT_ARCHETYPES = {"nav"}
 CHROME_LAYOUT_IDS = {"navbar", "footer"}
 IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".svg", ".webp", ".gif")
@@ -535,6 +550,48 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
                                  f"entity text {sorted(set(hits))} — an entity was "
                                  "escaped again (author literal characters, e.g. "
                                  "'—', not '&mdash;', in copy fed to renderers).")
+
+    # C13 — motion evidence: the brand's timing system is part of the extraction
+    # contract (the motion-audit gap). tokens.motion must carry at least one
+    # evidenced duration AND one easing (envelope shape is free — the check scans
+    # the serialized subtree), or declare notObserved with a reason. Evidenced
+    # interactive blocks owe their own timing fact.
+    motion = (doc.get("tokens") or {}).get("motion") if isinstance(doc.get("tokens"), dict) else None
+    if not isinstance(motion, dict) or not motion:
+        rep.error("C13", "tokens.motion missing — author the duration ladder / "
+                         "easings / signature moves from evidence/motion-audit.json "
+                         "(mine_motion.py stage), or record "
+                         "`tokens.motion: {notObserved: true, reason: …}` when the "
+                         "source genuinely declares no motion.")
+    elif motion.get("notObserved"):
+        if not str(motion.get("reason") or "").strip():
+            rep.error("C13", "tokens.motion.notObserved requires a `reason` naming "
+                             "where you looked (motion-audit.json empty? capture "
+                             "static-only?).")
+    else:
+        blob = json.dumps(motion)
+        if not TIME_LITERAL.search(blob):
+            rep.error("C13", "tokens.motion carries no duration value (e.g. "
+                             "'200ms') — derive the ladder from motion-audit.json "
+                             "durationCensus.")
+        if not EASING_LITERAL.search(blob):
+            rep.error("C13", "tokens.motion carries no easing (keyword or "
+                             "cubic-bezier) — derive from motion-audit.json "
+                             "easingCensus.")
+    for btype in INTERACTIVE_BLOCK_TYPES:
+        blk = blocks.get(btype)
+        if not isinstance(blk, dict) or blk.get("notObserved") \
+                or str(blk.get("use") or "").lower() == "never":
+            continue
+        blob = json.dumps(blk)
+        has_timing = bool(TIME_LITERAL.search(blob))
+        motion_note = blk.get("motion")
+        motion_declared_absent = isinstance(motion_note, dict) and motion_note.get("notObserved")
+        if not has_timing and not motion_declared_absent:
+            rep.error("C13", f"blocks.{btype}: evidenced interactive block without "
+                             "a timing fact — name its observed duration/easing "
+                             "(motion-audit.json per-selector table) or record "
+                             "`motion: {notObserved: true, reason: …}`.")
 
     return rep
 

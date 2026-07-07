@@ -18,6 +18,7 @@ pipeline:
         ├── contracts/       ← primitives/blocks/scaffolds + the standard layout-patterns
         ├── tokens.css       ← every token emitted as CSS custom properties + @font-face
         ├── motion.json      ← the resolved motion spec (easing, durations, reveal, parallax)
+        ├── motion-audit.yaml← tokens.motion + the mined per-selector motion table (when evidenced)
         ├── fonts/  assets/  ← self-hosted faces + real brand imagery
         └── quality/         ← neverDo/avoid/do rules (yaml) + anti-ai-slop.md checklist
 
@@ -116,13 +117,30 @@ def build_motion_json(doc: dict) -> str:
     """The RESOLVED motion system (not the raw YAML): easing, durations, scroll-reveal,
     link-interaction mode + measured hover color, and the image-parallax treatment —
     everything a foreign agent needs to reproduce the brand's motion without our
-    composers. Values mirror what compose_page/component_render actually emit."""
+    composers. Values mirror what compose_page/component_render actually emit.
+
+    When the brand carries an EVIDENCED `tokens.motion` (authored from
+    evidence/motion-audit.json — validator C13), the duration ladder / easings /
+    signature moves come from it verbatim instead of the legacy 3-tier
+    voice.motionSpec projection; the composer-behavior blocks (scrollReveal, link,
+    imageParallax) stay, since they describe what OUR composed pages do."""
     m = motion_spec(doc)
     p = image_parallax_spec(doc)
-    out = {
-        "easing": {"primary": m["ease"]},
-        "durationsMs": {"fast": int(m["fast"].rstrip("ms")), "base": int(m["base"].rstrip("ms")),
-                        "slow": int(m["slow"].rstrip("ms"))},
+    out: dict = {}
+    tokens_motion = (doc.get("tokens") or {}).get("motion")
+    if isinstance(tokens_motion, dict) and tokens_motion \
+            and not tokens_motion.get("notObserved"):
+        out["source"] = ("tokens.motion — evidence-derived (per-selector CSS motion "
+                         "audit); the full table ships as motion-audit.yaml")
+        for key in ("durations", "easings", "signatureMoves", "reducedMotion"):
+            if tokens_motion.get(key) is not None:
+                out[key] = tokens_motion[key]
+    else:
+        out["easing"] = {"primary": m["ease"]}
+        out["durationsMs"] = {"fast": int(m["fast"].rstrip("ms")),
+                              "base": int(m["base"].rstrip("ms")),
+                              "slow": int(m["slow"].rstrip("ms"))}
+    out.update({
         "scrollReveal": {"kind": "fade-translateY", "translateY": m["shift"],
                          "trigger": "IntersectionObserver, ~8% viewport inset, small per-item stagger"},
         "link": {"mode": link_mode(doc), "hoverColor": link_hover_color(doc),
@@ -136,9 +154,50 @@ def build_motion_json(doc: dict) -> str:
                                        "img scale(1.12) + yPercent pan; hero overlap pair moves "
                                        "at differential rates (0.4x / 1.2x); "
                                        "prefers-reduced-motion disables everything"},
-        "reducedMotion": "respect",
-    }
+    })
+    out.setdefault("reducedMotion", "respect")
     return json.dumps(out, indent=2) + "\n"
+
+
+def build_motion_audit_yaml(doc: dict, brand_dir: Path) -> str | None:
+    """agent/motion-audit.yaml — the brand's motion FIDELITY layer: the authored
+    `tokens.motion` contract (duration ladder, easings, named signature moves) plus
+    the mined per-selector evidence table (evidence/motion-audit.json) it was derived
+    from. None (not emitted) when the brand has neither — degrade-to-absent, no
+    invented tiers."""
+    tokens_motion = (doc.get("tokens") or {}).get("motion")
+    audit_path = brand_dir / "evidence" / "motion-audit.json"
+    audit = None
+    if audit_path.is_file():
+        try:
+            audit = json.loads(audit_path.read_text())
+        except (json.JSONDecodeError, OSError):
+            audit = None
+    if not isinstance(tokens_motion, dict) and audit is None:
+        return None
+    payload: dict = {
+        "schemaVersion": "kit-motion-audit.v1",
+        "note": ("Authored contract first (tokens.motion, evidence-derived — "
+                 "validator C13), then the mined per-selector table it cites. "
+                 "Selectors are the SOURCE site's (provenance, not classnames to "
+                 "reuse); durations/easings are the values to reproduce."),
+    }
+    if isinstance(tokens_motion, dict):
+        payload["tokensMotion"] = tokens_motion
+    if audit:
+        payload["evidence"] = {
+            "source": "evidence/motion-audit.json (mine_motion.py)",
+            "durationCensus": audit.get("durationCensus") or {},
+            "easingCensus": audit.get("easingCensus") or {},
+            "motionVars": audit.get("motionVars") or {},
+            "keyframes": [{"name": k.get("name"), "file": k.get("file"),
+                           "frames": k.get("frames")}
+                          for k in (audit.get("keyframes") or [])],
+            "transitions": audit.get("transitions") or [],
+            "animations": audit.get("animations") or [],
+            "jsTimingNotes": audit.get("jsTimingNotes") or [],
+        }
+    return yaml.safe_dump(payload, sort_keys=False, width=100, allow_unicode=True)
 
 
 # ── quality/ ─────────────────────────────────────────────────────────────────────
@@ -181,8 +240,10 @@ no repo, no other context required.
    structure; sizes are relationships/classes, never px — resolve them against the tokens.
 3. **`agent/tokens.css`** — every token as a CSS custom property, plus `@font-face` for the
    self-hosted display face. Build pages directly on these variables.
-4. **`agent/motion.json`** — the resolved motion system (easing, durations, scroll-reveal,
-   link hover, image parallax). Respect `prefers-reduced-motion`.
+4. **`agent/motion.json`** — the resolved motion system (duration ladder, easings,
+   signature moves when evidenced; scroll-reveal, link hover, image parallax). Respect
+   `prefers-reduced-motion`. Where present, **`agent/motion-audit.yaml`** carries the
+   full per-selector evidence table the values were derived from.
 5. **`agent/quality/rules.yaml`** — `neverDo` is the ONLY hard gate. Check your output
    against it before finishing. `quality/anti-ai-slop.md` lists generation-failure shapes
    (contrast, spacing, context bugs) to self-review against.
@@ -397,6 +458,9 @@ def export(brand_yaml: Path, out: Path | None) -> Path:
     # generated artifacts
     (agent / "tokens.css").write_text(build_tokens_css(doc, fonts_src))
     (agent / "motion.json").write_text(build_motion_json(doc))
+    motion_audit = build_motion_audit_yaml(doc, brand_dir)
+    if motion_audit is not None:
+        (agent / "motion-audit.yaml").write_text(motion_audit)
     (agent / "quality" / "rules.yaml").write_text(build_quality_rules(doc))
     slop = SPEC_DIR / "anti-ai-slop.md"
     if slop.exists():
