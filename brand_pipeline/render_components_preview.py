@@ -2323,6 +2323,18 @@ def _demo_timing(motion: dict) -> dict:
     return {"state": state, "reveal": reveal, "wash": wash, "ease": ease or "ease"}
 
 
+def _marquee_move(motion) -> dict | None:
+    """The brand's marquee-family signature move (name/move naming a marquee or a
+    translateX(-50%) loop), or None — the gate for the live marquee demo."""
+    for m in (motion or {}).get("signatureMoves") or []:
+        if not isinstance(m, dict):
+            continue
+        probe = f"{m.get('name') or ''} {m.get('move') or ''}".lower()
+        if "marquee" in probe or "translatex(-50%)" in probe:
+            return m
+    return None
+
+
 def spec_motion_css(doc) -> str:
     """Generated CSS for the motion chapter's LIVE demos — every timing literal is the
     brand's own tokens.motion value (nothing emitted for motion-less brands)."""
@@ -2334,7 +2346,7 @@ def spec_motion_css(doc) -> str:
         return ""
     ease = t["ease"]
     shadow = "0 12px 24px rgba(0,0,0,0.12)"
-    return f"""/* spec-book motion demos — timings are tokens.motion values verbatim */
+    css = f"""/* spec-book motion demos — timings are tokens.motion values verbatim */
 .spec-demo .btnf, .spec-demo .act {{ transition-duration: {t['state'][1]}; }}
 .spec-state-chip {{ display: inline-block; padding: 0.45rem 1rem;
   border: 1px solid var(--ink); color: var(--ink); background: transparent;
@@ -2347,6 +2359,22 @@ def spec_motion_css(doc) -> str:
 .spec-wash-demo {{ transition: box-shadow {t['wash'][1]} {ease},
   background {t['wash'][1]} {ease}; }}
 .spec-wash-demo:hover {{ box-shadow: {shadow}; background: var(--surface-panel); }}"""
+    if _marquee_move(motion) is not None:
+        # seam-correct marquee demo (P2, AS-42): two identical halves, -50% loop.
+        # The source times its marquee via JS (unmeasurable from static capture),
+        # so the demo runs at a fixed harness speed — cited as such in the chapter.
+        css += """
+.spec-marquee { overflow: hidden; margin-top: 0.5rem; }
+.spec-marquee-track { display: flex; width: max-content;
+  animation: spec-marquee-scroll 16s linear infinite; }
+.spec-marquee-half { display: flex; flex-wrap: nowrap; align-items: center;
+  gap: 2.5rem; padding-inline-end: 2.5rem; }
+.spec-marquee-chip { white-space: nowrap; }
+@keyframes spec-marquee-scroll { from { transform: translateX(0); }
+  to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .spec-marquee-track { animation: none; } }"""
+    return css
 
 
 def spec_motion_chapter(doc) -> str:
@@ -2418,10 +2446,33 @@ def spec_motion_chapter(doc) -> str:
         parts.append(
             f'<div class="spec-type-tiers" style="margin:1.5rem 0 0.25rem">live timing '
             f'demos (button state rows in Tier 1 ride the same tokens)</div>'
-            f'<div class="spec-demos">{demos}</div>'
-            f'<div class="spec-note" style="margin-top:0.75rem">pending (P2 renderer '
-            f'work): live marquee-scroll, accordion-reveal, mega-menu and carousel '
-            f'demos — the timing facts above already carry their measured values.</div>')
+            f'<div class="spec-demos">{demos}</div>')
+        # LIVE MARQUEE demo (P2): gated on the brand's own marquee signature move.
+        # Seam-correct device (two identical halves, -50% loop — the same math the
+        # composed logo strip rides); the demo loops the move's own name because the
+        # spec book invents no content. Duration is a harness constant: the source
+        # times its marquee via JS (see the move's timing note).
+        mq = _marquee_move(motion)
+        if mq is not None:
+            chip = esc(str(mq.get("name") or "marquee"))
+            half = "".join(f'<span class="spec-marquee-chip ex-eyebrow">{chip}</span>'
+                           for _ in range(6))
+            timing = str(mq.get("timing") or "JS-timed on source")
+            parts.append(
+                f'<div class="spec-type-tiers" style="margin:1.5rem 0 0.25rem">live '
+                f'marquee (seam-correct: two identical halves, translateX(-50%) loop)'
+                f'</div>'
+                f'<div class="spec-marquee"><div class="spec-marquee-track">'
+                f'<div class="spec-marquee-half">{half}</div>'
+                f'<div class="spec-marquee-half" aria-hidden="true">{half}</div>'
+                f'</div></div>'
+                f'<div class="spec-cite">signatureMoves.{chip} — {esc(timing)}; '
+                f'demo runs at harness speed (16s loop)</div>')
+        parts.append(
+            f'<div class="spec-note" style="margin-top:0.75rem">pending (P2+ renderer '
+            f'work): live mega-menu and carousel-advance demos — the accordion '
+            f'open-state and edge-cut carousel statics render in the pattern demos '
+            f'(Tier 3); the timing facts above carry their measured values.</div>')
     reduced = motion.get("reducedMotion")
     if isinstance(reduced, dict) and reduced.get("value"):
         parts.append(f'<div class="spec-cite" style="margin-top:1rem">'
