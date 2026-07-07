@@ -121,7 +121,16 @@ chrome:            # ONLY for navbar/footer sections, else omit entirely
   surfaceApprox: "#rrggbb"
   linkTreatment: <e.g. "14px #383a3d, darken+underline available cues visible">
   ctaTreatment: <e.g. "near-black filled pill, hugging content">
-motionHints: [ <only when statically visible: duplicated marquee row, scroll-arrow, etc.> ]
+motionHints: [ <motion AFFORDANCES the still frame betrays — report every one you
+  can see, as short generic strings. Look for: a logo/testimonial row duplicated or
+  cropped mid-item at the frame edge (marquee/auto-scroll track), carousel dots or
+  prev/next arrows (slide advance), progress bars or step indicators (timed or
+  scroll-linked progress), partially transparent or offset elements at a section
+  seam (scroll-reveal mid-flight), an accordion with one row open (animated
+  expand), arrow-in-pill icons beside CTA labels (hover icon-slide affordance),
+  stacked cards with peeking edges (swipe/drag), play buttons or video stills
+  (embedded motion). Name the affordance generically — never invent timings; the
+  CSS motion audit owns durations/easings.> ]
 confidence: high|medium|low
 notes: [ <truncation, ambiguity, cross-crop references — short factual strings> ]
 ```

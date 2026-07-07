@@ -81,6 +81,14 @@ FIXTURE_TOKENS = {
         "radius-global": {"value": "12px"},
         "radius-card": {"value": "12px"},
     },
+    # C13: motion is part of the token contract — an evidenced duration ladder +
+    # easing set (synthetic values, envelope-shaped like the authored files)
+    "motion": {
+        "durations": {"state": {"value": "150ms"}, "reveal": {"value": "300ms"}},
+        "easings": [{"value": "cubic-bezier(0.2, 0, 0, 1)", "use": "enter"}],
+        "signatureMoves": [{"name": "icon-slide", "duration": "300ms",
+                            "sourceSelectors": [".btn .icon"]}],
+    },
 }
 
 FIXTURE_VOICE = {
@@ -497,6 +505,71 @@ class BrandEvidenceContractTests(unittest.TestCase):
             "card", {"notObserved": True}))
         rep = self._validate()
         self.assertEqual([e for e in rep.errors if e.startswith("C10")], [])
+
+    # ── C13 motion evidence ──────────────────────────────────────────────────
+
+    def test_missing_motion_tokens_fails(self):
+        self._mutate_brand(lambda d: d["tokens"].pop("motion"))
+        rep = self._validate()
+        self.assertFalse(rep.ok)
+        msg = self._joined(rep.errors)
+        self.assertTrue(any(e.startswith("C13") for e in rep.errors), rep.errors)
+        self.assertIn("motion-audit.json", msg)
+
+    def test_motion_not_observed_with_reason_passes(self):
+        self._mutate_brand(lambda d: d["tokens"].__setitem__(
+            "motion", {"notObserved": True,
+                       "reason": "motion-audit.json empty — static capture, no "
+                                 "authored transitions"}))
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors if e.startswith("C13")], [],
+                         rep.errors)
+
+    def test_motion_not_observed_without_reason_fails(self):
+        self._mutate_brand(lambda d: d["tokens"].__setitem__(
+            "motion", {"notObserved": True}))
+        rep = self._validate()
+        self.assertTrue(any(e.startswith("C13") and "reason" in e
+                            for e in rep.errors), rep.errors)
+
+    def test_motion_without_duration_fails(self):
+        self._mutate_brand(lambda d: d["tokens"].__setitem__(
+            "motion", {"easings": [{"value": "ease-out"}]}))
+        rep = self._validate()
+        self.assertTrue(any(e.startswith("C13") and "duration" in e
+                            for e in rep.errors), rep.errors)
+
+    def test_motion_without_easing_fails(self):
+        self._mutate_brand(lambda d: d["tokens"].__setitem__(
+            "motion", {"durations": {"state": {"value": "150ms"}}}))
+        rep = self._validate()
+        self.assertTrue(any(e.startswith("C13") and "easing" in e
+                            for e in rep.errors), rep.errors)
+
+    def test_interactive_block_without_timing_fails(self):
+        self._mutate_brand(lambda d: d["blocks"].__setitem__(
+            "accordion", {"origin": "extracted", "use": "faq rows"}))
+        rep = self._validate()
+        self.assertTrue(any(e.startswith("C13") and "accordion" in e
+                            for e in rep.errors), rep.errors)
+
+    def test_interactive_block_with_timing_passes(self):
+        self._mutate_brand(lambda d: d["blocks"].__setitem__(
+            "accordion", {"origin": "extracted", "use": "faq rows",
+                          "motion": {"duration": "800ms",
+                                     "easing": "cubic-bezier(.16,1,.3,1)"}}))
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors if e.startswith("C13")], [],
+                         rep.errors)
+
+    def test_interactive_block_motion_not_observed_passes(self):
+        self._mutate_brand(lambda d: d["blocks"].__setitem__(
+            "carousel", {"origin": "extracted", "use": "testimonial slides",
+                         "motion": {"notObserved": True,
+                                    "reason": "JS-driven; no CSS timing mined"}}))
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors if e.startswith("C13")], [],
+                         rep.errors)
 
     # ── C11 composed-demo smoke ──────────────────────────────────────────────
 
