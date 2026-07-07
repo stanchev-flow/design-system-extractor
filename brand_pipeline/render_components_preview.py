@@ -1671,12 +1671,22 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
             entry["contract"] = "button"
             entry["copy"] = {"label": _demo_text(role, "cta", sp, use, authored) or sp["cta"]}
             slots.append(entry)
-            # a role naming BOTH a primary and a secondary action gets two demo buttons
+            # a role naming BOTH a primary and a secondary action gets two demo
+            # buttons IN DECLARED ORDER (primary first). The pair's treatments are
+            # hinted PER BUTTON (sysfix 2026-07: the whole-role prose reached the
+            # family dispatch and styled the primary button with the secondary's
+            # outline treatment): the first button takes the filled/primary word,
+            # the second takes the outline-ish word the role declared for it.
             if ("primary" in lower or "filled" in lower) and \
                     ("secondary" in lower or "outlined" in lower):
+                entry["copy"]["styleHint"] = "filled" if "filled" in lower else "primary"
+                second_hint = next((w for w in ("outlined", "outline", "ghost", "quiet")
+                                    if w in lower), "")
+                second_copy = {"label": authored.get("secondaryCta") or sp["cta"]}
+                if second_hint:
+                    second_copy["styleHint"] = second_hint
                 slots.append({"name": f"{name}-secondary", "role": "secondary action",
-                              "contract": "button",
-                              "copy": {"label": authored.get("secondaryCta") or sp["cta"]}})
+                              "contract": "button", "copy": second_copy})
             continue
         elif any(k in lower for k in ("quote", "testimonial")):
             entry["contract"] = "testimonial"
@@ -1820,6 +1830,11 @@ def compose_pattern_docs(doc, patterns, brand_yaml: Path, out_dir: Path) -> dict
                     merged = {**sect_copy, **composer_copy, **authored}
                     if merged:
                         cs.LAYOUT_COPY = {**cs.LAYOUT_COPY, adapted["id"]: merged}
+                    # brand-layout DECLARATIONS the adapter doesn't model ride onto
+                    # the adapted layout (sysfix 2026-07: the declared eyebrow
+                    # register was dropped on the demo-hydration path).
+                    if layout.get("eyebrowRegister"):
+                        adapted.setdefault("eyebrowRegister", layout["eyebrowRegister"])
                     use_layout, demo = adapted, True
                 except Exception:
                     use_layout, demo = layout, False  # demo synth never takes the tier down

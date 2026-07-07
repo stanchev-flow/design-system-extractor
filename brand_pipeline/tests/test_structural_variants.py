@@ -154,5 +154,30 @@ class PerSurfaceAliases(unittest.TestCase):
         self.assertNotIn("--c-button-bg", without)
 
 
+class EyebrowRegister(unittest.TestCase):
+    """layout.eyebrowRegister → section-scoped --c-eyebrow-color (theme-scoped
+    eyebrow families, sysfix 2026-07). Declared = layer-1 var reference; undeclared
+    = no emission (the .c-eyebrow fallback register applies); unknown role = loud."""
+
+    def setUp(self):
+        import compose_section as cs
+        self.cs = cs
+        self.doc = copy.deepcopy(FIXTURE)
+
+    def test_declared_register_emits_scoped_var(self):
+        css = self.cs.eyebrow_register_css(
+            self.doc, {"id": "s", "eyebrowRegister": "accent/primary"}, "#sec-3")
+        self.assertIn("#sec-3 { --c-eyebrow-color: var(--color-accent-primary); }",
+                      css)
+
+    def test_undeclared_layout_emits_nothing(self):
+        self.assertEqual(self.cs.eyebrow_register_css(self.doc, {"id": "s"}, "#s"), "")
+
+    def test_unknown_role_fails_loud(self):
+        with self.assertRaises(KeyError):
+            self.cs.eyebrow_register_css(
+                self.doc, {"id": "s", "eyebrowRegister": "accent/nope"}, "#s")
+
+
 if __name__ == "__main__":
     unittest.main()

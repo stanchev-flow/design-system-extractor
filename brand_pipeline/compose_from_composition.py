@@ -520,7 +520,7 @@ def _hero_mapping(section: dict, art_panel: bool = False) -> list[dict]:
             "slot": "main",
             "role": b.get("role") or b.get("name") or ("cta-primary" if i == 0 else "cta-secondary"),
             "contract": "button",
-            "usage": {"label": label, "accent": False},
+            "usage": _button_usage(b, label),
         })
     if not art_panel and _media_layers(section) is not None:
         for s in media:
@@ -556,6 +556,19 @@ def _hero_mapping(section: dict, art_panel: bool = False) -> list[dict]:
 def _button_slots(section: dict) -> list[dict]:
     """The section's real `button` contract slots (B5: these used to be dropped)."""
     return [s for s in _slots(section) if (s.get("contract") or "").lower() == "button"]
+
+
+def _button_usage(slot: dict, label: str) -> dict:
+    """Button usage payload: the slot's declared treatment (family / styleHint)
+    rides along (sysfix 2026-07: the split/conversion builders emitted bare
+    label+accent, so a declared 'outlined' secondary lost its family and rendered
+    as a second primary pill)."""
+    usage = {"label": label, "accent": False}
+    copy = slot.get("copy") if isinstance(slot.get("copy"), dict) else {}
+    for k in ("family", "styleHint"):
+        if str((copy or {}).get(k) or "").strip():
+            usage[k] = copy[k]
+    return usage
 
 
 def _has_form_slot(section: dict) -> bool:
@@ -603,7 +616,7 @@ def _cta_mapping(section: dict) -> list[dict]:
             "slot": "main",
             "role": b.get("role") or b.get("name") or ("cta-primary" if i == 0 else "cta-secondary"),
             "contract": "button",
-            "usage": {"label": label, "accent": False},
+            "usage": _button_usage(b, label),
         })
     if _has_form_slot(section) or not buttons:
         mapping.append({"slot": "main", "role": "newsletter form (underline only)",

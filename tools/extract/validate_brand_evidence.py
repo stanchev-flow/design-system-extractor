@@ -624,6 +624,27 @@ def _smoke_compose(rep: Report, brand_dir: Path, doc: dict,
                     rep.error("C11", f"pattern '{pid}' renders empty module "
                                      "caption(s) while the brand authored items — "
                                      "the item copy is not reaching the modules.")
+            # action-pair ORDER (sysfix 2026-07): in a multi-button action row the
+            # PRIMARY (plain .c-button) leads; a family-variant button rendering
+            # before it is the crossed-family/ordering defect class.
+            for row in re.findall(
+                    r'class="cs-(?:hero|conversion)-actions"\s*>(.*?)</div>', html,
+                    flags=re.DOTALL):
+                fams = [m or "primary"
+                        for m in re.findall(r'class="c-button(?:\s+c-button--([\w-]+))?"', row)]
+                if len(fams) >= 2 and "primary" in fams and fams[0] != "primary":
+                    rep.error("C11", f"pattern '{pid}' action row orders a "
+                                     f"'{fams[0]}' family button before the primary "
+                                     "— the primary action leads unless the "
+                                     "evidence declares otherwise.")
+            # furniture-less panel scan (sysfix 2026-07): a split shipping a cream
+            # panel with no title/rows/foot is the invented-content defect class
+            # resurfacing as an EMPTY box — the composer must elide it instead.
+            if re.search(r'class="cs-panel"\s*>\s*(?:<div class="c-rows">\s*'
+                         r'</div>\s*)?</div>', html):
+                rep.error("C11", f"pattern '{pid}' renders an EMPTY panel (no "
+                                 "title, rows, or foot) — panel-less splits must "
+                                 "elide the panel, not ship an empty surface.")
             hits = DOUBLE_ESCAPED_ENTITY.findall(html)
             if hits:
                 rep.error("C12", f"pattern '{pid}' demo contains double-escaped "
