@@ -63,20 +63,32 @@ FIXTURE_TOKENS = {
         "surface/inverse": {"bg": "#101828", "textPrimary": "text/on-inverse"},
         "surface/inverse-strong": {"bg": "#0c111d", "textPrimary": "text/on-inverse"},
     },
+    # C14: sized roles carry a MEASURED multi-breakpoint ladder, or confirm the
+    # single tier explicitly (measured constant across the tier ladder)
     "type": {
-        "display-hero": {"family": "Georgia", "sizeRem": {"base": 3.0}, "weight": 700},
-        "h1": {"family": "Georgia", "sizeRem": {"base": 2.5}, "weight": 700},
-        "h2": {"family": "Georgia", "sizeRem": {"base": 2.0}, "weight": 700},
-        "h3": {"family": "Georgia", "sizeRem": {"base": 1.5}, "weight": 600},
-        "body": {"family": "Helvetica", "sizeRem": {"base": 1.0}, "weight": 400},
-        "small": {"family": "Helvetica", "sizeRem": {"base": 0.875}, "weight": 400},
-        "eyebrow": {"family": "Helvetica", "sizeRem": {"base": 0.8125}, "weight": 600},
-        "control-text": {"family": "Helvetica", "sizeRem": {"base": 0.9375},
-                         "weight": 500},
+        "display-hero": {"family": "Georgia", "weight": 700,
+                         "sizeRem": {"base": 3.0, "tablet": 2.5, "mobile": 2.0}},
+        "h1": {"family": "Georgia", "weight": 700,
+               "sizeRem": {"base": 2.5, "tablet": 2.0, "mobile": 1.75}},
+        "h2": {"family": "Georgia", "weight": 700,
+               "sizeRem": {"base": 2.0, "tablet": 1.75}},
+        "h3": {"family": "Georgia", "weight": 600,
+               "sizeRem": {"base": 1.5, "tablet": 1.25}},
+        "body": {"family": "Helvetica", "weight": 400,
+                 "sizeRem": {"base": 1.0}, "singleTierConfirmed": True},
+        "small": {"family": "Helvetica", "weight": 400,
+                  "sizeRem": {"base": 0.875}, "singleTierConfirmed": True},
+        "eyebrow": {"family": "Helvetica", "weight": 600,
+                    "sizeRem": {"base": 0.8125}, "singleTierConfirmed": True},
+        "control-text": {"family": "Helvetica", "weight": 500,
+                         "sizeRem": {"base": 0.9375}, "singleTierConfirmed": True},
     },
+    # C15: the relational rungs (X-to-Y) are the formalized rhythm ladder
     "spacing": {
         "section-padding-light": {"value": "5rem"},
         "eyebrow-to-heading": {"value": "1rem"},
+        "heading-to-body": {"value": "1.25rem"},
+        "body-to-cta": {"value": "2rem"},
         "panel-padding": {"value": "2rem"},
         "radius-global": {"value": "12px"},
         "radius-card": {"value": "12px"},
@@ -98,6 +110,9 @@ FIXTURE_VOICE = {
 
 FIXTURE_BRAND = {
     "brand": {"name": "Fixture"},
+    # C14: the brand declares which measured breakpoint its canonical values cite
+    "meta": {"canonicalTier": {"viewport": 1440,
+                               "note": "sizeRem.base == computed @1440"}},
     "tokens": FIXTURE_TOKENS,
     "voice": FIXTURE_VOICE,
     "blocks": {
@@ -570,6 +585,94 @@ class BrandEvidenceContractTests(unittest.TestCase):
         rep = self._validate()
         self.assertEqual([e for e in rep.errors if e.startswith("C13")], [],
                          rep.errors)
+
+    # ── C14 canonical-tier discipline ────────────────────────────────────────
+
+    def test_missing_canonical_tier_meta_fails(self):
+        self._mutate_brand(lambda d: d.pop("meta"))
+        rep = self._validate()
+        self.assertTrue(any(e.startswith("C14") and "canonicalTier" in e
+                            for e in rep.errors), rep.errors)
+
+    def test_single_breakpoint_role_unconfirmed_fails(self):
+        def strip(d):
+            d["tokens"]["type"]["body"].pop("singleTierConfirmed")
+        self._mutate_brand(strip)
+        rep = self._validate()
+        self.assertTrue(any(e.startswith("C14") and "body" in e
+                            for e in rep.errors), rep.errors)
+
+    def test_single_breakpoint_role_confirmed_passes(self):
+        # the complete fixture carries confirmed single-tier roles already
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors if e.startswith("C14")], [],
+                         rep.errors)
+
+    def test_scalar_size_rem_unconfirmed_fails(self):
+        self._mutate_brand(lambda d: d["tokens"]["type"].__setitem__(
+            "caption", {"family": "Helvetica", "sizeRem": 0.75, "weight": 400}))
+        rep = self._validate()
+        self.assertTrue(any(e.startswith("C14") and "caption" in e
+                            for e in rep.errors), rep.errors)
+
+    def test_families_scale_shape_checked_by_c14(self):
+        # the families+scale token shape gets the same discipline
+        self._mutate_brand(lambda d: d["tokens"].__setitem__(
+            "type", {"families": {"display": {"value": "Georgia"}},
+                     "scale": {"display-xl": {"family": "display",
+                                              "sizeRem": 4.0}}}))
+        rep = self._validate()
+        self.assertTrue(any(e.startswith("C14") and "display-xl" in e
+                            for e in rep.errors), rep.errors)
+
+    # ── C15 relational spacing ladder ────────────────────────────────────────
+
+    def test_missing_relational_ladder_fails(self):
+        def strip(d):
+            for k in ("eyebrow-to-heading", "heading-to-body", "body-to-cta"):
+                d["tokens"]["spacing"].pop(k)
+        self._mutate_brand(strip)
+        rep = self._validate()
+        self.assertTrue(any(e.startswith("C15") for e in rep.errors), rep.errors)
+
+    def test_single_relational_rung_fails(self):
+        def strip(d):
+            d["tokens"]["spacing"].pop("heading-to-body")
+            d["tokens"]["spacing"].pop("body-to-cta")
+        self._mutate_brand(strip)
+        rep = self._validate()
+        msg = self._joined(rep.errors)
+        self.assertTrue(any(e.startswith("C15") for e in rep.errors), rep.errors)
+        self.assertIn("eyebrow-to-heading", msg)
+
+    def test_two_relational_rungs_pass(self):
+        self._mutate_brand(lambda d: d["tokens"]["spacing"].pop("body-to-cta"))
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors if e.startswith("C15")], [],
+                         rep.errors)
+
+    def test_relational_ladder_not_observed_with_reason_passes(self):
+        def swap(d):
+            for k in ("eyebrow-to-heading", "heading-to-body", "body-to-cta"):
+                d["tokens"]["spacing"].pop(k)
+            d["tokens"]["spacing"]["relationalLadder"] = {
+                "notObserved": True,
+                "reason": "single-viewport landing page — no measurable "
+                          "role-to-role rhythm beyond section padding"}
+        self._mutate_brand(swap)
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors if e.startswith("C15")], [],
+                         rep.errors)
+
+    def test_relational_ladder_not_observed_without_reason_fails(self):
+        def swap(d):
+            for k in ("eyebrow-to-heading", "heading-to-body", "body-to-cta"):
+                d["tokens"]["spacing"].pop(k)
+            d["tokens"]["spacing"]["relationalLadder"] = {"notObserved": True}
+        self._mutate_brand(swap)
+        rep = self._validate()
+        self.assertTrue(any(e.startswith("C15") and "reason" in e
+                            for e in rep.errors), rep.errors)
 
     # ── C11 composed-demo smoke ──────────────────────────────────────────────
 

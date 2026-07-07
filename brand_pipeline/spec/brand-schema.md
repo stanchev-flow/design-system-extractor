@@ -127,6 +127,13 @@ They do **not** carry Webflow variable names/ids/modes — those move to
 `targetMappings` (§7). A token name *is* its semantic role (`surface/primary`,
 `text/on-inverse`, `display-hero`, `section-padding-light`).
 
+> **Canonical tier (C14).** A brand whose type carries sized roles declares
+> `meta.canonicalTier: {viewport, label, note}` at the TOP level — the measured
+> breakpoint every canonical value (`sizeRem.base`, spacing `value:`) refers to.
+> The measure stage samples the capture at a viewport ladder (default
+> 1920/1440/960/375, `computed-styles.json tiers`, every block stamped with its
+> tier); the authored ladders and per-role `tiers` stamps trace back to it.
+
 ```yaml
 tokens:
   colors:
@@ -137,7 +144,12 @@ tokens:
   type:
     <roleName>:                      # display-hero, h1, h2, h3, eyebrow, body, control-text, …
       family:       "<font family>"
-      sizeRem:      { base: …, tablet: …, mobileL: …, mobile: … }   # responsive ladder
+      sizeRem:      { base: …, tablet: …, mobileL: …, mobile: … }   # responsive ladder —
+                                     # C14: ≥ 2 breakpoints per sized role, OR
+      singleTierConfirmed: true      # measured constant across the tier ladder (explicit)
+      tiers:                         # per-viewport MEASURED stamps (canonical-tier ladder,
+        w1440: { px: …, source: computed|saved-css }   # measure stage `tiers` samples)
+        w960:  { px: …, source: … }  # every stamp names the tier it was measured at
       lineHeight:   "<em|unitless>"
       weight:       <int>            # REQUIRED on EVERY tier — the measured computed font-weight
       letterSpacing:"<rem|em>"
@@ -147,6 +159,10 @@ tokens:
       value:        "<rem>"
       role:         "<short intent>"
       modeLadder:   { base: …, tablet: …, mobileL: …, mobile: … }   # responsive
+    <role>-to-<role>:                # RELATIONAL LADDER (C15): named gaps BETWEEN content
+      value:        "<rem>"          # roles — eyebrow-to-heading, heading-to-body,
+      modeLadder:   { … }            # body-to-cta, … (or relationalLadder:
+                                     # {notObserved: true, reason: …} when truly absent)
   surfaces:
     <surfaceRole>:                   # surface/primary, surface/inverse, …
       bg:           "<hex>"          # or token ref
@@ -1144,7 +1160,7 @@ Precedence rules (the only hard gate is still the brand's own `neverDo`, like Ap
 ## 10. Extraction OUTPUT CONTRACT — validator conventions (Path-2, 2026-07)
 
 A brand evidence folder (`runs/<brand>/brand/`) is DONE only when
-`tools/extract/validate_brand_evidence.py` passes (checks C1–C12). The validator encodes
+`tools/extract/validate_brand_evidence.py` passes (checks C1–C15). The validator encodes
 repo-observed failure shapes (a missing `section-copy.yaml` rendering every section as
 wordmark+arrow; a single stretched button variant; a logo wall with zero logo files; a
 `legal.copyright` key the composers cannot see) as hard contract errors. This section
@@ -1254,6 +1270,23 @@ C12 scans generated HTML (`components-preview/`, `chrome/` under the brand dir, 
 the C11 smoke renders) for double-escaped entity text (`&amp;mdash;` etc.) — author
 literal characters (`—`) in copy fed to renderers, never entity strings.
 `--no-smoke` skips C11 for environments without the harness.
+
+### 10.3e Motion + tier + relational-ladder tokens (C13–C15, P0/P1 2026-07)
+
+- **C13 `tokens.motion`** — authored from `evidence/motion-audit.json`: ≥ 1 evidenced
+  duration AND ≥ 1 easing (duration ladder / easing census / `signatureMoves[]`), or
+  `tokens.motion: {notObserved: true, reason: …}`. Evidenced interactive blocks
+  (accordion/tabs/modal/dropdown-menu/carousel) each carry a timing fact or a
+  `motion: {notObserved, reason}` note.
+- **C14 canonical tier** — `meta.canonicalTier` present when sized type roles exist;
+  every sized role's `sizeRem` carries ≥ 2 breakpoints or the role carries
+  `singleTierConfirmed: true` (verified against the measured tier ladder, both token
+  shapes — flat roles and `type.scale` entries). Per-role `tiers:` stamps
+  (`w<viewport>: {px, source}`) trace the ladder to the measure stage samples.
+- **C15 relational spacing ladder** — ≥ 2 named `<role>-to-<role>` rungs in
+  `tokens.spacing` (eyebrow-to-heading, heading-to-body, body-to-cta, …) each with a
+  value, or `tokens.spacing.relationalLadder: {notObserved: true, reason: …}`. Rung
+  names describe role relationships, never sections or content.
 
 ### 10.4 Required sibling outputs (C4–C6, C8–C9)
 
