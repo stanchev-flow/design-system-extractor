@@ -65,6 +65,9 @@ version:          # schema version string, e.g. "2.0"
 brand:            # identity block: name, sourceUrl, snapshot (one-paragraph thesis)
 tokens:           # colors / type / spacing / surfaces → intent + value (library-AGNOSTIC)
 surfaceGrammar:   # the surface role system + transition/nesting rules
+buttons:          # measured ACTION-STYLE families (state matrices) — §10.2
+navbar:           # extracted nav chrome: links/ctas + measured registers + presentation (§3 note)
+footer:           # extracted footer chrome: columns/social + legal.text + measured registers (§10.3)
 contracts:        # refs to the shared universal catalogs (primitives.yaml, blocks.yaml)
 primitives:       # [] THIS brand's overrides/usage rules AGAINST the primitive contracts
 blocks:           # [] THIS brand's overrides/usage rules AGAINST the block contracts
@@ -79,6 +82,12 @@ targetMappings:   # OPTIONAL, NON-CANONICAL. substrate-specific ids (Webflow) fo
 provenanceIndex:  # sectionId → source screenshot / url / DOM node (resolves provenance refs)
 indexes:          # OPTIONAL refs to sibling artifacts this brand.yaml indexes (SIGN-OFF #6)
 ```
+
+> `brand.yaml` is one file of a REQUIRED sibling set: `section-copy.yaml` (authored
+> verbatim copy — schema in `spec/section-copy-schema.md`), `layout-library.yaml`
+> (`layout-patterns.v1`, §4.4), curated `assets/` (logos included when observed), and
+> the extraction `evidence/` bundle. §10 records the output contract the validator
+> (`tools/extract/validate_brand_evidence.py`) enforces across the set.
 
 ## 2. The universal rule-entry envelope
 
@@ -376,7 +385,18 @@ blocks:
     rules:      [ <ruleKey ref or short statement> ]   # brand-UNIQUE prose only
     refs:       [ neverDo.<id>, … ]    # optional: reference a neverDo/do instead of restating it
     confidence: …; source: …; scope: …; changelog: […]
+
+  <contractKey>:                  # a block the source pages genuinely NEVER show
+    notObserved: true             # explicit absence marker (§10) — never just omit the key
+    note: "<where you looked>"    # optional: which grounding/DOM evidence confirms the absence
 ```
+
+> **Every contract block type is ATTEMPTED — evidence or explicit absence.** Extraction
+> must leave each `contracts/blocks.yaml` key either populated with evidence
+> (`origin`/`use`/`slots`/`provenance`) or explicitly marked `notObserved: true`. A
+> silently-missing key is indistinguishable from "extraction never looked", which is how
+> a source site's card component vanished from a brand (`card` prose lived only in layout
+> useCase text). The output-contract validator (§10) fails on silent gaps.
 
 > **`refs` vs `rules` (de-duplication).** A primitive/block should NOT restate a rule that
 > a `neverDo` (or a `use`/`variant`/`remapFrom` binding) already expresses. When the only
@@ -1108,3 +1128,70 @@ Precedence rules (the only hard gate is still the brand's own `neverDo`, like Ap
 2. **Standard supplies the base** — used when the project library has no adequate match.
 3. **Brand `neverDo` is the hard gate** — a pattern whose treatments would violate a
    `neverDo` (e.g. WoodWave `no-text-on-photos`) is filtered out before scoring.
+
+## 10. Extraction OUTPUT CONTRACT — validator conventions (Path-2, 2026-07)
+
+A brand evidence folder (`runs/<brand>/brand/`) is DONE only when
+`tools/extract/validate_brand_evidence.py` passes (checks C1–C9). The validator encodes
+repo-observed failure shapes (a missing `section-copy.yaml` rendering every section as
+wordmark+arrow; a single stretched button variant; a logo wall with zero logo files; a
+`legal.copyright` key the composers cannot see) as hard contract errors. This section
+records the schema-side conventions those checks rely on; the evidence-first authoring
+method that PRODUCES them is `spec/layout-analyst-skill.md`.
+
+### 10.1 `blocks.<type>.notObserved` — explicit absence (C2)
+
+Every block key in `contracts/blocks.yaml` is either populated with evidence or marked
+`notObserved: true` (§5.1). Silence is a contract violation: an unmarked gap cannot be
+distinguished from an extraction miss, and `card` is historically the block this bites.
+
+### 10.2 `buttons:` — the measured action-style family matrix (C3)
+
+`buttons:` records EVERY observed action style as its own family, each with a usable
+state matrix. Family names are generic action tiers (`primary` / `secondary` /
+`tertiary` / `textCta` — never section- or content-specific names):
+
+```yaml
+buttons:
+  renderHint: { useFilledButton: true|false, note: "<one-liner>" }   # optional dispatch hint
+  <family>:                       # primary, secondary, tertiary, textCta, …
+    style:     filled|outline|filled-neutral|text-link-arrow|…
+    bg:        "<hex|transparent>"    # fill (filled/outline families)
+    fg:        "<hex>"                # label ink
+    border:    "<css border|null>"
+    radius:    "<css length>"         # REQUIRED — pill vs square is brand identity
+    padding:   "<css shorthand>"
+    font:      "<family>"; weight: <int>; sizeRem: <number>
+    bgHover:   "<hex>";  bgPressed: "<hex>"   # state facts — at least ONE state fact
+    fgHover:   "<hex>";  focus: "<prose>"     # (bgHover/fgHover/decoration/focus) REQUIRED
+    decoration: "<prose>"             # text families: idle/hover decoration behavior
+    confidence: …; source: …; provenance: […]
+  singleVariantConfirmed: true      # ONLY after re-checking evidence: the source truly
+                                    # carries ONE action style (C3 otherwise fails a
+                                    # one-family matrix — sites almost always have ≥ 2)
+```
+
+Layer 1 (`tokens_css.py`) emits `--button[-<family>]-*` custom properties from the
+`primary`/`secondary`/`tertiary` families; `textCta`-style families drive the arrow-link
+device. Absence of `buttons:` entirely = the typographic-CTA structural variant.
+
+### 10.3 `footer.legal.text` — the normative legal-line key (C7)
+
+The composers read the footer legal line from `footer.legal.text`
+(`component_render.footer_content`). `text:` is the NORMATIVE key; synonyms
+(`copyright:`, `line:`, …) are invisible to the renderer and fail validation. Social
+entries need `{network, href}` shapes; columns pass through verbatim.
+
+### 10.4 Required sibling outputs (C4–C6, C8–C9)
+
+- `section-copy.yaml` — authored verbatim copy per content-bearing layout
+  (`sectionCopy` base incl. `wordmark:`, `layoutCopy.<layoutId>` per section; full
+  schema + merge precedence in **`spec/section-copy-schema.md`**). Without it the
+  composers degrade every section to empty copy by design.
+- `layout-library.yaml` — one `layout-patterns.v1` pattern per OBSERVED section shape;
+  every `layouts[]` entry carries `patternRef` (or an explicit `noPatternReason`).
+- Curated `assets/` — including ≥ 3 real logo files whenever a logo wall was observed
+  (a logos use-case with no logo assets renders a text-caption wall), plus
+  `assets-tagged.json` naming only files that exist on disk.
+- `evidence/` — the extraction bundle (dom-mine / css-mine / measured / section crops /
+  per-section vision grounding YAMLs) that every extracted value traces back to.
