@@ -596,7 +596,7 @@ p { text-wrap-style: balance; }
 /* header block: eyebrow -> heading (+ optional subhead/cta) typographic cluster */
 .c-header { display: flex; flex-direction: column; gap: var(--c-eyebrow-gap); }
 
-/* paragraph primitive: narrow offset body, Inter sentence case, generous leading.
+/* paragraph primitive: narrow offset body in the brand body register, generous leading.
    font-weight rides the brand's measured body tier (N1, fix-batch 2026-07): a brand
    whose body register is light (300) must not silently render at the UA's 400. */
 .c-paragraph { font-family: var(--c-font-body); font-size: var(--c-body-size);
@@ -874,13 +874,17 @@ def nav_hover_css(doc) -> str:
     link = (((doc or {}).get("navbar") or {}).get("measured") or {}).get("link") or {}
     if not (isinstance(link.get("hoverBg"), str) and link["hoverBg"].strip()):
         return ""
-    return """
+    # border-radius rides the layer-1 token and is emitted ONLY when the brand measured
+    # a hoverRadius — no literal fallback (AS-24 token-provenance: a `999px` guess has
+    # no provenance in any brand's manifest).
+    radius = ("  border-radius: var(--chrome-nav-link-hover-radius);\n"
+              if link.get("hoverRadius") not in (None, "") else "")
+    return f"""
 /* nav-link hover wash (measured chrome interaction — navbar.measured.link.hoverBg). */
-.cs-navlinks .c-arrow-link { padding: 0.35em 0.8em; margin: -0.35em -0.8em;
-  border-radius: var(--chrome-nav-link-hover-radius, 999px);
-  transition: background-color var(--c-motion-fast) var(--c-ease); }
-.cs-navlinks .c-arrow-link:hover, .cs-navlinks .c-arrow-link:focus-visible {
-  background: var(--chrome-nav-link-hover-bg); }
+.cs-navlinks .c-arrow-link {{ padding: 0.35em 0.8em; margin: -0.35em -0.8em;
+{radius}  transition: background-color var(--c-motion-fast) var(--c-ease); }}
+.cs-navlinks .c-arrow-link:hover, .cs-navlinks .c-arrow-link:focus-visible {{
+  background: var(--chrome-nav-link-hover-bg); }}
 """
 
 

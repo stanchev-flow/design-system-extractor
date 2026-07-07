@@ -1198,7 +1198,13 @@ navbar:
     href: https://woodwavegallery.webflow.io/#visit
   - label: buy tickets
     href: https://webflow.com/templates/html/woodwave-photography-website-template
-  ctas: []
+  # trailing nav ACTION declared as brand data (AS-39 nav-fix 2026-07): the source nav's
+  # closing "buy tickets" renders as the bar's action (typographic arrow under this
+  # brand's no-filled-button law). Previously inferred in shared code by a ticket/buy
+  # keyword heuristic — that vocabulary guess is gone; the declaration lives here.
+  ctas:
+  - label: buy tickets
+    href: https://webflow.com/templates/html/woodwave-photography-website-template
   measured:
     _provenance: getComputedStyle (rendered px / CSS strings) from saved DOM
     bar:

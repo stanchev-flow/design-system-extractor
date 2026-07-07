@@ -165,6 +165,35 @@ tokens:
 > Webflow Assembler maps the SAME intent to a variable + Color-schemes mode using the
 > ids recorded in `targetMappings`. Canonical tokens never name either substrate.
 
+> **Chrome PRESENTATION devices are brand declarations, never renderer defaults**
+> (nav-fix 2026-07). Casing, decorative separators, chrome surfaces, and chrome
+> interactions all derive from the brand's own data, degrading to NEUTRAL when silent:
+>
+> - `tokens.type.<tier>.case` — the register's measured case (`uppercase` / `sentence`
+>   / `title` / `none`). ALL rendered casing (headings, eyebrows, controls, nav links,
+>   footer links, gallery specimens) rides the generated `--case-<tier>` variables;
+>   shared CSS never hardcodes `text-transform`. A silent tier renders as authored
+>   (`none`), and content passes through Python untransformed (no `.upper()` styling).
+> - `tokens.type.<tier>.prefix` — OPTIONAL decorative text device for the register
+>   (e.g. an eyebrow slash prefix observed on the live site). Consumed by specimen /
+>   preview surfaces; composed section copy authors its own prefixes. Silent = none.
+> - `navbar.separator` / `footer.separator` — the decorative inter-link separator
+>   GLYPH observed in the brand's chrome (e.g. `"/"`). Silent = links separated by
+>   spacing alone; a glyph is never inherited from another brand.
+> - `navbar.surface.bg` — the measured bar color. The composer resolves it to one of
+>   the brand's OWN `tokens.surfaces` roles by nearest RGB (`nav_surface_role`, same
+>   discipline as the AS-35 footer resolution); a TRANSPARENT/unmeasured bar keeps the
+>   opening section's surface (the extracted nav sits over what it overlaps).
+> - `navbar.measured.link.hoverBg` / `.hoverRadius` — the measured nav-link hover
+>   WASH (pill/underlay). Emitted as `--chrome-nav-link-hover-*` layer-1 tokens and
+>   rendered only when extracted; hover-less brands keep the default link interaction.
+> - The nav CTA renders through the same law-first `cta-shape` dispatch as every other
+>   action (`render_button`): a filled-primary brand gets its measured pill in the nav,
+>   a typographic brand keeps the ink arrow link. WHICH primary item is the action is
+>   itself evidence, never a vocabulary guess: an explicit `navbar.ctas[]` entry wins,
+>   else a `navbar.links[].style` filled-pill marker, else `navbar.measured.cta`
+>   promotes the LAST primary item; a brand declaring none renders links only.
+
 > **Vertical rhythm (spacing) — STYLE owns the scale, BRAND owns the measured values.**
 > The active STYLE layer (`styles/<id>.md`, front-matter `spacing:` — authoritative — with
 > the prose *Density & rhythm → Vertical rhythm & spacing scale* subsection as the parser
