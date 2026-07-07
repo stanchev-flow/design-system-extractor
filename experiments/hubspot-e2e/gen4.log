@@ -1,0 +1,96 @@
+  offGridExpansion=False (from style)
+  [attempt 0] 92.09s  in=21459 out=7658
+    gate: FAIL ['never-typographic-primary', 'Surface = brand surface/base (#fcfcfa)', 'Brand assets present (not placeholder)', 'No off-palette hex colors', 'All brand image assets present', 'alignment-resolution']
+  [attempt 1] 73.0s  in=21840 out=6241
+    gate: FAIL ['never-typographic-primary', 'Surface = brand surface/base (#fcfcfa)', 'Brand assets present (not placeholder)', 'No off-palette hex colors', 'All brand image assets present']
+  [attempt 2] 69.6s  in=21802 out=5833
+    gate: FAIL ['never-typographic-primary', 'Surface = brand surface/base (#fcfcfa)', 'Brand assets present (not placeholder)', 'No off-palette hex colors', 'All brand image assets present']
+{
+  "ok": false,
+  "attempts": 3,
+  "wall_s": 240.9,
+  "style": "corporate-saas-clean",
+  "offGridExpansion": false,
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "stack-fullbleed",
+      "novelty": "reuse",
+      "surfaceIntent": "inverse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      }
+    },
+    {
+      "id": "logos",
+      "useCase": "logos",
+      "archetype": "stack",
+      "novelty": "adapt",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-elevated-card"
+      }
+    },
+    {
+      "id": "features",
+      "useCase": "features",
+      "archetype": "cards",
+      "novelty": "reuse",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      }
+    },
+    {
+      "id": "testimonial",
+      "useCase": "testimonial",
+      "archetype": "stack",
+      "novelty": "adapt",
+      "surfaceIntent": "panel",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-elevated-card"
+      }
+    },
+    {
+      "id": "cta",
+      "useCase": "cta",
+      "archetype": "stack",
+      "novelty": "adapt",
+      "surfaceIntent": "panel",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-elevated-card"
+      }
+    }
+  ],
+  "failures": [
+    [
+      "never-typographic-primary",
+      "filled primary CTA button present=False; outline secondary=False"
+    ],
+    [
+      "Surface = brand surface/base (#fcfcfa)",
+      "section renders on the brand surface bg #fcfcfa"
+    ],
+    [
+      "Brand assets present (not placeholder)",
+      "4 local asset(s), missing=['assets/hero-staircase.jpg', 'assets/overlap-vase.jpg', 'assets/hero-staircase.jpg']"
+    ],
+    [
+      "No off-palette hex colors",
+      "off-palette=['#1f1a14', '#f7efe6']; brand palette has 12 hexes"
+    ],
+    [
+      "All brand image assets present",
+      "local images=4; missing=['assets/hero-staircase.jpg', 'assets/overlap-vase.jpg', 'assets/hero-staircase.jpg']"
+    ]
+  ],
+  "schema_errors": [],
+  "neverdo_hits": [],
+  "scorecard_overall": null
+}

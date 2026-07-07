@@ -1,0 +1,1555 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remote — Component Preview Gallery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lexend+Deca:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style id="tokens">
+/* Remote — generated design tokens (layer 1). Source: brand.yaml sha256=8aa3cbeef504; generator tokens_css.py v1.0.0; style=none; tokens=201; disabledDevices=counter-display,ghost-watermark,footer-display-links. Regenerate via the compose CLI — never hand-edit. */
+:root {
+  --color-ink-primary: #141415;
+  --color-ink-body: #595b5f;
+  --color-ink-secondary: #383a3d;
+  --color-ink-muted: #777a7e;
+  --color-ink-faint: #b3b5b7;
+  --color-neutral-canvas: #eff0f0;
+  --color-neutral-raised: #f6f7f8;
+  --color-neutral-card: #ffffff;
+  --color-action-primary: #0564ff;
+  --color-action-primary-hover: #0047bc;
+  --color-action-primary-active: #00235c;
+  --color-action-primary-focus: #003284;
+  --color-action-primary-disabled: #ccdfff;
+  --color-action-outline-hover-wash: #ebf2ff;
+  --color-action-neutral: #232325;
+  --color-action-neutral-hover: #595b5f;
+  --color-action-neutral-active: #141415;
+  --color-surface-deep-navy: #00235c;
+  --color-surface-deep-accent: #511621;
+  --color-surface-deep-accent-hover: #742030;
+  --color-accent-warm-wash: #fceef1;
+  --color-accent-crimson: #a52d44;
+  --color-accent-eyebrow-blue-deep: #0047bc;
+  --color-accent-periwinkle: #9bc1ff;
+  --color-accent-pale-blue-chip: #ccdfff;
+  --color-text-link: #0564ff;
+  --color-text-link-hover: #0047bc;
+  --color-text-link-active: #003284;
+  --color-text-link-hover-on-inverse: #ccdfff;
+  --color-text-link-active-on-inverse: #9bc1ff;
+  --color-overlay-hover-wash: #e7e8e9;
+  --color-border-focus-ring: #0564ff;
+  --color-border-input: #d1d6dc;
+  --color-border-default: #b3b5b7;
+  --color-state-disabled-fill: #d2d3d5;
+  --color-surface-art-pastel: #dae2e8;
+  --color-state-error: #b41818;
+  --color-surface-primary: #eff0f0;
+  --color-surface-panel: #ffffff;
+  --color-surface-inverse: #00235c;
+  --color-surface-inverse-strong: #00235c;
+  --color-accent-highlight: #0564ff;
+  --color-accent-highlight-on-inverse: #9bc1ff;
+  --color-text-on-primary: #141415;
+  --color-text-on-primary-muted: #595b5f;
+  --color-text-on-inverse: #ffffff;
+  --color-text-on-inverse-muted: #9bc1ff;
+  --color-text-on-accent: #ffffff;
+  --color-text-ghost-on-primary: #e7e8e9;
+  --color-border-hairline-on-primary: rgba(179,181,183,0.4);
+  --color-border-hairline-on-inverse: rgba(255,255,255,0.4);
+  --surface-surface-primary: #eff0f0;
+  --surface-surface-panel: #ffffff;
+  --surface-surface-raised: #f6f7f8;
+  --surface-surface-inverse: #00235c;
+  --surface-surface-inverse-strong: #00235c;
+  --surface-surface-accent: #511621;
+  --surface-surface-hero-noise: #dae2e8;
+  --font-display-hero: 'Bossa', 'Lexend Deca', sans-serif;
+  --size-display-hero: 2.875rem;
+  --size-display-hero-base: 2.875rem;
+  --weight-display-hero: 400;
+  --leading-display-hero: 1.19em;
+  --case-display-hero: none;
+  --tracking-display-hero: 0em;
+  --font-h1: 'Bossa', 'Lexend Deca', sans-serif;
+  --size-h1: 2.875rem;
+  --size-h1-base: 2.875rem;
+  --weight-h1: 400;
+  --leading-h1: 1.2em;
+  --case-h1: none;
+  --tracking-h1: 0em;
+  --font-h2: 'Bossa', 'Lexend Deca', sans-serif;
+  --size-h2: 2.25rem;
+  --size-h2-base: 2.25rem;
+  --weight-h2: 400;
+  --leading-h2: 1.2em;
+  --case-h2: none;
+  --tracking-h2: 0em;
+  --font-h3: 'Bossa', 'Lexend Deca', sans-serif;
+  --size-h3: 1.75rem;
+  --size-h3-base: 1.75rem;
+  --weight-h3: 400;
+  --leading-h3: 1.2em;
+  --case-h3: none;
+  --tracking-h3: 0em;
+  --font-body: 'Inter', sans-serif;
+  --size-body: 1.125rem;
+  --size-body-base: 1.125rem;
+  --weight-body: 400;
+  --leading-body: 1.5em;
+  --case-body: none;
+  --tracking-body: 0em;
+  --font-eyebrow: 'Bossa', 'Lexend Deca', sans-serif;
+  --size-eyebrow: 0.875rem;
+  --size-eyebrow-base: 0.875rem;
+  --weight-eyebrow: 400;
+  --leading-eyebrow: 1.5em;
+  --case-eyebrow: uppercase;
+  --tracking-eyebrow: 0.05em;
+  --font-control-text: 'Inter', sans-serif;
+  --size-control-text: 1rem;
+  --size-control-text-base: 1rem;
+  --weight-control-text: 500;
+  --leading-control-text: 1.5em;
+  --case-control-text: none;
+  --tracking-control-text: 0em;
+  --font-h4: 'Bossa', 'Lexend Deca', sans-serif;
+  --size-h4: 1.375rem;
+  --size-h4-base: 1.375rem;
+  --weight-h4: 400;
+  --leading-h4: 1.2em;
+  --case-h4: none;
+  --tracking-h4: 0em;
+  --font-body-sm: 'Inter', sans-serif;
+  --size-body-sm: 1rem;
+  --size-body-sm-base: 1rem;
+  --weight-body-sm: 400;
+  --leading-body-sm: 1.5em;
+  --case-body-sm: none;
+  --tracking-body-sm: 0em;
+  --space-section-padding-light: 3rem;
+  --space-section-y-lg: 5rem;
+  --space-section-y-xl: 7rem;
+  --space-module-gap-editorial: 5rem;
+  --space-eyebrow-to-heading: 0.75rem;
+  --space-panel-padding: 2rem;
+  --space-grid-gap: 2rem;
+  --space-stack-md: 1rem;
+  --space-stack-lg: 3rem;
+  --space-button-inset: 0.6875rem 1.5rem;
+  --space-container-max: 76rem;
+  --space-badge-tier: 6.25rem;
+  --space-radius-global: 1rem;
+  --radius-global: 1rem;
+  --radius-card: 1rem;
+  --radius-panel: 0.75rem;
+  --radius-media: 0.625rem;
+  --radius-button: 2.5rem;
+  --radius-input: 0.1875rem;
+  --shadow-card-hover: 0px 12px 24px 0px rgba(0,0,0,0.08);
+  --aspect-wide: 16 / 9;
+  --aspect-landscape: 3 / 2;
+  --aspect-square: 1 / 1;
+  --motion-fast: 300ms;
+  --motion-base: 500ms;
+  --motion-slow: 1000ms;
+  --motion-ease: ease;
+  --button-bg: #0564ff;
+  --button-fg: #ffffff;
+  --button-bg-hover: #0047bc;
+  --button-bg-pressed: #00235c;
+  --button-border: 1px solid #0564ff;
+  --button-pad: 0.6875rem 1.5rem;
+  --button-radius: 2.5rem;
+  --button-weight: 400;
+  --button-size: 1.125rem;
+  --button-font: 'Inter', 'Lexend Deca', sans-serif;
+  --button-secondary-bg: transparent;
+  --button-secondary-fg: #0564ff;
+  --button-secondary-bg-hover: #ebf2ff;
+  --button-secondary-border: 1px solid #0564ff;
+  --button-secondary-pad: 0.6875rem 1.5rem;
+  --button-secondary-radius: 2.5rem;
+  --button-secondary-weight: 400;
+  --button-secondary-size: 1.125rem;
+  --button-secondary-font: 'Inter', 'Lexend Deca', sans-serif;
+  --button-tertiary-bg: #232325;
+  --button-tertiary-fg: #ffffff;
+  --button-tertiary-bg-hover: #595b5f;
+  --button-tertiary-bg-pressed: #141415;
+  --button-tertiary-pad: 0.6875rem 1.5rem;
+  --button-tertiary-radius: 2.5rem;
+  --button-tertiary-weight: 400;
+  --button-tertiary-size: 1.125rem;
+  --button-tertiary-font: 'Inter', 'Lexend Deca', sans-serif;
+  --size-nav: 1rem;
+  --chrome-nav-link-weight: 500;
+  --chrome-nav-logo-w: 5.875rem;
+  --chrome-nav-logo-h: 1.875rem;
+  --chrome-foot-link-size: 0.875rem;
+  --chrome-foot-link-weight: 400;
+  --chrome-link-hover: #ccdfff;
+}
+
+@media (max-width: 991px) {
+  :root {
+    --size-display-hero: 2.25rem;
+    --size-h1: 2.25rem;
+    --size-h2: 1.75rem;
+    --size-h3: 1.375rem;
+    --size-body: 1rem;
+    --size-h4: 1.25rem;
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --size-display-hero: 1.75rem;
+    --size-h1: 1.75rem;
+    --size-h2: 1.375rem;
+    --size-h3: 1.25rem;
+    --size-body: 1rem;
+    --size-h4: 1.125rem;
+  }
+}
+
+@media (max-width: 479px) {
+  :root {
+    --size-display-hero: 1.75rem;
+    --size-h1: 1.75rem;
+    --size-h2: 1.375rem;
+    --size-h3: 1.25rem;
+    --size-body: 1rem;
+    --size-h4: 1.125rem;
+  }
+}
+</style>
+<style>
+
+:root {
+  --surface-primary: #eff0f0;
+  --surface-panel: #ffffff;
+  --surface-inverse: #00235c;
+  --surface-inverse-strong: #00235c;
+  --accent: #0564ff;
+  --ink: #141415;
+  --ink-muted: #595b5f;
+  --ink-inverse: #ffffff;
+  --ink-inverse-muted: #9bc1ff;
+  --ghost: #e7e8e9;
+  --hairline: rgba(179,181,183,0.4);
+
+  --font-heading: 'Bossa', 'Lexend Deca', sans-serif;
+  --font-body: 'Inter', 'Inter', sans-serif;
+
+  --display-size: 2.875rem;
+  --h1-size: 2.875rem;
+  --h2-size: 2.25rem;
+  --h3-size: 1.75rem;
+  --eyebrow-size: 0.875rem;
+  --body-size: 1.125rem;
+  --control-size: 1rem;
+  --counter-size: 2rem;
+  --eyebrow-ls: 0.05em;
+  --control-ls: 0em;
+
+  --radius: 1rem;
+  --panel-pad: 2rem;
+  --eyebrow-gap: 0.75rem;
+  --module-gap: 5rem;
+  --ease: 120ms;
+}
+:root {
+  --c-paper: var(--surface-surface-primary);
+  --c-ink: var(--color-text-on-primary);
+  --c-ink-muted: var(--color-text-on-primary-muted);
+  --c-accent: var(--color-text-on-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-on-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--c-h2-size);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 1.0rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-title-overlap: -2.75rem;
+  --c-aspect-wide: var(--aspect-wide);
+  --c-aspect-landscape: var(--aspect-landscape);
+  --c-aspect-square: var(--aspect-square);
+  --c-button-bg: var(--button-bg);
+  --c-button-fg: var(--button-fg);
+  --c-button-bg-hover: var(--button-bg-hover);
+  --c-button-border: var(--button-border);
+  --c-button-pad: var(--button-pad);
+  --c-button-radius: var(--button-radius);
+  --c-button-weight: var(--button-weight);
+  --c-button-size: var(--button-size);
+  --c-button-font: var(--button-font);
+  --c-input-radius: var(--radius-input);
+  --c-foot-link-size: var(--chrome-foot-link-size);
+  --c-foot-link-weight: var(--chrome-foot-link-weight);
+}
+[data-surface-frame="surface/primary"] {
+  --c-paper: var(--surface-surface-primary);
+  --c-ink: var(--color-text-on-primary);
+  --c-ink-muted: var(--color-text-on-primary-muted);
+  --c-accent: var(--color-text-on-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-on-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--c-h2-size);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 1.0rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-title-overlap: -2.75rem;
+  --c-aspect-wide: var(--aspect-wide);
+  --c-aspect-landscape: var(--aspect-landscape);
+  --c-aspect-square: var(--aspect-square);
+  --c-button-bg: var(--button-bg);
+  --c-button-fg: var(--button-fg);
+  --c-button-bg-hover: var(--button-bg-hover);
+  --c-button-border: var(--button-border);
+  --c-button-pad: var(--button-pad);
+  --c-button-radius: var(--button-radius);
+  --c-button-weight: var(--button-weight);
+  --c-button-size: var(--button-size);
+  --c-button-font: var(--button-font);
+  --c-input-radius: var(--radius-input);
+  --c-foot-link-size: var(--chrome-foot-link-size);
+  --c-foot-link-weight: var(--chrome-foot-link-weight);
+}
+[data-surface-frame="surface/panel"] {
+  --c-paper: var(--surface-surface-panel);
+  --c-ink: var(--color-text-on-primary);
+  --c-ink-muted: var(--color-text-on-primary-muted);
+  --c-accent: var(--color-text-on-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-on-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--c-h2-size);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 1.0rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-title-overlap: -2.75rem;
+  --c-aspect-wide: var(--aspect-wide);
+  --c-aspect-landscape: var(--aspect-landscape);
+  --c-aspect-square: var(--aspect-square);
+  --c-button-bg: var(--button-bg);
+  --c-button-fg: var(--button-fg);
+  --c-button-bg-hover: var(--button-bg-hover);
+  --c-button-border: var(--button-border);
+  --c-button-pad: var(--button-pad);
+  --c-button-radius: var(--button-radius);
+  --c-button-weight: var(--button-weight);
+  --c-button-size: var(--button-size);
+  --c-button-font: var(--button-font);
+  --c-input-radius: var(--radius-input);
+  --c-foot-link-size: var(--chrome-foot-link-size);
+  --c-foot-link-weight: var(--chrome-foot-link-weight);
+}
+[data-surface-frame="surface/raised"] {
+  --c-paper: var(--surface-surface-raised);
+  --c-ink: var(--color-text-on-primary);
+  --c-ink-muted: var(--color-text-on-primary-muted);
+  --c-accent: var(--color-text-on-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-on-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--c-h2-size);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 1.0rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-title-overlap: -2.75rem;
+  --c-aspect-wide: var(--aspect-wide);
+  --c-aspect-landscape: var(--aspect-landscape);
+  --c-aspect-square: var(--aspect-square);
+  --c-button-bg: var(--button-bg);
+  --c-button-fg: var(--button-fg);
+  --c-button-bg-hover: var(--button-bg-hover);
+  --c-button-border: var(--button-border);
+  --c-button-pad: var(--button-pad);
+  --c-button-radius: var(--button-radius);
+  --c-button-weight: var(--button-weight);
+  --c-button-size: var(--button-size);
+  --c-button-font: var(--button-font);
+  --c-input-radius: var(--radius-input);
+  --c-foot-link-size: var(--chrome-foot-link-size);
+  --c-foot-link-weight: var(--chrome-foot-link-weight);
+}
+[data-surface-frame="surface/inverse"] {
+  --c-paper: var(--surface-surface-inverse);
+  --c-ink: var(--color-text-on-inverse);
+  --c-ink-muted: var(--color-text-on-inverse-muted);
+  --c-accent: var(--color-accent-highlight-on-inverse);
+  --c-hairline: var(--color-border-hairline-on-inverse);
+  --c-link-hover: var(--chrome-link-hover);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--c-h2-size);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 1.0rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-title-overlap: -2.75rem;
+  --c-aspect-wide: var(--aspect-wide);
+  --c-aspect-landscape: var(--aspect-landscape);
+  --c-aspect-square: var(--aspect-square);
+  --c-button-bg: var(--button-bg);
+  --c-button-fg: var(--button-fg);
+  --c-button-bg-hover: var(--button-bg-hover);
+  --c-button-border: var(--button-border);
+  --c-button-pad: var(--button-pad);
+  --c-button-radius: var(--button-radius);
+  --c-button-weight: var(--button-weight);
+  --c-button-size: var(--button-size);
+  --c-button-font: var(--button-font);
+  --c-input-radius: var(--radius-input);
+  --c-foot-link-size: var(--chrome-foot-link-size);
+  --c-foot-link-weight: var(--chrome-foot-link-weight);
+}
+[data-surface-frame="surface/inverse-strong"] {
+  --c-paper: var(--surface-surface-inverse-strong);
+  --c-ink: var(--color-text-on-inverse);
+  --c-ink-muted: var(--color-text-on-inverse-muted);
+  --c-accent: var(--color-accent-highlight-on-inverse);
+  --c-hairline: var(--color-border-hairline-on-inverse);
+  --c-link-hover: var(--chrome-link-hover);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--c-h2-size);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 1.0rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-title-overlap: -2.75rem;
+  --c-aspect-wide: var(--aspect-wide);
+  --c-aspect-landscape: var(--aspect-landscape);
+  --c-aspect-square: var(--aspect-square);
+  --c-button-bg: var(--button-bg);
+  --c-button-fg: var(--button-fg);
+  --c-button-bg-hover: var(--button-bg-hover);
+  --c-button-border: var(--button-border);
+  --c-button-pad: var(--button-pad);
+  --c-button-radius: var(--button-radius);
+  --c-button-weight: var(--button-weight);
+  --c-button-size: var(--button-size);
+  --c-button-font: var(--button-font);
+  --c-input-radius: var(--radius-input);
+  --c-foot-link-size: var(--chrome-foot-link-size);
+  --c-foot-link-weight: var(--chrome-foot-link-weight);
+}
+[data-surface-frame="surface/accent"] {
+  --c-paper: var(--surface-surface-accent);
+  --c-ink: var(--color-text-on-inverse);
+  --c-ink-muted: var(--color-text-on-inverse-muted);
+  --c-accent: var(--color-accent-warm-wash);
+  --c-hairline: var(--color-border-hairline-on-inverse);
+  --c-link-hover: var(--chrome-link-hover);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--c-h2-size);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 1.0rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-title-overlap: -2.75rem;
+  --c-aspect-wide: var(--aspect-wide);
+  --c-aspect-landscape: var(--aspect-landscape);
+  --c-aspect-square: var(--aspect-square);
+  --c-button-bg: var(--button-bg);
+  --c-button-fg: var(--button-fg);
+  --c-button-bg-hover: var(--button-bg-hover);
+  --c-button-border: var(--button-border);
+  --c-button-pad: var(--button-pad);
+  --c-button-radius: var(--button-radius);
+  --c-button-weight: var(--button-weight);
+  --c-button-size: var(--button-size);
+  --c-button-font: var(--button-font);
+  --c-input-radius: var(--radius-input);
+  --c-foot-link-size: var(--chrome-foot-link-size);
+  --c-foot-link-weight: var(--chrome-foot-link-weight);
+}
+[data-surface-frame="surface/hero-noise"] {
+  --c-paper: var(--surface-surface-hero-noise);
+  --c-ink: var(--color-text-on-primary);
+  --c-ink-muted: var(--color-text-on-primary-muted);
+  --c-accent: var(--color-text-on-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-on-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--c-h2-size);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 1.0rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-title-overlap: -2.75rem;
+  --c-aspect-wide: var(--aspect-wide);
+  --c-aspect-landscape: var(--aspect-landscape);
+  --c-aspect-square: var(--aspect-square);
+  --c-button-bg: var(--button-bg);
+  --c-button-fg: var(--button-fg);
+  --c-button-bg-hover: var(--button-bg-hover);
+  --c-button-border: var(--button-border);
+  --c-button-pad: var(--button-pad);
+  --c-button-radius: var(--button-radius);
+  --c-button-weight: var(--button-weight);
+  --c-button-size: var(--button-size);
+  --c-button-font: var(--button-font);
+  --c-input-radius: var(--radius-input);
+  --c-foot-link-size: var(--chrome-foot-link-size);
+  --c-foot-link-weight: var(--chrome-foot-link-weight);
+}
+
+/* provenance: preview-chrome — gallery harness styling (masthead, badges, tier headers,
+   spec labels, state-matrix chrome); never brand output. Specimen content inside the
+   frames renders through component_vars + COMPONENT_CSS from the generated tokens
+   (SPEC §C.4 split). */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+img { display: block; max-width: 100%; }
+
+/* iframe-safe: cq* units resolve against this sized box. NO vh/dvh/vw anywhere. */
+html { background: var(--surface-primary); height: 100%; }
+html, body {
+  background: var(--surface-primary);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+body {
+  min-height: 100%;
+  container-type: size;
+  container-name: frame;
+  line-height: 1.5;
+}
+
+.page { width: 100%; max-width: 96rem; margin: 0 auto; padding: 4cqh 5cqw 8cqh; }
+
+/* Masthead on the dark bookend surface (gold accent permitted here). */
+.masthead {
+  background: var(--surface-inverse);
+  color: var(--ink-inverse);
+  padding: 5cqh 5cqw;
+  margin-bottom: 5cqh;
+}
+.masthead .eyebrow { color: var(--ink-inverse-muted); }
+.masthead h1 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: var(--h1-size);
+  line-height: 1.1em;
+  color: var(--accent);
+  margin: var(--eyebrow-gap) 0 1rem;
+}
+.masthead p { color: var(--ink-inverse-muted); max-width: 52rem; font-size: var(--body-size); }
+.legend { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 2rem; }
+.legend span { display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: var(--eyebrow-size); letter-spacing: var(--eyebrow-ls);
+  text-transform: uppercase; color: var(--ink-inverse-muted); }
+
+/* Tier headers. */
+.tier { margin: 6cqh 0 2.5cqh; }
+.tier-num { font-family: var(--font-heading); font-size: var(--counter-size);
+  color: var(--ink); line-height: 1; }
+.tier-name { font-family: var(--font-heading); text-transform: uppercase;
+  font-size: var(--h2-size); line-height: 1.2em; color: var(--ink); margin-top: 0.25rem; }
+.tier-sub { font-size: var(--eyebrow-size); letter-spacing: var(--eyebrow-ls);
+  text-transform: uppercase; color: var(--ink-muted); margin-top: 0.75rem; }
+.tier-rule { height: 1px; background: var(--hairline); margin-top: 1.25rem; }
+
+/* Surface-roles specimen tier: each frame paints its own surface via the scoped
+   per-surface alias block ([data-surface-frame] — see component_alias_css). */
+.sw-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1px; background: var(--hairline); }
+.sw-frame { background: var(--c-paper); color: var(--c-ink);
+  padding: var(--panel-pad); display: flex; flex-direction: column;
+  gap: 1rem; align-items: flex-start; min-height: 14rem; }
+.sw-role { font-size: var(--eyebrow-size); letter-spacing: var(--eyebrow-ls);
+  text-transform: uppercase; color: var(--c-ink-muted); }
+
+/* Single-column long list. One item PER ROW, full page width, stacked top to
+   bottom. No multi-column grid, no boxed card containers — rows are separated by
+   a thin 1px hairline rule with generous vertical breathing room. Each row is a
+   two-part flow: a left meta column (name + badge + tags + intent + notes) and a
+   right example column; on narrow widths the example stacks beneath the meta. */
+.list { display: flex; flex-direction: column; }
+.cmp { display: grid; grid-template-columns: 19rem 1fr; column-gap: 3rem; row-gap: 1.25rem;
+  align-items: start; padding: 2.75rem 0; border-top: 1px solid var(--hairline); }
+.cmp:first-child { border-top: 0; padding-top: 1.5rem; }
+.cmp-meta { display: flex; flex-direction: column; gap: 0.85rem; }
+.cmp-head { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem; }
+.cmp-name { font-family: var(--font-heading); text-transform: uppercase;
+  font-size: var(--h3-size); line-height: 1.2em; color: var(--ink); }
+.cmp-intent { font-size: var(--body-size); color: var(--ink-muted); line-height: 1.5em; }
+.cmp-example { display: flex; flex-direction: column; gap: 1.25rem; max-width: 52rem; }
+
+/* Badges / tags — square, no radius. */
+.badge { font-family: var(--font-body); font-size: 0.625rem; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 0.2rem 0.5rem; border-radius: 0; line-height: 1.2; }
+.badge-extracted { background: var(--ink); color: var(--surface-primary); }
+.badge-designed { background: transparent; color: var(--ink-muted);
+  border: 1px dashed var(--ink-muted); }
+.tag { font-family: var(--font-body); font-size: 0.625rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-muted);
+  border: 1px solid var(--hairline); padding: 0.2rem 0.5rem; }
+.tag-never { border-style: dashed; color: var(--ink-muted); }
+
+/* Example stage — no box, no border: the example sits openly in the row flow. */
+.cmp-stage { display: flex; flex-direction: column; gap: 1rem; }
+.cmp-note { font-size: var(--eyebrow-size); letter-spacing: 0.04em; line-height: 1.45em;
+  color: var(--ink-muted); }
+.cmp-note strong { color: var(--ink); font-weight: 600; }
+
+/* Dark sub-surface used inside examples that the brand confines to dark bands
+   (logo, badge, banner, navbar, footer, tooltip, code). Accent allowed here. */
+.surface-dark { background: var(--surface-inverse); color: var(--ink-inverse);
+  padding: 1.25rem; }
+.surface-darkest { background: var(--surface-inverse-strong); color: var(--ink-inverse);
+  padding: 1.25rem; }
+.surface-panel { background: var(--surface-panel); color: var(--ink);
+  padding: var(--panel-pad); }
+/* footer demo: rescope the shared --c-* vars to the inverse tokens so the imported
+   render_footer c-* classes read on-brand (light ink on the near-black footer band),
+   and give the centered cluster generous, scale-driven breathing room. */
+.cmp-footer-demo { --c-paper: var(--surface-inverse-strong); --c-ink: var(--ink-inverse);
+  --c-ink-muted: var(--ink-inverse-muted); --c-accent: var(--accent);
+  --c-block-gap: 2.5rem; padding: 3rem 1.75rem; }
+
+/* ── faithful example primitives ── */
+.ex-display { font-family: var(--font-heading); font-weight: 400; text-transform: uppercase;
+  font-size: var(--h2-size); line-height: 1.2em; color: var(--ink); }
+.ex-h3 { font-family: var(--font-heading); font-weight: 400; text-transform: uppercase;
+  font-size: var(--h3-size); line-height: 1.3em; color: var(--ink); }
+.ex-sub { font-family: var(--font-heading); font-weight: 400; font-size: 1.125rem;
+  line-height: 1.3em; color: var(--ink-muted); }
+.ex-eyebrow { font-family: var(--font-body); font-size: var(--eyebrow-size);
+  letter-spacing: var(--eyebrow-ls); text-transform: uppercase; color: var(--ink-muted); }
+.ex-body { font-family: var(--font-body); font-size: var(--body-size); line-height: 1.55em;
+  color: var(--ink-muted); max-width: 34ch; }
+.ex-caption { font-family: var(--font-body); font-size: var(--eyebrow-size);
+  letter-spacing: var(--eyebrow-ls); text-transform: uppercase; color: var(--ink-muted); }
+.ex-label { font-family: var(--font-body); font-size: var(--control-size);
+  letter-spacing: var(--control-ls); text-transform: uppercase; color: var(--ink); }
+
+/* image / video / avatar / illustration: hard-edged rectangles, radius 0, no chrome. */
+.ex-photo { background: var(--surface-inverse); color: var(--ink-inverse-muted);
+  border-radius: 0; aspect-ratio: 4 / 3; width: 100%; display: flex; align-items: center;
+  justify-content: center; font-family: var(--font-body); font-size: var(--eyebrow-size);
+  letter-spacing: var(--eyebrow-ls); text-transform: uppercase; }
+.ex-photo.is-portrait { aspect-ratio: 3 / 4; max-width: 9rem; }
+.ex-photo.is-square { aspect-ratio: 1 / 1; max-width: 6rem; }
+.ex-illus { background: var(--ghost); color: var(--ink-muted); aspect-ratio: 4/3;
+  display: flex; align-items: center; justify-content: center; font-family: var(--font-heading);
+  font-size: 2rem; text-transform: uppercase; }
+.ex-play { width: 0; height: 0; border-style: solid; border-width: 0.55rem 0 0.55rem 0.9rem;
+  border-color: transparent transparent transparent var(--ink-inverse); }
+
+/* logo wordmark. */
+.ex-logo { font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 0.06em;
+  font-size: 1.25rem; color: var(--accent); }
+
+/* divider / ruled rows / list. */
+.ex-rule { height: 1px; background: var(--hairline); width: 100%; }
+.ex-rows { display: flex; flex-direction: column; }
+.ex-row { position: relative; display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; padding: 0.85rem 0; }
+.ex-row + .ex-row::before, .ex-row::before { content: ""; position: absolute; left: 0; right: 0;
+  top: 0; height: 1px; background: var(--hairline); }
+.ex-list { display: flex; flex-direction: column; }
+.ex-list .ex-li { position: relative; padding: 0.6rem 0 0.6rem 1.5rem;
+  font-family: var(--font-body); font-size: var(--body-size); color: var(--ink); }
+.ex-list .ex-li::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px;
+  background: var(--hairline); }
+.ex-list .ex-li::after { content: "/"; position: absolute; left: 0; top: 0.6rem;
+  color: var(--ink-muted); font-family: var(--font-heading); }
+
+/* quote / stat / counter. */
+.ex-quote { font-family: var(--font-heading); text-transform: uppercase; font-weight: 400;
+  font-size: 1.5rem; line-height: 1.25em; color: var(--ink); }
+.ex-counter { font-family: var(--font-heading); font-size: var(--counter-size); line-height: 1;
+  color: var(--ink); }
+
+/* code. */
+.ex-code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.8125rem;
+  color: var(--ink-inverse); white-space: pre; line-height: 1.5; }
+
+/* badge marker (gold, flat square, dark only). */
+.ex-marker { display: inline-block; background: var(--accent); color: var(--surface-inverse-strong);
+  font-family: var(--font-body); font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.25rem 0.5rem; border-radius: 0; }
+
+/* underline form controls — no box, no fill, radius 0. */
+.ex-field { position: relative; display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 1rem; padding-bottom: 0.5rem; width: 100%; }
+.ex-field::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: var(--hairline); }
+.ex-input { flex: 1; border: 0; background: transparent; outline: none; color: var(--ink);
+  font-family: var(--font-body); font-size: var(--body-size); padding: 0; }
+.ex-input::placeholder { color: var(--ink-muted); }
+.ex-select { display: inline-flex; align-items: center; gap: 0.5rem; position: relative;
+  padding-bottom: 0.5rem; font-family: var(--font-body); font-size: var(--control-size);
+  letter-spacing: var(--control-ls); text-transform: uppercase; color: var(--ink); }
+.ex-select::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: var(--hairline); }
+
+/* square slider. */
+.ex-slider { position: relative; height: 1px; background: var(--hairline); width: 100%; margin: 1rem 0; }
+.ex-slider .fill { position: absolute; left: 0; top: 0; height: 1px; width: 55%; background: var(--ink); }
+.ex-slider .handle { position: absolute; left: 55%; top: -0.4rem; width: 0.8rem; height: 0.8rem;
+  background: var(--ink); border-radius: 0; }
+
+/* square progress. */
+.ex-progress { position: relative; height: 0.4rem; border: 1px solid var(--hairline); width: 100%; }
+.ex-progress .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 62%; background: var(--ink); }
+
+/* tooltip. */
+.ex-tip { display: inline-block; background: var(--surface-inverse); color: var(--ink-inverse);
+  padding: 0.4rem 0.6rem; border-radius: 0; font-family: var(--font-body); font-size: var(--eyebrow-size);
+  letter-spacing: 0.04em; }
+
+/* spacer visual. */
+.ex-spacer { border-left: 1px solid var(--hairline); border-right: 1px solid var(--hairline);
+  position: relative; height: 3rem; display: flex; align-items: center; justify-content: center; }
+.ex-spacer span { font-family: var(--font-body); font-size: var(--eyebrow-size);
+  letter-spacing: var(--eyebrow-ls); text-transform: uppercase; color: var(--ink-muted); }
+
+/* ── typographic action (link / cta / icon-button remap) ── */
+.act { font-family: var(--font-body); font-size: var(--control-size); letter-spacing: var(--control-ls);
+  text-transform: uppercase; color: var(--ink); text-decoration: none; background: none; border: 0;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0;
+  transition: transform var(--ease) ease, opacity var(--ease) ease; }
+.act .arrow { transition: transform var(--ease) ease; }
+/* static state classes (so all five are visible at once) + live pseudo-classes */
+.act.is-hover, .act.live:hover { text-decoration: underline; text-underline-offset: 0.25rem; }
+.act.is-hover .arrow, .act.live:hover .arrow { transform: translateX(0.35rem); }
+.act.is-active, .act.live:active { opacity: 0.6; transform: translateY(1px); }
+.act.is-focus, .act.live:focus-visible { outline: 1px solid var(--ink); outline-offset: 0.3rem;
+  text-decoration: none; }
+.act.is-disabled, .act.live:disabled, .act.live[aria-disabled="true"] { opacity: 0.32;
+  pointer-events: none; text-decoration: none; }
+
+/* avoid (synthesized) filled button / icon-button — what the brand does NOT use. */
+.avoid-btn { font-family: var(--font-body); font-size: var(--control-size); letter-spacing: var(--control-ls);
+  text-transform: uppercase; background: var(--surface-inverse); color: var(--ink-inverse); border: 0;
+  border-radius: 0; padding: 0.7rem 1.2rem; cursor: pointer; opacity: 0.85; }
+.avoid-iconbtn { width: 2.4rem; height: 2.4rem; display: inline-flex; align-items: center;
+  justify-content: center; background: var(--surface-inverse); color: var(--ink-inverse); border: 0;
+  border-radius: 0; cursor: pointer; }
+.avoid-pill { display: inline-block; border: 1px solid var(--ink-muted); border-radius: 999px;
+  padding: 0.25rem 0.8rem; font-family: var(--font-body); font-size: var(--eyebrow-size);
+  letter-spacing: var(--eyebrow-ls); text-transform: uppercase; color: var(--ink-muted); }
+.strike { position: relative; }
+.strike::after { content: ""; position: absolute; left: -4%; right: -4%; top: 50%; height: 1px;
+  background: var(--ink-muted); transform: rotate(-8deg); }
+
+/* checkbox / radio / toggle — square, radius 0, hairline + flat dark fill.
+   OFF/default is an EMPTY cream control with a 1px hairline outline (no fill, no
+   glyph shown); ON is the flat dark fill. Knob/box are a fixed size so the state
+   row stays aligned. */
+.ex-check { display: inline-flex; align-items: center; gap: 0.6rem; cursor: pointer;
+  font-family: var(--font-body); font-size: var(--body-size); color: var(--ink); }
+/* OFF: empty cream box, hairline outline, no visible check. */
+.ex-check .box { width: 1.15rem; height: 1.15rem; box-sizing: border-box;
+  border: 1px solid var(--hairline); border-radius: 0; background: var(--surface-primary);
+  display: inline-flex; align-items: center; justify-content: center; color: transparent;
+  font-size: 0.8rem; line-height: 1; transition: background var(--ease) ease, border-color var(--ease) ease; }
+/* ON: flat dark fill with a light check. */
+.ex-check.is-on .box, .ex-check input:checked + .box { background: var(--ink);
+  border-color: var(--ink); color: var(--surface-primary); }
+.ex-check.is-hover .box, .ex-check:hover .box { border-color: var(--ink); }
+.ex-check.is-focus .box, .ex-check input:focus-visible + .box { outline: 2px solid var(--ink);
+  outline-offset: 2px; }
+.ex-check.is-disabled, .ex-check.disabled { opacity: 0.3; pointer-events: none; }
+.ex-check input { position: absolute; opacity: 0; width: 0; height: 0; }
+
+.ex-switch { display: inline-flex; align-items: center; gap: 0.6rem; cursor: pointer;
+  font-family: var(--font-body); font-size: var(--body-size); color: var(--ink); }
+/* OFF/default: empty cream track + hairline outline, dark knob pushed LEFT — an
+   obviously empty switch, never a solid block. */
+.ex-switch .track { width: 2.8rem; height: 1.4rem; box-sizing: border-box;
+  background: var(--surface-primary); border: 1px solid var(--hairline); border-radius: 0;
+  position: relative; transition: background var(--ease) ease, border-color var(--ease) ease; }
+.ex-switch .knob { position: absolute; top: 50%; transform: translateY(-50%); left: 2px;
+  width: 1rem; height: 1rem; background: var(--ink); border-radius: 0;
+  transition: left var(--ease) ease, background var(--ease) ease; }
+/* ON: flat dark fill, knob pushed RIGHT (light knob for contrast on the dark track). */
+.ex-switch.is-on .track, .ex-switch input:checked + .track { background: var(--surface-inverse);
+  border-color: var(--surface-inverse); }
+.ex-switch.is-on .knob, .ex-switch input:checked + .track .knob { left: calc(100% - 1rem - 2px);
+  background: var(--ink-inverse); }
+/* hover (off): subtle emphasis by darkening the outline. */
+.ex-switch.is-hover .track, .ex-switch:hover .track { border-color: var(--ink); }
+.ex-switch.is-focus .track, .ex-switch input:focus-visible + .track { outline: 2px solid var(--ink);
+  outline-offset: 2px; }
+.ex-switch.is-disabled, .ex-switch.disabled { opacity: 0.3; pointer-events: none; }
+.ex-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+
+/* underline field state demo */
+.ex-field.is-hover::after, .ex-field.live:hover::after { background: var(--ink-muted); height: 1px; }
+.ex-field.is-active::after, .ex-field.is-focus::after,
+.ex-field.live:focus-within::after { background: var(--ink); height: 2px; }
+.ex-field.is-disabled { opacity: 0.32; pointer-events: none; }
+
+/* states matrix. */
+.states { display: flex; flex-direction: column; gap: 1rem; }
+.states-label { font-family: var(--font-body); font-size: 0.625rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-muted); }
+.state-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px;
+  background: var(--hairline); border: 1px solid var(--hairline); }
+.state-col { background: var(--surface-primary); padding: 1rem 0.75rem; display: flex;
+  flex-direction: column; align-items: flex-start; gap: 0.75rem; min-height: 5rem;
+  justify-content: space-between; }
+.state-col .stg { display: flex; align-items: center; min-height: 2rem; }
+.state-name { font-family: var(--font-body); font-size: 0.5625rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-muted); }
+.state-live { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+  padding-top: 0.25rem; }
+.state-live .hint { font-family: var(--font-body); font-size: 0.5625rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-muted); }
+
+/* ── Tier 3: extracted layouts (composed through ARCHETYPE_COMPOSERS) ──
+   Each pattern row embeds the REAL composed section document (compose_section.
+   build_document output) in an iframe: composed sections carry their own scoped
+   surface/scaffold CSS, so the iframe keeps them faithful without any mockup. */
+.cmp--layout .cmp-example { max-width: none; }
+.layout-frame { display: block; width: 100%; height: 42rem; border: 1px solid var(--hairline);
+  background: var(--surface-primary); }
+
+/* masthead anchor nav to the tier sections (the page's in-page navigation). */
+.toc { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 1.5rem; }
+.toc a { color: var(--accent); font-family: var(--font-body); font-size: var(--eyebrow-size);
+  letter-spacing: var(--eyebrow-ls); text-transform: uppercase; text-decoration: none; }
+.toc a:hover { text-decoration: underline; text-underline-offset: 0.25rem; }
+
+/* collapsed secondary group: standard-tier patterns, listed only (not composed). */
+.std { margin-top: 3rem; }
+.std summary { cursor: pointer; font-family: var(--font-body); font-size: var(--eyebrow-size);
+  letter-spacing: var(--eyebrow-ls); text-transform: uppercase; color: var(--ink-muted);
+  padding: 0.85rem 0; border-top: 1px solid var(--hairline); }
+.std-row { display: grid; grid-template-columns: 19rem 1fr; column-gap: 3rem;
+  padding: 0.85rem 0; border-top: 1px solid var(--hairline); align-items: baseline; }
+.std-row .std-id { font-family: var(--font-heading); text-transform: uppercase;
+  font-size: 1rem; color: var(--ink); }
+.std-row .std-meta { font-size: var(--eyebrow-size); letter-spacing: 0.04em;
+  color: var(--ink-muted); line-height: 1.5em; }
+
+/* On narrower frames the example stacks directly beneath the meta line. */
+@media (max-width: 60rem) {
+  .cmp { grid-template-columns: 1fr; column-gap: 0; }
+  .std-row { grid-template-columns: 1fr; }
+}
+@media (max-width: 40rem) {
+  .state-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+
+/* ── shared catalog components (single source of truth) ── */
+/* text-wrap defaults (anti-ai-slop.md AS-15): headings/eyebrows/captions balance their
+   line breaks (no orphaned last word on a display heading); paragraphs use balanced
+   wrapping too — engines cap balance at ~6 lines, so long body copy is unaffected while
+   short paragraphs stop orphaning. */
+.c-heading, .c-eyebrow, .c-caption { text-wrap: balance; }
+p { text-wrap-style: balance; }
+.c-heading { font-family: var(--c-font-heading); color: var(--c-ink); margin: 0;
+  /* case comes from the brand's own heading register (CR-1): uppercase is a MEASURED
+     brand fact (--case-h2 via --c-case-heading), never a shared-CSS assumption. */
+  text-transform: var(--c-case-heading);
+  font-weight: var(--c-heading-weight, var(--c-display-weight)); }
+.c-heading--display { font-size: var(--c-display-size); line-height: var(--c-display-lh);
+  letter-spacing: var(--c-display-ls); }
+.c-heading--h2 { font-size: var(--c-h2-size); line-height: 1.3em; }
+.c-heading--h3 { font-size: var(--c-h3-size); line-height: 1.3em; }
+.c-heading--accent { color: var(--c-accent); }
+/* stepped-lines (G7): each authored line is a block; the scaffold sets the per-line
+   registered indent via --c-step-N (half-column multiples of the shared grid). */
+.c-heading-line { display: block; }
+/* mixed-face (G5): face contrast INSIDE one heading. Default is weight contrast (safe
+   for brands with no italic cut — never a synthesized italic); a brand shipping a real
+   italic sets --c-alt-style: italic. */
+.c-heading-alt { font-style: var(--c-alt-style, normal);
+  font-weight: var(--c-alt-weight, 500); }
+
+.c-eyebrow { font-family: var(--c-font-body); font-size: var(--c-eyebrow-size);
+  letter-spacing: var(--c-eyebrow-ls); text-transform: var(--c-case-eyebrow);
+  color: var(--c-ink-muted); margin: 0; }
+
+.c-image { display: block; width: 100%; border: none; box-shadow: none;
+  border-radius: var(--radius); object-fit: cover;
+  /* PLACEHOLDER BACKING (anti-ai-slop AS-23): every image slot carries a diagonal-hatch
+     plate DERIVED FROM THE SURFACE'S OWN TOKENS (never a hardcoded hex at this level —
+     AS-01). Visible while the photo loads, on a broken src, or wherever cover-fit leaves
+     the frame unpainted; re-scopes per surface automatically because it reads --c-ink/
+     --c-paper. PAPER-dominant mixes (the plate is the surface, gently lifted toward its ink):
+     on WoodWave's dark hero this resolves to ~rgb(59,49,40)/rgb(51,41,32) — the
+     requested deep-brown hatch pair. */
+  background: repeating-linear-gradient(135deg,
+    var(--c-paper) 0px,
+    var(--c-paper) 13px,
+    color-mix(in srgb, var(--c-paper) 93%, var(--c-ink)) 13px,
+    color-mix(in srgb, var(--c-paper) 93%, var(--c-ink)) 26px); }
+/* hero-collage occlusion geometry: this exact base/overlap crop PAIR is what makes the
+   layered collage device read (the spacer clearance math + depth parallax derive from
+   it — see .cs-spacer + parallax_css docstrings). Compositions that declare mediaAspect
+   override it inline per §4.6.5; brands without the collage device never render these
+   classes. */
+.c-image--hero { /* provenance: structural — collage occlusion geometry */
+  aspect-ratio: 1355 / 570; }
+.c-image--overlap { /* provenance: structural — collage occlusion geometry */
+  aspect-ratio: 785 / 620; }
+/* the CANONICAL mask-pan wrapper — wraps ONLY the <img>, never a sibling caption, so the
+   scroll-parallax scale/translate (parallax_css/parallax_script_tags) can never bleed into
+   caption text sitting beside it in the same figure/div. Structural, always present
+   (harmless when parallax is disabled: overflow:hidden around an unscaled, untransformed
+   image is visually a no-op — a plain wrapper). See brand-schema.md §4.4.1. */
+.c-image-mask { display: block; overflow: hidden; }
+/* placeholder used by the gallery when no real asset is bound (keeps the gallery
+   self-contained); composed sections always bind a real image src. */
+.c-image-ph { display: flex; align-items: center; justify-content: center;
+  background: var(--c-ink); color: var(--c-paper); border-radius: var(--radius);
+  /* provenance: structural — placeholder plate geometry (gallery/unbound slots only;
+     composed sections always bind a real src, and declared aspects win inline) */
+  aspect-ratio: 4 / 3; font-family: var(--c-font-body); font-size: var(--c-eyebrow-size);
+  letter-spacing: var(--c-eyebrow-ls); text-transform: var(--c-case-control); }
+
+.c-arrow-link { font-family: var(--c-font-body); font-size: var(--c-control-size);
+  letter-spacing: var(--c-control-ls); text-transform: var(--c-case-control);
+  text-decoration: none;
+  color: var(--c-action-color, currentColor); display: inline-flex; align-items: center;
+  gap: 0.5rem; background: none; border: none; cursor: pointer; padding: 0; }
+.c-arrow-link--accent { color: var(--c-accent); }
+
+.c-arrow { transition: transform var(--c-motion-fast) var(--c-ease); }
+.c-arrow-link:hover .c-arrow { transform: translateX(0.35rem); }
+
+/* wordmark logo (harness/wordmark brands; composed WoodWave navs use .c-logo--img):
+   the TEXT-LOGO device renders in the brand's own control register — weight from the
+   heading register, tracking/case from control-text (CR-4). */
+.c-logo { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--c-font-body);
+  font-weight: var(--c-logo-weight, var(--c-heading-weight));
+  font-size: var(--c-control-size);
+  letter-spacing: var(--c-logo-ls, var(--c-control-ls));
+  text-transform: var(--c-logo-case, var(--c-case-control));
+  color: var(--c-logo-color, var(--c-accent)); }
+.c-logo .c-glyph { font-family: var(--c-font-heading);
+  font-size: calc(var(--c-control-size) * 1.25); }
+/* image logo (composed nav): the extracted brand logo as a plain linked <img>, no chip,
+   no border, no radius. Sized from the extracted 175x26 proportions (height-capped so it
+   scales down gracefully); width:auto keeps the aspect ratio. The WoodWave source SVG is
+   already the brand gold, so it reads on the dark hero surface with no filter needed. */
+.c-logo--img { display: inline-flex; align-items: center; text-decoration: none;
+  border: none; border-radius: 0; }
+.c-logo-img { display: block; height: var(--chrome-nav-logo-h, 1.625rem);
+  width: auto; max-width: 12rem; }
+
+/* header block: eyebrow -> heading (+ optional subhead/cta) typographic cluster */
+.c-header { display: flex; flex-direction: column; gap: var(--c-eyebrow-gap); }
+
+/* paragraph primitive: narrow offset body, Inter sentence case, generous leading.
+   font-weight rides the brand's measured body tier (N1, fix-batch 2026-07): a brand
+   whose body register is light (300) must not silently render at the UA's 400. */
+.c-paragraph { font-family: var(--c-font-body); font-size: var(--c-body-size);
+  font-weight: var(--c-body-weight);
+  line-height: 1.55em; color: var(--c-ink-muted); max-width: var(--c-measure, 34ch); margin: 0; }
+
+/* caption primitive: muted uppercase margin micro-text (never over media). */
+.c-caption { font-family: var(--c-font-body); font-size: var(--c-eyebrow-size);
+  letter-spacing: var(--c-eyebrow-ls); text-transform: var(--c-case-eyebrow);
+  color: var(--c-ink-muted); margin: 0; }
+
+/* form block + underline field: NO box, NO fill, NO border — the single 1px rule is a
+   pseudo-element (height:1px+background), so it never reads as a boxed input or a section
+   hairline (honors WoodWave no-boxed-inputs / no-section-hairlines). */
+.c-form { display: flex; flex-direction: column; gap: var(--c-form-gap, 1.25rem); }
+.c-field { position: relative; display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 1rem; padding-bottom: 0.5rem; }
+.c-field::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: var(--c-hairline); }
+.c-field-text { font-family: var(--c-font-body); font-size: var(--c-body-size);
+  text-transform: var(--c-case-control); letter-spacing: var(--c-control-ls);
+  color: var(--c-ink-muted); }
+
+/* ruled action rows (the divider primitive): label left, value/action right, separated by a
+   1px pseudo-rule INSIDE a panel only — never as a section seam. */
+.c-rows { display: flex; flex-direction: column; }
+.c-row { position: relative; display: flex; align-items: baseline; justify-content: space-between;
+  gap: 1rem; padding: 0.85rem 0; }
+.c-row::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px;
+  background: var(--c-hairline); }
+.c-row-label { font-family: var(--c-font-body); font-size: var(--c-control-size);
+  letter-spacing: var(--c-control-ls); text-transform: var(--c-case-control);
+  color: var(--c-ink); }
+.c-row-value { font-family: var(--c-font-heading); font-size: var(--c-h3-size); color: var(--c-ink); }
+
+/* footer block (closing bookend): a CENTERED cluster of sitemap + TEXT social links
+   (slash-separated, no icons) + a centered muted legal line, reusing the brand's
+   typographic vocabulary. No boxes, borders, shadows, or radius. cq/rem units only.
+   The SITEMAP REGISTER is a per-brand GRAMMAR (fix-batch 2026-07, B6): the oversized
+   didone slash-sitemap vs the measured multi-column directory live in
+   footer_grammar_css() and are emitted per brand — neither leaks into the other. */
+.c-footer { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--c-block-gap, 2.5rem); }
+.c-foot-sep { color: var(--c-ink-muted); font-family: var(--c-font-heading); }
+.c-foot-social { display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 0.4rem 0.9rem; margin: 0 auto; }
+.c-foot-social-link { font-family: var(--c-font-body); font-size: var(--c-control-size);
+  letter-spacing: var(--c-control-ls); text-transform: var(--c-case-control);
+  color: var(--c-ink-muted); text-decoration: none; }
+.c-foot-social .c-foot-sep { font-family: var(--c-font-body); }
+.c-foot-legal { font-family: var(--c-font-body); font-size: var(--c-eyebrow-size);
+  letter-spacing: var(--c-eyebrow-ls); color: var(--c-ink-muted); margin: 0; }
+
+/* ── MOTION ── authored brand spec (brand.yaml voice.motionSpec): easing + durations
+   come ONLY from the brand's --c-* motion aliases (component_render.motion_vars_css →
+   generated layer-1 --motion-*). CR-3: fallback literals are GONE — a missing motion
+   spec fails loud at tokens generation, it never inherits another brand's tempo.
+   Motion is time + transform only — no viewport units, no new color/shadow/radius. */
+
+/* typographic links: an underline that DRAWS IN (scaleX 0->100%, origin left), NOT a
+   color swap — consistent with the typographic-link aesthetic. The rule is a 1px
+   pseudo-element (height+background), never a border, so it adds no border/hairline. */
+.c-arrow-link, .c-foot-sitemap-link, .c-foot-social-link { position: relative; }
+.c-arrow-link::after, .c-foot-sitemap-link::after, .c-foot-social-link::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -0.08em; height: 1px;
+  background: currentColor; transform: scaleX(0); transform-origin: left center;
+  transition: transform var(--c-motion-base) var(--c-ease); }
+.c-arrow-link:hover::after, .c-arrow-link:focus-visible::after,
+.c-foot-sitemap-link:hover::after, .c-foot-sitemap-link:focus-visible::after,
+.c-foot-social-link:hover::after, .c-foot-social-link:focus-visible::after {
+  transform: scaleX(1); }
+
+/* calm scroll reveal: opacity + small translateY (no scale pop, no rotation). The hidden
+   initial state is GATED on `.cs-motion-ready` (added by the page's tiny IntersectionObserver
+   script) so content is fully visible if JS/IO is unavailable; `.is-in` reveals it.
+   The translateY shift is the brand's OPTIONAL scrollReveal token: absent, the 0px
+   fallback makes the reveal fade-only (device disabled, never a foreign shift). The
+   stagger step derives from the brand's own fast duration (0.1875 × fast — WoodWave's
+   authored 320ms → the measured 60ms step), so reveal tempo scales with brand tempo. */
+.cs-motion-ready .cs-reveal {
+  opacity: 0; transform: translateY(var(--c-reveal-shift, 0px));
+  transition: opacity var(--c-motion-slow) var(--c-ease),
+              transform var(--c-motion-slow) var(--c-ease);
+  transition-delay: calc(var(--cs-reveal-i, 0) * var(--c-motion-fast) * 0.1875);
+  will-change: opacity, transform; }
+.cs-motion-ready .cs-reveal.is-in { opacity: 1; transform: none; }
+
+/* respect prefers-reduced-motion: reduce — neutralize all transitions/reveals + the arrow
+   nudge, and force revealed content fully visible. */
+@media (prefers-reduced-motion: reduce) {
+  .c-arrow,
+  .c-arrow-link::after, .c-foot-sitemap-link::after, .c-foot-social-link::after,
+  .cs-motion-ready .cs-reveal { transition: none !important; animation: none !important; }
+  .c-arrow-link:hover .c-arrow { transform: none !important; }
+  .cs-reveal, .cs-motion-ready .cs-reveal { opacity: 1 !important; transform: none !important; }
+}
+
+
+.c-button { display: inline-block;
+  background: var(--c-button-bg, var(--c-accent));
+  color: var(--c-button-fg, var(--c-button-ink, var(--c-paper)));
+  font-family: var(--c-button-font, var(--c-font-body));
+  font-size: var(--c-button-size, var(--c-control-size));
+  font-weight: var(--c-button-weight, var(--c-heading-weight));
+  letter-spacing: var(--c-button-ls, var(--c-control-ls));
+  text-decoration: none;
+  padding: var(--c-button-pad, 0.8em 1.6em); /* provenance: structural — em-relative
+     control inset fallback (shape, not magnitude: scales with the button's own size) */
+  border-radius: var(--c-button-radius, var(--radius)); border: none;
+  transition: background var(--c-motion-fast) var(--c-ease),
+              transform var(--c-motion-fast) var(--c-ease); }
+/* hover = the brand's MEASURED bg swap (--c-button-bg-hover); the old universal
+   brightness-filter was a motion-language assumption (one brand's hover mechanic). */
+.c-button:hover, .c-button:focus-visible {
+  background: var(--c-button-bg-hover, var(--c-button-bg, var(--c-accent)));
+  transform: translateY(-1px); }
+
+.c-field--boxed { align-items: center;
+  padding: 0.6em 0.9em; /* provenance: structural — em-relative field inset (shape,
+     not magnitude: scales with the field's own type size) */
+  border: 1px solid var(--c-input-border, var(--c-hairline));
+  border-radius: var(--c-input-radius, var(--radius));
+  background: var(--c-input-bg, transparent); }
+.c-field--boxed::after { display: none; }
+
+/* display-links footer grammar: CENTERED oversized didone slash sitemap — for brands
+   whose type scale carries a footer display tier. The link is a CONTAINED oversized
+   clamp: clearly larger than body editorial display, right-sized for a footer. */
+.c-foot-sitemap { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center;
+  gap: 0.4rem 1.5rem; max-width: 60rem; margin: 0 auto; }
+.c-foot-sitemap-link { font-family: var(--c-font-heading);
+  text-transform: var(--c-foot-link-case, var(--c-case-heading));
+  font-weight: var(--c-foot-link-weight, var(--c-heading-weight, var(--c-display-weight)));
+  /* provenance: structural — this device's contained floor/ceiling (the sanctioned
+     footer scale from the bookend batch), a register bound rather than a brand
+     magnitude; the brand's own footer tier feeds --c-foot-link-size when resolved. */
+  font-size: var(--c-foot-link-size, clamp(1.75rem, 3.5cqw, 3rem));
+  line-height: 1.2em; color: var(--c-ink); text-decoration: none; }
+
+/* columns footer grammar: a measured multi-column link directory — for brands whose
+   extracted footer is a dense sitemap of small links, not a display device. Register
+   (size/weight) rides the brand's measured chrome tokens via --c-foot-link-size;
+   layout mechanics (wrap/gaps/measure) are structural. */
+.c-foot-cols { display: flex; flex-wrap: wrap; justify-content: center; text-align: left;
+  gap: var(--c-block-gap, 2.5rem) clamp(2rem, 5cqw, 4rem); max-width: 72rem; margin: 0 auto; }
+.c-foot-col { display: flex; flex-direction: column; gap: 0.6em;
+  flex: 1 1 10rem; min-width: 10rem; max-width: 16rem; }
+.c-foot-col-link { font-family: var(--c-font-body);
+  font-size: var(--c-foot-link-size, var(--c-control-size));
+  font-weight: var(--c-foot-link-weight, var(--c-body-weight));
+  color: var(--c-ink-muted); text-decoration: none; line-height: 1.6em; }
+.c-foot-col-link:hover, .c-foot-col-link:focus-visible { color: var(--c-link-hover); }
+
+:root { --c-ease: var(--motion-ease); --c-motion-fast: var(--motion-fast); --c-motion-base: var(--motion-base); --c-motion-slow: var(--motion-slow); }
+
+/* link hover (color-shift mode) -- SAFE default here; the real per-surface value (accent
+   on dark, ink on light) is set by component_vars/root_vars (anti-ai-slop.md AS-10). */
+:root { --c-link-hover: var(--c-ink); }
+.c-arrow-link, .c-foot-sitemap-link, .c-foot-social-link {
+  transition: color var(--c-motion-fast) var(--c-ease); }
+.c-arrow-link:hover, .c-arrow-link:focus-visible,
+.c-foot-sitemap-link:hover, .c-foot-sitemap-link:focus-visible,
+.c-foot-social-link:hover, .c-foot-social-link:focus-visible { color: var(--c-link-hover); }
+/* color-shift REPLACES the underline draw-in for these links (no double signal). */
+.c-arrow-link::after, .c-foot-sitemap-link::after, .c-foot-social-link::after { content: none; }
+
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="masthead">
+    <div class="eyebrow ex-eyebrow">/ Component Preview Gallery</div>
+    <h1>Remote</h1>
+    <p>A light, systematic SaaS marketing system on a cool gray canvas (#eff0f0) led by a single vivid blue (#0564ff). Every text tier — hero display down to h6 — is Bossa (a geometric grotesque) at weight 400, sentence case; hierarchy comes from size, not weight. Inter carries body, UI, buttons, and the footer. All CTAs are fully-rounded pills (40px radius): blue filled primary, blue outlined secondary, near-black neutral tertiary (the nav CTA). Eyebrows are uppercase Bossa microlabels color-coded per section family (blue #0564ff / #0047bc, crimson #a52d44, gray #595b5f). Content sits in pure-white 16px-rounded cards that are FLAT at idle and gain a soft shadow + tint only on hover. Dark surfaces never appear as section bands: a deep navy (#00235c) backs media areas INSIDE white cards, and a deep maroon (#511621) inverts the active item of feature lists (soft pink wash #fceef1 on hover). The hero and closing CTA sit on an inset 12px-rounded panel painted with a pastel grey-green-blue noise-gradient art texture; text on it stays dark ink. The footer is LIGHT (#f6f7f8): a six-column 14px directory with gray links that darken + underline on hover.</p>
+    <div class="legend">
+      <span><span class="badge badge-extracted">extracted</span> observed on the live page</span>
+      <span><span class="badge badge-designed">synthesized</span> designed, not used on page</span>
+      <span>never typographic primary · never zero radius · never allcaps headings</span>
+    </div>
+    <nav class="toc"><a href="#tier-primitives">Primitives</a><a href="#tier-blocks">Blocks</a><a href="#tier-surfaces">Surfaces</a><a href="#tier-layouts">Extracted layouts</a></nav>
+  </header>
+  <section class="tier" id="tier-primitives">
+    <div class="tier-num">Tier 1</div>
+    <div class="tier-name">Primitives</div>
+    <div class="tier-sub">8 atomic primitives &amp;mdash; 3 action elements carry an interactive state matrix</div>
+    <div class="tier-rule"></div>
+  </section>
+  <div class="list">
+    <article class="cmp" data-origin="extracted">
+      <div class="cmp-meta">
+        <div class="cmp-head">
+          <span class="cmp-name">heading</span>
+          <span class="badge badge-extracted">extracted</span>
+          <span class="tag">use: always</span>
+        </div>
+        <div class="cmp-intent">Primary titling text at a hierarchy tier.</div>
+        <div class="cmp-note">&bull; every heading tier is Bossa weight 400 sentence-case — hierarchy by SIZE only, never weight or caps</div>
+      </div>
+      <div class="cmp-example">
+        <div class="cmp-stage"><div class="c-heading c-heading--display">Remote</div><div class="ex-eyebrow">display / h1 / h2 / h3 &mdash; Bossa</div></div>
+      </div>
+    </article>
+    <article class="cmp" data-origin="extracted">
+      <div class="cmp-meta">
+        <div class="cmp-head">
+          <span class="cmp-name">eyebrow</span>
+          <span class="badge badge-extracted">extracted</span>
+          <span class="tag">use: always</span>
+        </div>
+        <div class="cmp-intent">Short overline / kicker label above a heading. (aliases: kicker, overline)</div>
+        <div class="cmp-note">&bull; uppercase Bossa microlabel, 0.05em tracked, color-coded per section family (blue/crimson/gray) — never body-gray-only</div>
+      </div>
+      <div class="cmp-example">
+        <div class="cmp-stage"><p class="c-eyebrow">/ 01 — On View</p></div>
+      </div>
+    </article>
+    <article class="cmp" data-origin="extracted">
+      <div class="cmp-meta">
+        <div class="cmp-head">
+          <span class="cmp-name">paragraph</span>
+          <span class="badge badge-extracted">extracted</span>
+          <span class="tag">use: always</span>
+        </div>
+        <div class="cmp-intent">A block of body copy. (aliases: text, body, rich-text)</div>
+        <div class="cmp-note">&bull; Inter 400, 1.5 line-height, muted gray ink (#595b5f) on light surfaces</div>
+      </div>
+      <div class="cmp-example">
+        <div class="cmp-stage"><p class="c-paragraph">Set narrow, roughly a third of the container and offset from its media. Inter, sentence case, generous leading.</p></div>
+      </div>
+    </article>
+    <article class="cmp" data-origin="extracted">
+      <div class="cmp-meta">
+        <div class="cmp-head">
+          <span class="cmp-name">button</span>
+          <span class="badge badge-extracted">extracted</span>
+          <span class="tag">use: always</span><span class="tag">stateful</span>
+        </div>
+        <div class="cmp-intent">A pressable control with a surface (filled / outline / ghost).</div>
+        <div class="cmp-note">&bull; PRIMARY actions are FILLED blue pills with white labels — never typographic (neverDo.never-typographic-primary); secondary is a blue outlined pill; neutral near-black pill for chrome CTAs</div>
+      </div>
+      <div class="cmp-example">
+        <div class="cmp-stage"><div class="ex-caption">Brand realization &mdash; the measured filled button:</div><a class="c-button" href="#" role="button">Book Demo</a></div>
+      </div>
+    </article>
+    <article class="cmp" data-origin="extracted">
+      <div class="cmp-meta">
+        <div class="cmp-head">
+          <span class="cmp-name">link</span>
+          <span class="badge badge-extracted">extracted</span>
+          <span class="tag">use: text-links-only</span><span class="tag">stateful</span>
+        </div>
+        <div class="cmp-intent">A textual navigational/action link (no button surface).</div>
+        <div class="cmp-note">&bull; text links are BLUE (#0564ff), idle-clean, hover underline + darken (#0047bc); reserved for tertiary &#x27;Learn more&#x27; actions</div>
+      </div>
+      <div class="cmp-example">
+        <div class="cmp-stage"><a class="c-arrow-link" href="#">Book Demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a><div class="states">
+      <div class="states-label">states · hover / press / focus inside the iframe</div>
+      <div class="state-row"><div class="state-col"><div class="stg"><a class="act " href="#" tabindex="-1">Book Demo <span class="arrow">&rarr;</span></a></div><div class="state-name">default</div></div><div class="state-col"><div class="stg"><a class="act is-hover" href="#" tabindex="-1">Book Demo <span class="arrow">&rarr;</span></a></div><div class="state-name">hover</div></div><div class="state-col"><div class="stg"><a class="act is-active" href="#" tabindex="-1">Book Demo <span class="arrow">&rarr;</span></a></div><div class="state-name">pressed</div></div><div class="state-col"><div class="stg"><a class="act is-focus" href="#" tabindex="-1">Book Demo <span class="arrow">&rarr;</span></a></div><div class="state-name">focus</div></div><div class="state-col"><div class="stg"><a class="act is-disabled" href="#" tabindex="-1">Book Demo <span class="arrow">&rarr;</span></a></div><div class="state-name">disabled</div></div></div>
+      <div class="state-live"><span class="hint">live &rarr;</span><a class="act live" href="#">Book Demo <span class="arrow">&rarr;</span></a><button class="act live" disabled>Sold Out <span class="arrow">&rarr;</span></button></div>
+    </div></div>
+      </div>
+    </article>
+    <article class="cmp" data-origin="extracted">
+      <div class="cmp-meta">
+        <div class="cmp-head">
+          <span class="cmp-name">image</span>
+          <span class="badge badge-extracted">extracted</span>
+          <span class="tag">use: always</span>
+        </div>
+        <div class="cmp-intent">A raster/vector photograph or graphic.</div>
+        <div class="cmp-note">&bull; illustration/product-UI art on deep-navy or noise-gradient backdrops; media boxes rounded 10px; photography only as circle-cropped avatars</div>
+      </div>
+      <div class="cmp-example">
+        <div class="cmp-stage"><div class="c-image-ph">IMAGE</div><div class="ex-caption">Media at the brand radius &mdash; no shadow, border or mat</div></div>
+      </div>
+    </article>
+    <article class="cmp" data-origin="extracted">
+      <div class="cmp-meta">
+        <div class="cmp-head">
+          <span class="cmp-name">logo</span>
+          <span class="badge badge-extracted">extracted</span>
+          <span class="tag">use: always</span>
+        </div>
+        <div class="cmp-intent">Brand wordmark / mark.</div>
+        <div class="cmp-note">&bull; customer logos are monochrome ink vectors on the light canvas, ~40px tall, marquee row</div>
+      </div>
+      <div class="cmp-example">
+        <div class="cmp-stage"><div class="surface-dark"><span class="ex-logo">Remote</span></div><div class="ex-caption">Wordmark &mdash; rendered on the brand chrome surface</div></div>
+      </div>
+    </article>
+    <article class="cmp" data-origin="extracted">
+      <div class="cmp-meta">
+        <div class="cmp-head">
+          <span class="cmp-name">input</span>
+          <span class="badge badge-extracted">extracted</span>
+          <span class="tag">use: forms</span><span class="tag">stateful</span>
+        </div>
+        <div class="cmp-intent">A single-line text entry control.</div>
+        <div class="cmp-note">&bull; boxed white fields, 2px #d1d6dc border, 3px radius; submit is a filled pill</div>
+      </div>
+      <div class="cmp-example">
+        <div class="cmp-stage"><div class="ex-caption">Boxed field &mdash; brand input radius, border and fill</div><label class="c-field c-field--boxed"><span class="c-field-text">Enter your email</span></label></div>
+      </div>
+    </article>
+  </div>
+  <section class="tier" id="tier-blocks">
+    <div class="tier-num">Tier 2</div>
+    <div class="tier-name">Blocks</div>
+    <div class="tier-sub">4 composed clusters &amp;mdash; faithful mini-renders honoring the brand&#x27;s slot grammar</div>
+    <div class="tier-rule"></div>
+  </section>
+  <div class="list">
+    <article class="cmp" data-origin="extracted">
+      <div class="cmp-meta">
+        <div class="cmp-head">
+          <span class="cmp-name">header</span>
+          <span class="badge badge-extracted">extracted</span>
+          
+        </div>
+        <div class="cmp-intent">A section heading cluster that opens or titles a section.</div>
+        
+      </div>
+      <div class="cmp-example">
+        <div class="cmp-stage"><div class="c-header"><p class="c-eyebrow">/ Products</p><h1 class="c-heading c-heading--display">Remote</h1><a class="c-arrow-link" href="#">Book Demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div></div>
+      </div>
+    </article>
+    <article class="cmp" data-origin="extracted">
+      <div class="cmp-meta">
+        <div class="cmp-head">
+          <span class="cmp-name">navbar</span>
+          <span class="badge badge-extracted">extracted</span>
+          
+        </div>
+        <div class="cmp-intent">Top-of-page navigation cluster.</div>
+        
+      </div>
+      <div class="cmp-example">
+        <div class="cmp-stage"><div class="surface-dark"><div style="display:flex;align-items:center;justify-content:space-between;gap:1.5rem"><span class="ex-logo" style="font-size:1rem">Remote</span><span class="ex-label" style="color:var(--ink-inverse);font-size:var(--control-size)">Products <span style="opacity:.5">/</span> Solutions <span style="opacity:.5">/</span> Resources</span><a class="act" href="#" style="color:var(--accent)">Book Demo <span class="arrow">&rarr;</span></a></div></div><div class="ex-caption">Bar on the brand chrome surface; typographic nav links</div></div>
+      </div>
+    </article>
+    <article class="cmp" data-origin="extracted">
+      <div class="cmp-meta">
+        <div class="cmp-head">
+          <span class="cmp-name">footer</span>
+          <span class="badge badge-extracted">extracted</span>
+          
+        </div>
+        <div class="cmp-intent">Bottom-of-page cluster: identity, link columns, legal.</div>
+        
+      </div>
+      <div class="cmp-example">
+        <div class="cmp-stage"><div class="surface-darkest cmp-footer-demo"><div class="c-footer"><nav class="c-foot-sitemap" aria-label="Sitemap"><a class="c-foot-sitemap-link" href="#">Products</a> <span class="c-foot-sep" aria-hidden="true">/</span> <a class="c-foot-sitemap-link" href="#">Solutions</a> <span class="c-foot-sep" aria-hidden="true">/</span> <a class="c-foot-sitemap-link" href="#">Resources</a> <span class="c-foot-sep" aria-hidden="true">/</span> <a class="c-foot-sitemap-link" href="#">Pricing</a> <span class="c-foot-sep" aria-hidden="true">/</span> <a class="c-foot-sitemap-link" href="#">Book Demo</a></nav><nav class="c-foot-social" aria-label="Social"><a class="c-foot-social-link" href="#">Instagram</a> <span class="c-foot-sep" aria-hidden="true">/</span> <a class="c-foot-social-link" href="#">Facebook</a> <span class="c-foot-sep" aria-hidden="true">/</span> <a class="c-foot-social-link" href="#">Youtube</a> <span class="c-foot-sep" aria-hidden="true">/</span> <a class="c-foot-social-link" href="#">Twitter</a></nav><p class="c-foot-legal">© 2026 Remote</p></div></div><div class="ex-caption">Closing bookend &mdash; centered display-register sitemap, text social row + muted legal; shared <code>render_footer</code>, no boxes</div></div>
+      </div>
+    </article>
+    <article class="cmp" data-origin="extracted">
+      <div class="cmp-meta">
+        <div class="cmp-head">
+          <span class="cmp-name">form</span>
+          <span class="badge badge-extracted">extracted</span>
+          
+        </div>
+        <div class="cmp-intent">A data-collection cluster: fields plus a submit action.</div>
+        
+      </div>
+      <div class="cmp-example">
+        <div class="cmp-stage"><div class="c-form"><p class="c-eyebrow">/ Newsletter</p><label class="c-field c-field--boxed"><span class="c-field-text">Enter your email</span><a class="c-button" href="#" role="button">Subscribe</a></label></div><div class="ex-caption">Field + inline submit in the brand's field/CTA grammar</div></div>
+      </div>
+    </article>
+  </div>
+
+<section id="tier-surfaces">
+  <div class="tier">
+    <div class="tier-num">3</div>
+    <div class="tier-name">Surface roles</div>
+    <div class="tier-sub">per-surface alias scopes &mdash; accent + hover re-scoping (AS-20), live :hover inside each frame</div>
+    <div class="tier-rule"></div>
+  </div>
+  <div class="sw-grid"><div class="sw-frame" data-surface-frame="surface/primary"><div class="sw-role">surface/primary</div><p class="c-eyebrow">Specimen eyebrow</p><h2 class="c-heading c-heading--h3">Primary</h2><a class="c-arrow-link" href="#">Hover interaction <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div><div class="sw-frame" data-surface-frame="surface/panel"><div class="sw-role">surface/panel</div><p class="c-eyebrow">Specimen eyebrow</p><h2 class="c-heading c-heading--h3">Panel</h2><a class="c-arrow-link" href="#">Hover interaction <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div><div class="sw-frame" data-surface-frame="surface/raised"><div class="sw-role">surface/raised</div><p class="c-eyebrow">Specimen eyebrow</p><h2 class="c-heading c-heading--h3">Raised</h2><a class="c-arrow-link" href="#">Hover interaction <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div><div class="sw-frame" data-surface-frame="surface/inverse"><div class="sw-role">surface/inverse · dark</div><p class="c-eyebrow">Specimen eyebrow</p><h2 class="c-heading c-heading--h3">Inverse</h2><a class="c-arrow-link c-arrow-link--accent" href="#">Hover interaction <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div><div class="sw-frame" data-surface-frame="surface/inverse-strong"><div class="sw-role">surface/inverse-strong · dark</div><p class="c-eyebrow">Specimen eyebrow</p><h2 class="c-heading c-heading--h3">Inverse Strong</h2><a class="c-arrow-link c-arrow-link--accent" href="#">Hover interaction <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div><div class="sw-frame" data-surface-frame="surface/accent"><div class="sw-role">surface/accent · dark</div><p class="c-eyebrow">Specimen eyebrow</p><h2 class="c-heading c-heading--h3">Accent</h2><a class="c-arrow-link c-arrow-link--accent" href="#">Hover interaction <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div><div class="sw-frame" data-surface-frame="surface/hero-noise"><div class="sw-role">surface/hero-noise</div><p class="c-eyebrow">Specimen eyebrow</p><h2 class="c-heading c-heading--h3">Hero Noise</h2><a class="c-arrow-link" href="#">Hover interaction <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div></div>
+</section>
+  <section class="tier" id="tier-layouts">
+    <div class="tier-num">Tier 3</div>
+    <div class="tier-name">Extracted Layouts</div>
+    <div class="tier-sub">7 project-tier layout patterns &mdash; 7 extracted, 0 designed &mdash; each composed through the real archetype composers</div>
+    <div class="tier-rule"></div>
+  </section>
+  <div class="list">
+    <article class="cmp cmp--layout" data-origin="extracted">
+      <div class="cmp-meta">
+        <div class="cmp-head">
+          <span class="cmp-name">hero-inset-noise-panel</span>
+          <span class="badge badge-extracted">extracted</span>
+          <span class="tag">use-case: hero</span><span class="tag">archetype: split</span><span class="tag">confidence: high</span>
+        </div>
+        <div class="cmp-intent">Split hero INSIDE an inset rounded panel (12px) painted with the brand&#x27;s pastel noise-gradient art: left content stack (display heading -&gt; supporting body -&gt; filled primary pill + outlined secondary pill), right illustration. Text on the art stays dark ink — no scrim, no blur, no photographic background.</div>
+        <div class="cmp-note"><strong>Extracted.</strong> Observed on the live page. Provenance: hero.</div>
+      </div>
+      <div class="cmp-example">
+        <div class="cmp-stage"><iframe class="layout-frame" src="layouts/hero-inset-noise-panel.html" loading="lazy" title="hero-inset-noise-panel — composed section"></iframe><div class="ex-caption">Composed through the real archetype composer (brand layout: hero)</div></div>
+      </div>
+    </article>
+    <article class="cmp cmp--layout" data-origin="extracted">
+      <div class="cmp-meta">
+        <div class="cmp-head">
+          <span class="cmp-name">logo-marquee-strip</span>
+          <span class="badge badge-extracted">extracted</span>
+          <span class="tag">use-case: logos</span><span class="tag">archetype: stack</span><span class="tag">confidence: high</span>
+        </div>
+        <div class="cmp-intent">Customer-proof strip on the canvas: short uppercase gray microlabel caption over a continuous marquee row of monochrome ink logo vectors (~40px tall, 64px gaps). Logos come from the tagged logo-wall-logo assets — REAL vectors, never text names.</div>
+        <div class="cmp-note"><strong>Extracted.</strong> Observed on the live page. Provenance: logo-wall.</div>
+      </div>
+      <div class="cmp-example">
+        <div class="cmp-stage"><iframe class="layout-frame" src="layouts/logo-marquee-strip.html" loading="lazy" title="logo-marquee-strip — composed section"></iframe><div class="ex-caption">Composed through the real archetype composer (brand layout: logo-wall)</div></div>
+      </div>
+    </article>
+    <article class="cmp cmp--layout" data-origin="extracted">
+      <div class="cmp-meta">
+        <div class="cmp-head">
+          <span class="cmp-name">feature-accordion-deep-accent</span>
+          <span class="badge badge-extracted">extracted</span>
+          <span class="tag">use-case: features</span><span class="tag">archetype: split</span><span class="tag">confidence: high</span>
+        </div>
+        <div class="cmp-intent">Feature exploration split: crimson uppercase eyebrow + section heading, then a left accordion list beside right product-UI media. Idle items are hairline rows; hovered items take a warm tint wash; the ACTIVE item inverts to a deep-accent inset card (deep maroon, white ink, circle-arrow affordance) — one at a time.</div>
+        <div class="cmp-note"><strong>Extracted.</strong> Observed on the live page. Provenance: accordion-features.</div>
+      </div>
+      <div class="cmp-example">
+        <div class="cmp-stage"><iframe class="layout-frame" src="layouts/feature-accordion-deep-accent.html" loading="lazy" title="feature-accordion-deep-accent — composed section"></iframe><div class="ex-caption">Composed through the real archetype composer (brand layout: feature-accordion)</div></div>
+      </div>
+    </article>
+    <article class="cmp cmp--layout" data-origin="extracted">
+      <div class="cmp-meta">
+        <div class="cmp-head">
+          <span class="cmp-name">features-card-grid-navy-media</span>
+          <span class="badge badge-extracted">extracted</span>
+          <span class="tag">use-case: features</span><span class="tag">archetype: grid</span><span class="tag">confidence: high</span>
+        </div>
+        <div class="cmp-intent">White card grid (2–3 columns, 32px gap): each card is a 16px-rounded pure-white panel, FLAT at idle (shadow+tint only on hover), with a deep-navy media area on top (product art), then an eyebrow microlabel, heading, body, and a blue text link with arrow. Cards on the gray canvas — never dark card fills.</div>
+        <div class="cmp-note"><strong>Extracted.</strong> Observed on the live page. Provenance: workflow-cards.</div>
+      </div>
+      <div class="cmp-example">
+        <div class="cmp-stage"><iframe class="layout-frame" src="layouts/features-card-grid-navy-media.html" loading="lazy" title="features-card-grid-navy-media — composed section"></iframe><div class="ex-caption">Composed through the real archetype composer (brand layout: workflow-cards)</div></div>
+      </div>
+    </article>
+    <article class="cmp cmp--layout" data-origin="extracted">
+      <div class="cmp-meta">
+        <div class="cmp-head">
+          <span class="cmp-name">cta-inline-banner</span>
+          <span class="badge badge-extracted">extracted</span>
+          <span class="tag">use-case: cta</span><span class="tag">archetype: stack</span><span class="tag">confidence: high</span>
+        </div>
+        <div class="cmp-intent">Inline conversion banner: a 10px-rounded soft panel with the noise-art edge, centered heading (question form) + ONE filled primary pill. Compact — a conversion beat between content sections, not a closing section.</div>
+        <div class="cmp-note"><strong>Extracted.</strong> Observed on the live page. Provenance: banner-cta.</div>
+      </div>
+      <div class="cmp-example">
+        <div class="cmp-stage"><iframe class="layout-frame" src="layouts/cta-inline-banner.html" loading="lazy" title="cta-inline-banner — composed section"></iframe><div class="ex-caption">Composed through the real archetype composer (brand layout: banner-cta)</div></div>
+      </div>
+    </article>
+    <article class="cmp cmp--layout" data-origin="extracted">
+      <div class="cmp-meta">
+        <div class="cmp-head">
+          <span class="cmp-name">cta-closing-noise</span>
+          <span class="badge badge-extracted">extracted</span>
+          <span class="tag">use-case: cta</span><span class="tag">archetype: stack</span><span class="tag">confidence: high</span>
+        </div>
+        <div class="cmp-intent">Closing CTA on the pastel noise-gradient art surface: centered heading + supporting body + ONE filled primary pill; generous breathing room (112/80px). Dark ink on the art — the light bookend that mirrors the hero panel.</div>
+        <div class="cmp-note"><strong>Extracted.</strong> Observed on the live page. Provenance: closing-cta.</div>
+      </div>
+      <div class="cmp-example">
+        <div class="cmp-stage"><iframe class="layout-frame" src="layouts/cta-closing-noise.html" loading="lazy" title="cta-closing-noise — composed section"></iframe><div class="ex-caption">Composed through the real archetype composer (brand layout: closing-cta)</div></div>
+      </div>
+    </article>
+    <article class="cmp cmp--layout" data-origin="extracted">
+      <div class="cmp-meta">
+        <div class="cmp-head">
+          <span class="cmp-name">testimonial-card-row</span>
+          <span class="badge badge-extracted">extracted</span>
+          <span class="tag">use-case: testimonial</span><span class="tag">archetype: grid</span><span class="tag">confidence: high</span>
+        </div>
+        <div class="cmp-intent">Social-proof slider: centered gray eyebrow + heading with inline bold emphasis, then a 3-up row of white 16px cards — company mark, quote, circle avatar + name/role. Edge-fade gradients; cards flat idle, hover shadow+tint.</div>
+        <div class="cmp-note"><strong>Extracted.</strong> Observed on the live page. Provenance: testimonials.</div>
+      </div>
+      <div class="cmp-example">
+        <div class="cmp-stage"><iframe class="layout-frame" src="layouts/testimonial-card-row.html" loading="lazy" title="testimonial-card-row — composed section"></iframe><div class="ex-caption">Composed through the real archetype composer (brand layout: testimonials)</div></div>
+      </div>
+    </article>
+  </div>
+  <details class="std">
+    <summary>Standard-tier library &mdash; 35 brand-agnostic patterns (contracts/layout-patterns/, listed only)</summary>
+    <div class="std-row"><span class="std-id">about-two-column-media-copy</span><span class="std-meta">about &middot; split &mdash; Wide two-column rail on a shared light canvas — rectangular image column beside a headline + body + action column.</span></div><div class="std-row"><span class="std-id">about-split-editorial-grid</span><span class="std-meta">about &middot; grid &mdash; Split editorial intro over a supporting grid of cards — narrative copy above evenly sized info cards.</span></div><div class="std-row"><span class="std-id">seam-straddle-portrait</span><span class="std-meta">about &middot; banded &mdash; A calm two-surface section: a full-bleed monochrome photo band (top ~50%) over a light panel band (bottom ~50%), hard seam. An inset portrait (cols 4–9) STRADDLES the seam — roughly a third on the photo, two thirds on the panel. A small tracked caption sits on the photo band; a short closing paragraph closes the panel band. The symmetric, quiet cousin of the straddle family (realizes the sanctioned media-over-seam pair).</span></div><div class="std-row"><span class="std-id">about-ghostword-editorial-run</span><span class="std-meta">about &middot; overlay &mdash; Centered editorial copy stack over a wide blended graphic with an oversized low-contrast ghost word.</span></div><div class="std-row"><span class="std-id">cta-centered-inverse-cta</span><span class="std-meta">cta &middot; stack &mdash; Centered heading + support copy + paired buttons on an inverse conversion band.</span></div><div class="std-row"><span class="std-id">cta-split-copy-cta</span><span class="std-meta">cta &middot; split &mdash; Two-zone utility band — copy stack on one side, paired actions on the other.</span></div><div class="std-row"><span class="std-id">cta-fullbleed-scrimmed-media</span><span class="std-meta">cta &middot; stack-fullbleed &mdash; Viewport-width scrimmed media band with a narrow centered conversion stack and an oversized ghost word.</span></div><div class="std-row"><span class="std-id">cta-inline-form-pill</span><span class="std-meta">cta &middot; row &mdash; Inline lead-gen row — underlined input with an adjacent content-hugging pill submit and short helper copy.</span></div><div class="std-row"><span class="std-id">features-split-feature</span><span class="std-meta">features &middot; split &mdash; Single feature explainer — copy column beside a contained product/media pane.</span></div><div class="std-row"><span class="std-id">features-shared-light-run</span><span class="std-meta">features &middot; stack &mdash; Editorial feature run on a shared light canvas — centered intro over stretched supporting copy, continuing surface.</span></div><div class="std-row"><span class="std-id">features-icon-label-grid</span><span class="std-meta">features &middot; grid &mdash; N-up grid of compact icon + label + short-body feature cells.</span></div><div class="std-row"><span class="std-id">features-media-card-overlay</span><span class="std-meta">features &middot; bento &mdash; Tall fixed media cards with a top badge and large heading overlaid on the media, plus ghost accent word.</span></div><div class="std-row"><span class="std-id">footer-link-column-grid</span><span class="std-meta">footer &middot; grid &mdash; Full-width footer band — brand group beside a wide grid of link columns with headings and stacked links.</span></div><div class="std-row"><span class="std-id">footer-inverse-closing-oversized-wordmark</span><span class="std-meta">footer &middot; stack-fullbleed &mdash; Inverse closing footer with a small brand group over an oversized low-contrast wordmark bleeding to the edges.</span></div><div class="std-row"><span class="std-id">footer-compact-utility-bar</span><span class="std-meta">footer &middot; band &mdash; Compact full-width utility bar on a continuing surface — left link group, centered legal/identity, right policy link and payment badges.</span></div><div class="std-row"><span class="std-id">gallery-editorial-card-grid</span><span class="std-meta">gallery &middot; grid &mdash; Editorial card grid on a shared light canvas — wide intro row above evenly sized media cards with captions.</span></div><div class="std-row"><span class="std-id">gallery-square-card-run</span><span class="std-meta">gallery &middot; row &mdash; Continuous warm-canvas rail of square editorial cards with marginal captions.</span></div><div class="std-row"><span class="std-id">gallery-logo-strip</span><span class="std-meta">gallery &middot; band &mdash; Full-width solid band with a wide edge-gutter row of evenly spaced logos and a short label.</span></div><div class="std-row"><span class="std-id">staggered-caption-columns-3</span><span class="std-meta">gallery &middot; cards &mdash; Editorial index: an oversized display masthead (cols 1–10) with a micro-caption, then three grid-registered image columns at different colStarts, widths, heights AND vertical offsets (middle column highest, right column lowest) — each with an editorial caption + tracked arrow link whose baselines follow their own image, never a shared row.</span></div><div class="std-row"><span class="std-id">gallery-mosaic-with-overflow</span><span class="std-meta">gallery &middot; bento &mdash; Wide mixed-size gallery mosaic with right-edge overflow and an oversized ghost accent word behind the frames.</span></div><div class="std-row"><span class="std-id">hero-centered-stack-on-media</span><span class="std-meta">hero &middot; stack-fullbleed &mdash; Narrow centered copy stack floating over a full-bleed atmospheric media canvas.</span></div><div class="std-row"><span class="std-id">hero-split-media-copy</span><span class="std-meta">hero &middot; split &mdash; Two-region hero — typographic copy column beside a contained hero image.</span></div><div class="std-row"><span class="std-id">hero-ghostword-atmospheric</span><span class="std-meta">hero &middot; overlay &mdash; Oversized low-contrast ghost wordmark straddling the media behind a compact centered stage.</span></div><div class="std-row"><span class="std-id">card-over-portrait-statement</span><span class="std-meta">hero &middot; overlay &mdash; A full-bleed portrait photograph as the entire canvas; a solid content card (~half the container, centered both axes, aspect echoing the canvas) floats over it carrying a space-between stack: wordmark top, condensed statement center, caption bottom. The card occludes the media focal center on purpose.</span></div><div class="std-row"><span class="std-id">boundary-straddle-headline</span><span class="std-meta">hero &middot; overlay &mdash; A narrow full-height rail (cols 1–3, panel surface; eyebrow top, short body mid, meta bottom) beside a full-bleed photo (cols 4–12, hard seam). A poster display heading registers to the seam and straddles onto the photo, top-anchored. A flat translucent scrim band crosses the photo at ~55–75% height carrying three keyword columns.</span></div><div class="std-row"><span class="std-id">framed-inset-monument</span><span class="std-meta">hero &middot; overlay &mdash; A framed inset photograph (page margins visible on all sides, ~1 col left/right) with a monumental display word (cols 1–8) registered to the image&#x27;s BOTTOM edge — flush to half-straddling — and a small annotation cluster inside the frame at cols 10–11. Corner-anchored decorative media may break the frame edges at z:front.</span></div><div class="std-row"><span class="std-id">stepped-overlay-statement</span><span class="std-meta">hero &middot; overlay &mdash; A full-bleed photograph carries the entire section; the display statement breaks into 3 fixed lines whose left edges step progressively rightward (0 / +0.5 col / +3 cols). A small right-aligned support cluster + typographic CTA anchor to the bottom-right corner (cols 11–12).</span></div><div class="std-row"><span class="std-id">type-behind-media-masthead</span><span class="std-meta">hero &middot; overlay &mdash; A light page opened by a two-line monumental display wordmark spanning near-full width, with TWO portrait images stacked centrally ON TOP of the type — the heading sits z:back and is partially occluded (word ends stay visible). The second, smaller image registers to the first&#x27;s bottom-right corner. A row-registered pair of marginal captions flanks the media at mid-height.</span></div><div class="std-row"><span class="std-id">tucked-headline-panorama</span><span class="std-meta">hero &middot; overlay &mdash; Dark-surface opener: a two-line display heading top-left (cols 1–5) whose bottom line tucks BEHIND the top edge of a framed panoramic photograph below (media in front, ~40% of the line height submerged); a short support paragraph top-right (cols 7–10) shares the heading&#x27;s first row. The photo is near-full-bleed with slim visible margins on both sides and below.</span></div><div class="std-row"><span class="std-id">hero-fullbleed-scrimmed-overlay</span><span class="std-meta">hero &middot; stack-fullbleed &mdash; Viewport-width media canvas with a scrim and a floating utility overlay plus bottom-anchored copy.</span></div><div class="std-row"><span class="std-id">pricing-two-card-row</span><span class="std-meta">pricing &middot; row &mdash; Two equal-width plan cards in a horizontal row — label, price, feature list, action.</span></div><div class="std-row"><span class="std-id">pricing-toggle-intro-plan-cards</span><span class="std-meta">pricing &middot; stack &mdash; Centered heading + support copy with a compact monthly/annual segmented toggle above the plan cards.</span></div><div class="std-row"><span class="std-id">pricing-editorial-two-column</span><span class="std-meta">pricing &middot; split &mdash; Two-column editorial pricing — narrative copy column beside a single plan/offer column.</span></div><div class="std-row"><span class="std-id">testimonial-centered-quote-stack</span><span class="std-meta">testimonial &middot; stack &mdash; Centered testimonial stack — small media marker, large quote, attribution metadata, bare arrows.</span></div><div class="std-row"><span class="std-id">testimonial-horizontal-card-rail-carousel</span><span class="std-meta">testimonial &middot; row &mdash; Overflowing horizontal rail of fixed-size review cards with a partial next card, progress rule and compact controls.</span></div>
+  </details>
+</div>
+</body>
+</html>

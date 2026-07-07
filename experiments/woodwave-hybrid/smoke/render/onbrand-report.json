@@ -35,6 +35,8 @@
       "No lorem/placeholder copy": true,
       "All brand image assets present": true,
       "Rounding matches brand radius scale": true,
+      "No foreign-brand content literals (alt/aria/title)": true,
+      "No foreign-brand asset references": true,
       "Webfonts loaded (no silent system fallback)": true
     }
   },
@@ -50,7 +52,12 @@
       "text-contrast": true,
       "decoration-salience": true,
       "occlusion": true,
-      "band-attribution": true
+      "band-attribution": true,
+      "alignment-resolution": true,
+      "media-registration": true,
+      "interaction-contrast": true,
+      "token-provenance": true,
+      "logo-wall-integrity": true
     },
     "details": {
       "text-contrast": "32 text elements measured against their effective background (surface + decoration layer); worst = sec-0/cs-sub('A simpler way to get sta') at 7.19 (floor 4.5); skipped=0",

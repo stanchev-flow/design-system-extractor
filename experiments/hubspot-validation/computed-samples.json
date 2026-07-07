@@ -1,0 +1,71 @@
+{
+  "page": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot/brand/compose/signup-launch-tokenized/index.html",
+  "samples": {
+    "hero display heading": {
+      "font-family": "\"HubSpot Serif\", \"Source Serif 4\", serif",
+      "font-size": "172.8px",
+      "font-weight": "500",
+      "text-transform": "none",
+      "letter-spacing": "normal",
+      "color": "rgb(255, 255, 255)"
+    },
+    "eyebrow": {
+      "font-family": "\"HubSpot Sans\", \"Lexend Deca\", sans-serif",
+      "font-size": "14px",
+      "font-weight": "400",
+      "text-transform": "none",
+      "letter-spacing": "0.56px",
+      "color": "rgb(255, 72, 0)"
+    },
+    "arrow link (rendered CTA)": {
+      "font-family": "\"HubSpot Sans\", \"Lexend Deca\", sans-serif",
+      "font-size": "16px",
+      "font-weight": "400",
+      "text-transform": "none",
+      "color": "rgb(255, 255, 255)",
+      "text-decoration-line": "none"
+    },
+    "paragraph": {
+      "font-family": "\"HubSpot Sans\", \"Lexend Deca\", sans-serif",
+      "font-size": "18px",
+      "font-weight": "400",
+      "color": "rgba(255, 255, 255, 0.62)"
+    },
+    "boxed field": {
+      "border-radius": "16px",
+      "background-color": "rgba(0, 0, 0, 0)",
+      "border": "1px solid rgba(0, 0, 0, 0.11)"
+    },
+    "section (2nd)": null,
+    "caption": {
+      "font-size": "14px",
+      "text-transform": "none",
+      "letter-spacing": "0.56px"
+    }
+  },
+  "root_vars": {
+    "--c-motion-fast": "150ms",
+    "--c-motion-base": "200ms",
+    "--c-motion-slow": "300ms",
+    "--c-ease": "ease-in-out",
+    "--motion-fast": "150ms",
+    "--motion-base": "200ms",
+    "--motion-slow": "300ms",
+    "--motion-ease": "ease-in-out",
+    "--radius": "1rem",
+    "--radius-button": "0.5rem",
+    "--button-bg": "#ff4800",
+    "--button-bg-hover": "#c93700",
+    "--surface-surface-panel": "#f8f5ee",
+    "--color-accent-highlight": "#ff4800",
+    "--case-h2": "none",
+    "--size-display-hero-base": "4.5rem",
+    "--weight-display-hero": "500",
+    "--space-section-y-md": "4rem"
+  },
+  "hero_scope": {
+    "displaySize": "clamp(9rem, 12cqw, 16rem)",
+    "caseHeading": "none",
+    "bg": "rgb(31, 31, 31)"
+  }
+}

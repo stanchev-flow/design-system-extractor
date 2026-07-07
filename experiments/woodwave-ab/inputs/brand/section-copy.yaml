@@ -1,0 +1,265 @@
+# WoodWave section copy — relocated VERBATIM from brand_pipeline/compose_section.py
+# (SECTION_COPY + LAYOUT_COPY module constants) as part of the cross-brand
+# contamination fix: brand copy is BRAND DATA, not pipeline code. The composers
+# read this file via compose_section.attach_brand_copy / copy_for; a brand without
+# a section-copy.yaml simply degrades to empty copy (wordmark-only nav, elided
+# eyebrow/cta) instead of inheriting another brand's voice.
+#
+# sectionCopy: the page-global base (hero voice + nav wordmark/links/cta).
+# layoutCopy:  per-layout-id overrides merged over the base (same shape the old
+#              module dict had; runtime composition/wildcard copy still wins).
+sectionCopy:
+  wordmark: WoodWave
+  nav:
+  - About
+  - Gallery
+  - Exhibition
+  - Visit
+  # specimenEyebrow: gallery/preview eyebrow specimen (see runs/woodwave copy).
+  specimenEyebrow: 01 — On View
+  eyebrow: Est. 2019 — Portland, Oregon
+  subhead: An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade.
+  cta: Buy Tickets
+layoutCopy:
+  editorial-collage:
+    ghost: About
+    eyebrow: About the gallery
+    heading: The building is the first work on view
+    body: Woodwave occupies a timber hall raised in 1941 and kept close to its original state.
+      The grain of the walls, the curve of the vault, the slow movement of daylight — the
+      architecture sets the terms, and the collection answers them.
+    caption: Vault detail
+    cta: Our story
+  info-band:
+    eyebrow: Plan your visit
+    heading: Come stand in the hall
+    panelTitle: Ticket prices
+    rows:
+    - - Adults
+      - 12 €
+    - - Reduced
+      - 8 €
+    - - Under 18
+      - Free
+    cta: Buy tickets
+    caption: Harbour quarter
+  conversion-stack:
+    eyebrow: Stay in touch
+    heading: Hear when the walls change
+    body: One letter a season — new works, new hours, nothing else.
+    placeholder: Your email
+    cta: Subscribe
+  mission-statement:
+    eyebrow: What we hold
+    heading: 'Space as
+
+      a muse'
+    body: We collect work that listens to its room. From the late twentieth century to the
+      present day, the holdings favour pieces shaped by material, scale and place — art that
+      stands differently here than anywhere else.
+    cta: The collection
+  gallery-showcase:
+    eyebrow: Inside the hall
+    counter: 1/6
+    caption: Central nave
+  heritage-timeline:
+    ghost: 1941–2023
+    eyebrow: Eight decades
+    heading: 'A collection
+
+      built slowly'
+    body: The first works entered the hall the year it opened. Since then the collection has
+      grown by patience rather than appetite — a few pieces each era, chosen for how they
+      hold the room.
+    caption: Acquisition, 1974
+  curator-quote:
+    eyebrow: From the curator
+    quote: '“A room this
+
+      honest forgives
+
+      nothing”'
+    body: Elin Marsh, curator since 2011, on hanging work in the timber hall. Every placement
+      is tested against the light at three hours of the day before it stays.
+    caption: Elin Marsh
+  visit-band:
+    eyebrow: Plan your visit
+    heading: 'Come stand
+
+      in the hall'
+    ticketsTitle: Ticket prices
+    ticketsRows:
+    - - Adults
+      - 12 €
+    - - Reduced
+      - 8 €
+    - - Under 18
+      - Free
+    ticketsCta: Buy tickets
+    visitTitle: Hours & address
+    visitRows:
+    - - Tue–Sun, 10–18
+      - ''
+    - - Mondays closed
+      - ''
+    - - 14 Harbour Lane, Aldermoor
+      - ''
+    visitCta: Get directions
+    mapCaption: Harbour quarter
+  exhibition-hero:
+    wordmark: WoodWave
+    nav:
+    - About
+    - Gallery
+    - Exhibition
+    - Visit
+    eyebrow: 12 Sep 2026 — 18 Jan 2027
+    subhead: A group show on material, craft, and the marks of the hand — extending the gallery's
+      own thesis from architecture to object.
+    cta: Buy tickets
+  exhibition-about:
+    ghost: Held
+    eyebrow: About the exhibition
+    heading: 'The hand leaves
+
+      a record the eye
+
+      can follow'
+    body: Held in Wood brings together pieces shaped by material, scale and place — work that
+      carries the evidence of its own making. Grain, joint, and tool mark are not hidden here;
+      they are the subject.
+    caption: Study, oak and ash
+    cta: Plan your visit
+  exhibition-works:
+    eyebrow: Featured in the show
+    counter: 1/9
+    caption: Turned vessel, elm
+  exhibition-schedule:
+    eyebrow: Key dates
+    heading: 'Held in Wood
+
+      runs one season'
+    rows:
+    - - Preview evening
+      - 11 Sep, 18:00
+    - - Exhibition opens
+      - 12 Sep 2026
+    - - Artist talk
+      - 24 Oct, 18:30
+    - - Exhibition closes
+      - 18 Jan 2027
+  exhibition-tickets:
+    eyebrow: Tickets
+    heading: 'Come stand
+
+      with the work'
+    intro: Included with general admission — no separate booking for the show itself.
+    rows:
+    - - General
+      - 14 €
+    - - Concession
+      - 9 €
+    - - Under 18
+      - Free
+    - - Members
+      - Free
+    - - Preview evening
+      - 22 €
+    cta: Buy tickets
+  exhibition-curator-quote:
+    eyebrow: From the curator
+    quote: '“Wood remembers
+
+      every hand that
+
+      has held it”'
+    body: 'Elin Marsh, on Held in Wood: a material that keeps a record of its own history.
+      Every piece in this room was still growing within living memory.'
+    caption: Elin Marsh
+  exhibition-faq:
+    eyebrow: Before you visit
+    heading: 'A few
+
+      questions'
+    items:
+    - - What should I bring?
+      - Nothing but yourself — the hall is step-free and seating is available throughout.
+    - - Is the building accessible?
+      - Yes. Step-free access at the main entrance, accessible toilets, and seating in every
+        room.
+    - - Can I take photographs?
+      - Personal, non-flash photography only. No tripods or professional equipment without
+        prior arrangement.
+    - - Do you take group bookings?
+      - Groups of six or more — contact the gallery ahead of your visit to arrange a time.
+    - - Can I get a refund on preview-evening tickets?
+      - Preview-evening tickets are refundable up to 48 hours before the event.
+    - - Is there an age restriction?
+      - None for the exhibition. The preview evening serves alcohol; it is not a dry event.
+  demo-staggered-cards:
+    eyebrow: On view now
+    heading: 'Rooms that
+
+      hold the light'
+    cards:
+    - caption: Panorama viewpoint
+      body: The seamless blend of contemporary design with the organic — a distinctive environment
+        where the architecture and the collection answer each other, hour by hour.
+      aspect: 16 / 10
+      asset: hero-staircase.jpg
+      link: See the room
+    - caption: At the heart of the haven
+      body: A cutting-edge sphere housing the future of interactive contemporary art, set
+        quietly into the timber hall's oldest and most weathered corner.
+      aspect: 4 / 3
+      asset: overlap-vase.jpg
+  demo-interlock-inset:
+    caption: 'Perspective hall — ArtUnveil
+
+      Space by Isabella St.'
+    statement: 'Woodwave Gallery: where design, nature, and boundless creativity harmoniously
+      converge, inspiring imagination in the quiet geometry of the city''s oldest timber hall'
+    asset: hero-staircase.jpg
+
+# layoutImages: per-layout REAL photography (relocated from the old shared
+# LAYOUT_IMAGES module dict) — layout id -> {role-substring: filename}, checked by
+# _props_for BEFORE the generic image fallback so each section shows its own photo.
+# Keywords must be UNAMBIGUOUS role substrings (a bare "statement"/"portrait"/"map"
+# would hijack caption/body slots too).
+layoutImages:
+  mission-statement: {statement photography: About-img-2.jpg}
+  gallery-showcase: {interior photography: Web-gallery-1.jpg}
+  heritage-timeline: {heritage photography: About-img-4.jpg}
+  curator-quote: {curator portrait: About-img-5.jpg}
+  visit-band: {static map: Map.jpg}
+  exhibition-works: {interior photography: Web-gallery-1.jpg}
+  exhibition-curator-quote: {curator portrait: About-img-5.jpg}
+
+# defaultArt: the brand's PREFERRED default/fallback art per generic role kind
+# (relocated from the old module fallback name lists). Resolved through _brand_art,
+# so a name only applies when the file exists in this brand's own inventory; other
+# brands resolve their own art by kind keywords or omit the device. `overlays` is
+# the layered-hero overlay cycle IN ORDER (overlay N prefers overlays[N]).
+defaultArt:
+  hero: [hero-staircase.jpg]
+  detail: [overlap-vase.jpg]
+  gallery: [Web-gallery-1.jpg]
+  portrait: [About-img-5.jpg]
+  map: [Map.jpg]
+  overlays: [overlap-vase.jpg, About-img-2.jpg, About-img-4.jpg, About-img-5.jpg]
+  occlusion-main: [About-img-2.jpg]
+
+# wildcardCopy: copy blocks for wildcard-generator candidates that NEED brand voice
+# (relocated from the old in-code candidate copy). Keyed by candidate render id; a
+# brand without a block simply skips that candidate (logged) — copy is never seeded
+# from another brand.
+wildcardCopy:
+  wildcard-hero-ghost:
+    ghost: Wood
+    eyebrow: "Est. 2019 — Portland, Oregon"
+    heading: "Contemporary art\nin a landmark\ntimber hall"
+    body: >-
+      An evolving exhibition of woodgrain, light, and the quiet geometry of the
+      handmade — held in a hall that has been standing since 1941.
+    caption: Main hall, east light
+    cta: Buy tickets

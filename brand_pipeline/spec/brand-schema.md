@@ -518,10 +518,14 @@ The mapping keys (`tokens.colors.<role>`, `layouts.<id>`) are **back-references*
 the canonical nodes. If a canonical node has no `targetMappings` entry, the Tailwind
 renderer still works; only the deferred assembler needs the mapping.
 
-## 8. FILLED-IN WoodWave example — `brand.yaml`
+## 8. FILLED-IN WoodWave example — `brand.yaml` (NON-NORMATIVE)
 
-> All values are real WoodWave artifacts. Canonical nodes are library-agnostic; all
-> Webflow ids live under `targetMappings.webflow`. Changelog timestamps use the run date.
+> **Illustrative only — never copy example values.** The SHAPE is a real extraction;
+> the color values below are replaced with obviously-fake placeholders so no example
+> hex can be mistaken for a default. A different brand fills every node with its own
+> measured values (rounded, buttoned, light-chrome brands are equally valid). Canonical
+> nodes are library-agnostic; all Webflow ids live under `targetMappings.webflow`.
+> Changelog timestamps use the run date.
 
 ```yaml
 version: "2.0"
@@ -551,19 +555,20 @@ contracts:
 
 tokens:
   colors:
-    surface/primary: { value: "#FAF0E8", role: "cream canvas background", provenance: [opening-bookend, about-run] }
-    surface/inverse: { value: "#3A2F23", role: "deep warm-brown bookend band", provenance: [opening-bookend] }
-    accent/highlight:{ value: "#E9DC8C", role: "muted gold accent on dark only", provenance: [opening-bookend] }
-    text/on-primary: { value: "#1F1A14", role: "body/display text on cream", provenance: [about-run] }
-    text/on-inverse: { value: "#F5EDE2", role: "text on dark bands", provenance: [opening-bookend] }
+    # ILLUSTRATIVE hexes (obviously fake) — a real brand.yaml carries MEASURED values.
+    surface/primary: { value: "#FEFEF0", role: "light canvas background", provenance: [opening-bookend, about-run] }
+    surface/inverse: { value: "#010203", role: "dark bookend band", provenance: [opening-bookend] }
+    accent/highlight:{ value: "#ABC123", role: "accent, scoped per brand rules", provenance: [opening-bookend] }
+    text/on-primary: { value: "#0F0F0F", role: "body/display text on light", provenance: [about-run] }
+    text/on-inverse: { value: "#FAFAFA", role: "text on dark bands", provenance: [opening-bookend] }
   type:
     display-hero: { family: "Playfair Display", sizeRem: { base: 6, tablet: 4.5, mobileL: 3.5, mobile: 3 }, lineHeight: "1.05em", weight: 400, letterSpacing: "0rem", case: uppercase }
     eyebrow:      { family: "Inter", sizeRem: { base: 0.6875 }, lineHeight: "1.2em", weight: 400, letterSpacing: "0.08em", case: uppercase }
   spacing:
     section-padding-light: { value: "6.875rem", role: "vertical section padding on cream", modeLadder: { base: "6.875rem", tablet: "5rem", mobileL: "4rem", mobile: "4rem" } }
   surfaces:
-    surface/primary: { bg: "#FAF0E8", intent: "default cream canvas", textPrimary: text/on-primary, textAccent: null, provenance: [about-run] }
-    surface/inverse: { bg: "#3A2F23", intent: "dark bookend band", textPrimary: text/on-inverse, textAccent: accent/highlight, provenance: [opening-bookend] }
+    surface/primary: { bg: "#FEFEF0", intent: "default light canvas", textPrimary: text/on-primary, textAccent: null, provenance: [about-run] }
+    surface/inverse: { bg: "#010203", intent: "dark bookend band", textPrimary: text/on-inverse, textAccent: accent/highlight, provenance: [opening-bookend] }
 
 surfaceGrammar:
   roles: [ surface/primary, surface/inverse ]

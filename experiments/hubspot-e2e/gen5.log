@@ -1,0 +1,92 @@
+  offGridExpansion=False (from style)
+  [attempt 0] 73.07s  in=21520 out=6163
+    gate: FAIL ['never-typographic-primary', 'Brand assets present (not placeholder)', 'No off-palette hex colors', 'All brand image assets present']
+  [attempt 1] 69.74s  in=22397 out=5980
+    gate: FAIL ['never-typographic-primary', 'Brand assets present (not placeholder)', 'No off-palette hex colors', 'All brand image assets present', 'alignment-resolution']
+  [attempt 2] 82.67s  in=22435 out=6794
+    gate: FAIL ['never-typographic-primary', 'Brand assets present (not placeholder)', 'No off-palette hex colors', 'All brand image assets present']
+{
+  "ok": false,
+  "attempts": 3,
+  "wall_s": 230.7,
+  "style": "corporate-saas-clean",
+  "offGridExpansion": false,
+  "sections": [
+    {
+      "id": "sec-hero",
+      "useCase": "hero",
+      "archetype": "stack-fullbleed",
+      "novelty": "adapt",
+      "surfaceIntent": "inverse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      }
+    },
+    {
+      "id": "sec-logos",
+      "useCase": "logos",
+      "archetype": "stack",
+      "novelty": "adapt",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      }
+    },
+    {
+      "id": "sec-features",
+      "useCase": "features",
+      "archetype": "cards",
+      "novelty": "adapt",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-elevated-card"
+      }
+    },
+    {
+      "id": "sec-testimonial",
+      "useCase": "testimonial",
+      "archetype": "stack",
+      "novelty": "adapt",
+      "surfaceIntent": "panel",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      }
+    },
+    {
+      "id": "sec-cta",
+      "useCase": "cta",
+      "archetype": "stack",
+      "novelty": "reuse",
+      "surfaceIntent": "panel",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-elevated-card"
+      }
+    }
+  ],
+  "failures": [
+    [
+      "never-typographic-primary",
+      "filled primary CTA button present=False; outline secondary=False"
+    ],
+    [
+      "Brand assets present (not placeholder)",
+      "4 local asset(s), missing=['assets/{&#x27;src&#x27;: &#x27;assets/ProductIcons_MarketingHub_Icon_Orange.webp&#x27;}', 'assets/{&#x27;src&#x27;: &#x27;assets/ProductIcons_SmartCRM_Icon_Orange.webp&#x27;}', 'assets/{&#x27;src&#x27;: &#x27;assets/ProductIcons_SalesHub_Icon_Orange.webp&#x27;}']"
+    ],
+    [
+      "No off-palette hex colors",
+      "off-palette=['#1f1a14', '#f7efe6']; brand palette has 12 hexes"
+    ],
+    [
+      "All brand image assets present",
+      "local images=4; missing=['assets/{&#x27;src&#x27;: &#x27;assets/ProductIcons_MarketingHub_Icon_Orange.webp&#x27;}', 'assets/{&#x27;src&#x27;: &#x27;assets/ProductIcons_SmartCRM_Icon_Orange.webp&#x27;}', 'assets/{&#x27;src&#x27;: &#x27;assets/ProductIcons_SalesHub_Icon_Orange.webp&#x27;}']"
+    ]
+  ],
+  "schema_errors": [],
+  "neverdo_hits": [],
+  "scorecard_overall": null
+}

@@ -110,11 +110,21 @@ blocks:
       panels:   { accepts: [content-block], optional: false, repeatable: true, order: 2 }
 
   logo-bar:
-    intent: "A row/grid of partner/customer logos. (alias: logo-bar / logos)"
-    aliases: [logos]
+    intent: "A row/grid of partner/customer logos. (alias: logo-bar / logos / logo-strip)"
+    aliases: [logos, logo-strip]
     slots:
       caption: { accepts: [eyebrow, heading, label], optional: true, order: 1 }
       logos:   { accepts: [logo], optional: false, repeatable: true, order: 2 }
+    variants: [image-strip, text-captions]
+    # Realization is EVIDENCE-based (AS-33), resolved per entry at the adapter boundary:
+    #   image-strip   — the entry's asset file exists ON DISK in the extracted brand dir
+    #                   (a horizontal `.cs-logo-strip` row of real logo images; emphasis
+    #                   treatment is the active STYLE's qualitative `logoStrip` flag);
+    #   text-captions — no disk-backed file for the entry (uppercase caption of the
+    #                   mark's own alt/label metadata — the declared fallback device).
+    # A filename appearing in a composition is NOT evidence; the file is. Broken or
+    # invented image references are never emitted; alt text derives from asset metadata,
+    # never a brand-named literal.
 
   feature-item:
     intent: "A single grid cell: icon/media + title + supporting text + optional link."

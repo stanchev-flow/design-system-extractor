@@ -1,0 +1,80 @@
+  offGridExpansion=False (from style)
+  [attempt 0] 109.76s  in=20490 out=8592
+    render failed: KeyError: 'surface/inverse-strong'
+  [attempt 1] 26.88s  in=20591 out=2497
+    offGrid prefilter (flag off): [('cta', "off-grid treatment(s) ['panel-on-media'] locked (offGridExpansion=false) — remove them / keep the section aligned to the captured pattern")]
+  [attempt 2] 104.29s  in=20652 out=8069
+    render failed: KeyError: 'surface/inverse-strong'
+{
+  "ok": false,
+  "attempts": 3,
+  "wall_s": 244.4,
+  "style": "corporate-saas-clean",
+  "offGridExpansion": false,
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "split",
+      "novelty": "reuse",
+      "surfaceIntent": "inverse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      }
+    },
+    {
+      "id": "logos",
+      "useCase": "logos",
+      "archetype": "stack",
+      "novelty": "adapt",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      }
+    },
+    {
+      "id": "features",
+      "useCase": "features",
+      "archetype": "cards",
+      "novelty": "adapt",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      }
+    },
+    {
+      "id": "testimonial",
+      "useCase": "testimonial",
+      "archetype": "stack",
+      "novelty": "adapt",
+      "surfaceIntent": "panel",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-elevated-card"
+      }
+    },
+    {
+      "id": "cta",
+      "useCase": "cta",
+      "archetype": "stack",
+      "novelty": "reuse",
+      "surfaceIntent": "panel",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-elevated-card"
+      }
+    }
+  ],
+  "failures": [
+    [
+      "render",
+      "KeyError: 'surface/inverse-strong'"
+    ]
+  ],
+  "schema_errors": [],
+  "neverdo_hits": [],
+  "scorecard_overall": null
+}

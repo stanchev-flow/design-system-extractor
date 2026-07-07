@@ -1,0 +1,108 @@
+  offGridExpansion=False (from style)
+  [attempt 0] 80.91s  in=21524 out=6660
+    gate: FAIL ['never-typographic-primary', 'Brand assets present (not placeholder)', 'All brand image assets present', 'Rounding matches brand radius scale', 'token-provenance']
+  [attempt 1] 134.96s  in=22454 out=10230
+    gate: FAIL ['never-typographic-primary', 'Brand assets present (not placeholder)', 'All brand image assets present', 'Rounding matches brand radius scale', 'token-provenance']
+  [attempt 2] 112.48s  in=22454 out=9598
+    gate: FAIL ['never-typographic-primary', 'Brand assets present (not placeholder)', 'All brand image assets present', 'Rounding matches brand radius scale', 'token-provenance']
+{
+  "ok": false,
+  "attempts": 3,
+  "wall_s": 334.2,
+  "style": "corporate-saas-clean",
+  "out_dir": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot/brand/compose/signup-launch-tokenized",
+  "offGridExpansion": false,
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "stack-fullbleed",
+      "novelty": "adapt",
+      "surfaceIntent": "inverse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      }
+    },
+    {
+      "id": "logos",
+      "useCase": "logos",
+      "archetype": "stack",
+      "novelty": "adapt",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-elevated-card"
+      }
+    },
+    {
+      "id": "features",
+      "useCase": "features",
+      "archetype": "cards",
+      "novelty": "adapt",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-elevated-card"
+      }
+    },
+    {
+      "id": "testimonial",
+      "useCase": "testimonial",
+      "archetype": "stack",
+      "novelty": "adapt",
+      "surfaceIntent": "panel",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-elevated-card"
+      }
+    },
+    {
+      "id": "cta",
+      "useCase": "cta",
+      "archetype": "stack",
+      "novelty": "reuse",
+      "surfaceIntent": "panel",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-elevated-card"
+      }
+    },
+    {
+      "id": "footer",
+      "useCase": "footer",
+      "archetype": "stack",
+      "novelty": "adapt",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-elevated-card"
+      }
+    }
+  ],
+  "failures": [
+    [
+      "never-typographic-primary",
+      "filled primary CTA button present=False; outline secondary=False"
+    ],
+    [
+      "Brand assets present (not placeholder)",
+      "4 local asset(s), missing=['assets/{&#x27;src&#x27;: &#x27;assets/ProductIcons_SalesHub_Icon_Orange.webp&#x27;}', 'assets/{&#x27;src&#x27;: &#x27;assets/ProductIcons_DataHub_Icon_Orange.webp&#x27;}', 'assets/{&#x27;src&#x27;: &#x27;assets/ProductIcons_SmartCRM_Icon_Orange.webp&#x27;}']"
+    ],
+    [
+      "All brand image assets present",
+      "local images=4; missing=['assets/{&#x27;src&#x27;: &#x27;assets/ProductIcons_SalesHub_Icon_Orange.webp&#x27;}', 'assets/{&#x27;src&#x27;: &#x27;assets/ProductIcons_DataHub_Icon_Orange.webp&#x27;}', 'assets/{&#x27;src&#x27;: &#x27;assets/ProductIcons_SmartCRM_Icon_Orange.webp&#x27;}']"
+    ],
+    [
+      "Rounding matches brand radius scale",
+      "radius vars=['1rem', '1rem', '1rem', '0.5rem', '0.25rem', '1rem', '0.5rem', '999999px', '0.5rem', '0.5rem', '0.5rem', '1rem', 'var(--button-radius)', '1rem']; brand scale=['0.25rem', '0.5rem', '1rem', '999999px']; off-scale=['var(--button-radius)']"
+    ],
+    [
+      "token-provenance",
+      ".c-foot-sitemap-link{font-size}: raw `3rem` \u2014 no HubSpot token resolves to this value; nearest token: --size-h2 [foreign-brand value: matches WoodWave Gallery --size-display-hero@mobile]; .cs-ov-panel .c-heading--display{font-size}: raw `5rem` \u2014 no HubSpot token resolves to this value; nearest token: --size-display-hero [foreign-brand value: matches WoodWave Gallery --chrome-foot-link-size]; .cs-ov-behind .c-heading--display{font-size}: raw `5rem` \u2014 no HubSpot token resolves to this value; nearest token: --size-display-hero [foreign-brand value: matches WoodWave Gallery --chrome-foot-link-size]; allowlisted: 11"
+    ]
+  ],
+  "schema_errors": [],
+  "neverdo_hits": [],
+  "scorecard_overall": null
+}

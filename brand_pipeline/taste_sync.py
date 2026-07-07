@@ -183,6 +183,12 @@ def export_if_changed(brand_yaml: Path) -> bool:
     brand_dir = brand_yaml.parent
     kit = brand_dir / "kit"
     canon = [brand_dir / f for f in ("brand.yaml", "layout-library.yaml", "magic-trick.md")]
+    # The kit also SHIPS the portable gates + the anti-slop spec (agent/quality/) — an
+    # upgraded auditor is a canon change too, or every field copy keeps certifying with
+    # the old, weaker gate.
+    pipeline = Path(__file__).parent
+    canon += [pipeline / f for f in
+              ("contrast_audit.mjs", "slop_audit.mjs", "spec/anti-ai-slop.md")]
     kit_stamp = (kit / "readme.md")
     if kit_stamp.exists():
         newest = max(f.stat().st_mtime for f in canon if f.exists())

@@ -1,0 +1,71 @@
+  offGridExpansion=False (from style)
+  [attempt 0] 115.88s  in=21371 out=9590
+    gate: PASS
+{
+  "ok": true,
+  "attempts": 1,
+  "wall_s": 125.2,
+  "style": "corporate-saas-clean",
+  "offGridExpansion": false,
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "stack-fullbleed",
+      "novelty": "adapt",
+      "surfaceIntent": "inverse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      }
+    },
+    {
+      "id": "logos",
+      "useCase": "logos",
+      "archetype": "stack",
+      "novelty": "adapt",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-elevated-card"
+      }
+    },
+    {
+      "id": "features",
+      "useCase": "features",
+      "archetype": "cards",
+      "novelty": "adapt",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-elevated-card"
+      }
+    },
+    {
+      "id": "testimonial",
+      "useCase": "testimonial",
+      "archetype": "stack",
+      "novelty": "adapt",
+      "surfaceIntent": "panel",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-elevated-card"
+      }
+    },
+    {
+      "id": "cta",
+      "useCase": "cta",
+      "archetype": "stack",
+      "novelty": "reuse",
+      "surfaceIntent": "panel",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-elevated-card"
+      }
+    }
+  ],
+  "failures": [],
+  "schema_errors": [],
+  "neverdo_hits": [],
+  "scorecard_overall": true
+}

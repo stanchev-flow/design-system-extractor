@@ -1067,7 +1067,7 @@ def render_chrome_index_html(
   }}
   .social-sep {{ color: var(--footer-link); opacity: 0.5; }}
 
-  /* ---- CENTERED flat footer (no column headings; e.g. WoodWave) ---- */
+  /* ---- CENTERED flat footer (no column headings — flat-sitemap brands) ---- */
   footer.footer-centered .inner {{
     display: flex;
     flex-direction: column;

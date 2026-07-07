@@ -130,27 +130,30 @@ def _asset_src(slot: dict | None) -> str | None:
 
 
 def _valid_asset_names(brand_dir: Path) -> set[str]:
-    """Basenames of the real brand image assets: brand_dir + brand_dir/assets on disk,
-    PLUS compose_section.ASSET_SOURCES — the canonical set copy_assets() copies into
-    EVERY rendered page (they live deeper under the run, e.g. render/*/assets/, so a
-    dir-only scan wrongly dropped declared srcs like hero-staircase.jpg that are in fact
-    always present in the page's assets/)."""
-    exts = (".jpg", ".jpeg", ".png", ".svg", ".webp", ".gif")
-    names: set[str] = set(cs.ASSET_SOURCES)
-    for d in (brand_dir, brand_dir / "assets"):
-        if d.is_dir():
-            names |= {p.name for p in d.iterdir() if p.suffix.lower() in exts}
-    return names
+    """Basenames of the real brand image assets — DISK EVIDENCE from the ACTIVE brand's
+    own tree only (AS-34): ``compose_section.brand_image_inventory`` scans brand_dir
+    recursively (assets/ subdirectories included — blocker-6 — plus the deeper
+    render/*/assets copies that the old ``ASSET_SOURCES`` module-constant seed papered
+    over). The constant seed is GONE: it declared one brand's filenames valid for every
+    brand, so a foreign composition's ``hero-staircase.jpg`` survived sanitization and
+    shipped as a broken reference."""
+    return set(cs.brand_image_inventory(brand_dir))
 
 
 def _sanitize_assets(comp: dict, brand_dir: Path) -> dict:
     """Normalize asset srcs so the rendered page passes the gate's asset-fidelity checks:
-      - a VALID local basename (a real file under brand_dir[/assets]) is rewritten to the
-        ``assets/<name>`` path the composer copies it to (a bare ``hero-staircase.jpg`` would
+      - a VALID local basename (a real file under the ACTIVE brand's tree) is rewritten to
+        the ``assets/<name>`` path the composer copies it to (a bare ``logo-box.svg`` would
         otherwise resolve to the page root and read as "missing");
-      - a hallucinated src (no matching file) is DROPPED so the renderer falls back to its
-        brand photography defaults (compose_section.ASSET_SOURCES);
-      - http(s)/data srcs are left untouched.
+      - a hallucinated src (no matching file) is DROPPED so the renderer falls back to the
+        ACTIVE brand's own default art (or omits the device) — never a foreign brand's;
+      - http(s)/data srcs are left untouched;
+      - a BARE-STRING item in a repeatable slot's copy list (AS-34, blocker-1: the
+        live-generation shape ``copy: ["Anthropic", "logo-box.svg", …]``) is COERCED, not
+        filtered: a string naming a real brand file becomes ``{"asset": {"src": …}}``
+        (evidence routing then draws the real image); any other string becomes
+        ``{"text": …}`` (the caption device). ``_repeatable_copy``'s dict filter then
+        keeps every item instead of silently dropping the wall.
     Operates on a deep copy; the original composition (persisted for provenance) is unchanged."""
     valid = _valid_asset_names(brand_dir)
 
@@ -175,6 +178,13 @@ def _sanitize_assets(comp: dict, brand_dir: Path) -> dict:
             n = _norm(a)
             obj["asset"] = {"src": n} if n else None
 
+    def _coerce_item(item):
+        """A bare-string copy-list item → a dict the downstream mapping keeps."""
+        if not isinstance(item, str) or not item.strip():
+            return item
+        n = _norm(item.strip())
+        return {"asset": {"src": n}} if n else {"text": item.strip()}
+
     out = _copy.deepcopy(comp)
     for sec in (out.get("sections") or []):
         if not isinstance(sec, dict):
@@ -185,7 +195,8 @@ def _sanitize_assets(comp: dict, brand_dir: Path) -> dict:
             _clean_asset(slot)
             c = slot.get("copy")
             if isinstance(c, list):
-                for item in c:
+                slot["copy"] = [_coerce_item(item) for item in c]
+                for item in slot["copy"]:
                     if isinstance(item, dict):
                         _clean_asset(item)
     return out
@@ -216,6 +227,46 @@ def _slot_placement(slot: dict) -> dict:
 def _is_media_slot(slot: dict) -> bool:
     return (slot.get("contract") or "").lower() in ("image", "video") or any(
         k in (slot.get("role") or "").lower() for k in ("photo", "media", "image"))
+
+
+# treatment kinds that declare the INSET ART-PANEL surface (schema-gap 9, AS-37):
+# a rounded panel painted with a brand art asset, hosting the section's content/media.
+_ART_PANEL_KINDS = {"panel-on-media", "inset-panel", "art-panel", "inset-rounded-panel-art"}
+
+
+def _is_art_panel_bg_slot(slot: dict) -> bool:
+    """A slot that IS the panel's paint (not content media): named/roled 'background'
+    or 'panel', drawn at z:back or full-bleed width."""
+    label = f"{slot.get('name') or ''} {slot.get('role') or ''}".lower()
+    if not ("background" in label or "panel" in label):
+        return False
+    return (str(slot.get("z") or "").lower() == "back"
+            or str(slot.get("width") or "").lower() == "full-bleed")
+
+
+def _art_panel_payload(section: dict) -> dict | None:
+    """Detect a section that declares the INSET ART-PANEL device (AS-37): either a
+    sanctioned panel treatment (`panel-on-media` / `inset-panel` / `art-panel`) or a
+    z:back/full-bleed background/panel slot. Returns {"asset": <declared src|None>} —
+    the composer resolves a missing asset from the ACTIVE brand's own measured
+    heroTreatment/inventory (never another brand's file), or paints the plain panel
+    surface. None = no panel declared (every existing composition, byte-unchanged)."""
+    def _is_panel_treatment(t) -> bool:
+        # kind alone is not enough: `panel-on-media` targeting a TEXT slot is the
+        # overlay grammar's text-chip (G1), not the art panel. The art panel is the
+        # treatment whose target IS the section's background/panel surface.
+        if not isinstance(t, dict) or t.get("sanctioned", True) is False:
+            return False
+        if (t.get("kind") or "").lower() not in _ART_PANEL_KINDS:
+            return False
+        target = str(t.get("target") or "").lower()
+        return target in ("background", "panel", "section", "")
+
+    treat = any(_is_panel_treatment(t) for t in (section.get("treatments") or []))
+    bg = next((s for s in _slots(section) if _is_art_panel_bg_slot(s)), None)
+    if not treat and bg is None:
+        return None
+    return {"asset": _asset_src(bg) if bg else None}
 
 
 def _media_layers(section: dict) -> list[dict] | None:
@@ -283,6 +334,39 @@ def _media_layers(section: dict) -> list[dict] | None:
 
 
 # ── usage folding: one composition slot → one blockMapping entry ────────────────────
+
+def _logo_item_mapping(item: dict | str) -> dict | None:
+    """Route ONE logo-wall entry (a list-copy item OR a whole logo slot) on DISK
+    EVIDENCE (AS-33): an asset src that survived ``_sanitize_assets`` (rewritten to
+    ``assets/<name>`` because the file exists in the brand dir) renders as a REAL
+    logo image in the logo-strip device; an entry whose file does not exist on disk
+    (src dropped by the sanitizer, or never declared) falls back to the uppercase
+    text-caption device — a filename in a composition is NOT evidence, the file is.
+    Alt text derives from the entry's own metadata (alt/label) or the asset filename,
+    never a brand-named literal (AS-29). Returns None for an entry with neither a
+    usable image nor any text (nothing is invented for it).
+
+    A BARE STRING entry (AS-34, blocker-1) is accepted defensively as a text caption —
+    the sanitizer normally coerces strings first (with disk-evidence routing for
+    filename strings), but a direct caller must never crash or silently drop one."""
+    if isinstance(item, str):
+        item = {"text": item}
+    if not isinstance(item, dict):
+        return None
+    a = item.get("asset")
+    src = a.get("src") if isinstance(a, dict) else (a if isinstance(a, str) else None)
+    label = (item.get("alt")
+             or (a.get("alt") if isinstance(a, dict) else None)
+             or item.get("text") or item.get("label") or "").strip()
+    if isinstance(src, str) and src.startswith("assets/"):
+        alt = label or Path(src).stem.replace("-", " ").replace("_", " ").strip()
+        return {"slot": "logo-strip", "role": "logo item", "contract": "logo",
+                "usage": {"src": src, "alt": alt, "variant": "strip"}}
+    if label:
+        return {"slot": "flow", "role": "logo item", "contract": "caption",
+                "usage": {"text": label, "case": "upper"}}
+    return None
+
 
 def _slot_to_mapping(slot: dict) -> dict:
     """Map one composition slot → a blockMapping entry {slot, role, contract, usage},
@@ -394,37 +478,88 @@ def _hero_section_copy(section: dict) -> dict:
     return out
 
 
-def _hero_mapping(section: dict) -> list[dict]:
+def _hero_mapping(section: dict, art_panel: bool = False) -> list[dict]:
     """blockMapping for the hero stack: wordmark logo + display-title heading + the media
-    slots. LEGACY shape (no placement vocabulary anywhere): exactly the hero/overlap pair
-    compose_stack_hero's _pick expects — byte-identical to before. PLACED shape (any media
-    slot carries §4.6.5 placement / >2 media): one entry PER media slot, each folding its
-    placement into usage; the composer draws them from layout['_mediaLayers']."""
+    slots + the section's REAL action slots. LEGACY shape (no placement vocabulary
+    anywhere): the hero/overlap pair compose_stack_hero's _pick expects. PLACED shape
+    (any media slot carries §4.6.5 placement / >2 media): one entry PER media slot, each
+    folding its placement into usage; the composer draws them from layout['_mediaLayers'].
+
+    SLOT-FAITHFUL MEDIA (AS-34, blocker-2): a hero/overlap image entry is emitted only
+    for a media slot the composition actually BINDS. The old shape emitted BOTH entries
+    unconditionally, so a one-media (or zero-media) hero inherited the other entry's
+    renderer default — WoodWave placeholder art on another brand's page. A hero with no
+    media slots at all keeps the legacy pair (both srcless): that is the deliberate
+    "trust the brand's default art" shape every existing WoodWave composition renders,
+    and the renderer default now resolves from the ACTIVE brand's own inventory.
+
+    SLOT-FAITHFUL ACTIONS (AS-27 hero extension, blocker-3): real `button` contract
+    slots map through — compose_stack_hero renders them via render_button's law-first
+    cta-shape dispatch (a `never-typographic-primary` brand gets its filled pill; a
+    typographic brand's dispatch downgrades to the arrow link, unchanged). Emitted only
+    when button slots exist, so legacy compositions stay byte-identical."""
     slots = _slots(section)
     title = _by_role(slots, "title", "display") or _by_contract(slots, "header", "heading")
     heading = _slot_text(title, "heading", "text") or "Everything in one place"
     media = [s for s in slots if _is_media_slot(s)]
+    if art_panel:
+        # the panel's z:back/full-bleed paint slot is the PANEL SURFACE, not content
+        # media — exclude it so it can't map as an <img> (the composer paints it as
+        # the panel background fill instead).
+        media = [s for s in media if not _is_art_panel_bg_slot(s)]
     mapping = [
         {"slot": "main", "role": "wordmark (nav)", "contract": "logo", "usage": {"variant": "inverse"}},
         {"slot": "main", "role": "display title", "contract": "heading",
          "usage": {"heading": heading, "level": "display"}},
     ]
-    if _media_layers(section) is not None:
+    actions = []
+    for i, b in enumerate(_button_slots(section)):
+        label = _slot_text(b, "label", "cta", "text") or "Get started"
+        actions.append({
+            "slot": "main",
+            "role": b.get("role") or b.get("name") or ("cta-primary" if i == 0 else "cta-secondary"),
+            "contract": "button",
+            "usage": {"label": label, "accent": False},
+        })
+    if not art_panel and _media_layers(section) is not None:
         for s in media:
             entry = _slot_to_mapping(s)
             entry["slot"] = "main"
             entry["role"] = f"placed media ({s.get('name') or s.get('role') or 'media'})"
             mapping.append(entry)
-        return mapping
+        return mapping + actions
+    if art_panel:
+        # slot-faithful ONLY: the panel hero maps each bound content-media slot 1:1
+        # and never invents the legacy hero/overlap pair.
+        for s in media:
+            entry = _slot_to_mapping(s)
+            entry["slot"] = "main"
+            entry["role"] = f"panel media ({s.get('name') or s.get('role') or 'media'})"
+            mapping.append(entry)
+        return mapping + actions
     hero_src = _asset_src(media[0]) if len(media) >= 1 else None
     over_src = _asset_src(media[1]) if len(media) >= 2 else None
-    mapping.append({"slot": "main", "role": "hero photography", "contract": "image",
-                    "usage": {"ratio": "landscape", "radius": "0",
-                              **({"src": hero_src} if hero_src else {})}})
-    mapping.append({"slot": "main", "role": "overlap photography", "contract": "image",
-                    "usage": {"ratio": "portrait", "radius": "0",
-                              **({"src": over_src} if over_src else {})}})
-    return mapping
+    if len(media) >= 1 or not media:
+        # legacy zero-media shape keeps BOTH srcless entries (brand default art);
+        # a bound hero slot maps 1:1.
+        mapping.append({"slot": "main", "role": "hero photography", "contract": "image",
+                        "usage": {"ratio": "landscape", "radius": "0",
+                                  **({"src": hero_src} if hero_src else {})}})
+    if len(media) >= 2 or not media:
+        mapping.append({"slot": "main", "role": "overlap photography", "contract": "image",
+                        "usage": {"ratio": "portrait", "radius": "0",
+                                  **({"src": over_src} if over_src else {})}})
+    return mapping + actions
+
+
+def _button_slots(section: dict) -> list[dict]:
+    """The section's real `button` contract slots (B5: these used to be dropped)."""
+    return [s for s in _slots(section) if (s.get("contract") or "").lower() == "button"]
+
+
+def _has_form_slot(section: dict) -> bool:
+    return any((s.get("contract") or "").lower() in ("form", "input", "form-field")
+               for s in _slots(section))
 
 
 def _cta_copy(section: dict) -> dict:
@@ -432,26 +567,44 @@ def _cta_copy(section: dict) -> dict:
     header = _by_role(slots, "heading", "title") or _by_contract(slots, "header", "heading")
     form = _by_contract(slots, "form", "input") or _by_role(slots, "signup", "form", "field")
     formcopy = (form or {}).get("copy") if isinstance((form or {}).get("copy"), dict) else {}
+    # body: a body-role slot first, then the header block's own body/text key (a v1
+    # header copy dict carries the lede under `text` — dropping it left the CTA bare).
+    body = _slot_text(_by_role(slots, "body", "sub", "lede"), "text", "body") \
+        or _text((header or {}).get("copy"), "body", "text") or ""
     return {
         "eyebrow": _slot_text(_by_role(slots, "eyebrow"), "eyebrow", "text")
         or _text((header or {}).get("copy"), "eyebrow") or "Introducing",
         "heading": _slot_text(header, "heading", "text") or "Start today",
-        "body": _slot_text(_by_role(slots, "body", "sub", "lede"), "text", "body")
-        or _text((header or {}).get("copy"), "body") or "",
+        "body": body,
         "placeholder": (formcopy or {}).get("placeholder", "you@company.com"),
         "cta": (formcopy or {}).get("submit")
         or _slot_text(_by_role(slots, "action", "cta"), "label", "cta") or "Start free",
     }
 
 
-def _cta_mapping() -> list[dict]:
-    # a `form` contract routes compose_stack → compose_conversion_stack.
-    return [
+def _cta_mapping(section: dict) -> list[dict]:
+    """blockMapping for the conversion stack. SLOT-FAITHFUL (B5, fix-batch 2026-07):
+    real `button` contract slots are PRESERVED (they render through render_button's
+    cta-shape dispatch — the filled CTA a corporate brand's gate demands); the signup
+    form entry is emitted only when the section binds a form slot OR binds no explicit
+    action at all (the legacy shape every existing WoodWave conversion renders)."""
+    mapping = [
         {"slot": "main", "role": "heading", "contract": "header",
          "usage": {"level": "h2"}},
-        {"slot": "main", "role": "newsletter form (underline only)", "contract": "form",
-         "usage": {"variant": "underline"}},
     ]
+    buttons = _button_slots(section)
+    for i, b in enumerate(buttons):
+        label = _slot_text(b, "label", "cta", "text") or "Get started"
+        mapping.append({
+            "slot": "main",
+            "role": b.get("role") or b.get("name") or ("cta-primary" if i == 0 else "cta-secondary"),
+            "contract": "button",
+            "usage": {"label": label, "accent": False},
+        })
+    if _has_form_slot(section) or not buttons:
+        mapping.append({"slot": "main", "role": "newsletter form (underline only)",
+                        "contract": "form", "usage": {"variant": "underline"}})
+    return mapping
 
 
 def _cards_copy(section: dict) -> dict:
@@ -466,11 +619,20 @@ def _cards_copy(section: dict) -> dict:
         modules = [m for m in modules if m]
     cards = []
     for m in modules:
+        # asset: the sanitizer normalizes a bare module asset name into {src, alt} —
+        # unwrap to STRINGS here so the composer never string-interpolates a dict into
+        # the src path (the `assets/{'src': …}` malformation, fix-batch 2026-07).
+        asset = m.get("asset")
+        alt = m.get("alt")
+        if isinstance(asset, dict):
+            alt = alt or asset.get("alt")
+            asset = asset.get("src")
         cards.append({
             "caption": m.get("heading") or m.get("caption") or m.get("title") or "",
             "body": m.get("text") or m.get("body") or "",
             "link": m.get("link") or m.get("cta"),
-            "asset": m.get("asset"),
+            "asset": asset,
+            "alt": alt,
             "aspect": m.get("aspect"),
         })
     return {
@@ -637,6 +799,15 @@ def _gallery_copy(section: dict) -> dict:
                                "label", "cta", "text"))):
         if val:
             out[key] = val
+    # real `button` action slots (B5): surfaced as an ordered actions list so the
+    # composer renders THEM (primary via render_button's cta-shape dispatch) instead of
+    # downgrading every action to the single copy-driven arrow link. Emitted only when
+    # button slots exist, so legacy sections (no `actions` key) stay byte-identical.
+    buttons = _button_slots(section)
+    if buttons:
+        out["actions"] = [
+            {"label": _slot_text(b, "label", "cta", "text") or "Get started"}
+            for b in buttons]
     return out
 
 
@@ -833,7 +1004,13 @@ def composition_to_layout(section: dict) -> dict:
     if placement:
         layout["_placement"] = placement
     # media layers for the layered hero composer (None = legacy measured geometry).
-    layers = _media_layers(section) if archetype == "stack" else None
+    # INSET ART-PANEL hero detection (AS-37, schema-gap 9) — BEFORE the placed-media
+    # classification: the panel's z:back/full-bleed background slot is the panel's
+    # PAINT, not a text-on-media background layer, so a panel hero must not also
+    # trigger the layered/scrim path off that same slot.
+    use_case = (section.get("useCase") or "").lower()
+    art_panel = _art_panel_payload(section) if use_case == "hero" else None
+    layers = _media_layers(section) if (archetype == "stack" and art_panel is None) else None
     if layers is not None:
         layout["_mediaLayers"] = layers
     # interlock media side: a float-wrap/inset treatment side (or knobs.mediaSide) is a
@@ -850,38 +1027,124 @@ def composition_to_layout(section: dict) -> dict:
     layout["_composition"] = {"useCase": section.get("useCase"), "novelty": novelty,
                               "archetype": archetype}
 
-    # blockMapping + composer copy. Disambiguate the `stack` archetype by useCase (it serves
-    # both the hero bookend and the closing conversion CTA): a hero stack → the hero composer;
-    # ANY other stack (cta/footer/…, with or without an explicit form) → the conversion stack.
-    use_case = (section.get("useCase") or "").lower()
-    is_hero = archetype == "stack" and use_case == "hero"
-    is_conversion = archetype == "stack" and not is_hero
+    # blockMapping + composer copy. Disambiguate the `stack` archetype by EVIDENCE
+    # (fix-batch 2026-07, N2: the old rule forced EVERY non-hero stack into the
+    # conversion composer, collapsing logos/testimonial/footer stacks into
+    # near-identical invented signup forms):
+    #   - useCase `hero` → the hero composer (unchanged);
+    #   - a CONVERSION stack is one that declares a conversion useCase (cta/…) OR binds
+    #     a form/input slot OR binds real button actions → the conversion composer;
+    #   - any OTHER stack (logos / testimonial / footer / features-divider …) routes to
+    #     the generic-flow composer with a slot-faithful mapping, so each source role
+    #     keeps its own shape instead of inheriting the signup-form scaffold.
+    # a hero is a STACK hero, or (AS-37) a SPLIT hero that declares the inset art-panel
+    # device — the panel grid subsumes the split's two-column intent, so it routes to
+    # the hero composer's panel variant instead of the info-band split.
+    is_hero = use_case == "hero" and (
+        archetype == "stack" or (archetype == "split" and art_panel is not None))
+    _conversion_cases = {"cta", "conversion", "newsletter", "signup", "subscribe", "contact"}
+    is_conversion = (archetype == "stack" and not is_hero
+                     and (use_case in _conversion_cases
+                          or _has_form_slot(section) or bool(_button_slots(section))))
+    if archetype == "stack" and not is_hero and not is_conversion:
+        renderer_archetype = _GENERIC_FLOW
+        layout["archetype"] = _GENERIC_FLOW
 
     if renderer_archetype == _GENERIC_FLOW:
         # expand repeatable list-copy slots (e.g. value_props) into caption+paragraph entries
-        # so the generic-flow safety net never silently drops module copy.
+        # so the generic-flow safety net never silently drops module copy. Contract-aware
+        # (fix-batch 2026-07): logo walls / utility link lists / testimonials / labels
+        # normalize to REGISTERED shared renderers, never an unresolved-slot marker.
+        # A section that binds ANY logo-contract slot is a logo-wall-role section: flag it
+        # so the generic-flow composer stamps the resolved device (image strip / text
+        # captions / empty) for the gate's logo-wall-integrity check (AS-33).
+        if any((s.get("contract") or "").lower().startswith("logo")
+               for s in _slots(section)):
+            layout["_logoWall"] = True
         mapping = []
         for s in _slots(section):
-            if isinstance(s.get("copy"), list):
-                for i, m in enumerate(_repeatable_copy(s)):
-                    cap = m.get("heading") or m.get("caption") or m.get("title") or ""
-                    body = m.get("text") or m.get("body") or ""
-                    if cap:
-                        mapping.append({"slot": "flow", "role": f"module caption {i + 1}",
-                                        "contract": "caption", "usage": {"text": cap, "case": "upper"}})
-                    if body:
-                        mapping.append({"slot": "flow", "role": f"module body {i + 1}",
-                                        "contract": "paragraph", "usage": {"text": body}})
+            c_low = (s.get("contract") or "").lower()
+            copyval = s.get("copy")
+            if isinstance(copyval, list):
+                items = _repeatable_copy(s)
+                if c_low.startswith("logo"):
+                    # logo wall (AS-33): per-item EVIDENCE routing — an entry whose
+                    # asset file exists on disk (src survived _sanitize_assets) renders
+                    # as a real logo image in the logo-strip device; an entry without a
+                    # disk-backed file falls back to the uppercase text caption. Never
+                    # a broken/invented image reference. Iterates the RAW list (AS-34,
+                    # blocker-1): bare-string items route through the same mapping (the
+                    # sanitizer coerces them with disk evidence first; an unsanitized
+                    # string still lands as a caption) instead of being dict-filtered
+                    # into an empty wall.
+                    for it in (copyval if isinstance(copyval, list) else items):
+                        entry = _logo_item_mapping(it)
+                        if entry:
+                            mapping.append(entry)
+                elif c_low in ("link", "cta"):
+                    for it in items:
+                        label = (it.get("label") or it.get("text") or "").strip()
+                        if label:
+                            mapping.append({"slot": "flow", "role": "utility link",
+                                            "contract": "link",
+                                            "usage": {"label": label,
+                                                      "href": it.get("href", "#"),
+                                                      "accent": False}})
+                else:
+                    for i, m in enumerate(items):
+                        cap = m.get("heading") or m.get("caption") or m.get("title") or ""
+                        body = m.get("text") or m.get("body") or ""
+                        if cap:
+                            mapping.append({"slot": "flow", "role": f"module caption {i + 1}",
+                                            "contract": "caption", "usage": {"text": cap, "case": "upper"}})
+                        if body:
+                            mapping.append({"slot": "flow", "role": f"module body {i + 1}",
+                                            "contract": "paragraph", "usage": {"text": body}})
+            elif c_low in ("testimonial", "quote"):
+                quote = _text(copyval, "quote", "text") \
+                    or (copyval if isinstance(copyval, str) else "")
+                if quote:
+                    mapping.append({"slot": "flow", "role": "testimonial quote",
+                                    "contract": "paragraph",
+                                    "usage": {"text": quote, "measure": "44ch"}})
+                if isinstance(copyval, dict):
+                    attrib = " — ".join(x for x in (copyval.get("name"), copyval.get("role"))
+                                        if isinstance(x, str) and x.strip())
+                    if attrib:
+                        mapping.append({"slot": "flow", "role": "attribution",
+                                        "contract": "caption",
+                                        "usage": {"text": attrib, "case": "upper"}})
+            elif c_low == "logo":
+                # SINGLE logo slot (the live-generation shape: one slot per mark, each
+                # carrying its own asset payload). Same AS-33 evidence routing as the
+                # list-copy wall above; an asset-less, text-less logo slot maps to
+                # nothing rather than inheriting the brand-wordmark device (which is
+                # a NAV device — five wordmark repeats on a logo wall was the leak).
+                entry = _logo_item_mapping(s)
+                if entry:
+                    mapping.append(entry)
+            elif c_low == "label":
+                mapping.append({"slot": "flow", "role": s.get("role") or "label",
+                                "contract": "caption",
+                                "usage": {"text": _slot_text(s, "text", "label") or ""}})
+            elif c_low == "subheading":
+                e = _slot_to_mapping(s)
+                e["contract"] = "paragraph"
+                mapping.append(e)
             else:
                 mapping.append(_slot_to_mapping(s))
         layout["blockMapping"] = mapping
         layout["_composerCopy"] = {}
-    elif is_hero:  # hero stack
-        layout["blockMapping"] = _hero_mapping(section)
+    elif is_hero:  # hero stack (incl. the AS-37 inset art-panel split hero)
+        if art_panel is not None:
+            layout["_artPanel"] = art_panel
+            # panel heroes render via the stack-hero composer + hero scaffold.
+            layout["archetype"] = "stack"
+        layout["blockMapping"] = _hero_mapping(section, art_panel=art_panel is not None)
         layout["_composerCopy"] = {}
         layout["_sectionCopy"] = _hero_section_copy(section)
     elif is_conversion:  # conversion stack
-        layout["blockMapping"] = _cta_mapping()
+        layout["blockMapping"] = _cta_mapping(section)
         layout["_composerCopy"] = _cta_copy(section)
     elif archetype in ("overlay", "banded"):
         # the layered/banded composers consume the RAW slot+treatment payload directly
@@ -909,6 +1172,9 @@ def composition_to_doc(comp: dict, brand_yaml_path: Path | str) -> tuple[dict, l
     Returns ``(doc, order)``.
     """
     doc = yaml.safe_load(Path(brand_yaml_path).read_text()) or {}
+    # active-brand image inventory (AS-34) + authored section copy; in-memory only.
+    cs.attach_brand_copy(doc, Path(brand_yaml_path).parent)
+    cs.attach_asset_inventory(doc, Path(brand_yaml_path).parent)
     sections = [s for s in (comp.get("sections") or []) if isinstance(s, dict)]
     if not sections:
         raise ValueError("composition has no sections")
@@ -991,6 +1257,12 @@ def render_composition(comp: dict, brand_yaml_path: Path | str, outdir: Path | s
         cs.prepare_nav_logo(doc, brand_dir, outdir / "assets")
         html = cp.build_page(doc, brand_yaml_path, order, style_ctx)
         (outdir / "index.html").write_text(html)
+        # drift-detection + provenance-index sidecar (SPEC §B.1/§F): the index the
+        # token-provenance gate reads. Same generator call the embedded block used.
+        import tokens_css
+        tokens_css.write_manifest(
+            outdir, tokens_css.build_page_tokens(doc, style_ctx,
+                                                 brand_yaml_path=brand_yaml_path))
         copied = cs.copy_assets(brand_dir, outdir / "assets")
         copied += _copy_declared_assets(render_comp, brand_dir, outdir / "assets")
         copied += cs.copy_fonts(brand_dir, outdir / "assets", doc)
@@ -1041,16 +1313,20 @@ def _declared_asset_names(comp: dict) -> set[str]:
 
 
 def _copy_declared_assets(comp: dict, brand_dir: Path, out_assets: Path) -> list[str]:
-    """Copy composition-declared brand assets that ``copy_assets`` (canonical
-    ASSET_SOURCES only) does not cover — e.g. a composition referencing the real
-    ``About-img-3.jpg``. Without this the gate's asset-presence rows read the file as
-    missing (found + wrapper-patched by the showcase harness; upstreamed here)."""
+    """Copy composition-declared brand assets that ``copy_assets`` (the brand's
+    curated assets/ trees) does not cover — e.g. a composition referencing a real
+    file that lives only under a render/*/assets snapshot of the SAME brand. Without
+    this the gate's asset-presence rows read the file as missing (found +
+    wrapper-patched by the showcase harness; upstreamed here). The search never
+    leaves ``brand_dir`` — a declared name resolves from the ACTIVE brand's own
+    tree or not at all."""
     copied = []
     for name in sorted(_declared_asset_names(comp)):
         dest = out_assets / name
         if dest.exists():
             continue
-        src = cs.find_asset_source(brand_dir, name)
+        hits = sorted(brand_dir.glob(f"**/assets/{name}"))
+        src = hits[0] if hits else None
         if src is None:  # brand_dir root/assets (the set _valid_asset_names scanned)
             for d in (brand_dir, brand_dir / "assets"):
                 if (d / name).is_file():

@@ -395,6 +395,591 @@
       }
     },
     {
+      "id": "card-over-portrait-statement",
+      "useCase": "hero",
+      "archetype": "overlay",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "card-over-portrait-statement"
+      },
+      "slots": [
+        {
+          "name": "canvas",
+          "role": "full-bleed portrait canvas",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "full-bleed",
+          "z": "back",
+          "contract": "image",
+          "mediaAspect": "portrait",
+          "asset": null
+        },
+        {
+          "name": "card",
+          "role": "statement panel",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "fixed",
+          "z": "front",
+          "contract": "heading",
+          "copy": []
+        },
+        {
+          "name": "wordmark",
+          "role": "tracked wordmark",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "Est. 2019 \u2014 Portland, Oregon",
+            "heading": "WOODWAVE GALLERY"
+          }
+        },
+        {
+          "name": "statement",
+          "role": "condensed statement",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "Est. 2019 \u2014 Portland, Oregon",
+            "heading": "WOODWAVE GALLERY"
+          }
+        },
+        {
+          "name": "caption",
+          "role": "closing caption lines",
+          "textLen": "medium",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "Central nave"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "canvas",
+          "edge": "all"
+        },
+        {
+          "kind": "panel-on-media",
+          "target": "card",
+          "over": "canvas",
+          "registration": {
+            "toSlot": "canvas",
+            "edge": "top",
+            "depthBaselines": 0,
+            "z": "front"
+          },
+          "distribute": "space-between"
+        }
+      ],
+      "knobs": {
+        "cardSpan": 6,
+        "align": "center"
+      }
+    },
+    {
+      "id": "boundary-straddle-headline",
+      "useCase": "hero",
+      "archetype": "overlay",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "boundary-straddle-headline"
+      },
+      "slots": [
+        {
+          "name": "rail",
+          "role": "sidebar rail panel",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": []
+        },
+        {
+          "name": "rail-eyebrow",
+          "role": "tracked eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "eyebrow",
+          "copy": {
+            "text": "Est. 2019 \u2014 Portland, Oregon"
+          }
+        },
+        {
+          "name": "rail-body",
+          "role": "short support body",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade."
+          }
+        },
+        {
+          "name": "rail-meta",
+          "role": "bottom meta",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "Central nave"
+          }
+        },
+        {
+          "name": "photo",
+          "role": "full-bleed atmosphere photo",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "full-bleed",
+          "z": "back",
+          "contract": "image",
+          "mediaAspect": "landscape",
+          "asset": null
+        },
+        {
+          "name": "heading",
+          "role": "seam-straddling display title",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "Est. 2019 \u2014 Portland, Oregon",
+            "heading": "WOODWAVE GALLERY"
+          }
+        },
+        {
+          "name": "keywords",
+          "role": "scrim keyword columns",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "stretch",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade."
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "photo",
+          "edge": "right"
+        },
+        {
+          "kind": "text-on-media",
+          "target": "heading",
+          "over": "photo",
+          "sanctioned": true
+        },
+        {
+          "kind": "straddle",
+          "target": "heading",
+          "registration": {
+            "toSlot": "rail",
+            "edge": "right",
+            "depthCols": 0,
+            "z": "front"
+          },
+          "sanctioned": true
+        },
+        {
+          "kind": "scrim-band",
+          "target": "keywords",
+          "over": "photo",
+          "band": {
+            "rowStart": 0.55,
+            "rowSpan": 0.2
+          },
+          "fill": {
+            "opacityClass": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "railSide": "left",
+        "keywordCount": 3
+      }
+    },
+    {
+      "id": "framed-inset-monument",
+      "useCase": "hero",
+      "archetype": "overlay",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "framed-inset-monument"
+      },
+      "slots": [
+        {
+          "name": "frame",
+          "role": "framed hero photography",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "framed",
+          "z": "mid",
+          "contract": "image",
+          "mediaAspect": "landscape",
+          "asset": null
+        },
+        {
+          "name": "monument",
+          "role": "monumental display word",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "Est. 2019 \u2014 Portland, Oregon",
+            "heading": "WOODWAVE GALLERY"
+          }
+        },
+        {
+          "name": "annotation",
+          "role": "in-frame margin annotation",
+          "textLen": "medium",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade."
+          }
+        },
+        {
+          "name": "cue",
+          "role": "scroll cue",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade."
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "framed",
+          "target": "frame",
+          "widthRel": {
+            "to": "container",
+            "ratio": 0.86
+          }
+        },
+        {
+          "kind": "straddle",
+          "target": "monument",
+          "registration": {
+            "toSlot": "frame",
+            "edge": "bottom",
+            "depthBaselines": 0,
+            "z": "front"
+          },
+          "sanctioned": true
+        }
+      ],
+      "knobs": {
+        "straddleDepth": "flush",
+        "monumentSpan": 8,
+        "decoCount": 0
+      }
+    },
+    {
+      "id": "stepped-overlay-statement",
+      "useCase": "hero",
+      "archetype": "overlay",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "stepped-overlay-statement"
+      },
+      "slots": [
+        {
+          "name": "canvas",
+          "role": "full-bleed hero photography",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "full-bleed",
+          "z": "back",
+          "contract": "image",
+          "mediaAspect": "landscape",
+          "asset": null
+        },
+        {
+          "name": "statement",
+          "role": "stepped display statement",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "Est. 2019 \u2014 Portland, Oregon",
+            "heading": "WOODWAVE GALLERY"
+          }
+        },
+        {
+          "name": "support",
+          "role": "right-aligned support copy",
+          "textLen": "medium",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade."
+          }
+        },
+        {
+          "name": "action",
+          "role": "cta",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "Buy Tickets"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "canvas",
+          "edge": "all"
+        },
+        {
+          "kind": "text-on-media",
+          "target": "statement",
+          "over": "canvas",
+          "sanctioned": true
+        },
+        {
+          "kind": "stepped-lines",
+          "target": "statement",
+          "direction": "right",
+          "steps": [
+            0,
+            1,
+            6
+          ],
+          "amount": {
+            "class": "heavy"
+          }
+        }
+      ],
+      "knobs": {
+        "stepProgression": "accelerating",
+        "lineCount": 3,
+        "supportCorner": "bottom-right"
+      }
+    },
+    {
+      "id": "type-behind-media-masthead",
+      "useCase": "hero",
+      "archetype": "overlay",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "type-behind-media-masthead"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "centered tracked eyebrow lines",
+          "textLen": "medium",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "eyebrow",
+          "copy": {
+            "text": "Est. 2019 \u2014 Portland, Oregon"
+          }
+        },
+        {
+          "name": "media-main",
+          "role": "primary portrait photography",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "z": "mid",
+          "contract": "image",
+          "mediaAspect": "portrait",
+          "asset": null
+        },
+        {
+          "name": "media-detail",
+          "role": "overlapping detail photography",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "z": "front",
+          "contract": "image",
+          "mediaAspect": "portrait",
+          "asset": null
+        },
+        {
+          "name": "caption-left",
+          "role": "flanking margin caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "Central nave"
+          }
+        },
+        {
+          "name": "caption-right",
+          "role": "flanking margin caption (date)",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "Central nave"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "type-behind-media",
+          "target": "monument",
+          "over": "media-main",
+          "maxOcclusion": {
+            "class": "medium"
+          },
+          "endsVisible": true,
+          "sanctioned": true
+        },
+        {
+          "kind": "overlap",
+          "pair": [
+            "media-detail",
+            "media-main"
+          ],
+          "zOrder": [
+            "media-main",
+            "media-detail"
+          ],
+          "amount": {
+            "class": "medium"
+          }
+        },
+        {
+          "kind": "marginal-caption",
+          "target": "caption-left",
+          "side": "left"
+        },
+        {
+          "kind": "marginal-caption",
+          "target": "caption-right",
+          "side": "right"
+        }
+      ],
+      "knobs": {
+        "occlusion": "medium",
+        "detailCorner": "bottom-right"
+      }
+    },
+    {
+      "id": "tucked-headline-panorama",
+      "useCase": "hero",
+      "archetype": "overlay",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "tucked-headline-panorama"
+      },
+      "slots": [
+        {
+          "name": "support",
+          "role": "support paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade."
+          }
+        },
+        {
+          "name": "panorama",
+          "role": "panoramic portrait photography",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "framed",
+          "z": "mid",
+          "contract": "image",
+          "mediaAspect": "wide",
+          "asset": null
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "framed",
+          "target": "panorama",
+          "widthRel": {
+            "to": "container",
+            "ratio": 0.92
+          }
+        },
+        {
+          "kind": "straddle",
+          "target": "heading",
+          "registration": {
+            "toSlot": "panorama",
+            "edge": "top",
+            "depthBaselines": 4,
+            "z": "back"
+          },
+          "maxOcclusion": {
+            "class": "medium"
+          },
+          "endsVisible": true,
+          "sanctioned": true
+        }
+      ],
+      "knobs": {
+        "tuckDepth": "medium",
+        "headingSide": "left"
+      }
+    },
+    {
       "id": "hero-fullbleed-scrimmed-overlay",
       "useCase": "hero",
       "archetype": "stack-fullbleed",
@@ -638,6 +1223,85 @@
       ],
       "knobs": {
         "columns": "3"
+      }
+    },
+    {
+      "id": "seam-straddle-portrait",
+      "useCase": "about",
+      "archetype": "banded",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "seam-straddle-portrait"
+      },
+      "slots": [
+        {
+          "name": "photo-band",
+          "role": "full-bleed atmosphere photography",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "full-bleed",
+          "z": "back",
+          "contract": "image",
+          "mediaAspect": "landscape",
+          "asset": null
+        },
+        {
+          "name": "band-caption",
+          "role": "tracked caption on photo",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "image",
+          "asset": null
+        },
+        {
+          "name": "inset",
+          "role": "seam-straddling portrait",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "z": "mid",
+          "contract": "image",
+          "mediaAspect": "portrait",
+          "asset": null
+        },
+        {
+          "name": "body",
+          "role": "closing paragraph",
+          "textLen": "long",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "We collect work that listens to its room. From the late twentieth century to the present day, the holdings favour pieces shaped by material, scale and place \u2014 art that stands differently here than anywhere else."
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "bleed",
+          "target": "photo-band",
+          "edge": "all"
+        },
+        {
+          "kind": "straddle",
+          "target": "inset",
+          "registration": {
+            "toSlot": "seam",
+            "edge": "top",
+            "depthBaselines": 12,
+            "z": "mid"
+          }
+        }
+      ],
+      "knobs": {
+        "bandSplit": 0.5,
+        "straddleBalance": "third-above",
+        "align": "center"
       }
     },
     {
@@ -1237,6 +1901,125 @@
       ],
       "knobs": {
         "logoCount": "5"
+      }
+    },
+    {
+      "id": "staggered-caption-columns-3",
+      "useCase": "gallery",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "staggered-caption-columns-3"
+      },
+      "slots": [
+        {
+          "name": "masthead",
+          "role": "display masthead",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "eyebrow": "Inside the hall",
+            "heading": "Space as\na muse"
+          }
+        },
+        {
+          "name": "masthead-caption",
+          "role": "tracked micro caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "Central nave"
+          }
+        },
+        {
+          "name": "column-image",
+          "role": "column photography",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "z": "mid",
+          "contract": "image",
+          "mediaAspect": "portrait",
+          "asset": null
+        },
+        {
+          "name": "column-caption",
+          "role": "editorial caption",
+          "textLen": "medium",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "Central nave"
+          }
+        },
+        {
+          "name": "column-link",
+          "role": "arrow link",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "The collection"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "stagger",
+          "target": "column-image",
+          "axis": "vertical",
+          "amount": {
+            "class": "heavy"
+          },
+          "perColumn": [
+            {
+              "colStart": 1,
+              "colSpan": 3,
+              "rowOffset": 1
+            },
+            {
+              "colStart": 4,
+              "colSpan": 4,
+              "rowOffset": 0
+            },
+            {
+              "colStart": 9,
+              "colSpan": 4,
+              "rowOffset": 3
+            }
+          ]
+        },
+        {
+          "kind": "mixed-face",
+          "target": "masthead",
+          "spans": [
+            {
+              "part": "lead",
+              "face": "roman"
+            },
+            {
+              "part": "emphasis",
+              "face": "italic"
+            }
+          ]
+        }
+      ],
+      "knobs": {
+        "columnCount": 3,
+        "offsetProgression": "mid-high",
+        "captionFace": "brand-caption"
       }
     },
     {

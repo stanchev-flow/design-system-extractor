@@ -61,7 +61,8 @@ tokens:
     h1:                  { family: "Melodrama", renderProxy: "Playfair Display", sizeRem: { base: 3.5, tablet: 3, mobileL: 2.5, mobile: 2.25 }, lineHeight: "1.15em", weight: 400, letterSpacing: "0rem", case: uppercase }
     h2:                  { family: "Melodrama", renderProxy: "Playfair Display", sizeRem: { base: 2.25, tablet: 2, mobileL: 1.875, mobile: 1.75 }, lineHeight: "1.3em", weight: 400, letterSpacing: "0rem", case: uppercase }
     h3:                  { family: "Melodrama", renderProxy: "Playfair Display", sizeRem: { base: 1.625, tablet: 1.625, mobileL: 1.5, mobile: 1.5 }, lineHeight: "1.3em", weight: 400, letterSpacing: "0rem", case: uppercase }
-    eyebrow:             { family: "Inter", sizeRem: { base: 0.6875 }, lineHeight: "1.2em", weight: 400, letterSpacing: "0.08em", case: uppercase }
+    # prefix: the register's decorative text device (live eyebrows read "/ 01 — …").
+    eyebrow:             { family: "Inter", sizeRem: { base: 0.6875 }, lineHeight: "1.2em", weight: 400, letterSpacing: "0.08em", case: uppercase, prefix: "/ " }
     body:                { family: "Inter", sizeRem: { base: 0.875 }, lineHeight: "1.55em", weight: 400, case: sentence }
     control-text:        { family: "Inter", sizeRem: { base: 0.875 }, lineHeight: "1.2em", weight: 400, letterSpacing: "0.08em", case: uppercase }
     counter-display:     { family: "Melodrama", renderProxy: "Playfair Display", sizeRem: { base: 2 }, lineHeight: "1.0", weight: 400, case: none }
@@ -860,6 +861,33 @@ blocks:
     scope: design-language
     changelog: []
 
+# ── HERO DISPLAY LAW — the brand's committed hero-only display treatment (added with the
+#    cross-brand contamination fix so this frozen snapshot keeps re-rendering its arms
+#    byte-identically: compose_page now emits the #sec-0 brand-over-style override only
+#    when the brand declares it, instead of unconditionally for every styled page).
+heroDisplay:
+  align: centered
+  color: accent
+  weightRole: display-hero
+
+# ── self-hosted font registry — mirrors runs/woodwave/brand/brand.yaml (added with the
+#    cross-brand contamination fix: the pipeline's legacy module-level Melodrama registry
+#    was deleted, so this frozen snapshot must declare its own faces to keep re-rendering
+#    byte-identically). Files live under assets/fonts/, woff2 preferred + ttf kept.
+selfHostedFonts:
+  - family: Melodrama
+    faces:
+      - weight: 300
+        files: [Melodrama-Light.woff2, Melodrama-Light.ttf]
+      - weight: 400
+        files: [Melodrama-Regular.woff2, Melodrama-Regular.ttf]
+      - weight: 500
+        files: [Melodrama-Medium.woff2, Melodrama-Medium.ttf]
+      - weight: 600
+        files: [Melodrama-Semibold.woff2, Melodrama-Semibold.ttf]
+      - weight: 700
+        files: [Melodrama-Bold.woff2, Melodrama-Bold.ttf]
+
 # ── CANONICAL LAYOUTS — archetype + surface intent + slots (blocks/media) + intent blockMapping.
 #    Webflow scaffold/component ids live under targetMappings.webflow.layouts.<id>.
 layouts:
@@ -1132,6 +1160,8 @@ navbar:
   scope: site-chrome
   confidence: high
   archetype: nav
+  # chrome presentation device (nav-fix 2026-07): slash-separated links observed live.
+  separator: "/"
   twoTier: false
   sticky: false
   surface:
@@ -1259,6 +1289,8 @@ footer:
   scope: site-chrome
   confidence: high
   archetype: grid
+  # chrome presentation device (nav-fix 2026-07): slash-separated sitemap/social rows.
+  separator: "/"
   surface:
     bg: rgb(24, 19, 19)
     color: rgb(51, 51, 51)

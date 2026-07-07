@@ -35,6 +35,8 @@
       "No lorem/placeholder copy": true,
       "All brand image assets present": true,
       "Rounding matches brand radius scale": true,
+      "No foreign-brand content literals (alt/aria/title)": true,
+      "No foreign-brand asset references": true,
       "Webfonts loaded (no silent system fallback)": true
     }
   },
@@ -50,7 +52,12 @@
       "text-contrast": true,
       "decoration-salience": true,
       "occlusion": true,
-      "band-attribution": true
+      "band-attribution": true,
+      "alignment-resolution": true,
+      "media-registration": true,
+      "interaction-contrast": true,
+      "token-provenance": true,
+      "logo-wall-integrity": true
     },
     "details": {
       "text-contrast": "30 text elements measured against their effective background (surface + decoration layer); worst = sec-2/c-caption('Trusted by 10,000+ teams') at 7.81 (floor 4.5); skipped=0",

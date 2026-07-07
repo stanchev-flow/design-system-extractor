@@ -1,0 +1,104 @@
+  offGridExpansion=False (from style)
+  [attempt 0] 85.47s  in=20512 out=6645
+    gate: FAIL ['never-typographic-primary', 'Heading copy from source present', 'Brand assets present (not placeholder)', 'No off-palette hex colors', 'All brand image assets present', 'text-contrast', 'alignment-resolution']
+  [attempt 1] 148.11s  in=21151 out=11608
+    gate: FAIL ['never-typographic-primary', 'Heading copy from source present', 'Brand assets present (not placeholder)', 'No off-palette hex colors', 'All brand image assets present', 'text-contrast']
+  [attempt 2] 120.97s  in=21118 out=9303
+    gate: FAIL ['never-typographic-primary', 'Heading copy from source present', 'Brand assets present (not placeholder)', 'No off-palette hex colors', 'All brand image assets present', 'text-contrast', 'alignment-resolution']
+{
+  "ok": false,
+  "attempts": 3,
+  "wall_s": 360.7,
+  "style": "corporate-saas-clean",
+  "offGridExpansion": false,
+  "sections": [
+    {
+      "id": "sec-hero",
+      "useCase": "hero",
+      "archetype": "split",
+      "novelty": "adapt",
+      "surfaceIntent": "inverse",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      }
+    },
+    {
+      "id": "sec-features",
+      "useCase": "features",
+      "archetype": "cards",
+      "novelty": "adapt",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      }
+    },
+    {
+      "id": "sec-testimonial",
+      "useCase": "testimonial",
+      "archetype": "stack",
+      "novelty": "adapt",
+      "surfaceIntent": "panel",
+      "seededFrom": {
+        "lib": "standard",
+        "id": "hero-split-media-copy"
+      }
+    },
+    {
+      "id": "sec-cta",
+      "useCase": "cta",
+      "archetype": "stack",
+      "novelty": "adapt",
+      "surfaceIntent": "panel",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-elevated-card"
+      }
+    },
+    {
+      "id": "sec-footer",
+      "useCase": "footer",
+      "archetype": "stack",
+      "novelty": "adapt",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-elevated-card"
+      }
+    }
+  ],
+  "failures": [
+    [
+      "never-typographic-primary",
+      "filled primary CTA button present=False; outline secondary=False"
+    ],
+    [
+      "Heading copy from source present",
+      "source heading begins 'Where go-to-market teams...'"
+    ],
+    [
+      "Brand assets present (not placeholder)",
+      "4 local asset(s), missing=['assets/hero-staircase.jpg', 'assets/hero-staircase.jpg', 'assets/overlap-vase.jpg', 'assets/hero-staircase.jpg']"
+    ],
+    [
+      "No off-palette hex colors",
+      "off-palette=['#1f1a14', '#f7efe6']; brand palette has 12 hexes"
+    ],
+    [
+      "All brand image assets present",
+      "local images=4; missing=['assets/hero-staircase.jpg', 'assets/hero-staircase.jpg', 'assets/overlap-vase.jpg', 'assets/hero-staircase.jpg']"
+    ],
+    [
+      "text-contrast",
+      "10/33 text elements below WCAG-ish floor (display >= 3.0, body >= 4.5): sec-1/c-caption('Set up in minutes') #fefefd on #fcfcfa = 1.02 (< 4.5 body); sec-1/c-paragraph('No manual wiring \u2014 you'r') #fefefd on #fcfcfa = 1.02 (< 4.5 body); sec-1/c-caption('One source of truth') #fefefd on #fcfcfa = 1.02 (< 4.5 body); sec-1/c-paragraph('Everyone sees the same t') #fefefd on #fcfcfa = 1.02 (< 4.5 body) (+6 more)"
+    ],
+    [
+      "alignment-resolution",
+      "sec-0: asymmetric anchor 'left' declares NO counterweight device; sec-1: asymmetric anchor 'left' declares NO counterweight device; sec-2: asymmetric anchor 'left' declares NO counterweight device; sec-4: asymmetric anchor 'left' declares NO counterweight device"
+    ]
+  ],
+  "schema_errors": [],
+  "neverdo_hits": [],
+  "scorecard_overall": null
+}

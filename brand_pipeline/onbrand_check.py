@@ -30,6 +30,15 @@ decoration layer behind it; >=3.0 display-scale, >=4.5 body/small) and
 surface: composite-vs-surface contrast ratio <= 1.15). Both are computed
 statically by readability.py; see its docstring for the model + thresholds.
 
+TOKEN PROVENANCE (AS-24, 2026-07-03): `token-provenance` joined the same invariant
+tier — every visual value in the emitted style blocks (minus the generated
+`<style id="tokens">` layer-1 block) must trace to the active brand's token index
+(tokens.manifest.json beside the render, else rebuilt from brand.yaml) or carry a
+`/* provenance: structural */` allowlist comment. Colors/spacing/radius/type are
+errors; duration/easing literals are WARNING severity per DECISIONS.md #3. A
+literal matching ANOTHER brand's index is called out as a foreign-brand DNA leak.
+Scanner lives in token_provenance.py; the layer-1 generator in tokens_css.py.
+
 Writes onbrand-report.md next to the render and prints an overall verdict.
 
 Usage:
@@ -52,6 +61,9 @@ from styles import load_style  # noqa: E402
 # READABILITY + DECORATION-SALIENCE (2026-07-01): static contrast analysis for the
 # `text-contrast` / `decoration-salience` composition invariants (see readability.py).
 import readability  # noqa: E402
+# TOKEN PROVENANCE (AS-24, token-layer-2026-07): the raw-literal scanner for the
+# `token-provenance` composition invariant (see token_provenance.py + tokens_css.py).
+import token_provenance  # noqa: E402
 
 HEX_RE = re.compile(r"#[0-9a-fA-F]{6}")
 _SERIF_HINTS = ("serif", "playfair", "didone", "georgia", "times")
@@ -251,6 +263,11 @@ def extract_facts(doc, html, layout, render_dir):
     radii = re.findall(r"border-radius:\s*([^;]+);", low)
     f["radii"] = [r.strip() for r in radii]
     f["radius_vars"] = dict(re.findall(r"(--[a-z0-9-]*radius[a-z0-9-]*):\s*([^;]+);", low))
+    # EVERY custom-property declaration (last one wins, mirroring the cascade for the
+    # common same-specificity case) — the lookup table for var()-chain resolution
+    # (fix-batch 2026-07, N6: `var(--button-radius)` must resolve to its 0.5rem layer-1
+    # value BEFORE the radius-scale check judges it, not read as an off-scale literal).
+    f["css_vars"] = dict(re.findall(r"(--[a-z0-9-]+)\s*:\s*([^;{}]+)", low))
     f["has_zero_radius_ui"] = bool(
         re.search(r"\.(btn|card|hs-|wd-media)[^{}]*\{[^}]*border-radius:\s*0(px|rem)?;", low))
 
@@ -260,15 +277,23 @@ def extract_facts(doc, html, layout, render_dir):
     f["borders"] = borders
     f["has_depth"] = bool(shadows or borders)
 
-    f["gradients"] = re.findall(r"(linear-gradient|radial-gradient|conic-gradient)\(", low)
+    # no-gradients counts gradient WASHES (color ramps). A `repeating-*` hard-stop stripe
+    # is a flat texture plate, not a wash — the sanctioned AS-23 placeholder backing
+    # (.c-image hatch from the surface's own tokens) must not trip a brand's no-gradients
+    # neverDo, or every composed page fails the moment an image slot exists.
+    f["gradients"] = re.findall(
+        r"(?<!repeating-)(linear-gradient|radial-gradient|conic-gradient)\(", low)
 
     blur_m = re.search(r"filter:\s*blur\(([^)]*)\)", low)
     f["hero_blur"] = blur_m.group(1).strip() if blur_m else None
     f["has_hero_blur"] = bool(blur_m and blur_m.group(1).strip() not in ("0", "0px", "none", ""))
     f["has_button_el"] = "<button" in low
     # filled CTA = a primary button/cta selector that paints a background
+    # ELEMENT-level check (anti-ai-slop.md AS-08 history): the shared stylesheet now
+    # always carries the `.c-button` RULE; only an element actually USING the class is a
+    # filled CTA on this page.
     f["has_filled_cta"] = bool(
-        re.search(r"\.(btn-primary|cta-primary)[^{}]*\{[^}]*background", low))
+        re.search(r'class="[^"]*\b(btn-primary|cta-primary|c-button)\b', low))
     f["has_outline_cta"] = bool(re.search(r"\.(btn-secondary|cta-secondary)", low))
 
     # display heading uppercase? find a heading-ish selector with uppercase transform
@@ -319,6 +344,12 @@ def extract_facts(doc, html, layout, render_dir):
     f["local_imgs"] = local
     f["missing_imgs"] = [s for s in local if not (Path(render_dir) / s).exists()]
 
+    # composer-authored content attributes (alt / aria-label / title) — scanned by the
+    # foreign-brand-content slop check (fix-batch 2026-07: a hardcoded
+    # `alt="WoodWave editorial photography"` shipped verbatim on another brand's page).
+    f["content_attr_texts"] = re.findall(r'(?:alt|aria-label|title)="([^"]*)"', html,
+                                         flags=re.I)
+
     role, surf = resolve_surface(doc, layout)
     f["surface_role"] = role
     f["surface_bg"] = surf.get("bg")
@@ -332,8 +363,20 @@ def extract_facts(doc, html, layout, render_dir):
             f["surface_mode"] = "Inverse"
         elif role:
             f["surface_mode"] = "Primary"
-    f["bg_in_css"] = bool(re.search(rf"--bg:\s*{re.escape(surf.get('bg',''))}", html, re.I)) \
-        if surf.get("bg") else False
+    _bg = str(surf.get("bg") or "")
+    # a DESCRIPTIVE v1 surface value ("image + dark scrim") can never appear as a literal
+    # CSS color — the composer substitutes an on-palette dark; requiring the literal here
+    # made the check unpassable by design. Non-color surfaces are media surfaces: pass.
+    if _bg and not re.match(r"^(#|rgb|hsl)", _bg.strip()):
+        f["bg_in_css"] = True
+    else:
+        f["bg_in_css"] = bool(re.search(rf"--bg:\s*{re.escape(_bg)}", html, re.I)) if _bg else False
+
+    # token-provenance (AS-24): the active render's layer-1 index — the values THIS
+    # page was generated against (tokens.manifest.json beside the render). A missing
+    # manifest marks a pre-token-layer render: the provenance check reports advisory
+    # skip rather than retro-failing pages generated before the layer existed.
+    f["token_index"] = token_provenance.load_manifest_index(render_dir)
     return f
 
 
@@ -622,7 +665,8 @@ def check_fidelity(doc, html, layout, facts):
     n_actions = sum(1 for m in entries
                     if any(k in (m.get("role") or "") for k in ("cta", "button", "primary", "secondary")))
     if n_actions:
-        present = html.lower().count('class="btn') >= min(n_actions, 1)
+        present = (html.lower().count('class="btn') + html.lower().count('c-button')
+                   + html.lower().count('c-arrow-link')) >= min(n_actions, 1)
         checks.append((f"Action buttons present (expect {n_actions})", present,
                        f"mapping declares {n_actions} action(s)"))
 
@@ -642,6 +686,99 @@ def check_fidelity(doc, html, layout, facts):
 
 # ── slop checklist (brand-agnostic) ──────────────────────────────────────────────
 
+def _resolve_css_var_chain(value: str, var_map: dict, max_depth: int = 8) -> str:
+    """Resolve a `var(--name[, fallback])` chain to its ultimate value using the page's
+    OWN custom-property declarations (fix-batch 2026-07, N6). Non-var values pass
+    through unchanged; an undeclared name resolves through its fallback (recursively);
+    a dead-end/cyclic chain returns the deepest reachable expression (judged as-is)."""
+    seen: set[str] = set()
+    v = str(value).strip()
+    for _ in range(max_depth):
+        m = re.fullmatch(r"var\(\s*(--[a-z0-9-]+)\s*(?:,\s*(.+?)\s*)?\)", v, re.I)
+        if not m:
+            return v
+        name, fallback = m.group(1).lower(), m.group(2)
+        if name in seen:
+            return v
+        seen.add(name)
+        nxt = var_map.get(name)
+        if nxt is None:
+            if fallback is None:
+                return v
+            v = fallback.strip()
+        else:
+            v = str(nxt).strip()
+    return v
+
+
+_BRAND_NAMES_CACHE: list[str] | None = None
+
+
+def _known_brand_names() -> list[str]:
+    """Names of every extracted brand in the local runs/ corpus (runs/*/brand/brand.yaml).
+    The comparison corpus for the foreign-brand-content check — same corpus idea as the
+    provenance scanner's foreign-brand VALUE attribution. Cached per process."""
+    global _BRAND_NAMES_CACHE
+    if _BRAND_NAMES_CACHE is None:
+        names = []
+        runs = Path(__file__).resolve().parent.parent / "runs"
+        if runs.is_dir():
+            for by in sorted(runs.glob("*/brand/brand.yaml")):
+                try:
+                    d = yaml.safe_load(by.read_text()) or {}
+                except Exception:
+                    continue
+                n = ((d.get("brand") or {}).get("name") or "").strip()
+                if n and n not in names:
+                    names.append(n)
+        _BRAND_NAMES_CACHE = names
+    return _BRAND_NAMES_CACHE
+
+
+_BRAND_ASSET_CORPUS_CACHE: dict | None = None
+_IMG_EXT_RE = re.compile(r"\.(png|jpe?g|webp|avif|gif|svg)$", re.I)
+
+
+def _brand_asset_corpus() -> dict:
+    """Per-brand image-asset basename inventories for the foreign-brand ASSET check
+    (remote-fix 2026-07, AS-34). For each extracted brand: every image basename under
+    ``runs/<b>/brand/**`` EXCLUDING ``compose/`` output dirs, plus the top-level
+    ``runs/<b>/assets``. ``compose/`` is excluded on purpose: it is the pipeline's own
+    composed-page output lane — a foreign file copied there by a buggy run must never
+    launder itself into the brand's inventory (self-whitelisting), while the older
+    render/variants lanes hold canonical single-section asset copies (WoodWave's
+    hero art lives only there). Keyed by lowercase brand name; cached per process."""
+    global _BRAND_ASSET_CORPUS_CACHE
+    if _BRAND_ASSET_CORPUS_CACHE is None:
+        corpus = {}
+        runs = Path(__file__).resolve().parent.parent / "runs"
+        if runs.is_dir():
+            for by in sorted(runs.glob("*/brand/brand.yaml")):
+                try:
+                    d = yaml.safe_load(by.read_text()) or {}
+                except Exception:
+                    continue
+                name = ((d.get("brand") or {}).get("name") or "").strip().lower()
+                if not name:
+                    continue
+                names = set()
+                brand_dir = by.parent
+                for p in brand_dir.rglob("*"):
+                    if not (p.is_file() and _IMG_EXT_RE.search(p.name)):
+                        continue
+                    if "compose" in p.relative_to(brand_dir).parts:
+                        continue
+                    names.add(p.name)
+                parent_assets = brand_dir.parent / "assets"
+                if parent_assets.is_dir():
+                    for p in parent_assets.iterdir():
+                        if p.is_file() and _IMG_EXT_RE.search(p.name):
+                            names.add(p.name)
+                corpus.setdefault(name, set()).update(names)
+        _BRAND_ASSET_CORPUS_CACHE = corpus
+    return _BRAND_ASSET_CORPUS_CACHE
+
+
 def check_slop(doc, html, layout, facts):
     checks = []
     fam = facts["heading_family"]
@@ -658,7 +795,11 @@ def check_slop(doc, html, layout, facts):
     checks.append(("All brand image assets present", not facts["missing_imgs"],
                    f"local images={len(facts['local_imgs'])}; missing={facts['missing_imgs'] or 'none'}"))
 
-    # rounding consistent with the brand radius scale
+    # rounding consistent with the brand radius scale. var()-chain-AWARE (fix-batch
+    # 2026-07, N6): a radius alias that REFERENCES another custom property (e.g.
+    # `--c-button-radius: var(--button-radius)` → layer-1 `--button-radius: 0.5rem`)
+    # is resolved through the page's own declarations before being judged — an alias
+    # chain into an on-scale token is the token architecture working, not off-scale.
     brand_radii = set()
     for k, s in doc["tokens"]["spacing"].items():
         if "radius" in k:
@@ -667,10 +808,58 @@ def check_slop(doc, html, layout, facts):
     for s in (doc.get("tokens", {}).get("radius", {}) or {}).values():
         if isinstance(s, dict) and s.get("value"):
             brand_radii.add(str(s.get("value")).strip())
+    var_map = facts.get("css_vars") or {}
     var_vals = [v.strip() for v in facts["radius_vars"].values()]
-    bad = [v for v in var_vals if v not in brand_radii and v not in ("0", "0px", "0rem")]
+    resolved = [_resolve_css_var_chain(v, var_map) for v in var_vals]
+    bad = [f"{orig} -> {res}" if orig != res else orig
+           for orig, res in zip(var_vals, resolved)
+           if res not in brand_radii and res not in ("0", "0px", "0rem")]
     checks.append(("Rounding matches brand radius scale", not bad,
                    f"radius vars={var_vals or 'none'}; brand scale={sorted(brand_radii) or 'none'}; off-scale={bad or 'none'}"))
+
+    # foreign-brand content literals (fix-batch 2026-07): composer-authored content
+    # attributes (alt/aria-label/title) must never carry ANOTHER extracted brand's name —
+    # that is composer DNA leaking between brands (the content-attribute twin of the
+    # provenance scanner's foreign-brand VALUE callout). Names come from the local
+    # runs/*/brand corpus; the active brand's own name (under any label) is exempt.
+    active_name = ((doc.get("brand") or {}).get("name") or "").strip().lower()
+    foreign_hits = []
+    for other in _known_brand_names():
+        ol = other.lower()
+        if active_name and (ol in active_name or active_name in ol):
+            continue  # the active brand under any label
+        toks = [other] + ([other.split()[0]] if len(other.split()[0]) >= 4 else [])
+        pat = re.compile("|".join(re.escape(t) for t in toks), re.I)
+        hits = [t for t in facts.get("content_attr_texts", []) if pat.search(t)]
+        if hits:
+            foreign_hits.append(f"'{other}' in {hits[:2]}")
+    checks.append(("No foreign-brand content literals (alt/aria/title)", not foreign_hits,
+                   f"foreign brand names in content attributes={foreign_hits or 'none'}"))
+
+    # foreign-brand ASSET references (remote-fix 2026-07, AS-34): every locally
+    # referenced image must trace to the ACTIVE brand's own asset inventory. A name
+    # that is absent from the active brand but IS another extracted brand's asset is
+    # composer/adapter DNA leaking between brands (the file-level twin of the content-
+    # literal check above — e.g. WoodWave hero art shipped as a fallback on Remote).
+    # Names the active brand owns are exempt even if a sibling shares the same name.
+    corpus = _brand_asset_corpus()
+    own = corpus.get(active_name, set()) if active_name else set()
+    if not own:  # brand label variants (e.g. "WoodWave Gallery" vs dir name)
+        for bname, names in corpus.items():
+            if active_name and (bname in active_name or active_name in bname):
+                own = own | names
+    foreign_assets = []
+    for ref in facts.get("local_imgs", []):
+        base = ref.split("?")[0].rstrip("/").split("/")[-1]
+        if not base or base in own:
+            continue
+        owners = [b for b, names in corpus.items()
+                  if base in names
+                  and not (active_name and (b in active_name or active_name in b))]
+        if owners:
+            foreign_assets.append(f"{base} (owned by {'/'.join(sorted(owners))})")
+    checks.append(("No foreign-brand asset references", not foreign_assets,
+                   f"foreign-owned image refs={foreign_assets or 'none'}"))
 
     # Phase 1B: a self-hosted @font-face is a webfont too — don't count it as slop.
     checks.append(("Webfonts loaded (no silent system fallback)", facts["webfont_delivered"],
@@ -776,7 +965,20 @@ def check_composition(doc, html, layout, facts):
     #    --composition.
     try:
         analysis = readability.analyze(html, default_bg=facts.get("surface_bg"))
-        tc_pass, tc_detail = readability.check_text_contrast(html, analysis=analysis)
+        # fidelity-over-floor (fix-batch 2026-07): the brand's own MEASURED component
+        # pairs (buttons.primary/secondary fg-on-bg from brand.yaml) are exempt from the
+        # generic WCAG-ish floor — this invariant targets AI drift, and a provenance-
+        # verified measured pair is brand truth (real brands ship sub-AA primaries).
+        # Any non-measured low-contrast pairing still fails.
+        measured_pairs = []
+        for fam in ("primary", "secondary"):
+            b = ((doc.get("buttons") or {}).get(fam) or {})
+            fg = b.get("fg") or b.get("label") or b.get("color")
+            bg = b.get("bg") or b.get("background")
+            if fg and bg:
+                measured_pairs.append((str(fg), str(bg)))
+        tc_pass, tc_detail = readability.check_text_contrast(
+            html, analysis=analysis, measured_pairs=measured_pairs)
         ds_pass, ds_detail = readability.check_decoration_salience(html, analysis=analysis)
     except Exception as exc:  # static analysis must never crash the gate
         analysis = None
@@ -849,7 +1051,109 @@ def check_composition(doc, html, layout, facts):
                    "contrast vs their OWN surface (incl. cards/panels)",
                    ic_pass, ic_detail))
 
+    # 13. TOKEN PROVENANCE (AS-24, token-layer-2026-07) — every visual value in the
+    #     emitted style blocks (minus the generated <style id="tokens"> block) must
+    #     trace to the ACTIVE brand's token index or a `/* provenance: structural */`
+    #     allowlist comment. A literal that matches ANOTHER brand's index gets the
+    #     foreign-brand callout (the DNA-leak smoking gun). Duration/easing literals
+    #     are WARNING severity (DECISIONS.md #3): carried in the detail, never
+    #     flipping the row.
+    tp_pass, tp_detail = _check_token_provenance(doc, html, facts)
+    checks.append(("token-provenance",
+                   "All emitted visual values trace to the brand token index "
+                   "(raw literals need a structural allowlist comment)",
+                   tp_pass, tp_detail))
+
+    # 14. LOGO-WALL INTEGRITY (G14, AS-33) — a logo-wall-role section renders REAL
+    #     disk-backed logo images (non-empty, metadata-derived alts) or the declared
+    #     text-caption fallback; an empty logo frame, a broken/missing logo src, or an
+    #     alt-less mark fails. Vacuous pass on pages with no stamped logo walls.
+    lw_pass, lw_detail = _check_logo_wall(html, facts)
+    checks.append(("logo-wall-integrity",
+                   "Logo walls carry disk-backed logo images or text captions "
+                   "(never empty frames, broken srcs, or alt-less marks)",
+                   lw_pass, lw_detail))
+
     return checks
+
+
+_RUNS_ROOT = Path(__file__).resolve().parent.parent / "runs"
+
+
+def _check_token_provenance(doc, html, facts):
+    """(passed, detail) for the token-provenance invariant.
+
+    Scans ONLY manifest-carrying renders: tokens.manifest.json is the proof the page
+    was generated through the layer-1 path, and its index holds the exact values the
+    page was generated against. Pre-token-layer renders (no manifest) skip advisory —
+    retro-failing them would regress every regate baseline without a defect."""
+    try:
+        index = facts.get("token_index")
+        if not index:
+            return True, ("no tokens.manifest.json beside render (pre-token-layer "
+                          "page) — advisory skip; regenerate to enable the scan")
+        brand = ((doc.get("brand") or {}).get("name")) or "brand"
+        foreign = token_provenance.foreign_brand_indexes(_RUNS_ROOT, brand)
+        res = token_provenance.check_token_provenance(
+            html, index, brand=brand, foreign_indexes=foreign)
+        return res["passed"], res["detail"]
+    except Exception as exc:  # static scan must never crash the gate
+        return True, f"provenance scan unavailable ({type(exc).__name__}: {exc})"
+
+
+# ── G14 logo-wall integrity (AS-33) ──────────────────────────────────────────────────
+
+def _check_logo_wall(html, facts):
+    """(passed, detail) for the logo-wall-integrity invariant (AS-33).
+
+    The generic-flow composer stamps every logo-wall-role section with its RESOLVED
+    device (``data-logo-device="image|text|empty"``). The contract this verifies:
+      - ``image``: the section carries >=1 real ``.c-logo-img`` whose src is non-empty
+        AND present on disk (cross-referenced against facts['missing_imgs'], the
+        gate's own disk scan) AND whose alt is non-empty (metadata-derived, AS-29);
+      - ``text``: the section carries >=1 non-empty caption/eyebrow text (the declared
+        text-caption fallback device);
+      - ``empty``: always a failure — a logo wall with neither usable images nor text
+        is an empty frame (the AS-11 shape, scoped to this device).
+    Pages with no stamped logo-wall sections pass vacuously (pre-device renders never
+    retro-fail)."""
+    problems = []
+    missing = set(facts.get("missing_imgs") or [])
+    stamped = 0
+    for seg in re.split(r"(?=<section\b)", html):
+        m = re.match(r'<section\b[^>]*\bdata-logo-device="([^"]+)"', seg)
+        if not m:
+            continue
+        stamped += 1
+        mode = m.group(1)
+        body = seg.split("</section>")[0]
+        imgs = re.findall(r'<img\b[^>]*class="[^"]*c-logo-img[^"]*"[^>]*>', body)
+        if mode == "empty":
+            problems.append("logo-wall section rendered neither logo images nor text")
+        elif mode == "image":
+            if not imgs:
+                problems.append("image-device logo wall carries no .c-logo-img")
+            for tag in imgs:
+                src = (re.search(r'\bsrc="([^"]*)"', tag) or [None, ""])[1]
+                alt = (re.search(r'\balt="([^"]*)"', tag) or [None, ""])[1]
+                if not (src or "").strip():
+                    problems.append("logo image with empty src")
+                elif src in missing:
+                    problems.append(f"logo src missing on disk: {src}")
+                if not (alt or "").strip():
+                    problems.append(f"logo image missing alt (src={src or '?'})")
+        elif mode == "text":
+            caps = re.findall(r'<p\b[^>]*class="[^"]*c-(?:caption|eyebrow)[^"]*"[^>]*>'
+                              r"([^<]*)</p>", body)
+            if not any(c.strip() for c in caps):
+                problems.append("text-device logo wall carries no caption text")
+        else:
+            problems.append(f"unknown logo device stamp '{mode}'")
+    if stamped == 0:
+        return True, "no logo-wall sections on this page"
+    more = f" (+{len(problems) - 6} more)" if len(problems) > 6 else ""
+    return (not problems,
+            f"logo-wall sections={stamped}; problems={problems[:6] or 'none'}{more}")
 
 
 # ── G10 alignment resolution (AS-18) ─────────────────────────────────────────────────
@@ -860,8 +1164,17 @@ _ALIGN_ENUM = ("centered", "left", "right", "space-between", "edge-to-edge", "mi
 
 
 def _style_declares_alignment(html) -> bool:
-    """True when the render's active style (html[data-style]) declares a machine-readable
-    alignment stance. Style-less renders (or an unloadable style) never gate on stamps."""
+    """True when the render's OPERATIVE style declared a machine-readable alignment
+    stance. Style-less renders (or an unloadable style) never gate on stamps.
+
+    Preferred source: the composer's own `data-align-stance` stamp on <html> (AS-18 —
+    a page rendered against a snapshotted styles_dir must be judged by the definition
+    it rendered with; re-loading today's styles/<id>.md by name would demand stamps the
+    operative style never declared). Legacy pages without the stamp fall back to
+    loading the style by id."""
+    m = re.search(r'<html\b[^>]*\bdata-align-stance="([^"]+)"', html)
+    if m:
+        return m.group(1) == "declared"
     m = re.search(r'<html\b[^>]*\bdata-style="([^"]+)"', html)
     if not m:
         return False
@@ -1083,6 +1396,48 @@ def _display_reaches_poster(value: str | None, min_rem: float, min_cqw: float):
             f"cqw={cqws or 'none'} (intent ~{min_cqw}); poster={'yes' if (rem_ok or cqw_ok) else 'NO'}")
 
 
+def _brand_display_rem(doc):
+    """The brand's measured display-hero base size in rem (None when unmeasured).
+    Mirrors tokens_css.type_role's two shapes: flat role node OR families+scale."""
+    types = (doc.get("tokens", {}) or {}).get("type", {}) or {}
+    node = types.get("display-hero")
+    if not isinstance(node, dict):
+        scale = types.get("scale")
+        node = scale.get("display-hero") if isinstance(scale, dict) else None
+    if not isinstance(node, dict):
+        return None
+    sz = node.get("sizeRem")
+    if isinstance(sz, dict):
+        sz = sz.get("base")
+    if sz is None and node.get("px"):
+        try:
+            sz = round(float(node["px"]) / 16, 4)
+        except (TypeError, ValueError):
+            sz = None
+    try:
+        return float(sz) if sz is not None else None
+    except (TypeError, ValueError):
+        return None
+
+
+def _display_rides_brand_tier(value: str | None, tier_rem):
+    """display_source='brand' judgment (B3/B11): the effective display magnitude must
+    BE the brand's measured display-hero tier — a var() reference to the layer-1 tier
+    token, or the tier's rem value verbatim — never an inflated poster clamp."""
+    if not value:
+        return False, "no --display-size found"
+    if "--size-display-hero" in value:
+        return True, f"display-size={value} — rides the brand display-hero tier token"
+    rems = [float(x) for x in re.findall(r"(\d+(?:\.\d+)?)\s*rem", value)]
+    if tier_rem is None:
+        return False, (f"display-size={value}; brand display-hero tier UNMEASURED — "
+                       f"cannot verify brand-sourced display")
+    ok = any(abs(r - float(tier_rem)) < 0.03 for r in rems)
+    return ok, (f"display-size={value} -> rems={rems or 'none'} vs brand display-hero "
+                f"tier {tier_rem}rem (style display_source=brand); "
+                f"{'matches' if ok else 'DOES NOT match'}")
+
+
 def detect_brand_overrides(html, doc, style=None):
     """Detect the style rules the BRAND intentionally overrides in this render.
 
@@ -1206,10 +1561,18 @@ def check_style(doc, html, layout, facts, style):
             checks.append((lbl, "WARN",
                            f"{detail} — style default not met; no backing brand override (advisory)"))
 
-    # Rule 1 — display reaches genuine poster scale (INVARIANT)
-    passed, detail = _display_reaches_poster(
-        _effective_display_size(html), s.min_display_rem, s.display_vw)
-    add("[INVARIANT] " + label(0, "Display reaches poster scale"), passed, detail)
+    # Rule 1 — display magnitude, display_source-aware (B3/B11, fix-batch 2026-07):
+    # 'poster' styles must reach genuine poster scale (unchanged); a 'brand'-sourced
+    # style (corporate archetypes) must ride the brand's own measured display-hero tier
+    # instead — inflating a 65px-hero brand to a poster clamp is the FAILURE there.
+    if getattr(s, "display_source", "poster") == "brand":
+        passed, detail = _display_rides_brand_tier(
+            _effective_display_size(html), _brand_display_rem(doc))
+        add("[INVARIANT] Display rides the brand's measured display tier", passed, detail)
+    else:
+        passed, detail = _display_reaches_poster(
+            _effective_display_size(html), s.min_display_rem, s.display_vw)
+        add("[INVARIANT] " + label(0, "Display reaches poster scale"), passed, detail)
 
     # Rule 2 — flat throughout: no cards, no shadows (depth from scale/whitespace only) (INVARIANT)
     flat_ok = (not facts["shadows"]) and (not facts["borders"]) and (not facts["has_card_class"])
@@ -1317,8 +1680,8 @@ def render_report(doc, layout, nd, fid, slop, render_dir, allow=None, style=None
     w("## Method")
     w("")
     w("- **neverDo:** every `neverDo[]` rule in `brand.yaml` is dispatched through a "
-      "brand-agnostic checker registry (supports both the WoodWave hard-edged ids and "
-      "the HubSpot rounded-SaaS ids) and statically verified against the rendered "
+      "brand-agnostic checker registry (supports both hard-edged editorial id families "
+      "and rounded-SaaS id families) and statically verified against the rendered "
       "HTML/CSS. Unknown ids fall back to a keyword heuristic, else report as "
       "informational rather than a false fail.")
     w("- **Fidelity:** structured checklist derived from the rendered layout's resolved "
@@ -1407,7 +1770,7 @@ def render_report(doc, layout, nd, fid, slop, render_dir, allow=None, style=None
       "fonts from Google Fonts and the source crop in `assets/`).")
     w("- A captured preview of the render is at `assets/_preview-render.png`; the source "
       "crop it was compared against is `assets/_source-*-crop.*`.")
-    w(f"- Re-generate: `python3 brand_pipeline/render_section.py <brand.yaml> {lid} -o {render_dir}`.")
+    w(f"- Re-generate: `python3 brand_pipeline/compose_section.py <brand.yaml> {lid} -o {render_dir}`.")
     layout_flag = f" --layout {lid}" if Path(render_dir).name != f"section-{lid}" else ""
     w(f"- Re-run this gate: `python3 brand_pipeline/onbrand_check.py <brand.yaml> {render_dir}{layout_flag}`.")
     w("")

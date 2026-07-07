@@ -556,11 +556,12 @@ def inject_comparison_shim(index_html: Path, *, dividers: bool = False) -> None:
   margin-top: 0.35rem; max-width: 60ch; }
 """ if dividers else ""
     shim = f"""<style id="gallery-comparison-shim">
-/* gallery-comparison shim — appended by build_anchored_variants.py, not a pipeline
-   change: every hero shows the original's dark+gold treatment side by side (the page
-   contract deliberately commits the accent to ONE bookend, which is correct for real
-   pages but not for a comparison artifact). Brand token values only (accent =
-   tokens/colors/accent/highlight). Composition invariants are gated per-hero standalone
+/* provenance: preview-chrome — gallery-comparison shim appended by
+   build_anchored_variants.py, not a pipeline change: every hero shows the original's
+   dark+gold treatment side by side (the page contract deliberately commits the accent
+   to ONE bookend, which is correct for real pages but not for a comparison artifact),
+   and the variant-label dividers are quiet caption-scale gallery furniture. Accent =
+   tokens/colors/accent/highlight. Composition invariants are gated per-hero standalone
    (standalone-gates/). The per-section centering + per-section copy workarounds that
    used to live here are RETIRED — expressed through the composition contract now. */
 [data-layout^="hero-"] .c-heading--display {{ color: {_accent_hex()}; }}{divider_css}</style>

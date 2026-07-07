@@ -219,9 +219,10 @@ def inject_divider_shim(index_html: Path, labels: list[tuple[str, str]]) -> None
         safe = text.replace('"', "'")
         rules.append(f'div[data-layout="{lid}"]::before {{ content: "{safe}"; }}')
     shim = """<style id="showcase-divider-shim">
-/* showcase divider labels — appended by build_showcase.py, not a pipeline change.
-   Quiet eyebrow-style strips (hero-gallery divider convention): caption scale,
-   uppercase tracked, thin hairline rule; can never read as a hero. */
+/* provenance: preview-chrome — showcase divider labels appended by build_showcase.py,
+   not a pipeline change (comparison-artifact furniture, same convention as the
+   hero-gallery shim). Quiet eyebrow-style strips: caption scale, uppercase tracked,
+   thin hairline rule; can never read as a hero. */
 div[data-layout]::before {
   display: block; box-sizing: border-box; width: 100%;
   padding: 0.75rem 2.5rem 0.75rem;

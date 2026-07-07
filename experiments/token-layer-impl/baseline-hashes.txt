@@ -1,0 +1,16 @@
+Conflict-protocol baseline — token-layer implementation worker
+Recorded: 2026-07-03 03:02 (UTC+1)
+Working tree includes foreign edits from the HubSpot external worker (component_render.py 23:43, export_kit.py 00:26, slop_audit.mjs, taste_sync.py, AS-21/22/23) — regate-verified baseline, built on as-is.
+
+file | mtime | sha256
+component_render.py | Jul  2 23:43:37 2026 | 853411383c06978a51016cabb9870736769feac99c641b58d7ca18c197a6e9fa
+compose_section.py | Jul  3 02:51:40 2026 | fcbfbbb5c1d57f19c4d0aa34b83f3ac80d8d4e84c17b4a24f0ce661d0cab1b99
+compose_page.py | Jul  3 02:51:26 2026 | d81082de1b35fd819b8102c06c3f3f53c1f4c3e1628a3d509cbcda70444c4986
+styles.py | Jul  2 17:27:43 2026 | 3688cbfeaa8d3bbbd87f176d3452567002da922a2701ed6ce732d8b62298ca1c
+render_components_preview.py | Jul  2 17:58:54 2026 | 31e70d6bc932f0b86e91a57ed75e8617c5e1858482c5e8c28acc25e1e4af6349
+export_kit.py | Jul  3 00:26:14 2026 | b687b2ee1fd3c93aec2a4c0d1c246e82452a7fce3d01639489209a7bf0c7f240
+onbrand_check.py | Jul  3 02:51:52 2026 | 76731d23a0372c59ae854878a84bbabf007616afab5c0fe30be81217dd43bc0f
+render_section.py | Jul  1 21:46:30 2026 | 972465e278f2c5afd93065c33662f905e622cf679fb0d27cf2eb1903211233cf
+taste_sync.py | Jul  2 18:44:35 2026 | 19f866f1f2c6449b37a3761bb47b47913d48fcb28ec98625675a6fbe496cdd07
+generate_composition.py | Jul  2 17:42:10 2026 | 3d1b6651bfcb76d549ce8e3029a05eaf5a1587a9afbd4bed8a7784b49c197ecb
+spec/anti-ai-slop.md | Jul  3 02:54:24 2026 | bbfab22b6d426c66f5083031d26d49d6957e20f7814ab5d5d527de8b430ea656

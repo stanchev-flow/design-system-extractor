@@ -35,8 +35,15 @@ PRECEDENCE (enforced in ``merge``):
 
 This module is library-agnostic: styles live in ``styles/`` and brand stays in
 ``runs/<brand>/``. It writes nothing - it is a pure loader/merge engine consumed by the
-renderer (render_hero_variants.py / render_section.py) and the on-brand gate
-(onbrand_check.py).
+composers (compose_section.py / compose_page.py; render_section.py retired 2026-07-03),
+render_hero_variants.py and the on-brand gate (onbrand_check.py).
+
+ST-1 (token-layer 2026-07): the numeric structure defaults below are the STYLE's
+stances/ratios. They reach emitted CSS only through layer-2 custom properties
+(``--c-display-*``, rhythm vars) — never as raw visual declarations — so the
+token-provenance scanner's declaration scope stays clean by construction. The
+``SLOT_FALLBACKS`` paper/ink placeholders are merge-time defaults for brand.md-silent
+slots; no composer path emits them into page CSS.
 """
 from __future__ import annotations
 
@@ -78,6 +85,41 @@ class StyleStructure:
     display_max_rem: float = 16.0           # upper clamp bound for the display tier
     display_leading: float = 0.94           # tight display leading (~0.92-1.0)
     display_tracking: str = "-0.02em"       # negative tracking on display
+    # WHO owns the display magnitude (front-matter `type.display_source`):
+    #   "poster" — the STYLE's poster clamp above is the identity (editorial archetypes:
+    #              the oversized display IS the style, brands opt in by choosing it);
+    #   "brand"  — the BRAND's measured display-hero tier drives the size (corporate
+    #              archetypes: headline scale is a brand fact, the style only shapes
+    #              leading/tracking/weight — a 65px-hero brand must not inflate to 172px).
+    display_source: str = "poster"
+    # primary-action ARCHETYPE DEFAULT (B5, fix-batch 2026-07): how this style renders a
+    # primary CTA when the brand's own structure law is silent — 'filled' (corporate
+    # archetypes demand filled buttons) or 'typographic' (editorial link grammar).
+    # Derived from the front-matter soft_options.primary-action default (a value naming
+    # a *button renders filled; a *link renders typographic). "" = the style is silent
+    # (non-migrated) → brand token presence decides, the legacy resolution.
+    primary_action: str = ""
+    # logo-strip device treatment (AS-33, logo-strip 2026-07): the style's QUALITATIVE
+    # stance on how a partner/customer logo strip treats its marks —
+    #   'monochrome' — grayscale + reduced emphasis, full color on hover (the corporate
+    #                  trust-wall register);
+    #   'reduced'    — dimmed resting emphasis only, marks keep their own ink;
+    #   'plain'      — marks as shipped, no treatment.
+    # "" = style silent (non-migrated) → no treatment emitted, identical to 'plain'.
+    # Front-matter `logoStrip:` only; the realization lives in ONE shared helper
+    # (compose_section.logo_strip_treatment_css) — the style never carries CSS values.
+    logo_strip: str = ""
+    # inset ART-PANEL surface (AS-37, remote-fix 2026-07): the style's QUALITATIVE
+    # stance on the rounded panel painted with a brand art asset (noise/gradient/
+    # illustration fill) hosting a section's content/media —
+    #   'inset' — the device is part of this style's grammar (panel/card styles);
+    #   'none'  — panel-averse style: the device never renders, whatever the brand
+    #             or composition declares (hard-edged editorial grammar).
+    # "" = style silent (non-migrated) → treated as 'none' while the style is ACTIVE;
+    # with no active style the brand's own measured evidence decides. Front-matter
+    # `artPanel:` only; measured values (radius, art asset) are BRAND tokens and the
+    # realization lives in the shared hero composer — never CSS values here.
+    art_panel: str = ""
     motion_min_ms: int = 500                # restrained/slow motion floor
     motion_ms: int = 600                    # applied transition duration
     single_accent: bool = True              # one committed accent, never scattered
@@ -162,6 +204,89 @@ def _fmt_rem(n: float) -> str:
     return f"{_fmt_num(n)}rem"
 
 
+# ── freedom budget (the 0-5 per-section wildcard allowance; style-layer owned) ───
+
+@dataclass
+class FreedomBudget:
+    """The style layer's QUALITATIVE 0-5 freedom-budget ladder (front-matter
+    ``freedomBudget:`` block). ``levels`` maps int level -> {name, unlocks, forbids}
+    (style-relative prose, never exact values). ``ceiling`` is the style's hard top —
+    a requested level above it resolves AT the ceiling (e.g. corporate-saas-clean caps
+    at crank). ``default`` is the level a brand gets when it doesn't choose one; a
+    brand may CHOOSE a level (voice.dials.freedom) but never redefines the ladder."""
+    default: int = 0
+    ceiling: int = 0
+    levels: dict[int, dict] = field(default_factory=dict)
+
+    def clamp(self, level) -> int:
+        """Resolve a requested level against the ceiling (and floor 0)."""
+        try:
+            lvl = int(level)
+        except (TypeError, ValueError):
+            return self.default
+        return max(0, min(lvl, self.ceiling))
+
+    def describe(self, level) -> dict:
+        """The qualitative definition for a (clamped) level; {} when undeclared."""
+        return self.levels.get(self.clamp(level), {})
+
+
+def _parse_freedom_budget(meta: dict) -> FreedomBudget | None:
+    """Parse the front-matter ``freedomBudget:`` block (FRONT-MATTER ONLY — like the
+    alignment stance, a budget must be machine-explicit or absent; there is no prose
+    fallback). Accepts ``freedomBudget`` / ``freedom_budget``. Level keys are coerced to
+    int; each level value may be a plain string (treated as ``unlocks``) or a
+    {name, unlocks, forbids} map. ``ceiling`` defaults to the highest declared level;
+    ``default`` is clamped into [0, ceiling]. Returns None when the style declares no
+    budget (a non-migrated style file loads unchanged; callers keep legacy behavior)."""
+    raw = meta.get("freedomBudget", meta.get("freedom_budget"))
+    if not isinstance(raw, dict):
+        return None
+    levels: dict[int, dict] = {}
+    for key, val in (raw.get("levels") or {}).items():
+        try:
+            lvl = int(key)
+        except (TypeError, ValueError):
+            print(f"[styles] freedomBudget: dropping non-integer level key {key!r}")
+            continue
+        if isinstance(val, dict):
+            levels[lvl] = {"name": str(val.get("name") or ""),
+                           "unlocks": str(val.get("unlocks") or ""),
+                           "forbids": str(val.get("forbids") or "")}
+        else:
+            levels[lvl] = {"name": "", "unlocks": str(val), "forbids": ""}
+    if not levels:
+        return None
+    ceiling_raw = raw.get("ceiling")
+    try:
+        ceiling = int(ceiling_raw) if ceiling_raw is not None else max(levels)
+    except (TypeError, ValueError):
+        ceiling = max(levels)
+    ceiling = max(0, min(ceiling, max(levels)))
+    try:
+        default = int(raw.get("default", 0))
+    except (TypeError, ValueError):
+        default = 0
+    return FreedomBudget(default=max(0, min(default, ceiling)),
+                         ceiling=ceiling, levels=levels)
+
+
+def brand_freedom_level(doc: dict) -> int | None:
+    """The BRAND's freedom-level CHOICE, if any: ``voice.dials.freedom`` in brand.yaml
+    (a bare integer or the dial convention ``{value: <n>, ...}``). This is a LEVEL
+    choice only — level definitions live in the style layer; the caller clamps the
+    choice via ``FreedomBudget.clamp``. Returns None when the brand is silent."""
+    dial = (((doc.get("voice") or {}).get("dials") or {}).get("freedom"))
+    if isinstance(dial, dict):
+        dial = dial.get("value")
+    if dial is None:
+        return None
+    try:
+        return int(dial)
+    except (TypeError, ValueError):
+        return None
+
+
 # ── style spec (parsed from styles/<id>.md) ──────────────────────────────────────
 
 @dataclass
@@ -196,6 +321,10 @@ class Style:
     # Editorial styles (radical-editorial, editorial-luxury) set TRUE; clean/corporate
     # (corporate-saas-clean) sets FALSE. Absent -> False (conservative: no expansion).
     off_grid_expansion: bool = False
+    # ── freedom budget (0-5 wildcard allowance; front-matter `freedomBudget:` block) ──
+    # None when the style declares no budget (non-migrated file loads unchanged);
+    # consumers (wildcard_generator, generate_composition) then keep legacy behavior.
+    freedom_budget: FreedomBudget | None = None
     title: str = ""
     raw_md: str = ""
     source_path: str = ""
@@ -319,7 +448,7 @@ def _parse_structure(body: str, meta: dict | None = None) -> StyleStructure:
     front-matter keys are:
 
         type:    {display_min_rem, display_vw, display_max_rem, display_leading,
-                  display_tracking}
+                  display_tracking, display_source}
         motion:  {min_ms, base_ms}
         radius:  <css length>            # structural corner-radius default
         shape:   {flat, centered, single_accent}
@@ -366,6 +495,36 @@ def _parse_structure(body: str, meta: dict | None = None) -> StyleStructure:
         m = re.search(r"tracking[^-]*(-\d?\.\d+em)", type_sec, re.I)
         if m:
             s.display_tracking = m.group(1)
+
+    # display magnitude OWNER: front-matter only (machine-explicit, like the alignment
+    # stance); absent -> "poster" (the legacy behavior, so non-migrated styles are
+    # byte-unchanged). Unknown values fall back to "poster" rather than inventing a mode.
+    if str(type_fm.get("display_source", "")).strip().lower() == "brand":
+        s.display_source = "brand"
+
+    # primary-action archetype default (B5): read from the soft_options front-matter
+    # block ('primary-action' option). The option VALUE names a device (pill-button,
+    # filled-button, ghost-link, …): '*button' → filled, '*link' → typographic. Absent
+    # or unrecognized → "" (style silent; brand token presence decides, as before).
+    so = meta.get("soft_options") or {}
+    pa = so.get("primary-action") or so.get("primaryAction") or {}
+    pa_default = str((pa.get("default") if isinstance(pa, dict) else pa) or "").strip().lower()
+    if "button" in pa_default:
+        s.primary_action = "filled"
+    elif "link" in pa_default:
+        s.primary_action = "typographic"
+
+    # logo-strip treatment (AS-33): front-matter only (machine-explicit, like
+    # display_source); an absent/unrecognized value leaves the style silent ("") —
+    # the device renders marks untreated, never an invented emphasis.
+    ls = str(meta.get("logoStrip") or meta.get("logo_strip") or "").strip().lower()
+    if ls in ("monochrome", "reduced", "plain"):
+        s.logo_strip = ls
+
+    # inset art-panel surface (AS-37): front-matter only, same discipline as logoStrip.
+    ap = str(meta.get("artPanel") or meta.get("art_panel") or "").strip().lower()
+    if ap in ("inset", "none"):
+        s.art_panel = ap
 
     # motion: front-matter {min_ms, base_ms} exact, else prose range "~320–620ms" (low
     # end = floor, midpoint = applied duration) OR a single "(500ms+)" floor.
@@ -545,6 +704,9 @@ def load_style(style_id: str, styles_dir: Path | None = None) -> Style:
     # documented spellings; a `capabilities:` block is also honored so the flag can live
     # beside future capability toggles. Absent -> False (no expansion; conservative).
     off_grid = _parse_off_grid_expansion(meta)
+    # freedom budget (0-5 wildcard allowance). Front-matter ONLY (machine-explicit or
+    # absent, like the alignment stance); absent -> None (legacy behavior preserved).
+    freedom_budget = _parse_freedom_budget(meta)
     structure = _parse_structure(body, meta)
     # Soft-radius fix: when the style declares `radius` as a SOFT option, the structural
     # default radius is that option's default (e.g. editorial-luxury's ~10px luxury
@@ -568,6 +730,7 @@ def load_style(style_id: str, styles_dir: Path | None = None) -> Style:
         invariants=invariants,
         soft_options=soft_options,
         off_grid_expansion=off_grid,
+        freedom_budget=freedom_budget,
         title=title_m.group(1).strip() if title_m else sid,
         raw_md=md,
         source_path=str(path),
@@ -708,6 +871,22 @@ class RenderContext:
         Inactive context (no style) -> False (no expansion)."""
         return bool(self.style.off_grid_expansion) if self.style else False
 
+    @property
+    def freedom_budget(self) -> FreedomBudget | None:
+        """The active style's 0-5 freedom-budget ladder (see Style.freedom_budget).
+        None when no style is active or the style declares no budget."""
+        return self.style.freedom_budget if self.style else None
+
+    def resolve_freedom_level(self, doc: dict | None = None) -> int | None:
+        """The concrete freedom level for a run: the brand's LEVEL choice
+        (``voice.dials.freedom``) clamped to the style ceiling, else the style default.
+        None when the style declares no budget (caller keeps legacy behavior)."""
+        fb = self.freedom_budget
+        if fb is None:
+            return None
+        choice = brand_freedom_level(doc or {})
+        return fb.clamp(choice) if choice is not None else fb.default
+
 
 def merge(style: Style, doc: dict) -> RenderContext:
     """Layer BRAND on top of STYLE per the precedence rules.
@@ -783,5 +962,11 @@ if __name__ == "__main__":
         "invariants": ctx.style.invariants,
         "soft_options": ctx.style.soft_options,
         "offGridExpansion": ctx.off_grid_expansion,
+        "freedomBudget": (None if ctx.freedom_budget is None else {
+            "default": ctx.freedom_budget.default,
+            "ceiling": ctx.freedom_budget.ceiling,
+            "resolved": ctx.resolve_freedom_level(doc),
+            "levels": {str(k): v for k, v in sorted(ctx.freedom_budget.levels.items())},
+        }),
         "notes": ctx.notes,
     }, indent=2))

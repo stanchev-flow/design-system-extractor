@@ -597,7 +597,7 @@ def main():
                   treatments=set(), surface_intent="any"),
             args.brand_yaml)
         _run_match(
-            "text-on-photo hero (should be neverDo-filtered for WoodWave)",
+            "text-on-photo hero (should be neverDo-filtered for a no-text-on-photos brand)",
             Query(use_case="hero", textlens=["medium"], has_media=True,
                   treatments={"text-on-media"}, surface_intent="any"),
             args.brand_yaml)

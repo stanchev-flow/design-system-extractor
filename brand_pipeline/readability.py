@@ -703,13 +703,35 @@ def analyze(html, default_bg=None):
             "skipped": skipped}
 
 
-def check_text_contrast(html, default_bg=None, analysis=None):
-    """(passed, detail) for the `text-contrast` invariant."""
+def check_text_contrast(html, default_bg=None, analysis=None, measured_pairs=None):
+    """(passed, detail) for the `text-contrast` invariant.
+
+    ``measured_pairs`` (fix-batch 2026-07, fidelity-over-floor): an optional set of
+    (fg, bg) hex pairs the BRAND ITSELF measured on the live site (e.g.
+    ``buttons.primary.fg`` on ``buttons.primary.bg`` from brand.yaml). An element whose
+    resolved pair matches EXACTLY is exempt from the generic floor and reported as a
+    measured-brand pair: this check targets AI-authored drift, and a provenance-verified
+    component pair is brand truth, not drift (many real brands ship sub-AA primary
+    buttons). Any OTHER low-contrast combination — including the same hues in a
+    non-measured pairing — still fails."""
     a = analysis if analysis is not None else analyze(html, default_bg=default_bg)
     rows = a["text"]
     fails = [r for r in rows if not r["passed"]]
     if not rows:
         return True, f"no statically-resolvable text elements found (skipped={a['skipped']})"
+    exempt = []
+    if fails and measured_pairs:
+        pairs = {(str(f).strip().lower(), str(b).strip().lower())
+                 for f, b in measured_pairs if f and b}
+        still = []
+        for r in fails:
+            key = (str(r["color"]).strip().lower(),
+                   str(r["bg_decor"] or r["bg"]).strip().lower())
+            (exempt if key in pairs else still).append(r)
+        fails = still
+    exempt_note = (f"; {len(exempt)} element(s) exempt as MEASURED brand pairs "
+                   f"({'; '.join(sorted({r['color'] + ' on ' + str(r['bg_decor'] or r['bg']) for r in exempt}))})"
+                   if exempt else "")
     if fails:
         shown = "; ".join(
             f"{r['desc']} {r['color']} on {r['bg_decor'] or r['bg']} = {r['ratio']} "
@@ -717,11 +739,12 @@ def check_text_contrast(html, default_bg=None, analysis=None):
         more = f" (+{len(fails) - 4} more)" if len(fails) > 4 else ""
         return False, (f"{len(fails)}/{len(rows)} text elements below WCAG-ish floor "
                        f"(display >= {TEXT_CONTRAST_DISPLAY_MIN}, body >= "
-                       f"{TEXT_CONTRAST_BODY_MIN}): {shown}{more}")
+                       f"{TEXT_CONTRAST_BODY_MIN}): {shown}{more}{exempt_note}")
     worst = min(rows, key=lambda r: r["ratio"] / r["threshold"])
     return True, (f"{len(rows)} text elements measured against their effective background "
                   f"(surface + decoration layer); worst = {worst['desc']} at "
-                  f"{worst['ratio']} (floor {worst['threshold']}); skipped={a['skipped']}")
+                  f"{worst['ratio']} (floor {worst['threshold']}); skipped={a['skipped']}"
+                  f"{exempt_note}")
 
 
 def check_link_hover_contrast(html, default_bg=None, analysis=None):

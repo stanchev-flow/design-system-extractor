@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Replication probe — remote.com (NOT A LANE)</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--font-sans);
+    font-size: var(--size-body); line-height: var(--lh-body); font-weight: var(--weight-body);
+    color: var(--color-ink); background: var(--color-bg);
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: var(--container); margin: 0 auto; padding: 0 var(--space-6); }
+  a { color: inherit; text-decoration: none; }
+
+  /* ---------- top banner ---------- */
+  .banner {
+    background: var(--color-banner); color: var(--color-on-dark);
+    font-size: var(--size-small); text-align: center; padding: var(--space-3) var(--space-4);
+  }
+  .banner a { text-decoration: underline; font-weight: 600; }
+
+  /* ---------- nav ---------- */
+  .nav { padding: var(--space-4) 0; }
+  .nav .container { display: flex; align-items: center; gap: var(--space-6); }
+  .logo { display: flex; align-items: center; gap: var(--space-2); font-weight: 700; font-size: 22px; letter-spacing: -0.01em; }
+  .logo-mark {
+    width: 32px; height: 32px; border-radius: var(--radius-pill);
+    background: var(--color-ink); color: var(--color-on-dark);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700;
+  }
+  .nav-links { display: flex; gap: var(--space-6); margin-left: var(--space-8); font-size: 15px; font-weight: 500; }
+  .nav-links a::after { content: " \2304"; font-size: 11px; color: var(--color-ink-faint); }
+  .nav-links a.plain::after { content: ""; }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: var(--space-5); font-size: 15px; font-weight: 500; }
+  .btn {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    border-radius: var(--radius-pill); padding: 12px 24px;
+    font-size: 15px; font-weight: 600; border: 1px solid transparent;
+    transition: background var(--motion-fast) var(--motion-ease);
+    cursor: pointer;
+  }
+  .btn-dark { background: var(--color-ink); color: var(--color-on-dark); }
+  .btn-primary { background: var(--color-brand-blue); color: var(--color-on-dark); }
+  .btn-primary:hover { background: var(--color-brand-blue-deep); }
+  .btn-outline { border-color: var(--color-brand-blue); color: var(--color-brand-blue); background: transparent; }
+
+  /* ---------- hero ---------- */
+  .hero-wrap { padding: var(--space-4) var(--space-6) 0; }
+  .hero {
+    max-width: 1400px; margin: 0 auto; border-radius: var(--radius-card);
+    background: linear-gradient(100deg, #ececea 0%, #ebecec 60%, var(--color-brand-blue-tint) 100%);
+    display: grid; grid-template-columns: 1fr 1.1fr; align-items: center;
+    padding: var(--space-8) var(--space-8); gap: var(--space-6); overflow: hidden;
+  }
+  .hero h1 {
+    font-size: var(--size-display); line-height: var(--lh-display);
+    font-weight: var(--weight-display); letter-spacing: var(--ls-tight);
+    margin-bottom: var(--space-5);
+  }
+  .hero p { color: var(--color-ink-soft); max-width: 46ch; margin-bottom: var(--space-6); }
+  .hero-ctas { display: flex; gap: var(--space-3); }
+  .hero-art img { width: 100%; height: auto; display: block; }
+
+  /* ---------- logos band ---------- */
+  .logos { padding: var(--space-8) 0 var(--space-9); text-align: center; }
+  .caption {
+    font-size: var(--size-caption); letter-spacing: var(--ls-caption);
+    font-weight: var(--weight-caption); text-transform: uppercase; color: var(--color-ink-soft);
+  }
+  .logo-row {
+    margin-top: var(--space-7); display: flex; gap: var(--space-8);
+    justify-content: center; align-items: center; flex-wrap: wrap;
+    color: var(--color-ink-faint); font-weight: 700; font-size: 22px; filter: grayscale(1);
+  }
+  .logo-row span { opacity: 0.75; }
+
+  /* ---------- how we do it ---------- */
+  .how { padding: 0 0 var(--space-9); }
+  .how .container { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-8); }
+  .eyebrow { font-size: var(--size-caption); letter-spacing: var(--ls-caption); font-weight: var(--weight-caption); text-transform: uppercase; }
+  .eyebrow-red { color: var(--color-crimson); }
+  .eyebrow-blue { color: var(--color-brand-blue); }
+  .how h2 { font-size: var(--size-h2); line-height: var(--lh-h2); font-weight: var(--weight-h2); letter-spacing: var(--ls-tight); margin: var(--space-3) 0 var(--space-6); }
+  .acc-item { border-bottom: 1px solid var(--color-line); padding: var(--space-5) var(--space-2); display: flex; align-items: center; gap: var(--space-4); font-weight: var(--weight-h3); font-size: 17px; }
+  .acc-item .chev { margin-left: auto; color: var(--color-ink-soft); }
+  .dot { width: 24px; height: 24px; border-radius: 6px; background: var(--color-crimson); display: inline-block; flex: none; }
+  .acc-open {
+    background: var(--color-burgundy); color: var(--color-on-dark);
+    border-radius: 2px; padding: var(--space-6); margin: 0 0 var(--space-2);
+  }
+  .acc-open .head { display: flex; align-items: center; gap: var(--space-4); font-weight: var(--weight-h3); font-size: 17px; }
+  .acc-open p { margin: var(--space-4) 0 var(--space-6); font-size: 15px; opacity: 0.92; max-width: 40ch; }
+  .circle-btn {
+    width: 44px; height: 44px; border-radius: var(--radius-pill);
+    background: var(--color-on-dark); color: var(--color-ink);
+    display: inline-flex; align-items: center; justify-content: center; font-size: 18px;
+  }
+  .how-art {
+    background: var(--color-surface); border-radius: var(--radius-card-sm);
+    box-shadow: var(--shadow-card); padding: var(--space-6);
+    display: flex; align-items: center; justify-content: center; min-height: 420px;
+  }
+  .invoice-card { background: var(--color-surface); border-radius: var(--radius-card-sm); box-shadow: var(--shadow-card); padding: var(--space-5); width: 100%; max-width: 420px; }
+  .invoice-card h4 { font-size: 18px; margin-bottom: var(--space-4); }
+  .invoice-row { display: flex; justify-content: space-between; padding: var(--space-3) 0; border-bottom: 1px solid var(--color-line); font-size: var(--size-small); }
+  .invoice-row b { font-weight: 600; }
+  .pill-badge { background: var(--color-crimson); color: var(--color-on-dark); border-radius: var(--radius-pill); font-size: 12px; padding: 2px 10px; }
+
+  /* ---------- infra section ---------- */
+  .infra { padding: 0 0 var(--space-9); }
+  .infra .container { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-8); align-items: center; }
+  .infra h2 { font-size: var(--size-h2); line-height: var(--lh-h2); font-weight: var(--weight-h2); letter-spacing: var(--ls-tight); margin: var(--space-3) 0 var(--space-5); }
+  .infra p { color: var(--color-ink-soft); }
+  .chip-stack { background: var(--color-surface); border-radius: var(--radius-card-sm); box-shadow: var(--shadow-card); padding: var(--space-5); font-size: var(--size-small); }
+  .chip { display: flex; justify-content: space-between; align-items: center; padding: var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-chip); margin-bottom: var(--space-3); }
+  .chip .tag { color: var(--color-brand-blue); font-weight: 600; }
+
+  /* ---------- CTA band ---------- */
+  .cta-band { padding: 0 var(--space-6) var(--space-9); }
+  .cta-band .inner {
+    max-width: 1400px; margin: 0 auto; border-radius: var(--radius-card);
+    background: linear-gradient(180deg, var(--color-surface-sunken) 60%, #dfe8e0 100%);
+    text-align: center; padding: var(--space-9) var(--space-8);
+  }
+  .cta-band h2 { font-size: 36px; line-height: var(--lh-h2); font-weight: var(--weight-h2); letter-spacing: var(--ls-tight); max-width: 30ch; margin: 0 auto var(--space-6); }
+
+  /* ---------- workflows cards ---------- */
+  .workflows { padding: 0 0 var(--space-10); }
+  .workflows h2 { font-size: var(--size-h2); font-weight: var(--weight-h2); letter-spacing: var(--ls-tight); margin-bottom: var(--space-7); }
+  .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); }
+  .wf-card { background: var(--color-surface); border-radius: 4px; overflow: hidden; }
+  .wf-card .img { background: var(--color-navy); aspect-ratio: 2.1 / 1; }
+  .wf-card .img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .wf-card .body { padding: var(--space-5) var(--space-5) var(--space-6); }
+  .wf-card h3 { font-size: var(--size-h3); font-weight: var(--weight-h3); margin: var(--space-3) 0; }
+  .wf-card p { color: var(--color-ink-soft); font-size: 15px; margin-bottom: var(--space-4); }
+  .learn { color: var(--color-brand-blue); font-weight: 600; text-decoration: underline; font-size: 15px; }
+</style>
+</head>
+<body>
+
+<div class="banner">Do you know how to say "global payroll" in Dutch? <a href="#">Take the quiz &rarr;</a></div>
+
+<nav class="nav">
+  <div class="container">
+    <a class="logo" href="#"><span class="logo-mark">R</span> remote</a>
+    <div class="nav-links">
+      <a href="#">Products</a><a href="#">Solutions</a><a href="#">Resources</a><a class="plain" href="#">Pricing</a>
+    </div>
+    <div class="nav-right">
+      <a href="#">&#9786; Login</a><a href="#">&#127760;</a>
+      <a class="btn btn-dark" href="#">Book demo</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero-wrap">
+  <div class="hero">
+    <div>
+      <h1>Global employment runs on&nbsp;Remote</h1>
+      <p>Hire and pay anyone in the world — with the compliance, reliability, and local expertise that only owned infrastructure delivers.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#">Book demo &rarr;</a>
+        <a class="btn btn-outline" href="#">Sign up</a>
+      </div>
+    </div>
+    <div class="hero-art">
+      <img src="../../screenshots/remote/Remote%20%E2%80%94%20Global%20Employment%20Infrastructure%20_%20EOR,%20Payroll%20%26%20Compliance,%20Worldwide_files/new-global-employment-runs-on-remote-hero-homepage_english@2x.webp" alt="Remote global network illustration">
+    </div>
+  </div>
+</header>
+
+<section class="logos">
+  <div class="caption">Global companies grow with Remote</div>
+  <div class="logo-row">
+    <span>MIZUHO</span><span>&#9679; Lovable</span><span>box</span><span>miro</span><span>KFC</span><span>&#10029; Heineken</span><span>BYD</span><span>&#9650; Vercel</span><span>ANTHROPIC</span>
+  </div>
+</section>
+
+<section class="how">
+  <div class="container">
+    <div>
+      <div class="eyebrow eyebrow-red">How we do it</div>
+      <h2>One system of record. Every employment need.</h2>
+      <div class="acc-item"><span class="dot"></span> Employer of Record (EOR) <span class="chev">&#8964;</span></div>
+      <div class="acc-item"><span class="dot"></span> Global Payroll <span class="chev">&#8964;</span></div>
+      <div class="acc-item"><span class="dot"></span> Contractor of Record (COR) <span class="chev">&#8964;</span></div>
+      <div class="acc-open">
+        <div class="head"><span class="dot"></span> Contractor Management <span class="chev" style="margin-left:auto">&#8963;</span></div>
+        <p>Engage contractors compliantly, anywhere — and convert them to FTEs before misclassification risk becomes a legal problem.</p>
+        <span class="circle-btn">&rarr;</span>
+      </div>
+      <div class="acc-item"><span class="dot"></span> Professional Employer Organization (PEO) <span class="chev">&#8964;</span></div>
+    </div>
+    <div class="how-art">
+      <div class="invoice-card">
+        <h4>Invoices</h4>
+        <div class="invoice-row"><b>John Sotho</b><span>Argentina</span><span>2,200 EUR</span></div>
+        <div class="invoice-row"><b>Nari Kim</b><span>France</span><span>8,000 EUR</span></div>
+        <div class="invoice-row"><b>Bryan James</b><span>Japan</span><span>5,000 EUR</span></div>
+        <div style="margin-top:16px"><span class="pill-badge">+22</span> <span style="font-size:14px">Payroll transferred for all team — <b>$204,00</b> USD</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="infra">
+  <div class="container">
+    <div class="chip-stack">
+      <div class="chip"><span><b>&#9432; Payroll engine</b></span><span class="tag">RUNNING</span></div>
+      <div class="chip"><span>UK &middot; monthly cycle</span><span><b>&pound;312,540</b></span></div>
+      <div class="chip"><span>DE &middot; monthly cycle</span><span><b>&euro;487,210</b></span></div>
+      <div class="chip"><span>BR &middot; 13th salary</span><span><b>R$ 891k</b></span></div>
+      <div class="chip" style="margin-bottom:0"><span><b>&#9432; Compliance layer</b></span><span class="tag">VERIFIED</span></div>
+    </div>
+    <div>
+      <div class="eyebrow eyebrow-blue">Intelligent infrastructure</div>
+      <h2>Owned end-to-end infrastructure, operated in-house.</h2>
+      <p>We have our own legal experts, our own payroll specialists, and our own compliance teams in every market we operate in. And because it's all ours, everything lives in one place: every employment record, contract, compliance document, and payroll engine run accurate, current, audit-ready, <b>SOC 2 Type 2 compliant</b>, and <b>ISO 27001 certified</b>.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="inner">
+    <h2>Hiring internationally, converting contractors, or consolidating payroll? Talk to our team.</h2>
+    <a class="btn btn-primary" href="#">Book demo &rarr;</a>
+  </div>
+</section>
+
+<section class="workflows">
+  <div class="container">
+    <h2>Your workflows, your way, on our infrastructure</h2>
+    <div class="card-grid">
+      <div class="wf-card">
+        <div class="img"><img src="../../screenshots/remote/Remote%20%E2%80%94%20Global%20Employment%20Infrastructure%20_%20EOR,%20Payroll%20%26%20Compliance,%20Worldwide_files/remote-mcp-blue-image-card@2x.webp" alt="MCP illustration"></div>
+        <div class="body">
+          <div class="eyebrow eyebrow-blue">MCP</div>
+          <h3>Deploy AI agents on real employment data</h3>
+          <p>Remote MCP gives any AI agent a live, secure connection to payroll, contracts, compliance data, and org structure — no API keys, no exports, no custom integrations needed.</p>
+          <a class="learn" href="#">Learn more &rarr;</a>
+        </div>
+      </div>
+      <div class="wf-card">
+        <div class="img"><img src="../../screenshots/remote/Remote%20%E2%80%94%20Global%20Employment%20Infrastructure%20_%20EOR,%20Payroll%20%26%20Compliance,%20Worldwide_files/remote-integrations-image-card@2x.webp" alt="Integrations illustration"></div>
+        <div class="body">
+          <div class="eyebrow eyebrow-blue">Integrations</div>
+          <h3>Plug Remote into your stack</h3>
+          <p>Keep the HR tools your team already uses. Remote runs the payroll and compliance underneath, natively integrated with Workday, HiBob, BambooHR, Personio, and more.</p>
+          <a class="learn" href="#">See all integrations &rarr;</a>
+        </div>
+      </div>
+      <div class="wf-card">
+        <div class="img"><img src="../../screenshots/remote/Remote%20%E2%80%94%20Global%20Employment%20Infrastructure%20_%20EOR,%20Payroll%20%26%20Compliance,%20Worldwide_files/remote-api-first-by-design-image-card@2x.webp" alt="API illustration"></div>
+        <div class="body">
+          <div class="eyebrow eyebrow-blue">API</div>
+          <h3>Build on top of ours</h3>
+          <p>Remote is API-first by design. Use our REST API, webhooks, and CLI to build custom workflows, embed global employment into your product, and automate everything.</p>
+          <a class="learn" href="#">Read the docs &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
