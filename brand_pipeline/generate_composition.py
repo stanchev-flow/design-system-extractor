@@ -228,6 +228,124 @@ def brand_facts(doc: dict) -> dict:
 
 # ── PHASE 1C: the prompt builder ──────────────────────────────────────────────────
 
+# Surface-role dark markers (mirrors component_render.make_context + the textAccent
+# convention: LIGHT surfaces carry no textAccent; a textAccent-bearing surface is a
+# dark/inverse-family band even when its role name is brand-specific, e.g. an
+# image-scrim hero surface).
+_DARK_ROLE_HINTS = ("inverse", "accent", "overlay")
+
+
+def _surface_rhythm_profile(doc: dict) -> dict:
+    """Derive the brand's OBSERVED surface rhythm facts from extracted evidence
+    (surfaceGrammar.pageRhythm resolved against tokens.surfaces), for the
+    surface-fidelity prompt rules. Palette-agnostic: only light/dark band structure
+    is derived, never any brand's colors.
+
+    Returns {"rhythm": [roles], "dark_count": int, "opens_dark": bool,
+             "has_rhythm": bool, "has_dark_surface": bool}.
+    A brand with NO captured rhythm reports has_rhythm=False (callers fall back to
+    the historical default rather than inventing an all-light claim)."""
+    surfaces = (doc.get("tokens") or {}).get("surfaces") or {}
+
+    def _is_dark(role: str) -> bool:
+        r = str(role or "")
+        if any(h in r for h in _DARK_ROLE_HINTS):
+            return True
+        surf = surfaces.get(r)
+        return bool(isinstance(surf, dict) and surf.get("textAccent"))
+
+    rhythm = (doc.get("surfaceGrammar") or {}).get("pageRhythm")
+    if isinstance(rhythm, dict):
+        rhythm = rhythm.get("value")
+    rhythm = [str(r) for r in rhythm] if isinstance(rhythm, list) else []
+    dark_flags = [_is_dark(r) for r in rhythm]
+    return {
+        "rhythm": rhythm,
+        "dark_count": sum(dark_flags),
+        "opens_dark": bool(dark_flags and dark_flags[0]),
+        "has_rhythm": bool(rhythm),
+        "has_dark_surface": any(_is_dark(r) for r in surfaces),
+    }
+
+
+def _brand_fidelity_rules(doc: dict, single_accent: bool) -> str:
+    """The BRAND FIDELITY rule block, derived from the brand's extracted surface
+    grammar instead of asserting one grammar for every brand (the old hardcoded
+    "exactly ONE inverse hero" rule forced dark bands onto all-light brands).
+
+    Three shapes:
+      - rhythm OPENS dark  -> the historical rule (one inverse hero bookend);
+      - rhythm has dark bands but NOT at the opening -> hero stays light; inverse
+        reserved for as many later bands as observed;
+      - all-light rhythm -> inverse surfaceIntent is FORBIDDEN everywhere.
+    A brand with no captured rhythm keeps the historical default when it declares a
+    dark surface at all, else falls through to the all-light rule (nothing to paint
+    an inverse band with)."""
+    prof = _surface_rhythm_profile(doc)
+    accent_hero = (
+        "  It is the ONLY section that carries the brand accent (on its display-title); the\n"
+        "  gate's single-accent rule allows at most ONE accent-styled element on the page.\n"
+        if single_accent else "")
+    accent_light = (
+        "- ACCENT DISCIPLINE: at most ONE committed accent-styled TEXT moment page-wide\n"
+        "  (accent display-title or eyebrow), placed only on a surface where the brand's own\n"
+        "  rules make the accent legal. Actions (buttons/links) realize accent through the\n"
+        "  brand's catalog and do not count against this budget.\n"
+        if single_accent else "")
+
+    if prof["has_rhythm"] and prof["dark_count"] == 0:
+        return (
+            "- BRAND FIDELITY (HARD — derived from the brand's extracted surface rhythm): the\n"
+            "  observed page rhythm carries NO dark/inverse band. Every section — the hero\n"
+            "  included — uses `surfaceIntent` \"primary\", \"panel\" or \"any\"; NEVER emit\n"
+            "  \"inverse\" or \"inverse-strong\" for this brand. The hero realizes its impact\n"
+            "  through the brand's own extracted hero pattern (panel/art surface, display-scale\n"
+            "  type, placed media), not through a dark band the source never shows.\n"
+            + accent_light)
+    if prof["has_rhythm"] and not prof["opens_dark"]:
+        return (
+            "- BRAND FIDELITY (HARD — derived from the brand's extracted surface rhythm): the\n"
+            "  observed rhythm keeps the OPENING light and reserves dark band(s) for later\n"
+            f"  positions ({prof['dark_count']} dark band(s) observed, e.g. a closing conversion\n"
+            "  band). The hero uses `surfaceIntent` \"primary\", \"panel\" or \"any\"; at most\n"
+            f"  {prof['dark_count']} section(s) may use \"inverse\"/\"inverse-strong\", placed\n"
+            "  where the extracted rhythm shows them (never the opener).\n"
+            + accent_light)
+    if not prof["has_rhythm"] and not prof["has_dark_surface"]:
+        return (
+            "- BRAND FIDELITY (HARD): this brand declares no dark/inverse surface, so no section\n"
+            "  may use `surfaceIntent` \"inverse\" or \"inverse-strong\" — every section uses\n"
+            "  \"primary\", \"panel\" or \"any\".\n"
+            + accent_light)
+    # opens-dark rhythm, or no rhythm evidence but a dark surface exists (historical default).
+    return (
+        "- BRAND FIDELITY (HARD — derived from the brand's extracted surface rhythm): the\n"
+        "  observed rhythm opens on a dark band. Exactly ONE section — the hero/opening\n"
+        "  bookend — MUST use `surfaceIntent: \"inverse\"` (or \"inverse-strong\").\n"
+        + accent_hero +
+        "  EVERY other section uses `surfaceIntent: \"primary\"` or \"panel\""
+        + (" and carries NO accent" if single_accent else "") + ".\n")
+
+
+_COPY_QUALITY_RULES = """- COPY QUALITY (HARD): copy is REAL, specific and non-repeating.
+  - Within a section, eyebrow ≠ heading ≠ body: never restate one phrase across slots. The
+    eyebrow is a short register label (<= 6 words), the heading carries the section's ONE
+    claim, the body ADVANCES it with NEW information (specifics, numbers, proof from the
+    brief) instead of paraphrasing the heading.
+  - No heading repeats verbatim across sections; no slot ships placeholder prose ("Lorem",
+    "Section body", the bare brand name as a heading).
+  - Bind the brief's own facts and vocabulary into slot copy; where the brief is thin for a
+    section, derive from the brand's extracted voice/do-avoid evidence — never generic
+    marketing filler that could caption any brand.
+- LOGO WALLS (HARD): a `logos` use-case section binds its wall as ONE repeatable slot whose
+  `copy` is an ARRAY of {"alt": "<Company>", "asset": "<file>"} objects — each `asset` an
+  EXACT filename from the brand-assets list above (the logo files). Never bare strings,
+  never invented filenames, and never a text-only wall while real logo assets exist.
+- FOOTER (HARD): do NOT compose a footer section. The renderer appends the brand's
+  extracted footer chrome to every page, so a model-authored footer renders as a DUPLICATE.
+  Omit "footer" from `sections` even when the brief mentions footer content."""
+
+
 def _expansion_capability_block(off_grid_expansion: bool) -> str:
     """The prose the model reads for the off-grid EXPANSION capability gate (Part B).
 
@@ -286,10 +404,12 @@ def build_prompt(brief_text: str, brand_yaml_path: Path | str, style_id: str,
     facts = brand_facts(doc)
 
     # merged STYLE (structure + invariants + soft options + spacing/type scale).
+    single_accent = True  # style-structure default (styles.StyleStructure.single_accent)
     try:
         ctx = styles_mod.load_and_merge(style_id, doc)
         st = ctx.style
         struct = ctx.structure
+        single_accent = bool(struct.single_accent)
         style_lines = [
             f"style id: {st.id}",
             f"display floor: {struct.display_size_css()} (>= {struct.min_display_rem}rem)",
@@ -514,11 +634,12 @@ RULES:
   3-object copy array so each is its own module).
 - BRAND ASSETS: the ONLY real image files are: {assets_line}. For a media slot set
   `asset.src` to one of these EXACT filenames, or `asset: null` (the renderer then supplies
-  brand photography). NEVER invent a filename (e.g. gallery-01.jpg) — a missing file FAILS the gate.
-- BRAND FIDELITY (HARD): exactly ONE section — the hero/opening bookend — MUST use
-  `surfaceIntent: "inverse"` (or "inverse-strong") and is the ONLY section that carries the brand
-  accent (on its display-title). EVERY other section uses `surfaceIntent: "primary"` or "panel" and
-  carries NO accent — the gate's single-accent rule allows at most ONE accent element on the page.
+  brand photography). NEVER invent a filename (e.g. gallery-01.jpg) — a missing file FAILS the
+  gate. PREFER binding a real asset to each media-bearing module when a suitable one exists
+  (a repeatable module run whose items each have matching brand art binds each module's
+  `asset` explicitly, as a bare-string filename inside that module's copy object); reserve
+  `asset: null` for slots where nothing in the list fits.
+{_brand_fidelity_rules(doc, single_accent)}{_COPY_QUALITY_RULES}
 """
     return system + "\n" + user
 

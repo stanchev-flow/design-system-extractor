@@ -23,6 +23,11 @@ re-run this so changes persist. It:
 Everything rendered comes from the saved DOM via the contract; nothing is
 fabricated. Generic across brands (also runs for woodwave).
 
+STANDALONE by decision (Path-2 reconcile, 2026-07): the evidence-first authoring
+skill (spec/layout-analyst-skill.md, Phase 0) INVOKES this tool as its first step
+and then verifies presentation devices against css-facts — the bridge is the
+generator, the skill is the caller; neither re-implements the other.
+
 Usage:
     ./venv/bin/python tools/bridge_chrome_to_brand.py --brand hubspot
 """

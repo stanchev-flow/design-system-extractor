@@ -1,344 +1,255 @@
 ---
 name: brand-layout-analyst
 description: >-
-  Extract a target site's layout design language into the canonical brand.yaml.
-  Use when analyzing a captured site (screenshots + DOM) to derive surface
-  grammar, layout archetypes, grid/width/overlap rules, and per-slot mappings onto
-  the AISB Webflow library inventory. Invoke for first-pass brand extraction, for
-  re-analyzing a single section after an iteration signal, or whenever you need to
-  turn observed sections into brand.yaml layout entries with real library
-  component names/ids. Pairs with the webflow-library-aisb skill (component/token
-  map) and the signal-loop self-education design.
+  Author the canonical brand evidence set (brand.yaml + section-copy.yaml +
+  layout-library.yaml + tagged assets) from a Phase-A extraction evidence bundle
+  (DOM/CSS mining, computed measurement, section crops, vision grounding).
+  Use after the extraction tools have produced runs/<brand>/brand/evidence/;
+  the authoring pass is DONE only when tools/extract/validate_brand_evidence.py
+  passes (C1–C9). Invoke for first-pass brand authoring, for re-authoring after
+  new evidence, or to repair a specific validator failure.
 ---
 
-# brand-layout-analyst (the Layout Analyst)
+# brand-layout-analyst (the evidence-first Layout Analyst)
 
-> This is a **spec** for a Cursor skill (USER DECISION #1: the **Layout Analyst** is a
-> skill any agent can invoke, NOT a hardcoded pipeline step). It is the extraction arm
-> of the **Brand Extractor** pipeline; the **Art Director** (`brand-art-director`) owns
-> consolidation. It does not run automatically; an agent reads it and follows the
-> method. It writes only to `brand.yaml` (canonical) per `brand-schema.md`. It never
-> edits `brand.md` (a rendered projection) and never touches a live site.
+> This is a **spec** for a skill any agent can invoke, NOT a hardcoded pipeline step.
+> It is the AUTHORING arm of the Brand Extractor: it turns the machine-mined evidence
+> bundle into the canonical brand files. It never touches a live site and never
+> hand-edits rendered projections (`brand.md`, chrome preview HTML — both are
+> regenerated from canonical data).
 >
-> **Worked examples reference "the reference brand"** — the first extraction this
-> method was proven on. Examples are ILLUSTRATIVE of the method only; never copy their
-> values, rules, rhythms, or ids into another brand's extraction. A brand with the
-> opposite aesthetic (rounded, filled buttons, light chrome) follows the same method
-> and produces entirely different entries.
+> **The contract is explicit: you owe exactly what the validator checks.** A brand
+> folder is not "done" when the YAML looks plausible — it is done when
+> `./venv/bin/python tools/extract/validate_brand_evidence.py --brand <brand>` exits
+> clean. Every check (C1–C9, below) encodes a real failure this repo has already
+> shipped once; treat a validator error as a missed observation, not red tape.
 >
-> **`brand.yaml` is library-AGNOSTIC.** Canonical nodes carry *intent* — archetype,
-> slot role, primitive/block **contract** (`contracts/primitives.yaml`,
-> `contracts/blocks.yaml`), token semantics. The build target NOW is **Tailwind/shadcn**
-> (intent → classes); the **Webflow Assembler is DEFERRED** (intent → components). Any
-> Webflow-specific ids (component/variable/mode ids, the role table below) are
-> **assembler-only annotations** and belong in the optional, non-canonical
-> `targetMappings:` block — NOT on canonical token/layout nodes.
->
-> **Sign-off notes baked in:** (#5) composite archetypes (`collage`/`overlay`/`band`)
-> are realized with **absolute offsets inside the nearest scaffold slot — no new
-> components are created**. (#6) `brand.yaml` **indexes** the existing sibling artifacts;
-> it references them and never supersedes or deletes them.
+> **Worked examples are illustrative of the method only.** Never copy another brand's
+> values, rules, rhythms, hexes, or ids into a new extraction. A brand with the
+> opposite aesthetic follows the same method and produces entirely different entries.
 
-## Inputs
+## Inputs — the Phase-A evidence bundle
 
-- Captured section screenshots + per-section DOM/CSS (e.g. `runs/<brand>/assets/*`,
-  `screenshots/*`). Read section-by-section; do NOT load whole inventories at once.
-- The library inventory via the **webflow-library-aisb** skill
-  (`.cursor/skills/webflow-library-aisb/SKILL.md` → `components.json`,
-  `variables.json`). Grep for component names/ids and variable names; never invent ids.
-- Any existing `brand.yaml` (for re-analysis / incremental updates).
+All under `runs/<brand>/brand/evidence/` (plus the capture itself). Produced by the
+extraction tools; read them section-by-section, never all at once:
 
-## Output
+| file | producer | what it grounds |
+|---|---|---|
+| `dom-sections.json` | `tools/extract/mine_dom.py` | section census: order, wrappers, per-section tag/class/text/img inventory, repeated-module counts |
+| `css-rules.json` / `css-facts.json` | `tools/extract/mine_css.py` | authored CSS: hover rules, transitions, radii, shadows, chrome-presentation devices (casing, separators), motion evidence |
+| `computed-styles.json` | `tools/extract/measure_computed.py` | browser-computed styles per sampled element — the BUTTON VARIANT-MATRIX evidence and the real type/spacing/surface numbers |
+| `section-rects.json` | `tools/extract/measure_computed.py` | section y-ranges (drives cropping) |
+| `crops/` + `crops-manifest.json` | `tools/extract/slice_sections.py` | per-section screenshots |
+| `grounding/*.yaml` | `tools/extract/ground_sections_vision.py` | per-section VISION grounding (`section-grounding.v1`): creative direction, component anatomy, verbatim copy, surface relationships |
+| `../assets/` + `assets-manifest.json` | `tools/extract/curate_assets.py` | the real downloaded image/logo/font files |
+| `runs/<brand>/assets/source-chrome.v2.json` | chrome extractor | the measured nav/footer contract |
 
-- Mutations to `brand.yaml` only, conforming to `brand-schema.md`: `tokens` (intent +
-  value, library-agnostic), `surfaceGrammar`, brand `primitives[]`/`blocks[]` overrides
-  (against the shared contracts), `layouts[]`, `compositionRules[]`, the three rule lists
-  **`do[]` / `avoid[]` / `neverDo[]`**, `voice.dials`, `recipePolicy`. Optionally,
-  per-section **`targetMappings.webflow`** annotations for the deferred assembler (never
-  on canonical nodes).
-- Every decision wrapped in the rule envelope (`value, confidence, source:creation,
-  scope, changelog`). First-pass extraction always uses `source: creation`.
+Plus: existing canonical files when re-authoring, `contracts/primitives.yaml` /
+`contracts/blocks.yaml`, and the standard pattern library
+(`brand_pipeline/layout_library.py`).
 
-## Archetype vocabulary (tied to REAL library scaffolds)
+## Outputs — the mandatory set (what C1–C9 verify)
 
-The `archetype` enum maps onto real `Section / *` and `Layout / *` components from
-`components.json` (ids verified). Choose the closest scaffold; if none fits, mark
-the archetype as a **composite** and compose from primitives (see Gap handling).
+1. **`brand.yaml`** (schema: `spec/brand-schema.md`) — tokens (colors/type/spacing/
+   surfaces, every type tier with measured `weight` and `case`), `surfaceGrammar`
+   (incl. `pageRhythm`), `buttons:` with the **FULL measured variant matrix** — every
+   observed action family (primary/secondary/tertiary/textCta…), each with `radius`,
+   fill/ink facts and at least one state fact; one family only with
+   `buttons.singleVariantConfirmed: true` after re-checking (schema §10.2) —
+   `primitives[]`/`blocks[]` overrides where **every contract block type is either
+   evidenced or explicitly `notObserved: true`** (schema §10.1; `card` is the
+   historical miss — card anatomy is a COMPONENT, never layout prose), `layouts[]`
+   one entry per observed section with `patternRef`, `navbar:`/`footer:` chrome incl.
+   presentation devices and `footer.legal.text` (the normative key, schema §10.3),
+   the three rule lists, `voice`, `provenanceIndex`.
+2. **`section-copy.yaml`** (schema: `spec/section-copy-schema.md`) — the source's REAL
+   verbatim copy: `sectionCopy` (incl. `wordmark:`) + `layoutCopy.<layoutId>` for
+   every content-bearing layout. Without it every composed section renders
+   wordmark+arrow degenerates by design.
+3. **`layout-library.yaml`** (`layout-patterns.v1`) — **one pattern per observed
+   section shape**, each with `useCase`, `archetypeRef`, `contentShape` (slots with
+   `textLen`/`sizeClass`/`sizeRel`/`mediaAspect`/`z`), `specialTreatments`,
+   `surfaceIntent`, provenance. Every `brand.yaml` layout carries a `patternRef` to
+   one of these (or an explicit `noPatternReason`).
+4. **Tagged assets** — `assets-tagged.json` naming only files that exist under
+   `assets/`, with role tags; **≥ 3 real logo files whenever a logo wall was
+   observed** (a logos use-case with zero logo assets renders a text wall).
+5. **Chrome presentation evidence** — nav/footer merged into `brand.yaml` via
+   `tools/bridge_chrome_to_brand.py` (below), then presentation devices verified
+   against css-facts: `tokens.type.<tier>.case`, optional `.prefix`,
+   `navbar.separator`/`footer.separator`, `navbar.surface.bg`, measured link-hover
+   wash, and the nav-action evidence ladder (`navbar.ctas[]` → `links[].style`
+   filled marker → `measured.cta`).
 
-| archetype | real library scaffold | componentId | slots | when to use |
-|---|---|---|---|---|
-| `stack` | `Section / Stack` | `185a3d3a-0806-d61b-7c06-c5fdd636b093` | 1 | single-column hero/bookend/conversion; bg + overlay + width props |
-| `split` | `Section / Split / Content and media` | `464eadea-7e5a-f915-2967-4a8d53b13c44` | 2 | content beside media (info band, feature) |
-| `split-form` | `Section / Split / Content and form` | `1e71bad3-53f0-ec9b-1456-7048c20d373e` | 2 | content beside a lead form |
-| `split-fullbleed` | `Section / Split / Full bleed / Content and media` | `4dc34099-ab5b-36ae-4038-9fba6033f846` | 2 | edge-to-edge split, media bleeds to viewport edge |
-| `split-card` | `Section / Split card / Content and media` (+ `- v2`) | `464eadea…`/v2 | 1–2 | boxed split on a contained card surface |
-| `stack-fullbleed` | `Section / Stack / Full bleed / Content and media` | `b5c9aa7f-160f-7d95-c514-07e16adcd0e8` | 2 | full-bleed media band with stacked content |
-| `grid` | `Layout / Grid` | `d5fba640-4fbd-f78e-5787-c9d5ef9bc1c6` | 1 | N-up card/logo grids (Columns, Gap size props) |
-| `bento` | `Layout / Bento /4` | `e3e4b1e1-2787-78b8-a6dc-b2d16bd5f9f9` | 4 | asymmetric 4-cell feature mosaic |
-| `row` | `Layout / Row` | `77ad6397-b708-c48f-7bc0-fba0c89e23cb` | 1 | inline horizontal cluster (logos, chips) |
-| `layout-stack` | `Layout / Stack` | `1dc9a490-022c-93ee-82d9-23756de94edb` | 1 | inner vertical stack within a section |
-| `layout-split` | `Layout / Split` | `c74af562-456b-6df4-f8ab-77794ed53b4f` | 2 | inner two-cell split within a section |
-| `header` | `Header` / `Header / Split` | `7cc94828…` / `685a9cc8…` | 1–2 | section heading cluster (eyebrow/heading/subheading) |
-| `logos` | `Logos Wrapper` | `f375ff98-6eb2-826d-0e70-4b45d0fd6fc2` | 1 | logo bar |
-| `band` *(composite)* | `Section / Stack` + overlay props | `185a3d3a…` | 1 | full-bleed colored bookend; overlap done in-slot |
-| `collage` *(composite)* | `Section / Stack` + in-slot `Layout / Stack`/absolute offsets | `185a3d3a…` | 1 | staggered editorial field; **no native scaffold** → compose |
-| `overlay` *(composite)* | `Section / Split card` or `Section / Stack` + offset panel | — | 1–2 | panel overlapping media edges; **compose**, library has no overlap primitive |
+Every decision is wrapped in the rule envelope (`value, confidence, source: creation,
+scope, changelog`) with `provenance: [<sectionId>…]` resolving via `provenanceIndex`.
 
-`band`, `collage`, and `overlay` are **composites**: there is no single library
-component that expresses staggered overlap. Use the nearest `Section / *` scaffold
-for the surface + slot shell, then build the inner composition from leaf primitives
-(see Phase 3 + Gap handling).
+## The vision + DOM cross-check protocol
 
-## Method — 4 phases
+Neither evidence stream is authoritative alone; each catches the other's blind spots.
+For EVERY section, read its `grounding/*.yaml` **and** its `dom-sections.json` entry
+plus the relevant `computed-styles.json` samples together:
 
-### Phase 1 — Section segmentation
+- **Vision claims a color/size/weight** → confirm against computed styles. Vision
+  approximates ("≈ #0a0b1e"); computed styles are exact. Record the computed value,
+  keep the vision observation as corroboration. A vision claim with NO computed
+  counterpart stays `confidence: low`.
+- **DOM shows structure vision missed** — repeated module counts, hidden slides,
+  aria labels, real anchor hrefs, image intrinsic sizes. A grounding YAML that read a
+  card grid as "one panel" is corrected by the DOM's repeated-wrapper census.
+- **Vision shows what DOM cannot** — creative direction (duotone, grain, scrim),
+  perceived surface boundaries, image CONTENT ("team photo, warm palette"), whether
+  a band reads dark even when its bg is an image. DOM/CSS mining alone misses card
+  anatomy and copy hierarchy — this is why C9 requires grounding evidence.
+- **Copy is transcribed, not summarized** — `section-copy.yaml` binds the grounding
+  YAMLs' verbatim `copy` blocks, cross-checked against DOM text (DOM wins on exact
+  characters; vision wins on which text is actually visible/prominent).
+- **States need CSS evidence** — hover/focus/pressed facts come from
+  `css-facts.json` hoverRules + transitions, never from guessing. A button family
+  without a state fact fails C3.
 
-Goal: split the captured page into an ordered list of sections, each a candidate
-`layouts[]` entry, and record the page-level surface rhythm.
+## Grounding conventions (repo law — AGENTS.md)
 
-1. Walk the page top → bottom. A **section** = a top-level full-width band that owns
-   a background surface and a coherent content group. Use DOM `<section>`/top-level
-   children as the first cut; merge/split by visual surface boundaries from screenshots.
-2. Assign each section a stable `sectionId` slug (e.g. `opening-bookend`,
-   `about-run`, `info-band`) and register it in `provenanceIndex` (url, node,
-   screenshot).
-3. Record the **page rhythm**: the ordered list of surface roles across sections →
-   `surfaceGrammar.pageRhythm`. (The reference brand, illustrative: inverse → primary →
-   band → primary → inverse → inverse-strong.)
-4. Note **seam behavior** between consecutive sections (hard cut vs gradient/fade vs
-   bridging element) → `surfaceGrammar.transition` + any one-off bridging device.
+- **Detailed factual inventory, not evidence summaries.** Preserve approximate
+  hex/rgb values, full typography (family/size/weight/case/spacing), image and
+  graphic creative direction, component layout, and parent/child surface
+  relationships. "Evidence", "local only" and "low confidence" must never become the
+  dominant output register — capture the thing itself, flag confidence in the
+  envelope.
+- **Palette-agnostic language** in every rule/prompt-facing string: describe surface
+  relationships ("inverse-strong closing band", "warm-on-dark control family"), never
+  "the navy section". Exact values live in tokens; role names describe function.
+- **No section-specific token names.** `promoInverse`/`heroAccent` are forbidden
+  shapes; a one-off visual relationship is captured as a generic reusable pattern
+  (inverse-surface variant, high-contrast inset card, conditional border behavior).
+  Surface-scoped VARIANT names (`button-primary-on-inverseStrong`) are fine — they
+  name reusable surface roles, not content.
+- **Section-aware prose is allowed, section-specific variables are not** — a rule
+  may say "the closing conversion band uses the inverse surface"; a token may not be
+  named `ctaBandBg`.
 
-Output: skeleton `layouts[]` (id + provenance only) + `surfaceGrammar.pageRhythm`
-+ `surfaceGrammar.transition`. **Write to `brand.yaml` now** before Phase 2.
+## Method — 5 phases
 
-### Phase 2 — Layout-archetype extraction
+### Phase 0 — Chrome bridge (run FIRST)
 
-For each section, capture the structural skeleton. Record each observable as a rule
-envelope (`source: creation`).
+Run `./venv/bin/python tools/bridge_chrome_to_brand.py --brand <brand>` (kept as a
+STANDALONE generator; this skill invokes it, never re-implements it). It merges the
+measured `source-chrome.v2.json` nav/footer into `brand.yaml` atomically and
+regenerates the chrome preview at `runs/<brand>/brand/chrome/index.html` — never
+hand-edit that HTML. Then VERIFY the presentation devices the bridge cannot see
+against `css-facts.json` and the crops: separators, casing per type tier, link-hover
+wash, which primary item is the ACTION (evidence ladder, schema §3 note). Fix
+`footer.legal` to the normative `text:` key if the contract used a synonym.
 
-1. **Surface semantics** — identify the section background/surface role
-   (`surface/primary|inverse|inverse-strong|panel`) and the Color-schemes **mode**
-   that themes it (`surfaceMode` + `modeId`). Map raw bg hex → a `tokens.surfaces`
-   entry. Detect child-surface nesting (e.g. panel inside inverse) →
-   `surfaceGrammar.nesting`.
-2. **Section gutters / padding** — vertical section padding tier and horizontal
-   container gutter; map to `Section/Section Padding Vertical` and a `Container/*`
-   width. Record per-breakpoint ladder if visible → `tokens.spacing` +
-   `widthRules.container`.
-3. **Grid observability** — `columns` (1, 2, N, bento-4), `stagger`
-   (none | alternating-anchors | offset), `overlap` (none | which sanctioned type),
-   and inter-item `gap` (map to `Spacing/*` or `Grid gap` mode) → `gridRules`.
-4. **Width constraints** — content max-width (`full-bleed` | `Width`/`Width LG`/
-   `Width SM` preset) and text **measure** (e.g. "~1/3 container", "~50%", ch cap)
-   → `widthRules`.
-5. **Overlap rules** — enumerate sanctioned overlap types present
-   (display-text-over-media, media-over-media, panel-over-media, media-over-seam)
-   and the z-order ladder → `overlapRules` + (if cross-cutting) `compositionRules`.
+### Phase 1 — Section census + surface rhythm
 
-Pick the `archetype` from the vocabulary table and set `scaffold`
-(component + componentId). **Write each section's layout entry to `brand.yaml` as it
-is completed** (incremental save discipline).
+Walk `dom-sections.json` top→bottom against the crops. A section = a full-width band
+owning a background surface and a coherent content group; merge/split DOM candidates
+by the visual surface boundaries the crops show.
 
-6. **Content-shape signature capture (NEW).** Beyond archetype + grid, capture the
-   *content shape* — the detail that makes a section reusable as a PATTERN. For each slot
-   record, expressed as RELATIONSHIPS/CLASSES, never px (they resolve later against the
-   STYLE scale + brand tokens):
-   - `textLen` (`none|word|short|medium|long`) — short ≈ eyebrow/caption (≤6 words), long
-     ≈ body copy (>40 words). This is how the pattern encodes "SHORT eyebrow + LONG body".
-   - `sizeClass` (`colossal|hero|display|title|body|caption`) and, where a slot's size is
-     visibly tied to a neighbour, `sizeRel: { to: <slot|container>, ratio, axis }` — e.g. a
-     body column measured to ~1/3 the container, or a ghost word ~1.4× the media width.
-   - media slots: `mediaAspect` + `mediaScale: { of, fraction }`; `opacityClass` for
-     ghost/watermark slots; `z` (`back|mid|front`).
-   - **Aspect-ratio PALETTE (page-level, once).** Measure the real dimensions of every
-     source image and consolidate into `tokens.imagery.aspectPalette` (roles like
-     `band`/`landscape`/`near-square`/`portrait`, each `{value, role, provenance}`) — the
-     brand's ratio VARIETY is a signature (anti-ai-slop.md AS-17); a single hardcoded
-     ratio per section flattens it. Composers read the palette via `--c-aspect-*` vars.
-   - **Special treatments** — the signature devices — into `specialTreatments[]`:
-     `ghost-word` (colossal watermark word behind/straddling media), `overlap`, `stagger`,
-     `bleed`, `marginal-caption`, `text-on-media`. Record each device's target/pair/anchor/
-     `amount.class` (`light|medium|heavy`). *This is exactly the reference brand's detail —
-     the giant ghost word floating around the photo, the margin micro-caption, the
-     alternating stagger.* Capture the PATTERN, not the pixels.
-   - **Alignment coherence — `contentShape.alignment` (REQUIRED whenever any slot is
-     centered).** Do not stop at recording the block's own alignment as a `variantKnob` —
-     that alone silently drops what happens to SIBLING slots (this is precisely how a real
-     gap slipped through: the reference brand's conversion stack recorded `align: center`
-     but nothing said the body/form should ALSO center or share the body's measure, so the
-     render came back with a centered heading over a left-anchored, full-width form). Record:
-     `alignment.value` (center/left/mixed), `alignment.inheritance`
-     (block-inherits/per-slot-override), and `alignment.rule` stating the OBSERVED behavior
-     for THIS pattern family — it is **not universal**: a CTA/conversion block's centered
-     heading conventionally centers every sibling too (and a control/form shares the body's
-     measure, never a bare full-width default); a section-level HEADER block (an intro
-     heading over a longer body run) can center only the heading while the body stays
-     left-anchored — state which case applies, do not assume.
-   - **Control-measure requirement.** Any slot with `sizeClass: control` (a form/input/
-     button row) MUST carry an explicit `width` or `sizeRel` — a control has no natural
-     "measure" the way a paragraph does, so an unrecorded control silently defaults to
-     stretching the full container in the renderer. Prefer `sizeRel: { to: body, ratio:
-     1.0, axis: width }` over a bare `width: stretch` unless the source genuinely shows the
-     control running edge-to-edge.
-   - **Scroll-parallax motion (`kind: scroll-parallax`, brand-schema.md §4.4.1).** Check the
-     source DOM/CSS for a Webflow IX2 (or equivalent) scroll-linked interaction: sample the
-     SAME element's computed `transform` at 2+ scroll depths (not just once) — a static
-     entrance animation settles to ONE final value and stays there; a scroll-parallax value
-     keeps changing proportional to scroll position. A wrapper element whose class name
-     hints "wrp"/"mask" around a single `<img>` with a changing `translate3d(0, Ypx, 0)` is
-     the `mask-pan` mode. When the pattern ALSO has an `overlap` treatment between two MEDIA
-     slots (not text-over-media), check whether BOTH images carry independent scroll-linked
-     transforms at DIFFERENT rates — that is the `depth` mode, recorded by adding a
-     `scroll-parallax` entry that references the SAME `pair` the `overlap` entry already
-     names (do not duplicate the pair data). Record the OBSERVED brand-level toggle in
-     `voice.motionSpec.imageParallax` (§4.4.1) — this is a BRAND rule (applies to every
-     module image), not a per-section variantKnob — with `amount` matching the brand's own
-     `voice.dials.motion` (never invent a heavier motion than the brand's locked dial).
+1. Assign each section a stable `sectionId` slug; register url/node/crop in
+   `provenanceIndex`.
+2. Record `surfaceGrammar.pageRhythm` — the ordered surface roles down the page —
+   from computed section backgrounds cross-checked against how the crops READ (an
+   image-scrim band that reads dark is a dark band even if its bg property is an
+   image). Generation derives its inverse-band budget from this rhythm; an all-light
+   brand must record an all-light rhythm, not inherit a dark bookend by template.
+3. Record seam behavior (`surfaceGrammar.transition`) and any bridging devices.
 
-### Phase 2.5 — Use-case classification + reuse-before-create against the library (NEW)
+Write the skeleton (`layouts[]` ids + provenance + rhythm) to `brand.yaml` NOW —
+incremental save discipline applies through every phase.
 
-This phase makes layouts REUSABLE and stops re-inventing section HTML/CSS. It runs the
-two-tier layout library (`brand_pipeline/layout_library.py`; schema `layout-patterns.v1`,
-`brand-schema.md` §4.4/§5.5, Appendix C).
+### Phase 2 — Tokens + component matrices (computed-first)
 
-1. **Classify the section by USE-CASE** (`hero|features|pricing|testimonial|gallery|cta|
-   about|faq|logos|footer`) from its role + copy. A hero and a pricing section are
-   different use-cases with different vocabularies; keep them separate.
-2. **Build a retrieval query** from the section's content-shape (Phase 2 step 6): observed
-   `textLen` classes, media presence/aspect, `specialTreatments` kinds, `surfaceIntent`.
-   Call `layout_library.match(query, <brand.yaml>)` — it scores PROJECT patterns first,
-   then STANDARD, and hard-filters any pattern whose treatments would break a brand
-   `neverDo` (the only hard gate). It returns `reuse` / `adapt` / `miss`.
-3. **reuse / adapt** → do NOT re-invent structure. Set the `brand.yaml layouts[]` entry's
-   `patternRef: { lib, id }` to the chosen pattern and (for `adapt`) record the tuned
-   `variantKnobs`. The section now generates FROM the pattern.
-4. **miss** (nothing close enough) → capture this section's content-shape as a NEW pattern
-   and `layout_library.promote(<patternDict>, <brand.yaml>)` it into
-   `runs/<brand>/brand/layout-library.yaml` as `origin: extracted` (with `provenance`,
-   `confidence`, `changelog`), then set the layout's `patternRef` to it. Next run it is a
-   reuse. **Project patterns win over standard on ties** — this is how a project builds its
-   own signature layout library on top of the shared base.
+1. **Tokens** from `computed-styles.json`: colors→semantic roles, every `tokens.type`
+   tier with measured `weight` (REQUIRED — default 400 only when genuinely
+   undeclared) and `case`, spacing tiers with real section padding / module gaps,
+   `tokens.surfaces` with `textPrimary`/`textAccent` per role, imagery
+   `aspectPalette` from real image dimensions.
+2. **Buttons — the full variant matrix.** Enumerate EVERY observed action style from
+   computed samples + css-facts hoverRules into `buttons.<family>` (generic tier
+   names: primary/secondary/tertiary/textCta). Each family: `style`, fill/ink,
+   `radius`, padding, type facts, and ≥ 1 state fact (bgHover/fgHover/decoration/
+   focus). One family only + `singleVariantConfirmed: true` ONLY after re-scanning
+   grounding + css-facts for the families sites almost always carry.
+3. **Blocks — attempt every contract type.** For each key in `contracts/blocks.yaml`:
+   extract the brand's usage (origin/use/slots/provenance) or mark
+   `notObserved: true` with a note of where you looked. Card anatomy (media-well,
+   radius, hover elevation, link affordance) is extracted as a card COMPONENT entry,
+   not left as layout prose.
 
-> Reuse-before-create for LAYOUTS is the same discipline the skill already applies to
-> contracts (Phase 3): reuse an existing pattern, adapt via knobs, and only create on a
-> true miss — promoting the creation so it is reusable next time.
+### Phase 3 — Per-section layout + pattern authoring
 
-### Phase 3 — Per-slot mapping (contracts now; Webflow components deferred)
+For each section, from its grounding YAML + DOM entry + crop:
 
-For each section, map each slot's semantic role onto a **primitive/block contract**
-(`contracts/primitives.yaml`, `contracts/blocks.yaml`) and record it in the canonical
-`layouts[].blockMapping[]` with library-agnostic intent props (see `brand-schema.md`
-§4.2 / §5). This is **reuse-before-create** against the shared contracts.
+1. **Archetype + structure** → `layouts[]` entry: archetype (stack/split/grid/bento/
+   row/band/collage/overlay…), `surfaceIntent`, `gridRules` (columns/stagger/overlap/
+   gap), `widthRules` (container intent + text measure), `overlapRules`, and
+   `blockMapping[]` binding slots to primitive/block CONTRACTS (library-agnostic;
+   reuse-before-create against the contracts).
+2. **Content-shape signature** → the pattern detail that makes the section reusable:
+   per-slot `textLen` (none/word/short/medium/long), `sizeClass`
+   (colossal/hero/display/title/body/caption), `sizeRel` where a size is tied to a
+   neighbour, `mediaAspect`/`mediaScale`/`opacityClass`/`z` for media, and
+   `specialTreatments[]` (ghost-word/overlap/stagger/bleed/marginal-caption/
+   text-on-media…) with target/pair/anchor/amount-class. Capture the PATTERN, not
+   the pixels.
+   - **Alignment coherence** (REQUIRED whenever any slot centers): record
+     `alignment.value`, `.inheritance`, and the observed sibling rule — a centered
+     conversion stack conventionally centers/measure-locks its form too; a header
+     block may center only its heading. State which case applies.
+   - **Control measure**: any `sizeClass: control` slot MUST carry `width`/`sizeRel`
+     (controls have no natural measure; unrecorded controls stretch full-container).
+   - **Scroll motion**: sample computed `transform` at 2+ scroll depths before
+     recording `scroll-parallax`; record the brand-level toggle in
+     `voice.motionSpec`, never above the brand's locked motion dial.
+3. **Pattern authoring — one per observed section shape.** Query
+   `layout_library.match()` first: `reuse`/`adapt` → set the layout's `patternRef`
+   (+ tuned `variantKnobs`); `miss` → author the NEW pattern into
+   `layout-library.yaml` (`origin: extracted`, provenance, confidence) and reference
+   it. Distinct observed shapes never share one pattern; near-duplicates raise a
+   pattern's confidence instead of forking it.
+4. **Verbatim copy** → `section-copy.yaml` `layoutCopy.<layoutId>` from the grounding
+   `copy` blocks (slots keyed to the layout's slot names; module arrays for repeated
+   cards/logos), plus `sectionCopy.wordmark` and shared strings.
+5. **Assets** → tag the section's real files in `assets-tagged.json` (role, section);
+   for logo walls confirm ≥ 3 real logo files exist under `assets/` (re-run
+   `curate_assets.py` for missing ones rather than inventing filenames).
 
-> The real-library role map below (component names + ids + Title-Case props) is for the
-> **DEFERRED Webflow Assembler** — emit it as per-section `targetMappings.webflow.layouts.<id>.components`,
-> NOT onto canonical nodes. The Tailwind/shadcn renderer needs only the contract intent.
+### Phase 4 — Rule synthesis + validation
 
-1. List the scaffold's slots (Phase 2 archetype → `slots[]`; e.g. `Section / Split`
-   has `Slot` + `Slot 2`).
-2. For each content element in a slot, find the **closest existing library
-   component**: query via the webflow-library-aisb skill (grep `components.json`
-   for the name → id) or the role map below. Prefer leaf primitives:
-   `Heading`, `Subheading`, `Eyebrow`, `Paragraph`, `Rich Text`, `Image`, `Logo`,
-   `Link / Primary`, `Link / Secondary`, `Form / Webflow / Lead`, `Card / Wrapper`.
-3. Record `{ slot, role, component, componentId, props }` with real prop names
-   (Title Case, from `components.json`).
-4. **Brand-rule overrides** take priority over visual mimicry. E.g. a brand carrying a
-   typographic-primary `neverDo` maps a CTA to `Link / Secondary` (arrow style), never
-   `Button / Primary`, even if it looks button-like — while a filled-button brand maps
-   the same CTA straight onto `Button / Primary`.
-
-Verified role map from the reference brand's extraction (illustrative — real ids for
-THAT library; derive your own from the active inventory):
-
-| brand role | library component | componentId | key props |
-|---|---|---|---|
-| display & section headings | `Heading` | `b2fd0399-aede-b4e1-bd06-56c8171fc86e` | Text, Style, Tag (h1/h2/h3) |
-| eyebrow / overline / caption | `Eyebrow` | `0add895d-ff42-8ef4-91cb-0eff2e60b2f6` | Text, Style |
-| lede under heading | `Subheading` | `b9ff6088-addf-fd27-a6e6-924b468f4775` | Text |
-| body copy | `Rich Text` | `168eb097-8c4f-7053-ad79-34bc90c5d144` | Content |
-| photography | `Image` | `6310b519-341d-abdd-6429-69c8d2c0f91a` | Image, Alt Text, Aspect ratio, Radius, Link |
-| typographic action (no pills) | `Link / Secondary` | `75c4556a-b7c2-b1f3-2d05-0ea2dbee7fc8` | Link, Label, Size, Style |
-| accent action on dark | `Link / Primary` | `f4011c6d-2d1a-fe52-2b09-f69962b38d4b` | Link, Label, Size, Style |
-| brand mark | `Logo` | `e0a8f694-256a-253e-2b47-350921c8e3fc` | Image, Alt Text, Color, Size |
-| newsletter / lead form | `Form / Webflow / Lead` | `f5fc0862-ff04-59e0-1011-79aa7d4c39db` | Type/Style variants, Form ID, per-field props |
-
-**Write `componentMapping[]` into each layout entry now.**
-
-#### Gap handling — reuse-before-create / compose-from-primitives
-
-When no single component matches a slot's content:
-
-1. **Reuse first.** Re-check the inventory for a variant/prop that covers the need
-   (e.g. dark theme = a Color-schemes **mode**, not a new component; a "muted"
-   caption = `Eyebrow` Style variant). Theme with modes, not new colors.
-2. **Compose from primitives.** For composites (`collage`, `overlay`, `band`):
-   instantiate the nearest `Section / *` scaffold for the surface/slot shell, then
-   fill slots with leaf primitives arranged via `Layout / Stack`/`Layout / Grid` +
-   offset utilities. Record the composition in `componentMapping[]` as multiple
-   primitive rows on the same slot (as in the reference brand's collage and hero
-   bookend examples).
-3. **Create only on a true miss.** If a genuinely new reusable component is needed,
-   note it in `recipePolicy`/changelog as a `create` action and define it by
-   composing existing primitives + forwarding their props (prop-binding workflow in
-   the webflow-library-aisb skill). Do not invent ids; creation happens at build
-   time, the skill only records the intent + provenance.
-
-### Phase 4 — Rule synthesis into `brand.yaml`
-
-Consolidate per-section observations into the canonical document:
-
-1. **De-duplicate into design-language rules.** Observations that recur across ≥2
-   sections with consistent values become `compositionRules`/`surfaceGrammar` entries
-   at `scope: design-language`, `confidence: high`. Single-occurrence observations
-   stay `confidence: low` and (if they would generalize unsafely)
-   `scope: one-off` (e.g. the reference brand's seam-bridging photo).
-2. **Synthesize the three rule lists** `do[]` / `avoid[]` / `neverDo[]`:
-   - `do[]` — positive prescriptions / affirmative house style (e.g. "all actions are
-     typographic arrow links"). High-confidence, source: creation.
-   - `avoid[]` — soft discouragements ("prefer asymmetric editorial runs").
-   - `neverDo[]` — hard prohibitions from absences + anti-patterns (no buttons, no
-     radius, no shadows, no gradients, …). Each a high-confidence prohibition.
-3. **Set the locked dials** (`voice.dials`: variance/motion/density) from overall
-   variance, observed motion, and content density. Mark inferred dials (e.g. motion
-   when hover is unobservable) as `confidence: medium|low`.
-4. **Set `recipePolicy`** flags (scaffoldFirst, reuseBeforeCreate,
-   composeFromPrimitives, themeViaModes, slotsTakeInstancesOnly) — for the AISB
-   library these are all `true`.
-5. **Confidence + provenance everywhere.** Every entry carries `confidence`,
-   `source: creation`, `scope`, `provenance[sectionIds]`, and an initial `changelog`
-   `created` record.
-6. **Re-render** `brand.md` via `render_brand_md(brand.yaml)` (do not hand-write it)
-   and confirm the projection reads cleanly for human review.
-7. **Reconcile the project layout library** (`runs/<brand>/brand/layout-library.yaml`)
-   across runs — **append/reconcile, never overwrite**. A pattern seen again with the same
-   shape raises `confidence` and may promote `one-off`→`design-language`; a conflicting
-   observation lands `scope: one-off` and enqueues a signal (`signal-loop.md`). A standard
-   pattern truly observed here is promoted INTO the project library as `origin: extracted`
-   (the one-way ratchet, `brand-schema.md` §5.3) — never the reverse.
-8. **Check `anti-ai-slop.md` before calling the render done.** This is a MANDATORY step,
-   not optional polish — `onbrand_check.py` verifies brand-rule *values*, it does not catch
-   context-blindness bugs (a color that's right on one surface and invisible on another, a
-   spacing literal that looks fine at one viewport and huge at another, dispatch logic that
-   silently breaks the moment a pattern is reused under a new id). Two of the checks are
-   SCRIPTED — run both on every composed page:
-   - `node brand_pipeline/contrast_audit.mjs <index.html>` — WCAG contrast for every text
-     element vs its EFFECTIVE background + every section's hover state (AS-01/AS-10).
-   - `node brand_pipeline/slop_audit.mjs <index.html>` — section content-completeness:
-     metadata-only sections, empty grid columns, maps without address text, forms without
-     a stated reason (AS-11..AS-14).
-   Skim the rest of the rule list against what was just built; when a NEW instance of one
-   of these failure shapes is caught, add an entry — don't just fix it and move on.
+1. De-duplicate recurring observations (≥ 2 sections, consistent) into
+   `compositionRules`/`surfaceGrammar` at `scope: design-language`; single
+   occurrences stay `confidence: low` / `scope: one-off`.
+2. Synthesize `do[]` / `avoid[]` / `neverDo[]` (prohibitions from consistent
+   absences: no shadows, no radius, no text-on-photos…), set `voice.dials`,
+   `recipePolicy`.
+3. Re-render `brand.md` via `render_brand_md(brand.yaml)` — never hand-write it.
+4. **Run the validator — the exit criterion:**
+   `./venv/bin/python tools/extract/validate_brand_evidence.py --brand <brand>`
+   - C1 brand.yaml parses; C2 every contract block evidenced or `notObserved`;
+   - C3 button families each usable, single-family only when confirmed;
+   - C4 section-copy.yaml present, wordmark set, every content-bearing layout
+     covered; C5 layout↔pattern coverage both directions;
+   - C6 logo walls have real logo assets; C7 navbar/footer complete incl.
+     `legal.text` and presentation evidence; C8 tagged assets exist on disk;
+   - C9 vision grounding exists (`--allow-no-vision` only for explicitly
+     DOM-only salvage runs).
+   Fix and re-run until clean — a validator error means a missed observation.
+5. **Anti-slop checks** before calling any composed render done:
+   `node brand_pipeline/contrast_audit.mjs <index.html>` and
+   `node brand_pipeline/slop_audit.mjs <index.html>`; skim `spec/anti-ai-slop.md`
+   for new instances of registered failure shapes and REGISTER new ones found.
 
 ## Operating rules (inherited)
 
-- Read economically: section-by-section; grep the inventory JSONs for names/ids,
-  never load them whole.
-- Never invent component ids, prop names, variable names, or token hex — source them
-  from the real files. If unknown, record `confidence: low` and queue a question via
-  the signal loop rather than guessing.
-- Write to `brand.yaml` incrementally (after each phase/section) so partial progress
-  is never lost.
-- On contradiction with an existing rule during re-analysis, follow the
-  **one-off-and-queue** default from `signal-loop.md`: apply as `scope: one-off`,
-  do not promote, enqueue the clarifying question.
+- Read economically: one section's evidence at a time; grep the big JSONs, never
+  load them whole.
+- Never invent values — computed styles and real files are the source. Unknown →
+  `confidence: low` + a signal-loop question, not a guess.
+- Write canonical files incrementally after each phase/section.
+- On contradiction with an existing rule during re-authoring: apply as
+  `scope: one-off`, do not promote, enqueue the clarifying question
+  (`signal-loop.md`).
+- Append/reconcile the project layout library across runs — never overwrite; the
+  extracted-over-designed ratchet (schema §5.3) only moves one way.

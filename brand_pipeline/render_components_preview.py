@@ -44,6 +44,7 @@ from __future__ import annotations
 
 import argparse
 import html
+import re
 import sys
 from pathlib import Path
 
@@ -70,6 +71,7 @@ from tokens_css import (  # noqa: E402
 import component_render as cr  # noqa: E402
 import compose_section as cs  # noqa: E402  (shared self-hosted-font copy + @font-face emit)
 import compose_page as cp  # noqa: E402  (chrome footer surface-role resolution)
+import compose_from_composition as cfc  # noqa: E402  (Tier-3 demo hydration adapter)
 
 # Gallery render context (RP-1): rebound per brand in main() via _bind_gallery_ctx —
 # the canvas is the BRAND's primary surface, so is_dark/accent-legality come from the
@@ -113,6 +115,88 @@ def component_alias_css(doc) -> str:
 
 def esc(value) -> str:
     return html.escape(str(value if value is not None else ""))
+
+
+# ── measured button families (remote-fix Phase C) ────────────────────────────────
+
+def _fam_slug(name: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", str(name).lower()).strip("-") or "family"
+
+
+def _is_text_button_family(fam: dict) -> bool:
+    """A text-link family (e.g. a 'Learn more →' card link) has no fill/outline of its
+    own — it demos through the arrow-link device, not the filled specimen class."""
+    if str(fam.get("style") or "").lower().startswith("text"):
+        return True
+    return not fam.get("bg") and not fam.get("border")
+
+
+def _button_families(doc) -> dict:
+    """The brand's measured button families from brand.yaml `buttons`, in declaration
+    order. Only real family dicts count — sibling markers (`renderHint`,
+    `singleVariantConfirmed`) carry none of the family keys and are skipped."""
+    fams = {}
+    for name, fam in ((doc.get("buttons") or {})).items():
+        if isinstance(fam, dict) and any(fam.get(k) for k in ("bg", "fg", "border", "style")):
+            fams[name] = fam
+    return fams
+
+
+# layer-1 (tokens_css.build_page_tokens) emits --button[-<family>]-* custom properties
+# for these families; the specimen CSS var()-references them so the values stay in the
+# generated token block, exactly like every other specimen class.
+_TOKENIZED_FAMILIES = ("primary", "secondary", "tertiary")
+
+
+def button_family_css(doc) -> str:
+    """Per-family specimen classes (`.btnf-<family>`) for a filled-CTA brand's measured
+    button families. Families layer 1 tokenizes ride var() references; any additional
+    measured filled family falls back to its own brand.yaml values (read at render time
+    from the ACTIVE brand's file — never another brand's, never shared literals)."""
+    fams = _button_families(doc)
+    if not fams or cr.cta_shape(doc) != "filled":
+        return ""
+    out = []
+    for name, fam in fams.items():
+        if _is_text_button_family(fam):
+            continue
+        slug = _fam_slug(name)
+        if name in _TOKENIZED_FAMILIES:
+            p = "--button" if name == "primary" else f"--button-{name}"
+            base = (f"background: var({p}-bg, transparent); "
+                    f"color: var({p}-fg, var(--button-fg)); "
+                    f"border: var({p}-border, 0); "
+                    f"border-radius: var({p}-radius, var(--button-radius, 0)); "
+                    f"padding: var({p}-pad, var(--button-pad, 0.7rem 1.4rem)); "
+                    f"font-family: var({p}-font, var(--button-font, var(--font-body))); "
+                    f"font-size: var({p}-size, var(--button-size, var(--control-size))); "
+                    f"font-weight: var({p}-weight, var(--button-weight, 400));")
+            hover = f"background: var({p}-bg-hover, var({p}-bg, transparent));"
+            press = (f"background: var({p}-bg-pressed, "
+                     f"var({p}-bg-hover, var({p}-bg, transparent)));")
+        else:
+            def _v(key, default):
+                v = fam.get(key)
+                return str(v) if v is not None else default
+            size = f"{fam['sizeRem']}rem" if fam.get("sizeRem") else "var(--control-size)"
+            base = (f"background: {_v('bg', 'transparent')}; "
+                    f"color: {_v('fg', 'var(--ink)')}; "
+                    f"border: {_v('border', '0')}; "
+                    f"border-radius: {_v('radius', '0')}; "
+                    f"padding: {_v('padding', '0.7rem 1.4rem')}; "
+                    f"font-family: var(--font-body); font-size: {size}; "
+                    f"font-weight: {_v('weight', '400')};")
+            hover = f"background: {_v('bgHover', _v('bg', 'transparent'))};"
+            press = f"background: {_v('bgPressed', _v('bgHover', _v('bg', 'transparent')))};"
+            if fam.get("fgHover"):
+                hover += f" color: {fam['fgHover']};"
+        out.append(f".btnf-{slug} {{ {base} }}\n"
+                   f".btnf-{slug}.is-hover, .btnf-{slug}.live:hover {{ {hover} }}\n"
+                   f".btnf-{slug}.is-active, .btnf-{slug}.live:active {{ {press} }}")
+    if not out:
+        return ""
+    return ("/* measured button families — values via layer-1 --button[-<family>]-* refs */\n"
+            + "\n".join(out))
 
 
 # Action / interactive primitives that receive a full state matrix + live instance.
@@ -282,7 +366,15 @@ body {
 .cmp-name { font-family: var(--font-heading); text-transform: var(--case-h2, none);
   font-size: var(--h3-size); line-height: 1.2em; color: var(--ink); }
 .cmp-intent { font-size: var(--body-size); color: var(--ink-muted); line-height: 1.5em; }
-.cmp-example { display: flex; flex-direction: column; gap: 1.25rem; max-width: 52rem; }
+/* NON-STRETCH stage alignment (AGENTS.md flex-column mechanic, remote-fix Phase C):
+   flex-column children stretch by default, so content-hugging specimens (buttons,
+   eyebrows, chips, arrow links) rendered edge-to-edge. The stage columns align
+   flex-start and the container-ish specimens that genuinely need the full row
+   (state matrices, ruled rows/lists, surface frames, chrome demos, composed-layout
+   iframes, classless inline-styled wrappers) opt back in via align-self: stretch. */
+.cmp-example { display: flex; flex-direction: column; align-items: flex-start;
+  gap: 1.25rem; max-width: 52rem; }
+.cmp-example > .cmp-stage { align-self: stretch; }
 
 /* Badges / tags — square, no radius. */
 .badge { font-family: var(--font-body); font-size: 0.625rem; letter-spacing: 0.1em;
@@ -295,8 +387,16 @@ body {
   border: 1px solid var(--hairline); padding: 0.2rem 0.5rem; }
 .tag-never { border-style: dashed; color: var(--ink-muted); }
 
-/* Example stage — no box, no border: the example sits openly in the row flow. */
-.cmp-stage { display: flex; flex-direction: column; gap: 1rem; }
+/* Example stage — no box, no border: the example sits openly in the row flow.
+   align-items: flex-start = the non-stretch default; the stretch list below re-widens
+   the specimens that are full-row containers by design. */
+.cmp-stage { display: flex; flex-direction: column; gap: 1rem; align-items: flex-start; }
+.cmp-stage > div:not([class]), .cmp-stage > .states, .cmp-stage > .ex-rows,
+.cmp-stage > .ex-list, .cmp-stage > .ex-illus, .cmp-stage > .ex-spacer,
+.cmp-stage > .surface-dark, .cmp-stage > .surface-darkest, .cmp-stage > .surface-panel,
+.cmp-stage > .cmp-chrome-demo, .cmp-stage > .cmp-footer-demo,
+.cmp-stage > .c-header, .cmp-stage > .c-form, .cmp-stage > .c-field,
+.cmp-stage > .layout-frame, .cmp-stage > iframe { align-self: stretch; }
 .cmp-note { font-size: var(--eyebrow-size); letter-spacing: 0.04em; line-height: 1.45em;
   color: var(--ink-muted); }
 .cmp-note strong { color: var(--ink); font-weight: 600; }
@@ -439,6 +539,18 @@ body {
   text-decoration: none; }
 .act.is-disabled, .act.live:disabled, .act.live[aria-disabled="true"] { opacity: 0.32;
   pointer-events: none; text-decoration: none; }
+
+/* ── measured button FAMILIES (filled-CTA brands): one specimen class per family,
+   values var()-chained into the layer-1 --button[-<family>]-* tokens (remote-fix
+   Phase C: the single-variant render hid the measured secondary/tertiary/text
+   families). inline-flex + stage flex-start = content-hugging by construction. */
+.btnf { display: inline-flex; align-items: center; gap: 0.5rem; align-self: flex-start;
+  text-decoration: none; cursor: pointer; line-height: 1.15; white-space: nowrap;
+  transition: background var(--ease) ease, color var(--ease) ease,
+    border-color var(--ease) ease; }
+.btnf.is-focus, .btnf.live:focus-visible { outline: 2px solid currentColor;
+  outline-offset: 2px; }
+.btnf.is-disabled, .btnf.live:disabled { opacity: 0.38; pointer-events: none; }
 
 /* avoid (synthesized) filled button / icon-button — what the brand does NOT use. */
 .avoid-btn { font-family: var(--font-body); font-size: var(--control-size); letter-spacing: var(--control-ls);
@@ -688,10 +800,41 @@ def render_cta(doc, key, item):
 
 
 def render_button(doc, key, item):
-    """Law-first: a filled-CTA brand renders its REAL catalog button as the brand
-    realization; a typographic brand keeps the observed-as-prohibition framing
-    (arrow-link realization + struck filled button as the avoid variant)."""
+    """Law-first: a filled-CTA brand renders its FULL measured family matrix —
+    every brand.yaml `buttons` family (primary / secondary / tertiary / text-link)
+    with its own five-state row + live instance (remote-fix Phase C: the old
+    single-variant render hid the measured secondary/tertiary/text families). A
+    typographic brand keeps the observed-as-prohibition framing (arrow-link
+    realization + struck filled button as the avoid variant)."""
     if _brand_law(doc)["cta"] == "filled":
+        fams = _button_families(doc)
+        rows: list[str] = []
+        for name, fam in fams.items():
+            if rows:
+                rows.append('<div class="ex-rule"></div>')
+            style_word = esc(fam.get("style") or "filled")
+            if _is_text_button_family(fam):
+                matrix = _state_matrix(
+                    lambda cls: _arrow(_SPEC_CTA, cls),
+                    '<a class="act live" href="#">' + esc(_SPEC_CTA)
+                    + ' <span class="arrow">&rarr;</span></a>',
+                    label=f"{name} · hover / press / focus inside the iframe")
+                rows.append(f'<div class="ex-caption"><strong>{esc(name)}</strong> &mdash; '
+                            f'{style_word}; demos through the arrow-link device</div>{matrix}')
+                continue
+            slug = _fam_slug(name)
+            def _sw(cls, slug=slug):
+                return (f'<a class="btnf btnf-{slug} {cls}" href="#" tabindex="-1">'
+                        f'{esc(_SPEC_CTA)}</a>')
+            live = (f'<a class="btnf btnf-{slug} live" href="#">{esc(_SPEC_CTA)}</a>'
+                    f'<button class="btnf btnf-{slug} live" disabled>{esc(_SPEC_CTA)}</button>')
+            rows.append(
+                f'<div class="ex-caption"><strong>{esc(name)}</strong> &mdash; {style_word}; '
+                'content-hugging (inline-flex, non-stretch stage)</div>'
+                + _state_matrix(_sw, live,
+                                label=f"{name} · hover / press / focus inside the iframe"))
+        if rows:
+            return "".join(rows)
         return ('<div class="ex-caption">Brand realization &mdash; the measured filled button:</div>'
                 + cr.render_button(doc, _GALLERY_CTX, {"label": _SPEC_CTA}))
     matrix = _state_matrix(
@@ -1238,11 +1381,184 @@ def layout_for_pattern(doc, pattern_id: str):
     return None
 
 
+# ── Tier-3 DEMO copy hydration (remote-fix Phase C) ──────────────────────────────
+# A brand WITHOUT an authored section-copy.yaml used to compose every pattern demo
+# from empty copy (_SafeCopy), so each row degenerated to the wordmark + a bare
+# arrow. The gallery now synthesizes STRUCTURAL demo content per pattern from the
+# brand's OWN evidence — layout-library contentShape slots + the brand layout's
+# slot roles/assets — and registers it through the SAME runtime copy surfaces the
+# composition adapter uses (cs.LAYOUT_COPY). Demo text is brand-derived specimen
+# prose (brand name / navbar cta / quoted literals the analyst embedded in slot
+# roles); demo media binds the layout slots' real `assets:` files. Brands WITH
+# authored copy are untouched (the authored layers win, this path never runs).
+
+# quoted literal inside an analyst-authored slot role — REAL captured copy
+# (e.g. a microlabel role carrying the observed caption in quotes).
+_ROLE_QUOTE_RX = re.compile(r"[\u2018\u201c'\"]([^\u2019\u201d'\"]{4,90})[\u2019\u201d'\"]")
+
+
+def _demo_hydration_active(doc) -> bool:
+    """Demo copy only when the brand authored NO section-copy layers at all."""
+    return not cs.brand_section_copy(doc) and not cs.brand_layout_copy(doc)
+
+
+def _demo_text(role_text: str, kind: str, sp: dict, use: str) -> str:
+    """Specimen text for one demo slot: a quoted literal from the analyst's slot role
+    when present (real captured copy), else register-appropriate structural prose
+    derived from the ACTIVE brand (name / cta) — never another brand's voice."""
+    m = _ROLE_QUOTE_RX.search(role_text or "")
+    if m:
+        return m.group(1).strip()
+    if kind == "eyebrow":
+        return f"{sp['name']} {use} specimen"
+    if kind == "heading":
+        return f"A {use} pattern in the {sp['name']} register"
+    if kind == "body":
+        return (f"Structural demo copy: the pattern's surfaces, registers and components are "
+                f"{sp['name']}'s real extracted system; authored copy replaces this text once "
+                "section-copy.yaml is extracted.")
+    if kind == "cta":
+        return sp["cta"]
+    return f"{use} {kind} specimen"
+
+
+def _demo_section_for_pattern(doc, pat, layout) -> dict:
+    """Build a composition.v1-shaped demo SECTION for one pattern + its referencing
+    brand layout, so the PROVEN composition adapter (compose_from_composition.
+    composition_to_layout) does the slot→blockMapping/copy binding — logo walls,
+    hero copy, split translators and placement all reuse the tested path."""
+    sp = _specimen(doc)
+    pid = pat.get("id", "")
+    use = str(pat.get("useCase") or "section")
+    shape_slots = {s.get("name"): s for s in ((pat.get("contentShape") or {}).get("slots") or [])
+                   if isinstance(s, dict) and s.get("name")}
+    lay_slots = [s for s in (layout.get("slots") or []) if isinstance(s, dict)]
+
+    def _asset_label(fname: str) -> str:
+        """Human words from the brand's own asset filename (data cleanup, no restyle)."""
+        stem = Path(str(fname)).stem
+        for pref in ("avatar-", "card-", "img-", "photo-"):
+            if stem.startswith(pref):
+                stem = stem[len(pref):]
+        return stem.replace("-", " ").replace("_", " ").strip() or stem
+
+    slots: list[dict] = []
+    seen: set = set()
+    for ls in lay_slots:
+        name = str(ls.get("name") or f"slot-{len(slots)}")
+        seen.add(name)
+        role = str(ls.get("role") or shape_slots.get(name, {}).get("role") or name)
+        shape = shape_slots.get(name) or {}
+        lower = f"{name} {role}".lower()
+        # the adapter's _by_role matchers scan ROLE prose for semantic keywords —
+        # lead with the slot NAME so "heading — section h2" hits the "heading" probe.
+        entry: dict = {"name": name, "role": f"{name} — {role}" if role != name else name}
+        for k in ("textLen", "sizeClass", "width", "z", "mediaAspect"):
+            if shape.get(k):
+                entry[k] = shape[k]
+        assets = [str(a) for a in (ls.get("assets") or []) if a]
+        is_media = (ls.get("type") == "media") or bool(shape.get("mediaAspect"))
+        if (is_media or assets) and ("logo" in lower or len(assets) >= 6):
+            entry["contract"] = "logo"
+            entry["copy"] = list(assets)  # coerced to asset items by _sanitize_assets
+        elif len(assets) >= 2:
+            # a multi-asset slot is a repeatable MODULE run (cards / avatars): one
+            # module per real asset, labeled from the brand's own filenames.
+            entry["contract"] = "card"
+            entry["copy"] = [{"heading": _asset_label(a),
+                              "text": _demo_text(role, "body", sp, use),
+                              "asset": a, "alt": _asset_label(a)} for a in assets]
+        elif is_media or assets:
+            entry["contract"] = "image"
+            if assets:
+                entry["asset"] = {"src": assets[0], "alt": f"{sp['name']} {name}"}
+        elif any(k in lower for k in ("eyebrow", "microlabel", "caption", "label")):
+            # single-key copy: a `text` twin here would echo into the translators'
+            # lede/body fallbacks (a v1 header dict carries its lede under `text`).
+            entry["contract"] = "eyebrow"
+            entry["copy"] = {"eyebrow": _demo_text(role, "eyebrow", sp, use)}
+        elif any(k in lower for k in ("heading", "title", "display", "h1", "h2")):
+            entry["contract"] = "heading"
+            entry["copy"] = {"heading": _demo_text(role, "heading", sp, use)}
+        elif any(k in lower for k in ("action", "cta", "button", "pill")):
+            entry["contract"] = "button"
+            entry["copy"] = {"label": _demo_text(role, "cta", sp, use)}
+            slots.append(entry)
+            # a role naming BOTH a primary and a secondary action gets two demo buttons
+            if ("primary" in lower or "filled" in lower) and \
+                    ("secondary" in lower or "outlined" in lower):
+                slots.append({"name": f"{name}-secondary", "role": "secondary action",
+                              "contract": "button", "copy": {"label": sp["cta"]}})
+            continue
+        elif any(k in lower for k in ("quote", "testimonial")):
+            entry["contract"] = "testimonial"
+            entry["copy"] = {"quote": _demo_text(role, "body", sp, use),
+                             "name": sp["name"], "role": f"{use} specimen"}
+        elif any(k in lower for k in ("list", "accordion", "faq", "rows", "items")):
+            # ruled-row / accordion runs read label(+text) module lists
+            entry["contract"] = "list"
+            entry["copy"] = [{"label": f"{use} item {i + 1}", "title": f"{use} item {i + 1}",
+                              "text": _demo_text(role, "body", sp, use)}
+                             for i in range(3)]
+        else:
+            entry["contract"] = "paragraph"
+            entry["copy"] = {"text": _demo_text(role, "body", sp, use), "body":
+                             _demo_text(role, "body", sp, use)}
+        slots.append(entry)
+
+    # contentShape-only slots the brand layout doesn't list (e.g. a z:back panel
+    # background) still shape the section — the art-panel/layer classifiers read them.
+    for name, shape in shape_slots.items():
+        if name in seen:
+            continue
+        entry = {"name": name, "role": str(shape.get("role") or name)}
+        for k in ("textLen", "sizeClass", "width", "z", "mediaAspect"):
+            if shape.get(k):
+                entry[k] = shape[k]
+        if shape.get("mediaAspect") or shape.get("z") == "back":
+            entry["contract"] = "image"
+        else:
+            entry["contract"] = "paragraph"
+            entry["copy"] = {"text": _demo_text(str(shape.get("role") or ""), "body", sp, use)}
+        slots.append(entry)
+
+    # pattern treatments pass through where they use the composition vocabulary
+    # (extraction-side kinds outside it, e.g. `marquee`, are dropped; the adapter
+    # only maps known kinds — composition.v1 treatment enum).
+    known_kinds = {
+        "ghost-word", "overlap", "stagger", "bleed", "marginal-caption", "text-on-media",
+        "counter-rotate", "float-wrap", "inset", "straddle", "panel-on-media",
+        "scrim-band", "framed", "type-behind-media", "mixed-face", "stepped-lines",
+        "break-frame"}
+    treatments = [dict(t) for t in (pat.get("specialTreatments") or [])
+                  if isinstance(t, dict) and str(t.get("kind")) in known_kinds]
+
+    return {
+        "id": layout.get("id") or pid,
+        "useCase": use,
+        # the LAYOUT's archetype is renderer vocabulary (build_document dispatches on
+        # it); the pattern's archetypeRef is extraction vocabulary (e.g. `grid`) and
+        # only backstops layouts that don't declare one.
+        "archetype": str(layout.get("archetype") or pat.get("archetypeRef") or "stack"),
+        "surfaceIntent": str(pat.get("surfaceIntent") or "any"),
+        "novelty": "reuse",
+        "seededFrom": {"lib": "project", "id": pid},
+        "slots": slots,
+        "treatments": treatments,
+    }
+
+
 def compose_pattern_docs(doc, patterns, brand_yaml: Path, out_dir: Path) -> dict:
     """Compose every pattern that has a referencing layout into
     <out_dir>/layouts/<pattern-id>.html via the real archetype composers. Returns
     {pattern_id: {"href": relative-url} | {"error": str}}. Defensive per pattern:
-    a composer failing (e.g. mid-edit by another process) degrades that ONE row."""
+    a composer failing (e.g. mid-edit by another process) degrades that ONE row.
+
+    When the brand lacks authored section copy (no section-copy.yaml), each pattern
+    demo is hydrated through the composition adapter with brand-derived specimen
+    content (_demo_section_for_pattern) so the tier shows the pattern's REAL
+    structure instead of the empty-copy wordmark degenerate. cs.LAYOUT_COPY is
+    snapshot/patched/restored exactly like compose_from_composition.render_composition."""
     import copy as _copy
     layouts_dir = out_dir / "layouts"
     layouts_dir.mkdir(parents=True, exist_ok=True)
@@ -1254,20 +1570,40 @@ def compose_pattern_docs(doc, patterns, brand_yaml: Path, out_dir: Path) -> dict
     cs.copy_assets(brand_yaml.parent, layouts_dir / "assets")
     cs.copy_fonts(brand_yaml.parent, layouts_dir / "assets", cdoc)
 
+    hydrate = _demo_hydration_active(cdoc)
+    saved_layout_copy = cs.LAYOUT_COPY
     results = {}
-    for pat in patterns:
-        pid = pat.get("id", "")
-        layout = layout_for_pattern(cdoc, pid)
-        if layout is None:
-            results[pid] = {"error": "no brand.yaml layout references this pattern "
-                                     "(listed without a composed render)"}
-            continue
-        try:
-            html_doc = cs.build_document(cdoc, layout, brand_yaml, style_ctx)
-            (layouts_dir / f"{pid}.html").write_text(html_doc)
-            results[pid] = {"href": f"layouts/{pid}.html", "layout": layout.get("id")}
-        except Exception as exc:  # composer mid-edit / moving state: degrade this row only
-            results[pid] = {"error": f"composer failed: {type(exc).__name__}: {exc}"}
+    try:
+        for pat in patterns:
+            pid = pat.get("id", "")
+            layout = layout_for_pattern(cdoc, pid)
+            if layout is None:
+                results[pid] = {"error": "no brand.yaml layout references this pattern "
+                                         "(listed without a composed render)"}
+                continue
+            use_layout, demo = layout, False
+            if hydrate:
+                try:
+                    sec = _demo_section_for_pattern(cdoc, pat, layout)
+                    comp = cfc._sanitize_assets({"sections": [sec]}, brand_yaml.parent)
+                    adapted = cfc.composition_to_layout(comp["sections"][0])
+                    composer_copy = adapted.pop("_composerCopy", {}) or {}
+                    sect_copy = adapted.pop("_sectionCopy", None) or {}
+                    merged = {**sect_copy, **composer_copy}
+                    if merged:
+                        cs.LAYOUT_COPY = {**cs.LAYOUT_COPY, adapted["id"]: merged}
+                    use_layout, demo = adapted, True
+                except Exception:
+                    use_layout, demo = layout, False  # demo synth never takes the tier down
+            try:
+                html_doc = cs.build_document(cdoc, use_layout, brand_yaml, style_ctx)
+                (layouts_dir / f"{pid}.html").write_text(html_doc)
+                results[pid] = {"href": f"layouts/{pid}.html", "layout": layout.get("id"),
+                                **({"demo": True} if demo else {})}
+            except Exception as exc:  # composer mid-edit / moving state: degrade this row only
+                results[pid] = {"error": f"composer failed: {type(exc).__name__}: {exc}"}
+    finally:
+        cs.LAYOUT_COPY = saved_layout_copy
     return results
 
 
@@ -1539,6 +1875,7 @@ def build_page(doc, prim_items, prim_contracts, block_items, block_contracts, br
 {face_css}
 {root}
 {component_alias_css(doc)}
+{button_family_css(doc)}
 {BASE_CSS}
 {cr.COMPONENT_CSS}
 {cr.structural_variant_css(doc, include_all=True)}
