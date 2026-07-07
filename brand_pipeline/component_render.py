@@ -536,7 +536,9 @@ p { text-wrap-style: balance; }
 
 .c-eyebrow { font-family: var(--c-font-body); font-size: var(--c-eyebrow-size);
   letter-spacing: var(--c-eyebrow-ls); text-transform: var(--c-case-eyebrow);
-  color: var(--c-ink-muted); margin: 0; }
+  /* a section's declared eyebrow register (layout.eyebrowRegister → section-scoped
+     --c-eyebrow-color) wins; undeclared sections keep the muted-ink default. */
+  color: var(--c-eyebrow-color, var(--c-ink-muted)); margin: 0; }
 
 .c-image { display: block; width: 100%; border: none; box-shadow: none;
   border-radius: var(--radius); object-fit: cover;
@@ -1059,12 +1061,18 @@ def button_family_for_style(doc, hint: str) -> str | None:
     Palette-agnostic — the match is between the slot's declared treatment and the
     brand's OWN declared family styles; no family name is ever assumed."""
     def _norm(text: str) -> set[str]:
-        canon = {"outlined": "outline", "ghosted": "ghost"}
+        canon = {"outlined": "outline", "ghosted": "ghost", "solid": "filled"}
         return {canon.get(w, w)
                 for w in str(text or "").lower().replace("-", " ").split()}
 
     words = _norm(hint)
     if not words:
+        return None
+    # a DUAL-action description ("filled primary pill + outlined secondary pill")
+    # names both treatments — it cannot select ONE family; the caller splits the
+    # pair and hints each button separately (sysfix 2026-07: the whole-role hint
+    # made the FIRST/primary button take the outline family).
+    if "filled" in words and words & {"outline", "ghost", "quiet"}:
         return None
     for name, facts in _button_families(doc).items():
         if _norm(facts.get("style")) & words & {"outline", "ghost", "quiet", "neutral"}:

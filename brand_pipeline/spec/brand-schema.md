@@ -255,6 +255,10 @@ layouts:
     patternRef:    { lib: project|standard, id: <patternId> }  # OPTIONAL back-ref: the reusable
                                                                # use-case layout PATTERN (§4.4) this
                                                                # section was generated from / promoted to
+    eyebrowRegister: <color token role>       # OPTIONAL: the section's declared eyebrow
+                                              # color family — a `tokens.colors` ROLE the
+                                              # section's theme scope selects (e.g. an
+                                              # accent family or the muted ink family)
     confidence:    high|medium|low
     provenance:    [<sectionId>…]
 ```
@@ -262,6 +266,14 @@ layouts:
 > `patternRef` is additive and optional — a layout with no `patternRef` behaves exactly as
 > before. It links a concrete section instance to the reusable **use-case layout pattern**
 > (§4.4) it reuses, so generation looks the pattern up instead of reinventing structure.
+
+> `eyebrowRegister` implements theme-scoped eyebrow families ("eyebrow color follows the
+> section's declared scope"): when present, the composed section's eyebrow microlabel
+> reads that color role (section-scoped `--c-eyebrow-color` → the layer-1 `--color-*`
+> var); undeclared layouts keep the render path's default register (muted ink, or the
+> active style's single-accent deployment). The value must name a role the brand's own
+> `tokens.colors` carries — an unknown role fails loud at composition. Role names stay
+> generic/reusable (an accent family, a muted ink family), never section-specific.
 
 > Substrate ids for the scaffold/components a layout maps to (Webflow component ids,
 > Section/Layout names) are **not** here — record them per-section in `targetMappings`

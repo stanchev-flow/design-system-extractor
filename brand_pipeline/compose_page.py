@@ -442,6 +442,10 @@ def compose_section_block(doc, layout, idx, style_ctx, brand_yaml=None, accent_i
         disp = page_display_size(doc, style_ctx)
     vars_css = section_vars(doc, sel, surf, display_size=disp, accent_on=accent_on,
                             surf_role=role, style_ctx=style_ctx)
+    # declared eyebrow register (brand-schema layout.eyebrowRegister): the section's
+    # theme-scope family lands as a #sec-N-scoped --c-eyebrow-color (same mechanism
+    # as the single-section path in cs.build_document).
+    vars_css += cs.eyebrow_register_css(doc, layout, sel)
 
     # Reuse-before-create: resolve the reusable layout PATTERN + scope its pattern-driven
     # special-treatment vars to THIS section (#sec-N) so the ghost/stagger geometry comes

@@ -105,7 +105,8 @@ FIXTURE_BRAND = {
         "primary": {"style": "filled", "bg": "#101828", "fg": "#ffffff",
                     "radius": "12px", "bgHover": "#243040", "fgHover": "#ffffff",
                     "height": "2.75rem", "padding": "0 1.25rem"},
-        "outlined": {"fg": "#101828", "border": "1px solid #101828",
+        "outlined": {"style": "outline", "fg": "#101828",
+                     "border": "1px solid #101828",
                      "radius": "12px", "decoration": "underline"},
     },
     "navbar": {
@@ -123,6 +124,10 @@ FIXTURE_BRAND = {
         {"id": "hero-split", "archetype": "split", "useCase": "hero",
          "patternRef": {"id": "fx-hero"},
          "slots": [{"name": "copy", "type": "content"},
+                   # dual-action role: the demo splits this into a primary +
+                   # secondary button pair (C11 asserts the primary leads)
+                   {"name": "actions", "type": "content",
+                    "role": "primary filled pill + outlined secondary pill"},
                    {"name": "art", "type": "image"}]},
         {"id": "logo-strip", "archetype": "stack",
          "useCase": "customer-proof-strip",
@@ -556,6 +561,60 @@ class BrandEvidenceContractTests(unittest.TestCase):
         rep = self._validate(smoke=True)
         self.assertEqual([e for e in rep.errors if "alignment" in e], [],
                          rep.errors)
+
+    def test_action_pair_composes_primary_first(self):
+        # the fixture hero declares "primary filled pill + outlined secondary
+        # pill" — the composed pair must lead with the plain primary (and the
+        # complete fixture stays green under the C11 order assertion).
+        rep = self._validate(smoke=True)
+        self.assertTrue(rep.ok, rep.errors)
+
+    def test_empty_panel_split_fails_smoke(self):
+        # simulate the pre-fix defect class: a split shipping the cream panel
+        # with NO title/rows/foot (the invented-content removal left an empty
+        # box). The composer now elides the panel; C11 polices regressions.
+        import compose_section as cs2
+        real = cs2.compose_info_band
+
+        def empty_panel(doc, layout, ctx, rendered, style_ctx):
+            return ('<section class="cs-section cs-split-sec"><div class="cs-split">'
+                    '<div class="cs-panel">\n      \n      '
+                    '<div class="c-rows"></div>\n      \n    </div>'
+                    '</div></section>')
+
+        cs2.compose_info_band = empty_panel
+        try:
+            rep = self._validate(smoke=True)
+        finally:
+            cs2.compose_info_band = real
+        self.assertTrue(any(e.startswith("C11") and "EMPTY panel" in e
+                            for e in rep.errors), rep.errors)
+
+    def test_crossed_action_pair_fails_smoke(self):
+        # simulate the pre-fix defect class: the whole-role prose reaches the
+        # family dispatch, so the FIRST (primary) button takes the outline
+        # family and the pair renders secondary-before-primary.
+        import render_components_preview as rp
+        real = rp._demo_section_for_pattern
+
+        def crossing(doc, pat, layout):
+            sec = real(doc, pat, layout)
+            btns = [s for s in (sec.get("slots") or [])
+                    if s.get("contract") == "button"]
+            if len(btns) >= 2:
+                btns[0]["role"] = "outlined secondary cta"
+                btns[0].setdefault("copy", {})["styleHint"] = "outlined"
+                (btns[1].get("copy") or {}).pop("styleHint", None)
+                btns[1]["role"] = "primary cta"
+            return sec
+
+        rp._demo_section_for_pattern = crossing
+        try:
+            rep = self._validate(smoke=True)
+        finally:
+            rp._demo_section_for_pattern = real
+        self.assertTrue(any(e.startswith("C11") and "primary" in e
+                            for e in rep.errors), rep.errors)
 
     # ── C12 escape hygiene ───────────────────────────────────────────────────
 

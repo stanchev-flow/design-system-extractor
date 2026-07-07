@@ -655,6 +655,27 @@ def resolve_surface_intent(doc, layout):
 DARK_SURFACES = ("surface/inverse", "surface/inverse-strong", "surface/accent", "surface/overlay")
 
 
+def eyebrow_register_css(doc, layout, sel: str) -> str:
+    """Per-section eyebrow register (brand-schema `layout.eyebrowRegister`, sysfix
+    2026-07): a layout may declare WHICH of the brand's own eyebrow color families
+    its microlabel reads — the value names a `tokens.colors` ROLE (an accent family,
+    the muted ink family, …). Emits a section-scoped `--c-eyebrow-color` pointing at
+    the layer-1 var; undeclared layouts keep the surface default (the alias stays
+    unset and `.c-eyebrow` falls back to its register for the render path). Declaring
+    a role the brand does not carry fails loud — that is an evidence bug, and the C11
+    smoke reports it as a compose failure."""
+    role = str((layout or {}).get("eyebrowRegister") or "").strip()
+    if not role:
+        return ""
+    colors = (doc.get("tokens", {}) or {}).get("colors", {}) or {}
+    if role not in colors:
+        raise KeyError(f"layout '{(layout or {}).get('id')}' declares "
+                       f"eyebrowRegister '{role}' but tokens.colors carries no "
+                       "such role")
+    return (f"\n/* eyebrow register: the section's declared theme-scope family */\n"
+            f"{sel} {{ --c-eyebrow-color: {tokens_css.color_var(role)}; }}")
+
+
 def _brand_spacing(doc, key):
     """Read a brand.yaml spacing token VALUE (read-only); None when absent."""
     tok = ((doc.get("tokens", {}) or {}).get("spacing", {}) or {}).get(key)
@@ -1520,8 +1541,19 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
         f'<div class="c-row"><span class="c-row-label">{cr.esc(lbl)}</span>'
         f'<span class="c-row-value">{cr.esc(val)}</span></div>'
         for lbl, val in copy.get("rows", []))
+    # bound `button` contract slots (B5 parity with compose_stack_hero, sysfix
+    # 2026-07: this route silently DROPPED them and rendered the copy-layer arrow
+    # instead): real action slots compose as one horizontal .cs-hero-actions row
+    # under the intro, in declared order; the legacy copy-driven arrow renders
+    # only when NO bound action slot exists.
+    action_frags = [r["html"] for r in rendered
+                    if r.get("contract") == "button" and (r.get("html") or "").strip()]
+    actions_html = ""
     cta_html = ""
-    if str(copy["cta"]).strip():
+    if action_frags:
+        actions_html = ('\n    <div class="cs-hero-actions">'
+                        + "".join(action_frags) + "</div>")
+    elif str(copy["cta"]).strip():
         cta_html = ('<div class="cs-panel-foot">'
                     + cr.render_arrow_link(doc, ctx, {"label": copy["cta"]}) + "</div>")
     eyebrow_html = cr.render_eyebrow(doc, ctx, {"text": copy["eyebrow"]})
@@ -1532,6 +1564,28 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
     if str(copy["body"]).strip():
         band_body = "\n    " + cr.render_paragraph(
             doc, ctx, {"text": copy["body"], "measure": "50ch"})
+    # PANEL EVIDENCE gate (sysfix 2026-07, punch-list item 9 completion): the cream
+    # panel is REAL only when the brand declared panel furniture — a title or ruled
+    # rows. Without them the panel ELIDES (degrade-to-absent; the old markup shipped
+    # an empty cream box once the invented "Details"/"Learn more" fillers were
+    # removed) and the section composes as the classic media | text split instead:
+    # the copy column takes the second half (grounding order: slots as declared),
+    # heading on the section h2 register, actions/arrow riding the text column.
+    if not (title_html or rows):
+        tail = actions_html
+        if not tail and str(copy["cta"]).strip():
+            tail = "\n      " + cr.render_arrow_link(doc, ctx, {"label": copy["cta"]})
+        header_html = cr.render_header(doc, ctx, {
+            "eyebrow": copy["eyebrow"], "heading": copy["heading"], "level": "h2",
+            "accent": False})
+        return f"""<section class="cs-section cs-split-sec">
+  <div class="cs-split">
+    <div class="cs-split-media"><div class="c-image-mask">{media_html}</div></div>
+    <div class="cs-split-body">
+      {header_html}{band_body}{tail}
+    </div>
+  </div>
+</section>"""
     # The dark info-band heading uses the brand's DIDONE DISPLAY tier (same family/scale
     # logic as the hero + collage headings), NOT a small h2 — on the dark inverse surface
     # it reads in paper/white (var(--c-ink) = text/on-inverse), accent reserved for the
@@ -1541,7 +1595,7 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
     return f"""<section class="cs-section cs-split-sec">
   <div class="cs-split-intro">
     <div class="cs-eyebrow-wrap">{eyebrow_html}</div>
-    {band_heading}{band_body}
+    {band_heading}{band_body}{actions_html}
   </div>
   <div class="cs-split">
     <div class="cs-split-media"><div class="c-image-mask">{media_html}</div></div>
@@ -2896,11 +2950,17 @@ SCAFFOLD_HERO_CSS = """.cs-section { min-height: 100cqh; }
 /* small z:front media pinned to a corner of the SECTION frame (alignTo.corner). */
 .cs-corner-media { position: absolute; }
 .cs-corner-media .c-image, .cs-corner-media .c-image-ph { width: 100%; }
-/* HERO ACTIONS row (AS-27 hero extension): real bound action slots cluster on the
-   brand's control rhythm; each child is the shared c-button / c-arrow-link primitive
-   (filled vs typographic is render_button's law-first dispatch, not CSS). */
+/* HERO ACTIONS row (AS-27 hero extension): real bound action slots cluster as a
+   HORIZONTAL wrapping pair; each child is the shared c-button / c-arrow-link
+   primitive (filled vs typographic is render_button's law-first dispatch, not CSS).
+   sysfix 2026-07: gap is CONTROL-scale (1em — an action pair sits on the control
+   rhythm, not the section block rhythm; the old block-gap forced a wrap in the
+   split-hero column) and alignment defaults to the reading edge — the old
+   `justify-content: inherit` crossed axes (a flex-COLUMN parent's `center` means
+   vertical centering, but inherited into this ROW it centered the pair). Centered
+   contexts opt in explicitly (.cs-foot below / the conversion centered anchor). */
 .cs-hero-actions { display: flex; flex-wrap: wrap; align-items: center;
-  gap: var(--c-block-gap); justify-content: inherit; }
+  gap: 1em; justify-content: flex-start; }
 .cs-foot .cs-hero-actions { justify-content: center; }
 @media (max-width: 991px) { .cs-navlinks { display: none; } }
 @media (max-width: 767px) { .cs-section {
@@ -3012,6 +3072,15 @@ SCAFFOLD_SPLIT_CSS = """.cs-split-intro { max-width: 100%; margin-bottom: 3.5rem
   gap: 0; align-items: stretch; }
 .cs-split-media { grid-column: 1 / span 6; display: flex; }
 .cs-split > .cs-panel { grid-column: 7 / -1; }
+/* panel-less split (media | text, sysfix 2026-07): when the brand declared no panel
+   furniture, the copy column rides the grid's second half on the reading rhythm — a
+   vertically-centered text stack, breathing room instead of the flush panel cut. */
+.cs-split > .cs-split-body { grid-column: 8 / -1; display: flex;
+  flex-direction: column; justify-content: center; align-items: flex-start;
+  gap: var(--c-block-gap); }
+.cs-split-body .c-header { display: flex; flex-direction: column;
+  gap: var(--c-eyebrow-gap); }
+.cs-split-body .c-paragraph { margin: 0; }
 .cs-split-media .c-image { width: 100%; height: 100%; object-fit: cover; }
 /* CS-1 (token-layer-2026-07): the brand-color literals that used to sit in these var()
    fallbacks are GONE — the generated layer-1 block always defines the panel family
@@ -3029,7 +3098,7 @@ SCAFFOLD_SPLIT_CSS = """.cs-split-intro { max-width: 100%; margin-bottom: 3.5rem
 .cs-panel-title { margin-bottom: 1.25rem; }
 .cs-panel-foot { margin-top: 1.5rem; display: flex; justify-content: flex-end; }
 @media (max-width: 767px) { .cs-split { grid-template-columns: 1fr; }
-  .cs-split-media, .cs-split > .cs-panel { grid-column: 1; }
+  .cs-split-media, .cs-split > .cs-panel, .cs-split > .cs-split-body { grid-column: 1; }
   .cs-split-media .c-image { /* provenance: structural — mobile recrop: the stacked
     split half needs a bounded height (device geometry, not a brand ratio) */
     aspect-ratio: 4 / 3; } }"""
@@ -3634,6 +3703,9 @@ def _anchor_css(sel: str, anchor: str) -> str:
         # generic-flow (the SCAFFOLD_FLOW_CSS hardcoded flex-start is DELETED — the
         # resolved value is emitted here instead; AS-18)
         f"{sel} .cs-flow {{ align-items: {flex}; text-align: {text}; }}",
+        # action rows: wrapped lines follow the anchor too (the row itself is a
+        # flex child, so align-items above places the ROW; this places its lines)
+        f"{sel} .cs-hero-actions {{ justify-content: {flex}; }}",
         # gallery band (stack-fullbleed): intro header + caption honor the anchor
         f"{sel} .cs-gallery-intro {{ text-align: {text}; }}",
         f"{sel} .cs-gallery-caption {{ text-align: {text}; }}",
@@ -3896,9 +3968,11 @@ def style_override_css(style_ctx: RenderContext) -> str:
 .cs-section {{ padding: var(--c-section-pad-top) 12cqw
                         var(--c-section-pad-bottom) 6cqw; }}
 {style_density_css(style_ctx)}
-/* color deployment: single committed accent (the eyebrow slug); everything else ink. */
+/* color deployment: single committed accent (the eyebrow slug); everything else ink.
+   A section's DECLARED eyebrow register (layout.eyebrowRegister) is brand evidence,
+   so it wins over the style's generic deployment (brand hues beat style structure). */
 .c-heading--accent {{ color: var(--c-ink); }}
-.c-eyebrow {{ color: var(--c-accent); }}
+.c-eyebrow {{ color: var(--c-eyebrow-color, var(--c-accent)); }}
 """
 
 
@@ -3928,7 +4002,8 @@ def build_document(doc, layout, brand_yaml, style_ctx: RenderContext) -> str:
                          surface_role=role)
     css = vars_css + "\n" + cr.COMPONENT_CSS + cr.structural_variant_css(doc) \
         + "\n" + cr.link_hover_css(doc) + cr.nav_hover_css(doc) \
-        + "\n" + scaffold_css(doc, layout, style_ctx)
+        + "\n" + scaffold_css(doc, layout, style_ctx) \
+        + eyebrow_register_css(doc, layout, ":root")
     if ctx.style_active:
         css += "\n" + style_override_css(style_ctx)
         # ACCENT COLLAPSE PARITY (anti-ai-slop.md AS-06 + AS-10): the full-page path
