@@ -69,6 +69,7 @@ from tokens_css import (  # noqa: E402
 # change to a primitive renderer here is reflected in every composed section too.
 import component_render as cr  # noqa: E402
 import compose_section as cs  # noqa: E402  (shared self-hosted-font copy + @font-face emit)
+import compose_page as cp  # noqa: E402  (chrome footer surface-role resolution)
 
 # Gallery render context (RP-1): rebound per brand in main() via _bind_gallery_ctx —
 # the canvas is the BRAND's primary surface, so is_dark/accent-legality come from the
@@ -187,12 +188,18 @@ def root_css(doc) -> tuple[str, set]:
   --module-gap: {module_gap};
   --ease: {ease_ms};
 }}"""
+    # brand-declared list/separator specimen glyph (footer.separator / navbar.separator);
+    # the CSS fallback is a neutral en dash when the brand declares none.
+    glyph = cr.footer_separator(doc) or cr.nav_separator(doc)
+    if glyph:
+        css = css[:-1] + f'  --specimen-list-marker: "{glyph}";\n}}'
     return css, proxies
 
 
 # ── static (non-token) page + card + state CSS ──────────────────────────────────
-# Brand neverDo is baked in: radius 0, no shadows/borders (separation is fill
-# contrast + 1px ruled bars only), accent confined to .surface-dark contexts.
+# Harness chrome is deliberately NEUTRAL (flat, 1px ruled bars, no shadows): brand
+# presentation (casing, tracking, accent placement, chrome surfaces) renders through
+# the generated tokens — nav-fix 2026-07: no casing/separator/surface literals here.
 BASE_CSS = """
 /* provenance: preview-chrome — gallery harness styling (masthead, badges, tier headers,
    spec labels, state-matrix chrome); never brand output. Specimen content inside the
@@ -294,19 +301,30 @@ body {
   color: var(--ink-muted); }
 .cmp-note strong { color: var(--ink); font-weight: 600; }
 
-/* Dark sub-surface used inside examples that the brand confines to dark bands
-   (logo, badge, banner, navbar, footer, tooltip, code). Accent allowed here. */
+/* Dark sub-surface for component examples the brand renders on its inverse bands
+   (badge, banner, tooltip, code demos); the surface colors are the brand's own
+   inverse tokens. */
 .surface-dark { background: var(--surface-inverse); color: var(--ink-inverse);
   padding: 1.25rem; }
 .surface-darkest { background: var(--surface-inverse-strong); color: var(--ink-inverse);
   padding: 1.25rem; }
 .surface-panel { background: var(--surface-panel); color: var(--ink);
   padding: var(--panel-pad); }
-/* footer demo: rescope the shared --c-* vars to the inverse tokens so the imported
-   render_footer c-* classes read on-brand (light ink on the near-black footer band),
-   and give the centered cluster generous, scale-driven breathing room. */
-.cmp-footer-demo { --c-paper: var(--surface-inverse-strong); --c-ink: var(--ink-inverse);
-  --c-ink-muted: var(--ink-inverse-muted); --c-accent: var(--accent);
+/* chrome demos (navbar / logo / footer): the wrapper carries data-surface-frame for
+   the RESOLVED brand chrome surface role (nav_surface_role / footer_surface_role) —
+   the per-surface alias block scopes the --c-* vars, so a light-chrome brand demos
+   light and a dark-chrome brand demos dark, each from its own evidence. */
+.cmp-chrome-demo { background: var(--c-paper); color: var(--c-ink); padding: 1.25rem; }
+.cmp-chrome-demo .cs-nav { display: flex; align-items: center;
+  justify-content: space-between; gap: 2rem; }
+.cmp-chrome-demo .cs-navlinks { display: flex; gap: 0.55rem; flex: 1;
+  justify-content: center; flex-wrap: wrap; }
+.cmp-chrome-demo .cs-navlinks .c-arrow-link {
+  font-size: var(--size-nav, var(--c-control-size)); }
+.cmp-chrome-demo .cs-navlinks .cs-sep { opacity: 0.55; }
+/* footer demo: generous, scale-driven breathing room around the shared render_footer
+   output; surface + ink come from the alias scope, never an assumed dark band. */
+.cmp-footer-demo { background: var(--c-paper); color: var(--c-ink);
   --c-block-gap: 2.5rem; padding: 3rem 1.75rem; }
 
 /* ── faithful example primitives ── */
@@ -340,7 +358,7 @@ body {
 
 /* logo wordmark. */
 .ex-logo { font-family: var(--font-heading); text-transform: var(--case-control-text, none); letter-spacing: 0.06em;
-  font-size: 1.25rem; color: var(--accent); }
+  font-size: 1.25rem; color: var(--c-accent, var(--accent)); }
 
 /* divider / ruled rows / list. */
 .ex-rule { height: 1px; background: var(--hairline); width: 100%; }
@@ -576,14 +594,19 @@ def render_subheading(doc, key, item):
 
 
 def render_eyebrow(doc, key, item):
-    return cr.render_eyebrow(doc, _GALLERY_CTX, {"text": "/ 01 — On View"})
+    # Specimen = the brand's declared eyebrow PREFIX device + its authored specimen
+    # line (sectionCopy.specimenEyebrow), degrading to a numbered label built from
+    # the brand's own nav vocabulary — never another brand's gallery prose.
+    sc = cs.section_copy_view(doc)
+    text = sc.get("specimenEyebrow") or f"01 \u2014 {_specimen(doc)['links'][0]}"
+    return cr.render_eyebrow(doc, _GALLERY_CTX, {"text": cr.eyebrow_prefix(doc) + text})
 
 
 def render_paragraph(doc, key, item):
     # SSOT: rendered by the shared catalog renderer (also used by section composition).
     return cr.render_paragraph(doc, _GALLERY_CTX, {
         "text": ("Set narrow, roughly a third of the container and offset from its media. "
-                 "Inter, sentence case, generous leading.")})
+                 "The brand body register with generous leading.")})
 
 
 def render_label(doc, key, item):
@@ -622,7 +645,9 @@ def render_illustration(doc, key, item):
 
 
 def render_logo(doc, key, item):
-    return (f'<div class="surface-dark"><span class="ex-logo">{esc(_specimen(doc)["name"])}</span></div>'
+    role = _nav_demo_role(doc)
+    return (f'<div class="cmp-chrome-demo" data-surface-frame="{esc(role)}">'
+            f'<span class="ex-logo">{esc(_specimen(doc)["name"])}</span></div>'
             '<div class="ex-caption">Wordmark &mdash; rendered on the brand chrome surface</div>')
 
 
@@ -708,7 +733,7 @@ def render_pill(doc, key, item):
     if use != "never":
         return (f'<div class="ex-caption">Label chip at the brand radius:</div>'
                 f'<span class="avoid-pill">{esc(tag)}</span>')
-    return ('<div class="ex-caption">Brand realization &mdash; a tag remaps to an uppercase eyebrow label:</div>'
+    return ('<div class="ex-caption">Brand realization &mdash; a tag remaps to an eyebrow-register label:</div>'
             f'<span class="ex-eyebrow">{esc(tag)}</span>'
             '<div class="ex-rule"></div>'
             '<div class="ex-caption">Synthesized / avoid &mdash; rounded chip, never used:</div>'
@@ -754,7 +779,7 @@ def render_select(doc, key, item):
 def render_form_field(doc, key, item):
     return ('<span class="ex-eyebrow">Email address</span>'
             '<div class="ex-field"><span class="ex-input">you@email.com</span></div>'
-            '<div class="ex-caption">Label as uppercase eyebrow above the brand field control</div>')
+            '<div class="ex-caption">Label in the brand eyebrow register above the brand field control</div>')
 
 
 def render_checkbox(doc, key, item):
@@ -830,7 +855,7 @@ def render_stat(doc, key, item):
     sp = _specimen(doc)
     label = sp["links"][2] if len(sp["links"]) > 2 else sp["links"][0]
     return (f'<div class="ex-counter">1 / 6</div><div class="ex-eyebrow">{esc(label)}</div>'
-            '<div class="ex-caption">Display-register numeral + uppercase eyebrow &mdash; open, never boxed</div>')
+            '<div class="ex-caption">Display-register numeral + eyebrow-register label &mdash; open, never boxed</div>')
 
 
 def render_rating(doc, key, item):
@@ -892,21 +917,41 @@ def render_b_header(doc, key, item):
     # renderer; copy is the BRAND's (measured headline + derived CTA), blocker 7.
     sp = _specimen(doc)
     return cr.render_header(doc, _GALLERY_CTX, {
-        "eyebrow": "/ " + sp["links"][0], "heading": sp["headline"], "level": "display",
+        "eyebrow": cr.eyebrow_prefix(doc) + sp["links"][0], "heading": sp["headline"], "level": "display",
         "cta": sp["cta"]})
 
 
+def _nav_demo_role(doc) -> str:
+    """The surface ROLE the navbar/logo chrome demos render on. The brand's measured
+    bar color resolves to one of its own roles (cr.nav_surface_role); a TRANSPARENT
+    bar demos on the surface its measured link ink needs (light link ink → the bar
+    sits over a dark band → the brand's inverse role), else the base canvas."""
+    role = cr.nav_surface_role(doc)
+    if role:
+        return role
+    surfaces = (doc.get("tokens") or {}).get("surfaces") or {}
+    link = ((doc.get("navbar") or {}).get("measured") or {}).get("link") or {}
+    rgba = cr._parse_color_rgba(link.get("color"))
+    if rgba and sum(rgba[:3]) / 3 > 150 and "surface/inverse" in surfaces:
+        return "surface/inverse"
+    return "surface/primary" if "surface/primary" in surfaces \
+        else next(iter(surfaces), "surface/primary")
+
+
 def render_b_navbar(doc, key, item):
-    links = _specimen(doc)["links"][:3]
-    sep = ' <span style="opacity:.5">/</span> '
-    return ('<div class="surface-dark"><div style="display:flex;align-items:center;'
-            'justify-content:space-between;gap:1.5rem">'
-            '<span class="ex-logo" style="font-size:1rem">' + esc(_SPEC_NAME) + '</span>'
-            '<span class="ex-label" style="color:var(--ink-inverse);font-size:var(--control-size)">'
-            + sep.join(esc(x) for x in links) + '</span>'
-            '<a class="act" href="#" style="color:var(--accent)">' + esc(_SPEC_CTA) + ' <span class="arrow">&rarr;</span></a>'
-            '</div></div>'
-            '<div class="ex-caption">Bar on the brand chrome surface; typographic nav links</div>')
+    # SSOT (nav-fix 2026-07): the navbar demo is the SHARED render_navbar on the
+    # brand's RESOLVED chrome surface — the same builder + props derivation the
+    # composed page uses. Separator/casing/CTA-shape all ride brand declarations;
+    # nothing here assumes a dark bar, slash links, or a typographic cta.
+    role = _nav_demo_role(doc)
+    surfaces = (doc.get("tokens") or {}).get("surfaces") or {}
+    ctx = cr.make_context(doc, role, surfaces.get(role) or {})
+    props = dict(cs._navbar_props(doc))
+    props.pop("logo", None)  # image logo files live beside the composed page, not here
+    nav = cr.render_navbar(doc, ctx, props)
+    return (f'<div class="cmp-chrome-demo" data-surface-frame="{esc(role)}">{nav}</div>'
+            f'<div class="ex-caption">Bar on the brand&rsquo;s extracted chrome surface '
+            f'({esc(role)}); links + cta in the brand&rsquo;s own registers</div>')
 
 
 def render_b_footer(doc, key, item):
@@ -915,16 +960,20 @@ def render_b_footer(doc, key, item):
     # uses (component_render.footer_content) — ONE renderer + ONE content derivation for
     # both the gallery and the composed page. Content is the brand's own extracted
     # footer (sitemap/directory, TEXT social row, legal line); a brand with no footer
-    # extracted gets an honest caption, never a fabricated social row. Rendered on the
-    # brand's near-black strong surface (a footer/closing bookend is dark-only);
-    # `.cmp-footer-demo` rescopes the shared --c-* vars to the inverse tokens so the
-    # imported c-* classes read on-brand (light ink on dark), and the sitemap centers +
-    # right-sizes itself via the contained clamp in component_render.COMPONENT_CSS.
+    # extracted gets an honest caption, never a fabricated social row. The demo surface
+    # is the brand's MEASURED chrome-footer surface resolved to one of its own roles
+    # (compose_page.footer_surface_role — nav-fix 2026-07: a light-chrome brand demos
+    # light, never an assumed near-black band); the wrapper's data-surface-frame alias
+    # block scopes the --c-* vars, and the sitemap centers + right-sizes itself via the
+    # contained clamp in component_render.COMPONENT_CSS.
     if not (doc.get("footer") or {}):
         return ('<div class="ex-caption">No footer extracted for this brand &mdash; the '
                 'composed page ends without a closing bookend (nothing is invented)</div>')
-    foot = cr.render_footer(doc, _GALLERY_CTX, cr.footer_content(doc))
-    return (f'<div class="surface-darkest cmp-footer-demo">{foot}</div>'
+    role = cp.footer_surface_role(doc)
+    surfaces = (doc.get("tokens") or {}).get("surfaces") or {}
+    ctx = cr.make_context(doc, role, surfaces.get(role) or {})
+    foot = cr.render_footer(doc, ctx, cr.footer_content(doc))
+    return (f'<div class="cmp-footer-demo" data-surface-frame="{esc(role)}">{foot}</div>'
             '<div class="ex-caption">Closing bookend &mdash; the brand&rsquo;s extracted footer '
             '(sitemap, text social row + muted legal); shared <code>render_footer</code>, no boxes</div>')
 
@@ -967,7 +1016,7 @@ def render_b_form(doc, key, item):
     # SSOT: the form block composes the underline field + inline arrow submit via the
     # shared catalog renderer (the SAME render_form the section composer uses).
     form = cr.render_form(doc, _GALLERY_CTX, {
-        "eyebrow": "/ Newsletter", "placeholder": "Enter your email", "submit": "Subscribe"})
+        "eyebrow": cr.eyebrow_prefix(doc) + "Newsletter", "placeholder": "Enter your email", "submit": "Subscribe"})
     return (form + '<div class="ex-caption">Field + inline submit in the brand\'s field/CTA grammar</div>')
 
 
@@ -1031,7 +1080,7 @@ def render_b_tabs(doc, key, item):
 def render_b_logo_bar(doc, key, item):
     return ('<div class="ex-eyebrow">In partnership with</div>'
             '<div style="display:flex;gap:1.75rem;margin-top:0.6rem;font-family:var(--font-heading);'
-            'text-transform:uppercase;color:var(--ink)"><span>ARTC</span><span>FOLIO</span><span>KILN</span></div>'
+            'text-transform:var(--case-control-text, none);color:var(--ink)"><span>ARTC</span><span>FOLIO</span><span>KILN</span></div>'
             '<div class="ex-caption">Monochrome wordmarks in a flush row + eyebrow caption; no tiles</div>')
 
 
@@ -1123,7 +1172,7 @@ def render_b_steps(doc, key, item):
             '<span class="ex-h3" style="font-size:1.125rem;flex:1;margin-left:1rem">Book online</span></div>'
             '<div class="ex-row"><span class="ex-counter" style="font-size:1.5rem">02</span>'
             '<span class="ex-h3" style="font-size:1.125rem;flex:1;margin-left:1rem">Arrive & scan</span></div></div>'
-            '<div class="ex-caption">Big didone numerals + uppercase headings on ruled bars; never boxed</div>')
+            '<div class="ex-caption">Display-register numerals + heading-register labels on ruled bars; never boxed</div>')
 
 
 def render_b_step_item(doc, key, item):
@@ -1500,7 +1549,7 @@ def build_page(doc, prim_items, prim_contracts, block_items, block_contracts, br
 <body>
 <div class="page">
   <header class="masthead">
-    <div class="eyebrow ex-eyebrow">/ Component Preview Gallery</div>
+    <div class="eyebrow ex-eyebrow">{esc(cr.eyebrow_prefix(doc))}Component Preview Gallery</div>
     <h1>{esc(name)}</h1>
     <p>{esc(snapshot)}</p>
     <div class="legend">
@@ -1548,11 +1597,10 @@ def _specimen(doc):
     name = (doc.get("brand") or {}).get("name") or "Brand"
     nav = doc.get("navbar") or {}
     primary = [p.get("label") for p in (nav.get("primary") or []) if isinstance(p, dict) and p.get("label")]
-    cta = None
-    for cand in reversed(primary):
-        if any(k in cand.lower() for k in ("demo", "ticket", "buy", "start", "trial", "sign")):
-            cta = cand
-            break
+    # the action label comes from the SAME evidence ladder the composed nav uses
+    # (navbar.ctas[] / links[].style filled marker / measured.cta — never keyword
+    # guesses over another brand's commerce vocabulary), then sectionCopy.
+    cta = cs._navbar_props(doc).get("cta")
     headline = None
     for lay in (doc.get("layouts") or []):
         for bm in (lay.get("blockMapping") or []) if isinstance(lay, dict) else []:
@@ -1568,8 +1616,10 @@ def _specimen(doc):
                 break
         if headline:
             break
-    return {"name": name, "cta": (cta or "Learn more").title(),
-            "links": [str(x).title() for x in (primary[:4] or ["About", "Products", "Pricing", "Contact"])],
+    # labels pass through AS AUTHORED (AS-39): casing is presentation and belongs to
+    # the brand's case tokens in CSS, never a Python .title()/.upper() restyle.
+    return {"name": name, "cta": cta or "Learn more",
+            "links": [str(x) for x in (primary[:4] or ["About", "Products", "Pricing", "Contact"])],
             "headline": headline or name}
 
 

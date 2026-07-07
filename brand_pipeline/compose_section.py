@@ -825,14 +825,40 @@ def prepare_nav_logo(doc: dict, brand_dir: Path, out_assets: Path):
     return None
 
 
+def _nav_action_split(nav: dict, primary: list[dict]) -> tuple[list[dict], dict | None]:
+    """Split the extracted primary links into (links, trailing action) from EVIDENCE only
+    (AS-39 — no content-keyword heuristics naming any brand's commerce vocabulary):
+
+    1. an explicit ``navbar.ctas[]`` entry (the extractor saw a distinct action element);
+    2. a ``navbar.links[]`` entry whose measured ``style`` marks it as a filled pill/button
+       (the actions-slot control family), matched back into primary by label;
+    3. ``navbar.measured.cta`` present — a distinct CTA element was measured in the bar,
+       so the LAST primary item is that action.
+
+    A brand whose evidence declares none of these keeps every primary item as a plain
+    link — the action never materializes from vocabulary guesses."""
+    ctas = [c for c in (nav.get("ctas") or []) if isinstance(c, dict) and c.get("label")]
+    if ctas:
+        cta = ctas[-1]
+        return [p for p in primary if p.get("label") != cta.get("label")], cta
+    styled = {(l.get("label") or ""): (l.get("style") or "")
+              for l in (nav.get("links") or []) if isinstance(l, dict)}
+    for p in reversed(primary):
+        if "filled" in styled.get(p.get("label") or "", ""):
+            return [q for q in primary if q is not p], p
+    if primary and isinstance((nav.get("measured") or {}).get("cta"), dict):
+        return primary[:-1], primary[-1]
+    return primary, None
+
+
 def _navbar_props(doc: dict) -> dict:
     """Build render_navbar props from the extracted ``doc['navbar']`` (logo image + primary
     links + trailing CTA). When no navbar was extracted the nav degrades to the BRAND'S OWN
     data: its authored sectionCopy wordmark/links/cta when present, else a wordmark-only
     nav built from the brand name — copy is never borrowed from another brand.
 
-    The last primary item that reads like a ticket/buy action becomes the arrow CTA (the
-    common marketing-nav shape: primary links + trailing ticket/buy action)."""
+    The trailing action comes from the extraction evidence (``_nav_action_split``); the
+    composition/sectionCopy cta only fills in when the extraction declares none."""
     sc = section_copy_view(doc)
     brand_name = (doc.get("brand") or {}).get("name") or ""
     nav = doc.get("navbar")
@@ -843,10 +869,7 @@ def _navbar_props(doc: dict) -> dict:
                 "cta": sc.get("cta") or None}
     logo = nav.get("logo") or {}
     primary = [p for p in (nav.get("primary") or []) if isinstance(p, dict) and p.get("label")]
-    links, cta = primary, None
-    if primary and any(k in (primary[-1]["label"] or "").lower() for k in ("ticket", "buy")):
-        cta = primary[-1]
-        links = primary[:-1]
+    links, cta = _nav_action_split(nav, primary)
 
     props: dict = {
         "links": links or sc.get("nav") or [],
@@ -1308,8 +1331,10 @@ def compose_stack_hero(doc, layout, ctx, rendered, style_ctx):
     cta_slot = _pick(rendered, "cta") or _pick(rendered, "button") or _pick(rendered, "action")
     eyebrow_html = eyebrow_slot["html"] if eyebrow_slot else \
         cr.render_eyebrow(doc, ctx, {"text": copy["eyebrow"]})
+    # brand-name fallback passes through AS AUTHORED (AS-39) — display casing is the
+    # brand's case token on the heading register, never a Python .upper() restyle.
     title_html = title["html"] if title else cr.render_heading(doc, ctx, {
-        "text": ((doc.get("brand") or {}).get("name") or "Brand").upper(),
+        "text": (doc.get("brand") or {}).get("name") or "Brand",
         "accent": ctx.is_dark, "splitTwoLines": True})
     # HERO ACTIONS are law-first (AS-27 extended to the hero path, remote-fix blocker-3):
     # real `button` contract slots render through render_button's cta-shape dispatch —

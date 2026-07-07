@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import ast
 import copy
+import re
 import sys
 import tempfile
 import unittest
@@ -124,6 +125,36 @@ def _text_hits(path: Path) -> list[str]:
     return hits
 
 
+# Chrome-presentation patterns FORBIDDEN in shared-module string literals (nav-fix
+# 2026-07): casing must ride the brand's --case-* tokens (a var() fallback of `none`
+# is fine), and nav/footer separator glyphs must come from navbar.separator /
+# footer.separator brand declarations — a hardcoded glyph inside the separator span
+# is one brand's editorial device frozen into every brand's chrome.
+PRESENTATION_PATTERNS = [
+    (re.compile(r"text-transform\s*:\s*(uppercase|capitalize|lowercase)"),
+     "hardcoded text-transform casing (must be var(--case-*) from brand tokens)"),
+    (re.compile(r'class="cs-sep"[^>]*>\s*[^<\s]'),
+     "hardcoded nav separator glyph (must come from navbar.separator)"),
+    (re.compile(r'class="c-foot-sep"[^>]*>\s*[^<\s]'),
+     "hardcoded footer separator glyph (must come from footer.separator)"),
+]
+
+
+def _presentation_hits(py_path: Path) -> list[str]:
+    """Chrome-presentation DNA in the file's non-docstring string literals."""
+    tree = ast.parse(py_path.read_text())
+    doc_nodes = _docstring_nodes(tree)
+    hits: list[str] = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Constant) and isinstance(node.value, str) \
+                and id(node) not in doc_nodes:
+            for pat, why in PRESENTATION_PATTERNS:
+                m = pat.search(node.value)
+                if m:
+                    hits.append(f"line {node.lineno}: {why} — {m.group(0)!r}")
+    return hits
+
+
 class StaticScan(unittest.TestCase):
     """Scan A — shared code/spec surfaces carry no WoodWave literal."""
 
@@ -134,6 +165,17 @@ class StaticScan(unittest.TestCase):
             for hit in _literal_hits(p):
                 failures.append(f"{name}: {hit}")
         self.assertFalse(failures, "WoodWave DNA in shared string literals:\n  "
+                         + "\n  ".join(failures))
+
+    def test_no_hardcoded_chrome_presentation(self):
+        """Nav/chrome PRESENTATION (casing, separator glyphs) must be brand-token /
+        brand-declaration driven in every shared module (AS-38 presentation class)."""
+        failures = []
+        for name in SHARED_MODULES:
+            p = _BRAND_PIPELINE / name
+            for hit in _presentation_hits(p):
+                failures.append(f"{name}: {hit}")
+        self.assertFalse(failures, "chrome-presentation DNA in shared modules:\n  "
                          + "\n  ".join(failures))
 
     def test_styles_md_clean(self):
@@ -203,6 +245,20 @@ class FunctionalRender(unittest.TestCase):
         for label in ("#about", ">about<", ">gallery<", ">exhibition<", ">visit<"):
             self.assertNotIn(label, low,
                              f"borrowed nav label {label!r} on a navbar-less brand")
+
+    def test_no_inherited_chrome_presentation(self):
+        """A brand that declares NO separator/casing devices renders none: no
+        separator SPANS in the markup (the dormant .cs-sep style rule is fine), and
+        no literal text-transform casing in the emitted CSS (case rides --case-*
+        token VALUES, which this brand's data controls)."""
+        low = self.html.lower()
+        self.assertNotIn('class="cs-sep"', low,
+                         "nav separator markup on a separator-less brand")
+        self.assertNotIn('class="c-foot-sep"', low,
+                         "footer separator markup on a separator-less brand")
+        for pat, why in PRESENTATION_PATTERNS[:1]:
+            self.assertIsNone(pat.search(low),
+                              f"{why} leaked into a synthetic brand's page")
 
 
 if __name__ == "__main__":

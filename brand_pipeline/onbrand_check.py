@@ -809,7 +809,12 @@ def check_slop(doc, html, layout, facts):
         if isinstance(s, dict) and s.get("value"):
             brand_radii.add(str(s.get("value")).strip())
     var_map = facts.get("css_vars") or {}
-    var_vals = [v.strip() for v in facts["radius_vars"].values()]
+    # measured chrome interaction radii (--chrome-*, e.g. the nav-link hover wash pill)
+    # are EXTRACTED evidence straight from the layer-1 manifest, not composer-invented
+    # rounding — the token-provenance invariant (AS-24) already vouches for them, so
+    # they are exempt from the design radius SCALE the way 0 is (nav-fix 2026-07).
+    var_vals = [v.strip() for k, v in facts["radius_vars"].items()
+                if not k.startswith("--chrome-")]
     resolved = [_resolve_css_var_chain(v, var_map) for v in var_vals]
     bad = [f"{orig} -> {res}" if orig != res else orig
            for orig, res in zip(var_vals, resolved)

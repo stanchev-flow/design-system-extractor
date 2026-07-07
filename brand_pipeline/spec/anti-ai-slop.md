@@ -1170,6 +1170,45 @@ lanes byte-identical (or comment-only) against pre-fix baselines.
 
 ---
 
+## AS-39 — Chrome PRESENTATION DNA in shared renderers (casing / separators / surfaces)
+
+**Rule**: AS-38's *presentation* subclass — beyond copy and structure, a brand's chrome
+STYLING must never be a shared-code default. No hardcoded `text-transform` casing (ride
+the generated `--case-<tier>` variables, fallback `none`), no Python-side label casing
+(`.upper()` is styling), no hardcoded separator glyphs in nav/footer/list markup (a
+declared `navbar.separator` / `footer.separator` renders; silence renders spacing
+only), no assumed chrome surface (nav/footer/logo surfaces resolve from the brand's
+measured chrome colors to its OWN roles — `nav_surface_role` / `footer_surface_role`),
+no single-family action grammar (the nav CTA dispatches through the law-first
+`cta-shape` like every action), and chrome interactions (hover wash / color-shift)
+render only from measured evidence.
+
+**Why it happens**: content decontamination (AS-38) moves the *words* out but leaves
+the *look* behind, because presentation hides in CSS literals, harness styling, and
+"tiny" separator spans that carry no greppable brand name. The bootstrap brand's
+tracked-caps dark slash-separated chrome still reads perfect on that brand, so every
+render stays green until a sentence-case light-chrome brand ships wearing it.
+
+**Caught here**: nav-fix batch (2026-07-07) — after the AS-38 batch, Remote (light
+`#eff0f0` bar, sentence-case Inter links, no separators, pill hover, filled nav CTA)
+still rendered WoodWave's slash separators between nav links and footer social links
+(`render_navbar`/`render_footer` hardcoded `/` spans), Python-uppercased footer
+sitemap/social labels (`footer_content` `.upper()`), a components-preview gallery with
+~30 hardcoded `text-transform: uppercase` rules, a slash `.ex-li` list marker, "/ "
+eyebrow prefixes, and navbar/logo/footer demos pinned to `.surface-dark` ("the brand
+confines nav to dark bands" — one brand's law), plus a typographic arrow nav CTA on
+filled-button brands and Remote's measured nav hover wash dropped on the floor.
+
+**Verify**: unit — `tests/test_no_cross_brand_dna.py::test_no_hardcoded_chrome_presentation`
+(AST scan: no `text-transform: uppercase|capitalize|lowercase` and no non-empty
+`cs-sep`/`c-foot-sep` glyph literals in shared modules) and
+`FunctionalRender::test_no_inherited_chrome_presentation` (a declaration-less synthetic
+brand renders zero separator spans and no literal casing). Regression — the bootstrap
+brand's lanes pixel-identical with its devices re-declared as ITS brand data
+(`navbar.separator`, `footer.separator`, `tokens.type.eyebrow.prefix`).
+
+---
+
 ## Adding a new entry
 
 Copy this shape: **Rule** (the imperative, one or two sentences) / **Why it happens** (the
