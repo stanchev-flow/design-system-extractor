@@ -3,11 +3,16 @@ id: radical-editorial
 layer: style            # middle layer; brand.md overrides any token it sets
 owns: [shape, depth, type, density, color-deployment, motion]
 never_sets: [brand hue values, brand font families]
+composes_with: []       # none — a strict, self-contained grammar (most identity is Invariant)
 
 # ── machine-consumed structure (AUTHORITATIVE; parsed by brand_pipeline/styles.py) ──
-# Structured, deterministic parsed source (mirrors brand.yaml). The prose body below is
-# authoring guidance; a field ABSENT here falls back to the prose. Keep them consistent.
+# These structured values are the deterministic parsed source (mirrors brand.yaml). The
+# prose body below is authoring guidance; where a field is ABSENT here the parser falls
+# back to the prose. Keep the two consistent. (Prose lists — brand slots, invariants,
+# soft-option rationale, style rules, failure modes — stay in the body and are still
+# prose-parsed; only `soft_options` is mirrored here as structured data for the gate.)
 type:
+  display_source: poster    # the oversized poster display IS this style's identity
   display_min_rem: 9        # poster floor at desktop (prose: "AT LEAST 9rem / ~12vw")
   display_vw: 12            # documented intent (rendered as cqw, never a viewport unit)
   display_max_rem: 16.2     # upper clamp bound for the display tier
@@ -36,22 +41,40 @@ spacing:                    # named rem scale + which step each structural gap u
   cluster_gap_slot: 2xs
 soft_options:               # tier-2 brand-choosable options (allowed kept as prose string)
   display-case: { allowed: "uppercase, sentence, mixed", default: "sentence" }
+  primary-action: { allowed: "ghost-link, underline-link", default: "ghost-link" }
   accent-deployment: { allowed: "single-section, single-highlight", default: "single-highlight" }
   structural-numbers: { allowed: "on, off", default: "off" }
+# ── logo-strip device treatment (AS-33; parsed into StyleStructure.logo_strip) ──
+# QUALITATIVE stance on partner/customer logo strips (monochrome | reduced | plain).
+# Marks render as shipped — raw, hard-edged, no softening filter and no dimming; the
+# radical grammar does not polish third-party artifacts. Realization lives in the
+# shared composer helper; this file never carries CSS values.
+logoStrip: plain
+# ── inset art-panel surface (AS-37; parsed into StyleStructure.art_panel) ──
+# QUALITATIVE stance on the rounded panel painted with a brand art asset (noise /
+# gradient / illustration fill) hosting a section's content or media (inset | none).
+# NONE for this raw hard-edged grammar: zero radius, media is flush, surfaces are
+# bare — a rounded art panel never renders here, whatever the brand or composition
+# declares. Measured values stay brand tokens; no CSS values here.
+artPanel: none
 # ── alignment stance (AS-18; parsed into StyleStructure.alignment_*) ──
-# The hardest-left of the three styles: only the two sanctioned centered stacks (hero
-# bookend + conversion/CTA) and the closing footer cluster center; every editorial run
-# stays left WITH a declared counterweight device. Resolution order: section-explicit >
-# pattern contentShape.alignment > this map (useCase key first, then archetype).
+# Machine-readable role/archetype -> anchor map: the LAST layer of the composer's
+# resolution chain (section-explicit > pattern contentShape.alignment > THIS). A key is
+# tried as the section's useCase first, then its renderer archetype. The hardest-left of
+# the three styles: only the two sanctioned centered stacks (hero bookend +
+# conversion/CTA) and the closing footer cluster center; every editorial run stays left
+# WITH a declared counterweight device, never bare.
 alignment:
   default: left
   roles:
-    hero: centered                   # the sanctioned centered bookend (brand override territory)
+    # the sanctioned centered stacks (brand override territory)
+    hero: centered                   # the sanctioned centered bookend
     cta: centered
     conversion: centered
-    footer: centered
-    faq: centered
     pricing: centered
+    faq: centered
+    footer: centered                 # the closing bookend cluster
+    # left-anchored editorial devices — each declares its counterweight
     testimonial: { anchor: left, counterweight: portrait }
     about: { anchor: left, counterweight: media }
     features: { anchor: left, counterweight: media }
@@ -61,6 +84,7 @@ alignment:
     cards: { anchor: left, counterweight: staggered-grid }
     overlay: { anchor: left, counterweight: canvas }
     generic-flow: { anchor: left, counterweight: media }
+    # edge-to-edge bands / utility rows
     gallery: edge-to-edge
     stack-fullbleed: edge-to-edge
     banded: edge-to-edge
@@ -73,11 +97,65 @@ alignment:
 # for clean/corporate styles. Parsed by brand_pipeline/styles.py; enforced by
 # generate_composition.offgrid_prefilter + the render/gate repair loop.
 offGridExpansion: true
+# ── freedom budget (the 0-5 per-section wildcard allowance; parsed by styles.py) ──
+# QUALITATIVE, style-relative definitions of how far generation may deviate from the
+# brand median at each level — NO exact values (no px/hex/ratios): everything is
+# expressed against this style's own vocabulary (treatments, scale steps, type tiers,
+# ghost devices, the asymmetric grid). The ladder is cumulative (a level includes the
+# right to go lower). The BRAND may choose a LEVEL (`voice.dials.freedom` in
+# brand.yaml) but never redefines what a level means — definitions live here only.
+# Expansive upper levels are consistent with offGridExpansion: true.
+freedomBudget:
+  default: 3               # the radical style EXPECTS a deliberate inversion moment
+  ceiling: 5               # full ladder available (transplant + sanctioned relax)
+  levels:
+    0:
+      name: median
+      unlocks: nothing — the section ships the brand median exactly as retrieved/blessed
+      forbids: any deviation, including intensifying a treatment the section already carries
+    1:
+      name: nudge
+      unlocks: subtle intensification of treatments the section ALREADY carries — a ghost
+        device one step more present, an existing stagger one column-multiple deeper, an
+        existing margin one step more irregular on the style's own spacing scale
+      forbids: new treatments, alignment changes, foreign grammar, decoration added
+        where the median carried none
+    2:
+      name: crank
+      unlocks: push ONE existing treatment to its expressive extreme — the ghost
+        word/numeral grows from texture to the wall itself, extreme-contrast pairing of
+        the largest and smallest tiers in one passage, an overlap that nearly collides —
+        while the flat, sharp-cornered, near-monochrome identity stays untouched
+      forbids: a second accent, any radius or shadow, a new type family, anchor
+        inversion, more than one cranked treatment per section
+    3:
+      name: invert
+      unlocks: invert ONE soft-tier compositional stance for this section — a
+        dead-centered monument on the deliberately asymmetric page, a mirrored anchor
+        with the counterweight swinging sides, a left-anchored take on a sanctioned
+        centered stack — DECLARED via the alignment layer (never raw CSS fighting the
+        scaffold), one-off and logged
+      forbids: breaking an invariant without a declared counterweight, more than one
+        inversion per page, any neverDo relaxation
+    4:
+      name: transplant
+      unlocks: re-set the section's content in ANOTHER use-case's grammar from this
+        brand's own pattern library (registered recipes only); the display tier is
+        re-fitted to the transplanted copy's longest word so nothing collides
+      forbids: improvised unregistered grammar, vocabulary imported from outside the
+        brand library, any neverDo relaxation
+    5:
+      name: relax
+      unlocks: relax exactly ONE brand neverDo, ONLY where the brand's wildcardScope
+        sanctions it and ONLY via a registered recipe — one-off, logged, never promoted;
+        with no registered recipe the level caps down to transplant
+      forbids: relaxing more than one rule, acting outside the sanctioned scope,
+        promoting the relaxation into the design language
 ---
 
 > Parsed machine values live in the YAML front-matter above (the authoritative source);
-> the prose below is authoring guidance. Where a field is absent from the front-matter, the
-> parser falls back to this prose.
+> the prose below is authoring guidance the generating LLM reads. Where a field is absent
+> from the front-matter, the parser falls back to this prose.
 
 # Radical Editorial
 
@@ -159,18 +237,45 @@ symmetric (top = bottom) unless the brand explicitly commits otherwise.
 
 ### Motion
 - Restrained and smooth — expressive ease-out, durations in the ~320–620ms
-  range. The per-brand motion spec is the source of truth and OVERRIDES this
-  default: a brand authors its easing + fast/base/slow durations in `brand.yaml`
-  `voice.motionSpec` and the composer reads it. Type reveals, line-by-line fades,
-  gentle parallax on full-bleed imagery.
+  range. Type reveals, line-by-line fades, gentle parallax on full-bleed
+  imagery.
 - Nothing bouncy, nothing mechanical — no spring, overshoot, or snap. Motion
   should feel like a page turning, not a UI reacting. Respect
   prefers-reduced-motion.
+- The per-brand motion spec is the SOURCE OF TRUTH and OVERRIDES this default:
+  a brand authors its easing + fast/base/slow durations in `brand.yaml`
+  `voice.motionSpec` and the composer reads it, so the style's Motion section is
+  intentionally consistent with whatever the brand declares.
 
 ## Structural devices (use only if content earns them)
 - Oversized section numbers (01/02/03) ONLY when content is a real sequence.
 - Giant ghosted background numerals/words behind content for depth.
 - Thin horizontal rules; mono captions/slugs; full-bleed photography; drop caps.
+
+## Unit policy (rendered output)
+Any rhythm/sizing the spec describes conceptually in `vw` / `clamp(…vw…)` / `px`
+(e.g. the poster display at ~12vw, the 1px hairline rules) is INTENT only.
+Rendered output MUST use container-query units (`cqw`/`cqh`/`cqi`) against a
+`container-type: size` context — NEVER viewport units (`vw`/`vh`/`dvh`).
+Translate the concept; do not emit the `vw` literals. (The renderer already
+converts the ~12vw display intent to `cqw`.)
+
+## Precedence (three enforcement tiers)
+Two layers (STYLE base, BRAND on top), three enforcement tiers — the model the parser
+(`brand_pipeline/styles.py`) and the gate (`onbrand_check.py`) implement:
+
+1. **Invariants** (`## Invariants`) — the style's load-bearing identity. Advisory-STRONG:
+   the gate WARNs on a broken invariant with no documented override; never hard-FAILs.
+2. **Soft options** (`## Soft options`) — style choices with declared allowed values and
+   a default; a brand commits one via a token/primitive binding and the gate blesses it
+   as an intentional OVERRIDE.
+3. **Brand `neverDo`** (in `brand.yaml`) — the only hard, non-overridable layer; the gate
+   FAILs on a violation.
+
+The BRAND fills paper/ink/accent/fonts and wins on any value it explicitly sets,
+including one that contradicts an Invariant (e.g. a hero `#sec-0` centered / accent
+display heading). Invariants are the style identity but advisory-strong, NOT absolute —
+only the brand's own `neverDo` is hard.
 
 ## Style definition
 1. Display type reaches genuine poster scale (≥9rem/~12vw desktop). Not "large-ish."
@@ -197,32 +302,37 @@ gate WARNs if one is broken with no documented brand override, and never hard-FA
 6. Confident characterful display against a tight grotesk/mono; never two similar
    sans faces.
 
-## Precedence (three enforcement tiers)
-Two layers (STYLE base, BRAND on top), three enforcement tiers — the model the parser
-(`brand_pipeline/styles.py`) and the gate (`onbrand_check.py`) implement:
-
-1. **Invariants** (`## Invariants`) — the style's load-bearing identity. Advisory-STRONG:
-   the gate WARNs on a broken invariant with no documented override; never hard-FAILs.
-2. **Soft options** (`## Soft options`) — style choices with declared allowed values and
-   a default; a brand commits one via a token/primitive binding and the gate blesses it
-   as an intentional OVERRIDE.
-3. **Brand `neverDo`** (in `brand.yaml`) — the only hard, non-overridable layer; the gate
-   FAILs on a violation.
-
-The BRAND fills paper/ink/accent/fonts and wins on any value it explicitly sets,
-including one that contradicts an Invariant (e.g. a hero `#sec-0` centered / accent
-display heading). Invariants are the style identity but advisory-strong, NOT absolute —
-only the brand's own `neverDo` is hard.
-
 ## Soft options
 Brand-choosable style choices (tier 2 — see `## Precedence`). Each is
-`option-id: [allowed values] | default: <value>`. Radical Editorial is a strict style, so
-its soft surface is small — most of its identity is Invariant.
+`option-id: [allowed values] | default: <value>`. A brand commits a choice via a token
+or primitive binding; the gate blesses the committed choice as an intentional OVERRIDE.
+Radical Editorial is a strict style, so its soft surface is small — most of its
+identity is Invariant.
 - `display-case`: [uppercase, sentence, mixed] | default: sentence — pick ONE and commit.
+- `primary-action`: [ghost-link, underline-link] | default: ghost-link — the primary CTA
+  is a TYPOGRAPHIC link device in this grammar (arrow/underline draw-in); filled buttons
+  belong to other styles. A brand law demanding filled primaries overrides the style.
 - `accent-deployment`: [single-section, single-highlight] | default: single-highlight —
   a brand commits its one accent to a full-bleed section or a single highlight.
 - `structural-numbers`: [on, off] | default: off — oversized 01/02/03 section numbers,
   used ONLY when content is a real sequence.
+
+## Freedom budget (0–5 wildcard allowance)
+Machine values live in the front-matter `freedomBudget:` block (authoritative; parsed by
+`brand_pipeline/styles.py`, consumed by `wildcard_generator.py`). Qualitative and
+style-relative — no exact values; a brand picks a LEVEL (`voice.dials.freedom`), never
+new definitions. Default level: `3` (invert) — the radical style expects a deliberate
+inversion moment. Ceiling: `5` — expansive, consistent with `offGridExpansion: true`.
+- `0` median — ship the brand median untouched.
+- `1` nudge — subtly intensify treatments the section already carries.
+- `2` crank — one existing treatment to its expressive extreme (ghost word becomes the
+  wall itself); flat, sharp, near-monochrome identity untouched.
+- `3` invert — one declared compositional inversion (centered monument, mirrored
+  anchor), one-off and logged, via the alignment layer.
+- `4` transplant — the section's content re-set in another use-case's grammar from the
+  brand's own library, registered recipes only.
+- `5` relax — exactly one neverDo relaxation where `wildcardScope` sanctions it, via a
+  registered recipe only; otherwise caps to `4`.
 
 ## Failure modes (do NOT produce these)
 - Display type that isn't actually large enough — the #1 failure.

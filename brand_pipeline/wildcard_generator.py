@@ -44,25 +44,41 @@ from pathlib import Path
 import yaml
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import compose_page as cp  # noqa: E402
 import compose_section as cs  # noqa: E402
 import layout_library as ll  # noqa: E402
-from styles import inactive_context, load_and_merge  # noqa: E402
+from styles import FreedomBudget, inactive_context, load_and_merge  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
 # ── candidate definitions ────────────────────────────────────────────────────────
 
+def _first_layout_of_scaffold(doc, scaffold: str) -> str | None:
+    """The FIRST page layout (page order) composing through the given scaffold family,
+    or None when this brand's page has no section of that grammar."""
+    for lid in page_layout_ids(doc):
+        if cs.scaffold_key(cs.find_layout(doc, lid)) == scaffold:
+            return lid
+    return None
+
+
 def _candidates(doc: dict) -> list[dict]:
-    """Each candidate: which brand.yaml layout to start from, an optional in-memory layout
-    mutation, optional extra copy (registered into LAYOUT_COPY at runtime), a scoped CSS
-    override (the divergence itself), and the honest record of what it bends."""
-    return [
+    """Each candidate: which SCAFFOLD grammar to start from (resolved to the ACTIVE
+    brand's first layout of that family — a brand without the grammar skips the
+    candidate, logged), an optional in-memory layout mutation, optional extra copy
+    (registered into LAYOUT_COPY at runtime), a scoped CSS override (the divergence
+    itself), and the honest record of what it bends.
+
+    Candidate copy comes from the ACTIVE brand's section-copy.yaml ``wildcardCopy:``
+    (keyed by candidate id) — a candidate that NEEDS copy the brand doesn't carry is
+    omitted with a logged reason, never seeded from another brand's voice."""
+    wc = cs.brand_wildcard_copy(doc)
+    cands = [
         {
             "id": "ghost-colossal",
             "label": "Wildcard — Ghost at 3× (dial-crank)",
-            "base_layout": "editorial-collage",
-            "gate_layout": "editorial-collage",
+            "base_scaffold": "collage",
             "strategy": "dial-crank",
             "bends": "voice.dials.variance only — no rule. The ghost watermark goes from "
                      "texture (6% ink, behind content) to THE WALL ITSELF; everything else "
@@ -78,8 +94,7 @@ def _candidates(doc: dict) -> list[dict]:
         {
             "id": "centered-monument",
             "label": "Wildcard — Centered monument (avoid-invert)",
-            "base_layout": "mission-statement",
-            "gate_layout": "mission-statement",
+            "base_scaffold": "statement",
             "strategy": "avoid-invert",
             "bends": "avoid.prefer-asymmetry (SOFT rule — sanctioned to bend as a one-off, "
                      "logged, never promoted). The statement runs dead-centered, stacked, "
@@ -106,27 +121,19 @@ def _candidates(doc: dict) -> list[dict]:
         {
             "id": "hero-ghost",
             "label": "Wildcard — Hero in ghost-word grammar (transplant)",
-            "base_layout": "editorial-collage",
-            "gate_layout": "editorial-collage",
+            "base_scaffold": "collage",
             "strategy": "use-case transplant",
             "bends": "no rule — a USE-CASE transplant: the hero's content set in the "
-                     "about-run's ghost-word collage grammar (colossal 'WOOD' behind the "
-                     "opening statement) instead of the display-over-media hero pattern.",
+                     "about-run's ghost-word collage grammar (the colossal ghost word "
+                     "behind the opening statement) instead of the brand's own hero "
+                     "pattern.",
             "mutate": lambda lay: {**copy.deepcopy(lay), "id": "wildcard-hero-ghost"},
-            "copy": {
-                "wildcard-hero-ghost": {
-                    "ghost": "Wood",
-                    "eyebrow": "Est. 2019 — Portland, Oregon",
-                    "heading": "Contemporary art\nin a landmark\ntimber hall",
-                    "body": ("An evolving exhibition of woodgrain, light, and the quiet "
-                             "geometry of the handmade — held in a hall that has been "
-                             "standing since 1941."),
-                    "caption": "Main hall, east light",
-                    "cta": "Buy tickets",
-                },
-            },
-            # hero copy carries far longer words ("CONTEMPORARY") than the collage grammar
-            # was measured for — at the style's full poster scale the heading overflows its
+            # copy REQUIRED: the transplant re-voices the hero in the collage grammar —
+            # its copy block lives in the brand's section-copy.yaml wildcardCopy:
+            # (key = candidate render id). No block -> candidate omitted below.
+            "needs_copy": "wildcard-hero-ghost",
+            # hero copy tends to carry far longer words than the collage grammar was
+            # measured for — at the style's full poster scale the heading overflows its
             # grid column and collides with the body text (anti-ai-slop.md AS-03 shape:
             # a transplant inherits the target grammar's sizing assumptions; re-fit the
             # display scale to the LONGEST WORD of the transplanted copy, don't assume).
@@ -137,16 +144,44 @@ def _candidates(doc: dict) -> list[dict]:
 """,
         },
     ]
+    out = []
+    for cand in cands:
+        scaffold = cand.pop("base_scaffold")
+        lid = _first_layout_of_scaffold(doc, scaffold)
+        if lid is None:
+            print(f"  (skip: candidate '{cand['id']}' needs a '{scaffold}'-scaffold "
+                  f"section this brand's page doesn't compose — page sections: "
+                  f"{', '.join(page_layout_ids(doc))})")
+            continue
+        cand["base_layout"] = cand["gate_layout"] = lid
+        key = cand.pop("needs_copy", None)
+        if key is not None:
+            if key not in wc:
+                print(f"  (skip: candidate '{cand['id']}' needs wildcardCopy['{key}'] "
+                      f"in the brand's section-copy.yaml — not declared)")
+                continue
+            cand["copy"] = {key: wc[key]}
+        out.append(cand)
+    return out
 
 
-# ── FREEDOM BUDGET (per-section 0-5 magic-trick allowance, user-supplied) ────────
+# ── FREEDOM BUDGET (per-section 0-5 magic-trick allowance) ───────────────────────
+#
+# The LEVEL DEFINITIONS live in the STYLE LAYER: each base style's front-matter carries a
+# ``freedomBudget:`` block (default level + ceiling + qualitative per-level definitions,
+# parsed by styles.py into FreedomBudget). The intensity ladder below documents what the
+# MACHINERY here implements per level; what a level MEANS for a given style (what it
+# unlocks/forbids, expressed in that style's own vocabulary) is the style's declaration.
 #
 # The interaction protocol: before generating, the agent prints the page's sections
-# (``--list-sections``) and the user annotates each with 0-5 — how much freedom the
-# wildcard machinery gets for THAT section. The user pastes the list back
-# (``--budget "hero 1 mission 3 cta 0"``); one candidate is generated per section at the
-# HIGHEST available intensity <= its level. This keeps divergence a per-section, human-set
-# dial rather than an all-or-nothing switch — and 0 means 0: the section ships median.
+# (``--list-sections``) — each PRE-FILLED with the level resolved from the style layer
+# (brand ``voice.dials.freedom`` LEVEL choice clamped to the style ceiling, else the
+# style default) — and the user may adjust and paste the list back (``--budget
+# "hero 1 about 3 cta 0"`` — names are the brand's layout ids or canonical use-cases).
+# Without ``--budget``, the style-resolved level applies to every section (the template
+# is FILLED by the style layer, never left blank).
+# One candidate is generated per section at the HIGHEST available intensity <= its level;
+# every requested level is clamped to the style's ceiling. 0 means 0: median only.
 #
 # Intensity ladder (what each level UNLOCKS — higher includes the right to go lower):
 #   0  median only — never touched
@@ -157,20 +192,41 @@ def _candidates(doc: dict) -> list[dict]:
 #   5  RELAX      — one neverDo relaxation; ONLY where wildcardScope sanctions it (hero)
 #                   and ONLY via a registered recipe — no recipe, level caps at 4.
 
-USE_CASE_ALIASES = {
-    "hero": "opening-bookend", "about": "editorial-collage", "mission": "mission-statement",
-    "gallery": "gallery-showcase", "heritage": "heritage-timeline",
-    "testimonial": "curator-quote", "features": "visit-band", "visit": "visit-band",
-    "cta": "conversion-stack", "newsletter": "conversion-stack",
-}
-_ALIAS_BY_ID = {}
-for a, lid in USE_CASE_ALIASES.items():
-    _ALIAS_BY_ID.setdefault(lid, a)
+# Budget names are canonical LIBRARY use-cases ("hero", "about", "cta", …; see
+# contracts/layout-patterns/<useCase>.yaml) or exact layout ids. Which LAYOUT a
+# use-case resolves to is derived from the ACTIVE doc (use_case_map below), never
+# from a hardcoded id table.
 
-# Per-section CSS transforms for levels 1-3 (generic, treatment-driven). Levels 4-5 come
+def _layout_use_case(layout, patterns_by_id: dict[str, str]) -> str:
+    """A layout's use-case: its resolved patternRef's declared useCase first (the
+    library is the identity authority), else the keyword inference layout_library
+    itself uses when learning a pattern from a layout."""
+    ref = (layout or {}).get("patternRef")
+    pid = ref.get("id") if isinstance(ref, dict) else None
+    if pid and patterns_by_id.get(pid):
+        return patterns_by_id[pid]
+    return ll.infer_use_case(layout or {})
+
+
+def use_case_map(doc, brand_yaml: Path) -> dict[str, str]:
+    """use-case -> the FIRST page layout realizing it (page order), from the ACTIVE
+    doc + its project library. This replaces the old hardcoded alias table so budget
+    names like "hero" or "cta" can never resolve to another brand's layout id."""
+    patterns = {p.id: p.use_case for p in ll.load_project_patterns(brand_yaml)}
+    out: dict[str, str] = {}
+    for lid in page_layout_ids(doc):
+        layout = cs.find_layout(doc, lid)
+        out.setdefault(_layout_use_case(layout, patterns), lid)
+    return out
+
+
+# Per-scaffold CSS transforms for levels 1-3 (generic, treatment-driven). Levels 4-5 come
 # from the RECIPES registry below — they need real per-section design work, not a formula.
+# KEYED BY SCAFFOLD FAMILY (compose_section.scaffold_key), NOT layout id: the CSS targets
+# `.cs-<scaffold>-*` classes, so it applies to ANY brand's layout that composes through
+# that scaffold — a budget entry for a layout dispatches layout -> scaffold_key -> entry.
 SECTION_LADDER: dict[str, dict[int, tuple[str, str]]] = {
-    "opening-bookend": {
+    "hero": {
         1: ("deeper title-over-media overlap",
             ".cs-title { margin-bottom: calc(var(--c-title-overlap) * 1.6); }"),
         2: ("overlap photo crank — bigger, lower, nearly colliding",
@@ -179,7 +235,7 @@ SECTION_LADDER: dict[str, dict[int, tuple[str, str]]] = {
             ".cs-slot, .cs-eyebrow-wrap, .cs-title, .cs-foot { align-items: flex-start; "
             "text-align: left; }\n.cs-title .c-heading--display { text-align: left; margin-left: 0; }"),
     },
-    "editorial-collage": {
+    "collage": {
         1: ("ghost watermark +20%",
             ":root { --c-ghost-size: clamp(12rem, 48cqw, 40rem); }"),
         2: ("ghost colossal — the watermark IS the section",
@@ -190,7 +246,7 @@ SECTION_LADDER: dict[str, dict[int, tuple[str, str]]] = {
             "grid-template-columns: minmax(0,0.92fr) minmax(0,1.08fr); }\n"
             ".cs-ghost { right: auto; left: -3cqw; }"),
     },
-    "mission-statement": {
+    "statement": {
         1: ("taller statement media (3:4), wider gutter",
             ".cs-statement-grid { column-gap: 8rem; }\n"
             ".cs-statement-media .c-image { aspect-ratio: 3 / 4; }"),
@@ -211,7 +267,7 @@ SECTION_LADDER: dict[str, dict[int, tuple[str, str]]] = {
             "margin-left: auto; margin-right: auto; }\n"
             ".cs-statement-media { grid-column: 1; width: min(100%, 46rem); }"),
     },
-    "gallery-showcase": {
+    "gallery": {
         1: ("wider, shorter cinema band (16:8.5)",
             ".cs-gallery-media .c-image { aspect-ratio: 16 / 8.5; }"),
         2: ("counter at didone display scale — the index becomes typography",
@@ -221,7 +277,7 @@ SECTION_LADDER: dict[str, dict[int, tuple[str, str]]] = {
             ".cs-gallery-caption { text-align: right; }\n"
             ".cs-gallery-utility { padding: 0 1rem; }"),
     },
-    "heritage-timeline": {
+    "timeline": {
         1: ("ghost numerals +20%",
             ":root { --c-ghost-size: clamp(11rem, 40cqw, 32rem); }"),
         2: ("ghost numerals span the full band behind everything",
@@ -232,7 +288,7 @@ SECTION_LADDER: dict[str, dict[int, tuple[str, str]]] = {
             "grid-template-columns: minmax(0,0.92fr) minmax(0,1.08fr); }\n"
             ".cs-timeline-sec .cs-ghost--numerals { right: auto !important; left: -1cqw !important; }"),
     },
-    "curator-quote": {
+    "quote": {
         1: ("wider gutter between quote and portrait",
             ".cs-quote-grid { column-gap: 8rem; }"),
         2: ("portrait leads — flipped split",
@@ -246,15 +302,15 @@ SECTION_LADDER: dict[str, dict[int, tuple[str, str]]] = {
             ".cs-quote-sec .c-heading--display { text-align: center; }\n"
             ".cs-quote-media { grid-column: 1; width: min(100%, 30rem); }"),
     },
-    "visit-band": {
+    "visit": {
         1: ("panels bite deeper into the map",
             ".cs-visit-panels { margin-top: -6.5rem; }"),
-        2: ("asymmetric panel weights (tickets dominant)",
+        2: ("asymmetric panel weights (first panel dominant)",
             ".cs-visit-panels { grid-template-columns: 1.25fr 0.75fr; margin-top: -7.5rem; }"),
         3: ("panels pushed off-axis left, map breathing right",
             ".cs-visit-panels { max-width: 60rem; margin-left: 6cqw; margin-right: auto; }"),
     },
-    "conversion-stack": {
+    "conversion": {
         1: ("tighter column measure",
             ".cs-conversion { --c-cta-measure: 34ch; }"),
         2: ("heading past poster scale",
@@ -269,16 +325,27 @@ SECTION_LADDER: dict[str, dict[int, tuple[str, str]]] = {
 }
 
 # Level 4/5 need REAL recipes (foreign grammar / sanctioned rule relaxation), not a CSS
-# formula. Registered per section; a level above the best registered entry caps down.
+# formula. Registered per SCAFFOLD FAMILY (same key space as SECTION_LADDER); a level
+# above the best registered entry caps down.
 RECIPES: dict[str, dict[int, str]] = {
-    "opening-bookend": {4: "hero-ghost"},   # -> the transplant in _candidates()
-    # 5: none registered anywhere yet — wildcardScope sanctions hero-only neverDo
-    # relaxation, but no recipe has been designed; level 5 therefore caps to 4.
+    # "hero": {4: "hero-ghost"} PARKED 2026-07-02 (anti-ai-slop AS-22): the transplant
+    # kept the collage's light surface while the source brand's hero pattern was
+    # surface/inverse (review verdict: the hero should stay dark). Re-register only
+    # after the ghost grammar is re-fit for a dark surface (on-inverse ghost token +
+    # contrast). 5: none registered anywhere yet — wildcardScope sanctions hero-only
+    # neverDo relaxation, but no recipe has been designed; level 5 therefore caps to 4.
 }
 
 
-def parse_budget(text: str) -> dict[str, int]:
-    """Parse "hero 1 mission 3" / "hero=1, mission=3" into {layoutId: level}."""
+def parse_budget(text: str, fb: FreedomBudget | None = None,
+                 aliases: dict[str, str] | None = None) -> dict[str, int]:
+    """Parse "hero 1 about 3" / "hero=1, about=3" into {layoutId: level}. Names are the
+    ACTIVE brand's layout ids or canonical use-cases (resolved via `aliases`, the
+    use_case_map of the active doc — never a hardcoded id table); an unresolvable name
+    is reported with the brand's available names and SKIPPED. When the style declares
+    a FreedomBudget, every requested level is clamped to its ceiling (a conservative
+    style like corporate-saas-clean caps a "hero 5" down to crank)."""
+    aliases = aliases or {}
     out: dict[str, int] = {}
     tokens = re.split(r"[,\s]+", text.strip())
     i = 0
@@ -290,49 +357,86 @@ def parse_budget(text: str) -> dict[str, int]:
         else:
             name, lvl = tok, (tokens[i + 1] if i + 1 < len(tokens) else "0")
             i += 2
-        lid = USE_CASE_ALIASES.get(name.lower(), name)
         try:
-            out[lid] = max(0, min(5, int(lvl)))
+            level = max(0, min(5, int(lvl)))
         except ValueError:
             raise SystemExit(f"budget: could not parse level for '{name}' (got '{lvl}')")
+        lid = aliases.get(name.lower(), name)
+        if fb is not None and level > fb.ceiling:
+            print(f"  (note: {name} clamped {level}->{fb.ceiling}: style ceiling)")
+            level = fb.ceiling
+        out[lid] = level
     return out
 
 
-def list_sections(doc) -> str:
-    lines = ["Sections on the main page — copy this list back with a 0-5 freedom level",
-             "per line (0 = median only … 5 = max divergence incl. sanctioned rule relax):", ""]
-    order = ["opening-bookend", "editorial-collage", "mission-statement", "gallery-showcase",
-             "heritage-timeline", "curator-quote", "visit-band", "conversion-stack"]
-    for lid in order:
-        if cs.find_layout(doc, lid) is not None:
-            lines.append(f"  {_ALIAS_BY_ID.get(lid, lid)} 0")
+def page_layout_ids(doc) -> list[str]:
+    """The page's sections in PAGE ORDER — compose_page's brand-declared/derived
+    resolution (pageOrder: else authored layouts[]), filtered to layouts that exist."""
+    return [lid for lid in cp.page_order(doc) if cs.find_layout(doc, lid) is not None]
+
+
+def style_budget(doc, style_ctx) -> dict[str, int] | None:
+    """The style-layer FILLED budget: every page section at the level resolved from the
+    style's freedomBudget (brand voice.dials.freedom LEVEL choice clamped to the style
+    ceiling, else the style default). None when the style declares no budget."""
+    if not getattr(style_ctx, "active", False) or style_ctx.freedom_budget is None:
+        return None
+    level = style_ctx.resolve_freedom_level(doc)
+    return {lid: level for lid in page_layout_ids(doc)}
+
+
+def list_sections(doc, style_ctx=None) -> str:
+    """The 0-5 freedom-budget template (one line per page section, by LAYOUT ID —
+    the id vocabulary is the brand's own). PRE-FILLED from the style layer when the
+    active style declares a freedomBudget (no more blank all-zero template); a style
+    with no budget keeps the legacy all-zero template."""
+    fb = style_ctx.freedom_budget if style_ctx is not None else None
+    if fb is not None:
+        level = style_ctx.resolve_freedom_level(doc)
+        name = (fb.describe(level).get("name") or "?")
+        lines = [f"Sections on the main page — pre-filled at level {level} ({name}) from the",
+                 f"style layer (style default {fb.default}, ceiling {fb.ceiling}); adjust "
+                 "per line and pass back via --budget:", ""]
+    else:
+        level = 0
+        lines = ["Sections on the main page — copy this list back with a 0-5 freedom level",
+                 "per line (0 = median only … 5 = max divergence incl. sanctioned rule relax):",
+                 ""]
+    for lid in page_layout_ids(doc):
+        lines.append(f"  {lid} {level}")
     return "\n".join(lines)
 
 
 def budget_candidates(doc, budget: dict[str, int]) -> list[dict]:
-    """One candidate per budgeted section at the HIGHEST available intensity <= level."""
+    """One candidate per budgeted section at the HIGHEST available intensity <= level.
+    The ladder/recipe lookup dispatches layout -> its SCAFFOLD FAMILY (scaffold_key) —
+    a budget name that resolves to no layout in THIS brand is reported with the
+    available ids and skipped (never silently borrowed from another brand's page)."""
     out = []
     recipes_by_id = {c["id"]: c for c in _candidates(doc)}
     for lid, level in budget.items():
         if level <= 0:
             continue
-        if cs.find_layout(doc, lid) is None:
-            print(f"  (skip: no layout '{lid}' in brand.yaml)")
+        layout = cs.find_layout(doc, lid)
+        if layout is None:
+            print(f"  (skip: no layout '{lid}' in brand.yaml — available: "
+                  f"{', '.join(page_layout_ids(doc))})")
             continue
+        scaffold = cs.scaffold_key(layout)
         chosen = None
         for lvl in range(min(level, 5), 0, -1):
-            recipe_id = (RECIPES.get(lid) or {}).get(lvl)
+            recipe_id = (RECIPES.get(scaffold) or {}).get(lvl)
             if recipe_id and recipe_id in recipes_by_id:
                 r = recipes_by_id[recipe_id]
                 chosen = {**r, "id": f"{lid}-L{lvl}",
-                          "label": f"Wildcard L{lvl} — {_ALIAS_BY_ID.get(lid, lid)}: {r['label'].split('—')[-1].strip()}",
+                          "label": f"Wildcard L{lvl} — {lid}: {r['label'].split('—')[-1].strip()}",
                           "level": lvl}
                 break
-            ladder = (SECTION_LADDER.get(lid) or {}).get(lvl)
+            ladder = (SECTION_LADDER.get(scaffold) or {}).get(lvl)
             if ladder:
                 desc, css = ladder
                 chosen = {"id": f"{lid}-L{lvl}", "level": lvl,
-                          "label": f"Wildcard L{lvl} — {_ALIAS_BY_ID.get(lid, lid)}: {desc}",
+                          "label": f"Wildcard L{lvl} — {lid}: {desc}",
                           "base_layout": lid, "gate_layout": lid,
                           "strategy": {1: "nudge", 2: "crank", 3: "invert"}[lvl],
                           "bends": ("nothing — intensifies an existing treatment" if lvl <= 2 else
@@ -341,7 +445,7 @@ def budget_candidates(doc, budget: dict[str, int]) -> list[dict]:
                 break
         if chosen:
             if chosen["level"] < level:
-                print(f"  (note: {_ALIAS_BY_ID.get(lid, lid)} capped {level}->{chosen['level']}: "
+                print(f"  (note: {lid} capped {level}->{chosen['level']}: "
                       f"no recipe registered above L{chosen['level']})")
             out.append(chosen)
     return out
@@ -453,23 +557,47 @@ def main():
     ap.add_argument("brand_yaml", type=Path)
     ap.add_argument("--style", default="radical-editorial")
     ap.add_argument("--list-sections", action="store_true",
-                    help="print the page's sections as a 0-5 freedom-budget template and exit")
+                    help="print the page's sections as a 0-5 freedom-budget template "
+                         "(pre-filled from the style layer's freedomBudget) and exit")
     ap.add_argument("--budget", default=None,
-                    help='per-section freedom levels, e.g. "hero 1 mission 3 cta 0" '
-                         "(0=median only … 5=max; see intensity ladder)")
+                    help='per-section freedom levels by layout id or use-case, e.g. '
+                         '"hero 1 about 3 cta 0" (0=median only … 5=max, clamped to the '
+                         "style ceiling); omitted -> every section at the level resolved "
+                         "from the style layer")
+    ap.add_argument("--showcase", action="store_true",
+                    help="generate the three fixed strategy-showcase candidates "
+                         "(ghost-colossal / centered-monument / hero-ghost) instead of a "
+                         "budget-driven run")
     args = ap.parse_args()
     brand_yaml = args.brand_yaml.resolve()
     brand_dir = brand_yaml.parent
     doc = cs.load_doc(brand_yaml)
-    if args.list_sections:
-        print(list_sections(doc))
-        return
     style_ctx = load_and_merge(args.style, doc) if args.style else inactive_context()
+    fb = style_ctx.freedom_budget
+    if args.list_sections:
+        print(list_sections(doc, style_ctx))
+        return
 
     evidence = novelty_evidence(brand_yaml)
     print(f"novelty evidence: {evidence}\n")
 
-    cands = budget_candidates(doc, parse_budget(args.budget)) if args.budget else _candidates(doc)
+    if args.showcase:
+        cands = _candidates(doc)
+    elif args.budget:
+        cands = budget_candidates(doc, parse_budget(args.budget, fb,
+                                                    use_case_map(doc, brand_yaml)))
+    else:
+        # No user budget: FILL the template from the style layer (freedomBudget default,
+        # or the brand's voice.dials.freedom level choice clamped to the style ceiling).
+        budget = style_budget(doc, style_ctx)
+        if budget is None:   # style declares no budget -> legacy showcase behavior
+            cands = _candidates(doc)
+        else:
+            level = style_ctx.resolve_freedom_level(doc)
+            print(f"budget: style-layer fill — every section at level {level} "
+                  f"({fb.describe(level).get('name') or '?'}; style default {fb.default}, "
+                  f"ceiling {fb.ceiling})\n")
+            cands = budget_candidates(doc, budget)
     rows = []
     for cand in cands:
         out_dir = brand_dir / "variants" / f"wildcard-{cand['id']}"

@@ -87,9 +87,11 @@ patterns:
     variantKnobs:
       bandSplit: { type: enum, values: [0.45, 0.5, 0.55], default: 0.5 }
       straddleBalance: { type: enum, values: [third-above, half, third-below], default: third-above }
-      align: { type: enum, values: [center, left], default: left }
+      # default matches contentShape.alignment (centered) — a `left` default contradicted
+      # the declared stance and emitted a counterweight-less asymmetric anchor (AS-18).
+      align: { type: enum, values: [center, left], default: center }
     origin: designed
-    designedFrom: { note: "harvested from reference #8 (KOJA) — photo band 0–51% / panel band 51–100%, portrait cols 4–9 crossing the seam at depth ~0.33, caption + closing paragraph; realizes the already-sanctioned WoodWave media-over-seam pair", sources: [editorial-harvest-2026-07] }
+    designedFrom: { note: "harvested from reference #8 (KOJA) — photo band 0–51% / panel band 51–100%, portrait cols 4–9 crossing the seam at depth ~0.33, caption + closing paragraph; realizes the media-over-seam overlap pair (legal where a brand's compositionRules sanction it)", sources: [editorial-harvest-2026-07] }
     overridable: true
     confidence: medium
     source: creation

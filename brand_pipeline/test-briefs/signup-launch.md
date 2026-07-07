@@ -4,7 +4,7 @@ Purpose: a single, brand-neutral brief + copy block used to test the page compos
 The SAME brief is run through every brand's `brand.yaml` so we can compare how each
 brand selects, sequences, and expresses the same message in its own taste/vocabulary.
 
-Used by: AD-2 page composer (copy-to-section test) for woodwave + hubspot.
+Used by: AD-2 page composer (copy-to-section test) across all extracted brands.
 
 ---
 
@@ -45,6 +45,8 @@ Used by: AD-2 page composer (copy-to-section test) for woodwave + hubspot.
    rationale (why these sections, in this order), then render.
 
 ## Expected contrast (hypothesis to validate)
-- HubSpot (SaaS, rounded): likely hero-cta -> logo-wall -> feature-card-grid -> testimonial -> cta-band.
-- WoodWave (editorial gallery): no logo-wall/feature-grid, so social-proof + value-props
-  must map onto editorial-collage / info-band / conversion-stack vocabulary (or flag gaps).
+- A component-rich SaaS brand will likely sequence hero-cta -> logo-wall ->
+  feature-grid -> testimonial -> cta-band, binding social proof onto its own widgets.
+- A sparser editorial brand without logo-wall/feature-grid vocabulary must map
+  social-proof + value-props onto its nearest editorial sections (or flag the gaps) —
+  same message, different house vocabulary.

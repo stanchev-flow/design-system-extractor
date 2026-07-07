@@ -33,7 +33,7 @@ vh/dvh/vw units anywhere. Layout sizing uses container-query units (cqw/cqh/cqi)
 against an explicit `container-type: size; container-name: frame;` wrapper on a
 full-height html/body.
 
-Token resolution reuses the faithful helpers in render_section.py (imported, never
+Token resolution reuses the faithful helpers in tokens_css.py (imported, never
 modified) so every value is the brand's real token.
 
 Usage:
@@ -49,12 +49,14 @@ from pathlib import Path
 
 import yaml
 
-# Reuse the canonical, faithful token resolvers from render_section.py (same
-# package dir). We import — never modify — that module. When run as
+# Reuse the canonical, faithful token resolvers from tokens_css.py (the layer-1
+# generator module; the resolvers moved there when render_section.py was retired,
+# token-layer 2026-07). We import — never modify — that module. When run as
 # `python brand_pipeline/render_components_preview.py ...` the script's own dir is
 # on sys.path[0]; we also insert it explicitly to be robust to other launch dirs.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from render_section import (  # noqa: E402
+import tokens_css  # noqa: E402
+from tokens_css import (  # noqa: E402
     base_size,
     color_value,
     font_stack,
@@ -68,33 +70,44 @@ from render_section import (  # noqa: E402
 import component_render as cr  # noqa: E402
 import compose_section as cs  # noqa: E402  (shared self-hosted-font copy + @font-face emit)
 
-# Gallery render context: the gallery canvas is the light cream surface, so accent is
-# pinned to ink in the alias block below (no accent on light — neverDo). is_dark=False.
+# Gallery render context (RP-1): rebound per brand in main() via _bind_gallery_ctx —
+# the canvas is the BRAND's primary surface, so is_dark/accent-legality come from the
+# brand's own surface declaration, never from a hardcoded light-canvas assumption.
 _GALLERY_CTX = cr.ComponentContext(surface_role="surface/primary", is_dark=False)
 
-# Map the shared `--c-*` component vars onto the gallery's own brand vars (defined in
-# root_css), so the imported `c-*` classes read on-brand on the cream canvas.
-COMPONENT_ALIAS_CSS = """:root {
-  --c-paper: var(--surface-primary);
-  --c-ink: var(--ink);
-  --c-ink-muted: var(--ink-muted);
-  --c-accent: var(--ink);            /* light canvas: action/heading ink, never accent */
-  --c-font-heading: var(--font-heading);
-  --c-font-body: var(--font-body);
-  --c-display-size: var(--h2-size);  /* show the display sample at h2 scale to fit a card */
-  --c-display-lh: 1.2em;
-  --c-display-ls: 0;
-  --c-display-weight: 400;
-  --c-h2-size: var(--h2-size);
-  --c-h3-size: var(--h3-size);
-  --c-eyebrow-size: var(--eyebrow-size);
-  --c-eyebrow-ls: var(--eyebrow-ls);
-  --c-control-size: var(--control-size);
-  --c-control-ls: var(--control-ls);
-  --c-eyebrow-gap: var(--eyebrow-gap);
-  --c-body-size: var(--body-size);
-  --c-hairline: var(--hairline);
-}"""
+
+def _bind_gallery_ctx(doc) -> None:
+    """RP-1: bind the module-level gallery context to the BRAND's primary surface
+    (the same make_context the composers use), so specimen rendering decisions
+    (accent-on-dark, hover legality) follow the brand's surface declaration."""
+    global _GALLERY_CTX
+    surfaces = (doc.get("tokens", {}) or {}).get("surfaces", {}) or {}
+    role = "surface/primary" if "surface/primary" in surfaces else \
+        (next(iter(surfaces)) if surfaces else "surface/primary")
+    if surfaces:
+        _GALLERY_CTX = cr.make_context(doc, role, surfaces[role])
+
+
+def component_alias_css(doc) -> str:
+    """RP-1: the specimen alias layer, GENERATED per surface via the SAME
+    ``component_vars`` emitter production uses (no hand-pinned `--c-accent: var(--ink)`;
+    a brand whose primary surface declares a legal accent keeps it). The default
+    `:root` scope is the brand's primary surface — the gallery canvas — plus one scoped
+    block per surface role for the surface-roles specimen tier (`[data-surface-frame]`),
+    which makes AS-20 interaction re-scoping visually reviewable per surface."""
+    surfaces = (doc.get("tokens", {}) or {}).get("surfaces", {}) or {}
+    if not surfaces:
+        return ""
+    primary = "surface/primary" if "surface/primary" in surfaces else next(iter(surfaces))
+    blocks = [cr.component_vars(
+        doc, surfaces[primary], selector=":root",
+        # show the display sample at h2 scale so it fits a specimen card
+        display_size="var(--c-h2-size)", surface_role=primary)]
+    for role, surf in surfaces.items():
+        blocks.append(cr.component_vars(
+            doc, surf, selector=f'[data-surface-frame="{esc(role)}"]',
+            display_size="var(--c-h2-size)", surface_role=role))
+    return "\n".join(blocks)
 
 
 def esc(value) -> str:
@@ -136,18 +149,23 @@ def root_css(doc) -> tuple[str, set]:
     motion = (((doc.get("voice") or {}).get("dials") or {}).get("motion") or {}).get("value", "low")
     ease_ms = {"low": "180ms", "medium": "120ms", "high": "80ms"}.get(motion, "180ms")
 
+    # Every surface/ink token below is REQUIRED by the layer-1 generator, which ran
+    # (fail-loud) before this harness CSS is built — so no foreign-brand hex fallbacks
+    # (the old '#FAF0E8'/'#edd580' WoodWave literals, CP-1/RP-1 shape) can ever fire.
+    # accent/highlight is OPTIONAL: an accent-less brand renders its masthead in
+    # inverse ink instead of inheriting another brand's gold.
     css = f""":root {{
-  --surface-primary: {c('surface/primary', '#FAF0E8')};
-  --surface-panel: {c('surface/panel', '#F7EFE6')};
-  --surface-inverse: {c('surface/inverse', '#3A2F23')};
-  --surface-inverse-strong: {c('surface/inverse-strong', '#1B150F')};
-  --accent: {c('accent/highlight', '#edd580')};
-  --ink: {c('text/on-primary', '#1F1A14')};
-  --ink-muted: {c('text/on-primary-muted', '#4A4239')};
-  --ink-inverse: {c('text/on-inverse', '#F5EDE2')};
-  --ink-inverse-muted: {c('text/on-inverse-muted', '#C9BFB2')};
-  --ghost: {c('text/ghost-on-primary', 'rgba(31,26,20,0.06)')};
-  --hairline: {c('border/hairline-on-primary', 'rgba(31,26,20,0.30)')};
+  --surface-primary: {c('surface/primary')};
+  --surface-panel: {c('surface/panel')};
+  --surface-inverse: {c('surface/inverse')};
+  --surface-inverse-strong: {c('surface/inverse-strong')};
+  --accent: {c('accent/highlight', 'var(--ink-inverse)')};
+  --ink: {c('text/on-primary')};
+  --ink-muted: {c('text/on-primary-muted')};
+  --ink-inverse: {c('text/on-inverse')};
+  --ink-inverse-muted: {c('text/on-inverse-muted')};
+  --ghost: {c('text/ghost-on-primary')};
+  --hairline: {c('border/hairline-on-primary')};
 
   --font-heading: {heading_stack};
   --font-body: {body_stack};
@@ -160,8 +178,8 @@ def root_css(doc) -> tuple[str, set]:
   --body-size: {base_size(body) or 0.875}rem;
   --control-size: {base_size(ctrl) or 0.875}rem;
   --counter-size: {base_size(counter) or 2}rem;
-  --eyebrow-ls: {eyb.get('letterSpacing', '0.08em')};
-  --control-ls: {ctrl.get('letterSpacing', '0.08em')};
+  --eyebrow-ls: {eyb.get('letterSpacing', '0em')};
+  --control-ls: {ctrl.get('letterSpacing', '0em')};
 
   --radius: {radius};
   --panel-pad: {panel_pad};
@@ -176,6 +194,10 @@ def root_css(doc) -> tuple[str, set]:
 # Brand neverDo is baked in: radius 0, no shadows/borders (separation is fill
 # contrast + 1px ruled bars only), accent confined to .surface-dark contexts.
 BASE_CSS = """
+/* provenance: preview-chrome — gallery harness styling (masthead, badges, tier headers,
+   spec labels, state-matrix chrome); never brand output. Specimen content inside the
+   frames renders through component_vars + COMPONENT_CSS from the generated tokens
+   (SPEC §C.4 split). */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 img { display: block; max-width: 100%; }
 
@@ -207,7 +229,7 @@ body {
 .masthead h1 {
   font-family: var(--font-heading);
   font-weight: 400;
-  text-transform: uppercase;
+  text-transform: var(--case-h1, none);
   font-size: var(--h1-size);
   line-height: 1.1em;
   color: var(--accent);
@@ -217,17 +239,27 @@ body {
 .legend { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 2rem; }
 .legend span { display: inline-flex; align-items: center; gap: 0.5rem;
   font-size: var(--eyebrow-size); letter-spacing: var(--eyebrow-ls);
-  text-transform: uppercase; color: var(--ink-inverse-muted); }
+  text-transform: var(--case-eyebrow, none); color: var(--ink-inverse-muted); }
 
 /* Tier headers. */
 .tier { margin: 6cqh 0 2.5cqh; }
 .tier-num { font-family: var(--font-heading); font-size: var(--counter-size);
   color: var(--ink); line-height: 1; }
-.tier-name { font-family: var(--font-heading); text-transform: uppercase;
+.tier-name { font-family: var(--font-heading); text-transform: var(--case-h2, none);
   font-size: var(--h2-size); line-height: 1.2em; color: var(--ink); margin-top: 0.25rem; }
 .tier-sub { font-size: var(--eyebrow-size); letter-spacing: var(--eyebrow-ls);
-  text-transform: uppercase; color: var(--ink-muted); margin-top: 0.75rem; }
+  text-transform: var(--case-eyebrow, none); color: var(--ink-muted); margin-top: 0.75rem; }
 .tier-rule { height: 1px; background: var(--hairline); margin-top: 1.25rem; }
+
+/* Surface-roles specimen tier: each frame paints its own surface via the scoped
+   per-surface alias block ([data-surface-frame] — see component_alias_css). */
+.sw-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1px; background: var(--hairline); }
+.sw-frame { background: var(--c-paper); color: var(--c-ink);
+  padding: var(--panel-pad); display: flex; flex-direction: column;
+  gap: 1rem; align-items: flex-start; min-height: 14rem; }
+.sw-role { font-size: var(--eyebrow-size); letter-spacing: var(--eyebrow-ls);
+  text-transform: var(--case-eyebrow, none); color: var(--c-ink-muted); }
 
 /* Single-column long list. One item PER ROW, full page width, stacked top to
    bottom. No multi-column grid, no boxed card containers — rows are separated by
@@ -240,19 +272,19 @@ body {
 .cmp:first-child { border-top: 0; padding-top: 1.5rem; }
 .cmp-meta { display: flex; flex-direction: column; gap: 0.85rem; }
 .cmp-head { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem; }
-.cmp-name { font-family: var(--font-heading); text-transform: uppercase;
+.cmp-name { font-family: var(--font-heading); text-transform: var(--case-h2, none);
   font-size: var(--h3-size); line-height: 1.2em; color: var(--ink); }
 .cmp-intent { font-size: var(--body-size); color: var(--ink-muted); line-height: 1.5em; }
 .cmp-example { display: flex; flex-direction: column; gap: 1.25rem; max-width: 52rem; }
 
 /* Badges / tags — square, no radius. */
 .badge { font-family: var(--font-body); font-size: 0.625rem; letter-spacing: 0.1em;
-  text-transform: uppercase; padding: 0.2rem 0.5rem; border-radius: 0; line-height: 1.2; }
+  text-transform: var(--case-eyebrow, none); padding: 0.2rem 0.5rem; border-radius: 0; line-height: 1.2; }
 .badge-extracted { background: var(--ink); color: var(--surface-primary); }
 .badge-designed { background: transparent; color: var(--ink-muted);
   border: 1px dashed var(--ink-muted); }
 .tag { font-family: var(--font-body); font-size: 0.625rem; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--ink-muted);
+  text-transform: var(--case-eyebrow, none); color: var(--ink-muted);
   border: 1px solid var(--hairline); padding: 0.2rem 0.5rem; }
 .tag-never { border-style: dashed; color: var(--ink-muted); }
 
@@ -278,36 +310,36 @@ body {
   --c-block-gap: 2.5rem; padding: 3rem 1.75rem; }
 
 /* ── faithful example primitives ── */
-.ex-display { font-family: var(--font-heading); font-weight: 400; text-transform: uppercase;
+.ex-display { font-family: var(--font-heading); font-weight: 400; text-transform: var(--case-h2, none);
   font-size: var(--h2-size); line-height: 1.2em; color: var(--ink); }
-.ex-h3 { font-family: var(--font-heading); font-weight: 400; text-transform: uppercase;
+.ex-h3 { font-family: var(--font-heading); font-weight: 400; text-transform: var(--case-h3, var(--case-h2, none));
   font-size: var(--h3-size); line-height: 1.3em; color: var(--ink); }
 .ex-sub { font-family: var(--font-heading); font-weight: 400; font-size: 1.125rem;
   line-height: 1.3em; color: var(--ink-muted); }
 .ex-eyebrow { font-family: var(--font-body); font-size: var(--eyebrow-size);
-  letter-spacing: var(--eyebrow-ls); text-transform: uppercase; color: var(--ink-muted); }
+  letter-spacing: var(--eyebrow-ls); text-transform: var(--case-eyebrow, none); color: var(--ink-muted); }
 .ex-body { font-family: var(--font-body); font-size: var(--body-size); line-height: 1.55em;
   color: var(--ink-muted); max-width: 34ch; }
 .ex-caption { font-family: var(--font-body); font-size: var(--eyebrow-size);
-  letter-spacing: var(--eyebrow-ls); text-transform: uppercase; color: var(--ink-muted); }
+  letter-spacing: var(--eyebrow-ls); text-transform: var(--case-eyebrow, none); color: var(--ink-muted); }
 .ex-label { font-family: var(--font-body); font-size: var(--control-size);
-  letter-spacing: var(--control-ls); text-transform: uppercase; color: var(--ink); }
+  letter-spacing: var(--control-ls); text-transform: var(--case-control-text, none); color: var(--ink); }
 
 /* image / video / avatar / illustration: hard-edged rectangles, radius 0, no chrome. */
 .ex-photo { background: var(--surface-inverse); color: var(--ink-inverse-muted);
   border-radius: 0; aspect-ratio: 4 / 3; width: 100%; display: flex; align-items: center;
   justify-content: center; font-family: var(--font-body); font-size: var(--eyebrow-size);
-  letter-spacing: var(--eyebrow-ls); text-transform: uppercase; }
+  letter-spacing: var(--eyebrow-ls); text-transform: var(--case-control-text, none); }
 .ex-photo.is-portrait { aspect-ratio: 3 / 4; max-width: 9rem; }
 .ex-photo.is-square { aspect-ratio: 1 / 1; max-width: 6rem; }
 .ex-illus { background: var(--ghost); color: var(--ink-muted); aspect-ratio: 4/3;
   display: flex; align-items: center; justify-content: center; font-family: var(--font-heading);
-  font-size: 2rem; text-transform: uppercase; }
+  font-size: 2rem; text-transform: var(--case-h2, none); }
 .ex-play { width: 0; height: 0; border-style: solid; border-width: 0.55rem 0 0.55rem 0.9rem;
   border-color: transparent transparent transparent var(--ink-inverse); }
 
 /* logo wordmark. */
-.ex-logo { font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 0.06em;
+.ex-logo { font-family: var(--font-heading); text-transform: var(--case-control-text, none); letter-spacing: 0.06em;
   font-size: 1.25rem; color: var(--accent); }
 
 /* divider / ruled rows / list. */
@@ -322,11 +354,11 @@ body {
   font-family: var(--font-body); font-size: var(--body-size); color: var(--ink); }
 .ex-list .ex-li::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px;
   background: var(--hairline); }
-.ex-list .ex-li::after { content: "/"; position: absolute; left: 0; top: 0.6rem;
+.ex-list .ex-li::after { content: var(--specimen-list-marker, "\2013"); position: absolute; left: 0; top: 0.6rem;
   color: var(--ink-muted); font-family: var(--font-heading); }
 
 /* quote / stat / counter. */
-.ex-quote { font-family: var(--font-heading); text-transform: uppercase; font-weight: 400;
+.ex-quote { font-family: var(--font-heading); text-transform: var(--case-h2, none); font-weight: 400;
   font-size: 1.5rem; line-height: 1.25em; color: var(--ink); }
 .ex-counter { font-family: var(--font-heading); font-size: var(--counter-size); line-height: 1;
   color: var(--ink); }
@@ -337,7 +369,7 @@ body {
 
 /* badge marker (gold, flat square, dark only). */
 .ex-marker { display: inline-block; background: var(--accent); color: var(--surface-inverse-strong);
-  font-family: var(--font-body); font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase;
+  font-family: var(--font-body); font-size: 0.625rem; letter-spacing: 0.1em; text-transform: var(--case-eyebrow, none);
   padding: 0.25rem 0.5rem; border-radius: 0; }
 
 /* underline form controls — no box, no fill, radius 0. */
@@ -350,7 +382,7 @@ body {
 .ex-input::placeholder { color: var(--ink-muted); }
 .ex-select { display: inline-flex; align-items: center; gap: 0.5rem; position: relative;
   padding-bottom: 0.5rem; font-family: var(--font-body); font-size: var(--control-size);
-  letter-spacing: var(--control-ls); text-transform: uppercase; color: var(--ink); }
+  letter-spacing: var(--control-ls); text-transform: var(--case-control-text, none); color: var(--ink); }
 .ex-select::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
   background: var(--hairline); }
 
@@ -373,11 +405,11 @@ body {
 .ex-spacer { border-left: 1px solid var(--hairline); border-right: 1px solid var(--hairline);
   position: relative; height: 3rem; display: flex; align-items: center; justify-content: center; }
 .ex-spacer span { font-family: var(--font-body); font-size: var(--eyebrow-size);
-  letter-spacing: var(--eyebrow-ls); text-transform: uppercase; color: var(--ink-muted); }
+  letter-spacing: var(--eyebrow-ls); text-transform: var(--case-eyebrow, none); color: var(--ink-muted); }
 
 /* ── typographic action (link / cta / icon-button remap) ── */
 .act { font-family: var(--font-body); font-size: var(--control-size); letter-spacing: var(--control-ls);
-  text-transform: uppercase; color: var(--ink); text-decoration: none; background: none; border: 0;
+  text-transform: var(--case-control-text, none); color: var(--ink); text-decoration: none; background: none; border: 0;
   cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0;
   transition: transform var(--ease) ease, opacity var(--ease) ease; }
 .act .arrow { transition: transform var(--ease) ease; }
@@ -392,14 +424,14 @@ body {
 
 /* avoid (synthesized) filled button / icon-button — what the brand does NOT use. */
 .avoid-btn { font-family: var(--font-body); font-size: var(--control-size); letter-spacing: var(--control-ls);
-  text-transform: uppercase; background: var(--surface-inverse); color: var(--ink-inverse); border: 0;
+  text-transform: var(--case-control-text, none); background: var(--surface-inverse); color: var(--ink-inverse); border: 0;
   border-radius: 0; padding: 0.7rem 1.2rem; cursor: pointer; opacity: 0.85; }
 .avoid-iconbtn { width: 2.4rem; height: 2.4rem; display: inline-flex; align-items: center;
   justify-content: center; background: var(--surface-inverse); color: var(--ink-inverse); border: 0;
   border-radius: 0; cursor: pointer; }
 .avoid-pill { display: inline-block; border: 1px solid var(--ink-muted); border-radius: 999px;
   padding: 0.25rem 0.8rem; font-family: var(--font-body); font-size: var(--eyebrow-size);
-  letter-spacing: var(--eyebrow-ls); text-transform: uppercase; color: var(--ink-muted); }
+  letter-spacing: var(--eyebrow-ls); text-transform: var(--case-eyebrow, none); color: var(--ink-muted); }
 .strike { position: relative; }
 .strike::after { content: ""; position: absolute; left: -4%; right: -4%; top: 50%; height: 1px;
   background: var(--ink-muted); transform: rotate(-8deg); }
@@ -455,7 +487,7 @@ body {
 /* states matrix. */
 .states { display: flex; flex-direction: column; gap: 1rem; }
 .states-label { font-family: var(--font-body); font-size: 0.625rem; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--ink-muted); }
+  text-transform: var(--case-eyebrow, none); color: var(--ink-muted); }
 .state-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px;
   background: var(--hairline); border: 1px solid var(--hairline); }
 .state-col { background: var(--surface-primary); padding: 1rem 0.75rem; display: flex;
@@ -463,15 +495,42 @@ body {
   justify-content: space-between; }
 .state-col .stg { display: flex; align-items: center; min-height: 2rem; }
 .state-name { font-family: var(--font-body); font-size: 0.5625rem; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--ink-muted); }
+  text-transform: var(--case-eyebrow, none); color: var(--ink-muted); }
 .state-live { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
   padding-top: 0.25rem; }
 .state-live .hint { font-family: var(--font-body); font-size: 0.5625rem; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--ink-muted); }
+  text-transform: var(--case-eyebrow, none); color: var(--ink-muted); }
+
+/* ── Tier 3: extracted layouts (composed through ARCHETYPE_COMPOSERS) ──
+   Each pattern row embeds the REAL composed section document (compose_section.
+   build_document output) in an iframe: composed sections carry their own scoped
+   surface/scaffold CSS, so the iframe keeps them faithful without any mockup. */
+.cmp--layout .cmp-example { max-width: none; }
+.layout-frame { display: block; width: 100%; height: 42rem; border: 1px solid var(--hairline);
+  background: var(--surface-primary); }
+
+/* masthead anchor nav to the tier sections (the page's in-page navigation). */
+.toc { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 1.5rem; }
+.toc a { color: var(--accent); font-family: var(--font-body); font-size: var(--eyebrow-size);
+  letter-spacing: var(--eyebrow-ls); text-transform: var(--case-eyebrow, none); text-decoration: none; }
+.toc a:hover { text-decoration: underline; text-underline-offset: 0.25rem; }
+
+/* collapsed secondary group: standard-tier patterns, listed only (not composed). */
+.std { margin-top: 3rem; }
+.std summary { cursor: pointer; font-family: var(--font-body); font-size: var(--eyebrow-size);
+  letter-spacing: var(--eyebrow-ls); text-transform: var(--case-eyebrow, none); color: var(--ink-muted);
+  padding: 0.85rem 0; border-top: 1px solid var(--hairline); }
+.std-row { display: grid; grid-template-columns: 19rem 1fr; column-gap: 3rem;
+  padding: 0.85rem 0; border-top: 1px solid var(--hairline); align-items: baseline; }
+.std-row .std-id { font-family: var(--font-heading); text-transform: var(--case-h3, var(--case-h2, none));
+  font-size: 1rem; color: var(--ink); }
+.std-row .std-meta { font-size: var(--eyebrow-size); letter-spacing: 0.04em;
+  color: var(--ink-muted); line-height: 1.5em; }
 
 /* On narrower frames the example stacks directly beneath the meta line. */
 @media (max-width: 60rem) {
   .cmp { grid-template-columns: 1fr; column-gap: 0; }
+  .std-row { grid-template-columns: 1fr; }
 }
 @media (max-width: 40rem) {
   .state-row { grid-template-columns: repeat(2, 1fr); }
@@ -503,14 +562,17 @@ def _state_matrix(swatch_fn, live_html, label="states · hover / press / focus i
 
 def render_heading(doc, key, item):
     # SSOT: rendered by the shared catalog renderer (also used by section composition).
+    # Specimen text + caption are BRAND-derived (blocker 7): measured layout copy /
+    # the brand's own display family, never another brand's gallery prose.
     h = cr.render_heading(doc, _GALLERY_CTX,
-                          {"text": "Exhibitions On View", "level": "display", "tag": "div"})
-    return (h + '<div class="ex-eyebrow">display / h1 / h2 / h3 &mdash; didone, uppercase</div>')
+                          {"text": _specimen(doc)["headline"], "level": "display", "tag": "div"})
+    return (h + f'<div class="ex-eyebrow">display / h1 / h2 / h3 &mdash; {esc(_brand_law(doc)["display"])}</div>')
 
 
 def render_subheading(doc, key, item):
-    return ('<div class="ex-display" style="font-size:var(--h3-size)">A Living Archive</div>'
-            '<div class="ex-sub">A smaller didone line, muted &mdash; never a generic sans sub-deck.</div>')
+    law = _brand_law(doc)
+    return (f'<div class="ex-display" style="font-size:var(--h3-size)">{esc(_specimen(doc)["headline"])}</div>'
+            f'<div class="ex-sub">The supporting register &mdash; {esc(law["display"])} at h3 scale, muted.</div>')
 
 
 def render_eyebrow(doc, key, item):
@@ -525,58 +587,71 @@ def render_paragraph(doc, key, item):
 
 
 def render_label(doc, key, item):
-    return '<span class="ex-label">Gallery Hours</span>'
+    return f'<span class="ex-label">{esc(_specimen(doc)["links"][0])}</span>'
 
 
 def render_caption(doc, key, item):
     return ('<div class="ex-photo" style="aspect-ratio:16/9">PHOTO</div>'
-            '<div class="ex-caption">Fig. 01 &mdash; Spiral staircase, 2026</div>')
+            f'<div class="ex-caption">Fig. 01 &mdash; {esc(_specimen(doc)["name"])} photography</div>')
 
 
 def render_image(doc, key, item):
-    img = cr.render_image(doc, _GALLERY_CTX, {"placeholder": "IMAGE — RADIUS 0"})
-    return (img + '<div class="ex-caption">Hard-edged photography &mdash; no shadow, border or mat</div>')
+    law = _brand_law(doc)
+    ph = "IMAGE — RADIUS 0" if law["square"] else "IMAGE"
+    img = cr.render_image(doc, _GALLERY_CTX, {"placeholder": ph})
+    return (img + f'<div class="ex-caption">Media {esc(law["radius_word"])} &mdash; no shadow, border or mat</div>')
 
 
 def render_video(doc, key, item):
+    law = _brand_law(doc)
     return ('<div class="ex-photo"><span class="ex-play" aria-hidden="true"></span></div>'
-            '<div class="ex-caption">Treated like image &mdash; hard-edged rectangle</div>')
+            f'<div class="ex-caption">Treated like image &mdash; {esc(law["radius_word"])}</div>')
 
 
 def render_avatar(doc, key, item):
-    return ('<div class="ex-photo is-square">PERSON</div>'
-            '<div class="ex-caption">Hard rectangle crop &mdash; round default overridden by no-radius</div>')
+    law = _brand_law(doc)
+    cap = ("Hard rectangle crop &mdash; round default overridden by no-radius"
+           if law["square"] else "Crop at the brand radius")
+    return (f'<div class="ex-photo is-square">PERSON</div>'
+            f'<div class="ex-caption">{cap}</div>')
 
 
 def render_illustration(doc, key, item):
     return ('<div class="ex-illus">&#9697;</div>'
-            '<div class="ex-caption">Flat ghost-tone graphic &mdash; no gradients</div>')
+            '<div class="ex-caption">Flat graphic in a muted brand tone &mdash; no gradients</div>')
 
 
 def render_logo(doc, key, item):
-    return ('<div class="surface-dark"><span class="ex-logo">WoodWave</span></div>'
-            '<div class="ex-caption">Wordmark &mdash; gold on dark, never on cream</div>')
+    return (f'<div class="surface-dark"><span class="ex-logo">{esc(_specimen(doc)["name"])}</span></div>'
+            '<div class="ex-caption">Wordmark &mdash; rendered on the brand chrome surface</div>')
 
 
 def render_icon(doc, key, item):
     return ('<div style="display:flex;gap:1.25rem;font-family:var(--font-heading);'
             'font-size:1.5rem;color:var(--ink)"><span>&rarr;</span><span>&#8260;</span>'
             '<span>+</span><span>&#8599;</span></div>'
-            '<div class="ex-caption">Thin monoline glyphs inheriting text color &mdash; no accent on light</div>')
+            '<div class="ex-caption">Thin monoline glyphs inheriting text color</div>')
 
 
 def render_link(doc, key, item):
     # SSOT: the base arrow link comes from the shared catalog renderer (cta/link remap).
-    base = cr.render_arrow_link(doc, _GALLERY_CTX, {"label": "Buy Tickets"})
+    base = cr.render_arrow_link(doc, _GALLERY_CTX, {"label": _specimen(doc)["cta"]})
     matrix = _state_matrix(
-        lambda cls: _arrow("Buy Tickets", cls),
-        '<a class="act live" href="#">Buy Tickets <span class="arrow">&rarr;</span></a>'
+        lambda cls: _arrow(_SPEC_CTA, cls),
+        '<a class="act live" href="#">' + _SPEC_CTA + ' <span class="arrow">&rarr;</span></a>'
         '<button class="act live" disabled>Sold Out <span class="arrow">&rarr;</span></button>',
     )
     return f'{base}{matrix}'
 
 
 def render_cta(doc, key, item):
+    # Law-first (blocker 7 + AS-27 family): the specimen mirrors the brand's resolved
+    # cta-shape — a filled-primary brand shows its real catalog button, a typographic
+    # brand its arrow link — instead of asserting one brand's "never a button" law.
+    if _brand_law(doc)["cta"] == "filled":
+        base = cr.render_button(doc, _GALLERY_CTX, {"label": "Subscribe"})
+        return ('<div class="ex-caption">CTA role &mdash; realized by the brand\'s filled button</div>'
+                f'{base}')
     base = cr.render_arrow_link(doc, _GALLERY_CTX, {"label": "Subscribe"})
     matrix = _state_matrix(
         lambda cls: _arrow("Subscribe", cls),
@@ -588,18 +663,22 @@ def render_cta(doc, key, item):
 
 
 def render_button(doc, key, item):
-    """Button is observed-as-prohibition: render the arrow link it remaps to (with
-    states), and show the filled button as the synthesized / avoid variant."""
+    """Law-first: a filled-CTA brand renders its REAL catalog button as the brand
+    realization; a typographic brand keeps the observed-as-prohibition framing
+    (arrow-link realization + struck filled button as the avoid variant)."""
+    if _brand_law(doc)["cta"] == "filled":
+        return ('<div class="ex-caption">Brand realization &mdash; the measured filled button:</div>'
+                + cr.render_button(doc, _GALLERY_CTX, {"label": _SPEC_CTA}))
     matrix = _state_matrix(
-        lambda cls: _arrow("Buy Tickets", cls),
-        '<a class="act live" href="#">Buy Tickets <span class="arrow">&rarr;</span></a>'
-        '<button class="act live" disabled>Buy Tickets <span class="arrow">&rarr;</span></button>',
+        lambda cls: _arrow(_SPEC_CTA, cls),
+        '<a class="act live" href="#">' + _SPEC_CTA + ' <span class="arrow">&rarr;</span></a>'
+        '<button class="act live" disabled>' + _SPEC_CTA + ' <span class="arrow">&rarr;</span></button>',
     )
     return ('<div class="ex-caption">Brand realization &mdash; the arrow link the CTA remaps to:</div>'
             f'{matrix}'
             '<div class="ex-rule"></div>'
             '<div class="ex-caption">Synthesized / avoid &mdash; filled button, never used on page:</div>'
-            '<div class="strike"><button class="avoid-btn" tabindex="-1">Buy Tickets</button></div>')
+            '<div class="strike"><button class="avoid-btn" tabindex="-1">' + _SPEC_CTA + '</button></div>')
 
 
 def render_icon_button(doc, key, item):
@@ -608,6 +687,11 @@ def render_icon_button(doc, key, item):
         '<a class="act live" href="#" aria-label="Next"><span class="arrow">&rarr;</span></a>'
         '<button class="act live" disabled aria-label="Next"><span class="arrow">&rarr;</span></button>',
     )
+    if _brand_law(doc)["cta"] == "filled":
+        # no measured icon-button in the catalog: show the typographic stand-in
+        # without asserting a prohibition the brand doesn't carry.
+        return ('<div class="ex-caption">No measured icon-button &mdash; typographic arrow stand-in:</div>'
+                f'{matrix}')
     return ('<div class="ex-caption">Brand realization &mdash; remaps to a typographic arrow/slash link:</div>'
             f'{matrix}'
             '<div class="ex-rule"></div>'
@@ -616,19 +700,34 @@ def render_icon_button(doc, key, item):
 
 
 def render_pill(doc, key, item):
+    tag = _specimen(doc)["links"][0]
+    use = ""
+    prims = doc.get("primitives")
+    if isinstance(prims, dict) and isinstance(prims.get(key), dict):
+        use = str(prims[key].get("use", "")).lower()
+    if use != "never":
+        return (f'<div class="ex-caption">Label chip at the brand radius:</div>'
+                f'<span class="avoid-pill">{esc(tag)}</span>')
     return ('<div class="ex-caption">Brand realization &mdash; a tag remaps to an uppercase eyebrow label:</div>'
-            '<span class="ex-eyebrow">Sculpture</span>'
+            f'<span class="ex-eyebrow">{esc(tag)}</span>'
             '<div class="ex-rule"></div>'
             '<div class="ex-caption">Synthesized / avoid &mdash; rounded chip, never used:</div>'
-            '<div class="strike"><span class="avoid-pill">Sculpture</span></div>')
+            f'<div class="strike"><span class="avoid-pill">{esc(tag)}</span></div>')
 
 
 def render_badge(doc, key, item):
+    law = _brand_law(doc)
+    shape = "square" if law["square"] else "brand-radius"
     return ('<div class="surface-dark"><span class="ex-marker">New</span></div>'
-            '<div class="ex-caption">Flat square accent marker &mdash; gold on dark only, never rounded</div>')
+            f'<div class="ex-caption">Flat {shape} accent marker &mdash; accent-legal surfaces only</div>')
 
 
 def render_input(doc, key, item):
+    # Law-first (blocker 7): a boxed-field brand shows its REAL catalog input; the
+    # underline specimen (and its "underline only" law prose) is the underline brands'.
+    if cr.input_shape(doc) == "boxed":
+        return ('<div class="ex-caption">Boxed field &mdash; brand input radius, border and fill</div>'
+                + cr.render_input(doc, _GALLERY_CTX, {"placeholder": "Enter your email"}))
     def sw(cls):
         return (f'<span class="ex-field {cls}" style="min-width:9rem">'
                 '<span class="ex-input">you@email.com</span></span>')
@@ -642,19 +741,20 @@ def render_input(doc, key, item):
 
 def render_textarea(doc, key, item):
     return ('<div class="ex-field" style="align-items:flex-start;min-height:3.5rem">'
-            '<span class="ex-input">Multi-line entry as a single underline rule&hellip;</span></div>'
-            '<div class="ex-caption">No box/fill, matching the Lead-form input</div>')
+            '<span class="ex-input">Multi-line entry&hellip;</span></div>'
+            '<div class="ex-caption">Follows the brand\'s field grammar (same shape as the input)</div>')
 
 
 def render_select(doc, key, item):
-    return ('<span class="ex-select">Choose a tour <span aria-hidden="true">&#9662;</span></span>'
-            '<div class="ex-caption">Underline trigger, uppercase control-text; flat square menu</div>')
+    return (f'<span class="ex-select">Select {esc(_specimen(doc)["links"][0].lower())} '
+            '<span aria-hidden="true">&#9662;</span></span>'
+            '<div class="ex-caption">Trigger in the brand control-text register; flat menu panel</div>')
 
 
 def render_form_field(doc, key, item):
     return ('<span class="ex-eyebrow">Email address</span>'
             '<div class="ex-field"><span class="ex-input">you@email.com</span></div>'
-            '<div class="ex-caption">Label as uppercase eyebrow; underline control; no boxed row</div>')
+            '<div class="ex-caption">Label as uppercase eyebrow above the brand field control</div>')
 
 
 def render_checkbox(doc, key, item):
@@ -663,17 +763,22 @@ def render_checkbox(doc, key, item):
         on = "is-on" if cls == "is-active" else ""
         return f'<span class="ex-check {cls} {on}"><span class="box">&#10003;</span></span>'
     live = ('<label class="ex-check live"><input type="checkbox">'
-            '<span class="box">&#10003;</span><span>Members (toggle me)</span></label>'
+            '<span class="box">&#10003;</span><span>Subscribe (toggle me)</span></label>'
             '<label class="ex-check disabled"><input type="checkbox" disabled>'
-            '<span class="box">&#10003;</span><span>Closed</span></label>')
-    return ('<div class="ex-caption">Empty cream box + 1px hairline when off; flat dark fill + light check on select &mdash; radius 0</div>'
+            '<span class="box">&#10003;</span><span>Locked</span></label>')
+    return ('<div class="ex-caption">Empty field-surface box + 1px hairline when off; solid ink fill + inverse check on select</div>'
             f'{_state_matrix(sw, live)}')
 
 
 def render_radio(doc, key, item):
-    return ('<span class="ex-check radio is-on"><span class="box">&#9632;</span><span>Adult</span></span>'
-            '<span class="ex-check radio"><span class="box"></span><span>Concession</span></span>'
-            '<div class="ex-caption">Square selector (radius 0 overrides the round default)</div>')
+    sp = _specimen(doc)
+    a, b = sp["links"][0], (sp["links"][1] if len(sp["links"]) > 1 else "Other")
+    law = _brand_law(doc)
+    cap = ("Square selector (radius 0 overrides the round default)"
+           if law["square"] else "Selector at the brand radius")
+    return (f'<span class="ex-check radio is-on"><span class="box">&#9632;</span><span>{esc(a)}</span></span>'
+            f'<span class="ex-check radio"><span class="box"></span><span>{esc(b)}</span></span>'
+            f'<div class="ex-caption">{cap}</div>')
 
 
 def render_toggle(doc, key, item):
@@ -684,57 +789,67 @@ def render_toggle(doc, key, item):
         return (f'<span class="ex-switch {cls} {on}">'
                 '<span class="track"><span class="knob"></span></span></span>')
     live = ('<label class="ex-switch live"><input type="checkbox">'
-            '<span class="track"><span class="knob"></span></span><span>Late hours (toggle me)</span></label>'
+            '<span class="track"><span class="knob"></span></span><span>Updates (toggle me)</span></label>'
             '<label class="ex-switch disabled"><input type="checkbox" disabled>'
             '<span class="track"><span class="knob"></span></span><span>Locked</span></label>')
-    return ('<div class="ex-caption">Square sliding switch &mdash; empty cream track when off (knob left); '
-            'flat dark fill when on (knob right); no pill/rounding, radius 0</div>'
+    return ('<div class="ex-caption">Sliding switch &mdash; empty track when off (knob left); '
+            'solid ink fill when on (knob right)</div>'
             f'{_state_matrix(sw, live)}')
 
 
 def render_slider(doc, key, item):
     return ('<div class="ex-slider"><span class="fill"></span><span class="handle"></span></div>'
-            '<div class="ex-caption">1px square track + square handle &mdash; no rounded thumb</div>')
+            '<div class="ex-caption">1px track + flat handle &mdash; no decorative thumb</div>')
 
 
 def render_file_upload(doc, key, item):
     return ('<span class="ex-select">Attach a file <span aria-hidden="true">&rarr;</span></span>'
-            '<div class="ex-caption">Underline-style trigger + uppercase control-text &mdash; no dropzone box</div>')
+            '<div class="ex-caption">Trigger in the brand control grammar &mdash; no dropzone box</div>')
 
 
 def render_divider(doc, key, item):
-    return ('<div class="ex-rows"><div class="ex-row"><span class="ex-label">Adult</span>'
-            '<span class="ex-counter" style="font-size:1.25rem">&pound;14</span></div>'
-            '<div class="ex-row"><span class="ex-label">Concession</span>'
-            '<span class="ex-counter" style="font-size:1.25rem">&pound;9</span></div></div>'
+    sp = _specimen(doc)
+    a, b = sp["links"][0], (sp["links"][1] if len(sp["links"]) > 1 else "Other")
+    return (f'<div class="ex-rows"><div class="ex-row"><span class="ex-label">{esc(a)}</span>'
+            '<span class="ex-counter" style="font-size:1.25rem">01</span></div>'
+            f'<div class="ex-row"><span class="ex-label">{esc(b)}</span>'
+            '<span class="ex-counter" style="font-size:1.25rem">02</span></div></div>'
             '<div class="ex-caption">1px ruled action-row bar inside a panel &mdash; never a section seam</div>')
 
 
 def render_quote(doc, key, item):
-    return ('<blockquote class="ex-quote">A space that lets the work breathe.</blockquote>'
-            '<div class="ex-eyebrow">&mdash; The Observer</div>'
-            '<div class="ex-caption">Large didone, open on the canvas; attribution as margin eyebrow</div>')
+    sp = _specimen(doc)
+    law = _brand_law(doc)
+    return (f'<blockquote class="ex-quote">{esc(sp["headline"])}</blockquote>'
+            f'<div class="ex-eyebrow">&mdash; {esc(sp["name"])}</div>'
+            f'<div class="ex-caption">Display-register quote ({esc(law["display"])}), open on the canvas; '
+            'attribution as margin eyebrow</div>')
 
 
 def render_stat(doc, key, item):
-    return ('<div class="ex-counter">1 / 6</div><div class="ex-eyebrow">Galleries open</div>'
-            '<div class="ex-caption">Big didone numeral + uppercase eyebrow &mdash; open, never boxed</div>')
+    sp = _specimen(doc)
+    label = sp["links"][2] if len(sp["links"]) > 2 else sp["links"][0]
+    return (f'<div class="ex-counter">1 / 6</div><div class="ex-eyebrow">{esc(label)}</div>'
+            '<div class="ex-caption">Display-register numeral + uppercase eyebrow &mdash; open, never boxed</div>')
 
 
 def render_rating(doc, key, item):
     return ('<div class="ex-counter" style="font-size:1.5rem">4.8 / 5</div>'
-            '<div class="ex-caption">Fraction numeral &mdash; no colored stars on cream</div>')
+            '<div class="ex-caption">Fraction numeral &mdash; no colored star glyphs</div>')
 
 
 def render_list(doc, key, item):
-    items = ["Permanent collection", "Rotating exhibitions", "Members-only previews"]
-    rows = "".join(f'<div class="ex-li">{esc(t)}</div>' for t in items)
+    rows = "".join(f'<div class="ex-li">{esc(t)}</div>' for t in _specimen(doc)["links"][:3])
     return (f'<div class="ex-list">{rows}</div>'
-            '<div class="ex-caption">Rows separated by 1px ruled bars; slash marker, never decorative bullets</div>')
+            '<div class="ex-caption">Rows separated by 1px ruled bars &mdash; brand marker, never decorative bullets</div>')
 
 
 def render_code(doc, key, item):
-    return ('<div class="surface-darkest"><pre class="ex-code">curl woodwave.io/api\n  &gt; { "open": true }</pre></div>'
+    # specimen host derives from the BRAND name (was a hardcoded woodwave.io literal —
+    # AS-06 shape: one brand's DNA rendered into every brand's gallery).
+    host = ((doc.get("brand") or {}).get("name") or "brand").lower().replace(" ", "")
+    return (f'<div class="surface-darkest"><pre class="ex-code">curl {esc(host)}.example/api\n'
+            '  &gt; { "open": true }</pre></div>'
             '<div class="ex-caption">Monospace on near-black, radius 0 &mdash; off-brand, used rarely</div>')
 
 
@@ -744,8 +859,9 @@ def render_progress(doc, key, item):
 
 
 def render_tooltip(doc, key, item):
-    return ('<span class="ex-tip">Opens at 10:00</span>'
-            '<div class="ex-caption">Square dark panel, no shadow/radius, Inter micro-text</div>')
+    law = _brand_law(doc)
+    return ('<span class="ex-tip">More detail</span>'
+            f'<div class="ex-caption">Flat dark panel, no shadow; {esc(law["body"])} micro-text</div>')
 
 
 def render_spacer(doc, key, item):
@@ -772,67 +888,79 @@ PRIMITIVE_RENDERERS = {
 # ── per-block faithful example renderers ────────────────────────────────────────
 
 def render_b_header(doc, key, item):
-    # SSOT: the header block composes eyebrow + heading + arrow cta via the shared renderer.
+    # SSOT: the header block composes eyebrow + heading + arrow cta via the shared
+    # renderer; copy is the BRAND's (measured headline + derived CTA), blocker 7.
+    sp = _specimen(doc)
     return cr.render_header(doc, _GALLERY_CTX, {
-        "eyebrow": "/ Now Open", "heading": "Light & Timber", "level": "display",
-        "cta": "Plan your visit"})
+        "eyebrow": "/ " + sp["links"][0], "heading": sp["headline"], "level": "display",
+        "cta": sp["cta"]})
 
 
 def render_b_navbar(doc, key, item):
+    links = _specimen(doc)["links"][:3]
+    sep = ' <span style="opacity:.5">/</span> '
     return ('<div class="surface-dark"><div style="display:flex;align-items:center;'
             'justify-content:space-between;gap:1.5rem">'
-            '<span class="ex-logo" style="font-size:1rem">WoodWave</span>'
+            '<span class="ex-logo" style="font-size:1rem">' + esc(_SPEC_NAME) + '</span>'
             '<span class="ex-label" style="color:var(--ink-inverse);font-size:var(--control-size)">'
-            'About <span style="opacity:.5">/</span> Gallery <span style="opacity:.5">/</span> Visit</span>'
-            '<a class="act" href="#" style="color:var(--accent)">Buy Tickets <span class="arrow">&rarr;</span></a>'
+            + sep.join(esc(x) for x in links) + '</span>'
+            '<a class="act" href="#" style="color:var(--accent)">' + esc(_SPEC_CTA) + ' <span class="arrow">&rarr;</span></a>'
             '</div></div>'
-            '<div class="ex-caption">Zero-chrome bar &mdash; no fill/border/button; slash typographic nav</div>')
+            '<div class="ex-caption">Bar on the brand chrome surface; typographic nav links</div>')
 
 
 def render_b_footer(doc, key, item):
     # SSOT: the footer block is rendered by the SHARED catalog renderer
-    # (component_render.render_footer) — the SAME renderer the page composer uses — so
-    # there is ONE footer renderer for both the gallery and the composed page. Rendered
-    # on the brand's near-black strong surface (a footer/closing bookend is dark-only);
+    # (component_render.render_footer) with the SAME content source the page composer
+    # uses (component_render.footer_content) — ONE renderer + ONE content derivation for
+    # both the gallery and the composed page. Content is the brand's own extracted
+    # footer (sitemap/directory, TEXT social row, legal line); a brand with no footer
+    # extracted gets an honest caption, never a fabricated social row. Rendered on the
+    # brand's near-black strong surface (a footer/closing bookend is dark-only);
     # `.cmp-footer-demo` rescopes the shared --c-* vars to the inverse tokens so the
     # imported c-* classes read on-brand (light ink on dark), and the sitemap centers +
     # right-sizes itself via the contained clamp in component_render.COMPONENT_CSS.
-    foot = cr.render_footer(doc, _GALLERY_CTX, {
-        "sitemap": ["About", "Gallery", "Exhibition", "Visit", "Buy Tickets"],
-        "social": ["Instagram", "Facebook", "Youtube", "Twitter"],
-        "legal": "© 2026 WoodWave Gallery",
-    })
+    if not (doc.get("footer") or {}):
+        return ('<div class="ex-caption">No footer extracted for this brand &mdash; the '
+                'composed page ends without a closing bookend (nothing is invented)</div>')
+    foot = cr.render_footer(doc, _GALLERY_CTX, cr.footer_content(doc))
     return (f'<div class="surface-darkest cmp-footer-demo">{foot}</div>'
-            '<div class="ex-caption">Closing bookend &mdash; centered, right-sized oversized didone '
-            'slash sitemap, text social row + muted legal; shared <code>render_footer</code>, no boxes</div>')
+            '<div class="ex-caption">Closing bookend &mdash; the brand&rsquo;s extracted footer '
+            '(sitemap, text social row + muted legal); shared <code>render_footer</code>, no boxes</div>')
 
 
 def render_b_media_text(doc, key, item):
+    sp = _specimen(doc)
+    a, b = sp["links"][0], (sp["links"][1] if len(sp["links"]) > 1 else "Other")
     return ('<div style="display:grid;grid-template-columns:1fr 1fr;gap:0">'
             '<div class="ex-photo" style="aspect-ratio:auto">PHOTO</div>'
-            '<div class="surface-panel"><div class="ex-h3">Ticket Prices</div>'
+            f'<div class="surface-panel"><div class="ex-h3">{esc(sp["headline"])}</div>'
             '<div class="ex-rows" style="margin-top:0.75rem">'
-            '<div class="ex-row"><span class="ex-label">Adult</span>'
-            f'{_arrow("Buy")}</div>'
-            '<div class="ex-row"><span class="ex-label">Concession</span>'
-            f'{_arrow("Buy")}</div></div></div></div>'
-            '<div class="ex-caption">Two flush halves, gap 0, hard cut; cream panel child of inverse</div>')
+            f'<div class="ex-row"><span class="ex-label">{esc(a)}</span>'
+            f'{_arrow(sp["cta"])}</div>'
+            f'<div class="ex-row"><span class="ex-label">{esc(b)}</span>'
+            f'{_arrow(sp["cta"])}</div></div></div></div>'
+            '<div class="ex-caption">Two flush halves, gap 0, hard cut; panel surface child of inverse</div>')
 
 
 def render_b_content_block(doc, key, item):
+    sp = _specimen(doc)
     return ('<div class="ex-photo" style="aspect-ratio:16/9">PHOTO</div>'
-            '<div class="ex-caption">Fig. 02 &mdash; Atrium</div>'
-            '<div class="ex-h3" style="margin-top:0.5rem">A Living Archive</div>'
-            '<p class="ex-body">Narrow offset body, ~1/3 container, set over the ghost watermark.</p>'
+            f'<div class="ex-caption">Fig. 02 &mdash; {esc(sp["name"])}</div>'
+            f'<div class="ex-h3" style="margin-top:0.5rem">{esc(sp["headline"])}</div>'
+            '<p class="ex-body">Narrow offset body, roughly a third of the container.</p>'
             f'{_arrow("Read more")}')
 
 
 def render_b_cta_block(doc, key, item):
+    sp = _specimen(doc)
+    action = (cr.render_button(doc, _GALLERY_CTX, {"label": sp["cta"]})
+              if _brand_law(doc)["cta"] == "filled" else _arrow(sp["cta"]))
     return ('<div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:1rem">'
-            '<div class="ex-eyebrow">/ Stay in touch</div>'
-            '<div class="ex-display">Join the List</div>'
-            f'{_arrow("Subscribe")}</div>'
-            '<div class="ex-caption">Narrow centered stack; typographic arrow action, never a button</div>')
+            f'<div class="ex-eyebrow">/ {esc(sp["links"][0])}</div>'
+            f'<div class="ex-display">{esc(sp["headline"])}</div>'
+            f'{action}</div>'
+            '<div class="ex-caption">Narrow centered stack; action in the brand\'s resolved CTA shape</div>')
 
 
 def render_b_form(doc, key, item):
@@ -840,56 +968,64 @@ def render_b_form(doc, key, item):
     # shared catalog renderer (the SAME render_form the section composer uses).
     form = cr.render_form(doc, _GALLERY_CTX, {
         "eyebrow": "/ Newsletter", "placeholder": "Enter your email", "submit": "Subscribe"})
-    return (form + '<div class="ex-caption">Underline-only field + inline typographic submit; no boxed inputs</div>')
+    return (form + '<div class="ex-caption">Field + inline submit in the brand\'s field/CTA grammar</div>')
 
 
 def render_b_card(doc, key, item):
-    return ('<div class="ex-caption"><strong>No cards on cream.</strong> Light-canvas content is open '
-            'editorial collage:</div>'
+    return ('<div class="ex-caption"><strong>Card treatment follows the brand law.</strong></div>'
             '<div class="ex-photo" style="aspect-ratio:16/9">PHOTO</div>'
-            '<div class="ex-caption">Fig. 03 &mdash; in the margin</div>'
+            f'<div class="ex-caption">Fig. 03 &mdash; {esc(_specimen(doc)["name"])}</div>'
             '<div class="ex-rule"></div>'
-            '<div class="ex-caption">A bounded unit only ever appears as the cream panel inside a dark band.</div>')
+            '<div class="ex-caption">Bounded units appear only where the brand\'s surface rules allow.</div>')
 
 
 def render_b_testimonial(doc, key, item):
-    return ('<blockquote class="ex-quote">It rewired how I think about a gallery.</blockquote>'
+    sp = _specimen(doc)
+    law = _brand_law(doc)
+    return (f'<blockquote class="ex-quote">{esc(sp["headline"])}</blockquote>'
             '<div style="display:flex;align-items:center;gap:0.75rem;margin-top:0.75rem">'
             '<div class="ex-photo is-square" style="max-width:3rem;margin:0">A</div>'
-            '<span class="ex-eyebrow">Ada Mensah &mdash; Curator</span></div>'
-            '<div class="ex-caption">Open didone quote; name/role as margin eyebrow; rectangle avatar</div>')
+            f'<span class="ex-eyebrow">{esc(sp["name"])} &mdash; Customer</span></div>'
+            f'<div class="ex-caption">Open {esc(law["display"])} quote; name/role as margin eyebrow</div>')
 
 
 def render_b_stat_block(doc, key, item):
-    return ('<div style="display:flex;gap:2.5rem">'
-            '<div><div class="ex-counter">12</div><div class="ex-eyebrow">Galleries</div></div>'
-            '<div><div class="ex-counter">40k</div><div class="ex-eyebrow">Visitors</div></div>'
-            '<div><div class="ex-counter">6</div><div class="ex-eyebrow">Exhibitions</div></div></div>'
-            '<div class="ex-caption">Row of big didone numerals + eyebrow labels; open, no boxes</div>')
+    sp = _specimen(doc)
+    labels = (sp["links"] + ["Teams", "Regions"])[:3]
+    cells = "".join(
+        f'<div><div class="ex-counter">{n}</div><div class="ex-eyebrow">{esc(lb)}</div></div>'
+        for n, lb in zip(("12", "40k", "6"), labels))
+    return (f'<div style="display:flex;gap:2.5rem">{cells}</div>'
+            '<div class="ex-caption">Row of display-register numerals + eyebrow labels; open, no boxes</div>')
 
 
 def render_b_accordion(doc, key, item):
+    sp = _specimen(doc)
+    a, b = sp["links"][0], (sp["links"][1] if len(sp["links"]) > 1 else "Other")
     return ('<div class="ex-rows">'
-            '<div class="ex-row"><span class="ex-h3" style="font-size:1.125rem">Opening hours</span>'
+            f'<div class="ex-row"><span class="ex-h3" style="font-size:1.125rem">{esc(a)}</span>'
             '<span style="font-family:var(--font-heading)">&#8260;</span></div>'
-            '<div class="ex-row"><span class="ex-h3" style="font-size:1.125rem">Accessibility</span>'
+            f'<div class="ex-row"><span class="ex-h3" style="font-size:1.125rem">{esc(b)}</span>'
             '<span style="font-family:var(--font-heading)">&#8260;</span></div></div>'
-            '<div class="ex-caption">Didone triggers separated by 1px ruled bars; slash indicator</div>')
+            '<div class="ex-caption">Display-register triggers separated by 1px ruled bars</div>')
 
 
 def render_b_accordion_item(doc, key, item):
+    sp = _specimen(doc)
+    law = _brand_law(doc)
     return ('<div class="ex-row" style="padding-top:0"><span class="ex-h3" style="font-size:1.125rem">'
-            'Opening hours</span><span style="font-family:var(--font-heading)">&#8260;</span></div>'
-            '<p class="ex-body">Tue&ndash;Sun, 10:00&ndash;18:00. Late opening Thursdays.</p>'
-            '<div class="ex-caption">Didone trigger + Inter body; slash/arrow, never a chevron chip</div>')
+            f'{esc(sp["links"][0])}</span><span style="font-family:var(--font-heading)">&#8260;</span></div>'
+            '<p class="ex-body">Expanded body copy in the brand body register.</p>'
+            f'<div class="ex-caption">Trigger + {esc(law["body"])} body; typographic indicator, never a chevron chip</div>')
 
 
 def render_b_tabs(doc, key, item):
+    links = (_specimen(doc)["links"] + ["More"])[:3]
     return ('<div style="display:flex;gap:1.5rem">'
-            '<span class="ex-label" style="border-bottom:2px solid var(--ink);padding-bottom:0.3rem">Overview</span>'
-            '<span class="ex-label" style="color:var(--ink-muted)">Access</span>'
-            '<span class="ex-label" style="color:var(--ink-muted)">Map</span></div>'
-            '<div class="ex-caption">Uppercase typographic triggers, underline active state; never pill/boxed</div>')
+            f'<span class="ex-label" style="border-bottom:2px solid var(--ink);padding-bottom:0.3rem">{esc(links[0])}</span>'
+            f'<span class="ex-label" style="color:var(--ink-muted)">{esc(links[1])}</span>'
+            f'<span class="ex-label" style="color:var(--ink-muted)">{esc(links[2])}</span></div>'
+            '<div class="ex-caption">Typographic triggers, underline active state</div>')
 
 
 def render_b_logo_bar(doc, key, item):
@@ -900,53 +1036,58 @@ def render_b_logo_bar(doc, key, item):
 
 
 def render_b_feature_item(doc, key, item):
+    sp = _specimen(doc)
     return ('<div style="font-family:var(--font-heading);font-size:1.5rem;color:var(--ink)">&#8599;</div>'
-            '<div class="ex-h3" style="margin-top:0.5rem">Self-guided tours</div>'
-            '<p class="ex-body">Move at your own pace with margin captions throughout.</p>'
+            f'<div class="ex-h3" style="margin-top:0.5rem">{esc(sp["links"][0])}</div>'
+            '<p class="ex-body">Feature body copy in the brand register.</p>'
             f'{_arrow("Learn more")}'
-            '<div class="ex-caption">Open grid cell &mdash; thin icon + didone heading + body + arrow; no box</div>')
+            '<div class="ex-caption">Open grid cell &mdash; thin icon + heading + body + action; no box</div>')
 
 
 def render_b_pricing_card(doc, key, item):
+    sp = _specimen(doc)
     return ('<div class="ex-rows"><div class="ex-row" style="padding-top:0">'
-            '<div><span class="ex-counter" style="font-size:1.5rem">&pound;14</span> '
-            '<span class="ex-eyebrow">Adult</span></div>'
-            f'{_arrow("Buy")}</div></div>'
-            '<div class="ex-caption">Plan as a ruled action row (numeral + label + arrow); never a boxed tile</div>')
+            '<div><span class="ex-counter" style="font-size:1.5rem">01</span> '
+            f'<span class="ex-eyebrow">{esc(sp["links"][0])}</span></div>'
+            f'{_arrow(sp["cta"])}</div></div>'
+            '<div class="ex-caption">Plan as a ruled action row (numeral + label + action)</div>')
 
 
 def render_b_banner(doc, key, item):
+    sp = _specimen(doc)
     return ('<div class="surface-dark" style="display:flex;align-items:center;justify-content:space-between;gap:1rem">'
-            '<span class="ex-label" style="color:var(--ink-inverse)">Late opening this Thursday</span>'
+            f'<span class="ex-label" style="color:var(--ink-inverse)">{esc(sp["headline"])}</span>'
             '<span style="display:flex;gap:1.25rem;align-items:center">'
             '<a class="act" href="#" style="color:var(--accent)">Details <span class="arrow">&rarr;</span></a>'
             '<span style="color:var(--ink-inverse-muted);font-family:var(--font-heading)">&times;</span></span></div>'
-            '<div class="ex-caption">Slim dark strip; uppercase text + arrow link; typographic dismiss</div>')
+            '<div class="ex-caption">Slim strip on the brand chrome surface; text + link action; typographic dismiss</div>')
 
 
 def render_b_modal(doc, key, item):
-    return ('<div style="background:rgba(27,21,15,0.55);padding:1.25rem">'
+    law = _brand_law(doc)
+    panel_word = "hard-edged square panel" if law["square"] else "panel at the brand radius"
+    return ('<div style="background:rgba(0,0,0,0.55);padding:1.25rem">'
             '<div class="surface-panel"><div style="display:flex;justify-content:space-between;align-items:start">'
             '<div class="ex-h3">Before you go</div>'
             '<span style="font-family:var(--font-heading)">&times;</span></div>'
-            '<p class="ex-body" style="margin-top:0.5rem">A hard-edged square panel on a flat scrim.</p>'
+            f'<p class="ex-body" style="margin-top:0.5rem">A {panel_word} on a flat scrim.</p>'
             f'{_arrow("Got it")}</div></div>'
-            '<div class="ex-caption">Square panel, radius 0, no shadow; flat scrim; typographic close</div>')
+            '<div class="ex-caption">Panel per the brand radius law, no shadow; flat scrim; typographic close</div>')
 
 
 def render_b_dropdown_menu(doc, key, item):
-    return (f'{_arrow("Visit")}'
-            '<div class="surface-dark" style="margin-top:0.5rem;display:flex;flex-direction:column;gap:0.5rem">'
-            '<span class="ex-label" style="color:var(--ink-inverse)">Hours</span>'
-            '<span class="ex-label" style="color:var(--ink-inverse)">Getting here</span>'
-            '<span class="ex-label" style="color:var(--ink-inverse)">Access</span></div>'
-            '<div class="ex-caption">Flat square menu panel; uppercase links; slash/arrow trigger</div>')
+    links = (_specimen(doc)["links"] + ["More"])[:3]
+    rows = "".join(f'<span class="ex-label" style="color:var(--ink-inverse)">{esc(x)}</span>' for x in links)
+    return (f'{_arrow(links[0])}'
+            f'<div class="surface-dark" style="margin-top:0.5rem;display:flex;flex-direction:column;gap:0.5rem">{rows}</div>'
+            '<div class="ex-caption">Flat menu panel; typographic links and trigger</div>')
 
 
 def render_b_breadcrumb(doc, key, item):
-    return ('<div class="ex-eyebrow">Home <span style="opacity:.5">/</span> Visit '
-            '<span style="opacity:.5">/</span> Tickets</div>'
-            '<div class="ex-caption">Uppercase Inter trail with the brand slash separator; muted</div>')
+    links = (_specimen(doc)["links"] + ["More"])[:2]
+    return (f'<div class="ex-eyebrow">Home <span style="opacity:.5">/</span> {esc(links[0])} '
+            f'<span style="opacity:.5">/</span> {esc(links[1])}</div>'
+            '<div class="ex-caption">Uppercase trail with the brand separator; muted</div>')
 
 
 def render_b_pagination(doc, key, item):
@@ -1021,6 +1162,172 @@ def render_generic(doc, key, item, contract):
     return "".join(parts)
 
 
+# ── Tier 3: extracted layout patterns (project-tier layout-library.yaml) ─────────
+# Each pattern is rendered through the REAL archetype composers: we find a brand.yaml
+# layout that references the pattern (patternRef.id) and run it through
+# compose_section.build_document — the same path the composed pages use — writing a
+# standalone per-pattern document that the gallery embeds as an iframe row. No
+# hand-built HTML mockups. compose_section.py is imported, never modified.
+
+def load_layout_library(brand_yaml: Path) -> list[dict]:
+    """Read the project-tier layout library sitting next to brand.yaml. Returns []
+    when absent so brands without a library render the gallery unchanged."""
+    lib = brand_yaml.parent / "layout-library.yaml"
+    if not lib.exists():
+        return []
+    data = yaml.safe_load(lib.read_text()) or {}
+    return data.get("patterns") or []
+
+
+def layout_for_pattern(doc, pattern_id: str):
+    """First brand.yaml layout whose explicit patternRef points at this pattern
+    (canonical story order = first wins)."""
+    for layout in doc.get("layouts", []) or []:
+        ref = layout.get("patternRef") or {}
+        if isinstance(ref, dict) and ref.get("id") == pattern_id:
+            return layout
+    return None
+
+
+def compose_pattern_docs(doc, patterns, brand_yaml: Path, out_dir: Path) -> dict:
+    """Compose every pattern that has a referencing layout into
+    <out_dir>/layouts/<pattern-id>.html via the real archetype composers. Returns
+    {pattern_id: {"href": relative-url} | {"error": str}}. Defensive per pattern:
+    a composer failing (e.g. mid-edit by another process) degrades that ONE row."""
+    import copy as _copy
+    layouts_dir = out_dir / "layouts"
+    layouts_dir.mkdir(parents=True, exist_ok=True)
+    style_ctx = cs.inactive_context()
+    # One shared assets/ dir beside the per-pattern documents (they reference
+    # 'assets/<file>' relatively, same convention as compose_section main()).
+    cdoc = _copy.deepcopy(doc)
+    cs.prepare_nav_logo(cdoc, brand_yaml.parent, layouts_dir / "assets")
+    cs.copy_assets(brand_yaml.parent, layouts_dir / "assets")
+    cs.copy_fonts(brand_yaml.parent, layouts_dir / "assets", cdoc)
+
+    results = {}
+    for pat in patterns:
+        pid = pat.get("id", "")
+        layout = layout_for_pattern(cdoc, pid)
+        if layout is None:
+            results[pid] = {"error": "no brand.yaml layout references this pattern "
+                                     "(listed without a composed render)"}
+            continue
+        try:
+            html_doc = cs.build_document(cdoc, layout, brand_yaml, style_ctx)
+            (layouts_dir / f"{pid}.html").write_text(html_doc)
+            results[pid] = {"href": f"layouts/{pid}.html", "layout": layout.get("id")}
+        except Exception as exc:  # composer mid-edit / moving state: degrade this row only
+            results[pid] = {"error": f"composer failed: {type(exc).__name__}: {exc}"}
+    return results
+
+
+def _pattern_badge(pat):
+    origin = (pat or {}).get("origin", "designed")
+    if origin == "extracted":
+        return '<span class="badge badge-extracted">extracted</span>'
+    return '<span class="badge badge-designed">designed</span>'
+
+
+def _pattern_note(pat):
+    origin = (pat or {}).get("origin", "designed")
+    prov = ", ".join(str(p) for p in (pat.get("provenance") or []))
+    if origin == "extracted":
+        body = f"Observed on the live page. Provenance: {esc(prov)}." if prov \
+            else "Observed on the live page."
+        return f'<div class="cmp-note"><strong>Extracted.</strong> {body}</div>'
+    note = ((pat.get("designedFrom") or {}).get("note") or "").strip()
+    lead = "<strong>Designed / synthesized.</strong>"
+    if pat.get("source") == "field":
+        lead = "<strong>Designed — ratified from a field proposal.</strong>"
+    return f'<div class="cmp-note">{lead} {esc(note)}</div>' if note \
+        else f'<div class="cmp-note">{lead}</div>'
+
+
+def build_layout_card(pat, composed):
+    pid = pat.get("id", "")
+    origin = pat.get("origin", "designed")
+    tags = []
+    if pat.get("useCase"):
+        tags.append(f'<span class="tag">use-case: {esc(pat["useCase"])}</span>')
+    if pat.get("archetypeRef"):
+        tags.append(f'<span class="tag">archetype: {esc(pat["archetypeRef"])}</span>')
+    if pat.get("confidence"):
+        tags.append(f'<span class="tag">confidence: {esc(pat["confidence"])}</span>')
+
+    info = composed.get(pid) or {}
+    if info.get("href"):
+        stage = (f'<iframe class="layout-frame" src="{esc(info["href"])}" loading="lazy" '
+                 f'title="{esc(pid)} — composed section"></iframe>'
+                 f'<div class="ex-caption">Composed through the real archetype composer '
+                 f'(brand layout: {esc(info.get("layout", ""))})</div>')
+    else:
+        stage = (f'<div class="cmp-note"><strong>Not composed.</strong> '
+                 f'{esc(info.get("error", "unavailable"))}</div>')
+
+    return f"""    <article class="cmp cmp--layout" data-origin="{esc(origin)}">
+      <div class="cmp-meta">
+        <div class="cmp-head">
+          <span class="cmp-name">{esc(pid)}</span>
+          {_pattern_badge(pat)}
+          {"".join(tags)}
+        </div>
+        <div class="cmp-intent">{esc(pat.get("intent", ""))}</div>
+        {_pattern_note(pat)}
+      </div>
+      <div class="cmp-example">
+        <div class="cmp-stage">{stage}</div>
+      </div>
+    </article>"""
+
+
+def load_standard_patterns() -> list[dict]:
+    """Standard-tier (brand-agnostic) patterns from brand_pipeline/contracts/
+    layout-patterns/*.yaml — listed as a collapsed secondary group, not composed."""
+    lp_dir = Path(__file__).resolve().parent / "contracts" / "layout-patterns"
+    if not lp_dir.is_dir():
+        return []
+    out = []
+    for f in sorted(lp_dir.glob("*.yaml")):
+        if f.name == "index.yaml":
+            continue
+        try:
+            data = yaml.safe_load(f.read_text()) or {}
+        except Exception:
+            continue
+        out.extend(data.get("patterns") or [])
+    return out
+
+
+def build_layouts_section(patterns, composed, standard):
+    n_extracted = sum(1 for p in patterns if p.get("origin") == "extracted")
+    n_designed = len(patterns) - n_extracted
+    cards = "\n".join(build_layout_card(p, composed) for p in patterns)
+
+    std_html = ""
+    if standard:
+        rows = "".join(
+            f'<div class="std-row"><span class="std-id">{esc(p.get("id", ""))}</span>'
+            f'<span class="std-meta">{esc(p.get("useCase", ""))} &middot; '
+            f'{esc(p.get("archetypeRef", ""))} &mdash; {esc(p.get("intent", ""))}</span></div>'
+            for p in standard)
+        std_html = f"""
+  <details class="std">
+    <summary>Standard-tier library &mdash; {len(standard)} brand-agnostic patterns (contracts/layout-patterns/, listed only)</summary>
+    {rows}
+  </details>"""
+
+    return f"""  <section class="tier" id="tier-layouts">
+    <div class="tier-num">Tier 3</div>
+    <div class="tier-name">Extracted Layouts</div>
+    <div class="tier-sub">{len(patterns)} project-tier layout patterns &mdash; {n_extracted} extracted, {n_designed} designed &mdash; each composed through the real archetype composers</div>
+    <div class="tier-rule"></div>
+  </section>
+  <div class="list">
+{cards}
+  </div>{std_html}"""
+
+
 # ── card + page assembly ────────────────────────────────────────────────────────
 
 def _origin_badge(item):
@@ -1084,12 +1391,13 @@ def build_card(doc, key, item, contract, renderers):
     </article>"""
 
 
-def build_section(doc, num, name, sub, items, contracts, renderers):
+def build_section(doc, num, name, sub, items, contracts, renderers, anchor=""):
     cards = "\n".join(
         build_card(doc, key, item, contracts.get(key, {}), renderers)
         for key, item in items.items()
     )
-    return f"""  <section class="tier">
+    id_attr = f' id="{esc(anchor)}"' if anchor else ""
+    return f"""  <section class="tier"{id_attr}>
     <div class="tier-num">{esc(num)}</div>
     <div class="tier-name">{esc(name)}</div>
     <div class="tier-sub">{esc(sub)}</div>
@@ -1100,23 +1408,75 @@ def build_section(doc, num, name, sub, items, contracts, renderers):
   </div>"""
 
 
-def build_page(doc, prim_items, prim_contracts, block_items, block_contracts, brand_dir=None):
+def build_surfaces_section(doc) -> str:
+    """Surface-roles specimen tier (SPEC §C.4 / AS-20): one frame PER surface role,
+    each scoped to its own generated per-surface alias block (`[data-surface-frame]`),
+    so accent legality + link-hover re-scoping are visually reviewable on every
+    surface the brand declares — not just a single hardcoded light canvas."""
+    surfaces = (doc.get("tokens", {}) or {}).get("surfaces", {}) or {}
+    if not surfaces:
+        return ""
+    frames = []
+    for role, surf in surfaces.items():
+        ctx = cr.make_context(doc, role, surf)
+        specimen = (
+            cr.render_eyebrow(doc, ctx, {"text": "Specimen eyebrow"})
+            + cr.render_heading(doc, ctx, {"text": role.split("/")[-1].replace("-", " ").title(),
+                                           "level": "h3"})
+            + cr.render_arrow_link(doc, ctx, {"label": "Hover interaction",
+                                              "accent": ctx.is_dark}))
+        frames.append(
+            f'<div class="sw-frame" data-surface-frame="{esc(role)}">'
+            f'<div class="sw-role">{esc(role)}{" · dark" if ctx.is_dark else ""}</div>'
+            f'{specimen}</div>')
+    return f"""
+<section id="tier-surfaces">
+  <div class="tier">
+    <div class="tier-num">3</div>
+    <div class="tier-name">Surface roles</div>
+    <div class="tier-sub">per-surface alias scopes &mdash; accent + hover re-scoping (AS-20), live :hover inside each frame</div>
+    <div class="tier-rule"></div>
+  </div>
+  <div class="sw-grid">{''.join(frames)}</div>
+</section>"""
+
+
+def build_page(doc, prim_items, prim_contracts, block_items, block_contracts, brand_dir=None,
+               layout_patterns=None, composed=None, standard_patterns=None, tokens_html=""):
     root, proxies = root_css(doc)
     gf = google_fonts_link(proxies)
     face_css = cs.font_face_css(brand_dir, doc) if brand_dir else ""
     name = (doc.get("brand") or {}).get("name", "Brand")
     snapshot = (((doc.get("brand") or {}).get("snapshot") or {}).get("value") or "").strip()
+    # rule chips are BRAND-DRIVEN (the first few neverDo ids, humanized) — these were
+    # hardcoded WoodWave literals ("radius 0 · no shadows …") shown verbatim on EVERY
+    # brand's gallery, directly contradicting e.g. HubSpot's rounded/filled system.
+    _nd = [str(r.get("id", "")).replace("no-", "no ").replace("never-", "never ").replace("-", " ")
+           for r in (doc.get("neverDo") or []) if isinstance(r, dict)]
+    rule_chips = " · ".join(_nd[:4]) if _nd else "brand rules: see brand.yaml neverDo"
 
     n_actions = sum(1 for k in prim_items if k in ACTION_KINDS)
 
     prim_section = build_section(
         doc, "Tier 1", "Primitives",
         f"{len(prim_items)} atomic primitives &mdash; {n_actions} action elements carry an interactive state matrix",
-        prim_items, prim_contracts, PRIMITIVE_RENDERERS)
+        prim_items, prim_contracts, PRIMITIVE_RENDERERS, anchor="tier-primitives")
     block_section = build_section(
         doc, "Tier 2", "Blocks",
         f"{len(block_items)} composed clusters &mdash; faithful mini-renders honoring the brand's slot grammar",
-        block_items, block_contracts, BLOCK_RENDERERS)
+        block_items, block_contracts, BLOCK_RENDERERS, anchor="tier-blocks")
+
+    surfaces_section = build_surfaces_section(doc)
+
+    layouts_section = ""
+    toc_layouts = ""
+    if layout_patterns:
+        layouts_section = "\n" + build_layouts_section(
+            layout_patterns, composed or {}, standard_patterns or [])
+        toc_layouts = '<a href="#tier-layouts">Extracted layouts</a>'
+    toc = (f'<nav class="toc"><a href="#tier-primitives">Primitives</a>'
+           f'<a href="#tier-blocks">Blocks</a><a href="#tier-surfaces">Surfaces</a>'
+           f'{toc_layouts}</nav>')
 
     return f"""<!doctype html>
 <html lang="en">
@@ -1125,12 +1485,14 @@ def build_page(doc, prim_items, prim_contracts, block_items, block_contracts, br
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{esc(name)} — Component Preview Gallery</title>
 {gf}
+{tokens_html}
 <style>
 {face_css}
 {root}
-{COMPONENT_ALIAS_CSS}
+{component_alias_css(doc)}
 {BASE_CSS}
 {cr.COMPONENT_CSS}
+{cr.structural_variant_css(doc, include_all=True)}
 {cr.motion_vars_css(doc)}
 {cr.link_hover_css(doc)}
 </style>
@@ -1144,11 +1506,13 @@ def build_page(doc, prim_items, prim_contracts, block_items, block_contracts, br
     <div class="legend">
       <span><span class="badge badge-extracted">extracted</span> observed on the live page</span>
       <span><span class="badge badge-designed">synthesized</span> designed, not used on page</span>
-      <span>radius 0 &middot; no shadows &middot; accent on dark only &middot; typographic actions</span>
+      <span>{esc(rule_chips)}</span>
     </div>
+    {toc}
   </header>
 {prim_section}
 {block_section}
+{surfaces_section}{layouts_section}
 </div>
 </body>
 </html>
@@ -1166,6 +1530,72 @@ def load_contract(brand_yaml: Path, doc, kind: str) -> dict:
     return data.get(kind, {}) or {}
 
 
+_SPEC_NAME = "Brand"
+_SPEC_CTA = "Learn more"
+_SPEC_LINKS = ["About", "Products", "Pricing", "Contact"]
+
+
+def _specimen(doc):
+    """Brand-driven specimen strings for the gallery (anti-ai-slop AS-06/AS-01 shape:
+    these were hardcoded WoodWave literals — _SPEC_CTA, 'WoodWave' — rendered
+    verbatim into EVERY brand's gallery, so HubSpot's preview read as WoodWave).
+
+    remote-fix 2026-07 (blocker 7): also derives a display HEADLINE from the brand's
+    own measured layout copy (`layouts[].blockMapping[].props.Text` on a heading
+    slot) so specimen headings/quotes are the ACTIVE brand's captured copy, never
+    another brand's gallery prose; brands without measured copy fall back to the
+    brand name (a type specimen set in the brand's own wordmark string)."""
+    name = (doc.get("brand") or {}).get("name") or "Brand"
+    nav = doc.get("navbar") or {}
+    primary = [p.get("label") for p in (nav.get("primary") or []) if isinstance(p, dict) and p.get("label")]
+    cta = None
+    for cand in reversed(primary):
+        if any(k in cand.lower() for k in ("demo", "ticket", "buy", "start", "trial", "sign")):
+            cta = cand
+            break
+    headline = None
+    for lay in (doc.get("layouts") or []):
+        for bm in (lay.get("blockMapping") or []) if isinstance(lay, dict) else []:
+            if not isinstance(bm, dict):
+                continue
+            txt = str(((bm.get("props") or {}).get("Text")) or "").strip()
+            if not txt:
+                continue
+            slot = str(bm.get("slot") or "").lower()
+            comp = str(bm.get("component") or "").lower()
+            if comp == "heading" or "heading" in slot or slot == "main":
+                headline = txt
+                break
+        if headline:
+            break
+    return {"name": name, "cta": (cta or "Learn more").title(),
+            "links": [str(x).title() for x in (primary[:4] or ["About", "Products", "Pricing", "Contact"])],
+            "headline": headline or name}
+
+
+def _brand_law(doc):
+    """Brand-derived caption FACTS for the gallery (blocker 7, remote-fix 2026-07):
+    captions must describe the ACTIVE brand's law, so the prose is computed from the
+    brand's own tokens (families, radius scale, cta/input shape) instead of shipping
+    one brand's design-law sentences into every brand's preview."""
+    disp = (type_role(doc, "display-hero") or {}).get("family") \
+        or (type_role(doc, "h1") or {}).get("family") or "the display face"
+    body = (type_role(doc, "body") or {}).get("family") or "the body face"
+    radii = set()
+    for k, s in ((doc.get("tokens", {}) or {}).get("spacing", {}) or {}).items():
+        if "radius" in k and isinstance(s, dict):
+            radii.add(str(s.get("value", "")).strip())
+    for s in ((doc.get("tokens", {}) or {}).get("radius", {}) or {}).values():
+        if isinstance(s, dict) and s.get("value"):
+            radii.add(str(s.get("value")).strip())
+    square = radii <= {"0", "0px", "0rem", ""}
+    return {
+        "display": disp, "body": body, "square": square,
+        "radius_word": "hard-edged (radius 0)" if square else "at the brand radius",
+        "cta": cr.cta_shape(doc),
+    }
+
+
 def main():
     ap = argparse.ArgumentParser(description="Render a brand-styled component preview gallery.")
     ap.add_argument("brand_yaml", type=Path, help="path to a brand.yaml")
@@ -1174,16 +1604,41 @@ def main():
     args = ap.parse_args()
 
     doc = yaml.safe_load(args.brand_yaml.read_text())
+    # AS-34 (remote-fix blocker 7): attach the ACTIVE brand's on-disk image inventory so
+    # every pattern/default art resolves from the brand's own files — without this the
+    # preview tier fell back to another brand's legacy default art names.
+    cs.attach_brand_copy(doc, args.brand_yaml.parent)
+    cs.attach_asset_inventory(doc, args.brand_yaml.parent)
+    _bind_gallery_ctx(doc)  # RP-1: gallery canvas = the BRAND's primary surface
+    global _SPEC_NAME, _SPEC_CTA, _SPEC_LINKS
+    _sp = _specimen(doc)
+    _SPEC_NAME, _SPEC_CTA, _SPEC_LINKS = _sp["name"], _sp["cta"], _sp["links"]
     prim_contracts = load_contract(args.brand_yaml, doc, "primitives")
     block_contracts = load_contract(args.brand_yaml, doc, "blocks")
 
     prim_items = doc.get("primitives") or {}
     block_items = doc.get("blocks") or {}
 
-    page = build_page(doc, prim_items, prim_contracts, block_items, block_contracts,
-                      brand_dir=args.brand_yaml.parent)
-
     args.out.mkdir(parents=True, exist_ok=True)
+
+    # layer-1 generated tokens block: the specimens' alias layer resolves against it
+    # (same generator + fail-loud semantics as the composed pages).
+    bundle = tokens_css.build_page_tokens(doc, None, brand_yaml_path=args.brand_yaml)
+    tokens_css.write_manifest(args.out, bundle)
+
+    # Tier 3: compose each project-tier layout pattern through the real archetype
+    # composers into <out>/layouts/<pattern-id>.html (embedded as iframe rows).
+    layout_patterns = load_layout_library(args.brand_yaml)
+    composed = compose_pattern_docs(doc, layout_patterns, args.brand_yaml, args.out) \
+        if layout_patterns else {}
+    standard_patterns = load_standard_patterns() if layout_patterns else []
+
+    page = build_page(doc, prim_items, prim_contracts, block_items, block_contracts,
+                      brand_dir=args.brand_yaml.parent,
+                      layout_patterns=layout_patterns, composed=composed,
+                      standard_patterns=standard_patterns,
+                      tokens_html=tokens_css.style_tag(bundle))
+
     out_file = args.out / "index.html"
     out_file.write_text(page)
     cs.copy_fonts(args.brand_yaml.parent, args.out / "assets", doc)
@@ -1194,6 +1649,13 @@ def main():
     print(f"  blocks:     {len(block_items)} (rendered)")
     print(f"  action elements with state matrices: {n_actions} "
           f"({', '.join(k for k in prim_items if k in ACTION_KINDS)})")
+    if layout_patterns:
+        ok = sum(1 for v in composed.values() if v.get("href"))
+        print(f"  layout patterns: {len(layout_patterns)} listed, {ok} composed "
+              f"through ARCHETYPE_COMPOSERS; {len(standard_patterns)} standard-tier listed")
+        for pid, v in composed.items():
+            if not v.get("href"):
+                print(f"    ! {pid}: {v.get('error')}")
 
 
 if __name__ == "__main__":

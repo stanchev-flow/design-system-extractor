@@ -20,6 +20,12 @@ description: >-
 > method. It writes only to `brand.yaml` (canonical) per `brand-schema.md`. It never
 > edits `brand.md` (a rendered projection) and never touches a live site.
 >
+> **Worked examples reference "the reference brand"** — the first extraction this
+> method was proven on. Examples are ILLUSTRATIVE of the method only; never copy their
+> values, rules, rhythms, or ids into another brand's extraction. A brand with the
+> opposite aesthetic (rounded, filled buttons, light chrome) follows the same method
+> and produces entirely different entries.
+>
 > **`brand.yaml` is library-AGNOSTIC.** Canonical nodes carry *intent* — archetype,
 > slot role, primitive/block **contract** (`contracts/primitives.yaml`,
 > `contracts/blocks.yaml`), token semantics. The build target NOW is **Tailwind/shadcn**
@@ -97,8 +103,8 @@ Goal: split the captured page into an ordered list of sections, each a candidate
    `about-run`, `info-band`) and register it in `provenanceIndex` (url, node,
    screenshot).
 3. Record the **page rhythm**: the ordered list of surface roles across sections →
-   `surfaceGrammar.pageRhythm`. (Woodwave: inverse → primary → band → primary →
-   inverse → inverse-strong.)
+   `surfaceGrammar.pageRhythm`. (The reference brand, illustrative: inverse → primary →
+   band → primary → inverse → inverse-strong.)
 4. Note **seam behavior** between consecutive sections (hard cut vs gradient/fade vs
    bridging element) → `surfaceGrammar.transition` + any one-off bridging device.
 
@@ -152,15 +158,15 @@ is completed** (incremental save discipline).
    - **Special treatments** — the signature devices — into `specialTreatments[]`:
      `ghost-word` (colossal watermark word behind/straddling media), `overlap`, `stagger`,
      `bleed`, `marginal-caption`, `text-on-media`. Record each device's target/pair/anchor/
-     `amount.class` (`light|medium|heavy`). *This is exactly the WoodWave detail — the giant
-     ghost "ABOUT"/"WOODWAVE" word floating around the photo, the margin micro-caption, the
+     `amount.class` (`light|medium|heavy`). *This is exactly the reference brand's detail —
+     the giant ghost word floating around the photo, the margin micro-caption, the
      alternating stagger.* Capture the PATTERN, not the pixels.
    - **Alignment coherence — `contentShape.alignment` (REQUIRED whenever any slot is
      centered).** Do not stop at recording the block's own alignment as a `variantKnob` —
      that alone silently drops what happens to SIBLING slots (this is precisely how a real
-     gap slipped through: WoodWave's conversion-stack recorded `align: center` but nothing
-     said the body/form should ALSO center or share the body's measure, so the render came
-     back with a centered heading over a left-anchored, full-width form). Record:
+     gap slipped through: the reference brand's conversion stack recorded `align: center`
+     but nothing said the body/form should ALSO center or share the body's measure, so the
+     render came back with a centered heading over a left-anchored, full-width form). Record:
      `alignment.value` (center/left/mixed), `alignment.inheritance`
      (block-inherits/per-slot-override), and `alignment.rule` stating the OBSERVED behavior
      for THIS pattern family — it is **not universal**: a CTA/conversion block's centered
@@ -237,11 +243,13 @@ For each section, map each slot's semantic role onto a **primitive/block contrac
    `Link / Primary`, `Link / Secondary`, `Form / Webflow / Lead`, `Card / Wrapper`.
 3. Record `{ slot, role, component, componentId, props }` with real prop names
    (Title Case, from `components.json`).
-4. **Brand-rule overrides** take priority over visual mimicry. E.g. Woodwave's
-   `neverDo: no-buttons` means a CTA maps to `Link / Secondary` (arrow style), never
-   `Button / Primary`, even if it looks button-like.
+4. **Brand-rule overrides** take priority over visual mimicry. E.g. a brand carrying a
+   typographic-primary `neverDo` maps a CTA to `Link / Secondary` (arrow style), never
+   `Button / Primary`, even if it looks button-like — while a filled-button brand maps
+   the same CTA straight onto `Button / Primary`.
 
-Verified Woodwave role map (from `section-recipe.md`, real ids):
+Verified role map from the reference brand's extraction (illustrative — real ids for
+THAT library; derive your own from the active inventory):
 
 | brand role | library component | componentId | key props |
 |---|---|---|---|
@@ -268,8 +276,8 @@ When no single component matches a slot's content:
    instantiate the nearest `Section / *` scaffold for the surface/slot shell, then
    fill slots with leaf primitives arranged via `Layout / Stack`/`Layout / Grid` +
    offset utilities. Record the composition in `componentMapping[]` as multiple
-   primitive rows on the same slot (as in the Woodwave `editorial-collage` and
-   `opening-bookend` examples).
+   primitive rows on the same slot (as in the reference brand's collage and hero
+   bookend examples).
 3. **Create only on a true miss.** If a genuinely new reusable component is needed,
    note it in `recipePolicy`/changelog as a `create` action and define it by
    composing existing primitives + forwarding their props (prop-binding workflow in
@@ -284,7 +292,7 @@ Consolidate per-section observations into the canonical document:
    sections with consistent values become `compositionRules`/`surfaceGrammar` entries
    at `scope: design-language`, `confidence: high`. Single-occurrence observations
    stay `confidence: low` and (if they would generalize unsafely)
-   `scope: one-off` (e.g. Woodwave seam-bridging photo).
+   `scope: one-off` (e.g. the reference brand's seam-bridging photo).
 2. **Synthesize the three rule lists** `do[]` / `avoid[]` / `neverDo[]`:
    - `do[]` — positive prescriptions / affirmative house style (e.g. "all actions are
      typographic arrow links"). High-confidence, source: creation.

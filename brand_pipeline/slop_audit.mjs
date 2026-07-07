@@ -19,9 +19,13 @@ import path from "node:path";
 const browser = await chromium.launch();
 let anyFlag = false;
 
+const WIDTHS = [1440, 1180];   // multi-viewport (anti-ai-slop AS-16): the collage
+                               // head/body collision only appeared below ~1280px —
+                               // single-width audits certify the one width you looked at.
 for (const target of process.argv.slice(2)) {
   const url = target.startsWith("http") ? target : pathToFileURL(path.resolve(target)).href;
-  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  for (const width of WIDTHS) {
+  const page = await browser.newPage({ viewport: { width, height: 900 } });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto(url, { waitUntil: "networkidle" });
   await page.waitForTimeout(400);
@@ -87,6 +91,17 @@ for (const target of process.argv.slice(2)) {
         }
       }
 
+      // AS-23: naked image slots — every content image needs the surface-derived
+      // placeholder backing (repeating-linear-gradient hatch). Logos/icons exempt.
+      for (const im of media.filter(m => m.tagName === "IMG")) {
+        const r = im.getBoundingClientRect();
+        if (r.width < 80 || r.height < 80) continue;               // logo/icon scale
+        if (im.closest(".c-logo--img,.cs-nav,.c-footer")) continue;
+        const bg = getComputedStyle(im).backgroundImage;
+        if (!/repeating-linear-gradient/.test(bg))
+          out.push(`AS-23 ${id}: content image without placeholder backing (src=${(im.getAttribute("src") || "").slice(-40)})`);
+      }
+
       // AS-13: map/chart media without data-like text in the same section
       // word-bounded: a bare /graph/ matched inside "photoGRAPHy" (every brand photo!) —
       // the classic substring-vs-word false positive.
@@ -150,7 +165,7 @@ for (const target of process.argv.slice(2)) {
     return out;
   });
 
-  const name = target.split("/").slice(-2).join("/");
+  const name = target.split("/").slice(-2).join("/") + ` @${width}px`;
   if (flags.length) {
     anyFlag = true;
     console.log(`FLAG ${name}  (${flags.length})`);
@@ -159,6 +174,7 @@ for (const target of process.argv.slice(2)) {
     console.log(`PASS ${name}`);
   }
   await page.close();
+  }
 }
 await browser.close();
 process.exit(anyFlag ? 1 : 0);

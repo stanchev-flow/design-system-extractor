@@ -12,6 +12,7 @@ composes_with: [serif-display-override, gradient-feature-section]
 # soft-option rationale, style rules, failure modes — stay in the body and are still
 # prose-parsed; only `soft_options` is mirrored here as structured data for the gate.)
 type:
+  display_source: poster    # the oversized poster display IS this style's identity
   display_min_rem: 8        # poster floor at desktop (prose: "AT LEAST 8rem / ~11vw")
   display_vw: 11            # documented intent (rendered as cqw, never a viewport unit)
   display_max_rem: 14.4     # upper clamp bound for the display tier
@@ -43,6 +44,19 @@ soft_options:               # tier-2 brand-choosable options (allowed kept as pr
   display-case: { allowed: "uppercase, sentence", default: "uppercase" }
   primary-action: { allowed: "pill-button, outline-button, ghost-link", default: "pill-button" }
   accent-presence: { allowed: "single-jewel, monochrome", default: "single-jewel" }
+# ── logo-strip device treatment (AS-33; parsed into StyleStructure.logo_strip) ──
+# QUALITATIVE stance on partner/customer logo strips (monochrome | reduced | plain).
+# Marks keep their own ink but sit back from the editorial content — quiet, dimmed
+# emphasis rather than a filtered grayscale row (luxury restraint, not corporate
+# uniformity). Realization lives in the shared composer helper; never CSS values here.
+logoStrip: reduced
+# ── inset art-panel surface (AS-37; parsed into StyleStructure.art_panel) ──
+# QUALITATIVE stance on the rounded panel painted with a brand art asset (noise /
+# gradient / illustration fill) hosting a section's content or media (inset | none).
+# NONE for this hard-edged editorial grammar: media is flush and rectangular, content
+# sits on the canvas — a rounded art panel never renders here, whatever the brand or
+# composition declares. Measured values stay brand tokens; no CSS values here.
+artPanel: none
 # ── alignment stance (AS-18; parsed into StyleStructure.alignment_*) ──
 # Machine-readable role/archetype -> anchor map: the LAST layer of the composer's
 # resolution chain (section-explicit > pattern contentShape.alignment > THIS). A key is
@@ -82,6 +96,59 @@ alignment:
 # for clean/corporate styles. Parsed by brand_pipeline/styles.py; enforced by
 # generate_composition.offgrid_prefilter + the render/gate repair loop.
 offGridExpansion: true
+# ── freedom budget (the 0-5 per-section wildcard allowance; parsed by styles.py) ──
+# QUALITATIVE, style-relative definitions of how far generation may deviate from the
+# brand median at each level — NO exact values (no px/hex/ratios): everything is
+# expressed against this style's own vocabulary (treatments, scale steps, type tiers,
+# soft options, the signature motif). The ladder is cumulative (a level includes the
+# right to go lower). The BRAND may choose a LEVEL (`voice.dials.freedom` in
+# brand.yaml) but never redefines what a level means — definitions live here only.
+# Expansive upper levels are consistent with offGridExpansion: true.
+freedomBudget:
+  default: 2               # luxury tolerates a confident crank of its own devices
+  ceiling: 5               # full ladder available (transplant + sanctioned relax)
+  levels:
+    0:
+      name: median
+      unlocks: nothing — the section ships the brand median exactly as retrieved/blessed
+      forbids: any deviation, including intensifying a treatment the section already carries
+    1:
+      name: nudge
+      unlocks: subtle intensification of treatments the section ALREADY carries — one
+        step up the style's own spacing scale, a slightly deeper existing overlap, an
+        airier existing gutter, the signature motif a touch more present
+      forbids: new treatments, alignment changes, foreign grammar, decoration added
+        where the median carried none
+    2:
+      name: crank
+      unlocks: push ONE existing treatment to its expressive extreme — the signature
+        watermark grows from texture toward the dominant field, an index counter set at
+        the display tier, an overlap that nearly collides — while the two-field,
+        single-jewel-accent, serif-display identity stays untouched
+      forbids: a second accent, a third field, a new type family, anchor inversion,
+        more than one cranked treatment per section
+    3:
+      name: invert
+      unlocks: invert ONE soft-tier compositional stance for this section — a
+        dead-centered monument moment on the otherwise asymmetric page, or a
+        left-anchored take on a sanctioned centered stack — DECLARED via the alignment
+        layer (never raw CSS fighting the scaffold), one-off and logged
+      forbids: breaking an invariant without a declared counterweight, more than one
+        inversion per page, any neverDo relaxation
+    4:
+      name: transplant
+      unlocks: re-set the section's content in ANOTHER use-case's grammar from this
+        brand's own pattern library (registered recipes only); the display tier is
+        re-fitted to the transplanted copy's longest word so nothing collides
+      forbids: improvised unregistered grammar, vocabulary imported from outside the
+        brand library, any neverDo relaxation
+    5:
+      name: relax
+      unlocks: relax exactly ONE brand neverDo, ONLY where the brand's wildcardScope
+        sanctions it and ONLY via a registered recipe — one-off, logged, never promoted;
+        with no registered recipe the level caps down to transplant
+      forbids: relaxing more than one rule, acting outside the sanctioned scope,
+        promoting the relaxation into the design language
 ---
 
 > Parsed machine values live in the YAML front-matter above (the authoritative source);
@@ -329,6 +396,23 @@ or primitive binding; the gate blesses the committed choice as an intentional OV
   a brand may remap the CTA role to a typographic link (`button use: never`).
 - `accent-presence`: [single-jewel, monochrome] | default: single-jewel — a brand with
   no accent token collapses the accent to ink (monochrome), never inventing a second.
+
+## Freedom budget (0–5 wildcard allowance)
+Machine values live in the front-matter `freedomBudget:` block (authoritative; parsed by
+`brand_pipeline/styles.py`, consumed by `wildcard_generator.py`). Qualitative and
+style-relative — no exact values; a brand picks a LEVEL (`voice.dials.freedom`), never
+new definitions. Default level: `2` (crank) — luxury tolerates a confident push of its
+own devices. Ceiling: `5` — expansive, consistent with `offGridExpansion: true`.
+- `0` median — ship the brand median untouched.
+- `1` nudge — subtly intensify treatments the section already carries.
+- `2` crank — one existing treatment to its expressive extreme (watermark toward the
+  dominant field, counter at display tier); identity untouched.
+- `3` invert — one declared compositional inversion (e.g. a centered monument moment),
+  one-off and logged, via the alignment layer.
+- `4` transplant — the section's content re-set in another use-case's grammar from the
+  brand's own library, registered recipes only.
+- `5` relax — exactly one neverDo relaxation where `wildcardScope` sanctions it, via a
+  registered recipe only; otherwise caps to `4`.
 
 ## Failure modes (do NOT produce these)
 - Display type that isn't actually large enough — the #1 failure.

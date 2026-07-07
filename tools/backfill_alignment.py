@@ -57,12 +57,13 @@ ASSIGN = {
 }
 
 
-# PROJECT tier (runs/woodwave/brand/layout-library.yaml): the measured WoodWave truth.
-# These declarations pin each extracted pattern's OWN anchor so the style layer's role
-# defaults can never re-anchor a signature device (e.g. editorial-luxury's
-# `testimonial: centered` role must not centre the portrait-collage quote, and its
-# `features: left` role must not left-flip the centered ruled-list panels' headings).
-PROJECT_LIB = Path(__file__).resolve().parent.parent / "runs" / "woodwave" / "brand" / "layout-library.yaml"
+# PROJECT tier: a brand's extracted layout-library.yaml, passed on argv (there is NO
+# default — pointing a one-shot backfill at one specific brand's library by default is
+# how cross-brand assumptions creep in). These declarations pin each extracted
+# pattern's OWN anchor so the style layer's role defaults can never re-anchor a
+# signature device (e.g. editorial-luxury's `testimonial: centered` role must not
+# centre the portrait-collage quote, and its `features: left` role must not left-flip
+# the centered ruled-list panels' headings).
 PROJECT_ASSIGN = {
     "hero-display-over-staggered-media": "{ value: centered, inheritance: block-inherits }",
     "editorial-ghostword-collage": "{ value: left, counterweight: ghostword, inheritance: per-slot-override }",
@@ -142,9 +143,11 @@ def main():
             print(f"{f.name}: {', '.join(done)}")
         total += done
     missing = sorted(set(ASSIGN) - set(total))
-    proj_done = backfill_project(PROJECT_LIB) if PROJECT_LIB.exists() else []
+    # project-tier library comes from argv ONLY (no brand-specific default path).
+    proj_lib = Path(sys.argv[1]) if len(sys.argv) > 1 else None
+    proj_done = backfill_project(proj_lib) if (proj_lib and proj_lib.exists()) else []
     if proj_done:
-        print(f"layout-library.yaml (project): {', '.join(proj_done)}")
+        print(f"{proj_lib.name} (project): {', '.join(proj_done)}")
     if missing:
         print(f"NOT FOUND (check ids): {missing}", file=sys.stderr)
         return 1

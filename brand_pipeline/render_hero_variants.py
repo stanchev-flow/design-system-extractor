@@ -53,21 +53,53 @@ from styles import RenderContext, inactive_context, load_and_merge  # noqa: E402
 # The single neverDo rule the WILDCARD variant (C) is allowed to relax.
 WILDCARD_RELAXED_RULE = "no-buttons"
 
-# Real, on-brand hero copy (NOT lorem). Title comes from the layout blockMapping.
-COPY = {
-    "wordmark": "WoodWave",
-    "nav": ["About", "Gallery", "Exhibition", "Visit"],
-    "eyebrow": "Est. 2019 — Portland, Oregon",
-    "subhead": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade.",
-    "cta": "Buy Tickets",
-}
+# Real, on-brand hero copy (NOT lorem). Title comes from the layout blockMapping; the
+# voice lines are loaded from the BRAND'S OWN section-copy.yaml (sectionCopy block)
+# beside brand.yaml — never a hardcoded literal (the old dict froze one brand's voice
+# into the harness). Missing file/keys degrade to a wordmark-only nav + elided lines,
+# matching the composer's degrade-to-empty copy policy. Hydrated by render_variant().
+COPY = {"wordmark": "", "nav": [], "eyebrow": "", "subhead": "", "cta": ""}
 
-# Hero photography reused from the existing pipeline render (real WoodWave assets).
-ASSET_SOURCES = [
-    "hero-staircase.jpg",
-    "overlap-vase.jpg",
-    "_source-hero-crop.jpg",
-]
+# Hero photography candidate NAMES, from the brand's own authored section-copy.yaml
+# (defaultArt values + layoutImages) — only files that actually exist under the brand
+# dir are copied, so a brand without these simply renders the placeholder plate.
+ASSET_SOURCES: list = []
+
+# Hero/overlap art the markup binds — the brand's OWN defaultArt (hero + detail kinds);
+# empty means "no art declared" and the collage degrades to unbound media plates.
+ART: dict = {"hero": "", "overlap": ""}
+
+
+def load_brand_copy(doc, brand_dir: Path) -> tuple[dict, list, dict]:
+    """(copy dict, asset name seed, art dict) from <brand_dir>/section-copy.yaml;
+    degrade-to-empty."""
+    data = {}
+    p = Path(brand_dir) / "section-copy.yaml"
+    if p.exists():
+        data = yaml.safe_load(p.read_text()) or {}
+    sc = data.get("sectionCopy") or {}
+    copy_block = {
+        "wordmark": sc.get("wordmark") or (doc.get("brand") or {}).get("name") or "Brand",
+        "nav": list(sc.get("nav") or []),
+        "eyebrow": sc.get("eyebrow") or "",
+        "subhead": sc.get("subhead") or "",
+        "cta": sc.get("cta") or "",
+    }
+    art_src = data.get("defaultArt") or {}
+    art = {
+        "hero": (art_src.get("hero") or [""])[0],
+        "overlap": (art_src.get("detail") or art_src.get("overlays") or [""])[0],
+    }
+    names: list[str] = []
+    for kind_names in art_src.values():
+        for n in (kind_names or []):
+            if n not in names:
+                names.append(n)
+    for img_map in (data.get("layoutImages") or {}).values():
+        for n in (img_map or {}).values():
+            if n not in names:
+                names.append(n)
+    return copy_block, names, art
 
 
 # ── loaders + token resolvers (library-agnostic; targetMappings ignored) ────────
@@ -307,7 +339,8 @@ def build_css(doc, layout, cfg, style_ctx: RenderContext | None = None) -> str:
     text = color(doc, surf.get("textPrimary"))
     accent = color(doc, surf.get("textAccent")) or text
     muted = color(doc, "text/on-inverse-muted") or text
-    on_accent = color(doc, "text/on-primary") or "#1F1A14"
+    # on-accent ink: the brand's own token, else its base text ink (never a foreign hex).
+    on_accent = color(doc, "text/on-primary") or text or "#000000"
 
     disp = type_role(doc, "display-hero")
     radius = spacing(doc, "radius-global", "0rem")
@@ -481,33 +514,40 @@ def build_html(doc, layout, cfg, style_ctx: RenderContext | None = None) -> str:
     section_cls = "hv-section is-editorial" if style_active else "hv-section"
     slot_cls = "hv-slot is-editorial" if style_active else "hv-slot"
 
-    title = heading_text(layout, "WOODWAVE GALLERY")
+    title = heading_text(layout, name.upper())
     parts = title.split(" ")
     line1, line2 = (parts[0], " ".join(parts[1:])) if len(parts) >= 2 else (title, "")
 
     nav = ' <span class="sep">/</span> '.join(
         f'<a href="#">{_esc(n)}</a>' for n in COPY["nav"])
 
-    # media block: B/C = media-over-media (absolute overlap); A = margin figure
+    # media block: B/C = media-over-media (absolute overlap); A = margin figure.
+    # Art binds the brand's OWN defaultArt (hydrated into ART); a brand with none
+    # declared renders unbound media plates rather than another brand's photos.
+    hero_img = (f'<img class="hv-media is-hero" src="assets/{_esc(ART["hero"])}"\n'
+                f'         alt="Hero photograph">'
+                if ART.get("hero") else '<div class="hv-media is-hero"></div>')
+    overlap_img = (f'<img class="hv-media is-overlap-abs" src="assets/{_esc(ART["overlap"])}"\n'
+                   f'         alt="Detail photograph">'
+                   if ART.get("overlap") else '<div class="hv-media is-overlap-abs"></div>')
+    figure_img = (f'<img src="assets/{_esc(ART["overlap"])}" alt="Detail photograph">'
+                  if ART.get("overlap") else '<div class="hv-media"></div>')
     if cfg["media_over_media"]:
-        media_block = """  <!-- media-over-media via absolute offsets: sanctioned overlap (compositionRules) -->
+        media_block = f"""  <!-- media-over-media via absolute offsets: sanctioned overlap (compositionRules) -->
   <div class="hv-collage">
-    <img class="hv-media is-hero" src="assets/hero-staircase.jpg"
-         alt="Spiral wooden staircase shot from above">
-    <img class="hv-media is-overlap-abs" src="assets/overlap-vase.jpg"
-         alt="Terracotta vase on a wooden ledge">
+    {hero_img}
+    {overlap_img}
   </div>
   <div class="hv-spacer"></div>"""
     else:
-        media_block = """  <!-- hero photo only; sanctioned overlap limited to title-over-media -->
+        media_block = f"""  <!-- hero photo only; sanctioned overlap limited to title-over-media -->
   <div class="hv-collage">
-    <img class="hv-media is-hero" src="assets/hero-staircase.jpg"
-         alt="Spiral wooden staircase shot from above">
+    {hero_img}
   </div>
   <!-- portrait kept as a margin figure with an uppercase micro-caption (no media-over-media) -->
   <figure class="hv-figure">
-    <figcaption class="hv-cap">Plate 02 — Vessel</figcaption>
-    <img src="assets/overlap-vase.jpg" alt="Terracotta vase on a wooden ledge">
+    <figcaption class="hv-cap">Plate 02 — Detail</figcaption>
+    {figure_img}
   </figure>"""
 
     # CTA: A/B typographic arrow link; C filled gold button (relaxes no-buttons)
@@ -566,7 +606,7 @@ def build_html(doc, layout, cfg, style_ctx: RenderContext | None = None) -> str:
 # ── assets + signal log ──────────────────────────────────────────────────────────
 
 def find_asset_source(brand_dir: Path, name: str) -> Path | None:
-    """Locate a reusable WoodWave asset by name under the brand's existing renders."""
+    """Locate a reusable brand asset by name under the brand's existing renders."""
     candidates = [
         brand_dir / "render" / "section-opening-bookend" / "assets" / name,
         brand_dir / "compose" / "signup-launch" / "assets" / name,
@@ -634,6 +674,10 @@ def render_variant(doc, layout, brand_dir: Path, variant: str, out_dir: Path,
         f"wildcard neverDo relaxation requested for non-hero layout "
         f"'{layout.get('id')}' (archetype '{layout.get('archetype')}'): "
         "magicTrick.wildcardScope is hero-only")
+    copy_block, asset_names, art = load_brand_copy(doc, brand_dir)
+    COPY.update(copy_block)
+    ASSET_SOURCES[:] = asset_names
+    ART.update(art)
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "index.html").write_text(build_html(doc, layout, cfg, style_ctx))
     copied = copy_assets(brand_dir, out_dir / "assets")
@@ -641,7 +685,7 @@ def render_variant(doc, layout, brand_dir: Path, variant: str, out_dir: Path,
     if cfg["relax"]:
         logged = log_one_off_exception(
             brand_dir, cfg["relax"],
-            note=("Variant C (WILDCARD) renders a filled gold CTA button instead of a "
+            note=("Variant C (WILDCARD) renders a filled accent CTA button instead of a "
                   "typographic arrow link — a one-off, bolder hero. Passive log only."),
             variant=variant.upper())
     return {

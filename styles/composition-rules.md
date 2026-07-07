@@ -135,39 +135,36 @@ truth for how every primitive renders.** Your job is to *arrange* the vocabulary
 
 ## 2. Hard constraints (brand `neverDo` — the only non-overridable layer)
 
-These are absolute for WoodWave (from `runs/woodwave/brand/brand.yaml` `neverDo`). A
-composition that violates one FAILS the gate. They are injected per-brand at gen time; obey
-whatever the active brand carries.
+Hard constraints are the ACTIVE brand's `neverDo` rules, injected under "## Brand facts"
+at generation time. They are the only non-overridable layer: a composition that violates
+any injected rule FAILS the gate. Rules arrive as `id: statement` pairs — realize each
+statement STRUCTURALLY in what you emit (choose primitives, treatments, and surfaces so
+the statement holds by construction, don't merely avoid naming the forbidden thing).
 
-- **`no-radius`** — radius is globally `0` (`tokens.spacing.radius-global: 0rem`). Never
-  request rounding on any slot/asset.
-- **`no-shadows`** — no drop shadows, borders, or mats. Separation is fill contrast only.
-- **`no-gradients`** — no gradients/tints/fade transitions; surface seams are hard cuts.
-- **`no-buttons`** — the `cta` role is realized by the `link` primitive (`variant: arrow`
-  or `slash`), NEVER a `button`. `button` / `icon-button` are `use: never`.
-- **`no-boxed-inputs`** — form fields are underline-only (`input`/`textarea`/`select`
-  `variant: underline`), inline typographic submit; never a boxed/filled input.
-- **`no-cards-on-cream`** — no bounded cards on `surface/primary` (cream). Light-canvas
-  content is OPEN collage (use `content-block` / `feature-item` open, not boxed). A bounded
-  unit is legal ONLY as the `surface/panel` child of a dark band (see `blocks.media-text`).
-- **`no-accent-on-light`** — the gold accent (`accent/highlight`) appears ONLY on inverse /
-  accent surfaces; never an accent-colored link/icon/fill on a light surface.
-- **`no-text-on-photos`** — no text overlaid on photographs; captions live in the margin
-  (`marginal-caption`). The **single sanctioned exception** is the hero bookend's
-  `display-title-over-media` — emit it as a `text-on-media` treatment with
-  `sanctioned: true`, and only in a hero section.
-- **`no-section-hairlines`** — no hairline rules between sections. A 1px rule is legal only
-  as an action-row bar INSIDE a panel (`divider`), never as a section seam.
-- **`no-default-fonts`** — display tiers use the brand didone display face; never a system/
-  generic sans for display. (Handled by tokens; do not request a font.)
-- **`no-centered-everything`** — centering is reserved for hero + cta/bookend stacks;
-  editorial runs are anchored/asymmetric (set `knobs.align` accordingly).
+Illustrative rule *shapes* only — NONE of these is active unless the injected brand
+facts carry it:
+
+- a **flatness** rule (no shadows / gradients / radius) forbids soft separation, so
+  separation must come from fill contrast and hard edges;
+- a **typographic-primary** rule remaps the `cta` role onto a `link` primitive
+  (`variant: arrow`/`slash`) instead of a `button`;
+- an **accent-scope** rule restricts the accent color to its declared surfaces;
+- a **text-on-photo** rule forbids overlaying text on photography, with captions moved
+  to the margin — except where the brand names a sanctioned exception (emit that
+  treatment with `sanctioned: true`);
+- a **container-discipline** rule forbids bounded cards/boxes on some surfaces, making
+  open composition the default there;
+- an **alignment** rule reserves centering for specific section roles and keeps
+  editorial runs anchored/asymmetric.
+
+Nothing in this section presumes a palette, a radius, a component family, or a section
+order — obey exactly what the active brand's injected rules state, no more and no less.
 
 ## 3. Values are tokens · units are cq · spacing is a named step · type is a tier
 
 - **Values are tokens.** Colors resolve to `tokens.colors` roles (`surface/inverse`,
   `text/on-primary`, `accent/highlight`, …). Emit token REFS or surface roles — **never a
-  raw hex**. Accent obeys `no-accent-on-light`.
+  raw hex**. Accent placement obeys the brand's accent-scope `neverDo` rules when carried.
 - **Units are container-query.** Any rhythm/size is expressed as a *class/relationship*
   (`sizeClass`, `width`, `amount.class`, `mediaScale`), which the renderer resolves to
   `cqw/cqh/cqi` against a `container-type: size` context. **Never emit `vw`/`vh`/`dvh`**, and
@@ -187,25 +184,28 @@ intensity `amount.class` of `light` / `medium` / `heavy`:
 
 - **`stagger`** — offset sibling modules along an axis (alternating anchors). Legal
   everywhere; the workhorse for editorial runs. `amount: heavy` ≈ ~1/3-container offset.
-- **`overlap`** — two slots overlap with an explicit `zOrder`; the brand's *primary
-  ornament*. Sanctioned pairs only (WoodWave `compositionRules.overlap-primary-ornament`:
-  display-text-over-media, media-over-media, panel-over-media, media-over-seam).
+- **`overlap`** — two slots overlap with an explicit `zOrder`. Sanctioned pairs only —
+  read the ACTIVE brand's `compositionRules` overlap entry for which pairs it sanctions;
+  typical pair vocabularies: display-text-over-media, media-over-media, panel-over-media,
+  media-over-seam.
 - **`ghost-word`** — an oversized low-opacity watermark word behind content
   (`anchor: behind-media|straddle-media|margin|full-bleed`, `bleed: none|partial|full`).
   Uses the `ghost-watermark` type tier + `text/ghost-on-primary`.
 - **`bleed`** — media runs off an `edge` (`left|right|top|bottom|all`).
 - **`marginal-caption`** — a micro-caption pinned in the margin `side: left|right` beside
-  media (the brand's caption pattern; the on-brand answer to `no-text-on-photos`).
+  media (the classic caption answer for a brand whose `neverDo` forbids text on photos).
 - **`float-wrap` + `inset`** — a statement wraps around an inset image (the incoming
   `interlock` archetype). `inset` sizes the floated media (~50% measure).
 - **STACKING:** treatments may combine on one section — e.g. `ghost-word` (back) +
-  `stagger` (modules) + `marginal-caption` is the WoodWave editorial-collage signature; a
-  hero may stack the sanctioned `text-on-media` + `overlap`. Keep `zOrder` consistent with
+  `stagger` (modules) + `marginal-caption` is a common editorial-collage signature; a
+  hero may stack a sanctioned `text-on-media` + `overlap`. Keep `zOrder` consistent with
   the brand z-ladder (ghost-watermark → media → panels → text).
-- **ILLEGAL / conditional:** `text-on-media` maps to `no-text-on-photos` and is illegal
-  EXCEPT the sanctioned hero `display-title-over-media` (`sanctioned: true`). `counter-rotate`
-  is in the vocabulary but has no composer yet (inert). Any device that would realize a
-  boxed card, a shadow, a gradient, or a radius is illegal (maps to the matching neverDo).
+- **ILLEGAL / conditional:** `text-on-media` maps to a brand's text-on-photo `neverDo`
+  when carried, and is then illegal EXCEPT that brand's named sanctioned exception
+  (emitted with `sanctioned: true`, e.g. a hero `display-title-over-media`).
+  `counter-rotate` is in the vocabulary but has no composer yet (inert). Any device that
+  would realize a shape a carried `neverDo` forbids (a bounded card, a shadow, a
+  gradient, a radius) is illegal for that brand — it maps to the matching rule.
 
 ### 4a. The overlay family (editorial-harvest-2026-07)
 
@@ -214,9 +214,10 @@ vocabulary (grid columns + `registration`) — no parallel mechanisms:
 
 - **`panel-on-media`** — a solid-surface panel (`target`, usually `contract: media-text`)
   grid-placed OVER a media slot (`over`). The panel carries its own opaque surface, so the
-  text inside it never touches the photo — this is the sanctioned `panel-over-media`
-  overlap pair, and the panel's internal stack distributes by `distribute: start|center|
-  space-between`. The panel is a flat surface: no shadow, no radius (neverDo still holds).
+  text inside it never touches the photo — this realizes the `panel-over-media` overlap
+  pair (sanction it per the brand's `compositionRules`), and the panel's internal stack
+  distributes by `distribute: start|center|space-between`. Every carried `neverDo`
+  (flatness, radius, …) still holds inside the panel.
 - **`straddle`** — the `target` crosses another slot's edge, declared with the SAME
   `registration {toSlot, edge, depthCols|depthBaselines, z}` grammar as any overlap.
   `z: front` rides over the crossed slot (a display heading breaking a rail/photo seam);
@@ -313,10 +314,11 @@ draws; use them when the brief/axis calls for a placement the default can't expr
 - **`banded` archetype = dual-surface seam.** `bands: {split: 0.5, surfaces:
   [photo, panel]}` renders TWO stacked full-width surfaces with a hard horizontal seam
   (a hard cut, never a gradient). Slots straddle the seam via
-  `registration: {toSlot: seam, edge: top|bottom, depthBaselines}` — WoodWave's
-  sanctioned `media-over-seam` pair. Content is surface-attributed to the band it sits
-  on (straddlers to both) for the neverDo/readability checks. Cross-SECTION straddling
-  is deliberately unsupported: model the whole device as ONE banded section.
+  `registration: {toSlot: seam, edge: top|bottom, depthBaselines}` — the
+  `media-over-seam` overlap pair (sanction it per the brand's `compositionRules`).
+  Content is surface-attributed to the band it sits on (straddlers to both) for the
+  neverDo/readability checks. Cross-SECTION straddling is deliberately unsupported:
+  model the whole device as ONE banded section.
 - **Readability is a gate, not a vibe.** Decorative/back layers (ghost words,
   backgrounds, deep overlaps) must never compromise text readability: the on-brand
   gate's readability checks (text-contrast on media/scrims, decoration-salience on
@@ -336,7 +338,7 @@ invariant you MAY freely choose:
   centering for hero + cta.
 - **Z-order:** author the layering within the ladder.
 - **Emphasis:** choose WHICH slot gets the display tier and WHICH single element carries the
-  one accent (accent on inverse/accent surfaces only).
+  one accent (respecting the brand's accent-scope rules where carried).
 - **Section select + order:** SELECT which use-cases the brief needs and ORDER them (this
   replaces the hardcoded story order).
 - **Propose a NOVEL pattern:** set `novelty: novel` and `seededFrom: null` when the brief

@@ -120,22 +120,28 @@ rationale: "<why these sections / this order / these novel departures>"   # advi
 
 `kind` values are exactly `layout_library.TREATMENT_KINDS`. `sanctioned: true` is how the
 composition records a device that is *only* legal because a brand
-`compositionRule`/`neverDo` exception permits it — the canonical case being WoodWave's
-`display-title-over-media` (the ONE `text-on-media` allowed by `no-text-on-photos`, see
-`runs/woodwave/brand/brand.yaml` neverDo `no-text-on-photos`).
+`compositionRule`/`neverDo` exception permits it — the canonical shape being a brand
+whose text-on-photos rule names `display-title-over-media` as its ONE allowed
+`text-on-media` (read the ACTIVE brand's `neverDo` for whether such an exception exists).
 
-## 4.6.2 Worked WoodWave example
+## 4.6.2 Worked example A — an editorial gallery brand (NON-NORMATIVE)
 
-Brand `runs/woodwave/brand/brand.yaml`, style `editorial-luxury`, brief `signup-launch`
+> **Non-normative.** "Brand A" is an illustrative editorial brand: flat, typographic
+> CTAs, open collage, a sanctioned hero display overlap. Its rules, copy, and pattern
+> ids show the SHAPE of a composition — never copy its values; read the ACTIVE brand's
+> injected facts instead. Example B below shows the same schema under an opposite
+> brand so no single aesthetic reads as "the law".
+
+Brand `runs/<brand-a>/brand/brand.yaml`, style `editorial-luxury`, brief `signup-launch`
 (hero + 3 value_props + conversion). Three sections: a hero with the sanctioned display
 overlap, a **`cards` features section that renders the brief's 3 value_props as 3 modules
 plus a cta stack**, and a centered conversion stack.
 
 ```yaml
 schemaVersion: composition.v1
-brief: { id: signup-launch, name: "WoodWave — signup launch",
+brief: { id: signup-launch, name: "Brand A — signup launch",
          useCasesRequested: [hero, features, cta] }
-brand: { ref: runs/woodwave/brand/brand.yaml, name: "WoodWave Gallery" }
+brand: { ref: runs/<brand-a>/brand/brand.yaml, name: "Brand A" }
 style: { id: editorial-luxury }
 sections:
 
@@ -151,7 +157,7 @@ sections:
           copy: { variant: inverse } }
       - { name: main, role: display-title, contract: header, textLen: medium,
           sizeClass: display, width: hug, z: front,
-          copy: { eyebrow: "NOW ENROLLING", heading: "WOODWAVE GALLERY" } }
+          copy: { eyebrow: "NOW ENROLLING", heading: "GALLERY OPENING" } }
       - { name: main, role: hero-photo, contract: image, mediaAspect: landscape,
           width: full-bleed, z: back, copy: { radius: "0" }, asset: { ratio: landscape } }
       - { name: main, role: overlap-photo, contract: image, mediaAspect: portrait,
@@ -171,7 +177,7 @@ sections:
     slots:
       - { name: intro, role: section-title, contract: header, textLen: short,
           sizeClass: title, width: hug, z: front,
-          copy: { eyebrow: "WHY WOODWAVE", heading: "Three ways in" } }
+          copy: { eyebrow: "WHY US", heading: "Three ways in" } }
       - { name: modules, role: value-prop-module, contract: feature-item, textLen: long,
           sizeClass: body, width: stretch, z: front,
           copy:                            # repeatable: 3 value_props → 3 instances
@@ -204,6 +210,50 @@ rationale: >-
   single-module library seed into a 3-module open collage so the brief's three value_props
   each render as their own module (the exact Arm-A ceiling REPORT flagged) while honoring
   no-cards-on-cream via feature-item (open, not boxed). CTA reuses the underline stack.
+```
+
+## 4.6.2b Worked example B — a rounded SaaS brand (NON-NORMATIVE)
+
+> **Non-normative**, and deliberately the OPPOSITE aesthetic of example A: rounded
+> corners, filled `button` CTAs, boxed cards on a light canvas, no overlap sanction —
+> all legal here because THIS brand's `neverDo` carries none of A's rules. The schema
+> is identical; only the injected brand facts change what is on-brand.
+
+```yaml
+schemaVersion: composition.v1
+brief: { id: signup-launch, name: "Brand B — signup launch",
+         useCasesRequested: [hero, cta] }
+brand: { ref: runs/<brand-b>/brand/brand.yaml, name: "Brand B" }
+style: { id: corporate-saas-clean }
+sections:
+  - id: hero
+    useCase: hero
+    archetype: stack
+    surfaceIntent: primary                 # a LIGHT hero — nothing requires inverse
+    seededFrom: { lib: standard, id: hero-centered-stack-on-media }
+    novelty: reuse
+    slots:
+      - { name: main, role: display-title, contract: header, textLen: medium,
+          sizeClass: display, width: hug, z: front,
+          copy: { eyebrow: "NEW", heading: "Ship support that scales" } }
+      - { name: main, role: primary-cta, contract: button, textLen: short,
+          width: hug, z: front, copy: { label: "Start free trial" } }   # a FILLED button: legal, B carries no typographic-primary rule
+    treatments: []                         # no overlap/ghost-word: B sanctions none
+    knobs: { align: center }
+  - id: cta
+    useCase: cta
+    archetype: cards                       # boxed cards on the light canvas: legal for B
+    surfaceIntent: panel
+    seededFrom: { lib: standard, id: cta-card-band }
+    novelty: adapt
+    slots:
+      - { name: main, role: heading, contract: header, textLen: short, sizeClass: title,
+          width: hug, z: front, copy: { heading: "Try it with your team" } }
+      - { name: main, role: signup, contract: button, width: hug, z: front,
+          copy: { label: "Get started", radius: "12px" } }   # rounded: B has no radius rule
+rationale: >-
+  Every device example A had to avoid is unremarkable here — and vice versa: an unfilled
+  typographic CTA would read OFF-brand for B. Brand facts, not this spec, decide.
 ```
 
 ## 4.6.3 The 1:1 round-trip mapping (composition → existing renderer input)
@@ -345,8 +395,9 @@ to overlap. Treatments that live here:
 stacked full-width surface bands with a hard horizontal seam at `split` (fraction of
 section height, snapped to `--baseline`; a hard cut, never a gradient). Slots straddle
 the seam by registering against the reserved slot name `seam`
-(`registration: {toSlot: seam, edge: top, depthBaselines: N}`) — realizing WoodWave's
-sanctioned `media-over-seam`. For neverDo/readability, content is surface-attributed to
+(`registration: {toSlot: seam, edge: top, depthBaselines: N}`) — realizing the
+`media-over-seam` overlap pair (sanctioned where the active brand's `compositionRules`
+allow it). For neverDo/readability, content is surface-attributed to
 the band it sits on; straddlers to both. Cross-SECTION straddling was explicitly
 rejected: model the device as ONE dual-surface section.
 

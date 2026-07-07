@@ -40,8 +40,10 @@ import yaml
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import component_render as cr  # noqa: E402
-from render_section import (  # noqa: E402
+import tokens_css  # noqa: E402
+from tokens_css import (  # noqa: E402
     _PROXY_GF,
+    _slug,
     base_size,
     color_value,
     css_len,
@@ -54,71 +56,214 @@ from styles import RenderContext, inactive_context, load_and_merge  # noqa: E402
 import layout_library as ll  # noqa: E402
 
 
-# Real, on-brand section copy (NOT lorem). Heading comes from the layout's blockMapping;
-# the rest mirrors the established WoodWave hero so fidelity/slop checks stay grounded.
-SECTION_COPY = {
-    "wordmark": "WoodWave",
-    "nav": ["About", "Gallery", "Exhibition", "Visit"],
-    "eyebrow": "Est. 2019 — Portland, Oregon",
-    "subhead": "An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade.",
-    "cta": "Buy Tickets",
+# ── section copy: BRAND DATA, not pipeline code ──────────────────────────────────
+# A brand's real section copy lives in `<brand_dir>/section-copy.yaml`
+# (`sectionCopy:` page-global base + `layoutCopy:` per-layout-id overrides) and is
+# attached to the in-memory doc by the render entrypoints (attach_brand_copy), the
+# same way the asset inventory travels. The module dicts below are EMPTY runtime
+# patch surfaces: compose_from_composition / wildcard_generator / A-B harnesses
+# still bind per-render copy by patching them, and a patched entry wins over the
+# brand file. A brand with NO section-copy.yaml degrades to empty copy (wordmark-
+# only nav, elided eyebrow/cta — the _SafeCopy behavior), never to another brand's.
+SECTION_COPY: dict = {}
+
+# private doc key carrying the ACTIVE brand's section-copy.yaml payload
+# ({"section": {...}, "layout": {id: {...}}}); in-memory only, never written back.
+BRAND_COPY_KEY = "_brandCopy"
+SECTION_COPY_FILE = "section-copy.yaml"
+
+
+def load_brand_copy(brand_dir: Path) -> dict:
+    """Read `<brand_dir>/section-copy.yaml` into {"section", "layout", "layoutImages",
+    "defaultArt", "wildcardCopy"} layers. Missing file (or malformed top level) → empty
+    layers: copy and default art DEGRADE, they are never borrowed from another brand."""
+    out = {"section": {}, "layout": {}, "layoutImages": {}, "defaultArt": {},
+           "wildcardCopy": {}}
+    p = Path(brand_dir) / SECTION_COPY_FILE
+    if not p.is_file():
+        return out
+    try:
+        data = yaml.safe_load(p.read_text()) or {}
+    except Exception:
+        return out
+    if isinstance(data, dict):
+        sec, lay = data.get("sectionCopy"), data.get("layoutCopy")
+        if isinstance(sec, dict):
+            out["section"] = sec
+        if isinstance(lay, dict):
+            out["layout"] = {k: v for k, v in lay.items() if isinstance(v, dict)}
+        li, da = data.get("layoutImages"), data.get("defaultArt")
+        if isinstance(li, dict):
+            out["layoutImages"] = {k: v for k, v in li.items() if isinstance(v, dict)}
+        if isinstance(da, dict):
+            out["defaultArt"] = {k: [str(x) for x in v]
+                                 for k, v in da.items() if isinstance(v, list)}
+        wc = data.get("wildcardCopy")
+        if isinstance(wc, dict):
+            out["wildcardCopy"] = {k: v for k, v in wc.items() if isinstance(v, dict)}
+    return out
+
+
+def attach_brand_copy(doc: dict, brand_dir: Path) -> dict:
+    """Attach the active brand's section-copy layers to the in-memory doc (under the
+    private ``_brandCopy`` key). Idempotent; returns the doc for chaining."""
+    if isinstance(doc, dict):
+        doc[BRAND_COPY_KEY] = load_brand_copy(Path(brand_dir))
+    return doc
+
+
+def brand_section_copy(doc) -> dict:
+    """The active brand's page-global copy base (empty when no section-copy.yaml)."""
+    bc = doc.get(BRAND_COPY_KEY) if isinstance(doc, dict) else None
+    return (bc or {}).get("section") or {}
+
+
+def brand_layout_copy(doc) -> dict:
+    """The active brand's per-layout-id copy overrides (empty when none declared)."""
+    bc = doc.get(BRAND_COPY_KEY) if isinstance(doc, dict) else None
+    return (bc or {}).get("layout") or {}
+
+
+def brand_layout_images(doc) -> dict:
+    """The active brand's per-layout photography map (section-copy.yaml
+    ``layoutImages:``): layout id -> {role-substring: filename}. Empty when the
+    brand declares none — sections then resolve generic default art or omit."""
+    bc = doc.get(BRAND_COPY_KEY) if isinstance(doc, dict) else None
+    return (bc or {}).get("layoutImages") or {}
+
+
+def brand_default_art_names(doc, kind: str) -> list[str]:
+    """The active brand's PREFERRED default-art filenames for a generic role kind
+    (section-copy.yaml ``defaultArt:``). [] when undeclared — _brand_art then falls
+    through to the generic keyword match over the brand's own inventory."""
+    bc = doc.get(BRAND_COPY_KEY) if isinstance(doc, dict) else None
+    return ((bc or {}).get("defaultArt") or {}).get(kind) or []
+
+
+def brand_wildcard_copy(doc) -> dict:
+    """The active brand's wildcard-candidate copy blocks (section-copy.yaml
+    ``wildcardCopy:``): candidate id -> copy dict. Empty when undeclared — wildcard
+    candidates that NEED copy are then omitted, never seeded from another brand."""
+    bc = doc.get(BRAND_COPY_KEY) if isinstance(doc, dict) else None
+    return (bc or {}).get("wildcardCopy") or {}
+
+# ── brand asset inventory (AS-34: active-brand-only default art + recursive discovery) ─
+
+IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".svg", ".webp", ".gif")
+
+# private doc key carrying the ACTIVE brand's on-disk image inventory (attached by the
+# render entrypoints via attach_asset_inventory; in-memory only, never written back).
+ASSET_INVENTORY_KEY = "_assetInventory"
+
+
+def brand_image_inventory(brand_dir: Path) -> list[str]:
+    """Sorted unique basenames of the ACTIVE brand's real image assets — RECURSIVE
+    (blocker-6: subdirectories such as ``assets/logos/`` used to be invisible, forcing
+    extraction workers to flatten their curated trees). Scanned roots:
+      - ``brand_dir`` itself, recursively (covers the WoodWave convention where the
+        canonical files live under ``render/*/assets/`` — disk evidence replaces the old
+        cross-brand ``ASSET_SOURCES`` name seed);
+      - ``brand_dir.parent/assets`` top level (the run-root convention, e.g.
+        runs/<brand>/assets/hero-full-bleed.webp) — top level only, because the run root
+        also stores extraction dumps that must never count as curated brand assets.
+    ``fonts/`` subtrees and the per-page composed ``NAV_LOGO_LOCAL`` are excluded."""
+    brand_dir = Path(brand_dir)
+    names: set[str] = set()
+    if brand_dir.is_dir():
+        for p in brand_dir.rglob("*"):
+            if not p.is_file() or p.suffix.lower() not in IMAGE_EXTS:
+                continue
+            if "fonts" in p.parts or p.name == NAV_LOGO_LOCAL:
+                continue
+            names.add(p.name)
+    parent_assets = brand_dir.parent / "assets"
+    if parent_assets.is_dir():
+        names |= {p.name for p in parent_assets.iterdir()
+                  if p.is_file() and p.suffix.lower() in IMAGE_EXTS
+                  and p.name != NAV_LOGO_LOCAL}
+    return sorted(names)
+
+
+def attach_asset_inventory(doc: dict, brand_dir: Path) -> dict:
+    """Attach the active brand's image inventory to the in-memory doc (under the private
+    ``_assetInventory`` key) so composers can resolve default/fallback art from the
+    ACTIVE brand's own files (AS-34). Idempotent; returns the doc for chaining."""
+    if isinstance(doc, dict):
+        doc[ASSET_INVENTORY_KEY] = brand_image_inventory(Path(brand_dir))
+    return doc
+
+
+# default-art KIND → filename keywords, tried in order against the active brand's
+# inventory. Keywords name generic asset ROLES (never a brand's own filenames): the
+# resolver is a keyword match over the brand's OWN files, so every brand resolves
+# its OWN art or nothing. A brand may pin exact preferences per kind via its
+# section-copy.yaml ``defaultArt:`` (brand_default_art_names), checked first.
+_DEFAULT_ART_KEYWORDS = {
+    "hero": ("hero", "full-bleed", "cover"),
+    "detail": ("overlap", "detail", "closeup", "texture"),
+    "gallery": ("gallery", "interior", "showcase"),
+    "portrait": ("portrait", "avatar", "curator"),
+    "map": ("map",),
 }
 
-ASSET_SOURCES = ["hero-staircase.jpg", "overlap-vase.jpg",
-                 "About-img-2.jpg", "About-img-4.jpg", "About-img-5.jpg",
-                 "Web-gallery-1.jpg", "Map.jpg"]
 
-# Layout-specific REAL photography (downloaded from the extracted assets-manifest.json
-# CDN entries — NOT the generic hero-staircase.jpg fallback). Keyed by layout id -> a
-# {role-substring: filename} map, checked in `_props_for` BEFORE the generic image
-# fallback so each new section shows its own real photo instead of reusing the hero's.
-LAYOUT_IMAGES = {
-    # keywords must be UNAMBIGUOUS substrings — a keyword that also matches a caption/body
-    # role (e.g. bare "statement"/"portrait"/"map") would hijack that slot's props too.
-    "mission-statement": {"statement photography": "About-img-2.jpg"},
-    "gallery-showcase": {"interior photography": "Web-gallery-1.jpg"},
-    "heritage-timeline": {"heritage photography": "About-img-4.jpg"},
-    "curator-quote": {"curator portrait": "About-img-5.jpg"},
-    "visit-band": {"static map": "Map.jpg"},
-    # "Held in Wood" exhibition page — reuses already-downloaded assets (no new photo
-    # fetches; per session direction, photography accuracy is not the current priority).
-    "exhibition-works": {"interior photography": "Web-gallery-1.jpg"},
-    "exhibition-curator-quote": {"curator portrait": "About-img-5.jpg"},
-}
+def brand_default_art(doc, kind: str = "hero") -> str | None:
+    """The ACTIVE brand's default art for a generic role kind, as an ``assets/<name>``
+    src — or None when the brand's inventory carries no match (callers must then OMIT
+    the device, never borrow another brand's file: AS-34). A doc without an attached
+    inventory (direct library callers / legacy harnesses) returns None for non-WoodWave
+    shapes and the legacy WoodWave defaults only when those files are actually in the
+    attached inventory — i.e. resolution is ALWAYS evidence-based."""
+    inv = doc.get(ASSET_INVENTORY_KEY) if isinstance(doc, dict) else None
+    if not inv:
+        return None
+    for kw in _DEFAULT_ART_KEYWORDS.get(kind, (kind,)):
+        hit = next((n for n in inv if kw in n.lower()), None)
+        if hit:
+            return f"assets/{hit}"
+    return None
+
+
+def _brand_art(doc, kind: str, *preferred: str) -> str | None:
+    """Evidence-checked default/fallback art (AS-34): the first *preferred* filename
+    (the brand's own declared ``defaultArt:`` hints) that actually exists in the
+    ACTIVE brand's inventory, else the first inventory file matching the generic
+    *kind* keywords (brand_default_art), else None — the caller must then omit the
+    device, NEVER borrow another brand's file. A doc with NO attached inventory
+    resolves None too: art is only ever emitted on disk evidence."""
+    inv = doc.get(ASSET_INVENTORY_KEY) if isinstance(doc, dict) else None
+    if not inv:
+        return None
+    for name in preferred:
+        if name in inv:
+            return f"assets/{name}"
+    return brand_default_art(doc, kind)
+
+# Layout-specific REAL photography is BRAND DATA: each brand declares its own
+# ``layoutImages:`` map in section-copy.yaml (layout id -> {role-substring: filename}),
+# read via brand_layout_images(doc) in `_props_for` BEFORE the generic image fallback
+# so each section shows its own real photo instead of reusing the hero's.
 
 # Local, offline-safe filename the composed nav logo is copied to (referenced from the
 # generated HTML as `assets/<NAV_LOGO_LOCAL>`).
 NAV_LOGO_LOCAL = "nav-logo.svg"
 
 # ── self-hosted brand DISPLAY fonts ──────────────────────────────────────────────
-# A brand's real display face can be a NON-Google webfont (e.g. WoodWave's "Melodrama").
-# Instead of a Google-Fonts proxy, we self-host the file under
-# `<brand_dir>/assets/fonts/` and, at compose time, (a) copy it into EACH page's
-# `assets/` (offline-safe, exactly like the nav-logo copy) and (b) emit an `@font-face`
-# so the display heading actually renders in it. Keyed by the brand.yaml `family` name so
-# the mechanism is brand-agnostic; a brand whose display family is a Google font (or has
-# no self-hosted file) is byte-unchanged (no @font-face, no copy).
+# A brand's real display face can be a NON-Google webfont. Instead of a Google-Fonts
+# proxy, the brand self-hosts the files under `<brand_dir>/assets/fonts/` and
+# DECLARES them in its brand.yaml `selfHostedFonts:` registry (see
+# brand_self_hosted_fonts below). At compose time we (a) copy each face file into
+# the page's `assets/` (offline-safe, exactly like the nav-logo copy) and (b) emit
+# `@font-face` blocks so the display heading actually renders in it. Keyed by the
+# brand.yaml `family` name; a brand whose display family is a Google font (or that
+# registers nothing) is byte-unchanged (no @font-face, no copy).
 #
 # Each family self-hosts the REAL per-weight masters as SEPARATE `@font-face` blocks
-# (one file pair per weight), so the browser picks the correct face for each requested
-# font-weight — e.g. the yellow hero heading (weight 500 → Melodrama-Medium) renders
-# lighter than section headings (weight 400 → Melodrama-Regular), matching the source
-# site. (An earlier version self-hosted only the Bold master and mapped every display
-# weight onto it via a `font-weight: 400 700` range, which made every heading render Bold.)
-# Files are sourced verbatim from WoodWave's Webflow CDN
-# (base https://cdn.prod.website-files.com/657acd8d782ab334f6b2e5a6/) and stored under
-# `<brand_dir>/assets/fonts/`; both woff2 (preferred) and ttf (fallback) are kept.
-SELF_HOSTED_FONTS = {
-    "Melodrama": {
-        "faces": [
-            {"weight": 300, "files": ["Melodrama-Light.woff2", "Melodrama-Light.ttf"]},
-            {"weight": 400, "files": ["Melodrama-Regular.woff2", "Melodrama-Regular.ttf"]},
-            {"weight": 500, "files": ["Melodrama-Medium.woff2", "Melodrama-Medium.ttf"]},
-            {"weight": 600, "files": ["Melodrama-Semibold.woff2", "Melodrama-Semibold.ttf"]},
-            {"weight": 700, "files": ["Melodrama-Bold.woff2", "Melodrama-Bold.ttf"]},
-        ],
-    },
-}
+# (one file pair per weight), so the browser picks the correct face for each
+# requested font-weight. (An earlier version self-hosted only the Bold master and
+# mapped every display weight onto it via a `font-weight: 400 700` range, which made
+# every heading render Bold.) There is NO module-level registry: font registration
+# is brand data, never shared pipeline state.
 
 # The display type roles whose `family` we scan for a self-hosted face.
 _DISPLAY_FONT_ROLES = ("display-hero", "h1", "h2", "h3", "counter-display",
@@ -133,12 +278,55 @@ def find_font_source(brand_dir: Path, name: str):
     return p if p.exists() else None
 
 
+def brand_self_hosted_fonts(doc: dict) -> dict:
+    """The ACTIVE brand's self-hosted font registry (schema-gap 8, remote-fix 2026-07):
+    built ONLY from the brand.yaml ``selfHostedFonts`` entries — a brand registers its
+    own faces declaratively; there is no shared module registry to inherit from.
+
+    brand.yaml shape (additive, generic)::
+
+        selfHostedFonts:
+          - family: DisplayFace          # must match the type role's `family`
+            faces:
+              - weight: 400
+                files: [DisplayFace-Regular.woff2, DisplayFace-Regular.ttf]
+                # style: italic         # optional; normal when absent
+
+    Files live under ``<brand_dir>/assets/fonts/``. A registered family whose files
+    are ABSENT on disk simply emits no @font-face — the font stack then falls through
+    to the brand's measured ``renderProxy``, so a registry entry can never break a
+    render (registry present, commercial files not captured, proxy declared as the
+    fallback)."""
+    reg: dict = {}
+    entries = doc.get("selfHostedFonts") if isinstance(doc, dict) else None
+    for entry in (entries or []):
+        if not isinstance(entry, dict):
+            continue
+        fam = str(entry.get("family") or "").strip()
+        faces = []
+        for f in (entry.get("faces") or []):
+            if not isinstance(f, dict):
+                continue
+            files = [str(x).strip() for x in (f.get("files") or [])
+                     if isinstance(x, str) and str(x).strip()]
+            if not files:
+                continue
+            face = {"weight": f.get("weight", 400), "files": files}
+            if f.get("style"):
+                face["style"] = str(f["style"]).strip().lower()
+            faces.append(face)
+        if fam and faces:
+            reg[fam] = {"faces": faces}
+    return reg
+
+
 def self_hosted_families(doc: dict) -> list[str]:
     """The brand display families that have a registered self-hosted font (order-stable)."""
+    reg = brand_self_hosted_fonts(doc)
     fams, seen = [], set()
     for role in _DISPLAY_FONT_ROLES:
         fam = type_role(doc, role).get("family")
-        if fam in SELF_HOSTED_FONTS and fam not in seen:
+        if fam in reg and fam not in seen:
             seen.add(fam)
             fams.append(fam)
     return fams
@@ -149,9 +337,10 @@ def copy_fonts(brand_dir: Path, out_assets: Path, doc: dict) -> list[str]:
     @font-face works offline (mirrors ``copy_assets`` / the nav-logo copy). Returns the
     list of copied filenames; empty (and a no-op) when the brand uses no self-hosted font."""
     out_assets.mkdir(parents=True, exist_ok=True)
+    reg = brand_self_hosted_fonts(doc)
     copied = []
     for fam in self_hosted_families(doc):
-        for face in SELF_HOSTED_FONTS[fam]["faces"]:
+        for face in reg[fam]["faces"]:
             for name in face["files"]:
                 src = find_font_source(brand_dir, name)
                 if src:
@@ -163,10 +352,12 @@ def copy_fonts(brand_dir: Path, out_assets: Path, doc: dict) -> list[str]:
 def font_face_css(brand_dir: Path, doc: dict) -> str:
     """Emit the ``@font-face`` block(s) for the brand's self-hosted display face(s),
     referencing the copied ``assets/<file>`` relatively (woff2 preferred, ttf fallback).
-    Returns "" when the brand carries no self-hosted font (so other brands stay unchanged)."""
+    Returns "" when the brand carries no self-hosted font — or when the registered
+    files are absent on disk (the font stack then resolves the measured renderProxy)."""
+    reg = brand_self_hosted_fonts(doc)
     blocks = []
     for fam in self_hosted_families(doc):
-        for face in SELF_HOSTED_FONTS[fam]["faces"]:
+        for face in reg[fam]["faces"]:
             srcs = []
             for name in face["files"]:
                 if find_font_source(brand_dir, name):
@@ -174,187 +365,67 @@ def font_face_css(brand_dir: Path, doc: dict) -> str:
                     srcs.append(f"url('assets/{name}') format('{_FONT_FORMATS.get(ext, ext)}')")
             if not srcs:
                 continue
+            style = face.get("style") or "normal"
             blocks.append(
                 f"@font-face {{ font-family: '{fam}'; src: {', '.join(srcs)}; "
-                f"font-weight: {face['weight']}; font-style: normal; font-display: swap; }}")
+                f"font-weight: {face['weight']}; font-style: {style}; font-display: swap; }}")
     if not blocks:
         return ""
     return ("/* self-hosted brand display face(s) — copied into assets/ for offline use */\n"
             + "\n".join(blocks))
 
-# Per-layout REAL brand copy, sourced verbatim from runs/woodwave/brand/voice.md §5
-# (Section copy). NOT lorem and NOT invented: every string below is the brand's own
-# authored section copy. The hero (opening-bookend) keeps SECTION_COPY (its snapshot-
-# grounded copy) so the existing single-section render stays byte-identical.
-LAYOUT_COPY = {
-    "editorial-collage": {
-        "ghost": "About",
-        "eyebrow": "About the gallery",
-        "heading": "The building is the first work on view",
-        "body": ("Woodwave occupies a timber hall raised in 1941 and kept close to its "
-                 "original state. The grain of the walls, the curve of the vault, the slow "
-                 "movement of daylight — the architecture sets the terms, and the collection "
-                 "answers them."),
-        "caption": "Vault detail",
-        "cta": "Our story",
-    },
-    "info-band": {
-        "eyebrow": "Plan your visit",
-        "heading": "Come stand in the hall",
-        "panelTitle": "Ticket prices",
-        "rows": [("Adults", "12 €"), ("Reduced", "8 €"), ("Under 18", "Free")],
-        "cta": "Buy tickets",
-        "caption": "Harbour quarter",
-    },
-    "conversion-stack": {
-        "eyebrow": "Stay in touch",
-        "heading": "Hear when the walls change",
-        "body": "One letter a season — new works, new hours, nothing else.",
-        "placeholder": "Your email",
-        "cta": "Subscribe",
-    },
-    # ── new sections, real copy sourced verbatim from voice.md §5 ────────────────
-    "mission-statement": {
-        "eyebrow": "What we hold",
-        "heading": "Space as\na muse",
-        "body": ("We collect work that listens to its room. From the late twentieth century "
-                 "to the present day, the holdings favour pieces shaped by material, scale "
-                 "and place — art that stands differently here than anywhere else."),
-        "cta": "The collection",
-    },
-    "gallery-showcase": {
-        "eyebrow": "Inside the hall",
-        "counter": "1/6",
-        "caption": "Central nave",
-    },
-    "heritage-timeline": {
-        "ghost": "1941–2023",
-        "eyebrow": "Eight decades",
-        "heading": "A collection\nbuilt slowly",
-        "body": ("The first works entered the hall the year it opened. Since then the "
-                 "collection has grown by patience rather than appetite — a few pieces "
-                 "each era, chosen for how they hold the room."),
-        "caption": "Acquisition, 1974",
-    },
-    "curator-quote": {
-        "eyebrow": "From the curator",
-        "quote": "“A room this\nhonest forgives\nnothing”",
-        "body": ("Elin Marsh, curator since 2011, on hanging work in the timber hall. Every "
-                 "placement is tested against the light at three hours of the day before it "
-                 "stays."),
-        "caption": "Elin Marsh",
-    },
-    "visit-band": {
-        "eyebrow": "Plan your visit",
-        "heading": "Come stand\nin the hall",
-        "ticketsTitle": "Ticket prices",
-        "ticketsRows": [("Adults", "12 €"), ("Reduced", "8 €"), ("Under 18", "Free")],
-        "ticketsCta": "Buy tickets",
-        "visitTitle": "Hours & address",
-        "visitRows": [("Tue–Sun, 10–18", ""), ("Mondays closed", ""),
-                      ("14 Harbour Lane, Aldermoor", "")],
-        "visitCta": "Get directions",
-        "mapCaption": "Harbour quarter",
-    },
-    # ── "Held in Wood" exhibition page (runs/woodwave/brand/brief-new-exhibition.md) ──
-    "exhibition-hero": {
-        "wordmark": "WoodWave",
-        "nav": ["About", "Gallery", "Exhibition", "Visit"],
-        "eyebrow": "12 Sep 2026 \u2014 18 Jan 2027",
-        "subhead": "A group show on material, craft, and the marks of the hand \u2014 extending the gallery's own thesis from architecture to object.",
-        "cta": "Buy tickets",
-    },
-    "exhibition-about": {
-        "ghost": "Held",
-        "eyebrow": "About the exhibition",
-        "heading": "The hand leaves\na record the eye\ncan follow",
-        "body": ("Held in Wood brings together pieces shaped by material, scale and place \u2014 "
-                 "work that carries the evidence of its own making. Grain, joint, and tool "
-                 "mark are not hidden here; they are the subject."),
-        "caption": "Study, oak and ash",
-        "cta": "Plan your visit",
-    },
-    "exhibition-works": {
-        "eyebrow": "Featured in the show",
-        "counter": "1/9",
-        "caption": "Turned vessel, elm",
-    },
-    "exhibition-schedule": {
-        "eyebrow": "Key dates",
-        "heading": "Held in Wood\nruns one season",
-        "rows": [("Preview evening", "11 Sep, 18:00"), ("Exhibition opens", "12 Sep 2026"),
-                 ("Artist talk", "24 Oct, 18:30"), ("Exhibition closes", "18 Jan 2027")],
-    },
-    "exhibition-tickets": {
-        "eyebrow": "Tickets",
-        "heading": "Come stand\nwith the work",
-        "intro": "Included with general admission \u2014 no separate booking for the show itself.",
-        "rows": [("General", "14 €"), ("Concession", "9 €"), ("Under 18", "Free"),
-                 ("Members", "Free"), ("Preview evening", "22 €")],
-        "cta": "Buy tickets",
-    },
-    "exhibition-curator-quote": {
-        # reuses the SAME portrait asset as the main site's curator quote (About-img-5.jpg) \u2014
-        # kept attributed to Elin Marsh (the gallery's own curator, speaking here about THIS
-        # show specifically) rather than an invented maker name, so the text never contradicts
-        # the reused photo. Per the current brief, photography accuracy is not the priority.
-        "eyebrow": "From the curator",
-        "quote": "\u201cWood remembers\nevery hand that\nhas held it\u201d",
-        "body": ("Elin Marsh, on Held in Wood: a material that keeps a record of its own "
-                 "history. Every piece in this room was still growing within living memory."),
-        "caption": "Elin Marsh",
-    },
-    "exhibition-faq": {
-        "eyebrow": "Before you visit",
-        "heading": "A few\nquestions",
-        "items": [
-            ("What should I bring?", "Nothing but yourself \u2014 the hall is step-free and seating is available throughout."),
-            ("Is the building accessible?", "Yes. Step-free access at the main entrance, accessible toilets, and seating in every room."),
-            ("Can I take photographs?", "Personal, non-flash photography only. No tripods or professional equipment without prior arrangement."),
-            ("Do you take group bookings?", "Groups of six or more \u2014 contact the gallery ahead of your visit to arrange a time."),
-            ("Can I get a refund on preview-evening tickets?", "Preview-evening tickets are refundable up to 48 hours before the event."),
-            ("Is there an age restriction?", "None for the exhibition. The preview evening serves alcohol; it is not a dry event."),
-        ],
-    },
-    # ── harvested-pattern DEMO sections (Claude Design layout library #04 / #11) ───
-    # Real WoodWave-voiced copy (on-brand, not lorem) sized to the harvested slot
-    # lengths: card captions 18–40ch tracked, card bodies 100–180ch, and a 100+ch
-    # statement so the interlock float-wrap actually wraps.
-    "demo-staggered-cards": {
-        "eyebrow": "On view now",
-        "heading": "Rooms that\nhold the light",
-        "cards": [
-            {"caption": "Panorama viewpoint",
-             "body": ("The seamless blend of contemporary design with the organic — a "
-                      "distinctive environment where the architecture and the collection "
-                      "answer each other, hour by hour."),
-             "aspect": "16 / 10", "asset": "hero-staircase.jpg", "link": "See the room"},
-            {"caption": "At the heart of the haven",
-             "body": ("A cutting-edge sphere housing the future of interactive contemporary "
-                      "art, set quietly into the timber hall's oldest and most weathered "
-                      "corner."),
-             "aspect": "4 / 3", "asset": "overlap-vase.jpg"},
-        ],
-    },
-    "demo-interlock-inset": {
-        "caption": "Perspective hall — ArtUnveil\nSpace by Isabella St.",
-        "statement": ("Woodwave Gallery: where design, nature, and boundless creativity "
-                      "harmoniously converge, inspiring imagination in the quiet geometry "
-                      "of the city's oldest timber hall"),
-        "asset": "hero-staircase.jpg",
-    },
-}
+# Per-layout copy overrides: runtime patch surface ONLY (see SECTION_COPY note).
+# A brand's authored per-layout copy lives in `<brand_dir>/section-copy.yaml`
+# under `layoutCopy:`; compositions and the wildcard generator register entries
+# here at render time, and a registered entry replaces the brand-file entry for
+# that layout id wholesale (the historical top-level-merge semantics).
+LAYOUT_COPY: dict = {}
 
 
-def copy_for(layout) -> dict:
-    """Merge the shared SECTION_COPY base with this layout's real voice.md copy."""
-    return {**SECTION_COPY, **LAYOUT_COPY.get((layout or {}).get("id"), {})}
+class _SafeCopy(dict):
+    """Copy dict that resolves a MISSING key to '' instead of raising (AS-36 /
+    remote-fix blocker-7: a pattern rendered for a brand whose copy dict lacks a
+    composer's key — e.g. `panelTitle` on a split preview — crashed the whole tier).
+    Composers keep their `copy["key"]` reads; an absent key renders as empty copy for
+    that device, which the renderers already handle (empty heading/caption elide)."""
+
+    def __missing__(self, key):
+        return ""
+
+
+def section_copy_view(doc) -> dict:
+    """The page-global copy BASE the composers see: the active brand's authored
+    ``sectionCopy`` (section-copy.yaml) with any runtime-patched module SECTION_COPY
+    merged over it. _SafeCopy, so a key no layer declares degrades to ''."""
+    return _SafeCopy({**brand_section_copy(doc), **SECTION_COPY})
+
+
+def layout_copy_layer(layout, doc=None) -> dict:
+    """The LAYOUT-layer copy for this section id. A runtime-registered module entry
+    (composition adapter / wildcard generator) replaces the brand-file entry
+    WHOLESALE — the same top-level semantics the old module dict had; otherwise the
+    brand's authored layoutCopy entry applies."""
+    lid = (layout or {}).get("id")
+    if lid in LAYOUT_COPY:
+        return LAYOUT_COPY[lid] or {}
+    return brand_layout_copy(doc).get(lid) or {}
+
+
+def copy_for(layout, doc=None) -> dict:
+    """Merge the page-global copy base with this layout's copy layer (brand-file
+    entry, or the runtime-registered entry when a composition/wildcard bound one)."""
+    return _SafeCopy({**brand_section_copy(doc), **SECTION_COPY,
+                      **layout_copy_layer(layout, doc)})
 
 
 # ── helpers ──────────────────────────────────────────────────────────────────────
 
 def load_doc(brand_yaml: Path) -> dict:
-    return yaml.safe_load(Path(brand_yaml).read_text())
+    doc = yaml.safe_load(Path(brand_yaml).read_text())
+    # attach the ACTIVE brand's on-disk image inventory (AS-34) + authored section
+    # copy so defaults resolve from the brand's own data — in-memory only.
+    attach_brand_copy(doc, Path(brand_yaml).parent)
+    return attach_asset_inventory(doc, Path(brand_yaml).parent)
 
 
 def find_layout(doc, layout_id):
@@ -387,25 +458,37 @@ def resolve_pattern(doc, layout, brand_yaml):
 # amount-class -> concrete relative magnitude (resolved as container-query units, never px).
 # The captured pattern's treatment ``amount.class`` drives the geometry, so the ghost word /
 # stagger scale come FROM the reused pattern instead of a hardcoded literal.
-_GHOST_SIZE = {"light": "clamp(6rem, 22cqw, 18rem)",
-               "medium": "clamp(8rem, 30cqw, 24rem)",
-               "heavy": "clamp(10rem, 40cqw, 32rem)"}
+#
+# CS-2 (token-layer-2026-07): the ladder's rem ENDPOINTS are now calc-of-var products of
+# the brand's MEASURED ghost tier (--size-ghost-watermark-base, layer 1) — the multipliers
+# are the ladder's structural step ratios (computed against the pre-token ladder at
+# WoodWave's 26.25rem tier so every existing render resolves byte-equal), the magnitude is
+# the brand's. A brand with no ghost-watermark tier leaves the var unresolved -> font-size
+# drops -> the device is disabled (never another brand's scale). cqw midpoints stay
+# structural fluidity (SPEC §C.2). The flat -base alias keeps clamp endpoints breakpoint-
+# independent (the responsive --size-ghost-watermark ladder is for direct consumers).
+_GHOST_BASE = "var(--size-ghost-watermark-base)"
+_GHOST_SIZE = {
+    "light": f"clamp(calc({_GHOST_BASE} * 0.2286), 22cqw, calc({_GHOST_BASE} * 0.6857))",
+    "medium": f"clamp(calc({_GHOST_BASE} * 0.3048), 30cqw, calc({_GHOST_BASE} * 0.9143))",
+    "heavy": f"clamp(calc({_GHOST_BASE} * 0.381), 40cqw, calc({_GHOST_BASE} * 1.219))",
+}
 # ALIGNMENT: offsets are no longer free scalars — they snap to the SHARED units emitted on
 # :root (--baseline / --col / --grid-gutter) so a staggered element lands on a shared line.
 # The %-based stagger keeps its responsive magnitude but round()s the USED value to an
 # exact --baseline multiple (registration without changing the rendered look).
 _STAGGER_OFFSET = {
-    "light": "round(nearest, 8%, var(--baseline, 0.5rem))",
-    "medium": "round(nearest, 18%, var(--baseline, 0.5rem))",
-    "heavy": "round(nearest, 33%, var(--baseline, 0.5rem))",
+    "light": "round(nearest, 8%, var(--baseline))",
+    "medium": "round(nearest, 18%, var(--baseline))",
+    "heavy": "round(nearest, 33%, var(--baseline))",
 }
 # Block offset for the multi-module `cards` composer (margin-block-start): the harvested
 # "~50px second-card offset" is now an exact --baseline multiple (old cqw values at the
 # 1440 reference: 2.5cqw≈2.25rem→4 baselines, 4cqw≈3.6rem→7, 6.5cqw≈5.85rem→12).
 _CARD_STAGGER = {
-    "light": "calc(4 * var(--baseline, 0.5rem))",
-    "medium": "calc(7 * var(--baseline, 0.5rem))",
-    "heavy": "calc(12 * var(--baseline, 0.5rem))",
+    "light": "calc(4 * var(--baseline))",
+    "medium": "calc(7 * var(--baseline))",
+    "heavy": "calc(12 * var(--baseline))",
 }
 
 
@@ -498,7 +581,7 @@ def pattern_treatment_css(pattern) -> str:
                 pass
             try:
                 ro = int(pc.get("rowOffset"))
-                decls.append(f"--c-drop-{i}: calc({3 * ro} * var(--baseline, 0.5rem));")
+                decls.append(f"--c-drop-{i}: calc({3 * ro} * var(--baseline));")
             except (TypeError, ValueError):
                 pass
     # multi-module knobs: the uneven column ratio maps to whole-column SPANS on the shared
@@ -533,7 +616,7 @@ def pattern_treatment_css(pattern) -> str:
                  if span > 1 else "var(--col)")
         # the inset's gutter sits on the side FACING the wrapped copy; --baseline multiples
         # only (old cqw scalars at the 1440 reference: 0.4cqw≈1, 1.2cqw≈2, ~3rem≈6).
-        _b = "var(--baseline, 0.5rem)"
+        _b = "var(--baseline)"
         margin = (f"calc(1 * {_b}) 0 calc(2 * {_b}) calc(6 * {_b})" if side == "right"
                   else f"calc(1 * {_b}) calc(6 * {_b}) calc(2 * {_b}) 0")
         decls.append(f"--c-float-side: {side};")
@@ -603,11 +686,21 @@ def rhythm_for(doc, style_ctx, surf_role) -> dict:
 def rhythm_vars_css(doc, style_ctx, surf_role, selector=":root") -> str:
     """Emit the rhythm CSS custom properties for ``selector`` from ``rhythm_for``.
     These vars (read by the scaffold geometry) make section padding + inter-block gaps
-    come from the spacing scale / brand tokens instead of ad-hoc literals."""
+    come from the spacing scale / brand tokens instead of ad-hoc literals.
+
+    Also declares the two STRUCTURAL frame constants the scaffolds read —
+    ``--c-section-pad-x`` (horizontal section inset) and ``--c-nav-pad-block`` (slim
+    page-nav vertical padding). Declaring them here (custom properties are layer-2;
+    the provenance scanner checks USED values, not ``--*`` declarations) lets the
+    scaffold var() references drop their literal fallbacks (AS-24 discipline /
+    remote-fix blocker-4: a `var(--c-section-pad, 6.25rem)` fallback read as a raw
+    literal AND a cross-brand token collision for any brand without a 6.25rem token).
+    Values are frame geometry (device structure), not brand rhythm tokens."""
     r = rhythm_for(doc, style_ctx, surf_role)
     return (f"{selector} {{ --c-section-pad-top: {r['pad_top']}; "
             f"--c-section-pad-bottom: {r['pad_bottom']}; --c-section-pad: {r['pad_bottom']}; "
-            f"--c-block-gap: {r['block_gap']}; --c-module-gap: {r['module_gap']}; }}")
+            f"--c-block-gap: {r['block_gap']}; --c-module-gap: {r['module_gap']}; "
+            f"--c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }}")
 
 
 def loadable_proxies(doc):
@@ -624,26 +717,32 @@ def loadable_proxies(doc):
     return out
 
 
-def find_asset_source(brand_dir: Path, name: str):
-    candidates = [
-        brand_dir / "render" / "section-opening-bookend" / "assets" / name,
-        brand_dir / "compose" / "signup-launch" / "assets" / name,
-    ]
-    for c in candidates:
-        if c.exists():
-            return c
-    hits = sorted(brand_dir.glob(f"**/assets/{name}"))
-    return hits[0] if hits else None
-
-
 def copy_assets(brand_dir: Path, out_assets: Path):
     out_assets.mkdir(parents=True, exist_ok=True)
     copied = []
-    for name in ASSET_SOURCES:
-        src = find_asset_source(brand_dir, name)
-        if src:
-            shutil.copy2(src, out_assets / name)
-            copied.append(name)
+    # brand-agnostic: any image under the ACTIVE brand's assets/ tree ships — checking
+    # BOTH conventions (curated images at <brand_dir>/assets/, or at the run root
+    # runs/<brand>/assets/). There is NO shared seed list: what ships is exactly what
+    # the brand's own disk evidence carries.
+    # RECURSIVE under the brand's own assets/ (blocker-6: curated subdirectories such as
+    # assets/logos/ were invisible, forcing workers to flatten their trees) — flattened
+    # to basenames on copy, first (sorted-path) occurrence wins; fonts/ ships via
+    # copy_fonts, not here. The RUN-ROOT convention stays top-level only: that dir also
+    # holds extraction dumps that are not curated brand assets.
+    def _ship(img: Path):
+        if img.is_file() and img.suffix.lower() in IMAGE_EXTS and img.name not in copied:
+            shutil.copy2(img, out_assets / img.name)
+            copied.append(img.name)
+
+    brand_assets = brand_dir / "assets"
+    if brand_assets.is_dir():
+        for img in sorted(brand_assets.rglob("*")):
+            if "fonts" not in img.relative_to(brand_assets).parts:
+                _ship(img)
+    parent_assets = brand_dir.parent / "assets"
+    if parent_assets.is_dir():
+        for img in sorted(parent_assets.glob("*")):
+            _ship(img)
     return copied
 
 
@@ -728,15 +827,20 @@ def prepare_nav_logo(doc: dict, brand_dir: Path, out_assets: Path):
 
 def _navbar_props(doc: dict) -> dict:
     """Build render_navbar props from the extracted ``doc['navbar']`` (logo image + primary
-    links + trailing CTA). Falls back to the hardcoded SECTION_COPY text wordmark + links
-    when navbar (or a usable logo image) is absent, so other brands/styles never break.
+    links + trailing CTA). When no navbar was extracted the nav degrades to the BRAND'S OWN
+    data: its authored sectionCopy wordmark/links/cta when present, else a wordmark-only
+    nav built from the brand name — copy is never borrowed from another brand.
 
-    The last primary item that reads like a ticket/buy action becomes the arrow CTA (mirrors
-    the established WoodWave nav: ABOUT / GALLERY / EXHIBITION / VISIT + BUY TICKETS)."""
+    The last primary item that reads like a ticket/buy action becomes the arrow CTA (the
+    common marketing-nav shape: primary links + trailing ticket/buy action)."""
+    sc = section_copy_view(doc)
+    brand_name = (doc.get("brand") or {}).get("name") or ""
     nav = doc.get("navbar")
     if not isinstance(nav, dict):
-        return {"wordmark": SECTION_COPY["wordmark"], "links": SECTION_COPY["nav"],
-                "cta": SECTION_COPY["cta"]}
+        # wordmark-only degrade: links/cta render only when the BRAND declares them.
+        return {"wordmark": sc.get("wordmark") or brand_name or "Brand",
+                "links": sc.get("nav") or [],
+                "cta": sc.get("cta") or None}
     logo = nav.get("logo") or {}
     primary = [p for p in (nav.get("primary") or []) if isinstance(p, dict) and p.get("label")]
     links, cta = primary, None
@@ -745,8 +849,8 @@ def _navbar_props(doc: dict) -> dict:
         links = primary[:-1]
 
     props: dict = {
-        "links": links or SECTION_COPY["nav"],
-        "cta": cta["label"] if cta else SECTION_COPY["cta"],
+        "links": links or sc.get("nav") or [],
+        "cta": cta["label"] if cta else (sc.get("cta") or None),
         "ctaHref": cta.get("href", "#") if cta else "#",
     }
     src = logo.get("_composedSrc")
@@ -759,7 +863,7 @@ def _navbar_props(doc: dict) -> dict:
             "height": logo.get("height"),
         }
     else:
-        props["wordmark"] = SECTION_COPY["wordmark"]
+        props["wordmark"] = sc.get("wordmark") or brand_name or "Brand"
     return props
 
 
@@ -770,17 +874,25 @@ def _props_for(doc, layout, role, usage, ctx):
     section's real copy. Role-keyword driven so it stays brand-agnostic."""
     r = (role or "").lower()
     usage = usage or {}
-    img_map = LAYOUT_IMAGES.get((layout or {}).get("id"))
+    sc = section_copy_view(doc)
+    # alt text derives from the ACTIVE brand + the asset's own name — never a hardcoded
+    # brand-named literal (fix-batch 2026-07: a brand-named alt literal was baked in
+    # here and leaked verbatim into other brands' renders).
+    brand_name = (doc.get("brand") or {}).get("name") or sc.get("wordmark") or "Brand"
+    img_map = brand_layout_images(doc).get((layout or {}).get("id"))
     if img_map:
         for kw, fname in img_map.items():
             if kw in r:
-                return {"src": f"assets/{fname}", "variant": "hero",
-                        "alt": f"WoodWave — {fname.rsplit('.', 1)[0].replace('-', ' ')}"}
-    brand_name = (doc.get("brand") or {}).get("name") or SECTION_COPY["wordmark"]
+                src = _brand_art(doc, "gallery", fname)
+                if src:
+                    return {"src": src, "variant": "hero",
+                            "alt": f"{brand_name} — {Path(src).name.rsplit('.', 1)[0].replace('-', ' ')}"}
+                break  # named art not in the ACTIVE brand's inventory → generic branches
     if "wordmark" in r or "nav" in r:
-        # serves both render_logo (text) and render_navbar (wordmark/links/cta)
+        # serves both render_logo (text) and render_navbar (wordmark/links/cta);
+        # links/cta come from the BRAND's own copy and degrade to none.
         return {"text": brand_name, "wordmark": brand_name,
-                "links": SECTION_COPY["nav"], "cta": SECTION_COPY["cta"]}
+                "links": sc.get("nav") or [], "cta": sc.get("cta") or None}
     if "title" in r or "heading" in r:
         # serves both render_heading (text) and the header block (heading).
         # v1 layouts carry the REAL heading in props.Text — prefer it over any default.
@@ -788,20 +900,24 @@ def _props_for(doc, layout, role, usage, ctx):
         return {"text": title, "heading": title, "level": usage.get("level", "display"),
                 "accent": ctx.is_dark, "splitTwoLines": True}
     if "hero" in r and ("photo" in r or "image" in r or "media" in r):
-        return {"src": "assets/hero-staircase.jpg", "variant": "hero",
-                "alt": "WoodWave editorial photography"}
+        return {"src": _brand_art(doc, "hero", *brand_default_art_names(doc, "hero")),
+                "variant": "hero",
+                "alt": f"{brand_name} editorial photography"}
     if "overlap" in r:
-        return {"src": "assets/overlap-vase.jpg", "variant": "overlap", "absolute": True,
-                "alt": "WoodWave detail photography"}
+        return {"src": _brand_art(doc, "detail", *brand_default_art_names(doc, "detail")),
+                "variant": "overlap", "absolute": True,
+                "alt": f"{brand_name} detail photography"}
     if "eyebrow" in r:
-        return {"text": usage.get("Text") or SECTION_COPY["eyebrow"]}
+        return {"text": usage.get("Text") or sc["eyebrow"]}
     if "action" in r or "cta" in r or "link" in r or "button" in r:
-        return {"label": usage.get("Label") or usage.get("label", SECTION_COPY["cta"]),
+        return {"label": usage.get("Label")
+                or (usage["label"] if "label" in usage else sc["cta"]),
                 "accent": ctx.is_dark}
     # generic image / media fallback
     if "photo" in r or "image" in r or "media" in r:
-        return {"src": "assets/hero-staircase.jpg", "variant": "hero",
-                "alt": "WoodWave editorial photography"}
+        return {"src": _brand_art(doc, "hero", *brand_default_art_names(doc, "hero")),
+                "variant": "hero",
+                "alt": f"{brand_name} editorial photography"}
     return dict(usage)
 
 
@@ -843,13 +959,26 @@ def _inline_props(contract, role, usage, ctx):
     if c in ("link", "cta"):
         return {"label": u.get("label") or u.get("text") or u.get("cta") or "Learn more",
                 "href": u.get("href", "#"), "accent": accent}
+    if c == "button":
+        # real action slot (B5): render_button dispatches on the brand's cta-shape
+        # (filled button vs typographic downgrade); accent stays neutral by default.
+        return {"label": u.get("label") or u.get("text") or u.get("cta") or "Get started",
+                "href": u.get("href", "#"), "accent": u.get("accent", False)}
     if c == "image":
         return {"src": u.get("src"), "alt": u.get("alt", ""),
                 "variant": u.get("variant", ""), "absolute": bool(u.get("absolute")),
                 "aspect": u.get("aspect"),
                 "placeholder": u.get("placeholder", "IMAGE / RADIUS 0")}
     if c == "logo":
-        return {"text": u.get("text") or SECTION_COPY["wordmark"]}
+        # IMAGE mode when the slot carries a disk-backed asset (AS-30: the payload is
+        # unwrapped, never dropped — the old text-only branch discarded usage.src and
+        # rendered SECTION_COPY's wordmark, five foreign-brand marks on a logo wall).
+        if u.get("src") or u.get("img"):
+            return {"src": u.get("src") or u.get("img"),
+                    "alt": u.get("alt") or u.get("text") or "",
+                    "variant": u.get("variant", "")}
+        # inline copy carried no text: degrade to empty, never another brand's mark.
+        return {"text": u.get("text") or ""}
     if c == "input":
         return {"placeholder": u.get("placeholder", "Your email"), "submit": u.get("submit")}
     if c == "header":
@@ -870,7 +999,7 @@ def _inline_props(contract, role, usage, ctx):
 _V1_COMPONENT_CONTRACTS = {
     "heading": "header", "eyebrow": "eyebrow", "subheading": "paragraph",
     "paragraph": "paragraph", "rich text": "paragraph", "image": "image", "logo": "logo",
-    "button / primary": "link", "button / secondary": "link", "button": "link",
+    "button / primary": "button", "button / secondary": "button", "button": "button",
     "link / primary": "link", "link / secondary": "link", "form / webflow / lead": "form",
 }
 
@@ -931,12 +1060,40 @@ def _pick(rendered, *keywords):
 # the section frame). Matches the brand z-ladder (ghost → media → panels → text).
 _Z_LAYER = {"back": 0, "mid": 2, "front": 3}
 
-# default photography per layer kind (cycled for extra overlays) — same brand assets the
-# legacy hero path binds, so a composition that omits asset srcs stays asset-faithful.
-_LAYER_FALLBACK = {"base": "hero-staircase.jpg", "background": "hero-staircase.jpg",
-                   "corner": "overlap-vase.jpg"}
-_OVERLAY_FALLBACKS = ["overlap-vase.jpg", "About-img-2.jpg", "About-img-4.jpg",
-                      "About-img-5.jpg"]
+# default photography per layer kind (cycled for extra overlays) — generic role KINDS
+# only; the concrete PREFERRED filenames are brand data (section-copy.yaml defaultArt:,
+# via brand_default_art_names) resolved through _brand_art so they only apply when the
+# file exists in the ACTIVE brand's inventory (AS-34); other brands resolve their OWN
+# art (generic-kind keyword match) or render the srcless placeholder — never another
+# brand's file.
+_LAYER_KINDS = {"base": "hero", "background": "hero", "corner": "detail"}
+_OVERLAY_KINDS = ["detail", "gallery", "gallery", "portrait"]
+
+
+def _layer_fallback(doc, key: str) -> tuple:
+    """(kind, preferred-names) for a named hero layer, from the brand's defaultArt."""
+    kind = _LAYER_KINDS[key]
+    return kind, brand_default_art_names(doc, kind)
+
+
+def _overlay_fallback(doc, i: int) -> tuple:
+    """(kind, preferred-names) for the i-th layered-hero overlay: the generic kind
+    cycle + the brand's ordered ``defaultArt.overlays`` preference for that slot."""
+    kind = _OVERLAY_KINDS[i % len(_OVERLAY_KINDS)]
+    names = brand_default_art_names(doc, "overlays")
+    preferred = [names[i % len(names)]] if names else []
+    return kind, preferred
+
+
+def _composer_art(doc, layout, kind: str) -> str | None:
+    """Composer-level media fallback (media slot missing entirely): the brand's own
+    ``layoutImages`` entry for THIS layout wins (its declared per-section photo),
+    else its ``defaultArt`` preference for the generic *kind* — all evidence-checked
+    via _brand_art; None (caller omits the device) when the brand carries no
+    matching art."""
+    li = brand_layout_images(doc).get((layout or {}).get("id")) or {}
+    names = [v for v in li.values() if isinstance(v, str)]
+    return _brand_art(doc, kind, *(names or brand_default_art_names(doc, kind)))
 
 
 def _span_width_css(span, cols: int = 12) -> str:
@@ -960,7 +1117,7 @@ def _overlay_style(layer: dict, idx: int) -> str:
     across top/bottom — REPLACING the legacy magic % offsets wherever a registration is
     declared. Undeclared knobs keep the measured hero's baseline-rounded % defaults."""
     reg = layer.get("registration") or {}
-    b = "var(--baseline, 0.5rem)"
+    b = "var(--baseline)"
     colu = "(var(--col) + var(--grid-gutter, 6rem))"
     parts = [f"width: {_span_width_css(layer.get('colSpan') or 4)}"]
 
@@ -995,11 +1152,17 @@ def _overlay_style(layer: dict, idx: int) -> str:
     return "; ".join(parts)
 
 
-def _layer_img(doc, ctx, layer: dict, *, variant: str, fallback: str) -> str:
-    src = layer.get("src") or f"assets/{fallback}"
+def _layer_img(doc, ctx, layer: dict, *, variant: str, fallback) -> str:
+    """One layered-hero image. `fallback` is a (kind, preferred-names) pair resolved
+    through _brand_art — evidence-checked against the ACTIVE brand's inventory (AS-34);
+    a brand with no matching art renders the srcless placeholder, never foreign art.
+    Alt text derives from the ACTIVE brand's name (AS-29), never a brand literal."""
+    kind, preferred = fallback
+    src = layer.get("src") or _brand_art(doc, kind, *preferred)
+    brand_name = (doc.get("brand") or {}).get("name") or "Brand"
     return cr.render_image(doc, ctx, {
         "src": src, "variant": variant, "aspect": layer.get("aspect"),
-        "alt": layer.get("alt") or "WoodWave photography"})
+        "alt": layer.get("alt") or f"{brand_name} photography"})
 
 
 def _stack_hero_layered(doc, ctx, layers: list[dict], *, eyebrow_html, title_html,
@@ -1018,20 +1181,20 @@ def _stack_hero_layered(doc, ctx, layers: list[dict], *, eyebrow_html, title_htm
 
     bg_html = ""
     if bg is not None:
-        img = _layer_img(doc, ctx, bg, variant="hero", fallback=_LAYER_FALLBACK["background"])
+        img = _layer_img(doc, ctx, bg, variant="hero", fallback=_layer_fallback(doc, "background"))
         bg_html = (f'\n  <div class="cs-bg-layer" aria-hidden="true">{img}'
                    f'<div class="cs-bg-scrim"></div></div>')
 
     collage = ""
     if base is not None or overlays:
         base_img = _layer_img(doc, ctx, base, variant="hero",
-                              fallback=_LAYER_FALLBACK["base"]) if base is not None else ""
+                              fallback=_layer_fallback(doc, "base")) if base is not None else ""
         base_style = ""
         if base is not None and base.get("colSpan"):
             base_style = f' style="max-width: {_span_width_css(base["colSpan"])}"'
         ovs = "\n".join(
             f'      <div class="cs-ov" style="{_overlay_style(l, i)}">'
-            f'{_layer_img(doc, ctx, l, variant="overlap", fallback=_OVERLAY_FALLBACKS[i % len(_OVERLAY_FALLBACKS)])}</div>'
+            f'{_layer_img(doc, ctx, l, variant="overlap", fallback=_overlay_fallback(doc, i))}</div>'
             for i, l in enumerate(overlays))
         collage = f"""    <div class="cs-collage cs-collage--layered"{base_style}>
       {base_img}
@@ -1044,11 +1207,11 @@ def _stack_hero_layered(doc, ctx, layers: list[dict], *, eyebrow_html, title_htm
         c = str(((l.get("alignTo") or {}) or {}).get("corner") or "br").lower()
         x = "left" if c in ("tl", "bl") else "right"
         y = "top" if c in ("tl", "tr") else "bottom"
-        img = _layer_img(doc, ctx, l, variant="overlap", fallback=_LAYER_FALLBACK["corner"])
+        img = _layer_img(doc, ctx, l, variant="overlap", fallback=_layer_fallback(doc, "corner"))
         corner_html += (f'\n  <div class="cs-corner-media" style="width: '
                         f'{_span_width_css(l.get("colSpan") or 3)}; '
-                        f'{x}: var(--c-section-pad-x, 2.5rem); '
-                        f'{y}: calc(6 * var(--baseline, 0.5rem)); z-index: 3">{img}</div>')
+                        f'{x}: var(--c-section-pad-x); '
+                        f'{y}: calc(6 * var(--baseline)); z-index: 3">{img}</div>')
 
     return f"""<section class="cs-section cs-hero-layered">{bg_html}{corner_html}
   <div class="cs-slot">
@@ -1059,6 +1222,62 @@ def _stack_hero_layered(doc, ctx, layers: list[dict], *, eyebrow_html, title_htm
       <p class="cs-sub">{cr.esc(subhead)}</p>
       {cta_html}
     </div>
+  </div>
+</section>"""
+
+
+def _hero_treatment_art(doc) -> str | None:
+    """The brand's own MEASURED art-panel paint (brand.yaml `heroTreatment.value.asset`),
+    as an ``assets/<name>`` src — only when the file actually exists in the ACTIVE
+    brand's inventory (AS-34 disk evidence; a declared-but-absent file resolves None
+    and the panel paints its plain surface instead)."""
+    val = ((doc.get("heroTreatment") or {}).get("value") or {}) if isinstance(doc, dict) else {}
+    name = val.get("asset")
+    if not isinstance(name, str) or not name.strip():
+        return None
+    inv = doc.get(ASSET_INVENTORY_KEY) or []
+    name = Path(name).name
+    return f"assets/{name}" if name in inv else None
+
+
+def _art_panel_permitted(style_ctx) -> bool:
+    """STYLE-law gate for the inset art-panel device (AS-37 / remote-fix schema-gap 9):
+    an ACTIVE style must declare `artPanel: inset` for the device to render (the
+    hard-edged editorial styles say `none`, so a panel-averse style can never grow a
+    rounded art panel). With no active style, the brand's own evidence (a declared
+    art-panel treatment + a real asset) decides — brand grammar is not suppressed by
+    a law nobody activated."""
+    if not (style_ctx and getattr(style_ctx, "active", False)
+            and getattr(style_ctx, "structure", None)):
+        return True
+    return (getattr(style_ctx.structure, "art_panel", None) or "none") == "inset"
+
+
+def _stack_hero_art_panel(doc, ctx, layout, rendered, panel, *, title_html,
+                          body_slot, cta_html, copy):
+    """The INSET ART-PANEL hero body (schema-gap 9): the whole hero lives INSIDE one
+    rounded panel painted with the brand's own art asset (noise/gradient/illustration
+    fill — surface role, not photography): content column (title → body → actions)
+    beside an optional media column. Geometry is generic; every measured value rides
+    brand tokens (panel radius via --radius-panel → --radius chain, rhythm via the
+    --c-* rhythm vars) and the art asset comes from the ACTIVE brand's inventory —
+    never a literal, never another brand's file (AS-34)."""
+    art = panel.get("asset") or _hero_treatment_art(doc)
+    bg_style = f' style="background-image: url(\'{cr.esc(art)}\')"' if art else ""
+    body_html = body_slot["html"] if body_slot else (
+        f'<p class="cs-sub">{cr.esc(copy["subhead"])}</p>' if copy["subhead"] else "")
+    media = next((r for r in rendered
+                  if r.get("contract") == "image" and (r.get("html") or "").strip()), None)
+    media_html = f'\n    <div class="cs-hero-panel-media">{media["html"]}</div>' \
+        if media else ""
+    mod = " cs-hero-panel--solo" if not media else ""
+    return f"""<section class="cs-section cs-hero-panel-sec">
+  <div class="cs-hero-panel{mod}"{bg_style}>
+    <div class="cs-hero-panel-content">
+      <div class="cs-title">{title_html}</div>
+      {body_html}
+      {cta_html}
+    </div>{media_html}
   </div>
 </section>"""
 
@@ -1074,7 +1293,7 @@ def compose_stack_hero(doc, layout, ctx, rendered, style_ctx):
     When the adapter classified PLACED media layers (layout['_mediaLayers'], §4.6.5),
     the media draws via the layered path; otherwise the measured default geometry is
     byte-identical."""
-    copy = copy_for(layout)
+    copy = copy_for(layout, doc)
     title = _pick(rendered, "title") or _pick(rendered, "heading")
 
     # The navbar is NO LONGER rendered here: it used to live INSIDE this hero #section, so it
@@ -1082,15 +1301,37 @@ def compose_stack_hero(doc, layout, ctx, rendered, style_ctx):
     # now hoisted to a PAGE-LEVEL sibling emitted once by compose_page.build_page BEFORE
     # #sec-0 (mirroring the footer), so the final structure is Page > { Nav, Section(s),
     # Footer } and the hero top padding normalizes to the normal section rhythm.
-    # eyebrow + subhead are header-block slots (optional); render them from the catalog.
-    eyebrow_html = cr.render_eyebrow(doc, ctx, {"text": copy["eyebrow"]})
+    # eyebrow / subhead / cta PREFER the layout's own resolved slots (v1 layouts carry
+    # real copy in componentMapping props); copy_for is the fallback, not the default.
+    eyebrow_slot = _pick(rendered, "eyebrow") or _pick(rendered, "tagline")
+    body_slot = _pick(rendered, "supporting") or _pick(rendered, "paragraph")
+    cta_slot = _pick(rendered, "cta") or _pick(rendered, "button") or _pick(rendered, "action")
+    eyebrow_html = eyebrow_slot["html"] if eyebrow_slot else \
+        cr.render_eyebrow(doc, ctx, {"text": copy["eyebrow"]})
     title_html = title["html"] if title else cr.render_heading(doc, ctx, {
         "text": ((doc.get("brand") or {}).get("name") or "Brand").upper(),
         "accent": ctx.is_dark, "splitTwoLines": True})
-    # the hero foot CTA is a typographic INK arrow link — the single committed accent stays
-    # reserved for the logo/eyebrow + the sanctioned display title, so the section carries
-    # exactly ONE accent element (satisfies the composition single-accent invariant).
-    cta_html = cr.render_arrow_link(doc, ctx, {"label": copy["cta"], "accent": False})
+    # HERO ACTIONS are law-first (AS-27 extended to the hero path, remote-fix blocker-3):
+    # real `button` contract slots render through render_button's cta-shape dispatch —
+    # a `never-typographic-primary` brand gets its measured filled pill(s), a typographic
+    # brand's dispatch downgrades the same slots to arrow links. Only with NO bound
+    # action slot does the legacy copy-driven arrow link render (the WoodWave default:
+    # the accent stays reserved for logo/eyebrow + display title, so the section carries
+    # exactly ONE accent element — the composition single-accent invariant).
+    action_frags = [r["html"] for r in rendered
+                    if r.get("contract") == "button" and (r.get("html") or "").strip()]
+    if action_frags:
+        cta_html = f'<div class="cs-hero-actions">{"".join(action_frags)}</div>'
+    elif cta_slot:
+        cta_html = cta_slot["html"]
+    else:
+        cta_html = cr.render_arrow_link(doc, ctx, {"label": copy["cta"], "accent": False})
+
+    panel = layout.get("_artPanel")
+    if panel is not None and _art_panel_permitted(style_ctx):
+        return _stack_hero_art_panel(doc, ctx, layout, rendered, panel,
+                                     title_html=title_html, body_slot=body_slot,
+                                     cta_html=cta_html, copy=copy)
 
     layers = layout.get("_mediaLayers")
     if layers:
@@ -1115,7 +1356,7 @@ def compose_stack_hero(doc, layout, ctx, rendered, style_ctx):
     <div class="cs-title">{title_html}</div>
 {collage}
     <div class="cs-foot">
-      <p class="cs-sub">{cr.esc(copy['subhead'])}</p>
+      {body_slot["html"] if body_slot else f'<p class="cs-sub">{cr.esc(copy["subhead"])}</p>'}
       {cta_html}
     </div>
   </div>
@@ -1130,11 +1371,13 @@ def compose_editorial_collage(doc, layout, ctx, rendered, style_ctx):
     left-anchored module of [eyebrow + display heading] + [hard-edged media w/ margin
     caption] + offset narrow paragraph + arrow link. z-order ghost -> media -> text.
     Every visible piece is a catalog component (header/image/caption/paragraph/link)."""
-    copy = copy_for(layout)
+    copy = copy_for(layout, doc)
     media = _pick(rendered, "media") or _pick(rendered, "image")
+    _brand_name = (doc.get("brand") or {}).get("name") or "Brand"
     media_html = media["html"] if media else cr.render_image(
-        doc, ctx, {"src": "assets/overlap-vase.jpg", "variant": "overlap",
-                   "alt": "WoodWave detail photography"})
+        doc, ctx, {"src": _composer_art(doc, layout, "detail"),
+                   "variant": "overlap",
+                   "alt": f"{_brand_name} detail photography"})
     header_html = cr.render_header(doc, ctx, {
         "eyebrow": copy["eyebrow"], "heading": copy["heading"], "level": "display",
         "accent": ctx.is_dark, "splitTwoLines": False})
@@ -1168,11 +1411,13 @@ def compose_heritage_timeline(doc, layout, ctx, rendered, style_ctx):
     """Assemble the heritage/collection-timeline collage: reuses editorial-collage's
     ghost-watermark-behind-media grammar, but the watermark is a YEAR RANGE (numerals),
     and TWO dated captions mark specific acquisitions instead of one margin caption."""
-    copy = copy_for(layout)
+    copy = copy_for(layout, doc)
     media = _pick(rendered, "heritage photography") or _pick(rendered, "media") or _pick(rendered, "image")
+    _brand_name = (doc.get("brand") or {}).get("name") or "Brand"
     media_html = media["html"] if media else cr.render_image(
-        doc, ctx, {"src": "assets/About-img-4.jpg", "variant": "overlap",
-                   "alt": "WoodWave heritage photography"})
+        doc, ctx, {"src": _composer_art(doc, layout, "gallery"),
+                   "variant": "overlap",
+                   "alt": f"{_brand_name} heritage photography"})
     header_html = cr.render_header(doc, ctx, {
         "eyebrow": copy["eyebrow"], "heading": copy["heading"], "level": "display",
         "accent": ctx.is_dark, "splitTwoLines": False})
@@ -1223,11 +1468,13 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
     half (the only cream-on-dark surface) carrying a didone H3 title + 1px-ruled action
     rows + an arrow link. Two flush halves, gap 0, hard cut. The panel keeps cream/ink
     coloring regardless of the inverse parent (its own --c-* scope on .cs-panel)."""
-    copy = copy_for(layout)
+    copy = copy_for(layout, doc)
     media = _pick(rendered, "photo") or _pick(rendered, "image") or _pick(rendered, "media")
+    _brand_name = (doc.get("brand") or {}).get("name") or "Brand"
     media_html = media["html"] if media else cr.render_image(
-        doc, ctx, {"src": "assets/hero-staircase.jpg", "variant": "hero",
-                   "alt": "WoodWave editorial photography"})
+        doc, ctx, {"src": _composer_art(doc, layout, "hero"),
+                   "variant": "hero",
+                   "alt": f"{_brand_name} editorial photography"})
     title_html = cr.render_heading(doc, ctx, {
         "text": copy["panelTitle"], "level": "h3"})
     rows = "".join(
@@ -1264,11 +1511,13 @@ def compose_about_statement(doc, layout, ctx, rendered, style_ctx):
     """Assemble the mission-statement: the PLAIN sibling of the editorial collage — an
     anchored text column (eyebrow -> display heading -> body -> arrow action) beside a
     single flush media panel. No ghost watermark; alternates anchor per the stagger rule."""
-    copy = copy_for(layout)
+    copy = copy_for(layout, doc)
     media = _pick(rendered, "statement photography") or _pick(rendered, "media") or _pick(rendered, "image")
+    _brand_name = (doc.get("brand") or {}).get("name") or "Brand"
     media_html = media["html"] if media else cr.render_image(
-        doc, ctx, {"src": "assets/About-img-2.jpg", "variant": "hero",
-                   "alt": "WoodWave gallery interior"})
+        doc, ctx, {"src": _composer_art(doc, layout, "gallery"),
+                   "variant": "hero",
+                   "alt": f"{_brand_name} gallery interior"})
     header_html = cr.render_header(doc, ctx, {
         "eyebrow": copy["eyebrow"], "heading": copy["heading"], "level": "display",
         "accent": ctx.is_dark, "splitTwoLines": False})
@@ -1291,11 +1540,14 @@ def compose_about_statement(doc, layout, ctx, rendered, style_ctx):
 def compose_curator_quote(doc, layout, ctx, rendered, style_ctx):
     """Assemble the curator-quote module: a heading-scale quote (didone serif, quotation
     marks kept) beside a hard-edged portrait, with a short name caption in the margin."""
-    copy = copy_for(layout)
+    copy = copy_for(layout, doc)
     media = _pick(rendered, "curator portrait") or _pick(rendered, "media") or _pick(rendered, "image")
+    # alt derives from the section's OWN attribution copy (never a hardcoded name).
+    _who = copy["caption"] or (doc.get("brand") or {}).get("name") or "Portrait"
     media_html = media["html"] if media else cr.render_image(
-        doc, ctx, {"src": "assets/About-img-5.jpg", "variant": "overlap",
-                   "alt": "Elin Marsh, curator"})
+        doc, ctx, {"src": _composer_art(doc, layout, "portrait"),
+                   "variant": "overlap",
+                   "alt": f"{_who}, curator"})
     eyebrow_html = cr.render_eyebrow(doc, ctx, {"text": copy["eyebrow"]})
     quote_html = cr.render_heading(doc, ctx, {
         "text": copy["quote"], "level": "display", "accent": False, "splitTwoLines": False})
@@ -1322,10 +1574,12 @@ def compose_visit_band(doc, layout, ctx, rendered, style_ctx):
     """Assemble the fuller visit-info band: an intro heading over a static desaturated
     map graphic, overlapped by TWO cream panels (ticket prices + hours/address). Panels
     keep cream/ink coloring regardless of the inverse parent, same as info-band's panel."""
-    copy = copy_for(layout)
+    copy = copy_for(layout, doc)
     media = _pick(rendered, "static map") or _pick(rendered, "media") or _pick(rendered, "image")
+    # alt derives from the section's OWN map caption copy (never a hardcoded place name).
     media_html = media["html"] if media else cr.render_image(
-        doc, ctx, {"src": "assets/Map.jpg", "variant": "hero", "alt": "Map — Harbour quarter"})
+        doc, ctx, {"src": _composer_art(doc, layout, "map"), "variant": "hero",
+                   "alt": f"Map — {copy['mapCaption']}".rstrip(" —")})
     eyebrow_html = cr.render_eyebrow(doc, ctx, {"text": copy["eyebrow"]})
     band_heading = cr.render_heading(doc, ctx, {
         "text": copy["heading"], "level": "display", "accent": False})
@@ -1397,18 +1651,20 @@ def compose_gallery_showcase(doc, layout, ctx, rendered, style_ctx):
     #sec-1 dropped-heading fix (AS-18 companion): a hero routed through this archetype
     (e.g. `hero-centered-stack-on-media` -> stack-fullbleed) declares heading/body/cta
     copy that this composer used to silently DROP. When the LAYOUT-layer copy carries
-    them (read from LAYOUT_COPY directly, NOT the SECTION_COPY-merged copy_for(), so
+    them (read from the layout layer directly, NOT the base-merged copy_for(), so
     legacy gallery bands stay byte-identical), a display header block renders above the
     photograph and an arrow link below the caption."""
-    copy = copy_for(layout)
+    copy = copy_for(layout, doc)
     media = _pick(rendered, "interior photography") or _pick(rendered, "media") or _pick(rendered, "image")
+    _brand_name = (doc.get("brand") or {}).get("name") or "Brand"
     media_html = media["html"] if media else cr.render_image(
-        doc, ctx, {"src": "assets/Web-gallery-1.jpg", "variant": "hero",
-                   "alt": "WoodWave gallery interior"})
+        doc, ctx, {"src": _composer_art(doc, layout, "gallery"),
+                   "variant": "hero",
+                   "alt": f"{_brand_name} gallery interior"})
     eyebrow_html = cr.render_eyebrow(doc, ctx, {"text": copy["eyebrow"]})
     counter_html = cr.render_caption(doc, ctx, {"text": copy["counter"]})
     caption_html = cr.render_caption(doc, ctx, {"text": copy["caption"]})
-    lc = LAYOUT_COPY.get((layout or {}).get("id"), {})
+    lc = layout_copy_layer(layout, doc)
     head = ""
     if lc.get("heading"):
         head_html = cr.render_header(doc, ctx, {
@@ -1422,7 +1678,19 @@ def compose_gallery_showcase(doc, layout, ctx, rendered, style_ctx):
     {body_html}
   </div>"""
     cta = ""
-    if lc.get("heading") and lc.get("cta"):
+    acts = [a for a in (lc.get("actions") or []) if isinstance(a, dict) and a.get("label")]
+    if lc.get("heading") and acts:
+        # real action slots (B5): the PRIMARY renders through render_button (filled for a
+        # filled-CTA brand, typographic downgrade otherwise); companions stay arrow links.
+        frags = [cr.render_button(doc, ctx, {"label": acts[0].get("label"),
+                                             "href": acts[0].get("href", "#"),
+                                             "accent": False})]
+        frags += [cr.render_arrow_link(doc, ctx, {"label": a.get("label"),
+                                                  "href": a.get("href", "#"),
+                                                  "accent": False}) for a in acts[1:]]
+        cta = f"""
+  <div class="cs-gallery-cta cs-foot">{''.join(frags)}</div>"""
+    elif lc.get("heading") and lc.get("cta"):
         cta_html = cr.render_arrow_link(doc, ctx, {"label": lc["cta"], "accent": False})
         cta = f"""
   <div class="cs-gallery-cta cs-foot">{cta_html}</div>"""
@@ -1447,18 +1715,33 @@ def compose_conversion_stack(doc, layout, ctx, rendered, style_ctx):
     spanning the full column width. No boxed inputs, no filled button.
     (Fix: level was hardcoded to the small h2 tier and the column was never actually
     centered — the pattern recorded `align: center` as intent but nothing implemented it,
-    which is why the render came out small and left-anchored against the source reference.)"""
-    copy = copy_for(layout)
+    which is why the render came out small and left-anchored against the source reference.)
+
+    ACTION SLOTS (B5, fix-batch 2026-07): when the section's mapping binds real `button`
+    contracts (a filled-CTA brand's conversion grammar), the composer renders THOSE
+    actions — via render_button's cta-shape dispatch — instead of inventing a signup
+    form the composition never declared. A mapping with no button slots keeps the
+    legacy copy-driven form path byte-identical (every existing WoodWave conversion)."""
+    copy = copy_for(layout, doc)
     header_html = cr.render_header(doc, ctx, {
         "eyebrow": copy["eyebrow"], "heading": copy["heading"], "level": "display",
         "accent": ctx.is_dark})
     body_html = cr.render_paragraph(doc, ctx, {"text": copy["body"], "measure": "40ch"})
-    form_html = cr.render_form(doc, ctx, {
-        "placeholder": copy["placeholder"], "submit": copy["cta"]})
+    action_frags = [r["html"] for r in rendered
+                    if r.get("contract") == "button" and (r.get("html") or "").strip()]
+    if action_frags:
+        has_form_slot = any(r.get("contract") == "form" for r in rendered)
+        form_html = cr.render_form(doc, ctx, {
+            "placeholder": copy["placeholder"], "submit": copy["cta"]}) if has_form_slot else ""
+        actions_html = f'\n    <div class="cs-conversion-actions">{"".join(action_frags)}</div>'
+    else:
+        form_html = cr.render_form(doc, ctx, {
+            "placeholder": copy["placeholder"], "submit": copy["cta"]})
+        actions_html = ""
     return f"""<section class="cs-section cs-conversion-sec">
   <div class="cs-conversion">
     {header_html}
-    {body_html}
+    {body_html}{actions_html}
     {form_html}
   </div>
 </section>"""
@@ -1476,19 +1759,38 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
     up. Every visible piece is a catalog component rendered by component_render; the
     offset/ratio come from the reused pattern's treatment/knob CSS vars. Hard-edged: no
     radius/shadow, cq/rem units only, brand tokens + the style spacing scale for rhythm."""
-    copy = copy_for(layout)
+    copy = copy_for(layout, doc)
     cards = copy.get("cards") or []
     # default assets + alternating aspect ratios: the pattern says "vary aspect between
     # cards"; the harvested 16/10 · 4/3 render as landscape/cover aspect-ratio boxes.
-    _assets = ["assets/hero-staircase.jpg", "assets/overlap-vase.jpg"]
+    # Defaults are EVIDENCE-CHECKED against the ACTIVE brand's inventory (AS-34): a
+    # brand without matching art renders the srcless placeholder, never foreign art.
+    _assets = [_brand_art(doc, "hero", *brand_default_art_names(doc, "hero")),
+               _brand_art(doc, "detail", *brand_default_art_names(doc, "detail"))]
     _aspects = ["16 / 10", "4 / 3"]
+    brand_name = (doc.get("brand") or {}).get("name") or "Brand"
     modules = []
     for i, card in enumerate(cards):
+        # asset may be a bare name, an already-prefixed path, or a sanitized {src, alt}
+        # dict (fix-batch 2026-07, N1-asset: interpolating the dict produced the literal
+        # `assets/{'src': …}` path the fidelity gate flagged). Alt resolves from the
+        # asset metadata, else the module caption + brand name — never a foreign-brand
+        # literal baked into the composer.
         raw = card.get("asset")
-        src = f"assets/{raw}" if raw else _assets[i % len(_assets)]
+        alt = card.get("alt")
+        if isinstance(raw, dict):
+            alt = alt or raw.get("alt")
+            raw = raw.get("src")
+        if raw:
+            src = raw if str(raw).startswith(("assets/", "http://", "https://", "data:")) \
+                else f"assets/{raw}"
+        else:
+            src = _assets[i % len(_assets)]
+        if not alt:
+            cap = (card.get("caption") or "").strip()
+            alt = f"{brand_name} — {cap}" if cap else f"{brand_name} photography"
         aspect = card.get("aspect") or _aspects[i % len(_aspects)]
-        img_html = cr.render_image(doc, ctx, {
-            "src": src, "alt": card.get("alt", "WoodWave editorial photography")})
+        img_html = cr.render_image(doc, ctx, {"src": src, "alt": alt})
         caption_html = cr.render_caption(doc, ctx, {"text": card.get("caption", "")})
         body_html = cr.render_paragraph(doc, ctx, {"text": card.get("body", ""), "measure": "44ch"})
         link_html = cr.render_arrow_link(doc, ctx, {"label": card["link"]}) if card.get("link") else ""
@@ -1520,11 +1822,14 @@ def compose_editorial_interlock(doc, layout, ctx, rendered, style_ctx):
     --c-inset-drop bottom margin so the headline's first lines sit level with the image).
     A float-wrap mechanism — DISTINCT from the ghost-word collage. Image + heading + caption
     are all catalog components (component_render); no radius/shadow, cq/rem units only."""
-    copy = copy_for(layout)
+    copy = copy_for(layout, doc)
     raw = copy.get("asset")
-    src = raw if str(raw or "").startswith("assets/") else (f"assets/{raw}" if raw else "assets/hero-staircase.jpg")
-    img_html = cr.render_image(doc, ctx, {"src": src, "alt": copy.get("alt", "WoodWave gallery hall"),
-                                          "aspect": copy.get("mediaAspectCss")})
+    src = raw if str(raw or "").startswith("assets/") \
+        else (f"assets/{raw}" if raw else _composer_art(doc, layout, "hero"))
+    _brand_name = (doc.get("brand") or {}).get("name") or "Brand"
+    img_html = cr.render_image(doc, ctx, {
+        "src": src, "alt": copy.get("alt") or f"{_brand_name} photography",
+        "aspect": copy.get("mediaAspectCss")})
     # two-line caption built on the c-caption primitive class (SSOT), <br> between lines.
     cap_lines = "<br>".join(cr.esc(ln) for ln in str(copy.get("caption", "")).split("\n") if ln.strip())
     statement_html = cr.render_heading(doc, ctx, {
@@ -1532,9 +1837,9 @@ def compose_editorial_interlock(doc, layout, ctx, rendered, style_ctx):
     # SUPPORT + CTA slots (ANCHORED-REPORT composer-gap #2 fix): the composer used to
     # silently DROP these; a composition that binds them now gets an interlock foot
     # cluster after the float clears. Read from the LAYOUT layer only (never the
-    # SECTION_COPY base, whose always-present `cta` would retro-add a CTA to every
+    # page-global base, whose always-present `cta` would retro-add a CTA to every
     # existing interlock render) — so legacy sections stay byte-identical.
-    lc = LAYOUT_COPY.get((layout or {}).get("id"), {})
+    lc = layout_copy_layer(layout, doc)
     support_html = cr.render_paragraph(doc, ctx, {"text": lc["support"], "measure": "44ch"}) \
         if lc.get("support") else ""
     cta_html = cr.render_arrow_link(doc, ctx, {"label": lc["cta"], "accent": False}) \
@@ -1565,19 +1870,45 @@ def compose_generic_flow(doc, layout, ctx, rendered, style_ctx):
     gracefully — every slot still renders through the shared component_render primitives
     (so the output stays gate-safe: c-* vocabulary, no bespoke markup) — instead of the
     dispatch falling through to the hero and mis-rendering. Media slots flow full-measure;
-    text slots stack with the block-gap rhythm. Hard-edged, cq/rem units only."""
-    parts = []
+    text slots stack with the block-gap rhythm. Hard-edged, cq/rem units only.
+
+    LOGO-STRIP DEVICE (AS-33): mapping entries the adapter routed to the image device
+    (slot="logo-strip", contract=logo, disk-backed src) group into ONE horizontal
+    ``.cs-logo-strip`` row at the first entry's position; text-fallback logo items stay
+    ordinary caption flow items. A ``_logoWall`` layout stamps the RESOLVED device on the
+    section element (``data-logo-device="image|text|empty"``) so the gate can verify the
+    section carries either real images or real text — never an empty frame."""
+    parts: list[str | None] = []
+    strip_items: list[str] = []
+    strip_pos: int | None = None
+    logo_text_items = 0
     for r in rendered:
         frag = r.get("html") or ""
         if not frag.strip() or "unresolved slot" in frag:
             continue
         role = (r.get("role") or "").lower()
+        if r.get("slot") == "logo-strip" and r.get("contract") == "logo":
+            if strip_pos is None:
+                strip_pos = len(parts)
+                parts.append(None)  # placeholder — replaced by the grouped strip below
+            strip_items.append(f'      <div class="cs-logo-strip-item">{frag}</div>')
+            continue
+        if role == "logo item":
+            logo_text_items += 1
         is_media = ("image" == r.get("contract")) or any(
             k in role for k in ("photo", "media", "image"))
         cls = "cs-flow-media" if is_media else "cs-flow-item"
         parts.append(f'    <div class="{cls}">{frag}</div>')
-    body = "\n".join(parts) or '    <!-- generic-flow: no renderable slots -->'
-    return f"""<section class="cs-section cs-flow-sec">
+    if strip_pos is not None:
+        parts[strip_pos] = ('    <div class="cs-logo-strip">\n'
+                            + "\n".join(strip_items) + "\n    </div>")
+    body = "\n".join(p for p in parts if p is not None) \
+        or '    <!-- generic-flow: no renderable slots -->'
+    device_attr = ""
+    if layout.get("_logoWall"):
+        mode = "image" if strip_items else ("text" if logo_text_items else "empty")
+        device_attr = f' data-logo-device="{mode}"'
+    return f"""<section class="cs-section cs-flow-sec"{device_attr}>
   <div class="cs-flow">
 {body}
   </div>
@@ -1594,7 +1925,7 @@ def compose_ruled_list_panel(doc, layout, ctx, rendered, style_ctx):
     on a genuine miss (layout-library.yaml pricing-ruled-list-panel /
     schedule-ruled-list-panel): the standard library's card-based pricing patterns were
     rejected by the brand's own no-cards-on-cream neverDo during retrieval."""
-    copy = copy_for(layout)
+    copy = copy_for(layout, doc)
     eyebrow_html = cr.render_eyebrow(doc, ctx, {"text": copy["eyebrow"]})
     heading_html = cr.render_heading(doc, ctx, {
         "text": copy["heading"], "level": "display", "accent": False})
@@ -1624,7 +1955,7 @@ def compose_faq_accordion(doc, layout, ctx, rendered, style_ctx):
     Promoted on a genuine miss (layout-library.yaml faq-accordion-list): no faq.yaml
     exists in the standard library at all. Rows separated by the brand's existing
     hairline device, never a card/box (no-cards-on-cream, no-shadows)."""
-    copy = copy_for(layout)
+    copy = copy_for(layout, doc)
     eyebrow_html = cr.render_eyebrow(doc, ctx, {"text": copy["eyebrow"]})
     heading_html = cr.render_heading(doc, ctx, {
         "text": copy["heading"], "level": "display", "accent": False})
@@ -1656,8 +1987,15 @@ def compose_stack(doc, layout, ctx, rendered, style_ctx):
         return compose_ruled_list_panel(doc, layout, ctx, rendered, style_ctx)
     if pid == "faq-accordion-list" or lid == "exhibition-faq":
         return compose_faq_accordion(doc, layout, ctx, rendered, style_ctx)
+    # a composition-declared HERO routes to the hero composer BEFORE the bound-contract
+    # checks (AS-27 hero extension): hero mappings now carry the section's REAL `button`
+    # action slots, which must not re-route the hero into the conversion composer.
+    if ((layout.get("_composition") or {}).get("useCase") or "").lower() == "hero":
+        return compose_stack_hero(doc, layout, ctx, rendered, style_ctx)
     contracts = {m.get("contract") for m in (layout.get("blockMapping") or [])}
-    if "form" in contracts:
+    # a bound `form` OR real `button` action slots => the conversion stack (B5: a
+    # filled-CTA brand's closing CTA binds buttons, not an invented signup form).
+    if "form" in contracts or "button" in contracts:
         return compose_conversion_stack(doc, layout, ctx, rendered, style_ctx)
     return compose_stack_hero(doc, layout, ctx, rendered, style_ctx)
 
@@ -1760,9 +2098,17 @@ def _ov_render_text(doc, ctx, slot, *, heading_props=None):
     return cr.render_paragraph(doc, ctx, {"text": txt, "measure": "38ch"})
 
 
-def _ov_media_html(doc, ctx, slot, *, variant="hero", fallback="hero-staircase.jpg"):
+def _ov_media_html(doc, ctx, slot, *, variant="hero", art="hero"):
+    # AS-34: the fallback preference comes from the ACTIVE brand's own declared
+    # defaultArt (brand_default_art_names) resolved against its inventory
+    # (_brand_art) — never a cross-brand literal src. ``art`` names the defaultArt
+    # kind whose preferred filenames apply to this slot.
+    kind = variant if variant in ("hero", "detail") else "hero"
+    src = slot.get("src") or _brand_art(doc, kind, *brand_default_art_names(doc, art))
+    if not src:
+        return ""
     return cr.render_image(doc, ctx, {
-        "src": slot.get("src") or f"assets/{fallback}",
+        "src": src,
         "variant": variant, "aspect": slot.get("aspect"),
         "alt": slot.get("alt") or (slot.get("role") or "brand photography")})
 
@@ -1885,10 +2231,10 @@ def _overlay_type_behind_media(doc, layout, ctx, slots, treatments, tbm):
         "text": _ov_text(heading) or "Heading", "level": "display", "accent": False,
         "splitTwoLines": True})
     main_html = _ov_media_html(doc, ctx, main, variant="overlap",
-                               fallback="About-img-2.jpg")
+                               art="occlusion-main")
     detail_html = (f'<div class="cs-ov-detail" style="width: '
                    f'{_span_width_css(detail.get("colSpan") or 3)}">'
-                   f'{_ov_media_html(doc, ctx, detail, variant="overlap", fallback="overlap-vase.jpg")}</div>'
+                   f'{_ov_media_html(doc, ctx, detail, variant="overlap", art="detail")}</div>'
                    if detail is not None else "")
     caption_html = ""
     for i, s in enumerate(captions[:2]):
@@ -1899,7 +2245,9 @@ def _overlay_type_behind_media(doc, layout, ctx, slots, treatments, tbm):
     rest_html = "".join(f'\n    <div class="cs-ov-foot-item">{_ov_render_text(doc, ctx, s)}</div>'
                         for s in rest if _ov_text(s))
 
-    pull = f"calc({vert:.3f} * 2.1 * var(--c-display-size, 5rem))"
+    # --c-display-size is ALWAYS emitted per section (component_vars) — no literal
+    # fallback (AS-24: a dormant `5rem` here was another brand's magnitude in disguise).
+    pull = f"calc({vert:.3f} * 2.1 * var(--c-display-size))"
     return f"""<section class="cs-section cs-overlay-sec cs-ov-tbm-sec"{_occlusion_attrs(geom, cap_class)}>
   <div class="cs-ov-frame">
     {eyebrow_html}
@@ -2039,7 +2387,7 @@ def compose_overlay(doc, layout, ctx, rendered, style_ctx):
                           + (f'<p class="cs-sub">{cr.esc(sub)}</p>' if sub else "")
                           + "</div>")
         scrim_html = (f'\n      <div class="cs-ov-scrimband" style="top: '
-                      f'round(nearest, {top:.0%}, var(--baseline, 0.5rem)); min-height: {h:.0%}; '
+                      f'round(nearest, {top:.0%}, var(--baseline)); min-height: {h:.0%}; '
                       f'background: {fill}">{items}</div>')
 
     # ── straddles (G2): z:front rides over an edge; z:back tucks under the canvas ──
@@ -2082,7 +2430,7 @@ def compose_overlay(doc, layout, ctx, rendered, style_ctx):
                                 f'{_span_width_css(partner.get("colSpan") or 4)}">'
                                 f'{_ov_render_text(doc, ctx, partner)}</div>')
             tucked_html = (f'\n    <div class="cs-ov-headrow cs-ov-headrow--tucked" '
-                          f'style="--c-tuck-depth: calc({depth_b:g} * var(--baseline, 0.5rem)); '
+                          f'style="--c-tuck-depth: calc({depth_b:g} * var(--baseline)); '
                           f'margin-inline-start: {_ov_left_css(target.get("colStart") or 1)}">'
                           f'\n      <div class="cs-ov-tucked" style="max-width: '
                           f'{_span_width_css(target.get("colSpan") or 6)}">{heading_html}</div>'
@@ -2100,9 +2448,9 @@ def compose_overlay(doc, layout, ctx, rendered, style_ctx):
             pos = []
             to_slot = by_name.get(reg.get("toSlot"))
             if edge == "bottom":
-                pos.append("bottom: calc(-0.5 * var(--baseline, 0.5rem))")
+                pos.append("bottom: calc(-0.5 * var(--baseline))")
             else:
-                pos.append("top: calc(6 * var(--baseline, 0.5rem))")
+                pos.append("top: calc(6 * var(--baseline))")
             if to_slot is not None and edge in ("left", "right"):
                 seam_col = int(to_slot.get("colStart") or 1) + int(to_slot.get("colSpan") or 3)
                 pos.append(f"left: {_ov_rel_left(seam_col, canvas_col)}")
@@ -2136,7 +2484,7 @@ def compose_overlay(doc, layout, ctx, rendered, style_ctx):
             for i, s in enumerate(steps))
         canvas_children.append(
             f'\n      <div class="cs-ov-straddle cs-ov-stepped" style="top: '
-            f'calc(10 * var(--baseline, 0.5rem)); left: {_ov_rel_left(target.get("colStart") or 1, canvas_col)}; '
+            f'calc(10 * var(--baseline)); left: {_ov_rel_left(target.get("colStart") or 1, canvas_col)}; '
             f'max-width: {_span_width_css(target.get("colSpan") or 8)}; {step_vars}">{heading_html}</div>')
 
     # ── break-frame (G6): corner-anchored DECORATION crossing the frame edge ──
@@ -2150,11 +2498,11 @@ def compose_overlay(doc, layout, ctx, rendered, style_ctx):
         x = "left" if corner in ("tl", "bl") else "right"
         y = "top" if corner in ("tl", "tr") else "bottom"
         db = float(reg.get("depthBaselines") or 4)
-        img = _ov_media_html(doc, ctx, target, variant="overlap", fallback="overlap-vase.jpg")
+        img = _ov_media_html(doc, ctx, target, variant="overlap", art="detail")
         canvas_children.append(
             f'\n      <div class="cs-ov-breakframe" aria-hidden="true" data-decoration="true" '
-            f'style="{x}: calc(-{db:g} * var(--baseline, 0.5rem)); '
-            f'{y}: calc(-{db:g} * var(--baseline, 0.5rem)); '
+            f'style="{x}: calc(-{db:g} * var(--baseline)); '
+            f'{y}: calc(-{db:g} * var(--baseline)); '
             f'width: {_span_width_css(target.get("colSpan") or 2)}">{img}</div>')
 
     # ── remaining placed/corner slots: in-frame annotations, cues, corner support ──
@@ -2173,12 +2521,12 @@ def compose_overlay(doc, layout, ctx, rendered, style_ctx):
             y = "top" if corner in ("tl", "tr") else "bottom"
             canvas_children.append(
                 f'\n      <div class="cs-ov-corner cs-ov-corner--{corner}" style="'
-                f'{x}: calc(4 * var(--baseline, 0.5rem)); {y}: calc(4 * var(--baseline, 0.5rem)); '
+                f'{x}: calc(4 * var(--baseline)); {y}: calc(4 * var(--baseline)); '
                 f'max-width: {_span_width_css(s.get("colSpan") or 2)}">{frag}</div>')
         elif s.get("colStart") is not None:
             canvas_children.append(
                 f'\n      <div class="cs-ov-placed" style="left: {_ov_rel_left(s.get("colStart"), canvas_col)}; '
-                f'top: calc(6 * var(--baseline, 0.5rem)); max-width: '
+                f'top: calc(6 * var(--baseline)); max-width: '
                 f'{_span_width_css(s.get("colSpan") or 2)}">{frag}</div>')
         else:
             foot_items.append(f'\n    <div class="cs-ov-foot-item">{frag}</div>')
@@ -2293,11 +2641,11 @@ def compose_banded(doc, layout, ctx, rendered, style_ctx):
             else "margin-inline: auto;"
         if straddler.get("media"):
             inner = _ov_media_html(doc, ctx, straddler, variant="overlap",
-                                   fallback="About-img-2.jpg")
+                                   art="occlusion-main")
         else:
             inner = _ov_render_text(doc, ctx, straddler)
         strad_html = (f'\n    <div class="cs-band-straddler" style="width: {_span_width_css(span)}; '
-                      f'{inline} --c-seam-rise: calc({rise_b:g} * var(--baseline, 0.5rem))">'
+                      f'{inline} --c-seam-rise: calc({rise_b:g} * var(--baseline))">'
                       f'{inner}</div>')
 
     rest_html = "".join(
@@ -2335,6 +2683,44 @@ ARCHETYPE_COMPOSERS = {
 }
 
 
+def scaffold_key(layout) -> str:
+    """The SCAFFOLD FAMILY the archetype dispatch will assemble for this layout — the
+    stable, brand-agnostic key space for scaffold-scoped machinery (the wildcard ladder
+    keys on this, since its CSS targets `.cs-<scaffold>-*` classes, not layout ids).
+    Mirrors compose_stack / compose_collage / compose_split exactly: patternRef id
+    first, then legacy layout id, then bound contracts, then the archetype default."""
+    archetype = ((layout or {}).get("archetype") or "stack").lower()
+    pid = _pattern_id(layout)
+    lid = (layout or {}).get("id")
+    if archetype == "stack":
+        if pid in ("pricing-ruled-list-panel", "schedule-ruled-list-panel") \
+                or lid in ("exhibition-tickets", "exhibition-schedule"):
+            return "ruled-list"
+        if pid == "faq-accordion-list" or lid == "exhibition-faq":
+            return "faq"
+        if (((layout or {}).get("_composition") or {}).get("useCase") or "").lower() == "hero":
+            return "hero"
+        contracts = {m.get("contract") for m in ((layout or {}).get("blockMapping") or [])}
+        if "form" in contracts or "button" in contracts:
+            return "conversion"
+        return "hero"
+    if archetype == "collage":
+        if pid == "heritage-ghost-numerals-timeline" or lid == "heritage-timeline":
+            return "timeline"
+        return "collage"
+    if archetype == "split":
+        if pid == "about-anchored-statement" or lid == "mission-statement":
+            return "statement"
+        if pid == "curator-quote-portrait-collage" or lid == "curator-quote":
+            return "quote"
+        if pid == "visit-dual-panel-map" or lid == "visit-band":
+            return "visit"
+        return "info-band"
+    if archetype == "stack-fullbleed":
+        return "gallery"
+    return archetype
+
+
 # ── scaffold CSS (archetype geometry; brand-token driven, cq-units only) ─────────
 
 # Shared base scaffold (cs-section + nav). Cream/ink come from the surface-scoped --c-*.
@@ -2343,13 +2729,16 @@ ARCHETYPE_COMPOSERS = {
 # sections register to identical left/right edges (previously each scaffold re-declared
 # its own `max-width: 86rem; margin: 0 auto`) — and (b) the shared 12-col registration
 # grid every two-column scaffold places onto (repeat(var(--grid-cols)) tracks +
-# var(--grid-gutter)) instead of private fr-ratio tracks.
+# var(--grid-gutter, 6rem)) instead of private fr-ratio tracks.
 SCAFFOLD_BASE_CSS = """.cs-section { background: var(--c-paper); color: var(--c-ink);
-  padding: var(--c-section-pad-top, 1.75rem) var(--c-section-pad-x, 2.5rem)
-           var(--c-section-pad-bottom, var(--c-section-pad, 6.25rem)); }
+  padding: var(--c-section-pad-top) var(--c-section-pad-x)
+           var(--c-section-pad-bottom); }
 .cs-nav { display: flex; align-items: center; justify-content: space-between; gap: 2rem;
   margin-bottom: clamp(2rem, 6cqw, 5rem); }
 .cs-navlinks { display: flex; gap: 0.55rem; flex: 1; justify-content: center; }
+/* nav links read the MEASURED nav register (--c-nav-size, single-sourced from
+   brand.yaml navbar.measured.link), not the generic control-text size. */
+.cs-navlinks .c-arrow-link { font-size: var(--c-nav-size, var(--c-control-size)); }
 .cs-navlinks .cs-sep { opacity: 0.55; }
 /* shared content container: ONE measure, identical section edges page-wide. */
 .cs-collage-grid, .cs-statement-grid, .cs-quote-grid, .cs-visit-panels,
@@ -2371,9 +2760,9 @@ SCAFFOLD_HERO_CSS = """.cs-section { min-height: 100cqh; }
    USED value to an exact --baseline multiple, so the overlap registers to the shared
    baseline grid at any width instead of landing on an arbitrary fraction. */
 .c-image--overlap.is-abs { position: absolute;
-  width: round(nearest, 34%, var(--baseline, 0.5rem));
-  right: round(nearest, 4%, var(--baseline, 0.5rem));
-  bottom: round(nearest, -28%, var(--baseline, 0.5rem)); z-index: 1; }
+  width: round(nearest, 34%, var(--baseline));
+  right: round(nearest, 4%, var(--baseline));
+  bottom: round(nearest, -28%, var(--baseline)); z-index: 1; }
 /* SPACER (anti-ai-slop.md AS-01/AS-03): reserves clearance below the collage for the
    overlap image's bleed (bottom:-28% of a 34%-wide, 785:620 image inside a 1355:570
    collage geometrically needs ~11.7% of the collage's OWN width, not a guessed round
@@ -2383,9 +2772,11 @@ SCAFFOLD_HERO_CSS = """.cs-section { min-height: 100cqh; }
    (measured against `.cs-slot`, not the width-capped collage) kept growing forever. */
 .cs-spacer { height: clamp(4rem, 12cqw, 9.5rem); }
 .cs-foot { display: flex; flex-direction: column; align-items: center;
-  gap: var(--c-block-gap, 1.75rem); text-align: center; margin-top: var(--c-block-gap, 2.5rem); }
-.cs-sub { font-family: var(--c-font-body); font-size: 1rem; line-height: 1.55em;
-  color: var(--c-ink-muted); max-width: 42rem; }
+  gap: var(--c-block-gap); text-align: center; margin-top: var(--c-block-gap); }
+/* subhead rides the brand body register one step up (1rem was body 0.875rem x 1.1429
+   against the pre-token render — ratio is structure, magnitude is the brand's). */
+.cs-sub { font-family: var(--c-font-body); font-size: calc(var(--c-body-size) * 1.1429);
+  line-height: 1.55em; color: var(--c-ink-muted); max-width: 42rem; }
 /* ── PLACED media layers (grid/overlap contract §4.6.5) ─────────────────────────
    Only sections whose composition declared placement get these classes; the legacy
    hero (.cs-collage without --layered) is byte-unchanged. z-ladder inside the layered
@@ -2409,14 +2800,52 @@ SCAFFOLD_HERO_CSS = """.cs-section { min-height: 100cqh; }
 /* small z:front media pinned to a corner of the SECTION frame (alignTo.corner). */
 .cs-corner-media { position: absolute; }
 .cs-corner-media .c-image, .cs-corner-media .c-image-ph { width: 100%; }
+/* HERO ACTIONS row (AS-27 hero extension): real bound action slots cluster on the
+   brand's control rhythm; each child is the shared c-button / c-arrow-link primitive
+   (filled vs typographic is render_button's law-first dispatch, not CSS). */
+.cs-hero-actions { display: flex; flex-wrap: wrap; align-items: center;
+  gap: var(--c-block-gap); justify-content: inherit; }
+.cs-foot .cs-hero-actions { justify-content: center; }
 @media (max-width: 991px) { .cs-navlinks { display: none; } }
-@media (max-width: 767px) { .cs-section { padding: clamp(1.25rem, 5cqw, 1.75rem)
+@media (max-width: 767px) { .cs-section {
+    /* provenance: structural — mobile floor insets (tap-safe minimum section padding on
+       a narrow frame; device floor, not a brand rhythm token) */
+    padding: clamp(1.25rem, 5cqw, 1.75rem)
     clamp(1.25rem, 5cqw, 1.75rem) clamp(1.5rem, 9cqw, 3rem); }
-  .c-image--overlap.is-abs { width: round(nearest, 46%, var(--baseline, 0.5rem));
-    right: round(nearest, 2%, var(--baseline, 0.5rem));
-    bottom: round(nearest, -18%, var(--baseline, 0.5rem)); }
+  .c-image--overlap.is-abs { width: round(nearest, 46%, var(--baseline));
+    right: round(nearest, 2%, var(--baseline));
+    bottom: round(nearest, -18%, var(--baseline)); }
   /* mobile overlap geometry (46% wide, bottom:-18%) needs ~7.6% of collage width */
-  .cs-spacer { height: clamp(2.5rem, 8cqw, 5rem); } }"""
+  .cs-spacer { height: clamp(2.5rem, 8cqw, 5rem); }
+}"""
+
+# INSET ART-PANEL hero (AS-37: generic art-panel surface; style-gated). Emitted ONLY
+# when the section actually renders the device (layout carries `_artPanel`), so pages
+# without it — e.g. every no-radius brand render — stay literally free of this CSS
+# (the neverDo.no-radius check reads the page text; an inert `border-radius:
+# var(--radius-panel, ...)` rule would read as a rounded device on a sharp brand).
+SCAFFOLD_ART_PANEL_CSS = """/* ── INSET ART-PANEL hero (AS-37) ─────────────────────
+   The hero lives INSIDE one rounded panel painted with the brand's own art asset.
+   Radius rides the brand token chain (panel tier, else the global radius); rhythm
+   rides the shared --c-* vars; the art is a background FILL (surface, not an <img>). */
+.cs-hero-panel-sec { display: flex; flex-direction: column; }
+.cs-hero-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center; column-gap: var(--grid-gutter, 6rem); flex: 1;
+  width: 100%; max-width: var(--content-measure, 86rem); margin-inline: auto;
+  border-radius: var(--radius-panel, var(--radius));
+  background-color: var(--c-panel-bg, var(--c-paper));
+  background-size: cover; background-position: center top; overflow: hidden;
+  padding: var(--c-module-gap, 6rem) var(--c-module-gap, 6rem); }
+.cs-hero-panel--solo { grid-template-columns: minmax(0, 1fr); }
+.cs-hero-panel-content { display: flex; flex-direction: column; align-items: flex-start;
+  justify-content: center; gap: var(--c-block-gap); text-align: left; }
+.cs-hero-panel-content .cs-title { margin-bottom: 0; text-align: inherit; }
+.cs-hero-panel-media { align-self: stretch; display: flex; align-items: center; }
+.cs-hero-panel-media .c-image, .cs-hero-panel-media .c-image-ph { width: 100%; }
+@media (max-width: 767px) {
+  .cs-hero-panel { grid-template-columns: minmax(0, 1fr); row-gap: var(--c-block-gap);
+    /* provenance: structural — mobile floor inset inside the art panel (device floor) */
+    padding: clamp(1.5rem, 6cqw, 2.5rem); } }"""
 
 # collage (editorial about-run): oversized ghost watermark behind a DELIBERATELY
 # asymmetric 2x2 module — headline top-left, offset body top-right, media bottom-left.
@@ -2426,9 +2855,16 @@ SCAFFOLD_HERO_CSS = """.cs-section { min-height: 100cqh; }
 # asymmetry reads as intentional editorial negative space, not an empty void.)
 SCAFFOLD_COLLAGE_CSS = """.cs-collage-sec { position: relative; overflow: hidden; }
 .cs-ghost { position: absolute; right: -3cqw; top: 4%; z-index: 0;
-  font-family: var(--c-font-heading); text-transform: uppercase; font-weight: 400;
-  font-size: var(--c-ghost-size, clamp(10rem, 40cqw, 32rem)); line-height: 0.9;
-  color: var(--c-ghost, rgba(31,26,20,0.06));
+  font-family: var(--c-font-heading);
+  text-transform: var(--case-ghost-watermark, var(--c-case-heading));
+  font-weight: var(--weight-ghost-watermark, var(--c-heading-weight));
+  /* ghost scale: brand-measured tier magnitude x structural ladder ratios (CS-2);
+     var unresolved (no ghost tier) => device disabled, never a foreign scale. */
+  font-size: var(--c-ghost-size,
+    clamp(calc(var(--size-ghost-watermark-base) * 0.381), 40cqw,
+          calc(var(--size-ghost-watermark-base) * 1.219)));
+  line-height: 0.9;
+  color: var(--c-ghost);
   pointer-events: none; white-space: nowrap; }
 /* SURFACE-AWARE ghost: the brand-constant --c-ghost is dark-ink-at-6% (cream tuned) —
    invisible dark-on-dark on an inverse collage. Scoped to inverse surfaces only, so
@@ -2441,7 +2877,7 @@ SCAFFOLD_COLLAGE_CSS = """.cs-collage-sec { position: relative; overflow: hidden
    so the head/media column and the body column register to shared page tracks. Row gap +
    body drop are exact --baseline multiples (3rem = 6, 3.5rem = 7). */
 .cs-collage-grid { position: relative; z-index: 1;
-  row-gap: calc(6 * var(--baseline, 0.5rem)); align-items: start; }
+  row-gap: calc(6 * var(--baseline)); align-items: start; }
 .cs-collage-head { grid-column: 1 / span 6; grid-row: 1; max-width: none; }
 /* the collage headline spans wider than the style's global display cap so it intrudes
    toward the right rather than stacking one word per line on the far left. */
@@ -2451,13 +2887,22 @@ SCAFFOLD_COLLAGE_CSS = """.cs-collage-sec { position: relative; overflow: hidden
 .cs-collage-media .c-image { width: 100%; }
 .cs-collage-body { grid-column: 7 / -1; grid-row: 1 / span 2; align-self: start;
   display: flex; flex-direction: column;
-  gap: var(--c-block-gap, 1.75rem); max-width: 38ch;
-  padding-top: calc(7 * var(--baseline, 0.5rem)); }
+  gap: var(--c-block-gap); max-width: 38ch;
+  padding-top: calc(7 * var(--baseline)); }
+/* MID collapse (anti-ai-slop AS-16 multi-viewport lesson): between ~768-1280px the
+   display heading overflows its 6-col track and paints OVER the body column (grid does
+   not clip overflow) — collapse to a single column well before the mobile breakpoint. */
+@media (max-width: 1280px) { .cs-collage-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .cs-collage-head { grid-column: 1; grid-row: 1; }
+  .cs-collage-body { grid-column: 1; grid-row: 2; padding-top: 0; max-width: 46ch; }
+  .cs-collage-media { grid-column: 1; grid-row: 3; align-self: start; } }
 @media (max-width: 767px) { .cs-collage-grid { grid-template-columns: 1fr; gap: 2.5rem; }
   .cs-collage-head { grid-column: 1; grid-row: 1; }
   .cs-collage-body { grid-column: 1; grid-row: 2; padding-top: 0; max-width: none; }
   .cs-collage-media { grid-column: 1; grid-row: 3; align-self: start; }
-  .cs-ghost { font-size: clamp(5rem, 40cqw, 12rem); right: auto; left: -2cqw; } }"""
+  .cs-ghost { font-size: clamp(calc(var(--size-ghost-watermark-base) * 0.1905), 40cqw,
+                calc(var(--size-ghost-watermark-base) * 0.4571));
+    right: auto; left: -2cqw; } }"""
 
 # split (info-band): two flush halves — photo | cream panel — gap 0, hard cut.
 SCAFFOLD_SPLIT_CSS = """.cs-split-intro { max-width: 100%; margin-bottom: 3.5rem; }
@@ -2472,21 +2917,26 @@ SCAFFOLD_SPLIT_CSS = """.cs-split-intro { max-width: 100%; margin-bottom: 3.5rem
 .cs-split-media { grid-column: 1 / span 6; display: flex; }
 .cs-split > .cs-panel { grid-column: 7 / -1; }
 .cs-split-media .c-image { width: 100%; height: 100%; object-fit: cover; }
-.cs-panel { background: var(--c-panel, #F7EFE6); color: var(--c-panel-ink, #1F1A14);
+/* CS-1 (token-layer-2026-07): the brand-color literals that used to sit in these var()
+   fallbacks are GONE — the generated layer-1 block always defines the panel family
+   (fail-loud at generation), so fallbacks were dead-or-DNA. */
+.cs-panel { background: var(--c-panel); color: var(--c-panel-ink);
   padding: 2.75rem 2.5rem; display: flex; flex-direction: column;
-  /* the cream panel keeps cream/ink coloring regardless of the dark parent band.
+  /* the panel keeps its own surface coloring regardless of the dark parent band.
      INTERACTION tokens re-scope with it (AS-20): the panel is a LIGHT surface, so the
      link hover resolves to the panel's own ink (ink-shift) — the parent dark section's
-     measured gold hover (--c-link-hover) must never leak onto cream (gold-on-cream
-     ~1.3:1, the 'GET DIRECTIONS' failure). */
-  --c-ink: var(--c-panel-ink, #1F1A14); --c-accent: var(--c-panel-ink, #1F1A14);
-  --c-link-hover: var(--c-panel-ink, #1F1A14);
-  --c-hairline: var(--c-panel-hairline, rgba(31,26,20,0.30)); }
+     measured accent hover (--c-link-hover) must never leak onto the light panel
+     (the 'GET DIRECTIONS' gold-on-cream ~1.3:1 failure). */
+  --c-ink: var(--c-panel-ink); --c-accent: var(--c-panel-ink);
+  --c-link-hover: var(--c-panel-ink);
+  --c-hairline: var(--c-panel-hairline); }
 .cs-panel-title { margin-bottom: 1.25rem; }
 .cs-panel-foot { margin-top: 1.5rem; display: flex; justify-content: flex-end; }
 @media (max-width: 767px) { .cs-split { grid-template-columns: 1fr; }
   .cs-split-media, .cs-split > .cs-panel { grid-column: 1; }
-  .cs-split-media .c-image { aspect-ratio: 4 / 3; } }"""
+  .cs-split-media .c-image { /* provenance: structural — mobile recrop: the stacked
+    split half needs a bounded height (device geometry, not a brand ratio) */
+    aspect-ratio: 4 / 3; } }"""
 
 # conversion stack (newsletter): a centered narrow column with the underline form.
 # ALIGNMENT-COHERENCE RULE (brand-schema.md §4.4 contentShape.alignment; CTA blocks only —
@@ -2497,10 +2947,15 @@ SCAFFOLD_SPLIT_CSS = """.cs-split-intro { max-width: 100%; margin-bottom: 3.5rem
 # measure, reading visibly wider than the body above it against the source reference).
 SCAFFOLD_CONVERSION_CSS = """.cs-conversion-sec { display: flex; justify-content: center; }
 .cs-conversion { display: flex; flex-direction: column; align-items: center; text-align: center;
-  gap: var(--c-block-gap, 1.75rem); max-width: 46rem; width: 100%; --c-cta-measure: 40ch; }
+  gap: var(--c-block-gap); max-width: 46rem; width: 100%; --c-cta-measure: 40ch; }
 .cs-conversion .c-paragraph { max-width: var(--c-cta-measure); }
 .cs-conversion .c-form { margin: 0.75rem auto 0; max-width: var(--c-cta-measure); width: 100%; }
 .cs-conversion .c-field { width: 100%; }
+/* real action slots (B5): the bound button contracts render as a centered action row —
+   present only when the composition binds `button` slots; the legacy form path never
+   emits this element. Gap rides the section's own block-gap alias. */
+.cs-conversion-actions { display: flex; flex-wrap: wrap; justify-content: center;
+  align-items: center; gap: var(--c-block-gap); }
 /* documented brand override (voice.md: "one of only two sanctioned centered stacks",
    the other being the hero #sec-0): beats the active style's generic
    `.c-heading--display { text-align:left; max-width:18ch }` default via higher
@@ -2517,7 +2972,7 @@ SCAFFOLD_CONVERSION_CSS = """.cs-conversion-sec { display: flex; justify-content
 # row markup, only the surrounding column geometry is new.
 SCAFFOLD_RULEDLIST_CSS = """.cs-ruledlist-sec { display: flex; justify-content: center; }
 .cs-ruledlist { display: flex; flex-direction: column; align-items: center; text-align: center;
-  gap: var(--c-block-gap, 1.75rem); max-width: 46rem; width: 100%; --c-list-measure: 34rem; }
+  gap: var(--c-block-gap); max-width: 46rem; width: 100%; --c-list-measure: 34rem; }
 .cs-ruledlist .c-paragraph { max-width: 40ch; }
 .cs-ruledlist .c-rows { max-width: var(--c-list-measure); width: 100%; text-align: left; }
 .cs-ruledlist-sec .c-heading--display { text-align: center; max-width: 34ch; }
@@ -2530,7 +2985,7 @@ SCAFFOLD_RULEDLIST_CSS = """.cs-ruledlist-sec { display: flex; justify-content: 
 # never an icon sprite/chevron asset.
 SCAFFOLD_FAQ_CSS = """.cs-faq-sec { display: flex; justify-content: center; }
 .cs-faq { display: flex; flex-direction: column; align-items: center; text-align: center;
-  gap: var(--c-block-gap, 1.75rem); max-width: 52rem; width: 100%; }
+  gap: var(--c-block-gap); max-width: 52rem; width: 100%; }
 .cs-faq-sec .c-heading--display { text-align: center; max-width: 34ch; }
 .c-faq-list { width: 100%; text-align: left; }
 .c-faq-item { position: relative; padding: 1.5rem 0; }
@@ -2541,8 +2996,11 @@ SCAFFOLD_FAQ_CSS = """.cs-faq-sec { display: flex; justify-content: center; }
   cursor: pointer; list-style: none; display: flex; align-items: baseline;
   justify-content: space-between; gap: 1.5rem; }
 .c-faq-q::-webkit-details-marker { display: none; }
-.c-faq-icon { font-family: var(--c-font-body); font-size: 1.25rem; color: var(--c-ink-muted);
-  flex: 0 0 auto; transition: transform var(--c-motion-fast, 320ms) var(--c-ease, ease); }
+/* disclosure glyph rides the question register: a fixed ratio of the brand's own h3
+   question size (1.25rem was 1.625rem x 0.7692 against the pre-token render). */
+.c-faq-icon { font-family: var(--c-font-body);
+  font-size: calc(var(--c-h3-size) * 0.7692); color: var(--c-ink-muted);
+  flex: 0 0 auto; transition: transform var(--c-motion-fast) var(--c-ease); }
 .c-faq-item[open] .c-faq-icon { transform: rotate(45deg); }
 .c-faq-a { font-family: var(--c-font-body); font-size: var(--c-body-size); line-height: 1.55em;
   color: var(--c-ink-muted); max-width: 56ch; margin-top: 0.85rem; }
@@ -2552,7 +3010,13 @@ SCAFFOLD_FAQ_CSS = """.cs-faq-sec { display: flex; justify-content: center; }
 # (a year range reads wider than a single word) and sit lower so they don't collide with
 # the heading, per the pattern's own `anchor: behind-media` + `amount.class: medium` overlap.
 SCAFFOLD_TIMELINE_CSS = """.cs-timeline-sec .cs-ghost--numerals { top: auto; bottom: -6%;
-  right: -1cqw; font-size: var(--c-ghost-size, clamp(9rem, 32cqw, 26rem)); letter-spacing: -0.01em; }
+  right: -1cqw;
+  font-size: var(--c-ghost-size,
+    clamp(calc(var(--size-ghost-watermark-base) * 0.3429), 32cqw,
+          calc(var(--size-ghost-watermark-base) * 0.9905)));
+  /* provenance: structural — numeral-pair tightening (glyph-overlap micro-tracking of
+     the year-range device, not a brand tracking token) */
+  letter-spacing: -0.01em; }
 @media (max-width: 767px) { .cs-timeline-sec .cs-ghost--numerals { bottom: auto; top: 2%; } }"""
 
 # mission statement (split variant): anchored text beside a single flush media panel, NO
@@ -2567,9 +3031,11 @@ SCAFFOLD_STATEMENT_CSS = """/* on the SHARED 12-col grid: the old private 0.9fr/
 .cs-statement-grid { align-items: center; }
 .cs-statement-text { grid-column: var(--c-statement-text-col, 1 / span 5);
   display: flex; flex-direction: column;
-  gap: var(--c-block-gap, 1.75rem); max-width: 46ch; }
+  gap: var(--c-block-gap); max-width: 46ch; }
 .cs-statement-media { grid-column: var(--c-statement-media-col, 6 / -1); }
-.cs-statement-media .c-image { width: 100%; aspect-ratio: var(--c-aspect-landscape, 4 / 3); object-fit: cover; }
+/* CR-6: bare palette ref — no literal fallback. Palette-less brands keep the intrinsic
+   ratio (the aspect device is disabled, never another brand's crop). */
+.cs-statement-media .c-image { width: 100%; aspect-ratio: var(--c-aspect-landscape); object-fit: cover; }
 @media (max-width: 767px) { .cs-statement-grid { grid-template-columns: 1fr; gap: 2.5rem; }
   .cs-statement-text, .cs-statement-media { grid-column: 1; } }"""
 
@@ -2583,18 +3049,18 @@ SCAFFOLD_QUOTE_CSS = """/* on the SHARED 12-col grid: the old private 1.2fr/0.8f
 .cs-quote-grid { align-items: center; }
 .cs-quote-text { grid-column: var(--c-quote-text-col, 1 / span 7);
   display: flex; flex-direction: column;
-  gap: var(--c-block-gap, 1.75rem); }
+  gap: var(--c-block-gap); }
 .cs-quote-text .c-heading--display { max-width: 20ch; }
 .cs-quote-media { grid-column: var(--c-quote-media-col, 8 / -1);
   display: flex; flex-direction: column; gap: 0.75rem; }
-.cs-quote-media .c-image { width: 100%; aspect-ratio: var(--c-aspect-portrait, 3 / 4); object-fit: cover; }
+.cs-quote-media .c-image { width: 100%; aspect-ratio: var(--c-aspect-portrait); object-fit: cover; }
 @media (max-width: 767px) { .cs-quote-grid { grid-template-columns: 1fr; gap: 2.5rem; }
   .cs-quote-text, .cs-quote-media { grid-column: 1; } }"""
 
 # visit band (split variant): intro heading over a static map with TWO cream panels
 # overlapping its lower edge (panel-over-media, the sanctioned overlap type).
 SCAFFOLD_VISIT_CSS = """.cs-visit-grid { position: relative; }
-.cs-visit-media .c-image { width: 100%; aspect-ratio: var(--c-aspect-band, 21 / 9); object-fit: cover; }
+.cs-visit-media .c-image { width: 100%; aspect-ratio: var(--c-aspect-band); object-fit: cover; }
 /* the panel PAIR keeps its own tight two-track split (a component cluster, not a page
    grid — a 6/6 span on the shared gutter would blow its 1.5rem seam to 6rem), but its
    seam + inset snap to --baseline multiples (1.5rem = 3, 2.5rem = 5) and its container
@@ -2602,11 +3068,11 @@ SCAFFOLD_VISIT_CSS = """.cs-visit-grid { position: relative; }
    `margin-top: -4.5rem` was dead — the later `margin: 0 auto` shorthand reset it —
    so it is dropped rather than silently resurrected here.) */
 .cs-visit-panels { position: relative; z-index: 1; display: grid;
-  grid-template-columns: 1fr 1fr; gap: calc(3 * var(--baseline, 0.5rem));
-  padding: 0 calc(5 * var(--baseline, 0.5rem)); }
+  grid-template-columns: 1fr 1fr; gap: calc(3 * var(--baseline));
+  padding: 0 calc(5 * var(--baseline)); }
 .cs-visit-panels .cs-panel { box-shadow: none; }
 @media (max-width: 767px) { .cs-visit-panels { grid-template-columns: 1fr;
-  margin-top: calc(3 * var(--baseline, 0.5rem)); padding: 0 1.25rem; } }"""
+  margin-top: calc(3 * var(--baseline)); padding: 0 1.25rem; } }"""
 
 # gallery showcase (stack-fullbleed): full-bleed photo, thin utility row (eyebrow far
 # left / static counter far right), margin caption below. No slider controls.
@@ -2614,16 +3080,21 @@ SCAFFOLD_GALLERY_CSS = """.cs-gallery-sec { padding-left: 0; padding-right: 0; }
 .cs-gallery-utility { display: flex; align-items: center; justify-content: space-between;
   padding: 0 2.5rem; margin-bottom: 1.25rem; }
 .cs-gallery-media { margin: 0; }
-.cs-gallery-media .c-image { width: 100%; aspect-ratio: var(--c-aspect-band, 16 / 7); object-fit: cover; display: block; }
+.cs-gallery-media .c-image { width: 100%; aspect-ratio: var(--c-aspect-band); object-fit: cover; display: block; }
 .cs-gallery-caption { padding: 1rem 2.5rem 0; }
 /* optional display header/cta (hero-through-gallery-band; #sec-1 dropped-heading fix).
    .cs-slot/.cs-foot membership means the resolved anchor (AS-18) aligns them. */
 .cs-gallery-head { display: flex; flex-direction: column; gap: 1rem;
   padding: 0 2.5rem; margin-bottom: 2rem; }
-.cs-gallery-cta { display: flex; padding: 1.25rem 2.5rem 0; }
+.cs-gallery-cta { display: flex; align-items: center;
+  gap: var(--c-block-gap); padding: 1.25rem 2.5rem 0; }
 @media (max-width: 767px) { .cs-gallery-utility, .cs-gallery-caption { padding-left: 1.25rem;
   padding-right: 1.25rem; } .cs-gallery-head, .cs-gallery-cta { padding-left: 1.25rem;
-  padding-right: 1.25rem; } .cs-gallery-media .c-image { aspect-ratio: 4 / 5; } }"""
+  padding-right: 1.25rem; }
+  .cs-gallery-media .c-image { /* provenance: structural — mobile recrop of the
+    full-bleed band device (tall crop so the band keeps presence on a narrow frame;
+    device geometry, not a brand ratio) */
+    aspect-ratio: 4 / 5; } }"""
 
 
 # cards (staggered caption cards — features-staggered-caption-cards, Claude Design #04):
@@ -2633,8 +3104,8 @@ SCAFFOLD_GALLERY_CSS = """.cs-gallery-sec { padding-left: 0; padding-right: 0; }
 # against the shared grid instead of a floating scalar. Hard-edged: no radius/shadow.
 SCAFFOLD_CARDS_CSS = """.cs-modules-sec { position: relative; }
 .cs-modules-intro { margin-bottom: clamp(2.5rem, 6cqw, 5rem); }
-.cs-modules { row-gap: clamp(calc(4 * var(--baseline, 0.5rem)), 5cqw,
-  calc(7 * var(--baseline, 0.5rem))); align-items: start; }
+.cs-modules { row-gap: clamp(calc(4 * var(--baseline)), 5cqw,
+  calc(7 * var(--baseline))); align-items: start; }
 .cs-modules > .cs-module:nth-child(odd) { grid-column: 1 / span var(--c-span-a, 7); }
 .cs-modules > .cs-module:nth-child(even) { grid-column: span var(--c-span-b, 5) / -1; }
 .cs-module { display: flex; flex-direction: column; gap: 0.9rem; }
@@ -2643,7 +3114,7 @@ SCAFFOLD_CARDS_CSS = """.cs-modules-sec { position: relative; }
    background/border/radius/shadow — depth from the stagger + whitespace only (so this is
    an editorial module, not a prohibited cream card). */
 .cs-modules > .cs-module:nth-child(even) {
-  margin-block-start: var(--c-card-stagger, calc(7 * var(--baseline, 0.5rem))); }
+  margin-block-start: var(--c-card-stagger, calc(7 * var(--baseline))); }
 /* PER-COLUMN placement (editorial-harvest-2026-07, staggered-caption-columns-3): a
    pattern's stagger.perColumn entries set --c-col-N/--c-drop-N (whole-column tracks +
    baseline-multiple drops) via pattern_treatment_css; the var() DEFAULTS reproduce the
@@ -2653,7 +3124,7 @@ SCAFFOLD_CARDS_CSS = """.cs-modules-sec { position: relative; }
   margin-block-start: var(--c-drop-1, 0); }
 .cs-modules > .cs-module:nth-child(2) {
   grid-column: var(--c-col-2, span var(--c-span-b, 5) / -1);
-  margin-block-start: var(--c-drop-2, var(--c-card-stagger, calc(7 * var(--baseline, 0.5rem)))); }
+  margin-block-start: var(--c-drop-2, var(--c-card-stagger, calc(7 * var(--baseline)))); }
 .cs-modules > .cs-module:nth-child(3) {
   grid-column: var(--c-col-3, 1 / span var(--c-span-a, 7));
   margin-block-start: var(--c-drop-3, 0); }
@@ -2676,21 +3147,29 @@ SCAFFOLD_CARDS_CSS = """.cs-modules-sec { position: relative; }
 SCAFFOLD_INTERLOCK_CSS = """.cs-interlock { position: relative; }
 .cs-interlock-media { float: var(--c-float-side, right);
   width: var(--c-inset-width, calc(7 * var(--col) + 6 * var(--grid-gutter, 6rem)));
-  margin: var(--c-inset-margin, calc(1 * var(--baseline, 0.5rem)) 0
-          calc(2 * var(--baseline, 0.5rem)) calc(6 * var(--baseline, 0.5rem)));
-  aspect-ratio: var(--c-aspect-landscape, 3 / 2); overflow: hidden; border-radius: 0; }
+  margin: var(--c-inset-margin, calc(1 * var(--baseline)) 0
+          calc(2 * var(--baseline)) calc(6 * var(--baseline)));
+  /* aspect alias only (no literal fallback): brands without an aspectPalette let the
+     media keep its natural ratio — device disabled, never a foreign crop. */
+  aspect-ratio: var(--c-aspect-landscape); overflow: hidden; border-radius: 0; }
 .cs-interlock-media .c-image { width: 100%; height: 100%; }
 .cs-interlock-caption { display: block;
-  margin-bottom: var(--c-inset-drop, clamp(calc(9 * var(--baseline, 0.5rem)), 12cqw,
-    calc(22 * var(--baseline, 0.5rem)))); }
+  margin-bottom: var(--c-inset-drop, clamp(calc(9 * var(--baseline)), 12cqw,
+    calc(22 * var(--baseline)))); }
 .cs-interlock .c-heading--display { max-width: none; text-align: left;
-  font-size: clamp(2rem, 4.4cqw, 3.6rem); line-height: 1.06em; }
+  /* interlock display de-scales from the brand's display tier (0.3333/0.6 of the
+     measured base — ratios are structure, the rem magnitude is the brand's). */
+  font-size: clamp(calc(var(--size-display-hero-base) * 0.3333), 4.4cqw,
+                   calc(var(--size-display-hero-base) * 0.6));
+  line-height: 1.06em; }
 .cs-interlock-clear { clear: both; }
 /* support/CTA foot cluster (rendered ONLY when the composition binds those slots —
    ANCHORED-REPORT composer-gap #2 fix; legacy interlock sections emit no foot). */
 .cs-interlock-foot { display: flex; flex-direction: column; align-items: flex-start;
-  gap: var(--c-block-gap, 1.75rem); margin-top: var(--c-block-gap, 2.5rem); }
+  gap: var(--c-block-gap); margin-top: var(--c-block-gap); }
 @media (max-width: 767px) { .cs-interlock-media { float: none; width: 100%; margin: 0 0 1.75rem;
+  /* provenance: structural — mobile recrop: the un-floated interlock media needs a
+     bounded height (device geometry, not a brand ratio) */
   aspect-ratio: 3 / 2; } .cs-interlock-caption { margin-bottom: 1.25rem; } }"""
 
 
@@ -2704,7 +3183,7 @@ SCAFFOLD_OVERLAY_CSS = """.cs-overlay-sec { position: relative; }
 .cs-ov-frame { position: relative; max-width: var(--content-measure, 86rem);
   margin-inline: auto; }
 .cs-ov--bleed .cs-ov-frame { max-width: none; }
-.cs-ov-canvas { position: relative; margin: 0; min-height: calc(48 * var(--baseline, 0.5rem)); }
+.cs-ov-canvas { position: relative; margin: 0; min-height: calc(48 * var(--baseline)); }
 .cs-ov-canvas > .c-image, .cs-ov-canvas > .c-image-ph {
   width: 100%; height: 100%; min-height: inherit; object-fit: cover; }
 /* framed (G4): page margins visible on ALL sides — the frame is an inset canvas other
@@ -2716,16 +3195,18 @@ SCAFFOLD_OVERLAY_CSS = """.cs-overlay-sec { position: relative; }
    panel-over-media pair. Own opaque surface scope (like the split's .cs-panel), so its
    text never composites against the photograph. Flat: no shadow, no radius. */
 .cs-ov-panel { position: absolute; z-index: 3; top: 50%; transform: translateY(-50%);
-  min-height: 62%; display: flex; flex-direction: column; gap: var(--c-block-gap, 1.75rem);
-  background: var(--c-panel, #F7EFE6); color: var(--c-panel-ink, #1F1A14);
+  min-height: 62%; display: flex; flex-direction: column; gap: var(--c-block-gap);
+  background: var(--c-panel); color: var(--c-panel-ink);
   /* light panel surface: interaction tokens re-scope with ink (AS-20) — no dark-surface
-     gold hover leaking onto the cream overlay panel. */
-  --c-ink: var(--c-panel-ink, #1F1A14); --c-accent: var(--c-panel-ink, #1F1A14);
-  --c-ink-muted: var(--c-panel-ink, #1F1A14);
-  --c-link-hover: var(--c-panel-ink, #1F1A14);
-  --c-hairline: var(--c-panel-hairline, rgba(31,26,20,0.30));
-  padding: calc(6 * var(--baseline, 0.5rem)) calc(5 * var(--baseline, 0.5rem)); }
-.cs-ov-panel .c-heading--display { font-size: calc(0.62 * var(--c-display-size, 5rem));
+     accent hover leaking onto the light overlay panel. CS-1: literal fallbacks gone. */
+  --c-ink: var(--c-panel-ink); --c-accent: var(--c-panel-ink);
+  --c-ink-muted: var(--c-panel-ink);
+  --c-link-hover: var(--c-panel-ink);
+  --c-hairline: var(--c-panel-hairline);
+  padding: calc(6 * var(--baseline)) calc(5 * var(--baseline)); }
+/* panel display steps DOWN from the section's own display alias — --c-display-size is
+   always emitted per section (component_vars), so no literal fallback (AS-24). */
+.cs-ov-panel .c-heading--display { font-size: calc(0.62 * var(--c-display-size));
   max-width: 14ch; }
 /* sidebar rail: the full-height panel column (ref 3) — space-between stack. */
 .cs-ov-rail { top: 0; bottom: 0; transform: none; min-height: 0;
@@ -2736,15 +3217,15 @@ SCAFFOLD_OVERLAY_CSS = """.cs-overlay-sec { position: relative; }
 /* tuck (G2 z:back + G8 params): the heading row sits in flow BEFORE the canvas and the
    canvas rides OVER its lower part by the registered depth (media z above heading z). */
 .cs-ov-headrow--tucked { display: flex; align-items: flex-start; gap: var(--grid-gutter, 6rem);
-  position: relative; z-index: 0; margin-bottom: calc(-1 * var(--c-tuck-depth, calc(4 * var(--baseline, 0.5rem)))); }
+  position: relative; z-index: 0; margin-bottom: calc(-1 * var(--c-tuck-depth, calc(4 * var(--baseline)))); }
 .cs-ov-headrow--tucked ~ .cs-ov-canvas { z-index: 2; }
 .cs-ov-headrow-side { margin-inline-start: auto; }
 /* scrim-band (G3): a FLAT translucent band across the canvas (fill set inline from the
    section surface + opacityClass — an rgba literal, never a gradient). */
 .cs-ov-scrimband { position: absolute; left: 0; right: 0; z-index: 2; display: flex;
   gap: var(--grid-gutter, 6rem); align-items: center;
-  padding: calc(3 * var(--baseline, 0.5rem)) calc(4 * var(--baseline, 0.5rem)); }
-.cs-ov-scrim-item { display: flex; flex-direction: column; gap: calc(1 * var(--baseline, 0.5rem)); }
+  padding: calc(3 * var(--baseline)) calc(4 * var(--baseline)); }
+.cs-ov-scrim-item { display: flex; flex-direction: column; gap: calc(1 * var(--baseline)); }
 .cs-ov-scrim-item .cs-sub { max-width: 24ch; }
 /* corner-registered cues/support + in-frame annotations. */
 .cs-ov-corner, .cs-ov-placed { position: absolute; z-index: 4; }
@@ -2760,27 +3241,28 @@ SCAFFOLD_OVERLAY_CSS = """.cs-overlay-sec { position: relative; }
 .cs-ov-stepped .c-heading-line:nth-child(4) { margin-inline-start: var(--c-step-4, 0); }
 /* type-behind-media (G8): REAL heading at z:0, media stack above (media z 2, detail 3);
    the detail image registers to the main's bottom-right corner (media-over-media). */
-.cs-ov-tbm-sec .cs-eyebrow-wrap { text-align: center; margin-bottom: calc(4 * var(--baseline, 0.5rem)); }
+.cs-ov-tbm-sec .cs-eyebrow-wrap { text-align: center; margin-bottom: calc(4 * var(--baseline)); }
 .cs-ov-behind { position: relative; z-index: 0; text-align: center; }
 .cs-ov-behind .c-heading--display { max-width: none; text-align: center;
-  font-size: calc(1.25 * var(--c-display-size, 5rem)); line-height: 1.02em; }
+  /* rides the section's display alias, always emitted per section — no literal fallback */
+  font-size: calc(1.25 * var(--c-display-size)); line-height: 1.02em; }
 .cs-ov-media-stack { position: relative; z-index: 2; }
 .cs-ov-media-stack > .c-image, .cs-ov-media-stack > .c-image-ph { width: 100%; }
 .cs-ov-detail { position: absolute; z-index: 3;
-  right: calc(-3 * var(--baseline, 0.5rem)); bottom: calc(-4 * var(--baseline, 0.5rem)); }
+  right: calc(-3 * var(--baseline)); bottom: calc(-4 * var(--baseline)); }
 .cs-ov-flank { position: absolute; top: 55%; z-index: 4; max-width: 16ch; }
 .cs-ov-flank--left { left: 0; }
 .cs-ov-flank--right { right: 0; text-align: right; }
 /* foot cluster for unplaced support/cta slots. */
 .cs-ov-foot { display: flex; flex-direction: column; align-items: flex-start;
-  gap: var(--c-block-gap, 1.75rem); margin-top: var(--c-block-gap, 2.5rem); }
+  gap: var(--c-block-gap); margin-top: var(--c-block-gap); }
 .cs-ov-foot-item { max-width: 46ch; }
 @media (max-width: 767px) {
   .cs-ov-panel, .cs-ov-rail { position: static; transform: none; width: 100% !important;
-    left: auto !important; min-height: 0; margin-top: var(--c-block-gap, 1.75rem); }
+    left: auto !important; min-height: 0; margin-top: var(--c-block-gap); }
   .cs-ov-straddle, .cs-ov-placed { position: static; max-width: none !important;
-    margin: var(--c-block-gap, 1.75rem) 0 0; }
-  .cs-ov-corner { position: static; text-align: left; margin-top: var(--c-block-gap, 1.75rem); }
+    margin: var(--c-block-gap) 0 0; }
+  .cs-ov-corner { position: static; text-align: left; margin-top: var(--c-block-gap); }
   .cs-ov-headrow--tucked { flex-direction: column; gap: 1.25rem; margin-bottom: 0; }
   .cs-ov-scrimband { position: static; flex-direction: column; align-items: flex-start; }
   .cs-ov-media-stack { margin-top: 0 !important; margin-inline: auto !important; }
@@ -2795,24 +3277,24 @@ SCAFFOLD_BANDED_CSS = """.cs-banded-sec { padding: 0; }
 .cs-band { position: relative; }
 .cs-band--top .cs-band-media { margin: 0; }
 .cs-band--top .c-image, .cs-band--top .c-image-ph { width: 100%;
-  height: calc(56 * var(--baseline, 0.5rem)); object-fit: cover; display: block; }
+  height: calc(56 * var(--baseline)); object-fit: cover; display: block; }
 /* the on-photo caption rides a small solid panel CHIP (sanctioned panel-over-media) —
    never bare text on the photograph. */
-.cs-band-chip { position: absolute; top: calc(5 * var(--baseline, 0.5rem));
+.cs-band-chip { position: absolute; top: calc(5 * var(--baseline));
   left: 50%; transform: translateX(-50%); z-index: 1;
-  padding: calc(1 * var(--baseline, 0.5rem)) calc(3 * var(--baseline, 0.5rem)); }
-.cs-band--bottom { padding: 0 var(--c-section-pad-x, 2.5rem)
-  var(--c-section-pad-bottom, var(--c-section-pad, 6.25rem)); }
+  padding: calc(1 * var(--baseline)) calc(3 * var(--baseline)); }
+.cs-band--bottom { padding: 0 var(--c-section-pad-x)
+  var(--c-section-pad-bottom); }
 .cs-band-straddler { position: relative; z-index: 2;
-  margin-top: calc(-1 * var(--c-seam-rise, calc(12 * var(--baseline, 0.5rem)))); }
+  margin-top: calc(-1 * var(--c-seam-rise, calc(12 * var(--baseline)))); }
 .cs-band-straddler .c-image, .cs-band-straddler .c-image-ph { width: 100%; }
 .cs-band-body { max-width: var(--content-measure, 86rem); margin-inline: auto;
-  display: flex; flex-direction: column; gap: var(--c-block-gap, 1.75rem);
-  padding-top: var(--c-block-gap, 2.5rem); }
+  display: flex; flex-direction: column; gap: var(--c-block-gap);
+  padding-top: var(--c-block-gap); }
 @media (max-width: 767px) {
-  .cs-band--top .c-image, .cs-band--top .c-image-ph { height: calc(36 * var(--baseline, 0.5rem)); }
+  .cs-band--top .c-image, .cs-band--top .c-image-ph { height: calc(36 * var(--baseline)); }
   .cs-band-straddler { width: 100% !important; margin-inline: 0 !important;
-    --c-seam-rise: calc(6 * var(--baseline, 0.5rem)); } }"""
+    --c-seam-rise: calc(6 * var(--baseline)); } }"""
 
 
 # generic-flow (graceful fallback): a stacked column; text items follow the block-gap
@@ -2822,10 +3304,24 @@ SCAFFOLD_BANDED_CSS = """.cs-banded-sec { padding: 0; }
 # alignment is emitted by layout_placement_css from the RESOLVED anchor (section >
 # pattern > style), never a silent left literal.
 SCAFFOLD_FLOW_CSS = """.cs-flow { display: flex; flex-direction: column;
-  gap: var(--c-block-gap, 1.75rem); max-width: 72rem; }
+  gap: var(--c-block-gap); max-width: 72rem; }
 .cs-flow-item { max-width: 62ch; }
 .cs-flow-media { width: 100%; }
 .cs-flow-media .c-image { width: 100%; height: auto; }
+/* logo-strip device (AS-33): a HORIZONTAL row of partner/customer logo images —
+   disk-backed extracted assets only (the adapter routes file-less entries to text
+   captions instead). Gap rides the brand rhythm. Emphasis treatment (grayscale/…) is
+   the STYLE layer's qualitative logoStrip flag (style_density_css), never hardcoded
+   here. */
+/* provenance: structural logo-strip-geometry — mark height/width caps are device frame
+   geometry (same discipline as the nav-logo height cap); a brand chrome token
+   (--c-logo-strip-h) wins over the structural default. */
+.cs-logo-strip { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center;
+  gap: var(--c-block-gap); max-width: none; }
+.cs-logo-strip-item { display: flex; align-items: center; }
+.cs-logo-strip .c-logo--img { border: none; border-radius: 0; }
+.cs-logo-strip .c-logo-img { height: var(--c-logo-strip-h, 2.25rem); width: auto;
+  max-width: 10rem; object-fit: contain; }
 @media (max-width: 767px) { .cs-flow { gap: clamp(1.25rem, 6cqw, 1.75rem); } }"""
 
 
@@ -2936,8 +3432,31 @@ def resolve_alignment(layout, pattern=None, style_ctx=None) -> dict | None:
         anchor = ll.normalize_anchor(
             sec.get("anchor"), where=f"layout '{layout.get('id')}' alignment")
         if anchor:
+            counterweight = sec.get("counterweight")
+            # COUNTERWEIGHT INHERITANCE (AS-18): a section that declares only an
+            # asymmetric ANCHOR (the common LLM `knobs.align: left` path) inherits the
+            # counterweight DEVICE from the deepest layer declaring one for the SAME
+            # anchor — pattern first, then style. The anchor's source stays "section";
+            # only when no layer declares a device does the stamp stay bare (and the
+            # G10 gate then fails the page: that IS counterweight-less asymmetry).
+            if counterweight is None and anchor in ("left", "right"):
+                pa = pattern.alignment if pattern is not None else None
+                if pa and pa.get("anchor") == anchor and pa.get("counterweight"):
+                    counterweight = pa["counterweight"]
+                elif style_ctx is not None and getattr(style_ctx, "active", False) \
+                        and style_ctx.structure is not None \
+                        and style_ctx.structure.declares_alignment():
+                    # scan ALL candidate role keys (not first-hit): we want the style's
+                    # device for THIS anchor — e.g. a testimonial-in-interlock section
+                    # declares left; `testimonial: centered` says nothing about a left
+                    # device, `interlock: {left, inset-media}` is the match.
+                    for key in _align_role_keys(layout, pattern):
+                        sa = style_ctx.structure.align_for(key)
+                        if sa and sa.get("anchor") == anchor and sa.get("counterweight"):
+                            counterweight = sa["counterweight"]
+                            break
             return {"anchor": anchor, "source": "section",
-                    "counterweight": sec.get("counterweight")}
+                    "counterweight": counterweight}
     # 2. pattern contentShape.alignment (brand-schema §4.4)
     if pattern is not None:
         pa = pattern.alignment
@@ -3076,7 +3595,7 @@ def layout_placement_css(sel: str, layout, resolved=None) -> str:
         try:
             n = max(1, int(g["columns"]))
             decls.append(f"--grid-cols: {n};")
-            decls.append(f"--col: calc((100% - {n - 1} * var(--grid-gutter)) / {n});")
+            decls.append(f"--col: calc((100% - {n - 1} * var(--grid-gutter, 6rem)) / {n});")
         except (TypeError, ValueError):
             pass
     gutter = str(g.get("gutter") or "").strip()
@@ -3110,54 +3629,39 @@ def scaffold_css(doc, layout, style_ctx=None) -> str:
     extra = _scaffold_extra_for(layout)
     if extra:
         arch_css = arch_css + "\n" + extra
+    # AS-37: the art-panel device CSS ships ONLY on sections that actually render it,
+    # so no-radius brand pages never carry its rounded-panel rule (see the blob note).
+    if (layout or {}).get("_artPanel") is not None:
+        arch_css = arch_css + "\n" + SCAFFOLD_ART_PANEL_CSS
     return rhythm_vars_css(doc, style_ctx, role) + "\n" + SCAFFOLD_BASE_CSS + "\n" + arch_css
 
 
-def root_vars(doc, surf, *, display_size, title_overlap) -> str:
-    """Emit the document :root. Carries BOTH the gate-readable legacy brand vars
-    (`--bg/--text/--accent/--font-heading/--font-body/--display-size/--radius`, the
-    authoritative VALUES) AND the `--c-*` aliases the shared component classes read."""
+def root_vars(doc, surf, *, display_size, title_overlap, surface_role=None) -> str:
+    """Emit the document :root for the single-section path. Carries the gate-readable
+    legacy brand vars (`--bg/--text/--accent/--font-heading/--font-body/--display-size/
+    --radius`) as RESOLVED literals — they are the gate's authoritative-VALUES contract
+    (extract_facts regexes them) — plus the `--c-*` aliases, which (token-layer-2026-07)
+    are var() references into the generated layer-1 block via component_vars, the SAME
+    emitter the full-page path uses (the old hand-mirrored copy drifted by design).
+    Panel/ghost brand-constant aliases + the shared grid/baseline units live here too."""
     text = color_value(doc, surf.get("textPrimary")) or "#111111"
     accent = color_value(doc, surf.get("textAccent")) or text
     bg = surf.get("bg") or "#ffffff"
-    # v1 surfaces sometimes carry a DESCRIPTIVE string ("image + dark scrim") instead of a
-    # color — written raw into CSS it's an invalid value the browser silently drops
-    # (anti-ai-slop.md AS-02 shape). Guard: non-color strings fall back to a dark canvas
-    # (descriptive surfaces in practice describe photo-over-scrim, i.e. dark).
+    # v1 DESCRIPTIVE surface ("image + dark scrim") — substitute the darkest brand color
+    # so the legacy --bg literal stays on-palette (anti-ai-slop.md AS-02 shape).
     if not re.match(r"^(#|rgb|hsl|var\()", str(bg).strip()):
-        bg = "#141414"
-    muted = (color_value(doc, "text/on-inverse-muted") if surf.get("textAccent")
-             else color_value(doc, "text/on-primary-muted")) or text
-    disp = type_role(doc, "display-hero")
-    h2 = type_role(doc, "h2")
-    h3 = type_role(doc, "h3")
-    eyb = type_role(doc, "eyebrow")
-    ctl = type_role(doc, "control-text")
+        _cands = [str(c.get("value") if isinstance(c, dict) else c)
+                  for c in ((doc.get("tokens", {}) or {}).get("colors", {}) or {}).values()]
+        _hexes = [h for h in _cands if re.match(r"^#[0-9a-fA-F]{6}$", h or "")]
+        bg = min(_hexes, key=lambda h: int(h[1:3], 16) + int(h[3:5], 16) + int(h[5:7], 16)) \
+            if _hexes else "#141414"
     heading_stack, _ = font_stack(doc, "display-hero", "Georgia, serif")
     body_stack, _ = font_stack(doc, "body", "system-ui, sans-serif")
     radius = spacing_value(doc, "radius-global", "0rem")
-    eyebrow_gap = spacing_value(doc, "eyebrow-to-heading", "1.5rem")
-    body = type_role(doc, "body")
-    # SURFACE-AWARE hairline (matches the `muted` pattern above): a dark surface
-    # never falls back to the light-surface "-on-primary" hairline value, which was
-    # a near-black rgba at 30% opacity — invisible ("dark on dark") on the dark
-    # inverse bands (e.g. the schedule/visit ruled rows). Prefers a dedicated
-    # "-on-inverse" token when the brand has extracted one; otherwise falls back to
-    # `muted`, which IS already correctly resolved per-surface above.
-    # color_value() passes an UNRESOLVED token name through as a literal string (by
-    # design, for callers that pass a raw hex value instead of a token ref) -- so `or
-    # muted` never fires for a genuinely-missing "-on-inverse" token (the string itself
-    # is truthy), and the browser silently drops the whole `--c-hairline` custom property
-    # (not a valid color), which is how the schedule/visit ruled-row dividers went fully
-    # TRANSPARENT rather than merely wrong-colored. Check token EXISTENCE directly instead
-    # of relying on color_value()'s return-value truthiness.
-    _hairline_tok = "border/hairline-on-inverse" if surf.get("textAccent") else "border/hairline-on-primary"
-    _colors = (doc.get("tokens", {}) or {}).get("colors", {}) or {}
-    hairline = color_value(doc, _hairline_tok) if _hairline_tok in _colors else muted
-    # PER-SURFACE link-hover (anti-ai-slop.md AS-10) -- mirrors component_render.
-    # component_vars(); the measured accent hover applies ONLY on a dark surface, never
-    # unconditionally (WoodWave's gold is a 1.3:1 contrast failure against cream).
-    link_hover = (cr.link_hover_color(doc) if surf.get("textAccent") else None) or text
+    alias_block = cr.component_vars(doc, surf, selector=":root",
+                                    display_size="var(--display-size)",
+                                    title_overlap=title_overlap,
+                                    surface_role=surface_role)
     return f""":root {{
   /* gate-readable legacy brand vars (authoritative token VALUES) */
   --bg: {bg};
@@ -3167,40 +3671,24 @@ def root_vars(doc, surf, *, display_size, title_overlap) -> str:
   --radius: {radius};
   --font-heading: {heading_stack};
   --font-body: {body_stack};
-  /* component aliases — the shared c-* classes (component_render.py) read these */
-  --c-paper: var(--bg);
-  --c-ink: var(--text);
-  --c-ink-muted: {muted};
-  --c-accent: var(--accent);
-  --c-hairline: {hairline};
-  --c-link-hover: {link_hover};
-  --c-font-heading: var(--font-heading);
-  --c-font-body: var(--font-body);
-  --c-display-size: var(--display-size);
-  --c-display-lh: {disp.get('lineHeight', '1.05em')};
-  --c-display-ls: {disp.get('letterSpacing', '0rem')};
-  --c-display-weight: {disp.get('weight', 400)};
-  --c-heading-weight: {h2.get('weight') or disp.get('weight', 400)};
-  --c-h2-size: {base_size(h2) or 2.25}rem;
-  --c-h3-size: {base_size(h3) or 1.625}rem;
-  --c-body-size: {base_size(body) or 1}rem;
-  --c-eyebrow-size: {base_size(eyb) or 0.6875}rem;
-  --c-eyebrow-ls: {eyb.get('letterSpacing', '0.08em')};
-  --c-control-size: {base_size(ctl) or 0.875}rem;
-  --c-control-ls: {ctl.get('letterSpacing', '0.08em')};
-  --c-eyebrow-gap: {eyebrow_gap};
-  --c-title-overlap: {css_len(title_overlap, '-2.75rem')};
+  /* brand-constant aliases for the collage ghost + the cream split panel (layer-1 refs;
+     all four tokens are REQUIRED — generation hard-failed already if any were missing) */
+  --c-ghost: var(--color-text-ghost-on-primary);
+  --c-panel: var(--surface-surface-panel);
+  --c-panel-ink: var(--color-text-on-primary);
+  --c-panel-hairline: var(--color-border-hairline-on-primary);
   /* ONE shared page grid + baseline (alignment quick wins): every archetype scaffold
      places onto THESE tracks instead of private per-section grids, and every offset
      scalar snaps to --baseline / one --col so staggered elements REGISTER to shared
      lines instead of floating. --col resolves its 100% against the element it is used
      on (the section's shared-measure container). */
-  --grid-cols: 12;
-  --grid-gutter: 6rem;
-  --content-measure: 86rem;
-  --baseline: 0.5rem;
-  --col: calc((100% - 11 * var(--grid-gutter)) / 12);
-}}"""
+  --grid-cols: 12; /* provenance: structural — shared registration grid */
+  --grid-gutter: 6rem; /* provenance: structural — registration gutter unit */
+  --content-measure: 86rem; /* provenance: structural — shared content measure */
+  --baseline: 0.5rem; /* provenance: structural — vertical registration unit */
+  --col: calc((100% - 11 * var(--grid-gutter, 6rem)) / 12);
+}}
+{alias_block}"""
 
 
 def style_density_css(style_ctx: RenderContext, *, heading_max: str = "18ch",
@@ -3223,7 +3711,39 @@ def style_density_css(style_ctx: RenderContext, *, heading_max: str = "18ch",
    (section > pattern > style role) is emitted per #sec-N and wins by specificity. */
 .cs-slot, .cs-foot, .cs-eyebrow-wrap, .cs-title {{ align-items: {flex}; text-align: {text}; }}
 {collage_rule}
-.c-heading--display {{ text-align: {text}; max-width: {heading_max};{heading_margin} }}"""
+.c-heading--display {{ text-align: {text}; max-width: {heading_max};{heading_margin} }}{logo_strip_treatment_css(style_ctx)}"""
+
+
+def logo_strip_treatment_css(style_ctx: RenderContext) -> str:
+    """The STYLE layer's qualitative ``logoStrip`` flag (AS-33), realized as the
+    logo-strip device's emphasis treatment. ONE shared implementation (called from
+    style_density_css so both override twins inherit it — AS-06). The style file names
+    only the QUALITATIVE treatment (monochrome | reduced | plain); the concrete
+    realization below is structural device behavior, identical for every brand, with
+    motion riding the brand's own tokens. A style with no flag (non-migrated) emits
+    nothing — marks render as shipped."""
+    s = style_ctx.structure
+    t = getattr(s, "logo_strip", "")
+    if t == "monochrome":
+        return """
+/* logoStrip: monochrome — marks read as a quiet grayscale row; full color on hover.
+   provenance: structural logo-strip-treatment — the qualitative flag's fixed
+   realization (emphasis fractions are device behavior, not brand values). */
+.cs-logo-strip .c-logo-img { filter: grayscale(1); opacity: 0.72;
+  transition: filter var(--c-motion-fast) var(--c-ease),
+              opacity var(--c-motion-fast) var(--c-ease); }
+.cs-logo-strip .c-logo--img:hover .c-logo-img,
+.cs-logo-strip .c-logo--img:focus-visible .c-logo-img { filter: none; opacity: 1; }"""
+    if t == "reduced":
+        return """
+/* logoStrip: reduced — marks keep their own ink but sit back from the content.
+   provenance: structural logo-strip-treatment — the qualitative flag's fixed
+   realization (emphasis fractions are device behavior, not brand values). */
+.cs-logo-strip .c-logo-img { opacity: 0.78;
+  transition: opacity var(--c-motion-fast) var(--c-ease); }
+.cs-logo-strip .c-logo--img:hover .c-logo-img,
+.cs-logo-strip .c-logo--img:focus-visible .c-logo-img { opacity: 1; }"""
+    return ""  # plain / style silent: marks as shipped, no treatment
 
 
 def style_override_css(style_ctx: RenderContext) -> str:
@@ -3236,20 +3756,26 @@ def style_override_css(style_ctx: RenderContext) -> str:
 /* STYLE: {style_ctx.style_id} (structure) layered OVER brand (hues+fonts). */
 /* ===================================================================== */
 :root {{
-  --c-paper: {style_ctx.paper};
-  --c-ink: {style_ctx.ink};
-  --c-accent: {style_ctx.accent};
+  /* PER-SURFACE HUES ARE NOT SET HERE (anti-ai-slop AS-06/AS-01): this override once
+     forced --c-paper/--c-ink/--c-accent to the brand's LIGHT slots at :root, clobbering
+     a DARK section's own surface in single-section renders — visit-band painted its
+     on-dark text colors onto the style's cream paper (1.30:1, caught by contrast_audit).
+     The full-page override (compose_page.page_style_override) never set hues; parity
+     restored. Surface hues come from root_vars/component_vars per section. */
   --c-radius: {s.radius};
-  --c-display-size: {s.display_size_css()};
+  --c-display-size: {s.display_size_css() if s.display_source != "brand" else "var(--size-display-hero)"};
   --c-display-lh: {s.display_leading};
   --c-display-ls: {s.display_tracking};
   --c-font-heading: '{style_ctx.font_display}', Georgia, serif;
   --c-font-body: '{style_ctx.font_body}', system-ui, sans-serif;
 }}
 /* Vertical padding comes from the rhythm scale / brand tokens (symmetric top=bottom),
-   not ad-hoc literals; horizontal stays the style's asymmetric cqw inset. */
-.cs-section {{ padding: var(--c-section-pad-top, 3rem) 12cqw
-                        var(--c-section-pad-bottom, 6rem) 6cqw; }}
+   not ad-hoc literals; horizontal stays the style's asymmetric cqw inset. The rhythm
+   vars are guaranteed by rhythm_vars_css on every render path, so the references are
+   fallback-free (AS-24 / remote-fix blocker-4: a literal fallback is unwrapped by the
+   provenance scanner and collides cross-brand). */
+.cs-section {{ padding: var(--c-section-pad-top) 12cqw
+                        var(--c-section-pad-bottom) 6cqw; }}
 {style_density_css(style_ctx)}
 /* color deployment: single committed accent (the eyebrow slug); everything else ink. */
 .c-heading--accent {{ color: var(--c-ink); }}
@@ -3264,6 +3790,8 @@ def build_document(doc, layout, brand_yaml, style_ctx: RenderContext) -> str:
     ctx = cr.make_context(doc, role, surf)
     ctx.style_active = bool(style_ctx and style_ctx.active)
     ctx.style_id = style_ctx.style_id if ctx.style_active else ""
+    # style-aware cta-shape (B5) — same resolution as the full-page path.
+    ctx.cta = cr.cta_shape(doc, style_ctx.structure if ctx.style_active else None)
 
     rendered = render_slots(doc, layout, ctx)
     archetype = (layout.get("archetype") or "stack").lower()
@@ -3274,8 +3802,13 @@ def build_document(doc, layout, brand_yaml, style_ctx: RenderContext) -> str:
     gf = google_fonts_link(loadable_proxies(doc))
     disp_size = f"{base_size(type_role(doc, 'display-hero')) or 6}rem"
     overlap = (layout.get("overlapRules", {}) or {}).get("offsets", {}).get("titleOverMediaTop")
-    vars_css = root_vars(doc, surf, display_size=disp_size, title_overlap=overlap)
-    css = vars_css + "\n" + cr.COMPONENT_CSS + "\n" + cr.link_hover_css(doc) \
+    # layer-1 generated tokens block (token-layer 2026-07): the measured brand values every
+    # var() below resolves against. Fail-loud on missing REQUIRED tokens (DECISIONS.md #2).
+    tokens_bundle = tokens_css.build_page_tokens(doc, style_ctx, brand_yaml_path=brand_yaml)
+    vars_css = root_vars(doc, surf, display_size=disp_size, title_overlap=overlap,
+                         surface_role=role)
+    css = vars_css + "\n" + cr.COMPONENT_CSS + cr.structural_variant_css(doc) \
+        + "\n" + cr.link_hover_css(doc) + cr.nav_hover_css(doc) \
         + "\n" + scaffold_css(doc, layout, style_ctx)
     if ctx.style_active:
         css += "\n" + style_override_css(style_ctx)
@@ -3313,6 +3846,13 @@ def build_document(doc, layout, brand_yaml, style_ctx: RenderContext) -> str:
     parallax_css = cr.parallax_css(doc)  # "" unless the brand declared imageParallax
 
     html_attr = f' data-style="{style_ctx.style_id}"' if ctx.style_active else ""
+    if ctx.style_active:
+        # AS-18 stance self-declaration — mirrors compose_page.build_page: the G10 gate
+        # judges stamps against the OPERATIVE style definition, stamped here, never by
+        # re-loading today's styles/<id>.md (snapshot styles_dir renders differ).
+        stance = "declared" if (style_ctx.structure is not None
+                                and style_ctx.structure.declares_alignment()) else "none"
+        html_attr += f' data-align-stance="{stance}"'
     parallax_attr = ' data-parallax-images="true"' if cr.image_parallax_spec(doc)["enabled"] else ""
     return f"""<!doctype html>
 <html lang="en"{html_attr}{pat_attr}{align_attr}{parallax_attr}>
@@ -3321,6 +3861,7 @@ def build_document(doc, layout, brand_yaml, style_ctx: RenderContext) -> str:
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{cr.esc(name)} - {cr.esc(layout['id'])} (composed from catalog)</title>
 {gf}
+{tokens_css.style_tag(tokens_bundle)}
 <style>
 {face_css}
 * {{ margin: 0; padding: 0; box-sizing: border-box; }}
@@ -3365,6 +3906,9 @@ def main():
     # reference the local, offline-safe asset (in-memory doc mutation only; brand.yaml unchanged).
     prepare_nav_logo(doc, Path(args.brand_yaml).parent, args.out / "assets")
     (args.out / "index.html").write_text(build_document(doc, layout, args.brand_yaml, style_ctx))
+    # drift-detection + provenance-index sidecar (SPEC §B.1/§F) — same bundle the page embeds.
+    tokens_css.write_manifest(
+        args.out, tokens_css.build_page_tokens(doc, style_ctx, brand_yaml_path=args.brand_yaml))
     copied = copy_assets(Path(args.brand_yaml).parent, args.out / "assets")
     copied += copy_fonts(Path(args.brand_yaml).parent, args.out / "assets", doc)
 

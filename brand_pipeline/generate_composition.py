@@ -304,6 +304,22 @@ def build_prompt(brief_text: str, brand_yaml_path: Path | str, style_id: str,
             *[f"  - {oid}: [{o.get('allowed')}] default {o.get('default')}"
               for oid, o in st.soft_options.items()],
         ]
+        # freedom budget (0-5 wildcard allowance) — the style layer's QUALITATIVE ladder
+        # of how far a section may deviate from the brand median. The RESOLVED level for
+        # this run (brand voice.dials.freedom clamped to the style ceiling, else the
+        # style default) is the operative allowance; levels are style-relative prose,
+        # never exact values. Absent for a non-migrated style (lines omitted).
+        fb = st.freedom_budget
+        if fb is not None:
+            resolved = ctx.resolve_freedom_level(doc)
+            style_lines += [
+                f"freedom budget (0-5 wildcard allowance): resolved level {resolved} "
+                f"(style default {fb.default}, ceiling {fb.ceiling} — higher requests cap "
+                "at the ceiling):",
+                *[f"  {lvl}. {d.get('name')}: unlocks {d.get('unlocks')}"
+                  + (f" | forbids {d.get('forbids')}" if d.get("forbids") else "")
+                  for lvl, d in sorted(fb.levels.items())],
+            ]
     except FileNotFoundError:
         style_lines = [f"style id: {style_id} (NOT FOUND — style layer omitted)"]
 
@@ -478,9 +494,10 @@ dual-surface section with a hard horizontal seam):
   first/last letterforms stay clear (`endsVisible: true`). Text-on-media-family — hero-only,
   `"sanctioned": true`. Keep the media span strictly INSIDE the heading span.
 - A "banded" section declares `bands: {{split, surfaces: [top, bottom]}}` (hard cut, never a
-  gradient) and elements straddle the seam via `registration.toSlot: "seam"` — WoodWave's
-  sanctioned media-over-seam. Model a photo-band→panel-band device as ONE banded section,
-  never as two overlapping sections.
+  gradient) and elements straddle the seam via `registration.toSlot: "seam"` — the
+  media-over-seam overlap pair (sanctioned where the brand's compositionRules allow it).
+  Model a photo-band→panel-band device as ONE banded section, never as two overlapping
+  sections.
 - Typographic devices: `stepped-lines` (an authored multi-line statement whose lines step by
   half-column indents), `mixed-face` (copy carries {{"lead": "...", "emphasis": "..."}}),
   `break-frame` (corner decoration crossing a frame edge; salience "decorative", never over text).
@@ -744,16 +761,24 @@ def _parse_gate_failures(report_md: Path) -> list[tuple[str, str]]:
 
 
 def gate_composition(render_dir: Path | str, brand_yaml_path: Path | str, style_id: str,
-                     *, layout: str = "opening-bookend",
+                     *, layout: str | None = None,
                      report_name: str = "onbrand-report.md") -> tuple[bool, list[tuple[str, str]], dict]:
     """Run onbrand_check.py --composition (HARD invariants) on a rendered page dir via
     subprocess (the authoritative gate). Returns (overall_pass, failures, scorecard) where
     failures = [(check_id, detail)] parsed from the human report and scorecard = the
-    machine-readable onbrand-report.json."""
+    machine-readable onbrand-report.json.
+
+    ``layout`` is the gate's surface-context layout id and must be an id from the ACTIVE
+    brand's brand.yaml. When None (the default), no --layout is passed and onbrand_check
+    resolves it itself (render-dir name, else the brand's first layout) — the old shared
+    default was one brand's hero id, which hard-failed the gate for every brand that
+    didn't carry a layout of that name (hubspot-validation bug B8)."""
     render_dir = Path(render_dir)
     cmd = [sys.executable, str(ONBRAND_CHECK), str(brand_yaml_path), str(render_dir),
-           "--layout", layout, "--style", style_id, "--composition",
+           "--style", style_id, "--composition",
            "--report", report_name]
+    if layout:
+        cmd[4:4] = ["--layout", layout]
     proc = subprocess.run(cmd, capture_output=True, text=True)
     json_name = re.sub(r"\.md$", "", report_name) + ".json"
     scorecard_path = render_dir / json_name
@@ -842,7 +867,7 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
                          variety_directive: str | None = None,
                          brief_id: str = "brief",
                          max_repairs: int = 2,
-                         layout: str = "opening-bookend",
+                         layout: str | None = None,
                          provider=None,
                          seeds: "SeedResult | None" = None,
                          max_tokens: int = 16000,

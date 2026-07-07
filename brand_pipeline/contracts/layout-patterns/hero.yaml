@@ -89,8 +89,8 @@ patterns:
     changelog:
       - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "ghostword-atmospheric", by: creation, signalId: null, note: "hand-blessed from harvest report" }
 
-  # ── editorial-harvest-2026-07 additions (8 reference images; see
-  #    experiments/woodwave-harvest/REPORT.md). All origin:designed, standard tier. ──
+  # ── editorial-harvest-2026-07 additions (8 reference images; see the
+  #    editorial-harvest experiment REPORT). All origin:designed, standard tier. ──
 
   - id: card-over-portrait-statement
     useCase: hero
