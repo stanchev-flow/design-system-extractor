@@ -608,10 +608,13 @@ def _cta_mapping(section: dict) -> list[dict]:
 
 
 def _cards_copy(section: dict) -> dict:
-    """features `cards`: intro eyebrow/heading + N modules (each caption + body [+ link])."""
+    """features `cards`: intro eyebrow/heading + N modules (each caption + body [+ link]).
+    A TESTIMONIAL run under the cards archetype (the quote-card grid a testimonial
+    pattern seeds) is the same module shape: quote→body, name (+ role)→caption."""
     slots = _slots(section)
     header = _by_role(slots, "section-title", "title", "heading") or _by_contract(slots, "header")
-    module_slot = _by_role(slots, "module", "value-prop", "feature", "card", "prop")
+    module_slot = _by_role(slots, "module", "value-prop", "feature", "card", "prop") \
+        or _by_contract(slots, "testimonial", "quote", "feature-item", "card")
     modules = _repeatable_copy(module_slot)
     if not modules:  # fall back: each non-intro slot is a module
         modules = [s.get("copy") for s in slots
@@ -627,9 +630,11 @@ def _cards_copy(section: dict) -> dict:
         if isinstance(asset, dict):
             alt = alt or asset.get("alt")
             asset = asset.get("src")
+        name = (m.get("name") or "").strip()
+        who = ", ".join(x for x in (name, (m.get("role") or "").strip()) if x)
         cards.append({
-            "caption": m.get("heading") or m.get("caption") or m.get("title") or "",
-            "body": m.get("text") or m.get("body") or "",
+            "caption": m.get("heading") or m.get("caption") or m.get("title") or who,
+            "body": m.get("text") or m.get("body") or m.get("quote") or "",
             "link": m.get("link") or m.get("cta"),
             "asset": asset,
             "alt": alt,
@@ -1043,7 +1048,13 @@ def composition_to_layout(section: dict) -> dict:
     is_hero = use_case == "hero" and (
         archetype == "stack" or (archetype == "split" and art_panel is not None))
     _conversion_cases = {"cta", "conversion", "newsletter", "signup", "subscribe", "contact"}
-    is_conversion = (archetype == "stack" and not is_hero
+    # a stack that binds a logo-contract slot is a logo-wall-role section even when it
+    # also carries an action (e.g. a partner/badge strip closed by one pill): the
+    # conversion scaffold would DROP the bound logo evidence (AS-33), so the logo
+    # device outranks the button heuristic — generic-flow renders both.
+    has_logo_slot = any((s.get("contract") or "").lower().startswith("logo")
+                        for s in _slots(section))
+    is_conversion = (archetype == "stack" and not is_hero and not has_logo_slot
                      and (use_case in _conversion_cases
                           or _has_form_slot(section) or bool(_button_slots(section))))
     if archetype == "stack" and not is_hero and not is_conversion:
