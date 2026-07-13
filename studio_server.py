@@ -22,10 +22,13 @@ keys already in .env.local. Asset harvesting fetches the public URL's HTML.
 
 from __future__ import annotations
 
+import faulthandler
 import json
 import os
 import re
+import shlex
 import shutil
+import signal
 import ssl
 import subprocess
 import sys
@@ -57,6 +60,27 @@ JOBS: dict[str, dict] = {}
 JOBS_LOCK = threading.Lock()
 
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp"}
+
+SERVER_STARTED = time.monotonic()
+
+# ── hang hardening knobs (all overridable via env, all stdlib) ────────────────
+# Per-connection socket timeout for request handlers. Without this, a client
+# that connects and stalls (browser preconnect, suspended tab mid-download,
+# sleep/wake half-open socket, killed headless browser) pins a handler thread
+# and an fd FOREVER; enough of them exhausts fds and accept() fails with EMFILE,
+# which socketserver swallows silently → the "process alive, port dead, no
+# traceback" wedge this server hit repeatedly. 30s reaps stalled peers while
+# leaving generous room for slow local transfers (timeout is per socket op, so
+# steady progress on big files never trips it).
+HANDLER_SOCKET_TIMEOUT_S = int(os.environ.get("STUDIO_SOCKET_TIMEOUT_S", "30"))
+# Outbound harvest fetch: per-socket-op timeout + a total wall-clock deadline
+# (a drip-feeding server defeats a bare urlopen timeout; the deadline doesn't).
+FETCH_SOCKET_TIMEOUT_S = int(os.environ.get("STUDIO_FETCH_TIMEOUT_S", "20"))
+FETCH_TOTAL_DEADLINE_S = int(os.environ.get("STUDIO_FETCH_DEADLINE_S", "75"))
+# Absolute ceiling for one pipeline subprocess run; the watchdog kills the whole
+# process group at the deadline so a wedged pipeline (or a grandchild holding
+# the stdout pipe open) can never pin a job thread forever.
+PIPELINE_TIMEOUT_S = int(os.environ.get("STUDIO_PIPELINE_TIMEOUT_S", "7200"))
 
 
 # ── helpers ──────────────────────────────────────────────────────────────────
@@ -893,6 +917,10 @@ def catalog_summary(version: str) -> dict:
 
 # ── asset harvesting from the live URL (best-effort, no headless browser) ──────
 def fetch_html(url: str) -> str:
+    """Fetch the page HTML with BOTH a per-socket-op timeout and a total
+    wall-clock deadline. urlopen's timeout only bounds each connect/recv; a
+    drip-feeding (or tarpit) server can otherwise stretch one fetch out
+    indefinitely and wedge the job thread."""
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
@@ -904,9 +932,25 @@ def fetch_html(url: str) -> str:
             "Accept": "text/html,application/xhtml+xml",
         },
     )
-    with urlopen(req, timeout=25, context=ctx) as resp:
-        raw = resp.read(6_000_000)
-    return raw.decode("utf-8", errors="ignore")
+    deadline = time.monotonic() + FETCH_TOTAL_DEADLINE_S
+    chunks: list[bytes] = []
+    remaining = 6_000_000
+    with urlopen(req, timeout=FETCH_SOCKET_TIMEOUT_S, context=ctx) as resp:
+        while remaining > 0:
+            if time.monotonic() > deadline:
+                raise TimeoutError(
+                    f"fetch exceeded {FETCH_TOTAL_DEADLINE_S}s total deadline: {url}"
+                )
+            # read1 = at most ONE underlying recv. A plain read(n) blocks until
+            # n bytes arrive, so a drip-feeding server (1 byte per 2s) would
+            # keep every socket op "successful" and dodge both the socket
+            # timeout and this deadline check forever.
+            chunk = resp.read1(min(65536, remaining))
+            if not chunk:
+                break
+            chunks.append(chunk)
+            remaining -= len(chunk)
+    return b"".join(chunks).decode("utf-8", errors="ignore")
 
 
 def harvest_assets(version: str, url: str, log) -> None:
@@ -1092,9 +1136,21 @@ def run_job(job_id: str, version: str, url: str, shots_dir: Path, title: str) ->
         "--config",
         str(config_path),
     ]
+    # Test hook (used by tools/soak_studio_server.py): replace the pipeline
+    # command wholesale so job plumbing can be exercised without a real
+    # (LLM-calling) pipeline run. Unset in normal operation.
+    override = os.environ.get("STUDIO_PIPELINE_CMD", "").strip()
+    if override:
+        cmd = shlex.split(override)
     log(f"$ {' '.join(cmd)}")
     log("")
+    watchdog: threading.Timer | None = None
     try:
+        # start_new_session puts the pipeline AND its children (playwright,
+        # browsers, provider CLIs) in their own process group so the watchdog /
+        # cleanup can kill the whole tree. Without it, a surviving grandchild
+        # keeps the stdout pipe open and the `for line in proc.stdout` loop
+        # below blocks forever even after run_pipeline exits.
         proc = subprocess.Popen(
             cmd,
             cwd=str(PROJECT_DIR),
@@ -1102,15 +1158,34 @@ def run_job(job_id: str, version: str, url: str, shots_dir: Path, title: str) ->
             stderr=subprocess.STDOUT,
             text=True,
             bufsize=1,
+            start_new_session=True,
         )
         set_job(job_id, pid=proc.pid)
+
+        def _kill_group() -> None:
+            log(f"!! pipeline watchdog: exceeded {PIPELINE_TIMEOUT_S}s, killing process group")
+            try:
+                os.killpg(proc.pid, signal.SIGKILL)
+            except (ProcessLookupError, PermissionError):
+                pass
+
+        watchdog = threading.Timer(PIPELINE_TIMEOUT_S, _kill_group)
+        watchdog.daemon = True
+        watchdog.start()
         for line in proc.stdout:  # type: ignore[union-attr]
             log(line.rstrip("\n"))
-        proc.wait()
-        rc = proc.returncode
+        try:
+            rc = proc.wait(timeout=60)
+        except subprocess.TimeoutExpired:
+            log("!! pipeline stdout closed but process lingered; killing process group")
+            _kill_group()
+            rc = proc.wait(timeout=10)
     except Exception as exc:
         log(f"!! pipeline failed to launch: {exc}")
         rc = 1
+    finally:
+        if watchdog is not None:
+            watchdog.cancel()
 
     log("")
     log(f"=== pipeline exited with code {rc} ===")
@@ -1151,6 +1226,14 @@ def tail(path: str, max_bytes: int = 60_000) -> str:
 
 # ── HTTP handler ───────────────────────────────────────────────────────────────
 class StudioHandler(SimpleHTTPRequestHandler):
+    # THE hang fix. StreamRequestHandler.setup() applies this to the connection
+    # socket, so every blocking read/write on a stalled client raises
+    # TimeoutError (handled by http.server: connection closed, thread exits)
+    # instead of pinning a handler thread + fd forever. See the 2026-07-09
+    # changes.md entry: 90 threads stuck in handle_one_request/readinto wedged
+    # the whole server silently once fds ran out.
+    timeout = HANDLER_SOCKET_TIMEOUT_S
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(PROJECT_DIR), **kwargs)
 
@@ -1211,6 +1294,17 @@ class StudioHandler(SimpleHTTPRequestHandler):
 
     def do_GET(self):  # noqa: N802
         path = urlparse(self.path).path
+        # Liveness probe: instant, lock-free, no filesystem. threads is the
+        # leak canary — a climbing count means handler threads are wedging.
+        if path == "/healthz":
+            return self._send_json(
+                {
+                    "ok": True,
+                    "pid": os.getpid(),
+                    "uptime_s": int(time.monotonic() - SERVER_STARTED),
+                    "threads": threading.active_count(),
+                }
+            )
         if path in ("/", "/studio", "/studio/"):
             return self._send_html(render_dashboard())
         if path == "/api/projects":
@@ -2161,11 +2255,40 @@ $("info-toggle").onclick = () => {
 </script></body></html>""".replace("__DATA__", data_json)
 
 
+class StudioServer(ThreadingHTTPServer):
+    daemon_threads = True  # stdlib default here, pinned so a wedged handler can never block exit
+    # Default backlog is 5; a burst (browser fanning out image loads) overflows
+    # it and macOS RSTs new connections. 128 rides bursts out gracefully.
+    request_queue_size = 128
+
+
+def _raise_fd_limit(target: int = 4096) -> None:
+    """Raise the soft RLIMIT_NOFILE toward `target` (macOS shells often default
+    to 256, which ~250 stalled sockets exhaust). Headroom, not the fix — the
+    handler socket timeout is what stops the stall accumulation."""
+    try:
+        import resource
+
+        soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
+        want = target if hard == resource.RLIM_INFINITY else min(target, hard)
+        if soft < want:
+            resource.setrlimit(resource.RLIMIT_NOFILE, (want, hard))
+    except Exception:
+        pass
+
+
 def main() -> None:
     port = int(os.environ.get("STUDIO_PORT", "1500"))
     STUDIO_DIR.mkdir(parents=True, exist_ok=True)
+    _raise_fd_limit()
+    # Hang forensics: fatal-signal tracebacks always on, and `kill -USR1 <pid>`
+    # dumps EVERY thread's stack to stderr without disturbing the process — if
+    # this server ever stops answering again, that dump is the diagnosis.
+    faulthandler.enable()
+    if hasattr(signal, "SIGUSR1"):
+        faulthandler.register(signal.SIGUSR1, all_threads=True, chain=False)
     try:
-        server = ThreadingHTTPServer(("127.0.0.1", port), StudioHandler)
+        server = StudioServer(("127.0.0.1", port), StudioHandler)
     except OSError as exc:
         if exc.errno in (48, 98):  # macOS EADDRINUSE / Linux EADDRINUSE
             print(
@@ -2181,6 +2304,7 @@ def main() -> None:
     print(f"Design System Studio → http://127.0.0.1:{port}/studio")
     print(f"Comparison viewer    → http://127.0.0.1:{port}/viewer.html")
     print(f"  (serving static files + runs from {PROJECT_DIR})")
+    print(f"  liveness: http://127.0.0.1:{port}/healthz · stacks: kill -USR1 {os.getpid()}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

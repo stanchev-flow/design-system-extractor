@@ -70,6 +70,29 @@ composers (`compose_section.py` `copy["…"]` reads):
   cta}` dicts) — per-module copy for card grids / testimonial runs / accordion
   rows. When a layout authors `items`, the composed modules must carry them (the
   C11 composed-demo smoke rejects empty module captions over authored items).
+  Per-item ASSET keys (all optional, filenames that must exist in the brand's
+  own on-disk inventory — a name with no disk evidence renders nothing, AS-34):
+  - `items[].icon` — the item's leading mark (accordion trigger icon tile,
+    fid2 2026-07).
+  - `items[].avatar` + `items[].name` + `items[].role` — the person row on
+    card/testimonial modules (fid2 2026-07).
+  - `items[].media` — the item's OWN counterweight media (fid5 2026-07): an
+    accordion whose items bind `media` swaps the right-side well to the ACTIVE
+    item's asset (crossfade on the brand's motion aliases; open item drives the
+    swap via generated `:has()` pairing rules). Items without `media` show the
+    honest empty well when active; NO item binding `media` keeps the single
+    slot-bound media path unchanged.
+
+  Disclosure completeness contract (fid8 2026-07, validator C17): when an
+  `items` list shows a disclosure pattern (>= 2 items and ANY item carrying a
+  `body`), EVERY item must carry a `body` — the collapsed states hide their
+  copy from static capture, so capture them via the interaction pass
+  (tools/extract/capture_disclosure_states.py) or the saved DOM's hidden
+  panels — or mark the item `bodyNotObserved: true` (entry-level
+  `itemBodiesNotObserved: true` when the source genuinely shows none). The
+  same all-or-none rule applies to `items[].media` (`mediaNotObserved: true` /
+  `itemMediaNotObserved: true`), and every bound media filename must exist
+  under the brand's assets.
 
 Multi-line headings use YAML block/quoted scalars with `\n` line breaks
 (composers honor explicit breaks). A key a composer needs but the layer lacks

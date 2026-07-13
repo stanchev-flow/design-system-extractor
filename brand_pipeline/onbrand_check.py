@@ -816,9 +816,23 @@ def check_slop(doc, html, layout, facts):
     var_vals = [v.strip() for k, v in facts["radius_vars"].items()
                 if not k.startswith("--chrome-")]
     resolved = [_resolve_css_var_chain(v, var_map) for v in var_vals]
+
+    def _rem(v):
+        """px/rem length → float rem for VALUE comparison (a measured 40px chrome
+        radius IS the brand's 2.5rem step; unit spelling is not a scale violation)."""
+        m = re.fullmatch(r"([\d.]+)(px|rem)", str(v).strip())
+        if not m:
+            return None
+        return float(m.group(1)) / (16.0 if m.group(2) == "px" else 1.0)
+    brand_rems = {r for r in (_rem(b) for b in brand_radii) if r is not None}
+
+    def _on_scale(res):
+        if res in brand_radii or res in ("0", "0px", "0rem"):
+            return True
+        r = _rem(res)
+        return r is not None and any(abs(r - b) < 1e-6 for b in brand_rems)
     bad = [f"{orig} -> {res}" if orig != res else orig
-           for orig, res in zip(var_vals, resolved)
-           if res not in brand_radii and res not in ("0", "0px", "0rem")]
+           for orig, res in zip(var_vals, resolved) if not _on_scale(res)]
     checks.append(("Rounding matches brand radius scale", not bad,
                    f"radius vars={var_vals or 'none'}; brand scale={sorted(brand_radii) or 'none'}; off-scale={bad or 'none'}"))
 
@@ -918,7 +932,11 @@ def check_composition(doc, html, layout, facts):
         if v:
             scale.add(v)
     off_rhythm = []
-    for m in re.finditer(r"([^{}]+)\{([^{}]*)\}", low):
+    # scan comment-free CSS: the selector-side capture ([^{}]+ back to the previous
+    # brace) otherwise swallows preceding comment PROSE, and any comment mentioning
+    # "section" turned an unrelated rule into a section-rhythm candidate.
+    low_nc = re.sub(r"/\*.*?\*/", " ", low, flags=re.S)
+    for m in re.finditer(r"([^{}]+)\{([^{}]*)\}", low_nc):
         sel = m.group(1).strip()
         if not re.search(r"(?:^|[\s,>+~])section\b|\.cs-sec|\.cs-section|\[data-pattern|\[data-composition", sel):
             continue
@@ -982,6 +1000,25 @@ def check_composition(doc, html, layout, facts):
             bg = b.get("bg") or b.get("background")
             if fg and bg:
                 measured_pairs.append((str(fg), str(bg)))
+        # same doctrine for the brand's authored LINK token on its own authored
+        # LIGHT surface roles: a provenance-verified text/link color on a
+        # provenance-verified canvas is brand truth (real sites ship their one
+        # link blue on every light band they own). Dark surfaces are excluded —
+        # they carry their own -on-inverse twins. Any non-authored pairing
+        # (wrong hue, wrong surface) still fails the floor.
+        _link = ((doc.get("tokens") or {}).get("colors") or {}).get("text/link")
+        _link_val = _link.get("value") if isinstance(_link, dict) else _link
+        if _link_val:
+            for surf in (((doc.get("tokens") or {}).get("surfaces") or {}).values()):
+                if isinstance(surf, dict) and not surf.get("textAccent") and surf.get("bg"):
+                    measured_pairs.append((str(_link_val), str(surf["bg"])))
+        # (the fid15 measured-pair exemption for the CHROME banner is gone — W1,
+        # stress-playbook 2026-07: the illegible pairing wasn't brand truth, it was a
+        # capture artifact — a translucent declaration stored WITHOUT its live
+        # backdrop. The extractor/bridge now resolve backdrop-aware paint
+        # (utilityBanner.bg is the composited screen-truth color, bgRaw keeps the
+        # declaration), so the banner passes the same floor as everything else and a
+        # future mis-extracted chrome color fails LOUDLY instead of being exempted.)
         tc_pass, tc_detail = readability.check_text_contrast(
             html, analysis=analysis, measured_pairs=measured_pairs)
         ds_pass, ds_detail = readability.check_decoration_salience(html, analysis=analysis)

@@ -24,6 +24,10 @@ Design intent (repo conventions this prompt encodes):
 - **Chrome presentation facts** (casing, separators, icon shape, link treatment)
   are first-class: they are what makes a nav/footer render like the source brand
   instead of the scaffold's habits.
+- **Recurring anatomy is evidence** (fix2). Named multi-slot component runs
+  (`componentAnatomies`) are the lead the Layout Analyst uses to promote anatomy
+  seen in 2+ section crops into a brand-owned `recipes:` entry
+  (brand-schema §4.4e) — the recipe layer is written during extraction.
 
 ---
 
@@ -129,6 +133,17 @@ chrome:            # ONLY for navbar/footer sections, else omit entirely
   surfaceApprox: "#rrggbb"
   linkTreatment: <e.g. "14px #383a3d, darken+underline available cues visible">
   ctaTreatment: <e.g. "near-black filled pill, hugging content">
+componentAnatomies:   # OMIT when the crop shows none. Named multi-slot component
+  # RUNS that read as reusable house devices — especially the run that OPENS the
+  # section (kicker/eyebrow devices, leader rules, trailing quiet CTAs) and any
+  # composite that repeats within the crop (card families). One entry per distinct
+  # anatomy; name parts generically (chip/pill/badge/rule/trail — never section or
+  # content names). The cross-section pass compares these strings ACROSS crops:
+  # the same anatomy in 2+ sections becomes a brand recipe, so describe the
+  # ANATOMY (ordered parts + styling class of each) precisely enough to match.
+  - name: <generic device name, e.g. "section headrail">
+    parts: <ordered one-liner, e.g. "icon chip (66px, r16) -> dotted leader rule -> trailing quiet CTA at far edge">
+    styling: <what varies vs. other appearances you can see: chip vs pill vs badge, icon size, rule style>
 motionHints: [ <motion AFFORDANCES the still frame betrays — report every one you
   can see, as short generic strings. Look for: a logo/testimonial row duplicated or
   cropped mid-item at the frame edge (marquee/auto-scroll track), carousel dots or

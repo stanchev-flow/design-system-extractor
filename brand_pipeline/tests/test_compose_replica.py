@@ -102,5 +102,44 @@ class KnownGapsTests(unittest.TestCase):
         self.assertEqual(gaps, [])
 
 
+class ChromeGapsTests(unittest.TestCase):
+    """_chrome_gaps honesty (hubspot-v2 2026-07): declared-absent banners and
+    self-hosted fonts with PostScript-style (space-free) file stems must not
+    surface as renderer gaps."""
+
+    def test_utility_banner_not_observed_is_not_a_gap(self):
+        import tempfile
+        doc = {"navbar": {"utilityBanner": {
+            "notObserved": True, "note": "source shows no banner"}}}
+        with tempfile.TemporaryDirectory() as td:
+            gaps = cx._chrome_gaps(doc, Path(td), "<html></html>")
+        self.assertFalse(any(g["capability"] == "utility banner" for g in gaps))
+
+    def test_utility_banner_observed_but_unrendered_is_a_gap(self):
+        import tempfile
+        doc = {"navbar": {"utilityBanner": {
+            "observed": True, "text": "Big promo — act now"}}}
+        with tempfile.TemporaryDirectory() as td:
+            gaps = cx._chrome_gaps(doc, Path(td), "<html>no banner here</html>")
+        self.assertTrue(any(g["capability"] == "utility banner" for g in gaps))
+
+    def test_spaced_family_matches_spacefree_font_stem(self):
+        import tempfile
+        doc = {"tokens": {"type": {"display-hero": {"family": "HubSpot Serif"}}}}
+        with tempfile.TemporaryDirectory() as td:
+            fonts = Path(td) / "assets" / "fonts"
+            fonts.mkdir(parents=True)
+            (fonts / "HubSpotSerif-Book.woff2").write_bytes(b"\0")
+            gaps = cx._chrome_gaps(doc, Path(td), "<html></html>")
+        self.assertFalse(any("display font" in g["capability"] for g in gaps))
+
+    def test_missing_display_font_still_flagged(self):
+        import tempfile
+        doc = {"tokens": {"type": {"display-hero": {"family": "Proprietary Face"}}}}
+        with tempfile.TemporaryDirectory() as td:
+            gaps = cx._chrome_gaps(doc, Path(td), "<html></html>")
+        self.assertTrue(any("display font" in g["capability"] for g in gaps))
+
+
 if __name__ == "__main__":
     unittest.main()

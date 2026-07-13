@@ -36,6 +36,7 @@ from __future__ import annotations
 import argparse
 import copy as _copy
 import json
+import re
 import shutil
 import sys
 from pathlib import Path
@@ -63,8 +64,8 @@ SURFACE_INTENT_MAP = {
 # The renderer archetypes that HAVE a bespoke composer (compose_section.ARCHETYPE_COMPOSERS
 # minus the generic fallback). A composition archetype outside this set — or any
 # novelty:novel section — routes to `generic-flow`.
-_BESPOKE_ARCHETYPES = ("stack", "collage", "split", "stack-fullbleed", "cards", "interlock",
-                       "overlay", "banded")
+_BESPOKE_ARCHETYPES = ("stack", "collage", "split", "media-split", "stack-fullbleed",
+                       "cards", "interlock", "overlay", "banded")
 
 _GENERIC_FLOW = "generic-flow"
 
@@ -266,7 +267,36 @@ def _art_panel_payload(section: dict) -> dict | None:
     bg = next((s for s in _slots(section) if _is_art_panel_bg_slot(s)), None)
     if not treat and bg is None:
         return None
-    return {"asset": _asset_src(bg) if bg else None}
+    # A background slot claimed by a sanctioned TEXT-ON-MEDIA treatment is the
+    # LAYERED full-bleed hero (copy directly on the photo — _media_layers),
+    # not the inset art panel: without this, any brand whose hero is a true
+    # photo band got hijacked into a rounded panel (hubspot-v2 2026-07). An
+    # explicit panel treatment still wins (that IS the declared device).
+    if not treat and bg is not None:
+        bg_name = str(bg.get("name") or "").lower()
+        for t in (section.get("treatments") or []):
+            if not isinstance(t, dict) or t.get("sanctioned", True) is False:
+                continue
+            if (t.get("kind") or "").lower() != "text-on-media":
+                continue
+            target = str(t.get("target") or "").lower()
+            if target in ("background", "panel", bg_name):
+                return None
+    payload: dict = {"asset": _asset_src(bg) if bg else None}
+    # EVENT-POSTER slots (event-scaffolds 2026-07), each authored-only so every
+    # existing panel hero keeps its exact payload shape semantics:
+    #   - a bound EYEBROW slot flags the panel to render the eyebrow register (the
+    #     text itself rides _hero_section_copy → copy['eyebrow'] as usual);
+    #   - a META-role caption slot (the poster's date/place line) passes its text
+    #     through for the caption register between body and actions.
+    slots = _slots(section)
+    if _slot_text(_by_role(slots, "eyebrow"), "eyebrow", "text"):
+        payload["eyebrow"] = True
+    meta = _slot_text(_by_role(slots, "meta", "details", "schedule", "when"),
+                      "text", "caption", "label")
+    if meta:
+        payload["meta"] = meta
+    return payload
 
 
 def _media_layers(section: dict) -> list[dict] | None:
@@ -385,9 +415,11 @@ def _slot_to_mapping(slot: dict) -> dict:
         usage["text"] = copyval
     elif isinstance(copyval, dict):
         # fold recognized copy fields directly so _inline_props can consume them
+        # (value/prefix/suffix/columns/rows: the stat + table contract vocabulary, W4)
         for k in ("eyebrow", "heading", "subheading", "body", "text", "caption",
                   "label", "cta", "placeholder", "submit", "level",
-                  "family", "styleHint"):
+                  "family", "styleHint",
+                  "value", "prefix", "suffix", "columns", "rows"):
             if k in copyval:
                 usage[k] = copyval[k]
     asset = slot.get("asset")
@@ -633,6 +665,11 @@ def _cards_copy(section: dict) -> dict:
     module_slot = _by_role(slots, "module", "value-prop", "feature", "card", "prop") \
         or _by_contract(slots, "testimonial", "quote", "feature-item", "card")
     modules = _repeatable_copy(module_slot)
+    # DECLARED slot mediaAspect (hubspot-v2 2026-07): a module slot whose pattern
+    # recorded the card-media frame (e.g. `mediaAspect: square` measured from the
+    # source's 1:1 product-UI wells) is honored as the per-card fallback — a module's
+    # own `aspect:` still wins. Slots without the fact keep the composer default.
+    slot_aspect = ASPECT_CSS.get(str((module_slot or {}).get("mediaAspect") or "").lower())
     if not modules:  # fall back: each non-intro slot is a module
         modules = [s.get("copy") for s in slots
                    if isinstance(s.get("copy"), dict) and s is not header]
@@ -649,18 +686,52 @@ def _cards_copy(section: dict) -> dict:
             asset = asset.get("src")
         name = (m.get("name") or "").strip()
         who = ", ".join(x for x in (name, (m.get("role") or "").strip()) if x)
-        cards.append({
+        card = {
             "caption": m.get("heading") or m.get("caption") or m.get("title") or who,
             "body": m.get("text") or m.get("body") or m.get("quote") or "",
             "link": m.get("link") or m.get("cta"),
             "asset": asset,
             "alt": alt,
-            "aspect": m.get("aspect"),
-        })
+            "aspect": m.get("aspect") or slot_aspect,
+        }
+        # CARD EYEBROW anatomy (fid6 2026-07): a module authoring its OWN microlabel
+        # carries eyebrow + heading as separate registers — the composer renders the
+        # eyebrow→heading→body→cta ladder instead of folding the heading into the
+        # caption tier. Modules without an eyebrow keep the caption fold unchanged.
+        if str(m.get("eyebrow") or "").strip():
+            card["eyebrow"] = str(m["eyebrow"]).strip()
+            card["heading"] = m.get("heading") or m.get("title") or ""
+        elif str(m.get("heading") or m.get("title") or "").strip():
+            # an EXPLICITLY authored heading passes through as one (hubspot-v2
+            # 2026-07): the composer's mark-media feature-card path renders it at
+            # the card register ("the feature-card ladder is mark → heading → body
+            # → link"); modules without media-treatment facts never read the key,
+            # so caption-fold brands stay byte-identical.
+            card["heading"] = str(m.get("heading") or m.get("title")).strip()
+        # PERSON attribution (fid2 2026-07): a testimonial module carrying an avatar
+        # asset and/or an authored name/role passes them through — the composer
+        # renders the avatar + name/role person row instead of a bare caption line.
+        avatar = m.get("avatar")
+        if isinstance(avatar, dict):
+            avatar = avatar.get("src")
+        if avatar:
+            card["avatar"] = avatar
+        if name:
+            card["name"] = name
+        if str(m.get("personRole") or m.get("role") or "").strip():
+            card["role"] = str(m.get("personRole") or m.get("role")).strip()
+        cards.append(card)
+    hdr_copy = (header or {}).get("copy")
     return {
         "eyebrow": _slot_text(_by_role(slots, "eyebrow"), "eyebrow", "text")
-        or _text((header or {}).get("copy"), "eyebrow"),
+        or _text(hdr_copy, "eyebrow"),
         "heading": _slot_text(header, "heading", "text") or "",
+        # intro SUBHEAD (event-scaffolds 2026-07): the module composers already
+        # render layout-copy `subhead` under the intro header — the translator now
+        # carries an authored body-role slot (or the header's own body key) through
+        # instead of silently dropping it. Absent ⇒ "" ⇒ elides (unchanged pages).
+        "subhead": _slot_text(_by_role(slots, "body", "sub", "lede"), "text", "body")
+        or (_text(hdr_copy, "body", "text") if isinstance(hdr_copy, dict) else "") or "",
         "cards": cards,
     }
 
@@ -689,6 +760,249 @@ def _cards_mapping(section: dict) -> list[dict]:
         else:
             mapping.append(_slot_to_mapping(s))
     return mapping
+
+
+# ── event scaffolds (2026-07): bento / pricing-tiers / signup-form / faq vocabulary ──
+
+def _bento_stamp(knob) -> dict | None:
+    """Validate the composition's `knobs.bento` → the `_bento` stamp compose_bento_grid
+    + layout_placement_css consume. Pattern-fact-driven knobs (AS-44 discipline —
+    facts validated here once, structural defaults are the composer's degrade):
+      cells:      [{span 3–12, rows 1–2, surface <sanctioned role str>, lead bool}]
+                  index-aligned with the section's module copy;
+      gap:        CSS length for the mosaic gap (e.g. the measured card-grid gutter);
+      collapseAt: px tier where the mosaic folds to one column (the brand's own
+                  measured collapse register).
+    Returns None for a malformed knob (section renders as the plain module grid)."""
+    if knob is True:
+        return {"cells": []}
+    if not isinstance(knob, dict):
+        return None
+    cells = []
+    for c in (knob.get("cells") or []):
+        c = c if isinstance(c, dict) else {}
+        cell: dict = {}
+        if isinstance(c.get("span"), (int, float)):
+            cell["span"] = max(3, min(12, int(c["span"])))
+        if isinstance(c.get("rows"), (int, float)):
+            cell["rows"] = max(1, min(2, int(c["rows"])))
+        if isinstance(c.get("start"), (int, float)):     # explicit track (e.g. a
+            cell["start"] = max(1, min(12, int(c["start"])))  # centered solo cell)
+        if str(c.get("surface") or "").strip():
+            cell["surface"] = str(c["surface"]).strip()
+        if c.get("lead"):
+            cell["lead"] = True
+        cells.append(cell)
+    stamp: dict = {"cells": cells}
+    if str(knob.get("gap") or "").strip():
+        stamp["gap"] = str(knob["gap"]).strip()
+    if isinstance(knob.get("collapseAt"), (int, float)):
+        stamp["collapseAt"] = int(knob["collapseAt"])
+    return stamp
+
+
+def _tiers_stamp(knob) -> dict | None:
+    """Validate `knobs.tiers` → the `_tiers` stamp compose_pricing_tiers consumes.
+      emphasize:       index of the ONE emphasized tier;
+      emphasisSurface: sanctioned surface ROLE its head band paints (resolved through
+                       the token layer by the composer; unknown role degrades to the
+                       border ring);
+      gap / collapseAt: same knob semantics as the bento stamp."""
+    if knob is True:
+        return {}
+    if not isinstance(knob, dict):
+        return None
+    stamp = {}
+    if isinstance(knob.get("emphasize"), (int, float)):
+        stamp["emphasize"] = int(knob["emphasize"])
+    if str(knob.get("emphasisSurface") or "").strip():
+        stamp["emphasisSurface"] = str(knob["emphasisSurface"]).strip()
+    if str(knob.get("gap") or "").strip():
+        stamp["gap"] = str(knob["gap"]).strip()
+    if isinstance(knob.get("collapseAt"), (int, float)):
+        stamp["collapseAt"] = int(knob["collapseAt"])
+    return stamp
+
+
+def _tiers_copy(section: dict) -> dict:
+    """pricing `cards`: intro eyebrow/heading/subhead + N TIER modules — each name
+    (caption register) / price + priceMeta / tagline / features[] / cta (+ ctaFamily)
+    — + an optional trailing note caption. Everything authored; missing keys elide."""
+    slots = _slots(section)
+    header = _by_role(slots, "section-title", "title", "heading") or _by_contract(slots, "header")
+    tier_slot = _by_role(slots, "tier", "plan", "module") \
+        or _by_contract(slots, "tier", "feature-item", "card")
+    tiers = []
+    for m in _repeatable_copy(tier_slot):
+        tiers.append({
+            "name": m.get("name") or m.get("heading") or m.get("caption") or "",
+            "price": m.get("price") or "",
+            "priceMeta": m.get("priceMeta") or m.get("unit") or "",
+            "tagline": m.get("tagline") or m.get("body") or m.get("text") or "",
+            "features": [str(f).strip() for f in (m.get("features") or [])
+                         if str(f).strip()],
+            "cta": m.get("cta") or m.get("label") or "",
+            "ctaFamily": m.get("ctaFamily") or m.get("family") or "",
+        })
+    hdr_copy = (header or {}).get("copy")
+    return {
+        "eyebrow": _slot_text(_by_role(slots, "eyebrow"), "eyebrow", "text")
+        or _text(hdr_copy, "eyebrow") or "",
+        "heading": _slot_text(header, "heading", "text") or "",
+        "subhead": _slot_text(_by_role(slots, "body", "sub", "lede"), "text", "body")
+        or (_text(hdr_copy, "body", "text") if isinstance(hdr_copy, dict) else "") or "",
+        "note": _slot_text(_by_role(slots, "note", "fineprint", "footnote"),
+                           "text", "caption") or "",
+        "tiers": tiers,
+    }
+
+
+def _tiers_mapping(section: dict) -> list[dict]:
+    """blockMapping for a pricing-tiers section (gate traceability + slot resolution,
+    same discipline as _cards_mapping): header entry, then per tier its name caption,
+    price heading, tagline paragraph, feature captions and button action."""
+    slots = _slots(section)
+    tier_slot = _by_role(slots, "tier", "plan", "module") \
+        or _by_contract(slots, "tier", "feature-item", "card")
+    mapping: list[dict] = [{"slot": "main", "role": "heading", "contract": "header",
+                            "usage": {"level": "h2"}}]
+    for i, m in enumerate(_repeatable_copy(tier_slot)):
+        name = m.get("name") or m.get("heading") or m.get("caption") or f"tier {i + 1}"
+        mapping.append({"slot": "tiers", "role": f"tier name {i + 1}",
+                        "contract": "caption", "usage": {"text": name, "case": "upper"}})
+        if m.get("price"):
+            mapping.append({"slot": "tiers", "role": f"tier price {i + 1}",
+                            "contract": "heading",
+                            "usage": {"heading": str(m["price"]), "level": "h3"}})
+        body = m.get("tagline") or m.get("body") or m.get("text") or ""
+        if body:
+            mapping.append({"slot": "tiers", "role": f"tier tagline {i + 1}",
+                            "contract": "paragraph", "usage": {"text": body}})
+        cta = m.get("cta") or m.get("label") or ""
+        if cta:
+            usage = {"label": cta, "accent": False}
+            if str(m.get("ctaFamily") or m.get("family") or "").strip():
+                usage["family"] = str(m.get("ctaFamily") or m.get("family")).strip()
+            mapping.append({"slot": "tiers", "role": f"tier action {i + 1}",
+                            "contract": "button", "usage": usage})
+    return mapping
+
+
+_FORM_FIELD_KINDS = {"text", "email", "tel", "select", "radio-group", "checkbox",
+                     # W12 (stress-playbook 2026-07): a declared multiline field is a
+                     # REAL vocabulary member — the old whitelist silently coerced it
+                     # to a single-line text input.
+                     "textarea"}
+
+
+def _form_fields_stamp(section: dict) -> dict | None:
+    """Validate a conversion section's multi-field FORM payload → the `_formFields`
+    stamp _compose_signup_form consumes. The fields live on the form slot's copy
+    (`fields: [...]`), microcopy beside them (consent / success / meta). Field keys:
+    kind (vocabulary above; unknown → text), label (REQUIRED — an unlabeled control
+    is dropped, never rendered bare), name, placeholder, helper, options[],
+    checkedIndex, required, span (half|full), autocomplete. None ⇒ no multi-field
+    payload (the classic single-line newsletter device renders unchanged)."""
+    form = _by_contract(_slots(section), "form", "input") \
+        or _by_role(_slots(section), "signup", "form")
+    formcopy = (form or {}).get("copy")
+    if not isinstance(formcopy, dict) or not isinstance(formcopy.get("fields"), list):
+        return None
+    fields = []
+    for f in formcopy["fields"]:
+        if not isinstance(f, dict) or not str(f.get("label") or "").strip():
+            continue
+        kind = str(f.get("kind") or "text").lower()
+        field = {"kind": kind if kind in _FORM_FIELD_KINDS else "text",
+                 "label": str(f["label"]).strip()}
+        # `error` is authored VALIDATION MICROCOPY — carried as a data-error attr on
+        # the control (static markup; no JS is invented to display it).
+        for k in ("name", "placeholder", "helper", "autocomplete", "error"):
+            if str(f.get(k) or "").strip():
+                field[k] = str(f[k]).strip()
+        if str(f.get("span") or "").lower() == "half":
+            field["span"] = "half"
+        if f.get("required"):
+            field["required"] = True
+        opts = [str(o).strip() for o in (f.get("options") or []) if str(o).strip()]
+        if opts:
+            field["options"] = opts
+        if isinstance(f.get("checkedIndex"), (int, float)):
+            field["checkedIndex"] = int(f["checkedIndex"])
+        fields.append(field)
+    if not fields:
+        return None
+    stamp: dict = {"fields": fields}
+    for k in ("consent", "success", "meta"):
+        if str(formcopy.get(k) or "").strip():
+            stamp[k] = str(formcopy[k]).strip()
+    return stamp
+
+
+def _faq_copy(section: dict) -> dict:
+    """faq stack → compose_faq_accordion copy keys: eyebrow / heading / items
+    [(question, answer)] from the section's repeatable item slot."""
+    slots = _slots(section)
+    header = _by_role(slots, "heading", "title") or _by_contract(slots, "header")
+    item_slot = _by_role(slots, "faq", "question", "item") \
+        or _by_contract(slots, "faq-item", "disclosure", "feature-item")
+    items = []
+    for m in _repeatable_copy(item_slot):
+        q = str(m.get("question") or m.get("heading") or m.get("caption") or "").strip()
+        a = str(m.get("answer") or m.get("text") or m.get("body") or "").strip()
+        if q and a:
+            items.append((q, a))
+    hdr_copy = (header or {}).get("copy")
+    return {
+        "eyebrow": _slot_text(_by_role(slots, "eyebrow"), "eyebrow", "text")
+        or _text(hdr_copy, "eyebrow") or "",
+        "heading": _slot_text(header, "heading", "text") or "",
+        # intro paragraph + closing action are OPTIONAL anatomy (the agenda shape);
+        # absent keys elide in the composer (SafeCopy), so bare FAQs are unchanged.
+        "intro": _slot_text(_by_role(slots, "body", "lede", "sub"), "text", "body")
+        or (_text(hdr_copy, "body", "text") if isinstance(hdr_copy, dict) else "") or "",
+        "cta": _slot_text(_by_role(slots, "action", "cta", "link"),
+                          "label", "cta", "text") or "",
+        "items": items,
+    }
+
+
+def _faq_mapping(section: dict) -> list[dict]:
+    """blockMapping for a composed FAQ (gate traceability): header + one caption/
+    paragraph pair per disclosure row."""
+    slots = _slots(section)
+    item_slot = _by_role(slots, "faq", "question", "item") \
+        or _by_contract(slots, "faq-item", "disclosure", "feature-item")
+    mapping: list[dict] = [{"slot": "main", "role": "heading", "contract": "header",
+                            "usage": {"level": "h2"}}]
+    for i, m in enumerate(_repeatable_copy(item_slot)):
+        q = str(m.get("question") or m.get("heading") or m.get("caption") or "").strip()
+        a = str(m.get("answer") or m.get("text") or m.get("body") or "").strip()
+        if q:
+            mapping.append({"slot": "faq", "role": f"question {i + 1}",
+                            "contract": "caption", "usage": {"text": q}})
+        if a:
+            mapping.append({"slot": "faq", "role": f"answer {i + 1}",
+                            "contract": "paragraph", "usage": {"text": a}})
+    return mapping
+
+
+def _faq_stamp(knob) -> dict:
+    """Validate `knobs.faq` → the `_faq` stamp (AS-40 hardening knobs): exclusive
+    (one open member at a time via <details name>) + open (the evidence-driven
+    open-item index; absent = all closed, the degrade) + the state-grammar role
+    refs (activeSurface / hoverWash — the accordion inset-emphasis vocabulary; the
+    composer resolves them through the token layer, unknown roles degrade)."""
+    stamp: dict = {"exclusive": True}
+    if isinstance(knob, dict):
+        if knob.get("exclusive") is False:
+            stamp["exclusive"] = False
+        if isinstance(knob.get("open"), (int, float)):
+            stamp["open"] = int(knob["open"])
+        for k in ("activeSurface", "hoverWash"):
+            if str(knob.get(k) or "").strip():
+                stamp[k] = str(knob[k]).strip()
+    return stamp
 
 
 def _module_copies(slots: list[dict]) -> list[dict]:
@@ -749,17 +1063,26 @@ def _split_copy(section: dict) -> dict:
     header = _by_role(slots, "heading", "title") or _by_contract(slots, "header")
     panel = _by_role(slots, "panel", "rows", "list", "prices")
     rows = []
+    row_icons: list[str] = []
+    row_media: list[str] = []
     for m in _repeatable_copy(panel):
         label = m.get("label") or m.get("heading") or m.get("title") or ""
         val = m.get("value") or m.get("text") or ""
         if label:
             rows.append((label, val))
+            row_icons.append(str(m.get("icon") or ""))
+            # per-item MEDIA binding (fid5 2026-07): an item's own media asset rides
+            # beside the rows so the accordion device can swap the counterweight
+            # well to the ACTIVE item's asset; all-empty degrades to the slot media.
+            row_media.append(str(m.get("media") or ""))
     if not rows:                                   # fold value_props modules into ruled rows
         for m in _module_copies(slots):
             label = m.get("heading") or m.get("label") or m.get("title") or ""
             val = m.get("text") or m.get("body") or m.get("value") or ""
             if label:
                 rows.append((label, val))
+                row_icons.append(str(m.get("icon") or ""))
+                row_media.append(str(m.get("media") or ""))
 
     def first(*keys: str) -> str:
         """First non-empty string under any of `keys` across the section's slot copy."""
@@ -780,8 +1103,21 @@ def _split_copy(section: dict) -> dict:
         # elide the empty panel-title/action devices instead.
         "panelTitle": _slot_text(panel, "heading", "title") or "",
         "rows": rows,
+        # per-row ICONS (fid2 2026-07): authored item icons ride beside the rows so
+        # the accordion device can render the brand's own product-family marks;
+        # all-empty degrades to no icon column.
+        "rowIcons": row_icons,
+        # per-row MEDIA (fid5 2026-07): authored item media assets for the accordion
+        # media-swap device; all-empty keeps the single slot-bound media path.
+        "rowMedia": row_media,
         "cta": _slot_text(_by_role(slots, "action", "cta", "link"), "label", "cta") or "",
         "caption": _slot_text(_by_role(slots, "caption"), "caption", "text") or "",
+        # AUTHORED HEADING REGISTER (W5, stress-playbook 2026-07): a header slot
+        # declaring copy.level carries it through so the info-band's intro heading is
+        # demotable — absent, the adapter's non-hero default (section tier) applies.
+        "headingLevel": str((_text((header or {}).get("copy"), "level")
+                             if isinstance((header or {}).get("copy"), dict) else "")
+                            or "").strip().lower(),
     }
     # about-statement / curator-quote keys: surface the section's own slot copy.
     out["body"] = _slot_text(_by_role(slots, "body", "statement", "lede", "support",
@@ -860,15 +1196,30 @@ def _interlock_copy(section: dict) -> dict:
                          "text", "body", "subheading") or ""
     cta = _slot_text(_by_role(slots, "action", "cta", "link"), "label", "cta", "text") or ""
     aspect = None
+    alt = ""
     if isinstance(media, dict):
         aspect = ASPECT_CSS.get((media.get("mediaAspect") or "").lower())
+        # AUTHORED ALT (W9, stress-playbook 2026-07): the slot's own asset.alt rides
+        # through — the composer used to fall straight to its brand-default alt,
+        # overwriting the composition's authored description.
+        a = media.get("asset")
+        if isinstance(a, dict) and str(a.get("alt") or "").strip():
+            alt = str(a["alt"]).strip()
+    evidence = None
+    knobs = section.get("knobs") if isinstance(section.get("knobs"), dict) else {}
+    if knobs.get("interlockEvidence"):
+        evidence = knobs["interlockEvidence"]
     return {
         "caption": cap,
         "statement": _slot_text(statement, "heading", "text") or "",
         "asset": _asset_src(media),
+        "alt": alt,
         "support": support,
         "cta": cta,
         "mediaAspectCss": aspect,
+        "mediaOrientation": ((media or {}).get("mediaAspect")
+                             if isinstance(media, dict) else None),
+        "interlockEvidence": evidence,
     }
 
 
@@ -877,6 +1228,7 @@ _COPY_TRANSLATORS = {
     "split": _split_copy,
     "cards": _cards_copy,
     "stack-fullbleed": _gallery_copy,
+    "media-split": _interlock_copy,
     "interlock": _interlock_copy,
 }
 
@@ -999,6 +1351,14 @@ def composition_to_layout(section: dict) -> dict:
         "gridRules": grid,
         "overlapRules": overlap,
     }
+    # A split renderer may carry a HEADER ABOVE the split rather than inside either
+    # column (comparison/info-band anatomy). Stamp the actual header context so the
+    # shared alignment chain consults standaloneStack in the captured brand grammar.
+    # Content below being two columns is not itself evidence for splitColumn alignment.
+    if archetype == "split" and (
+            (section.get("useCase") or "").lower() in ("comparison", "table")
+            or any((s.get("contract") or "").lower() == "table" for s in _slots(section))):
+        layout["_headerContext"] = "standaloneStack"
     # seededFrom → patternRef (drives resolve_pattern → pattern_treatment_css stagger/knobs).
     seeded = section.get("seededFrom")
     if isinstance(seeded, dict) and seeded.get("id"):
@@ -1040,6 +1400,26 @@ def composition_to_layout(section: dict) -> dict:
     layers = _media_layers(section) if (archetype == "stack" and art_panel is None) else None
     if layers is not None:
         layout["_mediaLayers"] = layers
+        # the sanctioned text-on-media treatment may DECLARE the scrim wash class
+        # over the z:back layer (scrim-band's fill.opacityClass vocabulary, plus
+        # `none` for art whose contrast tint is baked into the photograph itself —
+        # measured, not defaulted). Absent = the composer's flat default wash.
+        # A MEASURED scrim paint (fix1 2026-07, hero-overlay punch item) may ride
+        # `fill.color` instead: the brand's own captured overlay color (e.g. the
+        # source's ::after gradient resolved to one flat rgba) — validated as a
+        # color literal and painted verbatim by the layered-hero composer. Brands
+        # without the fact keep the class ladder / default wash byte-identically.
+        for t in (section.get("treatments") or []):
+            if isinstance(t, dict) and t.get("sanctioned", True) is not False \
+                    and (t.get("kind") or "").lower() == "text-on-media":
+                fill = t.get("fill") if isinstance(t.get("fill"), dict) else {}
+                color = str(fill.get("color") or "").strip()
+                if re.fullmatch(r"(rgba?\([\d\s.,%]+\)|#[0-9a-fA-F]{3,8})", color):
+                    layout["_bgScrimColor"] = color
+                oc = str(fill.get("opacityClass") or "").lower()
+                if oc in ("none", "light", "medium", "heavy"):
+                    layout["_bgScrimClass"] = oc
+                break
     # interlock media side: a float-wrap/inset treatment side (or knobs.mediaSide) is a
     # mirrorable contract lever → --c-float-side via compose_section.layout_placement_css.
     side = None
@@ -1079,7 +1459,14 @@ def composition_to_layout(section: dict) -> dict:
     is_conversion = (archetype == "stack" and not is_hero and not has_logo_slot
                      and (use_case in _conversion_cases
                           or _has_form_slot(section) or bool(_button_slots(section))))
-    if archetype == "stack" and not is_hero and not is_conversion:
+    # a composition-declared DISCLOSURE stack routes to the FAQ composer (event-
+    # scaffolds 2026-07): the `faq` useCase is the declaration (same rule as the
+    # hero), and a `knobs.faq` payload declares the same intent for disclosure
+    # sections whose useCase is semantic (agenda / schedule / …).
+    _knobs = section.get("knobs") if isinstance(section.get("knobs"), dict) else {}
+    is_faq = archetype == "stack" and not is_hero and not is_conversion \
+        and (use_case == "faq" or _knobs.get("faq") is not None)
+    if archetype == "stack" and not is_hero and not is_conversion and not is_faq:
         renderer_archetype = _GENERIC_FLOW
         layout["archetype"] = _GENERIC_FLOW
 
@@ -1127,6 +1514,30 @@ def composition_to_layout(section: dict) -> dict:
                                             "usage": {"label": label,
                                                       "href": it.get("href", "#"),
                                                       "accent": False}})
+                elif c_low in ("stat", "stat-block", "metric"):
+                    # stat contract (W4): each metric routes to the REAL stat renderer
+                    # (value at the brand's h2 register, label on the body register) —
+                    # never the caption fold that rendered "170+" at eyebrow size.
+                    # `group` rides the authored slot name so the flow composer bands
+                    # consecutive stats into ONE row (same discipline as logo strips).
+                    for i, m in enumerate(items):
+                        value = str(m.get("value") or m.get("heading")
+                                    or m.get("caption") or m.get("title") or "").strip()
+                        label = str(m.get("label") or m.get("text")
+                                    or m.get("body") or "").strip()
+                        if not value:
+                            continue
+                        mapping.append({"slot": s.get("name") or "stats",
+                                        "role": f"stat {i + 1}", "contract": "stat",
+                                        "usage": {"value": value, "label": label},
+                                        "group": str(s.get("name") or "stats")})
+                elif c_low == "table":
+                    # table contract (W4): the repeatable rows bind ONE semantic table
+                    # (render_table handles {label, value} dict rows).
+                    mapping.append({"slot": s.get("name") or "table",
+                                    "role": s.get("role") or "table",
+                                    "contract": "table",
+                                    "usage": {"rows": items}})
                 else:
                     for i, m in enumerate(items):
                         cap = m.get("heading") or m.get("caption") or m.get("title") or ""
@@ -1180,9 +1591,19 @@ def composition_to_layout(section: dict) -> dict:
         layout["blockMapping"] = _hero_mapping(section, art_panel=art_panel is not None)
         layout["_composerCopy"] = {}
         layout["_sectionCopy"] = _hero_section_copy(section)
+    elif is_faq:  # composed FAQ accordion (event-scaffolds 2026-07)
+        layout["blockMapping"] = _faq_mapping(section)
+        layout["_composerCopy"] = _faq_copy(section)
+        layout["_faq"] = _faq_stamp((section.get("knobs") or {}).get("faq"))
     elif is_conversion:  # conversion stack
         layout["blockMapping"] = _cta_mapping(section)
         layout["_composerCopy"] = _cta_copy(section)
+        # multi-field SIGNUP FORM payload (event-scaffolds 2026-07): stamped only
+        # when the form slot authors a validated `fields:` list — every existing
+        # single-line conversion renders byte-identically without it.
+        ff = _form_fields_stamp(section)
+        if ff is not None:
+            layout["_formFields"] = ff
     elif archetype in ("overlay", "banded"):
         # the layered/banded composers consume the RAW slot+treatment payload directly
         # (copy inline on each slot) — no fixed-key copy translator needed.
@@ -1192,11 +1613,105 @@ def composition_to_layout(section: dict) -> dict:
         if isinstance(section.get("bands"), dict):
             layout["_bands"] = section["bands"]
     else:  # collage / split / cards / stack-fullbleed / interlock
-        layout["blockMapping"] = _cards_mapping(section) if archetype == "cards" \
-            else [_slot_to_mapping(s) for s in _slots(section)]
+        if archetype == "cards":
+            layout["blockMapping"] = _cards_mapping(section)
+        else:
+            # list-copy LOGO slots expand per-item (AS-33 evidence routing — the same
+            # discipline as the generic-flow wall; hubspot-v2 2026-07): a split whose
+            # media slot binds a RUN of marks (award badges, partner logos) used to
+            # fold to one empty `logo` entry (usage folding drops list copy), so the
+            # composer saw no media and invented editorial art over the bound marks.
+            mapping = []
+            for s in _slots(section):
+                if (s.get("contract") or "").lower().startswith("logo") \
+                        and isinstance(s.get("copy"), list):
+                    for it in s["copy"]:
+                        entry = _logo_item_mapping(it)
+                        if entry:
+                            entry["group"] = str(s.get("name") or "logo-strip")
+                            mapping.append(entry)
+                else:
+                    mapping.append(_slot_to_mapping(s))
+            layout["blockMapping"] = mapping
         translator = _COPY_TRANSLATORS.get(archetype)
         layout["_composerCopy"] = translator(section) if translator else {}
+        # event scaffolds (2026-07): validated cards-family knobs stamp the BENTO
+        # mosaic / PRICING-TIER presentations (compose_cards dispatch). Malformed
+        # knobs stamp nothing — the module grid renders unchanged.
+        if archetype == "cards":
+            knobs = section.get("knobs") if isinstance(section.get("knobs"), dict) else {}
+            if knobs.get("bento") is not None:
+                stamp = _bento_stamp(knobs["bento"])
+                if stamp is not None:
+                    layout["_bento"] = stamp
+            if layout.get("_bento") is None and knobs.get("tiers") is not None:
+                stamp = _tiers_stamp(knobs["tiers"])
+                if stamp is not None:
+                    layout["_tiers"] = stamp
+                    layout["blockMapping"] = _tiers_mapping(section)
+                    layout["_composerCopy"] = _tiers_copy(section)
     return layout
+
+
+def adapt_brand_section(section: dict, doc: dict) -> tuple[dict, dict, dict | None]:
+    """Adapt ONE (sanitized) composition section against the ACTIVE BRAND — the single
+    shared lane path (fid10 2026-07). ``compose_replica`` and ``render_composition``
+    previously post-processed ``composition_to_layout`` differently: the replica lane
+    merged the brand's authored ``layoutCopy`` and rode the brand layout's declared
+    ``eyebrowRegister`` onto the adapted layout, while the catalog lane did neither —
+    so the composed-from-catalog page silently dropped authored headings/subheads
+    (translators emit ``""`` for keys a composition never voices) and lost the
+    per-section eyebrow color registers.
+
+    Returns ``(layout, merged_copy, sect_copy)``:
+      - ``layout``: ``composition_to_layout`` result; when the section id matches a
+        brand layout, declarations the composition vocabulary doesn't model
+        (``eyebrowRegister``) ride through.
+      - ``merged_copy``: the LAYOUT_COPY entry — hero section copy, then translator
+        copy, then the brand's AUTHORED layoutCopy for this id on top (the replica
+        lane's proven precedence: authored voice heals lossy slot translations and
+        translator fallbacks; a section id without an authored entry keeps the
+        composition copy exactly as before).
+      - ``sect_copy``: the hero SECTION_COPY payload (None on non-hero sections).
+    """
+    layout = composition_to_layout(section)
+    composer_copy = layout.pop("_composerCopy", {}) or {}
+    sect_copy = layout.pop("_sectionCopy", None)
+    brand_layout = next((l for l in (doc.get("layouts") or [])
+                         if isinstance(l, dict) and l.get("id") == layout.get("id")), None)
+    if brand_layout and brand_layout.get("eyebrowRegister"):
+        layout.setdefault("eyebrowRegister", brand_layout["eyebrowRegister"])
+    # the brand layout's DECLARED surface role rides through (same class of
+    # declaration as eyebrowRegister: the composition enum is coarse — any/primary/
+    # inverse/… — while the brand layout may name its real measured surface, e.g. an
+    # accent-wash art band or a photo-hero role; hubspot-v2 2026-07). Only a role the
+    # brand's tokens.surfaces actually carries wins (resolve_surface_intent contract).
+    b_surf = str((brand_layout or {}).get("surfaceIntent") or "")
+    if b_surf and b_surf in ((doc.get("tokens") or {}).get("surfaces") or {}):
+        layout["surfaceIntent"] = b_surf
+    authored = dict(cs.brand_layout_copy(doc).get(layout.get("id")) or {})
+    merged = {**(sect_copy or {}), **composer_copy, **authored}
+    # HEADING-LEVEL DEMOTION below the hero (W5, stress-playbook 2026-07): only the
+    # hero rides the display tier — a NON-HERO section's heading/header slot that
+    # declares no level demotes to the brand's measured section tier
+    # (cs.section_heading_level: h2 for ladder-bearing brands, display for brands
+    # without the fact — the historical degrade). An AUTHORED level (slot copy.level,
+    # folded into usage upstream) always wins, so a composition can still declare a
+    # display statement deliberately. Same rule for the split translator's
+    # headingLevel (the info-band intro heading), keeping every lane on one law.
+    if sect_copy is None:
+        tier = cs.section_heading_level(doc)
+        for m in (layout.get("blockMapping") or []):
+            if not isinstance(m, dict):
+                continue
+            if (m.get("contract") or "").lower() not in ("heading", "header"):
+                continue
+            usage = m.get("usage")
+            if isinstance(usage, dict) and not str(usage.get("level") or "").strip():
+                usage["level"] = tier
+        if not str(merged.get("headingLevel") or "").strip():
+            merged["headingLevel"] = tier
+    return layout, merged, sect_copy
 
 
 def composition_to_doc(comp: dict, brand_yaml_path: Path | str) -> tuple[dict, list[str]]:
@@ -1223,19 +1738,18 @@ def composition_to_doc(comp: dict, brand_yaml_path: Path | str) -> tuple[dict, l
     accent_layout_id: str | None = None
 
     for sec in sections:
-        layout = composition_to_layout(sec)
-        composer_copy = layout.pop("_composerCopy", {})
-        sect_copy = layout.pop("_sectionCopy", None)
+        # shared lane path (fid10 2026-07): the SAME brand-aware adaptation the
+        # replica assembler uses — authored layoutCopy heals lossy translator copy,
+        # brand-layout declarations (eyebrowRegister) ride through. PER-SECTION hero
+        # copy (ANCHORED-REPORT composer-gap #1 fix): every hero binds its own
+        # eyebrow/subhead/cta via LAYOUT_COPY[id] (compose_stack_hero reads
+        # copy_for(layout)); the FIRST hero additionally seeds the page-global
+        # SECTION_COPY base (nav wordmark/links + defaults for copyless sections).
+        layout, merged, sect_copy = adapt_brand_section(sec, doc)
         layouts.append(layout)
         order.append(layout["id"])
-        if composer_copy:
-            layout_copy[layout["id"]] = composer_copy
-        if sect_copy is not None:
-            # PER-SECTION hero copy (ANCHORED-REPORT composer-gap #1 fix): every hero
-            # binds its own eyebrow/subhead/cta via LAYOUT_COPY[id] (compose_stack_hero
-            # reads copy_for(layout)); the FIRST hero additionally seeds the page-global
-            # SECTION_COPY base (nav wordmark/links + defaults for copyless sections).
-            layout_copy[layout["id"]] = {**sect_copy, **layout_copy.get(layout["id"], {})}
+        if merged:
+            layout_copy[layout["id"]] = merged
         if sect_copy is not None and section_copy is None:
             section_copy = sect_copy
             accent_layout_id = layout["id"]  # the hero bookend keeps the single accent
@@ -1310,15 +1824,13 @@ def render_composition(comp: dict, brand_yaml_path: Path | str, outdir: Path | s
     # persist the composition JSON next to the render for provenance/round-trip.
     (outdir / "composition.json").write_text(json.dumps(comp, indent=2) + "\n")
 
-    # unresolved-slot count (parity with compose_page.main()).
-    import component_render as cr
-    layouts = {l.get("id"): l for l in doc.get("layouts", [])}
-    unresolved = 0
-    for lid in order:
-        layout = layouts[lid]
-        ctx = cr.make_context(doc, *cs.resolve_surface_intent(doc, layout))
-        unresolved += sum(1 for r in cs.render_slots(doc, layout, ctx)
-                          if "unresolved slot" in r["html"])
+    # unresolved-slot count (parity with compose_page.main() and the gate's
+    # slot-resolution invariant, W11 stress-playbook 2026-07): count the markers in
+    # the EMITTED page. The old side-render re-ran render_slots per layout, which
+    # counted fragments the bespoke composers never place (e.g. a split's
+    # feature-item rows drawn by the accordion device) — phantom "unresolved: 2"
+    # while the shipped HTML carried zero markers.
+    unresolved = html.count("<!-- unresolved slot")
     return {"out": str(outdir / "index.html"), "order": order, "unresolved": unresolved,
             "accent_layout": hybrid["accent_layout_id"], "assets": copied}
 

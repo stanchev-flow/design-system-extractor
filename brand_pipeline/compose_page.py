@@ -200,6 +200,9 @@ MARQUEE_SCRIPT = """<script>
 (function () {
   var speed = %d; /* px per second — constant surface speed across marquees */
   [].forEach.call(document.querySelectorAll('.cs-marquee-track'), function (t) {
+    /* a MEASURED source period (data-marquee-measured, fid2 2026-07) is authoritative
+       — the px/s re-derivation applies only to marquees without the measured fact. */
+    if (t.closest('[data-marquee-measured]')) { return; }
     var half = t.querySelector('.cs-marquee-half');
     if (half && half.scrollWidth > 0) {
       t.style.setProperty('--cs-marquee-duration', (half.scrollWidth / speed).toFixed(2) + 's');
@@ -217,8 +220,20 @@ UTILITY_BANNER_CSS = """#page-banner { background: var(--c-paper); color: var(--
 #page-banner .cs-utility-banner { position: relative; display: flex; align-items: center;
   justify-content: center; gap: 0.75rem; text-align: center;
   padding: calc(2 * var(--baseline)) var(--c-section-pad-x);
-  font-family: var(--c-font-body); font-size: var(--c-control-size, 0.9375rem); }
+  font-family: var(--c-font-body); font-size: var(--c-control-size, var(--size-control-text-base)); }
 #page-banner .cs-utility-banner-text { margin: 0; }
+/* banner CTA (fid15): inherits the banner ink; measured presentation facts
+   (underline/weight/color) ride inline from the extraction. */
+#page-banner .cs-utility-banner-cta { color: inherit; text-decoration: none;
+  white-space: nowrap; }
+#page-banner .cs-utility-banner-arrow { display: inline-block; width: 1em; height: 1em;
+  vertical-align: -0.125em; }
+#page-banner .cs-utility-banner-arrow > svg { display: block; width: 100%; height: 100%; }
+/* mask DEGRADE (fix4): harvested banner artwork that failed single-ink
+   verification keeps the fix2 currentColor-mask channel. */
+#page-banner .cs-utility-banner-arrow--mask { background: currentColor;
+  -webkit-mask: var(--cs-ub-arrow) center / contain no-repeat;
+  mask: var(--cs-ub-arrow) center / contain no-repeat; }
 #page-banner .cs-utility-banner-close { position: absolute;
   right: var(--c-section-pad-x); top: 50%; transform: translateY(-50%);
   display: inline-flex; align-items: center; justify-content: center;
@@ -275,8 +290,14 @@ def legacy_root_vars(doc, surf, *, display_size) -> str:
      and snap offsets to --baseline / --col, so adjacent sections register to the same
      columns, edges and baselines. */
   --grid-cols: 12; /* provenance: structural — shared registration grid */
-  --grid-gutter: 6rem; /* provenance: structural — registration gutter unit */
-  --content-measure: 86rem; /* provenance: structural — shared content measure */
+  /* registration gutter: the brand's measured split-column rung when the ladder
+     authored one (fid11: tokens.spacing.column-to-column), else the structural unit */
+  --grid-gutter: var(--space-column-to-column, 6rem);
+  /* shared content measure = the brand's measured container LAW when authored
+     (tokens.spacing.container-span, fid10 2026-07 — e.g. a fluid min(NNcqw, cap)
+     from the measured tier containerFacts), else the measured container cap
+     (tokens.spacing.container-max, fid6 2026-07); 86rem structural default. */
+  --content-measure: var(--space-container-span, var(--space-container-max, 86rem));
   --baseline: 0.5rem; /* provenance: structural — vertical registration unit */
   --col: calc((100% - 11 * var(--grid-gutter)) / 12);
 }}"""
@@ -357,6 +378,10 @@ def page_scaffold_css() -> str:
         "/* footer (closing bookend): centered cluster; symmetric scale-driven padding. */",
         ".cs-footer-sec { padding-top: var(--c-section-pad-top);"
         " text-align: center; }",
+        "/* footer content containment (the band paints full-bleed; the directory/",
+        "   bottom-bar content centers at the page measure): CONTAINMENT_LAW_CSS",
+        "   (fix3; was the fid10 private copy here — .cs-footer-sec > .c-footer is",
+        "   a law member). */",
         "/* page-level navbar (hoisted out of the hero): a SLIM bar with its own modest",
         "   vertical padding + the section horizontal inset — it no longer inherits the",
         "   hero section's large padding-block-start. Its own margin-bottom is neutralized",
@@ -457,10 +482,13 @@ def page_display_size(doc, style_ctx) -> str:
     return f"{base_size(type_role(doc, 'display-hero')) or 6}rem"
 
 
-def compose_section_block(doc, layout, idx, style_ctx, brand_yaml=None, accent_id=None):
+def compose_section_block(doc, layout, idx, style_ctx, brand_yaml=None, accent_id=None,
+                          honor_curation=True):
     """Render ONE layout via the shared composer + return (html, scoped_vars_css).
     ``accent_id`` is the resolved accent section id (accent_layout_id); pass it from
-    build_page so the whole page agrees on the single committed accent."""
+    build_page so the whole page agrees on the single committed accent.
+    ``honor_curation`` — lane semantics for pattern curation (brand-schema §4.4c):
+    generation lanes keep the default True; the replica lane passes False."""
     role, surf = cs.resolve_surface_intent(doc, layout)
     ctx = cr.make_context(doc, role, surf)
     ctx.style_active = bool(style_ctx and style_ctx.active)
@@ -495,17 +523,42 @@ def compose_section_block(doc, layout, idx, style_ctx, brand_yaml=None, accent_i
     # Reuse-before-create: resolve the reusable layout PATTERN + scope its pattern-driven
     # special-treatment vars to THIS section (#sec-N) so the ghost/stagger geometry comes
     # from the reused pattern. Stamp data-pattern on the wrapper for traceability.
+    # A retrieval MISS is a VISIBLE advisory stamp, never a silent nothing (W6,
+    # stress-playbook 2026-07): data-pattern-match records the retrieval outcome
+    # (ref/reuse/adapt on hits, miss on an honest no-match) so audits can tell
+    # "deliberately pattern-less" from "forgot to look". kind "none" (no brand /
+    # no library plumbing) keeps the wrapper byte-identical.
     pattern, match_kind = cs.resolve_pattern(doc, layout, brand_yaml)
-    pat_attr = f' data-pattern="{cr.esc(pattern.id)}" data-pattern-lib="{cr.esc(pattern.lib)}"' \
-        if pattern else ""
+    if pattern:
+        pat_attr = (f' data-pattern="{cr.esc(pattern.id)}" '
+                    f'data-pattern-lib="{cr.esc(pattern.lib)}" '
+                    f'data-pattern-match="{cr.esc(match_kind)}"')
+    elif match_kind == "miss":
+        pat_attr = ' data-pattern-match="miss"'
+    else:
+        pat_attr = ""
     treat = cs.pattern_treatment_css(pattern)
     if treat:  # re-scope the :root vars emitter onto this section id
         vars_css = vars_css + "\n" + treat.replace(":root {", f"{sel} {{")
-    # ALIGNMENT RESOLUTION (AS-18): section-explicit > pattern contentShape.alignment >
-    # style role default — resolved by ONE function, emitted per section, and stamped on
-    # the wrapper as data-align/-source/-counterweight (mirrors data-pattern). Silent CSS
+    # GRID EQUALIZATION (fid14, AS-50): the pattern's measured gridEqualize fact drives
+    # card-row height behavior — stretch + pinned action rows, or explicit hug. "" for
+    # fact-less patterns (byte-identical degrade).
+    equalize = cs.pattern_equalize_css(pattern, sel)
+    if equalize:
+        vars_css = vars_css + "\n" + equalize
+    # MEASURED IN-CARD ACTION SEAM (deviceGeometry.cardActionGap): emitted after the
+    # equalize block so a pattern authoring both facts resolves to its own card seam.
+    card_rhythm = cs.pattern_card_rhythm_css(pattern, sel)
+    if card_rhythm:
+        vars_css = vars_css + "\n" + card_rhythm
+    # ALIGNMENT RESOLUTION (AS-18/AS-49): section-explicit > pattern curation
+    # (generation lanes, brand-schema §4.4c) > pattern contentShape.alignment > brand
+    # layoutGrammar.headerContext (contextual grammar, fid11) > style role default —
+    # resolved by ONE function, emitted per section, and stamped on the wrapper as
+    # data-align/-source/-counterweight (mirrors data-pattern). Silent CSS
     # fall-through only remains where NO layer declares a stance (unstyled legacy pages).
-    resolved = cs.resolve_alignment(layout, pattern, style_ctx)
+    resolved = cs.resolve_alignment(layout, pattern, style_ctx, doc=doc,
+                                    honor_curation=honor_curation)
     align_attr = cs.align_stamp_attrs(resolved)
     # per-section placement (composition.v1 §4.6.5): resolved alignment + declared grid +
     # mirrorable float side. "" for every layout that resolves/declares none.
@@ -532,11 +585,19 @@ def _section_renders_nav(layout) -> bool:
 
 
 def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
-               wildcards: dict[str, int] | None = None) -> str:
+               wildcards: dict[str, int] | None = None,
+               honor_curation: bool = True) -> str:
     name = doc["brand"]["name"]
     layouts = {l.get("id"): l for l in doc.get("layouts", [])}
     chosen = [layouts[i] for i in order if i in layouts]
     accent_id = accent_layout_id(doc, order)
+
+    # Resolve the chrome's harvested glyph artwork (social icons, store badges, nav
+    # trigger chevron + utility-control icons — fid15) into data: URIs on the
+    # in-memory doc BEFORE any chrome renders: the page-level navbar consumes the
+    # resolved facts, so this must precede render_navbar (it previously ran just
+    # before the footer, leaving the nav glyph-blind). brand.yaml is never written.
+    cr.prepare_chrome_glyphs(doc, Path(brand_yaml).parent)
 
     opening_role, opening_surf = cs.resolve_surface_intent(doc, chosen[0])
     poster = page_display_size(doc, style_ctx)
@@ -544,7 +605,8 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
     blocks, var_blocks = [], []
     for idx, layout in enumerate(chosen):
         block, vars_css, _role = compose_section_block(doc, layout, idx, style_ctx,
-                                                       brand_yaml, accent_id=accent_id)
+                                                       brand_yaml, accent_id=accent_id,
+                                                       honor_curation=honor_curation)
         blocks.append(block)
         var_blocks.append(vars_css)
 
@@ -567,6 +629,9 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
         nav_ctx = cr.make_context(doc, nav_role, nav_surf)
         nav_ctx.style_active = bool(style_ctx and style_ctx.active)
         nav_ctx.style_id = style_ctx.style_id if nav_ctx.style_active else ""
+        # page-level chrome nav renders the brand's CAPTURED mega-menu panels
+        # (fid4 2026-07) — menu-less brands emit byte-identical markup.
+        nav_ctx.mega_nav = True
         nav_html = cr.render_navbar(doc, nav_ctx, cs._navbar_props(doc))
         nav_block = (f'<div id="page-nav" class="cs-surface" '
                      f'data-surface="{cr.esc(nav_role)}">\n{nav_html}\n</div>')
@@ -574,6 +639,17 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
         var_blocks.append(section_vars(doc, nav_sel, nav_surf, display_size=None,
                                        accent_on=nav_accent_on, surf_role=nav_role,
                                        style_ctx=style_ctx))
+        # measured bar content width (fix1 2026-07): a chrome capture that recorded
+        # its own nav content max-width (navbar.measured.contentMaxWidth) centers
+        # the bar's content column at that measure — the bar still paints full-bleed
+        # via #page-nav. Unmeasured brands keep the full-inset bar, byte-identical.
+        cmw = ((doc.get("navbar") or {}).get("measured") or {}).get("contentMaxWidth")
+        if isinstance(cmw, (int, float)) and cmw > 0:
+            # contain-exempt: measured CHROME width — the bar's own captured content
+            # cap (a brand fact in px), not the shared section measure.
+            var_blocks.append(
+                f"#page-nav .cs-nav {{ max-width: calc({int(cmw)}px"
+                f" + 2 * var(--c-section-pad-x)); margin-inline: auto; }}")
 
     # UTILITY BANNER above the nav (P2, evidence-gated): rendered ONLY when the brand's
     # extracted chrome declares navbar.utilityBanner with observed text — absent/empty
@@ -584,29 +660,114 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
     ub = (doc.get("navbar") or {}).get("utilityBanner")
     if nav_block and isinstance(ub, dict) and ub.get("observed") \
             and str(ub.get("text") or "").strip():
+        # surface: MEASURED banner facts first (fid2 2026-07 — ub.bg/ub.ink carry the
+        # extracted paint, e.g. a :root-scope chrome color no section role owns);
+        # else the declared surface ROLE resolved from the brand's own tokens.
         b_role = str(ub.get("surface") or "")
         b_surf = (doc.get("tokens", {}).get("surfaces") or {}).get(b_role)
-        if isinstance(b_surf, dict) and b_surf.get("bg"):
-            b_ctx = cr.make_context(doc, b_role, b_surf)
+        measured_bg = str(ub.get("bg") or "").strip()
+        measured_ink = str(ub.get("ink") or "").strip()
+        if measured_bg or (isinstance(b_surf, dict) and b_surf.get("bg")):
+            paint_style = ""
+            if measured_bg:
+                # measured chrome paint: scoped literals on the banner's own scope
+                # (UTILITY_BANNER_CSS consumes --c-paper/--c-ink) — the top-bar color
+                # is a :root chrome fact no section surface role owns.
+                b_role = "chrome/utility-banner"
+                ink_decl = f" --c-ink: {measured_ink};" if measured_ink else ""
+                paint_style = (f' style="--c-paper: {measured_bg};{ink_decl} '
+                               f'background: {measured_bg};'
+                               + (f" color: {measured_ink};" if measured_ink else "")
+                               + '"')
+                b_ctx = cr.make_context(doc, b_role, {"bg": measured_bg})
+            else:
+                b_ctx = cr.make_context(doc, b_role, b_surf)
             b_ctx.style_active = bool(style_ctx and style_ctx.active)
             b_ctx.style_id = style_ctx.style_id if b_ctx.style_active else ""
             cta = ub.get("cta")
             cta_html = ""
             if isinstance(cta, dict) and str(cta.get("label") or "").strip():
-                cta_html = " " + cr.render_arrow_link(
-                    doc, b_ctx, {"label": cta["label"], "href": cta.get("href", "#")})
+                # measured banner-CTA anatomy (fid15): the extracted label renders
+                # VERBATIM (when the source's arrow is a text glyph it lives inside
+                # the label) with the measured presentation facts (underline /
+                # weight / color) as scoped literals; a HARVESTED arrow glyph
+                # (cta.arrow._dataUri via prepare_chrome_glyphs) appends as a
+                # currentColor mask. No fact ⇒ no arrow — never an invented glyph.
+                decls = []
+                if cta.get("underline"):
+                    decls.append("text-decoration: underline; text-underline-offset: 2px")
+                if str(cta.get("fontWeight") or "").strip():
+                    decls.append(f"font-weight: {cr.esc(str(cta['fontWeight']))}")
+                if str(cta.get("color") or "").strip():
+                    decls.append(f"color: {cr.esc(str(cta['color']))}")
+                style_attr = f' style="{"; ".join(decls)}"' if decls else ""
+                arrow = cta.get("arrow") if isinstance(cta.get("arrow"), dict) else {}
+                arrow_html = ""
+                if arrow.get("_inlineSvg"):
+                    # fix4 inline channel: sanitized single-ink artwork nests inline
+                    arrow_html = (' <span class="cs-utility-banner-arrow" aria-hidden="true">'
+                                  f'{cr._svg_instance(str(arrow["_inlineSvg"]))}</span>')
+                elif arrow.get("_dataUri"):
+                    arrow_html = (' <span class="cs-utility-banner-arrow'
+                                  ' cs-utility-banner-arrow--mask" aria-hidden="true"'
+                                  f' style="--cs-ub-arrow:url({arrow["_dataUri"]})"></span>')
+                cta_html = (f' <a class="cs-utility-banner-cta" '
+                            f'href="{cr.esc(cta.get("href", "#"))}"{style_attr}>'
+                            f'{cr.esc(str(cta["label"]).strip())}{arrow_html}</a>')
             dismiss_html = ""
             if ub.get("dismissible"):
-                dismiss_html = ('<button class="cs-utility-banner-close" type="button" '
-                                'aria-label="Dismiss">&#215;</button>')
+                # close glyph ladder (fid15): harvested artwork (close.asset resolved
+                # by prepare_chrome_glyphs) > measured box/strokeWidth reconstruction
+                # (brand-schema: close.kind box-only sanctions drawing the X from the
+                # measured facts) > the text multiplication-sign degrade.
+                close = ub.get("close") if isinstance(ub.get("close"), dict) else {}
+                cbox = close.get("box") if isinstance(close.get("box"), dict) else {}
+                if close.get("_inlineSvg"):
+                    glyph = (f'<span class="cs-utility-banner-arrow" aria-hidden="true">'
+                             f'{cr._svg_instance(str(close["_inlineSvg"]))}</span>')
+                elif close.get("_dataUri"):
+                    glyph = (f'<span class="cs-utility-banner-arrow'
+                             f' cs-utility-banner-arrow--mask" aria-hidden="true" '
+                             f'style="--cs-ub-arrow:url({close["_dataUri"]})"></span>')
+                elif cbox.get("w") and cbox.get("h"):
+                    w, h = int(cbox["w"]), int(cbox["h"])
+                    sw = int(close.get("strokeWidth") or 2)
+                    glyph = (f'<svg viewBox="0 0 {w} {h}" width="{w}" height="{h}" '
+                             f'fill="none" stroke="currentColor" stroke-width="{sw}" '
+                             f'stroke-linecap="round" aria-hidden="true">'
+                             f'<path d="M{sw} {sw}L{w - sw} {h - sw}M{w - sw} {sw}'
+                             f'L{sw} {h - sw}"/></svg>')
+                else:
+                    glyph = "&#215;"
+                ink = str(close.get("ink") or "").strip()
+                ink_attr = f' style="color: {cr.esc(ink)}"' if ink else ""
+                dismiss_html = (f'<button class="cs-utility-banner-close" type="button" '
+                                f'aria-label="Dismiss"{ink_attr}>{glyph}</button>')
             banner_block = (
-                f'<div id="page-banner" class="cs-surface" data-surface="{cr.esc(b_role)}">\n'
+                f'<div id="page-banner" class="cs-surface" '
+                f'data-surface="{cr.esc(b_role)}"{paint_style}>\n'
                 f'<div class="cs-utility-banner"><p class="cs-utility-banner-text">'
                 f'{cr.esc(str(ub["text"]).strip())}</p>{cta_html}{dismiss_html}</div>\n'
                 f'</div>')
-            var_blocks.append(section_vars(doc, "#page-banner", b_surf, display_size=None,
-                                           accent_on=False, surf_role=b_role,
-                                           style_ctx=style_ctx))
+            # measured banner REGISTER (fid15): the extracted strip's own font size
+            # wins over the chrome control alias when the capture carries it.
+            fs = ub.get("fontSize")
+            fs_decl = (f"--c-control-size: {int(fs)}px; "
+                       if isinstance(fs, (int, float)) and fs > 0 else "")
+            if not measured_bg:
+                var_blocks.append(section_vars(doc, "#page-banner", b_surf,
+                                               display_size=None, accent_on=False,
+                                               surf_role=b_role, style_ctx=style_ctx))
+                if fs_decl:
+                    var_blocks.append("#page-banner { " + fs_decl + "}")
+            else:
+                # measured paint skips the surface-role var pipeline, so re-declare the
+                # few aliases the banner CSS consumes (body font / control size refs into
+                # layer-1 + the structural section inset) at the banner's own scope.
+                var_blocks.append(
+                    "#page-banner { --c-font-body: var(--font-body); "
+                    + (fs_decl or "--c-control-size: var(--size-control-text-base, 0.9375rem); ")
+                    + "--c-section-pad-x: 2.5rem; }")
 
     # Closing-bookend FOOTER as the final section — composed via the SHARED component
     # renderer (component_render.render_footer), the SAME renderer the gallery uses, NOT
@@ -618,6 +779,8 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
     foot_ctx = cr.make_context(doc, foot_role, foot_surf)
     foot_ctx.style_active = bool(style_ctx and style_ctx.active)
     foot_ctx.style_id = style_ctx.style_id if foot_ctx.style_active else ""
+    # (glyph resolution ran at the top of build_page — the footer's social cluster
+    # reads the same _dataUri facts the nav affordances do.)
     foot_html = cr.render_footer(doc, foot_ctx, cr.footer_content(doc))
     # the closing bookend is stamped too (its centered cluster is the style's declared
     # footer stance, not an accident) so the alignment-resolution gate can see it.
@@ -656,6 +819,13 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
         # nav-link hover wash (measured chrome interaction) — appended only when the
         # brand extracted one, so hover-less brands keep byte-identical CSS.
         *([cr.nav_hover_css(doc)] if cr.nav_hover_css(doc) else []),
+        # mega-menu panel grammar (fid4 2026-07) — appended only when the brand's
+        # navbar carries captured menus (structure + measured open/close motion).
+        *([cr.nav_mega_css(doc)] if nav_block and cr.nav_mega_css(doc) else []),
+        # bar-affordance grammar (fid15) — trigger chevrons + in-bar utility cluster;
+        # appended only when this brand captured the facts (fact-less brands stay
+        # byte-identical).
+        *([cr.nav_affordance_css(doc)] if nav_block and cr.nav_affordance_css(doc) else []),
         page_scaffold_css(),
     ]
     # AS-37: the inset art-panel device CSS ships ONLY when a section on THIS page
@@ -663,11 +833,47 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
     # brands whose neverDo forbids radius (the static no-radius check reads page text).
     if any((l or {}).get("_artPanel") is not None for l in chosen):
         css_parts.append(cs.SCAFFOLD_ART_PANEL_CSS)
+    # inset conversion panel (fid2 2026-07): same conditional-shipping discipline —
+    # rides only when a section on THIS page was stamped for the panel presentation.
+    if any((l or {}).get("_insetPanel") is not None for l in chosen):
+        css_parts.append(cs.SCAFFOLD_CONVERSION_PANEL_CSS)
+    # full-bleed art band (fid5 2026-07): rides only when a section on THIS page was
+    # stamped for the art-surface background treatment.
+    if any((l or {}).get("_artSurface") is not None for l in chosen):
+        css_parts.append(cs.SCAFFOLD_CONVERSION_BAND_CSS)
+    # card plates (fid2 2026-07): the plate/person anatomy for brands whose card device
+    # declares a Container surface — page-level mirror of the scaffold_css gate.
+    if cs.card_panel_role(doc) is not None and any(
+            (l or {}).get("archetype", "").lower() == "cards" for l in chosen):
+        css_parts.append(cs.SCAFFOLD_CARD_PLATE_CSS)
     # P2 interaction devices (marquee / accordion / edge-cut): same conditional-shipping
-    # discipline — "" when no section on this page is stamped for one.
-    device_css = cs.device_scaffold_css(chosen)
+    # discipline — "" when no section on this page is stamped for one. The brand's
+    # derived grid-equalization grammar rides along so the pattern-less card scaffolds
+    # (bento/tiers) follow the same grammar the pattern-backed grids do (fid14, AS-50).
+    device_css = cs.device_scaffold_css(
+        chosen, equalize_grammar=cs.grid_equalize_grammar(brand_yaml))
     if device_css:
         css_parts.append(device_css)
+    # shared disclosure MOTION (AS-47): ONE source for every details-emitting family
+    # on this page (accordion device + FAQ/agenda scaffold rows) — brand motion facts
+    # only; "" for motion-less docs (instant-toggle degrade, never invented timing).
+    motion_css = cs.disclosure_motion_css(doc, chosen)
+    if motion_css:
+        css_parts.append(motion_css)
+    # RELATIONAL LADDER (AS-48): ladder-bearing brands render header/anatomy stacks
+    # as NO-GAP columns with per-pair margins from their own measured rungs — ONE
+    # shared source (compose_section.relational_ladder_css), appended after the
+    # scaffold blocks so its same-specificity overrides win by order. "" for
+    # ladder-less brands: uniform stack gap remains ONLY as that degrade.
+    ladder_css = cs.relational_ladder_css(doc)
+    if ladder_css:
+        css_parts.append(ladder_css)
+    # ACTION-GROUP law (fix2, brand-schema §4.4f): the brand's measured action-row
+    # gap/seam, appended AFTER the ladder so a marginAbove LENGTH outranks the rung
+    # by order. "" for fact-less brands (structural defaults hold byte-identically).
+    ag_css = cs.action_group_css(doc)
+    if ag_css:
+        css_parts.append(ag_css)
     # utility-banner chrome CSS ships only when THIS page renders the banner.
     if banner_block:
         css_parts.append(UTILITY_BANNER_CSS)
@@ -701,6 +907,9 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
     sections = "\n".join(blocks)
     # marquee duration script rides ONLY on pages that render a marquee track.
     marquee_script = MARQUEE_SCRIPT if "cs-marquee-track" in sections else ""
+    # keyboard/AT-parity script (interaction remediation 2026-07): guarded blocks
+    # keyed off the assembled body — pages without the components ship no script.
+    ix_script = cr.interaction_script("\n".join((banner_block, nav_block, sections)))
     return f"""<!doctype html>
 <html lang="en"{html_attr}{parallax_attr}>
 <head>
@@ -732,6 +941,7 @@ body {{ min-height: 100%; container-type: size; container-name: frame; }}
 {sections}
 {REVEAL_SCRIPT}
 {marquee_script}
+{ix_script}
 {cr.parallax_script_tags(doc)}
 </body>
 </html>
@@ -813,8 +1023,10 @@ def main():
         print(f"  [sec-{idx}] {lid:<18} archetype={layout.get('archetype'):<8} "
               f"slots={len(layout.get('blockMapping') or [])} unresolved={len(unresolved)}")
     fc = cr.footer_content(doc)
+    links_note = (f"columns={len(fc['columns'])}" if fc.get("columns")
+                  else f"sitemap={len(fc.get('sitemap') or [])}")
     print(f"  [sec-{len(chosen_ids)}] {'closing-bookend':<18} archetype={'footer':<8} "
-          f"sitemap={len(fc['sitemap'])} social={len(fc['social'])} "
+          f"{links_note} social={len(fc['social'])} "
           f"legal={'yes' if fc['legal'] else 'no'} (component_render.render_footer)")
 
 

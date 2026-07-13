@@ -154,6 +154,8 @@ IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".svg", ".webp", ".gif")
 # private doc key carrying the ACTIVE brand's on-disk image inventory (attached by the
 # render entrypoints via attach_asset_inventory; in-memory only, never written back).
 ASSET_INVENTORY_KEY = "_assetInventory"
+ASSET_TAGS_KEY = "_assetTags"
+MEDIA_TREATMENT_RULES_KEY = "_mediaTreatmentRules"
 
 
 def brand_image_inventory(brand_dir: Path) -> list[str]:
@@ -186,10 +188,34 @@ def brand_image_inventory(brand_dir: Path) -> list[str]:
 
 def attach_asset_inventory(doc: dict, brand_dir: Path) -> dict:
     """Attach the active brand's image inventory to the in-memory doc (under the private
-    ``_assetInventory`` key) so composers can resolve default/fallback art from the
-    ACTIVE brand's own files (AS-34). Idempotent; returns the doc for chaining."""
+    ``_assetInventory`` key) plus captured asset-kind/media-treatment facts from
+    ``assets-tagged.json``.  Facts stay in-memory and brand-local; malformed/missing
+    metadata degrades to an empty registry. Idempotent; returns the doc for chaining."""
     if isinstance(doc, dict):
         doc[ASSET_INVENTORY_KEY] = brand_image_inventory(Path(brand_dir))
+        tags: dict = {}
+        rules: list = []
+        tagged = Path(brand_dir) / "assets-tagged.json"
+        try:
+            payload = json.loads(tagged.read_text()) if tagged.is_file() else {}
+        except Exception:
+            payload = {}
+        if isinstance(payload, dict):
+            for asset in payload.get("assets") or []:
+                if not isinstance(asset, dict):
+                    continue
+                name = Path(str(asset.get("filename") or "")).name
+                if name:
+                    tags[name] = {
+                        "assetKind": asset.get("assetKind") or asset.get("useCase"),
+                        "useCase": asset.get("useCase"),
+                        **({"mediaTreatment": asset["mediaTreatment"]}
+                           if isinstance(asset.get("mediaTreatment"), dict) else {}),
+                    }
+            rules = [r for r in (payload.get("mediaTreatmentRules") or [])
+                     if isinstance(r, dict)]
+        doc[ASSET_TAGS_KEY] = tags
+        doc[MEDIA_TREATMENT_RULES_KEY] = rules
     return doc
 
 
@@ -204,6 +230,9 @@ _DEFAULT_ART_KEYWORDS = {
     "gallery": ("gallery", "interior", "showcase"),
     "portrait": ("portrait", "avatar", "curator"),
     "map": ("map",),
+    # inset-panel backdrop art (fid2 2026-07): the noise/texture/gradient family a
+    # brand paints its rounded panel bands with (generic asset-role words only).
+    "panel": ("noise", "texture", "gradient", "panel-art", "backdrop"),
 }
 
 
@@ -238,6 +267,27 @@ def _brand_art(doc, kind: str, *preferred: str) -> str | None:
         if name in inv:
             return f"assets/{name}"
     return brand_default_art(doc, kind)
+
+
+# filename mentions inside a treatment's own prose (evidence, not invention): the
+# art-surface note may name the exact art family file the capture shows.
+_ART_FILE_RX = re.compile(r"[\w][\w.-]*\.(?:webp|png|jpe?g|avif|gif|svg)", re.I)
+
+
+def _art_surface_src(doc, layout) -> str | None:
+    """The band art for a section stamped ``_artSurface`` (fid5 2026-07): filenames
+    the treatment itself names (explicit ``asset`` key, then any filename in its
+    note prose) are preferred, then the brand's declared panel-art pins, then the
+    generic noise/texture inventory match — all evidence-checked via _brand_art.
+    None ⇒ the caller keeps the flat brand-surface fill (degrade, never invented)."""
+    hint = layout.get("_artSurface")
+    if not isinstance(hint, dict):
+        return None
+    named = []
+    if hint.get("asset"):
+        named.append(Path(str(hint["asset"])).name)
+    named += _ART_FILE_RX.findall(str(hint.get("note") or ""))
+    return _brand_art(doc, "panel", *named, *brand_default_art_names(doc, "panel"))
 
 # Layout-specific REAL photography is BRAND DATA: each brand declares its own
 # ``layoutImages:`` map in section-copy.yaml (layout id -> {role-substring: filename}),
@@ -420,6 +470,21 @@ def copy_for(layout, doc=None) -> dict:
 
 # ── helpers ──────────────────────────────────────────────────────────────────────
 
+def section_heading_level(doc) -> str:
+    """The register NON-OPENING section headings ride (fid2 2026-07): a brand whose
+    measured type ladder declares an h2 role under a canonical tier (the P1 extraction
+    discipline) headlines its in-flow sections at that MEASURED h2 register — matching
+    the source, where only the hero rides the display tier. Brands without the
+    measured ladder keep the editorial display default (the historical behavior)."""
+    meta = (doc or {}).get("meta") or {}
+    type_roles = (((doc or {}).get("tokens") or {}).get("type")) or {}
+    h2 = type_roles.get("h2")
+    if isinstance(meta.get("canonicalTier"), dict) and isinstance(h2, dict) \
+            and isinstance(h2.get("sizeRem"), dict):
+        return "h2"
+    return "display"
+
+
 def load_doc(brand_yaml: Path) -> dict:
     doc = yaml.safe_load(Path(brand_yaml).read_text())
     # attach the ACTIVE brand's on-disk image inventory (AS-34) + authored section
@@ -484,13 +549,370 @@ def stamp_pattern_devices(doc, layout, brand_yaml) -> None:
             continue
         kind = str(t.get("kind") or "").lower()
         if kind == "marquee":
-            layout.setdefault("_marquee", {"target": t.get("target")})
+            hint: dict = {"target": t.get("target")}
+            # MEASURED period (fid2 2026-07): the brand's marquee signature move may
+            # carry the JS-computed duration serialized in the saved DOM
+            # (measured.durationS) — the composed track then runs the source's real
+            # period instead of the item-count approximation, and the page script
+            # leaves it untouched.
+            for m in (((doc.get("tokens") or {}).get("motion") or {})
+                      .get("signatureMoves") or []):
+                if not isinstance(m, dict):
+                    continue
+                probe = f"{m.get('name') or ''} {m.get('move') or ''}".lower()
+                measured = m.get("measured") if isinstance(m.get("measured"), dict) else {}
+                if ("marquee" in probe or "translatex(-50%)" in probe) \
+                        and measured.get("durationS"):
+                    try:
+                        hint["durationS"] = float(measured["durationS"])
+                    except (TypeError, ValueError):
+                        pass
+                    break
+            layout.setdefault("_marquee", hint)
         elif kind == "inset-emphasis":
             layout.setdefault("_accordion", {
                 "surfaceRole": t.get("surfaceRole"),
-                "hoverWash": t.get("hoverWash")})
+                "hoverWash": t.get("hoverWash"),
+                # optional AFFORDANCE the evidence declares on the active item
+                # (e.g. circle-arrow — the round go-affordance the capture shows).
+                "affordance": t.get("affordance")})
         elif kind == "edge-cut":
-            layout.setdefault("_edgeCut", True)
+            # measured rail CONTROLS (fix1 2026-07 item-8): a source rail that ships
+            # visible round prev/next chrome declares it on the treatment
+            # (`controls: {kind: round, pause: bool}`); the stamp stays truthy-True
+            # for control-less rails (Remote parity — nothing invented there).
+            if isinstance(t.get("controls"), dict):
+                layout.setdefault("_edgeCut", {"controls": dict(t["controls"])})
+            else:
+                layout.setdefault("_edgeCut", True)
+        elif kind == "carousel":
+            # SPLIT-PANEL CAROUSEL statics (fix1 2026-07 item-6): a split section whose
+            # sanctioned treatment declares a panel carousel over its list slot renders
+            # the static-faithful device — slide 1 visible, siblings as hidden panels,
+            # round prev/next + dot rail (consumed by compose_info_band). The media
+            # slot's measured container fraction rides along (illustration column
+            # share), same probe as the tabs device.
+            hint = {"target": t.get("target")}
+            for s in pattern.slots:
+                if isinstance(s, dict) and str(s.get("name") or "") == "media":
+                    ms = s.get("mediaScale") if isinstance(s.get("mediaScale"), dict) else {}
+                    try:
+                        f = float(ms.get("fraction"))
+                        if 0 < f < 1:
+                            hint["mediaFraction"] = f
+                    except (TypeError, ValueError):
+                        pass
+                    break
+            # measured CONTROL PLACEMENT (fix3, same treatment-fact discipline as
+            # the edge-cut rail's `controls`): a source whose prev/next chrome sits
+            # ON the dot rail below the slides (not floated mid-slide) declares
+            # `controls: {placement: rail, size: <CSS length>}` — the device then
+            # renders the bottom nav row at the captured control box. Fact-less
+            # carousels keep the structural mid-edge paddles byte-identically.
+            if isinstance(t.get("controls"), dict):
+                hint["controls"] = dict(t["controls"])
+            layout.setdefault("_carousel", hint)
+        elif kind == "tabs":
+            # TAB DEVICE (fix1 2026-07 item-9): a split section whose sanctioned
+            # treatment declares a tab switcher composes the WAI-ARIA APG tab device
+            # (tablist/tab/tabpanel; first tab active = the JS-off truth). Consumed by
+            # compose_info_band from the section's authored panels. The media slot's
+            # measured container fraction rides along (panel photo column share).
+            hint = {"target": t.get("target"), "note": t.get("note")}
+            # measured active-tab rule color (the committed-accent law collapses
+            # --c-accent to ink on non-accent bands, so the captured underline
+            # rides the treatment fact — never the page accent var).
+            if t.get("activeUnderline"):
+                hint["activeUnderline"] = str(t["activeUnderline"])
+            for s in pattern.slots:
+                if isinstance(s, dict) and str(s.get("name") or "") == "media":
+                    ms = s.get("mediaScale") if isinstance(s.get("mediaScale"), dict) else {}
+                    try:
+                        f = float(ms.get("fraction"))
+                        if 0 < f < 1:
+                            hint["mediaFraction"] = f
+                    except (TypeError, ValueError):
+                        pass
+                    break
+            layout.setdefault("_tabs", hint)
+        elif kind == "dotted-rule-rail":
+            # SECTION HEADROW RAIL (fix1 2026-07 item-8): a leading chip/pill joined
+            # by a horizontal rule to a trailing action at the far edge — the header
+            # rail device. The stamp carries the target slot's OWN assets (a declared
+            # icon chip; evidence-checked downstream) + the treatment prose (rule
+            # style vocabulary). Consumed by the cards + generic-flow composers.
+            # RECIPE FACTS (fix2 2026-07): when the pattern binds a brand recipe
+            # (`recipeRef: {recipe, variant}` → layout-library.yaml `recipes:`,
+            # brand-schema §4.4e) the resolved variant's measured facts ride the
+            # stamp — kicker shape/size/radius/icon, rule style, trailing-action
+            # presence, shared rail geometry. Recipe-less patterns keep the
+            # prose-vocabulary stamp byte-identically.
+            target = str(t.get("target") or "eyebrow")
+            slot = next((s for s in pattern.slots if isinstance(s, dict)
+                         and str(s.get("name") or "") == target), {})
+            rail_stamp = {
+                "note": t.get("note"),
+                "assets": [str(a) for a in (slot.get("assets") or []) if a],
+                "role": str(slot.get("role") or "")}
+            resolved = ll.resolve_recipe_ref(pattern, brand_yaml) if brand_yaml else None
+            if resolved is not None:
+                recipe, variant = resolved
+                rail_stamp["recipe"] = recipe.id
+                rail_stamp["geometry"] = dict(recipe.geometry or {})
+                rail_stamp["variant"] = {k: v for k, v in variant.items() if k != "id"}
+                rail_stamp["variantId"] = str(variant.get("id") or "")
+            layout.setdefault("_headRail", rail_stamp)
+        elif kind == "panel-on-media":
+            # INSET CONVERSION PANEL (fid2 2026-07): a conversion/banner pattern whose
+            # sanctioned treatment declares the rounded panel-on-media band renders
+            # its stack on a rounded inset panel (art from the brand's own panel-art
+            # inventory; flat brand-surface fill is the degrade). Consumed only by
+            # compose_conversion_stack — hero art-panels ride the adapter's _artPanel.
+            layout.setdefault("_insetPanel", {"note": t.get("note")})
+        elif kind == "art-surface" and \
+                str(t.get("target") or "").lower() == "background":
+            # FULL-BLEED ART BAND (fid5 2026-07): a section whose sanctioned treatment
+            # declares its BACKGROUND is an art surface (e.g. a closing CTA on the
+            # brand's noise-gradient band) renders the section box painted with the
+            # brand's OWN art — filenames the treatment itself names (asset/note) are
+            # preferred, evidence-checked against the inventory; flat brand-surface
+            # fill is the degrade. Consumed by compose_conversion_stack.
+            layout.setdefault("_artSurface", {"note": t.get("note"),
+                                              "asset": t.get("asset")})
+    # MARK-ROW SCALE facts (fid6 2026-07; fid7: per-GROUP map + mark-slot probe +
+    # measured row gap): a mark-row slot whose pattern declares a measured
+    # container-relative row scale (`mediaScale: {of: container, fraction: F, gap: L}`)
+    # stamps `{fraction, gap?, aspects}` under its slot name so the generic-flow strip
+    # renders EACH such row at its measured span (aspect-weighted marks, equal heights,
+    # measured inter-mark gap). Mark rows are recognized by slot vocabulary
+    # (logo/mark/badge/rating/award) OR by the slot's own assets all reading as marks
+    # (the AS-33 filename discipline) — the badge/rating rows of an awards strip are
+    # mark rows without "logo" anywhere in their name, which the fid6 probe missed and
+    # left them collapsed at the structural height cap. No fraction fact / unreadable
+    # assets ⇒ no stamp for that row (structural strip is the degrade).
+    _scales: dict = {}
+    for s in pattern.slots:
+        if not isinstance(s, dict):
+            continue
+        ms = s.get("mediaScale") if isinstance(s.get("mediaScale"), dict) else {}
+        if str(ms.get("of") or "").lower() != "container":
+            continue
+        probe = f"{s.get('name') or ''} {s.get('role') or ''}".lower()
+        assets = [str(a) for a in (s.get("assets") or []) if a]
+        marky = any(k in probe for k in ("logo", "mark", "badge", "rating", "award")) \
+            or (bool(assets) and all(_is_mark_asset(a) for a in assets))
+        if not marky:
+            continue
+        try:
+            fraction = float(ms.get("fraction"))
+        except (TypeError, ValueError):
+            continue
+        if not 0 < fraction <= 1:
+            continue
+        aspects = _asset_aspects(Path(brand_yaml).parent if brand_yaml else None, assets)
+        entry: dict = {"fraction": fraction, "aspects": aspects}
+        gap = str(ms.get("gap") or "").strip()
+        if re.fullmatch(r"[\d.]+(?:rem|em|px)", gap):
+            entry["gap"] = gap
+        # MEASURED ITEM BOX (fix2 2026-07, brand-schema mediaScale.item): the strip's
+        # uniform mark frame (width × height) measured on the capture — when present
+        # the renderer draws fixed contain-fit boxes instead of distributing widths.
+        item = ms.get("item") if isinstance(ms.get("item"), dict) else {}
+        item_box = {k: str(item.get(k) or "").strip() for k in ("width", "height")}
+        item_box = {k: v for k, v in item_box.items()
+                    if re.fullmatch(r"[\d.]+(?:rem|em|px)", v)}
+        if item_box:
+            entry["item"] = item_box
+        _scales[str(s.get("name") or "logos")] = entry
+    if _scales:
+        layout.setdefault("_logoScale", _scales)
+    # MEASURED STACK MEASURE (fid7 2026-07): a centered-stack pattern whose contentShape
+    # records the measured content-column cap (`stackMeasure: {value: <CSS length>}` —
+    # JS-off computed geometry off the capture) stamps it so the conversion composer
+    # sizes its column at the brand's real measure instead of the 46rem structural
+    # default (whose 40ch prose measure collapsed a closing band to ~55% of the
+    # source's content span). Malformed/missing values ⇒ no stamp (classic column).
+    sm = (pattern.content_shape or {}).get("stackMeasure")
+    if isinstance(sm, dict):
+        v = str(sm.get("value") or "").strip()
+        if re.fullmatch(r"[\d.]+(?:rem|em|px|ch)", v):
+            layout.setdefault("_stackMeasure", v)
+    # MEASURED BAND PADDING (fid7 2026-07): a pattern whose contentShape records the
+    # band's own measured vertical padding (`bandPadding: {top, bottom}` — bookend
+    # bands often breathe more than the brand's site-average section-padding token)
+    # stamps it so the composer overrides the section rhythm vars for THIS band only.
+    # Malformed lengths are dropped; nothing valid ⇒ no stamp (site rhythm holds).
+    bp = (pattern.content_shape or {}).get("bandPadding")
+    if isinstance(bp, dict):
+        pads = {k: str(bp.get(k) or "").strip() for k in ("top", "bottom")}
+        pads = {k: v for k, v in pads.items()
+                if re.fullmatch(r"[\d.]+(?:rem|em|px)", v)}
+        if pads:
+            layout.setdefault("_bandPadding", pads)
+    # MEASURED BAND RHYTHM (fix1 2026-07 item-4): a pattern whose contentShape records
+    # the band's OWN deterministic box-to-box seams (`bandRhythm: {eyebrowToHeading,
+    # headingToBody, bodyToCta}`) stamps them so the band composer overrides the
+    # site-wide relational-ladder rungs for THIS band only (bookend bands often run
+    # tighter/looser than the working sections). Malformed lengths drop; nothing
+    # valid ⇒ no stamp (the site ladder holds, byte-identical).
+    br = (pattern.content_shape or {}).get("bandRhythm")
+    if isinstance(br, dict):
+        rungs = {k: str(br.get(k) or "").strip()
+                 for k in ("eyebrowToHeading", "headingToBody", "bodyToCta")}
+        rungs = {k: v for k, v in rungs.items()
+                 if re.fullmatch(r"[\d.]+(?:rem|em|px)", v)}
+        if rungs:
+            layout.setdefault("_bandRhythm", rungs)
+    # MEASURED ACTION-GROUP override (fix2 2026-07): a pattern whose contentShape
+    # records its OWN multi-action row layout (`actionGroup: {gap, align,
+    # marginAbove}` — e.g. a closing band whose CTA pair runs a wider gap than the
+    # site default) stamps the partial override; the composer merges it over the
+    # brand-level `layoutGrammar.actionGroup` facts. Malformed lengths drop;
+    # nothing valid ⇒ no stamp (the brand default governs).
+    ag = (pattern.content_shape or {}).get("actionGroup")
+    if isinstance(ag, dict):
+        over: dict = {}
+        for k in ("gap", "marginAbove"):
+            v = str(ag.get(k) or "").strip()
+            if re.fullmatch(r"[\d.]+(?:rem|em|px)", v) or (k == "marginAbove" and v == "ladder"):
+                over[k] = v
+        if str(ag.get("align") or "").strip().lower() in ("start", "center", "end"):
+            over["align"] = str(ag["align"]).strip().lower()
+        # measured CROSS-AXIS placement (fix3): only a declared fact may move the
+        # row off the structural align-items default — never hardcoded per section.
+        if str(ag.get("crossAlign") or "").strip().lower() in ("start", "center",
+                                                               "end", "stretch"):
+            over["crossAlign"] = str(ag["crossAlign"]).strip().lower()
+        if over:
+            layout.setdefault("_actionGroup", over)
+    # SIDE-RAIL CARD COUNTERWEIGHT (fix1 2026-07 item-7): a SPLIT-archetype pattern
+    # whose alignment declares the CARD GRID as the copy rail's counterweight
+    # (`archetypeRef: split` + `alignment: {value: left, counterweight: cards}`)
+    # presents intro + actions as a left rail BESIDE the module grid (the split
+    # morphology the source shows), instead of stacking intro above the grid.
+    # The archetype requirement is load-bearing: a GRID pattern may also declare
+    # counterweight:cards ("full-width grid balances the left header") yet keep
+    # its header ABOVE the modules — only split anatomy owes the rail.
+    # Fact-only: no split declaration ⇒ no stamp (grids render as today).
+    _align = (pattern.content_shape or {}).get("alignment")
+    if isinstance(_align, dict) \
+            and str(getattr(pattern, "archetype_ref", "") or "").strip().lower() == "split" \
+            and str(_align.get("counterweight") or "").strip().lower() == "cards" \
+            and str(_align.get("value") or "").strip().lower() == "left":
+        layout.setdefault("_sideRail", True)
+    # SPLIT INTRO COLUMNS (fix1 2026-07 item-8): a pattern whose heading AND body
+    # slots both declare `width: half` presents them side by side (heading LEFT /
+    # supporting paragraph RIGHT) — the measured two-column intro morphology.
+    # Geometry facts only; patterns with hug/full copy slots render as today.
+    _slot_w = {str(s.get("name") or ""): str(s.get("width") or "")
+               for s in pattern.slots if isinstance(s, dict)}
+    if _slot_w.get("heading") == "half" and _slot_w.get("body") == "half":
+        layout.setdefault("_introSplit", True)
+    # MEASURED DEVICE GEOMETRY (fid9 2026-07): a pattern whose contentShape records
+    # the band's JS-off computed geometry (`deviceGeometry`) stamps the validated
+    # facts so the device composers draw the source's real proportions — column
+    # split/gaps, header placement, media region aspect/alignment, list rhythm —
+    # instead of the structural defaults (which under-drew a source band by ~200px).
+    # Every field is optional and validated; nothing valid ⇒ no stamp (the
+    # structural presentation is the degrade, byte-identical markup).
+    geo = (pattern.content_shape or {}).get("deviceGeometry")
+    if isinstance(geo, dict):
+        g: dict = {}
+        if str(geo.get("headerPlacement") or "").strip() == "list-column":
+            g["headerInColumn"] = True
+        if str(geo.get("columns") or "").strip() == "equal":
+            g["equalColumns"] = True
+        for k in ("columnGap", "rowGap", "contentSpan"):
+            v = str(geo.get(k) or "").strip()
+            if re.fullmatch(r"[\d.]+(?:rem|em|px)", v):
+                g[k] = v
+        med = geo.get("media") if isinstance(geo.get("media"), dict) else {}
+        aspect = str(med.get("aspect") or "").strip()
+        if re.fullmatch(r"\d+(?:\.\d+)?\s*/\s*\d+(?:\.\d+)?", aspect):
+            g["mediaAspect"] = aspect
+        if str(med.get("align") or "").strip() == "top":
+            g["mediaTop"] = True
+        # measured media FIT (fid10 2026-07): a source frame that letterboxes its
+        # asset (`fit: contain` — e.g. a square media well holding a landscape
+        # product-UI shot) records the fact; the split/accordion media column then
+        # contains instead of cover-cropping to the asset's own aspect.
+        if str(med.get("fit") or "").strip() == "contain":
+            g["mediaContain"] = True
+        lst = geo.get("list") if isinstance(geo.get("list"), dict) else {}
+        for src_k, dst_k in (("triggerMinHeight", "triggerMinH"), ("itemGap", "itemGap")):
+            v = str(lst.get(src_k) or "").strip()
+            if re.fullmatch(r"[\d.]+(?:rem|em|px)", v):
+                g[dst_k] = v
+        # MEASURED CARD-HEADING REGISTER (fix1 2026-07 item-8): a pattern whose cards
+        # ride a DIFFERENT measured type tier than the brand's global card device
+        # (blocks.card slots.heading.register) records it here — e.g. an oversized
+        # feature-card family beside a compact product-card family. The register
+        # names a brand type ROLE tier; the tag stays h3 (document outline).
+        reg = str(geo.get("cardRegister") or "").strip().lower()
+        if reg in ("h2", "h3", "h4", "h5", "h6"):
+            g["cardRegister"] = reg
+        # MEASURED SECTION-HEADING REGISTER (fix1 2026-07): the tier THIS section's
+        # heading measured on — when it differs from the brand's site-wide section
+        # register (a compact statement strip, an up-tier showcase headline).
+        h_reg = str(geo.get("headingRegister") or "").strip().lower()
+        if h_reg in ("display", "h1", "h2", "h3", "h4", "h5", "h6"):
+            g["headingRegister"] = h_reg
+        # MEASURED RAIL CARD BOX (fix1 2026-07 item-8): an edge-cut track whose cards
+        # measured their own width/gap (the clipped-card rhythm at the capture
+        # viewport) rides them; length-validated, structural clamp is the degrade.
+        for src_k, dst_k in (("cardWidth", "cardWidth"), ("cardGap", "cardGap")):
+            v = str(geo.get(src_k) or "").strip()
+            if re.fullmatch(r"[\d.]+(?:rem|em|px)", v):
+                g[dst_k] = v
+        if g:
+            layout.setdefault("_accGeometry", g)
+
+
+def _asset_aspects(brand_dir, names: list[str]) -> dict:
+    """{basename: width/height} for each readable image among ``names`` under the
+    brand's own asset conventions (brand assets/ tree, run-root assets/). Best-effort
+    evidence measurement: unreadable/missing files are simply absent from the map
+    (consumers require full coverage before scaling a row). Never raises."""
+    out: dict[str, float] = {}
+    if brand_dir is None:
+        return out
+    try:
+        from PIL import Image
+    except ImportError:
+        return out
+    roots = [Path(brand_dir) / "assets", Path(brand_dir).parent / "assets"]
+    for raw in names:
+        name = Path(raw).name
+        if name in out:
+            continue
+        for root in roots:
+            hits = sorted(root.rglob(name)) if root.is_dir() else []
+            if not hits:
+                continue
+            if name.lower().endswith(".svg"):
+                # vector marks (hubspot-v2 2026-07): PIL cannot open SVGs — the
+                # intrinsic ratio comes from the file's own viewBox/width/height.
+                try:
+                    txt = hits[0].read_text(errors="ignore")
+                    m = re.search(r'viewBox\s*=\s*"[\d.eE+-]+[ ,]+[\d.eE+-]+[ ,]+'
+                                  r'([\d.eE+-]+)[ ,]+([\d.eE+-]+)"', txt)
+                    if not m:
+                        m = re.search(r'width\s*=\s*"([\d.]+)(?:px)?"\s+'
+                                      r'height\s*=\s*"([\d.]+)(?:px)?"', txt)
+                    if m and float(m.group(2)) > 0:
+                        out[name] = round(float(m.group(1)) / float(m.group(2)), 4)
+                except Exception:
+                    pass
+                break
+            try:
+                with Image.open(hits[0]) as im:
+                    w, h = im.size
+                if w > 0 and h > 0:
+                    out[name] = round(w / h, 4)
+            except Exception:
+                pass
+            break
+    return out
 
 
 # amount-class -> concrete relative magnitude (resolved as container-query units, never px).
@@ -667,6 +1089,135 @@ def pattern_treatment_css(pattern) -> str:
             ":root { " + " ".join(decls) + " }")
 
 
+def pattern_equalize_css(pattern, scope: str = "") -> str:
+    """GRID EQUALIZATION consumption (fid14 2026-07, AS-50): render a card grid per the
+    pattern's measured ``contentShape.gridEqualize`` fact (brand-schema §4.4d).
+
+    ``stretch``: cards sharing a grid row equalize — explicit ``align-items: stretch``
+    (the editorial stagger scaffold's ``align-items: start`` hug would otherwise leak
+    into declared N-up grids), and when the source pins actions (``actionPinned``),
+    trailing action rows take ``margin-top: auto`` so the slack the source absorbs in
+    its flexing body region lands in the seam ABOVE the pinned row — the same visual
+    morphology (content top-anchored, actions bottom-anchored) without demanding a
+    wrapper the scaffold anatomy doesn't have. ``hug``: cards stay content-sized
+    (explicit ``align-items: start``, no pins).
+
+    Degrade: no pattern / no fact -> "" (fact-less brands are byte-identical)."""
+    fact = getattr(pattern, "grid_equalize", None) if pattern is not None else None
+    if not fact:
+        return ""
+    pfx = f"{scope} " if scope else ""
+    if fact["heights"] == "stretch":
+        rules = [f"/* grid equalization (pattern fact, AS-50): heights=stretch"
+                 f" slack={fact['slack']} actionPinned={str(fact['actionPinned']).lower()} */",
+                 f"{pfx}.cs-modules {{ align-items: stretch; }}"]
+        if fact["actionPinned"]:
+            rules.append(
+                f"{pfx}.cs-module > .c-arrow-link:last-child, "
+                f"{pfx}.cs-module > .c-button:last-child, "
+                f"{pfx}.cs-module > .c-person:last-child {{ margin-top: auto; }}")
+            # MINIMUM SEAM (spacing remediation B2 2026-07): margin-top:auto replaces
+            # the ladder's body->cta pair margin, so in the row's TALLEST card (zero
+            # slack) the pinned action sat flush against the body — the old fix padded
+            # the link's own box, which moves the glyph but leaves the measured
+            # box-to-box gap at 0. The seam now lives on the PRECEDING content's
+            # margin-bottom: `auto` absorbs only slack beyond the ladder rung, and the
+            # tallest card measures exactly the rung. Anatomy stacks only (gap:0 per
+            # AS-48); plates keep their structural flex gap as the minimum.
+            rules.append(
+                f"{pfx}.cs-module--anatomy > :has(+ .c-arrow-link:last-child), "
+                f"{pfx}.cs-module--anatomy > :has(+ .c-button:last-child) {{"
+                f" margin-bottom: var(--space-body-to-cta, 0.9rem); }}")
+            # PLAIN PLATES ride the same minimum (spacing spec: card.body-to-actions
+            # maps to ladder body-to-cta for every card) — their structural flex gap
+            # participates in the seam, so the margin tops it up to the rung
+            # (ladder-less brands resolve to gap - gap = 0: byte-identical degrade).
+            rules.append(
+                f"{pfx}.cs-module--plate:not(.cs-module--anatomy):not(.cs-module--quote)"
+                f" > :has(+ .c-arrow-link:last-child), "
+                f"{pfx}.cs-module--plate:not(.cs-module--anatomy):not(.cs-module--quote)"
+                f" > :has(+ .c-button:last-child) {{"
+                f" margin-bottom: calc(var(--space-body-to-cta,"
+                f" var(--cs-module-gap, 0.9rem)) - var(--cs-module-gap, 0.9rem)); }}")
+            # quote modules pin their attribution row; the minimum seam is the
+            # quote-card's own measured quote→attribution rung (B8).
+            rules.append(
+                f"{pfx}.cs-module--quote > :has(+ .c-person:last-child) {{"
+                f" margin-bottom: var(--space-quote-to-attribution, 0.9rem); }}")
+        return "\n".join(rules)
+    return (f"/* grid equalization (pattern fact, AS-50): heights=hug — content-sized */\n"
+            f"{pfx}.cs-modules {{ align-items: start; }}")
+
+
+def pattern_card_rhythm_css(pattern, scope: str = "") -> str:
+    """MEASURED IN-CARD ACTION SEAM (``contentShape.deviceGeometry.cardActionGap``,
+    spacing spec ``card.body-to-actions``): a pattern that measured its card's own
+    body→action register — a seam that does NOT ride the section-scale
+    body-to-cta rung — stamps that seam on its module cards. Flow modules get the
+    margin as a top-up over their structural flex gap; anatomy stacks (gap:0) get
+    it on the preceding content's margin-bottom, mirroring the equalize min-seam
+    mechanic so a PINNED action keeps its ``margin-top: auto`` pin (only slack
+    beyond the measured seam is absorbed). Emitted AFTER pattern_equalize_css at
+    both call sites, so a pattern authoring both facts resolves to its own
+    measured card seam. Degrade: no pattern / no fact -> ""."""
+    geo = ((getattr(pattern, "content_shape", None) or {}).get("deviceGeometry")
+           if pattern is not None else None) or {}
+    v = str(geo.get("cardActionGap") or "").strip()
+    if not re.fullmatch(r"[\d.]+(?:rem|em|px)", v):
+        return ""
+    fact = getattr(pattern, "grid_equalize", None) or {}
+    pinned = bool(fact.get("actionPinned"))
+    pfx = f"{scope} " if scope else ""
+    rules = [
+        f"/* measured in-card action seam (pattern deviceGeometry.cardActionGap) */",
+        # flow modules: the margin tops up the structural flex gap → net seam = {v}
+        f"{pfx}.cs-module:not(.cs-module--anatomy):not(.cs-module--quote)"
+        f" > :has(+ .c-arrow-link:last-child), "
+        f"{pfx}.cs-module:not(.cs-module--anatomy):not(.cs-module--quote)"
+        f" > :has(+ .c-button:last-child) {{"
+        f" margin-bottom: calc({v} - var(--cs-module-gap, 0.9rem)); }}",
+        f"{pfx}.cs-module--plate:not(.cs-module--anatomy):not(.cs-module--quote)"
+        f" > :has(+ .c-arrow-link:last-child), "
+        f"{pfx}.cs-module--plate:not(.cs-module--anatomy):not(.cs-module--quote)"
+        f" > :has(+ .c-button:last-child) {{"
+        f" margin-bottom: calc({v} - var(--cs-module-gap, 0.9rem)); }}",
+        # anatomy stacks (gap:0): the seam is the preceding content's margin-bottom
+        # (overrides the equalize rung min-seam — emitted later, same selector)
+        f"{pfx}.cs-module--anatomy > :has(+ .c-arrow-link:last-child), "
+        f"{pfx}.cs-module--anatomy > :has(+ .c-button:last-child) {{"
+        f" margin-bottom: {v}; }}",
+    ]
+    if not pinned:
+        # unpinned anatomy: the base ladder rule puts body-to-cta on the link's own
+        # margin — zero it so the measured seam above doesn't stack with the rung.
+        rules.append(
+            f"{pfx}.cs-module--anatomy > .c-arrow-link:last-child, "
+            f"{pfx}.cs-module--anatomy > .c-button:last-child {{"
+            f" margin-block-start: 0; }}")
+    return "\n".join(rules)
+
+
+def grid_equalize_grammar(brand_yaml) -> str | None:
+    """The BRAND's grid-equalization grammar, derived from the project library's
+    measured ``gridEqualize`` facts — the layer the pattern-less generated scaffolds
+    (bento mosaic, pricing tiers) consume, exactly like headerContext grammar backs
+    pattern-less alignment. Returns ``"stretch"`` / ``"hug"`` when every observed
+    card-grid fact agrees, ``"stretch"`` on a mixed corpus (equalization is the safer
+    majority morphology and the per-pattern fact still wins where one exists), or
+    ``None`` when no pattern records a stance (fact-less brands: scaffolds keep their
+    built-in behavior unchanged)."""
+    if not brand_yaml:
+        return None
+    try:
+        facts = [p.grid_equalize for p in ll.load_project_patterns(Path(brand_yaml))]
+        stances = {f["heights"] for f in facts if f}
+    except Exception:
+        return None
+    if not stances:
+        return None
+    return "hug" if stances == {"hug"} else "stretch"
+
+
 def catalog_entry(doc, contract):
     """Resolve a contract key to its brand catalog entry (primitive or block)."""
     return (doc.get("primitives") or {}).get(contract) \
@@ -735,8 +1286,11 @@ def rhythm_for(doc, style_ctx, surf_role) -> dict:
     pad = (_brand_spacing(doc, "section-padding-dark") if dark else None) \
         or _brand_spacing(doc, "section-padding-light") \
         or (s.section_pad if s else "6.25rem")
-    # inter-block gap: brand carries no generic block-gap token -> style scale (else neutral).
-    block_gap = s.block_gap if s else "2.5rem"
+    # inter-block gap: the brand's measured content-block ROW rhythm when the ladder
+    # authored one (fid11: tokens.spacing.block-to-block — the source's own
+    # header→content / content→content / content→actions rung), else the style
+    # scale (else neutral) — the historical uniform look stays the degrade.
+    block_gap = _brand_spacing(doc, "block-to-block") or (s.block_gap if s else "2.5rem")
     # module gap (between collage modules): prefer the brand's module-gap token.
     module_gap = _brand_spacing(doc, "module-gap-editorial") or (s.space("xl") if s else "6rem")
     return {"pad_top": pad, "pad_bottom": pad, "block_gap": block_gap, "module_gap": module_gap}
@@ -756,10 +1310,30 @@ def rhythm_vars_css(doc, style_ctx, surf_role, selector=":root") -> str:
     literal AND a cross-brand token collision for any brand without a 6.25rem token).
     Values are frame geometry (device structure), not brand rhythm tokens."""
     r = rhythm_for(doc, style_ctx, surf_role)
+    # MEASURED nav bar height (fid2 2026-07): when the brand extracted its chrome bar
+    # height, the page-nav vertical padding derives from it — (barH − tallest control)/2
+    # against the measured CTA height when present, floored at 0.5rem — instead of the
+    # structural 1.75rem default (which inflated an 81px measured bar to 104px).
+    nav_pad = "1.75rem"
+    nb = (doc.get("navbar") or {}) if isinstance(doc, dict) else {}
+    nm = nb.get("measured") or {}
+    bar_h = ((nm.get("bar") or {}).get("height"))
+    if isinstance(bar_h, (int, float)) and bar_h > 0:
+        cta_h = ((nm.get("cta") or {}).get("height"))
+        content_h = cta_h if isinstance(cta_h, (int, float)) and cta_h > 0 else 30
+        nav_pad = f"{max((bar_h - content_h) / 2.0, 8) / 16.0:.4g}rem"
+    # TWO-TIER bar (fix1 2026-07 item-12a): when the brand opted into the utility
+    # tier AND measured both tier heights, the tiers' min-heights carry the FULL
+    # measured bar geometry — the derived block padding (sized for a single bar)
+    # would double-count it, so it collapses to 0. Single-bar brands unchanged.
+    if isinstance(nb.get("utilityTier"), dict) \
+            and isinstance(nm.get("utilityBarHeight"), (int, float)) \
+            and isinstance(nm.get("primaryBarHeight"), (int, float)):
+        nav_pad = "0rem"
     return (f"{selector} {{ --c-section-pad-top: {r['pad_top']}; "
             f"--c-section-pad-bottom: {r['pad_bottom']}; --c-section-pad: {r['pad_bottom']}; "
             f"--c-block-gap: {r['block_gap']}; --c-module-gap: {r['module_gap']}; "
-            f"--c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }}")
+            f"--c-section-pad-x: 2.5rem; --c-nav-pad-block: {nav_pad}; }}")
 
 
 def loadable_proxies(doc):
@@ -935,6 +1509,38 @@ def _navbar_props(doc: dict) -> dict:
         "cta": cta["label"] if cta else (sc.get("cta") or None),
         "ctaHref": cta.get("href", "#") if cta else "#",
     }
+    # ACTION GROUP (fix1 2026-07 item-12b): when the evidence declares MULTIPLE bar
+    # actions (navbar.ctas[] length ≥ 2), every action rides along with its own
+    # measured register facts — render_navbar draws the N-action run. Single-cta
+    # brands never build this key (their bar markup stays byte-identical).
+    all_ctas = [c for c in (nav.get("ctas") or [])
+                if isinstance(c, dict) and c.get("label")]
+    if len(all_ctas) >= 2:
+        props["actions"] = [{
+            "label": c["label"], "href": c.get("href", "#"),
+            "style": {
+                "bg": c.get("bg"), "color": c.get("color"),
+                "border": c.get("border"), "radius": c.get("borderRadius"),
+                "height": c.get("height"), "padX": c.get("padX"),
+                "fontSize": c.get("fontSize"),
+            }} for c in all_ctas]
+    # MEASURED chrome-CTA facts (fid2 2026-07): the extracted nav CTA's own computed
+    # styles ride along so render_navbar draws the measured pill (e.g. a neutral
+    # filled CTA distinct from the page's accent primary). Declared navbar.ctas[0]
+    # facts win; navbar.measured.cta fills the geometry. Absent facts ⇒ no key, and
+    # render_navbar keeps the law-first button dispatch (the degrade).
+    c0 = next((c for c in (nav.get("ctas") or []) if isinstance(c, dict)), {})
+    m_cta = (nav.get("measured") or {}).get("cta") or {}
+    bg = c0.get("bg") or m_cta.get("bg")
+    if bg:
+        props["ctaStyle"] = {
+            "bg": bg,
+            "color": c0.get("color") or m_cta.get("color"),
+            "radius": c0.get("borderRadius", m_cta.get("radius")),
+            "height": m_cta.get("height"),
+            "padX": m_cta.get("paddingLeft"),
+            "fontSize": m_cta.get("fontSize"),
+        }
     src = logo.get("_composedSrc")
     if src:
         props["logo"] = {
@@ -1001,6 +1607,13 @@ def _props_for(doc, layout, role, usage, ctx):
                 "familyHint": f"{role or ''} {usage.get('styleHint') or ''}".strip()}
     # generic image / media fallback
     if "photo" in r or "image" in r or "media" in r:
+        # WRONG-ASSET GUARD (fid2 2026-07): a slot whose declared role is PRODUCT/UI
+        # art (collage, ui, screenshot, diagram) must never fall back to the brand's
+        # hero/background art — an unbound product-art slot degrades to NO src (the
+        # composer's honest media well), not to a noise-gradient backdrop pretending
+        # to be a product shot.
+        if re.search(r"product|collage|\bui\b|screenshot|diagram|snippet", r):
+            return {"src": None, "alt": ""}
         return {"src": _brand_art(doc, "hero", *brand_default_art_names(doc, "hero")),
                 "variant": "hero",
                 "alt": f"{brand_name} editorial photography"}
@@ -1016,7 +1629,9 @@ def _props_for(doc, layout, role, usage, ctx):
 # composition's OWN copy; otherwise we fall back to _props_for unchanged — so the existing
 # composed pages + A/B arms (whose usage never carries these keys) are byte-identical.
 _INLINE_COPY_KEYS = ("text", "body", "caption", "eyebrow", "subheading",
-                     "placeholder", "submit", "src", "alt")
+                     "placeholder", "submit", "src", "alt",
+                     # stat + table contract vocabulary (W4, stress-playbook 2026-07)
+                     "value", "columns", "rows")
 
 
 def _has_inline_copy(usage) -> bool:
@@ -1071,6 +1686,16 @@ def _inline_props(contract, role, usage, ctx):
         return {"text": u.get("text") or ""}
     if c == "input":
         return {"placeholder": u.get("placeholder", "Your email"), "submit": u.get("submit")}
+    if c in ("stat", "stat-block", "metric"):
+        # stat contract (W4): value + label at their REAL registers via render_stat —
+        # heading/text keys accepted as authoring aliases (value/label win).
+        return {"value": u.get("value") or u.get("heading") or u.get("text") or "",
+                "label": u.get("label") or u.get("body") or u.get("caption") or "",
+                "prefix": u.get("prefix"), "suffix": u.get("suffix")}
+    if c == "table":
+        # table contract (W4): caption/columns/rows straight through to render_table.
+        return {"caption": u.get("caption") or u.get("heading") or "",
+                "columns": u.get("columns"), "rows": u.get("rows")}
     if c == "header":
         return {"eyebrow": u.get("eyebrow"), "heading": u.get("heading", "Heading"),
                 "level": u.get("level", "display"), "accent": accent, "cta": u.get("cta")}
@@ -1113,11 +1738,22 @@ def render_slots(doc, layout, ctx):
     """For every blockMapping entry, resolve the bound catalog component and render it
     through the shared renderer. Returns a list of {slot, role, contract, html}."""
     rendered = []
+    # PATTERN-MEASURED HEADING REGISTER (fix1 2026-07, deviceGeometry.headingRegister —
+    # stamped before render by stamp_pattern_devices): a section whose pattern measured
+    # its heading on a DIFFERENT brand tier than the site-wide section register (e.g. a
+    # proof strip's statement heading at the compact sans tier, or a showcase band a
+    # tier up) rides its measured tier. Overrides the adapter's ladder default only for
+    # heading/header contracts; stamp-less sections render byte-identically.
+    _geo = layout.get("_accGeometry") if isinstance(layout.get("_accGeometry"), dict) else {}
+    _head_reg = str(_geo.get("headingRegister") or "").strip().lower()
     for m in _effective_mappings(layout):
         contract = m.get("contract")
         renderer = cr.resolve_renderer(contract)
         entry = catalog_entry(doc, contract)
         usage = m.get("usage")
+        if _head_reg and str(contract or "").lower() in ("heading", "header") \
+                and isinstance(usage, dict):
+            usage = {**usage, "level": _head_reg}
         props = None
         if _has_inline_copy(usage):
             props = _inline_props(contract, m.get("role"), usage, ctx)
@@ -1257,7 +1893,11 @@ def _layer_img(doc, ctx, layer: dict, *, variant: str, fallback) -> str:
 
 
 def _stack_hero_layered(doc, ctx, layers: list[dict], *, eyebrow_html, title_html,
-                        cta_html, subhead: str) -> str:
+                        cta_html, subhead: str, scrim_class: str | None = None,
+                        scrim_color: str | None = None,
+                        band_padding: dict | None = None,
+                        band_rhythm: dict | None = None,
+                        stack_measure: str | None = None) -> str:
     """The PLACED hero body (grid/overlap contract): media layers classified by the
     adapter (compose_from_composition._media_layers) draw as a registered layer stack —
     an optional z:back full-bleed BACKGROUND behind the copy (sanctioned text-on-media;
@@ -1273,8 +1913,27 @@ def _stack_hero_layered(doc, ctx, layers: list[dict], *, eyebrow_html, title_htm
     bg_html = ""
     if bg is not None:
         img = _layer_img(doc, ctx, bg, variant="hero", fallback=_layer_fallback(doc, "background"))
+        # the DECLARED text-on-media wash class (adapter `_bgScrimClass`): the brand's
+        # own treatment fact decides the scrim — `none` means the contrast tint is
+        # baked into the photograph (no wash div at all); light/medium/heavy ride the
+        # shared SCRIM_ALPHA ladder as a paper-toned inline wash. Undeclared keeps the
+        # flat default `.cs-bg-scrim` (existing brands byte-identical).
+        # A MEASURED scrim paint (adapter `_bgScrimColor`, fix1 2026-07) outranks the
+        # class ladder: the brand's own captured overlay color paints verbatim (the
+        # source hero's flat contrast wash), never a paper-mix approximation.
+        if scrim_color:
+            scrim_div = (f'<div class="cs-bg-scrim" style="background: '
+                         f'{cr.esc(scrim_color)}"></div>')
+        elif scrim_class == "none":
+            scrim_div = ""
+        elif scrim_class in SCRIM_ALPHA:
+            pct = round(SCRIM_ALPHA[scrim_class] * 100)
+            scrim_div = ('<div class="cs-bg-scrim" style="background: color-mix('
+                         f'in srgb, var(--c-paper) {pct}%, transparent)"></div>')
+        else:
+            scrim_div = '<div class="cs-bg-scrim"></div>'
         bg_html = (f'\n  <div class="cs-bg-layer" aria-hidden="true">{img}'
-                   f'<div class="cs-bg-scrim"></div></div>')
+                   f'{scrim_div}</div>')
 
     collage = ""
     if base is not None or overlays:
@@ -1304,7 +1963,41 @@ def _stack_hero_layered(doc, ctx, layers: list[dict], *, eyebrow_html, title_htm
                         f'{x}: var(--c-section-pad-x); '
                         f'{y}: calc(6 * var(--baseline)); z-index: 3">{img}</div>')
 
-    return f"""<section class="cs-section cs-hero-layered">{bg_html}{corner_html}
+    # FLAT layered hero (fix1 2026-07, hero title-seam punch item): with NO collage
+    # between title and foot there is nothing for the display title to overlap — the
+    # collage overlap margin (--c-title-overlap, a NEGATIVE pull) would drag the foot
+    # up through the authored heading→body rung. The modifier zeroes it so the seam
+    # rides the section's own block rhythm; collage heroes keep the overlap
+    # byte-identically.
+    flat_cls = " cs-hero-layered--flat" if not collage else ""
+    # MEASURED BAND PADDING (fix1 2026-07, stamped from contentShape.bandPadding —
+    # same consumption discipline as the conversion/split composers): the hero band's
+    # own measured vertical rhythm overrides the site-average section padding vars.
+    # No stamp ⇒ no style attribute (site rhythm byte-identical).
+    bp = band_padding if isinstance(band_padding, dict) else {}
+    pad_decls = "".join(
+        f" --c-section-pad-{k}: {cr.esc(bp[k])};" for k in ("top", "bottom") if bp.get(k))
+    # MEASURED BAND RHYTHM (fix1 2026-07 item-4, stamped from contentShape.bandRhythm):
+    # this band's OWN box-to-box seams override the site ladder as scoped vars —
+    # eyebrow→heading rides the eyebrow gap, heading→body the title→foot seam, and
+    # body→cta the foot's own internal gap (--cs-hero-foot-gap, a fallback-only var:
+    # rhythm-less brands resolve it straight back to --c-block-gap, byte-identical).
+    brh = band_rhythm if isinstance(band_rhythm, dict) else {}
+    for key, var in (("eyebrowToHeading", "--c-eyebrow-gap"),
+                     ("headingToBody", "--c-block-gap"),
+                     ("bodyToCta", "--cs-hero-foot-gap")):
+        if brh.get(key):
+            pad_decls += f" {var}: {cr.esc(brh[key])};"
+    # MEASURED HERO STACK MEASURE (fix3, stamped from contentShape.stackMeasure —
+    # the same fact the conversion composers consume): the centered hero's TEXT
+    # boxes cap at the source's own measured column, so the display heading wraps
+    # where the source wraps at ANY viewport past the measure (the containment law
+    # owns the section column; this is the narrower MEASURE vocabulary). No stamp
+    # ⇒ no var ⇒ the scaffold cap resolves to `none`, byte-identical rendering.
+    if isinstance(stack_measure, str) and stack_measure.strip():
+        pad_decls += f" --cs-stack-measure: {cr.esc(stack_measure.strip())};"
+    sec_style = f' style="{pad_decls.strip()}"' if pad_decls else ""
+    return f"""<section class="cs-section cs-hero-layered{flat_cls}"{sec_style}>{bg_html}{corner_html}
   <div class="cs-slot">
     <div class="cs-eyebrow-wrap">{eyebrow_html}</div>
     <div class="cs-title">{title_html}</div>
@@ -1352,7 +2045,16 @@ def _stack_hero_art_panel(doc, ctx, layout, rendered, panel, *, title_html,
     beside an optional media column. Geometry is generic; every measured value rides
     brand tokens (panel radius via --radius-panel → --radius chain, rhythm via the
     --c-* rhythm vars) and the art asset comes from the ACTIVE brand's inventory —
-    never a literal, never another brand's file (AS-34)."""
+    never a literal, never another brand's file (AS-34).
+
+    EVENT-POSTER extensions (event-scaffolds 2026-07), each SLOT-GATED so every
+    existing panel hero renders byte-identically:
+      - an authored EYEBROW slot (panel['eyebrow'] flag from the adapter) renders the
+        section eyebrow register above the title — unauthored panels keep none;
+      - an authored META line (panel['meta'] — e.g. the date/place caption of a
+        poster hero) renders in the caption register between body and actions;
+      - a declared `alignment.anchor: centered` centers the panel's content column
+        (the poster stance); side-anchored panels keep the editorial left column."""
     art = panel.get("asset") or _hero_treatment_art(doc)
     bg_style = f' style="background-image: url(\'{cr.esc(art)}\')"' if art else ""
     body_html = body_slot["html"] if body_slot else (
@@ -1362,11 +2064,22 @@ def _stack_hero_art_panel(doc, ctx, layout, rendered, panel, *, title_html,
     media_html = f'\n    <div class="cs-hero-panel-media">{media["html"]}</div>' \
         if media else ""
     mod = " cs-hero-panel--solo" if not media else ""
+    if (((layout or {}).get("alignment") or {}).get("anchor") or "").lower() == "centered":
+        mod += " cs-hero-panel--center"
+    eyebrow_html = ""
+    if panel.get("eyebrow") and str(copy["eyebrow"]).strip():
+        eyebrow_html = ('\n      <div class="cs-eyebrow-wrap">'
+                        + cr.render_eyebrow(doc, ctx, {"text": copy["eyebrow"]})
+                        + "</div>")
+    meta_html = ""
+    if str(panel.get("meta") or "").strip():
+        meta_html = ('\n      <p class="c-caption cs-hero-panel-meta">'
+                     + cr.esc(str(panel["meta"]).strip()) + "</p>")
     return f"""<section class="cs-section cs-hero-panel-sec">
   <div class="cs-hero-panel{mod}"{bg_style}>
-    <div class="cs-hero-panel-content">
+    <div class="cs-hero-panel-content">{eyebrow_html}
       <div class="cs-title">{title_html}</div>
-      {body_html}
+      {body_html}{meta_html}
       {cta_html}
     </div>{media_html}
   </div>
@@ -1414,7 +2127,8 @@ def compose_stack_hero(doc, layout, ctx, rendered, style_ctx):
     action_frags = [r["html"] for r in rendered
                     if r.get("contract") == "button" and (r.get("html") or "").strip()]
     if action_frags:
-        cta_html = f'<div class="cs-hero-actions">{"".join(action_frags)}</div>'
+        cta_html = (f'<div class="cs-hero-actions"{ag_attrs(doc, layout)}>'
+                    f'{"".join(action_frags)}</div>')
     elif cta_slot:
         cta_html = cta_slot["html"]
     else:
@@ -1430,7 +2144,12 @@ def compose_stack_hero(doc, layout, ctx, rendered, style_ctx):
     if layers:
         return _stack_hero_layered(doc, ctx, layers, eyebrow_html=eyebrow_html,
                                    title_html=title_html, cta_html=cta_html,
-                                   subhead=copy["subhead"])
+                                   subhead=copy["subhead"],
+                                   scrim_class=layout.get("_bgScrimClass"),
+                                   scrim_color=layout.get("_bgScrimColor"),
+                                   band_padding=layout.get("_bandPadding"),
+                                   band_rhythm=layout.get("_bandRhythm"),
+                                   stack_measure=layout.get("_stackMeasure"))
 
     hero_media = _pick(rendered, "hero", "photo") or _pick(rendered, "hero")
     overlap_media = _pick(rendered, "overlap")
@@ -1564,10 +2283,68 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
     copy = copy_for(layout, doc)
     media = _pick(rendered, "photo") or _pick(rendered, "image") or _pick(rendered, "media")
     _brand_name = (doc.get("brand") or {}).get("name") or "Brand"
-    media_html = media["html"] if media else cr.render_image(
-        doc, ctx, {"src": _composer_art(doc, layout, "hero"),
-                   "variant": "hero",
-                   "alt": f"{_brand_name} editorial photography"})
+    # BOUND MARK RUN in the media half (AS-33/AS-34, hubspot-v2 2026-07): a split
+    # whose media slot bound a run of marks (award badges / partner logos, expanded
+    # per-item by the adapter) renders that mark row — never invented editorial art
+    # over the section's own bound evidence. Award-badge filename families ride the
+    # brand's measured badge tier when one is authored (same rule as the flow strip).
+    logo_frags = [r["html"] for r in rendered
+                  if (r.get("contract") or "").lower().startswith("logo")
+                  and (r.get("html") or "").strip()]
+    mark_row = media is None and bool(logo_frags)
+    if mark_row:
+        # MEASURED ROW SCALE first (fid6/fid7 vocabulary, same stamp as the flow
+        # strip): a pattern that recorded the row's container fraction (+ gap) draws
+        # ONE aspect-weighted, equal-height row. The fraction is container-relative;
+        # the split's media half spans 6 of 12 columns, so the in-cell fraction
+        # doubles (clamped to the cell). Requires aspect coverage for every mark.
+        media_html = ""
+        scales = layout.get("_logoScale") if isinstance(layout.get("_logoScale"), dict) else {}
+        group = next((str(r.get("group") or "") for r in rendered
+                      if (r.get("contract") or "").lower().startswith("logo")), "")
+        scale = scales.get(group) if isinstance(scales.get(group), dict) else None
+        # MEASURED ITEM BOX first (fix2 2026-07, mediaScale.item — same stamp
+        # vocabulary as the flow strip): fixed contain-fit mark frames + measured
+        # box gap when the pattern recorded them.
+        _item_box = (scale or {}).get("item") if isinstance((scale or {}).get("item"), dict) else {}
+        if _item_box.get("width") and _item_box.get("height") and logo_frags:
+            gap_var = (f' --cs-strip-gap: {scale["gap"]};'
+                       if scale.get("gap") else "")
+            items = "\n".join(f'      <div class="cs-logo-strip-item">{f}</div>'
+                              for f in logo_frags)
+            media_html = (f'<div class="cs-logo-strip cs-logo-strip--itembox" '
+                          f'style="--cs-strip-item-w: {cr.esc(_item_box["width"])}; '
+                          f'--cs-strip-item-h: {cr.esc(_item_box["height"])};{gap_var}">\n'
+                          f'{items}\n    </div>')
+        elif scale and scale.get("fraction"):
+            aspects = scale.get("aspects") if isinstance(scale.get("aspects"), dict) else {}
+            srcs = [re.search(r'src="assets/([^"]+)"', f) for f in logo_frags]
+            weights = [aspects.get(Path(m.group(1)).name) if m else None for m in srcs]
+            if weights and all(w for w in weights):
+                frac = min(1.0, float(scale["fraction"]) / 0.5)
+                gap_var = (f' --cs-strip-gap: {scale["gap"]};'
+                           if scale.get("gap") else "")
+                items = "\n".join(
+                    f'      <div class="cs-logo-strip-item" style="flex: {w:g} 1 0">{f}</div>'
+                    for w, f in zip(weights, logo_frags))
+                media_html = (f'<div class="cs-logo-strip cs-logo-strip--scaled" '
+                              f'style="--cs-strip-fraction: {frac:g};{gap_var}">\n'
+                              f'{items}\n    </div>')
+        if not media_html:
+            badge_style = ""
+            _spacing = ((doc.get("tokens") or {}).get("spacing")) or {}
+            if isinstance(_spacing.get("badge-tier"), dict) and all(
+                    re.search(r"(badge|award|seal|leader|top-?\d+)", f, re.I)
+                    for f in logo_frags):
+                badge_style = ' style="--c-logo-strip-h: var(--space-badge-tier)"'
+            items = "\n".join(f'      <div class="cs-logo-strip-item">{f}</div>'
+                              for f in logo_frags)
+            media_html = f'<div class="cs-logo-strip"{badge_style}>\n{items}\n    </div>'
+    else:
+        media_html = media["html"] if media else cr.render_image(
+            doc, ctx, {"src": _composer_art(doc, layout, "hero"),
+                       "variant": "hero",
+                       "alt": f"{_brand_name} editorial photography"})
     # sysfix 2026-07: panel title / cta ELIDE when the section authored none — the
     # adapter no longer invents "Details"/"Learn more", so an empty string here must
     # not render an empty <h3>/bare arrow (fail-visible was wrong for OPTIONAL slots).
@@ -1575,10 +2352,11 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
     if str(copy["panelTitle"]).strip():
         title_html = "<div class=\"cs-panel-title\">" + cr.render_heading(doc, ctx, {
             "text": copy["panelTitle"], "level": "h3"}) + "</div>"
-    rows = "".join(
-        f'<div class="c-row"><span class="c-row-label">{cr.esc(lbl)}</span>'
-        f'<span class="c-row-value">{cr.esc(val)}</span></div>'
-        for lbl, val in copy.get("rows", []))
+    row_pairs = list(copy.get("rows", []))
+    rows = cr.render_table(doc, ctx, {
+        "rows": [{"label": lbl, "value": val} for lbl, val in row_pairs],
+        "comparison": True,
+    }) if row_pairs else ""
     # bound `button` contract slots (B5 parity with compose_stack_hero, sysfix
     # 2026-07: this route silently DROPPED them and rendered the copy-layer arrow
     # instead): real action slots compose as one horizontal .cs-hero-actions row
@@ -1589,7 +2367,7 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
     actions_html = ""
     cta_html = ""
     if action_frags:
-        actions_html = ('\n    <div class="cs-hero-actions">'
+        actions_html = (f'\n    <div class="cs-hero-actions"{ag_attrs(doc, layout)}>'
                         + "".join(action_frags) + "</div>")
     elif str(copy["cta"]).strip():
         cta_html = ('<div class="cs-panel-foot">'
@@ -1609,8 +2387,35 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
     # inverts onto the treatment's declared surface ROLE (resolved through the brand's
     # own layer-1 vars). No row carries body copy ⇒ all-idle collapsed (the degrade);
     # no stamped device ⇒ the classic panel/split branches below render unchanged.
-    row_pairs = list(copy.get("rows", []))
+    # TAB DEVICE (fix1 2026-07 item-9, stamped from the pattern's sanctioned `tabs`
+    # treatment): a split whose section copy preserves the switcher's panels verbatim
+    # (layoutCopy `panels`, + `tabs` labels) composes the WAI-ARIA APG tab device —
+    # tablist/tab/tabpanel with roving tabindex, first tab active (the JS-off truth),
+    # arrow-key operation via the shared structural script. No panels ⇒ the branch
+    # never fires (the classic split renders, byte-identical).
+    tab_panels = [p for p in copy.get("panels") if isinstance(p, dict)] \
+        if isinstance(copy.get("panels"), list) else []
+    if tab_panels and isinstance(layout.get("_tabs"), dict):
+        return _compose_tab_split(doc, layout, ctx, copy, tab_panels)
+    # SPLIT-PANEL CAROUSEL statics (fix1 2026-07 item-6, stamped from the pattern's
+    # sanctioned `carousel` treatment): the authored slide stacks (layoutCopy `items`,
+    # heading+body+media each) compose as ONE split row — slide 1 visible (the JS-off
+    # truth), siblings as hidden switchable panels — with the captured control rail
+    # (round prev/next at the row edges, dot rail below, first dot active).
+    car_slides = [s for s in copy.get("items")
+                  if isinstance(s, dict) and str(s.get("heading") or "").strip()] \
+        if isinstance(copy.get("items"), list) else []
+    if car_slides and isinstance(layout.get("_carousel"), dict):
+        return _compose_split_carousel(doc, layout, ctx, copy, car_slides)
     if row_pairs and isinstance(layout.get("_accordion"), dict):
+        # honest media degrade (fid2 2026-07): the accordion's counterweight media
+        # binds ONLY a slot-bound asset — never the page's default hero art (the
+        # noise texture was riding in as the "product UI" panel). With no bound
+        # asset the measured light media WELL renders empty (the well itself is the
+        # evidence; its fill is the brand's own raised-surface var).
+        if media is None or "c-image-ph" in (media_html or ""):
+            # (a placeholder chip is a gallery device, not composed-page evidence)
+            media_html = '<div class="cs-acc-well" aria-hidden="true"></div>'
         return _compose_accordion_split(doc, layout, ctx, copy, row_pairs,
                                         media_html, band_body, actions_html)
     # PANEL EVIDENCE gate (sysfix 2026-07, punch-list item 9 completion): the cream
@@ -1627,30 +2432,58 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
         header_html = cr.render_header(doc, ctx, {
             "eyebrow": copy["eyebrow"], "heading": copy["heading"], "level": "h2",
             "accent": False})
-        return f"""<section class="cs-section cs-split-sec">
+        # MEASURED BAND GEOMETRY (fid10 2026-07, same stamp family as the accordion
+        # device): a split pattern that recorded its media region (deviceGeometry.
+        # media aspect/align/fit) draws the source's frame — e.g. a SQUARE media well
+        # letterboxing a landscape product-UI shot — instead of cover-cropping at the
+        # asset's own aspect; a recorded bandPadding overrides the site-average
+        # section rhythm for THIS band only. No stamp ⇒ byte-identical markup.
+        geo = layout.get("_accGeometry") if isinstance(layout.get("_accGeometry"), dict) else {}
+        media_cls, media_vars = "", []
+        if geo.get("mediaAspect"):
+            media_cls += " cs-split-media--framed"
+            media_vars.append(f"--cs-split-media-aspect: {cr.esc(str(geo['mediaAspect']))}")
+        if geo.get("mediaTop"):
+            media_cls += " cs-split-media--top"
+        if geo.get("mediaContain"):
+            media_cls += " cs-split-media--contain"
+        media_style = f' style="{"; ".join(media_vars)};"' if media_vars else ""
+        bp = layout.get("_bandPadding") if isinstance(layout.get("_bandPadding"), dict) else {}
+        pad_decls = "".join(
+            f" --c-section-pad-{k}: {cr.esc(bp[k])};" for k in ("top", "bottom") if bp.get(k))
+        sec_style = f' style="{pad_decls.strip()}"' if pad_decls else ""
+        # a mark row is a flex strip, not an image — no mask frame around it.
+        media_cell = media_html if mark_row \
+            else f'<div class="c-image-mask">{media_html}</div>'
+        return f"""<section class="cs-section cs-split-sec"{sec_style}>
   <div class="cs-split">
-    <div class="cs-split-media"><div class="c-image-mask">{media_html}</div></div>
+    <div class="cs-split-media{media_cls}"{media_style}>{media_cell}</div>
     <div class="cs-split-body">
       {header_html}{band_body}{tail}
     </div>
   </div>
 </section>"""
-    # The dark info-band heading uses the brand's DIDONE DISPLAY tier (same family/scale
-    # logic as the hero + collage headings), NOT a small h2 — on the dark inverse surface
+    # The dark info-band heading rides the brand's DISPLAY tier by default (same
+    # family/scale logic as the hero + collage headings) — on the dark inverse surface
     # it reads in paper/white (var(--c-ink) = text/on-inverse), accent reserved for the
-    # hero. (Fix: the prior h2 looked undersized/off-style on the dark band.)
+    # hero. DEMOTABLE (W5, stress-playbook 2026-07): an authored/adapter-supplied
+    # `headingLevel` (slot copy.level via _split_copy, or the composition adapter's
+    # below-the-hero section-tier default) wins — legacy pages whose copy layer carries
+    # no headingLevel keep the display default byte-identically.
     band_heading = cr.render_heading(doc, ctx, {
-        "text": copy["heading"], "level": "display", "accent": False})
+        "text": copy["heading"],
+        "level": (str(copy["headingLevel"]).strip().lower() or "display"),
+        "accent": False})
     return f"""<section class="cs-section cs-split-sec">
   <div class="cs-split-intro">
     <div class="cs-eyebrow-wrap">{eyebrow_html}</div>
     {band_heading}{band_body}{actions_html}
   </div>
-  <div class="cs-split">
+  <div class="cs-split cs-split--panel">
     <div class="cs-split-media"><div class="c-image-mask">{media_html}</div></div>
     <div class="cs-panel">
       {title_html}
-      <div class="c-rows">{rows}</div>
+      <div class="c-rows c-rows--table">{rows}</div>
       {cta_html}
     </div>
   </div>
@@ -1665,7 +2498,11 @@ def _compose_accordion_split(doc, layout, ctx, copy, row_pairs, media_html,
     item's inversion resolves the treatment's surface/hoverWash ROLES to layer-1 vars
     scoped inline on the list — unknown/missing roles leave the vars unset and the
     CSS fallbacks keep the idle (non-inverted) presentation."""
-    acc = layout.get("_accordion") or {}
+    # keep the layout's OWN stamp dict (even when empty): the media-swap wiring
+    # writes the bound indexes back onto it for device_scaffold_css to read.
+    acc = layout.get("_accordion")
+    acc = acc if isinstance(acc, dict) else {}
+    layout["_accordion"] = acc
     group = f"acc-{_token_var_slug(layout.get('id') or 'section')}"
     scope_vars = []
     surf_role = str(acc.get("surfaceRole") or "")
@@ -1686,33 +2523,352 @@ def _compose_accordion_split(doc, layout, ctx, copy, row_pairs, media_html,
     chev = ('<span class="c-acc-chev" aria-hidden="true"><svg viewBox="0 0 10 6" '
             'width="10" height="6" fill="none" stroke="currentColor" '
             'stroke-width="1.5"><path d="M1 1l4 4 4-4"/></svg></span>')
+    # per-row ICONS (fid2 2026-07): authored item icons (the brand's own marks) render
+    # as a leading icon tile on each trigger; rows without one keep the plain label.
+    # Evidence-checked against the ACTIVE brand's inventory (AS-34) — a name that is
+    # not the brand's own file renders nothing.
+    inv = set(doc.get(ASSET_INVENTORY_KEY) or []) if isinstance(doc, dict) else set()
+    row_icons = [str(x or "") for x in (copy.get("rowIcons") or [])]
+    # PER-ITEM MEDIA SWAP (fid5 2026-07): items binding their own media asset
+    # (section-copy items[].media, folded to rowMedia by the adapters) drive the
+    # right-side well — the ACTIVE item's asset shows, swapping (crossfade on the
+    # brand's motion aliases) when the open item changes. Evidence-checked against
+    # the ACTIVE brand's inventory (AS-34); no item binding media ⇒ the single-media
+    # path below stays untouched (bound slot asset, else the honest well).
+    row_media = [str(x or "") for x in (copy.get("rowMedia") or [])]
+    media_names = []
+    for i in range(len(row_pairs)):
+        nm = Path(row_media[i]).name if i < len(row_media) and row_media[i] else ""
+        media_names.append(nm if nm and nm in inv else "")
+    if any(media_names):
+        layers = ['<div class="cs-acc-well" aria-hidden="true"></div>']
+        for i, nm in enumerate(media_names):
+            if not nm:
+                continue
+            fit = (" c-acc-media--contain"
+                   if cr.asset_render_mode(doc, nm, "accordion-media") == "contain" else "")
+            active_cls = " is-active" if i == active_idx else ""
+            layers.append(
+                f'<img class="cs-acc-media-item{fit}{active_cls}" data-acc-i="{i}" '
+                f'src="assets/{cr.esc(nm)}" alt="" loading="lazy">')
+        media_html = ('<div class="cs-acc-media">' + "".join(layers) + "</div>")
+        # stamp the bound indexes so device_scaffold_css emits the matching
+        # open-details -> media-layer pairing rules for THIS page (AS-37: the
+        # generated CSS ships only where the device composed).
+        acc["mediaIdx"] = [i for i, nm in enumerate(media_names) if nm]
+    # ACTIVE-ITEM AFFORDANCE: the treatment may declare the capture's round
+    # go-affordance on the expanded item (affordance: circle-arrow) — drawn with the
+    # active panel's own ink/paper vars, never a literal.
+    affordance = str(acc.get("affordance") or "").strip().lower()
+    arrow = ""
+    if affordance == "circle-arrow":
+        arrow = ('\n        <span class="c-acc-go" aria-hidden="true">'
+                 '<svg viewBox="0 0 14 14" width="14" height="14" fill="none" '
+                 'stroke="currentColor" stroke-width="1.5">'
+                 '<path d="M2 7h10M8 3l4 4-4 4"/></svg></span>')
     items = []
     for i, (label, val) in enumerate(row_pairs):
         is_open = " open" if i == active_idx else ""
+        # media-pairing attribute: only items that BOUND media carry it (the
+        # generated :has() rules match on it; media-less items pair nothing).
+        media_attr = f' data-acc-media="{i}"' if (i < len(media_names)
+                                                  and media_names[i]) else ""
+        icon_html = ""
+        icon_name = Path(row_icons[i]).name if i < len(row_icons) and row_icons[i] else ""
+        if icon_name and icon_name in inv:
+            icon_html = (f'<img class="c-acc-icon" src="assets/{cr.esc(icon_name)}" '
+                         f'alt="" aria-hidden="true">')
         panel = ""
         if str(val).strip():
             panel = ('\n        <div class="c-acc-panel">'
                      + cr.render_paragraph(doc, ctx, {"text": val, "measure": "44ch"})
+                     + (arrow if i == active_idx else "")
                      + "</div>")
         items.append(
-            f'      <details class="c-acc-item" name="{group}"{is_open}>\n'
-            f'        <summary class="c-acc-trigger"><span class="c-acc-label">'
+            f'      <details class="c-acc-item" name="{group}"{media_attr}{is_open}>\n'
+            f'        <summary class="c-acc-trigger">{icon_html}<span class="c-acc-label">'
             f'{cr.esc(label)}</span>{chev}</summary>{panel}\n'
             f'      </details>')
     header_html = cr.render_header(doc, ctx, {
         "eyebrow": copy["eyebrow"], "heading": copy["heading"], "level": "h2",
         "accent": False})
-    return f"""<section class="cs-section cs-split-sec cs-acc-sec">
-  <div class="cs-split-intro">
+    # MEASURED BAND GEOMETRY (fid9 2026-07, stamped from contentShape.deviceGeometry):
+    # the source band's own proportions override the structural split — equal columns
+    # at the measured gutter, the header stack riding the LIST column's first row (so
+    # the heading wraps at the column measure like the capture), square top-aligned
+    # media region, and the measured list rhythm (trigger height + inter-item gap).
+    # All var/class-gated: no stamp ⇒ the historical structural markup, byte-identical.
+    geo = layout.get("_accGeometry") if isinstance(layout.get("_accGeometry"), dict) else {}
+    split_vars = []
+    for key, var in (("columnGap", "--cs-acc-colgap"), ("rowGap", "--cs-acc-rowgap"),
+                     ("contentSpan", "--cs-acc-span"),
+                     ("triggerMinH", "--cs-acc-trig-minh"), ("itemGap", "--cs-acc-itemgap"),
+                     ("mediaAspect", "--cs-acc-media-aspect")):
+        if geo.get(key):
+            split_vars.append(f"{var}: {cr.esc(str(geo[key]))}")
+    split_style = f' style="{"; ".join(split_vars)};"' if split_vars else ""
+    equal_cls = " cs-acc-split--equal" if geo.get("equalColumns") else ""
+    media_cls = " cs-split-media--top" if geo.get("mediaTop") else ""
+    # MEASURED BAND PADDING (fid7 mechanism): this band's own vertical rhythm
+    # overrides the site-average section padding vars when the pattern measured it.
+    bp = layout.get("_bandPadding") if isinstance(layout.get("_bandPadding"), dict) else {}
+    pad_decls = "".join(
+        f" --c-section-pad-{k}: {cr.esc(bp[k])};" for k in ("top", "bottom") if bp.get(k))
+    sec_style = f' style="{pad_decls.strip()}"' if pad_decls else ""
+    intro = f"""<div class="cs-split-intro">
     {header_html}{band_body}{actions_html}
+  </div>"""
+    # SECTION ACTION SLOT (W8, stress-playbook 2026-07): a split-accordion section
+    # that authors a cta (and binds no real button slot — those render in the intro's
+    # actions row above) closes the LIST column with the brand's arrow link, riding
+    # the split's left-anchored grammar. The old path silently DROPPED the declared
+    # action — no render, no unresolved marker. Copy-less sections elide (no change).
+    foot_html = ""
+    if not actions_html and str(copy["cta"]).strip():
+        foot_html = ('\n      <div class="cs-acc-foot">'
+                     + cr.render_arrow_link(doc, ctx, {"label": copy["cta"]})
+                     + "</div>")
+    media_col = (f'<div class="cs-split-media{media_cls}">'
+                 f'<div class="c-image-mask">{media_html}</div></div>')
+    if geo.get("headerInColumn"):
+        return f"""<section class="cs-section cs-split-sec cs-acc-sec"{sec_style}>
+  <div class="cs-split cs-acc-split{equal_cls}"{split_style}>
+    <div class="cs-acc-col cs-acc-col--lead">
+      {intro}
+      <div class="c-acc"{style_attr}>
+{chr(10).join(items)}
+      </div>{foot_html}
+    </div>
+    {media_col}
   </div>
-  <div class="cs-split cs-acc-split">
+</section>"""
+    return f"""<section class="cs-section cs-split-sec cs-acc-sec"{sec_style}>
+  {intro}
+  <div class="cs-split cs-acc-split{equal_cls}"{split_style}>
     <div class="cs-acc-col">
       <div class="c-acc"{style_attr}>
 {chr(10).join(items)}
-      </div>
+      </div>{foot_html}
     </div>
-    <div class="cs-split-media"><div class="c-image-mask">{media_html}</div></div>
+    {media_col}
+  </div>
+</section>"""
+
+
+def _compose_split_carousel(doc, layout, ctx, copy, slides):
+    """SPLIT-PANEL CAROUSEL statics (fix1 2026-07 item-6; see compose_info_band).
+    One panel per authored slide — copy column (h3 + body) LEFT, the slide's own
+    bound illustration RIGHT — slide 1 rendered visible (the JS-off / static-capture
+    truth), siblings as `hidden` switchable panels. Control rail per the captured
+    anatomy: round prev/next buttons at the row edges (prev disabled on frame 1 —
+    the capture shows it dimmed), a dot rail below with the first dot active.
+    Everything chrome rides brand vars (hairline/ink/radius); slide media is
+    evidence-checked against the ACTIVE brand's inventory (AS-34). The shared
+    structural script (data-panelcar) makes the controls operable; JS-off keeps
+    slide 1 — never an empty band."""
+    inv = set(doc.get(ASSET_INVENTORY_KEY) or []) if isinstance(doc, dict) else set()
+    # measured registers (deviceGeometry heading/cardRegister, fix1): the section
+    # headline + the per-slide headings ride the tiers the pattern measured; the
+    # ladder default / h3 hold for register-silent patterns.
+    geo = layout.get("_accGeometry") if isinstance(layout.get("_accGeometry"), dict) else {}
+    head_level = str(geo.get("headingRegister") or "") or section_heading_level(doc)
+    slide_level = str(geo.get("cardRegister") or "") or "h3"
+    header_html = ""
+    if str(copy["heading"]).strip():
+        header_html = cr.render_header(doc, ctx, {
+            "eyebrow": copy["eyebrow"], "heading": copy["heading"],
+            "level": head_level, "accent": False})
+    sub = str(copy.get("subhead") or "").strip()
+    sub_html = ("\n    " + cr.render_paragraph(doc, ctx, {"text": sub, "measure": "50ch"})
+                if sub else "")
+    n = len(slides)
+    panels = []
+    for i, s in enumerate(slides):
+        head = cr.render_heading(doc, ctx, {
+            "text": str(s.get("heading") or ""), "level": slide_level, "tag": "h3"})
+        body_txt = str(s.get("body") or "").strip()
+        body = ("\n          " + cr.render_paragraph(
+            doc, ctx, {"text": body_txt, "measure": "44ch"})) if body_txt else ""
+        nm = Path(str(s.get("media") or "")).name
+        img = ""
+        if nm and nm in inv:
+            img = cr.render_image(doc, ctx, {
+                "src": f"assets/{nm}", "mediaRole": "carousel-media",
+                "alt": str(s.get("heading") or "")})
+        media_col = (f'\n        <div class="cs-panelcar-media">'
+                     f'<div class="c-image-mask">{img}</div></div>') if img else ""
+        hidden = "" if i == 0 else " hidden"
+        panels.append(
+            f'      <div class="cs-panelcar-slide" role="group" '
+            f'aria-roledescription="slide" aria-label="{i + 1} of {n}"'
+            f' data-panelcar-i="{i}"{hidden}>\n'
+            f'        <div class="cs-panelcar-grid">\n'
+            f'        <div class="cs-panelcar-copy">{head}{body}</div>'
+            f'{media_col}\n        </div>\n      </div>')
+    chev_l = ('<svg viewBox="0 0 8 12" width="8" height="12" fill="none" '
+              'stroke="currentColor" stroke-width="1.5" aria-hidden="true">'
+              '<path d="M7 1L2 6l5 5"/></svg>')
+    chev_r = ('<svg viewBox="0 0 8 12" width="8" height="12" fill="none" '
+              'stroke="currentColor" stroke-width="1.5" aria-hidden="true">'
+              '<path d="M1 1l5 5-5 5"/></svg>')
+    dots = "".join(
+        f'<button class="cs-panelcar-dot" type="button" data-panelcar-dot="{i}" '
+        f'aria-label="Go to slide {i + 1}"'
+        + (' aria-current="true"' if i == 0 else "") + "></button>"
+        for i in range(n))
+    label = str(copy["heading"]).strip() or "Carousel"
+    bp = layout.get("_bandPadding") if isinstance(layout.get("_bandPadding"), dict) else {}
+    pad_decls = "".join(
+        f" --c-section-pad-{k}: {cr.esc(bp[k])};" for k in ("top", "bottom") if bp.get(k))
+    sec_style = f' style="{pad_decls.strip()}"' if pad_decls else ""
+    # measured illustration-column share (pattern mediaScale.fraction on the stamp).
+    car_decls = []
+    try:
+        f = float((layout.get("_carousel") or {}).get("mediaFraction"))
+        if 0 < f < 1:
+            car_decls.append(f"--cs-panelcar-media-frac: {f:g}")
+    except (TypeError, ValueError):
+        pass
+    # measured CONTROL PLACEMENT (fix3, treatment `controls` fact): `placement:
+    # rail` seats prev/next ON the dot row — prev at the container's left edge,
+    # next at its right, dots centered between (the captured bottom-rail chrome).
+    # A declared control `size` rides along as the box var. Fact-less carousels
+    # keep the structural mid-edge paddles and this branch emits nothing.
+    controls = (layout.get("_carousel") or {}).get("controls")
+    controls = controls if isinstance(controls, dict) else {}
+    rail_nav = str(controls.get("placement") or "").strip().lower() == "rail"
+    size = str(controls.get("size") or "").strip()
+    if rail_nav and re.fullmatch(r"[\d.]+(?:rem|em|px)", size):
+        car_decls.append(f"--cs-panelcar-arrow-size: {cr.esc(size)}")
+    car_style = f' style="{"; ".join(car_decls)}"' if car_decls else ""
+    if rail_nav:
+        return f"""<section class="cs-section cs-panelcar-sec"{sec_style}>
+  <div class="cs-split-intro">
+    {header_html}{sub_html}
+  </div>
+  <div class="cs-panelcar cs-panelcar--railnav" data-panelcar{car_style} aria-roledescription="carousel" aria-label="{cr.esc(label)}">
+    <div class="cs-panelcar-panels">
+{chr(10).join(panels)}
+    </div>
+    <div class="cs-panelcar-nav">
+      <button class="cs-panelcar-arrow cs-panelcar-arrow--prev" type="button" data-panelcar-prev aria-label="Previous slide" disabled>{chev_l}</button>
+      <div class="cs-panelcar-dots">{dots}</div>
+      <button class="cs-panelcar-arrow cs-panelcar-arrow--next" type="button" data-panelcar-next aria-label="Next slide">{chev_r}</button>
+    </div>
+  </div>
+</section>"""
+    return f"""<section class="cs-section cs-panelcar-sec"{sec_style}>
+  <div class="cs-split-intro">
+    {header_html}{sub_html}
+  </div>
+  <div class="cs-panelcar" data-panelcar{car_style} aria-roledescription="carousel" aria-label="{cr.esc(label)}">
+    <button class="cs-panelcar-arrow cs-panelcar-arrow--prev" type="button" data-panelcar-prev aria-label="Previous slide" disabled>{chev_l}</button>
+    <div class="cs-panelcar-panels">
+{chr(10).join(panels)}
+    </div>
+    <button class="cs-panelcar-arrow cs-panelcar-arrow--next" type="button" data-panelcar-next aria-label="Next slide">{chev_r}</button>
+    <div class="cs-panelcar-dots">{dots}</div>
+  </div>
+</section>"""
+
+
+def _compose_tab_split(doc, layout, ctx, copy, panels):
+    """TAB DEVICE (fix1 2026-07 item-9; see compose_info_band): WAI-ARIA APG tab
+    semantics — a labelled `role=tablist` of native `role=tab` buttons (roving
+    tabindex: selected tab is the only tab stop; ArrowLeft/Right + Home/End move
+    selection via the shared structural script keyed on data-tabs), each controlling
+    a `role=tabpanel` (tabindex=0 so the panel itself is reachable; non-active
+    panels carry `hidden`). First tab active = the JS-off / static-capture truth.
+
+    Panel anatomy per the captured evidence: a hairline-bordered card split — the
+    panel's own case photo LEFT (inventory-checked, AS-34) / quote + bold name +
+    role caption + arrow link RIGHT — closed by the stat pair on a vertical-rule
+    row (the stat-rule treatment). Tab labels/quotes/stats are the section's OWN
+    authored panels — nothing invented. Active-tab treatment (weight + accent
+    underline) rides brand vars; the media fraction rides the pattern's measured
+    mediaScale when recorded (--cs-tabs-media-frac)."""
+    inv = set(doc.get(ASSET_INVENTORY_KEY) or []) if isinstance(doc, dict) else set()
+    slug = _token_var_slug(layout.get("id") or "tabs")
+    labels = [str(t) for t in (copy.get("tabs") or [])
+              if isinstance(copy.get("tabs"), list) and str(t or "").strip()]
+    if len(labels) != len(panels):   # authored labels win; panels' own headings degrade
+        labels = [str(p.get("heading") or f"Tab {i + 1}") for i, p in enumerate(panels)]
+    tabs_html = []
+    panels_html = []
+    for i, p in enumerate(panels):
+        active = i == 0
+        sel = "true" if active else "false"
+        roving = "" if active else ' tabindex="-1"'
+        tabs_html.append(
+            f'      <button class="cs-tab" type="button" role="tab" '
+            f'id="tab-{slug}-{i}" aria-selected="{sel}"{roving} '
+            f'aria-controls="tabpanel-{slug}-{i}">{cr.esc(labels[i])}</button>')
+        quote_txt = str(p.get("quote") or "").strip()
+        quote = cr.render_paragraph(doc, ctx, {"text": quote_txt, "measure": "58ch"}) \
+            if quote_txt else ""
+        nm_txt, role_txt = str(p.get("name") or "").strip(), str(p.get("role") or "").strip()
+        person = ""
+        if nm_txt or role_txt:
+            nm_html = f'<span class="c-person-name">{cr.esc(nm_txt)}</span>' if nm_txt else ""
+            rl_html = f'<span class="c-person-role">{cr.esc(role_txt)}</span>' if role_txt else ""
+            person = (f'\n          <div class="c-person">'
+                      f'<span class="c-person-meta">{nm_html}{rl_html}</span></div>')
+        cta_txt = str(p.get("cta") or "").strip()
+        cta = ("\n          " + cr.render_arrow_link(doc, ctx, {"label": cta_txt})
+               if cta_txt else "")
+        img_nm = Path(str(p.get("media") or "")).name
+        media = ""
+        if img_nm and img_nm in inv:
+            img = cr.render_image(doc, ctx, {
+                "src": f"assets/{img_nm}", "mediaRole": "card-media",
+                "alt": str(p.get("caption") or nm_txt or labels[i])})
+            media = (f'\n        <div class="cs-tabcard-media">'
+                     f'<div class="c-image-mask">{img}</div></div>')
+        # stat pair spans the FULL card under photo+quote (captured anatomy),
+        # centered cells split by the vertical hairline (the stat-rule treatment).
+        stats = ""
+        stat_items = [s for s in (p.get("stats") or []) if isinstance(s, dict)
+                      and str(s.get("value") or "").strip()]
+        if stat_items:
+            cells = "".join(
+                '<div class="cs-tabcard-stat">'
+                + cr.render_stat(doc, ctx, {"value": str(s.get("value") or ""),
+                                            "label": str(s.get("caption") or s.get("label") or "")})
+                + "</div>" for s in stat_items)
+            stats = f'\n        <div class="cs-tabcard-stats">{cells}</div>'
+        hidden = "" if active else " hidden"
+        panels_html.append(
+            f'    <div class="cs-tabpanel" role="tabpanel" id="tabpanel-{slug}-{i}" '
+            f'aria-labelledby="tab-{slug}-{i}" tabindex="0"{hidden}>\n'
+            f'      <div class="cs-tabcard">{media}\n'
+            f'        <div class="cs-tabcard-body">\n          {quote}{person}{cta}\n'
+            f'        </div>{stats}\n      </div>\n    </div>')
+    # measured media fraction (pattern mediaScale.fraction, carried on the stamp) —
+    # the photo column's share of the card; the structural default otherwise.
+    tab_decls = []
+    try:
+        f = float((layout.get("_tabs") or {}).get("mediaFraction"))
+        if 0 < f < 1:
+            tab_decls.append(f"--cs-tabs-media-frac: {f:g}")
+    except (TypeError, ValueError):
+        pass
+    # measured active-tab rule color (treatment fact — the page's committed-accent
+    # law collapses --c-accent to ink on this band, so the fact must ride scoped).
+    au = (layout.get("_tabs") or {}).get("activeUnderline")
+    if au:
+        tab_decls.append(f"--cs-tab-active-rule: {cr.esc(str(au))}")
+    frac_style = f' style="{"; ".join(tab_decls)}"' if tab_decls else ""
+    list_label = str(copy["heading"]).strip() or "Case studies"
+    bp = layout.get("_bandPadding") if isinstance(layout.get("_bandPadding"), dict) else {}
+    pad_decls = "".join(
+        f" --c-section-pad-{k}: {cr.esc(bp[k])};" for k in ("top", "bottom") if bp.get(k))
+    sec_style = f' style="{pad_decls.strip()}"' if pad_decls else ""
+    return f"""<section class="cs-section cs-tabs-sec"{sec_style}>
+  <div class="cs-tabs" data-tabs{frac_style}>
+    <div class="cs-tablist" role="tablist" aria-label="{cr.esc(list_label)}">
+{chr(10).join(tabs_html)}
+    </div>
+{chr(10).join(panels_html)}
   </div>
 </section>"""
 
@@ -1920,6 +3076,161 @@ def compose_gallery_showcase(doc, layout, ctx, rendered, style_ctx):
 
 # ── archetype: conversion stack (conversion, narrow centered/anchored) ───────────
 
+_FIELD_KINDS = ("text", "email", "tel", "select", "radio-group", "checkbox")
+
+
+def _signup_field_html(doc, ctx, field: dict, idx: int, form_uid: str) -> str:
+    """One signup-form field → accessible markup. Label text ALWAYS visible (a real
+    <label>/<legend>, never placeholder-as-label); the control rides the brand's own
+    boxed-input anatomy vars (--c-input-*/--color-border-input chain — same producers
+    as the boxed variant of render_form). Kinds: text/email/tel (input), textarea
+    (real multiline control, W12), select (native select + authored options),
+    radio-group (fieldset+legend, one checked per authored default), checkbox
+    (single opt-in row)."""
+    kind = str(field.get("kind") or "text").lower()
+    label = str(field.get("label") or "").strip()
+    name = str(field.get("name") or "").strip() or re.sub(
+        r"[^a-z0-9]+", "-", label.lower()).strip("-") or f"field-{idx}"
+    helper = str(field.get("helper") or "").strip()
+    span_cls = " cs-field--full" if str(field.get("span") or "").lower() != "half" else ""
+    req = " required" if field.get("required") else ""
+    # authored validation microcopy rides the control as data-error (static form:
+    # native constraint validation runs; the authored string is carried, not invented UI).
+    err = str(field.get("error") or "").strip()
+    err_attr = f' data-error="{cr.esc(err)}"' if err else ""
+    auto = (f' autocomplete="{cr.esc(str(field["autocomplete"]))}"'
+            if field.get("autocomplete") else "")
+    helper_html = (f'\n        <span class="cs-field-help">{cr.esc(helper)}</span>'
+                   if helper else "")
+    if kind == "radio-group":
+        options = [str(o).strip() for o in (field.get("options") or []) if str(o).strip()]
+        checked_i = field.get("checkedIndex")
+        rows = "".join(
+            f'\n        <label class="cs-choice"><input type="radio" name="{cr.esc(name)}" '
+            f'value="{cr.esc(re.sub(r"[^a-z0-9]+", "-", o.lower()).strip("-"))}"'
+            + (" checked" if isinstance(checked_i, int) and i == checked_i else "")
+            + f'{req}><span class="cs-choice-label">{cr.esc(o)}</span></label>'
+            for i, o in enumerate(options))
+        return (f'      <fieldset class="cs-choice-group cs-field--full">\n'
+                f'        <legend class="cs-field-label">{cr.esc(label)}</legend>'
+                f'{rows}{helper_html}\n      </fieldset>')
+    if kind == "checkbox":
+        return (f'      <label class="cs-choice cs-choice--solo cs-field--full">'
+                f'<input type="checkbox" name="{cr.esc(name)}"{req}>'
+                f'<span class="cs-choice-label">{cr.esc(label)}</span></label>')
+    fid = f"{form_uid}-{name}"
+    if kind == "select":
+        options = [str(o).strip() for o in (field.get("options") or []) if str(o).strip()]
+        prompt = str(field.get("placeholder") or "").strip()
+        opts = (f'\n          <option value="" disabled selected hidden>{cr.esc(prompt)}'
+                f'</option>' if prompt else "")
+        opts += "".join(
+            f'\n          <option value="{cr.esc(re.sub(r"[^a-z0-9]+", "-", o.lower()).strip("-"))}">'
+            f'{cr.esc(o)}</option>' for o in options)
+        control = (f'<select class="cs-input cs-input--select" id="{cr.esc(fid)}" '
+                   f'name="{cr.esc(name)}"{req}{err_attr}>{opts}\n        </select>')
+    elif kind == "textarea":
+        # REAL multiline control (W12, stress-playbook 2026-07): a declared textarea
+        # renders <textarea> on the SAME brand input-anatomy chain as .cs-input
+        # (border/radius/bg/focus tokens); rows is structural shape (~4 visible
+        # lines), never a brand magnitude. The old whitelist coerced this kind to a
+        # single-line <input type="text"> silently.
+        ph = (f' placeholder="{cr.esc(str(field["placeholder"]))}"'
+              if field.get("placeholder") else "")
+        control = (f'<textarea class="cs-input cs-input--multiline" id="{cr.esc(fid)}" '
+                   f'name="{cr.esc(name)}" rows="4"{ph}{auto}{req}{err_attr}></textarea>')
+    else:
+        itype = kind if kind in ("email", "tel") else "text"
+        ph = (f' placeholder="{cr.esc(str(field["placeholder"]))}"'
+              if field.get("placeholder") else "")
+        control = (f'<input class="cs-input" id="{cr.esc(fid)}" type="{itype}" '
+                   f'name="{cr.esc(name)}"{ph}{auto}{req}{err_attr}>')
+    return (f'      <div class="cs-field{span_cls}">\n'
+            f'        <label class="cs-field-label" for="{cr.esc(fid)}">{cr.esc(label)}'
+            f'</label>\n        {control}{helper_html}\n      </div>')
+
+
+def _compose_signup_form(doc, layout, ctx, rendered, style_ctx, *, copy,
+                         header_html, body_html):
+    """SIGNUP-FORM scaffold (event-scaffolds 2026-07) — the third new brand-agnostic
+    scaffold: a real multi-field registration form (static markup, no backend) on the
+    conversion stack's centered column. MECHANICS are generic (label-above boxed
+    fields on a responsive half/full grid, radio/checkbox choice rows, consent line,
+    one submit action, an aria-live success line for completeness of the static
+    contract); every VISIBLE value resolves from brand facts:
+      - field anatomy rides the SAME token chain as the boxed form variant
+        (--c-input-radius/-border/-bg producers; border/input + focus-ring colors);
+      - the submit is the measured button family via the c-button contract (cta-shape
+        dispatch discipline — a typographic brand's form degrades its submit to the
+        arrow-link register through the same law);
+      - the panel (when the brand declares a Container surface, card_panel_role)
+        plates the form on that surface; panel-less brands keep the open column.
+    Field/label/microcopy come EXCLUSIVELY from the composition's validated
+    `_formFields` stamp (AS-14: the intro copy states the exchange; AS-34: nothing
+    invented here — an unauthored key simply doesn't render)."""
+    ff = layout.get("_formFields") or {}
+    fields = ff.get("fields") or []
+    uid = re.sub(r"[^a-z0-9]+", "-", str(layout.get("id") or "signup").lower()).strip("-")
+    rows = "\n".join(_signup_field_html(doc, ctx, f, i, uid)
+                     for i, f in enumerate(fields))
+    # consent is LEGAL SENTENCE microcopy — it rides the form's helper register
+    # (sentence case), never the uppercase caption microlabel.
+    consent = str(ff.get("consent") or "").strip()
+    consent_html = (f'\n      <p class="cs-signup-consent">{cr.esc(consent)}</p>'
+                    if consent else "")
+    success = str(ff.get("success") or "").strip()
+    success_html = (f'\n      <p class="cs-signup-success" aria-live="polite" hidden>'
+                    f'{cr.esc(success)}</p>' if success else "")
+    submit = str(copy["cta"]).strip() or "Submit"
+    # the submit rides the measured button family CONTRACT: filled brands emit the
+    # real <button class="c-button …"> (family class via the same slug discipline as
+    # render_button); typographic brands keep the arrow-link register on a <button>
+    # reset — law-first, never a hardcoded pill.
+    if (ctx.cta or cr.cta_shape(doc)) == "filled":
+        submit_html = (f'<button class="c-button" type="submit">{cr.esc(submit)}'
+                       f'</button>')
+    else:
+        submit_html = (f'<button class="c-arrow-link cs-signup-submit-link" '
+                       f'type="submit">{cr.esc(submit)} <span class="c-arrow" '
+                       f'aria-hidden="true">&rarr;</span></button>')
+    # meta line (e.g. the event's date/place restated at the point of decision) —
+    # authored only; rides the caption register.
+    meta = str(ff.get("meta") or "").strip()
+    meta_html = (f'\n    <p class="c-caption cs-signup-meta">{cr.esc(meta)}</p>'
+                 if meta else "")
+    plate_cls = " cs-signup-panel--plate" if card_panel_role(doc) is not None else ""
+    form_html = f"""<form class="cs-signup-panel{plate_cls}" action="#" method="post">
+      <div class="cs-signup-grid">
+{rows}
+      </div>{consent_html}
+      <div class="cs-signup-actions">{submit_html}</div>{success_html}
+    </form>"""
+    sm = layout.get("_stackMeasure")
+    measure_style = (f' style="--cs-stack-measure: {cr.esc(str(sm))}; --c-cta-measure: 100%"'
+                     if sm else "")
+    bp = layout.get("_bandPadding") if isinstance(layout.get("_bandPadding"), dict) else {}
+    pad_decls = "".join(
+        f" --c-section-pad-{k}: {cr.esc(bp[k])};" for k in ("top", "bottom") if bp.get(k))
+    sec_style = f' style="{pad_decls.strip()}"' if pad_decls else ""
+    stack = f"""  <div class="cs-conversion cs-signup"{measure_style}>
+    {header_html}
+    {body_html}{meta_html}
+    {form_html}
+  </div>"""
+    # the sanctioned full-bleed art band (fid5 grammar) carries the signup drama when
+    # the composition stamped it; otherwise the flat conversion surface.
+    if layout.get("_artSurface") is not None:
+        art = _art_surface_src(doc, layout)
+        art_html = (f'\n  <img class="cs-conversion-band-art" src="{cr.esc(art)}" '
+                    f'alt="" aria-hidden="true">') if art else ""
+        return f"""<section class="cs-section cs-conversion-sec cs-conversion-sec--band cs-signup-sec"{sec_style}>{art_html}
+{stack}
+</section>"""
+    return f"""<section class="cs-section cs-conversion-sec cs-signup-sec"{sec_style}>
+{stack}
+</section>"""
+
+
 def compose_conversion_stack(doc, layout, ctx, rendered, style_ctx):
     """Assemble the cream conversion stack: a CENTERED narrow column (~50% container) — one
     of only two sanctioned centered stacks (with the hero) — of eyebrow -> full display-
@@ -1935,31 +3246,92 @@ def compose_conversion_stack(doc, layout, ctx, rendered, style_ctx):
     form the composition never declared. A mapping with no button slots keeps the
     legacy copy-driven form path byte-identical (every existing WoodWave conversion)."""
     copy = copy_for(layout, doc)
+    # register: the brand's measured section-heading tier (h2) when its type ladder
+    # declares one (fid2 2026-07 — composed sections rode the display/H1 register,
+    # oversizing every in-flow heading against the source); display is the degrade.
     header_html = cr.render_header(doc, ctx, {
-        "eyebrow": copy["eyebrow"], "heading": copy["heading"], "level": "display",
-        "accent": ctx.is_dark})
+        "eyebrow": copy["eyebrow"], "heading": copy["heading"],
+        "level": section_heading_level(doc), "accent": ctx.is_dark})
     # sysfix 2026-07: a body-less conversion (e.g. a heading+pill inline banner) must
     # not render an empty <p> — the paragraph elides exactly like the header's
     # optional eyebrow slot does.
     body_html = cr.render_paragraph(doc, ctx, {"text": copy["body"], "measure": "40ch"}) \
         if str(copy["body"]).strip() else ""
+    # SIGNUP-FORM scaffold (event-scaffolds 2026-07): a conversion whose composition
+    # stamped validated multi-field form facts renders the registration form instead
+    # of the single-line newsletter device. No stamp ⇒ every existing conversion
+    # (underline form / button banner) renders byte-identically below.
+    if layout.get("_formFields") is not None:
+        return _compose_signup_form(doc, layout, ctx, rendered, style_ctx, copy=copy,
+                                    header_html=header_html, body_html=body_html)
     action_frags = [r["html"] for r in rendered
                     if r.get("contract") == "button" and (r.get("html") or "").strip()]
     if action_frags:
         has_form_slot = any(r.get("contract") == "form" for r in rendered)
         form_html = cr.render_form(doc, ctx, {
             "placeholder": copy["placeholder"], "submit": copy["cta"]}) if has_form_slot else ""
-        actions_html = f'\n    <div class="cs-conversion-actions">{"".join(action_frags)}</div>'
+        actions_html = (f'\n    <div class="cs-conversion-actions"{ag_attrs(doc, layout)}>'
+                        f'{"".join(action_frags)}</div>')
     else:
         form_html = cr.render_form(doc, ctx, {
             "placeholder": copy["placeholder"], "submit": copy["cta"]})
         actions_html = ""
-    return f"""<section class="cs-section cs-conversion-sec">
-  <div class="cs-conversion">
+    # MEASURED STACK MEASURE (fid7 2026-07, stamped from the pattern's recorded
+    # contentShape.stackMeasure — JS-off computed content-column cap): the centered
+    # column rides the brand's real measure and the supporting paragraph spans it
+    # (the measured geometry: body text fills the content column, no ch clamp).
+    # Un-stamped layouts keep the classic 46rem column + 40ch prose measure
+    # byte-identically (the structural degrade for brands without the fact).
+    sm = layout.get("_stackMeasure")
+    measure_style = (f' style="--cs-stack-measure: {cr.esc(str(sm))}; --c-cta-measure: 100%"'
+                     if sm else "")
+    stack = f"""  <div class="cs-conversion"{measure_style}>
     {header_html}
     {body_html}{actions_html}
     {form_html}
+  </div>"""
+    # MEASURED BAND PADDING (fid7 2026-07, stamped from contentShape.bandPadding):
+    # this band's own measured vertical rhythm overrides the site-average section
+    # padding vars (inline custom properties beat the per-section rhythm selector).
+    # No stamp ⇒ no style attribute (site rhythm byte-identical).
+    bp = layout.get("_bandPadding") if isinstance(layout.get("_bandPadding"), dict) else {}
+    pad_decls = "".join(
+        f" --c-section-pad-{k}: {cr.esc(bp[k])};" for k in ("top", "bottom") if bp.get(k))
+    sec_style = f' style="{pad_decls.strip()}"' if pad_decls else ""
+    # INSET PANEL presentation (fid2 2026-07, stamped from the pattern's sanctioned
+    # panel-on-media treatment): the conversion stack sits on a rounded inset panel
+    # painted with the brand's OWN panel-art (defaultArt `panel:` pin, else the
+    # generic noise/texture inventory match). No art in the brand's inventory ⇒ the
+    # panel still rounds on the surface's own tokens (flat fill degrade); no stamp
+    # ⇒ the classic centered stack renders byte-identically.
+    if layout.get("_insetPanel") is not None:
+        art = _brand_art(doc, "panel", *brand_default_art_names(doc, "panel"))
+        art_html = ""
+        if art:
+            art_html = (f'\n    <img class="cs-conversion-panel-art" src="{cr.esc(art)}" '
+                        f'alt="" aria-hidden="true">')
+        return f"""<section class="cs-section cs-conversion-sec cs-conversion-sec--panel"{sec_style}>
+  <div class="cs-conversion-panel">{art_html}
+{stack}
   </div>
+</section>"""
+    # FULL-BLEED ART BAND (fid5 2026-07, stamped from the pattern's sanctioned
+    # `art-surface` background treatment): the whole SECTION box paints with the
+    # brand's own band art (treatment-named file first — see _art_surface_src) behind
+    # the stack, edge to edge — the closing-CTA-on-the-gradient-band grammar. No art
+    # in the brand's inventory ⇒ the band class still applies on the flat surface
+    # fill (degrade); no stamp ⇒ the classic centered stack renders byte-identically.
+    if layout.get("_artSurface") is not None:
+        art = _art_surface_src(doc, layout)
+        art_html = ""
+        if art:
+            art_html = (f'\n  <img class="cs-conversion-band-art" src="{cr.esc(art)}" '
+                        f'alt="" aria-hidden="true">')
+        return f"""<section class="cs-section cs-conversion-sec cs-conversion-sec--band"{sec_style}>{art_html}
+{stack}
+</section>"""
+    return f"""<section class="cs-section cs-conversion-sec"{sec_style}>
+{stack}
 </section>"""
 
 
@@ -1983,6 +3355,125 @@ def _is_mark_asset(path) -> bool:
     if name.lower().endswith(".svg"):
         return True
     return bool(_MARK_FILE_RX.search(Path(name).stem))
+
+
+# ── SECTION HEADRAIL device (fix1 item-8 markup; fix2 recipe-fact consumption) ──
+
+def _rail_spans_column(rail: dict) -> bool:
+    """True when the rail's recipe facts pin it to the LOCAL column (a split/siderail
+    copy column) instead of the section's content container — variant `span: column`
+    wins over the recipe-level `geometry.railAlignment`."""
+    variant = rail.get("variant") if isinstance(rail.get("variant"), dict) else {}
+    span = str(variant.get("span") or "").lower()
+    if span:
+        return span == "column"
+    geo = rail.get("geometry") if isinstance(rail.get("geometry"), dict) else {}
+    return str(geo.get("railAlignment") or "").lower() == "column"
+
+
+def _headrail_html(doc, ctx, rail: dict, *, eyebrow_html: str, cta_label: str,
+                   legacy_pill_wrap: bool) -> str:
+    """The section HEADRAIL device, shared by the cards + generic-flow composers:
+    leading kicker (chip / pill / badge) — leader rule — trailing quiet action.
+
+    RECIPE-BOUND rails (fix2, brand-schema §4.4e) render their variant's measured
+    facts: kicker shape/box/radius/icon (emitted as inline --cs-rail-* vars the
+    scaffold CSS consumes with structural defaults), rule style, trailing-action
+    presence + family, and the measured rail->heading seam. Recipe-LESS rails keep
+    the fix1 prose-vocabulary behavior byte-identically (chip when the slot binds
+    an inventory asset; else the eyebrow, pill-wrapped only on the flow path when
+    the prose says "pill"; rule dotted when the prose says so; trailing action
+    whenever the section authors a cta)."""
+    inv = set(doc.get(ASSET_INVENTORY_KEY) or []) if isinstance(doc, dict) else set()
+    chip_asset = next((Path(a).name for a in (rail.get("assets") or [])
+                       if Path(str(a)).name in inv), "")
+    rail_prose = f"{rail.get('role') or ''} {rail.get('note') or ''}"
+    variant = rail.get("variant") if isinstance(rail.get("variant"), dict) else {}
+    kicker = variant.get("kicker") if isinstance(variant.get("kicker"), dict) else {}
+    rule_v = variant.get("rule") if isinstance(variant.get("rule"), dict) else {}
+    trail_v = variant.get("trail") if isinstance(variant.get("trail"), dict) else {}
+    icon_v = kicker.get("icon") if isinstance(kicker.get("icon"), dict) else {}
+
+    decls: list[str] = []
+
+    def _decl(var: str, val) -> None:
+        v = str(val or "").strip()
+        if v:
+            decls.append(f"--{var}: {cr.esc(v)}")
+
+    # ── kicker ──
+    shape = str(kicker.get("shape") or "").lower()
+    icon_asset = Path(str(icon_v.get("asset") or "")).name
+    if icon_asset and icon_asset not in inv:
+        icon_asset = ""                      # inventory law: never bind a missing file
+    icon_asset = icon_asset or chip_asset
+    icon_img = (f'<img src="assets/{cr.esc(icon_asset)}" alt="" aria-hidden="true">'
+                if icon_asset else "")
+    if shape == "chip" and not kicker.get("label", False):
+        # icon-only identity chip (measured box/radius/icon ride the vars)
+        _decl("cs-rail-chip-size", kicker.get("size"))
+        _decl("cs-rail-chip-radius", kicker.get("radius"))
+        _decl("cs-rail-chip-icon", icon_v.get("size"))
+        if kicker.get("border"):
+            _decl("cs-rail-chip-border", "1px solid var(--c-hairline)")
+        lead = f'<span class="cs-headrail-chip">{icon_img}</span>'
+    elif shape in ("pill", "badge"):
+        # labeled pill/badge kicker, optional leading icon inside the box
+        _decl("cs-rail-pill-radius", kicker.get("radius"))
+        _decl("cs-rail-pill-pad", kicker.get("padding"))
+        _decl("cs-rail-pill-icon", icon_v.get("size"))
+        pill_icon = icon_img if icon_v else ""
+        lead = f'<span class="cs-headrail-pill">{pill_icon}{eyebrow_html}</span>'
+    elif chip_asset:                          # legacy: slot binds an inventory mark
+        lead = f'<span class="cs-headrail-chip">{icon_img}</span>'
+    elif legacy_pill_wrap and "pill" in rail_prose.lower():
+        lead = f'<span class="cs-headrail-pill">{eyebrow_html}</span>'
+    else:
+        lead = eyebrow_html
+    if variant and str(kicker.get("surface") or "").lower() == "panel":
+        # the kicker floats as a PANEL surface on the band (white plate on the
+        # band's own paper — the same container role card plates paint)
+        _decl("cs-rail-kicker-bg", "var(--c-panel, var(--c-paper))")
+
+    # ── leader rule ──
+    rule_style = str(rule_v.get("style") or "").lower()
+    dotted = " cs-headrail-rule--dotted" if (
+        rule_style == "dotted" or (not rule_style and "dotted" in rail_prose.lower())
+    ) else ""
+    rule_html = "" if rule_style == "none" else \
+        f'<hr class="cs-headrail-rule{dotted}" aria-hidden="true">'
+
+    # ── trailing action ──
+    want_trail = trail_v.get("present") if isinstance(trail_v.get("present"), bool) \
+        else bool(cta_label)
+    trail = ""
+    if want_trail and cta_label:
+        trail = cr.render_button(doc, ctx, {
+            "label": cta_label,
+            "familyHint": str(trail_v.get("family") or "") or rail_prose})
+
+    # ── shared geometry ──
+    geo = rail.get("geometry") if isinstance(rail.get("geometry"), dict) else {}
+    _decl("cs-rail-gap-below", geo.get("railToHeading"))
+    _decl("cs-rail-item-gap", geo.get("kickerGap"))
+
+    style_attr = f' style="{"; ".join(decls)}"' if decls else ""
+    return (f'<div class="cs-headrail"{style_attr}>{lead}{rule_html}{trail}</div>')
+
+
+def card_panel_role(doc) -> str | None:
+    """The brand's declared CONTAINER surface role for card plates (fid2 2026-07):
+    present only when the brand declares BOTH the card block device (blocks.card,
+    usable) and a Container-scheme surface (the floating panel role its cards paint).
+    None ⇒ the brand's cards are flat editorial modules (e.g. a no-cards neverDo
+    brand) and the composers must not invent panels."""
+    if not cr.block_device(doc, "card"):
+        return None
+    for role, spec in ((((doc or {}).get("tokens") or {}).get("surfaces")) or {}).items():
+        if isinstance(spec, dict) and spec.get("bg") \
+                and str(spec.get("schemeMode") or "").strip().lower() == "container":
+            return role
+    return None
 
 
 def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
@@ -2017,6 +3508,32 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
     # body leads the caption (card anatomy reading order). No treatment ⇒ the
     # contained grid renders unchanged.
     edgecut = bool(layout.get("_edgeCut"))
+    # WHITE CARD PLATES (fid2 2026-07): a brand whose declared card device rides a
+    # container-mode surface (blocks.card + a Container-scheme surface role) renders
+    # its modules as REAL panels — bg/ink/radius from the brand's own panel vars —
+    # in the contained grid too, not only on the edge-cut track. Brands without the
+    # card device (or without a container surface) keep the flat editorial modules.
+    plated = edgecut or card_panel_role(doc) is not None
+    # CARD HEADING REGISTER (fid6 2026-07): the brand's card device may pin its heading
+    # slot to a measured type register (blocks.card slots.heading.register — e.g. a
+    # 20px h5-register card heading measured in the capture DOM). The register picks
+    # the CLASS tier; the TAG stays h3 (document outline). h3 register = the default
+    # for brands without the fact.
+    _card_slots = (cr.block_device(doc, "card") or {}).get("slots") or {}
+    _head_slot = _card_slots.get("heading") if isinstance(_card_slots, dict) else None
+    _reg = str((_head_slot or {}).get("register") or "").strip().lower() \
+        if isinstance(_head_slot, dict) else ""
+    card_head_level = _reg if _reg in ("h2", "h3", "h4", "h5", "h6") else "h3"
+    # PATTERN-MEASURED register override (fix1 2026-07 item-8, deviceGeometry.
+    # cardRegister): THIS section's cards ride their own measured tier — e.g. an
+    # oversized agent-card family (h3) beside the brand's compact product-card
+    # device register (h5). The stamp also PROMOTES authored card headings out of
+    # the caption fold on media cards (the heading is a measured fact here, not an
+    # inference); stamp-less sections keep the device/caption behavior unchanged.
+    _pat_geo = layout.get("_accGeometry") if isinstance(layout.get("_accGeometry"), dict) else {}
+    pat_register = str(_pat_geo.get("cardRegister") or "").strip().lower()
+    if pat_register:
+        card_head_level = pat_register
     modules = []
     for i, card in enumerate(cards):
         # asset may be a bare name, an already-prefixed path, or a sanitized {src, alt}
@@ -2029,45 +3546,186 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
         if isinstance(raw, dict):
             alt = alt or raw.get("alt")
             raw = raw.get("src")
+        # QUOTE/TESTIMONIAL card detection (W7, stress-playbook 2026-07): a module
+        # carrying person attribution (name/role/avatar) is a quote card — it NEVER
+        # inherits the defaultArt backfill; only an EXPLICITLY bound asset renders.
+        # Generic content-shape detection, no section names, no brand specifics.
+        is_quote_card = bool(card.get("name") or card.get("avatar") or card.get("role"))
         if raw:
             src = raw if str(raw).startswith(("assets/", "http://", "https://", "data:")) \
                 else f"assets/{raw}"
+        elif is_quote_card:
+            src = None            # text-first quote card: no media well at all
         else:
             src = _assets[i % len(_assets)]
         if not alt:
             cap = (card.get("caption") or "").strip()
             alt = f"{brand_name} — {cap}" if cap else f"{brand_name} photography"
         aspect = card.get("aspect") or _default_aspect
-        # MARK media (sysfix 2026-07): a vector/mark asset (logo, badge, avatar-less
-        # wordmark — same filename discipline as the AS-33 logo strip) must render
-        # CONTAINED inside the module frame, never cover-cropped/stretched to the
-        # photo aspect. Generic per-asset classification, no brand names.
-        is_mark = _is_mark_asset(src)
-        contain = " cs-module-media--contain" if is_mark else ""
-        img_html = cr.render_image(doc, ctx, {"src": src, "alt": alt})
-        caption_html = cr.render_caption(doc, ctx, {"text": card.get("caption", "")})
+        # MEDIA TREATMENT FACT (fid16): card media resolves from the active brand's
+        # assetKind + generic slot-role rules.  No filename vocabulary: transparent
+        # illustrations/marks can contain, while screenshot/photo/product-UI card
+        # media can cover the full well when the curator/evidence authorizes it.
+        media_mode = cr.asset_render_mode(doc, src, "card-media") if src else "cover"
+        contained_media = media_mode == "contain"
+        # DECLARED mark row (fit: mark, hubspot-v2 2026-07): the module's art is a
+        # glyph/icon that sits at MARK height above the card copy — the feature-card
+        # anatomy — never a media well. Fact-only: no brand declares it, no change.
+        mark_media = media_mode == "mark"
+        # Edge-cut MARK anatomy is fact-first (hubspot-v2 2026-07): a DECLARED
+        # `fit: mark` renders the glyph row; a DECLARED `fit: contain` keeps the
+        # contained media WELL even on the track (the fit vocabulary distinguishes
+        # them — a product-UI shot contained on its well margin is not a logo).
+        # Legacy quote-card compositions may predate assets-tagged facts but still
+        # declare an unmistakable mark asset: the filename compatibility path applies
+        # ONLY when no media-treatment fact resolved (mode fell to the cover default).
+        edgecut_mark = edgecut and (mark_media
+                                    or (media_mode == "cover" and bool(src)
+                                        and _is_mark_asset(src)))
+        contain = " cs-module-media--contain" if contained_media else ""
+        # only the QUOTE card goes media-less (W7); a non-quote module with no
+        # resolvable art keeps the srcless placeholder chip exactly as before.
+        img_html = "" if (is_quote_card and not src) \
+            else cr.render_image(doc, ctx, {"src": src, "alt": alt,
+                                            "mediaRole": "card-media"})
+        # PERSON attribution row (fid2 2026-07): a module carrying an avatar and/or an
+        # authored name/role renders the avatar + name/role cluster (the testimonial
+        # card anatomy's divider + person row) INSTEAD of the bare caption line — the
+        # caption was the same "Name, Role" string. Modules without person facts keep
+        # the caption device unchanged.
+        person_html = ""
+        if card.get("avatar") or card.get("name"):
+            av = str(card.get("avatar") or "").strip()
+            av_src = ""
+            if av:
+                av_src = av if av.startswith(("assets/", "http://", "https://", "data:")) \
+                    else f"assets/{av}"
+            avatar_img = (f'<img class="c-person-avatar" src="{cr.esc(av_src)}" '
+                          f'alt="{cr.esc(card.get("name") or "")}">') if av_src else ""
+            nm = (f'<span class="c-person-name">{cr.esc(card["name"])}</span>'
+                  if card.get("name") else "")
+            rl = (f'<span class="c-person-role">{cr.esc(card["role"])}</span>'
+                  if card.get("role") else "")
+            meta = f'<span class="c-person-meta">{nm}{rl}</span>' if (nm or rl) else ""
+            person_html = f'<div class="c-person">{avatar_img}{meta}</div>'
+        caption_html = "" if person_html else \
+            cr.render_caption(doc, ctx, {"text": card.get("caption", "")})
+        # CARD EYEBROW + HEADING ANATOMY (fid6 2026-07): a module whose authored copy
+        # carries its OWN eyebrow (the per-card microlabel the grounding confirms)
+        # renders the full register ladder — eyebrow (c-eyebrow, the section's eyebrow
+        # register) then the card heading at the brand's declared card register
+        # (card_head_level above) — instead of folding the heading into the tracked
+        # caption register (which dropped the eyebrow and demoted the heading).
+        # Modules without a card eyebrow keep the caption anatomy byte-identical
+        # (the staggered-caption editorial card).
+        anatomy = bool(str(card.get("eyebrow") or "").strip()) \
+            or bool(pat_register and str(card.get("heading") or "").strip())
+        card_eyebrow_html = card_head_html = ""
+        if anatomy or (mark_media and str(card.get("heading") or "").strip()):
+            # (fit: mark modules carry their heading at the card register too — the
+            # feature-card ladder is mark → heading → body → link; eyebrow optional.)
+            if str(card.get("eyebrow") or "").strip():
+                card_eyebrow_html = cr.render_eyebrow(doc, ctx, {"text": card["eyebrow"]})
+            head_txt = str(card.get("heading") or card.get("caption") or "").strip()
+            if head_txt:
+                card_head_html = cr.render_heading(
+                    doc, ctx, {"text": head_txt, "level": card_head_level, "tag": "h3"})
+            caption_html = ""
+            anatomy = True
         body_html = cr.render_paragraph(doc, ctx, {"text": card.get("body", ""), "measure": "44ch"})
         link_html = cr.render_arrow_link(doc, ctx, {"label": card["link"]}) if card.get("link") else ""
-        if edgecut and is_mark:
+        if edgecut_mark:
             # card-plate anatomy: the company mark sits at MARK height (device frame
-            # geometry, same discipline as the logo strip), quote leads, caption
-            # (name/role) closes the card.
+            # geometry, same discipline as the logo strip), quote leads, the person
+            # row / caption (name/role) closes the card.
             figure = (f'      <figure class="cs-module-media cs-module-media--mark">'
                       f'{img_html}</figure>\n')
-            inner = f'{figure}      {body_html}\n      {caption_html}\n      {link_html}'
+            inner = (f'{figure}      {body_html}\n      '
+                     f'{person_html or caption_html}\n      {link_html}')
+        elif mark_media:
+            # FEATURE-CARD anatomy (declared fit: mark on a contained grid): mark row
+            # at device height, then the register ladder (eyebrow? → heading → body →
+            # link). The mark is a glyph fact, never a media well.
+            figure = (f'      <figure class="cs-module-media cs-module-media--mark">'
+                      f'{img_html}</figure>\n')
+            # HEADING-ROW mark placement (hubspot-v2 2026-07, brand card device
+            # `slots.icon.placement: heading-row`): the source's feature card seats
+            # its glyph BESIDE the heading (one row), not above it — the declared
+            # fact folds mark + heading into a flex headrow at the icon slot's
+            # measured size. Devices without the fact keep the stacked mark row.
+            _icon_slot = _card_slots.get("icon") if isinstance(_card_slots, dict) else None
+            _headrow = isinstance(_icon_slot, dict) \
+                and str(_icon_slot.get("placement") or "").strip() == "heading-row" \
+                and bool(card_head_html) and not card_eyebrow_html
+            if _headrow:
+                _sz = str(_icon_slot.get("size") or "").strip()
+                _sz_style = (f' style="--cs-headrow-mark: {cr.esc(_sz)}"'
+                             if re.fullmatch(r"[\d.]+(?:rem|em|px)", _sz) else "")
+                inner = (f'      <div class="cs-module-headrow"{_sz_style}>\n'
+                         f'  {figure}        {card_head_html}\n      </div>\n'
+                         f'      {body_html}\n      '
+                         f'{person_html}\n      {link_html}')
+            else:
+                lead = (f'{card_eyebrow_html}\n      {card_head_html}' if anatomy
+                        else caption_html)
+                inner = (f'{figure}      {lead}\n      {body_html}\n      '
+                         f'{person_html}\n      {link_html}')
         else:
+            # a media-less quote card composes text-first — no empty frame (W7).
             figure = (f'      <figure class="cs-module-media{contain}" '
-                      f'style="aspect-ratio: {cr.esc(aspect)};">{img_html}</figure>\n')
-            inner = f'{figure}      {caption_html}\n      {body_html}\n      {link_html}'
-        plate = " cs-module--plate" if edgecut else ""
+                      f'style="aspect-ratio: {cr.esc(aspect)};">{img_html}</figure>\n'
+                      if img_html else "")
+            lead = (f'{card_eyebrow_html}\n      {card_head_html}' if anatomy
+                    else caption_html)
+            inner = (f'{figure}      {lead}\n      {body_html}\n      '
+                     f'{person_html}\n      {link_html}')
+        plate = " cs-module--plate" if plated else ""
+        anatomy_cls = " cs-module--anatomy" if anatomy else ""
+        quote_cls = " cs-module--quote" if is_quote_card else ""
         modules.append(
-            f'    <article class="cs-module{plate}">\n{inner}\n    </article>')
+            f'    <article class="cs-module{plate}{anatomy_cls}{quote_cls}">\n'
+            f'{inner}\n    </article>')
+    # SECTION HEADROW RAIL (fix1 2026-07 item-8, stamped from the pattern's
+    # sanctioned `dotted-rule-rail` treatment): leading chip (the rail slot's own
+    # declared mark, inventory-checked) or eyebrow pill, a rule spanning to the far
+    # edge, and the section's authored cta as the trailing action (family resolved
+    # from the rail's own style prose). Renders ABOVE the intro; the eyebrow leaves
+    # the intro header (it rides the rail instead). No stamp ⇒ no rail, and the
+    # intro renders byte-identically. Recipe-bound rails (fix2) render their
+    # variant's measured facts via the shared helper.
+    rail = layout.get("_headRail") if isinstance(layout.get("_headRail"), dict) else None
+    rail_html = ""
+    rail_in_column = False
+    if rail is not None:
+        eyebrow_html = cr.render_eyebrow(doc, ctx, {"text": copy.get("eyebrow")}) \
+            if str(copy.get("eyebrow") or "").strip() else ""
+        rail_html = _headrail_html(doc, ctx, rail, eyebrow_html=eyebrow_html,
+                                   cta_label=str(copy.get("cta") or "").strip(),
+                                   legacy_pill_wrap=False) + "\n  "
+        rail_in_column = _rail_spans_column(rail)
     intro = ""
     if copy.get("heading"):
+        # section register: the measured h2 tier when the brand's ladder declares one
+        # (fid2 2026-07); a pattern-measured headingRegister (deviceGeometry, fix1)
+        # outranks it; an authored intro subhead renders under it (testimonial
+        # band's "Join customers who trust…" line was silently dropped before).
         header_html = cr.render_header(doc, ctx, {
-            "eyebrow": copy.get("eyebrow"), "heading": copy["heading"], "level": "display",
+            "eyebrow": copy.get("eyebrow") if rail is None else "",
+            "heading": copy["heading"],
+            "level": (str(_pat_geo.get("headingRegister") or "")
+                      or section_heading_level(doc)),
             "accent": ctx.is_dark, "splitTwoLines": False})
-        intro = f'<div class="cs-modules-intro">{header_html}</div>\n  '
+        own = layout_copy_layer(layout, doc)
+        sub = str((own or {}).get("subhead") or "").strip()
+        sub_html = cr.render_paragraph(doc, ctx, {"text": sub}) if sub else ""
+        # SPLIT INTRO (fix1 2026-07 item-8, stamped from half-width heading+body
+        # slots): heading column LEFT, supporting paragraph RIGHT — the measured
+        # two-column intro. Stamp-less sections keep the stacked intro.
+        if layout.get("_introSplit") and sub_html:
+            intro = (f'<div class="cs-modules-intro cs-intro-split">'
+                     f'{header_html}{sub_html}</div>\n  ')
+        else:
+            intro = f'<div class="cs-modules-intro">{header_html}{sub_html}</div>\n  '
     # DECLARED module grid (sysfix 2026-07): a section whose composition carries
     # §4.6.5 grid columns (adapter: brand gridRules.columns → layout['_grid']) flows
     # one module per track instead of the staggered 7/5 registration spans — the
@@ -2087,32 +3745,399 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
                     if r.get("contract") == "button" and (r.get("html") or "").strip()]
     actions_html = ""
     if action_frags:
-        actions_html = ('\n  <div class="cs-modules-actions">'
+        actions_html = (f'\n  <div class="cs-modules-actions"{ag_attrs(doc, layout)}>'
                         + "".join(action_frags) + "</div>")
     track_cls = f"cs-modules{cols_cls}" + (" cs-modules--edgecut" if edgecut else "")
-    track = f"""<div class="{track_cls}">
+    # measured rail card box (deviceGeometry cardWidth/cardGap via _accGeometry):
+    # the clipped-card rhythm at the capture viewport; clamp default otherwise.
+    card_decls = []
+    if edgecut and _pat_geo.get("cardWidth"):
+        card_decls.append(f"--cs-edgecut-card-w: {cr.esc(_pat_geo['cardWidth'])}")
+    if edgecut and _pat_geo.get("cardGap"):
+        card_decls.append(f"--cs-edgecut-gap: {cr.esc(_pat_geo['cardGap'])}")
+    track_style = f' style="{"; ".join(card_decls)}"' if card_decls else ""
+    track = f"""<div class="{track_cls}"{track_style}>
 {chr(10).join(modules)}
   </div>"""
     if edgecut:
-        track = f'<div class="cs-edgecut">{track}</div>'
+        # interaction remediation (2026-07, IC-CAR-01): the edge-cut scroller is a
+        # keyboard-operable region — focusable, named after the section's own
+        # heading (structural "Gallery" fallback, never invented brand copy), with
+        # ArrowLeft/ArrowRight handled by the shared interaction script. A rail whose
+        # treatment MEASURED visible chrome (`controls` on the _edgeCut stamp, fix1
+        # item-8) renders the captured round prev/next pair (wired by the same rail
+        # script); control-less rails (Remote) ship no invented chrome — pixel
+        # fidelity, resolution argued in interaction-contracts.md §Resolution notes.
+        rail_name = str(copy.get("heading") or "").strip() or "Gallery"
+        controls = (layout.get("_edgeCut") or {}).get("controls") \
+            if isinstance(layout.get("_edgeCut"), dict) else None
+        ctl_html = ""
+        if isinstance(controls, dict):
+            chev_l = ('<svg viewBox="0 0 8 12" width="8" height="12" fill="none" '
+                      'stroke="currentColor" stroke-width="1.5" aria-hidden="true">'
+                      '<path d="M7 1L2 6l5 5"/></svg>')
+            chev_r = ('<svg viewBox="0 0 8 12" width="8" height="12" fill="none" '
+                      'stroke="currentColor" stroke-width="1.5" aria-hidden="true">'
+                      '<path d="M1 1l5 5-5 5"/></svg>')
+            ctl_html = (
+                f'<button class="cs-edgecut-arrow cs-edgecut-arrow--prev" type="button" '
+                f'data-railbtn="prev" aria-label="Previous">{chev_l}</button>'
+                f'<button class="cs-edgecut-arrow cs-edgecut-arrow--next" type="button" '
+                f'data-railbtn="next" aria-label="Next">{chev_r}</button>')
+            # measured autoplay toggle (`controls.pause`, fix1 item-8): the source rail
+            # autoplays and parks a small round pause under the track — static-faithful
+            # chrome (present in the source's JS-off DOM), wired as a pressed-state
+            # toggle by the rail script. Rails without the fact ship nothing.
+            if controls.get("pause"):
+                pause_glyph = ('<svg viewBox="0 0 10 12" width="10" height="12" '
+                               'fill="currentColor" aria-hidden="true">'
+                               '<rect x="1" y="1" width="3" height="10" rx="0.75"/>'
+                               '<rect x="6" y="1" width="3" height="10" rx="0.75"/></svg>')
+                ctl_html += (
+                    f'<div class="cs-edgecut-pauserow"><button class="cs-edgecut-pause" '
+                    f'type="button" data-railbtn="pause" aria-pressed="false" '
+                    f'aria-label="Pause carousel">{pause_glyph}</button></div>')
+        track = (f'<div class="cs-edgecut-wrap">'
+                 f'<div class="cs-edgecut" tabindex="0" role="region" '
+                 f'aria-roledescription="carousel" aria-label="{cr.esc(rail_name)}">'
+                 f'{track}</div>{ctl_html}</div>') if ctl_html else \
+                (f'<div class="cs-edgecut" tabindex="0" role="region" '
+                 f'aria-roledescription="carousel" aria-label="{cr.esc(rail_name)}">'
+                 f'{track}</div>')
     edge_cls = " cs-modules-sec--edgecut" if edgecut else ""
-    return f"""<section class="cs-section cs-modules-sec{edge_cls}">
-  {intro}{track}{actions_html}
+    # SIDE-RAIL CARD COUNTERWEIGHT (fix1 2026-07 item-7, stamped from the pattern's
+    # `alignment {value: left, counterweight: cards}` declaration): the copy rail
+    # (intro + action pair) holds the LEFT column and the module grid rides beside
+    # it as the counterweight — the measured split morphology — instead of stacking
+    # intro above the grid with the actions dropped below it. Stamp-less sections
+    # return the stacked section byte-identically.
+    # measured band padding (fix1 2026-07, same consumption as the split family).
+    bp = layout.get("_bandPadding") if isinstance(layout.get("_bandPadding"), dict) else {}
+    pad_decls = "".join(
+        f" --c-section-pad-{k}: {cr.esc(bp[k])};" for k in ("top", "bottom") if bp.get(k))
+    sec_style = f' style="{pad_decls.strip()}"' if pad_decls else ""
+    if layout.get("_sideRail") and intro:
+        # a COLUMN-spanning rail (recipe `span: column` — the kicker+rule anatomy
+        # lives inside the copy column in the source) opens the copy column; a
+        # content-spanning rail keeps the section-level row above the split.
+        col_rail, sec_rail = (rail_html, "") if rail_in_column else ("", rail_html)
+        return f"""<section class="cs-section cs-modules-sec cs-modules-sec--siderail{edge_cls}"{sec_style}>
+  {sec_rail}<div class="cs-siderail">
+    <div class="cs-siderail-copy">
+      {col_rail}{intro.rstrip()}{actions_html}
+    </div>
+    {track}
+  </div>
+</section>"""
+    return f"""<section class="cs-section cs-modules-sec{edge_cls}"{sec_style}>
+  {rail_html}{intro}{track}{actions_html}
 </section>"""
 
 
-# ── archetype: interlock (float-wrap statement + inset — editorial-interlocking-inset) ──
+# ── archetype: cards / BENTO GRID (event-scaffolds 2026-07 — weighted panel mosaic) ──
+
+def _cell_surface_vars(doc, role: str) -> str:
+    """Inline surface re-scope for ONE bento cell painted with a sanctioned surface
+    ROLE (tokens.surfaces — the brand's own surface grammar). Resolves bg/ink/accent
+    THROUGH the generated --color-*/--surface-* token layer (never literals here);
+    an unknown/undeclared role returns "" so the cell keeps the panel default —
+    surfaces are law, not suggestions (AS-02)."""
+    surfaces = ((doc or {}).get("tokens") or {}).get("surfaces") or {}
+    spec = surfaces.get(role)
+    if not isinstance(spec, dict) or not spec.get("bg"):
+        return ""
+    slug = re.sub(r"[^a-z0-9]+", "-", str(role).lower()).strip("-")
+    decls = [f"--bn-bg: var(--surface-{slug})"]
+    for key, var in (("textPrimary", "--bn-ink"), ("textAccent", "--bn-accent")):
+        ref = spec.get(key)
+        if ref:
+            cslug = re.sub(r"[^a-z0-9]+", "-", str(ref).lower()).strip("-")
+            decls.append(f"{var}: var(--color-{cslug})")
+    # inverse/accent cells re-scope the shared ink/eyebrow vars too, so every catalog
+    # primitive inside the cell (paragraph/caption/eyebrow/link) reads the cell's own
+    # contrast pair — the same rescoping discipline the section surfaces use.
+    decls += ["--c-ink: var(--bn-ink, inherit)",
+              "--c-ink-muted: var(--bn-ink, inherit)",
+              "--c-eyebrow-color: var(--bn-accent, var(--bn-ink, inherit))"]
+    return "; ".join(decls)
+
+
+def compose_bento_grid(doc, layout, ctx, rendered, style_ctx):
+    """Assemble the BENTO GRID (event-scaffolds 2026-07) — new brand-agnostic scaffold
+    #1: ONE weighted mosaic of panel cells on a 12-track grid, an ANCHOR cell plus
+    supports (varying spans/row-depths), each cell the brand's own card anatomy
+    (eyebrow → heading at the measured card register → body → optional arrow link /
+    person row) on a sanctioned panel surface. MECHANICS are generic:
+      - cell WEIGHTS (span 3–12 / rows 1–2) come exclusively from the composition's
+        validated `_bento` stamp (pattern-fact-driven knobs, AS-44 discipline — the
+        no-fact degrade is the uniform equal-span grid);
+      - a cell may declare a sanctioned surface ROLE (tokens.surfaces) — resolved
+        through the token layer by _cell_surface_vars, never invented (AS-02);
+      - a `lead: true` cell renders its body at the lead register (the oversized
+        statement cell — e.g. a quote anchor);
+      - responsive collapse rides the brand's own measured column tier (the stamp's
+        collapseAt px, emitted as a container query by layout_placement_css; the
+        structural floor collapses everything to one column).
+    Every visible value is brand tokens: panel surface/radius/padding from the card
+    device chain, rhythm from --c-* vars, gaps from the measured grid gutter."""
+    copy = copy_for(layout, doc)
+    cards = copy.get("cards") or []
+    stamp = layout.get("_bento") or {}
+    cells_meta = stamp.get("cells") or []
+    _card_slots = (cr.block_device(doc, "card") or {}).get("slots") or {}
+    _head_slot = _card_slots.get("heading") if isinstance(_card_slots, dict) else None
+    _reg = str((_head_slot or {}).get("register") or "").strip().lower() \
+        if isinstance(_head_slot, dict) else ""
+    card_head_level = _reg if _reg in ("h2", "h3", "h4", "h5", "h6") else "h3"
+    cells = []
+    for i, card in enumerate(cards):
+        meta = cells_meta[i] if i < len(cells_meta) and isinstance(cells_meta[i], dict) else {}
+        decls = []
+        span = meta.get("span")
+        start = meta.get("start")
+        if isinstance(span, (int, float)) and isinstance(start, (int, float)):
+            # explicit placement (e.g. ONE centered feature cell): full track ref.
+            decls.append(f"--bn-col: {max(1, min(12, int(start)))} / span "
+                         f"{max(3, min(12, int(span)))}")
+        elif isinstance(span, (int, float)):
+            decls.append(f"--bn-span: {max(3, min(12, int(span)))}")
+        rows_n = meta.get("rows")
+        if isinstance(rows_n, (int, float)) and int(rows_n) > 1:
+            decls.append(f"--bn-rows: {min(2, int(rows_n))}")
+        surface_decls = _cell_surface_vars(doc, str(meta.get("surface") or ""))
+        if surface_decls:
+            decls.append(surface_decls)
+        style = f' style="{"; ".join(decls)}"' if decls else ""
+        surf_cls = " cs-bento-cell--surface" if surface_decls else ""
+        lead_cls = " cs-bento-cell--lead" if meta.get("lead") else ""
+        eyebrow_html = cr.render_eyebrow(doc, ctx, {"text": card["eyebrow"]}) \
+            if str(card.get("eyebrow") or "").strip() else ""
+        # a person-attributed cell (quote anatomy) must not re-render the caption's
+        # name/role fold as its heading — the person row below carries it.
+        head_txt = str(card.get("heading")
+                       or ("" if card.get("name") else card.get("caption"))
+                       or "").strip()
+        head_html = cr.render_heading(
+            doc, ctx, {"text": head_txt, "level": card_head_level, "tag": "h3"}) \
+            if head_txt else ""
+        # optional MEDIA WELL (the anchor-cell anatomy): a cell binding a captured
+        # asset leads with it — full-bleed to the cell's top edges via the same
+        # negative-margin well the card plates use; AS-34: src must be authored
+        # (inventory-validated upstream), never a composer default.
+        media_html = ""
+        raw = card.get("asset")
+        alt = card.get("alt")
+        if isinstance(raw, dict):
+            alt = alt or raw.get("alt")
+            raw = raw.get("src")
+        if raw:
+            src = raw if str(raw).startswith(("assets/", "http://", "https://", "data:")) \
+                else f"assets/{raw}"
+            aspect = card.get("aspect") or "16 / 10"
+            media_html = (f'<figure class="cs-bento-media" '
+                          f'style="aspect-ratio: {cr.esc(str(aspect))};">'
+                          + cr.render_image(doc, ctx, {"src": src, "alt": alt or head_txt})
+                          + "</figure>")
+        body_html = cr.render_paragraph(doc, ctx, {"text": card.get("body", "")}) \
+            if str(card.get("body") or "").strip() else ""
+        link_html = cr.render_arrow_link(doc, ctx, {"label": card["link"]}) \
+            if card.get("link") else ""
+        # person row (same anatomy as the card plates — avatar optional, name/role
+        # in the shared c-person register): a quote/host cell attributes itself.
+        person_html = ""
+        if card.get("name"):
+            av = str(card.get("avatar") or "").strip()
+            avatar_img = ""
+            if av:
+                av_src = av if av.startswith(("assets/", "http://", "https://", "data:")) \
+                    else f"assets/{av}"
+                avatar_img = (f'<img class="c-person-avatar" src="{cr.esc(av_src)}" '
+                              f'alt="{cr.esc(card.get("name") or "")}">')
+            nm = f'<span class="c-person-name">{cr.esc(card["name"])}</span>'
+            rl = (f'<span class="c-person-role">{cr.esc(card["role"])}</span>'
+                  if card.get("role") else "")
+            person_html = (f'<div class="c-person">{avatar_img}<span class="c-person-meta">'
+                           f'{nm}{rl}</span></div>')
+        inner = "\n      ".join(x for x in (media_html, eyebrow_html, head_html,
+                                            body_html, person_html, link_html) if x)
+        cells.append(f'    <article class="cs-bento-cell{surf_cls}{lead_cls}"{style}>\n'
+                     f'      {inner}\n    </article>')
+    intro = ""
+    if copy.get("heading"):
+        header_html = cr.render_header(doc, ctx, {
+            "eyebrow": copy.get("eyebrow"), "heading": copy["heading"],
+            "level": section_heading_level(doc),
+            "accent": ctx.is_dark, "splitTwoLines": False})
+        own = layout_copy_layer(layout, doc)
+        sub = str((own or {}).get("subhead") or "").strip()
+        sub_html = cr.render_paragraph(doc, ctx, {"text": sub}) if sub else ""
+        intro = f'<div class="cs-modules-intro">{header_html}{sub_html}</div>\n  '
+    # bound `button` contract slots close the section as one action row (B5 parity
+    # with the module-grid composer) — present only when the composition binds one.
+    action_frags = [r["html"] for r in rendered
+                    if r.get("contract") == "button" and (r.get("html") or "").strip()]
+    actions_html = (f'\n  <div class="cs-modules-actions"{ag_attrs(doc, layout)}>'
+                    + "".join(action_frags)
+                    + "</div>") if action_frags else ""
+    return f"""<section class="cs-section cs-bento-sec">
+  {intro}<div class="cs-bento">
+{chr(10).join(cells)}
+  </div>{actions_html}
+</section>"""
+
+
+# ── archetype: cards / PRICING TIERS (event-scaffolds 2026-07 — emphasized tier row) ──
+
+def compose_pricing_tiers(doc, layout, ctx, rendered, style_ctx):
+    """Assemble PRICING TIERS (event-scaffolds 2026-07) — new brand-agnostic scaffold
+    #2: N peer tier panels on one equal-track row (collapsing per the stamped tier),
+    each tier = name (caption register) → price (display-family figure) + unit meta →
+    tagline → hairline-ruled feature list → one action from the measured button
+    family. ONE tier may be EMPHASIZED (the stamp's `emphasize` index) — emphasis is
+    a sanctioned SURFACE relationship, never an invented badge (AS-44/AS-02):
+      - a brand declaring an inverse/accent surface role in its grammar paints the
+        emphasized tier's HEAD BAND with it (`emphasisSurface` in the stamp — role
+        resolved through the token layer, same discipline as the bento cells);
+      - brands without such a role degrade to the measured input/hairline border ring.
+    Panel anatomy rides the brand's card device chain (panel surface + card radius +
+    measured padding); prices ride the heading font stack + a contained structural
+    clamp (register bound, not a brand magnitude)."""
+    copy = copy_for(layout, doc)
+    tiers = copy.get("tiers") or []
+    stamp = layout.get("_tiers") or {}
+    emph_i = stamp.get("emphasize")
+    emph_surface_decls = _cell_surface_vars(doc, str(stamp.get("emphasisSurface") or ""))
+    cols = []
+    for i, tier in enumerate(tiers):
+        emph = isinstance(emph_i, int) and i == emph_i
+        name_html = (f'<p class="c-caption cs-tier-name">{cr.esc(tier.get("name") or "")}'
+                     f'</p>') if str(tier.get("name") or "").strip() else ""
+        price = str(tier.get("price") or "").strip()
+        unit = str(tier.get("priceMeta") or "").strip()
+        unit_html = f'<span class="cs-tier-unit">{cr.esc(unit)}</span>' if unit else ""
+        price_html = (f'<div class="cs-tier-price">{cr.esc(price)}{unit_html}</div>'
+                      if price else "")
+        tag = str(tier.get("tagline") or "").strip()
+        tag_html = f'<p class="cs-tier-tagline">{cr.esc(tag)}</p>' if tag else ""
+        feats = [str(f).strip() for f in (tier.get("features") or []) if str(f).strip()]
+        feats_html = ("\n        ".join(f'<li>{cr.esc(f)}</li>' for f in feats))
+        list_html = (f'\n      <ul class="cs-tier-list">\n        {feats_html}\n      </ul>'
+                     if feats else "")
+        cta = str(tier.get("cta") or "").strip()
+        cta_html = ""
+        if cta:
+            cta_html = "\n      " + cr.render_button(doc, ctx, {
+                "label": cta, "family": tier.get("ctaFamily") or None})
+        head_style = (f' style="{emph_surface_decls}"'
+                      if emph and emph_surface_decls else "")
+        head_cls = "cs-tier-head" + (
+            " cs-tier-head--surface" if emph and emph_surface_decls else "")
+        # ONE emphasis device, once: the surface head band when the brand's grammar
+        # sanctions the role; the strong border ring ONLY as the roleless degrade.
+        emph_cls = " cs-tier--emph" if emph and not emph_surface_decls else ""
+        cols.append(f"""    <article class="cs-tier{emph_cls}">
+      <header class="{head_cls}"{head_style}>
+        {name_html}
+        {price_html}
+        {tag_html}
+      </header>{list_html}{cta_html}
+    </article>""")
+    intro = ""
+    if copy.get("heading"):
+        header_html = cr.render_header(doc, ctx, {
+            "eyebrow": copy.get("eyebrow"), "heading": copy["heading"],
+            "level": section_heading_level(doc),
+            "accent": ctx.is_dark, "splitTwoLines": False})
+        own = layout_copy_layer(layout, doc)
+        sub = str((own or {}).get("subhead") or "").strip()
+        sub_html = cr.render_paragraph(doc, ctx, {"text": sub}) if sub else ""
+        intro = f'<div class="cs-modules-intro">{header_html}{sub_html}</div>\n  '
+    note = str(copy["note"]).strip()
+    note_html = (f'\n  <p class="c-caption cs-tiers-note">{cr.esc(note)}</p>'
+                 if note else "")
+    return f"""<section class="cs-section cs-tiers-sec">
+  {intro}<div class="cs-tiers">
+{chr(10).join(cols)}
+  </div>{note_html}
+</section>"""
+
+
+def compose_cards(doc, layout, ctx, rendered, style_ctx):
+    """`cards` archetype dispatcher (event-scaffolds 2026-07): the BENTO mosaic and
+    PRICING-TIER row are stamp-gated presentations of the cards family — a section
+    stamped `_bento`/`_tiers` (validated composition knobs) routes to its scaffold;
+    everything else renders the staggered/N-up module grid byte-identically."""
+    if layout.get("_bento") is not None:
+        return compose_bento_grid(doc, layout, ctx, rendered, style_ctx)
+    if layout.get("_tiers") is not None:
+        return compose_pricing_tiers(doc, layout, ctx, rendered, style_ctx)
+    return compose_features_cards(doc, layout, ctx, rendered, style_ctx)
+
+
+# ── archetype: media-split / evidence-qualified editorial interlock ───────────────
+
+def compose_media_split(doc, layout, ctx, rendered, style_ctx):
+    """Ordinary two-column media split: the complete copy stack is one child and
+    landscape media is the other.  This is the safe degradation target for advanced
+    editorial devices whose content-shape preconditions are not met."""
+    copy = copy_for(layout, doc)
+    lc = layout_copy_layer(layout, doc)
+    raw = copy.get("asset")
+    src = raw if str(raw or "").startswith("assets/") \
+        else (f"assets/{raw}" if raw else _composer_art(doc, layout, "hero"))
+    brand_name = (doc.get("brand") or {}).get("name") or "Brand"
+    eyebrow = copy.get("caption") or lc.get("eyebrow") or ""
+    title = copy.get("statement") or lc.get("title") or lc.get("heading") or ""
+    support = lc.get("support") or copy.get("support") or ""
+    cta = lc.get("cta") or copy.get("cta") or ""
+    eyebrow_html = (f'<div class="cs-eyebrow-wrap"><p class="c-caption">'
+                    f'{cr.esc(eyebrow)}</p></div>') if eyebrow else ""
+    heading_html = cr.render_heading(
+        doc, ctx, {"text": title,
+                   "level": copy.get("headingLevel") or section_heading_level(doc),
+                   "tag": "h2"}) if title else ""
+    support_html = cr.render_paragraph(
+        doc, ctx, {"text": support, "measure": "44ch"}) if support else ""
+    cta_html = cr.render_arrow_link(
+        doc, ctx, {"label": cta, "accent": False}) if cta else ""
+    image_html = cr.render_image(doc, ctx, {
+        "src": src, "alt": copy.get("alt") or f"{brand_name} media",
+        "aspect": copy.get("mediaAspectCss"), "mediaRole": "split-media"})
+    return f"""<section class="cs-section cs-media-split-sec">
+  <div class="cs-media-split">
+    <div class="cs-media-split-copy">
+      {eyebrow_html}
+      {heading_html}
+      {support_html}
+      {cta_html}
+    </div>
+    <figure class="cs-media-split-media">{image_html}</figure>
+  </div>
+</section>"""
+
+
+def interlock_preconditions(copy: dict, layout_copy: dict) -> bool:
+    """Advanced-device contract: explicit evidence, landscape media, the canonical
+    caption+statement+media shape, and no unsupported support/action foot cluster."""
+    evidence = copy.get("interlockEvidence") or copy.get("deviceEvidence")
+    aspect = str(copy.get("mediaAspect") or copy.get("mediaAspectCss") or "").lower()
+    landscape = (
+        copy.get("mediaOrientation") == "landscape"
+        or "landscape" in aspect
+        or aspect in ("3 / 2", "4 / 3", "16 / 9")
+    )
+    shape = bool(copy.get("caption") and copy.get("statement") and copy.get("asset"))
+    unsupported_foot = bool(layout_copy.get("support") or layout_copy.get("cta"))
+    return bool(evidence and landscape and shape and not unsupported_foot)
 
 def compose_editorial_interlock(doc, layout, ctx, rendered, style_ctx):
-    """Assemble the INTERLOCKING STATEMENT + INSET IMAGE section (Claude Design #11,
-    harvested as `editorial-interlocking-inset`). A two-line tracked CAPTION pins the
-    top-left, one landscape IMAGE floats into the upper-right (float side + width from the
-    pattern's --c-float-side / --c-inset-width), and a long serif STATEMENT heading WRAPS
-    around it — narrow beside the image, then full width beneath (the caption carries a big
-    --c-inset-drop bottom margin so the headline's first lines sit level with the image).
-    A float-wrap mechanism — DISTINCT from the ghost-word collage. Image + heading + caption
-    are all catalog components (component_render); no radius/shadow, cq/rem units only."""
+    """Assemble an evidence-qualified editorial statement + landscape inset.
+    Content that lacks the explicit evidence/canonical shape contract degrades to
+    ``compose_media_split``. The retained device uses a simple registered grid."""
     copy = copy_for(layout, doc)
+    lc = layout_copy_layer(layout, doc)
+    if not interlock_preconditions(copy, lc):
+        return compose_media_split(doc, layout, ctx, rendered, style_ctx)
     raw = copy.get("asset")
     src = raw if str(raw or "").startswith("assets/") \
         else (f"assets/{raw}" if raw else _composer_art(doc, layout, "hero"))
@@ -2129,24 +4154,13 @@ def compose_editorial_interlock(doc, layout, ctx, rendered, style_ctx):
     # cluster after the float clears. Read from the LAYOUT layer only (never the
     # page-global base, whose always-present `cta` would retro-add a CTA to every
     # existing interlock render) — so legacy sections stay byte-identical.
-    lc = layout_copy_layer(layout, doc)
-    support_html = cr.render_paragraph(doc, ctx, {"text": lc["support"], "measure": "44ch"}) \
-        if lc.get("support") else ""
-    cta_html = cr.render_arrow_link(doc, ctx, {"label": lc["cta"], "accent": False}) \
-        if lc.get("cta") else ""
-    foot = ""
-    if support_html or cta_html:
-        foot = f"""
-    <div class="cs-interlock-foot">
-      {support_html}
-      {cta_html}
-    </div>"""
     return f"""<section class="cs-section cs-interlock-sec">
   <div class="cs-interlock">
     <figure class="cs-interlock-media">{img_html}</figure>
-    <p class="c-caption cs-interlock-caption">{cap_lines}</p>
-    {statement_html}
-    <div class="cs-interlock-clear"></div>{foot}
+    <div class="cs-interlock-copy">
+      <p class="c-caption cs-interlock-caption">{cap_lines}</p>
+      {statement_html}
+    </div>
   </div>
 </section>"""
 
@@ -2169,13 +4183,64 @@ def compose_generic_flow(doc, layout, ctx, rendered, style_ctx):
     section element (``data-logo-device="image|text|empty"``) so the gate can verify the
     section carries either real images or real text — never an empty frame."""
     parts: list[str | None] = []
+    # SECTION HEADROW RAIL + SPLIT INTRO (fix1 2026-07 item-8; same stamps as the
+    # cards composer): a flow section whose pattern declares the dotted-rule-rail
+    # treatment folds its eyebrow into the rail row (leading pill — rule — trailing
+    # authored cta), and half-width heading+body slots pair into one two-column
+    # row. Consumed fragments leave the ordinary flow; stamp-less sections render
+    # byte-identically (no rail, classic stacked flow).
+    rail = layout.get("_headRail") if isinstance(layout.get("_headRail"), dict) else None
+    consumed: set[int] = set()
+    if rail is not None or layout.get("_introSplit"):
+        flow_copy = copy_for(layout, doc)
+        by_contract: dict[str, tuple[int, str]] = {}
+        for idx, r in enumerate(rendered):
+            frag = r.get("html") or ""
+            if not frag.strip() or "unresolved slot" in frag:
+                continue
+            c = (r.get("contract") or "").lower()
+            if c not in by_contract:
+                by_contract[c] = (idx, frag)
+        if rail is not None:
+            # the flow's already-rendered eyebrow fragment rides the rail (and
+            # leaves the ordinary flow); recipe variants restyle it via the
+            # shared helper (fix2), prose-vocabulary rails keep fix1 behavior.
+            # The eyebrow is consumed only when the kicker actually carries a
+            # LABEL (pill/badge variants, or the chip-less legacy rail) — an
+            # icon-only chip leaves the flow's eyebrow where it stands.
+            inv = set(doc.get(ASSET_INVENTORY_KEY) or []) if isinstance(doc, dict) else set()
+            has_chip = any(Path(str(a)).name in inv for a in (rail.get("assets") or []))
+            kick_shape = str(((rail.get("variant") or {}).get("kicker") or {})
+                             .get("shape") or "").lower() \
+                if isinstance(rail.get("variant"), dict) else ""
+            eyebrow_html = ""
+            if "eyebrow" in by_contract and \
+                    (kick_shape in ("pill", "badge") or not has_chip):
+                eb_idx, eyebrow_html = by_contract["eyebrow"]
+                consumed.add(eb_idx)
+            parts.append("    " + _headrail_html(
+                doc, ctx, rail, eyebrow_html=eyebrow_html,
+                cta_label=str(flow_copy.get("cta") or "").strip(),
+                legacy_pill_wrap=True))
+        if layout.get("_introSplit") and "heading" in by_contract \
+                and "paragraph" in by_contract:
+            h_idx, h_frag = by_contract["heading"]
+            p_idx, p_frag = by_contract["paragraph"]
+            consumed |= {h_idx, p_idx}
+            parts.append(f'    <div class="cs-intro-split">{h_frag}{p_frag}</div>')
     # PER-GROUP strips (sysfix 2026-07): logo entries carry the AUTHORED source-slot
     # name as `group` — each declared slot group (e.g. badges vs ratings) renders as
     # its OWN horizontal row at its first entry's position, in declared slot order.
     # The old single-strip fold merged every mark on the page into one row.
     strip_groups: dict[str, dict] = {}     # group -> {"pos": int, "items": [html]}
+    # STAT BAND (W4, stress-playbook 2026-07): stat-contract entries group into ONE
+    # horizontal band per authored slot (same per-group discipline as logo strips) —
+    # metrics read as a row of value/label columns, not a vertical caption stack.
+    stat_groups: dict[str, dict] = {}      # group -> {"pos": int, "items": [html]}
     logo_text_items = 0
-    for r in rendered:
+    for r_idx, r in enumerate(rendered):
+        if r_idx in consumed:              # folded into the headrail / split intro
+            continue
         frag = r.get("html") or ""
         if not frag.strip() or "unresolved slot" in frag:
             continue
@@ -2188,12 +4253,41 @@ def compose_generic_flow(doc, layout, ctx, rendered, style_ctx):
                 parts.append(None)  # placeholder — replaced by this group's strip below
             g["items"].append(f'      <div class="cs-logo-strip-item">{frag}</div>')
             continue
+        if r.get("contract") in ("stat", "metric"):
+            group = str(r.get("group") or r.get("slot") or "stats")
+            g = stat_groups.get(group)
+            if g is None:
+                g = stat_groups[group] = {"pos": len(parts), "items": []}
+                parts.append(None)  # placeholder — replaced by this group's band below
+            g["items"].append(f'      <div class="cs-stat-band-item">{frag}</div>')
+            continue
         if role == "logo item":
             logo_text_items += 1
         is_media = ("image" == r.get("contract")) or any(
             k in role for k in ("photo", "media", "image"))
-        cls = "cs-flow-media" if is_media else "cs-flow-item"
-        parts.append(f'    <div class="{cls}">{frag}</div>')
+        # HUG-COLLAPSE fix (fid6 2026-07): the prose measure (62ch) belongs to
+        # PARAGRAPH slots only. It used to clamp EVERY flow item — computed at the
+        # wrapper's inherited body size, so a centered section's h2 wrapped inside a
+        # ~500px box and the whole stack read collapsed. Headings/eyebrows/actions
+        # now hug their own content inside the full-width flow container ("hug"
+        # applies to slots, never to the section container).
+        if is_media:
+            cls = "cs-flow-media"
+        elif r.get("contract") == "paragraph":
+            cls = "cs-flow-item cs-flow-item--prose"
+        else:
+            cls = "cs-flow-item"
+        # SEMANTIC ROW STAMP (AS-48): the item's content relationship, from its
+        # CONTRACT — the relational-ladder CSS keys pair seams (eyebrow->heading,
+        # heading->body, body->action) on these, so a ladder-bearing brand's flow
+        # renders per-pair rhythm instead of one flattened uniform gap. Unmapped
+        # contracts (logo/image/form/caption rows) carry no stamp and ride the
+        # block-to-block row rhythm.
+        row = "media" if is_media else {
+            "eyebrow": "eyebrow", "heading": "heading",
+            "paragraph": "body", "button": "action"}.get(r.get("contract") or "")
+        row_attr = f' data-row="{row}"' if row else ""
+        parts.append(f'    <div class="{cls}"{row_attr}>{frag}</div>')
     # MARQUEE DEVICE (P2, replica-gate punch list): a strip group whose reused pattern
     # declares the sanctioned `marquee` treatment renders the seam-correct track — TWO
     # IDENTICAL halves inside one max-content flex track, looped by a translateX(-50%)
@@ -2208,17 +4302,93 @@ def compose_generic_flow(doc, layout, ctx, rendered, style_ctx):
             str(mq.get("target") or "") in (group, "") or len(strip_groups) == 1)
         if is_marquee:
             half = "\n".join(g["items"])
-            dur = max(6, 2 * len(g["items"]))
+            # MEASURED period first (fid2 2026-07): the stamped durationS is the
+            # source's own JS-computed loop period (serialized in the saved DOM);
+            # `data-marquee-measured` tells the page script to leave it alone. The
+            # item-count approximation stays the degrade for brands without the fact.
+            measured_s = mq.get("durationS") if mq else None
+            if measured_s:
+                dur = f"{measured_s:g}"
+                fixed_attr = ' data-marquee-measured="1"'
+            else:
+                dur = f"{max(6, 2 * len(g['items']))}"
+                fixed_attr = ""
             parts[g["pos"]] = (
-                f'    <div class="cs-logo-strip cs-marquee" '
+                f'    <div class="cs-logo-strip cs-marquee"{fixed_attr} '
                 f'style="--cs-marquee-duration: {dur}s">\n'
                 f'      <div class="cs-marquee-track">\n'
                 f'      <div class="cs-marquee-half">\n{half}\n      </div>\n'
                 f'      <div class="cs-marquee-half" aria-hidden="true">\n{half}\n'
                 f'      </div>\n      </div>\n    </div>')
         else:
-            parts[g["pos"]] = ('    <div class="cs-logo-strip">\n'
+            # MEASURED ROW SCALE (fid6 2026-07; fid7: per-group map + measured gap):
+            # a strip whose pattern recorded a container-relative row fraction for
+            # THIS slot group (`_logoScale[group]`, e.g. a partner-proof row spanning
+            # ~half the content width, or an awards strip's badge/rating rows at
+            # their measured spans) renders the row at that scale: the row box is
+            # `fraction * 100%` wide, each mark's flex weight is its real asset
+            # aspect ratio (equal heights, row fills the measured span), and the
+            # inter-mark gap rides the measured length when recorded. Requires
+            # aspect coverage for EVERY item (evidence first); otherwise the
+            # structural strip below is the degrade.
+            scales = layout.get("_logoScale") if isinstance(layout.get("_logoScale"), dict) else {}
+            scale = scales.get(group) if isinstance(scales.get(group), dict) else None
+            # MEASURED ITEM BOX first (fix2 2026-07, mediaScale.item): the strip's
+            # uniform mark frame measured on the capture — fixed contain-fit boxes
+            # + the measured box gap reproduce the source row exactly (the
+            # fraction-weighted route distributes widths, which UNDERSIZES marks
+            # when the source draws uniform frames wider than the ink).
+            item_box = (scale or {}).get("item") if isinstance((scale or {}).get("item"), dict) else {}
+            if item_box.get("width") and item_box.get("height") and g["items"]:
+                gap_var = (f' --cs-strip-gap: {scale["gap"]};'
+                           if scale.get("gap") else "")
+                parts[g["pos"]] = (
+                    f'    <div class="cs-logo-strip cs-logo-strip--itembox" '
+                    f'style="--cs-strip-item-w: {cr.esc(item_box["width"])}; '
+                    f'--cs-strip-item-h: {cr.esc(item_box["height"])};{gap_var}">\n'
+                    + "\n".join(g["items"]) + "\n    </div>")
+                continue
+            if scale and scale.get("fraction") and g["items"]:
+                aspects_map = scale.get("aspects") if isinstance(scale.get("aspects"), dict) else {}
+                weights = []
+                for item_html in g["items"]:
+                    m = re.search(r'src="assets/([^"]+)"', item_html)
+                    a = aspects_map.get(Path(m.group(1)).name) if m else None
+                    weights.append(a)
+                if weights and all(w for w in weights):
+                    scaled = [
+                        re.sub(r'class="cs-logo-strip-item"',
+                               f'class="cs-logo-strip-item" style="flex: {w:g} 1 0"',
+                               item_html, count=1)
+                        for w, item_html in zip(weights, g["items"])]
+                    gap_var = (f' --cs-strip-gap: {scale["gap"]};'
+                               if scale.get("gap") else "")
+                    parts[g["pos"]] = (
+                        f'    <div class="cs-logo-strip cs-logo-strip--scaled" '
+                        f'style="--cs-strip-fraction: {float(scale["fraction"]):g};{gap_var}">\n'
+                        + "\n".join(scaled) + "\n    </div>")
+                    continue
+            # BADGE TIER (fid2 2026-07): a strip whose marks read as AWARD BADGES
+            # (badge/award/seal filename families) renders at the brand's measured
+            # badge tier (spacing token `badge-tier`) when one is authored — award
+            # plaques are a taller mark class than wordmark logos. Brands without
+            # the token (or non-badge strips) keep the structural logo height.
+            badge_style = ""
+            spacing = ((doc.get("tokens") or {}).get("spacing")) or {}
+            if isinstance(spacing.get("badge-tier"), dict) and g["items"] and all(
+                    re.search(r"(badge|award|seal|leader|top-?\d+)", i, re.I)
+                    for i in g["items"]):
+                badge_style = ' style="--c-logo-strip-h: var(--space-badge-tier)"'
+            parts[g["pos"]] = (f'    <div class="cs-logo-strip"{badge_style}>\n'
                                + "\n".join(g["items"]) + "\n    </div>")
+    # stat bands land at their first entry's position; the column count is the
+    # authored item count (CSS collapses the grid on narrow frames).
+    for group, g in stat_groups.items():
+        if not g["items"]:
+            continue
+        parts[g["pos"]] = (
+            f'    <div class="cs-stat-band" style="--cs-stat-cols: {len(g["items"])}">\n'
+            + "\n".join(g["items"]) + "\n    </div>")
     any_strip_items = any(g["items"] for g in strip_groups.values())
     body = "\n".join(p for p in parts if p is not None) \
         or '    <!-- generic-flow: no renderable slots -->'
@@ -2226,7 +4396,13 @@ def compose_generic_flow(doc, layout, ctx, rendered, style_ctx):
     if layout.get("_logoWall"):
         mode = "image" if any_strip_items else ("text" if logo_text_items else "empty")
         device_attr = f' data-logo-device="{mode}"'
-    return f"""<section class="cs-section cs-flow-sec"{device_attr}>
+    # measured band padding (fix1 2026-07, same consumption as the split family):
+    # the pattern's own vertical padding overrides the site rhythm for THIS band.
+    bp = layout.get("_bandPadding") if isinstance(layout.get("_bandPadding"), dict) else {}
+    pad_decls = "".join(
+        f" --c-section-pad-{k}: {cr.esc(bp[k])};" for k in ("top", "bottom") if bp.get(k))
+    sec_style = f' style="{pad_decls.strip()}"' if pad_decls else ""
+    return f"""<section class="cs-section cs-flow-sec"{device_attr}{sec_style}>
   <div class="cs-flow">
 {body}
   </div>
@@ -2272,21 +4448,77 @@ def compose_faq_accordion(doc, layout, ctx, rendered, style_ctx):
     (question as <summary>, answer revealed on toggle — real interactivity, zero JS).
     Promoted on a genuine miss (layout-library.yaml faq-accordion-list): no faq.yaml
     exists in the standard library at all. Rows separated by the brand's existing
-    hairline device, never a card/box (no-cards-on-cream, no-shadows)."""
+    hairline device, never a card/box (no-cards-on-cream, no-shadows).
+
+    `_faq` stamp (event-scaffolds 2026-07, composition knob — AS-40 hardening): a
+    section stamped {exclusive: true} groups its rows into ONE platform-enforced
+    exclusivity set (<details name=…> — one open member at a time, zero JS); an
+    `open` index composes that member expanded (evidence-driven open state — the
+    degrade stays all-closed). STATE GRAMMAR knobs name the brand's OWN token roles
+    (the accordion inset-emphasis vocabulary): `activeSurface` inverts the open row
+    to a sanctioned surface role, `hoverWash` tints idle hovered rows with a
+    sanctioned color role — both resolved through the token layer here (never
+    literals) and shipped only with the stamp (SCAFFOLD_FAQ_STATE_CSS gate).
+    Un-stamped layouts render byte-identically, and the heading register rides the
+    brand's measured section tier when the ladder declares one (the same
+    section_heading_level law every other scaffold follows)."""
     copy = copy_for(layout, doc)
+    stamp = layout.get("_faq") if isinstance(layout.get("_faq"), dict) else None
     eyebrow_html = cr.render_eyebrow(doc, ctx, {"text": copy["eyebrow"]})
     heading_html = cr.render_heading(doc, ctx, {
-        "text": copy["heading"], "level": "display", "accent": False})
+        "text": copy["heading"],
+        "level": section_heading_level(doc) if stamp is not None else "display",
+        "accent": False})
+    uid = re.sub(r"[^a-z0-9]+", "-", str(layout.get("id") or "faq").lower()).strip("-")
+    # single-open is the family DEFAULT (interaction remediation 2026-07, IC-ACC-01):
+    # every FAQ group shares a <details name> so the platform enforces one open
+    # member — un-stamped layouts included (the _faq_stamp default is exclusive:
+    # true; the scaffold's own default now matches it). An AUTHORED multi-open
+    # override (knobs.faq.exclusive: false) drops the name and declares itself via
+    # data-acc-multi="authored" so the interaction audit can tell a deliberate
+    # multi-open family from an accidentally ungrouped one.
+    multi_authored = stamp is not None and stamp.get("exclusive") is False
+    name_attr = "" if multi_authored else f' name="faq-{cr.esc(uid)}"'
+    multi_attr = ' data-acc-multi="authored"' if multi_authored else ""
+    open_i = (stamp or {}).get("open")
+    # state-grammar roles → section-scoped vars (token-layer references, AS-02):
+    # an unknown/undeclared role resolves to nothing and the row keeps its degrade.
+    state_decls = []
+    surfaces = ((doc or {}).get("tokens") or {}).get("surfaces") or {}
+    active_role = str((stamp or {}).get("activeSurface") or "").strip()
+    spec = surfaces.get(active_role)
+    if isinstance(spec, dict) and spec.get("bg"):
+        slug = re.sub(r"[^a-z0-9]+", "-", active_role.lower()).strip("-")
+        state_decls.append(f"--faq-active-bg: var(--surface-{slug})")
+        if spec.get("textPrimary"):
+            ink = re.sub(r"[^a-z0-9]+", "-", str(spec["textPrimary"]).lower()).strip("-")
+            state_decls.append(f"--faq-active-ink: var(--color-{ink})")
+    wash_role = str((stamp or {}).get("hoverWash") or "").strip()
+    if wash_role and tokens_css.color_value(doc, wash_role):
+        wslug = re.sub(r"[^a-z0-9]+", "-", wash_role.lower()).strip("-")
+        state_decls.append(f"--faq-hover-bg: var(--color-{wslug})")
+    stated_cls = " cs-faq--stated" if state_decls else ""
+    state_style = f' style="{"; ".join(state_decls)}"' if state_decls else ""
     items = "".join(
-        f'<details class="c-faq-item"><summary class="c-faq-q">{cr.esc(q)}'
+        f'<details class="c-faq-item"{name_attr}'
+        + (" open" if isinstance(open_i, int) and i == open_i else "")
+        + f'><summary class="c-faq-q">{cr.esc(q)}'
         f'<span class="c-faq-icon" aria-hidden="true">+</span></summary>'
         f'<p class="c-faq-a">{cr.esc(a)}</p></details>'
-        for q, a in copy.get("items", []))
+        for i, (q, a) in enumerate(copy.get("items", [])))
+    # OPTIONAL anatomy (the agenda shape, event-scaffolds 2026-07): an authored
+    # intro paragraph above the rows and/or one typographic closing action —
+    # absent keys elide, so every bare FAQ renders byte-identically.
+    intro_html = ('\n    ' + cr.render_paragraph(doc, ctx, {"text": copy["intro"]})
+                  if str(copy["intro"]).strip() else "")
+    cta_html = ('\n    ' + cr.render_arrow_link(doc, ctx, {"label": copy["cta"],
+                                                           "accent": False})
+                if str(copy["cta"]).strip() else "")
     return f"""<section class="cs-section cs-faq-sec">
-  <div class="cs-faq">
+  <div class="cs-faq{stated_cls}"{state_style}>
     <div class="cs-eyebrow-wrap">{eyebrow_html}</div>
-    {heading_html}
-    <div class="c-faq-list">{items}</div>
+    {heading_html}{intro_html}
+    <div class="c-faq-list"{multi_attr}>{items}</div>{cta_html}
   </div>
 </section>"""
 
@@ -2303,7 +4535,13 @@ def compose_stack(doc, layout, ctx, rendered, style_ctx):
     if pid in ("pricing-ruled-list-panel", "schedule-ruled-list-panel") \
             or lid in ("exhibition-tickets", "exhibition-schedule"):
         return compose_ruled_list_panel(doc, layout, ctx, rendered, style_ctx)
-    if pid == "faq-accordion-list" or lid == "exhibition-faq":
+    # FAQ routes by pattern id, legacy layout id, the composition's declared
+    # useCase, OR the adapter's `_faq` stamp (event-scaffolds 2026-07: a composed
+    # disclosure section needs no patternRef — the declaration IS the route, same
+    # discipline as the hero below; the stamp covers semantic useCases like agenda).
+    if pid == "faq-accordion-list" or lid == "exhibition-faq" \
+            or layout.get("_faq") is not None \
+            or ((layout.get("_composition") or {}).get("useCase") or "").lower() == "faq":
         return compose_faq_accordion(doc, layout, ctx, rendered, style_ctx)
     # a composition-declared HERO routes to the hero composer BEFORE the bound-contract
     # checks (AS-27 hero extension): hero mappings now carry the section's REAL `button`
@@ -2991,7 +5229,10 @@ ARCHETYPE_COMPOSERS = {
     "collage": compose_collage,
     "split": compose_split,
     "stack-fullbleed": compose_gallery_showcase,
-    "cards": compose_features_cards,
+    # cards family dispatcher (event-scaffolds 2026-07): routes `_bento`/`_tiers`
+    # stamped sections to their scaffolds, everything else to the module grid.
+    "cards": compose_cards,
+    "media-split": compose_media_split,
     "interlock": compose_editorial_interlock,
     # editorial-harvest-2026-07: the layered positioning context + the dual-surface seam.
     "overlay": compose_overlay,
@@ -3014,7 +5255,11 @@ def scaffold_key(layout) -> str:
         if pid in ("pricing-ruled-list-panel", "schedule-ruled-list-panel") \
                 or lid in ("exhibition-tickets", "exhibition-schedule"):
             return "ruled-list"
-        if pid == "faq-accordion-list" or lid == "exhibition-faq":
+        # composition-declared disclosure routes without a patternRef (event-
+        # scaffolds 2026-07) — dispatch-parity with compose_stack's stamp route.
+        if pid == "faq-accordion-list" or lid == "exhibition-faq" \
+                or (layout or {}).get("_faq") is not None \
+                or (((layout or {}).get("_composition") or {}).get("useCase") or "").lower() == "faq":
             return "faq"
         if (((layout or {}).get("_composition") or {}).get("useCase") or "").lower() == "hero":
             return "hero"
@@ -3048,24 +5293,73 @@ def scaffold_key(layout) -> str:
 # its own `max-width: 86rem; margin: 0 auto`) — and (b) the shared 12-col registration
 # grid every two-column scaffold places onto (repeat(var(--grid-cols)) tracks +
 # var(--grid-gutter, 6rem)) instead of private fr-ratio tracks.
+# ── CONTAINMENT LAW (fix3 2026-07): ONE mechanism owns section containment ───────
+# CONTAINMENT means "this box IS (or spans) the section's content column": it fills
+# its parent (width: 100%), caps at the ONE shared measure and centers. Every major
+# section container inherits containment from THIS list — devices must never
+# re-declare `max-width: var(--content-measure)` / `margin-inline: auto` ad hoc.
+# That scatter is exactly how two real bugs shipped: a box that re-implements
+# containment INSIDE an already-contained column (the action row in the side-rail
+# copy column) resolves its auto margins before flex stretch, so it HUGS its
+# content and floats centered instead of spanning the column; and a device that
+# simply forgot the pair (the split-panel carousel) painted full-bleed while every
+# neighbor capped. `width: 100%` is load-bearing: it removes the hug-and-center
+# failure mode by construction (auto margins never see free space in a narrower
+# parent), so nesting a contained device inside a contained column is always safe.
+#
+# CONTAINMENT is not MEASURE. Deliberately narrower caps — the conversion stack's
+# --cs-stack-measure, prose `ch` clamps, the hero collage's 80rem art frame — are
+# device-owned text/media measures and stay where they are. The few places that
+# must touch the shared var outside this law (derived insets, anchor releases,
+# bleed escapes) carry a `contain-exempt:` tag; test_fix3 lints both directions.
+CONTAINED_DEVICES = (
+    ".cs-collage-grid", ".cs-statement-grid", ".cs-quote-grid", ".cs-visit-panels",
+    ".cs-modules-intro", ".cs-modules", ".cs-interlock", ".cs-split-intro",
+    ".cs-media-split", ".cs-hero-panel", ".cs-split", ".cs-conversion-panel",
+    ".cs-bento", ".cs-tiers", ".cs-modules-actions", ".cs-ov-frame",
+    ".cs-band-body", ".cs-flow", ".cs-tabs", ".cs-siderail", ".cs-headrail",
+    ".cs-panelcar", ".cs-footer-sec > .c-footer")
+
+CONTAINMENT_LAW_CSS = (
+    "/* ── CONTAINMENT LAW (fix3 2026-07): the ONE shared containment mechanism.\n"
+    "   Every major section container spans its parent, caps at the shared content\n"
+    "   measure and centers — identical section edges page-wide. Devices inherit\n"
+    "   containment from this rule and never re-declare it ad hoc; releases\n"
+    "   (edge-cut rails, overlay bleeds) and narrower MEASURE caps are the tagged\n"
+    "   exceptions, not private copies of this pair. */\n"
+    + ",\n".join(CONTAINED_DEVICES)
+    + " {\n  width: 100%; max-width: var(--content-measure, 86rem);"
+      " margin-inline: auto; }")
+
 SCAFFOLD_BASE_CSS = """.cs-section { background: var(--c-paper); color: var(--c-ink);
   padding: var(--c-section-pad-top) var(--c-section-pad-x)
            var(--c-section-pad-bottom); }
 .cs-nav { display: flex; align-items: center; justify-content: space-between; gap: 2rem;
   margin-bottom: clamp(2rem, 6cqw, 5rem); }
 .cs-navlinks { display: flex; gap: 0.55rem; flex: 1; justify-content: center; }
+/* TWO-TIER bar (fix1 2026-07 item-12a, navbar.utilityTier): thin utility strip over
+   the primary bar — rules inert unless render_navbar stamped the opt-in markup;
+   the tier vars are that brand's measured heights/register set inline. */
+.cs-nav--twotier { flex-direction: column; align-items: stretch; gap: 0; }
+.cs-nav-tier { display: flex; align-items: center; gap: 2rem; }
+.cs-nav-tier--utility { justify-content: space-between;
+  min-height: var(--cs-utier-h, 2.5rem); background: var(--cs-utier-bg, transparent);
+  font-size: var(--cs-utier-size, 0.75rem); }
+.cs-nav-tier--utility .cs-nav-util { display: inline-flex; align-items: center;
+  gap: 1.5rem; }
+.cs-nav-tier--primary { justify-content: space-between;
+  min-height: var(--cs-ptier-h, auto); }
+/* bar ACTION GROUP (fix1 item-12b): N measured-register actions at the bar end. */
+.cs-nav-actions { display: inline-flex; align-items: center; gap: 0.75rem;
+  flex: 0 0 auto; }
 /* nav links read the MEASURED nav register (--c-nav-size, single-sourced from
    brand.yaml navbar.measured.link), not the generic control-text size. */
 .cs-navlinks .c-arrow-link { font-size: var(--c-nav-size, var(--c-control-size)); }
 .cs-navlinks .cs-sep { opacity: 0.55; }
-/* shared content container: ONE measure, identical section edges page-wide. */
-.cs-collage-grid, .cs-statement-grid, .cs-quote-grid, .cs-visit-panels,
-.cs-modules-intro, .cs-modules, .cs-interlock {
-  max-width: var(--content-measure, 86rem); margin-inline: auto; }
 /* shared 12-col registration grid (column-gap IS the shared gutter). */
 .cs-collage-grid, .cs-statement-grid, .cs-quote-grid, .cs-modules {
   display: grid; grid-template-columns: repeat(var(--grid-cols, 12), minmax(0, 1fr));
-  column-gap: var(--grid-gutter, 6rem); }"""
+  column-gap: var(--grid-gutter, 6rem); }""" + "\n" + CONTAINMENT_LAW_CSS
 
 # stack hero (opening-bookend): centered display title over the media collage.
 SCAFFOLD_HERO_CSS = """.cs-section { min-height: 100cqh; }
@@ -3089,12 +5383,25 @@ SCAFFOLD_HERO_CSS = """.cs-section { min-height: 100cqh; }
    the full, uncapped section width on wide viewports — the way the old bare `22cqw`
    (measured against `.cs-slot`, not the width-capped collage) kept growing forever. */
 .cs-spacer { height: clamp(4rem, 12cqw, 9.5rem); }
+/* foot gap: --cs-hero-foot-gap is a FALLBACK-ONLY override slot (fix1 2026-07
+   item-4, measured bandRhythm.bodyToCta) — rhythm-less brands resolve straight
+   back to the block gap, byte-identical. */
 .cs-foot { display: flex; flex-direction: column; align-items: center;
-  gap: var(--c-block-gap); text-align: center; margin-top: var(--c-block-gap); }
+  gap: var(--cs-hero-foot-gap, var(--c-block-gap)); text-align: center;
+  margin-top: var(--c-block-gap); }
+/* MEASURED hero stack measure (fix3, --cs-stack-measure — a FALLBACK-ONLY slot set
+   inline from the pattern's stackMeasure fact): the hero's TEXT boxes cap at the
+   source's own measured column so the display heading wraps like the source at any
+   viewport (the wide-screen one-line-heading leak). Measure, not containment: the
+   section column stays law-owned; fact-less brands resolve to `none`,
+   byte-identical. Actions inside .cs-foot hug regardless (no cap needed). */
+.cs-title, .cs-foot { max-width: var(--cs-stack-measure, none); }
 /* subhead rides the brand body register one step up (1rem was body 0.875rem x 1.1429
    against the pre-token render — ratio is structure, magnitude is the brand's). */
 .cs-sub { font-family: var(--c-font-body); font-size: calc(var(--c-body-size) * 1.1429);
-  line-height: 1.55em; color: var(--c-ink-muted); max-width: 42rem; }
+  line-height: 1.55em; color: var(--c-ink-muted);
+  /* description measure rides the brand's authored ladder (fid11) when present */
+  max-width: var(--space-body-measure, 42rem); }
 /* ── PLACED media layers (grid/overlap contract §4.6.5) ─────────────────────────
    Only sections whose composition declared placement get these classes; the legacy
    hero (.cs-collage without --layered) is byte-unchanged. z-ladder inside the layered
@@ -3103,6 +5410,10 @@ SCAFFOLD_HERO_CSS = """.cs-section { min-height: 100cqh; }
 .cs-hero-layered { position: relative; overflow: hidden; }
 .cs-hero-layered .cs-slot { position: relative; z-index: 2; }
 .cs-hero-layered .cs-title { z-index: 4; }
+/* FLAT layered hero (fix1 2026-07): no collage between title and foot — the collage
+   overlap margin has nothing to overlap, so the title-to-body seam rides the block
+   rhythm instead of the negative pull. Collage heroes are untouched. */
+.cs-hero-layered--flat .cs-title { margin-bottom: 0; }
 .cs-collage--layered > .c-image, .cs-collage--layered > .c-image-ph {
   position: relative; z-index: 1; margin-inline: auto; }
 .cs-ov { position: absolute; }
@@ -3155,7 +5466,7 @@ SCAFFOLD_ART_PANEL_CSS = """/* ── INSET ART-PANEL hero (AS-37) ────�
 .cs-hero-panel-sec { display: flex; flex-direction: column; }
 .cs-hero-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center; column-gap: var(--grid-gutter, 6rem); flex: 1;
-  width: 100%; max-width: var(--content-measure, 86rem); margin-inline: auto;
+  /* containment: CONTAINMENT_LAW_CSS (fix3) */
   border-radius: var(--radius-panel, var(--radius));
   background-color: var(--c-panel-bg, var(--c-paper));
   background-size: cover; background-position: center top; overflow: hidden;
@@ -3164,6 +5475,14 @@ SCAFFOLD_ART_PANEL_CSS = """/* ── INSET ART-PANEL hero (AS-37) ────�
 .cs-hero-panel-content { display: flex; flex-direction: column; align-items: flex-start;
   justify-content: center; gap: var(--c-block-gap); text-align: left; }
 .cs-hero-panel-content .cs-title { margin-bottom: 0; text-align: inherit; }
+/* poster stance (event-scaffolds 2026-07): a `centered` anchor centers the panel's
+   content column; the display heading gets a contained poster measure so a long
+   centered title wraps as a block instead of one viewport-wide line. */
+.cs-hero-panel--center .cs-hero-panel-content { align-items: center; text-align: center; }
+.cs-hero-panel--center .cs-hero-panel-content .c-heading--display { max-width: 18ch; }
+.cs-hero-panel--center .cs-hero-panel-content .cs-sub { margin-inline: auto; }
+.cs-hero-panel--center .cs-hero-actions { justify-content: center; }
+.cs-hero-panel-meta { margin: 0; }
 .cs-hero-panel-media { align-self: stretch; display: flex; align-items: center; }
 .cs-hero-panel-media .c-image, .cs-hero-panel-media .c-image-ph { width: 100%; }
 @media (max-width: 767px) {
@@ -3229,15 +5548,30 @@ SCAFFOLD_COLLAGE_CSS = """.cs-collage-sec { position: relative; overflow: hidden
     right: auto; left: -2cqw; } }"""
 
 # split (info-band): two flush halves — photo | cream panel — gap 0, hard cut.
-SCAFFOLD_SPLIT_CSS = """.cs-split-intro { max-width: 100%; margin-bottom: 3.5rem; }
+SCAFFOLD_SPLIT_CSS = """/* container width rides the shared content container
+   (SCAFFOLD_BASE_CSS; spacing remediation B3 2026-07 — the old `max-width: 100%`
+   here escaped the container law). */
+.cs-split-intro { margin-bottom: 3.5rem; }
+/* RELATIONAL-LADDER RHYTHM (fid2 2026-07): the heading→body seam rides the brand's
+   measured ladder token everywhere — block-flow intros rendered the pair with NO
+   gap while flex bodies used the generic block gap (different sections, different
+   rhythm). Ladder-less brands fall back to the block gap (historical look). */
+.cs-split-intro .c-header + .c-paragraph {
+  margin-block-start: var(--space-heading-to-body, var(--c-block-gap, 1.5rem)); }
 .cs-split-intro .cs-eyebrow-wrap { margin-bottom: var(--c-eyebrow-gap); }
 /* the band heading is the didone DISPLAY tier; give it room to breathe (the style's
    global 16ch display cap is too tight for this dark-band heading). */
 .cs-split-intro .c-heading--display { max-width: 22ch; }
 /* the split places onto 12 shared columns with a ZERO gutter (the flush hard cut is the
-   band's character): each half spans 6, so its seam registers to the grid's center line. */
+   band's character): each half spans 6, so its seam registers to the grid's center line.
+   Containment (max-width + centering): CONTAINMENT_LAW_CSS (fix3; was fid10 here). */
 .cs-split { display: grid; grid-template-columns: repeat(var(--grid-cols, 12), minmax(0, 1fr));
   gap: 0; align-items: stretch; }
+/* the PANEL variant opens the brand's split gutter between its halves (spacing
+   remediation B4 2026-07): a brand that authored column-to-column gets the
+   measured seam between media and ledger panel; fact-less brands keep the flush
+   hard cut (the original band character — 0 is the degrade, not a new default). */
+.cs-split--panel { column-gap: var(--space-column-to-column, 0); }
 .cs-split-media { grid-column: 1 / span 6; display: flex; }
 .cs-split > .cs-panel { grid-column: 7 / -1; }
 /* panel-less split (media | text, sysfix 2026-07): when the brand declared no panel
@@ -3245,11 +5579,28 @@ SCAFFOLD_SPLIT_CSS = """.cs-split-intro { max-width: 100%; margin-bottom: 3.5rem
    vertically-centered text stack, breathing room instead of the flush panel cut. */
 .cs-split > .cs-split-body { grid-column: 8 / -1; display: flex;
   flex-direction: column; justify-content: center; align-items: flex-start;
-  gap: var(--c-block-gap); }
-.cs-split-body .c-header { display: flex; flex-direction: column;
-  gap: var(--c-eyebrow-gap); }
+  /* ladder rhythm (fid2 2026-07): heading→body seam = the measured ladder token;
+     the action row below restores its own (larger) body→cta rung. */
+  gap: var(--space-heading-to-body, var(--c-block-gap)); }
+.cs-split-body > .cs-hero-actions, .cs-split-body > .c-arrow-link {
+  margin-block-start: calc(var(--space-body-to-cta, var(--c-block-gap, 1.5rem))
+    - var(--space-heading-to-body, var(--c-block-gap, 1.5rem))); }
+/* ONE mechanic owns the eyebrow→heading seam (spacing remediation B1 2026-07):
+   the base .c-header already carries the flex column + eyebrow gap, and the
+   relational ladder converts that to owl margins — re-declaring the gap here
+   at higher specificity re-added it ON TOP of the ladder margin (doubled seam).
+   No local rule: base + ladder own it. */
 .cs-split-body .c-paragraph { margin: 0; }
 .cs-split-media .c-image { width: 100%; height: 100%; object-fit: cover; }
+/* MEASURED MEDIA REGION (fid10 2026-07, deviceGeometry.media stamps — var/class-gated,
+   structural presentation is the no-stamp degrade): a measured frame aspect fixes the
+   region's shape; `fit: contain` letterboxes the asset inside it (the source's own
+   object-fit) instead of cover-cropping; `align: top` pins the frame to the column top. */
+.cs-split-media--top { align-items: flex-start; }
+.cs-split-media--framed .c-image-mask { width: 100%;
+  aspect-ratio: var(--cs-split-media-aspect, auto); }
+.cs-split-media--framed .c-image { height: 100%; }
+.cs-split-media--contain .c-image { object-fit: contain; }
 /* CS-1 (token-layer-2026-07): the brand-color literals that used to sit in these var()
    fallbacks are GONE — the generated layer-1 block always defines the panel family
    (fail-loud at generation), so fallbacks were dead-or-DNA. */
@@ -3278,9 +5629,38 @@ SCAFFOLD_SPLIT_CSS = """.cs-split-intro { max-width: 100%; margin-bottom: 3.5rem
 # is the single source both the paragraph and the form read, so they can never drift apart
 # the way the form did before (it was stretched to the full 46rem column instead of this
 # measure, reading visibly wider than the body above it against the source reference).
+# INSET CONVERSION PANEL (fid2 2026-07; gated on the layout's _insetPanel stamp —
+# AS-37): the rounded band the conversion stack sits on. Radius = the brand's own
+# measured panel tier; the backdrop art (when the brand's inventory carries one)
+# cover-paints the panel behind the stack.
+SCAFFOLD_CONVERSION_PANEL_CSS = """.cs-conversion-panel { position: relative; overflow: hidden;
+  border-radius: var(--radius-panel, var(--radius-card, 0));
+  padding: clamp(3rem, 8cqw, 6.5rem) var(--c-section-pad-x);
+  display: flex; justify-content: center;
+  /* containment (spans + caps + centers): CONTAINMENT_LAW_CSS (fix3; was fid10 here) */ }
+.cs-conversion-panel-art { position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; border-radius: 0; }
+.cs-conversion-panel .cs-conversion { position: relative; }"""
+
+# FULL-BLEED ART BAND (fid5 2026-07; gated on the layout's _artSurface stamp — AS-37):
+# the section's own box paints edge-to-edge with the brand's band art (no radius, no
+# inset — the closing-band grammar), the stack rides above it. Art missing from the
+# brand's inventory ⇒ only the positioning context ships (flat surface fill).
+SCAFFOLD_CONVERSION_BAND_CSS = """.cs-conversion-sec--band { position: relative; overflow: hidden; }
+.cs-conversion-band-art { position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; z-index: 0; }
+.cs-conversion-sec--band > .cs-conversion { position: relative; z-index: 1; }"""
+
 SCAFFOLD_CONVERSION_CSS = """.cs-conversion-sec { display: flex; justify-content: center; }
 .cs-conversion { display: flex; flex-direction: column; align-items: center; text-align: center;
-  gap: var(--c-block-gap); max-width: 46rem; width: 100%; --c-cta-measure: 40ch; }
+  /* ladder rhythm (fid2 2026-07): same seam discipline as the split body. */
+  gap: var(--space-heading-to-body, var(--c-block-gap));
+  /* column cap = the pattern's measured stackMeasure when stamped (fid7 2026-07);
+     46rem stays the structural default for brands without the fact. */
+  max-width: var(--cs-stack-measure, 46rem); width: 100%; --c-cta-measure: 40ch; }
+.cs-conversion > .cs-conversion-actions, .cs-conversion > .c-form {
+  margin-block-start: calc(var(--space-body-to-cta, var(--c-block-gap, 1.5rem))
+    - var(--space-heading-to-body, var(--c-block-gap, 1.5rem))); }
 .cs-conversion .c-paragraph { max-width: var(--c-cta-measure); }
 .cs-conversion .c-form { margin: 0.75rem auto 0; max-width: var(--c-cta-measure); width: 100%; }
 .cs-conversion .c-field { width: 100%; }
@@ -3296,6 +5676,182 @@ SCAFFOLD_CONVERSION_CSS = """.cs-conversion-sec { display: flex; justify-content
    style's asymmetric left-anchored default unchanged. */
 .cs-conversion-sec .c-heading--display { text-align: center; max-width: 34ch; }
 @media (max-width: 767px) { .cs-conversion { max-width: 100%; } }"""
+
+# ── BENTO GRID scaffold (event-scaffolds 2026-07; ships ONLY with a `_bento` stamp —
+# AS-37 conditional-shipping discipline). MECHANICS generic: a 12-track dense mosaic
+# whose cell weights ride per-cell --bn-span/--bn-rows (validated composition knobs,
+# emitted inline by the composer); every VISIBLE value rides brand tokens — panel
+# surface/ink/hairline chain, card radius, measured panel padding, baseline rhythm.
+# CONTAINER LAW (AS-45): the mosaic spans the shared content measure and centers.
+# Cell gap is a pattern-fact knob (--bn-gap, stamped per section); 1rem structural
+# floor. Collapse tier = the stamp's collapseAt container query (layout_placement_css)
+# + the structural mobile floor below.
+SCAFFOLD_BENTO_CSS = """.cs-bento-sec { display: flex; flex-direction: column;
+  gap: calc(6 * var(--baseline)); }
+.cs-bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-flow: dense; gap: var(--bn-gap, 1rem);
+  /* containment: CONTAINMENT_LAW_CSS (fix3; was AS-45 note here) */ }
+.cs-bento-cell { grid-column: var(--bn-col, span var(--bn-span, 4));
+  grid-row: span var(--bn-rows, 1);
+  display: flex; flex-direction: column; gap: calc(1.5 * var(--baseline));
+  background: var(--bn-bg, var(--c-panel)); color: var(--bn-ink, var(--c-panel-ink));
+  --c-ink: var(--bn-ink, var(--c-panel-ink)); --c-ink-muted: var(--bn-ink, var(--c-panel-ink));
+  --c-hairline: var(--c-panel-hairline);
+  border-radius: var(--radius-card, 0);
+  --c-plate-pad: var(--space-panel-padding, calc(4 * var(--baseline)));
+  padding: var(--c-plate-pad); }
+.cs-bento-cell .c-paragraph { max-width: none; }
+.cs-bento-cell .c-heading { text-align: inherit; }
+/* LEAD cell (stamped lead: true): its statement rides the measured h2 register —
+   a register CHOICE from the brand's own ladder (the oversized quote/statement
+   tier), never an invented magnitude. */
+.cs-bento-cell--lead .c-paragraph { font-family: var(--c-font-heading);
+  font-size: var(--c-h2-size); line-height: 1.3em; font-weight: var(--c-heading-weight, 500);
+  color: var(--c-ink); }
+/* person attribution inside a cell (same c-person anatomy as the card plates,
+   scoped so panel-less brands get the row without the plate scaffold). */
+.cs-bento-cell .c-person { display: flex; align-items: center; gap: 0.85rem;
+  margin-top: auto; border-top: 1px solid var(--c-hairline);
+  padding-top: calc(2 * var(--baseline)); }
+.cs-bento-cell .c-person-meta { display: flex; flex-direction: column; gap: 0.15em; }
+.cs-bento-cell .c-arrow-link { margin-top: auto; }
+/* media well: bleeds to the cell's top + side edges (the card-plate well anatomy),
+   top corners on the card radius; the image covers its measured frame. */
+.cs-bento-media { margin: calc(-1 * var(--c-plate-pad)) calc(-1 * var(--c-plate-pad)) 0;
+  overflow: hidden;
+  border-radius: var(--radius-card, 0) var(--radius-card, 0) 0 0; }
+.cs-bento-media .c-image { width: 100%; height: 100%; object-fit: cover;
+  border-radius: 0; }
+/* structural mobile floor: single column, natural row heights. */
+@media (max-width: 767px) {
+  .cs-bento { grid-template-columns: 1fr; }
+  .cs-bento-cell { grid-column: auto; grid-row: auto; } }"""
+
+# ── PRICING TIERS scaffold (event-scaffolds 2026-07; ships ONLY with a `_tiers`
+# stamp). N peer panels on one equal-track row (--tier-cols, default 3; the stamp's
+# collapseAt tier folds to one column via layout_placement_css + the structural
+# floor). Emphasis is a sanctioned SURFACE/BORDER relationship: the emphasized
+# tier's head band paints a declared surface role (inline --bn-bg/--bn-ink vars,
+# same token-layer resolution as the bento cells) and/or the tier ring rides the
+# brand's strong input-border token — never an invented badge. Price rides the
+# heading stack at the measured h2 register.
+SCAFFOLD_TIERS_CSS = """.cs-tiers-sec { display: flex; flex-direction: column;
+  gap: calc(6 * var(--baseline)); }
+.cs-tiers { display: grid; grid-template-columns: repeat(var(--tier-cols, 3), minmax(0, 1fr));
+  gap: var(--bn-gap, 1rem); align-items: stretch;
+  /* containment: CONTAINMENT_LAW_CSS (fix3) */ }
+.cs-tier { display: flex; flex-direction: column; gap: calc(1.5 * var(--baseline));
+  background: var(--c-panel); color: var(--c-panel-ink);
+  --c-ink: var(--c-panel-ink); --c-ink-muted: var(--c-panel-ink);
+  --c-hairline: var(--c-panel-hairline);
+  border-radius: var(--radius-card, 0);
+  --c-plate-pad: var(--space-panel-padding, calc(4 * var(--baseline)));
+  padding: var(--c-plate-pad); }
+.cs-tier--emph { border: 1px solid var(--c-input-border, var(--color-border-input, var(--c-panel-hairline))); }
+.cs-tier-head { display: flex; flex-direction: column; gap: calc(1 * var(--baseline)); }
+/* emphasized head band on a declared surface role: bleeds to the panel edges
+   (the media-well negative-margin anatomy) and re-scopes its ink pair. */
+.cs-tier-head--surface { background: var(--bn-bg, var(--c-panel));
+  color: var(--bn-ink, var(--c-panel-ink));
+  --c-ink: var(--bn-ink, var(--c-panel-ink)); --c-ink-muted: var(--bn-ink, var(--c-panel-ink));
+  margin: calc(-1 * var(--c-plate-pad)) calc(-1 * var(--c-plate-pad)) 0;
+  padding: var(--c-plate-pad);
+  border-radius: var(--radius-card, 0) var(--radius-card, 0) 0 0; }
+.cs-tier-name { margin: 0; }
+.cs-tier-price { font-family: var(--c-font-heading); font-weight: var(--c-heading-weight, 500);
+  font-size: var(--c-h2-size); line-height: 1.1em; color: var(--c-ink);
+  display: flex; align-items: baseline; gap: 0.4em; flex-wrap: wrap; }
+.cs-tier-unit { font-family: var(--c-font-body); font-weight: var(--c-body-weight, 400);
+  font-size: var(--c-control-size); color: var(--c-ink-muted); }
+.cs-tier-tagline { font-family: var(--c-font-body); font-size: var(--c-body-size);
+  line-height: 1.5em; color: var(--c-ink); margin: 0; }
+.cs-tier-list { list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; }
+.cs-tier-list li { padding-block: calc(1.5 * var(--baseline));
+  border-top: 1px solid var(--c-hairline);
+  font-family: var(--c-font-body); font-size: var(--c-body-size);
+  line-height: 1.45em; color: var(--c-ink); }
+/* content-hugging action pinned to the panel foot (non-stretch alignment — a flex
+   column stretches children by default, which fabricates full-width buttons). */
+.cs-tier > .c-button, .cs-tier > .c-arrow-link { margin-top: auto; align-self: flex-start; }
+.cs-tiers-note { text-align: center; margin: 0; }
+@media (max-width: 767px) { .cs-tiers { grid-template-columns: 1fr; } }"""
+
+# ── SIGNUP FORM scaffold (event-scaffolds 2026-07; ships ONLY with a `_formFields`
+# stamp). Extends the conversion stack: intro (header/body/meta — the AS-14 exchange
+# copy) above ONE form panel of label-above boxed fields on a responsive half/full
+# grid. Field anatomy rides the SAME token chain as the boxed form variant
+# (--c-input-radius/-border/-bg; the strong border/input color; control height from
+# the measured button height); the focus ring's COLOR is the brand's declared
+# focus-ring role (geometry is the measured focus-fact shape: 2px ring, 2px offset —
+# ring params, not a brand magnitude; currentColor degrade). Choice controls ride
+# accent-color from the measured button bg (no restyled fake radios).
+SCAFFOLD_SIGNUP_CSS = """.cs-signup { --c-cta-measure: 100%; }
+.cs-signup-meta { margin: 0; }
+.cs-signup-panel { width: 100%; text-align: left;
+  display: flex; flex-direction: column;
+  /* form-stack fact (B8 2026-07): the brand's measured form-module stack rhythm;
+     the structural 2-baseline gap is the fact-less degrade. */
+  gap: var(--space-form-stack, calc(2 * var(--baseline))); }
+/* brands declaring a Container surface plate the form on it (card_panel_role);
+   panel-less brands keep the open column (class absent — no invented panel). */
+.cs-signup-panel--plate { background: var(--c-panel); color: var(--c-panel-ink);
+  --c-ink: var(--c-panel-ink); --c-ink-muted: var(--c-panel-ink);
+  --c-hairline: var(--c-panel-hairline);
+  border-radius: var(--radius-panel, var(--radius-card, 0));
+  --c-plate-pad: var(--space-panel-padding, calc(4 * var(--baseline)));
+  padding: calc(1.5 * var(--c-plate-pad)) var(--c-plate-pad); }
+.cs-signup-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* field-to-field fact (B8 2026-07): the form's measured field-grid rhythm rides
+     both axes; the structural 2-baseline gap is the degrade. */
+  gap: var(--space-field-to-field, calc(2 * var(--baseline)))
+       var(--space-field-to-field, calc(2 * var(--baseline))); }
+/* field-label-gap fact (B8 2026-07): the measured label→control seam; the
+   structural 0.5em register-relative seam is the degrade. */
+.cs-field { display: flex; flex-direction: column;
+  gap: var(--space-field-label-gap, 0.5em); min-width: 0; }
+.cs-field--full { grid-column: 1 / -1; }
+.cs-field-label { font-family: var(--c-font-body); font-size: var(--c-control-size);
+  font-weight: 500; color: var(--c-ink); text-align: left; }
+.cs-field-help { font-family: var(--c-font-body);
+  font-size: calc(var(--c-control-size) * 0.85); color: var(--c-ink-muted);
+  line-height: 1.4em; }
+.cs-input { width: 100%; min-height: var(--c-button-height, 3rem);
+  padding: 0 0.9em; /* provenance: structural — em-relative field inset (shape, not
+     magnitude), same discipline as .c-field--boxed */
+  font-family: var(--c-font-body); font-size: var(--c-control-size); color: var(--c-ink);
+  border: 1px solid var(--c-input-border, var(--color-border-input, var(--c-hairline)));
+  border-radius: var(--c-input-radius, var(--radius-input, var(--radius)));
+  background: var(--c-input-bg, transparent); }
+.cs-input:focus-visible { outline: 2px solid var(--color-action-focus-ring, currentColor);
+  outline-offset: 2px;
+  border-color: var(--c-input-border-active, var(--color-border-input, var(--c-ink))); }
+select.cs-input { appearance: auto; }
+/* real multiline control (W12): same anatomy chain as .cs-input; the vertical inset
+   mirrors the single-line optical centering (structural shape, not a magnitude) and
+   only vertical resize is offered so the authored grid column holds. */
+.cs-input--multiline { min-height: 0; height: auto; padding: 0.65em 0.9em;
+  line-height: 1.5em; resize: vertical; }
+.cs-choice-group { border: 0; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 0.75em; }
+.cs-choice-group legend { padding: 0; margin-bottom: 0.5em; }
+.cs-choice { display: flex; align-items: center; gap: 0.6em; text-align: left;
+  font-family: var(--c-font-body); font-size: var(--c-control-size); color: var(--c-ink); }
+.cs-choice input { width: 1.05em; height: 1.05em; margin: 0; flex: 0 0 auto;
+  accent-color: var(--c-button-bg, var(--c-accent)); }
+.cs-choice input:focus-visible { outline: 2px solid var(--color-action-focus-ring, currentColor);
+  outline-offset: 2px; }
+.cs-choice-label { line-height: 1.4em; }
+.cs-signup-consent { text-align: left; margin: 0; max-width: none;
+  font-family: var(--c-font-body); font-size: calc(var(--c-control-size) * 0.85);
+  line-height: 1.5em; color: var(--c-ink-muted); }
+.cs-signup-actions { display: flex; }
+.cs-signup-actions .c-button { cursor: pointer; }
+.cs-signup-submit-link { background: none; border: 0; padding: 0; cursor: pointer;
+  font: inherit; }
+.cs-signup-success { font-family: var(--c-font-body); font-size: var(--c-control-size);
+  color: var(--c-ink); margin: 0; }
+@media (max-width: 639px) { .cs-signup-grid { grid-template-columns: 1fr; } }"""
 
 # ruled-list panel (exhibition tickets/pricing + schedule/dates): a centered column,
 # same ALIGNMENT-COHERENCE discipline as .cs-conversion above — heading, intro, rows and
@@ -3321,7 +5877,11 @@ SCAFFOLD_FAQ_CSS = """.cs-faq-sec { display: flex; justify-content: center; }
   gap: var(--c-block-gap); max-width: 52rem; width: 100%; }
 .cs-faq-sec .c-heading--display { text-align: center; max-width: 34ch; }
 .c-faq-list { width: 100%; text-align: left; }
-.c-faq-item { position: relative; padding: 1.5rem 0; }
+/* list-item-inset + list-item-gap facts (B8 2026-07): the disclosure item's own
+   trigger inset and the stride BETWEEN item boxes ride the brand's measured
+   accordion rungs; the structural 1.5rem inset / flush stride are the degrades. */
+.c-faq-item { position: relative; padding: var(--space-list-item-inset, 1.5rem) 0; }
+.c-faq-item + .c-faq-item { margin-top: var(--space-list-item-gap, 0); }
 .c-faq-item::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px;
   background: var(--c-hairline); }
 .c-faq-item:last-child { padding-bottom: 0; }
@@ -3330,14 +5890,39 @@ SCAFFOLD_FAQ_CSS = """.cs-faq-sec { display: flex; justify-content: center; }
   justify-content: space-between; gap: 1.5rem; }
 .c-faq-q::-webkit-details-marker { display: none; }
 /* disclosure glyph rides the question register: a fixed ratio of the brand's own h3
-   question size (1.25rem was 1.625rem x 0.7692 against the pre-token render). */
+   question size (1.25rem was 1.625rem x 0.7692 against the pre-token render).
+   Marker/panel MOTION lives in the shared disclosure_motion_css block (AS-47). */
 .c-faq-icon { font-family: var(--c-font-body);
   font-size: calc(var(--c-h3-size) * 0.7692); color: var(--c-ink-muted);
-  flex: 0 0 auto; transition: transform var(--c-motion-fast) var(--c-ease); }
+  flex: 0 0 auto; }
 .c-faq-item[open] .c-faq-icon { transform: rotate(45deg); }
 .c-faq-a { font-family: var(--c-font-body); font-size: var(--c-body-size); line-height: 1.55em;
-  color: var(--c-ink-muted); max-width: 56ch; margin-top: 0.85rem; }
+  color: var(--c-ink-muted); max-width: var(--space-body-measure, 56ch); margin-top: 0.85rem; }
 @media (max-width: 767px) { .cs-faq { max-width: 100%; } .c-faq-q { font-size: var(--c-h3-size); } }"""
+
+# stamped disclosure STATE grammar (event-scaffolds 2026-07): the brand's own
+# one-open emphasis on the FAQ scaffold's rows — open-item inversion to a sanctioned
+# surface role and/or an idle hover wash from a sanctioned color role. Values ride
+# the section vars compose_faq_accordion resolves through the token layer; this
+# block ships ONLY when a page section stamps a state role (AS-37 discipline), so
+# every existing FAQ page keeps byte-identical CSS. The stated variant gives rows
+# an inline inset (the fill needs breathing room the bare hairline rows don't) on
+# the brand's card radius — the inset-emphasis card the accordion grammar records.
+SCAFFOLD_FAQ_STATE_CSS = """.cs-faq--stated .c-faq-item {
+  padding-inline: calc(2 * var(--baseline));
+  border-radius: var(--radius-card, 0); }
+.cs-faq--stated .c-faq-item:not([open]):hover { background: var(--faq-hover-bg, transparent); }
+.cs-faq--stated .c-faq-item[open] { background: var(--faq-active-bg, transparent);
+  /* the open item's pop-out margin rides the same measured list stride (B8) so the
+     stated variant cannot under-run the brand's item rhythm. */
+  padding-block: var(--space-list-item-inset, 1.5rem);
+  margin-block: var(--space-list-item-gap, 0.5rem);
+  --c-ink: var(--faq-active-ink, inherit); --c-ink-muted: var(--faq-active-ink, inherit); }
+.cs-faq--stated .c-faq-item[open]::before { display: none; }
+.cs-faq--stated .c-faq-item[open] + .c-faq-item::before { display: none; }
+.cs-faq--stated .c-faq-item:last-child {
+  padding-bottom: var(--space-list-item-inset, 1.5rem); }
+.cs-faq--stated .c-faq-a { color: var(--c-ink-muted); }"""
 
 # heritage timeline (collage variant): reuses the collage grid; ghost numerals span WIDER
 # (a year range reads wider than a single word) and sit lower so they don't collide with
@@ -3437,11 +6022,15 @@ SCAFFOLD_GALLERY_CSS = """.cs-gallery-sec { padding-left: 0; padding-right: 0; }
 # against the shared grid instead of a floating scalar. Hard-edged: no radius/shadow.
 SCAFFOLD_CARDS_CSS = """.cs-modules-sec { position: relative; }
 .cs-modules-intro { margin-bottom: clamp(2.5rem, 6cqw, 5rem); }
+/* ladder rhythm (fid2 2026-07): intro heading→subhead seam = the measured token. */
+.cs-modules-intro .c-header + .c-paragraph {
+  margin-block-start: var(--space-heading-to-body, var(--c-block-gap, 1.5rem)); }
 .cs-modules { row-gap: clamp(calc(4 * var(--baseline)), 5cqw,
   calc(7 * var(--baseline))); align-items: start; }
 .cs-modules > .cs-module:nth-child(odd) { grid-column: 1 / span var(--c-span-a, 7); }
 .cs-modules > .cs-module:nth-child(even) { grid-column: span var(--c-span-b, 5) / -1; }
-.cs-module { display: flex; flex-direction: column; gap: 0.9rem; }
+.cs-module { --cs-module-gap: 0.9rem; display: flex; flex-direction: column;
+  gap: var(--cs-module-gap); }
 /* the second (even) module is staggered downward so the columns never line up — the drop
    is a whole number of baselines (registration, not a float). Chrome-less: NO
    background/border/radius/shadow — depth from the stagger + whitespace only (so this is
@@ -3462,7 +6051,10 @@ SCAFFOLD_CARDS_CSS = """.cs-modules-sec { position: relative; }
   grid-column: var(--c-col-3, 1 / span var(--c-span-a, 7));
   margin-block-start: var(--c-drop-3, 0); }
 .cs-module-media { margin: 0; width: 100%; overflow: hidden; border-radius: 0; }
-.cs-module-media .c-image { width: 100%; height: 100%; }
+/* geometry belongs to the WELL/PLATE, never the bitmap (fid13: the source's card
+   images are square — the plate's own radius clips the visible corners; an image
+   carrying the global radius rounds all four corners INSIDE the well). */
+.cs-module-media .c-image { width: 100%; height: 100%; border-radius: 0; }
 /* DECLARED module grid (sysfix 2026-07: brand gridRules.columns → _grid → --grid-cols):
    one module per track, no stagger — overrides the nth-child registration spans above
    for sections whose composition declares an N-up card grid. */
@@ -3470,6 +6062,37 @@ SCAFFOLD_CARDS_CSS = """.cs-modules-sec { position: relative; }
 .cs-modules--cols > .cs-module:nth-child(even), .cs-modules--cols > .cs-module:nth-child(1),
 .cs-modules--cols > .cs-module:nth-child(2), .cs-modules--cols > .cs-module:nth-child(3) {
   grid-column: auto; margin-block-start: 0; }
+/* a declared-gutter N-up grid is UNIFORM: wrap rows ride the same measured gutter
+   (fid6 2026-07 — --grid-gutter-row is emitted by layout_placement_css only when the
+   section's evidence declares a grid gap; without it the editorial row rhythm holds).
+   RUNG SELECTION (spacing remediation B6 2026-07): the card grid's column seam is the
+   brand's own CARD-GRID rung (--space-grid-gap), not the page's split/registration
+   gutter — a declared section gutter (--grid-gutter-col) still wins, and brands
+   without a grid-gap fact keep riding the shared page gutter (the degrade). */
+.cs-modules--cols { column-gap: var(--grid-gutter-col,
+  var(--space-grid-gap, var(--grid-gutter, 6rem)));
+  row-gap: var(--grid-gutter-row, clamp(calc(4 * var(--baseline)), 5cqw,
+  calc(7 * var(--baseline)))); }
+/* CARD REGISTER LADDER rhythm (fid6 2026-07): a module carrying its own eyebrow +
+   heading anatomy rides the brand's measured relational spacing ladder for its
+   internal seams — eyebrow→heading, heading→body, body→cta — instead of the uniform
+   structural flex gap. Fallbacks keep the old 0.9rem rhythm for ladder-less brands. */
+.cs-module--anatomy { --cs-module-gap: 0rem; gap: 0; }
+.cs-module--anatomy > * + * {
+  margin-block-start: var(--space-heading-to-body, 0.9rem); }
+.cs-module--anatomy > .c-eyebrow + .c-heading {
+  margin-block-start: var(--space-eyebrow-to-heading, 0.9rem); }
+.cs-module--anatomy > .c-arrow-link {
+  margin-block-start: var(--space-body-to-cta, 0.9rem); }
+/* QUOTE-CARD seams (spacing remediation B8 2026-07): a quote module (mark → quote
+   body → attribution) rides the brand's measured quote-card rungs — mark→quote and
+   quote→attribution — the same owl-margin mechanic as the anatomy ladder. The
+   uniform 0.9rem flex rhythm survives as the fact-less degrade. */
+.cs-module--quote { --cs-module-gap: 0rem; gap: 0; }
+.cs-module--quote > * + * {
+  margin-block-start: var(--space-mark-to-quote, 0.9rem); }
+.cs-module--quote > * + .c-person {
+  margin-block-start: var(--space-quote-to-attribution, 0.9rem); }
 /* MARK media (sysfix 2026-07: logo/badge/rating/vector module media): contained inside
    the module frame — never cover-cropped/stretched; the same mark-geometry discipline
    as the logo-strip device (structural frame behavior, not a brand magnitude). */
@@ -3477,10 +6100,19 @@ SCAFFOLD_CARDS_CSS = """.cs-modules-sec { position: relative; }
 .cs-module-media--contain .c-image { width: 100%; height: 100%; object-fit: contain; }
 /* bound action slots (P2 parity with the split/hero routes): one action row under the
    modules — present only when the section binds a real button slot; centered rides the
-   section's resolved alignment stamp. */
+   section's resolved alignment stamp.
+   fix3 (the action-row centering leak): the row's PRIVATE `max-width + margin-inline:
+   auto` copy of containment is GONE — inside the side-rail copy column the auto
+   margins resolved before flex stretch, so the row hugged its two buttons and floated
+   centered (+21px off the column edge) while stamped data-ag-align="start". The row
+   now inherits containment from CONTAINMENT_LAW_CSS (width:100% makes the auto
+   margins inert in narrower columns); item placement inside the box belongs to
+   justify-content — anchors and the action-group law own it, never box margins.
+   align-items: center is CROSS-AXIS only (vertically centers unequal-height actions;
+   the captured sources bear it — a brand whose evidence differs authors
+   actionGroup.crossAlign, consumed by action_group_css). */
 .cs-modules-actions { display: flex; flex-wrap: wrap; align-items: center;
-  gap: var(--c-block-gap); margin-block-start: clamp(2rem, 5cqw, 3.5rem);
-  max-width: var(--content-measure, 86rem); margin-inline: auto; }
+  gap: var(--c-block-gap); margin-block-start: clamp(2rem, 5cqw, 3.5rem); }
 [data-align="centered"] .cs-modules-actions { justify-content: center; }
 @media (max-width: 767px) { .cs-modules { grid-template-columns: 1fr; gap: 2.5rem; }
   .cs-modules > .cs-module:nth-child(odd), .cs-modules > .cs-module:nth-child(even) {
@@ -3491,38 +6123,46 @@ SCAFFOLD_CARDS_CSS = """.cs-modules-sec { position: relative; }
 # margin) and the long statement heading WRAPS around it; the caption's big --c-inset-drop
 # bottom margin drops the headline so its first lines sit level with the image. The display
 # heading runs full measure at a CONTAINED editorial scale (not the poster hero scale) so a
-# 100–160ch statement wraps convincingly. Hard-edged, cq/rem units only.
-# The float mechanism is KEPT (grid cannot wrap running text around a block), but its
-# geometry snaps to the shared units: the inset width is a whole-column SPAN of the shared
-# grid (7 cols + 6 gutters ≈ the old 52%) and the margins/drop are --baseline multiples,
-# so the inset's edge and the headline's first line register to shared lines.
-SCAFFOLD_INTERLOCK_CSS = """.cs-interlock { position: relative; }
-.cs-interlock-media { float: var(--c-float-side, right);
-  width: var(--c-inset-width, calc(7 * var(--col) + 6 * var(--grid-gutter, 6rem)));
-  margin: var(--c-inset-margin, calc(1 * var(--baseline)) 0
-          calc(2 * var(--baseline)) calc(6 * var(--baseline)));
-  /* aspect alias only (no literal fallback): brands without an aspectPalette let the
-     media keep its natural ratio — device disabled, never a foreign crop. */
+# Evidence-qualified editorial interlock.  Its adapter/composer preconditions exclude
+# short/simple split content and unsupported foot clusters; retained instances use a
+# registered 5/7 grid, not float/clear width arithmetic (AS-58).
+SCAFFOLD_INTERLOCK_CSS = """.cs-interlock { position: relative; display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: var(--grid-gutter); align-items: center; }
+.cs-interlock-copy { min-width: 0; }
+.cs-interlock-media { width: 100%;
   aspect-ratio: var(--c-aspect-landscape); overflow: hidden; border-radius: 0; }
 .cs-interlock-media .c-image { width: 100%; height: 100%; }
 .cs-interlock-caption { display: block;
-  margin-bottom: var(--c-inset-drop, clamp(calc(9 * var(--baseline)), 12cqw,
-    calc(22 * var(--baseline)))); }
+  margin-bottom: var(--space-eyebrow-to-heading, var(--c-eyebrow-gap)); }
 .cs-interlock .c-heading--display { max-width: none; text-align: left;
   /* interlock display de-scales from the brand's display tier (0.3333/0.6 of the
      measured base — ratios are structure, the rem magnitude is the brand's). */
   font-size: clamp(calc(var(--size-display-hero-base) * 0.3333), 4.4cqw,
                    calc(var(--size-display-hero-base) * 0.6));
   line-height: 1.06em; }
-.cs-interlock-clear { clear: both; }
-/* support/CTA foot cluster (rendered ONLY when the composition binds those slots —
-   ANCHORED-REPORT composer-gap #2 fix; legacy interlock sections emit no foot). */
-.cs-interlock-foot { display: flex; flex-direction: column; align-items: flex-start;
-  gap: var(--c-block-gap); margin-top: var(--c-block-gap); }
-@media (max-width: 767px) { .cs-interlock-media { float: none; width: 100%; margin: 0 0 1.75rem;
-  /* provenance: structural — mobile recrop: the un-floated interlock media needs a
-     bounded height (device geometry, not a brand ratio) */
-  aspect-ratio: 3 / 2; } .cs-interlock-caption { margin-bottom: 1.25rem; } }"""
+@media (max-width: 767px) {
+  .cs-interlock { grid-template-columns: 1fr; }
+  .cs-interlock-media { aspect-ratio: 3 / 2; }
+}"""
+
+
+SCAFFOLD_MEDIA_SPLIT_CSS = """.cs-media-split { display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--grid-gutter); align-items: center; }
+.cs-media-split-copy { min-width: 0; display: flex; flex-direction: column; gap: 0; }
+.cs-media-split-copy .cs-eyebrow-wrap {
+  margin-bottom: var(--space-eyebrow-to-heading, var(--c-eyebrow-gap)); }
+.cs-media-split-copy .c-heading + .c-paragraph {
+  margin-top: var(--space-heading-to-body, var(--c-block-gap)); }
+.cs-media-split-copy .c-paragraph + .c-arrow-link,
+.cs-media-split-copy .c-heading + .c-arrow-link {
+  margin-top: var(--space-body-to-cta, var(--c-block-gap)); }
+.cs-media-split-media { min-width: 0; overflow: hidden;
+  aspect-ratio: var(--c-aspect-landscape); }
+.cs-media-split-media .c-image, .cs-media-split-media .c-image img {
+  width: 100%; height: 100%; }
+@media (max-width: 767px) { .cs-media-split { grid-template-columns: 1fr; } }"""
 
 
 # overlay (editorial-harvest-2026-07): ONE positioning context — an in-flow media canvas
@@ -3532,8 +6172,10 @@ SCAFFOLD_INTERLOCK_CSS = """.cs-interlock { position: relative; }
 # --col multiples so every layer registers to the shared grid.
 SCAFFOLD_OVERLAY_CSS = """.cs-overlay-sec { position: relative; }
 .cs-overlay-sec.cs-ov--bleed { padding-left: 0; padding-right: 0; }
-.cs-ov-frame { position: relative; max-width: var(--content-measure, 86rem);
-  margin-inline: auto; }
+.cs-ov-frame { position: relative;
+  /* containment: CONTAINMENT_LAW_CSS (fix3) */ }
+/* contain-exempt: overlay BLEED release — the declared edge-to-edge canvas escapes
+   the shared measure by design (a release, not a private containment copy). */
 .cs-ov--bleed .cs-ov-frame { max-width: none; }
 .cs-ov-canvas { position: relative; margin: 0; min-height: calc(48 * var(--baseline)); }
 .cs-ov-canvas > .c-image, .cs-ov-canvas > .c-image-ph {
@@ -3640,7 +6282,7 @@ SCAFFOLD_BANDED_CSS = """.cs-banded-sec { padding: 0; }
 .cs-band-straddler { position: relative; z-index: 2;
   margin-top: calc(-1 * var(--c-seam-rise, calc(12 * var(--baseline)))); }
 .cs-band-straddler .c-image, .cs-band-straddler .c-image-ph { width: 100%; }
-.cs-band-body { max-width: var(--content-measure, 86rem); margin-inline: auto;
+.cs-band-body { /* containment: CONTAINMENT_LAW_CSS (fix3) */
   display: flex; flex-direction: column; gap: var(--c-block-gap);
   padding-top: var(--c-block-gap); }
 @media (max-width: 767px) {
@@ -3656,8 +6298,15 @@ SCAFFOLD_BANDED_CSS = """.cs-banded-sec { padding: 0; }
 # alignment is emitted by layout_placement_css from the RESOLVED anchor (section >
 # pattern > style), never a silent left literal.
 SCAFFOLD_FLOW_CSS = """.cs-flow { display: flex; flex-direction: column;
-  gap: var(--c-block-gap); max-width: 72rem; }
-.cs-flow-item { max-width: 62ch; }
+  gap: var(--c-block-gap);
+  /* containment: CONTAINMENT_LAW_CSS (fix3; was fid10 here — note the old private
+     copy carried a 72rem fallback literal; the law's shared 86rem fallback only
+     binds when :root omits --content-measure, which no emitted page does). */ }
+/* the prose measure clamps PARAGRAPH slots only (fid6 2026-07): headings, eyebrows
+   and actions hug their own content — the old all-items 62ch clamp resolved at the
+   wrapper's body size and collapsed centered stacks to a ~500px column. */
+.cs-flow-item { max-width: none; }
+.cs-flow-item--prose { max-width: var(--space-body-measure, 62ch); }
 .cs-flow-media { width: 100%; }
 .cs-flow-media .c-image { width: 100%; height: auto; }
 /* logo-strip device (AS-33): a HORIZONTAL row of partner/customer logo images —
@@ -3668,12 +6317,45 @@ SCAFFOLD_FLOW_CSS = """.cs-flow { display: flex; flex-direction: column;
 /* provenance: structural logo-strip-geometry — mark height/width caps are device frame
    geometry (same discipline as the nav-logo height cap); a brand chrome token
    (--c-logo-strip-h) wins over the structural default. */
+/* inter-mark seam (B8 2026-07): the brand's measured strip rung when authored;
+   the uniform block rhythm stays as the fact-less degrade. */
 .cs-logo-strip { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center;
-  gap: var(--c-block-gap); max-width: none; }
+  gap: var(--space-strip-gap, var(--c-block-gap)); max-width: none; }
 .cs-logo-strip-item { display: flex; align-items: center; }
 .cs-logo-strip .c-logo--img { border: none; border-radius: 0; }
 .cs-logo-strip .c-logo-img { height: var(--c-logo-strip-h, 2.25rem); width: auto;
   max-width: 10rem; object-fit: contain; }
+/* MEASURED ROW SCALE (fid6 2026-07): the row spans the pattern's recorded fraction of
+   its container; item flex weights are the marks' real aspect ratios (composer-stamped
+   inline), so widths distribute aspect-proportionally and every mark lands the SAME
+   height — the measured generous row, not height-capped chips. */
+.cs-logo-strip--scaled { flex-wrap: nowrap; width: calc(var(--cs-strip-fraction, 0.5) * 100%);
+  /* inter-mark gap = the pattern's measured row gap when recorded (fid7 2026-07),
+     then the brand's strip rung (B8), then the uniform rhythm. */
+  gap: var(--cs-strip-gap, var(--space-strip-gap, var(--c-block-gap))); }
+.cs-logo-strip--scaled .cs-logo-strip-item { min-width: 0; }
+.cs-logo-strip--scaled .c-logo--img { width: 100%; }
+.cs-logo-strip--scaled .c-logo-img { height: auto; width: 100%; max-width: none; }
+/* MEASURED ITEM BOX (fix2 2026-07, mediaScale.item): the strip's uniform mark frame
+   as captured — fixed contain-fit boxes at the measured width × height, row hugs its
+   own measured run (max-content) and centers in the parent stack; the measured box
+   gap rides the same --cs-strip-gap chain the scaled row uses. */
+.cs-logo-strip--itembox { flex-wrap: nowrap; width: max-content; max-width: 100%;
+  gap: var(--cs-strip-gap, var(--space-strip-gap, var(--c-block-gap))); }
+.cs-logo-strip--itembox .cs-logo-strip-item {
+  flex: 0 0 var(--cs-strip-item-w); height: var(--cs-strip-item-h); }
+.cs-logo-strip--itembox .c-logo--img { width: 100%; height: 100%; }
+.cs-logo-strip--itembox .c-logo-img { height: 100%; width: 100%; max-width: none;
+  object-fit: contain; }
+/* stat band (W4): one horizontal row of stat columns — track count from the authored
+   item count, gutter rides the brand's own column rung. Collapses to a 2-up (then
+   1-up) grid on narrow frames instead of shrinking the value register. */
+.cs-stat-band { display: grid; width: 100%;
+  grid-template-columns: repeat(var(--cs-stat-cols, 4), minmax(0, 1fr));
+  gap: var(--c-block-gap) var(--grid-gutter, var(--space-column-to-column, 3rem)); }
+.cs-stat-band-item { min-width: 0; }
+@media (max-width: 991px) { .cs-stat-band { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 539px) { .cs-stat-band { grid-template-columns: 1fr; } }
 @media (max-width: 767px) { .cs-flow { gap: clamp(1.25rem, 6cqw, 1.75rem); } }"""
 
 
@@ -3689,8 +6371,12 @@ SCAFFOLD_FLOW_CSS = """.cs-flow { display: flex; flex-direction: column;
 # the resting offset — the static row IS the animation's t=0 frame.
 SCAFFOLD_MARQUEE_CSS = """.cs-marquee { display: block; overflow: hidden; max-width: none;
   /* pin the viewport box to its column (a flex item would otherwise size to the
-     max-content track and overflow the page horizontally) */
-  width: 100%; min-width: 0; }
+     max-content track and overflow the page horizontally), then FULL-BLEED it
+     (fid2 2026-07): the source marquee runs edge-to-edge, so the band takes the
+     section CONTAINER's full inline size and re-centers over the padding via the
+     classic 50%-50cqw shift (cq units only — no viewport units in composed CSS). */
+  min-width: 0; align-self: stretch;
+  width: 100cqw; margin-inline-start: calc(50% - 50cqw); }
 .cs-marquee .cs-marquee-track { display: flex; width: max-content;
   animation: cs-marquee-scroll var(--cs-marquee-duration, 30s) linear infinite; }
 .cs-marquee .cs-marquee-half { display: flex; flex-wrap: nowrap; align-items: center;
@@ -3704,11 +6390,36 @@ SCAFFOLD_MARQUEE_CSS = """.cs-marquee { display: block; overflow: hidden; max-wi
 # Accordion open-state (P2): native exclusive disclosure (<details name=…>, AS-40 —
 # the platform enforces single-open; no JS). The ACTIVE item inverts onto the
 # treatment's declared surface role via the --acc-* vars scoped inline on .c-acc;
-# unset vars keep the idle presentation (transparent, inherited ink). State/chevron
-# transitions ride the brand's motion aliases (--c-motion-*).
+# unset vars keep the idle presentation (transparent, inherited ink). State/chevron/
+# panel-height MOTION is NOT in this constant: every details-based disclosure family
+# shares ONE motion source (disclosure_motion_css, AS-47) so the FAQ scaffold can
+# never fork a static copy of the same mechanic.
 SCAFFOLD_ACCORDION_CSS = """.cs-acc-split .cs-acc-col { grid-column: 1 / span 6;
   display: flex; flex-direction: column; justify-content: center; }
 .cs-acc-split .cs-split-media { grid-column: 8 / -1; }
+/* the media column's mask must FILL its flex parent (fid5 2026-07): the well and
+   the media-swap stack are absolutely-layered boxes with no intrinsic width, so a
+   content-sized mask collapsed to 0px — the "empty right side" symptom. */
+.cs-acc-split .cs-split-media .c-image-mask { flex: 1 1 auto; width: 100%; }
+/* MEASURED BAND GEOMETRY (fid9 2026-07, contentShape.deviceGeometry): patterns that
+   measured their band draw the source proportions — EQUAL columns at the measured
+   gutter (the structural 6|5-of-12 split under-drew the media half), the header
+   stack leading the list column (heading wraps at the column measure), a fixed-
+   aspect top-aligned media region (a stretch-fill region tracked the list height
+   instead of the source's square), and the measured list rhythm. Every rule is
+   var/class-gated with the structural presentation as the no-stamp degrade. */
+.cs-acc-split--equal { grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--cs-acc-colgap, var(--grid-gutter, 0px));
+  max-width: var(--cs-acc-span, none); margin-inline: auto; }
+.cs-acc-split--equal .cs-acc-col { grid-column: 1; }
+.cs-acc-split--equal .cs-split-media { grid-column: 2; }
+.cs-acc-col--lead { justify-content: flex-start; }
+.cs-acc-col--lead > .cs-split-intro { margin-bottom: var(--cs-acc-rowgap, 3.5rem); }
+.cs-split-media--top { align-items: flex-start; }
+.cs-acc-split .cs-split-media--top .c-image-mask {
+  aspect-ratio: var(--cs-acc-media-aspect, auto); height: auto; }
+.c-acc-trigger { min-height: var(--cs-acc-trig-minh, auto); }
+.c-acc-item + .c-acc-item { margin-top: var(--cs-acc-itemgap, 0); }
 .c-acc { display: flex; flex-direction: column; width: 100%; }
 .c-acc-item { border-bottom: 1px solid var(--c-hairline); }
 .c-acc-trigger { display: flex; align-items: center; justify-content: space-between;
@@ -3717,19 +6428,62 @@ SCAFFOLD_ACCORDION_CSS = """.cs-acc-split .cs-acc-col { grid-column: 1 / span 6;
   /* family/weight/size ride the section-scoped brand vars — a bare <summary> would
      otherwise inherit the UA default (the var only resolves inside #sec-N scopes) */
   font-family: var(--c-font-body); font-weight: 500;
-  font-size: var(--c-control-size, 1rem);
-  transition: background-color var(--c-motion-fast, 150ms) var(--c-ease, ease); }
+  font-size: var(--c-control-size, 1rem); }
 .c-acc-trigger::-webkit-details-marker { display: none; }
-.c-acc-chev { display: inline-flex; flex: none;
-  transition: transform var(--c-motion-base, 200ms) var(--c-ease, ease); }
+.c-acc-chev { display: inline-flex; flex: none; }
 .c-acc-item[open] > .c-acc-trigger .c-acc-chev { transform: rotate(180deg); }
 .c-acc-item:not([open]):hover { background: var(--acc-hover-bg, transparent); }
 .c-acc-item[open] { background: var(--acc-active-bg, transparent);
   color: var(--acc-active-ink, inherit); --c-ink: var(--acc-active-ink, inherit);
   border-radius: var(--radius-card, 0); border-color: transparent; }
+@media (prefers-reduced-motion: reduce) {
+  .cs-acc-media-item { transition: none; } }
 .c-acc-panel { padding: 0 calc(3 * var(--baseline)) calc(3 * var(--baseline)); }
 .c-acc-panel .c-paragraph { color: inherit; }
+/* section action foot (W8): the split's declared cta closes the LIST column —
+   left-anchored per the split grammar, never dropped. RUNG ATTRIBUTION (spacing
+   remediation B7 2026-07): list→foot is a BLOCK-level row seam (the brand's
+   content→ctasAfterContent rows all ride the one block rhythm rung), not the
+   intra-stack body→cta rung; body→cta survives only as the degrade chain. */
+.cs-acc-foot { margin-top: var(--space-block-to-block,
+    var(--space-body-to-cta, calc(3 * var(--baseline))));
+  align-self: flex-start; }
+/* per-row icon tile (fid2 2026-07): the brand's own product-family mark leads the
+   trigger; contained, never cropped. */
+.c-acc-icon { width: 1.75rem; height: 1.75rem; object-fit: contain; flex: none;
+  background: none; }
+.c-acc-trigger .c-acc-label { flex: 1 1 auto; }
+/* active-item go-affordance (treatment: affordance circle-arrow): a round chip on
+   the active panel's own paper/ink — vars, never literals. */
+.c-acc-go { display: inline-flex; align-items: center; justify-content: center;
+  width: 2.5rem; height: 2.5rem; border-radius: 50%; margin-top: calc(2 * var(--baseline));
+  background: var(--c-paper); color: var(--acc-active-bg, var(--c-ink)); }
+.c-acc-panel .c-acc-go { margin-inline-start: 0; }
+/* honest MEDIA WELL degrade (fid2 2026-07): the measured light well renders as the
+   counterweight when no asset is bound — brand raised-surface var + card radius. */
+.cs-acc-well { width: 100%; height: 100%; min-height: 24rem;
+  background: var(--surface-surface-raised, var(--c-paper));
+  border-radius: var(--radius-card, 0); }
+/* PER-ITEM MEDIA SWAP (fid5 2026-07): items binding their own media (section-copy
+   items[].media) stack as layers over the honest well; the ACTIVE item's layer shows
+   (pairing rules generated per index by device_scaffold_css — :has() on the open
+   details), crossfading on the brand's structural-collapse tier so the well swaps
+   with the disclosure. Items without media leave no layer: opening one shows the
+   bare well (the fid2 degrade). Browsers without :has() keep the server-rendered
+   resting state (the @supports-gated .is-active fallback below). */
+.cs-acc-media { position: relative; width: 100%; height: 100%; min-height: 24rem; }
+.cs-acc-media .cs-acc-well { position: absolute; inset: 0; min-height: 0; }
+.cs-acc-media-item { position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; border-radius: var(--radius-card, 0); opacity: 0;
+  /* crossfade rides the brand aliases BARE (AS-47): unresolved vars invalidate the
+     declaration at computed-value time — motion-less brands swap instantly, never
+     on an invented 200ms. */
+  transition: opacity var(--c-motion-base) var(--c-ease); }
+.cs-acc-media-item.c-acc-media--contain { object-fit: contain; }
+@supports not selector(:has(a)) {
+  .cs-acc-media-item.is-active { opacity: 1; } }
 @media (max-width: 767px) {
+  .cs-acc-split--equal { grid-template-columns: minmax(0, 1fr); }
   .cs-acc-split .cs-acc-col, .cs-acc-split .cs-split-media { grid-column: 1; } }"""
 
 # Edge-cut carousel statics (P2): the module track becomes a native horizontal
@@ -3737,28 +6491,273 @@ SCAFFOLD_ACCORDION_CSS = """.cs-acc-split .cs-acc-col { grid-column: 1 / span 6;
 # the last visible card CLIPS (the capture's carousel affordance). The left content
 # edge stays registered to the shared measure. Cards take the plate anatomy (brand
 # panel surface + card radius vars — no literals).
-SCAFFOLD_EDGECUT_CSS = """.cs-edgecut { overflow-x: auto; scrollbar-width: none;
-  margin-inline-end: calc(-1 * var(--c-section-pad-x, 0rem));
-  padding-inline-start: max(0rem, calc((100% - var(--content-measure, 86rem)) / 2)); }
-.cs-edgecut::-webkit-scrollbar { display: none; }
-.cs-modules--edgecut { display: flex; flex-wrap: nowrap; align-items: stretch;
-  max-width: none; margin-inline: 0; column-gap: normal;
-  gap: calc(4 * var(--baseline)); }
-.cs-modules--edgecut > .cs-module, .cs-modules--edgecut > .cs-module:nth-child(odd),
-.cs-modules--edgecut > .cs-module:nth-child(even) {
-  flex: 0 0 clamp(20rem, 32cqw, 30rem); grid-column: auto; margin-block-start: 0; }
-.cs-module--plate { background: var(--c-panel); color: var(--c-panel-ink);
+# card PLATE + PERSON-ROW anatomy (shared by the edge-cut track and — fid2 2026-07 —
+# the contained card grid of any brand whose card device rides a Container surface;
+# see card_panel_role). Values are the brand's own panel/radius vars, never literals.
+SCAFFOLD_CARD_PLATE_CSS = """.cs-module--plate { background: var(--c-panel); color: var(--c-panel-ink);
   --c-ink: var(--c-panel-ink); --c-accent: var(--c-panel-ink);
   --c-hairline: var(--c-panel-hairline);
-  border-radius: var(--radius-card, 0); padding: calc(4 * var(--baseline)); }
+  /* plate inset rides the brand's measured panel-padding token when authored
+     (fid6 2026-07); the 4-baseline structural default is unchanged without it. */
+  --c-plate-pad: var(--space-panel-padding, calc(4 * var(--baseline)));
+  border-radius: var(--radius-card, 0); padding: var(--c-plate-pad); }
+/* FULL-BLEED MEDIA WELL (fid6 2026-07): a plated module's leading media frame runs
+   flush to the card's top + side edges (rounded top corners only — the classic card
+   anatomy the capture shows: media well INSIDE the plate, bleeding to its edges);
+   mark media (company logos on quote cards) keeps the inset mark row. */
+.cs-module--plate > .cs-module-media:first-child:not(.cs-module-media--mark) {
+  margin: calc(-1 * var(--c-plate-pad)) calc(-1 * var(--c-plate-pad)) 0;
+  width: calc(100% + 2 * var(--c-plate-pad));
+  border-radius: var(--radius-card, 0) var(--radius-card, 0) 0 0; }
+.cs-module--plate > .cs-module-media:first-child:not(.cs-module-media--mark) + * {
+  /* the seam is the plate pad BY CONSTRUCTION (the negative margin above swallowed
+     the padding) — subtract the module's own flex gap so it never double-counts
+     (anatomy/quote stacks run gap:0, plain plates 0.9rem; spacing audit
+     card.media-to-content = panel-padding either way). */
+  margin-block-start: calc(var(--c-plate-pad) - var(--cs-module-gap, 0rem)); }
+.c-person { display: flex; align-items: center; gap: 0.85rem; margin-top: auto;
+  border-top: 1px solid var(--c-hairline); padding-top: calc(2 * var(--baseline)); }
+.c-person-avatar { width: var(--c-avatar-size, 3rem); height: var(--c-avatar-size, 3rem);
+  border-radius: 50%; object-fit: cover; flex: 0 0 auto; }
+.c-person-meta { display: flex; flex-direction: column; gap: 0.15em; min-width: 0; }
+.c-person-name { font-family: var(--c-font-body);
+  font-weight: var(--weight-control-text, var(--c-heading-weight));
+  font-size: var(--c-control-size); color: var(--c-ink); }
+.c-person-role { font-family: var(--c-font-body);
+  font-size: calc(var(--c-control-size) * 0.9); color: var(--c-ink-muted); }
+.cs-module--plate { display: flex; flex-direction: column; }
+/* DECLARED mark row (fit: mark) on the contained grid — device-frame glyph height,
+   same discipline as the edge-cut mark row (the edgecut scope keeps its own rule). */
+.cs-modules .cs-module-media--mark { display: flex; align-items: center;
+  justify-content: flex-start; height: 2.25rem; }
+.cs-modules .cs-module-media--mark .c-image { width: auto; height: 100%;
+  max-width: 12rem; object-fit: contain; }
+/* HEADING-ROW mark placement (brand card device slots.icon.placement: heading-row):
+   glyph seated BESIDE the heading in one flex row at the icon slot's measured size;
+   the row itself rides the anatomy ladder like the stacked figure it replaces. */
+.cs-modules .cs-module-headrow { display: flex; align-items: center; gap: 1rem; }
+.cs-modules .cs-module-headrow .cs-module-media--mark,
+.cs-modules--edgecut .cs-module-headrow .cs-module-media--mark {
+  height: var(--cs-headrow-mark, 1.5rem); flex: 0 0 auto; width: auto; }
+.cs-module-headrow .c-heading { margin: 0; flex: 1 1 auto; }"""
+
+SCAFFOLD_EDGECUT_CSS = """.cs-edgecut { overflow-x: auto; scrollbar-width: none;
+  margin-inline-end: calc(-1 * var(--c-section-pad-x, 0rem));
+  /* contain-exempt: DERIVED inset — the released rail's left edge registers to the
+     shared measure via this calc (containment math, not a private max-width copy) */
+  padding-inline-start: max(0rem, calc((100% - var(--content-measure, 86rem)) / 2)); }
+.cs-edgecut::-webkit-scrollbar { display: none; }
+/* measured rail chrome (fix1 2026-07: `controls` fact on the edge-cut treatment) —
+   round paper prev/next pair at the rail edges; ships only where the fact composed. */
+.cs-edgecut-wrap { position: relative; }
+.cs-edgecut-arrow { /* provenance: structural — round control geometry (999px pill cap)
+  + neutral lift shadow; paddle paint itself rides brand panel/ink vars */
+  position: absolute; top: 50%; transform: translateY(-50%);
+  z-index: 2; width: 3rem; height: 3rem; border-radius: 999px; border: 0;
+  background: var(--c-panel, var(--c-paper)); color: var(--c-panel-ink, var(--c-ink));
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.12); display: inline-flex; align-items: center;
+  justify-content: center; cursor: pointer; padding: 0; }
+.cs-edgecut-arrow--prev { left: calc(1 * var(--baseline)); }
+.cs-edgecut-arrow--next { right: calc(1 * var(--baseline)); }
+.cs-edgecut-pauserow { display: flex; justify-content: center;
+  margin-top: calc(3 * var(--baseline)); }
+.cs-edgecut-pause { /* provenance: structural — round control geometry (999px pill cap) */
+  width: 2.5rem; height: 2.5rem; border-radius: 999px;
+  border: 1px solid var(--c-hairline); background: var(--c-paper);
+  color: var(--c-ink); display: inline-flex; align-items: center;
+  justify-content: center; cursor: pointer; padding: 0; }
+.cs-modules--edgecut { display: flex; flex-wrap: nowrap; align-items: stretch;
+  /* contain-exempt: edge-cut RELEASE — the track deliberately escapes the law's
+     cap/centering (its left inset re-registers via the .cs-edgecut derived pad) */
+  max-width: none; margin-inline: 0; column-gap: normal;
+  gap: var(--cs-edgecut-gap, calc(4 * var(--baseline))); }
+.cs-modules--edgecut > .cs-module, .cs-modules--edgecut > .cs-module:nth-child(odd),
+.cs-modules--edgecut > .cs-module:nth-child(even) {
+  /* measured card box (--cs-edgecut-card-w, deviceGeometry) or structural clamp */
+  flex: 0 0 var(--cs-edgecut-card-w, clamp(20rem, 32cqw, 30rem));
+  grid-column: auto; margin-block-start: 0; }
 .cs-modules--edgecut .cs-module-media--mark { display: flex; align-items: center;
   justify-content: flex-start; height: 2.25rem; }
 .cs-modules--edgecut .cs-module-media--mark .c-image { width: auto; height: 100%;
   max-width: 12rem; object-fit: contain; }
 @media (max-width: 767px) {
   .cs-modules--edgecut { gap: 1.25rem; }
-  .cs-modules--edgecut > .cs-module { flex-basis: min(86cqw, 24rem); } }"""
+  .cs-modules--edgecut > .cs-module { flex-basis: min(86cqw, 24rem); } }
+""" + SCAFFOLD_CARD_PLATE_CSS
 
+
+SCAFFOLD_PANELCAR_CSS = """/* SPLIT-PANEL CAROUSEL statics (fix1 2026-07 item-6): slide 1 visible, siblings
+   hidden; round prev/next at the row edges; dot rail below. All chrome rides brand
+   vars (hairline/ink/control radius); ships only where the device composed. */
+.cs-panelcar { position: relative; margin-top: calc(6 * var(--baseline)); }
+.cs-panelcar-grid { display: grid; align-items: center;
+  /* measured illustration share (--cs-panelcar-media-frac, pattern mediaScale)
+     sizes the media column; the copy column takes the rest. Even split default. */
+  grid-template-columns: minmax(0, 1fr)
+    minmax(0, calc(var(--cs-panelcar-media-frac, 0.5) * 100%));
+  column-gap: var(--grid-gutter, calc(4 * var(--baseline))); }
+.cs-panelcar-slide[hidden] { display: none; }
+.cs-panelcar-copy { display: flex; flex-direction: column;
+  gap: var(--c-block-gap, calc(3 * var(--baseline))); }
+.cs-panelcar-media .c-image-mask { width: 100%; }
+.cs-panelcar-media img { width: 100%; height: auto; object-fit: contain; }
+.cs-panelcar-arrow { /* provenance: structural — round control geometry (999px pill cap) */
+  position: absolute; top: 50%; transform: translateY(-50%);
+  z-index: 2; width: 3rem; height: 3rem; border-radius: 999px;
+  border: 1px solid var(--c-hairline); background: var(--c-paper);
+  color: var(--c-ink); display: inline-flex; align-items: center;
+  justify-content: center; cursor: pointer; padding: 0; }
+.cs-panelcar-arrow--prev { left: calc(-1 * var(--baseline)); }
+.cs-panelcar-arrow--next { right: calc(-1 * var(--baseline)); }
+.cs-panelcar-arrow[disabled] { opacity: 0.4; cursor: default; }
+.cs-panelcar-dots { display: flex; justify-content: center;
+  gap: calc(1.5 * var(--baseline)); margin-top: calc(5 * var(--baseline)); }
+/* RAIL-NAV variant (fix3, treatment controls.placement: rail): prev/next sit ON the
+   dot row below the slides — prev flush at the container's left edge, next at its
+   right, dots centered between (the captured bottom-rail chrome; the floated
+   mid-slide paddles collided with the copy column on contained sections). Control
+   box rides the measured size fact (--cs-panelcar-arrow-size); rules are inert
+   without the variant class — fact-less carousels keep the structural paddles. */
+.cs-panelcar--railnav .cs-panelcar-nav { display: grid;
+  grid-template-columns: auto 1fr auto; align-items: center;
+  margin-top: calc(5 * var(--baseline)); }
+.cs-panelcar--railnav .cs-panelcar-arrow { position: static; transform: none;
+  width: var(--cs-panelcar-arrow-size, 3rem);
+  height: var(--cs-panelcar-arrow-size, 3rem); }
+.cs-panelcar--railnav .cs-panelcar-dots { margin-top: 0; }
+.cs-panelcar-dot { /* provenance: structural — round dot geometry (999px pill cap) */
+  width: 0.625rem; height: 0.625rem; border-radius: 999px;
+  border: 0; padding: 0; cursor: pointer;
+  background: color-mix(in srgb, var(--c-ink) 25%, transparent); }
+.cs-panelcar-dot[aria-current="true"] { background: var(--c-ink); }
+@media (max-width: 767px) {
+  .cs-panelcar-grid { grid-template-columns: minmax(0, 1fr); row-gap: calc(3 * var(--baseline)); }
+  .cs-panelcar-arrow { display: none; } }
+"""
+
+SCAFFOLD_TABS_CSS = """/* TAB DEVICE (fix1 2026-07 item-9): WAI-ARIA APG tablist over a bordered case
+   card — photo column | quote column, stat pair on a vertical-rule row below.
+   Active tab = weight + accent underline; hover = subtle wash (the captured
+   states). Every value rides brand vars; ships only where the device composed. */
+.cs-tabs { /* containment: CONTAINMENT_LAW_CSS (fix3) */ }
+.cs-tablist { display: flex; justify-content: center; align-items: baseline;
+  gap: calc(1 * var(--baseline)); margin-bottom: calc(4 * var(--baseline)); }
+.cs-tab { background: none; border: 0; cursor: pointer;
+  font-family: var(--c-font-body); font-size: var(--c-control-size, 0.875rem);
+  font-weight: var(--weight-control-text, var(--weight-body)); color: var(--c-ink-muted, var(--c-ink));
+  padding: calc(1 * var(--baseline)) calc(1.5 * var(--baseline));
+  border-bottom: 2px solid transparent; }
+.cs-tab:hover { background: color-mix(in srgb, var(--c-ink) 5%, transparent); }
+.cs-tab[aria-selected="true"] { font-weight: var(--weight-h1); color: var(--c-ink);
+  border-bottom-color: var(--cs-tab-active-rule, var(--c-accent)); }
+.cs-tabpanel[hidden] { display: none; }
+.cs-tabcard { border: 1px solid var(--c-hairline);
+  border-radius: var(--radius-card, 0); background: var(--c-panel, var(--c-paper));
+  padding: calc(4 * var(--baseline));
+  display: grid; column-gap: calc(5 * var(--baseline));
+  row-gap: calc(4 * var(--baseline));
+  grid-template-columns: minmax(0, calc(var(--cs-tabs-media-frac, 0.45) * 100%)) minmax(0, 1fr); }
+.cs-tabcard-media .c-image-mask { width: 100%; height: 100%; }
+.cs-tabcard-media img { width: 100%; height: 100%; object-fit: cover;
+  border-radius: var(--radius-media, var(--radius-small, 0)); }
+.cs-tabcard-body { display: flex; flex-direction: column; justify-content: center;
+  gap: calc(2 * var(--baseline)); }
+.cs-tabcard-stats { grid-column: 1 / -1; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); align-items: start; }
+.cs-tabcard-stat { text-align: center;
+  padding-inline: calc(3 * var(--baseline)); display: flex; flex-direction: column;
+  align-items: center; gap: calc(0.5 * var(--baseline)); }
+.cs-tabcard-stat + .cs-tabcard-stat { border-left: 1px solid var(--c-hairline); }
+@media (max-width: 767px) {
+  .cs-tabcard { grid-template-columns: minmax(0, 1fr); }
+  .cs-tabcard-stats { grid-template-columns: minmax(0, 1fr); }
+  .cs-tabcard-stat + .cs-tabcard-stat { border-left: 0;
+    border-top: 1px solid var(--c-hairline); padding-top: calc(2 * var(--baseline)); } }
+"""
+
+SCAFFOLD_HEADRAIL_CSS = """/* SECTION HEADROW RAIL (fix1 2026-07 item-8): leading chip/pill — rule — trailing
+   action; the split intro (heading LEFT / body RIGHT) rides the same stamp family.
+   Rule style (dotted/solid) is the treatment's own vocabulary; chip is the brand's
+   paper surface. Ships only where a pattern stamped the device.
+   RECIPE FACTS (fix2): a recipe-bound rail stamps its variant's measured boxes as
+   inline --cs-rail-* vars; every declaration below falls back to the fix1
+   structural default, so recipe-less rails render byte-identically. The rail also
+   obeys the shared container law (it previously escaped the measure and ran the
+   full padded width while its intro capped — the fix2 overflow). */
+.cs-headrail { display: flex; align-items: center;
+  /* rail->heading seam measured ~24px on the captured header bands (crops
+     section-05/07: pill bottom to heading top), not the 48px section default */
+  gap: var(--cs-rail-item-gap, calc(3 * var(--baseline)));
+  margin-bottom: var(--cs-rail-gap-below, calc(3 * var(--baseline)));
+  /* column-flex parents anchor children left (content-hugging) — the rail must
+     span the measure or its flex rule collapses to 0 width; the span itself
+     (width + cap + centering) is CONTAINMENT_LAW_CSS (fix3) */
+  align-self: stretch; }
+.cs-headrail-rule { flex: 1 1 auto; border: 0;
+  border-top: 1px solid var(--c-hairline); margin: 0; }
+.cs-headrail-rule--dotted { border-top-style: dotted; }
+.cs-headrail-chip { /* provenance: structural — round chip geometry (999px pill cap);
+   recipe rails ride their measured box/radius/border via the --cs-rail-chip-* vars */
+  display: inline-flex; align-items: center; justify-content: center;
+  flex: none; width: var(--cs-rail-chip-size, 3rem);
+  height: var(--cs-rail-chip-size, 3rem);
+  border-radius: var(--cs-rail-chip-radius, 999px);
+  border: var(--cs-rail-chip-border, 0);
+  background: var(--cs-rail-kicker-bg, var(--c-paper)); }
+.cs-headrail-chip img { width: var(--cs-rail-chip-icon, 1.5rem);
+  height: var(--cs-rail-chip-icon, 1.5rem); object-fit: contain; }
+/* bordered rail PILL (the leading label boxed in a hairline pill): the label
+   renders as authored — the pill register is its own device, not the page
+   eyebrow register (case/tracking tokens stay on bare eyebrows). */
+.cs-headrail-pill { display: inline-flex; align-items: center; flex: none;
+  gap: var(--cs-rail-pill-gap, calc(1 * var(--baseline)));
+  border: 1px solid var(--c-hairline);
+  border-radius: var(--cs-rail-pill-radius, var(--radius-small, 0));
+  padding: var(--cs-rail-pill-pad,
+           calc(0.5 * var(--baseline)) calc(1.25 * var(--baseline)));
+  background: var(--cs-rail-kicker-bg, transparent); }
+.cs-headrail-pill img { width: var(--cs-rail-pill-icon, 1rem);
+  height: var(--cs-rail-pill-icon, 1rem); object-fit: contain; }
+.cs-headrail-pill .c-eyebrow { margin: 0; text-transform: none;
+  letter-spacing: normal; color: var(--c-ink); }
+.cs-intro-split { display: grid; align-items: start;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--grid-gutter, calc(4 * var(--baseline)));
+  margin-bottom: calc(6 * var(--baseline));
+  align-self: stretch; width: 100%; }
+/* a header-only section (rail + split intro and nothing after) must not carry the
+   dangling seam — the band below completes the unit (padding-bottom-none bands). */
+.cs-intro-split:last-child, .cs-headrail:last-child { margin-bottom: 0; }
+.cs-intro-split .c-header, .cs-intro-split .c-heading { margin-bottom: 0; }
+.cs-intro-split > .c-paragraph { justify-self: stretch; }
+@media (max-width: 767px) {
+  .cs-intro-split { grid-template-columns: minmax(0, 1fr);
+    row-gap: calc(2 * var(--baseline)); } }
+"""
+
+SCAFFOLD_SIDERAIL_CSS = """/* SIDE-RAIL CARD COUNTERWEIGHT (fix1 2026-07 item-7): the copy rail (intro +
+   actions) holds the LEFT column; the module grid is the counterweight beside it.
+   Ships only where a pattern declares alignment.counterweight: cards. */
+.cs-siderail { display: grid; align-items: start;
+  grid-template-columns: minmax(0, 35fr) minmax(0, 65fr);
+  column-gap: var(--grid-gutter, calc(4 * var(--baseline)));
+  /* containment: CONTAINMENT_LAW_CSS (fix3; was the fix2 private copy here) */ }
+.cs-siderail > .cs-siderail-copy { display: flex; flex-direction: column;
+  gap: var(--c-block-gap, calc(3 * var(--baseline))); position: sticky;
+  top: calc(4 * var(--baseline)); }
+/* an IN-COLUMN headrail (recipe span: column, fix2): the column's flex gap already
+   opens the seam — the rail's own margin tops it up (or pulls it back) so the
+   TOTAL seam equals the recipe's measured railToHeading fact. */
+.cs-siderail-copy > .cs-headrail { margin-bottom:
+  calc(var(--cs-rail-gap-below, calc(3 * var(--baseline))) - var(--c-block-gap, 0rem)); }
+.cs-siderail .cs-modules-intro { margin-bottom: 0; }
+.cs-siderail .cs-modules-actions { margin-top: 0; justify-content: flex-start; }
+.cs-siderail .cs-modules { margin-top: 0; }
+@media (max-width: 1023px) {
+  .cs-siderail { grid-template-columns: minmax(0, 1fr);
+    row-gap: calc(4 * var(--baseline)); }
+  .cs-siderail > .cs-siderail-copy { position: static; } }
+"""
 
 _ARCHETYPE_SCAFFOLD = {
     "stack": SCAFFOLD_HERO_CSS,          # the hero stack; conversion stack uses its own block below
@@ -3766,7 +6765,10 @@ _ARCHETYPE_SCAFFOLD = {
     "split": SCAFFOLD_SPLIT_CSS,
     "stack-fullbleed": SCAFFOLD_GALLERY_CSS,
     "cards": SCAFFOLD_CARDS_CSS,
-    "interlock": SCAFFOLD_INTERLOCK_CSS,
+    "media-split": SCAFFOLD_MEDIA_SPLIT_CSS,
+    # Interlock can safely degrade at render time, so its CSS bundle includes the
+    # ordinary split target as part of the device contract.
+    "interlock": SCAFFOLD_INTERLOCK_CSS + "\n" + SCAFFOLD_MEDIA_SPLIT_CSS,
     "overlay": SCAFFOLD_OVERLAY_CSS,
     "banded": SCAFFOLD_BANDED_CSS,
     "generic-flow": SCAFFOLD_FLOW_CSS,
@@ -3850,18 +6852,60 @@ def _align_role_keys(layout, pattern=None) -> list[str]:
     return keys
 
 
-def resolve_alignment(layout, pattern=None, style_ctx=None) -> dict | None:
-    """THE single alignment resolution chain (anti-ai-slop.md AS-18):
+def _header_grammar_anchor(doc, layout) -> dict | None:
+    """The brand's CONTEXTUAL header-alignment grammar (brand-schema §4.4b, AS-49):
+    ``layoutGrammar.headerContext`` maps the section's LAYOUT CONTEXT — a column of a
+    split row vs a header standing alone atop a stacked/grid section — to the brand's
+    observed default anchor. Returns a resolved stance dict (source "brand") or None
+    when the brand authored no grammar / no rung covers this context. Chrome
+    archetypes (nav/footer) and uncorroborated contexts never consult it."""
+    g = ((doc or {}).get("layoutGrammar") or {}).get("headerContext") \
+        if isinstance(doc, dict) else None
+    if not isinstance(g, dict) or not g:
+        return None
+    arch = ((layout or {}).get("archetype") or "stack").lower()
+    explicit_context = str((layout or {}).get("_headerContext") or "")
+    if explicit_context in ("splitColumn", "standaloneStack"):
+        key = explicit_context
+    elif arch in ("split", "media-split"):
+        key = "splitColumn"
+    elif arch in ("stack", "cards", "grid", "stack-fullbleed"):
+        key = "standaloneStack"
+    else:
+        return None
+    node = g.get(key)
+    if not isinstance(node, dict):
+        return None
+    anchor = ll.normalize_anchor(node.get("anchor"),
+                                 where=f"layoutGrammar.headerContext.{key}")
+    if not anchor:
+        return None
+    return {"anchor": anchor, "source": "brand",
+            "counterweight": node.get("counterweight")}
 
-        section-explicit ``alignment`` > pattern ``contentShape.alignment`` >
+
+def resolve_alignment(layout, pattern=None, style_ctx=None, doc=None,
+                      honor_curation=True) -> dict | None:
+    """THE single alignment resolution chain (anti-ai-slop.md AS-18 + AS-49):
+
+        section-explicit ``alignment`` > pattern ``curation`` (generation lanes) >
+        pattern ``contentShape.alignment`` >
+        brand ``layoutGrammar.headerContext`` (contextual grammar, fid11) >
         style role default (StyleStructure.align_for)
 
+    ``honor_curation`` selects the lane semantics (brand-schema §4.4c): GENERATION
+    lanes (composed catalog, event, wildcard, preview demos) pass True — a curated
+    ``follow-grammar`` ruling retires the pattern's dissenting fact and hands the
+    decision to the brand grammar. The REPLICA lane passes False: it rebuilds the
+    source 1:1 and its gate scores against the source, so the measured pattern fact
+    stays that lane's truth.
+
     Never a silent CSS fall-through: every resolved stance carries its winning SOURCE
-    ("section" | "pattern" | "style"), stamped on the section wrapper as
-    ``data-align-source`` (mirrors data-pattern). Out-of-enum anchors warn loudly (via
-    ``ll.normalize_anchor``) and fall through to the next layer EXPLICITLY. Returns
-    ``{"anchor", "source", "counterweight"}`` or None only when NO layer declares a
-    stance (e.g. an unstyled legacy render — behavior unchanged)."""
+    ("section" | "curation" | "pattern" | "brand" | "style"), stamped on the section
+    wrapper as ``data-align-source`` (mirrors data-pattern). Out-of-enum anchors warn
+    loudly (via ``ll.normalize_anchor``) and fall through to the next layer
+    EXPLICITLY. Returns ``{"anchor", "source", "counterweight"}`` or None only when NO
+    layer declares a stance (e.g. an unstyled legacy render — behavior unchanged)."""
     layout = layout or {}
     # 1. section-explicit (composition.v1 §4.6.5 / a layouts[] instance's own field)
     sec = layout.get("alignment")
@@ -3894,12 +6938,35 @@ def resolve_alignment(layout, pattern=None, style_ctx=None) -> dict | None:
                             break
             return {"anchor": anchor, "source": "section",
                     "counterweight": counterweight}
+    # 1.5 CURATION (brand-schema §4.4c): a curator's recorded resolution of a
+    # pattern-fact-vs-grammar dissent (exactly what the C18 advisory surfaces).
+    # `follow-grammar` RETIRES the pattern's dissenting fact for generation lanes:
+    # the decision falls to the brand grammar (layer 2.5); if no grammar rung covers
+    # this context the chain still skips the retired fact and lands on the style
+    # layer — reverting silently to a look the curator rejected would be worse.
+    curated_follow_grammar = False
+    if honor_curation and pattern is not None:
+        _cf = getattr(pattern, "curation_for", None)  # duck-typed pattern stubs lack it
+        cur = _cf("alignment") if callable(_cf) else None
+        if cur and str(cur.get("resolve")) == "follow-grammar":
+            curated_follow_grammar = True
+            ga = _header_grammar_anchor(doc, layout)
+            if ga:
+                return {**ga, "source": "curation"}
     # 2. pattern contentShape.alignment (brand-schema §4.4)
-    if pattern is not None:
+    if pattern is not None and not curated_follow_grammar:
         pa = pattern.alignment
         if pa:
             return {"anchor": pa["anchor"], "source": "pattern",
                     "counterweight": pa.get("counterweight")}
+    # 2.5 brand HEADER-CONTEXT GRAMMAR (brand-schema §4.4b, AS-49): the brand's own
+    # contextual default — beneath explicit facts (section/pattern stay supreme,
+    # fid10's resolution unchanged above), above the style layer. Exactly what a
+    # newly GENERATED section needs: a fact-less header inherits the brand's captured
+    # alignment grammar instead of a scaffold-hardcoded or style-guessed anchor.
+    ga = _header_grammar_anchor(doc, layout)
+    if ga:
+        return ga
     # 3. style role default (machine-readable alignment block, styles.py)
     if style_ctx is not None and getattr(style_ctx, "active", False) \
             and style_ctx.structure is not None \
@@ -3941,9 +7008,14 @@ def _anchor_css(sel: str, anchor: str) -> str:
     _slots_sel = f"{sel} .cs-slot, {sel} .cs-eyebrow-wrap, {sel} .cs-title, {sel} .cs-foot"
     if anchor == "space-between":
         # utility rows / logo strips: distribute along the row (the previously-dropped
-        # out-of-enum value). Flow markup becomes a wrapping space-between row.
+        # out-of-enum value). Flow markup becomes a wrapping space-between row — so the
+        # relational-ladder COLUMN mechanic (gap:0 + block-start margins, AS-48) must
+        # not apply: restore the row gap and zero the stacked margins (per-#sec-N
+        # specificity beats the page-level ladder rules).
         return (f"{sel} .cs-flow {{ flex-direction: row; flex-wrap: wrap; "
-                f"justify-content: space-between; align-items: baseline; max-width: none; }}\n"
+                f"justify-content: space-between; align-items: baseline; max-width: none; "
+                f"gap: var(--c-block-gap); }}\n"
+                f"{sel} .cs-flow > * + * {{ margin-block-start: 0; }}\n"
                 f"{sel} .cs-flow-item {{ max-width: 40ch; }}\n"
                 f"{sel} .cs-gallery-utility {{ justify-content: space-between; }}")
     if anchor == "edge-to-edge":
@@ -3967,8 +7039,15 @@ def _anchor_css(sel: str, anchor: str) -> str:
         # gallery band (stack-fullbleed): intro header + caption honor the anchor
         f"{sel} .cs-gallery-intro {{ text-align: {text}; }}",
         f"{sel} .cs-gallery-caption {{ text-align: {text}; }}",
-        # cards / interlock intros
+        # cards / interlock intros (+ their closing action row — AS-18: an anchor
+        # never silently no-ops on an archetype's markup)
         f"{sel} .cs-modules-intro {{ text-align: {text}; }}",
+        # info-band/comparison headers are structurally independent from the content
+        # split beneath them; their adapter stamps standaloneStack so this selector
+        # realizes the captured context grammar rather than inheriting split-column.
+        f"{sel} .cs-split-intro {{ align-items: {flex}; text-align: {text}; }}",
+        f"{sel} .cs-split-intro .cs-hero-actions {{ justify-content: {flex}; }}",
+        f"{sel} .cs-modules-actions {{ justify-content: {flex}; }}",
         # overlay: in-flow foot cluster + tucked headrow honor the anchor
         f"{sel} .cs-ov-foot {{ align-items: {flex}; text-align: {text}; }}",
         # banded: the bottom band's body column
@@ -3985,6 +7064,10 @@ def _anchor_css(sel: str, anchor: str) -> str:
             # column centers.
             f"{sel} .cs-conversion {{ align-items: center; text-align: center; }}",
             f"{sel} .cs-conversion-sec {{ justify-content: center; }}",
+            # measure-capped intro header RUNS (fid11 header-measure, capped on the
+            # intro's children — fid12) center as BLOCKS inside the full-measure intro
+            f"{sel} .cs-modules-intro > * {{ margin-inline: auto; }}",
+            f"{sel} .cs-split-intro > * {{ margin-inline: auto; }}",
             f"{sel} {{ --c-statement-text-col: 3 / -3; --c-statement-media-col: 4 / -4;"
             f" --c-quote-text-col: 3 / -3; --c-quote-media-col: 4 / -4; }}",
             f"{sel} .cs-statement-text, {sel} .cs-quote-text {{ align-items: center;"
@@ -3997,12 +7080,27 @@ def _anchor_css(sel: str, anchor: str) -> str:
             # the offset is legal because the anchor is a SIDE anchor).
             f"{sel} {{ --c-statement-text-col: 8 / -1; --c-statement-media-col: 1 / span 7;"
             f" --c-quote-text-col: 6 / -1; --c-quote-media-col: 1 / span 5; }}",
-            f"{sel} .cs-conversion {{ align-items: flex-end; text-align: right; }}",
+            # container law (fid10): the side anchor re-anchors the stack INSIDE the
+            # shared content spine — the column grows to the spine (still centered by
+            # the scaffold) and the TEXT keeps the stack measure, so the section rides
+            # the same container every other scaffold does. flex-end/flex-start makes
+            # every child hug content, so only text elements need the measure cap.
+            # contain-exempt: side-anchor RELEASE — the stack box grows from its
+            # 46rem measure to the shared spine; the measure cap moves to the text.
+            f"{sel} .cs-conversion {{ align-items: flex-end; text-align: right;"
+            f" max-width: var(--content-measure, 86rem); }}",
+            f"{sel} .cs-conversion .c-heading {{ max-width: var(--cs-stack-measure, 46rem); }}",
         ]
     elif anchor == "left":
         parts += [
-            f"{sel} .cs-conversion {{ align-items: flex-start; text-align: left; }}",
-            f"{sel} .cs-conversion-sec {{ justify-content: flex-start; }}",
+            # container law (fid10): same spine discipline as `right` — the old
+            # `justify-content: flex-start` pinned the 46rem column to the section's
+            # PADDING edge (spacing-audit off-ladder centering: gutters 40px/664px
+            # where the source anchors copy at the page container's edge).
+            # contain-exempt: side-anchor RELEASE (mirror of `right` above).
+            f"{sel} .cs-conversion {{ align-items: flex-start; text-align: left;"
+            f" max-width: var(--content-measure, 86rem); }}",
+            f"{sel} .cs-conversion .c-heading {{ max-width: var(--cs-stack-measure, 46rem); }}",
         ]
     return "\n".join(parts)
 
@@ -4046,26 +7144,94 @@ def layout_placement_css(sel: str, layout, resolved=None) -> str:
     gutter = str(g.get("gutter") or "").strip()
     if gutter and re.fullmatch(r"[\w.%()\s+*/-]+", gutter):
         decls.append(f"--grid-gutter: {gutter};")
+        # a DECLARED gutter also drives the module grid's wrap-row rhythm (fid6
+        # 2026-07): uniform N-up card grids ride the same measured gap both axes.
+        decls.append(f"--grid-gutter-row: {gutter};")
+        # …and the card grid's own column rung (spacing remediation B6 2026-07):
+        # .cs-modules--cols prefers the brand's grid-gap token over the page split
+        # gutter, so a section-declared gutter must outrank the token too.
+        decls.append(f"--grid-gutter-col: {gutter};")
     side = layout.get("_floatSide")
     if side in ("left", "right"):
         decls.append(f"--c-float-side: {side};")
+    # stamped per-pattern action-group override (brand-schema §4.4f): THIS band's
+    # measured row layout outranks the brand-default action-group law.
+    ag = layout.get("_actionGroup") if isinstance(layout.get("_actionGroup"), dict) else {}
+    if ag:
+        ag_groups = ", ".join(f"{sel} {g}" for g in _AG_GROUPS)
+        gap = str(ag.get("gap") or "").strip()
+        if re.fullmatch(r"[\d.]+(?:rem|em|px)", gap):
+            out.append(f"{ag_groups} {{ gap: {gap}; }}")
+        ma = str(ag.get("marginAbove") or "").strip()
+        if re.fullmatch(r"[\d.]+(?:rem|em|px)", ma):
+            out.append(f"{ag_groups} {{ margin-block-start: {ma}; }}")
+        # alignment ownership (fix3): a pattern-scoped align/crossAlign override
+        # claims the placement properties at #sec-N specificity — over the brand
+        # law AND over any context habit (same discipline as action_group_css).
+        align = str(ag.get("align") or "").strip().lower()
+        if align in _AG_JUSTIFY:
+            out.append(f"{ag_groups} {{ justify-content: {_AG_JUSTIFY[align]}; }}")
+        cross = str(ag.get("crossAlign") or "").strip().lower()
+        if cross in ("start", "center", "end", "stretch"):
+            flex = {"start": "flex-start", "end": "flex-end"}.get(cross, cross)
+            out.append(f"{ag_groups} {{ align-items: {flex}; }}")
+    # event scaffolds (2026-07): stamped bento/tier PATTERN FACTS → per-section vars.
+    # The cell gap is a knob (validated CSS length), the collapse tier a px container
+    # query below — the no-fact degrade is the scaffold's structural floor only.
+    bn = layout.get("_bento") if isinstance(layout.get("_bento"), dict) else {}
+    tr = layout.get("_tiers") if isinstance(layout.get("_tiers"), dict) else {}
+    for stamp in (bn, tr):
+        gap = str(stamp.get("gap") or "").strip()
+        if gap and re.fullmatch(r"[\w.%()\s+*/-]+", gap):
+            decls.append(f"--bn-gap: {gap};")
     if decls:
         out.append(f"{sel} {{ {' '.join(decls)} }}")
+    for stamp, rules in ((bn, f"{sel} .cs-bento {{ grid-template-columns: 1fr; }} "
+                              f"{sel} .cs-bento-cell {{ grid-column: auto; grid-row: auto; }}"),
+                         (tr, f"{sel} .cs-tiers {{ grid-template-columns: 1fr; }}")):
+        try:
+            px = int(stamp.get("collapseAt"))
+        except (TypeError, ValueError):
+            continue
+        out.append(f"@container frame (max-width: {px}px) {{ {rules} }}")
+    # OBSERVED COLUMN TIERS (fid6 2026-07): the extracted pattern's measured
+    # responsive column counts (recorded evidence, e.g. a 3-up grid the source
+    # re-wraps to 2-up below its tablet register) re-scope --grid-cols through
+    # container queries against the page frame — the canonical-tier count above
+    # stays the default. Scoped `{sel} .cs-section` so the rule works in both the
+    # full-page path (#sec-N wrapper) and the single-section path (sel=body, where
+    # body itself is the queried container and cannot match inside @container).
+    tiers = g.get("columnsTiers") if isinstance(g.get("columnsTiers"), list) else []
+    for t in sorted((t for t in tiers if isinstance(t, dict)),
+                    key=lambda t: -(t.get("maxViewportPx") or 0)):
+        try:
+            px = int(t["maxViewportPx"])
+            n = max(1, int(t["columns"]))
+        except (KeyError, TypeError, ValueError):
+            continue
+        out.append(f"@container frame (max-width: {px}px) {{ "
+                   f"{sel} .cs-section {{ --grid-cols: {n}; }} }}")
     if not out:
         return ""
     return "/* per-section placement (composition.v1 §4.6.5) */\n" + "\n".join(out)
 
 
-def scaffold_css(doc, layout, style_ctx=None) -> str:
+def scaffold_css(doc, layout, style_ctx=None, brand_yaml=None) -> str:
     """Return the base scaffold + this layout's archetype geometry. Brand-token driven,
     container-query / rem units only (never viewport). Vertical rhythm (section padding +
     inter-block gaps) comes from ``rhythm_for`` — brand spacing tokens preferred, else the
-    active style's spacing scale."""
+    active style's spacing scale. ``brand_yaml`` (optional) lets the device scaffolds
+    consume brand-derived grammar (fid14 grid equalization); None keeps them built-in."""
     role, _surf = resolve_surface_intent(doc, layout)
     archetype = (layout.get("archetype") or "stack").lower()
     primary = _primary_scaffold_for(layout)
     if primary:
         arch_css = primary
+    elif archetype == "stack" and scaffold_key(layout) == "faq":
+        # composition-declared FAQ (event-scaffolds 2026-07): the useCase route has
+        # no patternRef for the id registry to key on — dispatch parity with
+        # compose_stack, same discipline as the conversion branch below.
+        arch_css = SCAFFOLD_FAQ_CSS
     elif archetype == "stack" and scaffold_key(layout) == "conversion":
         # DISPATCH PARITY (sysfix 2026-07): scaffold_key mirrors compose_stack exactly
         # (patternRef/id, hero useCase, then form OR button contracts). The old
@@ -4073,6 +7239,12 @@ def scaffold_css(doc, layout, style_ctx=None) -> str:
         # conversion's `.cs-conversion` markup — correct markup, zero matching CSS,
         # so the centered narrow column never happened.
         arch_css = SCAFFOLD_CONVERSION_CSS
+        # inset-panel presentation CSS rides ONLY stamped sections (AS-37 discipline).
+        if layout.get("_insetPanel") is not None:
+            arch_css = arch_css + "\n" + SCAFFOLD_CONVERSION_PANEL_CSS
+        # full-bleed art band (fid5): same conditional-shipping discipline.
+        if layout.get("_artSurface") is not None:
+            arch_css = arch_css + "\n" + SCAFFOLD_CONVERSION_BAND_CSS
     else:
         arch_css = _ARCHETYPE_SCAFFOLD.get(archetype, SCAFFOLD_HERO_CSS)
     extra = _scaffold_extra_for(layout)
@@ -4084,25 +7256,341 @@ def scaffold_css(doc, layout, style_ctx=None) -> str:
         arch_css = arch_css + "\n" + SCAFFOLD_ART_PANEL_CSS
     # P2 interaction devices: same conditional-shipping discipline as the art panel —
     # each device's CSS rides only with a layout stamped for it (stamp_pattern_devices).
-    arch_css = arch_css + device_scaffold_css([layout])
+    arch_css = arch_css + device_scaffold_css(
+        [layout], equalize_grammar=grid_equalize_grammar(brand_yaml))
+    # shared disclosure MOTION (AS-47): rides any details-emitting family on this
+    # layout when the brand carries motion facts — one source for every lane.
+    arch_css = arch_css + disclosure_motion_css(doc, [layout])
+    # RELATIONAL LADDER (AS-48): the no-gap per-pair stack mechanic, appended AFTER
+    # the archetype scaffolds so its same-specificity overrides win by order — ""
+    # for ladder-less brands (uniform gap stays their degrade).
+    arch_css = arch_css + relational_ladder_css(doc)
+    # ACTION-GROUP law (fix2, brand-schema §4.4f): after the ladder so a measured
+    # marginAbove LENGTH outranks the rung by order; "" for fact-less brands.
+    _ag_css = action_group_css(doc)
+    if _ag_css:
+        arch_css = arch_css + "\n" + _ag_css
+    # card PLATES on the contained grid (fid2 2026-07): the plate/person anatomy CSS
+    # rides cards sections of brands whose card device declares a Container surface
+    # (card_panel_role) — edge-cut sections already carry it via the device scaffold.
+    if archetype == "cards" and layout.get("_edgeCut") is None \
+            and card_panel_role(doc) is not None:
+        arch_css = arch_css + "\n" + SCAFFOLD_CARD_PLATE_CSS
     return rhythm_vars_css(doc, style_ctx, role) + "\n" + SCAFFOLD_BASE_CSS + "\n" + arch_css
 
 
-def device_scaffold_css(layouts) -> str:
+def device_scaffold_css(layouts, equalize_grammar: str | None = None) -> str:
     """The P2 interaction-device scaffolds needed by ANY of ``layouts`` (marquee /
     accordion open-state / edge-cut carousel), concatenated — "" when none is stamped,
     so pages without the devices ship byte-identical CSS (AS-37 discipline).
     ``is not None`` (not truthiness): an EMPTY hint dict is a valid stamp — a device
-    treatment with no role refs still composes the device (idle presentation)."""
+    treatment with no role refs still composes the device (idle presentation).
+
+    ``equalize_grammar`` (fid14, AS-50): the brand's derived grid-equalization grammar
+    (grid_equalize_grammar). The bento/tiers card scaffolds ship the equalized
+    morphology by construction (row stretch + pinned action rows) — that already IS
+    the ``stretch`` grammar; a brand whose observed card grids all HUG gets a release
+    override so the generated scaffolds follow the same grammar the pattern-backed
+    grids do. None (fact-less brand) keeps the built-in behavior byte-identical."""
     ls = [l for l in (layouts or []) if isinstance(l, dict)]
     parts = []
     if any(l.get("_marquee") is not None for l in ls):
         parts.append(SCAFFOLD_MARQUEE_CSS)
+    # event scaffolds (2026-07): bento mosaic / pricing tiers / signup form / FAQ
+    # state grammar ride the same stamp-gated shipping — pages without the stamps
+    # keep byte-identical CSS.
+    if any(l.get("_bento") is not None for l in ls):
+        parts.append(SCAFFOLD_BENTO_CSS)
+        if equalize_grammar == "hug":
+            parts.append("/* brand grid grammar: hug — release the bento equalization"
+                         " (AS-50) */\n.cs-bento { align-items: start; }\n"
+                         ".cs-bento-cell .c-arrow-link, .cs-bento-cell .c-person {"
+                         " margin-top: 0; }")
+    if any(l.get("_tiers") is not None for l in ls):
+        parts.append(SCAFFOLD_TIERS_CSS)
+        if equalize_grammar == "hug":
+            parts.append("/* brand grid grammar: hug — release the tier equalization"
+                         " (AS-50) */\n.cs-tiers { align-items: start; }\n"
+                         ".cs-tier > .c-button, .cs-tier > .c-arrow-link {"
+                         " margin-top: 0; }")
+    if any(l.get("_formFields") is not None for l in ls):
+        parts.append(SCAFFOLD_SIGNUP_CSS)
+    if any((l.get("_faq") or {}).get("activeSurface") or (l.get("_faq") or {}).get("hoverWash")
+           for l in ls):
+        parts.append(SCAFFOLD_FAQ_STATE_CSS)
     if any(l.get("_accordion") is not None for l in ls):
         parts.append(SCAFFOLD_ACCORDION_CSS)
+        # per-item MEDIA-SWAP pairing rules (fid5 2026-07): one rule per bound item
+        # index (composer-stamped _accordion.mediaIdx) — the open <details> drives
+        # its own media layer via :has(), scoped structurally to any .cs-acc-split
+        # instance. No bound media anywhere ⇒ no rules (byte-identical CSS).
+        idxs = sorted({int(i) for l in ls
+                       for i in ((l.get("_accordion") or {}).get("mediaIdx") or [])})
+        if idxs:
+            parts.append("\n".join(
+                f'.cs-acc-split:has(.c-acc-item[data-acc-media="{i}"][open]) '
+                f'.cs-acc-media-item[data-acc-i="{i}"] {{ opacity: 1; }}'
+                for i in idxs))
     if any(l.get("_edgeCut") for l in ls):
         parts.append(SCAFFOLD_EDGECUT_CSS)
+    # fix1 2026-07 devices: split-panel carousel / tab switcher / section headrow
+    # rail (+ split intro) / side-rail card counterweight — same stamp-gated
+    # shipping; brands without the pattern facts keep byte-identical CSS.
+    if any(l.get("_carousel") is not None for l in ls):
+        parts.append(SCAFFOLD_PANELCAR_CSS)
+    if any(l.get("_tabs") is not None for l in ls):
+        parts.append(SCAFFOLD_TABS_CSS)
+    if any(l.get("_headRail") is not None or l.get("_introSplit") for l in ls):
+        parts.append(SCAFFOLD_HEADRAIL_CSS)
+    if any(l.get("_sideRail") for l in ls):
+        parts.append(SCAFFOLD_SIDERAIL_CSS)
     return ("\n" + "\n".join(parts)) if parts else ""
+
+
+def _disclosure_motion_block(item: str, trigger: str, marker: str) -> str:
+    """One details-based disclosure family's motion rules, selector-parameterized —
+    the ONE template both the accordion device and the FAQ scaffold ride (AS-46/47:
+    no private forks of the same mechanic). Emitted ONLY by disclosure_motion_css,
+    which gates on the brand's motion facts — every timing/easing value here is a
+    BARE brand alias (no literal fallbacks: the block never ships without the facts).
+    Panel height animates 0 -> auto on the platform's ::details-content slot — the
+    <details name=…>-compatible equivalent of the grid-rows 0fr->1fr trick (closed
+    details content is display-locked, so a grid-rows transition can never run on
+    it). Browsers without ::details-content / interpolate-size keep the instant
+    toggle; reduced-motion disables the panel tween."""
+    return f"""/* ANIMATED DISCLOSURE (shared source, AS-47): state fade on the brand's fast tier,
+   marker turn + panel height on the structural-collapse tier, brand primary curve. */
+{item} {{ interpolate-size: allow-keywords;
+  transition: background-color var(--c-motion-fast) var(--c-ease),
+              color var(--c-motion-fast) var(--c-ease); }}
+{trigger} {{ transition: background-color var(--c-motion-fast) var(--c-ease); }}
+{marker} {{ transition: transform var(--c-motion-base) var(--c-ease); }}
+{item}::details-content {{ display: block; block-size: 0; overflow-y: clip;
+  transition: block-size var(--c-motion-base) var(--c-ease),
+              content-visibility var(--c-motion-base) allow-discrete; }}
+{item}[open]::details-content {{ block-size: auto; }}
+@media (prefers-reduced-motion: reduce) {{
+  {item}::details-content {{ transition: none; }} }}"""
+
+
+def disclosure_motion_css(doc, layouts) -> str:
+    """The shared disclosure-motion CSS for every details-emitting scaffold among
+    ``layouts`` (accordion device rows, FAQ/agenda rows) — "" when none is present
+    OR when the brand carries no captured motion language (AS-47: interactive state
+    grammar ships WITH its captured motion wherever the mechanic renders; a brand
+    with no motion facts degrades to the instant toggle, never to invented timing).
+    The gate reads the brand's authored motion trio + easing (voice.motionSpec, the
+    same REQUIRED facts the --c-motion-*/--c-ease aliases are generated from), so
+    the bare alias references below always resolve when the block ships."""
+    ls = [l for l in (layouts or []) if isinstance(l, dict)]
+    if not ls:
+        return ""
+    spec = cr.motion_spec(doc)
+    if not (spec.get("ease") and spec.get("fast") and spec.get("base")):
+        return ""
+    parts = []
+    if any(l.get("_accordion") is not None for l in ls):
+        parts.append(_disclosure_motion_block(
+            ".c-acc-item", ".c-acc-trigger", ".c-acc-chev"))
+    if any(((l.get("archetype") or "stack").lower() == "stack"
+            and scaffold_key(l) == "faq") for l in ls):
+        parts.append(_disclosure_motion_block(
+            ".c-faq-item", ".c-faq-q", ".c-faq-icon"))
+    return ("\n" + "\n".join(parts)) if parts else ""
+
+
+def has_relational_ladder(doc) -> bool:
+    """True when the brand authored the full relational PAIR trio (tokens.spacing
+    eyebrow-to-heading + heading-to-body + body-to-cta, each with a value) — the gate
+    for the no-gap stack mechanic (AS-48). The block/column rungs are optional riders:
+    inside the gated block they degrade through var() chains, never re-gate it."""
+    spacing = ((doc or {}).get("tokens") or {}).get("spacing") or {}
+    def _has(key):
+        node = spacing.get(key)
+        return bool(node.get("value") if isinstance(node, dict) else node)
+    return all(_has(k) for k in ("eyebrow-to-heading", "heading-to-body", "body-to-cta"))
+
+
+# Header/anatomy stack containers the ladder mechanic converts: each is a flex COLUMN
+# whose children form the label -> headline -> description -> action run (or a subset).
+# Grid/card gutters and control rows are NOT here — those legitimately stay gap-based
+# (riding their own measured row/column facts where captured).
+# THIS TUPLE IS THE ONE REGISTRY (spacing remediation B5 2026-07): every scaffold
+# that stacks label/headline/body/action content must be listed here (or carry its
+# own explicit seam rules) — test_spacing_remediation.py guards the known families
+# so a NEW stack scaffold fails loudly instead of silently shipping 0px seams.
+# .cs-split-intro joined in B5: its bare heading+paragraph pairs rendered 0px
+# (only the .c-header-wrapped variant had a seam rule).
+_LADDER_STACKS = (".cs-faq", ".cs-foot", ".cs-hero-panel-content", ".cs-conversion",
+                  ".cs-statement-text", ".cs-quote-text", ".cs-collage-body",
+                  ".cs-gallery-head", ".cs-ruledlist", ".cs-split-intro")
+# pair vocabulary (element-classed runs): what can open a seam on the left and what
+# closes it on the right, per rung.
+_LADDER_HEADS = (".c-header", ".c-heading", ".cs-title")
+_LADDER_BODIES = (".c-paragraph", ".cs-sub")
+_LADDER_ACTION_LEFTS = (".c-paragraph", ".cs-sub", ".c-caption", ".c-header",
+                        ".c-heading", ".cs-title")
+_LADDER_ACTIONS = (".cs-hero-actions", ".cs-conversion-actions", ".c-form",
+                   ".cs-signup-panel", ".c-arrow-link", ".c-button")
+
+# ── ACTION-GROUP facts (fix2 2026-07): measured multi-action row layout ──────────
+_AG_GROUPS = (".cs-hero-actions", ".cs-modules-actions", ".cs-conversion-actions")
+
+
+def action_group_facts(doc, layout=None) -> dict:
+    """Resolve the brand's measured action-row layout facts (brand-schema §4.4f):
+    brand-level `layoutGrammar.actionGroup` merged under the pattern's stamped
+    `_actionGroup` override. Empty dict ⇒ no facts (structural defaults hold)."""
+    brand = ((doc.get("layoutGrammar") or {}).get("actionGroup") or {})
+    if not isinstance(brand, dict):
+        brand = {}
+    over = (layout or {}).get("_actionGroup") or {}
+    merged = {**brand, **over}
+    keys = ("gap", "align", "marginAbove", "crossAlign")
+    return merged if any(merged.get(k) for k in keys) else {}
+
+
+def _ag_px(value) -> float | None:
+    """CSS length → px at the 16px root (rem/em action rows are root-relative)."""
+    m = re.fullmatch(r"([\d.]+)(rem|em|px)", str(value or "").strip())
+    if not m:
+        return None
+    n = float(m.group(1))
+    return n * 16.0 if m.group(2) in ("rem", "em") else n
+
+
+def ag_attrs(doc, layout=None) -> str:
+    """Declaration stamps for one emitted action row: `data-ag-gap` (resolved px)
+    + `data-ag-align`. AS-60 and the spacing auditor audit the rendered group
+    against its OWN stamped declaration. No facts ⇒ no stamps (degrade)."""
+    facts = action_group_facts(doc, layout)
+    if not facts:
+        return ""
+    out = ""
+    gap_px = _ag_px(facts.get("gap"))
+    if gap_px is not None:
+        out += f' data-ag-gap="{gap_px:g}"'
+    align = str(facts.get("align") or "").strip().lower()
+    if align in ("start", "center", "end"):
+        out += f' data-ag-align="{align}"'
+    return out
+
+
+_AG_JUSTIFY = {"start": "flex-start", "center": "center", "end": "flex-end"}
+
+
+def action_group_css(doc) -> str:
+    """Brand-default action-row LAW (brand-schema §4.4f): the measured inter-action
+    gap (+ the marginAbove seam when the fact is a length rather than `ladder`)
+    emitted once per page over the scaffold's structural defaults.
+
+    ALIGNMENT OWNERSHIP (fix3, the centering-leak fix): a declared `align` fact now
+    claims the MAIN-AXIS placement property itself — `justify-content` on every
+    emitted group — instead of trusting each scaffold's habit. Box-level centering
+    (`margin-inline: auto` + max-width, the vector that actually displaced the
+    stamped side-rail group) is not claimed here because the containment law
+    already neutralized it structurally: contained groups span their column
+    (width: 100%), so auto margins never see free space. Contexts that OWN their
+    anchor (centered hero foot / panel / [data-align="centered"] / per-#sec-N
+    anchors) keep winning by selector specificity — the schema's sanctioned
+    exception, unchanged.
+
+    CROSS-AXIS is evidence-gated: the scaffold's structural `align-items: center`
+    (vertically centering unequal-height actions) holds unless the brand authored
+    `crossAlign` (start|center|end|stretch) — only then does the law claim
+    `align-items`. No facts ⇒ empty string (structural defaults hold
+    byte-identically)."""
+    facts = action_group_facts(doc)
+    if not facts:
+        return ""
+    groups = ", ".join(_AG_GROUPS)
+    parts = [f"/* ── ACTION-GROUP law (fix2): measured multi-action row facts ── */"]
+    gap = str(facts.get("gap") or "").strip()
+    if re.fullmatch(r"[\d.]+(?:rem|em|px)", gap):
+        parts.append(f"{groups} {{ gap: {gap}; }}")
+    ma = str(facts.get("marginAbove") or "").strip()
+    if re.fullmatch(r"[\d.]+(?:rem|em|px)", ma):
+        # a LENGTH seam overrides the ladder rung (source order: this block emits
+        # after relational_ladder_css); `ladder` (or absence) rides the rung.
+        parts.append(f"{groups} {{ margin-block-start: {ma}; }}")
+    align = str(facts.get("align") or "").strip().lower()
+    if align in _AG_JUSTIFY:
+        parts.append(f"{groups} {{ justify-content: {_AG_JUSTIFY[align]}; }}")
+    cross = str(facts.get("crossAlign") or "").strip().lower()
+    if cross in ("start", "center", "end", "stretch"):
+        flex = {"start": "flex-start", "end": "flex-end"}.get(cross, cross)
+        parts.append(f"{groups} {{ align-items: {flex}; }}")
+    return "\n".join(parts) if len(parts) > 1 else ""
+
+
+def relational_ladder_css(doc) -> str:
+    """The RELATIONAL-LADDER stack mechanic (AS-48), one shared source for every lane:
+    when the brand authored the pair trio, header/anatomy stacks become NO-GAP columns
+    and every seam is a per-pair margin riding the brand's own ladder tokens — the
+    source mechanic itself (a flex column with no gap; each element carries its
+    semantic margin). Uniform stack gap survives ONLY as the degrade for brands
+    without ladder evidence (this function returns "" and nothing changes).
+
+    Seam grammar (generic roles, never section-specific):
+      eyebrow -> heading   --space-eyebrow-to-heading (the .cs-eyebrow-wrap's own
+                           margin-bottom, --c-eyebrow-gap, already rides it)
+      heading -> body      --space-heading-to-body (body meta captions ride it too)
+      body    -> action    --space-body-to-cta
+      block   -> block     --space-block-to-block (content-block row rhythm; degrades
+                           to the uniform --c-block-gap when the rung is un-authored)
+    The .cs-flow lane is contract-precise: compose_flow stamps each item's semantic
+    row (data-row) so pair seams key on the CONTENT relationship, not markup order."""
+    if not has_relational_ladder(doc):
+        return ""
+    block = "var(--space-block-to-block, var(--c-block-gap))"
+    all_stacks = ", ".join(_LADDER_STACKS)
+    seams = ", ".join(f"{c} > * + *" for c in _LADDER_STACKS)
+    wrap_seams = ", ".join(f"{c} > .cs-eyebrow-wrap + *" for c in _LADDER_STACKS)
+    head_body = ", ".join(f"{c} > {h} + {b}" for c in _LADDER_STACKS
+                          for h in _LADDER_HEADS for b in _LADDER_BODIES)
+    body_meta = ", ".join(f"{c} > {b} + .c-caption" for c in _LADDER_STACKS
+                          for b in _LADDER_BODIES)
+    body_action = ", ".join(f"{c} > {l} + {a}" for c in _LADDER_STACKS
+                            for l in _LADDER_ACTION_LEFTS for a in _LADDER_ACTIONS)
+    return f"""
+/* ── RELATIONAL LADDER (AS-48): the brand's measured per-pair rhythm ─────────────
+   Header/anatomy stacks are NO-GAP columns; every seam is a per-pair margin riding
+   the authored ladder rungs (the source's own mechanic). Uniform gap is only the
+   no-ladder degrade — it never renders when this block ships. */
+{all_stacks} {{ gap: 0; }}
+{seams} {{ margin-block-start: {block}; }}
+/* label->headline: the eyebrow wrap's own margin-bottom (--c-eyebrow-gap == the
+   authored rung) IS the seam — the follower opens none of its own. */
+{wrap_seams} {{ margin-block-start: 0; }}
+{head_body} {{ margin-block-start: var(--space-heading-to-body); }}
+{body_meta} {{ margin-block-start: var(--space-heading-to-body); }}
+{body_action} {{ margin-block-start: var(--space-body-to-cta); }}
+/* the header CLUSTER itself (eyebrow -> heading -> optional typographic cta) */
+.c-header {{ gap: 0; }}
+.c-header > * + * {{ margin-block-start: var(--c-eyebrow-gap); }}
+.c-header > * + .c-arrow-link {{ margin-block-start: var(--space-body-to-cta); }}
+/* generic flow: contract-precise seams on the stamped semantic rows */
+.cs-flow {{ gap: 0; }}
+.cs-flow > * + * {{ margin-block-start: {block}; }}
+/* the headrail's own margin-bottom IS its seam (recipe railToHeading fact or the
+   structural default) — the follower opens none of its own (fix2; same discipline
+   as the eyebrow-wrap rule above). */
+.cs-flow > .cs-headrail + * {{ margin-block-start: 0; }}
+.cs-flow > [data-row="eyebrow"] + * {{ margin-block-start: var(--space-eyebrow-to-heading); }}
+.cs-flow > [data-row="heading"] + [data-row="body"] {{ margin-block-start: var(--space-heading-to-body); }}
+.cs-flow > [data-row="body"] + [data-row="action"],
+.cs-flow > [data-row="heading"] + [data-row="action"] {{ margin-block-start: var(--space-body-to-cta); }}
+@media (max-width: 767px) {{ .cs-flow {{ gap: 0; }} }}
+/* intro headers over module grids: the header->content seam is the brand's row
+   rhythm. The bounded header measure caps the header RUN inside the intro (the
+   source mechanic: a full-measure container whose header stack is measure-capped
+   and rides the resolved anchor) — capping the .cs-modules-intro CONTAINER itself
+   would fight the shared container centering (margin-inline: auto) and float a
+   left-anchored header off the content edge (fid12). */
+.cs-modules-intro {{ margin-bottom: {block}; }}
+.cs-modules-intro > * {{ max-width: var(--space-header-measure, none); }}
+.cs-modules-actions {{ margin-block-start: {block}; }}
+.cs-faq {{ max-width: var(--space-header-measure, 52rem); }}"""
 
 
 def root_vars(doc, surf, *, display_size, title_overlap, surface_role=None) -> str:
@@ -4152,8 +7640,16 @@ def root_vars(doc, surf, *, display_size, title_overlap, surface_role=None) -> s
      lines instead of floating. --col resolves its 100% against the element it is used
      on (the section's shared-measure container). */
   --grid-cols: 12; /* provenance: structural — shared registration grid */
-  --grid-gutter: 6rem; /* provenance: structural — registration gutter unit */
-  --content-measure: 86rem; /* provenance: structural — shared content measure */
+  /* registration gutter: the brand's measured split-column rung when the ladder
+     authored one (fid11: tokens.spacing.column-to-column), else the structural unit */
+  --grid-gutter: var(--space-column-to-column, 6rem);
+  /* the shared content measure rides the brand's MEASURED container LAW when the
+     spacing ladder authored one (fid10 2026-07: tokens.spacing.container-span — a
+     fluid min(NNcqw, cap) expression from the tier containerFacts), else the measured
+     container cap (fid6 2026-07: tokens.spacing.container-max — e.g. a 1216px
+     measured content column was rendering at the 86rem structural default,
+     inflating every section ~13% vs source); 86rem stays the ladder-less default. */
+  --content-measure: var(--space-container-span, var(--space-container-max, 86rem));
   --baseline: 0.5rem; /* provenance: structural — vertical registration unit */
   --col: calc((100% - 11 * var(--grid-gutter, 6rem)) / 12);
 }}
@@ -4285,7 +7781,7 @@ def build_document(doc, layout, brand_yaml, style_ctx: RenderContext) -> str:
                          surface_role=role)
     css = vars_css + "\n" + cr.COMPONENT_CSS + cr.structural_variant_css(doc) \
         + "\n" + cr.link_hover_css(doc) + cr.nav_hover_css(doc) \
-        + "\n" + scaffold_css(doc, layout, style_ctx) \
+        + "\n" + scaffold_css(doc, layout, style_ctx, brand_yaml=brand_yaml) \
         + eyebrow_register_css(doc, layout, ":root")
     if ctx.style_active:
         css += "\n" + style_override_css(style_ctx)
@@ -4305,15 +7801,36 @@ def build_document(doc, layout, brand_yaml, style_ctx: RenderContext) -> str:
     treat_css = pattern_treatment_css(pattern)
     if treat_css:
         css += "\n" + treat_css
-    pat_attr = f' data-pattern="{cr.esc(pattern.id)}" data-pattern-lib="{cr.esc(pattern.lib)}"' \
-        if pattern else ""
-    pat_comment = (f"\n<!-- layout pattern REUSED ({match_kind}): {pattern.lib}:{pattern.id}"
-                   f" — {cr.esc(pattern.intent)} -->" if pattern else "")
+    # GRID EQUALIZATION (fid14, AS-50): the pattern's measured gridEqualize fact drives
+    # card-row height behavior in this single-section render too (bare selectors — no
+    # #sec-N wrapper here). "" for fact-less patterns.
+    equalize_css = pattern_equalize_css(pattern)
+    if equalize_css:
+        css += "\n" + equalize_css
+    card_rhythm_css = pattern_card_rhythm_css(pattern)
+    if card_rhythm_css:
+        css += "\n" + card_rhythm_css
+    # retrieval outcome is a visible stamp either way (W6): hits carry id+lib+kind,
+    # an honest MISS carries the advisory attr + comment; kind "none" (no brand /
+    # library plumbing) stays unstamped so legacy renders are byte-identical.
+    if pattern:
+        pat_attr = (f' data-pattern="{cr.esc(pattern.id)}" '
+                    f'data-pattern-lib="{cr.esc(pattern.lib)}" '
+                    f'data-pattern-match="{cr.esc(match_kind)}"')
+        pat_comment = (f"\n<!-- layout pattern REUSED ({match_kind}): "
+                       f"{pattern.lib}:{pattern.id} — {cr.esc(pattern.intent)} -->")
+    elif match_kind == "miss":
+        pat_attr = ' data-pattern-match="miss"'
+        pat_comment = ("\n<!-- layout pattern: MISS — no library pattern matched this "
+                       "section's use-case/shape; composed from the archetype default -->")
+    else:
+        pat_attr, pat_comment = "", ""
 
-    # ALIGNMENT RESOLUTION (AS-18) — same chain as the full-page path: section-explicit >
-    # pattern contentShape.alignment > style role default; emitted body-scoped and
-    # stamped on <html> (single-section renders have no #sec-N wrapper).
-    resolved_align = resolve_alignment(layout, pattern, style_ctx)
+    # ALIGNMENT RESOLUTION (AS-18/AS-49) — same chain as the full-page path: section-
+    # explicit > pattern contentShape.alignment > brand layoutGrammar.headerContext >
+    # style role default; emitted body-scoped and stamped on <html> (single-section
+    # renders have no #sec-N wrapper).
+    resolved_align = resolve_alignment(layout, pattern, style_ctx, doc=doc)
     align_attr = align_stamp_attrs(resolved_align)
     placement_css = layout_placement_css("body", layout, resolved=resolved_align)
     if placement_css:
@@ -4321,6 +7838,10 @@ def build_document(doc, layout, brand_yaml, style_ctx: RenderContext) -> str:
 
     face_css = font_face_css(Path(brand_yaml).parent, doc) if brand_yaml else ""
     parallax_css = cr.parallax_css(doc)  # "" unless the brand declared imageParallax
+    # Structural interaction blocks are signature-gated against the assembled section.
+    # This includes the shared image loading/error lifecycle; image-less documents emit
+    # no initializer, while cached and lazy `.c-image` assets share the same state law.
+    ix_script = cr.interaction_script(section_html)
 
     html_attr = f' data-style="{style_ctx.style_id}"' if ctx.style_active else ""
     if ctx.style_active:
@@ -4356,6 +7877,7 @@ body {{ min-height: 100%; container-type: size; container-name: frame; }}
 <!-- Section composed from the brand catalog: each slot is a catalog component rendered
      by component_render.py (the SAME renderers the components-preview gallery uses). -->
 {section_html}
+{ix_script}
 {cr.parallax_script_tags(doc)}
 </body>
 </html>

@@ -90,6 +90,87 @@ def normalize_anchor(value, *, where: str = "") -> str | None:
     return a
 
 
+# ── the recipe object (brand-owned component recipes; fix2 2026-07) ─────────────
+# A RECIPE is a named recurring component anatomy the BRAND itself repeats across
+# sections (e.g. a section-opening head rail: kicker + leader rule + trailing quiet
+# CTA). Recipes live in the brand's OWN layout-library.yaml under `recipes:` —
+# never in shared code — and are written DURING EXTRACTION (layout-analyst-skill
+# §recipes): the grounding pass names anatomies seen in 2+ crops, the author
+# records the recipe + its variants + use cases, and patterns bind to it via
+# `recipeRef: {recipe, variant}`. Composers consume the resolved variant's
+# measured facts; the C23 validator advisory is the enforcement backstop.
+
+@dataclass
+class Recipe:
+    id: str
+    name: str
+    intent: str
+    anatomy: list[dict]            # ordered slots: {slot, role, required}
+    geometry: dict                 # shared measured facts (e.g. railAlignment: content)
+    variants: list[dict]           # [{id, useCase, <slot-fact maps>...}]
+    used_by: list[str]             # pattern ids bound to this recipe
+    origin: str                    # extracted | designed
+    provenance: list[str]
+    confidence: str
+    raw: dict = field(default_factory=dict)
+
+    def variant(self, variant_id: str | None) -> dict:
+        """Resolve one variant by id (None/miss -> first variant, else {}). A recipe
+        with no variants still resolves to {} so geometry-only recipes stay usable."""
+        vs = [v for v in (self.variants or []) if isinstance(v, dict)]
+        if not vs:
+            return {}
+        if variant_id:
+            for v in vs:
+                if str(v.get("id") or "") == str(variant_id):
+                    return v
+        return vs[0]
+
+
+def _recipe_from_dict(d: dict) -> Recipe:
+    return Recipe(
+        id=str(d.get("id")),
+        name=str(d.get("name") or d.get("id") or ""),
+        intent=str(d.get("intent") or ""),
+        anatomy=list(d.get("anatomy") or []),
+        geometry=d.get("geometry") or {},
+        variants=list(d.get("variants") or []),
+        used_by=[str(u) for u in (d.get("usedBy") or []) if u],
+        origin=str(d.get("origin") or "extracted"),
+        provenance=list(d.get("provenance") or []),
+        confidence=str(d.get("confidence") or "medium"),
+        raw=d,
+    )
+
+
+def load_recipes(brand_yaml: Path) -> list[Recipe]:
+    """Load the brand's recipes from its project layout-library.yaml. Missing library
+    or missing `recipes:` -> [] (recipes are brand data; there is no standard tier)."""
+    path = _project_library_path(brand_yaml)
+    if not path.exists():
+        return []
+    data = yaml.safe_load(path.read_text()) or {}
+    return [_recipe_from_dict(r) for r in (data.get("recipes") or [])
+            if isinstance(r, dict) and r.get("id")]
+
+
+def get_recipe(recipe_id: str, brand_yaml: Path) -> Recipe | None:
+    return next((r for r in load_recipes(brand_yaml) if r.id == str(recipe_id)), None)
+
+
+def resolve_recipe_ref(pattern: "Pattern", brand_yaml: Path) -> tuple[Recipe, dict] | None:
+    """Resolve a pattern's `recipeRef: {recipe, variant}` to (Recipe, variant-dict).
+    None when the pattern binds no recipe or the id dangles (composer degrades to its
+    structural device — a dangling ref must never hard-fail a render)."""
+    ref = (pattern.raw or {}).get("recipeRef")
+    if not isinstance(ref, dict) or not ref.get("recipe"):
+        return None
+    rec = get_recipe(str(ref["recipe"]), brand_yaml)
+    if rec is None:
+        return None
+    return rec, rec.variant(ref.get("variant"))
+
+
 # ── the pattern object ──────────────────────────────────────────────────────────
 
 @dataclass
@@ -135,6 +216,39 @@ class Pattern:
         return {"anchor": anchor,
                 "counterweight": a.get("counterweight"),
                 "inheritance": a.get("inheritance")}
+
+    @property
+    def grid_equalize(self) -> dict | None:
+        """The pattern's declared ``contentShape.gridEqualize`` fact (brand-schema
+        §4.4d): does the source equalize card heights per grid row, and the companion
+        anatomy that makes equalization work — ``{"heights": "stretch"|"hug",
+        "slack": <card slot absorbing the extra height>, "actionPinned": bool}``.
+        These travel together: equalization without the pinning fact produces floating
+        CTAs mid-card (AS-50). Returns None when the pattern records no stance or an
+        out-of-enum ``heights`` (resolution degrades to the scaffold default)."""
+        g = (self.content_shape or {}).get("gridEqualize")
+        if not isinstance(g, dict):
+            return None
+        heights = str(g.get("heights") or "").strip().lower()
+        if heights not in ("stretch", "hug"):
+            return None
+        return {"heights": heights,
+                "slack": str(g.get("slack") or "body"),
+                "actionPinned": bool(g.get("actionPinned"))}
+
+    def curation_for(self, aspect: str) -> dict | None:
+        """A curator's recorded resolution for ONE aspect of this pattern (brand-schema
+        §4.4c): ``curation: { <aspect>: { resolve, reason, by, ts } }`` on the pattern
+        mapping. Returns the aspect node verbatim or None. Curation is a
+        GENERATION-lane overlay — it resolves a reviewed fact-vs-grammar dissent
+        (the C18 advisory) toward the curator's ruling; the REPLICA lane never
+        consults it (it rebuilds the source 1:1 and its gate scores against the
+        source, so the measured fact stays that lane's truth)."""
+        cur = (self.raw or {}).get("curation")
+        if not isinstance(cur, dict):
+            return None
+        node = cur.get(aspect)
+        return node if isinstance(node, dict) else None
 
     def treatment_kinds(self) -> set[str]:
         return {str(t.get("kind")) for t in (self.special_treatments or []) if t.get("kind")}
@@ -387,12 +501,33 @@ _USECASE_KEYWORDS = {
 
 
 def infer_use_case(layout: dict) -> str:
+    """The retrieval bucket for a layout. Resolution order (W6, stress-playbook
+    2026-07):
+      1. a DECLARED use-case wins — the composition adapter stamps the authored
+         ``section.useCase`` on ``layout["_composition"]``; canonical values pass
+         through, semantic ones (process / conversion / …) map via the keyword
+         table;
+      2. keyword inference over the layout id + slot roles (unchanged);
+      3. NO MATCH -> "" (an unknown section belongs to NO retrieval bucket).
+    The old default was "hero", which scored hero patterns against arbitrary
+    sections — `hero-inset-noise-panel` stamped onto statement/comparison sections.
+    "" makes score_pattern's use-case gate fail every candidate -> honest miss."""
+    comp = layout.get("_composition")
+    declared = str((comp or {}).get("useCase") or "").strip().lower() \
+        if isinstance(comp, dict) else ""
+    if declared:
+        if declared in USE_CASES:
+            return declared
+        for uc, keys in _USECASE_KEYWORDS.items():
+            if any(k in declared for k in keys):
+                return uc
+        return ""   # declared but non-canonical (stats/statement/…): no bucket
     blob = (str(layout.get("id", "")) + " "
             + " ".join(str(s.get("role", "")) for s in (layout.get("slots") or []))).lower()
     for uc, keys in _USECASE_KEYWORDS.items():
         if any(k in blob for k in keys):
             return uc
-    return "hero"
+    return ""
 
 
 def _textlen_for(role: str, contract: str) -> str:
