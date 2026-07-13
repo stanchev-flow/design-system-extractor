@@ -634,27 +634,42 @@ override `surfaceIntent` to the target use-case's captured pattern surface; comp
 
 ---
 
-## AS-23 — Naked image slots (no placeholder backing)
+## AS-23 — Image backing outlives its loading/error state
 
-**Rule**: every content-image slot carries a PLACEHOLDER BACKING — a subtle diagonal
+**Rule**: every unresolved/loading or broken content-image slot carries a PLACEHOLDER
+BACKING — a subtle diagonal
 hatch (`repeating-linear-gradient(135deg, …13px/26px)`) built from the surface's OWN
 tokens: stripe A is `var(--c-paper)`, stripe B is `color-mix(in srgb, var(--c-paper) 93%,
-var(--c-ink))`. It shows while the photo loads, on a broken src, or wherever cover-fit
-leaves the frame unpainted — the frame never flashes the raw page background. The colors
-are NEVER hardcoded at system level (AS-01): the same one rule resolves to a deep-brown
-hatch on a dark section and a gently-shaded cream hatch on a light one.
+var(--c-ink))`. It shows while the image loads and remains on a broken src. After a
+successful load it must be removed completely: transparent pixels reveal the actual
+parent/surface behind the asset, never stripes. The colors are NEVER hardcoded at system
+level (AS-01): the same one rule resolves to a deep-brown hatch on a dark section and a
+gently-shaded cream hatch on a light one. State is load truth, not `src` presence:
+`data-load-state="loaded"` is stamped only after load (including cache-complete images);
+`error` retains the fallback, and lazy images transition when their eventual load fires.
+
+**Scope — ART-TAGGED media is exempt by contract**: non-photographic art (illustrations,
+product-UI graphics, marks — the renderer's `c-image--art` / `c-acc-media--contain`
+classes, driven by the brand's tagged asset inventory) deliberately keeps
+`background: none` as its JS-disabled safe fallback. The renderer's tag decision is the
+single shared law: the audit exempts exactly the classes the renderer stamps, never a
+parallel filename heuristic of its own (two independent judgments would drift — the W3
+failure class, where the audit flagged what the renderer did on purpose).
 
 **Why it happens**: images "always load" on the developer's machine, so the unpainted
 frame state is never seen; a backing added later gets hardcoded to the one brand being
-looked at, which is AS-01 with extra steps.
+looked at, or is left permanently on the `<img>` where transparent pixels expose it after
+load. The first is AS-01 with extra steps; the second conflates "has src" with "loaded."
 
 **Caught here**: WoodWave kit-field homepage review — image frames sat on the raw
 section background until load. Added as the system-level `.c-image` rule in
 `component_render.COMPONENT_CSS` (per-surface by construction since it reads
 `--c-paper`/`--c-ink`); on WoodWave's dark hero it resolves to rgb(58,45,31)/rgb(51,39,26).
 
-**Verify**: gate — `slop_audit.mjs` AS-23 check: every rendered content image's computed
-`background-image` contains `repeating-linear-gradient` (logos/icons under 80px exempt).
+**Verify**: gate — `slop_audit.mjs` AS-23 checks the lifecycle state against computed
+paint: unresolved/error images contain `repeating-linear-gradient`; successfully loaded
+images do not (logos/icons under 80px exempt; `.c-image--art` /
+`.c-acc-media--contain` exempt per the JS-disabled art contract above).
 
 ---
 
@@ -1325,6 +1340,622 @@ unreadable on its dark surface bands).
 family's preview CSS carries the color rule with the `opacity: 1` reset; composed
 page CSS carries no opacity-based disabled rules). Review — any new state CSS
 touching `disabled` in composers/kits greps clean of `opacity`/`grayscale`.
+
+---
+
+## AS-44 — Structural defaults competing with recorded pattern facts (facts must win)
+
+**Rule**: when a pattern's `contentShape` records presentation facts — `alignment`,
+`stackMeasure`, `bandPadding`, `deviceGeometry`, `mediaScale` — every composer that
+renders a section seeded from that pattern MUST resolve its alignment, geometry, and
+measure from those facts. The structural default (the generic split registration, the
+46rem column, the site-average rhythm, the left-anchor literal) is exclusively the
+DEGRADE for patterns without the fact — never a competing source of truth that a lane,
+adapter, or composer branch is allowed to fall back to while the fact exists upstream.
+A fact that is recorded but dropped anywhere along the resolution chain (pattern →
+composition → adapter → stamp → composer) is a bug in the chain, not a rendering choice.
+
+**Why it happens**: each adapter hop re-serializes the section into its own vocabulary,
+and any hop that doesn't model a fact silently drops it; the composer downstream still
+renders *something* (its structural default), so nothing fails loud. The output looks
+plausible in isolation — it only reads wrong next to the source or next to the other
+lane that kept the fact.
+
+**Caught here**: fid10 (2026-07) — the composed-from-catalog page rendered every
+section at structural defaults (hero collapsed to a narrow centered panel, accordion
+packed left with dead right space, split media cover-cropped) while the replica lane
+rendered the SAME patterns from the same library correctly: the catalog lane's
+`composition_to_doc` post-processed `composition_to_layout` differently from the
+replica lane, dropping the authored copy overlay and brand-layout declarations, and
+the fact stamps only fired on the lane that kept the `patternRef`.
+
+**Verify**: unit — `tests/test_fid10_lane_parity.py` (`LaneParityTest.
+test_stamp_parity_for_every_fact_class` asserts every stamped fact class survives the
+catalog path non-vacuously). Review — any new `contentShape` fact needs a consumer
+test proving the composed markup differs from the no-fact degrade.
+
+---
+
+## AS-45 — Centered stacks collapsing to hug/prose width (measure belongs to paragraphs)
+
+**Rule**: a section CONTAINER spans the shared content measure and centers itself
+(`max-width: var(--content-measure…); margin-inline: auto`) — a bare `max-width` with
+no centering margin is a left-packed band at any viewport wider than the measure. The
+prose measure (`ch`-based clamps) applies to PARAGRAPH slots only: headings, eyebrows,
+action rows, and media hug or span their own content INSIDE the full-measure container.
+A centered stack must never inherit a narrow slot's width — "hug" is a slot behavior,
+never a container behavior, and a container must never be sized by its narrowest child.
+
+**Why it happens**: one `max-width` on the wrapper "fixes" an over-wide band at the
+authoring viewport and nobody widens the window; a ch-clamp added for body text gets
+applied to every flow item because the loop doesn't branch by contract — the clamp
+resolves against the wrapper's inherited body size, so even headings wrap inside a
+~500px box and the whole stack reads collapsed.
+
+**Caught here**: fid6→fid10 (2026-07) — `SCAFFOLD_FLOW_CSS` carried `max-width: 72rem`
+with no `margin-inline: auto` (partner/badge/logo walls packed left with dead space
+right at wide viewports) and clamped every `.cs-flow-item` to 62ch (centered stacks
+collapsed to ~500px); the conversion stack's 46rem/40ch structural defaults did the
+same to a closing band measured at an 870px column.
+
+**Verify**: unit — `tests/test_fid10_lane_parity.py` (`ContainerLawTest`: flow, split,
+conversion panel, and page-footer content all cap at the shared measure AND center;
+prose clamps ride `--prose`/paragraph selectors only). Manual — view the composed page
+at ≥2× the content measure: every band's content column sits centered, none hug the
+left padding edge.
+
+---
+
+## AS-46 — Composition lanes with private adaptation forks (lane fact-parity)
+
+**Rule**: every lane that renders brand sections from patterns — the composed-from-
+catalog page, the replica assembler, the components-preview demo hydrator, and any
+future lane — MUST consume pattern facts through the SAME shared adaptation path (one
+function owning the brand-aware merge: authored copy overlay, brand-layout declaration
+ride-through, fact stamping). A lane must never re-implement its own partial copy of
+that post-processing: two hand-maintained copies WILL drift, and the drift is invisible
+until the lanes render the same section differently. When a lane needs an extra step,
+add it to the shared path (flag-gated if truly lane-specific), never as a private fork.
+
+**Why it happens**: the second lane starts as a copy-paste of the first lane's five
+post-processing lines ("it's just a pop and a merge"); the first lane later grows a
+sixth line (an authored-copy overlay, a declaration ride-through) and nobody remembers
+the copy exists. Each lane passes its own tests; only cross-lane comparison exposes it.
+
+**Caught here**: fid10 (2026-07) — `compose_replica.build_replica_page`,
+`render_components_preview.compose_pattern_docs`, and `compose_from_composition.
+composition_to_doc` each carried a private variant of the same adapt-section block; the
+catalog lane's variant skipped the authored `layoutCopy` merge and dropped
+`eyebrowRegister`, so the composed page lost authored headings/subheads and per-section
+eyebrow registers while the replica page kept them. All three now call
+`compose_from_composition.adapt_brand_section` — the single shared path.
+
+**Verify**: unit — `tests/test_fid10_lane_parity.py` (`LaneParityTest.
+test_catalog_path_matches_direct_path`: the catalog lane emits the SAME adapted layout
++ copy entry as calling the shared helper directly; `AdaptBrandSectionTest` locks the
+helper's merge semantics). Review — grep for `composition_to_layout(` call sites: every
+caller outside `adapt_brand_section` itself must justify why it bypasses the shared path.
+
+---
+
+## AS-47 — Interactive state grammar shipped without its captured motion
+
+**Rule**: when a brand's evidence captures the MOTION of an interaction mechanic
+(disclosure panel height, trigger state wash, marker turn, active-surface inversion —
+durations, easings, reduced-motion behavior), EVERY rendering of that mechanic in every
+lane and scaffold must ship that motion: a new scaffold that re-renders the same
+mechanic (a FAQ list re-rendering the accordion's details rows) inherits the motion
+grammar, not just the markup and state paint. Implement the mechanic's motion as ONE
+shared CSS source parameterized by selector family — never a second hand-written copy
+(AS-46 applied to interaction CSS). Timing/easing values ride the brand's motion
+aliases BARE (no literal fallbacks): a brand with no captured motion language degrades
+to the instant toggle, never to an invented 200ms.
+
+**Why it happens**: the state grammar is what screenshots show, so the new scaffold
+faithfully reproduces surfaces, inks, radii, and open-state inversion — and looks
+finished in every static capture. Motion lives only in the ORIGINAL component's CSS
+block, which the new scaffold never imports because its selectors differ; no static
+gate measures a transition, so the fork ships silent. The defect is invisible until
+someone clicks.
+
+**Caught here**: event-genlaunch (2026-07) — the composed homepage's accordion device
+animated (`::details-content` height tween + chevron turn + state fade on
+`--c-motion-base`/`--c-motion-fast`/`--c-ease`, fid5) while the event page's agenda and
+FAQ sections — the SAME details-rows mechanic through the new FAQ scaffold — rendered
+with zero transitions: the brand's captured 150/200ms motion facts never reached them.
+Fixed by factoring the fid5 motion into `compose_section.disclosure_motion_css`
+(selector-parameterized shared block, gated on the brand's motion trio + easing),
+consumed by both the accordion device and the FAQ scaffold in every lane.
+
+**Verify**: unit — `tests/test_event_scaffolds.py` (`DisclosureMotionTest`: a
+details-emitting layout on a motion-bearing doc MUST emit the shared block per family;
+a motion-less doc emits ""; timing rides bare aliases with zero literals; the scaffold
+constants may never grow a private `::details-content` copy back) and
+`tests/test_p2_interaction_devices.py` (`test_disclosure_animation_rides_motion_vars`).
+Render — grep the emitted page: every `<details` scaffold family present implies a
+matching `::details-content` transition block when the brand carries motion tokens.
+
+---
+
+## AS-48 — Uniform stack gap where a captured relational rhythm exists
+
+**Rule**: when a brand's evidence captures a RELATIONAL spacing ladder (per-pair rungs
+between content roles — label→headline, headline→description, description→action, plus
+the content-block row rhythm), header/anatomy stacks must render as NO-GAP columns
+whose every seam is a per-pair margin riding the authored ladder tokens — the source's
+own mechanic. A uniform container `gap` on such a stack is a named defect: it flattens
+three different measured seams into one invented rhythm (and stacks ON TOP of any
+pair margin that does exist, inflating it). Uniform gap remains legitimate ONLY as the
+degrade for brands whose evidence exposes no ladder, and for genuine grid/card
+gutters and control rows — which must themselves ride captured row-gap/column-gap
+facts where those exist.
+
+**Why it happens**: `display:flex; gap:` is the modern one-liner for a vertical stack,
+and a single gap value looks "clean" in code review. The source's rhythm lives in
+per-element margins (`margin-bottom: var(--label-headline-spacing)`) that no screenshot
+labels, so the generator reads the average spacing, picks one gap, and every pair seam
+lands wrong by a little — too much under the eyebrow, too little over the CTA — while
+still looking plausibly finished.
+
+**Caught here**: Remote (fid11 2026-07) — the source's header component is a flex
+column with NO gap; each element carries its own semantic margin from the
+`--zora-st-*` ladder (label→headline 12px, headline→description 16px,
+description→button 32px, content rows 64px at the 1440 tier), while the composers
+flattened everything with uniform `--c-block-gap` (2.5rem) container gaps — the FAQ
+column even added its gap on top of the eyebrow wrap's own margin. Fixed by authoring
+the complete generic ladder (`eyebrow-to-heading`, `heading-to-body`, `body-to-cta`,
+`block-to-block`, `column-to-column`, + `body-measure`/`header-measure` companions)
+into `tokens.spacing` and converting the stack mechanic via ONE gated source
+(`compose_section.relational_ladder_css`: gap:0 + per-pair margins; `compose_flow`
+stamps `data-row` so flow seams key on content relationships), with `--c-block-gap`
+itself now resolving from the brand's `block-to-block` rung.
+
+**Verify**: unit — `tests/test_relational_ladder.py` (ladder-bearing doc ⇒ the gated
+block ships with gap:0 + pair rungs and zero literals; ladder-less doc ⇒ ""; rhythm
+prefers `block-to-block`). Validator — C15 completeness: mined relational custom
+properties ⇒ every exposed rung authored, fail loud. Render — inspect a header run's
+computed seams against the brand's rung values (eyebrow→heading == the authored token,
+not the uniform gap).
+
+---
+
+## AS-49 — Headers aligned by scaffold habit instead of the brand's captured grammar
+
+**Rule**: generated headers must follow the brand's captured alignment grammar —
+`layoutGrammar.headerContext` (split-column vs standalone-stack anchors, derived from
+the observed patterns' measured alignment) — resolved through the ONE alignment chain:
+`section explicit > pattern curation (generation lanes) > pattern
+contentShape.alignment > brand headerContext grammar > style role default`. A
+scaffold-hardcoded `text-align`/`align-items` on a header run is a named defect:
+alignment is a brand fact with a resolution order, never a scaffold default. Explicit
+per-pattern facts still win over the grammar (the brand-default layer BENEATH them —
+exactly what newly GENERATED sections without facts need) — UNLESS a design curator
+recorded a `curation: { alignment: { resolve: follow-grammar } }` ruling on the
+pattern (brand-schema §4.4c): the source dissents from its own grammar, the curator
+resolves the dissent toward the grammar for OUR generated output, and the pattern's
+measured fact is retired for generation lanes only. The REPLICA lane ignores curation
+(it rebuilds the source 1:1; the measured fact stays its truth and its gate score must
+not move). Contexts the evidence never corroborated stay un-authored and fall through
+to the style layer.
+
+**Why it happens**: each scaffold gets built against one reference section, so its
+header alignment gets baked in as CSS (`.cs-modules-intro { text-align: left }`) and
+looks right for that section. The next composition reuses the scaffold in the other
+context — a standalone pricing header on a brand that centers standalone headers —
+and ships left-aligned, because nothing connected the scaffold to the brand's
+contextual rule; per-section facts can't help a section that HAS no pattern.
+
+**Caught here**: Remote (fid11 2026-07) — the source aligns its one header component
+LEFT inside every split column (hero, accordion, infra: 3/3 observed patterns, media
+counterweight) and CENTERS it standing alone atop stack/grid sections (6/7 observed:
+marquee, inline CTA, partner row, badge strip, closing CTA, testimonial header; the
+one left standalone header rides its own explicit pattern fact + cards counterweight,
+which outranks the grammar). The event page's bento and pricing sections — generated,
+pattern-less, fact-less — rendered their intro headers by scaffold habit instead of
+centering. Fixed by authoring `layoutGrammar.headerContext` (splitColumn: left +
+media counterweight / standaloneStack: centered) and adding the brand layer to
+`resolve_alignment` (stamped `data-align-source="brand"`).
+
+**Verify**: unit — `tests/test_relational_ladder.py` (`HeaderGrammarTest`: grammar
+resolves per context; pattern/section facts outrank it; chrome archetypes and
+grammar-less brands unchanged). Validator — C18: both contexts corroborated ⇒ grammar
+authored and matching the observed majority, fail loud. Render — a generated
+fact-less standalone header stamps `data-align="centered" data-align-source="brand"`
+on a brand whose grammar says so.
+
+---
+
+## AS-50 — Ragged card rows where the brand's evidence captures grid equalization
+
+**Rule**: when a brand's evidence captures grid equalization
+(`contentShape.gridEqualize`, brand-schema §4.4d), cards sharing a grid row must
+render EQUAL height, with the slack absorbed by the captured slot and action rows
+pinned per the captured anatomy (`actionPinned` — the `margin-top: auto` seam, with
+the pair-margin rung preserved as the pinned row's minimum seam so the tallest card
+never renders its action flush against the body). Ragged bottoms in an equalized
+grid, and floating CTAs mid-card from equalizing WITHOUT the pinning fact, are both
+named defects — the second is why the heights fact and the anatomy facts travel
+together. The pattern-less generated card scaffolds (bento mosaic cells, pricing
+tier panels) follow the same rule through the brand's derived grammar
+(`grid_equalize_grammar`): a brand whose observed card grids equalize gets equalized
+mosaic rows and tier rows; an all-hug brand gets content-sized cells; a fact-less
+brand keeps the scaffold's built-in behavior byte-identical. A `heights: hug` fact
+is equally binding: content-sized cards on a brand that hugs, never
+equalization-by-default.
+
+**Why it happens**: CSS grid stretches items to the row track by default, so a card
+grid LOOKS equalized until one scaffold sets `align-items: start` for an editorial
+stagger layout and a declared N-up grid variant inherits it — then every card hugs
+its content and row bottoms go ragged. The inverse failure is equalizing blindly:
+stretch alignment without the flex-grow slack slot and the pinned action row leaves
+the extra height BELOW the action (CTA floating mid-card, dead space under it),
+which reads broken in exactly the way the source's own anatomy avoids.
+
+**Caught here**: Remote (fid14 2026-07) — the source equalizes both observed card
+grids (workflow cards: 3 cards all 536px with differing text, body `flex-grow: 1`
+stretched 240→288px, image well fixed 248px; testimonials: all cards 391px while
+quotes run 135/108/108px, the quote frame flexes and the author row pins after it).
+Our composed workflow grid rendered 620/590/590px — the cards scaffold's
+`align-items: start` (correct for its stagger layout) leaked into the declared 3-up
+grid, and `.c-arrow-link` rows rode the ladder margin instead of pinning. Fixed by
+authoring the facts on both grid patterns and emitting per-section
+`pattern_equalize_css` (stretch + pinned trailing actions with the
+`--space-body-to-cta` rung as the minimum seam).
+
+**Verify**: unit — `tests/test_fid14_grid_equalize.py` (fact accessor, stretch/hug/
+degrade emission, pinned action rows, bento/tier grammar release, byte-identical
+fact-less pages). Validator — C20: card-grid patterns carry `gridEqualize` or the
+not-observed marker, fail loud. Render — measure per-row card heights in the
+composed grid (equal despite differing content) and the pinned action's bottom
+offset (constant across the row's cards).
+
+---
+
+## AS-51 — Heading-scale inflation below the hero (every section a poster)
+
+**Rule**: only the OPENING section rides the brand's display/poster register. A
+non-hero section's heading that declares no explicit level demotes to the brand's
+measured section-heading tier (`section_heading_level`: the extracted h2 role when
+the type ladder carries one; the display degrade only for brands without the fact).
+An AUTHORED level always wins — a composition may deliberately declare a display
+statement — but the DEFAULT must never be display. This applies to every path that
+resolves a heading register: contract slot mappings (`usage.level`), composer copy
+(`headingLevel`), and composer-internal defaults (the info-band's band heading).
+Multiple H1-scale heads on one page is a named defect, not a stylistic choice.
+
+**Why it happens**: the hero composer's display default gets copied into new section
+composers and slot translators one at a time ("big headings look impressive"), and
+each looks fine in a single-section preview — the inflation is only visible on a
+composed PAGE, where four sections shout at the same register and the type
+hierarchy (the brand's most-measured fact) flattens.
+
+**Caught here**: remote stress-playbook (2026-07) — `pb-stats`/`pb-compare` generic-flow
+headings and the `pb-process` info-band intro all rendered at the display tier
+(three poster heads below the hero) because `_inline_props`/`_split_copy` defaulted
+`level` to `display` and `compose_info_band` hardcoded it. Fixed by demoting
+level-less non-hero heading/header slots + composer `headingLevel` to
+`section_heading_level(doc)` in `adapt_brand_section` (W5), with the authored
+`copy.level` override carried through.
+
+**Verify**: unit — `tests/test_stress_playbook_weaknesses.py` (demotion below the
+hero, authored-level override, hero untouched). Render — count elements at the
+display size in a composed page: exactly the hero's (plus any AUTHORED display
+statements), never a default.
+
+---
+
+## AS-52 — Phantom media: default-art backfill in attributed/quote modules
+
+**Rule**: default-art backfill (the brand-asset rotation that fills a card grid's
+unbound media wells) must never inject media into a QUOTE/TESTIMONIAL module — a
+module carrying person attribution (name / role / avatar fields). Those modules are
+text-first: only an EXPLICITLY bound asset renders, and an asset-less quote card
+composes with no media frame at all (no empty figure, no placeholder). A random
+brand photo beside a person's words reads as a portrait of that person — invented
+evidence about a real human, the worst kind of phantom content.
+
+**Why it happens**: the backfill exists so photo-led card grids never render empty
+wells, and it keys on "card has no asset" without asking what KIND of card it is —
+the one content shape where an unrelated image actively lies (attribution binds the
+imagery to a person) inherits a mechanism designed for anonymous editorial photos.
+
+**Caught here**: remote stress-playbook (2026-07) — `pb-stories` testimonial cards
+drew rotating product-UI art next to customer quotes with names/roles; the lane had
+to pin explicit assets as a workaround. Fixed in `compose_features_cards` (W7):
+person-attributed cards skip the `_assets[i % len(_assets)]` rotation, render
+figure-less when unbound, and stamp `cs-module--quote` for audit traceability.
+
+**Verify**: unit — `tests/test_stress_playbook_weaknesses.py` (quote card without
+asset renders no `<figure>`/default art; explicit asset still renders; non-quote
+cards keep the backfill). Render — every image inside a `cs-module--quote` module
+traces to an authored `asset` binding in the composition/copy layer.
+
+---
+
+## AS-53 — Silent slot drops (declared content that simply vanishes)
+
+**Rule**: every DECLARED slot a composition binds must either render through its
+section's grammar or leave a VISIBLE trace — an `<!-- unresolved slot … -->` marker
+in the emitted HTML (which the gate's slot-resolution invariant counts) or a loud
+composer advisory. A composer that consumes a section may not quietly ignore slots
+its happy path doesn't place: dropping an authored action/caption/media slot leaves
+no marker, no warning, and no way to tell "deliberately elided" from "lost".
+Elision is only correct for EMPTY copy (the AS-34 no-invention rule); authored
+content that goes missing is a named defect even when the section "looks fine".
+
+**Why it happens**: bespoke composers are written against the slots their reference
+layout uses; extra slots fall off the end of the translator (`_split_copy` reads
+what it knows) and nothing downstream notices because the unresolved counter only
+sees slots the composer *attempted* — the drop happens before accounting.
+
+**Caught here**: remote stress-playbook (2026-07) — `pb-process` (split + accordion
+device) declared a `process-cta` action slot; `_compose_accordion_split` rendered
+header/rows/media and returned without placing the cta and without a marker (W8).
+Fixed: the accordion split renders the authored cta as its list-column foot
+(`cs-acc-foot`, arrow-link register, left-anchored per the split grammar) when no
+bound button slot already renders in the intro's actions row. Related counter bug
+(W11): the CLI parity counter re-rendered slots per layout and reported phantom
+`unresolved: 2` that the emitted page never carried — the count now reads the
+EMITTED html's markers, so the number is the page's truth.
+
+**Verify**: unit — `tests/test_stress_playbook_weaknesses.py` (accordion split
+renders the authored cta; cta-less sections render no foot; `render_composition`'s
+`unresolved` equals the emitted marker count). Gate — `slot-resolution` invariant:
+declared-slot coverage against the emitted page, zero markers on a green lane.
+
+---
+
+## AS-54 — Double-application of a spacing mechanic (gap + owl margin)
+
+**Rule**: exactly ONE mechanic owns each seam. When a stack is converted to the
+relational ladder (owl `margin-block-start` per pair), every flex/grid `gap`
+covering the same seam must be zeroed in that scope — and no LATER, more-specific
+rule may re-declare the gap "for safety". A seam owned twice measures the SUM:
+the ladder's 12px eyebrow→heading plus a re-added 12px flex gap renders 24px and
+no single rule looks wrong in isolation.
+
+**Why it happens**: a scaffold override wants to restate the component's look
+("the split body header keeps the eyebrow gap") without checking which mechanic
+already owns the seam at lower specificity. `gap` re-declared at higher
+specificity beats the base `gap: 0` that the ladder relies on, and the owl margin
+still applies — both mechanics fire.
+
+**Caught here**: remote spacing baseline (2026-07) — `.cs-split-body .c-header
+{ gap: var(--c-eyebrow-gap) }` in `SCAFFOLD_SPLIT_CSS` re-added the flex gap on
+top of the ladder margin: every split-scope eyebrow→heading seam measured 24px
+against the brand's 12px rung (replica + homepage + stress lanes). Fix: delete
+the re-add; base `.c-header` + the ladder own the seam.
+
+**Verify**: unit — `tests/test_relational_ladder.py` (ladder scopes zero their
+gaps; no scaffold CSS re-declares gap inside a ladder scope). Gate — spacing
+audit `header.eyebrow-to-heading` measures the rung once per lane.
+
+---
+
+## AS-55 — Pinned-slot collision (margin-top:auto with no minimum seam)
+
+**Rule**: a slot pinned to the end of an equalized box (`margin-top: auto` on a
+card's action row, an attribution row, a footer link) must carry a MINIMUM seam
+on the box-to-box side facing the content above it — the ladder rung for that
+relationship, expressed as the *preceding sibling's* `margin-bottom` (a real
+box-to-box distance `auto` cannot collapse). `auto` may only absorb slack BEYOND
+the rung. Padding on the pinned slot itself is not a seam: it moves the glyph
+but the measured box-to-box distance still reads 0.
+
+**Why it happens**: equalization thinking stops at "pin the action row so rows
+align". In every card except the row's tallest the slack IS the seam, so the
+collision only shows on the tallest card — the one place `auto` computes to 0.
+
+**Caught here**: remote spacing baseline (2026-07) — equalized chapter/team card
+grids pinned `.c-arrow-link` with `margin-top: auto`; on each row's tallest card
+the CTA sat flush against the body (0px against a 14.4px body→cta rung). Fix in
+`pattern_equalize_css`: the element preceding a pinned last-child action gets
+`margin-bottom: var(--space-body-to-cta …)`; quote cards get the same guard on
+the attribution row rung.
+
+**Verify**: unit — `tests/test_fid14_grid_equalize.py` (the `:has(+ …:last-child)`
+minimum-seam rule rides every equalize scope; no `padding-block-start` stand-in).
+Gate — spacing audit `card.body-to-actions` ≥ rung on the tallest card per row.
+
+---
+
+## AS-56 — Scaffold families escaping the container law
+
+**Rule**: every top-level scaffold wrapper that spans the page column MUST ride
+the shared content-container rule (`max-width: var(--content-measure);
+margin-inline: auto`) — by joining the one shared selector list, never by
+declaring its own width. A scaffold that declares `max-width: 100%` (or nothing)
+silently becomes a second, wider page column: sections stop sharing edges and
+the page reads as two different sites stacked.
+
+**Why it happens**: a new scaffold family is developed against a lane whose
+parent already constrains width, so "100% works here"; nothing fails at author
+time because the container law lives in a selector list the new family never
+joined. The failure only appears when the scaffold lands in a full-bleed section
+band.
+
+**Caught here**: remote spacing baseline (2026-07) — the compare band's
+`.cs-split-intro` declared `max-width: 100%` and rendered 1360px wide against
+the brand's 1216px container law (stress lane). Fix: the intro joined the shared
+container selector list in `SCAFFOLD_BASE_CSS`; the local width override was
+deleted. Same pass: `.cs-split-intro` was also missing from the ladder's stack
+registry (`_LADDER_STACKS`) — same failure shape, a registry a new family never
+joined — heading→body measured 0px against a 16px rung.
+
+**Verify**: unit — `tests/test_relational_ladder.py::LadderRegistryGuard`
+(every `cs-*` scaffold selector that renders a `c-header` stack is either in
+`_LADDER_STACKS` or on the documented exemption list; container-law membership
+asserted for intro/grid wrappers). Gate — spacing audit `container.section-width`
+per lane.
+
+---
+
+## AS-57 — Hover-only disclosure (no keyboard/AT parity for hover-driven UI)
+
+**Rule**: any content revealed by `:hover`/`:focus-within` CSS (mega-menu panels,
+dropdown menus, dismissible strips, overflow rails) must be operable and
+*dismissible* without a pointer, and must expose its state to AT: the trigger is
+a real `<button>` (or a link with disclosure state when it truly navigates),
+`aria-expanded` mirrors the open state, Enter/Space toggles, and **Escape closes
+and returns focus to the trigger** (WCAG 1.4.13 dismissible). The pure-CSS hover
+path stays as the JS-off degrade; the structural script layers state on top —
+never replaces it.
+
+**Why it happens**: CSS-only disclosure is genuinely elegant (`:focus-within`
+even passes a quick Tab test), so the keyboard story looks done. But CSS cannot
+express `aria-expanded`, cannot implement Escape-to-dismiss, and a focused
+trigger that shows a panel with no way to dismiss it TRAPS sighted keyboard
+users on hover-card content (1.4.13's exact target).
+
+**Caught here**: remote interaction baseline (2026-07) — all four compose lanes:
+mega-menu triggers were `<a href="">` with no state (IC-NAV-01/02/04/08),
+language `<details>` ignored Escape (IC-LANG-06), the banner close button was
+wired to nothing (IC-BAN-04), edge-cut rails were unreachable by keyboard
+(IC-CAR-01/05). Fix: `component_render.interaction_script` — guarded structural
+blocks emitted only for components present on the page; triggers became real
+buttons inheriting the measured pill styles (`button.cs-nav-trigger` UA reset).
+
+**Verify**: unit — `tests/test_interaction_remediation.py` (trigger element,
+state attributes, script emission guards). Gate — interaction audit `--strict`
+lanes nav/lang/banner/carousel behavioral checks green.
+
+---
+
+## AS-58 — Advanced mechanics without content-shape preconditions
+
+**Rule**: the simplest layout mechanic that reproduces captured evidence wins.
+Every advanced device (interlock, float-wrap, overlap, straddle) must declare
+evidence and content-shape preconditions at its adapter/composer boundary, plus
+a plain, semantically complete degradation path. If any precondition is absent,
+render the ordinary grid/stack/split; do not preserve complexity for its own sake.
+
+**Why it happens**: a visually distinctive catalog pattern is treated as a
+section label instead of a conditional device. Short copy, non-landscape media,
+or an extra foot cluster then inherits float math, clearance, and drop offsets
+designed for long editorial text, manufacturing voids with no source evidence.
+
+**Caught here**: the Remote stress playbook's statement was a complete
+eyebrow/heading/body/action stack beside one illustration, but rendered through
+the editorial interlock's float, seven-column inset, large drop, and clear-both
+foot. It now binds the ordinary media split. The interlock itself requires
+explicit evidence, landscape media, its canonical caption/statement/media shape,
+and no unsupported foot cluster; otherwise it degrades to that same split.
+
+**Verify**: unit — interlock precondition tests cover every failed condition and
+the explicit qualified path; rendered CSS contains grid mechanics and no
+`float`/`clear` device law. Visual proof compares the complete split stack and
+landscape media at desktop and the one-column responsive degrade.
+
+---
+
+## AS-59 — Multi-action groups without register hierarchy
+
+**Rule**: in any multi-action group (hero action pair, bar action group, card
+action row), exactly one action takes the brand's filled PRIMARY register; every
+sibling takes a different measured register — the brand's outlined secondary,
+ghost, or text-link. Two actions sharing the same filled register in one group
+is a flag. Palette-agnostic by construction: the check compares computed paint
+shape (fill vs stroke vs bare text), never any brand's hex values.
+
+**Why it happens**: a generator resolves every action slot through the same
+"CTA = primary button" default because the primary register is the only one it
+confidently knows. The measured secondary register exists in the extracted
+button matrix, but the action-pair authoring (slot role prose, action list) never
+names it — so the renderer's family dispatch lands on primary twice. Visually
+the group loses its hierarchy: two identical solid pills read as noise, and the
+source's carefully measured secondary register silently disappears.
+
+**Caught here**: the hubspot-v2 hero authored "Get a demo" + "Get started free"
+as two solid accent pills; the source pairs the solid primary with an OUTLINED
+secondary (bg white, 2px accent stroke — present in the measured button matrix
+all along). Same failure shape appeared in the bar's action group when the
+two-tier chrome contract landed (item-12b): both bar CTAs initially resolved to
+the filled register.
+
+**Verify**: `slop_audit.mjs` AS-59 — for every `[class*="-actions"]` /
+`.c-actions` group (sections AND the chrome bar), classify each visible
+`.c-button` / `a[role="button"]` as filled / outlined / text by computed style;
+≥2 filled actions with identical computed background in one group ⇒ FLAG. Unit:
+`brand_pipeline/tests/test_fix1_hubspot_punchlist.py` asserts the classifier +
+both scan passes exist and sit before the flag push.
+
+---
+
+## AS-60 — Scaffold-habit action-group layout over declared facts
+
+**Rule**: a rendered multi-action group that stamps its measured layout
+declaration (`data-ag-gap` / `data-ag-align`, from the brand's
+`layoutGrammar.actionGroup` facts + per-pattern overrides — brand-schema §4.4f)
+must actually COMPUTE that layout. A group whose computed inter-action gap
+deviates >2px from its own stamped gap, or whose computed `justify-content`
+resolves to a different alignment than its stamp outside any anchoring context
+(`.cs-foot`, `[data-align="centered"]`, `.cs-hero-panel--center`), is running on
+scaffold habit over brand facts ⇒ FLAG.
+
+**Why it happens**: action rows are the scaffold's oldest habit — a uniform
+`gap: 1em` / block-gap default and a context-inherited alignment predate the
+fact family, and every composer emits the row markup independently. When a new
+composer route (or a CSS refactor) forgets the action-group law, the page
+silently falls back to the habit: buttons drift 40px apart on a brand whose
+measured pair runs 16px, and nothing else fails — the buttons themselves are
+perfectly on-register.
+
+**Caught here**: the hubspot-v2 "Powered by AI" split rendered its CTA pair on
+the modules-row block-gap default (40px) where the source's `.cl-cta-group`
+measures 16px, and the closing band pair rendered 40px where the source's
+elevated-CTA group measures 24px — both while every button was individually
+on-register (AS-59 clean).
+
+**Verify**: `slop_audit.mjs` AS-60 — for every `[data-ag-gap]`/`[data-ag-align]`
+group with ≥2 visible children: computed `column-gap` within ±2px of the stamped
+px; computed `justify-content` (mapped to start/center/end) equals the stamped
+alignment unless an anchoring context owns it. Declaration-driven: fact-less
+brands stamp nothing and are never flagged. The spacing auditor measures the
+same contract as relationships (`actions.item-gap` / `actions.alignment`).
+
+**Painted-edge addendum (fix3)**: comparing computed `justify-content` to the
+stamp is NOT sufficient — a group whose BOX re-implements containment privately
+(`max-width` + `margin-inline: auto` inside an already-contained column) hugs
+its content and floats centered while `justify-content` still computes the
+stamped value, so the justify check reads clean on a visibly displaced row
+(the hubspot-v2 side-rail CTA pair painted 21px off its column edge with a
+conforming stamp). AS-60 therefore also measures the ITEMS' painted edges
+against the content column a reader compares them to (widest in-flow sibling,
+else the parent's content box) and flags >4px deviation from the stamped edge.
+The structural fix is the containment law (one shared `width: 100%` +
+`max-width` + `margin-inline: auto` rule; devices never re-declare the pair) —
+see spacing-conformance §Container law.
+
+---
+
+## AS-61 — Text-link ink spanning the container (unhugged typographic actions)
+
+**Rule**: a typographic action's box — and therefore its underline ink (border /
+pseudo-element rules span the box) — must HUG its label + glyph run in every
+placement. A text link whose box runs to its container's far edge paints an
+underline that reads as a rule/divider, not a link affordance ⇒ FLAG.
+
+**Why it happens**: the content-hugging-controls mechanic (this registry's
+button/eyebrow prose, now explicit for text links): column flex stacks blockify
+and STRETCH their children by default, so `display: inline-flex` +
+`width: auto` is not enough — a card-footer "Learn more →" link inside a
+`flex-direction: column` card body stretches to the card width, and its
+underline (static or hover-drawn) paints to the card's right edge. Nothing else
+fails: the label, glyph and hover nudge are all correct.
+
+**Caught here**: the hubspot-v2 product-grid card links rendered 261px boxes
+around a 110px "Learn more →" run (and the tab-card case-study links 406px
+around 173px) — every hover underline drew to the card edge instead of hugging
+the label. Fixed at the component: `.c-arrow-link { width: fit-content }`
+(fit-content beats flex stretch, which only applies to auto widths; no-op in
+rows and inline contexts) — the hug end of the containment-vs-measure-vs-hug
+discipline: a typographic action owns no column, so its box never spans one.
+
+**Verify**: `slop_audit.mjs` AS-61 — for every visible in-section
+`.c-arrow-link` (nav links excluded: padded hit-target boxes are deliberate
+chrome geometry): the box width must not exceed the content run
+(`Range.getBoundingClientRect`) by more than 12px. Structural, not
+declaration-driven — the hug contract is component law, not a brand fact.
 
 ---
 

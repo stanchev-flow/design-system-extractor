@@ -258,6 +258,34 @@ For each section, from its grounding YAML + DOM entry + crop:
    `layout-library.yaml` (`origin: extracted`, provenance, confidence) and reference
    it. Distinct observed shapes never share one pattern; near-duplicates raise a
    pattern's confidence instead of forking it.
+   - **Component recipes (REQUIRED authoring step, fix2).** After the per-section
+     pass, scan the authored patterns for RECURRING COMPONENT ANATOMY: the same
+     ordered slot run (e.g. kicker + leader rule + trailing quiet CTA) appearing in
+     2+ sections, restyled per context. Record each as a `recipes:` entry in
+     `layout-library.yaml` (brand-schema §4.4e): generic anatomy slots, shared
+     measured `geometry`, one `variants[]` entry per observed styling (chip vs pill
+     vs badge; icon sizes; rule style; trailing-action presence), `usedBy` +
+     `provenance`, and bind each participating pattern via
+     `recipeRef: {recipe, variant}`. The grounding output's "recurring anatomy"
+     notes (extraction-grounding-prompt) are the primary lead; patterns sharing a
+     rail-like slot signature without a recipe fail the C23 advisory. Recipes are
+     observed brand facts (`origin: extracted`) — never invent a variant the crops
+     don't show.
+   - **Action-group facts.** Measure the brand's multi-action row law once
+     (inter-action gap, orientation, wrap, alignment, seam above, register order —
+     JS-off computed at the canonical tier) and author
+     `layoutGrammar.actionGroup` (brand-schema §4.4f); bands that measure
+     differently get a per-pattern `contentShape.actionGroup` override. Scaffold
+     defaults are only the no-facts degrade.
+   - **Mark-row item boxes.** For logo/badge strips also record the measured
+     per-mark box (`mediaScale.item: {width, height}`) alongside `gap` — flex
+     weights derived from asset viewBoxes skew artwork scale when viewBoxes carry
+     padding; the measured item box is the truth the renderer locks to.
+   - **Text-CTA glyphs.** When the source's arrow/text links carry a REAL vector
+     glyph (sprite symbol, inline path), harvest it into `assets/` (verify the
+     symbol's own viewBox — sprite harvests often mis-copy it) and author
+     `buttons.<family>.glyph: {asset, size, source: computed}` so the device
+     renders the brand's real glyph instead of the Unicode fallback.
 4. **Verbatim copy** → `section-copy.yaml` `layoutCopy.<layoutId>` from the grounding
    `copy` blocks (slots keyed to the layout's slot names; module arrays for repeated
    cards/logos), plus `sectionCopy.wordmark` and shared strings.
@@ -274,6 +302,11 @@ For each section, from its grounding YAML + DOM entry + crop:
    absences: no shadows, no radius, no text-on-photos…), set `voice.dials`,
    `recipePolicy`.
 3. Re-render `brand.md` via `render_brand_md(brand.yaml)` — never hand-write it.
+   The style md MUST carry a "Component recipes" section (brand-schema §9b):
+   projection-rendered files get it from the `recipes:` layer automatically; a
+   hand-authored extraction summary gets one prose paragraph/bullet per recipe —
+   anatomy, variants, which sections deploy which variant — written as the brand's
+   own genre voice (descriptive prose, never a shared genre taxonomy).
 4. **Run the validator — the exit criterion:**
    `./venv/bin/python tools/extract/validate_brand_evidence.py --brand <brand>`
    - C1 brand.yaml parses; C2 every contract block evidenced or `notObserved`;
@@ -290,7 +323,10 @@ For each section, from its grounding YAML + DOM entry + crop:
      breakpoints (or `singleTierConfirmed: true` after verifying against the
      measured tier ladder);
    - C15 relational spacing ladder present as named `<role>-to-<role>` tokens
-     (or `relationalLadder: {notObserved, reason}`).
+     (or `relationalLadder: {notObserved, reason}`);
+   - C23 (advisory) recurring rail-like slot signatures across 2+ patterns are
+     bound to a `recipes:` entry via `recipeRef` — the recipe layer is written
+     during extraction, not post-hoc.
    Fix and re-run until clean — a validator error means a missed observation.
 5. **Anti-slop checks** before calling any composed render done:
    `node brand_pipeline/contrast_audit.mjs <index.html>` and

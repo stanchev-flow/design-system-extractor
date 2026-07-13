@@ -61,7 +61,56 @@ Checks (E = error, W = warning):
         rungs (`<role>-to-<role>`: eyebrow-to-heading, heading-to-body,
         body-to-cta, …), each with a value — or an explicit
         `tokens.spacing.relationalLadder: {notObserved: true, reason: …}`
-        marker when the source's rhythm genuinely exposes no such ladder
+        marker when the source's rhythm genuinely exposes no such ladder.
+        COMPLETENESS (fid11): when the mined corpus (cssRuleCorpus) exposes
+        relational spacing custom properties — vars pairing two content roles
+        with a spacing/gap word, or row-gap/column-gutter rhythm vars — every
+        exposed pair rung must be authored under its generic canonical name,
+        plus a row rung (block-to-block / grid-gap) and a column rung
+        (column-to-column / grid-gap); notObserved alongside exposed pair
+        vars is a contradiction
+  C16 E/W chrome DEPTH facts (fid4 2026-07), each requirement triggered by the
+        brand's OWN evidence: a navbar.primary `menu` needs populated column
+        groups (heading+links) and measured.megaPanel motion facts with a time
+        literal; megaOpen entries need real panel boxes and a matching menu;
+        icon/card/badge `asset:` refs must exist on disk; a footer.social
+        entry captured as kind: icon must bind harvested artwork; a measured
+        footer grid's wrapperSizes must sum to the extracted group count and
+        headed columns need measured.heading style facts; footer.bottomBar
+        needs divider presence + {label, href} policy links (social+legal
+        without any bottomBar facts warns)
+  C17 E disclosure per-item interaction content (fid8 2026-07): a layoutCopy
+        entry whose items list shows a disclosure pattern (>= 2 items, any
+        item carrying `body`) must carry a `body` on EVERY item — the states
+        hidden at static-capture time need the interaction pass — or mark the
+        item `bodyNotObserved: true` (entry-level `itemBodiesNotObserved:
+        true` accepted). Same all-or-none rule for per-item `media` (the
+        active-item media-swap device), and every bound items[].media file
+        must exist under the brand's assets (a non-existent name renders
+        nothing, silently)
+  C18 E contextual header-alignment grammar (fid11): when the observed pattern
+        library corroborates a header-alignment rule in BOTH layout contexts
+        (>= 2 split patterns agreeing and >= 2 standalone stack/grid patterns
+        agreeing, >= 2/3 majority each), layoutGrammar.headerContext must be
+        authored with matching splitColumn / standaloneStack anchors — the
+        brand-default layer generated sections resolve from (AS-49)
+  C21 E/W bar-level AFFORDANCES (fid15, C16's sibling): when the mined corpus
+        names a nav trigger chevron/caret, measured.trigger.chevron must carry
+        the harvested glyph facts (asset on disk, box; open transform/motion
+        warns when absent) or chevronNotObserved; utility-control glyph/chevron
+        assets must exist on disk; a dropdown-kind utility control needs its
+        live-captured items + panel paint or dropdownNotObserved; a primary
+        entry with no href and no menu is a flattened bar control (classify
+        under utility or mark utilityNotObserved); a corpus-named in-bar
+        language/locale switcher demands a dropdown-kind utility control; an
+        observed utilityBanner needs cta anatomy (label+href; ctaNotObserved
+        escape) and, when dismissible, close anatomy (kind+box;
+        closeNotObserved escape) with all bound assets on disk
+  C23 W component-recipe coverage (fix2, brand-schema §4.4e): 2+ patterns
+        sharing a rail-like anatomy signature should bind a brand `recipes:`
+        entry via recipeRef {recipe, variant}; dangling recipeRefs, empty
+        anatomies, id-less variants, and one-way usedBy bindings warn too —
+        recipes are brand data written DURING extraction, not post-hoc
 
 Importable API (used by brand_pipeline/tests/test_brand_evidence_contract.py):
     report = validate_brand_dir(brand_dir, contracts_path=..., ...)
@@ -107,6 +156,23 @@ INTERACTIVE_BLOCK_TYPES = ("accordion", "tabs", "modal", "dropdown-menu",
 # a RELATIONAL spacing token names the gap between two content roles (C15):
 # eyebrow-to-heading, heading-to-body, body-to-cta, label-to-field, …
 RELATIONAL_KEY = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*-to-[a-z0-9]+(?:-[a-z0-9]+)*$")
+# C15 completeness (fid11): role-synonym classes for detecting the source's OWN
+# relational spacing custom properties in the mined CSS corpus. Var names are
+# tokenized on hyphens and matched as exact words — a var pairing two DIFFERENT
+# role classes with a spacing/gap word (e.g. --*-label-headline-spacing) exposes
+# that rung; the brand must then author it under its GENERIC canonical name.
+REL_ROLE_WORDS = {
+    "eyebrow": ("eyebrow", "label", "kicker", "overline", "tagline"),
+    "heading": ("heading", "headline", "title"),
+    "body":    ("body", "description", "paragraph", "subtitle", "subhead"),
+    "cta":     ("cta", "button", "action"),
+}
+CANONICAL_RUNGS = {
+    ("eyebrow", "heading"): "eyebrow-to-heading",
+    ("heading", "body"):    "heading-to-body",
+    ("body", "cta"):        "body-to-cta",
+}
+_REL_ROLE_ORDER = ("eyebrow", "heading", "body", "cta")
 CHROME_LAYOUT_ARCHETYPES = {"nav"}
 CHROME_LAYOUT_IDS = {"navbar", "footer"}
 IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".svg", ".webp", ".gif")
@@ -117,6 +183,9 @@ class Report:
     brand_dir: Path
     errors: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
+    # informational notes: resolved/curated states worth seeing but demanding no
+    # action (e.g. a C18 dissent a curator already ruled on, brand-schema §4.4c)
+    notes: list[str] = field(default_factory=list)
 
     @property
     def ok(self) -> bool:
@@ -127,6 +196,9 @@ class Report:
 
     def warn(self, code: str, msg: str) -> None:
         self.warnings.append(f"{code}: {msg}")
+
+    def note(self, code: str, msg: str) -> None:
+        self.notes.append(f"{code}: {msg}")
 
 
 def _load_yaml(path: Path):
@@ -678,6 +750,649 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
                              f"tokens with measured values{have}, or record "
                              "`relationalLadder: {notObserved: true, reason: …}`.")
 
+    # C16 — chrome DEPTH facts (fid4 2026-07): mega-menu structure + motion, footer
+    # column→group hierarchy, bottom-bar structure, and social icon ARTWORK. Every
+    # requirement here triggers off the brand's OWN captured evidence (observed but
+    # incomplete ⇒ error); a brand whose chrome genuinely lacks the pattern owes
+    # nothing. Brand-agnostic: shapes and asset bindings only, never content.
+    def _asset_on_disk(ref) -> bool:
+        return isinstance(ref, str) and bool(ref.strip()) \
+            and (brand_dir / ref.strip()).is_file()
+
+    menus = [(str(item.get("label") or "?"), item["menu"])
+             for item in (nav.get("primary") or []) if isinstance(item, dict)
+             and isinstance(item.get("menu"), dict)]
+    for label, menu in menus:
+        cols = [c for c in (menu.get("columns") or []) if isinstance(c, dict)]
+        if not cols and not isinstance(menu.get("card"), dict):
+            rep.error("C16", f"navbar mega-menu '{label}' carries neither columns "
+                             "nor a panel card — an empty menu dict is a capture "
+                             "failure; re-extract or drop the key.")
+        for col in cols:
+            links = [l for l in (col.get("links") or []) if isinstance(l, dict)]
+            if not links:
+                rep.error("C16", f"navbar mega-menu '{label}' column "
+                                 f"{str(col.get('heading') or '?')!r} has no links — "
+                                 "column groups are heading+links units.")
+            for l in links:
+                ic = l.get("icon") if isinstance(l.get("icon"), dict) else None
+                if ic and ic.get("asset") and not _asset_on_disk(ic["asset"]):
+                    rep.error("C16", f"mega-menu '{label}' link "
+                                     f"{str(l.get('label') or '?')!r} icon asset "
+                                     f"{ic['asset']!r} not on disk under {brand_dir.name}/ "
+                                     "— materialize harvested icons before binding.")
+        card = menu.get("card") if isinstance(menu.get("card"), dict) else None
+        if card:
+            if not str(card.get("title") or "").strip():
+                rep.error("C16", f"navbar mega-menu '{label}' panel card has no title "
+                                 "— the right-side object is a content card; capture "
+                                 "its heading text or drop the fact.")
+            img = card.get("image") if isinstance(card.get("image"), dict) else None
+            if img and img.get("asset") and not _asset_on_disk(img["asset"]):
+                rep.error("C16", f"navbar mega-menu '{label}' card image asset "
+                                 f"{img['asset']!r} not on disk — materialize it.")
+    if menus:
+        mega = (nav.get("measured") or {}).get("megaPanel") \
+            if isinstance(nav.get("measured"), dict) else None
+        if not isinstance(mega, dict):
+            rep.error("C16", "navbar carries mega-menus but no measured.megaPanel "
+                             "facts (surface/link/groupTitle/motion) — the open-panel "
+                             "presentation must be measured, not defaulted.")
+        else:
+            motion_blob = json.dumps(mega.get("motion") or {})
+            if not TIME_LITERAL.search(motion_blob):
+                rep.error("C16", "navbar.measured.megaPanel.motion carries no time "
+                                 "literal — panel open/close + link hover timing is "
+                                 "part of the captured chrome (mine the transition "
+                                 "facts from computed styles).")
+        for mo in (nav.get("megaOpen") or []):
+            if not isinstance(mo, dict) or not mo.get("open"):
+                continue
+            panel = mo.get("panel") if isinstance(mo.get("panel"), dict) else {}
+            if not (panel.get("w") and panel.get("h")):
+                rep.error("C16", f"navbar.megaOpen '{mo.get('label')}' measured no "
+                                 "panel box (w/h) — the OPEN-state geometry pass "
+                                 "must record the real panel rect.")
+    elif isinstance(nav.get("megaOpen"), list) and nav.get("megaOpen"):
+        rep.error("C16", "navbar.megaOpen open-state measurements exist but no "
+                         "primary link carries a `menu` — structure and measurement "
+                         "must describe the same chrome; re-run the bridge.")
+
+    if foot:
+        socials = [s for s in (foot.get("social") or []) if isinstance(s, dict)]
+        icon_socials = [s for s in socials
+                        if str(s.get("kind") or "").lower() == "icon"]
+        for s in icon_socials:
+            ic = s.get("icon") if isinstance(s.get("icon"), dict) else None
+            src = (ic or {}).get("asset") or (ic or {}).get("src") or (ic or {}).get("svg")
+            if not src:
+                rep.error("C16", f"footer.social '{s.get('network')}' was captured as "
+                                 "kind: icon but binds no artwork (icon.asset/src/svg) "
+                                 "— harvest the glyph from the DOM (SVG/mask/img) or "
+                                 "the renderer degrades to a text link.")
+            elif (ic or {}).get("asset") and not _asset_on_disk(ic["asset"]):
+                rep.error("C16", f"footer.social '{s.get('network')}' icon asset "
+                                 f"{ic['asset']!r} not on disk — materialize it.")
+        f_measured = foot.get("measured") if isinstance(foot.get("measured"), dict) else {}
+        grid = f_measured.get("grid") if isinstance(f_measured.get("grid"), dict) else None
+        f_columns = [c for c in (foot.get("columns") or []) if isinstance(c, dict)]
+        headed = any(str(c.get("heading") or "").strip() for c in f_columns)
+        if grid and f_columns:
+            sizes = [int(s) for s in (grid.get("wrapperSizes") or [])
+                     if isinstance(s, (int, float)) and int(s) > 0]
+            if sizes and sum(sizes) != len(f_columns):
+                rep.error("C16", f"footer.measured.grid.wrapperSizes sums to "
+                                 f"{sum(sizes)} but {len(f_columns)} column groups "
+                                 "were extracted — the column→group hierarchy and "
+                                 "the group list must describe the same footer.")
+            if headed and not isinstance(f_measured.get("heading"), dict):
+                rep.error("C16", "footer columns carry headings but measured.heading "
+                                 "style facts (color/size/weight/casing) are missing "
+                                 "— the heading register must be measured, not "
+                                 "defaulted to link styling.")
+        bb = foot.get("bottomBar")
+        if isinstance(bb, dict):
+            div = bb.get("divider")
+            if not (isinstance(div, dict) and "present" in div):
+                rep.error("C16", "footer.bottomBar.divider must record presence "
+                                 "({present: bool, color?}) — divider-above-legal is "
+                                 "a structural fact renderers consume.")
+            bad_pol = [l for l in (bb.get("policyLinks") or [])
+                       if not (isinstance(l, dict) and l.get("label") and l.get("href"))]
+            if bad_pol:
+                rep.error("C16", f"footer.bottomBar.policyLinks: {len(bad_pol)} "
+                                 "entr(y/ies) missing {label, href}.")
+            for b in (bb.get("storeBadges") or []):
+                img = (b.get("img") if isinstance(b, dict) else None) or {}
+                if img.get("asset") and not _asset_on_disk(img["asset"]):
+                    rep.error("C16", f"footer.bottomBar store badge asset "
+                                     f"{img['asset']!r} not on disk — materialize it.")
+        elif socials and (foot.get("legal") or {}).get("text"):
+            rep.warn("C16", "footer carries social + legal but no bottomBar structure "
+                            "facts (divider/rows/policyLinks) — re-extract chrome to "
+                            "capture the bottom bar, or the renderer keeps the "
+                            "legacy one-row composition.")
+
+    # C17 — disclosure per-item interaction content (fid8 2026-07). A copy entry
+    # whose items list carries ANY body is evidence of a disclosure device (an
+    # openable item revealing per-item copy) — the states that were closed at
+    # static-capture time hide their bodies (and often a per-item media swap), so
+    # partial coverage means the interaction pass was skipped, not that the source
+    # lacks the content. Brand-agnostic: shapes + asset bindings only.
+    if copy_path.is_file():
+        try:
+            c17_doc = _load_yaml(copy_path)
+        except Exception:
+            c17_doc = None
+        lcopy = (c17_doc or {}).get("layoutCopy")
+        for lid, entry in (lcopy.items() if isinstance(lcopy, dict) else []):
+            if not isinstance(entry, dict):
+                continue
+            items = [i for i in (entry.get("items") or []) if isinstance(i, dict)]
+            if len(items) < 2:
+                continue
+            bodied = [i for i in items if str(i.get("body") or "").strip()]
+            if bodied and len(bodied) < len(items) \
+                    and not entry.get("itemBodiesNotObserved"):
+                missing = [str(i.get("heading") or i.get("label") or "?")
+                           for i in items
+                           if not str(i.get("body") or "").strip()
+                           and not i.get("bodyNotObserved")]
+                if missing:
+                    rep.error("C17", f"layoutCopy.{lid}: disclosure items missing "
+                                     f"body copy: {', '.join(missing)} — a body is "
+                                     "what makes an item openable; capture the "
+                                     "collapsed states (interaction pass / saved-DOM "
+                                     "hidden panels) or mark each `bodyNotObserved: "
+                                     "true` (entry-level `itemBodiesNotObserved: "
+                                     "true` when the source genuinely shows none).")
+            with_media = [i for i in items if str(i.get("media") or "").strip()]
+            if with_media and bodied:
+                if len(with_media) < len(items) and not entry.get("itemMediaNotObserved"):
+                    missing = [str(i.get("heading") or i.get("label") or "?")
+                               for i in items
+                               if not str(i.get("media") or "").strip()
+                               and not i.get("mediaNotObserved")]
+                    if missing:
+                        rep.error("C17", f"layoutCopy.{lid}: per-item media bound on "
+                                         f"{len(with_media)}/{len(items)} items "
+                                         f"(missing: {', '.join(missing)}) — the "
+                                         "media-swap device pairs each ACTIVE item "
+                                         "with its own asset; capture every state or "
+                                         "mark `mediaNotObserved: true` per item "
+                                         "(entry-level `itemMediaNotObserved: true`).")
+                for i in with_media:
+                    name = Path(str(i.get("media"))).name
+                    hits = list(brand_dir.rglob(name)) if name else []
+                    if not hits:
+                        rep.error("C17", f"layoutCopy.{lid}: items[].media "
+                                         f"{name!r} not found under {brand_dir.name}/ "
+                                         "— a non-existent filename renders nothing, "
+                                         "silently; materialize the captured asset "
+                                         "under assets/.")
+
+    # C15 COMPLETENESS (fid11 2026-07): when the source's OWN mined CSS exposes a
+    # relational spacing vocabulary — custom properties pairing two content roles
+    # (label/headline/description/button "spacing" ladders) or row-gap / column-gap
+    # rhythm vars — the authored ladder must be COMPLETE: every exposed pair rung
+    # under its generic canonical name, plus a row-rhythm / column-gutter token.
+    # A relationalLadder.notObserved marker alongside exposed pair vars is a
+    # contradiction. Var/selector names are provenance only (cite them in role:).
+    corpus_rel = str((doc.get("indexes") or {}).get("cssRuleCorpus")
+                     or "evidence/css-rules.json")
+    corpus_path = (brand_dir / corpus_rel).resolve()
+    corpus = None       # stays None when the brand ships no mined corpus (C21 reads it too)
+    spacing15 = (doc.get("tokens") or {}).get("spacing")
+    spacing15 = spacing15 if isinstance(spacing15, dict) else {}
+
+    def _rung_authored(key: str) -> bool:
+        node = spacing15.get(key)
+        return bool(node.get("value") if isinstance(node, dict) else node)
+
+    if corpus_path.is_file():
+        try:
+            corpus = json.loads(corpus_path.read_text())
+        except Exception:
+            corpus = None
+        decls_txt = " ".join(str(r.get("decls") or "")
+                             for r in ((corpus or {}).get("rules") or [])
+                             if isinstance(r, dict))
+        prop_names = set(re.findall(r"--[a-z0-9-]+(?=\s*:)", decls_txt))
+        role_of = {w: canon for canon, words in REL_ROLE_WORDS.items() for w in words}
+        exposed: dict[str, str] = {}          # canonical rung -> exposing var
+        row_vars: list[str] = []
+        col_vars: list[str] = []
+        for name in sorted(prop_names):
+            toks = name.strip("-").split("-")
+            if not any(t in ("spacing", "gap", "gutter") for t in toks):
+                continue
+            roles = {role_of[t] for t in toks if t in role_of}
+            if len(roles) == 2:
+                pair = tuple(sorted(roles, key=_REL_ROLE_ORDER.index))
+                rung = CANONICAL_RUNGS.get(pair)
+                if rung:
+                    exposed.setdefault(rung, name)
+            if "row" in toks and "gap" in toks:
+                row_vars.append(name)
+            if ("column" in toks and "gap" in toks) or "gutter" in toks:
+                col_vars.append(name)
+        marker15 = spacing15.get("relationalLadder")
+        if exposed and isinstance(marker15, dict) and marker15.get("notObserved"):
+            rep.error("C15", "tokens.spacing.relationalLadder.notObserved contradicts "
+                             "the mined corpus: the source exposes relational spacing "
+                             f"custom properties ({', '.join(sorted(exposed.values()))})"
+                             " — author the ladder instead of declaring absence.")
+        missing_rungs = [f"{rung} (exposed by {var})"
+                         for rung, var in sorted(exposed.items())
+                         if not _rung_authored(rung)]
+        if missing_rungs:
+            rep.error("C15", "relational ladder INCOMPLETE against the source's own "
+                             "spacing vocabulary: the mined corpus exposes rungs the "
+                             f"brand never authored: {'; '.join(missing_rungs)}. "
+                             "Resolve each var through the source's spacing scale at "
+                             "the canonical tier and author it as the generic "
+                             "tokens.spacing rung (source var names are provenance "
+                             "for role:, never token names).")
+        if row_vars and not any(_rung_authored(k)
+                                for k in ("block-to-block", "grid-gap", "row-gap")):
+            rep.error("C15", "the mined corpus exposes row-rhythm custom properties "
+                             f"({', '.join(sorted(set(row_vars))[:4])}…) but the brand "
+                             "authored no row rung — author block-to-block (content-"
+                             "block row rhythm) and/or grid-gap with the measured "
+                             "value.")
+        if col_vars and not any(_rung_authored(k)
+                                for k in ("column-to-column", "grid-gap", "column-gap")):
+            rep.error("C15", "the mined corpus exposes column-gutter custom properties "
+                             f"({', '.join(sorted(set(col_vars))[:4])}…) but the brand "
+                             "authored no column rung — author column-to-column "
+                             "(split gutter) and/or grid-gap with the measured value.")
+
+    # C18 — contextual header-alignment grammar (fid11, brand-schema §4.4b): when the
+    # observed pattern library corroborates a header-alignment rule in BOTH layout
+    # contexts (>= 2 split patterns agreeing and >= 2 standalone stack/grid patterns
+    # agreeing, at >= 2/3 majority), the brand must author layoutGrammar.headerContext
+    # with matching anchors — the brand-default layer generated sections resolve
+    # from (AS-49). Dissenting patterns keep their own explicit facts (which outrank
+    # the grammar), so exceptions never block authoring.
+    lib_rel = str((doc.get("indexes") or {}).get("layoutLibrary")
+                  or "layout-library.yaml")
+    lib_path = (brand_dir / lib_rel).resolve()
+    lib_pats: list[dict] = []
+    lib_doc: dict = {}
+    if lib_path.is_file():
+        try:
+            lib_doc = _load_yaml(lib_path) or {}
+        except Exception:
+            lib_doc = {}
+        lib_pats = [p for p in (lib_doc.get("patterns") or []) if isinstance(p, dict)]
+
+    def _norm_anchor18(v) -> str | None:
+        v = str(v or "").strip().lower()
+        v = {"center": "centered"}.get(v, v)
+        return v if v in ("left", "right", "centered") else None
+
+    split_obs: list[tuple[str, str]] = []
+    stack_obs: list[tuple[str, str]] = []
+    for p in lib_pats:
+        arch = str(p.get("archetypeRef") or p.get("archetype") or "").lower()
+        a = _norm_anchor18((((p.get("contentShape") or {}).get("alignment")) or {})
+                           .get("value"))
+        if not a:
+            continue
+        if arch == "split":
+            split_obs.append((str(p.get("id") or "?"), a))
+        elif arch in ("stack", "cards", "grid", "stack-fullbleed"):
+            stack_obs.append((str(p.get("id") or "?"), a))
+
+    corroborated: dict[str, tuple[str, int, int]] = {}
+    for key, obs in (("splitColumn", split_obs), ("standaloneStack", stack_obs)):
+        counts: dict[str, int] = {}
+        for _, a in obs:
+            counts[a] = counts.get(a, 0) + 1
+        if not counts:
+            continue
+        modal = max(counts, key=lambda k: counts[k])
+        n = counts[modal]
+        if n >= 2 and n * 3 >= len(obs) * 2:
+            corroborated[key] = (modal, n, len(obs))
+    if len(corroborated) == 2:
+        grammar = (doc.get("layoutGrammar") or {}).get("headerContext") \
+            if isinstance(doc.get("layoutGrammar"), dict) else None
+        for key, (modal, n, total) in sorted(corroborated.items()):
+            node = (grammar or {}).get(key) if isinstance(grammar, dict) else None
+            authored = _norm_anchor18(node.get("anchor")) \
+                if isinstance(node, dict) else None
+            if not authored:
+                rep.error("C18", f"header-alignment contexts observed but the grammar "
+                                 f"is not authored: {n}/{total} {key} patterns agree "
+                                 f"on '{modal}' — author layoutGrammar.headerContext."
+                                 f"{key}.anchor (brand-schema §4.4b; the brand-default "
+                                 "layer generated sections resolve from, AS-49).")
+            elif authored != modal:
+                rep.error("C18", f"layoutGrammar.headerContext.{key}.anchor "
+                                 f"'{authored}' contradicts the observed majority "
+                                 f"({n}/{total} patterns agree on '{modal}') — align "
+                                 "the grammar with the evidence or re-measure.")
+            else:
+                # ADVISORY (fid12): a dissenting explicit pattern fact OUTRANKS the
+                # grammar by resolution order, so a mis-extracted fact hides behind
+                # AS-49 forever — surface each dissent for human review. Verified
+                # exceptions are legitimate (cite the re-measurement in the pattern's
+                # changelog); unverified ones are exactly where wrong facts live.
+                # A dissent the curator already RULED ON (curation.alignment.resolve:
+                # follow-grammar, brand-schema §4.4c) downgrades to an informational
+                # note: generation lanes resolve through the ruling, review is done.
+                obs = split_obs if key == "splitColumn" else stack_obs
+                pat_by_id = {str(p.get("id") or "?"): p for p in lib_pats}
+                for pid, a in obs:
+                    if a == modal:
+                        continue
+                    cur = ((pat_by_id.get(pid) or {}).get("curation") or {}) \
+                        .get("alignment")
+                    if isinstance(cur, dict) \
+                            and str(cur.get("resolve")) == "follow-grammar":
+                        rep.note("C18", f"pattern '{pid}' explicit alignment '{a}' "
+                                        f"dissents from the {key} grammar '{modal}' "
+                                        f"({n}/{total}) — dissent curated toward "
+                                        "grammar (generation lanes center it; the "
+                                        "replica keeps the measured fact).")
+                        continue
+                    rep.warn("C18", f"pattern '{pid}' explicit alignment '{a}' "
+                                    f"dissents from the corroborated {key} "
+                                    f"grammar '{modal}' ({n}/{total}) — the fact "
+                                    "outranks the grammar (AS-49), so verify it "
+                                    "against the source (re-measure) and record "
+                                    "the confirmation in the pattern changelog.")
+
+    # C19 — RADIUS FIDELITY against the mined census (fid13): tokens.radius values
+    # are brand FACTS. When the source publishes its OWN radius custom properties
+    # (var()-backed census entries — the design system's actual ladder), every
+    # authored magnitude must ride that resolved ladder; raw literal census entries
+    # are the fallback vocabulary only (they include third-party embed noise —
+    # a 12px chat widget is not the brand's card radius). A vision-estimated radius
+    # outside the ladder (12px cards / 20px panels against 2/4/10/40) is an INVENTED
+    # fact — fail loud. 0 (square) and percentage circles are always legitimate;
+    # brands with no census skip.
+    facts_rel = str((doc.get("indexes") or {}).get("cssFacts")
+                    or "evidence/css-facts.json")
+    facts_path = (brand_dir / facts_rel).resolve()
+    if facts_path.is_file():
+        try:
+            census = (json.loads(facts_path.read_text()) or {}).get("radiusCensus")
+        except Exception:
+            census = None
+        census = census if isinstance(census, dict) else {}
+        # resolve var() refs through the mined rule corpus's definitions (--name: <len>)
+        var_defs: dict[str, float] = {}
+        if corpus_path.is_file():
+            try:
+                ctxt = " ".join(str(r.get("decls") or "") for r in
+                                (json.loads(corpus_path.read_text()).get("rules") or [])
+                                if isinstance(r, dict))
+            except Exception:
+                ctxt = ""
+            for name, num, unit in re.findall(
+                    r"(--[a-z0-9-]+)\s*:\s*([\d.]+)(px|rem)", ctxt):
+                var_defs.setdefault(name, float(num) * (16.0 if unit == "rem" else 1.0))
+        ladder_px: set[float] = set()   # the source's OWN radius tokens, resolved
+        literal_px: set[float] = set()  # raw literals (embeds included — weak signal)
+        for key in census:
+            vars_in_key = re.findall(r"--[a-z0-9-]+", key)
+            for var in vars_in_key:
+                if var in var_defs:
+                    ladder_px.add(var_defs[var])
+            if not vars_in_key:
+                for num, unit in re.findall(r"(?<![\w-])([\d.]+)(px|rem)", key):
+                    literal_px.add(float(num) * (16.0 if unit == "rem" else 1.0))
+        vocab_px = ladder_px or literal_px
+        vocab_kind = "published radius ladder" if ladder_px else "literal radius census"
+        if vocab_px:
+            radius_tokens = (doc.get("tokens") or {}).get("radius")
+            radius_tokens = radius_tokens if isinstance(radius_tokens, dict) else {}
+            for tname, node in sorted(radius_tokens.items()):
+                raw = node.get("value") if isinstance(node, dict) else node
+                m = re.fullmatch(r"([\d.]+)(px|rem)", str(raw or "").strip())
+                if not m:
+                    continue        # 0, percentages, keywords — always legitimate
+                px = float(m.group(1)) * (16.0 if m.group(2) == "rem" else 1.0)
+                if px == 0:
+                    continue
+                if not any(abs(px - v) <= 1.0 for v in vocab_px):
+                    near = ", ".join(f"{v:g}px" for v in sorted(vocab_px)[:6])
+                    rep.error("C19", f"tokens.radius.{tname} = {raw} ({px:g}px) is "
+                                     f"not in the source's {vocab_kind} ({near}) — "
+                                     "an authored radius is a FACT; re-measure "
+                                     "(JS-off computed) or map it to the source's "
+                                     "own ladder instead of a vision estimate.")
+
+    # C20 — GRID EQUALIZATION facts (fid14, brand-schema §4.4d, AS-50): every observed
+    # card-grid pattern (grid/cards/mosaic archetypes) must record whether the source
+    # equalizes card heights per row — contentShape.gridEqualize with heights
+    # stretch|hug plus the companion anatomy (slack slot, actionPinned) — or explicitly
+    # mark it unobservable (contentShape.gridEqualizeNotObserved: true). Library
+    # patterns ARE observations: while the capture exists the row-height measurement
+    # is always available, so a missing stance is an extraction gap — fail loud
+    # (same contract weight as the alignment/columns facts these grids already carry).
+    for p in lib_pats:
+        arch = str(p.get("archetypeRef") or p.get("archetype") or "").lower()
+        if arch not in ("grid", "cards", "mosaic"):
+            continue
+        pid = str(p.get("id") or "?")
+        shape = p.get("contentShape") if isinstance(p.get("contentShape"), dict) else {}
+        if shape.get("gridEqualizeNotObserved") is True:
+            continue
+        g = shape.get("gridEqualize")
+        heights = str((g or {}).get("heights") if isinstance(g, dict) else "").lower()
+        if heights not in ("stretch", "hug"):
+            rep.error("C20", f"card-grid pattern '{pid}' records no grid-equalization "
+                             "stance — measure the source's card row (JS-off @1440: "
+                             "equal heights with differing content = stretch; "
+                             "content-sized = hug) and author contentShape."
+                             "gridEqualize { heights, slack, actionPinned } "
+                             "(brand-schema §4.4d), or mark contentShape."
+                             "gridEqualizeNotObserved: true if the capture cannot "
+                             "show it (AS-50).")
+
+    # C21 — bar-level AFFORDANCES (fid15 2026-07, C16's sibling): the nav bar's own
+    # small devices — dropdown-trigger chevrons, in-bar utility controls (icon
+    # links / icon dropdowns), and the utility banner's cta/close anatomy. Each
+    # requirement triggers off DOM-DETECTABLE evidence (the mined css corpus names
+    # the affordance, or the brand's own captured facts imply it); genuinely absent
+    # affordances owe an explicit notObserved marker, never silence. Brand-agnostic:
+    # shapes, asset bindings, and web-platform semantics only.
+    def _corpus_selector_has(*token_sets: tuple[str, ...]) -> bool:
+        """True when any corpus rule's selector carries one token from EVERY set
+        (case-insensitive) — the source stylesheet observably names the device."""
+        if not isinstance(corpus, dict):
+            return False
+        for r in corpus.get("rules") or []:
+            sel = str((r or {}).get("selector") or "").lower()
+            if sel and all(any(t in sel for t in ts) for ts in token_sets):
+                return True
+        return False
+
+    m_trigger = (nav.get("measured") or {}).get("trigger") \
+        if isinstance(nav.get("measured"), dict) else None
+    m_chev = (m_trigger or {}).get("chevron") if isinstance(m_trigger, dict) else None
+    corpus_nav_chevron = _corpus_selector_has(
+        ("nav", "header", "menu"), ("chevron", "caret"))
+    if menus and corpus_nav_chevron and not isinstance(m_chev, dict) \
+            and not (m_trigger or {}).get("chevronNotObserved"):
+        rep.error("C21", "the source's stylesheet names a nav trigger chevron/caret "
+                         "but navbar.measured.trigger.chevron carries no facts — "
+                         "harvest the glyph (artwork + box + gap + open transform/"
+                         "motion) or mark measured.trigger.chevronNotObserved: true.")
+    if isinstance(m_chev, dict):
+        box = m_chev.get("box") if isinstance(m_chev.get("box"), dict) else {}
+        if not (box.get("w") and box.get("h")):
+            rep.error("C21", "navbar.measured.trigger.chevron has no measured box "
+                             "(w/h) — the glyph's geometry is part of the fact.")
+        if m_chev.get("asset") and not _asset_on_disk(m_chev["asset"]):
+            rep.error("C21", f"trigger chevron asset {m_chev['asset']!r} not on disk "
+                             f"under {brand_dir.name}/ — materialize the harvested "
+                             "artwork before binding.")
+        if not (m_chev.get("openTransform") or m_chev.get("transition")):
+            rep.warn("C21", "trigger chevron carries neither an open-state transform "
+                            "nor a transition — the open/close motion is part of the "
+                            "affordance; measure it (flip the trigger's expanded "
+                            "state) when the source animates it.")
+
+    utility = [u for u in (nav.get("utility") or []) if isinstance(u, dict)]
+    for u in utility:
+        ulabel = str(u.get("label") or u.get("role") or "?")
+        ic = u.get("icon") if isinstance(u.get("icon"), dict) else None
+        if ic and ic.get("asset") and not _asset_on_disk(ic["asset"]):
+            rep.error("C21", f"utility control {ulabel!r} icon asset "
+                             f"{ic['asset']!r} not on disk — materialize harvested "
+                             "glyphs; a missing file renders nothing, silently.")
+        ch = u.get("chevron") if isinstance(u.get("chevron"), dict) else None
+        if ch and ch.get("asset") and not _asset_on_disk(ch["asset"]):
+            rep.error("C21", f"utility control {ulabel!r} chevron asset "
+                             f"{ch['asset']!r} not on disk — materialize it.")
+        if str(u.get("kind") or "") == "dropdown" and not u.get("dropdownNotObserved"):
+            dd = u.get("dropdown") if isinstance(u.get("dropdown"), dict) else None
+            items = [i for i in ((dd or {}).get("items") or []) if isinstance(i, dict)
+                     and str(i.get("label") or "").strip()]
+            if not items:
+                rep.error("C21", f"utility dropdown {ulabel!r} carries no menu items "
+                                 "— the open-state panel must be captured live "
+                                 "(panels portal on open; a saved snapshot cannot "
+                                 "show them) or marked dropdownNotObserved: true.")
+            panel = (dd or {}).get("panel") if isinstance((dd or {}).get("panel"), dict) else {}
+            if items and not (panel.get("w") and panel.get("h") and panel.get("bg")):
+                rep.error("C21", f"utility dropdown {ulabel!r} items exist but the "
+                                 "panel presentation (w/h/bg) was not measured — "
+                                 "the open state carries both structure and paint.")
+
+    # a control FLATTENED into the primary tier: a primary entry that is neither a
+    # navigation destination (real href) nor a mega-menu tab is a bar control that
+    # missed utility classification (the exact regression this contract guards).
+    for p in (nav.get("primary") or []):
+        if not isinstance(p, dict) or isinstance(p.get("menu"), dict):
+            continue
+        href = str(p.get("href") or "").strip()
+        if href in ("", "#") and not p.get("utilityNotObserved"):
+            rep.error("C21", f"navbar.primary entry {str(p.get('label') or '?')!r} "
+                             "has no destination href and no menu — an in-bar "
+                             "CONTROL flattened into the nav-destination tier; "
+                             "classify it under navbar.utility (kind/role/glyph/"
+                             "dropdown anatomy) or mark utilityNotObserved: true.")
+
+    # the corpus observably names an in-bar language/locale switcher: the bar owes a
+    # dropdown-kind utility control (or the explicit marker on the navbar).
+    if _corpus_selector_has(("nav", "header"), ("languageswitcher", "language-switcher",
+                                                "localeswitcher", "locale-switcher")) \
+            and not any(str(u.get("kind") or "") == "dropdown" for u in utility) \
+            and not nav.get("utilityNotObserved"):
+        rep.error("C21", "the source's stylesheet names an in-bar language/locale "
+                         "switcher but navbar.utility carries no dropdown-kind "
+                         "control — capture it (glyph, collapsed presentation, "
+                         "locale items, panel) or mark navbar.utilityNotObserved: "
+                         "true.")
+
+    ub = nav.get("utilityBanner") if isinstance(nav.get("utilityBanner"), dict) else None
+    if ub and ub.get("observed") and str(ub.get("text") or "").strip():
+        cta = ub.get("cta") if isinstance(ub.get("cta"), dict) else None
+        if cta:
+            if not (str(cta.get("label") or "").strip() and str(cta.get("href") or "").strip()):
+                rep.error("C21", "utilityBanner.cta needs label + href — a banner "
+                                 "action without a destination is a capture gap.")
+            arrow = cta.get("arrow") if isinstance(cta.get("arrow"), dict) else None
+            if arrow and arrow.get("asset") and not _asset_on_disk(arrow["asset"]):
+                rep.error("C21", f"utilityBanner cta arrow asset {arrow['asset']!r} "
+                                 "not on disk — materialize it.")
+        elif not ub.get("ctaNotObserved"):
+            rep.error("C21", "utilityBanner is observed but carries no cta anatomy "
+                             "— capture the banner's action link (label/href/"
+                             "underline/weight) or mark ctaNotObserved: true when "
+                             "the source banner genuinely shows none.")
+        close = ub.get("close") if isinstance(ub.get("close"), dict) else None
+        if close:
+            cbox = close.get("box") if isinstance(close.get("box"), dict) else {}
+            if not (cbox.get("w") and cbox.get("h")):
+                rep.error("C21", "utilityBanner.close carries no measured box (w/h) "
+                                 "— the dismiss affordance's geometry is part of "
+                                 "the anatomy.")
+            if close.get("asset") and not _asset_on_disk(close["asset"]):
+                rep.error("C21", f"utilityBanner close asset {close['asset']!r} not "
+                                 "on disk — materialize it.")
+        elif ub.get("dismissible") and not ub.get("closeNotObserved"):
+            rep.error("C21", "utilityBanner is dismissible but carries no close "
+                             "anatomy (glyph kind + box) — capture the close "
+                             "affordance or mark closeNotObserved: true.")
+
+    # C22 — TWO-TIER chrome contract (fix1 2026-07, advisory): when the MEASURED
+    # chrome shows a real utility tier (utilityBarHeight > 0) the authored contract
+    # should declare `navbar.utilityTier` (the renderer's explicit opt-in). Advisory,
+    # not error — a brand may legitimately flatten a vestigial tier, but silence
+    # usually means the authoring missed the placement facts.
+    m_nav = nav.get("measured") if isinstance(nav.get("measured"), dict) else {}
+    ut_h = m_nav.get("utilityBarHeight")
+    if isinstance(ut_h, (int, float)) and ut_h > 0 \
+            and not isinstance(nav.get("utilityTier"), dict):
+        rep.warn("C22", f"measured chrome shows a utility tier ({int(ut_h)}px) but "
+                        "the authored contract lacks navbar.utilityTier — declare "
+                        "the tier (height/bg/fontSize/trailing) so the bar renders "
+                        "two-tier, or record why it was flattened.")
+
+    # C23 — COMPONENT-RECIPE coverage (fix2 2026-07, advisory; brand-schema §4.4e):
+    # recipes are brand data written DURING extraction. When 2+ project patterns
+    # share a rail-like anatomy signature (a *rail treatment kind — the section
+    # head-rail device family) they are instantiating ONE recurring component;
+    # each should bind a `recipes:` entry via recipeRef {recipe, variant}. Advisory,
+    # not error — a brand may carry two genuinely unrelated rails — but silence
+    # usually means the recipe layer was skipped. Dangling refs + one-way usedBy
+    # bindings are flagged too (both directions of the binding must agree).
+    recipes = [r for r in (lib_doc.get("recipes") or []) if isinstance(r, dict)]
+    recipe_ids = {str(r.get("id")) for r in recipes if r.get("id")}
+    # rail-like = the leader-rule head-rail device family (rule-rail / headrail /
+    # leader kinds) — NOT carousel-rail, which is a slide track, not an anatomy.
+    _rail_re = re.compile(r"rule-rail|head-?rail|leader")
+    railish = [p for p in lib_pats
+               if any(_rail_re.search(str(t.get("kind") or "").lower())
+                      for t in (p.get("specialTreatments") or [])
+                      if isinstance(t, dict))]
+    if len(railish) >= 2:
+        unbound = [str(p.get("id") or "?") for p in railish
+                   if not (isinstance(p.get("recipeRef"), dict)
+                           and str(p["recipeRef"].get("recipe") or "") in recipe_ids)]
+        if unbound:
+            rep.warn("C23", f"{len(railish)} patterns share a rail-like anatomy "
+                            f"({', '.join(str(p.get('id')) for p in railish)}) but "
+                            f"{', '.join(unbound)} bind(s) no recipes: entry — record "
+                            "the shared anatomy as a brand recipe with per-context "
+                            "variants (brand-schema §4.4e) and set recipeRef "
+                            "{recipe, variant} on each pattern.")
+    for p in lib_pats:
+        ref = p.get("recipeRef")
+        if isinstance(ref, dict) and ref.get("recipe") \
+                and str(ref["recipe"]) not in recipe_ids:
+            rep.warn("C23", f"pattern '{p.get('id')}' recipeRef names recipe "
+                            f"'{ref['recipe']}' which does not exist in "
+                            "layout-library.yaml recipes: — dangling binding "
+                            "(the composer will degrade to the structural device).")
+    pat_ids = {str(p.get("id")) for p in lib_pats if p.get("id")}
+    for r in recipes:
+        rid = str(r.get("id") or "?")
+        if not (r.get("anatomy") or []):
+            rep.warn("C23", f"recipe '{rid}' records no anatomy slots — a recipe is "
+                            "an ordered anatomy, not just a name.")
+        for v in (r.get("variants") or []):
+            if isinstance(v, dict) and not v.get("id"):
+                rep.warn("C23", f"recipe '{rid}' carries a variant without an id — "
+                                "patterns bind variants by id.")
+        for uid in (r.get("usedBy") or []):
+            if str(uid) not in pat_ids:
+                rep.warn("C23", f"recipe '{rid}' usedBy names unknown pattern "
+                                f"'{uid}'.")
+            else:
+                bound = next((p for p in lib_pats if str(p.get("id")) == str(uid)), {})
+                ref = bound.get("recipeRef")
+                if not (isinstance(ref, dict) and str(ref.get("recipe")) == rid):
+                    rep.warn("C23", f"recipe '{rid}' lists pattern '{uid}' in usedBy "
+                                    "but that pattern carries no matching recipeRef "
+                                    "— bind both directions.")
+
     return rep
 
 
@@ -818,18 +1533,20 @@ def main(argv=None) -> int:
                              allow_no_vision=args.allow_no_vision,
                              min_logo_assets=args.min_logo_assets,
                              smoke=not args.no_smoke)
+    for nmsg in rep.notes:
+        print(f"NOTE  {nmsg}")
     for w in rep.warnings:
         print(f"WARN  {w}")
     for e in rep.errors:
         print(f"ERROR {e}")
     verdict = "PASS" if rep.ok else "FAIL"
     print(f"[{verdict}] {brand_dir}: {len(rep.errors)} error(s), "
-          f"{len(rep.warnings)} warning(s)")
+          f"{len(rep.warnings)} warning(s), {len(rep.notes)} note(s)")
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True)
         args.report.write_text(json.dumps(
-            {"brandDir": str(brand_dir), "ok": rep.ok,
-             "errors": rep.errors, "warnings": rep.warnings}, indent=1))
+            {"brandDir": str(brand_dir), "ok": rep.ok, "errors": rep.errors,
+             "warnings": rep.warnings, "notes": rep.notes}, indent=1))
     return 0 if rep.ok else 1
 
 

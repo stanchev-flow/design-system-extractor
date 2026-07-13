@@ -163,11 +163,48 @@ tokens:
       value:        "<rem>"          # roles — eyebrow-to-heading, heading-to-body,
       modeLadder:   { … }            # body-to-cta, … (or relationalLadder:
                                      # {notObserved: true, reason: …} when truly absent)
+                                     # COMPLETENESS (C15, fid11): when the source's mined
+                                     # CSS exposes relational spacing custom properties
+                                     # (vars pairing two content roles — label/headline/
+                                     # description/button "spacing" ladders — or row-gap/
+                                     # column-gap rhythm vars), EVERY exposed rung must be
+                                     # authored under its GENERIC canonical name:
+                                     #   pair vars      → eyebrow-to-heading /
+                                     #                    heading-to-body / body-to-cta
+                                     #   row-gap var    → block-to-block (content-block
+                                     #                    row rhythm)
+                                     #   split col var  → column-to-column (split gutter)
+                                     # Source var/selector names are PROVENANCE ONLY
+                                     # (cite them in role:) — never token names. Rungs
+                                     # ride the canonical tier; register swaps go in
+                                     # modeLadder. CONSUMPTION: ladder-bearing brands
+                                     # render header/anatomy stacks as NO-GAP columns
+                                     # with per-pair margins (AS-48); uniform stack gap
+                                     # is ONLY the no-ladder degrade. Optional companion
+                                     # measures from the same ladder family (e.g.
+                                     # body-measure — description column measure;
+                                     # header-measure — bounded header-stack measure)
+                                     # are authored as plain spacing roles.
+    container-max:                   # measured content max-width (nav/footer cap)
+      value:        "<rem>"
+    container-span:                  # OPTIONAL measured outer-container LAW as one CSS
+      value:        "min(<N>cqw, <cap>rem)"   # expression (from tier containerFacts:
+                                     # fluid used-width fraction + wide-tier cap). When
+                                     # authored, --content-measure rides it page-wide
+                                     # (every section container centers this span);
+                                     # else container-max, else the structural 86rem.
   surfaces:
     <surfaceRole>:                   # surface/primary, surface/inverse, …
       bg:           "<hex>"          # or token ref
       intent:       "<role>"         # e.g. "default canvas", "dark bookend band"
       textPrimary:  "<token ref>"
+      textSecondary: "<token ref|null>" # OPTIONAL: this surface's measured secondary
+                                     # (muted) ink. Declare it when the source's
+                                     # secondary register on THIS surface is not the
+                                     # global muted role — e.g. a photographic band
+                                     # whose sub/eyebrow measured FULL-strength ink
+                                     # (the art carries the contrast). Absent ⇒ the
+                                     # global text/on-*-muted resolution applies.
       textAccent:   "<token ref|null>"
       provenance:   [<sectionId>…]
 ```
@@ -218,6 +255,136 @@ tokens:
 >   itself evidence, never a vocabulary guess: an explicit `navbar.ctas[]` entry wins,
 >   else a `navbar.links[].style` filled-pill marker, else `navbar.measured.cta`
 >   promotes the LAST primary item; a brand declaring none renders links only.
+
+> **Chrome DEPTH facts (fid4 2026-07 — mega-menus + footer hierarchy; validator C16).**
+> All optional; every requirement below triggers off the brand's OWN captured evidence
+> (observed-but-incomplete is a C16 error; a brand whose chrome lacks the pattern owes
+> nothing and renders exactly as before). Asset refs (`asset:`) are brand-dir-relative
+> paths that MUST exist on disk — artwork binds only when actually harvested.
+>
+> - `navbar.primary[].menu` — the captured MEGA-MENU for one top-level item:
+>   `columns: [{heading, area: main|aside, links: [{label, href, description?,
+>   descriptionOnHover?, icon?: {kind: svg|img|mask|bg, asset?, size?}}]}]` plus an
+>   optional right-side object `card: {title, href, body?, groupHeading?, area: aside,
+>   image?: {asset, alt?}, cta?: {label, href}}`. Column groups are heading+links
+>   units in source order; `area: aside` marks the bordered right rail.
+>   `descriptionOnHover: true` records a description the source reveals on hover
+>   (`grid-template-rows` 0fr→1fr device) vs one open at rest.
+> - `navbar.measured.megaPanel` — the open-panel PRESENTATION register, measured from
+>   computed styles: `surface {bg, borderTop?, radius?}`, `hiddenState {opacity,
+>   transform}` (the close pose the open transition animates from), `motion {panel,
+>   link, description?, chevron?}` (each `{property, duration, easing, delay}` — at
+>   least one time literal REQUIRED when menus exist), `link {padding, radius,
+>   fontSize, hoverBg?}`, `groupTitle {fontSize, fontWeight, color, textTransform?,
+>   letterSpacing?}`, `aside {borderLeft?, maxWidth?, paddingLeft?}`.
+> - `navbar.megaOpen[]` — OPEN-STATE geometry per tab (Playwright hover/force pass):
+>   `{label, open, panel {x,y,w,h}, aside? {widthFraction, borderLeft?}, groups:
+>   [{rect, links, linkColumns?, aside}], card?, shot?}`. Renderers read the aside
+>   width fraction + main-group link column count from here; each open entry must
+>   carry a real panel box and a matching `menu` on the same-labeled primary link.
+> - `navbar.measured.trigger.chevron` — the dropdown-trigger AFFORDANCE family fact
+>   (fid15 2026-07): the small trailing glyph a menu-owning tab carries. `{kind: svg,
+>   asset, box {w, h}, gap?, transition?, openTransform?}` — `asset` is the HARVESTED
+>   artwork (inline svg materialized under assets/), `gap` the measured label→glyph
+>   space, `openTransform` the open-state transform measured by flipping the trigger's
+>   expanded state (e.g. `matrix(-1,0,0,-1,0,0)` = 180° rotation), `transition` the
+>   chevron's own motion. REQUIRED when menu-owning triggers render an inline glyph
+>   (DOM-detectable) — capture it or mark `chevronNotObserved: true` on `measured.trigger`.
+> - `navbar.utility[]` — IN-BAR utility CONTROLS (fid15), distinct from nav
+>   destinations: the bar's trailing cluster (account links, locale switchers) and any
+>   above-bar tier rows. Each entry: `{label, href, kind: link|dropdown, role?
+>   (login|language|… — derived from the control's OWN semantics: auth-endpoint href,
+>   language/locale accessible name; never content vocabulary), bar? (trailing),
+>   ariaLabel?, collapsedLabel? (the short label the bar actually shows), icon?
+>   {kind: svg|img|mask|bg, asset, size?}, chevron? (trigger-chevron shape above),
+>   dropdown? {items: [{label, href, lang?, current?}], panel {w, h, bg, radius,
+>   border?, shadow?, paddingY?}, item {fontSize, color, padding, radius?},
+>   currentItem? {bg, color}}}`. A `kind: dropdown` control's open state is captured
+>   live (panels portal on open); items must come from the source DOM. A control whose
+>   glyph wasn't harvested renders as a text link (degrade, never invent artwork).
+> - `navbar.utilityBanner` — the dismissible promo strip ABOVE the bar, full anatomy
+>   (fid15): `{observed, text, bg, ink, fontSize?, cta? {label, href, underline?,
+>   color?, fontWeight?, arrow? {kind: svg, asset}}, close? {kind: svg|box-only|text,
+>   box {w, h}, strokeWidth?, ink?, ariaLabel?, asset?}, dismissible, provenance,
+>   source}`. `close.kind: box-only` records a measured close BOX whose glyph artwork
+>   the capture could not harvest (runtime-injected) — renderers may draw the X from
+>   the measured box/strokeWidth facts (fact reconstruction), never from imagination.
+>   When the live page no longer serves the banner, a saved banner-embed FRAGMENT
+>   (its own captured document) is a valid measurement source (`provenance` names it).
+> - **Validator (C21)** enforces the affordance family: corpus-named trigger chevrons /
+>   locale switchers demand the fact or its `…NotObserved` marker, bound assets must
+>   exist on disk, dropdown-kind utility controls need live-captured items + panel
+>   paint, href-less menu-less primary entries flag as flattened bar controls, and an
+>   observed banner owes cta + close anatomy (or explicit not-observed markers).
+> - `footer.measured.grid` — the directory's column→group HIERARCHY from DOM geometry:
+>   `wrapperSizes: [n, …]` (groups stacked per MAJOR column, source order; the sum
+>   must equal the extracted group count), plus `columnGap`, `wrappers[]` provenance.
+>   `footer.measured.heading` — the group-heading register (`color`, `fontSize`,
+>   `fontWeight`, `textTransform?`, `letterSpacing?`) — REQUIRED when columns carry
+>   headings (headed columns must not default to link styling).
+> - `footer.bottomBar` — the legal-row structure: `divider {present, color?, opacity?}`
+>   (REQUIRED shape), `rows: [{kinds, justify?, align?, gap?}]` (observed composition),
+>   `disclaimer?`, `storeBadges?: [{href, img: {asset, alt}}]`, `policyLinks:
+>   [{label, href}]` (the bottom bar's OWN links, distinct from `legal.links` keyword
+>   matches). Social + legal WITHOUT any bottomBar facts warns (stale capture).
+> - `footer.social[]` icon facts: `kind: icon` entries MUST bind harvested artwork —
+>   `icon {kind: svg|mask|img|bg, asset, size?, ink?}` + optional `box {width, height,
+>   radius?, bg?}` (the tappable box). No artwork harvested ⇒ author `kind: text`;
+>   renderers degrade to accessible text links, never invented glyphs.
+> - **Single-color glyph RENDERING CONTRACT (fix4 2026-07)** — the chrome's SVG
+>   glyph facts above (trigger/utility chevrons, utility icons, banner arrow/close,
+>   social icons) and the text-CTA `glyph` (§10.2) all emit as SANITIZED INLINE
+>   `<svg>` markup (`prepare_chrome_glyphs` stamps `_inlineSvg` beside `_dataUri`;
+>   `sanitize_inline_svg` strips script/foreignObject/event-attrs/external refs,
+>   guarantees xmlns + viewBox, drops width/height/foreign classes, dedupes ids
+>   per emitted instance, stamps `aria-hidden="true" focusable="false"`, and
+>   normalizes ink to `currentColor` ONLY after verifying the artwork is genuinely
+>   single-ink). The measured ink facts (`icon.ink` etc.) keep working — they ride
+>   the host's `color` chain now instead of a mask fill. Artwork that fails
+>   verification (multi-color, gradient, `<style>`-driven) keeps the fix2 data-URI
+>   currentColor-mask channel under a `--mask` modifier class; multi-color MARKS
+>   (store badges, wordmark `<img>` bindings, mega-panel item icons) stay on the
+>   image channel entirely. Brand data is unchanged by this contract — it is an
+>   emission technique, not a fact.
+
+> **Two-tier chrome + action groups (fix1 2026-07 — validator C22 advisory).**
+> All optional; brands without the facts render byte-identically.
+>
+> - `navbar.utilityTier` — the EXPLICIT opt-in for a distinct thin utility bar
+>   ABOVE the primary bar: `{height, bg?, fontSize?, trailing?: [labels]}`.
+>   `render_navbar` gates the two-tier markup on THIS key — never on `twoTier`
+>   alone, because a brand can declare `twoTier: true` with a measured
+>   `utilityBarHeight` of 0 (collapsed tier) and must keep its single bar. The
+>   captured `navbar.utility[]` run splits into the leading cluster (source
+>   order) and the trailing cluster (`trailing` placement labels, declared
+>   order) — placement facts win over any structural default. The primary tier
+>   keeps logo + primary links + actions with unchanged trigger markup (mega
+>   bindings and the fid15 chevron/glyph discipline ride as before).
+> - `navbar.ctas[]` as an ACTION GROUP — when the extraction declares TWO OR MORE
+>   bar actions, each entry carries its own measured register facts
+>   (`{label, href, style: primary|secondary|…, bg, color, border?, borderRadius,
+>   height?, padX?, fontSize?}`) and the bar renders the N-action run, each action
+>   painted from its own facts (`--navcta-*` consumption vars incl. the border
+>   channel). Single-cta brands keep the existing one-action markup byte-identically.
+>   Register hierarchy inside any group is auditable (anti-ai-slop AS-59: exactly
+>   one filled primary register per group).
+> - `footer.bottomBar.anatomy: centered-stack` — the bottom block renders as a
+>   centered COLUMN: social glyph row flanked by same-row hairline rules
+>   (`bottomBar.divider.color`), then the brand wordmark (`footer.logo` art
+>   recolored to the footer ink via CSS mask), then the centered legal line, then
+>   the underlined policy row. Brands without the key keep the inline row1/row2
+>   bottom-bar grammar unchanged.
+> - `tokens` button families may declare `onInverse: {bg?, color?, border?}` —
+>   the register the family takes on surfaces that declare `controls: onInverse`
+>   (surface-scoped variable re-pointing; see tokens §3).
+> - Pattern `contentShape.bandRhythm` (layout library) — authored per-band
+>   relational rungs `{eyebrowToHeading?, headingToBody?, bodyToCta?}` consumed as
+>   scoped gap variables by the band's composer (measured ladder values, not
+>   structural defaults).
+> - **Validator (C22, advisory)** — when measured chrome shows a real utility tier
+>   (`navbar.measured.utilityBarHeight` > 0) but the authored contract lacks
+>   `navbar.utilityTier`, advise (not error): the tier is evidence the authoring
+>   should declare.
 
 > **Vertical rhythm (spacing) — STYLE owns the scale, BRAND owns the measured values.**
 > The active STYLE layer (`styles/<id>.md`, front-matter `spacing:` — authoritative — with
@@ -844,6 +1011,23 @@ Page rhythm: inverse → primary → inverse. Transitions are hard cuts.
 > not design language). A `--check` mode re-renders and diffs; per SIGN-OFF #1 this
 > is a **warning only** and never fails a build.
 
+### 9b. "Component recipes" — the style-md recipe surface (fix2 2026-07)
+
+The brand's style markdown carries a **"Component recipes"** section describing each
+`recipes:` entry (§4.4e) in prose: its anatomy, variants, and use cases, written in
+the brand's own voice so any generator consuming the kit reads recipes as part of the
+brand's genre. Genre framing is **descriptive per-brand prose** ("this SaaS brand
+opens working sections with a headrail…", "this editorial brand carries a folio-rule
+family…") — never a shared genre taxonomy or enum in code.
+
+- **Projection-rendered brand.md** (render_brand_md.py): the section is emitted
+  deterministically from the sibling `layout-library.yaml` `recipes:` layer — same
+  contract as §17 "Layout patterns".
+- **Extraction-summary brand.md** (hand-authored human summary): the Layout Analyst
+  writes the section as part of authoring (layout-analyst-skill §recipes) — one
+  paragraph or bullet per recipe: anatomy → variants → which sections deploy which
+  variant and why.
+
 ---
 
 ## Appendix B — The two-layer site-generation model (STYLE + BRAND)
@@ -1007,9 +1191,29 @@ patterns:
           sizeRel:    { to: <otherSlot>, ratio: <num>, axis: width|height }  # relative size link
           width:      hug|stretch|fixed|media|full-bleed                     # harvest width class
           mediaAspect:portrait|landscape|square|freeform                     # media slots
-          mediaScale: { of: container|slot, fraction: <0..1> }               # media slots
+          mediaScale: { of: container|slot, fraction: <0..1>, gap: <CSS len>,  # media slots; optional MEASURED inter-item gap (rem/em/px) for mark rows
+                        item: { width: <CSS len>, height: <CSS len> } }        # optional MEASURED per-mark box (fix2): the strip's own item size at the canonical tier — when present the renderer locks mark height/width to the measurement instead of deriving size from fraction/flex weights (whose viewBox padding skews artwork scale)
           opacityClass: solid|tint|ghost                                     # for watermark/ghost slots
           z:          back|mid|front
+
+      # MEASURED STACK FACTS (optional, additive — source: computed only; JS-off
+      # geometry against the capture, recorded in resolution-independent units):
+      #   stackMeasure: { value: <CSS len>, source: computed }   # the centered stack's
+      #     content-column cap (e.g. a closing band whose heading AND body span a
+      #     measured 870px column — the composer sizes the column at the brand's real
+      #     measure instead of the structural default, and the body spans it).
+      #   bandPadding: { top: <CSS len>, bottom: <CSS len>, source: computed }  # the
+      #     band's own measured vertical padding when it diverges from the brand's
+      #     site-average section-padding token (bookend bands often breathe more).
+      #   deviceGeometry:              # measured device-band proportions (fid9) —
+      #     headerPlacement: list-column   # header stack = first row of the list column
+      #     columns: equal                 # equal split columns (vs the structural 6|5)
+      #     contentSpan: <CSS len>         # band content max-width when it diverges
+      #     columnGap: <CSS len>           #   from the brand's container token
+      #     rowGap: <CSS len>              # header row -> device row gap
+      #     media: { aspect: "<w / h>", align: top }   # fixed-aspect media region,
+      #     list: { triggerMinHeight: <CSS len>, itemGap: <CSS len> }  # list rhythm
+      # All degrade to absent — composers keep their structural defaults.
 
       # CONTROL-MEASURE REQUIREMENT: any slot with `sizeClass: control` (a form/input/
       # button row) MUST carry an explicit `width` or `sizeRel` — never leave it
@@ -1051,6 +1255,273 @@ patterns:
 > type scale (`styles.py` `StyleStructure.space_scale`) + brand `tokens`. So one pattern
 > adapts to any brand's rhythm and type scale — it stays brand-agnostic and does not
 > overfit one source page. This is what makes a pattern REUSABLE rather than a replica.
+
+### 4.4b `layoutGrammar.headerContext` — contextual header-alignment grammar (fid11)
+
+Per-pattern `contentShape.alignment` facts record WHERE each observed section anchors —
+but sources typically also carry a *system* behind those choices: ONE header component
+(kicker/eyebrow/icon/tag optional + heading + subheading optional + actions optional)
+whose alignment is decided by its **layout context**, not per-section whim. When the
+observed patterns corroborate a contextual rule, author it as a top-level brand block:
+
+```yaml
+layoutGrammar:
+  headerContext:
+    splitColumn:                       # header sits inside a column of a split row
+      anchor: left|centered|right
+      counterweight: <device>          # optional; same rule as patterns — an asymmetric
+                                       # anchor should name what fills the opposite side
+                                       # (author it when the observations corroborate one)
+      evidence: "<which observed patterns/rules corroborate it>"
+    standaloneStack:                   # header stands alone atop a stack/grid section
+      anchor: left|centered|right
+      evidence: "<…>"
+    confidence: high|medium
+    source: [saved-css, vision, computed]
+    scope: design-language
+```
+
+Rules:
+
+- **Derivation is measured, generic, and majority-honest.** Each observed section's
+  layout context is known (split vs standalone stack/grid); the header's computed
+  alignment in each is the evidence. Author a context rung only when its observations
+  agree; a context with mixed evidence stays un-authored (the per-pattern facts already
+  carry those sections). Cite dissenting patterns in `evidence` — an explicit pattern
+  fact outranks this grammar by resolution order, so exceptions are not contradictions.
+- **Validator (C18):** when the observed pattern library corroborates both contexts
+  (≥2 split patterns agreeing and ≥2 standalone stack/grid patterns agreeing), the
+  grammar MUST be authored — fail loud, same doctrine as C15.
+- **Consumption (AS-49):** `resolve_alignment` consults this grammar as the
+  brand-default layer BENEATH explicit facts:
+  `section alignment > pattern curation (generation lanes, §4.4c) > pattern
+  contentShape.alignment > layoutGrammar.headerContext > style role default`. The
+  resolved stance stamps `data-align-source="brand"`. This is exactly the layer newly
+  GENERATED sections need: a novel pattern with no alignment fact inherits the brand's
+  grammar instead of a scaffold-hardcoded anchor.
+
+### 4.4c pattern `curation` — a curator's ruling on a fact-vs-grammar dissent (fid13)
+
+Sometimes a source dissents from its own grammar: a pattern's measured fact is REAL
+(re-verified against the capture) yet a human design curator rules that OUR generated
+output should follow the brand's corroborated grammar instead — "the original looks
+strange here." That ruling is recorded on the pattern as a first-class block, never by
+editing the measured fact:
+
+```yaml
+patterns:
+  - id: <pattern-id>
+    contentShape:
+      alignment: { value: left, ... }   # the MEASURED fact — never rewritten by curation
+    curation:
+      alignment:                        # aspect key mirrors the fact it rules on
+        resolve: follow-grammar         # the only defined resolution today
+        by: user                        # who ruled (user | creation)
+        ts: "<ISO timestamp>"
+        reason: "<the curator's words / rationale>"
+    changelog:
+      - { ts: ..., action: curated, ... }   # the ruling is a changelog event too
+```
+
+Rules:
+
+- **Lane semantics.** GENERATION lanes (composed catalog, event/wildcard pages, preview
+  demos) resolve through the curation: `follow-grammar` retires the pattern's dissenting
+  fact and hands the decision to `layoutGrammar` (the winning stance stamps
+  `data-align-source="curation"`). The REPLICA lane passes `honor_curation=False` — it
+  rebuilds the source 1:1 and its gate scores against the source, so the measured fact
+  stays that lane's truth. A curation must therefore NEVER move the replica gate score.
+- **Precedence (AS-49).** `section explicit > curation > pattern fact > grammar >
+  style`. Curation beats the pattern's own fact (that is its whole job) but never a
+  section-explicit instruction: a composition author's direct `alignment:` knob remains
+  supreme. If no grammar rung covers the pattern's context, the retired fact is still
+  skipped (falling to the style layer) — silently reverting to a look the curator
+  rejected would be worse than the default.
+- **The fact survives.** `contentShape.alignment` keeps the measured value with its
+  re-measurement changelog; curation is an overlay, so re-extraction, the replica lane,
+  and future audits still see the source's truth.
+- **Validator (C18).** A dissent with a recorded curation downgrades from the advisory
+  WARN to an informational NOTE ("dissent curated toward grammar") — review is done;
+  uncurated dissents keep warning until verified or curated.
+
+### 4.4d `contentShape.gridEqualize` — card-row height behavior (fid14)
+
+Whether a card grid equalizes card heights per row is a measurable SOURCE fact, and the
+anatomy that makes equalization work travels with it — equalizing without knowing where
+the slack goes produces floating CTAs mid-card (AS-50). Every observed card-grid
+pattern (grid / cards / mosaic archetypes) records the stance on its `contentShape`:
+
+```yaml
+patterns:
+  - id: <card-grid pattern>
+    contentShape:
+      gridEqualize:
+        heights: stretch        # stretch (row-equalized) | hug (content-sized)
+        slack: body             # the card-internal region that absorbs the extra
+                                # height (the source's flex-grow:1 slot) — a generic
+                                # anatomy name (body | media | quote), never a
+                                # source class name
+        actionPinned: true      # does the trailing action/author row anchor to the
+                                # card bottom (margin-top:auto seam, or a flexing
+                                # region above it — same morphology)
+        evidence: "<the JS-off @1440 measurement: per-card heights with differing
+                    content, the flex-grow slot, the pinned row>"
+```
+
+Rules:
+
+- **Measure, don't infer.** `heights: stretch` requires cards of DIFFERING natural
+  content rendering the SAME height (equal heights with equal content proves nothing).
+  Cross-check at least two grid families where the corpus offers them.
+- **The trio travels together.** `heights` without `slack`/`actionPinned` is an
+  incomplete observation — the renderer needs all three to reproduce the morphology
+  (stretch alignment, slack absorption, bottom-pinned actions).
+- **Not observable?** Mark `contentShape.gridEqualizeNotObserved: true` (e.g. the
+  capture never shows the grid with uneven content and no flex anatomy is inspectable).
+- **Consumption.** Pattern-backed grids render per the fact
+  (`compose_section.pattern_equalize_css`); the pattern-less generated card scaffolds
+  (bento mosaic, pricing tiers) consume the BRAND grammar derived from these facts
+  (`grid_equalize_grammar`: all-hug ⇒ hug, any-stretch ⇒ stretch, no facts ⇒ built-in
+  behavior unchanged). Fact-less brands are byte-identical (degrade discipline).
+- **Validator (C20).** A card-grid pattern with neither `gridEqualize` nor the
+  not-observed marker is an extraction gap — error.
+
+### 4.4e `recipes:` — brand-owned COMPONENT RECIPES (fix2 2026-07)
+
+A **recipe** is a named recurring component anatomy the brand itself repeats across
+sections: the same ordered slots, restyled per context. Patterns capture one section's
+shape; a recipe captures the SHARED anatomy several patterns instantiate (e.g. a
+section-opening head rail: identity kicker + dotted leader rule + far-edge quiet CTA,
+seen as an icon chip on one band, a label pill on another, a badge on a third). Missing
+this layer is how three sections sharing one component get re-derived three times with
+three sets of small errors.
+
+Recipes are **brand data, written during extraction** — they live in the brand's own
+`layout-library.yaml` under a top-level `recipes:` key (sibling of `patterns:`), never
+in shared code or the standard library. The grounding pass names anatomies seen in 2+
+crops; the Layout Analyst records the recipe; patterns bind to it via `recipeRef`.
+
+```yaml
+recipes:
+  - id: <slug>                       # e.g. section-headrail — generic anatomy name,
+                                     # NEVER a section/content name (no "agents-rail")
+    name: "<human name>"
+    intent: "<one-line: what the anatomy is and where the brand deploys it>"
+    anatomy:                         # ordered slots (generic roles)
+      - { slot: kicker,  role: leading identity mark (chip/pill/badge), required: true }
+      - { slot: rule,    role: leader line joining kicker to the far edge, required: false }
+      - { slot: trail,   role: far-edge quiet action, required: false }
+    geometry:                        # shared MEASURED facts (source: computed)
+      railAlignment: content         # the anatomy spans the CONTENT container (or: column)
+      railToHeading: <CSS len>       # seam to the following element, when measured
+    variants:                        # each variant = one observed styling of the anatomy
+      - id: <slug>                   # e.g. icon-chip / label-pill / badge-with-icon
+        useCase: "<when the brand picks this variant>"
+        kicker: { shape: chip|pill|badge, radius: <CSS len>, size: <CSS len>,
+                  icon: { asset: <file>, size: <CSS len> },   # optional identity icon
+                  label: true|false }                          # text label present?
+        rule:  { style: dotted|solid|none }
+        trail: { present: true|false }
+    usedBy: [<pattern id>…]          # the patterns instantiating this recipe
+    origin: extracted                # recipes are observed, not invented
+    provenance: [<sectionId>…]
+    confidence: high|medium|low
+    changelog: [ { ts, action, from, to, by, signalId, note } ]
+```
+
+Patterns bind with a top-level key on the pattern mapping:
+
+```yaml
+patterns:
+  - id: <pattern>
+    recipeRef: { recipe: <recipe id>, variant: <variant id> }
+```
+
+Rules:
+
+- **Record during extraction, not post-hoc.** Detecting recurring anatomy across
+  sections is a REQUIRED authoring step (layout-analyst-skill §recipes); the C23
+  validator advisory is the backstop for patterns sharing a rail-like slot signature
+  with no recipe.
+- **Generic anatomy names.** Slot and variant ids describe shape (`icon-chip`,
+  `label-pill`), never the section or content they appeared in.
+- **Facts ride the recipe, styling stays per-variant.** Shared geometry (alignment
+  span, seams) lives once in `geometry:`; per-context looks (chip vs pill, icon size,
+  rule style, trailing action presence) live in the variant the pattern binds.
+- **Consumption + degrade.** Composers resolve `recipeRef` via
+  `layout_library.resolve_recipe_ref` and render the variant's measured facts; a
+  pattern with no `recipeRef` (or a dangling id) keeps the structural device
+  unchanged.
+- **Style surface.** Each recipe is ALSO described in prose in the brand's style md
+  ("Component recipes" section — §9b): anatomy, variants, use cases, in the brand's
+  own voice, so any generator consuming the kit reads recipes as part of the brand's
+  genre (a SaaS brand may lead sections with a headrail; an editorial brand may carry
+  a folio-rule family instead). Genre framing is descriptive per-brand prose — never
+  a shared enum in code.
+
+### 4.4f `contentShape.actionGroup` — measured action-row layout facts (fix2 2026-07)
+
+How a brand lays out a MULTI-ACTION row (primary + secondary CTA pair, card action
+rows) is a measured fact family, not a scaffold habit: inter-action gap, orientation,
+wrap behavior, alignment, the seam above the row, and the register composition. The
+scaffold's uniform defaults (1em gap, reading-edge alignment) survive ONLY as the
+no-facts degrade.
+
+Brand-level default (brand.yaml, sibling of `layoutGrammar.headerContext`):
+
+```yaml
+layoutGrammar:
+  actionGroup:
+    gap: <CSS len>                  # measured inter-action gap (flex gap)
+    orientation: row|column
+    wrap: wrap|nowrap
+    align: start|center|end         # alignment INSIDE the group's context; contexts
+                                    # with their own anchor (centered bands) still win
+    crossAlign: start|center|end|stretch  # OPTIONAL measured cross-axis placement;
+                                    # absent = the scaffold's structural align-items
+                                    # (center) holds — only author when the source
+                                    # computably deviates (fix3)
+    marginAbove: <CSS len|ladder>   # seam from the preceding body/heading; `ladder`
+                                    # = ride the relational rung (--space-body-to-cta)
+    registers: [primary, secondary] # observed register order (AS-59's subject)
+    source: computed
+    provenance: [<sectionId>…]
+```
+
+Per-pattern override (layout-library.yaml, when one band measures differently):
+
+```yaml
+patterns:
+  - id: <pattern>
+    contentShape:
+      actionGroup: { gap: <CSS len>, align: <enum>, marginAbove: <CSS len> }  # partial OK
+```
+
+Rules:
+
+- **Computed provenance.** Values come from JS-off computed geometry (flex gap,
+  justify-content, margin seams) at the canonical tier — vision estimates don't
+  qualify for the fact (they inform, the measurement decides).
+- **Consumption.** `compose_section` emits the brand default as the action-row law
+  and stamps each emitted group with its declared facts
+  (`data-ag-gap`/`data-ag-align`); per-pattern overrides re-stamp per band. The
+  spacing auditor measures `actions.item-gap` / `actions.alignment` as first-class
+  relationships; AS-60 flags a rendered group whose computed gap/alignment
+  contradicts its own stamped declaration (scaffold-habit override).
+- **Alignment ownership (fix3).** A declared `align` claims the main-axis placement
+  property itself: the law emits `justify-content` on every emitted group (brand
+  default page-wide at 0-1-0; a pattern override per `#sec-N` at 1-1-0). Anchor-
+  owning contexts (`.cs-foot`, `[data-align="centered"]`, panel-center) still win
+  by specificity — the sanctioned exception. Box-level centering (`max-width` +
+  `margin-inline: auto`) is NOT an alignment channel: the containment law owns the
+  box (a contained group spans its column via `width: 100%`, so auto margins are
+  structurally inert — the fix3 centering-leak vector closed by construction, see
+  spacing-conformance §Container law). `crossAlign` claims `align-items` the same
+  way, and ONLY when declared: the structural cross-axis default (`center` —
+  vertically centering unequal-height actions, which the captured sources bear) is
+  not a fact and stays scaffold-owned.
+- **Degrade.** No facts ⇒ no stamps, no law emission — the structural defaults hold
+  byte-identical.
 
 ### 4.4.1 `scroll-parallax` — the motion rule for editorial/collage-style sites
 
@@ -1193,6 +1664,27 @@ buttons:
     bgHover:   "<hex>";  bgPressed: "<hex>"   # state facts — at least ONE state fact
     fgHover:   "<hex>";  focus: "<prose>"     # (bgHover/fgHover/decoration/focus) REQUIRED
     decoration: "<prose>"             # text families: idle/hover decoration behavior
+    glyph:                            # OPTIONAL (fix2): the family's MEASURED trailing
+      asset: <file in assets/>        # glyph as a real harvested SVG (sprite symbol /
+      size: <CSS len>                 # inline path from the capture) + its rendered
+      source: computed                # box. When present the arrow-link device renders
+                                      # the SVG instead of the Unicode fallback; hover
+                                      # motion is unchanged.
+                                      # No glyph fact -> Unicode degrade, byte-identical.
+                                      # RENDERING CONTRACT (fix4 2026-07): single-color
+                                      # glyph facts (this glyph, nav chevrons/utility
+                                      # icons, footer social icons, banner arrow/close)
+                                      # emit SANITIZED INLINE <svg> markup — script/
+                                      # foreignObject/event-attrs/external refs stripped,
+                                      # xmlns+viewBox guaranteed, width/height dropped
+                                      # (CSS owns the box), ids deduped per instance,
+                                      # ink normalized to currentColor ONLY after
+                                      # single-ink verification. Artwork that fails
+                                      # verification (multi-color/gradient/<style>)
+                                      # keeps the fix2 data-URI currentColor-mask
+                                      # channel under a `--mask` modifier class —
+                                      # never a silent recolor. The fact schema is
+                                      # unchanged; only the emission technique moved.
     confidence: …; source: …; provenance: […]
   singleVariantConfirmed: true      # ONLY after re-checking evidence: the source truly
                                     # carries ONE action style (C3 otherwise fails a
@@ -1287,6 +1779,23 @@ literal characters (`—`) in copy fed to renderers, never entity strings.
   `tokens.spacing` (eyebrow-to-heading, heading-to-body, body-to-cta, …) each with a
   value, or `tokens.spacing.relationalLadder: {notObserved: true, reason: …}`. Rung
   names describe role relationships, never sections or content.
+
+### 10.3f Asset-kind media treatment
+
+`assets-tagged.json` may carry `mediaTreatmentRules[]` facts with
+`{assetKind, role, fit, evidence}`. `assetKind` is a reusable visual kind
+(`transparent-illustration`, `product-UI`, `screenshot`, `photo`, `mark`, …);
+`role` is a reusable media slot (`card-media`, `split-media`, or `*`); and `fit`
+is `contain` or `cover`. An asset may override the rule with
+`mediaTreatment: {fit, evidence}`.
+
+Treatment resolution is asset fact → matching kind/role rule → photographic
+`cover` degrade. Basenames, brand names, section IDs, and content-specific token
+names are not evidence and MUST NOT influence fit. Transparent illustrations
+with meaningful outer silhouette generally evidence `contain`; photos,
+screenshots, and product-UI collages authored as full-bleed regions generally
+evidence `cover`. Exact source decisions remain curator/evidence facts rather
+than universal filename conventions.
 
 ### 10.4 Required sibling outputs (C4–C6, C8–C9)
 

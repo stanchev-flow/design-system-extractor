@@ -77,6 +77,7 @@ from tokens_css import (  # noqa: E402
 # change to a primitive renderer here is reflected in every composed section too.
 import component_render as cr  # noqa: E402
 import compose_section as cs  # noqa: E402  (shared self-hosted-font copy + @font-face emit)
+import layout_library as ll  # noqa: E402  (brand recipes: spec-book recipe chapter)
 import compose_page as cp  # noqa: E402  (chrome footer surface-role resolution)
 import compose_from_composition as cfc  # noqa: E402  (Tier-3 demo hydration adapter)
 
@@ -1610,7 +1611,12 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
         # composer classifier) is a strip; the old `>= 6 assets` heuristic mislabeled
         # a 7-asset testimonial-card run (avatars + company marks) as a logo wall.
         all_marks = bool(assets) and all(cs._is_mark_asset(a) for a in assets)
-        if (is_media or assets) and ("logo" in lower or all_marks):
+        # AUTHORED per-module items outrank the all-marks filename inference
+        # (hubspot-v2 2026-07): a card run whose art is entirely product ICONS
+        # (all marks) is still a card run when the brand extracted per-card copy —
+        # authored evidence > filename kind. An explicit "logo" role keeps the strip.
+        items_override = bool(authored_items) and len(assets) >= 2 and "logo" not in lower
+        if (is_media or assets) and ("logo" in lower or all_marks) and not items_override:
             entry["contract"] = "logo"
             entry["copy"] = list(assets)  # coerced to asset items by _sanitize_assets
         elif len(assets) >= 2:
@@ -1634,11 +1640,29 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
                            or it.get("label") or (_asset_label(a) if a else ""),
                            "text": it.get("body") or it.get("text")
                            or it.get("quote") or ""}
+                    # per-card EYEBROW (fid6 2026-07): the authored item's own
+                    # microlabel rides through so the card renders the full
+                    # eyebrow→heading→body→cta register ladder (the old read
+                    # dropped it and the heading got demoted to the caption tier).
+                    if it.get("eyebrow"):
+                        mod["eyebrow"] = str(it["eyebrow"]).strip()
                     if it.get("cta"):
                         mod["link"] = it["cta"]
                     if a:
                         mod["asset"] = a
                         mod["alt"] = _asset_label(a)
+                    # PERSON attribution (fid2 2026-07): authored name/role pass
+                    # through; the item's avatar binds by AUTHORED name first, else
+                    # the i-th unclaimed photo (a slot mixing marks + avatar photos
+                    # pairs marks per-module above — photos are the person row).
+                    if it.get("name"):
+                        mod["name"] = str(it["name"]).strip()
+                    if it.get("role"):
+                        mod["personRole"] = str(it["role"]).strip()
+                    if it.get("avatar"):
+                        mod["avatar"] = str(it["avatar"]).strip()
+                    elif marks and photos and i < len(photos):
+                        mod["avatar"] = photos[i]
                     mods.append(mod)
                 entry["copy"] = mods
             else:
@@ -1668,6 +1692,12 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
         elif any(k in lower for k in ("heading", "title", "display", "h1", "h2", "header")):
             entry["contract"] = "heading"
             entry["copy"] = {"heading": _demo_text(role, "heading", sp, use, authored)}
+            # SECTION register (fid2 2026-07): a `title`-class slot is the pattern
+            # vocabulary for an in-flow section heading — it rides the brand's
+            # measured h2 register when the type ladder declares one, never the
+            # display/H1 poster tier (colossal/hero/display keep the poster tier).
+            if str(shape.get("sizeClass") or "").lower() == "title":
+                entry["copy"]["level"] = cs.section_heading_level(doc)
             # roles like "section header" miss _props_for's heading keywords
             # ("title"/"heading"), so the flow composer would drop the copy; a
             # `text` twin would echo into conversion-lede fallbacks instead,
@@ -1708,7 +1738,13 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
                 entry["contract"] = "list"
                 entry["copy"] = [{"label": it.get("heading") or it.get("label") or "",
                                   "title": it.get("heading") or it.get("label") or "",
-                                  "text": it.get("body") or it.get("text") or ""}
+                                  "text": it.get("body") or it.get("text") or "",
+                                  # authored per-item icon (the brand's own mark;
+                                  # sanitized against the inventory downstream)
+                                  **({"icon": it["icon"]} if it.get("icon") else {}),
+                                  # authored per-item media (fid5: the accordion
+                                  # media-swap binding; inventory-checked downstream)
+                                  **({"media": it["media"]} if it.get("media") else {})}
                                  for it in authored_items]
             else:
                 entry["contract"] = "list"
@@ -1727,10 +1763,12 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
     for name, shape in shape_slots.items():
         if name in seen:
             continue
-        entry = {"name": name, "role": str(shape.get("role") or name)}
+        role = str(shape.get("role") or name)
+        entry = {"name": name, "role": role}
         for k in ("textLen", "sizeClass", "width", "z", "mediaAspect"):
             if shape.get(k):
                 entry[k] = shape[k]
+        lower = f"{name} {role}".lower()
         if shape.get("z") == "back":
             entry["contract"] = "image"  # structural backdrop: the classifiers read it
         elif shape.get("mediaAspect"):
@@ -1738,11 +1776,42 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
             # srcless slot renders the placeholder plate (sysfix 2026-07: the black
             # plate rows). Structural z:back layers above are the only exception.
             continue
+        # fid2 2026-07: shape-only TEXT slots classify by the SAME keyword ladder as
+        # layout slots — the old paragraph-for-everything fold rendered a pattern's
+        # eyebrow slot as a body paragraph (the body fallback), duplicating the
+        # section body and dropping the eyebrow register entirely.
+        elif any(k in lower for k in ("eyebrow", "microlabel", "caption", "label")):
+            entry["contract"] = "eyebrow"
+            entry["copy"] = {"eyebrow": _demo_text(role, "eyebrow", sp, use, authored)}
+        elif any(k in lower for k in ("heading", "title", "display", "h1", "h2", "header")):
+            entry["contract"] = "heading"
+            entry["copy"] = {"heading": _demo_text(role, "heading", sp, use, authored)}
+            if str(shape.get("sizeClass") or "").lower() == "title":
+                entry["copy"]["level"] = cs.section_heading_level(doc)
+        elif any(k in lower for k in ("action", "cta", "button", "pill")):
+            entry["contract"] = "button"
+            entry["copy"] = {"label": _demo_text(role, "cta", sp, use, authored) or sp["cta"]}
         else:
             entry["contract"] = "paragraph"
             entry["copy"] = {"text": _demo_text(str(shape.get("role") or ""), "body", sp,
                                                 use, authored)}
         slots.append(entry)
+
+    # DECLARED slot order (fid2 2026-07): the pattern's contentShape order is the
+    # section's reading order — shape-only slots used to append at the END (a
+    # pattern's eyebrow/body rendered after the action). Slots the pattern doesn't
+    # declare keep their relative layout order after the declared run.
+    shape_order = {n: i for i, n in enumerate(shape_slots)}
+
+    def _order_key(name: str) -> int:
+        # a synthesized companion slot (…-secondary) rides its parent's position
+        base = str(name or "")
+        if base.endswith("-secondary"):
+            base = base[: -len("-secondary")]
+        return shape_order.get(base, shape_order.get(name, len(shape_order) + 1))
+
+    slots = [s for _, _, s in sorted(
+        (_order_key(s.get("name")), i, s) for i, s in enumerate(slots))]
 
     # pattern treatments pass through where they use the composition vocabulary
     # (extraction-side kinds outside it, e.g. `marquee`, are dropped; the adapter
@@ -1777,6 +1846,24 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
         n = _rules_grid_columns(layout)
         if n:
             section["grid"] = {"columns": n}
+            # the layout's MEASURED grid gap (fid6 2026-07: gridRules.gap was
+            # extracted but never consumed — declared card grids fell back to the
+            # structural 6rem gutter). CSS-length values only.
+            gap = str(((layout or {}).get("gridRules") or {}).get("gap") or "").strip()
+            if re.fullmatch(r"[\d.]+(rem|em|px|%)", gap):
+                section["grid"]["gutter"] = gap
+            # OBSERVED responsive column tiers (fid6 2026-07): the pattern's
+            # recorded column-count facts per viewport tier (measured off the
+            # source capture) ride into placement so the composed grid re-wraps
+            # where the source does — the enum default alone rendered the
+            # canonical count at every width.
+            tiers = ((pat.get("responsive") or {}).get("columnsTiers")
+                     if isinstance(pat.get("responsive"), dict) else None)
+            if isinstance(tiers, list):
+                clean = [t for t in tiers if isinstance(t, dict)
+                         and t.get("maxViewportPx") and t.get("columns")]
+                if clean:
+                    section["grid"]["columnsTiers"] = clean
     # declared pattern alignment rides into the composition (sysfix 2026-07): a
     # contentShape alignment of center becomes the section anchor the adapter
     # normalizes — without this the declared alignment silently dropped.
@@ -1830,18 +1917,13 @@ def compose_pattern_docs(doc, patterns, brand_yaml: Path, out_dir: Path) -> dict
                 try:
                     sec = _demo_section_for_pattern(cdoc, pat, layout)
                     comp = cfc._sanitize_assets({"sections": [sec]}, brand_yaml.parent)
-                    adapted = cfc.composition_to_layout(comp["sections"][0])
-                    composer_copy = adapted.pop("_composerCopy", {}) or {}
-                    sect_copy = adapted.pop("_sectionCopy", None) or {}
-                    authored = dict(cs.brand_layout_copy(cdoc).get(layout.get("id")) or {})
-                    merged = {**sect_copy, **composer_copy, **authored}
+                    # the SHARED brand-aware adaptation (fid10 2026-07): one path
+                    # for every lane — authored copy overlay + brand-layout
+                    # declaration ride-through (eyebrowRegister) live in
+                    # cfc.adapt_brand_section, never re-implemented per lane.
+                    adapted, merged, _ = cfc.adapt_brand_section(comp["sections"][0], cdoc)
                     if merged:
                         cs.LAYOUT_COPY = {**cs.LAYOUT_COPY, adapted["id"]: merged}
-                    # brand-layout DECLARATIONS the adapter doesn't model ride onto
-                    # the adapted layout (sysfix 2026-07: the declared eyebrow
-                    # register was dropped on the demo-hydration path).
-                    if layout.get("eyebrowRegister"):
-                        adapted.setdefault("eyebrowRegister", layout["eyebrowRegister"])
                     use_layout, demo = adapted, True
                 except Exception:
                     use_layout, demo = layout, False  # demo synth never takes the tier down
@@ -2044,17 +2126,28 @@ SPEC_BOOK_CSS = """
 .spec-demo { border: 1px solid var(--hairline); padding: 1.25rem; width: 15rem;
   display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-start; }
 
-/* buttons-on-surfaces chapter: one band per declared surface role */
+/* buttons-on-surfaces chapter: one band per declared surface role.
+   BAND CHROME INK (fid3 2026-07-08): every piece of annotation chrome around the
+   specimens — meta cites, state captions, LIVE hints, state-frame rules — derives
+   from the band surface's OWN paired ink token (--c-ink, re-scoped per band by the
+   [data-surface-frame] alias block) with a muted variant mixed from that ink toward
+   the band's own paper. Never a page-level gray and never a cross-family muted color
+   token (Remote's on-inverse-muted periwinkle was riding onto the maroon accent
+   band); the mix RATIOS are structural harness chrome, the colors are the brand's. */
 .spec-band { background: var(--c-paper); color: var(--c-ink); padding: 1.75rem;
-  margin-top: 1rem; display: flex; flex-direction: column; gap: 1.25rem; }
-.spec-band .spec-cite { color: var(--c-ink-muted); }
-.spec-band .states-label, .spec-band .state-name { color: var(--c-ink-muted); }
-.spec-band .state-row { background: transparent; gap: 0; }
+  margin-top: 1rem; display: flex; flex-direction: column; gap: 1.25rem;
+  --spec-band-mut: color-mix(in srgb, var(--c-ink) 76%, var(--c-paper));
+  --spec-band-frame: color-mix(in srgb, var(--c-ink) 34%, transparent); }
+.spec-band .spec-cite { color: var(--spec-band-mut); }
+.spec-band .states-label, .spec-band .state-name { color: var(--spec-band-mut); }
+.spec-band .state-row { background: transparent; gap: 0;
+  border: 1px solid var(--spec-band-frame); }
 .spec-band .state-col { background: transparent; padding-left: 0; }
-.spec-band .state-live .hint { color: var(--c-ink-muted); }
+.spec-band .state-live .hint { color: var(--spec-band-mut); }
 .spec-band .act { color: var(--c-ink); }
 .spec-band-head { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
-.spec-band-role { font-family: var(--font-heading), inherit; font-size: 1rem; }
+.spec-band-role { font-family: var(--font-heading), inherit; font-size: 1rem;
+  color: var(--c-ink); }
 """
 
 
@@ -2510,11 +2603,16 @@ def spec_buttons_surfaces_chapter(doc) -> str:
                     return (f'<a class="btnf btnf-{slug} {cls}" href="#" tabindex="-1">'
                             f'{esc(_SPEC_CTA)}</a>')
                 live = (f'<a class="btnf btnf-{slug} live" href="#">{esc(_SPEC_CTA)}</a>')
+                # the row wrapper MUST close (fid3 2026-07-08): the old unclosed <div>
+                # here swallowed everything after it, so each next surface band nested
+                # INSIDE the previous band (panels-within-panels with compounding
+                # padding) instead of rendering as a sibling.
                 rows.append(
                     f'<div><div class="spec-cite" style="margin-bottom:0.5rem">'
                     f'buttons.{esc(name)} · {style_word} · on tokens.surfaces.{esc(role)}</div>'
                     + _state_matrix(_sw, live, label=f"{name} · live hover/press inside "
-                                                     "the iframe"))
+                                                     "the iframe")
+                    + '</div>')
             else:
                 # text-link family (or typographic-CTA brand): the arrow-link device,
                 # rendered through the shared per-surface renderer for correct ink
@@ -2543,7 +2641,68 @@ def spec_buttons_surfaces_chapter(doc) -> str:
                          "".join(bands))
 
 
-def build_spec_book(doc) -> str:
+def spec_recipes_chapter(doc, brand_yaml) -> str:
+    """Component-recipes chapter (fix2 2026-07, brand-schema §4.4e): the brand's OWN
+    recurring component anatomies from layout-library.yaml `recipes:` — every variant
+    exhibited LIVE through the same composer device the pages render (no mockups),
+    each with its use-case caption, anatomy roster, and the patterns bound to it.
+    Recipe-less brands omit the chapter (recipes are brand data; no standard tier)."""
+    if not brand_yaml:
+        return ""
+    recipes = ll.load_recipes(Path(brand_yaml))
+    if not recipes:
+        return ""
+    ctx = _GALLERY_CTX
+    blocks = []
+    for rec in recipes:
+        anatomy_rows = "".join(
+            f'<div class="spec-cite">{esc(str(a.get("slot") or "?"))}'
+            f'{"" if a.get("required", True) else " (optional)"} — '
+            f'{esc(str(a.get("role") or ""))}</div>'
+            for a in rec.anatomy if isinstance(a, dict))
+        exhibits = []
+        for var in (rec.variants or [{}]):
+            if not isinstance(var, dict):
+                continue
+            vid = str(var.get("id") or "default")
+            # the SAME stamp shape stamp_pattern_devices builds for composers —
+            # the chapter renders through the real device, never a hand mockup
+            rail = {"note": rec.intent, "assets": [], "role": "",
+                    "recipe": rec.id, "geometry": dict(rec.geometry or {}),
+                    "variant": {k: v for k, v in var.items() if k != "id"},
+                    "variantId": vid}
+            kicker = var.get("kicker") if isinstance(var.get("kicker"), dict) else {}
+            eyebrow_html = cr.render_eyebrow(doc, ctx, {"text": vid.replace("-", " ")}) \
+                if kicker.get("label") else ""
+            trail_v = var.get("trail") if isinstance(var.get("trail"), dict) else {}
+            cta_label = _SPEC_CTA if trail_v.get("present") else ""
+            rail_html = cs._headrail_html(doc, ctx, rail, eyebrow_html=eyebrow_html,
+                                          cta_label=cta_label, legacy_pill_wrap=False)
+            # the gallery ships the full brand-asset tree under layouts/assets/
+            # (the pattern-iframe convention) — re-point the device's icon srcs
+            rail_html = rail_html.replace('src="assets/', 'src="layouts/assets/')
+            exhibits.append(
+                f'<div style="margin-top:1.25rem">'
+                f'<div class="spec-cite" style="margin-bottom:0.5rem">'
+                f'variant <strong>{esc(vid)}</strong> — {esc(str(var.get("useCase") or ""))}'
+                f'</div>{rail_html}</div>')
+        used = ", ".join(rec.used_by) or "—"
+        blocks.append(
+            f'<div class="spec-band">'
+            f'<div class="spec-band-head"><span class="spec-band-role">{esc(rec.name)}</span>'
+            f'<span class="spec-cite">layout-library.yaml recipes.{esc(rec.id)} · '
+            f'{len(rec.variants or [])} variants · usedBy: {esc(used)}</span></div>'
+            f'<p style="max-width:60ch">{esc(rec.intent)}</p>'
+            f'{anatomy_rows}{"".join(exhibits)}</div>')
+    # the composer's own device CSS rides along so the exhibits are the real thing
+    return _spec_chapter(
+        "spec-recipes", "Component recipes",
+        f"{len(recipes)} brand-owned recurring anatomies — variants rendered live "
+        "through the composer's device, captioned by use case",
+        f"<style>{cs.SCAFFOLD_HEADRAIL_CSS}</style>" + "".join(blocks))
+
+
+def build_spec_book(doc, brand_yaml=None) -> str:
     """Tier 0 — the spec-book chapter group (additive; chapters self-omit when the
     brand lacks their axis)."""
     chapters = "".join(x for x in (
@@ -2552,7 +2711,8 @@ def build_spec_book(doc) -> str:
         spec_spacing_chapter(doc),
         spec_radius_chapter(doc),
         spec_motion_chapter(doc),
-        spec_buttons_surfaces_chapter(doc)) if x)
+        spec_buttons_surfaces_chapter(doc),
+        spec_recipes_chapter(doc, brand_yaml)) if x)
     if not chapters:
         return ""
     return f"""
@@ -2707,7 +2867,8 @@ def build_page(doc, prim_items, prim_contracts, block_items, block_contracts, br
         block_items, block_contracts, BLOCK_RENDERERS, anchor="tier-blocks")
 
     surfaces_section = build_surfaces_section(doc)
-    spec_book = build_spec_book(doc)
+    spec_book = build_spec_book(
+        doc, (Path(brand_dir) / "brand.yaml") if brand_dir else None)
 
     layouts_section = ""
     toc_layouts = ""
@@ -2719,6 +2880,13 @@ def build_page(doc, prim_items, prim_contracts, block_items, block_contracts, br
     toc = (f'<nav class="toc">{toc_spec}<a href="#tier-primitives">Primitives</a>'
            f'<a href="#tier-blocks">Blocks</a><a href="#tier-surfaces">Surfaces</a>'
            f'{toc_layouts}</nav>')
+
+    # keyboard/AT-parity script (interaction remediation 2026-07): the gallery's
+    # live demos (bar utility dropdowns etc.) get the same guarded structural
+    # blocks the composed pages ship — emitted only for components present.
+    ix_script = cr.interaction_script(
+        "\n".join((spec_book, prim_section, block_section, surfaces_section,
+                   layouts_section)))
 
     return f"""<!doctype html>
 <html lang="en">
@@ -2740,6 +2908,7 @@ def build_page(doc, prim_items, prim_contracts, block_items, block_contracts, br
 {cr.structural_variant_css(doc, include_all=True)}
 {cr.motion_vars_css(doc)}
 {cr.link_hover_css(doc)}
+{cr.nav_affordance_css(doc)}
 {link_device_css(doc)}
 </style>
 </head>
@@ -2782,6 +2951,7 @@ def build_page(doc, prim_items, prim_contracts, block_items, block_contracts, br
   }});
 }})();
 </script>
+{ix_script}
 </body>
 </html>
 """
@@ -2878,6 +3048,10 @@ def main():
     # preview tier fell back to another brand's legacy default art names.
     cs.attach_brand_copy(doc, args.brand_yaml.parent)
     cs.attach_asset_inventory(doc, args.brand_yaml.parent)
+    # fid7b: inline the footer's harvested social glyphs (same call the page composer
+    # makes) so the gallery footer card demos the real circular icon socials; brands
+    # without harvested glyphs keep the accessible text-link degrade.
+    cr.prepare_chrome_glyphs(doc, args.brand_yaml.parent)
     _bind_gallery_ctx(doc)  # RP-1: gallery canvas = the BRAND's primary surface
     global _SPEC_NAME, _SPEC_CTA, _SPEC_LINKS
     _sp = _specimen(doc)
@@ -2916,10 +3090,11 @@ def main():
     n_chapters = sum(1 for fn in (spec_color_chapter, spec_type_chapter,
                                   spec_spacing_chapter, spec_radius_chapter,
                                   spec_motion_chapter, spec_buttons_surfaces_chapter)
-                     if fn(doc))
+                     if fn(doc)) \
+        + (1 if spec_recipes_chapter(doc, args.brand_yaml) else 0)
     print(f"Wrote {out_file}")
-    print(f"  spec book:  {n_chapters}/6 chapters (color/type/spacing/radius/motion/"
-          f"buttons-on-surfaces)")
+    print(f"  spec book:  {n_chapters}/7 chapters (color/type/spacing/radius/motion/"
+          f"buttons-on-surfaces/recipes)")
     print(f"  primitives: {len(prim_items)} (rendered)")
     print(f"  blocks:     {len(block_items)} (rendered)")
     print(f"  action elements with state matrices: {n_actions} "

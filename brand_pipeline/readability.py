@@ -514,6 +514,37 @@ class Resolver:
             n = n.parent
         return None
 
+    def rest_hidden(self, node):
+        """True when the node is INVISIBLE AT REST in the resting-state cascade —
+        `visibility: hidden` (nearest declaring ancestor wins; it inherits),
+        `display: none` on any ancestor, or a zero opacity anywhere up the chain.
+        Hover/focus un-hide rules carry unsupported pseudos and are deliberately
+        absent from this cascade, so a closed mega-panel/disclosure body reads
+        hidden here. Rest-hidden subtrees are NOT resting reading surface: gating
+        their text against contrast floors measures colors no reader can see
+        (the closed chrome dropdown was failing at ratio 1.0 — its own opacity)."""
+        seen_visibility = False
+        n = node
+        while n is not None and n.tag != "#document":
+            if not seen_visibility:
+                v = self.sheet.declaration(n, "visibility")
+                if v is not None:
+                    seen_visibility = True
+                    if str(self.resolve_value(n, v) or "").strip().lower() == "hidden":
+                        return True
+            d = self.sheet.declaration(n, "display")
+            if d is not None and str(self.resolve_value(n, d) or "").strip().lower() == "none":
+                return True
+            o = self.sheet.declaration(n, "opacity")
+            if o is not None:
+                try:
+                    if float(str(self.resolve_value(n, o) or "").strip()) == 0.0:
+                        return True
+                except ValueError:
+                    pass
+            n = n.parent
+        return False
+
 
 # ── interaction-state (hover) rules ──────────────────────────────────────────────────
 # AS-20: interaction tokens must survive contrast checks against their OWN surface —
@@ -529,7 +560,10 @@ _HOVER_PSEUDO_RE = re.compile(r":(?:hover|focus-visible|focus)\b")
 
 def _hover_rules_css(css_text):
     """Extract every top-level rule whose selector carries :hover/:focus(-visible),
-    re-emitted with the pseudo stripped and only the `color` declaration kept."""
+    re-emitted with the pseudo stripped and only the `color` (+ its OWN `background`,
+    when the same rule swaps both) kept. An invert-on-hover control (outline family
+    filling with ink + paper flip) changes color and surface TOGETHER — measuring its
+    hover ink against the RESTING surface manufactures a fail no hover state shows."""
     out = []
     for sel_text, body in Stylesheet._iter_rules(_strip_comments(css_text)):
         if not _HOVER_PSEUDO_RE.search(sel_text):
@@ -538,11 +572,13 @@ def _hover_rules_css(css_text):
         color = decls.get("color")
         if not color:
             continue
+        hover_bg = decls.get("background-color") or decls.get("background")
+        bg_decl = f" background: {hover_bg};" if hover_bg else ""
         sels = [_HOVER_PSEUDO_RE.sub("", s).strip() for s in sel_text.split(",")
                 if _HOVER_PSEUDO_RE.search(s)]
         sels = [s for s in sels if s]
         if sels:
-            out.append(f"{', '.join(sels)} {{ color: {color}; }}")
+            out.append(f"{', '.join(sels)} {{ color: {color};{bg_decl} }}")
     return "\n".join(out)
 
 
@@ -634,6 +670,9 @@ def analyze(html, default_bg=None):
             continue
         if any(_is_decoration(a) for a in node.ancestors()):
             continue
+        if res.rest_hidden(node):
+            skipped += 1          # closed chrome/disclosure body: no resting surface
+            continue
         color = res.effective_color(node)
         bg = res.effective_background(node, default_bg=default_bg)
         if color is None or bg is None:
@@ -671,10 +710,15 @@ def analyze(html, default_bg=None):
         for node in _walk(tb.root):
             if node.tag == "#document" or node.is_hidden():
                 continue
+            if res.rest_hidden(node):
+                continue          # closed chrome/disclosure: no reachable hover state
             raw = None
+            raw_bg = None
             for compounds, _spec, _order, decls in hsheet.rules:
                 if "color" in decls and hsheet._matches(compounds, node):
                     raw = decls["color"]  # cascade order preserved by rule order
+                    # the SAME winning rule's surface swap rides along (invert-on-hover)
+                    raw_bg = decls.get("background-color") or decls.get("background")
             if raw is None:
                 continue
             label = _subtree_text(node)
@@ -687,6 +731,13 @@ def analyze(html, default_bg=None):
             if color is None or bg is None:
                 skipped += 1
                 continue
+            # an invert-on-hover rule swaps ink AND surface together: its hover ink is
+            # read against its OWN hover fill (composited over the resting surface for
+            # translucent washes), not against a surface the hover state never shows.
+            if raw_bg:
+                hb = parse_color(res.resolve_value(node, raw_bg))
+                if hb is not None:
+                    bg = composite(hb, bg)
             alpha = color[3] * res.cumulative_opacity(node)
             fg = composite((color[0], color[1], color[2], alpha), bg)
             ratio = contrast_ratio(fg, bg)

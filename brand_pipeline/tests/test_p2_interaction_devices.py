@@ -32,6 +32,7 @@ _BRAND_PIPELINE = Path(__file__).resolve().parent.parent
 if str(_BRAND_PIPELINE) not in sys.path:
     sys.path.insert(0, str(_BRAND_PIPELINE))
 
+import compose_from_composition as cfc  # noqa: E402
 import compose_page as cp            # noqa: E402
 import compose_section as cs         # noqa: E402
 import component_render as cr        # noqa: E402
@@ -94,7 +95,8 @@ class StampPatternDevicesTest(unittest.TestCase):
         ])
         self.assertEqual(lay["_marquee"], {"target": "logos"})
         self.assertEqual(lay["_accordion"], {"surfaceRole": "surface/accent",
-                                             "hoverWash": "accent/warm-wash"})
+                                             "hoverWash": "accent/warm-wash",
+                                             "affordance": None})
         self.assertTrue(lay["_edgeCut"])
 
     def test_unsanctioned_treatments_do_not_stamp(self):
@@ -242,6 +244,191 @@ class AccordionDeviceTest(unittest.TestCase):
         self.assertNotIn("#", re.sub(r"/\*.*?\*/", "", css, flags=re.S)
                          .replace("#sec", ""))  # no color literals
 
+    def test_disclosure_animation_rides_motion_vars(self):
+        # fid5, refactored to the SHARED source (AS-47): the disclosure animates
+        # height 0 -> auto on ::details-content (the <details name=…>-compatible
+        # equivalent of grid-rows 0fr->1fr), timed ONLY by the brand's motion
+        # aliases; reduced-motion disables the transition. The accordion CONSTANT
+        # carries no motion of its own — disclosure_motion_css emits it, gated on
+        # the brand's motion facts.
+        doc = dict(FIXTURE_DOC)
+        doc["voice"] = {"motionSpec": {"easing": {"primary": "ease"},
+                                       "durations": {"fast": "150ms", "base": "200ms",
+                                                     "slow": "400ms"}}}
+        css = cs.disclosure_motion_css(doc, [{"id": "sec", "_accordion": {}}])
+        self.assertIn(".c-acc-item::details-content", css)
+        self.assertIn("interpolate-size: allow-keywords", css)
+        self.assertIn("block-size: 0", css)
+        self.assertIn("block-size: auto", css)
+        self.assertIn("block-size var(--c-motion-base) var(--c-ease)", css)
+        self.assertIn("prefers-reduced-motion: reduce", css)
+        # the grid-rows trick cannot run on <details> (rules only; comments may cite it)
+        self.assertNotIn("0fr", re.sub(r"/\*.*?\*/", "", css, flags=re.S))
+        # the constant itself stays motion-free (no second copy of the mechanic)
+        self.assertNotIn("::details-content", cs.SCAFFOLD_ACCORDION_CSS)
+
+
+# ── fid5: accordion per-item media swap ─────────────────────────────────────────────
+
+def _acc_media_doc(inventory):
+    d = dict(FIXTURE_DOC)
+    d[cs.ASSET_INVENTORY_KEY] = list(inventory)
+    return d
+
+
+def _compose_acc_media(doc, layout, rows, media):
+    saved = cs.LAYOUT_COPY
+    try:
+        cs.LAYOUT_COPY = {**cs.LAYOUT_COPY,
+                          layout["id"]: _acc_copy(rows) | {"rowMedia": media}}
+        return cs.compose_info_band(doc, layout, _ctx(), [], None)
+    finally:
+        cs.LAYOUT_COPY = saved
+
+
+class AccordionMediaSwapTest(unittest.TestCase):
+    ROWS = [("EOR", "Hire anyone, anywhere."), ("Payroll", ""), ("COR", "")]
+
+    def test_media_stack_and_pairing_attrs(self):
+        doc = _acc_media_doc(["panel-a.webp", "panel-c.webp"])
+        layout = _acc_layout()
+        html = _compose_acc_media(doc, layout, self.ROWS,
+                                  ["panel-a.webp", "", "panel-c.webp"])
+        # bound items carry the pairing attribute; the media-less one does not
+        self.assertIn('data-acc-media="0"', html)
+        self.assertNotIn('data-acc-media="1"', html)
+        self.assertIn('data-acc-media="2"', html)
+        # the stack renders over the honest well, one layer per bound item
+        self.assertIn('class="cs-acc-media"', html)
+        self.assertIn("cs-acc-well", html)
+        self.assertIn('data-acc-i="0"', html)
+        self.assertIn('src="assets/panel-a.webp"', html)
+        self.assertIn('data-acc-i="2"', html)
+        # the ACTIVE (evidenced open) item's layer is the server-rendered resting
+        # state for no-:has browsers
+        m = re.search(r'<img[^>]*data-acc-i="0"[^>]*>', html)
+        self.assertIn("is-active", m.group(0))
+        # composer stamps the bound indexes for the CSS generator
+        self.assertEqual(layout["_accordion"]["mediaIdx"], [0, 2])
+
+    def test_pairing_rules_generated_for_stamped_indexes(self):
+        doc = _acc_media_doc(["panel-a.webp", "panel-c.webp"])
+        layout = _acc_layout()
+        _compose_acc_media(doc, layout, self.ROWS, ["panel-a.webp", "", "panel-c.webp"])
+        css = cs.device_scaffold_css([layout])
+        self.assertIn('.cs-acc-split:has(.c-acc-item[data-acc-media="0"][open]) '
+                      '.cs-acc-media-item[data-acc-i="0"] { opacity: 1; }', css)
+        self.assertIn('[data-acc-media="2"]', css)
+        self.assertNotIn('[data-acc-media="1"]', css)
+
+    def test_unbound_media_names_degrade_to_well(self):
+        # names with no disk evidence render nothing (AS-34): no stack, no attrs,
+        # no pairing rules — the honest well keeps the counterweight.
+        doc = _acc_media_doc(["panel-a.webp"])
+        layout = _acc_layout()
+        html = _compose_acc_media(doc, layout, self.ROWS, ["ghost.webp", "", ""])
+        self.assertNotIn("cs-acc-media-item", html)
+        self.assertNotIn("data-acc-media", html)
+        self.assertIn("cs-acc-well", html)
+        self.assertNotIn("mediaIdx", layout["_accordion"])
+        # no PAIRING rules generated (the static @supports/:has fallback text in the
+        # scaffold constant is fine — only the per-index rules are conditional)
+        self.assertNotIn('[data-acc-media="0"][open]', cs.device_scaffold_css([layout]))
+
+    def test_no_row_media_keeps_single_path(self):
+        doc = _acc_media_doc(["panel-a.webp"])
+        layout = _acc_layout()
+        html = _compose_acc_media(doc, layout, self.ROWS, [])
+        self.assertNotIn("cs-acc-media-item", html)
+        self.assertNotIn("data-acc-media", html)
+
+    def test_media_swap_css_rides_motion_vars(self):
+        css = cs.SCAFFOLD_ACCORDION_CSS
+        # bare aliases (AS-47): unresolved vars invalidate the declaration for
+        # motion-less docs — never an invented literal fallback.
+        self.assertIn("opacity var(--c-motion-base) var(--c-ease)", css)
+        self.assertIn("@supports not selector(:has(a))", css)
+
+    def test_split_copy_carries_row_media(self):
+        # the adapter folds items[].media beside rows/rowIcons (schema:
+        # section-copy items[].media — the extraction agent authors the values).
+        section = {"slots": [{"name": "list", "role": "accordion items",
+                              "copy": [{"label": "EOR", "text": "b",
+                                        "icon": "i.webp", "media": "m.webp"},
+                                       {"label": "Payroll"}]}]}
+        out = cfc._split_copy(section)
+        self.assertEqual(out["rows"], [("EOR", "b"), ("Payroll", "")])
+        self.assertEqual(out["rowIcons"], ["i.webp", ""])
+        self.assertEqual(out["rowMedia"], ["m.webp", ""])
+
+
+# ── fid5: full-bleed art-surface conversion band ────────────────────────────────────
+
+def _conv_copy():
+    return {"eyebrow": "", "heading": "Global employment is hard.", "body": "We built it.",
+            "cta": "Book demo", "placeholder": "you@work.com", "quote": "", "caption": ""}
+
+
+def _compose_conversion(doc, layout):
+    saved = cs.LAYOUT_COPY
+    try:
+        cs.LAYOUT_COPY = {**cs.LAYOUT_COPY, layout["id"]: _conv_copy()}
+        return cs.compose_conversion_stack(doc, layout, _ctx(), [], None)
+    finally:
+        cs.LAYOUT_COPY = saved
+
+
+class ArtSurfaceBandTest(unittest.TestCase):
+    def _stamp(self, treatments, layout=None):
+        layout = layout if layout is not None else {"id": "sec"}
+        with mock.patch.object(cs, "resolve_pattern",
+                               return_value=(_pattern(treatments), "ref")):
+            cs.stamp_pattern_devices(FIXTURE_DOC, layout, Path("/tmp/x.yaml"))
+        return layout
+
+    def test_sanctioned_background_art_surface_stamps(self):
+        lay = self._stamp([{"kind": "art-surface", "target": "background",
+                            "sanctioned": True,
+                            "note": "noise family (band-noise.webp); full-bleed"}])
+        self.assertEqual(lay["_artSurface"],
+                         {"note": "noise family (band-noise.webp); full-bleed",
+                          "asset": None})
+
+    def test_non_background_art_surface_does_not_stamp(self):
+        lay = self._stamp([{"kind": "art-surface", "target": "media",
+                            "sanctioned": True}])
+        self.assertNotIn("_artSurface", lay)
+
+    def test_band_renders_treatment_named_art(self):
+        doc = _acc_media_doc(["band-noise.webp"])
+        layout = {"id": "close", "_artSurface":
+                  {"note": "noise family (band-noise.webp)", "asset": None}}
+        html = _compose_conversion(doc, layout)
+        self.assertIn("cs-conversion-sec--band", html)
+        self.assertIn('class="cs-conversion-band-art" src="assets/band-noise.webp"', html)
+
+    def test_band_without_inventory_art_degrades_flat(self):
+        layout = {"id": "close", "_artSurface": {"note": "no file named", "asset": None}}
+        html = _compose_conversion(dict(FIXTURE_DOC), layout)
+        self.assertIn("cs-conversion-sec--band", html)
+        self.assertNotIn("cs-conversion-band-art", html)
+
+    def test_no_stamp_keeps_classic_stack(self):
+        layout = {"id": "close"}
+        html = _compose_conversion(dict(FIXTURE_DOC), layout)
+        self.assertNotIn("cs-conversion-sec--band", html)
+        self.assertIn("cs-conversion-sec", html)
+
+    def test_band_css_gated_in_scaffold(self):
+        stamped = {"id": "close", "archetype": "stack",
+                   "_artSurface": {"note": "", "asset": None},
+                   "blockMapping": [{"contract": "button"}]}
+        css = cs.scaffold_css(FIXTURE_DOC, stamped)
+        self.assertIn(".cs-conversion-sec--band", css)
+        unstamped = {k: v for k, v in stamped.items() if k != "_artSurface"}
+        self.assertNotIn(".cs-conversion-sec--band",
+                         cs.scaffold_css(FIXTURE_DOC, unstamped))
+
 
 # ── edge-cut carousel statics ──────────────────────────────────────────────────────
 
@@ -358,8 +545,24 @@ class UtilityBannerTest(unittest.TestCase):
         import copy
         doc = copy.deepcopy(self.doc)
         doc["navbar"]["utilityBanner"]["surface"] = "surface/nope"
+        # strip the measured-paint facts too (fid2 2026-07): with a measured bg the
+        # banner legitimately renders on its own scoped literals regardless of the
+        # (unknown) role — this test covers the role-only degrade path.
+        doc["navbar"]["utilityBanner"].pop("bg", None)
+        doc["navbar"]["utilityBanner"].pop("ink", None)
         html = self._page(doc)
         self.assertNotIn("page-banner", html)
+
+    def test_measured_banner_paint_wins(self):
+        # a banner carrying measured bg/ink facts renders them as scoped literals
+        # (the :root chrome color no section surface role owns — fid2 2026-07).
+        import copy
+        doc = copy.deepcopy(self.doc)
+        doc["navbar"]["utilityBanner"]["bg"] = "#141415"
+        doc["navbar"]["utilityBanner"]["ink"] = "#ffffff"
+        html = self._page(doc)
+        self.assertIn('data-surface="chrome/utility-banner"', html)
+        self.assertIn("--c-paper: #141415", html)
 
     def test_textless_banner_renders_nothing(self):
         import copy

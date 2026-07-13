@@ -405,7 +405,9 @@ def emit_layer1(doc: dict) -> tuple[list[str], dict[str, list[str]], dict, list,
         missing.append("tokens.spacing.radius-global (or tokens.radius.global)")
     for role, node in radius_roles.items():
         val = node.get("value") if isinstance(node, dict) else node
-        if val and role != "global":
+        # `0` is a REAL measured fact (square family — e.g. media wells whose parent
+        # plate does the rounding), not an absence: only None/"" skip emission.
+        if val not in (None, "") and role != "global":
             lines.append(f"  --radius-{_slug(role)}: {val};")
             index[f"--radius-{_slug(role)}"] = str(val)
 
@@ -481,6 +483,16 @@ def emit_layer1(doc: dict) -> tuple[list[str], dict[str, list[str]], dict, list,
                 stack = f"'{b['font']}'" + (f", '{proxy}'" if proxy else "") + f", {generic}"
                 lines.append(f"  {prefix}-font: {stack};")
                 index[f"{prefix}-font"] = stack
+            # measured DARK-SURFACE variant (fix1 2026-07 item-10): a family's
+            # `onInverse` facts emit under `<prefix>-oninverse-*`; consumed only
+            # inside surface scopes that declare `controls: onInverse`
+            # (component_render._button_oninverse_css). No facts ⇒ no vars.
+            inv = b.get("onInverse")
+            if isinstance(inv, dict):
+                for src, suffix in pairs:
+                    if inv.get(src) is not None:
+                        lines.append(f"  {prefix}-oninverse-{suffix}: {inv[src]};")
+                        index[f"{prefix}-oninverse-{suffix}"] = str(inv[src])
         for req in ("--button-bg", "--button-fg"):
             if req not in index:
                 missing.append(f"buttons.primary.{'bg' if req.endswith('-bg') else 'fg'}")

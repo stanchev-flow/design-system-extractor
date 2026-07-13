@@ -441,12 +441,17 @@ class BrandEvidenceContractTests(unittest.TestCase):
         self.assertIn("prefix", self._joined(rep.errors))
 
     def test_mega_menu_clean_heading_passes(self):
-        self._mutate_brand(lambda d: d["navbar"].__setitem__(
-            "primary",
-            [{"label": "Products",
-              "menu": {"columns": [
-                  {"heading": "Global Employment",
-                   "links": [{"label": "Payroll Run"}]}]}}]))
+        def mut(d):
+            d["navbar"]["primary"] = [
+                {"label": "Products",
+                 "menu": {"columns": [
+                     {"heading": "Global Employment",
+                      "links": [{"label": "Payroll Run"}]}]}}]
+            # a captured menu owes measured open-panel facts (C16) — this test
+            # targets the C7 heading-prefix rule, so carry the minimal set.
+            d["navbar"]["measured"] = {"megaPanel": {
+                "motion": {"panel": {"duration": "0.3s"}}}}
+        self._mutate_brand(mut)
         rep = self._validate()
         self.assertEqual(rep.errors, [], rep.errors)
 
@@ -498,6 +503,71 @@ class BrandEvidenceContractTests(unittest.TestCase):
         rep = self._validate()
         self.assertFalse(rep.ok)
         self.assertTrue(any(e.startswith("C1") for e in rep.errors))
+
+    # ── C23 component-recipe coverage (fix2, brand-schema §4.4e) ─────────────
+
+    @staticmethod
+    def _railish(pid):
+        return {"id": pid, "useCase": "features",
+                "specialTreatments": [{"kind": "dotted-rule-rail"}]}
+
+    def _write_library(self, lib: dict):
+        (self.brand_dir / "layout-library.yaml").write_text(yaml.safe_dump(lib))
+
+    def _c23(self, rep):
+        return [w for w in rep.warnings if w.startswith("C23")]
+
+    def test_shared_rail_anatomy_without_recipe_advises(self):
+        self._write_library({"patterns": FIXTURE_LIBRARY["patterns"]
+                             + [self._railish("fx-rail-a"),
+                                self._railish("fx-rail-b")]})
+        rep = self._validate()
+        self.assertEqual(rep.errors, [], rep.errors)   # advisory, never an error
+        msgs = self._joined(self._c23(rep))
+        self.assertIn("fx-rail-a", msgs)
+        self.assertIn("fx-rail-b", msgs)
+
+    def test_recipe_bound_both_ways_is_quiet(self):
+        rail_a = {**self._railish("fx-rail-a"),
+                  "recipeRef": {"recipe": "section-headrail", "variant": "chip"}}
+        rail_b = {**self._railish("fx-rail-b"),
+                  "recipeRef": {"recipe": "section-headrail", "variant": "pill"}}
+        self._write_library({
+            "recipes": [{"id": "section-headrail", "name": "section headrail",
+                         "intent": "opener",
+                         "anatomy": [{"slot": "kicker", "role": "mark"}],
+                         "variants": [{"id": "chip", "useCase": "feature"},
+                                      {"id": "pill", "useCase": "editorial"}],
+                         "usedBy": ["fx-rail-a", "fx-rail-b"]}],
+            "patterns": FIXTURE_LIBRARY["patterns"] + [rail_a, rail_b]})
+        rep = self._validate()
+        self.assertEqual(self._c23(rep), [])
+
+    def test_dangling_recipe_ref_advises(self):
+        rail = {**self._railish("fx-rail-a"),
+                "recipeRef": {"recipe": "no-such-recipe"}}
+        self._write_library({"patterns": FIXTURE_LIBRARY["patterns"] + [rail]})
+        rep = self._validate()
+        self.assertIn("no-such-recipe", self._joined(self._c23(rep)))
+
+    def test_one_way_used_by_advises(self):
+        # recipe lists the pattern but the pattern carries no recipeRef back
+        self._write_library({
+            "recipes": [{"id": "section-headrail", "name": "rail", "intent": "x",
+                         "anatomy": [{"slot": "kicker", "role": "mark"}],
+                         "variants": [{"id": "chip", "useCase": "feature"}],
+                         "usedBy": ["fx-hero"]}],
+            "patterns": FIXTURE_LIBRARY["patterns"]})
+        rep = self._validate()
+        self.assertIn("bind both directions", self._joined(self._c23(rep)))
+
+    def test_anatomyless_recipe_advises(self):
+        self._write_library({
+            "recipes": [{"id": "bare", "name": "bare", "intent": "x",
+                         "variants": [{"id": "only", "useCase": "y"}]}],
+            "patterns": FIXTURE_LIBRARY["patterns"]})
+        rep = self._validate()
+        self.assertIn("no anatomy", self._joined(self._c23(rep)))
 
     # ── C10 card variant coverage ────────────────────────────────────────────
 
@@ -674,6 +744,304 @@ class BrandEvidenceContractTests(unittest.TestCase):
         self.assertTrue(any(e.startswith("C15") and "reason" in e
                             for e in rep.errors), rep.errors)
 
+    # ── C15 completeness against the mined corpus (fid11) ───────────────────
+
+    def _write_corpus(self, *decls):
+        ev = self.brand_dir / "evidence"
+        ev.mkdir(exist_ok=True)
+        (ev / "css-rules.json").write_text(json.dumps({
+            "schemaVersion": 1,
+            "rules": [{"selector": ":root", "media": "", "decls": d} for d in decls]}))
+
+    def test_exposed_pair_vars_demand_their_canonical_rungs(self):
+        # the corpus exposes all three pair ladders; the fixture authored only two.
+        self._write_corpus(
+            "--x-label-headline-spacing: 0.5rem",
+            "--x-headline-description-spacing: 0.75rem",
+            "--x-description-button-spacing: 1.5rem")
+        self._mutate_brand(lambda d: d["tokens"]["spacing"].pop("body-to-cta"))
+        rep = self._validate()
+        msg = self._joined(rep.errors)
+        self.assertTrue(any(e.startswith("C15") and "INCOMPLETE" in e
+                            for e in rep.errors), rep.errors)
+        self.assertIn("body-to-cta", msg)
+        self.assertIn("--x-description-button-spacing", msg)
+
+    def test_complete_ladder_passes_the_corpus_check(self):
+        self._write_corpus(
+            "--x-label-headline-spacing: 0.5rem",
+            "--x-headline-description-spacing: 0.75rem",
+            "--x-description-button-spacing: 1.5rem")
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors if e.startswith("C15")], [],
+                         rep.errors)
+
+    def test_not_observed_contradicting_exposed_vars_fails(self):
+        self._write_corpus("--x-label-headline-spacing: 0.5rem")
+        def swap(d):
+            for k in ("eyebrow-to-heading", "heading-to-body", "body-to-cta"):
+                d["tokens"]["spacing"].pop(k)
+            d["tokens"]["spacing"]["relationalLadder"] = {
+                "notObserved": True, "reason": "looked everywhere, honest"}
+        self._mutate_brand(swap)
+        rep = self._validate()
+        self.assertTrue(any(e.startswith("C15") and "contradicts" in e
+                            for e in rep.errors), rep.errors)
+
+    def test_exposed_row_gap_var_demands_a_row_rung(self):
+        self._write_corpus("--x-row-gap-spacing: 3rem")
+        rep = self._validate()
+        self.assertTrue(any(e.startswith("C15") and "block-to-block" in e
+                            for e in rep.errors), rep.errors)
+        # authoring the row rung satisfies it
+        self._mutate_brand(lambda d: d["tokens"]["spacing"].update(
+            {"block-to-block": {"value": "3rem"}}))
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors if e.startswith("C15")], [],
+                         rep.errors)
+
+    def test_exposed_column_gap_var_demands_a_column_rung(self):
+        self._write_corpus("--x-split-column-gap: 3rem")
+        rep = self._validate()
+        self.assertTrue(any(e.startswith("C15") and "column-to-column" in e
+                            for e in rep.errors), rep.errors)
+        self._mutate_brand(lambda d: d["tokens"]["spacing"].update(
+            {"grid-gap": {"value": "2rem"}}))
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors if e.startswith("C15")], [],
+                         rep.errors)
+
+    def test_single_role_spacing_vars_demand_nothing(self):
+        # a var naming ONE role (or none) is not a relational pair — no rung owed.
+        self._write_corpus("--x-content-spacing: 2rem", "--x-title-spacing: 1rem")
+        self._mutate_brand(lambda d: d["tokens"]["spacing"].pop("body-to-cta"))
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors
+                          if e.startswith("C15") and "INCOMPLETE" in e], [],
+                         rep.errors)
+
+    # ── C18 contextual header-alignment grammar (fid11) ─────────────────────
+
+    def _write_grammar_library(self):
+        lib = {"patterns": [
+            {"id": "fx-hero", "useCase": "hero", "archetypeRef": "split",
+             "contentShape": {"alignment": {"value": "left",
+                                            "counterweight": "media"}}},
+            {"id": "fx-infra", "useCase": "about", "archetypeRef": "split",
+             "contentShape": {"alignment": {"value": "left",
+                                            "counterweight": "media"}}},
+            {"id": "fx-logos", "useCase": "logos", "archetypeRef": "stack",
+             "contentShape": {"alignment": {"value": "center"}}},
+            {"id": "fx-cta", "useCase": "cta", "archetypeRef": "stack",
+             "contentShape": {"alignment": {"value": "centered"}}},
+        ]}
+        (self.brand_dir / "layout-library.yaml").write_text(yaml.safe_dump(lib))
+
+    def test_corroborated_contexts_demand_the_grammar(self):
+        self._write_grammar_library()
+        rep = self._validate()
+        hits = [e for e in rep.errors if e.startswith("C18")]
+        self.assertEqual(2, len(hits), rep.errors)
+        self.assertIn("splitColumn", self._joined(hits))
+        self.assertIn("standaloneStack", self._joined(hits))
+
+    def test_authored_grammar_passes(self):
+        self._write_grammar_library()
+        self._mutate_brand(lambda d: d.update({"layoutGrammar": {"headerContext": {
+            "splitColumn": {"anchor": "left", "counterweight": "media"},
+            "standaloneStack": {"anchor": "centered"}}}}))
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors if e.startswith("C18")], [],
+                         rep.errors)
+
+    def test_grammar_contradicting_the_majority_fails(self):
+        self._write_grammar_library()
+        self._mutate_brand(lambda d: d.update({"layoutGrammar": {"headerContext": {
+            "splitColumn": {"anchor": "left"},
+            "standaloneStack": {"anchor": "left"}}}}))
+        rep = self._validate()
+        self.assertTrue(any(e.startswith("C18") and "contradicts" in e
+                            for e in rep.errors), rep.errors)
+
+    def test_dissenting_pattern_fact_warns_for_review(self):
+        # fid12: an explicit fact that CONTRADICTS a corroborated grammar outranks
+        # it silently (AS-49) — the validator must surface it as an advisory.
+        lib = {"patterns": [
+            {"id": "fx-hero", "useCase": "hero", "archetypeRef": "split",
+             "contentShape": {"alignment": {"value": "left",
+                                            "counterweight": "media"}}},
+            {"id": "fx-infra", "useCase": "about", "archetypeRef": "split",
+             "contentShape": {"alignment": {"value": "left",
+                                            "counterweight": "media"}}},
+            {"id": "fx-logos", "useCase": "logos", "archetypeRef": "stack",
+             "contentShape": {"alignment": {"value": "center"}}},
+            {"id": "fx-cta", "useCase": "cta", "archetypeRef": "stack",
+             "contentShape": {"alignment": {"value": "center"}}},
+            {"id": "fx-grid", "useCase": "features", "archetypeRef": "grid",
+             "contentShape": {"alignment": {"value": "left",
+                                            "counterweight": "cards"}}},
+        ]}
+        (self.brand_dir / "layout-library.yaml").write_text(yaml.safe_dump(lib))
+        self._mutate_brand(lambda d: d.update({"layoutGrammar": {"headerContext": {
+            "splitColumn": {"anchor": "left", "counterweight": "media"},
+            "standaloneStack": {"anchor": "centered"}}}}))
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors if e.startswith("C18")], [],
+                         rep.errors)
+        hits = [w for w in rep.warnings
+                if w.startswith("C18") and "fx-grid" in w and "dissents" in w]
+        self.assertEqual(1, len(hits), rep.warnings)
+        # agreeing patterns never warn
+        self.assertFalse(any("fx-cta" in w for w in rep.warnings
+                             if w.startswith("C18")), rep.warnings)
+
+    def test_curated_dissent_downgrades_to_a_note(self):
+        # fid13 (brand-schema §4.4c): a dissent the curator already RULED ON is
+        # resolved — informational note, no advisory warn.
+        lib = {"patterns": [
+            {"id": "fx-hero", "useCase": "hero", "archetypeRef": "split",
+             "contentShape": {"alignment": {"value": "left",
+                                            "counterweight": "media"}}},
+            {"id": "fx-infra", "useCase": "about", "archetypeRef": "split",
+             "contentShape": {"alignment": {"value": "left",
+                                            "counterweight": "media"}}},
+            {"id": "fx-logos", "useCase": "logos", "archetypeRef": "stack",
+             "contentShape": {"alignment": {"value": "center"}}},
+            {"id": "fx-cta", "useCase": "cta", "archetypeRef": "stack",
+             "contentShape": {"alignment": {"value": "center"}}},
+            {"id": "fx-grid", "useCase": "features", "archetypeRef": "grid",
+             "contentShape": {"alignment": {"value": "left",
+                                            "counterweight": "cards"}},
+             "curation": {"alignment": {"resolve": "follow-grammar", "by": "user",
+                                        "ts": "2026-07-09T19:25:00Z",
+                                        "reason": "curator ruling"}}},
+        ]}
+        (self.brand_dir / "layout-library.yaml").write_text(yaml.safe_dump(lib))
+        self._mutate_brand(lambda d: d.update({"layoutGrammar": {"headerContext": {
+            "splitColumn": {"anchor": "left", "counterweight": "media"},
+            "standaloneStack": {"anchor": "centered"}}}}))
+        rep = self._validate()
+        self.assertFalse(any(w.startswith("C18") and "fx-grid" in w
+                             for w in rep.warnings), rep.warnings)
+        notes = [n for n in rep.notes
+                 if n.startswith("C18") and "fx-grid" in n and "curated" in n]
+        self.assertEqual(1, len(notes), rep.notes)
+
+    def test_one_context_alone_demands_nothing(self):
+        # dissent/mixed or single-context evidence: the grammar is not demanded
+        # (per-pattern facts already carry those sections).
+        lib = {"patterns": [
+            {"id": "fx-hero", "useCase": "hero", "archetypeRef": "split",
+             "contentShape": {"alignment": {"value": "left"}}},
+            {"id": "fx-infra", "useCase": "about", "archetypeRef": "split",
+             "contentShape": {"alignment": {"value": "left"}}},
+            {"id": "fx-logos", "useCase": "logos", "archetypeRef": "stack",
+             "contentShape": {"alignment": {"value": "center"}}},
+        ]}
+        (self.brand_dir / "layout-library.yaml").write_text(yaml.safe_dump(lib))
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors if e.startswith("C18")], [],
+                         rep.errors)
+
+    # ── C19 radius fidelity vs the mined census (fid13) ──────────────────────
+
+    def _write_radius_census(self, census: dict, *corpus_decls: str):
+        ev = self.brand_dir / "evidence"
+        ev.mkdir(exist_ok=True)
+        (ev / "css-facts.json").write_text(json.dumps(
+            {"schemaVersion": 1, "radiusCensus": census}))
+        (ev / "css-rules.json").write_text(json.dumps({
+            "rules": [{"selector": ":root", "decls": "; ".join(corpus_decls)}]}))
+
+    def test_radius_outside_the_published_ladder_fails(self):
+        # the source publishes its OWN radius tokens (2/4/10/40) — an authored
+        # 12px vision estimate is an invented fact, even though a 12px literal
+        # exists in the census (third-party embed noise).
+        self._write_radius_census(
+            {"var(--x-radius-a)": 27, "var(--x-radius-b)": 7, "12px": 3, "0": 12},
+            "--x-radius-a:10px", "--x-radius-b:40px")
+        self._mutate_brand(lambda d: d["tokens"].update(
+            {"radius": {"card": {"value": "0.75rem"}}}))
+        rep = self._validate()
+        hits = [e for e in rep.errors if e.startswith("C19") and "card" in e]
+        self.assertEqual(1, len(hits), rep.errors)
+        self.assertIn("published radius ladder", hits[0])
+
+    def test_radius_on_the_ladder_passes_and_zero_is_always_legitimate(self):
+        self._write_radius_census(
+            {"var(--x-radius-a)": 27, "var(--x-radius-b)": 7},
+            "--x-radius-a:10px", "--x-radius-b:40px")
+        self._mutate_brand(lambda d: d["tokens"].update(
+            {"radius": {"card": {"value": "0.625rem"},
+                        "button": {"value": "2.5rem"},
+                        "media": {"value": "0"}}}))
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors if e.startswith("C19")], [],
+                         rep.errors)
+
+    def test_literal_census_is_the_fallback_vocabulary(self):
+        # no var()-backed entries: raw literals become the (weaker) vocabulary.
+        self._write_radius_census({"6px": 9, "50%": 4, "0": 2})
+        self._mutate_brand(lambda d: d["tokens"].update(
+            {"radius": {"card": {"value": "6px"},
+                        "panel": {"value": "1.25rem"}}}))
+        rep = self._validate()
+        errs = [e for e in rep.errors if e.startswith("C19")]
+        self.assertEqual(1, len(errs), rep.errors)
+        self.assertIn("panel", errs[0])
+        self.assertIn("literal radius census", errs[0])
+
+    def test_no_census_demands_nothing(self):
+        self._mutate_brand(lambda d: d["tokens"].update(
+            {"radius": {"card": {"value": "3rem"}}}))
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors if e.startswith("C19")], [],
+                         rep.errors)
+
+    # ── C20 grid-equalization facts (fid14, brand-schema §4.4d, AS-50) ───────
+
+    def _write_grid_library(self, shape: dict):
+        lib = {"patterns": [
+            {"id": "fx-hero", "useCase": "hero"},
+            {"id": "fx-grid", "useCase": "features", "archetypeRef": "grid",
+             "contentShape": shape},
+        ]}
+        (self.brand_dir / "layout-library.yaml").write_text(yaml.safe_dump(lib))
+
+    def test_card_grid_without_an_equalization_stance_fails(self):
+        self._write_grid_library({"alignment": {"value": "left"}})
+        rep = self._validate()
+        hits = [e for e in rep.errors if e.startswith("C20") and "fx-grid" in e]
+        self.assertEqual(1, len(hits), rep.errors)
+        self.assertIn("gridEqualize", hits[0])
+
+    def test_authored_fact_or_not_observed_marker_passes(self):
+        self._write_grid_library({"gridEqualize": {
+            "heights": "stretch", "slack": "body", "actionPinned": True}})
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors if e.startswith("C20")], [],
+                         rep.errors)
+        self._write_grid_library({"gridEqualizeNotObserved": True})
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors if e.startswith("C20")], [],
+                         rep.errors)
+
+    def test_out_of_enum_heights_is_no_stance(self):
+        self._write_grid_library({"gridEqualize": {"heights": "equalish"}})
+        rep = self._validate()
+        self.assertEqual(1, len([e for e in rep.errors if e.startswith("C20")]),
+                         rep.errors)
+
+    def test_non_grid_archetypes_are_exempt(self):
+        lib = {"patterns": [
+            {"id": "fx-hero", "useCase": "hero", "archetypeRef": "split"},
+            {"id": "fx-logos", "useCase": "logos", "archetypeRef": "stack"},
+        ]}
+        (self.brand_dir / "layout-library.yaml").write_text(yaml.safe_dump(lib))
+        rep = self._validate()
+        self.assertEqual([e for e in rep.errors if e.startswith("C20")], [],
+                         rep.errors)
+
     # ── C11 composed-demo smoke ──────────────────────────────────────────────
 
     def test_srcless_media_placeholder_fails_smoke(self):
@@ -810,6 +1178,232 @@ class BrandEvidenceContractTests(unittest.TestCase):
             "<html><body>Global payroll — everywhere &rarr;</body></html>")
         rep = self._validate()
         self.assertEqual([e for e in rep.errors if e.startswith("C12")], [])
+
+    # ── C16 chrome depth facts (fid4 2026-07) ────────────────────────────────
+
+    @staticmethod
+    def _c16(rep):
+        return [e for e in rep.errors if e.startswith("C16")]
+
+    def _add_mega_menu(self, d, with_measured=True):
+        d["navbar"]["primary"] = [
+            {"label": "Products", "href": "/products", "menu": {
+                "columns": [{"heading": "Things", "area": "main",
+                             "links": [{"label": "Alpha", "href": "/a"}]}]}},
+            {"label": "Pricing", "href": "/pricing"}]
+        if with_measured:
+            d["navbar"]["measured"] = {"megaPanel": {
+                "surface": {"bg": "#ffffff"},
+                "motion": {"panel": {"duration": "0.3s", "easing": "ease"}}}}
+
+    def test_mega_menu_with_motion_facts_passes_c16(self):
+        self._mutate_brand(self._add_mega_menu)
+        self.assertEqual(self._c16(self._validate()), [])
+
+    def test_mega_menu_without_megapanel_facts_fails_c16(self):
+        self._mutate_brand(lambda d: self._add_mega_menu(d, with_measured=False))
+        errs = self._c16(self._validate())
+        self.assertTrue(any("measured.megaPanel" in e for e in errs), errs)
+
+    def test_mega_menu_motion_without_time_literal_fails_c16(self):
+        def mut(d):
+            self._add_mega_menu(d)
+            d["navbar"]["measured"]["megaPanel"]["motion"] = {"panel": {}}
+        self._mutate_brand(mut)
+        errs = self._c16(self._validate())
+        self.assertTrue(any("no time literal" in e for e in errs), errs)
+
+    def test_mega_menu_empty_column_fails_c16(self):
+        def mut(d):
+            self._add_mega_menu(d)
+            d["navbar"]["primary"][0]["menu"]["columns"][0]["links"] = []
+        self._mutate_brand(mut)
+        errs = self._c16(self._validate())
+        self.assertTrue(any("has no links" in e for e in errs), errs)
+
+    def test_mega_open_without_menu_fails_c16(self):
+        self._mutate_brand(lambda d: d["navbar"].__setitem__(
+            "megaOpen", [{"label": "Products", "open": True,
+                          "panel": {"w": 1440, "h": 400}}]))
+        errs = self._c16(self._validate())
+        self.assertTrue(any("megaOpen" in e for e in errs), errs)
+
+    def test_icon_social_without_artwork_fails_c16(self):
+        self._mutate_brand(lambda d: d["footer"].__setitem__(
+            "social", [{"network": "linkedin", "kind": "icon",
+                        "href": "https://example.com/li"}]))
+        errs = self._c16(self._validate())
+        self.assertTrue(any("binds no artwork" in e for e in errs), errs)
+
+    def test_icon_social_with_on_disk_asset_passes_c16(self):
+        (self.brand_dir / "assets" / "social-linkedin.svg").write_text(
+            "<svg xmlns='http://www.w3.org/2000/svg'/>")
+        self._mutate_brand(lambda d: d["footer"].__setitem__(
+            "social", [{"network": "linkedin", "kind": "icon",
+                        "href": "https://example.com/li",
+                        "icon": {"kind": "mask",
+                                 "asset": "assets/social-linkedin.svg"}}]))
+        self.assertEqual(self._c16(self._validate()), [])
+
+    def test_icon_social_with_missing_asset_file_fails_c16(self):
+        self._mutate_brand(lambda d: d["footer"].__setitem__(
+            "social", [{"network": "linkedin", "kind": "icon",
+                        "href": "https://example.com/li",
+                        "icon": {"kind": "mask",
+                                 "asset": "assets/social-linkedin.svg"}}]))
+        errs = self._c16(self._validate())
+        self.assertTrue(any("not on disk" in e for e in errs), errs)
+
+    def test_footer_wrapper_sizes_mismatch_fails_c16(self):
+        self._mutate_brand(lambda d: d["footer"].__setitem__(
+            "measured", {"heading": {"color": "#595b5f", "fontSize": 14},
+                         "grid": {"wrapperSizes": [2, 1]}}))
+        errs = self._c16(self._validate())
+        self.assertTrue(any("wrapperSizes" in e for e in errs), errs)
+
+    def test_footer_headed_columns_without_heading_facts_fails_c16(self):
+        self._mutate_brand(lambda d: d["footer"].__setitem__(
+            "measured", {"grid": {"wrapperSizes": [1]}}))
+        errs = self._c16(self._validate())
+        self.assertTrue(any("measured.heading" in e for e in errs), errs)
+
+    def test_footer_hierarchy_facts_pass_c16(self):
+        self._mutate_brand(lambda d: d["footer"].__setitem__(
+            "measured", {"heading": {"color": "#595b5f", "fontSize": 14},
+                         "grid": {"wrapperSizes": [1]}}))
+        self.assertEqual(self._c16(self._validate()), [])
+
+    def test_bottom_bar_without_divider_presence_fails_c16(self):
+        self._mutate_brand(lambda d: d["footer"].__setitem__(
+            "bottomBar", {"policyLinks": [{"label": "Privacy", "href": "/p"}]}))
+        errs = self._c16(self._validate())
+        self.assertTrue(any("divider" in e for e in errs), errs)
+
+    def test_bottom_bar_malformed_policy_links_fail_c16(self):
+        self._mutate_brand(lambda d: d["footer"].__setitem__(
+            "bottomBar", {"divider": {"present": True, "color": "#d2d3d5"},
+                          "policyLinks": [{"label": "Privacy"}]}))
+        errs = self._c16(self._validate())
+        self.assertTrue(any("policyLinks" in e for e in errs), errs)
+
+    def test_bottom_bar_complete_passes_c16(self):
+        self._mutate_brand(lambda d: d["footer"].__setitem__(
+            "bottomBar", {"divider": {"present": True, "color": "#d2d3d5"},
+                          "policyLinks": [{"label": "Privacy", "href": "/p"}]}))
+        self.assertEqual(self._c16(self._validate()), [])
+
+    def test_social_and_legal_without_bottom_bar_warns_c16(self):
+        rep = self._validate()
+        self.assertEqual(self._c16(rep), [])
+        self.assertTrue(any(w.startswith("C16") for w in rep.warnings), rep.warnings)
+
+    # ── C17 disclosure per-item interaction content (fid8 2026-07) ───────────
+
+    @staticmethod
+    def _c17(rep):
+        return [e for e in rep.errors if e.startswith("C17")]
+
+    def _write_copy_items(self, items, **entry_extra):
+        copy = dict(FIXTURE_COPY)
+        copy["layoutCopy"] = dict(FIXTURE_COPY["layoutCopy"])
+        copy["layoutCopy"]["hero-split"] = dict(copy["layoutCopy"]["hero-split"])
+        copy["layoutCopy"]["hero-split"]["items"] = items
+        copy["layoutCopy"]["hero-split"].update(entry_extra)
+        (self.brand_dir / "section-copy.yaml").write_text(yaml.safe_dump(copy))
+
+    def test_partial_disclosure_bodies_fail_c17(self):
+        self._write_copy_items([
+            {"heading": "Alpha", "body": "Open-state copy."},
+            {"heading": "Beta"},
+            {"heading": "Gamma"},
+        ])
+        errs = self._c17(self._validate())
+        self.assertTrue(any("Beta" in e and "Gamma" in e for e in errs), errs)
+
+    def test_full_disclosure_bodies_pass_c17(self):
+        self._write_copy_items([
+            {"heading": "Alpha", "body": "One."},
+            {"heading": "Beta", "body": "Two."},
+        ])
+        self.assertEqual(self._c17(self._validate()), [])
+
+    def test_body_not_observed_marker_passes_c17(self):
+        self._write_copy_items([
+            {"heading": "Alpha", "body": "One."},
+            {"heading": "Beta", "bodyNotObserved": True},
+        ])
+        self.assertEqual(self._c17(self._validate()), [])
+
+    def test_entry_level_not_observed_marker_passes_c17(self):
+        self._write_copy_items(
+            [{"heading": "Alpha", "body": "One."}, {"heading": "Beta"}],
+            itemBodiesNotObserved=True)
+        self.assertEqual(self._c17(self._validate()), [])
+
+    def test_label_only_items_owe_nothing_c17(self):
+        self._write_copy_items([{"heading": "Alpha"}, {"heading": "Beta"}])
+        self.assertEqual(self._c17(self._validate()), [])
+
+    def test_partial_item_media_fails_c17(self):
+        self._write_copy_items([
+            {"heading": "Alpha", "body": "One.", "media": "art-hero.webp"},
+            {"heading": "Beta", "body": "Two."},
+        ])
+        errs = self._c17(self._validate())
+        self.assertTrue(any("media" in e and "Beta" in e for e in errs), errs)
+
+    def test_full_item_media_on_disk_passes_c17(self):
+        self._write_copy_items([
+            {"heading": "Alpha", "body": "One.", "media": "art-hero.webp"},
+            {"heading": "Beta", "body": "Two.", "media": "art-hero.webp"},
+        ])
+        self.assertEqual(self._c17(self._validate()), [])
+
+    def test_item_media_missing_file_fails_c17(self):
+        self._write_copy_items([
+            {"heading": "Alpha", "body": "One.", "media": "art-hero.webp"},
+            {"heading": "Beta", "body": "Two.", "media": "ghost-collage.webp"},
+        ])
+        errs = self._c17(self._validate())
+        self.assertTrue(any("ghost-collage.webp" in e for e in errs), errs)
+
+    def test_media_not_observed_marker_passes_c17(self):
+        self._write_copy_items([
+            {"heading": "Alpha", "body": "One.", "media": "art-hero.webp"},
+            {"heading": "Beta", "body": "Two.", "mediaNotObserved": True},
+        ])
+        self.assertEqual(self._c17(self._validate()), [])
+
+    # ── C22: two-tier chrome contract advisory (fix1 2026-07) ────────────────
+
+    def test_measured_utility_tier_without_contract_warns_c22(self):
+        self._mutate_brand(lambda d: d["navbar"].__setitem__(
+            "measured", {"utilityBarHeight": 40, "primaryBarHeight": 88}))
+        rep = self._validate()
+        self.assertTrue(any(w.startswith("C22") for w in rep.warnings),
+                        rep.warnings)
+        self.assertTrue(any(e.startswith("C22") for e in rep.warnings
+                            if "utilityTier" in e))
+        # advisory, never an error
+        self.assertFalse(any(e.startswith("C22") for e in rep.errors))
+
+    def test_declared_utility_tier_silences_c22(self):
+        def mut(d):
+            d["navbar"]["measured"] = {"utilityBarHeight": 40,
+                                       "primaryBarHeight": 88}
+            d["navbar"]["utilityTier"] = {"height": 40, "bg": "#ffffff",
+                                          "trailing": ["Log in"]}
+        self._mutate_brand(mut)
+        rep = self._validate()
+        self.assertFalse(any(w.startswith("C22") for w in rep.warnings),
+                         rep.warnings)
+
+    def test_collapsed_utility_tier_owes_nothing_c22(self):
+        self._mutate_brand(lambda d: d["navbar"].__setitem__(
+            "measured", {"utilityBarHeight": 0, "primaryBarHeight": 81}))
+        rep = self._validate()
+        self.assertFalse(any(w.startswith("C22") for w in rep.warnings),
+                         rep.warnings)
 
 
 if __name__ == "__main__":

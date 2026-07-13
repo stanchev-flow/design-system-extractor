@@ -4284,6 +4284,10 @@ def generate_viewer(runs_dir: Path, output_path: Path):
         if manifest_path.exists():
             with open(manifest_path) as f:
                 manifest = json.load(f)
+            if manifest.get("screenshots") is None:
+                # brand-lane style manifest (e.g. runs/<brand>/manifest.json with
+                # status/stages keys) — not a pipeline run; nothing to embed.
+                continue
         else:
             manifest = infer_manifest_from_version_dir(version_dir)
             if not manifest.get("screenshots"):

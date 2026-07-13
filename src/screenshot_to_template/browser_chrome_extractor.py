@@ -16,6 +16,7 @@ Emits a richer `source_chrome.v2` contract consumed by chrome_codegen.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -121,6 +122,160 @@ _EXTRACT_JS = r"""
   //   2) a sibling container whose class/role looks like a submenu/flyout/dropdown
   // Returns null when there's no panel (e.g. a plain destination link).
   const MENU_CLS = /submenu|sub-menu|sub-nav|subnav|flyout|fly-out|dropdown|drop-down|mega|tab-dropdown|nav-panel|menu-panel/i;
+  // an ASIDE region inside a mega panel: the secondary rail that hosts either a
+  // compact link group or the promo/feature card (fid4 2026-07). Class-name
+  // families only — generic surface roles, never one brand's module hash.
+  const ASIDE_CLS = /secondary|aside|sidebar|side-rail|featured|promo|spotlight|highlight|extra/i;
+  // a promo/feature CARD object inside a panel (media + title + optional CTA)
+  const CARD_CLS = /card|entry|promo|feature|banner|tile|spotlight|teaser/i;
+  // small glyph inside a link/control (icon, not content imagery)
+  const ICON_MAX = 48;
+
+  // Compact icon source for a link/control: inline <svg> markup, a small <img>
+  // src, or a CSS mask-image / background-image URL (mask icons paint the
+  // element's backgroundColor through the mask shape — capture that ink too).
+  // Returns null when the element carries no icon — NEVER fabricates one.
+  const iconSource = (el) => {
+    const svg = el.querySelector("svg");
+    if (svg) {
+      const o = outer_or(svg);
+      if (o) {
+        const r = svg.getBoundingClientRect();
+        return { kind: "svg", svg: o, size: Math.round(Math.max(r.width, r.height)) || 0 };
+      }
+    }
+    const img = el.querySelector("img");
+    if (img) {
+      const r = img.getBoundingClientRect();
+      const w = r.width || px(getComputedStyle(img).width);
+      const h = r.height || px(getComputedStyle(img).height);
+      if ((w || h) && w <= ICON_MAX + 16 && h <= ICON_MAX + 16) {
+        return { kind: "img", src: img.currentSrc || img.src || "",
+                 alt: img.getAttribute("alt") || "",
+                 size: Math.round(Math.max(w, h)) || 0 };
+      }
+    }
+    const nodes = [el].concat(Array.from(el.querySelectorAll("*")).slice(0, 12));
+    for (const n of nodes) {
+      const s = getComputedStyle(n);
+      const candidates = [
+        ["mask", s.maskImage || s.webkitMaskImage || ""],
+        ["bg", s.backgroundImage || ""],
+      ];
+      for (const [kind, v] of candidates) {
+        if (!v || v === "none") continue;
+        const m = v.match(/url\((["']?)(.*?)\1\)/i);
+        if (!m || !m[2] || /^data:|gradient/i.test(m[2])) continue;
+        const r = n.getBoundingClientRect();
+        const size = Math.round(Math.max(r.width, r.height, px(s.width), px(s.height)));
+        if (size > ICON_MAX + 32) continue;   // content imagery, not a glyph
+        return { kind: kind, src: m[2].replace(/\\(.)/g, "$1"), size: size || 0,
+                 ink: kind === "mask" ? s.backgroundColor : "" };
+      }
+    }
+    return null;
+  };
+
+  // The link's own short DESCRIPTION line (menu-card anatomy: icon + title +
+  // description). A descendant whose class names a description/subtitle role, or
+  // the second distinct text node after the title. Returns { text, open } —
+  // `open` is whether the description renders EXPANDED at rest (some menus keep
+  // a featured group's descriptions visible and reveal the rest on link hover
+  // via a grid-template-rows transition). null when the link has none.
+  const linkDescription = (a, titleText) => {
+    const d = a.querySelector("[class*='desc' i], [class*='subtitle' i], [class*='caption' i], p, small");
+    // rest-state visibility: the nearest wrapper animating grid-template-rows —
+    // 0px = collapsed until hover; >0 or none = visible at rest.
+    const restOpen = (node) => {
+      let n = node;
+      for (let i = 0; i < 4 && n && n !== a.parentElement; i++) {
+        const s = getComputedStyle(n);
+        const g = s.gridTemplateRows || "";
+        if (g && g !== "none" && g !== "auto") return px(g) > 0;
+        n = n.parentElement;
+      }
+      return true;
+    };
+    if (d) {
+      const t = collapse(d.textContent || "").slice(0, 200);
+      if (t && t !== titleText) return { text: t, open: restOpen(d) };
+    }
+    const whole = collapse(a.textContent || "");
+    if (titleText && whole.length > titleText.length + 4 && whole.indexOf(titleText) === 0) {
+      return { text: whole.slice(titleText.length).trim().slice(0, 200), open: true };
+    }
+    return null;
+  };
+
+  // Does this node (a heading/group inside a panel) live in the panel's ASIDE
+  // region? Walk its ancestor chain up to the panel; any hop whose class names a
+  // secondary/aside/featured role marks the aside rail.
+  const inAsideRegion = (node, panel) => {
+    let n = node;
+    while (n && n !== panel) {
+      if (ASIDE_CLS.test(n.getAttribute && (n.getAttribute("class") || ""))) return true;
+      n = n.parentElement;
+    }
+    return false;
+  };
+
+  // Harvest the panel's PROMO/FEATURE CARD (the right-side object): a bounded
+  // non-link container carrying media + a title (and usually a CTA). Facts only
+  // — image src, title, body, CTA label/href — nothing invented. Returns
+  // { fact, el } so the column splitter can EXCLUDE the card's own heads/links
+  // from the link-group harvest (the card is its own object, not a column).
+  const harvestPanelCard = (panel, featuredSet) => {
+    const cands = Array.from(panel.querySelectorAll("article, div, a, section")).filter((e) => {
+      const cls = e.getAttribute("class") || "";
+      if (!CARD_CLS.test(cls)) return false;
+      if (!e.querySelector("img, picture, [style*='background-image']")) return false;
+      const t = collapse(e.textContent || "");
+      return t.length >= 8;
+    });
+    // keep the OUTERMOST card container only
+    const outer = cands.filter((e) => !cands.some((o) => o !== e && o.contains(e)));
+    if (!outer.length) return null;
+    const card = outer[0];
+    const img = card.querySelector("img");
+    const titleEl = card.querySelector("h1,h2,h3,h4,h5,h6,[class*='title' i],strong,b");
+    const title = titleEl ? anyLabel(titleEl) : "";
+    // CTA: an anchor with a short label, or a cta-classed NON-anchor node (card
+    // anatomies often render the affordance as a span inside one wrapping link).
+    let cta = null;
+    let href = card.tagName === "A" ? (card.getAttribute("href") || "") : "";
+    for (const a of card.querySelectorAll("a[href]")) {
+      const t = anyLabel(a);
+      if (!href) href = a.getAttribute("href") || "";
+      if (t && t.length <= 40 && t !== title) { cta = { label: t, href: a.getAttribute("href") || "" }; break; }
+    }
+    if (!cta) {
+      const ctaEl = card.querySelector("[class*='cta' i], [class*='action' i]");
+      if (ctaEl) {
+        const t = collapse(ctaEl.textContent || "").slice(0, 40);
+        if (t && t !== title) cta = { label: t, href: href };
+      }
+    }
+    // body: a desc/body node whose text is neither the title nor the CTA label —
+    // whole-card text concatenates title+cta ("…guessLearn more") and is NOT copy.
+    let body = "";
+    for (const bodyEl of card.querySelectorAll("p, [class*='desc' i], [class*='body' i]")) {
+      const t = collapse(bodyEl.textContent || "").slice(0, 240);
+      if (t && t !== title && (!cta || t !== cta.label) && !(title && t.indexOf(title) === 0)) {
+        body = t;
+        break;
+      }
+    }
+    const cs = getComputedStyle(card);
+    return { el: card, fact: {
+      title: title,
+      body: body,
+      cta: cta,
+      href: href,
+      image: img ? { src: img.currentSrc || img.src || "", alt: img.getAttribute("alt") || "" } : null,
+      area: inAsideRegion(card, panel) ? "aside" : "main",
+      surface: { bg: cs.backgroundColor, radius: px(cs.borderTopLeftRadius) },
+    } };
+  };
   const harvestMenu = (linkEl) => {
     // Resolve the enclosing nav-item container. Start the search from the link's
     // PARENT so a wrapper-ish class on the link itself (e.g. a "*nav-tab*" tab
@@ -180,12 +335,17 @@ _EXTRACT_JS = r"""
     // A title-classed node INSIDE a link is that LINK's own label (menu-card
     // title), never a column heading — promoting card titles to headings shifted
     // every column off by one card (sysfix 2026-07).
+    // the panel's promo/feature card (right-side object); its heads/links never
+    // join the column groups (fid4 2026-07).
+    const cardHit = harvestPanelCard(panel, featuredSet);
+    const card = cardHit ? cardHit.fact : null;
+    const cardEl = cardHit ? cardHit.el : null;
     const heads0 = Array.from(
       panel.querySelectorAll("h1,h2,h3,h4,h5,h6,[class*='title' i],[class*='heading' i]")
-    ).filter((h) => !h.closest("a[href]"));
+    ).filter((h) => !h.closest("a[href]") && !(cardEl && cardEl.contains(h)));
     const heads = heads0.filter((h) => !heads0.some((o) => o !== h && h.contains(o)));
     const allLinks = Array.from(panel.querySelectorAll("a[href]")).filter(
-      (a) => !featuredSet.has(a)
+      (a) => !featuredSet.has(a) && !(cardEl && cardEl.contains(a))
     );
     // A menu-card link labels itself by its own TITLE node when it carries one;
     // anyLabel() on the whole card concatenated title+description into one string
@@ -217,9 +377,22 @@ _EXTRACT_JS = r"""
           const k = (t + "|" + href).toLowerCase();
           if (seenL.has(k)) continue;
           seenL.add(k);
-          items.push({ label: t, href: href });
+          // per-link ANATOMY facts (fid4 2026-07): icon + description are part of
+          // the menu-card grammar; captured only when the DOM carries them.
+          const item = { label: t, href: href };
+          const desc = linkDescription(a, t);
+          if (desc) { item.description = desc.text; if (!desc.open) item.descriptionOnHover = true; }
+          const ic = iconSource(a);
+          if (ic) item.icon = ic;
+          items.push(item);
         }
-        if (items.length) columns.push({ heading: anyLabel(head), links: items });
+        if (items.length) {
+          const col = { heading: anyLabel(head), links: items };
+          // AREA fact (fid4 2026-07): which panel region the group lives in —
+          // 'main' columns vs the 'aside' secondary rail (compact links / promo).
+          col.area = inAsideRegion(head, panel) ? "aside" : "main";
+          columns.push(col);
+        }
       }
     }
     if (!columns.length && allLinks.length) {
@@ -232,12 +405,162 @@ _EXTRACT_JS = r"""
         const k = (t + "|" + href).toLowerCase();
         if (seenL.has(k)) continue;
         seenL.add(k);
-        items.push({ label: t, href: href });
+        const item = { label: t, href: href };
+        const desc = linkDescription(a, t);
+        if (desc) { item.description = desc.text; if (!desc.open) item.descriptionOnHover = true; }
+        const ic = iconSource(a);
+        if (ic) item.icon = ic;
+        items.push(item);
       }
-      if (items.length) columns.push({ heading: "", links: items });
+      if (items.length) columns.push({ heading: "", links: items, area: "main" });
     }
-    if (!columns.length && !featured.length) return null;
-    return { columns: columns.slice(0, 16), featured: featured.slice(0, 12) };
+    // an aside whose heading produced NO links but whose region holds the card
+    // (e.g. a "Case Studies" rail that is only the promo card) still records its
+    // heading as the card's group title.
+    if (card && !card.groupHeading) {
+      for (const h of heads) {
+        if (inAsideRegion(h, panel) && !columns.some((c) => c.heading === anyLabel(h))) {
+          card.groupHeading = anyLabel(h);
+          break;
+        }
+      }
+    }
+    if (!columns.length && !featured.length && !card) return null;
+    const out = { columns: columns.slice(0, 16), featured: featured.slice(0, 12) };
+    if (card) out.card = card;
+    return out;
+  };
+
+  // ---- mega-panel MOTION + GEOMETRY facts (computed styles; brand-agnostic) --
+  // Transition/animation declarations are readable from computed styles even
+  // while the panel is hidden — capture them as structured facts (durations/
+  // easings/hidden-state transform) so the renderer can reproduce the open/close
+  // choreography without guessing. Geometry (padding, aside split, border) reads
+  // from the same computed styles; rect-dependent numbers stay 0 when hidden and
+  // are re-measured in the OPEN state by the Playwright pass.
+  const transitionFact = (el) => {
+    if (!el) return null;
+    const s = getComputedStyle(el);
+    const t = s.transitionProperty && s.transitionProperty !== "all" ? {
+      property: s.transitionProperty,
+      duration: s.transitionDuration,
+      easing: s.transitionTimingFunction,
+      delay: s.transitionDelay,
+    } : (s.transitionDuration && s.transitionDuration !== "0s" ? {
+      property: s.transitionProperty || "all",
+      duration: s.transitionDuration,
+      easing: s.transitionTimingFunction,
+      delay: s.transitionDelay,
+    } : null);
+    return t;
+  };
+
+  const harvestPanelFacts = (linkEl) => {
+    let controls = linkEl.getAttribute("aria-controls") || "";
+    if (!controls) {
+      const item = (linkEl.parentElement || linkEl).closest(
+        "li, [class*='nav-item' i], [class*='nav-tab' i], [class*='menu-item' i], [class*='navLink' i]");
+      const tog = item && item.querySelector("[aria-controls]");
+      if (tog) controls = tog.getAttribute("aria-controls") || "";
+    }
+    const panel = controls ? document.getElementById(controls) : null;
+    if (!panel) return null;
+    const ps = getComputedStyle(panel);
+    const facts = {
+      _provenance: "getComputedStyle on the (hidden) mega panel from saved DOM",
+      surface: {
+        bg: ps.backgroundColor,
+        borderTop: ps.borderTopWidth !== "0px" ? (ps.borderTopWidth + " " + ps.borderTopColor) : "",
+        radius: px(ps.borderTopLeftRadius),
+        maxHeight: ps.maxHeight !== "none" ? ps.maxHeight : "",
+      },
+      hiddenState: { opacity: ps.opacity, transform: ps.transform !== "none" ? ps.transform : "" },
+      motion: {},
+    };
+    const pt = transitionFact(panel);
+    if (pt) facts.motion.panel = pt;
+    // the first link + its description reveal + the group title define the
+    // interaction family inside the panel.
+    const link0 = panel.querySelector("a[href]");
+    if (link0) {
+      const lt = transitionFact(link0);
+      if (lt) facts.motion.link = lt;
+      const ls = getComputedStyle(link0);
+      facts.link = {
+        padding: ls.padding, radius: px(ls.borderTopLeftRadius),
+        fontSize: px(ls.fontSize), fontWeight: ls.fontWeight, color: ls.color,
+      };
+      const hb = hoverBg(link0);
+      if (hb) facts.link.hoverBg = hb;
+      const desc = link0.querySelector("[class*='desc' i]");
+      if (desc) {
+        const dt = transitionFact(desc) || transitionFact(desc.firstElementChild);
+        if (dt) facts.motion.description = dt;
+      }
+    }
+    const title0 = Array.from(panel.querySelectorAll("h1,h2,h3,h4,h5,h6,span,[class*='title' i]"))
+      .find((h) => !h.closest("a[href]") && collapse(h.textContent || ""));
+    if (title0) {
+      const ts = getComputedStyle(title0);
+      facts.groupTitle = {
+        fontSize: px(ts.fontSize), fontWeight: ts.fontWeight, color: ts.color,
+        letterSpacing: ts.letterSpacing, textTransform: ts.textTransform,
+        fontFamily: ts.fontFamily,
+      };
+    }
+    // aside rail (secondary region): border split + width fraction come from CSS
+    const aside = Array.from(panel.querySelectorAll("div, section")).find((e) =>
+      ASIDE_CLS.test(e.getAttribute("class") || "") && e.parentElement &&
+      e.parentElement !== panel && panel.contains(e) &&
+      !CARD_CLS.test(e.getAttribute("class") || ""));
+    if (aside) {
+      const as = getComputedStyle(aside);
+      facts.aside = {
+        borderLeft: as.borderLeftWidth !== "0px" ? (as.borderLeftWidth + " " + as.borderLeftColor) : "",
+        maxWidth: as.maxWidth !== "none" ? as.maxWidth : "",
+        paddingLeft: px(as.paddingLeft),
+      };
+    }
+    // chevron / caret rotation (the trigger's own affordance)
+    const item = (linkEl.parentElement || linkEl).closest("li, [class*='nav-item' i], [class*='navLink' i]") || linkEl.parentElement;
+    const chev = (item || linkEl).querySelector("svg, [class*='chevron' i], [class*='caret' i], [class*='arrow' i]");
+    if (chev) {
+      const ct = transitionFact(chev);
+      if (ct) facts.motion.chevron = ct;
+    }
+    return facts;
+  };
+
+  // measured background-color a :hover rule would apply to el ("" when none) —
+  // same stylesheet scan as hoverColor but for the surface wash.
+  const hoverBg = (el) => {
+    if (!el) return "";
+    let found = "";
+    let sheets;
+    try { sheets = Array.from(document.styleSheets || []); } catch (e) { return ""; }
+    for (const sheet of sheets) {
+      let rules = null;
+      try { rules = sheet.cssRules || sheet.rules; } catch (e) { continue; }
+      if (!rules) continue;
+      for (const rule of Array.from(rules)) {
+        const sel = rule.selectorText;
+        if (!sel || sel.indexOf(":hover") < 0) continue;
+        const col = rule.style && rule.style.getPropertyValue("background-color");
+        if (!col) continue;
+        for (let part of sel.split(",")) {
+          if (part.indexOf(":hover") < 0) continue;
+          const base = part.replace(/:hover/g, "").trim();
+          if (!base) continue;
+          try {
+            if (el.matches(base)) {
+              const resolved = resolveColor(col, el);
+              if (resolved) found = resolved;
+            }
+          } catch (e) { /* invalid selector */ }
+        }
+      }
+    }
+    return found;
   };
 
   const px = (v) => {
@@ -580,12 +903,121 @@ _EXTRACT_JS = r"""
       l.tier = splitTop !== null && l.top < splitTop ? "utility" : "primary";
     }
 
-    // Attach captured mega-menu (columns + featured) to each PRIMARY tab that
-    // owns a dropdown. Read straight from the (hidden) DOM panel — no hover.
+    // Attach captured mega-menu (columns + featured + aside card) to each PRIMARY
+    // tab that owns a dropdown. Read straight from the (hidden) DOM panel — no hover.
+    let megaPanelFacts = null;
     for (const l of navLinks) {
       if (l.tier !== "primary" || !l._el) continue;
       const menu = harvestMenu(l._el);
-      if (menu) l.menu = menu;
+      if (menu) {
+        l.menu = menu;
+        // panel-level geometry/typography/motion facts (fid4 2026-07): the panel
+        // grammar is shared across tabs — keep the FIRST tab's facts as the
+        // family spec; per-tab structure lives on each l.menu.
+        if (!megaPanelFacts) megaPanelFacts = harvestPanelFacts(l._el);
+      }
+    }
+
+    // ---- bar AFFORDANCES (fid15 2026-07) --------------------------------------
+    // trigger chevron: the small trailing glyph inside a dropdown trigger. Harvested
+    // as artwork (inline svg) + geometry (size, gap to the label) + the OPEN-state
+    // transform/motion — measured by flipping aria-expanded (CSS attribute selectors
+    // respond without the site's JS; restored immediately).
+    const triggerChevron = (el) => {
+      const svgs = Array.from(el.querySelectorAll("svg")).filter(isVisible);
+      if (!svgs.length) return null;
+      // the chevron is the LAST small svg (a leading icon glyph would come first)
+      const svg = svgs[svgs.length - 1];
+      const r = svg.getBoundingClientRect();
+      if (Math.max(r.width, r.height) > ICON_MAX) return null;
+      const o = outer_or(svg);
+      if (!o) return null;
+      const fact = { kind: "svg", svg: o,
+                     box: { w: Math.round(r.width), h: Math.round(r.height) } };
+      // gap label→glyph: prefer the trigger's own flex gap; else geometry against
+      // the last text-bearing sibling before the svg.
+      const es = getComputedStyle(el);
+      const g = es.columnGap && es.columnGap !== "normal" ? px(es.columnGap) : 0;
+      if (g) fact.gap = g;
+      else {
+        let prev = svg.previousSibling, right = null;
+        while (prev) {
+          if (prev.nodeType === 1) { right = prev.getBoundingClientRect().right; break; }
+          if (prev.nodeType === 3 && prev.textContent.trim()) {
+            const range = document.createRange(); range.selectNodeContents(prev);
+            const rr = range.getBoundingClientRect();
+            if (rr.width) { right = rr.right; break; }
+          }
+          prev = prev.previousSibling;
+        }
+        if (right !== null) fact.gap = Math.max(0, Math.round(r.left - right));
+      }
+      const ss = getComputedStyle(svg);
+      if (ss.transition && ss.transition !== "all 0s ease 0s") fact.transition = ss.transition;
+      // OPEN-state transform: flip the trigger's aria-expanded and re-read.
+      const had = el.getAttribute("aria-expanded");
+      if (had !== null) {
+        try {
+          el.setAttribute("aria-expanded", "true");
+          const ot = getComputedStyle(svg).transform;
+          if (ot && ot !== "none" && ot !== ss.transform) fact.openTransform = ot;
+        } finally { el.setAttribute("aria-expanded", had); }
+      }
+      return fact;
+    };
+    let triggerFacts = null;
+    for (const l of navLinks) {
+      if (!l.menu || !l._el) continue;
+      const ch = triggerChevron(l._el);
+      if (ch) { if (!triggerFacts) triggerFacts = { chevron: ch }; l.hasChevron = true; }
+    }
+
+    // in-bar UTILITY controls: entries in the SAME row as the primary tabs but
+    // OUTSIDE the primary list container (trailing cluster — account links,
+    // locale switchers). Recognized structurally: the primary-list container is
+    // the LCA of the menu-owning tabs (fallback: of all primary entries); a
+    // same-row entry whose element sits outside that container and to its right
+    // is a utility control, never a nav destination. Its anatomy is harvested:
+    // leading glyph, dropdown-ness (aria-expanded w/o a mega panel), chevron.
+    const menuTabs = navLinks.filter((l) => l.tier === "primary" && l.menu && l._el);
+    const rowTabs = menuTabs.length >= 1 ? menuTabs
+      : navLinks.filter((l) => l.tier === "primary" && l._el);
+    let mainList = null;
+    if (rowTabs.length >= 2) mainList = lca(rowTabs[0]._el, rowTabs[rowTabs.length - 1]._el);
+    else if (rowTabs.length === 1) mainList = rowTabs[0]._el.parentElement;
+    if (mainList) {
+      const mr = mainList.getBoundingClientRect();
+      for (const l of navLinks) {
+        if (l.tier !== "primary" || !l._el || l.menu) continue;
+        const r = l._el.getBoundingClientRect();
+        if (mainList.contains(l._el) || r.left < mr.right - 4) continue;
+        l.tier = "utility";
+        l.bar = "trailing";
+        const ic = iconSource(l._el);
+        if (ic) l.icon = ic;
+        const expandable = l._el.getAttribute("aria-expanded") !== null ||
+                           l._el.getAttribute("aria-haspopup") !== null;
+        l.kind = expandable ? "dropdown" : "link";
+        const aria = l._el.getAttribute("aria-label") || "";
+        if (aria) l.ariaLabel = aria;
+        if (expandable) {
+          const ch = triggerChevron(l._el);
+          if (ch) l.chevron = ch;
+          // collapsed presentation: the trigger's VISIBLE inline label (aria-label
+          // is the accessible phrase; the bar shows only this short text, if any).
+          const spans = Array.from(l._el.querySelectorAll("span")).filter(isVisible);
+          const shown = spans.map((sp) => (sp.textContent || "").trim())
+            .filter((t) => t && t.length <= 24);
+          if (shown.length) l.collapsedLabel = shown[0];
+        }
+        // ROLE from the source's own semantics (web-platform conventions, not
+        // content vocabulary): an href routed at an auth endpoint marks login;
+        // an accessible name naming language/locale selection marks language.
+        const hrefL = (l.href || "").toLowerCase();
+        const ariaL = aria.toLowerCase();
+        if (/sign-?in|log-?in|account/.test(hrefL)) l.role = "login";
+        else if (/language|locale/.test(ariaL)) l.role = "language";
+      }
     }
 
     // ---- measured computed styles (the real fidelity lever) ----------------
@@ -664,6 +1096,11 @@ _EXTRACT_JS = r"""
         radius: px(s.borderTopLeftRadius),
       };
     }
+    // shared mega-panel grammar facts (surface/motion/typography, fid4 2026-07)
+    if (megaPanelFacts) measured.megaPanel = megaPanelFacts;
+    // dropdown-trigger affordance family facts (chevron artwork/geometry/motion,
+    // fid15 2026-07) — first menu-owning tab speaks for the family.
+    if (triggerFacts) measured.trigger = triggerFacts;
 
     const utilityLinks = navLinks.filter((l) => l.tier === "utility").map(clean);
     const primaryLinks = navLinks.filter((l) => l.tier === "primary").map(clean);
@@ -826,7 +1263,24 @@ _EXTRACT_JS = r"""
       const visTxt = collapse(visibleText(a));
       const iconChild = hasIconChild(a);
       const kind = (iconChild && !/[A-Za-z]{2,}/.test(visTxt)) ? "icon" : (visTxt ? "text" : "icon");
-      social.push({ network: net || "link", kind: kind, href: href, label: collapse(label(a)) || collapse(aria) || net, _el: a });
+      const entry = { network: net || "link", kind: kind, href: href, label: collapse(label(a)) || collapse(aria) || net, _el: a };
+      // ICON SOURCE fact (fid4 2026-07): the actual glyph the page renders —
+      // inline <svg> markup, an <img> src, or a CSS mask/background URL — plus
+      // the container box (size/radius/fills). Captured only when present; the
+      // curate step downloads/binds the real artwork from these facts.
+      const ic = iconSource(a);
+      if (ic) {
+        const as = getComputedStyle(a);
+        const box = a.getBoundingClientRect();
+        entry.icon = ic;
+        entry.box = {
+          width: Math.round(box.width) || px(as.width),
+          height: Math.round(box.height) || px(as.height),
+          radius: px(as.borderTopLeftRadius),
+          bg: as.backgroundColor,
+        };
+      }
+      social.push(entry);
     }
     const firstSocialEl = social.length ? social[0]._el : null;
 
@@ -872,6 +1326,180 @@ _EXTRACT_JS = r"""
     for (const a of Array.from(footer.querySelectorAll("a[href]")).filter(isVisible)) {
       const t = collapse(label(a));
       if (t && LEGAL_LINK.test(t)) pushLegal(a);
+    }
+
+    // ---- BOTTOM BAR structure (fid4 2026-07, brand-agnostic) -----------------
+    // The footer's closing region — copyright/disclaimer, store badges, divider
+    // rule, policy-link row, social cluster — captured as STRUCTURED facts from
+    // DOM geometry so the renderer reproduces the row composition instead of
+    // guessing. Region = the common ancestor of the © text and the last policy/
+    // social element, clamped to a direct child of the footer's inner stack.
+    let bottomBar = null;
+    {
+      // region anchors: the © line + the social cluster are the two most reliable
+      // BOTTOM landmarks (keyword-matched "legal" links can live up in the link
+      // columns, which would balloon the LCA to the whole footer).
+      const anchors = [legalTextEl, firstSocialEl].filter(Boolean);
+      if (anchors.length < 2 && firstLegalLinkEl) anchors.push(firstLegalLinkEl);
+      let region = null;
+      if (anchors.length >= 2) {
+        region = anchors.reduce((acc, el) => (acc ? lca(acc, el) : el), null);
+      } else if (anchors.length === 1) {
+        region = anchors[0].parentElement;
+      }
+      if (region === footer) {
+        // prefer the © text's own top-level block so the region is the bottom
+        // stack, not the whole footer
+        let n = legalTextEl || firstLegalLinkEl;
+        while (n && n.parentElement && n.parentElement !== footer) n = n.parentElement;
+        if (n && n !== footer) region = n;
+      }
+      if (region && footer.contains(region)) {
+        const rs = getComputedStyle(region);
+        // divider: an <hr> or a 1–2px-tall painted rule among the region's
+        // descendants (between rows). Color = its painted background/border.
+        let divider = null;
+        for (const el of Array.from(region.querySelectorAll("hr, div, span")).slice(0, 60)) {
+          const s = getComputedStyle(el);
+          const r = el.getBoundingClientRect();
+          const painted = !transparent(s.backgroundColor) ? s.backgroundColor
+            : (px(s.borderTopWidth) > 0 && !transparent(s.borderTopColor) ? s.borderTopColor : "");
+          if (r.height >= 0.5 && r.height <= 2.5 && r.width >= 200 && painted) {
+            divider = { present: true, color: painted,
+                        opacity: parseFloat(s.opacity || "1") };
+            break;
+          }
+        }
+        // row composition: the region's direct children (skip the divider) in
+        // order, each classified by what it CONTAINS — copyright/disclaimer
+        // text, store badges, policy links, social icons. Alignment facts come
+        // from each row's own computed flex layout.
+        const rowKind = (el) => {
+          const kinds = [];
+          if (legalTextEl && el.contains(legalTextEl)) kinds.push("copyright");
+          const badges = Array.from(el.querySelectorAll("a[href]")).filter((a) =>
+            /app.?store|play\.google|apps\.apple|google.?play/i.test(
+              (a.getAttribute("href") || "") + " " + (a.getAttribute("aria-label") || "") +
+              " " + (a.getAttribute("class") || "")));
+          if (badges.length) kinds.push("store-badges");
+          if (firstLegalLinkEl && el.contains(firstLegalLinkEl)) kinds.push("policy-links");
+          if (firstSocialEl && el.contains(firstSocialEl)) kinds.push("social");
+          if (!kinds.length && collapse(el.textContent || "")) kinds.push("text");
+          return kinds;
+        };
+        const rows = [];
+        for (const ch of Array.from(region.children)) {
+          const s = getComputedStyle(ch);
+          const r = ch.getBoundingClientRect();
+          if (ch.tagName === "HR" || (r.height <= 2.5 && r.width >= 200)) {
+            rows.push({ kinds: ["divider"] });
+            continue;
+          }
+          if (r.height < 1) continue;
+          rows.push({
+            kinds: rowKind(ch),
+            display: s.display,
+            direction: s.flexDirection || "",
+            justify: s.justifyContent || "",
+            align: s.alignItems || "",
+            gap: px((s.columnGap && s.columnGap !== "normal") ? s.columnGap : s.gap),
+          });
+        }
+        // DISCLAIMER small-print: a second text block near the © line that is
+        // NOT the © line itself (legal fine print — captured verbatim).
+        let disclaimer = "";
+        if (legalTextEl && legalTextEl.parentElement) {
+          for (const sib of Array.from(legalTextEl.parentElement.children)) {
+            if (sib === legalTextEl) continue;
+            const t = collapse(sib.textContent || "");
+            if (t && t.length >= 40 && !COPY.test(t) && !sib.querySelector("a[href]")) {
+              disclaimer = t.slice(0, 600);
+              break;
+            }
+          }
+        }
+        // STORE BADGES: app/play-store links with their real badge imagery.
+        const storeBadges = [];
+        for (const a of Array.from(region.querySelectorAll("a[href]"))) {
+          const hay = (a.getAttribute("href") || "") + " " + (a.getAttribute("aria-label") || "") +
+            " " + (a.getAttribute("class") || "");
+          if (!/app.?store|play\.google|apps\.apple|google.?play/i.test(hay)) continue;
+          const img = a.querySelector("img");
+          storeBadges.push({
+            href: a.getAttribute("href") || "",
+            label: collapse(a.getAttribute("aria-label") || label(a)).slice(0, 80),
+            img: img ? { src: img.currentSrc || img.src || "", alt: img.getAttribute("alt") || "" } : null,
+          });
+        }
+        // POLICY LINKS scoped to the region's own list (the visually-present
+        // bottom row) — keyword-matched links living up in the columns stay in
+        // legal.links but NOT here. Resolution: keyword-matched links INSIDE the
+        // region vote for their closest ul/ol/nav list; the winning list's links
+        // ship IN ORDER (so non-keyword members of the same row, e.g. "Imprint"
+        // localizations, are kept); regions with no list fall back to the
+        // keyword-matched region links themselves.
+        const policyLinks = [];
+        {
+          const seenP = new Set();
+          const inRegionLegal = Array.from(region.querySelectorAll("a[href]"))
+            .filter((a) => isVisible(a) && !socialNet(a.getAttribute("href") || ""))
+            .filter((a) => LEGAL_LINK.test(collapse(label(a)) || ""));
+          const listVotes = new Map();
+          for (const a of inRegionLegal) {
+            const list = a.closest("ul, ol, nav");
+            if (list && region.contains(list)) {
+              listVotes.set(list, (listVotes.get(list) || 0) + 1);
+            }
+          }
+          let bestList = null, bestVotes = 0;
+          for (const [list, n] of listVotes) {
+            if (n > bestVotes) { bestList = list; bestVotes = n; }
+          }
+          const pool = bestList
+            ? Array.from(bestList.querySelectorAll("a[href]")).filter(isVisible)
+            : inRegionLegal;
+          for (const a of pool) {
+            if (socialNet(a.getAttribute("href") || "")) continue;
+            const t = collapse(label(a)) || collapse(a.getAttribute("aria-label") || "");
+            if (!t) continue;
+            const k = t.toLowerCase();
+            if (seenP.has(k)) continue;
+            seenP.add(k);
+            policyLinks.push({ label: t, href: a.getAttribute("href") || "#" });
+          }
+        }
+        // vertical breathing room above the bar (fid4): the measured distance from
+        // the link-directory's bottom edge to the bottom region's top edge — part of
+        // the footer's real height budget the generator must reproduce.
+        let gapAbove = 0;
+        {
+          const regionTop = region.getBoundingClientRect().top;
+          let colsBottom = 0;
+          for (const h of headingEls) {
+            const wrap = h.parentElement || h;
+            const b = wrap.getBoundingClientRect().bottom;
+            if (b < regionTop && b > colsBottom) colsBottom = b;
+          }
+          // fall back: the lowest link ABOVE the region
+          if (!colsBottom) {
+            for (const a of Array.from(footer.querySelectorAll("a[href]")).filter(isVisible)) {
+              const b = a.getBoundingClientRect().bottom;
+              if (b < regionTop && b > colsBottom) colsBottom = b;
+            }
+          }
+          if (colsBottom) gapAbove = Math.max(0, Math.round(regionTop - colsBottom));
+        }
+        bottomBar = {
+          _provenance: "DOM geometry + getComputedStyle over the footer's bottom region",
+          divider: divider || { present: false },
+          rows: rows.slice(0, 8),
+          gap: px((rs.rowGap && rs.rowGap !== "normal") ? rs.rowGap : rs.gap),
+          gapAbove: gapAbove,
+          disclaimer: disclaimer,
+          storeBadges: storeBadges.slice(0, 4),
+          policyLinks: policyLinks.slice(0, 12),
+        };
+      }
     }
 
     // NEWSLETTER: an email input + submit living in the footer.
@@ -937,6 +1565,38 @@ _EXTRACT_JS = r"""
       const wrapperSizes = kids
         .map((ch) => gridHeads.filter((h) => ch.contains(h)).length)
         .filter((n) => n > 0);
+      // WRAPPER GEOMETRY (fid4 2026-07): each physical wrapper's rect + WHICH
+      // groups it stacks, clustered into visual tracks (x) and row bands (y) —
+      // a wrapping 6-wrapper flex over 3 tracks renders as 2 row bands, and the
+      // generator must reproduce that placement, not just the group count.
+      const wrappers = [];
+      for (const ch of kids) {
+        const headsIn = gridHeads.filter((h) => ch.contains(h));
+        if (!headsIn.length) continue;
+        const r = ch.getBoundingClientRect();
+        wrappers.push({
+          groups: headsIn.map((h) => label(h)),
+          x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width),
+        });
+      }
+      // cluster x → track index, y → row index (tolerance: half a wrapper width / 40px)
+      const xs = [];
+      for (const w of wrappers.slice().sort((a, b) => a.x - b.x)) {
+        if (!xs.length || Math.abs(w.x - xs[xs.length - 1]) > Math.max(40, w.w / 2)) xs.push(w.x);
+      }
+      const ys = [];
+      for (const w of wrappers.slice().sort((a, b) => a.y - b.y)) {
+        if (!ys.length || Math.abs(w.y - ys[ys.length - 1]) > 40) ys.push(w.y);
+      }
+      const nearest = (arr, v) => {
+        let bi = 0;
+        for (let i = 1; i < arr.length; i++) if (Math.abs(arr[i] - v) < Math.abs(arr[bi] - v)) bi = i;
+        return bi;
+      };
+      for (const w of wrappers) {
+        w.track = nearest(xs, w.x);
+        w.row = nearest(ys, w.y);
+      }
       fmeasured.grid = {
         display: cs.display,
         templateColumns: cs.gridTemplateColumns && cs.gridTemplateColumns !== "none" ? cs.gridTemplateColumns : "",
@@ -945,13 +1605,17 @@ _EXTRACT_JS = r"""
         columnCount: columns.length,
         wrapperCount: wrapperSizes.length,
         wrapperSizes: wrapperSizes,
+        trackCount: xs.length,
+        rowBandCount: ys.length,
+        wrappers: wrappers,
       };
     } else {
       fmeasured.grid = { display: "", templateColumns: "", columnGap: 0, rowGap: 0, columnCount: columns.length };
     }
     if (headingEls.length) {
       const s = getComputedStyle(headingEls[0]);
-      fmeasured.heading = { fontSize: px(s.fontSize), fontWeight: s.fontWeight, lineHeight: s.lineHeight, color: s.color, fontFamily: s.fontFamily };
+      fmeasured.heading = { fontSize: px(s.fontSize), fontWeight: s.fontWeight, lineHeight: s.lineHeight, color: s.color, fontFamily: s.fontFamily,
+        textTransform: s.textTransform, letterSpacing: s.letterSpacing };
     }
     // first real column link (skip the logo anchor) for link typography
     let flinkEl = null;
@@ -966,6 +1630,41 @@ _EXTRACT_JS = r"""
       fmeasured.link = { fontSize: px(s.fontSize), fontWeight: s.fontWeight, lineHeight: s.lineHeight, color: s.color };
       const fhc = hoverColor(flinkEl);
       if (fhc) fmeasured.linkHoverColor = fhc;
+      // VERTICAL RHYTHM (fid4 2026-07): the median top-to-top stride between
+      // consecutive links in the same stack — the directory's real line rhythm
+      // (line-height + list gap), so the generated column heights match the source.
+      let list = flinkEl.parentElement;
+      for (let i = 0; i < 4 && list; i++) {
+        const anchors = Array.from(list.querySelectorAll("a[href]")).filter(isVisible);
+        if (anchors.length >= 3) {
+          const tops = anchors.map((a) => a.getBoundingClientRect().top)
+            .sort((a, b) => a - b);
+          const strides = [];
+          for (let j = 1; j < tops.length; j++) {
+            const d = tops[j] - tops[j - 1];
+            if (d > 4 && d < 120) strides.push(d);
+          }
+          if (strides.length) {
+            strides.sort((a, b) => a - b);
+            fmeasured.link.rowStride =
+              Math.round(strides[Math.floor(strides.length / 2)]);
+          }
+          break;
+        }
+        list = list.parentElement;
+      }
+    }
+    // heading→first-link gap (the space under a column group heading)
+    if (colHeads.length && fmeasured.heading) {
+      const h0 = colHeads[0];
+      const scope = h0.parentElement ? h0.parentElement : footer;
+      const after = Array.from(scope.querySelectorAll("a[href]")).filter(isVisible)
+        .map((a) => a.getBoundingClientRect().top)
+        .filter((t) => t > h0.getBoundingClientRect().bottom - 1);
+      if (after.length) {
+        const gap = Math.round(Math.min(...after) - h0.getBoundingClientRect().bottom);
+        if (gap >= 0 && gap < 80) fmeasured.heading.gapBelow = gap;
+      }
     }
     if (flogo) fmeasured.logo = { width: flogo.width || 0, height: flogo.height || 0 };
     if (firstSocialEl) {
@@ -1038,6 +1737,7 @@ _EXTRACT_JS = r"""
       columns: columns.slice(0, 8),
       social: cleanSocial.slice(0, 12),
       legal: { text: legalText, links: legalLinks.slice(0, 12) },
+      bottomBar: bottomBar,
       newsletter: newsletter,
       measured: fmeasured,
     };
@@ -1046,6 +1746,848 @@ _EXTRACT_JS = r"""
   return result;
 };
 """
+
+
+# ── OPEN-STATE mega-panel measurement (Playwright hover/click pass) ──────────
+# The hidden-DOM harvest reads structure + declared transitions; THIS pass opens
+# each panel for real and measures rendered geometry (panel rect/padding, the
+# main/aside split, column boxes, the promo card box) plus a per-panel screenshot.
+# Brand-agnostic: triggers are located by aria-controls (the same association the
+# hidden harvest uses); sites without that association degrade to no open-state
+# facts — never a guess.
+
+_MEGA_TRIGGERS_JS = r"""
+() => {
+  const out = [];
+  const seen = new Set();
+  const header = document.querySelector("header[role='banner'], header, [class*='navbar' i], nav");
+  if (!header) return out;
+  for (const el of header.querySelectorAll("[aria-controls]")) {
+    const id = el.getAttribute("aria-controls") || "";
+    if (!id || seen.has(id)) continue;
+    // trigger must be VISIBLE at this viewport (skips the mobile drawer's
+    // hamburger duplicate, which is display:none at desktop width)
+    const r = el.getBoundingClientRect();
+    const s = getComputedStyle(el);
+    if (r.width < 2 || r.height < 2 || s.display === "none" || s.visibility === "hidden") continue;
+    const panel = document.getElementById(id);
+    if (!panel || !panel.querySelector("a[href]")) continue;
+    seen.add(id);
+    const txt = (el.textContent || "").replace(/\s+/g, " ").trim().slice(0, 60);
+    out.push({ label: txt, controls: id });
+  }
+  return out;
+};
+"""
+
+_MEGA_OPEN_MEASURE_JS = r"""
+(panelId) => {
+  const px = (v) => { const n = parseFloat(v || "0"); return Number.isFinite(n) ? Math.round(n) : 0; };
+  const panel = document.getElementById(panelId);
+  if (!panel) return null;
+  const s = getComputedStyle(panel);
+  if (s.display === "none" || s.visibility === "hidden" || parseFloat(s.opacity || "1") < 0.5) {
+    return { open: false };
+  }
+  const rect = (el) => { const r = el.getBoundingClientRect();
+    return { x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width), h: Math.round(r.height) }; };
+  const pr = rect(panel);
+  // a zero-size box is NOT an open panel (e.g. a mobile drawer forced visible
+  // at desktop width still lays out to 0x0)
+  if (pr.w < 40 || pr.h < 40) return { open: false };
+  const ASIDE_CLS = /secondary|aside|sidebar|side-rail|featured|promo|spotlight|highlight|extra/i;
+  const CARD_CLS = /card|entry|promo|feature|banner|tile|spotlight|teaser/i;
+  // the content container: the deepest descendant that still spans >= 85% of the
+  // panel and owns >= 2 children (padding read from it).
+  let content = panel;
+  for (let i = 0; i < 6; i++) {
+    const kids = Array.from(content.children).filter((c) => c.getBoundingClientRect().height > 4);
+    if (kids.length === 1 && kids[0].getBoundingClientRect().width >= pr.w * 0.85) {
+      content = kids[0];
+    } else break;
+  }
+  const cs = getComputedStyle(content);
+  // aside region: a visible child (anywhere shallow) whose class names the rail
+  let aside = null;
+  for (const el of panel.querySelectorAll("div, section")) {
+    const cls = el.getAttribute("class") || "";
+    if (!ASIDE_CLS.test(cls) || CARD_CLS.test(cls)) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width < 40 || r.height < 40) continue;
+    aside = el;
+    break;
+  }
+  // main-area GROUP boxes: elements owning a heading + links, direct structure
+  const groups = [];
+  for (const g of panel.querySelectorAll("div, section, li")) {
+    const cls = g.getAttribute("class") || "";
+    if (!/group|column|col\b/i.test(cls)) continue;
+    if (groups.some((o) => o.el.contains(g))) continue;
+    const anchors = Array.from(g.querySelectorAll("a[href]"));
+    const r = g.getBoundingClientRect();
+    if (!anchors.length || r.width < 40 || r.height < 20) continue;
+    // how many LINK COLUMNS the group's grid renders (distinct link left-x)
+    const lxs = [];
+    for (const a of anchors) {
+      const ar = a.getBoundingClientRect();
+      if (ar.width < 8) continue;
+      const x = Math.round(ar.x);
+      if (!lxs.some((v) => Math.abs(v - x) < 24)) lxs.push(x);
+    }
+    groups.push({ el: g, rect: rect(g), links: anchors.length,
+                  linkColumns: Math.max(1, lxs.length),
+                  aside: !!(aside && aside.contains(g)) });
+  }
+  // promo card box
+  let card = null;
+  for (const c of panel.querySelectorAll("article, a, div")) {
+    const cls = c.getAttribute("class") || "";
+    if (!CARD_CLS.test(cls)) continue;
+    if (!c.querySelector("img, picture")) continue;
+    const r = c.getBoundingClientRect();
+    if (r.width < 80 || r.height < 80) continue;
+    card = rect(c);
+    break;
+  }
+  const out = {
+    open: true,
+    panel: pr,
+    padding: { top: px(cs.paddingTop), right: px(cs.paddingRight),
+               bottom: px(cs.paddingBottom), left: px(cs.paddingLeft) },
+    surface: { bg: getComputedStyle(panel).backgroundColor,
+               radius: px(getComputedStyle(content).borderTopLeftRadius) },
+    groups: groups.map((g) => ({ rect: g.rect, links: g.links,
+                                 linkColumns: g.linkColumns, aside: g.aside })),
+    card: card,
+  };
+  if (aside) {
+    const ar = rect(aside);
+    const as2 = getComputedStyle(aside);
+    out.aside = { rect: ar, widthFraction: pr.w ? +(ar.w / pr.w).toFixed(3) : 0,
+                  borderLeft: as2.borderLeftWidth !== "0px"
+                    ? (as2.borderLeftWidth + " " + as2.borderLeftColor) : "" };
+  }
+  // main column split: distinct left x-positions of NON-aside groups
+  const xs = [...new Set(out.groups.filter((g) => !g.aside).map((g) => g.rect.x))];
+  out.mainColumnCount = xs.length;
+  return out;
+};
+"""
+
+
+# Force-open fallback for saved pages: the framework that toggles [hidden] /
+# aria-expanded doesn't hydrate offline, so hover/click never expands the panel.
+# Forcing = removing the DECLARED hidden state (hidden attr, display:none,
+# visibility, opacity, transform) on the panel and any suppressing ancestors so
+# the CSS-defined open layout paints. Geometry measured this way is the real
+# stylesheet layout — nothing synthetic. Every touched node is tagged so the
+# restore pass can undo it exactly.
+_MEGA_FORCE_JS = r"""
+(panelId) => {
+  const px = (v) => { const n = parseFloat(v || "0"); return Number.isFinite(n) ? n : 0; };
+  const panel = document.getElementById(panelId);
+  if (!panel) return false;
+  const force = (el) => {
+    if (el.getAttribute("data-cx-forced") != null) return;
+    el.setAttribute("data-cx-forced", el.hasAttribute("hidden") ? "h" : "");
+    el.setAttribute("data-cx-style", el.getAttribute("style") || "");
+    el.removeAttribute("hidden");
+    const s = getComputedStyle(el);
+    if (s.display === "none") el.style.display = "block";
+    if (s.visibility === "hidden" || s.visibility === "collapse") el.style.visibility = "visible";
+    if (parseFloat(s.opacity || "1") < 0.5) el.style.opacity = "1";
+    if (s.transform && s.transform !== "none") el.style.transform = "none";
+    if (s.maxHeight !== "none" && px(s.maxHeight) < 8) el.style.maxHeight = "none";
+  };
+  // ancestors that suppress paint must be forced too (deepest last)
+  const chain = [panel];
+  let anc = panel.parentElement;
+  for (let i = 0; anc && anc !== document.body && i < 5; i++) {
+    const s = getComputedStyle(anc);
+    if (anc.hasAttribute("hidden") || s.display === "none" ||
+        s.visibility === "hidden" || parseFloat(s.opacity || "1") < 0.5) {
+      chain.push(anc);
+    }
+    anc = anc.parentElement;
+  }
+  chain.reverse().forEach(force);
+  const trig = document.querySelector('[aria-controls="' + (window.CSS && CSS.escape ? CSS.escape(panelId) : panelId) + '"]');
+  if (trig) {
+    if (trig.getAttribute("data-cx-expanded") == null) {
+      trig.setAttribute("data-cx-expanded", trig.getAttribute("aria-expanded") || "");
+    }
+    trig.setAttribute("aria-expanded", "true");
+  }
+  return true;
+};
+"""
+
+_MEGA_RESTORE_JS = r"""
+() => {
+  for (const el of document.querySelectorAll("[data-cx-forced]")) {
+    const wasHidden = (el.getAttribute("data-cx-forced") || "").indexOf("h") >= 0;
+    const style = el.getAttribute("data-cx-style") || "";
+    if (style) el.setAttribute("style", style); else el.removeAttribute("style");
+    if (wasHidden) el.setAttribute("hidden", "");
+    el.removeAttribute("data-cx-forced");
+    el.removeAttribute("data-cx-style");
+  }
+  for (const t of document.querySelectorAll("[data-cx-expanded]")) {
+    const prev = t.getAttribute("data-cx-expanded") || "";
+    if (prev) t.setAttribute("aria-expanded", prev); else t.removeAttribute("aria-expanded");
+    t.removeAttribute("data-cx-expanded");
+  }
+};
+"""
+
+
+def measure_open_meganav(
+    page,
+    *,
+    shots_dir: Path | None = None,
+    shot_prefix: str = "chrome-mega",
+    log=print,
+) -> list[dict[str, Any]]:
+    """Open every aria-controls nav panel in turn (hover, then click, then a
+    force-open DOM fallback for non-hydrating saved pages), measure the RENDERED
+    open-state geometry, and screenshot the open panel (viewport clip spanning
+    the bar + panel). Returns per-item facts:
+    ``[{label, controls, open, forced?, panel, padding, groups, aside?, card?, shot?}]``.
+    Sites with no aria-controls triggers return [] — degrade, never invent."""
+    # evidence hygiene: hide fixed/sticky cookie-consent overlays so panel shots
+    # capture the chrome, not the banner (display state only — no data change)
+    try:
+        page.evaluate(
+            """() => {
+  for (const el of document.querySelectorAll("[class*='cookie' i], [id*='cookie' i], [aria-label*='cookie' i]")) {
+    const s = getComputedStyle(el);
+    if (s.position === 'fixed' || s.position === 'sticky') el.style.display = 'none';
+  }
+}"""
+        )
+    except Exception:
+        pass
+    triggers = page.evaluate(_MEGA_TRIGGERS_JS) or []
+    out: list[dict[str, Any]] = []
+    for i, trig in enumerate(triggers):
+        controls = trig.get("controls") or ""
+        if not controls:
+            continue
+        sel = f'[aria-controls="{controls}"]'
+        item: dict[str, Any] = {"label": trig.get("label") or "", "controls": controls}
+        facts = None
+        try:
+            el = page.locator(sel).first
+            el.hover(timeout=2500)
+            page.wait_for_timeout(450)
+            facts = page.evaluate(_MEGA_OPEN_MEASURE_JS, controls)
+            if not (facts and facts.get("open")):
+                el.click(timeout=2500)
+                page.wait_for_timeout(450)
+                facts = page.evaluate(_MEGA_OPEN_MEASURE_JS, controls)
+        except Exception:
+            facts = None  # interaction can't open it — fall through to force mode
+        try:
+            if not (facts and facts.get("open")):
+                if page.evaluate(_MEGA_FORCE_JS, controls):
+                    page.wait_for_timeout(150)
+                    facts = page.evaluate(_MEGA_OPEN_MEASURE_JS, controls)
+                    if facts and facts.get("open"):
+                        item["forced"] = True
+            if facts and facts.get("open"):
+                item.update(facts)
+                if shots_dir is not None:
+                    shots_dir.mkdir(parents=True, exist_ok=True)
+                    slug = re.sub(r"[^a-z0-9]+", "-", (item["label"] or f"item-{i}").lower()).strip("-") or f"item-{i}"
+                    shot = shots_dir / f"{shot_prefix}-{i}-{slug}.png"
+                    pr = facts["panel"]
+                    vp = page.viewport_size or {"width": 1440, "height": 1024}
+                    clip = {
+                        "x": 0,
+                        "y": 0,
+                        "width": vp["width"],
+                        "height": max(1, min(vp["height"], pr["y"] + pr["h"] + 24)),
+                    }
+                    page.screenshot(path=str(shot), clip=clip)
+                    item["shot"] = shot.name
+                log(f"[chrome-mega] '{item['label']}' open{' (forced)' if item.get('forced') else ''}: "
+                    f"panel {facts['panel']['w']}x{facts['panel']['h']} "
+                    f"groups={len(facts.get('groups') or [])} aside={'yes' if facts.get('aside') else 'no'} "
+                    f"card={'yes' if facts.get('card') else 'no'}")
+            else:
+                item["open"] = False
+                log(f"[chrome-mega] '{item['label']}': panel did not open (hover+click+force)")
+        except Exception as exc:  # keep the extraction alive — this pass is additive
+            item["open"] = False
+            item["error"] = f"{type(exc).__name__}: {exc}"
+            log(f"[chrome-mega] '{trig.get('label')}' failed: {item['error']}")
+        finally:
+            # undo any forcing + close before the next tab
+            try:
+                page.evaluate(_MEGA_RESTORE_JS)
+                page.keyboard.press("Escape")
+                page.mouse.move(4, 4)
+                page.wait_for_timeout(200)
+            except Exception:
+                pass
+        out.append(item)
+    return out
+
+
+# ── bar affordances LIVE pass (fid15 2026-07) ────────────────────────────────
+# The saved snapshot renders the bar's rest state only: the utility banner may be
+# dismissed at capture time, and dropdown PANELS that portal on open (locale
+# menus) never exist in the static DOM. This pass runs against the live page,
+# harvests the banner's full anatomy (message / cta link / close glyph) and each
+# in-bar utility dropdown's OPEN state (items + panel presentation + motion), and
+# screenshots the states. Additive: sites without these controls return {}.
+
+_BANNER_HARVEST_JS = r"""
+() => {
+  const px = (v) => { const n = parseFloat(v); return isNaN(n) ? 0 : Math.round(n); };
+  const isVisible = (el) => {
+    const s = getComputedStyle(el);
+    if (s.display === "none" || s.visibility === "hidden") return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 1 && r.height > 1;
+  };
+  // BACKDROP-AWARE paint resolution (W1, stress-playbook 2026-07): a strip's own
+  // backgroundColor may be semi-transparent — on the live page it composites over
+  // its ancestors' paint (e.g. a dark page cover), and THAT composite is the color
+  // the eye sees. Re-hosting the raw alpha value over a light page shifts the hue
+  // and kills contrast. Walk up from the element alpha-compositing each ancestor's
+  // backgroundColor until opaque (white page default), and record the result.
+  const parseColor = (c) => {
+    const m = /rgba?\(([^)]+)\)/.exec(c || "");
+    if (!m) return null;
+    const p = m[1].split(",").map((x) => parseFloat(x));
+    if (p.length < 3 || p.some((x) => isNaN(x))) return null;
+    return { r: p[0], g: p[1], b: p[2], a: p.length > 3 ? p[3] : 1 };
+  };
+  const effectiveBg = (el) => {
+    let r = 0, g = 0, b = 0, a = 0;
+    for (let node = el; node && a < 0.999; node = node.parentElement) {
+      const c = parseColor(getComputedStyle(node).backgroundColor);
+      if (!c || c.a <= 0) continue;
+      const w = (1 - a) * c.a;              // paint UNDER the accumulated layers
+      r += w * c.r; g += w * c.g; b += w * c.b; a += w;
+    }
+    if (a < 0.999) { const w = 1 - a; r += w * 255; g += w * 255; b += w * 255; }
+    return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
+  };
+  const headerCandidates = [
+    document.querySelector("header[role='banner']"),
+    document.querySelector("header"),
+    document.querySelector("[class*='navbar' i]"),
+    document.querySelector("nav"),
+  ].filter(Boolean);
+  let header = null;
+  for (const c of headerCandidates) {
+    const r = c.getBoundingClientRect();
+    if (isVisible(c) && r.top < 220 && r.height >= 32 && r.height < 240) { header = c; break; }
+  }
+  const headerTop = header ? header.getBoundingClientRect().top : 120;
+  // the banner: a slim full-width strip ABOVE the header carrying a dismiss button
+  const vw = window.innerWidth;
+  let banner = null;
+  for (const el of Array.from(document.body.querySelectorAll("div, section, aside"))) {
+    if (!isVisible(el) || el.contains(header) || (header && header.contains(el))) continue;
+    const r = el.getBoundingClientRect();
+    if (r.top > headerTop - 4 || r.height < 18 || r.height > 96 || r.width < vw * 0.9) continue;
+    if (!el.querySelector("button, [role='button']")) continue;
+    if (!(el.textContent || "").trim()) continue;
+    if (banner && banner.contains(el)) banner = el;  // innermost qualifying strip
+    else if (!banner) banner = el;
+  }
+  if (!banner) return null;
+  banner.setAttribute("data-affordance-banner", "1");
+  const s = getComputedStyle(banner);
+  const r = banner.getBoundingClientRect();
+  const out = {
+    observed: true,
+    bg: s.backgroundColor, ink: s.color, height: Math.round(r.height),
+    fontSize: px(s.fontSize),
+  };
+  // the composited screen-truth paint rides beside the raw declaration (W1); only
+  // meaningful (and only recorded) when the raw value carries alpha.
+  const rawBg = parseColor(s.backgroundColor);
+  if (rawBg && rawBg.a < 0.999) out.bgEffective = effectiveBg(banner);
+  // CTA link: an anchor inside the strip (label + href + text-decoration + arrow glyph)
+  const a = Array.from(banner.querySelectorAll("a[href]")).filter(isVisible)[0];
+  if (a) {
+    const as = getComputedStyle(a);
+    const cta = { label: (a.textContent || "").replace(/\s+/g, " ").trim(),
+                  href: a.getAttribute("href") || "",
+                  underline: (as.textDecorationLine || "").indexOf("underline") >= 0,
+                  color: as.color, fontWeight: as.fontWeight };
+    const svg = a.querySelector("svg");
+    if (svg) {
+      const o = svg.outerHTML || "";
+      const sr = svg.getBoundingClientRect();
+      if (o && o.length <= 12000)
+        cta.arrow = { kind: "svg", svg: o,
+                      box: { w: Math.round(sr.width), h: Math.round(sr.height) } };
+    }
+    out.cta = cta;
+  }
+  // close affordance: a small button whose accessible name or artwork dismisses
+  const btns = Array.from(banner.querySelectorAll("button, [role='button']")).filter(isVisible);
+  for (const b of btns) {
+    if (a && (b.contains(a) || a.contains(b))) continue;
+    const br = b.getBoundingClientRect();
+    if (Math.max(br.width, br.height) > 64) continue;
+    const close = { box: { w: Math.round(br.width), h: Math.round(br.height) } };
+    const aria = b.getAttribute("aria-label") || "";
+    if (aria) close.ariaLabel = aria;
+    const svg = b.querySelector("svg");
+    if (svg) {
+      const o = svg.outerHTML || "";
+      if (o && o.length <= 12000) { close.kind = "svg"; close.svg = o; }
+    } else if ((b.textContent || "").trim()) {
+      close.kind = "text"; close.glyphText = (b.textContent || "").trim().slice(0, 4);
+    }
+    out.close = close;
+    break;
+  }
+  // message: the strip's text minus the cta label and close glyph text
+  let msg = (banner.textContent || "").replace(/\s+/g, " ").trim();
+  if (out.cta && out.cta.label) msg = msg.replace(out.cta.label, " ");
+  if (out.close && out.close.glyphText) msg = msg.replace(out.close.glyphText, " ");
+  out.text = msg.replace(/\s+/g, " ").trim();
+  return out;
+}
+"""
+
+_UTILITY_TRIGGERS_JS = r"""
+() => {
+  const isVisible = (el) => {
+    const s = getComputedStyle(el);
+    if (s.display === "none" || s.visibility === "hidden") return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 1 && r.height > 1;
+  };
+  const headerCandidates = [
+    document.querySelector("header[role='banner']"),
+    document.querySelector("header"),
+    document.querySelector("[class*='navbar' i]"),
+    document.querySelector("nav"),
+  ].filter(Boolean);
+  let header = null;
+  for (const c of headerCandidates) {
+    const r = c.getBoundingClientRect();
+    if (isVisible(c) && r.top < 220 && r.height >= 32 && r.height < 240) { header = c; break; }
+  }
+  if (!header) return [];
+  // in-bar dropdown triggers that DON'T own an aria-controls mega panel: these
+  // are the utility dropdowns (locale switchers, account menus) whose panels
+  // portal on open. Mega tabs (aria-controls -> panel with links) are excluded.
+  const out = [];
+  let i = 0;
+  for (const b of Array.from(header.querySelectorAll("button[aria-expanded], [role='button'][aria-expanded]"))) {
+    if (!isVisible(b)) continue;
+    const controls = b.getAttribute("aria-controls");
+    if (controls) {
+      const panel = document.getElementById(controls);
+      if (panel && panel.querySelectorAll("a[href]").length >= 3) continue;  // mega tab
+    }
+    b.setAttribute("data-affordance-utility", String(i));
+    out.push({ index: i, ariaLabel: b.getAttribute("aria-label") || "",
+               label: (b.textContent || "").replace(/\s+/g, " ").trim() });
+    i += 1;
+  }
+  return out;
+}
+"""
+
+_UTILITY_OPEN_MEASURE_JS = r"""
+(idx) => {
+  const px = (v) => { const n = parseFloat(v); return isNaN(n) ? 0 : Math.round(n); };
+  const isVisible = (el) => {
+    const s = getComputedStyle(el);
+    if (s.display === "none" || s.visibility === "hidden" || parseFloat(s.opacity || "1") < 0.05) return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 1 && r.height > 1;
+  };
+  const trig = document.querySelector(`[data-affordance-utility="${idx}"]`);
+  if (!trig) return null;
+  const tr = trig.getBoundingClientRect();
+  // the opened panel: prefer aria-controls; else the nearest NEW list-bearing
+  // surface below the trigger (role=menu/listbox, or a ul/div of links/options).
+  let panel = null;
+  const controls = trig.getAttribute("aria-controls");
+  if (controls) {
+    const p = document.getElementById(controls);
+    if (p && isVisible(p)) panel = p;
+  }
+  if (!panel) {
+    let best = null, bestDy = 1e9;
+    for (const el of Array.from(document.querySelectorAll("[role='menu'], [role='listbox'], ul, [class*='menu' i], [class*='dropdown' i]"))) {
+      if (!isVisible(el) || el.contains(trig)) continue;
+      const r = el.getBoundingClientRect();
+      if (r.top < tr.bottom - 6 || r.width < 80 || r.width > 520 || r.height < 40) continue;
+      const items = el.querySelectorAll("a[href], [role='option'], [role='menuitem'], li, button");
+      if (items.length < 2) continue;
+      const dy = Math.abs(r.top - tr.bottom) + Math.abs(r.left - tr.left) * 0.25;
+      if (dy < bestDy) { best = el; bestDy = dy; }
+    }
+    panel = best;
+  }
+  if (!panel) return { open: false };
+  panel.setAttribute("data-affordance-utility-panel", "1");
+  const pr = panel.getBoundingClientRect();
+  const ps = getComputedStyle(panel);
+  const out = {
+    open: true,
+    panel: { x: Math.round(pr.x), y: Math.round(pr.y),
+             w: Math.round(pr.w || pr.width), h: Math.round(pr.height),
+             bg: ps.backgroundColor, radius: px(ps.borderTopLeftRadius),
+             shadow: ps.boxShadow && ps.boxShadow !== "none" ? ps.boxShadow : "",
+             border: ps.borderTopWidth && px(ps.borderTopWidth) ?
+                     `${ps.borderTopWidth} solid ${ps.borderTopColor}` : "",
+             paddingY: px(ps.paddingTop) },
+  };
+  if (ps.transition && ps.transition !== "all 0s ease 0s") out.panel.transition = ps.transition;
+  // items: label / href / hreflang / selected markers
+  const seen = new Set();
+  const items = [];
+  for (const it of Array.from(panel.querySelectorAll("a[href], [role='option'], [role='menuitem'], button"))) {
+    if (!isVisible(it)) continue;
+    const label = (it.textContent || "").replace(/\s+/g, " ").trim();
+    if (!label || label.length > 48 || seen.has(label)) continue;
+    seen.add(label);
+    const entry = { label: label };
+    const href = it.getAttribute && it.getAttribute("href");
+    if (href) entry.href = href;
+    const hl = it.getAttribute && (it.getAttribute("hreflang") || it.getAttribute("lang"));
+    if (hl) entry.lang = hl;
+    if (it.getAttribute("aria-current") || it.getAttribute("aria-selected") === "true" ||
+        /\b(current|selected|active)\b/i.test(it.className || "")) entry.current = true;
+    items.push(entry);
+    if (items.length >= 40) break;
+  }
+  out.items = items;
+  // item presentation: measured from a NON-current row; the current/selected row's
+  // own paint (often inverted) rides a separate fact.
+  const rows = Array.from(panel.querySelectorAll("a[href], [role='option'], [role='menuitem'], button")).filter(isVisible);
+  const isCurrent = (el) => !!(el.getAttribute("aria-current") ||
+    el.getAttribute("aria-selected") === "true" || /\b(current|selected|active)\b/i.test(el.className || ""));
+  const plain = rows.find((el) => !isCurrent(el)) || rows[0];
+  if (plain) {
+    const fs = getComputedStyle(plain);
+    out.item = { fontSize: px(fs.fontSize), color: fs.color,
+                 padding: `${px(fs.paddingTop)}px ${px(fs.paddingLeft)}px` };
+    if (px(fs.borderTopLeftRadius)) out.item.radius = px(fs.borderTopLeftRadius);
+  }
+  const cur = rows.find(isCurrent);
+  if (cur) {
+    const cs = getComputedStyle(cur);
+    if (cs.backgroundColor && cs.backgroundColor !== "rgba(0, 0, 0, 0)")
+      out.currentItem = { bg: cs.backgroundColor, color: cs.color };
+  }
+  // trigger chevron OPEN transform (hydrated real state)
+  const svgs = Array.from(trig.querySelectorAll("svg")).filter(isVisible);
+  if (svgs.length) {
+    const t = getComputedStyle(svgs[svgs.length - 1]).transform;
+    if (t && t !== "none") out.chevronOpenTransform = t;
+  }
+  return out;
+}
+"""
+
+
+def measure_bar_affordances(
+    url: str,
+    *,
+    viewport: tuple[int, int] = (1440, 900),
+    shots_dir: Path | None = None,
+    shot_prefix: str = "chrome-bar",
+    timeout_ms: int = 45000,
+    log=print,
+) -> dict[str, Any]:
+    """LIVE bar-affordance capture: utility-banner anatomy + in-bar utility
+    dropdown open states (locale menus etc.). Returns
+    ``{banner?, utilityDropdowns: {<ariaLabel-or-label>: {...}}, shots: [...]}``;
+    controls the page never shows come back absent (degrade, never invent)."""
+    from playwright.sync_api import sync_playwright
+
+    out: dict[str, Any] = {"utilityDropdowns": {}, "shots": []}
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page(viewport={"width": viewport[0], "height": viewport[1]},
+                                device_scale_factor=2)
+        page.goto(url, timeout=timeout_ms, wait_until="domcontentloaded")
+        page.wait_for_timeout(2200)
+        # consent overlays REMOVED (the BANNER strip is chrome we keep — consent is
+        # not; hidden-only nodes get re-shown by consent scripts and their fixed
+        # overlays intercept the dropdown clicks below)
+        try:
+            page.evaluate(
+                """() => {
+  for (const el of document.querySelectorAll("[class*='cookie' i], [id*='cookie' i], [aria-label*='cookie' i], [id*='consent' i], [class*='consent' i]")) {
+    if (el.closest('header, nav')) continue;
+    el.remove();
+  }
+}"""
+            )
+        except Exception:
+            pass
+        banner = None
+        try:
+            banner = page.evaluate(_BANNER_HARVEST_JS)
+        except Exception as exc:
+            log(f"[chrome-bar] banner harvest failed: {type(exc).__name__}: {exc}")
+        if banner:
+            out["banner"] = banner
+            if shots_dir is not None:
+                shots_dir.mkdir(parents=True, exist_ok=True)
+                shot = shots_dir / f"{shot_prefix}-banner.png"
+                try:
+                    page.locator("[data-affordance-banner]").screenshot(
+                        path=str(shot), animations="disabled")
+                    out["shots"].append(shot.name)
+                except Exception:
+                    pass
+            log(f"[chrome-bar] banner: text={banner.get('text', '')[:60]!r} "
+                f"cta={'yes' if banner.get('cta') else 'no'} "
+                f"close={'yes' if banner.get('close') else 'no'}")
+        else:
+            log("[chrome-bar] no utility banner rendered on the live page")
+        triggers = []
+        try:
+            triggers = page.evaluate(_UTILITY_TRIGGERS_JS) or []
+        except Exception as exc:
+            log(f"[chrome-bar] trigger scan failed: {type(exc).__name__}: {exc}")
+        for t in triggers:
+            name = t.get("ariaLabel") or t.get("label") or f"utility-{t['index']}"
+            sel = f'[data-affordance-utility="{t["index"]}"]'
+            facts = None
+            try:
+                page.locator(sel).click(timeout=3000)
+                page.wait_for_timeout(600)
+                facts = page.evaluate(_UTILITY_OPEN_MEASURE_JS, t["index"])
+            except Exception as exc:
+                log(f"[chrome-bar] '{name}' open failed: {type(exc).__name__}: {exc}")
+            if facts and facts.get("open"):
+                out["utilityDropdowns"][name] = facts
+                if shots_dir is not None:
+                    shots_dir.mkdir(parents=True, exist_ok=True)
+                    slug = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")[:40] or "utility"
+                    shot = shots_dir / f"{shot_prefix}-{slug}-open.png"
+                    try:
+                        pr = facts["panel"]
+                        vp = page.viewport_size or {"width": viewport[0], "height": viewport[1]}
+                        clip = {"x": 0, "y": 0, "width": vp["width"],
+                                "height": max(1, min(vp["height"], pr["y"] + pr["h"] + 24))}
+                        page.screenshot(path=str(shot), clip=clip)
+                        out["shots"].append(shot.name)
+                    except Exception:
+                        pass
+                log(f"[chrome-bar] '{name}' open: {len(facts.get('items') or [])} items, "
+                    f"panel {facts['panel']['w']}x{facts['panel']['h']}")
+            try:
+                page.keyboard.press("Escape")
+                page.mouse.move(4, 4)
+                page.wait_for_timeout(250)
+            except Exception:
+                pass
+        browser.close()
+    return out
+
+
+_BANNER_FRAGMENT_JS = r"""
+() => {
+  const px = (v) => { const n = parseFloat(v); return isNaN(n) ? 0 : Math.round(n); };
+  const isVisible = (el) => {
+    const s = getComputedStyle(el);
+    if (s.display === "none" || s.visibility === "hidden") return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 1 && r.height > 1;
+  };
+  const bs = getComputedStyle(document.body);
+  const out = { observed: true, bg: bs.backgroundColor, ink: bs.color,
+                fontSize: px(bs.fontSize) };
+  const a = Array.from(document.querySelectorAll("a[href]")).filter(isVisible)
+    .filter((x) => (x.textContent || "").trim())[0];
+  if (a) {
+    const as = getComputedStyle(a);
+    const cta = { label: (a.textContent || "").replace(/\s+/g, " ").trim(),
+                  href: a.getAttribute("href") || "",
+                  underline: (as.textDecorationLine || "").indexOf("underline") >= 0,
+                  color: as.color, fontWeight: as.fontWeight };
+    // weight may ride a styled WRAPPER (rich-text bold span around the anchor)
+    if (cta.fontWeight === "400" && a.parentElement) {
+      const ps = getComputedStyle(a.parentElement);
+      if (parseInt(ps.fontWeight, 10) > 400) cta.fontWeight = ps.fontWeight;
+    }
+    const svg = a.querySelector("svg");
+    if (svg && svg.outerHTML && svg.outerHTML.length <= 12000) {
+      const sr = svg.getBoundingClientRect();
+      cta.arrow = { kind: "svg", svg: svg.outerHTML,
+                    box: { w: Math.round(sr.width), h: Math.round(sr.height) } };
+    }
+    out.cta = cta;
+  }
+  // close affordance: dedicated close containers/buttons (fragment captures often
+  // style the box while the glyph itself is injected at runtime by the host page)
+  const closer = document.querySelector(
+    "[id*='close' i], [class*='close' i], button[aria-label*='close' i], button[aria-label*='dismiss' i]");
+  if (closer) {
+    const cs = getComputedStyle(closer);
+    const close = {};
+    const w = px(cs.width), h = px(cs.height);
+    if (w || h) close.box = { w: w, h: h };
+    if (cs.strokeWidth && px(cs.strokeWidth)) close.strokeWidth = px(cs.strokeWidth);
+    if (cs.color) close.ink = cs.color;
+    const svg = closer.querySelector("svg");
+    if (svg && svg.outerHTML && svg.outerHTML.length <= 12000) {
+      close.kind = "svg"; close.svg = svg.outerHTML;
+    } else {
+      close.kind = "box-only";  // glyph injected at runtime — artwork not captured
+    }
+    out.close = close;
+  } else {
+    // no close ELEMENT in the static fragment (runtime-injected): the fragment's
+    // own stylesheet still declares the close box — mine the close-named rules
+    // for the measured box/stroke/ink facts. Artwork stays uncaptured (box-only).
+    const close = {};
+    let sheets = [];
+    try { sheets = Array.from(document.styleSheets || []); } catch (e) {}
+    for (const sheet of sheets) {
+      let rules = null;
+      try { rules = sheet.cssRules || sheet.rules; } catch (e) { continue; }
+      for (const rule of Array.from(rules || [])) {
+        const sel = rule.selectorText || "";
+        if (!/close/i.test(sel) || !rule.style) continue;
+        const w = px(rule.style.getPropertyValue("width"));
+        const h = px(rule.style.getPropertyValue("height"));
+        if (w && h && w <= 64 && h <= 64) close.box = { w: w, h: h };
+        const sw = px(rule.style.getPropertyValue("stroke-width"));
+        if (sw) close.strokeWidth = sw;
+        const col = rule.style.getPropertyValue("color");
+        if (col && close.box) close.ink = col;
+      }
+    }
+    if (close.box) { close.kind = "box-only"; out.close = close; }
+  }
+  let msg = (document.body.innerText || "").replace(/\s+/g, " ").trim();
+  if (out.cta && out.cta.label) msg = msg.replace(out.cta.label, " ");
+  out.text = msg.replace(/\s+/g, " ").trim();
+  return out;
+}
+"""
+
+
+def harvest_banner_from_fragment(
+    fragment_path: str | Path,
+    *,
+    timeout_ms: int = 20000,
+    log=print,
+) -> dict[str, Any] | None:
+    """Measure a utility banner's anatomy from a SAVED banner fragment (a captured
+    iframe/embed .html that renders the banner as its own document — how hosted
+    promo-banner services save). Serves the fragment's folder locally and computed-
+    measures message / cta link (label, href, underline, weight, arrow) / close box.
+    Surface colors are the FRAGMENT's own; the caller decides whether the site's
+    banner-slot surface facts (mined CSS) supersede them. None when the fragment
+    shows no banner-ish content."""
+    import http.server
+    import socketserver
+    import threading
+    from urllib.parse import quote
+
+    from playwright.sync_api import sync_playwright
+
+    fragment_path = Path(fragment_path).resolve()
+    if not fragment_path.exists():
+        raise FileNotFoundError(f"banner fragment not found: {fragment_path}")
+    serve_dir = fragment_path.parent
+
+    class _Handler(http.server.SimpleHTTPRequestHandler):
+        def __init__(self, *a, **kw):
+            super().__init__(*a, directory=str(serve_dir), **kw)
+
+        def log_message(self, *a):
+            pass
+
+    httpd = socketserver.TCPServer(("127.0.0.1", 0), _Handler)
+    port = httpd.server_address[1]
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch()
+            page = browser.new_page(viewport={"width": 1440, "height": 300})
+            page.goto(f"http://127.0.0.1:{port}/{quote(fragment_path.name)}",
+                      timeout=timeout_ms, wait_until="domcontentloaded")
+            page.wait_for_timeout(600)
+            facts = page.evaluate(_BANNER_FRAGMENT_JS)
+            browser.close()
+    finally:
+        httpd.shutdown()
+        httpd.server_close()
+    if not (facts and (facts.get("text") or facts.get("cta"))):
+        return None
+    facts["fragment"] = str(fragment_path)
+    log(f"[chrome-banner] fragment: text={str(facts.get('text'))[:60]!r} "
+        f"cta={'yes' if facts.get('cta') else 'no'} close={'yes' if facts.get('close') else 'no'}")
+    return facts
+
+
+def merge_bar_affordances(contract: dict[str, Any], affordances: dict[str, Any]) -> None:
+    """Fold the live bar-affordance facts into the saved-page contract IN PLACE:
+    the banner anatomy lands at ``nav.banner`` and each dropdown's open state
+    attaches onto its matching ``nav.utility[]`` entry (by aria-label/label).
+    Facts the live page didn't show merge nothing — the saved capture stands."""
+    if not isinstance(affordances, dict):
+        return
+    nav = contract.get("nav") if isinstance(contract.get("nav"), dict) else None
+    if nav is None:
+        return
+    banner = affordances.get("banner")
+    if isinstance(banner, dict) and banner.get("observed"):
+        nav["banner"] = banner
+    drops = affordances.get("utilityDropdowns") or {}
+    if not isinstance(drops, dict):
+        return
+    entries = [l for l in (nav.get("utility") or []) if isinstance(l, dict)]
+    for name, facts in drops.items():
+        if not isinstance(facts, dict) or not facts.get("open"):
+            continue
+        key = str(name).strip().lower()
+        target = None
+        for l in entries:
+            probes = {str(l.get("ariaLabel") or "").strip().lower(),
+                      str(l.get("label") or "").strip().lower(),
+                      str(l.get("collapsedLabel") or "").strip().lower()}
+            if key and key in probes:
+                target = l
+                break
+        if target is None and len(drops) == 1:
+            # a single live dropdown with a single captured dropdown-kind entry
+            # matches structurally even when labels differ (locale-templated text)
+            cands = [l for l in entries if l.get("kind") == "dropdown"]
+            if len(cands) == 1:
+                target = cands[0]
+        if target is None:
+            continue
+        dd = {"items": facts.get("items") or [], "panel": facts.get("panel") or {}}
+        for key in ("item", "currentItem"):
+            if facts.get(key):
+                dd[key] = facts[key]
+        target["dropdown"] = dd
+        if facts.get("chevronOpenTransform"):
+            ch = target.get("chevron") if isinstance(target.get("chevron"), dict) else None
+            if ch is not None and not ch.get("openTransform"):
+                ch["openTransform"] = facts["chevronOpenTransform"]
+            # the bar's dropdown-trigger family shares ONE chevron glyph: when the
+            # measured open transform came from an IDENTICAL svg (same artwork,
+            # byte-equal markup), the family fact is the same measurement — backfill
+            # measured.trigger.chevron.openTransform (svg-equality guarded; a bar
+            # with distinct glyph families keeps them separate).
+            trig_ch = (((nav.get("measured") or {}).get("trigger") or {}).get("chevron"))
+            if isinstance(trig_ch, dict) and not trig_ch.get("openTransform") \
+                    and isinstance(ch, dict) \
+                    and str(trig_ch.get("svg") or "") == str(ch.get("svg") or ""):
+                trig_ch["openTransform"] = facts["chevronOpenTransform"]
 
 
 # ── 1:1 reference snapshot (separate artifact; NOT fed into the contract) ────
@@ -1283,9 +2825,15 @@ def extract_chrome_with_browser(
     url: str,
     *,
     timeout_ms: int = 30000,
+    mega_shots_dir: str | Path | None = None,
     log=print,
 ) -> dict[str, Any]:
-    """Launch headless Chromium, run the page, and extract nav/footer with styles."""
+    """Launch headless Chromium, run the page, and extract nav/footer with styles.
+
+    When ``mega_shots_dir`` is given, an OPEN-STATE mega-panel pass runs after the
+    static harvest: each aria-controls panel is opened (hover/click), its rendered
+    geometry measured, and a per-panel screenshot written there. The measured
+    open facts merge into ``nav.megaOpen`` (fid4 2026-07)."""
     from playwright.sync_api import sync_playwright
 
     log(f"[chrome-browser] launching headless chromium for {url}")
@@ -1299,6 +2847,15 @@ def extract_chrome_with_browser(
             except Exception:
                 pass
             data = page.evaluate(_EXTRACT_JS)
+            data = data or {}
+            if mega_shots_dir is not None and isinstance(data.get("nav"), dict):
+                try:
+                    mega = measure_open_meganav(
+                        page, shots_dir=Path(mega_shots_dir), log=log)
+                    if mega:
+                        data["nav"]["megaOpen"] = mega
+                except Exception as exc:  # additive pass — never sink the harvest
+                    log(f"[chrome-mega] open-state pass failed: {type(exc).__name__}: {exc}")
         finally:
             browser.close()
 
@@ -1436,11 +2993,61 @@ def _resolve_logo_srcs(
             node["logo"]["src"] = fix(node["logo"]["src"])
 
 
+def _localize_asset_srcs(data: dict[str, Any], local_origin: str, serve_dir: Path) -> None:
+    """Rewrite localhost-served asset srcs (icons / card images / store badges)
+    captured from a saved page back to their ON-DISK saved file (in place).
+
+    A saved-page capture serves `remote-com_files/...` via the throwaway
+    127.0.0.1 server, so computed `currentSrc` values point there. The saved file
+    IS the evidence — record its real path (`savedFile`) so the curate step can
+    copy the artwork into the brand's assets. Absolute remote URLs are left
+    untouched (they are the source of record; curation may download them)."""
+    from urllib.parse import unquote
+
+    def fix(node: dict[str, Any], key: str = "src") -> None:
+        s = str(node.get(key) or "")
+        if not s or not local_origin or not s.startswith(local_origin):
+            return
+        rel = unquote(s[len(local_origin):].lstrip("/"))
+        cand = (serve_dir / rel).resolve()
+        if cand.is_file():
+            node["savedFile"] = str(cand)
+            node[key] = rel
+
+    nav = data.get("nav") if isinstance(data.get("nav"), dict) else {}
+    for tier_key in ("links", "utility", "primary"):
+        for ln in (nav.get(tier_key) or []):
+            if not isinstance(ln, dict):
+                continue
+            menu = ln.get("menu") if isinstance(ln.get("menu"), dict) else None
+            if not menu:
+                continue
+            for col in (menu.get("columns") or []):
+                for sub in (col.get("links") or []):
+                    ic = sub.get("icon") if isinstance(sub, dict) else None
+                    if isinstance(ic, dict) and ic.get("src"):
+                        fix(ic)
+            card = menu.get("card") if isinstance(menu.get("card"), dict) else None
+            if card and isinstance(card.get("image"), dict):
+                fix(card["image"])
+    footer = data.get("footer") if isinstance(data.get("footer"), dict) else {}
+    for s in (footer.get("social") or []):
+        ic = s.get("icon") if isinstance(s, dict) else None
+        if isinstance(ic, dict) and ic.get("src"):
+            fix(ic)
+    bb = footer.get("bottomBar") if isinstance(footer.get("bottomBar"), dict) else None
+    if bb:
+        for badge in (bb.get("storeBadges") or []):
+            if isinstance(badge, dict) and isinstance(badge.get("img"), dict):
+                fix(badge["img"])
+
+
 def extract_chrome_from_saved_page(
     html_path: str | Path,
     *,
     base_url: str | None = None,
     timeout_ms: int = 30000,
+    mega_shots_dir: str | Path | None = None,
     log=print,
 ) -> dict[str, Any]:
     """Run the v2 browser extractor against a locally saved page (OFFLINE).
@@ -1477,7 +3084,8 @@ def extract_chrome_from_saved_page(
     local_url = f"{local_origin}/{quote(html_path.name)}"
     log(f"[chrome-saved] serving {serve_dir} → {local_url}")
     try:
-        data = extract_chrome_with_browser(local_url, timeout_ms=timeout_ms, log=log)
+        data = extract_chrome_with_browser(
+            local_url, timeout_ms=timeout_ms, mega_shots_dir=mega_shots_dir, log=log)
     finally:
         httpd.shutdown()
         httpd.server_close()
@@ -1491,6 +3099,9 @@ def extract_chrome_from_saved_page(
         _resolve_logo_srcs(data, html_path.read_text(encoding="utf-8", errors="ignore"), local_origin, base_url)
     except OSError:
         pass
+    # Map localhost-served icon/card/badge srcs back to their on-disk saved files
+    # (the curate step copies that artwork into the brand's assets — fid4 2026-07).
+    _localize_asset_srcs(data, local_origin, serve_dir)
     if base_url:
         _resolve_hrefs(data, base_url)
     return data

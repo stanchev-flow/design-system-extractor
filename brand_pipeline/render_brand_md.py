@@ -397,6 +397,12 @@ def render(doc: dict, brand_dir=None) -> str:
     # is the generalization a layouts[] instance links to via patternRef.
     _render_layout_patterns(w, brand_dir)
 
+    # 18. Component recipes (brand-schema §4.4e / §9b, fix2 2026-07) — prose projection
+    # of the brand's OWN recurring component anatomies so any generator consuming the
+    # kit reads them as part of the brand's voice. Genre framing stays descriptive
+    # per-brand (the recipe intent prose), never a shared taxonomy.
+    _render_recipes(w, brand_dir)
+
     return "\n".join(out).rstrip() + "\n"
 
 
@@ -424,6 +430,50 @@ def _render_layout_patterns(w, brand_dir) -> None:
         w(f"| `{p.get('id','')}` | {p.get('useCase','')} | {p.get('archetypeRef','')} | "
           f"{p.get('surfaceIntent','')} | {treatments} | {p.get('origin','')} |")
     w("")
+
+
+def _render_recipes(w, brand_dir) -> None:
+    """"Component recipes" section (brand-schema §9b): each recipe described in prose
+    with its anatomy, variants + use cases, and the patterns bound to it. Recipe-less
+    brands omit the section (recipes are brand data; there is no standard tier)."""
+    if not brand_dir:
+        return
+    from pathlib import Path as _P
+    lib = _P(brand_dir) / "layout-library.yaml"
+    if not lib.exists():
+        return
+    recipes = (yaml.safe_load(lib.read_text()) or {}).get("recipes") or []
+    recipes = [r for r in recipes if isinstance(r, dict) and r.get("id")]
+    if not recipes:
+        return
+    w("## 18. Component recipes")
+    w("")
+    w("Recurring multi-slot anatomies this brand reuses across sections — recorded as "
+      "first-class recipes in `layout-library.yaml` `recipes:` so generators compose "
+      "them as units instead of re-deriving the parts.")
+    w("")
+    for r in recipes:
+        w(f"### `{r.get('id')}` — {r.get('name') or r.get('id')}")
+        w("")
+        intent = " ".join(str(r.get("intent") or "").split())
+        if intent:
+            w(intent)
+            w("")
+        anatomy = [a for a in (r.get("anatomy") or []) if isinstance(a, dict)]
+        if anatomy:
+            w("Anatomy: " + " → ".join(
+                f"**{a.get('slot','?')}**{'' if a.get('required', True) else ' (optional)'}"
+                for a in anatomy) + ".")
+            w("")
+        for v in (r.get("variants") or []):
+            if isinstance(v, dict) and v.get("id"):
+                use = " ".join(str(v.get("useCase") or "").split())
+                w(f"- **{v['id']}** — {use}" if use else f"- **{v['id']}**")
+        used = [str(u) for u in (r.get("usedBy") or []) if u]
+        if used:
+            w("")
+            w("Used by: " + ", ".join(f"`{u}`" for u in used) + ".")
+        w("")
 
 
 def main() -> int:

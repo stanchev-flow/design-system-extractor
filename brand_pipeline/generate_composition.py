@@ -112,7 +112,8 @@ def candidate_use_cases(doc: dict) -> list[str]:
     seen: list[str] = []
     for layout in (doc.get("layouts") or []):
         uc = ll.infer_use_case(layout)
-        if uc not in seen:
+        # "" = no retrieval bucket (W6: unknown sections no longer default to hero)
+        if uc and uc not in seen:
             seen.append(uc)
     return seen
 

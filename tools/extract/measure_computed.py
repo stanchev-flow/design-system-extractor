@@ -147,16 +147,25 @@ JS = r"""
       backgroundColor: getComputedStyle(el).getPropertyValue('background-color'),
       heading: h ? (h.textContent || '').trim().slice(0, 120) : '' };
   };
-  let candidates = Array.from(root.children)
-    .filter((el) => el.getBoundingClientRect().height >= 40);
+  // CONTENT sections only: chrome-nested nodes (mega-menu dropdown panels that
+  // keep layout boxes while visibility:hidden, footer link columns) and
+  // invisible nodes are NOT page sections — they polluted section-rects and
+  // shifted every replica band mapping (hubspot-v2 2026-07).
+  const isContentSection = (el) => {
+    if (el.closest('header, footer, nav')) return false;
+    const s = getComputedStyle(el);
+    if (s.display === 'none' || s.visibility === 'hidden' || s.opacity === '0') return false;
+    if (el.closest('[aria-hidden="true"], [hidden]')) return false;
+    return el.getBoundingClientRect().height >= 40;
+  };
+  let candidates = Array.from(root.children).filter(isContentSection);
   if (candidates.length < 3) {
     const outermost = Array.from(document.querySelectorAll('section')).filter(
       (s) => !(s.parentElement && s.parentElement.closest('section')));
-    if (outermost.length > candidates.length) candidates = outermost;
+    const outermostContent = outermost.filter(isContentSection);
+    if (outermostContent.length > candidates.length) candidates = outermostContent;
   }
-  const sections = candidates
-    .filter((el) => el.getBoundingClientRect().height >= 40)
-    .map((el, i) => describe(el, i));
+  const sections = candidates.map((el, i) => describe(el, i));
 
   // header/footer participate as slices too (chrome crops for grounding).
   // Sticky/overlay wrappers can report near-document heights (100vh menus),

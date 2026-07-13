@@ -270,6 +270,19 @@ class TestButtonsSurfacesChapter(unittest.TestCase):
         self.assertIn("btnf-primary", html)      # filled state row specimens
         self.assertIn("· dark", html)            # dark bands labeled
 
+    def test_bands_are_balanced_siblings(self):
+        # fid3 regression: an unclosed row <div> nested every next band INSIDE the
+        # previous one — the chapter markup must be div-balanced so bands render as
+        # sequential SIBLINGS at equal depth.
+        html = rcp.spec_buttons_surfaces_chapter(_doc())
+        self.assertEqual(html.count("<div"), html.count("</div>"))
+        # each band closes before the next opens: splitting on band-open tags, every
+        # complete segment between two bands must itself be div-balanced.
+        segs = html.split('<div class="spec-band"')[1:]
+        for seg in segs[:-1]:
+            self.assertEqual(seg.count("<div") + 1, seg.count("</div>"),
+                             "a surface band leaks an unclosed <div> into the next band")
+
     def test_typographic_brand_rides_arrow_link(self):
         doc = _doc()
         doc.pop("buttons")

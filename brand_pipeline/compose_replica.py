@@ -138,15 +138,12 @@ def build_replica_page(brand_yaml: Path, out_dir: Path) -> dict:
             if hydrate_all or rp._layout_needs_asset_hydration(doc, layout):
                 sec = rp._demo_section_for_pattern(doc, pat, layout)
                 comp = cfc._sanitize_assets({"sections": [sec]}, brand_dir)
-                adapted = cfc.composition_to_layout(comp["sections"][0])
-                composer_copy = adapted.pop("_composerCopy", {}) or {}
-                sect_copy = adapted.pop("_sectionCopy", None) or {}
-                authored = dict(cs.brand_layout_copy(doc).get(lid) or {})
-                merged = {**sect_copy, **composer_copy, **authored}
+                # the SHARED brand-aware adaptation (fid10 2026-07): one path for
+                # both lanes — authored layoutCopy over the composition's copy,
+                # brand-layout declarations (eyebrowRegister) ridden through.
+                adapted, merged, _ = cfc.adapt_brand_section(comp["sections"][0], doc)
                 if merged:
                     layout_copy[adapted["id"]] = merged
-                if layout.get("eyebrowRegister"):
-                    adapted.setdefault("eyebrowRegister", layout["eyebrowRegister"])
                 comp_sections.append(sec)
                 adapted_layouts.append(adapted)
             else:
@@ -167,7 +164,12 @@ def build_replica_page(brand_yaml: Path, out_dir: Path) -> dict:
     try:
         cs.LAYOUT_COPY = {**cs.LAYOUT_COPY, **layout_copy}
         cs.prepare_nav_logo(page_doc, brand_dir, out_dir / "assets")
-        html = cp.build_page(page_doc, brand_yaml, order, style_ctx)
+        # REPLICA LANE: honor_curation=False (brand-schema §4.4c). This lane rebuilds
+        # the SOURCE 1:1 and its gate scores against the source — a curator's ruling
+        # ("follow-grammar") applies to generation lanes only; the measured pattern
+        # fact stays this lane's truth.
+        html = cp.build_page(page_doc, brand_yaml, order, style_ctx,
+                             honor_curation=False)
         (out_dir / "index.html").write_text(html)
         tokens_css.write_manifest(
             out_dir, tokens_css.build_page_tokens(page_doc, style_ctx,
@@ -351,9 +353,39 @@ def band_similarity(src_im, rep_im) -> dict:
     hs, hr = src_im.height, rep_im.height
     height = (min(hs, hr) / max(hs, hr)) if max(hs, hr) else 0.0
     score = W_STRUCTURE * structure + W_PIXEL * pixel + W_HEIGHT * height
+    # WIDTH FIDELITY (fid6 2026-07, diagnostic — NOT folded into `score`, so scores
+    # stay comparable across runs): ratio of the two bands' detected CONTENT spans.
+    # Catches the failure the averaged-MAE metric is nearly blind to: a centered
+    # stack collapsed to a fraction of the content width still leaves most of the
+    # band as matching background, so structure/pixel barely move (the partner band
+    # scored 0.982 while visibly collapsed to ~40% of the source's content span).
+    ws = _content_span(src_im)
+    wr = _content_span(rep_im)
+    width_fid = (min(ws, wr) / max(ws, wr)) if max(ws, wr) > 0 else 1.0
     return {"structure": round(structure, 4), "pixel": round(pixel, 4),
             "height": round(height, 4), "score": round(score, 4),
+            "widthFidelity": round(width_fid, 4),
+            "srcContentFrac": round(ws, 4), "replicaContentFrac": round(wr, 4),
             "srcHeight": hs, "replicaHeight": hr}
+
+
+def _content_span(im, sample_w: int = 320, threshold: float = 8.0) -> float:
+    """FRACTION of the band width occupied by content: columns of the downsampled
+    grayscale crop whose mean deviates from the band's background (estimated from
+    the outermost columns — section content is inset from the page edges) by more
+    than ``threshold`` gray levels. 0.0 when the band reads empty/uniform."""
+    from PIL import Image
+    g = im.convert("L")
+    h = max(4, round(sample_w * g.height / g.width))
+    g = g.resize((sample_w, h), Image.LANCZOS)
+    px = g.tobytes()  # mode L: one byte per pixel, row-major
+    col_means = [sum(px[x::sample_w]) / h for x in range(sample_w)]
+    edge = col_means[:6] + col_means[-6:]
+    bg = sorted(edge)[len(edge) // 2]
+    content = [x for x, m in enumerate(col_means) if abs(m - bg) > threshold]
+    if not content:
+        return 0.0
+    return (content[-1] - content[0] + 1) / sample_w
 
 
 def side_by_side(src_im, rep_im, out_path: Path, label: str) -> None:
@@ -452,9 +484,15 @@ def _chrome_gaps(doc: dict, brand_dir: Path, replica_html: str) -> list[dict]:
         out.append({"section": "navbar", "capability": "mega-menu open panels",
                     "note": note})
     ub = nav.get("utilityBanner")
-    if isinstance(ub, dict) and ub:
+    # honest-absence marker (validator C21 convention): utilityBanner.notObserved
+    # declares the source shows NO banner — nothing for the replica to render.
+    if isinstance(ub, dict) and ub and not ub.get("notObserved"):
+        # compare against the ESCAPED text too — the page HTML-escapes the copy, so
+        # a probe carrying quotes/ampersands would false-positive (fid15).
         probe = str(ub.get("text") or ub.get("copy") or "")[:40]
-        if not probe or probe not in replica_html:
+        esc_probe = cp.cr.esc(probe)
+        if not probe or (probe not in replica_html
+                         and esc_probe not in replica_html):
             out.append({"section": "navbar", "capability": "utility banner",
                         "note": "the source carries a promo/utility banner above the "
                                 "nav; the composed page-level chrome does not render it"})
@@ -463,8 +501,12 @@ def _chrome_gaps(doc: dict, brand_dir: Path, replica_html: str) -> list[dict]:
     fam = str((tokens_css.type_role(doc, "display-hero") or {}).get("family") or "")
     if fam:
         fonts_dir = brand_dir / "assets" / "fonts"
+        # match space-insensitively: files ship PostScript-style stems
+        # ("HubSpotSerif-Book") while the family is spaced ("HubSpot Serif").
+        fam_key = fam.lower().replace(" ", "")
         local = fonts_dir.is_dir() and any(
-            fam.lower() in f.stem.lower() for f in fonts_dir.glob("*.woff2"))
+            fam_key in f.stem.lower().replace(" ", "")
+            for f in fonts_dir.glob("*.woff2"))
         if fam not in cs.loadable_proxies(doc) and not local:
             out.append({"section": "page", "capability": f"display font ({fam})",
                         "note": "not self-hosted and not Google-loadable — headings "
@@ -484,15 +526,21 @@ def build_report(out_dir: Path, rows: list[dict], punch: list[dict],
         f"- metric: score = {W_STRUCTURE}·structure + {W_PIXEL}·pixel + "
         f"{W_HEIGHT}·height (Pillow RGB MAE; structure at {STRUCTURE_W}px, "
         f"pixel at {PIXEL_W}px)",
+        "- `width` = content-span ratio (diagnostic, not in score): detected content "
+        "width fraction of each band, min/max ratio — catches centered stacks "
+        "collapsed to a fraction of the source's content width, which the averaged "
+        "pixel metric barely registers",
         f"- **overall score (height-weighted): {overall:.3f}**", "",
-        "| band | source section | score | structure | pixel | height | src h | replica h | crops |",
-        "|---|---|---|---|---|---|---|---|---|",
+        "| band | source section | score | structure | pixel | height | width | src h | replica h | crops |",
+        "|---|---|---|---|---|---|---|---|---|---|",
     ]
     for r in rows:
         crop = f"[side-by-side]({r['pair']})" if r.get("pair") else "—"
+        wf = r.get("widthFidelity")
+        wf_cell = f"{wf:.3f}" if isinstance(wf, (int, float)) else "—"
         lines.append(
             f"| {r['id']} | {r['label']} | **{r['score']:.3f}** | {r['structure']:.3f} "
-            f"| {r['pixel']:.3f} | {r['height']:.3f} | {r['srcHeight']}px "
+            f"| {r['pixel']:.3f} | {r['height']:.3f} | {wf_cell} | {r['srcHeight']}px "
             f"| {r['replicaHeight']}px | {crop} |")
     lines += ["", f"![strip](diff/strip.png)", "", "## Renderer-gap punch list", ""]
     if punch:
@@ -585,6 +633,20 @@ def run_diff(brand_dir: Path, out_dir: Path, doc: dict,
             cap = g.split(" — ")[0]
             punch.append({"section": lid if layout else row["id"], "capability": cap,
                           "score": row["score"], "note": g})
+        # WIDTH-COLLAPSE flag (fid6 2026-07): a band whose content span diverges
+        # hard from the source gets its own punch entry even when the averaged
+        # score looks healthy (the metric blind spot the partner band exposed).
+        wf = row.get("widthFidelity")
+        if isinstance(wf, (int, float)) and wf < 0.72 \
+                and row["id"] not in ("page-nav", "footer"):
+            punch.append({
+                "section": lid if layout else row["id"],
+                "capability": "content width diverges",
+                "score": row["score"],
+                "note": (f"content span {row.get('replicaContentFrac', 0):.2f} of band "
+                         f"vs source {row.get('srcContentFrac', 0):.2f} "
+                         f"(width fidelity {wf:.2f}) — check hug/measure collapse "
+                         f"or over-wide container")})
         if low and not gaps and row["id"] not in ("page-nav", "footer"):
             drivers = []
             if row["height"] < 0.8:
