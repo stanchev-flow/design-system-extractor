@@ -1,0 +1,2033 @@
+{
+  "generatedAt": "2026-07-14T18:21:41Z",
+  "brandDir": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand",
+  "viewport": "1440x900",
+  "toleranceRule": "max(2px, 10%) for rhythm; max(2px, 1%) for widths; drift = within 2x tolerance",
+  "factbook": {
+    "steps": {
+      "action-group-gap": 16.0,
+      "badge-tier": 90.0,
+      "block-to-block": 40.0,
+      "body-to-cta": 40.0,
+      "column-to-column": 80.0,
+      "container-max": 1080.0,
+      "eyebrow-to-heading": 24.0,
+      "grid-gap": 32.0,
+      "heading-to-body": 32.0,
+      "list-item-gap": 16.0,
+      "logo-tier": 30.0,
+      "module-gap-editorial": 64.0,
+      "panel-padding": 32.0,
+      "radius-global": 8.0,
+      "section-padding-light": 64.0,
+      "section-y-lg": 96.0,
+      "section-y-sm": 40.0,
+      "section-y-xs": 24.0,
+      "stack-lg": 32.0,
+      "stack-md": 20.0
+    },
+    "scale": [
+      4.0,
+      8.0,
+      16.0,
+      24.0,
+      32.0,
+      40.0,
+      45.0
+    ],
+    "patternFacts": {
+      "agent-card-carousel": {
+        "deviceGeometry.columnGap": 17.0,
+        "deviceGeometry.cardActionGap": 32.0
+      },
+      "award-badge-row": {
+        "bandPadding.top": 40.0,
+        "bandPadding.bottom": 96.0,
+        "strip.gap.media": 12.0
+      },
+      "case-study-header-rail": {
+        "bandPadding.top": 64.0,
+        "bandPadding.bottom": 0.0
+      },
+      "closing-cta-dark": {
+        "actionGroup.gap": 24.0,
+        "stackMeasure": 992.0
+      },
+      "hero-photo-overlay": {
+        "bandPadding.top": 176.0,
+        "bandPadding.bottom": 176.0,
+        "stackMeasure": 784.0
+      },
+      "integration-collage-banner": {
+        "bandPadding.top": 64.0,
+        "bandPadding.bottom": 24.0,
+        "strip.gap.media": 20.0
+      },
+      "logo-proof-strip": {
+        "strip.gap.logos": 69.0
+      },
+      "product-grid-split": {
+        "deviceGeometry.cardActionGap": 48.0
+      },
+      "testimonial-tab-stats": {
+        "bandPadding.top": 40.0,
+        "bandPadding.bottom": 24.0
+      }
+    },
+    "chrome": {
+      "footer.contentMaxWidth": 1080.0,
+      "footer.grid.columnGap": 52.0,
+      "navbar.contentMaxWidth": 1080.0
+    }
+  },
+  "lanes": [
+    {
+      "lane": "compose/style-bakeoff-neumorphism/product-launch",
+      "html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-neumorphism/product-launch/index.html",
+      "mtime": "2026-07-14 19:19:44",
+      "elapsedS": 1.1,
+      "pageHeight": 2929,
+      "counts": {
+        "conform": 48,
+        "drift": 0,
+        "wrong-step": 1,
+        "off-ladder": 0,
+        "unmapped": 7,
+        "hardFails": 1,
+        "total": 56
+      },
+      "measurements": [
+        {
+          "sec": "sec-0",
+          "layout": "launch-hero",
+          "pattern": "hero-photo-overlay",
+          "bandRung": null,
+          "rel": "section.pad-top",
+          "value": 64,
+          "a": "section.cs-section.cs-hero--stacked",
+          "b": "div.cs-slot",
+          "rect": {
+            "x": 0,
+            "y": 128,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-0",
+          "layout": "launch-hero",
+          "pattern": "hero-photo-overlay",
+          "bandRung": null,
+          "rel": "section.pad-bottom",
+          "value": 64,
+          "a": "div.cs-slot",
+          "b": "section.cs-section.cs-hero--stacked",
+          "rect": {
+            "x": 0,
+            "y": 616.09,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-0",
+          "layout": "launch-hero",
+          "pattern": "hero-photo-overlay",
+          "bandRung": null,
+          "rel": "actions.item-gap",
+          "value": 16,
+          "a": "a.c-button",
+          "b": "a.c-button.c-button--secondary",
+          "rect": {
+            "x": 711.17,
+            "y": 560.09,
+            "w": 16,
+            "h": 56
+          },
+          "note": "median of 1 inter-action gap(s)",
+          "kind": "gap",
+          "measured": 16,
+          "declared": {
+            "name": "action-group-gap",
+            "px": 16.0,
+            "source": "actionGroup"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "list-item-gap",
+            "px": 16.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "what-shipped",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "section.pad-top",
+          "value": 64,
+          "a": "section.cs-section.cs-modules-sec",
+          "b": "div.cs-siderail",
+          "rect": {
+            "x": 0,
+            "y": 680.09,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "what-shipped",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "section.pad-bottom",
+          "value": 64,
+          "a": "div.cs-siderail",
+          "b": "section.cs-section.cs-modules-sec",
+          "rect": {
+            "x": 0,
+            "y": 1309.03,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "what-shipped",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.inset",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": null,
+          "rect": null,
+          "note": "computed padding-left",
+          "kind": "inset",
+          "measured": 32,
+          "declared": {
+            "name": "panel-padding",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "what-shipped",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.inset",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": null,
+          "rect": null,
+          "note": "computed padding-top",
+          "kind": "inset",
+          "measured": 32,
+          "declared": {
+            "name": "panel-padding",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "what-shipped",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.inset",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": null,
+          "rect": null,
+          "note": "computed padding-left",
+          "kind": "inset",
+          "measured": 32,
+          "declared": {
+            "name": "panel-padding",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "what-shipped",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.inset",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": null,
+          "rect": null,
+          "note": "computed padding-top",
+          "kind": "inset",
+          "measured": 32,
+          "declared": {
+            "name": "panel-padding",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "what-shipped",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.inset",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": null,
+          "rect": null,
+          "note": "computed padding-left",
+          "kind": "inset",
+          "measured": 32,
+          "declared": {
+            "name": "panel-padding",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "what-shipped",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.inset",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": null,
+          "rect": null,
+          "note": "computed padding-top",
+          "kind": "inset",
+          "measured": 32,
+          "declared": {
+            "name": "panel-padding",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "what-shipped",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.inset",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": null,
+          "rect": null,
+          "note": "computed padding-left",
+          "kind": "inset",
+          "measured": 32,
+          "declared": {
+            "name": "panel-padding",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "what-shipped",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.inset",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": null,
+          "rect": null,
+          "note": "computed padding-top",
+          "kind": "inset",
+          "measured": 32,
+          "declared": {
+            "name": "panel-padding",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "what-shipped",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "container.width",
+          "value": 1080,
+          "a": "div.cs-siderail",
+          "b": null,
+          "rect": {
+            "x": 180,
+            "y": 744.09,
+            "w": 1080,
+            "h": 60
+          },
+          "note": "",
+          "kind": "width",
+          "measured": 1080,
+          "declared": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "what-shipped",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "container.centering",
+          "value": 0,
+          "a": "div.cs-siderail",
+          "b": null,
+          "rect": null,
+          "note": "gutters 180px | 180px",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-2",
+          "layout": "beta-proof",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "section.pad-top",
+          "value": 64,
+          "a": "section.cs-section.cs-flow-sec",
+          "b": "div.cs-flow",
+          "rect": {
+            "x": 0,
+            "y": 1373.03,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-2",
+          "layout": "beta-proof",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "section.pad-bottom",
+          "value": 64,
+          "a": "div.cs-flow",
+          "b": "section.cs-section.cs-flow-sec",
+          "rect": {
+            "x": 0,
+            "y": 1756.03,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-2",
+          "layout": "beta-proof",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "header.heading-to-body",
+          "value": 40,
+          "a": "div.cs-flow-item",
+          "b": "div.cs-flow-item.cs-flow-item--prose",
+          "rect": {
+            "x": 473.58,
+            "y": 1530.03,
+            "w": 492.84,
+            "h": 40
+          },
+          "note": ".cs-flow",
+          "kind": "gap",
+          "measured": 40,
+          "declared": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 8.0,
+          "nearest": {
+            "name": "section-y-sm",
+            "px": 40.0,
+            "source": "token"
+          },
+          "severity": "wrong-step",
+          "gate": "hard"
+        },
+        {
+          "sec": "sec-2",
+          "layout": "beta-proof",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "block.header-to-content",
+          "value": 40,
+          "a": "div.cs-flow-item.cs-flow-item--prose",
+          "b": "div.cs-stat-band",
+          "rect": {
+            "x": 180,
+            "y": 1619.63,
+            "w": 1080,
+            "h": 40
+          },
+          "note": ".cs-flow",
+          "kind": "gap",
+          "measured": 40,
+          "declared": {
+            "name": "block-to-block",
+            "px": 40.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-y-sm",
+            "px": 40.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-2",
+          "layout": "beta-proof",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "header.eyebrow-to-heading",
+          "value": 24,
+          "a": "p.c-eyebrow",
+          "b": "h2.c-heading.c-heading--h2",
+          "rect": {
+            "x": 473.58,
+            "y": 1454.03,
+            "w": 492.84,
+            "h": 24
+          },
+          "note": ".c-header",
+          "kind": "gap",
+          "measured": 24,
+          "declared": {
+            "name": "eyebrow-to-heading",
+            "px": 24.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-y-xs",
+            "px": 24.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-2",
+          "layout": "beta-proof",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "stat.column-gap",
+          "value": 80,
+          "a": "div.cs-stat-band-item",
+          "b": "div.cs-stat-band-item",
+          "rect": {
+            "x": 486.66,
+            "y": 1659.63,
+            "w": 80,
+            "h": 96.4
+          },
+          "note": ".cs-stat-band column",
+          "kind": "gap",
+          "measured": 80,
+          "declared": {
+            "name": "column-to-column",
+            "px": 80.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "column-to-column",
+            "px": 80.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-2",
+          "layout": "beta-proof",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "stat.column-gap",
+          "value": 80,
+          "a": "div.cs-stat-band-item",
+          "b": "div.cs-stat-band-item",
+          "rect": {
+            "x": 873.33,
+            "y": 1659.63,
+            "w": 80,
+            "h": 96.4
+          },
+          "note": ".cs-stat-band column",
+          "kind": "gap",
+          "measured": 80,
+          "declared": {
+            "name": "column-to-column",
+            "px": 80.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "column-to-column",
+            "px": 80.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-2",
+          "layout": "beta-proof",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "header.stack-coherence",
+          "value": 0,
+          "a": "p.c-eyebrow",
+          "b": "p.c-eyebrow",
+          "rect": {
+            "x": 473.58,
+            "y": 1437.03,
+            "w": 4,
+            "h": 17
+          },
+          "note": "coherent",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-2",
+          "layout": "beta-proof",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "container.width",
+          "value": 1080,
+          "a": "div.cs-flow",
+          "b": null,
+          "rect": {
+            "x": 180,
+            "y": 1437.03,
+            "w": 1080,
+            "h": 60
+          },
+          "note": "",
+          "kind": "width",
+          "measured": 1080,
+          "declared": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-2",
+          "layout": "beta-proof",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "container.centering",
+          "value": 0,
+          "a": "div.cs-flow",
+          "b": null,
+          "rect": null,
+          "note": "gutters 180px | 180px",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-3",
+          "layout": "voice",
+          "pattern": "testimonial-tab-stats",
+          "bandRung": null,
+          "rel": "section.pad-top",
+          "value": 40,
+          "a": "section.cs-section.cs-flow-sec",
+          "b": "div.cs-flow",
+          "rect": {
+            "x": 0,
+            "y": 1820.03,
+            "w": 1440,
+            "h": 40
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 40,
+          "declared": {
+            "name": "testimonial-tab-stats.bandPadding.top",
+            "px": 40.0,
+            "source": "pattern:testimonial-tab-stats"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-y-sm",
+            "px": 40.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-3",
+          "layout": "voice",
+          "pattern": "testimonial-tab-stats",
+          "bandRung": null,
+          "rel": "section.pad-bottom",
+          "value": 24,
+          "a": "div.cs-flow",
+          "b": "section.cs-section.cs-flow-sec",
+          "rect": {
+            "x": 0,
+            "y": 1966.63,
+            "w": 1440,
+            "h": 24
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 24,
+          "declared": {
+            "name": "testimonial-tab-stats.bandPadding.bottom",
+            "px": 24.0,
+            "source": "pattern:testimonial-tab-stats"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-y-xs",
+            "px": 24.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-3",
+          "layout": "voice",
+          "pattern": "testimonial-tab-stats",
+          "bandRung": null,
+          "rel": "header.body-to-meta",
+          "value": 40,
+          "a": "div.cs-flow-item.cs-flow-item--prose",
+          "b": "div.cs-flow-item",
+          "rect": {
+            "x": 500.36,
+            "y": 1909.63,
+            "w": 439.28,
+            "h": 40
+          },
+          "note": ".cs-flow",
+          "kind": "gap",
+          "measured": 40,
+          "declared": null,
+          "delta": null,
+          "nearest": {
+            "name": "section-y-sm",
+            "px": 40.0,
+            "source": "token"
+          },
+          "severity": "unmapped",
+          "gate": "advisory"
+        },
+        {
+          "sec": "sec-3",
+          "layout": "voice",
+          "pattern": "testimonial-tab-stats",
+          "bandRung": null,
+          "rel": "container.width",
+          "value": 1080,
+          "a": "div.cs-flow",
+          "b": null,
+          "rect": {
+            "x": 180,
+            "y": 1860.03,
+            "w": 1080,
+            "h": 60
+          },
+          "note": "",
+          "kind": "width",
+          "measured": 1080,
+          "declared": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-3",
+          "layout": "voice",
+          "pattern": "testimonial-tab-stats",
+          "bandRung": null,
+          "rel": "container.centering",
+          "value": 0,
+          "a": "div.cs-flow",
+          "b": null,
+          "rect": null,
+          "note": "gutters 180px | 180px",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "close",
+          "pattern": "closing-cta-dark",
+          "bandRung": null,
+          "rel": "section.pad-top",
+          "value": 64,
+          "a": "section.cs-section.cs-conversion-sec",
+          "b": "div.cs-conversion",
+          "rect": {
+            "x": 0,
+            "y": 1990.63,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "close",
+          "pattern": "closing-cta-dark",
+          "bandRung": null,
+          "rel": "section.pad-bottom",
+          "value": 64,
+          "a": "div.cs-conversion",
+          "b": "section.cs-section.cs-conversion-sec",
+          "rect": {
+            "x": 0,
+            "y": 2259.42,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "close",
+          "pattern": "closing-cta-dark",
+          "bandRung": null,
+          "rel": "header.heading-to-body",
+          "value": 32,
+          "a": "div.c-header",
+          "b": "p.c-paragraph",
+          "rect": {
+            "x": 435.39,
+            "y": 2106.63,
+            "w": 569.2,
+            "h": 32
+          },
+          "note": ".cs-conversion",
+          "kind": "gap",
+          "measured": 32,
+          "declared": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "close",
+          "pattern": "closing-cta-dark",
+          "bandRung": null,
+          "rel": "header.body-to-actions",
+          "value": 40,
+          "a": "p.c-paragraph",
+          "b": "div.cs-conversion-actions",
+          "rect": {
+            "x": 435.39,
+            "y": 2163.42,
+            "w": 569.2,
+            "h": 40
+          },
+          "note": ".cs-conversion",
+          "kind": "gap",
+          "measured": 40,
+          "declared": {
+            "name": "body-to-cta",
+            "px": 40.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-y-sm",
+            "px": 40.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "close",
+          "pattern": "closing-cta-dark",
+          "bandRung": null,
+          "rel": "actions.item-gap",
+          "value": 24,
+          "a": "a.c-button",
+          "b": "a.c-button.c-button--secondary",
+          "rect": {
+            "x": 726.63,
+            "y": 2203.42,
+            "w": 24,
+            "h": 56
+          },
+          "note": "median of 1 inter-action gap(s)",
+          "kind": "gap",
+          "measured": 24,
+          "declared": {
+            "name": "closing-cta-dark.actionGroup.gap",
+            "px": 24.0,
+            "source": "pattern:closing-cta-dark"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-y-xs",
+            "px": 24.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "close",
+          "pattern": "closing-cta-dark",
+          "bandRung": null,
+          "rel": "container.stack-width",
+          "value": 992,
+          "a": "div.cs-conversion",
+          "b": null,
+          "rect": {
+            "x": 224,
+            "y": 2054.63,
+            "w": 992,
+            "h": 60
+          },
+          "note": "",
+          "kind": "width",
+          "measured": 992,
+          "declared": {
+            "name": "closing-cta-dark.stackMeasure",
+            "px": 992.0,
+            "source": "pattern:closing-cta-dark"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "closing-cta-dark.stackMeasure",
+            "px": 992.0,
+            "source": "pattern:closing-cta-dark"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "close",
+          "pattern": "closing-cta-dark",
+          "bandRung": null,
+          "rel": "container.centering",
+          "value": 0,
+          "a": "div.cs-conversion",
+          "b": null,
+          "rect": null,
+          "note": "gutters 224px | 224px",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-5",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "section.pad-top",
+          "value": 64,
+          "a": "section.cs-section.cs-footer-sec",
+          "b": "div.c-footer.c-footer--cstack",
+          "rect": {
+            "x": 0,
+            "y": 2323.42,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-5",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "section.pad-bottom",
+          "value": 64,
+          "a": "div.c-footer.c-footer--cstack",
+          "b": "section.cs-section.cs-footer-sec",
+          "rect": {
+            "x": 0,
+            "y": 2865.16,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-5",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "container.width",
+          "value": 1080,
+          "a": "div.c-footer.c-footer--cstack",
+          "b": null,
+          "rect": {
+            "x": 180,
+            "y": 2387.42,
+            "w": 1080,
+            "h": 60
+          },
+          "note": "",
+          "kind": "width",
+          "measured": 1080,
+          "declared": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-5",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "container.centering",
+          "value": 0,
+          "a": "div.c-footer.c-footer--cstack",
+          "b": null,
+          "rect": null,
+          "note": "gutters 180px | 180px",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-5",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "footer.link-gap",
+          "value": 4,
+          "a": "a.c-foot-col-link",
+          "b": "a.c-foot-col-link",
+          "rect": {
+            "x": 220.7,
+            "y": 2431.13,
+            "w": 158.11,
+            "h": 4
+          },
+          "note": "median of 8 link gaps",
+          "kind": "gap",
+          "measured": 4,
+          "declared": null,
+          "delta": null,
+          "nearest": {
+            "name": "--spacing-xs",
+            "px": 4.0,
+            "source": "scale"
+          },
+          "severity": "unmapped",
+          "gate": "advisory"
+        },
+        {
+          "sec": "sec-5",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "footer.link-gap",
+          "value": 4,
+          "a": "a.c-foot-col-link",
+          "b": "a.c-foot-col-link",
+          "rect": {
+            "x": 430.81,
+            "y": 2406.63,
+            "w": 158.13,
+            "h": 4
+          },
+          "note": "median of 8 link gaps",
+          "kind": "gap",
+          "measured": 4,
+          "declared": null,
+          "delta": null,
+          "nearest": {
+            "name": "--spacing-xs",
+            "px": 4.0,
+            "source": "scale"
+          },
+          "severity": "unmapped",
+          "gate": "advisory"
+        },
+        {
+          "sec": "sec-5",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "footer.link-gap",
+          "value": 4,
+          "a": "a.c-foot-col-link",
+          "b": "a.c-foot-col-link",
+          "rect": {
+            "x": 640.94,
+            "y": 2431.13,
+            "w": 158.11,
+            "h": 4
+          },
+          "note": "median of 7 link gaps",
+          "kind": "gap",
+          "measured": 4,
+          "declared": null,
+          "delta": null,
+          "nearest": {
+            "name": "--spacing-xs",
+            "px": 4.0,
+            "source": "scale"
+          },
+          "severity": "unmapped",
+          "gate": "advisory"
+        },
+        {
+          "sec": "sec-5",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "footer.link-gap",
+          "value": 4,
+          "a": "a.c-foot-col-link",
+          "b": "a.c-foot-col-link",
+          "rect": {
+            "x": 851.05,
+            "y": 2431.13,
+            "w": 158.12,
+            "h": 4
+          },
+          "note": "median of 7 link gaps",
+          "kind": "gap",
+          "measured": 4,
+          "declared": null,
+          "delta": null,
+          "nearest": {
+            "name": "--spacing-xs",
+            "px": 4.0,
+            "source": "scale"
+          },
+          "severity": "unmapped",
+          "gate": "advisory"
+        },
+        {
+          "sec": "sec-5",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "footer.link-gap",
+          "value": 4,
+          "a": "a.c-foot-col-link",
+          "b": "a.c-foot-col-link",
+          "rect": {
+            "x": 1061.17,
+            "y": 2431.13,
+            "w": 158.11,
+            "h": 4
+          },
+          "note": "median of 1 link gaps",
+          "kind": "gap",
+          "measured": 4,
+          "declared": null,
+          "delta": null,
+          "nearest": {
+            "name": "--spacing-xs",
+            "px": 4.0,
+            "source": "scale"
+          },
+          "severity": "unmapped",
+          "gate": "advisory"
+        },
+        {
+          "sec": "sec-5",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "footer.link-gap",
+          "value": 4,
+          "a": "a.c-foot-col-link",
+          "b": "a.c-foot-col-link",
+          "rect": {
+            "x": 1061.17,
+            "y": 2498.03,
+            "w": 158.11,
+            "h": 4
+          },
+          "note": "median of 4 link gaps",
+          "kind": "gap",
+          "measured": 4,
+          "declared": null,
+          "delta": null,
+          "nearest": {
+            "name": "--spacing-xs",
+            "px": 4.0,
+            "source": "scale"
+          },
+          "severity": "unmapped",
+          "gate": "advisory"
+        },
+        {
+          "sec": "sec-5",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "footer.column-gap",
+          "value": 52,
+          "a": "div.c-foot-cell",
+          "b": "div.c-foot-cell",
+          "rect": {
+            "x": 378.81,
+            "y": 2387.42,
+            "w": 52,
+            "h": 267.74
+          },
+          "note": "directory columns",
+          "kind": "gap",
+          "measured": 52,
+          "declared": {
+            "name": "footer.grid.columnGap",
+            "px": 52.0,
+            "source": "chrome:footer"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "footer.grid.columnGap",
+            "px": 52.0,
+            "source": "chrome:footer"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-5",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "footer.column-gap",
+          "value": 52,
+          "a": "div.c-foot-cell",
+          "b": "div.c-foot-cell",
+          "rect": {
+            "x": 588.94,
+            "y": 2387.42,
+            "w": 52,
+            "h": 267.74
+          },
+          "note": "directory columns",
+          "kind": "gap",
+          "measured": 52,
+          "declared": {
+            "name": "footer.grid.columnGap",
+            "px": 52.0,
+            "source": "chrome:footer"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "footer.grid.columnGap",
+            "px": 52.0,
+            "source": "chrome:footer"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-5",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "footer.column-gap",
+          "value": 52,
+          "a": "div.c-foot-cell",
+          "b": "div.c-foot-cell",
+          "rect": {
+            "x": 799.05,
+            "y": 2387.42,
+            "w": 52,
+            "h": 267.74
+          },
+          "note": "directory columns",
+          "kind": "gap",
+          "measured": 52,
+          "declared": {
+            "name": "footer.grid.columnGap",
+            "px": 52.0,
+            "source": "chrome:footer"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "footer.grid.columnGap",
+            "px": 52.0,
+            "source": "chrome:footer"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-5",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "footer.column-gap",
+          "value": 52,
+          "a": "div.c-foot-cell",
+          "b": "div.c-foot-cell",
+          "rect": {
+            "x": 1009.17,
+            "y": 2387.42,
+            "w": 52,
+            "h": 267.74
+          },
+          "note": "directory columns",
+          "kind": "gap",
+          "measured": 52,
+          "declared": {
+            "name": "footer.grid.columnGap",
+            "px": 52.0,
+            "source": "chrome:footer"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "footer.grid.columnGap",
+            "px": 52.0,
+            "source": "chrome:footer"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-0\u2192sec-1",
+          "layout": "launch-hero\u2192what-shipped",
+          "pattern": null,
+          "rel": "section.seam",
+          "value": 128,
+          "a": "sec-0",
+          "b": "sec-1",
+          "rect": {
+            "x": 0,
+            "y": 616.09,
+            "w": 1440,
+            "h": 128
+          },
+          "note": "",
+          "kind": "gap",
+          "measured": 128,
+          "declared": {
+            "name": "case-study-header-rail.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 128.0,
+            "source": "derived"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "case-study-header-rail.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 128.0,
+            "source": "derived"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1\u2192sec-2",
+          "layout": "what-shipped\u2192beta-proof",
+          "pattern": null,
+          "rel": "section.seam",
+          "value": 128,
+          "a": "sec-1",
+          "b": "sec-2",
+          "rect": {
+            "x": 0,
+            "y": 1309.03,
+            "w": 1440,
+            "h": 128
+          },
+          "note": "",
+          "kind": "gap",
+          "measured": 128,
+          "declared": {
+            "name": "case-study-header-rail.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 128.0,
+            "source": "derived"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "case-study-header-rail.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 128.0,
+            "source": "derived"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-2\u2192sec-3",
+          "layout": "beta-proof\u2192voice",
+          "pattern": null,
+          "rel": "section.seam",
+          "value": 104,
+          "a": "sec-2",
+          "b": "sec-3",
+          "rect": {
+            "x": 0,
+            "y": 1756.03,
+            "w": 1440,
+            "h": 104
+          },
+          "note": "",
+          "kind": "gap",
+          "measured": 104,
+          "declared": {
+            "name": "award-badge-row.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 104.0,
+            "source": "derived"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "award-badge-row.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 104.0,
+            "source": "derived"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-3\u2192sec-4",
+          "layout": "voice\u2192close",
+          "pattern": null,
+          "rel": "section.seam",
+          "value": 88,
+          "a": "sec-3",
+          "b": "sec-4",
+          "rect": {
+            "x": 0,
+            "y": 1966.63,
+            "w": 1440,
+            "h": 88
+          },
+          "note": "",
+          "kind": "gap",
+          "measured": 88,
+          "declared": {
+            "name": "testimonial-tab-stats.bandPadding.bottom+case-study-header-rail.bandPadding.top",
+            "px": 88.0,
+            "source": "derived"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "testimonial-tab-stats.bandPadding.bottom+case-study-header-rail.bandPadding.top",
+            "px": 88.0,
+            "source": "derived"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4\u2192sec-5",
+          "layout": "close\u2192closing-bookend",
+          "pattern": null,
+          "rel": "section.seam",
+          "value": 128,
+          "a": "sec-4",
+          "b": "sec-5",
+          "rect": {
+            "x": 0,
+            "y": 2259.42,
+            "w": 1440,
+            "h": 128
+          },
+          "note": "",
+          "kind": "gap",
+          "measured": 128,
+          "declared": {
+            "name": "case-study-header-rail.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 128.0,
+            "source": "derived"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "case-study-header-rail.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 128.0,
+            "source": "derived"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        }
+      ],
+      "skips": [
+        {
+          "sec": "sec-0",
+          "layout": "launch-hero",
+          "pattern": "hero-photo-overlay",
+          "bandRung": null,
+          "what": "container",
+          "why": "no max-width-constrained scaffold found"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "what-shipped",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "what": ".cs-modules",
+          "why": "staggered editorial grid (no uniform row/column gap)"
+        }
+      ],
+      "offenders": [
+        {
+          "rel": "header.heading-to-body",
+          "expected": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "measuredTypical": 40,
+          "count": 1,
+          "meanAbsDelta": 8.0,
+          "score": 8.0,
+          "severity": "wrong-step",
+          "sections": [
+            "sec-2(beta-proof)"
+          ],
+          "example": {
+            "sec": "sec-2",
+            "layout": "beta-proof",
+            "pattern": null,
+            "a": "div.cs-flow-item",
+            "b": "div.cs-flow-item.cs-flow-item--prose",
+            "note": ".cs-flow",
+            "rect": {
+              "x": 473.58,
+              "y": 1530.03,
+              "w": 492.84,
+              "h": 40
+            }
+          }
+        }
+      ],
+      "scale": {
+        "cells": [
+          {
+            "kind": "type",
+            "sec": "sec-0",
+            "layout": "launch-hero",
+            "px": 14,
+            "count": 1,
+            "examples": [
+              "c-eyebrow"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 14px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-1",
+            "layout": "what-shipped",
+            "px": 14,
+            "count": 1,
+            "examples": [
+              "c-eyebrow"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 14px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-2",
+            "layout": "beta-proof",
+            "px": 14,
+            "count": 1,
+            "examples": [
+              "c-eyebrow"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 14px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-3",
+            "layout": "voice",
+            "px": 14,
+            "count": 1,
+            "examples": [
+              "c-caption"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 14px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-5",
+            "layout": "closing-bookend",
+            "px": 14,
+            "count": 1,
+            "examples": [
+              "c-foot-legal"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 14px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-0",
+            "layout": "launch-hero",
+            "px": 16,
+            "count": 2,
+            "examples": [
+              "c-button",
+              "c-button.c-button--secondary"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 16px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-1",
+            "layout": "what-shipped",
+            "px": 16,
+            "count": 4,
+            "examples": [
+              "c-paragraph"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 16px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-2",
+            "layout": "beta-proof",
+            "px": 16,
+            "count": 1,
+            "examples": [
+              "c-paragraph"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 16px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-3",
+            "layout": "voice",
+            "px": 16,
+            "count": 1,
+            "examples": [
+              "c-paragraph"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 16px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-4",
+            "layout": "close",
+            "px": 16,
+            "count": 3,
+            "examples": [
+              "c-button",
+              "c-button.c-button--secondary",
+              "c-paragraph"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 16px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-1",
+            "layout": "what-shipped",
+            "px": 18,
+            "count": 4,
+            "examples": [
+              "c-heading.c-heading--h5"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 18px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-0",
+            "layout": "launch-hero",
+            "px": 18.3,
+            "count": 1,
+            "examples": [
+              "cs-sub"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 18px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-1",
+            "layout": "what-shipped",
+            "px": 40,
+            "count": 1,
+            "examples": [
+              "c-heading.c-heading--h2"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 40px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-2",
+            "layout": "beta-proof",
+            "px": 40,
+            "count": 1,
+            "examples": [
+              "c-heading.c-heading--h2"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 40px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-4",
+            "layout": "close",
+            "px": 40,
+            "count": 1,
+            "examples": [
+              "c-heading.c-heading--h2"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 40px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-0",
+            "layout": "launch-hero",
+            "px": 80,
+            "count": 1,
+            "examples": [
+              "c-heading.c-heading--display"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 80px"
+          },
+          {
+            "kind": "space",
+            "sec": "sec-3",
+            "layout": "voice",
+            "rel": "header.body-to-meta",
+            "px": 40.0,
+            "count": 1,
+            "verdict": "on-scale",
+            "anchor": "derived step 40px"
+          }
+        ],
+        "counts": {
+          "measured": 16,
+          "on-scale": 1,
+          "off-scale": 0
+        },
+        "hardFails": 0
+      }
+    }
+  ],
+  "screenshots": []
+}

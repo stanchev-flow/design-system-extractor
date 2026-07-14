@@ -1,0 +1,143 @@
+{
+  "brief": "evals/matrix/briefs/hubspot-v2/product-launch.md",
+  "baseStyle": "corporate-saas-clean",
+  "maxRepairs": 2,
+  "lanes": {
+    "swiss": {
+      "ok": true,
+      "attempts": 1,
+      "archetypes": [
+        "hero-demo-media-proof"
+      ],
+      "seconds": 185.9,
+      "failures": [],
+      "sections": [
+        {
+          "id": "hero-reveal",
+          "useCase": "hero",
+          "archetype": "split",
+          "archetypeRef": "hero-demo-media-proof",
+          "surfaceIntent": "primary"
+        },
+        {
+          "id": "what-shipped",
+          "useCase": "features",
+          "archetype": "cards",
+          "archetypeRef": null,
+          "surfaceIntent": "primary"
+        },
+        {
+          "id": "beta-proof",
+          "useCase": "testimonial",
+          "archetype": "stack",
+          "archetypeRef": null,
+          "surfaceIntent": "panel"
+        },
+        {
+          "id": "who-believes",
+          "useCase": "testimonial",
+          "archetype": "split",
+          "archetypeRef": null,
+          "surfaceIntent": "primary"
+        },
+        {
+          "id": "the-ask",
+          "useCase": "cta",
+          "archetype": "split",
+          "archetypeRef": null,
+          "surfaceIntent": "inverse"
+        }
+      ]
+    },
+    "editorial-magazine": {
+      "ok": true,
+      "attempts": 1,
+      "archetypes": [
+        "hero-demo-media-proof"
+      ],
+      "seconds": 141.0,
+      "failures": [],
+      "sections": [
+        {
+          "id": "hero",
+          "useCase": "hero",
+          "archetype": "split",
+          "archetypeRef": "hero-demo-media-proof",
+          "surfaceIntent": "primary"
+        },
+        {
+          "id": "what-shipped",
+          "useCase": "features",
+          "archetype": "cards",
+          "archetypeRef": null,
+          "surfaceIntent": "primary"
+        },
+        {
+          "id": "beta-proof",
+          "useCase": "gallery",
+          "archetype": "cards",
+          "archetypeRef": null,
+          "surfaceIntent": "panel"
+        },
+        {
+          "id": "belief",
+          "useCase": "testimonial",
+          "archetype": "stack",
+          "archetypeRef": null,
+          "surfaceIntent": "primary"
+        },
+        {
+          "id": "close",
+          "useCase": "cta",
+          "archetype": "stack",
+          "archetypeRef": null,
+          "surfaceIntent": "inverse"
+        }
+      ]
+    },
+    "neumorphism": {
+      "ok": true,
+      "attempts": 1,
+      "archetypes": [],
+      "seconds": 91.1,
+      "failures": [],
+      "sections": [
+        {
+          "id": "hero",
+          "useCase": "hero",
+          "archetype": "stack",
+          "archetypeRef": null,
+          "surfaceIntent": "photo-hero"
+        },
+        {
+          "id": "what-shipped",
+          "useCase": "features",
+          "archetype": "cards",
+          "archetypeRef": null,
+          "surfaceIntent": "primary"
+        },
+        {
+          "id": "beta-proof",
+          "useCase": "gallery",
+          "archetype": "stack",
+          "archetypeRef": null,
+          "surfaceIntent": "panel"
+        },
+        {
+          "id": "voice",
+          "useCase": "testimonial",
+          "archetype": "stack",
+          "archetypeRef": null,
+          "surfaceIntent": "primary"
+        },
+        {
+          "id": "close",
+          "useCase": "cta",
+          "archetype": "stack",
+          "archetypeRef": null,
+          "surfaceIntent": "inverse"
+        }
+      ]
+    }
+  }
+}

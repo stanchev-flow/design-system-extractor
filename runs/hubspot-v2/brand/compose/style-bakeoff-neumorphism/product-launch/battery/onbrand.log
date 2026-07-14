@@ -1,0 +1,37 @@
+$ /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/venv/bin/python /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/brand_pipeline/onbrand_check.py /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/brand.yaml /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-neumorphism/product-launch --layout hero --style corporate-saas-clean --composition --report onbrand-report.md
+
+--- stdout ---
+Wrote /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-neumorphism/product-launch/onbrand-report.md
+Wrote /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-neumorphism/product-launch/onbrand-report.json
+neverDo (hard):
+  [PASS] never-heavy-headings
+  [PASS] never-dark-mid-page
+  [PASS] never-text-logos
+style definition (corporate-saas-clean, advisory — never gates OVERALL):
+  [PASS] [INVARIANT] Display rides the brand's measured display tier
+  [WARN] [INVARIANT] One disciplined accent: reserved for CTAs, links, and key icons only;
+  [WARN] [SOFT] Radius matches brand choice
+  [PASS] [INVARIANT] Comfortable, consistent spacing: generous air, even vertical rhythm,
+  [PASS] [INVARIANT] Single committed accent (no second accent)
+  [WARN] Container-query units only (0 viewport units)
+composition invariants (HARD):
+  [PASS] single-accent
+  [PASS] primitive-only
+  [PASS] rhythm
+  [PASS] data-composition
+  [PASS] slot-resolution
+  [PASS] text-contrast
+  [PASS] decoration-salience
+  [PASS] occlusion
+  [PASS] band-attribution
+  [PASS] alignment-resolution
+  [PASS] media-registration
+  [PASS] interaction-contrast
+  [PASS] token-provenance
+  [PASS] logo-wall-integrity
+  [PASS] archetype-physics:launch-hero
+OVERALL: PASS
+
+--- stderr ---
+
+--- exit=0 ---

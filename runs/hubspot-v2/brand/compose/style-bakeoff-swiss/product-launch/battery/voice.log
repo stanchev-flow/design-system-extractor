@@ -1,0 +1,8 @@
+$ /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/venv/bin/python -m brand_pipeline.voice_audit /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch --brand /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand --strict --out /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/battery/voice
+
+--- stdout ---
+[voice-audit] compose/style-bakeoff-swiss/product-launch: PASS (sentence-length, exclamations, banned-hype, heading-casing)
+
+--- stderr ---
+
+--- exit=0 ---

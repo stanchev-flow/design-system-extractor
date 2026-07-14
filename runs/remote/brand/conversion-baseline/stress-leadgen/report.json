@@ -1,0 +1,180 @@
+{
+  "generatedAt": "2026-07-14T17:58:29Z",
+  "lanes": [
+    {
+      "lane": "runs/remote/brand/compose/stress-playbook",
+      "campaign": "leadgen-gated-content",
+      "binding": "explicit",
+      "ground": "rendered",
+      "funnelStage": "consideration",
+      "sequence": [
+        {
+          "id": "pb-hero",
+          "families": [
+            "hero"
+          ]
+        },
+        {
+          "id": "pb-stats",
+          "families": [
+            "stat-band"
+          ]
+        },
+        {
+          "id": "pb-statement",
+          "families": []
+        },
+        {
+          "id": "pb-chapters",
+          "families": [
+            "feature-grid"
+          ]
+        },
+        {
+          "id": "pb-process",
+          "families": [
+            "feature-grid"
+          ]
+        },
+        {
+          "id": "pb-compare",
+          "families": []
+        },
+        {
+          "id": "pb-banner",
+          "families": [
+            "cta-band"
+          ]
+        },
+        {
+          "id": "pb-stories",
+          "families": [
+            "carousel",
+            "quote"
+          ]
+        },
+        {
+          "id": "pb-badges",
+          "families": [
+            "logo-strip"
+          ]
+        },
+        {
+          "id": "pb-faq",
+          "families": [
+            "faq"
+          ]
+        },
+        {
+          "id": "pb-form",
+          "families": [
+            "capture-form",
+            "cta-band"
+          ]
+        }
+      ],
+      "rows": [
+        {
+          "kind": "opens",
+          "families": [
+            "hero"
+          ],
+          "severity": "required",
+          "ok": true,
+          "detail": "opens with hero",
+          "why": "the offer statement is the page's one claim \u2014 what the asset is and who it makes smarter"
+        },
+        {
+          "kind": "present",
+          "families": [
+            "capture-form"
+          ],
+          "severity": "required",
+          "ok": true,
+          "detail": "1 section(s) bind ['capture-form'] (budget 1-2)",
+          "why": "the form IS the conversion; a gated-content page without one is a blog post"
+        },
+        {
+          "kind": "window",
+          "families": [
+            "capture-form"
+          ],
+          "severity": "required",
+          "ok": false,
+          "detail": "first ['capture-form'] match at index 11 (past the first 3)",
+          "why": "gated-content readers decide fast \u2014 the form rides beside or directly after the offer, never buried below the fold's third beat"
+        },
+        {
+          "kind": "adjacent",
+          "families": [
+            "capture-form",
+            "logo-strip",
+            "quote",
+            "stat-band"
+          ],
+          "severity": "advisory",
+          "ok": false,
+          "detail": "nearest ['logo-strip', 'quote', 'stat-band'] beat 2 step(s) from ['capture-form'] (maxGap 1)",
+          "why": "borrowed credibility does its work at the moment of hesitation \u2014 proof sits within one beat of the form"
+        },
+        {
+          "kind": "present",
+          "families": [
+            "feature-grid"
+          ],
+          "severity": "advisory",
+          "ok": true,
+          "detail": "2 section(s) bind ['feature-grid'] (budget 1-2)",
+          "why": "a what's-inside preview (chapters, takeaways, sample figures) makes the unseen asset concrete"
+        },
+        {
+          "kind": "present",
+          "families": [
+            "pricing-tiers"
+          ],
+          "severity": "required",
+          "ok": true,
+          "detail": "0 section(s) bind ['pricing-tiers'] (budget 0-0)",
+          "why": "price talk on a gated-content page confuses the trade \u2014 the currency here is an email address, not money"
+        },
+        {
+          "kind": "closes",
+          "families": [
+            "cta-band",
+            "capture-form"
+          ],
+          "severity": "advisory",
+          "ok": true,
+          "detail": "closes on ['capture-form', 'cta-band']",
+          "why": "the close restates the trade for readers who scrolled past the early form (a scroll-back CTA or a second, shorter form)"
+        },
+        {
+          "kind": "depthBand",
+          "families": [],
+          "severity": "advisory",
+          "ok": false,
+          "detail": "11 content section(s) (band 4-6, funnel consideration)",
+          "why": "depth follows the funnel stage"
+        },
+        {
+          "kind": "formDepth",
+          "families": [
+            "capture-form"
+          ],
+          "severity": "advisory",
+          "ok": false,
+          "detail": "7 visible field(s) (band 2-4)",
+          "why": "low-friction trade: name/email(/company/role at most) \u2014 every extra field taxes a mid-funnel reader"
+        }
+      ],
+      "hardFloor": [
+        {
+          "rule": "hardFloor:conversion-moment",
+          "ok": true,
+          "detail": "capture-form present"
+        }
+      ],
+      "ok": true
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+[[PASS3-STYLE:BEGIN]]
+## STYLE DIRECTIVE — Neumorphism (style-library `neumorphism`, resolved per section)
+This run composes in a PICKED STYLE. The directive below RERANKS layout
+choices and sets compositional posture. It NEVER outranks brand facts,
+brand neverDo, or the gate battery: where a directive value conflicts
+with a measured brand fact, the brand fact wins (dissents listed below).
+
+Style constraints (compositional posture, brand tokens still paint):
+  - accentUsage: minimal
+  - border: none
+  - case: sentence
+  - contrast: normal
+  - density: balanced
+  - imagery: none
+  - motion: 150–500ms band, easing ease
+  - palette: mono
+  - radius: 4px(small) · 8px(button,card) · 16px(panel), policy tiered
+  - scaleRatio: 1.125
+  - shadow: soft
+  - tracking: normal
+  - typeBody: HubSpot Sans
+  - typeDisplay: HubSpot Serif
+Style signature moves (make these READABLE in the composition):
+  - soft extruded surfaces
+  - dual inner/outer shadow
+  - monochrome low-contrast
+
+Per-section layout guidance (the resolver's picks for this style):
+- hero: layout `center-stack` — Centered vertical stack: eyebrow, headline, sub, CTAs. Compose as archetype "stack" (centered header stack).
+    rules: headline states the value, not the feature; media supports, never competes with, the headline
+    soft defaults (brand evidence may override): ≤ 2 supporting lines
+    if HERO STRUCTURE CANDIDATES are offered above, prefer the candidate whose skeleton is closest to this layout — the copy plan still picks
+- feature-trio: layout `grid-3` — Three-up grid. Compose as archetype "cards" (columns: 3).
+    rules: parallel grammar across items; no item longer than the others
+    soft defaults (brand evidence may override): items are parallel in structure; each item: title + one line; icon optional but consistent
+- metrics-band: layout `grid-3` — Three-up grid. Compose as archetype "cards" (columns: 3).
+    rules: round, credible numbers; units consistent
+    soft defaults (brand evidence may override): number is the hero of each cell; label ≤ 4 words; 3–4 metrics
+- testimonial: layout `grid-3` — Three-up grid. Compose as archetype "cards" (columns: 3).
+    rules: one strong quote beats many weak ones; no invented quotes
+    soft defaults (brand evidence may override): quote is verbatim and central; attribution present (name + role/co)
+- cta-band: layout `center-stack` — Centered vertical stack: eyebrow, headline, sub, CTAs. Compose as archetype "stack" (centered header stack).
+    rules: short, imperative headline
+    soft defaults (brand evidence may override): restates the core value
+
+Brand-evidence dissents (brand facts that beat the directive):
+  - typeDisplay: directive said grotesk sans → brand fact HubSpot Serif WINS (brand.yaml tokens.type (measured family))
+  - typeBody: directive said neutral sans → brand fact HubSpot Sans WINS (brand.yaml tokens.type (measured family))
+  - case: directive said mixed → brand fact sentence WINS (voice-facts.yaml casing.headings (measured corpus))
+  - radius: directive said lg → brand fact 4px(small) · 8px(button,card) · 16px(panel), policy tiered WINS (style-scale.yaml radius (measured tokens.radius modes))
+[[PASS3-STYLE:END]]

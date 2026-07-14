@@ -1,0 +1,454 @@
+{
+  "generated_at": "2026-07-14T18:20:41+00:00",
+  "auditor_version": "1.0.0",
+  "spec": "brand_pipeline/spec/interaction-contracts.md",
+  "mode": "strict",
+  "summary": {
+    "cells": {
+      "pass": 16,
+      "fail": 0,
+      "advisory": 1,
+      "skip": 16
+    },
+    "required_check_failures": {}
+  },
+  "lanes": [
+    {
+      "lane": "compose/style-bakeoff-swiss/product-launch",
+      "path": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/index.html",
+      "audited_mtime": "2026-07-14T18:12:58+00:00",
+      "sha256_12": "55c86efe4c35",
+      "findings": [
+        {
+          "check": "IC-NAV-01",
+          "family": "nav",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "trigger 'Products' is a native button",
+          "line": 2721,
+          "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
+        },
+        {
+          "check": "IC-NAV-02",
+          "family": "nav",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "trigger 'Products' carries aria-expanded",
+          "line": 2721,
+          "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
+        },
+        {
+          "check": "IC-NAV-04",
+          "family": "nav",
+          "severity": "advisory",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "trigger references its panel via aria-controls",
+          "line": 2721,
+          "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
+        },
+        {
+          "check": "IC-NAV-01",
+          "family": "nav",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "trigger 'Solutions' is a native button",
+          "line": 2723,
+          "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
+        },
+        {
+          "check": "IC-NAV-02",
+          "family": "nav",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "trigger 'Solutions' carries aria-expanded",
+          "line": 2723,
+          "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
+        },
+        {
+          "check": "IC-NAV-04",
+          "family": "nav",
+          "severity": "advisory",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "trigger references its panel via aria-controls",
+          "line": 2723,
+          "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
+        },
+        {
+          "check": "IC-NAV-01",
+          "family": "nav",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "trigger 'Resources' is a native button",
+          "line": 2725,
+          "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
+        },
+        {
+          "check": "IC-NAV-02",
+          "family": "nav",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "trigger 'Resources' carries aria-expanded",
+          "line": 2725,
+          "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
+        },
+        {
+          "check": "IC-NAV-04",
+          "family": "nav",
+          "severity": "advisory",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "trigger references its panel via aria-controls",
+          "line": 2725,
+          "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
+        },
+        {
+          "check": "IC-NAV-03",
+          "family": "nav",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "no ARIA menu/menubar roles in site nav",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-NAV-05",
+          "family": "nav",
+          "severity": "advisory",
+          "status": "advisory",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "anchor with role=button in nav chrome — promises Space activation anchors don't have",
+          "line": 2727,
+          "snippet": "<a class=\"c-button c-button--navcta\" href=\"https://offers.hubspot.com/crm-platform-demo\" role=\"button\" style=\"--navcta-bg: rgb(255, 72, 0); --navcta-ink: rgb(25…"
+        },
+        {
+          "check": "IC-LANG-01",
+          "family": "lang",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "toggle is a native <summary> inside <details>",
+          "line": 2717,
+          "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"><svg aria-hidden=\"…"
+        },
+        {
+          "check": "IC-LANG-02",
+          "family": "lang",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "toggle has an accessible name",
+          "line": 2717,
+          "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"><svg aria-hidden=\"…"
+        },
+        {
+          "check": "IC-LANG-03",
+          "family": "lang",
+          "severity": "required",
+          "status": "skip",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "disclosure-navigation menu (plain nav links, no selection concept) — selection marking not applicable",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-ACC-01",
+          "family": "acc",
+          "severity": "required",
+          "status": "skip",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "no accordion/disclosure details detected in this lane",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-BAN-01",
+          "family": "banner",
+          "severity": "required",
+          "status": "skip",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "no dismissible banner detected in this lane",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-CAR-01",
+          "family": "carousel",
+          "severity": "required",
+          "status": "skip",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "no carousel/edge-cut rail detected in this lane",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-TAB-01",
+          "family": "tabs",
+          "severity": "required",
+          "status": "skip",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "no tab devices detected in this lane",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-MARQ-01",
+          "family": "marquee",
+          "severity": "required",
+          "status": "skip",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "no marquee detected in this lane",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-FORM-01",
+          "family": "form",
+          "severity": "required",
+          "status": "skip",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "no form controls or labels detected in this lane",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-REV-01",
+          "family": "reveal",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "hidden initial state is gated on a JS-added class (.cs-motion-ready .cs-reveal…)",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-REV-02",
+          "family": "reveal",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "prefers-reduced-motion forces reveal targets visible",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-REV-03",
+          "family": "reveal",
+          "severity": "advisory",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "static",
+          "message": "timed failsafe present (setTimeout forces all targets visible)",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-NAV-06",
+          "family": "nav",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "behavioral",
+          "message": "Tab reaches nav triggers, login, and language switcher",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-NAV-07",
+          "family": "nav",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "behavioral",
+          "message": "hover opens panel=True, keyboard focus opens panel=True",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-NAV-08",
+          "family": "nav",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "behavioral",
+          "message": "Escape closes the open panel and keeps focus in nav",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-LANG-05",
+          "family": "lang",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "behavioral",
+          "message": "Enter opens (open=True), Space toggles back=True",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-LANG-06",
+          "family": "lang",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "behavioral",
+          "message": "Escape closes the language dropdown",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-LANG-07",
+          "family": "lang",
+          "severity": "advisory",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "behavioral",
+          "message": "open dropdown items are in the Tab order",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-ACC-06",
+          "family": "acc",
+          "severity": "required",
+          "status": "skip",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "behavioral",
+          "message": "no accordion groups detected in this lane",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-ACC-07",
+          "family": "acc",
+          "severity": "required",
+          "status": "skip",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "behavioral",
+          "message": "no accordion groups detected in this lane",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-ACC-08",
+          "family": "acc",
+          "severity": "required",
+          "status": "skip",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "behavioral",
+          "message": "no accordion groups detected in this lane",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-BAN-04",
+          "family": "banner",
+          "severity": "required",
+          "status": "skip",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "behavioral",
+          "message": "no dismissible banner detected in this lane",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-CAR-05",
+          "family": "carousel",
+          "severity": "required",
+          "status": "skip",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "behavioral",
+          "message": "no carousel/edge-cut rail detected in this lane",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-TAB-05",
+          "family": "tabs",
+          "severity": "required",
+          "status": "skip",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "behavioral",
+          "message": "no tab devices detected in this lane",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-TAB-06",
+          "family": "tabs",
+          "severity": "required",
+          "status": "skip",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "behavioral",
+          "message": "no tab devices detected in this lane",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-MARQ-03",
+          "family": "marquee",
+          "severity": "required",
+          "status": "skip",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "behavioral",
+          "message": "no marquee detected in this lane",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-REV-04",
+          "family": "reveal",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "behavioral",
+          "message": "reduced motion: gate applied=False, 0 tagged targets, 0 hidden",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-FORM-07",
+          "family": "form",
+          "severity": "required",
+          "status": "skip",
+          "lane": "compose/style-bakeoff-swiss/product-launch",
+          "layer": "behavioral",
+          "message": "no form controls detected in this lane",
+          "line": null,
+          "snippet": null
+        }
+      ]
+    }
+  ]
+}

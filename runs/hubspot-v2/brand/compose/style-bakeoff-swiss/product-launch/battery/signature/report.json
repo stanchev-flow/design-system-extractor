@@ -1,0 +1,89 @@
+{
+  "generatedAt": "2026-07-14T18:20:43Z",
+  "brandDir": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand",
+  "viewport": "1440x900",
+  "signatureCount": 4,
+  "lanes": [
+    {
+      "lane": "compose/style-bakeoff-swiss/product-launch",
+      "html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/index.html",
+      "specimenLane": false,
+      "signatures": [
+        {
+          "id": "action-orange-scope",
+          "kind": "accent-scope",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "scope(allowed)",
+              "ok": true,
+              "detail": "all 3 in-family paints sit on allowed roles"
+            },
+            {
+              "check": "accent_budget",
+              "ok": true,
+              "sharePct": 0.154,
+              "budgetPct": 2.0,
+              "detail": "accent paint share 0.154% of page (budget 2.0%)"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "serif-display-sans-body",
+          "kind": "type-treatment",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "type(display)",
+              "ok": true,
+              "detail": "no rendered display rank on this lane (vacuous pass)"
+            },
+            {
+              "check": "type(body)",
+              "ok": true,
+              "detail": "2 sample(s) on family ['HubSpot Sans', 'Lexend Deca']"
+            },
+            {
+              "check": "type(button)",
+              "ok": true,
+              "detail": "2 sample(s) on family ['HubSpot Sans', 'Lexend Deca']"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "rounded-8-controls",
+          "kind": "shape-motif",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "buttons(radius 8px)",
+              "ok": true,
+              "detail": "all 2 buttons at 8px (\u00b11.5)"
+            },
+            {
+              "check": "buttons(neverPill)",
+              "ok": true,
+              "detail": "no pill silhouettes"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "deep-teal-dark-family",
+          "kind": "surface-habit",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "surfaces(dark family)",
+              "ok": true,
+              "detail": "2 dark section(s), all in the licensed family; 6 sections checked"
+            }
+          ],
+          "ok": true
+        }
+      ]
+    }
+  ]
+}

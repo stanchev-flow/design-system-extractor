@@ -1,0 +1,9 @@
+$ /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/venv/bin/python /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/brand_pipeline/signature_audit.py /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch --brand /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand --strict --out /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/battery/signature
+
+--- stdout ---
+[signature-audit] compose/style-bakeoff-swiss/product-launch: PASS · accent share 0.154%
+[signature-audit] report: /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/battery/signature/report.md
+
+--- stderr ---
+
+--- exit=0 ---

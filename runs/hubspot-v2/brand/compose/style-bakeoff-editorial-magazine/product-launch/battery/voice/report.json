@@ -1,0 +1,39 @@
+{
+  "generatedAt": "2026-07-14T18:21:13Z",
+  "brandDir": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand",
+  "lanes": [
+    {
+      "lane": "compose/style-bakeoff-editorial-magazine/product-launch",
+      "html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-editorial-magazine/product-launch/index.html",
+      "copyCounts": {
+        "headings": 8,
+        "bodies": 9,
+        "eyebrows": 6,
+        "ctas": 2
+      },
+      "checks": [
+        {
+          "check": "sentence-length",
+          "ok": true,
+          "detail": "mean 9.4w (max 14), p90 16w (max 23), 18 sentences"
+        },
+        {
+          "check": "exclamations",
+          "ok": true,
+          "detail": "0 exclamation mark(s) (max 0) \u2014 the measured corpus has none"
+        },
+        {
+          "check": "banned-hype",
+          "ok": true,
+          "detail": "0 hits across 14-word ban list"
+        },
+        {
+          "check": "heading-casing",
+          "ok": true,
+          "detail": "8 heading(s) sentence-case (brand terms allowed)"
+        }
+      ],
+      "ok": true
+    }
+  ]
+}

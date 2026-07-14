@@ -1,0 +1,52 @@
+[[PASS3-STYLE:BEGIN]]
+## STYLE DIRECTIVE — Editorial / Magazine (style-library `editorial-magazine`, resolved per section)
+This run composes in a PICKED STYLE. The directive below RERANKS layout
+choices and sets compositional posture. It NEVER outranks brand facts,
+brand neverDo, or the gate battery: where a directive value conflicts
+with a measured brand fact, the brand fact wins (dissents listed below).
+
+Style constraints (compositional posture, brand tokens still paint):
+  - accentUsage: minimal
+  - border: hairline
+  - case: sentence
+  - contrast: normal
+  - density: airy
+  - imagery: figure
+  - motion: 150–500ms band, easing ease
+  - palette: mono
+  - radius: 4px(small) · 8px(button,card) · 16px(panel), policy tiered
+  - scaleRatio: 1.125
+  - shadow: none
+  - tracking: normal
+  - typeBody: HubSpot Sans
+  - typeDisplay: HubSpot Serif
+Style signature moves (make these READABLE in the composition):
+  - dramatic serif/sans size contrast
+  - large figures with captions
+  - pull-quotes and drop context
+
+Per-section layout guidance (the resolver's picks for this style):
+- hero: layout `split-right` — Two columns, media left / text right. Compose as archetype "split" (media left / text right).
+    rules: headline states the value, not the feature; media supports, never competes with, the headline; oversized serif headline with drop-context sub; large figure right with caption; drop the secondary CTA
+    soft defaults (brand evidence may override): ≤ 2 supporting lines
+    if HERO STRUCTURE CANDIDATES are offered above, prefer the candidate whose skeleton is closest to this layout — the copy plan still picks
+- feature-trio: layout `list-rows` — Stacked full-width rows. Compose as archetype "stack" of full-width rows (one idea per row).
+    rules: parallel grammar across items; no item longer than the others; each feature reads as a short article with a figure
+    soft defaults (brand evidence may override): items are parallel in structure; each item: title + one line; icon optional but consistent
+- metrics-band: layout `grid-4` — Four-up grid. Compose as archetype "cards" (columns: 4).
+    rules: round, credible numbers; units consistent
+    soft defaults (brand evidence may override): number is the hero of each cell; label ≤ 4 words; 3–4 metrics
+- testimonial: layout `list-rows` — Stacked full-width rows. Compose as archetype "stack" of full-width rows (one idea per row).
+    rules: one strong quote beats many weak ones; no invented quotes
+    soft defaults (brand evidence may override): quote is verbatim and central; attribution present (name + role/co)
+- cta-band: layout `center-stack` — Centered vertical stack: eyebrow, headline, sub, CTAs. Compose as archetype "stack" (centered header stack).
+    rules: short, imperative headline
+    soft defaults (brand evidence may override): restates the core value
+
+Brand-evidence dissents (brand facts that beat the directive):
+  - scaleRatio: directive said 1.333 → brand fact 1.125 WINS (style-scale.yaml type (pass-1 derived over measured ladder))
+  - typeDisplay: directive said high-contrast serif → brand fact HubSpot Serif WINS (brand.yaml tokens.type (measured family))
+  - typeBody: directive said serif/humanist → brand fact HubSpot Sans WINS (brand.yaml tokens.type (measured family))
+  - case: directive said mixed → brand fact sentence WINS (voice-facts.yaml casing.headings (measured corpus))
+  - radius: directive said none → brand fact 4px(small) · 8px(button,card) · 16px(panel), policy tiered WINS (style-scale.yaml radius (measured tokens.radius modes))
+[[PASS3-STYLE:END]]

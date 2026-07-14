@@ -1,0 +1,9 @@
+$ node /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/brand_pipeline/slop_audit.mjs /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-neumorphism/product-launch/index.html
+
+--- stdout ---
+PASS product-launch/index.html @1440px
+PASS product-launch/index.html @1180px
+
+--- stderr ---
+
+--- exit=0 ---

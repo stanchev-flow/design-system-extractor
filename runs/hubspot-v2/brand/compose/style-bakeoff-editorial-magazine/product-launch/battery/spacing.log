@@ -1,0 +1,10 @@
+$ /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/venv/bin/python /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/brand_pipeline/spacing_audit.py /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-editorial-magazine/product-launch --brand /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand --strict --no-shots --out /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-editorial-magazine/product-launch/battery/spacing
+
+--- stdout ---
+[spacing-audit] compose/style-bakeoff-editorial-magazine/product-launch: 72 measured — 63 conform / 1 drift / 1 wrong-step / 0 off-ladder / 7 unmapped
+[spacing-audit] compose/style-bakeoff-editorial-magazine/product-launch: scale adherence — 14 measured-fact / 1 on-scale / 0 OFF-SCALE
+[spacing-audit] report: /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-editorial-magazine/product-launch/battery/spacing/report.md
+
+--- stderr ---
+
+--- exit=1 ---

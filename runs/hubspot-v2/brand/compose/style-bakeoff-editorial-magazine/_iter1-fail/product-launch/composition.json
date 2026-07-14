@@ -1,0 +1,312 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "breeze-agents-ga-launch",
+    "name": "Product launch \u2014 Breeze Agents, generally available",
+    "useCasesRequested": [
+      "hero",
+      "features",
+      "gallery",
+      "testimonial",
+      "cta"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "sec-1",
+      "useCase": "hero",
+      "archetype": "stack",
+      "surfaceIntent": "any",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-photo-overlay"
+      },
+      "slots": [
+        {
+          "name": "background",
+          "role": "hero-photo",
+          "contract": "image",
+          "textLen": "none",
+          "width": "full-bleed",
+          "mediaAspect": "wide",
+          "z": "back",
+          "asset": {
+            "src": "018-hs-full-bleed-1-optmised.webp",
+            "alt": "Team working together in a bright interior office",
+            "ratio": "wide"
+          }
+        },
+        {
+          "name": "eyebrow",
+          "role": "kicker",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "New \u2014 generally available"
+        },
+        {
+          "name": "heading",
+          "role": "headline",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "copy": "Breeze Agents are here."
+        },
+        {
+          "name": "body",
+          "role": "subhead",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "AI teammates for prospecting, content, service, and data \u2014 working on your CRM, waiting for your approval."
+        },
+        {
+          "name": "action-primary",
+          "role": "primary-action",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Start with Breeze"
+        },
+        {
+          "name": "action-secondary",
+          "role": "secondary-action",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "See how it works"
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "text-on-media",
+          "target": "heading",
+          "over": "background",
+          "sanctioned": true
+        }
+      ],
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "sec-2",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "intro-heading",
+          "role": "section-heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": "Four agents, one Smart CRM."
+        },
+        {
+          "name": "intro-body",
+          "role": "section-lede",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": "One agent per job, all working on the same customer data \u2014 every action waits for your approval."
+        },
+        {
+          "name": "cells",
+          "role": "feature-cards",
+          "contract": "card",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "heading": "Prospecting Agent",
+              "text": "Researches accounts and drafts outreach your reps approve, so pipeline building never idles.",
+              "asset": "029-producticons-saleshub-icon-orange.webp"
+            },
+            {
+              "heading": "Content Agent",
+              "text": "Turns one idea into on-brand drafts across formats, grounded in what already ranks for you.",
+              "asset": "031-producticons-contenthub-icon-orange.webp"
+            },
+            {
+              "heading": "Customer Agent",
+              "text": "Answers the questions your help docs already solve, and hands the rest to a human with context.",
+              "asset": "030-producticons-servicehub-icon-orange.webp"
+            },
+            {
+              "heading": "Data Agent",
+              "text": "Spots duplicates, gaps, and decay in the CRM and proposes the fix before reporting breaks.",
+              "asset": "032-producticons-datahub-icon-orange.webp"
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "columns": "4"
+      }
+    },
+    {
+      "id": "sec-3",
+      "useCase": "gallery",
+      "archetype": "cards",
+      "surfaceIntent": "panel",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "stats-eyebrow",
+          "role": "kicker",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Proof in beta"
+        },
+        {
+          "name": "stats-heading",
+          "role": "section-heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": "Teams already put Breeze to work."
+        },
+        {
+          "name": "stats",
+          "role": "metric-cells",
+          "contract": "stat",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "value": "12,000+",
+              "label": "beta teams"
+            },
+            {
+              "value": "135+",
+              "label": "countries on the platform"
+            },
+            {
+              "value": "4",
+              "label": "agents at launch"
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "columns": "3"
+      }
+    },
+    {
+      "id": "sec-4",
+      "useCase": "testimonial",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "pull-quote",
+          "role": "testimonial",
+          "contract": "testimonial",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "stretch",
+          "z": "front",
+          "copy": {
+            "quote": "The agents feel like teammates who never sit in meetings. Our reps approve the work instead of doing the busywork.",
+            "name": "Head of Sales",
+            "role": "beta customer"
+          }
+        }
+      ],
+      "treatments": []
+    },
+    {
+      "id": "sec-5",
+      "useCase": "cta",
+      "archetype": "stack",
+      "surfaceIntent": "inverse",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "closing-cta-dark"
+      },
+      "slots": [
+        {
+          "name": "cta-heading",
+          "role": "headline",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "copy": "Put an agent to work today."
+        },
+        {
+          "name": "cta-body",
+          "role": "support",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Breeze Agents are included with the platform \u2014 start free and turn them on."
+        },
+        {
+          "name": "cta-primary",
+          "role": "primary-action",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Start with Breeze"
+        },
+        {
+          "name": "cta-secondary",
+          "role": "secondary-action",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Get a demo"
+        }
+      ],
+      "treatments": []
+    }
+  ],
+  "rationale": "The page follows the brief's arc \u2014 reveal, what shipped, who believes it, the ask. The hero reuses hero-photo-overlay with the sanctioned text-on-media display title (centered, so no counterweight needed). The what-shipped reveal renders as four parallel product cards, one agent per job, each bound to its real product icon. The beta-proof band renders the three launch numbers as a clean grid. The testimonial is a single centered pull-quote in list-rows form with NO declared asymmetric anchor (the sec-4 alignment-resolution failure is fixed by omitting the anchor so it resolves through the header grammar rather than declaring 'left' without a counterweight). The close reuses closing-cta-dark on the licensed deep-teal band with a single primary and a quiet secondary. All headings are sentence case, no uppercase, no exclamation marks, accent stays on controls only."
+}

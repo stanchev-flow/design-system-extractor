@@ -1,0 +1,13 @@
+$ /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/venv/bin/python /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/brand_pipeline/interaction_audit.py /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-neumorphism/product-launch --strict --out /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-neumorphism/product-launch/battery/interaction
+
+--- stdout ---
+[static]     compose/style-bakeoff-neumorphism/product-launch … 0 required fails
+[behavioral] compose/style-bakeoff-neumorphism/product-launch … 0 required fails (3.8s)
+
+report: /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-neumorphism/product-launch/battery/interaction/report.md
+report: /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-neumorphism/product-launch/battery/interaction/report.json
+failing required cells: 0
+
+--- stderr ---
+
+--- exit=0 ---

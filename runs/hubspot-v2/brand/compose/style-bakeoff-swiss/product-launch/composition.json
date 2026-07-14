@@ -1,0 +1,343 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "breeze-agents-ga",
+    "name": "Breeze Agents \u2014 generally available",
+    "useCasesRequested": [
+      "hero",
+      "features",
+      "testimonial",
+      "cta"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "hero-reveal",
+      "useCase": "hero",
+      "archetype": "split",
+      "archetypeRef": "hero-demo-media-proof",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-photo-overlay"
+      },
+      "slots": [
+        {
+          "name": "content",
+          "role": "headline-stack",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": {
+            "eyebrow": "New \u2014 generally available",
+            "heading": "Breeze Agents are here.",
+            "subheading": "AI teammates for prospecting, content, service, and data \u2014 working on your CRM, waiting for your approval.",
+            "cta": [
+              {
+                "label": "Start with Breeze",
+                "variant": "filled"
+              },
+              {
+                "label": "See how it works",
+                "variant": "outline"
+              }
+            ]
+          }
+        },
+        {
+          "name": "media",
+          "role": "supporting-figure",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "landscape",
+          "z": "mid",
+          "colStart": 7,
+          "colSpan": 6,
+          "asset": {
+            "src": "026-customer-platform-graphic-breeze.png",
+            "alt": "Breeze Agents working across the HubSpot customer platform",
+            "ratio": "landscape"
+          }
+        }
+      ],
+      "treatments": [],
+      "grid": {
+        "columns": 12,
+        "gutter": "2rem"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "media"
+      }
+    },
+    {
+      "id": "what-shipped",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "intro",
+          "role": "section-header",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "What shipped",
+            "heading": "One agent per job, all on Smart CRM data.",
+            "subheading": "Four Breeze Agents ship today, each working alongside your team with human approval on every action."
+          }
+        },
+        {
+          "name": "cells",
+          "role": "feature-run",
+          "contract": "card",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "eyebrow": "01",
+              "heading": "Prospecting Agent",
+              "text": "It researches accounts and drafts outreach your reps approve, so pipeline building never idles."
+            },
+            {
+              "eyebrow": "02",
+              "heading": "Content Agent",
+              "text": "It turns one idea into on-brand drafts across formats, grounded in what already ranks for you."
+            },
+            {
+              "eyebrow": "03",
+              "heading": "Customer Agent",
+              "text": "It answers the questions your help docs already solve, and hands the rest to a human with context."
+            },
+            {
+              "eyebrow": "04",
+              "heading": "Data Agent",
+              "text": "It spots duplicates, gaps, and decay in the CRM and proposes the fix before reporting breaks."
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "columns": "4",
+        "align": "left"
+      },
+      "grid": {
+        "columns": 12,
+        "gutter": "2rem"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "cells"
+      }
+    },
+    {
+      "id": "beta-proof",
+      "useCase": "testimonial",
+      "archetype": "stack",
+      "surfaceIntent": "panel",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "proof-header",
+          "role": "section-title",
+          "contract": "header",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "heading": "Proof from the beta."
+          }
+        },
+        {
+          "name": "proof-support",
+          "role": "body",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Human approval on every action came standard through the beta."
+        },
+        {
+          "name": "stats",
+          "role": "metrics-band",
+          "contract": "stat-block",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": [
+            {
+              "value": "12,000+",
+              "label": "teams in beta"
+            },
+            {
+              "value": "135+",
+              "label": "countries on the platform"
+            },
+            {
+              "value": "4",
+              "label": "agents at launch"
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "columns": "3",
+        "align": "left"
+      },
+      "grid": {
+        "columns": 12,
+        "gutter": "2rem"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "stats"
+      }
+    },
+    {
+      "id": "who-believes",
+      "useCase": "testimonial",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "testimonial-tab-stats"
+      },
+      "slots": [
+        {
+          "name": "quote",
+          "role": "pull-quote",
+          "contract": "testimonial",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": {
+            "quote": "The agents feel like teammates who never sit in meetings. Our reps approve the work instead of doing the busywork.",
+            "name": "Head of Sales",
+            "role": "Beta customer"
+          }
+        },
+        {
+          "name": "media",
+          "role": "supporting-figure",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "landscape",
+          "z": "front",
+          "colStart": 7,
+          "colSpan": 6,
+          "asset": {
+            "src": "045-unipart-1.png",
+            "alt": "Beta customer team at work",
+            "ratio": "landscape"
+          }
+        }
+      ],
+      "treatments": [],
+      "grid": {
+        "columns": 12,
+        "gutter": "2rem"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "media"
+      }
+    },
+    {
+      "id": "the-ask",
+      "useCase": "cta",
+      "archetype": "split",
+      "surfaceIntent": "inverse",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "closing-cta-dark"
+      },
+      "slots": [
+        {
+          "name": "content",
+          "role": "closing-stack",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 7,
+          "copy": {
+            "heading": "Put an agent to work today.",
+            "text": "Breeze Agents are included with the platform. Start free and turn them on.",
+            "cta": [
+              {
+                "label": "Start with Breeze",
+                "variant": "filled"
+              },
+              {
+                "label": "Get a demo",
+                "variant": "outline"
+              }
+            ]
+          }
+        },
+        {
+          "name": "media",
+          "role": "brand-mark",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "square",
+          "z": "mid",
+          "colStart": 9,
+          "colSpan": 4,
+          "asset": {
+            "src": "010-breeze-symbol-rgb-gradient.svg",
+            "alt": "Breeze symbol",
+            "ratio": "square"
+          }
+        }
+      ],
+      "treatments": [],
+      "grid": {
+        "columns": 12,
+        "gutter": "2rem"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "media"
+      }
+    }
+  ],
+  "rationale": "The page follows the brief's arc \u2014 reveal, what shipped, who believes it, the ask \u2014 as four sections plus the appended footer chrome. The hero adopts the Swiss split-left posture (adapted from the project photo-overlay seed): the claim lives in a left-flush serif display stack with a single filled-orange primary and an outline secondary, while the Breeze platform graphic counterweights the right column, so no type touches the photo and the sanctioned text-on-media hero isn't needed. 'What shipped' renders the four agents as one parallel four-up cards run with numeral eyebrows and no decorative icons, honoring the feature-trio grammar extended to four peers. Belief transfer splits into a light stat band (12,000+ / 135+ / 4, serif stat numerals) and a single verbatim quote split (text left, figure right). The close reuses the deep-teal closing-cta-dark band \u2014 the only mid-run dark surface, at the end, per never-dark-mid-page \u2014 with one primary and a quiet demo action. Accent orange stays on controls and the mark only; all headings are sentence case ending in periods; every section declares an explicit anchor with a real counterweight slot. No off-grid treatments were used: clean-SaaS trust comes from disciplined alignment."
+}
