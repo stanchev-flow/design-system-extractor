@@ -1,5 +1,9 @@
 # Changes
 
+## 2026-07-14 — QUEUED: fix7 punch list (gallery review round 3) — accent application floor, knob-consumption lint, checklist device, stat binding, heading fit-stepping, note/meta discipline
+
+User review of the developer + demo gallery heroes. Full punch list with confirmed diagnoses: `FIX7-PUNCHLIST.md` (repo root). Headline finding: the orange-period signature and checkmark accent role were EXTRACTED into `runs/hubspot-v2/brand/brand.yaml` but nothing applies them at render time, and the demo composition's declared `knobs.supportKind: "list"` has NO consumer (silent drop → plain paragraphs). Queued behind the two in-flight agents (steals Stage B, pass 3) because the fixes need renderers + audit modules their fences exclude and their verification must not run against shifting renderer code. Also landed in this session: pushed `9ed7860` (fix5+fix6+pass1+pass2+steals-A code) and `c8e7b5f` (both brands' evidence) to origin/main.
+
 ## 2026-07-14 — pass2: the honest A/B eval of pass 1 (checkpoint B) — verdict: generation UNCHANGED, gates proved prospective value; 2 latent renderer bugs fixed — replicas held exactly
 
 Checkpoint B of the eval-gated plan: all 8 hero-archetype lanes regenerated end-to-end from the SAME briefs, honestly compared against the archived before-state (`runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/` — fix6 + pass 1's own real-lane fixes, framing note inside). Full accounting + per-hero decision table + conformance A/B: lane `changes.md` (pass2). A/B sheet: `…/shots/pass2-ab-contact-sheet.png`.
