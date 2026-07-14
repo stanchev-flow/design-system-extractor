@@ -1,0 +1,100 @@
+schemaVersion: section-grounding.v1
+sectionRole: logos
+layout:
+  structure: 'centered stack: eyebrow -> heading -> body -> logo row -> CTA button'
+  columns: 4
+  alignment: center
+  approxPaddingPx:
+    top: 100
+    bottom: 90
+  gapPx: 40
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#eef0ee'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: card
+  bgApprox: '#ffffff'
+  parent: canvas
+  radiusPx: 10
+  borderApprox: '1px #2a3b6b'
+  inkApprox: '#2a3b6b'
+typography:
+- role: eyebrow
+  approxSizePx: 15
+  weightApprox: 600
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#6b6f6c'
+  familyClass: grotesque-sans
+- role: h2
+  approxSizePx: 48
+  weightApprox: 500
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#111111'
+  familyClass: grotesque-sans
+- role: body
+  approxSizePx: 18
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#3a3d3b'
+  familyClass: grotesque-sans
+- role: control-label
+  approxSizePx: 16
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+components:
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: text label -> arrow icon, horizontal
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 16 28
+    radiusPx: 26
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: logo-item
+  variant: monochrome-and-color-vectors
+  countObserved: 4
+  anatomy: logo row of 4 brand marks
+  sizing:
+    widthBehavior: hug
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#000000'
+  caseTreatment: sentence
+copy:
+  eyebrow: THE GLOBAL PAYROLL BACKBONE
+  heading: The world’s best teams run on Remote
+  body: Remote is the infrastructure leading HR platforms trust to deliver global payroll, EOR, and contractor
+    management to their customers.
+  actions:
+  - label: Become a Partner
+    styleHint: outlined pill, hugging content
+  logosLegible:
+  - Certified Integration workday
+  - gusto
+  - bambooHR
+  - Personio
+media:
+- kind: logo-vector
+  treatment: brand logos in a horizontal row ~40px tall; workday in bordered white card, gusto orange,
+    bambooHR green, Personio black
+  aspect: wide
+  approxFractionOfSection: 0.15
+confidence: high
+notes: []
+_source:
+  crop: section-06-base-module-scss-module-sgiwqa-section.png
+  domClasses: base-module-scss-module__sGIWqa__section
+  model: claude-opus-4-8

@@ -1,0 +1,471 @@
+schemaVersion: layout-patterns.v1
+# HubSpot v2 PROJECT layout library — authored 2026-07-10 from the fresh live capture
+# (screenshots/hubspot-v2/) through the canonical evidence flow: one pattern per
+# observed page section (evidence/grounding/section-01..10; navbar/footer are chrome).
+# Vision groundings: claude-opus-4-8, 12/12 crops. Deterministic facts: JS-off
+# computed @1440 (evidence/computed-styles.json + targeted element measures) and the
+# site's own --cl-* / --light-theme-* / --dark-theme-* token sheet (css-facts.json).
+
+# ── Component recipes (fix2 2026-07, brand-schema §4.4e) ──────────────────────────
+# Brand-owned recurring component anatomies, written from the extraction evidence.
+# Patterns bind a recipe via `recipeRef: {recipe, variant}`; composers consume the
+# resolved variant's measured facts (compose_section._headrail_html).
+recipes:
+  - id: section-headrail
+    name: section headrail
+    intent: >-
+      The house section-opener: a leading identity kicker on a white plate, a
+      dotted 1px hairline leader rule running to the far edge, optionally closed
+      by a quiet ink-outlined action; the section heading follows below. One
+      anatomy, three observed stylings across the working sections — this SaaS
+      brand opens its major bands with the rail instead of a bare eyebrow.
+    anatomy:
+      - { slot: kicker, role: leading identity mark (icon chip / label pill / icon+label badge on a white plate), required: true }
+      - { slot: rule, role: dotted 1px hairline leader joining the kicker to the far edge, required: true }
+      - { slot: trail, role: far-edge quiet action (ink-outlined large register), required: false }
+    geometry:
+      railAlignment: content     # the rail spans the section's content container edge-to-edge
+      railToHeading: 2rem        # measured @1440 JS-off: rail box bottom -> heading top 16px + the rail's own 16px foot (both observed bands)
+      kickerGap: 1rem            # measured rail flex gap 16px (kicker -> rule -> trail)
+      source: computed
+    variants:
+      - id: icon-chip
+        useCase: "feature-band opener — the band's product identity as an icon-only chip (no label)"
+        kicker: { shape: chip, size: 4.125rem, radius: 1rem, border: true, surface: panel, label: false,
+                  icon: { asset: 035-breeze-20icon.svg, size: 2rem } }
+        rule: { style: dotted }
+        trail: { present: true, family: outline-ink }
+      - id: label-pill
+        useCase: "editorial section opener — a hairline label pill (14px w500 sentence case) leads the rail"
+        kicker: { shape: pill, radius: 0.25rem, padding: 0.25rem 0.5rem, surface: panel, label: true }
+        rule: { style: dotted }
+        trail: { present: true, family: outline-ink }
+      - id: badge-with-icon
+        useCase: "in-column opener (split copy rail) — icon+label badge, no trailing action; the rail spans its own column, not the page"
+        span: column
+        kicker: { shape: badge, radius: 0.25rem, padding: 0.25rem 0.5rem, surface: panel, label: true,
+                  icon: { asset: 027-ai-20sparkle.svg, size: 1rem } }
+        rule: { style: dotted }
+        trail: { present: false }
+    usedBy: [agent-card-carousel, case-study-header-rail, product-grid-split]
+    origin: extracted
+    provenance: [agent-carousel, case-study-header, product-grid]
+    confidence: high
+    changelog:
+      - { ts: "2026-07-13T10:40:00Z", action: created, from: null, to: section-headrail, by: fix2, signalId: null,
+          note: "measured JS-off @1440: icon chip 66×66 r16 pad16 icon 32×32 (035-breeze-20icon.svg — the sparkle previously bound to the agents rail belongs to the split badge); label pills 32px tall r4 pad 4×8, 1px rgba(0,0,0,0.11) hairline on white; rail gap 16; rail foot 16 + 16 to heading; agents/case-studies rails close with the ink-outlined large CTA (outline-ink family); the split opener spans its 352px copy column with no trail" }
+
+patterns:
+  - id: hero-photo-overlay
+    useCase: hero
+    archetypeRef: stack
+    surfaceIntent: any
+    intent: >-
+      Full-bleed photographic hero: a wide interior office scene with a warm-dark
+      tint carries a CENTERED cream-ink content stack — uppercase eyebrow, an 80px
+      serif display heading ending in an orange period accent, a supporting
+      paragraph, then a filled-orange primary button beside a white secondary
+      button (both large register). No panel, no card — the type sits directly on
+      the photograph.
+    contentShape:
+      alignment: { value: center, inheritance: block-inherits, rule: "single centered column over the full-bleed photo; every child centers" }
+      # fix3 2026-07: the hero stack's MEASURED text column. Source truth (JS-off
+      # computed h1 rect): x=348.7 w=742.56 @1440 = 46.41rem, the display heading
+      # on TWO lines ("Where go-to-market" / "teams go to grow.") via the source's
+      # own .-break element at ≥900px, in the "HubSpot Serif Page Header Human"
+      # display cut. Our HubSpot Serif Book cut runs ~2.5% wider at the same 80px
+      # ("Where go-to-market" probes 761px vs the source's 742.56 box), so the raw
+      # 46.41rem cap would force a THIRD line. The authored measure encodes the
+      # WRAP the fact exists for: 49rem (784px) sits inside our cut's two-line
+      # window (761..1005px), within 5% of the source box. The uncapped replica
+      # painted the heading as ONE line on wide screens.
+      stackMeasure: { value: 49rem, source: computed }
+      # fix1 2026-07 item-1: the hero band's OWN measured vertical rhythm (JS-off
+      # computed: band y=128 h=772; eyebrow box top ≈305, buttons bottom ≈722, band
+      # bottom 900 → pads ≈177/178 → 11rem on the 8px grid), deeper than the
+      # site-average section-padding token the composer would otherwise use.
+      bandPadding: { top: 11rem, bottom: 11rem }
+      # fix1 2026-07 item-4: deterministic box-to-box seams measured on the source
+      # hero (computed-styles h1/body/action rects + fullpage pixel scan):
+      # eyebrow→heading ≈10px, heading→body ≈28px, body→cta ≈44px — the hero band
+      # deviates from the site-wide relational ladder (24/32/56), so the band
+      # carries its own rung facts.
+      bandRhythm: { eyebrowToHeading: 0.625rem, headingToBody: 1.75rem, bodyToCta: 2.75rem }
+      slots:
+        - { name: eyebrow, role: uppercase cream microlabel, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: heading, role: serif display heading w/ orange period accent, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { name: body, role: supporting paragraph (cream, large register), textLen: medium, sizeClass: body, width: hug, z: front }
+        # fix1 2026-07 item-3: the secondary treatment is named EXPLICITLY ("outlined
+        # white") so the action-pair hint routes it into the brand's measured
+        # secondary family — computed evidence: 'Get started free' = white fill,
+        # 2px #ff4800 border, #ff4800 ink (.cl-button.-secondary.-large).
+        - { name: actions, role: filled-orange primary + outlined white secondary (large 16px/40px inset), textLen: short, sizeClass: control, width: hug, z: front }
+        - { name: background, role: full-bleed warm office photograph w/ dark tint, mediaAspect: wide, mediaScale: { of: container, fraction: 1.0 }, width: full-bleed, z: back, assets: [018-hs-full-bleed-1-optmised.webp] }
+    specialTreatments:
+      # fix1 2026-07 item-2: evidence CORRECTION — css-rules.json carries the source's
+      # own scrim: `.wf-page-header-human .wf-page-header_background-image::after
+      # { background-image: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.4)) }`
+      # — a real flat CSS wash over the photo, NOT a tint baked into the art (the
+      # iteration-2 "baked-in" claim was wrong). The measured flat color paints
+      # verbatim via fill.color.
+      - { kind: text-on-media, target: background, sanctioned: true, fill: { color: "rgba(0, 0, 0, 0.4)" }, note: "cream ink (#f8f5ee) over the photo behind a MEASURED flat scrim rgba(0,0,0,0.4) (css-rules: the page-header background-image ::after gradient resolves to one flat wash); no blur" }
+    responsive: { collapse: stack, mediaFirst: false }
+    variantKnobs:
+      secondaryCta: { type: enum, values: [on, off], default: on }
+    origin: extracted
+    provenance: [hero]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-10T19:50:00Z", action: created, from: null, to: hero-photo-overlay, by: creation, signalId: null, note: "grounding section-01: centered stack over full-bleed photo, pad ~210/200, eyebrow->heading 24, heading->body 40, body->cta 60; h1 measured 80px/95px serif w500 (Book master via the page-header face)" }
+      - { ts: "2026-07-12T00:30:00Z", action: adjusted, from: "opacityClass none / prose registers / site rhythm", to: "measured scrim rgba(0,0,0,0.4) + bandPadding 11rem/11rem + bandRhythm 10/28/44 + explicit outlined-white secondary", by: fix1-punch-list, signalId: null, note: "user punch items 1-4; deterministic evidence outranks the grounding's ink-to-ink approximations (css-rules ::after scrim; computed h1/action rects; fullpage pixel scan)" }
+      - { ts: "2026-07-13T16:30:00Z", action: adjusted, from: "uncapped hero text column", to: "stackMeasure 49rem", by: fix3-containment, signalId: null, note: "computed h1 rect w=742.56px @1440 (46.41rem, two lines via the source's own .-break at >=900px); the uncapped replica painted the heading one-line on wide screens. Authored 49rem, not the raw 46.41rem: our HubSpot Serif Book cut runs ~2.5% wider (two-line window probes 761..1005px), so the raw cap forced a THIRD line — 49rem reproduces the source wrap at 1440 AND 1920 (test-pinned)" }
+  - id: logo-proof-strip
+    useCase: logos
+    archetypeRef: stack
+    surfaceIntent: primary
+    intent: >-
+      Customer-proof strip on the canvas: a centered sans stat heading
+      ("299,000+ customers…") over ONE row of five REAL brand logo vectors
+      (~30px tall, wide ~130px gaps), mixed full-color and monochrome as the
+      source ships them. Carousel-capable rail (prev/next round buttons + dots
+      exist in the DOM) but the 1440 resting state is a static spaced row.
+    contentShape:
+      alignment: { value: center, inheritance: block-inherits, rule: "heading centered; logo row centered beneath" }
+      # fix1 2026-07 (pixel measure, fullpage capture y≈1040-1061): the statement
+      # heading rides the brand's compact sans tier (22px == h4 1.375rem, the token
+      # note's own equivalence).
+      # fix2 2026-07 (JS-off computed on the capture, .csol-logo-carousel-image):
+      # the source draws UNIFORM 153×76 contain-fit mark frames with a 69px box
+      # gap (row 200→1241 ≈ 1041px of the 1080 content). The earlier ink-to-ink
+      # read ("~130px gaps, ~30px heights") mixed visible-ink deltas with box
+      # geometry and drew the marks ~40% scale — mediaScale.item is the box fact.
+      deviceGeometry: { headingRegister: h4 }
+      slots:
+        - { name: heading, role: sans stat heading (22px w500), textLen: medium, sizeClass: title, width: hug, z: front }
+        - { name: logos, role: 5 customer logo vectors in one spaced row, mediaAspect: wide, mediaScale: { of: container, fraction: 0.96, gap: 69px, item: { width: 153px, height: 76px }, source: computed }, width: full-bleed, z: front, assets: [019-ebay-logo.svg, 020-doordash-logo.svg, 021-reddit-logo.svg, 022-tripadvisor-logo.svg, 023-eventbrite-logo.svg] }
+    specialTreatments:
+      - { kind: carousel-rail, target: logos, sanctioned: true, note: "cl-carousel rail with round controls in DOM; static spaced row is the measured 1440 resting frame (logo hover: opacity .55, css-facts hoverRules)" }
+    responsive: { collapse: none, mediaFirst: false }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [logo-wall]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-10T19:50:00Z", action: created, from: null, to: logo-proof-strip, by: creation, signalId: null, note: "grounding section-02: 5 legible logos (eBay/DoorDash/reddit/Tripadvisor/eventbrite), gap ~130px, heading 22px measured" }
+      - { ts: "2026-07-13T10:45:00Z", action: adjusted, from: "mediaScale fraction 0.9 / gap 130px (ink-to-ink)", to: "mediaScale item 153x76px + box gap 69px (computed)", by: fix2-logo-boxes, signalId: null, note: "playwright computed on capture: .csol-logo-carousel-image uniform 153x76 contain-fit frames, box gap 69px, row 1041px of 1080 content; the ink read undersized marks ~40%" }
+  - id: platform-showcase-carousel
+    useCase: features
+    archetypeRef: split
+    surfaceIntent: primary
+    intent: >-
+      Platform showcase: a centered 48px serif H2 + subheading, then a split row —
+      40px serif slide heading + body copy LEFT, a large layered product
+      illustration RIGHT (isometric translucent panels). A 3-frame carousel:
+      round neutral prev/next buttons and a 3-dot rail sit below; each frame swaps
+      the copy stack AND the illustration together.
+    contentShape:
+      alignment: { value: center, inheritance: self-only, counterweight: media, rule: "section header centered; slide rows split left copy / right media" }
+      # fix1 2026-07 (changelog measurement, grounding section-03): the section
+      # headline measured 48px serif == the brand h1 tier (3rem); each SLIDE's
+      # heading measured 40px serif == the h2 tier (2.5rem). Registers name brand
+      # type-role tiers (generic device geometry, no section-specific tokens).
+      deviceGeometry: { headingRegister: h1, cardRegister: h2 }
+      slots:
+        - { name: heading, role: section h2 (48px serif) + subheading, textLen: medium, sizeClass: title, width: hug, z: front }
+        - { name: list, role: 3 slide stacks (serif h3 40px + body), textLen: long, sizeClass: body, width: half, z: front }
+        - { name: media, role: layered platform illustration — the ACTIVE slide's art (JS-off truth; the other slides' art rides the authored items), mediaAspect: landscape, mediaScale: { of: container, fraction: 0.45 }, width: half, z: front, assets: [024-customer-20platform-20graphic-20-20smart-20crm1-5x-20-1.png] }
+        - { name: controls, role: round prev/next buttons + 3-dot rail, textLen: short, sizeClass: control, width: hug, z: front }
+    specialTreatments:
+      # fix3 2026-07 controls placement: the source seats prev/next ON the dot
+      # rail below the slides — prev flush at the 1080 container's LEFT edge,
+      # next at its RIGHT, dots centered between (crop section-03: control
+      # centers ≈x204/x1235 at 1440 = the container edges 180/1260 inset by the
+      # control radius; both level with the dot row, prev dimmed). Grounding
+      # records the round buttons at radiusPx 28 → a 56px (3.5rem) box. The
+      # device's structural default floats paddles mid-slide at the row edges —
+      # on this contained section that collided with the copy column.
+      - { kind: carousel, target: list, sanctioned: true, controls: { placement: rail, size: 3.5rem }, note: "3 dots (first active), prev dimmed at first frame; --cl-carousel-animation-duration 300ms ease; interaction states captured (evidence/interaction-states/platform-slide-*.png)" }
+    responsive: { collapse: stack, mediaFirst: false }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [platform-carousel]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-10T19:50:00Z", action: created, from: null, to: platform-showcase-carousel, by: creation, signalId: null, note: "grounding section-03 + live slide captures; h2 measured 48px/55.4 serif w500, slide h3 40px/44 serif" }
+      - { ts: "2026-07-13T16:30:00Z", action: adjusted, from: "structural mid-slide paddles / uncontained band", to: "controls {placement: rail, size: 3.5rem}", by: fix3-containment, signalId: null, note: "crop section-03: prev/next sit on the dot rail at the container edges (centers x204/x1235 @1440), radiusPx 28 -> 56px box; the carousel band itself joined the shared containment law (it painted full-bleed while the source caps at the 1080 content column)" }
+  - id: product-grid-split
+    useCase: features
+    archetypeRef: split
+    surfaceIntent: primary
+    recipeRef: { recipe: section-headrail, variant: badge-with-icon }
+    intent: >-
+      Product family split (~35/65): LEFT a sticky-feeling copy rail — bordered
+      eyebrow pill, 40px serif H2, body paragraph, then filled-orange +
+      orange-outlined medium buttons stacked; RIGHT a 2-column grid of ten white
+      product cards (8px radius, hairline border) each holding an orange line icon
+      + sans heading row, a 2-item checkmark list, and an ink "Learn more"
+      text-arrow link. A soft peach-to-pink gradient band seams the section's
+      bottom edge.
+    contentShape:
+      alignment: { value: left, inheritance: block-inherits, counterweight: cards, rule: "copy rail left; the card grid is the counterweight" }
+      slots:
+        - { name: eyebrow, role: bordered eyebrow badge (sparkle icon + label) + dotted rule spanning the copy column, textLen: short, sizeClass: caption, width: hug, z: front, assets: [027-ai-20sparkle.svg] }
+        - { name: heading, role: section h2 (40px serif), textLen: medium, sizeClass: title, width: hug, z: front }
+        - { name: body, role: supporting paragraph, textLen: long, sizeClass: body, width: hug, z: front }
+        - { name: actions, role: filled primary + outlined secondary (medium register), textLen: short, sizeClass: control, width: hug, z: front }
+        - { name: cards, role: 10 white product cards (icon + heading + checklist + text-arrow), textLen: long, sizeClass: body, width: half, z: front, assets: [028-producticons-marketinghub-icon-orange.webp, 029-producticons-saleshub-icon-orange.webp, 030-producticons-servicehub-icon-orange.webp, 031-producticons-contenthub-icon-orange.webp, 032-producticons-datahub-icon-orange.webp, 033-producticons-commercehub-icon-orange.webp, 034-producticons-smartcrm-icon-orange.webp, 035-breeze-20icon.svg, 009-small-business.svg, 027-ai-20sparkle.svg] }
+      gridEqualize: { heights: stretch, slack: body, actionPinned: true, evidence: "crop section-04 @1440: 'Learn more' rows align across each card pair (row 1: both at y=336) while content differs (Marketing Hub 3 text rows, Sales Hub 4) — slack absorbs above the pinned link (short card seam 90px vs tall card 48px)" }
+      deviceGeometry: { cardActionGap: "3rem", note: "in-card body→'Learn more' MINIMUM seam measured 48px on the tallest-content cards (crop section-04: Sales Hub body bottom y=288 / AEO y=1472, links at y=336/y=1520) — the card register, tighter than the 56px section rung" }
+    specialTreatments:
+      - { kind: gradient-seam, target: cards, sanctioned: true, note: "peach->pink gradient band (accent-fill family #fcc6b1/#fcc3dc) at the section's bottom edge (grounding section-04 band surface)" }
+      # fix2 2026-07: the copy rail's opener is the SAME headrail anatomy as the
+      # agents/case-studies bands (crop section-04: sparkle badge + dotted rule
+      # spanning the 352px copy column, no trailing CTA) — promoted to a sanctioned
+      # treatment bound to the section-headrail recipe (badge-with-icon variant).
+      - { kind: dotted-rule-rail, target: eyebrow, sanctioned: true, note: "icon+label badge ('Powered by AI', sparkle 16px) + dotted 1px rule spanning the copy column; NO trailing action — the rail lives inside the split's left rail (recipe section-headrail/badge-with-icon)" }
+    responsive: { collapse: stack, mediaFirst: false }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [product-grid]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-10T19:50:00Z", action: created, from: null, to: product-grid-split, by: creation, signalId: null, note: "grounding section-04: 10 cards, 20 checkmark items, 10 text-arrow links, card pad ~32, radius 12 vision -> 8px per --cl-border-radius-medium + measured card census; grid gap 32" }
+      - { ts: "2026-07-13T10:40:00Z", action: updated, from: product-grid-split, to: product-grid-split, by: fix2, signalId: null, note: "bound recipeRef section-headrail/badge-with-icon + promoted the copy-rail opener to a sanctioned dotted-rule-rail treatment (measured @1440: badge 138×32 r4 pad 4×8 w/ 16px sparkle icon + 8px gap, dotted rule to the column edge, rail confined to the 352px copy column, no trail)" }
+  - id: agent-card-carousel
+    useCase: features
+    archetypeRef: cards
+    surfaceIntent: accent
+    recipeRef: { recipe: section-headrail, variant: icon-chip }
+    intent: >-
+      AI-agent showcase on a warm gradient band (pink->peach): a header row with a
+      white sparkle icon chip, a dotted rule running to an ink-outlined pill CTA;
+      then a 40px serif heading LEFT / body paragraph RIGHT; below, an auto-playing
+      edge-cut card carousel — white 16px-radius cards, each a sand media-well
+      product-UI mockup on top, 24px sans heading, body, optional underlined
+      'Learn more' link. Round white prev/next/pause controls.
+    contentShape:
+      alignment: { value: left, inheritance: block-inherits, counterweight: none, rule: "header row spans full width; heading left, body right; card track full-bleed below" }
+      slots:
+        # fix2 2026-07 evidence CORRECTION: the chip's icon is the 32×32 breeze mark
+        # (source img src 035-Breeze-20Icon.svg); the 16px sparkle belongs to the
+        # product-grid split's badge kicker, not this chip.
+        - { name: eyebrow, role: breeze icon chip + dotted rule + ink-outlined pill CTA row, textLen: short, sizeClass: caption, width: full, z: front, assets: [035-breeze-20icon.svg] }
+        - { name: heading, role: section h2 (40px serif), textLen: medium, sizeClass: title, width: half, z: front }
+        - { name: body, role: supporting paragraph (right column), textLen: long, sizeClass: body, width: half, z: front }
+        - { name: cards, role: 3 agent cards w/ product-UI media wells, textLen: long, sizeClass: body, width: full-bleed, z: front, mediaAspect: square, assets: [036-customer-agent-en-2x.png, 037-prospecting-agent-en-2x.png, 038-data-hub-en-2x.png] }
+        - { name: controls, role: round white prev/next + pause buttons, textLen: short, sizeClass: control, width: hug, z: front }
+      gridEqualize: { heights: stretch, slack: media-well, actionPinned: false, note: "the visible track cards render EQUAL heights with differing copy lengths (breeze-slide interaction captures) — slack absorbs into the media well; links flow with the text stack" }
+      # fix1 2026-07 item-8: cardRegister = the 24px sans card-heading tier (== brand
+      # h3), a MEASURED step above the compact product-card register (blocks.card h5)
+      # — the oversized feature-card family. cardWidth/cardGap: pixel measure off the
+      # fullpage capture (card runs x 308–613 / 631–937 / 949–…: ~306px wide, ~17px
+      # gaps, mid-card clip at both frame edges).
+      deviceGeometry: { cardActionGap: "2rem", cardRegister: h3, cardWidth: "306px", cardGap: "17px", note: "in-card body→'Learn more' seam measured 33px on the Customer Agent card (crop section-05: body bottom y=783, link top y=816) — the card's own tight action register, NOT the 56px section-scale body-to-cta rung" }
+    specialTreatments:
+      - { kind: edge-cut, target: cards, sanctioned: true, controls: { kind: round, pause: true }, note: "infinite autoplay track, cards clipped mid-item at both frame edges; ROUND white prev/next chrome + pause control measured in-frame (grounding section-05 + breeze-slide interaction captures)" }
+      - { kind: band-art, target: background, sanctioned: true, note: "warm gradient band from the brand's accent-fill family (#fcc3dc pink -> #fcc6b1 peach -> #ffa581); white cards float on it" }
+      # fix1 2026-07 item-8: the header rail was declared only in intent prose — the
+      # renderer stamps devices from sanctioned treatments, so the rail is now a
+      # treatment fact (crop section-05: white sparkle chip LEFT, dotted rule, ink-
+      # outlined pill CTA at far right; case-study-header-rail notes the same device).
+      - { kind: dotted-rule-rail, target: eyebrow, sanctioned: true, note: "dotted 1px rule joins the white icon chip to the right-aligned ink-outlined pill CTA (crop section-05; same device as case-study-header-rail)" }
+    responsive: { collapse: stack, mediaFirst: false }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [agent-carousel]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-10T19:50:00Z", action: created, from: null, to: agent-card-carousel, by: creation, signalId: null, note: "grounding section-05: card radius 14 vision -> 16px per --cl-border-radius-container; media-well #f2ece4 vision -> #ece6d9 accent-fill-05; outlined pill = cl-button -tertiary-outline measured 2px #1f1f1f r8" }
+      - { ts: "2026-07-12T00:30:00Z", action: updated, from: agent-card-carousel, to: agent-card-carousel, by: fix1, signalId: null, note: "item-8: header rail promoted from intent prose to a sanctioned dotted-rule-rail treatment (the renderer stamps devices from treatments); eyebrow-slot CTA prose now names the measured ink-outlined register (-tertiary-outline 2px #1f1f1f)" }
+      - { ts: "2026-07-13T10:40:00Z", action: updated, from: agent-card-carousel, to: agent-card-carousel, by: fix2, signalId: null, note: "bound recipeRef section-headrail/icon-chip; eyebrow-slot icon corrected 027-ai-20sparkle.svg -> 035-breeze-20icon.svg (source chip img src is the 32×32 breeze mark; the sparkle is the split badge's icon)" }
+  - id: integration-collage-banner
+    useCase: banner
+    archetypeRef: split
+    surfaceIntent: primary
+    intent: >-
+      Integration proof banner: an inset white card (16px radius, hairline border)
+      on the canvas, split 50/50 — LEFT a 22px sans heading ('Works with the tools
+      you already use. 2,000+ integrations.') over an ink text link carrying the
+      brand's ORANGE underline; RIGHT a colorful app-logo collage (6 tool icons
+      tiled at angles, cropped at the card edges). A soft gradient seam tops the
+      band.
+    contentShape:
+      alignment: { value: left, inheritance: block-inherits, counterweight: media, rule: "copy column left; the logo collage is the counterweight" }
+      # fix1 2026-07: measured band padding + heading register (section-rects:
+      # -padding-top-md / -padding-bottom-xs = 64px/24px desktop, band h 330px;
+      # heading 22px == the brand h4 statement tier).
+      bandPadding: { top: 4rem, bottom: 1.5rem }
+      deviceGeometry: { headingRegister: h4 }
+      slots:
+        - { name: heading, role: sans banner heading (22px w500), textLen: medium, sizeClass: title, width: half, z: front }
+        - { name: action, role: ink text link w/ orange underline, textLen: short, sizeClass: control, width: hug, z: front }
+        - { name: media, role: app-logo collage (6 colored vectors, tiled), mediaAspect: landscape, mediaScale: { of: container, fraction: 0.42, gap: 1.25rem }, width: half, z: front, assets: [044-slack-icon-2.svg, 042-zapier-icon-2.svg, 041-mailchimp-icon-3.svg, 039-gmail-icon-3.svg, 040-shopify-icon-3.svg, 043-google-ads-icon-2.svg] }
+    specialTreatments:
+      - { kind: inset-panel, target: background, sanctioned: true, note: "white card radius 16 (--cl-border-radius-container), 1px hairline border-03 rgba(0,0,0,0.11), collage cropped at card edges (grounding section-06)" }
+    responsive: { collapse: stack, mediaFirst: false }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [integration-banner]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-10T19:50:00Z", action: created, from: null, to: integration-collage-banner, by: creation, signalId: null, note: "grounding section-06; underline device = text-link-underline-01 #ff4800 (site token)" }
+  - id: case-study-header-rail
+    useCase: content
+    archetypeRef: split
+    surfaceIntent: primary
+    recipeRef: { recipe: section-headrail, variant: label-pill }
+    intent: >-
+      Editorial section header: a top rail — bordered eyebrow pill ('Case
+      Studies') joined by a DOTTED horizontal rule to an ink-outlined pill CTA at
+      the far right; beneath it a split — 40px serif heading LEFT, body paragraph
+      RIGHT. Zero bottom padding: the testimonial band below completes the unit.
+    contentShape:
+      alignment: { value: left, inheritance: block-inherits, counterweight: none, rule: "pill left + CTA right on the rail; heading left column, body right column" }
+      # fix1 2026-07: measured band padding (section-rects + css-rules: the section's
+      # own -padding-top-md/-padding-bottom-none classes = 64px top / 0 bottom at
+      # desktop — the testimonial band below completes the unit; band h 240px).
+      bandPadding: { top: 4rem, bottom: 0rem }
+      slots:
+        - { name: eyebrow, role: bordered eyebrow pill + dotted rule + ink-outlined CTA rail, textLen: short, sizeClass: caption, width: full, z: front }
+        - { name: heading, role: section h2 (40px serif), textLen: medium, sizeClass: title, width: half, z: front }
+        - { name: body, role: supporting paragraph (right column), textLen: medium, sizeClass: body, width: half, z: front }
+    specialTreatments:
+      - { kind: dotted-rule-rail, target: eyebrow, sanctioned: true, note: "dotted 1px rule connects the eyebrow pill to the right-aligned CTA (grounding section-07; same device heads the agent carousel)" }
+    responsive: { collapse: stack, mediaFirst: false }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [case-study-header]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-10T19:50:00Z", action: created, from: null, to: case-study-header-rail, by: creation, signalId: null, note: "grounding section-07: padding-bottom-none; pill 1px #d8d6d0 r6-8; CTA outlined r8" }
+      - { ts: "2026-07-12T00:30:00Z", action: updated, from: case-study-header-rail, to: case-study-header-rail, by: fix1, signalId: null, note: "item-8: rail-slot CTA prose names the measured ink-outlined register so the rail device resolves the tertiary family (crop section-07: ink 2px outline, not the orange secondary)" }
+      - { ts: "2026-07-13T10:40:00Z", action: updated, from: case-study-header-rail, to: case-study-header-rail, by: fix2, signalId: null, note: "bound recipeRef section-headrail/label-pill (measured @1440: pill 101×32 r4 pad 4×8 hairline on white)" }
+  - id: testimonial-tab-stats
+    useCase: testimonial
+    archetypeRef: split
+    surfaceIntent: primary
+    intent: >-
+      Tabbed case-study proof: a row of three pill tabs (Enterprise / Mid-Sized
+      Business / Small Business — active tab carries the darker wash), then a
+      hairline-bordered card split photo LEFT (rounded 4px, workplace portrait) /
+      quote RIGHT — quotation body, bold author name, role caption, and a 'Read
+      full case study' link with the orange underline; below the quote a 50/50
+      stats row divided by a vertical rule: large serif stat numbers over sans
+      captions.
+    contentShape:
+      alignment: { value: left, inheritance: block-inherits, counterweight: media, rule: "photo column left; quote + stats right" }
+      # fix1 2026-07: measured band padding (section-rects: -padding-top-s /
+      # -padding-bottom-xs = 40px top / 24px bottom at desktop; band h 714px).
+      bandPadding: { top: 2.5rem, bottom: 1.5rem }
+      slots:
+        # fix1 2026-07 item-9: re-authored to the CAPTURED anatomy — the interaction
+        # captures (tab-03/04/05) show TEXT tabs: idle = transparent muted-ink label,
+        # ACTIVE = bolder ink + accent underline, wash only as the hover/pressed
+        # state. The prior "pill run w/ wash bg" prose described the harvested
+        # cl-tab-button base (r16, wash rgba(0,0,0,0.05)) as the resting look —
+        # contradicted by the captures (reported in changes.md).
+        - { name: tabs, role: text tab run — 3 tabs (14px w500; active bolder ink + accent underline; wash rgba(0,0,0,0.05) hover), textLen: short, sizeClass: control, width: hug, z: front }
+        # fix1 2026-07: photo column is a FIXED 600px of the ~1075px card content box
+        # (css-rules: testimonial-container grid-template-columns 600px 1fr; card pad
+        # 1.5rem) — fraction 0.56, not the 0.35 first authored from the crop eyeball.
+        - { name: media, role: ACTIVE panel case-study photograph (rounded 4px), mediaAspect: landscape, mediaScale: { of: container, fraction: 0.56 }, width: half, z: front, assets: [045-unipart-1.png] }
+        - { name: support-statement, role: supporting statement — quotation + bold author + role + underlined link, textLen: long, sizeClass: body, width: half, z: front }
+        - { name: stat-rows, role: ruled stat list — 2 serif numerals w/ sans descriptions, split by vertical rule, textLen: short, sizeClass: display, width: half, z: front }
+      # the switcher's other two panels (Mid-Sized / Small Business photos 046/047 +
+      # quotes + stats) are preserved verbatim in section-copy layoutCopy.…panels.
+    specialTreatments:
+      # fix1 2026-07 item-9: activeUnderline = the MEASURED active-tab rule color
+      # (interaction captures tab-03/04/05 show the brand accent-highlight rule
+      # #ff4800 under the selected label; the page's committed-accent law collapses
+      # --c-accent to ink on this band, so the device needs the measured fact).
+      - { kind: tabs, target: tabs, sanctioned: true, activeUnderline: "rgb(255, 72, 0)", note: "captured states (tab-03/04/05): active tab = bolder ink + accent-highlight underline (#ff4800); wash rgba(0,0,0,0.05) on hover/press (the measured cl-tab-button base r16 pad 8px); first tab active is the JS-off truth" }
+      - { kind: stat-rule, target: stats, sanctioned: true, note: "vertical hairline divider between the two stats (grounding section-08)" }
+    responsive: { collapse: stack, mediaFirst: true }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [testimonial-tabs]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-10T19:50:00Z", action: created, from: null, to: testimonial-tab-stats, by: creation, signalId: null, note: "grounding section-08 + DOM harvest: 3 tabs, 3 tab-contents w/ photo+quote+author+2 stats each; card border 1px border-03; photo r4 (--cl-border-radius-small)" }
+      - { ts: "2026-07-12T00:30:00Z", action: updated, from: testimonial-tab-stats, to: testimonial-tab-stats, by: fix1, signalId: null, note: "item-9: tabs slot + treatment re-authored to the CAPTURED anatomy (text tabs, active = bolder ink + accent underline, wash = hover state) — contradicts the created 'pill run w/ wash bg' resting-state claim; captures tab-03/04/05 are the evidence" }
+  - id: award-badge-row
+    useCase: logos
+    archetypeRef: stack
+    surfaceIntent: primary
+    intent: >-
+      Award proof strip: a 22px sans heading LEFT ('Voted #1 in 526 G2 Reports')
+      beside ONE row of six G2 award badge images (~90px tall pennant shields,
+      colored accents) filling the right side. Short top padding, generous bottom
+      — the dark closing band follows.
+    contentShape:
+      alignment: { value: left, inheritance: block-inherits, counterweight: media, rule: "heading left; badge row right" }
+      # fix1 2026-07: measured band padding + heading register (section-rects:
+      # -padding-top-s / -padding-bottom-lg = 40px/96px desktop, band h 216px;
+      # heading 22px == the brand h4 tier, same statement register as the logo strip).
+      bandPadding: { top: 2.5rem, bottom: 6rem }
+      deviceGeometry: { headingRegister: h4 }
+      slots:
+        - { name: heading, role: sans heading (22px w500), textLen: short, sizeClass: title, width: hug, z: front }
+        - { name: media, role: media row — 6 G2 award badge marks (~90px row), mediaAspect: portrait, mediaScale: { of: container, fraction: 0.52, gap: 0.75rem }, width: half, z: front, assets: [048-badge-leader-small-business.png, 049-badge-most-implementable.png, 050-badge-best-relationships-small-business.png, 051-badge-best-support-enterprise.png, 052-badge-best-results-mid-market.png, 053-badge-best-usability-enterprise.png] }
+    specialTreatments: []
+    responsive: { collapse: stack, mediaFirst: false }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [badge-row]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-10T19:50:00Z", action: created, from: null, to: award-badge-row, by: creation, signalId: null, note: "grounding section-09: 6 badges w/ SUMMER 2026 eyebrows + segment metas; heading register == logo-strip heading (22px sans)" }
+  - id: closing-cta-dark
+    useCase: cta
+    archetypeRef: stack
+    surfaceIntent: inverse
+    intent: >-
+      Closing conversion band: full-bleed DEEP-TEAL dark surface, LEFT-aligned 48px
+      serif heading in cream ink ending in an orange period accent, then the
+      filled-orange primary beside a cream-outlined secondary (the dark-surface
+      button variant). Generous 90px vertical padding. The near-black footer
+      follows directly.
+    contentShape:
+      alignment: { value: left, inheritance: block-inherits, rule: "heading + action row left-aligned inside the contained width" }
+      # fix1 2026-07: measured content span — the one-line 48px serif heading runs
+      # ~993px (replica-report srcContentFrac 0.69 × 1440; crop section-10 shows a
+      # single unwrapped line). The 46rem structural prose measure wrapped it.
+      stackMeasure: { value: 62rem }
+      # fix2 2026-07 (brand-schema §4.4f): THIS band's CTA pair runs a 24px gap
+      # (computed .wf-elevated-cta__ctas gap 24px @1440) — wider than the site's
+      # 16px actionGroup default, so the pattern carries the override.
+      actionGroup: { gap: 1.5rem }
+      slots:
+        - { name: heading, role: serif h2 (48px, cream ink, orange period), textLen: medium, sizeClass: display, width: hug, z: front }
+        - { name: actions, role: filled primary + cream-outlined secondary (dark-surface variant), textLen: short, sizeClass: control, width: hug, z: front }
+    specialTreatments:
+      - { kind: inverse-band, target: background, sanctioned: true, note: "deep teal #042729 (the site's own dark-theme background-01 token); cream ink #f8f5ee; secondary button border swaps to cream on this surface (dark-theme button-secondary-border)" }
+    responsive: { collapse: stack, mediaFirst: false }
+    variantKnobs:
+      secondaryCta: { type: enum, values: [on, off], default: on }
+    origin: extracted
+    provenance: [closing-cta]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-10T19:50:00Z", action: created, from: null, to: closing-cta-dark, by: creation, signalId: null, note: "grounding section-10: band #0a2a28 vision -> #042729 token; h2 measured 48px serif cream; buttons r8 pad 20/32 vision -> medium register 12/24 measured" }
+      - { ts: "2026-07-13T10:30:00Z", action: adjusted, from: "scaffold action-row defaults", to: "actionGroup { gap: 1.5rem }", by: fix2-action-groups, signalId: null, note: "computed .wf-elevated-cta__ctas: gap 24px, margin-top 40px (the seam rides the corrected body-to-cta ladder rung; only the gap deviates from the 16px brand default)" }

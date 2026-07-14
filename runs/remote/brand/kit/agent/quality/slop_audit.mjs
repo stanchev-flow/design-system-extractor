@@ -1,0 +1,318 @@
+// slop_audit.mjs — section-completeness audit (anti-ai-slop.md AS-11..AS-14).
+//
+// Checks every section of a rendered page for the CONTENT-completeness failure shapes
+// that a brand-rule gate and a contrast audit both structurally miss:
+//   AS-11 under-filled section (metadata-only: eyebrow/caption/counter/CTA but no
+//         heading + no substantive element)
+//   AS-12 empty column in a grid/split layout (one side filled, the other structurally empty)
+//   AS-13 information-bearing media (map/chart) without its data as text
+//   AS-14 an input/form with no stated reason (no body copy before it in the section)
+//
+// Heuristic by design — it flags for HUMAN review, it does not prove correctness. A PASS
+// means "no obvious empty-frame sections", not "the content is good".
+//
+// Usage: node brand_pipeline/slop_audit.mjs <index.html> [more.html ...]   (exit 1 on flags)
+import { chromium } from "playwright";
+import { pathToFileURL } from "node:url";
+import path from "node:path";
+
+const browser = await chromium.launch();
+let anyFlag = false;
+
+const WIDTHS = [1440, 1180];   // multi-viewport (anti-ai-slop AS-16): the collage
+                               // head/body collision only appeared below ~1280px —
+                               // single-width audits certify the one width you looked at.
+for (const target of process.argv.slice(2)) {
+  const url = target.startsWith("http") ? target : pathToFileURL(path.resolve(target)).href;
+  for (const width of WIDTHS) {
+  const page = await browser.newPage({ viewport: { width, height: 900 } });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto(url, { waitUntil: "networkidle" });
+  await page.waitForTimeout(400);
+
+  const flags = await page.evaluate(() => {
+    const out = [];
+    const sections = [...document.querySelectorAll('[id^="sec-"]')];
+    const scope = sections.length ? sections : [document.body];
+
+    const visible = (el) => {
+      const cs = getComputedStyle(el);
+      if (cs.display === "none" || cs.visibility === "hidden") return false;
+      const r = el.getBoundingClientRect();
+      return r.width > 0 && r.height > 0;
+    };
+    const realText = (el) => (el.textContent || "").trim();
+
+    // AS-59: multi-action hierarchy. In any action GROUP exactly one action may
+    // carry the filled primary register; siblings must take a DIFFERENT measured
+    // register (outlined / ghost / text-link). Palette-agnostic: registers are
+    // compared as COMPUTED paint (fill vs stroke vs bare text), never brand hexes —
+    // two actions sharing one filled register in one group is the flag.
+    const alphaOf = (c) => {
+      const m = /rgba?\(([^)]+)\)/.exec(c || "");
+      if (!m) return 0;
+      const p = m[1].split(",");
+      return p.length === 4 ? parseFloat(p[3]) : 1;
+    };
+    const actionRegister = (b) => {
+      const cs = getComputedStyle(b);
+      const bw = parseFloat(cs.borderTopWidth) || 0;
+      const outlined = bw >= 1 && alphaOf(cs.borderTopColor) > 0.05 &&
+        cs.borderTopColor !== cs.backgroundColor;
+      if (outlined) return "outlined:" + cs.borderTopColor;
+      if (alphaOf(cs.backgroundColor) > 0.05) return "filled:" + cs.backgroundColor;
+      return "text";
+    };
+    const auditActionGroup = (g, where) => {
+      const btns = [...g.querySelectorAll('.c-button, a[role="button"]')].filter(visible);
+      if (btns.length < 2) return;
+      const filled = btns.map(actionRegister).filter(r => r.startsWith("filled:"));
+      const dupes = filled.filter((r, i) => filled.indexOf(r) !== i);
+      if (dupes.length)
+        out.push(`AS-59 ${where}: ${filled.length} same-register filled actions in one group (${dupes[0].slice(7)}) — exactly one primary; siblings take the measured secondary/ghost/text register`);
+    };
+
+    // AS-60: scaffold-habit action-group layout. A rendered multi-action group
+    // that STAMPS its measured layout declaration (data-ag-gap / data-ag-align,
+    // brand-schema §4.4f) must actually compute it — a group whose computed gap
+    // or alignment contradicts its own stamp is running on scaffold habit over
+    // brand facts. Declaration-driven and palette-agnostic: no stamps, no audit.
+    const auditActionGroupFacts = (g, where) => {
+      const kids = [...g.children].filter(visible);
+      if (kids.length < 2) return;   // gap/alignment only observable on 2+ actions
+      const cs = getComputedStyle(g);
+      const declGap = parseFloat(g.getAttribute("data-ag-gap"));
+      if (Number.isFinite(declGap)) {
+        const computed = parseFloat(cs.columnGap) || 0;
+        if (Math.abs(computed - declGap) > 2)
+          out.push(`AS-60 ${where}: action-group gap ${Math.round(computed)}px contradicts its declared fact ${declGap}px (scaffold habit over measured actionGroup facts)`);
+      }
+      const declAlign = g.getAttribute("data-ag-align");
+      if (declAlign) {
+        // contexts that own their anchor are the schema's sanctioned exception
+        const anchored = g.closest('.cs-foot, [data-align="centered"], .cs-hero-panel--center')
+          || getComputedStyle(g.parentElement).alignItems === "center";
+        // a group box that HUGS its content run leaves justify-content nothing
+        // to distribute — the computed value is unobservable there, not a habit
+        const first = kids[0].getBoundingClientRect();
+        const last = kids[kids.length - 1].getBoundingClientRect();
+        const free = g.clientWidth - (last.right - first.left);
+        const J = { "flex-start": "start", "start": "start", "normal": "start", "left": "start",
+                    "center": "center", "flex-end": "end", "end": "end", "right": "end" };
+        const computedAlign = J[cs.justifyContent] || cs.justifyContent;
+        if (!anchored && free > 4 && computedAlign !== declAlign)
+          out.push(`AS-60 ${where}: action-group alignment '${computedAlign}' contradicts its declared fact '${declAlign}' outside any anchoring context`);
+        // PAINTED-EDGE check (fix3 — the blind spot the justify comparison missed):
+        // a group whose BOX is displaced off its content column (max-width + auto
+        // margins hug-centering it) computes the right justify-content yet paints
+        // the whole row off the column edge. Measure the ITEMS' painted edges
+        // against the column a reader compares them to — the widest in-flow
+        // sibling (the intro/heading stack), else the parent's content box.
+        if (!anchored) {
+          const sibs = [...g.parentElement.children].filter(
+            (el) => el !== g && visible(el) &&
+              getComputedStyle(el).position !== "absolute");
+          let colL, colR;
+          if (sibs.length) {
+            const w = sibs.reduce((a, b) =>
+              b.getBoundingClientRect().width > a.getBoundingClientRect().width ? b : a);
+            const wr = w.getBoundingClientRect();
+            colL = wr.left; colR = wr.right;
+          } else {
+            const pr = g.parentElement.getBoundingClientRect();
+            const pcs = getComputedStyle(g.parentElement);
+            colL = pr.left + parseFloat(pcs.paddingLeft);
+            colR = pr.right - parseFloat(pcs.paddingRight);
+          }
+          const lg = first.left - colL, rg = colR - last.right;
+          const dev = declAlign === "center" ? Math.abs(lg - rg)
+            : declAlign === "end" ? Math.abs(rg) : Math.abs(lg);
+          if (dev > 4)
+            out.push(`AS-60 ${where}: action-group painted ${Math.round(dev)}px off its declared '${declAlign}' column edge (box-level centering over the stamped fact)`);
+        }
+      }
+    };
+
+    for (const sec of scope) {
+      const id = sec.id || "page";
+      if (sec.querySelector(".c-footer")) continue;   // footer is a chrome bookend, not a content section
+
+      // ---- inventory of PRIMARY vs METADATA content ----
+      const headings = [...sec.querySelectorAll("h1,h2,h3,.c-heading")]
+        .filter(visible).filter(h => realText(h).length >= 8);
+      const paras = [...sec.querySelectorAll("p")]
+        .filter(visible)
+        .filter(p => !p.matches(".c-eyebrow,.c-caption") && !p.closest('[aria-hidden="true"]'))
+        .filter(p => realText(p).length >= 40);
+      // decorative DECLARED-HIDDEN art (empty-alt aria-hidden band/panel washes —
+      // the sanctioned art-surface device) is decoration, not content media: same
+      // aria-hidden exemption the text inventory below already applies.
+      const media = [...sec.querySelectorAll("img,video,svg.c-image")]
+        .filter(visible).filter(m => !m.closest(".cs-nav,.c-footer"))
+        .filter(m => !m.matches('[aria-hidden="true"]') && !m.closest('[aria-hidden="true"]'));
+      const rows = [...sec.querySelectorAll(".c-row, li, details")].filter(visible);
+      const forms = [...sec.querySelectorAll("input,.c-field,form")].filter(visible);
+      const metadata = [...sec.querySelectorAll(".c-eyebrow,.c-caption,.c-arrow-link")]
+        .filter(visible);
+
+      const primary = headings.length + paras.length + media.length + rows.length;
+
+      // AS-11: metadata-only frame, or lone short heading
+      if (primary === 0 && metadata.length > 0) {
+        out.push(`AS-11 ${id}: metadata-only section (eyebrow/caption/CTA, no heading, no content)`);
+      } else if (primary === headings.length && paras.length + media.length + rows.length + forms.length === 0) {
+        const longest = Math.max(...headings.map(h => realText(h).length));
+        if (longest < 40)
+          out.push(`AS-11 ${id}: heading-only section and the heading is short (${longest} chars) — needs media, list, or description`);
+      }
+
+      // AS-12: empty column in a grid/split (direct children of a multi-col container)
+      for (const grid of sec.querySelectorAll("*")) {
+        const cs = getComputedStyle(grid);
+        const isMultiCol = cs.display === "grid" &&
+          (cs.gridTemplateColumns.split(" ").filter(x => x !== "0px").length >= 2);
+        if (!isMultiCol || !visible(grid)) continue;
+        // decorative overlays (ghost watermarks: absolute, aria-hidden) are not columns —
+        // they don't occupy a grid track, so they must not count as an "empty column".
+        const cols = [...grid.children].filter(visible)
+          .filter(c => getComputedStyle(c).position !== "absolute")
+          .filter(c => !c.matches('[aria-hidden="true"]') && !c.closest('[aria-hidden="true"]'));
+        if (cols.length < 2) continue;
+        const filled = cols.map(c =>
+          realText(c).length >= 8 || c.querySelector("img,video,input,.c-field"));
+        if (filled.some(Boolean) && filled.some(f => !f)) {
+          out.push(`AS-12 ${id}: multi-column layout with an empty column (${filled.filter(f => !f).length} of ${cols.length} empty)`);
+        }
+      }
+
+      // AS-23: lifecycle-safe image backing. Unresolved/loading and error states need
+      // the surface-derived hatch; a successfully loaded image must have NO hatch so
+      // transparent pixels reveal the real parent surface. Logos/icons exempt.
+      // ART-TAGGED media exempt too (W3, stress-playbook 2026-07): the renderer's
+      // fid2 art contract (.c-image--art / .c-acc-media--contain) DELIBERATELY
+      // strips the hatch — transparent illustration/product-UI PNGs would show the
+      // plate through their alpha. The renderer's tag decision is the shared law;
+      // the audit reads the class it stamps instead of re-litigating it.
+      for (const im of media.filter(m => m.tagName === "IMG")) {
+        const r = im.getBoundingClientRect();
+        if (r.width < 80 || r.height < 80) continue;               // logo/icon scale
+        if (im.closest(".c-logo--img,.cs-nav,.c-footer")) continue;
+        if (im.matches(".c-image--art,.c-acc-media--contain")) continue; // art contract
+        const bg = getComputedStyle(im).backgroundImage;
+        const state = im.getAttribute("data-load-state");
+        const hatched = /repeating-linear-gradient/.test(bg);
+        if (state === "loaded" && hatched)
+          out.push(`AS-23 ${id}: loaded image retains placeholder backing (src=${(im.getAttribute("src") || "").slice(-40)})`);
+        if (state !== "loaded" && !hatched)
+          out.push(`AS-23 ${id}: loading/error image without placeholder backing (src=${(im.getAttribute("src") || "").slice(-40)})`);
+      }
+
+      // AS-13: map/chart media without data-like text in the same section
+      // word-bounded: a bare /graph/ matched inside "photoGRAPHy" (every brand photo!) —
+      // the classic substring-vs-word false positive.
+      const infoMedia = media.filter(m =>
+        /\b(map|chart|graph|diagram|floor ?plan)\b/i.test((m.getAttribute("alt") || "") + " " + (m.getAttribute("src") || "")));
+      if (infoMedia.length) {
+        const dataText = rows.length > 0 ||
+          /\d{1,4}\s+\w+|\bstreet\b|\blane\b|\bave\b|\d{2}[:.]\d{2}|\bopen\b|\bhours\b/i.test(realText(sec));
+        if (!dataText)
+          out.push(`AS-13 ${id}: map/chart media but no address/data text in the section`);
+      }
+
+      // AS-16: text flush against media (missing gutter). Per-LINE boxes via Range so a
+      // wrapped statement's individual lines are measured, not one giant bounding box.
+      // Exempt: hero (#sec-0 sanctioned display-over-media), captions, aria-hidden.
+      if (id !== "sec-0") {
+        const textEls = [...sec.querySelectorAll("h1,h2,h3,.c-heading,p")]
+          .filter(visible)
+          .filter(t => !t.matches(".c-caption,.c-eyebrow") && !t.closest('[aria-hidden="true"]'))
+          .filter(t => realText(t).length >= 8);
+        for (const img of media) {
+          const ir = img.getBoundingClientRect();
+          for (const t of textEls) {
+            if (t.contains(img) || img.contains(t)) continue;
+            const range = document.createRange();
+            range.selectNodeContents(t);
+            for (const r of range.getClientRects()) {
+              if (r.width < 4 || r.height < 4) continue;
+              const vOverlap = !(r.bottom <= ir.top || r.top >= ir.bottom);
+              const hOverlap = !(r.right <= ir.left || r.left >= ir.right);
+              if (vOverlap && hOverlap) {
+                out.push(`AS-16 ${id}: text intersects image ("${realText(t).slice(0, 30)}…")`);
+                break;
+              }
+              if (vOverlap) {
+                const gap = r.left >= ir.right ? r.left - ir.right
+                          : r.right <= ir.left ? ir.left - r.right : null;
+                if (gap !== null && gap < 16) {
+                  out.push(`AS-16 ${id}: text ${Math.round(gap)}px from image edge (needs >=16px gutter)`);
+                  break;
+                }
+              }
+              if (hOverlap && r.top >= ir.bottom && r.top - ir.bottom < 16) {
+                out.push(`AS-16 ${id}: text ${Math.round(r.top - ir.bottom)}px below image (needs >=16px gap)`);
+                break;
+              }
+            }
+          }
+        }
+      }
+
+      // AS-14: form present, but no body copy (>=40 chars) BEFORE it in the section
+      if (forms.length) {
+        const firstForm = forms[0];
+        const before = paras.some(p =>
+          p.compareDocumentPosition(firstForm) & Node.DOCUMENT_POSITION_FOLLOWING);
+        if (!before)
+          out.push(`AS-14 ${id}: input/form with no stated reason (no body copy before it)`);
+      }
+
+      // AS-59: multi-action hierarchy — one primary register per action group
+      // (in-section groups; the chrome bar's group is audited page-level below).
+      for (const g of sec.querySelectorAll('[class*="-actions"], .c-actions')) {
+        if (g.closest(".cs-nav")) continue;
+        auditActionGroup(g, id);
+      }
+
+      // AS-60: stamped action-group facts must be what actually computes.
+      for (const g of sec.querySelectorAll("[data-ag-gap], [data-ag-align]"))
+        auditActionGroupFacts(g, id);
+
+      // AS-61: typographic-action ink width. A text link's box — and therefore
+      // its underline ink (border/pseudo-rules span the box) — must HUG its
+      // label + glyph run in every placement. Column flex stacks blockify and
+      // stretch inline-flex children by default, so an unhugged link paints its
+      // underline to the card/container edge (the registry's content-hugging
+      // mechanic, now explicit for text links). Nav links are excluded: their
+      // padded hit-target boxes are deliberate chrome geometry.
+      for (const a of sec.querySelectorAll(".c-arrow-link")) {
+        if (a.closest(".cs-nav")) continue;
+        const r = a.getBoundingClientRect();
+        if (r.width === 0 || r.height === 0) continue;
+        const range = document.createRange();
+        range.selectNodeContents(a);
+        const ink = range.getBoundingClientRect();
+        if (ink.width > 0 && r.width - ink.width > 12)
+          out.push(`AS-61 ${id}: text-link box ${Math.round(r.width)}px vs content run ${Math.round(ink.width)}px — underline ink spans the container, not the label (stretched in a column flex stack)`);
+      }
+    }
+
+    // AS-59 page-level pass: the chrome bar's action group lives outside sec-* scope.
+    for (const g of document.querySelectorAll('.cs-nav [class*="-actions"], .cs-nav .c-actions'))
+      auditActionGroup(g, "page-nav");
+    return out;
+  });
+
+  const name = target.split("/").slice(-2).join("/") + ` @${width}px`;
+  if (flags.length) {
+    anyFlag = true;
+    console.log(`FLAG ${name}  (${flags.length})`);
+    for (const f of flags) console.log(`  ${f}`);
+  } else {
+    console.log(`PASS ${name}`);
+  }
+  await page.close();
+  }
+}
+await browser.close();
+process.exit(anyFlag ? 1 : 0);

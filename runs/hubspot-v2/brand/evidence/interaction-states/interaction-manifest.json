@@ -1,0 +1,59 @@
+{
+ "schemaVersion": "interaction-states.v1",
+ "states": [
+  {
+   "kind": "tab",
+   "index": 3,
+   "label": "Enterprise",
+   "file": "tab-03-enterprise.png"
+  },
+  {
+   "kind": "tab",
+   "index": 4,
+   "label": "Mid-Sized Business",
+   "file": "tab-04-mid-sized-business.png"
+  },
+  {
+   "kind": "tab",
+   "index": 5,
+   "label": "Small Business",
+   "file": "tab-05-small-business.png"
+  },
+  {
+   "kind": "carousel-slide",
+   "carousel": "customer-platform",
+   "index": 0,
+   "file": "platform-slide-0.png"
+  },
+  {
+   "kind": "carousel-slide",
+   "carousel": "customer-platform",
+   "index": 1,
+   "file": "platform-slide-1.png"
+  },
+  {
+   "kind": "carousel-slide",
+   "carousel": "customer-platform",
+   "index": 2,
+   "file": "platform-slide-2.png"
+  },
+  {
+   "kind": "carousel-slide",
+   "carousel": "breeze-agents",
+   "index": 0,
+   "file": "breeze-slide-0.png"
+  },
+  {
+   "kind": "carousel-slide",
+   "carousel": "breeze-agents",
+   "index": 1,
+   "file": "breeze-slide-1.png"
+  },
+  {
+   "kind": "carousel-slide",
+   "carousel": "breeze-agents",
+   "index": 2,
+   "file": "breeze-slide-2.png"
+  }
+ ]
+}

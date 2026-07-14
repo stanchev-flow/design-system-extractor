@@ -1,0 +1,165 @@
+schemaVersion: section-grounding.v1
+sectionRole: footer
+layout:
+  structure: multi-column link groups (5 columns) over dark canvas, centered social row + logo + legal
+    links below
+  columns: 5
+  alignment: left
+  approxPaddingPx:
+    top: 60
+    bottom: 60
+  gapPx: 32
+  containerWidth: contained
+surfaces:
+- role: band
+  bgApprox: '#052a2a'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#ffffff'
+- role: canvas
+  bgApprox: '#1c1c18'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#cfd0cc'
+typography:
+- role: h3
+  approxSizePx: 16
+  weightApprox: 700
+  case: title
+  trackingApprox: normal
+  colorApprox: '#ffffff'
+  familyClass: geometric-sans
+- role: footer-link
+  approxSizePx: 14
+  weightApprox: 400
+  case: title
+  trackingApprox: normal
+  colorApprox: '#c7c9c4'
+  familyClass: geometric-sans
+- role: caption
+  approxSizePx: 13
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#a7a9a4'
+  familyClass: geometric-sans
+- role: footer-link
+  approxSizePx: 14
+  weightApprox: 600
+  case: title
+  trackingApprox: normal
+  colorApprox: '#e8e9e6'
+  familyClass: geometric-sans
+surfaces_note: null
+components:
+- kind: link
+  variant: text
+  countObserved: 38
+  anatomy: single-line text link in stacked column list
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#c7c9c4'
+  caseTreatment: title
+- kind: icon
+  variant: social-glyph
+  countObserved: 7
+  anatomy: monochrome social glyphs in centered horizontal row
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#9a9c97'
+  caseTreatment: sentence
+- kind: logo-item
+  variant: wordmark
+  countObserved: 1
+  anatomy: HubSpot wordmark with sprocket 'o', centered
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#ffffff'
+  caseTreatment: title
+- kind: link
+  variant: text-underline
+  countObserved: 4
+  anatomy: underlined legal link, pipe separated row
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#e8e9e6'
+  caseTreatment: title
+copy:
+  heading: null
+  body: Copyright © 2026 HubSpot, Inc.
+  items:
+  - heading: Popular Features
+    body: All Products and Features / HubSpot AEO / Free Meeting Scheduler App / Breeze AI Tools / Email
+      Tracking Software / AI Content Writer / AI Website Generator / Email Marketing Software / Lead Management
+      Software / AI Prospecting Agent / Free Website Builder / Landing Pages / Free Online Form Builder
+      / Free Chatbot Builder / Free Live Chat Software / Marketing Analytics / Free Landing Page Builder
+      / Free Web Hosting
+    meta: null
+  - heading: Free Tools
+    body: See All Free Business Tools / AEO Grader / AI Search Sensor / Make My Persona / Email Signature
+      Generator / Free Business Templates / Software Comparisons Library / Website Templates
+    meta: null
+  - heading: Company
+    body: About Us / Careers / Management Team / Board of Directors / Investor Relations / Blog / Sustainability
+      / Contact Us
+    meta: null
+  - heading: Customers
+    body: Customer Support / Join a Local User Group
+    meta: null
+  - heading: Partners
+    body: All Partner Programs / Solutions Partner Program / Technology Partner Program / HubSpot for
+      Startups / Affiliate Program
+    meta: null
+  actions:
+  - label: Legal Center
+    styleHint: text-underline
+  - label: Privacy Policy
+    styleHint: text-underline
+  - label: Security
+    styleHint: text-underline
+  - label: Website Accessibility
+    styleHint: text-underline
+  - label: Manage Cookies
+    styleHint: text-underline
+media:
+- kind: icon-set
+  treatment: 'monochrome grey social glyphs ~22px in centered row: Facebook, Instagram, YouTube, X, LinkedIn,
+    Reddit, TikTok'
+  aspect: wide
+  approxFractionOfSection: 0.05
+- kind: logo-vector
+  treatment: white HubSpot wordmark with sprocket dot, centered
+  aspect: landscape
+  approxFractionOfSection: 0.04
+chrome:
+  casing: title
+  separators: pipe
+  iconShape: square-glyph
+  surfaceApprox: '#1c1c18'
+  linkTreatment: '14px #c7c9c4 column links, no underline'
+  ctaTreatment: 'no CTA button; legal links underlined 14px #e8e9e6'
+motionHints: []
+confidence: high
+notes:
+- thin teal-green band at top edge (#052a2a) is section seam
+- column heading H3 white, link items lighter grey
+- vertical divider between column groups visible around x=610
+- horizontal rules flank the social icon row
+_source:
+  crop: section-11-footer.png
+  domClasses: hsg-footer global-footer
+  model: claude-opus-4-8

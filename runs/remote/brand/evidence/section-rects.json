@@ -1,0 +1,176 @@
+{
+ "schemaVersion": "computed-measure.v1",
+ "source": "screenshots/remote-v2/remote-com.html",
+ "viewport": {
+  "w": 1440,
+  "h": 900
+ },
+ "jsEnabled": false,
+ "docHeight": 7205,
+ "chrome": [
+  {
+   "name": "header",
+   "classes": "site-navigation-module-scss-module__PNKrMq__nav",
+   "cappedFrom": null,
+   "rect": {
+    "x": 0,
+    "y": 44.09375,
+    "w": 1440,
+    "h": 81
+   }
+  },
+  {
+   "name": "footer",
+   "classes": "site-footer-module-scss-module__qYa75a__footer",
+   "cappedFrom": null,
+   "rect": {
+    "x": 0,
+    "y": 6335.53125,
+    "w": 1440,
+    "h": 869
+   }
+  }
+ ],
+ "sections": [
+  {
+   "index": 0,
+   "tag": "section",
+   "classes": "hero-module-scss-module__NmjvEq__section hero-module-scss-module__NmjvEq__sectionDefault",
+   "id": "",
+   "rect": {
+    "x": 0,
+    "y": 125.09375,
+    "w": 1440,
+    "h": 550
+   },
+   "backgroundColor": "rgba(0, 0, 0, 0)",
+   "heading": "Global employment runs on Remote"
+  },
+  {
+   "index": 1,
+   "tag": "section",
+   "classes": "base-module-scss-module__sGIWqa__section",
+   "id": "",
+   "rect": {
+    "x": 0,
+    "y": 675.09375,
+    "w": 1440,
+    "h": 256
+   },
+   "backgroundColor": "rgb(239, 240, 240)",
+   "heading": ""
+  },
+  {
+   "index": 2,
+   "tag": "section",
+   "classes": "base-module-scss-module__sGIWqa__section",
+   "id": "",
+   "rect": {
+    "x": 0,
+    "y": 931.09375,
+    "w": 1440,
+    "h": 973.375
+   },
+   "backgroundColor": "rgb(239, 240, 240)",
+   "heading": "One system of record. Every employment need."
+  },
+  {
+   "index": 3,
+   "tag": "section",
+   "classes": "base-module-scss-module__sGIWqa__section",
+   "id": "",
+   "rect": {
+    "x": 0,
+    "y": 1904.46875,
+    "w": 1440,
+    "h": 699
+   },
+   "backgroundColor": "rgb(239, 240, 240)",
+   "heading": "Owned end-to-end infrastructure, operated in-house."
+  },
+  {
+   "index": 4,
+   "tag": "section",
+   "classes": "base-module-scss-module__sGIWqa__section",
+   "id": "",
+   "rect": {
+    "x": 0,
+    "y": 2603.46875,
+    "w": 1440,
+    "h": 508.75
+   },
+   "backgroundColor": "rgb(239, 240, 240)",
+   "heading": "Hiring internationally, converting contractors, or consolidating payroll? Talk to our team."
+  },
+  {
+   "index": 5,
+   "tag": "section",
+   "classes": "base-module-scss-module__sGIWqa__section",
+   "id": "",
+   "rect": {
+    "x": 0,
+    "y": 3112.21875,
+    "w": 1440,
+    "h": 850.375
+   },
+   "backgroundColor": "rgb(239, 240, 240)",
+   "heading": "Your workflows, your way, on our infrastructure"
+  },
+  {
+   "index": 6,
+   "tag": "section",
+   "classes": "base-module-scss-module__sGIWqa__section",
+   "id": "",
+   "rect": {
+    "x": 0,
+    "y": 3962.59375,
+    "w": 1440,
+    "h": 560.375
+   },
+   "backgroundColor": "rgb(239, 240, 240)",
+   "heading": "The world\u2019s best teams run on Remote"
+  },
+  {
+   "index": 7,
+   "tag": "section",
+   "classes": "base-module-scss-module__sGIWqa__section",
+   "id": "",
+   "rect": {
+    "x": 0,
+    "y": 4522.96875,
+    "w": 1440,
+    "h": 805.1875
+   },
+   "backgroundColor": "rgb(239, 240, 240)",
+   "heading": "A word from our customers"
+  },
+  {
+   "index": 8,
+   "tag": "section",
+   "classes": "base-module-scss-module__sGIWqa__section",
+   "id": "",
+   "rect": {
+    "x": 0,
+    "y": 5328.15625,
+    "w": 1440,
+    "h": 568
+   },
+   "backgroundColor": "rgb(239, 240, 240)",
+   "heading": "The #1 global HR platform as voted by you"
+  },
+  {
+   "index": 9,
+   "tag": "section",
+   "classes": "hero-module-scss-module__NmjvEq__section",
+   "id": "",
+   "rect": {
+    "x": 0,
+    "y": 5896.15625,
+    "w": 1440,
+    "h": 439.375
+   },
+   "backgroundColor": "rgb(239, 240, 240)",
+   "heading": "Global employment is hard. We built the infrastructure to do it right."
+  }
+ ]
+}

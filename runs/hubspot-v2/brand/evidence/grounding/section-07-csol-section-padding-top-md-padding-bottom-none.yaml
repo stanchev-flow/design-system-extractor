@@ -1,0 +1,95 @@
+schemaVersion: section-grounding.v1
+sectionRole: content
+layout:
+  structure: 'eyebrow pill left + dotted rule + outlined CTA right on top row; below: serif heading left
+    / body right'
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 90
+    bottom: 0
+  gapPx: 60
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#faf9f6'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: pill
+  bgApprox: '#faf9f6'
+  parent: canvas
+  radiusPx: 6
+  borderApprox: '1px #d8d6d0'
+  inkApprox: '#1a1a1a'
+typography:
+- role: eyebrow
+  approxSizePx: 14
+  weightApprox: 700
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: control-label
+  approxSizePx: 15
+  weightApprox: 700
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: h2
+  approxSizePx: 44
+  weightApprox: 500
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#141414'
+  familyClass: serif
+- role: body
+  approxSizePx: 17
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#3a3a3a'
+  familyClass: grotesque-sans
+components:
+- kind: badge
+  variant: outlined
+  countObserved: 1
+  anatomy: text label inside thin rounded box
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 10 16
+    radiusPx: 6
+  surfaceApprox: '#faf9f6'
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: text label inside rounded box
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 16 28
+    radiusPx: 8
+  surfaceApprox: '#faf9f6'
+  inkApprox: '#1a1a1a'
+  caseTreatment: sentence
+copy:
+  eyebrow: Case Studies
+  heading: Remarkable results for every size business.
+  subheading: null
+  body: Scale your business with HubSpot. The proof is in our customers’ success.
+  actions:
+  - label: See all case studies
+    styleHint: outlined
+media: []
+motionHints: []
+confidence: high
+notes:
+- dotted horizontal rule connects eyebrow pill to CTA button across top
+- section bottom cut off; likely case-study cards below (padding-bottom-none)
+_source:
+  crop: section-07-csol-section-padding-top-md-padding-bottom-none.png
+  domClasses: csol-section -padding-top-md -padding-bottom-none
+  model: claude-opus-4-8

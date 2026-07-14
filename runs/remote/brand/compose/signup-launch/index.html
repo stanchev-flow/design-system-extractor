@@ -1,0 +1,1747 @@
+<!doctype html>
+<html lang="en" data-style="corporate-saas-clean" data-align-stance="declared">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remote - full page (composed from catalog)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lexend+Deca:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style id="tokens">
+/* Remote — generated design tokens (layer 1). Source: brand.yaml sha256=aa5ab71c7493; generator tokens_css.py v1.0.0; style=corporate-saas-clean; tokens=201; disabledDevices=counter-display,ghost-watermark,footer-display-links. Regenerate via the compose CLI — never hand-edit. */
+:root {
+  --color-ink-primary: #141415;
+  --color-ink-body: #595b5f;
+  --color-ink-secondary: #383a3d;
+  --color-ink-muted: #777a7e;
+  --color-ink-faint: #b3b5b7;
+  --color-neutral-canvas: #eff0f0;
+  --color-neutral-raised: #f6f7f8;
+  --color-neutral-card: #ffffff;
+  --color-action-primary: #0564ff;
+  --color-action-primary-hover: #0047bc;
+  --color-action-primary-active: #00235c;
+  --color-action-primary-focus: #003284;
+  --color-action-primary-disabled: #ccdfff;
+  --color-action-outline-hover-wash: #ebf2ff;
+  --color-action-neutral: #232325;
+  --color-action-neutral-hover: #595b5f;
+  --color-action-neutral-active: #141415;
+  --color-surface-deep-navy: #00235c;
+  --color-surface-deep-accent: #511621;
+  --color-surface-deep-accent-hover: #742030;
+  --color-accent-warm-wash: #fceef1;
+  --color-accent-crimson: #a52d44;
+  --color-accent-eyebrow-blue-deep: #0047bc;
+  --color-accent-periwinkle: #9bc1ff;
+  --color-accent-pale-blue-chip: #ccdfff;
+  --color-text-link: #0564ff;
+  --color-text-link-hover: #0047bc;
+  --color-text-link-active: #003284;
+  --color-text-link-hover-on-inverse: #ccdfff;
+  --color-text-link-active-on-inverse: #9bc1ff;
+  --color-overlay-hover-wash: #e7e8e9;
+  --color-border-focus-ring: #0564ff;
+  --color-border-input: #d1d6dc;
+  --color-border-default: #b3b5b7;
+  --color-state-disabled-fill: #d2d3d5;
+  --color-surface-art-pastel: #dae2e8;
+  --color-state-error: #b41818;
+  --color-surface-primary: #eff0f0;
+  --color-surface-panel: #ffffff;
+  --color-surface-inverse: #00235c;
+  --color-surface-inverse-strong: #00235c;
+  --color-accent-highlight: #0564ff;
+  --color-accent-highlight-on-inverse: #9bc1ff;
+  --color-text-on-primary: #141415;
+  --color-text-on-primary-muted: #595b5f;
+  --color-text-on-inverse: #ffffff;
+  --color-text-on-inverse-muted: #9bc1ff;
+  --color-text-on-accent: #ffffff;
+  --color-text-ghost-on-primary: #e7e8e9;
+  --color-border-hairline-on-primary: rgba(179,181,183,0.4);
+  --color-border-hairline-on-inverse: rgba(255,255,255,0.4);
+  --surface-surface-primary: #eff0f0;
+  --surface-surface-panel: #ffffff;
+  --surface-surface-raised: #f6f7f8;
+  --surface-surface-inverse: #00235c;
+  --surface-surface-inverse-strong: #00235c;
+  --surface-surface-accent: #511621;
+  --surface-surface-hero-noise: #dae2e8;
+  --font-display-hero: 'Bossa', 'Lexend Deca', sans-serif;
+  --size-display-hero: 2.875rem;
+  --size-display-hero-base: 2.875rem;
+  --weight-display-hero: 400;
+  --leading-display-hero: 1.19em;
+  --case-display-hero: none;
+  --tracking-display-hero: 0em;
+  --font-h1: 'Bossa', 'Lexend Deca', sans-serif;
+  --size-h1: 2.875rem;
+  --size-h1-base: 2.875rem;
+  --weight-h1: 400;
+  --leading-h1: 1.2em;
+  --case-h1: none;
+  --tracking-h1: 0em;
+  --font-h2: 'Bossa', 'Lexend Deca', sans-serif;
+  --size-h2: 2.25rem;
+  --size-h2-base: 2.25rem;
+  --weight-h2: 400;
+  --leading-h2: 1.2em;
+  --case-h2: none;
+  --tracking-h2: 0em;
+  --font-h3: 'Bossa', 'Lexend Deca', sans-serif;
+  --size-h3: 1.75rem;
+  --size-h3-base: 1.75rem;
+  --weight-h3: 400;
+  --leading-h3: 1.2em;
+  --case-h3: none;
+  --tracking-h3: 0em;
+  --font-body: 'Inter', sans-serif;
+  --size-body: 1.125rem;
+  --size-body-base: 1.125rem;
+  --weight-body: 400;
+  --leading-body: 1.5em;
+  --case-body: none;
+  --tracking-body: 0em;
+  --font-eyebrow: 'Bossa', 'Lexend Deca', sans-serif;
+  --size-eyebrow: 0.875rem;
+  --size-eyebrow-base: 0.875rem;
+  --weight-eyebrow: 400;
+  --leading-eyebrow: 1.5em;
+  --case-eyebrow: uppercase;
+  --tracking-eyebrow: 0.05em;
+  --font-control-text: 'Inter', sans-serif;
+  --size-control-text: 1rem;
+  --size-control-text-base: 1rem;
+  --weight-control-text: 500;
+  --leading-control-text: 1.5em;
+  --case-control-text: none;
+  --tracking-control-text: 0em;
+  --font-h4: 'Bossa', 'Lexend Deca', sans-serif;
+  --size-h4: 1.375rem;
+  --size-h4-base: 1.375rem;
+  --weight-h4: 400;
+  --leading-h4: 1.2em;
+  --case-h4: none;
+  --tracking-h4: 0em;
+  --font-body-sm: 'Inter', sans-serif;
+  --size-body-sm: 1rem;
+  --size-body-sm-base: 1rem;
+  --weight-body-sm: 400;
+  --leading-body-sm: 1.5em;
+  --case-body-sm: none;
+  --tracking-body-sm: 0em;
+  --space-section-padding-light: 3rem;
+  --space-section-y-lg: 5rem;
+  --space-section-y-xl: 7rem;
+  --space-module-gap-editorial: 5rem;
+  --space-eyebrow-to-heading: 0.75rem;
+  --space-panel-padding: 2rem;
+  --space-grid-gap: 2rem;
+  --space-stack-md: 1rem;
+  --space-stack-lg: 3rem;
+  --space-button-inset: 0.6875rem 1.5rem;
+  --space-container-max: 76rem;
+  --space-badge-tier: 6.25rem;
+  --space-radius-global: 1rem;
+  --radius-global: 1rem;
+  --radius-card: 1rem;
+  --radius-panel: 0.75rem;
+  --radius-media: 0.625rem;
+  --radius-button: 2.5rem;
+  --radius-input: 0.1875rem;
+  --shadow-card-hover: 0px 12px 24px 0px rgba(0,0,0,0.08);
+  --aspect-wide: 16 / 9;
+  --aspect-landscape: 3 / 2;
+  --aspect-square: 1 / 1;
+  --motion-fast: 300ms;
+  --motion-base: 500ms;
+  --motion-slow: 1000ms;
+  --motion-ease: ease;
+  --button-bg: #0564ff;
+  --button-fg: #ffffff;
+  --button-bg-hover: #0047bc;
+  --button-bg-pressed: #00235c;
+  --button-border: 1px solid #0564ff;
+  --button-pad: 0.6875rem 1.5rem;
+  --button-radius: 2.5rem;
+  --button-weight: 400;
+  --button-size: 1.125rem;
+  --button-font: 'Inter', 'Lexend Deca', sans-serif;
+  --button-secondary-bg: transparent;
+  --button-secondary-fg: #0564ff;
+  --button-secondary-bg-hover: #ebf2ff;
+  --button-secondary-border: 1px solid #0564ff;
+  --button-secondary-pad: 0.6875rem 1.5rem;
+  --button-secondary-radius: 2.5rem;
+  --button-secondary-weight: 400;
+  --button-secondary-size: 1.125rem;
+  --button-secondary-font: 'Inter', 'Lexend Deca', sans-serif;
+  --button-tertiary-bg: #232325;
+  --button-tertiary-fg: #ffffff;
+  --button-tertiary-bg-hover: #595b5f;
+  --button-tertiary-bg-pressed: #141415;
+  --button-tertiary-pad: 0.6875rem 1.5rem;
+  --button-tertiary-radius: 2.5rem;
+  --button-tertiary-weight: 400;
+  --button-tertiary-size: 1.125rem;
+  --button-tertiary-font: 'Inter', 'Lexend Deca', sans-serif;
+  --size-nav: 1rem;
+  --chrome-nav-link-weight: 500;
+  --chrome-nav-logo-w: 5.875rem;
+  --chrome-nav-logo-h: 1.875rem;
+  --chrome-foot-link-size: 0.875rem;
+  --chrome-foot-link-weight: 400;
+  --chrome-link-hover: #ccdfff;
+}
+
+@media (max-width: 991px) {
+  :root {
+    --size-display-hero: 2.25rem;
+    --size-h1: 2.25rem;
+    --size-h2: 1.75rem;
+    --size-h3: 1.375rem;
+    --size-body: 1rem;
+    --size-h4: 1.25rem;
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --size-display-hero: 1.75rem;
+    --size-h1: 1.75rem;
+    --size-h2: 1.375rem;
+    --size-h3: 1.25rem;
+    --size-body: 1rem;
+    --size-h4: 1.125rem;
+  }
+}
+
+@media (max-width: 479px) {
+  :root {
+    --size-display-hero: 1.75rem;
+    --size-h1: 1.75rem;
+    --size-h2: 1.375rem;
+    --size-h3: 1.25rem;
+    --size-body: 1rem;
+    --size-h4: 1.125rem;
+  }
+}
+</style>
+<style>
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+img { display: block; max-width: 100%; }
+/* iframe-safe container context: cq* length units resolve against this sized box. */
+html { background: var(--bg); height: 100%; }
+html, body { background: var(--bg); color: var(--text); font-family: var(--c-font-body);
+  -webkit-font-smoothing: antialiased; }
+body { min-height: 100%; container-type: size; container-name: frame; }
+.cs-surface { display: block; }
+:root {
+  /* gate-readable legacy brand vars (authoritative VALUES; page opens on #eff0f0) */
+  --bg: #eff0f0;
+  --text: #141415;
+  --accent: #141415;
+  --display-size: 2.875rem;
+  --radius: 1rem;
+  --font-heading: 'Bossa', 'Lexend Deca', sans-serif;
+  --font-body: 'Inter', 'Inter', sans-serif;
+  /* brand-constant aliases for the collage ghost + the cream split panel (layer-1 refs) */
+  --c-ghost: var(--color-text-ghost-on-primary);
+  --c-panel: var(--surface-surface-panel);
+  --c-panel-ink: var(--color-text-on-primary);
+  --c-panel-hairline: var(--color-border-hairline-on-primary);
+  /* ONE shared page grid + baseline (alignment quick wins) — mirrors
+     compose_section.root_vars: all section scaffolds place onto these SHARED tracks
+     and snap offsets to --baseline / --col, so adjacent sections register to the same
+     columns, edges and baselines. */
+  --grid-cols: 12; /* provenance: structural — shared registration grid */
+  --grid-gutter: 6rem; /* provenance: structural — registration gutter unit */
+  --content-measure: 86rem; /* provenance: structural — shared content measure */
+  --baseline: 0.5rem; /* provenance: structural — vertical registration unit */
+  --col: calc((100% - 11 * var(--grid-gutter)) / 12);
+}
+
+/* ── shared catalog components (single source of truth) ── */
+/* text-wrap defaults (anti-ai-slop.md AS-15): headings/eyebrows/captions balance their
+   line breaks (no orphaned last word on a display heading); paragraphs use balanced
+   wrapping too — engines cap balance at ~6 lines, so long body copy is unaffected while
+   short paragraphs stop orphaning. */
+.c-heading, .c-eyebrow, .c-caption { text-wrap: balance; }
+p { text-wrap-style: balance; }
+.c-heading { font-family: var(--c-font-heading); color: var(--c-ink); margin: 0;
+  /* case comes from the brand's own heading register (CR-1): uppercase is a MEASURED
+     brand fact (--case-h2 via --c-case-heading), never a shared-CSS assumption. */
+  text-transform: var(--c-case-heading);
+  font-weight: var(--c-heading-weight, var(--c-display-weight)); }
+.c-heading--display { font-size: var(--c-display-size); line-height: var(--c-display-lh);
+  letter-spacing: var(--c-display-ls); }
+.c-heading--h2 { font-size: var(--c-h2-size); line-height: 1.3em; }
+.c-heading--h3 { font-size: var(--c-h3-size); line-height: 1.3em; }
+.c-heading--accent { color: var(--c-accent); }
+/* stepped-lines (G7): each authored line is a block; the scaffold sets the per-line
+   registered indent via --c-step-N (half-column multiples of the shared grid). */
+.c-heading-line { display: block; }
+/* mixed-face (G5): face contrast INSIDE one heading. Default is weight contrast (safe
+   for brands with no italic cut — never a synthesized italic); a brand shipping a real
+   italic sets --c-alt-style: italic. */
+.c-heading-alt { font-style: var(--c-alt-style, normal);
+  font-weight: var(--c-alt-weight, 500); }
+
+.c-eyebrow { font-family: var(--c-font-body); font-size: var(--c-eyebrow-size);
+  letter-spacing: var(--c-eyebrow-ls); text-transform: var(--c-case-eyebrow);
+  color: var(--c-ink-muted); margin: 0; }
+
+.c-image { display: block; width: 100%; border: none; box-shadow: none;
+  border-radius: var(--radius); object-fit: cover;
+  /* PLACEHOLDER BACKING (anti-ai-slop AS-23): every image slot carries a diagonal-hatch
+     plate DERIVED FROM THE SURFACE'S OWN TOKENS (never a hardcoded hex at this level —
+     AS-01). Visible while the photo loads, on a broken src, or wherever cover-fit leaves
+     the frame unpainted; re-scopes per surface automatically because it reads --c-ink/
+     --c-paper. PAPER-dominant mixes (the plate is the surface, gently lifted toward its ink):
+     on WoodWave's dark hero this resolves to ~rgb(59,49,40)/rgb(51,41,32) — the
+     requested deep-brown hatch pair. */
+  background: repeating-linear-gradient(135deg,
+    var(--c-paper) 0px,
+    var(--c-paper) 13px,
+    color-mix(in srgb, var(--c-paper) 93%, var(--c-ink)) 13px,
+    color-mix(in srgb, var(--c-paper) 93%, var(--c-ink)) 26px); }
+/* hero-collage occlusion geometry: this exact base/overlap crop PAIR is what makes the
+   layered collage device read (the spacer clearance math + depth parallax derive from
+   it — see .cs-spacer + parallax_css docstrings). Compositions that declare mediaAspect
+   override it inline per §4.6.5; brands without the collage device never render these
+   classes. */
+.c-image--hero { /* provenance: structural — collage occlusion geometry */
+  aspect-ratio: 1355 / 570; }
+.c-image--overlap { /* provenance: structural — collage occlusion geometry */
+  aspect-ratio: 785 / 620; }
+/* the CANONICAL mask-pan wrapper — wraps ONLY the <img>, never a sibling caption, so the
+   scroll-parallax scale/translate (parallax_css/parallax_script_tags) can never bleed into
+   caption text sitting beside it in the same figure/div. Structural, always present
+   (harmless when parallax is disabled: overflow:hidden around an unscaled, untransformed
+   image is visually a no-op — a plain wrapper). See brand-schema.md §4.4.1. */
+.c-image-mask { display: block; overflow: hidden; }
+/* placeholder used by the gallery when no real asset is bound (keeps the gallery
+   self-contained); composed sections always bind a real image src. */
+.c-image-ph { display: flex; align-items: center; justify-content: center;
+  background: var(--c-ink); color: var(--c-paper); border-radius: var(--radius);
+  /* provenance: structural — placeholder plate geometry (gallery/unbound slots only;
+     composed sections always bind a real src, and declared aspects win inline) */
+  aspect-ratio: 4 / 3; font-family: var(--c-font-body); font-size: var(--c-eyebrow-size);
+  letter-spacing: var(--c-eyebrow-ls); text-transform: var(--c-case-control); }
+
+.c-arrow-link { font-family: var(--c-font-body); font-size: var(--c-control-size);
+  letter-spacing: var(--c-control-ls); text-transform: var(--c-case-control);
+  text-decoration: none;
+  color: var(--c-action-color, currentColor); display: inline-flex; align-items: center;
+  gap: 0.5rem; background: none; border: none; cursor: pointer; padding: 0; }
+.c-arrow-link--accent { color: var(--c-accent); }
+
+.c-arrow { transition: transform var(--c-motion-fast) var(--c-ease); }
+.c-arrow-link:hover .c-arrow { transform: translateX(0.35rem); }
+
+/* wordmark logo (harness/wordmark brands; composed WoodWave navs use .c-logo--img):
+   the TEXT-LOGO device renders in the brand's own control register — weight from the
+   heading register, tracking/case from control-text (CR-4). */
+.c-logo { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--c-font-body);
+  font-weight: var(--c-logo-weight, var(--c-heading-weight));
+  font-size: var(--c-control-size);
+  letter-spacing: var(--c-logo-ls, var(--c-control-ls));
+  text-transform: var(--c-logo-case, var(--c-case-control));
+  color: var(--c-logo-color, var(--c-accent)); }
+.c-logo .c-glyph { font-family: var(--c-font-heading);
+  font-size: calc(var(--c-control-size) * 1.25); }
+/* image logo (composed nav): the extracted brand logo as a plain linked <img>, no chip,
+   no border, no radius. Sized from the extracted 175x26 proportions (height-capped so it
+   scales down gracefully); width:auto keeps the aspect ratio. The WoodWave source SVG is
+   already the brand gold, so it reads on the dark hero surface with no filter needed. */
+.c-logo--img { display: inline-flex; align-items: center; text-decoration: none;
+  border: none; border-radius: 0; }
+.c-logo-img { display: block; height: var(--chrome-nav-logo-h, 1.625rem);
+  width: auto; max-width: 12rem; }
+
+/* header block: eyebrow -> heading (+ optional subhead/cta) typographic cluster */
+.c-header { display: flex; flex-direction: column; gap: var(--c-eyebrow-gap); }
+
+/* paragraph primitive: narrow offset body, Inter sentence case, generous leading.
+   font-weight rides the brand's measured body tier (N1, fix-batch 2026-07): a brand
+   whose body register is light (300) must not silently render at the UA's 400. */
+.c-paragraph { font-family: var(--c-font-body); font-size: var(--c-body-size);
+  font-weight: var(--c-body-weight);
+  line-height: 1.55em; color: var(--c-ink-muted); max-width: var(--c-measure, 34ch); margin: 0; }
+
+/* caption primitive: muted uppercase margin micro-text (never over media). */
+.c-caption { font-family: var(--c-font-body); font-size: var(--c-eyebrow-size);
+  letter-spacing: var(--c-eyebrow-ls); text-transform: var(--c-case-eyebrow);
+  color: var(--c-ink-muted); margin: 0; }
+
+/* form block + underline field: NO box, NO fill, NO border — the single 1px rule is a
+   pseudo-element (height:1px+background), so it never reads as a boxed input or a section
+   hairline (honors WoodWave no-boxed-inputs / no-section-hairlines). */
+.c-form { display: flex; flex-direction: column; gap: var(--c-form-gap, 1.25rem); }
+.c-field { position: relative; display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 1rem; padding-bottom: 0.5rem; }
+.c-field::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: var(--c-hairline); }
+.c-field-text { font-family: var(--c-font-body); font-size: var(--c-body-size);
+  text-transform: var(--c-case-control); letter-spacing: var(--c-control-ls);
+  color: var(--c-ink-muted); }
+
+/* ruled action rows (the divider primitive): label left, value/action right, separated by a
+   1px pseudo-rule INSIDE a panel only — never as a section seam. */
+.c-rows { display: flex; flex-direction: column; }
+.c-row { position: relative; display: flex; align-items: baseline; justify-content: space-between;
+  gap: 1rem; padding: 0.85rem 0; }
+.c-row::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px;
+  background: var(--c-hairline); }
+.c-row-label { font-family: var(--c-font-body); font-size: var(--c-control-size);
+  letter-spacing: var(--c-control-ls); text-transform: var(--c-case-control);
+  color: var(--c-ink); }
+.c-row-value { font-family: var(--c-font-heading); font-size: var(--c-h3-size); color: var(--c-ink); }
+
+/* footer block (closing bookend): a CENTERED cluster of sitemap + TEXT social links
+   (slash-separated, no icons) + a centered muted legal line, reusing the brand's
+   typographic vocabulary. No boxes, borders, shadows, or radius. cq/rem units only.
+   The SITEMAP REGISTER is a per-brand GRAMMAR (fix-batch 2026-07, B6): the oversized
+   didone slash-sitemap vs the measured multi-column directory live in
+   footer_grammar_css() and are emitted per brand — neither leaks into the other. */
+.c-footer { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--c-block-gap, 2.5rem); }
+.c-foot-sep { color: var(--c-ink-muted); font-family: var(--c-font-heading); }
+.c-foot-social { display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 0.4rem 0.9rem; margin: 0 auto; }
+.c-foot-social-link { font-family: var(--c-font-body); font-size: var(--c-control-size);
+  letter-spacing: var(--c-control-ls); text-transform: var(--c-case-control);
+  color: var(--c-ink-muted); text-decoration: none; }
+.c-foot-social .c-foot-sep { font-family: var(--c-font-body); }
+.c-foot-legal { font-family: var(--c-font-body); font-size: var(--c-eyebrow-size);
+  letter-spacing: var(--c-eyebrow-ls); color: var(--c-ink-muted); margin: 0; }
+
+/* ── MOTION ── authored brand spec (brand.yaml voice.motionSpec): easing + durations
+   come ONLY from the brand's --c-* motion aliases (component_render.motion_vars_css →
+   generated layer-1 --motion-*). CR-3: fallback literals are GONE — a missing motion
+   spec fails loud at tokens generation, it never inherits another brand's tempo.
+   Motion is time + transform only — no viewport units, no new color/shadow/radius. */
+
+/* typographic links: an underline that DRAWS IN (scaleX 0->100%, origin left), NOT a
+   color swap — consistent with the typographic-link aesthetic. The rule is a 1px
+   pseudo-element (height+background), never a border, so it adds no border/hairline. */
+.c-arrow-link, .c-foot-sitemap-link, .c-foot-social-link { position: relative; }
+.c-arrow-link::after, .c-foot-sitemap-link::after, .c-foot-social-link::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -0.08em; height: 1px;
+  background: currentColor; transform: scaleX(0); transform-origin: left center;
+  transition: transform var(--c-motion-base) var(--c-ease); }
+.c-arrow-link:hover::after, .c-arrow-link:focus-visible::after,
+.c-foot-sitemap-link:hover::after, .c-foot-sitemap-link:focus-visible::after,
+.c-foot-social-link:hover::after, .c-foot-social-link:focus-visible::after {
+  transform: scaleX(1); }
+
+/* calm scroll reveal: opacity + small translateY (no scale pop, no rotation). The hidden
+   initial state is GATED on `.cs-motion-ready` (added by the page's tiny IntersectionObserver
+   script) so content is fully visible if JS/IO is unavailable; `.is-in` reveals it.
+   The translateY shift is the brand's OPTIONAL scrollReveal token: absent, the 0px
+   fallback makes the reveal fade-only (device disabled, never a foreign shift). The
+   stagger step derives from the brand's own fast duration (0.1875 × fast — WoodWave's
+   authored 320ms → the measured 60ms step), so reveal tempo scales with brand tempo. */
+.cs-motion-ready .cs-reveal {
+  opacity: 0; transform: translateY(var(--c-reveal-shift, 0px));
+  transition: opacity var(--c-motion-slow) var(--c-ease),
+              transform var(--c-motion-slow) var(--c-ease);
+  transition-delay: calc(var(--cs-reveal-i, 0) * var(--c-motion-fast) * 0.1875);
+  will-change: opacity, transform; }
+.cs-motion-ready .cs-reveal.is-in { opacity: 1; transform: none; }
+
+/* respect prefers-reduced-motion: reduce — neutralize all transitions/reveals + the arrow
+   nudge, and force revealed content fully visible. */
+@media (prefers-reduced-motion: reduce) {
+  .c-arrow,
+  .c-arrow-link::after, .c-foot-sitemap-link::after, .c-foot-social-link::after,
+  .cs-motion-ready .cs-reveal { transition: none !important; animation: none !important; }
+  .c-arrow-link:hover .c-arrow { transform: none !important; }
+  .cs-reveal, .cs-motion-ready .cs-reveal { opacity: 1 !important; transform: none !important; }
+}
+
+
+.c-button { display: inline-block;
+  background: var(--c-button-bg, var(--c-accent));
+  color: var(--c-button-fg, var(--c-button-ink, var(--c-paper)));
+  font-family: var(--c-button-font, var(--c-font-body));
+  font-size: var(--c-button-size, var(--c-control-size));
+  font-weight: var(--c-button-weight, var(--c-heading-weight));
+  letter-spacing: var(--c-button-ls, var(--c-control-ls));
+  text-decoration: none;
+  padding: var(--c-button-pad, 0.8em 1.6em); /* provenance: structural — em-relative
+     control inset fallback (shape, not magnitude: scales with the button's own size) */
+  border-radius: var(--c-button-radius, var(--radius)); border: none;
+  transition: background var(--c-motion-fast) var(--c-ease),
+              transform var(--c-motion-fast) var(--c-ease); }
+/* hover = the brand's MEASURED bg swap (--c-button-bg-hover); the old universal
+   brightness-filter was a motion-language assumption (one brand's hover mechanic). */
+.c-button:hover, .c-button:focus-visible {
+  background: var(--c-button-bg-hover, var(--c-button-bg, var(--c-accent)));
+  transform: translateY(-1px); }
+
+.c-field--boxed { align-items: center;
+  padding: 0.6em 0.9em; /* provenance: structural — em-relative field inset (shape,
+     not magnitude: scales with the field's own type size) */
+  border: 1px solid var(--c-input-border, var(--c-hairline));
+  border-radius: var(--c-input-radius, var(--radius));
+  background: var(--c-input-bg, transparent); }
+.c-field--boxed::after { display: none; }
+
+/* columns footer grammar: a measured multi-column link directory — for brands whose
+   extracted footer is a dense sitemap of small links, not a display device. Register
+   (size/weight) rides the brand's measured chrome tokens via --c-foot-link-size;
+   layout mechanics (wrap/gaps/measure) are structural. */
+.c-foot-cols { display: flex; flex-wrap: wrap; justify-content: center; text-align: left;
+  gap: var(--c-block-gap, 2.5rem) clamp(2rem, 5cqw, 4rem); max-width: 72rem; margin: 0 auto; }
+.c-foot-col { display: flex; flex-direction: column; gap: 0.6em;
+  flex: 1 1 10rem; min-width: 10rem; max-width: 16rem; }
+.c-foot-col-link { font-family: var(--c-font-body);
+  font-size: var(--c-foot-link-size, var(--c-control-size));
+  font-weight: var(--c-foot-link-weight, var(--c-body-weight));
+  color: var(--c-ink-muted); text-decoration: none; line-height: 1.6em; }
+.c-foot-col-link:hover, .c-foot-col-link:focus-visible { color: var(--c-link-hover); }
+
+:root { --c-ease: var(--motion-ease); --c-motion-fast: var(--motion-fast); --c-motion-base: var(--motion-base); --c-motion-slow: var(--motion-slow); }
+
+/* link hover (color-shift mode) -- SAFE default here; the real per-surface value (accent
+   on dark, ink on light) is set by component_vars/root_vars (anti-ai-slop.md AS-10). */
+:root { --c-link-hover: var(--c-ink); }
+.c-arrow-link, .c-foot-sitemap-link, .c-foot-social-link {
+  transition: color var(--c-motion-fast) var(--c-ease); }
+.c-arrow-link:hover, .c-arrow-link:focus-visible,
+.c-foot-sitemap-link:hover, .c-foot-sitemap-link:focus-visible,
+.c-foot-social-link:hover, .c-foot-social-link:focus-visible { color: var(--c-link-hover); }
+/* color-shift REPLACES the underline draw-in for these links (no double signal). */
+.c-arrow-link::after, .c-foot-sitemap-link::after, .c-foot-social-link::after { content: none; }
+
+.cs-section { background: var(--c-paper); color: var(--c-ink);
+  padding: var(--c-section-pad-top, 1.75rem) var(--c-section-pad-x, 2.5rem)
+           var(--c-section-pad-bottom, var(--c-section-pad, 6.25rem)); }
+.cs-nav { display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+  margin-bottom: clamp(2rem, 6cqw, 5rem); }
+.cs-navlinks { display: flex; gap: 0.55rem; flex: 1; justify-content: center; }
+/* nav links read the MEASURED nav register (--c-nav-size, single-sourced from
+   brand.yaml navbar.measured.link), not the generic control-text size. */
+.cs-navlinks .c-arrow-link { font-size: var(--c-nav-size, var(--c-control-size)); }
+.cs-navlinks .cs-sep { opacity: 0.55; }
+/* shared content container: ONE measure, identical section edges page-wide. */
+.cs-collage-grid, .cs-statement-grid, .cs-quote-grid, .cs-visit-panels,
+.cs-modules-intro, .cs-modules, .cs-interlock {
+  max-width: var(--content-measure, 86rem); margin-inline: auto; }
+/* shared 12-col registration grid (column-gap IS the shared gutter). */
+.cs-collage-grid, .cs-statement-grid, .cs-quote-grid, .cs-modules {
+  display: grid; grid-template-columns: repeat(var(--grid-cols, 12), minmax(0, 1fr));
+  column-gap: var(--grid-gutter, 6rem); }
+.cs-section { min-height: 100cqh; }
+.cs-slot { display: flex; flex-direction: column; align-items: center; }
+.cs-eyebrow-wrap { margin-bottom: var(--c-eyebrow-gap); text-align: center; }
+.cs-title { position: relative; z-index: 2; text-align: center;
+  margin-bottom: var(--c-title-overlap); }
+.cs-collage { position: relative; width: 100%; max-width: 80rem; margin: 0 auto; }
+/* ALIGNMENT: the overlap depth/offsets keep their measured % magnitudes but round() the
+   USED value to an exact --baseline multiple, so the overlap registers to the shared
+   baseline grid at any width instead of landing on an arbitrary fraction. */
+.c-image--overlap.is-abs { position: absolute;
+  width: round(nearest, 34%, var(--baseline));
+  right: round(nearest, 4%, var(--baseline));
+  bottom: round(nearest, -28%, var(--baseline)); z-index: 1; }
+/* SPACER (anti-ai-slop.md AS-01/AS-03): reserves clearance below the collage for the
+   overlap image's bleed (bottom:-28% of a 34%-wide, 785:620 image inside a 1355:570
+   collage geometrically needs ~11.7% of the collage's OWN width, not a guessed round
+   number). The clamp() UPPER BOUND (9.5rem) is what actually matters here: it caps
+   growth once the collage hits its 80rem max-width, so the spacer stops scaling with
+   the full, uncapped section width on wide viewports — the way the old bare `22cqw`
+   (measured against `.cs-slot`, not the width-capped collage) kept growing forever. */
+.cs-spacer { height: clamp(4rem, 12cqw, 9.5rem); }
+.cs-foot { display: flex; flex-direction: column; align-items: center;
+  gap: var(--c-block-gap, 1.75rem); text-align: center; margin-top: var(--c-block-gap, 2.5rem); }
+/* subhead rides the brand body register one step up (1rem was body 0.875rem x 1.1429
+   against the pre-token render — ratio is structure, magnitude is the brand's). */
+.cs-sub { font-family: var(--c-font-body); font-size: calc(var(--c-body-size) * 1.1429);
+  line-height: 1.55em; color: var(--c-ink-muted); max-width: 42rem; }
+/* ── PLACED media layers (grid/overlap contract §4.6.5) ─────────────────────────
+   Only sections whose composition declared placement get these classes; the legacy
+   hero (.cs-collage without --layered) is byte-unchanged. z-ladder inside the layered
+   collage: back overlays(0) < base media(1) < mid(2) < front(3) < display title(4);
+   the corner-pinned media + background layer register to the SECTION frame. */
+.cs-hero-layered { position: relative; overflow: hidden; }
+.cs-hero-layered .cs-slot { position: relative; z-index: 2; }
+.cs-hero-layered .cs-title { z-index: 4; }
+.cs-collage--layered > .c-image, .cs-collage--layered > .c-image-ph {
+  position: relative; z-index: 1; margin-inline: auto; }
+.cs-ov { position: absolute; }
+.cs-ov .c-image, .cs-ov .c-image-ph { width: 100%; }
+/* z:back + width:full-bleed media = a true BACKGROUND layer behind the section copy —
+   the SANCTIONED text-on-media treatment. The scrim is a flat surface-toned wash (the
+   section's own --c-paper at high opacity) so text keeps AA contrast over the photo
+   (gate: text-contrast); never a gradient (brand neverDo no-gradients). */
+.cs-bg-layer { position: absolute; inset: 0; z-index: 0; }
+.cs-bg-layer .c-image { width: 100%; height: 100%; object-fit: cover; }
+.cs-bg-scrim { position: absolute; inset: 0;
+  background: color-mix(in srgb, var(--c-paper) 72%, transparent); }
+/* small z:front media pinned to a corner of the SECTION frame (alignTo.corner). */
+.cs-corner-media { position: absolute; }
+.cs-corner-media .c-image, .cs-corner-media .c-image-ph { width: 100%; }
+@media (max-width: 991px) { .cs-navlinks { display: none; } }
+@media (max-width: 767px) { .cs-section {
+    /* provenance: structural — mobile floor insets (tap-safe minimum section padding on
+       a narrow frame; device floor, not a brand rhythm token) */
+    padding: clamp(1.25rem, 5cqw, 1.75rem)
+    clamp(1.25rem, 5cqw, 1.75rem) clamp(1.5rem, 9cqw, 3rem); }
+  .c-image--overlap.is-abs { width: round(nearest, 46%, var(--baseline));
+    right: round(nearest, 2%, var(--baseline));
+    bottom: round(nearest, -18%, var(--baseline)); }
+  /* mobile overlap geometry (46% wide, bottom:-18%) needs ~7.6% of collage width */
+  .cs-spacer { height: clamp(2.5rem, 8cqw, 5rem); } }
+.cs-collage-sec { position: relative; overflow: hidden; }
+.cs-ghost { position: absolute; right: -3cqw; top: 4%; z-index: 0;
+  font-family: var(--c-font-heading);
+  text-transform: var(--case-ghost-watermark, var(--c-case-heading));
+  font-weight: var(--weight-ghost-watermark, var(--c-heading-weight));
+  /* ghost scale: brand-measured tier magnitude x structural ladder ratios (CS-2);
+     var unresolved (no ghost tier) => device disabled, never a foreign scale. */
+  font-size: var(--c-ghost-size,
+    clamp(calc(var(--size-ghost-watermark-base) * 0.381), 40cqw,
+          calc(var(--size-ghost-watermark-base) * 1.219)));
+  line-height: 0.9;
+  color: var(--c-ghost);
+  pointer-events: none; white-space: nowrap; }
+/* SURFACE-AWARE ghost: the brand-constant --c-ghost is dark-ink-at-6% (cream tuned) —
+   invisible dark-on-dark on an inverse collage. Scoped to inverse surfaces only, so
+   every existing cream collage render is byte-unchanged; low-salience by construction
+   (8% of the surface's own ink — gate: decoration-salience). */
+[data-surface*="inverse"] .cs-ghost {
+  color: color-mix(in srgb, var(--c-ink) 8%, transparent); }
+/* placed onto the SHARED 12-col grid (tracks + gutter from SCAFFOLD_BASE_CSS): the old
+   private 1.08fr/0.92fr ratio maps to a 6/6 span split (the nearest whole-column spans),
+   so the head/media column and the body column register to shared page tracks. Row gap +
+   body drop are exact --baseline multiples (3rem = 6, 3.5rem = 7). */
+.cs-collage-grid { position: relative; z-index: 1;
+  row-gap: calc(6 * var(--baseline)); align-items: start; }
+.cs-collage-head { grid-column: 1 / span 6; grid-row: 1; max-width: none; }
+/* the collage headline spans wider than the style's global display cap so it intrudes
+   toward the right rather than stacking one word per line on the far left. */
+.cs-collage-head .c-heading--display { max-width: 17ch; text-align: left; }
+.cs-collage-media { grid-column: 1 / span 6; grid-row: 2; display: flex;
+  flex-direction: column; gap: 0.75rem; margin: 0; align-self: end; }
+.cs-collage-media .c-image { width: 100%; }
+.cs-collage-body { grid-column: 7 / -1; grid-row: 1 / span 2; align-self: start;
+  display: flex; flex-direction: column;
+  gap: var(--c-block-gap, 1.75rem); max-width: 38ch;
+  padding-top: calc(7 * var(--baseline)); }
+/* MID collapse (anti-ai-slop AS-16 multi-viewport lesson): between ~768-1280px the
+   display heading overflows its 6-col track and paints OVER the body column (grid does
+   not clip overflow) — collapse to a single column well before the mobile breakpoint. */
+@media (max-width: 1280px) { .cs-collage-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .cs-collage-head { grid-column: 1; grid-row: 1; }
+  .cs-collage-body { grid-column: 1; grid-row: 2; padding-top: 0; max-width: 46ch; }
+  .cs-collage-media { grid-column: 1; grid-row: 3; align-self: start; } }
+@media (max-width: 767px) { .cs-collage-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .cs-collage-head { grid-column: 1; grid-row: 1; }
+  .cs-collage-body { grid-column: 1; grid-row: 2; padding-top: 0; max-width: none; }
+  .cs-collage-media { grid-column: 1; grid-row: 3; align-self: start; }
+  .cs-ghost { font-size: clamp(calc(var(--size-ghost-watermark-base) * 0.1905), 40cqw,
+                calc(var(--size-ghost-watermark-base) * 0.4571));
+    right: auto; left: -2cqw; } }
+.cs-split-intro { max-width: 100%; margin-bottom: 3.5rem; }
+.cs-split-intro .cs-eyebrow-wrap { margin-bottom: var(--c-eyebrow-gap); }
+/* the band heading is the didone DISPLAY tier; give it room to breathe (the style's
+   global 16ch display cap is too tight for this dark-band heading). */
+.cs-split-intro .c-heading--display { max-width: 22ch; }
+/* the split places onto 12 shared columns with a ZERO gutter (the flush hard cut is the
+   band's character): each half spans 6, so its seam registers to the grid's center line. */
+.cs-split { display: grid; grid-template-columns: repeat(var(--grid-cols, 12), minmax(0, 1fr));
+  gap: 0; align-items: stretch; }
+.cs-split-media { grid-column: 1 / span 6; display: flex; }
+.cs-split > .cs-panel { grid-column: 7 / -1; }
+.cs-split-media .c-image { width: 100%; height: 100%; object-fit: cover; }
+/* CS-1 (token-layer-2026-07): the WoodWave cream/ink/hairline literals that used to sit
+   in these var() fallbacks are GONE — the generated layer-1 block always defines the
+   panel family (fail-loud at generation), so fallbacks were dead-or-DNA. */
+.cs-panel { background: var(--c-panel); color: var(--c-panel-ink);
+  padding: 2.75rem 2.5rem; display: flex; flex-direction: column;
+  /* the panel keeps its own surface coloring regardless of the dark parent band.
+     INTERACTION tokens re-scope with it (AS-20): the panel is a LIGHT surface, so the
+     link hover resolves to the panel's own ink (ink-shift) — the parent dark section's
+     measured accent hover (--c-link-hover) must never leak onto the light panel
+     (the 'GET DIRECTIONS' gold-on-cream ~1.3:1 failure). */
+  --c-ink: var(--c-panel-ink); --c-accent: var(--c-panel-ink);
+  --c-link-hover: var(--c-panel-ink);
+  --c-hairline: var(--c-panel-hairline); }
+.cs-panel-title { margin-bottom: 1.25rem; }
+.cs-panel-foot { margin-top: 1.5rem; display: flex; justify-content: flex-end; }
+@media (max-width: 767px) { .cs-split { grid-template-columns: 1fr; }
+  .cs-split-media, .cs-split > .cs-panel { grid-column: 1; }
+  .cs-split-media .c-image { /* provenance: structural — mobile recrop: the stacked
+    split half needs a bounded height (device geometry, not a brand ratio) */
+    aspect-ratio: 4 / 3; } }
+.cs-gallery-sec { padding-left: 0; padding-right: 0; }
+.cs-gallery-utility { display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem; margin-bottom: 1.25rem; }
+.cs-gallery-media { margin: 0; }
+.cs-gallery-media .c-image { width: 100%; aspect-ratio: var(--c-aspect-band); object-fit: cover; display: block; }
+.cs-gallery-caption { padding: 1rem 2.5rem 0; }
+/* optional display header/cta (hero-through-gallery-band; #sec-1 dropped-heading fix).
+   .cs-slot/.cs-foot membership means the resolved anchor (AS-18) aligns them. */
+.cs-gallery-head { display: flex; flex-direction: column; gap: 1rem;
+  padding: 0 2.5rem; margin-bottom: 2rem; }
+.cs-gallery-cta { display: flex; align-items: center;
+  gap: var(--c-block-gap, 1.75rem); padding: 1.25rem 2.5rem 0; }
+@media (max-width: 767px) { .cs-gallery-utility, .cs-gallery-caption { padding-left: 1.25rem;
+  padding-right: 1.25rem; } .cs-gallery-head, .cs-gallery-cta { padding-left: 1.25rem;
+  padding-right: 1.25rem; }
+  .cs-gallery-media .c-image { /* provenance: structural — mobile recrop of the
+    full-bleed band device (tall crop so the band keeps presence on a narrow frame;
+    device geometry, not a brand ratio) */
+    aspect-ratio: 4 / 5; } }
+.cs-modules-sec { position: relative; }
+.cs-modules-intro { margin-bottom: clamp(2.5rem, 6cqw, 5rem); }
+.cs-modules { row-gap: clamp(calc(4 * var(--baseline)), 5cqw,
+  calc(7 * var(--baseline))); align-items: start; }
+.cs-modules > .cs-module:nth-child(odd) { grid-column: 1 / span var(--c-span-a, 7); }
+.cs-modules > .cs-module:nth-child(even) { grid-column: span var(--c-span-b, 5) / -1; }
+.cs-module { display: flex; flex-direction: column; gap: 0.9rem; }
+/* the second (even) module is staggered downward so the columns never line up — the drop
+   is a whole number of baselines (registration, not a float). Chrome-less: NO
+   background/border/radius/shadow — depth from the stagger + whitespace only (so this is
+   an editorial module, not a prohibited cream card). */
+.cs-modules > .cs-module:nth-child(even) {
+  margin-block-start: var(--c-card-stagger, calc(7 * var(--baseline))); }
+/* PER-COLUMN placement (editorial-harvest-2026-07, staggered-caption-columns-3): a
+   pattern's stagger.perColumn entries set --c-col-N/--c-drop-N (whole-column tracks +
+   baseline-multiple drops) via pattern_treatment_css; the var() DEFAULTS reproduce the
+   odd/even geometry exactly, so every existing render is computed-value unchanged. */
+.cs-modules > .cs-module:nth-child(1) {
+  grid-column: var(--c-col-1, 1 / span var(--c-span-a, 7));
+  margin-block-start: var(--c-drop-1, 0); }
+.cs-modules > .cs-module:nth-child(2) {
+  grid-column: var(--c-col-2, span var(--c-span-b, 5) / -1);
+  margin-block-start: var(--c-drop-2, var(--c-card-stagger, calc(7 * var(--baseline)))); }
+.cs-modules > .cs-module:nth-child(3) {
+  grid-column: var(--c-col-3, 1 / span var(--c-span-a, 7));
+  margin-block-start: var(--c-drop-3, 0); }
+.cs-module-media { margin: 0; width: 100%; overflow: hidden; border-radius: 0; }
+.cs-module-media .c-image { width: 100%; height: 100%; }
+@media (max-width: 767px) { .cs-modules { grid-template-columns: 1fr; gap: 2.5rem; }
+  .cs-modules > .cs-module:nth-child(odd), .cs-modules > .cs-module:nth-child(even) {
+    grid-column: 1; margin-block-start: 0; } }
+.cs-interlock { position: relative; }
+.cs-interlock-media { float: var(--c-float-side, right);
+  width: var(--c-inset-width, calc(7 * var(--col) + 6 * var(--grid-gutter, 6rem)));
+  margin: var(--c-inset-margin, calc(1 * var(--baseline)) 0
+          calc(2 * var(--baseline)) calc(6 * var(--baseline)));
+  /* aspect alias only (no literal fallback): brands without an aspectPalette let the
+     media keep its natural ratio — device disabled, never a foreign crop. */
+  aspect-ratio: var(--c-aspect-landscape); overflow: hidden; border-radius: 0; }
+.cs-interlock-media .c-image { width: 100%; height: 100%; }
+.cs-interlock-caption { display: block;
+  margin-bottom: var(--c-inset-drop, clamp(calc(9 * var(--baseline)), 12cqw,
+    calc(22 * var(--baseline)))); }
+.cs-interlock .c-heading--display { max-width: none; text-align: left;
+  /* interlock display de-scales from the brand's display tier (0.3333/0.6 of the
+     measured base — ratios are structure, the rem magnitude is the brand's). */
+  font-size: clamp(calc(var(--size-display-hero-base) * 0.3333), 4.4cqw,
+                   calc(var(--size-display-hero-base) * 0.6));
+  line-height: 1.06em; }
+.cs-interlock-clear { clear: both; }
+/* support/CTA foot cluster (rendered ONLY when the composition binds those slots —
+   ANCHORED-REPORT composer-gap #2 fix; legacy interlock sections emit no foot). */
+.cs-interlock-foot { display: flex; flex-direction: column; align-items: flex-start;
+  gap: var(--c-block-gap, 1.75rem); margin-top: var(--c-block-gap, 2.5rem); }
+@media (max-width: 767px) { .cs-interlock-media { float: none; width: 100%; margin: 0 0 1.75rem;
+  /* provenance: structural — mobile recrop: the un-floated interlock media needs a
+     bounded height (device geometry, not a brand ratio) */
+  aspect-ratio: 3 / 2; } .cs-interlock-caption { margin-bottom: 1.25rem; } }
+.cs-overlay-sec { position: relative; }
+.cs-overlay-sec.cs-ov--bleed { padding-left: 0; padding-right: 0; }
+.cs-ov-frame { position: relative; max-width: var(--content-measure, 86rem);
+  margin-inline: auto; }
+.cs-ov--bleed .cs-ov-frame { max-width: none; }
+.cs-ov-canvas { position: relative; margin: 0; min-height: calc(48 * var(--baseline)); }
+.cs-ov-canvas > .c-image, .cs-ov-canvas > .c-image-ph {
+  width: 100%; height: 100%; min-height: inherit; object-fit: cover; }
+/* framed (G4): page margins visible on ALL sides — the frame is an inset canvas other
+   slots register against (never edge-to-edge, never a border). */
+.cs-ov-canvas--framed { margin-inline: auto; }
+/* flat surface-toned wash (sanctioned text-on-media mitigation; never a gradient). */
+.cs-ov-scrim { position: absolute; inset: 0; z-index: 1; }
+/* panel-on-media (G1): a SOLID panel floated over the canvas — the sanctioned
+   panel-over-media pair. Own opaque surface scope (like the split's .cs-panel), so its
+   text never composites against the photograph. Flat: no shadow, no radius. */
+.cs-ov-panel { position: absolute; z-index: 3; top: 50%; transform: translateY(-50%);
+  min-height: 62%; display: flex; flex-direction: column; gap: var(--c-block-gap, 1.75rem);
+  background: var(--c-panel); color: var(--c-panel-ink);
+  /* light panel surface: interaction tokens re-scope with ink (AS-20) — no dark-surface
+     accent hover leaking onto the light overlay panel. CS-1: literal fallbacks gone. */
+  --c-ink: var(--c-panel-ink); --c-accent: var(--c-panel-ink);
+  --c-ink-muted: var(--c-panel-ink);
+  --c-link-hover: var(--c-panel-ink);
+  --c-hairline: var(--c-panel-hairline);
+  padding: calc(6 * var(--baseline)) calc(5 * var(--baseline)); }
+/* panel display steps DOWN from the section's own display alias — --c-display-size is
+   always emitted per section (component_vars), so no literal fallback (AS-24). */
+.cs-ov-panel .c-heading--display { font-size: calc(0.62 * var(--c-display-size));
+  max-width: 14ch; }
+/* sidebar rail: the full-height panel column (ref 3) — space-between stack. */
+.cs-ov-rail { top: 0; bottom: 0; transform: none; min-height: 0;
+  justify-content: space-between; }
+/* straddle (G2, z:front): a display heading riding over a crossed edge/seam. */
+.cs-ov-straddle { position: absolute; z-index: 4; }
+.cs-ov-straddle .c-heading--display { max-width: none; }
+/* tuck (G2 z:back + G8 params): the heading row sits in flow BEFORE the canvas and the
+   canvas rides OVER its lower part by the registered depth (media z above heading z). */
+.cs-ov-headrow--tucked { display: flex; align-items: flex-start; gap: var(--grid-gutter, 6rem);
+  position: relative; z-index: 0; margin-bottom: calc(-1 * var(--c-tuck-depth, calc(4 * var(--baseline)))); }
+.cs-ov-headrow--tucked ~ .cs-ov-canvas { z-index: 2; }
+.cs-ov-headrow-side { margin-inline-start: auto; }
+/* scrim-band (G3): a FLAT translucent band across the canvas (fill set inline from the
+   section surface + opacityClass — an rgba literal, never a gradient). */
+.cs-ov-scrimband { position: absolute; left: 0; right: 0; z-index: 2; display: flex;
+  gap: var(--grid-gutter, 6rem); align-items: center;
+  padding: calc(3 * var(--baseline)) calc(4 * var(--baseline)); }
+.cs-ov-scrim-item { display: flex; flex-direction: column; gap: calc(1 * var(--baseline)); }
+.cs-ov-scrim-item .cs-sub { max-width: 24ch; }
+/* corner-registered cues/support + in-frame annotations. */
+.cs-ov-corner, .cs-ov-placed { position: absolute; z-index: 4; }
+.cs-ov-corner--br, .cs-ov-corner--bl { text-align: right; }
+/* break-frame (G6): corner-anchored DECORATION crossing the frame edge — area-capped,
+   pointer-events none, never over text (decoration-salience applies). */
+.cs-ov-breakframe { position: absolute; z-index: 4; pointer-events: none; }
+.cs-overlay-sec:has(.cs-ov-breakframe) .cs-ov-frame { overflow: visible; }
+/* stepped-lines (G7): per-line registered indents in half-column units. */
+.cs-ov-stepped .c-heading-line:nth-child(1) { margin-inline-start: var(--c-step-1, 0); }
+.cs-ov-stepped .c-heading-line:nth-child(2) { margin-inline-start: var(--c-step-2, 0); }
+.cs-ov-stepped .c-heading-line:nth-child(3) { margin-inline-start: var(--c-step-3, 0); }
+.cs-ov-stepped .c-heading-line:nth-child(4) { margin-inline-start: var(--c-step-4, 0); }
+/* type-behind-media (G8): REAL heading at z:0, media stack above (media z 2, detail 3);
+   the detail image registers to the main's bottom-right corner (media-over-media). */
+.cs-ov-tbm-sec .cs-eyebrow-wrap { text-align: center; margin-bottom: calc(4 * var(--baseline)); }
+.cs-ov-behind { position: relative; z-index: 0; text-align: center; }
+.cs-ov-behind .c-heading--display { max-width: none; text-align: center;
+  /* rides the section's display alias, always emitted per section — no literal fallback */
+  font-size: calc(1.25 * var(--c-display-size)); line-height: 1.02em; }
+.cs-ov-media-stack { position: relative; z-index: 2; }
+.cs-ov-media-stack > .c-image, .cs-ov-media-stack > .c-image-ph { width: 100%; }
+.cs-ov-detail { position: absolute; z-index: 3;
+  right: calc(-3 * var(--baseline)); bottom: calc(-4 * var(--baseline)); }
+.cs-ov-flank { position: absolute; top: 55%; z-index: 4; max-width: 16ch; }
+.cs-ov-flank--left { left: 0; }
+.cs-ov-flank--right { right: 0; text-align: right; }
+/* foot cluster for unplaced support/cta slots. */
+.cs-ov-foot { display: flex; flex-direction: column; align-items: flex-start;
+  gap: var(--c-block-gap, 1.75rem); margin-top: var(--c-block-gap, 2.5rem); }
+.cs-ov-foot-item { max-width: 46ch; }
+@media (max-width: 767px) {
+  .cs-ov-panel, .cs-ov-rail { position: static; transform: none; width: 100% !important;
+    left: auto !important; min-height: 0; margin-top: var(--c-block-gap, 1.75rem); }
+  .cs-ov-straddle, .cs-ov-placed { position: static; max-width: none !important;
+    margin: var(--c-block-gap, 1.75rem) 0 0; }
+  .cs-ov-corner { position: static; text-align: left; margin-top: var(--c-block-gap, 1.75rem); }
+  .cs-ov-headrow--tucked { flex-direction: column; gap: 1.25rem; margin-bottom: 0; }
+  .cs-ov-scrimband { position: static; flex-direction: column; align-items: flex-start; }
+  .cs-ov-media-stack { margin-top: 0 !important; margin-inline: auto !important; }
+  .cs-ov-flank { position: static; max-width: none; margin-top: 1.25rem; }
+  .cs-ov-detail { position: static; width: 60% !important; margin-top: 0.75rem; }
+  .cs-ov-canvas { min-height: 0; } }
+.cs-banded-sec { padding: 0; }
+.cs-band { position: relative; }
+.cs-band--top .cs-band-media { margin: 0; }
+.cs-band--top .c-image, .cs-band--top .c-image-ph { width: 100%;
+  height: calc(56 * var(--baseline)); object-fit: cover; display: block; }
+/* the on-photo caption rides a small solid panel CHIP (sanctioned panel-over-media) —
+   never bare text on the photograph. */
+.cs-band-chip { position: absolute; top: calc(5 * var(--baseline));
+  left: 50%; transform: translateX(-50%); z-index: 1;
+  padding: calc(1 * var(--baseline)) calc(3 * var(--baseline)); }
+.cs-band--bottom { padding: 0 var(--c-section-pad-x, 2.5rem)
+  var(--c-section-pad-bottom, var(--c-section-pad, 6.25rem)); }
+.cs-band-straddler { position: relative; z-index: 2;
+  margin-top: calc(-1 * var(--c-seam-rise, calc(12 * var(--baseline)))); }
+.cs-band-straddler .c-image, .cs-band-straddler .c-image-ph { width: 100%; }
+.cs-band-body { max-width: var(--content-measure, 86rem); margin-inline: auto;
+  display: flex; flex-direction: column; gap: var(--c-block-gap, 1.75rem);
+  padding-top: var(--c-block-gap, 2.5rem); }
+@media (max-width: 767px) {
+  .cs-band--top .c-image, .cs-band--top .c-image-ph { height: calc(36 * var(--baseline)); }
+  .cs-band-straddler { width: 100% !important; margin-inline: 0 !important;
+    --c-seam-rise: calc(6 * var(--baseline)); } }
+.cs-flow { display: flex; flex-direction: column;
+  gap: var(--c-block-gap, 1.75rem); max-width: 72rem; }
+.cs-flow-item { max-width: 62ch; }
+.cs-flow-media { width: 100%; }
+.cs-flow-media .c-image { width: 100%; height: auto; }
+/* logo-strip device (AS-33): a HORIZONTAL row of partner/customer logo images —
+   disk-backed extracted assets only (the adapter routes file-less entries to text
+   captions instead). Gap rides the brand rhythm. Emphasis treatment (grayscale/…) is
+   the STYLE layer's qualitative logoStrip flag (style_density_css), never hardcoded
+   here. */
+/* provenance: structural logo-strip-geometry — mark height/width caps are device frame
+   geometry (same discipline as the nav-logo height cap); a brand chrome token
+   (--c-logo-strip-h) wins over the structural default. */
+.cs-logo-strip { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center;
+  gap: var(--c-block-gap, 1.75rem); max-width: none; }
+.cs-logo-strip-item { display: flex; align-items: center; }
+.cs-logo-strip .c-logo--img { border: none; border-radius: 0; }
+.cs-logo-strip .c-logo-img { height: var(--c-logo-strip-h, 2.25rem); width: auto;
+  max-width: 10rem; object-fit: contain; }
+@media (max-width: 767px) { .cs-flow { gap: clamp(1.25rem, 6cqw, 1.75rem); } }
+.cs-timeline-sec .cs-ghost--numerals { top: auto; bottom: -6%;
+  right: -1cqw;
+  font-size: var(--c-ghost-size,
+    clamp(calc(var(--size-ghost-watermark-base) * 0.3429), 32cqw,
+          calc(var(--size-ghost-watermark-base) * 0.9905)));
+  /* provenance: structural — numeral-pair tightening (glyph-overlap micro-tracking of
+     the year-range device, not a brand tracking token) */
+  letter-spacing: -0.01em; }
+@media (max-width: 767px) { .cs-timeline-sec .cs-ghost--numerals { bottom: auto; top: 2%; } }
+.cs-timeline-sec .cs-ghost--numerals { top: auto; bottom: -6%;
+  right: -1cqw;
+  font-size: var(--c-ghost-size,
+    clamp(calc(var(--size-ghost-watermark-base) * 0.3429), 32cqw,
+          calc(var(--size-ghost-watermark-base) * 0.9905)));
+  /* provenance: structural — numeral-pair tightening (glyph-overlap micro-tracking of
+     the year-range device, not a brand tracking token) */
+  letter-spacing: -0.01em; }
+@media (max-width: 767px) { .cs-timeline-sec .cs-ghost--numerals { bottom: auto; top: 2%; } }
+/* on the SHARED 12-col grid: the old private 0.9fr/1.1fr
+   ratio maps to a 5/7 span split (nearest whole-column spans preserving the
+   text-narrower-than-media asymmetry); tracks + gutter come from SCAFFOLD_BASE_CSS.
+   AS-19: the spans are VAR-DRIVEN with the editorial-offset defaults — a centered
+   resolved anchor re-scopes them symmetric (text 3/-3, media 4/-4) via
+   layout_placement_css, so the 6/-1 offset only ever applies to a side anchor. */
+.cs-statement-grid { align-items: center; }
+.cs-statement-text { grid-column: var(--c-statement-text-col, 1 / span 5);
+  display: flex; flex-direction: column;
+  gap: var(--c-block-gap, 1.75rem); max-width: 46ch; }
+.cs-statement-media { grid-column: var(--c-statement-media-col, 6 / -1); }
+/* CR-6: bare palette ref — no literal fallback. Palette-less brands keep the intrinsic
+   ratio (the aspect device is disabled, never another brand's crop). */
+.cs-statement-media .c-image { width: 100%; aspect-ratio: var(--c-aspect-landscape); object-fit: cover; }
+@media (max-width: 767px) { .cs-statement-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .cs-statement-text, .cs-statement-media { grid-column: 1; } }
+/* on the SHARED 12-col grid: the old private 0.9fr/1.1fr
+   ratio maps to a 5/7 span split (nearest whole-column spans preserving the
+   text-narrower-than-media asymmetry); tracks + gutter come from SCAFFOLD_BASE_CSS.
+   AS-19: the spans are VAR-DRIVEN with the editorial-offset defaults — a centered
+   resolved anchor re-scopes them symmetric (text 3/-3, media 4/-4) via
+   layout_placement_css, so the 6/-1 offset only ever applies to a side anchor. */
+.cs-statement-grid { align-items: center; }
+.cs-statement-text { grid-column: var(--c-statement-text-col, 1 / span 5);
+  display: flex; flex-direction: column;
+  gap: var(--c-block-gap, 1.75rem); max-width: 46ch; }
+.cs-statement-media { grid-column: var(--c-statement-media-col, 6 / -1); }
+/* CR-6: bare palette ref — no literal fallback. Palette-less brands keep the intrinsic
+   ratio (the aspect device is disabled, never another brand's crop). */
+.cs-statement-media .c-image { width: 100%; aspect-ratio: var(--c-aspect-landscape); object-fit: cover; }
+@media (max-width: 767px) { .cs-statement-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .cs-statement-text, .cs-statement-media { grid-column: 1; } }
+/* on the SHARED 12-col grid: the old private 1.2fr/0.8fr ratio
+   maps to a 7/5 span split (an almost exact match — 1.48 vs 1.5 — on the shared tracks);
+   tracks + gutter come from SCAFFOLD_BASE_CSS. AS-19: spans are VAR-DRIVEN with the
+   editorial-offset defaults — a centered resolved anchor re-scopes them symmetric. */
+.cs-quote-grid { align-items: center; }
+.cs-quote-text { grid-column: var(--c-quote-text-col, 1 / span 7);
+  display: flex; flex-direction: column;
+  gap: var(--c-block-gap, 1.75rem); }
+.cs-quote-text .c-heading--display { max-width: 20ch; }
+.cs-quote-media { grid-column: var(--c-quote-media-col, 8 / -1);
+  display: flex; flex-direction: column; gap: 0.75rem; }
+.cs-quote-media .c-image { width: 100%; aspect-ratio: var(--c-aspect-portrait); object-fit: cover; }
+@media (max-width: 767px) { .cs-quote-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .cs-quote-text, .cs-quote-media { grid-column: 1; } }
+/* on the SHARED 12-col grid: the old private 1.2fr/0.8fr ratio
+   maps to a 7/5 span split (an almost exact match — 1.48 vs 1.5 — on the shared tracks);
+   tracks + gutter come from SCAFFOLD_BASE_CSS. AS-19: spans are VAR-DRIVEN with the
+   editorial-offset defaults — a centered resolved anchor re-scopes them symmetric. */
+.cs-quote-grid { align-items: center; }
+.cs-quote-text { grid-column: var(--c-quote-text-col, 1 / span 7);
+  display: flex; flex-direction: column;
+  gap: var(--c-block-gap, 1.75rem); }
+.cs-quote-text .c-heading--display { max-width: 20ch; }
+.cs-quote-media { grid-column: var(--c-quote-media-col, 8 / -1);
+  display: flex; flex-direction: column; gap: 0.75rem; }
+.cs-quote-media .c-image { width: 100%; aspect-ratio: var(--c-aspect-portrait); object-fit: cover; }
+@media (max-width: 767px) { .cs-quote-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .cs-quote-text, .cs-quote-media { grid-column: 1; } }
+.cs-visit-grid { position: relative; }
+.cs-visit-media .c-image { width: 100%; aspect-ratio: var(--c-aspect-band); object-fit: cover; }
+/* the panel PAIR keeps its own tight two-track split (a component cluster, not a page
+   grid — a 6/6 span on the shared gutter would blow its 1.5rem seam to 6rem), but its
+   seam + inset snap to --baseline multiples (1.5rem = 3, 2.5rem = 5) and its container
+   registers to the shared measure via the SCAFFOLD_BASE_CSS container rule. (The old
+   `margin-top: -4.5rem` was dead — the later `margin: 0 auto` shorthand reset it —
+   so it is dropped rather than silently resurrected here.) */
+.cs-visit-panels { position: relative; z-index: 1; display: grid;
+  grid-template-columns: 1fr 1fr; gap: calc(3 * var(--baseline));
+  padding: 0 calc(5 * var(--baseline)); }
+.cs-visit-panels .cs-panel { box-shadow: none; }
+@media (max-width: 767px) { .cs-visit-panels { grid-template-columns: 1fr;
+  margin-top: calc(3 * var(--baseline)); padding: 0 1.25rem; } }
+.cs-visit-grid { position: relative; }
+.cs-visit-media .c-image { width: 100%; aspect-ratio: var(--c-aspect-band); object-fit: cover; }
+/* the panel PAIR keeps its own tight two-track split (a component cluster, not a page
+   grid — a 6/6 span on the shared gutter would blow its 1.5rem seam to 6rem), but its
+   seam + inset snap to --baseline multiples (1.5rem = 3, 2.5rem = 5) and its container
+   registers to the shared measure via the SCAFFOLD_BASE_CSS container rule. (The old
+   `margin-top: -4.5rem` was dead — the later `margin: 0 auto` shorthand reset it —
+   so it is dropped rather than silently resurrected here.) */
+.cs-visit-panels { position: relative; z-index: 1; display: grid;
+  grid-template-columns: 1fr 1fr; gap: calc(3 * var(--baseline));
+  padding: 0 calc(5 * var(--baseline)); }
+.cs-visit-panels .cs-panel { box-shadow: none; }
+@media (max-width: 767px) { .cs-visit-panels { grid-template-columns: 1fr;
+  margin-top: calc(3 * var(--baseline)); padding: 0 1.25rem; } }
+.cs-conversion-sec { display: flex; justify-content: center; }
+.cs-conversion { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--c-block-gap, 1.75rem); max-width: 46rem; width: 100%; --c-cta-measure: 40ch; }
+.cs-conversion .c-paragraph { max-width: var(--c-cta-measure); }
+.cs-conversion .c-form { margin: 0.75rem auto 0; max-width: var(--c-cta-measure); width: 100%; }
+.cs-conversion .c-field { width: 100%; }
+/* real action slots (B5): the bound button contracts render as a centered action row —
+   present only when the composition binds `button` slots; the legacy form path never
+   emits this element. Gap rides the section's own block-gap alias. */
+.cs-conversion-actions { display: flex; flex-wrap: wrap; justify-content: center;
+  align-items: center; gap: var(--c-block-gap, 1.75rem); }
+/* documented brand override (voice.md: "one of only two sanctioned centered stacks",
+   the other being the hero #sec-0): beats the active style's generic
+   `.c-heading--display { text-align:left; max-width:18ch }` default via higher
+   selector specificity, scoped ONLY to this section — every other section keeps the
+   style's asymmetric left-anchored default unchanged. */
+.cs-conversion-sec .c-heading--display { text-align: center; max-width: 34ch; }
+@media (max-width: 767px) { .cs-conversion { max-width: 100%; } }
+.cs-conversion-sec { display: flex; justify-content: center; }
+.cs-conversion { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--c-block-gap, 1.75rem); max-width: 46rem; width: 100%; --c-cta-measure: 40ch; }
+.cs-conversion .c-paragraph { max-width: var(--c-cta-measure); }
+.cs-conversion .c-form { margin: 0.75rem auto 0; max-width: var(--c-cta-measure); width: 100%; }
+.cs-conversion .c-field { width: 100%; }
+/* real action slots (B5): the bound button contracts render as a centered action row —
+   present only when the composition binds `button` slots; the legacy form path never
+   emits this element. Gap rides the section's own block-gap alias. */
+.cs-conversion-actions { display: flex; flex-wrap: wrap; justify-content: center;
+  align-items: center; gap: var(--c-block-gap, 1.75rem); }
+/* documented brand override (voice.md: "one of only two sanctioned centered stacks",
+   the other being the hero #sec-0): beats the active style's generic
+   `.c-heading--display { text-align:left; max-width:18ch }` default via higher
+   selector specificity, scoped ONLY to this section — every other section keeps the
+   style's asymmetric left-anchored default unchanged. */
+.cs-conversion-sec .c-heading--display { text-align: center; max-width: 34ch; }
+@media (max-width: 767px) { .cs-conversion { max-width: 100%; } }
+.cs-ruledlist-sec { display: flex; justify-content: center; }
+.cs-ruledlist { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--c-block-gap, 1.75rem); max-width: 46rem; width: 100%; --c-list-measure: 34rem; }
+.cs-ruledlist .c-paragraph { max-width: 40ch; }
+.cs-ruledlist .c-rows { max-width: var(--c-list-measure); width: 100%; text-align: left; }
+.cs-ruledlist-sec .c-heading--display { text-align: center; max-width: 34ch; }
+@media (max-width: 767px) { .cs-ruledlist { max-width: 100%; } }
+.cs-ruledlist-sec { display: flex; justify-content: center; }
+.cs-ruledlist { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--c-block-gap, 1.75rem); max-width: 46rem; width: 100%; --c-list-measure: 34rem; }
+.cs-ruledlist .c-paragraph { max-width: 40ch; }
+.cs-ruledlist .c-rows { max-width: var(--c-list-measure); width: 100%; text-align: left; }
+.cs-ruledlist-sec .c-heading--display { text-align: center; max-width: 34ch; }
+@media (max-width: 767px) { .cs-ruledlist { max-width: 100%; } }
+.cs-ruledlist-sec { display: flex; justify-content: center; }
+.cs-ruledlist { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--c-block-gap, 1.75rem); max-width: 46rem; width: 100%; --c-list-measure: 34rem; }
+.cs-ruledlist .c-paragraph { max-width: 40ch; }
+.cs-ruledlist .c-rows { max-width: var(--c-list-measure); width: 100%; text-align: left; }
+.cs-ruledlist-sec .c-heading--display { text-align: center; max-width: 34ch; }
+@media (max-width: 767px) { .cs-ruledlist { max-width: 100%; } }
+.cs-ruledlist-sec { display: flex; justify-content: center; }
+.cs-ruledlist { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--c-block-gap, 1.75rem); max-width: 46rem; width: 100%; --c-list-measure: 34rem; }
+.cs-ruledlist .c-paragraph { max-width: 40ch; }
+.cs-ruledlist .c-rows { max-width: var(--c-list-measure); width: 100%; text-align: left; }
+.cs-ruledlist-sec .c-heading--display { text-align: center; max-width: 34ch; }
+@media (max-width: 767px) { .cs-ruledlist { max-width: 100%; } }
+.cs-faq-sec { display: flex; justify-content: center; }
+.cs-faq { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--c-block-gap, 1.75rem); max-width: 52rem; width: 100%; }
+.cs-faq-sec .c-heading--display { text-align: center; max-width: 34ch; }
+.c-faq-list { width: 100%; text-align: left; }
+.c-faq-item { position: relative; padding: 1.5rem 0; }
+.c-faq-item::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px;
+  background: var(--c-hairline); }
+.c-faq-item:last-child { padding-bottom: 0; }
+.c-faq-q { font-family: var(--c-font-heading); font-size: var(--c-h3-size); color: var(--c-ink);
+  cursor: pointer; list-style: none; display: flex; align-items: baseline;
+  justify-content: space-between; gap: 1.5rem; }
+.c-faq-q::-webkit-details-marker { display: none; }
+/* disclosure glyph rides the question register: a fixed ratio of the brand's own h3
+   question size (1.25rem was 1.625rem x 0.7692 against the pre-token render). */
+.c-faq-icon { font-family: var(--c-font-body);
+  font-size: calc(var(--c-h3-size) * 0.7692); color: var(--c-ink-muted);
+  flex: 0 0 auto; transition: transform var(--c-motion-fast) var(--c-ease); }
+.c-faq-item[open] .c-faq-icon { transform: rotate(45deg); }
+.c-faq-a { font-family: var(--c-font-body); font-size: var(--c-body-size); line-height: 1.55em;
+  color: var(--c-ink-muted); max-width: 56ch; margin-top: 0.85rem; }
+@media (max-width: 767px) { .cs-faq { max-width: 100%; } .c-faq-q { font-size: var(--c-h3-size); } }
+.cs-faq-sec { display: flex; justify-content: center; }
+.cs-faq { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--c-block-gap, 1.75rem); max-width: 52rem; width: 100%; }
+.cs-faq-sec .c-heading--display { text-align: center; max-width: 34ch; }
+.c-faq-list { width: 100%; text-align: left; }
+.c-faq-item { position: relative; padding: 1.5rem 0; }
+.c-faq-item::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px;
+  background: var(--c-hairline); }
+.c-faq-item:last-child { padding-bottom: 0; }
+.c-faq-q { font-family: var(--c-font-heading); font-size: var(--c-h3-size); color: var(--c-ink);
+  cursor: pointer; list-style: none; display: flex; align-items: baseline;
+  justify-content: space-between; gap: 1.5rem; }
+.c-faq-q::-webkit-details-marker { display: none; }
+/* disclosure glyph rides the question register: a fixed ratio of the brand's own h3
+   question size (1.25rem was 1.625rem x 0.7692 against the pre-token render). */
+.c-faq-icon { font-family: var(--c-font-body);
+  font-size: calc(var(--c-h3-size) * 0.7692); color: var(--c-ink-muted);
+  flex: 0 0 auto; transition: transform var(--c-motion-fast) var(--c-ease); }
+.c-faq-item[open] .c-faq-icon { transform: rotate(45deg); }
+.c-faq-a { font-family: var(--c-font-body); font-size: var(--c-body-size); line-height: 1.55em;
+  color: var(--c-ink-muted); max-width: 56ch; margin-top: 0.85rem; }
+@media (max-width: 767px) { .cs-faq { max-width: 100%; } .c-faq-q { font-size: var(--c-h3-size); } }
+/* footer (closing bookend): centered cluster; symmetric scale-driven padding. */
+.cs-footer-sec { padding-top: var(--c-section-pad-top, var(--c-section-pad, 6.25rem)); text-align: center; }
+/* page-level navbar (hoisted out of the hero): a SLIM bar with its own modest
+   vertical padding + the section horizontal inset — it no longer inherits the
+   hero section's large padding-block-start. Its own margin-bottom is neutralized
+   so it reads as a bar flush above the hero, not padded inside it. */
+#page-nav { background: var(--c-paper); color: var(--c-ink); }
+#page-nav .cs-nav { margin-bottom: 0; padding: var(--c-nav-pad-block, 1.75rem) var(--c-section-pad-x, 2.5rem); }
+/* page: only the opening section is full-frame; others size to content. */
+.cs-section { min-height: auto; }
+#sec-0 .cs-section { min-height: 100cqh; }
+#sec-0 {
+  --c-paper: var(--surface-surface-primary);
+  --c-ink: var(--color-text-on-primary);
+  --c-ink-muted: var(--color-text-on-primary-muted);
+  --c-accent: var(--color-text-on-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-on-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: 2.875rem;
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 1.0rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-title-overlap: -2.75rem;
+  --c-aspect-wide: var(--aspect-wide);
+  --c-aspect-landscape: var(--aspect-landscape);
+  --c-aspect-square: var(--aspect-square);
+  --c-button-bg: var(--button-bg);
+  --c-button-fg: var(--button-fg);
+  --c-button-bg-hover: var(--button-bg-hover);
+  --c-button-border: var(--button-border);
+  --c-button-pad: var(--button-pad);
+  --c-button-radius: var(--button-radius);
+  --c-button-weight: var(--button-weight);
+  --c-button-size: var(--button-size);
+  --c-button-font: var(--button-font);
+  --c-input-radius: var(--radius-input);
+  --c-foot-link-size: var(--chrome-foot-link-size);
+  --c-foot-link-weight: var(--chrome-foot-link-weight);
+}
+#sec-0 { --c-section-pad-top: 3rem; --c-section-pad-bottom: 3rem; --c-section-pad: 3rem; --c-block-gap: 2rem; --c-module-gap: 5rem; }
+/* per-section placement (composition.v1 §4.6.5) */
+/* alignment: left (source: pattern, counterweight: media) — resolved, never fall-through (AS-18) */
+#sec-0 .cs-slot, #sec-0 .cs-eyebrow-wrap, #sec-0 .cs-title, #sec-0 .cs-foot { align-items: flex-start; text-align: left; }
+#sec-0 .cs-collage { margin-inline: 0 auto; }
+#sec-0 .c-heading--display { text-align: left; margin-inline: 0 auto; }
+#sec-0 .cs-flow { align-items: flex-start; text-align: left; }
+#sec-0 .cs-gallery-intro { text-align: left; }
+#sec-0 .cs-gallery-caption { text-align: left; }
+#sec-0 .cs-modules-intro { text-align: left; }
+#sec-0 .cs-ov-foot { align-items: flex-start; text-align: left; }
+#sec-0 .cs-band-body { align-items: flex-start; text-align: left; }
+#sec-0 .cs-conversion { align-items: flex-start; text-align: left; }
+#sec-0 .cs-conversion-sec { justify-content: flex-start; }
+#sec-1 {
+  --c-paper: var(--surface-surface-primary);
+  --c-ink: var(--color-text-on-primary);
+  --c-ink-muted: var(--color-text-on-primary-muted);
+  --c-accent: var(--color-text-on-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-on-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--size-display-hero-base);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 1.0rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-title-overlap: -2.75rem;
+  --c-aspect-wide: var(--aspect-wide);
+  --c-aspect-landscape: var(--aspect-landscape);
+  --c-aspect-square: var(--aspect-square);
+  --c-button-bg: var(--button-bg);
+  --c-button-fg: var(--button-fg);
+  --c-button-bg-hover: var(--button-bg-hover);
+  --c-button-border: var(--button-border);
+  --c-button-pad: var(--button-pad);
+  --c-button-radius: var(--button-radius);
+  --c-button-weight: var(--button-weight);
+  --c-button-size: var(--button-size);
+  --c-button-font: var(--button-font);
+  --c-input-radius: var(--radius-input);
+  --c-foot-link-size: var(--chrome-foot-link-size);
+  --c-foot-link-weight: var(--chrome-foot-link-weight);
+}
+#sec-1 { --c-section-pad-top: 3rem; --c-section-pad-bottom: 3rem; --c-section-pad: 3rem; --c-block-gap: 2rem; --c-module-gap: 5rem; }
+#sec-1 { --c-accent: var(--c-ink); }
+/* per-section placement (composition.v1 §4.6.5) */
+/* alignment: centered (source: pattern) — resolved, never fall-through (AS-18) */
+#sec-1 .cs-slot, #sec-1 .cs-eyebrow-wrap, #sec-1 .cs-title, #sec-1 .cs-foot { align-items: center; text-align: center; }
+#sec-1 .cs-collage { margin-inline: auto; }
+#sec-1 .c-heading--display { text-align: center; margin-inline: auto; }
+#sec-1 .cs-flow { align-items: center; text-align: center; }
+#sec-1 .cs-gallery-intro { text-align: center; }
+#sec-1 .cs-gallery-caption { text-align: center; }
+#sec-1 .cs-modules-intro { text-align: center; }
+#sec-1 .cs-ov-foot { align-items: center; text-align: center; }
+#sec-1 .cs-band-body { align-items: center; text-align: center; }
+#sec-1 { --c-statement-text-col: 3 / -3; --c-statement-media-col: 4 / -4; --c-quote-text-col: 3 / -3; --c-quote-media-col: 4 / -4; }
+#sec-1 .cs-statement-text, #sec-1 .cs-quote-text { align-items: center; text-align: center; margin-inline: auto; }
+#sec-1 .cs-statement-media, #sec-1 .cs-quote-media { justify-self: center; }
+#sec-2 {
+  --c-paper: var(--surface-surface-primary);
+  --c-ink: var(--color-text-on-primary);
+  --c-ink-muted: var(--color-text-on-primary-muted);
+  --c-accent: var(--color-text-on-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-on-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--size-display-hero-base);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 1.0rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-title-overlap: -2.75rem;
+  --c-aspect-wide: var(--aspect-wide);
+  --c-aspect-landscape: var(--aspect-landscape);
+  --c-aspect-square: var(--aspect-square);
+  --c-button-bg: var(--button-bg);
+  --c-button-fg: var(--button-fg);
+  --c-button-bg-hover: var(--button-bg-hover);
+  --c-button-border: var(--button-border);
+  --c-button-pad: var(--button-pad);
+  --c-button-radius: var(--button-radius);
+  --c-button-weight: var(--button-weight);
+  --c-button-size: var(--button-size);
+  --c-button-font: var(--button-font);
+  --c-input-radius: var(--radius-input);
+  --c-foot-link-size: var(--chrome-foot-link-size);
+  --c-foot-link-weight: var(--chrome-foot-link-weight);
+}
+#sec-2 { --c-section-pad-top: 3rem; --c-section-pad-bottom: 3rem; --c-section-pad: 3rem; --c-block-gap: 2rem; --c-module-gap: 5rem; }
+#sec-2 { --c-accent: var(--c-ink); }
+/* per-section placement (composition.v1 §4.6.5) */
+/* alignment: left (source: section, counterweight: media) — resolved, never fall-through (AS-18) */
+#sec-2 .cs-slot, #sec-2 .cs-eyebrow-wrap, #sec-2 .cs-title, #sec-2 .cs-foot { align-items: flex-start; text-align: left; }
+#sec-2 .cs-collage { margin-inline: 0 auto; }
+#sec-2 .c-heading--display { text-align: left; margin-inline: 0 auto; }
+#sec-2 .cs-flow { align-items: flex-start; text-align: left; }
+#sec-2 .cs-gallery-intro { text-align: left; }
+#sec-2 .cs-gallery-caption { text-align: left; }
+#sec-2 .cs-modules-intro { text-align: left; }
+#sec-2 .cs-ov-foot { align-items: flex-start; text-align: left; }
+#sec-2 .cs-band-body { align-items: flex-start; text-align: left; }
+#sec-2 .cs-conversion { align-items: flex-start; text-align: left; }
+#sec-2 .cs-conversion-sec { justify-content: flex-start; }
+#sec-3 {
+  --c-paper: var(--surface-surface-primary);
+  --c-ink: var(--color-text-on-primary);
+  --c-ink-muted: var(--color-text-on-primary-muted);
+  --c-accent: var(--color-text-on-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-on-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--size-display-hero-base);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 1.0rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-title-overlap: -2.75rem;
+  --c-aspect-wide: var(--aspect-wide);
+  --c-aspect-landscape: var(--aspect-landscape);
+  --c-aspect-square: var(--aspect-square);
+  --c-button-bg: var(--button-bg);
+  --c-button-fg: var(--button-fg);
+  --c-button-bg-hover: var(--button-bg-hover);
+  --c-button-border: var(--button-border);
+  --c-button-pad: var(--button-pad);
+  --c-button-radius: var(--button-radius);
+  --c-button-weight: var(--button-weight);
+  --c-button-size: var(--button-size);
+  --c-button-font: var(--button-font);
+  --c-input-radius: var(--radius-input);
+  --c-foot-link-size: var(--chrome-foot-link-size);
+  --c-foot-link-weight: var(--chrome-foot-link-weight);
+}
+#sec-3 { --c-section-pad-top: 3rem; --c-section-pad-bottom: 3rem; --c-section-pad: 3rem; --c-block-gap: 2rem; --c-module-gap: 5rem; }
+#sec-3 { --c-accent: var(--c-ink); }
+/* per-section placement (composition.v1 §4.6.5) */
+/* alignment: centered (source: pattern) — resolved, never fall-through (AS-18) */
+#sec-3 .cs-slot, #sec-3 .cs-eyebrow-wrap, #sec-3 .cs-title, #sec-3 .cs-foot { align-items: center; text-align: center; }
+#sec-3 .cs-collage { margin-inline: auto; }
+#sec-3 .c-heading--display { text-align: center; margin-inline: auto; }
+#sec-3 .cs-flow { align-items: center; text-align: center; }
+#sec-3 .cs-gallery-intro { text-align: center; }
+#sec-3 .cs-gallery-caption { text-align: center; }
+#sec-3 .cs-modules-intro { text-align: center; }
+#sec-3 .cs-ov-foot { align-items: center; text-align: center; }
+#sec-3 .cs-band-body { align-items: center; text-align: center; }
+#sec-3 { --c-statement-text-col: 3 / -3; --c-statement-media-col: 4 / -4; --c-quote-text-col: 3 / -3; --c-quote-media-col: 4 / -4; }
+#sec-3 .cs-statement-text, #sec-3 .cs-quote-text { align-items: center; text-align: center; margin-inline: auto; }
+#sec-3 .cs-statement-media, #sec-3 .cs-quote-media { justify-self: center; }
+#sec-4 {
+  --c-paper: var(--surface-surface-primary);
+  --c-ink: var(--color-text-on-primary);
+  --c-ink-muted: var(--color-text-on-primary-muted);
+  --c-accent: var(--color-text-on-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-on-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--size-display-hero-base);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 1.0rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-title-overlap: -2.75rem;
+  --c-aspect-wide: var(--aspect-wide);
+  --c-aspect-landscape: var(--aspect-landscape);
+  --c-aspect-square: var(--aspect-square);
+  --c-button-bg: var(--button-bg);
+  --c-button-fg: var(--button-fg);
+  --c-button-bg-hover: var(--button-bg-hover);
+  --c-button-border: var(--button-border);
+  --c-button-pad: var(--button-pad);
+  --c-button-radius: var(--button-radius);
+  --c-button-weight: var(--button-weight);
+  --c-button-size: var(--button-size);
+  --c-button-font: var(--button-font);
+  --c-input-radius: var(--radius-input);
+  --c-foot-link-size: var(--chrome-foot-link-size);
+  --c-foot-link-weight: var(--chrome-foot-link-weight);
+}
+#sec-4 { --c-section-pad-top: 3rem; --c-section-pad-bottom: 3rem; --c-section-pad: 3rem; --c-block-gap: 2rem; --c-module-gap: 5rem; }
+#sec-4 { --c-accent: var(--c-ink); }
+/* per-section placement (composition.v1 §4.6.5) */
+/* alignment: centered (source: pattern) — resolved, never fall-through (AS-18) */
+#sec-4 .cs-slot, #sec-4 .cs-eyebrow-wrap, #sec-4 .cs-title, #sec-4 .cs-foot { align-items: center; text-align: center; }
+#sec-4 .cs-collage { margin-inline: auto; }
+#sec-4 .c-heading--display { text-align: center; margin-inline: auto; }
+#sec-4 .cs-flow { align-items: center; text-align: center; }
+#sec-4 .cs-gallery-intro { text-align: center; }
+#sec-4 .cs-gallery-caption { text-align: center; }
+#sec-4 .cs-modules-intro { text-align: center; }
+#sec-4 .cs-ov-foot { align-items: center; text-align: center; }
+#sec-4 .cs-band-body { align-items: center; text-align: center; }
+#sec-4 { --c-statement-text-col: 3 / -3; --c-statement-media-col: 4 / -4; --c-quote-text-col: 3 / -3; --c-quote-media-col: 4 / -4; }
+#sec-4 .cs-statement-text, #sec-4 .cs-quote-text { align-items: center; text-align: center; margin-inline: auto; }
+#sec-4 .cs-statement-media, #sec-4 .cs-quote-media { justify-self: center; }
+#sec-5 {
+  --c-paper: var(--surface-surface-primary);
+  --c-ink: var(--color-text-on-primary);
+  --c-ink-muted: var(--color-text-on-primary-muted);
+  --c-accent: var(--color-text-on-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-on-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--size-display-hero-base);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 1.0rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-title-overlap: -2.75rem;
+  --c-aspect-wide: var(--aspect-wide);
+  --c-aspect-landscape: var(--aspect-landscape);
+  --c-aspect-square: var(--aspect-square);
+  --c-button-bg: var(--button-bg);
+  --c-button-fg: var(--button-fg);
+  --c-button-bg-hover: var(--button-bg-hover);
+  --c-button-border: var(--button-border);
+  --c-button-pad: var(--button-pad);
+  --c-button-radius: var(--button-radius);
+  --c-button-weight: var(--button-weight);
+  --c-button-size: var(--button-size);
+  --c-button-font: var(--button-font);
+  --c-input-radius: var(--radius-input);
+  --c-foot-link-size: var(--chrome-foot-link-size);
+  --c-foot-link-weight: var(--chrome-foot-link-weight);
+}
+#sec-5 { --c-section-pad-top: 3rem; --c-section-pad-bottom: 3rem; --c-section-pad: 3rem; --c-block-gap: 2rem; --c-module-gap: 5rem; }
+#sec-5 { --c-accent: var(--c-ink); }
+/* per-section placement (composition.v1 §4.6.5) */
+/* alignment: centered (source: pattern) — resolved, never fall-through (AS-18) */
+#sec-5 .cs-slot, #sec-5 .cs-eyebrow-wrap, #sec-5 .cs-title, #sec-5 .cs-foot { align-items: center; text-align: center; }
+#sec-5 .cs-collage { margin-inline: auto; }
+#sec-5 .c-heading--display { text-align: center; margin-inline: auto; }
+#sec-5 .cs-flow { align-items: center; text-align: center; }
+#sec-5 .cs-gallery-intro { text-align: center; }
+#sec-5 .cs-gallery-caption { text-align: center; }
+#sec-5 .cs-modules-intro { text-align: center; }
+#sec-5 .cs-ov-foot { align-items: center; text-align: center; }
+#sec-5 .cs-band-body { align-items: center; text-align: center; }
+#sec-5 { --c-statement-text-col: 3 / -3; --c-statement-media-col: 4 / -4; --c-quote-text-col: 3 / -3; --c-quote-media-col: 4 / -4; }
+#sec-5 .cs-statement-text, #sec-5 .cs-quote-text { align-items: center; text-align: center; margin-inline: auto; }
+#sec-5 .cs-statement-media, #sec-5 .cs-quote-media { justify-self: center; }
+#page-nav {
+  --c-paper: var(--surface-surface-primary);
+  --c-ink: var(--color-text-on-primary);
+  --c-ink-muted: var(--color-text-on-primary-muted);
+  --c-accent: var(--color-text-on-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-on-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--size-display-hero-base);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 1.0rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-title-overlap: -2.75rem;
+  --c-aspect-wide: var(--aspect-wide);
+  --c-aspect-landscape: var(--aspect-landscape);
+  --c-aspect-square: var(--aspect-square);
+  --c-button-bg: var(--button-bg);
+  --c-button-fg: var(--button-fg);
+  --c-button-bg-hover: var(--button-bg-hover);
+  --c-button-border: var(--button-border);
+  --c-button-pad: var(--button-pad);
+  --c-button-radius: var(--button-radius);
+  --c-button-weight: var(--button-weight);
+  --c-button-size: var(--button-size);
+  --c-button-font: var(--button-font);
+  --c-input-radius: var(--radius-input);
+  --c-foot-link-size: var(--chrome-foot-link-size);
+  --c-foot-link-weight: var(--chrome-foot-link-weight);
+}
+#page-nav { --c-section-pad-top: 3rem; --c-section-pad-bottom: 3rem; --c-section-pad: 3rem; --c-block-gap: 2rem; --c-module-gap: 5rem; }
+#sec-6 {
+  --c-paper: var(--surface-surface-inverse-strong);
+  --c-ink: var(--color-text-on-inverse);
+  --c-ink-muted: var(--color-text-on-inverse-muted);
+  --c-accent: var(--color-accent-highlight-on-inverse);
+  --c-hairline: var(--color-border-hairline-on-inverse);
+  --c-link-hover: var(--chrome-link-hover);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--size-display-hero-base);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 1.0rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-title-overlap: -2.75rem;
+  --c-aspect-wide: var(--aspect-wide);
+  --c-aspect-landscape: var(--aspect-landscape);
+  --c-aspect-square: var(--aspect-square);
+  --c-button-bg: var(--button-bg);
+  --c-button-fg: var(--button-fg);
+  --c-button-bg-hover: var(--button-bg-hover);
+  --c-button-border: var(--button-border);
+  --c-button-pad: var(--button-pad);
+  --c-button-radius: var(--button-radius);
+  --c-button-weight: var(--button-weight);
+  --c-button-size: var(--button-size);
+  --c-button-font: var(--button-font);
+  --c-input-radius: var(--radius-input);
+  --c-foot-link-size: var(--chrome-foot-link-size);
+  --c-foot-link-weight: var(--chrome-foot-link-weight);
+}
+#sec-6 { --c-section-pad-top: 3rem; --c-section-pad-bottom: 3rem; --c-section-pad: 3rem; --c-block-gap: 2rem; --c-module-gap: 5rem; }
+
+/* ===================================================================== */
+/* STYLE: corporate-saas-clean (structure) layered OVER brand (hues+fonts). */
+/* ===================================================================== */
+:root {
+  --radius: 1rem;
+  --display-size: 2.875rem;
+  --c-radius: 1rem;
+  --c-display-size: 2.875rem;
+  --c-display-lh: 0.94;
+  --c-display-ls: -0.02em;
+  --c-font-heading: 'Bossa', Georgia, serif;
+  --c-font-body: 'Inter', system-ui, sans-serif;
+}
+/* density default — style alignment.default (AS-18): anchor 'centered'. Per-section resolution
+   (section > pattern > style role) is emitted per #sec-N and wins by specificity. */
+.cs-slot, .cs-foot, .cs-eyebrow-wrap, .cs-title { align-items: center; text-align: center; }
+.cs-collage { margin: 0; }
+.c-heading--display { text-align: center; max-width: 16ch; margin-inline: auto; }
+/* logoStrip: monochrome — marks read as a quiet grayscale row; full color on hover.
+   provenance: structural logo-strip-treatment — the qualitative flag's fixed
+   realization (emphasis fractions are device behavior, not brand values). */
+.cs-logo-strip .c-logo-img { filter: grayscale(1); opacity: 0.72;
+  transition: filter var(--c-motion-fast) var(--c-ease),
+              opacity var(--c-motion-fast) var(--c-ease); }
+.cs-logo-strip .c-logo--img:hover .c-logo-img,
+.cs-logo-strip .c-logo--img:focus-visible .c-logo-img { filter: none; opacity: 1; }
+/* single committed accent: the eyebrow slug carries it (gold only where --c-accent is
+   gold, i.e. the opening bookend); the display title is ALWAYS ink, never the accent. */
+.c-eyebrow { color: var(--c-accent); }
+.c-heading--accent { color: var(--c-ink); }
+
+
+/* ===================================================================== */
+/* HERO brand-over-style exception (#sec-0 ONLY) — see hero_brand_override_css(). */
+/* ===================================================================== */
+#sec-0 .cs-slot, #sec-0 .cs-eyebrow-wrap, #sec-0 .cs-title, #sec-0 .cs-foot {
+  align-items: center; text-align: center; }
+#sec-0 .cs-collage { margin-left: auto; margin-right: auto; }
+#sec-0 .c-heading--display { text-align: center; max-width: 18ch;
+  margin-left: auto; margin-right: auto;
+  /* HERO poster renders at the display-hero weight (Melodrama Medium 500); every other
+     section heading inherits the section heading weight (Melodrama Regular 400). */
+  font-weight: var(--c-display-weight); }
+#sec-0 .cs-title .c-heading--accent { color: var(--c-accent); }
+
+
+/* style-gate alias (inert): maps the composer's editorial display heading onto the gate's
+   canonical `.hv-title.is-display` selector (left-anchored, ink) — see fn docstring. */
+.hv-title.is-display { text-align: left; color: var(--text); }
+
+
+</style>
+</head>
+<body>
+<!-- FULL PAGE composed from the brand catalog: each section's every slot is a catalog
+     component rendered by component_render.py (the SAME renderers the gallery uses),
+     arranged by its archetype assembler in compose_section.py. STYLE=radical-editorial
+     structure layered over per-section brand hues/fonts. -->
+<div id="page-nav" class="cs-surface" data-surface="surface/primary">
+<nav class="cs-nav"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/nav-logo.svg" alt="Remote" width="94" height="30"></a><span class="cs-navlinks"><a class="c-arrow-link" href="https://remote.com/services" style="gap:0">Products</a> <span class="cs-sep">/</span> <a class="c-arrow-link" href="https://remote.com/solutions" style="gap:0">Solutions</a> <span class="cs-sep">/</span> <a class="c-arrow-link" href="https://remote.com/resources" style="gap:0">Resources</a> <span class="cs-sep">/</span> <a class="c-arrow-link" href="https://remote.com/pricing" style="gap:0">Pricing</a> <span class="cs-sep">/</span> <a class="c-arrow-link" href="#book-demo" style="gap:0">Book demo</a></span><a class="c-arrow-link" href="#">Start free <span class="c-arrow" aria-hidden="true">&rarr;</span></a></nav>
+</div>
+<div id="sec-0" class="cs-surface" data-layout="hero" data-surface="surface/primary" data-pattern="hero-inset-noise-panel" data-pattern-lib="project" data-align="left" data-align-source="pattern" data-align-counterweight="media">
+<section class="cs-section cs-hero-layered">
+  <div class="cs-slot">
+    <div class="cs-eyebrow-wrap"><p class="c-eyebrow">Introducing</p></div>
+    <div class="cs-title"><h1 class="c-heading c-heading--display">Everything<br>in one place</h1></div>
+    <div class="cs-collage cs-collage--layered" style="max-width: calc(6 * var(--col) + 5 * var(--grid-gutter, 6rem))">
+      <img class="c-image c-image--hero" src="assets/hero-globe-illustration.webp" alt="Remote global platform illustration">
+
+    </div>
+    <div class="cs-spacer"></div>
+    <div class="cs-foot">
+      <p class="cs-sub">A simpler way to get started — built for how you actually work.</p>
+      <a class="c-arrow-link" href="#">Start free <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
+    </div>
+  </div>
+</section>
+</div>
+<div id="sec-1" class="cs-surface" data-layout="logos" data-surface="surface/primary" data-pattern="logo-marquee-strip" data-pattern-lib="project" data-align="centered" data-align-source="pattern">
+<section class="cs-section cs-flow-sec" data-logo-device="image">
+  <div class="cs-flow">
+    <div class="cs-flow-item"><p class="c-eyebrow">Trusted by 10,000+ teams</p></div>
+    <div class="cs-logo-strip">
+      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/logo-anthropic.svg" alt="Anthropic"></a></div>
+      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/logo-box.svg" alt="Box"></a></div>
+      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/logo-byd.svg" alt="BYD"></a></div>
+      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/logo-datadog.svg" alt="Datadog"></a></div>
+      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/logo-gitlab.svg" alt="GitLab"></a></div>
+      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/logo-heineken.svg" alt="Heineken"></a></div>
+      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/logo-kfc.svg" alt="KFC"></a></div>
+      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/logo-lovable.svg" alt="Lovable"></a></div>
+      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/logo-mercury.svg" alt="Mercury"></a></div>
+      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/logo-miro.svg" alt="Miro"></a></div>
+      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/logo-mizuho.svg" alt="Mizuho"></a></div>
+      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/logo-vercel.svg" alt="Vercel"></a></div>
+    </div>
+  </div>
+</section>
+</div>
+<div id="sec-2" class="cs-surface" data-layout="features" data-surface="surface/primary" data-pattern="feature-accordion-deep-accent" data-pattern-lib="project" data-align="left" data-align-source="section" data-align-counterweight="media">
+<section class="cs-section cs-modules-sec">
+  <div class="cs-modules-intro"><div class="c-header"><p class="c-eyebrow">Why teams switch</p><h1 class="c-heading c-heading--display">One place for everything you run</h1></div></div>
+  <div class="cs-modules">
+    <article class="cs-module">
+      <figure class="cs-module-media" style="aspect-ratio: 16 / 10;"><img class="c-image" src="assets/card-api-first.webp" alt="Remote — Set up in minutes"></figure>
+      <p class="c-caption">Set up in minutes</p>
+      <p class="c-paragraph" style="--c-measure:44ch">No manual wiring — you&#x27;re live the same day.</p>
+      
+    </article>
+    <article class="cs-module">
+      <figure class="cs-module-media" style="aspect-ratio: 4 / 3;"><img class="c-image" src="assets/card-integrations.webp" alt="Remote — One source of truth"></figure>
+      <p class="c-caption">One source of truth</p>
+      <p class="c-paragraph" style="--c-measure:44ch">Everyone sees the same thing, always up to date.</p>
+      
+    </article>
+    <article class="cs-module">
+      <figure class="cs-module-media" style="aspect-ratio: 16 / 10;"><img class="c-image" src="assets/card-mcp-agents.webp" alt="Remote — Scales with you"></figure>
+      <p class="c-caption">Scales with you</p>
+      <p class="c-paragraph" style="--c-measure:44ch">From your first project to your thousandth.</p>
+      
+    </article>
+  </div>
+</section>
+</div>
+<div id="sec-3" class="cs-surface" data-layout="testimonial" data-surface="surface/primary" data-pattern="testimonial-card-row" data-pattern-lib="project" data-align="centered" data-align-source="pattern">
+<section class="cs-section cs-flow-sec">
+  <div class="cs-flow">
+    <div class="cs-flow-item"><p class="c-paragraph" style="--c-measure:44ch">We replaced three tools in a week and never looked back.</p></div>
+    <div class="cs-flow-item"><p class="c-caption">Operations lead — Mid-market team</p></div>
+  </div>
+</section>
+</div>
+<div id="sec-4" class="cs-surface" data-layout="cta" data-surface="surface/primary" data-pattern="cta-inline-banner" data-pattern-lib="project" data-align="centered" data-align-source="pattern">
+<section class="cs-section cs-conversion-sec">
+  <div class="cs-conversion">
+    <div class="c-header"><p class="c-eyebrow">Ready to get everything in one place?</p><h1 class="c-heading c-heading--display">Ready to get everything in one place?</h1></div>
+    <p class="c-paragraph" style="--c-measure:40ch">Ready to get everything in one place?</p>
+    <div class="cs-conversion-actions"><a class="c-button" href="#" role="button">Start free</a></div>
+    
+  </div>
+</section>
+</div>
+<div id="sec-5" class="cs-surface" data-layout="footer" data-surface="surface/primary" data-pattern="logo-marquee-strip" data-pattern-lib="project" data-align="centered" data-align-source="pattern">
+<section class="cs-section cs-flow-sec">
+  <div class="cs-flow">
+    <div class="cs-flow-item"><a class="c-arrow-link" href="#">Product <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div>
+    <div class="cs-flow-item"><a class="c-arrow-link" href="#">Pricing <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div>
+    <div class="cs-flow-item"><a class="c-arrow-link" href="#">How it works <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div>
+    <div class="cs-flow-item"><a class="c-arrow-link" href="#">Customers <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div>
+    <div class="cs-flow-item"><a class="c-arrow-link" href="#">Contact <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div>
+    <div class="cs-flow-item"><p class="c-caption">© 2025 Remote. All rights reserved.</p></div>
+  </div>
+</section>
+</div>
+<div id="sec-6" class="cs-surface" data-layout="closing-bookend" data-surface="surface/inverse-strong" data-align="centered" data-align-source="style">
+<section class="cs-section cs-footer-sec">
+<div class="c-footer"><nav class="c-foot-cols" aria-label="Sitemap"><div class="c-foot-col"><a class="c-foot-col-link" href="https://remote.com/global-hr/employees">Hire International Employees</a><a class="c-foot-col-link" href="https://remote.com/global-hr/contractors">Hire International Contractors</a><a class="c-foot-col-link" href="https://remote.com/global-hr/expand-globally">Expand Globally</a><a class="c-foot-col-link" href="https://remote.com/global-hr/onboarding">Onboard Global Teams</a><a class="c-foot-col-link" href="https://remote.com/resources/api">Remote API</a><a class="c-foot-col-link" href="https://remote.com/services/global-payroll">Run Payroll</a><a class="c-foot-col-link" href="https://remote.com/services/benefits">Offer Global Benefits</a></div><div class="c-foot-col"><a class="c-foot-col-link" href="https://remote.com/pricing">Pricing</a><a class="c-foot-col-link" href="https://remote.com/services/global-employment">Employer of Record (EOR)</a><a class="c-foot-col-link" href="https://remote.com/services/contractor-management">Contractor Management</a><a class="c-foot-col-link" href="https://remote.com/services/global-payroll">Payroll</a><a class="c-foot-col-link" href="https://remote.com/services/relocation">Remote Relocation</a><a class="c-foot-col-link" href="https://remote.com/services/expansion-consulting">Expansion Consulting Services</a></div><div class="c-foot-col"><a class="c-foot-col-link" href="https://remote.com/blog">Global Employment Blog</a><a class="c-foot-col-link" href="https://remote.com/resources/research">Research</a><a class="c-foot-col-link" href="https://remote.com/resources/case-studies">Case Studies</a><a class="c-foot-col-link" href="https://remote.com/resources/webinars">Webinars</a><a class="c-foot-col-link" href="https://remote.com/resources/api-docs">Developer API Docs</a><a class="c-foot-col-link" href="https://remote.com/country-explorer">Country Explorer</a></div><div class="c-foot-col"><a class="c-foot-col-link" href="https://remote.com/why-remote/global-infrastructure">Global Infrastructure</a><a class="c-foot-col-link" href="https://remote.com/why-remote/security">Security and Compliance</a><a class="c-foot-col-link" href="https://remote.com/why-remote/price-guarantee">Transparent Price Guarantee</a><a class="c-foot-col-link" href="https://remote.com/why-remote/customer-experience">Customer Experience</a></div><div class="c-foot-col"><a class="c-foot-col-link" href="https://remote.com/about">About</a><a class="c-foot-col-link" href="https://remote.com/careers">Careers</a><a class="c-foot-col-link" href="https://remote.com/press">Newsroom</a><a class="c-foot-col-link" href="https://remote.com/events">Events</a><a class="c-foot-col-link" href="https://support.remote.com">Support</a><a class="c-foot-col-link" href="https://remote.com/contact-us">Contact Us</a></div><div class="c-foot-col"><a class="c-foot-col-link" href="https://remote.com/partners">Partner Programs</a><a class="c-foot-col-link" href="https://remote.com/partners/affiliates">Affiliates</a><a class="c-foot-col-link" href="https://remote.com/partners/vc">VC Partners</a><a class="c-foot-col-link" href="https://remote.com/partners/hr-consultants">HR Consultant Partners</a></div></nav><nav class="c-foot-social" aria-label="Social"><a class="c-foot-social-link" href="https://www.youtube.com/c/RemoteHQ">YOUTUBE</a> <span class="c-foot-sep" aria-hidden="true">/</span> <a class="c-foot-social-link" href="https://www.linkedin.com/company/remote.com/">LINKEDIN</a> <span class="c-foot-sep" aria-hidden="true">/</span> <a class="c-foot-social-link" href="https://x.com/remote">X</a> <span class="c-foot-sep" aria-hidden="true">/</span> <a class="c-foot-social-link" href="https://www.instagram.com/remotehq/">INSTAGRAM</a></nav></div>
+</section>
+</div>
+<script>
+(function () {
+  var root = document.documentElement;
+  var mq = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (mq && mq.matches) return;                      // reduced motion: no reveal, all visible
+  if (!('IntersectionObserver' in window)) return;   // no IO: leave content fully visible
+  var sel = '.cs-slot > *, .cs-collage-grid > *, .cs-split-intro, .cs-split, .cs-conversion, .c-footer';
+  var nodes = [].slice.call(document.querySelectorAll(sel));
+  if (!nodes.length) return;
+  root.classList.add('cs-motion-ready');             // gate: hidden initial state now applies
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+  nodes.forEach(function (n, i) {
+    n.classList.add('cs-reveal');
+    n.style.setProperty('--cs-reveal-i', String(i % 6));  // small per-target stagger
+    io.observe(n);
+  });
+})();
+</script>
+
+</body>
+</html>

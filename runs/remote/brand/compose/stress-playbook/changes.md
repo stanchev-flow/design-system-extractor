@@ -1,0 +1,16 @@
+# stress-playbook lane — changes.md
+
+Lane: `runs/remote/brand/compose/stress-playbook/`
+Purpose: generative stress-test page for the "remote" brand — one new composed page exercising as many unique catalog components/patterns as possible (patterns NOT already shown in `event-genlaunch`), to reveal design-system weaknesses.
+
+## Log
+
+- 2026-07-10: Lane folder + `shots/` created. `changes.md` stub written before any generation work.
+- 2026-07-10: PLAN.md written — "The Global Hiring Playbook" concept, 11 sections each mapped to an unexercised catalog device (see PLAN.md table).
+- 2026-07-10: copy-brief.md written — hand-authored on-voice copy (no LLM call; testimonials reused verbatim from `section-copy.yaml`).
+- 2026-07-10: composition.json hand-authored against `replica-composition.v1` (event-genlaunch schema): 11 sections, 5 seeded from project patterns (hero-inset-noise-panel, features-card-grid-navy-media, feature-accordion-deep-accent, cta-inline-banner, testimonial-card-row, badge-award-strip, cta-closing-noise), deliberate stress probes: `stat` contract fold, no-table comparison rows, `textarea` form-kind coercion, faq `exclusive:false` + `activeSurface: surface/inverse`.
+- 2026-07-10: index.html rendered via `compose_from_composition.py` (deterministic; CLI parity counter reported `unresolved: 2` but rendered HTML has 0 unresolved markers — logged as W11 in REPORT.md). Iterated composition 3×: pinned logo assets into testimonial cards (W7 workaround), added `"level":"h2"` to pb-stats/pb-badges headings (W5 workaround), added `grid.columns: 3` to pb-chapters.
+- 2026-07-10: gates run. `onbrand_check.py --composition`: neverDo PASS, fidelity PASS, slop checklist PASS; hard invariants 12/14 — `text-contrast` + `token-provenance` FAIL, both traced to shared page-banner/navbar chrome, not this composition (W1/W2). `slop_audit.mjs`: 10× AS-23 on art-tagged images at both breakpoints — gate-vs-renderer contradiction (W3). No shared code touched per concurrency fence.
+- 2026-07-10: shots/ captured at 1440px via Playwright (`shoot_sections.mjs`, `reducedMotion: reduce` to defeat scroll-reveal, full-page render + per-section clips): `full-page-1440.png` + 11 section closeups.
+- 2026-07-10: REPORT.md written — 11 sections w/ device mapping, gate results, 12 design-system weaknesses (W1–W12) with file/symptom/suspected-cause each. Lane complete.
+- 2026-07-10 (later): W1–W12 **resolved at the system level** (shared code; see root `changes.md` top entry + REPORT.md §6 "Resolution"). Lane artifacts refreshed: `index.html` re-rendered from the unchanged `composition.json` (CLI parity now `unresolved: 0` — W11), `onbrand-report.md`/`.json` re-gated — **OVERALL PASS** with the fid15 banner exemption removed (W1: banner paint now the composited `rgb(36,50,66)`, 13.13:1), `slop_audit.mjs` **PASS @1440+@1180** (W3: AS-23 art exemption; was 10 flags). All `shots/` re-captured (same 1440px reduced-motion method) + new `page-banner-page-banner.png` banner crop. Composition workarounds (pinned testimonial logos, explicit `"level":"h2"`) left in place — they are authored declarations and still render identically; the system defaults now do the right thing without them. Suite 592 (548 + 44 locks in `brand_pipeline/tests/test_stress_playbook_weaknesses.py`).

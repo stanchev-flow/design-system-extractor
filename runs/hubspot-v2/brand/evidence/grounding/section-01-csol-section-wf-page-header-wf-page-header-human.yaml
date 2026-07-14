@@ -1,0 +1,100 @@
+schemaVersion: section-grounding.v1
+sectionRole: hero
+layout:
+  structure: centered copy stack over full-bleed photo background, two CTAs in a row
+  columns: 1
+  alignment: center
+  approxPaddingPx:
+    top: 210
+    bottom: 200
+  gapPx: 24
+  containerWidth: full-bleed
+surfaces:
+- role: band
+  bgApprox: 'image-fill: interior workspace photo with warm-dark overlay'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#ffffff'
+typography:
+- role: eyebrow
+  approxSizePx: 14
+  weightApprox: 700
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#ffffff'
+  familyClass: geometric-sans
+- role: display
+  approxSizePx: 84
+  weightApprox: 400
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#ffffff'
+  familyClass: serif
+- role: body
+  approxSizePx: 20
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#f2f0ec'
+  familyClass: geometric-sans
+- role: control-label
+  approxSizePx: 17
+  weightApprox: 700
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#ffffff'
+  familyClass: geometric-sans
+relationalSpacingPx:
+  eyebrowToHeading: 24
+  headingToBody: 40
+  bodyToCta: 60
+components:
+- kind: button
+  variant: filled-primary
+  countObserved: 1
+  anatomy: single text label centered
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 22 40
+    radiusPx: 4
+  surfaceApprox: '#ff5c1a'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: single text label centered on white surface
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 22 40
+    radiusPx: 4
+  surfaceApprox: '#ffffff'
+  inkApprox: '#ff5c1a'
+  caseTreatment: sentence
+copy:
+  eyebrow: HUBSPOT AGENTIC CUSTOMER PLATFORM
+  heading: Where go-to-market teams go to grow.
+  body: Unite marketing, sales, and customer service on one agentic customer platform that delivers results
+    fast.
+  actions:
+  - label: Get a demo
+    styleHint: filled-primary
+  - label: Get started free
+    styleHint: outlined
+media:
+- kind: photo
+  treatment: full-bleed interior office scene with people, warm-dark tint behind centered copy
+  aspect: wide
+  approxFractionOfSection: 1.0
+motionHints: []
+confidence: high
+notes:
+- Heading has an orange period accent (#ff5c1a)
+- Top edge shows partial orange and outlined pill CTAs from navbar above (cropped)
+- Bottom edge trimmed by thin white sliver
+_source:
+  crop: section-01-csol-section-wf-page-header-wf-page-header-human.png
+  domClasses: csol-section wf-page-header wf-page-header-human -image-loaded -has-desktop-images -max-width-default
+    -padding-top-none -padding-b
+  model: claude-opus-4-8

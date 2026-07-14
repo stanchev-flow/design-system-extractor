@@ -1,0 +1,1074 @@
+{
+ "schemaVersion": 2,
+ "source": "screenshots/hubspot-v2/hubspot_files (fresh 2026-07-10 capture, curate_assets --auto + inline-SVG sprite pass)",
+ "note": "HubSpot v2 lane. Customer logos, product icons, platform graphics, agent product-UI mockups, case-study photos, G2 badges, integration tiles, the hero photograph, the wordmark (decoded from the chrome contract data-URI), footer social glyphs and chrome UI glyphs (materialized from the page's cl-icon sprite). Filenames relative to assets/.",
+ "useCaseLegend": {
+  "logo": "HubSpot orange wordmark w/ sprocket (nav) \u2014 light variant reused in the footer.",
+  "logo-wall-logo": "Customer trust logo vectors for the proof strip (real vectors, mixed color/mono as shipped).",
+  "integration-logo": "Colored app/tool logos for the integration collage.",
+  "award-badge": "G2 award badge art for the proof row.",
+  "case-study-photo": "Workplace photography for the tabbed testimonial card (4px radius).",
+  "feature-icon": "Product-family line icons (orange) + mega-panel glyphs.",
+  "product-graphic": "Layered isometric platform illustrations (carousel media).",
+  "product-UI": "Product-UI mockups for agent-card media wells (contained on sand wells).",
+  "background-art": "Full-bleed hero photograph (warm-dark tinted office scene).",
+  "app-badge": "App Store / Google Play badges (mega-panel promos).",
+  "social-glyph": "Monochrome footer social icons (cream on near-black).",
+  "ui-glyph": "Chrome/control glyphs from the site's own icon sprite (chevrons, search, carousel controls, checkmark).",
+  "decorative": "Mega-panel promo imagery."
+ },
+ "mediaTreatmentRules": [
+  {
+   "assetKind": "feature-icon",
+   "role": "card-media",
+   "fit": "mark",
+   "evidence": "Product-card icons render as a ~24px glyph row beside/above the 18px card heading (grounding section-04) \u2014 a device-frame mark, never a media well."
+  },
+  {
+   "assetKind": "product-graphic",
+   "role": "*",
+   "fit": "contain",
+   "evidence": "Layered isometric illustrations with meaningful silhouettes/alpha \u2014 never cover-cropped (grounding section-03)."
+  },
+  {
+   "assetKind": "product-UI",
+   "role": "card-media",
+   "fit": "contain",
+   "evidence": "UI mockups sit ON sand media wells with visible margins (grounding section-05) \u2014 contained, not full-bleed."
+  },
+  {
+   "assetKind": "case-study-photo",
+   "role": "card-media",
+   "fit": "cover",
+   "evidence": "Testimonial photographs fill their card half edge-to-edge at 4px radius (grounding section-08)."
+  },
+  {
+   "assetKind": "background-art",
+   "role": "hero-background",
+   "fit": "cover",
+   "evidence": "The hero photograph is a full-bleed band cover (grounding section-01)."
+  },
+  {
+   "assetKind": "logo-wall-logo",
+   "role": "*",
+   "fit": "contain",
+   "evidence": "Logo vectors render at ~30px height, hugging intrinsic aspect."
+  },
+  {
+   "assetKind": "award-badge",
+   "role": "*",
+   "fit": "contain",
+   "evidence": "Badge art renders at ~90px height, intrinsic aspect."
+  }
+ ],
+ "counts": {
+  "app-badge": 2,
+  "award-badge": 6,
+  "background-art": 1,
+  "case-study-photo": 3,
+  "decorative": 5,
+  "feature-icon": 14,
+  "integration-logo": 6,
+  "logo": 1,
+  "logo-wall-logo": 5,
+  "product-UI": 3,
+  "product-graphic": 3,
+  "social-glyph": 7,
+  "ui-glyph": 10
+ },
+ "total": 66,
+ "assets": [
+  {
+   "filename": "hubspot-wordmark.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 2836,
+   "useCase": "logo",
+   "intendedSlot": "nav/footer wordmark",
+   "label": "HubSpot",
+   "appearsInSections": [
+    0,
+    11
+   ],
+   "sectionLabels": [
+    "navbar",
+    "footer"
+   ]
+  },
+  {
+   "filename": "019-ebay-logo.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 2098,
+   "useCase": "logo-wall-logo",
+   "intendedSlot": "customer logo row",
+   "label": "eBay",
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "logo-wall"
+   ]
+  },
+  {
+   "filename": "020-doordash-logo.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 9556,
+   "useCase": "logo-wall-logo",
+   "intendedSlot": "customer logo row",
+   "label": "DoorDash",
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "logo-wall"
+   ]
+  },
+  {
+   "filename": "021-reddit-logo.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 11931,
+   "useCase": "logo-wall-logo",
+   "intendedSlot": "customer logo row",
+   "label": "Reddit",
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "logo-wall"
+   ]
+  },
+  {
+   "filename": "022-tripadvisor-logo.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 7443,
+   "useCase": "logo-wall-logo",
+   "intendedSlot": "customer logo row",
+   "label": "Tripadvisor",
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "logo-wall"
+   ]
+  },
+  {
+   "filename": "023-eventbrite-logo.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 4861,
+   "useCase": "logo-wall-logo",
+   "intendedSlot": "customer logo row",
+   "label": "Eventbrite",
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "logo-wall"
+   ]
+  },
+  {
+   "filename": "024-customer-20platform-20graphic-20-20smart-20crm1-5x-20-1.png",
+   "mimeType": "image/png",
+   "sizeBytes": 31259,
+   "width": 604,
+   "height": 353,
+   "useCase": "product-graphic",
+   "intendedSlot": "platform carousel slide 1 media",
+   "label": "Smart CRM layered platform graphic",
+   "appearsInSections": [
+    3
+   ],
+   "sectionLabels": [
+    "platform-carousel"
+   ]
+  },
+  {
+   "filename": "025-customer-20platform-20graphic-20-20hubs1-5x-20-1.png",
+   "mimeType": "image/png",
+   "sizeBytes": 31000,
+   "width": 604,
+   "height": 353,
+   "useCase": "product-graphic",
+   "intendedSlot": "platform carousel slide 2 media",
+   "label": "Hubs layered platform graphic",
+   "appearsInSections": [
+    3
+   ],
+   "sectionLabels": [
+    "platform-carousel"
+   ]
+  },
+  {
+   "filename": "026-customer-platform-graphic-breeze.png",
+   "mimeType": "image/png",
+   "sizeBytes": 26854,
+   "width": 604,
+   "height": 353,
+   "useCase": "product-graphic",
+   "intendedSlot": "platform carousel slide 3 media",
+   "label": "Breeze layered platform graphic",
+   "appearsInSections": [
+    3
+   ],
+   "sectionLabels": [
+    "platform-carousel"
+   ]
+  },
+  {
+   "filename": "028-producticons-marketinghub-icon-orange.webp",
+   "mimeType": "image/webp",
+   "sizeBytes": 1818,
+   "width": 182,
+   "height": 239,
+   "useCase": "feature-icon",
+   "intendedSlot": "product card icon",
+   "label": "Marketing Hub",
+   "appearsInSections": [
+    4
+   ],
+   "sectionLabels": [
+    "product-grid"
+   ]
+  },
+  {
+   "filename": "029-producticons-saleshub-icon-orange.webp",
+   "mimeType": "image/webp",
+   "sizeBytes": 2224,
+   "width": 224,
+   "height": 225,
+   "useCase": "feature-icon",
+   "intendedSlot": "product card icon",
+   "label": "Sales Hub",
+   "appearsInSections": [
+    4
+   ],
+   "sectionLabels": [
+    "product-grid"
+   ]
+  },
+  {
+   "filename": "030-producticons-servicehub-icon-orange.webp",
+   "mimeType": "image/webp",
+   "sizeBytes": 1851,
+   "width": 222,
+   "height": 186,
+   "useCase": "feature-icon",
+   "intendedSlot": "product card icon",
+   "label": "Service Hub",
+   "appearsInSections": [
+    4
+   ],
+   "sectionLabels": [
+    "product-grid"
+   ]
+  },
+  {
+   "filename": "031-producticons-contenthub-icon-orange.webp",
+   "mimeType": "image/webp",
+   "sizeBytes": 1758,
+   "width": 206,
+   "height": 227,
+   "useCase": "feature-icon",
+   "intendedSlot": "product card icon",
+   "label": "Content Hub",
+   "appearsInSections": [
+    4
+   ],
+   "sectionLabels": [
+    "product-grid"
+   ]
+  },
+  {
+   "filename": "032-producticons-datahub-icon-orange.webp",
+   "mimeType": "image/webp",
+   "sizeBytes": 1454,
+   "width": 239,
+   "height": 208,
+   "useCase": "feature-icon",
+   "intendedSlot": "product card icon",
+   "label": "Data Hub",
+   "appearsInSections": [
+    4
+   ],
+   "sectionLabels": [
+    "product-grid"
+   ]
+  },
+  {
+   "filename": "033-producticons-commercehub-icon-orange.webp",
+   "mimeType": "image/webp",
+   "sizeBytes": 1722,
+   "width": 206,
+   "height": 213,
+   "useCase": "feature-icon",
+   "intendedSlot": "product card icon",
+   "label": "Revenue Hub",
+   "appearsInSections": [
+    4
+   ],
+   "sectionLabels": [
+    "product-grid"
+   ]
+  },
+  {
+   "filename": "034-producticons-smartcrm-icon-orange.webp",
+   "mimeType": "image/webp",
+   "sizeBytes": 1982,
+   "width": 201,
+   "height": 201,
+   "useCase": "feature-icon",
+   "intendedSlot": "product card icon",
+   "label": "Smart CRM",
+   "appearsInSections": [
+    4
+   ],
+   "sectionLabels": [
+    "product-grid"
+   ]
+  },
+  {
+   "filename": "035-breeze-20icon.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 1382,
+   "useCase": "feature-icon",
+   "intendedSlot": "product card icon",
+   "label": "Breeze",
+   "appearsInSections": [
+    4
+   ],
+   "sectionLabels": [
+    "product-grid"
+   ]
+  },
+  {
+   "filename": "009-small-business.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 1566,
+   "useCase": "feature-icon",
+   "intendedSlot": "product card icon",
+   "label": "Small Business Bundle",
+   "appearsInSections": [
+    4
+   ],
+   "sectionLabels": [
+    "product-grid"
+   ]
+  },
+  {
+   "filename": "027-ai-20sparkle.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 1018,
+   "useCase": "feature-icon",
+   "intendedSlot": "product card icon + agent-band chip glyph",
+   "label": "AI sparkle",
+   "appearsInSections": [
+    4,
+    5
+   ],
+   "sectionLabels": [
+    "product-grid",
+    "agent-carousel"
+   ]
+  },
+  {
+   "filename": "002-marketing-hub.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 968,
+   "useCase": "feature-icon",
+   "intendedSlot": "mega-panel product glyph",
+   "label": "Marketing Hub (nav)",
+   "appearsInSections": [
+    0
+   ],
+   "sectionLabels": [
+    "navbar"
+   ]
+  },
+  {
+   "filename": "007-commerce-hub.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 863,
+   "useCase": "feature-icon",
+   "intendedSlot": "mega-panel product glyph",
+   "label": "Revenue Hub (nav)",
+   "appearsInSections": [
+    0
+   ],
+   "sectionLabels": [
+    "navbar"
+   ]
+  },
+  {
+   "filename": "010-breeze-symbol-rgb-gradient.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 1442,
+   "useCase": "feature-icon",
+   "intendedSlot": "mega-panel Breeze glyph",
+   "label": "Breeze gradient symbol",
+   "appearsInSections": [
+    0
+   ],
+   "sectionLabels": [
+    "navbar"
+   ]
+  },
+  {
+   "filename": "012-app-marketplace.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 2924,
+   "useCase": "feature-icon",
+   "intendedSlot": "mega-panel marketplace glyph",
+   "label": "App Marketplace",
+   "appearsInSections": [
+    0
+   ],
+   "sectionLabels": [
+    "navbar"
+   ]
+  },
+  {
+   "filename": "036-customer-agent-en-2x.png",
+   "mimeType": "image/png",
+   "sizeBytes": 90164,
+   "width": 640,
+   "height": 640,
+   "useCase": "product-UI",
+   "intendedSlot": "agent card media well",
+   "label": "Customer Agent UI mockup",
+   "appearsInSections": [
+    5
+   ],
+   "sectionLabels": [
+    "agent-carousel"
+   ]
+  },
+  {
+   "filename": "037-prospecting-agent-en-2x.png",
+   "mimeType": "image/png",
+   "sizeBytes": 67093,
+   "width": 640,
+   "height": 640,
+   "useCase": "product-UI",
+   "intendedSlot": "agent card media well",
+   "label": "Prospecting Agent UI mockup",
+   "appearsInSections": [
+    5
+   ],
+   "sectionLabels": [
+    "agent-carousel"
+   ]
+  },
+  {
+   "filename": "038-data-hub-en-2x.png",
+   "mimeType": "image/png",
+   "sizeBytes": 31046,
+   "width": 640,
+   "height": 640,
+   "useCase": "product-UI",
+   "intendedSlot": "agent card media well",
+   "label": "Data Agent UI mockup",
+   "appearsInSections": [
+    5
+   ],
+   "sectionLabels": [
+    "agent-carousel"
+   ]
+  },
+  {
+   "filename": "039-gmail-icon-3.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 969,
+   "useCase": "integration-logo",
+   "intendedSlot": "integration collage tile",
+   "label": "Gmail",
+   "appearsInSections": [
+    6
+   ],
+   "sectionLabels": [
+    "integration-banner"
+   ]
+  },
+  {
+   "filename": "040-shopify-icon-3.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 2576,
+   "useCase": "integration-logo",
+   "intendedSlot": "integration collage tile",
+   "label": "Shopify",
+   "appearsInSections": [
+    6
+   ],
+   "sectionLabels": [
+    "integration-banner"
+   ]
+  },
+  {
+   "filename": "041-mailchimp-icon-3.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 12467,
+   "useCase": "integration-logo",
+   "intendedSlot": "integration collage tile",
+   "label": "Mailchimp",
+   "appearsInSections": [
+    6
+   ],
+   "sectionLabels": [
+    "integration-banner"
+   ]
+  },
+  {
+   "filename": "042-zapier-icon-2.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 4979,
+   "useCase": "integration-logo",
+   "intendedSlot": "integration collage tile",
+   "label": "Zapier",
+   "appearsInSections": [
+    6
+   ],
+   "sectionLabels": [
+    "integration-banner"
+   ]
+  },
+  {
+   "filename": "043-google-ads-icon-2.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 2541,
+   "useCase": "integration-logo",
+   "intendedSlot": "integration collage tile",
+   "label": "Google Ads",
+   "appearsInSections": [
+    6
+   ],
+   "sectionLabels": [
+    "integration-banner"
+   ]
+  },
+  {
+   "filename": "044-slack-icon-2.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 1956,
+   "useCase": "integration-logo",
+   "intendedSlot": "integration collage tile",
+   "label": "Slack",
+   "appearsInSections": [
+    6
+   ],
+   "sectionLabels": [
+    "integration-banner"
+   ]
+  },
+  {
+   "filename": "045-unipart-1.png",
+   "mimeType": "image/png",
+   "sizeBytes": 266424,
+   "width": 500,
+   "height": 328,
+   "useCase": "case-study-photo",
+   "intendedSlot": "testimonial tab photo (Enterprise)",
+   "label": "Unipart",
+   "appearsInSections": [
+    8
+   ],
+   "sectionLabels": [
+    "testimonial-tabs"
+   ]
+  },
+  {
+   "filename": "046-angel-fc.png",
+   "mimeType": "image/png",
+   "sizeBytes": 296616,
+   "width": 495,
+   "height": 306,
+   "useCase": "case-study-photo",
+   "intendedSlot": "testimonial tab photo (Mid-Sized)",
+   "label": "Angel City FC",
+   "appearsInSections": [
+    8
+   ],
+   "sectionLabels": [
+    "testimonial-tabs"
+   ]
+  },
+  {
+   "filename": "047-youth-on-course.png",
+   "mimeType": "image/png",
+   "sizeBytes": 275340,
+   "width": 500,
+   "height": 347,
+   "useCase": "case-study-photo",
+   "intendedSlot": "testimonial tab photo (Small Business)",
+   "label": "Youth on Course",
+   "appearsInSections": [
+    8
+   ],
+   "sectionLabels": [
+    "testimonial-tabs"
+   ]
+  },
+  {
+   "filename": "048-badge-leader-small-business.png",
+   "mimeType": "image/png",
+   "sizeBytes": 2293,
+   "width": 69,
+   "height": 80,
+   "useCase": "award-badge",
+   "intendedSlot": "G2 badge row",
+   "label": "Leader \u2014 Small Business",
+   "appearsInSections": [
+    9
+   ],
+   "sectionLabels": [
+    "badge-row"
+   ]
+  },
+  {
+   "filename": "049-badge-most-implementable.png",
+   "mimeType": "image/png",
+   "sizeBytes": 2275,
+   "width": 69,
+   "height": 80,
+   "useCase": "award-badge",
+   "intendedSlot": "G2 badge row",
+   "label": "Most Implementable",
+   "appearsInSections": [
+    9
+   ],
+   "sectionLabels": [
+    "badge-row"
+   ]
+  },
+  {
+   "filename": "050-badge-best-relationships-small-business.png",
+   "mimeType": "image/png",
+   "sizeBytes": 2444,
+   "width": 69,
+   "height": 80,
+   "useCase": "award-badge",
+   "intendedSlot": "G2 badge row",
+   "label": "Best Relationship \u2014 Small Business",
+   "appearsInSections": [
+    9
+   ],
+   "sectionLabels": [
+    "badge-row"
+   ]
+  },
+  {
+   "filename": "051-badge-best-support-enterprise.png",
+   "mimeType": "image/png",
+   "sizeBytes": 2365,
+   "width": 69,
+   "height": 80,
+   "useCase": "award-badge",
+   "intendedSlot": "G2 badge row",
+   "label": "Best Support \u2014 Enterprise",
+   "appearsInSections": [
+    9
+   ],
+   "sectionLabels": [
+    "badge-row"
+   ]
+  },
+  {
+   "filename": "052-badge-best-results-mid-market.png",
+   "mimeType": "image/png",
+   "sizeBytes": 2409,
+   "width": 69,
+   "height": 80,
+   "useCase": "award-badge",
+   "intendedSlot": "G2 badge row",
+   "label": "Best Results \u2014 Mid-Market",
+   "appearsInSections": [
+    9
+   ],
+   "sectionLabels": [
+    "badge-row"
+   ]
+  },
+  {
+   "filename": "053-badge-best-usability-enterprise.png",
+   "mimeType": "image/png",
+   "sizeBytes": 2474,
+   "width": 69,
+   "height": 80,
+   "useCase": "award-badge",
+   "intendedSlot": "G2 badge row",
+   "label": "Best Usability \u2014 Enterprise",
+   "appearsInSections": [
+    9
+   ],
+   "sectionLabels": [
+    "badge-row"
+   ]
+  },
+  {
+   "filename": "018-hs-full-bleed-1-optmised.webp",
+   "mimeType": "image/webp",
+   "sizeBytes": 97548,
+   "width": 2160,
+   "height": 1440,
+   "useCase": "background-art",
+   "intendedSlot": "hero full-bleed photograph",
+   "label": "Warm office scene (hero)",
+   "appearsInSections": [
+    1
+   ],
+   "sectionLabels": [
+    "hero"
+   ]
+  },
+  {
+   "filename": "013-small-20businesses-20-26-20start-20ups.webp",
+   "mimeType": "image/webp",
+   "sizeBytes": 43640,
+   "width": 1035,
+   "height": 450,
+   "useCase": "decorative",
+   "intendedSlot": "mega-panel promo image (Solutions aside)",
+   "label": "Small businesses & start-ups",
+   "appearsInSections": [
+    0
+   ],
+   "sectionLabels": [
+    "navbar"
+   ]
+  },
+  {
+   "filename": "014-enterprise.webp",
+   "mimeType": "image/webp",
+   "sizeBytes": 61958,
+   "width": 1035,
+   "height": 450,
+   "useCase": "decorative",
+   "intendedSlot": "mega-panel promo image (Solutions aside)",
+   "label": "Enterprise",
+   "appearsInSections": [
+    0
+   ],
+   "sectionLabels": [
+    "navbar"
+   ]
+  },
+  {
+   "filename": "015-why-20choose-20hubspot.webp",
+   "mimeType": "image/webp",
+   "sizeBytes": 41454,
+   "width": 1035,
+   "height": 450,
+   "useCase": "decorative",
+   "intendedSlot": "mega-panel promo image (Solutions aside)",
+   "label": "Why choose HubSpot",
+   "appearsInSections": [
+    0
+   ],
+   "sectionLabels": [
+    "navbar"
+   ]
+  },
+  {
+   "filename": "016-case-20studies.webp",
+   "mimeType": "image/webp",
+   "sizeBytes": 52012,
+   "width": 1035,
+   "height": 450,
+   "useCase": "decorative",
+   "intendedSlot": "mega-panel promo image (Solutions aside)",
+   "label": "Case studies",
+   "appearsInSections": [
+    0
+   ],
+   "sectionLabels": [
+    "navbar"
+   ]
+  },
+  {
+   "filename": "017-spotlight-resized-518x225.png",
+   "mimeType": "image/png",
+   "sizeBytes": 126682,
+   "width": 518,
+   "height": 225,
+   "useCase": "decorative",
+   "intendedSlot": "mega-panel promo image (Resources)",
+   "label": "Spotlight",
+   "appearsInSections": [
+    0
+   ],
+   "sectionLabels": [
+    "navbar"
+   ]
+  },
+  {
+   "filename": "054-app-20store-20high-20res.png",
+   "mimeType": "image/png",
+   "sizeBytes": 2390,
+   "width": 136,
+   "height": 45,
+   "useCase": "app-badge",
+   "intendedSlot": "mega-panel app badge",
+   "label": "App Store",
+   "appearsInSections": [
+    0
+   ],
+   "sectionLabels": [
+    "navbar"
+   ]
+  },
+  {
+   "filename": "055-google-20play-20high-20res.png",
+   "mimeType": "image/png",
+   "sizeBytes": 2395,
+   "width": 136,
+   "height": 40,
+   "useCase": "app-badge",
+   "intendedSlot": "mega-panel app badge",
+   "label": "Google Play",
+   "appearsInSections": [
+    0
+   ],
+   "sectionLabels": [
+    "navbar"
+   ]
+  },
+  {
+   "filename": "social-facebook.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 273,
+   "useCase": "social-glyph",
+   "intendedSlot": "footer social row",
+   "label": "Facebook",
+   "appearsInSections": [
+    11
+   ],
+   "sectionLabels": [
+    "footer"
+   ]
+  },
+  {
+   "filename": "social-instagram.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 3279,
+   "useCase": "social-glyph",
+   "intendedSlot": "footer social row",
+   "label": "Instagram",
+   "appearsInSections": [
+    11
+   ],
+   "sectionLabels": [
+    "footer"
+   ]
+  },
+  {
+   "filename": "social-youtube.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 521,
+   "useCase": "social-glyph",
+   "intendedSlot": "footer social row",
+   "label": "YouTube",
+   "appearsInSections": [
+    11
+   ],
+   "sectionLabels": [
+    "footer"
+   ]
+  },
+  {
+   "filename": "social-x.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 351,
+   "useCase": "social-glyph",
+   "intendedSlot": "footer social row",
+   "label": "X",
+   "appearsInSections": [
+    11
+   ],
+   "sectionLabels": [
+    "footer"
+   ]
+  },
+  {
+   "filename": "social-linkedin.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 369,
+   "useCase": "social-glyph",
+   "intendedSlot": "footer social row",
+   "label": "LinkedIn",
+   "appearsInSections": [
+    11
+   ],
+   "sectionLabels": [
+    "footer"
+   ]
+  },
+  {
+   "filename": "social-reddit.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 1147,
+   "useCase": "social-glyph",
+   "intendedSlot": "footer social row",
+   "label": "Reddit",
+   "appearsInSections": [
+    11
+   ],
+   "sectionLabels": [
+    "footer"
+   ]
+  },
+  {
+   "filename": "social-tiktok.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 625,
+   "useCase": "social-glyph",
+   "intendedSlot": "footer social row",
+   "label": "TikTok",
+   "appearsInSections": [
+    11
+   ],
+   "sectionLabels": [
+    "footer"
+   ]
+  },
+  {
+   "filename": "icon-down.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 287,
+   "useCase": "ui-glyph",
+   "intendedSlot": "nav trigger chevron",
+   "label": "chevron down",
+   "appearsInSections": [
+    0
+   ],
+   "sectionLabels": [
+    "navbar"
+   ]
+  },
+  {
+   "filename": "icon-globe.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 766,
+   "useCase": "ui-glyph",
+   "intendedSlot": "language switcher glyph",
+   "label": "globe",
+   "appearsInSections": [
+    0
+   ],
+   "sectionLabels": [
+    "navbar"
+   ]
+  },
+  {
+   "filename": "icon-search.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 455,
+   "useCase": "ui-glyph",
+   "intendedSlot": "nav search glyph",
+   "label": "search",
+   "appearsInSections": [
+    0
+   ],
+   "sectionLabels": [
+    "navbar"
+   ]
+  },
+  {
+   "filename": "icon-right.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 297,
+   "useCase": "ui-glyph",
+   "intendedSlot": "text-arrow link glyph",
+   "label": "arrow right",
+   "appearsInSections": [
+    4
+   ],
+   "sectionLabels": [
+    "product-grid"
+   ]
+  },
+  {
+   "filename": "icon-next.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 382,
+   "useCase": "ui-glyph",
+   "intendedSlot": "carousel next control",
+   "label": "next",
+   "appearsInSections": [
+    3,
+    5
+   ],
+   "sectionLabels": [
+    "platform-carousel",
+    "agent-carousel"
+   ]
+  },
+  {
+   "filename": "icon-previous.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 361,
+   "useCase": "ui-glyph",
+   "intendedSlot": "carousel prev control",
+   "label": "previous",
+   "appearsInSections": [
+    3,
+    5
+   ],
+   "sectionLabels": [
+    "platform-carousel",
+    "agent-carousel"
+   ]
+  },
+  {
+   "filename": "icon-pause.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 512,
+   "useCase": "ui-glyph",
+   "intendedSlot": "carousel pause control",
+   "label": "pause",
+   "appearsInSections": [
+    5
+   ],
+   "sectionLabels": [
+    "agent-carousel"
+   ]
+  },
+  {
+   "filename": "icon-success.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 302,
+   "useCase": "ui-glyph",
+   "intendedSlot": "checkmark list glyph (orange)",
+   "label": "checkmark",
+   "appearsInSections": [
+    4
+   ],
+   "sectionLabels": [
+    "product-grid"
+   ]
+  },
+  {
+   "filename": "icon-close.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 391,
+   "useCase": "ui-glyph",
+   "intendedSlot": "dismiss control",
+   "label": "close",
+   "appearsInSections": [
+    0
+   ],
+   "sectionLabels": [
+    "navbar"
+   ]
+  },
+  {
+   "filename": "icon-left.svg",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 280,
+   "useCase": "ui-glyph",
+   "intendedSlot": "carousel prev (alt glyph)",
+   "label": "arrow left",
+   "appearsInSections": [
+    3
+   ],
+   "sectionLabels": [
+    "platform-carousel"
+   ]
+  }
+ ]
+}

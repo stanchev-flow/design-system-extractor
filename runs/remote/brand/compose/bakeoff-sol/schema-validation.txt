@@ -1,0 +1,12 @@
+Command:
+./venv/bin/python -m json.tool runs/remote/brand/compose/bakeoff-sol/composition.json
+jsonschema.validate(composition, brand_pipeline/spec/composition.v1.schema.json)
+
+Result:
+PASS
+
+Renderer summary:
+- Sections: 10
+- Unresolved slots: 0
+- Accent layout: workforce-intelligence-hero
+

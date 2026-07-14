@@ -1,0 +1,656 @@
+{
+  "generatedAt": "2026-07-14T16:24:28Z",
+  "brandDir": "runs/hubspot-v2/brand",
+  "viewport": "1440x900",
+  "signatureCount": 4,
+  "lanes": [
+    {
+      "lane": "compose/hero-archetypes/homepage",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/homepage/index.html",
+      "specimenLane": false,
+      "signatures": [
+        {
+          "id": "action-orange-scope",
+          "kind": "accent-scope",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "scope(allowed)",
+              "ok": true,
+              "detail": "all 6 in-family paints sit on allowed roles"
+            },
+            {
+              "check": "accent_budget",
+              "ok": true,
+              "sharePct": 1.128,
+              "budgetPct": 2.0,
+              "detail": "accent paint share 1.128% of page (budget 2.0%)"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "serif-display-sans-body",
+          "kind": "type-treatment",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "type(display)",
+              "ok": true,
+              "detail": "no rendered display rank on this lane (vacuous pass)"
+            },
+            {
+              "check": "type(body)",
+              "ok": true,
+              "detail": "1 sample(s) on family ['HubSpot Sans', 'Lexend Deca']"
+            },
+            {
+              "check": "type(button)",
+              "ok": true,
+              "detail": "4 sample(s) on family ['HubSpot Sans', 'Lexend Deca']"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "rounded-8-controls",
+          "kind": "shape-motif",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "buttons(radius 8px)",
+              "ok": true,
+              "detail": "all 4 buttons at 8px (\u00b11.5)"
+            },
+            {
+              "check": "buttons(neverPill)",
+              "ok": true,
+              "detail": "no pill silhouettes"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "deep-teal-dark-family",
+          "kind": "surface-habit",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "surfaces(dark family)",
+              "ok": true,
+              "detail": "1 dark section(s), all in the licensed family; 2 sections checked"
+            }
+          ],
+          "ok": true
+        }
+      ]
+    },
+    {
+      "lane": "compose/hero-archetypes/pricing",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/pricing/index.html",
+      "specimenLane": false,
+      "signatures": [
+        {
+          "id": "action-orange-scope",
+          "kind": "accent-scope",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "scope(allowed)",
+              "ok": true,
+              "detail": "all 3 in-family paints sit on allowed roles"
+            },
+            {
+              "check": "accent_budget",
+              "ok": true,
+              "sharePct": 0.46,
+              "budgetPct": 2.0,
+              "detail": "accent paint share 0.460% of page (budget 2.0%)"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "serif-display-sans-body",
+          "kind": "type-treatment",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "type(display)",
+              "ok": true,
+              "detail": "1 sample(s) on family ['HubSpot Serif', 'Source Serif']"
+            },
+            {
+              "check": "type(body)",
+              "ok": true,
+              "detail": "1 sample(s) on family ['HubSpot Sans', 'Lexend Deca']"
+            },
+            {
+              "check": "type(button)",
+              "ok": true,
+              "detail": "2 sample(s) on family ['HubSpot Sans', 'Lexend Deca']"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "rounded-8-controls",
+          "kind": "shape-motif",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "buttons(radius 8px)",
+              "ok": true,
+              "detail": "all 2 buttons at 8px (\u00b11.5)"
+            },
+            {
+              "check": "buttons(neverPill)",
+              "ok": true,
+              "detail": "no pill silhouettes"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "deep-teal-dark-family",
+          "kind": "surface-habit",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "surfaces(dark family)",
+              "ok": true,
+              "detail": "1 dark section(s), all in the licensed family; 2 sections checked"
+            }
+          ],
+          "ok": true
+        }
+      ]
+    },
+    {
+      "lane": "compose/hero-archetypes/product",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/product/index.html",
+      "specimenLane": false,
+      "signatures": [
+        {
+          "id": "action-orange-scope",
+          "kind": "accent-scope",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "scope(allowed)",
+              "ok": true,
+              "detail": "all 3 in-family paints sit on allowed roles"
+            },
+            {
+              "check": "accent_budget",
+              "ok": true,
+              "sharePct": 0.341,
+              "budgetPct": 2.0,
+              "detail": "accent paint share 0.341% of page (budget 2.0%)"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "serif-display-sans-body",
+          "kind": "type-treatment",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "type(display)",
+              "ok": true,
+              "detail": "1 sample(s) on family ['HubSpot Serif', 'Source Serif']"
+            },
+            {
+              "check": "type(body)",
+              "ok": true,
+              "detail": "1 sample(s) on family ['HubSpot Sans', 'Lexend Deca']"
+            },
+            {
+              "check": "type(button)",
+              "ok": true,
+              "detail": "2 sample(s) on family ['HubSpot Sans', 'Lexend Deca']"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "rounded-8-controls",
+          "kind": "shape-motif",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "buttons(radius 8px)",
+              "ok": true,
+              "detail": "all 2 buttons at 8px (\u00b11.5)"
+            },
+            {
+              "check": "buttons(neverPill)",
+              "ok": true,
+              "detail": "no pill silhouettes"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "deep-teal-dark-family",
+          "kind": "surface-habit",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "surfaces(dark family)",
+              "ok": true,
+              "detail": "1 dark section(s), all in the licensed family; 2 sections checked"
+            }
+          ],
+          "ok": true
+        }
+      ]
+    },
+    {
+      "lane": "compose/hero-archetypes/about",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/about/index.html",
+      "specimenLane": false,
+      "signatures": [
+        {
+          "id": "action-orange-scope",
+          "kind": "accent-scope",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "scope(allowed)",
+              "ok": true,
+              "detail": "all 3 in-family paints sit on allowed roles"
+            },
+            {
+              "check": "accent_budget",
+              "ok": true,
+              "sharePct": 0.282,
+              "budgetPct": 2.0,
+              "detail": "accent paint share 0.282% of page (budget 2.0%)"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "serif-display-sans-body",
+          "kind": "type-treatment",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "type(display)",
+              "ok": true,
+              "detail": "1 sample(s) on family ['HubSpot Serif', 'Source Serif']"
+            },
+            {
+              "check": "type(body)",
+              "ok": true,
+              "detail": "1 sample(s) on family ['HubSpot Sans', 'Lexend Deca']"
+            },
+            {
+              "check": "type(button)",
+              "ok": true,
+              "detail": "2 sample(s) on family ['HubSpot Sans', 'Lexend Deca']"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "rounded-8-controls",
+          "kind": "shape-motif",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "buttons(radius 8px)",
+              "ok": true,
+              "detail": "all 2 buttons at 8px (\u00b11.5)"
+            },
+            {
+              "check": "buttons(neverPill)",
+              "ok": true,
+              "detail": "no pill silhouettes"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "deep-teal-dark-family",
+          "kind": "surface-habit",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "surfaces(dark family)",
+              "ok": true,
+              "detail": "1 dark section(s), all in the licensed family; 2 sections checked"
+            }
+          ],
+          "ok": true
+        }
+      ]
+    },
+    {
+      "lane": "compose/hero-archetypes/blog",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/blog/index.html",
+      "specimenLane": false,
+      "signatures": [
+        {
+          "id": "action-orange-scope",
+          "kind": "accent-scope",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "scope(allowed)",
+              "ok": true,
+              "detail": "all 3 in-family paints sit on allowed roles"
+            },
+            {
+              "check": "accent_budget",
+              "ok": true,
+              "sharePct": 0.43,
+              "budgetPct": 2.0,
+              "detail": "accent paint share 0.430% of page (budget 2.0%)"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "serif-display-sans-body",
+          "kind": "type-treatment",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "type(display)",
+              "ok": true,
+              "detail": "no rendered display rank on this lane (vacuous pass)"
+            },
+            {
+              "check": "type(body)",
+              "ok": true,
+              "detail": "1 sample(s) on family ['HubSpot Sans', 'Lexend Deca']"
+            },
+            {
+              "check": "type(button)",
+              "ok": true,
+              "detail": "2 sample(s) on family ['HubSpot Sans', 'Lexend Deca']"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "rounded-8-controls",
+          "kind": "shape-motif",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "buttons(radius 8px)",
+              "ok": true,
+              "detail": "all 2 buttons at 8px (\u00b11.5)"
+            },
+            {
+              "check": "buttons(neverPill)",
+              "ok": true,
+              "detail": "no pill silhouettes"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "deep-teal-dark-family",
+          "kind": "surface-habit",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "surfaces(dark family)",
+              "ok": true,
+              "detail": "1 dark section(s), all in the licensed family; 2 sections checked"
+            }
+          ],
+          "ok": true
+        }
+      ]
+    },
+    {
+      "lane": "compose/hero-archetypes/demo",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/demo/index.html",
+      "specimenLane": false,
+      "signatures": [
+        {
+          "id": "action-orange-scope",
+          "kind": "accent-scope",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "scope(allowed)",
+              "ok": true,
+              "detail": "all 4 in-family paints sit on allowed roles"
+            },
+            {
+              "check": "accent_budget",
+              "ok": true,
+              "sharePct": 0.661,
+              "budgetPct": 2.0,
+              "detail": "accent paint share 0.661% of page (budget 2.0%)"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "serif-display-sans-body",
+          "kind": "type-treatment",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "type(display)",
+              "ok": true,
+              "detail": "1 sample(s) on family ['HubSpot Serif', 'Source Serif']"
+            },
+            {
+              "check": "type(body)",
+              "ok": true,
+              "detail": "1 sample(s) on family ['HubSpot Sans', 'Lexend Deca']"
+            },
+            {
+              "check": "type(button)",
+              "ok": true,
+              "detail": "3 sample(s) on family ['HubSpot Sans', 'Lexend Deca']"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "rounded-8-controls",
+          "kind": "shape-motif",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "buttons(radius 8px)",
+              "ok": true,
+              "detail": "all 3 buttons at 8px (\u00b11.5)"
+            },
+            {
+              "check": "buttons(neverPill)",
+              "ok": true,
+              "detail": "no pill silhouettes"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "deep-teal-dark-family",
+          "kind": "surface-habit",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "surfaces(dark family)",
+              "ok": true,
+              "detail": "1 dark section(s), all in the licensed family; 2 sections checked"
+            }
+          ],
+          "ok": true
+        }
+      ]
+    },
+    {
+      "lane": "compose/hero-archetypes/developer",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/developer/index.html",
+      "specimenLane": false,
+      "signatures": [
+        {
+          "id": "action-orange-scope",
+          "kind": "accent-scope",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "scope(allowed)",
+              "ok": true,
+              "detail": "all 4 in-family paints sit on allowed roles"
+            },
+            {
+              "check": "accent_budget",
+              "ok": true,
+              "sharePct": 0.677,
+              "budgetPct": 2.0,
+              "detail": "accent paint share 0.677% of page (budget 2.0%)"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "serif-display-sans-body",
+          "kind": "type-treatment",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "type(display)",
+              "ok": true,
+              "detail": "1 sample(s) on family ['HubSpot Serif', 'Source Serif']"
+            },
+            {
+              "check": "type(body)",
+              "ok": true,
+              "detail": "2 sample(s) on family ['HubSpot Sans', 'Lexend Deca']"
+            },
+            {
+              "check": "type(button)",
+              "ok": true,
+              "detail": "3 sample(s) on family ['HubSpot Sans', 'Lexend Deca']"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "rounded-8-controls",
+          "kind": "shape-motif",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "buttons(radius 8px)",
+              "ok": true,
+              "detail": "all 3 buttons at 8px (\u00b11.5)"
+            },
+            {
+              "check": "buttons(neverPill)",
+              "ok": true,
+              "detail": "no pill silhouettes"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "deep-teal-dark-family",
+          "kind": "surface-habit",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "surfaces(dark family)",
+              "ok": true,
+              "detail": "1 dark section(s), all in the licensed family; 2 sections checked"
+            }
+          ],
+          "ok": true
+        }
+      ]
+    },
+    {
+      "lane": "compose/hero-archetypes/event",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/event/index.html",
+      "specimenLane": false,
+      "signatures": [
+        {
+          "id": "action-orange-scope",
+          "kind": "accent-scope",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "scope(allowed)",
+              "ok": true,
+              "detail": "all 6 in-family paints sit on allowed roles"
+            },
+            {
+              "check": "accent_budget",
+              "ok": true,
+              "sharePct": 1.076,
+              "budgetPct": 2.0,
+              "detail": "accent paint share 1.076% of page (budget 2.0%)"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "serif-display-sans-body",
+          "kind": "type-treatment",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "type(display)",
+              "ok": true,
+              "detail": "1 sample(s) on family ['HubSpot Serif', 'Source Serif']"
+            },
+            {
+              "check": "type(body)",
+              "ok": true,
+              "detail": "3 sample(s) on family ['HubSpot Sans', 'Lexend Deca']"
+            },
+            {
+              "check": "type(button)",
+              "ok": true,
+              "detail": "4 sample(s) on family ['HubSpot Sans', 'Lexend Deca']"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "rounded-8-controls",
+          "kind": "shape-motif",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "buttons(radius 8px)",
+              "ok": true,
+              "detail": "all 4 buttons at 8px (\u00b11.5)"
+            },
+            {
+              "check": "buttons(neverPill)",
+              "ok": true,
+              "detail": "no pill silhouettes"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "deep-teal-dark-family",
+          "kind": "surface-habit",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "surfaces(dark family)",
+              "ok": true,
+              "detail": "1 dark section(s), all in the licensed family; 2 sections checked"
+            }
+          ],
+          "ok": true
+        }
+      ]
+    }
+  ]
+}

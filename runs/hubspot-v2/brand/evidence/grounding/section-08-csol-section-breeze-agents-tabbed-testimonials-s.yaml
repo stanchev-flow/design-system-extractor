@@ -1,0 +1,148 @@
+schemaVersion: section-grounding.v1
+sectionRole: testimonial
+layout:
+  structure: tabs row on top, then bordered card with photo left / quote right, stats row below split
+    50/50
+  columns: 2
+  alignment: mixed
+  approxPaddingPx:
+    top: 60
+    bottom: 60
+  gapPx: 40
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#fdfcfa'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1c1c1c'
+- role: card
+  bgApprox: '#fdfcfa'
+  parent: canvas
+  radiusPx: 8
+  borderApprox: '1px #e2ddd4'
+  inkApprox: '#1c1c1c'
+- role: media-well
+  bgApprox: 'image-fill: photo of a person in high-vis vest holding a clipboard in a warehouse'
+  parent: card
+  radiusPx: 4
+  borderApprox: none
+  inkApprox: '#ffffff'
+typography:
+- role: nav-link
+  approxSizePx: 17
+  weightApprox: 600
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1c1c1c'
+  familyClass: grotesque-sans
+- role: body
+  approxSizePx: 18
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#33322f'
+  familyClass: grotesque-sans
+- role: h3
+  approxSizePx: 16
+  weightApprox: 700
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1c1c1c'
+  familyClass: grotesque-sans
+- role: caption
+  approxSizePx: 15
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#4a4844'
+  familyClass: grotesque-sans
+- role: display
+  approxSizePx: 44
+  weightApprox: 400
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1c1c1c'
+  familyClass: serif
+copy:
+  eyebrow: null
+  heading: null
+  body: “HubSpot took the time to understand our business needs fully. The pre-sales and subsequent support
+    really stood out from the start. They committed to engage with us deeply and work side-by-side with
+    us on the implementation. They've since more than met this commitment.”
+  actions:
+  - label: Read full case study
+    styleHint: underlined text link
+  items:
+  - heading: '12'
+    body: months for the pipeline to grow from millions to billions
+    meta: null
+  - heading: '5'
+    body: point increase in net promoter score (NPS)
+    meta: null
+components:
+- kind: tab
+  variant: text-underline
+  countObserved: 3
+  anatomy: label with active state showing orange underline bar
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 0 0
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1c1c1c'
+  caseTreatment: title
+- kind: link
+  variant: text-arrow
+  countObserved: 1
+  anatomy: bold label with orange-tinted underline
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1c1c1c'
+  caseTreatment: title
+- kind: stat
+  variant: numeric-over-caption
+  countObserved: 2
+  anatomy: large serif number top -> caption below, divided by vertical rule
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1c1c1c'
+  caseTreatment: sentence
+- kind: media-frame
+  variant: rounded-photo
+  countObserved: 1
+  anatomy: single portrait photo inside card, left half
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 4
+  surfaceApprox: '#8a7a5f'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+media:
+- kind: photo
+  treatment: warehouse worker portrait, rounded corners, occupies left half of card
+  aspect: portrait
+  approxFractionOfSection: 0.35
+relationalSpacingPx:
+  headingToBody: 16
+  bodyToCta: 12
+motionHints:
+- tab row with active underline indicator (tab switch / slide)
+confidence: high
+notes:
+- Top of crop shows truncated large serif heading 'every size business.' cut off at frame top
+- Active tab 'Enterprise' has orange underline; other tabs inactive
+- Vertical divider rule between two stats
+_source:
+  crop: section-08-csol-section-breeze-agents-tabbed-testimonials-s.png
+  domClasses: csol-section breeze-agents-tabbed-testimonials__section -statistics-variation -padding-top-s
+    -padding-bottom-xs
+  model: claude-opus-4-8

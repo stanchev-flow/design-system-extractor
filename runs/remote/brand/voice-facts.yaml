@@ -1,0 +1,73 @@
+# STRUCTURED VOICE FACTS (pass1 2026-07; schema voice-facts.v1; brand-schema §4.8).
+# Derived from the brand's CAPTURED copy only — section-copy.yaml layoutCopy +
+# evidence/grounding section copy (headings, bodies, eyebrows, action labels).
+# voice.md stays the prose companion; this file is the machine-checkable layer the
+# voice gate (brand_pipeline/voice_audit.py) audits generated copy against.
+# Derivation method: unique captured strings, sentence-split on [.!?], word counts;
+# Flesch-Kincaid grade over the pooled heading+body corpus; verb-led share over
+# CONVERSION action labels (filled/outlined/pill styleHints), nav labels excluded.
+schema: voice-facts.v1
+brand: remote
+derivedFrom:
+  - section-copy.yaml (layoutCopy: 10 unique headings, 5 bodies, 11 action labels)
+  - evidence/grounding/section-*.yaml (copy blocks)
+  - voice.md (tone descriptors -- prose companion)
+
+tone:
+  descriptors: [plainspoken, systematic, operational, modest-proof-outsourced, technically-honest-at-depth]
+  register: >-
+    Infrastructure confidence in the second person — the reader is an operator being
+    handed controls; scale numbers persuade (170+ countries), badges shout so the
+    copy can stay modest; question-form conversion beats are licensed banner devices.
+  source: voice.md Voice (derived from the same captured corpus)
+
+sentences:
+  corpus: 23 sentences pooled from unique captured headings + bodies
+  meanWords: 10.5
+  medianWords: 7
+  p90Words: 21
+  maxWords: 32
+  gate:
+    # generated copy budgets = measured envelope with documented ~1.5x headroom;
+    # the voice gate warns beyond these (advisory severity by default)
+    meanWordsMax: 16
+    p90WordsMax: 32
+
+readingLevel:
+  fleschKincaidGrade: 8.5
+  band: "7-9 (plain operational talk; jargon licensed only at API depth — voice.md)"
+  gate: { fkGradeMax: 11 }
+
+casing:
+  headings:
+    rule: sentence
+    note: "measured 10/10 sentence case — never-allcaps-headings is already a neverDo"
+    brandTerms: [Remote, API, MCP, G2, HR, EOR, IT, Remote Payments]
+  eyebrows:
+    rule: uppercase
+    note: "measured 5/5 uppercase category labels, 2-5 words ('HOW WE DO IT')"
+  ctas: { rule: sentence, note: "Book demo / Sign up / Talk to our team — verb-first, 2-4 words" }
+
+verbLed:
+  conversionCtaShare: 0.67
+  corpus: "9 unique conversion labels (filled/outlined/pill styleHints): 6 verb-led"
+  samples: [Book demo, Sign up, Become a Partner, Hear from our customers, View all]
+  gate: { advisory: true, note: "share drops below ~0.5 in generated copy -> WARN" }
+
+punctuation:
+  exclamations: { measured: 0, gate: { max: 0 }, note: "no exclamation marks in the captured corpus — no hype punctuation" }
+
+bannedHype:
+  # words the captured corpus NEVER uses (voice.md: 'No exclamation marks, no hype
+  # adjectives; scale numbers do the persuading')
+  lexicon: [leverage, synergy, world-class, cutting-edge, revolutionary, game-changing,
+            supercharge, unleash, next-level, blazing, groundbreaking, unparalleled,
+            best-in-class, state-of-the-art]
+  evidence: "0 hits across the captured heading/body/CTA corpus"
+
+provenance:
+  method: >-
+    deterministic text stats over the captured corpus (see header); no model in the
+    loop. Numbers regenerate identically from section-copy.yaml + grounding.
+  authoredBy: user
+  ts: "2026-07-14T15:00:00Z"

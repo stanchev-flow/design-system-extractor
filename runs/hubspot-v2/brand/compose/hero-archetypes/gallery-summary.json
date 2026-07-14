@@ -1,0 +1,79 @@
+{
+  "lane": "runs/hubspot-v2/brand/compose/hero-archetypes",
+  "style": "corporate-saas-clean",
+  "forceOffGrid": true,
+  "pages": {
+    "homepage": {
+      "ok": true,
+      "attempts": 3,
+      "archetypes": [
+        "hero-split-product"
+      ],
+      "seconds": 194.0,
+      "failures": []
+    },
+    "pricing": {
+      "ok": true,
+      "attempts": 2,
+      "archetypes": [
+        "hero-pricing-value-forward"
+      ],
+      "seconds": 91.0,
+      "failures": []
+    },
+    "product": {
+      "ok": true,
+      "attempts": 1,
+      "archetypes": [
+        "hero-product-canvas-panel"
+      ],
+      "seconds": 75.1,
+      "failures": []
+    },
+    "about": {
+      "ok": true,
+      "attempts": 1,
+      "archetypes": [
+        "hero-mission-monument"
+      ],
+      "seconds": 63.0,
+      "failures": []
+    },
+    "blog": {
+      "ok": true,
+      "attempts": 1,
+      "archetypes": [
+        "hero-content-featured-lead"
+      ],
+      "seconds": 80.6,
+      "failures": []
+    },
+    "demo": {
+      "ok": true,
+      "attempts": 1,
+      "archetypes": [
+        "hero-form-split"
+      ],
+      "seconds": 63.3,
+      "failures": []
+    },
+    "developer": {
+      "ok": true,
+      "attempts": 3,
+      "archetypes": [
+        "hero-search-first"
+      ],
+      "seconds": 144.4,
+      "failures": []
+    },
+    "event": {
+      "ok": true,
+      "attempts": 2,
+      "archetypes": [
+        "hero-event-meta-forward"
+      ],
+      "seconds": 79.6,
+      "failures": []
+    }
+  }
+}

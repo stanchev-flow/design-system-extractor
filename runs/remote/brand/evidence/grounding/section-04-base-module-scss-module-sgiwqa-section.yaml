@@ -1,0 +1,68 @@
+schemaVersion: section-grounding.v1
+sectionRole: cta
+layout:
+  structure: centered heading + button stacked, inside a rounded inset panel with green glow at bottom
+  columns: 1
+  alignment: center
+  approxPaddingPx:
+    top: 90
+    bottom: 90
+  gapPx: 40
+  containerWidth: inset-panel
+surfaces:
+- role: canvas
+  bgApprox: '#eef0ef'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: inset-panel
+  bgApprox: 'gradient(#e6e8e7 -> #8fd6a8)'
+  parent: canvas
+  radiusPx: 20
+  borderApprox: none
+  inkApprox: '#141414'
+typography:
+- role: h2
+  approxSizePx: 44
+  weightApprox: 500
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#141414'
+  familyClass: grotesque-sans
+- role: control-label
+  approxSizePx: 17
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#ffffff'
+  familyClass: grotesque-sans
+components:
+- kind: button
+  variant: filled-primary
+  countObserved: 1
+  anatomy: label -> arrow icon
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 16 28
+    radiusPx: 24
+  surfaceApprox: '#1560f5'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+copy:
+  heading: Hiring internationally, converting contractors, or consolidating payroll? Talk to our team.
+  actions:
+  - label: Book demo
+    styleHint: filled-primary
+media:
+- kind: texture
+  treatment: soft green radial glow blending into light grey panel at bottom
+  aspect: wide
+  approxFractionOfSection: 0.4
+confidence: high
+notes:
+- green glow concentrated at lower-center/left of panel
+_source:
+  crop: section-04-base-module-scss-module-sgiwqa-section.png
+  domClasses: base-module-scss-module__sGIWqa__section
+  model: claude-opus-4-8

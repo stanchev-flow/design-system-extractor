@@ -1,0 +1,158 @@
+schemaVersion: section-grounding.v1
+sectionRole: features
+layout:
+  structure: split ~48/52, accordion list left / product-UI illustration right
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 100
+    bottom: 100
+  gapPx: 220
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#eef0ee'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: card
+  bgApprox: '#4a1522'
+  parent: canvas
+  radiusPx: 16
+  borderApprox: none
+  inkApprox: '#ffffff'
+- role: card
+  bgApprox: '#ffffff'
+  parent: canvas
+  radiusPx: 12
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: card
+  bgApprox: '#ffffff'
+  parent: canvas
+  radiusPx: 16
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: band
+  bgApprox: '#c3c9d4'
+  parent: canvas
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#ffffff'
+typography:
+- role: eyebrow
+  approxSizePx: 18
+  weightApprox: 600
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#c0304a'
+  familyClass: grotesque-sans
+- role: h1
+  approxSizePx: 60
+  weightApprox: 600
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#141414'
+  familyClass: grotesque-sans
+- role: h3
+  approxSizePx: 26
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: body
+  approxSizePx: 22
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#f0e0e4'
+  familyClass: grotesque-sans
+relationalSpacingPx:
+  eyebrowToHeading: 28
+  headingToBody: 40
+  bodyToCta: 44
+components:
+- kind: accordion-item
+  variant: collapsed-row
+  countObserved: 4
+  anatomy: gradient icon left -> label -> chevron-down right, divider below
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 28 0
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: accordion-item
+  variant: expanded-panel
+  countObserved: 1
+  anatomy: icon+heading+chevron-up top -> body -> circular arrow button
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 40 40
+    radiusPx: 16
+  surfaceApprox: '#4a1522'
+  inkApprox: '#ffffff'
+  caseTreatment: title
+- kind: button
+  variant: circular-icon
+  countObserved: 1
+  anatomy: right-arrow glyph centered in white circle
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 28
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1a1a1a'
+  caseTreatment: sentence
+- kind: icon
+  variant: gradient-glyph
+  countObserved: 5
+  anatomy: small pink-to-purple gradient symbol beside each accordion label
+  sizing:
+    widthBehavior: fixed
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#c0304a'
+  caseTreatment: sentence
+- kind: avatar
+  variant: card-portrait
+  countObserved: 1
+  anatomy: portrait photo on maroon panel -> name -> location -> flag pill
+  sizing:
+    widthBehavior: fixed
+    radiusPx: 12
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: badge
+  variant: flag-pill
+  countObserved: 1
+  anatomy: flag icon + UNITED STATES label in pink pill
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 4 10
+    radiusPx: 6
+  surfaceApprox: '#f9d4dc'
+  inkApprox: '#4a1522'
+  caseTreatment: upper
+media:
+- kind: product-ui
+  treatment: overlapping UI cards (chat popover, profile card, checklist row) on desaturated US map with
+    grid lines
+  aspect: landscape
+  approxFractionOfSection: 0.45
+motionHints:
+- accordion with one row open (animated expand)
+- chevron up/down toggle indicators on rows
+- arrow-in-circle button beside expanded panel (advance/navigate affordance)
+confidence: high
+notes:
+- cookie-settings floating button bottom-left of canvas
+- chat popover reads 'Hello, Lucy!' with close X; checklist reads 'Risk & compliance management'
+_source:
+  crop: accordion-item-4-professional-employer-organization-peo.png
+  domClasses: ''
+  model: claude-opus-4-8

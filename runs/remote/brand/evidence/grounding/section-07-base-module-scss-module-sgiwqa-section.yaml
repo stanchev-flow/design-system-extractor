@@ -1,0 +1,175 @@
+schemaVersion: section-grounding.v1
+sectionRole: testimonial
+layout:
+  structure: centered header on top, horizontal carousel of testimonial cards below, centered CTA at bottom
+  columns: 3
+  alignment: center
+  approxPaddingPx:
+    top: 90
+    bottom: 40
+  gapPx: 32
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#eeeeec'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: card
+  bgApprox: '#f7f7f5'
+  parent: canvas
+  radiusPx: 12
+  borderApprox: none
+  inkApprox: '#2b2b2b'
+- role: avatar
+  bgApprox: 'image-fill: circle-cropped portrait'
+  parent: card
+  radiusPx: 999
+  borderApprox: none
+  inkApprox: '#2b2b2b'
+typography:
+- role: h2
+  approxSizePx: 40
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: subheading
+  approxSizePx: 18
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#3a3a3a'
+  familyClass: grotesque-sans
+- role: body
+  approxSizePx: 18
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#2b2b2b'
+  familyClass: grotesque-sans
+- role: caption
+  approxSizePx: 16
+  weightApprox: 400
+  case: title
+  trackingApprox: normal
+  colorApprox: '#2b2b2b'
+  familyClass: grotesque-sans
+- role: link
+  approxSizePx: 16
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1a5cff'
+  familyClass: grotesque-sans
+- role: control-label
+  approxSizePx: 16
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+components:
+- kind: card
+  variant: testimonial-card
+  countObserved: 3
+  anatomy: logo top -> quote body -> avatar + name/title row -> read story link below card
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: 40 36
+    radiusPx: 12
+  surfaceApprox: '#f7f7f5'
+  inkApprox: '#2b2b2b'
+- kind: avatar
+  variant: circle-portrait
+  countObserved: 3
+  anatomy: circular cropped photo followed by vertical divider then name/title
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 999
+  surfaceApprox: transparent
+  inkApprox: '#2b2b2b'
+- kind: logo-item
+  variant: monochrome-wordmark
+  countObserved: 3
+  anatomy: icon glyph + wordmark text
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+- kind: link
+  variant: text-arrow
+  countObserved: 3
+  anatomy: label + trailing arrow glyph
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1a5cff'
+  caseTreatment: sentence
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: label + trailing arrow glyph inside pill outline
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 16 32
+    radiusPx: 999
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: sentence
+copy:
+  eyebrow: null
+  heading: A word from our customers
+  subheading: Join customers who trust Remote to transform their business.
+  body: null
+  actions:
+  - label: Read customer story →
+    styleHint: text-arrow
+  - label: Read customer story →
+    styleHint: text-arrow
+  - label: Read cus
+    styleHint: text-arrow
+  - label: Hear from our customers →
+    styleHint: outlined pill
+  items:
+  - heading: fountain
+    body: “If we had to manage and coordinate everything in-house, it would cost us well over $500,000
+      more each year. Remote not only eliminates that financial strain but also takes the operational
+      burden off our plate, allowing us to focus on growing our business with confidence and efficiency.”
+    meta: Luke McKinlay, VP of Finance
+  - heading: REVERSE TECH
+    body: “We run monthly, semi-monthly and hourly payroll in multiple different currencies around the
+      world and our Finance Manager has full visibility in a single platform. With Remote, you can make
+      it happen.”
+    meta: Marisol Jiménez, Head of People
+  - heading: Hom
+    body: “We work… employ 5… complian… definitely
+    meta: null
+  logosLegible:
+  - fountain
+  - REVERSE TECH
+  - Hom
+media:
+- kind: photo
+  treatment: circle-cropped portrait avatars ~64px inside cards
+  aspect: square
+  approxFractionOfSection: 0.03
+- kind: logo-vector
+  treatment: monochrome ink wordmarks with icon glyphs at card top
+  aspect: freeform
+  approxFractionOfSection: 0.02
+confidence: high
+notes:
+- Left and right cards cut off at crop edges; partial text and third logo 'Hom' truncated
+- Carousel implies horizontal scroll of testimonial cards
+_source:
+  crop: section-07-base-module-scss-module-sgiwqa-section.png
+  domClasses: base-module-scss-module__sGIWqa__section
+  model: claude-opus-4-8

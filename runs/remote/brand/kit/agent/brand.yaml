@@ -1,0 +1,2628 @@
+# brand.yaml — canonical design language for Remote (remote.com)
+# Phase D re-extraction (2026-07-07): authored by the extraction agent from the FRESH
+# live capture (screenshots/remote-v2/, Playwright 1440x900, scripts stripped) through
+# the evidence-first flow (run_brand_extraction.py mine-dom → mine-css → measure →
+# slice → ground → curate; spec/layout-analyst-skill.md authoring protocol).
+#
+# MEASUREMENT SOURCES (evidence/ bundle, all reproducible):
+#  - evidence/css-rules.json + css-facts.json — the site's OWN token sheet: the "zora"
+#    custom-property system (:root + [data-zora-theme=*] scopes) with exact palette
+#    steps (neutral 50–900, sea-blue 25–900, red-brand 25–900, sea-green, purple,
+#    yellow), radius tiers x1–x4 (2/4/10/40px), spacing scale x1–x9 (4→80px),
+#    hover pairs, letter-spacing tokens, font stacks (Inter + Bossa + JetBrains Mono)
+#  - evidence/computed-styles.json — JS-off getComputedStyle at 1440x900: chrome bars,
+#    heading ramp (h1 46/h2 36/h3 18/p 18), nav trigger 18px w500, footer link 14px,
+#    action-family census (pill h=48 r=40 pad 0 24)
+#  - evidence/dom-sections.json — DOM census: 66 module-section candidates, 8 footer
+#    link groups, button-class census, nav menu structure
+#  - evidence/grounding/*.yaml — 11 per-section VISION grounding files (opus,
+#    extraction-grounding-prompt.md): surfaces w/ parents, per-section type+component
+#    inventory, verbatim copy, creative direction
+#  - runs/remote/assets/source-chrome.v2.json — offline browser chrome contract
+#    (extract_chrome_saved.py over the fresh capture)
+#
+# Remote reads as the corpus's third pole: an ALL-LIGHT canvas system (no dark page
+# bands — dark lives INSIDE cards/panels as deep jewel-tone backdrops), fully-rounded
+# pill CTAs on a 40px radius token, a single-weight (400) geometric display face at
+# every heading tier, uppercase theme-colored eyebrows, white 12–16px cards that only
+# elevate on hover, and pastel noise/gradient art surfaces bookending the page.
+
+version: "1.1"
+
+brand:
+  name: "Remote"
+  sourceUrl: "https://remote.com"
+  baseStyle: corporate-saas-clean
+  snapshot:
+    value: >-
+      A light, systematic SaaS marketing system on a cool gray canvas (#eff0f0) led by a
+      single vivid blue (#0564ff — the site's own sea-blue-500 token). Every heading tier
+      is Bossa (a geometric grotesque) at weight 400, sentence case; hierarchy comes from
+      size, not weight. Inter carries body, UI, buttons, and the footer. All CTAs are
+      fully-rounded 48px-tall pills (40px radius token): blue filled primary, outlined
+      secondary in deep blue (#003284) that FILLS blue on hover, near-black neutral pill
+      for chrome (nav CTA), and blue arrow text-links. Eyebrows are uppercase tracked
+      microlabels color-coded by the section's theme scope (sea-blue #0047bc-family,
+      red-brand crimson #a52d44, neutral gray #595b5f). Content sits in pure-white
+      rounded cards that are FLAT at idle and gain a soft shadow + tint only on hover.
+      Dark surfaces never appear as section bands: deep navy (#00235c, the sea-blue-800
+      accent step) backs media wells INSIDE white cards, and deep maroon (#511621,
+      red-brand-800) inverts the active item of the feature accordion. The hero sits on
+      an inset 10px-rounded panel painted with a pastel grey-green-blue noise-gradient;
+      the closing CTA repeats the gradient as a full-bleed band; text on both stays dark
+      ink. The footer is LIGHT (#f6f7f8): an 8-group link directory in 6 visual columns,
+      ink links that soften + underline on hover, circular social icons, app badges.
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-03T16:40:00Z", action: created, from: null,
+          to: "all-light pill-CTA noise-panel system (saved-page ground truth)",
+          by: creation, signalId: null,
+          note: "first extraction — local capture (DOM + 22 CSS + inline instance styles + assets)" }
+      - { ts: "2026-07-07T12:30:00Z", action: refined, from: "hand extraction (remote-e2e)",
+          to: "evidence-first re-extraction (Phase D live capture + zora token sheet)",
+          by: creation, signalId: null,
+          note: "fresh capture 2026-07-07; corrected body ink (#383a3d not #595b5f), footer link ink (#141415), secondary-button family (deep-blue outline that fills blue on hover), pressed/focus states from the site's own token scopes; nav measured sticky+transparent; +3 patterns; full blocks coverage" }
+
+meta:
+  # P1.1 canonical-tier discipline (validator C14): every canonical value in this file
+  # (sizeRem.base, spacing value:, radius value:) refers to the 1440px measured tier
+  # unless a tier ladder says otherwise. The measure stage sampled the saved page at
+  # 1920/1440/960/375 (evidence/computed-styles.json `tiers`); per-role stamps ride
+  # in tokens.type.<role>.tiers. The source is mobile-first with min-width register
+  # swaps at 768/1024/1440/1920 — the authored max-width ladder (base >991 / tablet
+  # ≤991 / mobileL ≤767 / mobile ≤479) projects those registers; the 992–1023 window
+  # is a known projection seam (source still shows its <1024 register there).
+  canonicalTier:
+    viewport: 1440
+    label: base
+    note: "sizeRem.base == computed @1440 (the 1440–1919 source register); the 1920+
+      register is stamped per-role under tiers.w1920, not a sizeRem key"
+    measuredTiers: [1920, 1440, 960, 375]
+    source: computed
+    provenance: [evidence/computed-styles.json]
+
+indexes:
+  assetsTagged:     "./assets-tagged.json"
+  assetsTaggedMd:   "./assets-tagged.md"
+  savedPageHtml:    "../../../screenshots/remote-v2/remote-com.html"
+  savedPageAssets:  "../../../screenshots/remote-v2/remote-com_files/"
+  sourceScreenshot: "../../../screenshots/remote-v2/remote-com-fullpage.png"
+  voice:            "./voice.md"
+  layoutLibrary:    "./layout-library.yaml"
+  sectionCopy:      "./section-copy.yaml"
+  evidenceBundle:   "./evidence/"
+  cssRuleCorpus:    "./evidence/css-rules.json"
+  cssFacts:         "./evidence/css-facts.json"
+  computedStyles:   "./evidence/computed-styles.json"
+  domCensus:        "./evidence/dom-sections.json"
+  visionGrounding:  "./evidence/grounding/"
+  chromeContract:   "../assets/source-chrome.v2.json"
+  priorCapture:     "../../../screenshots/remote/"
+
+tokens:
+  colors:
+    # ── ink / neutrals — the site's own neutral scale (--zora-neutral-50..900)
+    ink/primary:      { value: "#141415", role: "heading + nav-link + footer-link ink (neutral-900; h1–h6, nav triggers, footer links)", status: mapped, source: saved-css, provenance: [hero, accordion-features, workflow-cards, navbar, footer] }
+    ink/body:         { value: "#383a3d", role: "body copy default (neutral-700 = --zora-text-secondary; measured p{color} rgb(56,58,61))", status: mapped, source: [saved-css, computed], provenance: [hero, infra-panel, testimonials] }
+    ink/secondary:    { value: "#595b5f", role: "quieter ink (neutral-600): gray eyebrow family, footer group headings (--zora-footer-header-text), footer-link hover", status: mapped, source: saved-css, provenance: [logo-wall, footer] }
+    ink/muted:        { value: "#777a7e", role: "neutral-500: disabled-button label, muted labels on accent parents", status: mapped, source: saved-css, provenance: [testimonials] }
+    ink/faint:        { value: "#b3b5b7", role: "neutral-400: disabled text, faint hairlines", status: mapped, source: saved-css, provenance: [footer] }
+    # ── surfaces (neutral scale steps)
+    neutral/canvas:   { value: "#eff0f0", role: "page canvas (--zora-bg-surface-01 = neutral-100; body{background} measured rgb(239,240,240))", status: mapped, source: [saved-css, computed], provenance: [hero, accordion-features, testimonials, navbar] }
+    neutral/raised:   { value: "#f6f7f8", role: "raised light band (neutral-50): footer bg (--zora-footer-bg), nav-open bg, card hover tint, accordion idle hover", status: mapped, source: [saved-css, computed], provenance: [footer, navbar, testimonials] }
+    neutral/card:     { value: "#ffffff", role: "card surface (--zora-bg-surface-02 = neutral-white): white content cards, nav hover pill, testimonial slides", status: mapped, source: saved-css, provenance: [testimonials, workflow-cards, navbar] }
+    # ── blue action family — the sea-blue theme scope ([data-zora-theme=sea-blue])
+    action/primary:          { value: "#0564ff", role: "primary CTA fill (sea-blue-500 = themed --zora-btn-bg), text links (--zora-link), blue eyebrow family", status: mapped, source: saved-css, provenance: [hero, banner-cta, closing-cta, infra-panel] }
+    action/primary-hover:    { value: "#0047bc", role: "primary CTA hover fill (sea-blue-600 = themed --zora-btn-bg-hover); link hover color", status: mapped, source: saved-css, provenance: [hero] }
+    action/primary-active:   { value: "#003284", role: "primary CTA pressed fill (sea-blue-700 = themed --zora-btn-bg-active)", status: mapped, source: saved-css, provenance: [hero] }
+    action/primary-disabled: { value: "#ccdfff", role: "primary CTA disabled fill (sea-blue-100 = themed --zora-btn-bg-disabled; label #67a1ff sea-blue-300)", status: mapped, source: saved-css, provenance: [hero] }
+    action/focus-ring:       { value: "#9bc1ff", role: "focus-visible outline (sea-blue-200 = themed --zora-btn-border-focused; 2px solid, 2px offset)", status: mapped, source: saved-css, provenance: [hero] }
+    # ── secondary (outlined) family — deep-blue outline that FILLS on hover
+    action/secondary-ink:    { value: "#003284", role: "outlined-pill label + border (sea-blue-700 = themed --zora-btn-border-secondary / --zora-btn-text-dark; measured 'Sign up' color rgb(0,50,132))", status: mapped, source: [saved-css, computed], provenance: [hero, partner-logos, testimonials, badge-strip] }
+    action/secondary-hover-fill: { value: "#0564ff", role: "outlined-pill hover FILLS with sea-blue-500 (themed --zora-btn-bg-hover-secondary) and the label goes light — outline melts (box-shadow inset -> transparent)", status: mapped, source: saved-css, provenance: [hero] }
+    # ── neutral action family (nav CTA, default .button outside the theme scope)
+    action/neutral:        { value: "#232325", role: "neutral filled pill (neutral-800 = :root --zora-btn-bg; the nav 'Book demo')", status: mapped, source: saved-css, provenance: [navbar] }
+    action/neutral-hover:  { value: "#595b5f", role: "neutral pill hover fill (neutral-600 = :root --zora-btn-bg-hover)", status: mapped, source: saved-css, provenance: [navbar] }
+    action/neutral-active: { value: "#383a3d", role: "neutral pill pressed fill (neutral-700 = :root --zora-btn-bg-active)", status: mapped, source: saved-css, provenance: [navbar] }
+    # ── deep jewel-tone panel family (INSET dark surfaces — never section bands)
+    surface/deep-navy:       { value: "#00235c", role: "deep navy media-well backdrop inside white cards (sea-blue-800 — the themed --zora-bg-accent step); vision ~#0a1f56", status: mapped, source: [saved-css, vision], provenance: [workflow-cards] }
+    surface/deep-accent:     { value: "#511621", role: "deep maroon inset panel (red-brand-800 — the red theme's --zora-bg-accent): ACTIVE feature-accordion item, white ink on it", status: mapped, source: [saved-css, vision], provenance: [accordion-features] }
+    surface/deep-accent-hover: { value: "#742030", role: "deep maroon hover fill (red-brand-700 — --zora-acc-bg-active-hover under the red theme)", status: mapped, source: saved-css, provenance: [accordion-features] }
+    accent/warm-wash:        { value: "#fceef1", role: "soft pink wash (red-brand-50): idle accordion-item hover in the red-themed section", status: mapped, source: saved-css, provenance: [accordion-features] }
+    accent/crimson:          { value: "#a52d44", role: "crimson eyebrow family (red-brand-600 = red-themed --zora-label); vision ~#a01f38", status: mapped, source: [saved-css, vision], provenance: [accordion-features] }
+    accent/eyebrow-blue-deep: { value: "#0047bc", role: "blue eyebrow family (sea-blue-600 = sea-blue-themed --zora-label); vision reads #1d5ce0-ish", status: mapped, source: [saved-css, vision], provenance: [infra-panel, workflow-cards] }
+    accent/periwinkle:       { value: "#9bc1ff", role: "muted blue-on-navy family (sea-blue-200): links/accents on the deep-navy media wells", status: mapped, source: saved-css, provenance: [workflow-cards] }
+    accent/pale-blue-chip:   { value: "#ccdfff", role: "pale blue chip fill (sea-blue-100): icon chips, badge tints on light panels", status: mapped, source: saved-css, provenance: [hero, infra-panel] }
+    # ── interaction / state
+    text/link:              { value: "#0564ff", role: "text links are BLUE (--zora-link = sea-blue-500); idle clean, hover underlines + darkens", status: mapped, source: saved-css, provenance: [workflow-cards, testimonials] }
+    text/link-hover:        { value: "#0047bc", role: "link hover color (--zora-link-hover = sea-blue-600)", status: mapped, source: saved-css }
+    text/link-on-inverse:   { value: "#9bc1ff", role: "link color on accent/dark surfaces (--zora-link-on-bg-accent = sea-blue-200)", status: mapped, source: saved-css }
+    text/link-hover-on-inverse: { value: "#ccdfff", role: "link hover on dark surfaces (--zora-link-hover-on-bg-accent = sea-blue-100)", status: mapped, source: saved-css }
+    overlay/hover-wash:     { value: "#e7e8e9", role: "hover wash on light surfaces (neutral-200 = --zora-tab-nav-bg-hover: nav trigger pills, language switcher)", status: mapped, source: saved-css, provenance: [navbar] }
+    overlay/hover-wash-white: { value: "#ffffff", role: "nav dropdown item hover wash (--zora-nav-item-bg-hover = neutral-white)", status: mapped, source: saved-css, provenance: [navbar] }
+    border/input:           { value: "#232325", role: "form input active border (--zora-input-border-active = neutral-800)", status: mapped, source: saved-css }
+    state/disabled-fill:    { value: "#d2d3d5", role: "neutral disabled fill (neutral-300 = :root --zora-btn-bg-disabled)", status: mapped, source: saved-css }
+    state/error:            { value: "#d3433c", role: "form error border (--zora-peach-500 / --zora-border-alert)", status: mapped, source: saved-css }
+    surface/art-pastel:     { value: "#dae2e8", role: "pastel noise-gradient art surface's average color (sampled from the bg-noise art asset) — palette-legal stand-in wherever the art itself cannot ship", status: mapped, source: computed, provenance: [hero, closing-cta] }
+    # ── canonical render-role ALIASES — the shared renderers resolve these EXACT names.
+    surface/primary:            { value: "#eff0f0", role: "ALIAS of neutral/canvas — canonical page-canvas role", status: mapped, source: saved-css, provenance: [hero, testimonials] }
+    surface/panel:              { value: "#ffffff", role: "ALIAS of neutral/card — canonical panel/card role (white cards ON the gray canvas)", status: mapped, source: saved-css, provenance: [testimonials, workflow-cards] }
+    surface/inverse:            { value: "#00235c", role: "ALIAS of surface/deep-navy — canonical dark role. NOTE: on the real page this navy is an INSET surface (media wells inside cards), never a full-width band", status: mapped, source: saved-css, provenance: [workflow-cards] }
+    surface/inverse-strong:     { value: "#00235c", role: "ALIAS — Remote has ONE dark family; strong == inverse (#00235c)", status: mapped, source: saved-css, provenance: [workflow-cards] }
+    accent/highlight:           { value: "#0564ff", role: "ALIAS of action/primary — canonical accent role (vivid blue; legal on light surfaces: buttons, links, eyebrows)", status: mapped, source: saved-css, provenance: [hero, closing-cta] }
+    accent/highlight-on-inverse: { value: "#9bc1ff", role: "accent variant ON deep-navy surfaces (periwinkle, sea-blue-200); full-strength blue is reserved for light surfaces", status: mapped, source: saved-css, provenance: [workflow-cards] }
+    text/on-primary:            { value: "#141415", role: "ALIAS of ink/primary — canonical ink-on-light role (headings; body uses the muted role)", status: mapped, source: saved-css }
+    text/on-primary-muted:      { value: "#383a3d", role: "ALIAS of ink/body — canonical muted-ink-on-light role (the real body ink, --zora-text-secondary)", status: mapped, source: [saved-css, computed] }
+    text/on-inverse:            { value: "#ffffff", role: "canonical ink-on-dark role (--zora-text-on-bg-accent): white text on deep-navy/deep-maroon panels", status: mapped, source: saved-css, provenance: [accordion-features, workflow-cards] }
+    text/on-inverse-muted:      { value: "#9bc1ff", role: "canonical muted-ink-on-dark role — periwinkle family on navy (links/labels on accent surfaces)", status: mapped, source: saved-css, provenance: [workflow-cards] }
+    text/on-accent:             { value: "#ffffff", role: "label color on the blue primary fill (--zora-btn-text-light)", status: mapped, source: saved-css, provenance: [hero, closing-cta] }
+    text/ghost-on-primary:      { value: "#e7e8e9", role: "canonical ghost-on-light role — Remote has NO ghost-type device; bound to the measured light hover wash so any fallback stays on-palette", status: mapped, source: saved-css }
+    border/hairline-on-primary: { value: "rgba(179,181,183,0.4)", role: "canonical hairline-on-light role — neutral-400 at 40% (footer divider family)", status: mapped, source: saved-css, provenance: [footer] }
+    border/hairline-on-inverse: { value: "rgba(255,255,255,0.4)", role: "hairline-on-dark role — derived: white at the light-hairline alpha; no solid hairline is measured on navy", status: derived, source: saved-css }
+  type:
+    # FLAT role shape so each role can declare a loadable renderProxy.
+    # Bossa is a self-hosted commercial face (site CDN woff2, NOT saved in the capture);
+    # closest loadable proxy: Lexend Deca (geometric grotesque, single-story a/g).
+    # Sizes are the 1440-viewport computed ramp (evidence/computed-styles.json):
+    # h1 46/55.2, h2 36/43.2, h3 18/27, p 18/27. Weight 400 at EVERY heading tier
+    # (fontWeightCensus: --zora-font-weight-regular dominates 61x; computed h1/h2/h3
+    # all 400 — single-weight display system).
+    # P1.1: every sized role carries its measured tier ladder — sizeRem is the authored
+    # max-width projection (canonical base == @1440, meta.canonicalTier); `tiers` are the
+    # per-viewport stamps (w<viewport>: px) from the measure ladder (computed) or the
+    # source's own typography-module class registers (saved-css, mobile-first swaps at
+    # 768/1024/1440/1920). h1–h6 covered: h1–h4 render on the page; h5/h6 are authored
+    # from the brand's class registers (no on-page instance at any measured tier).
+    display-hero:
+      { family: "Bossa", renderProxy: "Lexend Deca", sizeRem: { base: 2.875, tablet: 2.25, mobileL: 1.75, mobile: 1.75 }, lineHeight: "1.2em", weight: 400, letterSpacing: "0em", case: sentence,
+        tiers: { w1920: { px: 56, source: computed }, w1440: { px: 46, source: computed }, w960: { px: 28, source: computed }, w375: { px: 28, source: computed } },
+        note: "hero h1 measured 46px/55.2px @1440 (Bossa 400); 1920+ register measured 56px (7xl)" }
+    h1:
+      { family: "Bossa", renderProxy: "Lexend Deca", sizeRem: { base: 2.875, tablet: 2.25, mobileL: 1.75, mobile: 1.75 }, lineHeight: "1.2em",  weight: 400, letterSpacing: "0em", case: sentence,
+        tiers: { w1920: { px: 56, source: computed }, w1440: { px: 46, source: computed }, w960: { px: 28, source: computed }, w375: { px: 28, source: computed } },
+        note: "h1 == hero register (46px @1440; 56px @1920; 28px below 1024)" }
+    h2:
+      { family: "Bossa", renderProxy: "Lexend Deca", sizeRem: { base: 2.25,  tablet: 1.75, mobileL: 1.375, mobile: 1.375 }, lineHeight: "1.2em", weight: 400, letterSpacing: "0em", case: sentence,
+        tiers: { w1920: { px: 46, source: computed }, w1440: { px: 36, source: computed }, w960: { px: 22, source: computed }, w375: { px: 22, source: computed } },
+        note: "36px/43.2px measured @1440 (section headings; 46px @1920; vision reads 40–48px on retina crops)" }
+    h3:
+      { family: "Bossa", renderProxy: "Lexend Deca", sizeRem: { base: 1.75,  tablet: 1.375, mobileL: 1.25, mobile: 1.25 }, lineHeight: "1.2em", weight: 400, letterSpacing: "0em", case: sentence,
+        tiers: { w1920: { px: 36, source: saved-css }, w1440: { px: 28, source: saved-css }, w960: { px: 20, source: saved-css }, w375: { px: 20, source: saved-css } },
+        note: "28px tier from the typography-module h3 register (m→l→xl→3xl swaps); the page's FIRST h3 element rides the smaller card-title register (18px @1440 measured) — class register is the h3 contract" }
+    h4:
+      { family: "Bossa", renderProxy: "Lexend Deca", sizeRem: { base: 1.375, tablet: 1.25, mobileL: 1.125, mobile: 1.125 }, lineHeight: "1.2em", weight: 400, letterSpacing: "0em", case: sentence,
+        tiers: { w1920: { px: 28, source: saved-css }, w1440: { px: 22, source: saved-css }, w960: { px: 18, source: saved-css }, w375: { px: 18, source: saved-css } },
+        note: "22px tier; card headings (vision: 20–23px); register swaps s→m→l→xl" }
+    h5:
+      { family: "Bossa", renderProxy: "Lexend Deca", sizeRem: { base: 1.25, tablet: 1.125, mobileL: 1, mobile: 1 }, lineHeight: "1.5em", weight: 400, letterSpacing: "0em", case: sentence,
+        tiers: { w1920: { px: 22, source: saved-css }, w1440: { px: 20, source: saved-css }, w960: { px: 16, source: saved-css }, w375: { px: 16, source: saved-css } },
+        note: "typography-module h5 register (xs→s→m→l swaps); on-page instances: workflow card headings (<h3 class=typography…__h5>, measured 20px/30px @1440 — see blocks.card slots.heading.register)" }
+    h6:
+      { family: "Bossa", renderProxy: "Lexend Deca", sizeRem: { base: 1.125, tablet: 1, mobileL: 1, mobile: 1 }, lineHeight: "1.5em", weight: 400, letterSpacing: "0em", case: sentence,
+        tiers: { w1920: { px: 20, source: saved-css }, w1440: { px: 18, source: saved-css }, w960: { px: 16, source: saved-css }, w375: { px: 16, source: saved-css } },
+        note: "typography-module h6 register (xs→s→m swaps at 1440/1920 only); NO on-page instance at any measured tier — class-register evidence only" }
+    eyebrow:
+      { family: "Bossa", renderProxy: "Lexend Deca", sizeRem: { base: 0.875, tablet: 0.75, mobileL: 0.75, mobile: 0.75 }, lineHeight: "1.5em", weight: 400, letterSpacing: "0.05em", case: uppercase,
+        tiers: { w1920: { px: 14, source: saved-css }, w1440: { px: 14, source: saved-css }, w960: { px: 12, source: saved-css }, w375: { px: 12, source: saved-css } },
+        note: "uppercase microlabel — the label-small register (3xs→2xs swap at 1440: 12px→14px; vision reads 14–15px on the @1440 crops), tracking --zora-letter-spacing-l (.05em); COLOR comes from the section's theme scope (--zora-label: sea-blue-600 / red-brand-600 / neutral-600)" }
+    body:
+      { family: "Inter", renderProxy: "Inter", sizeRem: { base: 1.125, tablet: 1, mobileL: 1, mobile: 1 }, lineHeight: "1.5em", weight: 400, case: sentence,
+        tiers: { w1920: { px: 18, source: computed }, w1440: { px: 18, source: computed }, w960: { px: 16, source: computed }, w375: { px: 16, source: computed } },
+        note: "p measured 18px/27px @1440 AND @1920 (paragraph register swaps at 1440 only), 16px below; ink #383a3d; Inter is a Google face — proxy loads the true family" }
+    body-sm:
+      { family: "Inter", renderProxy: "Inter", sizeRem: { base: 1, tablet: 0.875, mobileL: 0.875, mobile: 0.875 }, lineHeight: "1.5em", weight: 400, case: sentence,
+        tiers: { w1920: { px: 16, source: saved-css }, w1440: { px: 16, source: saved-css }, w960: { px: 14, source: saved-css }, w375: { px: 14, source: saved-css } },
+        note: "16px secondary body — the paragraph-small register (2xs→xs swap at 1440)" }
+    control-text:
+      { family: "Inter", renderProxy: "Inter", sizeRem: { base: 1.125, tablet: 1, mobileL: 1, mobile: 1 }, lineHeight: "1.5em", weight: 500, letterSpacing: "0em", case: none,
+        tiers: { w1920: { px: 18, source: saved-css }, w1440: { px: 18, source: computed }, w960: { px: 16, source: saved-css }, w375: { px: 16, source: saved-css } },
+        note: "UI control register — nav triggers measured Inter 18px w500 @1440; button labels ride the same register (button-module label: xs→s swap at 1440, 16px→18px)" }
+    # emphasis-inside-heading law: measured across the full tier ladder — no <strong>/<b>
+    # renders inside any h1–h6 on the page; hierarchy is size-only (weight 400 everywhere)
+    headingEmphasis: { notObserved: true, reason: "0 strong/b-in-heading hits at 1920/1440/960/375 (computed tier ladder headingEmphasis)", source: computed }
+    # counter-display / ghost-watermark / footer-sitemap-link tiers: ABSENT BY MEASUREMENT
+    # (no counter, ghost-type, or display-sitemap device exists on the page). Their absence
+    # disables those devices (tokens_css disabledDevices) and selects the columns footer
+    # grammar (footer_grammar: no footer type tier + footer.columns present -> columns).
+  spacing:
+    # The site's own spacing scale: --zora-spacing-x1..x9 = 4/8/12/16/24/32/48/64/80px.
+    section-padding-light: { value: "3rem",  role: "vertical section rhythm on the light canvas (--zora-section-*-margin ladders resolve x6–x9 = 32–80px by breakpoint)", modeLadder: { base: "3rem", tablet: "2rem", mobileL: "2rem", mobile: "2rem" }, status: mapped, source: saved-css }
+    section-y-lg:          { value: "5rem",  role: "spacious section tier (x9 = 80px; grounding reads 80–130px on hero/closing bands)", status: mapped, source: [saved-css, vision] }
+    section-y-xl:          { value: "7rem",  role: "closing CTA breathing tier (vision: ~130px top pad on the gradient band)", status: mapped, source: vision }
+    module-gap-editorial:  { value: "5rem",  role: "ALIAS of section-y-lg — preview/composer module rhythm", status: mapped, source: saved-css }
+    # ── relational ladder (P1.1, validator C15): the named gaps BETWEEN content roles,
+    # from the source's own structured-text ladder (--zora-st-*-spacing custom
+    # properties; canonical value == the ≥1024 register, base register in modeLadder)
+    eyebrow-to-heading:    { value: "0.75rem", role: "label→headline gap — --zora-st-label-headline-spacing (x2→x3 swap at 1024: 8px→12px)", modeLadder: { base: "0.75rem", tablet: "0.5rem", mobileL: "0.5rem", mobile: "0.5rem" }, status: mapped, source: saved-css }
+    heading-to-body:       { value: "1rem",  role: "headline→description gap — --zora-st-headline-description-spacing (x3→x4 swap at 1024: 12px→16px)", modeLadder: { base: "1rem", tablet: "0.75rem", mobileL: "0.75rem", mobile: "0.75rem" }, status: mapped, source: saved-css }
+    body-to-cta:           { value: "2rem",  role: "description→button gap — --zora-st-description-button-spacing (x5→x6 swap at 1024: 24px→32px)", modeLadder: { base: "2rem", tablet: "1.5rem", mobileL: "1.5rem", mobile: "1.5rem" }, status: mapped, source: saved-css }
+    # fid11 2026-07: the ladder COMPLETED from the source's own structured-text custom
+    # properties (--zora-st-*; every value resolved through the mined --zora-spacing-x*
+    # scale at the 1440 canonical tier). The source mechanic is a NO-GAP header column
+    # whose elements carry per-pair semantic margins (.headerLabel margin-bottom
+    # label-headline; .headerTitle margin-bottom headline-description; content rows
+    # margin-top row-gap) — uniform container gap is NOT the brand's rhythm.
+    block-to-block:        { value: "4rem",  role: "content-block row rhythm — --zora-st-row-gap-spacing (x7→x8 swap at 1024: 48px→64px): header→content, content→content, content→ctasAfterContent all ride this ONE rung (.base-module content:not(:first-child) / ctasAfterContent margin-top)", modeLadder: { base: "4rem", tablet: "3rem", mobileL: "3rem", mobile: "3rem" }, status: mapped, source: saved-css }
+    column-to-column:      { value: "3rem",  role: "split-row column gutter — --zora-st-split-column-gap (0 below 1024 where columns stack/ride the description-button gap; x6=32px @1024, x7=48px @1440, x8=64px @1920; .base-module splitTop/splitRow gap)", modeLadder: { base: "3rem", tablet: "1.5rem", mobileL: "1.5rem", mobile: "1.5rem" }, status: mapped, source: saved-css }
+    body-measure:          { value: "35.6875rem", role: "description column measure — --zora-st-description-width ladder (20.4375/25/30.0625 rem below; 35.6875rem=571px @1440; 47.75rem @1920). 992–1023 carries the <1024 register (known projection seam)", modeLadder: { base: "35.6875rem", tablet: "25rem", mobileL: "20.4375rem", mobile: "20.4375rem" }, status: mapped, source: saved-css }
+    header-measure:        { value: "45rem", role: "bounded header-stack measure — --zora-st-width @1440 (45rem=720px; 60.1875rem @1920; .base-header boundedHeader max-width, applied ≥1024 only — below, headers run the full column)", modeLadder: { base: "45rem", tablet: "25rem", mobileL: "20.4375rem", mobile: "20.4375rem" }, status: mapped, source: saved-css }
+    band-inset:            { value: "7rem", role: "structured-text band inset ladder — --zora-st-paddings (--zora-padding-x1=1rem below 1024, x5=4rem @1024, x8=7rem @1440+); defined at :root every tier but NO consuming rule found in the mined corpus — captured for ladder completeness, composers do not consume it", modeLadder: { base: "7rem", tablet: "1rem", mobileL: "1rem", mobile: "1rem" }, status: mapped, source: saved-css }
+    panel-padding:         { value: "2rem",  role: "card/panel inset (--zora-panel-padding x6–x9 ladder; testimonial cards ~40px, hero panel up to 80px @xl)", status: mapped, source: [saved-css, vision] }
+    grid-gap:              { value: "2rem",  role: "card grid gap (grounding: 32–33px card gaps; --zora-s-p-logos-container-column-gap x6–x8)", status: mapped, source: [saved-css, vision] }
+    stack-md:              { value: "1rem",  role: "ALIAS of heading-to-body — intra-stack gap the composers consume (--zora-st-headline-description-spacing x3–x4)", status: mapped, source: saved-css }
+    stack-lg:              { value: "3rem",  role: "content-to-actions gap: the HERO badge/button register (x6–x7); the module-level rung is body-to-cta (x5–x6)", status: mapped, source: saved-css }
+    button-inset:          { value: "0rem 1.5rem", role: "pill inset: fixed 48px height (--zora-spacing-x7) + 0 24px padding (x5) measured on every .button", status: mapped, source: [saved-css, computed] }
+    container-max:         { value: "76rem", role: "content max-width 1216px measured (nav/footer contentMaxWidth); the outer layout container is fluid ~81vw below 1920 and caps at 1560px @1920 (tier containerFacts: max 100%/1560px, used 1168px @1440, 1560px @1920)", status: mapped, source: computed }
+    container-span:        { value: "min(81.2cqw, 97.5rem)", role: "the outer layout container LAW as one CSS expression (tier containerFacts: used 1168px @1440 = 81.1vw, capped 1560px @1920 = 97.5rem, ~9.4vw side margins each tier; the 960 tier runs tighter 5vw margins — the fluid term under-spans there, accepted). Sections/bands center this span page-wide (--content-measure)", status: mapped, source: computed }
+    badge-tier:            { value: "6.25rem", role: "proof badge tier (~100px awards; partner logos ride --zora-s-p-logos-big-height x8=64px)", status: mapped, source: [saved-css, vision] }
+    radius-global:         { value: "0.625rem", role: "ALIAS of radius/card — the working surface rounding (the source's own --zora-radius-x3 = 10px; fid13 corrected the 12px vision estimate)", status: mapped, source: [saved-css, computed] }
+    # ── spacing-remediation B8 (2026-07): unmapped-relationship capture, mined from the
+    # EXISTING css-rules.json corpus only (no live-site fetch). Canonical value == the
+    # 1440 tier of each source ladder, base register in modeLadder — same discipline as
+    # the relational ladder above. Names are GENERIC surface/component relationships
+    # (form field rhythm, disclosure-list stride, quote-card seams, strip gap), never
+    # section-specific.
+    field-to-field:        { value: "1rem",  role: "form field-grid rhythm — .hsfc-Row column-gap/row-gap (x3=12px base → x4=16px ≥768; the form's field rows and columns share one rung)", modeLadder: { base: "1rem", tablet: "1rem", mobileL: "0.75rem", mobile: "0.75rem" }, status: mapped, source: saved-css }
+    field-label-gap:       { value: "0.25rem", role: "label→control seam — form-module label margin-bottom (x1=4px flat, every tier; the field description rides the same x1 rung)", status: mapped, source: saved-css }
+    form-stack:            { value: "2rem",  role: "form module internal stack — --zora-form-spacing (x4=16px base → x5=24px ≥768 → x6=32px ≥1440; .formCard/.form flex-column gap between header, field grid, consent, actions)", modeLadder: { base: "2rem", tablet: "1.5rem", mobileL: "1rem", mobile: "1rem" }, status: mapped, source: saved-css }
+    list-item-gap:         { value: "1rem",  role: "disclosure-list stride — --accordion-item-gap (x3=12px base → x4=16px ≥768; the seam between accordion/FAQ item boxes)", modeLadder: { base: "1rem", tablet: "1rem", mobileL: "0.75rem", mobile: "0.75rem" }, status: mapped, source: saved-css }
+    list-item-inset:       { value: "1.5rem", role: "disclosure item inset — --accordion-item-padding (x4=16px base → x5=24px ≥1440; the trigger row's own padding inside the item box)", modeLadder: { base: "1.5rem", tablet: "1rem", mobileL: "1rem", mobile: "1rem" }, status: mapped, source: saved-css }
+    mark-to-quote:         { value: "1.5rem", role: "quote-card mark→quote seam — testimonial card root gap (x5=24px ≥768; the logo mark to quote-body seam inside the card column)", status: mapped, source: saved-css }
+    quote-to-attribution:  { value: "4rem",  role: "quote-card body→attribution seam — testimonial card frame gap (x6=32px base → x7=48px ≥1024 → x8=64px ≥1440; quote body to author row)", modeLadder: { base: "4rem", tablet: "3rem", mobileL: "2rem", mobile: "2rem" }, status: mapped, source: saved-css }
+    strip-gap:             { value: "4rem",  role: "logo/badge strip inter-mark gap — --zora-s-p-logos-container-column-gap (x6=32px base → x7=48px ≥768 → x8=64px ≥1440)", modeLadder: { base: "4rem", tablet: "3rem", mobileL: "2rem", mobile: "2rem" }, status: mapped, source: saved-css }
+  radius:
+    # The site's own radius tokens: --zora-radius-x1/x2/x3/x4 = 2/4/10/40px (+ 50% circles).
+    # fid13 (JS-off computed @1440): ONE surface radius — x3 = 10px — carries every large
+    # plate (grid card 10px, accordion active surface 10px, hero backgroundWrapper 10px,
+    # banner container 10px). Media wells INSIDE cards are SQUARE (imageWrap 0px; the
+    # card's own 10px rounds the visible top corners). Testimonial "cards" are
+    # transparent frames (0px, no plate) in the source — our plate device is a
+    # sanctioned adaptation and rides radius/card. Earlier 12px/20px were vision
+    # over-reads outside the source ladder (C19 now guards this).
+    card:   { value: "0.625rem", var: "--zora-radius-x3 (10px); computed 10px on grid cards + accordion active surface", role: "surface plates (white content cards, accordion active card; the testimonial plate ADAPTATION rides this too — source testimonial frames are plateless/square)", status: mapped, source: [saved-css, computed] }
+    panel:  { value: "0.625rem", var: "--zora-radius-x3 (10px); computed 10px on hero backgroundWrapper (1296x550) + banner container (1168x381)", role: "large inset panels (hero noise panel, banner CTA panel) — same x3 rung as cards, ONE surface radius brand-wide", status: mapped, source: [saved-css, computed] }
+    media:  { value: "0", var: "computed 0px on card imageWrap/image — the WELL is square; the parent plate's x3 radius rounds the visible top corners", role: "media wells inside cards: no own rounding (geometry belongs to the plate; wells/images stay square and the card clips)", status: mapped, source: computed }
+    button: { value: "2.5rem",   var: "--zora-radius-x4 / --zora-btn-radius-pill (40px)", role: "pill CTAs — fully rounded at every size (nav trigger hover pill rides the same token)", status: mapped, source: [saved-css, computed] }
+    input:  { value: "0.25rem",  var: "--zora-radius-x2 (4px)", role: "form fields + dropdown option hover washes", status: mapped, source: saved-css }
+  shadow:
+    # Cards are FLAT at idle; elevation appears ON HOVER only (with the #f6f7f8 tint).
+    card-hover: { value: "0px 12px 24px 0px rgba(0,0,0,0.08)", role: "hover elevation on white cards (measured testimonial cardHasLink:hover::before: bg --zora-bg-surface-02 + 0 12px 24px #00000014)", status: mapped, source: saved-css }
+  motion:
+    # Authored from evidence/motion-audit.json (mine-motion stage: per-selector
+    # transition/animation/@keyframes audit of the fresh capture's module CSS —
+    # 102 transition rules, 20 animation rules, 22 keyframes, 8 timing custom
+    # properties). Durations are the census ladder (counts cited); easings are the
+    # mined curves; signature moves cite their source selectors. Selectors are
+    # PROVENANCE (the source site's classnames), never names to reuse.
+    durations:
+      micro:      { value: "100ms", role: "hover washes on dense option lists (select/multi-select .option background .1s)", census: 4, source: motion-audit }
+      state:      { value: "150ms", role: "THE state tier — color/background-color/border state shifts (nav links, accordion triggers, button ink, language items)", census: 46, source: motion-audit }
+      move:       { value: "200ms", role: "small transforms + fades (chevron rotate .2s, accordion panel height .2s, opacity fades, skip-link slide)", census: 23, source: motion-audit }
+      collapse:   { value: "250ms", role: "structural collapse + hover-out exits (footer group grid-rows .25s, menu toggle bars, --zora-btn-duration-hover-out .25s, modal popupIn)", census: 19, source: motion-audit }
+      reveal:     { value: "300ms", role: "panel/menu reveals + hover-in enters (nav desktopPanel opacity/transform .3s, nav entry-card grid-rows .3s, --zora-btn-duration-hover-in .3s, modal backdropIn)", census: 38, source: motion-audit }
+      elevation:  { value: "500ms", role: "card hover plate (testimonial card ::before background/box-shadow/bottom .5s — the tint+shadow wash)", census: 4, source: motion-audit }
+      expressive: { value: "800ms", role: "large hover card reveals (image-grid link row height/margin/opacity .8s + image zoom .8s — always paired with the expo-out curve)", census: 8, source: motion-audit }
+    easings:
+      - { value: "cubic-bezier(0, 0, .2, 1)",  use: "ENTER (decelerate) — --zora-btn-easing-enter + --zora-btn-easing-press", census: 25, source: motion-audit }
+      - { value: "cubic-bezier(.4, 0, 1, 1)",  use: "EXIT (accelerate) — --zora-btn-easing-exit", census: 14, source: motion-audit }
+      - { value: "cubic-bezier(.16, 1, .3, 1)", use: "EXPRESSIVE expo-out — reserved for the 800ms card reveals", census: 8, source: motion-audit }
+      - { value: "ease", use: "browser default on the short state tier (most 150/200ms transitions leave easing unspecified) + 3 explicit uses", census: 3, source: motion-audit }
+      - { value: "linear", use: "marquee track only (sp-scroll keyframes, infinite)", census: 1, source: motion-audit }
+    signatureMoves:
+      - name: cta-arrow-swap
+        move: "CTA arrow icon exits right by --zora-btn-arrow-travel (16px) fading out, then re-enters from the left (opacity swap at the 45%/45.1% keyframes); hover-in 300ms enter curve, hover-out 250ms exit curve"
+        timing: "300ms cubic-bezier(0, 0, .2, 1) in / 250ms cubic-bezier(.4, 0, 1, 1) out"
+        sourceSelectors: ["@keyframes button-module…icon-slide-right-enter/-leave", ".button-module…button[data-icon-anim=enter] .iconRight", ".link-module…link[data-icon-anim=…] (same system on text links)", "--zora-btn-arrow-travel: 16px"]
+      - name: marquee-scroll
+        move: "logo strip track scrolls continuously left by half its doubled width (translateX(var(--sp-offset,-50%))), linear, infinite"
+        timing: "duration is JS-set via --sp-duration (CSS fallback 0s) — see motion-audit jsTimingNotes; static capture renders the strip paused"
+        # fid2 2026-07: the JS-computed duration IS recoverable — the saved DOM
+        # serialized the rendered inline style on the strip track:
+        # style="--sp-duration: 36s" (screenshots/remote-v2/remote-com.html).
+        measured: { durationS: 36, source: saved-dom-inline-style, note: "one full -50% loop of the doubled track = 36s as computed by the site's own JS at 1440" }
+        sourceSelectors: ["@keyframes social-proof-module…sp-scroll", ".social-proof-module…stripTrack", "stripTrack[style*='--sp-duration']"]
+      - name: mega-menu-reveal
+        move: "nav dropdown panel fades+slides open (opacity/transform/visibility) while entry-card images and descriptions unfold via grid-template-rows"
+        timing: "300ms across panel, card image and description (no easing declared — browser ease)"
+        sourceSelectors: [".site-navigation-module…desktopPanel", ".site-navigation-module…navEntryCardImageInner", ".site-navigation-module…navEntryCardDescription"]
+      - name: hover-card-reveal
+        move: "work-culture image cards: hidden link row slides open (height/margin-top/opacity) while the image well shrinks and the image zooms — the brand's most expressive move"
+        timing: "800ms cubic-bezier(.16, 1, .3, 1) on every property"
+        sourceSelectors: [".image-grid-card-module…card:hover …", ".image-grid-card-module…imageWrap", ".image-grid-card-module…link"]
+      - name: card-elevation-wash
+        move: "testimonial cards raise a ::before plate on hover: surface tint to #f6f7f8 + 0 12px 24px rgba(0,0,0,.08) shadow + plate extends 8px past the bottom edge"
+        timing: "500ms (no easing declared — browser ease)"
+        sourceSelectors: [".testimonial-card-module…card:before", ".testimonial-card-module…cardHasLink:hover…"]
+      - name: modal-pop
+        move: "form modal: backdrop fades in; popup scales .97→1 while translating 8px up (sheet evidence only — no modal renders on the captured page)"
+        timing: "backdrop 300ms / popup 250ms"
+        sourceSelectors: ["@keyframes form-modal-module…backdropIn", "@keyframes form-modal-module…popupIn"]
+      - name: accordion-state-shift
+        move: "feature accordion: trigger background/ink/corner-rounding shift on the state tier, chevron rotates on the move tier, panel height animates on the move tier"
+        timing: "trigger 150ms; chevron + panel height 200ms"
+        sourceSelectors: [".accordion-module…trigger", ".accordion-module…triggerChevron", ".accordion-module…panel"]
+    reducedMotion: { value: "declared", role: "12 prefers-reduced-motion rules measured in the fresh sheet", source: motion-audit }
+    provenance: [evidence/motion-audit.json]
+    confidence: high
+    source: saved-css
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-07T19:10:00Z", action: created, from: null, to: "evidence-derived motion tokens (7-tier duration ladder, 5 easings, 7 signature moves)", by: creation, signalId: null, note: "P0.1 motion axis — authored from the new mine-motion stage output; supersedes the coarse voice.motionSpec 3-tier read for kit consumers (motionSpec stays as the composer dial)" }
+  imagery:
+    aspectPalette:
+      wide:      { value: "16 / 9", role: "media wells / product-UI panels (landscape wells inside cards)", provenance: [workflow-cards], source: vision }
+      landscape: { value: "3 / 2",  role: "card media areas", provenance: [workflow-cards], source: vision }
+      square:    { value: "1 / 1",  role: "avatars (rendered as circles, --zora-testimonial-profile-size 48px), icon tiles, hero illustration frame", provenance: [testimonials, hero], source: [saved-css, vision] }
+  surfaces:
+    # LIGHT surfaces carry NO textAccent (textAccent presence is the composer's
+    # dark-surface heuristic). Remote's page run is ALL-LIGHT; the dark roles below are
+    # real measured surfaces that appear INSET (inside cards/panels) on the source page.
+    surface/primary:        { bg: "#eff0f0", schemeMode: "base (Primary)", intent: "cool gray page canvas (bg-surface-01)", textPrimary: text/on-primary, textAccent: null, provenance: [hero, accordion-features, testimonials, closing-cta] }
+    surface/panel:          { bg: "#ffffff", schemeMode: "Container",      intent: "white card/panel floating on the canvas (10px radius = --zora-radius-x3, flat idle, hover shadow+tint)", textPrimary: text/on-primary, textAccent: null, provenance: [testimonials, workflow-cards, infra-panel] }
+    surface/raised:         { bg: "#f6f7f8", schemeMode: "Secondary",      intent: "raised light band (neutral-50: footer, nav-open bg, hover tints)", textPrimary: text/on-primary, textAccent: null, provenance: [footer] }
+    surface/inverse:        { bg: "#00235c", schemeMode: "Inverse",        intent: "deep navy (sea-blue-800 accent step) — on the source page an INSET media/panel backdrop inside white cards, not a page band", textPrimary: text/on-inverse, textAccent: accent/highlight-on-inverse, provenance: [workflow-cards] }
+    surface/inverse-strong: { bg: "#00235c", schemeMode: "Inverse",        intent: "ALIAS — single dark family; strong == inverse", textPrimary: text/on-inverse, textAccent: accent/highlight-on-inverse, provenance: [workflow-cards] }
+    surface/accent:         { bg: "#511621", schemeMode: "Inverse",        intent: "deep maroon inset emphasis panel (red-brand-800) — the ACTIVE feature-list item inverts to this (generic: deep-accent inset card; white ink; hover #742030)", textPrimary: text/on-inverse, textAccent: accent/warm-wash, provenance: [accordion-features] }
+    surface/hero-noise:     { bg: "#dae2e8", schemeMode: "base (Primary)", intent: "pastel noise-gradient ART surface (asset bg-noise-top-2x.webp; grey→green→blue gradient; #dae2e8 = sampled average); dark ink text on it. Hero: inset 10px panel (x3, computed fid13); closing CTA: full-bleed band", textPrimary: text/on-primary, textAccent: null, overlay: none, blur: none, provenance: [hero, closing-cta] }
+
+heroTreatment:
+  value:
+    background: inset-rounded-panel-art
+    asset: "bg-noise-top-2x.webp"   # pastel grey-green-blue noise-gradient texture (fresh capture, 2x)
+    panelRadius: "0.625rem"
+    overlay: none
+    blur: none
+    textColor: "#141415"
+    align: left
+    media: { asset: "hero-globe-illustration.webp", position: right, note: "wireframe globe illustration w/ floating product-UI status cards; content column left, illustration right, ~50/50 split (grounding section-00)" }
+  confidence: high
+  source: [vision, saved-css]
+  scope: design-language
+  changelog:
+    - { ts: "2026-07-03T16:40:00Z", action: created, from: null, to: "inset noise-art panel, dark ink, left-aligned, illustration right", by: creation, signalId: null, note: "first extraction" }
+    - { ts: "2026-07-07T12:30:00Z", action: refined, from: "12px panel radius", to: "~20px panel radius + fresh 2x art asset", by: creation, signalId: null, note: "grounding section-00: inset-panel radius ~20px, gradient #e6e8ea->#cfe0ea" }
+    - { ts: "2026-07-09T19:40:00Z", action: corrected, from: "~20px panel radius (vision)", to: "10px (--zora-radius-x3)", by: fid13, signalId: null, note: "user challenged card rounding; JS-off computed @1440: hero backgroundWrapper (1296x550) border-radius 10px — the ~20px was a vision over-read outside the source's 2/4/10/40 ladder (C19 now guards)" }
+
+surfaceGrammar:
+  roles: [ surface/primary, surface/panel, surface/raised, surface/inverse, surface/inverse-strong, surface/accent, surface/hero-noise ]
+  pageRhythm:
+    value: [ surface/hero-noise, surface/primary, surface/primary, surface/primary, surface/primary, surface/primary, surface/primary, surface/primary, surface/primary, surface/hero-noise, surface/raised ]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-03T16:40:00Z", action: created, from: null, to: "noise hero → unbroken light run → noise closing CTA → LIGHT footer", by: creation, signalId: null, note: "first extraction" }
+      - { ts: "2026-07-07T12:30:00Z", action: confirmed, from: null, to: "same rhythm re-measured", by: creation, signalId: null, note: "11 grounded sections: every canvas #eee-#eff0f0 family, zero dark bands; footer #f4f5f6-#f6f7f8" }
+  transition:
+    value: "soft"
+    confidence: high
+    source: [vision, saved-css]
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-03T16:40:00Z", action: created, from: null, to: "soft", by: creation, signalId: null, note: "one continuous canvas; panels/cards inset INTO it; no hard seams, no band cuts" }
+  nesting:
+    - { child: surface/panel,   allowedParents: [ surface/primary, surface/raised ], confidence: high, source: creation, scope: design-language, changelog: [] }
+    - { child: surface/inverse, allowedParents: [ surface/panel, surface/primary ], note: "deep navy lives INSIDE white cards (media wells) — inset, not a band (grounding section-05: media-well parent=card)", confidence: high, source: creation, scope: design-language, changelog: [] }
+    - { child: surface/accent,  allowedParents: [ surface/primary, surface/panel ], note: "deep maroon inverts ONE emphasized item of a list on the canvas (grounding section-02: card parent=canvas)", confidence: high, source: creation, scope: design-language, changelog: [] }
+
+# fid11 2026-07: CONTEXTUAL header-alignment grammar (brand-schema §4.4b). The source's
+# one header component (label + headline + optional description/actions) aligns by its
+# LAYOUT CONTEXT, not per-section whim: START-aligned whenever it sits inside a column
+# of a split row, CENTERED (block + text, the source's opt-in `textCentered` modifier:
+# text-align:center + align-self:center + align-items:center) when it stands alone
+# atop a stacked/grid section. Generation consumes this as the brand-DEFAULT alignment
+# layer: explicit section/pattern alignment facts still win (AS-18 resolution order).
+layoutGrammar:
+  headerContext:
+    splitColumn:
+      anchor: left
+      counterweight: media
+      evidence: "all 3 observed split patterns align the header column left with a media counterweight (layout-library: hero-inset-noise-panel, feature-accordion-deep-accent, infra-proof-split contentShape.alignment.value=left + counterweight=media); the source header component's default stance is start-aligned (css-rules: .base-header header = plain flex column; centering is the opt-in textCentered modifier)"
+    standaloneStack:
+      anchor: centered
+      evidence: "6 of 7 observed standalone headers center block+text (layout-library: logo-marquee-strip, cta-inline-banner, partner-proof-row, badge-award-strip, cta-closing-noise value=center; testimonial-card-row header centered self-only); the ONE left standalone header (features-card-grid-navy-media) rides its own explicit pattern fact + cards counterweight, which outranks this default by resolution order"
+    confidence: high
+    source: [saved-css, vision]
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-09T09:55:00Z", action: created, from: null, to: "splitColumn=left / standaloneStack=centered", by: fid11, signalId: null, note: "derived from the 10 grounded patterns' measured header alignment by layout context + the source base-header module's default/textCentered mechanics" }
+  # fix2 2026-07 (brand-schema §4.4f): measured multi-action row layout. The ONE
+  # multi-CTA group on the capture (hero base-ctas: 'Book demo' + 'Sign up') runs
+  # gap 16px, flex-wrap wrap, left-anchored in its column. Its body→group seam
+  # measured 48px = the hero register rung (stack-lg x6–x7), while the module rung
+  # is body-to-cta 2rem — marginAbove rides the ladder rather than freezing one
+  # band's hero-register seam into the site-wide law.
+  actionGroup:
+    gap: 1rem
+    orientation: row
+    wrap: wrap
+    align: start
+    marginAbove: ladder
+    registers: [primary, secondary]
+    source: computed
+    provenance: [hero]
+    confidence: high
+    changelog:
+      - { ts: "2026-07-13T10:30:00Z", action: created, from: null, to: "gap 1rem / wrap / start / marginAbove ladder", by: fix2-action-groups, signalId: null, note: "playwright computed on capture @1440: hero .base-ctas gap 16px wrap left; seam above 48px (hero stack-lg register — the replica's hero foot currently rides the 2rem module rung: pre-existing, reported not churned)" }
+
+buttons:
+  renderHint: { useFilledButton: true, note: "Renderer MUST emit real FILLED pill buttons. Remote primary CTAs are solid blue pills; text links are a separate blue arrow device." }
+  primary:
+    style: filled
+    bg: "#0564ff"              # sea-blue-500 — themed --zora-btn-bg ([data-zora-theme=sea-blue])
+    bgHover: "#0047bc"         # sea-blue-600
+    fgHover: "#ffffff"         # label stays light through the fill darken (--zora-btn-text-light both states)
+    bgPressed: "#003284"       # sea-blue-700 — themed --zora-btn-bg-active
+    bgDisabled: "#ccdfff"      # sea-blue-100 (label #67a1ff sea-blue-300)
+    fg: "#ffffff"              # --zora-btn-text-light
+    border: "none"
+    radius: "2.5rem"           # --zora-radius-x4 / --zora-btn-radius-pill (40px)
+    padding: "0 1.5rem"        # 0 24px measured; FIXED height 3rem (--zora-spacing-x7 = 48px)
+    height: "3rem"
+    font: "Inter"
+    weight: 500
+    sizeRem: 1.125             # 18px control register @1440
+    focus: "outline 2px solid #9bc1ff; outline-offset 2px"   # themed --zora-btn-border-focused (sea-blue-200)
+    confidence: high
+    source: [saved-css, computed, vision]
+    provenance: [hero, banner-cta, closing-cta]
+    note: "Measured .button-module .primary under [data-zora-theme=sea-blue]: fill sea-blue-500, hover 600, pressed 700, disabled 100/300; pill h48 r40 pad 0 24 (computed census); label swap animation on hover (::after translate, --zora-btn-duration tokens)."
+  secondary:
+    style: outline
+    bg: "transparent"
+    border: "1px solid #003284"   # sea-blue-700 — themed --zora-btn-border-secondary (inset box-shadow ring)
+    fg: "#003284"                 # themed --zora-btn-text-dark; measured 'Sign up' rgb(0,50,132)
+    bgHover: "#0564ff"            # hover FILLS with sea-blue-500 (themed --zora-btn-bg-hover-secondary)
+    fgHover: "#ffffff"            # label inverts to light as the fill slides in; outline melts (inset shadow -> transparent)
+    bgPressed: "#0047bc"          # themed --zora-btn-bg-active-secondary (sea-blue-600)
+    radius: "2.5rem"
+    padding: "0 1.5rem"
+    height: "3rem"
+    font: "Inter"
+    weight: 500
+    sizeRem: 1.125
+    confidence: high
+    source: [saved-css, computed, vision]
+    provenance: [hero, partner-logos, testimonials, badge-strip]
+    note: "Hero 'Sign up' + the quiet proof-section pills ('Become a Partner', 'Hear from our customers', '4,000+ reviews'). Vision reads the quiet pills with near-ink labels — same outlined family on neutral scope (border/label #141415-family); the sea-blue scope yields the deep-blue variant."
+  tertiary:
+    style: filled-neutral
+    bg: "#232325"              # neutral-800 — :root --zora-btn-bg (outside the theme scope)
+    bgHover: "#595b5f"         # neutral-600
+    fgHover: "#ffffff"         # label unchanged — white on both neutral fills (--zora-btn-text-light)
+    bgPressed: "#383a3d"       # neutral-700 — :root --zora-btn-bg-active
+    bgDisabled: "#d2d3d5"      # neutral-300 (label #b3b5b7)
+    fg: "#ffffff"
+    radius: "2.5rem"
+    padding: "0 1.5rem"
+    height: "3rem"
+    font: "Inter"
+    weight: 500
+    sizeRem: 1.125
+    confidence: high
+    source: [saved-css, computed]
+    provenance: [navbar]
+    note: "The default .button at :root scope — near-black neutral pill (nav 'Book demo', measured white label + r40 + h48)."
+  textCta:
+    style: text-link-arrow
+    fg: "#0564ff"              # --zora-link (sea-blue-500)
+    fgHover: "#0047bc"         # --zora-link-hover (sea-blue-600)
+    decoration: "no underline idle; hover darkens to #0047bc; trailing arrow glyph rides inline"
+    radius: "0"
+    font: "Inter"
+    weight: 500
+    sizeRem: 1
+    # fix2 2026-07: the trailing glyph is the site's own inline SVG (link-module
+    # arrowIcon, 16×16 viewBox, currentColor path) — harvested verbatim from the
+    # capture to assets/icon-arrow-link.svg. width/height 16px measured on the
+    # rendered links.
+    glyph: { asset: icon-arrow-link.svg, size: 1rem, source: computed }
+    confidence: high
+    source: [saved-css, vision]
+    provenance: [workflow-cards, testimonials]
+    note: "'Learn more →' / 'See all integrations →' / 'Read customer story →' links (link-module + testimonial-card link: hover color --zora-link-hover). 16px w500."
+
+contracts:
+  primitives: "./contracts/primitives.yaml"
+  blocks:     "./contracts/blocks.yaml"
+
+primitives:
+  heading:
+    origin: extracted
+    use: always
+    rules: [ "every heading tier is Bossa weight 400 sentence-case — hierarchy by SIZE only, never weight or caps" ]
+    provenance: [hero, accordion-features, banner-cta]
+    confidence: high
+  eyebrow:
+    origin: extracted
+    use: always
+    rules: [ "uppercase microlabel, 0.05em tracked, color set by the section's theme scope (sea-blue / red-brand crimson / neutral gray) — never body-gray-only" ]
+    provenance: [accordion-features, infra-panel, workflow-cards, logo-wall]
+    confidence: high
+  paragraph:
+    origin: extracted
+    use: always
+    rules: [ "Inter 400, 1.5 line-height, muted ink (#383a3d) on light surfaces" ]
+    provenance: [hero, infra-panel, testimonials]
+    confidence: high
+  button:
+    origin: extracted
+    use: always
+    variant: filled-primary
+    rules: [ "PRIMARY actions are FILLED blue pills with white labels — never typographic; secondary is a deep-blue outlined pill that FILLS blue on hover; neutral near-black pill for chrome CTAs; all pills 48px tall, 40px radius, content-hugging" ]
+    provenance: [hero, banner-cta, closing-cta, navbar]
+    confidence: high
+  link:
+    origin: extracted
+    use: text-links-only
+    rules: [ "text links are BLUE (#0564ff), idle-clean, hover darkens (#0047bc); reserved for tertiary 'Learn more' / 'Read customer story' actions with a trailing arrow" ]
+    provenance: [workflow-cards, testimonials]
+    confidence: high
+  image:
+    origin: extracted
+    use: always
+    rules: [ "illustration/product-UI art on deep-navy or noise-gradient backdrops; media wells rounded 10px; photography only as circle-cropped avatars" ]
+    provenance: [hero, workflow-cards, testimonials]
+    confidence: high
+  logo:
+    origin: extracted
+    use: always
+    rules: [ "customer logos are monochrome ink vectors on the light canvas, ~40px tall, single spaced row (marquee-capable)" ]
+    provenance: [logo-wall]
+    confidence: high
+  input:
+    origin: extracted
+    use: forms
+    rules: [ "boxed light fields, active border #232325 (--zora-input-border-active), 4px radius; submit is a filled pill" ]
+    provenance: [popup-forms]
+    confidence: medium
+
+blocks:
+  # C2 coverage: every contract block type attempted — extracted evidence or an
+  # explicit notObserved marker (source: grounding components[] + dom/css census).
+  header:
+    origin: extracted
+    slots:
+      eyebrow: { use: optional, note: "uppercase theme-colored microlabel" }
+      heading: { use: require }
+      cta:     { use: optional, note: "FILLED blue pill (see primitives.button)" }
+    provenance: [hero, banner-cta]
+    confidence: high
+  content-block:
+    origin: extracted
+    use: always
+    slots:
+      eyebrow: { use: optional }
+      heading: { use: require }
+      body:    { use: optional }
+      actions: { use: optional }
+    provenance: [infra-panel, closing-cta]
+    confidence: high
+    note: "eyebrow → heading → body → actions stacks (st-* spacing tokens: label-headline x2–x3, headline-description x3–x4, description-button x5–x6)."
+  card:
+    origin: extracted
+    use: always
+    anatomy: "12–14px-rounded pure-white panel, FLAT at idle; optional deep-navy media well on top (10px radius, product art, white/periwinkle ink); then eyebrow microlabel → heading (Bossa 400) → body → blue arrow text-link; hover = bg tint #f6f7f8 + 0 12px 24px rgba(0,0,0,0.08) shadow + link reveal (testimonial-card cardHasLink:hover)"
+    variants:                    # C10 coverage — the two observed card registers
+      - { id: media-well, note: "inverse-surface inset media panel on top (product art, contained), then the text stack (grounding sections 03/05)" }
+      - { id: text-only,  note: "same white panel without the media well — eyebrow/heading/body/arrow only (feature grids, accordion siblings)" }
+    slots:
+      media:   { use: optional, note: "deep-navy media well (surface/inverse INSET)" }
+      eyebrow: { use: optional, note: "uppercase theme-colored label" }
+      heading: { use: require, register: h5, note: "card headings ride the h5 type register — measured 20px/30px Bossa 400 @1440 (saved-capture DOM: <h3 class=typography…__h5> on the workflow cards)" }
+      body:    { use: optional }
+      action:  { use: optional, note: "blue text-link with trailing arrow" }
+    provenance: [workflow-cards, testimonials, infra-panel]
+    confidence: high
+  form:
+    origin: extracted
+    designedFrom: { note: "form module CSS measured in the fresh capture (field-module inputWrap: active border --zora-input-border-active #232325, error border peach-500, disabled fill; radius-x2 washes); the booking form itself is a modal not rendered on the captured page" }
+    overridable: true
+    confidence: medium
+  testimonial:
+    origin: extracted
+    use: always
+    anatomy: "white card: company logo top → quote body (Inter 18px) → circle avatar (48px) + vertical divider + name/role → 'Read customer story →' link revealed on hover"
+    provenance: [testimonials]
+    confidence: high
+  stat-block:
+    notObserved: true
+    note: "no standalone numeric stat block on the captured page — the closest devices are review-score rows (platform glyph + stars + 4.6/5) inside the awards strip, extracted under blocks.logo-bar/badge evidence"
+  navbar:
+    origin: extracted
+    provenance: [navbar]
+    confidence: high
+  footer:
+    origin: extracted
+    provenance: [footer]
+    confidence: high
+  accordion:
+    origin: extracted
+    use: feature-exploration
+    anatomy: "vertical item list, one expanded at a time; triggers measured 24px padding, radius-x3 top corners; idle hover --zora-acc-bg-hover #f6f7f8 (warm wash #fceef1 in the red-themed instance); ACTIVE item inverts to the theme's deep accent (--zora-acc-bg-accent scope: #4a1420-family maroon) with white ink"
+    motion: { trigger: "background-color/color/border-radius 150ms", chevron: "transform 200ms", panel: "height 200ms", source: "motion-audit: .accordion-module…trigger/…triggerChevron/…panel" }
+    provenance: [accordion-features]
+    confidence: high
+  accordion-item:
+    origin: extracted
+    anatomy: "icon left → title (Bossa, sentence) → chevron right; expanded: body + circular white icon-button (40px, arrow) on the deep-accent fill"
+    provenance: [accordion-features]
+    confidence: high
+  tabs:
+    notObserved: true
+    note: "no tab device on the captured homepage"
+  logo-bar:
+    origin: extracted
+    use: always
+    anatomy: "two registers measured: (1) customer wall — uppercase gray eyebrow over a single row of monochrome ~40px ink vectors, 64–100px gaps; (2) partner row — colored logos at the big tier (~64px) inside a centered header stack; award badges ride a 6-up ~100px shield row"
+    provenance: [logo-wall, partner-logos, badge-strip]
+    confidence: high
+  feature-item:
+    origin: extracted
+    anatomy: "accordion rows and card-grid items: icon/eyebrow → heading → body → optional text-link"
+    provenance: [accordion-features, workflow-cards]
+    confidence: high
+  pricing-card:
+    notObserved: true
+    note: "no pricing device on the captured homepage (pricing lives on a separate route)"
+  banner:
+    origin: extracted
+    use: conversion-moments
+    anatomy: "rounded inset panel on the canvas, centered heading + ONE filled pill; soft green-glow gradient bottom edge (grounding section-04)"
+    provenance: [banner-cta]
+    confidence: high
+  modal:
+    notObserved: true
+    note: "form-modal CSS exists in the sheet (closeButton hover scale 1.08) but no modal renders on the captured page"
+  dropdown-menu:
+    origin: extracted
+    anatomy: "nav dropdown panels: white panels (--zora-nav-item-bg-hover white item wash), entry cards with image+description reveals on hover; menus measured 9–16 links each (Products/Solutions/Resources)"
+    motion: { panel: "opacity/transform/visibility 300ms open", entryCard: "image (height/opacity/transform) + description (grid-template-rows) 300ms", source: "motion-audit: .site-navigation-module…desktopPanel/…navEntryCard* — corrects the earlier 0.8s read (that timing belongs to the image-grid work cards, not the nav)" }
+    provenance: [navbar]
+    confidence: high
+  breadcrumb:
+    notObserved: true
+    note: "breadcrumb-module CSS carried in the sheet; not rendered on the captured homepage"
+  pagination:
+    notObserved: true
+    note: "numbered-pagination CSS backs the carousel arrow controls; no numbered pagination renders on the captured page"
+  table:
+    notObserved: true
+    note: "table tokens exist in the sheet (--zora-table-*); no table renders on the captured homepage"
+  carousel:
+    origin: extracted
+    anatomy: "testimonial card carousel: horizontally scrolled 3-up card row, edge cards cut at viewport, arrow controls (carousel-arrows module reusing the button system)"
+    motion: { notObserved: true, reason: "slide advance is JS/scroll-driven — no CSS track timing in motion-audit.json; the arrow controls ride the button system's state/reveal tiers (see tokens.motion)", source: motion-audit }
+    provenance: [testimonials]
+    confidence: high
+  steps:
+    notObserved: true
+    note: "no numbered step sequence on the captured homepage"
+  step-item:
+    notObserved: true
+    note: "no numbered step sequence on the captured homepage"
+  cta-block:
+    origin: extracted
+    use: always
+    anatomy: "centered heading (+ optional body) + ONE filled blue pill; two registers: inline banner (rounded inset panel, green glow) and closing band (full-bleed pastel gradient, 130/90px padding)"
+    provenance: [banner-cta, closing-cta]
+    confidence: high
+  media-text:
+    origin: extracted
+    anatomy: "50/50 split: copy stack one side, product-UI/illustration media the other (hero, infra panel, accordion split); media on light grid-lined wells or deep-navy insets"
+    provenance: [hero, infra-panel, accordion-features]
+    confidence: high
+
+layouts:
+  - id: navbar
+    archetype: nav
+    index: 0
+    surfaceMode: { mode: "base (Primary)" }
+    useCase: "Top nav riding the canvas color (transparent sticky bar): wordmark left, pill-hover nav triggers center, Login + language switcher + near-black 'Book demo' pill right. A dismissible promo utility banner may sit above."
+    whenToUse: "Always — global chrome."
+    slots:
+      - { name: "brand",    type: media,   role: "Remote wordmark", asset: "remote-wordmark.svg" }
+      - { name: "navlinks", type: content, role: "primary nav triggers (pill hover wash #e7e8e9, radius 40)" }
+      - { name: "actions",  type: content, role: "Login link + neutral filled Book demo pill" }
+    gridRules:  { columns: "auto", justify: "space-between", align: center }
+    widthRules: { container: "contained", measure: "1216px content max" }
+  - id: hero
+    archetype: split
+    index: 1
+    patternRef: { lib: project, id: hero-inset-noise-panel }
+    surfaceMode: { mode: "base (Primary)", note: "inset ~20px-rounded noise-art panel on the canvas" }
+    useCase: "Hero: left content stack (h1 → body → blue filled pill + outlined pill) beside a right globe illustration with floating product-UI status cards, all inside the rounded pastel noise panel."
+    whenToUse: "Page opener."
+    slots:
+      - { name: "heading", type: content, role: "display heading (Bossa 400 sentence)" }
+      - { name: "body",    type: content, role: "supporting paragraph" }
+      - { name: "actions", type: content, role: "primary filled pill + secondary outlined pill" }
+      - { name: "media",   type: media,   role: "globe/product illustration", assets: [ "hero-globe-illustration.webp" ] }
+    gridRules:  { columns: "1fr 1fr", justify: "space-between", align: center }
+    widthRules: { container: "wide", measure: "content ~50%" }
+  - id: logo-wall
+    archetype: stack
+    index: 2
+    patternRef: { lib: project, id: logo-marquee-strip }
+    eyebrowRegister: ink/secondary  # gray family — grounding section-01 eyebrow ~#6b7078
+    surfaceMode: { mode: "base (Primary)" }
+    useCase: "Customer-proof strip: uppercase gray eyebrow caption over a single row of monochrome customer logo vectors (~40px, 64–100px gaps)."
+    whenToUse: "Directly after the hero."
+    slots:
+      - { name: "caption", type: content, role: "uppercase microlabel ('GLOBAL COMPANIES GROW WITH REMOTE')" }
+      - { name: "logos",   type: media,   role: "12 monochrome ink logo SVGs, spaced row", assets: [ "logo-anthropic.svg", "logo-box.svg", "logo-byd.svg", "logo-datadog.svg", "logo-gitlab.svg", "logo-heineken.svg", "logo-kfc.svg", "logo-lovable.svg", "logo-mercury.svg", "logo-miro.svg", "logo-mizuho.svg", "logo-vercel.svg" ] }
+    gridRules:  { columns: "logo row", justify: "center", align: center }
+    widthRules: { container: "full-bleed row", measure: "64–100px column gap" }
+  - id: feature-accordion
+    archetype: split
+    index: 3
+    patternRef: { lib: project, id: feature-accordion-deep-accent }
+    eyebrowRegister: accent/crimson  # red theme scope — grounding section-02 eyebrow ~#a01f38
+    surfaceMode: { mode: "base (Primary)" }
+    useCase: "Product accordion (red theme scope): crimson eyebrow + h2, left accordion list (idle: hairline rows; hover: pink wash; ACTIVE: deep-maroon inset panel w/ white ink + circle-arrow) beside right product-UI media on a grid-lined well."
+    whenToUse: "Primary feature exploration."
+    slots:
+      - { name: "eyebrow", type: content, role: "crimson uppercase label ('HOW WE DO IT')" }
+      - { name: "heading", type: content, role: "section h2" }
+      - { name: "list",    type: content, role: "accordion items w/ deep-accent active state" }
+      - { name: "media",   type: media,   role: "product UI collage (profile card + task list)" }
+    gridRules:  { columns: "1fr 1fr", justify: "space-between", align: start }
+    widthRules: { container: "contained", measure: "two-col holder, 140px gap" }
+  - id: infra-panel
+    archetype: split
+    index: 4
+    patternRef: { lib: project, id: infra-proof-split }
+    eyebrowRegister: accent/eyebrow-blue-deep  # blue theme scope — grounding section-03 eyebrow ~#1d5ce0
+    surfaceMode: { mode: "base (Primary)" }
+    useCase: "Deep-dive proof split: product-UI card stack LEFT (payroll/compliance white cards on a grid-lined well), blue eyebrow + h2 + long proof body RIGHT."
+    whenToUse: "Trust/architecture narrative."
+    slots:
+      - { name: "media",   type: media,   role: "stacked product-UI proof cards", assets: [ "panel-infrastructure-ui-snippet.webp" ] }
+      - { name: "eyebrow", type: content, role: "blue uppercase label ('INTELLIGENT INFRASTRUCTURE')" }
+      - { name: "heading", type: content, role: "section h2" }
+      - { name: "body",    type: content, role: "supporting copy w/ compliance proof terms" }
+    gridRules:  { columns: "1fr 1fr", justify: "space-between", align: center }
+    widthRules: { container: "contained" }
+  - id: banner-cta
+    archetype: stack
+    index: 5
+    patternRef: { lib: project, id: cta-inline-banner }
+    surfaceMode: { mode: "base (Primary)", note: "rounded inset panel w/ soft green glow at the bottom edge" }
+    useCase: "Inline conversion banner: centered h2 question + ONE filled blue pill on a rounded inset panel."
+    whenToUse: "Mid-page conversion moment."
+    slots:
+      - { name: "heading", type: content, role: "centered h2 (question form)" }
+      - { name: "action",  type: content, role: "single filled blue pill" }
+    gridRules:  { columns: "single", justify: "center", align: center }
+    widthRules: { container: "contained", measure: "centered, generous inner padding" }
+  - id: workflow-cards
+    archetype: cards
+    index: 6
+    patternRef: { lib: project, id: features-card-grid-navy-media }
+    eyebrowRegister: accent/eyebrow-blue-deep  # blue theme scope — grounding section-05 eyebrow ~#1c50d8
+    surfaceMode: { mode: "base (Primary)" }
+    useCase: "White card grid (3 col, ~33px gap): deep-navy media well on top (product art), then blue eyebrow label, heading, body. Section header: blue eyebrow ('INTEGRATIONS, API, AND MCP') + h2."
+    whenToUse: "Feature/workflow sets."
+    slots:
+      - { name: "heading", type: content, role: "section header stack (eyebrow + heading)" }
+      - { name: "cards", type: content, role: "white cards w/ navy media wells", assets: [ "card-api-first.webp", "card-integrations.webp", "card-mcp-agents.webp" ] }
+    gridRules:  { columns: "repeat(3)", gap: "2rem" }
+    widthRules: { container: "contained" }
+  - id: partner-logos
+    archetype: stack
+    index: 7
+    patternRef: { lib: project, id: partner-proof-row }
+    eyebrowRegister: ink/secondary  # gray family — grounding section-06 eyebrow ~#6b6f6c
+    surfaceMode: { mode: "base (Primary)" }
+    useCase: "Partner proof: gray eyebrow + h2 + body centered, row of 4 colored partner logos (~40–64px tier, one in a bordered white card), one outlined pill."
+    whenToUse: "Ecosystem/partnership proof."
+    slots:
+      - { name: "heading", type: content, role: "centered header stack ('THE GLOBAL PAYROLL BACKBONE')" }
+      # asset ORDER is source order (grounding section-06 + crop: Workday card first,
+      # then Gusto, BambooHR, Personio) — not filename order.
+      - { name: "logos",   type: media,   role: "4 partner logos (colored)", assets: [ "logo-workday-certified.webp", "logo-gusto.webp", "logo-bamboohr.webp", "logo-personio.webp" ] }
+      - { name: "action",  type: content, role: "outlined pill ('Become a Partner')" }
+    gridRules:  { columns: "centered row", justify: "center" }
+    widthRules: { container: "contained" }
+  - id: testimonials
+    archetype: cards
+    index: 8
+    patternRef: { lib: project, id: testimonial-card-row }
+    surfaceMode: { mode: "base (Primary)" }
+    useCase: "Testimonial carousel: centered h2 + subhead, 3-up white cards (company mark top, quote, circle avatar + divider + name/role, hover-revealed 'Read customer story →' link), edge cards cut at viewport; centered outlined pill below."
+    whenToUse: "Social proof."
+    slots:
+      - { name: "heading", type: content, role: "centered header ('A word from our customers')" }
+      - { name: "cards",   type: content, role: "quote cards w/ avatars + company marks", assets: [ "avatar-luke-mckinlay.webp", "avatar-marisol-jimenez.webp", "avatar-maria-shkaruppa.webp", "logo-fountain.svg", "logo-reversetech.svg", "logo-homeproject.svg", "logo-semrush.svg" ] }
+      - { name: "action",  type: content, role: "outlined pill ('Hear from our customers')" }
+    gridRules:  { columns: "3-up carousel", gap: "2rem" }
+    widthRules: { container: "contained" }
+  - id: badge-strip
+    archetype: stack
+    index: 9
+    patternRef: { lib: project, id: badge-award-strip }
+    surfaceMode: { mode: "base (Primary)" }
+    useCase: "Award proof: centered heading + row of 6 G2 award shields (~100px) + row of 3 review-platform ratings (glyph + stars + score) + outlined pill ('4,000+ reviews')."
+    whenToUse: "Third-party validation."
+    slots:
+      - { name: "heading", type: content, role: "centered heading" }
+      - { name: "badges",  type: media,   role: "award shield badges (~100px row)", assets: [ "badge-g2-top50-hr.webp", "badge-g2-top100-hr.webp", "badge-g2-top100-fastest-growing.webp", "badge-g2-top100-global-sellers.webp", "badge-g2-payroll-leader.webp", "badge-g2-gep-leader.webp" ] }
+      - { name: "ratings", type: media,   role: "review-platform rating chips (glyph + stars + score)", assets: [ "rating-g2.webp", "rating-trustpilot.webp", "rating-capterra.webp" ] }
+      - { name: "action",  type: content, role: "outlined pill" }
+    gridRules:  { columns: "badge row", justify: "center" }
+    widthRules: { container: "contained" }
+  - id: closing-cta
+    archetype: stack
+    index: 10
+    patternRef: { lib: project, id: cta-closing-noise }
+    surfaceMode: { mode: "base (Primary)", note: "full-bleed pastel gradient band (grey→blue→green)" }
+    useCase: "Closing CTA on the pastel gradient band: centered h2 + body + ONE filled blue pill; generous 130/90px padding."
+    whenToUse: "Page close, before footer."
+    slots:
+      - { name: "heading", type: content, role: "centered h2" }
+      - { name: "body",    type: content, role: "supporting paragraph" }
+      - { name: "action",  type: content, role: "single filled blue pill" }
+    gridRules:  { columns: "single", justify: "center", align: center }
+    widthRules: { container: "contained", measure: "~780px text measure" }
+  - id: footer
+    archetype: grid
+    index: 11
+    surfaceMode: { mode: "Secondary", note: "LIGHT footer — #f6f7f8" }
+    useCase: "Link directory: 8 headed groups flowing into 6 visual columns (14px links), legal row + app badges, bottom bar with policy links + circular social icons."
+    whenToUse: "Always — global chrome."
+    slots:
+      - { name: "linkcols", type: content, role: "8 grouped link columns (6 visual)" }
+      - { name: "legal",    type: content, role: "copyright + disclaimer + policy links" }
+      - { name: "social",   type: content, role: "circle social icons (YouTube/LinkedIn/X/Instagram)" }
+    gridRules:  { columns: "6", gap: "2rem" }
+    widthRules: { container: "contained" }
+
+compositionRules:
+  - id: inset-panel-hero
+    statement: "The hero sits on an INSET rounded panel (10px = --zora-radius-x3, the brand's ONE surface radius) painted with the brand's pastel noise-gradient art; text on the art stays dark ink (no scrim, no blur, no white text). The closing CTA repeats the gradient as a full-bleed band."
+    value: { panelRadius: "0.625rem", art: "bg-noise-top-2x.webp", textColor: "#141415" }
+    confidence: high
+    source: [saved-css, computed]
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-09T19:40:00Z", action: corrected, from: "panelRadius 1.25rem (~20px vision)", to: "0.625rem (10px x3, computed)", by: fid13, signalId: null, note: "JS-off computed @1440: hero backgroundWrapper + banner container both 10px" }
+  - id: pill-cta-system
+    statement: "Every button is a fully-rounded pill (40px radius token, 48px fixed height, 0 24px inset, Inter 500 18px): blue filled primary, deep-blue outlined secondary that FILLS blue on hover, near-black neutral pill for chrome; hover swaps the FILL, never the shape."
+    value: { radius: "2.5rem", height: "3rem", primary: filled-blue, secondary: outline-fills-blue, neutral: filled-near-black }
+    confidence: high
+    source: [saved-css, computed]
+    scope: design-language
+    changelog: []
+  - id: white-cards-flat-idle
+    statement: "Content cards are pure white, 10px-rounded (--zora-radius-x3), borderless and FLAT at idle; elevation (0 12px 24px rgba(0,0,0,0.08)) plus a #f6f7f8 tint appears only on hover. Media wells inside cards are SQUARE — the card's own radius clips the visible top corners."
+    value: { radius: "0.625rem", bg: "#ffffff", idleShadow: none, hoverShadow: "0px 12px 24px 0px rgba(0,0,0,0.08)" }
+    confidence: high
+    source: [saved-css, computed]
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-09T19:40:00Z", action: corrected, from: "12-14px rounding (vision)", to: "10px (x3, computed) + square wells", by: fid13, signalId: null, note: "JS-off computed @1440: grid card plate 10px, imageWrap/image 0px, accordion active surface 10px; the source ladder is 2/4/10/40 — 12px existed only in embed noise (3 literal census rules)" }
+  - id: dark-is-inset
+    statement: "Dark surfaces are INSET, never page bands: deep navy (#00235c family) backs media wells inside white cards; the page canvas itself stays light end-to-end."
+    value: { navy: "#00235c", deployment: inset-only }
+    confidence: high
+    source: [vision, saved-css]
+    scope: design-language
+    changelog: []
+  - id: deep-accent-active-item
+    statement: "In interactive lists, the ACTIVE item inverts to a deep-accent inset card (deep maroon #511621 family, white ink, circle-arrow affordance); idle items are hairline rows; hovered items take a warm tint wash (#fceef1). Generic pattern: high-contrast inset emphasis, one item at a time."
+    value: { active: "#511621", activeHover: "#742030", idleHover: "#fceef1" }
+    confidence: high
+    source: [vision, saved-css]
+    scope: design-language
+    changelog: []
+  - id: single-weight-display
+    statement: "The display face runs at weight 400 on EVERY tier; hierarchy is size-only. Bold appears only as inline emphasis inside body copy."
+    value: { headings: "Bossa 400 sentence", emphasis: "inline only" }
+    confidence: high
+    source: computed
+    scope: design-language
+    changelog: []
+  - id: theme-scoped-eyebrows
+    statement: "Eyebrows are uppercase 14–15px 0.05em-tracked microlabels whose COLOR comes from the section's theme scope: blue family (#0047bc/#0564ff) for product/platform sections, crimson (#a52d44) for the deep-accent feature family, gray (#595b5f) for proof strips. Generic mechanic: one label token, re-scoped per section family."
+    value: { case: uppercase, tracking: "0.05em", families: [blue, crimson, gray] }
+    confidence: high
+    source: [saved-css, vision]
+    scope: design-language
+    changelog: []
+  - id: logo-strips-real-vectors
+    statement: "Customer logo walls render REAL vector logos in monochrome ink (~40px tall) in a spaced row (marquee-capable); partner strips render colored logo images at the bigger tier; award badges ride a shield row. Logos are never text names."
+    value: { customerLogos: "monochrome svg row 40px", partnerLogos: "colored static row 40–64px", badges: "~100px badge row" }
+    confidence: high
+    source: [vision, saved-css]
+    scope: design-language
+    changelog: []
+  - id: light-footer-directory
+    statement: "The footer is LIGHT (#f6f7f8): a multi-column 14px Inter directory; group headings gray (#595b5f), links ink (#141415 w400) that soften to gray + underline on hover; legal row muted; circular social icons; app badges."
+    value: { bg: "#f6f7f8", columns: 6, linkSize: "14px" }
+    confidence: high
+    source: [saved-css, computed]
+    scope: design-language
+    changelog: []
+
+do:
+  - { id: pill-ctas,           statement: "Make every CTA a fully-rounded 48px pill: blue filled primary, outlined secondary, near-black neutral for chrome.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: size-only-hierarchy, statement: "Set all headings in the display face at weight 400, sentence case; scale size, never weight.", value: true, confidence: high, source: computed, scope: design-language, changelog: [] }
+  - { id: white-cards,         statement: "Float white rounded flat cards on the gray canvas; reveal shadow + tint on hover only.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: inset-dark,          statement: "Deploy deep navy as an inset backdrop (card media wells, inner panels) with white ink and periwinkle accents.", value: true, confidence: high, source: vision, scope: design-language, changelog: [] }
+  - { id: coded-eyebrows,      statement: "Open sections with uppercase tracked eyebrows color-coded to the section family (blue/crimson/gray).", value: true, confidence: high, source: [saved-css, vision], scope: design-language, changelog: [] }
+  - { id: noise-bookends,      statement: "Bookend the page with the pastel noise-gradient art (hero inset panel, closing full-bleed band), dark ink on the art.", value: true, confidence: high, source: vision, scope: design-language, changelog: [] }
+  - { id: real-logo-walls,     statement: "Render logo walls from the extracted monochrome vector logos in a spaced row.", value: true, confidence: high, source: vision, scope: design-language, changelog: [] }
+
+avoid:
+  - { id: no-dark-bands,       statement: "Avoid full-width dark section bands; the canvas run is light end-to-end — darkness belongs INSIDE cards/panels.", value: true, confidence: high, source: vision, scope: design-language, changelog: [] }
+  - { id: no-heavy-display,    statement: "No bold/heavy display type; the display face never exceeds weight 400 at heading tiers.", value: true, confidence: high, source: computed, scope: design-language, changelog: [] }
+  - { id: no-sharp-buttons,    statement: "No rectangular or lightly-rounded buttons; CTAs are full pills.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: no-idle-shadows,     statement: "No resting drop-shadows on cards; elevation is a hover behavior.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: no-photo-heroes,     statement: "No photographic hero backgrounds or scrims; hero media is illustration/product-UI art on the noise panel.", value: true, confidence: high, source: vision, scope: design-language, changelog: [] }
+  - { id: no-accent-flood,     statement: "Do not flood surfaces with the action blue; large fields stay gray/white/pastel — blue is for CTAs, links, eyebrows, and small chips.", value: true, confidence: high, source: vision, scope: design-language, changelog: [] }
+
+neverDo:
+  - { id: never-typographic-primary, statement: "Never render the primary CTA as a typographic link; it is always a filled blue pill.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: never-zero-radius,         statement: "Never zero out radius; the system is rounded (cards 12–14px, panels ~20px, media 10px, pills 40px).", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: never-allcaps-headings,    statement: "Never set headings in all-caps; headings are sentence-case — uppercase belongs to the eyebrow register only.", value: true, confidence: high, source: computed, scope: design-language, changelog: [] }
+
+voice:
+  ref: "./voice.md"
+  motionSpec:
+    state: defined
+    easing:
+      primary: "ease"          # short state transitions (.15s/.2s color/background families in transitionCensus); button fills ride --zora-btn-duration/easing tokens; card image reveals cubic-bezier(.16,1,.3,1)
+    durations:
+      fast: "150ms"            # color .15s / background-color .15s (links, washes) — the dominant census pair
+      base: "200ms"            # transform .2s / opacity .2s (badges, arrows, hover fades)
+      slow: "800ms"            # large reveals (nav entry-card image/description slide: .8s cubic-bezier(.16,1,.3,1); image zoom scale(1.18))
+    link:
+      mode: color-shift        # links darken on hover (#0564ff -> #0047bc); footer links soften + underline
+      value: "color-shift + underline-on-hover (footer)"
+    scrollReveal:
+      value: "fade"            # reveal choreography is JS-driven (stripped in the capture); reduced-motion guards exist (10 prefers-reduced-motion rules)
+    marquee:
+      value: "logo strip renders as a spaced static row at 1440 (marquee-capable track classes present)"
+    imageParallax:
+      enabled: false
+      origin: extracted
+      provenance: [hero, workflow-cards]
+    reducedMotion: "declared"   # 10 prefers-reduced-motion rules measured in the fresh sheet
+    confidence: high
+    source: saved-css
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-07T12:30:00Z", action: refined, from: "500ms house tempo (old capture)", to: "150/200/800ms census + button duration tokens + reduced-motion declared", by: creation, signalId: null, note: "transitionCensus from evidence/css-facts.json; the fresh sheet is the Next.js module system, not the old CMS sheets" }
+  dials:
+    variance: { value: low,    confidence: high, source: creation, scope: design-language, changelog: [] }
+    motion:   { value: medium, confidence: high, state: defined, source: creation, scope: design-language, changelog: [ { ts: "2026-07-07T12:30:00Z", action: confirmed, from: null, to: medium, by: creation, signalId: null, note: "carousel, accordion inversion, hover tint+shadow, nav card reveals — controlled, no bounce" } ] }
+    density:  { value: medium, confidence: high, source: creation, scope: design-language, changelog: [] }
+
+recipePolicy:
+  scaffoldFirst:          { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  reuseBeforeCreate:      { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  composeFromPrimitives:  { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  themeViaModes:          { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  slotsTakeInstancesOnly: { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+
+provenanceIndex:
+  navbar:             { url: "https://remote.com", node: "nav.site-navigation-module (sticky, transparent over canvas)", evidence: "evidence/computed-styles.json#chrome + ../assets/source-chrome.v2.json" }
+  hero:               { url: "https://remote.com", node: "hero-module section (inset noise panel)", evidence: "evidence/grounding/section-00-*.yaml + evidence/crops/section-00-*.png" }
+  logo-wall:          { url: "https://remote.com", node: "base-module section 01 (customer logo row)", evidence: "evidence/grounding/section-01-*.yaml" }
+  accordion-features: { url: "https://remote.com", node: "base-module section 02 (accordion split, red theme)", evidence: "evidence/grounding/section-02-*.yaml" }
+  infra-panel:        { url: "https://remote.com", node: "base-module section 03 (proof split)", evidence: "evidence/grounding/section-03-*.yaml" }
+  banner-cta:         { url: "https://remote.com", node: "base-module section 04 (inline banner, green glow)", evidence: "evidence/grounding/section-04-*.yaml" }
+  workflow-cards:     { url: "https://remote.com", node: "base-module section 05 (3-up card grid, navy media wells)", evidence: "evidence/grounding/section-05-*.yaml" }
+  partner-logos:      { url: "https://remote.com", node: "base-module section 06 (partner proof row)", evidence: "evidence/grounding/section-06-*.yaml" }
+  testimonials:       { url: "https://remote.com", node: "base-module section 07 (testimonial carousel)", evidence: "evidence/grounding/section-07-*.yaml" }
+  badge-strip:        { url: "https://remote.com", node: "base-module section 08 (G2 awards + ratings)", evidence: "evidence/grounding/section-08-*.yaml" }
+  closing-cta:        { url: "https://remote.com", node: "hero-module section 09 (full-bleed gradient band)", evidence: "evidence/grounding/section-09-*.yaml" }
+  footer:             { url: "https://remote.com", node: "footer.site-footer-module (8 groups / 6 columns)", evidence: "evidence/grounding/section-10-footer.yaml + evidence/computed-styles.json#chrome" }
+  popup-forms:        { url: "https://remote.com", node: "form/field modules (CSS-measured; modal not rendered)", evidence: "evidence/css-facts.json hoverRules (field/hubspot-form modules)" }
+
+# ── self-hosted font registry ──────────────────────────────────────────────────────
+# Bossa is a commercial face served from the site CDN and NOT saved in this capture:
+# no @font-face is emitted and the type stack falls through to the measured
+# renderProxy (Lexend Deca). Drop licensed Bossa-Regular.woff2 into
+# runs/remote/brand/assets/fonts/ and the display face renders real with no
+# pipeline change.
+selfHostedFonts:
+  - family: Bossa
+    faces:
+      - weight: 400
+        files: [Bossa-Regular.woff2, Bossa-Regular.woff]
+    # P2 audit (2026-07-07): the woff2/woff files are NOT in either saved capture —
+    # the source @font-face URLs point to ../media/ paths the save never downloaded
+    # (checked screenshots/remote-v2/remote-com_files/ and the older
+    # screenshots/remote/ capture; no font binaries on disk). Self-hosting stays
+    # pending a re-capture that includes the media/ font payloads; headings render
+    # in the declared fallback stack until then. Do not fetch from the network.
+    note: font files absent from saved captures; registry kept for provenance, render degrades to fallback stack
+
+# ---- EXACT extracted site chrome (nav/footer) ----
+
+navbar:
+  origin: extracted
+  source: extracted
+  scope: site-chrome
+  confidence: high
+  provenance:
+    node: nav.site-navigation-module-scss-module__PNKrMq__nav
+    sourceUrl: https://remote.com
+    savedPage: ../../../screenshots/remote-v2/remote-com.html
+    extractor: tools/extract_chrome_saved.py (offline Playwright v2) + tools/extract/measure_computed.py (JS-off, 1440x900)
+    contract: ../assets/source-chrome.v2.json
+  archetype: nav
+  sticky: true
+  surface:
+    bg: rgba(0, 0, 0, 0)
+    color: rgb(0, 0, 0)
+    height: 81
+  utilityBanner:
+    note: a dismissible promo top-bar (~44px) may precede the nav (top-bar-module; 'Do you know how to say global payroll in Dutch?'); marketing device, not core chrome
+    observed: true
+    text: Do you know how to say "global payroll" in Dutch?
+    bg: rgb(36, 50, 66)
+    bgRaw: rgba(51, 79, 111, 0.5)
+    ink: rgb(255, 255, 255)
+    dismissible: true
+    source: measured
+    provenance:
+    - top-bar-module css (:root cover-bg = neutral-900)
+    - bg backdrop-composited (W1) — raw rgba(51,79,111,.5) over the measured cover-bg
+      '#141415' = the screen-truth paint rgb(36,50,66); bgRaw keeps the declaration
+    - recorded promo copy
+    - captured banner fragment hs-web-interactive-7405301-213867283760.html
+    fontSize: 14
+    cta:
+      label: Take the quiz →
+      href: https://cta-service-cms2.hubspot.com/web-interactives/public/v1/track/click?encryptedPayload=AVxigLIucnZ%2FuDlroWspoAljcm5TdX81GxVbVGD0zgclLyckVpOcZTPOIdY5qTPbjYzTK3auuzqOa2A%2FeznaGCO6CeEm6hj41NU6Mqb%2B9TNGrPe%2Bs8eOE%2BhKpkCRQspqxYpYSdcFzSQvne9eGKcovcQ%2B%2Bczm0J3m1CWx1UG7OEvljzctcEw%3D&portalId=7405301&webInteractiveId=559713706623&webInteractiveContentId=213867283760&containerType=BANNER&campaignId=5c6d3931-2111-4e4a-a180-dd5bd59c1fb0&pageUrl=https%3A%2F%2Fremote.com%2F&pageTitle=Remote+%E2%80%94+Global+Employment+Infrastructure+%7C+EOR%2C+Payroll+%26+Compliance%2C+Worldwide&referrer=&userAgent=Mozilla%2F5.0+%28Macintosh%3B+Intel+Mac+OS+X+10_15_7%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F149.0.0.0+Safari%2F537.36&hutk=0e46dfcbe23c8a229f37f0d22f061c37&hssc=36654911.1.1782938074776&hstc=36654911.0e46dfcbe23c8a229f37f0d22f061c37.1782908167706.1782908167706.1782938074776.2&pageId=186057898075&analyticsPageId=186057898075&hsfp=6ef84b617352e3459274c7707b8dc7d0&canonicalUrl=https%3A%2F%2Fremote.com&contentType=standard-page
+      underline: true
+      color: rgb(255, 255, 255)
+      fontWeight: '700'
+    close:
+      kind: box-only
+      box:
+        w: 16
+        h: 16
+      strokeWidth: 2
+      ink: rgb(250, 250, 250)
+  logo:
+    kind: svg
+    alt: Remote home
+    src: remote-wordmark.svg
+    width: 94
+    height: 30
+    href: https://remote.com/
+    srcContract: ../assets/source-chrome.v2.json#nav.logo.src
+  slots:
+  - name: brand
+    type: media
+    role: nav wordmark / home link
+    source: extracted
+  - name: navlinks
+    type: content
+    role: primary nav triggers (pill hover wash)
+    source: extracted
+  - name: actions
+    type: content
+    role: Login + language switcher + neutral filled 'Book demo' pill
+    source: extracted
+  links:
+  - label: Products
+    href: ''
+    menu:
+      columns:
+      - heading: Global Employment
+        area: main
+        links:
+        - label: Global Payroll Run
+          href: https://remote.com/global-hr/global-payroll
+          description: Run compliant payroll easily
+          icon:
+            kind: img
+            asset: assets/nav-icon-global-payroll-run.svg
+            size: 20
+        - label: Employer of Record
+          href: https://remote.com/global-hr/employer-of-record
+          description: Expand globally with zero entity cost
+          icon:
+            kind: img
+            asset: assets/nav-icon-employer-of-record.svg
+            size: 20
+        - label: Contractor of Record
+          href: https://remote.com/global-hr/contractor-of-record
+          description: Compliantly engage contractors worldwide
+          icon:
+            kind: img
+            asset: assets/nav-icon-contractor-of-record.svg
+            size: 20
+        - label: Contractor Management
+          href: https://remote.com/global-hr/contractor-management
+          description: Onboard and manage contractors globally
+          icon:
+            kind: img
+            asset: assets/nav-icon-contractor-management.svg
+            size: 20
+        - label: PEO
+          href: https://remote.com/global-hr/professional-employer-organization
+          description: Outsource complex employment tasks
+          icon:
+            kind: img
+            asset: assets/nav-icon-peo.svg
+            size: 20
+      - heading: Infrastructure
+        area: main
+        links:
+        - label: Remote Embedded
+          href: https://embedded.remote.com/
+          description: Seamlessly integrate HR into workflows
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-remote-embedded.svg
+            size: 20
+        - label: Platform
+          href: https://remote.com/global-hr/hr-core
+          description: Manage your global HR core
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-platform.svg
+            size: 20
+        - label: Connect
+          href: https://remote.com/remote-mcp
+          description: Connect your AI tools with Remote
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-connect.svg
+            size: 20
+        - label: Integrations
+          href: https://remote.com/global-hr/integrations-for-customers
+          description: Streamline processes with essential business tools
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-integrations.svg
+            size: 20
+      - heading: Services
+        area: aside
+        links:
+        - label: Ask an Expert
+          href: https://remote.com/global-hr/ask-an-expert
+          description: Get expert help on global HR & compliance
+          descriptionOnHover: true
+        - label: Background Checks
+          href: https://remote.com/global-hr/background-checks
+          description: Simplify your candidate screening processes
+          descriptionOnHover: true
+        - label: Compliance Watchtower
+          href: https://remote.com/global-hr/hr-compliance
+          description: Stay ahead of compliance risks
+          descriptionOnHover: true
+        - label: Device Management
+          href: https://remote.com/global-hr/device-management
+          description: Provision and track IT devices globally
+          descriptionOnHover: true
+        - label: Entity Setup
+          href: https://remote.com/global-hr/global-entity-setup
+          description: Establish compliant entities fast
+          descriptionOnHover: true
+        - label: Mobility & Relocation
+          href: https://remote.com/global-hr/global-mobility
+          description: Relocate employees with ease
+          descriptionOnHover: true
+        - label: Benefits
+          href: https://remote.com/global-hr/global-benefits
+          description: Manage employee benefits with ease
+          descriptionOnHover: true
+      featured: []
+  - label: Solutions
+    href: ''
+    menu:
+      columns:
+      - heading: Global Coverage
+        area: main
+        links:
+        - label: Country Explorer
+          href: https://remote.com/country-explorer
+          description: Find global employment support by country
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-country-explorer.svg
+            size: 20
+        - label: US State Explorer
+          href: https://remote.com/us-state-explorer?service=all
+          description: Simplify hiring across all US states
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-us-state-explorer.svg
+            size: 20
+        - label: Compare Remote
+          href: https://remote.com/resources/compare-remote
+          description: See how we stack up against others
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-compare-remote.svg
+            size: 20
+      - heading: Growth Stage
+        area: main
+        links:
+        - label: Startups
+          href: https://remote.com/global-hr/startups
+          description: Agile global HR & payroll solutions for growing companies
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-startups.svg
+            size: 20
+        - label: Mid-Market
+          href: https://remote.com/global-hr/midsize
+          description: Expand teams with tailored HR solutions
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-mid-market.svg
+            size: 20
+        - label: Enterprise
+          href: https://remote.com/global-hr/enterprise
+          description: Global HR for large businesses
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-enterprise.svg
+            size: 20
+      - heading: Partner with us
+        area: main
+        links:
+        - label: Strategic Technology Partners
+          href: https://remote.com/global-hr/remote-api
+          description: Flexibly embed global HR into your platform
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-strategic-technology-partners.svg
+            size: 20
+        - label: Become a Partner
+          href: https://remote.com/partners
+          description: Explore partnership opportunities with us
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-become-a-partner.svg
+            size: 20
+      featured: []
+      card:
+        title: 'Scaling global talent with ease: How Flowla achieves 100% HR visibility with Remote'
+        body: ''
+        href: /resources/case-studies/scaling-global-talent-with-ease-how-flowla-achieves-100-hr-visibility-with-remote
+        area: aside
+        groupHeading: Case Studies
+        cta:
+          label: Learn more
+          href: /resources/case-studies/scaling-global-talent-with-ease-how-flowla-achieves-100-hr-visibility-with-remote
+        image:
+          alt: flowela-header@2x.webp
+          asset: assets/nav-card-solutions.webp
+        surface:
+          bg: rgba(0, 0, 0, 0)
+          radius: 10
+  - label: Resources
+    href: ''
+    menu:
+      columns:
+      - heading: Tools & Calculators
+        area: main
+        links:
+        - label: Misclassification risk calculator
+          href: https://remote.com/resources/employee-misclassification-risk-tool
+          description: Check employee misclassification risk by country
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-misclassification-risk-calculator.svg
+            size: 20
+        - label: Employee cost calculator
+          href: https://remote.com/resources/employee-cost-calculator
+          description: Calculate total employee costs in any country
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-employee-cost-calculator.svg
+            size: 20
+        - label: Contractor payout calculator
+          href: https://remote.com/resources/contractor-payout-explorer
+          description: Explore currency options and payout speeds for global contractors
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-contractor-payout-calculator.svg
+            size: 20
+      - heading: Learn with Remote
+        area: main
+        links:
+        - label: Research & Guides
+          href: https://remote.com/resources/research
+        - label: Case studies
+          href: https://remote.com/resources/case-studies
+        - label: HR Glossary
+          href: https://remote.com/resources/hr-glossary
+        - label: Checklists & Templates
+          href: https://remote.com/resources/checklists-templates
+        - label: Job Description Library
+          href: https://remote.com/resources/job-descriptions
+        - label: Webinars
+          href: https://remote.com/resources/webinars
+        - label: Events
+          href: https://remote.com/events
+        - label: Newsroom
+          href: https://remote.com/news
+        - label: Salary & Talent Insights
+          href: https://support.remote.com/hc/en-us/sections/34243549052685-Talent-Insights
+        - label: Insights center
+          href: https://remote.com/resources/insights-center
+        - label: Get support
+          href: https://support.remote.com/
+        - label: See all resources
+          href: https://remote.com/resources
+      - heading: Blog
+        area: main
+        links:
+        - label: Global Payroll
+          href: https://remote.com/blog/tag/payroll
+        - label: EOR & PEO
+          href: https://remote.com/blog/tag/eor-peo
+        - label: Contractor Management
+          href: https://remote.com/blog/tag/contractor-management
+        - label: Compliance
+          href: https://remote.com/blog/tag/compliance
+        - label: Taxes
+          href: https://remote.com/blog/tag/taxes
+        - label: Work visas & permits
+          href: https://remote.com/blog/tag/relocation
+        - label: Changelog
+          href: https://remote.com/blog/changelog
+        - label: Explore the blog
+          href: https://remote.com/blog
+      featured: []
+      card:
+        title: The most complex global payroll market isn't the one you'd guess
+        body: ''
+        href: /blog/the-most-complex-global-payroll-market-isn-t-the-one-you-d-guess
+        area: aside
+        groupHeading: Blog Posts
+        cta:
+          label: Learn more
+          href: /blog/the-most-complex-global-payroll-market-isn-t-the-one-you-d-guess
+        image:
+          alt: CFO Global Payroll Forecast
+          asset: assets/nav-card-resources.webp
+        surface:
+          bg: rgba(0, 0, 0, 0)
+          radius: 10
+  - label: Pricing
+    href: https://remote.com/pricing
+  - label: Login
+    href: https://employ.remote.com/sign-in
+    kind: link
+    role: login
+    bar: trailing
+    icon:
+      kind: svg
+      size: 24
+  - label: 'Select language — current: English'
+    href: ''
+    kind: dropdown
+    role: language
+    bar: trailing
+    ariaLabel: 'Select language — current: English'
+    icon:
+      kind: svg
+      size: 24
+    chevron:
+      kind: svg
+      box:
+        w: 16
+        h: 16
+      gap: 4
+      transition: transform 0.2s
+      openTransform: matrix(-1, 0, 0, -1, 0, 0)
+  primary:
+  - label: Products
+    href: ''
+    menu:
+      columns:
+      - heading: Global Employment
+        area: main
+        links:
+        - label: Global Payroll Run
+          href: https://remote.com/global-hr/global-payroll
+          description: Run compliant payroll easily
+          icon:
+            kind: img
+            asset: assets/nav-icon-global-payroll-run.svg
+            size: 20
+        - label: Employer of Record
+          href: https://remote.com/global-hr/employer-of-record
+          description: Expand globally with zero entity cost
+          icon:
+            kind: img
+            asset: assets/nav-icon-employer-of-record.svg
+            size: 20
+        - label: Contractor of Record
+          href: https://remote.com/global-hr/contractor-of-record
+          description: Compliantly engage contractors worldwide
+          icon:
+            kind: img
+            asset: assets/nav-icon-contractor-of-record.svg
+            size: 20
+        - label: Contractor Management
+          href: https://remote.com/global-hr/contractor-management
+          description: Onboard and manage contractors globally
+          icon:
+            kind: img
+            asset: assets/nav-icon-contractor-management.svg
+            size: 20
+        - label: PEO
+          href: https://remote.com/global-hr/professional-employer-organization
+          description: Outsource complex employment tasks
+          icon:
+            kind: img
+            asset: assets/nav-icon-peo.svg
+            size: 20
+      - heading: Infrastructure
+        area: main
+        links:
+        - label: Remote Embedded
+          href: https://embedded.remote.com/
+          description: Seamlessly integrate HR into workflows
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-remote-embedded.svg
+            size: 20
+        - label: Platform
+          href: https://remote.com/global-hr/hr-core
+          description: Manage your global HR core
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-platform.svg
+            size: 20
+        - label: Connect
+          href: https://remote.com/remote-mcp
+          description: Connect your AI tools with Remote
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-connect.svg
+            size: 20
+        - label: Integrations
+          href: https://remote.com/global-hr/integrations-for-customers
+          description: Streamline processes with essential business tools
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-integrations.svg
+            size: 20
+      - heading: Services
+        area: aside
+        links:
+        - label: Ask an Expert
+          href: https://remote.com/global-hr/ask-an-expert
+          description: Get expert help on global HR & compliance
+          descriptionOnHover: true
+        - label: Background Checks
+          href: https://remote.com/global-hr/background-checks
+          description: Simplify your candidate screening processes
+          descriptionOnHover: true
+        - label: Compliance Watchtower
+          href: https://remote.com/global-hr/hr-compliance
+          description: Stay ahead of compliance risks
+          descriptionOnHover: true
+        - label: Device Management
+          href: https://remote.com/global-hr/device-management
+          description: Provision and track IT devices globally
+          descriptionOnHover: true
+        - label: Entity Setup
+          href: https://remote.com/global-hr/global-entity-setup
+          description: Establish compliant entities fast
+          descriptionOnHover: true
+        - label: Mobility & Relocation
+          href: https://remote.com/global-hr/global-mobility
+          description: Relocate employees with ease
+          descriptionOnHover: true
+        - label: Benefits
+          href: https://remote.com/global-hr/global-benefits
+          description: Manage employee benefits with ease
+          descriptionOnHover: true
+      featured: []
+  - label: Solutions
+    href: ''
+    menu:
+      columns:
+      - heading: Global Coverage
+        area: main
+        links:
+        - label: Country Explorer
+          href: https://remote.com/country-explorer
+          description: Find global employment support by country
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-country-explorer.svg
+            size: 20
+        - label: US State Explorer
+          href: https://remote.com/us-state-explorer?service=all
+          description: Simplify hiring across all US states
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-us-state-explorer.svg
+            size: 20
+        - label: Compare Remote
+          href: https://remote.com/resources/compare-remote
+          description: See how we stack up against others
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-compare-remote.svg
+            size: 20
+      - heading: Growth Stage
+        area: main
+        links:
+        - label: Startups
+          href: https://remote.com/global-hr/startups
+          description: Agile global HR & payroll solutions for growing companies
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-startups.svg
+            size: 20
+        - label: Mid-Market
+          href: https://remote.com/global-hr/midsize
+          description: Expand teams with tailored HR solutions
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-mid-market.svg
+            size: 20
+        - label: Enterprise
+          href: https://remote.com/global-hr/enterprise
+          description: Global HR for large businesses
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-enterprise.svg
+            size: 20
+      - heading: Partner with us
+        area: main
+        links:
+        - label: Strategic Technology Partners
+          href: https://remote.com/global-hr/remote-api
+          description: Flexibly embed global HR into your platform
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-strategic-technology-partners.svg
+            size: 20
+        - label: Become a Partner
+          href: https://remote.com/partners
+          description: Explore partnership opportunities with us
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-become-a-partner.svg
+            size: 20
+      featured: []
+      card:
+        title: 'Scaling global talent with ease: How Flowla achieves 100% HR visibility with Remote'
+        body: ''
+        href: /resources/case-studies/scaling-global-talent-with-ease-how-flowla-achieves-100-hr-visibility-with-remote
+        area: aside
+        groupHeading: Case Studies
+        cta:
+          label: Learn more
+          href: /resources/case-studies/scaling-global-talent-with-ease-how-flowla-achieves-100-hr-visibility-with-remote
+        image:
+          alt: flowela-header@2x.webp
+          asset: assets/nav-card-solutions.webp
+        surface:
+          bg: rgba(0, 0, 0, 0)
+          radius: 10
+  - label: Resources
+    href: ''
+    menu:
+      columns:
+      - heading: Tools & Calculators
+        area: main
+        links:
+        - label: Misclassification risk calculator
+          href: https://remote.com/resources/employee-misclassification-risk-tool
+          description: Check employee misclassification risk by country
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-misclassification-risk-calculator.svg
+            size: 20
+        - label: Employee cost calculator
+          href: https://remote.com/resources/employee-cost-calculator
+          description: Calculate total employee costs in any country
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-employee-cost-calculator.svg
+            size: 20
+        - label: Contractor payout calculator
+          href: https://remote.com/resources/contractor-payout-explorer
+          description: Explore currency options and payout speeds for global contractors
+          descriptionOnHover: true
+          icon:
+            kind: svg
+            asset: assets/nav-icon-contractor-payout-calculator.svg
+            size: 20
+      - heading: Learn with Remote
+        area: main
+        links:
+        - label: Research & Guides
+          href: https://remote.com/resources/research
+        - label: Case studies
+          href: https://remote.com/resources/case-studies
+        - label: HR Glossary
+          href: https://remote.com/resources/hr-glossary
+        - label: Checklists & Templates
+          href: https://remote.com/resources/checklists-templates
+        - label: Job Description Library
+          href: https://remote.com/resources/job-descriptions
+        - label: Webinars
+          href: https://remote.com/resources/webinars
+        - label: Events
+          href: https://remote.com/events
+        - label: Newsroom
+          href: https://remote.com/news
+        - label: Salary & Talent Insights
+          href: https://support.remote.com/hc/en-us/sections/34243549052685-Talent-Insights
+        - label: Insights center
+          href: https://remote.com/resources/insights-center
+        - label: Get support
+          href: https://support.remote.com/
+        - label: See all resources
+          href: https://remote.com/resources
+      - heading: Blog
+        area: main
+        links:
+        - label: Global Payroll
+          href: https://remote.com/blog/tag/payroll
+        - label: EOR & PEO
+          href: https://remote.com/blog/tag/eor-peo
+        - label: Contractor Management
+          href: https://remote.com/blog/tag/contractor-management
+        - label: Compliance
+          href: https://remote.com/blog/tag/compliance
+        - label: Taxes
+          href: https://remote.com/blog/tag/taxes
+        - label: Work visas & permits
+          href: https://remote.com/blog/tag/relocation
+        - label: Changelog
+          href: https://remote.com/blog/changelog
+        - label: Explore the blog
+          href: https://remote.com/blog
+      featured: []
+      card:
+        title: The most complex global payroll market isn't the one you'd guess
+        body: ''
+        href: /blog/the-most-complex-global-payroll-market-isn-t-the-one-you-d-guess
+        area: aside
+        groupHeading: Blog Posts
+        cta:
+          label: Learn more
+          href: /blog/the-most-complex-global-payroll-market-isn-t-the-one-you-d-guess
+        image:
+          alt: CFO Global Payroll Forecast
+          asset: assets/nav-card-resources.webp
+        surface:
+          bg: rgba(0, 0, 0, 0)
+          radius: 10
+  - label: Pricing
+    href: https://remote.com/pricing
+  ctas:
+  - label: Book demo
+    href: ''
+    filled: true
+    hasIcon: false
+    bg: rgb(35, 35, 37)
+    color: rgb(255, 255, 255)
+    borderRadius: 40
+  presentation:
+    casing: sentence
+    separator: none
+    linkHover:
+      bg: '#e7e8e9'
+      radius: 2.5rem
+      note: --zora-tab-nav-bg-hover pill wash on triggers
+  measured:
+    _provenance: getComputedStyle (rendered px / CSS strings) from saved DOM
+    bar:
+      bg: rgba(0, 0, 0, 0)
+      effectiveBg: rgb(239, 240, 240)
+      height: 81
+      sticky: true
+      paddingTop: 0
+      paddingBottom: 0
+      paddingLeft: 0
+      paddingRight: 0
+    contentMaxWidth: 1216
+    logo:
+      width: 94
+      height: 30
+    link:
+      fontSize: 18
+      fontWeight: '500'
+      color: rgb(20, 20, 21)
+      lineHeight: 27px
+      padding: 8px 16px
+      hoverBg: '#e7e8e9'
+      hoverRadius: 40
+    cta:
+      bg: rgb(35, 35, 37)
+      color: rgb(255, 255, 255)
+      radius: 40
+      height: 48
+      padding: 0 24px
+      fontSize: 13
+      fontWeight: '400'
+      paddingTop: 0
+      paddingBottom: 0
+      paddingLeft: 24
+      paddingRight: 24
+    utilityBarHeight: 0
+    primaryBarHeight: 81
+    linkGap: 12
+    megaPanel:
+      _provenance: getComputedStyle on the (hidden) mega panel from saved DOM
+      surface:
+        bg: rgb(246, 247, 248)
+        borderTop: 1px rgb(210, 211, 213)
+        radius: 0
+        maxHeight: 892.8px
+      hiddenState:
+        opacity: '0'
+        transform: matrix(1, 0, 0, 1, 0, 20)
+      motion:
+        panel:
+          property: opacity, transform, visibility
+          duration: 0.3s, 0.3s, 0.3s
+          easing: ease, ease, ease
+          delay: 0s, 0s, 0s
+        link:
+          property: background-color
+          duration: 0.15s
+          easing: ease
+          delay: 0s
+        description:
+          property: grid-template-rows
+          duration: 0.3s
+          easing: ease
+          delay: 0s
+        chevron:
+          property: transform
+          duration: 0.2s
+          easing: ease
+          delay: 0s
+      link:
+        padding: 8px
+        radius: 4
+        fontSize: 16
+        fontWeight: '400'
+        color: rgb(0, 0, 0)
+        hoverBg: '#fff'
+      groupTitle:
+        fontSize: 14
+        fontWeight: '400'
+        color: rgb(56, 58, 61)
+        letterSpacing: 0.7px
+        textTransform: uppercase
+        fontFamily: Bossa, "Bossa Fallback", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif
+      aside:
+        borderLeft: 1px rgb(210, 211, 213)
+        maxWidth: 24.68%
+        paddingLeft: 16
+    utilityLink:
+      fontSize: 18
+      fontWeight: '500'
+      color: rgb(20, 20, 21)
+    trigger:
+      chevron:
+        kind: svg
+        box:
+          w: 16
+          h: 16
+        gap: 4
+        transition: transform 0.2s
+        openTransform: matrix(-1, 0, 0, -1, 0, 0)
+        asset: assets/nav-trigger-chevron.svg
+  twoTier: true
+  utility:
+  - label: Login
+    href: https://employ.remote.com/sign-in
+    kind: link
+    role: login
+    bar: trailing
+    icon:
+      kind: svg
+      asset: assets/nav-utility-login.svg
+      size: 24
+  - label: 'Select language — current: English'
+    href: ''
+    kind: dropdown
+    role: language
+    bar: trailing
+    ariaLabel: 'Select language — current: English'
+    icon:
+      kind: svg
+      asset: assets/nav-utility-language.svg
+      size: 24
+    chevron:
+      kind: svg
+      asset: assets/nav-trigger-chevron.svg
+      box:
+        w: 16
+        h: 16
+      gap: 4
+      transition: transform 0.2s
+      openTransform: matrix(-1, 0, 0, -1, 0, 0)
+    dropdown:
+      items:
+      - label: English
+        href: /
+        lang: en-us
+        current: true
+      - label: Nederlands
+        href: /nl-nl
+        lang: nl-nl
+      - label: Français
+        href: /fr-fr
+        lang: fr-fr
+      - label: Deutsch
+        href: /de-de
+        lang: de-de
+      - label: Español
+        href: /es-es
+        lang: es-es
+      - label: Italiano
+        href: /it-it
+        lang: it-it
+      - label: Português
+        href: /pt-pt
+        lang: pt-pt
+      - label: 日本語
+        href: /ja-jp
+        lang: ja-jp
+      - label: 한국어
+        href: /ko-kr
+        lang: ko-kr
+      - label: 中文（简体）
+        href: /zh-cn
+        lang: zh-cn
+      panel:
+        w: 198
+        h: 518
+        bg: rgb(255, 255, 255)
+        radius: 2
+        border: 1px solid rgb(20, 20, 21)
+        paddingY: 8
+      item:
+        fontSize: 18
+        color: rgb(20, 20, 21)
+        padding: 16px 12px
+        radius: 2
+      currentItem:
+        bg: rgb(20, 20, 21)
+        color: rgb(255, 255, 255)
+  rules:
+    layout: split
+    tiers: utility-over-primary
+    justify: space-between
+    align: center
+    anyButtonHasIcon: false
+  changelog:
+  - ts: '2026-07-07T16:01:52Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 0 utility + 6 primary links (3 with mega-menu), 1 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-07-07T16:05:05Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 0 utility + 6 primary links (3 with mega-menu), 1 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-07-08T15:09:54Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 0 utility + 6 primary links (3 with mega-menu), 1 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-07-08T15:16:15Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 0 utility + 6 primary links (3 with mega-menu), 1 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-07-08T15:16:58Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 0 utility + 6 primary links (3 with mega-menu), 1 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-07-08T15:25:27Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 0 utility + 6 primary links (3 with mega-menu), 1 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-07-08T16:05:52Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 0 utility + 6 primary links (3 with mega-menu), 1 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-07-08T16:10:19Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 0 utility + 6 primary links (3 with mega-menu), 1 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-07-09T22:52:37Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 2 utility + 4 primary links (3 with mega-menu), 1 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-07-09T22:56:04Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 2 utility + 4 primary links (3 with mega-menu), 1 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  megaOpen:
+  - label: Products
+    controls: _R_d5fiuqivb_-panel-0
+    forced: true
+    open: true
+    panel:
+      x: 0
+      y: 129
+      w: 1440
+      h: 456
+    padding:
+      top: 0
+      right: 0
+      bottom: 0
+      left: 0
+    surface:
+      bg: rgb(246, 247, 248)
+      radius: 0
+    groups:
+    - rect:
+        x: 136
+        y: 130
+        w: 863
+        h: 455
+      links: 9
+      linkColumns: 3
+      aside: false
+    - rect:
+        x: 999
+        y: 130
+        w: 305
+        h: 455
+      links: 7
+      linkColumns: 1
+      aside: true
+    card: null
+    aside:
+      rect:
+        x: 999
+        y: 130
+        w: 305
+        h: 455
+      widthFraction: 0.212
+      borderLeft: 1px rgb(210, 211, 213)
+    mainColumnCount: 1
+    shot: chrome-mega-0-products.png
+  - label: Solutions
+    controls: _R_d5fiuqivb_-panel-1
+    forced: true
+    open: true
+    panel:
+      x: 0
+      y: 129
+      w: 1440
+      h: 447
+    padding:
+      top: 0
+      right: 0
+      bottom: 0
+      left: 0
+    surface:
+      bg: rgb(246, 247, 248)
+      radius: 0
+    groups:
+    - rect:
+        x: 136
+        y: 130
+        w: 863
+        h: 446
+      links: 8
+      linkColumns: 3
+      aside: false
+    - rect:
+        x: 999
+        y: 130
+        w: 305
+        h: 446
+      links: 1
+      linkColumns: 1
+      aside: true
+    card:
+      x: 1016
+      y: 191
+      w: 288
+      h: 353
+    aside:
+      rect:
+        x: 999
+        y: 130
+        w: 305
+        h: 446
+      widthFraction: 0.212
+      borderLeft: 1px rgb(210, 211, 213)
+    mainColumnCount: 1
+    shot: chrome-mega-1-solutions.png
+  - label: Resources
+    controls: _R_d5fiuqivb_-panel-2
+    forced: true
+    open: true
+    panel:
+      x: 0
+      y: 128
+      w: 1440
+      h: 643
+    padding:
+      top: 0
+      right: 0
+      bottom: 0
+      left: 0
+    surface:
+      bg: rgb(246, 247, 248)
+      radius: 0
+    groups:
+    - rect:
+        x: 136
+        y: 129
+        w: 863
+        h: 642
+      links: 23
+      linkColumns: 3
+      aside: false
+    - rect:
+        x: 999
+        y: 129
+        w: 305
+        h: 642
+      links: 1
+      linkColumns: 1
+      aside: true
+    card:
+      x: 1016
+      y: 190
+      w: 288
+      h: 326
+    aside:
+      rect:
+        x: 999
+        y: 129
+        w: 305
+        h: 642
+      widthFraction: 0.212
+      borderLeft: 1px rgb(210, 211, 213)
+    mainColumnCount: 1
+    shot: chrome-mega-2-resources.png
+footer:
+  origin: extracted
+  source: extracted
+  scope: site-chrome
+  confidence: high
+  provenance:
+    node: footer.site-footer-module-scss-module__qYa75a__footer
+    sourceUrl: https://remote.com
+    savedPage: ../../../screenshots/remote-v2/remote-com.html
+    extractor: tools/extract_chrome_saved.py + measure_computed.py + grounding/section-10-footer.yaml (column headings recovered by the vision pass)
+    contract: ../assets/source-chrome.v2.json
+  archetype: grid
+  surface:
+    bg: rgb(246, 247, 248)
+    color: rgb(0, 0, 0)
+  slots:
+  - name: linkcols
+    type: content
+    role: 8 grouped footer nav columns (6 visual)
+    source: extracted
+  - name: legal
+    type: content
+    role: copyright + disclaimer + policy links
+    source: extracted
+  - name: social
+    type: content
+    role: circular social icons (YouTube/LinkedIn/X/Instagram)
+    source: extracted
+  - name: apps
+    type: content
+    role: App Store / Google Play badges
+    source: extracted
+  presentation:
+    casing: title
+    separator: none
+    headings:
+      color: '#595b5f'
+      size: 15
+      weight: 600
+      note: --zora-footer-header-text
+  measured:
+    _provenance: getComputedStyle (rendered px / CSS strings) from saved DOM
+    bg: rgb(246, 247, 248)
+    color: rgb(0, 0, 0)
+    height: 869
+    contentMaxWidth: 1216
+    grid:
+      columnCount: 8
+      groupCount: 8
+      display: flex
+      templateColumns: ''
+      columnGap: 26
+      rowGap: 26
+      wrapperCount: 6
+      wrapperSizes:
+      - 1
+      - 2
+      - 1
+      - 2
+      - 1
+      - 1
+      trackCount: 6
+      rowBandCount: 1
+      wrappers:
+      - groups:
+        - Solutions
+        x: 136
+        y: 6828
+        w: 173
+        track: 0
+        row: 0
+      - groups:
+        - Product Services
+        - Product Business Size
+        x: 335
+        y: 6828
+        w: 173
+        track: 1
+        row: 0
+      - groups:
+        - Resources
+        x: 534
+        y: 6828
+        w: 173
+        track: 2
+        row: 0
+      - groups:
+        - Why Remote
+        - By Role
+        x: 733
+        y: 6828
+        w: 173
+        track: 3
+        row: 0
+      - groups:
+        - Company
+        x: 932
+        y: 6828
+        w: 173
+        track: 4
+        row: 0
+      - groups:
+        - Partnerships
+        x: 1131
+        y: 6828
+        w: 173
+        track: 5
+        row: 0
+    heading:
+      fontSize: 14
+      fontWeight: '500'
+      color: rgb(89, 91, 95)
+      lineHeight: 21px
+      fontFamily: Inter, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif
+      textTransform: none
+      letterSpacing: normal
+    link:
+      fontSize: 14
+      fontWeight: '400'
+      color: rgb(20, 20, 21)
+      lineHeight: 21px
+      hoverColorOnLight: '#383a3d'
+      rowStride: 33
+    linkHoverColor: '#383a3d'
+    social:
+      iconFill: '#383a3d'
+      iconHover: '#777a7e'
+      kind: icon
+      size: 0
+      fontSize: 16
+      fontWeight: '400'
+      color: rgb(0, 0, 238)
+      letterSpacing: normal
+      textTransform: none
+    padding:
+      top: 0
+      bottom: 0
+      left: 0
+      right: 0
+    bottom:
+      textAlign: start
+    legal:
+      fontSize: 14
+      fontWeight: '400'
+      lineHeight: 21px
+      color: rgb(119, 122, 126)
+  columns:
+  - heading: Solutions
+    links:
+    - label: Hire International Employees
+      href: https://remote.com/global-hr/hire-international-employees
+    - label: Hire International Contractors
+      href: https://remote.com/global-hr/hire-international-contractors
+    - label: Expand Globally
+      href: https://remote.com/global-hr/global-expansion
+    - label: Onboard Global Teams
+      href: https://remote.com/global-hr/onboard-global-teams
+    - label: Remote API
+      href: https://remote.com/global-hr/remote-api
+    - label: Run Payroll
+      href: https://remote.com/global-hr/run-payroll
+    - label: Offer Global Benefits
+      href: https://remote.com/global-hr/global-benefits
+    - label: Offer Stock Options
+      href: https://remote.com/global-hr/offer-stock-options/equity-essentials
+    - label: US Expansion Offering
+      href: https://remote.com/global-hr/us-expansion
+    - label: Global HR
+      href: https://remote.com/global-hr
+  - heading: Product Services
+    links:
+    - label: Pricing
+      href: https://remote.com/pricing
+    - label: Employer of Record (EOR)
+      href: https://remote.com/global-hr/employer-of-record
+    - label: Contractor Management
+      href: https://remote.com/global-hr/contractor-management
+    - label: Payroll
+      href: https://remote.com/global-hr/global-payroll
+    - label: Expansion Consulting Services
+      href: https://remote.com/global-hr/international-expansion-consulting
+    - label: Recruit
+      href: https://remote.com/global-hr/recruit
+  - heading: Product Business Size
+    links:
+    - label: Global HR for Startups
+      href: https://remote.com/global-hr/startups
+    - label: Global HR for Small Business
+      href: https://remote.com/global-hr/small-business
+    - label: Global HR for Enterprise
+      href: https://remote.com/global-hr/enterprise
+  - heading: Resources
+    links:
+    - label: Global Employment Blog
+      href: https://remote.com/blog
+    - label: Research
+      href: https://remote.com/resources/research
+    - label: Case Studies
+      href: https://remote.com/resources/case-studies
+    - label: Webinars
+      href: https://remote.com/resources/webinars
+    - label: Developer API Docs
+      href: https://remote.com/global-hr/remote-api/getting-started
+    - label: Compare Remote
+      href: https://remote.com/resources/compare-remote
+    - label: Tech Stack Integrations
+      href: https://remote.com/resources/integrations-for-customers
+    - label: Remote Handbook
+      href: https://www.notion.so/remotecom/a3439c6ccaac4d5f8c7515c357345c11?v=8bb7f9be662f45da87ef4ab14a42be37
+    - label: Country Explorer
+      href: https://remote.com/country-explorer
+    - label: US State Explorer
+      href: https://remote.com/us-state-explorer
+    - label: Employee Cost Calculator
+      href: https://remote.com/resources/employee-cost-calculator
+    - label: Misclassification Risk Tool
+      href: https://remote.com/resources/employee-misclassification-risk-tool
+  - heading: Why Remote
+    links:
+    - label: Global Infrastructure
+      href: https://remote.com/why-remote/global-infrastructure
+    - label: Security and Compliance
+      href: https://remote.com/why-remote/security-compliance
+    - label: 'Security and Compliance: Trust Portal'
+      href: https://trust.remote.com/
+    - label: Transparent Price Guarantee
+      href: https://remote.com/blog/fair-price-guarantee
+    - label: IP Protection
+      href: https://remote.com/why-remote/ip-protection
+    - label: Customer Experience
+      href: https://remote.com/why-remote/customer-experience
+  - heading: By Role
+    links:
+    - label: Startup Founders
+      href: https://remote.com/platform/use-case/startup-founders
+    - label: Remote for Employees
+      href: https://remote.com/platform/use-case/employees
+    - label: Freelancer Hub
+      href: https://remote.com/global-hr/freelancer-hub
+    - label: For jobseekers
+      href: https://remote.com/jobs
+  - heading: Company
+    links:
+    - label: About
+      href: https://remote.com/about
+    - label: Careers
+      href: https://remote.com/careers
+    - label: Newsroom
+      href: https://remote.com/news
+    - label: Events
+      href: https://remote.com/events
+    - label: Marketplace
+      href: https://remote.com/partners/marketplace
+    - label: Support
+      href: https://support.remote.com/hc/en-us
+    - label: Remote Status
+      href: https://remote.com/status
+    - label: Contact Us
+      href: https://remote.com/contact-us
+    - label: Accessibility Statement
+      href: https://remote.com/accessibility-statement
+  - heading: Partnerships
+    links:
+    - label: Partner Programs
+      href: https://remote.com/partners
+    - label: Affiliates
+      href: https://remote.com/partners/affiliates
+    - label: VC Partners
+      href: https://remote.com/partners/vc-partners
+    - label: HR Consultant Partners
+      href: https://remote.com/partners/hr-consultants
+    - label: Financial Advisor Partners
+      href: https://remote.com/partners/financial-advisors
+    - label: Law Firm Partners
+      href: https://remote.com/partners/law-firms
+    - label: Partner Perks Marketplace
+      href: https://remote.com/partners/perks-marketplace
+    - label: Remote Recruiter Network
+      href: https://remote.com/recruiters
+  legal:
+    text: Copyright © 2026. Remote Technology, Inc. All rights reserved.
+    disclaimer: Numbers on this page are based on internal data compiled from existing customer base and speed assumption is based on the fact that standard onboarding may take 30 days and Remote's average onboarding time is 2.3 days.
+    links:
+    - label: Security and Compliance
+      href: https://remote.com/why-remote/security-compliance
+    - label: 'Security and Compliance: Trust Portal'
+      href: https://trust.remote.com/
+    - label: Accessibility Statement
+      href: https://remote.com/accessibility-statement
+    - label: Privacy Policy
+      href: https://remote.com/privacy-policy
+    - label: Cookie Policy
+      href: https://remote.com/cookie-policy
+    - label: Terms of Use
+      href: https://remote.com/terms-of-use
+    - label: Disclaimer
+      href: https://remote.com/disclaimer
+    - label: Imprint
+      href: https://remote.com/policy/imprint
+  social:
+  - network: youtube
+    kind: icon
+    href: https://www.youtube.com/channel/UCPJsrP8zyttajAybEMQBNgA
+    icon:
+      kind: mask
+      asset: assets/social-youtube.svg
+      size: 20
+      ink: rgb(56, 58, 61)
+    box:
+      width: 40
+      height: 40
+      radius: 12
+      bg: rgba(0, 0, 0, 0)
+  - network: linkedin
+    kind: icon
+    href: https://www.linkedin.com/company/remote.com
+    icon:
+      kind: mask
+      asset: assets/social-linkedin.svg
+      size: 20
+      ink: rgb(56, 58, 61)
+    box:
+      width: 40
+      height: 40
+      radius: 12
+      bg: rgba(0, 0, 0, 0)
+  - network: twitter
+    kind: icon
+    href: https://twitter.com/remote
+    icon:
+      kind: mask
+      asset: assets/social-twitter.svg
+      size: 20
+      ink: rgb(56, 58, 61)
+    box:
+      width: 40
+      height: 40
+      radius: 12
+      bg: rgba(0, 0, 0, 0)
+  - network: instagram
+    kind: icon
+    href: https://www.instagram.com/remote/
+    icon:
+      kind: mask
+      asset: assets/social-instagram.svg
+      size: 20
+      ink: rgb(56, 58, 61)
+    box:
+      width: 40
+      height: 40
+      radius: 12
+      bg: rgba(0, 0, 0, 0)
+  newsletter:
+    present: false
+  rules:
+    columns: 8
+    layout: grid
+    hasColumnHeadings: true
+    align: center-bottom
+    darkInverse: true
+    socialStyle: icon
+  changelog:
+  - ts: '2026-07-07T16:01:52Z'
+    action: updated
+    from: null
+    to: footer 8 cols (max 12 links/col), 4 social, 8 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-07-07T16:05:05Z'
+    action: updated
+    from: null
+    to: footer 8 cols (max 12 links/col), 4 social, 8 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-07-08T15:09:54Z'
+    action: updated
+    from: null
+    to: footer 8 cols (max 12 links/col), 4 social, 8 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-07-08T15:16:15Z'
+    action: updated
+    from: null
+    to: footer 8 cols (max 12 links/col), 4 social, 8 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-07-08T15:16:58Z'
+    action: updated
+    from: null
+    to: footer 8 cols (max 12 links/col), 4 social, 8 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-07-08T15:25:27Z'
+    action: updated
+    from: null
+    to: footer 8 cols (max 12 links/col), 4 social, 8 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-07-08T16:05:52Z'
+    action: updated
+    from: null
+    to: footer 8 cols (max 12 links/col), 4 social, 8 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-07-08T16:10:19Z'
+    action: updated
+    from: null
+    to: footer 8 cols (max 12 links/col), 4 social, 8 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-07-09T22:52:37Z'
+    action: updated
+    from: null
+    to: footer 8 cols (max 12 links/col), 4 social, 8 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-07-09T22:56:04Z'
+    action: updated
+    from: null
+    to: footer 8 cols (max 12 links/col), 4 social, 8 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  bottomBar:
+    divider:
+      present: true
+      color: rgb(210, 211, 213)
+      opacity: 0.4
+    rows:
+    - kinds:
+      - copyright
+      - store-badges
+      display: flex
+      direction: row
+      justify: normal
+      align: flex-end
+      gap: 26
+    - kinds:
+      - divider
+    - kinds:
+      - social
+      display: flex
+      direction: row
+      justify: flex-end
+      align: center
+      gap: 48
+    gap: 32
+    gapAbove: 168
+    disclaimer: Numbers on this page are based on internal data compiled from existing customer base and speed assumption is based on the fact that standard onboarding may take 30 days and Remote’s average onboarding time is 2.3 days.
+    storeBadges:
+    - href: https://apps.apple.com/app/apple-store/id1613496903?pt=122685638&ct=Remote.com&mt=8
+      label: ''
+      img:
+        alt: App Store
+        asset: assets/badge-app-store.svg
+    - href: https://play.google.com/store/apps/details?id=com.remote.employ&referrer=utm_source%3DRemote.com%26utm_medium%3Dbanner
+      label: ''
+      img:
+        alt: Google Play
+        asset: assets/badge-google-play.svg
+    policyLinks:
+    - label: Privacy Policy
+      href: https://remote.com/privacy-policy
+    - label: Cookie Policy
+      href: https://remote.com/cookie-policy
+    - label: Terms of Use
+      href: https://remote.com/terms-of-use
+    - label: Disclaimer
+      href: https://remote.com/disclaimer
+    - label: Imprint
+      href: /policy/imprint

@@ -1,0 +1,882 @@
+{
+  "schemaVersion": "replica-composition.v1",
+  "brief": "GPT-5.6 Sol comparison run: a ten-section Remote lead-generation page for a tailored Global Payroll Consolidation Plan. The composition uses conventional captured mechanics, centered standalone headers, left-aligned split headers, capped containers, equalized card grids, stable table columns, exclusive disclosures, and one closing form.",
+  "order": [
+    "sol-hero",
+    "sol-proof",
+    "sol-control",
+    "sol-workstreams",
+    "sol-scale",
+    "sol-process",
+    "sol-decision",
+    "sol-ecosystem",
+    "sol-faq",
+    "sol-plan-form"
+  ],
+  "sections": [
+    {
+      "id": "sol-hero",
+      "useCase": "hero",
+      "archetype": "split",
+      "surfaceIntent": "any",
+      "novelty": "adapted",
+      "note": "Conventional captured split hero: complete left-aligned offer stack and one transparent illustration counterweight inside the sanctioned inset noise-art panel.",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-inset-noise-panel"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "GLOBAL PAYROLL, ONE PLAN"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "display heading",
+          "contract": "heading",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "heading": "Put every payroll on one operating plan"
+          }
+        },
+        {
+          "name": "body",
+          "role": "supporting paragraph",
+          "contract": "paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "text": "Map every country, provider, calendar, and compliance owner into a payroll model your finance and people teams can run together. Remote will show you what to consolidate first, what to keep, and how to move without disrupting payday."
+          }
+        },
+        {
+          "name": "actions",
+          "role": "cta-primary",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "control",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "label": "Get your payroll plan",
+            "styleHint": "filled"
+          }
+        },
+        {
+          "name": "actions-secondary",
+          "role": "cta-secondary",
+          "contract": "button",
+          "copy": {
+            "label": "See how it works",
+            "styleHint": "outlined"
+          }
+        },
+        {
+          "name": "media",
+          "role": "transparent global payroll illustration",
+          "contract": "image",
+          "width": "half",
+          "z": "front",
+          "mediaAspect": "square",
+          "asset": {
+            "src": "hero-globe-illustration.webp",
+            "alt": "Remote global payroll product illustration showing teams, payments, and country records"
+          }
+        },
+        {
+          "name": "background",
+          "role": "inset rounded panel with captured noise art",
+          "contract": "image",
+          "width": "full-bleed",
+          "z": "back",
+          "mediaAspect": "landscape",
+          "asset": {
+            "src": "bg-noise-top-2x.webp",
+            "alt": ""
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "panel-on-media",
+          "target": "background",
+          "sanctioned": true,
+          "note": "Captured inset noise-art panel with dark ink; transparent illustration uses contain."
+        }
+      ],
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "media"
+      }
+    },
+    {
+      "id": "sol-proof",
+      "useCase": "logos",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "note": "Exact customer-logo strip precondition: short centered caption and real monochrome vectors.",
+      "seededFrom": {
+        "lib": "project",
+        "id": "logo-marquee-strip"
+      },
+      "slots": [
+        {
+          "name": "caption",
+          "role": "centered proof caption",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "GLOBAL TEAMS RUN PAYROLL WITH REMOTE"
+          }
+        },
+        {
+          "name": "logos",
+          "role": "monochrome customer logo vectors",
+          "contract": "logo",
+          "width": "full-bleed",
+          "z": "front",
+          "mediaAspect": "wide",
+          "copy": [
+            "logo-box.svg",
+            "logo-miro.svg",
+            "logo-kfc.svg",
+            "logo-heineken.svg",
+            "logo-vercel.svg",
+            "logo-anthropic.svg",
+            "logo-datadog.svg",
+            "logo-gitlab.svg"
+          ]
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "sol-control",
+      "useCase": "features",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "adapted",
+      "note": "Conventional media-left proof split. Product UI supports one complete left-aligned infrastructure explanation stack.",
+      "seededFrom": {
+        "lib": "project",
+        "id": "infra-proof-split"
+      },
+      "slots": [
+        {
+          "name": "media",
+          "role": "product UI proof",
+          "contract": "image",
+          "width": "half",
+          "z": "front",
+          "mediaAspect": "square",
+          "asset": {
+            "src": "panel-infrastructure-ui-snippet.webp",
+            "alt": "Remote payroll interface with country-level status, approvals, and compliance records"
+          }
+        },
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "ONE PAYROLL CONTROL PLANE"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "section heading",
+          "contract": "heading",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "heading": "See the whole payroll month before it starts"
+          }
+        },
+        {
+          "name": "body",
+          "role": "long infrastructure explanation",
+          "contract": "paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "half",
+          "z": "front",
+          "copy": {
+            "text": "Remote brings employee records, payroll inputs, approvals, local filings, and payment status into one operating view. Your team gets one calendar and one accountable partner, while in-country specialists handle the rules that should never be left to a spreadsheet."
+          }
+        },
+        {
+          "name": "action",
+          "role": "closing text link",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "control",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "label": "Explore global payroll"
+          }
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "media"
+      }
+    },
+    {
+      "id": "sol-workstreams",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "adapted",
+      "grid": {
+        "columns": 3
+      },
+      "note": "Three equal-rank workstreams qualify for the measured three-card grid. Standalone header is centered by curation; cards use captured equalization and pinned actions.",
+      "seededFrom": {
+        "lib": "project",
+        "id": "features-card-grid-navy-media"
+      },
+      "slots": [
+        {
+          "name": "header",
+          "role": "standalone centered section title",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "WHAT THE PLAN COVERS",
+            "heading": "One plan for the three jobs payroll has to do"
+          }
+        },
+        {
+          "name": "intro-body",
+          "role": "body \u2014 section introduction",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "text": "The assessment follows the work, not your org chart. Each workstream ends with clear owners, dependencies, and a practical migration sequence."
+          }
+        },
+        {
+          "name": "cards",
+          "role": "equalized workstream cards with navy media wells",
+          "contract": "feature-item",
+          "width": "full",
+          "z": "front",
+          "copy": [
+            {
+              "eyebrow": "CONNECT",
+              "heading": "Bring every payroll input into one flow",
+              "text": "Connect the HR systems your teams already use, then map variable pay, approvals, cutoffs, and provider handoffs into one dependable data path.",
+              "link": "See integrations",
+              "asset": "card-integrations.webp",
+              "alt": "Remote integrations connecting payroll and HR systems"
+            },
+            {
+              "eyebrow": "SCALE",
+              "heading": "Add countries on existing infrastructure",
+              "text": "Choose the right employment and payroll model by country. The plan shows what can move now and what needs a controlled local transition.",
+              "link": "Plan country expansion",
+              "asset": "card-api-first.webp",
+              "alt": "Remote platform adding an employee through global infrastructure"
+            },
+            {
+              "eyebrow": "CONTROL",
+              "heading": "Keep exceptions visible before payday",
+              "text": "Standardize calendars, approvals, funding, and reconciliation so every blocked item has an owner before finance starts the close.",
+              "link": "See payroll controls",
+              "asset": "card-mcp-agents.webp",
+              "alt": "Remote automation connected to payroll workflows and approvals"
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "sol-scale",
+      "useCase": "stats",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapted",
+      "note": "Three factual metrics use the supported stat contract in a contained generic-flow band. No cards or invented figures.",
+      "slots": [
+        {
+          "name": "header",
+          "role": "standalone centered section title",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "BUILT FOR GLOBAL OPERATIONS",
+            "heading": "The infrastructure behind the plan"
+          }
+        },
+        {
+          "name": "intro",
+          "role": "section introduction",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "text": "The recommendations are grounded in the same operating system Remote uses to run employment and payroll for global teams."
+          }
+        },
+        {
+          "name": "metrics",
+          "role": "stat band",
+          "contract": "stat",
+          "width": "full",
+          "z": "front",
+          "copy": [
+            {
+              "value": "170+",
+              "label": "Countries covered by Remote\u2019s global employment platform"
+            },
+            {
+              "value": "1",
+              "label": "System of record for employment, payroll, and compliance"
+            },
+            {
+              "value": "4,000+",
+              "label": "Reviews from teams evaluating the work in practice"
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "sol-process",
+      "useCase": "features",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "adapted",
+      "note": "Four substantive stages justify a single-open disclosure beside distinct product UI. This is the page\u2019s only deep-accent inversion.",
+      "seededFrom": {
+        "lib": "project",
+        "id": "feature-accordion-deep-accent"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "FROM MAP TO MIGRATION"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "section heading",
+          "contract": "heading",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "heading": "Consolidate in the order the work requires"
+          }
+        },
+        {
+          "name": "intro",
+          "role": "section introduction",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "text": "Four stages turn a provider inventory into a payroll operating plan. Open a stage to see the decision it resolves."
+          }
+        },
+        {
+          "name": "list",
+          "role": "exclusive process accordion",
+          "contract": "feature-item",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "half",
+          "z": "front",
+          "copy": [
+            {
+              "label": "Inventory the current month",
+              "text": "Document every country, entity, provider, cutoff, file, approval, payment route, and compliance owner. The result is one accurate map of how payroll runs today.",
+              "media": "collage-global-payroll-ui.webp"
+            },
+            {
+              "label": "Choose the model by country",
+              "text": "Decide where owned entities, employer of record, or contractor management fit your headcount, timeline, and risk. The plan keeps each country decision explicit.",
+              "media": "collage-eor-ui.webp"
+            },
+            {
+              "label": "Sequence the migration",
+              "text": "Group countries by readiness, payroll calendar, data quality, and contract timing. Move the cleanest cohort first, then reuse the operating pattern.",
+              "media": "collage-contractor-of-record-ui.webp"
+            },
+            {
+              "label": "Run a controlled first close",
+              "text": "Set parallel checks, approval owners, funding deadlines, and escalation paths before the first consolidated payday. Nothing changes without a named control.",
+              "media": "collage-peo-ui.webp"
+            }
+          ]
+        },
+        {
+          "name": "media",
+          "role": "active-stage product UI",
+          "contract": "image",
+          "width": "half",
+          "z": "front",
+          "mediaAspect": "square",
+          "asset": {
+            "src": "collage-global-payroll-ui.webp",
+            "alt": "Remote product interface for the active payroll consolidation stage"
+          }
+        },
+        {
+          "name": "action",
+          "role": "closing text link",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "control",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "label": "Get your payroll plan"
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "faq": {
+          "exclusive": true,
+          "open": 0,
+          "activeSurface": "surface/accent",
+          "hoverWash": "accent/warm-wash"
+        }
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "media"
+      }
+    },
+    {
+      "id": "sol-decision",
+      "useCase": "comparison",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapted",
+      "note": "The content is genuinely tabular, so a contained semantic table supplies stable columns and aligned text starts. No split, offset, or full-viewport scaffold.",
+      "slots": [
+        {
+          "name": "header",
+          "role": "standalone centered section title",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "THE OPERATING MODEL",
+            "heading": "Know what consolidation changes"
+          }
+        },
+        {
+          "name": "intro",
+          "role": "section introduction",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "text": "A consolidated model does not remove local work. It gives that work one owner, one data path, and one place for your team to see it."
+          }
+        },
+        {
+          "name": "comparison",
+          "role": "stable three-column operating model comparison",
+          "contract": "table",
+          "width": "full",
+          "z": "front",
+          "copy": {
+            "caption": "Local provider stack compared with a consolidated Remote model",
+            "columns": [
+              "Decision",
+              "Local provider stack",
+              "Consolidated with Remote"
+            ],
+            "rows": [
+              [
+                "Payroll inputs",
+                "Reformatted and sent provider by provider",
+                "Standardized through one operating flow"
+              ],
+              [
+                "Country calendars",
+                "Tracked across separate local schedules",
+                "Coordinated in one global calendar"
+              ],
+              [
+                "Compliance ownership",
+                "Split between internal teams and local vendors",
+                "Assigned to Remote\u2019s in-country specialists"
+              ],
+              [
+                "Approval status",
+                "Collected across email, files, and portals",
+                "Visible in one system before payroll runs"
+              ],
+              [
+                "Expansion",
+                "New vendor search and onboarding by country",
+                "Add countries on existing infrastructure"
+              ]
+            ]
+          }
+        },
+        {
+          "name": "action",
+          "role": "closing text link",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "control",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "label": "Compare payroll models"
+          }
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "sol-ecosystem",
+      "useCase": "logos",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapted",
+      "note": "A short static colored partner row demonstrates ecosystem compatibility. It is not used as a customer wall.",
+      "seededFrom": {
+        "lib": "project",
+        "id": "partner-proof-row"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "WORK WITH YOUR HR STACK"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "section heading",
+          "contract": "heading",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "heading": "Consolidate payroll without rebuilding everything around it"
+          }
+        },
+        {
+          "name": "body",
+          "role": "body \u2014 supporting paragraph",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "text": "Keep the systems your teams already use for people data. Remote connects the operating layer underneath so payroll, compliance, and country expansion follow one model."
+          }
+        },
+        {
+          "name": "logos",
+          "role": "colored partner logos",
+          "contract": "logo",
+          "width": "half",
+          "z": "front",
+          "mediaAspect": "wide",
+          "copy": [
+            "logo-workday-certified.webp",
+            "logo-gusto.webp",
+            "logo-bamboohr.webp",
+            "logo-personio.webp"
+          ]
+        },
+        {
+          "name": "action",
+          "role": "cta-secondary",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "control",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "label": "See integrations",
+            "styleHint": "outlined"
+          }
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "sol-faq",
+      "useCase": "faq",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapted",
+      "note": "Five substantive implementation objections use a single-open FAQ. The active surface stays neutral because the signature accent is already used by the process accordion.",
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "PLANNING THE CHANGE"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "section heading",
+          "contract": "heading",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "heading": "Questions teams ask before consolidating payroll"
+          }
+        },
+        {
+          "name": "items",
+          "role": "exclusive questions and answers",
+          "contract": "faq-item",
+          "width": "full",
+          "z": "front",
+          "copy": [
+            {
+              "question": "Do we have to move every country at once?",
+              "answer": "No. The plan groups countries by readiness, risk, calendar, and contract timing. Most teams start with a clean cohort and reuse that operating pattern for the next group."
+            },
+            {
+              "question": "Can we keep our existing HR system?",
+              "answer": "Yes. The goal is to consolidate the payroll operating layer, not force every people workflow into a new tool. The assessment records which systems stay and where data needs a dependable handoff."
+            },
+            {
+              "question": "What happens to our local payroll providers?",
+              "answer": "The plan makes that decision country by country. It identifies which relationships should end, which obligations need a controlled transition, and where a phased handover reduces risk."
+            },
+            {
+              "question": "Who needs to join the assessment?",
+              "answer": "Usually payroll, finance, people operations, and the owner of your HR data. We keep the working group small and bring in local stakeholders only where a country decision needs them."
+            },
+            {
+              "question": "What do we receive at the end?",
+              "answer": "A country map, recommended operating model, migration cohorts, control owners, and the decisions required before the first consolidated payroll run."
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "faq": {
+          "exclusive": true,
+          "open": 0,
+          "activeSurface": "surface/primary",
+          "hoverWash": "accent/warm-wash"
+        }
+      },
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "sol-plan-form",
+      "useCase": "signup",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapted",
+      "note": "The page\u2019s single conversion destination: a compact qualification form on the captured closing noise-art band.",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-closing-noise"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "closing heading",
+          "contract": "heading",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "heading": "Get your Global Payroll Consolidation Plan"
+          }
+        },
+        {
+          "name": "body",
+          "role": "body \u2014 supporting paragraph",
+          "contract": "paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "text": "Tell us where payroll runs today and what is making the month harder than it should be. Remote will map the operating model, migration order, and controls for a dependable first close."
+          }
+        },
+        {
+          "name": "form",
+          "role": "payroll plan qualification form",
+          "contract": "form",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "submit": "Get your payroll plan",
+            "meta": "Practical assessment \u00b7 Country-by-country plan \u00b7 No big-bang migration required",
+            "consent": "By submitting, you agree to Remote\u2019s Terms and Privacy Policy. We\u2019ll use your details to arrange the assessment and follow up about global payroll.",
+            "success": "Your request is in. A Remote payroll specialist will contact you to scope the assessment.",
+            "fields": [
+              {
+                "kind": "text",
+                "label": "Full name",
+                "name": "full-name",
+                "placeholder": "Alex Morgan",
+                "required": true,
+                "span": "half",
+                "autocomplete": "name",
+                "error": "Enter your full name."
+              },
+              {
+                "kind": "email",
+                "label": "Work email",
+                "name": "work-email",
+                "placeholder": "alex@company.com",
+                "helper": "We\u2019ll use this to arrange the assessment.",
+                "required": true,
+                "span": "half",
+                "autocomplete": "email",
+                "error": "Enter a complete work email."
+              },
+              {
+                "kind": "text",
+                "label": "Company",
+                "name": "company",
+                "placeholder": "Company name",
+                "required": true,
+                "span": "half",
+                "autocomplete": "organization",
+                "error": "Enter your company name."
+              },
+              {
+                "kind": "select",
+                "label": "Countries on payroll",
+                "name": "country-count",
+                "placeholder": "Select a range",
+                "options": [
+                  "2\u20135",
+                  "6\u201310",
+                  "11\u201325",
+                  "26+"
+                ],
+                "span": "half"
+              },
+              {
+                "kind": "select",
+                "label": "Current payroll setup",
+                "name": "current-setup",
+                "placeholder": "Choose the closest match",
+                "options": [
+                  "Local providers by country",
+                  "One global provider",
+                  "Mixed providers and internal payroll",
+                  "Planning our first international payroll"
+                ],
+                "span": "full"
+              },
+              {
+                "kind": "textarea",
+                "label": "What needs to improve?",
+                "name": "improvement",
+                "placeholder": "Tell us where the payroll month breaks down.",
+                "helper": "Optional. Provider handoffs, late inputs, reporting, compliance, or expansion are useful places to start.",
+                "span": "full"
+              }
+            ]
+          }
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "centered"
+      }
+    }
+  ],
+  "rationale": "GPT-5.6 Sol chose a new payroll-consolidation lead-generation concept and composed it from captured Remote grammar. Simple content uses conventional splits or centered stacks; repeated peers use the measured equalized card grid; sequential stages use one exclusive accent accordion; comparison data uses a semantic contained table; and the form is reserved for the closing destination. This deliberately avoids the prior playbook concept, editorial interlock, comparison split, carousel, non-exclusive disclosures, and unsupported decorative anatomy."
+}

@@ -1,0 +1,215 @@
+schemaVersion: section-grounding.v1
+sectionRole: features
+layout:
+  structure: split ~50/50, accordion list left / product-UI mockup right on gridded canvas
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 100
+    bottom: 100
+  gapPx: 120
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#eeeeee'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: card
+  bgApprox: '#6e1728'
+  parent: canvas
+  radiusPx: 16
+  borderApprox: none
+  inkApprox: '#ffffff'
+- role: card
+  bgApprox: '#ffffff'
+  parent: canvas
+  radiusPx: 14
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: chrome-bar
+  bgApprox: '#fbe9ec'
+  parent: card
+  radiusPx: 8
+  borderApprox: none
+  inkApprox: '#6e1728'
+typography:
+- role: eyebrow
+  approxSizePx: 18
+  weightApprox: 600
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#9e2440'
+  familyClass: grotesque-sans
+- role: h1
+  approxSizePx: 62
+  weightApprox: 500
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: h3
+  approxSizePx: 26
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: body
+  approxSizePx: 22
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#f2dfe3'
+  familyClass: grotesque-sans
+- role: caption
+  approxSizePx: 13
+  weightApprox: 600
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#8a5560'
+  familyClass: grotesque-sans
+relationalSpacingPx:
+  eyebrowToHeading: 28
+  headingToBody: 40
+  bodyToCta: 44
+components:
+- kind: accordion-item
+  variant: divider-row-with-leading-icon-and-chevron
+  countObserved: 5
+  anatomy: leading gradient icon -> label -> chevron right; hairline divider below; expanded item becomes
+    filled dark card with body + arrow button
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 28 24
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: accordion-item
+  variant: expanded-filled-dark
+  countObserved: 1
+  anatomy: icon -> heading -> chevron up top row -> body -> circular arrow button
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 36 32
+    radiusPx: 16
+  surfaceApprox: '#6e1728'
+  inkApprox: '#ffffff'
+  caseTreatment: title
+- kind: button
+  variant: circular-arrow-icon
+  countObserved: 1
+  anatomy: white circle with maroon right-arrow glyph
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 32
+  surfaceApprox: '#ffffff'
+  inkApprox: '#6e1728'
+  caseTreatment: sentence
+- kind: button
+  variant: text-pill
+  countObserved: 1
+  anatomy: outlined pill labeled Search
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 10 24
+    radiusPx: 22
+  surfaceApprox: transparent
+  inkApprox: '#6e1728'
+  caseTreatment: title
+- kind: button
+  variant: filled-icon
+  countObserved: 1
+  anatomy: maroon pill with white search magnifier glyph
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 10 20
+    radiusPx: 22
+  surfaceApprox: '#6e1728'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: avatar
+  variant: circular-portrait-with-flag-badge
+  countObserved: 3
+  anatomy: circle-cropped portrait with small circular flag badge overlap
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 32
+  surfaceApprox: '#6e1728'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: badge
+  variant: overflow-count
+  countObserved: 1
+  anatomy: maroon circle with +22 label
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 32
+  surfaceApprox: '#6e1728'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: list-item
+  variant: table-row-avatar-country-amount
+  countObserved: 3
+  anatomy: circular avatar -> contractor name -> flag + country -> invoice amount
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 16 20
+    radiusPx: 0
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+copy:
+  eyebrow: HOW WE DO IT
+  heading: One system of record. Every employment need.
+  body: null
+  actions:
+  - label: Search
+    styleHint: text-pill outlined
+  items:
+  - heading: Employer of Record (EOR)
+    body: null
+    meta: null
+  - heading: Global Payroll
+    body: null
+    meta: null
+  - heading: Contractor of Record (COR)
+    body: null
+    meta: null
+  - heading: Contractor Management
+    body: Engage contractors compliantly, anywhere — and convert them to FTEs before misclassification
+      risk becomes a legal problem.
+    meta: null
+  - heading: Professional Employer Organization (PEO)
+    body: null
+    meta: null
+  logosLegible: []
+media:
+- kind: product-ui
+  treatment: 'layered white cards on gridded canvas: payroll-transferred stat card with avatar cluster
+    + invoices table'
+  aspect: landscape
+  approxFractionOfSection: 0.45
+- kind: icon-set
+  treatment: gradient circular/square glyphs ~40px beside each accordion row
+  aspect: square
+  approxFractionOfSection: 0.05
+motionHints:
+- accordion with one row expanded (animated expand/collapse)
+- chevron up/down toggles per row
+- arrow-in-circle button beside expanded row (hover/advance affordance)
+- avatar cluster with +22 overflow (implied roster continuation)
+confidence: high
+notes:
+- Purple cookie-consent bubble at bottom-left is a floating page widget, not part of section
+- Payroll amount reads '$204,00 USD' verbatim (European comma decimal)
+- Right-side grid lines are faint decorative background pattern
+_source:
+  crop: accordion-item-3-contractor-management.png
+  domClasses: ''
+  model: claude-opus-4-8

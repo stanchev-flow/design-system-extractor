@@ -1,0 +1,115 @@
+# contracts/scaffolds.yaml — UNIVERSAL structural scaffolds (Tier 3, defined ONCE, shared by every brand)
+#
+# A SCAFFOLD is the section shell + surface: the outermost structural container whose
+# slots are filled by BLOCKS (which in turn expose slots filled by PRIMITIVES). Slots
+# are recursive: scaffold -> block -> primitive.
+#
+# These map to `brand.yaml.layouts[].archetype` enums and to the real library's
+# `Section / *` and `Layout / *` components. This file defines the universal scaffold
+# contracts ONCE — it is NOT per-brand. A brand NEVER redefines a contract; each
+# `brand.yaml.layouts[]` entry is a brand-specific INSTANCE of one of these scaffolds
+# (slots filled with blocks/media, plus its grid/width/overlap usage rules).
+#
+# LIBRARY-AGNOSTIC. `slots` = the number of independent fill regions the scaffold
+# exposes. `archetype` = the matching `layouts[].archetype` enum. Substrate names
+# (Webflow component ids, Section/Layout names) live ONLY in render code or the
+# optional brand.yaml `targetMappings:` annotation block — never here.
+#
+# TIER ABOVE THIS FILE: the USE-CASE LAYOUT PATTERN (contracts/layout-patterns/*.yaml,
+# schema `layout-patterns.v1`, brand-schema.md §4.4). A pattern REFERENCES an archetype
+# below via `archetypeRef:` and adds the reusable content-shape signature + special
+# treatments for a use-case (hero/pricing/…). Scaffolds stay purely structural; patterns
+# never redefine a scaffold, they select one.
+
+version: "0.1"
+
+scaffolds:
+
+  # --- Section scaffolds (full-section shells + surface) ----------------------
+
+  section-stack:
+    intent: "Single-column band — content stacked vertically on one surface."
+    archetype: stack
+    slots: 1
+    use: "hero, bookend, conversion, any single-column section"
+
+  section-split:
+    intent: "Two-region section — content beside media."
+    archetype: split
+    slots: 2
+    use: "feature explainer, product shot beside copy"
+
+  section-split-content-form:
+    intent: "Two-region section — content beside a form."
+    archetype: split
+    slots: 2
+    use: "contact / demo-request / signup sections (copy + lead-gen form)"
+
+  section-split-fullbleed:
+    intent: "Edge-to-edge two-region split (one or both regions bleed to the viewport edge)."
+    archetype: split-fullbleed
+    slots: 2
+    use: "immersive split where media runs to the page edge"
+
+  section-stack-fullbleed:
+    intent: "Full-bleed media with stacked content over/under it."
+    archetype: stack-fullbleed
+    slots: 2
+    use: "full-bleed hero/bookend with overlaid or stacked copy"
+
+  # --- Layout scaffolds (inner structural containers) ------------------------
+
+  layout-grid:
+    intent: "N-up grid of repeated cells."
+    archetype: grid
+    slots: 1
+    use: "features grid, card grid, logo grid (cells repeat in one slot)"
+
+  layout-bento:
+    intent: "Asymmetric mosaic of differently-sized cells."
+    archetype: bento
+    slots: 4
+    use: "bento feature showcase, mixed-size highlight mosaic"
+
+  layout-row:
+    intent: "Inline horizontal cluster."
+    archetype: row
+    slots: 1
+    use: "inline button/stat/logo rows, horizontal item strips"
+
+  layout-stack:
+    intent: "Inner vertical stack (nested, not a full section)."
+    archetype: stack
+    slots: 1
+    use: "vertical grouping of blocks inside another scaffold's slot"
+
+  layout-split:
+    intent: "Inner two-cell split (nested, not a full section)."
+    archetype: split
+    slots: 2
+    use: "two-up grouping nested inside another scaffold's slot"
+
+  # --- Specialized block-shell scaffolds -------------------------------------
+
+  header-scaffold:
+    intent: "Heading-cluster shell — hosts a header block (optionally beside actions/media)."
+    archetype: stack
+    slots: 2
+    use: "section intro shell (1 slot for header; optional 2nd for actions/media)"
+
+  logos-wrapper:
+    intent: "Logo-bar shell — hosts a logo-bar block."
+    archetype: row
+    slots: 1
+    use: "customer/partner logo strip shell"
+
+# Composites WITHOUT a native scaffold — `band`, `collage`, `overlay`:
+# there is no dedicated scaffold contract. Reuse the nearest `section-stack` for the
+# surface, then build the staggered/overlapping/offset composition from PRIMITIVES +
+# offset/composition utilities inside the slot. These archetypes are still valid
+# `brand.yaml.layouts[].archetype` values; they just resolve onto section-stack at the
+# scaffold tier (the brand records the offset mechanics in `compositionRules[]`).
+composites:
+  band:    { reusesScaffold: section-stack, note: "offset/staggered composition inside the stack slot" }
+  collage: { reusesScaffold: section-stack, note: "overlapping media/text composed from primitives + offsets" }
+  overlay: { reusesScaffold: section-stack, note: "layered z-ordered composition inside the stack slot" }

@@ -1,0 +1,1666 @@
+schemaVersion: kit-motion-audit.v1
+note: Authored contract first (tokens.motion, evidence-derived — validator C13), then the mined per-selector
+  table it cites. Selectors are the SOURCE site's (provenance, not classnames to reuse); durations/easings
+  are the values to reproduce.
+tokensMotion:
+  durations:
+    micro:
+      value: 100ms
+      role: hover washes on dense option lists (select/multi-select .option background .1s)
+      census: 4
+      source: motion-audit
+    state:
+      value: 150ms
+      role: THE state tier — color/background-color/border state shifts (nav links, accordion triggers,
+        button ink, language items)
+      census: 46
+      source: motion-audit
+    move:
+      value: 200ms
+      role: small transforms + fades (chevron rotate .2s, accordion panel height .2s, opacity fades, skip-link
+        slide)
+      census: 23
+      source: motion-audit
+    collapse:
+      value: 250ms
+      role: structural collapse + hover-out exits (footer group grid-rows .25s, menu toggle bars, --zora-btn-duration-hover-out
+        .25s, modal popupIn)
+      census: 19
+      source: motion-audit
+    reveal:
+      value: 300ms
+      role: panel/menu reveals + hover-in enters (nav desktopPanel opacity/transform .3s, nav entry-card
+        grid-rows .3s, --zora-btn-duration-hover-in .3s, modal backdropIn)
+      census: 38
+      source: motion-audit
+    elevation:
+      value: 500ms
+      role: card hover plate (testimonial card ::before background/box-shadow/bottom .5s — the tint+shadow
+        wash)
+      census: 4
+      source: motion-audit
+    expressive:
+      value: 800ms
+      role: large hover card reveals (image-grid link row height/margin/opacity .8s + image zoom .8s —
+        always paired with the expo-out curve)
+      census: 8
+      source: motion-audit
+  easings:
+  - value: cubic-bezier(0, 0, .2, 1)
+    use: ENTER (decelerate) — --zora-btn-easing-enter + --zora-btn-easing-press
+    census: 25
+    source: motion-audit
+  - value: cubic-bezier(.4, 0, 1, 1)
+    use: EXIT (accelerate) — --zora-btn-easing-exit
+    census: 14
+    source: motion-audit
+  - value: cubic-bezier(.16, 1, .3, 1)
+    use: EXPRESSIVE expo-out — reserved for the 800ms card reveals
+    census: 8
+    source: motion-audit
+  - value: ease
+    use: browser default on the short state tier (most 150/200ms transitions leave easing unspecified)
+      + 3 explicit uses
+    census: 3
+    source: motion-audit
+  - value: linear
+    use: marquee track only (sp-scroll keyframes, infinite)
+    census: 1
+    source: motion-audit
+  signatureMoves:
+  - name: cta-arrow-swap
+    move: CTA arrow icon exits right by --zora-btn-arrow-travel (16px) fading out, then re-enters from
+      the left (opacity swap at the 45%/45.1% keyframes); hover-in 300ms enter curve, hover-out 250ms
+      exit curve
+    timing: 300ms cubic-bezier(0, 0, .2, 1) in / 250ms cubic-bezier(.4, 0, 1, 1) out
+    sourceSelectors:
+    - '@keyframes button-module…icon-slide-right-enter/-leave'
+    - .button-module…button[data-icon-anim=enter] .iconRight
+    - .link-module…link[data-icon-anim=…] (same system on text links)
+    - '--zora-btn-arrow-travel: 16px'
+  - name: marquee-scroll
+    move: logo strip track scrolls continuously left by half its doubled width (translateX(var(--sp-offset,-50%))),
+      linear, infinite
+    timing: duration is JS-set via --sp-duration (CSS fallback 0s) — see motion-audit jsTimingNotes; static
+      capture renders the strip paused
+    measured:
+      durationS: 36
+      source: saved-dom-inline-style
+      note: one full -50% loop of the doubled track = 36s as computed by the site's own JS at 1440
+    sourceSelectors:
+    - '@keyframes social-proof-module…sp-scroll'
+    - .social-proof-module…stripTrack
+    - stripTrack[style*='--sp-duration']
+  - name: mega-menu-reveal
+    move: nav dropdown panel fades+slides open (opacity/transform/visibility) while entry-card images
+      and descriptions unfold via grid-template-rows
+    timing: 300ms across panel, card image and description (no easing declared — browser ease)
+    sourceSelectors:
+    - .site-navigation-module…desktopPanel
+    - .site-navigation-module…navEntryCardImageInner
+    - .site-navigation-module…navEntryCardDescription
+  - name: hover-card-reveal
+    move: 'work-culture image cards: hidden link row slides open (height/margin-top/opacity) while the
+      image well shrinks and the image zooms — the brand''s most expressive move'
+    timing: 800ms cubic-bezier(.16, 1, .3, 1) on every property
+    sourceSelectors:
+    - .image-grid-card-module…card:hover …
+    - .image-grid-card-module…imageWrap
+    - .image-grid-card-module…link
+  - name: card-elevation-wash
+    move: 'testimonial cards raise a ::before plate on hover: surface tint to #f6f7f8 + 0 12px 24px rgba(0,0,0,.08)
+      shadow + plate extends 8px past the bottom edge'
+    timing: 500ms (no easing declared — browser ease)
+    sourceSelectors:
+    - .testimonial-card-module…card:before
+    - .testimonial-card-module…cardHasLink:hover…
+  - name: modal-pop
+    move: 'form modal: backdrop fades in; popup scales .97→1 while translating 8px up (sheet evidence
+      only — no modal renders on the captured page)'
+    timing: backdrop 300ms / popup 250ms
+    sourceSelectors:
+    - '@keyframes form-modal-module…backdropIn'
+    - '@keyframes form-modal-module…popupIn'
+  - name: accordion-state-shift
+    move: 'feature accordion: trigger background/ink/corner-rounding shift on the state tier, chevron
+      rotates on the move tier, panel height animates on the move tier'
+    timing: trigger 150ms; chevron + panel height 200ms
+    sourceSelectors:
+    - .accordion-module…trigger
+    - .accordion-module…triggerChevron
+    - .accordion-module…panel
+  reducedMotion:
+    value: declared
+    role: 12 prefers-reduced-motion rules measured in the fresh sheet
+    source: motion-audit
+  provenance:
+  - evidence/motion-audit.json
+  confidence: high
+  source: saved-css
+  scope: design-language
+  changelog:
+  - ts: '2026-07-07T19:10:00Z'
+    action: created
+    from: null
+    to: evidence-derived motion tokens (7-tier duration ladder, 5 easings, 7 signature moves)
+    by: creation
+    signalId: null
+    note: P0.1 motion axis — authored from the new mine-motion stage output; supersedes the coarse voice.motionSpec
+      3-tier read for kit consumers (motionSpec stays as the composer dial)
+evidence:
+  source: evidence/motion-audit.json (mine_motion.py)
+  durationCensus:
+    150ms: 46
+    300ms: 38
+    200ms: 23
+    250ms: 19
+    800ms: 8
+    0ms: 5
+    100ms: 4
+    500ms: 4
+    400ms: 4
+    1000ms: 2
+    750ms: 1
+  easingCensus:
+    cubic-bezier(0, 0, .2, 1): 25
+    cubic-bezier(.4, 0, 1, 1): 14
+    cubic-bezier(.16,1,.3,1): 8
+    ease: 3
+    ease-in: 2
+    linear: 1
+    ? linear(0,0.006,0.023 2.2%,0.096 4.8%,0.532 15.4%,0.72 21%,0.793,0.853 26.7%,0.902,0.941,0.968 36.2%,0.987
+      39.7%,1 43.7%,1.007 48.3%,1.009 55.3%,1.002 78.2%,1 )
+    : 1
+    ? linear(0,0.006,0.022 2.3%,0.091 5.1%,0.18 7.6%,0.508 16.3%,0.607,0.691,0.762,0.822 28.4%,0.872,0.912
+      35.1%,0.944 38.9%,0.968 43%,0.985 47.6%,0.996 53.1%,1.001 58.4%,1.003 65.1%,1 )
+    : 1
+  motionVars:
+    --zora-btn-arrow-travel: 16px
+    --zora-btn-duration-hover-in: .3s
+    --zora-btn-duration-hover-out: .25s
+    --zora-btn-duration-press-in: .15s
+    --zora-btn-duration-press-out: .15s
+    --zora-btn-easing-enter: cubic-bezier(0, 0, .2, 1)
+    --zora-btn-easing-exit: cubic-bezier(.4, 0, 1, 1)
+    --zora-btn-easing-press: cubic-bezier(0, 0, .2, 1)
+  keyframes:
+  - name: form-modal-module-scss-module__k-iMvq__backdropIn
+    file: 001-0x8emzyc26mln.css
+    frames: 0%{opacity:0}to{opacity:1}
+  - name: form-modal-module-scss-module__k-iMvq__popupIn
+    file: 001-0x8emzyc26mln.css
+    frames: 0%{opacity:0;transform:scale(.97)translateY(8px)}to{opacity:1;transform:scale(1)translateY(0)}
+  - name: select-module-scss-module__bMF8aa__subSlideIn
+    file: 001-0x8emzyc26mln.css
+    frames: 0%{opacity:0;transform:translate(20%)}to{opacity:1;transform:translate(0)}
+  - name: social-proof-module-scss-module__JFn2kG__sp-scroll
+    file: 002-0bn3zeg0i3rmh.css
+    frames: to{transform:translateX(var(--sp-offset,-50%))}
+  - name: button-module-scss-module__jujiWa__icon-slide-right-enter
+    file: 004-0s-9krv8370e1.css
+    frames: 0%{opacity:1;transform:translate(0)}45%{transform:translateX(var(--zora-btn-arrow-travel));opacity:0}45.1%{transform:translateX(calc(-1
+      * var(--zora-btn-arrow-travel)));opacity:0}to{opacity:1;transform:translate(0)}
+  - name: button-module-scss-module__jujiWa__icon-slide-right-leave
+    file: 004-0s-9krv8370e1.css
+    frames: 0%{opacity:1;transform:translate(0)}45%{transform:translateX(calc(-1 * var(--zora-btn-arrow-travel)));opacity:0}45.1%{transform:translateX(var(--zora-btn-arrow-travel));opacity:0}to{opacity:1;transform:translate(0)}
+  - name: button-module-scss-module__jujiWa__icon-slide-translate-enter
+    file: 004-0s-9krv8370e1.css
+    frames: 0%{opacity:1;translate:0}45%{translate:var(--zora-btn-arrow-travel) 0;opacity:0}45.1%{translate:calc(-1*var(--zora-btn-arrow-travel))
+      0;opacity:0}to{opacity:1;translate:0}
+  - name: button-module-scss-module__jujiWa__icon-slide-translate-leave
+    file: 004-0s-9krv8370e1.css
+    frames: 0%{opacity:1;translate:0}45%{translate:calc(-1*var(--zora-btn-arrow-travel)) 0;opacity:0}45.1%{translate:var(--zora-btn-arrow-travel)
+      0;opacity:0}to{opacity:1;translate:0}
+  - name: link-module-scss-module__ZXIWnW__icon-slide-right-enter
+    file: 004-0s-9krv8370e1.css
+    frames: 0%{opacity:1;transform:translate(0)}45%{transform:translateX(var(--zora-btn-arrow-travel));opacity:0}45.1%{transform:translateX(calc(-1
+      * var(--zora-btn-arrow-travel)));opacity:0}to{opacity:1;transform:translate(0)}
+  - name: link-module-scss-module__ZXIWnW__icon-slide-right-leave
+    file: 004-0s-9krv8370e1.css
+    frames: 0%{opacity:1;transform:translate(0)}45%{transform:translateX(calc(-1 * var(--zora-btn-arrow-travel)));opacity:0}45.1%{transform:translateX(var(--zora-btn-arrow-travel));opacity:0}to{opacity:1;transform:translate(0)}
+  - name: link-module-scss-module__ZXIWnW__icon-slide-translate-enter
+    file: 004-0s-9krv8370e1.css
+    frames: 0%{opacity:1;translate:0}45%{translate:var(--zora-btn-arrow-travel) 0;opacity:0}45.1%{translate:calc(-1*var(--zora-btn-arrow-travel))
+      0;opacity:0}to{opacity:1;translate:0}
+  - name: link-module-scss-module__ZXIWnW__icon-slide-translate-leave
+    file: 004-0s-9krv8370e1.css
+    frames: 0%{opacity:1;translate:0}45%{translate:calc(-1*var(--zora-btn-arrow-travel)) 0;opacity:0}45.1%{translate:var(--zora-btn-arrow-travel)
+      0;opacity:0}to{opacity:1;translate:0}
+  - name: hero-form-module-scss-module__joewbW__icon-slide-right-enter
+    file: 004-0s-9krv8370e1.css
+    frames: 0%{opacity:1;transform:translate(0)}45%{transform:translateX(var(--zora-btn-arrow-travel));opacity:0}45.1%{transform:translateX(calc(-1
+      * var(--zora-btn-arrow-travel)));opacity:0}to{opacity:1;transform:translate(0)}
+  - name: hero-form-module-scss-module__joewbW__icon-slide-right-leave
+    file: 004-0s-9krv8370e1.css
+    frames: 0%{opacity:1;transform:translate(0)}45%{transform:translateX(calc(-1 * var(--zora-btn-arrow-travel)));opacity:0}45.1%{transform:translateX(var(--zora-btn-arrow-travel));opacity:0}to{opacity:1;transform:translate(0)}
+  - name: hero-form-module-scss-module__joewbW__icon-slide-translate-enter
+    file: 004-0s-9krv8370e1.css
+    frames: 0%{opacity:1;translate:0}45%{translate:var(--zora-btn-arrow-travel) 0;opacity:0}45.1%{translate:calc(-1*var(--zora-btn-arrow-travel))
+      0;opacity:0}to{opacity:1;translate:0}
+  - name: hero-form-module-scss-module__joewbW__icon-slide-translate-leave
+    file: 004-0s-9krv8370e1.css
+    frames: 0%{opacity:1;translate:0}45%{translate:calc(-1*var(--zora-btn-arrow-travel)) 0;opacity:0}45.1%{translate:var(--zora-btn-arrow-travel)
+      0;opacity:0}to{opacity:1;translate:0}
+  - name: fade-in
+    file: <inline-style-00>
+    frames: 0%{opacity:0}to{opacity:1}
+  - name: slide-right
+    file: <inline-style-00>
+    frames: 0%{transform:translate3d(-100%,0,0)}to{transform:translateZ(0)}
+  - name: slide-left
+    file: <inline-style-00>
+    frames: 0%{transform:translate3d(100%,0,0)}to{transform:translateZ(0)}
+  - name: slide-up
+    file: <inline-style-00>
+    frames: 0%{transform:translate3d(0,100%,0)}to{transform:translateZ(0)}
+  - name: box-slide-up
+    file: <inline-style-00>
+    frames: 0%{transform:translate3d(-50%,100%,0)}to{transform:translate3d(-50%,-50%,0)}
+  - name: slide-down
+    file: <inline-style-00>
+    frames: 0%{transform:translate3d(0,-100%,0)}to{transform:translateZ(0)}
+  transitions:
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: .form-modal-module-scss-module__k-iMvq__closeButton
+    transitions:
+    - property: transform
+      duration: .2s
+      easing: null
+      delay: null
+      raw: transform .2s
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: :is(.hubspot-form-module-scss-module__3vnVUq__formContainer input,.hubspot-form-module-scss-module__3vnVUq__formContainer
+      textarea,.hubspot-form-module-scss-module__3vnVUq__formContainer select)
+    transitions:
+    - property: border-color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: border-color .15s!important
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: .hubspot-form-module-scss-module__3vnVUq__formContainer .hsfc-DropdownInput:after
+    transitions:
+    - property: transform
+      duration: .2s
+      easing: null
+      delay: null
+      raw: transform .2s!important
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: .hubspot-form-module-scss-module__3vnVUq__formContainer .hsfc-DropdownInput>input
+    transitions:
+    - property: border-color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: border-color .15s!important
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: .hubspot-form-module-scss-module__3vnVUq__formContainer .hsfc-DropdownOptions__List__ListItem
+    transitions:
+    - property: background
+      duration: .1s
+      easing: null
+      delay: null
+      raw: background .1s!important
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: .hubspot-form-module-scss-module__3vnVUq__formContainer .hsfc-Button
+    transitions:
+    - property: background
+      duration: .2s
+      easing: null
+      delay: null
+      raw: background .2s!important
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: .hubspot-form-module-scss-module__3vnVUq__formContainer .hsfc-CheckboxInput
+    transitions:
+    - property: background-color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: background-color .15s
+    - property: border-color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: border-color .15s!important
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: .hsfc-CheckboxInput
+    transitions:
+    - property: background-color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: background-color .15s
+    - property: border-color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: border-color .15s!important
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: .field-module-scss-module__Ghl7wW__inputWrap
+    transitions:
+    - property: border-color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: border-color .15s
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: .field-module-scss-module__Ghl7wW__textarea
+    transitions:
+    - property: border-color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: border-color .15s
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: .select-module-scss-module__bMF8aa__trigger
+    transitions:
+    - property: border-color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: border-color .15s
+    - property: background
+      duration: .15s
+      easing: null
+      delay: null
+      raw: background .15s
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: .select-module-scss-module__bMF8aa__chevron
+    transitions:
+    - property: transform
+      duration: .2s
+      easing: null
+      delay: null
+      raw: transform .2s
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: .select-module-scss-module__bMF8aa__option
+    transitions:
+    - property: background
+      duration: .1s
+      easing: null
+      delay: null
+      raw: background .1s
+  - file: 001-0x8emzyc26mln.css
+    media: '@media (hover:none)'
+    selector: .select-module-scss-module__bMF8aa__listbox[data-sub-open=true]
+    transitions:
+    - property: opacity
+      duration: .2s
+      easing: null
+      delay: null
+      raw: opacity .2s
+    - property: transform
+      duration: .2s
+      easing: null
+      delay: null
+      raw: transform .2s
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: .checkbox-module-scss-module__Qzc5vq__control
+    transitions:
+    - property: background-color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: background-color .15s
+    - property: border-color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: border-color .15s
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: .multi-select-module-scss-module__BoXZLG__trigger
+    transitions:
+    - property: border-color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: border-color .15s
+    - property: background
+      duration: .15s
+      easing: null
+      delay: null
+      raw: background .15s
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: .multi-select-module-scss-module__BoXZLG__chevron
+    transitions:
+    - property: transform
+      duration: .2s
+      easing: null
+      delay: null
+      raw: transform .2s
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: .multi-select-module-scss-module__BoXZLG__option
+    transitions:
+    - property: background
+      duration: .1s
+      easing: null
+      delay: null
+      raw: background .1s
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: .rich-content-module-scss-module__XfslxW__sideNavLink
+    transitions:
+    - property: color
+      duration: .2s
+      easing: null
+      delay: null
+      raw: color .2s
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: .rich-content-module-scss-module__XfslxW__richTextBody summary:before
+    transitions:
+    - property: transform
+      duration: .2s
+      easing: null
+      delay: null
+      raw: transform .2s
+  - file: 002-0bn3zeg0i3rmh.css
+    media: ''
+    selector: .social-proof-module-scss-module__JFn2kG__badgeSlot
+    transitions:
+    - property: opacity
+      duration: .2s
+      easing: null
+      delay: null
+      raw: opacity .2s
+  - file: 002-0bn3zeg0i3rmh.css
+    media: '@media only screen and (min-width:1440px)'
+    selector: :is(.social-proof-module-scss-module__JFn2kG__listGrid[data-clickable]:has(.social-proof-module-scss-module__JFn2kG__badgeSlot:hover)
+      .social-proof-module-scss-module__JFn2kG__badgeSlot:not(:hover),.s
+    transitions:
+    - property: opacity
+      duration: .2s
+      easing: null
+      delay: null
+      raw: opacity .2s
+  - file: 002-0bn3zeg0i3rmh.css
+    media: '@media only screen and (min-width:1440px)'
+    selector: .social-proof-module-scss-module__JFn2kG__stripTrack[data-clickable]:hover .social-proof-module-scss-module__JFn2kG__badgeSlot
+    transitions:
+    - property: opacity
+      duration: .2s
+      easing: null
+      delay: null
+      raw: opacity .2s
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .site-footer-module-scss-module__qYa75a__groupIconGlyph
+    transitions:
+    - property: opacity
+      duration: .2s
+      easing: null
+      delay: null
+      raw: opacity .2s
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .site-footer-module-scss-module__qYa75a__groupBody
+    transitions:
+    - property: grid-template-rows
+      duration: .25s
+      easing: null
+      delay: null
+      raw: grid-template-rows .25s
+    - property: visibility
+      duration: 0s
+      easing: null
+      delay: .25s
+      raw: visibility 0s .25s
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: '@layer metric-card'
+    transitions:
+    - property: background-color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: background-color .15s
+    - property: color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: color .15s
+    - property: border-color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: border-color .15s
+    - property: box-shadow
+      duration: .15s
+      easing: null
+      delay: null
+      raw: box-shadow .15s
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .status-metric-item-module-scss-module__5mB4Pa__closeButton
+    transitions:
+    - property: color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: color .15s
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .social-share-module-scss-module__N9vRQW__link
+    transitions:
+    - property: opacity
+      duration: .15s
+      easing: null
+      delay: null
+      raw: opacity .15s
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .site-navigation-module-scss-module__PNKrMq__nav:after
+    transitions:
+    - property: opacity
+      duration: .3s
+      easing: null
+      delay: .1s
+      raw: opacity .3s .1s
+    - property: visibility
+      duration: .3s
+      easing: null
+      delay: .1s
+      raw: visibility .3s .1s
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .site-navigation-module-scss-module__PNKrMq__navBar
+    transitions:
+    - property: background-color
+      duration: .3s
+      easing: null
+      delay: null
+      raw: background-color .3s
+    - property: border-color
+      duration: .3s
+      easing: null
+      delay: null
+      raw: border-color .3s
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .site-navigation-module-scss-module__PNKrMq__navTrigger
+    transitions:
+    - property: background-color
+      duration: .2s
+      easing: null
+      delay: null
+      raw: background-color .2s
+    - property: color
+      duration: .2s
+      easing: null
+      delay: null
+      raw: color .2s
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .site-navigation-module-scss-module__PNKrMq__chevron
+    transitions:
+    - property: transform
+      duration: .2s
+      easing: null
+      delay: null
+      raw: transform .2s
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .site-navigation-module-scss-module__PNKrMq__secondaryLink
+    transitions:
+    - property: background-color
+      duration: .2s
+      easing: null
+      delay: null
+      raw: background-color .2s
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .site-navigation-module-scss-module__PNKrMq__languageSwitcherTrigger
+    transitions:
+    - property: background-color
+      duration: .2s
+      easing: null
+      delay: null
+      raw: background-color .2s
+    - property: color
+      duration: .2s
+      easing: null
+      delay: null
+      raw: color .2s
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .site-navigation-module-scss-module__PNKrMq__languageSwitcherItem
+    transitions:
+    - property: background-color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: background-color .15s
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .site-navigation-module-scss-module__PNKrMq__menuToggleBar
+    transitions:
+    - property: transform
+      duration: .25s
+      easing: null
+      delay: null
+      raw: transform .25s
+  - file: 003-0h9hik8jgta-r.css
+    media: '@media (min-width:1200px)'
+    selector: .site-navigation-module-scss-module__PNKrMq__desktopPanel
+    transitions:
+    - property: opacity
+      duration: .3s
+      easing: null
+      delay: null
+      raw: opacity .3s
+    - property: transform
+      duration: .3s
+      easing: null
+      delay: null
+      raw: transform .3s
+    - property: visibility
+      duration: .3s
+      easing: null
+      delay: null
+      raw: visibility .3s
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .site-navigation-module-scss-module__PNKrMq__navLink
+    transitions:
+    - property: background-color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: background-color .15s
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .site-navigation-module-scss-module__PNKrMq__navLinkDescription
+    transitions:
+    - property: grid-template-rows
+      duration: .3s
+      easing: null
+      delay: null
+      raw: grid-template-rows .3s
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .site-navigation-module-scss-module__PNKrMq__navLinkDescriptionInner
+    transitions:
+    - property: opacity
+      duration: .3s
+      easing: null
+      delay: .1s
+      raw: opacity .3s .1s
+    - property: transform
+      duration: .3s
+      easing: null
+      delay: null
+      raw: transform .3s
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .site-navigation-module-scss-module__PNKrMq__navEntryCardImageInner
+    transitions:
+    - property: height
+      duration: .3s
+      easing: null
+      delay: null
+      raw: height .3s
+    - property: opacity
+      duration: .3s
+      easing: null
+      delay: .1s
+      raw: opacity .3s .1s
+    - property: transform
+      duration: .3s
+      easing: null
+      delay: null
+      raw: transform .3s
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .site-navigation-module-scss-module__PNKrMq__navEntryCardDescription
+    transitions:
+    - property: grid-template-rows
+      duration: .3s
+      easing: null
+      delay: null
+      raw: grid-template-rows .3s
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .site-navigation-module-scss-module__PNKrMq__navEntryCardDescriptionInner
+    transitions:
+    - property: opacity
+      duration: .3s
+      easing: null
+      delay: .1s
+      raw: opacity .3s .1s
+    - property: transform
+      duration: .3s
+      easing: null
+      delay: null
+      raw: transform .3s
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .site-navigation-module-scss-module__PNKrMq__skipLink
+    transitions:
+    - property: transform
+      duration: .2s
+      easing: null
+      delay: null
+      raw: transform .2s
+  - file: 003-0h9hik8jgta-r.css
+    media: '@media (prefers-reduced-motion:reduce)'
+    selector: .site-navigation-module-scss-module__PNKrMq__nav:after,.site-navigation-module-scss-module__PNKrMq__navBar,.site-navigation-module-scss-module__PNKrMq__navTrigger,.site-navigation-module-scss-module__
+    transitions:
+    - property: none
+      duration: null
+      easing: null
+      delay: null
+      raw: none!important
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .accordion-module-scss-module__Fv6A4q__panelDescription a
+    transitions:
+    - property: color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: color .15s
+  - file: 003-0h9hik8jgta-r.css
+    media: '@media (prefers-reduced-motion:reduce)'
+    selector: .accordion-module-scss-module__Fv6A4q__panelDescription a
+    transitions:
+    - property: none
+      duration: null
+      easing: null
+      delay: null
+      raw: none
+  - file: 003-0h9hik8jgta-r.css
+    media: ''
+    selector: .testimonial-card-module-scss-module__twDa0a__card:before
+    transitions:
+    - property: background-color
+      duration: .5s
+      easing: null
+      delay: null
+      raw: background-color .5s
+    - property: box-shadow
+      duration: .5s
+      easing: null
+      delay: null
+      raw: box-shadow .5s
+    - property: bottom
+      duration: .5s
+      easing: null
+      delay: null
+      raw: bottom .5s
+  - file: 003-0h9hik8jgta-r.css
+    media: '@media only screen and (min-width:1024px)'
+    selector: .testimonial-card-module-scss-module__twDa0a__cardHasLink .testimonial-card-module-scss-module__twDa0a__link
+    transitions:
+    - property: opacity
+      duration: .5s
+      easing: null
+      delay: null
+      raw: opacity .5s
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .testimonials-module-scss-module___3RyIq__scrollThumb
+    transitions:
+    - property: transform
+      duration: .3s
+      easing: null
+      delay: null
+      raw: transform .3s
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .button-module-scss-module__jujiWa__button
+    transitions:
+    - property: --btn-text-color
+      duration: var(--zora-btn-duration-hover-out)
+      easing: var(--zora-btn-easing-exit)
+      delay: null
+      raw: --btn-text-color var(--zora-btn-duration-hover-out) var(--zora-btn-easing-exit)
+    - property: color
+      duration: var(--zora-btn-duration-hover-out)
+      easing: var(--zora-btn-easing-exit)
+      delay: null
+      raw: color var(--zora-btn-duration-hover-out) var(--zora-btn-easing-exit)
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .button-module-scss-module__jujiWa__button:before
+    transitions:
+    - property: clip-path
+      duration: var(--zora-btn-duration-press-out)
+      easing: var(--zora-btn-easing-press)
+      delay: null
+      raw: clip-path var(--zora-btn-duration-press-out) var(--zora-btn-easing-press)
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .button-module-scss-module__jujiWa__button:after
+    transitions:
+    - property: transform
+      duration: var(--zora-btn-duration-hover-out)
+      easing: var(--zora-btn-easing-exit)
+      delay: null
+      raw: transform var(--zora-btn-duration-hover-out) var(--zora-btn-easing-exit)
+    - property: clip-path
+      duration: var(--zora-btn-duration-press-out)
+      easing: var(--zora-btn-easing-press)
+      delay: null
+      raw: clip-path var(--zora-btn-duration-press-out) var(--zora-btn-easing-press)
+  - file: 004-0s-9krv8370e1.css
+    media: '@media only screen and (min-width:1024px)'
+    selector: .button-module-scss-module__jujiWa__button:hover:not(:disabled):not([data-disabled])
+    transitions:
+    - property: --btn-text-color
+      duration: var(--zora-btn-duration-hover-in)
+      easing: var(--zora-btn-easing-enter)
+      delay: null
+      raw: --btn-text-color var(--zora-btn-duration-hover-in) var(--zora-btn-easing-enter)
+    - property: color
+      duration: var(--zora-btn-duration-hover-in)
+      easing: var(--zora-btn-easing-enter)
+      delay: null
+      raw: color var(--zora-btn-duration-hover-in) var(--zora-btn-easing-enter)
+  - file: 004-0s-9krv8370e1.css
+    media: '@media only screen and (min-width:1024px)'
+    selector: .button-module-scss-module__jujiWa__button:hover:not(:disabled):not([data-disabled]):after
+    transitions:
+    - property: transform
+      duration: var(--zora-btn-duration-hover-in)
+      easing: var(--zora-btn-easing-enter)
+      delay: null
+      raw: transform var(--zora-btn-duration-hover-in) var(--zora-btn-easing-enter)
+    - property: clip-path
+      duration: var(--zora-btn-duration-press-out)
+      easing: var(--zora-btn-easing-press)
+      delay: null
+      raw: clip-path var(--zora-btn-duration-press-out) var(--zora-btn-easing-press)
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .button-module-scss-module__jujiWa__button:active:not(:disabled):not([data-disabled])
+    transitions:
+    - property: --btn-text-color
+      duration: var(--zora-btn-duration-press-in)
+      easing: var(--zora-btn-easing-press)
+      delay: null
+      raw: --btn-text-color var(--zora-btn-duration-press-in) var(--zora-btn-easing-press)
+    - property: color
+      duration: var(--zora-btn-duration-press-in)
+      easing: var(--zora-btn-easing-press)
+      delay: null
+      raw: color var(--zora-btn-duration-press-in) var(--zora-btn-easing-press)
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .button-module-scss-module__jujiWa__button:active:not(:disabled):not([data-disabled]):before
+    transitions:
+    - property: clip-path
+      duration: var(--zora-btn-duration-press-in)
+      easing: var(--zora-btn-easing-press)
+      delay: null
+      raw: clip-path var(--zora-btn-duration-press-in) var(--zora-btn-easing-press)
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .button-module-scss-module__jujiWa__button:active:not(:disabled):not([data-disabled]):after
+    transitions:
+    - property: transform
+      duration: var(--zora-btn-duration-hover-in)
+      easing: var(--zora-btn-easing-enter)
+      delay: null
+      raw: transform var(--zora-btn-duration-hover-in) var(--zora-btn-easing-enter)
+    - property: clip-path
+      duration: var(--zora-btn-duration-press-in)
+      easing: var(--zora-btn-easing-press)
+      delay: null
+      raw: clip-path var(--zora-btn-duration-press-in) var(--zora-btn-easing-press)
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .button-module-scss-module__jujiWa__secondary
+    transitions:
+    - property: --btn-text-color
+      duration: var(--zora-btn-duration-hover-out)
+      easing: var(--zora-btn-easing-exit)
+      delay: null
+      raw: --btn-text-color var(--zora-btn-duration-hover-out) var(--zora-btn-easing-exit)
+    - property: color
+      duration: var(--zora-btn-duration-hover-out)
+      easing: var(--zora-btn-easing-exit)
+      delay: null
+      raw: color var(--zora-btn-duration-hover-out) var(--zora-btn-easing-exit)
+    - property: box-shadow
+      duration: var(--zora-btn-duration-press-out)
+      easing: var(--zora-btn-easing-press)
+      delay: null
+      raw: box-shadow var(--zora-btn-duration-press-out) var(--zora-btn-easing-press)
+  - file: 004-0s-9krv8370e1.css
+    media: '@media only screen and (min-width:1024px)'
+    selector: .button-module-scss-module__jujiWa__secondary:hover:not(:disabled):not([data-disabled])
+    transitions:
+    - property: --btn-text-color
+      duration: var(--zora-btn-duration-hover-in)
+      easing: var(--zora-btn-easing-enter)
+      delay: null
+      raw: --btn-text-color var(--zora-btn-duration-hover-in) var(--zora-btn-easing-enter)
+    - property: color
+      duration: var(--zora-btn-duration-hover-in)
+      easing: var(--zora-btn-easing-enter)
+      delay: null
+      raw: color var(--zora-btn-duration-hover-in) var(--zora-btn-easing-enter)
+    - property: box-shadow
+      duration: var(--zora-btn-duration-press-in)
+      easing: var(--zora-btn-easing-press)
+      delay: null
+      raw: box-shadow var(--zora-btn-duration-press-in) var(--zora-btn-easing-press)
+  - file: 004-0s-9krv8370e1.css
+    media: '@media (prefers-reduced-motion:reduce)'
+    selector: .button-module-scss-module__jujiWa__button,.button-module-scss-module__jujiWa__button:before,.button-module-scss-module__jujiWa__button:after,.button-module-scss-module__jujiWa__label,.button-module-s
+    transitions:
+    - property: none
+      duration: null
+      easing: null
+      delay: null
+      raw: none!important
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .link-module-scss-module__ZXIWnW__link
+    transitions:
+    - property: color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: color .15s
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .numbered-pagination-module-scss-module__9u_Nxq__item
+    transitions:
+    - property: background-color
+      duration: var(--zora-btn-duration-hover-in)
+      easing: ease
+      delay: null
+      raw: background-color var(--zora-btn-duration-hover-in) ease
+    - property: border-color
+      duration: var(--zora-btn-duration-hover-in)
+      easing: ease
+      delay: null
+      raw: border-color var(--zora-btn-duration-hover-in) ease
+  - file: 004-0s-9krv8370e1.css
+    media: '@media (prefers-reduced-motion:reduce)'
+    selector: .numbered-pagination-module-scss-module__9u_Nxq__item
+    transitions:
+    - property: none
+      duration: null
+      easing: null
+      delay: null
+      raw: none
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .table-scroll-wrapper-module-scss-module__vZH5oW__scrollIndicatorThumb
+    transitions:
+    - property: width
+      duration: .1s
+      easing: null
+      delay: null
+      raw: width .1s
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .pill-module-scss-module__2yHsDq__pill
+    transitions:
+    - property: background-color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: background-color .15s
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .accordion-module-scss-module__G5fMcq__surface
+    transitions:
+    - property: background-color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: background-color .15s
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .accordion-module-scss-module__G5fMcq__trigger
+    transitions:
+    - property: background-color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: background-color .15s
+    - property: color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: color .15s
+    - property: border-radius
+      duration: .15s
+      easing: null
+      delay: null
+      raw: border-radius .15s
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .accordion-module-scss-module__G5fMcq__triggerLeadIcon
+    transitions:
+    - property: color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: color .15s
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .accordion-module-scss-module__G5fMcq__triggerLabel
+    transitions:
+    - property: color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: color .15s
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .accordion-module-scss-module__G5fMcq__triggerChevron
+    transitions:
+    - property: transform
+      duration: .2s
+      easing: null
+      delay: null
+      raw: transform .2s
+    - property: color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: color .15s
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .accordion-module-scss-module__G5fMcq__panel
+    transitions:
+    - property: height
+      duration: .2s
+      easing: null
+      delay: null
+      raw: height .2s
+  - file: 004-0s-9krv8370e1.css
+    media: '@media (prefers-reduced-motion:reduce)'
+    selector: .accordion-module-scss-module__G5fMcq__surface,.accordion-module-scss-module__G5fMcq__trigger,.accordion-module-scss-module__G5fMcq__triggerLeadIcon,.accordion-module-scss-module__G5fMcq__triggerChevr
+    transitions:
+    - property: none
+      duration: null
+      easing: null
+      delay: null
+      raw: none
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .base-header-module-scss-module__NfTPRW__headerDescription a
+    transitions:
+    - property: color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: color .15s
+  - file: 004-0s-9krv8370e1.css
+    media: '@media (prefers-reduced-motion:reduce)'
+    selector: .base-header-module-scss-module__NfTPRW__headerDescription a
+    transitions:
+    - property: none
+      duration: null
+      easing: null
+      delay: null
+      raw: none
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .radio-module-scss-module__FoX0Lq__control
+    transitions:
+    - property: border-color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: border-color .15s
+    - property: background
+      duration: .15s
+      easing: null
+      delay: null
+      raw: background .15s
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .radio-module-scss-module__FoX0Lq__control:after
+    transitions:
+    - property: background
+      duration: .15s
+      easing: null
+      delay: null
+      raw: background .15s
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .hubspot-api-form-module-scss-module__vsz7Ma__submitButton:before
+    transitions:
+    - property: transform
+      duration: var(--zora-btn-duration-hover-out)
+      easing: var(--zora-btn-easing-exit)
+      delay: null
+      raw: transform var(--zora-btn-duration-hover-out) var(--zora-btn-easing-exit)
+  - file: 004-0s-9krv8370e1.css
+    media: '@media only screen and (min-width:1024px)'
+    selector: .hubspot-api-form-module-scss-module__vsz7Ma__submitButton:hover:not(:disabled):before
+    transitions:
+    - property: transform
+      duration: var(--zora-btn-duration-hover-in)
+      easing: var(--zora-btn-easing-enter)
+      delay: null
+      raw: transform var(--zora-btn-duration-hover-in) var(--zora-btn-easing-enter)
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .hero-form-module-scss-module__joewbW__formCard .hsfc-Button:not(.hsfc-Button--secondary):before
+    transitions:
+    - property: transform
+      duration: var(--zora-btn-duration-hover-out)
+      easing: var(--zora-btn-easing-exit)
+      delay: null
+      raw: transform var(--zora-btn-duration-hover-out) var(--zora-btn-easing-exit)!important
+  - file: 004-0s-9krv8370e1.css
+    media: '@media only screen and (min-width:1024px)'
+    selector: .hero-form-module-scss-module__joewbW__formCard .hsfc-Button:not(.hsfc-Button--secondary):hover:before
+    transitions:
+    - property: transform
+      duration: var(--zora-btn-duration-hover-in)
+      easing: var(--zora-btn-easing-enter)
+      delay: null
+      raw: transform var(--zora-btn-duration-hover-in) var(--zora-btn-easing-enter)!important
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .hero-form-module-scss-module__joewbW__formCard .hsfc-NavigationRow__Buttons button:first-child:not(:only-child)
+    transitions:
+    - property: color
+      duration: var(--zora-btn-duration-hover-out)
+      easing: var(--zora-btn-easing-exit)
+      delay: null
+      raw: color var(--zora-btn-duration-hover-out) var(--zora-btn-easing-exit)!important
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .hero-form-module-scss-module__joewbW__formCard .hsfc-NavigationRow__Buttons button:first-child:not(:only-child):after
+    transitions:
+    - property: transform
+      duration: var(--zora-btn-duration-hover-out)
+      easing: var(--zora-btn-easing-exit)
+      delay: null
+      raw: transform var(--zora-btn-duration-hover-out) var(--zora-btn-easing-exit)!important
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .hero-form-module-scss-module__joewbW__formCard .hsfc-NavigationRow__Buttons button:first-child:not(:only-child):before
+    transitions:
+    - property: none
+      duration: null
+      easing: null
+      delay: null
+      raw: none!important
+  - file: 004-0s-9krv8370e1.css
+    media: '@media only screen and (min-width:1024px)'
+    selector: .hero-form-module-scss-module__joewbW__formCard .hsfc-NavigationRow__Buttons button:first-child:not(:only-child):hover
+    transitions:
+    - property: color
+      duration: var(--zora-btn-duration-hover-in)
+      easing: var(--zora-btn-easing-enter)
+      delay: null
+      raw: color var(--zora-btn-duration-hover-in) var(--zora-btn-easing-enter)!important
+  - file: 004-0s-9krv8370e1.css
+    media: '@media only screen and (min-width:1024px)'
+    selector: .hero-form-module-scss-module__joewbW__formCard .hsfc-NavigationRow__Buttons button:first-child:not(:only-child):hover:after
+    transitions:
+    - property: transform
+      duration: var(--zora-btn-duration-hover-in)
+      easing: var(--zora-btn-easing-enter)
+      delay: null
+      raw: transform var(--zora-btn-duration-hover-in) var(--zora-btn-easing-enter)!important
+  - file: 004-0s-9krv8370e1.css
+    media: '@media only screen and (min-width:1024px)'
+    selector: .icon-grid-card-module-scss-module__0NrwLG__card .icon-grid-card-module-scss-module__0NrwLG__linkHoverReveal
+    transitions:
+    - property: opacity
+      duration: .25s
+      easing: null
+      delay: null
+      raw: opacity .25s
+    - property: transform
+      duration: .25s
+      easing: null
+      delay: null
+      raw: transform .25s
+    - property: color
+      duration: .15s
+      easing: null
+      delay: null
+      raw: color .15s
+  - file: 004-0s-9krv8370e1.css
+    media: '@media only screen and (min-width:1024px) and (prefers-reduced-motion:reduce)'
+    selector: .icon-grid-card-module-scss-module__0NrwLG__card .icon-grid-card-module-scss-module__0NrwLG__linkHoverReveal
+    transitions:
+    - property: none
+      duration: null
+      easing: null
+      delay: null
+      raw: none
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .image-grid-card-module-scss-module__oxpacW__imageWrap
+    transitions:
+    - property: height
+      duration: .8s
+      easing: cubic-bezier(.16,1,.3,1)
+      delay: null
+      raw: height .8s cubic-bezier(.16,1,.3,1)
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .image-grid-card-module-scss-module__oxpacW__image
+    transitions:
+    - property: transform
+      duration: .8s
+      easing: cubic-bezier(.16,1,.3,1)
+      delay: null
+      raw: transform .8s cubic-bezier(.16,1,.3,1)
+  - file: 004-0s-9krv8370e1.css
+    media: '@media only screen and (min-width:1024px)'
+    selector: .image-grid-card-module-scss-module__oxpacW__link
+    transitions:
+    - property: height
+      duration: .8s
+      easing: cubic-bezier(.16,1,.3,1)
+      delay: null
+      raw: height .8s cubic-bezier(.16,1,.3,1)
+    - property: margin-top
+      duration: .8s
+      easing: cubic-bezier(.16,1,.3,1)
+      delay: null
+      raw: margin-top .8s cubic-bezier(.16,1,.3,1)
+    - property: opacity
+      duration: .8s
+      easing: cubic-bezier(.16,1,.3,1)
+      delay: null
+      raw: opacity .8s cubic-bezier(.16,1,.3,1)
+    - property: pointer-events
+      duration: null
+      easing: null
+      delay: null
+      raw: pointer-events
+  - file: 004-0s-9krv8370e1.css
+    media: '@media only screen and (min-width:1024px)'
+    selector: .image-grid-card-module-scss-module__oxpacW__card:hover .image-grid-card-module-scss-module__oxpacW__link,.image-grid-card-module-scss-module__oxpacW__card:focus-within
+      .image-grid-card-module-scss-mo
+    transitions:
+    - property: height
+      duration: .8s
+      easing: cubic-bezier(.16,1,.3,1)
+      delay: null
+      raw: height .8s cubic-bezier(.16,1,.3,1)
+    - property: margin-top
+      duration: .8s
+      easing: cubic-bezier(.16,1,.3,1)
+      delay: null
+      raw: margin-top .8s cubic-bezier(.16,1,.3,1)
+    - property: opacity
+      duration: .8s
+      easing: cubic-bezier(.16,1,.3,1)
+      delay: null
+      raw: opacity .8s cubic-bezier(.16,1,.3,1)
+    - property: pointer-events
+      duration: 0s
+      easing: null
+      delay: .8s
+      raw: pointer-events 0s .8s
+  - file: <inline-style-00>
+    media: ''
+    selector: '#ccc .checkbox-toggle--slider .checkbox-toggle-toggle'
+    transitions:
+    - property: all
+      duration: .4s
+      easing: ease
+      delay: null
+      raw: all .4s ease
+  - file: <inline-style-00>
+    media: ''
+    selector: .ccc-panel.visible
+    transitions:
+    - property: opacity
+      duration: .4s
+      easing: null
+      delay: null
+      raw: opacity .4s
+  - file: <inline-style-00>
+    media: ''
+    selector: '#ccc .ccc-vendor-reveal'
+    transitions:
+    - property: opacity
+      duration: .4s
+      easing: null
+      delay: null
+      raw: opacity .4s
+  - file: <inline-style-00>
+    media: ''
+    selector: '#ccc .cmp-back'
+    transitions:
+    - property: opacity
+      duration: .4s
+      easing: null
+      delay: null
+      raw: opacity .4s
+  - file: <inline-style-02>
+    media: ''
+    selector: .go722322694
+    transitions:
+    - property: none
+      duration: null
+      easing: null
+      delay: null
+      raw: none !important
+  - file: <inline-style-02>
+    media: ''
+    selector: .go1656994552
+    transitions:
+    - property: transform
+      duration: 0.75s
+      easing: linear(0,0.006,0.023 2.2%,0.096 4.8%,0.532 15.4%,0.72 21%,0.793,0.853 26.7%,0.902,0.941,0.968
+        36.2%,0.987 39.7%,1 43.7%,1.007 48.3%,1.009 55.3%,1.002 78.2%,1 )
+      delay: null
+      raw: transform 0.75s linear(0,0.006,0.023 2.2%,0.096 4.8%,0.532 15.4%,0.72 21%,0.793,0.853 26.7%,0.902,0.941,0.968
+        36.2%,0.987 39.7%,1 43.7%,1.007 48.3%,1.009 55.3%,1.002 78.2%,1 )
+  - file: <inline-style-02>
+    media: ''
+    selector: .go456419034
+    transitions:
+    - property: opacity
+      duration: 0.3s
+      easing: ease-in
+      delay: null
+      raw: opacity 0.3s ease-in
+  - file: <inline-style-02>
+    media: ''
+    selector: .go3128134379
+    transitions:
+    - property: max-height
+      duration: 1s
+      easing: ease-in
+      delay: null
+      raw: max-height 1s ease-in
+  - file: <inline-style-02>
+    media: ''
+    selector: .go3508454897
+    transitions:
+    - property: transform
+      duration: 1s
+      easing: linear(0,0.006,0.022 2.3%,0.091 5.1%,0.18 7.6%,0.508 16.3%,0.607,0.691,0.762,0.822 28.4%,0.872,0.912
+        35.1%,0.944 38.9%,0.968 43%,0.985 47.6%,0.996 53.1%,1.001 58.4%,1.003 65.1%,1 )
+      delay: null
+      raw: transform 1s linear(0,0.006,0.022 2.3%,0.091 5.1%,0.18 7.6%,0.508 16.3%,0.607,0.691,0.762,0.822
+        28.4%,0.872,0.912 35.1%,0.944 38.9%,0.968 43%,0.985 47.6%,0.996 53.1%,1.001 58.4%,1.003 65.1%,1
+        )
+  - file: <inline-style-06>
+    media: ''
+    selector: '#q-messenger-frame.qlfd-not-full-screen'
+    transitions:
+    - property: background-color
+      duration: 300ms
+      easing: null
+      delay: null
+      raw: background-color 300ms
+    - property: height
+      duration: 0s
+      easing: null
+      delay: 300ms
+      raw: height 0s 300ms
+    - property: width
+      duration: 0s
+      easing: null
+      delay: 300ms
+      raw: width 0s 300ms !important
+  animations:
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: .form-modal-module-scss-module__k-iMvq__backdrop[data-open]
+    animations:
+    - name: form-modal-module-scss-module__k-iMvq__backdropIn
+      duration: .3s
+      easing: null
+      delay: null
+      extras: []
+      raw: .3s form-modal-module-scss-module__k-iMvq__backdropIn
+  - file: 001-0x8emzyc26mln.css
+    media: ''
+    selector: .form-modal-module-scss-module__k-iMvq__popup.form-modal-module-scss-module__k-iMvq__popupVisible
+    animations:
+    - name: form-modal-module-scss-module__k-iMvq__popupIn
+      duration: .25s
+      easing: null
+      delay: null
+      extras: []
+      raw: .25s form-modal-module-scss-module__k-iMvq__popupIn
+  - file: 001-0x8emzyc26mln.css
+    media: '@media (prefers-reduced-motion:reduce)'
+    selector: .form-modal-module-scss-module__k-iMvq__backdrop,.form-modal-module-scss-module__k-iMvq__popup
+    animations:
+    - name: null
+      duration: null
+      easing: null
+      delay: null
+      extras:
+      - none
+      raw: none!important
+  - file: 001-0x8emzyc26mln.css
+    media: '@media (hover:none)'
+    selector: .select-module-scss-module__bMF8aa__subListbox
+    animations:
+    - name: select-module-scss-module__bMF8aa__subSlideIn
+      duration: .2s
+      easing: null
+      delay: null
+      extras:
+      - forwards
+      raw: .2s forwards select-module-scss-module__bMF8aa__subSlideIn
+  - file: 002-0bn3zeg0i3rmh.css
+    media: ''
+    selector: .social-proof-module-scss-module__JFn2kG__stripTrack
+    animations:
+    - name: social-proof-module-scss-module__JFn2kG__sp-scroll
+      duration: var(--sp-duration,0s)
+      easing: linear
+      delay: null
+      extras:
+      - infinite
+      raw: social-proof-module-scss-module__JFn2kG__sp-scroll var(--sp-duration,0s) linear infinite
+  - file: 002-0bn3zeg0i3rmh.css
+    media: '@media (prefers-reduced-motion:reduce)'
+    selector: .social-proof-module-scss-module__JFn2kG__stripTrack
+    animations:
+    - name: null
+      duration: null
+      easing: null
+      delay: null
+      extras:
+      - none
+      raw: none
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .button-module-scss-module__jujiWa__button[data-icon-anim=enter]:not(:disabled):not([data-disabled])
+      .button-module-scss-module__jujiWa__animatedIcon
+    animations:
+    - name: button-module-scss-module__jujiWa__icon-slide-right-enter
+      duration: var(--zora-btn-duration-hover-in)
+      easing: var(--zora-btn-easing-enter)
+      delay: null
+      extras:
+      - forwards
+      raw: button-module-scss-module__jujiWa__icon-slide-right-enter var(--zora-btn-duration-hover-in)
+        var(--zora-btn-easing-enter) forwards
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .button-module-scss-module__jujiWa__button[data-icon-anim=leave]:not(:disabled):not([data-disabled])
+      .button-module-scss-module__jujiWa__animatedIcon
+    animations:
+    - name: button-module-scss-module__jujiWa__icon-slide-right-leave
+      duration: var(--zora-btn-duration-hover-out)
+      easing: var(--zora-btn-easing-exit)
+      delay: null
+      extras:
+      - forwards
+      raw: button-module-scss-module__jujiWa__icon-slide-right-leave var(--zora-btn-duration-hover-out)
+        var(--zora-btn-easing-exit) forwards
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .button-module-scss-module__jujiWa__button[data-icon-anim=enter]:not(:disabled):not([data-disabled])[data-anim-dir=reverse]
+      .button-module-scss-module__jujiWa__animatedIcon
+    animations:
+    - name: button-module-scss-module__jujiWa__icon-slide-right-leave
+      duration: var(--zora-btn-duration-hover-in)
+      easing: var(--zora-btn-easing-enter)
+      delay: null
+      extras:
+      - forwards
+      raw: button-module-scss-module__jujiWa__icon-slide-right-leave var(--zora-btn-duration-hover-in)
+        var(--zora-btn-easing-enter) forwards
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .button-module-scss-module__jujiWa__button[data-icon-anim=leave]:not(:disabled):not([data-disabled])[data-anim-dir=reverse]
+      .button-module-scss-module__jujiWa__animatedIcon
+    animations:
+    - name: button-module-scss-module__jujiWa__icon-slide-right-enter
+      duration: var(--zora-btn-duration-hover-out)
+      easing: var(--zora-btn-easing-exit)
+      delay: null
+      extras:
+      - forwards
+      raw: button-module-scss-module__jujiWa__icon-slide-right-enter var(--zora-btn-duration-hover-out)
+        var(--zora-btn-easing-exit) forwards
+  - file: 004-0s-9krv8370e1.css
+    media: '@media (prefers-reduced-motion:reduce)'
+    selector: .button-module-scss-module__jujiWa__button,.button-module-scss-module__jujiWa__button:before,.button-module-scss-module__jujiWa__button:after,.button-module-scss-module__jujiWa__label,.button-module-s
+    animations:
+    - name: null
+      duration: null
+      easing: null
+      delay: null
+      extras:
+      - none
+      raw: none!important
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .link-module-scss-module__ZXIWnW__link[data-icon-anim=enter] .link-module-scss-module__ZXIWnW__iconWrap>*
+    animations:
+    - name: link-module-scss-module__ZXIWnW__icon-slide-right-enter
+      duration: var(--zora-btn-duration-hover-in)
+      easing: var(--zora-btn-easing-enter)
+      delay: null
+      extras:
+      - forwards
+      raw: link-module-scss-module__ZXIWnW__icon-slide-right-enter var(--zora-btn-duration-hover-in) var(--zora-btn-easing-enter)
+        forwards
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .link-module-scss-module__ZXIWnW__link[data-icon-anim=leave] .link-module-scss-module__ZXIWnW__iconWrap>*
+    animations:
+    - name: link-module-scss-module__ZXIWnW__icon-slide-right-leave
+      duration: var(--zora-btn-duration-hover-out)
+      easing: var(--zora-btn-easing-exit)
+      delay: null
+      extras:
+      - forwards
+      raw: link-module-scss-module__ZXIWnW__icon-slide-right-leave var(--zora-btn-duration-hover-out)
+        var(--zora-btn-easing-exit) forwards
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: '[data-link-arrow-animate=hover]:hover .link-module-scss-module__ZXIWnW__arrowIcon,[data-link-arrow-animate=hover]:focus-within
+      .link-module-scss-module__ZXIWnW__arrowIcon'
+    animations:
+    - name: link-module-scss-module__ZXIWnW__icon-slide-right-enter
+      duration: var(--zora-btn-duration-hover-in)
+      easing: var(--zora-btn-easing-enter)
+      delay: null
+      extras: []
+      raw: link-module-scss-module__ZXIWnW__icon-slide-right-enter var(--zora-btn-duration-hover-in) var(--zora-btn-easing-enter)
+  - file: 004-0s-9krv8370e1.css
+    media: '@media (prefers-reduced-motion:reduce)'
+    selector: .link-module-scss-module__ZXIWnW__arrowIcon
+    animations:
+    - name: null
+      duration: null
+      easing: null
+      delay: null
+      extras:
+      - none
+      raw: none!important
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .hero-form-module-scss-module__joewbW__formCard .hsfc-Button:not(.hsfc-Button--secondary):after
+    animations:
+    - name: hero-form-module-scss-module__joewbW__icon-slide-right-leave
+      duration: var(--zora-btn-duration-hover-out)
+      easing: var(--zora-btn-easing-exit)
+      delay: null
+      extras:
+      - forwards
+      raw: hero-form-module-scss-module__joewbW__icon-slide-right-leave var(--zora-btn-duration-hover-out)
+        var(--zora-btn-easing-exit) forwards!important
+  - file: 004-0s-9krv8370e1.css
+    media: '@media only screen and (min-width:1024px)'
+    selector: .hero-form-module-scss-module__joewbW__formCard .hsfc-Button:not(.hsfc-Button--secondary):hover:after
+    animations:
+    - name: hero-form-module-scss-module__joewbW__icon-slide-right-enter
+      duration: var(--zora-btn-duration-hover-in)
+      easing: var(--zora-btn-easing-enter)
+      delay: null
+      extras:
+      - forwards
+      raw: hero-form-module-scss-module__joewbW__icon-slide-right-enter var(--zora-btn-duration-hover-in)
+        var(--zora-btn-easing-enter) forwards!important
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .hero-form-module-scss-module__joewbW__formCard .hsfc-NavigationRow__Buttons button:first-child:not(:only-child):after
+    animations:
+    - name: null
+      duration: null
+      easing: null
+      delay: null
+      extras:
+      - none
+      raw: none!important
+  - file: 004-0s-9krv8370e1.css
+    media: ''
+    selector: .hero-form-module-scss-module__joewbW__formCard .hsfc-NavigationRow__Buttons button:first-child:not(:only-child):before
+    animations:
+    - name: hero-form-module-scss-module__joewbW__icon-slide-translate-enter
+      duration: var(--zora-btn-duration-hover-out)
+      easing: var(--zora-btn-easing-exit)
+      delay: null
+      extras:
+      - forwards
+      raw: hero-form-module-scss-module__joewbW__icon-slide-translate-enter var(--zora-btn-duration-hover-out)
+        var(--zora-btn-easing-exit) forwards!important
+  - file: 004-0s-9krv8370e1.css
+    media: '@media only screen and (min-width:1024px)'
+    selector: .hero-form-module-scss-module__joewbW__formCard .hsfc-NavigationRow__Buttons button:first-child:not(:only-child):hover:before
+    animations:
+    - name: hero-form-module-scss-module__joewbW__icon-slide-translate-leave
+      duration: var(--zora-btn-duration-hover-in)
+      easing: var(--zora-btn-easing-enter)
+      delay: null
+      extras:
+      - forwards
+      raw: hero-form-module-scss-module__joewbW__icon-slide-translate-leave var(--zora-btn-duration-hover-in)
+        var(--zora-btn-easing-enter) forwards!important
+  jsTimingNotes:
+  - target: logo-strip marquee (.social-proof-module…stripTrack)
+    note: sp-scroll duration is set by JS via --sp-duration (CSS fallback 0s); the static capture renders
+      the strip paused, so the real scroll period is unmeasurable from this evidence — record as JS-driven.
+  - target: testimonial carousel track
+    note: slide advance is JS/scroll-snap driven; no CSS track timing exists. Arrow controls reuse the
+      button system's 150ms state / 300ms hover-in tiers.
+  - target: scroll-reveal choreography
+    note: section reveal-on-scroll is JS-driven and stripped in the saved capture; 10 prefers-reduced-motion
+      rules in the sheet imply motion exists live. voice.motionSpec.scrollReveal records 'fade'.

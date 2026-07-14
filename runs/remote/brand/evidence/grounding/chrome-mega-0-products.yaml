@@ -1,0 +1,269 @@
+schemaVersion: section-grounding.v1
+sectionRole: navbar
+layout:
+  structure: top cookie banner strip -> nav bar with logo left, center links, right actions -> open mega-menu
+    dropdown with two-column left grid + right services list
+  columns: 4
+  alignment: mixed
+  approxPaddingPx:
+    top: 0
+    bottom: 40
+  gapPx: 32
+  containerWidth: full-bleed
+surfaces:
+- role: chrome-bar
+  bgApprox: '#f4f4f4'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: band
+  bgApprox: '#ffffff'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#5b3df5'
+- role: inset-panel
+  bgApprox: '#f4f4f4'
+  parent: chrome-bar
+  radiusPx: 0
+  borderApprox: '1px #e0e0e0'
+  inkApprox: '#1a1a1a'
+- role: pill
+  bgApprox: '#e6e6e6'
+  parent: chrome-bar
+  radiusPx: 20
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+typography:
+- role: nav-link
+  approxSizePx: 16
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: eyebrow
+  approxSizePx: 14
+  weightApprox: 600
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#6b6b6b'
+  familyClass: grotesque-sans
+- role: h3
+  approxSizePx: 17
+  weightApprox: 600
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: body
+  approxSizePx: 15
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#6b6b6b'
+  familyClass: grotesque-sans
+- role: caption
+  approxSizePx: 14
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#5b3df5'
+  familyClass: grotesque-sans
+components:
+- kind: button
+  variant: filled-primary
+  countObserved: 1
+  anatomy: solid violet fill, white label
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 11 20
+    radiusPx: 4
+  surfaceApprox: '#5b3df5'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: violet outline, violet label
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 11 20
+    radiusPx: 4
+  surfaceApprox: '#ffffff'
+  inkApprox: '#5b3df5'
+  caseTreatment: sentence
+- kind: link
+  variant: text-underline
+  countObserved: 1
+  anatomy: underlined violet text label (Settings)
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#5b3df5'
+  caseTreatment: title
+- kind: button
+  variant: filled-neutral
+  countObserved: 1
+  anatomy: near-black pill, white label (Book demo)
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 13 28
+    radiusPx: 24
+  surfaceApprox: '#111111'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: link
+  variant: nav-dropdown
+  countObserved: 4
+  anatomy: label + chevron for dropdown items
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 8 16
+    radiusPx: 20
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: list-item
+  variant: icon-heading-body
+  countObserved: 7
+  anatomy: colored icon left -> heading -> body description
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: badge
+  variant: pill
+  countObserved: 1
+  anatomy: small rounded pink pill 'New' beside Connect
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 2 8
+    radiusPx: 10
+  surfaceApprox: '#f8d7e3'
+  inkApprox: '#c0245e'
+  caseTreatment: title
+- kind: link
+  variant: text-icon
+  countObserved: 7
+  anatomy: services list plain text links stacked
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: icon
+  variant: nav-utility
+  countObserved: 2
+  anatomy: login person circle icon, globe/language selector with chevron
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+copy:
+  eyebrow: GLOBAL EMPLOYMENT
+  heading: null
+  body: Some of these cookies are essential, while others help us to improve our services and your experience
+    by providing insights into how the site is being used.
+  actions:
+  - label: Accept all
+    styleHint: filled-primary
+  - label: Reject optional
+    styleHint: outlined
+  - label: Settings
+    styleHint: text-underline
+  - label: Login
+    styleHint: nav-utility
+  - label: Book demo
+    styleHint: filled-neutral
+  items:
+  - heading: Global Payroll Run
+    body: Run compliant payroll easily
+    meta: GLOBAL EMPLOYMENT
+  - heading: Employer of Record
+    body: Expand globally with zero entity cost
+    meta: GLOBAL EMPLOYMENT
+  - heading: Contractor of Record
+    body: Compliantly engage contractors worldwide
+    meta: GLOBAL EMPLOYMENT
+  - heading: Contractor Management
+    body: Onboard and manage contractors globally
+    meta: GLOBAL EMPLOYMENT
+  - heading: PEO
+    body: Outsource complex employment tasks
+    meta: GLOBAL EMPLOYMENT
+  - heading: Remote Embedded
+    body: null
+    meta: INFRASTRUCTURE
+  - heading: Platform
+    body: null
+    meta: INFRASTRUCTURE
+  - heading: Connect
+    body: null
+    meta: INFRASTRUCTURE / New
+  - heading: Integrations
+    body: null
+    meta: INFRASTRUCTURE
+  - heading: Ask an Expert
+    body: null
+    meta: SERVICES
+  - heading: Background Checks
+    body: null
+    meta: SERVICES
+  - heading: Compliance Watchtower
+    body: null
+    meta: SERVICES
+  - heading: Device Management
+    body: null
+    meta: SERVICES
+  - heading: Entity Setup
+    body: null
+    meta: SERVICES
+  - heading: Mobility & Relocation
+    body: null
+    meta: SERVICES
+  - heading: Benefits
+    body: null
+    meta: SERVICES
+chrome:
+  casing: title
+  separators: whitespace-only
+  iconShape: text-labels
+  surfaceApprox: '#f4f4f4'
+  linkTreatment: '16px #1a1a1a nav labels, active item in gray pill with chevron'
+  ctaTreatment: near-black filled pill 'Book demo', hugging content; violet filled 'Accept all' in cookie
+    strip
+media:
+- kind: logo-vector
+  treatment: wordmark 'remote' with red rounded-square R mark, ~24px tall
+  aspect: landscape
+  approxFractionOfSection: 0.03
+- kind: icon-set
+  treatment: small colored circular/product glyphs left of each menu item, ~20px
+  aspect: square
+  approxFractionOfSection: 0.05
+motionHints:
+- mega-menu dropdown open (animated expand/reveal)
+- cookie banner cut off at top edge (fixed/overlay strip)
+- dropdown chevrons beside nav labels (expand affordance)
+- language selector chevron (dropdown affordance)
+confidence: high
+notes:
+- cookie consent banner partially cut off at top edge; heading truncated
+- bottom of crop shows a gray blurred band, likely start of next section, truncated
+- '''New'' badge color read as pink/magenta on Connect item'
+_source:
+  crop: chrome-mega-0-products.png
+  domClasses: ''
+  model: claude-opus-4-8

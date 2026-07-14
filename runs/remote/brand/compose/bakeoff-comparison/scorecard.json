@@ -1,0 +1,119 @@
+{
+  "scoringOrder": "Candidates were scored under neutral labels before model reveal.",
+  "maximumBaseScore": 100,
+  "candidates": {
+    "Candidate A": {
+      "rubric": {
+        "marketingStrategyAndNarrativeFlow": {
+          "score": 19,
+          "max": 20
+        },
+        "copyClaritySpecificityCredibilityAndCtaProgression": {
+          "score": 18,
+          "max": 20
+        },
+        "patternContentQualification": {
+          "score": 14,
+          "max": 15
+        },
+        "remoteBrandFidelity": {
+          "score": 14,
+          "max": 15
+        },
+        "layoutCoherenceAndSpacing": {
+          "score": 14,
+          "max": 15
+        },
+        "visualVarietyWithoutUnsupportedNovelty": {
+          "score": 8,
+          "max": 10
+        },
+        "leadGenerationEffectiveness": {
+          "score": 5,
+          "max": 5
+        }
+      },
+      "baseScore": 92,
+      "penalties": [
+        {
+          "type": "invented-or-unsupported-product-claims",
+          "points": -8,
+          "reason": "Claims such as always-current payroll refresh, live compliance status, market benchmarks, day-one population, connectors/uploads, and product-specific access/security behavior are not substantiated by the marketer brief."
+        },
+        {
+          "type": "repetitive-patterns",
+          "points": -1,
+          "reason": "Adjacent three-up card grids reuse the same visual family."
+        }
+      ],
+      "excludedSharedRendererPenalties": [
+        {
+          "pointsNotApplied": -1,
+          "reason": "Shared 736px form-stack width versus the 720px extracted header-measure."
+        }
+      ],
+      "finalScore": 83
+    },
+    "Candidate B": {
+      "rubric": {
+        "marketingStrategyAndNarrativeFlow": {
+          "score": 18,
+          "max": 20
+        },
+        "copyClaritySpecificityCredibilityAndCtaProgression": {
+          "score": 17,
+          "max": 20
+        },
+        "patternContentQualification": {
+          "score": 11,
+          "max": 15
+        },
+        "remoteBrandFidelity": {
+          "score": 14,
+          "max": 15
+        },
+        "layoutCoherenceAndSpacing": {
+          "score": 10,
+          "max": 15
+        },
+        "visualVarietyWithoutUnsupportedNovelty": {
+          "score": 9,
+          "max": 10
+        },
+        "leadGenerationEffectiveness": {
+          "score": 5,
+          "max": 5
+        }
+      },
+      "baseScore": 84,
+      "penalties": [
+        {
+          "type": "repetitive-copy",
+          "points": -1,
+          "reason": "Decision/review/context language repeats across several sections and stays less product-specific."
+        },
+        {
+          "type": "composition-induced-layout",
+          "points": -2,
+          "reason": "Using inert knobs.columns without section.grid on three card sections produced staggered two-up layouts with orphan cards and excessive page length."
+        }
+      ],
+      "excludedSharedRendererPenalties": [
+        {
+          "pointsNotApplied": -1,
+          "reason": "Shared 736px form-stack width versus the 720px extracted header-measure."
+        }
+      ],
+      "finalScore": 81
+    }
+  },
+  "winner": {
+    "candidate": "Candidate A",
+    "margin": 2,
+    "confidence": "medium"
+  },
+  "finalReveal": {
+    "Candidate A": "Claude Opus 4.8 Thinking High",
+    "Candidate B": "GPT-5.6 Sol"
+  }
+}

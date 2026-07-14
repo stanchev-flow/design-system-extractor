@@ -1,0 +1,785 @@
+{
+  "schemaVersion": "replica-composition.v1",
+  "brief": "Remote Launch Day \u2014 8-section lead-gen event page (generative test). Copy verbatim from copy-brief.md; every section is fresh layout DNA on the extracted Remote design system.",
+  "order": [
+    "event-hero",
+    "event-proof",
+    "event-bento",
+    "event-agenda",
+    "event-quote",
+    "event-passes",
+    "event-faq",
+    "event-signup"
+  ],
+  "sections": [
+    {
+      "id": "event-hero",
+      "useCase": "hero",
+      "archetype": "split",
+      "surfaceIntent": "any",
+      "novelty": "novel",
+      "note": "EVENT POSTER hero: the brand's sanctioned inset noise-panel device recomposed as a centered solo poster (no content media) \u2014 eyebrow, display heading, lede, event meta caption, two pills. New DNA vs the homepage's split panel.",
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "eyebrow",
+          "copy": {
+            "eyebrow": "REMOTE LAUNCH DAY"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "title \u2014 display heading",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "heading": "Meet the agents that run on Remote"
+          }
+        },
+        {
+          "name": "body",
+          "role": "sub \u2014 supporting paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "On September 17 we're launching AI agents for payroll, compliance, and contracts \u2014 built on the employment infrastructure we own in 170+ countries. Watch them work on live data, ask the team anything, and be first in line for early access."
+          }
+        },
+        {
+          "name": "meta",
+          "role": "meta \u2014 event date/place line",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "Thursday, September 17, 2026 \u00b7 16:00 UTC \u00b7 Virtual, free to attend"
+          }
+        },
+        {
+          "name": "actions",
+          "role": "cta-primary",
+          "textLen": "short",
+          "sizeClass": "control",
+          "width": "hug",
+          "z": "front",
+          "contract": "button",
+          "copy": {
+            "label": "Save your seat",
+            "styleHint": "filled"
+          }
+        },
+        {
+          "name": "actions-secondary",
+          "role": "cta-secondary",
+          "contract": "button",
+          "copy": {
+            "label": "See the agenda",
+            "styleHint": "outlined"
+          }
+        },
+        {
+          "name": "background",
+          "role": "inset rounded panel w/ noise-gradient art",
+          "width": "full-bleed",
+          "z": "back",
+          "mediaAspect": "landscape",
+          "contract": "image"
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "panel-on-media",
+          "target": "background",
+          "sanctioned": true,
+          "note": "the brand's rounded inset panel on its own noise-gradient art; ink text on it"
+        }
+      ],
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "event-proof",
+      "useCase": "logos",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapted",
+      "note": "registration proof strip: the captured monochrome logo marquee plus a NEW quiet stat line beneath it.",
+      "seededFrom": {
+        "lib": "project",
+        "id": "logo-marquee-strip"
+      },
+      "slots": [
+        {
+          "name": "caption",
+          "role": "caption \u2014 uppercase microlabel",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "eyebrow",
+          "copy": {
+            "eyebrow": "GLOBAL COMPANIES LAUNCH WITH REMOTE"
+          }
+        },
+        {
+          "name": "logos",
+          "role": "logos \u2014 monochrome customer logo vectors (row)",
+          "width": "full-bleed",
+          "z": "front",
+          "mediaAspect": "wide",
+          "contract": "logo",
+          "copy": [
+            "logo-anthropic.svg",
+            "logo-box.svg",
+            "logo-byd.svg",
+            "logo-datadog.svg",
+            "logo-gitlab.svg",
+            "logo-heineken.svg",
+            "logo-kfc.svg",
+            "logo-lovable.svg",
+            "logo-mercury.svg",
+            "logo-miro.svg",
+            "logo-mizuho.svg",
+            "logo-vercel.svg"
+          ]
+        },
+        {
+          "name": "stat",
+          "role": "stat line",
+          "textLen": "medium",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "12,000+ seats saved so far \u2014 by teams that run payroll in one country, and teams that run it in 60."
+          }
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "event-bento",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "novel",
+      "note": "BENTO GRID (new scaffold): 12-track mosaic \u2014 anchor 8x2 with the captured agents-card art in a media well, three 4-span mediums, MCP cell inverted to the sanctioned deep-accent emphasis card, API 4-span, security as a full-width slim bar.",
+      "slots": [
+        {
+          "name": "header",
+          "role": "section-title",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "header",
+          "copy": {
+            "eyebrow": "WHAT WE'RE LAUNCHING",
+            "heading": "One system of record. Now with agents."
+          }
+        },
+        {
+          "name": "intro-body",
+          "role": "body \u2014 section intro",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "Everything Remote already runs for you \u2014 payroll, contracts, compliance \u2014 gets an agent working on it. Here's what goes live on September 17."
+          }
+        },
+        {
+          "name": "cells",
+          "role": "module \u2014 bento cells (anchor + six supports)",
+          "width": "full-bleed",
+          "z": "front",
+          "contract": "feature-item",
+          "copy": [
+            {
+              "eyebrow": "REMOTE AGENTS",
+              "heading": "Deploy AI agents on real employment data",
+              "text": "A team of agents for the work Remote already runs: payroll, compliance, and contracts. They work on live employment data inside the system of record \u2014 and every action waits for your approval.",
+              "link": "Save your seat",
+              "asset": "card-mcp-agents.webp",
+              "alt": "Remote Agents working on live employment data in the Remote product UI",
+              "aspect": "16 / 10"
+            },
+            {
+              "eyebrow": "PAYROLL",
+              "heading": "Catch payroll errors before payday, not after",
+              "text": "The Payroll Agent reviews every run against contracts, local tax rules, and the last cycle, then flags what's off while you can still fix it."
+            },
+            {
+              "eyebrow": "COMPLIANCE",
+              "heading": "Track employment law across 170+ countries",
+              "text": "When the law changes anywhere you hire, the Compliance Agent tells you what changed, who on your team is affected, and what to do next."
+            },
+            {
+              "eyebrow": "CONTRACTS",
+              "heading": "Send localized contracts in minutes, not weeks",
+              "text": "Drafts employment agreements from your terms, localized against the playbooks our own legal teams maintain in every market. Nothing goes out without your review."
+            },
+            {
+              "eyebrow": "MCP",
+              "heading": "Bring your own agents",
+              "text": "Remote MCP connects Claude, ChatGPT, or your own agents to live employment data \u2014 no API keys, no exports, no custom integrations needed."
+            },
+            {
+              "eyebrow": "API",
+              "heading": "Build on top of ours",
+              "text": "REST API, webhooks, and CLI. Embed agents and employment workflows into your own product, or extend Remote however your business needs."
+            },
+            {
+              "eyebrow": "SECURITY",
+              "heading": "Every action logged, every decision yours",
+              "text": "Agents run on infrastructure that is SOC 2 Type 2 compliant and ISO 27001 certified. Every step is audit-ready; nothing runs unattended."
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "bento": {
+          "cells": [
+            {
+              "span": 8,
+              "rows": 2
+            },
+            {
+              "span": 4
+            },
+            {
+              "span": 4
+            },
+            {
+              "span": 4
+            },
+            {
+              "span": 4,
+              "surface": "surface/accent"
+            },
+            {
+              "span": 4
+            },
+            {
+              "span": 12
+            }
+          ],
+          "gap": "2rem",
+          "collapseAt": 992
+        }
+      }
+    },
+    {
+      "id": "event-agenda",
+      "useCase": "agenda",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "novel",
+      "note": "agenda as the brand's hairline disclosure grammar: keynote row open at rest on the sanctioned deep-accent inversion (one-at-a-time), warm-wash idle hover, typographic closing action.",
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "eyebrow",
+          "copy": {
+            "eyebrow": "WHAT YOU'LL SEE"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "heading",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "heading": "Two hours, four sessions, all of it live"
+          }
+        },
+        {
+          "name": "intro",
+          "role": "body \u2014 agenda intro",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "No mockups, no staged environments \u2014 every demo runs on the same infrastructure your team would use. Can't make it live? Register anyway: recordings reach every registrant the same day."
+          }
+        },
+        {
+          "name": "sessions",
+          "role": "item \u2014 agenda sessions (time \u00b7 title \u00b7 description \u00b7 speaker)",
+          "width": "full-bleed",
+          "z": "front",
+          "contract": "faq-item",
+          "copy": [
+            {
+              "question": "16:00 UTC \u2014 The launch keynote",
+              "answer": "The agent family, revealed: what's live today, what's in beta, and where the infrastructure goes next. \u2014 Ana Ferreira, VP of Product"
+            },
+            {
+              "question": "16:40 UTC \u2014 Payroll and compliance, run by agents",
+              "answer": "Watch the Payroll Agent review a live multi-country run and the Compliance Agent handle a real law change. \u2014 Priya Nair, Director of Product, Payroll"
+            },
+            {
+              "question": "17:10 UTC \u2014 Build on Remote MCP",
+              "answer": "Connect an agent to live employment data in under ten minutes. Bring your laptop \u2014 this one's hands-on. \u2014 Sam Okafor, Staff Engineer, Platform"
+            },
+            {
+              "question": "17:40 UTC \u2014 Ask us anything",
+              "answer": "Product, engineering, and legal on one stage. Bring the hard questions. \u2014 Hosted by the Remote AI team"
+            }
+          ]
+        },
+        {
+          "name": "cta",
+          "role": "action \u2014 closing text link",
+          "textLen": "short",
+          "sizeClass": "control",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "Save your seat"
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "faq": {
+          "exclusive": true,
+          "open": 0,
+          "activeSurface": "surface/accent",
+          "hoverWash": "accent/warm-wash"
+        }
+      },
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "event-quote",
+      "useCase": "testimonial",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "novel",
+      "note": "single featured quote card: the bento scaffold's one centered 8-span lead cell (start 3) \u2014 oversized statement register, name/role person row. No captured avatar exists for this person, so none is rendered (AS-34).",
+      "slots": [
+        {
+          "name": "header",
+          "role": "section-title",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "header",
+          "copy": {
+            "eyebrow": "FROM THE BETA",
+            "heading": "A word from the beta"
+          }
+        },
+        {
+          "name": "intro-body",
+          "role": "body \u2014 section subhead",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "Sixty teams have been running the agents since April. Here's how it's going."
+          }
+        },
+        {
+          "name": "quote-card",
+          "role": "module \u2014 featured beta quote",
+          "width": "full-bleed",
+          "z": "front",
+          "contract": "feature-item",
+          "copy": [
+            {
+              "quote": "\"The Payroll Agent flagged three things in our first supervised run \u2014 one was a contractor misclassification in Germany that would have cost us a five-figure correction. It reads payroll closer than we do.\"",
+              "name": "Elena Marchetti",
+              "personRole": "Head of People Operations"
+            }
+          ]
+        },
+        {
+          "name": "cta",
+          "role": "cta-secondary",
+          "textLen": "short",
+          "sizeClass": "control",
+          "width": "hug",
+          "z": "front",
+          "contract": "button",
+          "copy": {
+            "label": "Save your seat",
+            "styleHint": "outlined"
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "bento": {
+          "cells": [
+            {
+              "start": 3,
+              "span": 8,
+              "lead": true
+            }
+          ],
+          "gap": "2rem",
+          "collapseAt": 992
+        }
+      }
+    },
+    {
+      "id": "event-passes",
+      "useCase": "pricing",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "novel",
+      "note": "PRICING TIERS (new scaffold): three white tier panels on the gray canvas; Builder emphasized via the sanctioned navy inset head band (surface/inverse \u2014 a nested inverse panel, the workflow-card grammar), never a dark full band.",
+      "slots": [
+        {
+          "name": "header",
+          "role": "section-title",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "header",
+          "copy": {
+            "eyebrow": "PASSES AND PRICING",
+            "heading": "The keynote is free. The labs go deeper."
+          }
+        },
+        {
+          "name": "intro-body",
+          "role": "body \u2014 pricing intro",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "Every pass includes the live broadcast and same-day recordings. Paid passes add the hands-on lab, the private Q&A, and a head start on early access."
+          }
+        },
+        {
+          "name": "tiers",
+          "role": "tier \u2014 event passes",
+          "width": "full-bleed",
+          "z": "front",
+          "contract": "tier",
+          "copy": [
+            {
+              "name": "Virtual",
+              "price": "Free",
+              "tagline": "The full launch, live and on demand.",
+              "features": [
+                "Live keynote and all four sessions",
+                "Same-day recordings, yours to keep",
+                "A place on the Remote Agents early access list"
+              ],
+              "cta": "Save your seat",
+              "ctaFamily": "primary"
+            },
+            {
+              "name": "Builder",
+              "price": "$149",
+              "tagline": "For the people who'll build on it.",
+              "features": [
+                "Everything in Virtual",
+                "Hands-on Remote MCP lab \u2014 90 minutes, capped at 200 seats",
+                "Private Q&A with the agents product team",
+                "Priority position for early access"
+              ],
+              "cta": "Get the Builder pass",
+              "ctaFamily": "secondary"
+            },
+            {
+              "name": "Team",
+              "price": "$549",
+              "priceMeta": "five seats",
+              "tagline": "Bring people, finance, and engineering together.",
+              "features": [
+                "Everything in Builder, for five people",
+                "A working session with a Remote solutions engineer",
+                "Agent-readiness review of your payroll and compliance setup",
+                "First-cohort seats in the Remote Agents beta"
+              ],
+              "cta": "Get the Team pass",
+              "ctaFamily": "secondary"
+            }
+          ]
+        },
+        {
+          "name": "note",
+          "role": "note \u2014 pricing microcopy",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "Prices in USD. Paid passes are fully refundable until September 10, 2026."
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "tiers": {
+          "emphasize": 1,
+          "emphasisSurface": "surface/inverse",
+          "gap": "2rem",
+          "collapseAt": 992
+        }
+      }
+    },
+    {
+      "id": "event-faq",
+      "useCase": "faq",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapted",
+      "note": "objection-clearing FAQ directly above the form: platform-exclusive disclosure, first item open at rest, warm-wash idle hover (no accent inversion \u2014 that device is spent on the agenda).",
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "eyebrow",
+          "copy": {
+            "eyebrow": "QUESTIONS, ANSWERED"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "heading",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "heading": "What to know before you register"
+          }
+        },
+        {
+          "name": "items",
+          "role": "item \u2014 questions and answers",
+          "width": "full-bleed",
+          "z": "front",
+          "contract": "faq-item",
+          "copy": [
+            {
+              "question": "Is the launch really free?",
+              "answer": "Yes. The Virtual pass is free and includes the live broadcast, all four sessions, and same-day recordings. Paid passes exist for people who want the hands-on lab."
+            },
+            {
+              "question": "Do I need to be a Remote customer?",
+              "answer": "No. The keynote and demos assume nothing. The MCP lab is easier with a Remote account \u2014 and we'll set up a sandbox for everyone who doesn't have one."
+            },
+            {
+              "question": "I can't make the time. Should I still register?",
+              "answer": "Yes \u2014 recordings go out to every registrant the same day, and registering puts you on the early access list for Remote Agents."
+            },
+            {
+              "question": "How technical is it?",
+              "answer": "The keynote and the payroll deep dive are for operators \u2014 people and finance leaders. The MCP lab is for engineers. The Q&A is for everyone."
+            },
+            {
+              "question": "What happens to my data in the demos?",
+              "answer": "Demos run on demonstration entities we own \u2014 not customer data. Everything the agents touch runs on infrastructure that's SOC 2 Type 2 compliant and ISO 27001 certified."
+            },
+            {
+              "question": "Can I get a refund on a paid pass?",
+              "answer": "Yes, in full, until September 10. After that we'll transfer it to a colleague instead \u2014 just reply to your confirmation email."
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "faq": {
+          "exclusive": true,
+          "open": 0,
+          "hoverWash": "accent/warm-wash"
+        }
+      },
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "event-signup",
+      "useCase": "signup",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "novel",
+      "note": "SIGNUP FORM (new scaffold) on the brand's closing noise-gradient band (seeded facts: art-surface, 54.375rem stack measure, 5rem band padding): white form panel riding the art, boxed inputs, split half/full grid, filled-pill submit.",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-closing-noise"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "heading",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "heading": "Ready to see the agents work?"
+          }
+        },
+        {
+          "name": "body",
+          "role": "body \u2014 states the exchange",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "One registration gets you the live broadcast, the recordings, and a place in line for early access. It takes about a minute."
+          }
+        },
+        {
+          "name": "form",
+          "role": "signup \u2014 registration form",
+          "width": "hug",
+          "z": "front",
+          "contract": "form",
+          "copy": {
+            "submit": "Save my seat",
+            "meta": "Thursday, September 17, 2026 \u00b7 16:00\u201318:00 UTC \u00b7 Virtual",
+            "consent": "By registering, you agree to Remote's Terms and Privacy Policy. We'll email you about Launch Day and Remote Agents early access \u2014 unsubscribe anytime.",
+            "success": "You're in. Check your inbox for the calendar invite and your pass.",
+            "fields": [
+              {
+                "kind": "text",
+                "label": "Full name",
+                "name": "full-name",
+                "placeholder": "Alex Serra",
+                "required": true,
+                "span": "half",
+                "autocomplete": "name",
+                "error": "Enter your full name."
+              },
+              {
+                "kind": "email",
+                "label": "Work email",
+                "name": "work-email",
+                "placeholder": "alex@company.com",
+                "helper": "Your pass, calendar invite, and recordings land here.",
+                "required": true,
+                "span": "half",
+                "autocomplete": "email",
+                "error": "Check the email address \u2014 it doesn't look complete."
+              },
+              {
+                "kind": "text",
+                "label": "Company",
+                "name": "company",
+                "placeholder": "Company name",
+                "required": true,
+                "span": "half",
+                "autocomplete": "organization",
+                "error": "Enter your company name."
+              },
+              {
+                "kind": "select",
+                "label": "Company size",
+                "name": "company-size",
+                "placeholder": "How many people?",
+                "options": [
+                  "1\u201310",
+                  "11\u201350",
+                  "51\u2013200",
+                  "201\u20131,000",
+                  "1,000+"
+                ],
+                "required": true,
+                "span": "half",
+                "error": "Pick a range."
+              },
+              {
+                "kind": "select",
+                "label": "Your role",
+                "name": "role",
+                "placeholder": "Choose the closest fit",
+                "options": [
+                  "People / HR",
+                  "Finance / Payroll",
+                  "Engineering / IT",
+                  "Founder / Leadership",
+                  "Other"
+                ],
+                "helper": "So we can point you at the right sessions.",
+                "span": "full"
+              },
+              {
+                "kind": "radio-group",
+                "label": "Pass",
+                "name": "pass",
+                "options": [
+                  "Virtual \u2014 free",
+                  "Builder \u2014 $149",
+                  "Team \u2014 $549, five seats"
+                ],
+                "checkedIndex": 0,
+                "helper": "Paid passes continue to payment after this step. Fully refundable until September 10, 2026.",
+                "span": "full"
+              },
+              {
+                "kind": "checkbox",
+                "label": "Product news from Remote, about once a month",
+                "name": "product-news",
+                "span": "full"
+              }
+            ]
+          }
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "centered"
+      }
+    }
+  ]
+}

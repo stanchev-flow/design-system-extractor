@@ -1,0 +1,176 @@
+{
+ "schemaVersion": "computed-measure.v1",
+ "source": "screenshots/hubspot-v2/hubspot.html",
+ "viewport": {
+  "w": 1440,
+  "h": 900
+ },
+ "jsEnabled": false,
+ "docHeight": 6986,
+ "chrome": [
+  {
+   "name": "header",
+   "classes": "global-nav-header",
+   "cappedFrom": null,
+   "rect": {
+    "x": 0,
+    "y": 0,
+    "w": 1440,
+    "h": 128
+   }
+  },
+  {
+   "name": "footer",
+   "classes": "hsg-footer global-footer",
+   "cappedFrom": null,
+   "rect": {
+    "x": 0,
+    "y": 6330.1875,
+    "w": 1440,
+    "h": 655.40625
+   }
+  }
+ ],
+ "sections": [
+  {
+   "index": 0,
+   "tag": "section",
+   "classes": "csol-section wf-page-header wf-page-header-human -image-loaded -has-desktop-images -max-width-default -padding-top-none -padding-b",
+   "id": "homepage_page_header",
+   "rect": {
+    "x": 0,
+    "y": 128,
+    "w": 1440,
+    "h": 772
+   },
+   "backgroundColor": "rgb(4, 39, 41)",
+   "heading": "Where go-to-market teams go to \n               grow scale close retain grow"
+  },
+  {
+   "index": 1,
+   "tag": "section",
+   "classes": "csol-section csol-logo-carousel -large -padding-top-md -padding-bottom-md",
+   "id": "widget_194002141486",
+   "rect": {
+    "x": 0,
+    "y": 900,
+    "w": 1440,
+    "h": 260.53125
+   },
+   "backgroundColor": "rgb(252, 252, 250)",
+   "heading": "299,000+ customers in over 135 countries grow their businesses with HubSpot."
+  },
+  {
+   "index": 2,
+   "tag": "section",
+   "classes": "csol-section wf-customer-platform -padding-top-md -padding-bottom-md",
+   "id": "widget_195064770155",
+   "rect": {
+    "x": 0,
+    "y": 1160.53125,
+    "w": 1440,
+    "h": 742.8125
+   },
+   "backgroundColor": "rgb(252, 252, 250)",
+   "heading": "HubSpot's Agentic Customer Platform"
+  },
+  {
+   "index": 3,
+   "tag": "section",
+   "classes": "csol-section wf-product-platform -padding-top-md -padding-bottom-md",
+   "id": "widget_194002141487",
+   "rect": {
+    "x": 0,
+    "y": 1903.34375,
+    "w": 1440,
+    "h": 1600
+   },
+   "backgroundColor": "rgb(252, 252, 250)",
+   "heading": "Growing a business is hard. HubSpot makes it easier."
+  },
+  {
+   "index": 4,
+   "tag": "section",
+   "classes": "csol-section wf-animated-carousel-section -breeze -padding-top-md -padding-bottom-md",
+   "id": "widget_194002141488",
+   "rect": {
+    "x": 0,
+    "y": 3503.34375,
+    "w": 1440,
+    "h": 992
+   },
+   "backgroundColor": "rgb(252, 222, 210)",
+   "heading": "Built-in AI agents that work for you 24/7."
+  },
+  {
+   "index": 5,
+   "tag": "section",
+   "classes": "csol-section wf-rotating-svg -padding-top-md -padding-bottom-xs",
+   "id": "",
+   "rect": {
+    "x": 0,
+    "y": 4495.34375,
+    "w": 1440,
+    "h": 330
+   },
+   "backgroundColor": "rgb(252, 252, 250)",
+   "heading": "Works with the tools you already use. 2,000+ integrations."
+  },
+  {
+   "index": 6,
+   "tag": "section",
+   "classes": "csol-section -padding-top-md -padding-bottom-none",
+   "id": "widget_194002141490",
+   "rect": {
+    "x": 0,
+    "y": 4825.34375,
+    "w": 1440,
+    "h": 240
+   },
+   "backgroundColor": "rgb(252, 252, 250)",
+   "heading": "Remarkable results for every size business."
+  },
+  {
+   "index": 7,
+   "tag": "section",
+   "classes": "csol-section breeze-agents-tabbed-testimonials__section -statistics-variation -padding-top-s -padding-bottom-xs",
+   "id": "",
+   "rect": {
+    "x": 0,
+    "y": 5065.34375,
+    "w": 1440,
+    "h": 714.09375
+   },
+   "backgroundColor": "rgb(252, 252, 250)",
+   "heading": ""
+  },
+  {
+   "index": 8,
+   "tag": "section",
+   "classes": "csol-section wf-badges -padding-top-s -padding-bottom-lg",
+   "id": "widget_194002141492",
+   "rect": {
+    "x": 0,
+    "y": 5779.4375,
+    "w": 1440,
+    "h": 216
+   },
+   "backgroundColor": "rgb(252, 252, 250)",
+   "heading": "Voted #1 in 526 G2 Reports"
+  },
+  {
+   "index": 9,
+   "tag": "section",
+   "classes": "csol-section wf-elevated-cta  -padding-top-md -padding-bottom-md",
+   "id": "widget_1754602889014",
+   "rect": {
+    "x": 0,
+    "y": 5995.4375,
+    "w": 1440,
+    "h": 334.75
+   },
+   "backgroundColor": "rgb(4, 39, 41)",
+   "heading": "Make impossible growth feel impossibly easy, with HubSpot"
+  }
+ ]
+}

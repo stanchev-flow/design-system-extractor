@@ -1,0 +1,86 @@
+schemaVersion: section-grounding.v1
+sectionRole: banner
+layout:
+  structure: split ~50/50, copy left / integration logo collage right, inside an inset rounded card
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 90
+    bottom: 60
+  gapPx: 40
+  containerWidth: inset-panel
+surfaces:
+- role: canvas
+  bgApprox: '#faf8f5'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: band
+  bgApprox: 'gradient(#f4c9c0 -> #f6d9c8)'
+  parent: canvas
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: card
+  bgApprox: '#ffffff'
+  parent: canvas
+  radiusPx: 16
+  borderApprox: '1px #ececec'
+  inkApprox: '#1a1a1a'
+- role: media-well
+  bgApprox: '#ffffff'
+  parent: card
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+typography:
+- role: h2
+  approxSizePx: 28
+  weightApprox: 700
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: link
+  approxSizePx: 15
+  weightApprox: 600
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+relationalSpacingPx:
+  headingToCta: 34
+components:
+- kind: link
+  variant: text-underline
+  countObserved: 1
+  anatomy: text label with orange underline rule beneath
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: sentence
+copy:
+  heading: Works with the tools you already use. 2,000+ integrations.
+  actions:
+  - label: See all app integrations
+    styleHint: text-underline (orange underline)
+media:
+- kind: logo-vector
+  treatment: colorful app logo collage (Slack, Zapier, Mailchimp, Gmail, Shopify, Google) tiled at angles,
+    cropped at edges
+  aspect: landscape
+  approxFractionOfSection: 0.5
+motionHints:
+- logo collage cropped mid-item at right/bottom edges (scroll or drift affordance)
+confidence: high
+notes:
+- top gradient band is truncated at crop top edge
+- logo collage cut off at card bottom and right edges
+_source:
+  crop: section-06-csol-section-wf-rotating-svg-padding-top-md-padd.png
+  domClasses: csol-section wf-rotating-svg -padding-top-md -padding-bottom-xs
+  model: claude-opus-4-8

@@ -1,0 +1,113 @@
+# STANDARD (brand-agnostic) layout patterns for the FEATURES use-case.
+# origin: designed — general generalizations of the harvest clusters. Sizes are classes, never px.
+schemaVersion: layout-patterns.v1
+useCase: features
+patterns:
+
+  - id: features-split-feature
+    useCase: features
+    archetypeRef: split
+    surfaceIntent: any
+    intent: "Single feature explainer — copy column beside a contained product/media pane."
+    contentShape:
+      alignment: { value: left, counterweight: media, inheritance: per-slot-override }
+      slots:
+        - { name: eyebrow, role: overline, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: heading, role: section-title, textLen: short, sizeClass: title, width: hug, z: front }
+        - { name: body, role: body-copy, textLen: long, sizeClass: body, width: stretch, sizeRel: { to: media, ratio: 0.5, axis: width }, z: front }
+        - { name: actions, role: cta-group, textLen: short, sizeClass: body, width: hug, z: front }
+        - { name: media, role: product-shot, mediaAspect: landscape, mediaScale: { of: container, fraction: 0.5 }, width: media, z: mid }
+    specialTreatments:
+      - { kind: overlap, pair: [heading, media], zOrder: [media, heading], amount: { class: light } }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      mediaSide: { type: enum, values: [left, right], default: right }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters split_feature x6, blue_inset_feature_module", sources: [harvest-10-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "split-feature", by: creation, signalId: null, note: "hand-blessed from harvest report (features: overlap x11, ghost-word x7)" }
+
+  - id: features-shared-light-run
+    useCase: features
+    archetypeRef: stack
+    surfaceIntent: panel
+    intent: "Editorial feature run on a shared light canvas — centered intro over stretched supporting copy, continuing surface."
+    contentShape:
+      alignment: { value: left, counterweight: label, inheritance: per-slot-override }
+      slots:
+        - { name: eyebrow, role: overline, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: heading, role: section-title, textLen: short, sizeClass: title, width: hug, z: front }
+        - { name: body, role: body-copy, textLen: long, sizeClass: body, width: stretch, z: front }
+        - { name: label, role: vertical-rail-label, textLen: word, sizeClass: caption, width: hug, z: mid }
+    specialTreatments:
+      - { kind: stagger, target: body, axis: vertical, amount: { class: light } }
+    responsive: { collapse: reflow, mediaFirst: false }
+    variantKnobs:
+      railSide: { type: enum, values: [left, none], default: left }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters shared_light_canvas_run x5, shared_light_editorial_run, rounded_tray_with_vertical_label_rail", sources: [harvest-10-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "shared-light-run", by: creation, signalId: null, note: "hand-blessed from harvest report" }
+
+  - id: features-icon-label-grid
+    useCase: features
+    archetypeRef: grid
+    surfaceIntent: any
+    intent: "N-up grid of compact icon + label + short-body feature cells."
+    contentShape:
+      alignment: { value: centered, inheritance: block-inherits }
+      slots:
+        - { name: heading, role: section-title, textLen: short, sizeClass: title, width: hug, z: front }
+        - { name: icon, role: feature-icon, mediaAspect: square, mediaScale: { of: slot, fraction: 0.25 }, width: hug, z: front }
+        - { name: label, role: feature-label, textLen: short, sizeClass: body, width: hug, z: front }
+        - { name: body, role: feature-body, textLen: long, sizeClass: caption, width: stretch, z: front }
+    specialTreatments:
+      - { kind: stagger, target: body, axis: horizontal, amount: { class: light } }
+    responsive: { collapse: reflow, mediaFirst: false }
+    variantKnobs:
+      columns: { type: enum, values: ["2", "3", "4"], default: "3" }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters compact_icon_label_pair, centered_narrow_row_four_inline_icon_label_items", sources: [harvest-10-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "icon-label-grid", by: creation, signalId: null, note: "hand-blessed from harvest report" }
+
+  - id: features-media-card-overlay
+    useCase: features
+    archetypeRef: bento
+    surfaceIntent: any
+    intent: "Tall fixed media cards with a top badge and large heading overlaid on the media, plus ghost accent word."
+    contentShape:
+      alignment: { value: left, counterweight: media, inheritance: per-slot-override }
+      slots:
+        - { name: ghostword, role: watermark, textLen: word, sizeClass: colossal, width: full-bleed, opacityClass: ghost, z: back }
+        - { name: badge, role: badge, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: heading, role: card-title, textLen: short, sizeClass: title, width: hug, z: front }
+        - { name: body, role: card-body, textLen: long, sizeClass: caption, width: stretch, z: front }
+        - { name: media, role: card-media, mediaAspect: portrait, mediaScale: { of: container, fraction: 1.0 }, width: media, z: mid }
+    specialTreatments:
+      - { kind: text-on-media, target: heading, over: media }
+      - { kind: ghost-word, target: ghostword, anchor: behind-media, bleed: partial }
+      - { kind: overlap, pair: [heading, media], zOrder: [media, heading], amount: { class: medium } }
+    responsive: { collapse: reflow, mediaFirst: false }
+    variantKnobs:
+      badgePos: { type: enum, values: [top-left, top-right], default: top-left }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters media_card_with_overlay_metadata, tall_fixed_media_card_with_top_badge_and_large_overlay_heading", sources: [harvest-10-projects] }
+    overridable: true
+    confidence: medium
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "media-card-overlay", by: creation, signalId: null, note: "hand-blessed from harvest report" }

@@ -1,0 +1,120 @@
+schemaVersion: section-grounding.v1
+sectionRole: features
+layout:
+  structure: 'centered heading top, then split: copy left / 3D layered illustration right, carousel controls
+    bottom'
+  columns: 2
+  alignment: mixed
+  approxPaddingPx:
+    top: 80
+    bottom: 100
+  gapPx: 80
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#faf9f5'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1c1c1c'
+- role: card
+  bgApprox: '#f0f0f0'
+  parent: canvas
+  radiusPx: 36
+  borderApprox: none
+  inkApprox: '#333333'
+typography:
+- role: h2
+  approxSizePx: 58
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1c1c1c'
+  familyClass: serif
+- role: body
+  approxSizePx: 16
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#2b2b2b'
+  familyClass: grotesque-sans
+- role: h3
+  approxSizePx: 38
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1c1c1c'
+  familyClass: serif
+- role: caption
+  approxSizePx: 16
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#555555'
+  familyClass: grotesque-sans
+relationalSpacingPx:
+  headingToBody: 20
+components:
+- kind: button
+  variant: filled-neutral
+  countObserved: 2
+  anatomy: circular icon button with chevron glyph, one left (prev) one right (next)
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 28
+  surfaceApprox: '#eeece7'
+  inkApprox: '#333333'
+  caseTreatment: sentence
+- kind: icon
+  variant: carousel-dots
+  countObserved: 3
+  anatomy: 3 dots, first filled dark, others light gray
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 8
+  surfaceApprox: '#1c1c1c'
+  inkApprox: '#1c1c1c'
+  caseTreatment: sentence
+- kind: media-frame
+  variant: layered-3d-panels
+  countObserved: 1
+  anatomy: stacked isometric translucent panels labeled Smart CRM / Hubs / Breeze with orange icon-grid
+    card in front
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#333333'
+  caseTreatment: title
+copy:
+  eyebrow: null
+  heading: HubSpot's Agentic Customer Platform
+  subheading: Connected data and tools make it easier to know, do, and connect everything across your
+    business.
+  body: HubSpot's Smart CRM is the single source of truth that connects all your business data.
+  items:
+  - heading: A CRM that’s really smart.
+    body: HubSpot's Smart CRM is the single source of truth that connects all your business data.
+    meta: null
+  logosLegible: []
+media:
+- kind: illustration
+  treatment: isometric layered translucent glass panels (orange, green, lilac) labeled Smart CRM / Hubs
+    / Breeze, orange front card with monochrome tool icons
+  aspect: landscape
+  approxFractionOfSection: 0.45
+motionHints:
+- carousel dots (3, first active) indicate slide advance
+- prev/next circular chevron buttons for slide navigation
+- left prev button dimmed indicating first slide position
+confidence: high
+notes:
+- prev button appears disabled/dimmed (first slide state)
+- illustration is a stylized product-UI representation of layered platform tiers
+_source:
+  crop: section-03-csol-section-wf-customer-platform-padding-top-md.png
+  domClasses: csol-section wf-customer-platform -padding-top-md -padding-bottom-md
+  model: claude-opus-4-8

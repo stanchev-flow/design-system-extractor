@@ -1,0 +1,1646 @@
+# brand.yaml — canonical design language for HubSpot (hubspot.com) — "HubSpot v2"
+# Authored 2026-07-10 by the extraction agent from the FRESH live capture
+# (screenshots/hubspot-v2/, Playwright 1440x900, webfonts downloaded into the
+# capture) through the evidence-first flow (run_brand_extraction.py mine-dom →
+# mine-css → mine-motion → measure → slice → ground → curate;
+# spec/layout-analyst-skill.md authoring protocol).
+#
+# MEASUREMENT SOURCES (evidence/ bundle, all reproducible):
+#  - evidence/css-facts.json + the site's OWN custom-property token sheet mined
+#    from the captured CSS: --light-theme-* / --dark-theme-* literal palette
+#    (105 tokens per scheme), --cl-font-* type registers, --cl-border-radius-*
+#    (4/8/16px), --cl-button-padding-* (8x16 / 12x24 / 16x40), --cl-section-padding-*
+#    (24/40/64/96), --cl-section-gutter 16px, --button-transition 0.15s
+#  - evidence/computed-styles.json — JS-off getComputedStyle at 1440x900 + the
+#    1920/1440/960/375 tier ladder: chrome bars (header 128px white, footer
+#    #1f1f1f), container 1080px at every tier, 48 action families
+#  - targeted JS-off element measures @1440 (hero h1 80/95 serif 500; section h2
+#    48/55.4 and 40/44 serif 500; body 16/28 w300; card h3 18/28 + 24/34 sans 500;
+#    tab pill 14/22 w500 r16 wash; footer link 12px w500 62%-cream)
+#  - evidence/motion-audit.json — 59 transition rules, 6 animation rules,
+#    9 keyframes, 7 motion custom properties, duration/easing censuses
+#  - evidence/grounding/*.yaml — 12 per-section VISION grounding files
+#    (claude-opus-4-8): surfaces w/ parents, per-section type + component
+#    inventory, verbatim copy, media creative direction
+#  - runs/hubspot-v2/assets/source-chrome.v2.json — offline browser chrome
+#    contract + 5 measured OPEN mega/dropdown panels (evidence/chrome-states/)
+#
+# HubSpot reads as a WARM EDITORIAL SaaS system: a warm off-white canvas
+# (#fcfcfa) with cream accents (#f8f5ee), ONE vivid orange (#ff4800) carrying
+# every primary action and accent period, serif display headings (HubSpot Serif,
+# weight 500, sentence case) over a light sans body (HubSpot Sans at weight 300),
+# soft 8px-radius squared buttons (never pills), white cards on hairline borders,
+# warm peach/pink gradient art bands, and TWO dark surfaces: a deep-teal
+# conversion band (#042729) and the near-black footer (#1f1f1f).
+
+version: "1.1"
+
+brand:
+  name: "HubSpot"
+  sourceUrl: "https://www.hubspot.com/"
+  baseStyle: corporate-saas-warm-editorial
+  snapshot:
+    value: >-
+      A warm, editorial SaaS marketing system on an off-white canvas (#fcfcfa — the
+      site's own light-theme background-01 token) accented in cream (#f8f5ee) and led
+      by a single vivid orange (#ff4800 — the brand token that fills every primary
+      button, checkmark, underline accent, and the wordmark itself). Display headings
+      are HubSpot Serif at weight 500, sentence case, frequently closing with an
+      orange period accent; the hero runs an 80px serif register over a full-bleed
+      photograph with cream ink. Body copy is HubSpot Sans at the LIGHT weight (300),
+      16px/28px. Buttons are soft 8px-radius rectangles with a 2px border slot at
+      three sizes (8x16 / 12x24 / 16x40): filled orange primary (hover darkens
+      #c93700, pressed #9f2800), white secondary outlined 2px orange whose hover
+      washes #fcece6, an ink-outlined tertiary, and near-black neutral chrome pills
+      only in mega-panel CTAs. Text links are INK (#1f1f1f) — often decorated with an
+      orange underline (the site's text-link-underline token) — and card text-arrows
+      slide 5px right on hover. Cards are white on hairline rgba(0,0,0,0.11) borders
+      at radius 8 (product grid) or 16 (feature carousels, banner panels); media
+      wells inside agent cards ride a warm sand (#ece6d9). Section seams and feature
+      bands carry warm peach/pink gradient art (accent fills #fcc6b1, #fcc3dc,
+      #ffa581). Proof rides real logo vectors, G2 badge art, tabbed case-study
+      quotes with serif stat numerals. Two dark surfaces only: the deep-teal
+      closing CTA band (#042729, dark-theme background-01) and the near-black
+      footer (#1f1f1f) with cream 62%-alpha links.
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-10T20:00:00Z", action: created, from: null,
+          to: "warm editorial serif-display orange-action system (fresh capture ground truth)",
+          by: creation, signalId: null,
+          note: "first extraction for the hubspot-v2 lane — evidence-first from the site's own --light-theme/--dark-theme/--cl-* token sheet + JS-off measures + 12 vision groundings" }
+
+meta:
+  # P1.1 canonical-tier discipline (validator C14): every canonical value in this
+  # file (sizeRem.base, spacing value:, radius value:) refers to the 1440px measured
+  # tier unless a tier ladder says otherwise. The measure stage sampled the saved
+  # page at 1920/1440/960/375 (evidence/computed-styles.json `tiers`).
+  canonicalTier:
+    viewport: 1440
+    label: base
+    note: "sizeRem.base == computed @1440; the source's registers are stable from
+      960 through 1920 (container caps at 1080px from 1080w up; only the hero
+      display and body step down at 375)"
+    measuredTiers: [1920, 1440, 960, 375]
+    source: computed
+    provenance: [evidence/computed-styles.json]
+
+indexes:
+  assetsTagged:     "./assets-tagged.json"
+  savedPageHtml:    "../../../screenshots/hubspot-v2/hubspot.html"
+  savedPageAssets:  "../../../screenshots/hubspot-v2/hubspot_files/"
+  sourceScreenshot: "../../../screenshots/hubspot-v2/hubspot-fullpage.png"
+  voice:            "./voice.md"
+  layoutLibrary:    "./layout-library.yaml"
+  sectionCopy:      "./section-copy.yaml"
+  evidenceBundle:   "./evidence/"
+  cssFacts:         "./evidence/css-facts.json"
+  computedStyles:   "./evidence/computed-styles.json"
+  domCensus:        "./evidence/dom-sections.json"
+  motionAudit:      "./evidence/motion-audit.json"
+  visionGrounding:  "./evidence/grounding/"
+  chromeContract:   "../assets/source-chrome.v2.json"
+  chromeStates:     "./evidence/chrome-states/"
+  interactionStates: "./evidence/interaction-states/"
+
+tokens:
+  colors:
+    # ── ink / neutrals — the site's own light-theme scale
+    ink/primary:      { value: "#1f1f1f", role: "heading + body + nav-link ink (--light-theme-text-01 / link-01 / border-01 / icon-01; measured body color rgb(31,31,31))", status: mapped, source: [saved-css, computed], provenance: [hero, product-grid, testimonial-tabs, navbar] }
+    ink/secondary:    { value: "rgba(0, 0, 0, 0.62)", role: "muted ink (--light-theme-text-02): quieter captions, tertiary-button hover fill, pressed-link states", status: mapped, source: saved-css, provenance: [testimonial-tabs, footer] }
+    ink/placeholder:  { value: "rgba(0, 0, 0, 0.4)", role: "placeholder / disabled text (--light-theme-text-placeholder-01)", status: mapped, source: saved-css }
+    ink/icon:         { value: "#292929", role: "secondary icon ink (--light-theme-icon-02; social-button fill idle)", status: mapped, source: saved-css, provenance: [footer] }
+    # ── surfaces (light scheme steps)
+    neutral/canvas:   { value: "#fcfcfa", role: "page canvas (--light-theme-background-01; body background measured rgb(252,252,250))", status: mapped, source: [saved-css, computed], provenance: [logo-wall, product-grid, testimonial-tabs] }
+    neutral/cream:    { value: "#f8f5ee", role: "warm cream (--light-theme-background-02/03): raised band tint, dark-surface INK (text-01 on dark = this cream), mega-CTA surface family", status: mapped, source: saved-css, provenance: [hero, closing-cta, footer] }
+    neutral/card:     { value: "#ffffff", role: "card/panel surface (--light-theme-container-01): product cards, agent cards, banner panel, mega panels, chrome bar", status: mapped, source: saved-css, provenance: [product-grid, agent-carousel, integration-banner, navbar] }
+    # ── orange action family — the brand's ONE accent (site brand token)
+    action/primary:          { value: "#ff4800", role: "primary CTA fill (--light-theme-button-primary-fill-idle == --light-theme-hubspot-brand-01 == text-brand-01 == border-brand-01 == checkmark fill: buttons, wordmark, checkmarks, underline accents, heading period accents)", status: mapped, source: [saved-css, computed], provenance: [hero, product-grid, closing-cta, navbar] }
+    action/primary-hover:    { value: "#c93700", role: "primary CTA hover fill (--light-theme-button-primary-fill-hover / hover-brand-01); secondary-button hover ink", status: mapped, source: saved-css, provenance: [hero] }
+    action/primary-active:   { value: "#9f2800", role: "primary CTA pressed fill (--light-theme-button-primary-fill-pressed / pressed-brand-01)", status: mapped, source: saved-css, provenance: [hero] }
+    action/secondary-wash:   { value: "#fcece6", role: "secondary (outlined) button hover wash (--light-theme-button-secondary-fill-hover)", status: mapped, source: saved-css, provenance: [hero] }
+    action/secondary-pressed: { value: "#fcc6b1", role: "secondary button pressed fill (--light-theme-button-secondary-fill-pressed — the peach accent-fill-02 step)", status: mapped, source: saved-css, provenance: [hero] }
+    action/neutral:          { value: "#1f1f1f", role: "neutral filled control (--light-theme-button-tertiary-fill-idle): skip-link pill, dark utility fills; hover rgba(0,0,0,0.62), pressed rgba(0,0,0,0.47)", status: mapped, source: saved-css, provenance: [navbar] }
+    state/focus:             { value: "#2f7579", role: "focus ring + 'free' semantic teal (--light-theme-focus-01 / free-01 / border-highlight-01)", status: mapped, source: saved-css }
+    state/disabled-fill:     { value: "rgba(0, 0, 0, 0.02)", role: "disabled button fill (--light-theme-disabled-02; label rgba(0,0,0,0.2) disabled-01)", status: mapped, source: saved-css }
+    state/error:             { value: "#d9002b", role: "error semantic (--light-theme-error-01; wash #fcc5be)", status: mapped, source: saved-css }
+    state/success:           { value: "#00823a", role: "success semantic (--light-theme-success-01; wash #bde7cb)", status: mapped, source: saved-css }
+    # ── warm art family — accent fills/decorations (gradient bands, seams, chips)
+    accent/peach:      { value: "#fcc6b1", role: "peach accent fill (--light-theme-accent-fill-02 = badge-brand-fill-01): gradient-band art, secondary-pressed, loading fills", status: mapped, source: [saved-css, vision], provenance: [product-grid, agent-carousel] }
+    accent/pink:       { value: "#fcc3dc", role: "pink accent (accent-decoration-08 / background-accent-03): gradient-band art partner", status: mapped, source: [saved-css, vision], provenance: [product-grid, agent-carousel] }
+    accent/coral:      { value: "#ffa581", role: "coral decoration step (--light-theme-accent-decoration-02): warm gradient midpoints", status: mapped, source: [saved-css, vision], provenance: [agent-carousel] }
+    accent/sand:       { value: "#ece6d9", role: "sand media-well fill inside cards (--light-theme-accent-fill-05; vision read #f2ece4 on the agent-card wells)", status: mapped, source: [saved-css, vision], provenance: [agent-carousel] }
+    accent/sage:       { value: "#b9cdbe", role: "sage accent fill (--light-theme-accent-fill-04 / background-accent-01)", status: mapped, source: saved-css }
+    accent/stone:      { value: "#cfcccb", role: "stone neutral fill (--light-theme-accent-fill-01 / neutral-background-01 / hover-03)", status: mapped, source: saved-css }
+    accent/lilac:      { value: "#d7cdfc", role: "lilac accent fill (--light-theme-accent-fill-06; platform-illustration layer family)", status: mapped, source: [saved-css, vision], provenance: [platform-carousel] }
+    accent/aqua:       { value: "#b2e9eb", role: "aqua accent fill (--light-theme-accent-fill-07)", status: mapped, source: saved-css }
+    # ── dark scheme (the site's own dark-theme scope — two REAL dark surfaces)
+    surface/deep-teal:     { value: "#042729", role: "deep-teal dark band (--dark-theme-background-01 / container-01: the closing CTA band; vision read #0a2a28)", status: mapped, source: [saved-css, vision], provenance: [closing-cta] }
+    surface/deep-teal-raised: { value: "#093436", role: "raised step on the deep teal (--dark-theme-background-02/03)", status: mapped, source: saved-css, provenance: [closing-cta] }
+    surface/footer:        { value: "#1f1f1f", role: "near-black footer band (--light/dark-theme-background-footer-01; measured footer bg rgb(31,31,31))", status: mapped, source: [saved-css, computed], provenance: [footer] }
+    # ── interaction / borders
+    text/link:             { value: "#1f1f1f", role: "text links are INK (--light-theme-link-01) — never orange text; hover holds ink (hover-link-01) and rides underline/arrow devices", status: mapped, source: saved-css, provenance: [product-grid, integration-banner] }
+    text/link-deep:        { value: "#124548", role: "mega-panel link ink (--light-theme-link-02; measured mega panel link rgb(18,69,72))", status: mapped, source: [saved-css, computed], provenance: [navbar] }
+    text/link-underline:   { value: "#ff4800", role: "the ORANGE underline decoration under ink text links (--light-theme-text-link-underline-01) — signature device", status: mapped, source: saved-css, provenance: [integration-banner, testimonial-tabs] }
+    border/hairline:       { value: "rgba(0, 0, 0, 0.11)", role: "hairline card/divider border (--light-theme-border-03 / divider-01; product cards, banner panel, testimonial card, mega CTA border)", status: mapped, source: [saved-css, computed], provenance: [product-grid, integration-banner, testimonial-tabs] }
+    border/strong:         { value: "rgba(0, 0, 0, 0.47)", role: "strong hairline (--light-theme-border-02; mega-panel top rule measured 1px rgba(0,0,0,0.47))", status: mapped, source: [saved-css, computed], provenance: [navbar] }
+    overlay/hover-wash:    { value: "rgba(0, 0, 0, 0.05)", role: "wash on light surfaces (--light-theme-hover-01; tab pills idle bg, round-control hover)", status: mapped, source: [saved-css, computed], provenance: [testimonial-tabs, platform-carousel] }
+    overlay/scrim:         { value: "rgba(0, 0, 0, 0.81)", role: "overlay scrim (--light-theme-overlay-01 / hover-inverse-01)", status: mapped, source: saved-css }
+    # ── canonical render-role ALIASES — the shared renderers resolve these EXACT names.
+    surface/primary:            { value: "#fcfcfa", role: "ALIAS of neutral/canvas — canonical page-canvas role", status: mapped, source: saved-css, provenance: [logo-wall, product-grid] }
+    surface/panel:              { value: "#ffffff", role: "ALIAS of neutral/card — canonical panel/card role (white cards on the warm canvas)", status: mapped, source: saved-css, provenance: [product-grid, agent-carousel] }
+    surface/raised:             { value: "#f8f5ee", role: "ALIAS of neutral/cream — canonical raised-light role (warm cream)", status: mapped, source: saved-css }
+    surface/inverse:            { value: "#042729", role: "ALIAS of surface/deep-teal — canonical dark band role (closing CTA)", status: mapped, source: saved-css, provenance: [closing-cta] }
+    surface/inverse-strong:     { value: "#1f1f1f", role: "ALIAS of surface/footer — the near-black chrome dark (footer band)", status: mapped, source: saved-css, provenance: [footer] }
+    accent/highlight:           { value: "#ff4800", role: "ALIAS of action/primary — canonical accent role (the one orange; legal on light AND dark surfaces: buttons keep the same fill family in both schemes)", status: mapped, source: saved-css, provenance: [hero, closing-cta] }
+    accent/highlight-on-inverse: { value: "#ff4800", role: "accent ON dark surfaces — the orange family is scheme-stable (dark-theme button-primary-fill-idle is the same #ff4800)", status: mapped, source: saved-css, provenance: [closing-cta] }
+    text/on-primary:            { value: "#1f1f1f", role: "ALIAS of ink/primary — canonical ink-on-light role", status: mapped, source: saved-css }
+    text/on-primary-muted:      { value: "rgba(0, 0, 0, 0.62)", role: "ALIAS of ink/secondary — canonical muted-ink-on-light role (--light-theme-text-02)", status: mapped, source: saved-css }
+    text/on-inverse:            { value: "#f8f5ee", role: "canonical ink-on-dark role (--dark-theme-text-01 — the CREAM, not pure white; hero-on-photo + closing band + footer headings all measured rgb(248,245,238))", status: mapped, source: [saved-css, computed], provenance: [hero, closing-cta, footer] }
+    text/on-inverse-muted:      { value: "rgba(255, 255, 255, 0.62)", role: "canonical muted-ink-on-dark role (--dark-theme-text-02; footer links measured rgba(255,255,255,0.62))", status: mapped, source: [saved-css, computed], provenance: [footer] }
+    color/photo-tint:           { value: "#55453e", role: "sampled average of the photographic hero band's ink-bearing region (the copy-region tone of the tinted art) — the band's fallback canvas while the photo paints; generic photographic-surface tint role", status: mapped, source: screenshot, provenance: [hero] }
+    text/on-accent:             { value: "#ffffff", role: "label color on the orange primary fill (--light-theme-button-primary-text-color / text-on-color-01)", status: mapped, source: saved-css, provenance: [hero, closing-cta] }
+    text/ghost-on-primary:      { value: "rgba(0, 0, 0, 0.05)", role: "canonical ghost-on-light role — HubSpot has NO ghost-type device; bound to the measured light hover wash so any fallback stays on-palette", status: mapped, source: saved-css }
+    border/hairline-on-primary: { value: "rgba(0, 0, 0, 0.11)", role: "ALIAS of border/hairline — canonical hairline-on-light role", status: mapped, source: saved-css, provenance: [product-grid] }
+    border/hairline-on-inverse: { value: "rgba(255, 255, 255, 0.11)", role: "hairline-on-dark role (--dark-theme divider family rgba(255,255,255,0.0784–0.11): footer social-row rules)", status: mapped, source: saved-css, provenance: [footer] }
+  type:
+    # FLAT role shape so each role can declare a loadable renderProxy.
+    # HubSpot Sans + HubSpot Serif are the brand's OWN faces, captured as woff2 in
+    # this lane (screenshots/hubspot-v2/hubspot_files/fonts/) and SELF-HOSTED via
+    # the selfHostedFonts registry (assets/fonts/). renderProxy declares the
+    # measured fallback: Lexend Deca appears in the source's own body stack
+    # ("HubSpot Sans","Lexend Deca",…); Source Serif 4 proxies the serif when the
+    # local faces cannot load.
+    # Weights follow the source @font-face masters: Sans Book = 300–400,
+    # Sans Medium = 500–600, Serif Book = 300 (also the page-header display face),
+    # Serif Medium = 400–600. Headings measure w500; body measures w300.
+    display-hero:
+      { family: "HubSpot Serif", renderProxy: "Source Serif 4", sizeRem: { base: 5, tablet: 5, mobileL: 3, mobile: 3 }, lineHeight: "1.19em", weight: 400, letterSpacing: "0em", case: sentence,
+        tiers: { w1920: { px: 80, source: computed }, w1440: { px: 80, source: computed }, w960: { px: 80, source: computed }, w375: { px: 48, source: computed } },
+        note: "hero h1 measured 80px/95px @1440 (the page-header face maps every weight onto the Serif BOOK master — hence weight 400 here so the self-hosted Book file renders it); 48px @375; heading closes with an orange period accent" }
+    h1:
+      { family: "HubSpot Serif", renderProxy: "Source Serif 4", sizeRem: { base: 3, tablet: 3, mobileL: 2.5, mobile: 2.5 }, lineHeight: "1.15em", weight: 500, letterSpacing: "0em", case: sentence,
+        tiers: { w1920: { px: 48, source: computed }, w1440: { px: 48, source: computed }, w960: { px: 48, source: computed }, w375: { px: 40, source: saved-css } },
+        note: "the large section register: platform h2 + closing-cta h2 measured 48px/55.4px serif w500 @1440 (== the site's own --cl-font-size-h1 3rem); 2.5rem small register below (--cl-font-size-h1-small)" }
+    h2:
+      { family: "HubSpot Serif", renderProxy: "Source Serif 4", sizeRem: { base: 2.5, tablet: 2.5, mobileL: 2, mobile: 2 }, lineHeight: "1.1em", weight: 500, letterSpacing: "0em", case: sentence,
+        tiers: { w1920: { px: 40, source: computed }, w1440: { px: 40, source: computed }, w960: { px: 40, source: computed }, w375: { px: 32, source: saved-css } },
+        note: "the standard section heading: product/agent/case-study h2 measured 40px/44px serif w500 @1440 (== --cl-font-size-h2 2.5rem; 2rem small register); platform slide h3 rides this same 40px serif register" }
+    h3:
+      { family: "HubSpot Sans", renderProxy: "Lexend Deca", sizeRem: { base: 1.5, tablet: 1.5, mobileL: 1.375, mobile: 1.375 }, lineHeight: "1.42em", weight: 500, letterSpacing: "0em", case: sentence,
+        tiers: { w1920: { px: 24, source: computed }, w1440: { px: 24, source: computed }, w960: { px: 24, source: saved-css }, w375: { px: 22, source: saved-css } },
+        note: "sans card heading, large register: agent-card h3 measured 24px/34px sans w500 (== --cl-font-size-h3 1.5rem)" }
+    h4:
+      { family: "HubSpot Sans", renderProxy: "Lexend Deca", sizeRem: { base: 1.375, tablet: 1.375, mobileL: 1.125, mobile: 1.125 }, lineHeight: "1.45em", weight: 500, letterSpacing: "0em", case: sentence,
+        tiers: { w1920: { px: 22, source: computed }, w1440: { px: 22, source: computed }, w960: { px: 22, source: saved-css }, w375: { px: 18, source: saved-css } },
+        note: "standalone sans statement heading: logo-strip '299,000+ customers…' measured 22px/32px w500 @1440; badge-row + integration-banner headings ride it (== --cl-font-size-h4 1.375rem)" }
+    h5:
+      { family: "HubSpot Sans", renderProxy: "Lexend Deca", sizeRem: { base: 1.125, tablet: 1.125, mobileL: 1, mobile: 1 }, lineHeight: "1.56em", weight: 500, letterSpacing: "0em", case: sentence,
+        tiers: { w1920: { px: 18, source: computed }, w1440: { px: 18, source: computed }, w960: { px: 18, source: saved-css }, w375: { px: 16, source: saved-css } },
+        note: "compact card heading: product-grid card h3 measured 18px/28px sans w500 (== --cl-font-size-h5 1.125rem)" }
+    h6:
+      { family: "HubSpot Sans", renderProxy: "Lexend Deca", sizeRem: { base: 1, tablet: 1, mobileL: 1, mobile: 1 }, lineHeight: "1.5em", weight: 500, letterSpacing: "0em", case: sentence,
+        tiers: { w1920: { px: 16, source: saved-css }, w1440: { px: 16, source: saved-css }, w960: { px: 16, source: saved-css }, w375: { px: 16, source: saved-css } },
+        note: "smallest heading register (--cl-font-size-h6 1rem); footer column headings ride a 14px chrome variant (see footer.measured.heading)" }
+    eyebrow:
+      { family: "HubSpot Sans", renderProxy: "Lexend Deca", sizeRem: { base: 0.875, tablet: 0.875, mobileL: 0.875, mobile: 0.875 }, lineHeight: "1.57em", weight: 500, letterSpacing: "0.04em", case: uppercase,
+        tiers: { w1920: { px: 14, source: computed }, w1440: { px: 14, source: computed }, w960: { px: 14, source: computed }, w375: { px: 14, source: computed } },
+        note: "uppercase microlabel — hero tagline measured 14px/22px w500 uppercase (cream on the hero photo; == --cl-font-size-microheading 0.875rem, --cl-font-weight-microheading medium). The OTHER eyebrow register is the bordered PILL (sentence case 16px w300 in a 1px hairline box, radius 8 — 'Powered by AI', 'Case Studies'): see blocks.header.slots.eyebrow" }
+    body:
+      { family: "HubSpot Sans", renderProxy: "Lexend Deca", sizeRem: { base: 1, tablet: 1, mobileL: 1, mobile: 0.9 }, lineHeight: "1.75em", weight: 300, case: sentence,
+        tiers: { w1920: { px: 16, source: computed }, w1440: { px: 16, source: computed }, w960: { px: 16, source: computed }, w375: { px: 14.4, source: computed } },
+        note: "body measured 16px/28px w300 (the Sans BOOK master; --cl-font-weight-p-medium = light 300) — LIGHT body is a brand signature; 14.4px @375" }
+    body-lg:
+      { family: "HubSpot Sans", renderProxy: "Lexend Deca", sizeRem: { base: 1.125, tablet: 1.125, mobileL: 1, mobile: 1 }, lineHeight: "1.6em", weight: 300, case: sentence,
+        tiers: { w1920: { px: 18, source: saved-css }, w1440: { px: 18, source: saved-css }, w960: { px: 18, source: saved-css }, w375: { px: 16, source: saved-css } },
+        note: "large body register (--cl-font-size-large / p-large 1.125rem, weight light): hero supporting paragraph (vision read ~20px on the retina crop; the token register is 18px)" }
+    body-sm:
+      { family: "HubSpot Sans", renderProxy: "Lexend Deca", sizeRem: { base: 0.875, tablet: 0.875, mobileL: 0.875, mobile: 0.875 }, lineHeight: "1.57em", weight: 300, case: sentence,
+        tiers: { w1920: { px: 14, source: computed }, w1440: { px: 14, source: computed }, w960: { px: 14, source: saved-css }, w375: { px: 14, source: saved-css } },
+        note: "small body: product-card checkmark items measured 14px/22px w300 (--cl-font-size-small / p-small)" }
+    control-text:
+      { family: "HubSpot Sans", renderProxy: "Lexend Deca", sizeRem: { base: 1, tablet: 1, mobileL: 1, mobile: 1 }, lineHeight: "1.75em", weight: 500, letterSpacing: "0em", case: none,
+        tiers: { w1920: { px: 16, source: computed }, w1440: { px: 16, source: computed }, w960: { px: 16, source: computed }, w375: { px: 16, source: computed } },
+        note: "UI control register — the MEDIUM button label (16px/28px w500, --cl-button-font-size medium); small buttons 14px/22px, large buttons 18px/32px (see buttons); tab pills 14px w500" }
+    stat-display:
+      { family: "HubSpot Serif", renderProxy: "Source Serif 4", sizeRem: { base: 2.75, tablet: 2.75, mobileL: 2, mobile: 2 }, lineHeight: "1.15em", weight: 400, letterSpacing: "0em", case: none,
+        tiers: { w1920: { px: 44, source: vision }, w1440: { px: 44, source: vision }, w960: { px: 44, source: vision }, w375: { px: 32, source: vision } },
+        note: "serif stat numerals in the testimonial stats row (grounding section-08: ~44px serif '12' / '5' over sans captions)" }
+    # emphasis-inside-heading law: no <strong>/<b> renders inside any h1–h6 at any
+    # measured tier (computed tier ladder headingEmphasis: zero hits). Hierarchy is
+    # size + family (serif display vs sans card registers), never inline bolding.
+    headingEmphasis: { notObserved: true, reason: "0 strong/b-in-heading hits at 1920/1440/960/375 (computed tier ladder)", source: computed }
+    # counter-display / ghost-watermark / footer-sitemap-link tiers: ABSENT BY
+    # MEASUREMENT (no counter device, no ghost type, no display-size footer links
+    # anywhere on the page). Their absence disables those devices.
+  spacing:
+    # The site's own section ladder: --cl-section-padding-none/extra-small/small/
+    # medium/large = 0 / 16→24 / 24→40 / 40→64 / 64→96 px (base→≥breakpoint pairs
+    # mined from the captured sheets). Sections compose them per-edge via
+    # -padding-top-*/-padding-bottom-* modifiers (dom census).
+    section-padding-light: { value: "4rem",  role: "the workhorse vertical section rhythm (--cl-section-padding-medium 64px at desktop; most sections ride -padding-top-md/-padding-bottom-md)", modeLadder: { base: "4rem", tablet: "4rem", mobileL: "2.5rem", mobile: "2.5rem" }, status: mapped, source: saved-css }
+    section-y-sm:          { value: "2.5rem", role: "short section tier (--cl-section-padding-small 40px at desktop; badges row rides -padding-top-s)", modeLadder: { base: "2.5rem", tablet: "2.5rem", mobileL: "1.5rem", mobile: "1.5rem" }, status: mapped, source: saved-css }
+    section-y-xs:          { value: "1.5rem", role: "extra-short tier (--cl-section-padding-extra-small 24px at desktop; integration banner bottom)", modeLadder: { base: "1.5rem", tablet: "1.5rem", mobileL: "1rem", mobile: "1rem" }, status: mapped, source: saved-css }
+    section-y-lg:          { value: "6rem",  role: "spacious tier (--cl-section-padding-large 96px at desktop; badge row bottom = -padding-bottom-lg; hero pads ~210/200 ride its own photo band)", modeLadder: { base: "6rem", tablet: "6rem", mobileL: "4rem", mobile: "4rem" }, status: mapped, source: saved-css }
+    module-gap-editorial:  { value: "4rem",  role: "ALIAS of section-padding-light — preview/composer module rhythm", status: mapped, source: saved-css }
+    # ── relational ladder (P1.1, validator C15): named gaps BETWEEN content roles.
+    # The source has no structured-text custom properties; the ladder is authored
+    # from the vision groundings' relational reads at 1440 (three+ sections each),
+    # snapped to the 8px system grid.
+    eyebrow-to-heading:    { value: "1.5rem", role: "eyebrow→heading gap (hero grounding 24px; the product rail reads 40px under its pill register — the pill carries its own inset)", modeLadder: { base: "1.5rem", tablet: "1.5rem", mobileL: "1rem", mobile: "1rem" }, status: mapped, source: vision }
+    heading-to-body:       { value: "2rem",  role: "heading→body gap (groundings: hero 40, product 32, platform 20 — canonical 32 at the split/product register)", modeLadder: { base: "2rem", tablet: "2rem", mobileL: "1.5rem", mobile: "1.5rem" }, status: mapped, source: vision }
+    body-to-cta:           { value: "2.5rem", role: "body→actions gap (fix2: JS-off computed rect seams on the capture — hero 40, powered-by-ai 40, closing 40; the earlier vision 56/60 were ink-to-ink over-reads)", modeLadder: { base: "2.5rem", tablet: "2.5rem", mobileL: "2rem", mobile: "2rem" }, status: mapped, source: computed }
+    block-to-block:        { value: "2.5rem", role: "header-stack→content rhythm inside sections (grounding gapPx 32–40 between the header row and card tracks/split rows)", modeLadder: { base: "2.5rem", tablet: "2.5rem", mobileL: "2rem", mobile: "2rem" }, status: mapped, source: vision }
+    column-to-column:      { value: "5rem",  role: "split-row column gutter (platform grounding 80px copy↔illustration; case-study header 60px; product split 32 rides grid-gap)", modeLadder: { base: "5rem", tablet: "3rem", mobileL: "2rem", mobile: "2rem" }, status: mapped, source: vision }
+    grid-gap:              { value: "2rem",  role: "card grid gap (product grid + agent track grounding gapPx 32; testimonial card internal split 40)", status: mapped, source: vision }
+    panel-padding:         { value: "2rem",  role: "card/panel inset (product cards 32px measured pad; agent cards 28x40 vision; --cl-card-interactive-padding 1.5rem for compact cards)", status: mapped, source: [saved-css, vision] }
+    stack-md:              { value: "1.25rem", role: "intra-stack gap (heading→body inside cards, grounding 16–20px)", status: mapped, source: vision }
+    stack-lg:              { value: "2rem",  role: "content→actions inside cards/rails", status: mapped, source: vision }
+    list-item-gap:         { value: "1rem",  role: "checkmark-list row rhythm inside product cards (14px rows w/ 22px line, ~16px stride read from the crop)", status: mapped, source: vision }
+    button-inset:          { value: "0.75rem 1.5rem", role: "MEDIUM button inset 12x24 (--cl-button-padding-medium; small 8x16, large 16x40 — see buttons.sizes)", status: mapped, source: [saved-css, computed] }
+    container-max:         { value: "67.5rem", role: "content max-width 1080px measured at EVERY tier (nav/content/footer contentMaxWidth 1080; --cl-section-content-max-width)", status: mapped, source: computed }
+    container-span:        { value: "min(100vw - 2rem, 67.5rem)", role: "the container LAW as one CSS expression: 1080px cap, 16px side gutters below the cap (--cl-section-gutter 16px; tier facts: used 1080 @1440/1920 = 0.75/0.563 fraction, full-width minus gutters @960/375)", status: mapped, source: computed }
+    badge-tier:            { value: "5.625rem", role: "award badge tier (~90px G2 shields, grounding section-09)", status: mapped, source: vision }
+    logo-tier:             { value: "1.875rem", role: "customer logo tier (~30px wordmark vectors in the proof strip, grounding section-02)", status: mapped, source: vision }
+    radius-global:         { value: "0.5rem", role: "ALIAS of radius/button — the brand's working surface rounding (8px --cl-border-radius-medium)", status: mapped, source: saved-css }
+  radius:
+    # The site's own radius tokens: --cl-border-radius-small/medium/container =
+    # 4 / 8 / 16px (+ 50% circles on carousel controls). input 4px. Census also
+    # carries 3px/12px/48px/1rem literals from cookie-banner embed noise — not
+    # brand rungs.
+    small:  { value: "0.25rem", var: "--cl-border-radius-small / --cl-border-radius-input (4px)", role: "photos inside testimonial cards, form inputs", status: mapped, source: [saved-css, vision] }
+    button: { value: "0.5rem",  var: "--cl-border-radius-medium (8px); measured on every cl-button + the mega panel", role: "ALL buttons at every size + compact cards (product grid) + mega dropdown panels + eyebrow pills", status: mapped, source: [saved-css, computed] }
+    card:   { value: "0.5rem",  var: "--cl-border-radius-medium / --cl-border-radius-container-small (8px)", role: "compact card plates: product cards, testimonial card frame", status: mapped, source: [saved-css, vision] }
+    panel:  { value: "1rem",    var: "--cl-border-radius-container / -container-medium (16px)", role: "large panels: agent cards, integration banner card, tab pills (measured r16)", status: mapped, source: [saved-css, computed] }
+    circle: { value: "50%",     var: "border-radius: 50% (radiusCensus 10x)", role: "round carousel controls (48px --cl-carousel-controls-button-size), avatar crops", status: mapped, source: [saved-css, computed] }
+  shadow:
+    # Cards are FLAT — idle AND hover. Hover feedback is a background tint + a
+    # 1px ring (box-shadow 0 0 0 1px border-color), never elevation.
+    card-hover-ring: { value: "0 0 0 1px rgba(0,0,0,0.11)", role: "hoverable-card hover ring (.cl-card.-hoverable:hover: bg wash + box-shadow 0 0 0 1px var(--cl-card-border-hover-color)) — a RING, not a drop shadow", status: mapped, source: saved-css }
+  motion:
+    # Authored from evidence/motion-audit.json (59 transition rules, 6 animation
+    # rules, 9 keyframes, 7 timing custom properties). Durations are the census
+    # ladder; easings the mined curves. Selectors are PROVENANCE, never names.
+    durations:
+      state:      { value: "150ms", role: "THE control tier — button color/background/border (--button-transition '0.15s color ease-out, 0.15s background-color ease-out, …'; nav link background/color .15s linear)", census: 6, source: motion-audit }
+      move:       { value: "200ms", role: "small fades (mega panel opacity .2s ease-out/.2s ease-in with .1s delay pairing)", census: 8, source: motion-audit }
+      reveal:     { value: "300ms", role: "the DOMINANT tier — carousel slide (--cl-carousel-animation-duration 300ms ease), nav dropdown chevron (transform .3s ease), footer column collapse (all .3s ease), underline-offset shifts", census: 31, source: motion-audit }
+      settle:     { value: "400ms", role: "page-header image fade-in (--wf-page-header-image-loaded-speed 400ms ease-out)", census: 1, source: motion-audit }
+      emphasis:   { value: "500ms", role: "larger state swaps (a11y contrast toggle 0.5s ease-in-out family)", census: 10, source: motion-audit }
+      slow:       { value: "1000ms", role: "long choreography tier (carousel autoplay-adjacent timing census)", census: 5, source: motion-audit }
+    easings:
+      - { value: "ease", use: "the default curve — carousel easing (--cl-carousel-easing), dropdown transforms, footer collapse", census: 17, source: motion-audit }
+      - { value: "ease-in-out", use: "toggles + underline shifts (text-underline-offset .3s ease-in-out, contrast toggle)", census: 17, source: motion-audit }
+      - { value: "ease-out", use: "ENTER — button state family (--button-transition), panel fade-in, header image settle", census: 8, source: motion-audit }
+      - { value: "ease-in", use: "EXIT — panel fade-out pairing", census: 6, source: motion-audit }
+      - { value: "linear", use: "nav link background/color micro-shift (.15s linear)", census: 6, source: motion-audit }
+      - { value: "linear(0,0.006,0.023 2.2%,…,1)", use: "TWO spring-like linear() curves (modern spring easing) on decorative reveals — evidence of a spring register, used sparingly", census: 2, source: motion-audit }
+    signatureMoves:
+      - name: text-arrow-nudge
+        move: "card text-links slide their arrow icon 5px right on hover (transform: translateX(5px) on the icon span)"
+        timing: "rides the 150ms state tier"
+        sourceSelectors: [".wf-product-platform__card-textlink.cl-textLink:hover>.cl-textLink…", ".cl-textLink:hover"]
+      - name: button-state-fade
+        move: "buttons shift fill/ink/border together on one custom property (color, background-color, border-color .15s ease-out)"
+        timing: "150ms ease-out (--button-transition)"
+        sourceSelectors: ["--button-transition", ".cl-button:hover/:focus-visible"]
+      - name: mega-panel-fade
+        move: "nav dropdown panels fade in (opacity .2s ease-out + visibility .3s, .1s delay) and out (.2s ease-in); the trigger chevron rotates 180° on the reveal tier"
+        timing: "panel 200/300ms; chevron transform 300ms ease (--global-nav-dropdown-toggle-transition)"
+        sourceSelectors: [".global-nav-dropdown…", "--global-nav-dropdown-toggle-transition"]
+      - name: carousel-slide
+        move: "carousel trains translate on the reveal tier; dots swap active fill; round controls wash on hover (--cl-color-hover-01)"
+        timing: "300ms ease (--cl-carousel-animation-duration/-easing)"
+        sourceSelectors: [".cl-carousel-train", ".cl-round-button:hover"]
+      - name: logo-dim
+        move: "logo-strip logos dim to 55% opacity on hover"
+        timing: "opacity transition on the state tier"
+        sourceSelectors: [".csol-logo-carousel-logo-container:is(a):hover"]
+      - name: card-hover-ring
+        move: "hoverable cards tint their background (--cl-card-hover-background-color = hover-01 wash) and raise a 1px ring (box-shadow 0 0 0 1px) — flat, no elevation"
+        timing: "state tier"
+        sourceSelectors: [".cl-card.-hoverable:hover"]
+      - name: header-image-settle
+        move: "the hero photograph fades/settles in once loaded (opacity, 400ms ease-out)"
+        timing: "400ms ease-out (--wf-page-header-image-loaded-speed/-easing-function)"
+        sourceSelectors: ["--wf-page-header-image-loaded-*", ".wf-page-header.-image-loaded"]
+    reducedMotion: { value: "declared", role: "prefers-reduced-motion guards measured in the captured sheets (mediaBreakpoints census: no-preference gates on decorative motion)", source: motion-audit }
+    provenance: [evidence/motion-audit.json]
+    confidence: high
+    source: saved-css
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-10T20:00:00Z", action: created, from: null, to: "evidence-derived motion tokens (6-tier duration ladder, 6 easings, 7 signature moves)", by: creation, signalId: null, note: "P0.1 motion axis from the mine-motion stage output" }
+  imagery:
+    aspectPalette:
+      wide:      { value: "16 / 9", role: "full-bleed hero photography + platform illustrations", provenance: [hero, platform-carousel], source: vision }
+      landscape: { value: "3 / 2",  role: "agent-card media wells (product-UI mockups on sand wells)", provenance: [agent-carousel], source: vision }
+      portrait:  { value: "3 / 4",  role: "testimonial case-study photographs (left half of the quote card)", provenance: [testimonial-tabs], source: vision }
+      square:    { value: "1 / 1",  role: "product icons (~24px), app-logo collage tiles, badge art", provenance: [product-grid, integration-banner, badge-row], source: vision }
+  surfaces:
+    # LIGHT surfaces carry NO textAccent (composer dark-surface heuristic). The
+    # page runs light end-to-end until the closing sequence: deep-teal CTA band,
+    # then the near-black footer. Warm gradient art rides ON the light canvas as
+    # band/seam art, not a scheme change.
+    surface/primary:        { bg: "#fcfcfa", schemeMode: "base (Primary)", intent: "warm off-white page canvas (--light-theme-background-01)", textPrimary: text/on-primary, textAccent: null, provenance: [logo-wall, platform-carousel, product-grid, testimonial-tabs, badge-row] }
+    surface/panel:          { bg: "#ffffff", schemeMode: "Container",      intent: "white card/panel on the canvas (radius 8 compact / 16 large; hairline rgba(0,0,0,0.11) border; FLAT idle and hover — hover is a wash + 1px ring)", textPrimary: text/on-primary, textAccent: null, provenance: [product-grid, agent-carousel, integration-banner, testimonial-tabs] }
+    surface/raised:         { bg: "#f8f5ee", schemeMode: "Secondary",      intent: "warm cream raised band (--light-theme-background-02; subtle warm step off the canvas)", textPrimary: text/on-primary, textAccent: null, provenance: [logo-wall] }
+    surface/accent-wash:    { bg: "#fcc6b1", schemeMode: "base (Primary)", intent: "warm gradient ART band (peach #fcc6b1 -> pink #fcc3dc -> coral #ffa581 family): the agent-carousel band + product-grid bottom seam; DARK ink stays legal on it; white cards float on it", textPrimary: text/on-primary, textAccent: null, overlay: none, blur: none, provenance: [agent-carousel, product-grid] }
+    # fix1 2026-07 item-10: `controls: onInverse` — a surface-level fact that the
+    # brand's measured dark-surface BUTTON variants (buttons.<family>.onInverse)
+    # apply on this surface (generic reusable pattern: dark bands swap the outline
+    # family to the surface's own ink). photo-hero does NOT declare it: its measured
+    # secondary is the LIGHT white-fill variant (computed 'Get started free' on the
+    # hero: white bg + orange border/ink).
+    surface/inverse:        { bg: "#042729", schemeMode: "Inverse",        intent: "deep-teal conversion band (--dark-theme-background-01): cream ink, orange primary stays orange, secondary button swaps to cream outline", textPrimary: text/on-inverse, textAccent: accent/highlight-on-inverse, controls: onInverse, provenance: [closing-cta] }
+    surface/inverse-strong: { bg: "#1f1f1f", schemeMode: "Inverse",        intent: "near-black chrome dark (--*-theme-background-footer-01): the footer directory; cream headings, 62%-cream links", textPrimary: text/on-inverse, textAccent: accent/highlight-on-inverse, controls: onInverse, provenance: [footer] }
+    surface/photo-hero:     { bg: "#55453e", schemeMode: "Inverse",        intent: "full-bleed photographic hero band (warm interior office scene behind a measured rgba(0,0,0,0.4) scrim; #55453e = color/photo-tint, the sampled copy-region average of the scrimmed art) — CREAM ink on it, orange + white buttons", textPrimary: text/on-inverse, textSecondary: text/on-inverse, textAccent: accent/highlight-on-inverse, overlay: "flat CSS scrim rgba(0,0,0,0.4) (measured ::after)", blur: none, note: "the sub + eyebrow measured FULL cream rgb(248,245,238) on the photo (18px/14px) — no 62% muted register exists on this band, so textSecondary rides the same cream role; the hero's measured secondary button stays the LIGHT white-fill variant (no controls: onInverse here)", provenance: [hero] }
+
+heroTreatment:
+  value:
+    background: full-bleed-photo
+    asset: "018-hs-full-bleed-1-optmised.webp"   # warm interior office scene, people at work
+    # fix1 2026-07 item-2 (evidence CORRECTION): css-rules.json measures a REAL CSS
+    # scrim on the hero photo — the page-header background-image ::after paints
+    # linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.4)), i.e. one flat
+    # rgba(0,0,0,0.4) wash. The earlier "baked-in tint, no CSS scrim" claim was wrong.
+    overlay: "flat CSS scrim rgba(0, 0, 0, 0.4) over the photo (measured ::after gradient, resolves flat)"
+    blur: none
+    textColor: "#f8f5ee"
+    align: center
+    media: { asset: null, position: none, note: "no foreground media object — the photograph IS the band; the centered copy stack (eyebrow → 80px serif display w/ orange period → body-lg → two large buttons) sits directly on it (grounding section-01)" }
+  confidence: high
+  source: [vision, computed, saved-css]
+  scope: design-language
+  changelog:
+    - { ts: "2026-07-10T20:00:00Z", action: created, from: null, to: "full-bleed tinted photo, centered cream stack, orange+white large buttons", by: creation, signalId: null, note: "grounding section-01 + measured h1 80/95 serif; pads ~210/200" }
+    - { ts: "2026-07-12T00:30:00Z", action: adjusted, from: "baked-in warm-dark tint (no CSS scrim measured)", to: "flat CSS scrim rgba(0,0,0,0.4)", by: fix1-punch-list, signalId: null, note: "css-rules.json: .wf-page-header_background-image::after linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)) — a measured scrim the replica must draw" }
+
+surfaceGrammar:
+  roles: [ surface/primary, surface/panel, surface/raised, surface/accent-wash, surface/inverse, surface/inverse-strong, surface/photo-hero ]
+  pageRhythm:
+    value: [ surface/photo-hero, surface/primary, surface/primary, surface/primary, surface/accent-wash, surface/primary, surface/primary, surface/primary, surface/primary, surface/inverse, surface/inverse-strong ]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-10T20:00:00Z", action: created, from: null, to: "photo hero → long light run (one warm gradient band mid-page) → deep-teal CTA → near-black footer", by: creation, signalId: null, note: "12 grounded sections: canvas #fcfcfa/#faf9f5 family everywhere; gradient band at section 05; dark only at 10 (teal) and footer (near-black)" }
+  transition:
+    value: "hard"
+    confidence: high
+    source: [vision, saved-css]
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-10T20:00:00Z", action: created, from: null, to: "hard", by: creation, signalId: null, note: "band cuts are clean edges (photo→canvas, canvas→gradient, canvas→teal, teal→black); gradient SEAMS blur only inside the art itself" }
+  nesting:
+    - { child: surface/panel,       allowedParents: [ surface/primary, surface/accent-wash ], note: "white cards sit on the canvas (product grid, banner, testimonial) AND on the gradient band (agent cards) — grounding sections 04/05/06/08", confidence: high, source: creation, scope: design-language, changelog: [] }
+    - { child: surface/accent-wash, allowedParents: [ surface/primary ], note: "the warm gradient is a BAND or SEAM on the light page run, never nested in dark", confidence: high, source: creation, scope: design-language, changelog: [] }
+    - { child: surface/inverse,     allowedParents: [ surface/primary ], note: "the deep-teal band cuts straight off the light run (grounding section-10)", confidence: high, source: creation, scope: design-language, changelog: [] }
+
+# CONTEXTUAL header-alignment grammar (brand-schema §4.4b). The observed rule:
+# a header standing alone atop a stacked section centers ONLY in the hero and
+# platform sections; every rail/split header anchors left with the CTA riding the
+# rail's far right.
+layoutGrammar:
+  headerContext:
+    splitColumn:
+      anchor: left
+      counterweight: media
+      evidence: "all 5 split patterns anchor the copy column left with a media/cards counterweight (layout-library: product-grid-split, integration-collage-banner, case-study-header-rail, testimonial-tab-stats, award-badge-row: alignment.value=left + counterweight media/cards)"
+    standaloneStack:
+      anchor: centered
+      evidence: "hero + logo strip + platform header center block+text (grounding sections 01/02/03: alignment center); the agent-carousel and closing-cta standalone headers anchor left as explicit pattern facts, which outrank this default by resolution order (AS-18)"
+    confidence: high
+    source: [vision, computed]
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-10T20:00:00Z", action: created, from: null, to: "splitColumn=left / standaloneStack=centered", by: creation, signalId: null, note: "derived from the 10 grounded patterns' measured header alignment by layout context" }
+  # fix2 2026-07 (brand-schema §4.4f): measured multi-action row layout. JS-off
+  # computed geometry on the capture @1440: hero .wf-page-header_content-ctas gap
+  # 16px mt 40px (centered hero context); powered-by-ai .cl-cta-group gap 16px
+  # wrap, left, body→group seam 40px; closing .wf-elevated-cta__ctas gap 24px
+  # (per-pattern override on closing-cta-dark), mt 40px, left. All three seams
+  # land the same 40px rung ⇒ marginAbove rides the ladder (body-to-cta 2.5rem).
+  actionGroup:
+    gap: 1rem
+    orientation: row
+    wrap: wrap
+    align: start
+    marginAbove: ladder
+    registers: [primary, secondary]
+    source: computed
+    provenance: [hero, powered-by-ai, closing-cta]
+    confidence: high
+    changelog:
+      - { ts: "2026-07-13T10:30:00Z", action: created, from: null, to: "gap 1rem / wrap / start / marginAbove ladder", by: fix2-action-groups, signalId: null, note: "playwright computed on capture: hero+pbai groups gap 16, closing 24 (pattern override); every body→group seam 40px" }
+
+buttons:
+  renderHint: { useFilledButton: true, note: "Renderer MUST emit real FILLED buttons. HubSpot primary CTAs are solid orange 8px-radius rectangles; text links are a separate ink device with an orange underline. THREE measured size registers shared by every family: small 14px/22 pad 8x16 h42 (nav CTAs), medium 16px/28 pad 12x24 h56 (section CTAs — the canonical register authored below), large 18px/32 pad 16x40 h68 (hero CTAs)." }
+  primary:
+    style: filled
+    bg: "#ff4800"              # --light-theme-button-primary-fill-idle (identical in the dark scheme)
+    bgHover: "#c93700"         # --light-theme-button-primary-fill-hover
+    fgHover: "#ffffff"         # label stays white through the darken
+    bgPressed: "#9f2800"       # --light-theme-button-primary-fill-pressed
+    bgDisabled: "rgba(0, 0, 0, 0.02)"   # --light-theme-disabled-02 (label rgba(0,0,0,0.2))
+    fg: "#ffffff"              # --light-theme-button-primary-text-color
+    border: "2px solid transparent"     # --cl-border-width-heavy slot keeps geometry stable across variants
+    radius: "0.5rem"           # --cl-border-radius-medium (8px) — measured on every button
+    padding: "0.75rem 1.5rem"  # medium register (12x24); small 8x16, large 16x40
+    height: "3.5rem"           # 56px measured on every medium button (small 42, large 68)
+    font: "HubSpot Sans"
+    weight: 500
+    sizeRem: 1                 # 16px medium register @1440
+    focus: "outline 2px solid #2f7579; outline-offset 2px"   # --light-theme-focus-01
+    confidence: high
+    source: [saved-css, computed, vision]
+    provenance: [hero, product-grid, closing-cta, navbar]
+    note: "Measured .cl-button.-primary: bg rgb(255,72,0), white label, r8, border 2px transparent; hover/pressed from the site's own light-theme button tokens; identical fill family on dark surfaces (dark-theme tokens repeat #ff4800/#c93700/#9f2800)."
+  secondary:
+    style: outline
+    bg: "#ffffff"                 # --light-theme-button-secondary-fill-idle
+    border: "2px solid #ff4800"   # --light-theme-button-secondary-border; measured 2px solid rgb(255,72,0)
+    fg: "#ff4800"                 # measured 'Get started free' color rgb(255,72,0)
+    bgHover: "#fcece6"            # --light-theme-button-secondary-fill-hover (soft orange wash)
+    fgHover: "#c93700"            # --light-theme-button-secondary-text-color-hover
+    bgPressed: "#fcc6b1"          # --light-theme-button-secondary-fill-pressed (peach)
+    radius: "0.5rem"
+    padding: "0.75rem 1.5rem"
+    height: "3.5rem"              # 56px measured (medium register)
+    font: "HubSpot Sans"
+    weight: 500
+    sizeRem: 1
+    onInverse: { border: "2px solid #f8f5ee", fg: "#f8f5ee", bg: "transparent", bgHover: "rgba(0, 0, 0, 0.2)", fgHover: "#f8f5ee", note: "dark-surface variant (--dark-theme-button-secondary-border/-text: cream outline on the deep-teal band — grounding section-10 outlined white); hover affordance is the dark bg wash, the cream label HOLDS (without fgHover the family's light-surface hover ink #c93700 leaks in at 3.29:1 on the deep teal)" }
+    confidence: high
+    source: [saved-css, computed, vision]
+    provenance: [hero, product-grid, closing-cta, navbar]
+    note: "'Get started free' family — white fill + 2px orange border + orange label on light; cream outline on dark bands."
+  tertiary:
+    style: outline-ink
+    bg: "transparent"
+    border: "2px solid #1f1f1f"   # measured 'Explore Breeze Agents' (.cl-button.-tertiary-outline): 2px rgb(31,31,31)
+    fg: "#1f1f1f"
+    bgHover: "rgba(0, 0, 0, 0.05)"   # hover wash (--cl-color-hover-01)
+    fgHover: "#1f1f1f"
+    bgPressed: "rgba(0, 0, 0, 0.06)"
+    radius: "0.5rem"
+    padding: "0.75rem 1.5rem"
+    height: "3.5rem"           # 56px measured ('Explore Breeze Agents' medium register)
+    font: "HubSpot Sans"
+    weight: 500
+    sizeRem: 1
+    confidence: high
+    source: [saved-css, computed]
+    provenance: [agent-carousel, case-study-header]
+    note: "the quiet ink-outlined family ('Explore Breeze Agents', 'See all case studies'); the FILLED near-black neutral (#1f1f1f fill, white label — skip-link + tertiary-fill tokens) exists as its chrome sibling."
+  textCta:
+    style: text-link-arrow
+    fg: "#1f1f1f"              # --light-theme-link-01 — ink, NEVER orange text
+    fgHover: "#1f1f1f"         # hover holds ink (--light-theme-hover-link-01); the device moves instead
+    decoration: "orange underline (--light-theme-text-link-underline-01 #ff4800) on standing links; card text-arrows are clean w/ a trailing arrow glyph that slides 5px right on hover"
+    radius: "0"
+    font: "HubSpot Sans"
+    weight: 500
+    sizeRem: 1
+    # fix2 2026-07: the trailing glyph is the site's own sprite arrow, not a Unicode
+    # character — every .cl-textLink renders <use href="#cl-icon-next"> (32×32 symbol)
+    # in a 16px .cl-textLink-icon.-small box. Harvested to assets/icon-next.svg
+    # (viewBox corrected 24->32 to match the sprite symbol's own).
+    glyph: { asset: icon-next.svg, size: 1rem, source: computed }
+    confidence: high
+    source: [saved-css, computed, vision]
+    provenance: [product-grid, integration-banner, testimonial-tabs]
+    note: "'Learn more →' card links (arrow translateX(5px) hover); 'See all app integrations' / 'Read full case study' standing links w/ the orange underline device."
+
+contracts:
+  primitives: "../../../brand_pipeline/contracts/primitives.yaml"
+  blocks:     "../../../brand_pipeline/contracts/blocks.yaml"
+
+primitives:
+  heading:
+    origin: extracted
+    use: always
+    rules: [ "display headings are HubSpot Serif weight 500 sentence-case (the hero rides the Serif Book master at its 80px register); card headings swap to HubSpot Sans 500 — hierarchy comes from SIZE + FAMILY, never weight jumps or caps", "landmark headings may close with an orange period accent (hero, closing CTA)" ]
+    provenance: [hero, platform-carousel, product-grid, closing-cta]
+    confidence: high
+  eyebrow:
+    origin: extracted
+    use: always
+    rules: [ "TWO eyebrow registers: (1) uppercase 14px w500 microlabel (hero, cream on photo); (2) bordered PILL — sentence-case 16px w300 label in a 1px hairline box, radius 8 ('Powered by AI', 'Case Studies'), often joined by a dotted rule to a right-aligned CTA" ]
+    provenance: [hero, product-grid, case-study-header, agent-carousel]
+    confidence: high
+  paragraph:
+    origin: extracted
+    use: always
+    rules: [ "HubSpot Sans LIGHT (300), 16px/28px, ink #1f1f1f on light surfaces; cream #f8f5ee on photo/dark bands; 18px large register in the hero" ]
+    provenance: [hero, product-grid, agent-carousel]
+    confidence: high
+  button:
+    origin: extracted
+    use: always
+    variant: filled-primary
+    rules: [ "PRIMARY actions are FILLED orange (#ff4800) 8px-radius rectangles with white labels — never typographic; secondary is white w/ 2px orange border + orange label (cream outline on dark bands); tertiary is ink-outlined; all buttons carry a 2px border slot and hug content at three insets (8x16/12x24/16x40)" ]
+    provenance: [hero, product-grid, closing-cta, navbar]
+    confidence: high
+  link:
+    origin: extracted
+    use: text-links-only
+    rules: [ "text links are INK (#1f1f1f) w500 — orange appears as the UNDERLINE decoration or the arrow affordance, never as link text color; card text-arrows slide the arrow 5px right on hover" ]
+    provenance: [product-grid, integration-banner, testimonial-tabs]
+    confidence: high
+  image:
+    origin: extracted
+    use: always
+    rules: [ "photography = warm human workplace scenes (full-bleed hero w/ dark tint; portrait case-study shots at 4px radius); product story = layered isometric illustration + UI mockups on sand media-wells; icons = orange line-icons ~24px; proof = real logo vectors + badge art" ]
+    provenance: [hero, platform-carousel, agent-carousel, testimonial-tabs]
+    confidence: high
+  logo:
+    origin: extracted
+    use: always
+    rules: [ "customer logos are REAL brand vectors (~30px tall, mixed full-color/mono as shipped) in one spaced row; award badges are ~90px art images; never text names" ]
+    provenance: [logo-wall, badge-row]
+    confidence: high
+  input:
+    origin: extracted
+    use: forms
+    rules: [ "4px-radius boxed fields (--cl-border-radius-input); focus ring teal #2f7579; error #d9002b w/ #fcc5be wash (token evidence only — no form renders on the captured homepage)" ]
+    provenance: [popup-forms]
+    confidence: medium
+
+blocks:
+  # C2 coverage: every contract block type attempted — extracted evidence or an
+  # explicit notObserved marker (source: grounding components[] + dom/css census).
+  header:
+    origin: extracted
+    slots:
+      eyebrow: { use: optional, note: "uppercase microlabel OR bordered pill register (see primitives.eyebrow)" }
+      heading: { use: require }
+      cta:     { use: optional, note: "filled orange primary (+ optional secondary)" }
+    provenance: [hero, product-grid, case-study-header]
+    confidence: high
+  content-block:
+    origin: extracted
+    use: always
+    slots:
+      eyebrow: { use: optional }
+      heading: { use: require }
+      body:    { use: optional }
+      actions: { use: optional }
+    provenance: [hero, product-grid, agent-carousel, closing-cta]
+    confidence: high
+    note: "eyebrow → heading → body → actions stacks (relational ladder: 24/32/56 at 1440)."
+  card:
+    origin: extracted
+    use: always
+    anatomy: "white plate on a hairline rgba(0,0,0,0.11) border; TWO radius registers: compact 8px (product cards) and large 16px (agent cards, banner panel); FLAT idle AND hover — hover = wash tint + 1px ring, no elevation; internal stack: icon/media → heading (sans 500) → body/checklist → ink text-arrow"
+    variants:                    # C10 coverage — the observed card registers
+      - { id: icon-checklist, note: "product card: 24px orange line icon + 18px sans heading row → 2-item checkmark list (orange checks, 14px light body) → 'Learn more' text-arrow (grounding section-04, 10 observed)" }
+      - { id: media-well,     note: "agent card: sand (#ece6d9) media well w/ product-UI mockup on top → 24px sans heading → body → optional underlined link (grounding section-05, radius 16)" }
+      - { id: quote-photo,    note: "testimonial card: hairline frame, photo left (4px radius) / quote + author + stats right (grounding section-08)" }
+      - { id: banner-panel,   note: "integration banner: 16px-radius white panel, copy left / logo collage right (grounding section-06)" }
+    slots:
+      media:   { use: optional, note: "sand media well (agent) or photo (testimonial)" }
+      icon:    { use: optional, placement: heading-row, size: "1.5rem", note: "orange product line-icon ~24px seated BESIDE the card heading in one row (grounding section-04: 'icon + 18px sans heading row')" }
+      heading: { use: require, register: h5, note: "compact cards ride the 18px sans register (h5); large agent cards ride 24px (h3)" }
+      body:    { use: optional }
+      action:  { use: optional, note: "ink text-arrow link" }
+    motion: { hover: "background wash + 1px ring on the state tier (150ms); text-arrow slides 5px right", source: "motion-audit: .cl-card.-hoverable:hover, .cl-textLink:hover" }
+    provenance: [product-grid, agent-carousel, testimonial-tabs, integration-banner]
+    confidence: high
+  form:
+    origin: extracted
+    designedFrom: { note: "input tokens measured in the captured sheets (radius-input 4px, focus teal, error family); no form renders on the captured homepage" }
+    overridable: true
+    confidence: medium
+  testimonial:
+    origin: extracted
+    use: always
+    anatomy: "tabbed case-study card: 3 pill tabs above; hairline-bordered card w/ workplace photo left (4px radius) / quote body (16px light) + bold author name + role caption + orange-underlined 'Read full case study' link right; 50/50 serif-stat row under the quote, split by a vertical hairline"
+    provenance: [testimonial-tabs]
+    confidence: high
+  stat-block:
+    origin: extracted
+    use: proof-moments
+    anatomy: "large serif numeral (~44px, weight 400) over a 14–15px sans caption; pairs sit side-by-side divided by a vertical hairline rule (inside the testimonial card)"
+    provenance: [testimonial-tabs]
+    confidence: high
+  navbar:
+    origin: extracted
+    provenance: [navbar]
+    confidence: high
+  footer:
+    origin: extracted
+    provenance: [footer]
+    confidence: high
+  accordion:
+    notObserved: true
+    note: "no accordion device on the captured homepage (the burger-menu disclosure toggles in the mobile nav census are chrome, not a content accordion)"
+  accordion-item:
+    notObserved: true
+    note: "no accordion device on the captured homepage"
+  tabs:
+    origin: extracted
+    use: audience-switch
+    anatomy: "pill tabs: 14px w500 labels in 16px-radius pills, idle bg rgba(0,0,0,0.05) wash, pad 8px 16px; active pill darkens; the mega-menu sidebar reuses the same pill register vertically (By Use Case / By Team Size / Why HubSpot?)"
+    motion: { switch: "content swap on the reveal tier (300ms ease); pill wash on the state tier (150ms)", source: "motion-audit: cl-tab-button family + carousel/tab shared timing" }
+    provenance: [testimonial-tabs, navbar]
+    confidence: high
+  logo-bar:
+    origin: extracted
+    use: always
+    anatomy: "two registers measured: (1) customer proof — centered 22px sans stat heading over ONE row of 5 real logo vectors ~30px tall, ~130px gaps, hover dims to 55%; (2) award proof — 22px sans heading left beside a row of 6 G2 badge images ~90px"
+    provenance: [logo-wall, badge-row]
+    confidence: high
+  feature-item:
+    origin: extracted
+    anatomy: "icon/media → sans heading → light body → optional ink text-arrow (product cards, agent cards, platform slides)"
+    provenance: [product-grid, agent-carousel, platform-carousel]
+    confidence: high
+  pricing-card:
+    notObserved: true
+    note: "no pricing device on the captured homepage (pricing lives on its own route)"
+  banner:
+    origin: extracted
+    use: conversion-moments
+    anatomy: "inset 16px-radius white panel on the canvas: sans statement heading + orange-underlined ink link LEFT, colorful app-logo collage RIGHT (grounding section-06)"
+    provenance: [integration-banner]
+    confidence: high
+  modal:
+    notObserved: true
+    note: "no modal renders on the captured page (cookie-banner embed excluded from brand evidence)"
+  dropdown-menu:
+    origin: extracted
+    anatomy: "nav mega panels: full-width white panels under the bar (measured 1400px wide, 8px radius on compact dropdowns, 1px rgba(0,0,0,0.47) top rule), link ink #124548 deep-teal 14px w500 pad 8x15; product tiles w/ descriptions + neutral CTA buttons (#fcfcfa fill, 2px rgba(0,0,0,0.11) border); Solutions panel adds a left sidebar of pill tabs + a promo aside card"
+    motion: { panel: "opacity .2s ease-out in / .2s ease-in out + visibility .3s (.1s delay)", chevron: "transform .3s ease (--global-nav-dropdown-toggle-transition)", source: "motion-audit + chrome contract megaPanel.motion" }
+    provenance: [navbar]
+    confidence: high
+  breadcrumb:
+    notObserved: true
+    note: "no breadcrumb on the captured homepage"
+  pagination:
+    origin: extracted
+    use: carousel-progress
+    anatomy: "carousel dot rail: ~8px dots, active dot ink-filled, inactive light gray (platform carousel, logo rail)"
+    provenance: [platform-carousel, logo-wall]
+    confidence: high
+  table:
+    notObserved: true
+    note: "no table renders on the captured homepage"
+  carousel:
+    origin: extracted
+    anatomy: "THREE registers: (1) logo rail (static spaced row at rest, round controls in DOM); (2) platform showcase — copy+illustration frames swapped by round neutral prev/next (48px, --cl-carousel-controls-button-size) + 3-dot rail, prev dimmed at first frame; (3) agent track — infinite AUTOPLAY edge-cut card track w/ round white prev/next + pause control"
+    motion: { slide: "translate 300ms ease (--cl-carousel-animation-duration/-easing)", controls: "round-button hover wash (--cl-color-hover-01) on the state tier", source: "motion-audit: .cl-carousel-train, .cl-round-button" }
+    provenance: [logo-wall, platform-carousel, agent-carousel]
+    confidence: high
+  steps:
+    notObserved: true
+    note: "no numbered step sequence on the captured homepage"
+  step-item:
+    notObserved: true
+    note: "no numbered step sequence on the captured homepage"
+  cta-block:
+    origin: extracted
+    use: always
+    anatomy: "closing register: full-bleed deep-teal band, LEFT-aligned 48px serif cream heading w/ orange period + primary/secondary button pair; the hero repeats the same stack CENTERED on its photo band"
+    provenance: [closing-cta, hero]
+    confidence: high
+  media-text:
+    origin: extracted
+    anatomy: "split rows at two ratios: ~50/50 (platform copy↔illustration, banner copy↔collage, testimonial photo↔quote) and ~35/65 (product copy rail ↔ card grid)"
+    provenance: [platform-carousel, product-grid, integration-banner, testimonial-tabs]
+    confidence: high
+
+layouts:
+  - id: navbar
+    archetype: nav
+    index: 0
+    surfaceMode: { mode: "Container" }
+    useCase: "Two-tier chrome on white: utility row (language picker, High Contrast toggle, Customer Support, Contact Sales | search, Log in, About) above the primary row (orange wordmark, four mega tabs w/ chevrons — active tab underlined, small filled-orange 'Get a demo' + orange-outlined 'Get started free')."
+    whenToUse: "Always — global chrome."
+    slots:
+      - { name: "brand",    type: media,   role: "HubSpot orange wordmark w/ sprocket", asset: "hubspot-wordmark.svg" }
+      - { name: "navlinks", type: content, role: "primary mega tabs (16px w400 ink, chevron 16px, active tab underlined)" }
+      - { name: "actions",  type: content, role: "small filled primary + small outlined secondary" }
+    gridRules:  { columns: "auto", justify: "space-between", align: center }
+    widthRules: { container: "contained", measure: "1080px content max" }
+  - id: hero
+    archetype: stack
+    index: 1
+    patternRef: { lib: project, id: hero-photo-overlay }
+    surfaceMode: { mode: "Inverse", note: "full-bleed tinted photograph band; cream ink" }
+    surfaceIntent: surface/photo-hero
+    useCase: "Photographic hero: centered cream stack (uppercase eyebrow → 80px serif display w/ orange period → 18px body → large filled-orange + white-secondary buttons) on the warm office photo."
+    whenToUse: "Page opener."
+    slots:
+      - { name: "eyebrow", type: content, role: "uppercase cream microlabel ('HUBSPOT AGENTIC CUSTOMER PLATFORM')" }
+      - { name: "heading", type: content, role: "80px serif display (sentence, orange period)" }
+      - { name: "body",    type: content, role: "supporting paragraph (18px light, cream)" }
+      # fix1 2026-07 item-3: the role must NAME the outlined treatment — the demo
+      # pair-builder hints each button from these words; "white secondary" carried
+      # no style word, so both buttons resolved to the primary register. Measured:
+      # hero secondary = white fill / 2px #ff4800 border / #ff4800 ink
+      # (computed-styles.json .cl-button.-secondary.-large — the light outline family).
+      - { name: "actions", type: content, role: "large filled primary + outlined white secondary" }
+      - { name: "background", type: media, role: "full-bleed warm office photograph", assets: [ "018-hs-full-bleed-1-optmised.webp" ] }
+    gridRules:  { columns: "single", justify: "center", align: center }
+    widthRules: { container: "full-bleed", measure: "centered stack ~780px" }
+  - id: logo-wall
+    archetype: stack
+    index: 2
+    patternRef: { lib: project, id: logo-proof-strip }
+    surfaceMode: { mode: "base (Primary)" }
+    surfaceIntent: surface/primary
+    useCase: "Customer-proof strip: centered 22px sans stat heading over ONE row of 5 real customer logo vectors (~30px, wide gaps)."
+    whenToUse: "Directly after the hero."
+    slots:
+      - { name: "heading", type: content, role: "sans stat heading ('299,000+ customers…')" }
+      - { name: "logos",   type: media,   role: "5 customer logo vectors, spaced row", assets: [ "019-ebay-logo.svg", "020-doordash-logo.svg", "021-reddit-logo.svg", "022-tripadvisor-logo.svg", "023-eventbrite-logo.svg" ] }
+    gridRules:  { columns: "logo row", justify: "center", align: center }
+    widthRules: { container: "contained", measure: "~130px column gap" }
+  - id: platform-carousel
+    archetype: split
+    index: 3
+    patternRef: { lib: project, id: platform-showcase-carousel }
+    surfaceMode: { mode: "base (Primary)" }
+    surfaceIntent: surface/primary
+    useCase: "Platform showcase carousel: centered 48px serif h2 + subhead; slide rows split 40px serif slide-heading + body LEFT / layered platform illustration RIGHT; round prev/next + 3-dot rail below."
+    whenToUse: "Platform architecture story."
+    slots:
+      - { name: "heading", type: content, role: "48px serif section heading + subhead" }
+      - { name: "list",    type: content, role: "3 slide copy stacks (40px serif h3 + body)" }
+      - { name: "media",   type: media,   role: "layered isometric platform illustration — the ACTIVE slide's art (JS-off truth; slides 2-3's art rides layoutCopy items)", assets: [ "024-customer-20platform-20graphic-20-20smart-20crm1-5x-20-1.png" ] }
+      - { name: "controls", type: content, role: "round neutral prev/next + 3 dots" }
+    gridRules:  { columns: "1fr 1fr", justify: "space-between", align: center }
+    widthRules: { container: "contained", measure: "~80px column gap" }
+  - id: product-grid
+    archetype: cards
+    index: 4
+    patternRef: { lib: project, id: product-grid-split }
+    surfaceMode: { mode: "base (Primary)", note: "peach→pink gradient seam at the bottom edge" }
+    surfaceIntent: surface/primary
+    useCase: "Product family: copy rail LEFT (bordered 'Powered by AI' pill, 40px serif h2, body, filled+outlined buttons) beside a 2-col grid of TEN white icon-checklist cards RIGHT."
+    whenToUse: "Product/feature family overview."
+    slots:
+      - { name: "eyebrow", type: content, role: "bordered eyebrow pill ('Powered by AI')" }
+      - { name: "heading", type: content, role: "40px serif section heading" }
+      - { name: "body",    type: content, role: "supporting paragraph" }
+      - { name: "actions", type: content, role: "filled primary + outlined secondary (medium)" }
+      - { name: "cards",   type: content, role: "10 icon-checklist product cards", assets: [ "028-producticons-marketinghub-icon-orange.webp", "029-producticons-saleshub-icon-orange.webp", "030-producticons-servicehub-icon-orange.webp", "031-producticons-contenthub-icon-orange.webp", "032-producticons-datahub-icon-orange.webp", "033-producticons-commercehub-icon-orange.webp", "034-producticons-smartcrm-icon-orange.webp", "035-breeze-20icon.svg", "009-small-business.svg", "027-ai-20sparkle.svg" ] }
+    gridRules:  { columns: "repeat(2)", gap: "2rem" }
+    widthRules: { container: "contained", measure: "copy rail ~35% / grid ~65%" }
+  - id: agent-carousel
+    archetype: cards
+    index: 5
+    patternRef: { lib: project, id: agent-card-carousel }
+    surfaceMode: { mode: "base (Primary)", note: "warm gradient band (surface/accent-wash): pink→peach art; white cards float on it" }
+    surfaceIntent: surface/accent-wash
+    useCase: "AI-agent showcase on the warm gradient band: sparkle-chip + dotted-rule + outlined-pill header rail; 40px serif heading left / body right; edge-cut autoplay card track (sand media wells + 24px sans headings); round white controls + pause."
+    whenToUse: "Feature-set showcase with product-UI proof."
+    slots:
+      - { name: "eyebrow", type: content, role: "icon chip + dotted rule + outlined CTA rail", assets: [ "027-ai-20sparkle.svg" ] }
+      - { name: "heading", type: content, role: "40px serif heading (left)" }
+      - { name: "body",    type: content, role: "supporting paragraph (right column)" }
+      - { name: "cards",   type: content, role: "3 agent cards w/ product-UI media wells", assets: [ "036-customer-agent-en-2x.png", "037-prospecting-agent-en-2x.png", "038-data-hub-en-2x.png" ] }
+      - { name: "controls", type: content, role: "round white prev/next + pause" }
+    gridRules:  { columns: "3-up edge-cut track", gap: "2rem" }
+    widthRules: { container: "full-bleed track", measure: "cards ~430px" }
+  - id: integration-banner
+    archetype: split
+    index: 6
+    patternRef: { lib: project, id: integration-collage-banner }
+    surfaceMode: { mode: "Container", note: "inset 16px-radius white panel on the canvas" }
+    surfaceIntent: surface/primary
+    useCase: "Integration proof banner: 22px sans heading + orange-underlined ink link LEFT / colorful app-logo collage RIGHT, inside an inset white panel."
+    whenToUse: "Ecosystem proof moment."
+    slots:
+      - { name: "heading", type: content, role: "sans banner heading ('Works with the tools you already use…')" }
+      - { name: "action",  type: content, role: "ink link w/ orange underline ('See all app integrations')" }
+      - { name: "media",   type: media,   role: "app-logo collage (6 tool vectors)", assets: [ "044-slack-icon-2.svg", "042-zapier-icon-2.svg", "041-mailchimp-icon-3.svg", "039-gmail-icon-3.svg", "040-shopify-icon-3.svg", "043-google-ads-icon-2.svg" ] }
+    gridRules:  { columns: "1fr 1fr", justify: "space-between", align: center }
+    widthRules: { container: "contained", measure: "panel inset, ~40px gap" }
+  - id: case-study-header
+    archetype: generic-flow   # a 240px header RAIL (pill/rule/CTA + 2-col heading/body) — no media half; the split composer would invent an art panel here
+    index: 7
+    patternRef: { lib: project, id: case-study-header-rail }
+    surfaceMode: { mode: "base (Primary)" }
+    surfaceIntent: surface/primary
+    useCase: "Editorial header rail: bordered 'Case Studies' pill + dotted rule + outlined 'See all case studies' CTA; 40px serif heading LEFT / body RIGHT. Zero bottom padding — the testimonial band completes it."
+    whenToUse: "Proof-section opener."
+    slots:
+      - { name: "eyebrow", type: content, role: "bordered pill + dotted rule + outlined CTA rail" }
+      - { name: "heading", type: content, role: "40px serif heading (left column)" }
+      - { name: "body",    type: content, role: "supporting paragraph (right column)" }
+    gridRules:  { columns: "1fr 1fr", justify: "space-between", align: start }
+    widthRules: { container: "contained" }
+  - id: testimonial-tabs
+    archetype: split
+    index: 8
+    patternRef: { lib: project, id: testimonial-tab-stats }
+    surfaceMode: { mode: "base (Primary)" }
+    surfaceIntent: surface/primary
+    useCase: "Tabbed case-study proof: 3 pill tabs (Enterprise/Mid-Sized/Small); hairline card w/ workplace photo LEFT / quote + author + orange-underlined link RIGHT; serif stat pair under the quote split by a vertical rule."
+    whenToUse: "Social proof with segmentation."
+    slots:
+      - { name: "tabs",  type: content, role: "segment pill run — 3 tab pills ('Enterprise' active; Mid-Sized Business; Small Business), 14px w500, r16 wash" }
+      - { name: "media", type: media,   role: "ACTIVE panel case-study photograph (4px radius, warehouse scene)", assets: [ "045-unipart-1.png" ] }
+      - { name: "support-statement", type: content, role: "supporting statement — the active panel's verbatim customer words + author attribution" }
+      - { name: "stat-rows", type: content, role: "ruled stat list — 2 serif numerals w/ descriptions" }
+    gridRules:  { columns: "photo 40% / quote 60%", justify: "space-between", align: stretch }
+    widthRules: { container: "contained" }
+    note: "The live band is a 3-tab switcher; JS-off truth (and the replica) is the ACTIVE Enterprise panel. All three panels' verbatim copy is preserved under layoutCopy.testimonial-tabs.panels."
+  - id: badge-row
+    archetype: split
+    index: 9
+    patternRef: { lib: project, id: award-badge-row }
+    surfaceMode: { mode: "base (Primary)" }
+    surfaceIntent: surface/primary
+    useCase: "Award proof: 22px sans heading LEFT ('Voted #1 in 526 G2 Reports') beside a row of 6 G2 badge images (~90px)."
+    whenToUse: "Third-party validation."
+    slots:
+      - { name: "heading", type: content, role: "sans heading (left)" }
+      - { name: "media",   type: media,   role: "media row — 6 G2 award badge marks (~90px, right)", assets: [ "048-badge-leader-small-business.png", "049-badge-most-implementable.png", "050-badge-best-relationships-small-business.png", "051-badge-best-support-enterprise.png", "052-badge-best-results-mid-market.png", "053-badge-best-usability-enterprise.png" ] }
+    gridRules:  { columns: "heading + badge row", justify: "space-between", align: center }
+    widthRules: { container: "contained" }
+  - id: closing-cta
+    archetype: stack
+    index: 10
+    patternRef: { lib: project, id: closing-cta-dark }
+    surfaceMode: { mode: "Inverse", note: "full-bleed deep-teal band (#042729)" }
+    surfaceIntent: surface/inverse
+    useCase: "Closing conversion: LEFT-aligned 48px serif cream heading w/ orange period + filled-orange and cream-outlined buttons on the deep-teal band."
+    whenToUse: "Page close, before footer."
+    slots:
+      - { name: "heading", type: content, role: "48px serif cream heading" }
+      - { name: "actions", type: content, role: "filled primary + cream-outlined secondary" }
+    gridRules:  { columns: "single", justify: "start", align: center }
+    widthRules: { container: "contained" }
+  - id: footer
+    archetype: grid
+    index: 11
+    surfaceMode: { mode: "Inverse", note: "near-black #1f1f1f" }
+    useCase: "Directory footer: 5 headed link columns (Popular Features wide + 4 narrow), social glyph row between hairlines, centered cream wordmark, legal row w/ underlined policy links."
+    whenToUse: "Always — global chrome."
+    slots:
+      - { name: "linkcols", type: content, role: "5 grouped link columns (14px headings, 12px 62%-cream links)" }
+      - { name: "social",   type: content, role: "7 monochrome social glyphs in a centered row" }
+      - { name: "legal",    type: content, role: "copyright + 5 underlined policy links" }
+    gridRules:  { columns: "5", gap: "2rem" }
+    widthRules: { container: "contained", measure: "1080px" }
+
+compositionRules:
+  - id: one-orange-action-system
+    statement: "ONE vivid orange (#ff4800 — the site's own brand token) carries every primary action, checkmark, underline accent, heading period, and the wordmark. It never becomes body/link text color and never appears as a section background; dark bands keep the SAME orange fill family (the button tokens are scheme-stable)."
+    value: { accent: "#ff4800", hover: "#c93700", pressed: "#9f2800", deployment: "actions + marks + accents only" }
+    confidence: high
+    source: [saved-css, computed]
+    scope: design-language
+    changelog: []
+  - id: serif-display-sans-body
+    statement: "Display voice is HubSpot Serif at weight 500 sentence case (Book master at the hero's 80px register); working voice is HubSpot Sans — headings 500, body LIGHT 300. Hierarchy comes from size + family swaps, never weight jumps, caps, or inline bolding."
+    value: { display: "HubSpot Serif 500 sentence", body: "HubSpot Sans 300 16/28", cardHeadings: "HubSpot Sans 500" }
+    confidence: high
+    source: computed
+    scope: design-language
+    changelog: []
+  - id: orange-period-accent
+    statement: "Landmark serif headings may CLOSE with an orange period accent (hero 'go to grow.', closing band 'impossibly easy, with HubSpot.') — a punctuation-accent device, one per heading, landmark bands only."
+    value: { device: "trailing period in accent/highlight", scope: "hero + closing landmarks" }
+    confidence: high
+    source: vision
+    scope: design-language
+    changelog: []
+  - id: soft-rect-buttons
+    statement: "Every button is a soft 8px-radius RECTANGLE (never a pill) with a 2px border slot and three insets (8x16 / 12x24 / 16x40 at 14/16/18px labels). Hover swaps FILL/INK on a 150ms ease-out; geometry never changes."
+    value: { radius: "0.5rem", borderSlot: "2px", sizes: [small, medium, large] }
+    confidence: high
+    source: [saved-css, computed]
+    scope: design-language
+    changelog: []
+  - id: ink-links-orange-underline
+    statement: "Text links are INK (#1f1f1f, w500). The brand's link decoration is the ORANGE UNDERLINE token (#ff4800) on standing links, and a trailing arrow that slides 5px right on card links. Link text itself never turns orange."
+    value: { ink: "#1f1f1f", underline: "#ff4800", arrowNudge: "translateX(5px)" }
+    confidence: high
+    source: [saved-css, vision]
+    scope: design-language
+    changelog: []
+  - id: flat-cards-hairline-borders
+    statement: "Cards are white plates on hairline rgba(0,0,0,0.11) borders — FLAT at idle AND hover (hover = background wash + 1px ring, no drop shadows anywhere). Compact cards round 8px; large feature cards and panels round 16px."
+    value: { border: "1px rgba(0,0,0,0.11)", radiusCompact: "0.5rem", radiusLarge: "1rem", elevation: none }
+    confidence: high
+    source: [saved-css, computed, vision]
+    scope: design-language
+    changelog: []
+  - id: warm-gradient-band-art
+    statement: "Section art is a WARM GRADIENT family (peach #fcc6b1 → pink #fcc3dc → coral #ffa581 — the site's own accent-fill/decoration steps) deployed as full section bands or bottom seams on the light run; dark ink stays legal on it and white cards float on it."
+    value: { family: ["#fcc6b1", "#fcc3dc", "#ffa581"], deployment: "bands + seams on the light run" }
+    confidence: high
+    source: [saved-css, vision]
+    scope: design-language
+    changelog: []
+  - id: dark-closing-sequence
+    statement: "Dark surfaces appear ONLY as the closing sequence: the deep-teal conversion band (#042729, the site's dark-theme background token) then the near-black footer (#1f1f1f). Ink on dark is CREAM (#f8f5ee), not pure white; the secondary button swaps to a cream outline."
+    value: { teal: "#042729", footer: "#1f1f1f", inkOnDark: "#f8f5ee" }
+    confidence: high
+    source: [saved-css, computed]
+    scope: design-language
+    changelog: []
+  - id: pill-rail-header-device
+    statement: "Editorial sections open with a RAIL: a bordered eyebrow pill (hairline box, radius 8, sentence case) joined by a DOTTED horizontal rule to a right-aligned quiet CTA (ink-outlined button) — one rail per section, feature/proof sections only."
+    value: { pill: "1px hairline box r8", rule: "dotted 1px", cta: "tertiary outlined right" }
+    confidence: high
+    source: vision
+    scope: design-language
+    changelog: []
+  - id: proof-is-real-artifacts
+    statement: "Proof renders REAL artifacts: customer logo vectors (~30px, as-shipped colors), G2 badge art (~90px), tabbed verbatim quotes with workplace photography and serif stat numerals. Logos and badges are never text names."
+    value: { logos: "real vectors ~30px", badges: "art images ~90px", stats: "serif numerals over sans captions" }
+    confidence: high
+    source: [vision, saved-css]
+    scope: design-language
+    changelog: []
+  - id: dark-footer-directory
+    statement: "The footer is a near-black directory: 5 headed columns (14px cream headings, 12px 62%-cream links), a 7-glyph social row between hairlines, a centered cream wordmark, and an underlined legal row. Hover: links brighten to cream + underline + demi-bold."
+    value: { bg: "#1f1f1f", columns: 5, linkSize: "12px", social: 7 }
+    confidence: high
+    source: [saved-css, computed]
+    scope: design-language
+    changelog: []
+
+do:
+  - { id: filled-orange-ctas,   statement: "Make every primary CTA a filled #ff4800 rectangle (8px radius, white label); pair with white/orange-outlined secondary on light, cream-outlined on dark.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: serif-landmarks,      statement: "Open landmark bands with serif display headings (sentence case, weight 500 register) — 80px hero, 48px section, 40px standard.", value: true, confidence: high, source: computed, scope: design-language, changelog: [] }
+  - { id: light-body,           statement: "Keep body copy LIGHT (HubSpot Sans 300, 16/28) — the airy body against medium sans card headings is the brand's texture.", value: true, confidence: high, source: computed, scope: design-language, changelog: [] }
+  - { id: warm-canvas,          statement: "Keep the canvas warm off-white (#fcfcfa) with cream (#f8f5ee) steps — never a cold gray.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: real-proof,           statement: "Bind real logo vectors, badge art, product icons, and case-study photography into proof sections.", value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  - { id: rail-headers,         statement: "Use the pill + dotted-rule + quiet-CTA rail to open feature/proof sections.", value: true, confidence: high, source: vision, scope: design-language, changelog: [] }
+avoid:
+  - { id: avoid-pill-buttons,   statement: "Avoid fully-rounded pill CTAs — HubSpot buttons are 8px-radius rectangles (only tab chips and round carousel controls curve further).", value: true, confidence: high, source: computed, scope: design-language, changelog: [] }
+  - { id: avoid-orange-text,    statement: "Avoid orange link/body text — orange is fills, underlines, marks, and accents only (the secondary button label is the one measured exception).", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: avoid-drop-shadows,   statement: "Avoid drop shadows and elevation — cards stay flat with hairline borders; hover is a wash + 1px ring.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: avoid-cold-neutrals,  statement: "Avoid cool grays/blues as surfaces — the neutral family is warm (#fcfcfa/#f8f5ee/#ece6d9); blues exist only inside illustration art.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+neverDo:
+  - { id: never-heavy-headings, statement: "Never render headings above weight 500 or in uppercase — display hierarchy is size + serif/sans family, sentence case.", value: true, confidence: high, source: computed, scope: design-language, changelog: [] }
+  - { id: never-dark-mid-page,  statement: "Never insert dark section bands mid-run — dark is the closing sequence (teal CTA + black footer) only.", value: true, confidence: high, source: vision, scope: design-language, changelog: [] }
+  - { id: never-text-logos,     statement: "Never render logo walls or badge rows as text names — real vectors/art or omit the section.", value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+
+# BRAND SIGNATURES (pass1 2026-07; brand-schema §4.7) — the 3-5 moves that make
+# HubSpot recognizable, each a MACHINE-CHECKABLE always/never rule verified by
+# brand_pipeline/signature_audit.py on every gated page. Generic kinds, brand
+# values; every entry cites the evidence that licenses it.
+signatures:
+  - id: action-orange-scope
+    kind: accent-scope
+    mode: never
+    claim: >-
+      The action orange (#ff4800 family) is a CONTROL ink: button fills, secondary
+      button ink/borders, eyebrow accents, link glyphs and the mark. It never paints
+      body copy, headings, or section surfaces — accent-wash bands ride the SEPARATE
+      warm peach family, never the action orange.
+    check:
+      colors: ["#ff4800", "#c93700"]
+      allowedRoles: [action, link, glyph, eyebrow, mark]
+      maxPaintSharePct: 2.0
+    evidence:
+      - "computed-styles.json actionGroups: primary fill rgb(255,72,0), hover #c93700 (buttons.primary/secondary facts)"
+      - "grounding sections 01/03/05: filled-primary + outlined action pairs; no orange body/heading ink anywhere in the census"
+      - "tokens.colors avoid-orange-text rule (saved-css): orange is fills/underlines/marks/accents only"
+      - "measured accent paint share: replica 0.46% of page paint, gallery heroes 0.27-0.90% — budget 2.0% is ~4x the replica share"
+    confidence: high
+    source: [computed, saved-css, vision]
+    changelog:
+      - { ts: "2026-07-14T15:00:00Z", action: created, from: null, to: authored, by: user, signalId: null, note: "pass1 signatures block — authored from existing captured evidence, no re-extraction" }
+  - id: serif-display-sans-body
+    kind: type-treatment
+    mode: always
+    claim: >-
+      Display ranks speak the serif (HubSpot Serif / proxy Source Serif 4); running
+      text and controls speak the sans (HubSpot Sans / proxy Lexend Deca). The serif
+      voice IS the brand's editorial register — a sans display or serif body breaks it.
+    check:
+      probes:
+        - { "on": display, familyIncludesAny: ["HubSpot Serif", "Source Serif"] }
+        - { "on": body, familyIncludesAny: ["HubSpot Sans", "Lexend Deca"] }
+        - { "on": button, familyIncludesAny: ["HubSpot Sans", "Lexend Deca"] }
+    evidence:
+      - "computed-styles.json headings: h1 'HubSpot Serif Page Header Human' 80px; body 'HubSpot Sans' 16px"
+      - "tokens.type: display-hero/h1/h2 family HubSpot Serif; h3-h6/body/eyebrow HubSpot Sans"
+    confidence: high
+    source: [computed, saved-css]
+    changelog:
+      - { ts: "2026-07-14T15:00:00Z", action: created, from: null, to: authored, by: user, signalId: null, note: "pass1 signatures block" }
+  - id: rounded-8-controls
+    kind: shape-motif
+    mode: always
+    claim: >-
+      Controls and cards corner at 8px (panels 16px) — soft rectangles, NEVER pills.
+      The 8px radius is the working surface rounding across buttons, cards and inputs.
+    check:
+      buttons: { radiusPx: 8, tolerancePx: 1.5 }
+      neverPill: true
+    evidence:
+      - "tokens.radius: button/card 0.5rem, panel 1rem, small 0.25rem (computed census)"
+      - "buttons.primary/secondary/tertiary radius 0.5rem (saved-css --cl-border-radius-medium)"
+      - "avoid-pill-buttons rule: fully-rounded pill CTAs are off-brand (only tab chips/carousel controls curve further)"
+    confidence: high
+    source: [computed, saved-css]
+    changelog:
+      - { ts: "2026-07-14T15:00:00Z", action: created, from: null, to: authored, by: user, signalId: null, note: "pass1 signatures block" }
+  - id: deep-teal-dark-family
+    kind: surface-habit
+    mode: never
+    claim: >-
+      Dark surfaces come ONLY from the licensed dark family — deep teal #042729 (+
+      raised #093436), the near-black footer #1f1f1f, and the photo-hero underlay
+      #55453e. Never a generic black, navy, or any other dark hue as a section surface.
+    check:
+      darkMaxLuminance: 0.25
+      darkAllowedColors: ["#042729", "#093436", "#1f1f1f", "#55453e"]
+    evidence:
+      - "tokens.surfaces: inverse #042729, inverse-strong #1f1f1f, photo-hero #55453e (schemeMode Inverse)"
+      - "surfaceGrammar.pageRhythm changelog: canvas family everywhere, dark only at section 10 (teal) and the footer (near-black)"
+      - "replica section census @1440: sec-9 rgb(4,39,41), sec-10 rgb(31,31,31), hero underlay rgb(85,69,62) — no other dark section paint"
+    confidence: high
+    source: [computed, vision]
+    changelog:
+      - { ts: "2026-07-14T15:00:00Z", action: created, from: null, to: authored, by: user, signalId: null, note: "pass1 signatures block" }
+
+voice:
+  ref: "./voice.md"
+  factsRef: "./voice-facts.yaml"   # structured voice facts (voice-facts.v1, pass1) — the voice gate's data layer
+  motionSpec:
+    state: defined
+    easing:
+      primary: "ease"          # carousel + dropdown default; buttons ride ease-out on the state tier
+    durations:
+      fast: "150ms"            # --button-transition: color/background-color/border-color .15s ease-out
+      base: "300ms"            # the dominant census tier: carousel slide, chevron rotate, footer collapse
+      slow: "500ms"            # toggle/emphasis tier
+    link:
+      mode: device-shift       # ink holds; the DEVICE moves (arrow nudges 5px, underline offset shifts)
+      value: "arrow translateX(5px) + text-underline-offset shift; footer links brighten + underline"
+    scrollReveal:
+      value: "fade"            # hero image settles in at 400ms ease-out; decorative reveals gated by reduced-motion
+    marquee:
+      value: "agent card track auto-plays (infinite, pause control); logo rail rests static at 1440"
+    imageParallax:
+      enabled: false
+      origin: extracted
+      provenance: [hero, agent-carousel]
+    reducedMotion: "declared"
+    confidence: high
+    source: saved-css
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-10T20:00:00Z", action: created, from: null, to: "150/300/500ms tiers + device-shift links", by: creation, signalId: null, note: "from motion-audit censuses" }
+  dials:
+    variance: { value: medium, confidence: high, source: creation, scope: design-language, changelog: [] }
+    motion:   { value: medium, confidence: high, state: defined, source: creation, scope: design-language, changelog: [ { ts: "2026-07-10T20:00:00Z", action: created, from: null, to: medium, by: creation, signalId: null, note: "three carousels + autoplay track + mega fades — lively but controlled, no bounce" } ] }
+    density:  { value: medium, confidence: high, source: creation, scope: design-language, changelog: [] }
+
+recipePolicy:
+  scaffoldFirst:          { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  reuseBeforeCreate:      { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  composeFromPrimitives:  { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  themeViaModes:          { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  slotsTakeInstancesOnly: { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+
+provenanceIndex:
+  navbar:            { url: "https://www.hubspot.com/", node: "header.global-nav-header (two-tier, white)", evidence: "evidence/computed-styles.json#chrome + ../assets/source-chrome.v2.json + evidence/chrome-states/" }
+  hero:              { url: "https://www.hubspot.com/", node: "section.wf-page-header-human (full-bleed photo)", evidence: "evidence/grounding/section-01-*.yaml + evidence/crops/section-01-*.png" }
+  logo-wall:         { url: "https://www.hubspot.com/", node: "section.csol-logo-carousel", evidence: "evidence/grounding/section-02-*.yaml" }
+  platform-carousel: { url: "https://www.hubspot.com/", node: "section.wf-customer-platform (3-frame showcase)", evidence: "evidence/grounding/section-03-*.yaml + evidence/interaction-states/platform-slide-*.png" }
+  product-grid:      { url: "https://www.hubspot.com/", node: "section.wf-product-platform (10-card grid + copy rail)", evidence: "evidence/grounding/section-04-*.yaml" }
+  agent-carousel:    { url: "https://www.hubspot.com/", node: "section.wf-animated-carousel-section.-breeze (gradient band, autoplay track)", evidence: "evidence/grounding/section-05-*.yaml + evidence/interaction-states/breeze-slide-*.png" }
+  integration-banner: { url: "https://www.hubspot.com/", node: "section.wf-rotating-svg (inset collage panel)", evidence: "evidence/grounding/section-06-*.yaml" }
+  case-study-header: { url: "https://www.hubspot.com/", node: "section.csol-section.-padding-bottom-none (rail header)", evidence: "evidence/grounding/section-07-*.yaml" }
+  testimonial-tabs:  { url: "https://www.hubspot.com/", node: "section.breeze-agents-tabbed-testimonials__section", evidence: "evidence/grounding/section-08-*.yaml + evidence/interaction-states/tab-0*.png" }
+  badge-row:         { url: "https://www.hubspot.com/", node: "section.wf-badges", evidence: "evidence/grounding/section-09-*.yaml" }
+  closing-cta:       { url: "https://www.hubspot.com/", node: "section.wf-elevated-cta (deep-teal band)", evidence: "evidence/grounding/section-10-*.yaml" }
+  footer:            { url: "https://www.hubspot.com/", node: "footer.hsg-footer.global-footer", evidence: "evidence/grounding/section-11-footer.yaml + evidence/computed-styles.json#chrome" }
+  popup-forms:       { url: "https://www.hubspot.com/", node: "form/input tokens (CSS-measured; no form renders on the homepage)", evidence: "css token sheet (--cl-border-radius-input, focus/error tokens)" }
+
+# ── self-hosted font registry ──────────────────────────────────────────────────────
+# The capture DOWNLOADED the brand's own woff2 masters from the page's @font-face
+# URLs (screenshots/hubspot-v2/hubspot_files/fonts/) and they are copied into
+# assets/fonts/. Weight mapping follows the source's own @font-face blocks:
+#   HubSpot Sans  — Book master w300–400, Medium master w500–600
+#   HubSpot Serif — Book master w300 + the page-header display face (all weights),
+#                   Medium master w400–600
+# display-hero is authored at weight 400 mapped to the SERIF BOOK master because
+# the source's "HubSpot Serif Page Header Human" face maps every hero weight onto
+# the Book file — that is the glyph weight the hero actually shows.
+selfHostedFonts:
+  - family: HubSpot Serif
+    faces:
+      - weight: 400
+        files: [HubSpotSerif-Book.woff2]
+      - weight: 500
+        files: [HubSpotSerif-Medium.woff2]
+      - weight: 600
+        files: [HubSpotSerif-Medium.woff2]
+  - family: HubSpot Sans
+    faces:
+      - weight: 300
+        files: [HubSpotSans-Book.woff2]
+      - weight: 400
+        files: [HubSpotSans-Book.woff2]
+      - weight: 500
+        files: [HubSpotSans-Medium.woff2]
+      - weight: 600
+        files: [HubSpotSans-Medium.woff2]
+
+# ---- EXACT extracted site chrome (nav/footer) ----
+
+navbar:
+  origin: extracted
+  source: extracted
+  scope: site-chrome
+  confidence: high
+  provenance:
+    node: header.global-nav-header
+    sourceUrl: https://www.hubspot.com/
+    savedPage: ../../../screenshots/hubspot-v2/hubspot.html
+    extractor: tools/extract_chrome_saved.py (offline Playwright v2) + tools/extract/measure_computed.py (JS-off, 1440x900) + live mega-open pass
+    contract: ../assets/source-chrome.v2.json
+  archetype: nav
+  sticky: false
+  twoTier: true
+  # fix1 2026-07 item-12a/c/d: EXPLICIT utility-TIER contract (brand-schema
+  # `navbar.utilityTier`). The renderer gates the distinct thin bar on THIS key —
+  # never on `twoTier` alone (Remote also declares twoTier: true but measured
+  # utilityBarHeight 0, so its bar must stay single-tier byte-identically).
+  # Evidence: measured.utilityBarHeight 40 over primaryBarHeight 88 (bar 128 total);
+  # utility register 12px w500 (measured.utilityLink); both tiers white, NO divider
+  # (computed header border-bottom: 0px none). Placement: leading cluster = the
+  # locale/support run (language switcher → High Contrast → Customer Support →
+  # Contact Sales, capture order); trailing cluster = Log in → About → Search at the
+  # bar's right edge (the About dropdown panel measured at x:1107 y:52 — the
+  # utility tier's right end; chrome-states/chrome-mega-1-about.png).
+  utilityTier:
+    height: 40
+    bg: rgb(255, 255, 255)
+    fontSize: 12
+    trailing: [Log in, About, Search]
+  surface:
+    bg: rgb(255, 255, 255)
+    color: rgb(31, 31, 31)
+    height: 128
+  utilityBanner:
+    notObserved: true
+    note: "no promo/utility banner rendered above the nav in the fresh capture (cookie consent is an embed, not chrome)"
+  logo:
+    kind: svg
+    alt: HubSpot
+    src: hubspot-wordmark.svg
+    width: 100
+    height: 28
+    href: https://www.hubspot.com/
+    srcContract: ../assets/source-chrome.v2.json#nav.logo.src
+  slots:
+    - { name: brand,    type: media,   role: "orange wordmark w/ sprocket 'o'", source: extracted }
+    - { name: navlinks, type: content, role: "4 mega tabs w/ chevrons; active tab underlined (Pricing on the captured page)", source: extracted }
+    - { name: actions,  type: content, role: "small filled 'Get a demo' + small outlined 'Get started free'", source: extracted }
+  utility:
+    - { label: English, kind: language-switcher, icon: { kind: svg, asset: assets/icon-globe.svg, box: { w: 16, h: 16 } }, chevron: { kind: svg, asset: assets/icon-down.svg, box: { w: 16, h: 16 } }, fontSize: 12, fontWeight: 500,
+        menu: { columns: [ { heading: "", area: main, links: [ { label: "日本語", href: "https://www.hubspot.jp/" }, { label: "Deutsch", href: "https://www.hubspot.de/" }, { label: "English", href: "https://www.hubspot.com/" }, { label: "Español", href: "https://www.hubspot.es/" }, { label: "Português", href: "https://br.hubspot.com/" }, { label: "Français", href: "https://www.hubspot.fr/" } ] } ] } }
+    - { label: High Contrast, kind: toggle, icon: { kind: toggle-switch, note: "pill toggle glyph, a11y contrast switch (--a11y-contrast-toggle-*, transform .5s ease-in-out)" }, fontSize: 12, fontWeight: 500 }
+    - { label: Customer Support, href: "https://help.hubspot.com/", icon: { kind: svg, note: "chat-bubble line glyph" }, fontSize: 12, fontWeight: 500 }
+    - { label: Contact Sales, href: "https://offers.hubspot.com/contact-sales", icon: { kind: svg, note: "phone line glyph" }, fontSize: 12, fontWeight: 500 }
+    - { label: Log in, href: "https://app.hubspot.com/login", fontSize: 12, fontWeight: 500 }
+    - { label: About, kind: dropdown, chevron: { kind: svg, asset: assets/icon-down.svg, box: { w: 16, h: 16 } }, fontSize: 12, fontWeight: 500,
+        dropdown: { panel: { x: 1107, y: 52, w: 178, h: 206, bg: "rgb(255, 255, 255)", radius: 8 }, shot: "evidence/chrome-states/chrome-mega-1-about.png",
+                    items: [ { label: "About Us", href: "https://www.hubspot.com/our-story" }, { label: "Careers", href: "https://www.hubspot.com/careers" }, { label: "Contact Us", href: "https://www.hubspot.com/company/contact" }, { label: "Investor Relations", href: "https://ir.hubspot.com/" }, { label: "Management Team", href: "https://www.hubspot.com/company/management" } ] } }
+    - { label: Search, kind: icon-button, icon: { kind: svg, asset: assets/icon-search.svg, box: { w: 16, h: 16 } } }
+  primary:
+    - label: Products
+      href: ""
+      color: rgb(31, 31, 31)
+      fontFamily: '"HubSpot Sans", sans-serif'
+      fontSize: 16
+      fontWeight: 400
+      tier: primary
+      hasChevron: true
+      menu:
+        columns:
+          - heading: "The HubSpot Customer Platform"
+            area: main
+            links:
+              - { label: "Marketing Hub", description: "Free and premium plans", href: "https://www.hubspot.com/products/marketing" }
+              - { label: "Sales Hub", description: "Free and premium plans", href: "https://www.hubspot.com/products/sales" }
+              - { label: "Service Hub", description: "Free and premium plans", href: "https://www.hubspot.com/products/service" }
+              - { label: "Content Hub", description: "Free and premium plans", href: "https://www.hubspot.com/products/content" }
+              - { label: "Data Hub", description: "Free and premium plans", href: "https://www.hubspot.com/products/data" }
+              - { label: "Revenue Hub", description: "Free and premium plans", href: "https://www.hubspot.com/products/revenue" }
+          - heading: "Platform Foundations"
+            area: main
+            links:
+              - { label: "Smart CRM", description: "AI-powered system of record", href: "https://www.hubspot.com/products/crm/ai-crm" }
+              - { label: "Small Business Bundle", description: "Starter edition of every product", href: "https://www.hubspot.com/products/crm/starter" }
+              - { label: "Breeze", description: "AI agents & assistants", href: "https://www.hubspot.com/products/artificial-intelligence" }
+              - { label: "AEO (Beta)", description: "AI search visibility", href: "https://www.hubspot.com/products/aeo" }
+              - { label: "HubSpot Marketplace", description: "See all integrations", href: "https://ecosystem.hubspot.com/marketplace/apps" }
+        ctas:
+          - { label: "Free HubSpot CRM", href: "https://www.hubspot.com/products/crm", style: neutral-bordered }
+          - { label: "Overview of all products", href: "https://www.hubspot.com/products/get-started", style: neutral-bordered }
+    - label: Solutions
+      href: ""
+      color: rgb(31, 31, 31)
+      fontFamily: '"HubSpot Sans", sans-serif'
+      fontSize: 16
+      fontWeight: 400
+      tier: primary
+      hasChevron: true
+      menu:
+        sidebarTabs: ["By Use Case", "By Team Size", "Why HubSpot?"]
+        columns:
+          - heading: "Marketing"
+            area: main
+            links:
+              - { label: "Generate leads", href: "https://www.hubspot.com/use-case/generate-leads" }
+              - { label: "Automate marketing", href: "https://www.hubspot.com/use-case/automate-marketing" }
+          - heading: "Sales"
+            area: main
+            links:
+              - { label: "Build pipeline", href: "https://www.hubspot.com/use-case/build-sales-pipeline" }
+              - { label: "Close deals", href: "https://www.hubspot.com/use-case/close-more-deals" }
+          - heading: "Customer Service"
+            area: main
+            links:
+              - { label: "Scale support", href: "https://www.hubspot.com/use-case/scale-customer-service-support" }
+              - { label: "Drive retention", href: "https://www.hubspot.com/use-case/drive-customer-satisfaction" }
+          - heading: "Content"
+            area: main
+            links:
+              - { label: "Create content", href: "https://www.hubspot.com/use-case/create-content-for-customer-journey" }
+              - { label: "Manage content", href: "https://www.hubspot.com/use-case/manage-content" }
+          - heading: "Startups & Small Businesses"
+            area: main
+            links:
+              - { label: "Find and reach customers", href: "https://www.hubspot.com/use-case/find-and-reach-customers" }
+              - { label: "Grow sales and get paid", href: "https://www.hubspot.com/use-case/grow-sales-and-get-paid-faster" }
+              - { label: "Organize customer data", href: "https://www.hubspot.com/use-case/understand-and-organize-customer-data" }
+          - heading: "AI Agents"
+            area: aside
+            links:
+              - { label: "Resolve customer queries 24/7", href: "https://www.hubspot.com/products/artificial-intelligence/ai-customer-service-agent" }
+              - { label: "Automate sales prospecting", href: "https://www.hubspot.com/products/sales/ai-prospecting-agent" }
+              - { label: "Research customers faster", href: "https://www.hubspot.com/products/artificial-intelligence/ai-data-agent" }
+    - label: Pricing
+      href: "https://www.hubspot.com/pricing"
+      color: rgb(31, 31, 31)
+      fontFamily: '"HubSpot Sans", sans-serif'
+      fontSize: 16
+      fontWeight: 400
+      tier: primary
+      active: true
+      activeTreatment: underline
+    - label: Resources
+      href: ""
+      color: rgb(31, 31, 31)
+      fontFamily: '"HubSpot Sans", sans-serif'
+      fontSize: 16
+      fontWeight: 400
+      tier: primary
+      hasChevron: true
+      menu:
+        columns:
+          - heading: "Featured Links"
+            area: main
+            links:
+              - { label: "Spotlight: Product Updates", href: "https://www.hubspot.com/spotlight" }
+              - { label: "What's New in HubSpot", href: "https://www.hubspot.com/new" }
+              - { label: "Why Choose HubSpot?", href: "https://www.hubspot.com/why-choose-hubspot" }
+              - { label: "Sustainability", href: "https://www.hubspot.com/sustainability" }
+          - heading: "Community & Events"
+            area: main
+            links:
+              - { label: "INBOUND Event", href: "https://www.inbound.com/" }
+              - { label: "Webinars", href: "https://www.hubspot.com/resources/webinar" }
+              - { label: "HubSpot Community", href: "https://community.hubspot.com/" }
+              - { label: "HubSpot User Groups", href: "https://www.hubspot.com/hubspot-user-groups" }
+          - heading: "Partners"
+            area: main
+            links:
+              - { label: "Solutions Partner Program", href: "https://www.hubspot.com/partners/solutions" }
+              - { label: "Technology Partner Program", href: "https://www.hubspot.com/partners/app" }
+              - { label: "Affiliate Partner Program", href: "https://www.hubspot.com/partners/affiliates" }
+              - { label: "Education Partner Program", href: "https://academy.hubspot.com/education-partner-program" }
+              - { label: "Startup Partner Program", href: "https://www.hubspot.com/startups/partners" }
+          - heading: "Education"
+            area: main
+            links:
+              - { label: "The Loop Marketing Playbook", href: "https://www.hubspot.com/loop-marketing" }
+              - { label: "What Is Inbound Marketing?", href: "https://www.hubspot.com/inbound-marketing" }
+              - { label: "HubSpot Blogs", href: "https://blog.hubspot.com/" }
+              - { label: "Free Courses & Certifications", href: "https://academy.hubspot.com/" }
+              - { label: "Ebooks, Guides & More", href: "https://www.hubspot.com/resources" }
+          - heading: "Tools & Services"
+            area: main
+            links:
+              - { label: "Website Templates", href: "https://ecosystem.hubspot.com/marketplace/templates" }
+              - { label: "Developer Tools", href: "https://developers.hubspot.com/" }
+              - { label: "Onboarding", href: "https://www.hubspot.com/services/onboarding" }
+              - { label: "Premium Support", href: "https://www.hubspot.com/services/premium-support" }
+              - { label: "Hire a Solutions Partner", href: "https://ecosystem.hubspot.com/marketplace/solutions" }
+  # fix1 2026-07 item-12b: the bar's action GROUP — each cta carries its own MEASURED
+  # register facts (structured, same vocabulary as the single-cta ctaStyle path:
+  # bg/color/border/borderRadius/height/padX/fontSize) so the renderer draws every
+  # action with its captured paint. Small register: 14px/22 w500, pad 8x16, h42, r8.
+  ctas:
+    - { label: "Get a demo", href: "https://offers.hubspot.com/crm-platform-demo", style: primary, size: small,
+        bg: "rgb(255, 72, 0)", color: "rgb(255, 255, 255)", borderRadius: 8, height: 42, padX: 16, fontSize: 14,
+        note: "measured: bg rgb(255,72,0), white 14px/22 w500, pad 8x16, r8, border 2px transparent" }
+    - { label: "Get started free", href: "https://app.hubspot.com/signup-hubspot/crm", style: secondary, size: small,
+        bg: "rgb(255, 255, 255)", color: "rgb(255, 72, 0)", border: "2px solid rgb(255, 72, 0)", borderRadius: 8, height: 42, padX: 16, fontSize: 14,
+        note: "measured: bg white, ink rgb(255,72,0), border 2px rgb(255,72,0), pad 8x16, r8" }
+  anyButtonHasIcon: false
+  measured:
+    _provenance: getComputedStyle (rendered px / CSS strings) from saved DOM + live mega-open pass
+    bar:
+      bg: rgb(255, 255, 255)
+      effectiveBg: rgb(255, 255, 255)
+      height: 128
+      paddingTop: 0
+      paddingBottom: 0
+      paddingLeft: 0
+      paddingRight: 0
+    utilityBarHeight: 40
+    primaryBarHeight: 88
+    contentMaxWidth: 1080
+    logo: { width: 100, height: 28 }
+    link: { fontSize: 16, fontWeight: 400, color: "rgb(31, 31, 31)", lineHeight: "18.4px" }
+    utilityLink: { fontSize: 12, fontWeight: 500, color: "rgb(31, 31, 31)" }
+    linkGap: 0
+    activeLink: { treatment: underline, note: "the current route's tab renders underlined (Pricing on the captured page)" }
+    megaPanel:
+      _provenance: getComputedStyle on the (hidden) mega panel from saved DOM
+      surface:
+        bg: rgb(255, 255, 255)
+        borderTop: 1px rgba(0, 0, 0, 0.47)
+        radius: 8
+        maxHeight: ""
+      hiddenState: { opacity: 0, transform: "" }
+      motion:
+        panel: { property: "opacity, visibility", duration: "0.2s, 0.3s", easing: "ease-out, ease", delay: "0.1s" }
+      link: { padding: "8px 15px", radius: 0, fontSize: 14, fontWeight: 500, color: "rgb(18, 69, 72)" }
+      cta: { bg: "rgb(252, 252, 250)", border: "2px solid rgba(0, 0, 0, 0.11)", radius: 8, fontSize: 16, fontWeight: 500, color: "rgb(31, 31, 31)", padding: "12px 24px" }
+    trigger:
+      chevron:
+        kind: svg
+        asset: assets/icon-down.svg
+        svg: '<svg class="cl-icon" aria-hidden="true" fill="currentColor"><use href="#cl-icon-down"></use></svg>'
+        box: { w: 16, h: 16 }
+        gap: 4
+        transition: transform 0.3s
+        curation:
+          motion: { resolve: instant, by: user, ts: "2026-07-14T10:30:00Z", reason: "fix5: open-state chevron must swap direction instantly in generation lanes (no rotation tween); the measured transform 0.3s stays this fact's evidence truth and the replica lane still renders it" }
+    languageSwitcher:
+      kind: dropdown
+      label: English
+      icon: { kind: svg, asset: assets/icon-globe.svg, box: { w: 16, h: 16 } }
+      chevron: { kind: svg, asset: assets/icon-down.svg, box: { w: 16, h: 16 } }
+      panel: { x: 172, y: 52, w: 120, h: 244, bg: "rgb(255, 255, 255)", radius: 8, padding: "7px 10px" }
+      options: ["日本語", "Deutsch", "English", "Español", "Português", "Français"]
+      shot: evidence/chrome-states/chrome-mega-0-select-a-language.png
+  megaOpen:
+    - label: Select a language
+      controls: global-nav-dropdown-list-language_switcher
+      open: true
+      panel: { x: 172, y: 52, w: 120, h: 244 }
+      padding: { top: 7, right: 10, bottom: 7, left: 10 }
+      surface: { bg: "rgb(255, 255, 255)", radius: 8 }
+      mainColumnCount: 1
+      shot: chrome-mega-0-select-a-language.png
+    - label: About
+      controls: global-nav-dropdown-list-utility_about
+      open: true
+      panel: { x: 1107, y: 52, w: 178, h: 206 }
+      padding: { top: 7, right: 10, bottom: 7, left: 10 }
+      surface: { bg: "rgb(255, 255, 255)", radius: 8 }
+      mainColumnCount: 1
+      shot: chrome-mega-1-about.png
+    - label: Products
+      controls: global-nav-tab-dropdown-section-main_products
+      open: true
+      panel: { x: 20, y: 128, w: 1400, h: 526 }
+      padding: { top: 24, right: 24, bottom: 24, left: 24 }
+      surface: { bg: "rgb(255, 255, 255)", radius: 8 }
+      mainColumnCount: 2
+      shot: chrome-mega-2-products.png
+    - label: Solutions
+      controls: global-nav-tab-dropdown-section-main_solutions
+      open: true
+      panel: { x: 20, y: 128, w: 1400, h: 711 }
+      padding: { top: 0, right: 0, bottom: 0, left: 0 }
+      surface: { bg: "rgb(255, 255, 255)", radius: 8 }
+      groups:
+        - rect: { x: 246, y: 129, w: 1173, h: 709 }
+          links: 19
+          linkColumns: 3
+          aside: true
+      aside: { rect: { x: 21, y: 129, w: 1398, h: 709 }, widthFraction: 0.999, note: "left sidebar of pill tabs (By Use Case / By Team Size / Why HubSpot?) + promo aside card" }
+      mainColumnCount: 3
+      shot: chrome-mega-3-solutions.png
+    - label: Resources
+      controls: global-nav-tab-dropdown-section-main_resources
+      open: true
+      panel: { x: 20, y: 128, w: 1400, h: 565 }
+      padding: { top: 6, right: 6, bottom: 6, left: 6 }
+      surface: { bg: "rgb(255, 255, 255)", radius: 8 }
+      mainColumnCount: 5
+      shot: chrome-mega-4-resources.png
+
+footer:
+  origin: extracted
+  source: extracted
+  scope: site-chrome
+  confidence: high
+  provenance:
+    node: footer.hsg-footer.global-footer
+    sourceUrl: https://www.hubspot.com/
+    savedPage: ../../../screenshots/hubspot-v2/hubspot.html
+    extractor: tools/extract_chrome_saved.py + measure_computed.py + grounding/section-11-footer.yaml
+    contract: ../assets/source-chrome.v2.json
+  archetype: grid
+  surface:
+    bg: rgb(31, 31, 31)
+    color: rgb(248, 245, 238)
+  slots:
+    - { name: linkcols, type: content, role: "5 grouped footer nav columns (Popular Features wide + 4)", source: extracted }
+    - { name: social,   type: content, role: "7 monochrome social glyphs, centered row between hairlines", source: extracted }
+    - { name: legal,    type: content, role: "copyright + 5 underlined policy links", source: extracted }
+  logo:
+    kind: svg
+    alt: HubSpot
+    src: hubspot-wordmark.svg
+    # fix1 2026-07 item-11 (pixel measure, fullpage capture): wordmark box 98×28px,
+    # centered on the page axis between the social row and the legal line.
+    height: 28
+    note: "cream/white wordmark centered above the legal row (the same wordmark art, light ink)"
+  presentation:
+    casing: title
+    separator: none
+    headings:
+      color: "#f8f5ee"
+      size: 14
+      weight: 500
+      note: "column headings measured 14px/16.1 w500 cream (the collapse-toggle buttons at desktop render as static headings)"
+  measured:
+    _provenance: getComputedStyle (rendered px / CSS strings) from saved DOM
+    bg: rgb(31, 31, 31)
+    color: rgb(248, 245, 238)
+    height: 655
+    contentMaxWidth: 1080
+    padding: { top: 48, bottom: 48, left: 32, right: 32 }
+    grid:
+      display: flex
+      templateColumns: ""
+      columnGap: 52
+      rowGap: 0
+      columnCount: 5
+      groupCount: 5
+      wrapperCount: 2
+      # VISUAL track map (drives the renderer): 5 tracks — Popular Features spreads
+      # its 18 links over TWO link columns (authored as a headed + headless column
+      # pair), Free Tools / Company each own a track, Customers + Partners stack in
+      # the last track (Partners' heading sits mid-height below Customers' 2 links).
+      wrapperSizes: [1, 1, 1, 1, 2]
+      trackCount: 5
+      rowBandCount: 1
+      # DOM wrappers as captured (provenance; the visual tracks above are what the
+      # rendered grid shows — wrapper-2's four groups spread as separate tracks):
+      wrappers:
+        - { groups: ["Popular Features"], x: 180, y: 6557, w: 432, track: 0, row: 0 }
+        - { groups: ["Free Tools", "Company", "Customers", "Partners"], x: 664, y: 6557, w: 596, track: 1, row: 0 }
+    heading:
+      fontSize: 14
+      fontWeight: "500"
+      color: rgb(248, 245, 238)
+      lineHeight: 16.1px
+      fontFamily: '"HubSpot Sans", sans-serif'
+      textTransform: none
+      letterSpacing: normal
+    link:
+      fontSize: 12
+      fontWeight: "500"
+      color: rgba(255, 255, 255, 0.62)
+      lineHeight: 28.8px
+      hoverColorOnDark: "#f8f5ee"
+      rowStride: 33
+      note: "hover: color hover-link-01 cream + font-weight demi-bold + underline (css-facts hoverRules)"
+    linkHoverColor: "#f8f5ee"
+    social:
+      kind: icon
+      # fix1 2026-07 item-10 (pixel sample, fullpage capture footer band): idle glyphs
+      # render the footer's MUTED SECONDARY register — brightest glyph pixel
+      # rgb(169,169,169) == white@62% over #1f1f1f, the same rgba(255,255,255,0.62)
+      # ink as the directory links (ghost icon-link register, idle). Saved-css
+      # --dark-theme-social-button-fill-idle #f8f5ee is the HOVER-brightened family;
+      # rendered idle pixels win.
+      iconFill: "rgba(255, 255, 255, 0.62)"
+      iconHover: "#f8f5ee"
+      size: 22
+      fontSize: 16
+      fontWeight: "400"
+      color: rgb(248, 245, 238)
+      letterSpacing: normal
+      textTransform: none
+      note: "monochrome glyph row, hairline rules flanking on the same row; idle = muted 62%-white icon-link register (measured px), hover brightens to cream"
+    bottom: { textAlign: center }
+    legal:
+      fontSize: 13
+      fontWeight: "400"
+      lineHeight: 21px
+      color: rgba(255, 255, 255, 0.62)
+  columns:
+    - heading: Popular Features
+      links:
+        - { label: "All Products and Features", href: "https://www.hubspot.com/products" }
+        - { label: "HubSpot AEO", href: "https://www.hubspot.com/products/aeo" }
+        - { label: "Free Meeting Scheduler App", href: "https://www.hubspot.com/products/sales/schedule-meeting" }
+        - { label: "Breeze AI Tools", href: "https://www.hubspot.com/products/artificial-intelligence" }
+        - { label: "Email Tracking Software", href: "https://www.hubspot.com/products/sales/email-tracking" }
+        - { label: "AI Content Writer", href: "https://www.hubspot.com/products/cms/ai-content-writer" }
+        - { label: "AI Website Generator", href: "https://www.hubspot.com/products/cms/ai-website-builder" }
+        - { label: "Email Marketing Software", href: "https://www.hubspot.com/products/marketing/email" }
+        - { label: "Lead Management Software", href: "https://www.hubspot.com/products/sales/lead-management" }
+    # Popular Features' SECOND link column (headless — the source spreads the group's
+    # 18 links over two side-by-side columns under one heading; split matches the
+    # captured column break after "Lead Management Software"):
+    - heading: ""
+      links:
+        - { label: "AI Prospecting Agent", href: "https://www.hubspot.com/products/sales/ai-prospecting-agent" }
+        - { label: "Free Website Builder", href: "https://www.hubspot.com/products/cms/website-builder" }
+        - { label: "Landing Pages", href: "https://www.hubspot.com/products/marketing/landing-pages" }
+        - { label: "Free Online Form Builder", href: "https://www.hubspot.com/products/marketing/forms" }
+        - { label: "Free Chatbot Builder", href: "https://www.hubspot.com/products/crm/chatbot-builder" }
+        - { label: "Free Live Chat Software", href: "https://www.hubspot.com/products/crm/live-chat" }
+        - { label: "Marketing Analytics", href: "https://www.hubspot.com/products/marketing/analytics" }
+        - { label: "Free Landing Page Builder", href: "https://www.hubspot.com/products/marketing/landing-pages/free-landing-page-creator" }
+        - { label: "Free Web Hosting", href: "https://www.hubspot.com/products/cms/web-hosting" }
+    - heading: Free Tools
+      links:
+        - { label: "See All Free Business Tools", href: "https://www.hubspot.com/free-business-tools" }
+        - { label: "AEO Grader", href: "https://www.hubspot.com/aeo-grader" }
+        - { label: "AI Search Sensor", href: "https://www.hubspot.com/ai-search-sensor" }
+        - { label: "Make My Persona", href: "https://www.hubspot.com/make-my-persona" }
+        - { label: "Email Signature Generator", href: "https://www.hubspot.com/email-signature-generator" }
+        - { label: "Free Business Templates", href: "https://www.hubspot.com/business-templates" }
+        - { label: "Software Comparisons Library", href: "https://www.hubspot.com/comparisons" }
+        - { label: "Website Templates", href: "https://ecosystem.hubspot.com/marketplace/templates" }
+    - heading: Company
+      links:
+        - { label: "About Us", href: "https://www.hubspot.com/our-story" }
+        - { label: "Careers", href: "https://www.hubspot.com/careers" }
+        - { label: "Management Team", href: "https://www.hubspot.com/company/management" }
+        - { label: "Board of Directors", href: "https://www.hubspot.com/company/board-of-directors" }
+        - { label: "Investor Relations", href: "https://ir.hubspot.com/" }
+        - { label: "Blog", href: "https://blog.hubspot.com/" }
+        - { label: "Sustainability", href: "https://www.hubspot.com/sustainability" }
+        - { label: "Contact Us", href: "https://www.hubspot.com/company/contact" }
+    - heading: Customers
+      links:
+        - { label: "Customer Support", href: "https://help.hubspot.com/" }
+        - { label: "Join a Local User Group", href: "https://www.hubspot.com/hubspot-user-groups" }
+    - heading: Partners
+      links:
+        - { label: "All Partner Programs", href: "https://www.hubspot.com/partners" }
+        - { label: "Solutions Partner Program", href: "https://www.hubspot.com/partners/solutions" }
+        - { label: "Technology Partner Program", href: "https://www.hubspot.com/partners/app" }
+        - { label: "HubSpot for Startups", href: "https://www.hubspot.com/startups" }
+        - { label: "Affiliate Program", href: "https://www.hubspot.com/partners/affiliates" }
+  # social GLYPH row (measured.social: 22px monochrome glyphs at the muted 62%-white
+  # icon-link register — fix1 item-10 pixel sample — bare, no plate boxes, hairline
+  # rules flanking on the same row; harvested sprite artwork):
+  social:
+    - { network: facebook,  href: "https://www.facebook.com/hubspot",  icon: { asset: assets/social-facebook.svg,  size: 22, ink: "rgba(255, 255, 255, 0.62)" }, box: { width: 40, height: 40 } }
+    - { network: instagram, href: "https://www.instagram.com/hubspot", icon: { asset: assets/social-instagram.svg, size: 22, ink: "rgba(255, 255, 255, 0.62)" }, box: { width: 40, height: 40 } }
+    - { network: youtube,   href: "https://www.youtube.com/user/hubspot", icon: { asset: assets/social-youtube.svg, size: 22, ink: "rgba(255, 255, 255, 0.62)" }, box: { width: 40, height: 40 } }
+    - { network: x,         href: "https://x.com/HubSpot",             icon: { asset: assets/social-x.svg,         size: 22, ink: "rgba(255, 255, 255, 0.62)" }, box: { width: 40, height: 40 } }
+    - { network: linkedin,  href: "https://www.linkedin.com/company/hubspot", icon: { asset: assets/social-linkedin.svg, size: 22, ink: "rgba(255, 255, 255, 0.62)" }, box: { width: 40, height: 40 } }
+    - { network: reddit,    href: "https://www.reddit.com/r/hubspot/", icon: { asset: assets/social-reddit.svg,    size: 22, ink: "rgba(255, 255, 255, 0.62)" }, box: { width: 40, height: 40 } }
+    - { network: tiktok,    href: "https://www.tiktok.com/@hubspot",   icon: { asset: assets/social-tiktok.svg,    size: 22, ink: "rgba(255, 255, 255, 0.62)" }, box: { width: 40, height: 40 } }
+  legal:
+    text: "Copyright © 2026 HubSpot, Inc."
+    links:
+      - { label: "Legal Center", href: "https://legal.hubspot.com/legal-center" }
+      - { label: "Privacy Policy", href: "https://legal.hubspot.com/privacy-policy" }
+      - { label: "Security", href: "https://legal.hubspot.com/security" }
+      - { label: "Website Accessibility", href: "https://www.hubspot.com/accessibility" }
+      - { label: "Manage Cookies", href: "https://www.hubspot.com/" }
+  bottomBar:
+    # fix1 2026-07 item-11: the bottom block is a CENTERED STACK (crop section-11 +
+    # grounding: hairline-flanked centered social glyph row → cream wordmark →
+    # centered copyright line → centered underlined policy row). Generic anatomy
+    # fact (brand-schema `footer.bottomBar.anatomy`); brands without it keep the
+    # inline row grammar byte-identically.
+    anatomy: centered-stack
+    divider: { present: true, color: "rgba(255, 255, 255, 0.11)", note: "horizontal hairline rules flank the social row (rgba(255,255,255,0.11) family)" }
+    policyLinks:
+      - { label: "Legal Center", href: "https://legal.hubspot.com/legal-center" }
+      - { label: "Privacy Policy", href: "https://legal.hubspot.com/privacy-policy" }
+      - { label: "Security", href: "https://legal.hubspot.com/security" }
+      - { label: "Website Accessibility", href: "https://www.hubspot.com/accessibility" }
+      - { label: "Manage Cookies", href: "https://www.hubspot.com/" }
+    note: "policy links render UNDERLINED at 13-14px cream; no app-store badges in the footer (the two store badges in assets belong to mega-panel promos)"

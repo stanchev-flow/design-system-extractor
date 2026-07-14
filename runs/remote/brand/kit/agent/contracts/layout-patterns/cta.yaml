@@ -1,0 +1,110 @@
+# STANDARD (brand-agnostic) layout patterns for the CTA use-case.
+# origin: designed — general generalizations of the harvest clusters. Sizes are classes, never px.
+schemaVersion: layout-patterns.v1
+useCase: cta
+patterns:
+
+  - id: cta-centered-inverse-cta
+    useCase: cta
+    archetypeRef: stack
+    surfaceIntent: inverse
+    intent: "Centered heading + support copy + paired buttons on an inverse conversion band."
+    contentShape:
+      alignment: { value: centered, inheritance: block-inherits }
+      slots:
+        - { name: heading, role: cta-title, textLen: short, sizeClass: display, width: hug, z: front }
+        - { name: support, role: support-copy, textLen: long, sizeClass: body, width: hug, z: front }
+        - { name: actions, role: cta-group, textLen: short, sizeClass: body, width: hug, z: front }
+    specialTreatments:
+      - { kind: overlap, pair: [heading, support], zOrder: [support, heading], amount: { class: light } }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      buttonCount: { type: enum, values: ["1", "2"], default: "2" }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters centered_inverse_cta x4, paired_cta_buttons x7", sources: [harvest-11-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "centered-inverse-cta", by: creation, signalId: null, note: "hand-blessed from harvest report (cta: bleed x21, ghost-word x10)" }
+
+  - id: cta-split-copy-cta
+    useCase: cta
+    archetypeRef: split
+    surfaceIntent: any
+    intent: "Two-zone utility band — copy stack on one side, paired actions on the other."
+    contentShape:
+      alignment: { value: left, counterweight: actions, inheritance: per-slot-override }
+      slots:
+        - { name: heading, role: cta-title, textLen: short, sizeClass: title, width: hug, z: front }
+        - { name: support, role: support-copy, textLen: long, sizeClass: body, width: hug, z: front }
+        - { name: actions, role: cta-group, textLen: short, sizeClass: body, width: hug, z: front }
+    specialTreatments:
+      - { kind: overlap, pair: [heading, actions], zOrder: [heading, actions], amount: { class: light } }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      actionSide: { type: enum, values: [left, right], default: right }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters split_copy_cta_stack x6, two_zone_utility_band, wide_edge_gutter_two_zone_utility_container", sources: [harvest-11-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "split-copy-cta", by: creation, signalId: null, note: "hand-blessed from harvest report" }
+
+  - id: cta-fullbleed-scrimmed-media
+    useCase: cta
+    archetypeRef: stack-fullbleed
+    surfaceIntent: inverse-strong
+    intent: "Viewport-width scrimmed media band with a narrow centered conversion stack and an oversized ghost word."
+    contentShape:
+      alignment: { value: centered, inheritance: block-inherits }
+      slots:
+        - { name: ghostword, role: watermark, textLen: word, sizeClass: colossal, width: full-bleed, opacityClass: ghost, z: back }
+        - { name: heading, role: cta-title, textLen: short, sizeClass: hero, width: hug, z: front }
+        - { name: support, role: support-copy, textLen: long, sizeClass: body, width: hug, sizeRel: { to: media, ratio: 0.4, axis: width }, z: front }
+        - { name: actions, role: cta-group, textLen: short, sizeClass: body, width: hug, z: front }
+        - { name: media, role: cta-media, mediaAspect: landscape, mediaScale: { of: container, fraction: 1.0 }, width: full-bleed, z: back }
+    specialTreatments:
+      - { kind: bleed, target: media, edge: all }
+      - { kind: ghost-word, target: ghostword, anchor: full-bleed, bleed: full }
+      - { kind: text-on-media, target: heading, over: media }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      scrim: { type: enum, values: [tint, gradient], default: gradient }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters full_bleed_scrimmed_media_background x4, centered_media_cta, viewport_width_media_band_hard_reset_edges", sources: [harvest-11-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "fullbleed-scrimmed-media", by: creation, signalId: null, note: "hand-blessed from harvest report" }
+
+  - id: cta-inline-form-pill
+    useCase: cta
+    archetypeRef: row
+    surfaceIntent: any
+    intent: "Inline lead-gen row — underlined input with an adjacent content-hugging pill submit and short helper copy."
+    contentShape:
+      alignment: { value: space-between, inheritance: per-slot-override }
+      slots:
+        - { name: heading, role: cta-title, textLen: short, sizeClass: title, width: hug, z: front }
+        - { name: helper, role: helper-copy, textLen: long, sizeClass: caption, width: hug, z: front }
+        - { name: input, role: form-input, textLen: short, sizeClass: body, width: stretch, z: front }
+        - { name: submit, role: submit-pill, textLen: word, sizeClass: body, width: hug, z: front }
+    specialTreatments:
+      - { kind: overlap, pair: [input, submit], zOrder: [input, submit], amount: { class: light } }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      submitSide: { type: enum, values: [inline, below], default: inline }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters inline_form_with_pill_submit x4, underline_input_with_adjacent_content_hugging_pill_submit", sources: [harvest-11-projects] }
+    overridable: true
+    confidence: medium
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "inline-form-pill", by: creation, signalId: null, note: "hand-blessed from harvest report" }

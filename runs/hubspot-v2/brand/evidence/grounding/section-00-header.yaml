@@ -1,0 +1,150 @@
+schemaVersion: section-grounding.v1
+sectionRole: navbar
+layout:
+  structure: 'two-tier nav bar: utility row top, primary logo+nav+CTAs below'
+  columns: null
+  alignment: mixed
+  approxPaddingPx:
+    top: 12
+    bottom: 12
+  gapPx: 32
+  containerWidth: contained
+surfaces:
+- role: chrome-bar
+  bgApprox: '#ffffff'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1b1b1b'
+typography:
+- role: nav-link
+  approxSizePx: 15
+  weightApprox: 600
+  case: title
+  trackingApprox: normal
+  colorApprox: '#2d3e50'
+  familyClass: geometric-sans
+- role: control-label
+  approxSizePx: 14
+  weightApprox: 600
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1b1b1b'
+  familyClass: geometric-sans
+components:
+- kind: link
+  variant: text-with-caret
+  countObserved: 7
+  anatomy: optional leading icon -> label -> optional dropdown caret
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#2d3e50'
+  caseTreatment: title
+- kind: link
+  variant: text-underline-active
+  countObserved: 1
+  anatomy: Pricing label with underline (active/current)
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#2d3e50'
+  caseTreatment: title
+- kind: button
+  variant: filled-primary
+  countObserved: 1
+  anatomy: label only
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 13 28
+    radiusPx: 4
+  surfaceApprox: '#ff5c35'
+  inkApprox: '#ffffff'
+  caseTreatment: title
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: label only
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 13 28
+    radiusPx: 4
+  surfaceApprox: transparent
+  inkApprox: '#ff5c35'
+  caseTreatment: title
+- kind: logo-item
+  variant: wordmark
+  countObserved: 1
+  anatomy: HubSpot orange wordmark with sprocket
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#ff5c35'
+  caseTreatment: title
+- kind: icon
+  variant: utility-glyph
+  countObserved: 5
+  anatomy: small line glyphs beside utility labels + search magnifier
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1b1b1b'
+  caseTreatment: title
+copy:
+  eyebrow: null
+  heading: null
+  body: null
+  actions:
+  - label: English
+    styleHint: text-with-caret
+  - label: High Contrast
+    styleHint: text-with-icon
+  - label: Customer Support
+    styleHint: text-with-icon
+  - label: Contact Sales
+    styleHint: text-with-icon
+  - label: Log in
+    styleHint: text-link
+  - label: About
+    styleHint: text-with-caret
+  - label: Products
+    styleHint: text-with-caret
+  - label: Solutions
+    styleHint: text-with-caret
+  - label: Pricing
+    styleHint: text-underline-active
+  - label: Resources
+    styleHint: text-with-caret
+  - label: Get a demo
+    styleHint: filled-primary
+  - label: Get started free
+    styleHint: outlined
+  logosLegible:
+  - HubSpot
+chrome:
+  casing: title
+  separators: whitespace-only
+  iconShape: text-labels
+  surfaceApprox: '#ffffff'
+  linkTreatment: '15px #2d3e50 nav links, active item underlined (Pricing)'
+  ctaTreatment: orange filled square-ish button (Get a demo) + orange outlined button (Get started free),
+    both hugging content
+motionHints:
+- dropdown carets beside Products/Solutions/Resources/About (menu expand)
+- search icon (expandable search field)
+confidence: high
+notes:
+- bottom edge shows top of following hero image band, cropped
+- toggle-style icon beside High Contrast suggests accessibility toggle control
+_source:
+  crop: section-00-header.png
+  domClasses: global-nav-header
+  model: claude-opus-4-8

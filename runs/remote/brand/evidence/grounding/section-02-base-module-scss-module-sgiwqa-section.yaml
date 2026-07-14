@@ -1,0 +1,199 @@
+schemaVersion: section-grounding.v1
+sectionRole: features
+layout:
+  structure: split ~50/50, accordion list left / product-UI mockup right
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 90
+    bottom: 90
+  gapPx: 140
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#eeedec'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: card
+  bgApprox: '#4a1420'
+  parent: canvas
+  radiusPx: 12
+  borderApprox: none
+  inkApprox: '#f5eaea'
+- role: media-well
+  bgApprox: 'gradient(#f4f2f0 -> #ffffff)'
+  parent: canvas
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: card
+  bgApprox: '#ffffff'
+  parent: media-well
+  radiusPx: 12
+  borderApprox: '1px #ece7e7'
+  inkApprox: '#1a1a1a'
+typography:
+- role: eyebrow
+  approxSizePx: 14
+  weightApprox: 600
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#a01f38'
+  familyClass: grotesque-sans
+- role: h2
+  approxSizePx: 44
+  weightApprox: 500
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: h3
+  approxSizePx: 20
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: body
+  approxSizePx: 17
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#e8d8db'
+  familyClass: grotesque-sans
+components:
+- kind: accordion-item
+  variant: filled-primary-expanded
+  countObserved: 1
+  anatomy: icon left -> heading -> chevron-up right; body below -> circular arrow button
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 32 32
+    radiusPx: 12
+  surfaceApprox: '#4a1420'
+  inkApprox: '#f5eaea'
+  caseTreatment: title
+- kind: accordion-item
+  variant: text-row-collapsed
+  countObserved: 4
+  anatomy: icon left -> heading -> chevron-down right, with bottom divider
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 24 8
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: button
+  variant: filled-neutral-icon
+  countObserved: 1
+  anatomy: circular white button with arrow-right glyph
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 20
+  surfaceApprox: '#ffffff'
+  inkApprox: '#4a1420'
+  caseTreatment: sentence
+- kind: avatar
+  variant: rounded-portrait
+  countObserved: 1
+  anatomy: portrait photo on maroon frame, rounded corners
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 8
+  surfaceApprox: '#4a1420'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: badge
+  variant: pill-tint
+  countObserved: 2
+  anatomy: small rounded pill with upper-case label
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 4 10
+    radiusPx: 10
+  surfaceApprox: '#f6dfe2'
+  inkApprox: '#a01f38'
+  caseTreatment: upper
+- kind: button
+  variant: outlined-pill
+  countObserved: 1
+  anatomy: pill outline with 'View all' label
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 6 16
+    radiusPx: 16
+  surfaceApprox: transparent
+  inkApprox: '#a01f38'
+  caseTreatment: sentence
+- kind: button
+  variant: filled-primary-icon
+  countObserved: 1
+  anatomy: solid pill with plus glyph
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 6 16
+    radiusPx: 16
+  surfaceApprox: '#a01f38'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: list-item
+  variant: task-row
+  countObserved: 1
+  anatomy: heart icon -> label -> overdue pill -> chevron
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 12 16
+    radiusPx: 8
+  surfaceApprox: '#f3f0f0'
+  inkApprox: '#1a1a1a'
+  caseTreatment: sentence
+copy:
+  eyebrow: HOW WE DO IT
+  heading: One system of record. Every employment need.
+  body: null
+  items:
+  - heading: Employer of Record (EOR)
+    body: Need to hire anyone, anywhere? We handle the employment contract, taxes, benefits, and compliance
+      — onboarded in hours, not months.
+    meta: null
+  - heading: Global Payroll
+    body: null
+    meta: null
+  - heading: Contractor of Record (COR)
+    body: null
+    meta: null
+  - heading: Contractor Management
+    body: null
+    meta: null
+  - heading: Professional Employer Organization (PEO)
+    body: null
+    meta: null
+  - heading: Sakura Tanaka
+    body: SOCIAL MEDIA MANAGER
+    meta: Tokyo, Japan • UTC +9:00
+  - heading: Things to do
+    body: Select new benefits for your employees
+    meta: Overdue
+  actions:
+  - label: View all
+    styleHint: outlined-pill
+copy_logos: []
+media:
+- kind: product-ui
+  treatment: profile card + task-list panel mockups on light grid-lined media-well, portrait avatar on
+    maroon frame
+  aspect: portrait
+  approxFractionOfSection: 0.45
+confidence: high
+notes:
+- Right-side mockup overlaps two floating cards on a faint blue grid background
+- Cursor arrow glyph visible over task row
+_source:
+  crop: section-02-base-module-scss-module-sgiwqa-section.png
+  domClasses: base-module-scss-module__sGIWqa__section
+  model: claude-opus-4-8
