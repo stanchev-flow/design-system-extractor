@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T18:21:41Z",
+  "generatedAt": "2026-07-14T20:19:15Z",
   "brandDir": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand",
   "viewport": "1440x900",
   "signatureCount": 4,
@@ -17,14 +17,14 @@
             {
               "check": "scope(allowed)",
               "ok": true,
-              "detail": "all 7 in-family paints sit on allowed roles"
+              "detail": "all 9 in-family paints sit on allowed roles"
             },
             {
               "check": "accent_budget",
               "ok": true,
-              "sharePct": 0.745,
+              "sharePct": 0.816,
               "budgetPct": 2.0,
-              "detail": "accent paint share 0.745% of page (budget 2.0%)"
+              "detail": "accent paint share 0.816% of page (budget 2.0%)"
             }
           ],
           "ok": true
@@ -79,6 +79,19 @@
               "check": "surfaces(dark family)",
               "ok": true,
               "detail": "2 dark section(s), all in the licensed family; 6 sections checked"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "accent-devices",
+          "kind": "device-floor",
+          "mode": "floor",
+          "checks": [
+            {
+              "check": "deviceFloor(hero)",
+              "ok": true,
+              "detail": "1 licensed device(s) rendered in the hero context \u00b7 floor 1"
             }
           ],
           "ok": true

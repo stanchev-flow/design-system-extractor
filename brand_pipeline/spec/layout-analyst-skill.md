@@ -313,6 +313,19 @@ For each section, from its grounding YAML + DOM entry + crop:
    family). Fewer than 3 means the brand's voice hasn't been found yet; more
    than 5 means rules are being dumped, not signatures. C25 (advisory) is the
    enforcement backstop.
+2b². **Accent devices + marker glyphs (REQUIRED extraction targets when the
+   evidence shows them, fix7 2026-07).** When the capture shows small accent
+   TOUCHES — a landmark heading closing with an accent-colored mark, list
+   markers in the brand's glyph, a standing-link underline decoration, an
+   accent-emphasized word — author the `accentDevices:` block (brand-schema
+   §4.11): device kind + the token role that paints it + licensed contexts
+   with floors, AND harvest the marker artwork into `assets/` + the tagged
+   inventory (the icon-next.svg pattern: the sprite symbol's own viewBox,
+   currentColor, sanitizer-clean). A signature that names the move without
+   the license is only half the fact — the fix7 review found the orange
+   period + checkmark accents EXTRACTED but never applied, because nothing
+   machine-applicable carried them. Do NOT invent: a hover-only underline is
+   an interaction treatment (motionSpec.link), not a standing accent device.
 2c. **Structured voice facts (REQUIRED, pass1 2026-07).** Derive
    `voice-facts.yaml` (brand-schema §4.8) from the captured copy corpus —
    sentence stats + gate budgets, reading level, casing rules with the

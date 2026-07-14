@@ -1,13 +1,13 @@
 # Interaction-Contract Baseline Report
 
-Generated: 2026-07-14T18:20:41+00:00 — auditor v1.0.0 — mode: strict
+Generated: 2026-07-14T20:18:14+00:00 — auditor v1.0.0 — mode: strict
 Contracts: `brand_pipeline/spec/interaction-contracts.md` (WAI-ARIA APG primary; Base UI secondary; Radix tertiary)
 
 ## Audited lanes
 
 | lane | file | mtime (UTC) | sha256/12 |
 |---|---|---|---|
-| compose/style-bakeoff-swiss/product-launch | `/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/index.html` | 2026-07-14T18:12:58+00:00 | `55c86efe4c35` |
+| compose/style-bakeoff-swiss/product-launch | `/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/index.html` | 2026-07-14T20:16:32+00:00 | `c46cf4afe5ae` |
 
 If a lane is re-rendered by another agent, re-run the audit; the mtime/sha above identify exactly which HTML was measured.
 
@@ -21,22 +21,22 @@ If a lane is re-rendered by another agent, re-run the audit; the mtime/sha above
 
 | check | family | severity | layer | status | detail |
 |---|---|---|---|---|---|
-| IC-NAV-05 | nav | advisory | static | **advisory** | anchor with role=button in nav chrome — promises Space activation anchors don't have (line 2727) |
-| IC-LANG-01 | lang | required | static | **pass** | toggle is a native <summary> inside <details> (line 2717) |
-| IC-LANG-02 | lang | required | static | **pass** | toggle has an accessible name (line 2717) |
+| IC-NAV-05 | nav | advisory | static | **advisory** | anchor with role=button in nav chrome — promises Space activation anchors don't have (line 2785) |
+| IC-LANG-01 | lang | required | static | **pass** | toggle is a native <summary> inside <details> (line 2775) |
+| IC-LANG-02 | lang | required | static | **pass** | toggle has an accessible name (line 2775) |
 | IC-LANG-05 | lang | required | behavioral | **pass** | Enter opens (open=True), Space toggles back=True |
 | IC-LANG-06 | lang | required | behavioral | **pass** | Escape closes the language dropdown |
 | IC-LANG-07 | lang | advisory | behavioral | **pass** | open dropdown items are in the Tab order |
-| IC-NAV-01 | nav | required | static | **pass** | trigger 'Products' is a native button (line 2721) |
-| IC-NAV-01 | nav | required | static | **pass** | trigger 'Solutions' is a native button (line 2723) |
-| IC-NAV-01 | nav | required | static | **pass** | trigger 'Resources' is a native button (line 2725) |
-| IC-NAV-02 | nav | required | static | **pass** | trigger 'Products' carries aria-expanded (line 2721) |
-| IC-NAV-02 | nav | required | static | **pass** | trigger 'Solutions' carries aria-expanded (line 2723) |
-| IC-NAV-02 | nav | required | static | **pass** | trigger 'Resources' carries aria-expanded (line 2725) |
+| IC-NAV-01 | nav | required | static | **pass** | trigger 'Products' is a native button (line 2779) |
+| IC-NAV-01 | nav | required | static | **pass** | trigger 'Solutions' is a native button (line 2781) |
+| IC-NAV-01 | nav | required | static | **pass** | trigger 'Resources' is a native button (line 2783) |
+| IC-NAV-02 | nav | required | static | **pass** | trigger 'Products' carries aria-expanded (line 2779) |
+| IC-NAV-02 | nav | required | static | **pass** | trigger 'Solutions' carries aria-expanded (line 2781) |
+| IC-NAV-02 | nav | required | static | **pass** | trigger 'Resources' carries aria-expanded (line 2783) |
 | IC-NAV-03 | nav | required | static | **pass** | no ARIA menu/menubar roles in site nav |
-| IC-NAV-04 | nav | advisory | static | **pass** | trigger references its panel via aria-controls (line 2721) |
-| IC-NAV-04 | nav | advisory | static | **pass** | trigger references its panel via aria-controls (line 2723) |
-| IC-NAV-04 | nav | advisory | static | **pass** | trigger references its panel via aria-controls (line 2725) |
+| IC-NAV-04 | nav | advisory | static | **pass** | trigger references its panel via aria-controls (line 2779) |
+| IC-NAV-04 | nav | advisory | static | **pass** | trigger references its panel via aria-controls (line 2781) |
+| IC-NAV-04 | nav | advisory | static | **pass** | trigger references its panel via aria-controls (line 2783) |
 | IC-NAV-06 | nav | required | behavioral | **pass** | Tab reaches nav triggers, login, and language switcher |
 | IC-NAV-07 | nav | required | behavioral | **pass** | hover opens panel=True, keyboard focus opens panel=True |
 | IC-NAV-08 | nav | required | behavioral | **pass** | Escape closes the open panel and keeps focus in nav |

@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
 <style id="tokens">
-/* HubSpot — generated design tokens (layer 1). Source: brand.yaml sha256=f6a74fabcd8b; generator tokens_css.py v1.0.0; style=corporate-saas-clean; tokens=273; disabledDevices=counter-display,ghost-watermark,footer-display-links. Regenerate via the compose CLI — never hand-edit. */
+/* HubSpot — generated design tokens (layer 1). Source: brand.yaml sha256=a5945199f111; generator tokens_css.py v1.0.0; style=corporate-saas-clean; tokens=273; disabledDevices=counter-display,ghost-watermark,footer-display-links. Regenerate via the compose CLI — never hand-edit. */
 :root {
   --color-ink-primary: #1f1f1f;
   --color-ink-secondary: rgba(0, 0, 0, 0.62);
@@ -582,8 +582,13 @@ p { text-wrap-style: balance; }
 /* stat primitive (contracts/primitives.yaml `stat`, W4): a big metric VALUE on the
    brand's own heading register + a muted supporting LABEL on the body register.
    The value rides the measured h2 tier by default (--c-stat-size override wins when a
-   brand ever measures a dedicated stat tier) — display stays reserved for the hero. */
-.c-stat { display: flex; flex-direction: column; gap: var(--space-eyebrow-to-heading, 0.5rem); }
+   brand ever measures a dedicated stat tier) — display stays reserved for the hero.
+   STAT PAIR BINDING (fix7 punch 4): the value→label seam is the statPair rung — the
+   TIGHTEST gap in any block the stat sits in (a brand-authored `stat-pair` spacing
+   token wins; the 0.5rem structural default already satisfies the <= 0.5x-sibling-gap
+   law everywhere). The old eyebrow-to-heading ride-along re-registered the pair to a
+   24px header seam, collapsing the value/label hierarchy against its siblings. */
+.c-stat { display: flex; flex-direction: column; gap: var(--space-stat-pair, 0.5rem); }
 .c-stat-value { font-family: var(--c-stat-font, var(--c-font-heading)); color: var(--c-ink);
   text-transform: var(--c-case-heading);
   font-weight: var(--c-heading-weight, var(--c-display-weight));
@@ -591,6 +596,31 @@ p { text-wrap-style: balance; }
 .c-stat-label { font-family: var(--c-font-body); font-size: var(--c-body-size);
   font-weight: var(--c-body-weight); line-height: 1.5em; color: var(--c-ink-muted);
   max-width: var(--space-body-measure, 34ch); }
+
+/* marked list (fix7 punch 3 — the checklist device): content-block items rendered as
+   a REAL list when the composition declares list intent. Hanging indent by grid
+   construction (marker track + text track); item stride rides the brand's own
+   list-item-gap rung. The MARKER is the brand's licensed glyph in the accent role
+   (inline-SVG channel) where an accentDevices marked-list-glyph license exists —
+   license-less brands keep the typographic dot at ink (semantic, never invented). */
+.c-marked-list { list-style: none; margin: 0; padding: 0; display: flex;
+  flex-direction: column; gap: var(--space-list-item-gap, 0.75rem);
+  font-family: var(--c-font-body); font-size: var(--c-body-size);
+  font-weight: var(--c-body-weight); line-height: 1.5em; color: var(--c-ink);
+  max-width: var(--c-measure, 62ch); }
+.c-marked-list > li { display: grid;
+  grid-template-columns: var(--c-list-marker-size, 1em) minmax(0, 1fr);
+  column-gap: 0.6em; align-items: start; }
+.c-list-marker { display: inline-flex; width: var(--c-list-marker-size, 1em);
+  height: var(--c-list-marker-size, 1em); margin-top: 0.22em;
+  color: var(--c-accent-mark, var(--c-ink)); }
+.c-list-marker svg { width: 100%; height: 100%; display: block; }
+
+/* punctuation-accent device (fix7 punch 1): a landmark heading's licensed terminal
+   mark in the device's own accent role — scheme-stable (--c-accent-mark is emitted
+   from the LICENSE's role token, never the surface accent, so a light-surface hero
+   paints the same mark the brand's landmarks evidence). */
+.c-accent-mark { color: var(--c-accent-mark, var(--c-accent)); }
 
 /* table block (contracts/blocks.yaml `table`, W4): semantic tabular data on the same
    ruled-row discipline as .c-rows — 1px hairline per row, label register for column
@@ -849,6 +879,8 @@ span.c-foot-wordmark { background: currentColor;
 .c-foot-cstack .c-foot-policy-link + .c-foot-policy-link {
   border-left: 1px solid var(--cf-rule, var(--c-hairline)); }
 
+/* licensed accent devices (fix7): the device role's own token paints the mark */
+:root { --c-accent-mark: var(--color-accent-highlight); --c-list-marker-size: 1em; }
 :root { --c-ease: var(--motion-ease); --c-motion-fast: var(--motion-fast); --c-motion-base: var(--motion-base); --c-motion-slow: var(--motion-slow); }
 
 
@@ -1159,6 +1191,11 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   gap: var(--space-field-label-gap, 0.5em); }
 .cs-hero-form .c-form { margin: 0; }
 .cs-hero-form .c-paragraph { margin: 0; }
+/* the form NOTE attaches to its control (fix7 punch 6/7): caption register BELOW the
+   field, capped to the control's own width (the wrapper's), balanced wrap — a meta
+   line inside an anchored stack honors the stack anchor, never a ragged floater.
+   (.c-caption already carries text-wrap: balance in the component base.) */
+.cs-hero-form .c-caption { margin: 0; max-width: 100%; align-self: stretch; }
 .cs-hero-links { display: flex; flex-wrap: wrap; align-items: center;
   justify-content: center; column-gap: var(--c-cluster-gap, 1rem);
   row-gap: 0.5rem; }
@@ -1312,6 +1349,18 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   border-top: 1px solid var(--c-hairline); }
 .cs-form-split-points li:last-child { border-bottom: 1px solid var(--c-hairline); }
 .cs-form-split-note { margin: 0; }
+/* HEADING FIT-TO-MEASURE (fix7 punch 5): a stepped display heading re-registers its
+   SIZE to the stamped rung of the brand's own ladder — class/semantics/budget stay
+   display (the pass1 overlay-panel channel); the leading is the display tier's own
+   em-relative value so it scales with the step. Stamp-less columns are inert. */
+[data-fit-rung="h1"] .c-heading--display { font-size: var(--c-h1-size); }
+[data-fit-rung="h2"] .c-heading--display { font-size: var(--c-h2-size); }
+/* STAT PAIR SEPARATION (fix7 punch 4): a stat device separates from the preceding
+   block by >= 1.5x the column's sibling gap — the parent flex gap (heading-to-body
+   rung) supplies 1x, this margin adds the other 0.5x, so the bound value+label pair
+   reads as its OWN block instead of another list row. */
+.cs-split-body > * + .c-stat { margin-block-start:
+  calc(0.5 * var(--space-heading-to-body, var(--c-block-gap, 1.5rem))); }
 @media (max-width: 767px) { .cs-split { grid-template-columns: 1fr; }
   .cs-split-media, .cs-split > .cs-panel, .cs-split > .cs-split-body { grid-column: 1; }
   .cs-split--form > .cs-split-body, .cs-split--form > .cs-form-split-panel {
@@ -1389,8 +1438,12 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
    without a grid-gap fact keep riding the shared page gutter (the degrade). */
 .cs-modules--cols { column-gap: var(--grid-gutter-col,
   var(--space-grid-gap, var(--grid-gutter, 6rem)));
-  row-gap: var(--grid-gutter-row, clamp(calc(4 * var(--baseline)), 5cqw,
-  calc(7 * var(--baseline)))); }
+  /* UNIFORM N-up grids wrap rows on the brand's card-grid rung too (fix7: a
+     knob-declared column count carries no gutter declaration, and the editorial
+     clamp is stagger-grid rhythm, not uniform-grid rhythm); the editorial clamp
+     stays the degrade for brands without the token. */
+  row-gap: var(--grid-gutter-row, var(--space-grid-gap,
+  clamp(calc(4 * var(--baseline)), 5cqw, calc(7 * var(--baseline))))); }
 /* CARD REGISTER LADDER rhythm (fid6 2026-07): a module carrying its own eyebrow +
    heading anatomy rides the brand's measured relational spacing ladder for its
    internal seams — eyebrow→heading, heading→body, body→cta — instead of the uniform
@@ -1661,7 +1714,12 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
    1-up) grid on narrow frames instead of shrinking the value register. */
 .cs-stat-band { display: grid; width: 100%;
   grid-template-columns: repeat(var(--cs-stat-cols, 4), minmax(0, 1fr));
-  gap: var(--c-block-gap) var(--grid-gutter, var(--space-column-to-column, 3rem)); }
+  /* the stat band's column seam is the brand's COLUMN rhythm (spacing law
+     stat.column-gap: column-to-column) — a section's registration-grid gutter is
+     registration geometry, never this device's rhythm (fix7: the model-authored
+     2rem gutter was overriding the brand's 80px rung). Gutter/structural values
+     stay the degrade chain for brands without the token. */
+  gap: var(--c-block-gap) var(--space-column-to-column, var(--grid-gutter, 3rem)); }
 .cs-stat-band-item { min-width: 0; }
 @media (max-width: 991px) { .cs-stat-band { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 539px) { .cs-stat-band { grid-template-columns: 1fr; } }
@@ -2303,6 +2361,7 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 #sec-1 .cs-band-body { align-items: flex-start; text-align: left; }
 #sec-1 .cs-conversion { align-items: flex-start; text-align: left; max-width: var(--content-measure, 86rem); }
 #sec-1 .cs-conversion .c-heading { max-width: var(--cs-stack-measure, 46rem); }
+#sec-1 { --grid-cols: 4; --col: calc((100% - 3 * var(--grid-gutter, 6rem)) / 4); }
 #sec-2 {
   --c-paper: var(--surface-surface-panel);
   --c-ink: var(--color-text-on-primary);
@@ -2744,7 +2803,7 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 <section class="cs-section cs-hero--stacked">
   <div class="cs-slot">
     <div class="cs-eyebrow-wrap"><p class="c-eyebrow">New — generally available</p></div>
-    <div class="cs-title"><h1 class="c-heading c-heading--display">Breeze Agents are here.</h1></div>
+    <div class="cs-title"><h1 class="c-heading c-heading--display">Breeze Agents are here<span class="c-accent-mark" data-accent-device="punctuation-accent">.</span></h1></div>
 
     <div class="cs-foot">
       <p class="cs-sub">AI teammates for prospecting, content, service, and data — working on your CRM, waiting for your approval.</p>
@@ -2763,7 +2822,7 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
       <div class="cs-headrail" style="--cs-rail-pill-radius: 0.25rem; --cs-rail-pill-pad: 0.25rem 0.5rem; --cs-rail-pill-icon: 1rem; --cs-rail-kicker-bg: var(--c-panel, var(--c-paper)); --cs-rail-gap-below: 2rem; --cs-rail-item-gap: 1rem"><span class="cs-headrail-pill"><img src="assets/027-ai-20sparkle.svg" alt="" aria-hidden="true"><p class="c-eyebrow">What shipped</p></span><hr class="cs-headrail-rule cs-headrail-rule--dotted" aria-hidden="true"></div>
   <div class="cs-modules-intro"><div class="c-header"><h2 class="c-heading c-heading--h2">One agent per job, all on Smart CRM data.</h2></div></div>
     </div>
-    <div class="cs-modules">
+    <div class="cs-modules cs-modules--cols" style="--grid-cols: 4">
     <article class="cs-module cs-module--plate cs-module--anatomy">
       <div class="cs-module-headrow" style="--cs-headrow-mark: 1.5rem">
         <figure class="cs-module-media cs-module-media--mark"><img class="c-image" src="assets/029-producticons-saleshub-icon-orange.webp" alt="HubSpot — Prospecting Agent"></figure>
@@ -2807,7 +2866,7 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 <div id="sec-2" class="cs-surface" data-layout="beta-proof" data-surface="surface/panel" data-pattern-match="miss" data-align="centered" data-align-source="section">
 <section class="cs-section cs-flow-sec">
   <div class="cs-flow">
-    <div class="cs-flow-item"><div class="c-header"><p class="c-eyebrow">Trusted in beta</p><h2 class="c-heading c-heading--h2">Believed before it left beta.</h2></div></div>
+    <div class="cs-flow-item" data-row="heading"><div class="c-header"><p class="c-eyebrow">Trusted in beta</p><h2 class="c-heading c-heading--h2">Believed before it left beta.</h2></div></div>
     <div class="cs-flow-item cs-flow-item--prose" data-row="body"><p class="c-paragraph">Human approval on every action came standard through the beta.</p></div>
     <div class="cs-stat-band" style="--cs-stat-cols: 3">
       <div class="cs-stat-band-item"><div class="c-stat"><span class="c-stat-value">12,000+</span><span class="c-stat-label">beta teams</span></div></div>
@@ -2828,7 +2887,7 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 <div id="sec-4" class="cs-surface" data-layout="close" data-surface="surface/inverse" data-pattern="closing-cta-dark" data-pattern-lib="project" data-pattern-match="ref" data-align="centered" data-align-source="section">
 <section class="cs-section cs-conversion-sec">
   <div class="cs-conversion" style="--cs-stack-measure: 62rem; --c-cta-measure: 100%">
-    <div class="c-header"><h2 class="c-heading c-heading--h2 c-heading--accent">Put an agent to work today.</h2></div>
+    <div class="c-header"><h2 class="c-heading c-heading--h2 c-heading--accent">Put an agent to work today<span class="c-accent-mark" data-accent-device="punctuation-accent">.</span></h2></div>
     <p class="c-paragraph" style="--c-measure:40ch">Breeze Agents are included with the platform — start free and turn them on.</p>
     <div class="cs-conversion-actions" data-ag-gap="24" data-ag-align="start"><a class="c-button" href="#" role="button">Start with Breeze</a><a class="c-button c-button--secondary" href="#" role="button">Get a demo</a></div>
     

@@ -4,11 +4,13 @@ layer: composition-grammar        # NOT a visual style; the universal grammar th
 kind: composition-rules
 assembled_at: generation-time     # merged with brand neverDo/scales + render_pattern_constraint seeds per run
 
-# ── machine-consumed structure (parsed like styles/*.md front-matter via styles.parse_front_matter) ──
-# The prompt builder (brand_pipeline/generate_composition.build_prompt) reads these values
-# and injects them; the prose below is the guidance the generating LLM reads. Keep the two
-# consistent. Values reference the REAL vocabulary (composition.v1.schema.json / §4.4 /
-# contracts/*.yaml) — no invented fields.
+# ── on-disk registry (documentation; NOT injected, NOT machine-parsed) ──
+# The prompt builder (brand_pipeline/generate_composition.build_prompt) injects ONLY the
+# "normative core" prose between this front-matter and the COMPOSITION-CORE:END sentinel.
+# Everything below the sentinel is the extended edition (rationale, device notes, case
+# detail) — on-disk reference for humans/agents, never prompt payload. Keep the three
+# layers consistent: this registry, the core, and the extended notes. Values reference the
+# REAL vocabulary (composition.v1.schema.json / §4.4 / contracts/*.yaml) — no invented fields.
 
 schemaVersion: composition.v1
 
@@ -99,14 +101,152 @@ freedom_envelope:
 precedence: [base-style-invariants, composition-rules, brand-neverDo-hard]
 ---
 
-> Parsed machine values live in the YAML front-matter above; the prose below is the
-> guidance the generating LLM reads. This file is the **universal composition grammar** —
-> it is assembled at generation time together with (a) the merged base STYLE
-> (`styles/<id>.md` invariants + soft options + spacing/type scale), (b) the brand's
-> `neverDo` / token scales, and (c) the `render_pattern_constraint` seed block for the
-> selected use-cases. See `## Assembly` at the end.
+# Composition rules (normative core)
 
-# Composition rules
+You emit ONE `composition.v1` object: ordered sections, each = archetype + slots
+(primitive/block refs) + treatments + inline copy. A deterministic renderer draws it;
+`onbrand_check.py` validates it. You NEVER write HTML/CSS and NEVER re-author a `c-*`
+primitive (`component_render.py` is the single source of truth). Arrange the vocabulary well.
+
+## 1. Palette & slot grammar
+
+- Archetypes — only these are drawable: `stack`, `collage`, `split`, `stack-fullbleed`,
+  `cards`, `interlock`, `overlay`, `banded`. A novel *arrangement* lives WITHIN one.
+- Every `slot.contract` must be a key from the primitives/blocks catalogs injected below.
+  Never invent a contract key.
+- Respect each block's slot grammar: `accepts` (legal fillers), `?optional` (may be empty),
+  `*repeatable` (holds a list — bind an ARRAY of `copy` to render N items).
+- Recursion: scaffold → block → primitive. Never a scaffold inside a block.
+
+## 2. Hard constraints (brand neverDo)
+
+The ACTIVE brand's `neverDo` rules arrive under "## Brand facts" as `id: statement` pairs.
+They are the ONLY non-overridable layer: one violation fails the gate. Realize each
+statement STRUCTURALLY — choose primitives, treatments, and surfaces so it holds by
+construction. Common shapes: a flatness rule → separation via fill contrast and hard
+edges; a typographic-primary rule → `cta` role renders as a `link` (arrow/slash), not a
+`button`; an accent-scope rule → accent only on its declared surfaces; a text-on-photo
+rule → captions to the margin, EXCEPT the brand's named sanctioned exception (emit that
+treatment with `sanctioned: true`); a container-discipline rule → open composition, no
+boxed cards on the named surfaces; an alignment rule → centering only for the named roles.
+Presume nothing about palette, radius, component family, or section order.
+
+## 3. Values are tokens · units are cq · spacing is a named step · type is a tier
+
+- Colors: emit `tokens.colors` roles / surface roles — never a raw hex.
+- Units: sizes/rhythm are classes (`sizeClass`, `width`, `amount.class`, `mediaScale`)
+  the renderer resolves to `cqw/cqh/cqi`. Never `vw`/`vh`/`dvh`, never a px literal.
+- Spacing: pick a NAMED step from the merged style `spacing.scale` (`3xs`…`2xl`) or the
+  brand's measured `tokens.spacing` step (brand preferred). Never an ad-hoc gap.
+- Type: `sizeClass` ∈ `colossal|hero|display|title|body|caption` → brand type tier; the
+  base-style display floor applies. ONE slot per section carries the display tier.
+
+## 4. Treatments (intensity `amount.class`: light | medium | heavy; stackable)
+
+- `stagger` — offset sibling modules along an axis; heavy ≈ 1/3-container offset.
+- `overlap` — two slots overlap with explicit `zOrder`; ONLY pairs the brand's
+  `compositionRules` sanctions (display-text-over-media, media-over-media,
+  panel-over-media, media-over-seam).
+- `ghost-word` — oversized low-opacity watermark (`anchor: behind-media|straddle-media|
+  margin|full-bleed`, `bleed: none|partial|full`); ghost-watermark tier + ghost token.
+- `bleed` — media runs off an `edge: left|right|top|bottom|all`.
+- `marginal-caption` — micro-caption pinned in the margin (`side: left|right`).
+- `float-wrap` + `inset` — statement wraps an inset image (~50% measure) — `interlock`.
+- `panel-on-media` — solid-surface panel grid-placed OVER media; text sits on the panel,
+  never the photo; `distribute: start|center|space-between`; every neverDo holds inside.
+- `straddle` — `target` crosses another slot's edge, declared with the same
+  `registration {toSlot, edge, depthCols|depthBaselines, z}` grammar as any overlap.
+  `z: front` rides over; `z: back` tucks under and carries the G8 occlusion contract.
+  TEXT-target onto photography = text-on-media family (needs `sanctioned: true`);
+  MEDIA-target (media-over-seam / media-over-media) = overlap family, no text sanction.
+- `scrim-band` — FLAT translucent band (never a gradient) crossing media at
+  `band: {rowStart, rowSpan}` (fractions of media height), carrying the `target` slot;
+  `fill.opacityClass: light|medium|heavy` ≈ 0.35/0.55/0.75 of the inverse surface; the
+  text-contrast gate sets the floor — use `medium`+ under caption text on busy photos.
+- `framed` — media at `width: framed`: page margins visible on ALL sides, snapped to
+  whole shared-grid columns; the frame is an inset canvas other slots register against.
+- `type-behind-media` — G8: REAL heading at FULL opacity rendered `z: back` under media
+  (NOT a ghost-word). Legal only with `maxOcclusion` class (light≈0.25 / medium≈0.4 /
+  heavy≈0.55 of glyph area) AND `endsVisible: true` (first/last letterforms clear); the
+  gate recomputes occlusion and fails over budget — above the cap, reclassify as
+  `ghost-word` and carry the real heading elsewhere. Text-on-media family (sanction it).
+- `mixed-face` — one heading, two faces via `spans: [{part: lead, face: roman},
+  {part: emphasis, face: italic}]`; no italic cut shipped → degrade to case/weight
+  contrast, never fake-italicize.
+- `stepped-lines` — authored multi-line statement; line indents step progressively
+  (`steps` in HALF-column units, `direction`) as registered grid indents.
+- `break-frame` — corner-anchored decorative media crossing a `framed` slot's edge;
+  decoration ONLY: area-capped, never covers text (decoration-salience gate).
+- `counter-rotate` is in the vocabulary but has no composer yet (inert).
+- Legality: `text-on-media` maps to a carried text-on-photo `neverDo` — illegal except
+  that brand's named sanctioned exception, emitted with `sanctioned: true`. Any device
+  realizing a shape a carried `neverDo` forbids (bounded card, shadow, gradient, radius)
+  is illegal for that brand. Keep stacked treatments on the z-ladder:
+  ghost-watermark → media → panels → text.
+
+## 4b. Placement on the ONE shared grid (all fields optional; omitted = measured default)
+
+- The page carries one registration grid (`--grid-cols: 12` + shared gutter + baseline).
+  Give slots `colStart`/`colSpan` so edges land on column lines; a deliberate break is a
+  registered nudge (`offsetCols`/`offsetBaselines`, fractional allowed) — never raw %/px.
+- Per-section `alignment: {anchor}` ∈ `centered|left|right|space-between|edge-to-edge|
+  mixed`. An asymmetric anchor MUST name its `counterweight` slot (media, ghost word,
+  panel) or the section reads crammed against a void. Omission is NOT blessed (AS-18):
+  the composer resolves pattern `contentShape.alignment` → style role default and stamps
+  the winner.
+- Offset media (AS-19): media pushed off the text axis is legal ONLY under a resolved
+  side anchor, or when the offset slot IS the registered counterweight; under a resolved
+  `centered` anchor media spans stay symmetric — else the media-registration check fails.
+- Every overlap declares `registration {toSlot, edge, depthCols|depthBaselines, z}`.
+  A multi-image cluster = N registered overlays with explicit back→front `z`.
+- `mediaAspect` resolves to a real aspect-ratio: `wide` 21/9 · `pano` 3/1 · `portrait`
+  3/4 · `square` 1/1 (also `landscape`, `freeform`). Pick the aspect that serves the
+  composition. Width classes: `hug|stretch|fixed|media|full-bleed|framed`.
+- A media slot with `z: back` + `width: full-bleed` is a true background layer = a
+  TEXT-ON-MEDIA treatment: legal only where sanctioned (`sanctioned: true`); the renderer
+  adds a flat scrim for AA. A small `z: front` image corner-pins via `alignTo: {corner}`.
+- `overlay` archetype = the section IS one layered device: every slot places by
+  `colStart/colSpan` + `z: back|mid|front` in one positioning context. Prefer it over
+  bolting many overlaps onto `stack`.
+- `banded` archetype = two stacked full-width surfaces with a HARD horizontal seam
+  (`bands: {split, surfaces}`; never a gradient). Slots straddle via
+  `registration: {toSlot: seam, edge, depthBaselines}` — the media-over-seam pair
+  (sanction it). Content is surface-attributed per band; cross-SECTION straddling is
+  unsupported — model the device as ONE banded section.
+- Readability is a gate, not a vibe: text-contrast (media/scrims) and decoration-salience
+  (ghost/back layers) FAIL sections whose text loses contrast or whose decoration shouts.
+  Compose so text always sits on a quiet field.
+
+## 5. The freedom envelope (invent WITHIN the invariants)
+
+You MAY freely choose: module count (2–4 — render N value_props as N modules, never one
+paragraph); column ratios (`1.2:1`, `1.6:1`, `2:1` preferred; even `1:1`/centering for
+hero + cta); z-order within the ladder; WHICH slot gets the display tier and WHICH single
+element carries the one accent (respect accent-scope rules); SELECT + ORDER the sections
+for the brief. You MAY propose a NOVEL pattern (`novelty: novel`, `seededFrom: null`)
+when the brief needs a structure the library lacks — it must still validate against the
+schema and pass every `neverDo`; if it gates green it becomes eligible for promotion into
+the project library. Novelty and the off-grid treatments are GATED by the run's expansion
+capability: obey the "Expansion capability" block injected right after this grammar
+(UNLOCKED → novel + off-grid legal; LOCKED → reuse/adapt captured patterns only).
+`ghost-word`, `marginal-caption`, `inset`, and the sanctioned hero `text-on-media` are
+style identity, always legal regardless. Seeds BIAS when unlocked, CAGE when locked —
+prefer reuse/adapt either way; reach for novel deliberately.
+
+## 6. Precedence (three tiers)
+
+1. Base-style invariants (advisory-STRONG — the gate warns).
+2. This grammar (palette, slot grammar, treatment legality, values ethos, envelope).
+3. Brand `neverDo` — the ONLY hard layer; a violation FAILS the gate.
+
+<!-- COMPOSITION-CORE:END — nothing below this line is injected into generation prompts -->
+
+# Extended edition — rationale, device notes, case detail (on-disk reference; NOT injected)
+
+> The core above is the normative text the generating LLM reads. This extended edition
+> preserves the full guidance with rationale and worked detail. When editing, keep the
+> registry (front-matter), the core, and this edition consistent — the golden test
+> (`tests/test_grammar_core.py`) enforces the core's vocabulary completeness and budget.
 
 The AI emits a `composition.v1` object (see `brand_pipeline/spec/composition-schema.md` /
 `composition.v1.schema.json`): an ordered list of sections, each = an archetype + slots
@@ -332,8 +472,8 @@ draws; use them when the brief/axis calls for a placement the default can't expr
 You have real latitude — this is the whole point of the hybrid. Without breaking any
 invariant you MAY freely choose:
 
-- **Module count:** 2–4 modules in a features/collage/cards run (this is exactly the Arm-A
-  ceiling the REPORT flagged — render N value_props as N modules, not one paragraph).
+- **Module count:** 2–4 modules in a features/collage/cards run (the classic structured-
+  representation ceiling — render N value_props as N modules, not one paragraph).
 - **Column ratios:** asymmetric splits (`1.2:1`, `1.6:1`, `2:1`); reserve even `1:1` /
   centering for hero + cta.
 - **Z-order:** author the layering within the ladder.
@@ -391,7 +531,9 @@ Identical model to `styles/*.md ## Precedence`:
 `brand_pipeline/generate_composition.build_prompt` assembles the system/user prompt from,
 in order:
 
-1. this **universal grammar** (front-matter + prose above),
+1. the **normative core** of this file (the prose between the front-matter and the
+   `COMPOSITION-CORE:END` sentinel — the front-matter registry and this extended
+   edition are NOT injected),
 2. the **merged base STYLE** (`styles.load_and_merge(style_id, brand)` → invariants, soft
    options, spacing/type scale, display floor),
 3. the **brand** `neverDo` ids + statements, token color roles, and measured `type` tiers /

@@ -1,11 +1,9 @@
 $ node /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/brand_pipeline/slop_audit.mjs /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/index.html
 
 --- stdout ---
-FLAG product-launch/index.html @1440px  (1)
-  AS-12 sec-3: multi-column layout with an empty column (1 of 2 empty)
-FLAG product-launch/index.html @1180px  (1)
-  AS-12 sec-3: multi-column layout with an empty column (1 of 2 empty)
+PASS product-launch/index.html @1440px
+PASS product-launch/index.html @1180px
 
 --- stderr ---
 
---- exit=1 ---
+--- exit=0 ---

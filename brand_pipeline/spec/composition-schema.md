@@ -9,20 +9,20 @@
 
 ## 4.6.0 Why a structured composition (the hybrid decision)
 
-The WoodWave A/B (`experiments/woodwave-ab/REPORT.md`) compared two generation
+A controlled A/B (archived under `experiments/`) compared two generation
 *representations* at constant brand+style+brief:
 
 - **Arm A (structured → deterministic renderer)** passed the gate **11/11** with zero
   effort, because `compose_page`→`compose_section`→`component_render` and
   `onbrand_check.py` are co-designed — but it is **ceilinged by a fixed layout catalog**:
-  the single-module `editorial-collage` flattened the brief's **three** value_props into
-  one paragraph (REPORT §"Structural variety", lines 171–177).
+  a single-module collage pattern flattened the brief's **three** value_props into
+  one paragraph.
 - **Arm B (HTML-first)** rendered the three props as three modules and shipped a real
   signup field, but **FAILED** the gate on mechanism coupling (`no-boxed-inputs`,
   `no-default-fonts`, `Webfonts loaded`) — artifacts of the gate keying on the pipeline's
-  delivery fingerprints, not off-brand output (REPORT §134–159, lines 105–116).
+  delivery fingerprints, not off-brand output.
 
-The approved resolution (REPORT §225–233) is the **hybrid**: the AI emits a
+The approved resolution is the **hybrid**: the AI emits a
 **STRUCTURED `composition.v1` object** — ordered sections → archetype/slots + primitive/
 block refs + treatments + inline copy — which the deterministic renderer draws and the
 gate validates. This keeps Arm A's primitive consistency + gate-safety while giving the
@@ -208,7 +208,7 @@ sections:
 rationale: >-
   Hero reuses the project bookend (sanctioned display overlap). Features ADAPTS the
   single-module library seed into a 3-module open collage so the brief's three value_props
-  each render as their own module (the exact Arm-A ceiling REPORT flagged) while honoring
+  each render as their own module (the exact Arm-A ceiling the A/B flagged) while honoring
   no-cards-on-cream via feature-item (open, not boxed). CTA reuses the underline stack.
 ```
 

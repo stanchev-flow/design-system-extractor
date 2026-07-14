@@ -683,10 +683,13 @@ def _hero_mapping(section: dict, art_panel: bool = False) -> list[dict]:
                               "submit": _text(c, "submit", "cta") or "Submit"}})
                 note = _text(c, "note")
                 if note:
-                    # the note is the form's STATED REASON (AS-14) — body register,
-                    # drawn ABOVE the field by the composer, never a caption microlabel.
+                    # the note ATTACHES to its control (fix7 punch 6): caption
+                    # register, drawn BELOW the field and capped to the control's
+                    # width by the composer — never a free-floating line between
+                    # the lede and the control. The form's stated reason (AS-14)
+                    # is the section's own body copy, not this meta line.
                     actions.append({"slot": "main", "role": f"foot form note ({sname})",
-                                    "contract": "paragraph", "usage": {"text": note}})
+                                    "contract": "caption", "usage": {"text": note}})
             elif contract == "link" and isinstance(s.get("copy"), list):
                 for item in s["copy"]:
                     label = _text(item, "label", "text") if isinstance(item, dict) \
@@ -786,16 +789,22 @@ def _cta_copy(section: dict) -> dict:
     header = _by_role(slots, "heading", "title") or _by_contract(slots, "header", "heading")
     form = _by_contract(slots, "form", "input") or _by_role(slots, "signup", "form", "field")
     formcopy = (form or {}).get("copy") if isinstance((form or {}).get("copy"), dict) else {}
+    # header-copy fallbacks are DICT-GUARDED (fix7, pass-3 follow-up 2 — the exact
+    # class pass 2 fixed for _split_copy): `_text`'s plain-string passthrough matches
+    # ANY key, so a string-copy heading slot used to echo THE HEADING into the
+    # eyebrow AND the body of every conversion whose header authored a bare string.
+    hdr_copy = (header or {}).get("copy")
+    hdr_dict = hdr_copy if isinstance(hdr_copy, dict) else None
     # body: a body-role slot first, then the header block's own body/text key (a v1
     # header copy dict carries the lede under `text` — dropping it left the CTA bare).
     body = _slot_text(_by_role(slots, "body", "sub", "lede"), "text", "body") \
-        or _text((header or {}).get("copy"), "body", "text") or ""
+        or (_text(hdr_dict, "body", "text") if hdr_dict else None) or ""
     return {
         # NO invented eyebrow (sysfix 2026-07): a conversion that authored none renders
         # none — the render_header eyebrow slot is OPTIONAL and elides on empty; the
         # old "Introducing" default was fabricated copy on every button-only banner.
         "eyebrow": _slot_text(_by_role(slots, "eyebrow"), "eyebrow", "text")
-        or _text((header or {}).get("copy"), "eyebrow") or "",
+        or (_text(hdr_dict, "eyebrow") if hdr_dict else None) or "",
         "heading": _slot_text(header, "heading", "text") or "Start today",
         "body": body,
         "placeholder": (formcopy or {}).get("placeholder", "you@company.com"),
@@ -804,12 +813,41 @@ def _cta_copy(section: dict) -> dict:
     }
 
 
+def _cta_action_labels(section: dict) -> list[dict]:
+    """Action payloads authored on `cta`-contract slots (fix7, pass-3 follow-up 1):
+    a conversion section whose actions ride a `cta` contract — one label string, or
+    a LIST of action objects/strings — expands each into a real action instead of
+    degrading to utility links (which left the section actionless, so the composer
+    invented a signup form the composition never declared: AS-14 + the invented
+    box's container.width miss). Returns [{"label", "family"?, "styleHint"?}]."""
+    out: list[dict] = []
+    for s in _slots(section):
+        if (s.get("contract") or "").lower() != "cta":
+            continue
+        c = s.get("copy")
+        items = c if isinstance(c, list) else [c]
+        for item in items:
+            if isinstance(item, str) and item.strip():
+                out.append({"label": item.strip()})
+            elif isinstance(item, dict):
+                label = _text(item, "label", "cta", "text")
+                if label:
+                    entry = {"label": label}
+                    for k in ("family", "styleHint"):
+                        if str(item.get(k) or "").strip():
+                            entry[k] = item[k]
+                    out.append(entry)
+    return out
+
+
 def _cta_mapping(section: dict) -> list[dict]:
     """blockMapping for the conversion stack. SLOT-FAITHFUL (B5, fix-batch 2026-07):
     real `button` contract slots are PRESERVED (they render through render_button's
-    cta-shape dispatch — the filled CTA a corporate brand's gate demands); the signup
-    form entry is emitted only when the section binds a form slot OR binds no explicit
-    action at all (the legacy shape every existing WoodWave conversion renders)."""
+    cta-shape dispatch — the filled CTA a corporate brand's gate demands); `cta`
+    contract action slots expand into the same real actions (fix7 — the stack-hero
+    path proved this expansion in fix6); the signup form entry is emitted only when
+    the section binds a form slot OR binds no explicit action at all (the legacy
+    shape every existing WoodWave conversion renders)."""
     mapping = [
         {"slot": "main", "role": "heading", "contract": "header",
          "usage": {"level": "h2"}},
@@ -823,7 +861,21 @@ def _cta_mapping(section: dict) -> list[dict]:
             "contract": "button",
             "usage": _button_usage(b, label),
         })
-    if _has_form_slot(section) or not buttons:
+    if not buttons:
+        for i, entry in enumerate(_cta_action_labels(section)):
+            usage = {"label": entry["label"], "accent": False}
+            for k in ("family", "styleHint"):
+                if entry.get(k):
+                    usage[k] = entry[k]
+            if i > 0 and "family" not in usage and "styleHint" not in usage:
+                usage["styleHint"] = "secondary outlined quiet"
+            mapping.append({
+                "slot": "main",
+                "role": "cta-primary" if i == 0 else "cta-secondary",
+                "contract": "button", "usage": usage,
+            })
+    has_actions = len(mapping) > 1
+    if _has_form_slot(section) or not has_actions:
         mapping.append({"slot": "main", "role": "newsletter form (underline only)",
                         "contract": "form", "usage": {"variant": "underline"}})
     return mapping
@@ -1070,19 +1122,40 @@ _FORM_FIELD_KINDS = {"text", "email", "tel", "select", "radio-group", "checkbox"
 
 def _form_fields_stamp(section: dict) -> dict | None:
     """Validate a conversion section's multi-field FORM payload → the `_formFields`
-    stamp _compose_signup_form consumes. The fields live on the form slot's copy
-    (`fields: [...]`), microcopy beside them (consent / success / meta). Field keys:
-    kind (vocabulary above; unknown → text), label (REQUIRED — an unlabeled control
-    is dropped, never rendered bare), name, placeholder, helper, options[],
-    checkedIndex, required, span (half|full), autocomplete. None ⇒ no multi-field
-    payload (the classic single-line newsletter device renders unchanged)."""
-    form = _by_contract(_slots(section), "form", "input") \
-        or _by_role(_slots(section), "signup", "form")
+    stamp _compose_signup_form consumes. TWO authored shapes resolve (AS-26 — the
+    authored form must not drop):
+
+    - DICT shape: a `form`/`input` contract slot whose copy dict carries
+      `fields: [...]` + microcopy beside them (consent / success / meta / header).
+    - LIST shape (eval-matrix baseline finding 2026-07-14): a `form-field` contract
+      slot whose copy IS the field list — the model's natural registration emission
+      (`_has_form_slot` already treats the contract as form evidence; the stamp
+      reader didn't). Sibling slots carry the microcopy: a `checkbox` contract slot
+      is the opt-in row (appended as a checkbox field); a consent-named/-roled
+      paragraph slot rides `consent`. The submit stays the composer's copy["cta"]
+      (the section's own button slot — already slot-faithful).
+
+    Field keys: kind (vocabulary above; unknown → text), label (REQUIRED — an
+    unlabeled control is dropped, never rendered bare), name, placeholder, helper
+    (authored `help` normalizes here), options[] (an authored "A / B / C" string
+    splits on the slash separators), checkedIndex, required, span (half|full),
+    autocomplete. None ⇒ no multi-field payload (the classic single-line
+    newsletter device renders unchanged)."""
+    slots = _slots(section)
+    form = _by_contract(slots, "form", "input") or _by_role(slots, "signup", "form")
     formcopy = (form or {}).get("copy")
-    if not isinstance(formcopy, dict) or not isinstance(formcopy.get("fields"), list):
+    fields_src: list | None = None
+    if isinstance(formcopy, dict) and isinstance(formcopy.get("fields"), list):
+        fields_src = formcopy["fields"]
+    else:
+        formcopy = None
+        ff_slot = _by_contract(slots, "form-field", "fields")
+        if ff_slot is not None and isinstance(ff_slot.get("copy"), list):
+            fields_src = ff_slot["copy"]
+    if fields_src is None:
         return None
     fields = []
-    for f in formcopy["fields"]:
+    for f in fields_src:
         if not isinstance(f, dict) or not str(f.get("label") or "").strip():
             continue
         kind = str(f.get("kind") or "text").lower()
@@ -1093,19 +1166,45 @@ def _form_fields_stamp(section: dict) -> dict | None:
         for k in ("name", "placeholder", "helper", "autocomplete", "error"):
             if str(f.get(k) or "").strip():
                 field[k] = str(f[k]).strip()
+        if "helper" not in field and str(f.get("help") or "").strip():
+            field["helper"] = str(f["help"]).strip()
         if str(f.get("span") or "").lower() == "half":
             field["span"] = "half"
         if f.get("required"):
             field["required"] = True
-        opts = [str(o).strip() for o in (f.get("options") or []) if str(o).strip()]
+        raw_opts = f.get("options")
+        if isinstance(raw_opts, str):
+            raw_opts = re.split(r"\s+/\s+", raw_opts)
+        opts = [str(o).strip() for o in (raw_opts or []) if str(o).strip()]
         if opts:
             field["options"] = opts
+            # an authored option run on a bare label is a CHOICE control — a text
+            # input would silently drop the options (AS-26); select is the compact
+            # registration register the anatomy declares.
+            if field["kind"] == "text":
+                field["kind"] = "select"
         if isinstance(f.get("checkedIndex"), (int, float)):
             field["checkedIndex"] = int(f["checkedIndex"])
         fields.append(field)
+    if fields and formcopy is None:
+        # LIST shape: the sibling opt-in checkbox joins the field grid; the
+        # consent-slot sentence rides the stamp's consent register.
+        optin = _by_contract(slots, "checkbox")
+        if optin is not None and str(optin.get("copy") or "").strip():
+            fields.append({"kind": "checkbox",
+                           "label": str(optin["copy"]).strip()})
     if not fields:
         return None
     stamp: dict = {"fields": fields}
+    if formcopy is None:
+        consent_slot = next(
+            (s for s in slots
+             if "consent" in (str(s.get("name") or "")
+                              + " " + str(s.get("role") or "")).lower()
+             and isinstance(s.get("copy"), str) and s["copy"].strip()), None)
+        if consent_slot is not None:
+            stamp["consent"] = consent_slot["copy"].strip()
+        return stamp
     for k in ("consent", "success", "meta"):
         if str(formcopy.get(k) or "").strip():
             stamp[k] = str(formcopy[k]).strip()
@@ -1326,8 +1425,21 @@ def _split_copy(section: dict) -> dict:
                                       "attribution"), "text", "body") \
         or _slot_text(_by_contract(slots, "paragraph"), "text", "body") \
         or first("text", "body") or first("attribution")
+    # TESTIMONIAL contract in the split copy path (fix7, pass-3 follow-up 7): the
+    # quote binds by its declared CONTRACT too — role keywords miss the natural
+    # authoring ("pull-quote", "customer-proof"), which left the split's copy column
+    # EMPTY (AS-12) while the same contract bound fine in stack sections. The
+    # attribution (name — role) rides beside it for the split composer's caption.
+    tslot = _by_contract(slots, "testimonial", "quote")
+    tcopy = (tslot or {}).get("copy") if isinstance((tslot or {}).get("copy"), dict) else {}
     out["quote"] = _slot_text(_by_role(slots, "quote"), "quote", "text") \
-        or first("quote") or out["heading"]
+        or _text(tcopy, "quote", "text") or first("quote") or out["heading"]
+    attribution = " — ".join(
+        x for x in (str(tcopy.get("name") or "").strip(),
+                    str(tcopy.get("role") or "").strip()) if x)
+    out["attribution"] = attribution
+    if not out["body"] and _text(tcopy, "quote", "text"):
+        out["body"] = _text(tcopy, "quote", "text")
     # visit-band aliases (read only when the section routes to compose_visit_band).
     out["mapCaption"] = out["caption"]
     out["ticketsTitle"] = out["panelTitle"]
@@ -1602,6 +1714,20 @@ def composition_to_layout(section: dict) -> dict:
     # declared section grid (re-scopes --grid-cols/--grid-gutter at render time only).
     if isinstance(section.get("grid"), dict):
         layout["_grid"] = section["grid"]
+    # `knobs.columns` (fix7 AS-63: the schema's own example knob finally has a
+    # consumer): the MODULE RUN's column count. Distinct from `section.grid` on
+    # purpose — 12 REGISTRATION columns ≠ 12 content columns (the swiss bakeoff
+    # rendered 4 cards letter-squeezed into 1-of-12 tracks because the registration
+    # count leaked into the module grid). The knob drives the module tracks; the
+    # declared grid keeps owning registration geometry.
+    try:
+        n = int(str((section.get("knobs") or {}).get("columns") or "").strip())
+    except (TypeError, ValueError):
+        n = 0
+    if n >= 1:
+        layout["_moduleCols"] = n
+        if "_grid" not in layout:
+            layout["_grid"] = {"columns": n, "source": "knob"}
     # per-slot placement (kept keyed by slot name for composers/scaffolds that read it).
     placement = {}
     for s in _slots(section):
@@ -1679,6 +1805,21 @@ def composition_to_layout(section: dict) -> dict:
     is_conversion = (archetype == "stack" and not is_hero and not has_logo_slot
                      and (use_case in _conversion_cases
                           or _has_form_slot(section) or bool(_button_slots(section))))
+    # REGISTRATION-FORM NORMALIZATION (eval-matrix baseline finding 2026-07-14): a
+    # conversion-USE section carrying a VALIDATED multi-field form payload routes to
+    # the conversion stack regardless of its declared archetype — no non-hero
+    # composer owns form anatomy, so an authored registration form on a `split`
+    # conversion silently dropped to a button-only band (AS-26; the conversion
+    # hardFloor caught it on both webinar-event baseline cells). Fact-gated on the
+    # stamp: form-less conversion splits (a plain CTA split) keep their shape, and
+    # every existing lane composition is untouched (repo scan: zero conversion-use
+    # non-stack sections bind a form payload).
+    if (not is_conversion and not is_hero and not has_logo_slot
+            and use_case in _conversion_cases
+            and _form_fields_stamp(section) is not None):
+        is_conversion = True
+        archetype = "stack"
+        layout["archetype"] = "stack"  # _composition keeps the DECLARED archetype (provenance)
     # a composition-declared DISCLOSURE stack routes to the FAQ composer (event-
     # scaffolds 2026-07): the `faq` useCase is the declaration (same rule as the
     # hero), and a `knobs.faq` payload declares the same intent for disclosure
@@ -1768,6 +1909,30 @@ def composition_to_layout(section: dict) -> dict:
                         if body:
                             mapping.append({"slot": "flow", "role": f"module body {i + 1}",
                                             "contract": "paragraph", "usage": {"text": body}})
+            elif c_low in ("stat", "stat-block", "metric"):
+                # DICT-shaped stat vocabulary (fix7, pass-3 follow-up 3): a singular
+                # stat slot ({value, label}) or a dict wrapping a nested item run
+                # ({stats: [...]} / {items: [...]}) binds the SAME stat renderer as
+                # the array shape — it used to fall through and render EMPTY (only
+                # ARRAY copy bound; AS-11 read the section as heading-only).
+                items = []
+                if isinstance(copyval, dict):
+                    nested = next((v for v in copyval.values()
+                                   if isinstance(v, list)
+                                   and any(isinstance(x, dict) for x in v)), None)
+                    items = [x for x in nested if isinstance(x, dict)] \
+                        if nested else [copyval]
+                for i, m in enumerate(items):
+                    value = str(m.get("value") or m.get("heading")
+                                or m.get("caption") or m.get("title") or "").strip()
+                    label = str(m.get("label") or m.get("text")
+                                or m.get("body") or "").strip()
+                    if not value:
+                        continue
+                    mapping.append({"slot": s.get("name") or "stats",
+                                    "role": f"stat {i + 1}", "contract": "stat",
+                                    "usage": {"value": value, "label": label},
+                                    "group": str(s.get("name") or "stats")})
             elif c_low in ("testimonial", "quote"):
                 quote = _text(copyval, "quote", "text") \
                     or (copyval if isinstance(copyval, str) else "")
@@ -1903,6 +2068,10 @@ def composition_to_layout(section: dict) -> dict:
                 layout["_formSplit"] = {
                     "points": points,
                     "side": str(knobs.get("formSide") or "").lower(),
+                    # declared LIST INTENT (fix7 punch 3 — knobs.supportKind, the
+                    # AS-63 proving case): the copy column's parallel support items
+                    # render as the marked-list device, never plain paragraphs.
+                    "supportKind": str(knobs.get("supportKind") or "").lower(),
                 }
                 if intro:
                     layout["_formSplit"]["intro"] = intro

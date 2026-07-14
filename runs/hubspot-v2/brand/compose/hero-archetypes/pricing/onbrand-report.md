@@ -75,6 +75,8 @@ AI-authored `composition.v1` drift checks (single-accent, primitive-only vocabul
 | `token-provenance` — All emitted visual values trace to the brand token index (raw literals need a structural allowlist comment) | PASS | all emitted visual values trace to the HubSpot token index; allowlisted: 29 |
 | `logo-wall-integrity` — Logo walls carry disk-backed logo images or text captions (never empty frames, broken srcs, or alt-less marks) | PASS | no logo-wall sections on this page |
 | `archetype-physics:sec-0` — Archetype physics bindings (hero-pricing-value-forward) | PASS | containment:delegated[spacing_audit (container law)]; headingTier:delegated[slop_audit (AS-32/AS-51)]; headerContext:ok(alignment-resolution); relationalRhythm:ok(rhythm); surfaceContrast:ok(text-contrast); stackMeasure:delegated[spacing_audit (measure cells)] |
+| `knob-consumption` — Every declared knob has a consumer (AS-63) | PASS | composition lints clean |
+| `content-redundancy` — No sibling-slot content redundancy (AS-65) | PASS | composition lints clean |
 
 ## How to view
 - Open `pricing/index.html` in any browser (it loads the brand fonts from Google Fonts and the source crop in `assets/`).

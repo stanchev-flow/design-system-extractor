@@ -337,7 +337,18 @@ RELATIONSHIPS: dict[str, Rel] = {
     # heading sits over a left kicker/body/action group (the panel-header defect,
     # which every per-child cell passed because each child conformed to its OWN
     # declaration). Same center-family verdict scale as actions.alignment.
+    # fix7 punch 7: CAPTION-register children (meta lines, attached form notes)
+    # joined the stance census — a ragged floater off the stack anchor is exactly
+    # the shape this cell exists to catch.
     "header.stack-coherence": Rel("center", ()),
+    # STAT PAIR BINDING (fix7 punch 4; spacing-conformance §statPair): inside a
+    # stat device the value→label gap must be the TIGHTEST gap in its block
+    # (<= 0.5x the block's sibling gap) and the pair must SEPARATE from the
+    # preceding block by >= 1.5x that sibling gap. Both cells measure the
+    # VIOLATION magnitude in px (0 = bound; center-family verdict scale), so any
+    # brand's ladder sets its own thresholds — no absolute px law is invented.
+    "stat.pair-binding": Rel("center", ()),
+    "stat.pair-separation": Rel("center", ()),
 }
 
 HARD = ("wrong-step", "off-ladder")
@@ -1287,6 +1298,10 @@ MEASURE_JS = r"""
         if (c.contains('c-eyebrow') || c.contains('cs-eyebrow-wrap')) return 'eyebrow';
         if (c.contains('c-heading')) return 'heading';
         if (c.contains('cs-sub') || c.contains('c-paragraph')) return 'body';
+        // caption-register children joined the census (fix7 punch 7): a meta
+        // line / attached form note is a stack child like any other — a ragged
+        // floater painting off the stack anchor is the defect this cell catches.
+        if (c.contains('c-caption') || c.contains('cs-hero-form')) return 'meta';
         if (c.contains('cs-hero-actions') || c.contains('cs-modules-actions')
             || c.contains('cs-conversion-actions') || c.contains('cs-signup-actions'))
           return 'actions';
@@ -1354,6 +1369,42 @@ MEASURE_JS = r"""
              note, 'center');
       });
     }
+
+    // ── stat pair binding (fix7 punch 4) ──
+    // value→label must be the tightest gap in the stat's block (<= 0.5x the
+    // block's ordinary sibling gap) AND the pair separates from the preceding
+    // block by >= 1.5x that sibling gap. Measured as VIOLATION px (0 = bound).
+    // Sibling gap = median of the parent's other adjacent-child gaps; a stat
+    // with no non-stat siblings (e.g. inside a stat-band cell) skips — the band
+    // grid owns that rhythm.
+    sec.querySelectorAll('.c-stat').forEach((stat) => {
+      const value = stat.querySelector(':scope > .c-stat-value');
+      const label = stat.querySelector(':scope > .c-stat-label');
+      if (!value || !label || !visible(value) || !visible(label)) return;
+      const parent = stat.parentElement;
+      const kids = [...parent.children].filter(inFlow);
+      const idx = kids.indexOf(stat);
+      const sibGaps = [];
+      for (let i = 0; i + 1 < kids.length; i++) {
+        if (kids[i] === stat || kids[i + 1] === stat) continue;
+        const g = vgap(kids[i], kids[i + 1]);
+        if (g >= -0.5) sibGaps.push(g);
+      }
+      if (!sibGaps.length) { skip('.c-stat pair', 'no non-stat sibling gaps in the block'); return; }
+      const sib = median(sibGaps);
+      const pair = vgap(value, label);
+      push('stat.pair-binding', round2(Math.max(0, pair - 0.5 * sib)), value, label,
+           gapRectV(value, label),
+           `pair ${round2(pair)}px vs sibling gap ${round2(sib)}px (budget <= ${round2(0.5 * sib)}px)`,
+           'center');
+      if (idx > 0) {
+        const sep = vgap(kids[idx - 1], stat);
+        push('stat.pair-separation', round2(Math.max(0, 1.5 * sib - sep)),
+             kids[idx - 1], stat, gapRectV(kids[idx - 1], stat),
+             `separation ${round2(sep)}px vs 1.5x sibling gap ${round2(1.5 * sib)}px`,
+             'center');
+      }
+    });
 
     // ── disclosure lists: accordion + FAQ ──
     sec.querySelectorAll('.c-acc').forEach((acc) => {

@@ -216,6 +216,43 @@ def attach_asset_inventory(doc: dict, brand_dir: Path) -> dict:
                      if isinstance(r, dict)]
         doc[ASSET_TAGS_KEY] = tags
         doc[MEDIA_TREATMENT_RULES_KEY] = rules
+        attach_accent_devices(doc, brand_dir)
+    return doc
+
+
+ACCENT_GLYPHS_KEY = "_accentGlyphs"
+
+
+def attach_accent_devices(doc: dict, brand_dir: Path) -> dict:
+    """Resolve the brand's licensed accent-device GLYPH artwork (fix7 punch 3;
+    brand-schema §4.11) into sanitized inline SVG on the in-memory doc — the same
+    inline-SVG channel the chrome glyphs ride (fix4 sanitizer: currentColor,
+    single-ink verified, never scripts/rasters). A device naming a file the brand's
+    tree does not carry, or artwork the sanitizer refuses, resolves to NOTHING (the
+    marked-list marker then degrades to the typographic dot — inventory law).
+    Idempotent; brands without ``accentDevices`` attach an empty registry."""
+    if not isinstance(doc, dict):
+        return doc
+    glyphs: dict[str, str] = {}
+    for dev in (doc.get("accentDevices") or []):
+        if not isinstance(dev, dict):
+            continue
+        kind = str(dev.get("kind") or "")
+        asset = str(((dev.get("glyph") or {}) or {}).get("asset") or "").strip()
+        if not asset or kind in glyphs:
+            continue
+        name = Path(asset).name
+        hits = sorted(Path(brand_dir).rglob(name))
+        src = next((h for h in hits if h.is_file() and "fonts" not in h.parts), None)
+        if src is None:
+            continue
+        try:
+            svg = cr.sanitize_inline_svg(src.read_text())
+        except Exception:
+            svg = None
+        if svg:
+            glyphs[kind] = svg
+    doc[ACCENT_GLYPHS_KEY] = glyphs
     return doc
 
 
@@ -491,6 +528,97 @@ def load_doc(brand_yaml: Path) -> dict:
     # copy so defaults resolve from the brand's own data — in-memory only.
     attach_brand_copy(doc, Path(brand_yaml).parent)
     return attach_asset_inventory(doc, Path(brand_yaml).parent)
+
+
+# ── heading FIT-TO-MEASURE stepping (fix7 punch 5; AS-66) ─────────────────────────
+# A display-rung heading placed in a SUB-MEASURE column steps DOWN the brand's own
+# measured heading ladder until its projected line count fits the register cap
+# (hero display: 3 lines — the archetype geometry's own 1–3 band; SR-HERO-01 is the
+# detecting gate, this is the fix mechanic, same class as pass1's overlay-panel 0.6
+# re-registration). Deterministic: a greedy word-wrap projection over the brand's
+# measured tier sizes — never a browser call, never an invented size (every step is
+# a measured rung, so scale_adherence holds by construction).
+
+_FIT_LADDER = ("display", "h1", "h2")   # heading-register rungs, largest first
+_FIT_CHAR_EM = 0.6                       # mean glyph advance (em) — calibrated on the
+                                         # measured form-split wraps (5-line/4-line
+                                         # cases @80px in a 500px column, stage B)
+
+
+def _tier_px(doc, level: str) -> float | None:
+    """The measured 1440-tier px size for a heading register (tiers.w1440.px first,
+    sizeRem.base * 16 as the fallback). None when the brand never measured it."""
+    role = "display-hero" if level == "display" else level
+    spec = (((doc or {}).get("tokens") or {}).get("type") or {}).get(role)
+    if not isinstance(spec, dict):
+        return None
+    tier = ((spec.get("tiers") or {}).get("w1440") or {})
+    if isinstance(tier, dict) and isinstance(tier.get("px"), (int, float)):
+        return float(tier["px"])
+    sr = spec.get("sizeRem")
+    base = sr.get("base") if isinstance(sr, dict) else sr
+    return float(base) * 16.0 if isinstance(base, (int, float)) else None
+
+
+def projected_line_count(text: str, font_px: float, measure_px: float,
+                         char_em: float = _FIT_CHAR_EM) -> int:
+    """Greedy word-wrap projection: words advance at ``len(word) * char_em * font``
+    with a quarter-em space — the deterministic stand-in for the rendered break."""
+    words = str(text or "").split()
+    if not words or not font_px or not measure_px:
+        return 1
+    space = 0.25 * font_px
+    lines, cur = 1, 0.0
+    for w in words:
+        wpx = len(w) * char_em * font_px
+        if cur and cur + space + wpx > measure_px:
+            lines += 1
+            cur = wpx
+        else:
+            cur = (cur + space + wpx) if cur else wpx
+    return lines
+
+
+def heading_fit_level(doc, text: str, measure_px: float | None,
+                      cap: int = 3) -> str:
+    """The FIRST rung of the brand's measured heading ladder whose projected line
+    count fits ``cap`` inside ``measure_px`` — 'display' when the display rung
+    already fits (full-measure headings never step). Exhausting the ladder returns
+    its last measured rung (the copy budget then carries the rest — SR-HERO-01)."""
+    if not measure_px or not str(text or "").strip():
+        return "display"
+    fitted = "display"
+    for level in _FIT_LADDER:
+        px = _tier_px(doc, level)
+        if px is None:
+            continue
+        fitted = level
+        if projected_line_count(text, px, measure_px) <= cap:
+            return level
+    return fitted
+
+
+def split_half_measure_px(doc, tracks: int = 6, of: int = 12) -> float | None:
+    """The 1440-tier px width of a ``tracks``-of-``of`` split column under the
+    brand's own container + column-gutter facts (the form-split copy column spans
+    6 of 12 shared tracks with the column-to-column gutter between all of them).
+    None when the brand declares no container width (no stepping — full measure)."""
+    spacing = (((doc or {}).get("tokens") or {}).get("spacing")) or {}
+
+    def _px(name):
+        v = (spacing.get(name) or {}).get("value") if isinstance(spacing.get(name), dict) else None
+        m = re.fullmatch(r"([\d.]+)\s*(rem|px|em)", str(v or "").strip())
+        if not m:
+            return None
+        n = float(m.group(1))
+        return n * 16.0 if m.group(2) in ("rem", "em") else n
+
+    width = _px("container-max")
+    if width is None:
+        return None
+    gutter = _px("column-to-column") or 32.0
+    track = (width - (of - 1) * gutter) / of
+    return max(0.0, tracks * track + (tracks - 1) * gutter)
 
 
 def find_layout(doc, layout_id):
@@ -2268,11 +2396,14 @@ def compose_stack_hero(doc, layout, ctx, rendered, style_ctx):
                       if str(r.get("role") or "").startswith("foot form (")
                       and (r.get("html") or "").strip()), "")
     if form_html:
-        # the note precedes the field: it is the form's stated reason (AS-14).
+        # the note ATTACHES to its control (fix7 punch 6): caption register BELOW
+        # the field, capped to the control's width by the .cs-hero-form scope —
+        # never a free-floating line between the lede and the control (the stated
+        # reason AS-14 reads is the section's own body copy above).
         form_note = next((r["html"] for r in rendered
                           if str(r.get("role") or "").startswith("foot form note")
                           and (r.get("html") or "").strip()), "")
-        form_html = f'<div class="cs-hero-form">{form_note}{form_html}</div>'
+        form_html = f'<div class="cs-hero-form">{form_html}{form_note}</div>'
     link_frags = [r["html"] for r in rendered
                   if str(r.get("role") or "").startswith("rail link")
                   and (r.get("html") or "").strip()]
@@ -2547,6 +2678,12 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
     if str(copy["body"]).strip():
         band_body = "\n    " + cr.render_paragraph(
             doc, ctx, {"text": copy["body"], "measure": "50ch"})
+        # QUOTE ATTRIBUTION (fix7, pass-3 follow-up 7): a testimonial-contract split
+        # carries its name — role line as the caption under the quote copy (the same
+        # person register the stack path renders); attribution-less splits elide.
+        if str(copy.get("attribution") or "").strip():
+            band_body += "\n    " + cr.render_caption(
+                doc, ctx, {"text": copy["attribution"]})
     # ACCORDION OPEN-STATE (P2, replica-gate punch list): a split whose reused pattern
     # declares the sanctioned `inset-emphasis` list treatment composes its rows as a
     # native single-open accordion (<details name=…> — exclusive by the platform, no
@@ -2596,9 +2733,14 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
         tail = actions_html
         if not tail and str(copy["cta"]).strip():
             tail = "\n      " + cr.render_arrow_link(doc, ctx, {"label": copy["cta"]})
+        # a HERO split's opening statement is the page LANDMARK even at the
+        # measure-fit h2 register — the licensed punctuation-accent device
+        # applies there exactly as on display-rank landmarks (fix7 punch 1).
+        is_landmark = str(((layout.get("_composition") or {}).get("useCase")
+                           or "")).lower() == "hero"
         header_html = cr.render_header(doc, ctx, {
             "eyebrow": copy["eyebrow"], "heading": copy["heading"], "level": "h2",
-            "accent": False})
+            "accent": False, "landmark": is_landmark})
         # MEASURED BAND GEOMETRY (fid10 2026-07, same stamp family as the accordion
         # device): a split pattern that recorded its media region (deviceGeometry.
         # media aspect/align/fit) draws the source's frame — e.g. a SQUARE media well
@@ -2640,7 +2782,9 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
     band_heading = cr.render_heading(doc, ctx, {
         "text": copy["heading"],
         "level": (str(copy["headingLevel"]).strip().lower() or "display"),
-        "accent": False})
+        "accent": False,
+        "landmark": str(((layout.get("_composition") or {}).get("useCase")
+                         or "")).lower() == "hero"})
     return f"""<section class="cs-section cs-split-sec">
   <div class="cs-split-intro">
     <div class="cs-eyebrow-wrap">{eyebrow_html}</div>
@@ -2699,6 +2843,18 @@ def _compose_form_split(doc, layout, ctx, rendered, copy):
       </div>{consent_html}
       <div class="cs-signup-actions">{submit_html}</div>{note_html}
     </form>"""
+    # HEADING FIT-TO-MEASURE (fix7 punch 5; AS-66): the display rung in this HALF-
+    # MEASURE column steps DOWN the brand's measured heading ladder until the
+    # projected line count fits the hero display cap (3) — the register keeps its
+    # display CLASS (semantics + the SR-HERO-01 budget still bind) and re-registers
+    # its SIZE to the stepped rung via the data-fit stamp, the same channel as
+    # pass1's overlay-panel re-registration. Full-measure headings never step.
+    fit_cap = 3
+    fit_rung = heading_fit_level(doc, copy["heading"],
+                                 split_half_measure_px(doc), cap=fit_cap)
+    fit_attrs = f' data-fit-cap="{fit_cap}"'
+    if fit_rung != "display":
+        fit_attrs += f' data-fit-rung="{cr.esc(fit_rung)}"'
     # eyebrow + heading compose as ONE header block: render_header owns the
     # eyebrow→heading seam (the brand's relational-ladder token), so the split
     # column's flex gap never re-registers it.
@@ -2710,12 +2866,21 @@ def _compose_form_split(doc, layout, ctx, rendered, copy):
     # strings (`support`) compose as real paragraphs — the block contract's shape,
     # and the form's stated reason precedes the field (AS-14). The ruled-points
     # device below stays the `list` contract's presentation.
+    # MARKED-LIST intent (fix7 punch 3): a composition that DECLARES list intent
+    # (knobs.supportKind list/bullets, stamped on _formSplit by the adapter)
+    # renders the parallel support items as the marked-list device — brand glyph
+    # marker in the accent role, hanging indent, list-item-gap stride — never a
+    # run of look-alike paragraphs (the silent knob drop AS-63 now fails loud).
     body_txt = str(copy["body"]).strip() or str(fs.get("intro") or "").strip()
     body_html = ("\n      " + cr.render_paragraph(doc, ctx, {"text": body_txt})) \
         if body_txt else ""
-    for s in (fs.get("support") or []):
-        if str(s).strip():
-            body_html += "\n      " + cr.render_paragraph(doc, ctx, {"text": str(s).strip()})
+    support = [str(s).strip() for s in (fs.get("support") or []) if str(s).strip()]
+    list_intent = str(fs.get("supportKind") or "").lower() in ("list", "bullets")
+    if support and list_intent:
+        body_html += "\n      " + cr.render_marked_list(doc, ctx, {"items": support})
+    else:
+        for s in support:
+            body_html += "\n      " + cr.render_paragraph(doc, ctx, {"text": s})
     points = [str(p).strip() for p in (fs.get("points") or []) if str(p).strip()]
     points_html = ""
     if points:
@@ -2725,9 +2890,10 @@ def _compose_form_split(doc, layout, ctx, rendered, copy):
     stat_html = ("\n      " + stat["html"]) \
         if stat and (stat.get("html") or "").strip() else ""
     flip = " cs-split--form-left" if str(fs.get("side") or "").lower() == "left" else ""
+    intent_attr = ' data-list-intent="list"' if (support and list_intent) else ""
     return f"""<section class="cs-section cs-split-sec cs-form-split-sec">
   <div class="cs-split cs-split--form{flip}">
-    <div class="cs-split-body">
+    <div class="cs-split-body"{fit_attrs}{intent_attr}>
       {header_html}{body_html}{points_html}{stat_html}
     </div>
     {panel_html}
@@ -3975,9 +4141,17 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
     # §4.6.5 grid columns (adapter: brand gridRules.columns → layout['_grid']) flows
     # one module per track instead of the staggered 7/5 registration spans — the
     # brand's own N-up card grid, not the harvested editorial stagger.
+    # MODULE-COLUMN COUNT (fix7): a `knobs.columns` declaration (_moduleCols) is the
+    # CONTENT track count and outranks the registration-grid count — 12 registration
+    # columns are not 12 card tracks (the swiss bakeoff's 4 cards letter-squeezed
+    # into 1-of-12 tracks was exactly that leak).
     cols_cls = ""
+    module_cols = None
     try:
-        if int((layout.get("_grid") or {}).get("columns") or 0) >= 2:
+        if int(layout.get("_moduleCols") or 0) >= 2:
+            module_cols = int(layout["_moduleCols"])
+            cols_cls = " cs-modules--cols"
+        elif int((layout.get("_grid") or {}).get("columns") or 0) >= 2:
             cols_cls = " cs-modules--cols"
     except (TypeError, ValueError):
         pass
@@ -3996,6 +4170,10 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
     # measured rail card box (deviceGeometry cardWidth/cardGap via _accGeometry):
     # the clipped-card rhythm at the capture viewport; clamp default otherwise.
     card_decls = []
+    if module_cols:
+        # the knob's CONTENT track count re-scopes the module grid only — the
+        # section keeps its registration --grid-cols for placed devices (fix7).
+        card_decls.append(f"--grid-cols: {module_cols}")
     if edgecut and _pat_geo.get("cardWidth"):
         card_decls.append(f"--cs-edgecut-card-w: {cr.esc(_pat_geo['cardWidth'])}")
     if edgecut and _pat_geo.get("cardGap"):
@@ -4134,9 +4312,39 @@ def compose_bento_grid(doc, layout, ctx, rendered, style_ctx):
     _reg = str((_head_slot or {}).get("register") or "").strip().lower() \
         if isinstance(_head_slot, dict) else ""
     card_head_level = _reg if _reg in ("h2", "h3", "h4", "h5", "h6") else "h3"
+    # DE-FACTO LEAD STAMP (fix7, stage-B follow-up): when NO cell declares
+    # `lead: true`, a FIRST card whose authored anatomy strictly supersets the
+    # (identical) anatomy every sibling shares IS the mosaic's lead — stamp it so
+    # SR-GRID-01 reads the renderer's own declaration instead of re-inferring the
+    # same superset from rendered anatomy. Mirrors the auditor's inference exactly.
+    def _card_anatomy(card: dict) -> frozenset:
+        pieces = set()
+        if str(card.get("eyebrow") or "").strip():
+            pieces.add("eyebrow")
+        if str(card.get("heading") or ("" if card.get("name") else card.get("caption"))
+               or "").strip():
+            pieces.add("heading")
+        if card.get("asset"):
+            pieces.add("media")
+        if str(card.get("body") or "").strip():
+            pieces.add("body")
+        if card.get("name"):
+            pieces.add("person")
+        if card.get("link"):
+            pieces.add("link")
+        return frozenset(pieces)
+
+    defacto_lead = -1
+    if cards and not any(isinstance(m, dict) and m.get("lead") for m in cells_meta) \
+            and len(cards) >= 4:
+        rest_sets = {_card_anatomy(c) for c in cards[1:]}
+        if len(rest_sets) == 1 and _card_anatomy(cards[0]) > next(iter(rest_sets)):
+            defacto_lead = 0
     cells = []
     for i, card in enumerate(cards):
         meta = cells_meta[i] if i < len(cells_meta) and isinstance(cells_meta[i], dict) else {}
+        if i == defacto_lead:
+            meta = {**meta, "lead": True}
         decls = []
         span = meta.get("span")
         start = meta.get("start")
@@ -4527,9 +4735,11 @@ def compose_generic_flow(doc, layout, ctx, rendered, style_ctx):
         # heading->body, body->action) on these, so a ladder-bearing brand's flow
         # renders per-pair rhythm instead of one flattened uniform gap. Unmapped
         # contracts (logo/image/form/caption rows) carry no stamp and ride the
-        # block-to-block row rhythm.
+        # block-to-block row rhythm. A HEADER block stamps as the heading row
+        # (fix7, pass-3 follow-up 6): its lead-in sibling paragraph then rides the
+        # heading→body rung instead of the 40px block stride the audit flagged.
         row = "media" if is_media else {
-            "eyebrow": "eyebrow", "heading": "heading",
+            "eyebrow": "eyebrow", "heading": "heading", "header": "heading",
             "paragraph": "body", "button": "action"}.get(r.get("contract") or "")
         row_attr = f' data-row="{row}"' if row else ""
         parts.append(f'    <div class="{cls}"{row_attr}>{frag}</div>')
@@ -5748,6 +5958,11 @@ SCAFFOLD_HERO_CSS = """.cs-section { min-height: 100cqh; }
   gap: var(--space-field-label-gap, 0.5em); }
 .cs-hero-form .c-form { margin: 0; }
 .cs-hero-form .c-paragraph { margin: 0; }
+/* the form NOTE attaches to its control (fix7 punch 6/7): caption register BELOW the
+   field, capped to the control's own width (the wrapper's), balanced wrap — a meta
+   line inside an anchored stack honors the stack anchor, never a ragged floater.
+   (.c-caption already carries text-wrap: balance in the component base.) */
+.cs-hero-form .c-caption { margin: 0; max-width: 100%; align-self: stretch; }
 .cs-hero-links { display: flex; flex-wrap: wrap; align-items: center;
   justify-content: center; column-gap: var(--c-cluster-gap, 1rem);
   row-gap: 0.5rem; }
@@ -5780,7 +5995,12 @@ SCAFFOLD_ART_PANEL_CSS = """/* ── INSET ART-PANEL hero (AS-37) ────�
   border-radius: var(--radius-panel, var(--radius));
   background-color: var(--c-panel-bg, var(--c-paper));
   background-size: cover; background-position: center top; overflow: hidden;
-  padding: var(--c-module-gap, 6rem) var(--c-module-gap, 6rem); }
+  /* PANEL INSET = the brand's measured panel-padding fact (fix7, pass-3 follow-up
+     4): the spacing law (hero.panel-inset) always expected it; the device padded
+     the module-gap rhythm instead — first composed instantiation exposed the
+     mismatch. Brands without the fact keep the module-gap degrade. */
+  padding: var(--space-panel-padding, var(--c-module-gap, 6rem))
+           var(--space-panel-padding, var(--c-module-gap, 6rem)); }
 .cs-hero-panel--solo { grid-template-columns: minmax(0, 1fr); }
 .cs-hero-panel-content { display: flex; flex-direction: column; align-items: flex-start;
   justify-content: center; gap: var(--c-block-gap); text-align: left; }
@@ -5946,6 +6166,18 @@ SCAFFOLD_SPLIT_CSS = """/* container width rides the shared content container
   border-top: 1px solid var(--c-hairline); }
 .cs-form-split-points li:last-child { border-bottom: 1px solid var(--c-hairline); }
 .cs-form-split-note { margin: 0; }
+/* HEADING FIT-TO-MEASURE (fix7 punch 5): a stepped display heading re-registers its
+   SIZE to the stamped rung of the brand's own ladder — class/semantics/budget stay
+   display (the pass1 overlay-panel channel); the leading is the display tier's own
+   em-relative value so it scales with the step. Stamp-less columns are inert. */
+[data-fit-rung="h1"] .c-heading--display { font-size: var(--c-h1-size); }
+[data-fit-rung="h2"] .c-heading--display { font-size: var(--c-h2-size); }
+/* STAT PAIR SEPARATION (fix7 punch 4): a stat device separates from the preceding
+   block by >= 1.5x the column's sibling gap — the parent flex gap (heading-to-body
+   rung) supplies 1x, this margin adds the other 0.5x, so the bound value+label pair
+   reads as its OWN block instead of another list row. */
+.cs-split-body > * + .c-stat { margin-block-start:
+  calc(0.5 * var(--space-heading-to-body, var(--c-block-gap, 1.5rem))); }
 @media (max-width: 767px) { .cs-split { grid-template-columns: 1fr; }
   .cs-split-media, .cs-split > .cs-panel, .cs-split > .cs-split-body { grid-column: 1; }
   .cs-split--form > .cs-split-body, .cs-split--form > .cs-form-split-panel {
@@ -6403,8 +6635,12 @@ SCAFFOLD_CARDS_CSS = """.cs-modules-sec { position: relative; }
    without a grid-gap fact keep riding the shared page gutter (the degrade). */
 .cs-modules--cols { column-gap: var(--grid-gutter-col,
   var(--space-grid-gap, var(--grid-gutter, 6rem)));
-  row-gap: var(--grid-gutter-row, clamp(calc(4 * var(--baseline)), 5cqw,
-  calc(7 * var(--baseline)))); }
+  /* UNIFORM N-up grids wrap rows on the brand's card-grid rung too (fix7: a
+     knob-declared column count carries no gutter declaration, and the editorial
+     clamp is stagger-grid rhythm, not uniform-grid rhythm); the editorial clamp
+     stays the degrade for brands without the token. */
+  row-gap: var(--grid-gutter-row, var(--space-grid-gap,
+  clamp(calc(4 * var(--baseline)), 5cqw, calc(7 * var(--baseline))))); }
 /* CARD REGISTER LADDER rhythm (fid6 2026-07): a module carrying its own eyebrow +
    heading anatomy rides the brand's measured relational spacing ladder for its
    internal seams — eyebrow→heading, heading→body, body→cta — instead of the uniform
@@ -6689,7 +6925,12 @@ SCAFFOLD_FLOW_CSS = """.cs-flow { display: flex; flex-direction: column;
    1-up) grid on narrow frames instead of shrinking the value register. */
 .cs-stat-band { display: grid; width: 100%;
   grid-template-columns: repeat(var(--cs-stat-cols, 4), minmax(0, 1fr));
-  gap: var(--c-block-gap) var(--grid-gutter, var(--space-column-to-column, 3rem)); }
+  /* the stat band's column seam is the brand's COLUMN rhythm (spacing law
+     stat.column-gap: column-to-column) — a section's registration-grid gutter is
+     registration geometry, never this device's rhythm (fix7: the model-authored
+     2rem gutter was overriding the brand's 80px rung). Gutter/structural values
+     stay the degrade chain for brands without the token. */
+  gap: var(--c-block-gap) var(--space-column-to-column, var(--grid-gutter, 3rem)); }
 .cs-stat-band-item { min-width: 0; }
 @media (max-width: 991px) { .cs-stat-band { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 539px) { .cs-stat-band { grid-template-columns: 1fr; } }

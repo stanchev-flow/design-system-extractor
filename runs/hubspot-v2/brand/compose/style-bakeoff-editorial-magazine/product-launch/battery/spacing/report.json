@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T18:21:12Z",
+  "generatedAt": "2026-07-14T20:18:46Z",
   "brandDir": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand",
   "viewport": "1440x900",
   "toleranceRule": "max(2px, 10%) for rhythm; max(2px, 1%) for widths; drift = within 2x tolerance",
@@ -84,17 +84,17 @@
     {
       "lane": "compose/style-bakeoff-editorial-magazine/product-launch",
       "html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-editorial-magazine/product-launch/index.html",
-      "mtime": "2026-07-14 19:13:19",
+      "mtime": "2026-07-14 21:16:53",
       "elapsedS": 1.1,
-      "pageHeight": 3026,
+      "pageHeight": 2891,
       "counts": {
-        "conform": 63,
+        "conform": 67,
         "drift": 1,
-        "wrong-step": 1,
+        "wrong-step": 0,
         "off-ladder": 0,
         "unmapped": 7,
-        "hardFails": 1,
-        "total": 72
+        "hardFails": 0,
+        "total": 75
       },
       "measurements": [
         {
@@ -237,7 +237,7 @@
           "rect": {
             "x": 810,
             "y": 231.5,
-            "w": 433.56,
+            "w": 433.58,
             "h": 24
           },
           "note": ".c-header",
@@ -440,7 +440,7 @@
           "b": "section.cs-section.cs-modules-sec",
           "rect": {
             "x": 0,
-            "y": 1446.61,
+            "y": 1335.41,
             "w": 1440,
             "h": 64
           },
@@ -456,6 +456,102 @@
           "nearest": {
             "name": "section-padding-light",
             "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "what-shipped",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "grid.column-gap",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": "article.cs-module.cs-module--plate",
+          "rect": {
+            "x": 919,
+            "y": 635.59,
+            "w": 32,
+            "h": 307.47
+          },
+          "note": ".cs-modules column",
+          "kind": "gap",
+          "measured": 32,
+          "declared": {
+            "name": "grid-gap",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "what-shipped",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "grid.column-gap",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": "article.cs-module.cs-module--plate",
+          "rect": {
+            "x": 919,
+            "y": 975.06,
+            "w": 32,
+            "h": 360.35
+          },
+          "note": ".cs-modules column",
+          "kind": "gap",
+          "measured": 32,
+          "declared": {
+            "name": "grid-gap",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "what-shipped",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "grid.row-gap",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": "article.cs-module.cs-module--plate",
+          "rect": {
+            "x": 610,
+            "y": 943.06,
+            "w": 650,
+            "h": 32
+          },
+          "note": ".cs-modules row",
+          "kind": "gap",
+          "measured": 32,
+          "declared": {
+            "name": "grid-gap",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
             "source": "token"
           },
           "severity": "conform",
@@ -527,7 +623,7 @@
           "rect": {
             "x": 642,
             "y": 752.59,
-            "w": 416,
+            "w": 245,
             "h": 24
           },
           "note": "",
@@ -559,7 +655,7 @@
           "rect": {
             "x": 642,
             "y": 804.67,
-            "w": 416,
+            "w": 245,
             "h": 32
           },
           "note": "",
@@ -643,9 +739,9 @@
           "a": "p.c-eyebrow",
           "b": "h3.c-heading.c-heading--h5",
           "rect": {
-            "x": 1202,
-            "y": 808.59,
-            "w": 256,
+            "x": 983,
+            "y": 752.59,
+            "w": 245,
             "h": 24
           },
           "note": "",
@@ -675,9 +771,9 @@
           "a": "h3.c-heading.c-heading--h5",
           "b": "p.c-paragraph",
           "rect": {
-            "x": 1202,
-            "y": 860.67,
-            "w": 256,
+            "x": 983,
+            "y": 804.67,
+            "w": 245,
             "h": 32
           },
           "note": "",
@@ -762,8 +858,8 @@
           "b": "h3.c-heading.c-heading--h5",
           "rect": {
             "x": 642,
-            "y": 1172.06,
-            "w": 416,
+            "y": 1092.06,
+            "w": 245,
             "h": 24
           },
           "note": "",
@@ -794,8 +890,8 @@
           "b": "p.c-paragraph",
           "rect": {
             "x": 642,
-            "y": 1224.14,
-            "w": 416,
+            "y": 1172.22,
+            "w": 245,
             "h": 32
           },
           "note": "",
@@ -879,9 +975,9 @@
           "a": "p.c-eyebrow",
           "b": "h3.c-heading.c-heading--h5",
           "rect": {
-            "x": 1202,
-            "y": 1228.06,
-            "w": 256,
+            "x": 983,
+            "y": 1092.06,
+            "w": 245,
             "h": 24
           },
           "note": "",
@@ -911,9 +1007,9 @@
           "a": "h3.c-heading.c-heading--h5",
           "b": "p.c-paragraph",
           "rect": {
-            "x": 1202,
-            "y": 1308.22,
-            "w": 256,
+            "x": 983,
+            "y": 1172.22,
+            "w": 245,
             "h": 32
           },
           "note": "",
@@ -970,8 +1066,8 @@
           "a": "p.c-eyebrow",
           "b": "p.c-eyebrow",
           "rect": {
-            "x": 1202,
-            "y": 791.59,
+            "x": 983,
+            "y": 735.59,
             "w": 4,
             "h": 17
           },
@@ -998,7 +1094,7 @@
           "b": "p.c-eyebrow",
           "rect": {
             "x": 642,
-            "y": 1155.06,
+            "y": 1075.06,
             "w": 4,
             "h": 17
           },
@@ -1024,8 +1120,8 @@
           "a": "p.c-eyebrow",
           "b": "p.c-eyebrow",
           "rect": {
-            "x": 1202,
-            "y": 1211.06,
+            "x": 983,
+            "y": 1075.06,
             "w": 4,
             "h": 17
           },
@@ -1106,7 +1202,7 @@
           "b": "div.cs-flow",
           "rect": {
             "x": 0,
-            "y": 1510.61,
+            "y": 1399.41,
             "w": 1440,
             "h": 64
           },
@@ -1138,7 +1234,7 @@
           "b": "section.cs-section.cs-flow-sec",
           "rect": {
             "x": 0,
-            "y": 1852.61,
+            "y": 1717.41,
             "w": 1440,
             "h": 64
           },
@@ -1165,31 +1261,31 @@
           "pattern": null,
           "bandRung": null,
           "rel": "header.heading-to-body",
-          "value": 40,
+          "value": 32,
           "a": "div.cs-flow-item",
           "b": "div.cs-flow-item.cs-flow-item--prose",
           "rect": {
             "x": 473.58,
-            "y": 1626.61,
+            "y": 1515.41,
             "w": 492.84,
-            "h": 40
+            "h": 32
           },
           "note": ".cs-flow",
           "kind": "gap",
-          "measured": 40,
+          "measured": 32,
           "declared": {
             "name": "heading-to-body",
             "px": 32.0,
             "source": "token"
           },
-          "delta": 8.0,
+          "delta": 0.0,
           "nearest": {
-            "name": "section-y-sm",
-            "px": 40.0,
+            "name": "heading-to-body",
+            "px": 32.0,
             "source": "token"
           },
-          "severity": "wrong-step",
-          "gate": "hard"
+          "severity": "conform",
+          "gate": "pass"
         },
         {
           "sec": "sec-2",
@@ -1202,7 +1298,7 @@
           "b": "div.cs-stat-band",
           "rect": {
             "x": 180,
-            "y": 1716.2,
+            "y": 1597,
             "w": 1080,
             "h": 40
           },
@@ -1234,9 +1330,9 @@
           "b": "div.cs-stat-band-item",
           "rect": {
             "x": 486.66,
-            "y": 1756.2,
+            "y": 1637,
             "w": 80,
-            "h": 96.41
+            "h": 80.41
           },
           "note": ".cs-stat-band column",
           "kind": "gap",
@@ -1266,9 +1362,9 @@
           "b": "div.cs-stat-band-item",
           "rect": {
             "x": 873.33,
-            "y": 1756.2,
+            "y": 1637,
             "w": 80,
-            "h": 96.41
+            "h": 80.41
           },
           "note": ".cs-stat-band column",
           "kind": "gap",
@@ -1298,7 +1394,7 @@
           "b": null,
           "rect": {
             "x": 180,
-            "y": 1574.61,
+            "y": 1463.41,
             "w": 1080,
             "h": 60
           },
@@ -1352,7 +1448,7 @@
           "b": "div.cs-flow",
           "rect": {
             "x": 0,
-            "y": 1916.61,
+            "y": 1781.41,
             "w": 1440,
             "h": 40
           },
@@ -1384,7 +1480,7 @@
           "b": "section.cs-section.cs-flow-sec",
           "rect": {
             "x": 0,
-            "y": 2063.2,
+            "y": 1928,
             "w": 1440,
             "h": 24
           },
@@ -1416,7 +1512,7 @@
           "b": "div.cs-flow-item",
           "rect": {
             "x": 500.36,
-            "y": 2006.2,
+            "y": 1871,
             "w": 439.28,
             "h": 40
           },
@@ -1444,7 +1540,7 @@
           "b": null,
           "rect": {
             "x": 180,
-            "y": 1956.61,
+            "y": 1821.41,
             "w": 1080,
             "h": 60
           },
@@ -1498,7 +1594,7 @@
           "b": "div.cs-conversion",
           "rect": {
             "x": 0,
-            "y": 2087.2,
+            "y": 1952,
             "w": 1440,
             "h": 64
           },
@@ -1530,7 +1626,7 @@
           "b": "section.cs-section.cs-conversion-sec",
           "rect": {
             "x": 0,
-            "y": 2356,
+            "y": 2220.8,
             "w": 1440,
             "h": 64
           },
@@ -1562,7 +1658,7 @@
           "b": "p.c-paragraph",
           "rect": {
             "x": 435.39,
-            "y": 2203.2,
+            "y": 2068,
             "w": 569.2,
             "h": 32
           },
@@ -1594,7 +1690,7 @@
           "b": "div.cs-conversion-actions",
           "rect": {
             "x": 435.39,
-            "y": 2260,
+            "y": 2124.8,
             "w": 569.2,
             "h": 40
           },
@@ -1626,7 +1722,7 @@
           "b": null,
           "rect": {
             "x": 224,
-            "y": 2151.2,
+            "y": 2016,
             "w": 992,
             "h": 60
           },
@@ -1680,7 +1776,7 @@
           "b": "div.c-footer.c-footer--cstack",
           "rect": {
             "x": 0,
-            "y": 2420,
+            "y": 2284.8,
             "w": 1440,
             "h": 64
           },
@@ -1712,7 +1808,7 @@
           "b": "section.cs-section.cs-footer-sec",
           "rect": {
             "x": 0,
-            "y": 2961.73,
+            "y": 2826.53,
             "w": 1440,
             "h": 64
           },
@@ -1744,7 +1840,7 @@
           "b": null,
           "rect": {
             "x": 180,
-            "y": 2484,
+            "y": 2348.8,
             "w": 1080,
             "h": 60
           },
@@ -1798,7 +1894,7 @@
           "b": "a.c-foot-col-link",
           "rect": {
             "x": 220.7,
-            "y": 2527.7,
+            "y": 2392.5,
             "w": 158.11,
             "h": 4
           },
@@ -1826,7 +1922,7 @@
           "b": "a.c-foot-col-link",
           "rect": {
             "x": 430.81,
-            "y": 2503.2,
+            "y": 2368,
             "w": 158.13,
             "h": 4
           },
@@ -1854,7 +1950,7 @@
           "b": "a.c-foot-col-link",
           "rect": {
             "x": 640.94,
-            "y": 2527.7,
+            "y": 2392.5,
             "w": 158.11,
             "h": 4
           },
@@ -1882,7 +1978,7 @@
           "b": "a.c-foot-col-link",
           "rect": {
             "x": 851.05,
-            "y": 2527.7,
+            "y": 2392.5,
             "w": 158.12,
             "h": 4
           },
@@ -1910,7 +2006,7 @@
           "b": "a.c-foot-col-link",
           "rect": {
             "x": 1061.17,
-            "y": 2527.7,
+            "y": 2392.5,
             "w": 158.11,
             "h": 4
           },
@@ -1938,7 +2034,7 @@
           "b": "a.c-foot-col-link",
           "rect": {
             "x": 1061.17,
-            "y": 2594.61,
+            "y": 2459.41,
             "w": 158.11,
             "h": 4
           },
@@ -1966,7 +2062,7 @@
           "b": "div.c-foot-cell",
           "rect": {
             "x": 378.81,
-            "y": 2484,
+            "y": 2348.8,
             "w": 52,
             "h": 267.73
           },
@@ -1998,7 +2094,7 @@
           "b": "div.c-foot-cell",
           "rect": {
             "x": 588.94,
-            "y": 2484,
+            "y": 2348.8,
             "w": 52,
             "h": 267.73
           },
@@ -2030,7 +2126,7 @@
           "b": "div.c-foot-cell",
           "rect": {
             "x": 799.05,
-            "y": 2484,
+            "y": 2348.8,
             "w": 52,
             "h": 267.73
           },
@@ -2062,7 +2158,7 @@
           "b": "div.c-foot-cell",
           "rect": {
             "x": 1009.17,
-            "y": 2484,
+            "y": 2348.8,
             "w": 52,
             "h": 267.73
           },
@@ -2124,7 +2220,7 @@
           "b": "sec-2",
           "rect": {
             "x": 0,
-            "y": 1446.61,
+            "y": 1335.41,
             "w": 1440,
             "h": 128
           },
@@ -2155,7 +2251,7 @@
           "b": "sec-3",
           "rect": {
             "x": 0,
-            "y": 1852.61,
+            "y": 1717.41,
             "w": 1440,
             "h": 104
           },
@@ -2186,7 +2282,7 @@
           "b": "sec-4",
           "rect": {
             "x": 0,
-            "y": 2063.2,
+            "y": 1928,
             "w": 1440,
             "h": 88
           },
@@ -2217,7 +2313,7 @@
           "b": "sec-5",
           "rect": {
             "x": 0,
-            "y": 2356,
+            "y": 2220.8,
             "w": 1440,
             "h": 128
           },
@@ -2241,46 +2337,31 @@
       ],
       "skips": [
         {
-          "sec": "sec-1",
-          "layout": "what-shipped",
-          "pattern": "product-grid-split",
+          "sec": "sec-2",
+          "layout": "beta-proof",
+          "pattern": null,
           "bandRung": null,
-          "what": ".cs-modules",
-          "why": "staggered editorial grid (no uniform row/column gap)"
-        }
-      ],
-      "offenders": [
+          "what": ".c-stat pair",
+          "why": "no non-stat sibling gaps in the block"
+        },
         {
-          "rel": "header.heading-to-body",
-          "expected": {
-            "name": "heading-to-body",
-            "px": 32.0,
-            "source": "token"
-          },
-          "measuredTypical": 40,
-          "count": 1,
-          "meanAbsDelta": 8.0,
-          "score": 8.0,
-          "severity": "wrong-step",
-          "sections": [
-            "sec-2(beta-proof)"
-          ],
-          "example": {
-            "sec": "sec-2",
-            "layout": "beta-proof",
-            "pattern": null,
-            "a": "div.cs-flow-item",
-            "b": "div.cs-flow-item.cs-flow-item--prose",
-            "note": ".cs-flow",
-            "rect": {
-              "x": 473.58,
-              "y": 1626.61,
-              "w": 492.84,
-              "h": 40
-            }
-          }
+          "sec": "sec-2",
+          "layout": "beta-proof",
+          "pattern": null,
+          "bandRung": null,
+          "what": ".c-stat pair",
+          "why": "no non-stat sibling gaps in the block"
+        },
+        {
+          "sec": "sec-2",
+          "layout": "beta-proof",
+          "pattern": null,
+          "bandRung": null,
+          "what": ".c-stat pair",
+          "why": "no non-stat sibling gaps in the block"
         }
       ],
+      "offenders": [],
       "scale": {
         "cells": [
           {

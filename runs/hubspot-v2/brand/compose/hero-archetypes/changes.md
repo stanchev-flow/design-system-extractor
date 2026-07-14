@@ -371,6 +371,62 @@ first battery over all 8 heroes + the replica.
   after the measure-aware wrap calibration (see contracts changelog 18:05Z).
 - Shots ×8 + `shots/contact-sheet.png` + lane index refreshed (`--shots`).
 
+## fix7 — accent devices, marked list, stat binding, fit-stepping, lints (2026-07-14)
+
+Root log: `changes.md` (fix7) + `FIX7-PUNCHLIST.md` (per-item landing table).
+User review round 3 (developer + demo) — all fixes system-level; this lane's
+record covers the data fixes + the re-render/battery.
+
+### Composition data fixes (this lane)
+
+- **blog + event headings gained their landmark periods** ("…honest takes." /
+  "Spotlight.") — the brand's own signature move (landmark serif headings close
+  with the orange period), now REQUIRED by the accentDevices hero floor (>= 1
+  licensed device on the opening landmark). Copy-level, same class as stage B's
+  SR-HERO-01 fix.
+- **developer**: the search form's `note` ("Popular: CRM API · UI extensions ·
+  OAuth · webhooks") DROPPED — it enumerated the exact links the `popular` slot
+  already renders as the arrow-link rail (AS-65 content-redundancy lint; keep
+  the structured device, drop the prose line).
+- **knob values normalized to their declared enums** (AS-63; render-neutral —
+  nothing consumed them): about `mediaBelow true→on` + `frameWidth wide→1.0`,
+  homepage `proofRow true→on`, product `panelCorner tl→left` + `panelSpan
+  half→6`, event `metaPlacement above→above-heading`. demo's `supportKind:
+  "list"` KEPT — it now has a real consumer (the marked-list device) and the
+  archetype enum grew the value.
+
+### What the re-render picked up (renderer devices, shared code)
+
+- Every hero's landmark heading closes with the ORANGE PERIOD device
+  (`.c-accent-mark`, stamped `data-accent-device="punctuation-accent"`) —
+  including the split heroes (homepage/blog), whose measure-fit h2 statements
+  are composer-declared landmarks.
+- **demo**: the 3 benefit items render as the brand's CHECKMARK MARKED LIST
+  (icon-success.svg markers in the accent role, hanging indent, list-item-gap
+  stride; `data-list-intent` stamped); the display heading STEPS to the
+  measured h1 rung (80px → 48px, `data-fit-cap="3" data-fit-rung="h1"`,
+  2 rendered lines); the stat pair binds (value→label 8px vs sibling 32px;
+  +16px separation before the pair).
+- **developer**: no more floating meta line — the quick-links rail is the one
+  device (a future note would render as a caption ATTACHED below the control).
+
+### Verification (fix7 final, true exit codes)
+
+- Re-rendered ×8 (`--rerender`, saved compositions, no model calls): onbrand
+  gate **PASS ×8**.
+- slop **PASS @1440+@1180 ×8**, 0 advisories (AS-64/AS-66 live; AS-14 counts
+  substantive marked-list items as the stated reason) — exit 0.
+- interaction `--strict` **0 required fails ×8** — exit 0.
+- spacing `--strict` **0 wrong-step / 0 off-ladder / 0 OFF-SCALE ×8** — the new
+  `stat.pair-binding`/`stat.pair-separation` cells CONFORM on demo — exit 0.
+- signature `--strict` **PASS ×8 + replica** (accent shares 0.30–1.14% vs 2%;
+  the NEW device floor enforced: hero landmark >= 1 licensed device ×9) — exit 0.
+- voice **PASS ×8** — exit 0. section-rules `--strict` **PASS ×9** (8 heroes +
+  replica; 0 required / 0 advisory) — exit 0. conversion **honest skips ×9**
+  (no campaignType on single-hero briefs) — exit 0.
+- Shots ×8 + `shots/contact-sheet.png` + lane index refreshed.
+- Replicas (root log): hubspot-v2 **0.957**, Remote **0.951** — both improved.
+
 ## pass1 — new-gate findings landed on this lane (2026-07-14)
 
 Root log: `changes.md` (pass1); brand lane log: `runs/hubspot-v2/brand/changes.md`.

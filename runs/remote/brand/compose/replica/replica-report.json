@@ -1,6 +1,6 @@
 {
  "schemaVersion": "replica-report.v1",
- "overall": 0.95,
+ "overall": 0.9509,
  "bands": [
   {
    "id": "page-nav",
@@ -19,15 +19,15 @@
   {
    "id": "sec-0",
    "label": "hero \u2014 Global employment runs on Remote",
-   "structure": 0.9528,
-   "pixel": 0.9395,
-   "height": 0.7463,
-   "score": 0.9075,
-   "widthFidelity": 0.8643,
+   "structure": 0.956,
+   "pixel": 0.9411,
+   "height": 0.7983,
+   "score": 0.92,
+   "widthFidelity": 0.9036,
    "srcContentFrac": 0.875,
-   "replicaContentFrac": 0.7562,
+   "replicaContentFrac": 0.7906,
    "srcHeight": 550,
-   "replicaHeight": 737,
+   "replicaHeight": 689,
    "pair": "diff/sec-0.png"
   },
   {
@@ -175,7 +175,7 @@
   {
    "section": "hero",
    "capability": "composite hero art",
-   "score": 0.9075,
+   "score": 0.92,
    "note": "composite hero art \u2014 the source layers an illustration with floating product-UI chips; the composer binds one asset per media slot (no multi-layer collage of tagged crops)"
   },
   {
@@ -199,6 +199,6 @@
  ],
  "sourceShot": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/remote-v2/remote-com-fullpage.png",
  "sourceHeight": 7253,
- "replicaHeight": 7336,
+ "replicaHeight": 7288,
  "brand": "Remote"
 }

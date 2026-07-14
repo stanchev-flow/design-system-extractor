@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T18:20:44Z",
+  "generatedAt": "2026-07-14T20:18:17Z",
   "brandDir": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand",
   "lanes": [
     {
@@ -7,7 +7,7 @@
       "html": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/index.html",
       "copyCounts": {
         "headings": 8,
-        "bodies": 6,
+        "bodies": 8,
         "eyebrows": 6,
         "ctas": 0
       },
@@ -15,7 +15,7 @@
         {
           "check": "sentence-length",
           "ok": true,
-          "detail": "mean 7.9w (max 14), p90 16w (max 23), 15 sentences"
+          "detail": "mean 8.0w (max 14), p90 16w (max 23), 18 sentences"
         },
         {
           "check": "exclamations",

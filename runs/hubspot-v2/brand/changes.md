@@ -938,3 +938,47 @@ Checkpoints C+D of the eval-gated plan. Full log + upfront criteria + verdict:
   onbrand/interaction/scale green ×3; **no style graduated**.
 - Replicas re-run after everything: **0.956** (this brand) / **0.950**
   (Remote) — held exactly.
+
+## fix7 — accent devices LICENSED + applied, lints, list/stat/fit devices (2026-07-14)
+
+Root log: repo `changes.md` (fix7) + `FIX7-PUNCHLIST.md` (per-item landing
+table); lane logs: `compose/hero-archetypes/changes.md` (fix7) +
+`compose/style-bakeoff/changes.md` (fix7). This section records the BRAND DATA
+authored here and this brand's verification.
+
+### Brand data authored (this brand)
+
+- **`accentDevices:` block** (brand-schema **§4.11**, NEW) — the extracted
+  accent moves become machine-applicable LICENSES with floors:
+  - `orange-period` (punctuation-accent, mark ".", role accent/highlight):
+    contexts hero (**floor 1** — the landmark band must carry >= 1 licensed
+    device) + closing (roster, no floor). Evidence: the orange-period-accent
+    signature ("go to grow." / "impossibly easy, with HubSpot."), the heading
+    primitive rule, the action/primary role prose ("heading period accents").
+  - `orange-checkmark-list` (marked-list-glyph, glyph `icon-success.svg` 1em,
+    role accent/highlight): context benefit-list. Evidence: the glyph was
+    ALREADY harvested + tagged "checkmark list glyph (orange)" (fix5 viewBox
+    repair); the site's own `--light-theme-checkmark-list-icon-brand-fill:
+    #ff4800`; grounding section-04 checkmark rows; the list-item-gap token.
+  - `orange-underline-links` (underline-accent, role text/link-underline):
+    context standing-link — roster completeness (the textCta family already
+    renders it; not machine-counted).
+- **accent-scope signature**: `allowedRoles` += `accentDevice` (changelog
+  inside) — the renderer-stamped device spans/markers are the SAME orange
+  family the role prose already names.
+- No new glyph harvest was needed: `assets/icon-success.svg` (32-grid,
+  currentColor, sprite-true viewBox) was in the inventory since extraction;
+  fix7 gave it its consumer.
+
+### Verification (this brand, true exit codes — root log carries the commands)
+
+- Replica rebuilt + re-scored with the final code: **0.957** (was 0.956 —
+  IMPROVED: the hero + closing landmark periods now paint orange like the
+  source, and the photo-band eyebrow rides the capture's measured cream via
+  the contrast guard). Replica gates: slop PASS, spacing 0 hard (119 conform /
+  3 drift / 6 unmapped), signature strict PASS incl. the device floor,
+  section-rules replica skip.
+- Gallery: full battery green ×8 (fix7 section in the lane changelog).
+- Style-bakeoff: deterministic re-render, battery GREEN ×3 — the checkpoint-D
+  C1 residuals attributable to renderer/adapter/audit gaps cleared (lane
+  changelog has the before→after delta).

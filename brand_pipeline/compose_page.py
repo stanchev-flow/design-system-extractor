@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -303,6 +304,14 @@ def legacy_root_vars(doc, surf, *, display_size) -> str:
 }}"""
 
 
+def _hex_rgb(value: str) -> tuple | None:
+    m = re.fullmatch(r"#([0-9a-fA-F]{6})", str(value or "").strip())
+    if not m:
+        return None
+    h = m.group(1)
+    return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16))
+
+
 def section_vars(doc, sel, surf, *, display_size, accent_on, surf_role, style_ctx) -> str:
     """Per-section surface-scoped --c-* values (the shared c-* classes read these). For
     every section except the accent layout, the committed accent collapses to ink so no
@@ -314,6 +323,22 @@ def section_vars(doc, sel, surf, *, display_size, accent_on, surf_role, style_ct
     extra = [cs.rhythm_vars_css(doc, style_ctx, surf_role, selector=sel)]
     if not accent_on:
         extra.append(f"{sel} {{ --c-accent: var(--c-ink); }}")
+    else:
+        # EYEBROW INK ON SCRIM/DARK SURFACES (fix7, pass-3 follow-up 8): the accent
+        # section's eyebrow deployment (`.c-eyebrow { color: var(--c-accent) }` in
+        # the style override) is CONTRAST-GUARDED — a surface whose own textAccent
+        # cannot carry small text (WCAG 4.5:1 against the surface bg, e.g. an
+        # image-scrim band whose sampled underlay sits mid-luminance) re-registers
+        # the eyebrow to the surface's primary ink, exactly what the capture
+        # evidence shows on such bands. Palette-agnostic: pure contrast arithmetic
+        # over the brand's own declared values; high-contrast pairs are untouched.
+        from readability import contrast_ratio
+        bg = _hex_rgb(surf.get("bg"))
+        accent = _hex_rgb(tokens_css.color_value(doc, surf.get("textAccent")))
+        if bg and accent and contrast_ratio(accent, bg) < 4.5:
+            extra.append(f"{sel} {{ --c-eyebrow-color: var(--c-ink); "
+                         f"/* accent {contrast_ratio(accent, bg):.2f}:1 on this "
+                         f"surface — eyebrow rides primary ink */ }}")
     return block + "\n" + "\n".join(extra)
 
 

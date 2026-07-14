@@ -1,6 +1,6 @@
 # Spacing-conformance baseline report
 
-Generated 2026-07-14T18:21:41Z · viewport 1440x900 · contract: `brand_pipeline/spec/spacing-conformance.md` · tolerance: max(2px, 10%) for rhythm; max(2px, 1%) for widths; drift = within 2x tolerance.
+Generated 2026-07-14T20:19:15Z · viewport 1440x900 · contract: `brand_pipeline/spec/spacing-conformance.md` · tolerance: max(2px, 10%) for rhythm; max(2px, 1%) for widths; drift = within 2x tolerance.
 
 Severity: `conform` pass · `drift` advisory · `wrong-step`/`off-ladder` **hard fail** · `unmapped` extraction gap (advisory, listed apart).
 
@@ -8,17 +8,11 @@ Severity: `conform` pass · `drift` advisory · `wrong-step`/`off-ladder` **hard
 
 | lane | audited file (mtime) | total | conform | drift | wrong-step | off-ladder | unmapped | hard fails |
 |---|---|---|---|---|---|---|---|---|
-| compose/style-bakeoff-neumorphism/product-launch | 2026-07-14 19:19:44 | 56 | 48 | 0 | 1 | 0 | 7 | **1** |
+| compose/style-bakeoff-neumorphism/product-launch | 2026-07-14 21:17:15 | 59 | 52 | 0 | 0 | 0 | 7 | **0** |
 
 ## compose/style-bakeoff-neumorphism/product-launch
 
-`/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-neumorphism/product-launch/index.html` (mtime 2026-07-14 19:19:44)
-
-### Top offenders (hard fails, ranked frequency x magnitude)
-
-| # | relationship | measured | expected | Δ | hits | where |
-|---|---|---|---|---|---|---|
-| 1 | `header.heading-to-body` | ~40px | heading-to-body (32px) | 8px | 1 | sec-2(beta-proof) |
+`/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-neumorphism/product-launch/index.html` (mtime 2026-07-14 21:17:15)
 
 ### Unmapped relationships (extraction gaps — capture work, not render bugs)
 
@@ -60,6 +54,9 @@ Severity: `conform` pass · `drift` advisory · `wrong-step`/`off-ladder` **hard
 | sec-0 (launch-hero) | `actions.item-gap` | 16px | action-group-gap (16px) | +0px | conform | median of 1 inter-action gap(s) |
 | sec-1 (what-shipped) | `section.pad-top` | 64px | section-padding-light (64px) | +0px | conform |  |
 | sec-1 (what-shipped) | `section.pad-bottom` | 64px | section-padding-light (64px) | +0px | conform |  |
+| sec-1 (what-shipped) | `grid.column-gap` | 32px | grid-gap (32px) | +0px | conform | .cs-modules column |
+| sec-1 (what-shipped) | `grid.column-gap` | 32px | grid-gap (32px) | +0px | conform | .cs-modules column |
+| sec-1 (what-shipped) | `grid.column-gap` | 32px | grid-gap (32px) | +0px | conform | .cs-modules column |
 | sec-1 (what-shipped) | `card.inset` | 32px | panel-padding (32px) | +0px | conform | computed padding-left |
 | sec-1 (what-shipped) | `card.inset` | 32px | panel-padding (32px) | +0px | conform | computed padding-top |
 | sec-1 (what-shipped) | `card.inset` | 32px | panel-padding (32px) | +0px | conform | computed padding-left |
@@ -72,7 +69,7 @@ Severity: `conform` pass · `drift` advisory · `wrong-step`/`off-ladder` **hard
 | sec-1 (what-shipped) | `container.centering` | 0px | centered (0px) | +0px | conform | gutters 180px / 180px |
 | sec-2 (beta-proof) | `section.pad-top` | 64px | section-padding-light (64px) | +0px | conform |  |
 | sec-2 (beta-proof) | `section.pad-bottom` | 64px | section-padding-light (64px) | +0px | conform |  |
-| sec-2 (beta-proof) | `header.heading-to-body` | 40px | heading-to-body (32px) | +8px | **wrong-step** | .cs-flow |
+| sec-2 (beta-proof) | `header.heading-to-body` | 32px | heading-to-body (32px) | +0px | conform | .cs-flow |
 | sec-2 (beta-proof) | `block.header-to-content` | 40px | block-to-block (40px) | +0px | conform | .cs-flow |
 | sec-2 (beta-proof) | `header.eyebrow-to-heading` | 24px | eyebrow-to-heading (24px) | +0px | conform | .c-header |
 | sec-2 (beta-proof) | `stat.column-gap` | 80px | column-to-column (80px) | +0px | conform | .cs-stat-band column |
@@ -115,5 +112,7 @@ Severity: `conform` pass · `drift` advisory · `wrong-step`/`off-ladder` **hard
 ### Skipped (absent/inapplicable anatomy)
 
 - sec-0 (launch-hero): container — no max-width-constrained scaffold found
-- sec-1 (what-shipped): .cs-modules — staggered editorial grid (no uniform row/column gap)
+- sec-2 (beta-proof): .c-stat pair — no non-stat sibling gaps in the block
+- sec-2 (beta-proof): .c-stat pair — no non-stat sibling gaps in the block
+- sec-2 (beta-proof): .c-stat pair — no non-stat sibling gaps in the block
 

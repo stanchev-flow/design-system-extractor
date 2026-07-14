@@ -32,6 +32,9 @@ for (const target of process.argv.slice(2)) {
 
   const flags = await page.evaluate(() => {
     const out = [];
+    // ADVISORY findings print for human review but never set the exit flag —
+    // the channel AS-64's SHOULD arm rides (fix7; hard arms stay in `out`).
+    const advisories = [];
     const sections = [...document.querySelectorAll('[id^="sec-"]')];
     const scope = sections.length ? sections : [document.body];
 
@@ -150,7 +153,11 @@ for (const target of process.argv.slice(2)) {
       const media = [...sec.querySelectorAll("img,video,svg.c-image")]
         .filter(visible).filter(m => !m.closest(".cs-nav,.c-footer"))
         .filter(m => !m.matches('[aria-hidden="true"]') && !m.closest('[aria-hidden="true"]'));
-      const rows = [...sec.querySelectorAll(".c-row, li, details")].filter(visible);
+      // .c-stat cells are PRIMARY content (fix7, pass-3 follow-up 5): a heading +
+      // stat band used to read as "heading-only" because the inventory never
+      // counted the stat device's value/label pairs.
+      const rows = [...sec.querySelectorAll(".c-row, li, details, .c-stat")]
+        .filter(visible);
       const forms = [...sec.querySelectorAll("input,.c-field,form")].filter(visible);
       const metadata = [...sec.querySelectorAll(".c-eyebrow,.c-caption,.c-arrow-link")]
         .filter(visible);
@@ -258,13 +265,61 @@ for (const target of process.argv.slice(2)) {
         }
       }
 
-      // AS-14: form present, but no body copy (>=40 chars) BEFORE it in the section
+      // AS-14: form present, but no body copy (>=40 chars) BEFORE it in the section.
+      // Substantive MARKED-LIST items count as the stated reason too (fix7: a
+      // benefit checklist before a capture form states the exchange exactly like
+      // a paragraph — the list is the paragraph run's structured form).
       if (forms.length) {
         const firstForm = forms[0];
-        const before = paras.some(p =>
+        const reasons = paras.concat(
+          [...sec.querySelectorAll(".c-marked-list li")].filter(visible)
+            .filter(li => realText(li).length >= 40));
+        const before = reasons.some(p =>
           p.compareDocumentPosition(firstForm) & Node.DOCUMENT_POSITION_FOLLOWING);
         if (!before)
           out.push(`AS-14 ${id}: input/form with no stated reason (no body copy before it)`);
+      }
+
+      // AS-64: parallel benefit runs SHOULD be a marked list (fix7 punch 3).
+      // HARD arm: a container that DECLARED list intent (data-list-intent — the
+      // renderer stamps it when a composition's supportKind said list) yet renders
+      // 3+ sibling paragraphs and no marked list dropped the declaration.
+      // ADVISORY arm: 3+ consecutive short sibling paragraphs of parallel length
+      // anywhere read as an unmarked list — surfaced for review, never an exit flag.
+      for (const box of sec.querySelectorAll("[data-list-intent]")) {
+        const plainP = [...box.children].filter(
+          (el) => el.matches("p.c-paragraph") && visible(el));
+        if (!box.querySelector(".c-marked-list") && plainP.length >= 3)
+          out.push(`AS-64 ${id}: declared list intent renders ${plainP.length} plain paragraphs and no marked list (dropped device)`);
+      }
+      for (const box of new Set([...sec.querySelectorAll("p")].map((p) => p.parentElement))) {
+        if (!box || box.closest(".cs-nav,.c-footer")) continue;
+        const kids = [...box.children].filter(visible);
+        let run = 0;
+        for (const el of kids) {
+          const isShortP = el.matches("p.c-paragraph") && !el.matches(".c-eyebrow,.c-caption")
+            && realText(el).length >= 24 && realText(el).length <= 160;
+          run = isShortP ? run + 1 : 0;
+          if (run === 3) {
+            advisories.push(`AS-64 ${id}: 3+ consecutive short sibling paragraphs — parallel benefit phrasing usually wants the marked-list device`);
+            break;
+          }
+        }
+      }
+
+      // AS-66: heading fit-to-measure (fix7 punch 5). A column stamped with its
+      // fit cap (data-fit-cap — the renderer's own step-down contract) whose
+      // heading still renders more lines than the cap means the deterministic
+      // fit mechanic failed or was bypassed. Declaration-driven: no stamp, no audit.
+      for (const box of sec.querySelectorAll("[data-fit-cap]")) {
+        const cap = parseInt(box.getAttribute("data-fit-cap"), 10);
+        const h = box.querySelector(".c-heading");
+        if (!Number.isFinite(cap) || !h || !visible(h)) continue;
+        const cs = getComputedStyle(h);
+        const lh = parseFloat(cs.lineHeight) || 1.2 * parseFloat(cs.fontSize);
+        const lines = Math.max(1, Math.round(h.getBoundingClientRect().height / lh));
+        if (lines > cap)
+          out.push(`AS-66 ${id}: heading renders ${lines} lines against its stamped fit cap ${cap} (rung ${box.getAttribute("data-fit-rung") || "display"}) — the register step-down did not fit the measure`);
       }
 
       // AS-59: multi-action hierarchy — one primary register per action group
@@ -300,17 +355,18 @@ for (const target of process.argv.slice(2)) {
     // AS-59 page-level pass: the chrome bar's action group lives outside sec-* scope.
     for (const g of document.querySelectorAll('.cs-nav [class*="-actions"], .cs-nav .c-actions'))
       auditActionGroup(g, "page-nav");
-    return out;
+    return { out, advisories };
   });
 
   const name = target.split("/").slice(-2).join("/") + ` @${width}px`;
-  if (flags.length) {
+  if (flags.out.length) {
     anyFlag = true;
-    console.log(`FLAG ${name}  (${flags.length})`);
-    for (const f of flags) console.log(`  ${f}`);
+    console.log(`FLAG ${name}  (${flags.out.length})`);
+    for (const f of flags.out) console.log(`  ${f}`);
   } else {
     console.log(`PASS ${name}`);
   }
+  for (const a of flags.advisories) console.log(`  ADVISORY ${a}`);
   await page.close();
   }
 }

@@ -246,39 +246,76 @@ no renderer/gate module imports the resolver.
 
 ## FOLLOW-UPS (renderer/gate territory — fenced this pass, logged not fixed)
 
+> **STATUS UPDATE (fix7, 2026-07-14): ALL TEN RESOLVED** at the system level —
+> root log: repo `changes.md` (fix7) + `FIX7-PUNCHLIST.md`. The three bakeoff
+> lanes were re-rendered DETERMINISTICALLY from their saved compositions
+> (`../../..../style-bakeoff/rerender.py` — no model calls, no composition
+> edits) and the C1 residual reds cleared: battery GREEN ×3
+> (`style-bakeoff/battery-summary.json`, before → after: swiss slop 1→0 +
+> spacing 1→0, editorial-magazine spacing 1→0, neumorphism spacing 1→0).
+> Per-item resolution inline below.
+
 1. `cta`-contract action slots with list copy: the composition adapter maps
    them to utility LINKS (or nothing), so the conversion composer invents a
    signup form the composition never declared (AS-14) whose box also breaks
    `container.width`. The adapter should expand list-cta copy into real
    buttons (the stack-hero path already does — fix6).
+   **RESOLVED (fix7)**: `_cta_mapping` expands cta-contract list/string copy
+   into real button entries; the form only renders for genuinely actionless
+   legacy conversions.
 2. `_cta_copy`'s `_text` plain-string passthrough echoes a string heading into
    eyebrow AND body (the exact class pass-2 fixed for `_split_copy`).
+   **RESOLVED (fix7)**: dict-guarded header fallbacks.
 3. Stat vocabulary: `stat` (singular) contracts and DICT-shaped stat-block
    copy render empty; only ARRAY copy on stat/stat-block/metric binds.
+   **RESOLVED (fix7)**: dict copy binds — singular {value,label} or a nested
+   item list expands through the same stat renderer + band grouping.
 4. The art-panel hero device pads `--c-module-gap` (64px here) while the
    spacing relationship `hero.panel-inset` expects the measured
    `panel-padding` (32px) — first composed lane to render the device exposed
    the mismatch (gallery pages never instantiated it).
+   **RESOLVED (fix7)**: the device pads
+   `var(--space-panel-padding, var(--c-module-gap, 6rem))` — measured fact
+   first, module-gap degrade.
 5. Slop AS-11's primary-content inventory does not count `.c-stat` cells — a
    heading + stat band reads as "heading-only".
+   **RESOLVED (fix7)**: `.c-stat` joined the primary inventory.
 6. Flow-stack `header` block followed by a sibling paragraph renders a 40px
    gap where the audit's `header.heading-to-body` expects 32px — lead-in body
    copy must ride the header block's `body` key (or the composer/audit needs
    reconciling).
+   **RESOLVED (fix7)**: header-contract flow items stamp `data-row="heading"`,
+   so the adjacent paragraph rides the relational ladder's heading→body rung —
+   the systemic cell all three lanes carried is green.
 7. The `testimonial` contract binds in stack sections but NOT in the split
    copy path (empty split column, AS-12).
+   **RESOLVED (fix7)**: `_split_copy` binds the contract (quote + name—role
+   attribution); the split renders the quote as the copy column + attribution
+   caption (swiss slop AS-12 → PASS).
 8. A flow section painted on the photo-hero surface keeps the light-surface
    accent eyebrow ink (#ff4800 on #55453e = 2.68 contrast) — surface-ink
    resolution gap for non-hero composers on image-scrim surfaces.
+   **RESOLVED (fix7)**: the accent section's eyebrow deployment is
+   contrast-guarded in `compose_page.section_vars` (< 4.5:1 → primary ink) —
+   palette-agnostic arithmetic; the replica's photo-band eyebrow now matches
+   the capture's measured cream (replica score IMPROVED to 0.957).
 9. Composed pages WITHOUT a `data-archetype` stamp fall to the non-creative
    fidelity cells, which demand the SOURCE hero surface — a pattern-reuse-only
    page cannot legitimately ship a light hero. Related: a composition section
    id equal to a brand layout id (`hero`) makes the gate bind source-layout
    expectations onto that section.
+   **RESOLVED (fix7)**: every generated composition.v1 render takes the
+   creative fidelity scope (stamped brand surface roles + authored heading
+   identity); replicas (replica-composition.v1) keep the source cells.
 10. The style-directive block could pre-empt the vocabulary traps by naming
     the PROVEN action/stat authoring shapes (button contracts, array copy) —
     deliberate scope call to keep the block guidance-only this pass; revisit
     with (1)–(3).
+    **RESOLVED (fix7)**: the shapes now live in the UNIVERSAL prompt rules
+    (COPY QUALITY → PROVEN AUTHORING SHAPES: button contracts, stat arrays,
+    list intent, knob vocabulary + the AS-65 redundancy rule) — every lane
+    gets them, style-directive or not; the directive block stays
+    guidance-only as designed.
 
 ---
 

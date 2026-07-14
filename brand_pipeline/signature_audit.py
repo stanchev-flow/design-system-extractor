@@ -49,6 +49,11 @@ ROLE_SELECTORS = {
     "eyebrow": ".c-eyebrow, .cs-eyebrow, .cs-kicker",
     "mark":    ".c-logo, .cs-nav-brand, .c-foot-brand, .c-foot-wordmark",
     "chip":    ".cs-chip, .c-chip, .spec-chip",
+    # LICENSED accent devices (fix7; brand-schema §4.11): renderer-stamped device
+    # spans/markers (punctuation accents, marked-list glyphs). A brand licenses the
+    # role by listing `accentDevice` in an accent-scope signature's allowedRoles —
+    # stamps only exist where a licensed device rendered.
+    "accentDevice": "[data-accent-device], .c-accent-mark, .c-list-marker",
     "focus":   ":focus-visible",  # not statically reachable; kept for schema completeness
 }
 
@@ -83,6 +88,13 @@ MEASURE_JS = """
   const label = (el) => el.tagName.toLowerCase() +
     (clsOf(el) ? '.' + clsOf(el).trim().split(/\\s+/).slice(0, 2).join('.') : '');
   const secOf = (el) => { const s = el.closest('[id^="sec-"]'); return s ? s.id : null; };
+
+  // ---- licensed accent-device census (fix7 FLOOR mode): renderer-stamped devices ----
+  const devices = [];
+  for (const el of document.querySelectorAll('[data-accent-device]')) {
+    if (!vis(el)) continue;
+    devices.push({ kind: el.getAttribute('data-accent-device'), sec: secOf(el) });
+  }
 
   // ---- element walk: paint census (accent classification happens in Python) ----
   const paints = [];
@@ -172,7 +184,7 @@ MEASURE_JS = """
   }
 
   const de = document.documentElement;
-  return { paints, buttons, typeProbes, sections,
+  return { paints, buttons, typeProbes, sections, devices,
            pageArea: de.scrollWidth * de.scrollHeight,
            hasSections: sections.length > 0 };
 }
@@ -361,6 +373,57 @@ def check_surface_habit(sig: dict, m: dict) -> list[dict]:
     return rows
 
 
+def check_accent_device_floors(devices_decl: list[dict], m: dict) -> list[dict]:
+    """FLOOR mode (fix7 punch 1): licensed accent devices carry per-context FLOORS —
+    a landmark context must render >= floor licensed devices (any licensed kind;
+    the renderer stamps each application as ``data-accent-device``). Today's gate
+    only capped overuse (paint-share budgets), so accent-starved pages passed
+    silently — 'zero accent touches anywhere' was the review finding this closes.
+    Context vocabulary (structural, brand-agnostic):
+      hero    — the page's FIRST content section (the opening landmark band);
+      closing — the LAST content section (the closing landmark band);
+      page    — anywhere on the page.
+    A context row without a floor licenses without demanding (ceiling-only /
+    roster entries); ceilings cap the same count when declared."""
+    secs = [s["id"] for s in (m.get("sections") or [])]
+    if not secs:
+        return []
+    scope_ids = {"hero": {secs[0]}, "closing": {secs[-1]}, "page": set(secs)}
+    counts: dict[str, int] = {k: 0 for k in scope_ids}
+    for d in (m.get("devices") or []):
+        for ctx_name, ids in scope_ids.items():
+            if d.get("sec") in ids:
+                counts[ctx_name] += 1
+    rows = []
+    seen: set[str] = set()
+    for dev in devices_decl:
+        for ctx in (dev.get("contexts") or []):
+            if not isinstance(ctx, dict):
+                continue
+            name = str(ctx.get("context") or "").strip()
+            if name not in scope_ids or name in seen:
+                continue
+            floor = ctx.get("floor")
+            ceiling = ctx.get("ceiling")
+            if floor is None and ceiling is None:
+                continue
+            seen.add(name)
+            n = counts[name]
+            ok = True
+            bits = [f"{n} licensed device(s) rendered in the {name} context"]
+            if isinstance(floor, (int, float)):
+                ok &= n >= int(floor)
+                bits.append(f"floor {int(floor)}")
+            if isinstance(ceiling, (int, float)):
+                ok &= n <= int(ceiling)
+                bits.append(f"ceiling {int(ceiling)}")
+            rows.append({"check": f"deviceFloor({name})", "ok": ok,
+                         "detail": " · ".join(bits) + (
+                             "" if ok else " — accent-starved landmark: apply a "
+                                          "licensed device (extracted, never invented)")})
+    return rows
+
+
 KIND_CHECKS = {
     "accent-scope": check_accent_scope,
     "shape-motif": check_shape_motif,
@@ -376,7 +439,7 @@ SPECIMEN_KINDS = {"shape-motif", "type-treatment"}
 # ── driver ───────────────────────────────────────────────────────────────────────
 
 def audit_lane(pw, html: Path, signatures: list[dict],
-               viewport=DEFAULT_VIEWPORT) -> dict:
+               viewport=DEFAULT_VIEWPORT, accent_devices: list[dict] | None = None) -> dict:
     browser = pw.chromium.launch()
     try:
         page = browser.new_page(viewport={"width": viewport[0], "height": viewport[1]},
@@ -411,6 +474,14 @@ def audit_lane(pw, html: Path, signatures: list[dict],
         entry["checks"] = rows
         entry["ok"] = all(r["ok"] for r in rows)
         out["signatures"].append(entry)
+    # accent-device FLOORS (fix7 punch 1; brand.yaml `accentDevices:` §4.10) — a
+    # page-level claim like the accent budget: specimen lanes void it.
+    if accent_devices and not specimen:
+        rows = check_accent_device_floors(accent_devices, m)
+        if rows:
+            out["signatures"].append({
+                "id": "accent-devices", "kind": "device-floor", "mode": "floor",
+                "checks": rows, "ok": all(r["ok"] for r in rows)})
     return out
 
 
@@ -420,11 +491,13 @@ def run_audit(lane_paths: list[Path], brand_dir: Path, out_dir: Path | None,
 
     doc = yaml.safe_load((brand_dir / "brand.yaml").read_text()) or {}
     signatures = [s for s in (doc.get("signatures") or []) if isinstance(s, dict)]
+    accent_devices = [d for d in (doc.get("accentDevices") or []) if isinstance(d, dict)]
     report = {"generatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
               "brandDir": str(brand_dir), "viewport": f"{viewport[0]}x{viewport[1]}",
               "signatureCount": len(signatures), "lanes": []}
-    if not signatures:
-        report["note"] = "no signatures: block — nothing to audit (fact-gated skip)"
+    if not signatures and not accent_devices:
+        report["note"] = ("no signatures:/accentDevices: blocks — nothing to audit "
+                          "(fact-gated skip)")
         return report
 
     with sync_playwright() as pw:
@@ -436,7 +509,8 @@ def run_audit(lane_paths: list[Path], brand_dir: Path, out_dir: Path | None,
                 entry["error"] = "file not found"
             else:
                 try:
-                    entry.update(audit_lane(pw, html, signatures, viewport))
+                    entry.update(audit_lane(pw, html, signatures, viewport,
+                                            accent_devices=accent_devices))
                 except Exception as exc:
                     entry["error"] = f"{type(exc).__name__}: {exc}"[:300]
             report["lanes"].append(entry)
