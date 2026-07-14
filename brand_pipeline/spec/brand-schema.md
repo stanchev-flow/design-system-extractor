@@ -629,6 +629,31 @@ errors back the verdict; stale `sourceDigest` flagged). The `scale_adherence`
 gate (spacing auditor) audits generative-lane novel geometry against the
 artifact (spec/spacing-conformance.md).
 
+### 4.10 Section-scoped rules + conversion grammars (quality steals 2026-07)
+
+Two shared, brand-INDEPENDENT contract files sit beside the vocabulary catalogs
+(they are law about generated OUTPUT, so they live in `contracts/`, not in any
+`brand.yaml`):
+
+- **`contracts/section-rules.yaml`** (`section-rules.v1`) — per-section-family
+  falsifiable quality rules (hero, stat-band, logo-strip, capture-form,
+  pricing-tiers, quote, feature-grid, faq, cta-band, nav, footer, carousel).
+  Law text: `spec/section-rules.md`; checker: `section_rules_audit.py`
+  (battery member). Rules with `enforcement: delegated` name existing law
+  (`delegatedTo`: an AS rule / gate / IC family) and are never re-implemented.
+- **`contracts/conversion-structure.yaml`** (`conversion-structure.v1`) — per
+  campaign-type section-SEQUENCE grammars (funnel depth bands, form placement,
+  proof ordering). Law text: `spec/conversion-structure.md`; checker:
+  `conversion_audit.py` (advisory; hardFloor rows gate); prompt-side guidance
+  projection: `conversion_structure.render_guidance_block` behind the
+  opt-in `inject_conversion_guidance` flag (default OFF — byte-identical
+  prompts otherwise).
+
+A brief opts into a grammar with ONE frontmatter key — `campaignType: <id>` —
+beside the existing `pageType`/`taskIntents`/`variance` keys. Briefs without it
+are untouched by both layers (fact-gated). The standing 12-brief instrument
+that exercises both contracts is `evals/matrix/` (protocol in its README).
+
 ## 5. `contracts` — the universal THREE-TIER vocabulary layer (NEW)
 
 Three shared, library-agnostic catalogs define the full structural vocabulary

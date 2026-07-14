@@ -917,3 +917,24 @@ table + conformance A/B: the lane's own `changes.md` (pass2 section); root
 - Two latent renderer bugs surfaced by fresh slot shapes, fixed shared-side
   (form-split `content-block` support drop; `_split_copy` string leak), 12 new
   tests. Suite 1060; replica **0.956 held exactly** (rebuilt with final code).
+
+## pass3 — style resolution + prompt injection + 3-style bakeoff (2026-07-14)
+
+Checkpoints C+D of the eval-gated plan. Full log + upfront criteria + verdict:
+`brand_pipeline/contracts/style-library/changes.md`; lane-local record:
+`compose/style-bakeoff/changes.md`.
+
+- NEW `brand_pipeline/style_resolver.py` (4-level style-library cascade UNDER
+  the brand evidence stack, two-class invariants, loud layout rejection) + the
+  pass-1 facts / style-directive injection into `generate_composition.
+  build_prompt` (`[[PASS3-FACTS]]` / `[[PASS3-STYLE]]` sentinels, fact-gated —
+  artifact-less brands byte-identical). Spec: `spec/style-resolution.md`.
+  Tests: `test_pass3_*.py` (56). Suite **1259 passed** (zero failures).
+- Bakeoff lanes (this brand): `compose/style-bakeoff-{swiss,editorial-magazine,
+  neumorphism}/product-launch/` off the shared product-launch brief; sheet:
+  `compose/style-bakeoff-contact-sheet.png`. Verdict: **NO-PASS against C1**
+  (residual spacing/slop cells — adapter/audit vocabulary follow-ups, logged),
+  C2 style-distinctiveness + C3 brand-recognizability MET; signature/voice/
+  onbrand/interaction/scale green ×3; **no style graduated**.
+- Replicas re-run after everything: **0.956** (this brand) / **0.950**
+  (Remote) — held exactly.

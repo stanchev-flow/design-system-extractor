@@ -1,8 +1,14 @@
 # conversion-structure.md — campaign section-sequence contracts
 
-> **Status: stage A authored (2026-07-14); checker + prompt wiring land in stage B.**
-> Data: `contracts/conversion-structure.yaml` (conversion-structure.v1). This doc is
-> the law text for consumption; the YAML owns the grammars.
+> **Status: stage B wired (2026-07-14).** Data:
+> `contracts/conversion-structure.yaml` (conversion-structure.v1). This doc is
+> the law text for consumption; the YAML owns the grammars. Two consumer
+> modules, one owner each (AS-06 discipline):
+> `conversion_structure.py` — the brief-time guidance projection (prompt side);
+> `conversion_audit.py` — the deterministic checker (composition + rendered
+> lanes, reports, advisory wiring). Tests: `test_conversion_guidance.py`
+> (projection + injection byte-identity) / `test_conversion_structure.py`
+> (checker interpreter).
 
 ## What this layer owns
 
@@ -15,27 +21,40 @@ its tiers below four marketing beats, an awareness launch that opens with a
 qualification battery. Those are structure-of-argument failures, and they are
 checkable from the section family sequence alone.
 
-## Brief-time guidance injection (zero extra LLM calls)
+## Brief-time guidance injection (zero extra LLM calls) — WIRED, default OFF
 
 A brief opts in with ONE frontmatter key: `campaignType: <id>` (beside the
 existing `pageType`/`taskIntents`/`variance` keys that `parse_brief_frontmatter`
-already reads). At prompt-assembly time, `generate_composition.build_prompt`
-projects the campaign's grammar into a short guidance block appended to the
-system prompt — exactly how the archetype shortlist rides in today:
+already reads). `conversion_structure.render_guidance_block(brief_text)`
+projects the campaign's grammar into a short guidance block:
 
 - the campaign `intent` prose, verbatim;
 - one bullet per constraint, deterministically templated from the constraint
-  kind + its `why:` note (e.g. `window/firstN:3` → "place the capture form
-  within the first three sections — <why>");
+  kind + its `why:` note (e.g. `window/firstN:3` → "capture-form lands within
+  the first 3 sections — <why>");
 - the depth band and form-depth band as plain sentences.
 
-The projection is a pure function of the YAML (no model call, no network); the
-composition request stays ONE generation call with a slightly longer prompt.
-Briefs without `campaignType` assemble byte-identical prompts — fact-gated,
-zero effect on existing lanes. Prompt guidance is ADVICE to the generator; the
-checker is what verifies the outcome.
+The block rides the USER prompt (with the brief, before the output contract)
+via `build_prompt(..., conversion_guidance=...)`, threaded from
+`generate_composition(..., inject_conversion_guidance=True)`. The wiring is
+DOUBLY fact-gated, per the pass-2 scope note (pass 3 owns the system-prompt
+brand-fact injection; this block must not pre-empt that architecture):
 
-## Deterministic checker (stage B; advisory first)
+1. the caller must opt in — the flag defaults to **False**, so the default
+   pipeline assembles byte-identical prompts (test-pinned:
+   `test_conversion_guidance.py::PromptInjection`);
+2. the brief must declare a known `campaignType` — absent/unknown projects
+   None, byte-identical again.
+
+The projection is a pure function of the YAML (no model call, no network); an
+opted-in composition request stays ONE generation call with a slightly longer
+prompt (~1.7k chars). Prompt guidance is ADVICE to the generator; the checker
+is what verifies the outcome. The eval-matrix BASELINE round runs with the flag
+OFF — the baseline measures the un-guided pipeline, and the checker's advisory
+findings on it quantify what the guidance is FOR; a later round may A/B the
+flag against that baseline.
+
+## Deterministic checker (`conversion_audit.py`; advisory first)
 
 `check_conversion_structure(composition, campaign)` evaluates the ordered
 content-section family list (chrome excluded) against the campaign's constraint

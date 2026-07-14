@@ -1,8 +1,11 @@
 # section-rules.md — the section-scoped deterministic rule library
 
-> **Status: stage A authored (2026-07-14); enforcement lands in stage B.** Data:
-> `contracts/section-rules.yaml` (section-rules.v1). This doc is the short law text;
-> the YAML is the system of record for the rules themselves.
+> **Status: ENFORCED (stage B landed 2026-07-14).** Data:
+> `contracts/section-rules.yaml` (section-rules.v1); checker:
+> `brand_pipeline/section_rules_audit.py`; tests:
+> `tests/test_section_rules_audit.py`; first battery + calibrations:
+> `evals/matrix/changes.md`. This doc is the short law text; the YAML is the
+> system of record for the rules themselves.
 
 ## Why rules belong to sections
 

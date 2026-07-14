@@ -344,6 +344,33 @@ facts to SHAPE generation rather than police it, they must be injected into
   rebuilt from the final renders; lane index regenerated; `viewer.html`
   untouched (no viewer-affecting code).
 
+## steals stage B — section-rules gate finding landed on this lane (2026-07-14)
+
+Root log: `evals/matrix/changes.md` (stage B). The NEW section-rules auditor
+(`brand_pipeline/section_rules_audit.py`, contracts/section-rules.yaml) ran its
+first battery over all 8 heroes + the replica.
+
+- **SR-HERO-01 catch (demo, required)** — the hero-form-split display heading
+  "See the customer platform work for your team." rendered **5 lines** at the
+  1440 tier (80px display in the 500px form-split half measure; even the
+  half-measure-licensed budget is 4). Same failure class as the pass-2 A/B's
+  before-state (6 lines). Fix at the copy level per the rule's own remedy
+  ("tighten the copy … never widen the measure"): composition.json heading →
+  **"See the customer platform at work."** (same claim, display-length) —
+  renders 4 lines within the licensed half-measure budget.
+- Re-rendered via `tools/run_hero_archetype_gallery.py --rerender --only demo`
+  (no model calls); onbrand gate **PASS**.
+- Full battery re-run on demo (true exit codes): slop **PASS @1440+@1180**
+  (exit 0) · interaction `--strict` **0 required fails** (exit 0) · spacing
+  `--strict` **18 conform / 1 drift / 0 wrong-step / 0 off-ladder**, scale
+  **6 measured / 8 on-scale / 0 off-scale** (exit 0) · signature `--strict`
+  **PASS, accent 0.669%** (exit 0) · voice **PASS** (exit 0) · section-rules
+  **PASS 0 required / 0 advisory** (exit 0).
+- All 8 heroes + replica re-audited under section-rules: **PASS ×9** (replica
+  reports the evidence-lane skip by design). Advisory warns on this lane: none
+  after the measure-aware wrap calibration (see contracts changelog 18:05Z).
+- Shots ×8 + `shots/contact-sheet.png` + lane index refreshed (`--shots`).
+
 ## pass1 — new-gate findings landed on this lane (2026-07-14)
 
 Root log: `changes.md` (pass1); brand lane log: `runs/hubspot-v2/brand/changes.md`.
