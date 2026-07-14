@@ -1,0 +1,12 @@
+# Manifest for the STANDARD (brand-agnostic) layout-pattern library.
+# One entry per use-case file. origin=designed, hand-blessed from the harvest report.
+schemaVersion: layout-patterns.v1
+useCases:
+  - { useCase: hero,        file: hero.yaml,        patternCount: 4 }
+  - { useCase: features,    file: features.yaml,    patternCount: 4 }
+  - { useCase: pricing,     file: pricing.yaml,     patternCount: 3 }
+  - { useCase: testimonial, file: testimonial.yaml, patternCount: 2 }
+  - { useCase: gallery,     file: gallery.yaml,     patternCount: 4 }
+  - { useCase: cta,         file: cta.yaml,         patternCount: 4 }
+  - { useCase: about,       file: about.yaml,       patternCount: 3 }
+  - { useCase: footer,      file: footer.yaml,      patternCount: 3 }

@@ -1,0 +1,219 @@
+schemaVersion: section-grounding.v1
+sectionRole: features
+layout:
+  structure: split ~48/52, accordion list left / product-UI mockup right on grid backdrop
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 100
+    bottom: 100
+  gapPx: 200
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#efefed'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: card
+  bgApprox: '#6e1a2e'
+  parent: canvas
+  radiusPx: 16
+  borderApprox: none
+  inkApprox: '#f5e3e7'
+- role: card
+  bgApprox: '#dff5c0'
+  parent: canvas
+  radiusPx: 16
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: media-well
+  bgApprox: '#8f1f38'
+  parent: card
+  radiusPx: 8
+  borderApprox: none
+  inkApprox: '#ffffff'
+- role: card
+  bgApprox: '#ffffff'
+  parent: canvas
+  radiusPx: 16
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: chrome-bar
+  bgApprox: '#f3f2f7'
+  parent: card
+  radiusPx: 8
+  borderApprox: none
+  inkApprox: '#6b6b70'
+typography:
+- role: eyebrow
+  approxSizePx: 18
+  weightApprox: 600
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#b0264a'
+  familyClass: grotesque-sans
+- role: h2
+  approxSizePx: 60
+  weightApprox: 600
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: h3
+  approxSizePx: 28
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: body
+  approxSizePx: 24
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#f0dce1'
+  familyClass: grotesque-sans
+- role: caption
+  approxSizePx: 13
+  weightApprox: 600
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#6b6b70'
+  familyClass: grotesque-sans
+relationalSpacingPx:
+  eyebrowToHeading: 40
+  headingToBody: 90
+  bodyToCta: 40
+components:
+- kind: accordion-item
+  variant: filled-neutral-collapsed
+  countObserved: 4
+  anatomy: icon left -> label -> chevron-down right, divider line below
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 22 12
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: accordion-item
+  variant: filled-primary-expanded
+  countObserved: 1
+  anatomy: icon left -> label -> chevron-up right -> body -> circular arrow button
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 36 32
+    radiusPx: 16
+  surfaceApprox: '#6e1a2e'
+  inkApprox: '#f5e3e7'
+  caseTreatment: title
+- kind: button
+  variant: text-arrow-circular
+  countObserved: 1
+  anatomy: circular white button with right arrow glyph
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 30
+  surfaceApprox: '#ffffff'
+  inkApprox: '#6e1a2e'
+  caseTreatment: sentence
+- kind: icon
+  variant: gradient-glyph
+  countObserved: 5
+  anatomy: small brand mark left of accordion label
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#b0264a'
+  caseTreatment: sentence
+- kind: badge
+  variant: filled-pill
+  countObserved: 1
+  anatomy: green pill with status label
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 8 16
+    radiusPx: 16
+  surfaceApprox: '#c7f08a'
+  inkApprox: '#2e6b1f'
+  caseTreatment: upper
+- kind: avatar
+  variant: circle-portrait
+  countObserved: 2
+  anatomy: circular portrait beside contractor name in table row
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 30
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: media-frame
+  variant: id-card
+  countObserved: 1
+  anatomy: portrait media-well left -> name/role/location/status right
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: 20 24
+    radiusPx: 16
+  surfaceApprox: '#dff5c0'
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+copy:
+  eyebrow: HOW WE DO IT
+  heading: One system of record. Every employment need.
+  body: Engage international contractors compliantly. Contracts, payments, and risk — all handled by our
+    experts.
+  actions:
+  - label: →
+    styleHint: text-arrow-circular
+  items:
+  - heading: Employer of Record (EOR)
+    body: null
+    meta: collapsed
+  - heading: Global Payroll
+    body: null
+    meta: collapsed
+  - heading: Contractor of Record (COR)
+    body: Engage international contractors compliantly. Contracts, payments, and risk — all handled by
+      our experts.
+    meta: expanded
+  - heading: Contractor Management
+    body: null
+    meta: collapsed
+  - heading: Professional Employer Organization (PEO)
+    body: null
+    meta: collapsed
+  - heading: PROJECT MANAGER Manuel Lopez
+    body: Madrid, Spain
+    meta: THIS CONTRACTOR IS ELIGIBLE
+  - heading: Amanda Mars
+    body: Oct 31
+    meta: 5,000 GPB
+  - heading: Bryan James
+    body: Oct 31
+    meta: 3,000 GPB
+media:
+- kind: product-ui
+  treatment: ID card with circle-cropped portrait on maroon well + invoice table card, floating on faint
+    grid backdrop
+  aspect: portrait
+  approxFractionOfSection: 0.45
+motionHints:
+- accordion with one row open (animated expand)
+- arrow-in-circle button beside expanded item (hover icon-slide affordance)
+- grab-hand cursor over ID card (drag affordance)
+confidence: high
+notes:
+- left column is an accordion list; COR row expanded
+- circular cookie/settings icon bottom-left is likely page chrome overlapping crop
+- invoice amounts labeled 'GPB' verbatim in source
+_source:
+  crop: accordion-item-2-contractor-of-record-cor.png
+  domClasses: ''
+  model: claude-opus-4-8

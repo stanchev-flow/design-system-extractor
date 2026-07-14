@@ -1,0 +1,69 @@
+schemaVersion: section-grounding.v1
+sectionRole: logos
+layout:
+  structure: centered eyebrow label above a single horizontal row of monochrome logos
+  columns: 7
+  alignment: center
+  approxPaddingPx:
+    top: 80
+    bottom: 100
+  gapPx: 100
+  containerWidth: full-bleed
+surfaces:
+- role: canvas
+  bgApprox: '#eeeeee'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#6b7078'
+- role: inset-panel
+  bgApprox: '#f5f5f5'
+  parent: canvas
+  radiusPx: 20
+  borderApprox: none
+  inkApprox: '#6b7078'
+typography:
+- role: eyebrow
+  approxSizePx: 14
+  weightApprox: 600
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#6b7078'
+  familyClass: grotesque-sans
+components:
+- kind: logo-item
+  variant: monochrome-wordmark
+  countObserved: 7
+  anatomy: single row of grayscale brand marks, evenly spaced
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#6b7078'
+  caseTreatment: title
+copy:
+  eyebrow: GLOBAL COMPANIES GROW WITH REMOTE
+  logosLegible:
+  - box
+  - miro
+  - KFC
+  - Heineken
+  - BYD
+  - Vercel
+  - ANTHROP\C
+  - DATADOG
+media:
+- kind: logo-vector
+  treatment: monochrome gray brand wordmarks/logos ~40px tall in a single row
+  aspect: wide
+  approxFractionOfSection: 0.5
+confidence: high
+notes:
+- top edge shows bottom of a rounded inset-panel from previous section, cut off
+- rightmost DATADOG logo is truncated at right crop edge
+- Anthropic wordmark rendered as ANTHROP\C with backslash glyph
+_source:
+  crop: section-01-base-module-scss-module-sgiwqa-section.png
+  domClasses: base-module-scss-module__sGIWqa__section
+  model: claude-opus-4-8

@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "hubspot-homepage-hero",
+    "name": "HubSpot homepage hero \u2014 agentic customer platform",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "sec-hero",
+      "useCase": "hero",
+      "archetype": "split",
+      "archetypeRef": "hero-split-product",
+      "surfaceIntent": "inverse",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "kicker",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "The agentic customer platform"
+        },
+        {
+          "name": "heading",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "copy": "Go-to-market teams grow here."
+        },
+        {
+          "name": "subheading",
+          "role": "lede",
+          "contract": "paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": "Marketing, sales, and service run on one platform \u2014 with Breeze AI agents working alongside your team, not bolted on beside it."
+        },
+        {
+          "name": "action-primary",
+          "role": "primary-action",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Get a demo"
+        },
+        {
+          "name": "action-secondary",
+          "role": "secondary-action",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Get started free"
+        },
+        {
+          "name": "proof",
+          "role": "proof",
+          "contract": "label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "299,000+ customers in 135+ countries grow on HubSpot."
+        },
+        {
+          "name": "media",
+          "role": "product-media",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "landscape",
+          "z": "mid",
+          "colStart": 7,
+          "colSpan": 6,
+          "asset": {
+            "src": "025-customer-20platform-20graphic-20-20hubs1-5x-20-1.png",
+            "alt": "The HubSpot customer platform \u2014 marketing, sales, service, content, data, and commerce hubs on one connected surface",
+            "ratio": "landscape"
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "mediaSide": "right"
+      }
+    }
+  ],
+  "rationale": "Repair pass. The prior bento hero placed body paragraphs inside light-surfaced cards on an inverse section, so cell copy resolved cream-on-white (text-contrast fail) and an invalid alignment source ('brand') broke header-context resolution. This version drops the card cells entirely and uses the hero-split-product skeleton: a copy column (eyebrow, one-claim display heading in sentence case ending on the single accent period, lede, action pair, honest proof line) all rendered directly on the inverse deep-teal surface where cream ink keeps AA contrast, beside the real customer-platform hubs graphic (025) as the counterweight that shows platform breadth at first glance. Breeze agents are named in the lede so both hubs and agents read as the product. Alignment is omitted so the brand's split-column header grammar resolves it (no invalid 'brand' align source). Inverse surface satisfies the dark-open bookend rule; the display-title's period carries the single accent; the filled primary vs. outlined secondary keep one primary per action group. No text-on-media, no mid-page dark band, no text logo wall \u2014 every neverDo holds by construction."
+}

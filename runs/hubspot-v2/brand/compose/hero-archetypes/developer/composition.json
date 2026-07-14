@@ -1,0 +1,101 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "hubspot-dev-hero",
+    "name": "Developer hero \u2014 HubSpot Developers",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "sec-0",
+      "useCase": "hero",
+      "archetype": "stack",
+      "archetypeRef": "hero-search-first",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "heading",
+          "role": "title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "copy": "Build on the customer platform."
+        },
+        {
+          "name": "subheading",
+          "role": "lede",
+          "contract": "paragraph",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "APIs, SDKs, CRM cards, and Breeze agent tools \u2014 documented and ready to wire up."
+        },
+        {
+          "name": "search",
+          "role": "primary-control",
+          "contract": "form",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": {
+            "fields": [
+              {
+                "label": "Search the docs",
+                "placeholder": "Search the docs \u2014 APIs, SDKs, CRM cards, Breeze agent tools",
+                "variant": "boxed"
+              }
+            ],
+            "submit": "Search",
+            "note": "Popular: CRM API \u00b7 UI extensions \u00b7 OAuth \u00b7 webhooks"
+          }
+        },
+        {
+          "name": "popular",
+          "role": "quick-links",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": [
+            {
+              "text": "CRM API",
+              "variant": "arrow"
+            },
+            {
+              "text": "UI extensions",
+              "variant": "arrow"
+            },
+            {
+              "text": "OAuth",
+              "variant": "arrow"
+            },
+            {
+              "text": "Webhooks",
+              "variant": "arrow"
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "popularRow": "on"
+      }
+    }
+  ],
+  "rationale": "Single compact working masthead built on hero-search-first: the search form is the hero's primary control, sized to the stack measure (not full-bleed) with a purpose-stated placeholder and a real submit affordance, then popular entry points as quiet arrow links. Surface stays on the warm light page canvas per the light-canvas invariant and the plainspoken docs voice \u2014 dark bands are reserved for the closing sequence. Alignment is left to the brand's header grammar (no asymmetric anchor declared), fixing the prior alignment-resolution failure. No off-grid treatments; disciplined aligned stack earns developer trust."
+}

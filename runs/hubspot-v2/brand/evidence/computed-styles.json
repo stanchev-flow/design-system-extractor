@@ -1,0 +1,1985 @@
+{
+ "schemaVersion": "computed-measure.v2",
+ "source": "screenshots/hubspot-v2/hubspot.html",
+ "viewport": {
+  "w": 1440,
+  "h": 900
+ },
+ "jsEnabled": false,
+ "chrome": {
+  "header": {
+   "background-color": "rgb(255, 255, 255)",
+   "color": "rgb(31, 31, 31)",
+   "padding": "0px",
+   "border-bottom": "0px none rgb(31, 31, 31)",
+   "border-top": "0px none rgb(31, 31, 31)",
+   "position": "relative",
+   "max-width": "none",
+   "_rect": {
+    "x": 0,
+    "y": 0,
+    "w": 1440,
+    "h": 128
+   }
+  },
+  "footer": {
+   "background-color": "rgb(31, 31, 31)",
+   "color": "rgb(248, 245, 238)",
+   "padding": "48px 32px",
+   "border-bottom": "0px none rgb(248, 245, 238)",
+   "border-top": "0px none rgb(248, 245, 238)",
+   "position": "static",
+   "max-width": "none",
+   "_rect": {
+    "x": 0,
+    "y": 6330.1875,
+    "w": 1440,
+    "h": 655.40625
+   }
+  },
+  "navLink": {
+   "color": "rgb(255, 255, 255)",
+   "font-family": "\"HubSpot Sans\", sans-serif",
+   "font-size": "14px",
+   "font-weight": "500",
+   "line-height": "22px",
+   "letter-spacing": "normal",
+   "text-transform": "none",
+   "padding": "8px 16px",
+   "border-radius": "8px",
+   "_rect": {
+    "x": -1000,
+    "y": 4,
+    "w": 136.890625,
+    "h": 42
+   }
+  },
+  "footerLink": {
+   "color": "rgba(255, 255, 255, 0.62)",
+   "font-family": "\"HubSpot Sans\", sans-serif",
+   "font-size": "12px",
+   "font-weight": "500",
+   "line-height": "28.8px",
+   "letter-spacing": "normal",
+   "text-transform": "none",
+   "_rect": {
+    "x": 180,
+    "y": 6417.46875,
+    "w": 191.5,
+    "h": 32.796875
+   }
+  }
+ },
+ "headings": {
+  "h1": {
+   "color": "rgb(248, 245, 238)",
+   "font-family": "\"HubSpot Serif Page Header Human\", \"HubSpot Serif\", serif",
+   "font-size": "80px",
+   "font-weight": "500",
+   "line-height": "95px",
+   "letter-spacing": "normal",
+   "text-transform": "none",
+   "_rect": {
+    "x": 348.71875,
+    "y": 336,
+    "w": 742.5625,
+    "h": 190
+   }
+  },
+  "h2": {
+   "color": "rgb(31, 31, 31)",
+   "font-family": "\"HubSpot Sans\", sans-serif",
+   "font-size": "18px",
+   "font-weight": "500",
+   "line-height": "28px",
+   "letter-spacing": "normal",
+   "text-transform": "none",
+   "_rect": {
+    "x": 344.9921875,
+    "y": 153,
+    "w": 82.875,
+    "h": 112
+   }
+  },
+  "h3": {
+   "color": "rgb(31, 31, 31)",
+   "font-family": "\"HubSpot Sans\", sans-serif",
+   "font-size": "16px",
+   "font-weight": "500",
+   "line-height": "28px",
+   "letter-spacing": "normal",
+   "text-transform": "none",
+   "_rect": {
+    "x": 368.9921875,
+    "y": 508,
+    "w": 0,
+    "h": 56
+   }
+  },
+  "h4": null,
+  "h5": null,
+  "h6": null,
+  "p": {
+   "color": "rgb(255, 255, 255)",
+   "font-family": "\"HubSpot Sans\", \"Lexend Deca\", LexendDeca, \"Helvetica Neue\", helvetica, arial, sans-serif",
+   "font-size": "12.8px",
+   "font-weight": "300",
+   "line-height": "19.2px",
+   "letter-spacing": "normal",
+   "text-transform": "none",
+   "_rect": {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   }
+  }
+ },
+ "body": {
+  "color": "rgb(31, 31, 31)",
+  "font-family": "\"HubSpot Sans\", sans-serif",
+  "font-size": "16px",
+  "font-weight": "300",
+  "line-height": "28px",
+  "letter-spacing": "normal",
+  "text-transform": "none",
+  "background-color": "rgb(252, 252, 250)",
+  "_rect": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 6985.59375
+  }
+ },
+ "htmlFont": {
+  "font-size": "16px",
+  "_rect": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 6985.59375
+  }
+ },
+ "actionGroups": [
+  {
+   "classes": "global-nav-mobile-list-item-dropdown-toggle",
+   "tag": "button",
+   "count": 8,
+   "sample": "Products",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(0, 0, 0)",
+    "border": "0px none rgb(0, 0, 0)",
+    "border-radius": "0px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "400",
+    "line-height": "16.1px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "block",
+    "width": "auto",
+    "_rect": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    }
+   }
+  },
+  {
+   "classes": "hsg-footer__nav-toggle global-footer__nav-toggle",
+   "tag": "button",
+   "count": 5,
+   "sample": "Popular Features",
+   "widthBehavior": "stretch",
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(248, 245, 238)",
+    "border": "0px none rgb(248, 245, 238)",
+    "border-radius": "0px",
+    "padding": "0px 0px 16px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "16.1px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "431px",
+    "_rect": {
+     "x": 180,
+     "y": 6385.375,
+     "w": 431,
+     "h": 32.09375
+    }
+   }
+  },
+  {
+   "classes": "",
+   "tag": "button",
+   "count": 3,
+   "sample": "Accept all",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgb(255, 255, 255)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "8px 16px",
+    "font-family": "\"HubSpot Sans\", \"Lexend Deca\", LexendDeca, \"Helvetica Neue\", helvetica, arial, sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "24px",
+    "letter-spacing": "normal",
+    "text-transform": "capitalize",
+    "display": "flex",
+    "width": "100%",
+    "_rect": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    }
+   }
+  },
+  {
+   "classes": "global-nav-tab-button cl-navLink-submenu-toggle",
+   "tag": "button",
+   "count": 3,
+   "sample": "Products",
+   "widthBehavior": "hug",
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "0px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "16px",
+    "font-weight": "400",
+    "line-height": "18.4px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "18px",
+    "_rect": {
+     "x": 397.984375,
+     "y": 82,
+     "w": 18,
+     "h": 18
+    }
+   }
+  },
+  {
+   "classes": "global-nav-sidebar-btn cl-tab-button",
+   "tag": "button",
+   "count": 3,
+   "sample": "By Use Case",
+   "widthBehavior": "stretch",
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0.05)",
+    "color": "rgb(31, 31, 31)",
+    "border": "",
+    "border-radius": "16px",
+    "padding": "8px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "209px",
+    "_rect": {
+     "x": 448.984375,
+     "y": 153,
+     "w": 209,
+     "h": 38
+    }
+   }
+  },
+  {
+   "classes": "cl-tab-button breeze-agents-tabbed-testimonials__tab-button",
+   "tag": "button",
+   "count": 3,
+   "sample": "Enterprise",
+   "widthBehavior": "stretch",
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "",
+    "border-radius": "0px",
+    "padding": "8px 16px 4px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "16px",
+    "font-weight": "500",
+    "line-height": "28px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "110.188px",
+    "_rect": {
+     "x": 505.671875,
+     "y": 5107.34375,
+     "w": 110.1875,
+     "h": 44
+    }
+   }
+  },
+  {
+   "classes": "cl-navLink-submenu-toggle",
+   "tag": "button",
+   "count": 2,
+   "sample": "Select a language",
+   "widthBehavior": "hug",
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "0px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "16px",
+    "font-weight": "400",
+    "line-height": "18.4px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "16px",
+    "_rect": {
+     "x": 249.03125,
+     "y": 18,
+     "w": 16,
+     "h": 16
+    }
+   }
+  },
+  {
+   "classes": "global-nav-site-search-close-button",
+   "tag": "button",
+   "count": 2,
+   "sample": "Close Search",
+   "widthBehavior": "hug",
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(0, 0, 0)",
+    "border": "0px none rgb(0, 0, 0)",
+    "border-radius": "0px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "16px",
+    "font-weight": "400",
+    "line-height": "18.4px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "none",
+    "width": "24px",
+    "_rect": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    }
+   }
+  },
+  {
+   "classes": "cl-round-button -medium cl-carousel-controls-previous",
+   "tag": "button",
+   "count": 2,
+   "sample": "Previous",
+   "widthBehavior": "hug",
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0.02)",
+    "color": "rgb(0, 0, 0)",
+    "border": "0px none rgb(0, 0, 0)",
+    "border-radius": "50%",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "16px",
+    "font-weight": "400",
+    "line-height": "18.4px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "48px",
+    "_rect": {
+     "x": 180,
+     "y": 1030.265625,
+     "w": 48,
+     "h": 48
+    }
+   }
+  },
+  {
+   "classes": "cl-round-button -medium cl-carousel-controls-next",
+   "tag": "button",
+   "count": 2,
+   "sample": "Next",
+   "widthBehavior": "hug",
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0.02)",
+    "color": "rgb(0, 0, 0)",
+    "border": "0px none rgb(0, 0, 0)",
+    "border-radius": "50%",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "16px",
+    "font-weight": "400",
+    "line-height": "18.4px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "48px",
+    "_rect": {
+     "x": 1212,
+     "y": 1030.265625,
+     "w": 48,
+     "h": 48
+    }
+   }
+  },
+  {
+   "classes": "banner-close-btn",
+   "tag": "button",
+   "count": 1,
+   "sample": "\u00d7close",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(255, 255, 255)",
+    "border": "0px none rgb(255, 255, 255)",
+    "border-radius": "0px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", \"Lexend Deca\", LexendDeca, \"Helvetica Neue\", helvetica, arial, sans-serif",
+    "font-size": "32px",
+    "font-weight": "400",
+    "line-height": "56px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "block",
+    "width": "auto",
+    "_rect": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    }
+   }
+  },
+  {
+   "classes": "hs-close-button",
+   "tag": "button",
+   "count": 1,
+   "sample": "",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(0, 0, 0)",
+    "border": "0px none rgb(0, 0, 0)",
+    "border-radius": "0px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", \"Lexend Deca\", LexendDeca, \"Helvetica Neue\", helvetica, arial, sans-serif",
+    "font-size": "14px",
+    "font-weight": "400",
+    "line-height": "24.5px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "block",
+    "width": "auto",
+    "_rect": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    }
+   }
+  },
+  {
+   "classes": "ga_nav_link cl-button -tertiary -small global-nav-skip-link",
+   "tag": "a",
+   "count": 1,
+   "sample": "Skip to content",
+   "widthBehavior": "hug",
+   "measured": {
+    "background-color": "rgb(31, 31, 31)",
+    "color": "rgb(255, 255, 255)",
+    "border": "2px solid rgba(0, 0, 0, 0)",
+    "border-radius": "8px",
+    "padding": "8px 16px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "block",
+    "width": "136.891px",
+    "_rect": {
+     "x": -1000,
+     "y": 4,
+     "w": 136.890625,
+     "h": 42
+    }
+   }
+  },
+  {
+   "classes": "global-nav-high-contrast-btn a11y-contrast-toggle -x-small -icon-left ",
+   "tag": "button",
+   "count": 1,
+   "sample": "High Contrast",
+   "widthBehavior": "stretch",
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "16px 0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "16px",
+    "font-weight": "400",
+    "line-height": "18.4px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "inline-flex",
+    "width": "105.797px",
+    "_rect": {
+     "x": 295.03125,
+     "y": 0,
+     "w": 105.796875,
+     "h": 52
+    }
+   }
+  },
+  {
+   "classes": "global-nav-back-btn -light -mobile-only",
+   "tag": "button",
+   "count": 1,
+   "sample": "Back",
+   "widthBehavior": "hug",
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "none",
+    "width": "auto",
+    "_rect": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    }
+   }
+  },
+  {
+   "classes": "global-nav-burger-btn",
+   "tag": "button",
+   "count": 1,
+   "sample": "Menu",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(0, 0, 0)",
+    "border": "0px none rgb(0, 0, 0)",
+    "border-radius": "0px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "16px",
+    "font-weight": "400",
+    "line-height": "18.4px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "block",
+    "width": "100%",
+    "_rect": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    }
+   }
+  },
+  {
+   "classes": "global-nav-header-cta -primary -medium -button ga_nav_link nav-software-freecrm",
+   "tag": "a",
+   "count": 1,
+   "sample": "Free HubSpot CRM",
+   "widthBehavior": "hug",
+   "measured": {
+    "background-color": "rgb(252, 252, 250)",
+    "color": "rgb(31, 31, 31)",
+    "border": "2px solid rgba(0, 0, 0, 0.11)",
+    "border-radius": "8px",
+    "padding": "12px 24px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "16px",
+    "font-weight": "500",
+    "line-height": "28px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "block",
+    "width": "118.203px",
+    "_rect": {
+     "x": 467.8671875,
+     "y": 242,
+     "w": 118.203125,
+     "h": 140
+    }
+   }
+  },
+  {
+   "classes": "global-nav-header-cta -primary -medium -button ga_nav_link nav-software-platform",
+   "tag": "a",
+   "count": 1,
+   "sample": "Overview of all products",
+   "widthBehavior": "hug",
+   "measured": {
+    "background-color": "rgb(252, 252, 250)",
+    "color": "rgb(31, 31, 31)",
+    "border": "2px solid rgba(0, 0, 0, 0.11)",
+    "border-radius": "8px",
+    "padding": "12px 24px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "16px",
+    "font-weight": "500",
+    "line-height": "28px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "block",
+    "width": "124.5px",
+    "_rect": {
+     "x": 602.0703125,
+     "y": 242,
+     "w": 124.5,
+     "h": 140
+    }
+   }
+  },
+  {
+   "classes": "global-nav-card-cta-text-link -small ga_nav_link nav-software-marketing",
+   "tag": "a",
+   "count": 1,
+   "sample": "Free and premium plans",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "0px",
+    "_rect": {
+     "x": 368.9921875,
+     "y": 638,
+     "w": 0,
+     "h": 66
+    }
+   }
+  },
+  {
+   "classes": "global-nav-card-cta-text-link -small ga_nav_link nav-software-sales",
+   "tag": "a",
+   "count": 1,
+   "sample": "Free and premium plans",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "0px",
+    "_rect": {
+     "x": 412.9921875,
+     "y": 616,
+     "w": 0,
+     "h": 66
+    }
+   }
+  },
+  {
+   "classes": "global-nav-card-cta-text-link -small ga_nav_link nav-software-service",
+   "tag": "a",
+   "count": 1,
+   "sample": "Free and premium plans",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "0px",
+    "_rect": {
+     "x": 456.9921875,
+     "y": 638,
+     "w": 0,
+     "h": 66
+    }
+   }
+  },
+  {
+   "classes": "global-nav-card-cta-text-link -small ga_nav_link nav-software-content",
+   "tag": "a",
+   "count": 1,
+   "sample": "Free and premium plans",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "0px",
+    "_rect": {
+     "x": 500.9921875,
+     "y": 638,
+     "w": 0,
+     "h": 66
+    }
+   }
+  },
+  {
+   "classes": "global-nav-card-cta-text-link -small ga_nav_link nav-software-data",
+   "tag": "a",
+   "count": 1,
+   "sample": "Free and premium plans",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "0px",
+    "_rect": {
+     "x": 368.9921875,
+     "y": 870,
+     "w": 0,
+     "h": 66
+    }
+   }
+  },
+  {
+   "classes": "global-nav-card-cta-text-link -small ga_nav_link nav-software-revenue",
+   "tag": "a",
+   "count": 1,
+   "sample": "Free and premium plans",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "0px",
+    "_rect": {
+     "x": 412.9921875,
+     "y": 914,
+     "w": 0,
+     "h": 66
+    }
+   }
+  },
+  {
+   "classes": "global-nav-card-cta-text-link -small ga_nav_link nav-software-smartcrm",
+   "tag": "a",
+   "count": 1,
+   "sample": "Learn more",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "0px",
+    "_rect": {
+     "x": 456.9921875,
+     "y": 914,
+     "w": 0,
+     "h": 44
+    }
+   }
+  },
+  {
+   "classes": "global-nav-card-cta-text-link -small ga_nav_link nav-software-starter",
+   "tag": "a",
+   "count": 1,
+   "sample": "Learn more",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "0px",
+    "_rect": {
+     "x": 500.9921875,
+     "y": 1096,
+     "w": 0,
+     "h": 44
+    }
+   }
+  },
+  {
+   "classes": "global-nav-card-cta-text-link -small ga_nav_link nav-software-ai",
+   "tag": "a",
+   "count": 1,
+   "sample": "Learn more",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "0px",
+    "_rect": {
+     "x": 368.9921875,
+     "y": 1423,
+     "w": 0,
+     "h": 44
+    }
+   }
+  },
+  {
+   "classes": "global-nav-card-cta-text-link -small ga_nav_link nav-software-aeo",
+   "tag": "a",
+   "count": 1,
+   "sample": "Learn more",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "0px",
+    "_rect": {
+     "x": 412.9921875,
+     "y": 1561,
+     "w": 0,
+     "h": 44
+    }
+   }
+  },
+  {
+   "classes": "global-nav-card-cta-text-link -small ga_nav_link nav-software-marketplace",
+   "tag": "a",
+   "count": 1,
+   "sample": "See all integrations",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "0px",
+    "_rect": {
+     "x": 456.9921875,
+     "y": 1385,
+     "w": 0,
+     "h": 44
+    }
+   }
+  },
+  {
+   "classes": "global-nav-card-title-link ga_nav_link nav-solutions-prospectagent",
+   "tag": "a",
+   "count": 1,
+   "sample": "Automate sales prospecting",
+   "widthBehavior": "stretch",
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "0px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "16px",
+    "font-weight": "500",
+    "line-height": "28px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "inline",
+    "width": "auto",
+    "_rect": {
+     "x": 921.15625,
+     "y": 1126,
+     "w": 91.546875,
+     "h": 75
+    }
+   }
+  },
+  {
+   "classes": "global-nav-card-cta-text-link -small ga_nav_link nav-solutions-smallbiz",
+   "tag": "a",
+   "count": 1,
+   "sample": "Learn more\n        \n          about HubS",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "auto",
+    "_rect": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    }
+   }
+  },
+  {
+   "classes": "global-nav-card-cta-text-link -small ga_nav_link nav-solutions-enterprise",
+   "tag": "a",
+   "count": 1,
+   "sample": "Learn more\n        \n          about HubS",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "auto",
+    "_rect": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    }
+   }
+  },
+  {
+   "classes": "global-nav-card-cta-text-link -small ga_nav_link nav-solutions-wch",
+   "tag": "a",
+   "count": 1,
+   "sample": "Learn more\n        \n          about why ",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "auto",
+    "_rect": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    }
+   }
+  },
+  {
+   "classes": "global-nav-card-cta-text-link -small ga_nav_link nav-solutions-casestudies",
+   "tag": "a",
+   "count": 1,
+   "sample": "See all case studies",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "auto",
+    "_rect": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    }
+   }
+  },
+  {
+   "classes": "global-nav-card-cta-text-link -small ga_nav_link nav-solutions-spotlight",
+   "tag": "a",
+   "count": 1,
+   "sample": "Explore product updates",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "auto",
+    "_rect": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    }
+   }
+  },
+  {
+   "classes": "global-nav-mobile-list-item-link ga_nav_link nav-solutions-prospectagent",
+   "tag": "a",
+   "count": 1,
+   "sample": "Automate sales prospecting",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "0px",
+    "padding": "8px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "300",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "grid",
+    "width": "auto",
+    "_rect": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    }
+   }
+  },
+  {
+   "classes": "cl-button -primary -small -light ga_nav_link homepage-hp-nav ",
+   "tag": "a",
+   "count": 1,
+   "sample": "Get a demo of HubSpot's premium software",
+   "widthBehavior": "hug",
+   "measured": {
+    "background-color": "rgb(255, 72, 0)",
+    "color": "rgb(255, 255, 255)",
+    "border": "2px solid rgba(0, 0, 0, 0)",
+    "border-radius": "8px",
+    "padding": "8px 16px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "block",
+    "width": "113.375px",
+    "_rect": {
+     "x": 988.84375,
+     "y": 69,
+     "w": 113.375,
+     "h": 42
+    }
+   }
+  },
+  {
+   "classes": "cl-button -secondary -small -light ga_nav_link homepage-hp-nav2 ",
+   "tag": "a",
+   "count": 1,
+   "sample": "Get started free with HubSpot's free too",
+   "widthBehavior": "hug",
+   "measured": {
+    "background-color": "rgb(255, 255, 255)",
+    "color": "rgb(255, 72, 0)",
+    "border": "2px solid rgb(255, 72, 0)",
+    "border-radius": "8px",
+    "padding": "8px 16px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "block",
+    "width": "141.781px",
+    "_rect": {
+     "x": 1118.21875,
+     "y": 69,
+     "w": 141.78125,
+     "h": 42
+    }
+   }
+  },
+  {
+   "classes": "cl-button -tertiary -small -light ga_nav_link nav-utility-login",
+   "tag": "a",
+   "count": 1,
+   "sample": "Log in",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgb(31, 31, 31)",
+    "color": "rgb(255, 255, 255)",
+    "border": "2px solid rgba(0, 0, 0, 0)",
+    "border-radius": "8px",
+    "padding": "8px 16px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "14px",
+    "font-weight": "500",
+    "line-height": "22px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "block",
+    "width": "auto",
+    "_rect": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    }
+   }
+  },
+  {
+   "classes": "global-nav-high-contrast-btn a11y-contrast-toggle -x-small -icon-right ",
+   "tag": "button",
+   "count": 1,
+   "sample": "High Contrast",
+   "widthBehavior": null,
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "0px none rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "8px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "16px",
+    "font-weight": "400",
+    "line-height": "18.4px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "100%",
+    "_rect": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    }
+   }
+  },
+  {
+   "classes": "cl-button -primary -large wf-page-header_content-ctas-cta homepage-hero ",
+   "tag": "a",
+   "count": 1,
+   "sample": "Get a demo\n      of HubSpot's premium so",
+   "widthBehavior": "hug",
+   "measured": {
+    "background-color": "rgb(255, 72, 0)",
+    "color": "rgb(255, 255, 255)",
+    "border": "2px solid rgba(0, 0, 0, 0)",
+    "border-radius": "8px",
+    "padding": "16px 40px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "18px",
+    "font-weight": "500",
+    "line-height": "32px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "block",
+    "width": "183.469px",
+    "_rect": {
+     "x": 510.265625,
+     "y": 654,
+     "w": 183.46875,
+     "h": 68
+    }
+   }
+  },
+  {
+   "classes": "cl-button -secondary -large wf-page-header_content-ctas-cta homepage-hero2 ",
+   "tag": "a",
+   "count": 1,
+   "sample": "Get started free\n      with HubSpot's fr",
+   "widthBehavior": "hug",
+   "measured": {
+    "background-color": "rgb(255, 255, 255)",
+    "color": "rgb(255, 72, 0)",
+    "border": "2px solid rgb(255, 72, 0)",
+    "border-radius": "8px",
+    "padding": "16px 40px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "18px",
+    "font-weight": "500",
+    "line-height": "32px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "block",
+    "width": "220px",
+    "_rect": {
+     "x": 709.734375,
+     "y": 654,
+     "w": 220,
+     "h": 68
+    }
+   }
+  },
+  {
+   "classes": "cl-button -primary -medium wf-flexible-section-header_content-cta homepage-products",
+   "tag": "a",
+   "count": 1,
+   "sample": "Get a demo\n      of HubSpot's software",
+   "widthBehavior": "hug",
+   "measured": {
+    "background-color": "rgb(255, 72, 0)",
+    "color": "rgb(255, 255, 255)",
+    "border": "2px solid rgba(0, 0, 0, 0)",
+    "border-radius": "8px",
+    "padding": "12px 24px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "16px",
+    "font-weight": "500",
+    "line-height": "28px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "block",
+    "width": "140.422px",
+    "_rect": {
+     "x": 180,
+     "y": 2399.34375,
+     "w": 140.421875,
+     "h": 56
+    }
+   }
+  },
+  {
+   "classes": "cl-button -secondary -medium wf-flexible-section-header_content-cta homepage-products2",
+   "tag": "a",
+   "count": 1,
+   "sample": "Get started free\n      with HubSpot's fr",
+   "widthBehavior": "hug",
+   "measured": {
+    "background-color": "rgb(255, 255, 255)",
+    "color": "rgb(255, 72, 0)",
+    "border": "2px solid rgb(255, 72, 0)",
+    "border-radius": "8px",
+    "padding": "12px 24px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "16px",
+    "font-weight": "500",
+    "line-height": "28px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "block",
+    "width": "172.891px",
+    "_rect": {
+     "x": 336.421875,
+     "y": 2399.34375,
+     "w": 172.890625,
+     "h": 56
+    }
+   }
+  },
+  {
+   "classes": "cl-button -tertiary-outline -medium wf-flexible-section-header_cta homepage-breezeagents",
+   "tag": "a",
+   "count": 1,
+   "sample": "Explore Breeze Agents\n      built-in AI ",
+   "widthBehavior": "hug",
+   "measured": {
+    "background-color": "rgba(0, 0, 0, 0)",
+    "color": "rgb(31, 31, 31)",
+    "border": "2px solid rgb(31, 31, 31)",
+    "border-radius": "8px",
+    "padding": "12px 24px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "16px",
+    "font-weight": "500",
+    "line-height": "28px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "block",
+    "width": "224.766px",
+    "_rect": {
+     "x": 1027.234375,
+     "y": 3580.34375,
+     "w": 224.765625,
+     "h": 56
+    }
+   }
+  },
+  {
+   "classes": "cl-round-button -light cl-carousel-controls-previous",
+   "tag": "button",
+   "count": 1,
+   "sample": "Previous slide",
+   "widthBehavior": "hug",
+   "measured": {
+    "background-color": "rgb(255, 255, 255)",
+    "color": "rgb(0, 0, 0)",
+    "border": "0px none rgb(0, 0, 0)",
+    "border-radius": "50%",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "16px",
+    "font-weight": "400",
+    "line-height": "18.4px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "48px",
+    "_rect": {
+     "x": 188,
+     "y": 4072.34375,
+     "w": 48,
+     "h": 48
+    }
+   }
+  },
+  {
+   "classes": "cl-round-button -light cl-carousel-controls-next",
+   "tag": "button",
+   "count": 1,
+   "sample": "Next slide",
+   "widthBehavior": "hug",
+   "measured": {
+    "background-color": "rgb(255, 255, 255)",
+    "color": "rgb(0, 0, 0)",
+    "border": "0px none rgb(0, 0, 0)",
+    "border-radius": "50%",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "16px",
+    "font-weight": "400",
+    "line-height": "18.4px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "48px",
+    "_rect": {
+     "x": 1204,
+     "y": 4072.34375,
+     "w": 48,
+     "h": 48
+    }
+   }
+  },
+  {
+   "classes": "cl-round-button -small cl-carousel-autoplay-toggle",
+   "tag": "button",
+   "count": 1,
+   "sample": "Pause Carousel",
+   "widthBehavior": "stretch",
+   "measured": {
+    "background-color": "rgb(255, 255, 255)",
+    "color": "rgb(0, 0, 0)",
+    "border": "0px none rgb(0, 0, 0)",
+    "border-radius": "50%",
+    "padding": "0px",
+    "font-family": "\"HubSpot Sans\", sans-serif",
+    "font-size": "16px",
+    "font-weight": "400",
+    "line-height": "18.4px",
+    "letter-spacing": "normal",
+    "text-transform": "none",
+    "display": "flex",
+    "width": "32px",
+    "_rect": {
+     "x": 704,
+     "y": 4399.34375,
+     "w": 32,
+     "h": 32
+    }
+   }
+  }
+ ],
+ "tierViewports": [
+  1920,
+  1440,
+  960,
+  375
+ ],
+ "tiers": {
+  "1920": {
+   "tier": "1920",
+   "viewport": {
+    "w": 1920,
+    "h": 1080
+   },
+   "htmlFontSize": "16px",
+   "bodyFontSize": "16px",
+   "headings": {
+    "h1": {
+     "color": "rgb(248, 245, 238)",
+     "font-family": "\"HubSpot Serif Page Header Human\", \"HubSpot Serif\", serif",
+     "font-size": "80px",
+     "font-weight": "500",
+     "line-height": "95px",
+     "letter-spacing": "normal",
+     "text-transform": "none",
+     "_rect": {
+      "x": 588.71875,
+      "y": 426,
+      "w": 742.5625,
+      "h": 190
+     },
+     "tier": "1920"
+    },
+    "h2": {
+     "color": "rgb(31, 31, 31)",
+     "font-family": "\"HubSpot Sans\", sans-serif",
+     "font-size": "18px",
+     "font-weight": "500",
+     "line-height": "28px",
+     "letter-spacing": "normal",
+     "text-transform": "none",
+     "_rect": {
+      "x": 584.9921875,
+      "y": 153,
+      "w": 82.875,
+      "h": 112
+     },
+     "tier": "1920"
+    },
+    "h3": {
+     "color": "rgb(31, 31, 31)",
+     "font-family": "\"HubSpot Sans\", sans-serif",
+     "font-size": "16px",
+     "font-weight": "500",
+     "line-height": "28px",
+     "letter-spacing": "normal",
+     "text-transform": "none",
+     "_rect": {
+      "x": 608.9921875,
+      "y": 508,
+      "w": 0,
+      "h": 56
+     },
+     "tier": "1920"
+    },
+    "h4": null,
+    "h5": null,
+    "h6": null,
+    "p": {
+     "color": "rgb(255, 255, 255)",
+     "font-family": "\"HubSpot Sans\", \"Lexend Deca\", LexendDeca, \"Helvetica Neue\", helvetica, arial, sans-serif",
+     "font-size": "12.8px",
+     "font-weight": "300",
+     "line-height": "19.2px",
+     "letter-spacing": "normal",
+     "text-transform": "none",
+     "_rect": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0
+     },
+     "tier": "1920"
+    }
+   },
+   "containerFacts": [
+    {
+     "tier": "1920",
+     "owner": "content",
+     "tag": "div",
+     "classes": "csol-section-wrapper",
+     "cssMaxWidth": "1080px",
+     "cssMinWidth": "auto",
+     "usedWidthPx": 1080,
+     "viewportFraction": 0.563,
+     "paddingLeft": "0px",
+     "paddingRight": "0px"
+    },
+    {
+     "tier": "1920",
+     "owner": "header",
+     "tag": "div",
+     "classes": "global-nav-content-section",
+     "cssMaxWidth": "1080px",
+     "cssMinWidth": "auto",
+     "usedWidthPx": 1080,
+     "viewportFraction": 0.563,
+     "paddingLeft": "0px",
+     "paddingRight": "0px"
+    },
+    {
+     "tier": "1920",
+     "owner": "footer",
+     "tag": "div",
+     "classes": "hsg-footer__layout global-footer__layout global-nav-content-section",
+     "cssMaxWidth": "1080px",
+     "cssMinWidth": "0px",
+     "usedWidthPx": 1080,
+     "viewportFraction": 0.563,
+     "paddingLeft": "0px",
+     "paddingRight": "0px"
+    }
+   ],
+   "headingEmphasis": []
+  },
+  "1440": {
+   "tier": "1440",
+   "viewport": {
+    "w": 1440,
+    "h": 900
+   },
+   "htmlFontSize": "16px",
+   "bodyFontSize": "16px",
+   "headings": {
+    "h1": {
+     "color": "rgb(248, 245, 238)",
+     "font-family": "\"HubSpot Serif Page Header Human\", \"HubSpot Serif\", serif",
+     "font-size": "80px",
+     "font-weight": "500",
+     "line-height": "95px",
+     "letter-spacing": "normal",
+     "text-transform": "none",
+     "_rect": {
+      "x": 348.71875,
+      "y": 336,
+      "w": 742.5625,
+      "h": 190
+     },
+     "tier": "1440"
+    },
+    "h2": {
+     "color": "rgb(31, 31, 31)",
+     "font-family": "\"HubSpot Sans\", sans-serif",
+     "font-size": "18px",
+     "font-weight": "500",
+     "line-height": "28px",
+     "letter-spacing": "normal",
+     "text-transform": "none",
+     "_rect": {
+      "x": 344.9921875,
+      "y": 153,
+      "w": 82.875,
+      "h": 112
+     },
+     "tier": "1440"
+    },
+    "h3": {
+     "color": "rgb(31, 31, 31)",
+     "font-family": "\"HubSpot Sans\", sans-serif",
+     "font-size": "16px",
+     "font-weight": "500",
+     "line-height": "28px",
+     "letter-spacing": "normal",
+     "text-transform": "none",
+     "_rect": {
+      "x": 368.9921875,
+      "y": 508,
+      "w": 0,
+      "h": 56
+     },
+     "tier": "1440"
+    },
+    "h4": null,
+    "h5": null,
+    "h6": null,
+    "p": {
+     "color": "rgb(255, 255, 255)",
+     "font-family": "\"HubSpot Sans\", \"Lexend Deca\", LexendDeca, \"Helvetica Neue\", helvetica, arial, sans-serif",
+     "font-size": "12.8px",
+     "font-weight": "300",
+     "line-height": "19.2px",
+     "letter-spacing": "normal",
+     "text-transform": "none",
+     "_rect": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0
+     },
+     "tier": "1440"
+    }
+   },
+   "containerFacts": [
+    {
+     "tier": "1440",
+     "owner": "content",
+     "tag": "div",
+     "classes": "csol-section-wrapper",
+     "cssMaxWidth": "1080px",
+     "cssMinWidth": "auto",
+     "usedWidthPx": 1080,
+     "viewportFraction": 0.75,
+     "paddingLeft": "0px",
+     "paddingRight": "0px"
+    },
+    {
+     "tier": "1440",
+     "owner": "header",
+     "tag": "div",
+     "classes": "global-nav-content-section",
+     "cssMaxWidth": "1080px",
+     "cssMinWidth": "auto",
+     "usedWidthPx": 1080,
+     "viewportFraction": 0.75,
+     "paddingLeft": "0px",
+     "paddingRight": "0px"
+    },
+    {
+     "tier": "1440",
+     "owner": "footer",
+     "tag": "div",
+     "classes": "hsg-footer__layout global-footer__layout global-nav-content-section",
+     "cssMaxWidth": "1080px",
+     "cssMinWidth": "0px",
+     "usedWidthPx": 1080,
+     "viewportFraction": 0.75,
+     "paddingLeft": "0px",
+     "paddingRight": "0px"
+    }
+   ],
+   "headingEmphasis": []
+  },
+  "960": {
+   "tier": "960",
+   "viewport": {
+    "w": 960,
+    "h": 720
+   },
+   "htmlFontSize": "16px",
+   "bodyFontSize": "16px",
+   "headings": {
+    "h1": {
+     "color": "rgb(248, 245, 238)",
+     "font-family": "\"HubSpot Serif Page Header Human\", \"HubSpot Serif\", serif",
+     "font-size": "80px",
+     "font-weight": "500",
+     "line-height": "95px",
+     "letter-spacing": "normal",
+     "text-transform": "none",
+     "_rect": {
+      "x": 108.71875,
+      "y": 210,
+      "w": 742.5625,
+      "h": 190
+     },
+     "tier": "960"
+    },
+    "h2": {
+     "color": "rgb(31, 31, 31)",
+     "font-family": "\"HubSpot Sans\", sans-serif",
+     "font-size": "18px",
+     "font-weight": "500",
+     "line-height": "28px",
+     "letter-spacing": "normal",
+     "text-transform": "none",
+     "_rect": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0
+     },
+     "tier": "960"
+    },
+    "h3": {
+     "color": "rgb(31, 31, 31)",
+     "font-family": "\"HubSpot Sans\", sans-serif",
+     "font-size": "16px",
+     "font-weight": "500",
+     "line-height": "28px",
+     "letter-spacing": "normal",
+     "text-transform": "none",
+     "_rect": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0
+     },
+     "tier": "960"
+    },
+    "h4": null,
+    "h5": null,
+    "h6": null,
+    "p": {
+     "color": "rgb(255, 255, 255)",
+     "font-family": "\"HubSpot Sans\", \"Lexend Deca\", LexendDeca, \"Helvetica Neue\", helvetica, arial, sans-serif",
+     "font-size": "12.8px",
+     "font-weight": "300",
+     "line-height": "19.2px",
+     "letter-spacing": "normal",
+     "text-transform": "none",
+     "_rect": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0
+     },
+     "tier": "960"
+    }
+   },
+   "containerFacts": [
+    {
+     "tier": "960",
+     "owner": "content",
+     "tag": "div",
+     "classes": "csol-section-wrapper",
+     "cssMaxWidth": "1080px",
+     "cssMinWidth": "auto",
+     "usedWidthPx": 960,
+     "viewportFraction": 1,
+     "paddingLeft": "16px",
+     "paddingRight": "16px"
+    },
+    {
+     "tier": "960",
+     "owner": "header",
+     "tag": "div",
+     "classes": "global-nav-content-section",
+     "cssMaxWidth": "1080px",
+     "cssMinWidth": "0px",
+     "usedWidthPx": 960,
+     "viewportFraction": 1,
+     "paddingLeft": "0px",
+     "paddingRight": "0px"
+    },
+    {
+     "tier": "960",
+     "owner": "footer",
+     "tag": "div",
+     "classes": "hsg-footer__layout global-footer__layout global-nav-content-section",
+     "cssMaxWidth": "1080px",
+     "cssMinWidth": "0px",
+     "usedWidthPx": 896,
+     "viewportFraction": 0.933,
+     "paddingLeft": "0px",
+     "paddingRight": "0px"
+    }
+   ],
+   "headingEmphasis": []
+  },
+  "375": {
+   "tier": "375",
+   "viewport": {
+    "w": 375,
+    "h": 812
+   },
+   "htmlFontSize": "16px",
+   "bodyFontSize": "16px",
+   "headings": {
+    "h1": {
+     "color": "rgb(248, 245, 238)",
+     "font-family": "\"HubSpot Serif Page Header Human\", \"HubSpot Serif\", serif",
+     "font-size": "48px",
+     "font-weight": "500",
+     "line-height": "55px",
+     "letter-spacing": "normal",
+     "text-transform": "none",
+     "_rect": {
+      "x": 48,
+      "y": 178,
+      "w": 279,
+      "h": 220
+     },
+     "tier": "375"
+    },
+    "h2": {
+     "color": "rgb(31, 31, 31)",
+     "font-family": "\"HubSpot Sans\", sans-serif",
+     "font-size": "18px",
+     "font-weight": "500",
+     "line-height": "28px",
+     "letter-spacing": "normal",
+     "text-transform": "none",
+     "_rect": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0
+     },
+     "tier": "375"
+    },
+    "h3": {
+     "color": "rgb(31, 31, 31)",
+     "font-family": "\"HubSpot Sans\", sans-serif",
+     "font-size": "16px",
+     "font-weight": "500",
+     "line-height": "28px",
+     "letter-spacing": "normal",
+     "text-transform": "none",
+     "_rect": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0
+     },
+     "tier": "375"
+    },
+    "h4": null,
+    "h5": null,
+    "h6": null,
+    "p": {
+     "color": "rgb(255, 255, 255)",
+     "font-family": "\"HubSpot Sans\", \"Lexend Deca\", LexendDeca, \"Helvetica Neue\", helvetica, arial, sans-serif",
+     "font-size": "14.4px",
+     "font-weight": "300",
+     "line-height": "19.2px",
+     "letter-spacing": "normal",
+     "text-transform": "none",
+     "_rect": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0
+     },
+     "tier": "375"
+    }
+   },
+   "containerFacts": [
+    {
+     "tier": "375",
+     "owner": "content",
+     "tag": "div",
+     "classes": "csol-section-wrapper",
+     "cssMaxWidth": "1080px",
+     "cssMinWidth": "auto",
+     "usedWidthPx": 375,
+     "viewportFraction": 1,
+     "paddingLeft": "16px",
+     "paddingRight": "16px"
+    },
+    {
+     "tier": "375",
+     "owner": "header",
+     "tag": "div",
+     "classes": "global-nav-content-section",
+     "cssMaxWidth": "1080px",
+     "cssMinWidth": "0px",
+     "usedWidthPx": 375,
+     "viewportFraction": 1,
+     "paddingLeft": "0px",
+     "paddingRight": "0px"
+    },
+    {
+     "tier": "375",
+     "owner": "footer",
+     "tag": "section",
+     "classes": "hsg-footer__contact-links global-footer__contact-links social-cl global-nav-content-section",
+     "cssMaxWidth": "1080px",
+     "cssMinWidth": "0px",
+     "usedWidthPx": 372.97,
+     "viewportFraction": 0.995,
+     "paddingLeft": "16px",
+     "paddingRight": "16px"
+    }
+   ],
+   "headingEmphasis": []
+  }
+ }
+}

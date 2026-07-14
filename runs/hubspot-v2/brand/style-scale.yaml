@@ -1,0 +1,360 @@
+schema: style-scale.v1
+brand: hubspot-v2
+sourceDigest: sha256:f6a74fabcd8b
+inputs:
+  brandYaml: brand.yaml
+  computedStyles: evidence/computed-styles.json
+  motionSpec: voice.motionSpec
+law: derived layer — raw evidence and brand.yaml stay untouched; a measured fact ALWAYS beats
+  a derived step; the replica lane never consumes this file
+type:
+  basePx: 16.0
+  ratio: 1.125
+  followsScale: true
+  fitQuality:
+    rmse: 0.0338
+    worstErrPct: 5.1
+    verdict: approximate
+  stepsPx:
+  - 14.2
+  - 16.0
+  - 18.0
+  - 20.2
+  - 22.8
+  - 25.6
+  - 28.8
+  - 32.4
+  - 36.5
+  - 41.1
+  - 46.2
+  - 52.0
+  - 58.5
+  - 65.8
+  - 74.0
+  - 83.2
+  fits:
+  - name: display-hero
+    measuredPx: 80.0
+    stepPx: 83.2
+    k: 14
+    errPct: 4.0
+    corroboratedBy:
+    - h1
+  - name: h1
+    measuredPx: 48.0
+    stepPx: 46.2
+    k: 9
+    errPct: 3.8
+    corroboratedBy: null
+  - name: stat-display
+    measuredPx: 44.0
+    stepPx: 46.2
+    k: 9
+    errPct: 5.0
+    corroboratedBy: null
+  - name: h2
+    measuredPx: 40.0
+    stepPx: 41.1
+    k: 8
+    errPct: 2.6
+    corroboratedBy: null
+  - name: h3
+    measuredPx: 24.0
+    stepPx: 22.8
+    k: 3
+    errPct: 5.1
+    corroboratedBy: null
+  - name: h4
+    measuredPx: 22.0
+    stepPx: 22.8
+    k: 3
+    errPct: 3.6
+    corroboratedBy: null
+  - name: body-lg
+    measuredPx: 18.0
+    stepPx: 18.0
+    k: 1
+    errPct: 0.0
+    corroboratedBy:
+    - h2
+  - name: h5
+    measuredPx: 18.0
+    stepPx: 18.0
+    k: 1
+    errPct: 0.0
+    corroboratedBy:
+    - h2
+  - name: body
+    measuredPx: 16.0
+    stepPx: 16.0
+    k: 0
+    errPct: 0.0
+    corroboratedBy:
+    - body
+    - h3
+  - name: buttons.primary
+    measuredPx: 16.0
+    stepPx: 16.0
+    k: 0
+    errPct: 0.0
+    corroboratedBy:
+    - body
+    - h3
+  - name: buttons.secondary
+    measuredPx: 16.0
+    stepPx: 16.0
+    k: 0
+    errPct: 0.0
+    corroboratedBy:
+    - body
+    - h3
+  - name: buttons.tertiary
+    measuredPx: 16.0
+    stepPx: 16.0
+    k: 0
+    errPct: 0.0
+    corroboratedBy:
+    - body
+    - h3
+  - name: buttons.textCta
+    measuredPx: 16.0
+    stepPx: 16.0
+    k: 0
+    errPct: 0.0
+    corroboratedBy:
+    - body
+    - h3
+  - name: control-text
+    measuredPx: 16.0
+    stepPx: 16.0
+    k: 0
+    errPct: 0.0
+    corroboratedBy:
+    - body
+    - h3
+  - name: h6
+    measuredPx: 16.0
+    stepPx: 16.0
+    k: 0
+    errPct: 0.0
+    corroboratedBy:
+    - body
+    - h3
+  - name: body-sm
+    measuredPx: 14.0
+    stepPx: 14.2
+    k: -1
+    errPct: 1.6
+    corroboratedBy: null
+  - name: eyebrow
+    measuredPx: 14.0
+    stepPx: 14.2
+    k: -1
+    errPct: 1.6
+    corroboratedBy: null
+  provenance:
+    method: 'parsimony modular-ratio fit: the COARSEST candidate ratio (1.618 > 1.5 > 1.414
+      > 1.333 > 1.25 > 1.2 > 1.125) whose RMSE clears 0.025 wins (a denser ratio fits anything
+      — vacuous quantization); min-RMSE fallback when none clears. Inputs are the brand''s
+      measured type ladder (tokens.type sizeRem at the canonical tier + button sizeRem), corroborated
+      against evidence/computed-styles.json rendered px'
+    inputs:
+    - name: body
+      px: 16.0
+    - name: body-lg
+      px: 18.0
+    - name: body-sm
+      px: 14.0
+    - name: buttons.primary
+      px: 16.0
+    - name: buttons.secondary
+      px: 16.0
+    - name: buttons.tertiary
+      px: 16.0
+    - name: buttons.textCta
+      px: 16.0
+    - name: control-text
+      px: 16.0
+    - name: display-hero
+      px: 80.0
+    - name: eyebrow
+      px: 14.0
+    - name: h1
+      px: 48.0
+    - name: h2
+      px: 40.0
+    - name: h3
+      px: 24.0
+    - name: h4
+      px: 22.0
+    - name: h5
+      px: 18.0
+    - name: h6
+      px: 16.0
+    - name: stat-display
+      px: 44.0
+space:
+  baseUnitPx: 4
+  followsScale: true
+  fitQuality:
+    coverage: 0.909
+    verdict: approximate
+  stepsPx:
+  - 4
+  - 8
+  - 16
+  - 20
+  - 24
+  - 32
+  - 40
+  - 64
+  - 80
+  - 96
+  multiples:
+  - 1.0
+  - 2.0
+  - 4.0
+  - 5.0
+  - 6.0
+  - 8.0
+  - 10.0
+  - 16.0
+  - 20.0
+  - 24.0
+  sectionRhythmPx:
+  - 24
+  - 40
+  - 64
+  - 96
+  outliers:
+  - name: css:--global-nav-search-total-close-button-and-gap-space
+    px: 45.0
+    nearestStepPx: 44
+    errPx: 1.0
+  excluded:
+  - name: badge-tier
+    px: 90.0
+    class: media-tier (mark size, not rhythm)
+  - name: button-inset
+    class: non-length (shorthand/expression)
+  - name: container-max
+    px: 1080.0
+    class: containment (width family)
+  - name: container-span
+    class: non-length (shorthand/expression)
+  - name: logo-tier
+    px: 30.0
+    class: media-tier (mark size, not rhythm)
+  - name: radius-global
+    px: 8.0
+    class: radius alias (corner family)
+  provenance:
+    method: largest base unit (8 preferred, else 4) carrying ≥90% of the measured rhythm ladder
+      (tokens.spacing lengths ≤200px, media tiers / measures / containment / radius aliases
+      classified out); steps are the measured multiples present, never invented rungs
+    inputs:
+    - name: block-to-block
+      px: 40.0
+    - name: body-to-cta
+      px: 40.0
+    - name: column-to-column
+      px: 80.0
+    - name: css:--global-nav-search-total-close-button-and-gap-space
+      px: 45.0
+    - name: css:--spacing-2xl
+      px: 40.0
+    - name: css:--spacing-lg
+      px: 24.0
+    - name: css:--spacing-md
+      px: 16.0
+    - name: css:--spacing-sm
+      px: 8.0
+    - name: css:--spacing-xl
+      px: 32.0
+    - name: css:--spacing-xs
+      px: 4.0
+    - name: css:--wf-flexible-tagline-spacing-large
+      px: 16.0
+    - name: css:--wf-flexible-tagline-spacing-small
+      px: 8.0
+    - name: eyebrow-to-heading
+      px: 24.0
+    - name: grid-gap
+      px: 32.0
+    - name: heading-to-body
+      px: 32.0
+    - name: list-item-gap
+      px: 16.0
+    - name: module-gap-editorial
+      px: 64.0
+    - name: panel-padding
+      px: 32.0
+    - name: section-padding-light
+      px: 64.0
+    - name: section-y-lg
+      px: 96.0
+    - name: section-y-sm
+      px: 40.0
+    - name: section-y-xs
+      px: 24.0
+    - name: stack-lg
+      px: 32.0
+    - name: stack-md
+      px: 20.0
+radius:
+  modes:
+  - px: 4.0
+    roles:
+    - small
+  - px: 8.0
+    roles:
+    - button
+    - card
+  - px: 16.0
+    roles:
+    - panel
+  policy: tiered
+  special:
+    circle: 50%
+  provenance:
+    method: tokens.radius grouped by value; policy is descriptive (pill-controls when the
+      button radius dwarfs the plate radius)
+    inputs:
+    - name: button
+      px: 8.0
+    - name: card
+      px: 8.0
+    - name: panel
+      px: 16.0
+    - name: small
+      px: 4.0
+grid:
+  contentMaxPx: 1080.0
+  gutterPx: 80.0
+  cardGapPx: 32.0
+  columns: null
+  note: columns omitted — not a measured fact for this brand (the registration grid is pipeline
+    structure); widths carry their token provenance
+  provenance:
+    contentMaxPx: tokens.spacing.container-max
+    gutterPx: tokens.spacing.column-to-column
+    cardGapPx: tokens.spacing.grid-gap
+motion:
+  rungsMs:
+  - 150
+  - 300
+  - 500
+  bandMs:
+    min: 150
+    max: 500
+  easing: ease
+  provenance:
+    method: voice.motionSpec.durations (measured motion census) — the band is the measured
+      envelope, no invented tiers
+    inputs:
+    - name: base
+      ms: 300
+    - name: fast
+      ms: 150
+    - name: slow
+      ms: 500

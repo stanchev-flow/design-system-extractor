@@ -1,0 +1,257 @@
+{
+ "schemaVersion": "assets-curation.v1",
+ "note": "Curated capture assets \u2014 starting point for the authored assets-tagged.json (agent refines tags/labels; tools/refine_assets_vision.py can vision-check them).",
+ "entries": [
+  {
+   "dest": "icon-eor-product.svg",
+   "source": "screenshots/remote-v2/remote-com_files/002-Employer-of-Record-EOR-icon-product_24.svg",
+   "origin": "files",
+   "bytes": 1064,
+   "tagGuess": "feature-icon"
+  },
+  {
+   "dest": "icon-contractor-product.svg",
+   "source": "screenshots/remote-v2/remote-com_files/004-Contractor-management-icon-product_24.svg",
+   "origin": "files",
+   "bytes": 997,
+   "tagGuess": "feature-icon"
+  },
+  {
+   "dest": "bg-noise-top-2x.webp",
+   "source": "screenshots/remote-v2/remote-com_files/008-background-homepage-noise-grey-green-blue-top-2x.webp",
+   "origin": "files",
+   "bytes": 28676,
+   "tagGuess": "award-badge"
+  },
+  {
+   "dest": "logo-gitlab.svg",
+   "source": "screenshots/remote-v2/remote-com_files/010-logo_gitlab.svg",
+   "origin": "files",
+   "bytes": 3730,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "logo-mizuho.svg",
+   "source": "screenshots/remote-v2/remote-com_files/011-logo_mizuho.svg",
+   "origin": "files",
+   "bytes": 3597,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "logo-lovable.svg",
+   "source": "screenshots/remote-v2/remote-com_files/012-logo_lovable.svg",
+   "origin": "files",
+   "bytes": 6231,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "logo-box.svg",
+   "source": "screenshots/remote-v2/remote-com_files/013-logo_box.svg",
+   "origin": "files",
+   "bytes": 4269,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "logo-miro.svg",
+   "source": "screenshots/remote-v2/remote-com_files/014-logo_miro.svg",
+   "origin": "files",
+   "bytes": 1679,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "logo-kfc.svg",
+   "source": "screenshots/remote-v2/remote-com_files/015-logo_kfc.svg",
+   "origin": "files",
+   "bytes": 3105,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "logo-heineken.svg",
+   "source": "screenshots/remote-v2/remote-com_files/016-logo_heineken.svg",
+   "origin": "files",
+   "bytes": 13763,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "logo-byd.svg",
+   "source": "screenshots/remote-v2/remote-com_files/017-logo_byd.svg",
+   "origin": "files",
+   "bytes": 3112,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "logo-vercel.svg",
+   "source": "screenshots/remote-v2/remote-com_files/018-logo_vercel.svg",
+   "origin": "files",
+   "bytes": 3849,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "logo-anthropic.svg",
+   "source": "screenshots/remote-v2/remote-com_files/019-logo_anthropic.svg",
+   "origin": "files",
+   "bytes": 2419,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "logo-datadog.svg",
+   "source": "screenshots/remote-v2/remote-com_files/020-logo_datadog.svg",
+   "origin": "files",
+   "bytes": 7442,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "logo-mercury.svg",
+   "source": "screenshots/remote-v2/remote-com_files/021-logo_mercury.svg",
+   "origin": "files",
+   "bytes": 13007,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "logo-semrush.svg",
+   "source": "screenshots/remote-v2/remote-com_files/036-logo_semrush.svg",
+   "origin": "files",
+   "bytes": 4241,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "logo-fountain.svg",
+   "source": "screenshots/remote-v2/remote-com_files/038-logo_fountain.svg",
+   "origin": "files",
+   "bytes": 6480,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "logo-reversetech.svg",
+   "source": "screenshots/remote-v2/remote-com_files/040-logo_reversetech.svg",
+   "origin": "files",
+   "bytes": 5298,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "logo-homeproject.svg",
+   "source": "screenshots/remote-v2/remote-com_files/042-logo_homeproject.svg",
+   "origin": "files",
+   "bytes": 13084,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "badge-app-store.svg",
+   "source": "screenshots/remote-v2/remote-com_files/054-app-store.svg",
+   "origin": "files",
+   "bytes": 14548,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "badge-google-play.svg",
+   "source": "screenshots/remote-v2/remote-com_files/055-google-play.svg",
+   "origin": "files",
+   "bytes": 9156,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "logo-inline-00.svg",
+   "source": "inline-svg:9a01152151",
+   "origin": "inline-svg",
+   "bytes": 5869,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-01.svg",
+   "source": "inline-svg:7ef399d0af",
+   "origin": "inline-svg",
+   "bytes": 3777,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-02.svg",
+   "source": "inline-svg:779d69b598",
+   "origin": "inline-svg",
+   "bytes": 3632,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-03.svg",
+   "source": "inline-svg:a3b1598e99",
+   "origin": "inline-svg",
+   "bytes": 6278,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-04.svg",
+   "source": "inline-svg:7112df9533",
+   "origin": "inline-svg",
+   "bytes": 4280,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-05.svg",
+   "source": "inline-svg:992a2e0aec",
+   "origin": "inline-svg",
+   "bytes": 1684,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-06.svg",
+   "source": "inline-svg:1660895752",
+   "origin": "inline-svg",
+   "bytes": 3122,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-07.svg",
+   "source": "inline-svg:1691d28b03",
+   "origin": "inline-svg",
+   "bytes": 13858,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-08.svg",
+   "source": "inline-svg:08578b4b2e",
+   "origin": "inline-svg",
+   "bytes": 3141,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-09.svg",
+   "source": "inline-svg:09b4ad80f7",
+   "origin": "inline-svg",
+   "bytes": 3890,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-10.svg",
+   "source": "inline-svg:63c6f352a9",
+   "origin": "inline-svg",
+   "bytes": 2472,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-11.svg",
+   "source": "inline-svg:fea602c652",
+   "origin": "inline-svg",
+   "bytes": 7513,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-12.svg",
+   "source": "inline-svg:e7588f5447",
+   "origin": "inline-svg",
+   "bytes": 13060,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  }
+ ]
+}

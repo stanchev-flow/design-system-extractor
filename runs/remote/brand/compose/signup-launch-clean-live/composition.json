@@ -1,0 +1,334 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "new-offering-launch",
+    "name": "New offering launch",
+    "useCasesRequested": [
+      "hero",
+      "logos",
+      "features",
+      "testimonial",
+      "cta",
+      "footer"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/remote/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-inset-noise-panel"
+      },
+      "slots": [
+        {
+          "name": "hero-header",
+          "role": "header",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "hug",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": {
+            "eyebrow": "Introducing",
+            "heading": "Everything in one place",
+            "subheading": "A simpler way to get started \u2014 built for how you actually work."
+          }
+        },
+        {
+          "name": "hero-primary-cta",
+          "role": "cta",
+          "contract": "button",
+          "textLen": "short",
+          "width": "hug",
+          "colStart": 1,
+          "colSpan": 3,
+          "copy": "Start free"
+        },
+        {
+          "name": "hero-secondary-cta",
+          "role": "cta",
+          "contract": "button",
+          "textLen": "short",
+          "width": "hug",
+          "colStart": 4,
+          "colSpan": 3,
+          "copy": "See how it works"
+        },
+        {
+          "name": "hero-media",
+          "role": "media",
+          "contract": "image",
+          "textLen": "none",
+          "width": "media",
+          "mediaAspect": "square",
+          "z": "front",
+          "colStart": 7,
+          "colSpan": 6,
+          "asset": {
+            "src": "hero-globe-illustration.webp",
+            "alt": "Global illustration of everything in one place",
+            "ratio": "square"
+          }
+        }
+      ],
+      "treatments": []
+    },
+    {
+      "id": "logos",
+      "useCase": "logos",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "logo-marquee-strip"
+      },
+      "slots": [
+        {
+          "name": "logo-bar",
+          "role": "logo-proof",
+          "contract": "logo-bar",
+          "textLen": "short",
+          "width": "stretch",
+          "copy": {
+            "caption": "Trusted by 10,000+ teams"
+          }
+        },
+        {
+          "name": "logos",
+          "role": "logos",
+          "contract": "logo",
+          "textLen": "none",
+          "width": "stretch",
+          "copy": [
+            {
+              "alt": "Anthropic",
+              "asset": "logo-anthropic.svg"
+            },
+            {
+              "alt": "Box",
+              "asset": "logo-box.svg"
+            },
+            {
+              "alt": "BYD",
+              "asset": "logo-byd.svg"
+            },
+            {
+              "alt": "Datadog",
+              "asset": "logo-datadog.svg"
+            },
+            {
+              "alt": "GitLab",
+              "asset": "logo-gitlab.svg"
+            },
+            {
+              "alt": "Heineken",
+              "asset": "logo-heineken.svg"
+            },
+            {
+              "alt": "KFC",
+              "asset": "logo-kfc.svg"
+            },
+            {
+              "alt": "Lovable",
+              "asset": "logo-lovable.svg"
+            },
+            {
+              "alt": "Mercury",
+              "asset": "logo-mercury.svg"
+            },
+            {
+              "alt": "Miro",
+              "asset": "logo-miro.svg"
+            },
+            {
+              "alt": "Mizuho",
+              "asset": "logo-mizuho.svg"
+            },
+            {
+              "alt": "Vercel",
+              "asset": "logo-vercel.svg"
+            }
+          ]
+        }
+      ],
+      "treatments": []
+    },
+    {
+      "id": "features",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "feature-accordion-deep-accent"
+      },
+      "slots": [
+        {
+          "name": "features-header",
+          "role": "header",
+          "contract": "header",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "copy": {
+            "heading": "Built to work the way you do"
+          }
+        },
+        {
+          "name": "feature-cards",
+          "role": "feature-run",
+          "contract": "card",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "stretch",
+          "copy": [
+            {
+              "heading": "Set up in minutes",
+              "text": "No manual wiring \u2014 you're live the same day.",
+              "asset": "card-api-first.webp"
+            },
+            {
+              "heading": "One source of truth",
+              "text": "Everyone sees the same thing, always up to date.",
+              "asset": "card-integrations.webp"
+            },
+            {
+              "heading": "Scales with you",
+              "text": "From your first project to your thousandth.",
+              "asset": "card-mcp-agents.webp"
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "columns": "3"
+      }
+    },
+    {
+      "id": "testimonial",
+      "useCase": "testimonial",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "testimonial-card-row"
+      },
+      "slots": [
+        {
+          "name": "testimonial",
+          "role": "testimonial",
+          "contract": "testimonial",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "copy": {
+            "quote": "We replaced three tools in a week and never looked back.",
+            "name": "Operations lead",
+            "role": "Mid-market team"
+          },
+          "asset": {
+            "src": "avatar-erik-sveen.webp",
+            "alt": "Operations lead",
+            "ratio": "square"
+          }
+        }
+      ],
+      "treatments": []
+    },
+    {
+      "id": "cta",
+      "useCase": "cta",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-inline-banner"
+      },
+      "slots": [
+        {
+          "name": "cta-header",
+          "role": "header",
+          "contract": "header",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "copy": {
+            "heading": "Ready to get everything in one place?"
+          }
+        },
+        {
+          "name": "cta-button",
+          "role": "cta",
+          "contract": "button",
+          "textLen": "short",
+          "width": "hug",
+          "copy": "Start free"
+        }
+      ],
+      "treatments": []
+    },
+    {
+      "id": "footer",
+      "useCase": "footer",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-inline-banner"
+      },
+      "slots": [
+        {
+          "name": "footer-links",
+          "role": "nav-links",
+          "contract": "link",
+          "textLen": "short",
+          "width": "stretch",
+          "copy": [
+            {
+              "text": "Product"
+            },
+            {
+              "text": "Pricing"
+            },
+            {
+              "text": "Customers"
+            },
+            {
+              "text": "Docs"
+            },
+            {
+              "text": "Contact"
+            }
+          ]
+        },
+        {
+          "name": "footer-legal",
+          "role": "legal",
+          "contract": "label",
+          "textLen": "short",
+          "width": "stretch",
+          "copy": "\u00a9 Remote. All rights reserved."
+        }
+      ],
+      "treatments": []
+    }
+  ],
+  "rationale": "Remote is an all-light SaaS brand, so every section sits on a light surface and only the hero carries the single reserved accent on its display heading. Order sells the message in the brand's own vocabulary: a light noise-art hero pairs the 'Everything in one place' headline with the globe illustration and the filled-blue primary pill plus a secondary action; a logo marquee delivers the '10,000+ teams' proof with real customer vectors; a 3-up feature card row renders each value_prop as its own module with a real product card image; a single testimonial stack carries the quote; a compact inline CTA banner is the conversion beat; a lightweight link+legal footer closes. All sections reuse/adapt captured project patterns with disciplined on-grid alignment (offGridExpansion locked) \u2014 the cta section drops the panel-on-media treatment and stays a plain aligned stack per the repair."
+}

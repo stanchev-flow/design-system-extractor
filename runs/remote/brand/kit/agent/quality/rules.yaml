@@ -1,0 +1,47 @@
+gate: 'neverDo is the ONLY hard gate — violating any entry means the output is off-brand and must not
+  ship. avoid[] is a soft preference; do[] is the affirmative house style. One sanctioned exception: recipePolicy.magicTrick
+  may relax exactly ONE neverDo on HERO sections only, when a blessed entry in magic-trick.md documents
+  it.'
+neverDo:
+- id: never-typographic-primary
+  statement: Never render the primary CTA as a typographic link; it is always a filled blue pill.
+- id: never-zero-radius
+  statement: Never zero out radius; the system is rounded (cards 12–14px, panels ~20px, media 10px, pills
+    40px).
+- id: never-allcaps-headings
+  statement: Never set headings in all-caps; headings are sentence-case — uppercase belongs to the eyebrow
+    register only.
+avoid:
+- id: no-dark-bands
+  statement: Avoid full-width dark section bands; the canvas run is light end-to-end — darkness belongs
+    INSIDE cards/panels.
+- id: no-heavy-display
+  statement: No bold/heavy display type; the display face never exceeds weight 400 at heading tiers.
+- id: no-sharp-buttons
+  statement: No rectangular or lightly-rounded buttons; CTAs are full pills.
+- id: no-idle-shadows
+  statement: No resting drop-shadows on cards; elevation is a hover behavior.
+- id: no-photo-heroes
+  statement: No photographic hero backgrounds or scrims; hero media is illustration/product-UI art on
+    the noise panel.
+- id: no-accent-flood
+  statement: Do not flood surfaces with the action blue; large fields stay gray/white/pastel — blue is
+    for CTAs, links, eyebrows, and small chips.
+do:
+- id: pill-ctas
+  statement: 'Make every CTA a fully-rounded 48px pill: blue filled primary, outlined secondary, near-black
+    neutral for chrome.'
+- id: size-only-hierarchy
+  statement: Set all headings in the display face at weight 400, sentence case; scale size, never weight.
+- id: white-cards
+  statement: Float white rounded flat cards on the gray canvas; reveal shadow + tint on hover only.
+- id: inset-dark
+  statement: Deploy deep navy as an inset backdrop (card media wells, inner panels) with white ink and
+    periwinkle accents.
+- id: coded-eyebrows
+  statement: Open sections with uppercase tracked eyebrows color-coded to the section family (blue/crimson/gray).
+- id: noise-bookends
+  statement: Bookend the page with the pastel noise-gradient art (hero inset panel, closing full-bleed
+    band), dark ink on the art.
+- id: real-logo-walls
+  statement: Render logo walls from the extracted monochrome vector logos in a spaced row.

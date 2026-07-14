@@ -1,0 +1,122 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "hubspot-spotlight-fall-2026-hero",
+    "name": "HubSpot Spotlight \u2014 fall 2026 reveal (event hero)",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "spotlight-event-hero",
+      "useCase": "hero",
+      "archetype": "stack",
+      "surfaceIntent": "raised",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "archetypeRef": "hero-event-meta-forward",
+      "slots": [
+        {
+          "name": "meta",
+          "role": "event-logistics",
+          "contract": "label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Oct 8, 2026 \u00b7 9:00 AM ET \u00b7 Streamed live \u00b7 Free"
+        },
+        {
+          "name": "heading",
+          "role": "event-name",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "hero",
+          "width": "hug",
+          "z": "front",
+          "copy": "Spotlight"
+        },
+        {
+          "name": "subheading",
+          "role": "promise",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "HubSpot's fall reveal \u2014 watch Breeze agents and hundreds of Hub updates ship, live."
+        },
+        {
+          "name": "actionGroup",
+          "role": "register-actions",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": [
+            {
+              "label": "Save my seat",
+              "variant": "filled"
+            },
+            {
+              "label": "See the fall lineup",
+              "variant": "ghost"
+            }
+          ]
+        },
+        {
+          "name": "agenda",
+          "role": "agenda-rail",
+          "contract": "logo-bar",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "caption": "90 minutes across Marketing, Sales, Service, Content, Data and Commerce Hub \u2014 and Smart CRM.",
+            "logos": [
+              {
+                "alt": "Marketing Hub",
+                "asset": "028-producticons-marketinghub-icon-orange.webp"
+              },
+              {
+                "alt": "Sales Hub",
+                "asset": "029-producticons-saleshub-icon-orange.webp"
+              },
+              {
+                "alt": "Service Hub",
+                "asset": "030-producticons-servicehub-icon-orange.webp"
+              },
+              {
+                "alt": "Content Hub",
+                "asset": "031-producticons-contenthub-icon-orange.webp"
+              },
+              {
+                "alt": "Data Hub",
+                "asset": "032-producticons-datahub-icon-orange.webp"
+              },
+              {
+                "alt": "Commerce Hub",
+                "asset": "033-producticons-commercehub-icon-orange.webp"
+              }
+            ]
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "metaPlacement": "above",
+        "agendaRail": "on"
+      }
+    }
+  ],
+  "rationale": "Single hero on the hero-event-meta-forward archetype: the tracked caption meta row leads (the facts ARE the pitch and carry the news/urgency register, so no NEW badge or countdown), the event name 'Spotlight' takes the licensed hero-scale display moment typeset in the brand's own display face (ink on the warm cream raised band \u2014 accent text is not licensed on a light surface, so orange stays in the primary button and the six Hub product marks), one promise line advances the meta without inflating (AS-51), and a single primary 'Save my seat' beside a quiet ghost sibling honors AS-59. The agenda rail renders the six real Hub product-icon assets as the quiet agenda-at-a-glance with one caption line \u2014 never louder than the name. Surface is 'raised' per the copy-first plan; no media slot, matching the brief's deliberate omission of atmosphere photography, speaker strip and venue. Off-grid unlocked but not needed \u2014 disciplined clean-SaaS alignment serves this copy best."
+}

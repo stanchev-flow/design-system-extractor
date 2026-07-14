@@ -1,0 +1,84 @@
+# STANDARD (brand-agnostic) layout patterns for the PRICING use-case.
+# origin: designed — general generalizations of the harvest clusters. Sizes are classes, never px.
+schemaVersion: layout-patterns.v1
+useCase: pricing
+patterns:
+
+  - id: pricing-two-card-row
+    useCase: pricing
+    archetypeRef: row
+    surfaceIntent: any
+    intent: "Two equal-width plan cards in a horizontal row — label, price, feature list, action."
+    contentShape:
+      alignment: { value: centered, inheritance: block-inherits }
+      slots:
+        - { name: heading, role: section-title, textLen: short, sizeClass: title, width: hug, z: front }
+        - { name: planLabel, role: plan-label, textLen: short, sizeClass: body, width: hug, z: front }
+        - { name: price, role: price, textLen: word, sizeClass: display, width: hug, z: front }
+        - { name: features, role: feature-list, textLen: long, sizeClass: body, width: hug, z: front }
+        - { name: action, role: cta, textLen: short, sizeClass: body, width: hug, z: front }
+    specialTreatments:
+      - { kind: overlap, pair: [price, planLabel], zOrder: [planLabel, price], amount: { class: light } }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      elevatedCard: { type: enum, values: [none, first, second], default: second }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters two_card_pricing_row x4, equal_width_plan_card_label_price_features_button, elevated_offer_card", sources: [harvest-3-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "two-card-row", by: creation, signalId: null, note: "hand-blessed from harvest report" }
+
+  - id: pricing-toggle-intro-plan-cards
+    useCase: pricing
+    archetypeRef: stack
+    surfaceIntent: any
+    intent: "Centered heading + support copy with a compact monthly/annual segmented toggle above the plan cards."
+    contentShape:
+      alignment: { value: centered, inheritance: block-inherits }
+      slots:
+        - { name: heading, role: section-title, textLen: short, sizeClass: title, width: hug, z: front }
+        - { name: support, role: support-copy, textLen: long, sizeClass: body, width: hug, z: front }
+        - { name: toggle, role: segmented-control, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: cards, role: plan-card-row, textLen: long, sizeClass: body, width: stretch, z: front }
+    specialTreatments:
+      - { kind: stagger, target: cards, axis: horizontal, amount: { class: light } }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      toggleSegments: { type: enum, values: ["2", "3"], default: "2" }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters centered_intro_with_toggle, compact_segmented_control x4, heading_support_toggle_stack", sources: [harvest-3-projects] }
+    overridable: true
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "toggle-intro-plan-cards", by: creation, signalId: null, note: "hand-blessed from harvest report" }
+
+  - id: pricing-editorial-two-column
+    useCase: pricing
+    archetypeRef: split
+    surfaceIntent: panel
+    intent: "Two-column editorial pricing — narrative copy column beside a single plan/offer column."
+    contentShape:
+      alignment: { value: left, counterweight: offer, inheritance: per-slot-override }
+      slots:
+        - { name: heading, role: section-title, textLen: short, sizeClass: title, width: hug, z: front }
+        - { name: body, role: body-copy, textLen: long, sizeClass: body, width: hug, sizeRel: { to: offer, ratio: 1.0, axis: width }, z: front }
+        - { name: offer, role: offer-card, textLen: long, sizeClass: body, width: hug, z: front }
+        - { name: action, role: cta, textLen: short, sizeClass: body, width: hug, z: front }
+    specialTreatments:
+      - { kind: bleed, target: offer, edge: right }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      offerSide: { type: enum, values: [left, right], default: right }
+    origin: designed
+    designedFrom: { note: "generalized from harvest clusters two_column_editorial, two_column_pricing_card", sources: [harvest-3-projects] }
+    overridable: true
+    confidence: medium
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-01T00:00:00Z", action: created, from: null, to: "editorial-two-column", by: creation, signalId: null, note: "hand-blessed from harvest report" }

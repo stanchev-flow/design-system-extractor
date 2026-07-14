@@ -1,0 +1,11 @@
+GPT-5.6 Sol experiment — anti-slop audit
+
+Command:
+node --import ./runs/remote/brand/compose/sol-experiment/slop_chrome_preload.mjs brand_pipeline/slop_audit.mjs runs/remote/brand/compose/sol-experiment/index.html
+
+Result:
+PASS sol-experiment/index.html @1440px
+PASS sol-experiment/index.html @1180px
+
+The lane-local preload only points Playwright at the installed system Chrome after
+the shared Playwright cache disappeared. The shared audit source is unchanged.

@@ -1,0 +1,177 @@
+schemaVersion: section-grounding.v1
+sectionRole: features
+layout:
+  structure: header row (icon + dotted rule + CTA) atop heading-left / body-right, over a horizontal card
+    carousel
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 90
+    bottom: 60
+  gapPx: 32
+  containerWidth: contained
+surfaces:
+- role: band
+  bgApprox: 'gradient(#f8c9cf -> #f6a98a)'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#2c1420'
+- role: card
+  bgApprox: '#ffffff'
+  parent: band
+  radiusPx: 14
+  borderApprox: none
+  inkApprox: '#1f1f1f'
+- role: media-well
+  bgApprox: '#f2ece4'
+  parent: card
+  radiusPx: 10
+  borderApprox: none
+  inkApprox: '#2c1420'
+- role: chrome-bar
+  bgApprox: '#ffffff'
+  parent: band
+  radiusPx: 12
+  borderApprox: '1px #ffffff'
+  inkApprox: '#e2612e'
+typography:
+- role: h2
+  approxSizePx: 44
+  weightApprox: 500
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#241019'
+  familyClass: serif
+- role: body
+  approxSizePx: 17
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#3a2530'
+  familyClass: grotesque-sans
+- role: h3
+  approxSizePx: 24
+  weightApprox: 700
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1f1f1f'
+  familyClass: grotesque-sans
+- role: control-label
+  approxSizePx: 15
+  weightApprox: 600
+  case: title
+  trackingApprox: normal
+  colorApprox: '#2c1420'
+  familyClass: grotesque-sans
+components:
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: text label 'Explore Breeze Agents' in bordered pill
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 18 28
+    radiusPx: 10
+  surfaceApprox: transparent
+  inkApprox: '#2c1420'
+  caseTreatment: title
+- kind: card
+  variant: filled-neutral
+  countObserved: 4
+  anatomy: media-well (product-UI mockup) top -> heading -> body -> optional text link
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: 28 40
+    radiusPx: 14
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1f1f1f'
+  caseTreatment: title
+- kind: link
+  variant: text-arrow
+  countObserved: 1
+  anatomy: underlined 'Learn more' text link
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1f1f1f'
+  caseTreatment: sentence
+- kind: icon
+  variant: filled-neutral
+  countObserved: 1
+  anatomy: orange sparkle glyph in rounded white square
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 12
+  surfaceApprox: '#ffffff'
+  inkApprox: '#e2612e'
+  caseTreatment: sentence
+- kind: avatar
+  variant: circle
+  countObserved: 1
+  anatomy: circle-cropped portrait inside Customer Agent card mock
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 20
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1f1f1f'
+  caseTreatment: sentence
+copy:
+  eyebrow: null
+  heading: Built-in AI agents that work for you 24/7.
+  subheading: null
+  body: Breeze Agents are your always-on teammates. They can resolve over 65% of customer inquiries, accelerate
+    your sales pipeline, and whip up quality content in no time.
+  actions:
+  - label: Explore Breeze Agents
+    styleHint: outlined pill
+  - label: Learn more
+    styleHint: text link underlined
+  - label: Generate property
+    styleHint: filled-primary pill in mock
+  - label: View automations
+    styleHint: filled dark pill in mock
+  items:
+  - heading: Data Agent
+    body: Get instant answers to custom questions about your customers.
+    meta: null
+  - heading: Customer Agent
+    body: Resolve 65% of your customer inquiries automatically.
+    meta: Learn more
+  - heading: Prospecting Agent
+    body: Spot buying signals, source contacts, and launch personal… outreach — instantly.
+    meta: null
+media:
+- kind: product-ui
+  treatment: 'in-card app mockups on neutral media-wells: smart-property form, HubBot chat, prospecting
+    panel'
+  aspect: portrait
+  approxFractionOfSection: 0.45
+- kind: icon
+  treatment: orange 4-point sparkle glyphs in white rounded squares
+  aspect: square
+  approxFractionOfSection: 0.03
+chrome:
+  casing: title
+  separators: whitespace-only
+  iconShape: square-glyph
+  surfaceApprox: '#ffffff'
+  linkTreatment: '15px #2c1420 in outlined pill'
+  ctaTreatment: outlined pill hugging content, dark ink
+motionHints:
+- carousel with prev/next chevron arrows at left and right edges
+- cards cropped mid-item at both frame edges (horizontal slide track)
+- pause button below carousel (auto-advancing slideshow)
+confidence: high
+notes:
+- left and right cards partially clipped by frame edges
+- Prospecting Agent card heading and body truncated at right edge
+- dotted horizontal rule connects icon to CTA in header row
+_source:
+  crop: section-05-csol-section-wf-animated-carousel-section-breeze.png
+  domClasses: csol-section wf-animated-carousel-section -breeze -padding-top-md -padding-bottom-md
+  model: claude-opus-4-8

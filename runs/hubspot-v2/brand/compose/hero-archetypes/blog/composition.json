@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "hubspot-blog-hero",
+    "name": "HubSpot Blog \u2014 content-hub opener",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "blog-hero",
+      "useCase": "hero",
+      "archetype": "split",
+      "archetypeRef": "hero-content-featured-lead",
+      "surfaceIntent": "panel",
+      "novelty": "novel",
+      "seededFrom": null,
+      "grid": {
+        "columns": 12,
+        "gutter": "2rem"
+      },
+      "slots": [
+        {
+          "name": "kicker",
+          "role": "hub-register-label",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 5,
+          "copy": "The HubSpot Blog"
+        },
+        {
+          "name": "heading",
+          "role": "hub-masthead",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 5,
+          "copy": "Playbooks, benchmarks, and honest takes"
+        },
+        {
+          "name": "subheading",
+          "role": "hub-promise",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 5,
+          "copy": "For go-to-market teams planning the next quarter \u2014 the research, field-tested tactics, and candid lessons behind what actually moves revenue."
+        },
+        {
+          "name": "browse",
+          "role": "hub-action",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 5,
+          "copy": "Browse all articles"
+        },
+        {
+          "name": "featured",
+          "role": "featured-article",
+          "contract": "card",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "media",
+          "mediaAspect": "landscape",
+          "z": "mid",
+          "colStart": 7,
+          "colSpan": 6,
+          "copy": {
+            "eyebrow": "Featured report",
+            "heading": "The 2026 State of Customer Platforms",
+            "text": "1,200 GTM leaders on what agentic AI actually changed \u2014 where it moved the pipeline, and where the hype outran the results.",
+            "meta": [
+              "HubSpot Research",
+              "12 min read"
+            ],
+            "cta": "Read the report"
+          },
+          "asset": {
+            "src": "016-case-20studies.webp",
+            "alt": "The 2026 State of Customer Platforms \u2014 report cover",
+            "ratio": "landscape"
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "featuredSide": "right",
+        "captureRow": "off"
+      }
+    }
+  ],
+  "rationale": "A single content-hub hero built on the hero-content-featured-lead genre archetype: a left masthead column (register eyebrow + display hub heading + promise line + a quiet 'Browse all articles' link) beside a right featured card that gives the flagship '2026 State of Customer Platforms' report real estate \u2014 warm editorial cover art, category eyebrow, its own title tier, a real research byline, and the single filled 'Read the report' primary. Chosen archetype fits the brief better than the three project seeds (photo-overlay/closing-cta/testimonial-tab), so novelty is novel. Heading holds the only display tier while the card title stays at title (avoids AS-51 double display); no dark band (brand never-dark-mid-page), sentence-case weight-500 headings (never-heavy-headings), and a fresh 'panel' surface for gallery variety. Clean SaaS discipline: even split on the shared grid, no off-grid treatments, one primary action per group."
+}

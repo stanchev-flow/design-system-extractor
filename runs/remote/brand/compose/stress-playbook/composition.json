@@ -1,0 +1,956 @@
+{
+  "schemaVersion": "replica-composition.v1",
+  "brief": "The Global Hiring Playbook \u2014 11-section resource lead-gen page (generative STRESS TEST). Copy verbatim from copy-brief.md; every section exercises a catalog device event-genlaunch did not (split art-panel hero w/ meta, stats flow, interlock, navy-well card grid, deep-accent split accordion w/ media swap, info-band comparison rows, inset-glow banner, edge-cut testimonial carousel, badge+rating group strips, navy non-exclusive FAQ, tel/textarea form on the closing noise band).",
+  "order": [
+    "pb-hero",
+    "pb-stats",
+    "pb-statement",
+    "pb-chapters",
+    "pb-process",
+    "pb-compare",
+    "pb-banner",
+    "pb-stories",
+    "pb-badges",
+    "pb-faq",
+    "pb-form"
+  ],
+  "sections": [
+    {
+      "id": "pb-hero",
+      "useCase": "hero",
+      "archetype": "split",
+      "surfaceIntent": "any",
+      "novelty": "adapted",
+      "note": "STRESS 1 \u2014 split art-panel hero WITH media counterweight PLUS the poster's eyebrow+meta registers: the sanctioned inset noise panel, left content stack, right product-UI collage. Distinct from the homepage hero (globe, no eyebrow/meta) and from event-genlaunch's centered solo poster.",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-inset-noise-panel"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "eyebrow",
+          "copy": {
+            "eyebrow": "THE GLOBAL HIRING PLAYBOOK"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "title \u2014 display heading",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "heading": "Hire in any country before your competitors open the tab"
+          }
+        },
+        {
+          "name": "body",
+          "role": "sub \u2014 supporting paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "Twelve chapters on employing, contracting, and paying people in 170+ countries \u2014 written by the legal and payroll teams who run it for real, not summarized from search results. Free, and updated every quarter."
+          }
+        },
+        {
+          "name": "meta",
+          "role": "meta \u2014 playbook facts line",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "12 chapters \u00b7 40+ templates \u00b7 Free \u00b7 Updated quarterly"
+          }
+        },
+        {
+          "name": "actions",
+          "role": "cta-primary",
+          "textLen": "short",
+          "sizeClass": "control",
+          "width": "hug",
+          "z": "front",
+          "contract": "button",
+          "copy": {
+            "label": "Get the playbook",
+            "styleHint": "filled"
+          }
+        },
+        {
+          "name": "actions-secondary",
+          "role": "cta-secondary",
+          "contract": "button",
+          "copy": {
+            "label": "Browse the chapters",
+            "styleHint": "outlined"
+          }
+        },
+        {
+          "name": "media",
+          "role": "media \u2014 product-UI collage counterweight",
+          "width": "half",
+          "z": "front",
+          "mediaAspect": "square",
+          "contract": "image",
+          "asset": {
+            "src": "collage-peo-ui.webp",
+            "alt": "Remote product UI showing a global team roster with local employment details"
+          }
+        },
+        {
+          "name": "background",
+          "role": "inset rounded panel w/ noise-gradient art",
+          "width": "full-bleed",
+          "z": "back",
+          "mediaAspect": "landscape",
+          "contract": "image",
+          "asset": {
+            "src": "bg-noise-grey-green-blue-top.webp",
+            "alt": ""
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "panel-on-media",
+          "target": "background",
+          "sanctioned": true,
+          "note": "the brand's rounded inset panel on its own noise-gradient art; ink text on it"
+        }
+      ],
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "media"
+      }
+    },
+    {
+      "id": "pb-stats",
+      "useCase": "stats",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "novel",
+      "note": "STRESS 2 \u2014 stats band through the generic-flow module fold: four metric modules (value as caption register, label as paragraph). Probes the missing `stat` big-number renderer; page must still read well.",
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "eyebrow",
+          "copy": {
+            "eyebrow": "WHY A PLAYBOOK"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "heading",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "heading": "Global hiring punishes guesswork",
+            "level": "h2"
+          }
+        },
+        {
+          "name": "intro",
+          "role": "body \u2014 section intro",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "Every country rewrites the rules \u2014 employment law, payroll cadence, benefits, termination. The playbook exists so your first hire abroad doesn't become your first legal project abroad."
+          }
+        },
+        {
+          "name": "stats",
+          "role": "stat \u2014 metric value + supporting label",
+          "width": "full-bleed",
+          "z": "front",
+          "contract": "stat",
+          "copy": [
+            {
+              "heading": "170+",
+              "text": "Countries where the playbook's guidance is grounded in Remote's own local entities."
+            },
+            {
+              "heading": "6\u201312 months",
+              "text": "Typical time to open a local entity yourself \u2014 the path the playbook helps you skip."
+            },
+            {
+              "heading": "90 days",
+              "text": "How often employment law changes somewhere you might hire \u2014 and how often we update."
+            },
+            {
+              "heading": "$0",
+              "text": "What the playbook costs. The expertise is the product demo."
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "pb-statement",
+      "useCase": "statement",
+      "archetype": "media-split",
+      "surfaceIntent": "primary",
+      "novelty": "adapted",
+      "note": "STRESS 3 \u2014 ordinary evidence-grounded media split: complete caption/statement/support/action stack at left, landscape transparent illustration at right. The content shape intentionally does not invoke the advanced interlock device.",
+      "slots": [
+        {
+          "name": "caption",
+          "role": "caption \u2014 pin",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "caption",
+          "copy": {
+            "text": "FROM THE FIELD"
+          }
+        },
+        {
+          "name": "statement",
+          "role": "statement \u2014 oversized claim",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "heading": "Hiring in a new country should feel like hiring across the street."
+          }
+        },
+        {
+          "name": "support",
+          "role": "support \u2014 quiet backing line",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "That's the standard the playbook holds every chapter to \u2014 if a step can't be done in an afternoon, we show you the infrastructure that makes it one."
+          }
+        },
+        {
+          "name": "media",
+          "role": "media \u2014 product illustration",
+          "width": "half",
+          "z": "front",
+          "mediaAspect": "landscape",
+          "contract": "image",
+          "asset": {
+            "src": "hero-globe-illustration.webp",
+            "alt": "Globe illustration with orbiting Remote product-UI chips"
+          }
+        },
+        {
+          "name": "action",
+          "role": "action \u2014 closing text link",
+          "textLen": "short",
+          "sizeClass": "control",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "Get the playbook"
+          }
+        }
+      ],
+      "treatments": []
+    },
+    {
+      "id": "pb-chapters",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "adapted",
+      "grid": {
+        "columns": 3
+      },
+      "note": "STRESS 4 \u2014 the brand's workflow-card grammar (features-card-grid-navy-media): three flat white cards with deep-navy media wells, card eyebrows, gridEqualize heights, curated centered standalone header. Event-genlaunch used bento, never this grid.",
+      "seededFrom": {
+        "lib": "project",
+        "id": "features-card-grid-navy-media"
+      },
+      "slots": [
+        {
+          "name": "header",
+          "role": "section-title",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "header",
+          "copy": {
+            "eyebrow": "WHAT'S INSIDE",
+            "heading": "Twelve chapters. Three you'll open first."
+          }
+        },
+        {
+          "name": "intro-body",
+          "role": "body \u2014 section intro",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "Each chapter pairs plain-language guidance with the templates and checklists our own teams use \u2014 copy them, adapt them, ship them."
+          }
+        },
+        {
+          "name": "cards",
+          "role": "module \u2014 chapter cards w/ navy media wells",
+          "width": "full",
+          "z": "front",
+          "contract": "feature-item",
+          "copy": [
+            {
+              "eyebrow": "EMPLOY",
+              "heading": "Hire full-time anywhere, without an entity",
+              "text": "When employer of record beats opening an entity, how to read an EOR contract, and the questions to ask about who really employs your people.",
+              "link": "Read chapter one",
+              "asset": "collage-eor-ui.webp",
+              "alt": "Remote EOR product UI in a deep-navy media well"
+            },
+            {
+              "eyebrow": "CONTRACT",
+              "heading": "Work with contractors without the misclassification bill",
+              "text": "The tests countries actually apply, contract templates that hold up locally, and when a contractor is legally already your employee.",
+              "link": "Read chapter two",
+              "asset": "collage-contractor-management-ui.webp",
+              "alt": "Remote contractor management product UI in a deep-navy media well"
+            },
+            {
+              "eyebrow": "PAY",
+              "heading": "Run multi-country payroll people can set their watch to",
+              "text": "Payroll calendars, currencies, and statutory payments across every market you operate in \u2014 and what \"consolidated payroll\" should really mean.",
+              "link": "Read chapter three",
+              "asset": "collage-global-payroll-ui.webp",
+              "alt": "Remote global payroll product UI in a deep-navy media well"
+            }
+          ]
+        }
+      ],
+      "treatments": []
+    },
+    {
+      "id": "pb-process",
+      "useCase": "features",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "adapted",
+      "note": "STRESS 5 \u2014 the brand's signature deep-accent split accordion (feature-accordion-deep-accent): four process steps, ACTIVE step inverts to the deep-accent inset card with circle-arrow affordance, per-step media swap (rowMedia) in the square counterweight well. Event-genlaunch's disclosures ran through the FAQ composer, never this split device. The page's single accent deployment.",
+      "seededFrom": {
+        "lib": "project",
+        "id": "feature-accordion-deep-accent"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "eyebrow",
+          "copy": {
+            "eyebrow": "HOW TEAMS USE IT"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "heading",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "heading": "From \"can we hire there?\" to a signed offer"
+          }
+        },
+        {
+          "name": "intro",
+          "role": "body \u2014 section intro",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "Four steps, in the order real teams take them. Open a step to see the chapter and template that carries it."
+          }
+        },
+        {
+          "name": "list",
+          "role": "list \u2014 accordion steps w/ deep-accent active state",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "half",
+          "z": "front",
+          "contract": "feature-item",
+          "copy": [
+            {
+              "label": "Scope the country",
+              "text": "Chapter 2's country scorecards: employment cost, required benefits, notice periods, and the local quirks that surprise finance teams \u2014 before you promise anyone a start date.",
+              "media": "collage-contractor-of-record-ui.webp"
+            },
+            {
+              "label": "Choose the employment model",
+              "text": "Entity, EOR, or contractor \u2014 chapter 4's decision tree prices each path against your timeline and headcount, in plain numbers.",
+              "media": "collage-peo-ui.webp"
+            },
+            {
+              "label": "Make the offer compliant",
+              "text": "Localized offer letters and benefits baselines from chapter 7, drafted from the playbooks our own legal teams maintain in every market.",
+              "media": "collage-eor-ui.webp"
+            },
+            {
+              "label": "Run the first payroll",
+              "text": "Chapter 10's first-90-days checklist: payroll registration, statutory filings, and the calendar that keeps payday boring.",
+              "media": "collage-global-payroll-ui.webp"
+            }
+          ]
+        },
+        {
+          "name": "media",
+          "role": "media \u2014 product UI well (active step)",
+          "width": "half",
+          "z": "front",
+          "mediaAspect": "square",
+          "contract": "image",
+          "asset": {
+            "src": "collage-contractor-of-record-ui.webp",
+            "alt": "Remote product UI for the active process step"
+          }
+        },
+        {
+          "name": "action",
+          "role": "action \u2014 closing text link",
+          "textLen": "short",
+          "sizeClass": "control",
+          "width": "hug",
+          "z": "front",
+          "contract": "link",
+          "copy": {
+            "label": "Get the playbook"
+          }
+        }
+      ],
+      "treatments": []
+    },
+    {
+      "id": "pb-compare",
+      "useCase": "comparison",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "novel",
+      "note": "STRESS 6 \u2014 build-vs-buy comparison as the info-band split's ruled label/value rows beside the infrastructure proof UI. Probes the missing comparison-`table` contract renderer (blocks.yaml declares `table`; no composer draws one).",
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "eyebrow",
+          "copy": {
+            "eyebrow": "THE HONEST COMPARISON"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "heading",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "heading": "Opening an entity vs. hiring through Remote"
+          }
+        },
+        {
+          "name": "rows",
+          "role": "rows \u2014 comparison dimensions (label \u00b7 both paths)",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "half",
+          "z": "front",
+          "contract": "feature-item",
+          "copy": [
+            {
+              "label": "Time to first hire",
+              "value": "Own entity: 6\u201312 months of registration and setup. Through Remote: days, on infrastructure that already exists."
+            },
+            {
+              "label": "Upfront cost",
+              "value": "Own entity: incorporation, local counsel, capital requirements. Through Remote: a per-employee price you can read."
+            },
+            {
+              "label": "Ongoing compliance",
+              "value": "Own entity: your team tracks every law change. Through Remote: our local teams do \u2014 it's the same infrastructure this playbook is written from."
+            },
+            {
+              "label": "Exit",
+              "value": "Own entity: winding down takes as long as setting up. Through Remote: offboard compliantly and close the line item."
+            }
+          ]
+        },
+        {
+          "name": "support",
+          "role": "body \u2014 support line",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "Chapter four runs this comparison for the twelve countries teams ask about most \u2014 with the real numbers filled in."
+          }
+        },
+        {
+          "name": "media",
+          "role": "media \u2014 infrastructure proof UI",
+          "width": "half",
+          "z": "front",
+          "mediaAspect": "square",
+          "contract": "image",
+          "asset": {
+            "src": "panel-infrastructure-ui-snippet.webp",
+            "alt": "Remote infrastructure product UI with compliance status cards"
+          }
+        }
+      ],
+      "treatments": []
+    },
+    {
+      "id": "pb-banner",
+      "useCase": "cta",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapted",
+      "note": "STRESS 7 \u2014 the captured inline conversion banner (cta-inline-banner): rounded inset panel with the soft tinted glow, question-form heading, exactly ONE filled pill. A compact conversion beat, not a closing section.",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-inline-banner"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "heading \u2014 cta question",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "heading": "Ready to make your next country the easy one?"
+          }
+        },
+        {
+          "name": "action",
+          "role": "cta-primary",
+          "textLen": "short",
+          "sizeClass": "control",
+          "width": "hug",
+          "z": "front",
+          "contract": "button",
+          "copy": {
+            "label": "Get the playbook",
+            "styleHint": "filled"
+          }
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "pb-stories",
+      "useCase": "testimonial",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "adapted",
+      "note": "STRESS 8 \u2014 the captured testimonial carousel (testimonial-card-row): 3-up white quote cards with circle avatars + name/role person rows, EDGE-CUT presentation (cut-at-viewport carousel track), closing outlined pill. Captured quotes verbatim; real captured avatars.",
+      "seededFrom": {
+        "lib": "project",
+        "id": "testimonial-card-row"
+      },
+      "slots": [
+        {
+          "name": "header",
+          "role": "section-title",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "header",
+          "copy": {
+            "heading": "A word from our customers"
+          }
+        },
+        {
+          "name": "subhead",
+          "role": "sub \u2014 section subhead",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "Join customers who trust Remote to transform their business."
+          }
+        },
+        {
+          "name": "cards",
+          "role": "module \u2014 quote cards w/ avatars",
+          "width": "full",
+          "z": "front",
+          "contract": "testimonial",
+          "copy": [
+            {
+              "quote": "\"If we had to manage and coordinate everything in-house, it would cost us well over $500,000 more each year. Remote not only eliminates that financial strain but also takes the operational burden off our plate, allowing us to focus on growing our business with confidence and efficiency.\"",
+              "name": "Luke McKinlay",
+              "personRole": "VP of Finance",
+              "avatar": "avatar-luke-mckinlay.webp",
+              "asset": "logo-fountain.svg",
+              "alt": "Fountain company mark"
+            },
+            {
+              "quote": "\"We run monthly, semi-monthly and hourly payroll in multiple different currencies around the world and our Finance Manager has full visibility in a single platform. With Remote, you can make it happen.\"",
+              "name": "Marisol Jim\u00e9nez",
+              "personRole": "Head of People",
+              "avatar": "avatar-marisol-jimenez.webp",
+              "asset": "logo-reversetech.svg",
+              "alt": "ReverseTech company mark"
+            },
+            {
+              "quote": "\"We see Remote as a leading and trusted partner in this space. The expert support they provide in local payroll, tax compliance, and HR operations has streamlined our processes and created more opportunities for growth and success on a global scale.\"",
+              "name": "Maria Shkaruppa",
+              "personRole": "Senior Global Mobility and Remote Hiring Manager",
+              "avatar": "avatar-maria-shkaruppa.webp",
+              "asset": "logo-homeproject.svg",
+              "alt": "HomeProject company mark"
+            }
+          ]
+        },
+        {
+          "name": "action",
+          "role": "cta-secondary",
+          "textLen": "short",
+          "sizeClass": "control",
+          "width": "hug",
+          "z": "front",
+          "contract": "button",
+          "copy": {
+            "label": "Hear from our customers",
+            "styleHint": "outlined"
+          }
+        }
+      ],
+      "treatments": []
+    },
+    {
+      "id": "pb-badges",
+      "useCase": "logos",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapted",
+      "note": "STRESS 9 \u2014 the captured third-party-validation strip (badge-award-strip): six G2 award shields as one measured strip row, three review-platform rating chips as a second, ONE outlined pill. Exercises the generic-flow multi-GROUP mark rows (badges + ratings render as separate strips, never merged). All badge/rating art is real captured assets.",
+      "seededFrom": {
+        "lib": "project",
+        "id": "badge-award-strip"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "heading \u2014 centered heading",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "heading": "The #1 global HR platform as voted by you",
+            "level": "h2"
+          }
+        },
+        {
+          "name": "badges",
+          "role": "logos \u2014 award shield badges (row)",
+          "width": "full",
+          "z": "front",
+          "mediaAspect": "portrait",
+          "contract": "logo",
+          "copy": [
+            "badge-g2-top50-hr.webp",
+            "badge-g2-top100-hr.webp",
+            "badge-g2-top100-fastest-growing.webp",
+            "badge-g2-top100-global-sellers.webp",
+            "badge-g2-payroll-leader.webp",
+            "badge-g2-gep-leader.webp"
+          ]
+        },
+        {
+          "name": "ratings",
+          "role": "logos \u2014 review-platform rating chips (row)",
+          "width": "half",
+          "z": "front",
+          "mediaAspect": "wide",
+          "contract": "logo",
+          "copy": [
+            "rating-g2.webp",
+            "rating-trustpilot.webp",
+            "rating-capterra.webp"
+          ]
+        },
+        {
+          "name": "action",
+          "role": "cta-secondary",
+          "textLen": "short",
+          "sizeClass": "control",
+          "width": "hug",
+          "z": "front",
+          "contract": "button",
+          "copy": {
+            "label": "4,000+ reviews",
+            "styleHint": "outlined"
+          }
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "pb-faq",
+      "useCase": "faq",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapted",
+      "note": "STRESS 10 \u2014 FAQ disclosure, NAVY-INVERSE variant: knobs.faq.activeSurface = surface/inverse (the brand's deep-navy well surface as the active card \u2014 the accent inversion is spent on pb-process), exclusive:false (multiple items may be open \u2014 unexercised knob), first item open at rest, warm-wash idle hover.",
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "contract": "eyebrow",
+          "copy": {
+            "eyebrow": "BEFORE YOU DOWNLOAD"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "heading",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "heading": "What to know about the playbook"
+          }
+        },
+        {
+          "name": "items",
+          "role": "item \u2014 questions and answers",
+          "width": "full-bleed",
+          "z": "front",
+          "contract": "faq-item",
+          "copy": [
+            {
+              "question": "Is it really free?",
+              "answer": "Yes. No paywall, no trial. You give us a work email; we give you twelve chapters and every template. That's the whole exchange."
+            },
+            {
+              "question": "Who writes it?",
+              "answer": "The same in-house legal, payroll, and mobility teams who run employment for Remote's customers in 170+ countries. Not freelancers, not aggregated blog posts."
+            },
+            {
+              "question": "How current is the guidance?",
+              "answer": "Every chapter is reviewed quarterly, and material law changes ship as updates in between. The playbook you download today is the playbook our own teams used this morning."
+            },
+            {
+              "question": "Is it useful if we never buy Remote?",
+              "answer": "Yes, deliberately. The scorecards, templates, and decision trees work whichever path you take \u2014 the playbook argues for doing it right, not for doing it with us."
+            },
+            {
+              "question": "What formats does it come in?",
+              "answer": "Web and PDF, chapter by chapter or the whole thing. Templates arrive as editable documents your team can adapt."
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "faq": {
+          "exclusive": false,
+          "open": 0,
+          "activeSurface": "surface/inverse",
+          "hoverWash": "accent/warm-wash"
+        }
+      },
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "pb-form",
+      "useCase": "signup",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapted",
+      "note": "STRESS 11 \u2014 compact resource form on the brand's closing noise-gradient band (cta-closing-noise): white form panel riding the art. Exercises the `tel` field kind (never used) and a deliberate `textarea` kind the schema does NOT support \u2014 expected coercion to a single-line text input (logged as a design-system gap).",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-closing-noise"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "heading",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "contract": "heading",
+          "copy": {
+            "heading": "Get the Global Hiring Playbook"
+          }
+        },
+        {
+          "name": "body",
+          "role": "body \u2014 states the exchange",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "contract": "paragraph",
+          "copy": {
+            "text": "Twelve chapters, 40+ templates, updated quarterly \u2014 free. Tell us where to send it and where you're hiring next, and chapter one is in your inbox in about a minute."
+          }
+        },
+        {
+          "name": "form",
+          "role": "signup \u2014 playbook download form",
+          "width": "hug",
+          "z": "front",
+          "contract": "form",
+          "copy": {
+            "submit": "Get the playbook",
+            "meta": "Free \u00b7 12 chapters \u00b7 Updated quarterly",
+            "consent": "By downloading, you agree to Remote's Terms and Privacy Policy. We'll email you the playbook and its updates \u2014 unsubscribe anytime.",
+            "success": "It's on its way. Check your inbox for chapter one and your template library.",
+            "fields": [
+              {
+                "kind": "text",
+                "label": "Full name",
+                "name": "full-name",
+                "placeholder": "Alex Serra",
+                "required": true,
+                "span": "half",
+                "autocomplete": "name",
+                "error": "Enter your full name."
+              },
+              {
+                "kind": "email",
+                "label": "Work email",
+                "name": "work-email",
+                "placeholder": "alex@company.com",
+                "helper": "The playbook and its quarterly updates land here.",
+                "required": true,
+                "span": "half",
+                "autocomplete": "email",
+                "error": "Check the email address \u2014 it doesn't look complete."
+              },
+              {
+                "kind": "text",
+                "label": "Company",
+                "name": "company",
+                "placeholder": "Company name",
+                "required": true,
+                "span": "half",
+                "autocomplete": "organization",
+                "error": "Enter your company name."
+              },
+              {
+                "kind": "tel",
+                "label": "Phone (optional)",
+                "name": "phone",
+                "placeholder": "+44 20 0000 0000",
+                "helper": "Only if you'd like a walkthrough from our team.",
+                "span": "half",
+                "autocomplete": "tel"
+              },
+              {
+                "kind": "select",
+                "label": "Where are you hiring next?",
+                "name": "region",
+                "placeholder": "Pick a region",
+                "options": [
+                  "Europe",
+                  "North America",
+                  "Latin America",
+                  "Asia-Pacific",
+                  "Middle East & Africa",
+                  "Not sure yet"
+                ],
+                "span": "full"
+              },
+              {
+                "kind": "textarea",
+                "label": "Your biggest hiring question",
+                "name": "hiring-question",
+                "placeholder": "What should the next edition cover?",
+                "helper": "Optional \u2014 the answers shape the next edition.",
+                "span": "full"
+              },
+              {
+                "kind": "checkbox",
+                "label": "Send me the quarterly update when chapters change",
+                "name": "quarterly-update",
+                "span": "full"
+              }
+            ]
+          }
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "centered"
+      }
+    }
+  ]
+}

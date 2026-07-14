@@ -1,0 +1,386 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "new-offering-launch",
+    "name": "New offering launch",
+    "useCasesRequested": [
+      "hero",
+      "logos",
+      "features",
+      "testimonial",
+      "cta",
+      "footer"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/remote/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-inset-noise-panel"
+      },
+      "slots": [
+        {
+          "name": "background",
+          "role": "inset rounded panel with noise-gradient art",
+          "contract": "image",
+          "z": "back",
+          "width": "full-bleed",
+          "mediaAspect": "wide",
+          "asset": {
+            "src": "bg-noise-grey-green-blue-top.webp",
+            "alt": "Soft grey-green-blue noise gradient art",
+            "ratio": "wide"
+          }
+        },
+        {
+          "name": "eyebrow",
+          "role": "kicker",
+          "contract": "eyebrow",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "copy": "Introducing"
+        },
+        {
+          "name": "heading",
+          "role": "display title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "copy": "Everything in one place"
+        },
+        {
+          "name": "subheading",
+          "role": "lede",
+          "contract": "subheading",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "copy": "A simpler way to get started \u2014 built for how you actually work."
+        },
+        {
+          "name": "primaryCta",
+          "role": "primary action",
+          "contract": "button",
+          "textLen": "word",
+          "sizeClass": "body",
+          "copy": "Start free"
+        },
+        {
+          "name": "secondaryCta",
+          "role": "secondary action",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "copy": "See how it works"
+        },
+        {
+          "name": "media",
+          "role": "hero illustration",
+          "contract": "image",
+          "colSpan": 6,
+          "z": "front",
+          "width": "media",
+          "mediaAspect": "landscape",
+          "asset": {
+            "src": "hero-globe-illustration.webp",
+            "alt": "Global coverage globe illustration",
+            "ratio": "landscape"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "panel-on-media",
+          "target": "background",
+          "sanctioned": true
+        }
+      ],
+      "knobs": {
+        "secondaryCta": "true"
+      }
+    },
+    {
+      "id": "logos",
+      "useCase": "logos",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "logo-marquee-strip"
+      },
+      "slots": [
+        {
+          "name": "caption",
+          "role": "microlabel caption",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "copy": "Trusted by 10,000+ teams"
+        },
+        {
+          "name": "logos",
+          "role": "customer logo row",
+          "contract": "logo-bar",
+          "width": "stretch",
+          "copy": [
+            {
+              "alt": "Anthropic",
+              "asset": "logo-anthropic.svg"
+            },
+            {
+              "alt": "Box",
+              "asset": "logo-box.svg"
+            },
+            {
+              "alt": "BYD",
+              "asset": "logo-byd.svg"
+            },
+            {
+              "alt": "Datadog",
+              "asset": "logo-datadog.svg"
+            },
+            {
+              "alt": "GitLab",
+              "asset": "logo-gitlab.svg"
+            },
+            {
+              "alt": "Heineken",
+              "asset": "logo-heineken.svg"
+            },
+            {
+              "alt": "KFC",
+              "asset": "logo-kfc.svg"
+            },
+            {
+              "alt": "Lovable",
+              "asset": "logo-lovable.svg"
+            },
+            {
+              "alt": "Mercury",
+              "asset": "logo-mercury.svg"
+            },
+            {
+              "alt": "Miro",
+              "asset": "logo-miro.svg"
+            },
+            {
+              "alt": "Mizuho",
+              "asset": "logo-mizuho.svg"
+            },
+            {
+              "alt": "Vercel",
+              "asset": "logo-vercel.svg"
+            }
+          ]
+        }
+      ],
+      "treatments": []
+    },
+    {
+      "id": "features",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "feature-accordion-deep-accent"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "section kicker",
+          "contract": "eyebrow",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "copy": "Why teams switch"
+        },
+        {
+          "name": "heading",
+          "role": "section heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "title",
+          "copy": "One simpler way to work"
+        },
+        {
+          "name": "cards",
+          "role": "feature modules",
+          "contract": "card",
+          "width": "stretch",
+          "copy": [
+            {
+              "heading": "Set up in minutes",
+              "text": "No manual wiring \u2014 you're live the same day.",
+              "asset": "card-api-first.webp"
+            },
+            {
+              "heading": "One source of truth",
+              "text": "Everyone sees the same thing, always up to date.",
+              "asset": "card-integrations.webp"
+            },
+            {
+              "heading": "Scales with you",
+              "text": "From your first project to your thousandth.",
+              "asset": "card-mcp-agents.webp"
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "columns": "3"
+      }
+    },
+    {
+      "id": "testimonial",
+      "useCase": "testimonial",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "testimonial-card-row"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "section kicker",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "copy": "Customer proof"
+        },
+        {
+          "name": "testimonial",
+          "role": "customer quote",
+          "contract": "testimonial",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "copy": {
+            "quote": "We replaced three tools in a week and never looked back.",
+            "name": "Operations lead",
+            "role": "Mid-market team"
+          },
+          "asset": {
+            "src": "avatar-erik-sveen.webp",
+            "alt": "Customer avatar",
+            "ratio": "square"
+          }
+        }
+      ],
+      "treatments": []
+    },
+    {
+      "id": "cta",
+      "useCase": "cta",
+      "archetype": "stack",
+      "surfaceIntent": "panel",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-inline-banner"
+      },
+      "slots": [
+        {
+          "name": "background",
+          "role": "inset rounded panel with noise-gradient art",
+          "contract": "image",
+          "z": "back",
+          "width": "full-bleed",
+          "mediaAspect": "wide",
+          "asset": {
+            "src": "bg-noise-grey-green-blue-top.webp",
+            "alt": "Soft noise gradient art",
+            "ratio": "wide"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "conversion heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "title",
+          "z": "front",
+          "copy": "Ready to get everything in one place?"
+        },
+        {
+          "name": "primaryCta",
+          "role": "primary action",
+          "contract": "button",
+          "textLen": "word",
+          "sizeClass": "body",
+          "z": "front",
+          "copy": "Start free"
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "panel-on-media",
+          "target": "background",
+          "sanctioned": true
+        }
+      ]
+    },
+    {
+      "id": "footer",
+      "useCase": "footer",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "logo-marquee-strip"
+      },
+      "slots": [
+        {
+          "name": "links",
+          "role": "footer navigation",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "copy": [
+            {
+              "text": "Product"
+            },
+            {
+              "text": "Pricing"
+            },
+            {
+              "text": "Customers"
+            },
+            {
+              "text": "Docs"
+            },
+            {
+              "text": "Contact"
+            }
+          ]
+        },
+        {
+          "name": "legal",
+          "role": "legal line",
+          "contract": "label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "copy": "\u00a9 2026 Remote. All rights reserved."
+        }
+      ],
+      "treatments": []
+    }
+  ],
+  "rationale": "Reuses Remote's seeded project patterns in a benefit-led order: an all-light inset noise-art hero (sanctioned panel-on-media) carries the display title + primary pill + secondary link; a monochrome customer logo marquee delivers the 10,000+ teams proof with real logo vectors; a 3-up clean cards run maps the three value_props one-module-each with real card imagery; a stacked testimonial carries the quote; an inline noise-art CTA banner is the conversion beat; a minimal footer closes. All sections stay on-grid, light-canvas, novelty reuse/adapt \u2014 no off-grid treatments, no invented sections. The logo wall now binds a list of {alt, asset} objects to real customer logo files to satisfy logo-wall-integrity."
+}

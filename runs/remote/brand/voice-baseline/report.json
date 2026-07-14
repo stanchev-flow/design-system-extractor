@@ -1,0 +1,72 @@
+{
+  "generatedAt": "2026-07-14T14:49:23Z",
+  "brandDir": "runs/remote/brand",
+  "lanes": [
+    {
+      "lane": "compose/replica",
+      "html": "runs/remote/brand/compose/replica/index.html",
+      "copyCounts": {
+        "headings": 12,
+        "bodies": 16,
+        "eyebrows": 8,
+        "ctas": 7
+      },
+      "checks": [
+        {
+          "check": "sentence-length",
+          "ok": true,
+          "detail": "mean 12.0w (max 16), p90 25w (max 32), 42 sentences"
+        },
+        {
+          "check": "exclamations",
+          "ok": true,
+          "detail": "0 exclamation mark(s) (max 0) \u2014 the measured corpus has none"
+        },
+        {
+          "check": "banned-hype",
+          "ok": true,
+          "detail": "0 hits across 14-word ban list"
+        },
+        {
+          "check": "heading-casing",
+          "ok": true,
+          "detail": "12 heading(s) sentence-case (brand terms allowed)"
+        }
+      ],
+      "ok": true
+    },
+    {
+      "lane": "compose/event-genlaunch",
+      "html": "runs/remote/brand/compose/event-genlaunch/index.html",
+      "copyCounts": {
+        "headings": 14,
+        "bodies": 36,
+        "eyebrows": 14,
+        "ctas": 7
+      },
+      "checks": [
+        {
+          "check": "sentence-length",
+          "ok": true,
+          "detail": "mean 10.6w (max 16), p90 19w (max 32), 76 sentences"
+        },
+        {
+          "check": "exclamations",
+          "ok": true,
+          "detail": "0 exclamation mark(s) (max 0) \u2014 the measured corpus has none"
+        },
+        {
+          "check": "banned-hype",
+          "ok": true,
+          "detail": "0 hits across 14-word ban list"
+        },
+        {
+          "check": "heading-casing",
+          "ok": true,
+          "detail": "14 heading(s) sentence-case (brand terms allowed)"
+        }
+      ],
+      "ok": true
+    }
+  ]
+}

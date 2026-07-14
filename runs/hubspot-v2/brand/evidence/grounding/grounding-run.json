@@ -1,0 +1,91 @@
+{
+ "schemaVersion": "section-grounding.v1",
+ "model": "claude-opus-4-8",
+ "promptFile": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/brand_pipeline/spec/extraction-grounding-prompt.md",
+ "runs": [
+  {
+   "crop": "section-00-header.png",
+   "latency_s": 18.62,
+   "input_tokens": 3006,
+   "output_tokens": 1698,
+   "out": "section-00-header.yaml"
+  },
+  {
+   "crop": "section-01-csol-section-wf-page-header-wf-page-header-human.png",
+   "latency_s": 14.18,
+   "input_tokens": 4336,
+   "output_tokens": 1133,
+   "out": "section-01-csol-section-wf-page-header-wf-page-header-human.yaml"
+  },
+  {
+   "crop": "section-02-csol-section-csol-logo-carousel-large-padding-to.png",
+   "latency_s": 10.52,
+   "input_tokens": 3332,
+   "output_tokens": 792,
+   "out": "section-02-csol-section-csol-logo-carousel-large-padding-to.yaml"
+  },
+  {
+   "crop": "section-03-csol-section-wf-customer-platform-padding-top-md.png",
+   "latency_s": 17.76,
+   "input_tokens": 4254,
+   "output_tokens": 1439,
+   "out": "section-03-csol-section-wf-customer-platform-padding-top-md.yaml"
+  },
+  {
+   "crop": "section-04-csol-section-wf-product-platform-padding-top-md.png",
+   "latency_s": 28.54,
+   "input_tokens": 5818,
+   "output_tokens": 2689,
+   "out": "section-04-csol-section-wf-product-platform-padding-top-md.yaml"
+  },
+  {
+   "crop": "section-05-csol-section-wf-animated-carousel-section-breeze.png",
+   "latency_s": 26.5,
+   "input_tokens": 4731,
+   "output_tokens": 2174,
+   "out": "section-05-csol-section-wf-animated-carousel-section-breeze.yaml"
+  },
+  {
+   "crop": "section-06-csol-section-wf-rotating-svg-padding-top-md-padd.png",
+   "latency_s": 13.65,
+   "input_tokens": 3481,
+   "output_tokens": 987,
+   "out": "section-06-csol-section-wf-rotating-svg-padding-top-md-padd.yaml"
+  },
+  {
+   "crop": "section-07-csol-section-padding-top-md-padding-bottom-none.png",
+   "latency_s": 12.53,
+   "input_tokens": 3306,
+   "output_tokens": 1037,
+   "out": "section-07-csol-section-padding-top-md-padding-bottom-none.yaml"
+  },
+  {
+   "crop": "section-08-csol-section-breeze-agents-tabbed-testimonials-s.png",
+   "latency_s": 21.34,
+   "input_tokens": 4190,
+   "output_tokens": 1708,
+   "out": "section-08-csol-section-breeze-agents-tabbed-testimonials-s.yaml"
+  },
+  {
+   "crop": "section-09-csol-section-wf-badges-padding-top-s-padding-bot.png",
+   "latency_s": 15.36,
+   "input_tokens": 3265,
+   "output_tokens": 972,
+   "out": "section-09-csol-section-wf-badges-padding-top-s-padding-bot.yaml"
+  },
+  {
+   "crop": "section-10-csol-section-wf-elevated-cta-padding-top-md-padd.png",
+   "latency_s": 10.61,
+   "input_tokens": 3483,
+   "output_tokens": 835,
+   "out": "section-10-csol-section-wf-elevated-cta-padding-top-md-padd.yaml"
+  },
+  {
+   "crop": "section-11-footer.png",
+   "latency_s": 24.05,
+   "input_tokens": 3998,
+   "output_tokens": 2081,
+   "out": "section-11-footer.yaml"
+  }
+ ]
+}

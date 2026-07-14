@@ -1,0 +1,955 @@
+{
+ "schemaVersion": 2,
+ "source": "screenshots/remote-v2/remote-com_files (fresh 2026-07-07 capture, curate_assets --auto + inline-SVG pass) merged with the prior capture's curated set (same site, files verified on disk)",
+ "note": "Phase D re-extraction. Fresh capture re-acquired the 12 customer-wall logo vectors (byte-near-identical, canonical names kept), added 4 testimonial company marks, 2 product icons, the 2x noise art and the app badges. Prior-capture assets (avatars, card art, badges, ratings, wordmark, partner logos) remain valid brand art from the same source and are retained. Filenames relative to assets/.",
+ "useCaseLegend": {
+  "logo": "Remote brand wordmark (nav/footer).",
+  "logo-wall-logo": "Monochrome customer trust logo vectors for the logo marquee (the logo-strip device binds these).",
+  "integration-logo": "Colored partner/ecosystem logos for the static partner row.",
+  "award-badge": "G2 award badges for the proof strip.",
+  "rating-badge": "Review-platform rating chips (G2/Trustpilot/Capterra).",
+  "testimonial-avatar": "Customer headshots, rendered as circles.",
+  "feature-icon": "Product-family icons (pale-blue chip family).",
+  "hero-illustration": "Hero globe/product illustration (right media column).",
+  "background-art": "Pastel noise-gradient art surfaces (hero panel, closing CTA).",
+  "product-graphic": "Product-UI / card media art (deep-navy backdrops).",
+  "decorative": "Uncategorized decorative imagery.",
+  "testimonial-logo": "Monochrome company marks atop testimonial cards (fresh capture).",
+  "app-badge": "App Store / Google Play footer badges.",
+  "product-UI": "Per-item product-UI collages for disclosure media swap (accordion right panel; contained render, never cover-cropped)."
+ },
+ "mediaTreatmentRules": [
+  {
+   "assetKind": "hero-illustration",
+   "role": "*",
+   "fit": "contain",
+   "evidence": "Transparent illustration with meaningful alpha/outer silhouette."
+  },
+  {
+   "assetKind": "product-UI",
+   "role": "card-media",
+   "fit": "cover",
+   "evidence": "Curated screenshot/collage cards are authored as full-bleed media regions."
+  },
+  {
+   "assetKind": "product-UI",
+   "role": "accordion-media",
+   "fit": "contain",
+   "evidence": "Disclosure product-UI collages are authored as uncropped layers inside a bounded media well."
+  },
+  {
+   "assetKind": "product-graphic",
+   "role": "card-media",
+   "fit": "cover",
+   "evidence": "Curated screenshot/collage cards are authored as full-bleed media regions."
+  }
+ ],
+ "counts": {
+  "app-badge": 2,
+  "award-badge": 6,
+  "background-art": 2,
+  "feature-icon": 8,
+  "hero-illustration": 1,
+  "integration-logo": 4,
+  "logo": 1,
+  "logo-wall-logo": 12,
+  "product-graphic": 6,
+  "rating-badge": 3,
+  "testimonial-avatar": 4,
+  "testimonial-logo": 4,
+  "product-UI": 5
+ },
+ "total": 58,
+ "assets": [
+  {
+   "filename": "avatar-erik-sveen.webp",
+   "useCase": "testimonial-avatar",
+   "intendedSlot": "testimonial avatar (rendered as 50% circle)",
+   "label": "Erik Sveen",
+   "mimeType": "image/webp",
+   "width": 2000,
+   "height": 1468,
+   "sizeBytes": 124939,
+   "appearsInSections": [
+    8
+   ],
+   "sectionLabels": [
+    "testimonials"
+   ]
+  },
+  {
+   "filename": "avatar-luke-mckinlay.webp",
+   "useCase": "testimonial-avatar",
+   "intendedSlot": "testimonial avatar (rendered as 50% circle)",
+   "label": "Luke Mckinlay",
+   "mimeType": "image/webp",
+   "width": 2000,
+   "height": 1468,
+   "sizeBytes": 243715,
+   "appearsInSections": [
+    8
+   ],
+   "sectionLabels": [
+    "testimonials"
+   ]
+  },
+  {
+   "filename": "avatar-maria-shkaruppa.webp",
+   "useCase": "testimonial-avatar",
+   "intendedSlot": "testimonial avatar (rendered as 50% circle)",
+   "label": "Maria Shkaruppa",
+   "mimeType": "image/webp",
+   "width": 2000,
+   "height": 1468,
+   "sizeBytes": 214545,
+   "appearsInSections": [
+    8
+   ],
+   "sectionLabels": [
+    "testimonials"
+   ]
+  },
+  {
+   "filename": "avatar-marisol-jimenez.webp",
+   "useCase": "testimonial-avatar",
+   "intendedSlot": "testimonial avatar (rendered as 50% circle)",
+   "label": "Marisol Jimenez",
+   "mimeType": "image/webp",
+   "width": 2000,
+   "height": 1468,
+   "sizeBytes": 148903,
+   "appearsInSections": [
+    8
+   ],
+   "sectionLabels": [
+    "testimonials"
+   ]
+  },
+  {
+   "filename": "badge-g2-gep-leader.webp",
+   "useCase": "award-badge",
+   "intendedSlot": "G2 award badge (150px badge row)",
+   "label": "G2 Gep Leader",
+   "mimeType": "image/webp",
+   "width": 280,
+   "height": 323,
+   "sizeBytes": 4484,
+   "appearsInSections": [
+    9
+   ],
+   "sectionLabels": [
+    "badge-strip"
+   ]
+  },
+  {
+   "filename": "badge-g2-payroll-leader.webp",
+   "useCase": "award-badge",
+   "intendedSlot": "G2 award badge (150px badge row)",
+   "label": "G2 Payroll Leader",
+   "mimeType": "image/webp",
+   "width": 280,
+   "height": 323,
+   "sizeBytes": 4178,
+   "appearsInSections": [
+    9
+   ],
+   "sectionLabels": [
+    "badge-strip"
+   ]
+  },
+  {
+   "filename": "badge-g2-top100-fastest-growing.webp",
+   "useCase": "award-badge",
+   "intendedSlot": "G2 award badge (150px badge row)",
+   "label": "G2 Top100 Fastest Growing",
+   "mimeType": "image/webp",
+   "width": 280,
+   "height": 323,
+   "sizeBytes": 4936,
+   "appearsInSections": [
+    9
+   ],
+   "sectionLabels": [
+    "badge-strip"
+   ]
+  },
+  {
+   "filename": "badge-g2-top100-global-sellers.webp",
+   "useCase": "award-badge",
+   "intendedSlot": "G2 award badge (150px badge row)",
+   "label": "G2 Top100 Global Sellers",
+   "mimeType": "image/webp",
+   "width": 560,
+   "height": 646,
+   "sizeBytes": 9104,
+   "appearsInSections": [
+    9
+   ],
+   "sectionLabels": [
+    "badge-strip"
+   ]
+  },
+  {
+   "filename": "badge-g2-top100-hr.webp",
+   "useCase": "award-badge",
+   "intendedSlot": "G2 award badge (150px badge row)",
+   "label": "G2 Top100 Hr",
+   "mimeType": "image/webp",
+   "width": 560,
+   "height": 646,
+   "sizeBytes": 9880,
+   "appearsInSections": [
+    9
+   ],
+   "sectionLabels": [
+    "badge-strip"
+   ]
+  },
+  {
+   "filename": "badge-g2-top50-hr.webp",
+   "useCase": "award-badge",
+   "intendedSlot": "G2 award badge (150px badge row)",
+   "label": "G2 Top50 Hr",
+   "mimeType": "image/webp",
+   "width": 280,
+   "height": 323,
+   "sizeBytes": 4542,
+   "appearsInSections": [
+    9
+   ],
+   "sectionLabels": [
+    "badge-strip"
+   ]
+  },
+  {
+   "filename": "bg-noise-grey-green-blue-top.webp",
+   "useCase": "background-art",
+   "intendedSlot": "pastel noise-gradient art surface (hero inset panel + closing CTA; dark ink on it)",
+   "label": "Noise Grey Green Blue Top",
+   "mimeType": "image/webp",
+   "width": 4560,
+   "height": 2320,
+   "sizeBytes": 28676,
+   "appearsInSections": [
+    1,
+    10
+   ],
+   "sectionLabels": [
+    "hero",
+    "closing-cta"
+   ]
+  },
+  {
+   "filename": "card-api-first.webp",
+   "useCase": "product-graphic",
+   "intendedSlot": "workflow card media (product art on deep-navy backdrop)",
+   "label": "Api First",
+   "mimeType": "image/webp",
+   "width": 1200,
+   "height": 1100,
+   "sizeBytes": 154137,
+   "appearsInSections": [
+    6
+   ],
+   "sectionLabels": [
+    "workflow-cards"
+   ]
+  },
+  {
+   "filename": "card-customer-story-culture.webp",
+   "useCase": "product-graphic",
+   "intendedSlot": "customer-story card media (photo collage on navy)",
+   "label": "Customer Story Culture",
+   "mimeType": "image/webp",
+   "width": 1498,
+   "height": 1100,
+   "sizeBytes": 24188,
+   "appearsInSections": [
+    6
+   ],
+   "sectionLabels": [
+    "workflow-cards"
+   ]
+  },
+  {
+   "filename": "card-customer-story-reverse-tech.webp",
+   "useCase": "product-graphic",
+   "intendedSlot": "customer-story card media (photo collage on navy)",
+   "label": "Customer Story Reverse Tech",
+   "mimeType": "image/webp",
+   "width": 1498,
+   "height": 1100,
+   "sizeBytes": 27898,
+   "appearsInSections": [
+    6
+   ],
+   "sectionLabels": [
+    "workflow-cards"
+   ]
+  },
+  {
+   "filename": "card-integrations.webp",
+   "useCase": "product-graphic",
+   "intendedSlot": "workflow card media (product art on deep-navy backdrop)",
+   "label": "Integrations",
+   "mimeType": "image/webp",
+   "width": 1200,
+   "height": 1100,
+   "sizeBytes": 50304,
+   "appearsInSections": [
+    6
+   ],
+   "sectionLabels": [
+    "workflow-cards"
+   ]
+  },
+  {
+   "filename": "card-mcp-agents.webp",
+   "useCase": "product-graphic",
+   "intendedSlot": "workflow card media (product art on deep-navy backdrop)",
+   "label": "Mcp Agents",
+   "mimeType": "image/webp",
+   "width": 1200,
+   "height": 1100,
+   "sizeBytes": 89473,
+   "appearsInSections": [
+    6
+   ],
+   "sectionLabels": [
+    "workflow-cards"
+   ]
+  },
+  {
+   "filename": "hero-globe-illustration.webp",
+   "useCase": "hero-illustration",
+   "intendedSlot": "hero media: globe illustration w/ orbiting product-UI chips (right column)",
+   "label": "Globe Illustration",
+   "mimeType": "image/webp",
+   "width": 1498,
+   "height": 1100,
+   "sizeBytes": 265577,
+   "appearsInSections": [
+    1
+   ],
+   "sectionLabels": [
+    "hero"
+   ]
+  },
+  {
+   "filename": "icon-check-star-stamp.webp",
+   "useCase": "feature-icon",
+   "intendedSlot": "decorative stamp glyph",
+   "label": "Check Star Stamp",
+   "mimeType": "image/webp",
+   "width": 132,
+   "height": 128,
+   "sizeBytes": 10758,
+   "appearsInSections": [
+    9
+   ],
+   "sectionLabels": [
+    "badge-strip"
+   ]
+  },
+  {
+   "filename": "icon-contractor-management.webp",
+   "useCase": "feature-icon",
+   "intendedSlot": "product-family icon (pale-blue chip family)",
+   "label": "Contractor Management",
+   "mimeType": "image/webp",
+   "width": 64,
+   "height": 64,
+   "sizeBytes": 1734,
+   "appearsInSections": [
+    10
+   ],
+   "sectionLabels": [
+    "closing-cta"
+   ]
+  },
+  {
+   "filename": "icon-contractor-of-record.webp",
+   "useCase": "feature-icon",
+   "intendedSlot": "product-family icon (pale-blue chip family)",
+   "label": "Contractor Of Record",
+   "mimeType": "image/webp",
+   "width": 64,
+   "height": 64,
+   "sizeBytes": 1308,
+   "appearsInSections": [
+    10
+   ],
+   "sectionLabels": [
+    "closing-cta"
+   ]
+  },
+  {
+   "filename": "icon-eor.webp",
+   "useCase": "feature-icon",
+   "intendedSlot": "product-family icon (pale-blue chip family)",
+   "label": "Eor",
+   "mimeType": "image/webp",
+   "width": 64,
+   "height": 64,
+   "sizeBytes": 1646,
+   "appearsInSections": [
+    10
+   ],
+   "sectionLabels": [
+    "closing-cta"
+   ]
+  },
+  {
+   "filename": "icon-global-payroll.webp",
+   "useCase": "feature-icon",
+   "intendedSlot": "product-family icon (pale-blue chip family)",
+   "label": "Global Payroll",
+   "mimeType": "image/webp",
+   "width": 64,
+   "height": 64,
+   "sizeBytes": 1662,
+   "appearsInSections": [
+    10
+   ],
+   "sectionLabels": [
+    "closing-cta"
+   ]
+  },
+  {
+   "filename": "icon-peo.webp",
+   "useCase": "feature-icon",
+   "intendedSlot": "product-family icon (pale-blue chip family)",
+   "label": "Peo",
+   "mimeType": "image/webp",
+   "width": 64,
+   "height": 64,
+   "sizeBytes": 1152,
+   "appearsInSections": [
+    10
+   ],
+   "sectionLabels": [
+    "closing-cta"
+   ]
+  },
+  {
+   "filename": "logo-anthropic.svg",
+   "useCase": "logo-wall-logo",
+   "intendedSlot": "customer trust logo (monochrome ink vector, marquee row ~40px)",
+   "label": "Anthropic",
+   "mimeType": "image/svg+xml",
+   "width": 179,
+   "height": 40,
+   "sizeBytes": 2472,
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "logo-wall"
+   ]
+  },
+  {
+   "filename": "logo-bamboohr.webp",
+   "useCase": "integration-logo",
+   "intendedSlot": "partner/integration logo (colored, static centered row 64px tier)",
+   "label": "Bamboohr",
+   "mimeType": "image/webp",
+   "width": 1380,
+   "height": 600,
+   "sizeBytes": 16520,
+   "appearsInSections": [
+    7
+   ],
+   "sectionLabels": [
+    "partner-logos"
+   ]
+  },
+  {
+   "filename": "logo-box.svg",
+   "useCase": "logo-wall-logo",
+   "intendedSlot": "customer trust logo (monochrome ink vector, marquee row ~40px)",
+   "label": "Box",
+   "mimeType": "image/svg+xml",
+   "width": 63,
+   "height": 40,
+   "sizeBytes": 4287,
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "logo-wall"
+   ]
+  },
+  {
+   "filename": "logo-byd.svg",
+   "useCase": "logo-wall-logo",
+   "intendedSlot": "customer trust logo (monochrome ink vector, marquee row ~40px)",
+   "label": "Byd",
+   "mimeType": "image/svg+xml",
+   "width": 67,
+   "height": 40,
+   "sizeBytes": 3141,
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "logo-wall"
+   ]
+  },
+  {
+   "filename": "logo-datadog.svg",
+   "useCase": "logo-wall-logo",
+   "intendedSlot": "customer trust logo (monochrome ink vector, marquee row ~40px)",
+   "label": "Datadog",
+   "mimeType": "image/svg+xml",
+   "width": 158,
+   "height": 40,
+   "sizeBytes": 7513,
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "logo-wall"
+   ]
+  },
+  {
+   "filename": "logo-gitlab.svg",
+   "useCase": "logo-wall-logo",
+   "intendedSlot": "customer trust logo (monochrome ink vector, marquee row ~40px)",
+   "label": "Gitlab",
+   "mimeType": "image/svg+xml",
+   "width": 130,
+   "height": 40,
+   "sizeBytes": 3801,
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "logo-wall"
+   ]
+  },
+  {
+   "filename": "logo-gusto.webp",
+   "useCase": "integration-logo",
+   "intendedSlot": "partner/integration logo (colored, static centered row 64px tier)",
+   "label": "Gusto",
+   "mimeType": "image/webp",
+   "width": 747,
+   "height": 600,
+   "sizeBytes": 10066,
+   "appearsInSections": [
+    7
+   ],
+   "sectionLabels": [
+    "partner-logos"
+   ]
+  },
+  {
+   "filename": "logo-heineken.svg",
+   "useCase": "logo-wall-logo",
+   "intendedSlot": "customer trust logo (monochrome ink vector, marquee row ~40px)",
+   "label": "Heineken",
+   "mimeType": "image/svg+xml",
+   "width": 191,
+   "height": 40,
+   "sizeBytes": 13858,
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "logo-wall"
+   ]
+  },
+  {
+   "filename": "logo-kfc.svg",
+   "useCase": "logo-wall-logo",
+   "intendedSlot": "customer trust logo (monochrome ink vector, marquee row ~40px)",
+   "label": "Kfc",
+   "mimeType": "image/svg+xml",
+   "width": 89,
+   "height": 40,
+   "sizeBytes": 3122,
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "logo-wall"
+   ]
+  },
+  {
+   "filename": "logo-lovable.svg",
+   "useCase": "logo-wall-logo",
+   "intendedSlot": "customer trust logo (monochrome ink vector, marquee row ~40px)",
+   "label": "Lovable",
+   "mimeType": "image/svg+xml",
+   "width": 144,
+   "height": 40,
+   "sizeBytes": 6278,
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "logo-wall"
+   ]
+  },
+  {
+   "filename": "logo-mercury.svg",
+   "useCase": "logo-wall-logo",
+   "intendedSlot": "customer trust logo (monochrome ink vector, marquee row ~40px)",
+   "label": "Mercury",
+   "mimeType": "image/svg+xml",
+   "width": 182,
+   "height": 40,
+   "sizeBytes": 13060,
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "logo-wall"
+   ]
+  },
+  {
+   "filename": "logo-miro.svg",
+   "useCase": "logo-wall-logo",
+   "intendedSlot": "customer trust logo (monochrome ink vector, marquee row ~40px)",
+   "label": "Miro",
+   "mimeType": "image/svg+xml",
+   "width": 92,
+   "height": 40,
+   "sizeBytes": 1684,
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "logo-wall"
+   ]
+  },
+  {
+   "filename": "logo-mizuho.svg",
+   "useCase": "logo-wall-logo",
+   "intendedSlot": "customer trust logo (monochrome ink vector, marquee row ~40px)",
+   "label": "Mizuho",
+   "mimeType": "image/svg+xml",
+   "width": 103,
+   "height": 40,
+   "sizeBytes": 3650,
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "logo-wall"
+   ]
+  },
+  {
+   "filename": "logo-personio.webp",
+   "useCase": "integration-logo",
+   "intendedSlot": "partner/integration logo (colored, static centered row 64px tier)",
+   "label": "Personio",
+   "mimeType": "image/webp",
+   "width": 1202,
+   "height": 600,
+   "sizeBytes": 8722,
+   "appearsInSections": [
+    7
+   ],
+   "sectionLabels": [
+    "partner-logos"
+   ]
+  },
+  {
+   "filename": "logo-vercel.svg",
+   "useCase": "logo-wall-logo",
+   "intendedSlot": "customer trust logo (monochrome ink vector, marquee row ~40px)",
+   "label": "Vercel",
+   "mimeType": "image/svg+xml",
+   "width": 136,
+   "height": 40,
+   "sizeBytes": 3890,
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "logo-wall"
+   ]
+  },
+  {
+   "filename": "logo-workday-certified.webp",
+   "useCase": "integration-logo",
+   "intendedSlot": "partner/integration logo (colored, static centered row 64px tier)",
+   "label": "Workday Certified",
+   "mimeType": "image/webp",
+   "width": 600,
+   "height": 600,
+   "sizeBytes": 15796,
+   "appearsInSections": [
+    7
+   ],
+   "sectionLabels": [
+    "partner-logos"
+   ]
+  },
+  {
+   "filename": "panel-infrastructure-ui-snippet.webp",
+   "useCase": "product-graphic",
+   "intendedSlot": "product-UI snippet art (split-panel media)",
+   "label": "Infrastructure Ui Snippet",
+   "mimeType": "image/webp",
+   "width": 1526,
+   "height": 1100,
+   "sizeBytes": 137516,
+   "appearsInSections": [
+    4
+   ],
+   "sectionLabels": [
+    "infra-panel"
+   ]
+  },
+  {
+   "filename": "rating-capterra.webp",
+   "useCase": "rating-badge",
+   "intendedSlot": "review-platform rating chip (stars + score)",
+   "label": "Capterra",
+   "mimeType": "image/webp",
+   "width": 432,
+   "height": 48,
+   "sizeBytes": 5809,
+   "appearsInSections": [
+    9
+   ],
+   "sectionLabels": [
+    "badge-strip"
+   ]
+  },
+  {
+   "filename": "rating-g2.webp",
+   "useCase": "rating-badge",
+   "intendedSlot": "review-platform rating chip (stars + score)",
+   "label": "G2",
+   "mimeType": "image/webp",
+   "width": 308,
+   "height": 48,
+   "sizeBytes": 4800,
+   "appearsInSections": [
+    9
+   ],
+   "sectionLabels": [
+    "badge-strip"
+   ]
+  },
+  {
+   "filename": "rating-trustpilot.webp",
+   "useCase": "rating-badge",
+   "intendedSlot": "review-platform rating chip (stars + score)",
+   "label": "Trustpilot",
+   "mimeType": "image/webp",
+   "width": 429,
+   "height": 48,
+   "sizeBytes": 5468,
+   "appearsInSections": [
+    9
+   ],
+   "sectionLabels": [
+    "badge-strip"
+   ]
+  },
+  {
+   "filename": "remote-wordmark.svg",
+   "useCase": "logo",
+   "intendedSlot": "nav/footer brand wordmark (mark + word, ink #141415)",
+   "label": "Remote Wordmark",
+   "mimeType": "image/svg+xml",
+   "width": 94,
+   "height": 30,
+   "sizeBytes": 5828,
+   "appearsInSections": [
+    0,
+    11
+   ],
+   "sectionLabels": [
+    "navbar",
+    "footer"
+   ]
+  },
+  {
+   "filename": "logo-fountain.svg",
+   "useCase": "testimonial-logo",
+   "intendedSlot": "testimonial-card company mark (monochrome ink)",
+   "label": "Fountain",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 6480,
+   "appearsInSections": [],
+   "sectionLabels": []
+  },
+  {
+   "filename": "logo-reversetech.svg",
+   "useCase": "testimonial-logo",
+   "intendedSlot": "testimonial-card company mark (monochrome ink)",
+   "label": "Reverse Tech",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 5298,
+   "appearsInSections": [],
+   "sectionLabels": []
+  },
+  {
+   "filename": "logo-homeproject.svg",
+   "useCase": "testimonial-logo",
+   "intendedSlot": "testimonial-card company mark (monochrome ink)",
+   "label": "HomeProject",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 13084,
+   "appearsInSections": [],
+   "sectionLabels": []
+  },
+  {
+   "filename": "logo-semrush.svg",
+   "useCase": "testimonial-logo",
+   "intendedSlot": "testimonial-card company mark (monochrome ink)",
+   "label": "Semrush",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 4241,
+   "appearsInSections": [],
+   "sectionLabels": []
+  },
+  {
+   "filename": "icon-eor-product.svg",
+   "useCase": "feature-icon",
+   "intendedSlot": "accordion/product family icon (EOR)",
+   "label": "Employer of Record icon",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 1064,
+   "appearsInSections": [],
+   "sectionLabels": []
+  },
+  {
+   "filename": "icon-contractor-product.svg",
+   "useCase": "feature-icon",
+   "intendedSlot": "accordion/product family icon (Contractor Management)",
+   "label": "Contractor Management icon",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 997,
+   "appearsInSections": [],
+   "sectionLabels": []
+  },
+  {
+   "filename": "bg-noise-top-2x.webp",
+   "useCase": "background-art",
+   "intendedSlot": "hero/closing noise-gradient art surface (fresh 2x capture)",
+   "label": "Pastel noise gradient (2x)",
+   "mimeType": "image/webp",
+   "sizeBytes": 28676,
+   "appearsInSections": [],
+   "sectionLabels": [],
+   "width": 4560,
+   "height": 2320
+  },
+  {
+   "filename": "badge-app-store.svg",
+   "useCase": "app-badge",
+   "intendedSlot": "footer app download badge",
+   "label": "App Store badge",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 14548,
+   "appearsInSections": [],
+   "sectionLabels": []
+  },
+  {
+   "filename": "badge-google-play.svg",
+   "useCase": "app-badge",
+   "intendedSlot": "footer app download badge",
+   "label": "Google Play badge",
+   "mimeType": "image/svg+xml",
+   "sizeBytes": 9156,
+   "appearsInSections": [],
+   "sectionLabels": []
+  },
+  {
+   "filename": "collage-eor-ui.webp",
+   "useCase": "product-UI",
+   "intendedSlot": "feature-accordion per-item media swap (right counterweight well)",
+   "label": "Employer of Record collage",
+   "mimeType": "image/webp",
+   "width": 1068,
+   "height": 1068,
+   "sizeBytes": 44210,
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "feature-accordion"
+   ],
+   "accordionItem": "Employer of Record (EOR)",
+   "provenance": "fid8 2026-07: live per-item interaction capture (tools/extract/capture_disclosure_states.py), settled media-region element crop @2x"
+  },
+  {
+   "filename": "collage-global-payroll-ui.webp",
+   "useCase": "product-UI",
+   "intendedSlot": "feature-accordion per-item media swap (right counterweight well)",
+   "label": "Global Payroll collage",
+   "mimeType": "image/webp",
+   "width": 1068,
+   "height": 1068,
+   "sizeBytes": 52320,
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "feature-accordion"
+   ],
+   "accordionItem": "Global Payroll",
+   "provenance": "fid8 2026-07: live per-item interaction capture (tools/extract/capture_disclosure_states.py), settled media-region element crop @2x"
+  },
+  {
+   "filename": "collage-contractor-of-record-ui.webp",
+   "useCase": "product-UI",
+   "intendedSlot": "feature-accordion per-item media swap (right counterweight well)",
+   "label": "Contractor of Record collage",
+   "mimeType": "image/webp",
+   "width": 1068,
+   "height": 1068,
+   "sizeBytes": 48832,
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "feature-accordion"
+   ],
+   "accordionItem": "Contractor of Record (COR)",
+   "provenance": "fid8 2026-07: live per-item interaction capture (tools/extract/capture_disclosure_states.py), settled media-region element crop @2x"
+  },
+  {
+   "filename": "collage-contractor-management-ui.webp",
+   "useCase": "product-UI",
+   "intendedSlot": "feature-accordion per-item media swap (right counterweight well)",
+   "label": "Contractor Management collage",
+   "mimeType": "image/webp",
+   "width": 1068,
+   "height": 1068,
+   "sizeBytes": 55446,
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "feature-accordion"
+   ],
+   "accordionItem": "Contractor Management",
+   "provenance": "fid8 2026-07: live per-item interaction capture (tools/extract/capture_disclosure_states.py), settled media-region element crop @2x"
+  },
+  {
+   "filename": "collage-peo-ui.webp",
+   "useCase": "product-UI",
+   "intendedSlot": "feature-accordion per-item media swap (right counterweight well)",
+   "label": "PEO collage",
+   "mimeType": "image/webp",
+   "width": 1068,
+   "height": 1068,
+   "sizeBytes": 48770,
+   "appearsInSections": [
+    2
+   ],
+   "sectionLabels": [
+    "feature-accordion"
+   ],
+   "accordionItem": "Professional Employer Organization (PEO)",
+   "provenance": "fid8 2026-07: live per-item interaction capture (tools/extract/capture_disclosure_states.py), settled media-region element crop @2x"
+  }
+ ]
+}

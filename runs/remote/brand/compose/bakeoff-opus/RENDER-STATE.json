@@ -1,0 +1,77 @@
+{
+  "recordedAt": "2026-07-10T19:54:41.100468+01:00",
+  "note": "SHA-256 + mtime of shared renderer/schema/brand inputs USED AT RENDER TIME for candidate B (final render). Parent will normalize by re-rendering composition.json against a final code state; these are the versions this lane's index.html was produced against.",
+  "renderCommand": "venv/bin/python brand_pipeline/render_composition.py runs/remote/brand/compose/bakeoff-opus/composition.json runs/remote/brand/brand.yaml -o runs/remote/brand/compose/bakeoff-opus --style corporate-saas-clean",
+  "files": {
+    "brand_pipeline/render_composition.py": {
+      "sha256": "0b98adc7c78cc7fc3af1106f1e6e749510123f2d264778b058bcf676ab1046b2",
+      "bytes": 717,
+      "mtime": "2026-07-01T21:46:30.487006+01:00"
+    },
+    "brand_pipeline/compose_from_composition.py": {
+      "sha256": "18a8db2afcf67986b71de7a7a1084b1f3a070ea48108e73a37b7cf26e8db2b06",
+      "bytes": 97216,
+      "mtime": "2026-07-10T19:19:23.133996+01:00"
+    },
+    "brand_pipeline/compose_page.py": {
+      "sha256": "a9ff75a09d9d4b3435205949104173e702723b5486ee6a298463f9af46678614",
+      "bytes": 57504,
+      "mtime": "2026-07-10T18:00:37.192033+01:00"
+    },
+    "brand_pipeline/compose_section.py": {
+      "sha256": "76799f4117a71bb6e661f6b4a0443a94c7312d6320a716c911e37091b6bfcbb2",
+      "bytes": 378990,
+      "mtime": "2026-07-10T19:45:33.380336+01:00"
+    },
+    "brand_pipeline/component_render.py": {
+      "sha256": "5c8dc56eca924ce4bd3ca64feba01f7d381c97ad1ae3b88479eff2916041ccdb",
+      "bytes": 158279,
+      "mtime": "2026-07-10T19:45:28.456231+01:00"
+    },
+    "brand_pipeline/tokens_css.py": {
+      "sha256": "4ba772c923854bd7ee012912cce60f2729d629187173f4dce002c791812aa779",
+      "bytes": 27611,
+      "mtime": "2026-07-09T19:42:34.857445+01:00"
+    },
+    "brand_pipeline/styles.py": {
+      "sha256": "be2bbc9605cfd4f17a6293afb683a7c4ef2d3fb1b86463131c08da4d4619218a",
+      "bytes": 46575,
+      "mtime": "2026-07-09T18:41:18.770540+01:00"
+    },
+    "brand_pipeline/layout_library.py": {
+      "sha256": "c567b158ecea83dd69c0de9ffff8db860ccb0d37a738049e875a032936d2b86e",
+      "bytes": 33798,
+      "mtime": "2026-07-10T15:18:24.947366+01:00"
+    },
+    "brand_pipeline/onbrand_check.py": {
+      "sha256": "d72a70679dd327255aa43bf94737fc9fc51a920f0b8421993d81c568dacfed8e",
+      "bytes": 100470,
+      "mtime": "2026-07-10T15:28:07.049194+01:00"
+    },
+    "brand_pipeline/slop_audit.mjs": {
+      "sha256": "1557461d3ed631555bcfec078b3ac6e181b96b79475d6cae45df1acb81f22aad",
+      "bytes": 10313,
+      "mtime": "2026-07-10T19:45:57.501322+01:00"
+    },
+    "runs/remote/brand/brand.yaml": {
+      "sha256": "aba210664fc4ecddca7e2d7587567613e66cb8ecde3b5afc933dcf3429b25327",
+      "bytes": 144481,
+      "mtime": "2026-07-10T18:27:25.514750+01:00"
+    },
+    "runs/remote/brand/layout-library.yaml": {
+      "sha256": "be945533ba45a74a049d73ec4e93c10d278c0c5661382920b0cf9229c9fef0fe",
+      "bytes": 30088,
+      "mtime": "2026-07-09T20:18:35.461012+01:00"
+    },
+    "runs/remote/brand/section-copy.yaml": {
+      "sha256": "63bfcc4f8637bdd60f4fc5e4539417e54a3a0ed6046b3c4fcd80fe470ee4eaee",
+      "bytes": 8987,
+      "mtime": "2026-07-09T18:05:05.225315+01:00"
+    },
+    "styles/corporate-saas-clean.md": {
+      "sha256": "02a7ac78bc11ca4b109b10bf6089ba9cc91381d75219e144896d5477aa4a3d0d",
+      "bytes": 19793,
+      "mtime": "2026-07-09T18:41:18.827241+01:00"
+    }
+  }
+}

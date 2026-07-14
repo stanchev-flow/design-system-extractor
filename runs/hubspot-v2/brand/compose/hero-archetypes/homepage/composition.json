@@ -1,0 +1,134 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "hubspot-homepage-hero",
+    "name": "HubSpot homepage hero \u2014 one platform, Breeze agents",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "sec-0",
+      "useCase": "hero",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-photo-overlay"
+      },
+      "archetypeRef": "hero-split-product",
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "media"
+      },
+      "slots": [
+        {
+          "name": "kicker",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": "The agentic customer platform"
+        },
+        {
+          "name": "heading",
+          "role": "hero-claim",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": "Go-to-market teams grow here."
+        },
+        {
+          "name": "subheading",
+          "role": "supporting-lede",
+          "contract": "paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": "Marketing, sales, and service run on one platform, with Breeze AI agents working alongside your team. Every hub, every workflow, and every customer conversation moves in sync."
+        },
+        {
+          "name": "cta-primary",
+          "role": "primary-action",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 3,
+          "copy": "Get a demo"
+        },
+        {
+          "name": "cta-secondary",
+          "role": "secondary-action",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "colStart": 4,
+          "colSpan": 3,
+          "copy": "Get started free"
+        },
+        {
+          "name": "proof",
+          "role": "proof-beat",
+          "contract": "stat",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": {
+            "value": "299,000+",
+            "label": "customers in 135+ countries grow on HubSpot"
+          }
+        },
+        {
+          "name": "media",
+          "role": "product-surface",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "landscape",
+          "z": "mid",
+          "colStart": 7,
+          "colSpan": 6,
+          "asset": {
+            "src": "025-customer-20platform-20graphic-20-20hubs1-5x-20-1.png",
+            "alt": "HubSpot customer platform \u2014 Marketing, Sales, Service, Content, Data, and Commerce hubs connected on one Smart CRM",
+            "ratio": "landscape"
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "mediaSide": "right",
+        "proofRow": "true"
+      }
+    }
+  ],
+  "rationale": "Single hero adapted from hero-photo-overlay but re-expressed as hero-split-product on the warm light canvas the brief asks for (warm/editorial, never stock abstraction): copy column carries the one claim 'Go-to-market teams grow here.' with a Breeze/one-platform lede, the paired demo/free actions (one primary, one outline secondary), and the honest 299,000+/135+ proof beat; the counterweight media binds the real hubs platform graphic to show breadth at first glance. Asymmetric left anchor now names the media slot as its counterweight (fixes alignment-resolution + headerContext); the authored display heading renders verbatim (fixes display-heading identity). No text-on-media needed since art sits beside the copy, so treatments stay empty and every neverDo holds (sentence-case size-driven heading, light canvas, no text logos)."
+}

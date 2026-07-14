@@ -1,0 +1,139 @@
+schemaVersion: section-grounding.v1
+sectionRole: logos
+layout:
+  structure: centered heading -> row of 6 award badges -> row of 3 rating scores -> centered CTA button
+  columns: 6
+  alignment: center
+  approxPaddingPx:
+    top: 120
+    bottom: 60
+  gapPx: 32
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#eeeeee'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: badge
+  bgApprox: '#ffffff'
+  parent: canvas
+  radiusPx: 4
+  borderApprox: '1px #1a1a1a'
+  inkApprox: '#1a1a1a'
+- role: chrome-bar
+  bgApprox: '#eeeeee'
+  parent: canvas
+  radiusPx: 24
+  borderApprox: '1px #1a1a1a'
+  inkApprox: '#1a1a1a'
+typography:
+- role: h2
+  approxSizePx: 34
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: caption
+  approxSizePx: 11
+  weightApprox: 700
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: body
+  approxSizePx: 16
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: control-label
+  approxSizePx: 18
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+components:
+- kind: badge
+  variant: award-shield
+  countObserved: 6
+  anatomy: banner label top -> G2 red-square glyph -> year 2026 -> big rank text -> subtitle category
+    -> multicolor chevron base
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 4
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1a1a1a'
+  caseTreatment: upper
+- kind: rating
+  variant: star-score
+  countObserved: 3
+  anatomy: brand glyph -> brand name -> star row -> numeric score
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: label -> arrow icon
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 16 32
+    radiusPx: 28
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: sentence
+copy:
+  heading: 'The #1 global HR platform as voted by you'
+  actions:
+  - label: 4,000+ reviews →
+    styleHint: outlined pill hugging content
+  items:
+  - heading: Top 50
+    body: HR PRODUCTS
+    meta: BEST SOFTWARE 2026
+  - heading: Top 100
+    body: BEST SOFTWARE PRODUCTS
+    meta: BEST SOFTWARE 2026
+  - heading: Top 100
+    body: FASTEST GROWING
+    meta: BEST SOFTWARE 2026
+  - heading: Top 100
+    body: GLOBAL SELLERS
+    meta: BEST SOFTWARE 2026
+  - heading: Leader
+    body: MULTI-COUNTRY PAYROLL
+    meta: SPRING 2026
+  - heading: Leader
+    body: GLOBAL EMPLOYMENT PLATFORMS
+    meta: SPRING 2026
+  logosLegible:
+  - G2
+  - Trustpilot
+  - Capterra
+media:
+- kind: icon-set
+  treatment: 6 award shield badges with multicolor chevron bases, white on canvas
+  aspect: portrait
+  approxFractionOfSection: 0.4
+- kind: logo-vector
+  treatment: 3 review-platform logos with star ratings and scores 4.6/5, 4.7/5, 4.4/5
+  aspect: wide
+  approxFractionOfSection: 0.12
+confidence: high
+notes:
+- Top edge shows a small cut-off black underline from previous section
+- 'Star ratings: G2 4.6/5, Trustpilot 4.7/5, Capterra 4.4/5'
+_source:
+  crop: section-08-base-module-scss-module-sgiwqa-section.png
+  domClasses: base-module-scss-module__sGIWqa__section
+  model: claude-opus-4-8

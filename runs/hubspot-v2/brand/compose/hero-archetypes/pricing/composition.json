@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "pricing-hero-hubspot",
+    "name": "Pricing hero \u2014 HubSpot",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "sec-0",
+      "useCase": "hero",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "archetypeRef": "hero-pricing-value-forward",
+      "slots": [
+        {
+          "name": "kicker",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 8,
+          "copy": "Pricing"
+        },
+        {
+          "name": "heading",
+          "role": "heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 9,
+          "copy": "Start free, scale as you grow."
+        },
+        {
+          "name": "subheading",
+          "role": "subheading",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 7,
+          "copy": "Free tools to get going, no credit card required. Upgrade to premium editions on each hub as your team needs more."
+        },
+        {
+          "name": "actions",
+          "role": "cta",
+          "contract": "header",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 8,
+          "copy": {
+            "cta": [
+              {
+                "label": "Get started free",
+                "variant": "filled",
+                "role": "primary"
+              },
+              {
+                "label": "Talk to sales",
+                "variant": "ghost",
+                "role": "secondary"
+              }
+            ]
+          }
+        },
+        {
+          "name": "meta",
+          "role": "meta",
+          "contract": "label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": "Premium editions priced per hub \u00b7 billed monthly or annually"
+        }
+      ],
+      "treatments": []
+    }
+  ],
+  "rationale": "Single compact pricing masthead using the hero-pricing-value-forward archetype: a stack that frames the value ('start free, scale as you grow'), states the qualifier (free tools, no credit card, premium editions per hub) in the subheading, and hands off to the plan cards below the fold. Repair: removed the asymmetric 'left' anchor with no counterweight \u2014 the section now omits section.alignment so the brand's standaloneStack header grammar resolves anchoring (no dangling counterweight required). surfaceIntent stays on the warm 'primary' canvas (not yet used in this run's variety set) to keep the masthead a quiet working opener, not a statement band. Primary action 'Get started free' takes the sole filled register; 'Talk to sales' is a quiet ghost sibling (AS-59). No plan cards drawn here \u2014 the archetype's anatomy is framing-only. Off-grid treatments deliberately withheld: a clean, disciplined, on-grid stack earns the trust a pricing opener needs."
+}

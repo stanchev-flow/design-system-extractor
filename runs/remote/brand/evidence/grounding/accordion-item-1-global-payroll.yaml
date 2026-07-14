@@ -1,0 +1,197 @@
+schemaVersion: section-grounding.v1
+sectionRole: features
+layout:
+  structure: split ~48/52, accordion list left / product-UI illustration right
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 100
+    bottom: 120
+  gapPx: 80
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#eeeeec'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: card
+  bgApprox: '#6b1f2f'
+  parent: canvas
+  radiusPx: 16
+  borderApprox: none
+  inkApprox: '#ffffff'
+- role: card
+  bgApprox: '#ffffff'
+  parent: canvas
+  radiusPx: 14
+  borderApprox: '1px #e6e6e4'
+  inkApprox: '#1a1a1a'
+- role: media-well
+  bgApprox: '#f4f4f2'
+  parent: canvas
+  radiusPx: 0
+  borderApprox: '1px #d6dbe8 (grid lines)'
+  inkApprox: '#1a1a1a'
+- role: band
+  bgApprox: '#fce8ec'
+  parent: media-well
+  radiusPx: 10
+  borderApprox: '1px dashed #d98'
+  inkApprox: '#1a1a1a'
+typography:
+- role: eyebrow
+  approxSizePx: 17
+  weightApprox: 700
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#a8213a'
+  familyClass: grotesque-sans
+- role: h1
+  approxSizePx: 58
+  weightApprox: 600
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: h3
+  approxSizePx: 26
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: body
+  approxSizePx: 22
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#f0d8dd'
+  familyClass: grotesque-sans
+- role: caption
+  approxSizePx: 15
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#4a4a4a'
+  familyClass: grotesque-sans
+relationalSpacingPx:
+  eyebrowToHeading: 24
+  headingToBody: 40
+  bodyToCta: 44
+components:
+- kind: accordion-item
+  variant: filled-neutral
+  countObserved: 5
+  anatomy: icon left -> label -> chevron right; expanded item shows body + circular arrow CTA
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 28 32
+    radiusPx: 16
+  surfaceApprox: '#eeeeec'
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: accordion-item
+  variant: filled-primary
+  countObserved: 1
+  anatomy: icon -> heading -> chevron-up; body text -> circular arrow button
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 32 40
+    radiusPx: 16
+  surfaceApprox: '#6b1f2f'
+  inkApprox: '#ffffff'
+  caseTreatment: title
+- kind: button
+  variant: filled-neutral
+  countObserved: 1
+  anatomy: circular white button with right-arrow glyph
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: 18 18
+    radiusPx: 30
+  surfaceApprox: '#ffffff'
+  inkApprox: '#6b1f2f'
+  caseTreatment: sentence
+- kind: icon
+  variant: gradient-glyph
+  countObserved: 5
+  anatomy: small pink-to-red gradient mark left of each accordion label
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#c0203c'
+  caseTreatment: sentence
+- kind: badge
+  variant: pill
+  countObserved: 2
+  anatomy: NEED APPROVAL pill and Biweekly pill on product card
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 6 12
+    radiusPx: 14
+  surfaceApprox: '#fce8ec'
+  inkApprox: '#a8213a'
+  caseTreatment: upper
+- kind: list-item
+  variant: status-row
+  countObserved: 4
+  anatomy: green check circle -> label -> date right
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 18 20
+    radiusPx: 10
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1a1a1a'
+  caseTreatment: sentence
+copy:
+  eyebrow: HOW WE DO IT
+  heading: One system of record. Every employment need.
+  body: Accurate, compliant payroll in every country you operate. Run by our in-house teams, no partner
+    network.
+  actions:
+  - label: →
+    styleHint: filled-neutral circular arrow button
+  items:
+  - heading: Employer of Record (EOR)
+    body: null
+    meta: null
+  - heading: Global Payroll
+    body: Accurate, compliant payroll in every country you operate. Run by our in-house teams, no partner
+      network.
+    meta: expanded
+  - heading: Contractor of Record (COR)
+    body: null
+    meta: null
+  - heading: Contractor Management
+    body: null
+    meta: null
+  - heading: Professional Employer Organization (PEO)
+    body: null
+    meta: null
+media:
+- kind: product-ui
+  treatment: payroll status timeline cards + employee portrait card over faint blue grid media-well
+  aspect: portrait
+  approxFractionOfSection: 0.45
+- kind: photo
+  treatment: circle/rounded-crop portrait with US flag badge over dark red backing
+  aspect: portrait
+  approxFractionOfSection: 0.08
+motionHints:
+- accordion with one row open (animated expand)
+- chevron-down/up toggles indicate collapse/expand
+- arrow-in-circle CTA suggests hover advance
+- cursor pointer over + button betrays interactive add action
+- status timeline connector line implies stepped progress
+confidence: high
+notes:
+- cookie-consent circular icon bottom-left overlaps section (page chrome, not part of section)
+- portrait described generically; subject not identified
+_source:
+  crop: accordion-item-1-global-payroll.png
+  domClasses: ''
+  model: claude-opus-4-8

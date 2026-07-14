@@ -1,0 +1,24 @@
+{
+  "Candidate A": {
+    "render": {
+      "command": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/venv/bin/python brand_pipeline/render_composition.py runs/remote/brand/compose/bakeoff-opus/composition.json runs/remote/brand/brand.yaml -o runs/remote/brand/compose/bakeoff-opus --style corporate-saas-clean",
+      "elapsedSeconds": 1.3826
+    },
+    "schema": {
+      "pass": true,
+      "errorCount": 0,
+      "errors": []
+    }
+  },
+  "Candidate B": {
+    "render": {
+      "command": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/venv/bin/python brand_pipeline/render_composition.py runs/remote/brand/compose/bakeoff-sol/composition.json runs/remote/brand/brand.yaml -o runs/remote/brand/compose/bakeoff-sol",
+      "elapsedSeconds": 1.8928
+    },
+    "schema": {
+      "pass": true,
+      "errorCount": 0,
+      "errors": []
+    }
+  }
+}

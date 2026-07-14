@@ -1,0 +1,96 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "hubspot-developers-hero",
+    "name": "Developer hero \u2014 HubSpot Developers",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "stack",
+      "archetypeRef": "hero-search-first",
+      "surfaceIntent": "inverse",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "heading",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 8,
+          "copy": "Build on the customer platform."
+        },
+        {
+          "name": "search",
+          "role": "primary-control",
+          "contract": "form",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 8,
+          "copy": {
+            "fields": [
+              {
+                "label": "Search the docs",
+                "placeholder": "Search the docs \u2014 APIs, SDKs, CRM cards, Breeze agent tools"
+              }
+            ],
+            "submit": "Search",
+            "note": "Reference, guides, and API changelogs across the developer platform."
+          }
+        },
+        {
+          "name": "popular",
+          "role": "popular-links",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 8,
+          "copy": [
+            {
+              "label": "CRM API",
+              "variant": "arrow"
+            },
+            {
+              "label": "UI extensions",
+              "variant": "arrow"
+            },
+            {
+              "label": "OAuth",
+              "variant": "arrow"
+            },
+            {
+              "label": "Webhooks",
+              "variant": "arrow"
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "popularRow": "on"
+      }
+    }
+  ],
+  "rationale": "Single hero section per the brief. Chose the hero-search-first genre archetype because the brief names the search field as the hero's primary control \u2014 a compact working masthead that routes developers to answers fast, not a persuasion band. The excluded code/terminal skeleton is honored (no mono tier / code asset in HubSpot v2). Standalone-stack alignment context: I OMIT section.alignment so the brand's header grammar resolves the anchor (fixing the prior alignment-resolution failure where a bare 'left' anchor named no counterweight \u2014 a compact standalone masthead has no natural counterweight slot, so omission + brand resolution is the honest fix). Surface is inverse (deep teal) as the opening bookend that carries the page's single accent on the display-title's terminal period. Heading is sentence-case, weight \u2264500 (never-heavy-headings). The search form binds the brief's exact placeholder vocabulary and a working submit affordance; popular entry points render as quiet arrow links (CRM API / UI extensions / OAuth / webhooks) hugging their labels. No photo, so no text-on-media treatment is needed."
+}

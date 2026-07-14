@@ -1,0 +1,253 @@
+{
+  "generatedAt": "2026-07-10T19:07:22.814320+00:00",
+  "conditions": {
+    "renderCodeState": "See RENDER-STATE.json",
+    "screenshotViewport": "1440x1000",
+    "deviceScaleFactor": 1,
+    "reducedMotion": true,
+    "revealStabilized": true,
+    "antiSlopWidths": [
+      1440,
+      1180
+    ],
+    "spacingViewport": "1440x900"
+  },
+  "candidates": {
+    "Candidate A": {
+      "schema": {
+        "pass": true,
+        "errorCount": 0,
+        "errors": []
+      },
+      "render": {
+        "command": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/venv/bin/python brand_pipeline/render_composition.py runs/remote/brand/compose/bakeoff-opus/composition.json runs/remote/brand/brand.yaml -o runs/remote/brand/compose/bakeoff-opus --style corporate-saas-clean",
+        "elapsedSeconds": 1.3826
+      },
+      "onbrandHard": {
+        "pass": true,
+        "neverDo": {
+          "never-typographic-primary": true,
+          "never-zero-radius": true,
+          "never-allcaps-headings": true
+        },
+        "compositionInvariants": {
+          "mode": "hard",
+          "pass": true,
+          "checks": {
+            "single-accent": true,
+            "primitive-only": true,
+            "rhythm": true,
+            "data-composition": true,
+            "slot-resolution": true,
+            "text-contrast": true,
+            "decoration-salience": true,
+            "occlusion": true,
+            "band-attribution": true,
+            "alignment-resolution": true,
+            "media-registration": true,
+            "interaction-contrast": true,
+            "token-provenance": true,
+            "logo-wall-integrity": true
+          },
+          "details": {
+            "text-contrast": "184 text elements measured against their effective background (surface + decoration layer); worst = sec-0/c-button('Book a demo') at 4.91 (floor 4.5); skipped=89",
+            "decoration-salience": "no decoration layers (ghost word / watermark) in this render"
+          }
+        },
+        "readability": {
+          "text-contrast": "184 text elements measured against their effective background (surface + decoration layer); worst = sec-0/c-button('Book a demo') at 4.91 (floor 4.5); skipped=89",
+          "decoration-salience": "no decoration layers (ghost word / watermark) in this render"
+        }
+      },
+      "antiSlop": {
+        "pass": true,
+        "widths": {
+          "1440": "PASS",
+          "1180": "PASS"
+        }
+      },
+      "interactionStrict": {
+        "pass": true,
+        "summary": {
+          "cells": {
+            "pass": 38,
+            "fail": 0,
+            "advisory": 2,
+            "skip": 3
+          },
+          "required_check_failures": {}
+        }
+      },
+      "spacingStrict": {
+        "pass": false,
+        "counts": {
+          "conform": 156,
+          "drift": 0,
+          "wrong-step": 0,
+          "off-ladder": 1,
+          "unmapped": 0,
+          "hardFails": 1,
+          "total": 157
+        },
+        "hardFailures": [
+          {
+            "section": "sec-9",
+            "relationship": "container.stack-width",
+            "measuredPx": 736,
+            "severity": "off-ladder",
+            "declared": {
+              "name": "header-measure",
+              "px": 720.0,
+              "source": "token"
+            },
+            "nearest": {
+              "name": "header-measure",
+              "px": 720.0,
+              "source": "token"
+            },
+            "note": ""
+          }
+        ]
+      },
+      "unresolvedSlots": {
+        "pass": true,
+        "count": 0
+      }
+    },
+    "Candidate B": {
+      "schema": {
+        "pass": true,
+        "errorCount": 0,
+        "errors": []
+      },
+      "render": {
+        "command": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/venv/bin/python brand_pipeline/render_composition.py runs/remote/brand/compose/bakeoff-sol/composition.json runs/remote/brand/brand.yaml -o runs/remote/brand/compose/bakeoff-sol",
+        "elapsedSeconds": 1.8928
+      },
+      "onbrandHard": {
+        "pass": true,
+        "neverDo": {
+          "never-typographic-primary": true,
+          "never-zero-radius": true,
+          "never-allcaps-headings": true
+        },
+        "compositionInvariants": {
+          "mode": "hard",
+          "pass": true,
+          "checks": {
+            "single-accent": true,
+            "primitive-only": true,
+            "rhythm": true,
+            "data-composition": true,
+            "slot-resolution": true,
+            "text-contrast": true,
+            "decoration-salience": true,
+            "occlusion": true,
+            "band-attribution": true,
+            "alignment-resolution": true,
+            "media-registration": true,
+            "interaction-contrast": true,
+            "token-provenance": true,
+            "logo-wall-integrity": true
+          },
+          "details": {
+            "text-contrast": "203 text elements measured against their effective background (surface + decoration layer); worst = sec-0/c-button('Request a demo') at 4.91 (floor 4.5); skipped=89",
+            "decoration-salience": "no decoration layers (ghost word / watermark) in this render"
+          }
+        },
+        "readability": {
+          "text-contrast": "203 text elements measured against their effective background (surface + decoration layer); worst = sec-0/c-button('Request a demo') at 4.91 (floor 4.5); skipped=89",
+          "decoration-salience": "no decoration layers (ghost word / watermark) in this render"
+        }
+      },
+      "antiSlop": {
+        "pass": true,
+        "widths": {
+          "1440": "PASS",
+          "1180": "PASS"
+        }
+      },
+      "interactionStrict": {
+        "pass": true,
+        "summary": {
+          "cells": {
+            "pass": 37,
+            "fail": 0,
+            "advisory": 2,
+            "skip": 4
+          },
+          "required_check_failures": {}
+        }
+      },
+      "spacingStrict": {
+        "pass": false,
+        "counts": {
+          "conform": 173,
+          "drift": 0,
+          "wrong-step": 2,
+          "off-ladder": 1,
+          "unmapped": 0,
+          "hardFails": 3,
+          "total": 176
+        },
+        "hardFailures": [
+          {
+            "section": "sec-5",
+            "relationship": "header.heading-to-body",
+            "measuredPx": 64,
+            "severity": "wrong-step",
+            "declared": {
+              "name": "heading-to-body",
+              "px": 16.0,
+              "source": "token"
+            },
+            "nearest": {
+              "name": "block-to-block",
+              "px": 64.0,
+              "source": "token"
+            },
+            "note": ".cs-flow"
+          },
+          {
+            "section": "sec-6",
+            "relationship": "container.width",
+            "measuredPx": 720,
+            "severity": "wrong-step",
+            "declared": {
+              "name": "container-span",
+              "px": 1169.28,
+              "source": "token"
+            },
+            "nearest": {
+              "name": "header-measure",
+              "px": 720.0,
+              "source": "token"
+            },
+            "note": ""
+          },
+          {
+            "section": "sec-9",
+            "relationship": "container.stack-width",
+            "measuredPx": 736,
+            "severity": "off-ladder",
+            "declared": {
+              "name": "header-measure",
+              "px": 720.0,
+              "source": "token"
+            },
+            "nearest": {
+              "name": "header-measure",
+              "px": 720.0,
+              "source": "token"
+            },
+            "note": ""
+          }
+        ]
+      },
+      "unresolvedSlots": {
+        "pass": true,
+        "count": 0
+      }
+    }
+  }
+}

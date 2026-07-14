@@ -1,0 +1,369 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "new-offering-launch",
+    "name": "New offering launch",
+    "useCasesRequested": [
+      "hero",
+      "logos",
+      "features",
+      "testimonial",
+      "cta",
+      "footer"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/remote/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-inset-noise-panel"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": "Introducing"
+        },
+        {
+          "name": "heading",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": "Everything in one place"
+        },
+        {
+          "name": "subheading",
+          "role": "lede",
+          "contract": "subheading",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "stretch",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": "A simpler way to get started \u2014 built for how you actually work."
+        },
+        {
+          "name": "primaryCta",
+          "role": "primary-action",
+          "contract": "button",
+          "textLen": "word",
+          "sizeClass": "body",
+          "width": "hug",
+          "colStart": 1,
+          "colSpan": 3,
+          "copy": "Start free"
+        },
+        {
+          "name": "secondaryCta",
+          "role": "secondary-action",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "colStart": 4,
+          "colSpan": 3,
+          "copy": "See how it works"
+        },
+        {
+          "name": "heroMedia",
+          "role": "hero-illustration",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "landscape",
+          "z": "front",
+          "colStart": 7,
+          "colSpan": 6,
+          "asset": {
+            "src": "hero-globe-illustration.webp",
+            "alt": "Remote global platform illustration",
+            "ratio": "landscape"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "panel-on-media",
+          "target": "heading",
+          "over": "heroMedia",
+          "distribute": "center",
+          "sanctioned": true
+        }
+      ],
+      "knobs": {
+        "secondaryCta": "on"
+      }
+    },
+    {
+      "id": "logos",
+      "useCase": "logos",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "logo-marquee-strip"
+      },
+      "slots": [
+        {
+          "name": "caption",
+          "role": "microlabel",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "copy": "Trusted by 10,000+ teams"
+        },
+        {
+          "name": "logos",
+          "role": "logo-wall",
+          "contract": "logo",
+          "textLen": "none",
+          "sizeClass": "caption",
+          "width": "stretch",
+          "copy": [
+            {
+              "alt": "Anthropic",
+              "asset": "logo-anthropic.svg"
+            },
+            {
+              "alt": "Box",
+              "asset": "logo-box.svg"
+            },
+            {
+              "alt": "BYD",
+              "asset": "logo-byd.svg"
+            },
+            {
+              "alt": "Datadog",
+              "asset": "logo-datadog.svg"
+            },
+            {
+              "alt": "GitLab",
+              "asset": "logo-gitlab.svg"
+            },
+            {
+              "alt": "Heineken",
+              "asset": "logo-heineken.svg"
+            },
+            {
+              "alt": "KFC",
+              "asset": "logo-kfc.svg"
+            },
+            {
+              "alt": "Lovable",
+              "asset": "logo-lovable.svg"
+            },
+            {
+              "alt": "Mercury",
+              "asset": "logo-mercury.svg"
+            },
+            {
+              "alt": "Miro",
+              "asset": "logo-miro.svg"
+            },
+            {
+              "alt": "Mizuho",
+              "asset": "logo-mizuho.svg"
+            },
+            {
+              "alt": "Vercel",
+              "asset": "logo-vercel.svg"
+            }
+          ]
+        }
+      ],
+      "treatments": []
+    },
+    {
+      "id": "features",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "feature-accordion-deep-accent"
+      },
+      "slots": [
+        {
+          "name": "sectionHeader",
+          "role": "section-header",
+          "contract": "header",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "stretch",
+          "copy": {
+            "eyebrow": "Why teams switch",
+            "heading": "One place for everything you run"
+          }
+        },
+        {
+          "name": "cards",
+          "role": "feature-cards",
+          "contract": "card",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "stretch",
+          "copy": [
+            {
+              "heading": "Set up in minutes",
+              "text": "No manual wiring \u2014 you're live the same day.",
+              "asset": "card-api-first.webp"
+            },
+            {
+              "heading": "One source of truth",
+              "text": "Everyone sees the same thing, always up to date.",
+              "asset": "card-integrations.webp"
+            },
+            {
+              "heading": "Scales with you",
+              "text": "From your first project to your thousandth.",
+              "asset": "card-mcp-agents.webp"
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "columns": "3",
+        "align": "left"
+      }
+    },
+    {
+      "id": "testimonial",
+      "useCase": "testimonial",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "testimonial-card-row"
+      },
+      "slots": [
+        {
+          "name": "testimonial",
+          "role": "social-proof",
+          "contract": "testimonial",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "stretch",
+          "copy": {
+            "quote": "We replaced three tools in a week and never looked back.",
+            "name": "Operations lead",
+            "role": "Mid-market team"
+          },
+          "asset": {
+            "src": "avatar-erik-sveen.webp",
+            "alt": "Operations lead portrait",
+            "ratio": "square"
+          }
+        }
+      ],
+      "treatments": []
+    },
+    {
+      "id": "cta",
+      "useCase": "cta",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-inline-banner"
+      },
+      "slots": [
+        {
+          "name": "ctaHeading",
+          "role": "conversion-heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "copy": "Ready to get everything in one place?"
+        },
+        {
+          "name": "ctaButton",
+          "role": "primary-action",
+          "contract": "button",
+          "textLen": "word",
+          "sizeClass": "body",
+          "width": "hug",
+          "copy": "Start free"
+        }
+      ],
+      "treatments": []
+    },
+    {
+      "id": "footer",
+      "useCase": "footer",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "logo-marquee-strip"
+      },
+      "slots": [
+        {
+          "name": "footerLinks",
+          "role": "footer-nav",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "stretch",
+          "copy": [
+            {
+              "text": "Product"
+            },
+            {
+              "text": "Pricing"
+            },
+            {
+              "text": "How it works"
+            },
+            {
+              "text": "Customers"
+            },
+            {
+              "text": "Contact"
+            }
+          ]
+        },
+        {
+          "name": "footerLegal",
+          "role": "legal",
+          "contract": "label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "stretch",
+          "copy": "\u00a9 2025 Remote. All rights reserved."
+        }
+      ],
+      "treatments": []
+    }
+  ],
+  "rationale": "Ordered hero \u2192 logos \u2192 features \u2192 testimonial \u2192 cta \u2192 footer to move an evaluating prospect from promise to proof to detail to nudge. The hero reuses hero-inset-noise-panel on the light noise-art panel (Remote is all-light) with the display title, supporting body, and the two pill actions; the single placed globe illustration fills the right half (colSpan 6, z:front). Logos reuse logo-marquee-strip binding the real customer SVG/webp vectors as {alt,asset} objects. Value props map to a 3-up card row adapted from the feature pattern, each module carrying a real card image. Social proof is a single testimonial stack; the conversion beat reuses cta-inline-banner with one filled pill; the footer adapts the canvas strip into a link row + legal line. Every non-hero section stays on-grid with even alignment, no off-grid treatments (locked style), single accent lives on the hero title/primary action, and all primary actions render as the brand's filled blue pill button. Gap noted: no dedicated footer or feature-accordion seed matched the cards layout exactly, so both were adapted from the nearest canvas/feature project patterns rather than invented novel."
+}

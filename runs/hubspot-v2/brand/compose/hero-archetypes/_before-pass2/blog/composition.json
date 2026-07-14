@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "hubspot-blog-hero",
+    "name": "The HubSpot Blog \u2014 content-hub opener",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "blog-hero",
+      "useCase": "hero",
+      "archetype": "split",
+      "surfaceIntent": "inverse",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "archetypeRef": "hero-content-featured-lead",
+      "grid": {
+        "columns": 12,
+        "gutter": "2rem"
+      },
+      "knobs": {
+        "featuredSide": "right",
+        "captureRow": "off"
+      },
+      "slots": [
+        {
+          "name": "kicker",
+          "role": "hub-name",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 5,
+          "copy": "The HubSpot Blog"
+        },
+        {
+          "name": "heading",
+          "role": "hub-promise",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 5,
+          "copy": "Playbooks, benchmarks, and honest takes for go-to-market teams."
+        },
+        {
+          "name": "subheading",
+          "role": "hub-lede",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 5,
+          "copy": "Fresh research and field-tested tactics for marketing, sales, and service. Written for the people who run the pipeline, not the hype cycle."
+        },
+        {
+          "name": "hub-action",
+          "role": "hub-cta",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 5,
+          "copy": "Browse all articles"
+        },
+        {
+          "name": "featured",
+          "role": "featured-piece",
+          "contract": "card",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "media",
+          "mediaAspect": "landscape",
+          "z": "mid",
+          "colStart": 7,
+          "colSpan": 6,
+          "copy": {
+            "eyebrow": "Featured report",
+            "heading": "The 2026 State of Customer Platforms",
+            "text": "1,200 GTM leaders on what agentic AI actually changed this year \u2014 where it moved the number, and where it didn't.",
+            "meta": "Research team \u00b7 14 min read",
+            "cta": "Read the report"
+          },
+          "asset": {
+            "src": "017-spotlight-resized-518x225.png",
+            "alt": "Cover art for The 2026 State of Customer Platforms report",
+            "ratio": "landscape"
+          }
+        }
+      ],
+      "treatments": []
+    }
+  ],
+  "rationale": "The brief is a content-hub opener that leads with a flagship piece, so I chose the hero-content-featured-lead genre archetype (split): a left masthead column (hub name eyebrow, the promise as the one display heading ending in the single orange period accent, a specific no-hype lede, and a quiet 'Browse all articles' hub link) beside a right featured card that gives the flagship report real estate \u2014 category pill, title, byline meta, warm spotlight cover art, and the 'Read the report' action. Per brand fidelity the sole hero uses surfaceIntent inverse (the brand's dark opening band) and carries the page's only accent on the display title; every CTA stays neutral cream on the teal surface to preserve the single-accent rule. No capture form (nothing in the brief promises a subscription outcome, avoiding AS-14). Reuse over invention: no novel structure or off-grid treatment was needed, so the section is a disciplined adapt of a library archetype."
+}

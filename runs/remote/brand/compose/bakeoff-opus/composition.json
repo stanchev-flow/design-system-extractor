@@ -1,0 +1,837 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "workforce-intelligence-launch",
+    "name": "Remote \u2014 Workforce Intelligence launch",
+    "text": "Launch landing page for Remote's new Workforce Intelligence product. Target VP People, CFO, and HR Operations at international companies with 500+ employees. Goal: qualified demo requests. ~10 sections: problem, product value, key capabilities, how it works, customer proof, comparison, FAQ, lead form. Concise, credible, specific; no invented claims/stats. Feels natively Remote, not a copy of the homepage.",
+    "useCasesRequested": [
+      "hero",
+      "features",
+      "testimonial",
+      "faq",
+      "cta"
+    ]
+  },
+  "brand": {
+    "ref": "runs/remote/brand/brand.yaml",
+    "name": "Remote"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-inset-noise-panel"
+      },
+      "novelty": "reuse",
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "NEW \u00b7 WORKFORCE INTELLIGENCE"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "display-title",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "heading": "See your global workforce clearly"
+          }
+        },
+        {
+          "name": "body",
+          "role": "body",
+          "contract": "paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "text": "Workforce Intelligence turns the employment data Remote already runs \u2014 payroll, headcount, cost, and compliance across every country \u2014 into one current, decision-ready view for your People and Finance teams."
+          }
+        },
+        {
+          "name": "cta-primary",
+          "role": "cta-primary",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "label": "Book a demo"
+          }
+        },
+        {
+          "name": "cta-secondary",
+          "role": "cta-secondary",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "label": "Take a product tour",
+            "family": "outlined"
+          }
+        },
+        {
+          "name": "media",
+          "role": "product illustration",
+          "contract": "image",
+          "mediaAspect": "square",
+          "width": "media",
+          "z": "front",
+          "asset": {
+            "src": "hero-globe-illustration.webp",
+            "alt": "Remote Workforce Intelligence overview illustration",
+            "ratio": "square"
+          }
+        },
+        {
+          "name": "background",
+          "role": "inset panel art",
+          "contract": "image",
+          "mediaAspect": "landscape",
+          "width": "full-bleed",
+          "z": "back",
+          "asset": {
+            "src": "bg-noise-top-2x.webp",
+            "alt": "",
+            "ratio": "landscape"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "panel-on-media",
+          "target": "background",
+          "sanctioned": true
+        }
+      ],
+      "knobs": {
+        "secondaryCta": "on"
+      }
+    },
+    {
+      "id": "problem",
+      "useCase": "features",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "infra-proof-split"
+      },
+      "novelty": "adapt",
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "THE VISIBILITY GAP"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "heading",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "heading": "Global teams outgrow their spreadsheets"
+          }
+        },
+        {
+          "name": "body",
+          "role": "body",
+          "contract": "paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": {
+            "text": "When you employ people across dozens of countries, the numbers that matter \u2014 fully-loaded cost per employee, headcount by entity, compliance status \u2014 live in different tools, currencies, and time zones. By the time Finance reconciles them they are already out of date, and People teams answer board questions from stale exports."
+          }
+        },
+        {
+          "name": "media",
+          "role": "product-ui media",
+          "contract": "image",
+          "mediaAspect": "landscape",
+          "width": "media",
+          "z": "front",
+          "asset": {
+            "src": "panel-infrastructure-ui-snippet.webp",
+            "alt": "Remote product interface showing workforce data"
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "mediaSide": "left"
+      }
+    },
+    {
+      "id": "product-value",
+      "useCase": "features",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "feature-accordion-deep-accent"
+      },
+      "novelty": "reuse",
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "ONE VIEW OF RECORD"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "heading",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "heading": "Every workforce number in one place, always current"
+          }
+        },
+        {
+          "name": "list",
+          "role": "accordion list",
+          "contract": "feature-item",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "label": "Total workforce cost",
+              "value": "Salary, benefits, employer taxes, and contractor spend, rolled up by country, entity, and team in your reporting currency \u2014 refreshed as each payroll runs."
+            },
+            {
+              "label": "Headcount and org structure",
+              "value": "A live map of who you employ, where, and how they are engaged \u2014 EOR, contractor, or PEO \u2014 and how your org is changing over time."
+            },
+            {
+              "label": "Compliance status",
+              "value": "Where every worker stands on contracts, classification, and local requirements, surfaced before it becomes a risk."
+            },
+            {
+              "label": "Benchmarks and planning",
+              "value": "Compare compensation against real market ranges and model the cost of your next hire in any country before you commit."
+            }
+          ]
+        },
+        {
+          "name": "media",
+          "role": "product-ui media",
+          "contract": "image",
+          "mediaAspect": "square",
+          "width": "media",
+          "z": "front",
+          "asset": {
+            "src": "panel-infrastructure-ui-snippet.webp",
+            "alt": "Workforce Intelligence panel showing cost and headcount"
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {}
+    },
+    {
+      "id": "capabilities",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "features-card-grid-navy-media"
+      },
+      "novelty": "reuse",
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "cards"
+      },
+      "grid": {
+        "columns": 3,
+        "gutter": "2rem"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "heading",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "WHAT'S INSIDE",
+            "heading": "Built for the people who answer for the numbers"
+          }
+        },
+        {
+          "name": "cards",
+          "role": "cards",
+          "contract": "feature-item",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "eyebrow": "COST ANALYTICS",
+              "heading": "Fully-loaded cost, live",
+              "body": "Salary, benefits, employer taxes, and contractor spend by country, entity, and team \u2014 in one currency, updated as each payroll runs. No exports.",
+              "asset": {
+                "src": "card-api-first.webp",
+                "alt": "Cost analytics interface"
+              }
+            },
+            {
+              "eyebrow": "COMPLIANCE",
+              "heading": "Risk you can see coming",
+              "body": "Classification, contract, and local-requirement status for every worker, drawn from the owned-entity compliance data Remote already maintains.",
+              "asset": {
+                "src": "card-integrations.webp",
+                "alt": "Compliance status interface"
+              }
+            },
+            {
+              "eyebrow": "PLANNING",
+              "heading": "Model the next hire",
+              "body": "Benchmark pay against real market ranges and estimate the true cost of hiring in a new country before you open the role.",
+              "asset": {
+                "src": "card-mcp-agents.webp",
+                "alt": "Hiring cost planning interface"
+              }
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "columns": 3
+      }
+    },
+    {
+      "id": "how-it-works",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "features-card-grid-navy-media"
+      },
+      "novelty": "adapt",
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "cards"
+      },
+      "grid": {
+        "columns": 3,
+        "gutter": "2rem"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "heading",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "HOW IT WORKS",
+            "heading": "No integration project \u2014 it is already connected"
+          }
+        },
+        {
+          "name": "steps",
+          "role": "cards",
+          "contract": "feature-item",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "eyebrow": "STEP 1",
+              "heading": "Runs on data you already have",
+              "body": "If you run employment through Remote, Workforce Intelligence is populated from day one. No imports, no data warehouse, no setup project.",
+              "asset": {
+                "src": "collage-eor-ui.webp",
+                "alt": "Employment records in the Remote platform"
+              }
+            },
+            {
+              "eyebrow": "STEP 2",
+              "heading": "Bring in the rest of your team",
+              "body": "Add contractors and directly-employed staff to the same view with lightweight connectors and secure uploads.",
+              "asset": {
+                "src": "collage-contractor-management-ui.webp",
+                "alt": "Contractor management in the Remote platform"
+              }
+            },
+            {
+              "eyebrow": "STEP 3",
+              "heading": "Share the view that fits the room",
+              "body": "Finance sees cost, People sees headcount, leadership sees the summary \u2014 role-based, from a single source of truth.",
+              "asset": {
+                "src": "collage-global-payroll-ui.webp",
+                "alt": "Payroll and cost view in the Remote platform"
+              }
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "columns": 3
+      }
+    },
+    {
+      "id": "comparison",
+      "useCase": "features",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "infra-proof-split"
+      },
+      "novelty": "adapt",
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "BEFORE AND AFTER"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "heading",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "heading": "The manual way vs. Workforce Intelligence"
+          }
+        },
+        {
+          "name": "rows",
+          "role": "comparison rows",
+          "contract": "feature-item",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "label": "Cost reporting",
+              "value": "Spreadsheets reconciled monthly, per country \u2192 one live rollup, every currency"
+            },
+            {
+              "label": "Compliance checks",
+              "value": "Periodic manual audits \u2192 continuous status, flagged early"
+            },
+            {
+              "label": "Headcount data",
+              "value": "Exports from several systems \u2192 a single current org view"
+            },
+            {
+              "label": "Planning a hire",
+              "value": "Guesswork and email threads \u2192 modeled cost before you commit"
+            }
+          ]
+        },
+        {
+          "name": "media",
+          "role": "product-ui media",
+          "contract": "image",
+          "mediaAspect": "landscape",
+          "width": "media",
+          "z": "front",
+          "asset": {
+            "src": "collage-global-payroll-ui.webp",
+            "alt": "Workforce Intelligence cost and payroll view"
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "mediaSide": "left"
+      }
+    },
+    {
+      "id": "proof",
+      "useCase": "testimonial",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "testimonial-card-row"
+      },
+      "novelty": "reuse",
+      "slots": [
+        {
+          "name": "heading",
+          "role": "heading",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "heading": "Trusted by finance and people teams worldwide"
+          }
+        },
+        {
+          "name": "subhead",
+          "role": "subhead",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "text": "Companies already run their global operations on Remote's owned infrastructure."
+          }
+        },
+        {
+          "name": "cards",
+          "role": "cards",
+          "contract": "testimonial",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "quote": "If we had to manage and coordinate everything in-house, it would cost us well over $500,000 more each year. Remote not only eliminates that financial strain but also takes the operational burden off our plate, allowing us to focus on growing our business with confidence and efficiency.",
+              "name": "Luke McKinlay",
+              "role": "VP of Finance",
+              "avatar": "avatar-luke-mckinlay.webp",
+              "asset": {
+                "src": "logo-fountain.svg",
+                "alt": "Fountain"
+              }
+            },
+            {
+              "quote": "We run monthly, semi-monthly and hourly payroll in multiple different currencies around the world and our Finance Manager has full visibility in a single platform. With Remote, you can make it happen.",
+              "name": "Marisol Jim\u00e9nez",
+              "role": "Head of People",
+              "avatar": "avatar-marisol-jimenez.webp",
+              "asset": {
+                "src": "logo-reversetech.svg",
+                "alt": "Reverse Tech"
+              }
+            },
+            {
+              "quote": "We see Remote as a leading and trusted partner in this space. The expert support they provide in local payroll, tax compliance, and HR operations has streamlined our processes and created more opportunities for growth and success on a global scale.",
+              "name": "Maria Shkaruppa",
+              "role": "Senior Global Mobility and Remote Hiring Manager",
+              "avatar": "avatar-maria-shkaruppa.webp",
+              "asset": {
+                "src": "logo-homeproject.svg",
+                "alt": "Home Project"
+              }
+            }
+          ]
+        },
+        {
+          "name": "action",
+          "role": "action",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "label": "Read customer stories",
+            "family": "outlined"
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {}
+    },
+    {
+      "id": "conversion-beat",
+      "useCase": "cta",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-inline-banner"
+      },
+      "novelty": "reuse",
+      "slots": [
+        {
+          "name": "heading",
+          "role": "heading",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "heading": "Want to see your own workforce data in one view? Talk to our team."
+          }
+        },
+        {
+          "name": "action",
+          "role": "cta",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "label": "Book a demo"
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {}
+    },
+    {
+      "id": "faq",
+      "useCase": "faq",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "alignment": {
+        "anchor": "centered"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "QUESTIONS"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "heading",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "heading": "Common questions from People and Finance teams"
+          }
+        },
+        {
+          "name": "items",
+          "role": "faq",
+          "contract": "faq-item",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": [
+            {
+              "question": "Do we need to use Remote for payroll to use Workforce Intelligence?",
+              "answer": "It is most complete when Remote runs your employment, because the data is already there. You can also bring in contractors and directly-employed staff through connectors and secure uploads."
+            },
+            {
+              "question": "Where does the data come from?",
+              "answer": "From the employment records Remote already maintains as your Employer of Record, payroll, and contractor provider, plus any sources you connect. Nothing is estimated where a real record exists."
+            },
+            {
+              "question": "Who is it built for?",
+              "answer": "People and HR operations leaders who need current headcount and compliance status, and Finance leaders who need fully-loaded workforce cost \u2014 working from the same source of truth."
+            },
+            {
+              "question": "Is our data secure?",
+              "answer": "Workforce Intelligence runs on the same infrastructure as the rest of Remote, which is SOC 2 Type 2 compliant and ISO 27001 certified. Access is role-based."
+            },
+            {
+              "question": "How do we get started?",
+              "answer": "Book a demo and we will show it with your regions and engagement types. If you already use Remote, we can walk through your live view."
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "faq": {
+          "exclusive": true,
+          "open": 0
+        }
+      }
+    },
+    {
+      "id": "lead-form",
+      "useCase": "cta",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "REQUEST A DEMO"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "heading",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "heading": "See Workforce Intelligence with your own regions"
+          }
+        },
+        {
+          "name": "body",
+          "role": "body",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "text": "Tell us a little about your team and we will tailor the walkthrough to your countries, entities, and engagement mix."
+          }
+        },
+        {
+          "name": "form",
+          "role": "signup",
+          "contract": "form",
+          "textLen": "none",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "submit": "Book my demo",
+            "consent": "By requesting a demo you agree to Remote contacting you about the product. You can unsubscribe at any time.",
+            "success": "Thanks \u2014 a member of our team will be in touch shortly.",
+            "fields": [
+              {
+                "kind": "text",
+                "label": "Full name",
+                "name": "name",
+                "placeholder": "Alex Rivera",
+                "span": "half",
+                "required": true,
+                "autocomplete": "name"
+              },
+              {
+                "kind": "email",
+                "label": "Work email",
+                "name": "email",
+                "placeholder": "you@company.com",
+                "span": "half",
+                "required": true,
+                "autocomplete": "email"
+              },
+              {
+                "kind": "text",
+                "label": "Company",
+                "name": "company",
+                "placeholder": "Company name",
+                "span": "half",
+                "required": true,
+                "autocomplete": "organization"
+              },
+              {
+                "kind": "select",
+                "label": "Company size",
+                "name": "size",
+                "span": "half",
+                "required": true,
+                "options": [
+                  "500\u20131,000",
+                  "1,000\u20135,000",
+                  "5,000+"
+                ]
+              },
+              {
+                "kind": "select",
+                "label": "Primary region",
+                "name": "region",
+                "span": "half",
+                "options": [
+                  "North America",
+                  "EMEA",
+                  "APAC",
+                  "LATAM",
+                  "Global"
+                ]
+              },
+              {
+                "kind": "textarea",
+                "label": "What would you like to see?",
+                "name": "notes",
+                "placeholder": "Countries, entities, and the numbers you need in one view",
+                "span": "full"
+              }
+            ]
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {}
+    }
+  ],
+  "rationale": "Ten sections seeded almost entirely from the Remote PROJECT layout library so the page reads natively Remote without copying its homepage narrative. Hero reuses the inset noise-panel art hero; the problem reuses the infra-proof split (media | copy); product value reuses the deep-accent accordion (its inset-emphasis treatment renders the one inverted active row the brand allows); capabilities reuse the navy-media card grid; how-it-works and comparison adapt the card family into plain module grids (no navy wells) to stay distinct; customer proof reuses the testimonial card row with VERBATIM captured Remote testimonials; a compact inline banner is the mid-page conversion beat; a native FAQ accordion and a multi-field demo lead form close the page on the goal (qualified demo requests). Surface is one continuous light canvas; the only accent is the hero panel and the accordion's active row. No statistics or customer claims are invented."
+}

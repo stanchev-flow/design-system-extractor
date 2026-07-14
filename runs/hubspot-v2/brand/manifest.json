@@ -1,0 +1,108 @@
+{
+ "project": "HubSpot v2",
+ "brand": "hubspot-v2",
+ "status": "completed",
+ "pipeline_run_completed": true,
+ "source_url": "https://www.hubspot.com/",
+ "started_utc": "2026-07-10T19:14:30Z",
+ "completed_utc": "2026-07-11T00:15:00Z",
+ "pipeline": "run_brand_extraction.py (canonical: mine-dom, mine-css, mine-motion, measure, slice, ground, curate, author, validate) + compose_replica gate",
+ "vision_model": "claude-opus-4-8",
+ "vision_preflight": "PASS 2026-07-10T19:13Z (tiny analyze_image call, usage returned)",
+ "capture_dir": "screenshots/hubspot-v2/",
+ "viewports": [1920, 1440, 960, 375],
+ "screenshots": [
+  "screenshots/hubspot-v2/hubspot-fullpage.png",
+  "screenshots/hubspot-v2/tiers/hubspot-fullpage-1920.png",
+  "screenshots/hubspot-v2/tiers/hubspot-fullpage-960.png",
+  "screenshots/hubspot-v2/tiers/hubspot-fullpage-375.png"
+ ],
+ "input_hashes_sha256": {
+  "screenshots/hubspot-v2/hubspot.html": "a0647c17fbeb1ab389de7dffe14684125605330554b01ef4f89476c7430c2c68",
+  "screenshots/hubspot-v2/hubspot-fullpage.png": "9e063651ef1aa387ac0cfe3adae3c45d2ebc2c922f5c78d426471848d2846cd2",
+  "screenshots/hubspot-v2/tiers/hubspot-fullpage-1920.png": "c7d3bce2df97ad74f9363b4ac684e7314a42ebb693808a672aeb41c28b0f5280",
+  "screenshots/hubspot-v2/tiers/hubspot-fullpage-960.png": "03f47c6670f9abd1adda3b575bd048c61bdfaef9b06c22a0cc65dfdd35baaec7",
+  "screenshots/hubspot-v2/tiers/hubspot-fullpage-375.png": "a85e0377eea7b6bb0a286966ce646d23868a808a515442922fe5fbe44d3cad8e"
+ },
+ "stages": {
+  "capture": "done 2026-07-10T19:18Z (1440 canonical + 1920/960/375 tier shots, webfonts downloaded + rewritten local)",
+  "mine-dom": "done (25 sections censused)",
+  "mine-css": "done (1,676 rules / 41 sheets)",
+  "mine-motion": "done (59 transitions, 6 animations, 9 keyframes)",
+  "measure": "done (10 content sections + nav/footer chrome after phantom-section fix, 4 tiers)",
+  "slice": "done (12 crops: header + 10 sections + footer)",
+  "ground": "done (12/12 crops, claude-opus-4-8, 0 failures)",
+  "chrome": "done (source-chrome.v2.json + 5 mega open panels)",
+  "interaction-states": "done (9 states)",
+  "curate": "done (66 entries + 4 font files)",
+  "author": "done 2026-07-10T20:20Z (brand.yaml, layout-library 10 patterns, section-copy verbatim, assets-tagged 66, brand.md, voice.md)",
+  "validate": "PASS (C1-C21: 0 errors, 1 expected breadth warning)",
+  "render": "done (components-preview spec book, 10 layouts; regenerated fix1)",
+  "replica": "done — overall 0.9563 (fix1 punch list; trajectory 0.478 / 0.844 / 0.895 / 0.905 / 0.9031 / 0.9563)"
+ },
+ "gates": {
+  "validate": "PASS (C1-C23, 0 errors; C23 recipe coverage quiet — headrail recipe bound both directions)",
+  "onbrand": "PASS (--composition --layout hero; all 14 HARD invariants incl. interaction-contrast + token-provenance) [fix3 re-run]",
+  "slop": "PASS @1440 + @1180 (incl. AS-60 painted-edge addendum + new AS-61 text-link ink hug) [fix3 re-run]",
+  "interaction_strict": "PASS (0 failing required cells) [fix3 re-run]",
+  "spacing_strict": "PASS (fix3: exit 0 — 114 conform / 3 drift / 0 wrong-step / 0 off-ladder / 6 unmapped of 123; the 2 extra cells vs fix2 are the hero title/foot stack-width cells now classified as measure-capped NARROW_STACKS; actions.alignment now measures the group's PAINTED left edge vs the content column and conforms on all three stamped groups; drift = the pre-existing split.column-gap +10px x2 and block.row-gap -8px advisories)"
+ },
+ "replica": {
+  "overall": 0.956,
+  "previous_overall": 0.9563,
+  "fix3_note": "0.956 held through fix3 (containment law migration render-neutral where containment was already correct). Intended geometry changes: powered-by-ai action row flush-left (was hug-centered by its own auto margins), platform slider contained at the shared measure with arrows on the dot rail (was full-bleed with overlay paddles over text), card arrow-link underlines hug label+glyph, hero heading capped at stackMeasure 49rem (2-line wrap parity at 1440 AND 1920).",
+  "fix2_note": "0.9563 -> 0.956: the siderail container-law cap (product-grid band now spans the shared 1080 spine like the source; widthFidelity 0.995) trades ~0.005 of one band's pixel similarity for spacing-gate truth, same doctrine as fix1 iter 5. Logo strip now draws measured 153x76 boxes at 69px gaps; arrow-links render the brand's own sprite SVG as data-URI masks; action rows run measured 16px (24px closing) gaps.",
+  "fix1_overall": 0.9031,
+  "source_height": 6986,
+  "replica_height": 6960,
+  "bands": {
+   "page-nav": 0.9769, "hero": 0.9778, "logo-wall": 0.9739,
+   "platform-carousel": 0.9487, "product-grid": 0.9750, "agent-carousel": 0.9098,
+   "integration-banner": 0.9294, "case-study-header": 0.9541,
+   "testimonial-tabs": 0.9539, "badge-row": 0.9498, "closing-cta": 0.9702,
+   "footer": 0.9658
+  },
+  "bands_previous": {
+   "page-nav": 0.9107, "hero": 0.7709, "logo-wall": 0.9119,
+   "platform-carousel": 0.9394, "product-grid": 0.9475, "agent-carousel": 0.8714,
+   "integration-banner": 0.9117, "case-study-header": 0.9242,
+   "testimonial-tabs": 0.8588, "badge-row": 0.9531, "closing-cta": 0.9602,
+   "footer": 0.9427
+  },
+  "punch_list_non_authoring": [
+   "hero: video-static capability gap (source embeds motion media)",
+   "agent-carousel: video-static capability gap",
+   "closing-cta: advisory width (source pairs stack with illustration art)",
+   "navbar: mega-menu open panels authored but closed-state comparison cannot score them"
+  ]
+ },
+ "fix1_punch_list": {
+  "date_utc": "2026-07-12",
+  "items_closed": 12,
+  "shots_prefix": "shots/fix1-",
+  "shared_devices": [
+   "navbar.utilityTier two-tier bar", "navbar.ctas[] N-action group",
+   "footer.bottomBar.anatomy centered-stack", "AS-59 slop rule",
+   "IC-TAB contract + auditor family", "WAI-ARIA tab device",
+   "split-carousel statics + edge-cut rail controls",
+   "side-rail card counterweight (split-archetype gated)",
+   "headrow rail (chip/pill + rule + trailing CTA) + split intro",
+   "pattern bandPadding/bandRhythm stamps", "surface controls:onInverse button variants"
+  ]
+ },
+ "regression_proof": {
+  "pytest": "872 passed (fix3; baseline 842 + 30 net new in test_fix3_containment_alignment.py: containment law membership + source lint both directions, AG alignment ownership incl. crossAlign, audit-catches-centering pre-fail/post-pass fixture, AS-60 painted-edge + AS-61 presence, rail-nav carousel, arrow-link hug live-browser, hero measure + wrap parity 1440/1920; fid10 ContainerLawTest migrated to law-membership assertions; zero regressions)",
+  "remote_replica": "0.950 re-rendered with current code (baseline held exactly through fix3: containment law migration render-neutral, AG alignment claims inert without facts)",
+  "remote_gates": "[fix3 re-run] onbrand PASS (--composition replica), slop PASS @1440+@1180 (replica + event incl. AS-61), interaction strict 0 failing, spacing strict replica 131/131 conform / event 108 conform + 2 pre-existing unmapped",
+  "remote_composed_lane": "event-genlaunch re-rendered through current composers (stale build had the pre-fit-content arrow-link; AS-61 caught it — the rule works — fresh render passes)"
+ },
+ "vision_grounding": {
+  "model": "claude-opus-4-8",
+  "calls": 12,
+  "ok": 12,
+  "failed": 0,
+  "input_tokens": 47200,
+  "output_tokens": 17545
+ },
+ "notes": "Fresh capture; no artifacts reused from runs/hubspot, runs/hubspot-sol, runs/hubspot-sol-clean-v2, experiments/hubspot-*. All 7 prior failure classes beaten (navbar band rendered 0.911, height parity 7187 vs 6986, logo wall bound 0.912, per-section curated assets, HubSpot Sans+Serif self-hosted, onbrand PASS, slop PASS)."
+}

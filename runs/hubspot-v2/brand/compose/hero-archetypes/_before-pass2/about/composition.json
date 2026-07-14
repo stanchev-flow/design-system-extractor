@@ -1,0 +1,119 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "about-hero-mission",
+    "name": "About hero \u2014 HubSpot",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "about-hero",
+      "useCase": "hero",
+      "archetype": "stack",
+      "surfaceIntent": "inverse",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "archetypeRef": "hero-mission-monument",
+      "grid": {
+        "columns": 12,
+        "gutter": "2rem"
+      },
+      "alignment": {
+        "anchor": "centered"
+      },
+      "slots": [
+        {
+          "name": "kicker",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "colStart": 3,
+          "colSpan": 8,
+          "copy": "Our mission"
+        },
+        {
+          "name": "statement",
+          "role": "mission-statement",
+          "contract": "heading",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "colStart": 2,
+          "colSpan": 10,
+          "copy": "Helping millions of organizations grow better."
+        },
+        {
+          "name": "support",
+          "role": "conviction",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "colStart": 4,
+          "colSpan": 6,
+          "copy": "Growing better means aligning your company's success with your customers' \u2014 winning with empathy, at scale."
+        },
+        {
+          "name": "action",
+          "role": "cta",
+          "contract": "link",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "colStart": 4,
+          "colSpan": 6,
+          "copy": "Read our story"
+        },
+        {
+          "name": "media",
+          "role": "supporting-photo",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "framed",
+          "mediaAspect": "landscape",
+          "z": "mid",
+          "colStart": 3,
+          "colSpan": 8,
+          "asset": {
+            "src": "015-why-20choose-20hubspot.webp",
+            "alt": "HubSpot teams and customers at work",
+            "ratio": "landscape"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "framed",
+          "target": "media",
+          "widthRel": {
+            "to": "container",
+            "ratio": 0.66
+          },
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "align": "center",
+        "mediaBelow": "true"
+      }
+    }
+  ],
+  "rationale": "One statement-beat hero only, adapting the hero-mission-monument archetype: a dead-centered mission monument on the brand's sanctioned opening dark band (surfaceIntent inverse), the ONE section allowed to carry the accent \u2014 placed on the display-title's closing period. The oversized serif statement leads, a single conviction line advances it with new specifics (empathy at scale, customer-aligned success), and restraint holds: just one quiet 'Read our story' link, no conversion furniture. A framed, subordinate workplace photograph sits BELOW the type as the altarpiece base \u2014 media never carries text, honoring no-text-on-photos. Centered anchor keeps the framed media symmetric (no misregistration). Heading stays sentence case at weight-500 tier per never-heavy-headings; no mid-page dark band beyond this opening bookend."
+}

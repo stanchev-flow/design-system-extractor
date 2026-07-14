@@ -1,0 +1,226 @@
+# contracts/blocks.yaml — UNIVERSAL composed clusters (defined ONCE, shared by every brand)
+#
+# A BLOCK is a named cluster with an internal slot grammar. Slots are RECURSIVE:
+#   scaffold -> block -> primitive
+# A block exposes slots filled by primitives (and sometimes nested blocks); a layout
+# (in brand.yaml `layouts[]`) exposes slots filled by blocks/media. This file defines
+# the universal block contracts ONCE — it is NOT per-brand.
+#
+# A brand NEVER redefines a contract. `brand.yaml.blocks[]` records only THIS brand's
+# usage rules, chosen variants, slot omissions/remaps, and prohibitions AGAINST these
+# contracts (same model as tokens: universal contract + brand override).
+#
+# LIBRARY-AGNOSTIC. Slots reference primitives by their contract key in
+# `contracts/primitives.yaml` (or other block keys here). Each slot declares:
+#   - `accepts`    : which contract key(s) may fill it
+#   - `optional`   : true if the slot may be empty (default false)
+#   - `repeatable` : true if the slot holds a list (default false)
+#   - `order`      : informational authoring order
+# Substrate names (shadcn classes / Webflow component ids) never appear here — they
+# live in render code or the optional brand.yaml `targetMappings:` annotation block.
+
+version: "0.1"
+
+blocks:
+
+  header:
+    intent: "A section heading cluster that opens or titles a section."
+    # Canonical slot grammar: [eyebrow?, heading, subheading?, text?, cta?, after-cta-text?]
+    slots:
+      eyebrow:        { accepts: [eyebrow], optional: true,  order: 1 }
+      heading:        { accepts: [heading], optional: false, order: 2 }
+      subheading:     { accepts: [subheading], optional: true, order: 3 }
+      text:           { accepts: [paragraph], optional: true, order: 4 }
+      cta:            { accepts: [cta, button, link], optional: true, repeatable: true, order: 5 }
+      after-cta-text: { accepts: [label, paragraph], optional: true, order: 6 }
+
+  content-block:
+    intent: "A generic body cluster: a header plus arbitrary supporting media/lists."
+    slots:
+      header: { accepts: [header], optional: true, order: 1 }
+      body:   { accepts: [paragraph, list], optional: true, repeatable: true, order: 2 }
+      media:  { accepts: [image, video], optional: true, repeatable: true, order: 3 }
+      cta:    { accepts: [cta, button, link], optional: true, repeatable: true, order: 4 }
+
+  card:
+    intent: "A bounded content unit (feature/pricing/blog card)."
+    slots:
+      media:   { accepts: [image, icon, video], optional: true, order: 1 }
+      eyebrow: { accepts: [eyebrow], optional: true, order: 2 }
+      heading: { accepts: [heading], optional: false, order: 3 }
+      text:    { accepts: [paragraph], optional: true, order: 4 }
+      meta:    { accepts: [label, pill, badge], optional: true, repeatable: true, order: 5 }
+      cta:     { accepts: [cta, button, link], optional: true, order: 6 }
+
+  form:
+    intent: "A data-collection cluster: fields plus a submit action."
+    slots:
+      header: { accepts: [header], optional: true, order: 1 }
+      fields: { accepts: [form-field], optional: false, repeatable: true, order: 2 }
+      submit: { accepts: [button, cta], optional: false, order: 3 }
+      note:   { accepts: [label, paragraph], optional: true, order: 4 }
+
+  testimonial:
+    intent: "Social proof: a quote with attributing person."
+    slots:
+      quote:  { accepts: [quote], optional: false, order: 1 }
+      avatar: { accepts: [avatar, image], optional: true, order: 2 }
+      name:   { accepts: [label], optional: true, order: 3 }
+      role:   { accepts: [label], optional: true, order: 4 }
+      rating: { accepts: [rating], optional: true, order: 5 }
+      logo:   { accepts: [logo], optional: true, order: 6 }
+
+  stat-block:
+    intent: "A cluster of metrics, optionally titled."
+    slots:
+      header: { accepts: [header], optional: true, order: 1 }
+      stats:  { accepts: [stat], optional: false, repeatable: true, order: 2 }
+
+  navbar:
+    intent: "Top-of-page navigation cluster."
+    slots:
+      logo:    { accepts: [logo], optional: false, order: 1 }
+      links:   { accepts: [link], optional: true, repeatable: true, order: 2 }
+      actions: { accepts: [cta, button, link], optional: true, repeatable: true, order: 3 }
+
+  footer:
+    intent: "Bottom-of-page cluster: identity, link columns, legal."
+    slots:
+      logo:     { accepts: [logo], optional: true, order: 1 }
+      columns:  { accepts: [content-block, link], optional: true, repeatable: true, order: 2 }
+      social:   { accepts: [link, icon], optional: true, repeatable: true, order: 3 }
+      legal:    { accepts: [label, paragraph], optional: true, order: 4 }
+
+  accordion:
+    intent: "A vertical list of expand/collapse items."
+    slots:
+      header: { accepts: [header], optional: true, order: 1 }
+      items:  { accepts: [accordion-item], optional: false, repeatable: true, order: 2 }
+
+  accordion-item:
+    intent: "One row of an accordion: a trigger label and a collapsible body."
+    slots:
+      trigger: { accepts: [heading, label], optional: false, order: 1 }
+      body:    { accepts: [paragraph], optional: false, order: 2 }
+
+  tabs:
+    intent: "A set of switchable panels behind tab triggers."
+    slots:
+      triggers: { accepts: [label, button], optional: false, repeatable: true, order: 1 }
+      panels:   { accepts: [content-block], optional: false, repeatable: true, order: 2 }
+
+  logo-bar:
+    intent: "A row/grid of partner/customer logos. (alias: logo-bar / logos / logo-strip)"
+    aliases: [logos, logo-strip]
+    slots:
+      caption: { accepts: [eyebrow, heading, label], optional: true, order: 1 }
+      logos:   { accepts: [logo], optional: false, repeatable: true, order: 2 }
+    variants: [image-strip, text-captions]
+    # Realization is EVIDENCE-based (AS-33), resolved per entry at the adapter boundary:
+    #   image-strip   — the entry's asset file exists ON DISK in the extracted brand dir
+    #                   (a horizontal `.cs-logo-strip` row of real logo images; emphasis
+    #                   treatment is the active STYLE's qualitative `logoStrip` flag);
+    #   text-captions — no disk-backed file for the entry (uppercase caption of the
+    #                   mark's own alt/label metadata — the declared fallback device).
+    # A filename appearing in a composition is NOT evidence; the file is. Broken or
+    # invented image references are never emitted; alt text derives from asset metadata,
+    # never a brand-named literal.
+
+  feature-item:
+    intent: "A single grid cell: icon/media + title + supporting text + optional link."
+    slots:
+      icon:    { accepts: [icon, image], optional: true, order: 1 }
+      heading: { accepts: [heading, label], optional: false, order: 2 }
+      text:    { accepts: [paragraph], optional: true, order: 3 }
+      link:    { accepts: [link, cta], optional: true, order: 4 }
+
+  pricing-card:
+    intent: "A plan/tier tile: name, price, feature list, and a CTA."
+    slots:
+      eyebrow:  { accepts: [eyebrow], optional: true, order: 1 }
+      planName: { accepts: [heading, label], optional: false, order: 2 }
+      price:    { accepts: [stat, heading, label], optional: false, order: 3 }
+      period:   { accepts: [label], optional: true, order: 4 }
+      features: { accepts: [list, paragraph], optional: false, repeatable: true, order: 5 }
+      cta:      { accepts: [cta, button, link], optional: false, order: 6 }
+      badge:    { accepts: [badge, pill], optional: true, order: 7 }
+
+  banner:
+    intent: "A slim full-width announcement/notice strip. (alias: announcement)"
+    aliases: [announcement]
+    slots:
+      text:    { accepts: [paragraph, label], optional: false, order: 1 }
+      link:    { accepts: [link, cta], optional: true, order: 2 }
+      dismiss: { accepts: [icon-button, button], optional: true, order: 3 }
+
+  modal:
+    intent: "An overlay panel/dialog above the page. (alias: dialog)"
+    aliases: [dialog]
+    slots:
+      header:  { accepts: [header, heading], optional: true, order: 1 }
+      body:    { accepts: [content-block, paragraph, form], optional: false, order: 2 }
+      actions: { accepts: [cta, button, link], optional: true, repeatable: true, order: 3 }
+      close:   { accepts: [icon-button, button], optional: false, order: 4 }
+
+  dropdown-menu:
+    intent: "A triggered menu list of actions/links. (alias: menu)"
+    aliases: [menu]
+    slots:
+      trigger: { accepts: [button, icon-button, link], optional: false, order: 1 }
+      items:   { accepts: [link, label], optional: false, repeatable: true, order: 2 }
+
+  breadcrumb:
+    intent: "A path trail of ancestor links to the current page."
+    slots:
+      items: { accepts: [link, label], optional: false, repeatable: true, order: 1 }
+
+  pagination:
+    intent: "Page-to-page navigation control."
+    slots:
+      prev:  { accepts: [link, button, icon-button], optional: true, order: 1 }
+      pages: { accepts: [link, label], optional: false, repeatable: true, order: 2 }
+      next:  { accepts: [link, button, icon-button], optional: true, order: 3 }
+
+  table:
+    intent: "Tabular data: header columns and data rows."
+    slots:
+      caption: { accepts: [caption, label], optional: true, order: 1 }
+      columns: { accepts: [label, heading], optional: false, repeatable: true, order: 2 }
+      rows:    { accepts: [paragraph, label, link, badge, pill], optional: false, repeatable: true, order: 3 }
+
+  carousel:
+    intent: "A horizontally scrolling/rotating set of items. (alias: slider)"
+    aliases: [slider]
+    slots:
+      items:      { accepts: [card, image, testimonial, content-block], optional: false, repeatable: true, order: 1 }
+      controls:   { accepts: [icon-button, button], optional: true, repeatable: true, order: 2 }
+      indicators: { accepts: [icon, label], optional: true, repeatable: true, order: 3 }
+
+  steps:
+    intent: "An ordered sequence of steps/process stages. (alias: process)"
+    aliases: [process]
+    slots:
+      header: { accepts: [header], optional: true, order: 1 }
+      steps:  { accepts: [step-item], optional: false, repeatable: true, order: 2 }
+
+  step-item:
+    intent: "One stage of a steps/process block: number/icon + title + text."
+    slots:
+      number:  { accepts: [label, stat, badge], optional: true, order: 1 }
+      icon:    { accepts: [icon, image], optional: true, order: 2 }
+      heading: { accepts: [heading, label], optional: false, order: 3 }
+      text:    { accepts: [paragraph], optional: true, order: 4 }
+
+  cta-block:
+    intent: "A focused conversion cluster: header + actions, optional media."
+    slots:
+      header:  { accepts: [header], optional: false, order: 1 }
+      actions: { accepts: [cta, button, link], optional: false, repeatable: true, order: 2 }
+      media:   { accepts: [image, video, illustration], optional: true, order: 3 }
+
+  media-text:
+    intent: "Paired media beside a content cluster (split content). (alias: split-content)"
+    aliases: [split-content]
+    slots:
+      media:   { accepts: [image, video, illustration], optional: false, order: 1 }
+      content: { accepts: [content-block, header], optional: false, order: 2 }

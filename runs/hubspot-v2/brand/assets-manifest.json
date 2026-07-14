@@ -1,0 +1,486 @@
+{
+ "schemaVersion": "assets-curation.v1",
+ "note": "Curated capture assets \u2014 starting point for the authored assets-tagged.json (agent refines tags/labels; tools/refine_assets_vision.py can vision-check them).",
+ "entries": [
+  {
+   "dest": "002-marketing-hub.svg",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/002-marketing-hub.svg",
+   "origin": "files",
+   "bytes": 968,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "007-commerce-hub.svg",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/007-commerce-hub.svg",
+   "origin": "files",
+   "bytes": 863,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "009-small-business.svg",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/009-small-business.svg",
+   "origin": "files",
+   "bytes": 1566,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "010-breeze-symbol-rgb-gradient.svg",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/010-Breeze-Symbol_RGB-Gradient.svg",
+   "origin": "files",
+   "bytes": 1442,
+   "tagGuess": "background-art"
+  },
+  {
+   "dest": "012-app-marketplace.svg",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/012-app-marketplace.svg",
+   "origin": "files",
+   "bytes": 2924,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "013-small-20businesses-20-26-20start-20ups.webp",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/013-Small-20Businesses-20-26-20Start-20ups.webp",
+   "origin": "files",
+   "bytes": 43640,
+   "tagGuess": "rating-badge"
+  },
+  {
+   "dest": "014-enterprise.webp",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/014-Enterprise.webp",
+   "origin": "files",
+   "bytes": 61958,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "015-why-20choose-20hubspot.webp",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/015-Why-20Choose-20HubSpot.webp",
+   "origin": "files",
+   "bytes": 41454,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "016-case-20studies.webp",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/016-Case-20Studies.webp",
+   "origin": "files",
+   "bytes": 52012,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "017-spotlight-resized-518x225.png",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/017-spotlight_resized_518x225.png",
+   "origin": "files",
+   "bytes": 126682,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "018-hs-full-bleed-1-optmised.webp",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/018-HS_Full_Bleed_1_optmised.webp",
+   "origin": "files",
+   "bytes": 97548,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "019-ebay-logo.svg",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/019-ebay-logo.svg",
+   "origin": "files",
+   "bytes": 2098,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "020-doordash-logo.svg",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/020-doordash-logo.svg",
+   "origin": "files",
+   "bytes": 9556,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "021-reddit-logo.svg",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/021-reddit-logo.svg",
+   "origin": "files",
+   "bytes": 11931,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "022-tripadvisor-logo.svg",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/022-tripadvisor-logo.svg",
+   "origin": "files",
+   "bytes": 7443,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "023-eventbrite-logo.svg",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/023-eventbrite-logo.svg",
+   "origin": "files",
+   "bytes": 4861,
+   "tagGuess": "logo"
+  },
+  {
+   "dest": "024-customer-20platform-20graphic-20-20smart-20crm1-5x-20-1.png",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/024-Customer-20Platform-20Graphic-20--20Smart-20CRM1.5x-20-1-.png",
+   "origin": "files",
+   "bytes": 31259,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "025-customer-20platform-20graphic-20-20hubs1-5x-20-1.png",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/025-Customer-20Platform-20Graphic-20--20Hubs1.5x-20-1-.png",
+   "origin": "files",
+   "bytes": 31000,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "026-customer-platform-graphic-breeze.png",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/026-customer-platform-graphic-breeze.png",
+   "origin": "files",
+   "bytes": 26854,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "027-ai-20sparkle.svg",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/027-AI-20Sparkle.svg",
+   "origin": "files",
+   "bytes": 1018,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "028-producticons-marketinghub-icon-orange.webp",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/028-ProductIcons_MarketingHub_Icon_Orange.webp",
+   "origin": "files",
+   "bytes": 1818,
+   "tagGuess": "feature-icon"
+  },
+  {
+   "dest": "029-producticons-saleshub-icon-orange.webp",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/029-ProductIcons_SalesHub_Icon_Orange.webp",
+   "origin": "files",
+   "bytes": 2224,
+   "tagGuess": "feature-icon"
+  },
+  {
+   "dest": "030-producticons-servicehub-icon-orange.webp",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/030-ProductIcons_ServiceHub_Icon_Orange.webp",
+   "origin": "files",
+   "bytes": 1851,
+   "tagGuess": "feature-icon"
+  },
+  {
+   "dest": "031-producticons-contenthub-icon-orange.webp",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/031-ProductIcons_ContentHub_Icon_Orange.webp",
+   "origin": "files",
+   "bytes": 1758,
+   "tagGuess": "feature-icon"
+  },
+  {
+   "dest": "032-producticons-datahub-icon-orange.webp",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/032-ProductIcons_DataHub_Icon_Orange.webp",
+   "origin": "files",
+   "bytes": 1454,
+   "tagGuess": "feature-icon"
+  },
+  {
+   "dest": "033-producticons-commercehub-icon-orange.webp",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/033-ProductIcons_CommerceHub_Icon_Orange.webp",
+   "origin": "files",
+   "bytes": 1722,
+   "tagGuess": "feature-icon"
+  },
+  {
+   "dest": "034-producticons-smartcrm-icon-orange.webp",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/034-ProductIcons_SmartCRM_Icon_Orange.webp",
+   "origin": "files",
+   "bytes": 1982,
+   "tagGuess": "feature-icon"
+  },
+  {
+   "dest": "035-breeze-20icon.svg",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/035-Breeze-20Icon.svg",
+   "origin": "files",
+   "bytes": 1382,
+   "tagGuess": "feature-icon"
+  },
+  {
+   "dest": "036-customer-agent-en-2x.png",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/036-customer-agent-en-2x.png",
+   "origin": "files",
+   "bytes": 90164,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "037-prospecting-agent-en-2x.png",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/037-prospecting-agent-en-2x.png",
+   "origin": "files",
+   "bytes": 67093,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "038-data-hub-en-2x.png",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/038-data-hub-en-2x.png",
+   "origin": "files",
+   "bytes": 31046,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "039-gmail-icon-3.svg",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/039-gmail-icon-3.svg",
+   "origin": "files",
+   "bytes": 969,
+   "tagGuess": "feature-icon"
+  },
+  {
+   "dest": "040-shopify-icon-3.svg",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/040-shopify-icon-3.svg",
+   "origin": "files",
+   "bytes": 2576,
+   "tagGuess": "feature-icon"
+  },
+  {
+   "dest": "041-mailchimp-icon-3.svg",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/041-mailchimp-icon-3.svg",
+   "origin": "files",
+   "bytes": 12467,
+   "tagGuess": "feature-icon"
+  },
+  {
+   "dest": "042-zapier-icon-2.svg",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/042-zapier-icon-2.svg",
+   "origin": "files",
+   "bytes": 4979,
+   "tagGuess": "feature-icon"
+  },
+  {
+   "dest": "043-google-ads-icon-2.svg",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/043-google-ads-icon-2.svg",
+   "origin": "files",
+   "bytes": 2541,
+   "tagGuess": "feature-icon"
+  },
+  {
+   "dest": "044-slack-icon-2.svg",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/044-slack-icon-2.svg",
+   "origin": "files",
+   "bytes": 1956,
+   "tagGuess": "feature-icon"
+  },
+  {
+   "dest": "045-unipart-1.png",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/045-Unipart-1.png",
+   "origin": "files",
+   "bytes": 266424,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "046-angel-fc.png",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/046-angel-FC.png",
+   "origin": "files",
+   "bytes": 296616,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "047-youth-on-course.png",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/047-youth-on-course.png",
+   "origin": "files",
+   "bytes": 275340,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "048-badge-leader-small-business.png",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/048-badge-leader-small-business.png",
+   "origin": "files",
+   "bytes": 2293,
+   "tagGuess": "award-badge"
+  },
+  {
+   "dest": "049-badge-most-implementable.png",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/049-badge-most-implementable.png",
+   "origin": "files",
+   "bytes": 2275,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "050-badge-best-relationships-small-business.png",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/050-badge-best-relationships-small-business.png",
+   "origin": "files",
+   "bytes": 2444,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "051-badge-best-support-enterprise.png",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/051-badge-best-support-enterprise.png",
+   "origin": "files",
+   "bytes": 2365,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "052-badge-best-results-mid-market.png",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/052-badge-best-results-mid-market.png",
+   "origin": "files",
+   "bytes": 2409,
+   "tagGuess": "award-badge"
+  },
+  {
+   "dest": "053-badge-best-usability-enterprise.png",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/053-badge-best-usability-enterprise.png",
+   "origin": "files",
+   "bytes": 2474,
+   "tagGuess": "award-badge"
+  },
+  {
+   "dest": "054-app-20store-20high-20res.png",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/054-app-20store-20high-20res.png",
+   "origin": "files",
+   "bytes": 2390,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "055-google-20play-20high-20res.png",
+   "source": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot_files/055-google-20play-20high-20res.png",
+   "origin": "files",
+   "bytes": 2395,
+   "tagGuess": "decorative"
+  },
+  {
+   "dest": "logo-inline-00.svg",
+   "source": "inline-svg:55e29fb1eb",
+   "origin": "inline-svg",
+   "bytes": 1496,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-01.svg",
+   "source": "inline-svg:63a8f4467c",
+   "origin": "inline-svg",
+   "bytes": 1473,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-02.svg",
+   "source": "inline-svg:7837256c56",
+   "origin": "inline-svg",
+   "bytes": 854,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-03.svg",
+   "source": "inline-svg:34f7879d47",
+   "origin": "inline-svg",
+   "bytes": 798,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-04.svg",
+   "source": "inline-svg:a3153b0ef7",
+   "origin": "inline-svg",
+   "bytes": 710,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-05.svg",
+   "source": "inline-svg:bfa1d492f5",
+   "origin": "inline-svg",
+   "bytes": 1118,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-06.svg",
+   "source": "inline-svg:30b81c6fb6",
+   "origin": "inline-svg",
+   "bytes": 1274,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-07.svg",
+   "source": "inline-svg:9ab3f65b6a",
+   "origin": "inline-svg",
+   "bytes": 854,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-08.svg",
+   "source": "inline-svg:cfbfeff067",
+   "origin": "inline-svg",
+   "bytes": 1482,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-09.svg",
+   "source": "inline-svg:0189209b18",
+   "origin": "inline-svg",
+   "bytes": 566,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-10.svg",
+   "source": "inline-svg:019b09cd81",
+   "origin": "inline-svg",
+   "bytes": 2972,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-11.svg",
+   "source": "inline-svg:eff24fc03e",
+   "origin": "inline-svg",
+   "bytes": 3891,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-12.svg",
+   "source": "inline-svg:39c1f26187",
+   "origin": "inline-svg",
+   "bytes": 1038,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-13.svg",
+   "source": "inline-svg:9c0276d036",
+   "origin": "inline-svg",
+   "bytes": 1873,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-14.svg",
+   "source": "inline-svg:fb860a2ff9",
+   "origin": "inline-svg",
+   "bytes": 4596,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-15.svg",
+   "source": "inline-svg:df650b6825",
+   "origin": "inline-svg",
+   "bytes": 1897,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-16.svg",
+   "source": "inline-svg:fb67803fed",
+   "origin": "inline-svg",
+   "bytes": 2388,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  },
+  {
+   "dest": "logo-inline-17.svg",
+   "source": "inline-svg:6828d460d5",
+   "origin": "inline-svg",
+   "bytes": 2091,
+   "tagGuess": "logo-wall-logo",
+   "altHint": ""
+  }
+ ]
+}

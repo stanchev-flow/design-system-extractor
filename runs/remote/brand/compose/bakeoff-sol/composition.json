@@ -1,0 +1,816 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "remote-workforce-intelligence-launch",
+    "name": "Remote Workforce Intelligence launch",
+    "text": "Create a launch landing page for Remote\u2019s new Workforce Intelligence product. Target VP People, CFO, and HR Operations leaders at international companies with 500+ employees. The goal is qualified demo requests. Build approximately 10 sections that explain the problem, product value, key capabilities, how it works, customer proof, comparison with the current way of working, FAQ, and a lead form. Keep the copy concise, credible, and specific; do not invent customer claims or statistics. Use the extracted Remote design system and existing assets to create a page that feels natively Remote but is not a copy of its homepage.",
+    "useCasesRequested": [
+      "hero",
+      "features",
+      "testimonial",
+      "faq",
+      "cta"
+    ]
+  },
+  "brand": {
+    "ref": "runs/remote/brand/brand.yaml",
+    "name": "Remote"
+  },
+  "style": {
+    "id": "brand-default"
+  },
+  "sections": [
+    {
+      "id": "workforce-intelligence-hero",
+      "useCase": "hero",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-inset-noise-panel"
+      },
+      "novelty": "adapt",
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "media"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "caption",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "NEW \u00b7 WORKFORCE INTELLIGENCE"
+        },
+        {
+          "name": "heading",
+          "role": "display title",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "heading": "See your global workforce clearly"
+          }
+        },
+        {
+          "name": "body",
+          "role": "supporting body",
+          "contract": "paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Turn workforce records into answers People and Finance can review together. Explore change, investigate what is driving it, and prepare decisions without rebuilding the same report."
+        },
+        {
+          "name": "primary-action",
+          "role": "primary action",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "label": "Request a demo",
+            "family": "primary"
+          }
+        },
+        {
+          "name": "secondary-action",
+          "role": "secondary action",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "label": "See how it works",
+            "family": "secondary",
+            "styleHint": "outlined"
+          }
+        },
+        {
+          "name": "media",
+          "role": "product illustration media",
+          "contract": "image",
+          "width": "media",
+          "mediaAspect": "square",
+          "z": "front",
+          "asset": {
+            "src": "hero-globe-illustration.webp",
+            "alt": "Remote product interface cards arranged around a globe"
+          }
+        },
+        {
+          "name": "background",
+          "role": "panel background",
+          "contract": "image",
+          "width": "full-bleed",
+          "mediaAspect": "landscape",
+          "z": "back",
+          "asset": {
+            "src": "bg-noise-top-2x.webp",
+            "alt": ""
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "panel-on-media",
+          "target": "background",
+          "sanctioned": true
+        }
+      ],
+      "knobs": {
+        "secondaryCta": "on"
+      }
+    },
+    {
+      "id": "reporting-gap",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "alignment": {
+        "anchor": "centered"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "section-title",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "THE REPORTING GAP",
+            "heading": "The question is urgent. The data is scattered.",
+            "body": "A leadership request should not trigger another round of exports, formula checks, and definition debates."
+          }
+        },
+        {
+          "name": "cards",
+          "role": "problem card modules",
+          "contract": "feature-item",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "eyebrow": "DISCONNECTED SOURCES",
+              "heading": "The workforce picture arrives in pieces",
+              "body": "Headcount, payroll, contracts, and local context often reach the review through separate exports.",
+              "asset": {
+                "src": "card-integrations.webp",
+                "alt": "Connected tools in the Remote product"
+              }
+            },
+            {
+              "eyebrow": "SHIFTING DEFINITIONS",
+              "heading": "Every answer starts with reconciliation",
+              "body": "Teams lose time agreeing on scope, dates, and labels before they can discuss what changed.",
+              "asset": {
+                "src": "panel-infrastructure-ui-snippet.webp",
+                "alt": "Structured operational records in Remote"
+              }
+            },
+            {
+              "eyebrow": "SLOW HANDOFFS",
+              "heading": "The decision waits for the deck",
+              "body": "People, Finance, and Operations each rebuild the same context for a different audience.",
+              "asset": {
+                "src": "card-api-first.webp",
+                "alt": "Structured workflow in the Remote product"
+              }
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "columns": "3"
+      }
+    },
+    {
+      "id": "decision-layer-capabilities",
+      "useCase": "features",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "feature-accordion-deep-accent"
+      },
+      "novelty": "adapt",
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "media"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "section heading",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "ONE DECISION LAYER",
+            "heading": "Move from workforce data to a clear next question"
+          }
+        },
+        {
+          "name": "list",
+          "role": "accordion list",
+          "contract": "feature-item",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "heading": "Shared workforce view",
+              "text": "Start from a consistent view of the workforce so People and Finance review the same scope.",
+              "icon": "icon-global-payroll.webp",
+              "media": "collage-global-payroll-ui.webp"
+            },
+            {
+              "heading": "Changes and drivers",
+              "text": "Move from a top-line change to the teams, locations, or workforce groups that need a closer look.",
+              "icon": "icon-eor.webp",
+              "media": "collage-eor-ui.webp"
+            },
+            {
+              "heading": "Leadership-ready views",
+              "text": "Frame the same workforce context for a People review, finance discussion, or operating check-in.",
+              "icon": "icon-peo.webp",
+              "media": "collage-peo-ui.webp"
+            },
+            {
+              "heading": "Repeatable reviews",
+              "text": "Return to a clear review structure instead of rebuilding definitions and presentation logic each cycle.",
+              "icon": "icon-contractor-management.webp",
+              "media": "collage-contractor-management-ui.webp"
+            }
+          ]
+        },
+        {
+          "name": "media",
+          "role": "product UI media",
+          "contract": "image",
+          "width": "media",
+          "mediaAspect": "square",
+          "z": "front",
+          "asset": {
+            "src": "collage-global-payroll-ui.webp",
+            "alt": "Remote product interface showing workforce and payroll information"
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "activeSurface": "surface/accent",
+        "hoverWash": "accent/warm-wash"
+      }
+    },
+    {
+      "id": "how-workforce-intelligence-works",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "features-card-grid-navy-media"
+      },
+      "novelty": "adapt",
+      "alignment": {
+        "anchor": "centered"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "section-title",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "HOW IT WORKS",
+            "heading": "A shorter path from question to decision",
+            "body": "Use one repeatable flow for recurring workforce reviews and one-off leadership questions."
+          }
+        },
+        {
+          "name": "cards",
+          "role": "step card modules",
+          "contract": "feature-item",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "eyebrow": "01 \u00b7 CONNECT",
+              "heading": "Bring the workforce context together",
+              "body": "Start with the records and operating context already held across Remote and your review process.",
+              "asset": {
+                "src": "card-integrations.webp",
+                "alt": "Integration connections in the Remote product"
+              }
+            },
+            {
+              "eyebrow": "02 \u00b7 ORGANIZE",
+              "heading": "Set the scope for the question",
+              "body": "Choose the workforce population, period, and business lens the review needs.",
+              "asset": {
+                "src": "card-api-first.webp",
+                "alt": "Structured product workflow in Remote"
+              }
+            },
+            {
+              "eyebrow": "03 \u00b7 INVESTIGATE",
+              "heading": "Follow the change to its drivers",
+              "body": "Move from an overall signal into the workforce groups that explain it.",
+              "asset": {
+                "src": "card-mcp-agents.webp",
+                "alt": "Remote product interface cards"
+              }
+            },
+            {
+              "eyebrow": "04 \u00b7 ALIGN",
+              "heading": "Prepare the decision together",
+              "body": "Carry the same context into the People, Finance, and Operations conversation.",
+              "asset": {
+                "src": "panel-infrastructure-ui-snippet.webp",
+                "alt": "Remote interface with structured operational records"
+              }
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "columns": 2
+      }
+    },
+    {
+      "id": "leadership-views",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "features-card-grid-navy-media"
+      },
+      "novelty": "adapt",
+      "alignment": {
+        "anchor": "centered"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "section-title",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "BUILT FOR THE REVIEW",
+            "heading": "One workforce view, focused for each leader",
+            "body": "Keep the underlying context consistent while each team examines the decision from its own operating lens."
+          }
+        },
+        {
+          "name": "cards",
+          "role": "leader card modules",
+          "contract": "feature-item",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "eyebrow": "VP PEOPLE",
+              "heading": "See where workforce plans need attention",
+              "body": "Review workforce shape and change across the organization before the leadership conversation.",
+              "asset": {
+                "src": "card-mcp-agents.webp",
+                "alt": "Remote workforce product interface"
+              }
+            },
+            {
+              "eyebrow": "CFO",
+              "heading": "Review the assumptions behind the plan",
+              "body": "Examine workforce context with People using a shared scope and consistent definitions.",
+              "asset": {
+                "src": "card-api-first.webp",
+                "alt": "Remote structured data interface"
+              }
+            },
+            {
+              "eyebrow": "HR OPERATIONS",
+              "heading": "Make recurring reporting repeatable",
+              "body": "Reduce manual assembly and give each review a clear, reusable starting point.",
+              "asset": {
+                "src": "card-integrations.webp",
+                "alt": "Remote integrations product interface"
+              }
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "columns": "3"
+      }
+    },
+    {
+      "id": "workflow-comparison",
+      "useCase": "features",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "novel",
+      "alignment": {
+        "anchor": "centered"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "section heading",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "A BETTER OPERATING RHYTHM",
+            "heading": "Replace report assembly with decision preparation"
+          }
+        },
+        {
+          "name": "body",
+          "role": "supporting body",
+          "contract": "paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "The difference is not another dashboard. It is a more consistent way to move from a workforce question to a leadership conversation."
+        },
+        {
+          "name": "comparison",
+          "role": "workflow comparison table",
+          "contract": "table",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": {
+            "columns": [
+              "Review point",
+              "Current way \u2192 Workforce Intelligence"
+            ],
+            "rows": [
+              {
+                "label": "Starting point",
+                "value": "Collect exports and rebuild the reporting file \u2192 Begin from a shared workforce view"
+              },
+              {
+                "label": "Definitions",
+                "value": "Reconcile scope during the meeting \u2192 Set the scope before the review"
+              },
+              {
+                "label": "Investigation",
+                "value": "Send follow-up requests to explain change \u2192 Follow the change into the relevant workforce groups"
+              },
+              {
+                "label": "Handoff",
+                "value": "Create separate People and Finance narratives \u2192 Review the same context through each leader\u2019s lens"
+              },
+              {
+                "label": "Next cycle",
+                "value": "Rebuild the process \u2192 Return to a repeatable review structure"
+              }
+            ]
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {}
+    },
+    {
+      "id": "remote-customer-perspectives",
+      "useCase": "testimonial",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "testimonial-card-row"
+      },
+      "novelty": "reuse",
+      "alignment": {
+        "anchor": "centered"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "section-title",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "REMOTE CUSTOMER PERSPECTIVES",
+            "heading": "Built for teams already operating across borders",
+            "body": "These customers speak about their experience with Remote\u2019s broader platform and support."
+          }
+        },
+        {
+          "name": "cards",
+          "role": "testimonial card modules",
+          "contract": "testimonial",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "quote": "We run monthly, semi-monthly and hourly payroll in multiple different currencies around the world and our Finance Manager has full visibility in a single platform. With Remote, you can make it happen.",
+              "name": "Marisol Jim\u00e9nez",
+              "role": "Head of People",
+              "avatar": "avatar-marisol-jimenez.webp",
+              "asset": {
+                "src": "logo-reversetech.svg",
+                "alt": "Reverse Tech"
+              }
+            },
+            {
+              "quote": "We see Remote as a leading and trusted partner in this space. The expert support they provide in local payroll, tax compliance, and HR operations has streamlined our processes and created more opportunities for growth and success on a global scale.",
+              "name": "Maria Shkaruppa",
+              "role": "Senior Global Mobility and Remote Hiring Manager",
+              "avatar": "avatar-maria-shkaruppa.webp",
+              "asset": {
+                "src": "logo-homeproject.svg",
+                "alt": "Home Project"
+              }
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "columns": 2
+      }
+    },
+    {
+      "id": "operational-trust",
+      "useCase": "features",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "seededFrom": {
+        "lib": "project",
+        "id": "infra-proof-split"
+      },
+      "novelty": "adapt",
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "media"
+      },
+      "slots": [
+        {
+          "name": "media",
+          "role": "product UI media",
+          "contract": "image",
+          "width": "media",
+          "mediaAspect": "square",
+          "z": "front",
+          "asset": {
+            "src": "panel-infrastructure-ui-snippet.webp",
+            "alt": "Remote interface showing structured employment records"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "section heading",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "OPERATIONAL BY DESIGN",
+            "heading": "Bring workforce context into a system your teams can govern"
+          }
+        },
+        {
+          "name": "body",
+          "role": "supporting body",
+          "contract": "paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Give the right teams a consistent place to review workforce information and prepare decisions. Remote\u2019s broader platform brings global employment records and operations into one environment."
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "mediaSide": "left"
+      }
+    },
+    {
+      "id": "workforce-intelligence-faq",
+      "useCase": "faq",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "alignment": {
+        "anchor": "centered"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "section heading",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "QUESTIONS, ANSWERED",
+            "heading": "What leaders ask before a demo",
+            "body": "Start with your operating model and the workforce decisions your team needs to make."
+          }
+        },
+        {
+          "name": "items",
+          "role": "faq disclosure items",
+          "contract": "faq-item",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "question": "Who is Workforce Intelligence designed for?",
+              "answer": "It is designed for People, Finance, and HR Operations leaders who need a shared view of workforce information for recurring reviews and business decisions."
+            },
+            {
+              "question": "What workforce questions can we bring to a demo?",
+              "answer": "Bring a real question your team regularly answers, such as understanding workforce change, preparing a leadership review, or aligning People and Finance around a plan."
+            },
+            {
+              "question": "Does this replace our HR systems?",
+              "answer": "The product is positioned as a decision layer for workforce review. A demo can clarify how it fits with the systems and processes your team uses today."
+            },
+            {
+              "question": "Is it relevant for a multi-country workforce?",
+              "answer": "The launch is intended for international companies. Share your countries, workforce model, and reporting process so the demo can focus on your operating context."
+            },
+            {
+              "question": "What should we prepare before the demo?",
+              "answer": "Your role, approximate company size, operating footprint, and one recurring workforce decision are enough to tailor the conversation."
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "faq": {
+          "exclusive": true,
+          "open": 0,
+          "activeSurface": "surface/accent",
+          "hoverWash": "accent/warm-wash"
+        }
+      }
+    },
+    {
+      "id": "qualified-demo-request",
+      "useCase": "cta",
+      "archetype": "stack",
+      "surfaceIntent": "panel",
+      "novelty": "adapt",
+      "alignment": {
+        "anchor": "centered"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "conversion heading",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "eyebrow": "REQUEST A DEMO",
+            "heading": "Bring one workforce question. We\u2019ll show you a clearer way to answer it.",
+            "body": "Tell us about your role, company size, and operating footprint. A Remote specialist will follow up to tailor the conversation."
+          }
+        },
+        {
+          "name": "lead-form",
+          "role": "qualified demo form",
+          "contract": "form",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": {
+            "fields": [
+              {
+                "kind": "text",
+                "label": "First name",
+                "name": "first-name",
+                "autocomplete": "given-name",
+                "required": true,
+                "span": "half"
+              },
+              {
+                "kind": "text",
+                "label": "Last name",
+                "name": "last-name",
+                "autocomplete": "family-name",
+                "required": true,
+                "span": "half"
+              },
+              {
+                "kind": "email",
+                "label": "Work email",
+                "name": "email",
+                "autocomplete": "work email",
+                "required": true,
+                "span": "half"
+              },
+              {
+                "kind": "text",
+                "label": "Company",
+                "name": "company",
+                "autocomplete": "organization",
+                "required": true,
+                "span": "half"
+              },
+              {
+                "kind": "select",
+                "label": "Your role",
+                "name": "role",
+                "options": [
+                  "VP People / People leader",
+                  "CFO / Finance leader",
+                  "HR Operations leader",
+                  "Other"
+                ],
+                "required": true,
+                "span": "half"
+              },
+              {
+                "kind": "select",
+                "label": "Company size",
+                "name": "company-size",
+                "options": [
+                  "500\u2013999 employees",
+                  "1,000\u20134,999 employees",
+                  "5,000+ employees"
+                ],
+                "required": true,
+                "span": "half"
+              },
+              {
+                "kind": "text",
+                "label": "Where does your company operate?",
+                "name": "operating-footprint",
+                "placeholder": "Countries or regions",
+                "required": true,
+                "span": "full"
+              },
+              {
+                "kind": "textarea",
+                "label": "What workforce question are you trying to answer?",
+                "name": "workforce-question",
+                "placeholder": "Tell us about the review or decision",
+                "required": true,
+                "span": "full"
+              }
+            ],
+            "consent": "By submitting this form, you agree that Remote may contact you about Workforce Intelligence.",
+            "success": "Thanks. A Remote specialist will follow up.",
+            "submit": "Request a demo"
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {}
+    }
+  ],
+  "rationale": "The page follows a decision journey rather than the Remote homepage sequence: operational pain, product capability, workflow, audience-specific value, comparison, proof, trust, FAQ, and qualification. It reuses Remote\u2019s noise-panel hero, light canvas, inset dark media wells, deep-accent disclosure state, restrained proof treatment, and pill actions without copying the homepage narrative."
+}

@@ -1,0 +1,32 @@
+/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/brand_pipeline/onbrand_check.py:93: DeprecationWarning: 'maxsplit' is passed as positional argument
+  v = re.split(r"[;{}]", val, 1)[0].strip().lower()
+Wrote runs/remote/brand/compose/bakeoff-opus/normalized-gates/onbrand-report.md
+Wrote runs/remote/brand/compose/bakeoff-opus/normalized-gates/onbrand-report.json
+neverDo (hard):
+  [PASS] never-typographic-primary
+  [PASS] never-zero-radius
+  [PASS] never-allcaps-headings
+style definition (corporate-saas-clean, advisory — never gates OVERALL):
+  [PASS] [INVARIANT] Display rides the brand's measured display tier
+  [WARN] [INVARIANT] One disciplined accent: reserved for CTAs, links, and key icons only;
+  [WARN] [SOFT] Radius matches brand choice
+  [PASS] [INVARIANT] Comfortable, consistent spacing: generous air, even vertical rhythm,
+  [PASS] [INVARIANT] Single committed accent (no second accent)
+  [WARN] Container-query units only (0 viewport units)
+composition invariants (HARD):
+  [PASS] single-accent
+  [PASS] primitive-only
+  [PASS] rhythm
+  [PASS] data-composition
+  [PASS] slot-resolution
+  [PASS] text-contrast
+  [PASS] decoration-salience
+  [PASS] occlusion
+  [PASS] band-attribution
+  [PASS] alignment-resolution
+  [PASS] media-registration
+  [PASS] interaction-contrast
+  [PASS] token-provenance
+  [PASS] logo-wall-integrity
+OVERALL: PASS
+EXIT_CODE=0

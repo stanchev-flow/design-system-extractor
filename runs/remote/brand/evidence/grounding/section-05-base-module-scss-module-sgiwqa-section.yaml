@@ -1,0 +1,137 @@
+schemaVersion: section-grounding.v1
+sectionRole: features
+layout:
+  structure: eyebrow + h2 header, then 3-column card row below; each card = dark media-well top -> eyebrow
+    -> heading -> body
+  columns: 3
+  alignment: left
+  approxPaddingPx:
+    top: 80
+    bottom: 80
+  gapPx: 33
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#eeeff0'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#111111'
+- role: card
+  bgApprox: '#ffffff'
+  parent: canvas
+  radiusPx: 12
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: media-well
+  bgApprox: '#0a1f56'
+  parent: card
+  radiusPx: 10
+  borderApprox: none
+  inkApprox: '#8ea3d6'
+typography:
+- role: eyebrow
+  approxSizePx: 15
+  weightApprox: 600
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#1c50d8'
+  familyClass: geometric-sans
+- role: h2
+  approxSizePx: 46
+  weightApprox: 500
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#111318'
+  familyClass: grotesque-sans
+- role: h3
+  approxSizePx: 23
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#141414'
+  familyClass: grotesque-sans
+- role: body
+  approxSizePx: 17
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#3f4247'
+  familyClass: grotesque-sans
+- role: eyebrow
+  approxSizePx: 14
+  weightApprox: 600
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#1c50d8'
+  familyClass: geometric-sans
+components:
+- kind: card
+  variant: filled-neutral
+  countObserved: 3
+  anatomy: dark media-well top -> card-eyebrow -> heading -> body
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: 28 30
+    radiusPx: 12
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1a1a1a'
+  caseTreatment: sentence
+- kind: media-frame
+  variant: inverse-media-well
+  countObserved: 3
+  anatomy: dark navy illustration panel inside top of each card
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: null
+    radiusPx: 10
+  surfaceApprox: '#0a1f56'
+  inkApprox: '#8ea3d6'
+  caseTreatment: sentence
+copy:
+  eyebrow: INTEGRATIONS, API, AND MCP
+  heading: Your workflows, your way, on our infrastructure
+  items:
+  - heading: Deploy AI agents on real employment data
+    body: Remote MCP gives any AI agent a live, secure connection to payroll, contracts, compliance data,
+      and org structure — no API keys, no exports, no custom integrations needed.
+    meta: MCP
+  - heading: Plug Remote into your stack
+    body: Keep the HR tools your team already uses. Remote runs the payroll and compliance underneath,
+      natively integrated with Workday, HiBob, BambooHR, Personio, and more.
+    meta: INTEGRATIONS
+  - heading: Build on top of ours
+    body: Remote is API-first by design. Use our REST API, webhooks, and CLI to build custom workflows,
+      embed global employment into your own product, or extend Remote however your business needs.
+    meta: API
+  logosLegible:
+  - HiBob
+  - slack
+  - carta
+  - Kota
+  - zelt
+  - MERGE
+  - GoCo
+  - Workday
+media:
+- kind: illustration
+  treatment: node/hub diagram with app labels (CLAUDE, CUSTOM APP, AUTOMATION, CHAT GPT, CURSOR, COPILOT)
+    on dark navy well
+  aspect: landscape
+  approxFractionOfSection: 0.11
+- kind: illustration
+  treatment: grid of integration logo tiles around central R glyph on dark navy well
+  aspect: landscape
+  approxFractionOfSection: 0.11
+- kind: product-ui
+  treatment: add-a-team-member UI card with portrait and code snippet on dark navy well
+  aspect: landscape
+  approxFractionOfSection: 0.11
+confidence: high
+notes:
+- media-well contents rendered small; some logo labels approximate
+- portrait in third card is a circle/rounded product-UI avatar
+_source:
+  crop: section-05-base-module-scss-module-sgiwqa-section.png
+  domClasses: base-module-scss-module__sGIWqa__section
+  model: claude-opus-4-8

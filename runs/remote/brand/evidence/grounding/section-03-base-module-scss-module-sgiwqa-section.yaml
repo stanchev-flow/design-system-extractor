@@ -1,0 +1,148 @@
+schemaVersion: section-grounding.v1
+sectionRole: features
+layout:
+  structure: split ~50/50, product-UI illustration left / copy right, on light canvas
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 180
+    bottom: 180
+  gapPx: 80
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#eef0f0'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1b1d1f'
+- role: card
+  bgApprox: '#ffffff'
+  parent: canvas
+  radiusPx: 14
+  borderApprox: '1px #e2e6ea'
+  inkApprox: '#1b1d1f'
+- role: card
+  bgApprox: '#ffffff'
+  parent: canvas
+  radiusPx: 14
+  borderApprox: '1px #e2e6ea'
+  inkApprox: '#1b1d1f'
+- role: card
+  bgApprox: '#ffffff'
+  parent: canvas
+  radiusPx: 12
+  borderApprox: '1px #e2e6ea'
+  inkApprox: '#1b1d1f'
+typography:
+- role: eyebrow
+  approxSizePx: 15
+  weightApprox: 600
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#1d5ce0'
+  familyClass: grotesque-sans
+- role: h2
+  approxSizePx: 44
+  weightApprox: 500
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#1b1d1f'
+  familyClass: grotesque-sans
+- role: body
+  approxSizePx: 18
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#3a3d40'
+  familyClass: grotesque-sans
+- role: caption
+  approxSizePx: 13
+  weightApprox: 600
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1b1d1f'
+  familyClass: grotesque-sans
+components:
+- kind: card
+  variant: filled-neutral
+  countObserved: 3
+  anatomy: icon + title + status badge -> list rows with flag, label, value, check
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: 18 20
+    radiusPx: 14
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1b1d1f'
+  caseTreatment: sentence
+- kind: badge
+  variant: filled-neutral
+  countObserved: 2
+  anatomy: pill label text
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 4 10
+    radiusPx: 12
+  surfaceApprox: '#eaf1ff'
+  inkApprox: '#1d5ce0'
+  caseTreatment: sentence
+- kind: badge
+  variant: filled-neutral
+  countObserved: 1
+  anatomy: RUNNING status label
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 2 6
+    radiusPx: 6
+  surfaceApprox: transparent
+  inkApprox: '#1d5ce0'
+  caseTreatment: upper
+- kind: avatar
+  variant: rounded-square
+  countObserved: 3
+  anatomy: portrait tile + flag + name caption
+  sizing:
+    widthBehavior: fixed
+    radiusPx: 8
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1b1d1f'
+  caseTreatment: title
+- kind: stat
+  variant: boxed-field
+  countObserved: 3
+  anatomy: small label -> check + value
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: 8 10
+    radiusPx: 8
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1b1d1f'
+  caseTreatment: upper
+copy:
+  eyebrow: INTELLIGENT INFRASTRUCTURE
+  heading: Owned end-to-end infrastructure, operated in-house.
+  body: 'We have our own legal experts, our own payroll specialists, and our own compliance teams in every
+    market we operate in. And because it''s all ours, everything lives in one place: every employment
+    record, contract, compliance document, and payroll engine run accurate, current, audit-ready, SOC
+    2 Type 2 compliant, and ISO 27001 certified.'
+  items:
+  - heading: Payroll engine
+    body: UK · monthly cycle £312,540 / DE · monthly cycle €487,210 / BR · 13th salary R$ 891k
+    meta: RUNNING
+  - heading: Compliance layer
+    body: SOC 2 Type II / ISO 27001 / GDPR Aligned
+    meta: VERIFIED
+  logosLegible: []
+media:
+- kind: product-ui
+  treatment: stacked white UI cards with grid backdrop, payroll + compliance + avatar column
+  aspect: landscape
+  approxFractionOfSection: 0.5
+confidence: high
+notes:
+- Avatar caption names (Ana Silva, Pedro Nik, Luna Choi) are illustrative UI labels
+- left product-UI sits on faint grid texture within canvas
+_source:
+  crop: section-03-base-module-scss-module-sgiwqa-section.png
+  domClasses: base-module-scss-module__sGIWqa__section
+  model: claude-opus-4-8

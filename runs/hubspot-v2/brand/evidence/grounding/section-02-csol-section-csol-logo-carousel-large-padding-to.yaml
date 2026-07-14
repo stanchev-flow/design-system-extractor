@@ -1,0 +1,69 @@
+schemaVersion: section-grounding.v1
+sectionRole: logos
+layout:
+  structure: centered heading above a single row of 5 brand logos
+  columns: 5
+  alignment: center
+  approxPaddingPx:
+    top: 70
+    bottom: 90
+  gapPx: 130
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#fdfcfa'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#33475b'
+- role: band
+  bgApprox: 'image-fill: cropped photo of hands near a laptop on a desk, warm-toned'
+  parent: canvas
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#ffffff'
+typography:
+- role: h3
+  approxSizePx: 24
+  weightApprox: 700
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#33475b'
+  familyClass: grotesque-sans
+components:
+- kind: logo-item
+  variant: monochrome-and-color brand vectors
+  countObserved: 5
+  anatomy: single row of horizontally spaced brand wordmark logos
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#e75a3b'
+  caseTreatment: title
+copy:
+  heading: 299,000+ customers in over 135 countries grow their businesses with HubSpot.
+  logosLegible:
+  - eBay
+  - DoorDash
+  - reddit
+  - Tripadvisor
+  - eventbrite
+media:
+- kind: logo-vector
+  treatment: row of 5 brand wordmark logos ~30px tall, mix of full-color (eBay, reddit, eventbrite, DoorDash)
+    and black (Tripadvisor)
+  aspect: wide
+  approxFractionOfSection: 0.2
+- kind: photo
+  treatment: cropped lifestyle photo strip at top edge of section, warm-toned hands/desk
+  aspect: wide
+  approxFractionOfSection: 0.1
+confidence: high
+notes:
+- Top edge shows a thin sliver of a photographic band cut off, likely belonging to the section above.
+_source:
+  crop: section-02-csol-section-csol-logo-carousel-large-padding-to.png
+  domClasses: csol-section csol-logo-carousel -large -padding-top-md -padding-bottom-md
+  model: claude-opus-4-8

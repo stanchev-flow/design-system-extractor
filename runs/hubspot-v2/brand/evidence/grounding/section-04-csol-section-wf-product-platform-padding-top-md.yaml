@@ -1,0 +1,217 @@
+schemaVersion: section-grounding.v1
+sectionRole: features
+layout:
+  structure: split ~35/65, copy column left / 2-column card grid right
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 90
+    bottom: 110
+  gapPx: 32
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#fdfcfa'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: card
+  bgApprox: '#ffffff'
+  parent: canvas
+  radiusPx: 12
+  borderApprox: '1px #ececec'
+  inkApprox: '#1a1a1a'
+- role: band
+  bgApprox: 'gradient(#f6c9b0 -> #f3b8d0)'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+typography:
+- role: eyebrow
+  approxSizePx: 15
+  weightApprox: 600
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: h2
+  approxSizePx: 52
+  weightApprox: 500
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#1a1a1a'
+  familyClass: serif
+- role: body
+  approxSizePx: 17
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#3a3a3a'
+  familyClass: grotesque-sans
+- role: h3
+  approxSizePx: 20
+  weightApprox: 700
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: caption
+  approxSizePx: 15
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#3a3a3a'
+  familyClass: grotesque-sans
+- role: control-label
+  approxSizePx: 15
+  weightApprox: 600
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+relationalSpacingPx:
+  eyebrowToHeading: 40
+  headingToBody: 32
+  bodyToCta: 56
+components:
+- kind: button
+  variant: filled-primary
+  countObserved: 1
+  anatomy: text label centered
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 18 32
+    radiusPx: 6
+  surfaceApprox: '#f8541c'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: text label centered
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 18 32
+    radiusPx: 6
+  surfaceApprox: transparent
+  inkApprox: '#f8541c'
+  caseTreatment: sentence
+- kind: badge
+  variant: outlined
+  countObserved: 1
+  anatomy: spark icon -> label
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 8 14
+    radiusPx: 6
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: card
+  variant: filled-neutral
+  countObserved: 10
+  anatomy: icon+heading top -> divider -> checkmark list -> divider -> text-arrow link
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 32 32
+    radiusPx: 12
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: link
+  variant: text-arrow
+  countObserved: 10
+  anatomy: label -> right arrow
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: sentence
+- kind: icon
+  variant: outlined
+  countObserved: 10
+  anatomy: orange line-icon per card header
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#f8541c'
+  caseTreatment: sentence
+- kind: list-item
+  variant: checkmark
+  countObserved: 20
+  anatomy: orange checkmark -> body text
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#3a3a3a'
+  caseTreatment: sentence
+copy:
+  eyebrow: Powered by AI
+  heading: Growing a business is hard. HubSpot makes it easier.
+  subheading: null
+  body: Disconnected tools and data slow you down. HubSpot connects everything — and everyone — in one
+    place to make growing a business easier than you think.
+  actions:
+  - label: Get a demo
+    styleHint: filled-primary
+  - label: Get started free
+    styleHint: outlined
+  items:
+  - heading: Marketing Hub®
+    body: Attract and convert the right leads. Run campaigns, personalize content, and track it all.
+    meta: Learn more
+  - heading: Sales Hub®
+    body: Generate quality leads and close deals, faster. Automate prospecting, manage pipeline, and accelerate
+      revenue growth.
+    meta: Learn more
+  - heading: Service Hub®
+    body: Streamline and scale support to serve customers faster. Drive retention with actionable insights,
+      customer health scores, and real-time usage data.
+    meta: Learn more
+  - heading: Content Hub™
+    body: Create content that clicks with your audience. Build pages, publish content across channels,
+      and stay on brand.
+    meta: Learn more
+  - heading: Data Hub™
+    body: Turn scattered data into unified intelligence. Combine, clean, and activate your customer data
+      across every team and tool.
+    meta: Learn more
+  - heading: Revenue Hub™
+    body: Make it easy for customers to pay you. Send quotes, collect payments, and manage subscriptions.
+    meta: Learn more
+  - heading: Smart CRM™
+    body: All your customer data in one place. Keep your data clean, connected, and actionable.
+    meta: Learn more
+  - heading: Breeze™
+    body: AI that works with you, and for you. Agents & assistants everywhere you need them.
+    meta: Learn more
+  - heading: Small Business Bundle
+    body: The Starter edition of each product, at one low price.
+    meta: Learn more
+  - heading: AEO (Beta)
+    body: See where your brand shows up in AI results. Get recommendations to improve your visibility.
+    meta: Learn more
+media:
+- kind: icon-set
+  treatment: orange line-icons ~24px in each card header
+  aspect: square
+  approxFractionOfSection: 0.03
+motionHints:
+- arrow beside 'Learn more' text links (hover icon-slide affordance)
+- gradient band at bottom edge (section seam)
+confidence: high
+notes:
+- bottom pink/peach gradient band is cropped at frame edge
+- heading uses serif family distinct from body grotesque-sans
+_source:
+  crop: section-04-csol-section-wf-product-platform-padding-top-md.png
+  domClasses: csol-section wf-product-platform -padding-top-md -padding-bottom-md
+  model: claude-opus-4-8

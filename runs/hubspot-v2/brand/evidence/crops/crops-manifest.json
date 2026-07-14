@@ -1,0 +1,119 @@
+{
+ "schemaVersion": "section-crops.v1",
+ "screenshot": "screenshots/hubspot-v2/hubspot-fullpage.png",
+ "imageSize": {
+  "w": 1440,
+  "h": 6986
+ },
+ "mode": "rects",
+ "crops": [
+  {
+   "file": "section-00-header.png",
+   "index": 0,
+   "yTop": 0,
+   "yBottom": 152,
+   "classes": "global-nav-header",
+   "heading": "",
+   "sourceLabel": "header"
+  },
+  {
+   "file": "section-01-csol-section-wf-page-header-wf-page-header-human.png",
+   "index": 1,
+   "yTop": 104,
+   "yBottom": 924,
+   "classes": "csol-section wf-page-header wf-page-header-human -image-loaded -has-desktop-images -max-width-default -padding-top-none -padding-b",
+   "heading": "Where go-to-market teams go to \n               grow scale close retain grow",
+   "sourceLabel": "csol-section wf-page-header wf-page-header-human -image-loaded -has-desktop-images -max-width-default -padding-top-none -padding-b"
+  },
+  {
+   "file": "section-02-csol-section-csol-logo-carousel-large-padding-to.png",
+   "index": 2,
+   "yTop": 876,
+   "yBottom": 1184,
+   "classes": "csol-section csol-logo-carousel -large -padding-top-md -padding-bottom-md",
+   "heading": "299,000+ customers in over 135 countries grow their businesses with HubSpot.",
+   "sourceLabel": "csol-section csol-logo-carousel -large -padding-top-md -padding-bottom-md"
+  },
+  {
+   "file": "section-03-csol-section-wf-customer-platform-padding-top-md.png",
+   "index": 3,
+   "yTop": 1136,
+   "yBottom": 1927,
+   "classes": "csol-section wf-customer-platform -padding-top-md -padding-bottom-md",
+   "heading": "HubSpot's Agentic Customer Platform",
+   "sourceLabel": "csol-section wf-customer-platform -padding-top-md -padding-bottom-md"
+  },
+  {
+   "file": "section-04-csol-section-wf-product-platform-padding-top-md.png",
+   "index": 4,
+   "yTop": 1879,
+   "yBottom": 3527,
+   "classes": "csol-section wf-product-platform -padding-top-md -padding-bottom-md",
+   "heading": "Growing a business is hard. HubSpot makes it easier.",
+   "sourceLabel": "csol-section wf-product-platform -padding-top-md -padding-bottom-md"
+  },
+  {
+   "file": "section-05-csol-section-wf-animated-carousel-section-breeze.png",
+   "index": 5,
+   "yTop": 3479,
+   "yBottom": 4519,
+   "classes": "csol-section wf-animated-carousel-section -breeze -padding-top-md -padding-bottom-md",
+   "heading": "Built-in AI agents that work for you 24/7.",
+   "sourceLabel": "csol-section wf-animated-carousel-section -breeze -padding-top-md -padding-bottom-md"
+  },
+  {
+   "file": "section-06-csol-section-wf-rotating-svg-padding-top-md-padd.png",
+   "index": 6,
+   "yTop": 4471,
+   "yBottom": 4849,
+   "classes": "csol-section wf-rotating-svg -padding-top-md -padding-bottom-xs",
+   "heading": "Works with the tools you already use. 2,000+ integrations.",
+   "sourceLabel": "csol-section wf-rotating-svg -padding-top-md -padding-bottom-xs"
+  },
+  {
+   "file": "section-07-csol-section-padding-top-md-padding-bottom-none.png",
+   "index": 7,
+   "yTop": 4801,
+   "yBottom": 5089,
+   "classes": "csol-section -padding-top-md -padding-bottom-none",
+   "heading": "Remarkable results for every size business.",
+   "sourceLabel": "csol-section -padding-top-md -padding-bottom-none"
+  },
+  {
+   "file": "section-08-csol-section-breeze-agents-tabbed-testimonials-s.png",
+   "index": 8,
+   "yTop": 5041,
+   "yBottom": 5803,
+   "classes": "csol-section breeze-agents-tabbed-testimonials__section -statistics-variation -padding-top-s -padding-bottom-xs",
+   "heading": "",
+   "sourceLabel": "csol-section breeze-agents-tabbed-testimonials__section -statistics-variation -padding-top-s -padding-bottom-xs"
+  },
+  {
+   "file": "section-09-csol-section-wf-badges-padding-top-s-padding-bot.png",
+   "index": 9,
+   "yTop": 5755,
+   "yBottom": 6019,
+   "classes": "csol-section wf-badges -padding-top-s -padding-bottom-lg",
+   "heading": "Voted #1 in 526 G2 Reports",
+   "sourceLabel": "csol-section wf-badges -padding-top-s -padding-bottom-lg"
+  },
+  {
+   "file": "section-10-csol-section-wf-elevated-cta-padding-top-md-padd.png",
+   "index": 10,
+   "yTop": 5971,
+   "yBottom": 6354,
+   "classes": "csol-section wf-elevated-cta  -padding-top-md -padding-bottom-md",
+   "heading": "Make impossible growth feel impossibly easy, with HubSpot",
+   "sourceLabel": "csol-section wf-elevated-cta  -padding-top-md -padding-bottom-md"
+  },
+  {
+   "file": "section-11-footer.png",
+   "index": 11,
+   "yTop": 6306,
+   "yBottom": 6986,
+   "classes": "hsg-footer global-footer",
+   "heading": "",
+   "sourceLabel": "footer"
+  }
+ ]
+}

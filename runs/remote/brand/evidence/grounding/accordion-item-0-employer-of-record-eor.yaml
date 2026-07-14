@@ -1,0 +1,231 @@
+schemaVersion: section-grounding.v1
+sectionRole: features
+layout:
+  structure: split ~48/52, accordion list left / product-UI mockup right on gridded canvas
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 100
+    bottom: 100
+  gapPx: 200
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#eef0ee'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: card
+  bgApprox: '#4a1420'
+  parent: canvas
+  radiusPx: 16
+  borderApprox: none
+  inkApprox: '#f7ecec'
+- role: card
+  bgApprox: '#ffffff'
+  parent: canvas
+  radiusPx: 12
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: media-well
+  bgApprox: '#8a2841'
+  parent: card
+  radiusPx: 8
+  borderApprox: none
+  inkApprox: '#ffffff'
+- role: inset-panel
+  bgApprox: '#f2f0f2'
+  parent: card
+  radiusPx: 10
+  borderApprox: none
+  inkApprox: '#3a3a3a'
+typography:
+- role: eyebrow
+  approxSizePx: 18
+  weightApprox: 600
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#a3123f'
+  familyClass: grotesque-sans
+- role: h1
+  approxSizePx: 60
+  weightApprox: 600
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: h3
+  approxSizePx: 26
+  weightApprox: 600
+  case: title
+  trackingApprox: normal
+  colorApprox: '#f7ecec'
+  familyClass: grotesque-sans
+- role: body
+  approxSizePx: 22
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#e8d4d8'
+  familyClass: grotesque-sans
+- role: control-label
+  approxSizePx: 26
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+relationalSpacingPx:
+  eyebrowToHeading: 28
+  headingToBody: 40
+components:
+- kind: accordion-item
+  variant: filled-primary-expanded
+  countObserved: 1
+  anatomy: icon left -> title -> chevron-up right -> body -> circular arrow button
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 40 48
+    radiusPx: 16
+  surfaceApprox: '#4a1420'
+  inkApprox: '#f7ecec'
+  caseTreatment: title
+- kind: accordion-item
+  variant: text-row-collapsed
+  countObserved: 4
+  anatomy: icon left -> title -> chevron-down right, divider below
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 36 0
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: button
+  variant: filled-neutral-arrow
+  countObserved: 1
+  anatomy: circular white button with right-arrow glyph
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 30
+  surfaceApprox: '#ffffff'
+  inkApprox: '#8a2841'
+  caseTreatment: sentence
+- kind: badge
+  variant: pill-tint
+  countObserved: 1
+  anatomy: CONTRACTOR label pill
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 5 12
+    radiusPx: 12
+  surfaceApprox: '#f6dde3'
+  inkApprox: '#8a2841'
+  caseTreatment: upper
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: View all pill outlined
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 9 20
+    radiusPx: 20
+  surfaceApprox: '#ffffff'
+  inkApprox: '#a3123f'
+  caseTreatment: sentence
+- kind: button
+  variant: filled-primary
+  countObserved: 1
+  anatomy: circular + add button
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 22
+  surfaceApprox: '#b8143f'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: list-item
+  variant: task-row
+  countObserved: 3
+  anatomy: icon -> label -> status pill -> chevron right
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 16 16
+    radiusPx: 10
+  surfaceApprox: '#f2f0f2'
+  inkApprox: '#3a3a3a'
+  caseTreatment: sentence
+- kind: avatar
+  variant: portrait-tile
+  countObserved: 1
+  anatomy: rectangular circle-crop portrait on maroon tile
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 8
+  surfaceApprox: '#8a2841'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: icon
+  variant: floating-cookie
+  countObserved: 1
+  anatomy: circular purple cookie-consent icon bottom-left
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 32
+  surfaceApprox: '#5b1fd0'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+copy:
+  eyebrow: HOW WE DO IT
+  heading: One system of record. Every employment need.
+  body: Need to hire anyone, anywhere? We handle the employment contract, taxes, benefits, and compliance
+    — onboarded in hours, not months.
+  actions:
+  - label: View all
+    styleHint: outlined pill
+  - label: +
+    styleHint: filled-primary circular
+  items:
+  - heading: Employer of Record (EOR)
+    body: Need to hire anyone, anywhere? We handle the employment contract, taxes, benefits, and compliance
+      — onboarded in hours, not months.
+    meta: expanded
+  - heading: Global Payroll
+    body: null
+    meta: collapsed
+  - heading: Contractor of Record (COR)
+    body: null
+    meta: collapsed
+  - heading: Contractor Management
+    body: null
+    meta: collapsed
+  - heading: Professional Employer Organization (PEO)
+    body: null
+    meta: collapsed
+media:
+- kind: product-ui
+  treatment: profile card + Things to do task list mockup on gridded canvas, circle-cropped portrait in
+    maroon tile
+  aspect: portrait
+  approxFractionOfSection: 0.42
+- kind: photo
+  treatment: circle/rect-cropped portrait inside media-well tile ~120px
+  aspect: portrait
+  approxFractionOfSection: 0.05
+motionHints:
+- accordion with one row open (animated expand/collapse)
+- arrow-in-circle button beside expanded item (navigation affordance)
+- cursor pointer over task row (interactive hover state)
+copyNotes: []
+confidence: high
+notes:
+- 'Product-UI mockup includes status pills: ''Overdue'', ''1 day left'', ''1 day left'''
+- Right-side mockup sits on a faint blue grid-line texture overlaying canvas
+_source:
+  crop: accordion-item-0-employer-of-record-eor.png
+  domClasses: ''
+  model: claude-opus-4-8

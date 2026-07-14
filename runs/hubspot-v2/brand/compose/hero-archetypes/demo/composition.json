@@ -1,0 +1,132 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "demo-request-hero",
+    "name": "Demo request hero \u2014 HubSpot",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "demo-hero",
+      "useCase": "hero",
+      "archetype": "split",
+      "surfaceIntent": "accent-wash",
+      "novelty": "novel",
+      "seededFrom": null,
+      "archetypeRef": "hero-form-split",
+      "grid": {
+        "columns": 12,
+        "gutter": "2rem"
+      },
+      "slots": [
+        {
+          "name": "kicker",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": "Request a demo"
+        },
+        {
+          "name": "heading",
+          "role": "headline",
+          "contract": "heading",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": "See the customer platform work for your team."
+        },
+        {
+          "name": "support",
+          "role": "value-proof",
+          "contract": "content-block",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": {
+            "header": {
+              "heading": "What you'll see in 30 minutes"
+            },
+            "body": [
+              "Breeze AI agents working a real pipeline live \u2014 prospecting, follow-up, and support handled for you.",
+              "Marketing, sales, and service running on one connected CRM.",
+              "A walkthrough tailored to your stack, not a generic product tour."
+            ]
+          }
+        },
+        {
+          "name": "proof",
+          "role": "proof-line",
+          "contract": "stat",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": {
+            "value": "299,000+",
+            "label": "customers grow with HubSpot"
+          }
+        },
+        {
+          "name": "form",
+          "role": "conversion-form",
+          "contract": "form",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "fixed",
+          "z": "front",
+          "colStart": 8,
+          "colSpan": 5,
+          "copy": {
+            "header": {
+              "heading": "Book your demo"
+            },
+            "fields": [
+              {
+                "label": "First name",
+                "type": "text"
+              },
+              {
+                "label": "Work email",
+                "type": "email"
+              },
+              {
+                "label": "Company size",
+                "type": "select"
+              }
+            ],
+            "submit": "Book my demo",
+            "note": "Submit and we'll email you within one business day to schedule your 30-minute demo. No sales pressure \u2014 just a walkthrough tailored to your stack."
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "formSide": "right",
+        "formFrame": "panel",
+        "supportKind": "list"
+      }
+    }
+  ],
+  "rationale": "The brief is a lead-gen capture opener, so the hero IS the conversion surface \u2014 I chose the hero-form-split genre archetype: a persuasion column (kicker, one display claim, a 'what you'll see in 30 minutes' proof block, and a 299,000+ customer stat line) beside the form panel that acts as the counterweight (first name, work email, company size, one clear 'Book my demo' submit) with a note that says exactly what happens next, honoring the 'never gate behind vague promises' instruction. No project seed models a form hero, so this is novel within the drawable split archetype. Surface is accent-wash \u2014 a warm gradient art band not yet used in the run, keeping the light-canvas invariant (never dark mid-page) while licensing the form panel to nest. Clean-SaaS discipline: on-grid split, even alignment context, single accent reserved to the submit action, sentence-case heading at display tier, no off-grid treatments."
+}

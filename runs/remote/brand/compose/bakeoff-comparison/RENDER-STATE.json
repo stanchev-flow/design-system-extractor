@@ -1,0 +1,98 @@
+{
+  "schemaVersion": "render-state.v1",
+  "capturedAt": "2026-07-10T19:01:33.030988+00:00",
+  "note": "Single shared renderer/composer state used for both normalized candidates.",
+  "files": [
+    {
+      "path": "brand_pipeline/render_composition.py",
+      "sha256": "0b98adc7c78cc7fc3af1106f1e6e749510123f2d264778b058bcf676ab1046b2",
+      "bytes": 717,
+      "mtimeEpoch": 1782938790.487006,
+      "mtime": "2026-07-01T20:46:30.487006+00:00"
+    },
+    {
+      "path": "brand_pipeline/compose_from_composition.py",
+      "sha256": "18a8db2afcf67986b71de7a7a1084b1f3a070ea48108e73a37b7cf26e8db2b06",
+      "bytes": 97216,
+      "mtimeEpoch": 1783707563.1339958,
+      "mtime": "2026-07-10T18:19:23.133996+00:00"
+    },
+    {
+      "path": "brand_pipeline/compose_page.py",
+      "sha256": "a9ff75a09d9d4b3435205949104173e702723b5486ee6a298463f9af46678614",
+      "bytes": 57504,
+      "mtimeEpoch": 1783702837.1920328,
+      "mtime": "2026-07-10T17:00:37.192033+00:00"
+    },
+    {
+      "path": "brand_pipeline/compose_section.py",
+      "sha256": "76799f4117a71bb6e661f6b4a0443a94c7312d6320a716c911e37091b6bfcbb2",
+      "bytes": 378990,
+      "mtimeEpoch": 1783709133.380336,
+      "mtime": "2026-07-10T18:45:33.380336+00:00"
+    },
+    {
+      "path": "brand_pipeline/component_render.py",
+      "sha256": "5c8dc56eca924ce4bd3ca64feba01f7d381c97ad1ae3b88479eff2916041ccdb",
+      "bytes": 158279,
+      "mtimeEpoch": 1783709128.4562306,
+      "mtime": "2026-07-10T18:45:28.456231+00:00"
+    },
+    {
+      "path": "brand_pipeline/layout_library.py",
+      "sha256": "c567b158ecea83dd69c0de9ffff8db860ccb0d37a738049e875a032936d2b86e",
+      "bytes": 33798,
+      "mtimeEpoch": 1783693104.947366,
+      "mtime": "2026-07-10T14:18:24.947366+00:00"
+    },
+    {
+      "path": "brand_pipeline/tokens_css.py",
+      "sha256": "4ba772c923854bd7ee012912cce60f2729d629187173f4dce002c791812aa779",
+      "bytes": 27611,
+      "mtimeEpoch": 1783622554.8574455,
+      "mtime": "2026-07-09T18:42:34.857445+00:00"
+    },
+    {
+      "path": "brand_pipeline/styles.py",
+      "sha256": "be2bbc9605cfd4f17a6293afb683a7c4ef2d3fb1b86463131c08da4d4619218a",
+      "bytes": 46575,
+      "mtimeEpoch": 1783618878.7705398,
+      "mtime": "2026-07-09T17:41:18.770540+00:00"
+    },
+    {
+      "path": "brand_pipeline/spec/composition.v1.schema.json",
+      "sha256": "2d121be3e77d40fde0abb3962c99d27aae62d6046c75c2a76111af59c2667b61",
+      "bytes": 25326,
+      "mtimeEpoch": 1782999244.070264,
+      "mtime": "2026-07-02T13:34:04.070264+00:00"
+    },
+    {
+      "path": "runs/remote/brand/brand.yaml",
+      "sha256": "aba210664fc4ecddca7e2d7587567613e66cb8ecde3b5afc933dcf3429b25327",
+      "bytes": 144481,
+      "mtimeEpoch": 1783704445.5147502,
+      "mtime": "2026-07-10T17:27:25.514750+00:00"
+    },
+    {
+      "path": "runs/remote/brand/layout-library.yaml",
+      "sha256": "be945533ba45a74a049d73ec4e93c10d278c0c5661382920b0cf9229c9fef0fe",
+      "bytes": 30088,
+      "mtimeEpoch": 1783624715.4610121,
+      "mtime": "2026-07-09T19:18:35.461012+00:00"
+    },
+    {
+      "path": "runs/remote/brand/section-copy.yaml",
+      "sha256": "63bfcc4f8637bdd60f4fc5e4539417e54a3a0ed6046b3c4fcd80fe470ee4eaee",
+      "bytes": 8987,
+      "mtimeEpoch": 1783616705.2253146,
+      "mtime": "2026-07-09T17:05:05.225315+00:00"
+    },
+    {
+      "path": "styles/corporate-saas-clean.md",
+      "sha256": "02a7ac78bc11ca4b109b10bf6089ba9cc91381d75219e144896d5477aa4a3d0d",
+      "bytes": 19793,
+      "mtimeEpoch": 1783618878.8272414,
+      "mtime": "2026-07-09T17:41:18.827241+00:00"
+    }
+  ]
+}

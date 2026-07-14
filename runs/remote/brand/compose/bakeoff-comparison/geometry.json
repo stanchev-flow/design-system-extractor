@@ -1,0 +1,2005 @@
+{
+  "generatedAt": "2026-07-10T19:07:22.814519+00:00",
+  "measurementViewport": "1440x1000 @1x, reduced motion, stabilized reveals",
+  "candidates": {
+    "Candidate A": {
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "deviceScaleFactor": 1
+      },
+      "page": {
+        "width": 1440,
+        "height": 8923
+      },
+      "sections": [
+        {
+          "section": "sec-0",
+          "layout": "hero",
+          "pattern": "hero-inset-noise-panel",
+          "sectionHeightPx": 736.64,
+          "verticalPaddingPx": {
+            "top": 48,
+            "bottom": 48
+          },
+          "containerWidthPx": 1169.27,
+          "guttersPx": {
+            "left": 135.36,
+            "right": 135.37,
+            "centeringDelta": 0.01
+          },
+          "header": {
+            "text": "See your global workforce clearly",
+            "rect": {
+              "left": 215.36,
+              "top": 329.86,
+              "right": 662.11,
+              "bottom": 440.27,
+              "width": 446.75,
+              "height": 110.41
+            },
+            "textAlign": "left"
+          },
+          "splitColumnGapPx": 48,
+          "gridColumnGapsPx": [],
+          "gridRowGapsPx": [],
+          "cardEqualHeightSpreadPx": [],
+          "cardPaddingPx": [],
+          "cardCtaSeamsPx": [],
+          "media": [
+            {
+              "well": {
+                "left": 743.98,
+                "top": 257.97,
+                "right": 1224.63,
+                "bottom": 738.61,
+                "width": 480.64,
+                "height": 480.64
+              },
+              "image": {
+                "left": 743.98,
+                "top": 257.97,
+                "right": 1224.63,
+                "bottom": 738.61,
+                "width": 480.64,
+                "height": 480.64
+              },
+              "objectFit": "contain",
+              "visibleEmptyWellAreaPx2": 0
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "rawAnomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "section": "sec-1",
+          "layout": "problem",
+          "pattern": "infra-proof-split",
+          "sectionHeightPx": 712.63,
+          "verticalPaddingPx": {
+            "top": 64,
+            "bottom": 64
+          },
+          "containerWidthPx": 1169.27,
+          "guttersPx": {
+            "left": 135.36,
+            "right": 135.37,
+            "centeringDelta": 0.01
+          },
+          "header": {
+            "text": "Global teams outgrow their spreadsheets",
+            "rect": {
+              "left": 817.42,
+              "top": 1084.95,
+              "right": 1304.63,
+              "bottom": 1178.55,
+              "width": 487.2,
+              "height": 93.59
+            },
+            "textAlign": "start"
+          },
+          "splitColumnGapPx": 97.44,
+          "gridColumnGapsPx": [],
+          "gridRowGapsPx": [],
+          "cardEqualHeightSpreadPx": [],
+          "cardPaddingPx": [],
+          "cardCtaSeamsPx": [],
+          "media": [
+            {
+              "well": {
+                "left": 135.36,
+                "top": 930.61,
+                "right": 719.98,
+                "bottom": 1515.23,
+                "width": 584.63,
+                "height": 584.63
+              },
+              "image": {
+                "left": 135.36,
+                "top": 930.61,
+                "right": 719.98,
+                "bottom": 1515.23,
+                "width": 584.63,
+                "height": 584.63
+              },
+              "objectFit": "contain",
+              "visibleEmptyWellAreaPx2": 0
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "rawAnomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "section": "sec-2",
+          "layout": "product-value",
+          "pattern": "feature-accordion-deep-accent",
+          "sectionHeightPx": 850.31,
+          "verticalPaddingPx": {
+            "top": 64,
+            "bottom": 64
+          },
+          "containerWidthPx": 1168,
+          "guttersPx": {
+            "left": 136,
+            "right": 136,
+            "centeringDelta": 0
+          },
+          "header": {
+            "text": "Every workforce number in one place, always current",
+            "rect": {
+              "left": 136,
+              "top": 1672.23,
+              "right": 669.5,
+              "bottom": 1765.83,
+              "width": 533.5,
+              "height": 93.59
+            },
+            "textAlign": "left"
+          },
+          "splitColumnGapPx": 101,
+          "gridColumnGapsPx": [],
+          "gridRowGapsPx": [],
+          "cardEqualHeightSpreadPx": [],
+          "cardPaddingPx": [],
+          "cardCtaSeamsPx": [],
+          "media": [
+            {
+              "well": {
+                "left": 770.5,
+                "top": 1643.23,
+                "right": 1304,
+                "bottom": 2365.55,
+                "width": 533.5,
+                "height": 722.31
+              },
+              "image": {
+                "left": 770.5,
+                "top": 1643.23,
+                "right": 1304,
+                "bottom": 2176.73,
+                "width": 533.5,
+                "height": 533.5
+              },
+              "objectFit": "cover",
+              "visibleEmptyWellAreaPx2": 100730.13
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "rawAnomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "section": "sec-3",
+          "layout": "capabilities",
+          "pattern": "features-card-grid-navy-media",
+          "sectionHeightPx": 791.38,
+          "verticalPaddingPx": {
+            "top": 48,
+            "bottom": 48
+          },
+          "containerWidthPx": 1169.27,
+          "guttersPx": {
+            "left": 135.36,
+            "right": 135.37,
+            "centeringDelta": 0.01
+          },
+          "header": {
+            "text": "Built for the people who answer for the numbers",
+            "rect": {
+              "left": 135.36,
+              "top": 2506.55,
+              "right": 855.36,
+              "bottom": 2600.14,
+              "width": 720,
+              "height": 93.59
+            },
+            "textAlign": "left"
+          },
+          "splitColumnGapPx": null,
+          "gridColumnGapsPx": [
+            32,
+            32
+          ],
+          "gridRowGapsPx": [],
+          "cardEqualHeightSpreadPx": [
+            0
+          ],
+          "cardPaddingPx": [
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            },
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            },
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            }
+          ],
+          "cardCtaSeamsPx": [],
+          "media": [
+            {
+              "well": {
+                "left": 135.36,
+                "top": 2664.14,
+                "right": 503.78,
+                "bottom": 2894.39,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "image": {
+                "left": 135.36,
+                "top": 2664.14,
+                "right": 503.78,
+                "bottom": 2894.39,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "objectFit": "cover",
+              "visibleEmptyWellAreaPx2": 0
+            },
+            {
+              "well": {
+                "left": 535.78,
+                "top": 2664.14,
+                "right": 904.2,
+                "bottom": 2894.39,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "image": {
+                "left": 535.78,
+                "top": 2664.14,
+                "right": 904.2,
+                "bottom": 2894.39,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "objectFit": "cover",
+              "visibleEmptyWellAreaPx2": 0
+            },
+            {
+              "well": {
+                "left": 936.2,
+                "top": 2664.14,
+                "right": 1304.63,
+                "bottom": 2894.39,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "image": {
+                "left": 936.2,
+                "top": 2664.14,
+                "right": 1304.63,
+                "bottom": 2894.39,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "objectFit": "cover",
+              "visibleEmptyWellAreaPx2": 0
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "rawAnomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "section": "sec-4",
+          "layout": "how-it-works",
+          "pattern": "features-card-grid-navy-media",
+          "sectionHeightPx": 793.47,
+          "verticalPaddingPx": {
+            "top": 48,
+            "bottom": 48
+          },
+          "containerWidthPx": 1169.27,
+          "guttersPx": {
+            "left": 135.36,
+            "right": 135.37,
+            "centeringDelta": 0.01
+          },
+          "header": {
+            "text": "No integration project \u2014 it is already connected",
+            "rect": {
+              "left": 135.36,
+              "top": 3297.92,
+              "right": 855.36,
+              "bottom": 3391.52,
+              "width": 720,
+              "height": 93.59
+            },
+            "textAlign": "left"
+          },
+          "splitColumnGapPx": null,
+          "gridColumnGapsPx": [
+            32,
+            32
+          ],
+          "gridRowGapsPx": [],
+          "cardEqualHeightSpreadPx": [
+            0
+          ],
+          "cardPaddingPx": [
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            },
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            },
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            }
+          ],
+          "cardCtaSeamsPx": [],
+          "media": [
+            {
+              "well": {
+                "left": 135.36,
+                "top": 3455.52,
+                "right": 503.78,
+                "bottom": 3685.77,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "image": {
+                "left": 135.36,
+                "top": 3455.52,
+                "right": 503.78,
+                "bottom": 3685.77,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "objectFit": "cover",
+              "visibleEmptyWellAreaPx2": 0
+            },
+            {
+              "well": {
+                "left": 535.78,
+                "top": 3455.52,
+                "right": 904.2,
+                "bottom": 3685.77,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "image": {
+                "left": 535.78,
+                "top": 3455.52,
+                "right": 904.2,
+                "bottom": 3685.77,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "objectFit": "cover",
+              "visibleEmptyWellAreaPx2": 0
+            },
+            {
+              "well": {
+                "left": 936.2,
+                "top": 3455.52,
+                "right": 1304.63,
+                "bottom": 3685.77,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "image": {
+                "left": 936.2,
+                "top": 3455.52,
+                "right": 1304.63,
+                "bottom": 3685.77,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "objectFit": "cover",
+              "visibleEmptyWellAreaPx2": 0
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "rawAnomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "section": "sec-5",
+          "layout": "comparison",
+          "pattern": "infra-proof-split",
+          "sectionHeightPx": 788.42,
+          "verticalPaddingPx": {
+            "top": 48,
+            "bottom": 48
+          },
+          "containerWidthPx": 1169.27,
+          "guttersPx": {
+            "left": 135.36,
+            "right": 135.37,
+            "centeringDelta": 0.01
+          },
+          "header": {
+            "text": "The manual way vs. Workforce Intelligence",
+            "rect": {
+              "left": 135.36,
+              "top": 4091.39,
+              "right": 1304.63,
+              "bottom": 4138.19,
+              "width": 1169.27,
+              "height": 46.8
+            },
+            "textAlign": "left"
+          },
+          "splitColumnGapPx": 48,
+          "gridColumnGapsPx": [],
+          "gridRowGapsPx": [],
+          "cardEqualHeightSpreadPx": [],
+          "cardPaddingPx": [],
+          "cardCtaSeamsPx": [],
+          "media": [
+            {
+              "well": {
+                "left": 135.36,
+                "top": 4194.19,
+                "right": 695.98,
+                "bottom": 4754.81,
+                "width": 560.63,
+                "height": 560.63
+              },
+              "image": {
+                "left": 135.36,
+                "top": 4194.19,
+                "right": 695.98,
+                "bottom": 4754.81,
+                "width": 560.63,
+                "height": 560.63
+              },
+              "objectFit": "cover",
+              "visibleEmptyWellAreaPx2": 0
+            }
+          ],
+          "tables": [
+            {
+              "rect": {
+                "left": 783.98,
+                "top": 4238.19,
+                "right": 1264.63,
+                "bottom": 4593.94,
+                "width": 480.64,
+                "height": 355.75
+              },
+              "rowWidths": [
+                480.64,
+                480.64,
+                480.64,
+                480.64
+              ],
+              "rowHeights": [
+                109.19,
+                82.19,
+                82.19,
+                81.69
+              ],
+              "columnTemplate": "none"
+            },
+            {
+              "rect": {
+                "left": 783.98,
+                "top": 4238.19,
+                "right": 1264.63,
+                "bottom": 4593.94,
+                "width": 480.64,
+                "height": 355.75
+              },
+              "rowWidths": [
+                480.64,
+                480.64,
+                480.64,
+                480.64
+              ],
+              "rowHeights": [
+                109.19,
+                82.19,
+                82.19,
+                81.69
+              ],
+              "columnTemplate": "none"
+            }
+          ],
+          "form": null,
+          "rawAnomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "section": "sec-6",
+          "layout": "proof",
+          "pattern": "testimonial-card-row",
+          "sectionHeightPx": 857.84,
+          "verticalPaddingPx": {
+            "top": 48,
+            "bottom": 48
+          },
+          "containerWidthPx": 1169.27,
+          "guttersPx": {
+            "left": 135.36,
+            "right": 135.37,
+            "centeringDelta": 0.01
+          },
+          "header": {
+            "text": "Trusted by finance and people teams worldwide",
+            "rect": {
+              "left": 359.98,
+              "top": 4850.81,
+              "right": 1079.98,
+              "bottom": 4944.41,
+              "width": 720,
+              "height": 93.59
+            },
+            "textAlign": "center"
+          },
+          "splitColumnGapPx": null,
+          "gridColumnGapsPx": [
+            32,
+            32
+          ],
+          "gridRowGapsPx": [],
+          "cardEqualHeightSpreadPx": [
+            0
+          ],
+          "cardPaddingPx": [
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            },
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            },
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            }
+          ],
+          "cardCtaSeamsPx": [],
+          "media": [
+            {
+              "well": {
+                "left": 167.36,
+                "top": 5084.31,
+                "right": 564.16,
+                "bottom": 5120.31,
+                "width": 396.8,
+                "height": 36
+              },
+              "image": {
+                "left": 167.36,
+                "top": 5084.31,
+                "right": 279.86,
+                "bottom": 5120.31,
+                "width": 112.5,
+                "height": 36
+              },
+              "objectFit": "contain",
+              "visibleEmptyWellAreaPx2": 10234.8
+            },
+            {
+              "well": {
+                "left": 660.16,
+                "top": 5084.31,
+                "right": 1056.95,
+                "bottom": 5120.31,
+                "width": 396.8,
+                "height": 36
+              },
+              "image": {
+                "left": 660.16,
+                "top": 5084.31,
+                "right": 821.25,
+                "bottom": 5120.31,
+                "width": 161.09,
+                "height": 36
+              },
+              "objectFit": "contain",
+              "visibleEmptyWellAreaPx2": 8485.56
+            },
+            {
+              "well": {
+                "left": 1152.95,
+                "top": 5084.31,
+                "right": 1549.75,
+                "bottom": 5120.31,
+                "width": 396.8,
+                "height": 36
+              },
+              "image": {
+                "left": 1152.95,
+                "top": 5084.31,
+                "right": 1304.14,
+                "bottom": 5120.31,
+                "width": 151.19,
+                "height": 36
+              },
+              "objectFit": "contain",
+              "visibleEmptyWellAreaPx2": 8841.96
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "rawAnomalies": {
+            "overflow": [
+              {
+                "tag": "ARTICLE",
+                "className": "cs-module cs-module--plate cs-module--quote",
+                "rect": {
+                  "left": 1120.95,
+                  "top": 5052.31,
+                  "right": 1581.75,
+                  "bottom": 5500.66,
+                  "width": 460.8,
+                  "height": 448.34
+                }
+              },
+              {
+                "tag": "FIGURE",
+                "className": "cs-module-media cs-module-media--mark",
+                "rect": {
+                  "left": 1152.95,
+                  "top": 5084.31,
+                  "right": 1549.75,
+                  "bottom": 5120.31,
+                  "width": 396.8,
+                  "height": 36
+                }
+              },
+              {
+                "tag": "P",
+                "className": "c-paragraph",
+                "rect": {
+                  "left": 1152.95,
+                  "top": 5144.31,
+                  "right": 1549.75,
+                  "bottom": 5311.75,
+                  "width": 396.8,
+                  "height": 167.44
+                }
+              },
+              {
+                "tag": "DIV",
+                "className": "c-person",
+                "rect": {
+                  "left": 1152.95,
+                  "top": 5388.27,
+                  "right": 1549.75,
+                  "bottom": 5468.66,
+                  "width": 396.8,
+                  "height": 80.39
+                }
+              },
+              {
+                "tag": "SPAN",
+                "className": "c-person-meta",
+                "rect": {
+                  "left": 1214.55,
+                  "top": 5405.27,
+                  "right": 1549.75,
+                  "bottom": 5468.66,
+                  "width": 335.2,
+                  "height": 63.39
+                }
+              },
+              {
+                "tag": "SPAN",
+                "className": "c-person-name",
+                "rect": {
+                  "left": 1214.55,
+                  "top": 5405.27,
+                  "right": 1549.75,
+                  "bottom": 5426.27,
+                  "width": 335.2,
+                  "height": 21
+                }
+              },
+              {
+                "tag": "SPAN",
+                "className": "c-person-role",
+                "rect": {
+                  "left": 1214.55,
+                  "top": 5428.66,
+                  "right": 1549.75,
+                  "bottom": 5468.66,
+                  "width": 335.2,
+                  "height": 40
+                }
+              }
+            ],
+            "verticalVoids": []
+          }
+        },
+        {
+          "section": "sec-7",
+          "layout": "conversion-beat",
+          "pattern": "cta-inline-banner",
+          "sectionHeightPx": 477.59,
+          "verticalPaddingPx": {
+            "top": 48,
+            "bottom": 48
+          },
+          "containerWidthPx": 1169.27,
+          "guttersPx": {
+            "left": 135.38,
+            "right": 135.36,
+            "centeringDelta": 0.02
+          },
+          "header": {
+            "text": "Want to see your own workforce data in one view? Talk to our team.",
+            "rect": {
+              "left": 352,
+              "top": 5812.66,
+              "right": 1088,
+              "bottom": 5906.25,
+              "width": 736,
+              "height": 93.59
+            },
+            "textAlign": "center"
+          },
+          "splitColumnGapPx": null,
+          "gridColumnGapsPx": [],
+          "gridRowGapsPx": [],
+          "cardEqualHeightSpreadPx": [],
+          "cardPaddingPx": [],
+          "cardCtaSeamsPx": [],
+          "media": [],
+          "tables": [],
+          "form": null,
+          "rawAnomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "section": "sec-8",
+          "layout": "faq",
+          "pattern": null,
+          "sectionHeightPx": 869.91,
+          "verticalPaddingPx": {
+            "top": 48,
+            "bottom": 48
+          },
+          "containerWidthPx": 720,
+          "guttersPx": {
+            "left": 360,
+            "right": 360,
+            "centeringDelta": 0
+          },
+          "header": {
+            "text": "Common questions from People and Finance teams",
+            "rect": {
+              "left": 360,
+              "top": 6215.25,
+              "right": 1080,
+              "bottom": 6308.84,
+              "width": 720,
+              "height": 93.59
+            },
+            "textAlign": "center"
+          },
+          "splitColumnGapPx": null,
+          "gridColumnGapsPx": [],
+          "gridRowGapsPx": [],
+          "cardEqualHeightSpreadPx": [],
+          "cardPaddingPx": [],
+          "cardCtaSeamsPx": [],
+          "media": [],
+          "tables": [],
+          "form": null,
+          "rawAnomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "section": "sec-9",
+          "layout": "lead-form",
+          "pattern": "cta-inline-banner",
+          "sectionHeightPx": 1001.69,
+          "verticalPaddingPx": {
+            "top": 48,
+            "bottom": 48
+          },
+          "containerWidthPx": 736,
+          "guttersPx": {
+            "left": 352,
+            "right": 352,
+            "centeringDelta": 0
+          },
+          "header": {
+            "text": "See Workforce Intelligence with your own regions",
+            "rect": {
+              "left": 352,
+              "top": 7085.16,
+              "right": 1088,
+              "bottom": 7178.75,
+              "width": 736,
+              "height": 93.59
+            },
+            "textAlign": "center"
+          },
+          "splitColumnGapPx": null,
+          "gridColumnGapsPx": [
+            16,
+            16
+          ],
+          "gridRowGapsPx": [
+            16,
+            16,
+            16
+          ],
+          "cardEqualHeightSpreadPx": [
+            85.38
+          ],
+          "cardPaddingPx": [],
+          "cardCtaSeamsPx": [],
+          "media": [],
+          "tables": [],
+          "form": {
+            "rect": {
+              "left": 352,
+              "top": 7282.56,
+              "right": 1088,
+              "bottom": 7961.84,
+              "width": 736,
+              "height": 679.28
+            },
+            "fieldRects": [
+              {
+                "left": 384,
+                "top": 7330.56,
+                "right": 712,
+                "bottom": 7403.56,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 728,
+                "top": 7330.56,
+                "right": 1056,
+                "bottom": 7403.56,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 384,
+                "top": 7419.56,
+                "right": 712,
+                "bottom": 7492.56,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 728,
+                "top": 7419.56,
+                "right": 1056,
+                "bottom": 7492.56,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 384,
+                "top": 7508.56,
+                "right": 712,
+                "bottom": 7581.56,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 384,
+                "top": 7597.56,
+                "right": 1056,
+                "bottom": 7755.94,
+                "width": 672,
+                "height": 158.38
+              }
+            ],
+            "verticalFieldGaps": [
+              16,
+              16,
+              16
+            ]
+          },
+          "rawAnomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        }
+      ],
+      "spacingConformance": {
+        "conform": 156,
+        "drift": 0,
+        "wrong-step": 0,
+        "off-ladder": 1,
+        "unmapped": 0,
+        "hardFails": 1,
+        "total": 157
+      },
+      "spacingHardFailures": [
+        {
+          "section": "sec-9",
+          "relationship": "container.stack-width",
+          "measuredPx": 736,
+          "severity": "off-ladder",
+          "declared": {
+            "name": "header-measure",
+            "px": 720.0,
+            "source": "token"
+          },
+          "nearest": {
+            "name": "header-measure",
+            "px": 720.0,
+            "source": "token"
+          },
+          "note": ""
+        }
+      ]
+    },
+    "Candidate B": {
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "deviceScaleFactor": 1
+      },
+      "page": {
+        "width": 1440,
+        "height": 11675
+      },
+      "sections": [
+        {
+          "section": "sec-0",
+          "layout": "workforce-intelligence-hero",
+          "pattern": "hero-inset-noise-panel",
+          "sectionHeightPx": 736.64,
+          "verticalPaddingPx": {
+            "top": 48,
+            "bottom": 48
+          },
+          "containerWidthPx": 1169.27,
+          "guttersPx": {
+            "left": 135.36,
+            "right": 135.37,
+            "centeringDelta": 0.01
+          },
+          "header": {
+            "text": "See your global workforce clearly",
+            "rect": {
+              "left": 215.36,
+              "top": 345.8,
+              "right": 695.98,
+              "bottom": 456.2,
+              "width": 480.63,
+              "height": 110.41
+            },
+            "textAlign": "left"
+          },
+          "splitColumnGapPx": 48,
+          "gridColumnGapsPx": [],
+          "gridRowGapsPx": [],
+          "cardEqualHeightSpreadPx": [],
+          "cardPaddingPx": [],
+          "cardCtaSeamsPx": [],
+          "media": [
+            {
+              "well": {
+                "left": 743.98,
+                "top": 257.97,
+                "right": 1224.63,
+                "bottom": 738.61,
+                "width": 480.64,
+                "height": 480.64
+              },
+              "image": {
+                "left": 743.98,
+                "top": 257.97,
+                "right": 1224.63,
+                "bottom": 738.61,
+                "width": 480.64,
+                "height": 480.64
+              },
+              "objectFit": "contain",
+              "visibleEmptyWellAreaPx2": 0
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "rawAnomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "section": "sec-1",
+          "layout": "reporting-gap",
+          "pattern": "infra-proof-split",
+          "sectionHeightPx": 1627.59,
+          "verticalPaddingPx": {
+            "top": 48,
+            "bottom": 48
+          },
+          "containerWidthPx": 1169.27,
+          "guttersPx": {
+            "left": 135.36,
+            "right": 135.37,
+            "centeringDelta": 0.01
+          },
+          "header": {
+            "text": "The question is urgent. The data is scattered.",
+            "rect": {
+              "left": 359.98,
+              "top": 943.61,
+              "right": 1079.98,
+              "bottom": 1037.2,
+              "width": 720,
+              "height": 93.59
+            },
+            "textAlign": "center"
+          },
+          "splitColumnGapPx": null,
+          "gridColumnGapsPx": [],
+          "gridRowGapsPx": [
+            98.89
+          ],
+          "cardEqualHeightSpreadPx": [
+            98.89
+          ],
+          "cardPaddingPx": [
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            },
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            },
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            }
+          ],
+          "cardCtaSeamsPx": [],
+          "media": [
+            {
+              "well": {
+                "left": 135.36,
+                "top": 1173.02,
+                "right": 797.42,
+                "bottom": 1586.8,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "image": {
+                "left": 135.36,
+                "top": 1173.02,
+                "right": 797.42,
+                "bottom": 1586.8,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "objectFit": "cover",
+              "visibleEmptyWellAreaPx2": 0
+            },
+            {
+              "well": {
+                "left": 845.42,
+                "top": 1229.02,
+                "right": 1304.61,
+                "bottom": 1516,
+                "width": 459.19,
+                "height": 286.98
+              },
+              "image": {
+                "left": 845.42,
+                "top": 1229.02,
+                "right": 1304.61,
+                "bottom": 1516,
+                "width": 459.19,
+                "height": 286.98
+              },
+              "objectFit": "cover",
+              "visibleEmptyWellAreaPx2": 0
+            },
+            {
+              "well": {
+                "left": 135.36,
+                "top": 1837.61,
+                "right": 797.42,
+                "bottom": 2251.39,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "image": {
+                "left": 135.36,
+                "top": 1837.61,
+                "right": 797.42,
+                "bottom": 2251.39,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "objectFit": "cover",
+              "visibleEmptyWellAreaPx2": 0
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "rawAnomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "section": "sec-2",
+          "layout": "decision-layer-capabilities",
+          "pattern": "feature-accordion-deep-accent",
+          "sectionHeightPx": 822.41,
+          "verticalPaddingPx": {
+            "top": 64,
+            "bottom": 64
+          },
+          "containerWidthPx": 1168,
+          "guttersPx": {
+            "left": 136,
+            "right": 136,
+            "centeringDelta": 0
+          },
+          "header": {
+            "text": "Move from workforce data to a clear next question",
+            "rect": {
+              "left": 136,
+              "top": 2587.2,
+              "right": 669.5,
+              "bottom": 2680.8,
+              "width": 533.5,
+              "height": 93.59
+            },
+            "textAlign": "left"
+          },
+          "splitColumnGapPx": 101,
+          "gridColumnGapsPx": [],
+          "gridRowGapsPx": [],
+          "cardEqualHeightSpreadPx": [],
+          "cardPaddingPx": [],
+          "cardCtaSeamsPx": [],
+          "media": [
+            {
+              "well": {
+                "left": 770.5,
+                "top": 2558.2,
+                "right": 1304,
+                "bottom": 3252.61,
+                "width": 533.5,
+                "height": 694.41
+              },
+              "image": {
+                "left": 770.5,
+                "top": 2558.2,
+                "right": 1304,
+                "bottom": 3091.7,
+                "width": 533.5,
+                "height": 533.5
+              },
+              "objectFit": "contain",
+              "visibleEmptyWellAreaPx2": 85845.48
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "rawAnomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "section": "sec-3",
+          "layout": "how-workforce-intelligence-works",
+          "pattern": "features-card-grid-navy-media",
+          "sectionHeightPx": 1580.8,
+          "verticalPaddingPx": {
+            "top": 48,
+            "bottom": 48
+          },
+          "containerWidthPx": 1169.27,
+          "guttersPx": {
+            "left": 135.36,
+            "right": 135.37,
+            "centeringDelta": 0.01
+          },
+          "header": {
+            "text": "A shorter path from question to decision",
+            "rect": {
+              "left": 359.98,
+              "top": 3393.61,
+              "right": 1079.98,
+              "bottom": 3440.41,
+              "width": 720,
+              "height": 46.8
+            },
+            "textAlign": "center"
+          },
+          "splitColumnGapPx": null,
+          "gridColumnGapsPx": [],
+          "gridRowGapsPx": [
+            56
+          ],
+          "cardEqualHeightSpreadPx": [
+            56
+          ],
+          "cardPaddingPx": [
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            },
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            },
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            },
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            }
+          ],
+          "cardCtaSeamsPx": [],
+          "media": [
+            {
+              "well": {
+                "left": 135.36,
+                "top": 3576.22,
+                "right": 797.42,
+                "bottom": 3990,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "image": {
+                "left": 135.36,
+                "top": 3576.22,
+                "right": 797.42,
+                "bottom": 3990,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "objectFit": "cover",
+              "visibleEmptyWellAreaPx2": 0
+            },
+            {
+              "well": {
+                "left": 845.42,
+                "top": 3632.22,
+                "right": 1304.61,
+                "bottom": 3919.2,
+                "width": 459.19,
+                "height": 286.98
+              },
+              "image": {
+                "left": 845.42,
+                "top": 3632.22,
+                "right": 1304.61,
+                "bottom": 3919.2,
+                "width": 459.19,
+                "height": 286.98
+              },
+              "objectFit": "cover",
+              "visibleEmptyWellAreaPx2": 0
+            },
+            {
+              "well": {
+                "left": 135.36,
+                "top": 4240.81,
+                "right": 797.42,
+                "bottom": 4654.59,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "image": {
+                "left": 135.36,
+                "top": 4240.81,
+                "right": 797.42,
+                "bottom": 4654.59,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "objectFit": "cover",
+              "visibleEmptyWellAreaPx2": 0
+            },
+            {
+              "well": {
+                "left": 845.42,
+                "top": 4296.81,
+                "right": 1304.61,
+                "bottom": 4583.8,
+                "width": 459.19,
+                "height": 286.98
+              },
+              "image": {
+                "left": 845.42,
+                "top": 4296.81,
+                "right": 1304.61,
+                "bottom": 4583.8,
+                "width": 459.19,
+                "height": 286.98
+              },
+              "objectFit": "cover",
+              "visibleEmptyWellAreaPx2": 0
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "rawAnomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "section": "sec-4",
+          "layout": "leadership-views",
+          "pattern": "features-card-grid-navy-media",
+          "sectionHeightPx": 1627.59,
+          "verticalPaddingPx": {
+            "top": 48,
+            "bottom": 48
+          },
+          "containerWidthPx": 1169.27,
+          "guttersPx": {
+            "left": 135.36,
+            "right": 135.37,
+            "centeringDelta": 0.01
+          },
+          "header": {
+            "text": "One workforce view, focused for each leader",
+            "rect": {
+              "left": 359.98,
+              "top": 4974.41,
+              "right": 1079.98,
+              "bottom": 5068,
+              "width": 720,
+              "height": 93.59
+            },
+            "textAlign": "center"
+          },
+          "splitColumnGapPx": null,
+          "gridColumnGapsPx": [],
+          "gridRowGapsPx": [
+            56
+          ],
+          "cardEqualHeightSpreadPx": [
+            56
+          ],
+          "cardPaddingPx": [
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            },
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            },
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            }
+          ],
+          "cardCtaSeamsPx": [],
+          "media": [
+            {
+              "well": {
+                "left": 135.36,
+                "top": 5203.81,
+                "right": 797.42,
+                "bottom": 5617.59,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "image": {
+                "left": 135.36,
+                "top": 5203.81,
+                "right": 797.42,
+                "bottom": 5617.59,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "objectFit": "cover",
+              "visibleEmptyWellAreaPx2": 0
+            },
+            {
+              "well": {
+                "left": 845.42,
+                "top": 5259.81,
+                "right": 1304.61,
+                "bottom": 5546.8,
+                "width": 459.19,
+                "height": 286.98
+              },
+              "image": {
+                "left": 845.42,
+                "top": 5259.81,
+                "right": 1304.61,
+                "bottom": 5546.8,
+                "width": 459.19,
+                "height": 286.98
+              },
+              "objectFit": "cover",
+              "visibleEmptyWellAreaPx2": 0
+            },
+            {
+              "well": {
+                "left": 135.36,
+                "top": 5868.41,
+                "right": 797.42,
+                "bottom": 6282.19,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "image": {
+                "left": 135.36,
+                "top": 5868.41,
+                "right": 797.42,
+                "bottom": 6282.19,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "objectFit": "cover",
+              "visibleEmptyWellAreaPx2": 0
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "rawAnomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "section": "sec-5",
+          "layout": "workflow-comparison",
+          "pattern": "infra-proof-split",
+          "sectionHeightPx": 708.64,
+          "verticalPaddingPx": {
+            "top": 48,
+            "bottom": 48
+          },
+          "containerWidthPx": 1169.27,
+          "guttersPx": {
+            "left": 135.36,
+            "right": 135.37,
+            "centeringDelta": 0.01
+          },
+          "header": {
+            "text": "Replace report assembly with decision preparation",
+            "rect": {
+              "left": 276.16,
+              "top": 6602,
+              "right": 1163.81,
+              "bottom": 6648.8,
+              "width": 887.66,
+              "height": 46.8
+            },
+            "textAlign": "center"
+          },
+          "splitColumnGapPx": null,
+          "gridColumnGapsPx": [],
+          "gridRowGapsPx": [],
+          "cardEqualHeightSpreadPx": [],
+          "cardPaddingPx": [],
+          "cardCtaSeamsPx": [],
+          "media": [],
+          "tables": [
+            {
+              "rect": {
+                "left": 211.52,
+                "top": 6860.52,
+                "right": 1228.47,
+                "bottom": 7185.64,
+                "width": 1016.95,
+                "height": 325.13
+              },
+              "rowWidths": [
+                1016.95,
+                1016.95,
+                1016.95,
+                1016.95,
+                1016.95,
+                1016.95
+              ],
+              "rowHeights": [
+                49.69,
+                55.19,
+                55.19,
+                55.19,
+                55.19,
+                54.69
+              ],
+              "columnTemplate": "none"
+            }
+          ],
+          "form": null,
+          "rawAnomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "section": "sec-6",
+          "layout": "remote-customer-perspectives",
+          "pattern": "testimonial-card-row",
+          "sectionHeightPx": 790.23,
+          "verticalPaddingPx": {
+            "top": 48,
+            "bottom": 48
+          },
+          "containerWidthPx": 1169.27,
+          "guttersPx": {
+            "left": 135.36,
+            "right": 135.37,
+            "centeringDelta": 0.01
+          },
+          "header": {
+            "text": "Built for teams already operating across borders",
+            "rect": {
+              "left": 359.98,
+              "top": 7310.64,
+              "right": 1079.98,
+              "bottom": 7404.23,
+              "width": 720,
+              "height": 93.59
+            },
+            "textAlign": "center"
+          },
+          "splitColumnGapPx": null,
+          "gridColumnGapsPx": [
+            32
+          ],
+          "gridRowGapsPx": [],
+          "cardEqualHeightSpreadPx": [
+            0
+          ],
+          "cardPaddingPx": [
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            },
+            {
+              "top": 32,
+              "right": 32,
+              "bottom": 32,
+              "left": 32
+            }
+          ],
+          "cardCtaSeamsPx": [],
+          "media": [
+            {
+              "well": {
+                "left": 167.36,
+                "top": 7572.05,
+                "right": 564.16,
+                "bottom": 7608.05,
+                "width": 396.8,
+                "height": 36
+              },
+              "image": {
+                "left": 167.36,
+                "top": 7572.05,
+                "right": 328.45,
+                "bottom": 7608.05,
+                "width": 161.09,
+                "height": 36
+              },
+              "objectFit": "contain",
+              "visibleEmptyWellAreaPx2": 8485.56
+            },
+            {
+              "well": {
+                "left": 660.16,
+                "top": 7572.05,
+                "right": 1056.95,
+                "bottom": 7608.05,
+                "width": 396.8,
+                "height": 36
+              },
+              "image": {
+                "left": 660.16,
+                "top": 7572.05,
+                "right": 811.34,
+                "bottom": 7608.05,
+                "width": 151.19,
+                "height": 36
+              },
+              "objectFit": "contain",
+              "visibleEmptyWellAreaPx2": 8841.96
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "rawAnomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "section": "sec-7",
+          "layout": "operational-trust",
+          "pattern": "infra-proof-split",
+          "sectionHeightPx": 712.63,
+          "verticalPaddingPx": {
+            "top": 64,
+            "bottom": 64
+          },
+          "containerWidthPx": 1169.27,
+          "guttersPx": {
+            "left": 135.36,
+            "right": 135.37,
+            "centeringDelta": 0.01
+          },
+          "header": {
+            "text": "Bring workforce context into a system your teams can govern",
+            "rect": {
+              "left": 817.42,
+              "top": 8260.67,
+              "right": 1304.63,
+              "bottom": 8401.06,
+              "width": 487.2,
+              "height": 140.39
+            },
+            "textAlign": "start"
+          },
+          "splitColumnGapPx": 97.44,
+          "gridColumnGapsPx": [],
+          "gridRowGapsPx": [],
+          "cardEqualHeightSpreadPx": [],
+          "cardPaddingPx": [],
+          "cardCtaSeamsPx": [],
+          "media": [
+            {
+              "well": {
+                "left": 135.36,
+                "top": 8087.88,
+                "right": 719.98,
+                "bottom": 8672.5,
+                "width": 584.63,
+                "height": 584.63
+              },
+              "image": {
+                "left": 135.36,
+                "top": 8087.88,
+                "right": 719.98,
+                "bottom": 8672.5,
+                "width": 584.63,
+                "height": 584.63
+              },
+              "objectFit": "contain",
+              "visibleEmptyWellAreaPx2": 0
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "rawAnomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "section": "sec-8",
+          "layout": "workforce-intelligence-faq",
+          "pattern": null,
+          "sectionHeightPx": 934.92,
+          "verticalPaddingPx": {
+            "top": 48,
+            "bottom": 48
+          },
+          "containerWidthPx": 720,
+          "guttersPx": {
+            "left": 360,
+            "right": 360,
+            "centeringDelta": 0
+          },
+          "header": {
+            "text": "What leaders ask before a demo",
+            "rect": {
+              "left": 435.41,
+              "top": 8813.5,
+              "right": 1004.58,
+              "bottom": 8860.3,
+              "width": 569.17,
+              "height": 46.8
+            },
+            "textAlign": "center"
+          },
+          "splitColumnGapPx": null,
+          "gridColumnGapsPx": [],
+          "gridRowGapsPx": [],
+          "cardEqualHeightSpreadPx": [],
+          "cardPaddingPx": [],
+          "cardCtaSeamsPx": [],
+          "media": [],
+          "tables": [],
+          "form": null,
+          "rawAnomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "section": "sec-9",
+          "layout": "qualified-demo-request",
+          "pattern": "cta-inline-banner",
+          "sectionHeightPx": 1090.69,
+          "verticalPaddingPx": {
+            "top": 48,
+            "bottom": 48
+          },
+          "containerWidthPx": 736,
+          "guttersPx": {
+            "left": 352,
+            "right": 352,
+            "centeringDelta": 0
+          },
+          "header": {
+            "text": "Bring one workforce question. We\u2019ll show you a clearer way to answer it.",
+            "rect": {
+              "left": 352,
+              "top": 9748.42,
+              "right": 1088,
+              "bottom": 9842.02,
+              "width": 736,
+              "height": 93.59
+            },
+            "textAlign": "center"
+          },
+          "splitColumnGapPx": null,
+          "gridColumnGapsPx": [
+            16,
+            16,
+            16
+          ],
+          "gridRowGapsPx": [
+            16,
+            16,
+            16,
+            16
+          ],
+          "cardEqualHeightSpreadPx": [
+            85.38
+          ],
+          "cardPaddingPx": [],
+          "cardCtaSeamsPx": [],
+          "media": [],
+          "tables": [],
+          "form": {
+            "rect": {
+              "left": 352,
+              "top": 9945.83,
+              "right": 1088,
+              "bottom": 10714.11,
+              "width": 736,
+              "height": 768.28
+            },
+            "fieldRects": [
+              {
+                "left": 384,
+                "top": 9993.83,
+                "right": 712,
+                "bottom": 10066.83,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 728,
+                "top": 9993.83,
+                "right": 1056,
+                "bottom": 10066.83,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 384,
+                "top": 10082.83,
+                "right": 712,
+                "bottom": 10155.83,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 728,
+                "top": 10082.83,
+                "right": 1056,
+                "bottom": 10155.83,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 384,
+                "top": 10171.83,
+                "right": 712,
+                "bottom": 10244.83,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 728,
+                "top": 10171.83,
+                "right": 1056,
+                "bottom": 10244.83,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 384,
+                "top": 10260.83,
+                "right": 1056,
+                "bottom": 10333.83,
+                "width": 672,
+                "height": 73
+              },
+              {
+                "left": 384,
+                "top": 10349.83,
+                "right": 1056,
+                "bottom": 10508.2,
+                "width": 672,
+                "height": 158.38
+              }
+            ],
+            "verticalFieldGaps": [
+              16,
+              16,
+              16,
+              16
+            ]
+          },
+          "rawAnomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        }
+      ],
+      "spacingConformance": {
+        "conform": 173,
+        "drift": 0,
+        "wrong-step": 2,
+        "off-ladder": 1,
+        "unmapped": 0,
+        "hardFails": 3,
+        "total": 176
+      },
+      "spacingHardFailures": [
+        {
+          "section": "sec-5",
+          "relationship": "header.heading-to-body",
+          "measuredPx": 64,
+          "severity": "wrong-step",
+          "declared": {
+            "name": "heading-to-body",
+            "px": 16.0,
+            "source": "token"
+          },
+          "nearest": {
+            "name": "block-to-block",
+            "px": 64.0,
+            "source": "token"
+          },
+          "note": ".cs-flow"
+        },
+        {
+          "section": "sec-6",
+          "relationship": "container.width",
+          "measuredPx": 720,
+          "severity": "wrong-step",
+          "declared": {
+            "name": "container-span",
+            "px": 1169.28,
+            "source": "token"
+          },
+          "nearest": {
+            "name": "header-measure",
+            "px": 720.0,
+            "source": "token"
+          },
+          "note": ""
+        },
+        {
+          "section": "sec-9",
+          "relationship": "container.stack-width",
+          "measuredPx": 736,
+          "severity": "off-ladder",
+          "declared": {
+            "name": "header-measure",
+            "px": 720.0,
+            "source": "token"
+          },
+          "nearest": {
+            "name": "header-measure",
+            "px": 720.0,
+            "source": "token"
+          },
+          "note": ""
+        }
+      ]
+    }
+  }
+}

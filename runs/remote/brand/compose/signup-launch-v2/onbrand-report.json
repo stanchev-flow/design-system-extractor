@@ -1,0 +1,57 @@
+{
+  "layout": "hero",
+  "brand": "Remote",
+  "composition_mode": true,
+  "neverDo": {
+    "never-typographic-primary": true,
+    "never-zero-radius": true,
+    "never-allcaps-headings": true
+  },
+  "neverDo_allowed": [],
+  "fidelity": {
+    "pass": true,
+    "checks": {
+      "Surface = brand surface/primary (#eff0f0)": true,
+      "Display family present (Bossa)": true,
+      "Brand assets present (not placeholder)": true
+    }
+  },
+  "slop": {
+    "pass": true,
+    "checks": {
+      "No default/system display font": true,
+      "No off-palette hex colors": true,
+      "No lorem/placeholder copy": true,
+      "All brand image assets present": true,
+      "Rounding matches brand radius scale": true,
+      "No foreign-brand content literals (alt/aria/title)": true,
+      "No foreign-brand asset references": true,
+      "Webfonts loaded (no silent system fallback)": true
+    }
+  },
+  "invariants": {
+    "mode": "hard",
+    "pass": true,
+    "checks": {
+      "single-accent": true,
+      "primitive-only": true,
+      "rhythm": true,
+      "data-composition": true,
+      "slot-resolution": true,
+      "text-contrast": true,
+      "decoration-salience": true,
+      "occlusion": true,
+      "band-attribution": true,
+      "alignment-resolution": true,
+      "media-registration": true,
+      "interaction-contrast": true,
+      "token-provenance": true,
+      "logo-wall-integrity": true
+    },
+    "details": {
+      "text-contrast": "96 text elements measured against their effective background (surface + decoration layer); worst = page-nav/c-button('Book demo') at 4.91 (floor 4.5); skipped=0",
+      "decoration-salience": "no decoration layers (ghost word / watermark) in this render"
+    }
+  },
+  "overall": true
+}

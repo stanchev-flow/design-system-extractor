@@ -1,0 +1,82 @@
+# STRUCTURED VOICE FACTS (pass1 2026-07; schema voice-facts.v1; brand-schema §4.8).
+# Derived from the brand's CAPTURED copy only — section-copy.yaml layoutCopy +
+# evidence/grounding section copy (headings, bodies, eyebrows, action labels).
+# voice.md stays the prose companion; this file is the machine-checkable layer the
+# voice gate (brand_pipeline/voice_audit.py) audits generated copy against.
+# Derivation method: unique captured strings, sentence-split on [.!?], word counts;
+# Flesch-Kincaid grade over the pooled heading+body corpus; verb-led share over
+# CONVERSION action labels (filled/outlined styleHints), nav/utility labels excluded.
+schema: voice-facts.v1
+brand: hubspot-v2
+derivedFrom:
+  - section-copy.yaml (layoutCopy: 9 unique headings, 8 bodies, 24 action labels)
+  - evidence/grounding/section-*.yaml (copy blocks, 12 sections)
+  - voice.md (tone descriptors -- prose companion)
+
+tone:
+  descriptors: [confident, plainspoken, operator-directed, contrast-pivoting, proof-by-numbers]
+  register: >-
+    Growth talk spoken TO operators ("your teams", "your customers") about HubSpot in
+    the third person; short declaratives that pivot on a contrast (hard -> easier).
+  source: voice.md Register/Patterns (derived from the same captured corpus)
+
+sentences:
+  corpus: 28 sentences pooled from unique captured headings + bodies
+  meanWords: 9.5
+  medianWords: 7.5
+  p90Words: 15
+  maxWords: 20
+  gate:
+    # generated copy budgets = measured envelope with documented ~1.5x headroom;
+    # the voice gate warns beyond these (advisory severity by default)
+    meanWordsMax: 14
+    p90WordsMax: 23
+
+readingLevel:
+  fleschKincaidGrade: 7.0
+  band: "6-8 (middle-school plain talk — numbers carry the sophistication)"
+  gate: { fkGradeMax: 10 }
+
+casing:
+  headings:
+    rule: sentence
+    note: >-
+      Sentence case with product/proper nouns capitalized mid-heading (measured 7/9
+      pure sentence case; the exceptions are product-name titles).
+    brandTerms: [HubSpot, Breeze, Hub, Marketing, Sales, Service, Content, Commerce,
+                 Operations, Agentic, Customer, Platform, G2, AI, Agents, Reports,
+                 # multi-word product/offering names strip as phrases (captured verbatim
+                 # in the source corpus — proper nouns, not casing choices)
+                 Marketing Hub, Sales Hub, Service Hub, Content Hub, Operations Hub,
+                 Commerce Hub, Breeze Agents, Small Business Bundle]
+  eyebrows:
+    rule: two-register
+    note: >-
+      UPPERCASE microlabel register (hero tagline, token case transform) + the
+      sentence-case bordered pill register ('Powered by AI', 'Case Studies') —
+      blocks.header.slots.eyebrow. Casing is enforced by the type token at render.
+  ctas: { rule: sentence, note: "Get a demo / Get started free — never title case, never uppercase" }
+
+verbLed:
+  conversionCtaShare: 0.71
+  corpus: "7 unique conversion labels (filled/outlined styleHints): 5 verb-led"
+  samples: [Get a demo, Get started free, Explore Breeze Agents, See all case studies, Generate property]
+  gate: { advisory: true, note: "share drops below ~0.5 in generated copy -> WARN" }
+
+punctuation:
+  exclamations: { measured: 0, gate: { max: 0 }, note: "no exclamation marks anywhere on the captured page — the strongest punctuation is the orange period" }
+
+bannedHype:
+  # words the captured corpus NEVER uses (voice.md: avoids enterprise jargon and
+  # hype adjectives) — presence in generated copy is a voice violation
+  lexicon: [leverage, synergy, world-class, cutting-edge, revolutionary, game-changing,
+            supercharge, unleash, next-level, blazing, groundbreaking, unparalleled,
+            best-in-class, state-of-the-art]
+  evidence: "0 hits across the captured heading/body/CTA corpus"
+
+provenance:
+  method: >-
+    deterministic text stats over the captured corpus (see header); no model in the
+    loop. Numbers regenerate identically from section-copy.yaml + grounding.
+  authoredBy: user
+  ts: "2026-07-14T15:00:00Z"

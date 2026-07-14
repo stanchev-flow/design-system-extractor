@@ -1,0 +1,295 @@
+schemaVersion: section-grounding.v1
+sectionRole: navbar
+layout:
+  structure: navbar bar top with logo left / nav links center / login+cta right; below is an open mega-menu
+    dropdown with 3 link columns left and a blog-post card right
+  columns: 4
+  alignment: left
+  approxPaddingPx:
+    top: 8
+    bottom: 40
+  gapPx: 48
+  containerWidth: full-bleed
+surfaces:
+- role: chrome-bar
+  bgApprox: '#eef0f2'
+  parent: page
+  radiusPx: 0
+  borderApprox: '1px #e2e4e7'
+  inkApprox: '#1a1a1a'
+- role: band
+  bgApprox: '#ffffff'
+  parent: page
+  radiusPx: 0
+  borderApprox: '1px #e6e8ea'
+  inkApprox: '#3a3a4a'
+- role: card
+  bgApprox: '#f4f5f7'
+  parent: chrome-bar
+  radiusPx: 12
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: media-well
+  bgApprox: 'gradient(#1a1e4a -> #6b2530)'
+  parent: card
+  radiusPx: 8
+  borderApprox: none
+  inkApprox: '#ffffff'
+- role: pill
+  bgApprox: '#e2e4e7'
+  parent: chrome-bar
+  radiusPx: 20
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+typography:
+- role: nav-link
+  approxSizePx: 17
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: eyebrow
+  approxSizePx: 13
+  weightApprox: 600
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#6a6a72'
+  familyClass: grotesque-sans
+- role: body
+  approxSizePx: 16
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: h3
+  approxSizePx: 22
+  weightApprox: 600
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: control-label
+  approxSizePx: 15
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#2b6bff'
+  familyClass: grotesque-sans
+components:
+- kind: button
+  variant: filled-primary
+  countObserved: 1
+  anatomy: text label only
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 12 20
+    radiusPx: 6
+  surfaceApprox: '#5b28e0'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: text label only
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 12 20
+    radiusPx: 6
+  surfaceApprox: '#ffffff'
+  inkApprox: '#5b28e0'
+  caseTreatment: sentence
+- kind: link
+  variant: text-underline
+  countObserved: 1
+  anatomy: underlined text 'Settings'
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#5b28e0'
+  caseTreatment: sentence
+- kind: button
+  variant: filled-neutral
+  countObserved: 1
+  anatomy: text label 'Book demo'
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 14 26
+    radiusPx: 24
+  surfaceApprox: '#111111'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: link
+  variant: nav-dropdown
+  countObserved: 4
+  anatomy: label + optional chevron
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 10 14
+    radiusPx: 20
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: link
+  variant: text-icon
+  countObserved: 1
+  anatomy: person icon + 'Login'
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: list-item
+  variant: menu-link
+  countObserved: 20
+  anatomy: optional leading icon -> text label
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: sentence
+- kind: card
+  variant: blog-post-card
+  countObserved: 1
+  anatomy: media-well top -> heading -> arrow link
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: '0'
+    radiusPx: 12
+  surfaceApprox: '#f4f5f7'
+  inkApprox: '#1a1a1a'
+  caseTreatment: sentence
+- kind: link
+  variant: text-arrow
+  countObserved: 2
+  anatomy: label + right arrow
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#2b6bff'
+  caseTreatment: sentence
+copy:
+  eyebrow: TOOLS & CALCULATORS
+  heading: The most complex global payroll market isn't the one you'd guess
+  body: Some of these cookies are essential, while others help us to improve our services and your experience
+    by providing insights into how the site is being used.
+  actions:
+  - label: Accept all
+    styleHint: filled-primary
+  - label: Reject optional
+    styleHint: outlined
+  - label: Settings
+    styleHint: text-underline
+  - label: Book demo
+    styleHint: filled-neutral
+  - label: Login
+    styleHint: text-icon
+  - label: Learn more →
+    styleHint: text-arrow
+  items:
+  - heading: Misclassification risk calculator
+    body: null
+    meta: TOOLS & CALCULATORS
+  - heading: Employee cost calculator
+    body: null
+    meta: TOOLS & CALCULATORS
+  - heading: Contractor payout calculator
+    body: null
+    meta: TOOLS & CALCULATORS
+  - heading: Research & Guides
+    body: null
+    meta: LEARN WITH REMOTE
+  - heading: Case studies
+    body: null
+    meta: LEARN WITH REMOTE
+  - heading: HR Glossary
+    body: null
+    meta: LEARN WITH REMOTE
+  - heading: Checklists & Templates
+    body: null
+    meta: LEARN WITH REMOTE
+  - heading: Job Description Library
+    body: null
+    meta: LEARN WITH REMOTE
+  - heading: Webinars
+    body: null
+    meta: LEARN WITH REMOTE
+  - heading: Events
+    body: null
+    meta: LEARN WITH REMOTE
+  - heading: Newsroom
+    body: null
+    meta: LEARN WITH REMOTE
+  - heading: Salary & Talent Insights
+    body: null
+    meta: LEARN WITH REMOTE
+  - heading: Insights center
+    body: null
+    meta: LEARN WITH REMOTE
+  - heading: Get support
+    body: null
+    meta: LEARN WITH REMOTE
+  - heading: See all resources
+    body: null
+    meta: LEARN WITH REMOTE
+  - heading: Global Payroll
+    body: null
+    meta: BLOG
+  - heading: EOR & PEO
+    body: null
+    meta: BLOG
+  - heading: Contractor Management
+    body: null
+    meta: BLOG
+  - heading: Compliance
+    body: null
+    meta: BLOG
+  - heading: Taxes
+    body: null
+    meta: BLOG
+  - heading: Work visas & permits
+    body: null
+    meta: BLOG
+  - heading: Changelog
+    body: null
+    meta: BLOG
+  - heading: Explore the blog
+    body: null
+    meta: BLOG
+  logosLegible: []
+media:
+- kind: illustration
+  treatment: abstract concentric ellipse/orbit gradient graphic (navy to red) with '85%' bubble, on inverse
+    media-well inside blog card
+  aspect: landscape
+  approxFractionOfSection: 0.1
+chrome:
+  casing: title
+  separators: whitespace-only
+  iconShape: text-labels
+  surfaceApprox: '#eef0f2'
+  linkTreatment: '17px #1a1a1a nav links, dropdown chevrons, active item on light-gray rounded pill'
+  ctaTreatment: near-black filled pill 'Book demo', hugging content
+motionHints:
+- nav items with dropdown chevrons (expand mega-menu)
+- open mega-menu panel visible (dropdown reveal)
+- arrow-in-link 'Learn more →' (hover slide affordance)
+confidence: high
+notes:
+- Top edge shows a cookie-consent banner truncated at frame top (partial heading 'Your choice regarding
+  cookies on this site')
+- This crop combines the cookie banner, sticky navbar, and an open Resources mega-menu
+- Bottom edge shows a gray scrollbar/browser chrome element
+_source:
+  crop: chrome-mega-2-resources.png
+  domClasses: ''
+  model: claude-opus-4-8

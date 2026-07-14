@@ -1,0 +1,74 @@
+schemaVersion: section-grounding.v1
+sectionRole: cta
+layout:
+  structure: 'centered single-column: heading -> body -> button, over a soft gradient band'
+  columns: 1
+  alignment: center
+  approxPaddingPx:
+    top: 130
+    bottom: 90
+  gapPx: 32
+  containerWidth: contained
+surfaces:
+- role: band
+  bgApprox: 'gradient(#e8e9e9 -> #9fc4e8 -> #7fc3c2)'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: canvas
+  bgApprox: '#ededec'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+typography:
+- role: h2
+  approxSizePx: 44
+  weightApprox: 600
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#141414'
+  familyClass: grotesque-sans
+- role: body
+  approxSizePx: 18
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#3a3d40'
+  familyClass: grotesque-sans
+- role: control-label
+  approxSizePx: 16
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#ffffff'
+  familyClass: grotesque-sans
+components:
+- kind: button
+  variant: filled-primary
+  countObserved: 1
+  anatomy: label -> arrow glyph, inline
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 16 32
+    radiusPx: 28
+  surfaceApprox: '#1a56e8'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+copy:
+  heading: Global employment is hard. We built the infrastructure to do it right.
+  body: Every country has different laws, tax codes, payroll rules, and compliance requirements. Remote
+    handles the hard stuff — with in-house payroll teams, local legal experts, and owned entities in every
+    market we operate in.
+  actions:
+  - label: Book demo →
+    styleHint: filled-primary
+confidence: high
+notes:
+- top edge shows previous section's canvas with a partial cut-off element
+- gradient concentrated top-center to right, fading toward gray at edges/bottom
+_source:
+  crop: section-09-hero-module-scss-module-nmjveq-section.png
+  domClasses: hero-module-scss-module__NmjvEq__section
+  model: claude-opus-4-8

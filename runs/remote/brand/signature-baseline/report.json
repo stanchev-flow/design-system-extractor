@@ -1,0 +1,262 @@
+{
+  "generatedAt": "2026-07-14T15:15:54Z",
+  "brandDir": "runs/remote/brand",
+  "viewport": "1440x900",
+  "signatureCount": 5,
+  "lanes": [
+    {
+      "lane": "compose/replica",
+      "html": "runs/remote/brand/compose/replica/index.html",
+      "specimenLane": false,
+      "signatures": [
+        {
+          "id": "action-blue-scope",
+          "kind": "accent-scope",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "scope(allowed)",
+              "ok": true,
+              "detail": "all 28 in-family paints sit on allowed roles"
+            },
+            {
+              "check": "accent_budget",
+              "ok": true,
+              "sharePct": 0.484,
+              "budgetPct": 2.0,
+              "detail": "accent paint share 0.484% of page (budget 2.0%)"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "pill-controls",
+          "kind": "shape-motif",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "buttons(pill)",
+              "ok": true,
+              "detail": "all 8 buttons pill (radius >= height/2)"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "single-display-family-light-weights",
+          "kind": "type-treatment",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "type(display)",
+              "ok": true,
+              "detail": "1 sample(s) on family ['Bossa', 'Lexend Deca'], weight <= 500"
+            },
+            {
+              "check": "type(heading)",
+              "ok": true,
+              "detail": "11 sample(s) on family ['Bossa', 'Lexend Deca'], weight <= 500"
+            },
+            {
+              "check": "type(body)",
+              "ok": true,
+              "detail": "20 sample(s) on family ['Inter']"
+            },
+            {
+              "check": "type(button)",
+              "ok": true,
+              "detail": "8 sample(s) on family ['Inter'], weight <= 500"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "crimson-never-actions",
+          "kind": "accent-scope",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "scope(forbidden)",
+              "ok": true,
+              "detail": "family never paints ['action'] (4 in-family paints checked)"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "light-canvas-sections",
+          "kind": "surface-habit",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "surfaces(light canvas)",
+              "ok": true,
+              "detail": "all 11 sections on the light canvas"
+            }
+          ],
+          "ok": true
+        }
+      ]
+    },
+    {
+      "lane": "compose/event-genlaunch",
+      "html": "runs/remote/brand/compose/event-genlaunch/index.html",
+      "specimenLane": false,
+      "signatures": [
+        {
+          "id": "action-blue-scope",
+          "kind": "accent-scope",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "scope(allowed)",
+              "ok": true,
+              "detail": "all 19 in-family paints sit on allowed roles"
+            },
+            {
+              "check": "accent_budget",
+              "ok": true,
+              "sharePct": 0.373,
+              "budgetPct": 2.0,
+              "detail": "accent paint share 0.373% of page (budget 2.0%)"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "pill-controls",
+          "kind": "shape-motif",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "buttons(pill)",
+              "ok": true,
+              "detail": "all 8 buttons pill (radius >= height/2)"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "single-display-family-light-weights",
+          "kind": "type-treatment",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "type(display)",
+              "ok": true,
+              "detail": "1 sample(s) on family ['Bossa', 'Lexend Deca'], weight <= 500"
+            },
+            {
+              "check": "type(heading)",
+              "ok": true,
+              "detail": "14 sample(s) on family ['Bossa', 'Lexend Deca'], weight <= 500"
+            },
+            {
+              "check": "type(body)",
+              "ok": true,
+              "detail": "35 sample(s) on family ['Inter']"
+            },
+            {
+              "check": "type(button)",
+              "ok": true,
+              "detail": "8 sample(s) on family ['Inter'], weight <= 500"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "crimson-never-actions",
+          "kind": "accent-scope",
+          "mode": "never",
+          "checks": [
+            {
+              "check": "scope(forbidden)",
+              "ok": true,
+              "detail": "family never paints ['action'] (2 in-family paints checked)"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "light-canvas-sections",
+          "kind": "surface-habit",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "surfaces(light canvas)",
+              "ok": true,
+              "detail": "all 9 sections on the light canvas"
+            }
+          ],
+          "ok": true
+        }
+      ]
+    },
+    {
+      "lane": "compose/components",
+      "html": "runs/remote/brand/compose/components/index.html",
+      "specimenLane": true,
+      "signatures": [
+        {
+          "id": "action-blue-scope",
+          "kind": "accent-scope",
+          "mode": "never",
+          "skipped": "specimen lane \u2014 page-level accent-scope claims void on a spec book"
+        },
+        {
+          "id": "pill-controls",
+          "kind": "shape-motif",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "buttons(pill)",
+              "ok": true,
+              "detail": "all 5 buttons pill (radius >= height/2)"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "single-display-family-light-weights",
+          "kind": "type-treatment",
+          "mode": "always",
+          "checks": [
+            {
+              "check": "type(display)",
+              "ok": true,
+              "detail": "3 sample(s) on family ['Bossa', 'Lexend Deca'], weight <= 500"
+            },
+            {
+              "check": "type(heading)",
+              "ok": true,
+              "detail": "10 sample(s) on family ['Bossa', 'Lexend Deca'], weight <= 500"
+            },
+            {
+              "check": "type(body)",
+              "ok": true,
+              "detail": "11 sample(s) on family ['Inter']"
+            },
+            {
+              "check": "type(button)",
+              "ok": true,
+              "detail": "5 sample(s) on family ['Inter'], weight <= 500"
+            }
+          ],
+          "ok": true
+        },
+        {
+          "id": "crimson-never-actions",
+          "kind": "accent-scope",
+          "mode": "never",
+          "skipped": "specimen lane \u2014 page-level accent-scope claims void on a spec book"
+        },
+        {
+          "id": "light-canvas-sections",
+          "kind": "surface-habit",
+          "mode": "always",
+          "skipped": "specimen lane \u2014 page-level surface-habit claims void on a spec book"
+        }
+      ]
+    }
+  ]
+}

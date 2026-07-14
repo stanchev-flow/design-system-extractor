@@ -1,0 +1,138 @@
+{
+ "docHeight": 7336,
+ "bands": [
+  {
+   "id": "page-nav",
+   "kind": "nav",
+   "layout": "navbar",
+   "rect": {
+    "x": 0,
+    "y": 49,
+    "w": 1440,
+    "h": 80.96875
+   }
+  },
+  {
+   "id": "sec-0",
+   "kind": "section",
+   "layout": "hero",
+   "rect": {
+    "x": 0,
+    "y": 129.96875,
+    "w": 1440,
+    "h": 736.640625
+   }
+  },
+  {
+   "id": "sec-1",
+   "kind": "section",
+   "layout": "logo-wall",
+   "rect": {
+    "x": 0,
+    "y": 866.609375,
+    "w": 1440,
+    "h": 161
+   }
+  },
+  {
+   "id": "sec-2",
+   "kind": "section",
+   "layout": "feature-accordion",
+   "rect": {
+    "x": 0,
+    "y": 1027.609375,
+    "w": 1440,
+    "h": 947.3125
+   }
+  },
+  {
+   "id": "sec-3",
+   "kind": "section",
+   "layout": "infra-panel",
+   "rect": {
+    "x": 0,
+    "y": 1974.921875,
+    "w": 1440,
+    "h": 712.625
+   }
+  },
+  {
+   "id": "sec-4",
+   "kind": "section",
+   "layout": "banner-cta",
+   "rect": {
+    "x": 0,
+    "y": 2687.546875,
+    "w": 1440,
+    "h": 524.390625
+   }
+  },
+  {
+   "id": "sec-5",
+   "kind": "section",
+   "layout": "workflow-cards",
+   "rect": {
+    "x": 0,
+    "y": 3211.9375,
+    "w": 1440,
+    "h": 902.28125
+   }
+  },
+  {
+   "id": "sec-6",
+   "kind": "section",
+   "layout": "partner-logos",
+   "rect": {
+    "x": 0,
+    "y": 4114.21875,
+    "w": 1440,
+    "h": 507.46875
+   }
+  },
+  {
+   "id": "sec-7",
+   "kind": "section",
+   "layout": "testimonials",
+   "rect": {
+    "x": 0,
+    "y": 4621.6875,
+    "w": 1440,
+    "h": 811.046875
+   }
+  },
+  {
+   "id": "sec-8",
+   "kind": "section",
+   "layout": "badge-strip",
+   "rect": {
+    "x": 0,
+    "y": 5432.734375,
+    "w": 1440,
+    "h": 556.609375
+   }
+  },
+  {
+   "id": "sec-9",
+   "kind": "section",
+   "layout": "closing-cta",
+   "rect": {
+    "x": 0,
+    "y": 5989.34375,
+    "w": 1440,
+    "h": 433.3125
+   }
+  },
+  {
+   "id": "sec-10",
+   "kind": "section",
+   "layout": "closing-bookend",
+   "rect": {
+    "x": 0,
+    "y": 6422.65625,
+    "w": 1440,
+    "h": 912.875
+   }
+  }
+ ],
+ "schemaVersion": "replica-rects.v1"
+}

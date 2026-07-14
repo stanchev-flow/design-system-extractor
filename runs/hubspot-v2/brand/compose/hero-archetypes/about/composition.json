@@ -1,0 +1,115 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "hubspot-about-hero",
+    "name": "About hero \u2014 mission monument",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "about-mission-hero",
+      "useCase": "hero",
+      "archetype": "stack",
+      "archetypeRef": "hero-mission-monument",
+      "surfaceIntent": "raised",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "grid": {
+        "columns": 12,
+        "gutter": "2rem"
+      },
+      "alignment": {
+        "anchor": "centered"
+      },
+      "slots": [
+        {
+          "name": "kicker",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Our mission"
+        },
+        {
+          "name": "statement",
+          "role": "mission-statement",
+          "contract": "heading",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "colStart": 2,
+          "colSpan": 10,
+          "copy": "Helping millions of organizations grow better."
+        },
+        {
+          "name": "support",
+          "role": "conviction-line",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "colStart": 4,
+          "colSpan": 6,
+          "copy": "Growing better means aligning your company's success with your customers' \u2014 winning with empathy, at scale."
+        },
+        {
+          "name": "story-link",
+          "role": "quiet-action",
+          "contract": "cta",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Read our story"
+        },
+        {
+          "name": "media",
+          "role": "company-photograph",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "framed",
+          "mediaAspect": "landscape",
+          "z": "mid",
+          "colStart": 3,
+          "colSpan": 8,
+          "asset": {
+            "src": "018-hs-full-bleed-1-optmised.webp",
+            "alt": "HubSpot team collaborating in a bright open workplace",
+            "ratio": "landscape"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "framed",
+          "target": "media",
+          "widthRel": {
+            "to": "container",
+            "ratio": 0.66
+          },
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "mediaBelow": "true",
+        "frameWidth": "wide"
+      }
+    }
+  ],
+  "rationale": "The brief is a statement beat, not a conversion beat, so the hero adopts the hero-mission-monument genre archetype: a dead-centered mission statement at the display tier, one supporting conviction line, and a framed company photograph seated BELOW the type like an altarpiece base \u2014 media strictly subordinate. Adapted (not reused) from the project seeds because none of them (photo-overlay conversion hero, dark closing CTA, tabbed testimonial) fits a mission-first about opener; seededFrom is null. The single quiet 'Read our story' action is a typographic cta link, honoring 'at most one quiet action'. Photography supports but never carries text: the image sits in its own framed slot beneath the copy, so no-text-on-photos holds by construction and no text-on-media treatment is emitted. Surface is 'raised' (warm cream) \u2014 a light, optimistic editorial canvas obeying the light-canvas invariant, no dark mid-page band, and a variety pick less used across the run. Headings resolve to the brand's sentence-case serif conviction tier at weight <= 500, and the centered anchor keeps the framed media symmetric (no offset), so media-registration stays clean."
+}

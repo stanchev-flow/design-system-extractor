@@ -1,0 +1,10 @@
+Command:
+node brand_pipeline/slop_audit.mjs runs/remote/brand/compose/bakeoff-sol/index.html
+
+Final result:
+PASS bakeoff-sol/index.html @1440px
+PASS bakeoff-sol/index.html @1180px
+
+Note:
+An earlier render flagged four AS-23 accordion media images. Shared renderer files changed before the final controlled render. The final render, whose exact shared-file hashes are recorded in RENDER-STATE.json, passes at both audited widths.
+

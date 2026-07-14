@@ -1,0 +1,42 @@
+{
+ "schemaVersion": "section-grounding.v1",
+ "model": "claude-opus-4-8",
+ "promptFile": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/brand_pipeline/spec/extraction-grounding-prompt.md",
+ "runs": [
+  {
+   "crop": "accordion-item-0-employer-of-record-eor.png",
+   "latency_s": 33.5,
+   "input_tokens": 6940,
+   "output_tokens": 2794,
+   "out": "accordion-item-0-employer-of-record-eor.yaml"
+  },
+  {
+   "crop": "accordion-item-1-global-payroll.png",
+   "latency_s": 29.26,
+   "input_tokens": 6940,
+   "output_tokens": 2394,
+   "out": "accordion-item-1-global-payroll.yaml"
+  },
+  {
+   "crop": "accordion-item-2-contractor-of-record-cor.png",
+   "latency_s": 31.47,
+   "input_tokens": 6940,
+   "output_tokens": 2632,
+   "out": "accordion-item-2-contractor-of-record-cor.yaml"
+  },
+  {
+   "crop": "accordion-item-3-contractor-management.png",
+   "latency_s": 31.65,
+   "input_tokens": 6940,
+   "output_tokens": 2616,
+   "out": "accordion-item-3-contractor-management.yaml"
+  },
+  {
+   "crop": "accordion-item-4-professional-employer-organization-peo.png",
+   "latency_s": 25.04,
+   "input_tokens": 6782,
+   "output_tokens": 1869,
+   "out": "accordion-item-4-professional-employer-organization-peo.yaml"
+  }
+ ]
+}

@@ -1,0 +1,24 @@
+{
+  "attempts": 2,
+  "telemetry": [
+    {
+      "attempt": 0,
+      "latency_s": 39.36,
+      "input_tokens": 25717,
+      "output_tokens": 3083,
+      "temperature": null,
+      "stage": "schema-fail"
+    },
+    {
+      "attempt": 1,
+      "latency_s": 22.1,
+      "input_tokens": 25848,
+      "output_tokens": 1729,
+      "temperature": null,
+      "stage": "gated",
+      "gate_pass": true
+    }
+  ],
+  "model": "claude-opus-4-8",
+  "offGridExpansion": true
+}

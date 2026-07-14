@@ -1,0 +1,402 @@
+schemaVersion: layout-patterns.v1
+# Remote PROJECT layout library — Phase D re-extraction (2026-07-07) from the fresh
+# live capture (screenshots/remote-v2/) through the evidence flow: one pattern per
+# observed page section (evidence/grounding/section-00..09; footer is chrome).
+# Same precedence rules as any project tier: these patterns seed
+# generate_composition for runs/remote.
+
+# Brand-owned component recipes (brand-schema §4.4e, fix2 2026-07): recurring
+# multi-slot anatomies recorded from EXISTING pattern evidence (no re-grounding).
+# Remote's conversion beats share one anatomy on the brand's noise-art surface —
+# the two CTA patterns below already carry the measured facts; the recipe names
+# the shared unit. No composer consumes it as a rail (these are stack bands, not
+# headrails) — it is the kit-surface record of the recurring anatomy.
+recipes:
+  - id: conversion-noise-band
+    name: conversion noise band
+    intent: >-
+      The house conversion beat: a CENTERED stack — question-form heading,
+      optional supporting body, exactly ONE filled primary pill — sitting on the
+      brand's pastel noise-gradient art surface. This SaaS brand closes and
+      punctuates its page with these art-surface conversion bands (the hero
+      opens on the same noise art as an inset split panel), always dark ink on
+      the art: no scrim, no white text.
+    anatomy:
+      - { slot: heading, role: centered question/closing heading (display face, size-only hierarchy), required: true }
+      - { slot: body, role: supporting paragraph (full column measure, no ch clamp), required: false }
+      - { slot: action, role: exactly one filled primary pill (48px fixed height), required: true }
+    geometry:
+      stackAnchor: centered      # layoutGrammar.headerContext.standaloneStack
+      source: extracted          # existing pattern facts only; no re-grounding
+    variants:
+      - id: inline-panel
+        useCase: "conversion beat BETWEEN content sections — compact rounded inset panel (10px) with a soft tinted glow at the lower edge; heading + pill only, no body"
+      - id: closing-fullbleed
+        useCase: "closing bookend — the noise gradient as a FULL-BLEED band (measured: 54.375rem stack measure, 5rem band pads); heading + body + pill, mirrors the hero's art"
+    usedBy: [cta-inline-banner, cta-closing-noise]
+    origin: extracted
+    provenance: [banner-cta, closing-cta]
+    confidence: high
+    changelog:
+      - { ts: "2026-07-13T11:00:00Z", action: created, from: null, to: conversion-noise-band, by: fix2, signalId: null, note: "promoted from existing pattern evidence (cta-inline-banner + cta-closing-noise intents, measured stackMeasure/bandPadding, headerContext standalone=centered, hero-noise surface role) — no re-grounding; rendering unchanged (no composer consumes a recipeRef on stack bands)" }
+
+patterns:
+  - id: hero-inset-noise-panel
+    useCase: hero
+    archetypeRef: split
+    surfaceIntent: any
+    intent: >-
+      Split hero INSIDE an inset rounded panel (~20px) painted with the brand's pastel
+      noise-gradient art: left content stack (display heading -> supporting body ->
+      filled primary pill + outlined secondary pill), right illustration with floating
+      product-UI status cards. Text on the art stays dark ink — no scrim, no blur, no
+      photographic background.
+    contentShape:
+      alignment: { value: left, inheritance: block-inherits, counterweight: media, rule: "content column left-aligned; the right illustration column is the counterweight (~50/50 split)" }
+      slots:
+        - { name: heading, role: display heading (single-weight, sentence case), textLen: medium, sizeClass: display, width: hug, z: front }
+        - { name: body, role: supporting paragraph, textLen: long, sizeClass: body, width: hug, z: front }
+        - { name: actions, role: filled primary pill + outlined secondary pill, textLen: short, sizeClass: control, width: hug, z: front }
+        - { name: media, role: product/brand illustration, mediaAspect: square, mediaScale: { of: container, fraction: 0.45 }, width: half, z: front, assets: [hero-globe-illustration.webp] }
+        - { name: background, role: inset rounded panel w/ noise-gradient art, mediaAspect: landscape, mediaScale: { of: container, fraction: 1.0 }, width: full-bleed, z: back, assets: [bg-noise-top-2x.webp] }
+    specialTreatments:
+      - { kind: panel-on-media, target: background, sanctioned: true, note: "~20px-rounded panel inset on the canvas; art texture covers 100%; ink text on it" }
+    responsive: { collapse: stack, mediaFirst: false }
+    variantKnobs:
+      secondaryCta: { type: enum, values: [on, off], default: on }
+    origin: extracted
+    provenance: [hero]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-03T16:40:00Z", action: created, from: null, to: hero-inset-noise-panel, by: creation, signalId: null, note: "first extraction" }
+      - { ts: "2026-07-07T12:30:00Z", action: refined, from: "12px panel", to: "~20px panel + status-card illustration detail", by: creation, signalId: null, note: "grounding section-00: radius ~20, floating status cards, gradient #e6e8ea->#cfe0ea" }
+  - id: logo-marquee-strip
+    useCase: logos
+    archetypeRef: stack
+    surfaceIntent: primary
+    intent: >-
+      Customer-proof strip on the canvas: short uppercase gray microlabel caption over a
+      single row of monochrome ink logo vectors (~40px tall, 64–100px gaps; marquee-capable).
+      Logos come from the tagged logo-wall-logo assets — REAL vectors, never text names.
+    contentShape:
+      alignment: { value: center, inheritance: block-inherits, rule: "caption centered; logo row full-width" }
+      slots:
+        - { name: caption, role: uppercase eyebrow caption, textLen: short, sizeClass: caption, width: hug, z: front }
+        # fix2 2026-07: measured mark geometry recorded from the capture (JS-off
+        # computed, .social-proof badgeImage boxes): uniform 40px-tall frames at
+        # natural per-logo widths (65–191px), 64px box gap. The strip renders via
+        # the MARQUEE device, which keeps its structural frame — the item fact is
+        # recorded evidence, not (yet) consumed on the marquee route.
+        - { name: logos, role: monochrome customer logo vectors (row), mediaAspect: wide, mediaScale: { of: container, fraction: 1.0, gap: 4rem, item: { height: 2.5rem }, source: computed }, width: full-bleed, z: front, assets: [logo-box.svg, logo-miro.svg, logo-kfc.svg, logo-heineken.svg, logo-byd.svg, logo-vercel.svg, logo-anthropic.svg, logo-datadog.svg, logo-gitlab.svg, logo-mizuho.svg, logo-lovable.svg, logo-mercury.svg] }
+    specialTreatments:
+      - { kind: marquee, target: logos, sanctioned: true, note: "marquee-capable track; static spaced row is the measured 1440 form" }
+    responsive: { collapse: none, mediaFirst: false }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [logo-wall]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-03T16:40:00Z", action: created, from: null, to: logo-marquee-strip, by: creation, signalId: null, note: "first extraction" }
+      - { ts: "2026-07-07T12:30:00Z", action: confirmed, from: null, to: "same 12-logo set re-captured live", by: creation, signalId: null, note: "grounding section-01 + curate stage (12 fresh logo files, byte-near-identical)" }
+      - { ts: "2026-07-13T10:45:00Z", action: adjusted, from: "mediaScale fraction only", to: "+ gap 4rem / item height 2.5rem (computed)", by: fix2-logo-boxes, signalId: null, note: "recorded from the capture (uniform 40px frames, 64px box gap); marquee route unchanged — evidence recorded, not consumed (replica parity)" }
+  - id: feature-accordion-deep-accent
+    useCase: features
+    archetypeRef: split
+    surfaceIntent: primary
+    intent: >-
+      Feature exploration split: crimson uppercase eyebrow + section heading, then a
+      left accordion list beside right product-UI media on a grid-lined well. Idle items
+      are hairline rows; hovered items take a warm tint wash; the ACTIVE item inverts to
+      a deep-accent inset card (deep maroon, white ink, circle-arrow affordance) — one at
+      a time.
+    contentShape:
+      alignment: { value: left, inheritance: block-inherits, counterweight: media, rule: "header stack left; list left column; the right product-UI media column is the counterweight" }
+      slots:
+        - { name: eyebrow, role: crimson uppercase microlabel, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: heading, role: section heading, textLen: medium, sizeClass: title, width: hug, z: front }
+        - { name: list, role: accordion items w/ deep-accent active state, textLen: long, sizeClass: body, width: half, z: front }
+        - { name: media, role: product UI collage, mediaAspect: square, mediaScale: { of: container, fraction: 0.457 }, width: half, z: front }
+      bandPadding: { top: 4rem, bottom: 4rem, source: computed, note: "measured band padding 64px top/bottom (JS-off @1440; section 973px tall, grid 995→1840)" }
+      deviceGeometry:
+        source: computed
+        note: >-
+          JS-off computed geometry @1440 (2026-07-08): band content spans the 1168px
+          (73rem) fluid container, centered; two EQUAL grid columns 533.5px each,
+          column-gap 101px, row-gap 64px; the header stack is the FIRST ROW of the list
+          column (heading wraps to two lines at 534px); media region 534×534 square,
+          top-aligned with the header row; item stride 97px = 80px trigger + 16px
+          inter-item gap (+1px hairline).
+        headerPlacement: list-column
+        columns: equal
+        contentSpan: 73rem
+        columnGap: 6.3125rem
+        rowGap: 4rem
+        media: { aspect: "1 / 1", align: top }
+        list: { triggerMinHeight: 5rem, itemGap: 1rem }
+    specialTreatments:
+      - { kind: inset-emphasis, target: list, sanctioned: true, surfaceRole: surface/accent, hoverWash: accent/warm-wash, affordance: circle-arrow, note: "active item = deep-accent panel (#511621 family, white ink) closed by a round white go-affordance (grounding section-02: circular arrow button, filled-neutral-icon); idle hover = warm wash (#fceef1). surfaceRole/hoverWash name the brand's own token roles the composer resolves for the ACTIVE inversion (grounding section-02: filled-primary-expanded item)." }
+    responsive: { collapse: stack, mediaFirst: false }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [accordion-features]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-03T16:40:00Z", action: created, from: null, to: feature-accordion-deep-accent, by: creation, signalId: null, note: "first extraction" }
+      - { ts: "2026-07-07T12:30:00Z", action: confirmed, from: null, to: "re-measured under the red theme scope", by: creation, signalId: null, note: "grounding section-02 + [data-zora-theme=red] token scope (accent #4a1420-family, label #a52d44-family)" }
+      - { ts: "2026-07-07T18:30:00Z", action: refined, from: "inset-emphasis prose only", to: "inset-emphasis + surfaceRole/hoverWash role refs", by: creation, signalId: null, note: "P2 renderer capability: the treatment now names the reusable surface/color ROLES (surface/accent, accent/warm-wash) so composers render the measured active inversion without prose-matching" }
+      - { ts: "2026-07-08T12:30:00Z", action: refined, from: "no affordance fact", to: "affordance: circle-arrow", by: creation, signalId: null, note: "fid2: the grounded circular arrow go-affordance on the ACTIVE item is now a declared treatment fact the composer renders (round chip on the panel's own paper/ink vars)" }
+      - { ts: "2026-07-08T17:10:00Z", action: refined, from: "mediaAspect portrait, no band geometry facts", to: "measured deviceGeometry + bandPadding; media square 0.457", by: creation, signalId: null, note: "fid9: JS-off computed geometry @1440 — band pads 64px; EQUAL 533.5px columns, gap 101px; header stack rides the list column's first row (row-gap 64px); media 534×534 square top-aligned; item stride 97px (80px trigger + 16px gap). Corrects mediaAspect portrait→square (the measured region is 1:1)." }
+  - id: infra-proof-split
+    useCase: features
+    archetypeRef: split
+    surfaceIntent: primary
+    intent: >-
+      Trust/architecture proof split: stacked product-UI proof cards on one side (white
+      cards on a faint grid-lined well — status pills, checklists, value rows), blue
+      uppercase eyebrow + section heading + LONG proof paragraph (compliance terms,
+      certifications) on the other. The body carries the evidence density; media is
+      supporting texture.
+    contentShape:
+      alignment: { value: left, inheritance: block-inherits, counterweight: media, rule: "copy column carries an eyebrow + heading + long body; the stacked-card media column is the counterweight" }
+      bandPadding: { top: "4rem", bottom: "4rem", source: computed, note: "JS-off @1440: section 699px, split 571px at y+64 — 64px symmetric band padding" }
+      deviceGeometry:
+        source: computed
+        note: "JS-off @1440: split 1168px = cols 571px media | 496px copy (gap 101px); media frame 571x571 SQUARE, img 640x461 object-fit:contain letterboxed inside"
+        media: { aspect: "1 / 1", align: top, fit: contain }
+      slots:
+        - { name: media, role: stacked product-UI proof cards on a grid-lined well, mediaAspect: landscape, mediaScale: { of: container, fraction: 0.5 }, width: half, z: front }
+        - { name: eyebrow, role: blue uppercase microlabel, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: heading, role: section heading, textLen: medium, sizeClass: title, width: hug, z: front }
+        - { name: body, role: long proof paragraph w/ certification terms, textLen: long, sizeClass: body, width: half, z: front }
+    specialTreatments: []
+    responsive: { collapse: stack, mediaFirst: true }
+    variantKnobs:
+      mediaSide: { type: enum, values: [left, right], default: left }
+    origin: extracted
+    provenance: [infra-panel]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-07T12:30:00Z", action: created, from: null, to: infra-proof-split, by: creation, signalId: null, note: "Phase D: grounding section-03 (media LEFT / copy RIGHT, 3 white proof cards, 180px section padding)" }
+      - { ts: "2026-07-08T23:59:00Z", action: measured, from: null, to: infra-proof-split, by: fid10, signalId: null, note: "JS-off @1440 band geometry: bandPadding 64px symmetric (section 699px = 64 + split 571 + 64); media frame 571x571 SQUARE with the 640x461 product-UI shot object-fit:contain letterboxed (deviceGeometry.media aspect 1/1, align top, fit contain); split cols 571|496 gap 101px" }
+  - id: cta-inline-banner
+    useCase: cta
+    archetypeRef: stack
+    surfaceIntent: primary
+    recipeRef: { recipe: conversion-noise-band, variant: inline-panel }
+    intent: >-
+      Inline conversion banner: a rounded inset panel with a soft tinted glow at the
+      bottom edge, centered heading (question form) + ONE filled primary pill. Compact —
+      a conversion beat between content sections, not a closing section.
+    contentShape:
+      alignment: { value: center, inheritance: block-inherits, rule: "everything centered; generous inner padding" }
+      slots:
+        - { name: heading, role: cta heading (question form), textLen: medium, sizeClass: title, width: hug, z: front }
+        - { name: action, role: filled primary pill, textLen: short, sizeClass: control, width: hug, z: front }
+    specialTreatments:
+      - { kind: panel-on-media, target: heading, sanctioned: true, note: "rounded inner panel (~20px); soft green radial glow at lower edge (grounding section-04)" }
+    responsive: { collapse: none, mediaFirst: false }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [banner-cta]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-03T16:40:00Z", action: created, from: null, to: cta-inline-banner, by: creation, signalId: null, note: "first extraction" }
+      - { ts: "2026-07-07T12:30:00Z", action: confirmed, from: null, to: "re-measured (green glow gradient detail)", by: creation, signalId: null, note: "grounding section-04: gradient(#e6e8e7 -> #8fd6a8), heading 44px, one pill" }
+  - id: features-card-grid-navy-media
+    useCase: features
+    archetypeRef: grid
+    surfaceIntent: primary
+    intent: >-
+      White card grid (3 columns, ~33px gap): each card is a 10px-rounded pure-white
+      panel (--zora-radius-x3), FLAT at idle (shadow+tint only on hover), with a
+      deep-navy media well on top (product art; the well itself is SQUARE — the card's
+      radius clips its visible top corners), then an uppercase card eyebrow, heading,
+      body. Section header: blue eyebrow + heading. Cards on the gray canvas — never
+      dark card fills.
+    contentShape:
+      alignment: { value: left, inheritance: block-inherits, counterweight: cards, rule: "header stack left-anchored; the full-width card grid below is the counterweight; in-card content left-aligned under the media well" }
+      # GRID EQUALIZATION (fid14 2026-07-09, brand-schema §4.4d) — measured JS-off @1440:
+      # all 3 cards render 536px tall despite differing text runs; each card is a flex
+      # column whose BODY region carries flex-grow:1 (specified 240px, rendered 288px —
+      # the +48px slack lands in the body, text top-anchored), while the media well is
+      # fixed at 248px. The card's action (cover-link + hover-revealed text link) rides
+      # the body's bottom seam, so visible actions anchor to the card bottom.
+      gridEqualize: { heights: stretch, slack: body, actionPinned: true, evidence: "JS-off @1440: card heights 536/536/536 (equal, content differs); body flexGrow:1 rendered 288px vs specified 240px (slack absorber); imageWrap fixed 248px; link anchored at the body's bottom seam" }
+      slots:
+        - { name: heading, role: section header stack (eyebrow + heading), textLen: medium, sizeClass: title, width: hug, z: front }
+        - { name: cards, role: white cards w/ navy media wells + card eyebrows, textLen: long, sizeClass: body, width: full, z: front, assets: [card-mcp-agents.webp, card-integrations.webp, card-api-first.webp] }
+    specialTreatments:
+      - { kind: inset-media-surface, target: cards, sanctioned: true, note: "deep navy (#00235c family) media well INSIDE the white card; white/periwinkle ink on it" }
+    responsive:
+      collapse: stack
+      mediaFirst: false
+      # OBSERVED column tiers (measured JS-off against the saved capture, 2026-07-08):
+      # grid-module grid = 3 tracks at viewports >=1024 (tracks 287-401px, gap 18-26px),
+      # re-wraps to 2 tracks at <=992 (tracks 424-440px, gap 16px). The variantKnobs
+      # enum values [2, 3] are these observed tiers; default 3 = the canonical tier.
+      columnsTiers:
+        - { columns: 2, maxViewportPx: 992, source: computed }
+    variantKnobs:
+      columns: { type: enum, values: [2, 3], default: 3 }
+    origin: extracted
+    provenance: [workflow-cards]
+    confidence: high
+    source: creation
+    scope: design-language
+    # CURATION (brand-schema §4.4c): the measured left fact stands (fid12 re-verified),
+    # but the design curator ruled the dissent toward the brand's own grammar for OUR
+    # generated output. Generation lanes resolve alignment through this ruling
+    # (header centers, block+text, like every other standalone); the replica lane
+    # ignores curation and keeps the measured left fact (its gate scores vs source).
+    curation:
+      alignment: { resolve: follow-grammar, by: user, ts: "2026-07-09T19:25:00Z", reason: "user (design curator): 'I would center align it as it falls to the rule of being alone with no columns, so actually on original it looks strange' — the source dissents from its own 6/7 standaloneStack=centered grammar; resolve toward the grammar for generation" }
+    changelog:
+      - { ts: "2026-07-03T16:40:00Z", action: created, from: null, to: features-card-grid-navy-media, by: creation, signalId: null, note: "first extraction" }
+      - { ts: "2026-07-07T12:30:00Z", action: confirmed, from: null, to: "re-measured w/ per-card eyebrow anatomy", by: creation, signalId: null, note: "grounding section-05: MCP/INTEGRATIONS/API card eyebrows, navy wells ~#0a1f56" }
+      - { ts: "2026-07-08T15:20:00Z", action: confirmed, from: null, to: "responsive.columnsTiers recorded", by: creation, signalId: null, note: "fid6: measured saved-capture grid JS-off across 960-1440 viewports — 3 cols >=1024, 2 cols <=992; enum values [2,3] are the observed tiers" }
+      - { ts: "2026-07-09T17:30:00Z", action: confirmed, from: null, to: "alignment.value=left re-verified", by: fid12, signalId: null, note: "user challenged the left standalone header; re-measured the saved capture JS-off @1440: header block leftGap=136px (content edge) vs rightGap=584px, text-align: start, header run 720px (--zora-st-width bounded measure) — the source genuinely left-anchors THIS standalone header against its own standaloneStack=centered grammar (6/7); the fact stands and legitimately outranks the grammar (AS-49)" }
+      - { ts: "2026-07-09T19:25:00Z", action: curated, from: "alignment left (generation)", to: "follow-grammar (centered)", by: user, signalId: null, note: "fid13: curation.alignment authored — the user resolves the fid12 dissent toward the standaloneStack grammar for generation lanes; the pattern fact itself is untouched and the replica lane still renders left" }
+      - { ts: "2026-07-09T19:40:00Z", action: corrected, from: "well '10px radius' in intent", to: "card 10px, well square", by: fid13, signalId: null, note: "JS-off computed @1440: card plate border-radius 10px (--zora-radius-x3), imageWrap/image 0px — the card's radius clips the well's visible top corners; intent text corrected" }
+      - { ts: "2026-07-09T20:20:00Z", action: confirmed, from: null, to: "contentShape.gridEqualize recorded", by: fid14, signalId: null, note: "user observation: source grid cards share a height; measured JS-off @1440 — 3 cards all 536px with differing text, body flexGrow:1 stretched 240→288px (slack), image well fixed 248px; heights=stretch, slack=body, actionPinned=true" }
+  - id: partner-proof-row
+    useCase: logos
+    archetypeRef: stack
+    surfaceIntent: primary
+    intent: >-
+      Ecosystem-proof stack: centered gray uppercase eyebrow + heading + supporting body,
+      then a centered row of ~4 COLORED partner logos (bigger tier than the customer
+      wall; one mark may sit in a bordered white card), closed by ONE outlined pill.
+      Distinct from the customer wall: color is allowed, the row is static and short.
+    contentShape:
+      alignment: { value: center, inheritance: block-inherits, rule: "entire stack centered; logo row is the proof beat between body and action" }
+      slots:
+        - { name: eyebrow, role: gray uppercase microlabel, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: heading, role: section heading, textLen: medium, sizeClass: title, width: hug, z: front }
+        - { name: body, role: supporting paragraph, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { name: logos, role: colored partner logos (static centered row), mediaAspect: wide, mediaScale: { of: container, fraction: 0.5 }, width: half, z: front, assets: [logo-workday-certified.webp, logo-gusto.webp, logo-bamboohr.webp, logo-personio.webp] }
+        - { name: action, role: outlined pill, textLen: short, sizeClass: control, width: hug, z: front }
+    specialTreatments: []
+    responsive: { collapse: none, mediaFirst: false }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [partner-logos]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-07T12:30:00Z", action: created, from: null, to: partner-proof-row, by: creation, signalId: null, note: "Phase D: grounding section-06 (workday card + gusto/bambooHR/Personio row, 'Become a Partner' outlined pill)" }
+  - id: testimonial-card-row
+    useCase: testimonial
+    archetypeRef: grid
+    surfaceIntent: primary
+    intent: >-
+      Social-proof carousel: centered heading + subhead, then a 3-up row of white rounded
+      cards — company mark top, quote body, circle avatar + vertical divider + name/role;
+      a 'Read customer story' arrow link reveals on card hover. Edge cards cut at the
+      viewport (carousel affordance); ONE outlined pill closes the section.
+    contentShape:
+      alignment: { value: center, inheritance: self-only, rule: "header centered; card content left-aligned" }
+      # GRID EQUALIZATION (fid14 2026-07-09, brand-schema §4.4d) — measured JS-off @1440:
+      # every card in the row renders 391px tall while the quote runs differ (135 vs
+      # 108 vs 108px) — real stretch, not equal content. The quote FRAME carries
+      # flex-grow:1 (239px rendered) and absorbs the slack; the author row (avatar +
+      # divider + name/role) sits AFTER the flexing frame, so it pins to the card
+      # bottom — the classic equalize-with-pinned-footer anatomy.
+      gridEqualize: { heights: stretch, slack: body, actionPinned: true, evidence: "JS-off @1440: card heights 391/391/391 while quotes run 135/108/108px; quote frame flexGrow:1 (239px) absorbs the slack; author row after the flexing frame = bottom-pinned; row container align-items normal (stretch)" }
+      slots:
+        - { name: heading, role: centered header stack (heading + subhead), textLen: medium, sizeClass: title, width: hug, z: front }
+        - { name: cards, role: quote cards w/ company marks + circle avatars, textLen: long, sizeClass: body, width: full, z: front, assets: [logo-fountain.svg, logo-reversetech.svg, logo-homeproject.svg, avatar-luke-mckinlay.webp, avatar-marisol-jimenez.webp, avatar-maria-shkaruppa.webp] }
+        - { name: action, role: outlined pill, textLen: short, sizeClass: control, width: hug, z: front }
+    specialTreatments:
+      - { kind: edge-cut, target: cards, sanctioned: true, note: "cut-at-viewport carousel track (grounding section-07: 'horizontal carousel of testimonial cards', 'left and right cards cut off at crop edges') — first cards full, edge card clipped past the section padding" }
+    responsive: { collapse: stack, mediaFirst: false }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [testimonials]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-03T16:40:00Z", action: created, from: null, to: testimonial-card-row, by: creation, signalId: null, note: "first extraction" }
+      - { ts: "2026-07-07T12:30:00Z", action: refined, from: "3-up slider", to: "carousel w/ company-mark anatomy + hover-revealed story link", by: creation, signalId: null, note: "grounding section-07 + testimonial-card hover rules (link reveal, card shadow); fresh company-mark vectors captured (fountain/reversetech/homeproject/semrush)" }
+      - { ts: "2026-07-07T18:30:00Z", action: refined, from: "edge-cut prose only (intent)", to: "sanctioned edge-cut treatment on cards", by: creation, signalId: null, note: "P2 renderer capability: the intent's cut-at-viewport fact becomes a declared treatment so composers render the carousel-statics presentation instead of a contained grid" }
+      - { ts: "2026-07-09T20:20:00Z", action: confirmed, from: null, to: "contentShape.gridEqualize recorded", by: fid14, signalId: null, note: "cross-check grid (different natural content lengths): cards all 391px while quotes run 135/108/108px — real stretch; quote frame flexGrow:1 absorbs slack, author row after the flexing frame pins to the bottom; heights=stretch, slack=body, actionPinned=true" }
+  - id: badge-award-strip
+    useCase: logos
+    archetypeRef: stack
+    surfaceIntent: primary
+    intent: >-
+      Third-party-validation stack: centered heading, a row of ~6 award shield badges
+      (~100px, white cards with multicolor chevron bases), a row of ~3 review-platform
+      rating chips (platform glyph + star row + numeric score), closed by ONE outlined
+      pill. Proof density comes from REAL badge/rating art, never invented numbers.
+    contentShape:
+      alignment: { value: center, inheritance: block-inherits, rule: "every row centered; badges then ratings then action" }
+      slots:
+        - { name: heading, role: centered heading, textLen: medium, sizeClass: title, width: hug, z: front }
+        # row scales measured JS-off against the saved capture @1440 (2026-07-08):
+        # badge row spans x170→1270 = 1100px of the 1168px content container
+        # (fraction 0.94; shields 130×150px, inter-badge gap 64px = 4rem); rating row
+        # spans x396→1044 = 648px (fraction 0.555; chips 24px tall, gap 32px = 2rem).
+        # The earlier 0.66/0.33 values were vision estimates.
+        - { name: badges, role: award shield badges (~100px row), mediaAspect: portrait, mediaScale: { of: container, fraction: 0.94, gap: 4rem, source: computed }, width: full, z: front, assets: [badge-g2-top50-hr.webp, badge-g2-top100-hr.webp, badge-g2-top100-fastest-growing.webp, badge-g2-top100-global-sellers.webp, badge-g2-payroll-leader.webp, badge-g2-gep-leader.webp] }
+        - { name: ratings, role: review-platform rating chips (glyph + stars + score), mediaAspect: wide, mediaScale: { of: container, fraction: 0.555, gap: 2rem, source: computed }, width: half, z: front, assets: [rating-g2.webp, rating-trustpilot.webp, rating-capterra.webp] }
+        - { name: action, role: outlined pill, textLen: short, sizeClass: control, width: hug, z: front }
+    specialTreatments: []
+    responsive: { collapse: stack, mediaFirst: false }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [badge-strip]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-07T12:30:00Z", action: created, from: null, to: badge-award-strip, by: creation, signalId: null, note: "Phase D: grounding section-08 (6 G2 shields + G2 4.6 / Trustpilot 4.7 / Capterra 4.4 rating rows + '4,000+ reviews' pill)" }
+      - { ts: "2026-07-08T17:20:00Z", action: refined, from: "mediaScale fractions 0.66/0.33 (vision)", to: "measured 0.94/0.555 + row gaps 4rem/2rem", by: measurement, signalId: null, note: "fid7: JS-off computed geometry @1440 — badge row 1100px, rating row 648px of the 1168px content container; replica gate width-fidelity flagged the band at 0.65" }
+  - id: cta-closing-noise
+    useCase: cta
+    archetypeRef: stack
+    surfaceIntent: primary
+    recipeRef: { recipe: conversion-noise-band, variant: closing-fullbleed }
+    intent: >-
+      Closing CTA on the pastel noise-gradient art as a FULL-BLEED band (grey → blue →
+      green): centered heading + supporting body + ONE filled primary pill; generous
+      breathing room (~130/90px). Dark ink on the art — the light bookend that mirrors
+      the hero panel.
+    contentShape:
+      alignment: { value: center, inheritance: block-inherits, rule: "centered stack, ~780px text measure" }
+      # measured JS-off against the saved capture @1440 (2026-07-08): the closing
+      # stack's content column caps at 870px (54.375rem) — heading AND body both span
+      # the full column (x285→1155 centered; body has NO ch clamp, maxWidth none).
+      stackMeasure: { value: 54.375rem, source: computed }
+      # band vertical padding measured 80px top + bottom @1440 (content 80→359 of the
+      # 439px band) — corrects the grounding's "~130/90px" vision estimate; the brand's
+      # site-average section-padding token (3rem base tier) under-pads this band.
+      bandPadding: { top: 5rem, bottom: 5rem, source: computed }
+      slots:
+        - { name: heading, role: closing heading, textLen: medium, sizeClass: title, width: hug, z: front }
+        - { name: body, role: supporting paragraph, textLen: long, sizeClass: body, width: hug, z: front }
+        - { name: action, role: filled primary pill, textLen: short, sizeClass: control, width: hug, z: front }
+    specialTreatments:
+      - { kind: art-surface, target: background, sanctioned: true, note: "noise-gradient art family (bg-noise-top-2x.webp); ink text; full-bleed band in the closing position" }
+    responsive: { collapse: none, mediaFirst: false }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [closing-cta]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-03T16:40:00Z", action: created, from: null, to: cta-closing-noise, by: creation, signalId: null, note: "first extraction" }
+      - { ts: "2026-07-07T12:30:00Z", action: refined, from: "inset panel", to: "full-bleed gradient band", by: creation, signalId: null, note: "grounding section-09: band surface gradient(#e8e9e9 -> #9fc4e8 -> #7fc3c2), no panel radius in the closing position" }
+      - { ts: "2026-07-08T17:20:00Z", action: refined, from: "text measure as intent prose only", to: "contentShape.stackMeasure 54.375rem (measured)", by: measurement, signalId: null, note: "fid7: JS-off computed geometry @1440 — content column 870px, body spans it fully (no ch clamp); replica gate width-fidelity flagged the band at 0.56" }

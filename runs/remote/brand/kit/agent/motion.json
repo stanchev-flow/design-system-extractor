@@ -1,0 +1,175 @@
+{
+  "source": "tokens.motion \u2014 evidence-derived (per-selector CSS motion audit); the full table ships as motion-audit.yaml",
+  "durations": {
+    "micro": {
+      "value": "100ms",
+      "role": "hover washes on dense option lists (select/multi-select .option background .1s)",
+      "census": 4,
+      "source": "motion-audit"
+    },
+    "state": {
+      "value": "150ms",
+      "role": "THE state tier \u2014 color/background-color/border state shifts (nav links, accordion triggers, button ink, language items)",
+      "census": 46,
+      "source": "motion-audit"
+    },
+    "move": {
+      "value": "200ms",
+      "role": "small transforms + fades (chevron rotate .2s, accordion panel height .2s, opacity fades, skip-link slide)",
+      "census": 23,
+      "source": "motion-audit"
+    },
+    "collapse": {
+      "value": "250ms",
+      "role": "structural collapse + hover-out exits (footer group grid-rows .25s, menu toggle bars, --zora-btn-duration-hover-out .25s, modal popupIn)",
+      "census": 19,
+      "source": "motion-audit"
+    },
+    "reveal": {
+      "value": "300ms",
+      "role": "panel/menu reveals + hover-in enters (nav desktopPanel opacity/transform .3s, nav entry-card grid-rows .3s, --zora-btn-duration-hover-in .3s, modal backdropIn)",
+      "census": 38,
+      "source": "motion-audit"
+    },
+    "elevation": {
+      "value": "500ms",
+      "role": "card hover plate (testimonial card ::before background/box-shadow/bottom .5s \u2014 the tint+shadow wash)",
+      "census": 4,
+      "source": "motion-audit"
+    },
+    "expressive": {
+      "value": "800ms",
+      "role": "large hover card reveals (image-grid link row height/margin/opacity .8s + image zoom .8s \u2014 always paired with the expo-out curve)",
+      "census": 8,
+      "source": "motion-audit"
+    }
+  },
+  "easings": [
+    {
+      "value": "cubic-bezier(0, 0, .2, 1)",
+      "use": "ENTER (decelerate) \u2014 --zora-btn-easing-enter + --zora-btn-easing-press",
+      "census": 25,
+      "source": "motion-audit"
+    },
+    {
+      "value": "cubic-bezier(.4, 0, 1, 1)",
+      "use": "EXIT (accelerate) \u2014 --zora-btn-easing-exit",
+      "census": 14,
+      "source": "motion-audit"
+    },
+    {
+      "value": "cubic-bezier(.16, 1, .3, 1)",
+      "use": "EXPRESSIVE expo-out \u2014 reserved for the 800ms card reveals",
+      "census": 8,
+      "source": "motion-audit"
+    },
+    {
+      "value": "ease",
+      "use": "browser default on the short state tier (most 150/200ms transitions leave easing unspecified) + 3 explicit uses",
+      "census": 3,
+      "source": "motion-audit"
+    },
+    {
+      "value": "linear",
+      "use": "marquee track only (sp-scroll keyframes, infinite)",
+      "census": 1,
+      "source": "motion-audit"
+    }
+  ],
+  "signatureMoves": [
+    {
+      "name": "cta-arrow-swap",
+      "move": "CTA arrow icon exits right by --zora-btn-arrow-travel (16px) fading out, then re-enters from the left (opacity swap at the 45%/45.1% keyframes); hover-in 300ms enter curve, hover-out 250ms exit curve",
+      "timing": "300ms cubic-bezier(0, 0, .2, 1) in / 250ms cubic-bezier(.4, 0, 1, 1) out",
+      "sourceSelectors": [
+        "@keyframes button-module\u2026icon-slide-right-enter/-leave",
+        ".button-module\u2026button[data-icon-anim=enter] .iconRight",
+        ".link-module\u2026link[data-icon-anim=\u2026] (same system on text links)",
+        "--zora-btn-arrow-travel: 16px"
+      ]
+    },
+    {
+      "name": "marquee-scroll",
+      "move": "logo strip track scrolls continuously left by half its doubled width (translateX(var(--sp-offset,-50%))), linear, infinite",
+      "timing": "duration is JS-set via --sp-duration (CSS fallback 0s) \u2014 see motion-audit jsTimingNotes; static capture renders the strip paused",
+      "measured": {
+        "durationS": 36,
+        "source": "saved-dom-inline-style",
+        "note": "one full -50% loop of the doubled track = 36s as computed by the site's own JS at 1440"
+      },
+      "sourceSelectors": [
+        "@keyframes social-proof-module\u2026sp-scroll",
+        ".social-proof-module\u2026stripTrack",
+        "stripTrack[style*='--sp-duration']"
+      ]
+    },
+    {
+      "name": "mega-menu-reveal",
+      "move": "nav dropdown panel fades+slides open (opacity/transform/visibility) while entry-card images and descriptions unfold via grid-template-rows",
+      "timing": "300ms across panel, card image and description (no easing declared \u2014 browser ease)",
+      "sourceSelectors": [
+        ".site-navigation-module\u2026desktopPanel",
+        ".site-navigation-module\u2026navEntryCardImageInner",
+        ".site-navigation-module\u2026navEntryCardDescription"
+      ]
+    },
+    {
+      "name": "hover-card-reveal",
+      "move": "work-culture image cards: hidden link row slides open (height/margin-top/opacity) while the image well shrinks and the image zooms \u2014 the brand's most expressive move",
+      "timing": "800ms cubic-bezier(.16, 1, .3, 1) on every property",
+      "sourceSelectors": [
+        ".image-grid-card-module\u2026card:hover \u2026",
+        ".image-grid-card-module\u2026imageWrap",
+        ".image-grid-card-module\u2026link"
+      ]
+    },
+    {
+      "name": "card-elevation-wash",
+      "move": "testimonial cards raise a ::before plate on hover: surface tint to #f6f7f8 + 0 12px 24px rgba(0,0,0,.08) shadow + plate extends 8px past the bottom edge",
+      "timing": "500ms (no easing declared \u2014 browser ease)",
+      "sourceSelectors": [
+        ".testimonial-card-module\u2026card:before",
+        ".testimonial-card-module\u2026cardHasLink:hover\u2026"
+      ]
+    },
+    {
+      "name": "modal-pop",
+      "move": "form modal: backdrop fades in; popup scales .97\u21921 while translating 8px up (sheet evidence only \u2014 no modal renders on the captured page)",
+      "timing": "backdrop 300ms / popup 250ms",
+      "sourceSelectors": [
+        "@keyframes form-modal-module\u2026backdropIn",
+        "@keyframes form-modal-module\u2026popupIn"
+      ]
+    },
+    {
+      "name": "accordion-state-shift",
+      "move": "feature accordion: trigger background/ink/corner-rounding shift on the state tier, chevron rotates on the move tier, panel height animates on the move tier",
+      "timing": "trigger 150ms; chevron + panel height 200ms",
+      "sourceSelectors": [
+        ".accordion-module\u2026trigger",
+        ".accordion-module\u2026triggerChevron",
+        ".accordion-module\u2026panel"
+      ]
+    }
+  ],
+  "reducedMotion": {
+    "value": "declared",
+    "role": "12 prefers-reduced-motion rules measured in the fresh sheet",
+    "source": "motion-audit"
+  },
+  "scrollReveal": {
+    "kind": "fade-translateY",
+    "translateY": null,
+    "trigger": "IntersectionObserver, ~8% viewport inset, small per-item stagger"
+  },
+  "link": {
+    "mode": "color-shift",
+    "hoverColor": "#383a3d",
+    "hoverColorNote": "measured on a DARK surface \u2014 apply ONLY on dark/inverse surfaces; on light surfaces hover stays the surface ink (WCAG: the accent is a 1.3:1 contrast failure on the light canvas \u2014 see quality/anti-ai-slop.md AS-10)"
+  },
+  "imageParallax": {
+    "enabled": false,
+    "amount": "light",
+    "mechanism": "GSAP ScrollTrigger scrub; masked wrapper (.c-image-mask, overflow:hidden, wraps ONLY the img, never a caption); img scale(1.12) + yPercent pan; hero overlap pair moves at differential rates (0.4x / 1.2x); prefers-reduced-motion disables everything"
+  }
+}

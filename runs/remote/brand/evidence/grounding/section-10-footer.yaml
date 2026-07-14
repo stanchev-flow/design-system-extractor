@@ -1,0 +1,153 @@
+schemaVersion: section-grounding.v1
+sectionRole: footer
+layout:
+  structure: 6-column link grid on top, legal copy + app badges below, then bottom bar with policy links
+    + social icons
+  columns: 6
+  alignment: left
+  approxPaddingPx:
+    top: 72
+    bottom: 40
+  gapPx: 32
+  containerWidth: contained
+surfaces:
+- role: band
+  bgApprox: '#f4f5f6'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#2b2f33'
+- role: chrome-bar
+  bgApprox: '#e7e8e9'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#2b2f33'
+- role: chrome-bar
+  bgApprox: '#f4f5f6'
+  parent: band
+  radiusPx: 0
+  borderApprox: '1px #e0e2e4'
+  inkApprox: '#3a3d40'
+typography:
+- role: h3
+  approxSizePx: 15
+  weightApprox: 600
+  case: title
+  trackingApprox: normal
+  colorApprox: '#22262a'
+  familyClass: grotesque-sans
+- role: footer-link
+  approxSizePx: 15
+  weightApprox: 400
+  case: title
+  trackingApprox: normal
+  colorApprox: '#3a3d40'
+  familyClass: grotesque-sans
+- role: caption
+  approxSizePx: 14
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#6b6f73'
+  familyClass: grotesque-sans
+components:
+- kind: link
+  variant: text
+  countObserved: 45
+  anatomy: single-line or wrapped text link in column list
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#3a3d40'
+  caseTreatment: title
+- kind: media-frame
+  variant: app-store-badge
+  countObserved: 2
+  anatomy: black rounded badge with brand glyph + download text
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: 10 16
+    radiusPx: 8
+  surfaceApprox: '#000000'
+  inkApprox: '#ffffff'
+  caseTreatment: title
+- kind: link
+  variant: text
+  countObserved: 5
+  anatomy: policy link in bottom bar row
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#3a3d40'
+  caseTreatment: title
+- kind: icon
+  variant: social-glyph
+  countObserved: 4
+  anatomy: monochrome outline social icon
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#2b2f33'
+  caseTreatment: sentence
+copy:
+  body: Copyright © 2026. Remote Technology, Inc. All rights reserved. Numbers on this page are based
+    on internal data compiled from existing customer base and speed assumption is based on the fact that
+    standard onboarding may take 30 days and Remote's average…
+  items:
+  - heading: Solutions
+    body: Hire International Employees / Hire International Contractors / Expand Globally / Onboard Global
+      Teams / Remote API / Run Payroll / Offer Global Benefits / Offer Stock Options / US Expansion Offering
+      / Global HR
+    meta: null
+  - heading: Product Services
+    body: Pricing / Employer of Record (EOR) / Contractor Management / Payroll / Remote Relocation / Expansion
+      Consulting Services / Recruit
+    meta: null
+  - heading: Product Business Size
+    body: Global HR for Startups / Global HR for Small Business / Global HR for Enterprise
+    meta: null
+  - heading: Resources
+    body: Global Employment Blog / Research / Case Studies / Webinars / Developer API Docs / Compare Remote
+      / Tech Stack Integrations / Remote Handbook / Country Explorer / US State Explorer / Employee Cost
+      Calculator / Misclassification Risk Tool
+    meta: null
+  - heading: Why Remote
+    body: 'Global Infrastructure / Security and Compliance / Security and Compliance: Trust Portal / Transparent
+      Price Guarantee / IP Protection / Customer Experience'
+    meta: null
+  - heading: By Role
+    body: Startup Founders / Remote for Employees / Freelancer Hub / For jobseekers
+    meta: null
+  - heading: Company
+    body: About / Careers / Newsroom / Events / Marketplace / Support / Remote Status / Contact Us / Accessibility
+      Statement
+    meta: null
+  - heading: Partnerships
+    body: Partner Programs / Affiliates / VC Partners / HR Consultant Partners / Financial Advisor Partners
+      / Law Firm Partners / Partner Perks Marketplace / Remote Recruiter Network
+    meta: null
+chrome:
+  casing: title
+  separators: whitespace-only
+  iconShape: square-glyph
+  surfaceApprox: '#f4f5f6'
+  linkTreatment: '15px #3a3d40 grotesque-sans, title case'
+  ctaTreatment: black app-store badges, fixed width
+motionHints: []
+confidence: high
+notes:
+- Top edge shows a lighter grey band (#e7e8e9) likely bottom of previous section
+- Bottom-left partially visible purple square icon (chat/support widget), cut off
+- Social icons read as YouTube, LinkedIn, X, Instagram
+- 'Bottom policy links: Privacy Policy, Cookie Policy, Terms of Use, Disclaimer, Imprint'
+_source:
+  crop: section-10-footer.png
+  domClasses: site-footer-module-scss-module__qYa75a__footer
+  model: claude-opus-4-8

@@ -1,0 +1,123 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "hubspot-spotlight-fall-2026-hero",
+    "name": "HubSpot Spotlight fall 2026 reveal \u2014 copy-first hero",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "spotlight-hero",
+      "useCase": "hero",
+      "archetype": "stack",
+      "archetypeRef": "hero-event-meta-forward",
+      "surfaceIntent": "raised",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-photo-overlay"
+      },
+      "slots": [
+        {
+          "name": "meta",
+          "role": "event-logistics",
+          "contract": "label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Oct 8, 2026 \u00b7 9:00 AM ET \u00b7 Streamed live \u00b7 Free"
+        },
+        {
+          "name": "heading",
+          "role": "event-name",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "hero",
+          "width": "hug",
+          "z": "front",
+          "copy": "Spotlight"
+        },
+        {
+          "name": "subheading",
+          "role": "promise",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "HubSpot's fall reveal \u2014 watch Breeze agents and hundreds of Hub updates ship, live."
+        },
+        {
+          "name": "actionGroup",
+          "role": "register-actions",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": [
+            {
+              "label": "Save my seat",
+              "variant": "filled",
+              "emphasis": "primary"
+            },
+            {
+              "label": "See the fall lineup",
+              "variant": "ghost",
+              "emphasis": "secondary"
+            }
+          ]
+        },
+        {
+          "name": "agenda",
+          "role": "agenda-rail",
+          "contract": "logo-bar",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "caption": "90 minutes across Marketing, Sales, Service, Content, Data and Commerce Hub \u2014 and Smart CRM.",
+            "logos": [
+              {
+                "alt": "Marketing Hub",
+                "asset": "028-producticons-marketinghub-icon-orange.webp"
+              },
+              {
+                "alt": "Sales Hub",
+                "asset": "029-producticons-saleshub-icon-orange.webp"
+              },
+              {
+                "alt": "Service Hub",
+                "asset": "030-producticons-servicehub-icon-orange.webp"
+              },
+              {
+                "alt": "Content Hub",
+                "asset": "031-producticons-contenthub-icon-orange.webp"
+              },
+              {
+                "alt": "Data Hub",
+                "asset": "032-producticons-datahub-icon-orange.webp"
+              },
+              {
+                "alt": "Commerce Hub",
+                "asset": "033-producticons-commercehub-icon-orange.webp"
+              }
+            ]
+          }
+        }
+      ],
+      "treatments": []
+    }
+  ],
+  "rationale": "Copy-first event opener built on the hero-event-meta-forward genre archetype: the logistics meta row leads as the news register (date carries the urgency, so no countdown or NEW badge), the single-word event name 'Spotlight' takes the hero tier in the brand's own display face (ink on the cream raised band \u2014 no accent text off dark surfaces, no wordmark raster), the promise sits directly beneath, then a register action pair with one primary ('Save my seat') and a quiet ghost sibling ('See the fall lineup') honoring AS-59. The agenda rail lands below the actions in the brand's real product marks (six Hub webp icons via logo-bar, satisfying never-text-logos) at caption weight so it never outshouts the name. surfaceIntent 'raised' is the copy plan's warm cream band, a licensed roster surface not yet used across sibling heroes. No atmosphere media, no text-on-media treatment needed; orange stays confined to the primary button and the Hub marks. Adapt of the project hero family recomposed to the meta-forward archetype; footer omitted per the hard rule."
+}

@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "hubspot-pricing-hero",
+    "name": "Pricing hero \u2014 HubSpot",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "sec-0",
+      "useCase": "hero",
+      "archetype": "stack",
+      "archetypeRef": "hero-pricing-value-forward",
+      "surfaceIntent": "inverse",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "closing-cta-dark"
+      },
+      "slots": [
+        {
+          "name": "kicker",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Pricing"
+        },
+        {
+          "name": "heading",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "copy": "Start free, scale as you grow."
+        },
+        {
+          "name": "subheading",
+          "role": "support-line",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Free tools to get going \u2014 no credit card required. Add premium editions on any hub as your team grows."
+        },
+        {
+          "name": "actions",
+          "role": "action-group",
+          "contract": "header",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": {
+            "cta": [
+              "Get started free",
+              "Talk to sales"
+            ]
+          }
+        },
+        {
+          "name": "meta",
+          "role": "qualifier-meta",
+          "contract": "label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "No credit card required \u00b7 Premium editions priced per hub"
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "bandHeight": "compact",
+        "metaRow": "text"
+      }
+    }
+  ],
+  "rationale": "Single compact pricing masthead using the hero-pricing-value-forward genre archetype on a stack: the value frame is the display heading, one support line names the qualifier, and a caption meta row states the free-tools/premium-editions nuance before handing off to the tier cards below the fold. It opens on the brand's mandated inverse (deep-teal) surface as the sole accent-carrying bookend \u2014 the primary 'Get started free' button is the one accent element, with 'Talk to sales' as the quiet sibling (AS-59). Alignment is intentionally omitted so the brand's standaloneStack header grammar resolves it (fixing the prior missing-counterweight failure); no off-grid device is used since the section is a working masthead, not a statement piece. bandHeight stays compact so real prices are not pushed below the fold."
+}

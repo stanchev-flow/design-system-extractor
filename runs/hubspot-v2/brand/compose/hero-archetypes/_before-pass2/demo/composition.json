@@ -1,0 +1,136 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "hubspot-demo-request-hero",
+    "name": "Demo request hero",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "hero-demo",
+      "useCase": "hero",
+      "archetype": "split",
+      "archetypeRef": "hero-form-split",
+      "surfaceIntent": "accent-wash",
+      "novelty": "novel",
+      "seededFrom": null,
+      "grid": {
+        "columns": 12,
+        "gutter": "2rem"
+      },
+      "slots": [
+        {
+          "name": "kicker",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": "Book a demo"
+        },
+        {
+          "name": "heading",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": "See the HubSpot customer platform work for your team."
+        },
+        {
+          "name": "support",
+          "role": "lede",
+          "contract": "paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": "Watch Breeze AI agents work a real pipeline on one connected CRM, tailored to your stack in 30 minutes. A live walkthrough, not a slide deck."
+        },
+        {
+          "name": "see-points",
+          "role": "value-list",
+          "contract": "list",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": [
+            "Breeze AI agents working a real pipeline, live",
+            "Marketing, sales, and service on one CRM",
+            "30 minutes, tailored to the tools you already run"
+          ]
+        },
+        {
+          "name": "proof",
+          "role": "proof-stat",
+          "contract": "stat",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 6,
+          "copy": {
+            "value": "299,000+",
+            "label": "customers grow with HubSpot"
+          }
+        },
+        {
+          "name": "demo-form",
+          "role": "capture-form",
+          "contract": "form",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "fixed",
+          "z": "front",
+          "colStart": 7,
+          "colSpan": 6,
+          "copy": {
+            "header": {
+              "heading": "Book your 30-minute demo"
+            },
+            "fields": [
+              {
+                "label": "First name"
+              },
+              {
+                "label": "Work email"
+              },
+              {
+                "label": "Company size"
+              }
+            ],
+            "submit": "Book my demo",
+            "note": "We'll email you a scheduling link within one business day \u2014 pick a time that works, no obligation."
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "formSide": "right",
+        "formFrame": "panel",
+        "supportKind": "value-list"
+      }
+    }
+  ],
+  "rationale": "One hero only. The brief is a lead-gen opener, so I chose the hero-form-split genre archetype: a persuasion column (kicker, display heading with the platform claim, a lede that states exactly what you'll see and how long, a scannable value list, and a 299,000+ proof stat) beside the form as the counterweight in cols 7-12. The form carries only first name, work email, company size and one clear 'Book my demo' submit, with a note that says precisely what happens next (scheduling link within a business day) \u2014 never gating behind vague promises. Split archetype keeps modules on the shared 12-col grid; alignment is left to the brand's header grammar. Per brand surface rhythm this opening bookend is the single inverse (deep-teal) band and the only section carrying the accent, applied to the display title. No text logos, no dark mid-run bands, sentence-case heading at weight 500 \u2014 every neverDo holds by construction. Novel because the seed library's hero pattern is a photo overlay, not a capture form; recomposed within the drawable split archetype."
+}

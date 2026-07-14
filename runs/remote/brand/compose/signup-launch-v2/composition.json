@@ -1,0 +1,379 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "new-offering-launch",
+    "name": "New offering launch",
+    "useCasesRequested": [
+      "hero",
+      "logos",
+      "features",
+      "testimonial",
+      "cta"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/remote/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "split",
+      "surfaceIntent": "any",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-inset-noise-panel"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Introducing"
+        },
+        {
+          "name": "heading",
+          "role": "headline",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "copy": "Everything in one place"
+        },
+        {
+          "name": "body",
+          "role": "subheading",
+          "contract": "subheading",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "A simpler way to get started \u2014 built for how you actually work."
+        },
+        {
+          "name": "primaryCta",
+          "role": "primary-action",
+          "contract": "button",
+          "textLen": "word",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Start free"
+        },
+        {
+          "name": "secondaryCta",
+          "role": "secondary-action",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "See how it works"
+        },
+        {
+          "name": "media",
+          "role": "hero-illustration",
+          "contract": "image",
+          "textLen": "none",
+          "width": "media",
+          "mediaAspect": "square",
+          "z": "front",
+          "asset": {
+            "src": "hero-globe-illustration.webp",
+            "alt": "Product overview illustration with floating status cards",
+            "ratio": "square"
+          }
+        },
+        {
+          "name": "background",
+          "role": "art-surface",
+          "contract": "image",
+          "textLen": "none",
+          "width": "full-bleed",
+          "mediaAspect": "landscape",
+          "z": "back",
+          "asset": {
+            "src": "bg-noise-top-2x.webp",
+            "alt": "",
+            "ratio": "landscape"
+          }
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "text-on-media",
+          "target": "heading",
+          "over": "background",
+          "sanctioned": true,
+          "amount": {
+            "class": "light"
+          }
+        }
+      ],
+      "knobs": {
+        "secondaryCta": "on"
+      }
+    },
+    {
+      "id": "logos",
+      "useCase": "logos",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "partner-proof-row"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Trusted worldwide"
+        },
+        {
+          "name": "heading",
+          "role": "heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": "Trusted by 10,000+ teams"
+        },
+        {
+          "name": "body",
+          "role": "supporting",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "From fast-moving startups to established enterprises, teams standardize on one place to work."
+        },
+        {
+          "name": "logos",
+          "role": "logo-wall",
+          "contract": "logo-bar",
+          "textLen": "none",
+          "width": "media",
+          "mediaAspect": "wide",
+          "z": "front",
+          "copy": [
+            {
+              "alt": "Workday",
+              "asset": "logo-workday-certified.webp"
+            },
+            {
+              "alt": "Datadog",
+              "asset": "logo-datadog.svg"
+            },
+            {
+              "alt": "GitLab",
+              "asset": "logo-gitlab.svg"
+            },
+            {
+              "alt": "Mercury",
+              "asset": "logo-mercury.svg"
+            }
+          ]
+        },
+        {
+          "name": "action",
+          "role": "secondary-action",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "See all customers"
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "features",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "infra-proof-split"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Why teams switch"
+        },
+        {
+          "name": "heading",
+          "role": "heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": "Built for how you actually work"
+        },
+        {
+          "name": "features",
+          "role": "feature-run",
+          "contract": "feature-item",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "heading": "Set up in minutes",
+              "text": "No manual wiring \u2014 you're live the same day."
+            },
+            {
+              "heading": "One source of truth",
+              "text": "Everyone sees the same thing, always up to date."
+            },
+            {
+              "heading": "Scales with you",
+              "text": "From your first project to your thousandth."
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "columns": "3",
+        "align": "left"
+      }
+    },
+    {
+      "id": "testimonial",
+      "useCase": "testimonial",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "testimonial-card-row"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": "Teams that made the switch"
+        },
+        {
+          "name": "cards",
+          "role": "testimonial-run",
+          "contract": "testimonial",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "quote": "We replaced three tools in a week and never looked back.",
+              "name": "Operations lead",
+              "role": "Mid-market team",
+              "asset": "logo-fountain.svg"
+            },
+            {
+              "quote": "Onboarding took an afternoon, not a quarter.",
+              "name": "Head of Operations",
+              "role": "Growth-stage company",
+              "asset": "logo-gusto.webp"
+            },
+            {
+              "quote": "Everyone finally works from the same source of truth.",
+              "name": "Chief Operating Officer",
+              "role": "Global services team",
+              "asset": "logo-personio.webp"
+            }
+          ]
+        },
+        {
+          "name": "action",
+          "role": "secondary-action",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Read customer stories"
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "columns": "3"
+      },
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "cta",
+      "useCase": "cta",
+      "archetype": "stack",
+      "surfaceIntent": "panel",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "cta-inline-banner"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "role": "heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": "Ready to bring everything together?"
+        },
+        {
+          "name": "action",
+          "role": "primary-action",
+          "contract": "button",
+          "textLen": "word",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Start free"
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "centered"
+      }
+    }
+  ],
+  "rationale": "Ordered as hero \u2192 logos \u2192 features \u2192 testimonial \u2192 cta, mapping the brief onto Remote's captured SaaS patterns. The hero reuses hero-inset-noise-panel (display headline, subhead, filled + outlined CTA pills over the brand's pastel art surface) with the single sanctioned display-title-over-media treatment. Trust comes early via partner-proof-row bound to the 10,000+ stat and four real colored partner logos. The three value_props render as ONE feature-item run in a clean on-grid 3-up cards row adapted from infra-proof-split (archetype swapped to cards to hold the three modules while keeping the proof intent). testimonial-card-row carries the real quote plus two brand-voice-consistent proofs. The cta reuses cta-inline-banner as a centered conversion beat; per the offGridExpansion=false lock the panel-on-media treatment was removed and the banner ships as a disciplined on-grid centered stack on a panel band. No inverse/dark bands, one accent budget honored through actions, sentence-case headings, non-zero radius throughout, footer omitted for the appended brand chrome."
+}

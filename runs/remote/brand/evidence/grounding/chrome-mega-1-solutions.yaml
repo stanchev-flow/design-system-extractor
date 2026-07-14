@@ -1,0 +1,265 @@
+schemaVersion: section-grounding.v1
+sectionRole: navbar
+layout:
+  structure: sticky top bar with cookie banner strip above; open mega-menu dropdown below (3 link-groups
+    left, case-study card right)
+  columns: 4
+  alignment: left
+  approxPaddingPx:
+    top: 0
+    bottom: 24
+  gapPx: 32
+  containerWidth: contained
+surfaces:
+- role: chrome-bar
+  bgApprox: '#f2f3f5'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a2e'
+- role: band
+  bgApprox: '#ffffff'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#5a5a6a'
+- role: inset-panel
+  bgApprox: '#eef0f2'
+  parent: chrome-bar
+  radiusPx: 0
+  borderApprox: '1px #d8dade'
+  inkApprox: '#1a1a2e'
+- role: card
+  bgApprox: '#ffffff'
+  parent: inset-panel
+  radiusPx: 8
+  borderApprox: none
+  inkApprox: '#1a1a2e'
+- role: media-well
+  bgApprox: '#0f1b3d'
+  parent: card
+  radiusPx: 8
+  borderApprox: none
+  inkApprox: '#ffffff'
+typography:
+- role: nav-link
+  approxSizePx: 16
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1a1a2e'
+  familyClass: grotesque-sans
+- role: eyebrow
+  approxSizePx: 13
+  weightApprox: 600
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#8a8a96'
+  familyClass: grotesque-sans
+- role: control-label
+  approxSizePx: 16
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1a1a2e'
+  familyClass: grotesque-sans
+- role: h3
+  approxSizePx: 22
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1a1a2e'
+  familyClass: grotesque-sans
+- role: body
+  approxSizePx: 14
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#5a5a6a'
+  familyClass: grotesque-sans
+- role: link
+  approxSizePx: 15
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#3b5bfd'
+  familyClass: grotesque-sans
+components:
+- kind: button
+  variant: filled-primary
+  countObserved: 1
+  anatomy: solid purple rectangle, centered label 'Accept all'
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 11 20
+    radiusPx: 4
+  surfaceApprox: '#5b2be0'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: bordered rectangle, label 'Reject optional'
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 11 20
+    radiusPx: 4
+  surfaceApprox: '#ffffff'
+  inkApprox: '#5b2be0'
+  caseTreatment: sentence
+- kind: link
+  variant: text-underline
+  countObserved: 1
+  anatomy: underlined text link 'Settings'
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#5b2be0'
+  caseTreatment: sentence
+- kind: button
+  variant: filled-primary
+  countObserved: 1
+  anatomy: near-black pill, label 'Book demo'
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 14 28
+    radiusPx: 24
+  surfaceApprox: '#0a0a14'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: link
+  variant: nav-link
+  countObserved: 4
+  anatomy: text label with optional chevron
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 8 12
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1a1a2e'
+  caseTreatment: title
+- kind: pill
+  variant: filled-neutral
+  countObserved: 1
+  anatomy: active nav item 'Solutions' with chevron on gray pill
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 8 16
+    radiusPx: 20
+  surfaceApprox: '#e2e3e7'
+  inkApprox: '#1a1a2e'
+  caseTreatment: title
+- kind: list-item
+  variant: icon-plus-label
+  countObserved: 9
+  anatomy: leading line-icon -> label text, some with trailing badge
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1a1a2e'
+  caseTreatment: title
+- kind: badge
+  variant: filled-neutral
+  countObserved: 1
+  anatomy: small pill 'Coming soon' beside Remote Build
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 3 10
+    radiusPx: 12
+  surfaceApprox: '#e2e3e7'
+  inkApprox: '#5a5a6a'
+  caseTreatment: sentence
+- kind: logo-item
+  variant: wordmark
+  countObserved: 1
+  anatomy: circular R glyph -> 'remote' wordmark
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#0a0a14'
+  caseTreatment: lower
+copy:
+  eyebrow: GLOBAL COVERAGE
+  heading: null
+  body: Some of these cookies are essential, while others help us to improve our services and your experience
+    by providing insights into how the site is being used.
+  actions:
+  - label: Accept all
+    styleHint: filled-primary
+  - label: Reject optional
+    styleHint: outlined
+  - label: Settings
+    styleHint: text-underline
+  - label: Book demo
+    styleHint: filled-primary
+  - label: Login
+    styleHint: nav-link
+  - label: Learn more
+    styleHint: text-arrow
+  items:
+  - heading: Country Explorer
+    body: null
+    meta: GLOBAL COVERAGE
+  - heading: US State Explorer
+    body: null
+    meta: GLOBAL COVERAGE
+  - heading: Compare Remote
+    body: null
+    meta: GLOBAL COVERAGE
+  - heading: Startups
+    body: null
+    meta: GROWTH STAGE
+  - heading: Mid-Market
+    body: null
+    meta: GROWTH STAGE
+  - heading: Enterprise
+    body: null
+    meta: GROWTH STAGE
+  - heading: Strategic Technology Partners
+    body: null
+    meta: PARTNER WITH US
+  - heading: Become a Partner
+    body: null
+    meta: PARTNER WITH US
+  - heading: Remote Build
+    body: null
+    meta: Coming soon
+  - heading: 'Scaling global talent with ease: How Flowla achieves 100% HR visibility with Remote'
+    body: null
+    meta: CASE STUDIES
+  logosLegible: []
+media:
+- kind: logo-vector
+  treatment: white 'Flowla' logo with icon on dark navy media-well
+  aspect: landscape
+  approxFractionOfSection: 0.12
+- kind: icon-set
+  treatment: thin monochrome line icons ~20px beside each menu item
+  aspect: square
+  approxFractionOfSection: 0.05
+chrome:
+  casing: title
+  separators: whitespace-only
+  iconShape: text-labels
+  surfaceApprox: '#f2f3f5'
+  linkTreatment: '16px #1a1a2e title-case, active item on gray pill, dropdown chevrons'
+  ctaTreatment: near-black filled pill 'Book demo', hugging content
+motionHints:
+- accordion/mega-menu open (Solutions dropdown expanded)
+- chevron icons beside nav links (dropdown expand affordance)
+- arrow-in-link beside 'Learn more' (hover icon-slide affordance)
+confidence: high
+notes:
+- cookie banner strip cut off at top edge, heading partially visible above 'Some of these cookies...'
+- bottom edge shows faint gray strip, likely start of next section
+- faint background text visible behind mega-menu panel (page content beneath overlay)
+_source:
+  crop: chrome-mega-1-solutions.png
+  domClasses: ''
+  model: claude-opus-4-8

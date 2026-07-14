@@ -1,0 +1,145 @@
+schemaVersion: section-grounding.v1
+sectionRole: hero
+layout:
+  structure: split ~50/50, copy left / globe illustration right, inside a rounded inset panel
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 100
+    bottom: 100
+  gapPx: 80
+  containerWidth: inset-panel
+surfaces:
+- role: canvas
+  bgApprox: '#eef0f0'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#111318'
+- role: inset-panel
+  bgApprox: 'gradient(#e6e8ea -> #cfe0ea)'
+  parent: canvas
+  radiusPx: 20
+  borderApprox: none
+  inkApprox: '#111318'
+- role: card
+  bgApprox: '#ffffff'
+  parent: inset-panel
+  radiusPx: 12
+  borderApprox: '1px #e3e6ea'
+  inkApprox: '#1a1c20'
+typography:
+- role: h1
+  approxSizePx: 52
+  weightApprox: 500
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#121317'
+  familyClass: grotesque-sans
+- role: body
+  approxSizePx: 18
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#3a3d42'
+  familyClass: grotesque-sans
+- role: control-label
+  approxSizePx: 16
+  weightApprox: 600
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#ffffff'
+  familyClass: grotesque-sans
+components:
+- kind: button
+  variant: filled-primary
+  countObserved: 1
+  anatomy: label + right arrow icon
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 14 28
+    radiusPx: 24
+  surfaceApprox: '#2461ff'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: label only
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 14 28
+    radiusPx: 24
+  surfaceApprox: transparent
+  inkApprox: '#1c2a4d'
+  caseTreatment: sentence
+- kind: card
+  variant: filled-neutral
+  countObserved: 4
+  anatomy: avatar/flag/icon left -> name/label -> sub-meta; some with pill value
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 12 16
+    radiusPx: 12
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1a1c20'
+  caseTreatment: sentence
+- kind: avatar
+  variant: rounded-square
+  countObserved: 2
+  anatomy: portrait thumbnail inside card
+  sizing:
+    widthBehavior: fixed
+    radiusPx: 8
+  surfaceApprox: '#cfd4da'
+  inkApprox: '#1a1c20'
+  caseTreatment: sentence
+- kind: badge
+  variant: pill
+  countObserved: 3
+  anatomy: value or LIVE status pill
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 3 8
+    radiusPx: 6
+  surfaceApprox: '#e5edff'
+  inkApprox: '#2461ff'
+  caseTreatment: sentence
+copy:
+  heading: Global employment runs on Remote
+  body: Hire and pay anyone in the world — with the compliance, reliability, and local expertise that
+    only owned infrastructure delivers.
+  actions:
+  - label: Book demo
+    styleHint: filled-primary
+  - label: Sign up
+    styleHint: outlined
+  items:
+  - heading: Ana Pereira
+    body: EOR, Engineering
+    meta: null
+  - heading: Payroll run
+    body: 142 employees
+    meta: €487k
+  - heading: Contract signed
+    body: 12 sec ago
+    meta: LIVE
+  - heading: Kenji T. · Tokyo
+    body: Contractor → FTE
+    meta: ¥6.2M
+media:
+- kind: illustration
+  treatment: wireframe globe with dashed orbit lines, blue node dots, central circular brand logo mark,
+    floating status cards
+  aspect: square
+  approxFractionOfSection: 0.45
+motionHints:
+- LIVE status pill suggests animated feed
+confidence: high
+notes:
+- top edge shows sliver of a dark button in page chrome above panel
+- globe center displays circular 'R' brand mark
+_source:
+  crop: section-00-hero-module-scss-module-nmjveq-section-hero-modu.png
+  domClasses: hero-module-scss-module__NmjvEq__section hero-module-scss-module__NmjvEq__sectionDefault
+  model: claude-opus-4-8

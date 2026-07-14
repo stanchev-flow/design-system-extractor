@@ -1,0 +1,80 @@
+schemaVersion: section-grounding.v1
+sectionRole: cta
+layout:
+  structure: left-aligned heading over two side-by-side buttons, full-bleed dark band
+  columns: 1
+  alignment: left
+  approxPaddingPx:
+    top: 90
+    bottom: 90
+  gapPx: 32
+  containerWidth: full-bleed
+surfaces:
+- role: band
+  bgApprox: '#0a2a28'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#f4f1ea'
+- role: chrome-bar
+  bgApprox: '#1a1a1a'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#f4f1ea'
+typography:
+- role: h2
+  approxSizePx: 56
+  weightApprox: 500
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#f4f1ea'
+  familyClass: serif
+- role: control-label
+  approxSizePx: 16
+  weightApprox: 700
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#ffffff'
+  familyClass: grotesque-sans
+relationalSpacingPx:
+  headingToBody: 60
+components:
+- kind: button
+  variant: filled-primary
+  countObserved: 1
+  anatomy: text label centered
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 20 32
+    radiusPx: 8
+  surfaceApprox: '#f8531b'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: text label centered
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 20 32
+    radiusPx: 8
+  surfaceApprox: transparent
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+copy:
+  heading: Make impossible growth feel impossibly easy, with HubSpot.
+  body: null
+  actions:
+  - label: Get a demo
+    styleHint: filled-primary
+  - label: Get started free
+    styleHint: outlined
+confidence: high
+notes:
+- orange period accent at end of heading (#f8531b)
+- thin dark strip at bottom edge is start of next section
+_source:
+  crop: section-10-csol-section-wf-elevated-cta-padding-top-md-padd.png
+  domClasses: csol-section wf-elevated-cta  -padding-top-md -padding-bottom-md
+  model: claude-opus-4-8

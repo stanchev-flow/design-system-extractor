@@ -1,0 +1,180 @@
+# section-copy.yaml — Remote brand copy layers (section-copy-schema.md v1)
+# Phase D re-extraction (2026-07-07). Source of truth: the per-section VISION
+# grounding YAMLs' verbatim `copy` blocks (evidence/grounding/section-*.yaml),
+# cross-checked against the DOM census (evidence/dom-sections.json). Real site
+# voice only — nothing invented, nothing borrowed cross-brand.
+
+sectionCopy:
+  wordmark: "Remote"
+  nav: [Products, Solutions, Resources, Pricing]
+  specimenEyebrow: "HOW WE DO IT"          # the brand's own uppercase eyebrow register (section-02)
+  eyebrow: "GLOBAL COMPANIES GROW WITH REMOTE"
+  subhead: "Hire and pay anyone in the world — with the compliance, reliability, and local expertise that only owned infrastructure delivers."
+  cta: "Book demo"
+
+layoutCopy:
+  hero:
+    heading: "Global employment runs on Remote"
+    body: >-
+      Hire and pay anyone in the world — with the compliance, reliability, and
+      local expertise that only owned infrastructure delivers.
+    cta: "Book demo"
+    secondaryCta: "Sign up"
+  logo-wall:
+    eyebrow: "GLOBAL COMPANIES GROW WITH REMOTE"
+    caption: "GLOBAL COMPANIES GROW WITH REMOTE"
+  feature-accordion:
+    eyebrow: "HOW WE DO IT"
+    heading: "One system of record. Every employment need."
+    # NO section-level body (fid2 2026-07): the source intro is eyebrow + h2 only —
+    # the EOR copy lives ONLY inside the expanded first item (grounding section-02);
+    # the old duplicate here rendered the same paragraph twice.
+    # per-item icons: the brand's OWN captured product-family marks (assets-tagged
+    # useCase feature-icon), matched to the items they were exported for.
+    # per-item bodies (fid8 2026-07): VERBATIM source copy — items 2-5 harvested from
+    # the saved DOM's collapsed panels (panelDescription paragraphs render hidden) and
+    # cross-checked against the live interaction pass (evidence/crops/
+    # accordion-one-system-of-record.json). A body is what makes an item openable.
+    # per-item media (fid8 2026-07): the right-panel collage the source swaps per
+    # active item — five distinct product-UI collages captured by the per-item
+    # interaction pass (tools/extract/capture_disclosure_states.py, live remote.com,
+    # element crops of the settled media region at 2x).
+    items:
+      - heading: "Employer of Record (EOR)"
+        icon: icon-eor.webp
+        media: collage-eor-ui.webp
+        body: >-
+          Need to hire anyone, anywhere? We handle the employment contract,
+          taxes, benefits, and compliance — onboarded in hours, not months.
+      - heading: "Global Payroll"
+        icon: icon-global-payroll.webp
+        media: collage-global-payroll-ui.webp
+        body: >-
+          Accurate, compliant payroll in every country you operate. Run by our
+          in-house teams, no partner network.
+      - heading: "Contractor of Record (COR)"
+        icon: icon-contractor-of-record.webp
+        media: collage-contractor-of-record-ui.webp
+        body: >-
+          Engage international contractors compliantly. Contracts, payments,
+          and risk — all handled by our experts.
+      - heading: "Contractor Management"
+        icon: icon-contractor-management.webp
+        media: collage-contractor-management-ui.webp
+        body: >-
+          Engage contractors compliantly, anywhere — and convert them to FTEs
+          before misclassification risk becomes a legal problem.
+      - heading: "Professional Employer Organization (PEO)"
+        icon: icon-peo.webp
+        media: collage-peo-ui.webp
+        body: >-
+          US hiring without the admin burden. Payroll, taxes, benefits, all
+          taken care of.
+  infra-panel:
+    eyebrow: "INTELLIGENT INFRASTRUCTURE"
+    heading: "Owned end-to-end infrastructure, operated in-house."
+    body: >-
+      We have our own legal experts, our own payroll specialists, and our own
+      compliance teams in every market we operate in. And because it's all ours,
+      everything lives in one place: every employment record, contract,
+      compliance document, and payroll engine run accurate, current,
+      audit-ready, SOC 2 Type 2 compliant, and ISO 27001 certified.
+  banner-cta:
+    heading: "Hiring internationally, converting contractors, or consolidating payroll? Talk to our team."
+    cta: "Book demo"
+  workflow-cards:
+    eyebrow: "INTEGRATIONS, API, AND MCP"
+    heading: "Your workflows, your way, on our infrastructure"
+    items:
+      - eyebrow: "MCP"
+        heading: "Deploy AI agents on real employment data"
+        body: >-
+          Remote MCP gives any AI agent a live, secure connection to payroll,
+          contracts, compliance data, and org structure — no API keys, no
+          exports, no custom integrations needed.
+        cta: "Learn more"
+      - eyebrow: "INTEGRATIONS"
+        heading: "Plug Remote into your stack"
+        body: >-
+          Keep the HR tools your team already uses. Remote runs the payroll and
+          compliance underneath, natively integrated with Workday, HiBob,
+          BambooHR, Personio, and more.
+        cta: "See all integrations"
+      - eyebrow: "API"
+        heading: "Build on top of ours"
+        body: >-
+          Remote is API-first by design. Use our REST API, webhooks, and CLI to
+          build custom workflows, embed global employment into your own product,
+          or extend Remote however your business needs.
+        cta: "Explore the API"
+  partner-logos:
+    eyebrow: "THE GLOBAL PAYROLL BACKBONE"
+    heading: "The world's best teams run on Remote"
+    body: >-
+      Remote is the infrastructure leading HR platforms trust to deliver global
+      payroll, EOR, and contractor management to their customers.
+    cta: "Become a Partner"
+  testimonials:
+    heading: "A word from our customers"
+    subhead: "Join customers who trust Remote to transform their business."
+    quote: >-
+      If we had to manage and coordinate everything in-house, it would cost us
+      well over $500,000 more each year. Remote not only eliminates that
+      financial strain but also takes the operational burden off our plate,
+      allowing us to focus on growing our business with confidence and
+      efficiency.
+    caption: "Luke McKinlay, VP of Finance"
+    # name/role split from the captured caption lines; avatar = the brand's own
+    # captured portrait for that person (assets-tagged useCase testimonial-avatar).
+    items:
+      - quote: >-
+          If we had to manage and coordinate everything in-house, it would cost
+          us well over $500,000 more each year. Remote not only eliminates that
+          financial strain but also takes the operational burden off our plate,
+          allowing us to focus on growing our business with confidence and
+          efficiency.
+        caption: "Luke McKinlay, VP of Finance"
+        name: "Luke McKinlay"
+        role: "VP of Finance"
+        avatar: avatar-luke-mckinlay.webp
+      - quote: >-
+          We run monthly, semi-monthly and hourly payroll in multiple different
+          currencies around the world and our Finance Manager has full
+          visibility in a single platform. With Remote, you can make it happen.
+        caption: "Marisol Jiménez, Head of People"
+        name: "Marisol Jiménez"
+        role: "Head of People"
+        avatar: avatar-marisol-jimenez.webp
+      - quote: >-
+          We see Remote as a leading and trusted partner in this space. The
+          expert support they provide in local payroll, tax compliance, and HR
+          operations has streamlined our processes and created more
+          opportunities for growth and success on a global scale.
+        caption: "Maria Shkaruppa, Senior Global Mobility and Remote Hiring Manager"
+        name: "Maria Shkaruppa"
+        role: "Senior Global Mobility and Remote Hiring Manager"
+        avatar: avatar-maria-shkaruppa.webp
+    cta: "Hear from our customers"
+  badge-strip:
+    heading: "The #1 global HR platform as voted by you"
+    cta: "4,000+ reviews"
+  closing-cta:
+    heading: "Global employment is hard. We built the infrastructure to do it right."
+    body: >-
+      Every country has different laws, tax codes, payroll rules, and compliance
+      requirements. Remote handles the hard stuff — with in-house payroll teams,
+      local legal experts, and owned entities in every market we operate in.
+    cta: "Book demo"
+
+layoutImages:
+  hero: { illustration: hero-globe-illustration.webp }
+  infra-panel: { "UI": panel-infrastructure-ui-snippet.webp }
+
+defaultArt:
+  hero: [bg-noise-top-2x.webp, bg-noise-grey-green-blue-top.webp]
+  detail: [panel-infrastructure-ui-snippet.webp]
+  portrait: [avatar-luke-mckinlay.webp, avatar-marisol-jimenez.webp, avatar-maria-shkaruppa.webp]
+  # inset-panel backdrop (banner/conversion bands): the green-tinted member of the
+  # captured pastel-noise family (grounding section-04: noise-gradient band with a
+  # soft green glow at the lower edge).
+  panel: [bg-noise-grey-green-blue-top.webp]

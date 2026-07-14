@@ -1,0 +1,87 @@
+schemaVersion: section-grounding.v1
+sectionRole: logos
+layout:
+  structure: 'single row: heading left / row of 6 award badges right'
+  columns: 7
+  alignment: mixed
+  approxPaddingPx:
+    top: 40
+    bottom: 100
+  gapPx: 24
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#fbfbf8'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: band
+  bgApprox: '#08302b'
+  parent: canvas
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#ffffff'
+typography:
+- role: h2
+  approxSizePx: 28
+  weightApprox: 700
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: caption
+  approxSizePx: 8
+  weightApprox: 600
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#4a4a4a'
+  familyClass: grotesque-sans
+components:
+- kind: badge
+  variant: g2-award-badge
+  countObserved: 6
+  anatomy: top bar (SUMMER 2026 + G2 red logo) -> title -> segment label, pennant/shield shape
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 2
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+copy:
+  heading: 'Voted #1 in 526 G2 Reports'
+  items:
+  - heading: Leader
+    body: null
+    meta: SMALL BUSINESS
+  - heading: Most Implementable
+    body: null
+    meta: null
+  - heading: Best Relationship
+    body: null
+    meta: SMALL BUSINESS
+  - heading: Easiest Admin
+    body: null
+    meta: ENTERPRISE
+  - heading: Best Results
+    body: null
+    meta: MID-MARKET
+  - heading: Best Usability
+    body: null
+    meta: ENTERPRISE
+  logosLegible: []
+media:
+- kind: icon-set
+  treatment: 6 G2 award badges in a row, shield/pennant shape with colored bottom accents (orange, blue,
+    teal, gold, purple, gold), ~90px tall
+  aspect: portrait
+  approxFractionOfSection: 0.4
+confidence: high
+notes:
+- Each badge carries SUMMER 2026 eyebrow and red G2 logo mark at top
+- Dark teal band cut off at bottom edge belongs to next section
+_source:
+  crop: section-09-csol-section-wf-badges-padding-top-s-padding-bot.png
+  domClasses: csol-section wf-badges -padding-top-s -padding-bottom-lg
+  model: claude-opus-4-8

@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "marketing-hub-hero",
+    "name": "Marketing Hub \u2014 product hero",
+    "useCasesRequested": [
+      "hero"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "hero-marketing-hub",
+      "useCase": "hero",
+      "archetype": "overlay",
+      "archetypeRef": "hero-product-canvas-panel",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-photo-overlay"
+      },
+      "grid": {
+        "columns": 12,
+        "gutter": "2rem"
+      },
+      "slots": [
+        {
+          "name": "canvas",
+          "role": "product-canvas",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "hero",
+          "width": "full-bleed",
+          "mediaAspect": "wide",
+          "z": "back",
+          "colStart": 1,
+          "colSpan": 12,
+          "asset": {
+            "src": "024-customer-20platform-20graphic-20-20smart-20crm1-5x-20-1.png",
+            "alt": "HubSpot smart CRM campaign dashboard showing automated marketing workflows",
+            "ratio": "landscape"
+          }
+        },
+        {
+          "name": "panel",
+          "role": "copy-panel",
+          "contract": "header",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "fixed",
+          "z": "front",
+          "colStart": 1,
+          "colSpan": 5,
+          "copy": {
+            "eyebrow": "Marketing Hub",
+            "heading": "Marketing that runs itself. Almost.",
+            "subheading": "Breeze automates your campaigns, nurture, and attribution \u2014 so the busywork runs on its own and you stay on strategy.",
+            "cta": [
+              "Get a demo",
+              "See it in action"
+            ]
+          },
+          "asset": null
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "panel-on-media",
+          "target": "panel",
+          "over": "canvas",
+          "distribute": "center",
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "knobs": {
+        "panelCorner": "left",
+        "panelSpan": "5"
+      }
+    }
+  ],
+  "rationale": "One hero only, per brief. Chose the hero-product-canvas-panel archetype (drawn as an 'overlay' \u2014 one positioning context) so the smart-CRM product graphic IS the canvas (z:back, full-bleed, wide) while a SOLID copy panel (z:front, left inset) carries the tight claim \u2014 realizing the sanctioned panel-over-media pair so type never touches the screenshot (no unsanctioned text-on-media, readability holds). It adapts the project hero-photo-overlay pattern: same full-bleed bookend surface and centered-claim intent, but with a solid panel instead of raw text-on-photo because the product screenshot is information-bearing. As the observed opening bookend it takes surfaceIntent:inverse and is the sole accent bearer (the orange period on the display heading \u2014 single-accent respected). Copy is tight and non-repeating: eyebrow = register label, heading = the one wry claim in sentence case, subheading advances it with the Breeze automation specifics (campaigns, nurture, attribution). Primary 'Get a demo' + secondary 'See it in action' keep one primary per action group. Real product art (024 customer-platform smart-CRM graphic) is bound \u2014 no invented UI."
+}

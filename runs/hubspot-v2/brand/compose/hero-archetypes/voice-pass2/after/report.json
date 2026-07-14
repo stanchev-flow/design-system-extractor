@@ -1,0 +1,270 @@
+{
+  "generatedAt": "2026-07-14T16:24:35Z",
+  "brandDir": "runs/hubspot-v2/brand",
+  "lanes": [
+    {
+      "lane": "compose/hero-archetypes/homepage",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/homepage/index.html",
+      "copyCounts": {
+        "headings": 1,
+        "bodies": 1,
+        "eyebrows": 1,
+        "ctas": 2
+      },
+      "checks": [
+        {
+          "check": "sentence-length",
+          "ok": true,
+          "detail": "mean 10.3w (max 14, n<4 advisory-only), p90 16w (max 23), 3 sentences"
+        },
+        {
+          "check": "exclamations",
+          "ok": true,
+          "detail": "0 exclamation mark(s) (max 0) \u2014 the measured corpus has none"
+        },
+        {
+          "check": "banned-hype",
+          "ok": true,
+          "detail": "0 hits across 14-word ban list"
+        },
+        {
+          "check": "heading-casing",
+          "ok": true,
+          "detail": "1 heading(s) sentence-case (brand terms allowed)"
+        }
+      ],
+      "ok": true
+    },
+    {
+      "lane": "compose/hero-archetypes/pricing",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/pricing/index.html",
+      "copyCounts": {
+        "headings": 1,
+        "bodies": 1,
+        "eyebrows": 1,
+        "ctas": 0
+      },
+      "checks": [
+        {
+          "check": "sentence-length",
+          "ok": true,
+          "detail": "mean 9.0w (max 14, n<4 advisory-only), p90 12w (max 23), 3 sentences"
+        },
+        {
+          "check": "exclamations",
+          "ok": true,
+          "detail": "0 exclamation mark(s) (max 0) \u2014 the measured corpus has none"
+        },
+        {
+          "check": "banned-hype",
+          "ok": true,
+          "detail": "0 hits across 14-word ban list"
+        },
+        {
+          "check": "heading-casing",
+          "ok": true,
+          "detail": "1 heading(s) sentence-case (brand terms allowed)"
+        }
+      ],
+      "ok": true
+    },
+    {
+      "lane": "compose/hero-archetypes/product",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/product/index.html",
+      "copyCounts": {
+        "headings": 1,
+        "bodies": 1,
+        "eyebrows": 1,
+        "ctas": 0
+      },
+      "checks": [
+        {
+          "check": "sentence-length",
+          "ok": true,
+          "detail": "mean 13.5w (max 14, n<4 advisory-only), p90 23w (max 23), 2 sentences"
+        },
+        {
+          "check": "exclamations",
+          "ok": true,
+          "detail": "0 exclamation mark(s) (max 0) \u2014 the measured corpus has none"
+        },
+        {
+          "check": "banned-hype",
+          "ok": true,
+          "detail": "0 hits across 14-word ban list"
+        },
+        {
+          "check": "heading-casing",
+          "ok": true,
+          "detail": "1 heading(s) sentence-case (brand terms allowed)"
+        }
+      ],
+      "ok": true
+    },
+    {
+      "lane": "compose/hero-archetypes/about",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/about/index.html",
+      "copyCounts": {
+        "headings": 1,
+        "bodies": 1,
+        "eyebrows": 1,
+        "ctas": 0
+      },
+      "checks": [
+        {
+          "check": "sentence-length",
+          "ok": true,
+          "detail": "mean 11.0w (max 14, n<4 advisory-only), p90 16w (max 23), 2 sentences"
+        },
+        {
+          "check": "exclamations",
+          "ok": true,
+          "detail": "0 exclamation mark(s) (max 0) \u2014 the measured corpus has none"
+        },
+        {
+          "check": "banned-hype",
+          "ok": true,
+          "detail": "0 hits across 14-word ban list"
+        },
+        {
+          "check": "heading-casing",
+          "ok": true,
+          "detail": "1 heading(s) sentence-case (brand terms allowed)"
+        }
+      ],
+      "ok": true
+    },
+    {
+      "lane": "compose/hero-archetypes/blog",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/blog/index.html",
+      "copyCounts": {
+        "headings": 1,
+        "bodies": 1,
+        "eyebrows": 1,
+        "ctas": 0
+      },
+      "checks": [
+        {
+          "check": "sentence-length",
+          "ok": true,
+          "detail": "mean 12.5w (max 14, n<4 advisory-only), p90 20w (max 23), 2 sentences"
+        },
+        {
+          "check": "exclamations",
+          "ok": true,
+          "detail": "0 exclamation mark(s) (max 0) \u2014 the measured corpus has none"
+        },
+        {
+          "check": "banned-hype",
+          "ok": true,
+          "detail": "0 hits across 14-word ban list"
+        },
+        {
+          "check": "heading-casing",
+          "ok": true,
+          "detail": "1 heading(s) sentence-case (brand terms allowed)"
+        }
+      ],
+      "ok": true
+    },
+    {
+      "lane": "compose/hero-archetypes/demo",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/demo/index.html",
+      "copyCounts": {
+        "headings": 2,
+        "bodies": 2,
+        "eyebrows": 1,
+        "ctas": 1
+      },
+      "checks": [
+        {
+          "check": "sentence-length",
+          "ok": true,
+          "detail": "mean 8.4w (max 14), p90 11w (max 23), 5 sentences"
+        },
+        {
+          "check": "exclamations",
+          "ok": true,
+          "detail": "0 exclamation mark(s) (max 0) \u2014 the measured corpus has none"
+        },
+        {
+          "check": "banned-hype",
+          "ok": true,
+          "detail": "0 hits across 14-word ban list"
+        },
+        {
+          "check": "heading-casing",
+          "ok": true,
+          "detail": "2 heading(s) sentence-case (brand terms allowed)"
+        }
+      ],
+      "ok": true
+    },
+    {
+      "lane": "compose/hero-archetypes/developer",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/developer/index.html",
+      "copyCounts": {
+        "headings": 1,
+        "bodies": 2,
+        "eyebrows": 0,
+        "ctas": 1
+      },
+      "checks": [
+        {
+          "check": "sentence-length",
+          "ok": true,
+          "detail": "mean 10.0w (max 14, n<4 advisory-only), p90 15w (max 23), 3 sentences"
+        },
+        {
+          "check": "exclamations",
+          "ok": true,
+          "detail": "0 exclamation mark(s) (max 0) \u2014 the measured corpus has none"
+        },
+        {
+          "check": "banned-hype",
+          "ok": true,
+          "detail": "0 hits across 14-word ban list"
+        },
+        {
+          "check": "heading-casing",
+          "ok": true,
+          "detail": "1 heading(s) sentence-case (brand terms allowed)"
+        }
+      ],
+      "ok": true
+    },
+    {
+      "lane": "compose/hero-archetypes/event",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/event/index.html",
+      "copyCounts": {
+        "headings": 1,
+        "bodies": 2,
+        "eyebrows": 1,
+        "ctas": 2
+      },
+      "checks": [
+        {
+          "check": "sentence-length",
+          "ok": true,
+          "detail": "mean 14.5w (max 14, n<4 advisory-only), p90 15w (max 23), 2 sentences"
+        },
+        {
+          "check": "exclamations",
+          "ok": true,
+          "detail": "0 exclamation mark(s) (max 0) \u2014 the measured corpus has none"
+        },
+        {
+          "check": "banned-hype",
+          "ok": true,
+          "detail": "0 hits across 14-word ban list"
+        },
+        {
+          "check": "heading-casing",
+          "ok": true,
+          "detail": "1 heading(s) sentence-case (brand terms allowed)"
+        }
+      ],
+      "ok": true
+    }
+  ]
+}

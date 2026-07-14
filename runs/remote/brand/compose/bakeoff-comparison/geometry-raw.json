@@ -1,0 +1,3300 @@
+{
+  "generatedAt": "2026-07-10T19:01:33.035489+00:00",
+  "candidates": {
+    "Candidate A": {
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "deviceScaleFactor": 1
+      },
+      "page": {
+        "width": 1440,
+        "height": 8923
+      },
+      "sections": [
+        {
+          "id": "sec-0",
+          "layout": "hero",
+          "pattern": "hero-inset-noise-panel",
+          "sectionRect": {
+            "left": 0,
+            "top": 129.97,
+            "right": 1440,
+            "bottom": 866.61,
+            "width": 1440,
+            "height": 736.64
+          },
+          "computedPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "contentPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "container": {
+            "rect": {
+              "left": 135.36,
+              "top": 177.97,
+              "right": 1304.63,
+              "bottom": 818.61,
+              "width": 1169.27,
+              "height": 640.64
+            },
+            "leftGutter": 135.36,
+            "rightGutter": 135.37,
+            "centeringDelta": 0.01
+          },
+          "headings": [
+            {
+              "text": "See your global workforce clearly",
+              "rect": {
+                "left": 215.36,
+                "top": 329.86,
+                "right": 662.11,
+                "bottom": 440.27,
+                "width": 446.75,
+                "height": 110.41
+              },
+              "textAlign": "left"
+            }
+          ],
+          "split": {
+            "rect": {
+              "left": 135.36,
+              "top": 177.97,
+              "right": 1304.63,
+              "bottom": 818.61,
+              "width": 1169.27,
+              "height": 640.64
+            },
+            "childRects": [
+              {
+                "left": 215.36,
+                "top": 300.86,
+                "right": 695.98,
+                "bottom": 695.72,
+                "width": 480.63,
+                "height": 394.86
+              },
+              {
+                "left": 743.98,
+                "top": 257.97,
+                "right": 1224.63,
+                "bottom": 738.61,
+                "width": 480.64,
+                "height": 480.64
+              }
+            ],
+            "columnGap": 48
+          },
+          "grids": [],
+          "cards": [],
+          "media": [
+            {
+              "rect": {
+                "left": 743.98,
+                "top": 257.97,
+                "right": 1224.63,
+                "bottom": 738.61,
+                "width": 480.64,
+                "height": 480.64
+              },
+              "imageRect": {
+                "left": 743.98,
+                "top": 257.97,
+                "right": 1224.63,
+                "bottom": 738.61,
+                "width": 480.64,
+                "height": 480.64
+              },
+              "objectFit": "contain",
+              "emptyWellPx": 0
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "anomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "id": "sec-1",
+          "layout": "problem",
+          "pattern": "infra-proof-split",
+          "sectionRect": {
+            "left": 0,
+            "top": 866.61,
+            "right": 1440,
+            "bottom": 1579.23,
+            "width": 1440,
+            "height": 712.63
+          },
+          "computedPadding": {
+            "top": 64,
+            "bottom": 64
+          },
+          "contentPadding": {
+            "top": 64,
+            "bottom": 64
+          },
+          "container": {
+            "rect": {
+              "left": 135.36,
+              "top": 930.61,
+              "right": 1304.63,
+              "bottom": 1515.23,
+              "width": 1169.27,
+              "height": 584.63
+            },
+            "leftGutter": 135.36,
+            "rightGutter": 135.37,
+            "centeringDelta": 0.01
+          },
+          "headings": [
+            {
+              "text": "Global teams outgrow their spreadsheets",
+              "rect": {
+                "left": 817.42,
+                "top": 1084.95,
+                "right": 1304.63,
+                "bottom": 1178.55,
+                "width": 487.2,
+                "height": 93.59
+              },
+              "textAlign": "start"
+            }
+          ],
+          "split": {
+            "rect": {
+              "left": 135.36,
+              "top": 930.61,
+              "right": 1304.63,
+              "bottom": 1515.23,
+              "width": 1169.27,
+              "height": 584.63
+            },
+            "childRects": [
+              {
+                "left": 135.36,
+                "top": 930.61,
+                "right": 719.98,
+                "bottom": 1515.23,
+                "width": 584.63,
+                "height": 584.63
+              },
+              {
+                "left": 817.42,
+                "top": 930.61,
+                "right": 1304.63,
+                "bottom": 1515.23,
+                "width": 487.2,
+                "height": 584.63
+              }
+            ],
+            "columnGap": 97.44
+          },
+          "grids": [],
+          "cards": [],
+          "media": [
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 930.61,
+                "right": 719.98,
+                "bottom": 1515.23,
+                "width": 584.63,
+                "height": 584.63
+              },
+              "imageRect": {
+                "left": 135.36,
+                "top": 930.61,
+                "right": 719.98,
+                "bottom": 1515.23,
+                "width": 584.63,
+                "height": 584.63
+              },
+              "objectFit": "contain",
+              "emptyWellPx": 0
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "anomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "id": "sec-2",
+          "layout": "product-value",
+          "pattern": "feature-accordion-deep-accent",
+          "sectionRect": {
+            "left": 0,
+            "top": 1579.23,
+            "right": 1440,
+            "bottom": 2429.55,
+            "width": 1440,
+            "height": 850.31
+          },
+          "computedPadding": {
+            "top": 64,
+            "bottom": 64
+          },
+          "contentPadding": {
+            "top": 64,
+            "bottom": 64
+          },
+          "container": {
+            "rect": {
+              "left": 136,
+              "top": 1643.23,
+              "right": 1304,
+              "bottom": 2365.55,
+              "width": 1168,
+              "height": 722.31
+            },
+            "leftGutter": 136,
+            "rightGutter": 136,
+            "centeringDelta": 0
+          },
+          "headings": [
+            {
+              "text": "Every workforce number in one place, always current",
+              "rect": {
+                "left": 136,
+                "top": 1672.23,
+                "right": 669.5,
+                "bottom": 1765.83,
+                "width": 533.5,
+                "height": 93.59
+              },
+              "textAlign": "left"
+            }
+          ],
+          "split": {
+            "rect": {
+              "left": 136,
+              "top": 1643.23,
+              "right": 1304,
+              "bottom": 2365.55,
+              "width": 1168,
+              "height": 722.31
+            },
+            "childRects": [
+              {
+                "left": 136,
+                "top": 1643.23,
+                "right": 669.5,
+                "bottom": 2365.55,
+                "width": 533.5,
+                "height": 722.31
+              },
+              {
+                "left": 770.5,
+                "top": 1643.23,
+                "right": 1304,
+                "bottom": 2365.55,
+                "width": 533.5,
+                "height": 722.31
+              }
+            ],
+            "columnGap": 101
+          },
+          "grids": [],
+          "cards": [],
+          "media": [
+            {
+              "rect": {
+                "left": 770.5,
+                "top": 1643.23,
+                "right": 1304,
+                "bottom": 2365.55,
+                "width": 533.5,
+                "height": 722.31
+              },
+              "imageRect": {
+                "left": 770.5,
+                "top": 1643.23,
+                "right": 1304,
+                "bottom": 2176.73,
+                "width": 533.5,
+                "height": 533.5
+              },
+              "objectFit": "cover",
+              "emptyWellPx": 100730.13
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "anomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "id": "sec-3",
+          "layout": "capabilities",
+          "pattern": "features-card-grid-navy-media",
+          "sectionRect": {
+            "left": 0,
+            "top": 2429.55,
+            "right": 1440,
+            "bottom": 3220.92,
+            "width": 1440,
+            "height": 791.38
+          },
+          "computedPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "contentPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "container": {
+            "rect": {
+              "left": 135.36,
+              "top": 2477.55,
+              "right": 1304.63,
+              "bottom": 2600.14,
+              "width": 1169.27,
+              "height": 122.59
+            },
+            "leftGutter": 135.36,
+            "rightGutter": 135.37,
+            "centeringDelta": 0.01
+          },
+          "headings": [
+            {
+              "text": "Built for the people who answer for the numbers",
+              "rect": {
+                "left": 135.36,
+                "top": 2506.55,
+                "right": 855.36,
+                "bottom": 2600.14,
+                "width": 720,
+                "height": 93.59
+              },
+              "textAlign": "left"
+            },
+            {
+              "text": "Fully-loaded cost, live",
+              "rect": {
+                "left": 167.36,
+                "top": 2955.39,
+                "right": 471.78,
+                "bottom": 2985.39,
+                "width": 304.42,
+                "height": 30
+              },
+              "textAlign": "start"
+            },
+            {
+              "text": "Risk you can see coming",
+              "rect": {
+                "left": 567.78,
+                "top": 2955.39,
+                "right": 872.2,
+                "bottom": 2985.39,
+                "width": 304.42,
+                "height": 30
+              },
+              "textAlign": "start"
+            },
+            {
+              "text": "Model the next hire",
+              "rect": {
+                "left": 968.2,
+                "top": 2955.39,
+                "right": 1272.63,
+                "bottom": 2985.39,
+                "width": 304.42,
+                "height": 30
+              },
+              "textAlign": "start"
+            }
+          ],
+          "split": null,
+          "grids": [
+            {
+              "className": "cs-modules cs-modules--cols",
+              "rect": {
+                "left": 135.36,
+                "top": 2664.14,
+                "right": 1304.63,
+                "bottom": 3172.92,
+                "width": 1169.27,
+                "height": 508.78
+              },
+              "itemRects": [
+                {
+                  "left": 135.36,
+                  "top": 2664.14,
+                  "right": 503.78,
+                  "bottom": 3172.92,
+                  "width": 368.42,
+                  "height": 508.78
+                },
+                {
+                  "left": 535.78,
+                  "top": 2664.14,
+                  "right": 904.2,
+                  "bottom": 3172.92,
+                  "width": 368.42,
+                  "height": 508.78
+                },
+                {
+                  "left": 936.2,
+                  "top": 2664.14,
+                  "right": 1304.63,
+                  "bottom": 3172.92,
+                  "width": 368.42,
+                  "height": 508.78
+                }
+              ],
+              "columnGaps": [
+                32,
+                32
+              ],
+              "rowGaps": [],
+              "equalHeightSpread": 0
+            }
+          ],
+          "cards": [
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 2664.14,
+                "right": 503.78,
+                "bottom": 3172.92,
+                "width": 368.42,
+                "height": 508.78
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            },
+            {
+              "rect": {
+                "left": 535.78,
+                "top": 2664.14,
+                "right": 904.2,
+                "bottom": 3172.92,
+                "width": 368.42,
+                "height": 508.78
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            },
+            {
+              "rect": {
+                "left": 936.2,
+                "top": 2664.14,
+                "right": 1304.63,
+                "bottom": 3172.92,
+                "width": 368.42,
+                "height": 508.78
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            }
+          ],
+          "media": [
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 2664.14,
+                "right": 503.78,
+                "bottom": 2894.39,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "imageRect": {
+                "left": 135.36,
+                "top": 2664.14,
+                "right": 503.78,
+                "bottom": 2894.39,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "objectFit": "cover",
+              "emptyWellPx": 0
+            },
+            {
+              "rect": {
+                "left": 535.78,
+                "top": 2664.14,
+                "right": 904.2,
+                "bottom": 2894.39,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "imageRect": {
+                "left": 535.78,
+                "top": 2664.14,
+                "right": 904.2,
+                "bottom": 2894.39,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "objectFit": "cover",
+              "emptyWellPx": 0
+            },
+            {
+              "rect": {
+                "left": 936.2,
+                "top": 2664.14,
+                "right": 1304.63,
+                "bottom": 2894.39,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "imageRect": {
+                "left": 936.2,
+                "top": 2664.14,
+                "right": 1304.63,
+                "bottom": 2894.39,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "objectFit": "cover",
+              "emptyWellPx": 0
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "anomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "id": "sec-4",
+          "layout": "how-it-works",
+          "pattern": "features-card-grid-navy-media",
+          "sectionRect": {
+            "left": 0,
+            "top": 3220.92,
+            "right": 1440,
+            "bottom": 4014.39,
+            "width": 1440,
+            "height": 793.47
+          },
+          "computedPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "contentPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "container": {
+            "rect": {
+              "left": 135.36,
+              "top": 3268.92,
+              "right": 1304.63,
+              "bottom": 3391.52,
+              "width": 1169.27,
+              "height": 122.59
+            },
+            "leftGutter": 135.36,
+            "rightGutter": 135.37,
+            "centeringDelta": 0.01
+          },
+          "headings": [
+            {
+              "text": "No integration project \u2014 it is already connected",
+              "rect": {
+                "left": 135.36,
+                "top": 3297.92,
+                "right": 855.36,
+                "bottom": 3391.52,
+                "width": 720,
+                "height": 93.59
+              },
+              "textAlign": "left"
+            },
+            {
+              "text": "Runs on data you already have",
+              "rect": {
+                "left": 167.36,
+                "top": 3746.77,
+                "right": 471.78,
+                "bottom": 3776.77,
+                "width": 304.42,
+                "height": 30
+              },
+              "textAlign": "start"
+            },
+            {
+              "text": "Bring in the rest of your team",
+              "rect": {
+                "left": 567.78,
+                "top": 3746.77,
+                "right": 872.2,
+                "bottom": 3776.77,
+                "width": 304.42,
+                "height": 30
+              },
+              "textAlign": "start"
+            },
+            {
+              "text": "Share the view that fits the room",
+              "rect": {
+                "left": 968.2,
+                "top": 3746.77,
+                "right": 1272.63,
+                "bottom": 3806.77,
+                "width": 304.42,
+                "height": 60
+              },
+              "textAlign": "start"
+            }
+          ],
+          "split": null,
+          "grids": [
+            {
+              "className": "cs-modules cs-modules--cols",
+              "rect": {
+                "left": 135.36,
+                "top": 3455.52,
+                "right": 1304.63,
+                "bottom": 3966.39,
+                "width": 1169.27,
+                "height": 510.88
+              },
+              "itemRects": [
+                {
+                  "left": 135.36,
+                  "top": 3455.52,
+                  "right": 503.78,
+                  "bottom": 3966.39,
+                  "width": 368.42,
+                  "height": 510.88
+                },
+                {
+                  "left": 535.78,
+                  "top": 3455.52,
+                  "right": 904.2,
+                  "bottom": 3966.39,
+                  "width": 368.42,
+                  "height": 510.88
+                },
+                {
+                  "left": 936.2,
+                  "top": 3455.52,
+                  "right": 1304.63,
+                  "bottom": 3966.39,
+                  "width": 368.42,
+                  "height": 510.88
+                }
+              ],
+              "columnGaps": [
+                32,
+                32
+              ],
+              "rowGaps": [],
+              "equalHeightSpread": 0
+            }
+          ],
+          "cards": [
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 3455.52,
+                "right": 503.78,
+                "bottom": 3966.39,
+                "width": 368.42,
+                "height": 510.88
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            },
+            {
+              "rect": {
+                "left": 535.78,
+                "top": 3455.52,
+                "right": 904.2,
+                "bottom": 3966.39,
+                "width": 368.42,
+                "height": 510.88
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            },
+            {
+              "rect": {
+                "left": 936.2,
+                "top": 3455.52,
+                "right": 1304.63,
+                "bottom": 3966.39,
+                "width": 368.42,
+                "height": 510.88
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            }
+          ],
+          "media": [
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 3455.52,
+                "right": 503.78,
+                "bottom": 3685.77,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "imageRect": {
+                "left": 135.36,
+                "top": 3455.52,
+                "right": 503.78,
+                "bottom": 3685.77,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "objectFit": "cover",
+              "emptyWellPx": 0
+            },
+            {
+              "rect": {
+                "left": 535.78,
+                "top": 3455.52,
+                "right": 904.2,
+                "bottom": 3685.77,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "imageRect": {
+                "left": 535.78,
+                "top": 3455.52,
+                "right": 904.2,
+                "bottom": 3685.77,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "objectFit": "cover",
+              "emptyWellPx": 0
+            },
+            {
+              "rect": {
+                "left": 936.2,
+                "top": 3455.52,
+                "right": 1304.63,
+                "bottom": 3685.77,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "imageRect": {
+                "left": 936.2,
+                "top": 3455.52,
+                "right": 1304.63,
+                "bottom": 3685.77,
+                "width": 368.42,
+                "height": 230.25
+              },
+              "objectFit": "cover",
+              "emptyWellPx": 0
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "anomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "id": "sec-5",
+          "layout": "comparison",
+          "pattern": "infra-proof-split",
+          "sectionRect": {
+            "left": 0,
+            "top": 4014.39,
+            "right": 1440,
+            "bottom": 4802.81,
+            "width": 1440,
+            "height": 788.42
+          },
+          "computedPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "contentPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "container": {
+            "rect": {
+              "left": 135.36,
+              "top": 4062.39,
+              "right": 1304.63,
+              "bottom": 4138.19,
+              "width": 1169.27,
+              "height": 75.8
+            },
+            "leftGutter": 135.36,
+            "rightGutter": 135.37,
+            "centeringDelta": 0.01
+          },
+          "headings": [
+            {
+              "text": "The manual way vs. Workforce Intelligence",
+              "rect": {
+                "left": 135.36,
+                "top": 4091.39,
+                "right": 1304.63,
+                "bottom": 4138.19,
+                "width": 1169.27,
+                "height": 46.8
+              },
+              "textAlign": "left"
+            }
+          ],
+          "split": {
+            "rect": {
+              "left": 135.36,
+              "top": 4194.19,
+              "right": 1304.63,
+              "bottom": 4754.81,
+              "width": 1169.27,
+              "height": 560.63
+            },
+            "childRects": [
+              {
+                "left": 135.36,
+                "top": 4194.19,
+                "right": 695.98,
+                "bottom": 4754.81,
+                "width": 560.63,
+                "height": 560.63
+              },
+              {
+                "left": 743.98,
+                "top": 4194.19,
+                "right": 1304.63,
+                "bottom": 4754.81,
+                "width": 560.64,
+                "height": 560.63
+              }
+            ],
+            "columnGap": 48
+          },
+          "grids": [],
+          "cards": [],
+          "media": [
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 4194.19,
+                "right": 695.98,
+                "bottom": 4754.81,
+                "width": 560.63,
+                "height": 560.63
+              },
+              "imageRect": {
+                "left": 135.36,
+                "top": 4194.19,
+                "right": 695.98,
+                "bottom": 4754.81,
+                "width": 560.63,
+                "height": 560.63
+              },
+              "objectFit": "cover",
+              "emptyWellPx": 0
+            }
+          ],
+          "tables": [
+            {
+              "rect": {
+                "left": 783.98,
+                "top": 4238.19,
+                "right": 1264.63,
+                "bottom": 4593.94,
+                "width": 480.64,
+                "height": 355.75
+              },
+              "rowWidths": [
+                480.64,
+                480.64,
+                480.64,
+                480.64
+              ],
+              "rowHeights": [
+                109.19,
+                82.19,
+                82.19,
+                81.69
+              ],
+              "columnTemplate": "none"
+            },
+            {
+              "rect": {
+                "left": 783.98,
+                "top": 4238.19,
+                "right": 1264.63,
+                "bottom": 4593.94,
+                "width": 480.64,
+                "height": 355.75
+              },
+              "rowWidths": [
+                480.64,
+                480.64,
+                480.64,
+                480.64
+              ],
+              "rowHeights": [
+                109.19,
+                82.19,
+                82.19,
+                81.69
+              ],
+              "columnTemplate": "none"
+            }
+          ],
+          "form": null,
+          "anomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "id": "sec-6",
+          "layout": "proof",
+          "pattern": "testimonial-card-row",
+          "sectionRect": {
+            "left": 0,
+            "top": 4802.81,
+            "right": 1440,
+            "bottom": 5660.66,
+            "width": 1440,
+            "height": 857.84
+          },
+          "computedPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "contentPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "container": {
+            "rect": {
+              "left": 135.36,
+              "top": 4850.81,
+              "right": 1304.63,
+              "bottom": 4988.31,
+              "width": 1169.27,
+              "height": 137.5
+            },
+            "leftGutter": 135.36,
+            "rightGutter": 135.37,
+            "centeringDelta": 0.01
+          },
+          "headings": [
+            {
+              "text": "Trusted by finance and people teams worldwide",
+              "rect": {
+                "left": 359.98,
+                "top": 4850.81,
+                "right": 1079.98,
+                "bottom": 4944.41,
+                "width": 720,
+                "height": 93.59
+              },
+              "textAlign": "center"
+            }
+          ],
+          "split": null,
+          "grids": [
+            {
+              "className": "cs-modules cs-modules--edgecut",
+              "rect": {
+                "left": 135.36,
+                "top": 5052.31,
+                "right": 1440,
+                "bottom": 5500.66,
+                "width": 1304.64,
+                "height": 448.34
+              },
+              "itemRects": [
+                {
+                  "left": 135.36,
+                  "top": 5052.31,
+                  "right": 596.16,
+                  "bottom": 5500.66,
+                  "width": 460.8,
+                  "height": 448.34
+                },
+                {
+                  "left": 628.16,
+                  "top": 5052.31,
+                  "right": 1088.95,
+                  "bottom": 5500.66,
+                  "width": 460.8,
+                  "height": 448.34
+                },
+                {
+                  "left": 1120.95,
+                  "top": 5052.31,
+                  "right": 1581.75,
+                  "bottom": 5500.66,
+                  "width": 460.8,
+                  "height": 448.34
+                }
+              ],
+              "columnGaps": [
+                32,
+                32
+              ],
+              "rowGaps": [],
+              "equalHeightSpread": 0
+            }
+          ],
+          "cards": [
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 5052.31,
+                "right": 596.16,
+                "bottom": 5500.66,
+                "width": 460.8,
+                "height": 448.34
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            },
+            {
+              "rect": {
+                "left": 628.16,
+                "top": 5052.31,
+                "right": 1088.95,
+                "bottom": 5500.66,
+                "width": 460.8,
+                "height": 448.34
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            },
+            {
+              "rect": {
+                "left": 1120.95,
+                "top": 5052.31,
+                "right": 1581.75,
+                "bottom": 5500.66,
+                "width": 460.8,
+                "height": 448.34
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            }
+          ],
+          "media": [
+            {
+              "rect": {
+                "left": 167.36,
+                "top": 5084.31,
+                "right": 564.16,
+                "bottom": 5120.31,
+                "width": 396.8,
+                "height": 36
+              },
+              "imageRect": {
+                "left": 167.36,
+                "top": 5084.31,
+                "right": 279.86,
+                "bottom": 5120.31,
+                "width": 112.5,
+                "height": 36
+              },
+              "objectFit": "contain",
+              "emptyWellPx": 10234.8
+            },
+            {
+              "rect": {
+                "left": 660.16,
+                "top": 5084.31,
+                "right": 1056.95,
+                "bottom": 5120.31,
+                "width": 396.8,
+                "height": 36
+              },
+              "imageRect": {
+                "left": 660.16,
+                "top": 5084.31,
+                "right": 821.25,
+                "bottom": 5120.31,
+                "width": 161.09,
+                "height": 36
+              },
+              "objectFit": "contain",
+              "emptyWellPx": 8485.56
+            },
+            {
+              "rect": {
+                "left": 1152.95,
+                "top": 5084.31,
+                "right": 1549.75,
+                "bottom": 5120.31,
+                "width": 396.8,
+                "height": 36
+              },
+              "imageRect": {
+                "left": 1152.95,
+                "top": 5084.31,
+                "right": 1304.14,
+                "bottom": 5120.31,
+                "width": 151.19,
+                "height": 36
+              },
+              "objectFit": "contain",
+              "emptyWellPx": 8841.96
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "anomalies": {
+            "overflow": [
+              {
+                "tag": "ARTICLE",
+                "className": "cs-module cs-module--plate cs-module--quote",
+                "rect": {
+                  "left": 1120.95,
+                  "top": 5052.31,
+                  "right": 1581.75,
+                  "bottom": 5500.66,
+                  "width": 460.8,
+                  "height": 448.34
+                }
+              },
+              {
+                "tag": "FIGURE",
+                "className": "cs-module-media cs-module-media--mark",
+                "rect": {
+                  "left": 1152.95,
+                  "top": 5084.31,
+                  "right": 1549.75,
+                  "bottom": 5120.31,
+                  "width": 396.8,
+                  "height": 36
+                }
+              },
+              {
+                "tag": "P",
+                "className": "c-paragraph",
+                "rect": {
+                  "left": 1152.95,
+                  "top": 5144.31,
+                  "right": 1549.75,
+                  "bottom": 5311.75,
+                  "width": 396.8,
+                  "height": 167.44
+                }
+              },
+              {
+                "tag": "DIV",
+                "className": "c-person",
+                "rect": {
+                  "left": 1152.95,
+                  "top": 5388.27,
+                  "right": 1549.75,
+                  "bottom": 5468.66,
+                  "width": 396.8,
+                  "height": 80.39
+                }
+              },
+              {
+                "tag": "SPAN",
+                "className": "c-person-meta",
+                "rect": {
+                  "left": 1214.55,
+                  "top": 5405.27,
+                  "right": 1549.75,
+                  "bottom": 5468.66,
+                  "width": 335.2,
+                  "height": 63.39
+                }
+              },
+              {
+                "tag": "SPAN",
+                "className": "c-person-name",
+                "rect": {
+                  "left": 1214.55,
+                  "top": 5405.27,
+                  "right": 1549.75,
+                  "bottom": 5426.27,
+                  "width": 335.2,
+                  "height": 21
+                }
+              },
+              {
+                "tag": "SPAN",
+                "className": "c-person-role",
+                "rect": {
+                  "left": 1214.55,
+                  "top": 5428.66,
+                  "right": 1549.75,
+                  "bottom": 5468.66,
+                  "width": 335.2,
+                  "height": 40
+                }
+              }
+            ],
+            "verticalVoids": []
+          }
+        },
+        {
+          "id": "sec-7",
+          "layout": "conversion-beat",
+          "pattern": "cta-inline-banner",
+          "sectionRect": {
+            "left": 0,
+            "top": 5660.66,
+            "right": 1440,
+            "bottom": 6138.25,
+            "width": 1440,
+            "height": 477.59
+          },
+          "computedPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "contentPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "container": {
+            "rect": {
+              "left": 135.38,
+              "top": 5708.66,
+              "right": 1304.64,
+              "bottom": 6090.25,
+              "width": 1169.27,
+              "height": 381.59
+            },
+            "leftGutter": 135.38,
+            "rightGutter": 135.36,
+            "centeringDelta": 0.02
+          },
+          "headings": [
+            {
+              "text": "Want to see your own workforce data in one view? Talk to our team.",
+              "rect": {
+                "left": 352,
+                "top": 5812.66,
+                "right": 1088,
+                "bottom": 5906.25,
+                "width": 736,
+                "height": 93.59
+              },
+              "textAlign": "center"
+            }
+          ],
+          "split": null,
+          "grids": [],
+          "cards": [],
+          "media": [],
+          "tables": [],
+          "form": null,
+          "anomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "id": "sec-8",
+          "layout": "faq",
+          "pattern": null,
+          "sectionRect": {
+            "left": 0,
+            "top": 6138.25,
+            "right": 1440,
+            "bottom": 7008.16,
+            "width": 1440,
+            "height": 869.91
+          },
+          "computedPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "contentPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "container": {
+            "rect": {
+              "left": 360,
+              "top": 6186.25,
+              "right": 1080,
+              "bottom": 6960.16,
+              "width": 720,
+              "height": 773.91
+            },
+            "leftGutter": 360,
+            "rightGutter": 360,
+            "centeringDelta": 0
+          },
+          "headings": [
+            {
+              "text": "Common questions from People and Finance teams",
+              "rect": {
+                "left": 360,
+                "top": 6215.25,
+                "right": 1080,
+                "bottom": 6308.84,
+                "width": 720,
+                "height": 93.59
+              },
+              "textAlign": "center"
+            }
+          ],
+          "split": null,
+          "grids": [],
+          "cards": [],
+          "media": [],
+          "tables": [],
+          "form": null,
+          "anomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "id": "sec-9",
+          "layout": "lead-form",
+          "pattern": "cta-inline-banner",
+          "sectionRect": {
+            "left": 0,
+            "top": 7008.16,
+            "right": 1440,
+            "bottom": 8009.84,
+            "width": 1440,
+            "height": 1001.69
+          },
+          "computedPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "contentPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "container": {
+            "rect": {
+              "left": 352,
+              "top": 7056.16,
+              "right": 1088,
+              "bottom": 7961.84,
+              "width": 736,
+              "height": 905.69
+            },
+            "leftGutter": 352,
+            "rightGutter": 352,
+            "centeringDelta": 0
+          },
+          "headings": [
+            {
+              "text": "See Workforce Intelligence with your own regions",
+              "rect": {
+                "left": 352,
+                "top": 7085.16,
+                "right": 1088,
+                "bottom": 7178.75,
+                "width": 736,
+                "height": 93.59
+              },
+              "textAlign": "center"
+            }
+          ],
+          "split": null,
+          "grids": [
+            {
+              "className": "cs-signup-grid",
+              "rect": {
+                "left": 384,
+                "top": 7330.56,
+                "right": 1056,
+                "bottom": 7755.94,
+                "width": 672,
+                "height": 425.38
+              },
+              "itemRects": [
+                {
+                  "left": 384,
+                  "top": 7330.56,
+                  "right": 712,
+                  "bottom": 7403.56,
+                  "width": 328,
+                  "height": 73
+                },
+                {
+                  "left": 728,
+                  "top": 7330.56,
+                  "right": 1056,
+                  "bottom": 7403.56,
+                  "width": 328,
+                  "height": 73
+                },
+                {
+                  "left": 384,
+                  "top": 7419.56,
+                  "right": 712,
+                  "bottom": 7492.56,
+                  "width": 328,
+                  "height": 73
+                },
+                {
+                  "left": 728,
+                  "top": 7419.56,
+                  "right": 1056,
+                  "bottom": 7492.56,
+                  "width": 328,
+                  "height": 73
+                },
+                {
+                  "left": 384,
+                  "top": 7508.56,
+                  "right": 712,
+                  "bottom": 7581.56,
+                  "width": 328,
+                  "height": 73
+                },
+                {
+                  "left": 384,
+                  "top": 7597.56,
+                  "right": 1056,
+                  "bottom": 7755.94,
+                  "width": 672,
+                  "height": 158.38
+                }
+              ],
+              "columnGaps": [
+                16,
+                16
+              ],
+              "rowGaps": [
+                16,
+                16,
+                16
+              ],
+              "equalHeightSpread": 85.38
+            }
+          ],
+          "cards": [],
+          "media": [],
+          "tables": [],
+          "form": {
+            "rect": {
+              "left": 352,
+              "top": 7282.56,
+              "right": 1088,
+              "bottom": 7961.84,
+              "width": 736,
+              "height": 679.28
+            },
+            "fieldRects": [
+              {
+                "left": 384,
+                "top": 7330.56,
+                "right": 712,
+                "bottom": 7403.56,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 728,
+                "top": 7330.56,
+                "right": 1056,
+                "bottom": 7403.56,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 384,
+                "top": 7419.56,
+                "right": 712,
+                "bottom": 7492.56,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 728,
+                "top": 7419.56,
+                "right": 1056,
+                "bottom": 7492.56,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 384,
+                "top": 7508.56,
+                "right": 712,
+                "bottom": 7581.56,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 384,
+                "top": 7597.56,
+                "right": 1056,
+                "bottom": 7755.94,
+                "width": 672,
+                "height": 158.38
+              }
+            ],
+            "verticalFieldGaps": [
+              16,
+              16,
+              16
+            ]
+          },
+          "anomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        }
+      ],
+      "anomalies": [
+        {
+          "section": "sec-6",
+          "type": "horizontal-overflow",
+          "count": 7
+        }
+      ]
+    },
+    "Candidate B": {
+      "viewport": {
+        "width": 1440,
+        "height": 1000,
+        "deviceScaleFactor": 1
+      },
+      "page": {
+        "width": 1440,
+        "height": 11675
+      },
+      "sections": [
+        {
+          "id": "sec-0",
+          "layout": "workforce-intelligence-hero",
+          "pattern": "hero-inset-noise-panel",
+          "sectionRect": {
+            "left": 0,
+            "top": 129.97,
+            "right": 1440,
+            "bottom": 866.61,
+            "width": 1440,
+            "height": 736.64
+          },
+          "computedPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "contentPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "container": {
+            "rect": {
+              "left": 135.36,
+              "top": 177.97,
+              "right": 1304.63,
+              "bottom": 818.61,
+              "width": 1169.27,
+              "height": 640.64
+            },
+            "leftGutter": 135.36,
+            "rightGutter": 135.37,
+            "centeringDelta": 0.01
+          },
+          "headings": [
+            {
+              "text": "See your global workforce clearly",
+              "rect": {
+                "left": 215.36,
+                "top": 345.8,
+                "right": 695.98,
+                "bottom": 456.2,
+                "width": 480.63,
+                "height": 110.41
+              },
+              "textAlign": "left"
+            }
+          ],
+          "split": {
+            "rect": {
+              "left": 135.36,
+              "top": 177.97,
+              "right": 1304.63,
+              "bottom": 818.61,
+              "width": 1169.27,
+              "height": 640.64
+            },
+            "childRects": [
+              {
+                "left": 215.36,
+                "top": 316.8,
+                "right": 695.98,
+                "bottom": 679.77,
+                "width": 480.63,
+                "height": 362.97
+              },
+              {
+                "left": 743.98,
+                "top": 257.97,
+                "right": 1224.63,
+                "bottom": 738.61,
+                "width": 480.64,
+                "height": 480.64
+              }
+            ],
+            "columnGap": 48
+          },
+          "grids": [],
+          "cards": [],
+          "media": [
+            {
+              "rect": {
+                "left": 743.98,
+                "top": 257.97,
+                "right": 1224.63,
+                "bottom": 738.61,
+                "width": 480.64,
+                "height": 480.64
+              },
+              "imageRect": {
+                "left": 743.98,
+                "top": 257.97,
+                "right": 1224.63,
+                "bottom": 738.61,
+                "width": 480.64,
+                "height": 480.64
+              },
+              "objectFit": "contain",
+              "emptyWellPx": 0
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "anomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "id": "sec-1",
+          "layout": "reporting-gap",
+          "pattern": "infra-proof-split",
+          "sectionRect": {
+            "left": 0,
+            "top": 866.61,
+            "right": 1440,
+            "bottom": 2494.2,
+            "width": 1440,
+            "height": 1627.59
+          },
+          "computedPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "contentPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "container": {
+            "rect": {
+              "left": 135.36,
+              "top": 914.61,
+              "right": 1304.63,
+              "bottom": 1109.02,
+              "width": 1169.27,
+              "height": 194.41
+            },
+            "leftGutter": 135.36,
+            "rightGutter": 135.37,
+            "centeringDelta": 0.01
+          },
+          "headings": [
+            {
+              "text": "The question is urgent. The data is scattered.",
+              "rect": {
+                "left": 359.98,
+                "top": 943.61,
+                "right": 1079.98,
+                "bottom": 1037.2,
+                "width": 720,
+                "height": 93.59
+              },
+              "textAlign": "center"
+            },
+            {
+              "text": "The workforce picture arrives in pieces",
+              "rect": {
+                "left": 167.36,
+                "top": 1647.8,
+                "right": 765.42,
+                "bottom": 1677.8,
+                "width": 598.06,
+                "height": 30
+              },
+              "textAlign": "start"
+            },
+            {
+              "text": "Every answer starts with reconciliation",
+              "rect": {
+                "left": 877.42,
+                "top": 1577,
+                "right": 1272.61,
+                "bottom": 1607,
+                "width": 395.19,
+                "height": 30
+              },
+              "textAlign": "start"
+            },
+            {
+              "text": "The decision waits for the deck",
+              "rect": {
+                "left": 167.36,
+                "top": 2312.39,
+                "right": 765.42,
+                "bottom": 2342.39,
+                "width": 598.06,
+                "height": 30
+              },
+              "textAlign": "start"
+            }
+          ],
+          "split": null,
+          "grids": [
+            {
+              "className": "cs-modules",
+              "rect": {
+                "left": 135.36,
+                "top": 1173.02,
+                "right": 1304.63,
+                "bottom": 2446.2,
+                "width": 1169.27,
+                "height": 1273.19
+              },
+              "itemRects": [
+                {
+                  "left": 135.36,
+                  "top": 1173.02,
+                  "right": 797.42,
+                  "bottom": 1781.61,
+                  "width": 662.06,
+                  "height": 608.59
+                },
+                {
+                  "left": 845.42,
+                  "top": 1229.02,
+                  "right": 1304.61,
+                  "bottom": 1738.72,
+                  "width": 459.19,
+                  "height": 509.7
+                },
+                {
+                  "left": 135.36,
+                  "top": 1837.61,
+                  "right": 797.42,
+                  "bottom": 2446.2,
+                  "width": 662.06,
+                  "height": 608.59
+                }
+              ],
+              "columnGaps": [],
+              "rowGaps": [
+                -552.59,
+                98.89
+              ],
+              "equalHeightSpread": 98.89
+            }
+          ],
+          "cards": [
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 1173.02,
+                "right": 797.42,
+                "bottom": 1781.61,
+                "width": 662.06,
+                "height": 608.59
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            },
+            {
+              "rect": {
+                "left": 845.42,
+                "top": 1229.02,
+                "right": 1304.61,
+                "bottom": 1738.72,
+                "width": 459.19,
+                "height": 509.7
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            },
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 1837.61,
+                "right": 797.42,
+                "bottom": 2446.2,
+                "width": 662.06,
+                "height": 608.59
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            }
+          ],
+          "media": [
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 1173.02,
+                "right": 797.42,
+                "bottom": 1586.8,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "imageRect": {
+                "left": 135.36,
+                "top": 1173.02,
+                "right": 797.42,
+                "bottom": 1586.8,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "objectFit": "cover",
+              "emptyWellPx": 0
+            },
+            {
+              "rect": {
+                "left": 845.42,
+                "top": 1229.02,
+                "right": 1304.61,
+                "bottom": 1516,
+                "width": 459.19,
+                "height": 286.98
+              },
+              "imageRect": {
+                "left": 845.42,
+                "top": 1229.02,
+                "right": 1304.61,
+                "bottom": 1516,
+                "width": 459.19,
+                "height": 286.98
+              },
+              "objectFit": "cover",
+              "emptyWellPx": 0
+            },
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 1837.61,
+                "right": 797.42,
+                "bottom": 2251.39,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "imageRect": {
+                "left": 135.36,
+                "top": 1837.61,
+                "right": 797.42,
+                "bottom": 2251.39,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "objectFit": "cover",
+              "emptyWellPx": 0
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "anomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "id": "sec-2",
+          "layout": "decision-layer-capabilities",
+          "pattern": "feature-accordion-deep-accent",
+          "sectionRect": {
+            "left": 0,
+            "top": 2494.2,
+            "right": 1440,
+            "bottom": 3316.61,
+            "width": 1440,
+            "height": 822.41
+          },
+          "computedPadding": {
+            "top": 64,
+            "bottom": 64
+          },
+          "contentPadding": {
+            "top": 64,
+            "bottom": 64
+          },
+          "container": {
+            "rect": {
+              "left": 136,
+              "top": 2558.2,
+              "right": 1304,
+              "bottom": 3252.61,
+              "width": 1168,
+              "height": 694.41
+            },
+            "leftGutter": 136,
+            "rightGutter": 136,
+            "centeringDelta": 0
+          },
+          "headings": [
+            {
+              "text": "Move from workforce data to a clear next question",
+              "rect": {
+                "left": 136,
+                "top": 2587.2,
+                "right": 669.5,
+                "bottom": 2680.8,
+                "width": 533.5,
+                "height": 93.59
+              },
+              "textAlign": "left"
+            }
+          ],
+          "split": {
+            "rect": {
+              "left": 136,
+              "top": 2558.2,
+              "right": 1304,
+              "bottom": 3252.61,
+              "width": 1168,
+              "height": 694.41
+            },
+            "childRects": [
+              {
+                "left": 136,
+                "top": 2558.2,
+                "right": 669.5,
+                "bottom": 3252.61,
+                "width": 533.5,
+                "height": 694.41
+              },
+              {
+                "left": 770.5,
+                "top": 2558.2,
+                "right": 1304,
+                "bottom": 3252.61,
+                "width": 533.5,
+                "height": 694.41
+              }
+            ],
+            "columnGap": 101
+          },
+          "grids": [],
+          "cards": [],
+          "media": [
+            {
+              "rect": {
+                "left": 770.5,
+                "top": 2558.2,
+                "right": 1304,
+                "bottom": 3252.61,
+                "width": 533.5,
+                "height": 694.41
+              },
+              "imageRect": {
+                "left": 770.5,
+                "top": 2558.2,
+                "right": 1304,
+                "bottom": 3091.7,
+                "width": 533.5,
+                "height": 533.5
+              },
+              "objectFit": "contain",
+              "emptyWellPx": 85845.48
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "anomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "id": "sec-3",
+          "layout": "how-workforce-intelligence-works",
+          "pattern": "features-card-grid-navy-media",
+          "sectionRect": {
+            "left": 0,
+            "top": 3316.61,
+            "right": 1440,
+            "bottom": 4897.41,
+            "width": 1440,
+            "height": 1580.8
+          },
+          "computedPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "contentPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "container": {
+            "rect": {
+              "left": 135.36,
+              "top": 3364.61,
+              "right": 1304.63,
+              "bottom": 3512.22,
+              "width": 1169.27,
+              "height": 147.61
+            },
+            "leftGutter": 135.36,
+            "rightGutter": 135.37,
+            "centeringDelta": 0.01
+          },
+          "headings": [
+            {
+              "text": "A shorter path from question to decision",
+              "rect": {
+                "left": 359.98,
+                "top": 3393.61,
+                "right": 1079.98,
+                "bottom": 3440.41,
+                "width": 720,
+                "height": 46.8
+              },
+              "textAlign": "center"
+            },
+            {
+              "text": "Bring the workforce context together",
+              "rect": {
+                "left": 167.36,
+                "top": 4051,
+                "right": 765.42,
+                "bottom": 4081,
+                "width": 598.06,
+                "height": 30
+              },
+              "textAlign": "start"
+            },
+            {
+              "text": "Set the scope for the question",
+              "rect": {
+                "left": 877.42,
+                "top": 3980.2,
+                "right": 1272.61,
+                "bottom": 4010.2,
+                "width": 395.19,
+                "height": 30
+              },
+              "textAlign": "start"
+            },
+            {
+              "text": "Follow the change to its drivers",
+              "rect": {
+                "left": 167.36,
+                "top": 4715.59,
+                "right": 765.42,
+                "bottom": 4745.59,
+                "width": 598.06,
+                "height": 30
+              },
+              "textAlign": "start"
+            },
+            {
+              "text": "Prepare the decision together",
+              "rect": {
+                "left": 877.42,
+                "top": 4644.8,
+                "right": 1272.61,
+                "bottom": 4674.8,
+                "width": 395.19,
+                "height": 30
+              },
+              "textAlign": "start"
+            }
+          ],
+          "split": null,
+          "grids": [
+            {
+              "className": "cs-modules",
+              "rect": {
+                "left": 135.36,
+                "top": 3576.22,
+                "right": 1304.63,
+                "bottom": 4849.41,
+                "width": 1169.27,
+                "height": 1273.19
+              },
+              "itemRects": [
+                {
+                  "left": 135.36,
+                  "top": 3576.22,
+                  "right": 797.42,
+                  "bottom": 4184.81,
+                  "width": 662.06,
+                  "height": 608.59
+                },
+                {
+                  "left": 845.42,
+                  "top": 3632.22,
+                  "right": 1304.61,
+                  "bottom": 4184.81,
+                  "width": 459.19,
+                  "height": 552.59
+                },
+                {
+                  "left": 135.36,
+                  "top": 4240.81,
+                  "right": 797.42,
+                  "bottom": 4849.41,
+                  "width": 662.06,
+                  "height": 608.59
+                },
+                {
+                  "left": 845.42,
+                  "top": 4296.81,
+                  "right": 1304.61,
+                  "bottom": 4849.41,
+                  "width": 459.19,
+                  "height": 552.59
+                }
+              ],
+              "columnGaps": [],
+              "rowGaps": [
+                -552.59,
+                56,
+                -552.6
+              ],
+              "equalHeightSpread": 56
+            }
+          ],
+          "cards": [
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 3576.22,
+                "right": 797.42,
+                "bottom": 4184.81,
+                "width": 662.06,
+                "height": 608.59
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            },
+            {
+              "rect": {
+                "left": 845.42,
+                "top": 3632.22,
+                "right": 1304.61,
+                "bottom": 4184.81,
+                "width": 459.19,
+                "height": 552.59
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            },
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 4240.81,
+                "right": 797.42,
+                "bottom": 4849.41,
+                "width": 662.06,
+                "height": 608.59
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            },
+            {
+              "rect": {
+                "left": 845.42,
+                "top": 4296.81,
+                "right": 1304.61,
+                "bottom": 4849.41,
+                "width": 459.19,
+                "height": 552.59
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            }
+          ],
+          "media": [
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 3576.22,
+                "right": 797.42,
+                "bottom": 3990,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "imageRect": {
+                "left": 135.36,
+                "top": 3576.22,
+                "right": 797.42,
+                "bottom": 3990,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "objectFit": "cover",
+              "emptyWellPx": 0
+            },
+            {
+              "rect": {
+                "left": 845.42,
+                "top": 3632.22,
+                "right": 1304.61,
+                "bottom": 3919.2,
+                "width": 459.19,
+                "height": 286.98
+              },
+              "imageRect": {
+                "left": 845.42,
+                "top": 3632.22,
+                "right": 1304.61,
+                "bottom": 3919.2,
+                "width": 459.19,
+                "height": 286.98
+              },
+              "objectFit": "cover",
+              "emptyWellPx": 0
+            },
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 4240.81,
+                "right": 797.42,
+                "bottom": 4654.59,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "imageRect": {
+                "left": 135.36,
+                "top": 4240.81,
+                "right": 797.42,
+                "bottom": 4654.59,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "objectFit": "cover",
+              "emptyWellPx": 0
+            },
+            {
+              "rect": {
+                "left": 845.42,
+                "top": 4296.81,
+                "right": 1304.61,
+                "bottom": 4583.8,
+                "width": 459.19,
+                "height": 286.98
+              },
+              "imageRect": {
+                "left": 845.42,
+                "top": 4296.81,
+                "right": 1304.61,
+                "bottom": 4583.8,
+                "width": 459.19,
+                "height": 286.98
+              },
+              "objectFit": "cover",
+              "emptyWellPx": 0
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "anomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "id": "sec-4",
+          "layout": "leadership-views",
+          "pattern": "features-card-grid-navy-media",
+          "sectionRect": {
+            "left": 0,
+            "top": 4897.41,
+            "right": 1440,
+            "bottom": 6525,
+            "width": 1440,
+            "height": 1627.59
+          },
+          "computedPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "contentPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "container": {
+            "rect": {
+              "left": 135.36,
+              "top": 4945.41,
+              "right": 1304.63,
+              "bottom": 5139.81,
+              "width": 1169.27,
+              "height": 194.41
+            },
+            "leftGutter": 135.36,
+            "rightGutter": 135.37,
+            "centeringDelta": 0.01
+          },
+          "headings": [
+            {
+              "text": "One workforce view, focused for each leader",
+              "rect": {
+                "left": 359.98,
+                "top": 4974.41,
+                "right": 1079.98,
+                "bottom": 5068,
+                "width": 720,
+                "height": 93.59
+              },
+              "textAlign": "center"
+            },
+            {
+              "text": "See where workforce plans need attention",
+              "rect": {
+                "left": 167.36,
+                "top": 5678.59,
+                "right": 765.42,
+                "bottom": 5708.59,
+                "width": 598.06,
+                "height": 30
+              },
+              "textAlign": "start"
+            },
+            {
+              "text": "Review the assumptions behind the plan",
+              "rect": {
+                "left": 877.42,
+                "top": 5607.8,
+                "right": 1272.61,
+                "bottom": 5637.8,
+                "width": 395.19,
+                "height": 30
+              },
+              "textAlign": "start"
+            },
+            {
+              "text": "Make recurring reporting repeatable",
+              "rect": {
+                "left": 167.36,
+                "top": 6343.19,
+                "right": 765.42,
+                "bottom": 6373.19,
+                "width": 598.06,
+                "height": 30
+              },
+              "textAlign": "start"
+            }
+          ],
+          "split": null,
+          "grids": [
+            {
+              "className": "cs-modules",
+              "rect": {
+                "left": 135.36,
+                "top": 5203.81,
+                "right": 1304.63,
+                "bottom": 6477,
+                "width": 1169.27,
+                "height": 1273.19
+              },
+              "itemRects": [
+                {
+                  "left": 135.36,
+                  "top": 5203.81,
+                  "right": 797.42,
+                  "bottom": 5812.41,
+                  "width": 662.06,
+                  "height": 608.59
+                },
+                {
+                  "left": 845.42,
+                  "top": 5259.81,
+                  "right": 1304.61,
+                  "bottom": 5812.41,
+                  "width": 459.19,
+                  "height": 552.59
+                },
+                {
+                  "left": 135.36,
+                  "top": 5868.41,
+                  "right": 797.42,
+                  "bottom": 6477,
+                  "width": 662.06,
+                  "height": 608.59
+                }
+              ],
+              "columnGaps": [],
+              "rowGaps": [
+                -552.6,
+                56
+              ],
+              "equalHeightSpread": 56
+            }
+          ],
+          "cards": [
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 5203.81,
+                "right": 797.42,
+                "bottom": 5812.41,
+                "width": 662.06,
+                "height": 608.59
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            },
+            {
+              "rect": {
+                "left": 845.42,
+                "top": 5259.81,
+                "right": 1304.61,
+                "bottom": 5812.41,
+                "width": 459.19,
+                "height": 552.59
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            },
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 5868.41,
+                "right": 797.42,
+                "bottom": 6477,
+                "width": 662.06,
+                "height": 608.59
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            }
+          ],
+          "media": [
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 5203.81,
+                "right": 797.42,
+                "bottom": 5617.59,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "imageRect": {
+                "left": 135.36,
+                "top": 5203.81,
+                "right": 797.42,
+                "bottom": 5617.59,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "objectFit": "cover",
+              "emptyWellPx": 0
+            },
+            {
+              "rect": {
+                "left": 845.42,
+                "top": 5259.81,
+                "right": 1304.61,
+                "bottom": 5546.8,
+                "width": 459.19,
+                "height": 286.98
+              },
+              "imageRect": {
+                "left": 845.42,
+                "top": 5259.81,
+                "right": 1304.61,
+                "bottom": 5546.8,
+                "width": 459.19,
+                "height": 286.98
+              },
+              "objectFit": "cover",
+              "emptyWellPx": 0
+            },
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 5868.41,
+                "right": 797.42,
+                "bottom": 6282.19,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "imageRect": {
+                "left": 135.36,
+                "top": 5868.41,
+                "right": 797.42,
+                "bottom": 6282.19,
+                "width": 662.06,
+                "height": 413.78
+              },
+              "objectFit": "cover",
+              "emptyWellPx": 0
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "anomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "id": "sec-5",
+          "layout": "workflow-comparison",
+          "pattern": "infra-proof-split",
+          "sectionRect": {
+            "left": 0,
+            "top": 6525,
+            "right": 1440,
+            "bottom": 7233.64,
+            "width": 1440,
+            "height": 708.64
+          },
+          "computedPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "contentPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "container": {
+            "rect": {
+              "left": 135.36,
+              "top": 6573,
+              "right": 1304.63,
+              "bottom": 7185.64,
+              "width": 1169.27,
+              "height": 612.64
+            },
+            "leftGutter": 135.36,
+            "rightGutter": 135.37,
+            "centeringDelta": 0.01
+          },
+          "headings": [
+            {
+              "text": "Replace report assembly with decision preparation",
+              "rect": {
+                "left": 276.16,
+                "top": 6602,
+                "right": 1163.81,
+                "bottom": 6648.8,
+                "width": 887.66,
+                "height": 46.8
+              },
+              "textAlign": "center"
+            }
+          ],
+          "split": null,
+          "grids": [],
+          "cards": [],
+          "media": [],
+          "tables": [
+            {
+              "rect": {
+                "left": 211.52,
+                "top": 6860.52,
+                "right": 1228.47,
+                "bottom": 7185.64,
+                "width": 1016.95,
+                "height": 325.13
+              },
+              "rowWidths": [
+                1016.95,
+                1016.95,
+                1016.95,
+                1016.95,
+                1016.95,
+                1016.95
+              ],
+              "rowHeights": [
+                49.69,
+                55.19,
+                55.19,
+                55.19,
+                55.19,
+                54.69
+              ],
+              "columnTemplate": "none"
+            }
+          ],
+          "form": null,
+          "anomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "id": "sec-6",
+          "layout": "remote-customer-perspectives",
+          "pattern": "testimonial-card-row",
+          "sectionRect": {
+            "left": 0,
+            "top": 7233.64,
+            "right": 1440,
+            "bottom": 8023.88,
+            "width": 1440,
+            "height": 790.23
+          },
+          "computedPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "contentPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "container": {
+            "rect": {
+              "left": 135.36,
+              "top": 7281.64,
+              "right": 1304.63,
+              "bottom": 7476.05,
+              "width": 1169.27,
+              "height": 194.41
+            },
+            "leftGutter": 135.36,
+            "rightGutter": 135.37,
+            "centeringDelta": 0.01
+          },
+          "headings": [
+            {
+              "text": "Built for teams already operating across borders",
+              "rect": {
+                "left": 359.98,
+                "top": 7310.64,
+                "right": 1079.98,
+                "bottom": 7404.23,
+                "width": 720,
+                "height": 93.59
+              },
+              "textAlign": "center"
+            }
+          ],
+          "split": null,
+          "grids": [
+            {
+              "className": "cs-modules cs-modules--edgecut",
+              "rect": {
+                "left": 135.36,
+                "top": 7540.05,
+                "right": 1440,
+                "bottom": 7975.88,
+                "width": 1304.64,
+                "height": 435.83
+              },
+              "itemRects": [
+                {
+                  "left": 135.36,
+                  "top": 7540.05,
+                  "right": 596.16,
+                  "bottom": 7975.88,
+                  "width": 460.8,
+                  "height": 435.83
+                },
+                {
+                  "left": 628.16,
+                  "top": 7540.05,
+                  "right": 1088.95,
+                  "bottom": 7975.88,
+                  "width": 460.8,
+                  "height": 435.83
+                }
+              ],
+              "columnGaps": [
+                32
+              ],
+              "rowGaps": [],
+              "equalHeightSpread": 0
+            }
+          ],
+          "cards": [
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 7540.05,
+                "right": 596.16,
+                "bottom": 7975.88,
+                "width": 460.8,
+                "height": 435.83
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            },
+            {
+              "rect": {
+                "left": 628.16,
+                "top": 7540.05,
+                "right": 1088.95,
+                "bottom": 7975.88,
+                "width": 460.8,
+                "height": 435.83
+              },
+              "padding": {
+                "top": 32,
+                "right": 32,
+                "bottom": 32,
+                "left": 32
+              },
+              "ctaSeam": null
+            }
+          ],
+          "media": [
+            {
+              "rect": {
+                "left": 167.36,
+                "top": 7572.05,
+                "right": 564.16,
+                "bottom": 7608.05,
+                "width": 396.8,
+                "height": 36
+              },
+              "imageRect": {
+                "left": 167.36,
+                "top": 7572.05,
+                "right": 328.45,
+                "bottom": 7608.05,
+                "width": 161.09,
+                "height": 36
+              },
+              "objectFit": "contain",
+              "emptyWellPx": 8485.56
+            },
+            {
+              "rect": {
+                "left": 660.16,
+                "top": 7572.05,
+                "right": 1056.95,
+                "bottom": 7608.05,
+                "width": 396.8,
+                "height": 36
+              },
+              "imageRect": {
+                "left": 660.16,
+                "top": 7572.05,
+                "right": 811.34,
+                "bottom": 7608.05,
+                "width": 151.19,
+                "height": 36
+              },
+              "objectFit": "contain",
+              "emptyWellPx": 8841.96
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "anomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "id": "sec-7",
+          "layout": "operational-trust",
+          "pattern": "infra-proof-split",
+          "sectionRect": {
+            "left": 0,
+            "top": 8023.88,
+            "right": 1440,
+            "bottom": 8736.5,
+            "width": 1440,
+            "height": 712.63
+          },
+          "computedPadding": {
+            "top": 64,
+            "bottom": 64
+          },
+          "contentPadding": {
+            "top": 64,
+            "bottom": 64
+          },
+          "container": {
+            "rect": {
+              "left": 135.36,
+              "top": 8087.88,
+              "right": 1304.63,
+              "bottom": 8672.5,
+              "width": 1169.27,
+              "height": 584.63
+            },
+            "leftGutter": 135.36,
+            "rightGutter": 135.37,
+            "centeringDelta": 0.01
+          },
+          "headings": [
+            {
+              "text": "Bring workforce context into a system your teams can govern",
+              "rect": {
+                "left": 817.42,
+                "top": 8260.67,
+                "right": 1304.63,
+                "bottom": 8401.06,
+                "width": 487.2,
+                "height": 140.39
+              },
+              "textAlign": "start"
+            }
+          ],
+          "split": {
+            "rect": {
+              "left": 135.36,
+              "top": 8087.88,
+              "right": 1304.63,
+              "bottom": 8672.5,
+              "width": 1169.27,
+              "height": 584.63
+            },
+            "childRects": [
+              {
+                "left": 135.36,
+                "top": 8087.88,
+                "right": 719.98,
+                "bottom": 8672.5,
+                "width": 584.63,
+                "height": 584.63
+              },
+              {
+                "left": 817.42,
+                "top": 8087.88,
+                "right": 1304.63,
+                "bottom": 8672.5,
+                "width": 487.2,
+                "height": 584.63
+              }
+            ],
+            "columnGap": 97.44
+          },
+          "grids": [],
+          "cards": [],
+          "media": [
+            {
+              "rect": {
+                "left": 135.36,
+                "top": 8087.88,
+                "right": 719.98,
+                "bottom": 8672.5,
+                "width": 584.63,
+                "height": 584.63
+              },
+              "imageRect": {
+                "left": 135.36,
+                "top": 8087.88,
+                "right": 719.98,
+                "bottom": 8672.5,
+                "width": 584.63,
+                "height": 584.63
+              },
+              "objectFit": "contain",
+              "emptyWellPx": 0
+            }
+          ],
+          "tables": [],
+          "form": null,
+          "anomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "id": "sec-8",
+          "layout": "workforce-intelligence-faq",
+          "pattern": null,
+          "sectionRect": {
+            "left": 0,
+            "top": 8736.5,
+            "right": 1440,
+            "bottom": 9671.42,
+            "width": 1440,
+            "height": 934.92
+          },
+          "computedPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "contentPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "container": {
+            "rect": {
+              "left": 360,
+              "top": 8784.5,
+              "right": 1080,
+              "bottom": 9623.42,
+              "width": 720,
+              "height": 838.92
+            },
+            "leftGutter": 360,
+            "rightGutter": 360,
+            "centeringDelta": 0
+          },
+          "headings": [
+            {
+              "text": "What leaders ask before a demo",
+              "rect": {
+                "left": 435.41,
+                "top": 8813.5,
+                "right": 1004.58,
+                "bottom": 8860.3,
+                "width": 569.17,
+                "height": 46.8
+              },
+              "textAlign": "center"
+            }
+          ],
+          "split": null,
+          "grids": [],
+          "cards": [],
+          "media": [],
+          "tables": [],
+          "form": null,
+          "anomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        },
+        {
+          "id": "sec-9",
+          "layout": "qualified-demo-request",
+          "pattern": "cta-inline-banner",
+          "sectionRect": {
+            "left": 0,
+            "top": 9671.42,
+            "right": 1440,
+            "bottom": 10762.11,
+            "width": 1440,
+            "height": 1090.69
+          },
+          "computedPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "contentPadding": {
+            "top": 48,
+            "bottom": 48
+          },
+          "container": {
+            "rect": {
+              "left": 352,
+              "top": 9719.42,
+              "right": 1088,
+              "bottom": 10714.11,
+              "width": 736,
+              "height": 994.69
+            },
+            "leftGutter": 352,
+            "rightGutter": 352,
+            "centeringDelta": 0
+          },
+          "headings": [
+            {
+              "text": "Bring one workforce question. We\u2019ll show you a clearer way to answer it.",
+              "rect": {
+                "left": 352,
+                "top": 9748.42,
+                "right": 1088,
+                "bottom": 9842.02,
+                "width": 736,
+                "height": 93.59
+              },
+              "textAlign": "center"
+            }
+          ],
+          "split": null,
+          "grids": [
+            {
+              "className": "cs-signup-grid",
+              "rect": {
+                "left": 384,
+                "top": 9993.83,
+                "right": 1056,
+                "bottom": 10508.2,
+                "width": 672,
+                "height": 514.38
+              },
+              "itemRects": [
+                {
+                  "left": 384,
+                  "top": 9993.83,
+                  "right": 712,
+                  "bottom": 10066.83,
+                  "width": 328,
+                  "height": 73
+                },
+                {
+                  "left": 728,
+                  "top": 9993.83,
+                  "right": 1056,
+                  "bottom": 10066.83,
+                  "width": 328,
+                  "height": 73
+                },
+                {
+                  "left": 384,
+                  "top": 10082.83,
+                  "right": 712,
+                  "bottom": 10155.83,
+                  "width": 328,
+                  "height": 73
+                },
+                {
+                  "left": 728,
+                  "top": 10082.83,
+                  "right": 1056,
+                  "bottom": 10155.83,
+                  "width": 328,
+                  "height": 73
+                },
+                {
+                  "left": 384,
+                  "top": 10171.83,
+                  "right": 712,
+                  "bottom": 10244.83,
+                  "width": 328,
+                  "height": 73
+                },
+                {
+                  "left": 728,
+                  "top": 10171.83,
+                  "right": 1056,
+                  "bottom": 10244.83,
+                  "width": 328,
+                  "height": 73
+                },
+                {
+                  "left": 384,
+                  "top": 10260.83,
+                  "right": 1056,
+                  "bottom": 10333.83,
+                  "width": 672,
+                  "height": 73
+                },
+                {
+                  "left": 384,
+                  "top": 10349.83,
+                  "right": 1056,
+                  "bottom": 10508.2,
+                  "width": 672,
+                  "height": 158.38
+                }
+              ],
+              "columnGaps": [
+                16,
+                16,
+                16
+              ],
+              "rowGaps": [
+                16,
+                16,
+                16,
+                16
+              ],
+              "equalHeightSpread": 85.38
+            }
+          ],
+          "cards": [],
+          "media": [],
+          "tables": [],
+          "form": {
+            "rect": {
+              "left": 352,
+              "top": 9945.83,
+              "right": 1088,
+              "bottom": 10714.11,
+              "width": 736,
+              "height": 768.28
+            },
+            "fieldRects": [
+              {
+                "left": 384,
+                "top": 9993.83,
+                "right": 712,
+                "bottom": 10066.83,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 728,
+                "top": 9993.83,
+                "right": 1056,
+                "bottom": 10066.83,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 384,
+                "top": 10082.83,
+                "right": 712,
+                "bottom": 10155.83,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 728,
+                "top": 10082.83,
+                "right": 1056,
+                "bottom": 10155.83,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 384,
+                "top": 10171.83,
+                "right": 712,
+                "bottom": 10244.83,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 728,
+                "top": 10171.83,
+                "right": 1056,
+                "bottom": 10244.83,
+                "width": 328,
+                "height": 73
+              },
+              {
+                "left": 384,
+                "top": 10260.83,
+                "right": 1056,
+                "bottom": 10333.83,
+                "width": 672,
+                "height": 73
+              },
+              {
+                "left": 384,
+                "top": 10349.83,
+                "right": 1056,
+                "bottom": 10508.2,
+                "width": 672,
+                "height": 158.38
+              }
+            ],
+            "verticalFieldGaps": [
+              16,
+              16,
+              16,
+              16
+            ]
+          },
+          "anomalies": {
+            "overflow": [],
+            "verticalVoids": []
+          }
+        }
+      ],
+      "anomalies": []
+    }
+  }
+}

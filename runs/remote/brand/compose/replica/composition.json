@@ -1,0 +1,725 @@
+{
+ "schemaVersion": "replica-composition.v1",
+ "order": [
+  "hero",
+  "logo-wall",
+  "feature-accordion",
+  "infra-panel",
+  "banner-cta",
+  "workflow-cards",
+  "partner-logos",
+  "testimonials",
+  "badge-strip",
+  "closing-cta"
+ ],
+ "sections": [
+  {
+   "id": "hero",
+   "useCase": "hero",
+   "archetype": "split",
+   "surfaceIntent": "any",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "hero-inset-noise-panel"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 display heading (Bossa 400 sentence)",
+     "textLen": "medium",
+     "sizeClass": "display",
+     "width": "hug",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "Global employment runs on Remote"
+     }
+    },
+    {
+     "name": "body",
+     "role": "body \u2014 supporting paragraph",
+     "textLen": "long",
+     "sizeClass": "body",
+     "width": "hug",
+     "z": "front",
+     "contract": "paragraph",
+     "copy": {
+      "text": "Hire and pay anyone in the world \u2014 with the compliance, reliability, and local expertise that only owned infrastructure delivers.",
+      "body": "Hire and pay anyone in the world \u2014 with the compliance, reliability, and local expertise that only owned infrastructure delivers."
+     }
+    },
+    {
+     "name": "actions",
+     "role": "actions \u2014 primary filled pill + secondary outlined pill",
+     "textLen": "short",
+     "sizeClass": "control",
+     "width": "hug",
+     "z": "front",
+     "contract": "button",
+     "copy": {
+      "label": "Book demo",
+      "styleHint": "filled"
+     }
+    },
+    {
+     "name": "actions-secondary",
+     "role": "secondary action",
+     "contract": "button",
+     "copy": {
+      "label": "Sign up",
+      "styleHint": "outlined"
+     }
+    },
+    {
+     "name": "media",
+     "role": "media \u2014 globe/product illustration",
+     "width": "half",
+     "z": "front",
+     "mediaAspect": "square",
+     "contract": "image",
+     "asset": {
+      "src": "hero-globe-illustration.webp",
+      "alt": "Remote media"
+     }
+    },
+    {
+     "name": "background",
+     "role": "inset rounded panel w/ noise-gradient art",
+     "width": "full-bleed",
+     "z": "back",
+     "mediaAspect": "landscape",
+     "contract": "image"
+    }
+   ],
+   "treatments": [
+    {
+     "kind": "panel-on-media",
+     "target": "background",
+     "sanctioned": true,
+     "note": "~20px-rounded panel inset on the canvas; art texture covers 100%; ink text on it"
+    }
+   ]
+  },
+  {
+   "id": "logo-wall",
+   "useCase": "logos",
+   "archetype": "stack",
+   "surfaceIntent": "primary",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "logo-marquee-strip"
+   },
+   "slots": [
+    {
+     "name": "caption",
+     "role": "caption \u2014 uppercase microlabel ('GLOBAL COMPANIES GROW WITH REMOTE')",
+     "textLen": "short",
+     "sizeClass": "caption",
+     "width": "hug",
+     "z": "front",
+     "contract": "eyebrow",
+     "copy": {
+      "eyebrow": "GLOBAL COMPANIES GROW WITH REMOTE"
+     }
+    },
+    {
+     "name": "logos",
+     "role": "logos \u2014 12 monochrome ink logo SVGs, spaced row",
+     "width": "full-bleed",
+     "z": "front",
+     "mediaAspect": "wide",
+     "contract": "logo",
+     "copy": [
+      "logo-anthropic.svg",
+      "logo-box.svg",
+      "logo-byd.svg",
+      "logo-datadog.svg",
+      "logo-gitlab.svg",
+      "logo-heineken.svg",
+      "logo-kfc.svg",
+      "logo-lovable.svg",
+      "logo-mercury.svg",
+      "logo-miro.svg",
+      "logo-mizuho.svg",
+      "logo-vercel.svg"
+     ]
+    }
+   ],
+   "treatments": [],
+   "alignment": {
+    "anchor": "centered"
+   }
+  },
+  {
+   "id": "feature-accordion",
+   "useCase": "features",
+   "archetype": "split",
+   "surfaceIntent": "primary",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "feature-accordion-deep-accent"
+   },
+   "slots": [
+    {
+     "name": "eyebrow",
+     "role": "eyebrow \u2014 crimson uppercase label ('HOW WE DO IT')",
+     "textLen": "short",
+     "sizeClass": "caption",
+     "width": "hug",
+     "z": "front",
+     "contract": "eyebrow",
+     "copy": {
+      "eyebrow": "HOW WE DO IT"
+     }
+    },
+    {
+     "name": "heading",
+     "role": "heading \u2014 section h2",
+     "textLen": "medium",
+     "sizeClass": "title",
+     "width": "hug",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "One system of record. Every employment need.",
+      "level": "h2"
+     }
+    },
+    {
+     "name": "list",
+     "role": "list \u2014 accordion items w/ deep-accent active state",
+     "textLen": "long",
+     "sizeClass": "body",
+     "width": "half",
+     "z": "front",
+     "contract": "list",
+     "copy": [
+      {
+       "label": "Employer of Record (EOR)",
+       "title": "Employer of Record (EOR)",
+       "text": "Need to hire anyone, anywhere? We handle the employment contract, taxes, benefits, and compliance \u2014 onboarded in hours, not months.",
+       "icon": "icon-eor.webp",
+       "media": "collage-eor-ui.webp"
+      },
+      {
+       "label": "Global Payroll",
+       "title": "Global Payroll",
+       "text": "Accurate, compliant payroll in every country you operate. Run by our in-house teams, no partner network.",
+       "icon": "icon-global-payroll.webp",
+       "media": "collage-global-payroll-ui.webp"
+      },
+      {
+       "label": "Contractor of Record (COR)",
+       "title": "Contractor of Record (COR)",
+       "text": "Engage international contractors compliantly. Contracts, payments, and risk \u2014 all handled by our experts.",
+       "icon": "icon-contractor-of-record.webp",
+       "media": "collage-contractor-of-record-ui.webp"
+      },
+      {
+       "label": "Contractor Management",
+       "title": "Contractor Management",
+       "text": "Engage contractors compliantly, anywhere \u2014 and convert them to FTEs before misclassification risk becomes a legal problem.",
+       "icon": "icon-contractor-management.webp",
+       "media": "collage-contractor-management-ui.webp"
+      },
+      {
+       "label": "Professional Employer Organization (PEO)",
+       "title": "Professional Employer Organization (PEO)",
+       "text": "US hiring without the admin burden. Payroll, taxes, benefits, all taken care of.",
+       "icon": "icon-peo.webp",
+       "media": "collage-peo-ui.webp"
+      }
+     ]
+    },
+    {
+     "name": "media",
+     "role": "media \u2014 product UI collage (profile card + task list)",
+     "width": "half",
+     "z": "front",
+     "mediaAspect": "square",
+     "contract": "image"
+    }
+   ],
+   "treatments": []
+  },
+  {
+   "id": "infra-panel",
+   "useCase": "features",
+   "archetype": "split",
+   "surfaceIntent": "primary",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "infra-proof-split"
+   },
+   "slots": [
+    {
+     "name": "media",
+     "role": "media \u2014 stacked product-UI proof cards",
+     "width": "half",
+     "z": "front",
+     "mediaAspect": "landscape",
+     "contract": "image",
+     "asset": {
+      "src": "panel-infrastructure-ui-snippet.webp",
+      "alt": "Remote media"
+     }
+    },
+    {
+     "name": "eyebrow",
+     "role": "eyebrow \u2014 blue uppercase label ('INTELLIGENT INFRASTRUCTURE')",
+     "textLen": "short",
+     "sizeClass": "caption",
+     "width": "hug",
+     "z": "front",
+     "contract": "eyebrow",
+     "copy": {
+      "eyebrow": "INTELLIGENT INFRASTRUCTURE"
+     }
+    },
+    {
+     "name": "heading",
+     "role": "heading \u2014 section h2",
+     "textLen": "medium",
+     "sizeClass": "title",
+     "width": "hug",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "Owned end-to-end infrastructure, operated in-house.",
+      "level": "h2"
+     }
+    },
+    {
+     "name": "body",
+     "role": "body \u2014 supporting copy w/ compliance proof terms",
+     "textLen": "long",
+     "sizeClass": "body",
+     "width": "half",
+     "z": "front",
+     "contract": "paragraph",
+     "copy": {
+      "text": "We have our own legal experts, our own payroll specialists, and our own compliance teams in every market we operate in. And because it's all ours, everything lives in one place: every employment record, contract, compliance document, and payroll engine run accurate, current, audit-ready, SOC 2 Type 2 compliant, and ISO 27001 certified.",
+      "body": "We have our own legal experts, our own payroll specialists, and our own compliance teams in every market we operate in. And because it's all ours, everything lives in one place: every employment record, contract, compliance document, and payroll engine run accurate, current, audit-ready, SOC 2 Type 2 compliant, and ISO 27001 certified."
+     }
+    }
+   ],
+   "treatments": []
+  },
+  {
+   "id": "banner-cta",
+   "useCase": "cta",
+   "archetype": "stack",
+   "surfaceIntent": "primary",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "cta-inline-banner"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 centered h2 (question form)",
+     "textLen": "medium",
+     "sizeClass": "title",
+     "width": "hug",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "Hiring internationally, converting contractors, or consolidating payroll? Talk to our team.",
+      "level": "h2"
+     }
+    },
+    {
+     "name": "action",
+     "role": "action \u2014 single filled blue pill",
+     "textLen": "short",
+     "sizeClass": "control",
+     "width": "hug",
+     "z": "front",
+     "contract": "button",
+     "copy": {
+      "label": "Book demo"
+     }
+    }
+   ],
+   "treatments": [
+    {
+     "kind": "panel-on-media",
+     "target": "heading",
+     "sanctioned": true,
+     "note": "rounded inner panel (~20px); soft green radial glow at lower edge (grounding section-04)"
+    }
+   ],
+   "alignment": {
+    "anchor": "centered"
+   }
+  },
+  {
+   "id": "workflow-cards",
+   "useCase": "features",
+   "archetype": "cards",
+   "surfaceIntent": "primary",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "features-card-grid-navy-media"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 section header stack (eyebrow + heading)",
+     "textLen": "medium",
+     "sizeClass": "title",
+     "width": "hug",
+     "z": "front",
+     "contract": "eyebrow",
+     "copy": {
+      "eyebrow": "INTEGRATIONS, API, AND MCP"
+     }
+    },
+    {
+     "name": "cards",
+     "role": "cards \u2014 white cards w/ navy media wells",
+     "textLen": "long",
+     "sizeClass": "body",
+     "width": "full",
+     "z": "front",
+     "contract": "card",
+     "copy": [
+      {
+       "heading": "Deploy AI agents on real employment data",
+       "text": "Remote MCP gives any AI agent a live, secure connection to payroll, contracts, compliance data, and org structure \u2014 no API keys, no exports, no custom integrations needed.",
+       "eyebrow": "MCP",
+       "link": "Learn more",
+       "asset": "card-api-first.webp",
+       "alt": "api first"
+      },
+      {
+       "heading": "Plug Remote into your stack",
+       "text": "Keep the HR tools your team already uses. Remote runs the payroll and compliance underneath, natively integrated with Workday, HiBob, BambooHR, Personio, and more.",
+       "eyebrow": "INTEGRATIONS",
+       "link": "See all integrations",
+       "asset": "card-integrations.webp",
+       "alt": "integrations"
+      },
+      {
+       "heading": "Build on top of ours",
+       "text": "Remote is API-first by design. Use our REST API, webhooks, and CLI to build custom workflows, embed global employment into your own product, or extend Remote however your business needs.",
+       "eyebrow": "API",
+       "link": "Explore the API",
+       "asset": "card-mcp-agents.webp",
+       "alt": "mcp agents"
+      }
+     ]
+    }
+   ],
+   "treatments": [],
+   "grid": {
+    "columns": 3,
+    "gutter": "2rem",
+    "columnsTiers": [
+     {
+      "columns": 2,
+      "maxViewportPx": 992,
+      "source": "computed"
+     }
+    ]
+   }
+  },
+  {
+   "id": "partner-logos",
+   "useCase": "logos",
+   "archetype": "stack",
+   "surfaceIntent": "primary",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "partner-proof-row"
+   },
+   "slots": [
+    {
+     "name": "eyebrow",
+     "role": "gray uppercase microlabel",
+     "textLen": "short",
+     "sizeClass": "caption",
+     "width": "hug",
+     "z": "front",
+     "contract": "eyebrow",
+     "copy": {
+      "eyebrow": "THE GLOBAL PAYROLL BACKBONE"
+     }
+    },
+    {
+     "name": "heading",
+     "role": "heading \u2014 centered header stack ('THE GLOBAL PAYROLL BACKBONE')",
+     "textLen": "medium",
+     "sizeClass": "title",
+     "width": "hug",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "The world's best teams run on Remote",
+      "level": "h2"
+     }
+    },
+    {
+     "name": "body",
+     "role": "supporting paragraph",
+     "textLen": "medium",
+     "sizeClass": "body",
+     "width": "hug",
+     "z": "front",
+     "contract": "paragraph",
+     "copy": {
+      "text": "Remote is the infrastructure leading HR platforms trust to deliver global payroll, EOR, and contractor management to their customers."
+     }
+    },
+    {
+     "name": "logos",
+     "role": "logos \u2014 4 partner logos (colored)",
+     "width": "half",
+     "z": "front",
+     "mediaAspect": "wide",
+     "contract": "logo",
+     "copy": [
+      "logo-workday-certified.webp",
+      "logo-gusto.webp",
+      "logo-bamboohr.webp",
+      "logo-personio.webp"
+     ]
+    },
+    {
+     "name": "action",
+     "role": "action \u2014 outlined pill ('Become a Partner')",
+     "textLen": "short",
+     "sizeClass": "control",
+     "width": "hug",
+     "z": "front",
+     "contract": "button",
+     "copy": {
+      "label": "Become a Partner"
+     }
+    }
+   ],
+   "treatments": [],
+   "alignment": {
+    "anchor": "centered"
+   }
+  },
+  {
+   "id": "testimonials",
+   "useCase": "testimonial",
+   "archetype": "cards",
+   "surfaceIntent": "primary",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "testimonial-card-row"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 centered header ('A word from our customers')",
+     "textLen": "medium",
+     "sizeClass": "title",
+     "width": "hug",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "A word from our customers",
+      "level": "h2"
+     }
+    },
+    {
+     "name": "cards",
+     "role": "cards \u2014 quote cards w/ avatars + company marks",
+     "textLen": "long",
+     "sizeClass": "body",
+     "width": "full",
+     "z": "front",
+     "contract": "card",
+     "copy": [
+      {
+       "heading": "Luke McKinlay, VP of Finance",
+       "text": "If we had to manage and coordinate everything in-house, it would cost us well over $500,000 more each year. Remote not only eliminates that financial strain but also takes the operational burden off our plate, allowing us to focus on growing our business with confidence and efficiency.",
+       "asset": "logo-fountain.svg",
+       "alt": "logo fountain",
+       "name": "Luke McKinlay",
+       "personRole": "VP of Finance",
+       "avatar": "avatar-luke-mckinlay.webp"
+      },
+      {
+       "heading": "Marisol Jim\u00e9nez, Head of People",
+       "text": "We run monthly, semi-monthly and hourly payroll in multiple different currencies around the world and our Finance Manager has full visibility in a single platform. With Remote, you can make it happen.",
+       "asset": "logo-reversetech.svg",
+       "alt": "logo reversetech",
+       "name": "Marisol Jim\u00e9nez",
+       "personRole": "Head of People",
+       "avatar": "avatar-marisol-jimenez.webp"
+      },
+      {
+       "heading": "Maria Shkaruppa, Senior Global Mobility and Remote Hiring Manager",
+       "text": "We see Remote as a leading and trusted partner in this space. The expert support they provide in local payroll, tax compliance, and HR operations has streamlined our processes and created more opportunities for growth and success on a global scale.",
+       "asset": "logo-homeproject.svg",
+       "alt": "logo homeproject",
+       "name": "Maria Shkaruppa",
+       "personRole": "Senior Global Mobility and Remote Hiring Manager",
+       "avatar": "avatar-maria-shkaruppa.webp"
+      }
+     ]
+    },
+    {
+     "name": "action",
+     "role": "action \u2014 outlined pill ('Hear from our customers')",
+     "textLen": "short",
+     "sizeClass": "control",
+     "width": "hug",
+     "z": "front",
+     "contract": "button",
+     "copy": {
+      "label": "Hear from our customers"
+     }
+    }
+   ],
+   "treatments": [],
+   "grid": {
+    "columns": 3,
+    "gutter": "2rem"
+   },
+   "alignment": {
+    "anchor": "centered"
+   }
+  },
+  {
+   "id": "badge-strip",
+   "useCase": "logos",
+   "archetype": "stack",
+   "surfaceIntent": "primary",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "badge-award-strip"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 centered heading",
+     "textLen": "medium",
+     "sizeClass": "title",
+     "width": "hug",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "The #1 global HR platform as voted by you",
+      "level": "h2"
+     }
+    },
+    {
+     "name": "badges",
+     "role": "badges \u2014 award shield badges (~100px row)",
+     "width": "full",
+     "z": "front",
+     "mediaAspect": "portrait",
+     "contract": "logo",
+     "copy": [
+      "badge-g2-top50-hr.webp",
+      "badge-g2-top100-hr.webp",
+      "badge-g2-top100-fastest-growing.webp",
+      "badge-g2-top100-global-sellers.webp",
+      "badge-g2-payroll-leader.webp",
+      "badge-g2-gep-leader.webp"
+     ]
+    },
+    {
+     "name": "ratings",
+     "role": "ratings \u2014 review-platform rating chips (glyph + stars + score)",
+     "width": "half",
+     "z": "front",
+     "mediaAspect": "wide",
+     "contract": "logo",
+     "copy": [
+      "rating-g2.webp",
+      "rating-trustpilot.webp",
+      "rating-capterra.webp"
+     ]
+    },
+    {
+     "name": "action",
+     "role": "action \u2014 outlined pill",
+     "textLen": "short",
+     "sizeClass": "control",
+     "width": "hug",
+     "z": "front",
+     "contract": "button",
+     "copy": {
+      "label": "4,000+ reviews"
+     }
+    }
+   ],
+   "treatments": [],
+   "alignment": {
+    "anchor": "centered"
+   }
+  },
+  {
+   "id": "closing-cta",
+   "useCase": "cta",
+   "archetype": "stack",
+   "surfaceIntent": "primary",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "cta-closing-noise"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 centered h2",
+     "textLen": "medium",
+     "sizeClass": "title",
+     "width": "hug",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "Global employment is hard. We built the infrastructure to do it right.",
+      "level": "h2"
+     }
+    },
+    {
+     "name": "body",
+     "role": "body \u2014 supporting paragraph",
+     "textLen": "long",
+     "sizeClass": "body",
+     "width": "hug",
+     "z": "front",
+     "contract": "paragraph",
+     "copy": {
+      "text": "Every country has different laws, tax codes, payroll rules, and compliance requirements. Remote handles the hard stuff \u2014 with in-house payroll teams, local legal experts, and owned entities in every market we operate in.",
+      "body": "Every country has different laws, tax codes, payroll rules, and compliance requirements. Remote handles the hard stuff \u2014 with in-house payroll teams, local legal experts, and owned entities in every market we operate in."
+     }
+    },
+    {
+     "name": "action",
+     "role": "action \u2014 single filled blue pill",
+     "textLen": "short",
+     "sizeClass": "control",
+     "width": "hug",
+     "z": "front",
+     "contract": "button",
+     "copy": {
+      "label": "Book demo"
+     }
+    }
+   ],
+   "treatments": [],
+   "alignment": {
+    "anchor": "centered"
+   }
+  }
+ ],
+ "errors": {}
+}

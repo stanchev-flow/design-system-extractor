@@ -1,0 +1,198 @@
+# section-copy.yaml — HubSpot v2 brand copy layers (section-copy-schema.md v1)
+# Authored 2026-07-10. Source of truth: the per-section VISION grounding YAMLs'
+# verbatim `copy` blocks (evidence/grounding/section-*.yaml) cross-checked against
+# a JS-off DOM harvest of the saved page (screenshots/hubspot-v2/hubspot.html).
+# Real site voice only — nothing invented, nothing borrowed cross-brand.
+# The animated hero heading cycles grow/scale/close/retain in the live DOM; the
+# captured resting frame reads "Where go-to-market teams go to grow." (with the
+# orange period) — that resting frame is the replica truth.
+
+sectionCopy:
+  wordmark: "HubSpot"
+  nav: [Products, Solutions, Pricing, Resources]
+  eyebrow: "HUBSPOT AGENTIC CUSTOMER PLATFORM"
+  specimenEyebrow: "HUBSPOT AGENTIC CUSTOMER PLATFORM"
+  subhead: "Unite marketing, sales, and customer service on one agentic customer platform that delivers results fast."
+  cta: "Get a demo"
+  secondaryCta: "Get started free"
+
+layoutCopy:
+  hero:
+    eyebrow: "HUBSPOT AGENTIC CUSTOMER PLATFORM"
+    heading: "Where go-to-market teams go to grow."
+    body: >-
+      Unite marketing, sales, and customer service on one agentic customer
+      platform that delivers results fast.
+    cta: "Get a demo"
+    secondaryCta: "Get started free"
+  logo-wall:
+    heading: "299,000+ customers in over 135 countries grow their businesses with HubSpot."
+    caption: "299,000+ customers in over 135 countries grow their businesses with HubSpot."
+  platform-carousel:
+    heading: "HubSpot's Agentic Customer Platform"
+    subhead: "Connected data and tools make it easier to know, do, and connect everything across your business."
+    # 3 carousel frames — copy stack + illustration swap together (interaction
+    # captures platform-slide-0/1/2.png). Media files are the source's own
+    # layered platform graphics in slide order.
+    items:
+      - heading: "A CRM that’s really smart."
+        body: "HubSpot’s Smart CRM is the single source of truth that connects all your business data."
+        media: 024-customer-20platform-20graphic-20-20smart-20crm1-5x-20-1.png
+      - heading: "Products that connect to everything."
+        body: "Unify your teams to create content, find leads, close deals, and grow revenue."
+        media: 025-customer-20platform-20graphic-20-20hubs1-5x-20-1.png
+      - heading: "Breeze: AI that gets your work done."
+        body: "Built-in AI tools boost productivity, scale growth, and unlock insights."
+        media: 026-customer-platform-graphic-breeze.png
+  product-grid:
+    eyebrow: "Powered by AI"
+    heading: "Growing a business is hard. HubSpot makes it easier."
+    body: >-
+      Disconnected tools and data slow you down. HubSpot connects everything —
+      and everyone — in one place to make growing a business easier than you
+      think.
+    cta: "Get a demo"
+    secondaryCta: "Get started free"
+    # 10 product cards, source order (DOM harvest; two checkmark rows each; every
+    # card closes with a text-arrow link). Icons: the brand's OWN product marks.
+    items:
+      - heading: "Marketing Hub®"
+        icon: 028-producticons-marketinghub-icon-orange.webp
+        body: "Attract and convert the right leads. Run campaigns, personalize content, and track it all."
+        cta: "Learn more"
+      - heading: "Sales Hub®"
+        icon: 029-producticons-saleshub-icon-orange.webp
+        body: "Generate quality leads and close deals, faster. Automate prospecting, manage pipeline, and accelerate revenue growth."
+        cta: "Learn more"
+      - heading: "Service Hub®"
+        icon: 030-producticons-servicehub-icon-orange.webp
+        body: "Streamline and scale support to serve customers faster. Drive retention with actionable insights, customer health scores, and real-time usage data."
+        cta: "Learn more"
+      - heading: "Content Hub™"
+        icon: 031-producticons-contenthub-icon-orange.webp
+        body: "Create content that clicks with your audience. Build pages, publish content across channels, and stay on brand."
+        cta: "Learn more"
+      - heading: "Data Hub™"
+        icon: 032-producticons-datahub-icon-orange.webp
+        body: "Turn scattered data into unified intelligence. Combine, clean, and activate your customer data across every team and tool."
+        cta: "Learn more"
+      - heading: "Revenue Hub™"
+        icon: 033-producticons-commercehub-icon-orange.webp
+        body: "Make it easy for customers to pay you. Send quotes, collect payments, and manage subscriptions."
+        cta: "Learn more"
+      - heading: "Smart CRM™"
+        icon: 034-producticons-smartcrm-icon-orange.webp
+        body: "All your customer data in one place. Keep your data clean, connected, and actionable."
+        cta: "Learn more"
+      - heading: "Breeze™"
+        icon: 035-breeze-20icon.svg
+        body: "AI that works with you, and for you. Agents & assistants everywhere you need them."
+        cta: "Learn more"
+      - heading: "Small Business Bundle"
+        icon: 009-small-business.svg
+        body: "The Starter edition of each product, at one low price."
+        cta: "Learn more"
+      - heading: "AEO (Beta)"
+        icon: 027-ai-20sparkle.svg
+        body: "See where your brand shows up in AI results. Get recommendations to improve your visibility."
+        cta: "Learn more"
+  agent-carousel:
+    heading: "Built-in AI agents that work for you 24/7."
+    body: >-
+      Breeze Agents are your always-on teammates. They can resolve over 65% of
+      customer inquiries, accelerate your sales pipeline, and whip up quality
+      content in no time.
+    cta: "Explore Breeze Agents"
+    # 3 distinct agent cards (the infinite track repeats them); per-card media =
+    # the source's own product-UI mockups captured from the card wells.
+    items:
+      - heading: "Customer Agent"
+        body: "Resolve 65% of your customer inquiries automatically."
+        media: 036-customer-agent-en-2x.png
+        cta: "Learn more"
+      - heading: "Prospecting Agent"
+        body: "Spot buying signals, source contacts, and launch personalized outreach — instantly."
+        media: 037-prospecting-agent-en-2x.png
+      - heading: "Data Agent"
+        body: "Get instant answers to custom questions about your customers."
+        media: 038-data-hub-en-2x.png
+  integration-banner:
+    heading: "Works with the tools you already use. 2,000+ integrations."
+    cta: "See all app integrations"
+  case-study-header:
+    eyebrow: "Case Studies"
+    heading: "Remarkable results for every size business."
+    body: "Scale your business with HubSpot. The proof is in our customers’ success."
+    cta: "See all case studies"
+  testimonial-tabs:
+    # 3-tab switcher (DOM harvest, verbatim). The JS-off/replica truth is the ACTIVE
+    # Enterprise panel: its quote+attribution ride `body`, its stat pair rides
+    # `items` (the ruled stat rows). ALL THREE panels are preserved under `panels`.
+    tabs: [Enterprise, Mid-Sized Business, Small Business]
+    body: >-
+      “HubSpot took the time to understand our business needs fully. The
+      pre-sales and subsequent support really stood out from the start. They
+      committed to engage with us deeply and work side-by-side with us on the
+      implementation. They’ve since more than met this commitment.” —
+      Adam Jones, Director of Business Development, Unipart · Read full case study
+    items:
+      - { heading: "12", body: "months for the pipeline to grow from millions to billions" }
+      - { heading: "5", body: "point increase in net promoter score (NPS)" }
+    panels:
+      - heading: "Enterprise"
+        quote: >-
+          “HubSpot took the time to understand our business needs fully. The
+          pre-sales and subsequent support really stood out from the start. They
+          committed to engage with us deeply and work side-by-side with us on the
+          implementation. They’ve since more than met this commitment.”
+        name: "Adam Jones"
+        role: "Director of Business Development, Unipart"
+        caption: "Adam Jones, Director of Business Development, Unipart"
+        media: 045-unipart-1.png
+        cta: "Read full case study"
+        stats:
+          - { value: "12", caption: "months for the pipeline to grow from millions to billions" }
+          - { value: "5", caption: "point increase in net promoter score (NPS)" }
+      - heading: "Mid-Sized Business"
+        quote: >-
+          “HubSpot gave us the tools we needed to grow without losing the
+          personal connection with our fans. Their support has been vital to our
+          continued marketing success.”
+        name: "Whitney Hallock"
+        role: "Director of Marketing & Experience, Angel City FC"
+        caption: "Whitney Hallock, Director of Marketing & Experience, Angel City FC"
+        media: 046-angel-fc.png
+        cta: "Read full case study"
+        stats:
+          - { value: "300%+", caption: "fan database growth in just 2 years" }
+          - { value: "~350", caption: "new fan sign-ups per week" }
+      - heading: "Small Business"
+        quote: >-
+          “Just like you’d train a new hire, we trained customer agent — and now
+          it’s often more accurate than we were. [...] And when something needs a
+          human touch, our team can step in quickly — with full context at their
+          fingertips.”
+        name: "John Mothershead"
+        role: "Director of Member Success, Youth on Course"
+        caption: "John Mothershead, Director of Member Success, Youth on Course"
+        media: 047-youth-on-course.png
+        cta: "Read full case study"
+        stats:
+          - { value: "59%", caption: "increase in members YoY" }
+          - { value: "17%", caption: "increase in response time" }
+  badge-row:
+    heading: "Voted #1 in 526 G2 Reports"
+  closing-cta:
+    heading: "Make impossible growth feel impossibly easy, with HubSpot."
+    cta: "Get a demo"
+    secondaryCta: "Get started free"
+
+layoutImages:
+  hero: { photo: 018-hs-full-bleed-1-optmised.webp }
+  integration-banner: { collage: 044-slack-icon-2.svg }
+
+defaultArt:
+  hero: [018-hs-full-bleed-1-optmised.webp]
+  detail: [024-customer-20platform-20graphic-20-20smart-20crm1-5x-20-1.png, 036-customer-agent-en-2x.png]
+  portrait: [045-unipart-1.png, 046-angel-fc.png, 047-youth-on-course.png]
+  panel: [025-customer-20platform-20graphic-20-20hubs1-5x-20-1.png]
