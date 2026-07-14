@@ -71,9 +71,9 @@
     },
 
     "surfaceIntent": {
-      "description": "Which surface role this section defaults to (\u00a74.4 surfaceIntent). Resolves to a tokens.surfaces role.",
+      "description": "Which surface role this section defaults to (\u00a74.4 surfaceIntent). Canonical intents (any, primary, panel, inverse, inverse-strong) resolve for every brand; ANY OTHER value must be the suffix of one of THIS brand's own tokens.surfaces roles (surface/<value>, e.g. a brand-declared 'raised' or 'accent-wash') \u2014 the renderer honors it only when the brand declares that role and keeps the historical degrade otherwise (fact-gated; never an invented palette). Surface choice is part of the copy-first layout plan (spec/archetype-library.md \u00a73).",
       "type": "string",
-      "enum": ["any", "primary", "inverse", "inverse-strong", "panel"]
+      "pattern": "^[a-z][a-z0-9-]{0,40}$"
     },
 
     "novelty": {
@@ -409,6 +409,7 @@
         "id": { "type": "string", "description": "section slug, unique within the composition, e.g. hero, features, cta" },
         "useCase": { "$ref": "#/$defs/useCase" },
         "archetype": { "$ref": "#/$defs/archetype" },
+        "archetypeRef": { "type": "string", "description": "OPTIONAL genre-archetype id from contracts/archetypes/*.yaml (spec/archetype-library.md) \u2014 the structural skeleton this section instantiates. The renderer normalizes the section against the archetype BEFORE brand adaptation (brand recipes win), and demotes to the brand's own evidenced anatomy when the id is unknown or a physics fact family cannot bind (fail closed). Only offered by the generator when hero structure candidates were injected." },
         "surfaceIntent": { "$ref": "#/$defs/surfaceIntent" },
         "seededFrom": { "$ref": "#/$defs/seededFrom" },
         "novelty": { "$ref": "#/$defs/novelty" },

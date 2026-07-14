@@ -1,0 +1,1864 @@
+# contracts/archetypes/heroes-saas.yaml — the SaaS HERO GENRE ARCHETYPE LIBRARY.
+#
+# WHAT THIS IS. A genre-level STRUCTURAL vocabulary for hero sections, selected by
+# brief + page type at generation time. It sits ABOVE the two-tier layout-pattern
+# library (spec/archetype-library.md):
+#
+#   scaffold (structural shell)      contracts/scaffolds.yaml
+#     ^ archetypeRef
+#   layout pattern (observed shape)  contracts/layout-patterns/*.yaml + runs/<brand>/brand/layout-library.yaml
+#     ^ brand recipes WIN over…
+#   GENRE ARCHETYPE (this file)      structural options the SOURCE SITE never had to show
+#
+# THE LAW (user-approved architecture; normative text in spec/archetype-library.md):
+#   - STYLE IS INVARIANT   — every instantiation draws tokens, type personality, surface
+#     grammar, spacing rhythm, recipes, and voice from the ACTIVE BRAND's extracted data.
+#     Nothing in this file names a color, face, radius, or copy voice.
+#   - STRUCTURE IS VARIABLE — the skeleton comes from here, chosen by page task, NOT
+#     limited to what the source site showed.
+#   - PHYSICS IS ALWAYS HARD — containment law, measure caps, actionGroup facts,
+#     contrast/readability, one-primary-per-group (AS-59), interaction contracts bind
+#     in creative mode exactly as in replica mode.
+#
+# PRECEDENCE. A brand's OWN hero pattern / recipes / layoutGrammar beat this library
+# wherever they conflict (extracted-over-designed ratchet, brand-schema §5.3). An
+# archetype is a starting skeleton the brand's facts instantiate — never a template
+# that overrides a fact.
+#
+# DATA, NEVER A CODE ENUM. This file is consumed by generation prompt assembly
+# (generate_composition) the way seed patterns are; no shared code may hardcode the
+# archetype ids or the genre taxonomy. New genres (editorial, ecommerce) are sibling
+# files, not code branches.
+#
+# VOCABULARY. Slot fields reuse layout-patterns.v1 classes exactly (textLen, sizeClass,
+# width, mediaAspect, z — brand-schema §4.4); `contract` names keys from
+# contracts/primitives.yaml + contracts/blocks.yaml; `structure.archetype` is the
+# composition.v1 drawable enum (stack | split | stack-fullbleed | cards | collage |
+# interlock | overlay | banded) so phase-2 consumption needs no translation layer.
+# All geometry is RANGES/CHARACTER CLASSES, never px — values resolve against the
+# active brand's measured tokens at instantiation.
+#
+# bandHeight character vocabulary (resolved against the brand's own section padding +
+# type scale; NOT a fixed px ladder):
+#   compact  — a working masthead; hands off fast to the content below (hub indexes,
+#              pricing). Roughly heading + one support row of the brand's rhythm.
+#   standard — a full opening beat (heading, support, actions, media) without claiming
+#              the whole viewport.
+#   tall     — a statement beat with generous band padding (bookend character).
+#   viewport — the band claims ~one viewport (the classic opening-bookend min-height).
+#
+# physicsBindings vocabulary (the fact families that MUST bind at instantiation; each
+# name anchors to existing law — see spec/archetype-library.md §4 for the full map):
+#   containment      — fix3 container law: content spans/caps at the shared measure
+#                      (spacing-conformance §Container law; AS-45, AS-56)
+#   headingTier      — sizeClass resolves to the brand's MEASURED type ladder; display
+#                      register belongs to the opener (AS-32, AS-51)
+#   headerContext    — alignment rides layoutGrammar.headerContext resolution
+#                      (brand-schema §4.4b; AS-49); explicit facts outrank it
+#   relationalRhythm — seams ride the brand's relational ladder rungs (C15; AS-48, AS-54)
+#   actionGroup      — measured multi-action law: gap/orientation/align/registers
+#                      (brand-schema §4.4f; AS-59, AS-60, AS-61)
+#   surfaceContrast  — resting AND state inks pass contrast on their real surface
+#                      (AS-01, AS-10; contrast_audit.mjs)
+#   stackMeasure     — the copy column caps at the brand's measured stack column where
+#                      captured, else the archetype's textMeasure character (AS-45)
+#   textOnMedia      — type over photography ONLY as the sanctioned hero device with a
+#                      FLAT scrim fill (AS-22; composition treatment `sanctioned: true`)
+#   gridEqualize     — card rows ride the brand's equalization stance + slack anatomy
+#                      (brand-schema §4.4d; AS-50, AS-55)
+#   controlMeasure   — any control/form slot carries an explicit width/sizeRel; never
+#                      an unspecified stretch (brand-schema §4.4 control-measure; AS-26)
+#   assetFidelity    — only real on-disk brand assets bind; no invented filenames, no
+#                      borrowed art, no phantom media in attributed modules
+#                      (AS-33, AS-34, AS-52)
+#   interaction      — any interactive device ships its WAI-ARIA contract family
+#                      (spec/interaction-contracts.md; AS-40, AS-41, AS-57)
+#   motion           — device motion rides the brand's captured motion tokens or
+#                      degrades to instant; never an invented 200ms (AS-47)
+#
+# EVERY archetype binds at minimum: containment, headingTier, headerContext,
+# relationalRhythm, surfaceContrast. Per-archetype lists below are COMPLETE (core +
+# additive) so one entry can be rendered into a prompt self-contained.
+#
+# INSTANTIABILITY BAR. Every archetype below is instantiable by a brand carrying only
+# the standard extraction facts (tokens/type ladder/spacing + relational ladder,
+# surfaces + pageRhythm, buttons variant matrix, layoutGrammar.headerContext +
+# .actionGroup, patterns/recipes, section-copy voice, tagged assets, chrome). No entry
+# requires data the extraction pipeline does not capture; where a slot benefits from an
+# OPTIONAL fact (e.g. mono type for a code panel), the entry names the degrade.
+
+schemaVersion: hero-archetypes.v1
+genre: saas
+useCase: hero
+origin: designed          # genre knowledge, hand-authored; overridable by brand facts
+overridable: true
+spec: ../../spec/archetype-library.md
+pageTypes: [homepage, pricing, product, about, blog, careers, demo, developer, event,
+            signup, customers, comparison]
+changelog:
+  - { ts: "2026-07-13T18:30:00Z", action: created, from: null, to: heroes-saas.v1,
+      by: creation, signalId: null,
+      note: "phase-1 authoring of the SaaS hero genre library: 26 archetypes across 12
+             page types; vocabulary aligned to layout-patterns.v1 + composition.v1;
+             physics bindings mapped to existing AS/spec law" }
+  - { ts: "2026-07-13T19:00:00Z", action: adjusted, from: heroes-saas.v1,
+      to: heroes-saas.v1, by: phase-2-wiring, signalId: null,
+      note: "additive requiresOffGrid flag on the four archetypes whose anatomy needs
+             off-grid geometry devices (seam straddle, crest bleed, ghost z-depth) —
+             consumed data-side by archetype_library.shortlist demotion; no schema bump" }
+  - { ts: "2026-07-14T09:40:00Z", action: adjusted, from: heroes-saas.v1,
+      to: heroes-saas.v1, by: copy-first-doctrine, signalId: null,
+      note: "hero-event-meta-forward grows an OPTIONAL agenda mark-rail slot (contract
+             logo-bar) + agendaRail knob — copy-first rebuild of the hubspot-v2 event
+             hero demanded agenda-at-a-glance proof in the brand's own product marks;
+             additive, existing instantiations unaffected" }
+
+archetypes:
+
+  # ──────────────────────────────────────────────────────────────────────────────
+  # WORKHORSE OPENERS (homepage / product)
+  # ──────────────────────────────────────────────────────────────────────────────
+
+  - id: hero-split-product
+    name: "Split product hero"
+    intent: >-
+      The SaaS workhorse: a copy column (kicker, heading, subheading, action pair)
+      beside a product-media counterweight. The page leads with what the product
+      looks like while the copy makes one claim.
+    structure: { archetype: split, scaffoldRef: section-split }
+    anatomy:
+      alignment:
+        context: splitColumn        # brand layoutGrammar.headerContext.splitColumn owns the anchor
+        counterweight: media
+      slots:
+        - { slot: kicker, role: register label / eyebrow (brand kicker recipe wins where one exists), contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: the page's one claim, contract: heading, required: true, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: advances the claim with specifics, contract: paragraph, required: true, textLen: long, sizeClass: body, width: hug, z: front }
+        - { slot: actionGroup, role: one filled primary + one differently-registered sibling, contract: button, required: true, textLen: short, sizeClass: control, width: hug, z: front }
+        - { slot: media, role: product surface (UI screenshot / illustration from brand assets), contract: image, required: true, mediaAspect: landscape, width: media, z: mid }
+        - { slot: proof, role: quiet trust line or micro logo run under the actions, contract: logo-bar, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+    geometry:
+      bandHeight: standard
+      mediaFraction: { min: 0.42, max: 0.55 }   # of the content container
+      textMeasure: >-
+        the brand's captured hero stackMeasure if any; else the copy column's natural
+        split measure — the heading must wrap in 2–3 lines, never one long line
+      containment: content-container
+    useCases:
+      pageTypes: [homepage, product]
+      taskIntents: ["show the product immediately", "one-claim positioning",
+                    "feature page with a strong visual", "developer product with UI"]
+      affinity: >-
+        Prefer over hero-centered-statement-canvas when real product media exists and
+        carries information; prefer hero-demo-media-proof instead when the brief leads
+        with a walkthrough/vertical proof stack; prefer hero-form-split when the page
+        task is lead capture.
+    variantKnobs:
+      mediaSide: { type: enum, values: [left, right], default: right }
+      frame: { type: enum, values: [canvas, inset-panel], default: canvas }   # inset-panel = the split lives inside a rounded inset art panel (panel stays INSIDE the section; surfaceIntent stays on the page canvas)
+      proofRow: { type: enum, values: [on, off], default: off }
+    exemplar:
+      instance: >-
+        Our own remote lane evidences the inset-panel variant:
+        runs/remote/brand/evidence/crops/section-00-hero-module-scss-module-nmjveq-section-hero-modu.png
+        (pattern hero-inset-noise-panel in runs/remote/brand/layout-library.yaml).
+      skeleton: >-
+        ~50/50 split inside a rounded inset panel on the canvas; left column stacks
+        heading -> supporting body -> filled primary + outlined secondary; right column
+        carries a product illustration with floating status cards; ink stays dark on
+        the art surface, no scrim.
+      take: >-
+        The split skeleton and column order; the action pair's two distinct registers;
+        the media column as counterweight (not decoration); the panel-inset option as a
+        FRAME choice, not a surface repaint.
+      ignore: >-
+        The pastel noise-gradient palette, the pill button geometry, the globe
+        illustration subject, all copy. A different brand instantiates the same
+        skeleton with its own surfaces, radii, and art.
+    slopTraps:
+      - "AS-12 empty column: a thin media asset (small logo, icon) leaves the
+         counterweight half hollow — the media slot must carry a real landscape/square
+         product surface or the archetype degrades to hero-centered-statement-canvas."
+      - "AS-59/AS-60 action-pair flattening: both CTAs resolve to the filled primary
+         register, or the pair renders on scaffold gap instead of the brand's measured
+         actionGroup gap."
+      - "AS-16 text set flush against media: the copy column needs its gutter to the
+         media edge from the brand's grid gutter, never zero."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, stackMeasure, assetFidelity]
+
+  - id: hero-centered-statement-canvas
+    name: "Centered statement on quiet canvas"
+    intent: >-
+      A standalone centered stack on the brand's plain canvas — kicker, display
+      heading, subheading, action pair — with optional product media BELOW the stack.
+      Confidence expressed through type and whitespace instead of a media canvas.
+    structure: { archetype: stack, scaffoldRef: section-stack }
+    anatomy:
+      alignment:
+        context: standaloneStack    # brand headerContext.standaloneStack owns the anchor;
+                                    # a left-anchoring brand renders this LEFT — that is correct
+        counterweight: none
+      slots:
+        - { slot: kicker, role: register label / announcement chip, contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: display statement, contract: heading, required: true, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: supporting paragraph at the stack measure, contract: paragraph, required: true, textLen: long, sizeClass: body, width: hug, z: front }
+        - { slot: actionGroup, role: primary + quiet sibling, contract: button, required: true, textLen: short, sizeClass: control, width: hug, z: front }
+        - { slot: media, role: product frame below the stack, contract: image, required: false, mediaAspect: wide, width: media, z: mid }
+    geometry:
+      bandHeight: standard          # tall when media is absent
+      mediaFraction: { min: 0.6, max: 0.85 }   # the below-stack frame, when present
+      textMeasure: >-
+        the whole stack shares ONE measure (conversion-stack alignment coherence,
+        brand-schema §4.4 alignment rule) — heading wraps 2–3 lines; body and actions
+        share the column, never full-container
+      containment: content-container
+    useCases:
+      pageTypes: [homepage, signup, event, product]
+      taskIntents: ["category creation / bold claim", "brand-led positioning",
+                    "pre-launch teaser", "product with no showable UI yet"]
+      affinity: >-
+        Prefer over hero-split-product when the claim is stronger than the screenshot
+        or no informative media exists; prefer hero-editorial-statement when the page
+        is about the company voice rather than a conversion beat.
+    variantKnobs:
+      mediaBelow: { type: enum, values: [on, off], default: on }
+      kickerStyle: { type: enum, values: [plain, badge], default: plain }  # badge = brand pill/badge primitive; the brand's own kicker recipe wins
+    exemplar:
+      instance: >-
+        The dev-tools homepage mold (Linear-style): a dark quiet canvas, a centered
+        two-line display statement, one sentence of support, one action pair, the
+        product frame fading in below.
+      skeleton: >-
+        Centered column at a fixed stack measure; kicker -> heading -> support ->
+        actions on the brand ladder; a wide product frame starts below the fold line
+        and is allowed to crop at the band bottom.
+      take: >-
+        The single shared stack measure; the restraint (one claim, one support row);
+        the below-stack media placement with bottom-crop license; rhythm from the
+        relational ladder.
+      ignore: >-
+        The dark palette and glow treatments (surface comes from the BRAND's page
+        rhythm — an all-light brand renders this light), the specific typeface
+        personality, the copy register.
+    slopTraps:
+      - "AS-45 measure collapse: the centered stack inherits a narrow slot's width or a
+         ch-clamp lands on the heading — container spans the shared measure, prose
+         clamps belong to paragraphs only."
+      - "AS-15 ragged wrap: a display statement ending in a one-word last line at the
+         authored measure."
+      - "AS-49 alignment transplant: hardcoding `centered` — the brand's
+         standaloneStack grammar decides; a left-anchoring brand centers NOTHING."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, stackMeasure]
+
+  - id: hero-layered-fullbleed-scrim
+    name: "Layered full-bleed media with scrim"
+    intent: >-
+      A full-bleed photographic/atmospheric canvas carrying a copy stack behind a FLAT
+      scrim — the sanctioned text-on-media hero. Human/environmental warmth or scale,
+      where the brand's imagery (not its UI) is the opening argument.
+    structure: { archetype: stack, scaffoldRef: section-stack-fullbleed }
+    anatomy:
+      alignment:
+        context: standaloneStack
+        counterweight: none
+      slots:
+        - { slot: background, role: full-bleed brand photograph / atmosphere, contract: image, required: true, mediaAspect: wide, width: full-bleed, z: back }
+        - { slot: kicker, role: register label over the media, contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: display heading over the media, contract: heading, required: true, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: supporting paragraph, contract: paragraph, required: true, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { slot: actionGroup, role: primary + surface-variant secondary, contract: button, required: true, textLen: short, sizeClass: control, width: hug, z: front }
+    geometry:
+      bandHeight: viewport
+      mediaFraction: { min: 1.0, max: 1.0 }
+      textMeasure: >-
+        the brand's captured hero stackMeasure where one exists; else cap so the
+        heading holds 2 lines over the media focal area
+      containment: content-container   # the copy column still registers to the shared measure; only the media bleeds
+    useCases:
+      pageTypes: [homepage, about, careers]
+      taskIntents: ["human-scale brand story", "trust/warmth-led positioning",
+                    "company-page opener", "recruiting with real workplace imagery"]
+      affinity: >-
+        Prefer over hero-split-product when brand photography (not product UI) is the
+        strongest asset; prefer hero-team-mosaic for careers pages that want PEOPLE
+        density rather than one atmospheric scene. Requires a real wide brand
+        photograph on disk — never a stock invention.
+    variantKnobs:
+      copyAnchor: { type: enum, values: [centered, bottom-left], default: centered }  # the brand's headerContext still outranks
+      scrim: { type: enum, values: [flat-tint, none], default: flat-tint }  # none ONLY when the art itself carries a quiet zone
+    exemplar:
+      instance: >-
+        Our own hubspot-v2 lane evidences this archetype:
+        runs/hubspot-v2/brand/evidence/crops/section-01-csol-section-wf-page-header-wf-page-header-human.png
+        (pattern hero-photo-overlay in runs/hubspot-v2/brand/layout-library.yaml — a
+        measured flat rgba(0,0,0,0.4) scrim, centered cream stack, 11rem band pads,
+        band-local rhythm 10/28/44).
+      skeleton: >-
+        Wide office scene bleeding all edges; one centered column: uppercase eyebrow,
+        two-line display heading, one supporting paragraph, filled primary + outlined
+        secondary; the band breathes deeper than the site's average section padding.
+      take: >-
+        The layer order (media back, flat scrim, copy front); the single copy column
+        with its own measured cap; the deeper-than-average band padding as a
+        BAND-LOCAL fact; the surface-variant secondary button on the dark canvas.
+      ignore: >-
+        The warm palette, the serif display face, the office subject matter, the exact
+        scrim alpha (measure the brand's own or use the renderer's surface-toned
+        default), all copy.
+    slopTraps:
+      - "AS-01/AS-10 contrast leak: ink chosen for the resting scrim fails over a
+         bright region of the photo, or hover states lose contrast — the scrim must be
+         a FLAT fill (never a gradient) and state inks re-check on this surface."
+      - "unsanctioned text-on-media: the treatment ships without `sanctioned: true`, or
+         gets transplanted to a non-hero section (AS-22 grammar transplant)."
+      - "AS-23 image lifecycle: the copy renders over an unloaded/failed photo backing
+         — the band needs its loading/error surface discipline."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, stackMeasure, textOnMedia,
+                      assetFidelity]
+
+  - id: hero-bento-lead
+    name: "Bento-led hero"
+    intent: >-
+      A compact heading row over an asymmetric bento mosaic of product surfaces — one
+      LEAD cell (the claim or hero media) plus supporting cells (stats, feature
+      screenshots, a quote). The hero and the proof grid fused into one band.
+    structure: { archetype: cards, scaffoldRef: layout-bento,
+                 note: "routes through the cards family with the validated `_bento` knob stamp (compose_section.compose_bento_grid)" }
+    anatomy:
+      alignment:
+        context: standaloneStack     # the header row above the mosaic
+        counterweight: none
+      slots:
+        - { slot: kicker, role: register label, contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: display heading (the only display register on the page), contract: heading, required: true, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { slot: actionGroup, role: primary + quiet sibling beside/below the heading, contract: button, required: true, textLen: short, sizeClass: control, width: hug, z: front }
+        - { slot: cells, role: 4–6 bento cells — ONE lead cell (media or statement) + supporting stat/feature/quote cells, contract: card, required: true, textLen: medium, sizeClass: body, width: stretch, z: front }
+    geometry:
+      bandHeight: tall
+      mediaFraction: { min: 0.55, max: 0.75 }   # the mosaic's share of the band
+      textMeasure: heading row rides the standalone-stack grammar; cell copy stays at card register
+      containment: content-container
+    useCases:
+      pageTypes: [homepage, product]
+      taskIntents: ["multi-surface platform story", "show breadth in one glance",
+                    "design-forward product flex"]
+      affinity: >-
+        Prefer over hero-split-product when the story is BREADTH (many surfaces/
+        capabilities) rather than one product view; avoid when the brief has fewer
+        than 4 real content cells — a padded bento reads as filler (AS-11).
+    variantKnobs:
+      cellCount: { type: enum, values: [4, 5, 6], default: 5 }
+      leadCell: { type: enum, values: [media, statement], default: media }
+    exemplar:
+      instance: >-
+        The design-tool homepage mold: a short heading row, then a 12-col mosaic —
+        one wide product-canvas cell, a tall community cell, small stat and quote
+        cells, every cell a real surface from the product.
+      skeleton: >-
+        Header row (heading + actions) at the content measure; below, a 12-col bento
+        with one lead cell spanning ~7 cols and 3–5 supporting cells; cells share one
+        radius/gutter family; the row equalizes per the brand's gridEqualize stance.
+      take: >-
+        The lead-cell dominance (one cell visibly outranks); mixed cell CONTENT KINDS
+        (media, stat, quote) rather than six identical cards; the mosaic as the
+        media-fraction of the band.
+      ignore: >-
+        Cell surface tints and radii (brand tokens), the specific product screenshots,
+        cell copy, any pastel palette.
+    slopTraps:
+      - "AS-11 under-filled cells: bento cells invented to fill the grid with no brief
+         content — drop to 4 cells or a different archetype instead."
+      - "AS-50/AS-55 equalization without anatomy: stretched rows with floating CTAs
+         mid-card; slack + pinned-action facts must travel with the stance."
+      - "AS-52 phantom media: a quote cell must never receive default-art backfill."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, gridEqualize, assetFidelity]
+
+  - id: hero-product-canvas-panel
+    name: "Product canvas with copy panel"
+    intent: >-
+      The product UI as the entire canvas: a full-width product frame fills the band
+      and a SOLID copy panel (heading, support, actions) is grid-placed over it. The
+      inverse of the split — media dominant, copy inset. Type never touches the
+      screenshot; the panel carries it.
+    structure: { archetype: overlay, scaffoldRef: section-stack }
+    anatomy:
+      alignment:
+        context: splitColumn         # the panel behaves as a copy column with the canvas as counterweight
+        counterweight: canvas
+      slots:
+        - { slot: canvas, role: full-width product frame (UI screenshot), contract: image, required: true, mediaAspect: wide, width: full-bleed, z: back }
+        - { slot: panel, role: solid content panel over the canvas (brand panel surface), contract: media-text, required: true, width: fixed, z: front }
+        - { slot: kicker, role: register label inside the panel, contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: display heading inside the panel, contract: heading, required: true, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: support copy inside the panel, contract: paragraph, required: true, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { slot: actionGroup, role: primary + quiet sibling inside the panel, contract: button, required: true, textLen: short, sizeClass: control, width: hug, z: front }
+    geometry:
+      bandHeight: viewport
+      mediaFraction: { min: 0.9, max: 1.0 }
+      textMeasure: the panel spans ~4–6 of 12 columns; copy wraps inside the panel measure
+      containment: content-container   # panel registers on the section grid; canvas may bleed
+    useCases:
+      pageTypes: [product, homepage]
+      taskIntents: ["the product IS the pitch", "dense working-surface products
+                    (dashboards, editors)", "second-visit conversion pages"]
+      affinity: >-
+        Prefer over hero-split-product when the product surface is information-dense
+        and worth a full-width look; requires a genuinely wide, legible product asset.
+        The panel-on-media pair is the sanctioned device — never bare text on the
+        screenshot.
+    variantKnobs:
+      panelCorner: { type: enum, values: [left, right], default: left }
+      panelSpan: { type: enum, values: [4, 5, 6], default: 5 }
+    exemplar:
+      instance: >-
+        The analytics-platform mold: a full-width dashboard frame under a solid panel
+        anchored to the left grid columns carrying the claim and the action pair.
+      skeleton: >-
+        Canvas layer = one wide product frame, allowed to bleed; a solid panel placed
+        cols 1–5 (or mirrored) at z:front with an internal stack on the brand ladder;
+        panel surface = the brand's panel role, full opacity.
+      take: >-
+        The panel-on-media discipline (solid surface, text never on the screenshot);
+        the panel's column registration; media-dominant band proportions.
+      ignore: >-
+        The dashboard's chrome/colors (any brand's own product art binds), panel
+        radius/shadow (brand tokens), copy.
+    slopTraps:
+      - "AS-05 wrong positioning ancestor: the panel absolutely positioned against the
+         page instead of the section's registration grid — it drifts at other
+         viewports."
+      - "translucent panel: dropping panel opacity to 'show more product' recreates
+         text-on-media without sanction and fails contrast (AS-01)."
+      - "AS-13 information-bearing media: if the screenshot carries the argument
+         (numbers, feature names), the copy must state it as text too."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, textOnMedia, assetFidelity]
+
+  - id: hero-demo-media-proof
+    name: "Demo-forward split with proof"
+    intent: >-
+      A split hero whose media half is a WALKTHROUGH surface (annotated product frame,
+      inline demo video with native controls) and whose copy column closes with a proof
+      row (customer marks or a stat line). For briefs that sell motion/flow.
+    structure: { archetype: split, scaffoldRef: section-split }
+    anatomy:
+      alignment:
+        context: splitColumn
+        counterweight: media
+      slots:
+        - { slot: kicker, role: register label, contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: claim heading, contract: heading, required: true, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: "what the demo shows, in words", contract: paragraph, required: true, textLen: long, sizeClass: body, width: hug, z: front }
+        - { slot: actionGroup, role: primary (watch/try) + quiet sibling, contract: button, required: true, textLen: short, sizeClass: control, width: hug, z: front }
+        - { slot: media, role: "demo frame — product video (native controls, poster from brand assets) or annotated screenshot", contract: video, required: true, mediaAspect: landscape, width: media, z: mid }
+        - { slot: proof, role: 3–5 customer marks or one stat line closing the copy column, contract: logo-bar, required: true, textLen: short, sizeClass: caption, width: hug, z: front }
+    geometry:
+      bandHeight: standard
+      mediaFraction: { min: 0.48, max: 0.58 }
+      textMeasure: split-column measure; proof row hugs its marks, never stretches
+      containment: content-container
+    useCases:
+      pageTypes: [product, homepage, demo]
+      taskIntents: ["show the flow, not the screen", "feature launch with a
+                    walkthrough", "product-led growth 'see it work' opener"]
+      affinity: >-
+        Prefer over hero-split-product when the brief references a demo/walkthrough;
+        prefer hero-form-split when the demo is gated behind a form. Inline media only
+        — no lightbox/modal (no modal interaction contract exists; a poster linking
+        out is the degrade).
+    variantKnobs:
+      mediaKind: { type: enum, values: [video, annotated-frame], default: annotated-frame }
+      proofKind: { type: enum, values: [marks, stat-line], default: marks }
+    exemplar:
+      instance: >-
+        The product-led-growth mold: left column claim + support + 'See how it works'
+        pair + a five-mark customer run; right column a browser-framed product clip
+        with native controls.
+      skeleton: >-
+        Standard split skeleton; the proof row is INSIDE the hero band, closing the
+        copy column at caption register; the media frame carries device chrome from
+        the brand's own art, not an invented mockup.
+      take: >-
+        Proof placement (in-band, under actions, quiet register); media half sized
+        like a working surface (not a thumbnail); native controls for video.
+      ignore: >-
+        The device-chrome styling, mark choices, palette, copy.
+    slopTraps:
+      - "AS-33/AS-34 mark integrity: proof marks must be real on-disk logo files —
+         no text-wall proof while assets exist, no borrowed art from another brand."
+      - "autoplaying media without the pause affordance (interaction contract
+         `carousel`-family discipline; AS-57 hover-only controls)."
+      - "AS-59 double-primary: 'Watch demo' and 'Get started' both filled."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, stackMeasure, assetFidelity,
+                      interaction, motion]
+
+  - id: hero-social-proof-embedded
+    name: "Proof-embedded opener"
+    intent: >-
+      A standard opener (stack or split) that folds the customer-proof strip INTO the
+      hero band: heading + support + actions, then a logo run / stat line as the
+      band's closing row. One band does the work of hero + logos.
+    structure: { archetype: stack, scaffoldRef: section-stack }
+    anatomy:
+      alignment:
+        context: standaloneStack
+        counterweight: none
+      slots:
+        - { slot: kicker, role: register label, contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: claim heading, contract: heading, required: true, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: support copy, contract: paragraph, required: true, textLen: long, sizeClass: body, width: hug, z: front }
+        - { slot: actionGroup, role: primary + quiet sibling, contract: button, required: true, textLen: short, sizeClass: control, width: hug, z: front }
+        - { slot: proof, role: closing proof row — 4–6 real customer marks with a caption, contract: logo-bar, required: true, textLen: short, sizeClass: caption, width: stretch, z: front }
+    geometry:
+      bandHeight: standard
+      mediaFraction: { min: 0.0, max: 0.3 }    # optional small media; the proof row is the visual foot
+      textMeasure: stack measure for copy; the proof row spans the content container with measured mark boxes
+      containment: content-container
+    useCases:
+      pageTypes: [homepage, customers]
+      taskIntents: ["credibility-first positioning", "enterprise trust signal at first
+                    glance", "compressed pages where hero+logos must share a band"]
+      affinity: >-
+        Prefer when the brief leads with WHO uses the product; if the brand's own page
+        rhythm shows a separate logo band, keep the brand's rhythm instead (brand
+        facts win) and drop the embedded row.
+    variantKnobs:
+      proofCaption: { type: enum, values: [on, off], default: on }
+      proofPlacement: { type: enum, values: [band-foot, under-actions], default: band-foot }
+    exemplar:
+      instance: >-
+        The enterprise-SaaS mold: centered claim + support + pair, then a quiet
+        'Trusted by' caption over a six-mark monochrome run at the band's foot.
+      skeleton: >-
+        Standalone stack at the brand's grammar anchor; proof row separated from the
+        actions by a full ladder rung, marks at their measured item boxes with the
+        brand's mark-row gap.
+      take: >-
+        The band-foot proof placement; caption + marks as ONE quiet unit; measured
+        mark boxes (never flex-weight scaling).
+      ignore: >-
+        Which companies appear, mark treatment (mono vs color is the brand's own
+        evidence), palette, copy.
+    slopTraps:
+      - "AS-33 logo wall keyed to filenames: marks must resolve to on-disk files; a
+         text wall while real vectors exist is the named failure."
+      - "AS-51 register inflation: the proof caption creeping up to title register —
+         it stays at caption."
+      - "mark-row scaling drift: deriving mark size from flex weights instead of the
+         measured item box (brand-schema §4.4 mark-row item boxes)."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, stackMeasure, assetFidelity]
+
+  - id: hero-stat-forward
+    name: "Metric-forward hero"
+    intent: >-
+      The claim carried by NUMBERS: a copy column beside (or above) an oversized stat
+      cluster — 2–4 measured outcomes at display scale with caption descriptions. For
+      products whose story is quantified impact.
+    structure: { archetype: split, scaffoldRef: section-split }
+    anatomy:
+      alignment:
+        context: splitColumn
+        counterweight: stats
+      slots:
+        - { slot: kicker, role: register label, contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: claim heading, contract: heading, required: true, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: support copy, contract: paragraph, required: true, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { slot: actionGroup, role: primary + quiet sibling, contract: button, required: true, textLen: short, sizeClass: control, width: hug, z: front }
+        - { slot: stats, role: 2–4 outcome stats — numeral at display register + caption description, contract: stat-block, required: true, textLen: short, sizeClass: display, width: media, z: front }
+    geometry:
+      bandHeight: standard
+      mediaFraction: { min: 0.38, max: 0.5 }   # the stat cluster's share
+      textMeasure: split-column measure; stat captions at caption measure under their numerals
+      containment: content-container
+    useCases:
+      pageTypes: [customers, homepage, product]
+      taskIntents: ["quantified-outcome positioning", "case-study hub opener",
+                    "ROI-led enterprise pitch"]
+      affinity: >-
+        Prefer over hero-social-proof-embedded when the brief carries REAL numbers
+        (from the brief copy — never invented); if numbers are thin, use marks-based
+        proof instead. Stat numerals ride the brand's display/stat register from the
+        measured type ladder.
+    variantKnobs:
+      statCount: { type: enum, values: [2, 3, 4], default: 3 }
+      statDividers: { type: enum, values: [rule, none], default: none }   # vertical hairline between stats, per brand hairline token
+    exemplar:
+      instance: >-
+        The case-study-hub mold (our hubspot-v2 testimonial band shows the stat
+        anatomy at section scale: serif numerals over sans captions split by a
+        vertical rule — runs/hubspot-v2/brand/evidence/crops/section-08-csol-section-breeze-agents-tabbed-testimonials-s.png).
+      skeleton: >-
+        Copy column left with the claim; right, a 2×1 or 3×1 stat cluster — numerals
+        at the brand's large register, one-line captions beneath, optional hairline
+        dividers; stats optically top-align with the heading.
+      take: >-
+        The numeral/caption pairing; divider-as-hairline option; stats as the
+        counterweight (they OWN the media half, no competing image).
+      ignore: >-
+        Numeral typeface (brand ladder decides serif/sans), divider paint, palette,
+        which metrics.
+    slopTraps:
+      - "AS-13 data trapped in art: stats baked into an image instead of text — the
+         numerals are TYPE, always."
+      - "invented numbers: stats must come from the brief's real facts; a generator
+         padding '10x faster' is content slop (copy-quality HARD rule)."
+      - "AS-32 display-magnitude drift: stat numerals resolving above the brand's
+         measured display tier to 'look impressive'."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, stackMeasure]
+
+  - id: hero-integration-constellation
+    name: "Integration constellation hero"
+    intent: >-
+      Copy column beside a constellation of integration/tool marks — a spatial cluster
+      (loose grid or orbit-like arrangement) of REAL third-party icons around a
+      product mark. The story: fits into everything you already use.
+    structure: { archetype: split, scaffoldRef: section-split }
+    anatomy:
+      alignment:
+        context: splitColumn
+        counterweight: media
+      slots:
+        - { slot: kicker, role: register label, contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: claim heading, contract: heading, required: true, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: support copy naming the count/breadth, contract: paragraph, required: true, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { slot: actionGroup, role: primary + quiet sibling, contract: button, required: true, textLen: short, sizeClass: control, width: hug, z: front }
+        - { slot: media, role: "mark constellation — 5–9 real tool icons tiled/clustered, cropping at the band edge is licensed", contract: logo-bar, required: true, mediaAspect: square, width: media, z: mid }
+    geometry:
+      bandHeight: standard
+      mediaFraction: { min: 0.4, max: 0.5 }
+      textMeasure: split-column measure
+      containment: content-container   # constellation may bleed its outer edge (tagged release)
+    useCases:
+      pageTypes: [product, homepage]
+      taskIntents: ["integrations/platform-fit story", "middleware/connector
+                    products", "ecosystem breadth pitch"]
+      affinity: >-
+        Prefer for integration-page briefs or connector products; requires ≥5 real
+        third-party mark files on disk. Our hubspot-v2 lane evidences the collage
+        device at banner scale (integration-collage-banner pattern,
+        runs/hubspot-v2/brand/evidence/crops/section-06-csol-section-wf-rotating-svg-padding-top-md-padd.png) —
+        this archetype promotes the same device to hero scale.
+    variantKnobs:
+      arrangement: { type: enum, values: [tiled, orbital], default: tiled }
+      markCount: { type: enum, values: [5, 6, 7, 8, 9], default: 6 }
+    exemplar:
+      instance: >-
+        The automation-platform mold: left claim about connecting tools; right a loose
+        grid of app icons at mixed angles/sizes, cropped at the section edge, the
+        product mark visually central.
+      skeleton: >-
+        Split with the constellation as counterweight; marks at measured icon boxes
+        with real gaps; one focal mark (the product) slightly dominant; outer marks
+        may crop at the frame.
+      take: >-
+        The cluster-as-media idea; focal-mark dominance; edge-crop license as a
+        deliberate treatment (not overflow accident).
+      ignore: >-
+        Which tools appear, tile tints/angles, palette, copy.
+    slopTraps:
+      - "AS-34 borrowed art: tool icons must be THIS brand's curated asset files —
+         never pulled from another run or invented."
+      - "decoration over text: constellation marks drifting over the copy column
+         (decorative layers never compromise readability — composition placement
+         contract)."
+      - "AS-42-family motion: if the cluster animates (orbit/marquee), seam math and
+         reduced-motion discipline apply; static is the safe default."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, assetFidelity, motion]
+
+  # ──────────────────────────────────────────────────────────────────────────────
+  # CONVERSION-FIRST OPENERS (demo / contact / signup / onboarding)
+  # ──────────────────────────────────────────────────────────────────────────────
+
+  - id: hero-form-split
+    name: "Form-split lead-gen hero"
+    intent: >-
+      The lead-gen workhorse: a persuasion column (heading, value bullets/support,
+      proof) beside a FORM PANEL (fields + submit + compliance note). The page task is
+      capture; the hero IS the conversion surface.
+    structure: { archetype: split, scaffoldRef: section-split-content-form }
+    anatomy:
+      alignment:
+        context: splitColumn
+        counterweight: form
+      slots:
+        - { slot: kicker, role: register label (e.g. the offer class), contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: "the offer, stated once", contract: heading, required: true, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { slot: support, role: what you get — support copy or 3–4 value bullets, contract: content-block, required: true, textLen: long, sizeClass: body, width: hug, z: front }
+        - { slot: proof, role: quiet trust row (marks or one attributed quote), contract: logo-bar, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: form, role: the capture form — fields + ONE submit + purpose/compliance note, contract: form, required: true, textLen: short, sizeClass: control, width: media, z: front }
+    geometry:
+      bandHeight: standard
+      mediaFraction: { min: 0.36, max: 0.46 }   # the form panel's share
+      textMeasure: persuasion column at split measure; the form panel's fields span the PANEL, not the page
+      containment: content-container
+    useCases:
+      pageTypes: [demo, signup, event]
+      taskIntents: ["demo request", "contact sales", "gated content/webinar
+                    registration", "trial with qualification fields"]
+      affinity: >-
+        THE archetype for form-first briefs. Prefer hero-form-centered when the form
+        is one field; prefer hero-event-meta-forward + a form section below when the
+        event story needs the full band first.
+    variantKnobs:
+      formSide: { type: enum, values: [right, left], default: right }
+      formFrame: { type: enum, values: [panel, plain], default: panel }   # panel = brand panel surface + hairline; plain = fields on canvas
+      supportKind: { type: enum, values: [paragraph, bullets], default: bullets }
+    exemplar:
+      instance: >-
+        The B2B demo-request mold: left column offer heading, three outcome bullets,
+        a five-mark trust run; right a bordered panel with 3–5 fields, one filled
+        submit, and a one-line privacy note.
+      skeleton: >-
+        ~60/40 split; the form panel visually bounded (brand panel surface + hairline
+        + radius token); fields stacked at the brand's form rhythm; exactly one
+        submit at the primary register; note at caption register.
+      take: >-
+        The persuasion/capture split; the bounded form panel; the compliance note as
+        part of the form anatomy; proof BELOW support (not above the heading).
+      ignore: >-
+        Field count/labels (brief decides), panel styling values, palette, copy.
+    slopTraps:
+      - "AS-14 purpose-blind form: fields with no stated reason — the heading/note
+         must say what submitting gets you."
+      - "AS-26 slot-faithless adapter: the authored form dropped, or a form invented
+         where the brief bound none."
+      - "control-measure omission: fields defaulting to full-container width instead
+         of the panel measure (§4.4 control-measure requirement)."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, stackMeasure, controlMeasure,
+                      interaction, assetFidelity]
+
+  - id: hero-form-centered
+    name: "Centered single-field conversion hero"
+    intent: >-
+      A centered stack whose action IS a one-row form (email + submit): heading,
+      support line, inline capture row, micro-note. The lowest-friction signup
+      opener.
+    structure: { archetype: stack, scaffoldRef: section-stack }
+    anatomy:
+      alignment:
+        context: standaloneStack
+        counterweight: none
+        note: >-
+          conversion-stack coherence (brand-schema §4.4 alignment rule): when the
+          brand grammar centers this stack, EVERY sibling — including the form row —
+          centers and SHARES the stack measure.
+      slots:
+        - { slot: kicker, role: register label, contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: the offer, contract: heading, required: true, textLen: short, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: one support line, contract: paragraph, required: true, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { slot: form, role: single-row capture — one field + one filled submit, contract: form, required: true, textLen: short, sizeClass: control, width: media, z: front }
+        - { slot: note, role: micro trust/compliance line, contract: label, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+    geometry:
+      bandHeight: standard
+      mediaFraction: { min: 0.0, max: 0.0 }
+      textMeasure: >-
+        ONE shared stack measure for heading, support AND the form row — the form
+        row matches the body measure (sizeRel to body, ratio 1.0), never the page
+      containment: content-container
+    useCases:
+      pageTypes: [signup, homepage, blog]
+      taskIntents: ["email-first trial signup", "waitlist capture",
+                    "newsletter-led content brand"]
+      affinity: >-
+        Prefer over hero-form-split when capture needs exactly one field; prefer
+        hero-onboarding-steps when the brief wants to preview the path after signup.
+    variantKnobs:
+      noteRow: { type: enum, values: [on, off], default: on }
+      fieldArrangement: { type: enum, values: [inline, stacked], default: inline }  # stacked = field above button at narrow widths per responsive collapse
+    exemplar:
+      instance: >-
+        The waitlist mold: kicker chip, one-line display heading, one support
+        sentence, an inline email row with a filled submit, a 'no spam' micro-note.
+      skeleton: >-
+        Centered (or brand-anchored) stack; the form row visually one unit — field
+        and button share height from the brand control register; note a full ladder
+        rung below.
+      take: >-
+        The one-unit form row; shared stack measure discipline; micro-note placement.
+      ignore: >-
+        Field/button geometry values (brand button matrix + control register),
+        palette, copy.
+    slopTraps:
+      - "AS-45/control-measure: the form row stretching to the container while the
+         heading holds a narrow measure — the row shares the stack measure."
+      - "AS-14 purpose-blind input: an email field with no stated outcome."
+      - "AS-59 in-form hierarchy: a second button (e.g. 'Learn more') inside the form
+         row at the filled register — siblings take the quiet register outside the
+         form."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, stackMeasure, controlMeasure,
+                      interaction]
+
+  - id: hero-onboarding-steps
+    name: "Path-preview onboarding hero"
+    intent: >-
+      A compact conversion opener that PREVIEWS the path: heading + support, a 3-step
+      row (numbered step items: sign up -> connect -> ship), then one action or a
+      single-field form. Reduces perceived effort by showing how short the road is.
+    structure: { archetype: stack, scaffoldRef: section-stack }
+    anatomy:
+      alignment:
+        context: standaloneStack
+        counterweight: none
+      slots:
+        - { slot: kicker, role: register label, contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: the offer, contract: heading, required: true, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: one support line, contract: paragraph, required: false, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { slot: steps, role: 3 numbered step items (number + label + one-line text), contract: steps, required: true, textLen: short, sizeClass: body, width: stretch, z: front }
+        - { slot: actionGroup, role: ONE primary (or single-field form), contract: button, required: true, textLen: short, sizeClass: control, width: hug, z: front }
+    geometry:
+      bandHeight: standard
+      mediaFraction: { min: 0.0, max: 0.2 }
+      textMeasure: stack measure for copy; the step row spans the content container in 3 equal cells
+      containment: content-container
+    useCases:
+      pageTypes: [signup, developer, demo]
+      taskIntents: ["self-serve onboarding", "time-to-value pitch",
+                    "setup-fear reduction for technical products"]
+      affinity: >-
+        Prefer over hero-form-centered when the brief's differentiator is HOW FAST
+        setup is; the steps must be real (from the brief), never padded to three.
+    variantKnobs:
+      stepOrientation: { type: enum, values: [row, column], default: row }
+      captureKind: { type: enum, values: [button, single-field-form], default: button }
+    exemplar:
+      instance: >-
+        The self-serve infra mold: heading, one sentence, a three-cell row '1 Create
+        account / 2 Connect repo / 3 Deploy', a single filled CTA beneath.
+      skeleton: >-
+        Standalone stack; step row at body register with number badges from the brand
+        badge primitive; one action closes the band — the steps do the persuading, so
+        the action stands alone.
+      take: >-
+        The path-preview placement between support and action; equal step cells;
+        SINGLE action discipline.
+      ignore: >-
+        Badge styling, step copy, palette.
+    slopTraps:
+      - "step padding: inventing a third step to fill the row (AS-11 content
+         integrity) — two real steps beat three padded ones (knob the count down)."
+      - "AS-51 register creep: step labels rising to title register — they stay at
+         body/caption."
+      - "AS-12 empty cells at narrow widths: the row must collapse to a column, not
+         leave orphan cells."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, stackMeasure]
+
+  # ──────────────────────────────────────────────────────────────────────────────
+  # PRICING
+  # ──────────────────────────────────────────────────────────────────────────────
+
+  - id: hero-pricing-value-forward
+    name: "Value-forward pricing masthead"
+    intent: >-
+      A compact pricing-page masthead: heading stating the pricing philosophy
+      (transparency/simplicity), one support line, optional billing-period meta row —
+      then hands off IMMEDIATELY to the tier cards below. The hero's job is framing,
+      not selling.
+    structure: { archetype: stack, scaffoldRef: section-stack }
+    anatomy:
+      alignment:
+        context: standaloneStack
+        counterweight: none
+      slots:
+        - { slot: kicker, role: register label ('Pricing'), contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: pricing philosophy in one line, contract: heading, required: true, textLen: short, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: "one qualifier (trial terms, seat logic)", contract: paragraph, required: true, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { slot: meta, role: billing-period switch RENDERED AS TEXT META (e.g. 'Billed monthly · Save 20% annually') or a tabs device when the tiers below consume it, contract: label, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+    geometry:
+      bandHeight: compact
+      mediaFraction: { min: 0.0, max: 0.0 }
+      textMeasure: stack measure; heading holds ONE line where the copy allows
+      containment: content-container
+    useCases:
+      pageTypes: [pricing]
+      taskIntents: ["price transparency framing", "plan-comparison page opener",
+                    "self-serve pricing with trial emphasis"]
+      affinity: >-
+        The default pricing opener. Prefer hero-pricing-plan-peek when the brief wants
+        plans visible above the fold; the masthead carries NO actions — the tier
+        cards own conversion (one-primary-per-group stays trivially clean).
+    variantKnobs:
+      metaRow: { type: enum, values: [on, off], default: on }
+    exemplar:
+      instance: >-
+        The self-serve pricing mold: 'Pricing' kicker, 'Simple pricing that scales
+        with you.', one line about the free tier, a monthly/annual toggle sitting
+        directly above the tier row.
+      skeleton: >-
+        Compact centered/brand-anchored stack; a clear single ladder rung to the meta
+        row; the band's bottom padding tightens so the tier cards read as the same
+        thought.
+      take: >-
+        The compactness (this hero must NOT be a viewport bookend); the hand-off
+        rhythm to the tiers; meta as caption-register text.
+      ignore: >-
+        Toggle styling (a real switch is a device decision for the TIERS section),
+        palette, copy.
+    slopTraps:
+      - "band inflation: a viewport-height pricing masthead pushes the actual prices
+         below the fold — bandHeight stays compact."
+      - "AS-51: the heading is the page's display moment; tier-card plan names below
+         must NOT repeat display register."
+      - "phantom toggle: a billing switch that visually toggles nothing (no tier
+         consumer) — render meta as text unless the tiers bind the state (AS-43
+         honest states)."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      surfaceContrast, stackMeasure]
+
+  - id: hero-pricing-plan-peek
+    name: "Plan-peek pricing hero"
+    intent: >-
+      A banded pricing opener where the tier cards CREST into the hero band: heading
+      + qualifier on the top surface, the plan row starting inside the band and
+      crossing the seam into the page canvas. Plans above the fold, framed by the
+      claim.
+    structure: { archetype: banded, scaffoldRef: section-stack,
+                 note: "dual-surface band with the card row straddling the seam (registration.toSlot: seam)" }
+    requiresOffGrid: true    # seam-straddle registration is an off-grid geometry device
+    anatomy:
+      alignment:
+        context: standaloneStack
+        counterweight: none
+      slots:
+        - { slot: kicker, role: register label, contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: pricing claim, contract: heading, required: true, textLen: short, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: one qualifier line, contract: paragraph, required: true, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { slot: tiers, role: 2–4 pricing cards cresting the band seam, contract: pricing-card, required: true, textLen: medium, sizeClass: body, width: stretch, z: front }
+    geometry:
+      bandHeight: tall               # the band + peeking cards together
+      mediaFraction: { min: 0.45, max: 0.6 }   # the tier row's share of the composed unit
+      textMeasure: header stack at stack measure; tier cards at the brand card register
+      containment: content-container
+    useCases:
+      pageTypes: [pricing]
+      taskIntents: ["plans-above-the-fold requirement", "short pricing pages where
+                    the hero and tiers merge", "seasonal pricing promos"]
+      affinity: >-
+        Prefer over hero-pricing-value-forward ONLY when the tier row is the page's
+        first task; requires the brand's surface rhythm to license a banded opener
+        (an all-light brand renders both band surfaces light — the seam stays a
+        surface CHANGE only if the brand shows one).
+    variantKnobs:
+      tierCount: { type: enum, values: [2, 3, 4], default: 3 }
+      seamDepth: { type: enum, values: [light, medium], default: medium }   # how far the cards cross the seam
+    exemplar:
+      instance: >-
+        The plan-first mold: a colored top band with 'Pick your plan', three tier
+        cards starting mid-band and finishing on the white canvas, the highlighted
+        tier badged.
+      skeleton: >-
+        Banded section (hard seam, two surface roles from the BRAND's rhythm); tier
+        cards registered to the seam with medium depth; one card may carry the
+        brand's highlight badge; equal card heights per the brand's gridEqualize
+        stance.
+      take: >-
+        The seam-straddle as the device (one banded section, never two overlapping
+        sections); the highlighted-tier badge slot; card row equalization anatomy.
+      ignore: >-
+        Band hues (brand pageRhythm), card radius/shadow, plan copy.
+    slopTraps:
+      - "two-section fake: modeling the peek as two overlapping sections instead of
+         ONE banded section (composition banded contract)."
+      - "AS-59 per-card actions: every tier's CTA filled — only the highlighted tier
+         takes the primary register; siblings take the brand's secondary."
+      - "AS-50 ragged tier row: equalization stance + slack anatomy must bind or
+         price rows misalign."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, gridEqualize, assetFidelity]
+
+  # ──────────────────────────────────────────────────────────────────────────────
+  # COMPANY / STORY (about, careers)
+  # ──────────────────────────────────────────────────────────────────────────────
+
+  - id: hero-editorial-statement
+    name: "Editorial statement hero"
+    intent: >-
+      An editorial opener: an oversized statement (display/hero register, 1–3 lines)
+      with a quiet meta row (kicker, date/readtime, or byline) and NO conversion
+      furniture. For pages whose job is voice — manifestos, content hubs, company
+      pages.
+    structure: { archetype: stack, scaffoldRef: section-stack }
+    anatomy:
+      alignment:
+        context: standaloneStack
+        counterweight: none
+      slots:
+        - { slot: kicker, role: quiet register label above the statement, contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: statement, role: the statement — the page's one display moment, contract: heading, required: true, textLen: medium, sizeClass: hero, width: hug, z: front }
+        - { slot: meta, role: byline/date/section meta row, contract: label, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: support, role: optional one-paragraph lede, contract: paragraph, required: false, textLen: long, sizeClass: body, width: hug, z: front }
+    geometry:
+      bandHeight: tall
+      mediaFraction: { min: 0.0, max: 0.0 }
+      textMeasure: >-
+        the statement may run WIDER than body measure (poster behavior) but still
+        wraps deliberately (2–3 balanced lines); the lede returns to prose measure
+      containment: content-container
+    useCases:
+      pageTypes: [about, blog, careers]
+      taskIntents: ["manifesto/mission voice", "content-hub identity moment",
+                    "brand-led about opener"]
+      affinity: >-
+        Prefer over hero-mission-monument when the brand's headerContext anchors
+        left (editorial asymmetry); prefer the monument when the grammar centers.
+        No actions by design — a page needing conversion picks a different opener.
+    variantKnobs:
+      lede: { type: enum, values: [on, off], default: off }
+      metaPlacement: { type: enum, values: [above, below], default: above }
+    exemplar:
+      instance: >-
+        The company-essay mold: a small kicker, a three-line hero-register statement
+        anchored to the brand's grammar, a one-line byline row — nothing else in the
+        band.
+      skeleton: >-
+        One dominant type block; meta at caption register separated by a full rung;
+        generous band padding carries the emptiness deliberately.
+      take: >-
+        The single-type-moment discipline; balanced multi-line wrap; the meta row as
+        the only furniture.
+      ignore: >-
+        Face/case/tracking (brand ladder), palette, the statement's words.
+    slopTraps:
+      - "AS-15 ragged wrap: an unbalanced last line at poster scale is the loudest
+         possible rag — line count and measure must be tuned together."
+      - "AS-32 magnitude overreach: 'hero' register resolving above the brand's
+         measured ladder; the style layer owns display magnitude."
+      - "furniture creep: adding a CTA 'just in case' — this archetype's identity is
+         its restraint (pick another archetype instead)."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      surfaceContrast, stackMeasure]
+
+  - id: hero-mission-monument
+    name: "Mission monument hero"
+    intent: >-
+      A dead-centered mission statement as a monument — statement, one support line —
+      with an optional framed company photograph BELOW the type (media subordinate,
+      like an altarpiece base). The about-page centerpiece.
+    structure: { archetype: stack, scaffoldRef: section-stack }
+    anatomy:
+      alignment:
+        context: standaloneStack
+        note: >-
+          this archetype PINS centered as its structural identity — legal because a
+          section-explicit anchor outranks the grammar (AS-49 precedence); a brand
+          whose avoid-rules forbid centered monuments simply doesn't get this
+          archetype offered.
+      slots:
+        - { slot: kicker, role: quiet register label, contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: statement, role: mission statement (2–3 balanced lines), contract: heading, required: true, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { slot: support, role: one support sentence, contract: paragraph, required: false, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { slot: media, role: framed company/team photograph below the type, contract: image, required: false, mediaAspect: landscape, width: framed, z: mid }
+    geometry:
+      bandHeight: tall
+      mediaFraction: { min: 0.0, max: 0.5 }
+      textMeasure: statement at a centered measure that wraps 2–3 lines; support returns to prose measure
+      containment: content-container
+    useCases:
+      pageTypes: [about, homepage]
+      taskIntents: ["mission-first company page", "values-led positioning",
+                    "post-announcement 'why we exist' page"]
+      affinity: >-
+        Prefer over hero-editorial-statement when the brand grammar centers standalone
+        stacks; the framed photo variant needs a REAL company photograph on disk —
+        otherwise render type-only.
+    variantKnobs:
+      mediaBelow: { type: enum, values: [on, off], default: off }
+      frameWidth: { type: enum, values: [0.7, 0.86, 1.0], default: 0.86 }  # of container; 1.0 = full content width
+    exemplar:
+      instance: >-
+        The mission-page mold: centered 'We exist to …' statement over a wide framed
+        team photograph with visible page margins on all sides.
+      skeleton: >-
+        Centered stack; a full band rung between support and the framed media; the
+        photo reads as evidence, not decoration — real people, real place.
+      take: >-
+        The type-dominant/media-subordinate ordering; the framed (not full-bleed)
+        media treatment; the centered coherence (every sibling centers and shares
+        measure).
+      ignore: >-
+        Photo subject/palette, frame ratio choice, copy.
+    slopTraps:
+      - "AS-19 misregistration: the centered stack declared but the media keeping an
+         asymmetric offset — the anchor must re-place ALL children."
+      - "AS-52-adjacent honesty: the photo implies THIS company — only the brand's own
+         curated photography binds; no stock backfill."
+      - "AS-16 missing gutter: support text set flush against the frame edge."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      surfaceContrast, stackMeasure, assetFidelity]
+
+  - id: hero-team-mosaic
+    name: "Team mosaic careers hero"
+    intent: >-
+      A careers opener pairing a recruiting claim with a PEOPLE-DENSE mosaic — a
+      collage/grid of real workplace photographs at varied aspects — and a single
+      'see roles' action. The proof is the faces.
+    structure: { archetype: collage, scaffoldRef: section-stack }
+    anatomy:
+      alignment:
+        context: splitColumn         # copy column beside the mosaic counterweight
+        counterweight: media
+      slots:
+        - { slot: kicker, role: register label ('Careers'), contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: recruiting claim, contract: heading, required: true, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: culture/support line + roles count when real, contract: paragraph, required: true, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { slot: actionGroup, role: ONE primary ('View open roles'), contract: button, required: true, textLen: short, sizeClass: control, width: hug, z: front }
+        - { slot: media, role: "3–5 workplace photographs at VARIED aspects, loosely stacked/overlapping", contract: image, required: true, mediaAspect: freeform, width: media, z: mid }
+    geometry:
+      bandHeight: standard
+      mediaFraction: { min: 0.45, max: 0.55 }
+      textMeasure: split-column measure
+      containment: content-container   # mosaic offsets stay within the section frame
+    useCases:
+      pageTypes: [careers, about]
+      taskIntents: ["recruiting warmth", "culture-forward hiring page",
+                    "'real people work here' proof"]
+      affinity: >-
+        Prefer over hero-layered-fullbleed-scrim when MULTIPLE real photos exist and
+        the brand's treatments license overlap/collage; with one strong photo, use the
+        scrim archetype instead. Requires ≥3 real photographs on disk.
+    variantKnobs:
+      mosaicSide: { type: enum, values: [right, left], default: right }
+      photoCount: { type: enum, values: [3, 4, 5], default: 4 }
+    exemplar:
+      instance: >-
+        The culture-page mold: left claim + one line + a single CTA; right a loose
+        stack of three photos — wide team shot back, portrait detail overlapping
+        front, aspect variety doing the energy.
+      skeleton: >-
+        Split with a collage counterweight; overlaps at light/medium amount classes
+        with a declared z-order; each photo keeps the brand's media treatment (radius,
+        mat) — variety in ASPECT, consistency in treatment.
+      take: >-
+        The varied-aspect discipline (AS-17's positive form); overlap as declared
+        registration; the single-action restraint.
+      ignore: >-
+        Photo subjects, overlap exact depths, palette, copy.
+    slopTraps:
+      - "AS-17 aspect monotony: three identical landscape crops kill the mosaic —
+         vary aspects per the brand's aspectPalette."
+      - "AS-34 borrowed photos: only THIS brand's curated workplace photography — a
+         careers hero with stock strangers is identity fraud."
+      - "AS-58 unearned complexity: with <3 photos the collage degrades to the plain
+         split — never pad with duplicates."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, stackMeasure, assetFidelity]
+
+  # ──────────────────────────────────────────────────────────────────────────────
+  # CONTENT HUBS (blog / resources / customers)
+  # ──────────────────────────────────────────────────────────────────────────────
+
+  - id: hero-content-featured-lead
+    name: "Featured-content lead hero"
+    intent: >-
+      A content-hub opener that leads with the FEATURED PIECE: a hub masthead column
+      (hub name, one-line promise, optional inline subscribe) beside a large featured
+      article card (cover, category pill, title, byline meta).
+    structure: { archetype: split, scaffoldRef: section-split }
+    anatomy:
+      alignment:
+        context: splitColumn
+        counterweight: featured
+      slots:
+        - { slot: kicker, role: hub register label, contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: hub name/promise, contract: heading, required: true, textLen: short, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: what the hub covers, contract: paragraph, required: true, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { slot: capture, role: optional inline subscribe row, contract: form, required: false, textLen: short, sizeClass: control, width: media, z: front }
+        - { slot: featured, role: featured article card — cover media + category pill + title + byline/date meta, contract: card, required: true, textLen: medium, sizeClass: title, width: media, z: mid }
+    geometry:
+      bandHeight: standard
+      mediaFraction: { min: 0.5, max: 0.6 }    # the featured card's share
+      textMeasure: masthead column at split measure; card title at the brand's title register (NOT display — AS-51)
+      containment: content-container
+    useCases:
+      pageTypes: [blog, customers]
+      taskIntents: ["editorial hub with a flagship piece", "resources center",
+                    "case-study hub with a lead story"]
+      affinity: >-
+        Prefer over hero-index-masthead when one piece deserves the spotlight;
+        prefer the masthead when the feed itself is the point. The featured card's
+        content comes from the brief — cover art must be a real asset.
+    variantKnobs:
+      featuredSide: { type: enum, values: [right, left], default: right }
+      captureRow: { type: enum, values: [on, off], default: off }
+    exemplar:
+      instance: >-
+        The engineering-blog mold: left 'The <hub> — notes on building X' + subscribe
+        row; right a large cover card with category pill, two-line title, author +
+        date meta.
+      skeleton: >-
+        Split; the featured card is a CARD (bounded unit at the brand's card anatomy:
+        media well, radius, hover affordance), not a bare image; byline meta at
+        caption register.
+      take: >-
+        The masthead/featured pairing; the card-anatomy discipline; title register
+        capped BELOW display.
+      ignore: >-
+        Cover art, category names, card styling values, copy.
+    slopTraps:
+      - "AS-52 phantom attribution: the byline is a real person — cover art and
+         author must come from authored content, never default-art rotation."
+      - "AS-51 double display: the card title rising to display register beside the
+         hub heading."
+      - "AS-14 purposeless subscribe: the capture row must state what arrives (the
+         hub promise line covers it)."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      surfaceContrast, stackMeasure, controlMeasure, assetFidelity,
+                      interaction]
+
+  - id: hero-index-masthead
+    name: "Index masthead hero"
+    intent: >-
+      The thinnest hero in the library: a working masthead for feed/index pages —
+      hub title, one promise line, a category/filter link row — then straight into
+      the grid below. Navigation furniture, done with type discipline.
+    structure: { archetype: stack, scaffoldRef: section-stack }
+    anatomy:
+      alignment:
+        context: standaloneStack
+        counterweight: none
+      slots:
+        - { slot: heading, role: hub title, contract: heading, required: true, textLen: short, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: one promise line, contract: paragraph, required: false, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { slot: categories, role: "category/filter LINK row (text links, active state honest)", contract: link, required: true, textLen: short, sizeClass: caption, width: hug, z: front }
+    geometry:
+      bandHeight: compact
+      mediaFraction: { min: 0.0, max: 0.0 }
+      textMeasure: stack measure; the category row wraps rather than truncates
+      containment: content-container
+    useCases:
+      pageTypes: [blog, customers, developer]
+      taskIntents: ["feed/index page opener", "docs hub landing", "changelog index"]
+      affinity: >-
+        The utilitarian choice — prefer whenever the content GRID is the page and
+        the hero must not compete. Category links are real anchors, not decorative
+        pills.
+    variantKnobs:
+      categoryStyle: { type: enum, values: [text-links, pills], default: text-links }  # pills only when the brand's own control family shows them
+    exemplar:
+      instance: >-
+        The library-index mold: 'Customer stories' at display register, one line, a
+        row of six category text-links with the active one marked by the brand's
+        link-active device.
+      skeleton: >-
+        Compact stack; category row separated by a full rung; band bottom padding
+        tight so the grid below joins the thought.
+      take: >-
+        The restraint; the active-category device from the brand's OWN link states;
+        the hand-off rhythm.
+      ignore: >-
+        Active-state paint (brand link/hover facts), category names, palette.
+    slopTraps:
+      - "AS-61 unhugged links: category text-links stretching their boxes — underline
+         ink must hug the label."
+      - "AS-43 faked active state: the active category shown by opacity instead of
+         the brand's real state colors."
+      - "band inflation: this masthead going viewport-height defeats its purpose."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      surfaceContrast, actionGroup]
+
+  - id: hero-case-lead
+    name: "Case-study lead hero"
+    intent: >-
+      A customers-hub opener that leads with ONE flagship story: heading column plus
+      a featured case card carrying the customer's mark, one pulled stat, a one-line
+      outcome, and a read action; a quiet mark run of other customers beneath.
+    structure: { archetype: split, scaffoldRef: section-split }
+    anatomy:
+      alignment:
+        context: splitColumn
+        counterweight: case
+      slots:
+        - { slot: kicker, role: register label ('Customer stories'), contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: hub claim, contract: heading, required: true, textLen: short, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: what readers will find, contract: paragraph, required: true, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { slot: case, role: featured case card — customer mark + pulled stat + outcome line + read action, contract: card, required: true, textLen: medium, sizeClass: title, width: media, z: mid }
+        - { slot: proof, role: quiet mark run of further customers, contract: logo-bar, required: false, textLen: none, sizeClass: caption, width: hug, z: front }
+    geometry:
+      bandHeight: standard
+      mediaFraction: { min: 0.45, max: 0.55 }
+      textMeasure: split-column measure; the pulled stat rides the brand's large numeral register inside the card
+      containment: content-container
+    useCases:
+      pageTypes: [customers, homepage]
+      taskIntents: ["proof-led hub opener", "enterprise social proof",
+                    "sales-enablement stories page"]
+      affinity: >-
+        Prefer over hero-stat-forward when ONE named story outranks aggregate numbers;
+        the case card needs real content (mark file + stat + outcome from the brief).
+    variantKnobs:
+      caseSide: { type: enum, values: [right, left], default: right }
+      furtherMarks: { type: enum, values: [on, off], default: on }
+    exemplar:
+      instance: >-
+        The customers-page mold: left hub claim; right a bounded card — customer
+        mark top, '3× pipeline' numeral, one outcome sentence, 'Read the story'
+        text action; five further marks in a quiet row below the split.
+      skeleton: >-
+        Split with a single bounded card as counterweight; card anatomy per the
+        brand's card contract (media-well/plate, pinned action); further marks at
+        measured boxes.
+      take: >-
+        The one-story focus; stat-inside-card placement; the pinned read action; the
+        subordinate further-marks row.
+      ignore: >-
+        Card surface/radius, which customer, palette, copy.
+    slopTraps:
+      - "AS-52 phantom media: the case card is ATTRIBUTED content — only the real
+         customer's mark/photo binds, never rotation art."
+      - "AS-59: the card's read action stays a text/quiet register; the page primary
+         (if any) lives in the copy column."
+      - "invented stats: the pulled number must be the brief's real fact."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, stackMeasure, assetFidelity]
+
+  # ──────────────────────────────────────────────────────────────────────────────
+  # DEVELOPER / DOCS
+  # ──────────────────────────────────────────────────────────────────────────────
+
+  - id: hero-terminal-split
+    name: "Terminal split developer hero"
+    intent: >-
+      The developer-product opener: a copy column (claim, support, install/quickstart
+      COMMAND as visible text, action pair) beside a code/terminal panel — a real
+      product/terminal screenshot from brand assets, or a text code sample on the
+      brand's panel surface in its mono face.
+    structure: { archetype: split, scaffoldRef: section-split }
+    anatomy:
+      alignment:
+        context: splitColumn
+        counterweight: media
+      slots:
+        - { slot: kicker, role: register label (version/SDK tag), contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: developer claim, contract: heading, required: true, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: "what it does, precisely", contract: paragraph, required: true, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { slot: command, role: install/quickstart one-liner as TEXT at mono/caption register, contract: label, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: actionGroup, role: "'Read docs' primary + quiet sibling", contract: button, required: true, textLen: short, sizeClass: control, width: hug, z: front }
+        - { slot: media, role: "code/terminal panel — screenshot asset, or authored code text on the brand panel surface", contract: image, required: true, mediaAspect: landscape, width: media, z: mid }
+    geometry:
+      bandHeight: standard
+      mediaFraction: { min: 0.45, max: 0.55 }
+      textMeasure: split-column measure; the command line hugs, never wraps mid-token
+      containment: content-container
+    useCases:
+      pageTypes: [developer, homepage, product]
+      taskIntents: ["API/SDK product pitch", "CLI tool opener",
+                    "docs-adjacent marketing page"]
+      affinity: >-
+        The default developer opener. Prefer hero-search-first for docs LANDING
+        pages (task = find, not evaluate). Degrade: a brand with no mono face
+        captured renders the command at its caption register on the panel surface —
+        the skeleton survives.
+    variantKnobs:
+      panelSide: { type: enum, values: [right, left], default: right }
+      commandRow: { type: enum, values: [on, off], default: on }
+    exemplar:
+      instance: >-
+        The API-platform mold: left claim + support + `npm install <pkg>` line +
+        'Start building' pair; right a dark terminal panel with a short annotated
+        request/response sample.
+      skeleton: >-
+        Split; the code panel reads as a working surface (panel surface + hairline +
+        the brand's radius); the command line sits between support and actions at a
+        distinct quiet register.
+      take: >-
+        The command-as-text placement (copyable, honest); the panel-as-media
+        treatment; precision voice in the support line.
+      ignore: >-
+        Terminal theme colors (panel = brand surface tokens; code sample = brand's
+        asset or authored text), the language shown, copy.
+    slopTraps:
+      - "code-as-image lying: if the panel is a screenshot, the command row must
+         still carry the real install line as TEXT (AS-13)."
+      - "AS-24-adjacent theme leak: hardcoding a dark 'terminal theme' — the panel
+         surface comes from the brand's own surface roles; a light brand gets a
+         light panel."
+      - "AS-16: the command line set flush against the panel edge."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, stackMeasure, assetFidelity]
+
+  - id: hero-search-first
+    name: "Search-first docs hero"
+    intent: >-
+      A docs/help landing opener whose primary control is a SEARCH FIELD: short
+      heading ('How can we help?' class), the search row, and a popular-links row
+      beneath. Task-completion furniture, not persuasion.
+    structure: { archetype: stack, scaffoldRef: section-stack }
+    anatomy:
+      alignment:
+        context: standaloneStack
+        counterweight: none
+        note: conversion-stack coherence — the search row shares the stack measure
+      slots:
+        - { slot: heading, role: help prompt heading, contract: heading, required: true, textLen: short, sizeClass: display, width: hug, z: front }
+        - { slot: search, role: one search field + submit, contract: form, required: true, textLen: short, sizeClass: control, width: media, z: front }
+        - { slot: popular, role: "popular-topic links row ('Popular: x, y, z')", contract: link, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+    geometry:
+      bandHeight: compact
+      mediaFraction: { min: 0.0, max: 0.0 }
+      textMeasure: ONE shared measure for heading + search row; popular links hug beneath
+      containment: content-container
+    useCases:
+      pageTypes: [developer, blog]
+      taskIntents: ["docs/help-center landing", "knowledge-base opener",
+                    "support portal entry"]
+      affinity: >-
+        The task-first choice for documentation landings; prefer hero-terminal-split
+        when the page must still SELL the product. The search field is a real form
+        (form interaction contract) — never a decorative input.
+    variantKnobs:
+      popularRow: { type: enum, values: [on, off], default: on }
+    exemplar:
+      instance: >-
+        The help-center mold: centered 'How can we help?', a wide search row with an
+        embedded submit, 'Popular: Getting started · Billing · API keys' beneath.
+      skeleton: >-
+        Compact stack; search row at the stack measure with field + submit as one
+        unit at the brand's control register; popular links at caption register a
+        rung below.
+      take: >-
+        The control-first hierarchy (heading serves the field); the popular-links
+        deflection row; the compact band.
+      ignore: >-
+        Field styling values, link choices, palette, copy.
+    slopTraps:
+      - "AS-14 purpose-blind input: the field needs its job stated (placeholder/label
+         from the brief's vocabulary)."
+      - "control-measure omission: the search row stretching full-container instead
+         of the stack measure."
+      - "decorative search: a field that submits nowhere — the form contract (submit
+         affordance, focus states) is binding even in a static lane."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      surfaceContrast, stackMeasure, controlMeasure, interaction]
+
+  # ──────────────────────────────────────────────────────────────────────────────
+  # EVENT / LAUNCH
+  # ──────────────────────────────────────────────────────────────────────────────
+
+  - id: hero-event-meta-forward
+    name: "Meta-forward event hero"
+    intent: >-
+      An event opener where the LOGISTICS lead: a date/venue/format meta row above or
+      beside the event title, one support line, a register action pair. The meta row
+      is the identity device — the facts ARE the pitch.
+    structure: { archetype: stack, scaffoldRef: section-stack }
+    anatomy:
+      alignment:
+        context: standaloneStack
+        counterweight: none
+      slots:
+        - { slot: meta, role: date · venue · format row at a tracked quiet register, contract: label, required: true, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: event name/claim, contract: heading, required: true, textLen: short, sizeClass: hero, width: hug, z: front }
+        - { slot: subheading, role: one line on why attend, contract: paragraph, required: true, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { slot: actionGroup, role: "'Register' primary + quiet agenda sibling", contract: button, required: true, textLen: short, sizeClass: control, width: hug, z: front }
+        # agenda rail (2026-07-14, copy-first growth): agenda-at-a-glance as a quiet
+        # row of the brand's OWN product/track marks + one caption line — the event
+        # genre's proof device when the story is breadth (what's covered), not people.
+        # Real files only (AS-33); never louder than the name.
+        - { slot: agenda, role: agenda-at-a-glance mark row + one caption line below the actions, contract: logo-bar, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: media, role: optional venue/last-year atmosphere photo below, contract: image, required: false, mediaAspect: wide, width: media, z: back }
+    geometry:
+      bandHeight: tall
+      mediaFraction: { min: 0.0, max: 0.4 }
+      textMeasure: stack measure; the meta row hugs and NEVER wraps mid-fact
+      containment: content-container
+    useCases:
+      pageTypes: [event]
+      taskIntents: ["conference/summit registration", "webinar signup",
+                    "launch-event save-the-date"]
+      affinity: >-
+        The default event opener. Prefer hero-announcement-crest for product LAUNCH
+        pages (the product, not the gathering, is the star). Countdown behavior is
+        out of scope — the date renders as authored meta text.
+    variantKnobs:
+      metaPlacement: { type: enum, values: [above-heading, below-heading], default: above-heading }
+      atmosphereMedia: { type: enum, values: [on, off], default: off }
+      agendaRail: { type: enum, values: [on, off], default: off }
+    exemplar:
+      instance: >-
+        The product-conference mold: 'OCT 14–15 · SF + VIRTUAL' tracked caption, the
+        event wordmark-scale title, one line, Register + View agenda pair.
+      skeleton: >-
+        Standalone stack; meta at tracked caption register (the brand's own tracking/
+        case facts); title may take the hero register — this page's identity moment;
+        actions per the brand's actionGroup law.
+      take: >-
+        The meta-first ordering; the tracked-caption device; the two-action pattern
+        (register primary, agenda quiet).
+      ignore: >-
+        Tracking/case values (brand type facts), title face, palette, copy.
+    slopTraps:
+      - "AS-59: Register AND agenda both filled — agenda takes the quiet register."
+      - "meta wrap: the date/venue row breaking mid-fact at narrow widths — it
+         collapses to stacked lines, never re-flows."
+      - "hero-register abuse: the event title at hero scale is licensed HERE; the
+         support line must not also inflate (AS-51)."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, stackMeasure]
+
+  - id: hero-announcement-crest
+    name: "Announcement crest launch hero"
+    intent: >-
+      A launch opener: a NEW/version badge kicker, an announcement statement, one
+      support line, a primary + quiet pair — and the product frame CRESTING into the
+      band from below (top edge visible, body cropped by the band's end). Ship-day
+      energy; the page below reveals the rest.
+    structure: { archetype: stack, scaffoldRef: section-stack,
+                 note: "the crest is the below-stack media with bottom-crop license; a banded variant registers the frame to the seam" }
+    requiresOffGrid: true    # the crest's bottom-crop/bleed license is an off-grid device
+    anatomy:
+      alignment:
+        context: standaloneStack
+        counterweight: none
+      slots:
+        - { slot: kicker, role: NEW/version badge + one-line what shipped, contract: badge, required: true, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: the announcement, contract: heading, required: true, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: one support line, contract: paragraph, required: true, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { slot: actionGroup, role: try/read primary + quiet changelog sibling, contract: button, required: true, textLen: short, sizeClass: control, width: hug, z: front }
+        - { slot: media, role: the shipped product frame cresting the band bottom, contract: image, required: true, mediaAspect: wide, width: media, z: mid }
+    geometry:
+      bandHeight: viewport
+      mediaFraction: { min: 0.35, max: 0.5 }   # the visible crest portion
+      textMeasure: stack measure; heading wraps 2 lines max — announcements are terse
+      containment: content-container
+    useCases:
+      pageTypes: [event, product, homepage]
+      taskIntents: ["product/version launch", "feature announcement page",
+                    "launch-week landing"]
+      affinity: >-
+        Prefer over hero-centered-statement-canvas when a real product frame exists
+        AND the brief is a dated announcement; the badge kicker binds the brand's own
+        badge/pill recipe where one exists (brand kicker recipes win).
+    variantKnobs:
+      crestDepth: { type: enum, values: [light, medium, heavy], default: medium }
+      badgeStyle: { type: enum, values: [badge, plain-kicker], default: badge }
+    exemplar:
+      instance: >-
+        The launch-day mold: an outlined 'NEW · v2.0' badge, a two-line announcement,
+        one sentence, Try it now + Read the changelog, the new UI cresting from the
+        band bottom at ~40% visibility.
+      skeleton: >-
+        Centered/brand-anchored stack; the badge is a real bounded primitive (brand
+        pill/badge anatomy); the product frame's TOP edge and chrome visible, body
+        cropped by the band end — a deliberate reveal, not an overflow bug.
+      take: >-
+        The badge-kicker device; the crest reveal with its crop license; terse
+        announcement register.
+      ignore: >-
+        Badge geometry (brand primitive), frame chrome, palette, copy.
+    slopTraps:
+      - "accidental-overflow reading: the crest must be a DECLARED crop (media slot
+         with its registration), never content escaping containment (AS-56)."
+      - "AS-51: the announcement is the display moment — the badge label must stay
+         caption register, not shout."
+      - "AS-23: the cresting frame's loading state — a half-visible broken image is
+         twice as loud."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, stackMeasure, assetFidelity]
+
+  # ──────────────────────────────────────────────────────────────────────────────
+  # COMPARISON / MIGRATION
+  # ──────────────────────────────────────────────────────────────────────────────
+
+  - id: hero-comparison-dual
+    name: "Dual-panel comparison hero"
+    intent: >-
+      A vs/alternative page opener: a centered claim over TWO mirrored panels — 'with
+      us' vs 'the other way' (or us vs named competitor) — each panel a short titled
+      list; one action pair beneath. The structure performs the comparison.
+    structure: { archetype: split, scaffoldRef: section-split,
+                 note: "header row above the split rides the standalone grammar; the two panels are the split cells" }
+    anatomy:
+      alignment:
+        context: standaloneStack     # the header row; panels mirror beneath
+        counterweight: none
+      slots:
+        - { slot: kicker, role: register label ('<Us> vs <Them>' / 'Why switch'), contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: the comparison claim, contract: heading, required: true, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { slot: panels, role: two mirrored panels — title + 3–5 point list each; OUR panel takes the brand's emphasis surface, contract: card, required: true, textLen: medium, sizeClass: body, width: stretch, z: front }
+        - { slot: actionGroup, role: switch/migrate primary + quiet comparison sibling, contract: button, required: true, textLen: short, sizeClass: control, width: hug, z: front }
+    geometry:
+      bandHeight: tall
+      mediaFraction: { min: 0.5, max: 0.65 }   # the panel pair's share
+      textMeasure: header at stack measure; panel copy at card register
+      containment: content-container
+    useCases:
+      pageTypes: [comparison]
+      taskIntents: ["vs-competitor landing", "migration pitch",
+                    "build-vs-buy argument page"]
+      affinity: >-
+        The structural choice for comparison briefs; prefer hero-stat-forward when
+        the argument is numeric rather than feature-by-feature. Emphasis asymmetry
+        comes from the brand's surface roles (panel vs primary), never invented
+        good/bad colors.
+    variantKnobs:
+      panelBalance: { type: enum, values: [equal, ours-dominant], default: equal }
+      pointCount: { type: enum, values: [3, 4, 5], default: 4 }
+    exemplar:
+      instance: >-
+        The migration-page mold: centered 'Why teams switch', left panel 'With
+        <other approach>' (plain surface, pain points), right panel 'With us'
+        (emphasis surface, mirrored gains), one Switch CTA beneath.
+      skeleton: >-
+        Header row, then two equal-width panels sharing radius/padding anatomy; OUR
+        panel differentiated by the brand's emphasis surface role + one badge; point
+        lists line-aligned across panels so rows compare 1:1.
+      take: >-
+        The mirrored-anatomy discipline (rows align across panels); emphasis via
+        surface ROLE; the comparison living in structure, not adjectives.
+      ignore: >-
+        Panel surface hues, list markers, competitor naming strategy, copy.
+    slopTraps:
+      - "AS-12 asymmetric emptiness: one panel with 5 points, the other with 2 —
+         point counts match or the rows visibly misalign."
+      - "invented judgment colors: red/green verdict paint the brand never shipped
+         (AS-01 family: surfaces come from the brand's roles)."
+      - "AS-59: the pair beneath must keep register hierarchy — 'See full comparison'
+         stays quiet."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, gridEqualize]
+
+  # ──────────────────────────────────────────────────────────────────────────────
+  # ATMOSPHERIC / EXPRESSIVE (style-gated: off-grid devices need the style unlock)
+  # ──────────────────────────────────────────────────────────────────────────────
+
+  - id: hero-banded-seam-straddle
+    name: "Banded seam-straddle hero"
+    requiresOffGrid: true    # media-over-seam straddle is an off-grid geometry device
+    intent: >-
+      A dual-surface opener with a hard horizontal seam (dark band over canvas, per
+      the BRAND's rhythm) where the product frame straddles the seam — copy on the
+      top surface, media crossing into the bottom. The seam gives the page an
+      architectural first beat.
+    structure: { archetype: banded, scaffoldRef: section-stack }
+    anatomy:
+      alignment:
+        context: standaloneStack
+        counterweight: none
+      slots:
+        - { slot: kicker, role: register label, contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: claim on the top surface, contract: heading, required: true, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: support copy on the top surface, contract: paragraph, required: true, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { slot: actionGroup, role: primary + surface-variant sibling, contract: button, required: true, textLen: short, sizeClass: control, width: hug, z: front }
+        - { slot: media, role: product frame registered to the seam (media-over-seam), contract: image, required: true, mediaAspect: wide, width: media, z: front }
+    geometry:
+      bandHeight: viewport
+      mediaFraction: { min: 0.45, max: 0.6 }
+      textMeasure: stack measure on the top surface
+      containment: content-container
+    useCases:
+      pageTypes: [homepage, product, event]
+      taskIntents: ["architectural first impression", "dark-opening brands that show
+                    UI", "launch pages wanting depth without photography"]
+      affinity: >-
+        Requires the brand's pageRhythm to license an opening dark band (surface
+        fidelity rules derive the budget); an all-light brand renders the seam as a
+        panel/canvas change or doesn't get this archetype. Media-over-seam needs no
+        text sanction — the copy never sits on the media.
+    variantKnobs:
+      seamPosition: { type: enum, values: [0.55, 0.62, 0.7], default: 0.62 }   # fraction of band height
+      mediaCorner: { type: enum, values: [centered, right], default: centered }
+    exemplar:
+      instance: >-
+        The platform-launch mold: deep band with centered claim + pair; a wide
+        product frame whose top half sits on the dark band and bottom half on the
+        white canvas; the seam runs clean behind it.
+      skeleton: >-
+        ONE banded section (hard cut, two surface roles from the brand's rhythm);
+        media slot registered toSlot:seam with declared depth; button secondary
+        swaps to its dark-surface variant on the top surface.
+      take: >-
+        The single-banded-section modeling; seam registration as the device;
+        per-surface button variants.
+      ignore: >-
+        Band hues (brand rhythm), seam fraction fine-tuning, frame chrome, copy.
+    slopTraps:
+      - "gradient seam: the cut must be HARD (banded contract) — a gradient blend is
+         a different (and here unsanctioned) device."
+      - "AS-10 state leakage across surfaces: hover inks tuned for the dark band
+         failing on the canvas half — interaction tokens re-scope per surface."
+      - "two-section fake (same as plan-peek): one banded section, never stacked
+         overlapping sections."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, textOnMedia, assetFidelity]
+
+  - id: hero-ghostword-atmospheric
+    name: "Ghost-word atmospheric hero"
+    intent: >-
+      An expressive opener: an oversized low-contrast ghost word (the brand's own
+      wordmark/category word) layered behind a compact copy stage and placed media.
+      Editorial gravity for brands whose style unlocks off-grid devices.
+    structure: { archetype: collage, scaffoldRef: section-stack,
+                 note: "style-gated: ghost-word is a style-identity device (legal regardless of offGrid flag) but suits editorial-leaning SaaS only" }
+    requiresOffGrid: true    # ghost z-depth + submerged type need the off-grid license
+    anatomy:
+      alignment:
+        context: splitColumn
+        counterweight: ghostword
+      slots:
+        - { slot: ghostword, role: oversized ghost word at ghost opacity class, contract: heading, required: true, textLen: word, sizeClass: colossal, width: full-bleed, z: back }
+        - { slot: kicker, role: register label, contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: display heading, contract: heading, required: true, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: support copy, contract: paragraph, required: true, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { slot: actionGroup, role: primary + quiet sibling, contract: button, required: true, textLen: short, sizeClass: control, width: hug, z: front }
+        - { slot: media, role: placed product/brand media, contract: image, required: false, mediaAspect: landscape, width: media, z: mid }
+    geometry:
+      bandHeight: viewport
+      mediaFraction: { min: 0.0, max: 0.55 }
+      textMeasure: stack measure for the stage; the ghost word bleeds by design (tagged release)
+      containment: content-container   # the STAGE contains; only the ghost layer bleeds
+    useCases:
+      pageTypes: [homepage, about, event]
+      taskIntents: ["category-word branding", "design-led SaaS wanting editorial
+                    weight", "event identity moment"]
+      affinity: >-
+        Offer only when the style layer's expressive envelope is open and the brand's
+        neverDo carries no watermark prohibition; the ghost word is the brand's OWN
+        word (wordmark/category), never decoration text.
+    variantKnobs:
+      ghostAnchor: { type: enum, values: [behind-media, straddle-media, margin], default: behind-media }
+      ghostScale: { type: enum, values: [large, colossal], default: large }
+    exemplar:
+      instance: >-
+        The standard library's hero-ghostword-atmospheric pattern
+        (contracts/layout-patterns/hero.yaml) — generalized from the harvest's
+        oversized_atmospheric_wordmark clusters — is this archetype's blessed
+        reference skeleton.
+      skeleton: >-
+        Ghost layer z:back at ghost opacity; a compact left-anchored stage (kicker,
+        heading, support, actions); optional media at z:mid between ghost and stage.
+      take: >-
+        The three-layer z discipline; ghost-at-ghost-opacity (texture, not message);
+        the compact stage measure against the oversized backdrop.
+      ignore: >-
+        The ghost word itself, face, palette, opacity exact value (brand token).
+    slopTraps:
+      - "ghost legibility inversion: the ghost word competing with the heading —
+         opacityClass ghost is the contract; if it reads first, it's broken."
+      - "AS-31-family scale gates: colossal register must resolve through the brand's
+         ladder, not a hardcoded rem wall."
+      - "transplant without surface re-fit: moving this to a dark band without
+         re-resolving the ghost ink (AS-22 — the parked wildcard recipe's exact
+         failure)."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, stackMeasure]
+
+  - id: hero-marquee-canvas
+    name: "Marquee-canvas hero"
+    intent: >-
+      A kinetic opener for community/scale stories: a compact claim stack over a
+      full-width MARQUEE band of real marks/covers/community items drifting
+      horizontally at the band's foot. Motion says volume; the copy stays still.
+    structure: { archetype: stack, scaffoldRef: section-stack }
+    anatomy:
+      alignment:
+        context: standaloneStack
+        counterweight: none
+      slots:
+        - { slot: kicker, role: register label, contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: scale/community claim, contract: heading, required: true, textLen: short, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: one support line, contract: paragraph, required: true, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { slot: actionGroup, role: primary + quiet sibling, contract: button, required: true, textLen: short, sizeClass: control, width: hug, z: front }
+        - { slot: marquee, role: full-width drifting rail of real marks/tiles at the band foot, contract: logo-bar, required: true, textLen: none, sizeClass: caption, width: full-bleed, z: mid }
+    geometry:
+      bandHeight: standard
+      mediaFraction: { min: 0.25, max: 0.4 }   # the marquee rail's share
+      textMeasure: stack measure; the rail bleeds full-width (tagged release)
+      containment: content-container
+    useCases:
+      pageTypes: [homepage, customers, event]
+      taskIntents: ["community/marketplace volume story", "integration breadth with
+                    motion", "event speaker/sponsor energy"]
+      affinity: >-
+        Prefer over hero-social-proof-embedded when VOLUME (dozens of items) is the
+        story and the brand's motion dial licenses movement; a motion:low brand gets
+        the static spaced row instead (same skeleton, marquee off).
+    variantKnobs:
+      motion: { type: enum, values: [drift, static], default: drift }   # brand voice.dials.motion outranks
+      rowCount: { type: enum, values: [1, 2], default: 1 }
+    exemplar:
+      instance: >-
+        The community-platform mold: centered claim + pair; beneath, one full-width
+        row of member/customer tiles drifting slowly, seamless loop, pausable.
+      skeleton: >-
+        Standalone stack at the top; the marquee rail full-bleed at the band foot,
+        items at measured boxes, seam invisible; the rail respects
+        prefers-reduced-motion (drops to static).
+      take: >-
+        The still-copy/moving-proof contrast; the foot placement; measured item
+        boxes on the rail.
+      ignore: >-
+        Tile content/styling, drift speed exact values (brand motion tokens), copy.
+    slopTraps:
+      - "AS-42 seam math: the loop must not jump or change speed with content width —
+         the marquee contract's exact failure register."
+      - "AS-57/reduced-motion: no pause affordance / ignoring
+         prefers-reduced-motion."
+      - "AS-33: rail items are real files; a marquee of invented tiles is high-speed
+         slop."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, assetFidelity, interaction, motion]
+
+  - id: hero-showreel-band
+    name: "Showreel band hero"
+    intent: >-
+      A cinematic opener: a compact claim stack, then a wide inline SHOWREEL band —
+      brand/product film with native controls and a poster from brand assets —
+      spanning the content width below. For brands whose strongest asset is footage.
+    structure: { archetype: stack, scaffoldRef: section-stack }
+    anatomy:
+      alignment:
+        context: standaloneStack
+        counterweight: none
+      slots:
+        - { slot: kicker, role: register label, contract: eyebrow, required: false, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { slot: heading, role: claim heading, contract: heading, required: true, textLen: short, sizeClass: display, width: hug, z: front }
+        - { slot: subheading, role: one support line, contract: paragraph, required: false, textLen: medium, sizeClass: body, width: hug, z: front }
+        - { slot: actionGroup, role: primary + quiet sibling, contract: button, required: true, textLen: short, sizeClass: control, width: hug, z: front }
+        - { slot: reel, role: "inline film band — native controls, brand poster, NO lightbox", contract: video, required: true, mediaAspect: wide, width: media, z: mid }
+    geometry:
+      bandHeight: tall
+      mediaFraction: { min: 0.5, max: 0.65 }
+      textMeasure: stack measure above the reel
+      containment: content-container
+    useCases:
+      pageTypes: [about, customers, event, homepage]
+      taskIntents: ["brand-film-led story", "event aftermovie opener",
+                    "customer-story montage"]
+      affinity: >-
+        Choose only when a REAL film/poster asset exists in the brand dir; no modal
+        interaction contract exists, so the reel is inline (native controls) — a
+        poster linking out is the degrade, a fake play button over a static image is
+        forbidden.
+    variantKnobs:
+      reelWidth: { type: enum, values: [content, framed], default: content }
+      autoplayMuted: { type: enum, values: [off, on], default: off }   # on requires visible pause + reduced-motion respect
+    exemplar:
+      instance: >-
+        The brand-film mold: short claim + one line + pair; a 21:9 film band below
+        with a real poster frame, native controls, no overlay chrome.
+      skeleton: >-
+        Stack hands off to the reel after one full rung; the reel is the band's
+        visual majority; controls are the platform's (honest affordances).
+      take: >-
+        The inline-reel honesty (no fake lightbox); poster-from-assets; the
+        copy-then-film rhythm.
+      ignore: >-
+        Footage content, aspect fine-choice, palette, copy.
+    slopTraps:
+      - "fake play affordance: a play glyph painted on a static image with no video
+         behind it (AS-23's dishonest cousin) — the reel slot requires a real asset."
+      - "autoplay without pause/reduced-motion discipline (AS-57, motion contract)."
+      - "AS-13: if the film carries the argument, the copy must still state it in
+         text."
+    physicsBindings: [containment, headingTier, headerContext, relationalRhythm,
+                      actionGroup, surfaceContrast, assetFidelity, interaction, motion]

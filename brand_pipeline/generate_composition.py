@@ -52,6 +52,7 @@ _HERE = Path(__file__).resolve().parent
 if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
+import archetype_library as al      # noqa: E402  (genre structure library — data, not enum)
 import layout_library as ll          # noqa: E402  (reuse-before-create: retrieval engine)
 import styles as styles_mod          # noqa: E402  (the STYLE layer loader/merge)
 
@@ -285,7 +286,80 @@ _PANEL_INTENT_RULE = (
     "  panel-toned band edge-to-edge.\n")
 
 
-def _brand_fidelity_rules(doc: dict, single_accent: bool) -> str:
+def _creative_surface_rules(doc: dict, single_accent: bool,
+                            used_surfaces: "list[str] | tuple[str, ...]") -> str:
+    """SURFACE SELECTION rule block for creative hero mode (archetype candidates
+    injected — spec/archetype-library.md §3 copy-first). Replaces the whole-page
+    rhythm MANDATE with the brand's own licensed surface ROSTER: on a standalone
+    hero page the rhythm rule ("the observed rhythm opens dark ⇒ the hero MUST be
+    inverse") over-applies one licensed band to every gallery member (fix6 root
+    cause — 8/8 heroes forced onto the same dark role). Palette-agnostic: every
+    line below is derived from tokens.surfaces / surfaceGrammar facts; a brand
+    with no dark surface still cannot go dark (the roster simply has none and the
+    hard line below says so)."""
+    prof = _surface_rhythm_profile(doc)
+    surfaces = (doc.get("tokens") or {}).get("surfaces") or {}
+
+    def _is_dark_role(role: str, surf: dict) -> bool:
+        # the surface's own schemeMode fact wins (role-name hints misfire on light
+        # art bands whose names contain "accent"); hint fallback for brands whose
+        # surfaces carry no schemeMode.
+        mode = str((surf or {}).get("schemeMode") or "").strip().lower()
+        if mode:
+            return mode.startswith("inverse")
+        return (any(h in role for h in _DARK_ROLE_HINTS)
+                or bool(isinstance(surf, dict) and surf.get("textAccent")))
+
+    roster = []
+    for role, surf in surfaces.items():
+        if not isinstance(surf, dict):
+            continue
+        suffix = role.split("/", 1)[1] if "/" in role else role
+        intent = str(surf.get("intent") or "").split("(")[0].strip().rstrip(";,. ")
+        dark = _is_dark_role(role, surf)
+        roster.append(
+            f"    - \"{suffix}\"{' (dark)' if dark else ''} — {intent or 'declared surface role'}")
+    nesting_lines = []
+    for n in (doc.get("surfaceGrammar") or {}).get("nesting") or []:
+        if isinstance(n, dict) and n.get("child"):
+            parents = ", ".join(str(p) for p in (n.get("allowedParents") or []))
+            nesting_lines.append(f"    - {n['child']} may nest ONLY on: {parents or '(none)'}")
+    used = [str(u) for u in (used_surfaces or []) if str(u).strip()]
+    variety = ""
+    if used:
+        counts: dict[str, int] = {}
+        for u in used:
+            counts[u] = counts.get(u, 0) + 1
+        summary = ", ".join(f"\"{k}\" ×{v}" if v > 1 else f"\"{k}\"" for k, v in counts.items())
+        variety = (
+            "  GALLERY VARIETY: sibling heroes in this run already chose "
+            f"{summary}. Prefer a licensed surface NOT yet used unless this copy plan\n"
+            "  genuinely demands a repeat — eight skeletons on one band is monotony,\n"
+            "  not fidelity.\n")
+    no_dark = ("" if prof["has_dark_surface"] else
+               "  This brand declares NO dark surface: \"inverse\"/\"inverse-strong\" are\n"
+               "  FORBIDDEN (nothing licensed to paint them with).\n")
+    accent_line = (
+        "  ACCENT DISCIPLINE: accent-colored TEXT is licensed only on surfaces whose\n"
+        "  facts carry a textAccent role; elsewhere accent lives in actions/marks via\n"
+        "  the brand catalog (not counted against the text budget).\n"
+        if single_accent else "")
+    return (
+        "- SURFACE SELECTION (creative hero mode — copy-first, spec/archetype-library.md §3):\n"
+        "  the hero band's `surfaceIntent` is part of the LAYOUT PLAN, chosen to serve the\n"
+        "  copy from this brand's OWN licensed roster (value — evidenced intent):\n"
+        + "\n".join(roster) + "\n"
+        "  Canonical values (any/primary/panel/inverse/inverse-strong) resolve as usual;\n"
+        "  any other value above resolves to the brand's `surface/<value>` role. Never\n"
+        "  invent a surface the roster lacks; never repaint slot text to fit a band.\n"
+        + ("  NESTING STAYS LICENSED — a panel/form device floats on a band only where\n"
+           "  the brand's nesting facts allow that parent:\n" + "\n".join(nesting_lines) + "\n"
+           if nesting_lines else "")
+        + no_dark + accent_line + variety + _PANEL_INTENT_RULE)
+
+
+def _brand_fidelity_rules(doc: dict, single_accent: bool,
+                          creative_hero_used: "list[str] | tuple[str, ...] | None" = None) -> str:
     """The BRAND FIDELITY rule block, derived from the brand's extracted surface
     grammar instead of asserting one grammar for every brand (the old hardcoded
     "exactly ONE inverse hero" rule forced dark bands onto all-light brands).
@@ -297,7 +371,14 @@ def _brand_fidelity_rules(doc: dict, single_accent: bool) -> str:
       - all-light rhythm -> inverse surfaceIntent is FORBIDDEN everywhere.
     A brand with no captured rhythm keeps the historical default when it declares a
     dark surface at all, else falls through to the all-light rule (nothing to paint
-    an inverse band with)."""
+    an inverse band with).
+
+    ``creative_hero_used`` is not-None ONLY when hero archetype candidates are in
+    the prompt (creative hero mode): the whole-page rhythm mandate then yields to
+    the licensed surface ROSTER (see _creative_surface_rules). Replica-shaped
+    composition paths pass None and keep this block byte-identical."""
+    if creative_hero_used is not None:
+        return _creative_surface_rules(doc, single_accent, creative_hero_used)
     prof = _surface_rhythm_profile(doc)
     accent_hero = (
         "  It is the ONLY section that carries the brand accent (on its display-title); the\n"
@@ -401,7 +482,9 @@ def _expansion_capability_block(off_grid_expansion: bool) -> str:
 
 
 def build_prompt(brief_text: str, brand_yaml_path: Path | str, style_id: str,
-                 seeds: SeedResult | str, off_grid_expansion: bool = True) -> str:
+                 seeds: SeedResult | str, off_grid_expansion: bool = True,
+                 hero_candidates: str | None = None,
+                 used_surfaces: "list[str] | tuple[str, ...] | None" = None) -> str:
     """Deterministically assemble the system/user prompt for the composition generator.
 
     Assembly order (mirrors styles/composition-rules.md ``## Assembly``):
@@ -411,6 +494,9 @@ def build_prompt(brief_text: str, brand_yaml_path: Path | str, style_id: str,
       3. brand facts (token color roles, neverDo, measured type tiers, spacing steps)
       4. primitives/blocks catalog signatures
       5. SEED constraints (render_pattern_constraint block from seed_patterns)
+      5b. HERO STRUCTURE CANDIDATES (genre archetype shortlist — only when the caller
+          resolved one; see archetype_library.render_candidate_block. Absent -> the
+          assembled prompt is byte-identical to the pre-archetype prompt.)
       6. the brief copy + the output contract (emit ONE composition.v1 object)
 
     ``off_grid_expansion`` is the resolved capability flag for this run (see
@@ -499,6 +585,10 @@ three-tier precedence (base-style invariants → composition-rules → brand nev
 ## SEED constraints (reuse-before-create; use-cases: {seed_use_cases})
 {seed_block or '(no reuse patterns matched — compose from the palette; novelty:novel expected)'}
 """
+    # 5b. genre archetype candidates — a caller-resolved shortlist (structure-variable
+    # lane). Fact-gated: absent/empty keeps the prompt byte-identical.
+    if hero_candidates:
+        system += "\n" + hero_candidates.strip() + "\n"
 
     # valid seededFrom refs (the model must pick from these or use null) — from the seeds.
     seed_refs = []
@@ -656,7 +746,8 @@ RULES:
   (a repeatable module run whose items each have matching brand art binds each module's
   `asset` explicitly, as a bare-string filename inside that module's copy object); reserve
   `asset: null` for slots where nothing in the list fits.
-{_brand_fidelity_rules(doc, single_accent)}{_COPY_QUALITY_RULES}
+{_brand_fidelity_rules(doc, single_accent,
+                       creative_hero_used=((used_surfaces or []) if hero_candidates else None))}{_COPY_QUALITY_RULES}
 """
     return system + "\n" + user
 
@@ -688,14 +779,22 @@ def _load_schema() -> dict:
     return json.loads(SCHEMA_PATH.read_text())
 
 
+_TOP_LEVEL_KEYS = ("schemaVersion", "brief", "brand", "style", "sections", "rationale")
+
+
 def normalize_top_level(comp: dict, *, brief_id: str, brand_ref: str, style_id: str) -> dict:
     """Fill/repair the DETERMINISTIC scaffolding fields the caller already knows
     (schemaVersion, brief.id, brand.ref, style.id) so the model spends its budget on the
     creative section work, not boilerplate. Also coerces the two common shape slips
-    (style/brand emitted as a bare string) into their object form. Never invents section
-    content. Idempotent."""
+    (style/brand emitted as a bare string) into their object form, and DROPS unknown
+    TOP-LEVEL keys (a model sometimes appends commentary objects like a fidelity
+    self-review; the schema forbids them and nothing reads them — deleting the key is
+    the same mechanical scaffolding repair as the shape coercions, and never touches
+    section content). Idempotent."""
     if not isinstance(comp, dict):
         return comp
+    for key in [k for k in comp if k not in _TOP_LEVEL_KEYS]:
+        comp.pop(key)
     comp.setdefault("schemaVersion", "composition.v1")
     # brief
     brief = comp.get("brief")
@@ -1010,6 +1109,12 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
                          seeds: "SeedResult | None" = None,
                          max_tokens: int = 16000,
                          force_off_grid: bool | None = None,
+                         page_type: str | None = None,
+                         task_intents: list[str] | None = None,
+                         genre: str = "heroes-saas",
+                         variance: str = "mid",
+                         exclude_archetypes: tuple[str, ...] = (),
+                         used_surfaces: tuple[str, ...] = (),
                          log=print) -> GenerationResult:
     """Generate a validated + on-brand ``composition.v1`` for the brief via ONE structured
     call to the repo's Anthropic client, then a bounded validate → neverDo-prefilter →
@@ -1040,8 +1145,37 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
     off_grid = resolve_off_grid_expansion(style_id, doc, force=force_off_grid)
     log(f"  offGridExpansion={off_grid}"
         + (f" (forced {force_off_grid})" if force_off_grid is not None else " (from style)"))
-    base_prompt = build_prompt(brief_text, brand_yaml_path, style_id, seeds,
-                               off_grid_expansion=off_grid)
+
+    # HERO STRUCTURE CANDIDATES (archetype-library selection, spec/archetype-library.md
+    # §3). Fact-gated three ways: the brief must declare a pageType (frontmatter or
+    # kwarg), the genre library must exist, and the run must have off-grid expansion
+    # (a locked style composes from captured patterns only — no candidates). Absent any
+    # of these the prompt is byte-identical to the pre-archetype assembly.
+    meta, brief_body = al.parse_brief_frontmatter(brief_text)
+    pt = (page_type or meta.get("pageType") or "").strip().lower()
+    tis = task_intents if task_intents is not None else (meta.get("taskIntents") or [])
+    gen = str(meta.get("genre") or genre or "").strip()
+    var = str(meta.get("variance") or variance or "mid").strip().lower()
+    exclude = tuple(dict.fromkeys(
+        [str(x) for x in (meta.get("excludeArchetypes") or [])]
+        + [str(x) for x in (exclude_archetypes or ())]))
+    require_archetype = bool(meta.get("requireArchetype"))
+    hero_candidates = None
+    cand_ids: set[str] = set()
+    if off_grid and pt and gen and al.genre_available(gen):
+        cands = al.shortlist(al.load_genre(gen), pt, tis, variance=var,
+                             brand_hero=al.brand_hero_structure(doc),
+                             off_grid=off_grid, exclude=exclude)
+        if cands:
+            hero_candidates = al.render_candidate_block(cands)
+            cand_ids = {str(c.get("id")) for c in cands}
+            log(f"  hero archetype candidates ({gen}/{pt}): {sorted(cand_ids)}")
+
+    base_prompt = build_prompt(brief_body, brand_yaml_path, style_id, seeds,
+                               off_grid_expansion=off_grid,
+                               hero_candidates=hero_candidates,
+                               used_surfaces=tuple(meta.get("usedSurfaces") or ())
+                               or tuple(used_surfaces or ()))
 
     if provider is None:
         if not load_api_keys():
@@ -1108,6 +1242,24 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
             log(f"    schema: {len(schema_errs)} error(s)")
             repair_note = _repair_note(schema_errs, [], [])
             continue
+
+        # 3b. archetype-selection contract (gallery/structure lanes): when the brief
+        # declares ``requireArchetype: true`` AND candidates were injected, the hero
+        # section MUST record one of the offered ids as archetypeRef (a repairable
+        # contract violation, not a schema error).
+        if require_archetype and cand_ids:
+            hero_refs = [str(s.get("archetypeRef") or "").strip()
+                         for s in (comp.get("sections") or [])
+                         if isinstance(s, dict) and _is_hero_section(s)]
+            if not hero_refs or any(r not in cand_ids for r in hero_refs):
+                failures = [("archetype-selection",
+                             f"the hero section must set archetypeRef to ONE of "
+                             f"{sorted(cand_ids)} (got {hero_refs or 'none'})")]
+                tele["stage"] = "archetype-fail"
+                telemetry.append(tele)
+                log(f"    archetype selection: {failures[0][1]}")
+                repair_note = _repair_note([], [], failures)
+                continue
 
         # 4. neverDo pre-filter (cheap, before render)
         nd_hits = neverdo_prefilter(comp, doc)

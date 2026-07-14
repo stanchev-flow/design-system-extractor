@@ -622,7 +622,32 @@ def check_neverdo(doc, html, layout, facts, allow=None):
 
 # ── fidelity (data-driven from layout + tokens) ─────────────────────────────────
 
-def check_fidelity(doc, html, layout, facts):
+def _authored_display_headings(render_dir) -> list[str]:
+    """Display-tier heading copy authored by the render's own composition.json
+    (creative-mode source of truth). [] when no composition exists / none authored."""
+    try:
+        comp = json.loads((Path(render_dir) / "composition.json").read_text())
+    except (OSError, ValueError, TypeError):
+        return []
+    out = []
+    for sec in (comp.get("sections") or []):
+        if not isinstance(sec, dict):
+            continue
+        for slot in (sec.get("slots") or []):
+            if not isinstance(slot, dict):
+                continue
+            contract = str(slot.get("contract") or "").lower()
+            size = str(slot.get("sizeClass") or "").lower()
+            if contract == "heading" or size in ("display", "colossal", "hero"):
+                c = slot.get("copy")
+                txt = c if isinstance(c, str) else \
+                    (c.get("heading") or c.get("text") or "") if isinstance(c, dict) else ""
+                if str(txt).strip():
+                    out.append(str(txt).strip())
+    return out
+
+
+def check_fidelity(doc, html, layout, facts, render_dir=None):
     checks = []
     role, surf = resolve_surface(doc, layout)
     disp = doc["tokens"]["type"].get("display-hero", {})
@@ -632,8 +657,33 @@ def check_fidelity(doc, html, layout, facts):
     def has(pat):
         return re.search(pat, html, re.IGNORECASE) is not None
 
-    checks.append((f"Surface = brand {role} ({surf.get('bg')})", facts["bg_in_css"],
-                   f"section renders on the brand surface bg {surf.get('bg')}"))
+    # CREATIVE-MODE SCOPE (spec/archetype-library.md §3.4): a render whose sections
+    # instantiate a genre archetype (``data-archetype`` wrapper stamp) deliberately
+    # varies STRUCTURE — and may legitimately vary section surface and copy — while
+    # style stays brand-bound. The two SOURCE-IDENTITY cells below therefore re-scope
+    # to the law they exist to protect, instead of silently failing on (or being
+    # silently skipped for) novel skeletons:
+    #   - surface: every rendered section must sit on one of the brand's OWN surface
+    #     roles (the data-surface stamps resolve into tokens.surfaces) — not
+    #     necessarily the SOURCE layout's surface;
+    #   - heading: authored display-tier copy must exist — the SOURCE heading string
+    #     is n/a (creative pages author their own voice-true copy).
+    # Renders without the stamp (replica + every deterministic lane) keep the original
+    # cells byte-identically.
+    creative = 'data-archetype="' in html
+
+    if creative:
+        surf_roles = set(((doc.get("tokens") or {}).get("surfaces") or {}).keys())
+        stamped = re.findall(r'data-surface="([^"]+)"', html)
+        off_role = sorted({s for s in stamped if s not in surf_roles})
+        checks.append(("Surface = a brand surface role (creative-mode scope)",
+                       bool(stamped) and not off_role,
+                       f"{len(stamped)} section(s) on brand roles; off-role: "
+                       f"{off_role or 'none'} — source-surface identity re-scoped for "
+                       "archetype-instantiated skeletons"))
+    else:
+        checks.append((f"Surface = brand {role} ({surf.get('bg')})", facts["bg_in_css"],
+                       f"section renders on the brand surface bg {surf.get('bg')}"))
 
     if disp_family:
         checks.append((f"Display family present ({disp_family})",
@@ -642,24 +692,51 @@ def check_fidelity(doc, html, layout, facts):
 
     entries = list(iter_mapping(layout))
 
-    # heading copy snippet from the source appears in the render
-    heading_map = next((m for m in entries
-                        if "heading" in (m.get("role") or "") or "title" in (m.get("role") or "")), None)
-    if heading_map:
-        snippet = (heading_map.get("props", {}).get("Text", "") or "")[:24]
-        # normalize tags + whitespace so split titles (e.g. WOODWAVE<br>GALLERY) still match
-        def _norm(s):
-            return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", s)).strip().lower()
-        checks.append(("Heading copy from source present",
-                       bool(snippet) and _norm(snippet) in _norm(html),
-                       f"source heading begins '{snippet}...'"))
+    # heading copy: the render's AUTHORED composition copy in creative mode (the
+    # composition.json beside the render is the source of truth — the brand layout's
+    # mapping may carry no heading role at all, which used to silently skip this
+    # cell while a composer dropped the heading); the SOURCE snippet otherwise.
+    def _norm(s):
+        return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", s)).strip().lower()
+
+    if creative:
+        # every authored display-tier heading must actually RENDER (a composer that
+        # drops one is a content failure this cell exists to catch). The heading's
+        # TIER/registration is the sibling gate's law (slop AS-32/AS-51 via the
+        # headingTier physics family), so no tag-level assertion here.
+        authored = _authored_display_headings(render_dir) if render_dir else []
+        norm_html = _norm(html)
+        missing = [h for h in authored if _norm(h)[:48] not in norm_html]
+        checks.append(("Authored display heading present (creative-mode scope)",
+                       bool(authored) and not missing,
+                       "source-copy identity re-scoped: the composition's own display "
+                       f"copy must render — authored {len(authored)}, "
+                       f"missing: {[m[:36] for m in missing] or 'none'}"))
+    else:
+        heading_map = next((m for m in entries
+                            if "heading" in (m.get("role") or "")
+                            or "title" in (m.get("role") or "")), None)
+        if heading_map:
+            snippet = (heading_map.get("props", {}).get("Text", "") or "")[:24]
+            # tag/whitespace-normalized so split titles (WOODWAVE<br>GALLERY) match
+            checks.append(("Heading copy from source present",
+                           bool(snippet) and _norm(snippet) in _norm(html),
+                           f"source heading begins '{snippet}...'"))
 
     # accent token surfaced
     accent_tok = surf.get("textAccent")
     if accent_tok:
         av = color_value(doc, accent_tok)
-        checks.append((f"Brand accent surfaced ({av})", has(rf"--accent:\s*{re.escape(av)}"),
-                       f"brand accent {av} present in the render"))
+        if creative:
+            # creative-mode scope: the opening surface (and so the ``--accent`` root
+            # var) is the composition's choice — the brand accent must still be
+            # DEPLOYED somewhere on the page (buttons/eyebrow/accent device).
+            checks.append((f"Brand accent surfaced ({av})", bool(av) and has(re.escape(av)),
+                           f"brand accent {av} deployed in the render "
+                           "(root-var identity re-scoped for creative mode)"))
+        else:
+            checks.append((f"Brand accent surfaced ({av})", has(rf"--accent:\s*{re.escape(av)}"),
+                           f"brand accent {av} present in the render"))
 
     # expected action / media count from the normalized mapping
     n_actions = sum(1 for m in entries
@@ -1067,7 +1144,8 @@ def check_composition(doc, html, layout, facts):
     al_pass, al_detail = _check_alignment_resolution(html)
     checks.append(("alignment-resolution",
                    "Every section's alignment is resolved + source-stamped "
-                   "(section|pattern|style); asymmetric anchors carry a counterweight",
+                   "(section|curation|pattern|brand|style); asymmetric anchors "
+                   "carry a counterweight",
                    al_pass, al_detail))
 
     # 11. MEDIA REGISTRATION (G11, AS-19) — a section that RESOLVES centered must place
@@ -1117,6 +1195,94 @@ def check_composition(doc, html, layout, facts):
                    lw_pass, lw_detail))
 
     return checks
+
+
+# ── archetype physics bindings (spec/archetype-library.md §3.4 / PHASE2 §3) ─────────
+# A composition section that instantiated a genre archetype (``archetypeRef`` +
+# the rendered ``data-archetype`` stamp) carries a physics CHECKLIST — the fact
+# families that must bind. This check maps each family to the checks that verify it:
+# families verified INSIDE this gate consult those rows' outcomes; families verified
+# by a SIBLING gate are reported as delegated (the lane runner enforces those gates'
+# exit codes — spacing_audit for the measured-ladder families, slop_audit for the
+# AS action-group/grid rules, interaction_audit for device contracts). No new physics
+# is invented here: the bindings list only selects which existing checks are MANDATORY
+# for that section. Fact-gated: no composition.json / no archetypeRef -> no rows.
+_PHYSICS_INTERNAL = {           # family -> composition-invariant row ids (inv)
+    "headerContext": ("alignment-resolution",),
+    "relationalRhythm": ("rhythm",),
+    "surfaceContrast": ("text-contrast",),
+    "textOnMedia": ("text-contrast", "occlusion"),
+    "interaction": ("interaction-contrast",),
+}
+_PHYSICS_FIDELITY = {           # family -> fidelity row label prefixes (fid)
+    "assetFidelity": ("All brand image assets present", "Brand assets present"),
+}
+_PHYSICS_DELEGATED = {          # family -> the sibling gate that owns it
+    "containment": "spacing_audit (container law)",
+    "stackMeasure": "spacing_audit (measure cells)",
+    "headingTier": "slop_audit (AS-32/AS-51)",
+    "actionGroup": "slop_audit (AS-59/AS-60/AS-61)",
+    "gridEqualize": "slop_audit (AS-44/AS-50)",
+    "controlMeasure": "slop_audit (AS-26) + interaction_audit",
+    "motion": "interaction_audit (reduced-motion posture)",
+}
+
+
+def check_archetype_physics(render_dir, html, inv, fid):
+    """Return extra composition-invariant rows for archetype-instantiated sections.
+    ``inv``/``fid`` are the already-computed rows this maps onto."""
+    comp_path = Path(render_dir) / "composition.json"
+    if not comp_path.exists():
+        return []
+    try:
+        comp = json.loads(comp_path.read_text())
+    except (OSError, json.JSONDecodeError):
+        return []
+    sections = [s for s in (comp.get("sections") or [])
+                if isinstance(s, dict) and s.get("archetypeRef")]
+    if not sections:
+        return []
+
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import archetype_library as al  # noqa: E402  (data loader — no archetype ids in code)
+
+    inv_by_id = {rid: bool(p) for rid, _label, p, _d in (inv or [])}
+    fid_rows = [(label, bool(p)) for label, p, _d in (fid or [])]
+    rows = []
+    for sec in sections:
+        ref = str(sec.get("archetypeRef"))
+        sid = str(sec.get("id") or sec.get("useCase") or "section")
+        rid = f"archetype-physics:{sid}"
+        stamped = f'data-archetype="{ref}"' in html
+        if not stamped:
+            rows.append((rid, f"Archetype physics bindings ({ref})", True,
+                         "demoted at adaptation (fail-closed fallback to the brand's "
+                         "own hero anatomy) — no bindings to verify"))
+            continue
+        art = al.find_archetype(ref)
+        if art is None:
+            rows.append((rid, f"Archetype physics bindings ({ref})", False,
+                         "rendered section stamps an archetype no genre library "
+                         "carries — skeleton unverifiable"))
+            continue
+        bits, ok = [], True
+        for fam in al.physics_checklist(art):
+            if fam in _PHYSICS_INTERNAL:
+                ids = _PHYSICS_INTERNAL[fam]
+                passed = all(inv_by_id.get(i, True) for i in ids)
+                ok &= passed
+                bits.append(f"{fam}:{'ok' if passed else 'FAIL'}"
+                            f"({','.join(ids)})")
+            elif fam in _PHYSICS_FIDELITY:
+                prefixes = _PHYSICS_FIDELITY[fam]
+                passed = all(p for label, p in fid_rows
+                             if any(label.startswith(x) for x in prefixes))
+                ok &= passed
+                bits.append(f"{fam}:{'ok' if passed else 'FAIL'}(fidelity)")
+            else:
+                bits.append(f"{fam}:delegated[{_PHYSICS_DELEGATED.get(fam, 'lane gates')}]")
+        rows.append((rid, f"Archetype physics bindings ({ref})", ok, "; ".join(bits)))
+    return rows
 
 
 _RUNS_ROOT = Path(__file__).resolve().parent.parent / "runs"
@@ -1253,7 +1419,9 @@ def _check_alignment_resolution(html):
         stamped += 1
         if anchor not in _ALIGN_ENUM:
             problems.append(f"{ident}: out-of-enum anchor '{anchor}'")
-        if source not in ("section", "pattern", "style"):
+        # the full legitimate source chain (compose_section.resolve_alignment):
+        # section > curation > pattern > brand grammar > style role default.
+        if source not in ("section", "curation", "pattern", "brand", "style"):
             problems.append(f"{ident}: unknown align source '{source}'")
         if anchor in ("left", "right") and not attrs.get("data-align-counterweight"):
             problems.append(f"{ident}: asymmetric anchor '{anchor}' declares NO "
@@ -1856,10 +2024,13 @@ def main():
     layout = resolve_layout(doc, args.render_dir, layout_override=args.layout)
     facts = extract_facts(doc, html, layout, args.render_dir)
     nd = check_neverdo(doc, html, layout, facts, allow=allow)
-    fid = check_fidelity(doc, html, layout, facts)
+    fid = check_fidelity(doc, html, layout, facts, render_dir=args.render_dir)
     slop = check_slop(doc, html, layout, facts)
 
     inv = check_composition(doc, html, layout, facts)
+    # archetype physics bindings (spec/archetype-library.md): extra HARD rows for
+    # sections that instantiated a genre archetype; [] for every other render.
+    inv += check_archetype_physics(args.render_dir, html, inv, fid)
 
     style = style_checks = None
     if args.style:

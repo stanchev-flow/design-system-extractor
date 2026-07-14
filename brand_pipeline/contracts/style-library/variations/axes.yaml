@@ -1,0 +1,24 @@
+# provenance: authored-prior (Claude design chat, 2026-07-14) — NOT evidence; requires bakeoff validation before brand use
+# converted from variations/axes.json; perSection deduplicated into sections/catalog.yaml (verified identical 21/21)
+provenance: "authored-prior (Claude design chat, 2026-07-14) — NOT evidence; requires bakeoff validation before brand use"
+$doc: Knobs the pipeline turns to enumerate on-style variants. Global axes apply everywhere; per-section
+  axes come from sections/catalog.json. Perturb ONE axis at a time, then re-resolve — every result stays
+  on-style and satisfies invariants.
+global:
+  density:
+  - tight
+  - balanced
+  - airy
+  accentUsage:
+  - minimal
+  - moderate
+  - expressive
+  mediaPresence:
+  - none
+  - supporting
+  - dominant
+  motion:
+  - none
+  - subtle
+  - playful
+perSection: null  # deduplicated at import: byte-identical (21/21) to sections/catalog.yaml variationAxes — the catalog is the single source of truth

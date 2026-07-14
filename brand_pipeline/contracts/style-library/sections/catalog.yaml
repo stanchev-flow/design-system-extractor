@@ -1,0 +1,726 @@
+# provenance: authored-prior (Claude design chat, 2026-07-14) — NOT evidence; requires bakeoff validation before brand use
+# normalized at import 2026-07-14: bare on/off axis values quoted (YAML-1.1 bool coercion had silently turned 8 authored "on"/"off" strings into booleans; sections/catalog.json carried the authored strings); nav slot typo dropddown->dropdown fixed
+provenance: "authored-prior (Claude design chat, 2026-07-14) — NOT evidence; requires bakeoff validation before brand use"
+$doc: "Section anatomy — style-agnostic. Slots (required/optional), allowed layout primitives, LOCKED invariants (cannot be overridden), variation axes, and soft rules. The style layer + overrides pick from layouts and set constraints; they may never violate invariants."
+count: 21
+sections:
+  - id: announcement-bar
+    name: Announcement Bar
+    purpose: Time-boxed promo or notice above the nav.
+    slots:
+      required:
+        - message
+      optional:
+        - link
+        - dismiss
+        - icon
+    layouts:
+      - sticky-bar
+    defaultLayout: sticky-bar
+    invariants:
+      - single line only
+      - dismissible must persist
+      - never covers nav
+    variationAxes:
+      tone:
+        - promo
+        - info
+        - launch
+      position:
+        - top
+        - below-nav
+    rules:
+      - ≤ 1 short sentence
+      - at most one link
+  - id: nav
+    name: Navigation
+    purpose: Primary wayfinding and top-level CTA.
+    slots:
+      required:
+        - logo
+        - links
+        - primaryCTA
+      optional:
+        - secondaryCTA
+        - dropdown  # normalized at import: authored "dropddown" in all three source formats
+        - search
+        - mobileToggle
+    layouts:
+      - sticky-bar
+    defaultLayout: sticky-bar
+    invariants:
+      - logo present
+      - ≤ 7 top-level links
+      - exactly one primary CTA
+      - mobile collapses to toggle
+    variationAxes:
+      density:
+        - tight
+        - balanced
+      behavior:
+        - static
+        - sticky
+        - hide-on-scroll
+      treatment:
+        - solid
+        - translucent
+        - transparent-over-hero
+    rules:
+      - "links are destinations, not actions"
+      - CTA visually distinct from links
+  - id: hero
+    name: Hero
+    purpose: The single most important above-the-fold statement + primary action.
+    slots:
+      required:
+        - headline
+        - primaryCTA
+      optional:
+        - eyebrow
+        - subhead
+        - secondaryCTA
+        - media
+        - socialProof
+    layouts:
+      - center-stack
+      - split-left
+      - split-right
+      - full-bleed
+      - minimal
+    defaultLayout: split-left
+    invariants:
+      - headline is the focal point
+      - exactly one primary CTA
+      - ≤ 2 supporting lines
+    variationAxes:
+      layout:
+        - center-stack
+        - split-left
+        - split-right
+        - full-bleed
+        - minimal
+      mediaPosition:
+        - right
+        - left
+        - background
+        - none
+      ctaEmphasis:
+        - single
+        - dual
+      density:
+        - tight
+        - airy
+    rules:
+      - "headline states the value, not the feature"
+      - "media supports, never competes with, the headline"
+  - id: logo-wall
+    name: Logo Wall
+    purpose: Social proof via customer/partner marks.
+    slots:
+      required:
+        - logos
+      optional:
+        - eyebrow
+        - link
+    layouts:
+      - grid-4
+      - marquee
+      - carousel
+    defaultLayout: grid-4
+    invariants:
+      - logos monochrome or unified treatment
+      - ≥ 4 logos
+      - equal optical weight
+    variationAxes:
+      motion:
+        - static
+        - marquee
+      treatment:
+        - mono
+        - grayscale
+        - brand
+      columns:
+        - 4
+        - 5
+        - 6
+    rules:
+      - no single logo dominates
+      - one-line eyebrow max
+  - id: feature-trio
+    name: Feature Trio
+    purpose: Three (or N) parallel value props.
+    slots:
+      required:
+        - items
+      optional:
+        - eyebrow
+        - heading
+        - subhead
+        - itemIcon
+        - itemLink
+    layouts:
+      - grid-3
+      - grid-2
+      - grid-4
+      - bento
+      - list-rows
+    defaultLayout: grid-3
+    invariants:
+      - items are parallel in structure
+      - "each item: title + one line"
+      - icon optional but consistent
+    variationAxes:
+      columns:
+        - 2
+        - 3
+        - 4
+      iconStyle:
+        - line
+        - solid
+        - none
+        - illustration
+      layout:
+        - grid-3
+        - bento
+        - list-rows
+      align:
+        - center
+        - left
+    rules:
+      - parallel grammar across items
+      - no item longer than the others
+  - id: feature-alternating
+    name: Alternating Features
+    purpose: "Deep-dive feature rows, image and text swapping sides."
+    slots:
+      required:
+        - rows
+      optional:
+        - heading
+        - rowMedia
+        - rowCTA
+        - rowBullets
+    layouts:
+      - list-rows
+      - split-left
+      - split-right
+    defaultLayout: list-rows
+    invariants:
+      - media side alternates each row
+      - one idea per row
+    variationAxes:
+      mediaPosition:
+        - alternating
+        - all-left
+        - all-right
+      density:
+        - airy
+        - tight
+      bullets:
+        - "on"
+        - "off"
+    rules:
+      - each row earns its space with a distinct idea
+  - id: product-split
+    name: Product Split
+    purpose: "Single product moment: copy beside a large screenshot/media."
+    slots:
+      required:
+        - heading
+        - media
+      optional:
+        - subhead
+        - bullets
+        - cta
+    layouts:
+      - split-left
+      - split-right
+      - bento
+      - tabs
+      - full-bleed
+    defaultLayout: split-right
+    invariants:
+      - media is the visual anchor
+      - one primary message
+    variationAxes:
+      mediaPosition:
+        - left
+        - right
+      mediaTreatment:
+        - screenshot
+        - device-frame
+        - abstract
+      layout:
+        - split
+        - tabs
+        - bento
+    rules:
+      - show the product doing the thing
+  - id: how-it-works
+    name: How It Works
+    purpose: Sequential explanation of the flow in N steps.
+    slots:
+      required:
+        - steps
+      optional:
+        - heading
+        - subhead
+        - stepMedia
+        - connector
+    layouts:
+      - grid-3
+      - list-rows
+      - tabs
+    defaultLayout: grid-3
+    invariants:
+      - steps numbered/ordered
+      - "3–5 steps"
+      - order is meaningful
+    variationAxes:
+      orientation:
+        - horizontal
+        - vertical
+      connector:
+        - line
+        - arrow
+        - none
+      steps:
+        - 3
+        - 4
+        - 5
+    rules:
+      - each step is one action
+      - progression reads left→right or top→bottom
+  - id: metrics-band
+    name: Metrics Band
+    purpose: Proof through numbers.
+    slots:
+      required:
+        - metrics
+      optional:
+        - heading
+        - source
+        - metricLabel
+    layouts:
+      - grid-4
+      - grid-3
+      - marquee
+    defaultLayout: grid-4
+    invariants:
+      - number is the hero of each cell
+      - label ≤ 4 words
+      - "3–4 metrics"
+    variationAxes:
+      columns:
+        - 3
+        - 4
+      emphasis:
+        - number-first
+        - animated-count
+      divider:
+        - line
+        - none
+    rules:
+      - "round, credible numbers"
+      - units consistent
+  - id: testimonial
+    name: Testimonial
+    purpose: "Human validation in the customer's words."
+    slots:
+      required:
+        - quote
+        - attribution
+      optional:
+        - heading
+        - avatar
+        - logo
+        - rating
+        - media
+    layouts:
+      - minimal
+      - grid-2
+      - grid-3
+      - carousel
+      - split-left
+    defaultLayout: minimal
+    invariants:
+      - quote is verbatim and central
+      - attribution present (name + role/co)
+    variationAxes:
+      count:
+        - single
+        - grid
+        - carousel
+      avatar:
+        - photo
+        - logo
+        - none
+      emphasis:
+        - quote-xl
+        - balanced
+    rules:
+      - one strong quote beats many weak ones
+      - no invented quotes
+  - id: case-study
+    name: Case Study
+    purpose: A named customer outcome with proof.
+    slots:
+      required:
+        - customer
+        - outcome
+      optional:
+        - logo
+        - metric
+        - quote
+        - media
+        - link
+    layouts:
+      - split-left
+      - full-bleed
+      - grid-2
+      - carousel
+    defaultLayout: split-left
+    invariants:
+      - names a real customer
+      - leads with the outcome/metric
+    variationAxes:
+      layout:
+        - split
+        - full-bleed
+        - card
+      proof:
+        - metric
+        - quote
+        - both
+    rules:
+      - "outcome first, story second"
+  - id: pricing
+    name: Pricing
+    purpose: Plan comparison driving to a purchase/trial.
+    slots:
+      required:
+        - tiers
+      optional:
+        - heading
+        - subhead
+        - billingToggle
+        - featureMatrix
+        - faqLink
+        - highlight
+    layouts:
+      - grid-3
+      - grid-2
+      - table
+      - tabs
+    defaultLayout: grid-3
+    invariants:
+      - "each tier: name, price, CTA"
+      - one recommended tier highlighted (unless style forbids)
+      - feature lists parallel
+    variationAxes:
+      tiers:
+        - 2
+        - 3
+        - 4
+      billing:
+        - monthly-annual-toggle
+        - single
+      highlight:
+        - middle
+        - none
+        - best-value
+      layout:
+        - cards
+        - table
+    rules:
+      - price is scannable
+      - one clear default choice
+  - id: comparison-table
+    name: Comparison Table
+    purpose: Feature-by-feature matrix (plans or vs-competitors).
+    slots:
+      required:
+        - columns
+        - rows
+      optional:
+        - heading
+        - legend
+        - stickyHeader
+    layouts:
+      - table
+    defaultLayout: table
+    invariants:
+      - header row/col pinned on scroll
+      - boolean cells use one consistent glyph
+    variationAxes:
+      orientation:
+        - plans
+        - competitors
+      density:
+        - tight
+        - comfortable
+      sticky:
+        - "on"
+        - "off"
+    rules:
+      - "truthful, comparable rows only"
+  - id: integrations-grid
+    name: Integrations Grid
+    purpose: Ecosystem breadth via app/tool tiles.
+    slots:
+      required:
+        - items
+      optional:
+        - heading
+        - subhead
+        - categories
+        - search
+        - cta
+    layouts:
+      - grid-4
+      - bento
+      - marquee
+    defaultLayout: grid-4
+    invariants:
+      - equal tile treatment
+      - logos legible at tile size
+    variationAxes:
+      columns:
+        - 4
+        - 5
+        - 6
+      filter:
+        - categories
+        - search
+        - none
+      treatment:
+        - mono
+        - brand
+    rules:
+      - "group by category when > 12"
+  - id: faq
+    name: FAQ
+    purpose: Preempt objections and reduce support load.
+    slots:
+      required:
+        - items
+      optional:
+        - heading
+        - subhead
+        - contactLink
+    layouts:
+      - accordion
+      - list-rows
+      - grid-2
+    defaultLayout: accordion
+    invariants:
+      - question then answer
+      - one item open at a time (accordion)
+    variationAxes:
+      layout:
+        - accordion
+        - two-column
+      default:
+        - all-closed
+        - first-open
+    rules:
+      - "real questions, plain answers"
+      - no marketing in answers
+  - id: security-trust
+    name: "Security & Trust"
+    purpose: "Compliance, certifications, and safeguards."
+    slots:
+      required:
+        - items
+      optional:
+        - heading
+        - subhead
+        - badges
+        - link
+    layouts:
+      - grid-4
+      - grid-3
+      - list-rows
+    defaultLayout: grid-3
+    invariants:
+      - only claims that are true/certified
+      - badges from issuers
+    variationAxes:
+      emphasis:
+        - badges
+        - copy
+        - both
+      columns:
+        - 3
+        - 4
+    rules:
+      - specific certifications beat vague assurances
+  - id: team
+    name: Team
+    purpose: "The people, for trust and culture."
+    slots:
+      required:
+        - members
+      optional:
+        - heading
+        - subhead
+        - memberRole
+        - memberSocial
+        - memberPhoto
+    layouts:
+      - grid-4
+      - grid-3
+      - carousel
+    defaultLayout: grid-4
+    invariants:
+      - consistent photo treatment
+      - name + role each
+    variationAxes:
+      columns:
+        - 3
+        - 4
+        - 5
+      photo:
+        - headshot
+        - illustrated
+        - initials
+      align:
+        - center
+        - left
+    rules:
+      - uniform crop and lighting across photos
+  - id: blog-resources
+    name: Blog / Resources
+    purpose: Latest content to build authority.
+    slots:
+      required:
+        - posts
+      optional:
+        - heading
+        - subhead
+        - categories
+        - viewAll
+    layouts:
+      - grid-3
+      - grid-2
+      - list-rows
+      - carousel
+    defaultLayout: grid-3
+    invariants:
+      - "each post: title + meta"
+      - consistent thumbnail ratio
+    variationAxes:
+      columns:
+        - 2
+        - 3
+      meta:
+        - date
+        - author
+        - readtime
+      thumb:
+        - "on"
+        - "off"
+    rules:
+      - most recent or most relevant first
+  - id: newsletter
+    name: Newsletter
+    purpose: Low-friction email capture.
+    slots:
+      required:
+        - heading
+        - emailInput
+        - submit
+      optional:
+        - subhead
+        - privacyNote
+        - socialProof
+    layouts:
+      - center-stack
+      - split-left
+      - minimal
+    defaultLayout: center-stack
+    invariants:
+      - single email field
+      - one submit action
+      - privacy/consent note
+    variationAxes:
+      layout:
+        - inline
+        - stacked
+        - split
+      proof:
+        - count
+        - none
+    rules:
+      - ask for the minimum (email only)
+  - id: cta-band
+    name: CTA Band
+    purpose: Final conversion push before the footer.
+    slots:
+      required:
+        - headline
+        - primaryCTA
+      optional:
+        - subhead
+        - secondaryCTA
+        - media
+        - background
+    layouts:
+      - center-stack
+      - full-bleed
+      - split-left
+      - minimal
+    defaultLayout: center-stack
+    invariants:
+      - exactly one primary CTA
+      - restates the core value
+      - high contrast with neighbors
+    variationAxes:
+      layout:
+        - center-stack
+        - full-bleed
+        - split
+      background:
+        - accent
+        - image
+        - surface
+      ctaEmphasis:
+        - single
+        - dual
+    rules:
+      - "short, imperative headline"
+  - id: footer
+    name: Footer
+    purpose: "Comprehensive navigation, legal, and closing brand."
+    slots:
+      required:
+        - linkGroups
+        - legal
+      optional:
+        - logo
+        - newsletter
+        - social
+        - localeSwitcher
+        - statusLink
+    layouts:
+      - columns-footer
+    defaultLayout: columns-footer
+    invariants:
+      - legal + copyright present
+      - link groups labeled
+      - logo/brand mark
+    variationAxes:
+      columns:
+        - 3
+        - 4
+        - 5
+      newsletter:
+        - "on"
+        - "off"
+      theme:
+        - dark
+        - light
+        - match
+    rules:
+      - group links by purpose
+      - legal row always last

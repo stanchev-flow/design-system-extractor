@@ -36,6 +36,11 @@ RHYTHM_MAX_PX = 200.0       # gap/inset facts live below this; width facts above
 DEFAULT_VIEWPORT = (1440, 900)   # canonical tier (meta.canonicalTier)
 LANE_TIMEOUT_MS = 120_000
 
+try:  # derived-scale consumption (pass1) — package + direct-script contexts
+    from brand_pipeline import style_scale as _style_scale
+except ImportError:  # pragma: no cover - direct sys.path import context
+    import style_scale as _style_scale
+
 
 # ───────────────────────────── fact resolution (pure) ─────────────────────────────
 
@@ -324,6 +329,15 @@ RELATIONSHIPS: dict[str, Rel] = {
     # declaration (data-ag-align) — same center-family verdict scale as
     # container.centering (conform ≤2px / drift ≤4px / off-ladder).
     "actions.alignment": Rel("center", ()),
+    # header-stack COHERENCE (fix5 2026-07 — the mixed-alignment blind spot): a
+    # header stack (eyebrow/heading/body/actions sharing one column) must paint
+    # ONE stance. The measurement is the largest px displacement any header child
+    # would need to match the stack's dominant painted stance — 0 when coherent
+    # (all-left, all-center, all-right each conform), hard when a lone centered
+    # heading sits over a left kicker/body/action group (the panel-header defect,
+    # which every per-child cell passed because each child conformed to its OWN
+    # declaration). Same center-family verdict scale as actions.alignment.
+    "header.stack-coherence": Rel("center", ()),
 }
 
 HARD = ("wrong-step", "off-ladder")
@@ -448,6 +462,25 @@ def classify_measurement(meas: dict, book: FactBook) -> dict:
     rel_id = meas["rel"]
     rel = RELATIONSHIPS[rel_id]
     declared = resolve_steps(rel_id, meas.get("pattern"), book)
+    # bandHeight re-registration (spec/archetype-library.md): a section stamped
+    # data-band-rung declared its pad on ANOTHER rung of the brand's own ladder —
+    # audit the pads against the STAMPED rung (still hard: a stamped band whose
+    # measured pad misses its own declaration fails exactly like any drift).
+    if rel_id in ("section.pad-top", "section.pad-bottom") and meas.get("bandRung"):
+        stamp = str(meas["bandRung"])
+        if stamp.startswith("derived:"):
+            # derived-scale re-registration (pass1, style-scale.v1): the knob had
+            # no measured rung in its direction and rode the quantized step — the
+            # pad audits against that DELIBERATE declaration, same hard gate.
+            try:
+                declared = [Fact("derived-scale step", float(stamp.split(":", 1)[1]),
+                                 "derived")]
+            except ValueError:
+                pass
+        else:
+            stamped = book.steps.get(stamp)
+            if stamped is not None:
+                declared = [stamped]
     sanctioned = (book.width_sanctioned() if rel.family == "width"
                   else book.gap_sanctioned())
     if rel_id == "section.seam":
@@ -466,6 +499,152 @@ def classify_measurement(meas: dict, book: FactBook) -> dict:
     if rel.advisory_only and sev in HARD:
         out["note"] = (out.get("note") or "") + f" [advisory-only: {rel.reason}]"
     return out
+
+
+# ───────────────────── scale adherence (pass1 2026-07, gate: scale_adherence) ─────
+#
+# On GENERATIVE lanes only (a composition.json beside the lane's index.html — the
+# composed-lane marker; replicas and the component previews carry none, exempt BY
+# CONSTRUCTION), novel geometry must lie on the brand's derived scale
+# (style-scale.v1): rendered SECTION-CONTENT font sizes and unmapped section-level
+# space steps either match a MEASURED fact (which always wins) or sit on a derived
+# step. Chrome subtrees are excluded — chrome renders harvested measured facts at
+# source-exact sizes the type ladder never declared (nav 12/13/15px etc.).
+
+TYPE_CENSUS_JS = """
+() => {
+  const CHROME = '.cs-nav, .c-foot, .cs-mega, .cs-utility-banner, nav, footer';
+  const out = [];
+  const sel = ['.c-heading--display', '.c-heading', 'h1', 'h2', 'h3', '.c-eyebrow',
+               'p', '.cs-sub', '.c-button:not(.c-arrow-link)'].join(', ');
+  for (const el of document.querySelectorAll(sel)) {
+    if (el.closest(CHROME)) continue;
+    const wrap = el.closest('[id^="sec-"]');
+    if (!wrap) continue;
+    const r = el.getBoundingClientRect();
+    if (!r.width || !r.height) continue;
+    const cs = getComputedStyle(el);
+    if (cs.display === 'none' || cs.visibility === 'hidden') continue;
+    const cls = (typeof el.className === 'string' ? el.className : '') || el.tagName.toLowerCase();
+    out.push({ px: parseFloat(cs.fontSize), cls: cls.trim().split(/\\s+/).slice(0, 2).join('.'),
+               sec: wrap.id, layout: wrap.dataset.layout || null });
+  }
+  return out;
+}
+"""
+
+# space rels that measure CHROME devices — harvested measured facts, not novel
+# composed geometry (the footer link column etc. renders on the replica too).
+_SCALE_CHROME_REL = re.compile(r"^(footer|nav)\.")
+
+
+def _is_generative_lane(lane_dir: Path) -> bool:
+    """GENERATIVE lanes carry either a composition.v1 (the generated-composition
+    contract) or a BRIEFED composition under the older replica-composition.v1
+    schema (event-genlaunch predates composition.v1 — a `brief` means someone
+    asked for a novel page). The true replica is the assembler's briefless
+    replica-composition.v1 (source-order rebuild — measured-fact path, exempt);
+    previews write no composition at all (exempt)."""
+    comp = lane_dir / "composition.json"
+    if not comp.exists():
+        return False
+    try:
+        head = json.loads(comp.read_text())
+    except Exception:
+        return False
+    schema = str(head.get("schemaVersion") or "")
+    if schema == "composition.v1":
+        return True
+    return schema == "replica-composition.v1" and bool(head.get("brief"))
+
+
+def load_type_facts(brand_dir: Path, rem_px: float = ROOT_REM_PX) -> list[float]:
+    """Every MEASURED type-size fact in px: tokens.type sizeRem across tiers, the
+    per-tier px table, and button label sizeRem. A rendered size matching any of
+    these is measured-fact geometry — never scale-audited."""
+    import yaml
+    doc = yaml.safe_load((brand_dir / "brand.yaml").read_text()) or {}
+    out: set[float] = set()
+    for spec in ((doc.get("tokens") or {}).get("type") or {}).values():
+        if not isinstance(spec, dict):
+            continue
+        sr = spec.get("sizeRem")
+        if isinstance(sr, dict):
+            for v in sr.values():
+                if isinstance(v, (int, float)):
+                    out.add(round(float(v) * rem_px, 1))
+        elif isinstance(sr, (int, float)):
+            out.add(round(float(sr) * rem_px, 1))
+        for tier in (spec.get("tiers") or {}).values():
+            if isinstance(tier, dict) and isinstance(tier.get("px"), (int, float)):
+                out.add(round(float(tier["px"]), 1))
+    for spec in (doc.get("buttons") or {}).values():
+        if isinstance(spec, dict) and isinstance(spec.get("sizeRem"), (int, float)):
+            out.add(round(float(spec["sizeRem"]) * rem_px, 1))
+    return sorted(out)
+
+
+def _near(px: float, candidates: list[float], tol: float) -> float | None:
+    hit = min(candidates, key=lambda c: abs(c - px), default=None)
+    return hit if hit is not None and abs(hit - px) <= tol else None
+
+
+def classify_scale(type_samples: list[dict], classified_space: list[dict],
+                   type_facts: list[float], scale: dict) -> dict:
+    """Scale-adherence verdicts for one generative lane. Returns the lane's
+    ``scale`` block: type cells (distinct rendered size x section) + space cells
+    (unmapped non-chrome measurements), each measured|on-scale|off-scale."""
+    type_steps = _style_scale.type_steps_px(scale)
+    space_steps = _style_scale.space_steps_px(scale)
+    cells: list[dict] = []
+
+    seen: dict[tuple, dict] = {}
+    for s in type_samples:
+        key = (round(s["px"], 1), s["sec"])
+        entry = seen.setdefault(key, {"px": round(s["px"], 1), "sec": s["sec"],
+                                      "layout": s.get("layout"),
+                                      "examples": set(), "count": 0})
+        entry["count"] += 1
+        entry["examples"].add(s["cls"])
+    for (px, sec), e in sorted(seen.items()):
+        tol = max(1.0, 0.02 * px)
+        fact = _near(px, type_facts, tol)
+        if fact is not None:
+            verdict, anchor = "measured", f"type fact {fact:g}px"
+        else:
+            step = _near(px, type_steps, tol)
+            if step is not None:
+                verdict, anchor = "on-scale", f"derived step {step:g}px"
+            else:
+                near_f = min(type_facts, key=lambda c: abs(c - px), default=None)
+                near_s = min(type_steps, key=lambda c: abs(c - px), default=None)
+                verdict = "off-scale"
+                anchor = (f"nearest fact {near_f:g}px / nearest step "
+                          f"{near_s:g}px" if near_f is not None and near_s is not None
+                          else "no facts/steps")
+        cells.append({"kind": "type", "sec": sec, "layout": e["layout"],
+                      "px": px, "count": e["count"],
+                      "examples": sorted(e["examples"])[:3],
+                      "verdict": verdict, "anchor": anchor})
+
+    for m in classified_space:
+        if m.get("severity") != "unmapped" or _SCALE_CHROME_REL.match(m["rel"]):
+            continue
+        px = float(m["measured"])
+        tol = max(2.0, 0.02 * px)
+        step = _near(px, space_steps, tol)
+        cells.append({"kind": "space", "sec": m.get("sec"), "layout": m.get("layout"),
+                      "rel": m["rel"], "px": px, "count": 1,
+                      "verdict": "on-scale" if step is not None else "off-scale",
+                      "anchor": (f"derived step {step:g}px" if step is not None else
+                                 f"no derived step within {tol:g}px "
+                                 f"(unit {((scale.get('space') or {}).get('baseUnitPx'))})")})
+
+    counts = {"measured": 0, "on-scale": 0, "off-scale": 0}
+    for c in cells:
+        counts[c["verdict"]] += 1
+    return {"cells": cells, "counts": counts,
+            "hardFails": counts["off-scale"]}
 
 
 # ─────────────────────────── ranking + report shaping (pure) ──────────────────────
@@ -605,6 +784,28 @@ def render_md(report: dict) -> str:
                 secs = ", ".join(sorted(entry["secs"])[:3])
                 L.append(f"| `{rel}` | {val}px x{entry['count']} |"
                          f" {_fmt_fact(entry['m'].get('nearest'))} | {secs} |")
+            L.append("")
+        sc = lane.get("scale")
+        if sc:
+            s = sc["counts"]
+            L.append("### Scale adherence (pass1 — generative lane; "
+                     "style-scale.v1 derived steps)")
+            L.append("")
+            L.append(f"{s['measured']} measured-fact · {s['on-scale']} on-scale · "
+                     f"**{s['off-scale']} off-scale** — novel geometry must sit on "
+                     "a measured fact (always wins) or a derived step; chrome + "
+                     "replica lanes exempt by construction.")
+            L.append("")
+            L.append("| kind | sec | value | verdict | anchor | examples |")
+            L.append("|---|---|---|---|---|---|")
+            for cell in sc["cells"]:
+                ex = ", ".join(cell.get("examples") or ([] if "rel" not in cell
+                                                         else [cell["rel"]]))
+                sev = (f"**{cell['verdict']}**" if cell["verdict"] == "off-scale"
+                       else cell["verdict"])
+                L.append(f"| {cell['kind']} | {cell['sec']} ({cell.get('layout')}) |"
+                         f" {cell['px']:g}px x{cell['count']} | {sev} |"
+                         f" {cell['anchor']} | {ex} |")
             L.append("")
         L.append("### All measurements")
         L.append("")
@@ -763,6 +964,9 @@ MEASURE_JS = r"""
       sec: wrap.id || '?',
       layout: wrap.getAttribute('data-layout') || '?',
       pattern: wrap.getAttribute('data-pattern') || null,
+      // bandHeight declaration stamps (spec/archetype-library.md): the section's
+      // deliberate pad re-registration to another rung of the brand's own ladder.
+      bandRung: wrap.getAttribute('data-band-rung') || null,
     };
     const push = (rel, value, a, b, gapRect, note, kind) => {
       measurements.push(Object.assign({}, ctx, {
@@ -1038,6 +1242,119 @@ MEASURE_JS = r"""
       }
     });
 
+    // ── header-stack coherence (fix5 — the mixed-alignment blind spot) ──
+    // Every per-child alignment cell conforms to its OWN declaration, so a
+    // heading centered by a leaked section rule over a left kicker/body/actions
+    // stack read green. This cell classifies each header child's PAINTED stance
+    // (text line boxes + control boxes, never the stretched element box) against
+    // the stack's content box and fails when stances mix. Stance-agnostic: an
+    // all-centered stack conforms exactly like an all-left one.
+    if (wrap.getAttribute('data-align') !== 'mixed') {
+      const paintSpan = (el) => {
+        let x0 = 1e9, x1 = -1e9, any = false;
+        const rng = document.createRange();
+        const tw = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+        for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+          if (!n.textContent.trim()) continue;
+          if (n.parentElement && !visible(n.parentElement)) continue;
+          if (n.parentElement && n.parentElement.closest('.c-button, .c-arrow-link'))
+            continue;  // controls measure as boxes below (their padding paints)
+          rng.selectNodeContents(n);
+          for (const r of rng.getClientRects()) {
+            if (r.width < 0.5 || r.height < 0.5) continue;
+            x0 = Math.min(x0, r.left); x1 = Math.max(x1, r.right); any = true;
+          }
+        }
+        el.querySelectorAll('img, svg, picture, video, input, .c-button, .c-arrow-link')
+          .forEach((c) => {
+            if (!visible(c)) return;
+            const r = c.getBoundingClientRect();
+            x0 = Math.min(x0, r.left); x1 = Math.max(x1, r.right); any = true;
+          });
+        if (el.matches('.c-button, .c-arrow-link')) {
+          const r = el.getBoundingClientRect();
+          x0 = Math.min(x0, r.left); x1 = Math.max(x1, r.right); any = true;
+        }
+        if (!any) return null;
+        return { left: round2(x0 + window.scrollX), right: round2(x1 + window.scrollX) };
+      };
+      const headerRole = (el) => {
+        const c = el.classList;
+        if (c.contains('cs-ov-panel-item') || c.contains('cs-flow-item')) {
+          const inner = el.firstElementChild;
+          return inner ? headerRole(inner) : null;
+        }
+        if (c.contains('c-eyebrow') || c.contains('cs-eyebrow-wrap')) return 'eyebrow';
+        if (c.contains('c-heading')) return 'heading';
+        if (c.contains('cs-sub') || c.contains('c-paragraph')) return 'body';
+        if (c.contains('cs-hero-actions') || c.contains('cs-modules-actions')
+            || c.contains('cs-conversion-actions') || c.contains('cs-signup-actions'))
+          return 'actions';
+        return null;
+      };
+      const stanceOf = (pb, colL, colR) => {
+        const L = round2(pb.left - colL), R = round2(colR - pb.right);
+        const tol = 6;
+        if (L <= tol && R <= tol) return { kind: 'full', L, R };
+        if (Math.abs(L - R) <= Math.max(6, 0.06 * Math.max(L, R)))
+          return { kind: 'center', L, R };
+        if (L <= tol) return { kind: 'left', L, R };
+        if (R <= tol) return { kind: 'right', L, R };
+        return { kind: 'other', L, R };
+      };
+      const moveCost = (s, kind) => kind === 'left' ? Math.abs(s.L)
+        : kind === 'right' ? Math.abs(s.R) : Math.abs(s.L - s.R) / 2;
+      const seen = new Set();
+      sec.querySelectorAll('.c-heading').forEach((h) => {
+        if (!inFlow(h)) return;
+        let stack = h.parentElement;
+        while (stack && stack !== sec
+               && [...stack.children].filter(inFlow).length === 1)
+          stack = stack.parentElement;
+        if (!stack || stack === sec || seen.has(stack)) return;
+        if (stack.closest('.cs-ov-stepped')) return;   // deliberate stepped indents
+        seen.add(stack);
+        const sr = rect(stack), scs = css(stack);
+        const colL = sr.left + num(scs.paddingLeft);
+        const colR = sr.right - num(scs.paddingRight);
+        if (colR - colL < 80) return;
+        const kids = [...stack.children].filter(inFlow).map((el) => {
+          const role = headerRole(el);
+          if (!role) return null;
+          const pb = paintSpan(el);
+          if (!pb) return null;
+          return { el, role, box: rect(el), stance: stanceOf(pb, colL, colR) };
+        }).filter(Boolean);
+        if (kids.length < 2 || !kids.some((k) => k.role === 'heading')) return;
+        let worst = 0, wa = kids[0], wb = kids[0], note = 'coherent';
+        for (let i = 0; i < kids.length; i++) {
+          for (let j = i + 1; j < kids.length; j++) {
+            const a = kids[i].stance, b = kids[j].stance;
+            // side-by-side children (two-column intros: heading | body rows)
+            // are a ROW device, not a stacked header — coherence is a claim
+            // about one COLUMN painting one stance.
+            const ra = kids[i].box, rb = kids[j].box;
+            const overlap = Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top);
+            if (overlap > 0.5 * Math.min(ra.height, rb.height)) continue;
+            if (a.kind === 'full' || b.kind === 'full') continue;
+            if (a.kind === b.kind) continue;
+            const cost = round2(Math.min(moveCost(a, b.kind), moveCost(b, a.kind)));
+            if (cost > worst) {
+              worst = cost; wa = kids[i]; wb = kids[j];
+              note = `${wa.role} paints ${wa.stance.kind} vs ${wb.role} `
+                + `${wb.stance.kind} (insets ${Math.round(wa.stance.L)}|`
+                + `${Math.round(wa.stance.R)} vs ${Math.round(wb.stance.L)}|`
+                + `${Math.round(wb.stance.R)})`;
+            }
+          }
+        }
+        const hr = rect(wa.el);
+        push('header.stack-coherence', worst, wa.el, wb.el,
+             { x: colL, y: hr.top, w: Math.max(4, worst), h: Math.min(hr.height, 40) },
+             note, 'center');
+      });
+    }
+
     // ── disclosure lists: accordion + FAQ ──
     sec.querySelectorAll('.c-acc').forEach((acc) => {
       const items = [...acc.querySelectorAll(':scope > .c-acc-item')].filter(visible);
@@ -1099,12 +1416,29 @@ MEASURE_JS = r"""
     const TEXT_TAGS = new Set(['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'A',
                                'SPAN', 'BUTTON', 'UL', 'OL', 'LI', 'SUMMARY']);
     const candidates = [];
+    // a full-bleed MEDIA canvas (an overlay/banded backdrop painting edge-to-edge)
+    // is sanctioned geometry, never "the section container" — the container law
+    // audits the CONTENT column. Absolutely-positioned bleeds were always excluded
+    // (inFlow); this excludes the in-flow canvas the overlay composer draws.
+    const isBleedMedia = (el, r) =>
+      (el.tagName === 'IMG' || el.tagName === 'FIGURE'
+        || el.classList.contains('c-image') || el.classList.contains('cs-ov-canvas'))
+      && r.width >= secR.width - 2;
+    // the hero media COLLAGE is a media device, not the section container: its
+    // width (and its layers' widths) is col-span/scaffold-registered geometry
+    // (whole columns + shared gutters of the registration grid — e.g. span 8 ≈
+    // 896px at 1440), which the width LADDER can't express by construction. The
+    // whole subtree is skipped so the law audits the acting content column
+    // (title/foot stacks → the stack-measure fact).
+    const isMediaCollage = (el) => el.classList.contains('cs-collage');
     const walkMW = (el, depth) => {
       if (depth > 3) return;
       for (const kid of el.children) {
-        if (!visible(kid) || !inFlow(kid) || TEXT_TAGS.has(kid.tagName)) continue;
+        if (!visible(kid) || !inFlow(kid) || TEXT_TAGS.has(kid.tagName)
+            || isMediaCollage(kid)) continue;
         const kr = rect(kid);
-        if (css(kid).maxWidth !== 'none' && kr.width >= 320)
+        if (css(kid).maxWidth !== 'none' && kr.width >= 320
+            && !isBleedMedia(kid, kr))
           candidates.push({ el: kid, r: kr, narrow: kid.matches(NARROW_STACKS) });
         walkMW(kid, depth + 1);
       }
@@ -1239,6 +1573,10 @@ def measure_lane(pw, html: Path, viewport: tuple[int, int]) -> dict:
         page.evaluate("document.fonts && document.fonts.ready")
         page.wait_for_timeout(700)
         raw = page.evaluate(MEASURE_JS)
+        # scale-adherence census (pass1): section-content font sizes; consumed only
+        # for generative lanes with a derived scale, but measured unconditionally
+        # (cheap, and keeps measure_lane single-shot).
+        raw["typeSamples"] = page.evaluate(TYPE_CENSUS_JS)
         return raw
     finally:
         browser.close()
@@ -1347,6 +1685,9 @@ def run_audit(lane_paths: list[Path], brand_dir: Path, out_dir: Path,
     out_dir.mkdir(parents=True, exist_ok=True)
     lanes_out: list[dict] = []
     screenshots: list[dict] = []
+    # derived-scale gate inputs (pass1): present ⇒ generative lanes get scale cells
+    scale = _style_scale.load_style_scale(brand_dir)
+    type_facts = load_type_facts(brand_dir) if scale else []
 
     with sync_playwright() as pw:
         for html in lane_paths:
@@ -1373,6 +1714,13 @@ def run_audit(lane_paths: list[Path], brand_dir: Path, out_dir: Path,
             entry["measurements"] = classified
             entry["skips"] = raw.get("skips", [])
             entry["offenders"] = rank_offenders(classified, top=top)
+            # scale_adherence (pass1): GENERATIVE lanes only — the marker is a
+            # composition.json with schemaVersion composition.v1 (the generated
+            # composition contract). The replica's replica-composition.v1 and the
+            # marker-less previews stay exempt by construction.
+            if scale and _is_generative_lane(html.parent):
+                entry["scale"] = classify_scale(raw.get("typeSamples") or [],
+                                                classified, type_facts, scale)
             lanes_out.append(entry)
 
         if shots:
@@ -1443,6 +1791,13 @@ def main(argv=None) -> int:
               f"{c['conform']} conform / {c['drift']} drift / "
               f"{c['wrong-step']} wrong-step / {c['off-ladder']} off-ladder / "
               f"{c['unmapped']} unmapped")
+        sc = lane.get("scale")
+        if sc:
+            hard += sc["hardFails"]
+            s = sc["counts"]
+            print(f"[spacing-audit] {lane['lane']}: scale adherence — "
+                  f"{s['measured']} measured-fact / {s['on-scale']} on-scale / "
+                  f"{s['off-scale']} OFF-SCALE")
     print(f"[spacing-audit] report: {out_dir / 'report.md'}")
     if args.strict and (hard or errors):
         return 1

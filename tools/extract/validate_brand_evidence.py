@@ -111,6 +111,20 @@ Checks (E = error, W = warning):
         entry via recipeRef {recipe, variant}; dangling recipeRefs, empty
         anatomies, id-less variants, and one-way usedBy bindings warn too —
         recipes are brand data written DURING extraction, not post-hoc
+  C24 W derived-scale artifact consistency (pass1, style-scale.v1): when
+        style-scale.yaml exists it must be INTERNALLY consistent (every space
+        step a multiple of the base unit, every type step on base*ratio^k,
+        section rhythm a subset of the space steps) and HONEST about fit
+        (fitQuality verdicts backed by the recorded errors; a poor fit must
+        set followsScale: false — the brand genuinely not following a scale
+        is recorded, never forced); staleness vs brand.yaml warns
+  C25 W brand signatures (pass1, brand-schema §4.7): the extraction should
+        author 3-5 `signatures:` entries (the moves that make THIS brand
+        recognizable) — each with a known kind (accent-scope / shape-motif /
+        type-treatment / surface-habit / spacing-habit), an always/never
+        mode, machine-checkable check params, and evidence provenance;
+        missing block, out-of-discipline counts (the "3-5, not 20" rule),
+        unknown kinds, and evidence-less entries warn
 
 Importable API (used by brand_pipeline/tests/test_brand_evidence_contract.py):
     report = validate_brand_dir(brand_dir, contracts_path=..., ...)
@@ -122,7 +136,9 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import math
 import re
 import sys
 import tempfile
@@ -1393,7 +1409,125 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
                                     "but that pattern carries no matching recipeRef "
                                     "— bind both directions.")
 
+    _check_style_scale(rep, brand_dir)
+    _check_signatures(rep, doc)
+
     return rep
+
+
+# C24 — derived-scale artifact (pass1 2026-07, style-scale.v1). The QUANTIZATION
+# layer's honesty contract: internal consistency (steps on the base/ratio, section
+# rhythm a subset of the steps) and fit honesty (recorded errors back the verdict;
+# a poor fit must not claim followsScale). Advisory — the artifact is derived and
+# regenerable; a brand without one simply hasn't run the normalizer.
+def _check_style_scale(rep: Report, brand_dir: Path) -> None:
+    path = brand_dir / "style-scale.yaml"
+    if not path.exists():
+        rep.note("C24", "style-scale.yaml absent — derived-scale layer not "
+                        "generated (tools/extract/normalize_scales.py); generative "
+                        "composers keep their fact-only degrades.")
+        return
+    try:
+        art = yaml.safe_load(path.read_text()) or {}
+    except Exception as exc:
+        rep.warn("C24", f"style-scale.yaml unparsable: {exc}")
+        return
+    if art.get("schema") != "style-scale.v1":
+        rep.warn("C24", f"style-scale.yaml schema '{art.get('schema')}' — expected "
+                        "style-scale.v1")
+        return
+
+    digest = "sha256:" + hashlib.sha256(
+        (brand_dir / "brand.yaml").read_bytes()).hexdigest()[:12]
+    if art.get("sourceDigest") and art["sourceDigest"] != digest:
+        rep.warn("C24", "style-scale.yaml is STALE — sourceDigest "
+                        f"{art.get('sourceDigest')} != current brand.yaml {digest}; "
+                        "re-run the normalizer so derived steps track the facts.")
+
+    space = art.get("space") or {}
+    unit = space.get("baseUnitPx")
+    steps = [float(s) for s in (space.get("stepsPx") or [])]
+    if isinstance(unit, (int, float)) and unit > 0:
+        off = [s for s in steps if abs(s / unit - round(s / unit)) > 0.02]
+        if off:
+            rep.warn("C24", f"space steps {off} not multiples of the base unit "
+                            f"{unit} — the artifact is internally inconsistent.")
+        rhythm = [float(s) for s in (space.get("sectionRhythmPx") or [])]
+        stray = [r for r in rhythm if r not in steps]
+        if stray:
+            rep.warn("C24", f"sectionRhythmPx {stray} not present in stepsPx — "
+                            "section rhythm must be a subset of the space steps.")
+        cov = ((space.get("fitQuality") or {}).get("coverage"))
+        if isinstance(cov, (int, float)) and cov < 0.8 and space.get("followsScale"):
+            rep.warn("C24", f"space followsScale claimed at coverage {cov} — a poor "
+                            "fit must be recorded honestly (followsScale: false).")
+
+    typ = art.get("type") or {}
+    base, ratio = typ.get("basePx"), typ.get("ratio")
+    if isinstance(base, (int, float)) and isinstance(ratio, (int, float)) and ratio > 1:
+        for s in (typ.get("stepsPx") or []):
+            k = round(math.log(float(s) / base, ratio))
+            pred = base * ratio ** k
+            if abs(pred - float(s)) / float(s) > 0.01:
+                rep.warn("C24", f"type step {s}px is not base*ratio^k for base "
+                                f"{base} ratio {ratio} — inconsistent step table.")
+        fq = typ.get("fitQuality") or {}
+        rmse = fq.get("rmse")
+        if isinstance(rmse, (int, float)):
+            if rmse > 0.05 and typ.get("followsScale"):
+                rep.warn("C24", f"type followsScale claimed at rmse {rmse} — a poor "
+                                "fit must set followsScale: false, never forced.")
+            worst = max((f.get("errPct", 0) for f in (typ.get("fits") or [])),
+                        default=0.0)
+            claimed = fq.get("worstErrPct")
+            if isinstance(claimed, (int, float)) and abs(worst - claimed) > 0.35:
+                rep.warn("C24", f"fitQuality.worstErrPct {claimed} does not match "
+                                f"the recorded fits (max errPct {worst}) — the "
+                                "honesty ledger must agree with itself.")
+
+
+# C25 — brand signatures (pass1 2026-07, brand-schema §4.7). The extraction
+# doctrine (layout-analyst-skill.md) makes authoring REQUIRED; the validator is
+# the enforcement backstop, same as C23 for recipes. Advisory.
+_SIGNATURE_KINDS = {"accent-scope", "shape-motif", "type-treatment",
+                    "surface-habit", "spacing-habit"}
+
+
+def _check_signatures(rep: Report, doc: dict) -> None:
+    sigs = doc.get("signatures")
+    if not sigs:
+        rep.warn("C25", "no `signatures:` block — the 3-5 moves that make this "
+                        "brand recognizable should be authored from the evidence "
+                        "during extraction (brand-schema §4.7; skill doctrine).")
+        return
+    if not isinstance(sigs, list):
+        rep.warn("C25", "`signatures:` must be a LIST of signature entries.")
+        return
+    if not (3 <= len(sigs) <= 5):
+        rep.warn("C25", f"{len(sigs)} signature(s) authored — the discipline is "
+                        "3-5, not 20 (and not fewer than 3): signatures are the "
+                        "brand's recognizable moves, not a rule dump.")
+    for s in sigs:
+        if not isinstance(s, dict):
+            rep.warn("C25", f"non-mapping signature entry: {s!r}")
+            continue
+        sid = str(s.get("id") or "?")
+        kind = str(s.get("kind") or "")
+        if kind not in _SIGNATURE_KINDS:
+            rep.warn("C25", f"signature '{sid}' kind '{kind}' is not a known rule "
+                            f"kind ({', '.join(sorted(_SIGNATURE_KINDS))}) — the "
+                            "signature auditor cannot verify it.")
+        if str(s.get("mode") or "") not in ("always", "never"):
+            rep.warn("C25", f"signature '{sid}' needs mode: always|never — a "
+                            "signature is a machine-checkable rule, not prose.")
+        if not isinstance(s.get("check"), dict) or not s["check"]:
+            rep.warn("C25", f"signature '{sid}' carries no check params — author "
+                            "the machine-checkable form (the claim is the prose "
+                            "companion, the check is the rule).")
+        if not (s.get("evidence") or []):
+            rep.warn("C25", f"signature '{sid}' cites no evidence provenance — "
+                            "every signature must name the sections/computed facts "
+                            "that license it.")
 
 
 def _smoke_compose(rep: Report, brand_dir: Path, doc: dict,

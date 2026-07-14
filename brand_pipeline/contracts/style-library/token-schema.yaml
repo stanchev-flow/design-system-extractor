@@ -1,0 +1,65 @@
+# provenance: authored-prior (Claude design chat, 2026-07-14) — NOT evidence; requires bakeoff validation before brand use
+# converted from token-schema.json (canonical-only JSON) at import
+provenance: "authored-prior (Claude design chat, 2026-07-14) — NOT evidence; requires bakeoff validation before brand use"
+$doc: Merged source of truth. `style` keys are the fixed grammar; `brand` keys are the instance. resolve()
+  binds brand values into the resolved section spec.
+style:
+  type:
+    pair:
+    - displayFont
+    - bodyFont
+    scaleRatio: 1.25
+    weights:
+    - 400
+    - 500
+    - 600
+    - 700
+    baseSize: 16
+  space:
+    base: 8
+    scale:
+    - 4
+    - 8
+    - 16
+    - 24
+    - 48
+    sectionRhythm: 96
+  shape:
+    radius: 12
+    borderWidth: 1
+    elevation:
+    - none
+    - sm
+    - md
+  color:
+    roles:
+    - bg
+    - surface
+    - text
+    - muted
+    - border
+    - accent
+    space: oklch
+  layout:
+    cols: 12
+    maxWidth: 1200
+    gutter: 24
+  motion:
+    easing: cubic-bezier(0.2,0,0,1)
+    durationMs:
+    - 120
+    - 240
+brand:
+  font:
+    display: Space Grotesk
+    body: Instrument Sans
+  accent: oklch(0.56 0.13 250)
+  logo: assets/logo.svg
+  signatures:
+  - 3–5 always/never rules (see styles/directives.json → signatures)
+  voice:
+    tone: confident, plain
+    readingLevel: grade 8
+    sentenceLength: short
+  overrides:
+    $note: optional brand-level (level 4) per-section patches, same shape as overrides.json

@@ -1,0 +1,224 @@
+# provenance: authored-prior (Claude design chat, 2026-07-14) — NOT evidence; requires bakeoff validation before brand use
+# converted from pipeline.json (canonical-only JSON) at import; describes the AUTHORS' intended 7-stage pipeline — package doc, not our pipeline
+provenance: "authored-prior (Claude design chat, 2026-07-14) — NOT evidence; requires bakeoff validation before brand use"
+$schema: https://json-schema.org/draft/2020-12/schema
+name: style-brand-saas-pipeline
+version: 1.0.0
+description: Agent-driven pipeline that captures a design STYLE as a reusable grammar and a BRAND as a
+  token instance, then composes SaaS marketing pages from archetypes so every new page stays on-style
+  and on-brand by construction.
+principles:
+  core_equation: final_page = style_rules ⊗ brand_tokens
+  separation:
+    style: 'Fixed grammar: rules, ratios, and relationships. What makes a page read as THIS STYLE. No
+      exact values.'
+    brand: 'Token instance: real fonts, colors, logo, plus 3-5 signature moves. What makes it RECOGNIZABLE.'
+  single_source_of_truth: tokens.json. Change once, every page updates.
+  compose_dont_template: Never template whole pages. Template section archetypes that consume tokens;
+    a page is a stack of archetypes.
+  biggest_lever: Quantize on extraction (stage 02). Snapping noisy scraped values to a clean scale converts
+    'looks kind of like the site' into 'reproducibly this brand'.
+artifacts:
+  brief.json: Scope, target, references collected at intake.
+  style.raw.json: Raw measurements from the reference (noisy).
+  style.schema.json: Normalized style grammar (quantized).
+  brand.tokens.json: Brand values + signatures + voice, keyed to the schema.
+  tokens.json: Merged source of truth = style.schema.json + brand.tokens.json.
+  pages/: Composed page files.
+  report.json: Validation results + repairs.
+  dist/: Shippable output + handoff.
+token_schema:
+  style:
+    type:
+      pair:
+      - displayFont
+      - bodyFont
+      scaleRatio: 1.25
+      weights:
+      - 400
+      - 500
+      - 600
+      - 700
+      baseSize: 16
+    space:
+      base: 8
+      scale:
+      - 4
+      - 8
+      - 16
+      - 24
+      - 48
+      sectionRhythm: 96
+    shape:
+      radius: 12
+      borderWidth: 1
+      elevation:
+      - none
+      - sm
+      - md
+    color:
+      roles:
+      - bg
+      - surface
+      - text
+      - muted
+      - border
+      - accent
+      space: oklch
+    layout:
+      cols: 12
+      maxWidth: 1200
+      gutter: 24
+      heroPattern: headline+sub+singleCTA
+    motion:
+      easing: cubic-bezier(0.2,0,0,1)
+      durationMs:
+      - 120
+      - 240
+  brand:
+    font:
+      display: Space Grotesk
+      body: Instrument Sans
+    accent: oklch(0.56 0.13 250)
+    logo: assets/logo.svg
+    signatures:
+    - 'example: headlines always tight-tracked'
+    - 'example: cards never get shadows, only 1px borders'
+    - 'example: accent only on primary action + links'
+    - 'example: one shape/corner motif repeated'
+    - 'example: consistent asymmetry / spacing habit'
+    voice:
+      tone: confident, plain
+      readingLevel: grade 8
+      sentenceLength: short
+stages:
+- id: '00'
+  name: Intake
+  agent: Intake Agent
+  role: Collects logo, existing URL/screenshots, sitemap, and constraints; asks sharp scoping questions.
+  inputs:
+  - brand references
+  - target site type
+  - scope
+  skills:
+  - questions
+  - asset ingest
+  - sitemap
+  outputs:
+  - brief.json
+  done_when: Scope, target pages, and references are captured and confirmed.
+- id: '01'
+  name: Detect style
+  agent: Style Detector
+  role: Reverse-engineers the reference into measurements (parameters, not DOM copy).
+  inputs:
+  - brief.json
+  skills:
+  - web fetch
+  - screenshot read
+  - measure
+  outputs:
+  - style.raw.json
+  measures:
+  - type scale
+  - spacing histogram
+  - radius mode
+  - color roles
+  - grid
+  - motion band
+  done_when: All schema keys have at least a raw measured value.
+- id: '02'
+  name: Normalize
+  agent: Normalizer
+  role: Quantizes noisy measurements onto clean scales; resolves color roles in oklch; fixes the grid.
+  inputs:
+  - style.raw.json
+  skills:
+  - quantize
+  - oklch solve
+  - grid fit
+  outputs:
+  - style.schema.json
+  done_when: Every value snaps to the base unit + ratio; no arbitrary numbers remain.
+- id: '03'
+  name: Brand treatment
+  agent: Brand Agent
+  role: Instantiates tokens and defines 3-5 signature moves + always/never rules + voice.
+  inputs:
+  - style.schema.json
+  - brief.json
+  skills:
+  - Create design system
+  - Frontend design
+  outputs:
+  - brand.tokens.json
+  - tokens.json
+  done_when: Schema slots are filled and signatures are written as explicit always/never rules.
+- id: '04'
+  name: Compose pages
+  agent: Layout Composer
+  role: Assembles each page from archetypes that consume tokens.json.
+  inputs:
+  - tokens.json
+  skills:
+  - Design Components
+  - Interactive prototype
+  outputs:
+  - pages/*.html
+  archetypes:
+  - Nav
+  - Hero
+  - Logo wall
+  - Feature trio
+  - Product split
+  - How it works
+  - Metrics band
+  - Testimonial
+  - Pricing
+  - FAQ
+  - CTA band
+  - Footer
+  done_when: All target pages exist and every section reads values from tokens.json only.
+- id: '05'
+  name: Validate & repair
+  agent: QA / Validator
+  role: Renders, inspects, and checks against style constraints; rejects or auto-fixes drift in a loop.
+  inputs:
+  - pages/*.html
+  - tokens.json
+  skills:
+  - render + screenshot
+  - a11y check
+  - repair
+  outputs:
+  - report.json
+  gates:
+  - id: contrast
+    check: text/bg meets WCAG AA
+  - id: scale_adherence
+    check: font sizes lie on the type ratio
+  - id: accent_budget
+    check: accent used sparingly per brand rule
+  - id: signature_check
+    check: all 3-5 signature moves present
+  - id: grid_alignment
+    check: elements share edges; no strays
+  - id: voice
+    check: copy matches tone spec
+  loop: On any gate failure, repair and re-run gates until all pass.
+  done_when: All gates pass on all pages.
+- id: '06'
+  name: Ship
+  agent: Ship Agent
+  role: Packages tokens + pages; produces export formats and handoff docs.
+  inputs:
+  - pages/*.html
+  - tokens.json
+  - report.json
+  skills:
+  - Save as standalone HTML
+  - Save as PDF
+  - Handoff to Claude Code
+  outputs:
+  - dist/
+  done_when: Deliverables exported and handoff package written.

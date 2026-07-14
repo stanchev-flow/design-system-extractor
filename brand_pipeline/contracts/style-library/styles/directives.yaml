@@ -1,0 +1,1263 @@
+# provenance: authored-prior (Claude design chat, 2026-07-14) — NOT evidence; requires bakeoff validation before brand use
+# YAML/JSON verified content-identical at import; JSON + MD projections dropped
+provenance: "authored-prior (Claude design chat, 2026-07-14) — NOT evidence; requires bakeoff validation before brand use"
+$doc: "Per-STYLE cross-cutting directives (cascade level 2). Each applies to ALL sections: it sets constraints and RERANKS each section's allowed layouts via layoutBias. Keys here override section defaults but can never override a section's locked invariants. 'signatures' are the 3–5 recognizable moves the brand layer instantiates."
+count: 51
+keys:
+  - family
+  - label
+  - density
+  - radius
+  - border
+  - shadow
+  - contrast
+  - accentUsage
+  - palette
+  - typeDisplay
+  - typeBody
+  - scaleRatio
+  - case
+  - tracking
+  - layoutBias
+  - motion
+  - imagery
+  - signatures
+styles:
+  swiss:
+    family: Foundational
+    label: Swiss / International
+    density: airy
+    radius: none
+    border: hairline
+    shadow: none
+    contrast: normal
+    accentUsage: minimal
+    palette: mono
+    typeDisplay: Helvetica/Neue grotesk
+    typeBody: grotesk
+    scaleRatio: 1.25
+    case: mixed
+    tracking: tight
+    layoutBias:
+      - grid-aligned
+      - split-left
+      - grid-3
+    motion: subtle
+    imagery: figure
+    signatures:
+      - "strict column grid, everything left-flush"
+      - "one accent, used structurally not decoratively"
+      - "large type, generous whitespace, no shadows"
+  bauhaus:
+    family: Foundational
+    label: Bauhaus
+    density: balanced
+    radius: none
+    border: hairline
+    shadow: none
+    contrast: high
+    accentUsage: expressive
+    palette: vivid
+    typeDisplay: geometric sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - grid-aligned
+      - bento
+      - grid-3
+    motion: subtle
+    imagery: photo
+    signatures:
+      - primary red/blue/yellow on black/white
+      - geometric shapes as structure
+      - circles/triangles/squares repeated
+  modernist:
+    family: Foundational
+    label: Modernist
+    density: airy
+    radius: sm
+    border: hairline
+    shadow: none
+    contrast: normal
+    accentUsage: minimal
+    palette: mono
+    typeDisplay: grotesk sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - grid-aligned
+      - split-left
+    motion: subtle
+    imagery: photo
+    signatures:
+      - form follows function
+      - restrained palette
+      - clarity over ornament
+  minimalist:
+    family: Foundational
+    label: Minimalist
+    density: airy
+    radius: sm
+    border: none
+    shadow: none
+    contrast: normal
+    accentUsage: minimal
+    palette: mono
+    typeDisplay: grotesk sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - minimal
+      - center-stack
+      - split-left
+    motion: subtle
+    imagery: figure
+    signatures:
+      - maximal whitespace
+      - one accent at most
+      - "remove until it breaks, then add one back"
+  grid-typographic:
+    family: Foundational
+    label: Grid / Typographic
+    density: balanced
+    radius: none
+    border: hairline
+    shadow: none
+    contrast: normal
+    accentUsage: minimal
+    palette: mono
+    typeDisplay: large grotesk
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: tight
+    layoutBias:
+      - grid-aligned
+      - list-rows
+    motion: subtle
+    imagery: none
+    signatures:
+      - type IS the design
+      - baseline grid visible in rhythm
+      - numerals and labels as ornament
+  flat:
+    family: Foundational
+    label: Flat design
+    density: balanced
+    radius: md
+    border: hairline
+    shadow: none
+    contrast: normal
+    accentUsage: expressive
+    palette: vivid
+    typeDisplay: grotesk sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - grid-3
+      - center-stack
+    motion: subtle
+    imagery: illustration
+    signatures:
+      - no gradients or shadows
+      - bold flat color blocks
+      - simple iconography
+  material:
+    family: Foundational
+    label: Material
+    density: balanced
+    radius: md
+    border: hairline
+    shadow: soft
+    contrast: normal
+    accentUsage: moderate
+    palette: duo
+    typeDisplay: grotesk sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - grid-3
+      - bento
+    motion: subtle
+    imagery: photo
+    signatures:
+      - elevation via layered shadow
+      - bold primary + accent roles
+      - FAB-style primary actions
+  editorial-magazine:
+    family: Editorial
+    label: Editorial / Magazine
+    density: airy
+    radius: none
+    border: hairline
+    shadow: none
+    contrast: normal
+    accentUsage: minimal
+    palette: mono
+    typeDisplay: high-contrast serif
+    typeBody: serif/humanist
+    scaleRatio: 1.333
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - split-right
+      - list-rows
+      - grid-2
+    motion: subtle
+    imagery: figure
+    signatures:
+      - dramatic serif/sans size contrast
+      - large figures with captions
+      - pull-quotes and drop context
+  newspaper:
+    family: Editorial
+    label: Newspaper
+    density: tight
+    radius: none
+    border: hairline
+    shadow: none
+    contrast: normal
+    accentUsage: minimal
+    palette: mono
+    typeDisplay: condensed serif
+    typeBody: serif
+    scaleRatio: 1.2
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - list-rows
+      - grid-3
+    motion: subtle
+    imagery: figure
+    signatures:
+      - multi-column measure
+      - rules/hairlines between stories
+      - dateline and byline treatment
+  serif-classic:
+    family: Editorial
+    label: Serif Classic
+    density: airy
+    radius: sm
+    border: hairline
+    shadow: none
+    contrast: normal
+    accentUsage: minimal
+    palette: mono
+    typeDisplay: old-style serif
+    typeBody: serif
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - center-stack
+      - split-left
+    motion: subtle
+    imagery: photo
+    signatures:
+      - timeless serif throughout
+      - warm paper neutrals
+      - understated
+  book-literary:
+    family: Editorial
+    label: Book / Literary
+    density: airy
+    radius: none
+    border: hairline
+    shadow: none
+    contrast: normal
+    accentUsage: minimal
+    palette: mono
+    typeDisplay: text serif
+    typeBody: text serif
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - minimal
+      - center-stack
+    motion: subtle
+    imagery: none
+    signatures:
+      - single measured column
+      - generous leading
+      - chapter-like rhythm
+  zine:
+    family: Editorial
+    label: Zine
+    density: tight
+    radius: none
+    border: hairline
+    shadow: hard
+    contrast: high
+    accentUsage: expressive
+    palette: duo
+    typeDisplay: mixed/photocopy
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - list-rows
+      - bento
+    motion: subtle
+    imagery: collage
+    signatures:
+      - cut-and-paste energy
+      - "xerox texture, tape, staples"
+      - hand-set irregularity
+  annual-report:
+    family: Editorial
+    label: Annual Report
+    density: airy
+    radius: sm
+    border: hairline
+    shadow: none
+    contrast: normal
+    accentUsage: moderate
+    palette: duo
+    typeDisplay: serif or grotesk
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - grid-2
+      - split-left
+      - grid-4
+    motion: subtle
+    imagery: figure
+    signatures:
+      - data as feature
+      - figure/caption discipline
+      - numeric confidence
+  brutalist:
+    family: Expressive
+    label: Brutalist
+    density: tight
+    radius: none
+    border: bold
+    shadow: none
+    contrast: high
+    accentUsage: expressive
+    palette: mono
+    typeDisplay: system/mono
+    typeBody: mono/system
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - list-rows
+      - grid-aligned
+      - asymmetric
+    motion: subtle
+    imagery: none
+    signatures:
+      - "raw HTML aesthetic, visible borders"
+      - "system fonts, underlined links"
+      - "no rounded corners, no soft shadow"
+  neubrutalism:
+    family: Expressive
+    label: Neubrutalism
+    density: balanced
+    radius: sm
+    border: bold
+    shadow: hard
+    contrast: high
+    accentUsage: expressive
+    palette: vivid
+    typeDisplay: bold grotesk
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - bento
+      - grid-3
+    motion: subtle
+    imagery: photo
+    signatures:
+      - thick black borders
+      - hard offset drop shadows
+      - saturated primaries on off-white
+  y2k:
+    family: Expressive
+    label: Y2K
+    density: balanced
+    radius: pill
+    border: hairline
+    shadow: soft
+    contrast: high
+    accentUsage: expressive
+    palette: vivid
+    typeDisplay: grotesk sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - center-stack
+      - bento
+    motion: subtle
+    imagery: illustration
+    signatures:
+      - "chrome/gloss, bubble shapes"
+      - "metallic gradients, lens flares"
+      - early-web optimism
+  vaporwave:
+    family: Expressive
+    label: Vaporwave
+    density: balanced
+    radius: sm
+    border: hairline
+    shadow: soft
+    contrast: high
+    accentUsage: expressive
+    palette: vivid
+    typeDisplay: retro serif + kana
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - center-stack
+      - full-bleed
+    motion: subtle
+    imagery: full-bleed
+    signatures:
+      - magenta/cyan gradients
+      - "grids, busts, glitch"
+      - nostalgic dreamscape
+  retro-70s:
+    family: Expressive
+    label: Retro / 70s
+    density: balanced
+    radius: pill
+    border: hairline
+    shadow: none
+    contrast: normal
+    accentUsage: expressive
+    palette: vivid
+    typeDisplay: groovy rounded
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - center-stack
+      - grid-3
+    motion: subtle
+    imagery: illustration
+    signatures:
+      - orange/mustard/brown palette
+      - rounded chunky type
+      - warm sunburst motifs
+  memphis:
+    family: Expressive
+    label: Memphis
+    density: balanced
+    radius: md
+    border: hairline
+    shadow: none
+    contrast: high
+    accentUsage: expressive
+    palette: vivid
+    typeDisplay: grotesk sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - bento
+      - grid-3
+    motion: subtle
+    imagery: illustration
+    signatures:
+      - "squiggles, confetti, zigzags"
+      - clashing bright colors
+      - playful geometric chaos
+  pixel-8bit:
+    family: Expressive
+    label: "8-bit / Pixel"
+    density: balanced
+    radius: none
+    border: hairline
+    shadow: hard
+    contrast: high
+    accentUsage: expressive
+    palette: vivid
+    typeDisplay: pixel/bitmap
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - grid-aligned
+      - center-stack
+    motion: subtle
+    imagery: illustration
+    signatures:
+      - pixel-perfect blocks
+      - limited retro palette
+      - "hard edges, no anti-alias feel"
+  psychedelic:
+    family: Expressive
+    label: Psychedelic
+    density: balanced
+    radius: lg
+    border: hairline
+    shadow: none
+    contrast: high
+    accentUsage: expressive
+    palette: vivid
+    typeDisplay: liquid/warped
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - center-stack
+      - full-bleed
+    motion: subtle
+    imagery: full-bleed
+    signatures:
+      - warped flowing type
+      - vibrating complementary colors
+      - kaleidoscopic symmetry
+  art-deco:
+    family: Expressive
+    label: Art Deco
+    density: airy
+    radius: none
+    border: hairline
+    shadow: none
+    contrast: normal
+    accentUsage: moderate
+    palette: duo
+    typeDisplay: geometric display serif
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: upper
+    tracking: wide
+    layoutBias:
+      - center-stack
+      - grid-aligned
+    motion: subtle
+    imagery: figure
+    signatures:
+      - gold on deep tones
+      - "symmetry, chevrons, sunbursts"
+      - tall elegant capitals
+  art-nouveau:
+    family: Expressive
+    label: Art Nouveau
+    density: airy
+    radius: lg
+    border: hairline
+    shadow: none
+    contrast: normal
+    accentUsage: moderate
+    palette: duo
+    typeDisplay: organic display serif
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - split-left
+      - center-stack
+    motion: subtle
+    imagery: illustration
+    signatures:
+      - flowing floral linework
+      - whiplash curves
+      - muted botanical palette
+  mid-century:
+    family: Expressive
+    label: Mid-century Modern
+    density: balanced
+    radius: md
+    border: hairline
+    shadow: none
+    contrast: normal
+    accentUsage: moderate
+    palette: duo
+    typeDisplay: geometric sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - grid-3
+      - split-left
+    motion: subtle
+    imagery: illustration
+    signatures:
+      - warm retro palette
+      - clean geometric illustration
+      - atomic-age optimism
+  saas-product:
+    family: Digital
+    label: SaaS / Product
+    density: balanced
+    radius: md
+    border: hairline
+    shadow: soft
+    contrast: normal
+    accentUsage: moderate
+    palette: duo
+    typeDisplay: grotesk sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - split-right
+      - grid-3
+      - bento
+    motion: subtle
+    imagery: screenshot
+    signatures:
+      - product screenshots in frames
+      - gradient/soft accent surfaces
+      - clear single primary CTA per view
+  dashboard-data:
+    family: Digital
+    label: Dashboard / Data
+    density: tight
+    radius: sm
+    border: hairline
+    shadow: soft
+    contrast: normal
+    accentUsage: moderate
+    palette: duo
+    typeDisplay: grotesk sans
+    typeBody: sans + tabular numerals
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - bento
+      - grid-4
+      - table
+    motion: subtle
+    imagery: screenshot
+    signatures:
+      - dense information grids
+      - "tabular figures, chart accents"
+      - status colors used semantically
+  glassmorphism:
+    family: Digital
+    label: Glassmorphism
+    density: balanced
+    radius: lg
+    border: hairline
+    shadow: soft
+    contrast: normal
+    accentUsage: moderate
+    palette: duo
+    typeDisplay: grotesk sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - center-stack
+      - bento
+    motion: subtle
+    imagery: full-bleed
+    signatures:
+      - frosted translucent panels
+      - backdrop blur over vivid bg
+      - "thin light borders, subtle depth"
+  neumorphism:
+    family: Digital
+    label: Neumorphism
+    density: balanced
+    radius: lg
+    border: none
+    shadow: soft
+    contrast: normal
+    accentUsage: minimal
+    palette: mono
+    typeDisplay: grotesk sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - center-stack
+      - grid-3
+    motion: subtle
+    imagery: none
+    signatures:
+      - soft extruded surfaces
+      - dual inner/outer shadow
+      - monochrome low-contrast
+  skeuomorphic:
+    family: Digital
+    label: Skeuomorphic
+    density: balanced
+    radius: md
+    border: hairline
+    shadow: soft
+    contrast: normal
+    accentUsage: moderate
+    palette: duo
+    typeDisplay: grotesk sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - center-stack
+      - grid-2
+    motion: subtle
+    imagery: photo
+    signatures:
+      - "real-world textures (leather, felt)"
+      - realistic depth and highlights
+      - tactile buttons
+  dark-mode:
+    family: Digital
+    label: Dark Mode
+    density: balanced
+    radius: md
+    border: hairline
+    shadow: soft
+    contrast: high
+    accentUsage: moderate
+    palette: duo
+    typeDisplay: grotesk sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - split-right
+      - bento
+      - grid-3
+    motion: subtle
+    imagery: screenshot
+    signatures:
+      - "near-black surfaces, layered elevation"
+      - "glowing accent, careful contrast"
+      - desaturated neutrals
+  bento-grid:
+    family: Digital
+    label: Bento Grid
+    density: balanced
+    radius: lg
+    border: hairline
+    shadow: soft
+    contrast: normal
+    accentUsage: moderate
+    palette: duo
+    typeDisplay: grotesk sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - bento
+      - grid-4
+    motion: subtle
+    imagery: screenshot
+    signatures:
+      - mixed-size rounded tiles
+      - one idea per tile
+      - tight consistent gutters
+  ios-hig:
+    family: Digital
+    label: iOS / HIG
+    density: balanced
+    radius: lg
+    border: hairline
+    shadow: soft
+    contrast: normal
+    accentUsage: moderate
+    palette: duo
+    typeDisplay: SF-like sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - center-stack
+      - list-rows
+    motion: subtle
+    imagery: photo
+    signatures:
+      - large rounded corners
+      - system-blue accent
+      - "clarity, deference, depth"
+  fluent:
+    family: Digital
+    label: Fluent
+    density: balanced
+    radius: md
+    border: hairline
+    shadow: soft
+    contrast: normal
+    accentUsage: moderate
+    palette: duo
+    typeDisplay: grotesk sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - grid-3
+      - bento
+    motion: subtle
+    imagery: photo
+    signatures:
+      - "acrylic material, subtle depth"
+      - reveal highlights
+      - coherent accent system
+  hand-drawn:
+    family: Texture
+    label: Hand-drawn / Sketch
+    density: balanced
+    radius: lg
+    border: bold
+    shadow: none
+    contrast: normal
+    accentUsage: moderate
+    palette: duo
+    typeDisplay: handwritten/marker
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - center-stack
+      - list-rows
+    motion: subtle
+    imagery: illustration
+    signatures:
+      - wobbly hand-drawn borders
+      - sketch arrows and doodles
+      - "imperfect, human marks"
+  collage:
+    family: Texture
+    label: Collage / Cut-paper
+    density: balanced
+    radius: none
+    border: hairline
+    shadow: soft
+    contrast: high
+    accentUsage: expressive
+    palette: vivid
+    typeDisplay: grotesk sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - bento
+      - asymmetric
+    motion: subtle
+    imagery: collage
+    signatures:
+      - "torn-paper edges, layering"
+      - mixed media scraps
+      - tactile overlap and shadow
+  organic:
+    family: Texture
+    label: Organic / Natural
+    density: balanced
+    radius: lg
+    border: hairline
+    shadow: soft
+    contrast: normal
+    accentUsage: moderate
+    palette: duo
+    typeDisplay: humanist sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - center-stack
+      - split-left
+    motion: subtle
+    imagery: photo
+    signatures:
+      - "blob shapes, soft curves"
+      - earthy natural palette
+      - "flowing, no hard grid"
+  grunge:
+    family: Texture
+    label: Grunge
+    density: balanced
+    radius: none
+    border: hairline
+    shadow: none
+    contrast: high
+    accentUsage: expressive
+    palette: mono
+    typeDisplay: distressed
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - asymmetric
+      - full-bleed
+    motion: subtle
+    imagery: texture
+    signatures:
+      - "distressed textures, splatter"
+      - high-contrast dirty neutrals
+      - "raw, edgy"
+  textured-paper:
+    family: Texture
+    label: Textured / Paper
+    density: balanced
+    radius: sm
+    border: hairline
+    shadow: soft
+    contrast: normal
+    accentUsage: minimal
+    palette: mono
+    typeDisplay: serif
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - center-stack
+      - split-left
+    motion: subtle
+    imagery: figure
+    signatures:
+      - subtle paper grain
+      - warm off-white surfaces
+      - "printed, crafted feel"
+  claymorphism:
+    family: Texture
+    label: Claymorphism
+    density: balanced
+    radius: lg
+    border: none
+    shadow: soft
+    contrast: normal
+    accentUsage: moderate
+    palette: vivid
+    typeDisplay: grotesk sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - center-stack
+      - grid-3
+    motion: subtle
+    imagery: illustration
+    signatures:
+      - puffy 3D clay shapes
+      - soft inner+outer shadow
+      - playful pastel palette
+  luxury-fashion:
+    family: Luxury
+    label: Luxury / High-fashion
+    density: airy
+    radius: none
+    border: hairline
+    shadow: none
+    contrast: normal
+    accentUsage: minimal
+    palette: mono
+    typeDisplay: high-contrast serif
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: upper
+    tracking: wide
+    layoutBias:
+      - full-bleed
+      - split-left
+      - minimal
+    motion: subtle
+    imagery: full-bleed
+    signatures:
+      - full-bleed editorial photography
+      - wide-tracked capitals
+      - black/white + one metal
+  boutique-wellness:
+    family: Luxury
+    label: Boutique / Wellness
+    density: airy
+    radius: lg
+    border: hairline
+    shadow: none
+    contrast: normal
+    accentUsage: minimal
+    palette: duo
+    typeDisplay: elegant serif
+    typeBody: humanist sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - center-stack
+      - split-left
+    motion: subtle
+    imagery: photo
+    signatures:
+      - soft muted earth tones
+      - calm generous spacing
+      - serif + gentle sans pairing
+  elegant-serif:
+    family: Luxury
+    label: Elegant Serif
+    density: airy
+    radius: none
+    border: hairline
+    shadow: none
+    contrast: normal
+    accentUsage: minimal
+    palette: mono
+    typeDisplay: display serif
+    typeBody: serif
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - center-stack
+      - split-left
+    motion: subtle
+    imagery: photo
+    signatures:
+      - refined serif hierarchy
+      - restrained neutral palette
+      - confident whitespace
+  monochrome:
+    family: Luxury
+    label: Monochrome
+    density: airy
+    radius: sm
+    border: hairline
+    shadow: none
+    contrast: normal
+    accentUsage: minimal
+    palette: mono
+    typeDisplay: grotesk sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - grid-aligned
+      - split-left
+      - minimal
+    motion: subtle
+    imagery: photo
+    signatures:
+      - single-hue or grayscale only
+      - contrast via value not color
+      - tonal discipline
+  scandinavian:
+    family: Luxury
+    label: Scandinavian
+    density: airy
+    radius: md
+    border: hairline
+    shadow: none
+    contrast: normal
+    accentUsage: minimal
+    palette: mono
+    typeDisplay: clean grotesk
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - grid-3
+      - split-left
+    motion: subtle
+    imagery: photo
+    signatures:
+      - light airy neutrals
+      - functional simplicity
+      - one muted accent
+  japandi:
+    family: Luxury
+    label: Japandi
+    density: airy
+    radius: sm
+    border: hairline
+    shadow: none
+    contrast: normal
+    accentUsage: minimal
+    palette: mono
+    typeDisplay: humanist serif/sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - minimal
+      - split-left
+    motion: subtle
+    imagery: photo
+    signatures:
+      - warm muted neutrals
+      - negative space as feature
+      - "natural materials, calm"
+  maximalist:
+    family: Bold
+    label: Maximalist
+    density: tight
+    radius: lg
+    border: hairline
+    shadow: hard
+    contrast: high
+    accentUsage: expressive
+    palette: vivid
+    typeDisplay: grotesk sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - bento
+      - asymmetric
+      - full-bleed
+    motion: subtle
+    imagery: collage
+    signatures:
+      - more is more — layered everything
+      - clashing type and color on purpose
+      - "dense, energetic composition"
+  anti-design:
+    family: Bold
+    label: Anti-design
+    density: tight
+    radius: none
+    border: bold
+    shadow: none
+    contrast: high
+    accentUsage: expressive
+    palette: vivid
+    typeDisplay: default/ugly-on-purpose
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - asymmetric
+      - list-rows
+    motion: subtle
+    imagery: photo
+    signatures:
+      - "deliberately 'wrong' choices"
+      - "system defaults, clashing scale"
+      - rules broken intentionally
+  cyberpunk:
+    family: Bold
+    label: Cyberpunk / Techno
+    density: tight
+    radius: none
+    border: hairline
+    shadow: none
+    contrast: high
+    accentUsage: expressive
+    palette: vivid
+    typeDisplay: mono/techno
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: upper
+    tracking: normal
+    layoutBias:
+      - bento
+      - grid-aligned
+      - full-bleed
+    motion: subtle
+    imagery: full-bleed
+    signatures:
+      - neon on near-black
+      - "glitch, scanlines, HUD framing"
+      - monospace data overlays
+  corporate-memphis:
+    family: Bold
+    label: Corporate Memphis
+    density: balanced
+    radius: lg
+    border: hairline
+    shadow: none
+    contrast: normal
+    accentUsage: expressive
+    palette: vivid
+    typeDisplay: grotesk sans
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - split-left
+      - grid-3
+    motion: subtle
+    imagery: illustration
+    signatures:
+      - flat blob-people illustration
+      - bright friendly palette
+      - rounded approachable shapes
+  poster-typographic:
+    family: Bold
+    label: Poster / Typographic
+    density: tight
+    radius: none
+    border: hairline
+    shadow: none
+    contrast: high
+    accentUsage: expressive
+    palette: duo
+    typeDisplay: oversized display
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: upper
+    tracking: tight
+    layoutBias:
+      - center-stack
+      - full-bleed
+      - asymmetric
+    motion: subtle
+    imagery: none
+    signatures:
+      - type fills the frame
+      - "one or two hues, high impact"
+      - hierarchy by extreme scale
+  high-contrast-mono:
+    family: Bold
+    label: High-contrast Mono
+    density: balanced
+    radius: none
+    border: hairline
+    shadow: none
+    contrast: high
+    accentUsage: minimal
+    palette: mono
+    typeDisplay: bold grotesk
+    typeBody: neutral sans
+    scaleRatio: 1.25
+    case: mixed
+    tracking: normal
+    layoutBias:
+      - grid-aligned
+      - split-left
+    motion: subtle
+    imagery: photo
+    signatures:
+      - pure black on white (or invert)
+      - "one accent used rarely, loudly"
+      - "sharp edges, strong hierarchy"

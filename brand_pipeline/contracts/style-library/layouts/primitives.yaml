@@ -1,0 +1,119 @@
+# provenance: authored-prior (Claude design chat, 2026-07-14) — NOT evidence; requires bakeoff validation before brand use
+# converted from layouts/primitives.json (canonical-only JSON) at import
+provenance: "authored-prior (Claude design chat, 2026-07-14) — NOT evidence; requires bakeoff validation before brand use"
+$doc: Reusable layout patterns that section layouts reference. Style directives rerank these; sections
+  declare which they allow.
+primitives:
+  center-stack:
+    desc: 'Centered vertical stack: eyebrow, headline, sub, CTAs.'
+    axis: vertical
+    good:
+    - hero
+    - cta-band
+    - newsletter
+  split-left:
+    desc: Two columns, text left / media right.
+    axis: horizontal
+    good:
+    - hero
+    - product-split
+    - feature-alternating
+  split-right:
+    desc: Two columns, media left / text right.
+    axis: horizontal
+    good:
+    - hero
+    - product-split
+    - feature-alternating
+  full-bleed:
+    desc: Media fills the frame, text overlaid.
+    axis: layered
+    good:
+    - hero
+    - cta-band
+    - case-study
+  grid-2:
+    desc: Two-up card/cell grid.
+    axis: grid
+    good:
+    - feature-trio
+    - testimonial
+    - pricing
+  grid-3:
+    desc: Three-up grid.
+    axis: grid
+    good:
+    - feature-trio
+    - pricing
+    - team
+    - how-it-works
+  grid-4:
+    desc: Four-up grid.
+    axis: grid
+    good:
+    - metrics-band
+    - integrations-grid
+    - logo-wall
+  bento:
+    desc: Mixed-size tiles on a shared grid.
+    axis: grid
+    good:
+    - feature-trio
+    - product-split
+    - integrations-grid
+  list-rows:
+    desc: Stacked full-width rows.
+    axis: vertical
+    good:
+    - feature-alternating
+    - faq
+    - how-it-works
+  table:
+    desc: Aligned columns/rows for comparison.
+    axis: grid
+    good:
+    - comparison-table
+    - pricing
+  accordion:
+    desc: Collapsible stacked items.
+    axis: vertical
+    good:
+    - faq
+  tabs:
+    desc: Tabbed panels sharing one region.
+    axis: layered
+    good:
+    - pricing
+    - product-split
+    - how-it-works
+  carousel:
+    desc: Horizontally scrolling/paged items.
+    axis: horizontal
+    good:
+    - testimonial
+    - logo-wall
+    - case-study
+  marquee:
+    desc: Continuous scrolling strip.
+    axis: horizontal
+    good:
+    - logo-wall
+    - metrics-band
+  sticky-bar:
+    desc: Pinned horizontal bar.
+    axis: horizontal
+    good:
+    - nav
+    - announcement-bar
+  columns-footer:
+    desc: Multi-column link groups + base row.
+    axis: grid
+    good:
+    - footer
+  minimal:
+    desc: Single element, maximal whitespace.
+    axis: vertical
+    good:
+    - hero
+    - cta-band
+    - testimonial

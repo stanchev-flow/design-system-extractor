@@ -1871,12 +1871,19 @@ def _nav_utility_fragment(doc, items: list[dict] | None = None) -> str:
     return f'<span class="cs-nav-util">{"".join(frags)}</span>'
 
 
-def nav_affordance_css(doc) -> str:
+def nav_affordance_css(doc, honor_curation: bool = True) -> str:
     """Bar-affordance CSS (fid15) — emitted ONLY when this brand captured the facts:
     the dropdown-trigger chevron (harvested glyph as a currentColor mask, measured
     box/gap, open rotation riding the measured motion) and the in-bar utility
     cluster (icon links + icon dropdowns with the measured panel/item paint).
-    Fact-less brands get "" and keep byte-identical pages."""
+    Fact-less brands get "" and keep byte-identical pages.
+
+    ``honor_curation`` — lane semantics (brand-schema §4.4c, the workflow-header
+    precedent applied to chrome motion): a curator's recorded ruling on the
+    chevron fact (``chevron.curation.motion.resolve: instant``, fix5 2026-07)
+    replaces the measured open-rotation TWEEN with an instant transform swap in
+    GENERATION lanes. The replica lane passes False and keeps the measured
+    transition — it rebuilds the source 1:1 and stays evidence-faithful."""
     utility = _nav_utility(doc)
     # chevron GEOMETRY facts: the trigger-family fact first; a brand whose only
     # captured chevron rides a utility control still gets the shared rule.
@@ -1895,10 +1902,19 @@ def nav_affordance_css(doc) -> str:
         h = int(box.get("h") or 14)
         gap = chev.get("gap")
         gap_px = f"{int(gap)}px" if isinstance(gap, (int, float)) else "0.25em"
-        # measured transition wins; the fact-less degrade rides the brand's own
-        # motion tokens (--c-motion-fast/--c-ease), never an invented literal.
-        trans = _mega_first(chev.get("transition"),
-                            "transform var(--c-motion-fast, 0.2s) var(--c-ease, ease)")
+        # measured transition wins; the fact-less degrade is the INSTANT swap —
+        # motion on a state-change glyph must be measured or absent (AS-47:
+        # "degrades to the instant toggle, never to an invented 200ms"; the old
+        # degrade invented a rotation tween on the brand's motion tokens).
+        trans = _mega_first(chev.get("transition"), "none")
+        # curated instant swap (fix5 2026-07): the user's ruling on the OPEN flip
+        # ("no spin — swap direction instantly") rides the fact as curation data;
+        # generation lanes honor it, the replica keeps the measured tween.
+        cur = (chev.get("curation") or {}).get("motion") \
+            if isinstance(chev.get("curation"), dict) else None
+        if honor_curation and isinstance(cur, dict) \
+                and str(cur.get("resolve") or "").lower() == "instant":
+            trans = "none"
         open_tf = str(chev.get("openTransform") or "rotate(180deg)")
         # fix4 inline channel: box/motion stay on the class; the artwork is the
         # span's nested sanitized <svg> (currentColor ink). The mask channel is
@@ -2403,7 +2419,17 @@ def button_family_for_style(doc, hint: str) -> str | None:
         score = len(style_words & words)
         if score > best_score:
             best, best_score = name, score
-    return best
+    if best:
+        return best
+    # FAMILY-NAME fallback (AS-59, archetype-gallery 2026-07): a hint naming one of
+    # the brand's OWN declared families selects it — the common composition role
+    # vocabulary (`secondary-action`, `cta-secondary`, `action-tertiary`) resolves
+    # through the brand's family list, never an assumed register. Brands without a
+    # family of that name degrade to primary exactly as before.
+    for name in _button_families(doc):
+        if _norm(name) & words:
+            return name
+    return None
 
 
 def _button_family_override_css(doc) -> str:
@@ -2449,8 +2475,13 @@ def _button_oninverse_css(doc) -> str:
             decls.append(f"border: var(--button-{_slug(name)}-oninverse-border);")
         if not decls:
             continue
-        sels = ", ".join(f'[data-surface="{esc(role)}"] .c-button--{_slug(name)}'
-                         for role in scoped_roles)
+        # LIGHT-PANEL opt-out: a solid light panel floated INSIDE the dark band
+        # (.cs-ov-panel — its own opaque surface scope) keeps the family's light-
+        # surface variant; the dark re-scope applies to controls on the band itself.
+        sels = ", ".join(
+            f'[data-surface="{esc(role)}"] .c-button--{_slug(name)}'
+            f':not(.cs-ov-panel .c-button--{_slug(name)})'
+            for role in scoped_roles)
         rules.append(sels + " { " + " ".join(decls) + " }")
     return ("\n" + "\n".join(rules) + "\n") if rules else ""
 
