@@ -1,6 +1,6 @@
-# Design System Extractor — Stanchev Fork
+# AI Brand Studio
 
-> **Personal fork** of [webflow/design-system-extractor](https://github.com/webflow/design-system-extractor), maintained by [@stanchev-flow](https://github.com/stanchev-flow) for hackathon experimentation. The upstream pipeline mechanics documented below are unchanged. See [Local changes](#local-changes) at the bottom for fork-specific additions and tested run recipes.
+> Evidence-first brand extraction + on-brand page generation. Lives at [webflow/ai-brand-studio](https://github.com/webflow/ai-brand-studio); originally forked from [webflow/design-system-extractor](https://github.com/webflow/design-system-extractor). The current architecture is the `brand_pipeline` flow diagrammed below ([HOW-IT-WORKS.md](HOW-IT-WORKS.md) has the full narrative); the legacy screenshot-runner docs are kept further down. See [Local changes](#local-changes) at the bottom for run recipes.
 
 ---
 
@@ -9,6 +9,71 @@ Design System Extractor turns website screenshots plus available source-site sty
 The current goal is broader than screenshot replication. The pipeline is an experiment in importing richer representations of external brand and design systems into Webflow-like generation workflows, and in building a "good design taste" engine that can help generated sites avoid generic output from the first draft.
 
 Walkthrough video: [Loom project walkthrough](https://www.loom.com/share/7f4b8068af1145d3bfb6bcf4b7ce27d4)
+
+## The Pipeline
+
+One brand is extracted once into machine-checkable evidence; pages are then generated forever against that evidence. The model composes, deterministic code paints, gates police, and the replica score proves the extraction against the real site.
+
+```mermaid
+flowchart TD
+    subgraph EXTRACT["1 · BRAND EXTRACTION — once per brand"]
+        SITE["Source site"] --> CAP["Capture agent<br/>multi-viewport screenshots ·<br/>computed CSS · DOM · saved CSS ·<br/>sprites · fonts · assets"]
+        CAP --> GROUND["Vision grounding agent<br/>section crops + full page →<br/>factual visual inventory"]
+        CAP --> MINE["Deterministic miners<br/>motion curves · spacing census ·<br/>type census · glyph harvest"]
+        GROUND --> ANALYST["Layout analyst agent<br/>evidence-first authoring skill"]
+        MINE --> ANALYST
+    end
+
+    subgraph BRAND["2 · BRAND RULES — brand-owned, written during extraction"]
+        BY["brand.yaml<br/>tokens · surfaces + nesting grammar ·<br/>chrome nav/footer · action groups ·<br/>SIGNATURES always/never"]
+        LL["layout-library.yaml<br/>section patterns ·<br/>component RECIPES"]
+        SC["section-copy.yaml<br/>real copy"]
+        VF["voice-facts.yaml<br/>sentence stats · casing ·<br/>banned lexicon"]
+        SS["style-scale.yaml<br/>derived type/space/radius scales"]
+    end
+
+    ANALYST --> BRAND
+    BRAND --> VAL["Fail-loud validator C1–C25<br/>missing evidence = loud error,<br/>never silent invention"]
+    VAL --> REPLICA["REPLICA GATE — ground truth<br/>rebuild source homepage from evidence only,<br/>SSIM vs live site: HubSpot 0.956 · Remote 0.950"]
+
+    subgraph STYLE["3 · STYLE LAYER — genre knowledge, brand-agnostic"]
+        ARCH["Archetype library<br/>29 SaaS hero skeletons ·<br/>anatomy + use cases"]
+        SL["Style library<br/>directives · section catalog ·<br/>layout primitives · variation axes"]
+        SR["Section rules +<br/>conversion-structure contracts<br/>per campaign type / funnel stage"]
+        AS["Anti-slop law AS-1..62<br/>interaction + layout correctness"]
+    end
+
+    subgraph RESOLVE["4 · RESOLUTION — styles under brand rules"]
+        RES["Resolver cascade<br/>section default → style directive →<br/>style×section override → BRAND override<br/>(brand always wins)"]
+    end
+
+    STYLE --> RES
+    BRAND --> RES
+
+    subgraph GEN["5 · PAGE GENERATION — per brief"]
+        BRIEF["Brief"] --> COPY["Copy-first plan<br/>content before layout"]
+        COPY --> COMPOSER["Composer agent LLM<br/>composition.json: structure + copy ·<br/>vocabulary from archetypes/recipes ·<br/>never paints pixels"]
+        COMPOSER --> RENDER["Deterministic renderer<br/>geometry from measured facts:<br/>containment law · spacing ladders ·<br/>alignment grammar · devices ·<br/>brand chrome 1:1"]
+    end
+
+    RES --> COMPOSER
+    RENDER --> GATES["6 · GATE BATTERY — deterministic, fail loud<br/>onbrand · anti-slop · interaction · spacing/scale ·<br/>signature + accent budget · voice · screenshot review"]
+    GATES -->|all green| PAGE["On-brand page"]
+    GATES -->|violation| COMPOSER
+
+    PAGE --> LOOP["LEARNING LOOP<br/>every reviewed defect →<br/>schema extension + renderer law +<br/>gate + regression test (1060+ tests) —<br/>the defect class dies permanently"]
+    LOOP -.-> BRAND
+    LOOP -.-> STYLE
+    LOOP -.-> RENDER
+```
+
+### Styles vs. brand rules — how they connect
+
+- **Style layer** (`brand_pipeline/contracts/`) is *genre* knowledge: how a SaaS page behaves — hero archetype skeletons, section catalogs, layout primitives, conversion structure per funnel stage. It is brand-agnostic and reusable across every brand.
+- **Brand rules** (`runs/<brand>/brand/`) are *measured facts* from one site: tokens, surface nesting grammar, component recipes, brand signatures ("landmark serif headings may close with an orange period"), voice metrics, derived scales. They are written during extraction, validated C1–C25, and proven by the replica score.
+- **Resolution** merges the two with fixed precedence — style provides defaults and vocabulary, brand overrides always win. The composer receives the merged contract in its prompt; it decides composition and copy, never spacing math.
+- **Gates enforce both sides**: anti-slop and interaction gates enforce the style layer's correctness law; signature, accent-budget, voice, and scale-adherence gates enforce the brand's own extracted facts. A page ships only when both agree.
+- **The loop closes at the right level**: a defect found in review is fixed as a schema field + renderer law + gate + regression test — never as a one-off prompt patch — so the same defect cannot recur on any future brand.
 
 ## Why This Exists
 
