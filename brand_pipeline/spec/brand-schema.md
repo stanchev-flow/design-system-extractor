@@ -346,6 +346,16 @@ tokens:
 >   (store badges, wordmark `<img>` bindings, mega-panel item icons) stay on the
 >   image channel entirely. Brand data is unchanged by this contract — it is an
 >   emission technique, not a fact.
+> - **Glyph asset `viewBox` is EVIDENCE, not a template (fix5 2026-07).** When
+>   harvest materializes a sprite `<use>`/`<symbol>` reference into a standalone
+>   asset file, the asset's `viewBox` MUST be copied from the source symbol —
+>   never assumed from a common icon-grid convention. A wrong viewBox crops the
+>   artwork identically in BOTH channels (mask and inline render the same
+>   coordinate system), so replica pixel-parity cannot catch it; the guard is
+>   geometric: every chrome glyph asset's painted extent (`getBBox`) must fit its
+>   declared viewBox (≤5% spill tolerance for source-faithful bleed) —
+>   `test_fix5_gallery_defects.GlyphCropTest`. Caught: 15 hubspot-v2 assets
+>   authored `0 0 24 24` over 32-grid (and custom-grid social) artwork.
 
 > **Two-tier chrome + action groups (fix1 2026-07 — validator C22 advisory).**
 > All optional; brands without the facts render byte-identically.
@@ -496,6 +506,7 @@ neverDo:                          # HARD prohibitions — absolute
 ```yaml
 voice:
   ref: "./voice.md"
+  factsRef: "./voice-facts.yaml"  # structured voice facts (§4.8, pass1 2026-07)
   dials:
     variance: { value: high|medium|low, …envelope }
     motion:   { value: high|medium|low, …envelope }
@@ -515,6 +526,108 @@ recipePolicy:
 > (`scope: one-off`, logged to `signals.log`, never promoted) is permitted on **HERO
 > sections only** (archetype `hero` / `opening-bookend`); every non-hero section
 > enforces ALL `neverDo` rules.
+
+### 4.7 `signatures:` — the brand's recognizable moves (pass1 2026-07)
+
+The 3-5 moves that make THIS brand recognizable, each a **machine-checkable
+always/never rule with evidence provenance**. Authoring them is a REQUIRED
+extraction step (layout-analyst-skill.md §10); the C25 validator advisory is the
+enforcement backstop; `brand_pipeline/signature_audit.py` verifies them on every
+gated page (`signature_check`) and walks the accent paint budget
+(`accent_budget`).
+
+```yaml
+signatures:
+  - id: <slug>                    # brand-specific NAME, generic KIND
+    kind: accent-scope | shape-motif | type-treatment | surface-habit | spacing-habit
+    mode: always | never          # the rule's polarity — machine-checkable, not prose
+    claim: "<one-sentence prose companion>"
+    check:                        # kind-specific machine parameters, e.g.:
+      colors: ["#ff5c35"]         #   accent-scope: family + role scoping
+      allowedRoles: [action-primary, arrow-link, logo-mark]
+      forbiddenRoles: [body-text, heading]
+      maxPaintSharePct: 5         #   optional accent_budget rider
+      # shape-motif: buttons: {radiusPx: 8 | pill: true} | neverPill: true
+      # type-treatment: probes: [{on: display, familyIncludesAny: […], weightMax: 500}]
+      # surface-habit: darkAllowedColors/darkMaxLuminance | sectionMinLuminance
+    evidence: ["<sections/computed facts that license the rule>", …]
+    confidence: {value: high, source: measured}
+    changelog: […]
+```
+
+Laws:
+- **3-5, not 20** — signatures are the brand's *recognizable* moves, not a rule
+  dump; fewer than 3 means the extraction hasn't found the brand's voice yet.
+- **Generic key vocabulary, brand-specific values** — the `kind` set is shared
+  pipeline vocabulary; names/values describe this brand (`action-orange-scope`
+  names a reusable accent-scoping move, never a section).
+- **Every signature cites evidence** — the sections/computed facts that license
+  it, same provenance discipline as every other fact.
+- `spacing-habit` signatures are verified by the spacing/scale machinery, not
+  the signature auditor — the auditor reports them as delegated.
+- **Specimen lanes** (spec books / component previews — no composed sections):
+  page-level claims (accent-scope, surface-habit) are void; element-level claims
+  (shape-motif, type-treatment) still bind.
+
+### 4.8 `voice.factsRef` — structured voice facts (pass1 2026-07)
+
+`voice.md` stays the prose companion; the machine-checkable layer is a sibling
+`voice-facts.yaml` (schema `voice-facts.v1`) referenced from the voice block:
+
+```yaml
+voice:
+  ref: "./voice.md"
+  factsRef: "./voice-facts.yaml"   # structured facts the voice gate audits against
+  dials: …
+```
+
+`voice-facts.yaml` carries: tone descriptors, sentence-length stats
+(mean/median/p90/max words) **with gate budgets** (measured envelope +
+documented headroom), reading-level band (Flesch-Kincaid), casing rules per role
+(headings/eyebrows/CTAs, with the brand-term allowlist — multi-word product
+names strip as phrases), verb-led CTA share, punctuation facts (exclamation
+ban), and a banned-hype lexicon (words the captured corpus never uses). All
+derived from the CAPTURED copy corpus (section-copy + grounding) —
+deterministic, regenerable, provenance recorded. `brand_pipeline/voice_audit.py`
+audits generated copy against it (advisory severity by default, `--strict` to
+gate); brands without the file skip cleanly (fact-gated).
+
+### 4.9 `style-scale.yaml` — the derived-scale artifact (pass1 2026-07)
+
+The QUANTIZATION layer: `tools/extract/normalize_scales.py` derives, from the
+existing captured evidence, one quantized scale artifact per brand
+(`<brand>/style-scale.yaml`, schema `style-scale.v1`):
+
+- `type` — modular ratio + base size fit against the measured type ladder
+  (parsimony: the COARSEST candidate ratio whose RMSE clears the bar wins — a
+  denser ratio fits anything, which would be vacuous quantization);
+- `space` — base unit + step multiples + section rhythm from the measured
+  spacing ladder AND the brand's own authored `--spacing-*` custom properties in
+  the evidence CSS corpus;
+- `radius` — corner modes grouped from the measured radius facts;
+- `grid` — content max-width/gutter/card gap where measured (columns never
+  invented);
+- `motion` — the measured duration band.
+
+**Dual-artifact law:** raw evidence and `brand.yaml` are never touched; every
+derived value records provenance (which raw facts produced it) and fit error;
+a brand that genuinely doesn't follow a scale is recorded honestly
+(`fitQuality.verdict: poor`, `followsScale: false` — a poor fit is NOT consumed).
+
+**Consumption law** (`brand_pipeline/style_scale.py`): GENERATIVE composers may
+prefer a derived step for NEW geometry **only where no measured fact binds** (a
+measured fact always wins); the REPLICA lane never loads the artifact —
+byte-identical by construction, test-pinned. Current consumer: the `bandHeight`
+knob's degrade (`compose_section.band_height_derived_px`) — a composed section
+whose knob has no measured rung in its direction rides the nearest derived
+section-rhythm step and stamps `data-band-rung="derived:<px>"`, which the
+spacing auditor treats as a deliberate declaration (same hard gate).
+
+Validator advisory **C24** checks internal consistency (steps on the base,
+rhythm a subset of steps, type steps on the ratio) and fit honesty (recorded
+errors back the verdict; stale `sourceDigest` flagged). The `scale_adherence`
+gate (spacing auditor) audits generative-lane novel geometry against the
+artifact (spec/spacing-conformance.md).
 
 ## 5. `contracts` — the universal THREE-TIER vocabulary layer (NEW)
 
@@ -1343,6 +1456,15 @@ Rules:
 - **Validator (C18).** A dissent with a recorded curation downgrades from the advisory
   WARN to an informational NOTE ("dissent curated toward grammar") — review is done;
   uncurated dissents keep warning until verified or curated.
+- **Chrome facts curate the same way (fix5 2026-07).** The mechanism is not
+  pattern-only: a measured CHROME fact can carry a curator's ruling under its own
+  `curation` key with the same lane semantics. First instance:
+  `navbar.measured.trigger.chevron.curation.motion: { resolve: instant, by, ts,
+  reason }` — the user ruled the open-state chevron flip must swap instantly in
+  generation lanes; `component_render.nav_affordance_css(doc, honor_curation=…)`
+  honors it (transition: none) while the replica keeps the measured tween
+  (`transform 0.3s`/`0.2s` stay the facts' evidence truth). Same invariants: the
+  measured fact survives untouched, and the curation never moves the replica score.
 
 ### 4.4d `contentShape.gridEqualize` — card-row height behavior (fid14)
 
@@ -1599,6 +1721,45 @@ Exactly the STYLE+BRAND model (Appendix B), applied to layouts:
   a project is promoted INTO the project library as `extracted`, never the reverse.
 - `runs/*/single/layouts.yaml` (`source_layouts.v1`) is unchanged — it is only the harvest
   FEEDSTOCK for seeding the standard library, still `do_not_use_as_design_system`.
+
+## 5.6 Genre archetype libraries (`contracts/archetypes/*.yaml`) — structure above the pattern tiers
+
+A THIRD structural tier sits above §5.5 (normative spec: `spec/archetype-library.md`;
+first genre: `contracts/archetypes/heroes-saas.yaml`, `hero-archetypes.v1`): genre
+structural vocabulary — skeletons a competent designer knows that the SOURCE SITE never
+had to show. The law is **style-invariant / structure-variable / physics-hard**:
+instantiation draws every visible property from the brand's extracted facts; only the
+skeleton comes from the library; the physics fact families named by the archetype's
+`physicsBindings` bind exactly as in replica mode.
+
+Wiring (phase-2 2026-07, all fact-gated so refless lanes stay byte-identical):
+
+- **Selection** — `archetype_library.shortlist()` filters by the brief's
+  `pageType`/`taskIntents` (brief frontmatter or caller kwargs) and injects 2–3
+  candidates into the generation prompt (`generate_composition.build_prompt
+  hero_candidates`) ONLY when the run has off-grid expansion. The composition records
+  the choice as the OPTIONAL section key `archetypeRef` (composition.v1).
+- **Instantiation** — `compose_from_composition.adapt_brand_section` normalizes the
+  section against the archetype FIRST (family, variantKnob defaults, `knobs.bandHeight`
+  from the archetype geometry), THEN runs brand adaptation — so brand recipes/tokens
+  win by ordering, not by special case. Unknown ids or unresolvable physics families
+  strip the ref (fail closed to the brand's own evidenced anatomy) with a note on
+  `layout._archetypeNotes`.
+- **`knobs.bandHeight`** (`compact|standard|tall`; `viewport` degrades to `tall`) —
+  the archetype's band character re-registers the section's vertical padding to the
+  NEAREST rung of the brand's OWN `section-*` spacing family
+  (`compose_section.band_height_css`, emitted as a `var(--space-…)` layer-1 reference).
+  The knob never invents a length; no rung in the wanted direction → standard rhythm.
+- **Audit** — the rendered wrapper stamps `data-archetype` (like `data-pattern`);
+  `onbrand_check` adds HARD `archetype-physics:<section>` rows mapping each bound
+  family to the row that verifies it (families owned by sibling gates are reported
+  `delegated[...]` and enforced by the lane runner: spacing_audit, slop_audit,
+  interaction_audit). Two source-identity fidelity cells re-scope on stamped renders
+  (creative-mode scope): the section surface must be one of the brand's OWN surface
+  roles (not necessarily the source layout's), and authored display copy replaces the
+  source-heading-snippet check.
+- **Precedence** — brand recipes WIN over archetype anatomy wherever both describe the
+  same role (§5.3 ratchet extends: extracted > designed > genre-designed).
 
 ## Appendix C — Layout precedence & retrieval (parallel to Appendix B)
 

@@ -47,12 +47,19 @@ _HERE = Path(__file__).resolve().parent
 if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
+import archetype_library as al     # noqa: E402  (genre skeleton normalization — fact-gated)
 import compose_page as cp          # noqa: E402
 import compose_section as cs       # noqa: E402
+import style_scale                 # noqa: E402  (derived-scale consumption, pass1)
 from styles import inactive_context, load_and_merge  # noqa: E402
 
 
-# composition.v1 surfaceIntent enum → the brand's tokens.surfaces role keys.
+# composition.v1 surfaceIntent canonical values → the brand's tokens.surfaces role
+# keys. Non-canonical intents (copy-first surface selection, 2026-07-14) resolve as
+# `surface/<intent>` and are honored ONLY when the brand declares that role
+# (compose_section.resolve_surface_intent's existing role-membership check); a brand
+# without the role keeps the historical degrade. The intent vocabulary therefore
+# stays the brand's own surface roster, never an invented palette.
 SURFACE_INTENT_MAP = {
     "any": "surface/primary",
     "primary": "surface/primary",
@@ -80,6 +87,17 @@ def _by_role(slots: list[dict], *keywords: str) -> dict | None:
     for s in slots:
         role = (s.get("role") or "").lower()
         if any(k in role for k in keywords):
+            return s
+    return None
+
+
+def _by_name(slots: list[dict], *names: str) -> dict | None:
+    """Match on the slot's declared NAME (the archetype anatomy vocabulary — meta,
+    kicker, subheading…). Role keywords stay the primary lookup; names are the
+    archetype-section fallback, because a genre skeleton fixes slot NAMES while the
+    model authors domain ROLE words (\"event-logistics\", \"promise\")."""
+    for s in slots:
+        if (s.get("name") or "").strip().lower() in names:
             return s
     return None
 
@@ -200,6 +218,17 @@ def _sanitize_assets(comp: dict, brand_dir: Path) -> dict:
                 for item in slot["copy"]:
                     if isinstance(item, dict):
                         _clean_asset(item)
+            elif isinstance(c, dict):
+                # dict copy carrying repeatable sub-lists (a block contract's item
+                # run, e.g. a logo-bar's marks — fix6): the same coerce/clean walk,
+                # so nested asset refs normalize + register for copying like any
+                # top-level list copy.
+                for key, v in list(c.items()):
+                    if isinstance(v, list):
+                        c[key] = [_coerce_item(item) for item in v]
+                        for item in c[key]:
+                            if isinstance(item, dict):
+                                _clean_asset(item)
     return out
 
 
@@ -501,6 +530,25 @@ def _hero_section_copy(section: dict) -> dict:
                                   "support"),
                          "text", "body", "subheading")
     cta = _slot_text(_by_role(slots, "action", "cta", "link"), "label", "cta", "text")
+    if section.get("archetypeRef"):
+        # GENRE-SKELETON sections are SLOT-FAITHFUL end to end (fix6, the event-hero
+        # copy-first rebuild): the anatomy fixes slot NAMES while models author domain
+        # role words ("event-logistics", "promise"), so the archetype vocabulary rides
+        # as a NAME/CONTRACT fallback — and a slot the composition does NOT author is
+        # rendered EMPTY, never back-filled from the brand's homepage SECTION_COPY
+        # (the ride-through that stamped the extraction's hero eyebrow/subhead onto
+        # creative heroes).
+        eyebrow = eyebrow \
+            or _slot_text(_by_name(slots, "kicker", "meta", "eyebrow"), "text", "label") \
+            or _slot_text(_by_contract(slots, "eyebrow", "label"), "text", "label")
+        subhead = subhead \
+            or _slot_text(_by_name(slots, "subheading", "support", "subhead", "promise"),
+                          "text", "body", "subheading")
+        out = dict(cs.SECTION_COPY)
+        out["eyebrow"] = eyebrow or ""
+        out["subhead"] = subhead or ""
+        out["cta"] = cta or ""
+        return out
     out = dict(cs.SECTION_COPY)
     if eyebrow:
         out["eyebrow"] = eyebrow
@@ -530,7 +578,15 @@ def _hero_mapping(section: dict, art_panel: bool = False) -> list[dict]:
     slots map through — compose_stack_hero renders them via render_button's law-first
     cta-shape dispatch (a `never-typographic-primary` brand gets its filled pill; a
     typographic brand's dispatch downgrades to the arrow link, unchanged). Emitted only
-    when button slots exist, so legacy compositions stay byte-identical."""
+    when button slots exist, so legacy compositions stay byte-identical.
+
+    ACTION-GROUP COPY (archetype-gallery 2026-07): a hero that authors its actions as
+    ONE group slot (`copy.cta` string or list — the natural generation shape) expands
+    each label into a real button entry; the SECOND and later actions carry a
+    'secondary'-treatment familyHint so render_button resolves the brand's own
+    measured non-primary register (brands without one degrade to primary and AS-59
+    arbitrates). Fires only when no `button` contract slots exist (slot-faithful
+    precedence unchanged)."""
     slots = _slots(section)
     title = _by_role(slots, "title", "display") or _by_contract(slots, "header", "heading")
     heading = _slot_text(title, "heading", "text") or "Everything in one place"
@@ -547,6 +603,29 @@ def _hero_mapping(section: dict, art_panel: bool = False) -> list[dict]:
     ]
     actions = []
     for i, b in enumerate(_button_slots(section)):
+        items = b.get("copy") if isinstance(b.get("copy"), list) else None
+        if items:
+            # ONE actionGroup slot whose copy is a LIST of action objects (the natural
+            # composition shape for an archetype actionGroup slot — fix6): each item is
+            # a real action; non-primary items carry their declared treatment (or the
+            # quiet-secondary hint) so render_button resolves the brand's own register.
+            for j, item in enumerate(x for x in items if isinstance(x, dict)):
+                label = _text(item, "label", "cta", "text")
+                if not label:
+                    continue
+                usage = {"label": label, "accent": False}
+                for k in ("family", "styleHint"):
+                    if str(item.get(k) or "").strip():
+                        usage[k] = item[k]
+                if j > 0 and "family" not in usage and "styleHint" not in usage:
+                    usage["styleHint"] = str(item.get("emphasis") or item.get("variant")
+                                             or "secondary outlined quiet")
+                actions.append({
+                    "slot": "main",
+                    "role": "cta-primary" if not actions else "cta-secondary",
+                    "contract": "button", "usage": usage,
+                })
+            continue
         label = _slot_text(b, "label", "cta", "text") or "Get started"
         actions.append({
             "slot": "main",
@@ -554,6 +633,74 @@ def _hero_mapping(section: dict, art_panel: bool = False) -> list[dict]:
             "contract": "button",
             "usage": _button_usage(b, label),
         })
+    if not actions:
+        for i, label in enumerate(_group_cta_labels(section)):
+            usage = {"label": label, "accent": False}
+            if i > 0:
+                usage["styleHint"] = "secondary outlined quiet"
+            actions.append({
+                "slot": "main",
+                "role": "cta-primary" if i == 0 else "cta-secondary",
+                "contract": "button", "usage": usage,
+            })
+    # SLOT-FAITHFUL ANATOMY DEVICES (fix6, archetype sections only). A genre skeleton
+    # binds its WHOLE anatomy in slots; three device families the legacy hero mapping
+    # never carried now map through — absent the ref the mapping is byte-identical:
+    #   - logo-family slot (agenda/track/award rail): per-item mark entries + the
+    #     rail's one caption line, drawn after the actions;
+    #   - form slot (search-first / capture anatomy): the brand's form block, folded
+    #     from the slot's field/submit/note copy;
+    #   - link slot with list copy (quiet link rail): one arrow-link entry per item.
+    if section.get("archetypeRef"):
+        for s in slots:
+            contract = (s.get("contract") or "").lower()
+            sname = s.get("name") or "rail"
+            if contract.startswith("logo"):
+                c = s.get("copy") if isinstance(s.get("copy"), dict) else {}
+                items = next((v for v in c.values()
+                              if isinstance(v, list) and any(isinstance(x, dict) for x in v)), [])
+                for item in items:
+                    src = _asset_src(item) if isinstance(item, dict) else None
+                    if not src:
+                        continue
+                    actions.append({
+                        "slot": "main", "role": f"rail mark ({sname})",
+                        "contract": "logo",
+                        "usage": {"src": src, "alt": _text(item, "alt", "text") or ""}})
+                cap = _text(c, "caption", "text")
+                if cap:
+                    actions.append({
+                        "slot": "main", "role": f"rail caption ({sname})",
+                        "contract": "caption", "usage": {"text": cap}})
+            elif contract == "form":
+                c = s.get("copy") if isinstance(s.get("copy"), dict) else {}
+                fields = [f for f in (c.get("fields") or []) if isinstance(f, dict)]
+                actions.append({
+                    "slot": "main", "role": f"foot form ({sname})",
+                    "contract": "form",
+                    "usage": {"placeholder": _text(fields[0] if fields else c,
+                                                   "placeholder", "label") or "Search",
+                              "submit": _text(c, "submit", "cta") or "Submit"}})
+                note = _text(c, "note")
+                if note:
+                    # the note is the form's STATED REASON (AS-14) — body register,
+                    # drawn ABOVE the field by the composer, never a caption microlabel.
+                    actions.append({"slot": "main", "role": f"foot form note ({sname})",
+                                    "contract": "paragraph", "usage": {"text": note}})
+            elif contract == "link" and isinstance(s.get("copy"), list):
+                for item in s["copy"]:
+                    label = _text(item, "label", "text") if isinstance(item, dict) \
+                        else (item if isinstance(item, str) else None)
+                    if label:
+                        # quiet register (single-accent invariant): the rail is
+                        # secondary wayfinding — never the page's committed accent.
+                        # `text` rides along so the inline-copy props path (the one
+                        # that honors accent:False) handles the entry.
+                        actions.append({
+                            "slot": "main", "role": f"rail link ({sname})",
+                            "contract": "link",
+                            "usage": {"label": label, "text": label,
+                                      "accent": False}})
     if not art_panel and _media_layers(section) is not None:
         for s in media:
             entry = _slot_to_mapping(s)
@@ -569,6 +716,13 @@ def _hero_mapping(section: dict, art_panel: bool = False) -> list[dict]:
             entry["slot"] = "main"
             entry["role"] = f"panel media ({s.get('name') or s.get('role') or 'media'})"
             mapping.append(entry)
+        return mapping + actions
+    # SLOT-FAITHFUL SKELETONS (spec/archetype-library.md): a hero instantiating a
+    # genre archetype binds its whole anatomy in slots — a zero-media composition
+    # means a text-forward band, never "trust the brand's default art" (the legacy
+    # replica-shape below, which layers invented photography OVER the display title —
+    # right for the extracted layered hero, wrong for a monument/value-forward stack).
+    if not media and section.get("archetypeRef"):
         return mapping + actions
     hero_src = _asset_src(media[0]) if len(media) >= 1 else None
     over_src = _asset_src(media[1]) if len(media) >= 2 else None
@@ -588,6 +742,25 @@ def _hero_mapping(section: dict, art_panel: bool = False) -> list[dict]:
 def _button_slots(section: dict) -> list[dict]:
     """The section's real `button` contract slots (B5: these used to be dropped)."""
     return [s for s in _slots(section) if (s.get("contract") or "").lower() == "button"]
+
+
+def _group_cta_labels(section: dict) -> list[str]:
+    """Action labels authored as ONE group slot: any non-button slot whose dict copy
+    carries ``cta`` (string or list of strings). [] when the section binds none —
+    every existing composition (which authors per-action `button` slots or none)
+    is untouched."""
+    for s in _slots(section):
+        c = s.get("copy")
+        if not isinstance(c, dict) or not c.get("cta"):
+            continue
+        v = c["cta"]
+        if isinstance(v, str) and v.strip():
+            return [v.strip()]
+        if isinstance(v, list):
+            labels = [str(x).strip() for x in v if isinstance(x, str) and str(x).strip()]
+            if labels:
+                return labels
+    return []
 
 
 def _button_usage(slot: dict, label: str) -> dict:
@@ -936,6 +1109,16 @@ def _form_fields_stamp(section: dict) -> dict | None:
     for k in ("consent", "success", "meta"):
         if str(formcopy.get(k) or "").strip():
             stamp[k] = str(formcopy[k]).strip()
+    # panel copy (fix6, form-split hero): the form's OWN header/submit/note ride the
+    # stamp so the capture-panel composer can voice them. The conversion composer
+    # reads none of these keys — every existing signup renders byte-identically.
+    header = formcopy.get("header") if isinstance(formcopy.get("header"), dict) else {}
+    for k, v in (("heading", _text(header, "heading", "text")
+                  or _text(formcopy, "heading")),
+                 ("submit", _text(formcopy, "submit", "cta")),
+                 ("note", _text(formcopy, "note"))):
+        if v:
+            stamp[k] = v
     return stamp
 
 
@@ -1060,7 +1243,11 @@ def _split_copy(section: dict) -> dict:
     experiments/woodwave-showcase/build_showcase.py — fix now upstreamed here). No copy
     is invented: every string comes from the section's own slots or stays empty."""
     slots = _slots(section)
-    header = _by_role(slots, "heading", "title") or _by_contract(slots, "header")
+    # contract fallback includes `heading` (archetype-gallery 2026-07): a heading
+    # slot under a domain role name (e.g. role "hub-promise") is still THE heading —
+    # role keywords first (unchanged), the declared contract as the honest fallback
+    # (same lookup _hero_section_copy always used).
+    header = _by_role(slots, "heading", "title") or _by_contract(slots, "header", "heading")
     panel = _by_role(slots, "panel", "rows", "list", "prices")
     rows = []
     row_icons: list[str] = []
@@ -1085,16 +1272,28 @@ def _split_copy(section: dict) -> dict:
                 row_media.append(str(m.get("media") or ""))
 
     def first(*keys: str) -> str:
-        """First non-empty string under any of `keys` across the section's slot copy."""
+        """First non-empty string under any of `keys` across the section's DICT-shaped
+        slot copy. Plain-string copy is EXCLUDED here (pass2 finding): `_text`'s str
+        passthrough matches ANY key, so this last-resort scan used to leak whatever
+        string slot came first into the body/quote lookups (the blog's eyebrow kicker
+        rendered as the hero body paragraph). Role/contract lookups keep the str
+        passthrough — a slot they match means its string."""
         for s in slots:
-            v = _text(s.get("copy"), *keys)
-            if v:
-                return v
+            if isinstance(s.get("copy"), dict):
+                v = _text(s.get("copy"), *keys)
+                if v:
+                    return v
         return ""
 
     out = {
+        # eyebrow: role keyword → the header's OWN dict eyebrow → the declared
+        # eyebrow contract. The header fallback is dict-guarded (pass2 finding): a
+        # plain-string heading copy used to echo THE HEADING into the eyebrow via the
+        # str passthrough whenever the model's role words dodged the keyword table.
         "eyebrow": _slot_text(_by_role(slots, "eyebrow"), "eyebrow", "text")
-        or _text((header or {}).get("copy"), "eyebrow") or "",
+        or (_text((header or {}).get("copy"), "eyebrow")
+            if isinstance((header or {}).get("copy"), dict) else None)
+        or _slot_text(_by_contract(slots, "eyebrow"), "eyebrow", "text") or "",
         # the section's own display heading (sysfix 2026-07: the key union was
         # missing it — out["heading"] below raised KeyError on quote-less splits)
         "heading": _slot_text(header, "heading", "text") or "",
@@ -1120,8 +1319,12 @@ def _split_copy(section: dict) -> dict:
                             or "").strip().lower(),
     }
     # about-statement / curator-quote keys: surface the section's own slot copy.
+    # Role keywords first (unchanged); the declared `paragraph` contract is the
+    # honest fallback (same doctrine as the header lookup above — the model authors
+    # domain role words like "hub-promise", but the contract IS the body claim).
     out["body"] = _slot_text(_by_role(slots, "body", "statement", "lede", "support",
                                       "attribution"), "text", "body") \
+        or _slot_text(_by_contract(slots, "paragraph"), "text", "body") \
         or first("text", "body") or first("attribution")
     out["quote"] = _slot_text(_by_role(slots, "quote"), "quote", "text") \
         or first("quote") or out["heading"]
@@ -1330,8 +1533,8 @@ def composition_to_layout(section: dict) -> dict:
     sid = section.get("id") or section.get("useCase") or "section"
     archetype = (section.get("archetype") or "stack").lower()
     novelty = (section.get("novelty") or "reuse").lower()
-    surface_intent = SURFACE_INTENT_MAP.get(
-        (section.get("surfaceIntent") or "any").lower(), "surface/primary")
+    raw_intent = (section.get("surfaceIntent") or "any").strip().lower()
+    surface_intent = SURFACE_INTENT_MAP.get(raw_intent) or f"surface/{raw_intent}"
 
     # renderer archetype: per the schema, a `novelty:novel` section still RECOMPOSES WITHIN a
     # drawable archetype — so it renders via that archetype's bespoke composer (novelty only
@@ -1351,11 +1554,18 @@ def composition_to_layout(section: dict) -> dict:
         "gridRules": grid,
         "overlapRules": overlap,
     }
+    # ARCHETYPE-declared header context rides through first (fix5 2026-07): the
+    # skeleton's anatomy states its own grammar rung (apply_archetype_skeleton
+    # stamps it on the section) — an explicit structural fact, so it outranks the
+    # split+table inference below. Without it an overlay/banded renderer archetype
+    # mapped to NO grammar rung and the header stack fell to the style default.
+    if section.get("_headerContext") in ("splitColumn", "standaloneStack"):
+        layout["_headerContext"] = section["_headerContext"]
     # A split renderer may carry a HEADER ABOVE the split rather than inside either
     # column (comparison/info-band anatomy). Stamp the actual header context so the
     # shared alignment chain consults standaloneStack in the captured brand grammar.
     # Content below being two columns is not itself evidence for splitColumn alignment.
-    if archetype == "split" and (
+    elif archetype == "split" and (
             (section.get("useCase") or "").lower() in ("comparison", "table")
             or any((s.get("contract") or "").lower() == "table" for s in _slots(section))):
         layout["_headerContext"] = "standaloneStack"
@@ -1365,6 +1575,16 @@ def composition_to_layout(section: dict) -> dict:
         layout["patternRef"] = {"lib": seeded.get("lib", "project"), "id": seeded["id"]}
     if isinstance(section.get("knobs"), dict):
         layout["variantKnobs"] = section["knobs"]
+    # genre-archetype provenance (spec/archetype-library.md): the chosen skeleton id
+    # rides through so the wrapper stamp + audits can see it; the bandHeight knob
+    # becomes a per-section rhythm hint (compose_section.band_height_css — a multiplier
+    # over the brand's OWN section-padding token, never a foreign length). Both are
+    # fact-gated: sections without the ref/knob keep the layout byte-identical.
+    if section.get("archetypeRef"):
+        layout["archetypeRef"] = str(section["archetypeRef"])
+    band = al.normalize_band_height((section.get("knobs") or {}).get("bandHeight"))
+    if band:
+        layout["_bandHeight"] = band
 
     # ── placement round-trip (§4.6.5; every field OPTIONAL) ──────────────────────
     # per-section alignment: first-class `alignment`, else the legacy knobs.align value.
@@ -1635,6 +1855,59 @@ def composition_to_layout(section: dict) -> dict:
             layout["blockMapping"] = mapping
         translator = _COPY_TRANSLATORS.get(archetype)
         layout["_composerCopy"] = translator(section) if translator else {}
+        # FORM-SPLIT hero (fix6, `hero-form-split` anatomy): a split HERO binding a
+        # validated multi-field form slot stamps the same `_formFields` payload the
+        # signup scaffold consumes, plus `_formSplit` (the copy column's proof points
+        # + the declared form side) — compose_info_band routes the pair to the
+        # capture-panel split. Splits without a fields-bearing form slot stamp
+        # nothing and render byte-identically.
+        if archetype == "split" and use_case == "hero":
+            ff = _form_fields_stamp(section)
+            if ff is not None:
+                layout["_formFields"] = ff
+                knobs = section.get("knobs") if isinstance(section.get("knobs"), dict) else {}
+                points_slot = next(
+                    (s for s in _slots(section)
+                     if (s.get("contract") or "").lower() == "list"
+                     and isinstance(s.get("copy"), list)), None)
+                # items may be bare strings (raw composition) OR {"text": …} dicts
+                # (the sanitizer's AS-34 coercion) — accept both.
+                points = []
+                for p in ((points_slot or {}).get("copy") or []):
+                    txt = p if isinstance(p, str) else _text(p, "text", "label")
+                    if str(txt or "").strip():
+                        points.append(str(txt).strip())
+                intro, support = "", []
+                if points_slot is None:
+                    # `content-block` support (pass2 finding): the hero-form-split
+                    # anatomy DECLARES its support slot as content-block, but only
+                    # `list` copy was consumed — a header+body support block was
+                    # silently dropped, leaving the form with no stated reason
+                    # (AS-14). Faithful to the block contract: its body strings are
+                    # PARAGRAPHS (`support`; the ruled-points device stays the
+                    # `list` contract's), its own heading rides as the copy
+                    # column's lead-in line (`intro`).
+                    cb = next(
+                        (s for s in _slots(section)
+                         if (s.get("contract") or "").lower() == "content-block"
+                         and isinstance(s.get("copy"), dict)
+                         and isinstance(s["copy"].get("body"), list)), None)
+                    if cb is not None:
+                        for p in cb["copy"]["body"]:
+                            txt = p if isinstance(p, str) else _text(p, "text", "label")
+                            if str(txt or "").strip():
+                                support.append(str(txt).strip())
+                        hdr = cb["copy"].get("header")
+                        intro = str((_text(hdr, "heading", "text")
+                                     if isinstance(hdr, dict) else "") or "").strip()
+                layout["_formSplit"] = {
+                    "points": points,
+                    "side": str(knobs.get("formSide") or "").lower(),
+                }
+                if intro:
+                    layout["_formSplit"]["intro"] = intro
+                if support:
+                    layout["_formSplit"]["support"] = support
         # event scaffolds (2026-07): validated cards-family knobs stamp the BENTO
         # mosaic / PRICING-TIER presentations (compose_cards dispatch). Malformed
         # knobs stamp nothing — the module grid renders unchanged.
@@ -1673,12 +1946,35 @@ def adapt_brand_section(section: dict, doc: dict) -> tuple[dict, dict, dict | No
         translator fallbacks; a section id without an authored entry keeps the
         composition copy exactly as before).
       - ``sect_copy``: the hero SECTION_COPY payload (None on non-hero sections).
+
+    ARCHETYPE SKELETON FIRST (spec/archetype-library.md §3.4): a section carrying
+    ``archetypeRef`` is normalized against its genre archetype BEFORE the brand
+    adaptation below — archetype family/knob defaults land first, then the brand's
+    recipes/tokens/declarations overwrite anatomy wherever the brand has its own
+    pattern, so "brand recipes win" is the ORDERING, not a special case. An unknown id
+    or an unresolvable physics fact family strips the ref (fail closed — the section
+    renders through the brand's own evidenced anatomy) and the demotion note rides
+    ``layout['_archetypeNotes']``. Sections without the ref pass through untouched.
     """
+    section, art_notes = al.apply_archetype_skeleton(section, doc)
     layout = composition_to_layout(section)
+    if art_notes:
+        layout["_archetypeNotes"] = art_notes
     composer_copy = layout.pop("_composerCopy", {}) or {}
     sect_copy = layout.pop("_sectionCopy", None)
-    brand_layout = next((l for l in (doc.get("layouts") or [])
-                         if isinstance(l, dict) and l.get("id") == layout.get("id")), None)
+    # STRUCTURE-VARIABLE mode (archetypeRef survived skeleton application): the
+    # brand-layout id ride-throughs below (surface role, eyebrowRegister, authored
+    # layoutCopy) exist to heal LOSSY REPLICA TRANSLATIONS of the brand's own
+    # sections. An archetype-instantiated section is deliberately NOT the brand's
+    # layout even when it shares an id (a generated hero is not the source hero) —
+    # riding the source surface/copy onto it repaints the new skeleton with the old
+    # section's identity (measured: the source's photo-hero surface under a bento
+    # grid). Brand recipes/tokens still win — they bind during composition, not via
+    # this id coincidence.
+    creative = bool(layout.get("archetypeRef"))
+    brand_layout = None if creative else next(
+        (l for l in (doc.get("layouts") or [])
+         if isinstance(l, dict) and l.get("id") == layout.get("id")), None)
     if brand_layout and brand_layout.get("eyebrowRegister"):
         layout.setdefault("eyebrowRegister", brand_layout["eyebrowRegister"])
     # the brand layout's DECLARED surface role rides through (same class of
@@ -1689,7 +1985,10 @@ def adapt_brand_section(section: dict, doc: dict) -> tuple[dict, dict, dict | No
     b_surf = str((brand_layout or {}).get("surfaceIntent") or "")
     if b_surf and b_surf in ((doc.get("tokens") or {}).get("surfaces") or {}):
         layout["surfaceIntent"] = b_surf
-    authored = dict(cs.brand_layout_copy(doc).get(layout.get("id")) or {})
+    # authored layoutCopy heals lossy REPLICA translations by id; a creative section
+    # authors its OWN copy — the source section's voice must not overwrite it via the
+    # same id coincidence (see the creative note above).
+    authored = {} if creative else dict(cs.brand_layout_copy(doc).get(layout.get("id")) or {})
     merged = {**(sect_copy or {}), **composer_copy, **authored}
     # HEADING-LEVEL DEMOTION below the hero (W5, stress-playbook 2026-07): only the
     # hero rides the display tier — a NON-HERO section's heading/header slot that
@@ -1727,6 +2026,12 @@ def composition_to_doc(comp: dict, brand_yaml_path: Path | str) -> tuple[dict, l
     # active-brand image inventory (AS-34) + authored section copy; in-memory only.
     cs.attach_brand_copy(doc, Path(brand_yaml_path).parent)
     cs.attach_asset_inventory(doc, Path(brand_yaml_path).parent)
+    # derived-scale consumption (pass1 2026-07, style-scale.v1): COMPOSED lanes may
+    # prefer a derived step for NEW geometry where no measured fact binds (e.g. the
+    # bandHeight knob with no measured rung in its direction). Loaded here — the
+    # generative doc builder — and ONLY here: the replica assembler never reads the
+    # artifact, so replica output is byte-identical whether or not it exists.
+    doc["_styleScale"] = style_scale.load_style_scale(Path(brand_yaml_path).parent)
     sections = [s for s in (comp.get("sections") or []) if isinstance(s, dict)]
     if not sections:
         raise ValueError("composition has no sections")
@@ -1764,6 +2069,11 @@ def composition_to_doc(comp: dict, brand_yaml_path: Path | str) -> tuple[dict, l
         "layout_copy": layout_copy,
         "accent_layout_id": accent_layout_id or (order[0] if order else None),
     }
+    # A composition renders a whole standalone PAGE (archetype-gallery 2026-07): the
+    # brand chrome (nav + banner) belongs on it whatever composer family opens it.
+    # The replica/catalog lanes never set this hint, so their split/collage-opened
+    # pages keep the historical nav-free shape byte-identically.
+    doc["_composedPage"] = True
     return doc, order
 
 
@@ -1858,6 +2168,14 @@ def _declared_asset_names(comp: dict) -> set[str]:
                 for item in c:
                     if isinstance(item, dict):
                         _take(item)
+            elif isinstance(c, dict):
+                # dict copy carrying repeatable sub-lists (fix6, mirrors the
+                # _sanitize_assets walk): nested item assets are declared files too.
+                for v in c.values():
+                    if isinstance(v, list):
+                        for item in v:
+                            if isinstance(item, dict):
+                                _take(item)
     return names
 
 

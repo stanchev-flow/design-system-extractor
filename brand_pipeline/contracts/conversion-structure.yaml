@@ -1,0 +1,314 @@
+# contracts/conversion-structure.yaml — CONVERSION-STRUCTURE CONTRACTS per campaign type.
+#
+# WHAT THIS IS. The expected SECTION-SEQUENCE GRAMMAR of a campaign page, per
+# campaign/page type, as checkable data: which section families a page needs,
+# what order they argue in, where proof sits, where the form sits, and how deep
+# the page runs for its funnel stage. Structure-of-argument law, not visual law —
+# visual/section quality is section-rules.yaml + the AS registry; this file owns
+# WHICH sections in WHAT order.
+#
+# CONSUMPTION (two deterministic paths, zero extra LLM calls — spec/conversion-structure.md):
+#   1. BRIEF-TIME GUIDANCE — a brief carrying `campaignType:` frontmatter gets this
+#      file's grammar projected into the composition prompt as prose bullets by the
+#      existing deterministic prompt assembler (generate_composition.build_prompt),
+#      exactly how archetype shortlists ride in. Same single model call, slightly
+#      longer prompt.
+#   2. POST-COMPOSITION CHECK (stage B) — a deterministic checker validates the
+#      composition's ordered section families against the campaign's constraints
+#      (advisory first) beside the existing composition gate. Post-render, the
+#      section-rules family detector re-grounds the same check on real markup.
+#
+# PRECEDENCE. Genre grammar, origin: designed — the BRIEF outranks it (a brief
+# that explicitly asks for pricing on a launch page wins; the checker records
+# OVERRIDE with the brief cited), and brand evidence outranks both where they
+# collide (brand-schema §5.3). Constraints are priors mined from conversion
+# practice, not laws of nature; severity is staged accordingly (advisory wiring
+# first, required only for the `hardFloor` rows below).
+#
+# FAMILY VOCABULARY. Content-section families from contracts/section-rules.yaml
+# `detection:` (hero, stat-band, logo-strip, capture-form, pricing-tiers, quote,
+# feature-grid, faq, cta-band, carousel). Chrome (nav/footer) never counts in
+# sequence/depth. At composition level families resolve via familyMap below; at
+# render level via the section-rules detector. A section may bind several
+# families (a closing form band is cta-band + capture-form).
+
+schemaVersion: conversion-structure.v1
+origin: designed
+overridable: true
+spec: ../spec/conversion-structure.md
+changelog:
+  - { ts: "2026-07-14T17:10:00Z", action: created, from: null, to: conversion-structure.v1,
+      by: creation, signalId: null,
+      note: "stage-A authoring (steal 3): 6 campaign grammars matching the eval-matrix
+             brief types; constraint vocabulary sized to a small deterministic
+             interpreter; judge rubric designed (not built) in the spec note" }
+
+# ── composition-level family resolution (stage B checker input) ──────────────────
+# useCase -> family is the cheap projection; capture-form and stat-band need slot
+# inspection (a form contract binding / >=2 stat contracts). The rendered-HTML
+# detector (section-rules detection table) is the authoritative fallback.
+familyMap:
+  hero: hero
+  logos: logo-strip
+  testimonial: quote
+  features: feature-grid
+  pricing: pricing-tiers
+  faq: faq
+  cta: cta-band
+  gallery: carousel        # gallery useCase renders rotating/showcase devices
+  about: feature-grid      # about narrative binds the grid family only when moduled; else unmapped
+  bySlots:
+    capture-form: "any section whose slots bind a form contract (blocks.form / signup device)"
+    stat-band: "any section binding >=2 stat contracts (blocks.stat-block / .c-stat)"
+
+# proof beat = any section binding one of these families (borrowed credibility).
+proofFamilies: [logo-strip, quote, stat-band]
+
+# ── depth bands per funnel stage (content sections, chrome excluded) ─────────────
+# awareness pages story-tell (deeper); decision pages get out of the reader's way.
+funnelDepthBands:
+  awareness:     { min: 5, max: 9 }
+  consideration: { min: 4, max: 8 }
+  decision:      { min: 3, max: 7 }
+
+# ── constraint vocabulary (the checker is a small interpreter over these kinds) ──
+# All constraints evaluate against the ORDERED list of content sections, each
+# tagged with its bound family set; indices are 1-based over content sections.
+#   opens:     { family }                          first section binds family
+#   closes:    { anyOf: [fam, ...] }               last section binds one of
+#   present:   { family | anyOf, min, max }        count budget across the page
+#   window:    { family | anyOf, firstN }          first match lands within the first N
+#   afterIndex:{ family, minIndex }                no match before minIndex
+#   before:    { first: fam, then: fam }           first `first`-match precedes first `then`-match
+#   adjacent:  { family, toAnyOf: [...], maxGap }  some match within maxGap of a to-match
+# Every constraint row may carry `severity: advisory|required` (default advisory)
+# and a `why:` note (projected into brief-time guidance verbatim).
+
+campaigns:
+
+  # ────────────────────────────────────────────────────────────────────────────────
+  - id: leadgen-gated-content
+    name: "Lead-gen — gated content offer"
+    funnelStage: consideration
+    conversionMoment: capture-form
+    intent: >-
+      Exchange contact details for an asset (report, guide, template, benchmark).
+      The page exists for ONE trade; everything either states the value of the
+      asset or lowers the cost of the form. Readers arrived curious, not
+      committed — friction is the enemy.
+    depthBand: { min: 4, max: 6 }
+    formDepth: { minFields: 2, maxFields: 4,
+                 note: "low-friction trade: name/email(/company/role at most) — every
+                        extra field taxes a mid-funnel reader" }
+    constraints:
+      - { kind: opens, family: hero, severity: required,
+          why: "the offer statement is the page's one claim — what the asset is and
+                who it makes smarter" }
+      - { kind: present, family: capture-form, min: 1, max: 2, severity: required,
+          why: "the form IS the conversion; a gated-content page without one is a blog post" }
+      - { kind: window, family: capture-form, firstN: 3, severity: required,
+          why: "gated-content readers decide fast — the form rides beside or directly
+                after the offer, never buried below the fold's third beat" }
+      - { kind: adjacent, family: capture-form, toAnyOf: [logo-strip, quote, stat-band],
+          maxGap: 1, severity: advisory,
+          why: "borrowed credibility does its work at the moment of hesitation — proof
+                sits within one beat of the form" }
+      - { kind: present, anyOf: [feature-grid], min: 1, max: 2, severity: advisory,
+          why: "a what's-inside preview (chapters, takeaways, sample figures) makes the
+                unseen asset concrete" }
+      - { kind: present, family: pricing-tiers, min: 0, max: 0, severity: required,
+          why: "price talk on a gated-content page confuses the trade — the currency
+                here is an email address, not money" }
+      - { kind: closes, anyOf: [cta-band, capture-form], severity: advisory,
+          why: "the close restates the trade for readers who scrolled past the early
+                form (a scroll-back CTA or a second, shorter form)" }
+
+  # ────────────────────────────────────────────────────────────────────────────────
+  - id: demo-request
+    name: "Demo request / talk to sales"
+    funnelStage: decision
+    conversionMoment: capture-form
+    intent: >-
+      Book a human conversation. High-intent readers arrive nearly convinced;
+      the page's job is scheduling that conversation without re-selling the whole
+      product — and setting honest expectations about what the demo IS (length,
+      who runs it, what they'll see).
+    depthBand: { min: 3, max: 6 }
+    formDepth: { minFields: 3, maxFields: 6,
+                 note: "qualification is licensed at decision stage (company size, role)
+                        — but every field past six re-opens the door the reader already
+                        walked through" }
+    constraints:
+      - { kind: opens, family: hero, severity: required,
+          why: "a short ask-framing claim — what the demo shows and how little it costs
+                to attend (minutes, not commitment)" }
+      - { kind: present, family: capture-form, min: 1, max: 1, severity: required,
+          why: "one booking form; a second form splits the page's single intent" }
+      - { kind: window, family: capture-form, firstN: 2, severity: required,
+          why: "decision-stage pages are form-first — the reader came to book, so the
+                form rides beside the hero or immediately after" }
+      - { kind: present, family: quote, min: 1, max: 2, severity: advisory,
+          why: "a human process needs human proof — a customer voice saying the
+                conversation was worth having" }
+      - { kind: adjacent, family: quote, toAnyOf: [capture-form], maxGap: 2, severity: advisory,
+          why: "the testimony belongs near the form it de-risks" }
+      - { kind: present, anyOf: [feature-grid], min: 0, max: 1, severity: advisory,
+          why: "at most one what-you'll-see beat — the demo itself is the product tour" }
+      - { kind: present, family: pricing-tiers, min: 0, max: 0, severity: advisory,
+          why: "tier grids restart evaluation; the demo conversation owns the pricing
+                talk (a brief may override for transparent-pricing brands)" }
+      - { kind: present, family: faq, min: 0, max: 1, severity: advisory,
+          why: "one objection beat (how long, is it a sales pitch, do I need to prepare)
+                — placed before the close, never opening the page" }
+
+  # ────────────────────────────────────────────────────────────────────────────────
+  - id: product-launch
+    name: "Product launch / announcement"
+    funnelStage: awareness
+    conversionMoment: cta-band
+    intent: >-
+      Reveal something new and convert attention into a next step (early access,
+      signup, waitlist). Awareness pages argue in a story arc: the reveal, what it
+      is, why it matters, who already believes it — the conversion ask lands AFTER
+      the story earns it.
+    depthBand: { min: 5, max: 9 }
+    formDepth: { minFields: 0, maxFields: 3,
+                 note: "when the next step is a waitlist/early-access capture, the form
+                        is an email-first micro-form at the close — never a qualifier
+                        battery at awareness stage" }
+    constraints:
+      - { kind: opens, family: hero, severity: required,
+          why: "the reveal moment — the launch statement owns the display register" }
+      - { kind: present, family: feature-grid, min: 1, max: 3, severity: required,
+          why: "the what-shipped beat: parallel cells for the launch's concrete pieces" }
+      - { kind: before, first: feature-grid, then: cta-band, severity: advisory,
+          why: "the ask comes after the reveal is explained — story before conversion" }
+      - { kind: present, anyOf: [logo-strip, quote, stat-band], min: 1, max: 3, severity: advisory,
+          why: "belief transfer: scale numbers, early-customer voices, or adopter marks
+                make the new thing feel already-real" }
+      - { kind: afterIndex, family: capture-form, minIndex: 3, severity: advisory,
+          why: "capture belongs at the close of an awareness arc; a form in the first
+                two beats gates the story the page exists to tell" }
+      - { kind: closes, anyOf: [cta-band, capture-form], severity: required,
+          why: "the page ends on the next step (early access / try it / waitlist) —
+                an awareness page that just trails off wastes its own reveal" }
+
+  # ────────────────────────────────────────────────────────────────────────────────
+  - id: webinar-event
+    name: "Webinar / event registration"
+    funnelStage: consideration
+    conversionMoment: capture-form
+    intent: >-
+      Register attendance for a dated moment. Logistics answer first (when, what
+      format, what it costs), agenda makes the time concrete, proof makes it
+      credible, objections cleared LAST — directly above the registration form the
+      page funnels into.
+    depthBand: { min: 4, max: 8 }
+    formDepth: { minFields: 4, maxFields: 8,
+                 note: "registration licenses depth (role, company size, pass/session
+                        choice all route the attendee experience) — the one campaign
+                        type where 6-8 fields is honest" }
+    constraints:
+      - { kind: opens, family: hero, severity: required,
+          why: "event name + meta row (date, time, format, price) — the scan answer
+                before any persuasion; logistics ARE the hero's proof" }
+      - { kind: present, family: capture-form, min: 1, max: 1, severity: required,
+          why: "one registration form — the page's single destination" }
+      - { kind: closes, anyOf: [capture-form, cta-band], severity: required,
+          why: "event pages funnel downward: everything above argues, the close
+                registers (the closing form is the conversion moment)" }
+      - { kind: window, anyOf: [logo-strip, quote, stat-band], firstN: 3, severity: advisory,
+          why: "early borrowed credibility (who attends / who spoke last time) before
+                the agenda deep-dive" }
+      - { kind: before, first: faq, then: capture-form, severity: advisory,
+          why: "objections cleared immediately above the form (can't attend live?
+                refunds? how technical?) — the event-page grammar" }
+      - { kind: present, family: faq, min: 1, max: 1, severity: advisory,
+          why: "a dated commitment always raises logistics objections; answering them
+                on-page is what separates a registration page from a poster" }
+      - { kind: present, family: pricing-tiers, min: 0, max: 1, severity: advisory,
+          why: "paid/tiered passes render as ONE tier beat when they exist; free events
+                skip it entirely" }
+
+  # ────────────────────────────────────────────────────────────────────────────────
+  - id: comparison
+    name: "Comparison / alternative"
+    funnelStage: decision
+    conversionMoment: cta-band
+    intent: >-
+      Win an evaluation already in progress. The reader holds a shortlist; the
+      page states the honest difference, carries the receipts (switch stories,
+      numbers), and offers the next step without theatrics. Overselling here
+      reads as insecurity.
+    depthBand: { min: 4, max: 7 }
+    formDepth: { minFields: 0, maxFields: 5,
+                 note: "when the close is a demo/migration form rather than a bare CTA,
+                        demo-request depth applies" }
+    constraints:
+      - { kind: opens, family: hero, severity: required,
+          why: "the positioning claim — the one-sentence difference, not a feature list" }
+      - { kind: present, family: feature-grid, min: 1, max: 3, severity: required,
+          why: "the comparison substance: parallel capability cells (or a comparison
+                table device) carrying the actual differences" }
+      - { kind: present, family: quote, min: 1, max: 2, severity: advisory,
+          why: "switcher testimony is THE proof register for a comparison — someone who
+                made the exact move the reader is considering" }
+      - { kind: afterIndex, family: capture-form, minIndex: 3, severity: advisory,
+          why: "evaluators comparing options resent early gates — capture only after
+                the comparison content has been given freely" }
+      - { kind: closes, anyOf: [cta-band, capture-form], severity: required,
+          why: "the evaluation ends in a next step (try/switch/migrate) — never in a
+                feature cell" }
+      - { kind: present, anyOf: [stat-band], min: 0, max: 1, severity: advisory,
+          why: "one measured-outcomes beat (migration time, cost delta) strengthens the
+                case; stacked stat bands read as protesting too much" }
+
+  # ────────────────────────────────────────────────────────────────────────────────
+  - id: pricing
+    name: "Pricing page"
+    funnelStage: decision
+    conversionMoment: pricing-tiers
+    intent: >-
+      Answer the question the reader arrived with — what does it cost — then hold
+      their hand through the objections that follow (billing, limits, changes,
+      refunds). The tiers ARE the hero content; burying price below marketing is
+      the classic dark-pattern smell.
+    depthBand: { min: 3, max: 7 }
+    formDepth: { minFields: 0, maxFields: 4,
+                 note: "a pricing page's optional form is a contact/enterprise beat at
+                        the close, never a gate before the tiers" }
+    constraints:
+      - { kind: opens, family: hero, severity: required,
+          why: "a compact opener — one claim + plan framing; the reader is here for
+                the number, so the hero hands off fast" }
+      - { kind: present, family: pricing-tiers, min: 1, max: 1, severity: required,
+          why: "one tier band; two tier bands on one page means the packaging is
+                unresolved" }
+      - { kind: window, family: pricing-tiers, firstN: 2, severity: required,
+          why: "the price answers within the first two beats — never below marketing
+                sections the reader must scroll past" }
+      - { kind: before, first: pricing-tiers, then: capture-form, severity: required,
+          why: "never gate the price: any form (enterprise contact) comes after the
+                tiers have answered the arrival question" }
+      - { kind: present, family: faq, min: 1, max: 1, severity: advisory,
+          why: "pricing is the objection-densest page (proration? seat changes?
+                refunds?) — the FAQ is load-bearing here, not filler" }
+      - { kind: before, first: pricing-tiers, then: faq, severity: advisory,
+          why: "objections follow the price, so the answers follow the tiers" }
+      - { kind: present, anyOf: [logo-strip, quote, stat-band], min: 1, max: 2, severity: advisory,
+          why: "one proof beat between the tiers and the close settles nerves at the
+                decision moment" }
+      - { kind: closes, anyOf: [cta-band, capture-form], severity: advisory,
+          why: "readers who reach the bottom are unconvinced by tiers alone — close
+                with the human path (talk to us / start free)" }
+
+# ── HARD FLOOR (stage-B severity doctrine) ───────────────────────────────────────
+# The checker wires ADVISORY-first for every row; the `required` rows above may
+# graduate to gate-failing only after the eval-matrix baseline proves them
+# (fixture-proven doctrine, same as section-rules). Two rows are hardFloor from
+# birth because their violation is structural dishonesty in ANY campaign:
+hardFloor:
+  - "a page whose declared campaign carries conversionMoment: capture-form must
+     contain a capture-form section (present min>=1 rows above)"
+  - "a pricing campaign never renders a capture-form before its tiers (the
+     never-gate-the-price row)"

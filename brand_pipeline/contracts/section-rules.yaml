@@ -1,0 +1,844 @@
+# contracts/section-rules.yaml — SECTION-SCOPED deterministic rule library.
+#
+# WHAT THIS IS. A per-section-family quality rule library — DATA, not code. Rules
+# belong to SECTIONS: a check that is meaningful for a stat band ("all values carry a
+# real magnitude") is meaningless for a quote, and a global gate can only express it
+# with brittle heuristics. This file scopes each rule to the section family whose
+# anatomy makes it falsifiable, the same way contracts/archetypes/heroes-saas.yaml
+# scopes physicsBindings per archetype and interaction_audit.py scopes IC checks
+# per component family.
+#
+# WHAT THIS IS NOT. Not a second anti-ai-slop registry. spec/anti-ai-slop.md
+# (AS-01..62) owns UNIVERSAL failure shapes; where a section-scoped concern is
+# already law there, the row below is `enforcement: delegated` and names the
+# enforcing gate — the section-rules auditor never re-implements a delegated check,
+# it reports the scoping (mirror of the archetype-physics delegation rows in
+# onbrand_check.py). Only `enforcement: new` rows get checker code.
+#
+# CONSUMPTION (stage B; spec/section-rules.md):
+#   brand_pipeline/section_rules_audit.py reads this file, detects each rendered
+#   section's families (detection table below), and checks the matching rules.
+#   Layers mirror interaction_audit: STATIC (parse HTML; word counts, anatomy
+#   parity, shape classes) + GEOMETRY (Playwright; rendered line counts, box
+#   uniformity). Reports report.md + report.json; baseline exits 0; --strict exits
+#   1 on failing `severity: required` rows. Fixture doctrine: every `new` rule
+#   ships a failing synthetic fixture AND passes the real lanes before it may
+#   carry `required`.
+#
+# LANE SCOPE (pass1 scale_adherence doctrine, spacing-conformance §3b):
+#   Content-family rules bind in GENERATIVE lanes only — composition.v1 marker OR
+#   briefed legacy composition. Replica lanes are EVIDENCE: a source site that
+#   renders a 4-line heading is a fact to reproduce, never a defect to flag.
+#   Chrome families (nav / footer) check fact-PARITY in generated lanes (chrome is
+#   deterministic render of measured facts; a violation is a render regression).
+#   Specimen/preview lanes skip page-scoped rules.
+#
+# PRECEDENCE (brand-schema §5.3, AS-44): measured brand facts outrank every rule
+# here. A rule whose budget a brand's OWN evidence contradicts records OVERRIDE
+# (blessed, with the fact cited), not FAIL — same posture as the style-library
+# genre-class invariants (contracts/style-library/INTEGRATION-PLAN.md §4.1).
+# Budgets below are genre bands mined from named provenance, not brand facts.
+#
+# PROVENANCE VALUES (mined-from):
+#   sibling-team-scorer — the sibling team's experimentation scorer list (their two
+#                         proven checks: heading wrap budget; stat-unit parallelism)
+#   as-history          — generalized from this repo's own AS-01..62 catch history
+#   typographic-cro     — typographic / conversion-practice literature priors
+#   style-library-catalog — contracts/style-library/sections/catalog.yaml
+#                         invariants, demoted to soft per INTEGRATION-PLAN §4.1
+#
+# UNIVERSAL AI-TELLS STAY OUT: see registryCandidates at the bottom — noted for the
+# AS registry, deliberately NOT enforced from this file.
+
+schemaVersion: section-rules.v1
+origin: designed            # genre quality knowledge, hand-authored; brand facts win
+overridable: true
+spec: ../spec/section-rules.md
+changelog:
+  - { ts: "2026-07-14T16:50:00Z", action: created, from: null, to: section-rules.v1,
+      by: creation, signalId: null,
+      note: "stage-A authoring (steal 1): 13 scopes, 57 rules (41 new / 16 delegated);
+             two sibling-team proven checks included (heading line budget generalized
+             beyond hero; stat-unit parallelism); enforcement deferred to stage B" }
+
+# ── DETECTION — how the auditor maps a rendered section to families ─────────────
+# A section may match MULTIPLE families (a capture form inside a CTA band binds
+# both); each matched family's rules apply. Selectors are the composers' stable
+# device classes; useCase comes from the lane's composition.json sections and the
+# archetypeRef/data-archetype stamp. Chrome families detect on the page, not #sec-*.
+detection:
+  section-header:  { any: ["header block (.cs-*-intro / heading run) of any matched non-chrome section"] }
+  hero:            { any: ["useCase hero", "data-archetype^=hero-", "first content section carrying the display register"] }
+  stat-band:       { any: [".cs-stat-band", "section with >=2 .c-stat"] }
+  logo-strip:      { any: [".cs-logo-strip", "useCase logos"] }
+  capture-form:    { any: ["section containing form (chrome excluded)", ".cs-signup-panel", ".cs-signup-grid"] }
+  pricing-tiers:   { any: [".cs-tiers", "useCase pricing"] }
+  quote:           { any: [".cs-quote-grid", ".cs-module--quote", "blockquote", "useCase testimonial"] }
+  feature-grid:    { any: [".cs-modules with >=2 modules", ".cs-bento", "useCase features"] }
+  faq:             { any: [".cs-faq", "details[name] group in a content section", "useCase faq"] }
+  cta-band:        { any: [".cs-conversion-sec", "useCase cta"] }
+  nav:             { any: [".cs-nav (chrome)"] }
+  footer:          { any: [".cs-footer-sec", ".c-foot (chrome)"] }
+  carousel:        { any: [".cs-edgecut", ".cs-panelcar", ".cs-marquee"] }
+
+# ── SEVERITY DOCTRINE (staged, pass1 voice-gate posture) ─────────────────────────
+# advisory — reported, never gates; the starting severity for every `new` rule.
+# required — gates under --strict ONLY after the rule is fixture-proven (fails its
+#            synthetic-bad fixture, passes all real lanes). Rows authored `required`
+#            below are the ones whose failure is unambiguous structural dishonesty;
+#            stage B still demotes any of them that a real lane contradicts, and the
+#            demotion is recorded in this file's changelog.
+
+rules:
+
+  # ───────────────────────────────────────────────────────────────────────────────
+  # SECTION-HEADER — the header block of ANY content section (the generalization
+  # scope: the sibling team proved the heading-wrap budget on heroes; here it binds
+  # everywhere a section opens with a heading).
+  # ───────────────────────────────────────────────────────────────────────────────
+
+  - id: SR-HDR-01
+    scope: section-header
+    assertion: >-
+      A non-hero section heading renders in at most 2 lines at the 1440 tier
+      (rendered lines = round(box height / computed line-height)). Headings that
+      need 3+ lines are copy written past the measure — tighten the copy or demote
+      the register, never widen the measure past the brand's cap.
+    severity: required
+    enforcement: new
+    check: { layer: geometry, selector: "section heading run (h2/.c-heading outside the hero)", metric: rendered-line-count, budget: "<= 2" }
+    rationale: >-
+      Multi-line wrapped section headings are the single most reliable visual tell
+      of unedited generated copy: real sites headline sections in one tight phrase.
+      Ragged wrap SHAPE is AS-15 (balance); the line BUDGET is uncovered law.
+    provenance: sibling-team-scorer
+
+  - id: SR-HDR-02
+    scope: section-header
+    assertion: >-
+      A section heading contains no terminal ellipsis, no double punctuation, and
+      is not a duplicate (case-normalized) of another section's heading on the page.
+    severity: required
+    enforcement: new
+    check: { layer: static, selector: "all section headings per page", metric: "dedupe + punctuation scan", budget: "0 duplicates / 0 ellipses" }
+    rationale: >-
+      Duplicated section headings are compositional filler (two sections claiming
+      one message); ellipses are trailing-off copy no brand corpus licenses.
+    provenance: as-history
+
+  - id: SR-HDR-03
+    scope: section-header
+    assertion: >-
+      Heading register defaults demote below the hero (only the opener rides the
+      display/poster tier unless a level is AUTHORED).
+    severity: required
+    enforcement: delegated
+    delegatedTo: [AS-51, AS-32]
+    check: { layer: delegated, note: "display-tier census is AS-51's verify; heading tier resolution is AS-32" }
+    rationale: scoping row only — the register law already exists; this library never re-implements it.
+    provenance: as-history
+
+  # ───────────────────────────────────────────────────────────────────────────────
+  # HERO — the opening beat. Structural physics (containment, measure, actionGroup,
+  # display ownership) is archetype physicsBindings law; the rows here are the
+  # hero-scoped COPY/REGISTER checks that had no owner.
+  # ───────────────────────────────────────────────────────────────────────────────
+
+  - id: SR-HERO-01
+    scope: hero
+    assertion: >-
+      The hero display heading renders in 1–3 lines at the 1440 tier; 4+ rendered
+      lines means the claim outgrew the display measure (heroes-saas geometry notes
+      say 2–3 lines; a short one-line statement, e.g. an event name, is licensed).
+    severity: required
+    enforcement: new
+    check: { layer: geometry, selector: ".c-heading--display (hero scope)", metric: rendered-line-count, budget: "<= 3" }
+    rationale: >-
+      The sibling team's proven hero check, kept at hero scope with the display
+      band (1–3) our own archetype geometry documents; SR-HDR-01 carries the
+      tighter non-hero budget.
+    provenance: sibling-team-scorer
+
+  - id: SR-HERO-02
+    scope: hero
+    assertion: >-
+      The hero supporting paragraph (subheading) renders in at most 3 lines at the
+      1440 tier and carries at most 2 sentences.
+    severity: advisory
+    enforcement: new
+    check: { layer: geometry+static, selector: "hero subheading paragraph", metric: "rendered-line-count + sentence count", budget: "<= 3 lines, <= 2 sentences" }
+    rationale: >-
+      A hero that needs a third supporting sentence is burying its claim; sentence
+      LENGTH is the voice gate's law (voice-facts budgets), sentence COUNT in the
+      opener is scoped here.
+    provenance: style-library-catalog   # hero invariant "<= 2 supporting lines", demoted genre-class
+
+  - id: SR-HERO-03
+    scope: hero
+    assertion: Exactly one filled-primary action in the hero action group.
+    severity: required
+    enforcement: delegated
+    delegatedTo: [AS-59]
+    check: { layer: delegated, note: "slop_audit.mjs AS-59 section pass covers the hero group" }
+    rationale: scoping row — register hierarchy law exists; listed so the hero family reads complete.
+    provenance: as-history
+
+  - id: SR-HERO-04
+    scope: hero
+    assertion: >-
+      The hero kicker/eyebrow is a register label — at most 5 words, no terminal
+      period, never a full sentence.
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: ".c-eyebrow (hero scope)", metric: "word count + punctuation", budget: "<= 5 words, no terminal ." }
+    rationale: >-
+      Sentence-length eyebrows are generated copy overflowing the register; a
+      kicker labels the claim, it never makes one. Casing is the voice gate's law
+      (per-role casing facts); the length budget is scoped here.
+    provenance: typographic-cro
+
+  - id: SR-HERO-05
+    scope: hero
+    assertion: >-
+      A hero proof row (trust line / micro logo run / meta row) renders at or below
+      the body register — its computed font-size never exceeds the hero body copy's.
+    severity: advisory
+    enforcement: new
+    check: { layer: geometry, selector: "hero proof/meta row vs hero body", metric: computed-font-size, budget: "proof <= body" }
+    rationale: >-
+      Proof is quiet by definition; a proof row promoted to heading scale competes
+      with the one claim the hero exists to make (display OWNERSHIP is AS-32; the
+      proof-row cap relative to body is uncovered).
+    provenance: typographic-cro
+
+  # ───────────────────────────────────────────────────────────────────────────────
+  # STAT-BAND / METRICS — the numbers section. The sibling team's second proven
+  # check (stat-unit parallelism) lives here, split into falsifiable sub-rules.
+  # ───────────────────────────────────────────────────────────────────────────────
+
+  - id: SR-STAT-01
+    scope: stat-band
+    assertion: >-
+      Every stat VALUE carries a genuine magnitude: it parses into one of the
+      licensed shape classes — INT ("12,000"), INT+ ("170+"), PCT ("98%"),
+      MULT ("2.5x"), CUR ("$5M"), RATIO ("24/7") — and is never a pure word
+      ("Global", "Trusted", "Many").
+    severity: required
+    enforcement: new
+    check: { layer: static, selector: ".c-stat-value / .cs-stat-band-item value", metric: shape-class parse, budget: "0 wordy values" }
+    rationale: >-
+      A stat band exists to state measurements; a word dressed in the stat register
+      is invented proof — the numeric cousin of AS-52's phantom media.
+    provenance: sibling-team-scorer
+
+  - id: SR-STAT-02
+    scope: stat-band
+    assertion: >-
+      Unit-qualifier parallelism: values sharing a shape class share qualifier
+      grammar (all counts use "+" or none do; all percents share precision), and
+      RATIO-shaped pseudo-stats ("24/7") never mix into a band of measured
+      magnitudes.
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: "stat values per band", metric: "per-class qualifier census", budget: "1 qualifier grammar per class; 0 RATIO among measured" }
+    rationale: >-
+      The classic AI stat band — "10k+ users · 99.9% uptime · 24/7 support" — mixes
+      a marketing ratio into measurements and drifts qualifiers; parallel grammar
+      is what makes a band read as evidence.
+    provenance: sibling-team-scorer
+
+  - id: SR-STAT-03
+    scope: stat-band
+    assertion: >-
+      Stat LABELS are parallel: uniform casing rule across the band, each 1–6
+      words, longest/shortest word count within 3x.
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: ".c-stat-label per band", metric: "casing census + word counts", budget: "1 casing rule; 1-6 words; spread <= 3x" }
+    rationale: Parallel structure is the band's grammar; one essay-length label breaks the scan rhythm.
+    provenance: typographic-cro
+
+  - id: SR-STAT-04
+    scope: stat-band
+    assertion: A band carries 2–6 stats; no two stats state the same value+label pair.
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: "stat items per band", metric: "count + case-normalized dedupe", budget: "2-6 items, 0 duplicates" }
+    rationale: >-
+      One stat is a claim (inline proof territory), seven is a table; duplicates
+      are slot-filling. Band size is a genre prior — a brand's measured band wins.
+    provenance: typographic-cro
+
+  - id: SR-STAT-05
+    scope: stat-band
+    assertion: Off-ladder invented magnitudes in stat TYPE sizing fail the scale gate.
+    severity: required
+    enforcement: delegated
+    delegatedTo: [AS-62, scale_adherence]
+    check: { layer: delegated, note: "spacing_audit scale cells already bind generative lanes" }
+    rationale: scoping row — the stat register's type sizes are ladder law, not new law.
+    provenance: as-history
+
+  # ───────────────────────────────────────────────────────────────────────────────
+  # LOGO-STRIP — borrowed-credibility proof rail.
+  # ───────────────────────────────────────────────────────────────────────────────
+
+  - id: SR-LOGO-01
+    scope: logo-strip
+    assertion: >-
+      Mark-box uniformity: every rendered mark sits inside a uniform item box —
+      when the brand declares mediaScale.item that box binds (existing fix2
+      device); fact-less strips must still render no mark taller than 1.5x the
+      strip's median mark height.
+    severity: required
+    enforcement: new
+    check: { layer: geometry, selector: ".cs-logo-strip-item img/svg boxes", metric: "height census vs median", budget: "max/median <= 1.5 (fact-less); itembox exact when declared" }
+    rationale: >-
+      Aspect-weighted distribution undersizes/oversizes marks (the fix2 hubspot
+      finding: 90x45 rendered where the source draws 153x76); equal optical weight
+      is what makes a strip read as a peer set. The declared-fact path is already
+      device law — the fact-LESS uniformity band is the new check.
+    provenance: as-history
+
+  - id: SR-LOGO-02
+    scope: logo-strip
+    assertion: A strip renders at least 4 marks (below 4, proof reads as name-dropping; use inline proof instead).
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: ".cs-logo-strip-item count", metric: count, budget: ">= 4" }
+    rationale: Genre floor from the imported catalog, demoted to soft — a brand's own measured 3-mark strip is evidence and records OVERRIDE.
+    provenance: style-library-catalog
+
+  - id: SR-LOGO-03
+    scope: logo-strip
+    assertion: Every mark is a disk-backed brand asset; no invented filenames, no borrowed art.
+    severity: required
+    enforcement: delegated
+    delegatedTo: [AS-33, AS-34]
+    check: { layer: delegated, note: "logo-bar realization law lives in blocks.yaml + AS-33/34 verifies" }
+    rationale: scoping row — evidence law exists.
+    provenance: as-history
+
+  - id: SR-LOGO-04
+    scope: logo-strip
+    assertion: >-
+      The strip caption renders at the caption/eyebrow register — computed
+      font-size at or below body size, never a heading tier.
+    severity: advisory
+    enforcement: new
+    check: { layer: geometry, selector: "strip caption vs body size", metric: computed-font-size, budget: "caption <= body" }
+    rationale: A logo strip is proof punctuation between beats; a heading-scale caption promotes it to a section statement it can't carry (AS-11 would then read it as under-filled).
+    provenance: typographic-cro
+
+  # ───────────────────────────────────────────────────────────────────────────────
+  # CAPTURE-FORM — lead capture / signup. Per-campaign form DEPTH is
+  # conversion-structure.yaml law; the rows here are form-anatomy quality.
+  # ───────────────────────────────────────────────────────────────────────────────
+
+  - id: SR-FORM-01
+    scope: capture-form
+    assertion: >-
+      Field budget: at most 8 visible controls (inputs/selects/radio groups/
+      checkboxes; a radio GROUP counts once), and at most 5 of them required.
+      Per-campaign depth bands (a gated-content form wants 2–3 fields, an event
+      registration licenses 6–8) bind from conversion-structure.yaml, not here.
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: "form controls in section (chrome excluded)", metric: "visible-control count + required count", budget: "<= 8 visible, <= 5 required" }
+    rationale: >-
+      Every field costs conversion; generators pad forms because fields are cheap
+      to emit. The band is deliberately generous — the campaign-scoped budget is
+      the sharp one (SR cross-contract: conversion-structure formDepth).
+    provenance: typographic-cro
+
+  - id: SR-FORM-02
+    scope: capture-form
+    assertion: The form is preceded by copy stating the exchange (what the reader gets for what they give).
+    severity: required
+    enforcement: delegated
+    delegatedTo: [AS-14]
+    check: { layer: delegated, note: "slop_audit.mjs AS-14 >=40 chars body-before-form" }
+    rationale: scoping row — stated-exchange law exists.
+    provenance: as-history
+
+  - id: SR-FORM-03
+    scope: capture-form
+    assertion: Every input carries a real label; placeholder is never the only name.
+    severity: required
+    enforcement: delegated
+    delegatedTo: [interaction-contracts form family]
+    check: { layer: delegated, note: "interaction_audit form labelling checks (browser-computed)" }
+    rationale: scoping row — labelling law exists.
+    provenance: as-history
+
+  - id: SR-FORM-04
+    scope: capture-form
+    assertion: >-
+      Exactly one submit action inside the form, on the filled-primary register;
+      any sibling action in the form panel takes a quieter register.
+    severity: required
+    enforcement: new
+    check: { layer: static, selector: "form submit controls + panel siblings", metric: "submit count + register class", budget: "1 submit, filled; siblings non-filled" }
+    rationale: >-
+      AS-59 covers multi-action GROUPS; a form with two submits (or a filled
+      sibling beside the submit) is the form-scoped variant its group scan does
+      not see when the actions sit in different containers.
+    provenance: as-history
+
+  - id: SR-FORM-05
+    scope: capture-form
+    assertion: >-
+      A form collecting personal data (email/name/phone input present) carries a
+      consent/privacy register line inside the section (legal-register text or the
+      form's consent node).
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: "PII inputs + .cs-signup-consent / legal-register text", metric: presence, budget: "consent line present" }
+    rationale: >-
+      The exchange statement (AS-14) says what you get; the consent line says what
+      happens to the data — real capture forms carry both, generated ones drop the
+      second. Genre-soft: a brand whose measured forms omit it records OVERRIDE.
+    provenance: style-library-catalog   # newsletter invariant "privacy/consent note"
+
+  - id: SR-FORM-06
+    scope: capture-form
+    assertion: Field labels are parallel — uniform casing rule, 1–4 words each, no label ends in a colon while siblings don't.
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: "form labels", metric: "casing census + word counts + punctuation", budget: "1 casing rule; 1-4 words; uniform colon usage" }
+    rationale: Mixed label grammar ("Full name" / "ENTER YOUR EMAIL:" / "company") is assembly-line output; parallel labels read as one designed form.
+    provenance: typographic-cro
+
+  # ───────────────────────────────────────────────────────────────────────────────
+  # PRICING-TIERS — plan cards.
+  # ───────────────────────────────────────────────────────────────────────────────
+
+  - id: SR-TIER-01
+    scope: pricing-tiers
+    assertion: >-
+      Tier-card parity: every card in the band renders the same slot anatomy — the
+      presence set over {name, price, period/tagline, feature list, CTA, badge} is
+      identical across cards (badge exempt: at most one card carries it).
+    severity: required
+    enforcement: new
+    check: { layer: static, selector: ".cs-tier slot presence sets", metric: set-equality, budget: "identical sets (badge exempt)" }
+    rationale: >-
+      A card missing the member its siblings have (no CTA, no feature list) reads
+      as a rendering accident; pricing is THE section readers compare cell-by-cell,
+      so anatomy asymmetry is instantly visible. Geometry equalization is AS-50;
+      anatomy parity had no owner.
+    provenance: sibling-team-scorer
+
+  - id: SR-TIER-02
+    scope: pricing-tiers
+    assertion: >-
+      At most one card carries the emphasis treatment (badge / inverse surface /
+      ring), and when a filled-primary CTA register appears in the band it belongs
+      to that emphasized card only.
+    severity: required
+    enforcement: new
+    check: { layer: static+geometry, selector: "emphasis-marked .cs-tier + CTA registers", metric: "emphasis count + filled placement", budget: "<= 1 emphasized; filled CTA only on it" }
+    rationale: >-
+      Two "most popular" cards is decision noise (the tier-band variant of AS-59's
+      one-filled-per-group; the group scan can't see across sibling cards).
+      Genre-soft on the highlight itself: a no-highlight band is licensed
+      (style-library pricing axis "highlight: none").
+    provenance: style-library-catalog
+
+  - id: SR-TIER-03
+    scope: pricing-tiers
+    assertion: >-
+      Price format parallelism: every price is one of the licensed shapes —
+      currency amount ("$149"), zero-price word ("Free"), or contact word
+      ("Custom" / "Contact sales" / "Talk to us") — and all currency-shaped prices
+      in a band share one grammar (same currency symbol; same period suffix
+      presence, "/mo" on all or none).
+    severity: required
+    enforcement: new
+    check: { layer: static, selector: ".cs-tier price nodes", metric: shape-class parse + grammar census, budget: "0 off-shape; 1 currency grammar" }
+    rationale: >-
+      "$149" beside "149 dollars" beside "$99/mo" (others period-less) is the
+      pricing cousin of stat-unit drift — same shape-class discipline as
+      SR-STAT-01/02, scoped to the section where money makes it costly.
+    provenance: sibling-team-scorer
+
+  - id: SR-TIER-04
+    scope: pricing-tiers
+    assertion: >-
+      Feature-list parity: per-card bullets number 2–8 and the longest list is at
+      most 2x the shortest (a 12-bullet card beside a 3-bullet card is filler
+      asymmetry, not differentiation).
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: ".cs-tier-list items per card", metric: "count band + spread", budget: "2-8 each; max/min <= 2" }
+    rationale: Escalating tiers legitimately add bullets ("Everything in X, plus…"); a runaway list means the generator padded one card instead of writing the delta.
+    provenance: typographic-cro
+
+  - id: SR-TIER-05
+    scope: pricing-tiers
+    assertion: A band renders 2–4 tiers (5+ belongs to a comparison table, 1 is a CTA band wearing a card).
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: ".cs-tier count", metric: count, budget: "2-4" }
+    rationale: Genre band; a brand's measured 5-tier pricing page is evidence and records OVERRIDE.
+    provenance: typographic-cro
+
+  - id: SR-TIER-06
+    scope: pricing-tiers
+    assertion: Tier card rows ride the brand's grid equalization stance and slack anatomy.
+    severity: required
+    enforcement: delegated
+    delegatedTo: [AS-50, AS-55]
+    check: { layer: delegated, note: "card-row equalization law; spacing_audit relationships" }
+    rationale: scoping row — geometry law exists.
+    provenance: as-history
+
+  # ───────────────────────────────────────────────────────────────────────────────
+  # QUOTE / TESTIMONIAL — attributed social proof.
+  # ───────────────────────────────────────────────────────────────────────────────
+
+  - id: SR-QUOTE-01
+    scope: quote
+    assertion: >-
+      Register distinction: quote body text is typographically distinct from the
+      page's section-heading register — it carries quote semantics (blockquote /
+      .cs-quote-text / .cs-module--quote) and its computed size stays below the
+      page's hero display size. Register PROMOTION (heading-family quote pull) is
+      licensed when the brand's measured ladder documents it (the pass1
+      register-promotion routing), but a quote must never read as a section
+      heading that grew quotation marks.
+    severity: required
+    enforcement: new
+    check: { layer: static+geometry, selector: "quote text nodes", metric: "semantic marker presence + size vs display", budget: "marked; size < hero display" }
+    rationale: >-
+      The user-named distinction: a heading states the brand's claim, a quote
+      states a customer's — when the two share a register the reader can't tell
+      testimony from marketing, which defeats proof. Voice/casing stays the voice
+      gate's law.
+    provenance: typographic-cro
+
+  - id: SR-QUOTE-02
+    scope: quote
+    assertion: Every quote carries attribution — a name node at minimum (role/company strengthen it); an unattributed quote is invented evidence.
+    severity: required
+    enforcement: new
+    check: { layer: static, selector: "quote modules", metric: "attribution node presence", budget: "name present per quote" }
+    rationale: Attribution is what makes a quote proof instead of copywriting; generators drop it because the quote slot fills without it.
+    provenance: sibling-team-scorer
+
+  - id: SR-QUOTE-03
+    scope: quote
+    assertion: No default-art backfill beside attributed quotes; only explicitly bound assets render.
+    severity: required
+    enforcement: delegated
+    delegatedTo: [AS-52]
+    check: { layer: delegated, note: "phantom-portrait law; cs-module--quote stamp exists for traceability" }
+    rationale: scoping row — phantom media law exists.
+    provenance: as-history
+
+  - id: SR-QUOTE-04
+    scope: quote
+    assertion: Quote body runs 10–70 words (shorter is a slogan in quote marks; longer is a case study pasted into a card).
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: "quote body text", metric: word-count, budget: "10-70 words" }
+    rationale: The band keeps quotes readable as pull-proof; a briefed long-form pull quote records OVERRIDE with the brief cited.
+    provenance: typographic-cro
+
+  # ───────────────────────────────────────────────────────────────────────────────
+  # FEATURE-GRID — parallel value props (modules / bento).
+  # ───────────────────────────────────────────────────────────────────────────────
+
+  - id: SR-GRID-01
+    scope: feature-grid
+    assertion: >-
+      Cell anatomy parity: every cell renders the same slot presence set over
+      {icon/media, eyebrow, heading, body, link}. Bento exempts the LEAD cell
+      (its richer anatomy is the device); supporting cells still hold parity
+      among themselves.
+    severity: required
+    enforcement: new
+    check: { layer: static, selector: "grid cell slot sets (.cs-modules / .cs-bento-cell)", metric: set-equality, budget: "identical sets (bento lead exempt)" }
+    rationale: >-
+      "Items are parallel in structure" is the grid's grammar (imported catalog
+      invariant, kept hard here because unlike tier badges NO cell is licensed to
+      differ except the bento lead). Empty CELLS are AS-12; geometry is AS-50 —
+      anatomy parity between filled cells had no owner.
+    provenance: style-library-catalog
+
+  - id: SR-GRID-02
+    scope: feature-grid
+    assertion: Cell headings are parallel — each 1–8 words, longest/shortest within 3x, one casing rule.
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: "cell headings", metric: "word counts + casing census", budget: "1-8 words; spread <= 3x; 1 casing rule" }
+    rationale: Parallel grammar across items is what makes a grid scannable; one 14-word cell heading among 3-word siblings is unedited output.
+    provenance: sibling-team-scorer
+
+  - id: SR-GRID-03
+    scope: feature-grid
+    assertion: Cell bodies are parallel in depth — each 1–3 sentences, longest/shortest word count within 2.5x.
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: "cell body paragraphs", metric: "sentence counts + word spread", budget: "1-3 sentences; spread <= 2.5x" }
+    rationale: Same parallelism law at body depth; sentence LENGTH stays the voice gate's budget.
+    provenance: typographic-cro
+
+  - id: SR-GRID-04
+    scope: feature-grid
+    assertion: Cell icons/marks render at one uniform box size (±10%) across the grid.
+    severity: advisory
+    enforcement: new
+    check: { layer: geometry, selector: "cell icon boxes", metric: box-size census, budget: "within 10% of median" }
+    rationale: The grid-scoped echo of logo mark-box uniformity; mixed icon scales read as pasted-together cells.
+    provenance: typographic-cro
+
+  - id: SR-GRID-05
+    scope: feature-grid
+    assertion: No structurally empty cells in the grid.
+    severity: required
+    enforcement: delegated
+    delegatedTo: [AS-12]
+    check: { layer: delegated, note: "empty-column/cell measurement lives in slop_audit" }
+    rationale: scoping row.
+    provenance: as-history
+
+  - id: SR-GRID-06
+    scope: feature-grid
+    assertion: Card rows ride the brand's equalization stance; pinned slots keep their minimum seam.
+    severity: required
+    enforcement: delegated
+    delegatedTo: [AS-50, AS-55]
+    check: { layer: delegated, note: "equalization + pinned-slot law" }
+    rationale: scoping row.
+    provenance: as-history
+
+  # ───────────────────────────────────────────────────────────────────────────────
+  # FAQ / ACCORDION — objection handling.
+  # ───────────────────────────────────────────────────────────────────────────────
+
+  - id: SR-FAQ-01
+    scope: faq
+    assertion: Every trigger is an actual question — interrogative opening word or terminal question mark.
+    severity: required
+    enforcement: new
+    check: { layer: static, selector: "accordion trigger text", metric: question-form parse, budget: "all triggers question-form" }
+    rationale: >-
+      "Our features" as an accordion trigger is navigation wearing an FAQ; readers
+      open FAQs to get ANSWERS, and statement-triggers signal the generator filled
+      a disclosure device with leftover copy.
+    provenance: typographic-cro
+
+  - id: SR-FAQ-02
+    scope: faq
+    assertion: Each answer runs 15–120 words — long enough to actually answer, short enough to stay an FAQ (docs-page answers belong on docs pages).
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: "accordion answer bodies", metric: word-count band, budget: "15-120 words each" }
+    rationale: Sub-15-word answers are objection theater ("Is it secure?" "Yes, very."); 120+ is pasted documentation.
+    provenance: sibling-team-scorer
+
+  - id: SR-FAQ-03
+    scope: faq
+    assertion: 3–8 items per FAQ band.
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: "accordion items", metric: count, budget: "3-8" }
+    rationale: One or two questions don't earn a disclosure device; 9+ means the section absorbed the whole help center.
+    provenance: typographic-cro
+
+  - id: SR-FAQ-04
+    scope: faq
+    assertion: At most a third of answers carry an action link (an FAQ that sells in every row is a CTA band in disguise).
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: "action links inside answers", metric: share, budget: "<= 1/3 of answers" }
+    rationale: The FAQ's conversion job is removing objections; per-answer CTAs invert it into pressure and dilute the page's real conversion moments.
+    provenance: typographic-cro
+
+  - id: SR-FAQ-05
+    scope: faq
+    assertion: Single-open disclosure discipline; keyboard/AT parity.
+    severity: required
+    enforcement: delegated
+    delegatedTo: [AS-40, AS-57, interaction-contracts acc family]
+    check: { layer: delegated, note: "details[name] grouping + IC-ACC checks" }
+    rationale: scoping row.
+    provenance: as-history
+
+  # ───────────────────────────────────────────────────────────────────────────────
+  # CTA-BAND — the closing conversion beat.
+  # ───────────────────────────────────────────────────────────────────────────────
+
+  - id: SR-CTA-01
+    scope: cta-band
+    assertion: >-
+      A CTA band is one decision moment: one heading, at most one short support
+      line (≤ 30 words), an action group — and no competing devices (no card
+      grids, no media wells, no feature lists inside the band).
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: ".cs-conversion-sec children", metric: "support word count + device census", budget: "<= 30 support words; 0 grids/wells/lists" }
+    rationale: >-
+      Generators pad closing bands into second feature sections; every added
+      device dilutes the decision. Scoped soft because briefed closing forms
+      (capture-form family) legitimately compose richer bands — the form rows
+      then bind their own family's rules.
+    provenance: typographic-cro
+
+  - id: SR-CTA-02
+    scope: cta-band
+    assertion: Exactly one filled-primary action in the band's action group.
+    severity: required
+    enforcement: delegated
+    delegatedTo: [AS-59, AS-60]
+    check: { layer: delegated, note: "register hierarchy + declared-layout law" }
+    rationale: scoping row.
+    provenance: as-history
+
+  - id: SR-CTA-03
+    scope: cta-band
+    assertion: >-
+      The primary action label is verb-led and 2–5 words (the band-scoped instance
+      of the brand's verb-led CTA share; the corpus-wide share stays the voice
+      gate's advisory).
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: "band primary action label", metric: "verb-led parse + word count", budget: "verb-led, 2-5 words" }
+    rationale: The closing button is the page's most-read three words; noun-pile labels ("Platform information") close nobody. Brand verb lexicons come from voice-facts, not a shared word list.
+    provenance: typographic-cro
+
+  # ───────────────────────────────────────────────────────────────────────────────
+  # NAV — measured chrome. Rules are fact-PARITY (chrome renders deterministically
+  # from harvested facts; drift = render regression, not a style choice).
+  # ───────────────────────────────────────────────────────────────────────────────
+
+  - id: SR-NAV-01
+    scope: nav
+    assertion: >-
+      Chrome parity: the rendered primary-bar link roster matches the brand's
+      harvested navbar facts — same item count, no invented or dropped labels.
+    severity: required
+    enforcement: new
+    check: { layer: static, selector: ".cs-navlinks items vs brand.yaml navbar facts", metric: roster diff, budget: "0 invented / 0 dropped" }
+    rationale: >-
+      Generated lanes reuse the deterministic chrome; a roster diff means a
+      composer regression (the silent-drop family, AS-53, scoped to chrome where
+      the fact list makes the diff exact).
+    provenance: as-history
+
+  - id: SR-NAV-02
+    scope: nav
+    assertion: Exactly one filled-primary action in the bar's action group.
+    severity: required
+    enforcement: delegated
+    delegatedTo: [AS-59]
+    check: { layer: delegated, note: "AS-59's page-level nav pass" }
+    rationale: scoping row.
+    provenance: as-history
+
+  - id: SR-NAV-03
+    scope: nav
+    assertion: Nav link labels are destinations, not pitches — 1–3 words, no terminal punctuation, no urgency lexicon ("now", "today", "free" as label tail).
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: "primary-bar link labels", metric: "word count + lexicon scan", budget: "1-3 words; 0 urgency tails" }
+    rationale: Genre-soft (a measured brand label wins with OVERRIDE); binds where compositions inject nav items in from-style/intake lanes without harvested chrome.
+    provenance: style-library-catalog
+
+  # ───────────────────────────────────────────────────────────────────────────────
+  # FOOTER — measured chrome.
+  # ───────────────────────────────────────────────────────────────────────────────
+
+  - id: SR-FOOT-01
+    scope: footer
+    assertion: >-
+      Chrome parity: rendered footer anatomy (column count, bottom-bar grammar,
+      social roster) matches the brand's harvested footer facts.
+    severity: required
+    enforcement: new
+    check: { layer: static, selector: "footer columns/bottom-bar vs chrome facts", metric: anatomy diff, budget: "0 drift" }
+    rationale: Same chrome-parity law as SR-NAV-01, at the footer.
+    provenance: as-history
+
+  - id: SR-FOOT-02
+    scope: footer
+    assertion: The footer carries a legal register line (copyright/legal text at caption scale).
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: "footer legal-register nodes", metric: presence, budget: "present" }
+    rationale: Every real footer signs the page; generated pages drop the line because no slot demanded it. Fact-gated soft — a measured footer without one is evidence.
+    provenance: typographic-cro
+
+  - id: SR-FOOT-03
+    scope: footer
+    assertion: No heading-only (link-less, body-less) footer columns.
+    severity: required
+    enforcement: delegated
+    delegatedTo: [AS-11, AS-12]
+    check: { layer: delegated, note: "under-filled/empty-column measurement, footer-scoped instance" }
+    rationale: scoping row.
+    provenance: as-history
+
+  # ───────────────────────────────────────────────────────────────────────────────
+  # CAROUSEL / SLIDER — rotating content devices.
+  # ───────────────────────────────────────────────────────────────────────────────
+
+  - id: SR-CAR-01
+    scope: carousel
+    assertion: Slide anatomy parity — every slide renders the same slot presence set (the carousel instance of tier/grid parity).
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: "slide slot sets (.cs-edgecut / .cs-panelcar items)", metric: set-equality, budget: "identical sets" }
+    rationale: A carousel is one device showing peers; a slide missing its siblings' anatomy reads as a broken frame when it rotates in.
+    provenance: sibling-team-scorer
+
+  - id: SR-CAR-02
+    scope: carousel
+    assertion: At least 3 items (a 2-item carousel is a split layout wearing controls; render the split).
+    severity: advisory
+    enforcement: new
+    check: { layer: static, selector: "carousel items", metric: count, budget: ">= 3" }
+    rationale: Rotation chrome costs interaction; two frames never pay for it.
+    provenance: typographic-cro
+
+  - id: SR-CAR-03
+    scope: carousel
+    assertion: Controls present, reachable, honestly stated (pause where autoplay); first frame fully visible without JS.
+    severity: required
+    enforcement: delegated
+    delegatedTo: [interaction-contracts carousel family, AS-41]
+    check: { layer: delegated, note: "IC-CAR checks + reveal-failsafe law" }
+    rationale: scoping row.
+    provenance: as-history
+
+  - id: SR-CAR-04
+    scope: carousel
+    assertion: Marquee loops keep seam math (no jump, no drift, content-independent speed).
+    severity: required
+    enforcement: delegated
+    delegatedTo: [AS-42]
+    check: { layer: delegated, note: "marquee seam law" }
+    rationale: scoping row.
+    provenance: as-history
+
+# ── UNIVERSAL AI-TELL CANDIDATES — noted for the AS registry, NOT enforced here ──
+# Per the library's own law (universal failure shapes belong to anti-ai-slop.md),
+# these two generalizations are recorded as candidates for the registry owner to
+# take or leave; the scoped rules above stand on their own either way.
+registryCandidates:
+  - candidate: numeric-register-parallelism
+    generalizes: [SR-STAT-01, SR-STAT-02, SR-TIER-03]
+    note: >-
+      Any ADJACENT numeric run (stat band, price row, meta row, comparison cells)
+      shares magnitude-shape grammar; a wordy value or drifting qualifier in any
+      register is one universal failure shape. Candidate next-AS entry if the
+      registry owner prefers one law over three scoped instances.
+  - candidate: rendered-line-budget-honesty
+    generalizes: [SR-HDR-01, SR-HERO-01, SR-HERO-02]
+    note: >-
+      Any bounded register (heading, eyebrow, button label, badge) has a rendered
+      line budget its copy must respect at the canonical tiers; wrap overflow in
+      ANY register is one universal failure shape (eyebrows wrapping to 2 lines,
+      buttons wrapping mid-label). Candidate AS entry; geometry check identical
+      to the scoped rules' line-count method.

@@ -742,7 +742,13 @@ def stamp_pattern_devices(doc, layout, brand_yaml) -> None:
     # bands often breathe more than the brand's site-average section-padding token)
     # stamps it so the composer overrides the section rhythm vars for THIS band only.
     # Malformed lengths are dropped; nothing valid ⇒ no stamp (site rhythm holds).
-    bp = (pattern.content_shape or {}).get("bandPadding")
+    # GENRE-SKELETON sections excepted (spec/archetype-library.md, same discipline as
+    # the alignment-layer skip): band GEOMETRY belongs to the archetype + the brand's
+    # own spacing ladder (knobs.bandHeight re-registers on a measured rung); the donor
+    # pattern's band padding is the SOURCE band's structural register, which must not
+    # ride onto a different skeleton. Treatments/rhythm facts keep donating.
+    bp = None if layout.get("archetypeRef") \
+        else (pattern.content_shape or {}).get("bandPadding")
     if isinstance(bp, dict):
         pads = {k: str(bp.get(k) or "").strip() for k in ("top", "bottom")}
         pads = {k: v for k, v in pads.items()
@@ -1334,6 +1340,102 @@ def rhythm_vars_css(doc, style_ctx, surf_role, selector=":root") -> str:
             f"--c-section-pad-bottom: {r['pad_bottom']}; --c-section-pad: {r['pad_bottom']}; "
             f"--c-block-gap: {r['block_gap']}; --c-module-gap: {r['module_gap']}; "
             f"--c-section-pad-x: 2.5rem; --c-nav-pad-block: {nav_pad}; }}")
+
+
+def band_height_rung(doc, layout, surf_role, style_ctx) -> str:
+    """The brand spacing-token NAME the section's ``_bandHeight`` knob re-registers
+    to: the NEAREST ``section-*`` rung BELOW the surface's resolved default pad
+    (``compact``) or ABOVE it (``tall``). '' when the knob is absent/unknown, the
+    default pad is unparsable, or no rung exists in the wanted direction (degrade =
+    standard rhythm). Shared by ``band_height_css`` (the CSS emission) and the
+    wrapper's ``data-band-rung`` declaration stamp (the spacing auditor's read)."""
+    band = str((layout or {}).get("_bandHeight") or "").strip().lower()
+    direction = {"compact": -1, "tall": 1}.get(band)
+    if not direction:
+        return ""
+
+    def _px(val) -> float | None:
+        m = re.fullmatch(r"([\d.]+)\s*(rem|px)", str(val or "").strip())
+        if not m:
+            return None
+        n = float(m.group(1))
+        return n * 16.0 if m.group(2) == "rem" else n
+
+    base = _px(rhythm_for(doc, style_ctx, surf_role)["pad_top"])
+    if base is None:
+        return ""
+    candidates = []
+    for name, tok in (((doc.get("tokens") or {}).get("spacing") or {}) or {}).items():
+        if not str(name).startswith("section"):
+            continue
+        px = _px((tok or {}).get("value") if isinstance(tok, dict) else None)
+        if px is not None and px > 0:
+            candidates.append((px, str(name)))
+    picks = sorted((c for c in candidates if (c[0] - base) * direction > 0),
+                   key=lambda c: abs(c[0] - base))
+    return picks[0][1] if picks else ""
+
+
+def band_height_derived_px(doc, layout, surf_role, style_ctx) -> float | None:
+    """Derived-scale degrade for the bandHeight knob (pass1 2026-07,
+    style-scale.v1 consumption): when the knob wants a direction the brand's OWN
+    measured ladder has no rung for, a composed lane may ride the nearest DERIVED
+    section-rhythm step instead of silently keeping standard rhythm. Fires only
+    when ALL hold: a valid knob, NO measured rung in the direction (a measured
+    fact always wins), and the page doc carries a loaded ``_styleScale`` with a
+    non-poor space fit (composition_to_doc loads it; the replica assembler never
+    does — byte-identical by construction). None ⇒ the historical '' degrade."""
+    band = str((layout or {}).get("_bandHeight") or "").strip().lower()
+    direction = {"compact": -1, "tall": 1}.get(band)
+    if not direction:
+        return None
+    if band_height_rung(doc, layout, surf_role, style_ctx):
+        return None  # measured rung binds — the derived step is never consulted
+    import style_scale as _ss
+    steps = _ss.section_rhythm_px(doc.get("_styleScale"))
+    if not steps:
+        return None
+    m = re.fullmatch(r"([\d.]+)\s*(rem|px)",
+                     str(rhythm_for(doc, style_ctx, surf_role)["pad_top"] or "").strip())
+    if not m:
+        return None
+    base = float(m.group(1)) * (16.0 if m.group(2) == "rem" else 1.0)
+    return _ss.nearest_step_px(steps, base, direction=direction)
+
+
+def band_height_css(doc, layout, sel: str, surf_role, style_ctx) -> str:
+    """Per-section bandHeight knob (spec/archetype-library.md; composition
+    ``knobs.bandHeight`` → ``layout['_bandHeight']``): re-registers the section's
+    vertical padding to the NEAREST rung of the brand's OWN section-rhythm token
+    family (``section-padding-*`` / ``section-y-*``) BELOW the surface's resolved
+    default pad (``compact``) or ABOVE it (``tall``). The knob never invents a
+    length — it only re-points at a different rung of the measured ladder (emitted
+    as a ``var(--space-…)`` layer-1 reference, so token provenance and the spacing
+    audit both see the brand's own fact). Degrades: no rung in the wanted direction,
+    an unparsable pad, or no ``_bandHeight`` hint -> '' (standard rhythm keeps).
+    Emitted AFTER ``rhythm_vars_css`` for the same selector so source order wins."""
+    band = str((layout or {}).get("_bandHeight") or "").strip().lower()
+    rung = band_height_rung(doc, layout, surf_role, style_ctx)
+    if not rung:
+        # derived-scale degrade (pass1 2026-07): a composed lane with a loaded
+        # style-scale prefers the nearest DERIVED section-rhythm step over the
+        # silent standard-rhythm keep — quantized new geometry instead of an
+        # unanswered knob. Measured rungs (above) always win; lanes without the
+        # artifact keep the historical '' byte-identically.
+        px = band_height_derived_px(doc, layout, surf_role, style_ctx)
+        if px is None:
+            return ""
+        val = f"{px:g}px"
+        return (f"\n/* bandHeight:{band} — no measured rung in this direction; "
+                f"re-registered to the DERIVED section-rhythm step {val} "
+                f"(style-scale.v1) */\n"
+                f"{sel} {{ --c-section-pad-top: {val}; --c-section-pad-bottom: {val}; "
+                f"--c-section-pad: {val}; }}")
+    var = f"var(--space-{tokens_css._slug(rung)})"
+    return (f"\n/* bandHeight:{band} — archetype band character re-registered to the "
+            f"brand's own '{rung}' rung */\n"
+            f"{sel} {{ --c-section-pad-top: {var}; --c-section-pad-bottom: {var}; "
+            f"--c-section-pad: {var}; }}")
 
 
 def loadable_proxies(doc):
@@ -2107,11 +2209,19 @@ def compose_stack_hero(doc, layout, ctx, rendered, style_ctx):
     # Footer } and the hero top padding normalizes to the normal section rhythm.
     # eyebrow / subhead / cta PREFER the layout's own resolved slots (v1 layouts carry
     # real copy in componentMapping props); copy_for is the fallback, not the default.
-    eyebrow_slot = _pick(rendered, "eyebrow") or _pick(rendered, "tagline")
-    body_slot = _pick(rendered, "supporting") or _pick(rendered, "paragraph")
-    cta_slot = _pick(rendered, "cta") or _pick(rendered, "button") or _pick(rendered, "action")
-    eyebrow_html = eyebrow_slot["html"] if eyebrow_slot else \
-        cr.render_eyebrow(doc, ctx, {"text": copy["eyebrow"]})
+    # ANATOMY-DEVICE fragments (fix6: foot form / rail — placed by their own blocks
+    # below) are excluded from these picks so a form's paragraph-register note can
+    # never double-render as the hero body.
+    core = [r for r in rendered
+            if not str(r.get("role") or "").startswith(("foot form", "rail "))]
+    eyebrow_slot = _pick(core, "eyebrow") or _pick(core, "tagline")
+    body_slot = _pick(core, "supporting") or _pick(core, "paragraph")
+    cta_slot = _pick(core, "cta") or _pick(core, "button") or _pick(core, "action")
+    # EMPTY copy value = the section authored NO such slot (slot-faithful archetype
+    # sections suppress the SECTION_COPY ride-through by passing "") — render nothing.
+    # Legacy paths always carry non-empty defaults, so this is byte-identical there.
+    eyebrow_html = eyebrow_slot["html"] if eyebrow_slot else (
+        cr.render_eyebrow(doc, ctx, {"text": copy["eyebrow"]}) if copy["eyebrow"] else "")
     # brand-name fallback passes through AS AUTHORED (AS-39) — display casing is the
     # brand's case token on the heading register, never a Python .upper() restyle.
     title_html = title["html"] if title else cr.render_heading(doc, ctx, {
@@ -2131,8 +2241,43 @@ def compose_stack_hero(doc, layout, ctx, rendered, style_ctx):
                     f'{"".join(action_frags)}</div>')
     elif cta_slot:
         cta_html = cta_slot["html"]
-    else:
+    elif copy["cta"]:
         cta_html = cr.render_arrow_link(doc, ctx, {"label": copy["cta"], "accent": False})
+    else:
+        cta_html = ""
+
+    # SLOT-FAITHFUL ANATOMY DEVICES (fix6, archetype sections only — the adapter maps
+    # them exclusively for genre-skeleton heroes, so legacy heroes render
+    # byte-identically):
+    #   "rail mark"/"rail caption" — an agenda/track/award row after the actions,
+    #     drawn through the existing logo-strip device + one caption line;
+    #   "foot form" — a search-first/capture anatomy's form block at the foot;
+    #   "rail link" — the quiet link row (popular/secondary destinations).
+    rail_html = ""
+    rail_marks = [r["html"] for r in rendered
+                  if str(r.get("role") or "").startswith("rail mark")
+                  and (r.get("html") or "").strip()]
+    if rail_marks:
+        rail_cap = next((r["html"] for r in rendered
+                         if str(r.get("role") or "").startswith("rail caption")
+                         and (r.get("html") or "").strip()), "")
+        items = "".join(f'<div class="cs-logo-strip-item">{f}</div>' for f in rail_marks)
+        rail_html = (f'<div class="cs-hero-rail"><div class="cs-logo-strip">{items}</div>'
+                     f'{rail_cap}</div>')
+    form_html = next((r["html"] for r in rendered
+                      if str(r.get("role") or "").startswith("foot form (")
+                      and (r.get("html") or "").strip()), "")
+    if form_html:
+        # the note precedes the field: it is the form's stated reason (AS-14).
+        form_note = next((r["html"] for r in rendered
+                          if str(r.get("role") or "").startswith("foot form note")
+                          and (r.get("html") or "").strip()), "")
+        form_html = f'<div class="cs-hero-form">{form_note}{form_html}</div>'
+    link_frags = [r["html"] for r in rendered
+                  if str(r.get("role") or "").startswith("rail link")
+                  and (r.get("html") or "").strip()]
+    links_html = (f'<div class="cs-hero-links">{"".join(link_frags)}</div>'
+                  if link_frags else "")
 
     panel = layout.get("_artPanel")
     if panel is not None and _art_panel_permitted(style_ctx):
@@ -2162,14 +2307,30 @@ def compose_stack_hero(doc, layout, ctx, rendered, style_ctx):
     </div>
     <div class="cs-spacer"></div>"""
 
-    body = f"""<section class="cs-section">
+    # STACKED archetype hero (spec/archetype-library.md): a genre-skeleton section
+    # whose composition declares NO overlap device renders the plain stack — the
+    # scaffold's measured title-over-collage pull is the SOURCE hero's layered fact,
+    # not a genre default. Zero bound media also drops the empty collage frame.
+    # Fact-gated on the ref: every existing lane keeps the classic shape byte-identically.
+    sec_cls = "cs-section"
+    if layout.get("archetypeRef") and not ((layout.get("overlapRules") or {}).get("types")):
+        sec_cls = "cs-section cs-hero--stacked"
+        if not hero_html.strip() and not overlap_html.strip():
+            collage = ""
+
+    sub_html = body_slot["html"] if body_slot else (
+        f'<p class="cs-sub">{cr.esc(copy["subhead"])}</p>' if copy["subhead"] else "")
+    body = f"""<section class="{sec_cls}">
   <div class="cs-slot">
     <div class="cs-eyebrow-wrap">{eyebrow_html}</div>
     <div class="cs-title">{title_html}</div>
 {collage}
     <div class="cs-foot">
-      {body_slot["html"] if body_slot else f'<p class="cs-sub">{cr.esc(copy["subhead"])}</p>'}
+      {sub_html}
+      {form_html}
       {cta_html}
+      {links_html}
+      {rail_html}
     </div>
   </div>
 </section>"""
@@ -2281,6 +2442,12 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
     rows + an arrow link. Two flush halves, gap 0, hard cut. The panel keeps cream/ink
     coloring regardless of the inverse parent (its own --c-* scope on .cs-panel)."""
     copy = copy_for(layout, doc)
+    # FORM-SPLIT hero (fix6): a split HERO whose composition bound a validated
+    # multi-field form slot (`_formFields` stamped by the adapter) composes as the
+    # capture split — copy column | real form panel — instead of the info-band
+    # shapes below, which have no slot for a form and silently dropped it.
+    if layout.get("_formFields") is not None:
+        return _compose_form_split(doc, layout, ctx, rendered, copy)
     media = _pick(rendered, "photo") or _pick(rendered, "image") or _pick(rendered, "media")
     _brand_name = (doc.get("brand") or {}).get("name") or "Brand"
     # BOUND MARK RUN in the media half (AS-33/AS-34, hubspot-v2 2026-07): a split
@@ -2486,6 +2653,84 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
       <div class="c-rows c-rows--table">{rows}</div>
       {cta_html}
     </div>
+  </div>
+</section>"""
+
+
+def _compose_form_split(doc, layout, ctx, rendered, copy):
+    """FORM-SPLIT hero (fix6, `hero-form-split` anatomy): the copy column carries the
+    hero ladder (eyebrow → display heading → support → proof points → stat) and the
+    counterweight half is a REAL capture panel — the signup scaffold's field anatomy
+    (`_signup_field_html`, same token chain as the boxed form variant), plated on the
+    brand's Container surface when the grammar declares one (card_panel_role;
+    panel-less brands keep the open form column, no invented plate). Every visible
+    value is authored: fields/submit/heading/note ride the validated `_formFields`
+    stamp, proof points ride `_formSplit` (the section's own list slot), the stat is
+    the bound stat fragment. Composes ONLY when the adapter stamped a split hero's
+    form slot — every other split renders byte-identically upstream."""
+    ff = layout.get("_formFields") or {}
+    fs = layout.get("_formSplit") if isinstance(layout.get("_formSplit"), dict) else {}
+    uid = _token_var_slug(str(layout.get("id") or "form-split"))
+    rows = "\n".join(_signup_field_html(doc, ctx, f, i, uid)
+                     for i, f in enumerate(ff.get("fields") or []))
+    submit = str(ff.get("submit") or copy["cta"] or "Submit").strip()
+    if (ctx.cta or cr.cta_shape(doc)) == "filled":
+        submit_html = f'<button class="c-button" type="submit">{cr.esc(submit)}</button>'
+    else:
+        submit_html = (f'<button class="c-arrow-link cs-signup-submit-link" '
+                       f'type="submit">{cr.esc(submit)} <span class="c-arrow" '
+                       f'aria-hidden="true">&rarr;</span></button>')
+    title_html = ""
+    if str(ff.get("heading") or "").strip():
+        title_html = "\n      " + cr.render_heading(doc, ctx, {
+            "text": ff["heading"], "level": "h3"})
+    # the note is SENTENCE microcopy (scheduling/expectation line) — it rides the
+    # signup consent register (sentence case), never the uppercase caption microlabel.
+    note = str(ff.get("note") or "").strip()
+    note_html = (f'\n      <p class="cs-signup-consent cs-form-split-note">'
+                 f'{cr.esc(note)}</p>' if note else "")
+    consent = str(ff.get("consent") or "").strip()
+    consent_html = (f'\n      <p class="cs-signup-consent">{cr.esc(consent)}</p>'
+                    if consent else "")
+    plate_cls = " cs-signup-panel--plate" if card_panel_role(doc) is not None else ""
+    panel_html = f"""<form class="cs-signup-panel cs-form-split-panel{plate_cls}" action="#" method="post">{title_html}
+      <div class="cs-signup-grid">
+{rows}
+      </div>{consent_html}
+      <div class="cs-signup-actions">{submit_html}</div>{note_html}
+    </form>"""
+    # eyebrow + heading compose as ONE header block: render_header owns the
+    # eyebrow→heading seam (the brand's relational-ladder token), so the split
+    # column's flex gap never re-registers it.
+    header_html = cr.render_header(doc, ctx, {
+        "eyebrow": copy["eyebrow"], "heading": copy["heading"],
+        "level": "display", "accent": False})
+    # a content-block support slot (pass2): its OWN heading (`intro`) is the copy
+    # column's lead-in when no separate body paragraph is authored, and its body
+    # strings (`support`) compose as real paragraphs — the block contract's shape,
+    # and the form's stated reason precedes the field (AS-14). The ruled-points
+    # device below stays the `list` contract's presentation.
+    body_txt = str(copy["body"]).strip() or str(fs.get("intro") or "").strip()
+    body_html = ("\n      " + cr.render_paragraph(doc, ctx, {"text": body_txt})) \
+        if body_txt else ""
+    for s in (fs.get("support") or []):
+        if str(s).strip():
+            body_html += "\n      " + cr.render_paragraph(doc, ctx, {"text": str(s).strip()})
+    points = [str(p).strip() for p in (fs.get("points") or []) if str(p).strip()]
+    points_html = ""
+    if points:
+        lis = "\n".join(f"        <li>{cr.esc(p)}</li>" for p in points)
+        points_html = f'\n      <ul class="cs-form-split-points">\n{lis}\n      </ul>'
+    stat = _pick(rendered, "stat")
+    stat_html = ("\n      " + stat["html"]) \
+        if stat and (stat.get("html") or "").strip() else ""
+    flip = " cs-split--form-left" if str(fs.get("side") or "").lower() == "left" else ""
+    return f"""<section class="cs-section cs-split-sec cs-form-split-sec">
+  <div class="cs-split cs-split--form{flip}">
+    <div class="cs-split-body">
+      {header_html}{body_html}{points_html}{stat_html}
+    </div>
+    {panel_html}
   </div>
 </section>"""
 
@@ -4654,6 +4899,37 @@ def _ov_render_text(doc, ctx, slot, *, heading_props=None):
     return cr.render_paragraph(doc, ctx, {"text": txt, "measure": "38ch"})
 
 
+def _ov_panel_copy_stack(doc, ctx, layout, copy: dict) -> str:
+    """Render a panel slot's OWN copy dict (eyebrow / heading / text|body / cta) as
+    panel items through the shared primitives. The cta value (string or list)
+    renders as a real action row: first action through render_button's law-first
+    cta-shape dispatch, later actions with a secondary-treatment hint so the brand's
+    own measured non-primary register resolves (AS-59 one-primary)."""
+    items = []
+    if str(copy.get("eyebrow") or "").strip():
+        items.append(cr.render_eyebrow(doc, ctx, {"text": copy["eyebrow"]}))
+    if str(copy.get("heading") or "").strip():
+        items.append(cr.render_heading(doc, ctx, {
+            "text": copy["heading"], "level": "display", "accent": False}))
+    body = copy.get("text") or copy.get("body") or copy.get("subheading") or ""
+    if str(body).strip():
+        items.append(cr.render_paragraph(doc, ctx, {"text": body, "measure": "38ch"}))
+    ctas = copy.get("cta")
+    labels = [ctas] if isinstance(ctas, str) and ctas.strip() else \
+        [str(x) for x in ctas if isinstance(x, str) and str(x).strip()] \
+        if isinstance(ctas, list) else []
+    if labels:
+        frags = []
+        for i, label in enumerate(labels):
+            props = {"label": label, "accent": False}
+            if i > 0:
+                props["familyHint"] = "secondary outlined quiet"
+            frags.append(cr.render_button(doc, ctx, props))
+        items.append(f'<div class="cs-hero-actions"{ag_attrs(doc, layout)}>'
+                     + "".join(frags) + "</div>")
+    return "\n      ".join(f'<div class="cs-ov-panel-item">{h}</div>' for h in items)
+
+
 def _ov_media_html(doc, ctx, slot, *, variant="hero", art="hero"):
     # AS-34: the fallback preference comes from the ACTIVE brand's own declared
     # defaultArt (brand_default_art_names) resolved against its inventory
@@ -4889,6 +5165,14 @@ def compose_overlay(doc, layout, ctx, rendered, style_ctx):
             f'<div class="cs-ov-panel-item">{_ov_render_text(doc, ctx, by_name[n])}</div>'
             for n in inner_names if _ov_text(by_name[n]))
         claimed.update(inner_names)
+        # the panel shell DOUBLING as the text payload (archetype-gallery 2026-07): a
+        # composition that authors the whole copy dict ON the panel slot (no sibling
+        # text slots) renders that copy as the panel stack — the old shell-only read
+        # drew an EMPTY panel over the canvas and silently dropped the authored
+        # heading. Sibling-slot compositions are byte-identical (inner wins).
+        if not inner and panel_slot is not None \
+                and isinstance(panel_slot.get("copy"), dict):
+            inner = _ov_panel_copy_stack(doc, ctx, layout, panel_slot["copy"])
         dist = str(panel_t.get("distribute") or "start").lower()
         dist_css = {"start": "flex-start", "center": "center",
                     "space-between": "space-between"}.get(dist, "flex-start")
@@ -5414,6 +5698,9 @@ SCAFFOLD_HERO_CSS = """.cs-section { min-height: 100cqh; }
    overlap margin has nothing to overlap, so the title-to-body seam rides the block
    rhythm instead of the negative pull. Collage heroes are untouched. */
 .cs-hero-layered--flat .cs-title { margin-bottom: 0; }
+/* STACKED archetype hero (genre skeleton without an overlap device): the title-to-
+   media seam rides the block rhythm — no negative pull into the collage. */
+.cs-hero--stacked .cs-title { margin-bottom: 0; }
 .cs-collage--layered > .c-image, .cs-collage--layered > .c-image-ph {
   position: relative; z-index: 1; margin-inline: auto; }
 .cs-ov { position: absolute; }
@@ -5441,6 +5728,29 @@ SCAFFOLD_HERO_CSS = """.cs-section { min-height: 100cqh; }
 .cs-hero-actions { display: flex; flex-wrap: wrap; align-items: center;
   gap: 1em; justify-content: flex-start; }
 .cs-foot .cs-hero-actions { justify-content: center; }
+/* hero MARK RAIL (fix6): an archetype anatomy's agenda/track/award row after the
+   actions — the shared logo-strip device + one caption line, following the foot's
+   stance (centered foot centers the rail; anchored packs re-anchor like actions).
+   The rail's marks are the BRAND'S OWN iconography (an agenda/track row), not a
+   third-party proof wall — the style layer's logoStrip emphasis treatment
+   (grayscale/reduced) does not apply inside the rail; marks render as shipped. */
+.cs-hero-rail { display: flex; flex-direction: column;
+  gap: var(--space-cluster-gap, var(--c-cluster-gap, 0.75rem)); }
+.cs-foot .cs-hero-rail .cs-logo-strip { justify-content: center; }
+.cs-hero-rail .c-caption { margin: 0; }
+.cs-hero-rail .cs-logo-strip .c-logo-img { filter: none; opacity: 1; }
+/* hero form + quiet link rail (fix6, archetype anatomy devices): the form block
+   caps at the CTA/control measure inside the foot; the link rail is one wrapping
+   row of arrow links at a quiet register. */
+/* one mechanic owns the width: the foot column is already capped at the hero's
+   measured stack measure, so the form fills it (no second competing cap). */
+.cs-hero-form { width: 100%; display: flex; flex-direction: column;
+  gap: var(--space-field-label-gap, 0.5em); }
+.cs-hero-form .c-form { margin: 0; }
+.cs-hero-form .c-paragraph { margin: 0; }
+.cs-hero-links { display: flex; flex-wrap: wrap; align-items: center;
+  justify-content: center; column-gap: var(--c-cluster-gap, 1rem);
+  row-gap: 0.5rem; }
 @media (max-width: 991px) { .cs-navlinks { display: none; } }
 @media (max-width: 767px) { .cs-section {
     /* provenance: structural — mobile floor insets (tap-safe minimum section padding on
@@ -5616,8 +5926,30 @@ SCAFFOLD_SPLIT_CSS = """/* container width rides the shared content container
   --c-hairline: var(--c-panel-hairline); }
 .cs-panel-title { margin-bottom: 1.25rem; }
 .cs-panel-foot { margin-top: 1.5rem; display: flex; justify-content: flex-end; }
+/* FORM-SPLIT hero (fix6): copy column | capture panel. The copy column takes the
+   reading half, the panel the counterweight half with the brand's column gutter
+   between; formSide:left mirrors the pair. Field/panel anatomy is the signup
+   scaffold's (SCAFFOLD_SIGNUP_CSS) — nothing new is styled here but placement. */
+.cs-split--form { column-gap: var(--space-column-to-column, 2rem);
+  align-items: center; }
+/* adjacent halves: the brand's column-to-column token IS the visible gap
+   (an empty registration column would re-register the seam off the ladder). */
+.cs-split--form > .cs-split-body { grid-column: 1 / span 6; grid-row: 1; }
+.cs-split--form > .cs-form-split-panel { grid-column: 7 / -1; grid-row: 1; }
+.cs-split--form-left > .cs-split-body { grid-column: 7 / -1; }
+.cs-split--form-left > .cs-form-split-panel { grid-column: 1 / span 6; }
+.cs-form-split-points { list-style: none; margin: 0; padding: 0; width: 100%;
+  max-width: var(--cs-stack-measure, 34rem);
+  font-family: var(--c-font-body); font-size: var(--c-body-size, 1rem);
+  line-height: 1.5; color: var(--c-ink); }
+.cs-form-split-points li { padding: 0.65em 0;
+  border-top: 1px solid var(--c-hairline); }
+.cs-form-split-points li:last-child { border-bottom: 1px solid var(--c-hairline); }
+.cs-form-split-note { margin: 0; }
 @media (max-width: 767px) { .cs-split { grid-template-columns: 1fr; }
   .cs-split-media, .cs-split > .cs-panel, .cs-split > .cs-split-body { grid-column: 1; }
+  .cs-split--form > .cs-split-body, .cs-split--form > .cs-form-split-panel {
+    grid-column: 1; grid-row: auto; }
   .cs-split-media .c-image { /* provenance: structural — mobile recrop: the stacked
     split half needs a bounded height (device geometry, not a brand ratio) */
     aspect-ratio: 4 / 3; } }"""
@@ -6199,8 +6531,13 @@ SCAFFOLD_OVERLAY_CSS = """.cs-overlay-sec { position: relative; }
   --c-hairline: var(--c-panel-hairline);
   padding: calc(6 * var(--baseline)) calc(5 * var(--baseline)); }
 /* panel display steps DOWN from the section's own display alias — --c-display-size is
-   always emitted per section (component_vars), so no literal fallback (AS-24). */
-.cs-ov-panel .c-heading--display { font-size: calc(0.62 * var(--c-display-size));
+   always emitted per section (component_vars), so no literal fallback (AS-24).
+   0.6 (pass1 2026-07, scale_adherence finding): the old 0.62 landed hubspot's panel
+   heading at 49.6px — on NO ladder (measured h1 48 / derived step 52). 0.6 puts the
+   stepped-down rank on the brand's own h1 rung for the evidenced display:h1 ratios
+   (hubspot 80->48 = h1; remote 46->27.6 ~= h3 28) — quantized new geometry, audited
+   per brand by the scale gate. */
+.cs-ov-panel .c-heading--display { font-size: calc(0.6 * var(--c-display-size));
   max-width: 14ch; }
 /* sidebar rail: the full-height panel column (ref 3) — space-between stack. */
 .cs-ov-rail { top: 0; bottom: 0; transform: none; min-height: 0;
@@ -6953,8 +7290,14 @@ def resolve_alignment(layout, pattern=None, style_ctx=None, doc=None,
             ga = _header_grammar_anchor(doc, layout)
             if ga:
                 return {**ga, "source": "curation"}
-    # 2. pattern contentShape.alignment (brand-schema §4.4)
-    if pattern is not None and not curated_follow_grammar:
+    # 2. pattern contentShape.alignment (brand-schema §4.4) — SKIPPED for genre-
+    # archetype sections (spec/archetype-library.md): the seeded pattern's alignment
+    # is a structural fact about the SOURCE's own section, and a section instantiating
+    # a genre skeleton takes structure from the archetype + brand grammar, not from
+    # the pattern it borrowed treatments from (style-invariant / structure-variable).
+    # The pattern keeps donating treatments/knobs; only this structural layer yields.
+    if pattern is not None and not curated_follow_grammar \
+            and not layout.get("archetypeRef"):
         pa = pattern.alignment
         if pa:
             return {"anchor": pa["anchor"], "source": "pattern",
@@ -7029,6 +7372,13 @@ def _anchor_css(sel: str, anchor: str) -> str:
     parts = [
         f"{_slots_sel} {{ align-items: {flex}; text-align: {text}; }}",
         f"{sel} .cs-collage {{ margin-inline: {margin}; }}",
+        # the pack REACHES overlay-panel interiors on purpose (fix5 2026-07, the
+        # mixed-alignment header defect): the panel IS the section's header stack,
+        # and this resolved anchor is the grammar's answer FOR that stack (the
+        # archetype anatomy stamps its header context — splitColumn here — before
+        # resolution). Exempting the panel just re-exposes the page-level style
+        # density default (.c-heading--display center/auto), which is how a lone
+        # centered heading sat over left siblings. One owner: this #sec-N pack.
         f"{sel} .c-heading--display {{ text-align: {text}; margin-inline: {margin}; }}",
         # generic-flow (the SCAFFOLD_FLOW_CSS hardcoded flex-start is DELETED — the
         # resolved value is emitted here instead; AS-18)
@@ -7036,6 +7386,9 @@ def _anchor_css(sel: str, anchor: str) -> str:
         # action rows: wrapped lines follow the anchor too (the row itself is a
         # flex child, so align-items above places the ROW; this places its lines)
         f"{sel} .cs-hero-actions {{ justify-content: {flex}; }}",
+        # the hero mark rail + quiet link rail (fix6) follow the action row's stance
+        f"{sel} .cs-hero-rail .cs-logo-strip {{ justify-content: {flex}; }}",
+        f"{sel} .cs-hero-links {{ justify-content: {flex}; }}",
         # gallery band (stack-fullbleed): intro header + caption honor the anchor
         f"{sel} .cs-gallery-intro {{ text-align: {text}; }}",
         f"{sel} .cs-gallery-caption {{ text-align: {text}; }}",

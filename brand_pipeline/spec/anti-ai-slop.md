@@ -1467,6 +1467,14 @@ Fixed by factoring the fid5 motion into `compose_section.disclosure_motion_css`
 (selector-parameterized shared block, gated on the brand's motion trio + easing),
 consumed by both the accordion device and the FAQ scaffold in every lane.
 
+Also caught (fix5 2026-07): the nav-chevron fact-less degrade in
+`component_render.nav_affordance_css` shipped an INVENTED rotation tween
+(`transform var(--c-motion-fast, 0.2s)`) — exactly the invented-200ms degrade this
+rule forbids. Fixed to `transition: none` (the instant toggle). Separately, the
+user's curated ruling on the MEASURED chevron tween ("no spin — swap instantly")
+rides the fact as `curation.motion` (brand-schema §4.4c applied to a chrome fact):
+generation lanes honor it; the replica lane keeps the measured transition.
+
 **Verify**: unit — `tests/test_event_scaffolds.py` (`DisclosureMotionTest`: a
 details-emitting layout on a motion-bearing doc MUST emit the shared block per family;
 a motion-less doc emits ""; timing rides bare aliases with zero literals; the scaffold
@@ -1956,6 +1964,36 @@ discipline: a typographic action owns no column, so its box never spans one.
 chrome geometry): the box width must not exceed the content run
 (`Range.getBoundingClientRect`) by more than 12px. Structural, not
 declaration-driven — the hug contract is component law, not a brand fact.
+
+---
+
+## AS-62 — Plausible arithmetic that invents an off-ladder magnitude
+
+**Rule**: a value computed FROM brand tokens is not automatically ON the brand's
+ladder. Any derived size/gap in novel geometry (`calc(ratio × token)`, averaged
+gaps, proportional step-downs) must land on a measured fact or a derived-scale
+step (`style-scale.yaml`) — otherwise the arithmetic has invented a magnitude
+the brand never ships, however principled the formula looks.
+
+**Why it happens**: ratios feel safer than literals ("0.62 of the display size
+respects the token!"), so generated CSS multiplies its way off the ladder. The
+formula references brand values, which passes every provenance check — but the
+RESULT is a foreign number, and foreign numbers are what make generated pages
+feel almost-right-but-off next to the source.
+
+**Caught here** (pass1 2026-07, at the `scale_adherence` gate's introduction):
+the overlay panel's stepped-down display heading — `calc(0.62 *
+var(--c-display-size))` = 49.6px on a brand whose ladder runs …44, 48, 52…
+(measured h1 48, derived step 52). Re-registered to 0.6 so the stepped rank
+lands on the brand's own h1 rung. Same pass: an 8px form label seam read
+off-scale because the scale normalizer hadn't mined the brand's own authored
+`--spacing-*` custom properties — the fix was completing the evidence harvest,
+not snapping the render.
+
+**Verify**: `spacing_audit.py` `scale_adherence` (generative lanes; spec
+`spacing-conformance.md` §3b) — rendered section-content font sizes + unmapped
+section space steps classify measured | on-scale | **off-scale** (hard fail);
+chrome + replica lanes exempt by construction.
 
 ---
 

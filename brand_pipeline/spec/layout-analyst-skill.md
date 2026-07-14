@@ -301,6 +301,29 @@ For each section, from its grounding YAML + DOM entry + crop:
 2. Synthesize `do[]` / `avoid[]` / `neverDo[]` (prohibitions from consistent
    absences: no shadows, no radius, no text-on-photos…), set `voice.dials`,
    `recipePolicy`.
+2b. **Brand signatures (REQUIRED authoring step, pass1 2026-07).** Author the
+   `signatures:` block (brand-schema §4.7): the **3-5, not 20** moves that make
+   THIS brand recognizable, each as a machine-checkable always/never rule —
+   generic `kind` vocabulary (`accent-scope`, `shape-motif`, `type-treatment`,
+   `surface-habit`, `spacing-habit`), brand-specific values, `check` params the
+   signature auditor can verify, and `evidence` citing the sections/computed
+   facts that license the rule. Candidates come from what repeats across the
+   whole capture (the accent that only ever paints actions; the corner silhouette
+   every control shares; the single display family; the licensed dark-surface
+   family). Fewer than 3 means the brand's voice hasn't been found yet; more
+   than 5 means rules are being dumped, not signatures. C25 (advisory) is the
+   enforcement backstop.
+2c. **Structured voice facts (REQUIRED, pass1 2026-07).** Derive
+   `voice-facts.yaml` (brand-schema §4.8) from the captured copy corpus —
+   sentence stats + gate budgets, reading level, casing rules with the
+   brand-term allowlist, verb-led CTA share, exclamation facts, banned-hype
+   lexicon — and reference it from `voice.factsRef`. Deterministic text stats,
+   no model in the loop; voice.md stays the prose companion.
+2d. **Derived scale (REQUIRED, pass1 2026-07).** Run
+   `./venv/bin/python tools/extract/normalize_scales.py runs/<brand>/brand` to
+   derive `style-scale.yaml` (brand-schema §4.9) from the authored facts +
+   evidence CSS. Never hand-edit the artifact; a poor fit is recorded honestly
+   (`followsScale: false`), not forced. C24 (advisory) checks consistency.
 3. Re-render `brand.md` via `render_brand_md(brand.yaml)` — never hand-write it.
    The style md MUST carry a "Component recipes" section (brand-schema §9b):
    projection-rendered files get it from the `recipes:` layer automatically; a
@@ -326,7 +349,11 @@ For each section, from its grounding YAML + DOM entry + crop:
      (or `relationalLadder: {notObserved, reason}`);
    - C23 (advisory) recurring rail-like slot signatures across 2+ patterns are
      bound to a `recipes:` entry via `recipeRef` — the recipe layer is written
-     during extraction, not post-hoc.
+     during extraction, not post-hoc;
+   - C24 (advisory) the derived `style-scale.yaml` is internally consistent and
+     its fit ledger honest (steps on the base/ratio, no forced followsScale);
+   - C25 (advisory) a `signatures:` block exists with 3-5 well-formed,
+     evidence-cited, machine-checkable entries (brand-schema §4.7).
    Fix and re-run until clean — a validator error means a missed observation.
 5. **Anti-slop checks** before calling any composed render done:
    `node brand_pipeline/contrast_audit.mjs <index.html>` and

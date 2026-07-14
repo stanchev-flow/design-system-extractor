@@ -519,6 +519,10 @@ def compose_section_block(doc, layout, idx, style_ctx, brand_yaml=None, accent_i
     # theme-scope family lands as a #sec-N-scoped --c-eyebrow-color (same mechanism
     # as the single-section path in cs.build_document).
     vars_css += cs.eyebrow_register_css(doc, layout, sel)
+    # bandHeight knob (archetype-library, composition knobs.bandHeight): re-registers
+    # this section's vertical padding to another rung of the brand's OWN section-rhythm
+    # ladder. "" for every layout without the hint (byte-identical degrade).
+    vars_css += cs.band_height_css(doc, layout, sel, role, style_ctx)
 
     # Reuse-before-create: resolve the reusable layout PATTERN + scope its pattern-driven
     # special-treatment vars to THIS section (#sec-N) so the ghost/stagger geometry comes
@@ -537,6 +541,26 @@ def compose_section_block(doc, layout, idx, style_ctx, brand_yaml=None, accent_i
         pat_attr = ' data-pattern-match="miss"'
     else:
         pat_attr = ""
+    # genre-archetype provenance (spec/archetype-library.md): the chosen skeleton id is
+    # stamped like data-pattern so audits can scope physics bindings per section.
+    # Absent ref -> byte-identical wrapper (every non-composition lane).
+    if layout.get("archetypeRef"):
+        pat_attr += f' data-archetype="{cr.esc(str(layout["archetypeRef"]))}"'
+    # bandHeight DECLARATION stamp (same discipline as data-ag-gap/-align): the
+    # section audits against its OWN re-registered rung — data-band-rung names the
+    # brand spacing token band_height_css resolved, so the spacing auditor reads the
+    # deliberate re-registration instead of the surface default. No knob ⇒ no stamp.
+    band_rung = cs.band_height_rung(doc, layout, role, style_ctx)
+    if not band_rung:
+        # derived-scale re-registration (pass1): the stamp names the derived step
+        # ("derived:<px>") so the spacing auditor audits the pad against the
+        # DELIBERATE quantized declaration, mirroring the token-rung read.
+        derived = cs.band_height_derived_px(doc, layout, role, style_ctx)
+        if derived is not None:
+            band_rung = f"derived:{derived:g}"
+    if band_rung:
+        pat_attr += (f' data-band-height="{cr.esc(str(layout.get("_bandHeight")))}"'
+                     f' data-band-rung="{cr.esc(band_rung)}"')
     treat = cs.pattern_treatment_css(pattern)
     if treat:  # re-scope the :root vars emitter onto this section id
         vars_css = vars_css + "\n" + treat.replace(":root {", f"{sel} {{")
@@ -618,7 +642,11 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
     # the normal section rhythm. Emitted only for pages whose opening section would have
     # rendered the hero nav (so a split/collage-opened page stays nav-free, as before).
     nav_block = ""
-    if chosen and _section_renders_nav(chosen[0]):
+    # A composed PAGE (compose_from_composition stamps `_composedPage`) always carries
+    # the brand chrome: its opener may be ANY composer family (split/overlay/collage),
+    # and a full page without the nav is a content gap, not a structural choice. The
+    # deterministic lanes keep the historical opener-family rule byte-identically.
+    if chosen and (_section_renders_nav(chosen[0]) or doc.get("_composedPage")):
         nav_sel = "#page-nav"
         # Chrome-nav surface = the brand's MEASURED bar color resolved to one of its
         # own roles (cr.nav_surface_role, nav-fix 2026-07). A transparent/unmeasured
@@ -824,8 +852,11 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
         *([cr.nav_mega_css(doc)] if nav_block and cr.nav_mega_css(doc) else []),
         # bar-affordance grammar (fid15) — trigger chevrons + in-bar utility cluster;
         # appended only when this brand captured the facts (fact-less brands stay
-        # byte-identical).
-        *([cr.nav_affordance_css(doc)] if nav_block and cr.nav_affordance_css(doc) else []),
+        # byte-identical). Lane curation rides through (fix5): a curated instant
+        # chevron swap applies to generation lanes; the replica keeps the tween.
+        *([cr.nav_affordance_css(doc, honor_curation=honor_curation)]
+          if nav_block and cr.nav_affordance_css(doc, honor_curation=honor_curation)
+          else []),
         page_scaffold_css(),
     ]
     # AS-37: the inset art-panel device CSS ships ONLY when a section on THIS page

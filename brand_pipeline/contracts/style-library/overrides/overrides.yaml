@@ -1,0 +1,129 @@
+# provenance: authored-prior (Claude design chat, 2026-07-14) — NOT evidence; requires bakeoff validation before brand use
+# YAML/JSON verified content-identical at import; JSON projection dropped
+provenance: "authored-prior (Claude design chat, 2026-07-14) — NOT evidence; requires bakeoff validation before brand use"
+$doc: "Cascade level 3 — sparse (style × section) patches, ONLY for pairs that break the defaults. Per-key merge: list only what changes. If you'd write a patch for every section of a style, move that rule to the style directive instead."
+overrides:
+  brutalist:
+    pricing:
+      layout: list-rows
+      variationAxes:
+        highlight:
+          - none
+      rules:
+        $append:
+          - prices in monospace
+          - "tiers stacked, no 'recommended' highlight"
+          - "thick 2px borders, no cards"
+    hero:
+      layout: minimal
+      rules:
+        $append:
+          - "headline in system font, left-flush"
+          - primary CTA is an underlined text link
+    testimonial:
+      layout: list-rows
+      rules:
+        $append:
+          - "quote as plain blockquote, no card or avatar"
+  editorial-magazine:
+    hero:
+      layout: split-right
+      variationAxes:
+        ctaEmphasis:
+          - single
+      rules:
+        $append:
+          - oversized serif headline with drop-context sub
+          - large figure right with caption
+          - drop the secondary CTA
+    feature-trio:
+      layout: list-rows
+      rules:
+        $append:
+          - each feature reads as a short article with a figure
+  swiss:
+    feature-trio:
+      layout: grid-3
+      rules:
+        $append:
+          - "strict equal columns, left-flush"
+          - no decorative icons — numerals or hairlines only
+    cta-band:
+      layout: split-left
+      rules:
+        $append:
+          - accent used only on the CTA itself
+  glassmorphism:
+    nav:
+      variationAxes:
+        treatment:
+          - translucent
+      rules:
+        $append:
+          - sticky frosted bar with backdrop blur over hero
+    pricing:
+      rules:
+        $append:
+          - tier cards are frosted glass panels over a vivid gradient
+  dark-mode:
+    metrics-band:
+      rules:
+        $append:
+          - numbers glow in accent
+          - dividers are low-opacity hairlines
+  dashboard-data:
+    metrics-band:
+      layout: grid-4
+      variationAxes:
+        emphasis:
+          - animated-count
+      rules:
+        $append:
+          - tabular numerals
+          - semantic status colors
+          - "dense, chart-adjacent"
+    hero:
+      layout: split-right
+      rules:
+        $append:
+          - hero media is a live-looking dashboard screenshot
+  luxury-fashion:
+    cta-band:
+      layout: full-bleed
+      variationAxes:
+        background:
+          - image
+      rules:
+        $append:
+          - "full-bleed image, wide-tracked capital headline"
+          - single understated text-link CTA
+    pricing:
+      rules:
+        $append:
+          - "no 'recommended' badge — parity of prestige across tiers"
+  neubrutalism:
+    faq:
+      layout: accordion
+      rules:
+        $append:
+          - each item is a bordered card with hard offset shadow
+    cta-band:
+      variationAxes:
+        background:
+          - accent
+      rules:
+        $append:
+          - "saturated block bg, thick border, hard-shadow button"
+  minimalist:
+    testimonial:
+      layout: minimal
+      rules:
+        $append:
+          - "one xl quote, attribution only, no avatar/logo grid"
+    feature-trio:
+      variationAxes:
+        iconStyle:
+          - none
+      rules:
+        $append:
+          - "text-only, no icons"

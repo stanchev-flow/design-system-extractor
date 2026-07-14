@@ -177,6 +177,7 @@ section container.
 | --- | --- | --- |
 | `actions.item-gap` | median same-row gap between actions in one emitted group (`.cs-hero-actions` / `.cs-modules-actions` / `.cs-conversion-actions`) | pattern `contentShape.actionGroup.gap` first, then the brand-level `layoutGrammar.actionGroup.gap`; *(unmapped)* for fact-less brands |
 | `actions.alignment` | PAINTED-EDGE conformance (fix3): the group's ITEMS against the CONTENT COLUMN a reader compares them to — the widest in-flow sibling sharing the group's parent (the intro/heading stack above the row), else the parent's content box. `start` ⇒ first item's left edge vs the column's left edge, `center` ⇒ abs(left − right edge delta), `end` ⇒ trailing delta. The fix2 cell measured item edges inside the group's OWN content box, which read 0px while the box itself was displaced (max-width + auto margins hug-centering it in its column) — the audit blind spot that let the stamped side-rail group paint 21px off its column | 0 (center-family verdict scale: conform ≤2px / drift ≤4px / off-ladder); contexts that own their anchor (`.cs-foot`, `[data-align="centered"]`, `.cs-hero-panel--center`, a centering flex parent) are skipped — the schema's sanctioned exception, not drift |
+| `header.stack-coherence` | STACK-STANCE conformance (fix5): a header stack (eyebrow / heading / body / action row sharing one flex column that contains a heading) must paint ONE alignment stance. Each child's PAINTED span (text line bounds via Range for text, border box otherwise) classifies as `left` / `center` / `right` / `full` against the stack's content box; the measurement is the largest px displacement any child needs to match the stack's dominant stance. Every per-child alignment cell can conform to its OWN declaration while the STACK mixes stances (the fix5 panel: a heading centered by a leaked page-level rule over a left kicker/body/actions — every existing cell passed). Side-by-side children (row devices: heading \| body two-column intros, vertical overlap > 50% of the shorter box) are skipped — coherence is a claim about one COLUMN | 0 (center-family verdict scale: conform ≤2px / drift ≤4px / off-ladder); `full`-stance children (measure-capped body filling the column) are compatible with any stance |
 
 Unmapped form rhythm is an **expected extraction gap** for brands whose source forms
 live in unrendered modals — the audit surfaces it as capture work, not render drift.
@@ -222,6 +223,44 @@ A relationship may be flagged `advisory-only` in the auditor's relationship regi
 (reason recorded in the report) when its hard fails cannot be attributed cleanly —
 none are currently registered; prose-derived facts (vocabulary §) cover the
 documented-range cases instead.
+
+### 3b. `scale_adherence` — the derived-scale gate (pass1 2026-07)
+
+On **generative lanes only**, novel geometry must lie on the brand's derived
+scale (`style-scale.yaml`, brand-schema §4.9): the lane's rendered
+section-content font sizes plus its `unmapped` section-level space measurements
+each classify as
+
+| verdict | meaning | gate class |
+| --- | --- | --- |
+| `measured` | matches a measured type/space fact (facts always win) | pass |
+| `on-scale` | no fact, but sits on a derived step within tolerance (max(1px, 2%) type; max(2px, 2%) space) | pass |
+| `off-scale` | matches neither — an arbitrary number in novel geometry | **hard fail** |
+
+Scope laws:
+- **Generative lanes only** — the marker is the lane's `composition.json`:
+  `schemaVersion: composition.v1`, or the legacy `replica-composition.v1` WITH a
+  `brief` (a briefed composition is a novel page). The replica's briefless
+  assembler composition and the marker-less previews are exempt **by
+  construction**; replica output never consumes the artifact.
+- **Chrome is excluded** — chrome renders harvested measured facts at
+  source-exact sizes (nav 12/13/15px…) the content ladder never declared; the
+  type census skips chrome subtrees and `footer.*`/`nav.*` space relationships
+  are filtered out.
+- A lane whose brand has no usable `style-scale.yaml` (absent, or
+  `followsScale: false` — an honest poor fit) gets no scale cells at all:
+  inventing steps from a bad fit would be the arbitrary-number failure this
+  gate exists to remove.
+- A composed section that consumed a derived step for its `bandHeight` knob
+  stamps `data-band-rung="derived:<px>"`; `section.pad-top/-bottom` then audit
+  against that deliberate declaration on the standard severity ladder above
+  (same hard gate as a token rung).
+
+Caught at introduction (2026-07): the overlay panel's stepped-down display
+(0.62 × 80px = 49.6px — on NO ladder; re-registered to 0.6 so the stepped rank
+lands on the brand's own h1 rung), and an 8px form label seam read off-scale
+because the normalizer had not mined the brand's own authored `--spacing-*`
+custom properties (miner extended; 8px is a declared step).
 
 ## 4. Measurement protocol
 
