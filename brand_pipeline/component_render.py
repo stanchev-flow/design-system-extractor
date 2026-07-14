@@ -779,8 +779,13 @@ p { text-wrap-style: balance; }
 /* stat primitive (contracts/primitives.yaml `stat`, W4): a big metric VALUE on the
    brand's own heading register + a muted supporting LABEL on the body register.
    The value rides the measured h2 tier by default (--c-stat-size override wins when a
-   brand ever measures a dedicated stat tier) — display stays reserved for the hero. */
-.c-stat { display: flex; flex-direction: column; gap: var(--space-eyebrow-to-heading, 0.5rem); }
+   brand ever measures a dedicated stat tier) — display stays reserved for the hero.
+   STAT PAIR BINDING (fix7 punch 4): the value→label seam is the statPair rung — the
+   TIGHTEST gap in any block the stat sits in (a brand-authored `stat-pair` spacing
+   token wins; the 0.5rem structural default already satisfies the <= 0.5x-sibling-gap
+   law everywhere). The old eyebrow-to-heading ride-along re-registered the pair to a
+   24px header seam, collapsing the value/label hierarchy against its siblings. */
+.c-stat { display: flex; flex-direction: column; gap: var(--space-stat-pair, 0.5rem); }
 .c-stat-value { font-family: var(--c-stat-font, var(--c-font-heading)); color: var(--c-ink);
   text-transform: var(--c-case-heading);
   font-weight: var(--c-heading-weight, var(--c-display-weight));
@@ -788,6 +793,31 @@ p { text-wrap-style: balance; }
 .c-stat-label { font-family: var(--c-font-body); font-size: var(--c-body-size);
   font-weight: var(--c-body-weight); line-height: 1.5em; color: var(--c-ink-muted);
   max-width: var(--space-body-measure, 34ch); }
+
+/* marked list (fix7 punch 3 — the checklist device): content-block items rendered as
+   a REAL list when the composition declares list intent. Hanging indent by grid
+   construction (marker track + text track); item stride rides the brand's own
+   list-item-gap rung. The MARKER is the brand's licensed glyph in the accent role
+   (inline-SVG channel) where an accentDevices marked-list-glyph license exists —
+   license-less brands keep the typographic dot at ink (semantic, never invented). */
+.c-marked-list { list-style: none; margin: 0; padding: 0; display: flex;
+  flex-direction: column; gap: var(--space-list-item-gap, 0.75rem);
+  font-family: var(--c-font-body); font-size: var(--c-body-size);
+  font-weight: var(--c-body-weight); line-height: 1.5em; color: var(--c-ink);
+  max-width: var(--c-measure, 62ch); }
+.c-marked-list > li { display: grid;
+  grid-template-columns: var(--c-list-marker-size, 1em) minmax(0, 1fr);
+  column-gap: 0.6em; align-items: start; }
+.c-list-marker { display: inline-flex; width: var(--c-list-marker-size, 1em);
+  height: var(--c-list-marker-size, 1em); margin-top: 0.22em;
+  color: var(--c-accent-mark, var(--c-ink)); }
+.c-list-marker svg { width: 100%; height: 100%; display: block; }
+
+/* punctuation-accent device (fix7 punch 1): a landmark heading's licensed terminal
+   mark in the device's own accent role — scheme-stable (--c-accent-mark is emitted
+   from the LICENSE's role token, never the surface accent, so a light-surface hero
+   paints the same mark the brand's landmarks evidence). */
+.c-accent-mark { color: var(--c-accent-mark, var(--c-accent)); }
 
 /* table block (contracts/blocks.yaml `table`, W4): semantic tabular data on the same
    ruled-row discipline as .c-rows — 1px hairline per row, label register for column
@@ -2508,7 +2538,100 @@ def structural_variant_css(doc, include_all: bool = False) -> str:
         parts.append(_FOOT_DISPLAY_LINKS_CSS)
     if include_all or grammar == "columns":
         parts.append(_FOOT_COLUMNS_CSS)
+    # licensed accent devices (fix7): the device-role var block ships only where the
+    # brand declares the license (accent_device_css itself is fact-gated).
+    parts.append(accent_device_css(doc))
     return "".join(parts)
+
+
+# ── licensed ACCENT DEVICES (fix7 2026-07; brand-schema §4.11) ────────────────────
+# The brand's small recognizable accent moves as MACHINE-APPLICABLE licenses
+# (brand.yaml `accentDevices:`): device kind + the token role that paints it +
+# licensed contexts with optional floor/ceiling counts. Everything here is
+# fact-gated — a brand without the block renders byte-identically, and no kind,
+# mark, or glyph name is ever invented in code.
+
+_ACCENT_DEVICE_KINDS = ("punctuation-accent", "marked-list-glyph",
+                        "underline-accent", "accent-word")
+
+
+def licensed_accent_devices(doc) -> list[dict]:
+    """The brand's declared accentDevices entries (known kinds only), verbatim."""
+    out = []
+    for d in ((doc or {}).get("accentDevices") or []):
+        if isinstance(d, dict) and str(d.get("kind") or "") in _ACCENT_DEVICE_KINDS:
+            out.append(d)
+    return out
+
+
+def accent_device(doc, kind: str) -> dict | None:
+    """The first licensed device of ``kind`` (None = the brand licenses none)."""
+    for d in licensed_accent_devices(doc):
+        if d.get("kind") == kind:
+            return d
+    return None
+
+
+def accent_device_css(doc) -> str:
+    """License-gated device vars: ``--c-accent-mark`` resolves the DEVICE's own
+    token role (scheme-stable — the mark paints the same family on any surface,
+    exactly what the landmark evidence shows), and the marker box rides the
+    licensed glyph size. "" for license-less brands (the .c-accent-mark /
+    .c-marked-list base rules then fall back to ink and never fire visually)."""
+    devices = licensed_accent_devices(doc)
+    if not devices:
+        return ""
+    decls = []
+    role = next((str(d.get("role") or "") for d in devices if d.get("role")), "")
+    if role:
+        decls.append(f"--c-accent-mark: var(--color-{_slug(role)});")
+    ml = accent_device(doc, "marked-list-glyph") or {}
+    size = str(((ml.get("glyph") or {}) or {}).get("size") or "").strip()
+    if re.fullmatch(r"[\d.]+(?:rem|em|px)", size):
+        decls.append(f"--c-list-marker-size: {size};")
+    if not decls:
+        return ""
+    return ("\n/* licensed accent devices (fix7): the device role's own token paints "
+            "the mark */\n:root { " + " ".join(decls) + " }")
+
+
+def _wrap_terminal_mark(inner: str, mark: str) -> str:
+    """Wrap a rendered heading's TERMINAL licensed mark in the accent span (one
+    per heading — the renderer applies the device at most once, which IS the
+    per-heading ceiling). ``inner`` is already-escaped markup; only a bare
+    trailing mark is wrapped (line/emphasis-span shapes end in a tag and skip)."""
+    m = esc(mark)
+    if not m or not inner.endswith(m) or inner.endswith("</span>" + m):
+        return inner
+    return (inner[: -len(m)]
+            + f'<span class="c-accent-mark" data-accent-device="punctuation-accent">'
+              f'{m}</span>')
+
+
+def render_marked_list(doc, ctx: ComponentContext, props=None) -> str:
+    """marked-list device (fix7 punch 3): ``props: items, measure``. Items render as
+    a semantic <ul> with a hanging marker column. The marker is the brand's licensed
+    marked-list glyph (sanitized inline SVG stashed on the doc by
+    compose_section.attach_accent_devices) in the device's accent role; brands
+    without the license keep a typographic dot at ink. Zero items elide."""
+    props = props or {}
+    items = [str(x).strip() for x in (props.get("items") or []) if str(x).strip()]
+    if not items:
+        return ""
+    glyphs = (doc or {}).get("_accentGlyphs") if isinstance(doc, dict) else None
+    svg = (glyphs or {}).get("marked-list-glyph") or ""
+    licensed = bool(svg) and accent_device(doc, "marked-list-glyph") is not None
+
+    def _marker() -> str:
+        if licensed:
+            return (f'<span class="c-list-marker" aria-hidden="true">'
+                    f"{_svg_instance(svg)}</span>")
+        return '<span class="c-list-marker" aria-hidden="true">&bull;</span>'
+
+    lis = "\n".join(f"        <li>{_marker()}<span>{esc(t)}</span></li>" for t in items)
+    device_attr = ' data-accent-device="marked-list-glyph"' if licensed else ""
+    style = f' style="--c-measure:{esc(props["measure"])}"' if props.get("measure") else ""
+    return f'<ul class="c-marked-list"{device_attr}{style}>\n{lis}\n      </ul>'
 
 
 # ── per-component renderers (SINGLE SOURCE OF TRUTH) ─────────────────────────────
@@ -2561,6 +2684,19 @@ def render_heading(doc, ctx: ComponentContext, props=None) -> str:
         parts = str(text).split(" ")
         if len(parts) == 2:
             inner = f"{esc(parts[0])}<br>{esc(parts[1])}"
+    # PUNCTUATION-ACCENT device (fix7 punch 1): when the brand LICENSES the device
+    # and this heading is a LANDMARK — the display rank, an accent-flagged landmark
+    # heading (the closing-band shape), or a composer-declared `landmark` (a hero
+    # split registers its opening statement at a measure-fit tier, but it is still
+    # the page's landmark heading) — a terminal mark matching the license wraps in
+    # the device span. Extracted-but-never-applied was the defect: the signature
+    # said landmark serif headings may close with the accent period, and no
+    # renderer ever painted it. Fact-gated: license-less brands are byte-identical.
+    dev = accent_device(doc, "punctuation-accent")
+    if dev is not None and (
+            _level_class(level) == "c-heading--display" or props.get("accent")
+            or props.get("landmark")):
+        inner = _wrap_terminal_mark(inner, str(dev.get("mark") or "").strip())
     return f'<{tag} class="c-heading {_level_class(level)}{accent}">{inner}</{tag}>'
 
 
@@ -2767,6 +2903,7 @@ def render_header(doc, ctx: ComponentContext, props=None) -> str:
         "text": props.get("heading", "Heading"),
         "level": props.get("level", "display"),
         "accent": props.get("accent"),
+        "landmark": props.get("landmark"),
         "splitTwoLines": props.get("splitTwoLines"),
     }))
     if props.get("cta"):

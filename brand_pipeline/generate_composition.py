@@ -63,6 +63,27 @@ COMPOSITION_RULES_PATH = REPO_ROOT / "styles" / "composition-rules.md"
 SCHEMA_PATH = _HERE / "spec" / "composition.v1.schema.json"
 ONBRAND_CHECK = _HERE / "onbrand_check.py"
 
+# The grammar file is three layers: YAML front-matter (on-disk registry), the NORMATIVE
+# CORE (the only prompt payload), and an extended edition below this sentinel (rationale +
+# device detail — on-disk reference, never injected). Split landed 2026-07-14: injecting
+# the whole 27KB file cost ~7k tokens/prompt and diluted rule salience; the core carries
+# every law + the complete vocabulary at ~1/3 the size (golden: tests/test_grammar_core.py).
+GRAMMAR_CORE_SENTINEL = "COMPOSITION-CORE:END"
+
+
+def grammar_core(raw: str) -> str:
+    """Return ONLY the normative core of composition-rules.md: front-matter registry
+    stripped, everything at/after ``GRAMMAR_CORE_SENTINEL`` dropped. Degrades safely —
+    no front-matter and/or no sentinel → the corresponding cut is skipped (never an
+    empty grammar)."""
+    _, body = styles_mod.parse_front_matter(raw)
+    idx = body.find(GRAMMAR_CORE_SENTINEL)
+    if idx != -1:
+        # cut at the start of the sentinel's own line (drop the marker comment too)
+        cut = body.rfind("\n", 0, idx)
+        body = body[:cut if cut != -1 else idx]
+    return body.strip() + "\n"
+
 # ── off-grid EXPANSION capability (Part B) ─────────────────────────────────────────
 # The freedom-envelope OFF-GRID treatment set: the placement moves that break the aligned
 # grid. A base style with offGridExpansion=TRUE (styles/<id>.md front-matter) unlocks these
@@ -433,9 +454,24 @@ _COPY_QUALITY_RULES = """- COPY QUALITY (HARD): copy is REAL, specific and non-r
     brief) instead of paraphrasing the heading.
   - No heading repeats verbatim across sections; no slot ships placeholder prose ("Lorem",
     "Section body", the bare brand name as a heading).
+  - NO SIBLING-SLOT REDUNDANCY (HARD lint, AS-65): no two slots in one section may carry
+    the same enumerable content in different registers — a form `note` must never re-list
+    the links an adjacent link slot already binds. Keep the structured device; a note is
+    for NEW information (what happens next), or omit it.
   - Bind the brief's own facts and vocabulary into slot copy; where the brief is thin for a
     section, derive from the brand's extracted voice/do-avoid evidence — never generic
     marketing filler that could caption any brand.
+- PROVEN AUTHORING SHAPES (HARD lints back them — AS-63):
+  - ACTIONS are `button` contract slots (or one actionGroup slot whose copy lists action
+    objects) — never bare `cta`/`link` strings hoping a composer invents the control.
+  - STATS/METRICS: a stat run is ONE `stat`/`stat-block` slot whose copy is an ARRAY of
+    {"value": "...", "label": "..."} objects (a single stat may use one such object).
+  - PARALLEL BENEFIT ITEMS (3+ short claims) declare list intent (`knobs.supportKind:
+    "list"` on form-split heroes, or a `list` contract slot) so they render as the brand's
+    marked list, never as look-alike paragraphs.
+  - Every `knobs` entry must be a knob the chosen archetype declares or a renderer consumes
+    (bandHeight/align/columns/mediaSide/formSide/supportKind/faq/bento/tiers), with a value
+    from its declared vocabulary — an unconsumable knob is a HARD lint failure.
 - LOGO WALLS (HARD): a `logos` use-case section binds its wall as ONE repeatable slot whose
   `copy` is an ARRAY of {"alt": "<Company>", "asset": "<file>"} objects — each `asset` an
   EXACT filename from the brand-assets list above (the logo files). Never bare strings,
@@ -570,6 +606,40 @@ def load_voice_facts(brand_dir: Path | str | None) -> dict | None:
     return facts
 
 
+def _accent_device_lines(doc: dict) -> list[str]:
+    """The brand's LICENSED accent devices (brand.yaml `accentDevices:`, fix7 —
+    brand-schema §4.11) as prompt constraints riding the pass-3 signature
+    injection: kind + how the renderer applies it + per-context floors."""
+    lines: list[str] = []
+    for dev in (doc.get("accentDevices") or []):
+        if not isinstance(dev, dict) or not dev.get("kind"):
+            continue
+        bits = [f"- [{dev.get('kind')}] {dev.get('id', '')}"]
+        if dev.get("mark"):
+            bits.append(f"mark {dev['mark']!r}")
+        glyph = (dev.get("glyph") or {}).get("asset") if isinstance(dev.get("glyph"), dict) else None
+        if glyph:
+            bits.append(f"glyph {glyph}")
+        ctxs = []
+        for c in (dev.get("contexts") or []):
+            if isinstance(c, dict) and c.get("context"):
+                tag = str(c["context"])
+                if c.get("floor") is not None:
+                    tag += f" floor {c['floor']}"
+                if c.get("ceiling") is not None:
+                    tag += f" ceiling {c['ceiling']}"
+                ctxs.append(tag)
+        if ctxs:
+            bits.append("contexts: " + ", ".join(ctxs))
+        lines.append(" — ".join(bits))
+    if lines:
+        lines.append("A landmark (hero/closing) band must CARRY at least its floor of "
+                     "licensed devices: close a landmark heading with the licensed "
+                     "mark, or declare list intent so benefit runs render the marked "
+                     "list. Never invent an unlicensed accent device.")
+    return lines
+
+
 def pass1_facts_block(doc: dict, brand_dir: Path | str | None) -> str:
     """Assemble the pass-1 facts injection block ("" when the brand carries NO
     pass-1 artifact — the graceful-degradation contract: prompt byte-identical
@@ -577,8 +647,9 @@ def pass1_facts_block(doc: dict, brand_dir: Path | str | None) -> str:
     scale = ssc.load_style_scale(brand_dir)
     scale_lines = _derived_scale_lines(scale)
     sig_lines = _signature_lines(doc)
+    device_lines = _accent_device_lines(doc)
     voice_lines = _voice_lines(load_voice_facts(brand_dir))
-    if not (scale_lines or sig_lines or voice_lines):
+    if not (scale_lines or sig_lines or device_lines or voice_lines):
         return ""
     parts = [PASS3_FACTS_BEGIN,
              "## Pass-1 brand facts (measured/derived — SHAPE the composition to these)"]
@@ -595,6 +666,12 @@ def pass1_facts_block(doc: dict, brand_dir: Path | str | None) -> str:
             "### Brand signatures — always/never composition constraints "
             "(signature_check gate verifies each)",
             *sig_lines,
+        ]
+    if device_lines:
+        parts += [
+            "### Licensed accent devices — floors are REQUIRED, roster is CLOSED "
+            "(signature gate verifies floors; fix7)",
+            *device_lines,
         ]
     if voice_lines:
         parts += [
@@ -651,7 +728,8 @@ def build_prompt(brief_text: str, brand_yaml_path: Path | str, style_id: str,
     """Deterministically assemble the system/user prompt for the composition generator.
 
     Assembly order (mirrors styles/composition-rules.md ``## Assembly``):
-      1. universal composition grammar (styles/composition-rules.md)
+      1. universal composition grammar — the NORMATIVE CORE only (grammar_core():
+         front-matter registry + extended edition below the sentinel stay on disk)
       1b. the off-grid EXPANSION capability gate (unlock/lock — Part B)
       2. merged base STYLE (styles.load_and_merge -> invariants, soft options, scales, floor)
       3. brand facts (token color roles, neverDo, measured type tiers, spacing steps)
@@ -724,7 +802,7 @@ def build_prompt(brief_text: str, brand_yaml_path: Path | str, style_id: str,
     seed_block = seeds.block if isinstance(seeds, SeedResult) else str(seeds)
     seed_use_cases = ", ".join(seeds.use_cases) if isinstance(seeds, SeedResult) else "(caller-supplied)"
 
-    grammar = COMPOSITION_RULES_PATH.read_text() if COMPOSITION_RULES_PATH.exists() else \
+    grammar = grammar_core(COMPOSITION_RULES_PATH.read_text()) if COMPOSITION_RULES_PATH.exists() else \
         "(styles/composition-rules.md not found)"
 
     nd_lines = [f"- {rid}: {stmt}" for rid, stmt in facts["neverDo"]]
@@ -1488,6 +1566,21 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
             telemetry.append(tele)
             log(f"    offGrid prefilter (flag off): {og_hits}")
             repair_note = _repair_note([], [], [], offgrid_hits=og_hits)
+            continue
+
+        # 4c. composition lints (fix7 AS-63/AS-65, cheap, before render): a knob with
+        # no consumer / an unconsumable value, or two sibling slots enumerating the
+        # same content in different registers — HARD, repairable (the model gets the
+        # exact hits back, same loop shape as the neverDo prefilter).
+        import composition_lint
+        lint_hits = composition_lint.lint_composition(comp)
+        if lint_hits:
+            failures = [(f"composition-lint:{rule}", f"section `{sid}`: {msg}")
+                        for sid, rule, msg in lint_hits]
+            tele["stage"] = "lint-fail"
+            telemetry.append(tele)
+            log(f"    composition lint: {[(s, r) for s, r, _ in lint_hits]}")
+            repair_note = _repair_note([], [], failures)
             continue
 
         # 5. render (via the Phase-2 adapter)

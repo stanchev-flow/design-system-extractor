@@ -1,5 +1,63 @@
 # Changes
 
+## 2026-07-14 — steals stage B (matrix lane): eval-matrix BASELINE round (12/12) + conversion-guidance prompt wiring (flag OFF) + registration-form adapter fix — suite 1346, generation-time neutrality proven
+
+The second stage-B agent's half of the steals wiring (the auditor half is the
+entry below; division of law in `spec/conversion-structure.md` — no co-edited
+files). Full round record: `evals/matrix/runs/2026-07-14-baseline/{round,results}.md`;
+lane log: `evals/matrix/changes.md` (BASELINE ROUND entry).
+
+- **Steal 3 prompt side** — NEW `brand_pipeline/conversion_structure.py`:
+  `render_guidance_block` projects a brief's `campaignType:` grammar
+  (contracts/conversion-structure.yaml) into prompt prose; threaded through
+  `generate_composition(inject_conversion_guidance=True)` →
+  `build_prompt(conversion_guidance=…)`, riding the USER prompt between brief
+  and output contract. DOUBLY fact-gated per the pass-2 scope note: flag
+  defaults **False** and unknown/absent campaignType projects None — default
+  prompt assembly byte-identical (test-pinned), pass-3's `[[PASS3-*]]`
+  injection architecture untouched. Zero extra LLM calls when on (~1.7k chars
+  on the same single call).
+- **Steal 2 executed** — NEW `tools/run_eval_matrix.py` (generate + full
+  battery incl. both new gates + results/shots/timing; resumable) ran the
+  standing 12-brief corpus as `runs/2026-07-14-baseline/`, guidance OFF.
+  Baseline: onbrand 6/12 in ≤4 attempts (gen mean 482s/brief); slop FLAG 9/12
+  (all AS-11/AS-12 under-filled beats); section-rules 3 required + 9 advisory
+  rows; **conversion hardFloor 4/12 — both leadgen + both webinar cells
+  rendered ZERO `<form>` elements** on capture-purpose pages. The new gates
+  cost ~1.6s/page, post-render (battery 148s total vs generation 5789s).
+- **First matrix finding fixed at the renderer** (AS-26 class, fixture-proven
+  both directions): a registration section authored as `useCase: cta` +
+  `archetype: split` + `form-field` slot (copy = the field list) dropped to a
+  button-only band. `compose_from_composition` now (1) resolves the LIST shape
+  in `_form_fields_stamp` (help→helper, option-string→list→select coercion,
+  sibling opt-in checkbox + consent slots) and (2) normalizes conversion-use
+  sections with a validated stamp to the conversion stack. Fact-gated: A/B
+  (old-vs-new stamp) byte-identical on event-genlaunch, gallery-demo, both
+  replicas; repo scan shows zero existing compositions in the newly-routed
+  class. The hero single-row fold (leadgen cells) is an archetype-choice
+  error — recorded for the guidance-ON A/B round, not patched.
+- **Specs** — brand-schema **§4.10** (both contracts + consumers + the
+  `campaignType:` frontmatter key), anti-ai-slop "How to use this" scope rule
+  §5 (section-scoped failures belong in section-rules.yaml; registryCandidates
+  is the promotion path), spec/conversion-structure.md status/ownership.
+- **Tests** — NEW `test_conversion_guidance.py` (8: projection + byte-identity
+  + matrix-corpus resolution) + `test_baseline_findings.py` (12: stamp shapes,
+  routing both ways, end-to-end render proof) + the 20 staged tests activated
+  with the auditor lane.
+
+**Regression proof:** suite **1346 passed, exit 0** (1259 entry-below baseline
++ this lane's 12 + concurrent growth; zero failures). Replicas re-scored:
+hubspot-v2 **0.9567**, Remote **0.9509** — the small movements vs the
+0.956/0.950 pins trace to concurrent testimonial-seam/hero-height renderer
+improvements landed in-tree (band diffs in lane reports), not steals code
+(A/B byte-identity). Battery: section-rules `--strict` exit 0 (hubspot 8
+heroes + replica; remote event-genlaunch + replica), conversion exit 0,
+slop PASS @1440+@1180 spot-set (demo, event-genlaunch, both replicas).
+Generation-time neutrality: prompt byte-identity test-pinned; auditors never
+imported by the generation path; new-gate cost rides the post-render battery
+(per-gate seconds in results.json). `viewer.html` untouched (no
+viewer-affecting code).
+
 ## 2026-07-14 — steals stage B + pass 3 landed (parallel agents): section-rules + conversion gates wired; style resolver + pass-1 prompt injection + 3-style bakeoff (honest NO-PASS) — suite 1259, replicas held exactly
 
 Two fenced agents ran concurrently and landed cleanly (no co-edited files).
@@ -8,9 +66,22 @@ Two fenced agents ran concurrently and landed cleanly (no co-edited files).
 - **Pass 3 (style layer):** NEW `brand_pipeline/style_resolver.py` — the package's 4-level cascade (section default → style directive → style×section override → brand override) merged UNDER brand evidence with a recorded dissent ledger; physics-class invariants delegate to existing gate ids, out-of-vocabulary picks reject loudly. `generate_composition.build_prompt` gains two sentinel-delimited blocks — `[[PASS3-FACTS]]` (derived scale rungs, signatures always/never, voice budgets) and `[[PASS3-STYLE]]` (resolved directives + dissents + a HARD alignment contract added at iteration 1) — the exact wiring pass 2 proved missing; no-artifact brands keep a byte-identical prompt. 56 golden/injection tests. **Bakeoff** (swiss / editorial-magazine / neumorphism × product-launch brief): style distinctiveness MET, brand recognizability MET (signature strict ×3 — unmistakably HubSpot in three different structures); full-battery green NOT met → **NO-PASS, no style graduated** (the plan's own stop). Every residual red traced to adapter/audit vocabulary gaps newly exposed by style-shaped compositions — 10 follow-ups catalogued in `contracts/style-library/changes.md`; iteration budgets logged honestly (neumorphism overran 4 vs 2). Contact sheet: `runs/hubspot-v2/brand/compose/style-bakeoff-contact-sheet.png`.
 - **Regression proof:** suite **1259 passed** exit 0 (1060 baseline + both agents, zero failures). Replicas: hubspot-v2 **0.956**, Remote **0.950** — held exactly. `viewer.html` untouched (no viewer-affecting code).
 
-## 2026-07-14 — IN FLIGHT: fix7 punch list (gallery review round 3) — accent application floor, knob-consumption lint, checklist device, stat binding, heading fit-stepping, note/meta discipline
+## 2026-07-14 — fix7 LANDED: accent devices applied with FLOORS, knob-consumption + redundancy lints (AS-63/65), marked-list device, stat pair binding, heading fit-stepping (AS-66) + 12 stage-B/pass-3 follow-ups — replicas IMPROVED 0.957 / 0.951
 
-User review of the developer + demo gallery heroes. Full punch list with confirmed diagnoses: `FIX7-PUNCHLIST.md` (repo root). Headline finding: the orange-period signature and checkmark accent role were EXTRACTED into `runs/hubspot-v2/brand/brand.yaml` but nothing applies them at render time, and the demo composition's declared `knobs.supportKind: "list"` has NO consumer (silent drop → plain paragraphs). Queued behind the two in-flight agents (steals Stage B, pass 3) because the fixes need renderers + audit modules their fences exclude and their verification must not run against shifting renderer code. Also landed in this session: pushed `9ed7860` (fix5+fix6+pass1+pass2+steals-A code) and `c8e7b5f` (both brands' evidence) to origin/main; created `webflow/ai-brand-studio` (private, org) with the same history and added it as the `webflow` remote; README renamed to AI Brand Studio + mermaid pipeline architecture diagram (`c839b4b`), then a plain-language pass on the diagram (insider vocabulary out, labeled merge-precedence edges, human-review step before the learning loop).
+User review of the developer + demo gallery heroes (round 3); punch list with per-item landing table: `FIX7-PUNCHLIST.md`. Headline diagnosis held: the orange-period signature and checkmark accent role were EXTRACTED but nothing ever APPLIED them, and `knobs.supportKind: "list"` had no consumer. Lane logs: `runs/hubspot-v2/brand/changes.md` (fix7) + both lane changelogs.
+
+- **P1 accent devices as LICENSES with floors** — NEW brand-schema **§4.11** `accentDevices:` (kind + paint role + per-context floor/ceiling; contexts are structural: hero/closing/page/benefit-list/standing-link). Renderer applies them: `render_heading` wraps a licensed terminal mark on LANDMARK headings (`.c-accent-mark`, stamped `data-accent-device`; hero splits declare their measure-fit h2 statement a landmark via the composer flag), the mark paints the license's OWN role token (`--c-accent-mark`, scheme-stable). `signature_audit` gains FLOOR mode — `check_accent_device_floors` counts rendered stamps per context (the old gate only capped overuse; accent-STARVED landmarks now fail — it caught homepage/blog before the landmark flag landed). The licensed roster + floors ride the pass-3 facts injection. hubspot-v2 authored 3 licenses (period floor 1 on hero; checkmark list; underline roster) + `accentDevice` in the accent-scope allowedRoles; Remote CHECKED and NOT authored (its underline is hover-state = interaction treatment — evidence-first, nothing invented). Blog/event headings gained their landmark periods (copy-level, the brand's own signature move).
+- **P2+P6 composition lints** — NEW `brand_pipeline/composition_lint.py`: **AS-63** knob-consumption (code-consumer registry `KNOB_CONSUMERS`, test-pinned to real consuming source, + archetype variantKnobs vocabulary with YAML-boolean spellings; out-of-enum values = "can never render") and **AS-65** sibling-slot content redundancy (separator-split normalized item sets; the developer note re-listing its quick-links rail was the case). Wired: generation-loop prefilter 4c (hard, repairable) + two gate rows in `onbrand_check --composition` (fact-gated on composition.v1). Data fixes: 5 gallery knob values normalized to their enums (render-neutral), the developer note dropped (keep the structured device), `supportKind` enum += `list` in heroes-saas.yaml.
+- **P3 marked-list device** — `render_marked_list`: semantic list, licensed glyph markers through the fix4 sanitized inline-SVG channel (`attach_accent_devices` resolves + sanitizes brand artwork; hubspot's `icon-success.svg` was already harvested), hanging indent by grid construction, `list-item-gap` stride, typographic-dot degrade for license-less brands. Form-split consumes `supportKind` (stamps `data-list-intent`). **AS-64**: hard arm on dropped declarations + advisory arm (3+ parallel short siblings) on slop's NEW ADVISORY channel (prints, never exits 1). AS-14 counts substantive list items as a form's stated reason.
+- **P4 stat pair binding** — `.c-stat` internal seam re-registered to `--space-stat-pair` (was riding eyebrow-to-heading: 24px ≈ the list stride — hierarchy collapse); split columns add +0.5x sibling-gap separation before a stat. NEW relational spacing cells `stat.pair-binding`/`stat.pair-separation` (<= 0.5x / >= 1.5x of the block's own sibling gap; spec §statPair). Demo: pair 8 vs budget 16, separation 48 vs 48 — conform.
+- **P5 heading fit-to-measure (AS-66)** — deterministic register step-down for display headings in sub-measure columns: greedy word-wrap projection (0.6em mean advance, calibrated on stage B's measured 5-line/4-line wraps) walks the brand's MEASURED heading rungs until the hero cap (3 lines) fits the split column (`split_half_measure_px` from container + column-gutter facts). Display class/semantics/SR-budget stay; size re-registers via `data-fit-rung` (the pass1 overlay-panel channel — AS-62-safe by construction); `data-fit-cap` is the stamped contract AS-66 polices. Demo display: 80px/4 lines → 48px h1 rung/2 lines.
+- **P6/P7 note attachment + caption coherence** — foot-form notes are CAPTION register ATTACHED below their control (control-width wrapper, balanced wrap); `.c-caption`/`.cs-hero-form` children joined the `header.stack-coherence` stance census.
+- **Follow-ups (stage B + pass 3, all landed)** — bento de-facto `--lead` stamp (mirrors SR-GRID-01's superset inference); `knobs.columns` = the MODULE track count (`_moduleCols` — 12 registration columns ≠ 12 card tracks; the swiss letter-squeezed feature run now renders the declared 4-up); cta-contract actions expand to real buttons (no invented signup form over declared actions); `_cta_copy` dict-guards; dict-shaped stat vocabulary binds; art-panel pads the measured `panel-padding`; AS-11 counts `.c-stat`; flow header stamps `data-row="heading"` (40→32 heading-to-body); testimonial contract binds in splits (+ attribution caption); scrim-surface eyebrow ink contrast-guarded (photo-hero 2.68:1 → primary ink, matching the capture); composed pages take creative fidelity scope without `data-archetype`; `.cs-stat-band` rides `column-to-column` over the registration gutter; uniform grids wrap rows on `grid-gap`; prompt gains PROVEN AUTHORING SHAPES + the redundancy rule.
+- **Docs**: anti-ai-slop **AS-63..AS-66**; brand-schema **§4.11**; spacing-conformance **§statPair** + coherence caption note; layout-analyst-skill step **2b²** (accent devices + marker glyphs are REQUIRED extraction targets when evidenced).
+
+**Regression proof:** suite **1347 passed** exit 0 (baseline 1259 + 76 fix7 tests: `test_fix7_devices.py` 37 + `test_fix7_lints.py` 39; 3 fix6 pins updated to the new note/`_formSplit` contracts, 1 fid6 pin to the row-gap chain, pass-3 degrade fixture retires accentDevices like signatures; the other +12 are `test_baseline_findings.py` — CONCURRENT eval-matrix baseline work that landed in the tree mid-pass with its own form-field adapter normalization, green under the combined code). Replicas rebuilt + re-scored with final code: hubspot-v2 **0.957**, Remote **0.951** — both IMPROVED (+0.001; the period device + cream eyebrow close real source gaps; replica slop/spacing/signature re-verified green). Gallery battery (final bytes, true exit codes): onbrand PASS ×8 · slop 0 · interaction 0 · spacing 0 (statPair cells conform) · signature 0 (floors live) · voice 0 · section-rules 0 (×9 with replica) · conversion 0 (honest skips). Bakeoff re-rendered DETERMINISTICALLY (new lane script `style-bakeoff/rerender.py`, no model calls): battery before→after — swiss slop 1→0 spacing 1→0, e-m spacing 1→0, neumorphism spacing 1→0 — **GREEN ×3** (+ section-rules PASS ×3 w/ 1 pre-existing SR-STAT-02 advisory each, conversion PASS 0 WARN ×3); both contact sheets + gallery shots/index refreshed. `viewer.html` untouched (no viewer-affecting code).
+
+Also landed earlier in this session (pre-fix7 queue): pushed `9ed7860` (fix5+fix6+pass1+pass2+steals-A code) and `c8e7b5f` (both brands' evidence) to origin/main; created `webflow/ai-brand-studio` (private, org) with the same history and added it as the `webflow` remote; README renamed to AI Brand Studio + mermaid pipeline architecture diagram (`c839b4b`), then a plain-language pass on the diagram (insider vocabulary out, labeled merge-precedence edges, human-review step before the learning loop).
 
 ## 2026-07-14 — pass2: the honest A/B eval of pass 1 (checkpoint B) — verdict: generation UNCHANGED, gates proved prospective value; 2 latent renderer bugs fixed — replicas held exactly
 

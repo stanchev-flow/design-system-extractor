@@ -130,9 +130,12 @@ class GracefulDegradation(unittest.TestCase):
         # artifacts only in the WITH dir
         shutil.copy(src / "style-scale.yaml", cls.with_dir / "style-scale.yaml")
         shutil.copy(src / "voice-facts.yaml", cls.with_dir / "voice-facts.yaml")
-        # the WITHOUT brand must also carry no signatures block (brand.yaml-owned)
+        # the WITHOUT brand must also carry no signatures / accentDevices blocks
+        # (both brand.yaml-owned prompt-shaping fact classes; accentDevices joined
+        # the facts block at fix7)
         doc = (cls.without_dir / "brand.yaml").read_text()
         doc = doc.replace("\nsignatures:\n", "\n_retired_signatures:\n", 1)
+        doc = doc.replace("\naccentDevices:\n", "\n_retired_accentDevices:\n", 1)
         (cls.without_dir / "brand.yaml").write_text(doc)
 
     @classmethod

@@ -167,14 +167,27 @@ deliberately untouched (changing eval-record copy would falsify the comparison).
   `conversion_structure.py` owns the prompt side, `conversion_audit.py` (this
   stage) stays the one checker — see spec/conversion-structure.md (their status
   note names both owners). No file was co-edited by both agents.
-- **Bento lead stamping**: the event-bento's lead cell (media+link anatomy)
+- **Bento lead stamping**: ~~the event-bento's lead cell (media+link anatomy)
   carries no `cs-bento-cell--lead` class — the auditor infers a de-facto lead
   (first cell, strict anatomy superset). A renderer stamp would make SR-GRID-01
-  exact; inference documented in the module.
-- **Form-split display register**: an 80px display on a ~500px half measure
+  exact; inference documented in the module.~~ — **RESOLVED (fix7 2026-07-14)**:
+  `compose_bento_grid` stamps the de-facto lead itself (first card whose
+  authored anatomy strictly supersets the identical sibling set — the exact
+  mirror of this auditor's inference), so SR-GRID-01 reads the renderer's own
+  declaration on fresh renders; the inference stays as the fallback for
+  pre-fix7 pages. Root log: repo `changes.md` (fix7).
+- **Form-split display register**: ~~an 80px display on a ~500px half measure
   leaves ~10 chars/line — nearly any claim wraps past budget. A future
   register-step-down for form-split heroes (like pass1's overlay-panel 0.6
-  re-registration) would fix the class; today the copy budget carries it.
+  re-registration) would fix the class; today the copy budget carries it.~~ —
+  **RESOLVED (fix7 2026-07-14, punch item 5 / AS-66)**: deterministic
+  fit-to-measure stepping — the display rung in a sub-measure column steps
+  down the brand's MEASURED heading ladder until the hero cap (3 lines) fits
+  (greedy word-wrap projection calibrated on THIS stage's measured 5-line /
+  4-line wraps); the class/SR-budget stay display, the size re-registers via
+  `data-fit-rung`, and slop AS-66 polices the stamped `data-fit-cap`. The demo
+  display now renders 2 lines at the 48px h1 rung. SR-HERO-01 stays the
+  copy-budget gate.
 - **`hero-archetypes` gallery lane briefs** predate `campaignType:` — single-
   hero galleries have no campaign grammar to bind (honest skip), but future
   full-page campaign lanes should declare it in frontmatter.
@@ -249,3 +262,58 @@ exit 0. No test content was touched to achieve this.
 - THIS changelog. No renderer, spec-book, style-bakeoff, root-changelog, or
   viewer files touched; `spec/anti-ai-slop.md` unchanged (no new universal rule
   needed — the two registryCandidates stay candidates).
+
+## 2026-07-14 — BASELINE ROUND run (steal 2 protocol step 2–4) + first matrix finding fixed
+
+*(the parallel stage-B agent — prompt-side/matrix lane; the auditor wiring
+above is consumed as-is)*
+
+- **Runner**: NEW `tools/run_eval_matrix.py` — generate (real loop, style pin
+  `corporate-saas-clean`, `force_off_grid`, `max_repairs=3`) + full battery
+  (slop / interaction / spacing / signature / voice `--strict` + section-rules
+  baseline mode + conversion advisory) + results.json/md + shots/contact sheet;
+  per-brief `generateSeconds` and per-gate `gateSeconds` recorded separately
+  (README §Timing). Resumable (`page_passed` skip, `--only`, `--skip-gen`,
+  `--force`, `--shots-only`). Briefs ride into each page dir as `brief.md` —
+  conversion_audit's own binding channel, zero flags needed.
+- **Round**: `evals/matrix/runs/2026-07-14-baseline/` — 12/12 generated +
+  gated + shot; guidance flag OFF (measures the un-guided pipeline). Headline:
+  onbrand 6/12 within 4 attempts; slop FLAG 9/12 (all AS-11/AS-12); spacing 4
+  FAILs (hubspot); section-rules 3 req + 9 adv rows across 12 pages;
+  **conversion hardFloor 4/12 — both leadgen-gated-content cells + both
+  webinar-event cells render ZERO `<form>` elements** (briefs author the field
+  lists verbatim). Full numbers + root-cause traces: the round's `round.md` +
+  `results.md`.
+- **Finding fixed renderer-side (AS-26 class)**: the model's natural
+  registration emission — dedicated register section (`useCase: cta`,
+  `archetype: split`) with a `form-field` contract slot whose copy IS the
+  field list — dropped to a button-only band: the stamp reader only knew the
+  dict shape and only conversion STACKS route form anatomy. FIX in
+  `compose_from_composition.py`: (1) `_form_fields_stamp` resolves the LIST
+  shape (help→helper, "A / B / C" option-string → list, option-run coerces
+  text→select, sibling checkbox = opt-in row, consent-slot sentence rides
+  `consent`); (2) conversion-use sections with a validated stamp normalize to
+  the conversion stack (`is_conversion`), whatever archetype they declared —
+  `_composition.archetype` keeps the declared value (provenance). Fact-gated
+  both ways: form-less conversion splits keep their shape; repo scan found
+  zero existing compositions in the newly-routed class; A/B renders (old stamp
+  vs new) byte-identical on event-genlaunch, gallery-demo, both replicas.
+  Tests: NEW `tests/test_baseline_findings.py` (12 — list-shape stamp, dict
+  shape pinned verbatim, routing both directions, end-to-end render proof).
+  The round's pages predate the fix (immutable record); the next round
+  measures it.
+- **Recorded, not patched** (fix level: guidance/prompt, per round.md): the
+  leadgen hero-form-centered 3-fields-into-single-row fold (archetype-choice
+  error — the campaign grammar wants a dedicated capture section; the flag-ON
+  A/B round is the test); AS-11/AS-12 under-filled beats (repair loop never
+  sees slop); alignment-resolution as the dominant hubspot attempt-killer.
+- **Verification**: suite **1346 passed, exit 0** (1259 at the entry above +
+  12 findings tests + concurrent agents' growth; zero failures). Replicas
+  re-scored post-fix: hubspot **0.9567**, remote **0.9509** — the +0.001-class
+  movements vs the 0.956/0.950 pins trace to concurrent testimonial-seam/
+  hero-height renderer improvements (band diffs in the lane reports), not to
+  steal wiring (A/B byte-identity above). Section-rules `--strict` re-run
+  exit 0 across hubspot 8 heroes + replica and remote event-genlaunch +
+  replica; conversion exit 0 (event lane binds via `--campaign`/brief only —
+  gallery lanes fact-gated skip); slop spot-checks PASS @1440+@1180 on demo /
+  event-genlaunch / both replicas.

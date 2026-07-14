@@ -49,10 +49,12 @@
       "interaction-contrast": true,
       "token-provenance": true,
       "logo-wall-integrity": true,
-      "archetype-physics:hero-reveal": true
+      "archetype-physics:hero-reveal": true,
+      "knob-consumption": true,
+      "content-redundancy": true
     },
     "details": {
-      "text-contrast": "95 text elements measured against their effective background (surface + decoration layer); worst = page-nav/c-button.c-button--navcta('Get a demo') at 3.4 (floor 4.5); skipped=72; 2 element(s) exempt as MEASURED brand pairs (#ff4800 on #ffffff; #ffffff on #ff4800)",
+      "text-contrast": "97 text elements measured against their effective background (surface + decoration layer); worst = page-nav/c-button.c-button--navcta('Get a demo') at 3.4 (floor 4.5); skipped=72; 2 element(s) exempt as MEASURED brand pairs (#ff4800 on #ffffff; #ffffff on #ff4800)",
       "decoration-salience": "no decoration layers (ghost word / watermark) in this render"
     }
   },

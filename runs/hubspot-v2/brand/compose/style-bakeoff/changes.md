@@ -72,3 +72,41 @@ on-brand structure); the residual reds are pre-existing composition-vocabulary
 and renderer↔audit mismatches newly exposed by style-shaped compositions.
 Contact sheet: `../style-bakeoff-contact-sheet.png`. Replicas after
 everything: hubspot-v2 0.956 · Remote 0.950 (held exactly).
+
+## fix7 — deterministic re-render: the checkpoint-D residuals cleared (2026-07-14)
+
+Root log: `changes.md` (fix7) + `FIX7-PUNCHLIST.md`. The fix7 pass landed the
+renderer/adapter/audit follow-ups the checkpoint-D verdict catalogued (see
+`brand_pipeline/contracts/style-library/changes.md` FOLLOW-UPS — now annotated);
+these lanes then inherited them WITHOUT touching the frozen eval record:
+
+- NEW lane script `rerender.py` — draws each lane's SAVED composition.json
+  through the current renderer (NO model calls, NO composition edits; contrast
+  `iterate_fix.py`, which patches compositions first). Compositions unchanged;
+  every render delta below is shared-code behavior.
+- **Battery delta** (`run_battery.py`, true exit codes; before → after):
+  - swiss: slop **1 → 0** (AS-12 — the testimonial contract now binds in the
+    split copy path, quote + attribution render) · spacing **1 → 0**
+    (header.heading-to-body 40→32 via the flow header row stamp;
+    stat.column-gap 32→80 via the stat band riding `column-to-column` over the
+    registration gutter).
+  - editorial-magazine: spacing **1 → 0** (the same systemic
+    header.heading-to-body cell).
+  - neumorphism: spacing **1 → 0** (same cell).
+  - **GREEN ×3** — onbrand/slop/interaction/spacing/signature/voice all exit 0
+    (signature now includes the accent-device floor: each hero landmark carries
+    its licensed period device).
+- Also live on these pages now: landmark punctuation accents (heroes close with
+  the orange period), the swiss/neumorphism `knobs.columns: 4` feature runs
+  render 4 REAL tracks (`_moduleCols` — 12 registration columns are not 12 card
+  tracks; the swiss letter-squeezed grid was exactly that leak), uniform-grid
+  rows ride the brand's `grid-gap` rung.
+- section-rules `--strict`: PASS ×3 (1 advisory each: SR-STAT-02 stat-label
+  wordiness — pre-existing authored copy, advisory by design). conversion
+  (`--campaign product-launch`): PASS ×3, 0 WARN, 0 hardFloor.
+- Contact sheet re-shot: `../style-bakeoff-contact-sheet.png` (+ per-lane
+  `shots/product-launch.png`).
+- The checkpoint-D VERDICT above is a frozen eval record and stands as written
+  (NO-PASS at its own bar, no graduation); this section records only that the
+  C1 residuals attributable to renderer/adapter/audit gaps are now fixed at the
+  system level and verified on these same artifacts.

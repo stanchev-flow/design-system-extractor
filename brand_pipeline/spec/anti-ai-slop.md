@@ -2004,6 +2004,121 @@ chrome + replica lanes exempt by construction.
 
 ---
 
+## AS-63 — Declared knob with no consumer (silent intent drop)
+
+**Rule**: every `knobs` entry a composition section declares must have a
+CONSUMER — a renderer/adapter device (the `composition_lint.KNOB_CONSUMERS`
+registry) or the section's chosen archetype's own `variantKnobs` vocabulary —
+and the USED VALUE must sit inside that consumer's declared vocabulary. A knob
+nothing consumes, or a value no consumer can render, is a HARD composition lint
+failure, never a silent no-op.
+
+**Why it happens**: knobs read like configuration, so emitting one FEELS like
+declaring behavior — but a renderer only honors the knobs it implements. The
+model records a real plan ("supportKind: list"), nothing reads it, and the
+declared anatomy quietly renders as something else. The page still passes every
+paint/contrast gate because nothing is *wrong*, only *missing* — exactly the
+silent-slot-drop class the stress-test pass closed for slots.
+
+**Caught here** (fix7 2026-07, the proving case): the demo hero declared
+`knobs.supportKind: "list"` on `hero-form-split`; a repo grep found ZERO
+consumers, so its three parallel benefit items rendered as stacked look-alike
+paragraphs and the review read the band as "no visual touches". Same sweep:
+five gallery knob values sat outside their archetype enums (`panelSpan:
+"half"` vs `[4, 5, 6]`, `metaPlacement: "above"` vs `above-heading`…) —
+recorded plans that could never render.
+
+**Verify**: `composition_lint.lint_knobs` — wired as a generation-loop
+prefilter (hard, repairable) and as the `knob-consumption` composition
+invariant in `onbrand_check --composition`. The registry is test-pinned to
+real consuming code (a registry entry without a consumer is the lie the lint
+exists to catch).
+
+---
+
+## AS-64 — Parallel benefit run rendered as look-alike paragraphs
+
+**Rule**: three or more consecutive sibling short paragraphs of parallel
+benefit phrasing inside a value-proof block SHOULD render as a marked list
+(the brand's own marker glyph in the accent role, hanging indent, list rhythm)
+— ADVISORY normally; a HARD failure when the composition itself declared list
+intent (the renderer stamps `data-list-intent`) and the paragraphs still
+rendered plain.
+
+**Why it happens**: the adapter's safe degrade for unhandled copy shapes is
+the paragraph — so a benefit run whose list declaration was dropped (AS-63)
+melts into body copy. Each paragraph is individually fine; the ROW of them
+reads as three identical subheadings with no scanning affordance, which is
+exactly the "AI slop" texture human editors flag.
+
+**Caught here** (fix7 2026-07): the demo hero's "What you'll see in 30
+minutes" content-block — three parallel claims, declared `supportKind: "list"`
+— rendered as three plain paragraphs whose stride matched the stat label gap,
+collapsing the whole column's hierarchy. Fixed by the marked-list device
+(`component_render.render_marked_list` + the brand's licensed checkmark glyph).
+
+**Verify**: `slop_audit.mjs` AS-64 — hard arm: a `[data-list-intent]`
+container rendering 3+ plain sibling paragraphs and no `.c-marked-list`; the
+SHOULD arm prints as `ADVISORY` (surfaced for review, never an exit flag).
+
+---
+
+## AS-65 — Sibling-slot content redundancy (one payload, two registers)
+
+**Rule**: no two sibling slots in one section may carry the same ENUMERABLE
+content in different registers. A prose line (a form `note`, a caption) that
+re-lists what an adjacent structured slot already binds is a composition
+defect: keep the structured device, drop the prose line.
+
+**Why it happens**: the model narrates its own structure — having authored a
+quick-links slot, it "helpfully" summarizes the same links into the form's
+note ("Popular: CRM API · UI extensions · OAuth · webhooks"). Each slot is
+individually plausible; together they render a duplicated row plus a floating
+meta line, and the reader sees the page repeat itself.
+
+**Caught here** (fix7 2026-07): the developer hero's search `note` enumerated
+the exact four destinations its `popular` link slot already rendered as the
+arrow-link rail — a ragged two-line caption floating between the lede and the
+control, duplicating the row below it.
+
+**Verify**: `composition_lint.lint_redundancy` — separator-split (·/|/,)
+normalized item sets per slot (nested `note`/`caption` strings included);
+>= 2 shared items covering >= 50% of the smaller set flags. Wired beside
+AS-63 (generation prefilter + `content-redundancy` gate row). The generation
+prompt states the rule up front (COPY QUALITY block).
+
+---
+
+## AS-66 — Display register unfitted to its measure
+
+**Rule**: a display-rung heading placed in a SUB-MEASURE column must fit its
+register cap (hero display: 3 rendered lines; section headings ride
+SR-HDR-01's tighter budget) — the renderer steps the SIZE down the brand's own
+measured heading ladder (display → h1 → h2) until the projected line count
+fits, and stamps the contract (`data-fit-cap` + `data-fit-rung`). A stamped
+column whose heading still exceeds its cap is a HARD flag: the mechanic failed
+or was bypassed.
+
+**Why it happens**: the display size is measured on the FULL-measure hero
+band; a form-split/half column keeps the 80px register on ~500px of measure —
+~10 characters a line — so nearly ANY claim wraps past the budget. Copy
+tightening (the stage-B remedy) carries one lane; the register is the class
+fix, exactly like pass1's overlay-panel 0.6 re-registration.
+
+**Caught here** (fix7 2026-07, the stage-B follow-up): the demo
+hero-form-split display rendered 4–6 lines at 80px in the 500px column across
+three copy revisions. The fit mechanic (`compose_section.heading_fit_level`,
+greedy word-wrap projection at 0.6em mean glyph advance) steps it to the
+brand's measured h1 rung (48px → 2 lines), keeping every magnitude on the
+ladder (AS-62 safe by construction).
+
+**Verify**: `slop_audit.mjs` AS-66 — for every `[data-fit-cap]` element, the
+first `.c-heading`'s rendered line count (box height / line-height) must not
+exceed the stamped cap. Declaration-driven: no stamp, no audit. SR-HERO-01
+stays the copy-budget gate; this rule polices the fix mechanic itself.
+
+---
+
 ## Adding a new entry
 
 Copy this shape: **Rule** (the imperative, one or two sentences) / **Why it happens** (the

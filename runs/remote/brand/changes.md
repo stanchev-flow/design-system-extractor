@@ -52,3 +52,24 @@ Evidence-first authoring from EXISTING capture (no re-extraction). Root log:
   0 off-scale; signature strict PASS ×3 lanes; voice PASS ×2 content lanes.
   Baselines: `signature-baseline/`, `voice-baseline/`, `spacing-baseline/pass1/`.
   Validator C1-C25: 0 errors (C24/C25 clean).
+
+## fix7 — device-license check (none authored) + replica re-score (2026-07-14)
+
+Root log: repo `changes.md` (fix7). Shared code gained licensed accent devices
+(brand-schema §4.11), composition lints (AS-63/AS-65), the marked-list/stat/fit
+devices and the scrim-surface eyebrow contrast guard — all fact-gated.
+
+- **accentDevices deliberately NOT authored for this brand**: the evidence was
+  checked — Remote's link underline appears on HOVER only (`--zora-link` ink
+  links darken + underline on hover; footer links soften + underline), which is
+  an INTERACTION treatment already captured in `voice.motionSpec.link`
+  (color-shift + underline-on-hover), not a standing accent device; no marker
+  glyphs or punctuation accents exist in the capture. Authoring a license would
+  invent evidence (skill step 2b²'s own caution).
+- Replica rebuilt + re-scored with the final code: **0.951** (was 0.950 —
+  IMPROVED within the same mechanics; no Remote-specific render change is
+  license-gated on this brand). Gates re-verified on the rebuilt replica:
+  slop PASS @1440+@1180, spacing strict 138/138 conform (0 hard), signature
+  strict PASS (accent share 0.487%) — exit 0 each.
+- Remote compose lanes (event-genlaunch, stress-playbook, bakeoffs) untouched
+  this pass (frozen artifacts; no re-render).

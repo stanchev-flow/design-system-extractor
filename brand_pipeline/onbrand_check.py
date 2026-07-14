@@ -670,7 +670,14 @@ def check_fidelity(doc, html, layout, facts, render_dir=None):
     #     is n/a (creative pages author their own voice-true copy).
     # Renders without the stamp (replica + every deterministic lane) keep the original
     # cells byte-identically.
-    creative = 'data-archetype="' in html
+    # fix7 (pass-3 follow-up 9): EVERY generated composition.v1 render takes the
+    # creative scope, stamp or no stamp — a pattern-reuse-only composed page authors
+    # its own surfaces too, and the old id-coincidence path (a composition section
+    # named `hero` binding the SOURCE hero's surface expectations) demanded the
+    # source hero surface on pages that never claimed to mirror it. Replicas write
+    # replica-composition.v1 and keep the source-identity cells byte-identically.
+    creative = 'data-archetype="' in html \
+        or _generated_composition(render_dir) is not None
 
     if creative:
         surf_roles = set(((doc.get("tokens") or {}).get("surfaces") or {}).keys())
@@ -697,7 +704,11 @@ def check_fidelity(doc, html, layout, facts, render_dir=None):
     # mapping may carry no heading role at all, which used to silently skip this
     # cell while a composer dropped the heading); the SOURCE snippet otherwise.
     def _norm(s):
-        return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", s)).strip().lower()
+        # tag-stripping injects a space where an inline device span sits (the fix7
+        # punctuation-accent wraps a heading's terminal mark) — whitespace before
+        # punctuation is never copy identity, so it normalizes away.
+        flat = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", s)).strip().lower()
+        return re.sub(r"\s+([.,!?;:])", r"\1", flat)
 
     if creative:
         # every authored display-tier heading must actually RENDER (a composer that
@@ -1282,6 +1293,44 @@ def check_archetype_physics(render_dir, html, inv, fid):
             else:
                 bits.append(f"{fam}:delegated[{_PHYSICS_DELEGATED.get(fam, 'lane gates')}]")
         rows.append((rid, f"Archetype physics bindings ({ref})", ok, "; ".join(bits)))
+    return rows
+
+
+def _generated_composition(render_dir) -> dict | None:
+    """The render's own composition.json when it is a GENERATED composition.v1
+    (the replica assembler's replica-composition.v1 and composition-less lanes
+    return None — those lanes keep every source-identity cell byte-identically)."""
+    if not render_dir:
+        return None
+    try:
+        comp = json.loads((Path(render_dir) / "composition.json").read_text())
+    except (OSError, ValueError, TypeError):
+        return None
+    if isinstance(comp, dict) and comp.get("schemaVersion") == "composition.v1":
+        return comp
+    return None
+
+
+def check_composition_lints(render_dir):
+    """Composition-lint rows (fix7 AS-63/AS-65 — brand_pipeline/composition_lint.py):
+    knob-consumption (every declared knob has a consumer and a renderable value)
+    + sibling-slot content redundancy. HARD under --composition like every other
+    composition invariant; [] for lanes without a generated composition."""
+    comp = _generated_composition(render_dir)
+    if comp is None:
+        return []
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import composition_lint  # noqa: E402
+    hits = composition_lint.lint_composition(comp)
+    rows = []
+    for rule in ("knob-consumption", "content-redundancy"):
+        mine = [(sid, msg) for sid, r, msg in hits if r == rule]
+        label = ("Every declared knob has a consumer (AS-63)"
+                 if rule == "knob-consumption" else
+                 "No sibling-slot content redundancy (AS-65)")
+        detail = "; ".join(f"{sid}: {msg}" for sid, msg in mine[:4]) \
+            or "composition lints clean"
+        rows.append((rule, label, not mine, detail))
     return rows
 
 
@@ -2031,6 +2080,9 @@ def main():
     # archetype physics bindings (spec/archetype-library.md): extra HARD rows for
     # sections that instantiated a genre archetype; [] for every other render.
     inv += check_archetype_physics(args.render_dir, html, inv, fid)
+    # composition lints (fix7 AS-63/AS-65): knob-consumption + sibling-slot content
+    # redundancy on the render's own composition.json; [] for composition-less lanes.
+    inv += check_composition_lints(args.render_dir)
 
     style = style_checks = None
     if args.style:

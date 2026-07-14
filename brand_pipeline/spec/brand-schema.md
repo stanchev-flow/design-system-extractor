@@ -654,6 +654,62 @@ beside the existing `pageType`/`taskIntents`/`variance` keys. Briefs without it
 are untouched by both layers (fact-gated). The standing 12-brief instrument
 that exercises both contracts is `evals/matrix/` (protocol in its README).
 
+### 4.11 `accentDevices:` — licensed accent devices with floors (fix7 2026-07)
+
+The brand's SMALL recognizable accent moves as MACHINE-APPLICABLE licenses.
+A `signatures:` entry can only police what renders; this block is the other
+half — the renderer APPLIES the licensed device and stamps every application
+`data-accent-device="<kind>"`, and the signature auditor verifies per-context
+FLOORS (an accent-STARVED landmark now fails, not just an over-painted page).
+Extraction doctrine: when the evidence shows these touches, capturing them
+here is REQUIRED, not optional (`layout-analyst-skill.md` step 2b) — an
+extracted-but-never-applied signature was exactly the fix7 defect.
+
+```yaml
+accentDevices:                       # OPTIONAL top-level list; fact-gated everywhere
+  - id: <brand-chosen slug>          # e.g. orange-period — a DEVICE name, never a section/content name
+    kind: punctuation-accent         # closed kind enum:
+                                     #   punctuation-accent — a landmark heading's terminal mark in the accent role
+                                     #   marked-list-glyph  — list markers as the brand's glyph in the accent role
+                                     #   underline-accent   — the standing-link underline decoration
+                                     #   accent-word        — one emphasized word in the accent role (vocabulary; no renderer yet)
+    mark: "."                        # punctuation-accent only: the licensed terminal mark
+    glyph: { asset: <file>, size: 1em }   # marked-list-glyph only: harvested artwork
+                                     # (the icon-next.svg pattern: sanitized inline-SVG channel,
+                                     # currentColor, viewBox = the sprite's own — EVIDENCE, not a template)
+    role: <token role>               # the token role that paints the device (e.g. accent/highlight);
+                                     # emitted as --c-accent-mark — scheme-stable, never the surface accent
+    contexts:                        # licensed contexts, floors/ceilings per context
+      - { context: hero, floor: 1 }  # structural context enum: hero (first content band) |
+                                     #   closing (last content band) | page | benefit-list | standing-link
+      - { context: closing }         # licensed, no floor (roster entry)
+    evidence: [ ... ]                # REQUIRED — cite the capture that licenses the device
+    confidence: high
+    source: [vision, saved-css]
+    changelog: [ ... ]
+```
+
+Consumption (all fact-gated — license-less brands render byte-identically):
+
+- `component_render.render_heading` wraps a LANDMARK heading's licensed
+  terminal mark (`.c-accent-mark`, one per heading — the structural ceiling);
+  landmark = the display rank or an accent-flagged heading.
+- `component_render.render_marked_list` renders declared list intent with the
+  licensed glyph markers (`compose_section.attach_accent_devices` resolves +
+  sanitizes the artwork onto the doc; missing/refused artwork degrades to the
+  typographic dot — inventory law).
+- `signature_audit.check_accent_device_floors` counts rendered
+  `[data-accent-device]` stamps per context and gates floors/ceilings
+  (`--strict`). The device paint itself joins the accent-scope census under
+  the `accentDevice` role — list it in the accent-scope signature's
+  `allowedRoles` when licensing devices.
+- `generate_composition.pass1_facts_block` injects the licensed roster +
+  floors into the composition prompt (the pass-3 signature injection).
+
+Device roles describe REUSABLE visual patterns (a punctuation accent, a marked
+list) — never section- or content-specific names; per-context floors say WHERE
+the brand's landmarks demand a touch, not what the copy must say.
+
 ## 5. `contracts` — the universal THREE-TIER vocabulary layer (NEW)
 
 Three shared, library-agnostic catalogs define the full structural vocabulary

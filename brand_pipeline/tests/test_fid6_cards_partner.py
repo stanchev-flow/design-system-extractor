@@ -245,12 +245,15 @@ class ObservedColumnsTest(unittest.TestCase):
     def test_cols_grid_row_gap_rides_declared_gutter(self):
         # spacing remediation B6 (2026-07): the N-up card grid's COLUMN seam prefers
         # a declared section gutter, then the brand's card-grid rung
-        # (--space-grid-gap), then the shared page gutter (degrade) — the row gap
-        # keeps its fid6 declared-gutter chain.
+        # (--space-grid-gap), then the shared page gutter (degrade). fix7: the ROW
+        # seam gained the same brand rung behind the declared gutter (a knob-declared
+        # uniform grid carries no gutter; the editorial clamp stays the fact-less
+        # degrade).
         self.assertIn(".cs-modules--cols { column-gap: var(--grid-gutter-col,\n"
-                      "  var(--space-grid-gap, var(--grid-gutter, 6rem)));\n"
-                      "  row-gap: var(--grid-gutter-row,",
+                      "  var(--space-grid-gap, var(--grid-gutter, 6rem)));",
                       cs.SCAFFOLD_CARDS_CSS)
+        self.assertIn("row-gap: var(--grid-gutter-row, var(--space-grid-gap,\n"
+                      "  clamp(", cs.SCAFFOLD_CARDS_CSS)
 
 
 # ── plate media bleed ──────────────────────────────────────────────────────────────

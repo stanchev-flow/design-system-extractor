@@ -999,17 +999,19 @@ signatures:
       warm peach family, never the action orange.
     check:
       colors: ["#ff4800", "#c93700"]
-      allowedRoles: [action, link, glyph, eyebrow, mark]
+      allowedRoles: [action, link, glyph, eyebrow, mark, accentDevice]
       maxPaintSharePct: 2.0
     evidence:
       - "computed-styles.json actionGroups: primary fill rgb(255,72,0), hover #c93700 (buttons.primary/secondary facts)"
       - "grounding sections 01/03/05: filled-primary + outlined action pairs; no orange body/heading ink anywhere in the census"
       - "tokens.colors avoid-orange-text rule (saved-css): orange is fills/underlines/marks/accents only"
       - "measured accent paint share: replica 0.46% of page paint, gallery heroes 0.27-0.90% — budget 2.0% is ~4x the replica share"
+      - "accentDevice role (fix7): the site's own action/primary token role names 'checkmark fill … underline accents, heading period accents' — the renderer-stamped device spans/markers carry exactly those licensed touches"
     confidence: high
     source: [computed, saved-css, vision]
     changelog:
       - { ts: "2026-07-14T15:00:00Z", action: created, from: null, to: authored, by: user, signalId: null, note: "pass1 signatures block — authored from existing captured evidence, no re-extraction" }
+      - { ts: "2026-07-14T20:30:00Z", action: updated, from: "allowedRoles [action, link, glyph, eyebrow, mark]", to: "+ accentDevice", by: fix7, signalId: null, note: "licensed accent devices (accentDevices block below) stamp data-accent-device; their paint is the SAME orange family the role prose already names (heading period accents, checkmark fill)" }
   - id: serif-display-sans-body
     kind: type-treatment
     mode: always
@@ -1064,6 +1066,57 @@ signatures:
     source: [computed, vision]
     changelog:
       - { ts: "2026-07-14T15:00:00Z", action: created, from: null, to: authored, by: user, signalId: null, note: "pass1 signatures block" }
+
+# LICENSED ACCENT DEVICES (fix7 2026-07; brand-schema §4.11) — the brand's small
+# recognizable accent MOVES as machine-applicable licenses: device kind + the token
+# role that paints it + licensed contexts with FLOOR/ceiling counts. The renderer
+# applies them (punctuation wrap, marked-list markers) and stamps each application
+# `data-accent-device`; signature_audit verifies the floors (an accent-starved
+# landmark now fails, not just an over-painted one). Kinds are generic; every value
+# below is this brand's own evidence — device roles, never section/content names.
+accentDevices:
+  - id: orange-period
+    kind: punctuation-accent
+    mark: "."
+    role: accent/highlight
+    contexts:
+      - { context: hero, floor: 1 }        # the landmark hero band carries >= 1 licensed device
+      - { context: closing }               # licensed on the closing landmark (no floor: the band may close copy-free)
+    evidence:
+      - "signature orange-period-accent: hero 'go to grow.' + closing 'impossibly easy, with HubSpot.' close with the orange period (vision, hero + closing-cta crops)"
+      - "primitives.heading rule: 'landmark headings may close with an orange period accent (hero, closing CTA)'"
+      - "tokens action/primary role: '… heading period accents' (--light-theme-hubspot-brand-01 family)"
+    confidence: high
+    source: [vision, saved-css]
+    changelog:
+      - { ts: "2026-07-14T20:30:00Z", action: created, from: null, to: authored, by: fix7, signalId: null, note: "extracted-but-never-applied signature becomes a renderer license + floor (gallery review round 3: ink periods on landmark serif headings)" }
+  - id: orange-checkmark-list
+    kind: marked-list-glyph
+    glyph: { asset: icon-success.svg, size: 1em }
+    role: accent/highlight
+    contexts:
+      - { context: benefit-list }          # licensed wherever a composition declares list intent
+    evidence:
+      - "assets-tagged.json icon-success.svg: 'checkmark list glyph (orange)' (product-grid, section-04) — harvested 32-grid currentColor sprite symbol (fix5 viewBox repair), the icon-next.svg pattern"
+      - "saved-css --light-theme-checkmark-list-icon-brand-fill: #ff4800 (the site's OWN checkmark-fill token)"
+      - "grounding section-04: 'orange checkmark -> body text' rows, 2 per product card, 10 cards"
+      - "tokens.spacing list-item-gap 1rem: 'checkmark-list row rhythm inside product cards'"
+    confidence: high
+    source: [saved-css, vision, computed]
+    changelog:
+      - { ts: "2026-07-14T20:30:00Z", action: created, from: null, to: authored, by: fix7, signalId: null, note: "checkmark glyph already harvested (icon-success.svg); this license lets the marked-list device consume it for declared list intent" }
+  - id: orange-underline-links
+    kind: underline-accent
+    role: text/link-underline
+    contexts:
+      - { context: standing-link }         # roster entry: licensed, no floor (the textCta device already paints it)
+    evidence:
+      - "tokens text/link-underline #ff4800 (--light-theme-text-link-underline-01) — 'the ORANGE underline decoration under ink text links — signature device'"
+      - "signature ink-links-orange-underline: standing links carry the orange underline; card text-arrows ride the arrow glyph instead"
+    confidence: high
+    source: saved-css
+    changelog:
+      - { ts: "2026-07-14T20:30:00Z", action: created, from: null, to: authored, by: fix7, signalId: null, note: "roster completeness: the underline accent is already rendered by the textCta family; licensed here so the device inventory reads whole (no floor — not machine-counted)" }
 
 voice:
   ref: "./voice.md"

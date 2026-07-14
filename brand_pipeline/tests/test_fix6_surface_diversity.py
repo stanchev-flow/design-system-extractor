@@ -285,7 +285,7 @@ class FootFormAndLinkRail(unittest.TestCase):
         sec.update(over)
         return sec
 
-    def test_form_slot_maps_as_foot_form_with_note_as_reason(self):
+    def test_form_slot_maps_as_foot_form_with_note_attached(self):
         mapping = cfc._hero_mapping(self._dev_like_section())
         form = [m for m in mapping if str(m["role"]).startswith("foot form (")]
         note = [m for m in mapping if str(m["role"]).startswith("foot form note")]
@@ -293,9 +293,11 @@ class FootFormAndLinkRail(unittest.TestCase):
         self.assertEqual(form[0]["contract"], "form")
         self.assertEqual(form[0]["usage"]["placeholder"], "Search the docs")
         self.assertEqual(form[0]["usage"]["submit"], "Search")
-        # AS-14: the note is the form's stated reason — body register, not caption
+        # fix7 punch 6: the note ATTACHES to its control — caption register below
+        # the field (AS-14's stated reason is the section's own body copy, not
+        # this meta line; fix6 had routed it as a paragraph ABOVE the field).
         self.assertEqual(len(note), 1)
-        self.assertEqual(note[0]["contract"], "paragraph")
+        self.assertEqual(note[0]["contract"], "caption")
 
     def test_link_list_maps_as_quiet_rail_links(self):
         mapping = cfc._hero_mapping(self._dev_like_section())
@@ -315,28 +317,34 @@ class FootFormAndLinkRail(unittest.TestCase):
                           if str(m["role"]).startswith(("foot form", "rail "))])
 
     def test_composer_core_picks_exclude_device_fragments(self):
-        """The note paragraph renders ONCE (inside the form block), never again as
-        the hero body — the developer page proves the end-to-end shape. Content-
-        agnostic (pass2): the note text reads from the lane's own composition so a
-        regenerated lane (same devices, fresh model copy) keeps proving the device."""
+        """A device note renders ONCE (inside the form wrapper, attached BELOW the
+        control — fix7 punch 6), never again as the hero body. Data-driven (pass2):
+        when the lane's composition carries a form note it must render exactly once
+        after the field; the current developer lane carries NONE (its note
+        duplicated the quick-links rail — the AS-65 redundancy fix dropped it), so
+        the wrapper renders bare and no floating meta line survives."""
         import html as H
         import json
         import re
         lane = REPO / "runs" / "hubspot-v2" / "brand" / "compose" / "hero-archetypes"
         comp = json.loads((lane / "developer" / "composition.json").read_text())
-        note = next(s["copy"]["note"] for sec in comp["sections"]
-                    for s in sec.get("slots", [])
-                    if (s.get("contract") or "") == "form"
-                    and isinstance(s.get("copy"), dict) and s["copy"].get("note"))
+        note = next((s["copy"]["note"] for sec in comp["sections"]
+                     for s in sec.get("slots", [])
+                     if (s.get("contract") or "") == "form"
+                     and isinstance(s.get("copy"), dict) and s["copy"].get("note")),
+                    None)
         html_text = (lane / "developer" / "index.html").read_text()
         hero = re.search(r'<section class="cs-section cs-hero[^"]*">.*?</section>',
                          html_text, re.S).group(0)
-        note_esc = H.escape(note.strip(), quote=False).replace("'", "&#x27;")
-        self.assertEqual(hero.count(note_esc), 1)
         self.assertEqual(hero.count("cs-hero-form"), 1)
         self.assertIn("cs-hero-links", hero)
-        # the note precedes the field: it is the form's stated reason (AS-14)
-        self.assertLess(hero.index(note_esc), hero.index("<input"))
+        if note is None:
+            self.assertNotIn("foot form note", hero)
+        else:
+            note_esc = H.escape(note.strip(), quote=False).replace("'", "&#x27;")
+            self.assertEqual(hero.count(note_esc), 1)
+            # fix7: the note ATTACHES below its control, never above it
+            self.assertGreater(hero.index(note_esc), hero.index("<input"))
 
 
 class FormSplitHero(unittest.TestCase):
@@ -380,9 +388,11 @@ class FormSplitHero(unittest.TestCase):
         self.assertEqual(ff["heading"], "Book your demo")
         self.assertEqual(ff["submit"], "Book my demo")
         self.assertEqual(ff["note"], "We'll email a scheduling link.")
-        # points accept bare strings AND the sanitizer's {"text": …} coercion
+        # points accept bare strings AND the sanitizer's {"text": …} coercion;
+        # supportKind rides the stamp since fix7 (empty here: no knob declared)
         self.assertEqual(layout["_formSplit"],
-                         {"points": ["Live pipeline", "One CRM"], "side": "right"})
+                         {"points": ["Live pipeline", "One CRM"], "side": "right",
+                          "supportKind": ""})
 
     def test_formless_split_hero_stamps_nothing(self):
         sec = self._demo_like_section()

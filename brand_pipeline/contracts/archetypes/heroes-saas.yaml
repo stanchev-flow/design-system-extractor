@@ -112,6 +112,12 @@ changelog:
              logo-bar) + agendaRail knob — copy-first rebuild of the hubspot-v2 event
              hero demanded agenda-at-a-glance proof in the brand's own product marks;
              additive, existing instantiations unaffected" }
+  - { ts: "2026-07-14T20:30:00Z", action: adjusted, from: heroes-saas.v1,
+      to: heroes-saas.v1, by: fix7, signalId: null,
+      note: "hero-form-split supportKind vocabulary += 'list' (the value live
+             generation actually authored) — now a REAL renderer consumer exists
+             (compose_section marked-list device + composition_lint AS-63 registry);
+             'bullets' stays the default alias, both render the marked list" }
 
 archetypes:
 
@@ -710,7 +716,7 @@ archetypes:
     variantKnobs:
       formSide: { type: enum, values: [right, left], default: right }
       formFrame: { type: enum, values: [panel, plain], default: panel }   # panel = brand panel surface + hairline; plain = fields on canvas
-      supportKind: { type: enum, values: [paragraph, bullets], default: bullets }
+      supportKind: { type: enum, values: [paragraph, bullets, list], default: bullets }   # bullets/list = the marked-list device (fix7)
     exemplar:
       instance: >-
         The B2B demo-request mold: left column offer heading, three outcome bullets,
