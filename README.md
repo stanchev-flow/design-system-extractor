@@ -12,56 +12,53 @@ Walkthrough video: [Loom project walkthrough](https://www.loom.com/share/7f4b806
 
 ## The Pipeline
 
-One brand is extracted once into machine-checkable evidence; pages are then generated forever against that evidence. The model composes, deterministic code paints, gates police, and the replica score proves the extraction against the real site.
+A brand is learned once and written down as checkable facts. Pages are then generated against those facts forever: the AI decides what to say and which layout serves it, code paints every pixel from measured brand values, automated gates block anything off-brand, and a rebuilt copy of the real homepage proves the brand was captured correctly.
 
 ```mermaid
 flowchart TD
-    subgraph EXTRACT["1 · BRAND EXTRACTION — once per brand"]
-        SITE["Source site"] --> CAP["Capture agent<br/>multi-viewport screenshots ·<br/>computed CSS · DOM · saved CSS ·<br/>sprites · fonts · assets"]
-        CAP --> GROUND["Vision grounding agent<br/>section crops + full page →<br/>factual visual inventory"]
-        CAP --> MINE["Deterministic miners<br/>motion curves · spacing census ·<br/>type census · glyph harvest"]
-        GROUND --> ANALYST["Layout analyst agent<br/>evidence-first authoring skill"]
+    subgraph EXTRACT["STEP 1 · LEARN THE BRAND — done once per brand"]
+        SITE["Company website"] --> CAP["Capture<br/>screenshots at every screen size ·<br/>real CSS values · fonts · icons · images"]
+        CAP --> GROUND["Visual analysis — AI<br/>describes what is actually visible,<br/>section by section"]
+        CAP --> MINE["Measurement — code<br/>exact spacing, type sizes,<br/>animation curves"]
+        GROUND --> ANALYST["Brand analyst — AI<br/>writes it all down as facts<br/>a machine can check"]
         MINE --> ANALYST
     end
 
-    subgraph BRAND["2 · BRAND RULES — brand-owned, written during extraction"]
-        BY["brand.yaml<br/>tokens · surfaces + nesting grammar ·<br/>chrome nav/footer · action groups ·<br/>SIGNATURES always/never"]
-        LL["layout-library.yaml<br/>section patterns ·<br/>component RECIPES"]
-        SC["section-copy.yaml<br/>real copy"]
-        VF["voice-facts.yaml<br/>sentence stats · casing ·<br/>banned lexicon"]
-        SS["style-scale.yaml<br/>derived type/space/radius scales"]
-    end
-
     ANALYST --> BRAND
-    BRAND --> VAL["Fail-loud validator C1–C25<br/>missing evidence = loud error,<br/>never silent invention"]
-    VAL --> REPLICA["REPLICA GATE — ground truth<br/>rebuild source homepage from evidence only,<br/>SSIM vs live site: HubSpot 0.956 · Remote 0.950"]
 
-    subgraph STYLE["3 · STYLE LAYER — genre knowledge, brand-agnostic"]
-        ARCH["Archetype library<br/>29 SaaS hero skeletons ·<br/>anatomy + use cases"]
-        SL["Style library<br/>directives · section catalog ·<br/>layout primitives · variation axes"]
-        SR["Section rules +<br/>conversion-structure contracts<br/>per campaign type / funnel stage"]
-        AS["Anti-slop law AS-1..62<br/>interaction + layout correctness"]
+    subgraph BRAND["STEP 2 · THE BRAND FILE — facts, not vibes"]
+        BY["Colors, type, backgrounds —<br/>and which components are allowed<br/>on which backgrounds"]
+        LL["Section + component recipes<br/>the real site actually uses"]
+        SIG["Brand signatures — small rules that<br/>make the brand recognizable<br/>(e.g. headings may end with an orange dot)"]
+        VOICE["Voice — how the brand writes:<br/>sentence length, casing, banned words"]
     end
 
-    subgraph RESOLVE["4 · RESOLUTION — styles under brand rules"]
-        RES["Resolver cascade<br/>section default → style directive →<br/>style×section override → BRAND override<br/>(brand always wins)"]
+    BRAND --> VAL["Completeness check — code<br/>25 hard checks; missing evidence is<br/>a loud error, never a silent guess"]
+    VAL --> REPLICA["PROOF the brand was captured:<br/>rebuild the real homepage from the<br/>brand file alone — 95%+ pixel match<br/>to the live site"]
+
+    subgraph STYLE["STEP 3 · STYLE KNOWLEDGE — how this KIND of site works, any brand"]
+        ARCH["Layout library<br/>29 proven hero layouts,<br/>each with its use case"]
+        SR["Page-structure rules<br/>what a pricing, demo, or launch<br/>page needs in order to convert"]
+        AS["62 correctness rules<br/>the mistakes AI layouts usually make,<br/>each one banned explicitly"]
     end
 
-    STYLE --> RES
-    BRAND --> RES
+    STYLE -->|"suggests defaults + vocabulary"| RES
+    BRAND -->|"has the final say — brand always wins"| RES
+    RES["MERGE<br/>style suggests, brand decides"]
 
-    subgraph GEN["5 · PAGE GENERATION — per brief"]
-        BRIEF["Brief"] --> COPY["Copy-first plan<br/>content before layout"]
-        COPY --> COMPOSER["Composer agent LLM<br/>composition.json: structure + copy ·<br/>vocabulary from archetypes/recipes ·<br/>never paints pixels"]
-        COMPOSER --> RENDER["Deterministic renderer<br/>geometry from measured facts:<br/>containment law · spacing ladders ·<br/>alignment grammar · devices ·<br/>brand chrome 1:1"]
+    subgraph GEN["STEP 4 · GENERATE A PAGE — on every request"]
+        BRIEF["Request / brief"] --> COPY["Content first<br/>write the message<br/>before choosing a layout"]
+        COPY --> COMPOSER["AI composer<br/>picks the structure + writes the copy —<br/>never touches pixels"]
+        COMPOSER --> RENDER["Code renderer<br/>every pixel measurement comes from<br/>the brand file, not from the AI"]
     end
 
     RES --> COMPOSER
-    RENDER --> GATES["6 · GATE BATTERY — deterministic, fail loud<br/>onbrand · anti-slop · interaction · spacing/scale ·<br/>signature + accent budget · voice · screenshot review"]
-    GATES -->|all green| PAGE["On-brand page"]
-    GATES -->|violation| COMPOSER
+    RENDER --> GATES["STEP 5 · QUALITY GATES — code, automatic<br/>right colors and components? · spacing and type<br/>on the brand's scale? · brand signatures present? ·<br/>copy sounds like the brand? · interactions work?"]
+    GATES -->|"all pass"| PAGE["Page ships"]
+    GATES -->|"any fail"| COMPOSER
 
-    PAGE --> LOOP["LEARNING LOOP<br/>every reviewed defect →<br/>schema extension + renderer law +<br/>gate + regression test (1060+ tests) —<br/>the defect class dies permanently"]
+    PAGE --> REVIEW["Human review"]
+    REVIEW --> LOOP["STEP 6 · LEARN PERMANENTLY<br/>every defect found becomes a new rule +<br/>an automated test — the same mistake<br/>cannot come back on any future brand"]
     LOOP -.-> BRAND
     LOOP -.-> STYLE
     LOOP -.-> RENDER
@@ -70,9 +67,9 @@ flowchart TD
 ### Styles vs. brand rules — how they connect
 
 - **Style layer** (`brand_pipeline/contracts/`) is *genre* knowledge: how a SaaS page behaves — hero archetype skeletons, section catalogs, layout primitives, conversion structure per funnel stage. It is brand-agnostic and reusable across every brand.
-- **Brand rules** (`runs/<brand>/brand/`) are *measured facts* from one site: tokens, surface nesting grammar, component recipes, brand signatures ("landmark serif headings may close with an orange period"), voice metrics, derived scales. They are written during extraction, validated C1–C25, and proven by the replica score.
+- **Brand rules** (`runs/<brand>/brand/`) are *measured facts* from one site: tokens, surface nesting grammar, component recipes, brand signatures ("landmark serif headings may close with an orange period"), voice metrics, derived scales. They are written during extraction, validated by the 25 completeness checks (C1–C25), and proven by the replica's pixel-match score.
 - **Resolution** merges the two with fixed precedence — style provides defaults and vocabulary, brand overrides always win. The composer receives the merged contract in its prompt; it decides composition and copy, never spacing math.
-- **Gates enforce both sides**: anti-slop and interaction gates enforce the style layer's correctness law; signature, accent-budget, voice, and scale-adherence gates enforce the brand's own extracted facts. A page ships only when both agree.
+- **Gates enforce both sides**: the 62 correctness rules (the "anti-slop" law) and interaction gates enforce the style layer; signature, accent-budget, voice, and scale-adherence gates enforce the brand's own extracted facts. A page ships only when both agree.
 - **The loop closes at the right level**: a defect found in review is fixed as a schema field + renderer law + gate + regression test — never as a one-off prompt patch — so the same defect cannot recur on any future brand.
 
 ## Why This Exists
