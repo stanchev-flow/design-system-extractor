@@ -28,6 +28,13 @@ narrow case and silently breaks outside it.**
 4. Prefer a **scriptable verification** for every rule (a computed-style check, a geometry
    check, a grep) over "look at a screenshot" — screenshots miss things reliably (see
    AS-01's own history: it rendered "fine" in single-section previews for weeks).
+5. **Scope check before adding**: this registry owns UNIVERSAL failure shapes — wrong on
+   any surface, in any section. A failure only falsifiable inside ONE section family's
+   anatomy (stat-unit parallelism, tier-card slot parity, FAQ answer length…) belongs in
+   `contracts/section-rules.yaml` (spec/section-rules.md; enforced by
+   `section_rules_audit.py`) — those rows cross-reference AS ids via `delegatedTo` instead
+   of duplicating them, and their `registryCandidates` block is the promotion path INTO
+   this registry when a section-scoped rule turns out to be universal.
 
 ---
 

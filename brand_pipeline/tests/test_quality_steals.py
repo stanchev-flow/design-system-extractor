@@ -1,12 +1,11 @@
-"""Data-contract validation for the three quality steals (stage A).
+"""Data-contract validation for the three quality steals.
 
-STAGED, NOT YET DISCOVERED: this file is deliberately named outside the suite's
-``test*.py`` discovery pattern while pass 2 is in flight (stage-A concurrency
-fence: the running pass-2 verification pins a suite count that stage-A files
-must not move). Stage B renames it to ``test_quality_steals.py`` — content is
-final; only the rename is deferred.
+Authored stage A (2026-07-14) under the pass-2 concurrency fence as
+``staged_test_quality_steals.py`` (outside discovery so the in-flight pass-2
+suite count stayed pinned); renamed into discovery at stage B.
 
-Covers, as DATA (no gate wiring yet — that is stage B):
+Covers, as DATA (enforcement wiring is tested in test_section_rules_audit.py /
+test_conversion_structure.py):
   - contracts/section-rules.yaml     (section-rules.v1): shape, scoping,
     delegation integrity against the AS registry, severity doctrine;
   - contracts/conversion-structure.yaml (conversion-structure.v1): campaign
@@ -15,7 +14,7 @@ Covers, as DATA (no gate wiring yet — that is stage B):
   - evals/matrix/: the 12-brief corpus parses through the REAL brief
     frontmatter reader and binds to real campaigns/page types.
 
-Run (stage B): ./venv/bin/python -m unittest brand_pipeline.tests.test_quality_steals
+Run:  ./venv/bin/python -m unittest brand_pipeline.tests.test_quality_steals
 """
 from __future__ import annotations
 

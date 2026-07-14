@@ -342,6 +342,7 @@ sections:
       - grid-3
       - carousel
       - split-left
+      - list-rows  # pass3 stage-A data repair (INTEGRATION-PLAN §4.3): blockquote rows — makes brutalist.testimonial.layout resolvable as authored
     defaultLayout: minimal
     invariants:
       - quote is verbatim and central
@@ -412,6 +413,7 @@ sections:
       - grid-2
       - table
       - tabs
+      - list-rows  # pass3 stage-A data repair (INTEGRATION-PLAN §4.3): stacked prestige tiers — makes brutalist.pricing.layout resolvable as authored
     defaultLayout: grid-3
     invariants:
       - "each tier: name, price, CTA"

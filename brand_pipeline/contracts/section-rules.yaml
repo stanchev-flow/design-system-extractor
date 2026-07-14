@@ -60,6 +60,29 @@ changelog:
       note: "stage-A authoring (steal 1): 13 scopes, 57 rules (41 new / 16 delegated);
              two sibling-team proven checks included (heading line budget generalized
              beyond hero; stat-unit parallelism); enforcement deferred to stage B" }
+  - { ts: "2026-07-14T17:40:00Z", action: calibrated, from: section-rules.v1,
+      to: section-rules.v1, by: stage-B enforcement, signalId: null,
+      note: "SR-TIER-02 demoted required->advisory per the staged-severity doctrine:
+             the event-genlaunch lane contradicts it deliberately (composition note:
+             Builder emphasized via the sanctioned inset head band while the brief's
+             conversion register rides the free Virtual pass CTA) — a licensed
+             upsell-highlight/conversion-register split, not unambiguous dishonesty.
+             faq detection row scoped: the disclosure-device selectors bind the faq
+             family only when the section does not declare a DIFFERENT content use
+             (an agenda authored as accordion rows is IC-ACC/AS-40 territory, not
+             FAQ content law — the event agenda is the contradicting lane)" }
+  - { ts: "2026-07-14T18:05:00Z", action: calibrated, from: section-rules.v1,
+      to: section-rules.v1, by: stage-B enforcement, signalId: null,
+      note: "wrap budgets made measure-aware (SR-HDR-01 / SR-HERO-01 / SR-HERO-02):
+             the authored line budgets describe FULL-measure boxes; a split/half-measure
+             column (media/form counterweight, box < ~60% of the 1440 content measure)
+             licenses ONE extra rendered line — same ink density, half the measure
+             (real-lane contradictions: bakeoff-sol split h2 at 3 lines/487px;
+             stress hero display 4 lines/481px — both licensed geometry, not copy
+             defects). SR-HERO-04 kicker budget scoped to KICKERS: a dot-separated
+             meta row riding the eyebrow register (event date-time-format rows,
+             the meta-forward archetype device) audits as a proof/meta row
+             (SR-HERO-05), never against the 5-word kicker cap" }
 
 # ── DETECTION — how the auditor maps a rendered section to families ─────────────
 # A section may match MULTIPLE families (a capture form inside a CTA band binds
@@ -75,7 +98,7 @@ detection:
   pricing-tiers:   { any: [".cs-tiers", "useCase pricing"] }
   quote:           { any: [".cs-quote-grid", ".cs-module--quote", "blockquote", "useCase testimonial"] }
   feature-grid:    { any: [".cs-modules with >=2 modules", ".cs-bento", "useCase features"] }
-  faq:             { any: [".cs-faq", "details[name] group in a content section", "useCase faq"] }
+  faq:             { any: ["useCase faq", ".cs-faq / details[name] group in a section that does not declare a DIFFERENT content use (an agenda authored as accordion rows is a disclosure device — IC-ACC/AS-40 law, not FAQ content law)"] }
   cta-band:        { any: [".cs-conversion-sec", "useCase cta"] }
   nav:             { any: [".cs-nav (chrome)"] }
   footer:          { any: [".cs-footer-sec", ".c-foot (chrome)"] }
@@ -106,7 +129,7 @@ rules:
       the register, never widen the measure past the brand's cap.
     severity: required
     enforcement: new
-    check: { layer: geometry, selector: "section heading run (h2/.c-heading outside the hero)", metric: rendered-line-count, budget: "<= 2" }
+    check: { layer: geometry, selector: "section heading run (h2/.c-heading outside the hero)", metric: rendered-line-count, budget: "<= 2 (half-measure columns license +1 — see 18:05Z calibration)" }
     rationale: >-
       Multi-line wrapped section headings are the single most reliable visual tell
       of unedited generated copy: real sites headline sections in one tight phrase.
@@ -152,7 +175,7 @@ rules:
       say 2–3 lines; a short one-line statement, e.g. an event name, is licensed).
     severity: required
     enforcement: new
-    check: { layer: geometry, selector: ".c-heading--display (hero scope)", metric: rendered-line-count, budget: "<= 3" }
+    check: { layer: geometry, selector: ".c-heading--display (hero scope)", metric: rendered-line-count, budget: "<= 3 (half-measure columns license +1 — see 18:05Z calibration)" }
     rationale: >-
       The sibling team's proven hero check, kept at hero scope with the display
       band (1–3) our own archetype geometry documents; SR-HDR-01 carries the
@@ -166,7 +189,7 @@ rules:
       1440 tier and carries at most 2 sentences.
     severity: advisory
     enforcement: new
-    check: { layer: geometry+static, selector: "hero subheading paragraph", metric: "rendered-line-count + sentence count", budget: "<= 3 lines, <= 2 sentences" }
+    check: { layer: geometry+static, selector: "hero subheading paragraph", metric: "rendered-line-count + sentence count", budget: "<= 3 lines (half-measure columns license +1), <= 2 sentences" }
     rationale: >-
       A hero that needs a third supporting sentence is burying its claim; sentence
       LENGTH is the voice gate's law (voice-facts budgets), sentence COUNT in the
@@ -190,7 +213,7 @@ rules:
       period, never a full sentence.
     severity: advisory
     enforcement: new
-    check: { layer: static, selector: ".c-eyebrow (hero scope)", metric: "word count + punctuation", budget: "<= 5 words, no terminal ." }
+    check: { layer: static, selector: ".c-eyebrow (hero scope; dot-separated meta rows audit as proof/meta rows under SR-HERO-05)", metric: "word count + punctuation", budget: "<= 5 words, no terminal ." }
     rationale: >-
       Sentence-length eyebrows are generated copy overflowing the register; a
       kicker labels the claim, it never makes one. Casing is the voice gate's law
@@ -435,7 +458,9 @@ rules:
       At most one card carries the emphasis treatment (badge / inverse surface /
       ring), and when a filled-primary CTA register appears in the band it belongs
       to that emphasized card only.
-    severity: required
+    severity: advisory   # demoted from required at stage B: a real lane (event
+                         # passes) licenses the upsell-highlight/conversion-register
+                         # split deliberately — see changelog 2026-07-14T17:40Z
     enforcement: new
     check: { layer: static+geometry, selector: "emphasis-marked .cs-tier + CTA registers", metric: "emphasis count + filled placement", budget: "<= 1 emphasized; filled CTA only on it" }
     rationale: >-

@@ -54,6 +54,7 @@ if str(_HERE) not in sys.path:
 
 import archetype_library as al      # noqa: E402  (genre structure library — data, not enum)
 import layout_library as ll          # noqa: E402  (reuse-before-create: retrieval engine)
+import style_scale as ssc            # noqa: E402  (pass-1 derived-scale artifact loader)
 import styles as styles_mod          # noqa: E402  (the STYLE layer loader/merge)
 
 REPO_ROOT = _HERE.parent
@@ -444,6 +445,166 @@ _COPY_QUALITY_RULES = """- COPY QUALITY (HARD): copy is REAL, specific and non-r
   Omit "footer" from `sections` even when the brief mentions footer content."""
 
 
+# ── PASS 3 (stage 2): pass-1 facts injected as prompt-shaping constraints ──────────
+# Pass 2's A/B eval proved pass-1 facts POLICED generation (gates) but never SHAPED
+# it — build_prompt was byte-identical with/without them. This block closes exactly
+# that gap: derived scale rungs become the allowed geometry vocabulary, brand
+# signatures become always/never composition constraints, voice facts become copy
+# constraints. PROMPT-SHAPING ONLY — deterministic physics stays in renderers and
+# gates. Fact-gated per artifact: a brand carrying none of them keeps a prompt
+# byte-identical to the pre-pass-3 assembly.
+
+PASS3_FACTS_BEGIN = "[[PASS3-FACTS:BEGIN]]"
+PASS3_FACTS_END = "[[PASS3-FACTS:END]]"
+
+
+def _fmt_px_list(values) -> str:
+    return ", ".join(f"{float(v):g}" for v in (values or []))
+
+
+def _derived_scale_lines(scale: dict | None) -> list[str]:
+    """The derived-scale rungs (style-scale.v1) as the ALLOWED geometry
+    vocabulary. Only followsScale blocks speak (a poor fit is never consumed —
+    style_scale.py law); absent artifact → []."""
+    if not scale:
+        return []
+    lines: list[str] = []
+    t = scale.get("type") or {}
+    if t.get("followsScale") and t.get("stepsPx"):
+        verdict = ((t.get("fitQuality") or {}).get("verdict") or "").strip()
+        lines.append(f"- type rungs(px): {_fmt_px_list(t['stepsPx'])} "
+                     f"(base {t.get('basePx'):g}px · ratio {t.get('ratio')}"
+                     + (f" · fit {verdict}" if verdict else "") + ")")
+    s = scale.get("space") or {}
+    if s.get("followsScale") and s.get("stepsPx"):
+        lines.append(f"- space steps(px): {_fmt_px_list(s['stepsPx'])} "
+                     f"(base unit {s.get('baseUnitPx')}px)")
+        rhythm = s.get("sectionRhythmPx") or []
+        if rhythm:
+            lines.append(f"- section rhythm(px): {_fmt_px_list(rhythm)} — bandHeight "
+                         "knob magnitudes ride these rungs")
+    r = scale.get("radius") or {}
+    if r.get("modes"):
+        modes = " · ".join(
+            f"{float(m.get('px', 0)):g}px({','.join(map(str, m.get('roles') or []))})"
+            for m in r["modes"])
+        lines.append(f"- radius modes: {modes}"
+                     + (f" (policy {r.get('policy')})" if r.get("policy") else ""))
+    m = scale.get("motion") or {}
+    band = m.get("bandMs") or {}
+    if band:
+        lines.append(f"- motion band: {band.get('min')}–{band.get('max')}ms"
+                     + (f", easing {m.get('easing')}" if m.get("easing") else ""))
+    return lines
+
+
+def _signature_lines(doc: dict) -> list[str]:
+    """The brand's pass-1 `signatures:` (brand-schema §4.7) as always/never
+    composition constraints — claims verbatim (they ARE the constraint prose)."""
+    lines: list[str] = []
+    for sig in (doc.get("signatures") or []):
+        if not isinstance(sig, dict) or not sig.get("id"):
+            continue
+        claim = " ".join(str(sig.get("claim") or "").split())
+        lines.append(f"- [{sig.get('mode', '?')}] {sig.get('id')} "
+                     f"({sig.get('kind', '')}): {claim}")
+    return lines
+
+
+def _voice_lines(facts: dict | None) -> list[str]:
+    """voice-facts.v1 gate budgets as copy constraints (voice_audit.py audits
+    the same numbers post-hoc; stating them up front is the shaping half)."""
+    if not facts:
+        return []
+    lines: list[str] = []
+    sen = facts.get("sentences") or {}
+    gate = sen.get("gate") or {}
+    if gate:
+        measured = []
+        if sen.get("meanWords") is not None:
+            measured.append(f"measured mean {sen['meanWords']}w")
+        if sen.get("p90Words") is not None:
+            measured.append(f"p90 {sen['p90Words']}w")
+        if sen.get("maxWords") is not None:
+            measured.append(f"max {sen['maxWords']}w")
+        lines.append(f"- sentences: mean ≤{gate.get('meanWordsMax')}w, "
+                     f"p90 ≤{gate.get('p90WordsMax')}w"
+                     + (f" ({'; '.join(measured)})" if measured else "")
+                     + " — write brand-length sentences, never run-ons")
+    excl = ((facts.get("punctuation") or {}).get("exclamations") or {})
+    if (excl.get("gate") or {}).get("max") is not None:
+        lines.append(f"- exclamation marks: max {excl['gate']['max']} "
+                     "(the captured corpus has none)")
+    casing = facts.get("casing") or {}
+    h_rule = ((casing.get("headings") or {}).get("rule"))
+    if h_rule:
+        lines.append(f"- headings: {h_rule} case (brand/product terms keep their "
+                     "capitals; never title-case a heading)")
+    cta_rule = ((casing.get("ctas") or {}).get("rule"))
+    if cta_rule:
+        lines.append(f"- CTA labels: {cta_rule} case; prefer verb-led labels")
+    lex = ((facts.get("bannedHype") or {}).get("lexicon") or [])
+    if lex:
+        lines.append("- banned words (the captured corpus never uses them): "
+                     + ", ".join(str(w) for w in lex))
+    tone = ((facts.get("tone") or {}).get("descriptors") or [])
+    if tone:
+        lines.append("- tone: " + ", ".join(str(t) for t in tone))
+    return lines
+
+
+def load_voice_facts(brand_dir: Path | str | None) -> dict | None:
+    """Parsed voice-facts.yaml for a brand run dir, or None (absent/invalid) —
+    same fact-gating shape as style_scale.load_style_scale."""
+    if not brand_dir:
+        return None
+    path = Path(brand_dir) / "voice-facts.yaml"
+    if not path.exists():
+        return None
+    try:
+        facts = yaml.safe_load(path.read_text())
+    except Exception:
+        return None
+    if not isinstance(facts, dict) or facts.get("schema") != "voice-facts.v1":
+        return None
+    return facts
+
+
+def pass1_facts_block(doc: dict, brand_dir: Path | str | None) -> str:
+    """Assemble the pass-1 facts injection block ("" when the brand carries NO
+    pass-1 artifact — the graceful-degradation contract: prompt byte-identical
+    to the pre-pass-3 assembly). Deterministic for fixed artifact bytes."""
+    scale = ssc.load_style_scale(brand_dir)
+    scale_lines = _derived_scale_lines(scale)
+    sig_lines = _signature_lines(doc)
+    voice_lines = _voice_lines(load_voice_facts(brand_dir))
+    if not (scale_lines or sig_lines or voice_lines):
+        return ""
+    parts = [PASS3_FACTS_BEGIN,
+             "## Pass-1 brand facts (measured/derived — SHAPE the composition to these)"]
+    if scale_lines:
+        parts += [
+            "### Derived scale rungs — the ALLOWED geometry vocabulary",
+            *scale_lines,
+            "Where no measured fact answers a magnitude (knob values, band heights,",
+            "type steps for novel geometry), pick FROM these rungs — never invent an",
+            "off-ladder number (the scale_adherence gate audits exactly this).",
+        ]
+    if sig_lines:
+        parts += [
+            "### Brand signatures — always/never composition constraints "
+            "(signature_check gate verifies each)",
+            *sig_lines,
+        ]
+    if voice_lines:
+        parts += [
+            "### Voice constraints — the copy budget (voice gate audits these)",
+            *voice_lines,
+        ]
+    parts.append(PASS3_FACTS_END)
+    return "\n".join(parts)
+
+
 def _expansion_capability_block(off_grid_expansion: bool) -> str:
     """The prose the model reads for the off-grid EXPANSION capability gate (Part B).
 
@@ -484,7 +645,9 @@ def _expansion_capability_block(off_grid_expansion: bool) -> str:
 def build_prompt(brief_text: str, brand_yaml_path: Path | str, style_id: str,
                  seeds: SeedResult | str, off_grid_expansion: bool = True,
                  hero_candidates: str | None = None,
-                 used_surfaces: "list[str] | tuple[str, ...] | None" = None) -> str:
+                 used_surfaces: "list[str] | tuple[str, ...] | None" = None,
+                 conversion_guidance: str | None = None,
+                 style_directives: str | None = None) -> str:
     """Deterministically assemble the system/user prompt for the composition generator.
 
     Assembly order (mirrors styles/composition-rules.md ``## Assembly``):
@@ -492,12 +655,24 @@ def build_prompt(brief_text: str, brand_yaml_path: Path | str, style_id: str,
       1b. the off-grid EXPANSION capability gate (unlock/lock — Part B)
       2. merged base STYLE (styles.load_and_merge -> invariants, soft options, scales, floor)
       3. brand facts (token color roles, neverDo, measured type tiers, spacing steps)
+      3b. PASS-1 FACTS block (pass 3 stage 2 — derived scale rungs as the allowed
+          geometry vocabulary, brand signatures as always/never composition
+          constraints, voice facts as copy constraints; delimited by
+          [[PASS3-FACTS:BEGIN/END]]. Fact-gated PER ARTIFACT: a brand carrying no
+          pass-1 artifact keeps the prompt byte-identical to the pre-pass-3 assembly.)
       4. primitives/blocks catalog signatures
       5. SEED constraints (render_pattern_constraint block from seed_patterns)
       5b. HERO STRUCTURE CANDIDATES (genre archetype shortlist — only when the caller
           resolved one; see archetype_library.render_candidate_block. Absent -> the
           assembled prompt is byte-identical to the pre-archetype prompt.)
-      6. the brief copy + the output contract (emit ONE composition.v1 object)
+      5c. STYLE DIRECTIVE block (pass 3 stage 2 — a caller-resolved style-library
+          directive rendered by style_resolver.render_style_directive_block, riding
+          [[PASS3-STYLE:BEGIN/END]] sentinels. Absent -> byte-identical. Guidance
+          only: it never outranks brand facts/neverDo or the gate battery.)
+      6. the brief copy [+ 6b. CONVERSION-STRUCTURE guidance — only when the caller
+         resolved one via conversion_structure.render_guidance_block; same fact-gated
+         byte-identity contract as 5b, riding WITH the brief in the user prompt]
+         + the output contract (emit ONE composition.v1 object)
 
     ``off_grid_expansion`` is the resolved capability flag for this run (see
     resolve_off_grid_expansion): TRUE authorizes novel + off-grid treatments; FALSE pins the
@@ -554,6 +729,11 @@ def build_prompt(brief_text: str, brand_yaml_path: Path | str, style_id: str,
 
     nd_lines = [f"- {rid}: {stmt}" for rid, stmt in facts["neverDo"]]
 
+    # 3b. PASS-1 FACTS (pass 3 stage 2) — "" for artifact-less brands, which keeps
+    # every byte of the assembly below identical to the pre-pass-3 prompt.
+    p1_block = pass1_facts_block(doc, Path(brand_yaml_path).parent)
+    pass1_section = f"\n{p1_block}\n" if p1_block else ""
+
     system = f"""# SYSTEM — Composition generator ({facts['name'] or 'brand'} · style {style_id})
 
 You author a page as a STRUCTURED `composition.v1` object (see the schema contract at the
@@ -575,7 +755,7 @@ three-tier precedence (base-style invariants → composition-rules → brand nev
 - spacing steps (pick a named step, never ad-hoc px): {' | '.join(facts['spacing_steps'])}
 - brand neverDo (HARD — a violation FAILS the gate):
 {chr(10).join(nd_lines)}
-
+{pass1_section}
 ## Primitive palette (contracts/primitives.yaml — use only these keys)
 {chr(10).join(primitive_signatures())}
 
@@ -589,6 +769,11 @@ three-tier precedence (base-style invariants → composition-rules → brand nev
     # lane). Fact-gated: absent/empty keeps the prompt byte-identical.
     if hero_candidates:
         system += "\n" + hero_candidates.strip() + "\n"
+
+    # 5c. style-library directive block (pass 3 stage 2) — caller-resolved via
+    # style_resolver.render_style_directive_block. Same byte-identity contract.
+    if style_directives:
+        system += "\n" + style_directives.strip() + "\n"
 
     # valid seededFrom refs (the model must pick from these or use null) — from the seeds.
     seed_refs = []
@@ -610,10 +795,13 @@ three-tier precedence (base-style invariants → composition-rules → brand nev
     assets = sorted(dict.fromkeys(assets))
     assets_line = ", ".join(assets) if assets else "(none — use asset:null everywhere)"
 
+    # 6b. conversion-structure guidance (steal 3) — fact-gated: None keeps the user
+    # prompt byte-identical (same contract as hero_candidates in the system prompt).
+    guidance_block = f"\n{conversion_guidance.strip()}\n" if conversion_guidance else ""
     user = f"""# USER — brief
 
 {brief_text.strip()}
-
+{guidance_block}
 # OUTPUT CONTRACT — emit EXACTLY ONE JSON object, no prose, no markdown fences.
 It MUST validate against composition.v1.schema.json. The EXACT shape (copy it precisely):
 
@@ -1115,6 +1303,8 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
                          variance: str = "mid",
                          exclude_archetypes: tuple[str, ...] = (),
                          used_surfaces: tuple[str, ...] = (),
+                         inject_conversion_guidance: bool = False,
+                         style_directives: str | None = None,
                          log=print) -> GenerationResult:
     """Generate a validated + on-brand ``composition.v1`` for the brief via ONE structured
     call to the repo's Anthropic client, then a bounded validate → neverDo-prefilter →
@@ -1171,11 +1361,31 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
             cand_ids = {str(c.get("id")) for c in cands}
             log(f"  hero archetype candidates ({gen}/{pt}): {sorted(cand_ids)}")
 
+    # CONVERSION-STRUCTURE guidance (steal 3) — DOUBLY fact-gated: the caller must
+    # opt in (flag, default False — the pass-3 injection-architecture decision stays
+    # open) AND the brief must declare a known campaignType. Absent either, the
+    # prompt is byte-identical to the un-guided assembly (test-pinned).
+    conv_guidance = None
+    if inject_conversion_guidance:
+        import conversion_structure as conv_mod
+        conv_guidance = conv_mod.render_guidance_block(brief_text)
+        if conv_guidance:
+            log(f"  conversion guidance: campaign={meta.get('campaignType')}")
+
+    # STYLE DIRECTIVE block (pass 3 stage 2) — caller-resolved (the style-bakeoff
+    # lane passes style_resolver.render_style_directive_block output). None keeps
+    # the prompt byte-identical (test-pinned).
+    if style_directives:
+        log("  style directives: injected "
+            f"({len(style_directives)} chars)")
+
     base_prompt = build_prompt(brief_body, brand_yaml_path, style_id, seeds,
                                off_grid_expansion=off_grid,
                                hero_candidates=hero_candidates,
                                used_surfaces=tuple(meta.get("usedSurfaces") or ())
-                               or tuple(used_surfaces or ()))
+                               or tuple(used_surfaces or ()),
+                               conversion_guidance=conv_guidance,
+                               style_directives=style_directives)
 
     if provider is None:
         if not load_api_keys():
