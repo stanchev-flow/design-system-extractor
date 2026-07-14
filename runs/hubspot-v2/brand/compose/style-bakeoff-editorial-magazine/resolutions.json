@@ -1,0 +1,1448 @@
+{
+  "hero": {
+    "section": "hero",
+    "style": "editorial-magazine",
+    "styleLabel": "Editorial / Magazine",
+    "layout": "split-right",
+    "layouts": [
+      "center-stack",
+      "split-left",
+      "split-right",
+      "full-bleed",
+      "minimal"
+    ],
+    "layoutBias": [
+      "split-right",
+      "list-rows",
+      "grid-2"
+    ],
+    "layoutDisciplines": [],
+    "slots": {
+      "required": [
+        "headline",
+        "primaryCTA"
+      ],
+      "optional": [
+        "eyebrow",
+        "subhead",
+        "secondaryCTA",
+        "media",
+        "socialProof"
+      ]
+    },
+    "variationAxes": {
+      "layout": [
+        "center-stack",
+        "split-left",
+        "split-right",
+        "full-bleed",
+        "minimal"
+      ],
+      "mediaPosition": [
+        "right",
+        "left",
+        "background",
+        "none"
+      ],
+      "ctaEmphasis": [
+        "single"
+      ],
+      "density": [
+        "tight",
+        "airy"
+      ]
+    },
+    "rules": [
+      "headline states the value, not the feature",
+      "media supports, never competes with, the headline",
+      "oversized serif headline with drop-context sub",
+      "large figure right with caption",
+      "drop the secondary CTA"
+    ],
+    "constraints": {
+      "density": "airy",
+      "radius": {
+        "modes": [
+          {
+            "px": 4.0,
+            "roles": [
+              "small"
+            ]
+          },
+          {
+            "px": 8.0,
+            "roles": [
+              "button",
+              "card"
+            ]
+          },
+          {
+            "px": 16.0,
+            "roles": [
+              "panel"
+            ]
+          }
+        ],
+        "policy": "tiered"
+      },
+      "border": "hairline",
+      "shadow": "none",
+      "contrast": "normal",
+      "accentUsage": "minimal",
+      "palette": "mono",
+      "typeDisplay": "HubSpot Serif",
+      "typeBody": "HubSpot Sans",
+      "scaleRatio": 1.125,
+      "case": "sentence",
+      "tracking": "normal",
+      "imagery": "figure",
+      "motion": {
+        "bandMs": {
+          "min": 150,
+          "max": 500
+        },
+        "easing": "ease"
+      }
+    },
+    "invariants": [
+      {
+        "text": "headline is the focal point",
+        "class": "physics",
+        "gate": "AS-32/AS-51"
+      },
+      {
+        "text": "exactly one primary CTA",
+        "class": "physics",
+        "gate": "AS-59"
+      },
+      {
+        "text": "\u2264 2 supporting lines",
+        "class": "genre"
+      }
+    ],
+    "styleSignatures": [
+      "dramatic serif/sans size contrast",
+      "large figures with captions",
+      "pull-quotes and drop context"
+    ],
+    "brandBindings": {
+      "scaleRatio": {
+        "value": 1.125,
+        "basePx": 16.0,
+        "provenance": "style-scale.yaml type (pass-1 derived over measured ladder)"
+      },
+      "space": {
+        "value": {
+          "baseUnitPx": 4,
+          "stepsPx": [
+            4,
+            8,
+            16,
+            20,
+            24,
+            32,
+            40,
+            64,
+            80,
+            96
+          ],
+          "sectionRhythmPx": [
+            24,
+            40,
+            64,
+            96
+          ]
+        },
+        "provenance": "style-scale.yaml space (pass-1 derived over measured ladder)"
+      },
+      "radius": {
+        "value": {
+          "modes": [
+            {
+              "px": 4.0,
+              "roles": [
+                "small"
+              ]
+            },
+            {
+              "px": 8.0,
+              "roles": [
+                "button",
+                "card"
+              ]
+            },
+            {
+              "px": 16.0,
+              "roles": [
+                "panel"
+              ]
+            }
+          ],
+          "policy": "tiered"
+        },
+        "provenance": "style-scale.yaml radius (measured tokens.radius modes)"
+      },
+      "motion": {
+        "value": {
+          "bandMs": {
+            "min": 150,
+            "max": 500
+          },
+          "easing": "ease"
+        },
+        "provenance": "style-scale.yaml motion (measured census band)"
+      },
+      "typeDisplay": {
+        "value": "HubSpot Serif",
+        "provenance": "brand.yaml tokens.type (measured family)"
+      },
+      "typeBody": {
+        "value": "HubSpot Sans",
+        "provenance": "brand.yaml tokens.type (measured family)"
+      },
+      "case": {
+        "value": "sentence",
+        "provenance": "voice-facts.yaml casing.headings (measured corpus)"
+      },
+      "signatures": {
+        "value": [
+          {
+            "id": "action-orange-scope",
+            "kind": "accent-scope",
+            "mode": "never",
+            "claim": "The action orange (#ff4800 family) is a CONTROL ink: button fills, secondary button ink/borders, eyebrow accents, link glyphs and the mark. It never paints body copy, headings, or section surfaces \u2014 accent-wash bands ride the SEPARATE warm peach family, never the action orange."
+          },
+          {
+            "id": "serif-display-sans-body",
+            "kind": "type-treatment",
+            "mode": "always",
+            "claim": "Display ranks speak the serif (HubSpot Serif / proxy Source Serif 4); running text and controls speak the sans (HubSpot Sans / proxy Lexend Deca). The serif voice IS the brand's editorial register \u2014 a sans display or serif body breaks it."
+          },
+          {
+            "id": "rounded-8-controls",
+            "kind": "shape-motif",
+            "mode": "always",
+            "claim": "Controls and cards corner at 8px (panels 16px) \u2014 soft rectangles, NEVER pills. The 8px radius is the working surface rounding across buttons, cards and inputs."
+          },
+          {
+            "id": "deep-teal-dark-family",
+            "kind": "surface-habit",
+            "mode": "never",
+            "claim": "Dark surfaces come ONLY from the licensed dark family \u2014 deep teal #042729 (+ raised #093436), the near-black footer #1f1f1f, and the photo-hero underlay #55453e. Never a generic black, navy, or any other dark hue as a section surface."
+          }
+        ],
+        "provenance": "brand.yaml signatures (pass-1, evidence-cited)"
+      }
+    },
+    "dissents": [
+      {
+        "key": "scaleRatio",
+        "directive": 1.333,
+        "brand": 1.125,
+        "provenance": "style-scale.yaml type (pass-1 derived over measured ladder)",
+        "winner": "brand"
+      },
+      {
+        "key": "typeDisplay",
+        "directive": "high-contrast serif",
+        "brand": "HubSpot Serif",
+        "provenance": "brand.yaml tokens.type (measured family)",
+        "winner": "brand"
+      },
+      {
+        "key": "typeBody",
+        "directive": "serif/humanist",
+        "brand": "HubSpot Sans",
+        "provenance": "brand.yaml tokens.type (measured family)",
+        "winner": "brand"
+      },
+      {
+        "key": "case",
+        "directive": "mixed",
+        "brand": "sentence",
+        "provenance": "voice-facts.yaml casing.headings (measured corpus)",
+        "winner": "brand"
+      },
+      {
+        "key": "radius",
+        "directive": "none",
+        "brand": {
+          "modes": [
+            {
+              "px": 4.0,
+              "roles": [
+                "small"
+              ]
+            },
+            {
+              "px": 8.0,
+              "roles": [
+                "button",
+                "card"
+              ]
+            },
+            {
+              "px": 16.0,
+              "roles": [
+                "panel"
+              ]
+            }
+          ],
+          "policy": "tiered"
+        },
+        "provenance": "style-scale.yaml radius (measured tokens.radius modes)",
+        "winner": "brand"
+      }
+    ],
+    "notes": [
+      "layout 'split-right' set explicitly by override editorial-magazine\u00d7hero"
+    ]
+  },
+  "feature-trio": {
+    "section": "feature-trio",
+    "style": "editorial-magazine",
+    "styleLabel": "Editorial / Magazine",
+    "layout": "list-rows",
+    "layouts": [
+      "grid-3",
+      "grid-2",
+      "grid-4",
+      "bento",
+      "list-rows"
+    ],
+    "layoutBias": [
+      "split-right",
+      "list-rows",
+      "grid-2"
+    ],
+    "layoutDisciplines": [],
+    "slots": {
+      "required": [
+        "items"
+      ],
+      "optional": [
+        "eyebrow",
+        "heading",
+        "subhead",
+        "itemIcon",
+        "itemLink"
+      ]
+    },
+    "variationAxes": {
+      "columns": [
+        2,
+        3,
+        4
+      ],
+      "iconStyle": [
+        "line",
+        "solid",
+        "none",
+        "illustration"
+      ],
+      "layout": [
+        "grid-3",
+        "bento",
+        "list-rows"
+      ],
+      "align": [
+        "center",
+        "left"
+      ]
+    },
+    "rules": [
+      "parallel grammar across items",
+      "no item longer than the others",
+      "each feature reads as a short article with a figure"
+    ],
+    "constraints": {
+      "density": "airy",
+      "radius": {
+        "modes": [
+          {
+            "px": 4.0,
+            "roles": [
+              "small"
+            ]
+          },
+          {
+            "px": 8.0,
+            "roles": [
+              "button",
+              "card"
+            ]
+          },
+          {
+            "px": 16.0,
+            "roles": [
+              "panel"
+            ]
+          }
+        ],
+        "policy": "tiered"
+      },
+      "border": "hairline",
+      "shadow": "none",
+      "contrast": "normal",
+      "accentUsage": "minimal",
+      "palette": "mono",
+      "typeDisplay": "HubSpot Serif",
+      "typeBody": "HubSpot Sans",
+      "scaleRatio": 1.125,
+      "case": "sentence",
+      "tracking": "normal",
+      "imagery": "figure",
+      "motion": {
+        "bandMs": {
+          "min": 150,
+          "max": 500
+        },
+        "easing": "ease"
+      }
+    },
+    "invariants": [
+      {
+        "text": "items are parallel in structure",
+        "class": "genre"
+      },
+      {
+        "text": "each item: title + one line",
+        "class": "genre"
+      },
+      {
+        "text": "icon optional but consistent",
+        "class": "genre"
+      }
+    ],
+    "styleSignatures": [
+      "dramatic serif/sans size contrast",
+      "large figures with captions",
+      "pull-quotes and drop context"
+    ],
+    "brandBindings": {
+      "scaleRatio": {
+        "value": 1.125,
+        "basePx": 16.0,
+        "provenance": "style-scale.yaml type (pass-1 derived over measured ladder)"
+      },
+      "space": {
+        "value": {
+          "baseUnitPx": 4,
+          "stepsPx": [
+            4,
+            8,
+            16,
+            20,
+            24,
+            32,
+            40,
+            64,
+            80,
+            96
+          ],
+          "sectionRhythmPx": [
+            24,
+            40,
+            64,
+            96
+          ]
+        },
+        "provenance": "style-scale.yaml space (pass-1 derived over measured ladder)"
+      },
+      "radius": {
+        "value": {
+          "modes": [
+            {
+              "px": 4.0,
+              "roles": [
+                "small"
+              ]
+            },
+            {
+              "px": 8.0,
+              "roles": [
+                "button",
+                "card"
+              ]
+            },
+            {
+              "px": 16.0,
+              "roles": [
+                "panel"
+              ]
+            }
+          ],
+          "policy": "tiered"
+        },
+        "provenance": "style-scale.yaml radius (measured tokens.radius modes)"
+      },
+      "motion": {
+        "value": {
+          "bandMs": {
+            "min": 150,
+            "max": 500
+          },
+          "easing": "ease"
+        },
+        "provenance": "style-scale.yaml motion (measured census band)"
+      },
+      "typeDisplay": {
+        "value": "HubSpot Serif",
+        "provenance": "brand.yaml tokens.type (measured family)"
+      },
+      "typeBody": {
+        "value": "HubSpot Sans",
+        "provenance": "brand.yaml tokens.type (measured family)"
+      },
+      "case": {
+        "value": "sentence",
+        "provenance": "voice-facts.yaml casing.headings (measured corpus)"
+      },
+      "signatures": {
+        "value": [
+          {
+            "id": "action-orange-scope",
+            "kind": "accent-scope",
+            "mode": "never",
+            "claim": "The action orange (#ff4800 family) is a CONTROL ink: button fills, secondary button ink/borders, eyebrow accents, link glyphs and the mark. It never paints body copy, headings, or section surfaces \u2014 accent-wash bands ride the SEPARATE warm peach family, never the action orange."
+          },
+          {
+            "id": "serif-display-sans-body",
+            "kind": "type-treatment",
+            "mode": "always",
+            "claim": "Display ranks speak the serif (HubSpot Serif / proxy Source Serif 4); running text and controls speak the sans (HubSpot Sans / proxy Lexend Deca). The serif voice IS the brand's editorial register \u2014 a sans display or serif body breaks it."
+          },
+          {
+            "id": "rounded-8-controls",
+            "kind": "shape-motif",
+            "mode": "always",
+            "claim": "Controls and cards corner at 8px (panels 16px) \u2014 soft rectangles, NEVER pills. The 8px radius is the working surface rounding across buttons, cards and inputs."
+          },
+          {
+            "id": "deep-teal-dark-family",
+            "kind": "surface-habit",
+            "mode": "never",
+            "claim": "Dark surfaces come ONLY from the licensed dark family \u2014 deep teal #042729 (+ raised #093436), the near-black footer #1f1f1f, and the photo-hero underlay #55453e. Never a generic black, navy, or any other dark hue as a section surface."
+          }
+        ],
+        "provenance": "brand.yaml signatures (pass-1, evidence-cited)"
+      }
+    },
+    "dissents": [
+      {
+        "key": "scaleRatio",
+        "directive": 1.333,
+        "brand": 1.125,
+        "provenance": "style-scale.yaml type (pass-1 derived over measured ladder)",
+        "winner": "brand"
+      },
+      {
+        "key": "typeDisplay",
+        "directive": "high-contrast serif",
+        "brand": "HubSpot Serif",
+        "provenance": "brand.yaml tokens.type (measured family)",
+        "winner": "brand"
+      },
+      {
+        "key": "typeBody",
+        "directive": "serif/humanist",
+        "brand": "HubSpot Sans",
+        "provenance": "brand.yaml tokens.type (measured family)",
+        "winner": "brand"
+      },
+      {
+        "key": "case",
+        "directive": "mixed",
+        "brand": "sentence",
+        "provenance": "voice-facts.yaml casing.headings (measured corpus)",
+        "winner": "brand"
+      },
+      {
+        "key": "radius",
+        "directive": "none",
+        "brand": {
+          "modes": [
+            {
+              "px": 4.0,
+              "roles": [
+                "small"
+              ]
+            },
+            {
+              "px": 8.0,
+              "roles": [
+                "button",
+                "card"
+              ]
+            },
+            {
+              "px": 16.0,
+              "roles": [
+                "panel"
+              ]
+            }
+          ],
+          "policy": "tiered"
+        },
+        "provenance": "style-scale.yaml radius (measured tokens.radius modes)",
+        "winner": "brand"
+      }
+    ],
+    "notes": [
+      "layout 'list-rows' set explicitly by override editorial-magazine\u00d7feature-trio"
+    ]
+  },
+  "metrics-band": {
+    "section": "metrics-band",
+    "style": "editorial-magazine",
+    "styleLabel": "Editorial / Magazine",
+    "layout": "grid-4",
+    "layouts": [
+      "grid-4",
+      "grid-3",
+      "marquee"
+    ],
+    "layoutBias": [
+      "split-right",
+      "list-rows",
+      "grid-2"
+    ],
+    "layoutDisciplines": [],
+    "slots": {
+      "required": [
+        "metrics"
+      ],
+      "optional": [
+        "heading",
+        "source",
+        "metricLabel"
+      ]
+    },
+    "variationAxes": {
+      "columns": [
+        3,
+        4
+      ],
+      "emphasis": [
+        "number-first",
+        "animated-count"
+      ],
+      "divider": [
+        "line",
+        "none"
+      ]
+    },
+    "rules": [
+      "round, credible numbers",
+      "units consistent"
+    ],
+    "constraints": {
+      "density": "airy",
+      "radius": {
+        "modes": [
+          {
+            "px": 4.0,
+            "roles": [
+              "small"
+            ]
+          },
+          {
+            "px": 8.0,
+            "roles": [
+              "button",
+              "card"
+            ]
+          },
+          {
+            "px": 16.0,
+            "roles": [
+              "panel"
+            ]
+          }
+        ],
+        "policy": "tiered"
+      },
+      "border": "hairline",
+      "shadow": "none",
+      "contrast": "normal",
+      "accentUsage": "minimal",
+      "palette": "mono",
+      "typeDisplay": "HubSpot Serif",
+      "typeBody": "HubSpot Sans",
+      "scaleRatio": 1.125,
+      "case": "sentence",
+      "tracking": "normal",
+      "imagery": "figure",
+      "motion": {
+        "bandMs": {
+          "min": 150,
+          "max": 500
+        },
+        "easing": "ease"
+      }
+    },
+    "invariants": [
+      {
+        "text": "number is the hero of each cell",
+        "class": "genre"
+      },
+      {
+        "text": "label \u2264 4 words",
+        "class": "genre"
+      },
+      {
+        "text": "3\u20134 metrics",
+        "class": "genre"
+      }
+    ],
+    "styleSignatures": [
+      "dramatic serif/sans size contrast",
+      "large figures with captions",
+      "pull-quotes and drop context"
+    ],
+    "brandBindings": {
+      "scaleRatio": {
+        "value": 1.125,
+        "basePx": 16.0,
+        "provenance": "style-scale.yaml type (pass-1 derived over measured ladder)"
+      },
+      "space": {
+        "value": {
+          "baseUnitPx": 4,
+          "stepsPx": [
+            4,
+            8,
+            16,
+            20,
+            24,
+            32,
+            40,
+            64,
+            80,
+            96
+          ],
+          "sectionRhythmPx": [
+            24,
+            40,
+            64,
+            96
+          ]
+        },
+        "provenance": "style-scale.yaml space (pass-1 derived over measured ladder)"
+      },
+      "radius": {
+        "value": {
+          "modes": [
+            {
+              "px": 4.0,
+              "roles": [
+                "small"
+              ]
+            },
+            {
+              "px": 8.0,
+              "roles": [
+                "button",
+                "card"
+              ]
+            },
+            {
+              "px": 16.0,
+              "roles": [
+                "panel"
+              ]
+            }
+          ],
+          "policy": "tiered"
+        },
+        "provenance": "style-scale.yaml radius (measured tokens.radius modes)"
+      },
+      "motion": {
+        "value": {
+          "bandMs": {
+            "min": 150,
+            "max": 500
+          },
+          "easing": "ease"
+        },
+        "provenance": "style-scale.yaml motion (measured census band)"
+      },
+      "typeDisplay": {
+        "value": "HubSpot Serif",
+        "provenance": "brand.yaml tokens.type (measured family)"
+      },
+      "typeBody": {
+        "value": "HubSpot Sans",
+        "provenance": "brand.yaml tokens.type (measured family)"
+      },
+      "case": {
+        "value": "sentence",
+        "provenance": "voice-facts.yaml casing.headings (measured corpus)"
+      },
+      "signatures": {
+        "value": [
+          {
+            "id": "action-orange-scope",
+            "kind": "accent-scope",
+            "mode": "never",
+            "claim": "The action orange (#ff4800 family) is a CONTROL ink: button fills, secondary button ink/borders, eyebrow accents, link glyphs and the mark. It never paints body copy, headings, or section surfaces \u2014 accent-wash bands ride the SEPARATE warm peach family, never the action orange."
+          },
+          {
+            "id": "serif-display-sans-body",
+            "kind": "type-treatment",
+            "mode": "always",
+            "claim": "Display ranks speak the serif (HubSpot Serif / proxy Source Serif 4); running text and controls speak the sans (HubSpot Sans / proxy Lexend Deca). The serif voice IS the brand's editorial register \u2014 a sans display or serif body breaks it."
+          },
+          {
+            "id": "rounded-8-controls",
+            "kind": "shape-motif",
+            "mode": "always",
+            "claim": "Controls and cards corner at 8px (panels 16px) \u2014 soft rectangles, NEVER pills. The 8px radius is the working surface rounding across buttons, cards and inputs."
+          },
+          {
+            "id": "deep-teal-dark-family",
+            "kind": "surface-habit",
+            "mode": "never",
+            "claim": "Dark surfaces come ONLY from the licensed dark family \u2014 deep teal #042729 (+ raised #093436), the near-black footer #1f1f1f, and the photo-hero underlay #55453e. Never a generic black, navy, or any other dark hue as a section surface."
+          }
+        ],
+        "provenance": "brand.yaml signatures (pass-1, evidence-cited)"
+      }
+    },
+    "dissents": [
+      {
+        "key": "scaleRatio",
+        "directive": 1.333,
+        "brand": 1.125,
+        "provenance": "style-scale.yaml type (pass-1 derived over measured ladder)",
+        "winner": "brand"
+      },
+      {
+        "key": "typeDisplay",
+        "directive": "high-contrast serif",
+        "brand": "HubSpot Serif",
+        "provenance": "brand.yaml tokens.type (measured family)",
+        "winner": "brand"
+      },
+      {
+        "key": "typeBody",
+        "directive": "serif/humanist",
+        "brand": "HubSpot Sans",
+        "provenance": "brand.yaml tokens.type (measured family)",
+        "winner": "brand"
+      },
+      {
+        "key": "case",
+        "directive": "mixed",
+        "brand": "sentence",
+        "provenance": "voice-facts.yaml casing.headings (measured corpus)",
+        "winner": "brand"
+      },
+      {
+        "key": "radius",
+        "directive": "none",
+        "brand": {
+          "modes": [
+            {
+              "px": 4.0,
+              "roles": [
+                "small"
+              ]
+            },
+            {
+              "px": 8.0,
+              "roles": [
+                "button",
+                "card"
+              ]
+            },
+            {
+              "px": 16.0,
+              "roles": [
+                "panel"
+              ]
+            }
+          ],
+          "policy": "tiered"
+        },
+        "provenance": "style-scale.yaml radius (measured tokens.radius modes)",
+        "winner": "brand"
+      }
+    ],
+    "notes": [
+      "layoutBias entries not in section layouts (rerank no-ops): ['split-right', 'list-rows', 'grid-2']"
+    ]
+  },
+  "testimonial": {
+    "section": "testimonial",
+    "style": "editorial-magazine",
+    "styleLabel": "Editorial / Magazine",
+    "layout": "list-rows",
+    "layouts": [
+      "minimal",
+      "grid-2",
+      "grid-3",
+      "carousel",
+      "split-left",
+      "list-rows"
+    ],
+    "layoutBias": [
+      "split-right",
+      "list-rows",
+      "grid-2"
+    ],
+    "layoutDisciplines": [],
+    "slots": {
+      "required": [
+        "quote",
+        "attribution"
+      ],
+      "optional": [
+        "heading",
+        "avatar",
+        "logo",
+        "rating",
+        "media"
+      ]
+    },
+    "variationAxes": {
+      "count": [
+        "single",
+        "grid",
+        "carousel"
+      ],
+      "avatar": [
+        "photo",
+        "logo",
+        "none"
+      ],
+      "emphasis": [
+        "quote-xl",
+        "balanced"
+      ]
+    },
+    "rules": [
+      "one strong quote beats many weak ones",
+      "no invented quotes"
+    ],
+    "constraints": {
+      "density": "airy",
+      "radius": {
+        "modes": [
+          {
+            "px": 4.0,
+            "roles": [
+              "small"
+            ]
+          },
+          {
+            "px": 8.0,
+            "roles": [
+              "button",
+              "card"
+            ]
+          },
+          {
+            "px": 16.0,
+            "roles": [
+              "panel"
+            ]
+          }
+        ],
+        "policy": "tiered"
+      },
+      "border": "hairline",
+      "shadow": "none",
+      "contrast": "normal",
+      "accentUsage": "minimal",
+      "palette": "mono",
+      "typeDisplay": "HubSpot Serif",
+      "typeBody": "HubSpot Sans",
+      "scaleRatio": 1.125,
+      "case": "sentence",
+      "tracking": "normal",
+      "imagery": "figure",
+      "motion": {
+        "bandMs": {
+          "min": 150,
+          "max": 500
+        },
+        "easing": "ease"
+      }
+    },
+    "invariants": [
+      {
+        "text": "quote is verbatim and central",
+        "class": "genre"
+      },
+      {
+        "text": "attribution present (name + role/co)",
+        "class": "genre"
+      }
+    ],
+    "styleSignatures": [
+      "dramatic serif/sans size contrast",
+      "large figures with captions",
+      "pull-quotes and drop context"
+    ],
+    "brandBindings": {
+      "scaleRatio": {
+        "value": 1.125,
+        "basePx": 16.0,
+        "provenance": "style-scale.yaml type (pass-1 derived over measured ladder)"
+      },
+      "space": {
+        "value": {
+          "baseUnitPx": 4,
+          "stepsPx": [
+            4,
+            8,
+            16,
+            20,
+            24,
+            32,
+            40,
+            64,
+            80,
+            96
+          ],
+          "sectionRhythmPx": [
+            24,
+            40,
+            64,
+            96
+          ]
+        },
+        "provenance": "style-scale.yaml space (pass-1 derived over measured ladder)"
+      },
+      "radius": {
+        "value": {
+          "modes": [
+            {
+              "px": 4.0,
+              "roles": [
+                "small"
+              ]
+            },
+            {
+              "px": 8.0,
+              "roles": [
+                "button",
+                "card"
+              ]
+            },
+            {
+              "px": 16.0,
+              "roles": [
+                "panel"
+              ]
+            }
+          ],
+          "policy": "tiered"
+        },
+        "provenance": "style-scale.yaml radius (measured tokens.radius modes)"
+      },
+      "motion": {
+        "value": {
+          "bandMs": {
+            "min": 150,
+            "max": 500
+          },
+          "easing": "ease"
+        },
+        "provenance": "style-scale.yaml motion (measured census band)"
+      },
+      "typeDisplay": {
+        "value": "HubSpot Serif",
+        "provenance": "brand.yaml tokens.type (measured family)"
+      },
+      "typeBody": {
+        "value": "HubSpot Sans",
+        "provenance": "brand.yaml tokens.type (measured family)"
+      },
+      "case": {
+        "value": "sentence",
+        "provenance": "voice-facts.yaml casing.headings (measured corpus)"
+      },
+      "signatures": {
+        "value": [
+          {
+            "id": "action-orange-scope",
+            "kind": "accent-scope",
+            "mode": "never",
+            "claim": "The action orange (#ff4800 family) is a CONTROL ink: button fills, secondary button ink/borders, eyebrow accents, link glyphs and the mark. It never paints body copy, headings, or section surfaces \u2014 accent-wash bands ride the SEPARATE warm peach family, never the action orange."
+          },
+          {
+            "id": "serif-display-sans-body",
+            "kind": "type-treatment",
+            "mode": "always",
+            "claim": "Display ranks speak the serif (HubSpot Serif / proxy Source Serif 4); running text and controls speak the sans (HubSpot Sans / proxy Lexend Deca). The serif voice IS the brand's editorial register \u2014 a sans display or serif body breaks it."
+          },
+          {
+            "id": "rounded-8-controls",
+            "kind": "shape-motif",
+            "mode": "always",
+            "claim": "Controls and cards corner at 8px (panels 16px) \u2014 soft rectangles, NEVER pills. The 8px radius is the working surface rounding across buttons, cards and inputs."
+          },
+          {
+            "id": "deep-teal-dark-family",
+            "kind": "surface-habit",
+            "mode": "never",
+            "claim": "Dark surfaces come ONLY from the licensed dark family \u2014 deep teal #042729 (+ raised #093436), the near-black footer #1f1f1f, and the photo-hero underlay #55453e. Never a generic black, navy, or any other dark hue as a section surface."
+          }
+        ],
+        "provenance": "brand.yaml signatures (pass-1, evidence-cited)"
+      }
+    },
+    "dissents": [
+      {
+        "key": "scaleRatio",
+        "directive": 1.333,
+        "brand": 1.125,
+        "provenance": "style-scale.yaml type (pass-1 derived over measured ladder)",
+        "winner": "brand"
+      },
+      {
+        "key": "typeDisplay",
+        "directive": "high-contrast serif",
+        "brand": "HubSpot Serif",
+        "provenance": "brand.yaml tokens.type (measured family)",
+        "winner": "brand"
+      },
+      {
+        "key": "typeBody",
+        "directive": "serif/humanist",
+        "brand": "HubSpot Sans",
+        "provenance": "brand.yaml tokens.type (measured family)",
+        "winner": "brand"
+      },
+      {
+        "key": "case",
+        "directive": "mixed",
+        "brand": "sentence",
+        "provenance": "voice-facts.yaml casing.headings (measured corpus)",
+        "winner": "brand"
+      },
+      {
+        "key": "radius",
+        "directive": "none",
+        "brand": {
+          "modes": [
+            {
+              "px": 4.0,
+              "roles": [
+                "small"
+              ]
+            },
+            {
+              "px": 8.0,
+              "roles": [
+                "button",
+                "card"
+              ]
+            },
+            {
+              "px": 16.0,
+              "roles": [
+                "panel"
+              ]
+            }
+          ],
+          "policy": "tiered"
+        },
+        "provenance": "style-scale.yaml radius (measured tokens.radius modes)",
+        "winner": "brand"
+      }
+    ],
+    "notes": [
+      "layoutBias entries not in section layouts (rerank no-ops): ['split-right']"
+    ]
+  },
+  "cta-band": {
+    "section": "cta-band",
+    "style": "editorial-magazine",
+    "styleLabel": "Editorial / Magazine",
+    "layout": "center-stack",
+    "layouts": [
+      "center-stack",
+      "full-bleed",
+      "split-left",
+      "minimal"
+    ],
+    "layoutBias": [
+      "split-right",
+      "list-rows",
+      "grid-2"
+    ],
+    "layoutDisciplines": [],
+    "slots": {
+      "required": [
+        "headline",
+        "primaryCTA"
+      ],
+      "optional": [
+        "subhead",
+        "secondaryCTA",
+        "media",
+        "background"
+      ]
+    },
+    "variationAxes": {
+      "layout": [
+        "center-stack",
+        "full-bleed",
+        "split"
+      ],
+      "background": [
+        "accent",
+        "image",
+        "surface"
+      ],
+      "ctaEmphasis": [
+        "single",
+        "dual"
+      ]
+    },
+    "rules": [
+      "short, imperative headline"
+    ],
+    "constraints": {
+      "density": "airy",
+      "radius": {
+        "modes": [
+          {
+            "px": 4.0,
+            "roles": [
+              "small"
+            ]
+          },
+          {
+            "px": 8.0,
+            "roles": [
+              "button",
+              "card"
+            ]
+          },
+          {
+            "px": 16.0,
+            "roles": [
+              "panel"
+            ]
+          }
+        ],
+        "policy": "tiered"
+      },
+      "border": "hairline",
+      "shadow": "none",
+      "contrast": "normal",
+      "accentUsage": "minimal",
+      "palette": "mono",
+      "typeDisplay": "HubSpot Serif",
+      "typeBody": "HubSpot Sans",
+      "scaleRatio": 1.125,
+      "case": "sentence",
+      "tracking": "normal",
+      "imagery": "figure",
+      "motion": {
+        "bandMs": {
+          "min": 150,
+          "max": 500
+        },
+        "easing": "ease"
+      }
+    },
+    "invariants": [
+      {
+        "text": "exactly one primary CTA",
+        "class": "physics",
+        "gate": "AS-59"
+      },
+      {
+        "text": "restates the core value",
+        "class": "genre"
+      },
+      {
+        "text": "high contrast with neighbors",
+        "class": "physics",
+        "gate": "AS-01"
+      }
+    ],
+    "styleSignatures": [
+      "dramatic serif/sans size contrast",
+      "large figures with captions",
+      "pull-quotes and drop context"
+    ],
+    "brandBindings": {
+      "scaleRatio": {
+        "value": 1.125,
+        "basePx": 16.0,
+        "provenance": "style-scale.yaml type (pass-1 derived over measured ladder)"
+      },
+      "space": {
+        "value": {
+          "baseUnitPx": 4,
+          "stepsPx": [
+            4,
+            8,
+            16,
+            20,
+            24,
+            32,
+            40,
+            64,
+            80,
+            96
+          ],
+          "sectionRhythmPx": [
+            24,
+            40,
+            64,
+            96
+          ]
+        },
+        "provenance": "style-scale.yaml space (pass-1 derived over measured ladder)"
+      },
+      "radius": {
+        "value": {
+          "modes": [
+            {
+              "px": 4.0,
+              "roles": [
+                "small"
+              ]
+            },
+            {
+              "px": 8.0,
+              "roles": [
+                "button",
+                "card"
+              ]
+            },
+            {
+              "px": 16.0,
+              "roles": [
+                "panel"
+              ]
+            }
+          ],
+          "policy": "tiered"
+        },
+        "provenance": "style-scale.yaml radius (measured tokens.radius modes)"
+      },
+      "motion": {
+        "value": {
+          "bandMs": {
+            "min": 150,
+            "max": 500
+          },
+          "easing": "ease"
+        },
+        "provenance": "style-scale.yaml motion (measured census band)"
+      },
+      "typeDisplay": {
+        "value": "HubSpot Serif",
+        "provenance": "brand.yaml tokens.type (measured family)"
+      },
+      "typeBody": {
+        "value": "HubSpot Sans",
+        "provenance": "brand.yaml tokens.type (measured family)"
+      },
+      "case": {
+        "value": "sentence",
+        "provenance": "voice-facts.yaml casing.headings (measured corpus)"
+      },
+      "signatures": {
+        "value": [
+          {
+            "id": "action-orange-scope",
+            "kind": "accent-scope",
+            "mode": "never",
+            "claim": "The action orange (#ff4800 family) is a CONTROL ink: button fills, secondary button ink/borders, eyebrow accents, link glyphs and the mark. It never paints body copy, headings, or section surfaces \u2014 accent-wash bands ride the SEPARATE warm peach family, never the action orange."
+          },
+          {
+            "id": "serif-display-sans-body",
+            "kind": "type-treatment",
+            "mode": "always",
+            "claim": "Display ranks speak the serif (HubSpot Serif / proxy Source Serif 4); running text and controls speak the sans (HubSpot Sans / proxy Lexend Deca). The serif voice IS the brand's editorial register \u2014 a sans display or serif body breaks it."
+          },
+          {
+            "id": "rounded-8-controls",
+            "kind": "shape-motif",
+            "mode": "always",
+            "claim": "Controls and cards corner at 8px (panels 16px) \u2014 soft rectangles, NEVER pills. The 8px radius is the working surface rounding across buttons, cards and inputs."
+          },
+          {
+            "id": "deep-teal-dark-family",
+            "kind": "surface-habit",
+            "mode": "never",
+            "claim": "Dark surfaces come ONLY from the licensed dark family \u2014 deep teal #042729 (+ raised #093436), the near-black footer #1f1f1f, and the photo-hero underlay #55453e. Never a generic black, navy, or any other dark hue as a section surface."
+          }
+        ],
+        "provenance": "brand.yaml signatures (pass-1, evidence-cited)"
+      }
+    },
+    "dissents": [
+      {
+        "key": "scaleRatio",
+        "directive": 1.333,
+        "brand": 1.125,
+        "provenance": "style-scale.yaml type (pass-1 derived over measured ladder)",
+        "winner": "brand"
+      },
+      {
+        "key": "typeDisplay",
+        "directive": "high-contrast serif",
+        "brand": "HubSpot Serif",
+        "provenance": "brand.yaml tokens.type (measured family)",
+        "winner": "brand"
+      },
+      {
+        "key": "typeBody",
+        "directive": "serif/humanist",
+        "brand": "HubSpot Sans",
+        "provenance": "brand.yaml tokens.type (measured family)",
+        "winner": "brand"
+      },
+      {
+        "key": "case",
+        "directive": "mixed",
+        "brand": "sentence",
+        "provenance": "voice-facts.yaml casing.headings (measured corpus)",
+        "winner": "brand"
+      },
+      {
+        "key": "radius",
+        "directive": "none",
+        "brand": {
+          "modes": [
+            {
+              "px": 4.0,
+              "roles": [
+                "small"
+              ]
+            },
+            {
+              "px": 8.0,
+              "roles": [
+                "button",
+                "card"
+              ]
+            },
+            {
+              "px": 16.0,
+              "roles": [
+                "panel"
+              ]
+            }
+          ],
+          "policy": "tiered"
+        },
+        "provenance": "style-scale.yaml radius (measured tokens.radius modes)",
+        "winner": "brand"
+      }
+    ],
+    "notes": [
+      "layoutBias entries not in section layouts (rerank no-ops): ['split-right', 'list-rows', 'grid-2']"
+    ]
+  }
+}

@@ -1,0 +1,165 @@
+{
+  "generatedAt": "2026-07-14T17:58:29Z",
+  "lanes": [
+    {
+      "lane": "runs/remote/brand/compose/event-genlaunch",
+      "campaign": "webinar-event",
+      "binding": "explicit",
+      "ground": "rendered",
+      "funnelStage": "consideration",
+      "sequence": [
+        {
+          "id": "event-hero",
+          "families": [
+            "hero"
+          ]
+        },
+        {
+          "id": "event-proof",
+          "families": [
+            "carousel",
+            "logo-strip"
+          ]
+        },
+        {
+          "id": "event-bento",
+          "families": [
+            "feature-grid"
+          ]
+        },
+        {
+          "id": "event-agenda",
+          "families": []
+        },
+        {
+          "id": "event-quote",
+          "families": [
+            "feature-grid",
+            "quote"
+          ]
+        },
+        {
+          "id": "event-passes",
+          "families": [
+            "pricing-tiers"
+          ]
+        },
+        {
+          "id": "event-faq",
+          "families": [
+            "faq"
+          ]
+        },
+        {
+          "id": "event-signup",
+          "families": [
+            "capture-form",
+            "cta-band"
+          ]
+        }
+      ],
+      "rows": [
+        {
+          "kind": "opens",
+          "families": [
+            "hero"
+          ],
+          "severity": "required",
+          "ok": true,
+          "detail": "opens with hero",
+          "why": "event name + meta row (date, time, format, price) \u2014 the scan answer before any persuasion; logistics ARE the hero's proof"
+        },
+        {
+          "kind": "present",
+          "families": [
+            "capture-form"
+          ],
+          "severity": "required",
+          "ok": true,
+          "detail": "1 section(s) bind ['capture-form'] (budget 1-1)",
+          "why": "one registration form \u2014 the page's single destination"
+        },
+        {
+          "kind": "closes",
+          "families": [
+            "capture-form",
+            "cta-band"
+          ],
+          "severity": "required",
+          "ok": true,
+          "detail": "closes on ['capture-form', 'cta-band']",
+          "why": "event pages funnel downward: everything above argues, the close registers (the closing form is the conversion moment)"
+        },
+        {
+          "kind": "window",
+          "families": [
+            "logo-strip",
+            "quote",
+            "stat-band"
+          ],
+          "severity": "advisory",
+          "ok": true,
+          "detail": "first ['logo-strip', 'quote', 'stat-band'] match at index 2 (within the first 3)",
+          "why": "early borrowed credibility (who attends / who spoke last time) before the agenda deep-dive"
+        },
+        {
+          "kind": "before",
+          "families": [
+            "faq",
+            "capture-form"
+          ],
+          "severity": "advisory",
+          "ok": true,
+          "detail": "first faq at 7, first capture-form at 8",
+          "why": "objections cleared immediately above the form (can't attend live? refunds? how technical?) \u2014 the event-page grammar"
+        },
+        {
+          "kind": "present",
+          "families": [
+            "faq"
+          ],
+          "severity": "advisory",
+          "ok": true,
+          "detail": "1 section(s) bind ['faq'] (budget 1-1)",
+          "why": "a dated commitment always raises logistics objections; answering them on-page is what separates a registration page from a poster"
+        },
+        {
+          "kind": "present",
+          "families": [
+            "pricing-tiers"
+          ],
+          "severity": "advisory",
+          "ok": true,
+          "detail": "1 section(s) bind ['pricing-tiers'] (budget 0-1)",
+          "why": "paid/tiered passes render as ONE tier beat when they exist; free events skip it entirely"
+        },
+        {
+          "kind": "depthBand",
+          "families": [],
+          "severity": "advisory",
+          "ok": true,
+          "detail": "8 content section(s) (band 4-8, funnel consideration)",
+          "why": "depth follows the funnel stage"
+        },
+        {
+          "kind": "formDepth",
+          "families": [
+            "capture-form"
+          ],
+          "severity": "advisory",
+          "ok": true,
+          "detail": "7 visible field(s) (band 4-8)",
+          "why": "registration licenses depth (role, company size, pass/session choice all route the attendee experience) \u2014 the one campaign type where 6-8 fields is honest"
+        }
+      ],
+      "hardFloor": [
+        {
+          "rule": "hardFloor:conversion-moment",
+          "ok": true,
+          "detail": "capture-form present"
+        }
+      ],
+      "ok": true
+    }
+  ]
+}

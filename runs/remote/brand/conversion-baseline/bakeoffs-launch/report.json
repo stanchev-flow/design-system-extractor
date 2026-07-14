@@ -1,0 +1,319 @@
+{
+  "generatedAt": "2026-07-14T17:58:29Z",
+  "lanes": [
+    {
+      "lane": "runs/remote/brand/compose/bakeoff-sol",
+      "campaign": "product-launch",
+      "binding": "explicit",
+      "ground": "rendered",
+      "funnelStage": "awareness",
+      "sequence": [
+        {
+          "id": "workforce-intelligence-hero",
+          "families": [
+            "hero"
+          ]
+        },
+        {
+          "id": "reporting-gap",
+          "families": [
+            "feature-grid"
+          ]
+        },
+        {
+          "id": "decision-layer-capabilities",
+          "families": [
+            "feature-grid"
+          ]
+        },
+        {
+          "id": "how-workforce-intelligence-works",
+          "families": [
+            "feature-grid"
+          ]
+        },
+        {
+          "id": "leadership-views",
+          "families": [
+            "feature-grid"
+          ]
+        },
+        {
+          "id": "workflow-comparison",
+          "families": [
+            "feature-grid"
+          ]
+        },
+        {
+          "id": "remote-customer-perspectives",
+          "families": [
+            "carousel",
+            "quote"
+          ]
+        },
+        {
+          "id": "operational-trust",
+          "families": [
+            "feature-grid"
+          ]
+        },
+        {
+          "id": "workforce-intelligence-faq",
+          "families": [
+            "faq"
+          ]
+        },
+        {
+          "id": "qualified-demo-request",
+          "families": [
+            "capture-form",
+            "cta-band"
+          ]
+        }
+      ],
+      "rows": [
+        {
+          "kind": "opens",
+          "families": [
+            "hero"
+          ],
+          "severity": "required",
+          "ok": true,
+          "detail": "opens with hero",
+          "why": "the reveal moment \u2014 the launch statement owns the display register"
+        },
+        {
+          "kind": "present",
+          "families": [
+            "feature-grid"
+          ],
+          "severity": "required",
+          "ok": false,
+          "detail": "6 section(s) bind ['feature-grid'] (budget 1-3)",
+          "why": "the what-shipped beat: parallel cells for the launch's concrete pieces"
+        },
+        {
+          "kind": "before",
+          "families": [
+            "feature-grid",
+            "cta-band"
+          ],
+          "severity": "advisory",
+          "ok": true,
+          "detail": "first feature-grid at 2, first cta-band at 10",
+          "why": "the ask comes after the reveal is explained \u2014 story before conversion"
+        },
+        {
+          "kind": "present",
+          "families": [
+            "logo-strip",
+            "quote",
+            "stat-band"
+          ],
+          "severity": "advisory",
+          "ok": true,
+          "detail": "1 section(s) bind ['logo-strip', 'quote', 'stat-band'] (budget 1-3)",
+          "why": "belief transfer: scale numbers, early-customer voices, or adopter marks make the new thing feel already-real"
+        },
+        {
+          "kind": "afterIndex",
+          "families": [
+            "capture-form"
+          ],
+          "severity": "advisory",
+          "ok": true,
+          "detail": "first capture-form at index 10 (>= minIndex 3)",
+          "why": "capture belongs at the close of an awareness arc; a form in the first two beats gates the story the page exists to tell"
+        },
+        {
+          "kind": "closes",
+          "families": [
+            "cta-band",
+            "capture-form"
+          ],
+          "severity": "required",
+          "ok": true,
+          "detail": "closes on ['capture-form', 'cta-band']",
+          "why": "the page ends on the next step (early access / try it / waitlist) \u2014 an awareness page that just trails off wastes its own reveal"
+        },
+        {
+          "kind": "depthBand",
+          "families": [],
+          "severity": "advisory",
+          "ok": false,
+          "detail": "10 content section(s) (band 5-9, funnel awareness)",
+          "why": "depth follows the funnel stage"
+        },
+        {
+          "kind": "formDepth",
+          "families": [
+            "capture-form"
+          ],
+          "severity": "advisory",
+          "ok": false,
+          "detail": "8 visible field(s) (band 0-3)",
+          "why": "when the next step is a waitlist/early-access capture, the form is an email-first micro-form at the close \u2014 never a qualifier battery at awareness stage"
+        }
+      ],
+      "hardFloor": [],
+      "ok": true
+    },
+    {
+      "lane": "runs/remote/brand/compose/bakeoff-opus",
+      "campaign": "product-launch",
+      "binding": "explicit",
+      "ground": "rendered",
+      "funnelStage": "awareness",
+      "sequence": [
+        {
+          "id": "hero",
+          "families": [
+            "hero"
+          ]
+        },
+        {
+          "id": "problem",
+          "families": [
+            "feature-grid"
+          ]
+        },
+        {
+          "id": "product-value",
+          "families": [
+            "feature-grid"
+          ]
+        },
+        {
+          "id": "capabilities",
+          "families": [
+            "feature-grid"
+          ]
+        },
+        {
+          "id": "how-it-works",
+          "families": [
+            "feature-grid"
+          ]
+        },
+        {
+          "id": "comparison",
+          "families": [
+            "feature-grid"
+          ]
+        },
+        {
+          "id": "proof",
+          "families": [
+            "carousel",
+            "quote"
+          ]
+        },
+        {
+          "id": "conversion-beat",
+          "families": [
+            "cta-band"
+          ]
+        },
+        {
+          "id": "faq",
+          "families": [
+            "faq"
+          ]
+        },
+        {
+          "id": "lead-form",
+          "families": [
+            "capture-form",
+            "cta-band"
+          ]
+        }
+      ],
+      "rows": [
+        {
+          "kind": "opens",
+          "families": [
+            "hero"
+          ],
+          "severity": "required",
+          "ok": true,
+          "detail": "opens with hero",
+          "why": "the reveal moment \u2014 the launch statement owns the display register"
+        },
+        {
+          "kind": "present",
+          "families": [
+            "feature-grid"
+          ],
+          "severity": "required",
+          "ok": false,
+          "detail": "5 section(s) bind ['feature-grid'] (budget 1-3)",
+          "why": "the what-shipped beat: parallel cells for the launch's concrete pieces"
+        },
+        {
+          "kind": "before",
+          "families": [
+            "feature-grid",
+            "cta-band"
+          ],
+          "severity": "advisory",
+          "ok": true,
+          "detail": "first feature-grid at 2, first cta-band at 8",
+          "why": "the ask comes after the reveal is explained \u2014 story before conversion"
+        },
+        {
+          "kind": "present",
+          "families": [
+            "logo-strip",
+            "quote",
+            "stat-band"
+          ],
+          "severity": "advisory",
+          "ok": true,
+          "detail": "1 section(s) bind ['logo-strip', 'quote', 'stat-band'] (budget 1-3)",
+          "why": "belief transfer: scale numbers, early-customer voices, or adopter marks make the new thing feel already-real"
+        },
+        {
+          "kind": "afterIndex",
+          "families": [
+            "capture-form"
+          ],
+          "severity": "advisory",
+          "ok": true,
+          "detail": "first capture-form at index 10 (>= minIndex 3)",
+          "why": "capture belongs at the close of an awareness arc; a form in the first two beats gates the story the page exists to tell"
+        },
+        {
+          "kind": "closes",
+          "families": [
+            "cta-band",
+            "capture-form"
+          ],
+          "severity": "required",
+          "ok": true,
+          "detail": "closes on ['capture-form', 'cta-band']",
+          "why": "the page ends on the next step (early access / try it / waitlist) \u2014 an awareness page that just trails off wastes its own reveal"
+        },
+        {
+          "kind": "depthBand",
+          "families": [],
+          "severity": "advisory",
+          "ok": false,
+          "detail": "10 content section(s) (band 5-9, funnel awareness)",
+          "why": "depth follows the funnel stage"
+        },
+        {
+          "kind": "formDepth",
+          "families": [
+            "capture-form"
+          ],
+          "severity": "advisory",
+          "ok": false,
+          "detail": "6 visible field(s) (band 0-3)",
+          "why": "when the next step is a waitlist/early-access capture, the form is an email-first micro-form at the close \u2014 never a qualifier battery at awareness stage"
+        }
+      ],
+      "hardFloor": [],
+      "ok": true
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+[[PASS3-STYLE:BEGIN]]
+## STYLE DIRECTIVE — Swiss / International (style-library `swiss`, resolved per section)
+This run composes in a PICKED STYLE. The directive below RERANKS layout
+choices and sets compositional posture. It NEVER outranks brand facts,
+brand neverDo, or the gate battery: where a directive value conflicts
+with a measured brand fact, the brand fact wins (dissents listed below).
+
+Style constraints (compositional posture, brand tokens still paint):
+  - accentUsage: minimal
+  - border: hairline
+  - case: sentence
+  - contrast: normal
+  - density: airy
+  - imagery: figure
+  - motion: 150–500ms band, easing ease
+  - palette: mono
+  - radius: 4px(small) · 8px(button,card) · 16px(panel), policy tiered
+  - scaleRatio: 1.125
+  - shadow: none
+  - tracking: tight
+  - typeBody: HubSpot Sans
+  - typeDisplay: HubSpot Serif
+Style signature moves (make these READABLE in the composition):
+  - strict column grid, everything left-flush
+  - one accent, used structurally not decoratively
+  - large type, generous whitespace, no shadows
+Layout disciplines (translated bias):
+  - grid-aligned → layout-grid + left-flush header discipline (strict shared column lines, no centered header stack)
+
+Per-section layout guidance (the resolver's picks for this style):
+- hero: layout `split-left` — Two columns, text left / media right. Compose as archetype "split" (text left / media right).
+    rules: headline states the value, not the feature; media supports, never competes with, the headline
+    soft defaults (brand evidence may override): ≤ 2 supporting lines
+    if HERO STRUCTURE CANDIDATES are offered above, prefer the candidate whose skeleton is closest to this layout — the copy plan still picks
+- feature-trio: layout `grid-3` — Three-up grid. Compose as archetype "cards" (columns: 3).
+    rules: parallel grammar across items; no item longer than the others; strict equal columns, left-flush; no decorative icons — numerals or hairlines only
+    soft defaults (brand evidence may override): items are parallel in structure; each item: title + one line; icon optional but consistent
+- metrics-band: layout `grid-3` — Three-up grid. Compose as archetype "cards" (columns: 3).
+    rules: round, credible numbers; units consistent
+    soft defaults (brand evidence may override): number is the hero of each cell; label ≤ 4 words; 3–4 metrics
+- testimonial: layout `split-left` — Two columns, text left / media right. Compose as archetype "split" (text left / media right).
+    rules: one strong quote beats many weak ones; no invented quotes
+    soft defaults (brand evidence may override): quote is verbatim and central; attribution present (name + role/co)
+- cta-band: layout `split-left` — Two columns, text left / media right. Compose as archetype "split" (text left / media right).
+    rules: short, imperative headline; accent used only on the CTA itself
+    soft defaults (brand evidence may override): restates the core value
+
+Alignment contract (HARD — the alignment-resolution gate enforces it):
+  declare `alignment` EXPLICITLY on every section. An asymmetric anchor
+  ({"anchor":"left"|"right"}) MUST name a real slot as `counterweight`;
+  a section left undeclared inherits its reused pattern's own asymmetric
+  stance WITHOUT a counterweight and FAILS the gate. Where this style's
+  posture is flush-asymmetric, declare the anchor AND the counterweight
+  slot; where no balancing slot exists, declare {"anchor":"centered"}.
+
+Brand-evidence dissents (brand facts that beat the directive):
+  - typeDisplay: directive said Helvetica/Neue grotesk → brand fact HubSpot Serif WINS (brand.yaml tokens.type (measured family))
+  - typeBody: directive said grotesk → brand fact HubSpot Sans WINS (brand.yaml tokens.type (measured family))
+  - case: directive said mixed → brand fact sentence WINS (voice-facts.yaml casing.headings (measured corpus))
+  - radius: directive said none → brand fact 4px(small) · 8px(button,card) · 16px(panel), policy tiered WINS (style-scale.yaml radius (measured tokens.radius modes))
+[[PASS3-STYLE:END]]

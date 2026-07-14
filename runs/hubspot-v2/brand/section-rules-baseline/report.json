@@ -1,0 +1,1555 @@
+{
+  "generatedAt": "2026-07-14T17:58:04Z",
+  "brandDir": "runs/hubspot-v2/brand",
+  "rules": 57,
+  "staticOnly": false,
+  "lanes": [
+    {
+      "lane": "compose/hero-archetypes/homepage",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/homepage/index.html",
+      "scope": "generative",
+      "sections": {
+        "sec-0": [
+          "hero",
+          "section-header"
+        ]
+      },
+      "findings": [
+        {
+          "rule": "stat-band",
+          "scope": "stat-band",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "logo-strip",
+          "scope": "logo-strip",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "capture-form",
+          "scope": "capture-form",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "pricing-tiers",
+          "scope": "pricing-tiers",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "quote",
+          "scope": "quote",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "feature-grid",
+          "scope": "feature-grid",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "faq",
+          "scope": "faq",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "cta-band",
+          "scope": "cta-band",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "carousel",
+          "scope": "carousel",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "SR-HDR-01",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "skip",
+          "detail": "no non-hero section headings rendered"
+        },
+        {
+          "rule": "SR-HDR-02",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "1 heading(s): 0 duplicates, 0 ellipses, 0 double punctuation"
+        },
+        {
+          "rule": "SR-HDR-03",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-51, AS-32"
+        },
+        {
+          "rule": "SR-HERO-01",
+          "scope": "hero",
+          "severity": "required",
+          "verdict": "skip",
+          "detail": "no display heading rendered",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-02",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "2 sentence(s), 4 line(s)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-03",
+          "scope": "hero",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-59"
+        },
+        {
+          "rule": "SR-HERO-04",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "1 eyebrow(s) <= 5 words, no terminal period",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-05",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "no proof/meta row",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-NAV-01",
+          "scope": "nav",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "4 primary-bar label(s) match the harvested roster"
+        },
+        {
+          "rule": "SR-NAV-02",
+          "scope": "nav",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-59"
+        },
+        {
+          "rule": "SR-NAV-03",
+          "scope": "nav",
+          "severity": "advisory",
+          "verdict": "override",
+          "detail": "harvested chrome \u2014 measured labels are brand evidence (navbar.primary cited)"
+        },
+        {
+          "rule": "SR-FOOT-01",
+          "scope": "footer",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "6 column group(s), 7 social mark(s), legal line \u2014 all match the harvested anatomy"
+        },
+        {
+          "rule": "SR-FOOT-02",
+          "scope": "footer",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "legal register line present"
+        },
+        {
+          "rule": "SR-FOOT-03",
+          "scope": "footer",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-11, AS-12"
+        }
+      ]
+    },
+    {
+      "lane": "compose/hero-archetypes/pricing",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/pricing/index.html",
+      "scope": "generative",
+      "sections": {
+        "sec-0": [
+          "hero",
+          "section-header"
+        ]
+      },
+      "findings": [
+        {
+          "rule": "stat-band",
+          "scope": "stat-band",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "logo-strip",
+          "scope": "logo-strip",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "capture-form",
+          "scope": "capture-form",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "pricing-tiers",
+          "scope": "pricing-tiers",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "quote",
+          "scope": "quote",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "feature-grid",
+          "scope": "feature-grid",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "faq",
+          "scope": "faq",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "cta-band",
+          "scope": "cta-band",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "carousel",
+          "scope": "carousel",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "SR-HDR-01",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "skip",
+          "detail": "no non-hero section headings rendered"
+        },
+        {
+          "rule": "SR-HDR-02",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "1 heading(s): 0 duplicates, 0 ellipses, 0 double punctuation"
+        },
+        {
+          "rule": "SR-HDR-03",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-51, AS-32"
+        },
+        {
+          "rule": "SR-HERO-01",
+          "scope": "hero",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "display renders 2 line(s) within the 3-line budget (half-measure columns license 4)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-02",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "2 sentence(s), 2 line(s)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-03",
+          "scope": "hero",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-59"
+        },
+        {
+          "rule": "SR-HERO-04",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "1 eyebrow(s) <= 5 words, no terminal period",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-05",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "no proof/meta row",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-NAV-01",
+          "scope": "nav",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "4 primary-bar label(s) match the harvested roster"
+        },
+        {
+          "rule": "SR-NAV-02",
+          "scope": "nav",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-59"
+        },
+        {
+          "rule": "SR-NAV-03",
+          "scope": "nav",
+          "severity": "advisory",
+          "verdict": "override",
+          "detail": "harvested chrome \u2014 measured labels are brand evidence (navbar.primary cited)"
+        },
+        {
+          "rule": "SR-FOOT-01",
+          "scope": "footer",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "6 column group(s), 7 social mark(s), legal line \u2014 all match the harvested anatomy"
+        },
+        {
+          "rule": "SR-FOOT-02",
+          "scope": "footer",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "legal register line present"
+        },
+        {
+          "rule": "SR-FOOT-03",
+          "scope": "footer",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-11, AS-12"
+        }
+      ]
+    },
+    {
+      "lane": "compose/hero-archetypes/product",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/product/index.html",
+      "scope": "generative",
+      "sections": {
+        "sec-0": [
+          "hero",
+          "section-header"
+        ]
+      },
+      "findings": [
+        {
+          "rule": "stat-band",
+          "scope": "stat-band",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "logo-strip",
+          "scope": "logo-strip",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "capture-form",
+          "scope": "capture-form",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "pricing-tiers",
+          "scope": "pricing-tiers",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "quote",
+          "scope": "quote",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "feature-grid",
+          "scope": "feature-grid",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "faq",
+          "scope": "faq",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "cta-band",
+          "scope": "cta-band",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "carousel",
+          "scope": "carousel",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "SR-HDR-01",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "skip",
+          "detail": "no non-hero section headings rendered"
+        },
+        {
+          "rule": "SR-HDR-02",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "1 heading(s): 0 duplicates, 0 ellipses, 0 double punctuation"
+        },
+        {
+          "rule": "SR-HDR-03",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-51, AS-32"
+        },
+        {
+          "rule": "SR-HERO-01",
+          "scope": "hero",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "display renders 2 line(s) within the 3-line budget (half-measure columns license 4)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-02",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "1 sentence(s), 3 line(s)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-03",
+          "scope": "hero",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-59"
+        },
+        {
+          "rule": "SR-HERO-04",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "1 eyebrow(s) <= 5 words, no terminal period",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-05",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "no proof/meta row",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-NAV-01",
+          "scope": "nav",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "4 primary-bar label(s) match the harvested roster"
+        },
+        {
+          "rule": "SR-NAV-02",
+          "scope": "nav",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-59"
+        },
+        {
+          "rule": "SR-NAV-03",
+          "scope": "nav",
+          "severity": "advisory",
+          "verdict": "override",
+          "detail": "harvested chrome \u2014 measured labels are brand evidence (navbar.primary cited)"
+        },
+        {
+          "rule": "SR-FOOT-01",
+          "scope": "footer",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "6 column group(s), 7 social mark(s), legal line \u2014 all match the harvested anatomy"
+        },
+        {
+          "rule": "SR-FOOT-02",
+          "scope": "footer",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "legal register line present"
+        },
+        {
+          "rule": "SR-FOOT-03",
+          "scope": "footer",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-11, AS-12"
+        }
+      ]
+    },
+    {
+      "lane": "compose/hero-archetypes/about",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/about/index.html",
+      "scope": "generative",
+      "sections": {
+        "sec-0": [
+          "hero",
+          "section-header"
+        ]
+      },
+      "findings": [
+        {
+          "rule": "stat-band",
+          "scope": "stat-band",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "logo-strip",
+          "scope": "logo-strip",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "capture-form",
+          "scope": "capture-form",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "pricing-tiers",
+          "scope": "pricing-tiers",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "quote",
+          "scope": "quote",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "feature-grid",
+          "scope": "feature-grid",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "faq",
+          "scope": "faq",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "cta-band",
+          "scope": "cta-band",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "carousel",
+          "scope": "carousel",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "SR-HDR-01",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "skip",
+          "detail": "no non-hero section headings rendered"
+        },
+        {
+          "rule": "SR-HDR-02",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "1 heading(s): 0 duplicates, 0 ellipses, 0 double punctuation"
+        },
+        {
+          "rule": "SR-HDR-03",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-51, AS-32"
+        },
+        {
+          "rule": "SR-HERO-01",
+          "scope": "hero",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "display renders 3 line(s) within the 3-line budget (half-measure columns license 4)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-02",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "1 sentence(s), 2 line(s)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-03",
+          "scope": "hero",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-59"
+        },
+        {
+          "rule": "SR-HERO-04",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "1 eyebrow(s) <= 5 words, no terminal period",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-05",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "no proof/meta row",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-NAV-01",
+          "scope": "nav",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "4 primary-bar label(s) match the harvested roster"
+        },
+        {
+          "rule": "SR-NAV-02",
+          "scope": "nav",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-59"
+        },
+        {
+          "rule": "SR-NAV-03",
+          "scope": "nav",
+          "severity": "advisory",
+          "verdict": "override",
+          "detail": "harvested chrome \u2014 measured labels are brand evidence (navbar.primary cited)"
+        },
+        {
+          "rule": "SR-FOOT-01",
+          "scope": "footer",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "6 column group(s), 7 social mark(s), legal line \u2014 all match the harvested anatomy"
+        },
+        {
+          "rule": "SR-FOOT-02",
+          "scope": "footer",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "legal register line present"
+        },
+        {
+          "rule": "SR-FOOT-03",
+          "scope": "footer",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-11, AS-12"
+        }
+      ]
+    },
+    {
+      "lane": "compose/hero-archetypes/blog",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/blog/index.html",
+      "scope": "generative",
+      "sections": {
+        "sec-0": [
+          "hero",
+          "section-header"
+        ]
+      },
+      "findings": [
+        {
+          "rule": "stat-band",
+          "scope": "stat-band",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "logo-strip",
+          "scope": "logo-strip",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "capture-form",
+          "scope": "capture-form",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "pricing-tiers",
+          "scope": "pricing-tiers",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "quote",
+          "scope": "quote",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "feature-grid",
+          "scope": "feature-grid",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "faq",
+          "scope": "faq",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "cta-band",
+          "scope": "cta-band",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "carousel",
+          "scope": "carousel",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "SR-HDR-01",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "skip",
+          "detail": "no non-hero section headings rendered"
+        },
+        {
+          "rule": "SR-HDR-02",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "1 heading(s): 0 duplicates, 0 ellipses, 0 double punctuation"
+        },
+        {
+          "rule": "SR-HDR-03",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-51, AS-32"
+        },
+        {
+          "rule": "SR-HERO-01",
+          "scope": "hero",
+          "severity": "required",
+          "verdict": "skip",
+          "detail": "no display heading rendered",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-02",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "1 sentence(s), 3 line(s)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-03",
+          "scope": "hero",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-59"
+        },
+        {
+          "rule": "SR-HERO-04",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "1 eyebrow(s) <= 5 words, no terminal period",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-05",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "no proof/meta row",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-NAV-01",
+          "scope": "nav",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "4 primary-bar label(s) match the harvested roster"
+        },
+        {
+          "rule": "SR-NAV-02",
+          "scope": "nav",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-59"
+        },
+        {
+          "rule": "SR-NAV-03",
+          "scope": "nav",
+          "severity": "advisory",
+          "verdict": "override",
+          "detail": "harvested chrome \u2014 measured labels are brand evidence (navbar.primary cited)"
+        },
+        {
+          "rule": "SR-FOOT-01",
+          "scope": "footer",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "6 column group(s), 7 social mark(s), legal line \u2014 all match the harvested anatomy"
+        },
+        {
+          "rule": "SR-FOOT-02",
+          "scope": "footer",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "legal register line present"
+        },
+        {
+          "rule": "SR-FOOT-03",
+          "scope": "footer",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-11, AS-12"
+        }
+      ]
+    },
+    {
+      "lane": "compose/hero-archetypes/demo",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/demo/index.html",
+      "scope": "generative",
+      "sections": {
+        "sec-0": [
+          "capture-form",
+          "hero",
+          "section-header"
+        ]
+      },
+      "findings": [
+        {
+          "rule": "stat-band",
+          "scope": "stat-band",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "logo-strip",
+          "scope": "logo-strip",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "pricing-tiers",
+          "scope": "pricing-tiers",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "quote",
+          "scope": "quote",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "feature-grid",
+          "scope": "feature-grid",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "faq",
+          "scope": "faq",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "cta-band",
+          "scope": "cta-band",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "carousel",
+          "scope": "carousel",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "SR-HDR-01",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "skip",
+          "detail": "no non-hero section headings rendered"
+        },
+        {
+          "rule": "SR-HDR-02",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "2 heading(s): 0 duplicates, 0 ellipses, 0 double punctuation"
+        },
+        {
+          "rule": "SR-HDR-03",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-51, AS-32"
+        },
+        {
+          "rule": "SR-HERO-01",
+          "scope": "hero",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "display renders 4 line(s) within the 3-line budget (half-measure columns license 4)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-02",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "1 sentence(s), 1 line(s)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-03",
+          "scope": "hero",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-59"
+        },
+        {
+          "rule": "SR-HERO-04",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "1 eyebrow(s) <= 5 words, no terminal period",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-05",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "no proof/meta row",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-FORM-01",
+          "scope": "capture-form",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "3 visible control(s) (max 8), 0 required (max 5)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-FORM-02",
+          "scope": "capture-form",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-14"
+        },
+        {
+          "rule": "SR-FORM-03",
+          "scope": "capture-form",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by interaction-contracts form family"
+        },
+        {
+          "rule": "SR-FORM-04",
+          "scope": "capture-form",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "1 filled submit; siblings quiet",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-FORM-05",
+          "scope": "capture-form",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "consent/privacy line present",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-FORM-06",
+          "scope": "capture-form",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "3 parallel field label(s)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-NAV-01",
+          "scope": "nav",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "4 primary-bar label(s) match the harvested roster"
+        },
+        {
+          "rule": "SR-NAV-02",
+          "scope": "nav",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-59"
+        },
+        {
+          "rule": "SR-NAV-03",
+          "scope": "nav",
+          "severity": "advisory",
+          "verdict": "override",
+          "detail": "harvested chrome \u2014 measured labels are brand evidence (navbar.primary cited)"
+        },
+        {
+          "rule": "SR-FOOT-01",
+          "scope": "footer",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "6 column group(s), 7 social mark(s), legal line \u2014 all match the harvested anatomy"
+        },
+        {
+          "rule": "SR-FOOT-02",
+          "scope": "footer",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "legal register line present"
+        },
+        {
+          "rule": "SR-FOOT-03",
+          "scope": "footer",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-11, AS-12"
+        }
+      ]
+    },
+    {
+      "lane": "compose/hero-archetypes/developer",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/developer/index.html",
+      "scope": "generative",
+      "sections": {
+        "sec-0": [
+          "hero",
+          "section-header"
+        ]
+      },
+      "findings": [
+        {
+          "rule": "stat-band",
+          "scope": "stat-band",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "logo-strip",
+          "scope": "logo-strip",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "capture-form",
+          "scope": "capture-form",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "pricing-tiers",
+          "scope": "pricing-tiers",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "quote",
+          "scope": "quote",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "feature-grid",
+          "scope": "feature-grid",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "faq",
+          "scope": "faq",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "cta-band",
+          "scope": "cta-band",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "carousel",
+          "scope": "carousel",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "SR-HDR-01",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "skip",
+          "detail": "no non-hero section headings rendered"
+        },
+        {
+          "rule": "SR-HDR-02",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "1 heading(s): 0 duplicates, 0 ellipses, 0 double punctuation"
+        },
+        {
+          "rule": "SR-HDR-03",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-51, AS-32"
+        },
+        {
+          "rule": "SR-HERO-01",
+          "scope": "hero",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "display renders 2 line(s) within the 3-line budget (half-measure columns license 4)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-02",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "1 sentence(s), 2 line(s)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-03",
+          "scope": "hero",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-59"
+        },
+        {
+          "rule": "SR-HERO-04",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "no hero kicker (meta rows are SR-HERO-05 territory)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-05",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "no proof/meta row",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-NAV-01",
+          "scope": "nav",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "4 primary-bar label(s) match the harvested roster"
+        },
+        {
+          "rule": "SR-NAV-02",
+          "scope": "nav",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-59"
+        },
+        {
+          "rule": "SR-NAV-03",
+          "scope": "nav",
+          "severity": "advisory",
+          "verdict": "override",
+          "detail": "harvested chrome \u2014 measured labels are brand evidence (navbar.primary cited)"
+        },
+        {
+          "rule": "SR-FOOT-01",
+          "scope": "footer",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "6 column group(s), 7 social mark(s), legal line \u2014 all match the harvested anatomy"
+        },
+        {
+          "rule": "SR-FOOT-02",
+          "scope": "footer",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "legal register line present"
+        },
+        {
+          "rule": "SR-FOOT-03",
+          "scope": "footer",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-11, AS-12"
+        }
+      ]
+    },
+    {
+      "lane": "compose/hero-archetypes/event",
+      "html": "runs/hubspot-v2/brand/compose/hero-archetypes/event/index.html",
+      "scope": "generative",
+      "sections": {
+        "sec-0": [
+          "hero",
+          "logo-strip",
+          "section-header"
+        ]
+      },
+      "findings": [
+        {
+          "rule": "stat-band",
+          "scope": "stat-band",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "capture-form",
+          "scope": "capture-form",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "pricing-tiers",
+          "scope": "pricing-tiers",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "quote",
+          "scope": "quote",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "feature-grid",
+          "scope": "feature-grid",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "faq",
+          "scope": "faq",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "cta-band",
+          "scope": "cta-band",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "carousel",
+          "scope": "carousel",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "family absent on this lane"
+        },
+        {
+          "rule": "SR-HDR-01",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "skip",
+          "detail": "no non-hero section headings rendered"
+        },
+        {
+          "rule": "SR-HDR-02",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "1 heading(s): 0 duplicates, 0 ellipses, 0 double punctuation"
+        },
+        {
+          "rule": "SR-HDR-03",
+          "scope": "section-header",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-51, AS-32"
+        },
+        {
+          "rule": "SR-HERO-01",
+          "scope": "hero",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "display renders 1 line(s) within the 3-line budget (half-measure columns license 4)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-02",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "1 sentence(s), 2 line(s)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-03",
+          "scope": "hero",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-59"
+        },
+        {
+          "rule": "SR-HERO-04",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "no hero kicker (meta rows are SR-HERO-05 territory)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-HERO-05",
+          "scope": "hero",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "no proof/meta row",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-LOGO-01",
+          "scope": "logo-strip",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "fact-less strip: max/median height 1.00 (<= 1.5), 6 mark(s)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-LOGO-02",
+          "scope": "logo-strip",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "6 distinct mark(s)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-LOGO-03",
+          "scope": "logo-strip",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-33, AS-34"
+        },
+        {
+          "rule": "SR-LOGO-04",
+          "scope": "logo-strip",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "caption register <= body (18.3px)",
+          "sec": "sec-0"
+        },
+        {
+          "rule": "SR-NAV-01",
+          "scope": "nav",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "4 primary-bar label(s) match the harvested roster"
+        },
+        {
+          "rule": "SR-NAV-02",
+          "scope": "nav",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-59"
+        },
+        {
+          "rule": "SR-NAV-03",
+          "scope": "nav",
+          "severity": "advisory",
+          "verdict": "override",
+          "detail": "harvested chrome \u2014 measured labels are brand evidence (navbar.primary cited)"
+        },
+        {
+          "rule": "SR-FOOT-01",
+          "scope": "footer",
+          "severity": "required",
+          "verdict": "pass",
+          "detail": "6 column group(s), 7 social mark(s), legal line \u2014 all match the harvested anatomy"
+        },
+        {
+          "rule": "SR-FOOT-02",
+          "scope": "footer",
+          "severity": "advisory",
+          "verdict": "pass",
+          "detail": "legal register line present"
+        },
+        {
+          "rule": "SR-FOOT-03",
+          "scope": "footer",
+          "severity": "required",
+          "verdict": "delegated",
+          "detail": "enforced by AS-11, AS-12"
+        }
+      ]
+    },
+    {
+      "lane": "compose/replica",
+      "html": "runs/hubspot-v2/brand/compose/replica/index.html",
+      "scope": "replica",
+      "sections": {
+        "sec-0": [
+          "hero",
+          "section-header"
+        ],
+        "sec-1": [
+          "logo-strip",
+          "section-header"
+        ],
+        "sec-2": [
+          "carousel",
+          "feature-grid",
+          "section-header"
+        ],
+        "sec-3": [
+          "feature-grid",
+          "section-header"
+        ],
+        "sec-4": [
+          "carousel",
+          "feature-grid",
+          "section-header"
+        ],
+        "sec-5": [
+          "logo-strip",
+          "section-header"
+        ],
+        "sec-6": [
+          "section-header"
+        ],
+        "sec-7": [
+          "quote",
+          "section-header",
+          "stat-band"
+        ],
+        "sec-8": [
+          "logo-strip",
+          "section-header"
+        ],
+        "sec-9": [
+          "cta-band",
+          "section-header"
+        ]
+      },
+      "findings": [
+        {
+          "rule": "*",
+          "scope": "*",
+          "severity": "advisory",
+          "verdict": "skip",
+          "detail": "replica lane \u2014 evidence, never an audit target (section-rules lane scope)"
+        }
+      ]
+    }
+  ]
+}
