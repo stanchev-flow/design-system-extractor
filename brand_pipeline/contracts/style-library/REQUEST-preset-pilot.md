@@ -1,6 +1,12 @@
 # Request — style preset pilot (paste into Claude Design chat)
 
-> Status: OUTBOUND REQUEST, authored 2026-07-14. Paste the section below the rule
+> Status: **ANSWERED 2026-07-15** ("spec 3" export) → imported as
+> `styles/pilot-presets.yaml` + `extraction-map.yaml` (audit + one transparent
+> color fix in `changes.md`; format lock `tests/test_style_presets_pilot.py`;
+> calibration kit `runs/style-calibration/v001/`). Kept for provenance and as the
+> commissioning template for the remaining 46 styles.
+>
+> Original status: OUTBOUND REQUEST, authored 2026-07-14. Paste the section below the rule
 > into the Claude Design chat that produced the 15-file style package. The reply,
 > if it honors the format, merges directly into `styles/directives.yaml` (new
 > `preset:` / `exemplars:` / `neighbors:` blocks per style) and `token-schema.yaml`

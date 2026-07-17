@@ -750,6 +750,9 @@ def build_prompt(brief_text: str, brand_yaml_path: Path | str, style_id: str,
       6. the brief copy [+ 6b. CONVERSION-STRUCTURE guidance — only when the caller
          resolved one via conversion_structure.render_guidance_block; same fact-gated
          byte-identity contract as 5b, riding WITH the brief in the user prompt]
+         [+ 6c. MEDIA SEMANTICS block — media-assets.v1 inventory digest + the HARD
+         binding rule + the no-match ladder, [[MEDIA-FACTS:BEGIN/END]]; fact-gated:
+         brands without media-assets.yaml keep the prompt byte-identical]
          + the output contract (emit ONE composition.v1 object)
 
     ``off_grid_expansion`` is the resolved capability flag for this run (see
@@ -872,6 +875,15 @@ three-tier precedence (base-style invariants → composition-rules → brand nev
                              if p.suffix.lower() in img_exts)
     assets = sorted(dict.fromkeys(assets))
     assets_line = ", ".join(assets) if assets else "(none — use asset:null everywhere)"
+
+    # MEDIA SEMANTICS block (media-assets.v1, 2026-07) — fact-gated exactly like the
+    # pass-1 injection: a brand without media-assets.yaml keeps every byte of the
+    # assembled prompt identical. With the artifact, the compact inventory digest
+    # (ids/kinds/aspects/rights/luminance) + the HARD binding rule + the no-match
+    # ladder ride with the asset rules ([[MEDIA-FACTS:BEGIN/END]] sentinels).
+    import media_semantics as ms
+    media_block = ms.media_rules_block(ms.load_media_assets(brand_dir))
+    media_rules = f"\n{media_block}\n" if media_block else ""
 
     # 6b. conversion-structure guidance (steal 3) — fact-gated: None keeps the user
     # prompt byte-identical (same contract as hero_candidates in the system prompt).
@@ -1011,7 +1023,7 @@ RULES:
   gate. PREFER binding a real asset to each media-bearing module when a suitable one exists
   (a repeatable module run whose items each have matching brand art binds each module's
   `asset` explicitly, as a bare-string filename inside that module's copy object); reserve
-  `asset: null` for slots where nothing in the list fits.
+  `asset: null` for slots where nothing in the list fits.{media_rules}
 {_brand_fidelity_rules(doc, single_accent,
                        creative_hero_used=((used_surfaces or []) if hero_candidates else None))}{_COPY_QUALITY_RULES}
 """
@@ -1362,6 +1374,49 @@ class GenerationResult:
     offgrid_hits: list[tuple[str, str]] = field(default_factory=list)   # last off-grid violations (if any)
 
 
+def _auto_style_directives(style_id: str, brand_yaml_path: Path | str,
+                           *, log=print) -> str | None:
+    """Auto-resolve the ALREADY-CHOSEN style through the style-library resolver and
+    render its pass-3 stage-2 prompt block (style_resolver.render_style_directive_block).
+
+    Gated on PRESET presence: a style with no preset (e.g. ``dark-mode``, the 1/51
+    uncovered id) and any non-library style id (e.g. a base-only ``styles/<id>.md``
+    id like ``corporate-saas-clean``) return None, so the assembled prompt stays
+    BYTE-IDENTICAL to the pre-wiring assembly — this is the feature's fact-gated
+    contract (only preset-backed ids gain a block). A preset-backed id
+    (``swiss``/``bauhaus``/…) returns the resolved block with its authored preset
+    defaults folded in UNDER any measured brand fact (the resolver owns precedence
+    + dissent logging; nothing here changes it).
+
+    FAIL-OPEN: a missing/unloadable style-library or ANY resolver error degrades
+    to None (no block, no crash). This is a live generation path — prompt shaping
+    must never take a run down."""
+    try:
+        import style_resolver as sr
+        library = sr.load_library()
+        if style_id not in library.presets:
+            return None                       # no preset → byte-identical (no block)
+        bundle = sr.load_brand_bundle(Path(brand_yaml_path).parent)
+        resolutions = sr.resolve_all(style_id, library, bundle)   # all sections
+        return sr.render_style_directive_block(style_id, resolutions, library) or None
+    except Exception as exc:                   # fail-open: shaping never crashes a run
+        log(f"  style directives: auto-resolution skipped ({type(exc).__name__})")
+        return None
+
+
+def _resolve_style_directives(style_directives: str | None, style_id: str,
+                              brand_yaml_path: Path | str, *, log=print) -> str | None:
+    """Style-directive precedence for the generate path: an EXPLICIT caller value
+    WINS (a non-None value is honored verbatim, including ``""`` = suppress);
+    ONLY when the caller supplies nothing (``None``) does the default path
+    auto-resolve the picked style. Explicit-wins + opt-out preserved; the library
+    loads at most once (inside ``_auto_style_directives``) and never when the
+    caller opted out."""
+    if style_directives is not None:
+        return style_directives               # explicit-wins / opt-out ("" suppresses)
+    return _auto_style_directives(style_id, brand_yaml_path, log=log)
+
+
 def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id: str,
                          *, out_dir: Path | str,
                          model: str | None = None,
@@ -1450,9 +1505,18 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
         if conv_guidance:
             log(f"  conversion guidance: campaign={meta.get('campaignType')}")
 
-    # STYLE DIRECTIVE block (pass 3 stage 2) — caller-resolved (the style-bakeoff
-    # lane passes style_resolver.render_style_directive_block output). None keeps
-    # the prompt byte-identical (test-pinned).
+    # STYLE DIRECTIVE block (pass 3 stage 2). AUTO-RESOLUTION (2026-07-17): the
+    # default path now resolves the ALREADY-CHOSEN style_id through the
+    # style-library resolver and injects render_style_directive_block output, so
+    # presets shape EVERY generation — not just opt-in lanes. An EXPLICIT caller
+    # value still wins (a non-None style_directives is honored verbatim, incl.
+    # "" = suppress); a style with no preset, a non-library style id, a missing
+    # library, or any resolver error DEGRADES SILENTLY to no block (byte-identical
+    # to the pre-wiring assembly). Resolved HERE (not inside build_prompt) so the
+    # assembler stays pure, the explicit-wins/opt-out guard is honored, and the
+    # library loads at most once per generation.
+    style_directives = _resolve_style_directives(
+        style_directives, style_id, brand_yaml_path, log=log)
     if style_directives:
         log("  style directives: injected "
             f"({len(style_directives)} chars)")
@@ -1580,6 +1644,22 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
             tele["stage"] = "lint-fail"
             telemetry.append(tele)
             log(f"    composition lint: {[(s, r) for s, r, _ in lint_hits]}")
+            repair_note = _repair_note([], [], failures)
+            continue
+
+        # 4d. media-binding lints (media semantics 2026-07, AS-67): every media slot
+        # resolves an asset or declares its gap; refs resolve; third-party marks stay
+        # in factual proof contexts. Fact-gated: brands without media-assets.yaml
+        # never reach this branch (registry None → zero hits).
+        import media_semantics as ms
+        media_hits = ms.lint_media_bindings(
+            comp, ms.load_media_assets(brand_yaml_path.parent))
+        if media_hits:
+            failures = [(f"media-lint:{rule}", f"section `{sid}`: {msg}")
+                        for sid, rule, msg in media_hits]
+            tele["stage"] = "media-lint-fail"
+            telemetry.append(tele)
+            log(f"    media lint: {[(s, r) for s, r, _ in media_hits]}")
             repair_note = _repair_note([], [], failures)
             continue
 

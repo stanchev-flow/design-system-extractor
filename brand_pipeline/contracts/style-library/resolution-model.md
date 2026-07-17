@@ -18,6 +18,16 @@ A concrete section spec is **computed**, never stored per (style, section).
 3. **override** — Specific (style × section) patch — the 'this style treats this section differently' case (from overrides/overrides.yaml).
 4. **brandOverride** — Final brand-specific say (from brand.tokens.json).
 
+> **Preset layer (2026-07-16, our implementation):** `styles/pilot-presets.yaml` +
+> `styles/generated-presets.yaml` supply concrete per-style VALUES (fonts, oklch/hex
+> palette roles, space/shape/layout, imagery, 5 signatures) that sit at **level 2**
+> beside the directives — authored defaults, UNCALIBRATED, unmeasured. In
+> `style_resolver.py` a preset slot fills only where the brand carries NO measured
+> fact; any measured brand fact suppresses its preset slot and is logged as a
+> `presetDissents` row (brand wins — the same posture as directive dissents).
+> Pilot wins over generated on id collision; `dark-mode` has no preset and resolves
+> directive-only, byte-identical to pre-preset behavior.
+
 ## Merge semantics
 - **Scalars** — replace — higher level wins (e.g. radius: 0 beats radius: md).
 - **Objects** — deep per-key merge — an override touches only the keys it names.

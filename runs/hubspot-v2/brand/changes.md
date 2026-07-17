@@ -982,3 +982,46 @@ authored here and this brand's verification.
 - Style-bakeoff: deterministic re-render, battery GREEN ×3 — the checkpoint-D
   C1 residuals attributable to renderer/adapter/audit gaps cleared (lane
   changelog has the before→after delta).
+
+## media-semantics — media-assets.v1 authored + mediaComposition on 5 patterns (2026-07-16)
+
+Root log: repo `changes.md` (MEDIA SEMANTICS SYSTEM); spec:
+`brand_pipeline/spec/media-assets-schema.md`. Authored FROM EXISTING EVIDENCE
+only (assets-tagged.json, grounding YAMLs, css-rules gradients, section-rects +
+fullpage pixel samples, Pillow-measured file stats) — no re-extraction, no edits
+to completed-run prompt files.
+
+- **`media-assets.yaml` (NEW)** — 66 logical assets covering the full
+  assets-tagged inventory: stable slug ids, the closed kind taxonomy
+  (photograph/client-photo/product-ui-screenshot/product-ui-collage/spot-icon/
+  ui-glyph/social-icon/logo-own/logo-third-party/badge-review-award/
+  badge-appstore/illustration/background-art), `usageRights` flags (every
+  customer/integration mark, G2 badge, store badge and social glyph =
+  `third-party-mark` — the AS-67 substrate), Pillow-measured luminance/
+  busyness/hue stats for every raster, harvested alts, and per-asset
+  `treatmentDefaults.fit` MIRRORING the assets-tagged rule resolution for each
+  file's exercised role (replica byte-parity by construction; test-pinned).
+  `assets-tagged.json` stays intact — it remains the renderer-compat inventory
+  and role-scoped fit fallback; media-assets.yaml is the richer superset.
+- **Photography fingerprint (measured)**: warm cast / mid-key / moderate
+  saturation / matte over the 4 real photographs (hero 018 + case studies
+  045/046/047; dominant hues 24/33/5/49).
+- **`generatedVisuals`**: `warm-accent-band-wash` — the horizontal pink→peach→
+  coral band wash as a css-gradient RECIPE on the brand's own token roles
+  (accent/pink #fcc3dc, accent/peach #fcc6b1, accent/coral #ffa581;
+  pixel-sampled at y≈3520 on the fullpage capture), poster cropped from the
+  run's own capture into `assets/generated/gv-warm-accent-band-poster.png`,
+  degrade live→poster→omit. One device, two pattern citations (the product-grid
+  gradient-seam + the agent band-art paint the same wash family).
+- **`mediaComposition` authored on 5 patterns** (data-only; composers/replica
+  unchanged): hero-photo-overlay background → `background-with-foreground`;
+  logo-proof-strip logos → `tiled-grid` (5 marks, computed 153×76 boxes);
+  integration-collage-banner media → `scattered-cluster` (6 marks,
+  rotationRange vision-estimated + flagged); agent-card-carousel cards →
+  `carousel` (3 product-UI refs); testimonial-tab-stats media → `state-swap`
+  trigger `tab` (3 client photos bound by tab label).
+- **Verification**: validator PASS (C1-C28, 0 errors; C26/C27/C28 active on
+  this artifact), replica `compose_replica --skip-shoot` output BYTE-IDENTICAL
+  to `compose/replica/index.html` (0.957 holds by construction), generation
+  prompt now carries the `[[MEDIA-FACTS]]` inventory digest + hard binding
+  rule + no-match ladder for this brand.

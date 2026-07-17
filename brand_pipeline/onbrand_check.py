@@ -1334,6 +1334,39 @@ def check_composition_lints(render_dir):
     return rows
 
 
+def check_media_bindings(render_dir, comp=None):
+    """Media-binding rows (media semantics 2026-07 — brand_pipeline/
+    media_semantics.py, spec/media-assets-schema.md §6/§7): every media-bearing slot
+    resolves an asset or carries an explicit noCompatibleAsset {reason} (no silent
+    drops — this repo's #1 recurring defect class), declared refs resolve into the
+    brand's media-assets.v1 registry, placeholder recipes are licensed, and
+    third-party marks obey AS-67. DOUBLY fact-gated: [] for lanes without a
+    generated composition AND for brands without media-assets.yaml (pre-media
+    lanes/brands never retro-fail)."""
+    comp = comp if comp is not None else _generated_composition(render_dir)
+    if comp is None:
+        return []
+    ref = str(((comp.get("brand") or {}) or {}).get("ref") or "")
+    if not ref:
+        return []
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import media_semantics as ms  # noqa: E402
+    registry = ms.load_media_assets(Path(ref).parent)
+    if registry is None:
+        return []
+    hits = ms.lint_media_bindings(comp, registry)
+    rows = []
+    for rule, label in (("media-binding",
+                         "Every media slot resolves or declares its gap"),
+                        ("mark-legality",
+                         "Third-party marks in factual proof contexts only (AS-67)")):
+        mine = [(sid, msg) for sid, r, msg in hits if r == rule]
+        detail = "; ".join(f"{sid}: {msg}" for sid, msg in mine[:4]) \
+            or "media bindings clean"
+        rows.append((rule, label, not mine, detail))
+    return rows
+
+
 _RUNS_ROOT = Path(__file__).resolve().parent.parent / "runs"
 
 
@@ -2083,6 +2116,10 @@ def main():
     # composition lints (fix7 AS-63/AS-65): knob-consumption + sibling-slot content
     # redundancy on the render's own composition.json; [] for composition-less lanes.
     inv += check_composition_lints(args.render_dir)
+    # media-binding rows (media semantics 2026-07, AS-67): every media slot resolves
+    # or declares its gap + third-party-mark legality. DOUBLY fact-gated ([] without
+    # a generated composition AND without the brand's media-assets.yaml).
+    inv += check_media_bindings(args.render_dir)
 
     style = style_checks = None
     if args.style:

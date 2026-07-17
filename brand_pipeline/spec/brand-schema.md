@@ -1726,6 +1726,56 @@ Rules:
 - **Degrade.** No facts ⇒ no stamps, no law emission — the structural defaults hold
   byte-identical.
 
+### 4.4g `mediaComposition` on pattern slots + the media-assets layer (media semantics 2026-07)
+
+The MEDIA SEMANTICS SYSTEM (normative spec: `spec/media-assets-schema.md`) separates
+ASSET SEMANTICS (what a file is — the per-brand `media-assets.yaml`, schema
+`media-assets.v1`) from COMPOSITION SEMANTICS (how assets/components arrange in a
+slot) and GENERATED-VISUAL DEVICES (code recipes, not files). At the pattern tier the
+composition half lands as an OPTIONAL `mediaComposition` block on any media-bearing
+`contentShape.slots[]` entry:
+
+```yaml
+contentShape:
+  slots:
+    - name: media
+      role: <generic role>
+      mediaAspect: …
+      z: …
+      assets: [<file>, …]              # unchanged — the compat binding channel
+      mediaComposition:                # NEW, optional — spec/media-assets-schema.md §3
+        mode: single|layered|masked-media|background-with-foreground
+            |overlapping-cluster|scattered-cluster|facepile|tiled-grid
+            |marquee|masonry|split-pair|carousel|state-swap
+            |atomic-collage|icon-in-headline
+        trigger: active-item|hover|tab   # state-swap only
+        maskRef: <media-assets id>       # masked-media only
+        layers:
+          - assetRef: <media-assets id>  # XOR componentRef {contract, usage}
+            z: back|mid|front
+            registration: { toSlot, edge, depthCols|depthBaselines, z }  # §4.6.5 grammar VERBATIM
+            forItem: <int|label>         # state-swap layers
+```
+
+Rules:
+
+- **No parallel placement mechanism.** Layers reuse the §4.6.5
+  registration/z/overlap vocabulary verbatim; a mode never re-invents offsets.
+- **Observed arrangements only.** Pattern-tier `mediaComposition` records what the
+  crops/DOM show (same evidence discipline as `specialTreatments`), with the pattern's
+  provenance covering it. `state-swap` + `trigger: active-item` is the generalized
+  form of the accordion media-swap device (the fid5/fid8 per-item media channel);
+  `marquee`/`carousel` align with the existing devices of those names — the mode is
+  the semantic record, the device keeps rendering.
+- **`assetRef` points into `media-assets.v1`** (stable logical-asset ids, variant
+  dedupe, kind taxonomy, rights, luminance facts — spec §2). The legacy `assets:`
+  filename lists stay valid; C27 checks that bound filenames are REGISTERED in the
+  media-assets registry when the brand ships one.
+- **Fact-gated everywhere.** Brands without `media-assets.yaml` render, validate, and
+  prompt byte-identically. Validators: C26 (artifact shape), C27 (reference
+  integrity), C28 (variant dedupe sanity, advisory); composed-lane binding rows +
+  AS-67 mark legality live in `brand_pipeline/media_semantics.py`.
+
 ### 4.4.1 `scroll-parallax` — the motion rule for editorial/collage-style sites
 
 Captured from a live site's Webflow IX2 scroll interaction (`.about-second-img-wrp`: a

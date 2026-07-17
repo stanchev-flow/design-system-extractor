@@ -83,6 +83,20 @@ Plus: existing canonical files when re-authoring, `contracts/primitives.yaml` /
 4. **Tagged assets** — `assets-tagged.json` naming only files that exist under
    `assets/`, with role tags; **≥ 3 real logo files whenever a logo wall was
    observed** (a logos use-case with zero logo assets renders a text wall).
+4b. **`media-assets.yaml`** (schema: `spec/media-assets-schema.md`, REQUIRED —
+   C26/C27/C28 enforced) — the MEDIA SEMANTICS layer over the same files:
+   stable logical-asset ids (slugs, never filenames), variant dedupe
+   (srcset/retina/format/duplicate siblings collapse into one entry's
+   `variants[]`, canonical = highest-res), the closed `assetSemantics.kind`
+   taxonomy, per-asset facts (intrinsic geometry, alpha, luminance/busyness
+   stats, focal/safe-crop — null = UNKNOWN, never guessed), `usageRights`
+   (own | stock | third-party-mark — the AS-67 flag), `treatmentDefaults`,
+   provenance; the brand-level `photographyFingerprint`; `generatedVisuals:`
+   recipes with posters; and `mediaComposition` on the layout-library patterns
+   whose crops show an arrangement (state-swap, marquee, background-with-
+   foreground, …). `assets-tagged.json` stays intact — it is the renderer-compat
+   inventory; `media-assets.yaml` is the richer superset (note the relationship
+   in both).
 5. **Chrome presentation evidence** — nav/footer merged into `brand.yaml` via
    `tools/bridge_chrome_to_brand.py` (below), then presentation devices verified
    against css-facts: `tokens.type.<tier>.case`, optional `.prefix`,
@@ -292,6 +306,43 @@ For each section, from its grounding YAML + DOM entry + crop:
 5. **Assets** → tag the section's real files in `assets-tagged.json` (role, section);
    for logo walls confirm ≥ 3 real logo files exist under `assets/` (re-run
    `curate_assets.py` for missing ones rather than inventing filenames).
+6. **Media semantics (REQUIRED authoring steps, media semantics 2026-07 —
+   spec/media-assets-schema.md; C26/C27/C28 enforced).**
+   - **Start from the tool draft.** `curate_assets.py` emits
+     `media-assets-draft.yaml` beside the manifest: stable ids, content-hash
+     dedupe (identical bytes → `variants[]`), Pillow-measured stats (intrinsic
+     geometry, alpha, dominant hue, luminance band, busyness; gracefully absent
+     when Pillow can't decode — SVGs stay `stats: null`), and a `kind` hint from
+     the filename tag guess. The draft is agent-refined into the authored
+     `media-assets.yaml` — the same draft→authored convention as
+     assets-manifest → assets-tagged.
+   - **Refine per asset** from the groundings' `mediaAssets` blocks + the crops:
+     correct the `kind` (closed taxonomy, spec §2.1), write `subject` as generic
+     role words, set `usageRights` (every customer/partner/press logo, review
+     badge and app badge is `third-party-mark`), carry the harvested alt, author
+     `treatmentDefaults` consistent with the assets-tagged fit facts, and set
+     provenance (source, sections, confidence). Leave `focalPoint`/`safeCrop`
+     null unless measured — null means UNKNOWN, a fabricated center is a guess.
+   - **Dedupe variants.** Collapse retina/format/srcset/duplicate siblings into
+     one logical asset; canonical = highest resolution. C28 flags byte-identical
+     files living under two ids.
+   - **Photography fingerprint.** Measure the brand's imagery grammar from the
+     actual `photograph`/`portrait` assets (temperature cast, key/exposure,
+     saturation band, matte/glossy — Pillow stats via the draft, else documented
+     manual reads); a photo-less brand records `notObserved` + reason.
+   - **Generated-visual recipes.** Author `generatedVisuals:` for devices the
+     evidence shows as CODE, not files (the groundings' `generatedVisualDevices`
+     + css-rules gradients): kind, re-instantiable recipe with brand TOKEN ROLES
+     for hues, a captured poster (crop it from the run's own capture; poster
+     filenames must avoid the default-art resolver keywords), and the
+     live → poster → omit degrade. Evidence licenses devices — never author a
+     gradient the capture doesn't show.
+   - **Composition authoring.** Where a crop/DOM shows an ARRANGEMENT (per-item
+     disclosure media swap, logo marquee vs static tiled grid, full-bleed art
+     behind a copy stack, an overlap cluster, a facepile), record
+     `mediaComposition` on that pattern's media slot (mode + layers with
+     `assetRef` ids; the §4.6.5 registration grammar verbatim). Observed
+     arrangements only — provenance covers them.
 
 ### Phase 4 — Rule synthesis + validation
 
@@ -366,7 +417,14 @@ For each section, from its grounding YAML + DOM entry + crop:
    - C24 (advisory) the derived `style-scale.yaml` is internally consistent and
      its fit ledger honest (steps on the base/ratio, no forced followsScale);
    - C25 (advisory) a `signatures:` block exists with 3-5 well-formed,
-     evidence-cited, machine-checkable entries (brand-schema §4.7).
+     evidence-cited, machine-checkable entries (brand-schema §4.7);
+   - C26 media-assets.yaml is well-formed media-assets.v1 (slug ids, on-disk
+     files, closed kind taxonomy, rights flags, provenance, poster discipline);
+   - C27 media references resolve (mediaComposition layer assetRef/maskRef →
+     registry ids, componentRef → shared contracts, pattern-bound files all
+     registered);
+   - C28 (advisory) variant dedupe is sane (no byte-identical files under two
+     ids; canonical = highest-res).
    Fix and re-run until clean — a validator error means a missed observation.
 5. **Anti-slop checks** before calling any composed render done:
    `node brand_pipeline/contrast_audit.mjs <index.html>` and

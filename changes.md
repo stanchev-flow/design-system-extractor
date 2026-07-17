@@ -1,5 +1,168 @@
 # Changes
 
+## 2026-07-17 — STYLE AUTO-RESOLUTION wired into the DEFAULT generate path: presets now shape every generation, not just opt-in lanes (fact-gated, byte-identical, explicit-wins, fail-open)
+
+- `brand_pipeline/generate_composition.py`: the pass-3 stage-2 style block is no
+  longer caller-only. `generate_composition()` now resolves the ALREADY-CHOSEN
+  `style_id` through the style-library resolver and injects
+  `render_style_directive_block` output by default. Wired at the higher-level
+  entrypoint (right before `build_prompt`, ~line 1476) via two small helpers —
+  `_auto_style_directives()` (load_library → resolve_all → render) and
+  `_resolve_style_directives()` (precedence gate) — so `build_prompt` stays a
+  pure assembler and the library loads at most once per run. No detection step:
+  this auto-RESOLVES the picked id; style DETECTION from a source site remains a
+  separate future feature. Precedence + `presetDissents` logging are unchanged
+  (owned by the resolver).
+- FACT-GATED / BYTE-IDENTITY: auto-resolution is gated on PRESET presence. A
+  style with no preset (`dark-mode`, the 1/51 uncovered id) and any non-library
+  style id (e.g. the base-only `corporate-saas-clean`) return no block, so the
+  assembled prompt stays byte-identical to the pre-wiring assembly. A
+  preset-backed id (`swiss`/`bauhaus`/…) gets the resolved block with authored
+  preset defaults folded in UNDER any measured brand fact.
+- EXPLICIT-WINS / OPT-OUT: an explicit caller `style_directives` is honored
+  verbatim (a non-None value wins, including `""` = suppress). Only `None`
+  triggers auto-resolution; the opt-out path never touches the library.
+- FAIL-OPEN: a missing/unloadable style-library or ANY resolver error degrades
+  to no block, no crash (this is a live generation path — prompt shaping must
+  never take a run down).
+- Prompt-shaping ONLY: no renderer/gate/replica code path was touched. Replica
+  SCORES cannot move (confirmed — no rendering path changed; full replica scoring
+  NOT re-run). The pass-3 fence (no renderer/gate module imports the resolver)
+  stays intact; `generate_composition` was already an allowed consumer.
+- Tests: NEW `brand_pipeline/tests/test_style_autoresolve.py` (16) covering the
+  resolve+render helper, the explicit-wins/opt-out precedence gate, default-path
+  build_prompt injection, and byte-identity for no-preset/non-library/failure
+  paths. Full suite: `env -u PLAYWRIGHT_BROWSERS_PATH ./venv/bin/python -m pytest
+  brand_pipeline/tests -q` → **1524 passed, 0 failed** (baseline 1508 + 16 new).
+  All existing pass-3 byte-identity tests stay green.
+
+## 2026-07-16 — STYLE PRESET LAYER LIVE: 45-style package imported (audited, 9 WCAG fixes), 50 presets wired into style_resolver as level-2 defaults — UNCALIBRATED by design
+
+- Imported Claude Design's 45-style preset delivery to
+  `brand_pipeline/contracts/style-library/styles/generated-presets.yaml`
+  (authored-prior provenance; pilot-grade computational audit: ids 45/45,
+  signatures 225/225 legal, exemplar policy pre-tagged calibration-only,
+  no identical font+palette+radius triples). NINE WCAG floor failures fixed
+  transparently (smallest oklch-L step; ledger in the file header + style-
+  library changes.md). Coverage: 51 directives = 5 pilot + 45 generated +
+  **`dark-mode` uncovered** (resolves byte-identically to pre-preset).
+- `style_resolver.py` §P: both preset files load as one merged map (pilot
+  wins on collision; exemplars stripped at load); presets fold into
+  `resolve()` as LEVEL-2 DEFAULTS — a preset slot fills only where the brand
+  has no measured fact; measured facts suppress their slots with a
+  `presetDissents` ledger (brand always wins). Preset block now renders in
+  `render_style_directive_block` marked "authored defaults (uncalibrated) —
+  any measured brand fact beats these"; rides the existing 5c injection hook
+  (generate_composition.py untouched — concurrent-agent fence honored).
+- Docs: style-library README file map, resolution-model.md preset-layer
+  note, extraction-map.yaml snap-target cross-ref.
+- Tests: NEW `test_style_presets_generated.py` (22) +
+  `test_style_preset_resolution.py` (25), all green. Full suite final run
+  **1508 passed / 0 failed** (baseline 1365 + mine + the concurrent media
+  agent's). Two mid-flight runs briefly showed 1 red in `test_fix7_lints.py`
+  (media lint rows) — the concurrent agent's onbrand_check edit mid-landing
+  in files this pass never touched; it settled green on its own.
+- Calibration explicitly DEFERRED: thresholds stay UNCALIBRATED and refine
+  over time via `runs/style-calibration/`; queue = 17 single-exemplar styles
+  + the worst shared-axis pairs (list in style-library changes.md).
+
+## 2026-07-16 — MEDIA SEMANTICS SYSTEM landed: media-assets.v1 + mediaComposition grammar + generated-visual recipes + no-match ladder — C26/C27/C28, AS-67, both brand artifacts authored, replicas BYTE-IDENTICAL
+
+The system-level media layer (design agreed over review rounds): ASSET SEMANTICS
+(what a file is) separated from COMPOSITION SEMANTICS (how assets/components
+arrange in a slot) plus GENERATED-VISUAL DEVICES (code recipes, not files).
+Everything fact-gated on the per-brand artifact — brands without it keep
+byte-identical prompts/renders/gates.
+
+- **Spec** — NEW `brand_pipeline/spec/media-assets-schema.md` (normative):
+  `media-assets.v1` per-brand artifact (stable logical-asset ids, variant dedupe
+  with canonical = highest-res, closed `assetSemantics.kind` taxonomy of 32
+  generic kinds, per-asset facts incl. measured luminance/busyness stats and
+  null-means-UNKNOWN focal/safe-crop, `usageRights` own|stock|third-party-mark,
+  `treatmentDefaults`, provenance), the brand `photographyFingerprint`,
+  `generatedVisuals:` recipes (css-gradient / mesh-gradient-blobs / shader-canvas
+  / embedded-3d / noise-grain / dot-grid; poster-frame discipline + the
+  live→poster→omit degrade ladder; devices licensed by measured evidence only),
+  the `mediaComposition` slot grammar (15 modes incl. masked-media, facepile,
+  tiled-grid vs marquee, state-swap subsuming the accordion swap, atomic-collage;
+  layers = assetRef XOR componentRef riding the §4.6.5 registration/z vocabulary
+  VERBATIM), and the HARD RULE + NO-MATCH LADDER (bind compatible extracted
+  assets; reuse-with-treatment → declared gap → brand-legal placeholder recipe;
+  silent placeholder = failure). Cross-refs: brand-schema **§4.4g**,
+  composition-schema **§4.6.7**, composition.v1.schema.json (slot `assetRef` /
+  `noCompatibleAsset` / `mediaComposition` + `$defs.mediaLayer`).
+- **Runtime** — NEW `brand_pipeline/media_semantics.py` (the one code home):
+  fact-gated loader/indexes, `apply_media_composition` (assetRef → canonical
+  file; masked-media → CSS clip; state-swap → the per-item media channel the
+  accordion device already renders; layered/background/cluster → layered-media
+  slots with componentRef layers landing on existing contracts; grid/marquee/
+  facepile folds), `lint_media_bindings` (media-binding + AS-67 mark-legality),
+  the ASSET-REQUEST MANIFEST (`asset-requests.json` beside composition.json,
+  stale-file removal), and the `[[MEDIA-FACTS]]` prompt block (inventory digest
+  + hard rule + ladder). Wire points: `compose_section.attach_asset_inventory`
+  (attaches `_mediaAssets`/`_mediaAssetsFit`), `component_render.asset_render_mode`
+  (per-asset treatmentDefaults FIRST, tagged facts as fallback),
+  `render_image`/`_layer_img` masked-media style (declared-only),
+  `compose_from_composition.render_composition` (normalize + manifest),
+  `generate_composition` (prompt block + a 4d media prefilter in the repair
+  loop), `onbrand_check.check_media_bindings` (2 HARD rows under --composition,
+  doubly fact-gated: composition + registry present).
+- **Validators** — `tools/extract/validate_brand_evidence.py` **C26** (artifact
+  shape: slug ids, on-disk files, kind enum, rights, provenance, poster
+  discipline — absence is a NOTE), **C27** (reference integrity: layer
+  assetRef/maskRef resolve, componentRef contracts exist, pattern-bound files
+  all registered), **C28** (advisory variant-dedupe sanity: byte-identical
+  files under two ids; variant out-resolving canonical). Anti-slop **AS-67**
+  registered (third-party marks decorating invented content; machine arm =
+  the mark-legality lint).
+- **Extraction path (forward)** — extraction-grounding-prompt.md gains
+  per-crop `mediaAssets` / `mediaComposition` / `generatedVisualDevices`
+  observation blocks (same detailed-inventory register; video subtype +
+  provider notes); layout-analyst-skill.md gains the REQUIRED media authoring
+  steps (draft → refine, dedupe, fingerprint, recipes, composition authoring)
+  + C26-C28 in the exit criteria; `tools/extract/curate_assets.py` now emits
+  `media-assets-draft.yaml` (stable ids, sha256 dedupe → variants, Pillow
+  stats with graceful vector skip, TAG_GUESSES→kind/rights hints;
+  `--no-media-draft` opts out).
+- **Brand artifacts (from existing evidence only — no re-extraction)** —
+  `runs/hubspot-v2/brand/media-assets.yaml` (66 logical assets, measured
+  warm photography fingerprint, 1 licensed css-gradient recipe with a poster
+  cropped from the run's own capture) + `runs/remote/brand/media-assets.yaml`
+  (57 logical assets — 58 files with the byte-identical noise pair deduped,
+  plus 2 nav-icon twins as duplicate variants; cool portrait fingerprint;
+  1 licensed radial-glow recipe + poster). `mediaComposition` authored on 9
+  patterns: hubspot hero background-with-foreground, logo tiled-grid,
+  integration scattered-cluster, agent carousel, testimonial tab state-swap;
+  remote hero art-surface background, logo MARQUEE vs partner TILED-GRID
+  contrast, accordion active-item state-swap (5 collages by item label).
+  assets-tagged.json intact both brands (compat path; relationship noted in
+  both files + brand changelogs).
+- **Tests** — NEW `test_media_semantics.py` (54: loader fact-gating, resolve/
+  fit maps, aspect classes, masked-media/state-swap/layered+componentRef/
+  facepile folds, media-binding + AS-67 lint pass/fail, manifest emission +
+  stale removal, C26/C27/C28 fixtures incl. mesh-gradient re-instantiation
+  params + poster discipline, curate draft dedupe/stats/hints, prompt block)
+  + NEW `test_media_artifacts_brands.py` (23: both artifacts C26-C28-clean,
+  superset-of-pattern-bindings, rights taxonomy, fingerprints, authored
+  compositions incl. the marquee-vs-grid contrast and label-bound swap layers,
+  treatmentDefault parity per exercised role, prompt injection + artifact-less
+  byte-identity, END-TO-END ladder walk-through: real assetRef bind + declared
+  gap → asset-requests.json + gate rows clean + silent-drop flagged +
+  registry fact-gate).
+
+**Regression proof:** suite **1508 passed, exit 0** — 77 new tests from this
+lane on top of the concurrently-growing tree (pre-change tree measured 1384;
+the parallel preset-pilot lane kept adding while this landed); ZERO losses,
+zero failures. Replicas: hubspot-v2 +
+Remote `compose_replica --skip-shoot` output **byte-identical** to the shipped
+`compose/replica/index.html` with the full media layer in place (scores 0.957 /
+0.951 hold by construction; treatmentDefaults mirror each file's tagged-rule
+resolution per exercised role — test-pinned). Validator PASS both brands (0
+errors; pre-existing C5 breadth + hubspot C24 staleness warnings unchanged).
+Prompt byte-identity for artifact-less brands test-pinned. `viewer.html` /
+`run_pipeline.py` untouched. Out of scope, left catalogued: the audit's
+cross-section anatomy auto-promotion / C23→error follow-up.
+
 ## 2026-07-14 — steals stage B (matrix lane): eval-matrix BASELINE round (12/12) + conversion-guidance prompt wiring (flag OFF) + registration-form adapter fix — suite 1346, generation-time neutrality proven
 
 The second stage-B agent's half of the steals wiring (the auditor half is the

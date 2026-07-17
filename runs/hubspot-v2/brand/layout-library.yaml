@@ -100,7 +100,20 @@ patterns:
         # secondary family — computed evidence: 'Get started free' = white fill,
         # 2px #ff4800 border, #ff4800 ink (.cl-button.-secondary.-large).
         - { name: actions, role: filled-orange primary + outlined white secondary (large 16px/40px inset), textLen: short, sizeClass: control, width: hug, z: front }
-        - { name: background, role: full-bleed warm office photograph w/ dark tint, mediaAspect: wide, mediaScale: { of: container, fraction: 1.0 }, width: full-bleed, z: back, assets: [018-hs-full-bleed-1-optmised.webp] }
+        # media semantics 2026-07 (spec/media-assets-schema.md §3): the observed
+        # arrangement — ONE full-bleed photograph at z:back with the content stack
+        # above it (the sanctioned text-on-media treatment below carries the scrim).
+        - name: background
+          role: full-bleed warm office photograph w/ dark tint
+          mediaAspect: wide
+          mediaScale: { of: container, fraction: 1.0 }
+          width: full-bleed
+          z: back
+          assets: [018-hs-full-bleed-1-optmised.webp]
+          mediaComposition:
+            mode: background-with-foreground
+            layers:
+              - { assetRef: hero-office-photo, z: back, width: full-bleed }
     specialTreatments:
       # fix1 2026-07 item-2: evidence CORRECTION — css-rules.json carries the source's
       # own scrim: `.wf-page-header-human .wf-page-header_background-image::after
@@ -121,6 +134,7 @@ patterns:
       - { ts: "2026-07-10T19:50:00Z", action: created, from: null, to: hero-photo-overlay, by: creation, signalId: null, note: "grounding section-01: centered stack over full-bleed photo, pad ~210/200, eyebrow->heading 24, heading->body 40, body->cta 60; h1 measured 80px/95px serif w500 (Book master via the page-header face)" }
       - { ts: "2026-07-12T00:30:00Z", action: adjusted, from: "opacityClass none / prose registers / site rhythm", to: "measured scrim rgba(0,0,0,0.4) + bandPadding 11rem/11rem + bandRhythm 10/28/44 + explicit outlined-white secondary", by: fix1-punch-list, signalId: null, note: "user punch items 1-4; deterministic evidence outranks the grounding's ink-to-ink approximations (css-rules ::after scrim; computed h1/action rects; fullpage pixel scan)" }
       - { ts: "2026-07-13T16:30:00Z", action: adjusted, from: "uncapped hero text column", to: "stackMeasure 49rem", by: fix3-containment, signalId: null, note: "computed h1 rect w=742.56px @1440 (46.41rem, two lines via the source's own .-break at >=900px); the uncapped replica painted the heading one-line on wide screens. Authored 49rem, not the raw 46.41rem: our HubSpot Serif Book cut runs ~2.5% wider (two-line window probes 761..1005px), so the raw cap forced a THIRD line — 49rem reproduces the source wrap at 1440 AND 1920 (test-pinned)" }
+      - { ts: "2026-07-16T09:30:00Z", action: updated, from: null, to: "background mediaComposition (background-with-foreground)", by: media-semantics, signalId: null, note: "media semantics layer: the background slot's arrangement recorded per spec/media-assets-schema.md §3 (assetRef hero-office-photo, z back, full-bleed); data-only — composers/replica unchanged" }
   - id: logo-proof-strip
     useCase: logos
     archetypeRef: stack
@@ -144,7 +158,25 @@ patterns:
       deviceGeometry: { headingRegister: h4 }
       slots:
         - { name: heading, role: sans stat heading (22px w500), textLen: medium, sizeClass: title, width: hug, z: front }
-        - { name: logos, role: 5 customer logo vectors in one spaced row, mediaAspect: wide, mediaScale: { of: container, fraction: 0.96, gap: 69px, item: { width: 153px, height: 76px }, source: computed }, width: full-bleed, z: front, assets: [019-ebay-logo.svg, 020-doordash-logo.svg, 021-reddit-logo.svg, 022-tripadvisor-logo.svg, 023-eventbrite-logo.svg] }
+        # media semantics 2026-07: the resting 1440 arrangement is a STATIC spaced
+        # grid of five marks (computed 153×76 boxes, 69px gaps) — tiled-grid, not a
+        # marquee; the carousel-rail treatment below records the rail affordance.
+        - name: logos
+          role: 5 customer logo vectors in one spaced row
+          mediaAspect: wide
+          mediaScale: { of: container, fraction: 0.96, gap: 69px, item: { width: 153px, height: 76px }, source: computed }
+          width: full-bleed
+          z: front
+          assets: [019-ebay-logo.svg, 020-doordash-logo.svg, 021-reddit-logo.svg, 022-tripadvisor-logo.svg, 023-eventbrite-logo.svg]
+          mediaComposition:
+            mode: tiled-grid
+            grid: { columns: 5, gap: 69px }
+            layers:
+              - { assetRef: client-logo-ebay }
+              - { assetRef: client-logo-doordash }
+              - { assetRef: client-logo-reddit }
+              - { assetRef: client-logo-tripadvisor }
+              - { assetRef: client-logo-eventbrite }
     specialTreatments:
       - { kind: carousel-rail, target: logos, sanctioned: true, note: "cl-carousel rail with round controls in DOM; static spaced row is the measured 1440 resting frame (logo hover: opacity .55, css-facts hoverRules)" }
     responsive: { collapse: none, mediaFirst: false }
@@ -157,6 +189,7 @@ patterns:
     changelog:
       - { ts: "2026-07-10T19:50:00Z", action: created, from: null, to: logo-proof-strip, by: creation, signalId: null, note: "grounding section-02: 5 legible logos (eBay/DoorDash/reddit/Tripadvisor/eventbrite), gap ~130px, heading 22px measured" }
       - { ts: "2026-07-13T10:45:00Z", action: adjusted, from: "mediaScale fraction 0.9 / gap 130px (ink-to-ink)", to: "mediaScale item 153x76px + box gap 69px (computed)", by: fix2-logo-boxes, signalId: null, note: "playwright computed on capture: .csol-logo-carousel-image uniform 153x76 contain-fit frames, box gap 69px, row 1041px of 1080 content; the ink read undersized marks ~40%" }
+      - { ts: "2026-07-16T09:30:00Z", action: updated, from: null, to: "logos mediaComposition (tiled-grid, 5 assetRefs)", by: media-semantics, signalId: null, note: "media semantics layer: the resting arrangement is a static 5-mark tiled grid (computed boxes above); the carousel-rail affordance stays the treatment's fact; data-only" }
   - id: platform-showcase-carousel
     useCase: features
     archetypeRef: split
@@ -260,7 +293,23 @@ patterns:
         - { name: eyebrow, role: breeze icon chip + dotted rule + ink-outlined pill CTA row, textLen: short, sizeClass: caption, width: full, z: front, assets: [035-breeze-20icon.svg] }
         - { name: heading, role: section h2 (40px serif), textLen: medium, sizeClass: title, width: half, z: front }
         - { name: body, role: supporting paragraph (right column), textLen: long, sizeClass: body, width: half, z: front }
-        - { name: cards, role: 3 agent cards w/ product-UI media wells, textLen: long, sizeClass: body, width: full-bleed, z: front, mediaAspect: square, assets: [036-customer-agent-en-2x.png, 037-prospecting-agent-en-2x.png, 038-data-hub-en-2x.png] }
+        # media semantics 2026-07: the card track's media advance by slide — the
+        # carousel arrangement (edge-cut autoplay track; controls stay the
+        # edge-cut treatment's facts below).
+        - name: cards
+          role: 3 agent cards w/ product-UI media wells
+          textLen: long
+          sizeClass: body
+          width: full-bleed
+          z: front
+          mediaAspect: square
+          assets: [036-customer-agent-en-2x.png, 037-prospecting-agent-en-2x.png, 038-data-hub-en-2x.png]
+          mediaComposition:
+            mode: carousel
+            layers:
+              - { assetRef: product-ui-agent-support }
+              - { assetRef: product-ui-agent-prospecting }
+              - { assetRef: product-ui-agent-data }
         - { name: controls, role: round white prev/next + pause buttons, textLen: short, sizeClass: control, width: hug, z: front }
       gridEqualize: { heights: stretch, slack: media-well, actionPinned: false, note: "the visible track cards render EQUAL heights with differing copy lengths (breeze-slide interaction captures) — slack absorbs into the media well; links flow with the text stack" }
       # fix1 2026-07 item-8: cardRegister = the 24px sans card-heading tier (== brand
@@ -288,6 +337,7 @@ patterns:
       - { ts: "2026-07-10T19:50:00Z", action: created, from: null, to: agent-card-carousel, by: creation, signalId: null, note: "grounding section-05: card radius 14 vision -> 16px per --cl-border-radius-container; media-well #f2ece4 vision -> #ece6d9 accent-fill-05; outlined pill = cl-button -tertiary-outline measured 2px #1f1f1f r8" }
       - { ts: "2026-07-12T00:30:00Z", action: updated, from: agent-card-carousel, to: agent-card-carousel, by: fix1, signalId: null, note: "item-8: header rail promoted from intent prose to a sanctioned dotted-rule-rail treatment (the renderer stamps devices from treatments); eyebrow-slot CTA prose now names the measured ink-outlined register (-tertiary-outline 2px #1f1f1f)" }
       - { ts: "2026-07-13T10:40:00Z", action: updated, from: agent-card-carousel, to: agent-card-carousel, by: fix2, signalId: null, note: "bound recipeRef section-headrail/icon-chip; eyebrow-slot icon corrected 027-ai-20sparkle.svg -> 035-breeze-20icon.svg (source chip img src is the 32×32 breeze mark; the sparkle is the split badge's icon)" }
+      - { ts: "2026-07-16T09:30:00Z", action: updated, from: null, to: "cards mediaComposition (carousel, 3 assetRefs)", by: media-semantics, signalId: null, note: "media semantics layer: the slide-advance media arrangement recorded; the edge-cut treatment keeps the track/control facts; data-only" }
   - id: integration-collage-banner
     useCase: banner
     archetypeRef: split
@@ -309,7 +359,26 @@ patterns:
       slots:
         - { name: heading, role: sans banner heading (22px w500), textLen: medium, sizeClass: title, width: half, z: front }
         - { name: action, role: ink text link w/ orange underline, textLen: short, sizeClass: control, width: hug, z: front }
-        - { name: media, role: app-logo collage (6 colored vectors, tiled), mediaAspect: landscape, mediaScale: { of: container, fraction: 0.42, gap: 1.25rem }, width: half, z: front, assets: [044-slack-icon-2.svg, 042-zapier-icon-2.svg, 041-mailchimp-icon-3.svg, 039-gmail-icon-3.svg, 040-shopify-icon-3.svg, 043-google-ads-icon-2.svg] }
+        # media semantics 2026-07: the observed arrangement — six colored app marks
+        # tiled AT ANGLES, cropped at the inset card's edges (grounding section-06:
+        # "6 tool icons tiled at angles") — a scattered cluster, not an even grid.
+        - name: media
+          role: app-logo collage (6 colored vectors, tiled)
+          mediaAspect: landscape
+          mediaScale: { of: container, fraction: 0.42, gap: 1.25rem }
+          width: half
+          z: front
+          assets: [044-slack-icon-2.svg, 042-zapier-icon-2.svg, 041-mailchimp-icon-3.svg, 039-gmail-icon-3.svg, 040-shopify-icon-3.svg, 043-google-ads-icon-2.svg]
+          mediaComposition:
+            mode: scattered-cluster
+            scatter: { rotationRange: [-15, 15], jitterCols: 0.5 }   # vision estimate (grounding section-06); no computed angles
+            layers:
+              - { assetRef: integration-logo-slack }
+              - { assetRef: integration-logo-zapier }
+              - { assetRef: integration-logo-mailchimp }
+              - { assetRef: integration-logo-gmail }
+              - { assetRef: integration-logo-shopify }
+              - { assetRef: integration-logo-google-ads }
     specialTreatments:
       - { kind: inset-panel, target: background, sanctioned: true, note: "white card radius 16 (--cl-border-radius-container), 1px hairline border-03 rgba(0,0,0,0.11), collage cropped at card edges (grounding section-06)" }
     responsive: { collapse: stack, mediaFirst: false }
@@ -321,6 +390,7 @@ patterns:
     scope: design-language
     changelog:
       - { ts: "2026-07-10T19:50:00Z", action: created, from: null, to: integration-collage-banner, by: creation, signalId: null, note: "grounding section-06; underline device = text-link-underline-01 #ff4800 (site token)" }
+      - { ts: "2026-07-16T09:30:00Z", action: updated, from: null, to: "media mediaComposition (scattered-cluster, 6 assetRefs)", by: media-semantics, signalId: null, note: "media semantics layer: grounding section-06's 'tiled at angles, cropped at card edges' recorded as a scattered cluster (rotationRange vision-estimated, flagged in-line); data-only" }
   - id: case-study-header-rail
     useCase: content
     archetypeRef: split
@@ -382,7 +452,23 @@ patterns:
         # fix1 2026-07: photo column is a FIXED 600px of the ~1075px card content box
         # (css-rules: testimonial-container grid-template-columns 600px 1fr; card pad
         # 1.5rem) — fraction 0.56, not the 0.35 first authored from the crop eyeball.
-        - { name: media, role: ACTIVE panel case-study photograph (rounded 4px), mediaAspect: landscape, mediaScale: { of: container, fraction: 0.56 }, width: half, z: front, assets: [045-unipart-1.png] }
+        # media semantics 2026-07: the media SWAPS with the selected tab — the
+        # generalized state-swap arrangement (trigger: tab); each panel's photograph
+        # binds by its tab label (layoutCopy …panels carries the quote/stat swaps).
+        - name: media
+          role: ACTIVE panel case-study photograph (rounded 4px)
+          mediaAspect: landscape
+          mediaScale: { of: container, fraction: 0.56 }
+          width: half
+          z: front
+          assets: [045-unipart-1.png]
+          mediaComposition:
+            mode: state-swap
+            trigger: tab
+            layers:
+              - { assetRef: client-photo-enterprise-tab, forItem: Enterprise }
+              - { assetRef: client-photo-midsize-tab, forItem: Mid-Sized Business }
+              - { assetRef: client-photo-smallbiz-tab, forItem: Small Business }
         - { name: support-statement, role: supporting statement — quotation + bold author + role + underlined link, textLen: long, sizeClass: body, width: half, z: front }
         - { name: stat-rows, role: ruled stat list — 2 serif numerals w/ sans descriptions, split by vertical rule, textLen: short, sizeClass: display, width: half, z: front }
       # the switcher's other two panels (Mid-Sized / Small Business photos 046/047 +
@@ -404,6 +490,7 @@ patterns:
     changelog:
       - { ts: "2026-07-10T19:50:00Z", action: created, from: null, to: testimonial-tab-stats, by: creation, signalId: null, note: "grounding section-08 + DOM harvest: 3 tabs, 3 tab-contents w/ photo+quote+author+2 stats each; card border 1px border-03; photo r4 (--cl-border-radius-small)" }
       - { ts: "2026-07-12T00:30:00Z", action: updated, from: testimonial-tab-stats, to: testimonial-tab-stats, by: fix1, signalId: null, note: "item-9: tabs slot + treatment re-authored to the CAPTURED anatomy (text tabs, active = bolder ink + accent underline, wash = hover state) — contradicts the created 'pill run w/ wash bg' resting-state claim; captures tab-03/04/05 are the evidence" }
+      - { ts: "2026-07-16T09:30:00Z", action: updated, from: null, to: "media mediaComposition (state-swap, trigger tab)", by: media-semantics, signalId: null, note: "media semantics layer: the tab-driven photo swap recorded as the generalized state-swap arrangement (3 assetRefs bound by tab label; interaction captures tab-03/04/05 are the evidence); data-only" }
   - id: award-badge-row
     useCase: logos
     archetypeRef: stack

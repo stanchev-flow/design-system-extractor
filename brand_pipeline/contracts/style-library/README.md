@@ -25,9 +25,13 @@ resolve(section, style, brand) = merge(sectionDefault, styleDirective, override,
 | `resolution-model.md` | engine | The 4-level cascade, merge semantics, locked invariants, algorithm. |
 | `sections/catalog.yaml` | **1** | Every section: slots, allowed layouts, invariants, variation axes. |
 | `styles/directives.yaml` | **2** | Every style: constraints + layout bias + signatures. |
+| `styles/pilot-presets.yaml` | **2** | PILOT (5 styles): concrete presets + 5 machine-checkable signatures + calibration-only exemplars ("spec 3" import 2026-07-15; format lock `tests/test_style_presets_pilot.py`). LIVE in `style_resolver.py` as level-2 defaults since 2026-07-16; wins over `generated-presets.yaml` on id collision. Thresholds UNCALIBRATED (calibration deferred; `runs/style-calibration/` workflow). |
+| `styles/generated-presets.yaml` | **2** | The remaining 45 styles: same schema as the pilot (presets + 5 signatures + neighbors/distinguishers + calibration-only exemplars; import 2026-07-16, 9 WCAG fixes documented in-file; format lock `tests/test_style_presets_generated.py`). LIVE as level-2 defaults; UNCALIBRATED. `dark-mode` is the 1/51 style with NO preset (resolves directive-only). |
+| `extraction-map.yaml` | — | Every token-schema key tagged snap (style-bound) vs literal (brand-bound) + confidence policy ("spec 3" import). |
 | `overrides/overrides.yaml` | **3** | Sparse (style × section) patches — only pairs that break defaults. |
 | `variations/axes.yaml` | — | Global variation knobs. Per-section knobs live in `sections/catalog.yaml` `variationAxes` (deduplicated at import; verified identical 21/21). |
 | `layouts/primitives.yaml` | — | The layout patterns sections reference. |
+| `REQUEST-preset-pilot.md` | — | The outbound request that produced the pilot (ANSWERED 2026-07-15 → `styles/pilot-presets.yaml` + `extraction-map.yaml`). |
 
 ## Why this shape
 - **Author `styles + sections`, not `styles × sections`.** 21 sections + 51 styles ≈ 72 authored units, not 1071+ matrix cells.

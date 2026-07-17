@@ -447,3 +447,284 @@ no renderer/gate module imports the resolver.
   editorial-magazine regenerate ONCE with the fixed block (their round-1
   artifacts archived in-lane at `_iter1-fail/`); neumorphism (green) is NOT
   regenerated.
+
+---
+
+## 2026-07-15 — preset pilot import + calibration prep (style-calibration/v001)
+
+**Pilot import (landed earlier today):** `styles/pilot-presets.yaml` (5 styles —
+swiss, editorial-magazine, neumorphism, scandinavian, japandi — each with `preset` /
+5 machine-checkable `signatures` / `neighbors` / `distinguishers` / calibration-only
+`exemplars`) + `extraction-map.yaml` + format-lock tests
+`brand_pipeline/tests/test_style_presets_pilot.py` (19 tests). One content defect
+fixed transparently at import: neumorphism `color.muted` failed the request's own
+3:1 contrast floor on bg (2.84:1 from the delivered hex); L stepped 0.58→0.55
+(#848992→#7b8089, 3.21:1). Everything else verbatim (details in the yaml header).
+
+**Calibration prep (this entry):** per the EXEMPLAR USAGE POLICY, exemplars get ONE
+measurement pass to turn the authored-prior thresholds into defensible envelope
+numbers, then the screenshots are discarded (never generation input, never runtime
+pixel-comparison). Prep artifacts (all under `runs/style-calibration/v001/`,
+gitignored):
+
+- **Shots: 14/14 captured, 0 failed** (Playwright, 1440px, full page) →
+  `runs/style-calibration/v001/shots/`. The 4 curl-level blockers all rendered in
+  the real browser (moma.org 403, aeon.co 429, normann-copenhagen.com 403,
+  normcph.com 454 — all captured clean). Two content caveats, recorded in manifest +
+  brief: (1) Karimoku Case's yaml URL karimoku-casestudy.com is DOMAIN-SQUATTED
+  (casino affiliate page); captured the official karimoku-case.com/about/ instead,
+  stitched from viewport frames because the site blanks scroll-revealed content in
+  full-page shots — exemplar URL repair is a follow-up decision; (2) the
+  moma.org/artists/8319 "Müller-Brockmann archive" URL resolves to a different
+  artist's page and measures MoMA's own site design — flagged weak evidence for the
+  swiss envelope.
+- **Manifest:** `runs/style-calibration/v001/manifest.json` (per exemplar: styleId,
+  name, url, file, status, note, capturedAt, viewportWidth).
+- **Brief:** `runs/style-calibration/v001/CALIBRATION-BRIEF.md` — paste-ready
+  Claude Design prompt: measurement protocol, envelope-across-exemplars rule (with
+  single-exemplar degradation + tolerance), merge-ready per-style YAML output in the
+  exact `check:` schema, anti-mimicry restated, current thresholds for all 5 styles
+  inlined, per-shot caveats, style-by-style attachment workflow.
+- Folder changelog: `runs/style-calibration/v001/changes.md`.
+
+**Status: thresholds remain UNCALIBRATED** — no edits to `pilot-presets.yaml` in
+this pass. Numbers come back from the user's Claude Design session; only then do
+check values move (with a changelog entry here).
+
+**Verification:** format-lock suite re-run after prep —
+`env -u PLAYWRIGHT_BROWSERS_PATH ./venv/bin/python -m pytest
+brand_pipeline/tests/test_style_presets_pilot.py -q` → **19 passed**;
+manifest parses (json + yaml) and cross-checks 14/14 against the pilot yaml
+exemplar list.
+
+---
+
+## Preset pilot import ("spec 3", 2026-07-15)
+
+Claude Design answered `REQUEST-preset-pilot.md` with two deliverables
+(`~/Downloads/spec 3/`), imported behind the same authored-prior discipline as
+the original package:
+
+- **`styles/pilot-presets.yaml`** — 5 styles (swiss, editorial-magazine,
+  neumorphism, scandinavian, japandi): concrete `preset:` values (real font
+  stacks + googleFont substitutes, oklch+hex 6-role palettes, spacing scales,
+  radii, imagery art direction), 5 machine-checkable signatures each in OUR
+  gate schema, neighbors + per-neighbor distinguishers, 14 exemplars ALL
+  tagged `usage: calibration-only` under an explicit anti-mimicry policy
+  header (never generation input, never pixel-compared; envelope not point).
+- **`extraction-map.yaml`** — every token-schema key tagged snap (style-bound,
+  with snapRule) vs literal (brand-bound: all colors, fonts, tracking, logo)
+  plus a confidencePolicy (noisy keys flag for human confirm; literals never
+  fabricated).
+- **Import audit (computational, not trust)**: ids resolve into
+  directives.yaml 5/5; signature kinds/modes/role vocab legal 25/25;
+  scandinavian-vs-japandi separable by checks alone (display families
+  disjoint, radii cross-fail 8↔3, whitespace floors 0.40 vs 0.55, cool 235°
+  vs warm 75° grounds); no style pair shares >4 preset axes; scaleRatio
+  carries real signal (1.2/1.25/1.333/1.5). **One content defect fixed
+  transparently at import** (same protocol as the original package):
+  neumorphism `color.muted` measured 2.84:1 on bg against the request's own
+  3:1 floor → L 0.58→0.55 (`#848992`→`#7b8089`, 3.21:1), annotated inline.
+- **Format lock**: `brand_pipeline/tests/test_style_presets_pilot.py` (19
+  tests) — pilot shape, signature schema, exemplar policy, WCAG floors,
+  no-filler, neighbor separation, extraction-map coverage/bindings/policy,
+  provenance headers. The remaining 46 styles must arrive in this shape or
+  fail here.
+- **Calibration kit** (next step, user-driven): all 14 exemplar URLs verified
+  live (4 bot-block curl but capture fine in a real browser); full-page
+  1440px screenshots ×14 + manifest + paste-ready measurement brief at
+  `runs/style-calibration/v001/` (protocol: whitespace ratio, section
+  padding, accent paint share, ground luminance/temperature, radii, type
+  category → merge-ready `calibration:` YAML with keep/adjust verdicts).
+  Thresholds calibrate ONCE against the measured envelope, then screenshots
+  retire per the exemplar policy.
+- NOT merged into `directives.yaml` and NOT wired into the resolver yet —
+  that graduation waits for the preset-live bakeoff (pass bar: 5 styles
+  tellable-apart at a glance; scandinavian-vs-japandi separable by signature
+  checks alone).
+
+---
+
+## 2026-07-16 — 45-style preset package imported + WHOLE preset layer LIVE (level-2 defaults, UNCALIBRATED)
+
+Claude Design delivered the remaining 45 non-pilot presets
+(`~/Downloads/generated-presets.yaml`, same schema as the pilot); imported to
+`styles/generated-presets.yaml` and the ENTIRE preset layer (5 pilot + 45
+generated) wired into `brand_pipeline/style_resolver.py` as LEVEL-2 DEFAULTS.
+Per the user's explicit call, NO calibration loop ran: every threshold stays
+marked UNCALIBRATED and refines over time through the existing
+`runs/style-calibration/` workflow (measure exemplars once, adjust check
+values with a changelog entry here, retire the shots).
+
+**Import + audit (computational, pilot-grade — all 45):**
+
+- **(a) id coverage**: 45/45 ids resolve into `directives.yaml`; 0 overlap
+  with the pilot 5. Coverage math: **51 directives = 5 pilot + 45 generated +
+  exactly ONE uncovered style — `dark-mode`** (no preset in either file; it
+  resolves directive-only, byte-identically to pre-preset behavior). All
+  neighbor refs are real directive ids with distinguishers both ways.
+- **(b) signature schema**: 225/225 legal — exactly 5 per style; kinds within
+  accent-scope/shape-motif/type-treatment/surface-habit/spacing-habit; role
+  vocab clean; every row carries claim + non-empty check. Mode census: 206
+  `always`, 13 `never`, 6 `sometimes` (optional motifs — prompt guidance,
+  never a gate; the six rows pinned by test).
+- **(c) WCAG self-consistency** (text/bg ≥4.5, text/surface ≥4.5, muted/bg
+  ≥3.0, computed from the hex mirrors; rgba surfaces composited over bg;
+  dark styles computed identically — contrast math is symmetric): **NINE
+  failures in 8 styles, fixed transparently** with the pilot protocol
+  (smallest oklch-L step to compliance; stepping verified byte-exact against
+  the pilot's documented neumorphism fix #848992→#7b8089): y2k muted
+  2.84→3.10 · vaporwave surface (text 3.95→4.68) · psychedelic surface (text
+  3.00→4.52) · glassmorphism bg (text-on-composited-glass 3.81→4.56) ·
+  claymorphism muted 2.80→3.04 · boutique-wellness muted 2.89→3.00 ·
+  maximalist surface (text 4.16→4.51) · anti-design text 4.39→4.59 AND muted
+  2.30→3.05. Where near-white/near-black TEXT had no headroom the
+  surface/bg stepped instead — each fix annotated inline + header ledger.
+  Only these 18 scalar values (9 × oklch+hex) differ from the delivery —
+  verified by structural diff. Note: the delivered hex mirrors drift from a
+  strict oklch→sRGB conversion on many roles (same character as the pilot
+  delivery; hex is declared an approximation and is the operative side for
+  the floors).
+- **(d) exemplar policy**: the delivered file did NOT lack it — the EXEMPLAR
+  USAGE POLICY header and per-exemplar `usage: calibration-only` tags arrived
+  already present (nothing added); every exemplar carries url + lookAt.
+  Delivery gap recorded: **17 styles carry ONE exemplar** (target 2-3) —
+  y2k, vaporwave, pixel-8bit, psychedelic, art-deco, art-nouveau,
+  skeuomorphic, ios-hig, fluent, hand-drawn, collage, organic, grunge,
+  textured-paper, anti-design, cyberpunk, poster-typographic — queued for
+  the deferred calibration pass to top up.
+- **(e) no-filler sampling across ALL 50 presets** (12 compared axes,
+  1225 pairs): scaleRatio carries real signal (10 distinct ratios 1.15–1.6);
+  **zero identical font+palette+radius triples** (the hard-defect line —
+  clean); 110 pairs share >4 axes. NOT hard-failed per the import call —
+  recorded as the **calibration queue** (deferred calibration will sharpen
+  them), worst offenders first: high-contrast-mono↔monochrome (8 shared) ·
+  claymorphism↔skeuomorphic (8) · retro-70s↔textured-paper,
+  organic↔textured-paper, mid-century↔y2k, mid-century↔monochrome,
+  memphis↔mid-century, high-contrast-mono↔mid-century,
+  hand-drawn↔retro-70s, glassmorphism↔y2k (7 each). These pairs' presets
+  remain distinguishable on identity axes (display family / accent / bg /
+  radius) — the sharing concentrates in base-size/gutter/max-width plumbing.
+- `pilot-presets.yaml` and `directives.yaml` untouched.
+
+**Resolver wiring (`style_resolver.py` §P — presets LIVE as level-2 defaults):**
+
+- `load_library` loads `pilot-presets.yaml` + `generated-presets.yaml` into
+  ONE merged preset map on `StyleLibrary.presets` (50 entries), **pilot wins
+  on id collision**; unknown preset ids fail closed (`StyleResolutionError`);
+  exemplars are STRIPPED at load (calibration-only — they must never travel
+  toward a prompt); the YAML-1.1 bare-`on:` probe-key coercion (same defect
+  class as the catalog's on/off axis values) is normalized in memory, files
+  verbatim.
+- `resolve()` step 8: `_apply_preset_precedence` folds the preset UNDER the
+  brand evidence stack — a preset slot fills ONLY where the brand carries no
+  measured fact; every brand binding suppresses its preset slot(s)
+  (typeDisplay/typeBody→font, scaleRatio→type ratio+base, space→space,
+  radius→shape.radiusPx, motion→motion, measured brand palette→color), each
+  suppression logged as a `presetDissents` row (winner=brand, provenance
+  named — the §4.2 posture applied to the preset layer). Directive
+  `constraints` and the existing dissent ledger are UNTOUCHED (presets are
+  additive fields `stylePreset` + `presetDissents`, absent entirely for
+  `dark-mode` — proven byte-identical against the pre-preset resolver on
+  resolution dicts AND rendered blocks, with and without a brand).
+- Preset scaleRatio values are REAL authored defaults — the §5 zero-signal
+  filler rule stays directive-only (a preset 1.25 survives; a measured brand
+  ratio still beats it with a dissent).
+- `render_style_directive_block` gains the compact prompt-safe preset block
+  (font pairing + stacks, palette roles oklch+hex, space steps + rhythm,
+  shape radius/border/shadow recipe, layout, imagery art direction, motion
+  when present, the 5 signatures as [always]/[never] guidance lines with
+  their check parameters, and the preset-dissent ledger), marked explicitly:
+  **"authored defaults (uncalibrated) — any measured brand fact beats
+  these"** + the calibration-workflow pointer. Purely additive (strip the
+  preset lines → the presetless block, byte-exact); no exemplar name/URL can
+  render. `generate_composition.py` NOT edited — the block rides the
+  existing 5c `style_directives` hook (injection contracts stay pinned by
+  `test_pass3_prompt_injection.py`, all green).
+- Docs made official: README file-map rows for both preset files;
+  resolution-model.md preset-layer note (level-2 defaults beside the
+  directives, brand facts win, pilot-wins rule, dark-mode accounting);
+  extraction-map.yaml header cross-ref (presets are the snap-rung targets).
+
+**Tests (NEW files only):**
+
+- `tests/test_style_presets_generated.py` (22) — format lock for the 45:
+  coverage math incl. the pinned `dark-mode` accounting, preset axes +
+  oklch/hex mirrors, 5-signature legality + the pinned six `sometimes` rows,
+  role vocab, WCAG floors for all 45 incl. the nine pinned fixes + header
+  ledger, exemplar policy incl. the pinned 17-single-exemplar gap,
+  no-filler hard line (no identical triples; no axis-identical pair),
+  provenance/UNCALIBRATED headers.
+- `tests/test_style_preset_resolution.py` (25) — resolver behavior: 50
+  presets loaded with pilot-wins (tamper-proofed via temp-library fixtures),
+  fail-closed unknown ids, exemplar stripping, probe-key normalization,
+  preset-fills-gap (empty bundle keeps the full preset, zero dissents),
+  partial-facts suppress only their slots, measured hubspot facts beat
+  presets with the full dissent ledger, dark-mode byte-identity (resolution
+  + rendered block, with/without brand, vs a presets-empty library),
+  preset-block content + uncalibrated marker + additivity proof + no-http
+  anti-mimicry guard, 21×51 all-pairs smoke with presets live.
+- Full suite: `env -u PLAYWRIGHT_BROWSERS_PATH ./venv/bin/python -m pytest
+  brand_pipeline/tests -q` → final run **1508 passed, 0 failed** (exit 0;
+  baseline was 1365 this morning — delta = my 47 + the concurrent
+  media-semantics agent's landings). Honest transit note: two mid-flight
+  runs showed 1507 passed / 1 failed on
+  `test_fix7_lints.py::OnbrandLintRows::test_composed_lane_gets_clean_rows`
+  (media-binding/mark-legality lint rows) — the concurrent agent's
+  `onbrand_check.py` edit mid-landing, in files this pass never touched; it
+  settled green on its own with no intervention (fence honored — no edits,
+  no reverts in their lane). All 75 pre-existing style-layer tests (pilot 19
+  + resolver 39 + injection 16) green with presets live; my 47 additions
+  green.
+
+**Status: presets are LIVE but UNCALIBRATED.** Deferred-calibration path
+(the over-time mechanism, unchanged): capture exemplars per style under
+`runs/style-calibration/` → measure once against the protocol brief →
+adjust the `check:` values in the preset yaml with a dated entry here →
+retire the shots. Queue priorities from this import: the 17 single-exemplar
+styles (top-ups) and the shared-axis pairs listed in (e).
+
+## 2026-07-17 — STYLE AUTO-RESOLUTION: presets now shape the DEFAULT generate path (not just opt-in lanes)
+
+The preset layer landed 2026-07-16 as level-2 defaults inside the resolver, but
+it only reached a generation prompt when a caller resolved the block by hand and
+passed `generate_composition(..., style_directives=...)`. This closes that gap:
+the default generate path now auto-resolves the picked style and injects the
+block by construction.
+
+- **Where** — `brand_pipeline/generate_composition.py`, the higher-level
+  `generate_composition()` entrypoint (right before `build_prompt`, ~line 1476).
+  Two new helpers carry it:
+  - `_auto_style_directives(style_id, brand_yaml_path)` — `load_library()` →
+    `resolve_all(style_id, library, load_brand_bundle(brand_dir))` →
+    `render_style_directive_block(...)`. Resolves ALL sections (the default
+    `resolve_all` behavior — the section set is unknown before the model
+    composes).
+  - `_resolve_style_directives(style_directives, style_id, brand_yaml_path)` —
+    the precedence gate: an explicit non-None caller value wins verbatim
+    (including `""` = suppress); only `None` triggers auto-resolution.
+  Resolved at the entrypoint (not inside `build_prompt`) so the assembler stays
+  pure, the explicit-wins/opt-out guard is honored, and `load_library` runs at
+  most once per generation. This is auto-RESOLUTION of an already-chosen id, not
+  style DETECTION (a separate future feature).
+- **Fact-gated / byte-identical** — auto-resolution is gated on PRESET presence
+  (`style_id in library.presets`). `dark-mode` (the uncovered id) and any
+  non-library style id (e.g. the base-only `corporate-saas-clean`) return no
+  block, so the assembled prompt stays byte-identical to the pre-wiring
+  assembly. Preset-backed ids get the resolved block with authored defaults
+  under any measured brand fact — precedence + `presetDissents` unchanged.
+- **Explicit-wins / opt-out** — a caller-supplied `style_directives` (incl.
+  `""`) is never overwritten; the opt-out path never touches the library.
+- **Fail-open** — a missing/unloadable library or any resolver error degrades to
+  no block, no crash (live generation path).
+- **Fence intact** — prompt-shaping only; no renderer/gate/replica path touched
+  (`generate_composition` was already the resolver's sanctioned consumer).
+  Replica scores cannot move; full replica scoring NOT re-run.
+- **Tests** — NEW `tests/test_style_autoresolve.py` (16): resolve+render helper
+  (preset-backed / no-preset / non-library / raise), precedence gate
+  (explicit-wins, opt-out, opt-out-never-loads-library, None→auto), default-path
+  `build_prompt` injection + ordering, and byte-identity for
+  no-preset/non-library/failure. Full suite:
+  `env -u PLAYWRIGHT_BROWSERS_PATH ./venv/bin/python -m pytest brand_pipeline/tests -q`
+  → **1524 passed, 0 failed** (baseline 1508 + 16 new). Existing pass-3
+  byte-identity tests (`test_pass3_prompt_injection.py`) stay green.

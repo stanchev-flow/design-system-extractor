@@ -28,6 +28,14 @@ Design intent (repo conventions this prompt encodes):
   (`componentAnatomies`) are the lead the Layout Analyst uses to promote anatomy
   seen in 2+ section crops into a brand-owned `recipes:` entry
   (brand-schema §4.4e) — the recipe layer is written during extraction.
+- **Media semantics are evidence** (media semantics 2026-07). Per-crop
+  `mediaAssets` (what each visible file IS: kind taxonomy, rights family, subject
+  as generic role words), `mediaComposition` (how assets/components ARRANGE:
+  mode, layers, what is baked flat vs separable), and `generatedVisualDevices`
+  (gradients/mesh/shader/3d that are CODE, not files — with parameters when
+  visible) feed the Layout Analyst's `media-assets.yaml` authoring
+  (spec/media-assets-schema.md). Same register as everything else: detailed
+  factual inventory, approximate values, generic role names.
 
 ---
 
@@ -126,6 +134,50 @@ media:
     treatment: <generic: "monochrome ink vectors ~40px tall in a row" / "screenshot on inverse media-well">
     aspect: landscape|portrait|square|wide|freeform
     approxFractionOfSection: <0..1>
+mediaAssets:   # OMIT when the crop shows no imagery. One entry per DISTINCT visual
+  # asset visible in this crop — the ASSET-SEMANTICS observation feeding
+  # media-assets.v1 authoring. `kind` uses the closed taxonomy (photograph,
+  # portrait, avatar, team-photo, client-photo, product-packshot,
+  # product-ui-screenshot, device-framed-mockup, product-ui-collage, diagram,
+  # chart, illustration, spot-icon, ui-glyph, social-icon, logo-own,
+  # logo-third-party, badge-compliance, badge-review-award, badge-appstore,
+  # background-art, texture-noise, pattern-tile, accent-shape, 3d-render, map,
+  # social-proof-screenshot, video-ambient-loop, video-content,
+  # video-embed-third-party, video-poster, animation).
+  - kind: <taxonomy value>
+    subject: <generic role words — "warm office scene", "orbiting product chips";
+      NEVER the pictured business/campaign subject>
+    rightsGuess: own|third-party-mark   # someone else's mark/badge vs the brand's own art
+    luminance: dark|mid|light           # how the asset READS (text-over-media legality)
+    busyness: low|medium|high           # detail density
+    aspect: landscape|portrait|square|wide|pano|freeform
+    alphaEdge: true|false               # meaningful silhouette/transparency visible?
+    countObserved: <n>                  # e.g. 6 integration tiles of this kind
+    videoSubtype: ambient-loop|content|embed-third-party   # video only; note the
+      # provider ("player chrome reads <provider>") + visible poster in `notes`
+mediaComposition:   # OMIT when each media sits alone. How this crop's assets/
+  # components ARRANGE — the arrangement observation feeding mediaComposition
+  # authoring (media-assets-schema §3). Report what is BAKED into one flat file vs
+  # SEPARABLE layers (distinct DOM nodes / mismatched resampling / occlusion edges).
+  - mode: single|layered|masked-media|background-with-foreground|overlapping-cluster
+      |scattered-cluster|facepile|tiled-grid|marquee|masonry|split-pair|carousel
+      |state-swap|atomic-collage|icon-in-headline
+    layers: <ordered back→front one-liner: "full-bleed photo (baked tint) -> centered
+      copy stack -> corner product chip; chip is a SEPARATE element, tint is baked">
+    bakedVsSeparable: <which parts are one flat artwork vs independently placed>
+    trigger: active-item|hover|tab      # state-swap only (open accordion item pairs
+      # with its own media; tab panel swaps art; hover reveals)
+    componentsOverMedia: <rendered COMPONENTS floating over media, if any: stat card,
+      testimonial chip, notification toast — name the component family, not content>
+generatedVisualDevices:   # OMIT when none. Visuals that are CODE, not files —
+  # gradients/mesh blobs/shader canvases/embedded 3D/noise/dot grids. Report
+  # parameters when visible; never guess hidden ones.
+  - kind: css-gradient|mesh-gradient-blobs|shader-canvas|embedded-3d|noise-grain|dot-grid
+    evidence: <why it reads as generated: "hard-edged band gradient, no raster grain" /
+      "blurred hue blobs drifting behind copy" / "canvas element, live reflections">
+    params: <approx stops/angles ("#fcc3dc -> #fcc6b1, ~90deg"), blob count + hue
+      families + blur class, provider chrome for embedded 3D — what is VISIBLE>
+    poster: <what a still poster frame of it shows>
 chrome:            # ONLY for navbar/footer sections, else omit entirely
   casing: <link-label case: sentence|upper|title>
   separators: <between links: none | "/" | "·" | pipe | whitespace-only>

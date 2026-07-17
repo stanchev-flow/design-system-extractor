@@ -2713,16 +2713,24 @@ def render_eyebrow(doc, ctx: ComponentContext, props=None) -> str:
 def asset_render_mode(doc, src, role: str = "") -> str:
     """Return ``cover`` | ``contain`` | ``mark`` from captured media-treatment facts.
 
-    Resolution: an asset's explicit ``mediaTreatment.fit``; then the first generic
-    ``mediaTreatmentRules`` entry matching its ``assetKind`` and the requested slot
-    role; finally ``cover`` (the safe photographic/full-bleed default).  Filename
-    words and brand names are deliberately ignored.  ``mark`` (hubspot-v2 2026-07)
-    declares a device-frame glyph row — icon/logo art that renders at mark height
-    inside its module, never as a media well.
+    Resolution: the media-assets.v1 registry's per-asset ``treatmentDefaults.fit``
+    (media semantics 2026-07 — attached as ``_mediaAssetsFit`` by
+    ``compose_section.attach_asset_inventory``; brands without the artifact attach
+    an empty map); then an asset's explicit ``mediaTreatment.fit``; then the first
+    generic ``mediaTreatmentRules`` entry matching its ``assetKind`` and the
+    requested slot role; finally ``cover`` (the safe photographic/full-bleed
+    default).  Filename words and brand names are deliberately ignored.  ``mark``
+    (hubspot-v2 2026-07) declares a device-frame glyph row — icon/logo art that
+    renders at mark height inside its module, never as a media well.
     """
     name = Path(str(src or "")).name
     if not name:
         return "cover"
+    ms_fit = (doc or {}).get("_mediaAssetsFit") if isinstance(doc, dict) else None
+    if isinstance(ms_fit, dict):
+        fit = str(ms_fit.get(name) or "").strip().lower()
+        if fit in ("cover", "contain", "mark"):
+            return fit
     tags = (doc or {}).get("_assetTags") if isinstance(doc, dict) else None
     fact = tags.get(name) if isinstance(tags, dict) else None
     if isinstance(fact, dict):
@@ -2758,7 +2766,18 @@ def render_image(doc, ctx: ComponentContext, props=None) -> str:
     variant = props.get("variant", "")
     mod = f" c-image--{variant}" if variant in ("hero", "overlap") else ""
     aspect = props.get("aspect")
-    style = f' style="aspect-ratio: {esc(str(aspect))}"' if aspect else ""
+    style_parts = [f"aspect-ratio: {aspect}"] if aspect else []
+    # masked-media clip (media semantics 2026-07, spec/media-assets-schema.md §3):
+    # the image clips inside a brand accent-shape/logo silhouette. Declared-only —
+    # mask-less images keep the exact historical markup.
+    mask = props.get("mask")
+    if mask:
+        style_parts.append(
+            f"-webkit-mask-image: url('{mask}'); mask-image: url('{mask}'); "
+            "-webkit-mask-size: contain; mask-size: contain; "
+            "-webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; "
+            "-webkit-mask-position: center; mask-position: center")
+    style = f' style="{esc("; ".join(style_parts))}"' if style_parts else ""
     src = props.get("src")
     alt = esc(props.get("alt", ""))
     if not src:

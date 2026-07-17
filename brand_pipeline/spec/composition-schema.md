@@ -407,3 +407,34 @@ contrast when the brand ships no alternate cut) · `stepped-lines {target, steps
 direction}` (per-line indents in half-column units on an authored multi-line statement)
 · `break-frame {target, registration, salience: decorative}` (corner-anchored decoration
 crossing a frame edge; area-capped, never over text, decoration-salience gate applies).
+
+## 4.6.7 Media semantics on slots (media-assets.v1 tie-in, 2026-07)
+
+Normative spec: `spec/media-assets-schema.md`. Three OPTIONAL slot-level additions —
+all fact-gated on the ACTIVE brand shipping `runs/<brand>/brand/media-assets.yaml`
+(artifact-less brands keep byte-identical prompts/renders/gates):
+
+- **`slot.assetRef`** — a stable LOGICAL-ASSET id into the brand's `media-assets.v1`
+  registry (spec §2). The adapter resolves it to the canonical variant file
+  (`asset.src`), so the existing asset machinery renders it; an id the registry does
+  not carry is a hard media-binding failure (never a silent drop, never an invented
+  filename).
+- **`slot.mediaComposition`** — the arrangement grammar (spec §3): `mode` +
+  `layers[]`, each layer `assetRef` XOR `componentRef {contract, usage}` with the
+  §4.6.5 registration/z vocabulary VERBATIM. `layered`/`background-with-foreground`/
+  cluster modes expand onto the layered-media path (`_media_layers` →
+  `compose_stack_hero`); `componentRef` layers land as regular slots on the existing
+  overlay/panel/registration machinery; `state-swap {trigger: active-item}`
+  generalizes the accordion media swap (layers fold onto the per-item media channel);
+  `masked-media {maskRef}` clips the media inside an `accent-shape` asset's
+  silhouette; `tiled-grid`/`marquee` fold marks onto the logo-strip/marquee devices.
+- **`slot.noCompatibleAsset`** — the DECLARED-GAP rung of the no-match ladder (spec
+  §6): `{reason, requiredKind, aspect?, surface?, placeholder?: <generatedVisuals
+  id>}`. Declared gaps are collected into the lane's ASSET-REQUEST MANIFEST
+  (`asset-requests.json` beside `composition.json`). A media slot that neither
+  resolves an asset nor declares its gap fails the composed-lane `media-binding` row.
+
+The HARD RULE the generator answers under (spec §6): bind a compatible extracted
+asset when one exists; the ladder (reuse-with-treatment → declared gap →
+brand-legal placeholder recipe) is the ONLY path when none does. Third-party-mark
+legality rides AS-67 (marks in factual proof contexts only; badges never fabricated).

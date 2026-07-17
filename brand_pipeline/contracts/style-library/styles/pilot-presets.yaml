@@ -1,0 +1,371 @@
+# provenance: authored-prior (Claude design chat, 2026-07-15 "spec 3" export) — NOT evidence;
+#   level-2 DEFAULTS only: every value here is beaten by any measured brand fact (resolution-model
+#   precedence). Requires the preset-live bakeoff (REQUEST-preset-pilot.md §next) before graduation
+#   to the remaining 46 styles.
+# import 2026-07-15: ONE content defect fixed transparently — neumorphism color.muted failed the
+#   request's own 3:1 floor on bg (measured 2.84:1 from the delivered hex mirrors); L stepped
+#   0.58→0.55 (#848992→#7b8089, 3.21:1). Everything else verbatim. Audit + format lock:
+#   tests/test_style_presets_pilot.py; changelog: ../changes.md.
+#
+# Pilot presets + signatures — 5 styles (swiss, editorial-magazine, neumorphism, scandinavian, japandi)
+# Merge-ready. Adds ONLY new blocks (preset / signatures / neighbors / distinguishers / exemplars)
+# keyed by existing directive ids. Does not alter the 17 directive keys.
+# oklch is canonical; hex is an sRGB approximation (out-of-gamut oklch clamps).
+# EXEMPLAR USAGE POLICY (applies to every 'exemplars' entry below):
+#   usage: calibration-only  —  measure ONCE to set signature thresholds, then discard the image.
+#   NOT generation input      —  never placed in the composing agent's prompt (would cause mimicry).
+#   NOT pixel-compared        —  the taste gate checks the abstracted signature numbers, not closeness
+#                                 to any screenshot; outputs must fall inside the ENVELOPE the 2-3
+#                                 exemplars span, never near a single point.
+
+styles:
+
+  swiss:
+    preset:
+      font:
+        display: { family: "Neue Haas Grotesk Display", stack: "Neue Haas Grotesk Display, Helvetica Neue, Helvetica, Arial, sans-serif", weights: [500, 700], googleFont: "Archivo" }
+        body:    { family: "Neue Haas Grotesk Text",    stack: "Neue Haas Grotesk Text, Helvetica Neue, Helvetica, Arial, sans-serif", weights: [400, 500], googleFont: "Archivo" }
+      type:
+        baseSizePx: 17
+        scaleRatio: 1.333          # true: Swiss lives on big display/body jumps, not the 1.25 default
+        lineHeight: { display: 1.02, body: 1.5 }
+        measureCh: { body: 66, lead: 40 }
+        tracking: { display: "-0.02em", body: "0" }
+      color:
+        bg:      { oklch: "oklch(0.98 0.003 250)", hex: "#f8f9fb" }
+        surface: { oklch: "oklch(1 0 0)",          hex: "#ffffff" }
+        text:    { oklch: "oklch(0.16 0.004 250)", hex: "#191b1e" }
+        muted:   { oklch: "oklch(0.52 0.012 250)", hex: "#71757c" }
+        border:  { oklch: "oklch(0.87 0.005 250)", hex: "#d8dadd" }
+        accent:  { oklch: "oklch(0.56 0.21 27)",   hex: "#de2010" }   # the Swiss red
+      space:
+        basePx: 8
+        stepsPx: [4, 8, 16, 24, 48, 96]
+        sectionRhythmPx: 120
+      shape:
+        radiusPx: { button: 0, card: 0, input: 0 }
+        borderWidthPx: 1
+        shadow: "none"
+      layout:
+        maxWidthPx: 1200
+        gutterPx: 24
+        columns: 12                # the grid is the point — never off-grid
+      imagery:
+        subjects: "objective documentary photography — objects, architecture, people at work"
+        lighting: "even, flat, unromantic"
+        backdrop: "real environments or seamless neutral; no studio gloss"
+        treatment: "black & white or restrained color, high tonal range, uncropped feel"
+        aspectHabits: ["3:2", "1:1"]
+    signatures:
+      - id: accent-structural-only
+        kind: accent-scope
+        mode: always
+        claim: "The single red appears only on primary actions and inline arrow-links — never on headings, body, or dividers."
+        check: { maxPaintSharePct: 3, allowedRoles: [action-primary, arrow-link], forbiddenRoles: [heading, body-text, divider, icon, badge] }
+      - id: sharp-corners
+        kind: shape-motif
+        mode: always
+        claim: "Nothing is rounded — buttons, cards, and inputs are square-cornered."
+        check: { buttons: { radiusPx: 0 }, cards: { radiusPx: 0 } }
+      - id: grotesk-only
+        kind: type-treatment
+        mode: always
+        claim: "Display and body are both neutral grotesk sans; no serifs anywhere."
+        check: { probes: [ { on: display, familyIncludesAny: ["Neue Haas", "Helvetica", "Akzidenz", "Archivo", "Univers"], caseIs: mixed }, { on: body, familyIncludesAny: ["Neue Haas", "Helvetica", "Akzidenz", "Archivo"] } ] }
+      - id: flat-surfaces
+        kind: surface-habit
+        mode: never
+        claim: "Depth is never faked — no drop shadows or elevation; separation comes from the grid and hairlines."
+        check: { shadow: none, sectionMinLuminance: 0.96 }
+      - id: grid-discipline
+        kind: spacing-habit
+        mode: always
+        claim: "Everything sits on a strict column grid with disciplined, not lavish, whitespace."
+        check: { minSectionPaddingPx: 96, whitespaceRatioMin: 0.38 }
+    neighbors: [editorial-magazine, minimalist]
+    distinguishers:
+      editorial-magazine: "Swiss is grotesk-only and grid-locked; editorial is serif-driven with dramatic size contrast and looser figure placement."
+      minimalist: "Swiss keeps a loud structural accent (the red) and a visible grid; minimalist suppresses accent and grid alike."
+    exemplars:
+      - { name: "Swissted (Mike Joyce)", url: "https://www.swissted.com/", lookAt: "grotesk-only lockups, one accent, strict grid", usage: "calibration-only" }
+      - { name: "Vitsœ", url: "https://www.vitsoe.com/", lookAt: "functional grid, restrained color, objective product photography", usage: "calibration-only" }
+      - { name: "Josef Müller-Brockmann archive", url: "https://www.moma.org/artists/8319", lookAt: "canonical grid systems and red accent usage", usage: "calibration-only" }
+
+  editorial-magazine:
+    preset:
+      font:
+        display: { family: "Canela",       stack: "Canela, Playfair Display, Georgia, 'Times New Roman', serif", weights: [400, 500], googleFont: "Playfair Display" }
+        body:    { family: "Tiempos Text",  stack: "Tiempos Text, 'Source Serif 4', Georgia, serif",             weights: [400, 500], googleFont: "Source Serif 4" }
+      type:
+        baseSizePx: 19
+        scaleRatio: 1.5            # true: magazines run huge display against small body — the widest jump in the pilot
+        lineHeight: { display: 1.04, body: 1.65 }
+        measureCh: { body: 68, lead: 52 }
+        tracking: { display: "-0.01em", body: "0" }
+      color:
+        bg:      { oklch: "oklch(0.97 0.009 85)", hex: "#f6f3ec" }   # warm paper
+        surface: { oklch: "oklch(0.99 0.006 85)", hex: "#fdfbf6" }
+        text:    { oklch: "oklch(0.19 0.012 60)", hex: "#23211c" }
+        muted:   { oklch: "oklch(0.52 0.016 62)", hex: "#756d61" }
+        border:  { oklch: "oklch(0.88 0.012 78)", hex: "#ded7c9" }
+        accent:  { oklch: "oklch(0.46 0.14 25)",  hex: "#9e3529" }   # ink-red, used like a rule/highlight
+      space:
+        basePx: 8
+        stepsPx: [4, 8, 16, 24, 40, 72]
+        sectionRhythmPx: 128
+      shape:
+        radiusPx: { button: 0, card: 0, input: 0 }
+        borderWidthPx: 1
+        shadow: "none"
+      layout:
+        maxWidthPx: 1180
+        gutterPx: 32
+      imagery:
+        subjects: "large editorial figures — portraits, still life, reportage, always captioned"
+        lighting: "directional, story-driven, allowed to be moody"
+        backdrop: "context-rich; full-bleed or figure-with-caption, never floating on white"
+        treatment: "rich color or duotone, printed-page feel, generous crop"
+        aspectHabits: ["4:5", "3:2"]
+    signatures:
+      - id: serif-display-drama
+        kind: type-treatment
+        mode: always
+        claim: "A high-contrast serif carries the display, set dramatically larger than a serif body."
+        check: { probes: [ { on: display, familyIncludesAny: ["Canela", "Tiempos", "Playfair", "Freight", "Newsreader", "GT Sectra"], weightMax: 500 }, { on: body, familyIncludesAny: ["Tiempos", "Source Serif", "Georgia", "Lora"] } ] }
+      - id: warm-paper-ground
+        kind: surface-habit
+        mode: always
+        claim: "Everything sits on a warm paper ground; no shadows, ink-on-page not UI-on-screen."
+        check: { shadow: none, sectionMinLuminance: 0.95 }
+      - id: accent-as-rule
+        kind: accent-scope
+        mode: always
+        claim: "The ink-red behaves like a printed rule/link accent, never a filled button field."
+        check: { maxPaintSharePct: 2, allowedRoles: [arrow-link, divider], forbiddenRoles: [action-primary, heading, body-text, badge] }
+      - id: square-figures
+        kind: shape-motif
+        mode: always
+        claim: "Figures and any framing stay square-cornered like a printed page."
+        check: { buttons: { radiusPx: 0 }, cards: { radiusPx: 0 } }
+      - id: broad-margins
+        kind: spacing-habit
+        mode: always
+        claim: "Wide margins and tall section rhythm give a spread-like pace."
+        check: { minSectionPaddingPx: 104, whitespaceRatioMin: 0.44 }
+    neighbors: [serif-classic, newspaper]
+    distinguishers:
+      serif-classic: "Editorial exploits extreme display/body size contrast (ratio ~1.5) and full-bleed figures; serif-classic stays even-toned and modest in scale."
+      newspaper: "Editorial is airy with large captioned figures; newspaper is dense, multi-column, hairline-ruled with condensed type."
+    exemplars:
+      - { name: "The Gentlewoman", url: "https://thegentlewoman.co.uk/", lookAt: "serif display scale, captioned full-bleed portraits, warm paper", usage: "calibration-only" }
+      - { name: "Aeon", url: "https://aeon.co/", lookAt: "long-form serif rhythm and measure", usage: "calibration-only" }
+      - { name: "It's Nice That", url: "https://www.itsnicethat.com/", lookAt: "editorial figure/caption discipline and pace", usage: "calibration-only" }
+
+  neumorphism:
+    preset:
+      font:
+        display: { family: "Nunito",      stack: "Nunito, 'Nunito Sans', system-ui, sans-serif",     weights: [600, 700], googleFont: "Nunito" }
+        body:    { family: "Nunito Sans", stack: "'Nunito Sans', Nunito, system-ui, sans-serif",     weights: [400, 600], googleFont: "Nunito Sans" }
+      type:
+        baseSizePx: 16
+        scaleRatio: 1.2            # true: soft UI keeps a gentle, close scale — no drama
+        lineHeight: { display: 1.15, body: 1.6 }
+        measureCh: { body: 60, lead: 44 }
+      color:
+        bg:      { oklch: "oklch(0.92 0.005 255)", hex: "#e5e7ec" }   # single mid-light ground
+        surface: { oklch: "oklch(0.92 0.005 255)", hex: "#e5e7ec" }   # SAME as bg — the signature
+        text:    { oklch: "oklch(0.36 0.013 258)", hex: "#4a4e57" }
+        muted:   { oklch: "oklch(0.55 0.010 258)", hex: "#7b8089" }   # import fix: delivered 0.58/#848992 = 2.84:1 on bg, under the 3:1 floor
+        border:  { oklch: "oklch(0.88 0.005 255)", hex: "#dbdde3" }
+        accent:  { oklch: "oklch(0.62 0.090 258)", hex: "#7b91c2" }   # desaturated, barely-there
+      space:
+        basePx: 8
+        stepsPx: [8, 16, 24, 32, 48, 72]
+        sectionRhythmPx: 96
+      shape:
+        radiusPx: { button: 16, card: 28, input: 14 }
+        borderWidthPx: 0
+        shadow: "6px 6px 12px oklch(0.82 0.01 258), -6px -6px 12px oklch(0.99 0.003 255)"  # dual light/dark = extruded
+      layout:
+        maxWidthPx: 1120
+        gutterPx: 24
+      motion:
+        easing: "cubic-bezier(0.4, 0, 0.2, 1)"
+        durationsMs: [140, 220]   # soft press-in transitions are part of the tactile read
+      imagery:
+        subjects: "minimal — abstract soft shapes, monochrome icons; photography is rare"
+        lighting: "diffuse, no hard highlights"
+        backdrop: "same ground tone as the UI"
+        treatment: "tinted to the single hue, very low contrast"
+        aspectHabits: ["1:1"]
+    signatures:
+      - id: extruded-depth
+        kind: surface-habit
+        mode: always
+        claim: "Elements appear pressed from the background using paired light+dark shadows; depth is the entire aesthetic."
+        check: { shadow: allowed, sectionMinLuminance: 0.90 }
+      - id: mono-monotone-ground
+        kind: surface-habit
+        mode: always
+        claim: "Surface and background share one tone — cards never contrast against the page."
+        check: { darkMaxLuminance: 0.95, shadow: allowed }
+      - id: pillowy-radius
+        kind: shape-motif
+        mode: always
+        claim: "Corners are large and pillowy on every control."
+        check: { buttons: { radiusPx: 16 }, cards: { radiusPx: 28 } }
+      - id: whisper-accent
+        kind: accent-scope
+        mode: always
+        claim: "Color is nearly absent — a single desaturated accent, used sparingly."
+        check: { maxPaintSharePct: 2, allowedRoles: [action-primary, icon], forbiddenRoles: [heading, body-text, divider, badge] }
+      - id: soft-sans
+        kind: type-treatment
+        mode: always
+        claim: "Type is a rounded, soft sans — never a serif or sharp grotesk."
+        check: { probes: [ { on: display, familyIncludesAny: ["Nunito", "Quicksand", "Varela", "Baloo", "Comfortaa"], weightMax: 700 } ] }
+    neighbors: [glassmorphism, claymorphism]
+    distinguishers:
+      glassmorphism: "Neumorphism is opaque, monochrome, and same-tone extruded; glassmorphism is translucent frosted panels over a vivid, contrasting background."
+      claymorphism: "Neumorphism is low-contrast monochrome with subtle dual shadow; claymorphism is puffy, saturated pastel with a pronounced inner+outer shadow and real color."
+    exemplars:
+      - { name: "Dribbble neumorphism collection", url: "https://dribbble.com/tags/neumorphism", lookAt: "same-tone surfaces, paired shadow direction, low contrast", usage: "calibration-only" }
+      - { name: "Neumorphism.io", url: "https://neumorphism.io/", lookAt: "the exact dual-shadow recipe and single-ground constraint", usage: "calibration-only" }
+
+  scandinavian:
+    preset:
+      font:
+        display: { family: "Hanken Grotesk", stack: "'Hanken Grotesk', 'Neue Montreal', system-ui, sans-serif", weights: [500, 600], googleFont: "Hanken Grotesk" }
+        body:    { family: "Hanken Grotesk", stack: "'Hanken Grotesk', system-ui, sans-serif",                  weights: [400, 500], googleFont: "Hanken Grotesk" }
+      type:
+        baseSizePx: 17
+        scaleRatio: 1.25
+        lineHeight: { display: 1.12, body: 1.6 }
+        measureCh: { body: 64, lead: 46 }
+      color:
+        bg:      { oklch: "oklch(0.98 0.004 235)", hex: "#f6f8fa" }   # COOL off-white
+        surface: { oklch: "oklch(1 0 0)",          hex: "#ffffff" }
+        text:    { oklch: "oklch(0.24 0.009 250)", hex: "#2f3238" }
+        muted:   { oklch: "oklch(0.56 0.013 245)", hex: "#7e828a" }
+        border:  { oklch: "oklch(0.91 0.005 235)", hex: "#e2e5e9" }
+        accent:  { oklch: "oklch(0.60 0.060 240)", hex: "#7c8fac" }   # muted DUSTY BLUE (cool)
+      space:
+        basePx: 8
+        stepsPx: [4, 8, 16, 24, 40, 64]
+        sectionRhythmPx: 96
+      shape:
+        radiusPx: { button: 8, card: 10, input: 8 }
+        borderWidthPx: 1
+        shadow: "none"
+      layout:
+        maxWidthPx: 1160
+        gutterPx: 24
+      imagery:
+        subjects: "products and interiors — furniture, homeware, styled but functional"
+        lighting: "bright, high-key natural daylight, cool cast"
+        backdrop: "seamless light neutral or clean bright interiors"
+        treatment: "crisp, true-to-life color, higher exposure, minimal grain"
+        aspectHabits: ["4:3", "1:1"]
+    signatures:
+      - id: cool-grotesk
+        kind: type-treatment
+        mode: always
+        claim: "Clean grotesk sans throughout, light weights — no serifs."
+        check: { probes: [ { on: display, familyIncludesAny: ["Hanken", "Neue Montreal", "Inter", "Circular", "Söhne"], weightMax: 600 }, { on: body, familyIncludesAny: ["Hanken", "Inter", "Neue Montreal"] } ] }
+      - id: soft-not-round
+        kind: shape-motif
+        mode: always
+        claim: "Gently softened corners — an 8px radius, present but restrained; never pill, never sharp."
+        check: { buttons: { radiusPx: 8 }, cards: { radiusPx: 10 } }
+      - id: bright-flat-light
+        kind: surface-habit
+        mode: always
+        claim: "Very bright, cool, flat surfaces; no shadow, no warmth."
+        check: { shadow: none, sectionMinLuminance: 0.96 }
+      - id: one-muted-cool-accent
+        kind: accent-scope
+        mode: always
+        claim: "A single muted cool accent on actions, links, and small icons."
+        check: { maxPaintSharePct: 5, allowedRoles: [action-primary, arrow-link, icon], forbiddenRoles: [heading, body-text, divider] }
+      - id: functional-air
+        kind: spacing-habit
+        mode: always
+        claim: "Airy but efficient — comfortable padding without ceremony."
+        check: { minSectionPaddingPx: 80, whitespaceRatioMin: 0.40 }
+    neighbors: [japandi, minimalist]
+    distinguishers:
+      japandi: "Scandinavian is COOL and brighter (bg L≈0.98, dusty-blue accent) with an 8px radius and all-grotesk type; Japandi is WARM (bg L≈0.95, terracotta accent), near-sharp 3px radius, and a humanist serif display."
+      minimalist: "Scandinavian keeps a visible (if muted) accent and product photography; minimalist strips accent to near-zero and often drops imagery entirely."
+    exemplars:
+      - { name: "HAY", url: "https://www.hay.dk/", lookAt: "bright cool neutrals, grotesk type, crisp product photography", usage: "calibration-only" }
+      - { name: "Muuto", url: "https://www.muuto.com/", lookAt: "airy functional grid, one restrained accent", usage: "calibration-only" }
+      - { name: "Normann Copenhagen", url: "https://www.normann-copenhagen.com/", lookAt: "high-key daylight imagery on light backdrops", usage: "calibration-only" }
+
+  japandi:
+    preset:
+      font:
+        display: { family: "Newsreader", stack: "Newsreader, 'Noto Serif', Georgia, serif",  weights: [400, 500], googleFont: "Newsreader" }
+        body:    { family: "Mulish",     stack: "Mulish, 'Hanken Grotesk', system-ui, sans-serif", weights: [400, 500], googleFont: "Mulish" }
+      type:
+        baseSizePx: 18
+        scaleRatio: 1.25
+        lineHeight: { display: 1.2, body: 1.7 }
+        measureCh: { body: 62, lead: 44 }
+      color:
+        bg:      { oklch: "oklch(0.95 0.013 75)", hex: "#eee7dd" }   # WARM greige
+        surface: { oklch: "oklch(0.975 0.011 78)", hex: "#f6f1e9" }
+        text:    { oklch: "oklch(0.28 0.016 52)", hex: "#372f27" }   # warm near-black
+        muted:   { oklch: "oklch(0.55 0.021 60)", hex: "#837565" }
+        border:  { oklch: "oklch(0.88 0.015 72)", hex: "#dcd3c4" }
+        accent:  { oklch: "oklch(0.58 0.095 45)", hex: "#b17c5c" }   # terracotta / clay (WARM)
+      space:
+        basePx: 8
+        stepsPx: [8, 16, 24, 40, 64, 104]
+        sectionRhythmPx: 144       # negative space is a feature — the widest rhythm in the pilot
+      shape:
+        radiusPx: { button: 3, card: 4, input: 3 }
+        borderWidthPx: 1
+        shadow: "none"
+      layout:
+        maxWidthPx: 1080
+        gutterPx: 32
+      imagery:
+        subjects: "natural materials and craft — wood, ceramic, linen, stone, single objects"
+        lighting: "warm, soft, low-key; long gentle shadows"
+        backdrop: "muted warm interiors, lived-in, uncluttered"
+        treatment: "low saturation, warm cast, matte; no bright pop"
+        aspectHabits: ["4:5", "1:1"]
+    signatures:
+      - id: humanist-serif-display
+        kind: type-treatment
+        mode: always
+        claim: "A soft humanist serif carries the display over a quiet humanist sans body."
+        check: { probes: [ { on: display, familyIncludesAny: ["Newsreader", "Noto Serif", "Lora", "Source Serif", "Cormorant"], weightMax: 500 }, { on: body, familyIncludesAny: ["Mulish", "Hanken", "Work Sans"] } ] }
+      - id: near-sharp-restraint
+        kind: shape-motif
+        mode: always
+        claim: "Corners are almost square — a 3px whisper of radius, more austere than Scandinavian."
+        check: { buttons: { radiusPx: 3 }, cards: { radiusPx: 4 } }
+      - id: negative-space-feature
+        kind: spacing-habit
+        mode: always
+        claim: "Emptiness is the composition — very tall rhythm and large section padding."
+        check: { minSectionPaddingPx: 120, whitespaceRatioMin: 0.55 }
+      - id: warm-quiet-ground
+        kind: surface-habit
+        mode: always
+        claim: "Warm, muted ground — never bright-white or cool; no shadow."
+        check: { shadow: none, sectionMinLuminance: 0.92 }
+      - id: earthy-single-accent
+        kind: accent-scope
+        mode: always
+        claim: "One earthy accent (clay/terracotta) on primary actions and links only."
+        check: { maxPaintSharePct: 4, allowedRoles: [action-primary, arrow-link], forbiddenRoles: [heading, body-text, divider, icon, badge] }
+    neighbors: [scandinavian, boutique-wellness]
+    distinguishers:
+      scandinavian: "Japandi is WARM (bg L≈0.95, terracotta accent), uses a humanist SERIF display, near-sharp 3px radius, and extreme negative space (rhythm 144px); Scandinavian is COOL, all-grotesk, 8px radius, tighter rhythm (96px)."
+      boutique-wellness: "Japandi is more austere and material-driven with a serif display; boutique-wellness runs softer, larger radii and a more decorative serif+sans pairing."
+    exemplars:
+      - { name: "Norm Architects", url: "https://normcph.com/", lookAt: "warm muted palette, serif restraint, extreme negative space", usage: "calibration-only" }
+      - { name: "Karimoku Case", url: "https://karimoku-casestudy.com/", lookAt: "warm natural-material photography, near-sharp framing", usage: "calibration-only" }
+      - { name: "Frama", url: "https://framacph.com/", lookAt: "earthy tones, quiet type, material-first imagery", usage: "calibration-only" }

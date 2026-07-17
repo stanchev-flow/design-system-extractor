@@ -1,0 +1,1455 @@
+# provenance: authored-prior (Claude design chat, 2026-07-16 export) — NOT evidence;
+#   expert-authored LEVEL-2 DEFAULTS only: every value here is beaten by any measured brand fact
+#   (resolution-model precedence). confidence: unmeasured for every style below — set by expert
+#   judgment (font/color/shape logic + real-world exemplar knowledge), not screenshots.
+#   Status: UNCALIBRATED — calibration explicitly deferred; signature-check thresholds refine over
+#   time via the runs/style-calibration workflow (measure exemplars ONCE, adjust check values,
+#   retire the shots). Live in style_resolver.py as level-2 defaults since 2026-07-16.
+# import 2026-07-16: NINE color defects fixed transparently — the WCAG self-consistency floors
+#   (text/bg ≥ 4.5, text/surface ≥ 4.5, muted/bg ≥ 3.0; rgba surfaces composited over bg; dark
+#   styles compute identically — contrast math is symmetric) failed on the delivered hex mirrors
+#   for 8 styles: y2k muted 2.84 · vaporwave text/surface 3.95 · psychedelic text/surface 3.00 ·
+#   glassmorphism text/composited-surface 3.81 · claymorphism muted 2.80 · boutique-wellness
+#   muted 2.89 · maximalist text/surface 4.16 · anti-design text/bg 4.39 AND muted/bg 2.30.
+#   Each fixed by the smallest oklch-L step to compliance on the axis with headroom (the pilot's
+#   neumorphism protocol; the near-white texts of vaporwave/psychedelic/glassmorphism and the
+#   near-black text of maximalist had no headroom, so their surface/bg stepped instead) — inline
+#   comment at every touched value. Everything else verbatim from the delivery.
+#   Audit + format lock: tests/test_style_presets_generated.py; changelog: ../changes.md.
+#
+# Presets + signatures for the 45 non-pilot styles. The pilot 5 (swiss, editorial-magazine,
+# neumorphism, scandinavian, japandi) live in pilot-presets.yaml, are richer/hand-tuned, and WIN
+# if an id ever appears in both files. dark-mode (1 of 51 directives) has NO preset in either
+# file yet — it resolves directive-only, byte-identical to pre-preset behavior.
+# Adds ONLY new blocks (preset / signatures / neighbors / distinguishers / exemplars) keyed to
+# existing directives.yaml ids — does not alter the 17 directive keys. oklch is canonical; hex is
+# an sRGB approximation (out-of-gamut oklch clamps). Signature modes: always/never plus six
+# `sometimes` rows (optional motifs) — prompt guidance only, never a gate.
+# EXEMPLAR USAGE POLICY (applies to every 'exemplars' entry below):
+#   usage: calibration-only  —  measure ONCE to set signature thresholds, then discard the image.
+#   NOT generation input      —  never placed in the composing agent's prompt (would cause mimicry).
+#   NOT pixel-compared        —  the taste gate checks the abstracted signature numbers, not closeness
+#                                 to any screenshot; outputs must fall inside the ENVELOPE the
+#                                 exemplars span, never near a single point.
+#   Delivery gap: 17 styles carry ONE exemplar (short of the 2-3 target) — queued for the deferred
+#   calibration pass to top up: y2k, vaporwave, pixel-8bit, psychedelic, art-deco, art-nouveau,
+#   skeuomorphic, ios-hig, fluent, hand-drawn, collage, organic, grunge, textured-paper,
+#   anti-design, cyberpunk, poster-typographic.
+
+styles:
+
+  # ---------------------------------------------------------------- Foundational
+  bauhaus:
+    preset:
+      font:
+        display: { family: "Josefin Sans", stack: "Josefin Sans, Futura, Century Gothic, sans-serif", weights: [600, 700], googleFont: "Josefin Sans" }
+        body:    { family: "Work Sans",    stack: "Work Sans, Futura, Century Gothic, sans-serif",     weights: [400, 500], googleFont: "Work Sans" }
+      type: { baseSizePx: 17, scaleRatio: 1.333, lineHeight: { display: 1.05, body: 1.55 }, measureCh: { body: 62, lead: 40 } }
+      color:
+        bg: { oklch: "oklch(0.97 0.01 90)", hex: "#f7f2e4" }
+        surface: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        text: { oklch: "oklch(0.14 0 0)", hex: "#1c1c1c" }
+        muted: { oklch: "oklch(0.5 0.01 90)", hex: "#7d7770" }
+        border: { oklch: "oklch(0.85 0.01 90)", hex: "#d8d2c4" }
+        accentPrimary: { oklch: "oklch(0.55 0.22 25)", hex: "#cc2b21" }
+        accentSecondary: { oklch: "oklch(0.45 0.18 255)", hex: "#1c4fa0" }
+        accentTertiary: { oklch: "oklch(0.85 0.16 95)", hex: "#e8b400" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 40, 64], sectionRhythmPx: 88 }
+      shape: { radiusPx: { button: 0, card: 0, input: 0 }, borderWidthPx: 2, shadow: "none" }
+      layout: { maxWidthPx: 1200, gutterPx: 24, columns: 12 }
+      imagery: { subjects: "geometric abstraction — circles/squares/triangles as subject, rarely photography", lighting: "flat", backdrop: "solid color fields, black or white", treatment: "flat, poster-like, high contrast", aspectHabits: ["1:1", "4:3"] }
+    signatures:
+      - { id: primary-triad-restraint, kind: accent-scope, mode: always, claim: "Exactly the red/blue/yellow triad on black-or-white — never blended, never a 4th hue.", check: { maxPaintSharePct: 15, allowedHueCount: 3, palette: vivid } }
+      - { id: geometric-shape-vocabulary, kind: shape-motif, mode: always, claim: "Circle/triangle/square recur as structural, load-bearing composition — not decoration.", check: { buttons: { radiusPx: 0 }, cards: { radiusPx: 0 } } }
+      - { id: grotesk-only, kind: type-treatment, mode: always, claim: "Geometric grotesk throughout, no serif.", check: { probes: [{ on: display, familyIncludesAny: ["Josefin Sans", "Futura", "Century Gothic"] }] } }
+      - { id: sharp-corners, kind: shape-motif, mode: never, claim: "No rounding anywhere.", check: { buttons: { radiusPx: 0 }, cards: { radiusPx: 0 } } }
+      - { id: asymmetric-grid-balance, kind: spacing-habit, mode: always, claim: "Off-center compositions balanced by shape weight, not symmetry.", check: { minSectionPaddingPx: 64, whitespaceRatioMin: 0.3 } }
+    neighbors: [swiss, memphis]
+    distinguishers:
+      swiss: "Bauhaus permits the full red/blue/yellow triad and literal shape-as-content; Swiss restricts to one structural accent and treats grid as invisible scaffolding."
+      memphis: "Bauhaus shapes are structural and load-bearing; Memphis shapes are decorative confetti scattered over an otherwise ordinary layout."
+    exemplars:
+      - { name: "Herbert Bayer Universal type specimens", url: "https://www.bauhaus.de/", lookAt: "geometric type, triad restraint", usage: "calibration-only" }
+      - { name: "Vitra Design Museum — Bauhaus", url: "https://design-museum.de/", lookAt: "shape-as-structure compositions", usage: "calibration-only" }
+
+  modernist:
+    preset:
+      font:
+        display: { family: "Work Sans", stack: "Work Sans, Univers, Helvetica Neue, sans-serif", weights: [500, 600], googleFont: "Work Sans" }
+        body:    { family: "Work Sans", stack: "Work Sans, Helvetica Neue, sans-serif", weights: [400, 500], googleFont: "Work Sans" }
+      type: { baseSizePx: 17, scaleRatio: 1.25, lineHeight: { display: 1.1, body: 1.55 }, measureCh: { body: 64, lead: 42 } }
+      color:
+        bg: { oklch: "oklch(0.97 0.003 250)", hex: "#f5f6f7" }
+        surface: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        text: { oklch: "oklch(0.18 0.004 250)", hex: "#1f2124" }
+        muted: { oklch: "oklch(0.53 0.01 250)", hex: "#787c82" }
+        border: { oklch: "oklch(0.88 0.005 250)", hex: "#dcdee1" }
+        accent: { oklch: "oklch(0.5 0.15 230)", hex: "#3a6ea8" }
+      space: { basePx: 8, stepsPx: [4, 8, 16, 24, 48, 80], sectionRhythmPx: 104 }
+      shape: { radiusPx: { button: 4, card: 6, input: 4 }, borderWidthPx: 1, shadow: "none" }
+      layout: { maxWidthPx: 1180, gutterPx: 24, columns: 12 }
+      imagery: { subjects: "architecture and industrial objects in use", lighting: "even", backdrop: "real environments", treatment: "restrained color, documentary", aspectHabits: ["3:2", "1:1"] }
+    signatures:
+      - { id: function-over-ornament, kind: spacing-habit, mode: always, claim: "No decorative element lacks a UI role.", check: { minSectionPaddingPx: 96, whitespaceRatioMin: 0.4 } }
+      - { id: restrained-functional-blue, kind: accent-scope, mode: always, claim: "One muted functional blue, never a loud hue.", check: { maxPaintSharePct: 3, allowedRoles: [action-primary, arrow-link] } }
+      - { id: soft-not-sharp, kind: shape-motif, mode: always, claim: "4px radius signals function, distinguishing from Swiss's 0px.", check: { buttons: { radiusPx: 4 }, cards: { radiusPx: 6 } } }
+      - { id: even-visible-grid, kind: spacing-habit, mode: always, claim: "Grid stays visible but quiet.", check: { minSectionPaddingPx: 96 } }
+      - { id: quiet-documentary-imagery, kind: type-treatment, mode: always, claim: "Photography is documentary, never staged/glossy.", check: { probes: [{ on: display, familyIncludesAny: ["Work Sans", "Univers", "Helvetica"] }] } }
+    neighbors: [swiss, minimalist]
+    distinguishers:
+      swiss: "Modernist softens corners slightly (4px) and mutes its accent to functional blue; Swiss stays sharp-cornered with a loud structural red."
+      minimalist: "Modernist keeps a visible grid and functional accent; minimalist suppresses both toward near-invisibility."
+    exemplars:
+      - { name: "Dieter Rams / Braun design archive", url: "https://www.ramsdesign.org/", lookAt: "restrained duotone, functional accent use", usage: "calibration-only" }
+      - { name: "Vitsœ", url: "https://www.vitsoe.com/", lookAt: "functional grid, documentary photography", usage: "calibration-only" }
+
+  minimalist:
+    preset:
+      font:
+        display: { family: "Inter", stack: "Inter, system-ui, sans-serif", weights: [400, 500], googleFont: "Inter" }
+        body:    { family: "Inter", stack: "Inter, system-ui, sans-serif", weights: [400], googleFont: "Inter" }
+      type: { baseSizePx: 16, scaleRatio: 1.2, lineHeight: { display: 1.2, body: 1.6 }, measureCh: { body: 60, lead: 42 } }
+      color:
+        bg: { oklch: "oklch(0.99 0 0)", hex: "#fefefe" }
+        surface: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        text: { oklch: "oklch(0.2 0 0)", hex: "#212121" }
+        muted: { oklch: "oklch(0.6 0 0)", hex: "#8f8f8f" }
+        border: { oklch: "oklch(0.93 0 0)", hex: "#ececec" }
+        accent: { oklch: "oklch(0.3 0.02 250)", hex: "#2e3238" }
+      space: { basePx: 8, stepsPx: [8, 16, 32, 56, 96, 144], sectionRhythmPx: 128 }
+      shape: { radiusPx: { button: 4, card: 6, input: 4 }, borderWidthPx: 0, shadow: "none" }
+      layout: { maxWidthPx: 1040, gutterPx: 24, columns: 12 }
+      imagery: { subjects: "single isolated object or figure", lighting: "soft neutral", backdrop: "seamless white or negative space", treatment: "desaturated, low-contrast", aspectHabits: ["1:1"] }
+    signatures:
+      - { id: near-zero-accent, kind: accent-scope, mode: always, claim: "Accent is optional; when present it's desaturated near-black, essentially zero paint share.", check: { maxPaintSharePct: 1 } }
+      - { id: maximal-whitespace, kind: spacing-habit, mode: always, claim: "The widest whitespace ratio in the system.", check: { whitespaceRatioMin: 0.55, minSectionPaddingPx: 120 } }
+      - { id: one-thing-per-screen, kind: spacing-habit, mode: always, claim: "A single focal element per view, no competing elements.", check: { minSectionPaddingPx: 120 } }
+      - { id: no-border-no-shadow, kind: surface-habit, mode: never, claim: "Never a border or shadow.", check: { shadow: none, sectionMinLuminance: 0.97 } }
+      - { id: restraint-as-content, kind: type-treatment, mode: always, claim: "Remove until it breaks, then add one back.", check: { probes: [{ on: display, familyIncludesAny: ["Inter"] }] } }
+    neighbors: [swiss, japandi]
+    distinguishers:
+      swiss: "Minimalist strips the accent that Swiss treats as essential; grid is felt, not seen."
+      japandi: "Minimalist is cool/neutral with zero warmth signal; Japandi is warm and material-driven."
+    exemplars:
+      - { name: "Kinfolk", url: "https://kinfolk.com/", lookAt: "maximal whitespace, one focal element", usage: "calibration-only" }
+      - { name: "Teenage Engineering", url: "https://teenage.engineering/", lookAt: "near-zero accent, restraint", usage: "calibration-only" }
+
+  grid-typographic:
+    preset:
+      font:
+        display: { family: "Space Grotesk", stack: "Space Grotesk, Neue Haas Unica, sans-serif", weights: [500, 700], googleFont: "Space Grotesk" }
+        body:    { family: "IBM Plex Sans", stack: "IBM Plex Sans, sans-serif", weights: [400, 500], googleFont: "IBM Plex Sans" }
+      type: { baseSizePx: 16, scaleRatio: 1.333, lineHeight: { display: 1.0, body: 1.5 }, measureCh: { body: 60, lead: 40 }, tracking: { display: "-0.03em", body: "0" } }
+      color:
+        bg: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        surface: { oklch: "oklch(0.97 0 0)", hex: "#f7f7f7" }
+        text: { oklch: "oklch(0.12 0 0)", hex: "#151515" }
+        muted: { oklch: "oklch(0.55 0 0)", hex: "#8c8c8c" }
+        border: { oklch: "oklch(0.85 0 0)", hex: "#d9d9d9" }
+        accent: { oklch: "oklch(0.55 0.2 30)", hex: "#c33a1e" }
+      space: { basePx: 8, stepsPx: [4, 8, 16, 24, 40], sectionRhythmPx: 72 }
+      shape: { radiusPx: { button: 0, card: 0, input: 0 }, borderWidthPx: 1, shadow: "none" }
+      layout: { maxWidthPx: 1280, gutterPx: 16, columns: 16 }
+      imagery: { subjects: "none typical; type-only pages", lighting: "n/a", backdrop: "n/a", treatment: "n/a", aspectHabits: [] }
+    signatures:
+      - { id: type-is-only-content, kind: type-treatment, mode: always, claim: "Imagery is absent almost by default; type carries the whole page.", check: { probes: [{ on: display, familyIncludesAny: ["Space Grotesk"] }] } }
+      - { id: visible-baseline-grid, kind: spacing-habit, mode: always, claim: "Every text block snaps to a shared leading grid.", check: { minSectionPaddingPx: 56, whitespaceRatioMin: 0.3 } }
+      - { id: numeral-ornament, kind: shape-motif, mode: always, claim: "Page/section numbers render large as decoration.", check: { buttons: { radiusPx: 0 }, cards: { radiusPx: 0 } } }
+      - { id: fine-16-col-grid, kind: spacing-habit, mode: always, claim: "A finer grid (16 cols) than Swiss's 12.", check: { minSectionPaddingPx: 56 } }
+      - { id: tight-tracking-display, kind: type-treatment, mode: always, claim: "Display tracking pulled tight.", check: { probes: [{ on: display, familyIncludesAny: ["Space Grotesk"] }] } }
+    neighbors: [swiss, brutalist]
+    distinguishers:
+      swiss: "Grid-typographic drops imagery almost entirely and uses numerals as ornament; Swiss keeps documentary photography central."
+      brutalist: "Grid-typographic is disciplined and aligned; brutalist is raw and intentionally unstyled."
+    exemplars:
+      - { name: "Experimental Jetset", url: "https://www.experimentaljetset.nl/", lookAt: "type-only grid discipline", usage: "calibration-only" }
+      - { name: "Base Design", url: "https://www.basedesign.com/", lookAt: "baseline grid, numeral ornament", usage: "calibration-only" }
+
+  flat:
+    preset:
+      font:
+        display: { family: "Poppins", stack: "Poppins, Proxima Nova, sans-serif", weights: [600, 700], googleFont: "Poppins" }
+        body:    { family: "Open Sans", stack: "Open Sans, sans-serif", weights: [400, 600], googleFont: "Open Sans" }
+      type: { baseSizePx: 16, scaleRatio: 1.25, lineHeight: { display: 1.2, body: 1.55 }, measureCh: { body: 62, lead: 42 } }
+      color:
+        bg: { oklch: "oklch(0.97 0.01 200)", hex: "#f3f8f8" }
+        surface: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        text: { oklch: "oklch(0.2 0.02 240)", hex: "#232a33" }
+        muted: { oklch: "oklch(0.55 0.02 240)", hex: "#7c8592" }
+        border: { oklch: "oklch(0.9 0.01 200)", hex: "#e2e8e8" }
+        accentPrimary: { oklch: "oklch(0.62 0.18 155)", hex: "#2ecc71" }
+        accentSecondary: { oklch: "oklch(0.7 0.17 55)", hex: "#f39c12" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 32, 48], sectionRhythmPx: 72 }
+      shape: { radiusPx: { button: 8, card: 10, input: 8 }, borderWidthPx: 1, shadow: "none" }
+      layout: { maxWidthPx: 1200, gutterPx: 24, columns: 12 }
+      imagery: { subjects: "simple flat illustration — icons, abstracted people/objects", lighting: "none, flat fill only", backdrop: "solid color", treatment: "2D flat fill, no gradient, no bevel", aspectHabits: ["1:1", "4:3"] }
+    signatures:
+      - { id: zero-depth-cues, kind: surface-habit, mode: never, claim: "No gradient AND no shadow AND no bevel — stricter than material.", check: { shadow: none, sectionMinLuminance: 0.94 } }
+      - { id: flat-icon-language, kind: shape-motif, mode: always, claim: "Single-weight line or filled icons, never photoreal.", check: { buttons: { radiusPx: 8 }, cards: { radiusPx: 10 } } }
+      - { id: bold-solid-fills, kind: accent-scope, mode: always, claim: "Color blocks as section dividers.", check: { maxPaintSharePct: 15, palette: vivid } }
+      - { id: rounded-not-sharp, kind: shape-motif, mode: always, claim: "8px radius signals approachable, not severe.", check: { buttons: { radiusPx: 8 } } }
+      - { id: duo-to-vivid-palette, kind: accent-scope, mode: always, claim: "Two saturated accents, never a gradient blend.", check: { maxPaintSharePct: 15 } }
+    neighbors: [material, corporate-memphis]
+    distinguishers:
+      material: "Flat forbids shadow entirely; material uses shadow as its core signal (elevation)."
+      corporate-memphis: "Flat is geometric/iconographic; corporate-memphis centers on blob-people illustration specifically."
+    exemplars:
+      - { name: "Slack brand illustrations", url: "https://slack.com/brand", lookAt: "flat fills, no gradient/shadow", usage: "calibration-only" }
+      - { name: "Trello", url: "https://trello.com/", lookAt: "bold solid color blocks", usage: "calibration-only" }
+
+  material:
+    preset:
+      font:
+        display: { family: "Roboto", stack: "Roboto, Google Sans, sans-serif", weights: [500, 700], googleFont: "Roboto" }
+        body:    { family: "Roboto", stack: "Roboto, sans-serif", weights: [400, 500], googleFont: "Roboto" }
+      type: { baseSizePx: 16, scaleRatio: 1.25, lineHeight: { display: 1.15, body: 1.5 }, measureCh: { body: 60, lead: 40 } }
+      color:
+        bg: { oklch: "oklch(0.98 0.002 250)", hex: "#f7f8fa" }
+        surface: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        text: { oklch: "oklch(0.18 0 0)", hex: "#1c1c1c" }
+        muted: { oklch: "oklch(0.5 0.01 250)", hex: "#787c85" }
+        border: { oklch: "oklch(0.9 0.005 250)", hex: "#e2e4e8" }
+        accentPrimary: { oklch: "oklch(0.5 0.19 265)", hex: "#4759b8" }
+        accentSecondary: { oklch: "oklch(0.68 0.17 15)", hex: "#e8536b" }
+      space: { basePx: 8, stepsPx: [4, 8, 16, 24, 32, 48], sectionRhythmPx: 80 }
+      shape: { radiusPx: { button: 8, card: 12, input: 8 }, borderWidthPx: 1, shadow: "0 1px 2px rgba(0,0,0,.12), 0 1px 3px rgba(0,0,0,.24)" }
+      layout: { maxWidthPx: 1200, gutterPx: 24, columns: 12 }
+      imagery: { subjects: "photography, product-in-context", lighting: "bright neutral", backdrop: "clean", treatment: "true color, moderate saturation", aspectHabits: ["16:9", "1:1"] }
+    signatures:
+      - { id: layered-elevation-shadow, kind: surface-habit, mode: always, claim: "Distinct shadow depths per z-level (1/2/3/4/6/8/12/16dp).", check: { shadow: allowed, sectionMinLuminance: 0.9 } }
+      - { id: primary-plus-accent-role-system, kind: accent-scope, mode: always, claim: "Exactly 2 named colors with fixed roles.", check: { maxPaintSharePct: 6, palette: duo } }
+      - { id: fab-primary-action, kind: shape-motif, mode: always, claim: "A circular/pill FAB for the single primary action.", check: { buttons: { radiusPx: 8 }, cards: { radiusPx: 12 } } }
+      - { id: ripple-implied-interactivity, kind: type-treatment, mode: always, claim: "Interactive surfaces imply a ripple/press response.", check: { probes: [{ on: display, familyIncludesAny: ["Roboto"] }] } }
+      - { id: eight-px-baseline-grid, kind: spacing-habit, mode: always, claim: "All spacing steps are multiples of 8px.", check: { minSectionPaddingPx: 64 } }
+    neighbors: [flat, saas-product]
+    distinguishers:
+      flat: "Material adds elevation shadow as its whole point; flat forbids shadow entirely."
+      saas-product: "Material follows a literal named elevation scale; saas-product is looser with softer ad-hoc shadows."
+    exemplars:
+      - { name: "Google Material Design", url: "https://m3.material.io/", lookAt: "elevation scale, FAB pattern", usage: "calibration-only" }
+      - { name: "Google Workspace", url: "https://workspace.google.com/", lookAt: "primary+accent role system", usage: "calibration-only" }
+
+  # ---------------------------------------------------------------- Editorial
+  newspaper:
+    preset:
+      font:
+        display: { family: "Bitter", stack: "Bitter, Cheltenham, Georgia, serif", weights: [700, 900], googleFont: "Bitter" }
+        body:    { family: "PT Serif", stack: "PT Serif, Georgia, serif", weights: [400, 700], googleFont: "PT Serif" }
+      type: { baseSizePx: 15, scaleRatio: 1.2, lineHeight: { display: 1.05, body: 1.45 }, measureCh: { body: 42, lead: 30 } }
+      color:
+        bg: { oklch: "oklch(0.96 0.006 80)", hex: "#efece3" }
+        surface: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        text: { oklch: "oklch(0.14 0.005 60)", hex: "#1b1a17" }
+        muted: { oklch: "oklch(0.48 0.01 60)", hex: "#6f6c64" }
+        border: { oklch: "oklch(0.75 0.005 60)", hex: "#bcb9b0" }
+        accent: { oklch: "oklch(0.4 0.16 20)", hex: "#8f2318" }
+      space: { basePx: 6, stepsPx: [6, 12, 18, 24, 36], sectionRhythmPx: 48 }
+      shape: { radiusPx: { button: 0, card: 0, input: 0 }, borderWidthPx: 2, shadow: "none" }
+      layout: { maxWidthPx: 1320, gutterPx: 16, columns: 6 }
+      imagery: { subjects: "reportage photography, halftone-friendly", lighting: "available-light", backdrop: "real-world", treatment: "black & white or muted, halftone dot feel", aspectHabits: ["4:3", "3:2"] }
+    signatures:
+      - { id: multi-column-narrow-measure, kind: spacing-habit, mode: always, claim: "42ch or less per column, several columns per row.", check: { minSectionPaddingPx: 32, whitespaceRatioMin: 0.15 } }
+      - { id: hairline-story-rules, kind: surface-habit, mode: always, claim: "Every story separated by a thin rule.", check: { shadow: none, sectionMinLuminance: 0.9 } }
+      - { id: dateline-byline-convention, kind: type-treatment, mode: always, claim: "Small-caps/condensed byline block above every story.", check: { probes: [{ on: display, familyIncludesAny: ["Bitter", "Cheltenham"] }] } }
+      - { id: condensed-serif-headlines, kind: type-treatment, mode: always, claim: "Condensed serif carries headlines.", check: { probes: [{ on: display, familyIncludesAny: ["Bitter"] }] } }
+      - { id: tight-density, kind: spacing-habit, mode: always, claim: "The tightest section padding of any editorial style.", check: { minSectionPaddingPx: 32 } }
+    neighbors: [editorial-magazine, book-literary]
+    distinguishers:
+      editorial-magazine: "Newspaper is dense and multi-column with hairline rules; editorial-magazine is airy, single dominant column with huge display jumps."
+      book-literary: "Newspaper is columnar and rule-divided; book-literary is one long uninterrupted reading column."
+    exemplars:
+      - { name: "The Guardian", url: "https://www.theguardian.com/", lookAt: "multi-column measure, hairline rules", usage: "calibration-only" }
+      - { name: "Le Monde", url: "https://www.lemonde.fr/", lookAt: "dateline/byline convention", usage: "calibration-only" }
+
+  serif-classic:
+    preset:
+      font:
+        display: { family: "EB Garamond", stack: "EB Garamond, Garamond, serif", weights: [500, 600], googleFont: "EB Garamond" }
+        body:    { family: "EB Garamond", stack: "EB Garamond, Garamond, serif", weights: [400], googleFont: "EB Garamond" }
+      type: { baseSizePx: 18, scaleRatio: 1.25, lineHeight: { display: 1.15, body: 1.65 }, measureCh: { body: 64, lead: 44 } }
+      color:
+        bg: { oklch: "oklch(0.97 0.006 70)", hex: "#f4f1ea" }
+        surface: { oklch: "oklch(0.99 0.004 70)", hex: "#fbf9f5" }
+        text: { oklch: "oklch(0.22 0.01 50)", hex: "#292520" }
+        muted: { oklch: "oklch(0.52 0.012 55)", hex: "#7d766a" }
+        border: { oklch: "oklch(0.87 0.008 65)", hex: "#ddd7c9" }
+        accent: { oklch: "oklch(0.42 0.09 30)", hex: "#7a3d2a" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 40, 64], sectionRhythmPx: 104 }
+      shape: { radiusPx: { button: 4, card: 6, input: 4 }, borderWidthPx: 1, shadow: "none" }
+      layout: { maxWidthPx: 1080, gutterPx: 32, columns: 8 }
+      imagery: { subjects: "portraiture and still-life, dignified", lighting: "soft directional", backdrop: "neutral/period-appropriate", treatment: "warm, even tonal range", aspectHabits: ["4:5", "1:1"] }
+    signatures:
+      - { id: timeless-oldstyle-serif, kind: type-treatment, mode: always, claim: "One classical serif carries both display and body, weight-only contrast.", check: { probes: [{ on: display, familyIncludesAny: ["EB Garamond", "Garamond"] }, { on: body, familyIncludesAny: ["EB Garamond"] }] } }
+      - { id: warm-paper-neutral-ground, kind: surface-habit, mode: always, claim: "Warm paper ground, no shadow.", check: { shadow: none, sectionMinLuminance: 0.94 } }
+      - { id: understated-single-accent, kind: accent-scope, mode: always, claim: "One brick/burgundy accent, link-only.", check: { maxPaintSharePct: 2, allowedRoles: [arrow-link] } }
+      - { id: even-modest-scale-jump, kind: type-treatment, mode: always, claim: "Ratio ~1.25 — never dramatic like editorial-magazine's 1.5.", check: { probes: [{ on: display, familyIncludesAny: ["EB Garamond"] }] } }
+      - { id: quiet-symmetry, kind: spacing-habit, mode: always, claim: "Airy, centered, understated composition.", check: { minSectionPaddingPx: 96, whitespaceRatioMin: 0.38 } }
+    neighbors: [editorial-magazine, elegant-serif]
+    distinguishers:
+      editorial-magazine: "Serif-classic uses ONE serif family at modest contrast; editorial-magazine pairs a dramatic display serif against a different, smaller serif body."
+      elegant-serif: "Serif-classic reads warm and traditionally bookish; elegant-serif is cooler and higher-contrast."
+    exemplars:
+      - { name: "The Paris Review", url: "https://www.theparisreview.org/", lookAt: "single-family serif hierarchy", usage: "calibration-only" }
+      - { name: "Folio Society", url: "https://www.foliosociety.com/", lookAt: "warm paper ground, understated accent", usage: "calibration-only" }
+
+  book-literary:
+    preset:
+      font:
+        display: { family: "Lora", stack: "Lora, Freight Text, Georgia, serif", weights: [500, 600], googleFont: "Lora" }
+        body:    { family: "Lora", stack: "Lora, Georgia, serif", weights: [400], googleFont: "Lora" }
+      type: { baseSizePx: 19, scaleRatio: 1.15, lineHeight: { display: 1.2, body: 1.75 }, measureCh: { body: 58, lead: 40 } }
+      color:
+        bg: { oklch: "oklch(0.97 0.008 75)", hex: "#f5f1e8" }
+        surface: { oklch: "oklch(0.97 0.008 75)", hex: "#f5f1e8" }
+        text: { oklch: "oklch(0.2 0.012 55)", hex: "#26221c" }
+        muted: { oklch: "oklch(0.55 0.014 58)", hex: "#847c6d" }
+        border: { oklch: "oklch(0.88 0.01 70)", hex: "#ded7c6" }
+        accent: { oklch: "oklch(0.5 0.02 50)", hex: "#847a68" }
+      space: { basePx: 8, stepsPx: [16, 24, 40, 64, 104, 168], sectionRhythmPx: 168 }
+      shape: { radiusPx: { button: 0, card: 0, input: 0 }, borderWidthPx: 1, shadow: "none" }
+      layout: { maxWidthPx: 860, gutterPx: 0, columns: 1 }
+      imagery: { subjects: "none typical; rare frontispiece illustration", lighting: "n/a", backdrop: "n/a", treatment: "engraving/etching feel if present", aspectHabits: ["2:3"] }
+    signatures:
+      - { id: single-column-only, kind: spacing-habit, mode: always, claim: "Strictly one column, never grid-aligned or split.", check: { minSectionPaddingPx: 120, whitespaceRatioMin: 0.5 } }
+      - { id: generous-leading, kind: type-treatment, mode: always, claim: "lineHeight.body >= 1.7, the highest in the set.", check: { probes: [{ on: body, familyIncludesAny: ["Lora"] }] } }
+      - { id: chapter-rhythm, kind: spacing-habit, mode: always, claim: "Very tall section gaps read as chapter breaks.", check: { minSectionPaddingPx: 160, whitespaceRatioMin: 0.55 } }
+      - { id: no-ui-chrome, kind: shape-motif, mode: never, claim: "No buttons/cards — even CTAs render as inline text links.", check: { buttons: { radiusPx: 0 }, cards: { radiusPx: 0 } } }
+      - { id: drop-cap-optional, kind: type-treatment, mode: sometimes, claim: "An optional drop-cap/ornament opens chapters.", check: { probes: [{ on: display, familyIncludesAny: ["Lora"] }] } }
+    neighbors: [serif-classic, minimalist]
+    distinguishers:
+      serif-classic: "Book-literary is strictly one column with no card/button chrome at all; serif-classic still uses a normal page layout with sections."
+      minimalist: "Book-literary's emptiness comes from reading rhythm; minimalist's comes from removed UI elements."
+    exemplars:
+      - { name: "A Public Space", url: "https://apublicspace.org/", lookAt: "single-column reading rhythm", usage: "calibration-only" }
+      - { name: "Visual Editions", url: "https://visual-editions.com/", lookAt: "chapter-like section breaks", usage: "calibration-only" }
+
+  zine:
+    preset:
+      font:
+        display: { family: "Special Elite", stack: "Special Elite, monospace", weights: [400], googleFont: "Special Elite" }
+        body:    { family: "Archivo", stack: "Archivo, Arial, sans-serif", weights: [400], googleFont: "Archivo" }
+      type: { baseSizePx: 16, scaleRatio: 1.4, lineHeight: { display: 1.0, body: 1.4 }, measureCh: { body: 50, lead: 34 } }
+      color:
+        bg: { oklch: "oklch(0.94 0.01 90)", hex: "#e9e4d6" }
+        surface: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        text: { oklch: "oklch(0.1 0 0)", hex: "#141414" }
+        muted: { oklch: "oklch(0.45 0 0)", hex: "#6f6f6f" }
+        border: { oklch: "oklch(0.3 0 0)", hex: "#4d4d4d" }
+        accent: { oklch: "oklch(0.6 0.2 15)", hex: "#d13b2f" }
+      space: { basePx: 4, stepsPx: [4, 8, 12, 20, 32], sectionRhythmPx: 40 }
+      shape: { radiusPx: { button: 0, card: 0, input: 0 }, borderWidthPx: 3, shadow: "hard" }
+      layout: { maxWidthPx: 1100, gutterPx: 12, columns: "asymmetric" }
+      imagery: { subjects: "collage cutouts, xeroxed photos, found ephemera", lighting: "harsh photocopy contrast", backdrop: "torn paper, tape, staples visible", treatment: "high-contrast B&W halftone, degraded photocopy texture", aspectHabits: ["irregular"] }
+    signatures:
+      - { id: xerox-degradation-texture, kind: surface-habit, mode: always, claim: "Visible noise/halftone/toner-drop texture on images.", check: { shadow: allowed, sectionMinLuminance: 0.85 } }
+      - { id: tape-and-staple-motifs, kind: shape-motif, mode: always, claim: "Literal tape/staple/pin graphics at overlap points.", check: { buttons: { radiusPx: 0 }, cards: { radiusPx: 0 } } }
+      - { id: mismatched-type-collision, kind: type-treatment, mode: always, claim: "2+ unrelated typefaces collide on one page on purpose.", check: { probes: [{ on: display, familyIncludesAny: ["Special Elite"] }, { on: body, familyIncludesAny: ["Archivo", "Arial"] }] } }
+      - { id: rotated-overlap-elements, kind: spacing-habit, mode: always, claim: "Elements sit at small random rotations, breaking the grid.", check: { minSectionPaddingPx: 24, whitespaceRatioMin: 0.15 } }
+      - { id: irregular-hand-set-scale, kind: type-treatment, mode: always, claim: "Headline sizes look manually chosen, not on a ratio.", check: { probes: [{ on: display, familyIncludesAny: ["Special Elite"] }] } }
+    neighbors: [collage, grunge]
+    distinguishers:
+      collage: "Zine is paper/xerox/office-supply themed; collage uses broader cut-paper/mixed-media layering without the photocopied-fanzine texture."
+      grunge: "Zine is paper-and-tape collage energy; grunge is distressed-texture/splatter energy, often digital and darker."
+    exemplars:
+      - { name: "Barnard Zine Library archive", url: "https://zines.barnard.edu/", lookAt: "photocopy texture, tape/staple motifs", usage: "calibration-only" }
+      - { name: "Adbusters", url: "https://adbusters.org/", lookAt: "mismatched type collision", usage: "calibration-only" }
+
+  annual-report:
+    preset:
+      font:
+        display: { family: "Source Serif 4", stack: "Source Serif 4, Charter, serif", weights: [500, 600], googleFont: "Source Serif 4" }
+        body:    { family: "Source Sans 3", stack: "Source Sans 3, sans-serif", weights: [400, 600], googleFont: "Source Sans 3" }
+      type: { baseSizePx: 16, scaleRatio: 1.25, lineHeight: { display: 1.1, body: 1.55 }, measureCh: { body: 62, lead: 42 } }
+      color:
+        bg: { oklch: "oklch(0.98 0.003 240)", hex: "#f7f8fa" }
+        surface: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        text: { oklch: "oklch(0.16 0.005 240)", hex: "#1c1e22" }
+        muted: { oklch: "oklch(0.5 0.01 240)", hex: "#767b83" }
+        border: { oklch: "oklch(0.88 0.005 240)", hex: "#dcdfe3" }
+        accentPrimary: { oklch: "oklch(0.45 0.13 195)", hex: "#1f6f7a" }
+        accentSecondary: { oklch: "oklch(0.65 0.15 90)", hex: "#c99a2e" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 40, 64, 96], sectionRhythmPx: 104 }
+      shape: { radiusPx: { button: 4, card: 6, input: 4 }, borderWidthPx: 1, shadow: "none" }
+      layout: { maxWidthPx: 1240, gutterPx: 32, columns: 12 }
+      imagery: { subjects: "leadership portraits, facilities, product-in-context, captioned", lighting: "corporate-clean", backdrop: "real", treatment: "confident color, high production value", aspectHabits: ["4:5", "16:9"] }
+    signatures:
+      - { id: data-as-hero, kind: shape-motif, mode: always, claim: "Large standalone stat callouts are a first-class content type.", check: { buttons: { radiusPx: 4 }, cards: { radiusPx: 6 } } }
+      - { id: figure-caption-discipline, kind: type-treatment, mode: always, claim: "Every photo carries a formal caption line.", check: { probes: [{ on: display, familyIncludesAny: ["Source Serif 4", "Charter"] }] } }
+      - { id: tabular-numeral-alignment, kind: type-treatment, mode: always, claim: "Numeric columns use tabular figures, decimal-aligned.", check: { probes: [{ on: body, familyIncludesAny: ["Source Sans 3"] }] } }
+      - { id: two-color-data-accent, kind: accent-scope, mode: always, claim: "Teal+gold fixed roles for primary/secondary data series.", check: { maxPaintSharePct: 6, palette: duo } }
+      - { id: confident-restrained-grid, kind: spacing-habit, mode: always, claim: "Formal, even grid.", check: { minSectionPaddingPx: 88, whitespaceRatioMin: 0.35 } }
+    neighbors: [saas-product, dashboard-data]
+    distinguishers:
+      saas-product: "Annual-report is print-descended and formal; saas-product is screen-native with product screenshots and no serif."
+      dashboard-data: "Annual-report is a narrative document with occasional big stats; dashboard-data is dense and entirely numeric/tabular."
+    exemplars:
+      - { name: "Apple Environmental Progress Report", url: "https://www.apple.com/environment/", lookAt: "data-as-hero callouts", usage: "calibration-only" }
+      - { name: "IKEA Sustainability Report", url: "https://www.ikea.com/", lookAt: "figure/caption discipline", usage: "calibration-only" }
+
+  # ---------------------------------------------------------------- Expressive
+  brutalist:
+    preset:
+      font:
+        display: { family: "IBM Plex Mono", stack: "IBM Plex Mono, system-ui, Times New Roman, monospace", weights: [400, 700], googleFont: "IBM Plex Mono" }
+        body:    { family: "IBM Plex Mono", stack: "IBM Plex Mono, Times New Roman, monospace", weights: [400], googleFont: "IBM Plex Mono" }
+      type: { baseSizePx: 16, scaleRatio: 1.15, lineHeight: { display: 1.2, body: 1.5 }, measureCh: { body: 66, lead: 46 } }
+      color:
+        bg: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        surface: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        text: { oklch: "oklch(0 0 0)", hex: "#000000" }
+        muted: { oklch: "oklch(0.4 0 0)", hex: "#666666" }
+        border: { oklch: "oklch(0 0 0)", hex: "#000000" }
+        accent: { oklch: "oklch(0.45 0.25 265)", hex: "#0000ee" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 32], sectionRhythmPx: 48 }
+      shape: { radiusPx: { button: 0, card: 0, input: 0 }, borderWidthPx: 1, shadow: "none" }
+      layout: { maxWidthPx: 1600, gutterPx: 16, columns: "list-rows" }
+      imagery: { subjects: "none typical; if present, unretouched screenshots", lighting: "n/a", backdrop: "n/a", treatment: "raw, unoptimized", aspectHabits: ["any"] }
+    signatures:
+      - { id: pure-black-on-white, kind: surface-habit, mode: always, claim: "Text is literal #000, bg literal #fff — not near-black/off-white.", check: { shadow: none, sectionMinLuminance: 1.0 } }
+      - { id: underlined-default-links, kind: accent-scope, mode: always, claim: "Default link blue + underline, no custom hover styling.", check: { maxPaintSharePct: 2, allowedRoles: [arrow-link] } }
+      - { id: visible-html-borders, kind: shape-motif, mode: always, claim: "Every container gets a visible 1px black border.", check: { buttons: { radiusPx: 0 }, cards: { radiusPx: 0 } } }
+      - { id: no-radius-no-shadow-ever, kind: surface-habit, mode: never, claim: "Never rounded, never shadowed.", check: { shadow: none } }
+      - { id: unstyled-form-controls, kind: type-treatment, mode: always, claim: "Native browser buttons/inputs, not custom-skinned.", check: { probes: [{ on: body, familyIncludesAny: ["IBM Plex Mono", "Times New Roman"] }] } }
+    neighbors: [neubrutalism, grid-typographic]
+    distinguishers:
+      neubrutalism: "Brutalist is genuinely unstyled; neubrutalism is a designed pastiche of raw HTML with saturated color and custom type."
+      grid-typographic: "Brutalist is intentionally raw/undesigned; grid-typographic is highly designed, typography-led."
+    exemplars:
+      - { name: "brutalistwebsites.com showcase", url: "https://brutalistwebsites.com/", lookAt: "unstyled HTML aesthetic", usage: "calibration-only" }
+      - { name: "Craigslist", url: "https://craigslist.org/", lookAt: "native controls, default link blue", usage: "calibration-only" }
+
+  neubrutalism:
+    preset:
+      font:
+        display: { family: "Space Grotesk", stack: "Space Grotesk, General Sans, sans-serif", weights: [700, 800], googleFont: "Space Grotesk" }
+        body:    { family: "DM Sans", stack: "DM Sans, sans-serif", weights: [400, 500], googleFont: "DM Sans" }
+      type: { baseSizePx: 16, scaleRatio: 1.333, lineHeight: { display: 1.05, body: 1.5 }, measureCh: { body: 60, lead: 40 } }
+      color:
+        bg: { oklch: "oklch(0.96 0.02 90)", hex: "#f2ecd9" }
+        surface: { oklch: "oklch(0.9 0.15 100)", hex: "#f4e04d" }
+        text: { oklch: "oklch(0.05 0 0)", hex: "#0a0a0a" }
+        muted: { oklch: "oklch(0.35 0.01 90)", hex: "#585349" }
+        border: { oklch: "oklch(0.05 0 0)", hex: "#0a0a0a" }
+        accentPrimary: { oklch: "oklch(0.55 0.24 25)", hex: "#e8402a" }
+        accentSecondary: { oklch: "oklch(0.55 0.2 260)", hex: "#4d5be0" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 32, 48], sectionRhythmPx: 72 }
+      shape: { radiusPx: { button: 6, card: 8, input: 6 }, borderWidthPx: 3, shadow: "hard" }
+      layout: { maxWidthPx: 1200, gutterPx: 24, columns: 12 }
+      imagery: { subjects: "bold flat photography or none, often outlined cutout-style", lighting: "high-contrast", backdrop: "saturated-solid", treatment: "outlined cutouts, poster energy", aspectHabits: ["1:1", "4:3"] }
+    signatures:
+      - { id: thick-black-outline-everywhere, kind: shape-motif, mode: always, claim: "3-4px solid black border on every card/button/input, non-negotiable.", check: { buttons: { radiusPx: 6 }, cards: { radiusPx: 8 } } }
+      - { id: offset-hard-shadow, kind: surface-habit, mode: always, claim: "Flat 4-8px offset shadow, zero blur, black.", check: { shadow: allowed, sectionMinLuminance: 0.88 } }
+      - { id: saturated-primary-on-offwhite, kind: accent-scope, mode: always, claim: "Yellow/red/blue fields against a warm off-white ground, never pure white.", check: { maxPaintSharePct: 20, palette: vivid } }
+      - { id: chunky-bold-grotesk-headlines, kind: type-treatment, mode: always, claim: "Chunky bold grotesk headlines.", check: { probes: [{ on: display, familyIncludesAny: ["Space Grotesk"] }] } }
+      - { id: playful-not-raw, kind: shape-motif, mode: always, claim: "Clearly art-directed, distinguishing from brutalist's rawness.", check: { buttons: { radiusPx: 6 } } }
+    neighbors: [brutalist, memphis]
+    distinguishers:
+      brutalist: "Neubrutalism art-directs the 'raw' look; brutalist is literally unstyled, default browser everything."
+      memphis: "Neubrutalism's shapes are structural UI; Memphis scatters decorative squiggle/confetti shapes with no structural role."
+    exemplars:
+      - { name: "Gumroad", url: "https://gumroad.com/", lookAt: "thick outlines, offset hard shadow", usage: "calibration-only" }
+      - { name: "Figma community neubrutalism templates", url: "https://www.figma.com/community/", lookAt: "saturated primaries on off-white", usage: "calibration-only" }
+
+  y2k:
+    preset:
+      font:
+        display: { family: "Orbitron", stack: "Orbitron, Eurostile, sans-serif", weights: [500, 700], googleFont: "Orbitron" }
+        body:    { family: "Quicksand", stack: "Quicksand, sans-serif", weights: [400, 500], googleFont: "Quicksand" }
+      type: { baseSizePx: 16, scaleRatio: 1.25, lineHeight: { display: 1.1, body: 1.5 }, measureCh: { body: 58, lead: 38 } }
+      color:
+        bg: { oklch: "oklch(0.85 0.02 240)", hex: "#c9d3e0" }
+        surface: { oklch: "oklch(0.95 0.02 240)", hex: "#e8edf5" }
+        text: { oklch: "oklch(0.15 0.02 250)", hex: "#1a1f2b" }
+        muted: { oklch: "oklch(0.48 0.02 250)", hex: "#6c7486" }   # import fix: delivered 0.5/#727a8c = 2.84:1 on bg, under the 3:1 floor
+        border: { oklch: "oklch(0.75 0.02 240)", hex: "#a9b3c4" }
+        accentPrimary: { oklch: "oklch(0.65 0.22 340)", hex: "#e83e9c" }
+        accentSecondary: { oklch: "oklch(0.6 0.2 200)", hex: "#1fb6d6" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 40, 64], sectionRhythmPx: 88 }
+      shape: { radiusPx: { button: 999, card: 24, input: 999 }, borderWidthPx: 1, shadow: "soft" }
+      layout: { maxWidthPx: 1160, gutterPx: 24, columns: 12 }
+      imagery: { subjects: "bubble 3D renders, chrome orbs, early-web mascots", lighting: "glossy specular highlight", backdrop: "gradient sky or starfield", treatment: "high-gloss render, lens flare", aspectHabits: ["1:1", "16:9"] }
+    signatures:
+      - { id: chrome-gloss-gradient, kind: surface-habit, mode: always, claim: "Metallic silver-to-white gradient fills on hero type or shapes.", check: { shadow: allowed, sectionMinLuminance: 0.75 } }
+      - { id: bubble-pill-everything, kind: shape-motif, mode: always, claim: "Buttons/badges/avatars are fully pill/circular, never square.", check: { buttons: { radiusPx: 999 }, cards: { radiusPx: 24 } } }
+      - { id: lens-flare-and-sparkle, kind: shape-motif, mode: always, claim: "Sparkle/star/flare graphics scattered as accents.", check: { cards: { radiusPx: 24 } } }
+      - { id: magenta-cyan-duo-accent, kind: accent-scope, mode: always, claim: "The two signature hues appear together, often as a gradient.", check: { maxPaintSharePct: 20, palette: vivid } }
+      - { id: glossy-specular-highlight, kind: surface-habit, mode: always, claim: "A bright diagonal highlight simulates plastic/chrome.", check: { shadow: allowed } }
+    neighbors: [vaporwave, retro-70s]
+    distinguishers:
+      vaporwave: "Y2K is optimistic/chrome/bubbly; vaporwave is melancholic/gradient-sky/glitch."
+      retro-70s: "Y2K reads futuristic-plastic; retro-70s reads warm-earthy-analog."
+    exemplars:
+      - { name: "Wayback Machine — early-2000s web archive", url: "https://web.archive.org/", lookAt: "chrome gloss, bubble UI", usage: "calibration-only" }
+
+  vaporwave:
+    preset:
+      font:
+        display: { family: "Righteous", stack: "Righteous, Noto Serif JP, serif", weights: [400], googleFont: "Righteous" }
+        body:    { family: "Poppins", stack: "Poppins, sans-serif", weights: [400], googleFont: "Poppins" }
+      type: { baseSizePx: 16, scaleRatio: 1.3, lineHeight: { display: 1.1, body: 1.55 }, measureCh: { body: 56, lead: 36 } }
+      color:
+        bg: { oklch: "oklch(0.55 0.15 320)", hex: "#a53d9e" }
+        surface: { oklch: "oklch(0.56 0.13 280)", hex: "#7a58bc" }   # import fix: delivered 0.6/#8664c9 put text at 3.95:1, under the 4.5 floor (text L 0.97 had no headroom)
+        text: { oklch: "oklch(0.97 0.02 280)", hex: "#f4eefc" }
+        muted: { oklch: "oklch(0.8 0.05 280)", hex: "#cbb9e8" }
+        border: { oklch: "oklch(0.7 0.1 300)", hex: "#b087d1" }
+        accentPrimary: { oklch: "oklch(0.75 0.19 190)", hex: "#3fd6d6" }
+        accentSecondary: { oklch: "oklch(0.7 0.22 350)", hex: "#ff6ec7" }
+      space: { basePx: 8, stepsPx: [8, 16, 32, 56, 96], sectionRhythmPx: 104 }
+      shape: { radiusPx: { button: 6, card: 8, input: 6 }, borderWidthPx: 1, shadow: "soft" }
+      layout: { maxWidthPx: 1120, gutterPx: 24, columns: "full-bleed" }
+      imagery: { subjects: "classical busts, grids/wireframe planes, palm trees, retro tech", lighting: "gradient sky, sunset glow", backdrop: "checkerboard floor or grid horizon", treatment: "duotone magenta/cyan, glitch artifacts, VHS scanlines", aspectHabits: ["16:9", "1:1"] }
+    signatures:
+      - { id: magenta-cyan-gradient-ground, kind: surface-habit, mode: always, claim: "The background itself is a duotone gradient, not a flat neutral.", check: { shadow: allowed, sectionMinLuminance: 0.5 } }
+      - { id: grid-horizon-motif, kind: shape-motif, mode: always, claim: "A receding wireframe grid/plane recurs as a literal graphic.", check: { cards: { radiusPx: 8 } } }
+      - { id: glitch-scanline-texture, kind: surface-habit, mode: always, claim: "Deliberate VHS/glitch artifacts on images or dividers.", check: { shadow: allowed } }
+      - { id: classical-bust-iconography, kind: shape-motif, mode: sometimes, claim: "Greco-Roman statue imagery recontextualized.", check: { cards: { radiusPx: 8 } } }
+      - { id: kana-and-retro-serif-mix, kind: type-treatment, mode: always, claim: "Katakana ornament paired with a retro display serif.", check: { probes: [{ on: display, familyIncludesAny: ["Righteous", "Noto Serif JP"] }] } }
+    neighbors: [y2k, cyberpunk]
+    distinguishers:
+      y2k: "Vaporwave's ground is a dark gradient sky, glitchy and melancholic; Y2K's ground is light chrome/silver, glossy and upbeat."
+      cyberpunk: "Vaporwave is soft-gradient and nostalgic; cyberpunk is near-black, hard-edged neon with HUD/data framing."
+    exemplars:
+      - { name: "Are.na vaporwave channels", url: "https://www.are.na/", lookAt: "grid-horizon, duotone gradient ground", usage: "calibration-only" }
+
+  retro-70s:
+    preset:
+      font:
+        display: { family: "Baloo 2", stack: "Baloo 2, Cooper Black, serif", weights: [500, 700], googleFont: "Baloo 2" }
+        body:    { family: "Nunito Sans", stack: "Nunito Sans, sans-serif", weights: [400], googleFont: "Nunito Sans" }
+      type: { baseSizePx: 17, scaleRatio: 1.25, lineHeight: { display: 1.1, body: 1.55 }, measureCh: { body: 60, lead: 40 } }
+      color:
+        bg: { oklch: "oklch(0.88 0.05 70)", hex: "#e3c99a" }
+        surface: { oklch: "oklch(0.92 0.04 65)", hex: "#ecdcb8" }
+        text: { oklch: "oklch(0.25 0.04 40)", hex: "#3f2e1e" }
+        muted: { oklch: "oklch(0.5 0.05 45)", hex: "#8a6c4f" }
+        border: { oklch: "oklch(0.75 0.05 55)", hex: "#c4ab84" }
+        accentPrimary: { oklch: "oklch(0.6 0.16 50)", hex: "#c1793a" }
+        accentSecondary: { oklch: "oklch(0.55 0.1 90)", hex: "#8a7233" }
+        accentTertiary: { oklch: "oklch(0.35 0.08 30)", hex: "#5c3a26" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 40, 64], sectionRhythmPx: 88 }
+      shape: { radiusPx: { button: 999, card: 16, input: 999 }, borderWidthPx: 1, shadow: "none" }
+      layout: { maxWidthPx: 1120, gutterPx: 24, columns: 3 }
+      imagery: { subjects: "sunburst motifs, warm interiors, groovy patterned textiles", lighting: "warm, golden-hour", backdrop: "wood paneling, shag texture, patterned wallpaper", treatment: "warm-cast film grain, saturated earth tones", aspectHabits: ["1:1", "4:3"] }
+    signatures:
+      - { id: orange-mustard-brown-triad, kind: accent-scope, mode: always, claim: "The fixed three-hue earth palette, always these three roles.", check: { maxPaintSharePct: 15, palette: vivid } }
+      - { id: sunburst-radial-motif, kind: shape-motif, mode: always, claim: "A radiating-lines graphic recurs as a section divider/background.", check: { cards: { radiusPx: 16 } } }
+      - { id: rounded-chunky-display-type, kind: type-treatment, mode: always, claim: "Bold groovy display face, soft thick strokes.", check: { probes: [{ on: display, familyIncludesAny: ["Baloo 2", "Cooper Black"] }] } }
+      - { id: warm-film-grain-imagery, kind: surface-habit, mode: always, claim: "Warm-cast grain on all imagery.", check: { shadow: none, sectionMinLuminance: 0.85 } }
+      - { id: pill-buttons-throughout, kind: shape-motif, mode: always, claim: "All buttons fully pill-shaped.", check: { buttons: { radiusPx: 999 } } }
+    neighbors: [mid-century, memphis]
+    distinguishers:
+      mid-century: "Retro-70s is warmer/earthier with sunburst motifs; mid-century is cooler-balanced with atomic-age motifs instead."
+      memphis: "Retro-70s commits to one warm earth palette; Memphis clashes many saturated, unrelated hues on purpose."
+    exemplars:
+      - { name: "50Watts vintage travel-poster archive", url: "https://50watts.com/", lookAt: "sunburst motifs, earth triad", usage: "calibration-only" }
+      - { name: "Hem retro furniture collections", url: "https://www.hem.com/", lookAt: "rounded chunky forms", usage: "calibration-only" }
+
+  memphis:
+    preset:
+      font:
+        display: { family: "Baloo 2", stack: "Baloo 2, VAG Rounded, sans-serif", weights: [600, 700], googleFont: "Baloo 2" }
+        body:    { family: "Nunito", stack: "Nunito, sans-serif", weights: [400], googleFont: "Nunito" }
+      type: { baseSizePx: 16, scaleRatio: 1.25, lineHeight: { display: 1.1, body: 1.5 }, measureCh: { body: 58, lead: 38 } }
+      color:
+        bg: { oklch: "oklch(0.97 0.005 90)", hex: "#f7f5ef" }
+        surface: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        text: { oklch: "oklch(0.15 0 0)", hex: "#1c1c1c" }
+        muted: { oklch: "oklch(0.5 0 0)", hex: "#7a7a7a" }
+        border: { oklch: "oklch(0.9 0 0)", hex: "#e6e6e6" }
+        accentPrimary: { oklch: "oklch(0.65 0.22 350)", hex: "#f0509c" }
+        accentSecondary: { oklch: "oklch(0.75 0.18 90)", hex: "#f5d327" }
+        accentTertiary: { oklch: "oklch(0.6 0.2 190)", hex: "#22c1c9" }
+        accentQuaternary: { oklch: "oklch(0.55 0.22 265)", hex: "#5b52d6" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 32, 48], sectionRhythmPx: 72 }
+      shape: { radiusPx: { button: 10, card: 14, input: 10 }, borderWidthPx: 1, shadow: "none" }
+      layout: { maxWidthPx: 1160, gutterPx: 24, columns: "bento" }
+      imagery: { subjects: "squiggles, confetti dots, zigzag borders as illustration", lighting: "flat", backdrop: "white/pastel", treatment: "flat vector, playful chaos", aspectHabits: ["1:1"] }
+    signatures:
+      - { id: four-clashing-accents, kind: accent-scope, mode: always, claim: "Pink/yellow/turquoise/purple all appear together, deliberately non-harmonious.", check: { maxPaintSharePct: 20, palette: vivid } }
+      - { id: squiggle-and-confetti-scatter, kind: shape-motif, mode: always, claim: "Loose decorative shapes float independent of grid, purely ornamental.", check: { cards: { radiusPx: 14 } } }
+      - { id: zigzag-border-motif, kind: shape-motif, mode: always, claim: "A zigzag/dashed line recurs as a divider/frame.", check: { buttons: { radiusPx: 10 } } }
+      - { id: playful-geometric-chaos, kind: spacing-habit, mode: always, claim: "Deliberately mismatched shape sizes breaking strict alignment.", check: { minSectionPaddingPx: 56, whitespaceRatioMin: 0.28 } }
+      - { id: white-ground-as-canvas, kind: surface-habit, mode: always, claim: "Near-white bg lets the color chaos read clearly.", check: { shadow: none, sectionMinLuminance: 0.93 } }
+    neighbors: [bauhaus, retro-70s]
+    distinguishers:
+      bauhaus: "Memphis's shapes are purely decorative scatter with no structural role; Bauhaus's shapes are the compositional structure itself."
+      retro-70s: "Memphis clashes 4 saturated unrelated hues; retro-70s commits to one warm earth triad."
+    exemplars:
+      - { name: "Memphis Group archive (MoMA)", url: "https://www.moma.org/", lookAt: "confetti/squiggle scatter", usage: "calibration-only" }
+      - { name: "Camille Walala studio", url: "https://camillewalala.com/", lookAt: "four-clashing-accent palette", usage: "calibration-only" }
+
+  pixel-8bit:
+    preset:
+      font:
+        display: { family: "Press Start 2P", stack: "Press Start 2P, monospace", weights: [400], googleFont: "Press Start 2P" }
+        body:    { family: "VT323", stack: "VT323, IBM Plex Mono, monospace", weights: [400], googleFont: "VT323" }
+      type: { baseSizePx: 16, scaleRatio: 1.25, lineHeight: { display: 1.3, body: 1.6 }, measureCh: { body: 56, lead: 36 } }
+      color:
+        bg: { oklch: "oklch(0.15 0.02 260)", hex: "#171a24" }
+        surface: { oklch: "oklch(0.2 0.02 260)", hex: "#212536" }
+        text: { oklch: "oklch(0.95 0 0)", hex: "#f0f0f0" }
+        muted: { oklch: "oklch(0.6 0.01 260)", hex: "#9199ac" }
+        border: { oklch: "oklch(0.35 0.02 260)", hex: "#3d4356" }
+        accentPrimary: { oklch: "oklch(0.75 0.2 140)", hex: "#4fd67a" }
+        accentSecondary: { oklch: "oklch(0.7 0.22 30)", hex: "#ef5b3f" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 32], sectionRhythmPx: 64 }
+      shape: { radiusPx: { button: 0, card: 0, input: 0 }, borderWidthPx: 3, shadow: "hard" }
+      layout: { maxWidthPx: 1024, gutterPx: 16, columns: "grid-aligned" }
+      imagery: { subjects: "sprite-style icons, pixel-art illustration", lighting: "n/a, flat color, no gradient", backdrop: "solid or pixel-pattern", treatment: "hard-edged, limited palette (8-16 colors), no anti-aliasing", aspectHabits: ["1:1"] }
+    signatures:
+      - { id: hard-pixel-edges, kind: shape-motif, mode: always, claim: "No anti-aliasing on any shape/icon — sharp stepped edges.", check: { buttons: { radiusPx: 0 }, cards: { radiusPx: 0 } } }
+      - { id: limited-retro-palette, kind: accent-scope, mode: always, claim: "A capped palette of ~8-16 colors, NES/Game-Boy-adjacent.", check: { maxPaintSharePct: 20, palette: vivid } }
+      - { id: pixel-font-display, kind: type-treatment, mode: always, claim: "A genuine bitmap/pixel typeface for headlines.", check: { probes: [{ on: display, familyIncludesAny: ["Press Start 2P"] }, { on: body, familyIncludesAny: ["VT323"] }] } }
+      - { id: dark-arcade-ground, kind: surface-habit, mode: always, claim: "Near-black background is the default.", check: { shadow: allowed, darkMaxLuminance: 0.22 } }
+      - { id: sprite-icon-language, kind: shape-motif, mode: always, claim: "Icons look like game sprites, not modern line/filled icon sets.", check: { buttons: { radiusPx: 0 } } }
+    neighbors: [cyberpunk, brutalist]
+    distinguishers:
+      cyberpunk: "Pixel-8bit is warm-arcade/nostalgic with a capped retro palette; cyberpunk is neon-on-black with glitch/HUD framing, unlimited saturated color."
+      brutalist: "Pixel-8bit is deliberately retro-stylized; brutalist is deliberately un-stylized."
+    exemplars:
+      - { name: "itch.io game showcase", url: "https://itch.io/", lookAt: "sprite icons, capped palette", usage: "calibration-only" }
+
+  psychedelic:
+    preset:
+      font:
+        display: { family: "Unbounded", stack: "Unbounded, sans-serif", weights: [700, 800], googleFont: "Unbounded" }
+        body:    { family: "Space Grotesk", stack: "Space Grotesk, sans-serif", weights: [400], googleFont: "Space Grotesk" }
+      type: { baseSizePx: 17, scaleRatio: 1.4, lineHeight: { display: 1.0, body: 1.5 }, measureCh: { body: 56, lead: 36 } }
+      color:
+        bg: { oklch: "oklch(0.55 0.22 300)", hex: "#a13fc4" }
+        surface: { oklch: "oklch(0.5 0.2 30)", hex: "#c54114" }   # import fix: delivered 0.6/#e8623a put text at 3.00:1, under the 4.5 floor (text L 0.97 had no headroom)
+        text: { oklch: "oklch(0.97 0.01 90)", hex: "#f7f2e0" }
+        muted: { oklch: "oklch(0.75 0.1 90)", hex: "#d9c9a3" }
+        border: { oklch: "oklch(0.65 0.15 300)", hex: "#c07fdc" }
+        accentPrimary: { oklch: "oklch(0.8 0.2 100)", hex: "#e9dc3f" }
+        accentSecondary: { oklch: "oklch(0.6 0.24 350)", hex: "#e0389a" }
+      space: { basePx: 8, stepsPx: [8, 16, 32, 56, 96], sectionRhythmPx: 96 }
+      shape: { radiusPx: { button: 20, card: 28, input: 20 }, borderWidthPx: 0, shadow: "none" }
+      layout: { maxWidthPx: 1120, gutterPx: 24, columns: "center-stack" }
+      imagery: { subjects: "kaleidoscopic pattern, swirling color fields, warped type-as-image", lighting: "n/a", backdrop: "saturated color field", treatment: "high-saturation, mirrored/kaleidoscopic symmetry, liquid distortion", aspectHabits: ["1:1", "3:4"] }
+    signatures:
+      - { id: vibrating-complementary-pairs, kind: accent-scope, mode: always, claim: "Colors chosen from opposite the wheel at equal intensity so edges optically vibrate.", check: { maxPaintSharePct: 25, palette: vivid } }
+      - { id: warped-liquid-display-type, kind: type-treatment, mode: always, claim: "Headline type is visually distorted/melted, not set straight.", check: { probes: [{ on: display, familyIncludesAny: ["Unbounded"] }] } }
+      - { id: kaleidoscopic-mirror-symmetry, kind: shape-motif, mode: always, claim: "Pattern elements repeat in mirrored/radial symmetry.", check: { cards: { radiusPx: 28 } } }
+      - { id: saturated-color-ground, kind: surface-habit, mode: always, claim: "The background itself is a vivid hue, never neutral.", check: { shadow: none, sectionMinLuminance: 0.45 } }
+      - { id: no-neutral-anywhere, kind: accent-scope, mode: never, claim: "Even 'muted' tones stay high-chroma.", check: { palette: vivid } }
+    neighbors: [vaporwave, art-nouveau]
+    distinguishers:
+      vaporwave: "Psychedelic uses solid vibrating complementary color fields and warped type; vaporwave uses a gradient sky and grid-horizon with 2 fixed neon hues."
+      art-nouveau: "Psychedelic vibrates with saturated complementary color; art-nouveau stays muted/botanical with flowing linework instead."
+    exemplars:
+      - { name: "SFMOMA Fillmore concert-poster collection", url: "https://www.sfmoma.org/", lookAt: "kaleidoscopic symmetry, vibrating color", usage: "calibration-only" }
+
+  art-deco:
+    preset:
+      font:
+        display: { family: "Cinzel Decorative", stack: "Cinzel Decorative, Broadway, serif", weights: [700], googleFont: "Cinzel Decorative" }
+        body:    { family: "Montserrat", stack: "Montserrat, sans-serif", weights: [400], googleFont: "Montserrat" }
+      type: { baseSizePx: 17, scaleRatio: 1.4, lineHeight: { display: 1.05, body: 1.6 }, measureCh: { body: 56, lead: 38 }, tracking: { display: "0.08em", body: "0" } }
+      color:
+        bg: { oklch: "oklch(0.16 0.02 260)", hex: "#191b22" }
+        surface: { oklch: "oklch(0.2 0.02 260)", hex: "#212430" }
+        text: { oklch: "oklch(0.95 0.01 90)", hex: "#f2eee0" }
+        muted: { oklch: "oklch(0.65 0.02 90)", hex: "#a89f88" }
+        border: { oklch: "oklch(0.4 0.02 260)", hex: "#3d4152" }
+        accent: { oklch: "oklch(0.75 0.13 85)", hex: "#c9a24b" }
+      space: { basePx: 8, stepsPx: [8, 16, 32, 48, 80], sectionRhythmPx: 112 }
+      shape: { radiusPx: { button: 0, card: 0, input: 0 }, borderWidthPx: 1, shadow: "none" }
+      layout: { maxWidthPx: 1080, gutterPx: 40, columns: "center-stack" }
+      imagery: { subjects: "architecture, fashion figures, geometric ornament", lighting: "dramatic-directional", backdrop: "deep jewel tones", treatment: "high-contrast, metallic sheen", aspectHabits: ["2:3", "1:1"] }
+    signatures:
+      - { id: gold-on-deep-ground, kind: accent-scope, mode: always, claim: "Brass/gold accent against near-black or jewel-toned ground, never on white.", check: { maxPaintSharePct: 6, allowedRoles: [heading, divider] } }
+      - { id: symmetric-chevron-sunburst-framing, kind: shape-motif, mode: always, claim: "Chevron/sunburst/fan ornament frames content symmetrically.", check: { buttons: { radiusPx: 0 } } }
+      - { id: wide-tracked-capitals, kind: type-treatment, mode: always, claim: "Display type set in tracked-out uppercase.", check: { probes: [{ on: display, familyIncludesAny: ["Cinzel Decorative"], caseIs: upper }] } }
+      - { id: geometric-deco-borders, kind: shape-motif, mode: always, claim: "Stepped/ziggurat line ornament as dividers.", check: { buttons: { radiusPx: 0 } } }
+      - { id: metallic-line-accents, kind: surface-habit, mode: always, claim: "Thin gold rules, not solid fills.", check: { shadow: none, sectionMinLuminance: 0.15 } }
+    neighbors: [luxury-fashion, art-nouveau]
+    distinguishers:
+      luxury-fashion: "Art deco is symmetric, geometric-ornamented, gold-on-dark; luxury-fashion is asymmetric full-bleed photography on white/black with no ornament."
+      art-nouveau: "Art deco is geometric/symmetric/metallic; art-nouveau is organic/asymmetric/botanical linework."
+    exemplars:
+      - { name: "Cartier heritage pages", url: "https://www.cartier.com/", lookAt: "gold-on-deep ground, symmetric framing", usage: "calibration-only" }
+
+  art-nouveau:
+    preset:
+      font:
+        display: { family: "Italiana", stack: "Italiana, Berkshire Swash, serif", weights: [400], googleFont: "Italiana" }
+        body:    { family: "EB Garamond", stack: "EB Garamond, serif", weights: [400], googleFont: "EB Garamond" }
+      type: { baseSizePx: 17, scaleRatio: 1.3, lineHeight: { display: 1.15, body: 1.65 }, measureCh: { body: 60, lead: 40 } }
+      color:
+        bg: { oklch: "oklch(0.95 0.02 100)", hex: "#efe8d3" }
+        surface: { oklch: "oklch(0.97 0.015 100)", hex: "#f5efdf" }
+        text: { oklch: "oklch(0.24 0.03 130)", hex: "#2e3320" }
+        muted: { oklch: "oklch(0.55 0.03 110)", hex: "#867d5c" }
+        border: { oklch: "oklch(0.85 0.03 110)", hex: "#d6cca6" }
+        accentPrimary: { oklch: "oklch(0.45 0.08 145)", hex: "#4f6b3f" }
+        accentSecondary: { oklch: "oklch(0.55 0.1 55)", hex: "#a37a3f" }
+      space: { basePx: 8, stepsPx: [8, 16, 32, 56, 96], sectionRhythmPx: 104 }
+      shape: { radiusPx: { button: 20, card: 24, input: 20 }, borderWidthPx: 1, shadow: "none" }
+      layout: { maxWidthPx: 1100, gutterPx: 32, columns: "split-left" }
+      imagery: { subjects: "botanical illustration, flowing figures, floral linework", lighting: "soft", backdrop: "parchment/muted", treatment: "linework-forward, muted botanical palette", aspectHabits: ["3:4", "1:1"] }
+    signatures:
+      - { id: whiplash-curve-linework, kind: shape-motif, mode: always, claim: "A literal S-curve/whiplash line motif recurs in borders, dividers, illustration.", check: { cards: { radiusPx: 24 } } }
+      - { id: floral-botanical-ornament, kind: shape-motif, mode: always, claim: "Vine/flower linework frames content, never purely geometric.", check: { buttons: { radiusPx: 20 } } }
+      - { id: muted-botanical-duo, kind: accent-scope, mode: always, claim: "Green+ochre fixed accent roles, never bright/saturated.", check: { maxPaintSharePct: 6, palette: duo } }
+      - { id: asymmetric-organic-composition, kind: spacing-habit, mode: always, claim: "Content flows around curved shapes rather than snapping to a grid.", check: { minSectionPaddingPx: 88, whitespaceRatioMin: 0.36 } }
+      - { id: flowing-display-serif-with-swashes, kind: type-treatment, mode: always, claim: "Flowing display serif with swashes.", check: { probes: [{ on: display, familyIncludesAny: ["Italiana", "Berkshire Swash"] }] } }
+    neighbors: [art-deco, boutique-wellness]
+    distinguishers:
+      art-deco: "Art nouveau is organic, curved, botanical, asymmetric; art deco is geometric, symmetric, metallic, angular."
+      boutique-wellness: "Art nouveau commits to literal botanical linework as its signature motif; boutique-wellness is softer/photographic without illustrated linework."
+    exemplars:
+      - { name: "Mucha Foundation archive", url: "https://www.muchafoundation.org/", lookAt: "whiplash curves, floral ornament", usage: "calibration-only" }
+
+  mid-century:
+    preset:
+      font:
+        display: { family: "Poppins", stack: "Poppins, Futura, sans-serif", weights: [600, 700], googleFont: "Poppins" }
+        body:    { family: "Work Sans", stack: "Work Sans, sans-serif", weights: [400], googleFont: "Work Sans" }
+      type: { baseSizePx: 16, scaleRatio: 1.25, lineHeight: { display: 1.1, body: 1.55 }, measureCh: { body: 60, lead: 40 } }
+      color:
+        bg: { oklch: "oklch(0.95 0.02 80)", hex: "#ede3cd" }
+        surface: { oklch: "oklch(0.99 0.01 80)", hex: "#fdfbf5" }
+        text: { oklch: "oklch(0.2 0.02 50)", hex: "#26221a" }
+        muted: { oklch: "oklch(0.55 0.03 60)", hex: "#867a63" }
+        border: { oklch: "oklch(0.85 0.02 70)", hex: "#d9cdb0" }
+        accentPrimary: { oklch: "oklch(0.6 0.15 45)", hex: "#c2793d" }
+        accentSecondary: { oklch: "oklch(0.55 0.1 190)", hex: "#4f8f8a" }
+        accentTertiary: { oklch: "oklch(0.75 0.14 90)", hex: "#d9b23f" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 40, 64], sectionRhythmPx: 88 }
+      shape: { radiusPx: { button: 10, card: 14, input: 10 }, borderWidthPx: 1, shadow: "none" }
+      layout: { maxWidthPx: 1160, gutterPx: 24, columns: 3 }
+      imagery: { subjects: "clean geometric illustration — atomic/boomerang motifs, optimistic domestic scenes", lighting: "flat/graphic", backdrop: "solid-color", treatment: "flat vector, warm retro palette, no gradient", aspectHabits: ["4:3", "1:1"] }
+    signatures:
+      - { id: atomic-boomerang-motif, kind: shape-motif, mode: always, claim: "A boomerang/atomic-orbit graphic shape recurs as ornament.", check: { cards: { radiusPx: 14 } } }
+      - { id: warm-balanced-retro-triad, kind: accent-scope, mode: always, claim: "Orange/teal/mustard in fixed roles, more balanced than 70s's earthier palette.", check: { maxPaintSharePct: 15, palette: duo } }
+      - { id: clean-geometric-illustration, kind: shape-motif, mode: always, claim: "Flat vector shapes with confident outline, not painterly.", check: { buttons: { radiusPx: 10 } } }
+      - { id: gently-rounded-geometry, kind: shape-motif, mode: always, claim: "10-14px radius reads 'friendly-atomic', not soft/pillowy.", check: { buttons: { radiusPx: 10 }, cards: { radiusPx: 14 } } }
+      - { id: even-flat-optimistic-light, kind: surface-habit, mode: always, claim: "Flat, optimistic, no gradient.", check: { shadow: none, sectionMinLuminance: 0.9 } }
+    neighbors: [retro-70s, flat]
+    distinguishers:
+      retro-70s: "Mid-century is cooler-balanced (adds teal) with atomic/boomerang motifs; retro-70s is warmer/earthier with sunburst motifs."
+      flat: "Mid-century's palette and motifs are period-specific; flat is period-agnostic."
+    exemplars:
+      - { name: "Herman Miller heritage", url: "https://www.hermanmiller.com/", lookAt: "atomic motifs, warm triad", usage: "calibration-only" }
+      - { name: "Eames Office archive", url: "https://www.eamesoffice.com/", lookAt: "clean geometric illustration", usage: "calibration-only" }
+
+  # ---------------------------------------------------------------- Digital
+  saas-product:
+    preset:
+      font:
+        display: { family: "Inter", stack: "Inter, sans-serif", weights: [600, 700], googleFont: "Inter" }
+        body:    { family: "Inter", stack: "Inter, sans-serif", weights: [400], googleFont: "Inter" }
+      type: { baseSizePx: 16, scaleRatio: 1.25, lineHeight: { display: 1.15, body: 1.55 }, measureCh: { body: 62, lead: 42 } }
+      color:
+        bg: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        surface: { oklch: "oklch(0.98 0.003 250)", hex: "#f8f9fb" }
+        text: { oklch: "oklch(0.15 0.005 250)", hex: "#191b1f" }
+        muted: { oklch: "oklch(0.5 0.008 250)", hex: "#767b84" }
+        border: { oklch: "oklch(0.9 0.004 250)", hex: "#e1e3e7" }
+        accentPrimary: { oklch: "oklch(0.55 0.19 265)", hex: "#4c5fd6" }
+        accentSecondary: { oklch: "oklch(0.7 0.15 165)", hex: "#39b892" }
+      space: { basePx: 8, stepsPx: [4, 8, 16, 24, 40, 64], sectionRhythmPx: 88 }
+      shape: { radiusPx: { button: 10, card: 14, input: 10 }, borderWidthPx: 1, shadow: "0 4px 16px rgba(0,0,0,.08)" }
+      layout: { maxWidthPx: 1280, gutterPx: 24, columns: 12 }
+      imagery: { subjects: "product UI screenshots in browser/device frames", lighting: "n/a", backdrop: "soft gradient blob or mesh behind the framed screenshot", treatment: "crisp screen capture, subtle color-wash background", aspectHabits: ["16:10", "4:3"] }
+    signatures:
+      - { id: framed-product-screenshot-hero, kind: shape-motif, mode: always, claim: "A literal browser/device chrome frames a UI screenshot as the hero visual.", check: { cards: { radiusPx: 14 } } }
+      - { id: soft-gradient-mesh-accent, kind: surface-habit, mode: always, claim: "A blurred colorful blob/mesh sits behind key content as ambient color, never a hard shape.", check: { shadow: allowed, sectionMinLuminance: 0.85 } }
+      - { id: single-cta-per-view, kind: accent-scope, mode: always, claim: "Exactly one high-contrast primary button visible per screen section.", check: { maxPaintSharePct: 5, allowedRoles: [action-primary] } }
+      - { id: ambient-not-elevation-shadow, kind: surface-habit, mode: always, claim: "Shadow reads as soft glow, not a stepped elevation system.", check: { shadow: allowed } }
+      - { id: indigo-violet-default-accent, kind: accent-scope, mode: always, claim: "The archetypal SaaS blue-violet accent.", check: { maxPaintSharePct: 5 } }
+    neighbors: [material, bento-grid]
+    distinguishers:
+      material: "SaaS-product uses ad-hoc soft ambient shadow and gradient-mesh accents; material uses a fixed literal elevation-shadow scale with no gradient blobs."
+      bento-grid: "SaaS-product centers one hero screenshot per section; bento-grid tiles many small screenshots/features into a mixed-size grid."
+    exemplars:
+      - { name: "Linear", url: "https://linear.app/", lookAt: "framed screenshot hero, gradient mesh", usage: "calibration-only" }
+      - { name: "Stripe", url: "https://stripe.com/", lookAt: "single-CTA discipline", usage: "calibration-only" }
+
+  dashboard-data:
+    preset:
+      font:
+        display: { family: "Inter", stack: "Inter, sans-serif", weights: [600], googleFont: "Inter" }
+        body:    { family: "Inter", stack: "Inter, sans-serif", weights: [400], googleFont: "Inter" }
+      type: { baseSizePx: 14, scaleRatio: 1.15, lineHeight: { display: 1.1, body: 1.4 }, measureCh: { body: 50, lead: 32 } }
+      color:
+        bg: { oklch: "oklch(0.97 0.003 250)", hex: "#f5f6f8" }
+        surface: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        text: { oklch: "oklch(0.16 0.005 250)", hex: "#1b1d21" }
+        muted: { oklch: "oklch(0.52 0.008 250)", hex: "#7a7f88" }
+        border: { oklch: "oklch(0.89 0.004 250)", hex: "#dfe1e5" }
+        accentPrimary: { oklch: "oklch(0.55 0.15 255)", hex: "#4a6fd6" }
+        statusGood: { oklch: "oklch(0.65 0.16 150)", hex: "#2fae6e" }
+        statusWarn: { oklch: "oklch(0.75 0.16 75)", hex: "#e0a52c" }
+        statusBad: { oklch: "oklch(0.6 0.2 25)", hex: "#dc4a3a" }
+      space: { basePx: 4, stepsPx: [4, 8, 12, 16, 24], sectionRhythmPx: 32 }
+      shape: { radiusPx: { button: 4, card: 6, input: 4 }, borderWidthPx: 1, shadow: "soft" }
+      layout: { maxWidthPx: "fluid", gutterPx: 16, columns: 4 }
+      imagery: { subjects: "charts, sparklines, data tables — no photography", lighting: "n/a", backdrop: "n/a", treatment: "flat chart fills, thin gridlines", aspectHabits: ["chart-native"] }
+    signatures:
+      - { id: semantic-status-color-triad, kind: accent-scope, mode: always, claim: "Green/amber/red always mean good/warn/bad, never decorative.", check: { maxPaintSharePct: 8, allowedRoles: [badge, icon] } }
+      - { id: tabular-figure-alignment, kind: type-treatment, mode: always, claim: "Every numeric column is monospaced-width and decimal-aligned.", check: { probes: [{ on: body, familyIncludesAny: ["Inter"] }] } }
+      - { id: dense-uninterrupted-grid, kind: spacing-habit, mode: always, claim: "The tightest density of any style — minimal whitespace between modules.", check: { minSectionPaddingPx: 16, whitespaceRatioMin: 0.1 } }
+      - { id: sparkline-and-chart-accent, kind: shape-motif, mode: always, claim: "Small inline charts embedded in table rows/cards.", check: { cards: { radiusPx: 6 } } }
+      - { id: fixed-14px-base, kind: type-treatment, mode: always, claim: "Smaller base type than any other style, to fit more data.", check: { probes: [{ on: body, familyIncludesAny: ["Inter"] }] } }
+    neighbors: [saas-product, annual-report]
+    distinguishers:
+      saas-product: "Dashboard-data is dense and numeric with a fixed status-color system; saas-product is airier and marketing-oriented."
+      annual-report: "Dashboard-data is a live, interactive numeric UI; annual-report is a narrative print-descended document."
+    exemplars:
+      - { name: "Datadog", url: "https://www.datadoghq.com/", lookAt: "semantic status color, tight density", usage: "calibration-only" }
+      - { name: "Vercel dashboard", url: "https://vercel.com/", lookAt: "tabular alignment, sparklines", usage: "calibration-only" }
+
+  glassmorphism:
+    preset:
+      font:
+        display: { family: "Inter", stack: "Inter, SF Pro, sans-serif", weights: [600], googleFont: "Inter" }
+        body:    { family: "Inter", stack: "Inter, sans-serif", weights: [400], googleFont: "Inter" }
+      type: { baseSizePx: 16, scaleRatio: 1.25, lineHeight: { display: 1.15, body: 1.55 }, measureCh: { body: 60, lead: 40 } }
+      color:
+        bg: { oklch: "oklch(0.5 0.2 280)", hex: "#6d3fc0" }   # import fix: delivered 0.55/#7b4fd1 put text at 3.81:1 on the rgba-composited glass surface, under the 4.5 floor
+        surface: { oklch: "oklch(0.9 0.02 250 / 0.15)", hex: "rgba(255,255,255,0.15)" }
+        text: { oklch: "oklch(0.98 0.01 250)", hex: "#f7f8fc" }
+        muted: { oklch: "oklch(0.85 0.02 250)", hex: "#cfd3e6" }
+        border: { oklch: "oklch(1 0 0 / 0.3)", hex: "rgba(255,255,255,0.3)" }
+        accent: { oklch: "oklch(0.8 0.12 195)", hex: "#8fd9e8" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 40, 64], sectionRhythmPx: 88 }
+      shape: { radiusPx: { button: 20, card: 28, input: 20 }, borderWidthPx: 1, shadow: "soft" }
+      layout: { maxWidthPx: 1120, gutterPx: 24, columns: "center-stack" }
+      imagery: { subjects: "abstract gradient blobs, blurred bokeh light", lighting: "n/a", backdrop: "vivid gradient mesh, always visible behind/around glass panels", treatment: "soft blur, luminous", aspectHabits: ["1:1", "16:9"] }
+    signatures:
+      - { id: translucent-frosted-panel, kind: surface-habit, mode: always, claim: "Every card literally uses backdrop-blur + low-opacity white fill — not a solid hex color.", check: { shadow: allowed, sectionMinLuminance: 0.5 } }
+      - { id: vivid-gradient-backdrop-required, kind: surface-habit, mode: always, claim: "A colorful gradient/bokeh MUST be visible behind the glass or the effect reads flat.", check: { sectionMinLuminance: 0.4 } }
+      - { id: thin-light-edge-highlight, kind: shape-motif, mode: always, claim: "A 1px semi-transparent white border traces panel edges, simulating glass rim light.", check: { cards: { radiusPx: 28 } } }
+      - { id: refracted-color-bleed, kind: surface-habit, mode: always, claim: "Background color subtly tints what's 'seen through' each panel.", check: { shadow: allowed } }
+      - { id: icy-cool-accent-only, kind: accent-scope, mode: always, claim: "Icy cyan-white accent only.", check: { maxPaintSharePct: 5 } }
+    neighbors: [neumorphism, ios-hig]
+    distinguishers:
+      neumorphism: "Glassmorphism is translucent over a vivid contrasting background; neumorphism is opaque and same-tone as its background."
+      ios-hig: "Glassmorphism's blur is the whole aesthetic and demands a vivid backdrop; iOS/HIG uses blur sparingly over mostly neutral grounds."
+    exemplars:
+      - { name: "Apple macOS Big Sur marketing archive", url: "https://www.apple.com/macos/", lookAt: "frosted panels over vivid gradient", usage: "calibration-only" }
+      - { name: "Windows 11 Fluent Mica", url: "https://www.microsoft.com/windows/", lookAt: "translucent surfaces", usage: "calibration-only" }
+
+  skeuomorphic:
+    preset:
+      font:
+        display: { family: "Inter", stack: "Inter, Helvetica Neue, sans-serif", weights: [600], googleFont: "Inter" }
+        body:    { family: "Inter", stack: "Inter, sans-serif", weights: [400], googleFont: "Inter" }
+      type: { baseSizePx: 16, scaleRatio: 1.25, lineHeight: { display: 1.15, body: 1.55 }, measureCh: { body: 58, lead: 38 } }
+      color:
+        bg: { oklch: "oklch(0.9 0.02 70)", hex: "#dccdb0" }
+        surface: { oklch: "oklch(0.85 0.04 50)", hex: "#c9a373" }
+        text: { oklch: "oklch(0.2 0.03 40)", hex: "#2c2016" }
+        muted: { oklch: "oklch(0.5 0.03 45)", hex: "#7a6650" }
+        border: { oklch: "oklch(0.6 0.04 45)", hex: "#8f7455" }
+        accent: { oklch: "oklch(0.55 0.18 30)", hex: "#b04a2e" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 32, 48], sectionRhythmPx: 80 }
+      shape: { radiusPx: { button: 10, card: 14, input: 10 }, borderWidthPx: 0, shadow: "soft (layered: outer drop + inner highlight + inner shadow)" }
+      layout: { maxWidthPx: 1120, gutterPx: 24, columns: 2 }
+      imagery: { subjects: "real-world material textures rendered as UI surfaces — leather, felt, brushed metal, wood grain", lighting: "simulated studio light with specular highlight", backdrop: "matches the material metaphor", treatment: "photoreal texture mapping, realistic depth", aspectHabits: ["1:1", "4:3"] }
+    signatures:
+      - { id: real-material-texture-mapping, kind: surface-habit, mode: always, claim: "Surfaces render as leather/felt/brushed-metal via visible grain texture, not flat color.", check: { shadow: allowed, sectionMinLuminance: 0.6 } }
+      - { id: simultaneous-highlight-and-shadow, kind: surface-habit, mode: always, claim: "Every raised control shows BOTH a light highlight on top and a shadow below at once.", check: { shadow: allowed } }
+      - { id: tactile-button-metaphor, kind: shape-motif, mode: always, claim: "Buttons look physically pressable — beveled edge + highlight.", check: { buttons: { radiusPx: 10 } } }
+      - { id: stitch-and-seam-details, kind: shape-motif, mode: sometimes, claim: "Decorative stitching or seam lines follow panel edges.", check: { cards: { radiusPx: 14 } } }
+      - { id: realistic-icon-rendering, kind: shape-motif, mode: always, claim: "Icons are rendered as tiny photoreal objects, not flat glyphs.", check: { buttons: { radiusPx: 10 } } }
+    neighbors: [material, claymorphism]
+    distinguishers:
+      material: "Skeuomorphic maps real textures and shows highlight+shadow together; material uses flat color with a single-direction abstract elevation shadow, no texture."
+      claymorphism: "Skeuomorphic mimics real hard materials realistically; claymorphism mimics a single soft material (clay) in a stylized, cartoonish way."
+    exemplars:
+      - { name: "Version Museum — Apple iOS 6 archive", url: "https://versionmuseum.com/apple-ios", lookAt: "leather/metal texture mapping", usage: "calibration-only" }
+
+  bento-grid:
+    preset:
+      font:
+        display: { family: "Inter", stack: "Inter, sans-serif", weights: [600, 700], googleFont: "Inter" }
+        body:    { family: "Inter", stack: "Inter, sans-serif", weights: [400], googleFont: "Inter" }
+      type: { baseSizePx: 16, scaleRatio: 1.25, lineHeight: { display: 1.15, body: 1.55 }, measureCh: { body: 60, lead: 40 } }
+      color:
+        bg: { oklch: "oklch(0.97 0.003 250)", hex: "#f6f7f9" }
+        surface: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        text: { oklch: "oklch(0.15 0.005 250)", hex: "#191b1f" }
+        muted: { oklch: "oklch(0.5 0.008 250)", hex: "#767b84" }
+        border: { oklch: "oklch(0.9 0.004 250)", hex: "#e2e4e8" }
+        accent: { oklch: "oklch(0.55 0.19 265)", hex: "#4c5fd6" }
+      space: { basePx: 8, stepsPx: [8, 12, 16, 24], sectionRhythmPx: 24 }
+      shape: { radiusPx: { button: 20, card: 24, input: 20 }, borderWidthPx: 1, shadow: "soft" }
+      layout: { maxWidthPx: 1280, gutterPx: 16, columns: "bento" }
+      imagery: { subjects: "feature screenshots or icon+stat combos, one per tile", lighting: "n/a", backdrop: "white/tinted-per-tile", treatment: "crisp, tile-scoped", aspectHabits: ["1:1", "2:1"] }
+    signatures:
+      - { id: mixed-size-tile-grid, kind: spacing-habit, mode: always, claim: "Tiles span different cell counts (1x1, 2x1, 2x2) within one uniform grid.", check: { minSectionPaddingPx: 16, whitespaceRatioMin: 0.15 } }
+      - { id: one-idea-per-tile, kind: shape-motif, mode: always, claim: "Each tile is a self-contained feature/stat, never split across tiles.", check: { cards: { radiusPx: 24 } } }
+      - { id: uniform-gutter-and-radius, kind: shape-motif, mode: always, claim: "Every tile shares identical corner radius and gap.", check: { cards: { radiusPx: 24 }, buttons: { radiusPx: 20 } } }
+      - { id: tile-background-variation, kind: surface-habit, mode: sometimes, claim: "Individual tiles may carry their own tint while the outer page stays neutral.", check: { shadow: allowed, sectionMinLuminance: 0.9 } }
+      - { id: no-section-dividers, kind: spacing-habit, mode: never, claim: "The grid itself replaces traditional section breaks.", check: { minSectionPaddingPx: 16 } }
+    neighbors: [saas-product, material]
+    distinguishers:
+      saas-product: "Bento-grid distributes features across mixed-size tiles; saas-product centers a single hero screenshot per section."
+      material: "Bento-grid's radius/shadow are uniform across all tiles; material varies shadow depth by elevation level."
+    exemplars:
+      - { name: "Apple product feature grids", url: "https://www.apple.com/iphone/", lookAt: "mixed-size tile grid", usage: "calibration-only" }
+      - { name: "Notion", url: "https://www.notion.so/", lookAt: "one-idea-per-tile", usage: "calibration-only" }
+
+  ios-hig:
+    preset:
+      font:
+        display: { family: "Inter", stack: "Inter, SF Pro Display, sans-serif", weights: [600, 700], googleFont: "Inter" }
+        body:    { family: "Inter", stack: "Inter, SF Pro Text, sans-serif", weights: [400], googleFont: "Inter" }
+      type: { baseSizePx: 17, scaleRatio: 1.25, lineHeight: { display: 1.15, body: 1.5 }, measureCh: { body: 58, lead: 38 } }
+      color:
+        bg: { oklch: "oklch(0.97 0.003 250)", hex: "#f6f6f8" }
+        surface: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        text: { oklch: "oklch(0.15 0 0)", hex: "#1a1a1a" }
+        muted: { oklch: "oklch(0.55 0.005 250)", hex: "#7d7d82" }
+        border: { oklch: "oklch(0.88 0.003 250)", hex: "#dedee2" }
+        accent: { oklch: "oklch(0.58 0.19 255)", hex: "#0a6cff" }
+      space: { basePx: 8, stepsPx: [8, 16, 20, 24, 32], sectionRhythmPx: 64 }
+      shape: { radiusPx: { button: 14, card: 20, input: 14 }, borderWidthPx: 1, shadow: "soft" }
+      layout: { maxWidthPx: 1100, gutterPx: 16, columns: "list-rows" }
+      imagery: { subjects: "product-in-hand photography, SF Symbols-style icons", lighting: "bright-clean", backdrop: "neutral", treatment: "crisp, true-to-device color", aspectHabits: ["9:19.5", "1:1"] }
+    signatures:
+      - { id: system-blue-single-accent, kind: accent-scope, mode: always, claim: "The exact iOS blue is the one interactive-affordance color, used consistently.", check: { maxPaintSharePct: 5, allowedRoles: [action-primary, arrow-link] } }
+      - { id: continuous-corner-squircle, kind: shape-motif, mode: always, claim: "Corners use a superellipse 'squircle' curve, not a plain circular radius.", check: { buttons: { radiusPx: 14 }, cards: { radiusPx: 20 } } }
+      - { id: sf-symbols-icon-language, kind: shape-motif, mode: always, claim: "Thin, consistent-weight line icons matching Apple's icon grammar.", check: { buttons: { radiusPx: 14 } } }
+      - { id: list-row-navigation-pattern, kind: spacing-habit, mode: always, claim: "Content organizes into grouped list rows with chevron affordances, not card grids.", check: { minSectionPaddingPx: 48, whitespaceRatioMin: 0.3 } }
+      - { id: clarity-deference-depth, kind: surface-habit, mode: always, claim: "Generous whitespace, content-first hierarchy, blur-based layering for modals.", check: { shadow: allowed, sectionMinLuminance: 0.92 } }
+    neighbors: [glassmorphism, fluent]
+    distinguishers:
+      glassmorphism: "iOS/HIG uses blur sparingly over mostly neutral grounds; glassmorphism makes blur-over-vivid-gradient the entire aesthetic."
+      fluent: "iOS/HIG's accent is one exact system blue; fluent builds a coherent multi-tint accent system with reveal-highlight motion."
+    exemplars:
+      - { name: "Apple Human Interface Guidelines", url: "https://developer.apple.com/design/", lookAt: "squircle corners, system blue", usage: "calibration-only" }
+
+  fluent:
+    preset:
+      font:
+        display: { family: "Inter", stack: "Inter, Segoe UI Variable, sans-serif", weights: [600], googleFont: "Inter" }
+        body:    { family: "Inter", stack: "Inter, sans-serif", weights: [400], googleFont: "Inter" }
+      type: { baseSizePx: 16, scaleRatio: 1.25, lineHeight: { display: 1.15, body: 1.55 }, measureCh: { body: 60, lead: 40 } }
+      color:
+        bg: { oklch: "oklch(0.97 0.003 250)", hex: "#f5f6f8" }
+        surface: { oklch: "oklch(0.98 0.005 250 / 0.7)", hex: "rgba(255,255,255,0.7)" }
+        text: { oklch: "oklch(0.16 0.005 250)", hex: "#1b1d21" }
+        muted: { oklch: "oklch(0.52 0.008 250)", hex: "#7a7f88" }
+        border: { oklch: "oklch(0.88 0.004 250)", hex: "#dee0e4" }
+        accentPrimary: { oklch: "oklch(0.5 0.16 255)", hex: "#3060c9" }
+        accentSecondary: { oklch: "oklch(0.6 0.14 300)", hex: "#8452c9" }
+      space: { basePx: 8, stepsPx: [4, 8, 16, 24, 32], sectionRhythmPx: 64 }
+      shape: { radiusPx: { button: 8, card: 12, input: 8 }, borderWidthPx: 1, shadow: "soft" }
+      layout: { maxWidthPx: 1200, gutterPx: 24, columns: 3 }
+      imagery: { subjects: "product UI, subtle 3D icon renders", lighting: "soft", backdrop: "mostly-neutral, no vivid gradient required", treatment: "clean, coherent-tint", aspectHabits: ["16:9", "1:1"] }
+    signatures:
+      - { id: acrylic-over-neutral, kind: surface-habit, mode: always, claim: "Translucent blur material like glassmorphism, but the backdrop stays mostly neutral.", check: { shadow: allowed, sectionMinLuminance: 0.85 } }
+      - { id: reveal-highlight-on-hover, kind: surface-habit, mode: always, claim: "A soft radial light-highlight follows the cursor/focus on interactive surfaces.", check: { shadow: allowed } }
+      - { id: coherent-multi-tint-accent-system, kind: accent-scope, mode: always, claim: "Several related accent tints mapped to consistent roles, not just one hue.", check: { maxPaintSharePct: 6, palette: duo } }
+      - { id: depth-via-z-layering, kind: surface-habit, mode: always, claim: "Depth implied through subtle parallax/layering more than shadow alone.", check: { shadow: allowed } }
+      - { id: rounded-8-12px-consistent-radius, kind: shape-motif, mode: always, claim: "Consistent 8-12px radius across components.", check: { buttons: { radiusPx: 8 }, cards: { radiusPx: 12 } } }
+    neighbors: [ios-hig, glassmorphism]
+    distinguishers:
+      ios-hig: "Fluent uses a multi-tint coherent accent system and reveal-highlight motion; iOS/HIG commits to one exact system-blue and squircle corners."
+      glassmorphism: "Fluent's acrylic sits over a neutral ground and stays subtle; glassmorphism's blur sits over a vivid gradient and IS the whole effect."
+    exemplars:
+      - { name: "Microsoft Fluent 2", url: "https://fluent2.microsoft.design/", lookAt: "acrylic over neutral, reveal highlight", usage: "calibration-only" }
+
+  # ---------------------------------------------------------------- Texture
+  hand-drawn:
+    preset:
+      font:
+        display: { family: "Kalam", stack: "Kalam, cursive", weights: [500, 700], googleFont: "Kalam" }
+        body:    { family: "Nunito Sans", stack: "Nunito Sans, sans-serif", weights: [400], googleFont: "Nunito Sans" }
+      type: { baseSizePx: 17, scaleRatio: 1.25, lineHeight: { display: 1.2, body: 1.6 }, measureCh: { body: 60, lead: 40 } }
+      color:
+        bg: { oklch: "oklch(0.97 0.008 80)", hex: "#f7f2e6" }
+        surface: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        text: { oklch: "oklch(0.2 0.01 60)", hex: "#28241d" }
+        muted: { oklch: "oklch(0.55 0.02 60)", hex: "#867b68" }
+        border: { oklch: "oklch(0.4 0.02 60)", hex: "#544c3d" }
+        accent: { oklch: "oklch(0.6 0.18 25)", hex: "#d1552f" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 40, 64], sectionRhythmPx: 88 }
+      shape: { radiusPx: { button: 16, card: 20, input: 16 }, borderWidthPx: 2, shadow: "none" }
+      layout: { maxWidthPx: 1120, gutterPx: 24, columns: "center-stack" }
+      imagery: { subjects: "doodled icons, sketch arrows, marker annotations", lighting: "n/a", backdrop: "paper-white", treatment: "loose ink linework, imperfect", aspectHabits: ["1:1"] }
+    signatures:
+      - { id: wobbly-hand-drawn-borders, kind: shape-motif, mode: always, claim: "Every border is an irregular SVG stroke path, never straight/uniform.", check: { buttons: { radiusPx: 16 }, cards: { radiusPx: 20 } } }
+      - { id: sketch-arrow-annotations, kind: shape-motif, mode: always, claim: "Hand-drawn arrows/circles point at and annotate key elements.", check: { cards: { radiusPx: 20 } } }
+      - { id: doodle-icon-language, kind: shape-motif, mode: always, claim: "Icons look sketched, inconsistent line weight.", check: { buttons: { radiusPx: 16 } } }
+      - { id: imperfect-human-marks, kind: spacing-habit, mode: always, claim: "Intentional small irregularities — rotated elements, uneven spacing.", check: { minSectionPaddingPx: 72, whitespaceRatioMin: 0.32 } }
+      - { id: marker-highlight-accent, kind: accent-scope, mode: always, claim: "Accent applied like a highlighter swipe behind text, not a filled shape.", check: { maxPaintSharePct: 5 } }
+    neighbors: [organic, zine]
+    distinguishers:
+      organic: "Hand-drawn's signature is literal sketch/ink texture; organic uses smooth blob curves with no hand-drawn linework."
+      zine: "Hand-drawn is warm/paper/sketchy and cohesive; zine is cold/photocopy/collage and deliberately chaotic."
+    exemplars:
+      - { name: "Notion illustration system", url: "https://www.notion.so/", lookAt: "sketch annotation style", usage: "calibration-only" }
+
+  collage:
+    preset:
+      font:
+        display: { family: "Anton", stack: "Anton, sans-serif", weights: [400], googleFont: "Anton" }
+        body:    { family: "Archivo", stack: "Archivo, sans-serif", weights: [400], googleFont: "Archivo" }
+      type: { baseSizePx: 17, scaleRatio: 1.35, lineHeight: { display: 1.05, body: 1.5 }, measureCh: { body: 56, lead: 36 } }
+      color:
+        bg: { oklch: "oklch(0.93 0.01 80)", hex: "#e6e0d0" }
+        surface: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        text: { oklch: "oklch(0.15 0 0)", hex: "#1a1a1a" }
+        muted: { oklch: "oklch(0.5 0 0)", hex: "#7a7a7a" }
+        border: { oklch: "oklch(0.7 0 0)", hex: "#b3b3b3" }
+        accentPrimary: { oklch: "oklch(0.6 0.2 30)", hex: "#cf5330" }
+        accentSecondary: { oklch: "oklch(0.65 0.15 90)", hex: "#c2a23a" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 32, 48], sectionRhythmPx: 72 }
+      shape: { radiusPx: { button: 0, card: 0, input: 0 }, borderWidthPx: 0, shadow: "soft" }
+      layout: { maxWidthPx: 1160, gutterPx: 16, columns: "asymmetric" }
+      imagery: { subjects: "cut-paper photo fragments, mixed media scraps, magazine-clipping style", lighting: "n/a", backdrop: "craft-paper", treatment: "layered, torn edges, visible paper grain", aspectHabits: ["irregular"] }
+    signatures:
+      - { id: torn-paper-edge-silhouettes, kind: shape-motif, mode: always, claim: "Images/shapes are masked with an irregular torn-edge outline, never a clean rectangle.", check: { cards: { radiusPx: 0 } } }
+      - { id: physical-layering-shadow, kind: surface-habit, mode: always, claim: "Each 'scrap' casts a small directional shadow onto the layer below it.", check: { shadow: allowed, sectionMinLuminance: 0.85 } }
+      - { id: mixed-media-scrap-variety, kind: type-treatment, mode: always, claim: "Different scrap 'materials' appear together on one page.", check: { probes: [{ on: display, familyIncludesAny: ["Anton"] }] } }
+      - { id: overlap-breaks-grid, kind: spacing-habit, mode: always, claim: "Content is allowed to overlap grid boundaries.", check: { minSectionPaddingPx: 48, whitespaceRatioMin: 0.2 } }
+      - { id: tactile-craft-paper-ground, kind: surface-habit, mode: always, claim: "The ground itself reads as craft/kraft paper.", check: { sectionMinLuminance: 0.85 } }
+    neighbors: [zine, maximalist]
+    distinguishers:
+      zine: "Collage uses broad mixed-media/craft-paper layering; zine narrows to specifically photocopy/office-supply texture."
+      maximalist: "Collage's density comes from overlapping torn-paper layers; maximalist's density comes from many non-overlapping elements crammed edge-to-edge."
+    exemplars:
+      - { name: "AIGA Eye on Design archive", url: "https://eyeondesign.aiga.org/", lookAt: "torn-paper layering", usage: "calibration-only" }
+
+  organic:
+    preset:
+      font:
+        display: { family: "Nunito", stack: "Nunito, sans-serif", weights: [600, 700], googleFont: "Nunito" }
+        body:    { family: "Nunito Sans", stack: "Nunito Sans, sans-serif", weights: [400], googleFont: "Nunito Sans" }
+      type: { baseSizePx: 17, scaleRatio: 1.25, lineHeight: { display: 1.15, body: 1.6 }, measureCh: { body: 60, lead: 40 } }
+      color:
+        bg: { oklch: "oklch(0.96 0.02 100)", hex: "#f0ead5" }
+        surface: { oklch: "oklch(0.98 0.015 100)", hex: "#f8f4e8" }
+        text: { oklch: "oklch(0.25 0.03 130)", hex: "#302b1c" }
+        muted: { oklch: "oklch(0.55 0.03 100)", hex: "#867b5f" }
+        border: { oklch: "oklch(0.85 0.03 100)", hex: "#d4c9a6" }
+        accentPrimary: { oklch: "oklch(0.55 0.1 145)", hex: "#5c7d4a" }
+        accentSecondary: { oklch: "oklch(0.65 0.1 60)", hex: "#b5895a" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 40, 64], sectionRhythmPx: 88 }
+      shape: { radiusPx: { button: 32, card: 40, input: 24 }, borderWidthPx: 0, shadow: "soft" }
+      layout: { maxWidthPx: 1120, gutterPx: 24, columns: "split-left" }
+      imagery: { subjects: "nature photography, plants, natural materials", lighting: "soft-natural", backdrop: "earthy", treatment: "warm, low-contrast, true-to-nature color", aspectHabits: ["4:5", "1:1"] }
+    signatures:
+      - { id: blob-shape-containers, kind: shape-motif, mode: always, claim: "Section backgrounds or image masks use literal irregular blob silhouettes, not rectangles.", check: { cards: { radiusPx: 40 } } }
+      - { id: flowing-asymmetric-layout, kind: spacing-habit, mode: always, claim: "Content flows around blob shapes rather than snapping to a rigid grid.", check: { minSectionPaddingPx: 72, whitespaceRatioMin: 0.34 } }
+      - { id: earthy-natural-duo-accent, kind: accent-scope, mode: always, claim: "Moss-green + terracotta, always warm-natural, never synthetic-bright.", check: { maxPaintSharePct: 6, palette: duo } }
+      - { id: soft-diffuse-natural-shadow, kind: surface-habit, mode: always, claim: "Shadows read like soft daylight, never hard or colored.", check: { shadow: allowed, sectionMinLuminance: 0.88 } }
+      - { id: no-hard-grid-anywhere, kind: spacing-habit, mode: never, claim: "No rigid grid alignment.", check: { minSectionPaddingPx: 72 } }
+    neighbors: [japandi, claymorphism]
+    distinguishers:
+      japandi: "Organic uses literal blob/curved shapes and flowing asymmetric layout; Japandi keeps quiet rectilinear layout with near-sharp 3px radius."
+      claymorphism: "Organic's curves stay flat/natural; claymorphism adds simulated 3D puffiness to those curves."
+    exemplars:
+      - { name: "Allbirds sustainability pages", url: "https://www.allbirds.com/", lookAt: "blob containers, earthy duo accent", usage: "calibration-only" }
+
+  grunge:
+    preset:
+      font:
+        display: { family: "Permanent Marker", stack: "Permanent Marker, cursive", weights: [400], googleFont: "Permanent Marker" }
+        body:    { family: "Archivo", stack: "Archivo, sans-serif", weights: [400], googleFont: "Archivo" }
+      type: { baseSizePx: 16, scaleRatio: 1.3, lineHeight: { display: 1.05, body: 1.5 }, measureCh: { body: 56, lead: 36 } }
+      color:
+        bg: { oklch: "oklch(0.2 0.01 60)", hex: "#252220" }
+        surface: { oklch: "oklch(0.25 0.01 60)", hex: "#302c29" }
+        text: { oklch: "oklch(0.9 0.01 70)", hex: "#e5e0d6" }
+        muted: { oklch: "oklch(0.5 0.01 60)", hex: "#7d766d" }
+        border: { oklch: "oklch(0.35 0.01 60)", hex: "#4a453f" }
+        accent: { oklch: "oklch(0.5 0.16 30)", hex: "#a34324" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 32, 48], sectionRhythmPx: 72 }
+      shape: { radiusPx: { button: 0, card: 0, input: 0 }, borderWidthPx: 1, shadow: "none" }
+      layout: { maxWidthPx: 1120, gutterPx: 16, columns: "asymmetric" }
+      imagery: { subjects: "distressed textures, splatter, torn/scratched surfaces, high-contrast band/street photography", lighting: "harsh", backdrop: "dark-dirty", treatment: "heavy grain, splatter overlay, high-contrast desaturated", aspectHabits: ["full-bleed"] }
+    signatures:
+      - { id: distressed-texture-overlay, kind: surface-habit, mode: always, claim: "A visible grain/scratch/splatter texture layer sits over every surface.", check: { shadow: none, sectionMinLuminance: 0.18 } }
+      - { id: dirty-desaturated-neutrals, kind: surface-habit, mode: always, claim: "Background and text avoid pure black/white, always slightly dirtied/warm-dark.", check: { sectionMinLuminance: 0.18 } }
+      - { id: splatter-ink-accent, kind: accent-scope, mode: always, claim: "Accent appears as irregular splatter/spray shapes, never a clean fill.", check: { maxPaintSharePct: 15 } }
+      - { id: high-contrast-raw-photography, kind: type-treatment, mode: always, claim: "Harsh, high-contrast B&W or desaturated photography, often full-bleed.", check: { probes: [{ on: display, familyIncludesAny: ["Permanent Marker"] }] } }
+      - { id: asymmetric-edgy-composition, kind: spacing-habit, mode: always, claim: "Intentionally off-balance, torn-edge framing.", check: { minSectionPaddingPx: 56, whitespaceRatioMin: 0.22 } }
+    neighbors: [zine, brutalist]
+    distinguishers:
+      zine: "Grunge's texture is splatter/scratch/dirt on a dark ground; zine's texture is specifically photocopy/toner degradation on a light ground."
+      brutalist: "Grunge is texturally raw but art-directed; brutalist is literally unstyled."
+    exemplars:
+      - { name: "Sub Pop Records", url: "https://www.subpop.com/", lookAt: "distressed texture, dirty neutrals", usage: "calibration-only" }
+
+  textured-paper:
+    preset:
+      font:
+        display: { family: "Lora", stack: "Lora, Tiempos, serif", weights: [500, 600], googleFont: "Lora" }
+        body:    { family: "Source Sans 3", stack: "Source Sans 3, sans-serif", weights: [400], googleFont: "Source Sans 3" }
+      type: { baseSizePx: 17, scaleRatio: 1.25, lineHeight: { display: 1.15, body: 1.6 }, measureCh: { body: 60, lead: 40 } }
+      color:
+        bg: { oklch: "oklch(0.95 0.012 75)", hex: "#eee6d6" }
+        surface: { oklch: "oklch(0.97 0.01 75)", hex: "#f4eee0" }
+        text: { oklch: "oklch(0.22 0.014 55)", hex: "#2b2419" }
+        muted: { oklch: "oklch(0.52 0.016 60)", hex: "#847a67" }
+        border: { oklch: "oklch(0.85 0.014 70)", hex: "#d9cfb8" }
+        accent: { oklch: "oklch(0.42 0.1 35)", hex: "#7c4326" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 40, 64], sectionRhythmPx: 88 }
+      shape: { radiusPx: { button: 4, card: 6, input: 4 }, borderWidthPx: 1, shadow: "soft (very faint, card-lift feel)" }
+      layout: { maxWidthPx: 1120, gutterPx: 24, columns: "split-left" }
+      imagery: { subjects: "still-life, craft objects, printed ephemera photographed on paper", lighting: "soft-natural", backdrop: "paper-texture", treatment: "warm, low-contrast, visible paper grain overlay on every surface", aspectHabits: ["4:5", "1:1"] }
+    signatures:
+      - { id: visible-paper-grain-overlay, kind: surface-habit, mode: always, claim: "A subtle noise/fiber texture is applied to every surface, not just the background.", check: { shadow: allowed, sectionMinLuminance: 0.88 } }
+      - { id: warm-off-white-never-pure, kind: surface-habit, mode: never, claim: "Background luminance capped below pure white, always a warm cream.", check: { sectionMinLuminance: 0.88 } }
+      - { id: printed-crafted-restraint, kind: surface-habit, mode: always, claim: "Feels bound/printed, not screen-native — minimal shadow, quiet serif hierarchy.", check: { shadow: allowed } }
+      - { id: low-key-ink-accent, kind: accent-scope, mode: always, claim: "A single muted ink-brown, never bright.", check: { maxPaintSharePct: 3, allowedRoles: [arrow-link] } }
+      - { id: faint-card-lift-shadow, kind: surface-habit, mode: always, claim: "Barely-there shadow, like paper lifted a millimeter off a surface.", check: { shadow: allowed } }
+    neighbors: [book-literary, japandi]
+    distinguishers:
+      book-literary: "Textured-paper adds a literal grain texture overlay and uses cards/sections; book-literary is texture-free, purely typographic."
+      japandi: "Textured-paper's warmth comes from literal paper-grain texture; Japandi's warmth comes from color/material photography with a smooth surface."
+    exemplars:
+      - { name: "Cereal Magazine", url: "https://readcereal.com/", lookAt: "warm paper-grain surfaces", usage: "calibration-only" }
+
+  claymorphism:
+    preset:
+      font:
+        display: { family: "Baloo 2", stack: "Baloo 2, sans-serif", weights: [600, 700], googleFont: "Baloo 2" }
+        body:    { family: "Nunito", stack: "Nunito, sans-serif", weights: [400], googleFont: "Nunito" }
+      type: { baseSizePx: 16, scaleRatio: 1.25, lineHeight: { display: 1.15, body: 1.6 }, measureCh: { body: 58, lead: 38 } }
+      color:
+        bg: { oklch: "oklch(0.93 0.03 300)", hex: "#e5d3ee" }
+        surface: { oklch: "oklch(0.88 0.06 350)", hex: "#e8b8d4" }
+        text: { oklch: "oklch(0.3 0.03 300)", hex: "#3e2f4a" }
+        muted: { oklch: "oklch(0.53 0.03 300)", hex: "#847493" }   # import fix: delivered 0.55/#8a7a99 = 2.80:1 on bg, under the 3:1 floor
+        border: { oklch: "oklch(0.8 0.04 300)", hex: "#cdb9dc" }
+        accentPrimary: { oklch: "oklch(0.75 0.1 200)", hex: "#8fd4dc" }
+        accentSecondary: { oklch: "oklch(0.8 0.12 90)", hex: "#ecd48a" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 32, 48], sectionRhythmPx: 80 }
+      shape: { radiusPx: { button: 32, card: 40, input: 28 }, borderWidthPx: 0, shadow: "soft (bright highlight + colored outer shadow, simultaneous)" }
+      layout: { maxWidthPx: 1120, gutterPx: 24, columns: 3 }
+      imagery: { subjects: "3D clay-render icons/mascots, puffy soft-body shapes", lighting: "soft-studio", backdrop: "pastel", treatment: "3D soft-body render, matte clay finish, no gloss", aspectHabits: ["1:1"] }
+    signatures:
+      - { id: puffy-3d-clay-shapes, kind: shape-motif, mode: always, claim: "Icons/illustrations render as soft inflated 3D clay forms, matte not glossy.", check: { cards: { radiusPx: 40 } } }
+      - { id: saturated-pastel-palette, kind: accent-scope, mode: always, claim: "Real hued pastel color, unlike neumorphism's monochrome.", check: { maxPaintSharePct: 15, palette: vivid } }
+      - { id: dual-colored-shadow, kind: surface-habit, mode: always, claim: "Bright highlight + soft colored shadow together, simulating puffed material.", check: { shadow: allowed, sectionMinLuminance: 0.75 } }
+      - { id: exaggerated-radius, kind: shape-motif, mode: always, claim: "Radius noticeably larger than neumorphism's for the same component.", check: { buttons: { radiusPx: 32 }, cards: { radiusPx: 40 } } }
+      - { id: playful-mascot-illustration, kind: shape-motif, mode: sometimes, claim: "Often paired with a soft 3D character/mascot as a recurring brand element.", check: { cards: { radiusPx: 40 } } }
+    neighbors: [neumorphism, corporate-memphis]
+    distinguishers:
+      neumorphism: "Claymorphism uses saturated pastel color and a colored dual shadow; neumorphism is strictly monochrome with a grayscale dual shadow."
+      corporate-memphis: "Claymorphism renders shapes as 3D-puffy clay objects; corporate-memphis stays flat 2D illustration."
+    exemplars:
+      - { name: "Duolingo", url: "https://www.duolingo.com/", lookAt: "puffy clay mascot, dual colored shadow", usage: "calibration-only" }
+      - { name: "Headspace", url: "https://www.headspace.com/", lookAt: "saturated pastel palette", usage: "calibration-only" }
+
+  # ---------------------------------------------------------------- Luxury
+  luxury-fashion:
+    preset:
+      font:
+        display: { family: "Bodoni Moda", stack: "Bodoni Moda, Didot, serif", weights: [400, 500], googleFont: "Bodoni Moda" }
+        body:    { family: "Archivo", stack: "Archivo, Helvetica Neue, sans-serif", weights: [400], googleFont: "Archivo" }
+      type: { baseSizePx: 16, scaleRatio: 1.4, lineHeight: { display: 1.0, body: 1.5 }, measureCh: { body: 56, lead: 36 }, tracking: { display: "0.12em", body: "0" } }
+      color:
+        bg: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        surface: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        text: { oklch: "oklch(0.05 0 0)", hex: "#0d0d0d" }
+        muted: { oklch: "oklch(0.55 0 0)", hex: "#8c8c8c" }
+        border: { oklch: "oklch(0.9 0 0)", hex: "#e6e6e6" }
+        accent: { oklch: "oklch(0.75 0.09 85)", hex: "#c2a25e" }
+      space: { basePx: 16, stepsPx: [16, 32, 56, 96, 160], sectionRhythmPx: 168 }
+      shape: { radiusPx: { button: 0, card: 0, input: 0 }, borderWidthPx: 0, shadow: "none" }
+      layout: { maxWidthPx: "full-bleed", gutterPx: 40, columns: "split-left" }
+      imagery: { subjects: "full-bleed high-fashion editorial photography, models, runway/campaign imagery", lighting: "dramatic-studio", backdrop: "minimal-set", treatment: "extreme contrast, desaturated or B&W, large-format print quality", aspectHabits: ["4:5", "2:3"] }
+    signatures:
+      - { id: full-bleed-editorial-photography, kind: shape-motif, mode: always, claim: "Campaign-quality imagery spans the full viewport with no padding/frame, repeatedly.", check: { cards: { radiusPx: 0 } } }
+      - { id: wide-tracked-uppercase-wordmark, kind: type-treatment, mode: always, claim: "Display type always set in tracked-out capitals, functioning like a wordmark.", check: { probes: [{ on: display, familyIncludesAny: ["Bodoni Moda", "Didot"], caseIs: upper }] } }
+      - { id: black-white-plus-one-metal, kind: accent-scope, mode: always, claim: "The entire palette is pure black, pure white, and exactly one metallic accent.", check: { maxPaintSharePct: 3, palette: mono } }
+      - { id: extreme-negative-space, kind: spacing-habit, mode: always, claim: "The tallest whitespace discipline outside book-literary.", check: { minSectionPaddingPx: 140, whitespaceRatioMin: 0.5 } }
+      - { id: zero-ui-chrome, kind: shape-motif, mode: never, claim: "No borders, no shadow, no rounded corners — nothing reads as software.", check: { buttons: { radiusPx: 0 }, cards: { radiusPx: 0 } } }
+    neighbors: [minimalist, art-deco]
+    distinguishers:
+      minimalist: "Luxury-fashion commits to full-bleed campaign photography and a wide-tracked capital wordmark; minimalist typically has little to no imagery."
+      art-deco: "Luxury-fashion is asymmetric, photography-led, black/white/gold on white; art deco is symmetric, ornament-led, gold on a dark jewel-toned ground."
+    exemplars:
+      - { name: "The Row", url: "https://www.therow.com/", lookAt: "full-bleed editorial, wordmark tracking", usage: "calibration-only" }
+      - { name: "Jil Sander", url: "https://www.jilsander.com/", lookAt: "black/white/one-metal restraint", usage: "calibration-only" }
+
+  boutique-wellness:
+    preset:
+      font:
+        display: { family: "Cormorant", stack: "Cormorant, Canela, serif", weights: [400, 500], googleFont: "Cormorant" }
+        body:    { family: "Karla", stack: "Karla, sans-serif", weights: [400, 500], googleFont: "Karla" }
+      type: { baseSizePx: 18, scaleRatio: 1.3, lineHeight: { display: 1.15, body: 1.7 }, measureCh: { body: 60, lead: 40 } }
+      color:
+        bg: { oklch: "oklch(0.96 0.015 70)", hex: "#f2e9d9" }
+        surface: { oklch: "oklch(0.98 0.012 70)", hex: "#f8f1e4" }
+        text: { oklch: "oklch(0.3 0.02 50)", hex: "#3a3226" }
+        muted: { oklch: "oklch(0.57 0.02 55)", hex: "#918665" }   # import fix: delivered 0.58/#948968 = 2.89:1 on bg, under the 3:1 floor
+        border: { oklch: "oklch(0.88 0.015 65)", hex: "#dfd4bc" }
+        accent: { oklch: "oklch(0.6 0.07 140)", hex: "#8ba076" }
+      space: { basePx: 8, stepsPx: [8, 16, 32, 56, 96], sectionRhythmPx: 128 }
+      shape: { radiusPx: { button: 20, card: 28, input: 20 }, borderWidthPx: 1, shadow: "none" }
+      layout: { maxWidthPx: 1080, gutterPx: 32, columns: "center-stack" }
+      imagery: { subjects: "spa/wellness lifestyle photography, calm portraiture, natural materials", lighting: "soft-diffuse", backdrop: "muted-natural", treatment: "low-contrast, warm, gentle grain", aspectHabits: ["4:5", "1:1"] }
+    signatures:
+      - { id: soft-muted-earth-palette, kind: accent-scope, mode: always, claim: "Sand + sage, always desaturated, never bright.", check: { maxPaintSharePct: 4, palette: duo } }
+      - { id: calm-generous-spacing, kind: spacing-habit, mode: always, claim: "Roomier than most, less extreme than luxury-fashion/book-literary.", check: { minSectionPaddingPx: 112, whitespaceRatioMin: 0.45 } }
+      - { id: serif-plus-gentle-sans-pairing, kind: type-treatment, mode: always, claim: "Soft serif display over a warm, rounded-leaning sans body.", check: { probes: [{ on: display, familyIncludesAny: ["Cormorant", "Canela"] }, { on: body, familyIncludesAny: ["Karla"] }] } }
+      - { id: rounded-calm-shapes, kind: shape-motif, mode: always, claim: "20-28px radius, softer than Japandi's near-sharp 3px.", check: { buttons: { radiusPx: 20 }, cards: { radiusPx: 28 } } }
+      - { id: lifestyle-not-product-imagery, kind: type-treatment, mode: always, claim: "People/spaces over objects.", check: { probes: [{ on: display, familyIncludesAny: ["Cormorant"] }] } }
+    neighbors: [japandi, art-nouveau]
+    distinguishers:
+      japandi: "Boutique-wellness is softer and rounder with lifestyle photography; Japandi is more austere (3px radius) and material/object-focused."
+      art-nouveau: "Boutique-wellness is photography-led; art-nouveau is illustration/linework-led with literal botanical ornament."
+    exemplars:
+      - { name: "Aman Resorts", url: "https://www.aman.com/", lookAt: "calm generous spacing, earth palette", usage: "calibration-only" }
+      - { name: "Goop", url: "https://goop.com/", lookAt: "serif+sans pairing, lifestyle imagery", usage: "calibration-only" }
+
+  elegant-serif:
+    preset:
+      font:
+        display: { family: "Playfair Display", stack: "Playfair Display, Freight Display, serif", weights: [500, 600], googleFont: "Playfair Display" }
+        body:    { family: "Source Serif 4", stack: "Source Serif 4, serif", weights: [400], googleFont: "Source Serif 4" }
+      type: { baseSizePx: 17, scaleRatio: 1.35, lineHeight: { display: 1.1, body: 1.65 }, measureCh: { body: 62, lead: 42 } }
+      color:
+        bg: { oklch: "oklch(0.98 0.003 250)", hex: "#f8f8f9" }
+        surface: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        text: { oklch: "oklch(0.12 0 0)", hex: "#161616" }
+        muted: { oklch: "oklch(0.5 0 0)", hex: "#808080" }
+        border: { oklch: "oklch(0.88 0 0)", hex: "#e0e0e0" }
+        accent: { oklch: "oklch(0.3 0.02 260)", hex: "#2e3242" }
+      space: { basePx: 8, stepsPx: [8, 16, 32, 56, 96], sectionRhythmPx: 112 }
+      shape: { radiusPx: { button: 0, card: 0, input: 0 }, borderWidthPx: 1, shadow: "none" }
+      layout: { maxWidthPx: 1080, gutterPx: 32, columns: "center-stack" }
+      imagery: { subjects: "refined portrait/product photography, high production value", lighting: "studio-clean", backdrop: "neutral", treatment: "high dynamic range, confident, cool color", aspectHabits: ["4:5", "1:1"] }
+    signatures:
+      - { id: refined-serif-hierarchy, kind: type-treatment, mode: always, claim: "A single elegant high-contrast serif carries both display and body, distinct weights only.", check: { probes: [{ on: display, familyIncludesAny: ["Playfair Display"] }, { on: body, familyIncludesAny: ["Source Serif 4"] }] } }
+      - { id: cool-neutral-ground, kind: surface-habit, mode: always, claim: "Bg reads cool/white unlike serif-classic's warm paper — the key differentiator.", check: { shadow: none, sectionMinLuminance: 0.96 } }
+      - { id: confident-generous-whitespace, kind: spacing-habit, mode: always, claim: "Airy but not as extreme as luxury-fashion.", check: { minSectionPaddingPx: 96, whitespaceRatioMin: 0.42 } }
+      - { id: restrained-ink-navy-accent, kind: accent-scope, mode: always, claim: "One deep cool accent, used only for links/rules.", check: { maxPaintSharePct: 2, allowedRoles: [arrow-link] } }
+      - { id: zero-ornament, kind: shape-motif, mode: never, claim: "No border decoration, no ornament beyond typography itself.", check: { buttons: { radiusPx: 0 }, cards: { radiusPx: 0 } } }
+    neighbors: [serif-classic, luxury-fashion]
+    distinguishers:
+      serif-classic: "Elegant-serif reads cool and modern; serif-classic reads warm and traditional (paper ground, old-style serif)."
+      luxury-fashion: "Elegant-serif is typography-led with occasional refined imagery; luxury-fashion is photography-led with a wide-tracked uppercase wordmark."
+    exemplars:
+      - { name: "Rimowa", url: "https://www.rimowa.com/", lookAt: "cool ground, refined serif hierarchy", usage: "calibration-only" }
+      - { name: "Aesop editorial", url: "https://www.aesop.com/us/r/story", lookAt: "confident whitespace, restrained accent", usage: "calibration-only" }
+
+  monochrome:
+    preset:
+      font:
+        display: { family: "Archivo", stack: "Archivo, Helvetica Neue, sans-serif", weights: [500, 700], googleFont: "Archivo" }
+        body:    { family: "Archivo", stack: "Archivo, sans-serif", weights: [400], googleFont: "Archivo" }
+      type: { baseSizePx: 16, scaleRatio: 1.25, lineHeight: { display: 1.15, body: 1.55 }, measureCh: { body: 62, lead: 42 } }
+      color:
+        bg: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        surface: { oklch: "oklch(0.97 0 0)", hex: "#f7f7f7" }
+        text: { oklch: "oklch(0.1 0 0)", hex: "#191919" }
+        muted: { oklch: "oklch(0.55 0 0)", hex: "#8c8c8c" }
+        border: { oklch: "oklch(0.85 0 0)", hex: "#d9d9d9" }
+        accent: { oklch: "oklch(0.3 0 0)", hex: "#4d4d4d" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 40, 64], sectionRhythmPx: 104 }
+      shape: { radiusPx: { button: 4, card: 6, input: 4 }, borderWidthPx: 1, shadow: "none" }
+      layout: { maxWidthPx: 1160, gutterPx: 24, columns: "grid-aligned" }
+      imagery: { subjects: "B&W or grayscale-treated photography exclusively", lighting: "high-contrast", backdrop: "neutral", treatment: "true grayscale or single-hue duotone, zero chroma elsewhere", aspectHabits: ["1:1", "3:2"] }
+    signatures:
+      - { id: zero-chroma-discipline, kind: accent-scope, mode: always, claim: "No hue anywhere except optionally a single duotone wash on imagery — the strictest palette rule here.", check: { maxPaintSharePct: 0, palette: mono } }
+      - { id: value-not-color-contrast, kind: surface-habit, mode: always, claim: "All hierarchy signaled by lightness steps of one neutral, never a second hue.", check: { shadow: none, sectionMinLuminance: 0.94 } }
+      - { id: grayscale-photography-only, kind: type-treatment, mode: always, claim: "Every image is B&W or single-tone duotone, no exceptions.", check: { probes: [{ on: display, familyIncludesAny: ["Archivo"] }] } }
+      - { id: tonal-accent-as-darkest-step, kind: accent-scope, mode: always, claim: "The 'accent' role is simply the darkest neutral used more assertively, not a distinct hue.", check: { maxPaintSharePct: 0 } }
+      - { id: clean-grid-without-color-cues, kind: spacing-habit, mode: always, claim: "Grid/hierarchy read through spacing and weight, not color.", check: { minSectionPaddingPx: 88, whitespaceRatioMin: 0.36 } }
+    neighbors: [swiss, high-contrast-mono]
+    distinguishers:
+      swiss: "Monochrome forbids hue entirely, even structurally; Swiss keeps one loud red hue as its defining structural accent."
+      high-contrast-mono: "Monochrome favors value gradation across grays for a softer, editorial tonal range; high-contrast-mono pushes to pure black/white extremes with almost no midtone."
+    exemplars:
+      - { name: "COS", url: "https://www.cosstores.com/", lookAt: "zero-chroma tonal discipline", usage: "calibration-only" }
+      - { name: "Byredo", url: "https://www.byredo.com/", lookAt: "grayscale photography", usage: "calibration-only" }
+
+  # ---------------------------------------------------------------- Bold
+  maximalist:
+    preset:
+      font:
+        display: { family: "Unbounded", stack: "Unbounded, Clash Display, sans-serif", weights: [700, 800], googleFont: "Unbounded" }
+        body:    { family: "Archivo", stack: "Archivo, sans-serif", weights: [500], googleFont: "Archivo" }
+      type: { baseSizePx: 17, scaleRatio: 1.45, lineHeight: { display: 1.0, body: 1.4 }, measureCh: { body: 54, lead: 34 } }
+      color:
+        bg: { oklch: "oklch(0.95 0.03 60)", hex: "#e9dcc4" }
+        surface: { oklch: "oklch(0.62 0.2 340)", hex: "#d05098" }   # import fix: delivered 0.6/#c94a92 put text at 4.16:1, under the 4.5 floor (text L 0.12 — surface had the headroom)
+        text: { oklch: "oklch(0.12 0 0)", hex: "#171717" }
+        muted: { oklch: "oklch(0.45 0.02 60)", hex: "#726957" }
+        border: { oklch: "oklch(0.3 0 0)", hex: "#4d4d4d" }
+        accentPrimary: { oklch: "oklch(0.7 0.22 40)", hex: "#e8712e" }
+        accentSecondary: { oklch: "oklch(0.55 0.22 265)", hex: "#5147d1" }
+        accentTertiary: { oklch: "oklch(0.75 0.18 110)", hex: "#b8c93e" }
+      space: { basePx: 8, stepsPx: [4, 8, 12, 16, 24], sectionRhythmPx: 40 }
+      shape: { radiusPx: { button: 20, card: 24, input: 16 }, borderWidthPx: 1, shadow: "hard (mixed — inconsistent on purpose)" }
+      layout: { maxWidthPx: 1200, gutterPx: 16, columns: "bento" }
+      imagery: { subjects: "layered patterns, mixed photography+illustration+type, dense collage-adjacent", lighting: "mixed", backdrop: "pattern-filled", treatment: "high-saturation, multiple textures/patterns overlapping", aspectHabits: ["mixed"] }
+    signatures:
+      - { id: more-is-more-layering, kind: surface-habit, mode: always, claim: "Multiple pattern/texture/color layers stack on the SAME surface simultaneously.", check: { shadow: allowed, sectionMinLuminance: 0.5 } }
+      - { id: deliberate-clash, kind: accent-scope, mode: always, claim: "Type, color, and scale are chosen to clash on purpose, not harmonize.", check: { maxPaintSharePct: 30, palette: vivid } }
+      - { id: dense-edge-to-edge-composition, kind: spacing-habit, mode: always, claim: "Minimal negative space anywhere — the opposite pole from minimalist.", check: { minSectionPaddingPx: 24, whitespaceRatioMin: 0.08 } }
+      - { id: inconsistent-shape-language, kind: shape-motif, mode: always, claim: "Radius/shadow/border vary element to element rather than following one rule.", check: { buttons: { radiusPx: 20 }, cards: { radiusPx: 24 } } }
+      - { id: five-plus-simultaneous-hues, kind: accent-scope, mode: always, claim: "More concurrent saturated colors on screen than any other style, including memphis.", check: { maxPaintSharePct: 30 } }
+    neighbors: [collage, memphis]
+    distinguishers:
+      collage: "Maximalist layers many distinct elements densely without necessarily overlapping physically; collage's density is specifically overlapping torn-paper scraps."
+      memphis: "Maximalist clashes color, pattern, AND density together; memphis's clash is specifically confetti/squiggle shapes over an otherwise plain page."
+    exemplars:
+      - { name: "Gucci seasonal campaigns", url: "https://www.gucci.com/", lookAt: "layered pattern+photo+type", usage: "calibration-only" }
+      - { name: "Ssense editorial", url: "https://www.ssense.com/editorial", lookAt: "dense edge-to-edge composition", usage: "calibration-only" }
+
+  anti-design:
+    preset:
+      font:
+        display: { family: "Georgia", stack: "Georgia, serif", weights: [400, 700], googleFont: "" }
+        body:    { family: "Arial", stack: "Verdana, Arial, sans-serif", weights: [400], googleFont: "" }
+      type: { baseSizePx: 16, scaleRatio: 1.6, lineHeight: { display: 1.0, body: 1.3 }, measureCh: { body: 70, lead: 46 } }
+      color:
+        bg: { oklch: "oklch(0.85 0.15 100)", hex: "#d4c93a" }
+        surface: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        text: { oklch: "oklch(0.39 0.2 280)", hex: "#772aa5" }   # import fix: delivered 0.4/#7a2ea8 = 4.39:1 on bg, under the 4.5 floor
+        muted: { oklch: "oklch(0.43 0 0)", hex: "#6c6c6c" }   # import fix: delivered 0.5/#808080 = 2.30:1 on bg, under the 3:1 floor
+        border: { oklch: "oklch(0 0 0)", hex: "#000000" }
+        accent: { oklch: "oklch(0.55 0.24 25)", hex: "#dc2020" }
+      space: { basePx: 4, stepsPx: [2, 6, 14, 22, 38], sectionRhythmPx: 38 }
+      shape: { radiusPx: { button: 0, card: 0, input: 0 }, borderWidthPx: 2, shadow: "none" }
+      layout: { maxWidthPx: "none", gutterPx: 8, columns: "asymmetric" }
+      imagery: { subjects: "clip-art, stretched/distorted stock photography", lighting: "n/a", backdrop: "clashing-color", treatment: "low-res, stretched aspect ratios on purpose", aspectHabits: ["distorted"] }
+    signatures:
+      - { id: deliberately-wrong-color-pairing, kind: accent-scope, mode: always, claim: "Hues chosen specifically because they clash uncomfortably, never even loosely harmonized.", check: { maxPaintSharePct: 30, palette: vivid } }
+      - { id: system-default-typography, kind: type-treatment, mode: always, claim: "Literal Times/Arial/Verdana at inconsistent sizes, refusing custom type design.", check: { probes: [{ on: display, familyIncludesAny: ["Georgia", "Times New Roman"] }, { on: body, familyIncludesAny: ["Arial", "Verdana"] }] } }
+      - { id: erratic-unsystematic-scale, kind: type-treatment, mode: always, claim: "No visible ratio governs heading sizes — arbitrarily chosen.", check: { probes: [{ on: display, familyIncludesAny: ["Georgia"] }] } }
+      - { id: broken-alignment-on-purpose, kind: spacing-habit, mode: always, claim: "Elements sit slightly off-grid or overflow their container intentionally.", check: { minSectionPaddingPx: 16, whitespaceRatioMin: 0.1 } }
+      - { id: clip-art-and-stretched-imagery, kind: shape-motif, mode: always, claim: "Low-fidelity or deliberately distorted-aspect imagery.", check: { cards: { radiusPx: 0 } } }
+    neighbors: [brutalist, grunge]
+    distinguishers:
+      brutalist: "Anti-design actively chooses ugly/clashing decisions; brutalist simply omits styling decisions with no color clash at all."
+      grunge: "Anti-design's wrongness is compositional/color; grunge's edge comes from surface texture on an otherwise coherent dark palette."
+    exemplars:
+      - { name: "Web Design Museum", url: "https://www.webdesignmuseum.org/", lookAt: "deliberately clashing color/type", usage: "calibration-only" }
+
+  cyberpunk:
+    preset:
+      font:
+        display: { family: "Chakra Petch", stack: "Chakra Petch, sans-serif", weights: [500, 700], googleFont: "Chakra Petch" }
+        body:    { family: "Rajdhani", stack: "Rajdhani, Share Tech Mono, sans-serif", weights: [400], googleFont: "Rajdhani" }
+      type: { baseSizePx: 16, scaleRatio: 1.3, lineHeight: { display: 1.1, body: 1.5 }, measureCh: { body: 58, lead: 38 }, tracking: { display: "0.02em", body: "0" } }
+      color:
+        bg: { oklch: "oklch(0.08 0.01 260)", hex: "#0a0b10" }
+        surface: { oklch: "oklch(0.12 0.02 260)", hex: "#131622" }
+        text: { oklch: "oklch(0.9 0.03 190)", hex: "#dcf5f0" }
+        muted: { oklch: "oklch(0.5 0.03 190)", hex: "#6f8f89" }
+        border: { oklch: "oklch(0.3 0.05 190)", hex: "#284545" }
+        accentPrimary: { oklch: "oklch(0.75 0.22 190)", hex: "#22e8d6" }
+        accentSecondary: { oklch: "oklch(0.65 0.28 340)", hex: "#f22bb0" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 32, 48], sectionRhythmPx: 56 }
+      shape: { radiusPx: { button: 0, card: 0, input: 0 }, borderWidthPx: 1, shadow: "none (colored glow instead of black drop shadow)" }
+      layout: { maxWidthPx: 1200, gutterPx: 16, columns: "bento" }
+      imagery: { subjects: "neon-lit cityscapes, HUD/interface overlays, circuit/data motifs", lighting: "neon-lit-dark", backdrop: "near-black", treatment: "high-contrast neon on black, scanline/glitch texture", aspectHabits: ["21:9", "16:9"] }
+    signatures:
+      - { id: neon-on-near-black, kind: surface-habit, mode: always, claim: "Ground is always near-black; the ONLY light comes from saturated neon accents.", check: { shadow: none, darkMaxLuminance: 0.1 } }
+      - { id: hud-data-framing, kind: shape-motif, mode: always, claim: "Corner brackets, crosshairs, and small data-readout labels frame content like a HUD.", check: { cards: { radiusPx: 0 } } }
+      - { id: glitch-scanline-overlay, kind: surface-habit, mode: always, claim: "Deliberate scanline/chromatic-aberration texture on images or dividers.", check: { shadow: none } }
+      - { id: monospace-data-overlay, kind: type-treatment, mode: always, claim: "Small monospace labels/readouts scattered as ambient 'system' text.", check: { probes: [{ on: body, familyIncludesAny: ["Rajdhani", "Share Tech Mono"] }] } }
+      - { id: glow-not-shadow, kind: surface-habit, mode: always, claim: "Depth/emphasis comes from colored blur-glow, never a black drop shadow.", check: { shadow: none } }
+    neighbors: [pixel-8bit, vaporwave]
+    distinguishers:
+      pixel-8bit: "Cyberpunk uses smooth neon glow and HUD framing on unlimited saturated color; pixel-8bit uses hard-edged sprites within a capped 8-16 color palette."
+      vaporwave: "Cyberpunk's ground is near-black with sharp neon and data-HUD framing; vaporwave's ground is a soft gradient sky with a grid-horizon."
+    exemplars:
+      - { name: "Cyberpunk 2077 official site", url: "https://www.cyberpunk.net/", lookAt: "neon-on-black, HUD framing", usage: "calibration-only" }
+
+  corporate-memphis:
+    preset:
+      font:
+        display: { family: "Poppins", stack: "Poppins, Circular, sans-serif", weights: [600, 700], googleFont: "Poppins" }
+        body:    { family: "Poppins", stack: "Poppins, sans-serif", weights: [400], googleFont: "Poppins" }
+      type: { baseSizePx: 16, scaleRatio: 1.25, lineHeight: { display: 1.15, body: 1.55 }, measureCh: { body: 60, lead: 40 } }
+      color:
+        bg: { oklch: "oklch(0.97 0.01 260)", hex: "#f5f5fa" }
+        surface: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        text: { oklch: "oklch(0.2 0.02 260)", hex: "#24243a" }
+        muted: { oklch: "oklch(0.55 0.02 260)", hex: "#7c7c94" }
+        border: { oklch: "oklch(0.9 0.01 260)", hex: "#e2e2ec" }
+        accentPrimary: { oklch: "oklch(0.6 0.2 30)", hex: "#e05a3a" }
+        accentSecondary: { oklch: "oklch(0.65 0.15 190)", hex: "#3ec2c9" }
+        accentTertiary: { oklch: "oklch(0.55 0.2 300)", hex: "#8a4fd6" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 32, 48], sectionRhythmPx: 80 }
+      shape: { radiusPx: { button: 24, card: 24, input: 20 }, borderWidthPx: 0, shadow: "none" }
+      layout: { maxWidthPx: 1200, gutterPx: 24, columns: 3 }
+      imagery: { subjects: "flat blob-proportioned human illustrations doing generic tasks", lighting: "n/a", backdrop: "solid-tint", treatment: "flat vector fill, oddly-proportioned limbs, no facial detail beyond simple features", aspectHabits: ["4:3", "1:1"] }
+    signatures:
+      - { id: blob-people-illustration, kind: shape-motif, mode: always, claim: "Flat vector human figures with elongated/blobby limbs and minimal facial features.", check: { cards: { radiusPx: 24 } } }
+      - { id: bright-friendly-multi-accent, kind: accent-scope, mode: always, claim: "3 rotating bright accent hues used interchangeably, no strict role-mapping.", check: { maxPaintSharePct: 20, palette: vivid } }
+      - { id: rounded-approachable-everything, kind: shape-motif, mode: always, claim: "Radius applied liberally to buttons, cards, and illustration shapes alike.", check: { buttons: { radiusPx: 24 } } }
+      - { id: flat-2d-no-depth, kind: surface-habit, mode: never, claim: "Zero shadow/gradient — purely flat.", check: { shadow: none, sectionMinLuminance: 0.92 } }
+      - { id: generic-activity-scenes, kind: type-treatment, mode: always, claim: "Illustrations depict abstracted 'teamwork/growth/success' scenarios, never specific products.", check: { probes: [{ on: display, familyIncludesAny: ["Poppins"] }] } }
+    neighbors: [flat, claymorphism]
+    distinguishers:
+      flat: "Corporate-memphis's signature is specifically blob-proportioned people illustration; flat design covers any flat 2D style without that figure convention."
+      claymorphism: "Corporate-memphis illustration stays flat 2D; claymorphism renders the same sensibility in simulated 3D puffy clay."
+    exemplars:
+      - { name: "Mailchimp illustration system", url: "https://mailchimp.com/about/design/", lookAt: "blob-people illustration", usage: "calibration-only" }
+      - { name: "Intercom", url: "https://www.intercom.com/", lookAt: "bright friendly multi-accent", usage: "calibration-only" }
+
+  poster-typographic:
+    preset:
+      font:
+        display: { family: "Anton", stack: "Anton, Druk, sans-serif", weights: [400], googleFont: "Anton" }
+        body:    { family: "Archivo", stack: "Archivo, sans-serif", weights: [500], googleFont: "Archivo" }
+      type: { baseSizePx: 18, scaleRatio: 1.6, lineHeight: { display: 0.95, body: 1.4 }, measureCh: { body: 54, lead: 34 }, tracking: { display: "-0.02em", body: "0" } }
+      color:
+        bg: { oklch: "oklch(0.95 0.01 60)", hex: "#eeece2" }
+        surface: { oklch: "oklch(0.95 0.01 60)", hex: "#eeece2" }
+        text: { oklch: "oklch(0.08 0 0)", hex: "#141414" }
+        muted: { oklch: "oklch(0.45 0 0)", hex: "#737373" }
+        border: { oklch: "oklch(0.08 0 0)", hex: "#141414" }
+        accent: { oklch: "oklch(0.55 0.24 25)", hex: "#dd2a1c" }
+      space: { basePx: 8, stepsPx: [8, 16, 32, 56], sectionRhythmPx: 56 }
+      shape: { radiusPx: { button: 0, card: 0, input: 0 }, borderWidthPx: 0, shadow: "none" }
+      layout: { maxWidthPx: 1200, gutterPx: 16, columns: "center-stack" }
+      imagery: { subjects: "none typical — type fills the frame; if imagery appears it's a single stark photo cropped tight", lighting: "n/a", backdrop: "n/a", treatment: "n/a", aspectHabits: ["1:1"] }
+    signatures:
+      - { id: type-fills-the-frame, kind: shape-motif, mode: always, claim: "Headline type is scaled so large it defines the entire composition, often bleeding off the edges.", check: { cards: { radiusPx: 0 } } }
+      - { id: one-or-two-hue-maximum, kind: accent-scope, mode: always, claim: "Strict cap of 1-2 hues total on the page, high-impact not decorative.", check: { maxPaintSharePct: 10, palette: duo } }
+      - { id: hierarchy-by-extreme-scale, kind: type-treatment, mode: always, claim: "The only hierarchy signal is size — sometimes a 10x+ jump between headline and next element.", check: { probes: [{ on: display, familyIncludesAny: ["Anton"], caseIs: upper }] } }
+      - { id: condensed-ultra-bold-display, kind: type-treatment, mode: always, claim: "A single very heavy condensed display face, uppercase, tight tracking.", check: { probes: [{ on: display, familyIncludesAny: ["Anton"] }] } }
+      - { id: image-optional, kind: type-treatment, mode: sometimes, claim: "The style works with zero imagery.", check: { probes: [{ on: display, familyIncludesAny: ["Anton"] }] } }
+    neighbors: [grid-typographic, high-contrast-mono]
+    distinguishers:
+      grid-typographic: "Poster-typographic uses extreme, uneven scale jumps for pure impact; grid-typographic uses a visible, even baseline grid where type is disciplined, not oversized."
+      high-contrast-mono: "Poster-typographic allows one accent hue for impact; high-contrast-mono stays strictly black/white with that accent used only 'rarely, loudly.'"
+    exemplars:
+      - { name: "Pentagram poster work", url: "https://www.pentagram.com/work", lookAt: "type-fills-the-frame, extreme scale hierarchy", usage: "calibration-only" }
+
+  high-contrast-mono:
+    preset:
+      font:
+        display: { family: "Archivo", stack: "Archivo, Helvetica Now, sans-serif", weights: [700, 900], googleFont: "Archivo" }
+        body:    { family: "Archivo", stack: "Archivo, sans-serif", weights: [400], googleFont: "Archivo" }
+      type: { baseSizePx: 16, scaleRatio: 1.4, lineHeight: { display: 1.0, body: 1.5 }, measureCh: { body: 60, lead: 40 } }
+      color:
+        bg: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        surface: { oklch: "oklch(1 0 0)", hex: "#ffffff" }
+        text: { oklch: "oklch(0 0 0)", hex: "#000000" }
+        muted: { oklch: "oklch(0.5 0 0)", hex: "#808080" }
+        border: { oklch: "oklch(0 0 0)", hex: "#000000" }
+        accent: { oklch: "oklch(0.55 0.24 25)", hex: "#dd1f10" }
+      space: { basePx: 8, stepsPx: [8, 16, 24, 40, 64], sectionRhythmPx: 88 }
+      shape: { radiusPx: { button: 0, card: 0, input: 0 }, borderWidthPx: 1, shadow: "none" }
+      layout: { maxWidthPx: 1160, gutterPx: 24, columns: "grid-aligned" }
+      imagery: { subjects: "stark B&W photography, extreme contrast, no midtone-heavy images", lighting: "hard-directional", backdrop: "pure-white-or-black", treatment: "pushed contrast, crushed shadows, blown highlights", aspectHabits: ["1:1", "4:5"] }
+    signatures:
+      - { id: pure-black-white-only, kind: surface-habit, mode: always, claim: "Text/bg are literal #000/#fff, not near-black/off-white — the strictest binary in the system.", check: { shadow: none, sectionMinLuminance: 1.0 } }
+      - { id: rare-loud-accent, kind: accent-scope, mode: always, claim: "The accent appears at most once or twice per screen but at full saturation when it does.", check: { maxPaintSharePct: 2, allowedRoles: [action-primary] } }
+      - { id: sharp-edges-strong-hierarchy, kind: shape-motif, mode: never, claim: "Zero radius anywhere, hierarchy driven by weight+size extremes.", check: { buttons: { radiusPx: 0 }, cards: { radiusPx: 0 } } }
+      - { id: invertible-palette, kind: surface-habit, mode: always, claim: "The whole system is designed to flip cleanly to black-bg/white-text as an equally valid mode.", check: { shadow: none } }
+      - { id: crushed-contrast-photography, kind: type-treatment, mode: always, claim: "Images treated to push toward pure black/white, minimal midtone.", check: { probes: [{ on: display, familyIncludesAny: ["Archivo"] }] } }
+    neighbors: [monochrome, brutalist]
+    distinguishers:
+      monochrome: "High-contrast-mono forces pure black/white with almost no midtone; monochrome allows a full range of gray steps for softer, editorial tonal hierarchy."
+      brutalist: "High-contrast-mono is a deliberate, art-directed binary system with one loud accent; brutalist has no accent system at all."
+    exemplars:
+      - { name: "Comme des Garçons", url: "https://www.comme-des-garcons.com/", lookAt: "pure black/white, rare loud accent", usage: "calibration-only" }
+      - { name: "Wolff Olins case studies", url: "https://www.wolffolins.com/work", lookAt: "invertible palette", usage: "calibration-only" }

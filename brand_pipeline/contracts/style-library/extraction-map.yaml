@@ -1,0 +1,144 @@
+# provenance: authored-prior (Claude design chat, 2026-07-15 "spec 3" export) — NOT evidence;
+#   a DESIGN INTENT map for the style-library's own token-schema.yaml keys. Our pipeline's
+#   snapping half already exists (tools/extract/normalize_scales.py + the scale-adherence gate);
+#   this map formalizes which keys snap vs stay literal when extraction feeds the style layer.
+# import 2026-07-15 note: keys are token-schema paths, verified to cover all leaves except
+#   documented aggregates (color.roles enumerates role names, type.baseSize is superseded by
+#   type.baseSizePx in the presets, brand.overrides is a $note stub). Audit + format lock:
+#   brand_pipeline/tests/test_style_presets_pilot.py.
+#
+# Extraction map — where every measured value lands, and how.
+# snap    = style-bound: measured value snaps to the matched style's preset rung (level-2 default).
+# literal = brand-bound: exact measured value is the brand identity; kept verbatim (level-4).
+# The preset rungs snap targets refer to live in styles/pilot-presets.yaml (5 styles) +
+#   styles/generated-presets.yaml (45 styles) — the level-2 default layer wired into
+#   style_resolver.py 2026-07-16 (uncalibrated authored values; brand facts always win).
+# Covers every key in token-schema (style + brand trees). No omissions.
+extractionMap:
+
+  # ---- style.type ----
+  type.pair:
+    binding: literal
+    note: "The actual typefaces ARE the brand — never snapped. Style only constrains the CATEGORY (serif vs grotesk), enforced by the type-treatment signature, not by this key."
+  type.scaleRatio:
+    binding: snap
+    snapRule: "nearest of [1.2, 1.25, 1.333, 1.414, 1.5]"
+    note: "Measure the median step between adjacent heading sizes; noisy on sites with few headings — low confidence when < 3 distinct sizes found."
+  type.baseSizePx:
+    binding: snap
+    snapRule: "nearest of [15, 16, 17, 18, 19, 20]"
+    note: "From computed body font-size; reliable."
+  type.weights:
+    binding: literal
+    note: "Keep the exact weights the brand ships; style caps the MAX via type-treatment.weightMax, it does not set them."
+  type.lineHeight:
+    binding: snap
+    snapRule: "round display to nearest 0.05 in [1.0..1.3], body to nearest 0.05 in [1.4..1.8]"
+  type.measureCh:
+    binding: snap
+    snapRule: "cluster measured line length to nearest of [44, 52, 60, 66, 72] ch"
+    note: "Derived from container width ÷ average glyph advance; medium confidence."
+  type.tracking:
+    binding: literal
+    note: "Letter-spacing is a brand fingerprint (esp. wide-tracked luxury); keep verbatim."
+
+  # ---- style.color ----
+  color.space:
+    binding: snap
+    snapRule: "always normalize to oklch canonical + hex mirror regardless of source format"
+  color.bg:
+    binding: literal
+    note: "Exact page ground is brand identity. Style influences ONLY temperature/luminance expectations via surface-habit signatures — it does not overwrite the value."
+  color.surface:
+    binding: literal
+  color.text:
+    binding: literal
+    note: "Keep verbatim, then assert WCAG AA against bg/surface at stage 05; repair (not snap) on failure."
+  color.muted:
+    binding: literal
+    note: "Assert 3:1 on bg; repair on failure."
+  color.border:
+    binding: literal
+  color.accent:
+    binding: literal
+    note: "The single strongest brand signal — NEVER snapped. Style constrains only its SCOPE (roles, paint share) via accent-scope signatures."
+
+  # ---- style.space ----
+  space.base:
+    binding: snap
+    snapRule: "nearest of [4, 8]"
+    note: "Infer from GCD of observed margins/paddings; very noisy — quantize aggressively, low confidence."
+  space.scale:
+    binding: snap
+    snapRule: "cluster observed spacings to nearest preset step, tolerance ±2px; drop clusters with < 2 members"
+    note: "Real sites are messy here; this is the highest-value quantization step."
+  space.sectionRhythm:
+    binding: snap
+    snapRule: "nearest of [88, 96, 112, 128, 144]"
+    note: "Median vertical gap between top-level sections; medium confidence."
+
+  # ---- style.shape ----
+  shape.radius:
+    binding: snap
+    snapRule: "nearest of [0, 3, 6, 8, 12, 16, 24]; measure buttons, cards, inputs separately"
+    note: "Strong style separator (Scandinavian 8 vs Japandi 3 vs Swiss 0); snap per-element, medium-high confidence."
+  shape.borderWidth:
+    binding: snap
+    snapRule: "nearest of [0, 1, 2]"
+  shape.elevation:
+    binding: snap
+    snapRule: "classify shadow presence to none | soft | hard | dual-neumorphic; keep the measured recipe as a literal sub-note if dual-neumorphic"
+    note: "Presence/type is style-bound; the exact blur/offset is kept literal only for neumorphism/neubrutalism where the recipe IS the signature."
+
+  # ---- style.layout ----
+  layout.cols:
+    binding: snap
+    snapRule: "nearest of [12, 16]"
+  layout.maxWidth:
+    binding: snap
+    snapRule: "nearest of [1080, 1120, 1160, 1200, 1280]"
+    note: "From the dominant content container width; reliable."
+  layout.gutter:
+    binding: snap
+    snapRule: "nearest of [16, 24, 32]"
+
+  # ---- style.motion ----
+  motion.easing:
+    binding: snap
+    snapRule: "classify to standard | decelerate | spring; map to the style preset curve"
+    note: "Often unmeasurable from static capture — low confidence; default to style preset when absent."
+  motion.durationMs:
+    binding: snap
+    snapRule: "nearest of [120, 160, 200, 240]"
+    note: "Only observable from live interaction traces; usually absent → fall back to preset."
+
+  # ---- brand.* (identity tree — almost entirely literal) ----
+  brand.font.display:
+    binding: literal
+    note: "The resolved display family, verbatim, incl. foundry/licensed name; googleFont substitute only if unavailable."
+  brand.font.body:
+    binding: literal
+  brand.accent:
+    binding: literal
+    note: "Duplicate of color.accent at the brand tier — the canonical brand hue; never snapped."
+  brand.logo:
+    binding: literal
+    note: "Extracted asset (SVG preferred); stored as-is, never derived."
+  brand.signatures:
+    binding: literal
+    note: "Not measured — these are the matched STYLE's signatures with the brand's real values bound into their checks. Assembled, not extracted."
+  brand.voice.tone:
+    binding: literal
+    note: "Inferred from copy sampling (NLP), low-medium confidence; flag for human confirm at intake."
+  brand.voice.readingLevel:
+    binding: literal
+    note: "Computed (e.g. Flesch-Kincaid) over sampled body copy; medium confidence."
+  brand.voice.sentenceLength:
+    binding: literal
+    note: "Measured mean sentence length over sampled copy; reliable."
+
+# ---- global confidence policy ----
+confidencePolicy:
+  belowThresholdAction: "flag for human confirmation at intake rather than silently accepting"
+  noisyKeys: [space.base, space.scale, motion.easing, motion.durationMs, brand.voice.tone]
+  rule: "snap-bound keys default to the style preset when confidence is low; literal-bound keys are never fabricated — if unmeasurable, leave null and prompt."
