@@ -58,7 +58,20 @@ patterns:
         - { name: body, role: supporting paragraph, textLen: long, sizeClass: body, width: hug, z: front }
         - { name: actions, role: filled primary pill + outlined secondary pill, textLen: short, sizeClass: control, width: hug, z: front }
         - { name: media, role: product/brand illustration, mediaAspect: square, mediaScale: { of: container, fraction: 0.45 }, width: half, z: front, assets: [hero-globe-illustration.webp] }
-        - { name: background, role: inset rounded panel w/ noise-gradient art, mediaAspect: landscape, mediaScale: { of: container, fraction: 1.0 }, width: full-bleed, z: back, assets: [bg-noise-top-2x.webp] }
+        # media semantics 2026-07 (spec/media-assets-schema.md §3): the observed
+        # arrangement — the noise-art surface paints the panel at z:back with the
+        # content stack + illustration above it (dark ink on the art, no scrim).
+        - name: background
+          role: inset rounded panel w/ noise-gradient art
+          mediaAspect: landscape
+          mediaScale: { of: container, fraction: 1.0 }
+          width: full-bleed
+          z: back
+          assets: [bg-noise-top-2x.webp]
+          mediaComposition:
+            mode: background-with-foreground
+            layers:
+              - { assetRef: art-surface-noise-gradient, z: back, width: full-bleed }
     specialTreatments:
       - { kind: panel-on-media, target: background, sanctioned: true, note: "~20px-rounded panel inset on the canvas; art texture covers 100%; ink text on it" }
     responsive: { collapse: stack, mediaFirst: false }
@@ -72,6 +85,7 @@ patterns:
     changelog:
       - { ts: "2026-07-03T16:40:00Z", action: created, from: null, to: hero-inset-noise-panel, by: creation, signalId: null, note: "first extraction" }
       - { ts: "2026-07-07T12:30:00Z", action: refined, from: "12px panel", to: "~20px panel + status-card illustration detail", by: creation, signalId: null, note: "grounding section-00: radius ~20, floating status cards, gradient #e6e8ea->#cfe0ea" }
+      - { ts: "2026-07-16T09:30:00Z", action: updated, from: null, to: "background mediaComposition (background-with-foreground)", by: media-semantics, signalId: null, note: "media semantics layer: the panel's art-surface arrangement recorded (assetRef art-surface-noise-gradient — the deduped logical asset covering both noise-file names); data-only, composers/replica unchanged" }
   - id: logo-marquee-strip
     useCase: logos
     archetypeRef: stack
@@ -89,7 +103,32 @@ patterns:
         # natural per-logo widths (65–191px), 64px box gap. The strip renders via
         # the MARQUEE device, which keeps its structural frame — the item fact is
         # recorded evidence, not (yet) consumed on the marquee route.
-        - { name: logos, role: monochrome customer logo vectors (row), mediaAspect: wide, mediaScale: { of: container, fraction: 1.0, gap: 4rem, item: { height: 2.5rem }, source: computed }, width: full-bleed, z: front, assets: [logo-box.svg, logo-miro.svg, logo-kfc.svg, logo-heineken.svg, logo-byd.svg, logo-vercel.svg, logo-anthropic.svg, logo-datadog.svg, logo-gitlab.svg, logo-mizuho.svg, logo-lovable.svg, logo-mercury.svg] }
+        # media semantics 2026-07: the MOVING-STRIP arrangement (marquee mode —
+        # aligns with the sanctioned marquee treatment below; the static spaced row
+        # is the measured 1440 resting frame). Contrast partner-proof-row: SAME
+        # asset family, tiled-grid mode (static centered row).
+        - name: logos
+          role: monochrome customer logo vectors (row)
+          mediaAspect: wide
+          mediaScale: { of: container, fraction: 1.0, gap: 4rem, item: { height: 2.5rem }, source: computed }
+          width: full-bleed
+          z: front
+          assets: [logo-box.svg, logo-miro.svg, logo-kfc.svg, logo-heineken.svg, logo-byd.svg, logo-vercel.svg, logo-anthropic.svg, logo-datadog.svg, logo-gitlab.svg, logo-mizuho.svg, logo-lovable.svg, logo-mercury.svg]
+          mediaComposition:
+            mode: marquee
+            layers:
+              - { assetRef: client-logo-box }
+              - { assetRef: client-logo-miro }
+              - { assetRef: client-logo-kfc }
+              - { assetRef: client-logo-heineken }
+              - { assetRef: client-logo-byd }
+              - { assetRef: client-logo-vercel }
+              - { assetRef: client-logo-anthropic }
+              - { assetRef: client-logo-datadog }
+              - { assetRef: client-logo-gitlab }
+              - { assetRef: client-logo-mizuho }
+              - { assetRef: client-logo-lovable }
+              - { assetRef: client-logo-mercury }
     specialTreatments:
       - { kind: marquee, target: logos, sanctioned: true, note: "marquee-capable track; static spaced row is the measured 1440 form" }
     responsive: { collapse: none, mediaFirst: false }
@@ -103,6 +142,7 @@ patterns:
       - { ts: "2026-07-03T16:40:00Z", action: created, from: null, to: logo-marquee-strip, by: creation, signalId: null, note: "first extraction" }
       - { ts: "2026-07-07T12:30:00Z", action: confirmed, from: null, to: "same 12-logo set re-captured live", by: creation, signalId: null, note: "grounding section-01 + curate stage (12 fresh logo files, byte-near-identical)" }
       - { ts: "2026-07-13T10:45:00Z", action: adjusted, from: "mediaScale fraction only", to: "+ gap 4rem / item height 2.5rem (computed)", by: fix2-logo-boxes, signalId: null, note: "recorded from the capture (uniform 40px frames, 64px box gap); marquee route unchanged — evidence recorded, not consumed (replica parity)" }
+      - { ts: "2026-07-16T09:30:00Z", action: updated, from: null, to: "logos mediaComposition (marquee, 12 assetRefs)", by: media-semantics, signalId: null, note: "media semantics layer: the moving-strip arrangement recorded in mode vocabulary (aligns with the sanctioned marquee treatment; partner-proof-row records the contrasting static tiled-grid); data-only" }
   - id: feature-accordion-deep-accent
     useCase: features
     archetypeRef: split
@@ -119,7 +159,25 @@ patterns:
         - { name: eyebrow, role: crimson uppercase microlabel, textLen: short, sizeClass: caption, width: hug, z: front }
         - { name: heading, role: section heading, textLen: medium, sizeClass: title, width: hug, z: front }
         - { name: list, role: accordion items w/ deep-accent active state, textLen: long, sizeClass: body, width: half, z: front }
-        - { name: media, role: product UI collage, mediaAspect: square, mediaScale: { of: container, fraction: 0.457 }, width: half, z: front }
+        # media semantics 2026-07: the ACTIVE-ITEM MEDIA SWAP (fid8 disclosure
+        # captures) recorded as the generalized state-swap arrangement — each
+        # accordion item pairs with its own settled product-UI collage (the
+        # layoutCopy items[].media channel renders it; layers bind by item label).
+        - name: media
+          role: product UI collage
+          mediaAspect: square
+          mediaScale: { of: container, fraction: 0.457 }
+          width: half
+          z: front
+          mediaComposition:
+            mode: state-swap
+            trigger: active-item
+            layers:
+              - { assetRef: disclosure-collage-eor, forItem: Employer of Record (EOR) }
+              - { assetRef: disclosure-collage-global-payroll, forItem: Global Payroll }
+              - { assetRef: disclosure-collage-contractor-record, forItem: Contractor of Record (COR) }
+              - { assetRef: disclosure-collage-contractor-mgmt, forItem: Contractor Management }
+              - { assetRef: disclosure-collage-peo, forItem: Professional Employer Organization (PEO) }
       bandPadding: { top: 4rem, bottom: 4rem, source: computed, note: "measured band padding 64px top/bottom (JS-off @1440; section 973px tall, grid 995→1840)" }
       deviceGeometry:
         source: computed
@@ -152,6 +210,7 @@ patterns:
       - { ts: "2026-07-07T18:30:00Z", action: refined, from: "inset-emphasis prose only", to: "inset-emphasis + surfaceRole/hoverWash role refs", by: creation, signalId: null, note: "P2 renderer capability: the treatment now names the reusable surface/color ROLES (surface/accent, accent/warm-wash) so composers render the measured active inversion without prose-matching" }
       - { ts: "2026-07-08T12:30:00Z", action: refined, from: "no affordance fact", to: "affordance: circle-arrow", by: creation, signalId: null, note: "fid2: the grounded circular arrow go-affordance on the ACTIVE item is now a declared treatment fact the composer renders (round chip on the panel's own paper/ink vars)" }
       - { ts: "2026-07-08T17:10:00Z", action: refined, from: "mediaAspect portrait, no band geometry facts", to: "measured deviceGeometry + bandPadding; media square 0.457", by: creation, signalId: null, note: "fid9: JS-off computed geometry @1440 — band pads 64px; EQUAL 533.5px columns, gap 101px; header stack rides the list column's first row (row-gap 64px); media 534×534 square top-aligned; item stride 97px (80px trigger + 16px gap). Corrects mediaAspect portrait→square (the measured region is 1:1)." }
+      - { ts: "2026-07-16T09:30:00Z", action: updated, from: null, to: "media mediaComposition (state-swap, trigger active-item)", by: media-semantics, signalId: null, note: "media semantics layer: the fid8 per-item media swap recorded as the generalized state-swap arrangement — 5 disclosure collages bound by item label (layoutCopy items[].media remains the render channel); data-only" }
   - id: infra-proof-split
     useCase: features
     archetypeRef: split
@@ -283,7 +342,23 @@ patterns:
         - { name: eyebrow, role: gray uppercase microlabel, textLen: short, sizeClass: caption, width: hug, z: front }
         - { name: heading, role: section heading, textLen: medium, sizeClass: title, width: hug, z: front }
         - { name: body, role: supporting paragraph, textLen: medium, sizeClass: body, width: hug, z: front }
-        - { name: logos, role: colored partner logos (static centered row), mediaAspect: wide, mediaScale: { of: container, fraction: 0.5 }, width: half, z: front, assets: [logo-workday-certified.webp, logo-gusto.webp, logo-bamboohr.webp, logo-personio.webp] }
+        # media semantics 2026-07: the STATIC tiled-grid arrangement — the deliberate
+        # contrast to the customer wall's marquee (same mark family, different mode).
+        - name: logos
+          role: colored partner logos (static centered row)
+          mediaAspect: wide
+          mediaScale: { of: container, fraction: 0.5 }
+          width: half
+          z: front
+          assets: [logo-workday-certified.webp, logo-gusto.webp, logo-bamboohr.webp, logo-personio.webp]
+          mediaComposition:
+            mode: tiled-grid
+            grid: { columns: 4, gap: 2rem }
+            layers:
+              - { assetRef: partner-logo-workday }
+              - { assetRef: partner-logo-gusto }
+              - { assetRef: partner-logo-bamboohr }
+              - { assetRef: partner-logo-personio }
         - { name: action, role: outlined pill, textLen: short, sizeClass: control, width: hug, z: front }
     specialTreatments: []
     responsive: { collapse: none, mediaFirst: false }
@@ -295,6 +370,7 @@ patterns:
     scope: design-language
     changelog:
       - { ts: "2026-07-07T12:30:00Z", action: created, from: null, to: partner-proof-row, by: creation, signalId: null, note: "Phase D: grounding section-06 (workday card + gusto/bambooHR/Personio row, 'Become a Partner' outlined pill)" }
+      - { ts: "2026-07-16T09:30:00Z", action: updated, from: null, to: "logos mediaComposition (tiled-grid, 4 assetRefs)", by: media-semantics, signalId: null, note: "media semantics layer: the static centered partner row recorded as tiled-grid — the deliberate mode contrast to the customer wall's marquee; data-only" }
   - id: testimonial-card-row
     useCase: testimonial
     archetypeRef: grid

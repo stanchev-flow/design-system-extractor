@@ -259,7 +259,94 @@
               }
             }
           ]
+        },
+        "assetRef": {
+          "type": "string",
+          "description": "OPTIONAL stable LOGICAL-ASSET id into the ACTIVE brand's media-assets.v1 registry (spec/media-assets-schema.md \u00a72). The adapter resolves it to the canonical variant file; an id the registry does not carry is a hard media-binding failure. Only meaningful for brands shipping media-assets.yaml (fact-gated)."
+        },
+        "noCompatibleAsset": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["reason"],
+          "description": "OPTIONAL declared-gap marker (the no-match ladder, spec/media-assets-schema.md \u00a76): NO compatible extracted asset exists for this media slot. Collected into the lane's asset-request manifest (asset-requests.json). A media slot that neither resolves an asset nor declares its gap fails the composed-lane media-binding row \u2014 silent placeholders are the failure this field exists to prevent.",
+          "properties": {
+            "reason": { "type": "string", "description": "why nothing in the inventory fits (kind/aspect/rights mismatch)" },
+            "requiredKind": { "type": "string", "description": "the media-assets kind the slot needs (spec \u00a72.1 vocabulary)" },
+            "aspect": { "$ref": "#/$defs/mediaAspect" },
+            "surface": { "type": "string", "description": "the surface the asset must sit on (luminance pairing)" },
+            "placeholder": { "type": "string", "description": "OPTIONAL generatedVisuals id from the brand's OWN licensed roster that paints the slot until the asset arrives (never a renderer default)" }
+          }
+        },
+        "mediaComposition": { "$ref": "#/$defs/mediaComposition" }
+      }
+    },
+
+    "mediaLayer": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "One layer of a mediaComposition (spec/media-assets-schema.md \u00a73): an extracted asset (assetRef) XOR a rendered component floating over media (componentRef \u2014 binds to the EXISTING block/primitive contracts). Placement reuses the \u00a74.6.5 registration/z vocabulary VERBATIM.",
+      "properties": {
+        "assetRef": { "type": "string", "description": "media-assets.v1 logical-asset id" },
+        "componentRef": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["contract"],
+          "properties": {
+            "contract": { "type": "string", "description": "primitive/block contract key (contracts/primitives.yaml | contracts/blocks.yaml)" },
+            "usage": { "type": "object", "additionalProperties": true, "description": "inline props for the component (same usage vocabulary as blockMapping)" }
+          }
+        },
+        "z": { "$ref": "#/$defs/z" },
+        "registration": { "$ref": "#/$defs/registration" },
+        "alignTo": { "$ref": "#/$defs/alignTo" },
+        "colSpan": { "type": "integer", "minimum": 1, "maximum": 24 },
+        "offsetCols": { "type": "number" },
+        "offsetBaselines": { "type": "number" },
+        "width": { "$ref": "#/$defs/width" },
+        "mediaAspect": { "$ref": "#/$defs/mediaAspect" },
+        "forItem": { "type": ["integer", "string"], "description": "state-swap: the item index/label this layer swaps in for" },
+        "motion": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": { "type": "string", "enum": ["parallax", "scroll-coupled"] },
+            "amount": { "type": "object", "additionalProperties": false, "required": ["class"], "properties": { "class": { "$ref": "#/$defs/amountClass" } } }
+          },
+          "description": "OPTIONAL motion facts \u2014 must agree with the brand's voice.motionSpec / motion dial axis"
         }
+      }
+    },
+
+    "mediaComposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode"],
+      "description": "OPTIONAL arrangement grammar for a media-bearing slot (spec/media-assets-schema.md \u00a73). Reuses the \u00a74.6.5 registration/z/overlap vocabulary \u2014 no parallel placement mechanism. state-swap {trigger} generalizes the accordion media swap; masked-media clips inside an accent-shape asset (maskRef); tiled-grid/marquee align with the existing logo-strip/marquee devices.",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["single", "layered", "masked-media", "background-with-foreground", "overlapping-cluster", "scattered-cluster", "facepile", "tiled-grid", "marquee", "masonry", "split-pair", "carousel", "state-swap", "atomic-collage", "icon-in-headline"]
+        },
+        "trigger": { "type": "string", "enum": ["active-item", "hover", "tab"], "description": "state-swap only" },
+        "maskRef": { "type": "string", "description": "masked-media only: the accent-shape/logo asset id whose silhouette clips the media" },
+        "scatter": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "rotationRange": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+            "jitterCols": { "type": "number" }
+          }
+        },
+        "overlapClass": { "$ref": "#/$defs/amountClass", "description": "facepile negative-margin stack depth" },
+        "grid": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "columns": { "type": "integer", "minimum": 1, "maximum": 24 },
+            "gap": { "type": "string" }
+          }
+        },
+        "layers": { "type": "array", "items": { "$ref": "#/$defs/mediaLayer" } }
       }
     },
 

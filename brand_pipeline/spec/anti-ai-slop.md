@@ -2119,6 +2119,40 @@ stays the copy-budget gate; this rule polices the fix mechanic itself.
 
 ---
 
+## AS-67 — Third-party marks decorating invented content (mark legality)
+
+**Rule**: an asset whose `usageRights` is `third-party-mark` (client/partner/press/
+integration logos, review/award/compliance/app-store badges — media-assets.v1
+taxonomy) may render ONLY in factual proof contexts: logo/proof/badge/integration
+strips, partner rows, and testimonials that carry real attribution copy. Never
+decorate an invented quote/testimonial with a client's mark; never fabricate a
+badge — a badge-role slot binds a REGISTERED mark or declares its gap (a generated
+placeholder recipe can never stand in for a badge) ⇒ FLAG.
+
+**Why it happens**: marks read like free credibility, so a generator reaches for
+them wherever a section feels thin — a customer logo "illustrating" a made-up
+quote, an award shield invented to fill a proof row. Each binding is individually
+plausible (the file is real, the render is clean); the LEGALITY is what breaks:
+someone else's mark now endorses content the mark's owner never said, which is
+both an anti-slop texture (fake-proof filler) and a genuine rights problem.
+
+**Caught here** (media semantics 2026-07, registered with the machine arm at the
+layer's introduction): the Remote source carries company marks atop its
+testimonial cards ONLY as attribution of real, named quotes — the extraction
+records those marks `usageRights: third-party-mark`, and the composed-lane check
+exists precisely so a generated lane cannot re-deploy them beside brief-invented
+quotes with no attribution (the shape the review flagged as the likeliest misuse
+of the new `assetRef` channel).
+
+**Verify**: `media_semantics.lint_media_bindings` rule `mark-legality` —
+machine-checkable via the registry's `usageRights` flag × the slot's use-case/role
+context (+ attribution-copy presence in testimonial sections). Wired as a
+generation prefilter (repairable) and as the `mark-legality` gate row under
+`onbrand_check --composition`. Fact-gated: brands without `media-assets.yaml`
+are never flagged.
+
+---
+
 ## Adding a new entry
 
 Copy this shape: **Rule** (the imperative, one or two sentences) / **Why it happens** (the

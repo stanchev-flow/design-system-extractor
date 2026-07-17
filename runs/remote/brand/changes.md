@@ -73,3 +73,54 @@ devices and the scrim-surface eyebrow contrast guard — all fact-gated.
   strict PASS (accent share 0.487%) — exit 0 each.
 - Remote compose lanes (event-genlaunch, stress-playbook, bakeoffs) untouched
   this pass (frozen artifacts; no re-render).
+
+## media-semantics — media-assets.v1 authored + mediaComposition on 4 patterns (2026-07-16)
+
+Root log: repo `changes.md` (MEDIA SEMANTICS SYSTEM); spec:
+`brand_pipeline/spec/media-assets-schema.md`. Authored FROM EXISTING EVIDENCE
+only (assets-tagged.json, the fid8 disclosure captures, grounding YAMLs,
+section-rects + the fullpage capture, Pillow-measured file stats) — no
+re-extraction.
+
+- **`media-assets.yaml` (NEW)** — 57 logical assets over the 58 tagged files:
+  VARIANT DEDUPE proven by content hash — `bg-noise-top-2x.webp` is
+  byte-identical to `bg-noise-grey-green-blue-top.webp` and lives as a
+  `duplicate` variant of ONE `art-surface-noise-gradient` logical asset
+  (both filenames stay resolvable because patterns bind both); the accordion
+  product icons' chrome twins (`nav-icon-employer-of-record.svg` /
+  `nav-icon-contractor-management.svg`) ride as duplicate variants too.
+  Kind taxonomy (portrait/product-ui-collage w/ `decomposition: flat` on the
+  navy plates + disclosure collages/logo-third-party with client|partner
+  subtypes/badge-review-award incl. rating chips/badge-appstore/background-art/
+  illustration/spot-icon), `usageRights` flags (customer wall, partner row,
+  testimonial company marks, G2 badges, rating chips, store badges =
+  `third-party-mark`), measured stats per raster, and `treatmentDefaults.fit`
+  mirroring the tagged-rule resolution per exercised role (replica byte-parity;
+  test-pinned). `assets-tagged.json` stays intact as the compat inventory +
+  role-scoped fallback (its product-UI card-media→cover vs accordion-media→
+  contain split remains authoritative for roles the per-asset default doesn't
+  exercise); media-assets.yaml is the richer superset.
+- **Photography fingerprint (measured)**: cool cast / mid-key / vivid /
+  neutral finish over the 4 testimonial portraits (hues 219-220) — the brand's
+  only page photography; everything else is illustration/collage/art surface.
+- **`generatedVisuals`**: `panel-edge-soft-glow` — the inline conversion
+  panel's soft green radial glow as a css-gradient RECIPE (grounding
+  section-04's #e6e8e7→#8fd6a8 evidence), poster cropped from the run's own
+  capture into `assets/generated/gv-soft-glow-edge-poster.png`, degrade
+  live→poster→omit.
+- **`mediaComposition` authored on 4 patterns** (data-only; composers/replica
+  unchanged): hero-inset-noise-panel background → `background-with-foreground`
+  (the deduped noise asset); logo-marquee-strip logos → `marquee` (12 client
+  marks — the moving strip) vs partner-proof-row logos → `tiled-grid` (4
+  partner marks — the static row): the deliberate mode contrast;
+  feature-accordion-deep-accent media → `state-swap` trigger `active-item`
+  (5 disclosure collages bound by item label — the generalized form of the
+  fid8 per-item media swap; layoutCopy items[].media remains the render
+  channel).
+- **Verification**: validator PASS (C1-C28, 0 errors), replica
+  `compose_replica --skip-shoot` output BYTE-IDENTICAL to
+  `compose/replica/index.html` (0.951 holds by construction), generation
+  prompt carries the `[[MEDIA-FACTS]]` block; the end-to-end no-match-ladder
+  walk-through (real assetRef bind + declared team-photo gap →
+  `asset-requests.json`) is test-pinned on this brand
+  (test_media_artifacts_brands.py).

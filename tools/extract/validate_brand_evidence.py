@@ -125,6 +125,24 @@ Checks (E = error, W = warning):
         mode, machine-checkable check params, and evidence provenance;
         missing block, out-of-discipline counts (the "3-5, not 20" rule),
         unknown kinds, and evidence-less entries warn
+  C26 E media-assets artifact shape (media semantics, spec/media-assets-schema.md):
+        when media-assets.yaml exists it must parse as media-assets.v1 with
+        unique slug ids, on-disk files (canonical + variants), a kind from the
+        closed enum, a usageRights flag, provenance {source, confidence}, legal
+        treatmentDefaults.fit, and generated visuals obeying the poster-frame
+        discipline (poster on disk, or null ONLY for self-rendering declarative
+        kinds with a posterNote). Absence is a NOTE (the layer is additive; the
+        skill doctrine makes authoring REQUIRED for new extractions)
+  C27 E media reference integrity (fact-gated on media-assets.yaml): every
+        mediaComposition layer assetRef/maskRef in the project layout-library
+        resolves into the registry, componentRef contracts exist in the shared
+        contracts, mediaComposition modes/triggers are in the closed enums, and
+        every file bound in pattern slots' assets: lists is REGISTERED (no
+        orphan bound assets)
+  C28 W variant dedupe sanity (advisory): byte-identical files under two
+        separate logical assets should collapse into one entry's variants[];
+        a variant out-resolving its canonical (higher pixel count) warns —
+        canonical = highest-res
 
 Importable API (used by brand_pipeline/tests/test_brand_evidence_contract.py):
     report = validate_brand_dir(brand_dir, contracts_path=..., ...)
@@ -1411,6 +1429,7 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
 
     _check_style_scale(rep, brand_dir)
     _check_signatures(rep, doc)
+    _check_media_assets(rep, brand_dir, lib_doc)
 
     return rep
 
@@ -1528,6 +1547,228 @@ def _check_signatures(rep: Report, doc: dict) -> None:
             rep.warn("C25", f"signature '{sid}' cites no evidence provenance — "
                             "every signature must name the sections/computed facts "
                             "that license it.")
+
+
+# C26/C27/C28 — the MEDIA SEMANTICS artifact (media-assets.v1; normative spec
+# brand_pipeline/spec/media-assets-schema.md). C26 = artifact shape (errors when the
+# file exists; absence is a note — the layer is additive and fact-gated everywhere).
+# C27 = reference integrity between the artifact and the project layout-library
+# (mediaComposition layer refs, mask refs, componentRef contracts, orphan bound
+# assets). C28 = variant-dedupe sanity (advisory). Vocabulary imports from
+# brand_pipeline/media_semantics.py — the single code home for the enums.
+def _check_media_assets(rep: Report, brand_dir: Path, lib_doc: dict) -> None:
+    path = brand_dir / "media-assets.yaml"
+    if not path.exists():
+        rep.note("C26", "media-assets.yaml absent — media semantics layer not "
+                        "authored (spec/media-assets-schema.md; curate_assets.py "
+                        "emits a draft); renderers/gates keep their fact-gated "
+                        "degrades.")
+        return
+    bp_dir = REPO_ROOT / "brand_pipeline"
+    if str(bp_dir) not in sys.path:
+        sys.path.insert(0, str(bp_dir))
+    try:
+        import media_semantics as ms
+    except Exception as exc:                     # pragma: no cover - env specific
+        rep.warn("C26", f"media_semantics module unavailable ({exc}) — media "
+                        "artifact not checked")
+        return
+    try:
+        art = yaml.safe_load(path.read_text()) or {}
+    except Exception as exc:
+        rep.error("C26", f"media-assets.yaml does not parse as YAML: {exc}")
+        return
+    if not isinstance(art, dict) or art.get("schemaVersion") != ms.SCHEMA_VERSION:
+        rep.error("C26", f"media-assets.yaml schemaVersion "
+                         f"{(art or {}).get('schemaVersion')!r} — expected "
+                         f"{ms.SCHEMA_VERSION}")
+        return
+
+    assets_dir = brand_dir / "assets"
+    on_disk = {p.name: p for p in assets_dir.rglob("*")
+               if p.is_file()} if assets_dir.is_dir() else {}
+
+    entries = [a for a in (art.get("assets") or []) if isinstance(a, dict)]
+    if not entries:
+        rep.error("C26", "media-assets.yaml carries no assets[] entries — an empty "
+                         "registry is a half-authored artifact; author it from "
+                         "assets-tagged.json + the capture (spec §8) or remove it.")
+    seen_ids: set[str] = set()
+    for a in entries:
+        aid = str(a.get("id") or "")
+        where = f"assets[{aid or '?'}]"
+        if not aid or not ms.ID_RE.match(aid):
+            rep.error("C26", f"{where}: id must be a stable kebab-case slug "
+                             "(spec §2) — filenames/labels are not ids.")
+        elif aid in seen_ids:
+            rep.error("C26", f"{where}: duplicate id — logical-asset ids are "
+                             "unique.")
+        seen_ids.add(aid)
+        fname = Path(str(a.get("file") or "")).name
+        if not fname or fname not in on_disk:
+            rep.error("C26", f"{where}: canonical file {fname or '(none)'} not on "
+                             "disk under assets/ — a manifest name is not "
+                             "evidence, the file is.")
+        for v in (a.get("variants") or []):
+            vf = Path(str((v or {}).get("file") or "")).name if isinstance(v, dict) else ""
+            if not vf or vf not in on_disk:
+                rep.error("C26", f"{where}: variant file {vf or '(none)'} not on "
+                                 "disk under assets/.")
+        sem = a.get("assetSemantics") if isinstance(a.get("assetSemantics"), dict) else {}
+        kind = str(sem.get("kind") or "")
+        if kind not in ms.ASSET_KINDS:
+            rep.error("C26", f"{where}: assetSemantics.kind {kind!r} is not in the "
+                             "media-assets kind enum (spec §2.1) — the taxonomy is "
+                             "closed; extend the spec before inventing a kind.")
+        if str(a.get("usageRights") or "") not in ms.USAGE_RIGHTS:
+            rep.error("C26", f"{where}: usageRights must be one of "
+                             f"{sorted(ms.USAGE_RIGHTS)} — the rights flag is what "
+                             "makes AS-67 machine-checkable.")
+        prov = a.get("provenance") if isinstance(a.get("provenance"), dict) else {}
+        if not (prov.get("source") and prov.get("confidence")):
+            rep.error("C26", f"{where}: provenance needs source + confidence "
+                             "(capture-files | inline-svg | disclosure-crop | "
+                             "vision-inferred).")
+        td = a.get("treatmentDefaults") if isinstance(a.get("treatmentDefaults"), dict) else {}
+        fit = str(td.get("fit") or "")
+        if fit and fit not in ms.TREATMENT_FITS:
+            rep.error("C26", f"{where}: treatmentDefaults.fit {fit!r} not in "
+                             f"{sorted(ms.TREATMENT_FITS)}.")
+
+    gen_ids: set[str] = set()
+    for g in (art.get("generatedVisuals") or []):
+        if not isinstance(g, dict):
+            continue
+        gid = str(g.get("id") or "?")
+        gen_ids.add(gid)
+        gwhere = f"generatedVisuals[{gid}]"
+        gkind = str(g.get("kind") or "")
+        if gkind not in ms.GENERATED_KINDS:
+            rep.error("C26", f"{gwhere}: kind {gkind!r} not in the generated-visual "
+                             f"enum ({', '.join(sorted(ms.GENERATED_KINDS))}).")
+        if not isinstance(g.get("recipe"), dict) or not g.get("recipe"):
+            rep.error("C26", f"{gwhere}: no recipe — a generated visual IS its "
+                             "re-instantiable recipe (spec §5), never a bitmap "
+                             "reference alone.")
+        poster = g.get("poster")
+        if poster:
+            if Path(str(poster)).name not in on_disk:
+                rep.error("C26", f"{gwhere}: poster {poster!r} not on disk under "
+                                 "assets/ — the poster-frame discipline (spec §5.1) "
+                                 "wants a real captured frame.")
+        else:
+            if gkind not in ms.SELF_RENDERING_KINDS:
+                rep.error("C26", f"{gwhere}: kind {gkind!r} REQUIRES a captured "
+                                 "poster (spec §5.1: replicas/contact sheets render "
+                                 "without executing code).")
+            elif not str(g.get("posterNote") or "").strip():
+                rep.error("C26", f"{gwhere}: poster null needs a posterNote saying "
+                                 "why the recipe alone reproduces the visual.")
+
+    # C27 — reference integrity against the project layout-library (fact-gated on
+    # the artifact existing; lib_doc may be {} when the library is absent).
+    registered_files = {Path(str(a.get("file") or "")).name
+                        for a in entries if a.get("file")}
+    for a in entries:
+        for v in (a.get("variants") or []):
+            if isinstance(v, dict) and v.get("file"):
+                registered_files.add(Path(str(v["file"])).name)
+    contracts_keys: set[str] = set()
+    for cpath in (REPO_ROOT / "brand_pipeline" / "contracts" / "primitives.yaml",
+                  REPO_ROOT / "brand_pipeline" / "contracts" / "blocks.yaml"):
+        if cpath.is_file():
+            try:
+                cdoc = yaml.safe_load(cpath.read_text()) or {}
+            except Exception:
+                cdoc = {}
+            for key in ("primitives", "blocks"):
+                if isinstance(cdoc.get(key), dict):
+                    contracts_keys |= set(cdoc[key].keys())
+
+    lib_patterns = [p for p in ((lib_doc or {}).get("patterns") or [])
+                    if isinstance(p, dict)]
+    for p in lib_patterns:
+        pid = str(p.get("id") or "?")
+        shape = p.get("contentShape") if isinstance(p.get("contentShape"), dict) else {}
+        for slot in (shape.get("slots") or []):
+            if not isinstance(slot, dict):
+                continue
+            sname = str(slot.get("name") or "slot")
+            for f in (slot.get("assets") or []):
+                if Path(str(f)).name not in registered_files:
+                    rep.error("C27", f"pattern '{pid}' slot '{sname}' binds "
+                                     f"{f!r} which media-assets.yaml does not "
+                                     "register — the registry is the superset; "
+                                     "register the file (or its logical asset).")
+            mc = slot.get("mediaComposition")
+            if not isinstance(mc, dict):
+                continue
+            mode = str(mc.get("mode") or "")
+            if mode not in ms.MEDIA_COMP_MODES:
+                rep.error("C27", f"pattern '{pid}' slot '{sname}' mediaComposition "
+                                 f"mode {mode!r} not in the mode enum (spec §3).")
+            trig = mc.get("trigger")
+            if trig is not None and str(trig) not in ms.STATE_SWAP_TRIGGERS:
+                rep.error("C27", f"pattern '{pid}' slot '{sname}' state-swap "
+                                 f"trigger {trig!r} not in "
+                                 f"{sorted(ms.STATE_SWAP_TRIGGERS)}.")
+            if mc.get("maskRef") and str(mc["maskRef"]) not in seen_ids:
+                rep.error("C27", f"pattern '{pid}' slot '{sname}' maskRef "
+                                 f"{mc['maskRef']!r} does not resolve to a "
+                                 "registered logical asset.")
+            for i, layer in enumerate(mc.get("layers") or []):
+                if not isinstance(layer, dict):
+                    continue
+                ref = layer.get("assetRef")
+                cref = layer.get("componentRef")
+                if ref and str(ref) not in seen_ids:
+                    rep.error("C27", f"pattern '{pid}' slot '{sname}' layer {i} "
+                                     f"assetRef {ref!r} does not resolve — bound "
+                                     "layers must name registered logical assets.")
+                if isinstance(cref, dict):
+                    ck = str(cref.get("contract") or "")
+                    if contracts_keys and ck not in contracts_keys:
+                        rep.error("C27", f"pattern '{pid}' slot '{sname}' layer {i} "
+                                         f"componentRef contract {ck!r} is not a "
+                                         "shared primitive/block contract key.")
+                if not ref and not isinstance(cref, dict):
+                    rep.error("C27", f"pattern '{pid}' slot '{sname}' layer {i} "
+                                     "carries neither assetRef nor componentRef — "
+                                     "a layer binds exactly one.")
+
+    # C28 — variant-dedupe sanity (advisory).
+    by_digest: dict[str, list[str]] = {}
+    for a in entries:
+        fname = Path(str(a.get("file") or "")).name
+        fp = on_disk.get(fname)
+        if fp is None:
+            continue
+        try:
+            digest = hashlib.sha256(fp.read_bytes()).hexdigest()
+        except OSError:
+            continue
+        by_digest.setdefault(digest, []).append(str(a.get("id")))
+    for digest, ids in sorted(by_digest.items()):
+        if len(ids) > 1:
+            rep.warn("C28", f"logical assets {ids} carry byte-identical canonical "
+                            "files — collapse the duplicates into ONE entry's "
+                            "variants[] (relation: duplicate).")
+    for a in entries:
+        facts = a.get("facts") if isinstance(a.get("facts"), dict) else {}
+        intrinsic = facts.get("intrinsic") if isinstance(facts.get("intrinsic"), dict) else {}
+        cw, ch = intrinsic.get("w"), intrinsic.get("h")
+        if not (isinstance(cw, (int, float)) and isinstance(ch, (int, float))):
+            continue
+        for v in (a.get("variants") or []):
+            if not isinstance(v, dict):
+                continue
+            vw, vh = v.get("w"), v.get("h")
+            if isinstance(vw, (int, float)) and isinstance(vh, (int, float)) \
+                    and vw * vh > cw * ch:
+                rep.warn("C28", f"assets[{a.get('id')}]: variant "
+                                f"{v.get('file')!r} ({vw}×{vh}) out-resolves the "
+                                f"canonical ({cw}×{ch}) — canonical = highest-res "
+                                "(spec §2); swap them.")
 
 
 def _smoke_compose(rep: Report, brand_dir: Path, doc: dict,

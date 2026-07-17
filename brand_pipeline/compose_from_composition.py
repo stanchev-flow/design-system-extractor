@@ -365,6 +365,8 @@ def _media_layers(section: dict) -> list[dict] | None:
             "role": s.get("role") or name,
             "src": _asset_src(s),
             "alt": ((s.get("asset") or {}) or {}).get("alt") if isinstance(s.get("asset"), dict) else None,
+            # masked-media clip (media semantics 2026-07) — declared-only passthrough
+            "mask": ((s.get("asset") or {}) or {}).get("mask") if isinstance(s.get("asset"), dict) else None,
             "aspect": ASPECT_CSS.get((s.get("mediaAspect") or "").lower()),
             "colStart": p.get("colStart"),
             "colSpan": p.get("colSpan"),
@@ -457,6 +459,8 @@ def _slot_to_mapping(slot: dict) -> dict:
             usage["src"] = asset["src"]
         if asset.get("alt"):
             usage["alt"] = asset["alt"]
+        if asset.get("mask"):
+            usage["mask"] = asset["mask"]     # masked-media clip (media semantics)
     return {
         "slot": slot.get("name") or slot.get("role") or "main",
         "role": slot.get("role") or slot.get("name") or "",
@@ -2260,9 +2264,16 @@ def render_composition(comp: dict, brand_yaml_path: Path | str, outdir: Path | s
     brand_yaml_path = Path(brand_yaml_path)
     brand_dir = Path(brand_dir) if brand_dir else brand_yaml_path.parent
 
+    # media semantics (media-assets.v1, 2026-07): resolve assetRef ids to canonical
+    # files and normalize mediaComposition modes onto the existing channels
+    # (layered media path, per-item swap, item folds, mask clips). Fact-gated:
+    # a brand without media-assets.yaml gets the SAME comp object back untouched.
+    import media_semantics as ms
+    registry = ms.load_media_assets(brand_dir)
+    render_comp = ms.apply_media_composition(comp, registry)
     # defensively drop hallucinated asset srcs so a bad filename can't fail asset fidelity
     # (renderer falls back to brand photography). Provenance copy below keeps the original.
-    render_comp = _sanitize_assets(comp, brand_dir)
+    render_comp = _sanitize_assets(render_comp, brand_dir)
     doc, order = composition_to_doc(render_comp, brand_yaml_path)
     hybrid = doc.pop("_hybridCopy")
 
@@ -2302,6 +2313,11 @@ def render_composition(comp: dict, brand_yaml_path: Path | str, outdir: Path | s
 
     # persist the composition JSON next to the render for provenance/round-trip.
     (outdir / "composition.json").write_text(json.dumps(comp, indent=2) + "\n")
+
+    # ASSET-REQUEST MANIFEST (media semantics 2026-07, spec §6 ladder rung 2):
+    # declared media gaps land beside the render so a human/agent can source the
+    # missing assets; gap-less compositions write nothing (and clear stale files).
+    ms.write_asset_request_manifest(outdir, comp)
 
     # unresolved-slot count (parity with compose_page.main() and the gate's
     # slot-resolution invariant, W11 stress-playbook 2026-07): count the markers in

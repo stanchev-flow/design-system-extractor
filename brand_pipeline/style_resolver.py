@@ -28,6 +28,22 @@ the normative adaptations of ``contracts/style-library/INTEGRATION-PLAN.md`` §4
   §5    ZERO-SIGNAL AXES — ``motion: subtle`` (51/51 styles) and
         ``scaleRatio: 1.25`` (49/51) are filler, emitted UNSET; a genuinely
         differing ratio (newspaper 1.2, editorial-magazine 1.333) survives.
+  §P    PRESET LAYER (2026-07-16) — ``styles/pilot-presets.yaml`` +
+        ``styles/generated-presets.yaml`` load as ONE merged preset map keyed
+        by style id (pilot wins on collision) and fold into every resolution
+        as LEVEL-2 DEFAULTS: a preset slot fills only when the brand carries
+        NO measured fact for it; every brand binding suppresses its preset
+        slot(s), each suppression logged as a ``presetDissents`` row (brand
+        wins, provenance named — same posture as the directive dissents).
+        Presets carry REAL per-style values, so the §5 filler rule applies to
+        DIRECTIVE values only — a preset scaleRatio of 1.25 is a deliberate
+        authored default and survives (unless a measured brand ratio beats
+        it). Preset values stay OUT of ``constraints`` (directive golden
+        behavior unchanged) and are UNCALIBRATED authored priors: prompt
+        guidance only, never a gate. A style with NO preset (dark-mode, the
+        1/51 uncovered id) resolves and renders byte-identically to
+        pre-preset behavior. Exemplars are STRIPPED at load — calibration-only
+        per the preset files' policy; they must never reach a prompt.
 
 Pure data-in/data-out: ``load_library()`` / ``load_brand_bundle()`` do the I/O,
 ``resolve()`` is deterministic over plain dicts, unit-testable with fixtures.
@@ -151,11 +167,64 @@ class StyleLibrary:
     overrides: dict[str, dict]         # style → section → patch (overrides.yaml)
     primitives: dict[str, dict]        # id → {desc, axis, good} (primitives.yaml)
     global_axes: dict[str, list]       # variations/axes.yaml `global`
+    presets: dict[str, dict] = field(default_factory=dict)  # §P: id → preset entry
     source_dir: Path = field(default=LIBRARY_DIR)
 
 
 def _read_yaml(path: Path) -> dict:
     return yaml.safe_load(path.read_text()) or {}
+
+
+# §P: preset files, in PRECEDENCE order — pilot loads first and WINS if an id
+# ever appears in both (the pilot five are richer/hand-tuned).
+_PRESET_FILES = ("pilot-presets.yaml", "generated-presets.yaml")
+
+
+def _normalize_probe_keys(check):
+    """YAML-1.1 coercion repair (same defect class as the catalog's bare
+    on/off axis values, §1.1): the preset files write probes as
+    ``{ on: display, ... }`` and YAML parses the bare ``on`` KEY as boolean
+    True. Normalize back to the authored string key in memory; the files
+    stay verbatim."""
+    if isinstance(check, dict):
+        return {("on" if k is True else k): _normalize_probe_keys(v)
+                for k, v in check.items()}
+    if isinstance(check, list):
+        return [_normalize_probe_keys(v) for v in check]
+    return check
+
+
+def _load_presets(styles_dir: Path, directive_ids: set[str]) -> dict[str, dict]:
+    """§P: one merged preset map keyed by style id. Missing files load as
+    nothing (the layer degrades to directive-only). Every preset id must
+    resolve into directives.yaml (fail closed on drift). Exemplars are
+    STRIPPED at load — they are calibration-only per the preset files' own
+    policy and must never travel toward a generation prompt."""
+    merged: dict[str, dict] = {}
+    for name in _PRESET_FILES:
+        path = styles_dir / name
+        if not path.exists():
+            continue
+        doc = _read_yaml(path)
+        source = "pilot" if name.startswith("pilot") else "generated"
+        for sid, entry in (doc.get("styles") or {}).items():
+            sid = str(sid)
+            if sid not in directive_ids:
+                raise StyleResolutionError(
+                    f"preset file {name} carries id {sid!r} which is not a "
+                    "directives.yaml style — presets key into existing ids only")
+            if sid in merged:              # pilot loaded first → pilot wins
+                continue
+            entry = entry or {}
+            merged[sid] = {
+                "preset": copy.deepcopy(entry.get("preset") or {}),
+                "signatures": _normalize_probe_keys(
+                    copy.deepcopy(entry.get("signatures") or [])),
+                "neighbors": list(entry.get("neighbors") or []),
+                "distinguishers": copy.deepcopy(entry.get("distinguishers") or {}),
+                "source": source,
+            }
+    return merged
 
 
 def load_library(lib_dir: Path | str = LIBRARY_DIR) -> StyleLibrary:
@@ -188,6 +257,7 @@ def load_library(lib_dir: Path | str = LIBRARY_DIR) -> StyleLibrary:
         overrides=overrides.get("overrides") or {},
         primitives=prims,
         global_axes=axes.get("global") or {},
+        presets=_load_presets(lib_dir / "styles", set(styles)),
         source_dir=lib_dir,
     )
 
@@ -366,6 +436,80 @@ def brand_bindings(bundle: BrandBundle) -> dict:
     return out
 
 
+# ── §P: preset precedence (presets are LEVEL-2 DEFAULTS under brand facts) ──────────
+
+def _apply_preset_precedence(entry: dict, bindings: dict,
+                             brand: BrandBundle | None) -> tuple[dict, list[dict]]:
+    """Fold ONE style's preset under the brand evidence stack: a preset slot
+    survives only where the brand carries NO measured fact; every measured
+    fact SUPPRESSES its preset slot(s) and logs a dissent row (brand wins,
+    provenance named — the §4.2 posture applied to the preset layer).
+
+    Slot map (brand binding → preset slot beaten):
+      typeDisplay → font.display · typeBody → font.body ·
+      scaleRatio → type.scaleRatio (+ type.baseSizePx when the binding carries
+      basePx) · space → space · radius → shape.radiusPx · motion → motion ·
+      measured brand palette (brand.yaml tokens.colors/surfaces) → color.
+
+    Signatures/imagery/layout/border/shadow stay preset — no brand binding
+    carries a measured fact for them today, and the rendered block states
+    that any measured brand fact beats them regardless."""
+    preset = copy.deepcopy(entry.get("preset") or {})
+    dissents: list[dict] = []
+
+    def _suppress(slot: str, preset_value, bound: dict):
+        dissents.append({"slot": slot, "preset": preset_value,
+                         "brand": bound.get("value"),
+                         "provenance": bound.get("provenance", ""),
+                         "winner": "brand"})
+
+    font = preset.get("font") or {}
+    if "typeDisplay" in bindings and font.get("display"):
+        _suppress("font.display", font.pop("display"), bindings["typeDisplay"])
+    if "typeBody" in bindings and font.get("body"):
+        _suppress("font.body", font.pop("body"), bindings["typeBody"])
+    if not font and "font" in preset:
+        del preset["font"]
+
+    typ = preset.get("type") or {}
+    if "scaleRatio" in bindings:
+        if "scaleRatio" in typ:
+            _suppress("type.scaleRatio", typ.pop("scaleRatio"), bindings["scaleRatio"])
+        if bindings["scaleRatio"].get("basePx") and "baseSizePx" in typ:
+            _suppress("type.baseSizePx", typ.pop("baseSizePx"),
+                      {"value": bindings["scaleRatio"]["basePx"],
+                       "provenance": bindings["scaleRatio"].get("provenance", "")})
+    if not typ and "type" in preset:
+        del preset["type"]
+
+    if "space" in bindings and preset.get("space"):
+        _suppress("space", preset.pop("space"), bindings["space"])
+
+    shape = preset.get("shape") or {}
+    if "radius" in bindings and shape.get("radiusPx"):
+        _suppress("shape.radiusPx", shape.pop("radiusPx"), bindings["radius"])
+    if not shape and "shape" in preset:
+        del preset["shape"]
+
+    if "motion" in bindings and preset.get("motion"):
+        _suppress("motion", preset.pop("motion"), bindings["motion"])
+
+    doc = (brand.doc if brand else {}) or {}
+    tokens = doc.get("tokens") or {}
+    if preset.get("color") and (tokens.get("colors") or tokens.get("surfaces")):
+        _suppress("color", preset.pop("color"),
+                  {"value": "brand-owned palette",
+                   "provenance": "brand.yaml tokens.colors/surfaces (measured palette)"})
+
+    return {
+        "preset": preset,
+        "signatures": copy.deepcopy(entry.get("signatures") or []),
+        "neighbors": list(entry.get("neighbors") or []),
+        "distinguishers": copy.deepcopy(entry.get("distinguishers") or {}),
+        "source": entry.get("source"),
+    }, dissents
+
+
 # ── the resolver ────────────────────────────────────────────────────────────────────
 
 def resolve(section_id: str, style_id: str, library: StyleLibrary,
@@ -383,6 +527,10 @@ def resolve(section_id: str, style_id: str, library: StyleLibrary,
       6. invariants classify into physics (gate-delegated) / genre (advisory)
       7. brand BINDINGS replace directive constraint values key-by-key
          (dissents recorded) — the §4.2 evidence-over-designed ratchet
+      8. §P: the style's PRESET (if one exists) folds in as level-2 defaults
+         UNDER the same bindings — measured facts suppress their preset slots
+         (presetDissents recorded); a style with no preset emits NO preset
+         keys at all (byte-identical to pre-preset resolutions)
 
     Raises StyleResolutionError on unknown ids, unknown $-tags, or an
     out-of-vocabulary explicit layout pick. Never mutates library/brand data.
@@ -475,7 +623,7 @@ def resolve(section_id: str, style_id: str, library: StyleLibrary,
         constraints[key] = copy.deepcopy(bound.get("value"))
     spec["constraints"] = constraints
 
-    return {
+    out = {
         "section": section_id,
         "style": style_id,
         "styleLabel": proj["label"],
@@ -493,6 +641,15 @@ def resolve(section_id: str, style_id: str, library: StyleLibrary,
         "dissents": dissents,
         "notes": notes,
     }
+
+    # 8. §P: preset layer (level-2 defaults; keys absent when no preset exists,
+    #    keeping no-preset styles byte-identical to pre-preset resolutions)
+    if style_id in library.presets:
+        preset_entry, preset_dissents = _apply_preset_precedence(
+            library.presets[style_id], bindings, brand)
+        out["stylePreset"] = preset_entry
+        out["presetDissents"] = preset_dissents
+    return out
 
 
 def resolve_all(style_id: str, library: StyleLibrary,
@@ -550,6 +707,143 @@ def _fmt_value(v) -> str:
     if isinstance(v, list):
         return ", ".join(_fmt_value(x) for x in v)
     return str(v)
+
+
+def _fmt_font_slot(f: dict) -> str:
+    fam = f.get("family") or "?"
+    weights = "/".join(str(w) for w in (f.get("weights") or []))
+    bits = [f'"{fam}"']
+    if weights:
+        bits.append(f"w{weights}")
+    gf = f.get("googleFont")
+    if gf and gf != fam:
+        bits.append(f"googleFont {gf}")
+    out = " ".join(bits)
+    if f.get("stack"):
+        out += f" — stack: {f['stack']}"
+    return out
+
+
+def _preset_lines(res: dict) -> list[str]:
+    """§P: the compact prompt-safe preset block for ONE resolved style. Empty
+    for styles without a preset (byte-identity for the uncovered id). Purely
+    additive guidance; every line renders only from slots that survived brand
+    suppression. Exemplars never appear here (stripped at load;
+    calibration-only)."""
+    entry = res.get("stylePreset")
+    if not entry:
+        return []
+    p = entry.get("preset") or {}
+    lines = [
+        "Style preset — authored defaults (uncalibrated) — any measured brand",
+        "fact beats these. Expert-authored level-2 defaults, not measurements;",
+        "check thresholds refine over time via the style-calibration workflow.",
+    ]
+
+    font = p.get("font") or {}
+    font_bits = [f"{slot} {_fmt_font_slot(font[slot])}"
+                 for slot in ("display", "body") if font.get(slot)]
+    if font_bits:
+        lines.append("  - font pairing: " + " · ".join(font_bits))
+
+    typ = p.get("type") or {}
+    if typ:
+        bits = []
+        if typ.get("baseSizePx") is not None:
+            bits.append(f"base {typ['baseSizePx']}px")
+        if typ.get("scaleRatio") is not None:
+            bits.append(f"ratio {typ['scaleRatio']}")
+        lh = typ.get("lineHeight") or {}
+        if lh:
+            bits.append("line-height " + " / ".join(
+                f"{k} {lh[k]}" for k in ("display", "body") if k in lh))
+        mc = typ.get("measureCh") or {}
+        if mc:
+            bits.append("measure " + " / ".join(
+                f"{k} {mc[k]}ch" for k in ("body", "lead") if k in mc))
+        tr = typ.get("tracking") or {}
+        if tr:
+            bits.append("tracking " + " / ".join(
+                f"{k} {tr[k]}" for k in ("display", "body") if k in tr))
+        if bits:
+            lines.append("  - type: " + " · ".join(bits))
+
+    color = p.get("color") or {}
+    if color:
+        role_bits = [f"{role} {v.get('oklch')} ({v.get('hex')})"
+                     for role, v in color.items() if isinstance(v, dict)]
+        lines.append("  - palette roles: " + " · ".join(role_bits))
+
+    space = p.get("space") or {}
+    if space:
+        bits = []
+        if space.get("basePx") is not None:
+            bits.append(f"base {space['basePx']}px")
+        if space.get("stepsPx"):
+            bits.append("steps(px) " + ", ".join(str(s) for s in space["stepsPx"]))
+        if space.get("sectionRhythmPx") is not None:
+            bits.append(f"section rhythm {space['sectionRhythmPx']}px")
+        lines.append("  - space: " + " · ".join(bits))
+
+    shape = p.get("shape") or {}
+    if shape:
+        bits = []
+        rad = shape.get("radiusPx") or {}
+        if rad:
+            bits.append("radius(px) " + " / ".join(
+                f"{k} {rad[k]}" for k in ("button", "card", "input") if k in rad))
+        if shape.get("borderWidthPx") is not None:
+            bits.append(f"border {shape['borderWidthPx']}px")
+        if shape.get("shadow") is not None:
+            bits.append(f"shadow {shape['shadow']}")
+        lines.append("  - shape: " + " · ".join(bits))
+
+    layout = p.get("layout") or {}
+    if layout:
+        bits = []
+        if layout.get("maxWidthPx") is not None:
+            bits.append(f"max-width {layout['maxWidthPx']}")
+        if layout.get("gutterPx") is not None:
+            bits.append(f"gutter {layout['gutterPx']}px")
+        if layout.get("columns") is not None:
+            bits.append(f"columns {layout['columns']}")
+        lines.append("  - layout: " + " · ".join(bits))
+
+    motion = p.get("motion") or {}
+    if motion:
+        bits = []
+        if motion.get("easing"):
+            bits.append(f"easing {motion['easing']}")
+        if motion.get("durationsMs"):
+            bits.append("durations(ms) " + ", ".join(str(d) for d in motion["durationsMs"]))
+        lines.append("  - motion: " + " · ".join(bits))
+
+    imagery = p.get("imagery") or {}
+    if imagery:
+        bits = [f"{k} — {imagery[k]}"
+                for k in ("subjects", "lighting", "backdrop", "treatment")
+                if imagery.get(k)]
+        if imagery.get("aspectHabits"):
+            bits.append("aspects " + ", ".join(str(a) for a in imagery["aspectHabits"]))
+        lines.append("  - imagery art direction: " + " · ".join(bits))
+
+    sigs = entry.get("signatures") or []
+    if sigs:
+        lines.append("Style preset signatures (always/never guidance; "
+                     "check thresholds UNCALIBRATED):")
+        for g in sigs:
+            check = g.get("check") or {}
+            lines.append(
+                f"  - [{g.get('mode')}] {g.get('id')} ({g.get('kind')}): "
+                f"{g.get('claim')} [check: {_fmt_value(check)}]")
+
+    pd = res.get("presetDissents") or []
+    if pd:
+        lines.append("Preset slots suppressed by measured brand facts (brand wins):")
+        for d in pd:
+            lines.append(f"  - {d['slot']}: authored default → brand fact "
+                         f"{_fmt_value(d['brand'])} WINS ({d['provenance']})")
+    return lines
 
 
 def render_style_directive_block(style_id: str, resolutions: dict[str, dict],
@@ -615,6 +909,9 @@ def render_style_directive_block(style_id: str, resolutions: dict[str, dict],
     ]
     if disc_lines:
         parts += ["Layout disciplines (translated bias):", *disc_lines]
+    preset_lines = _preset_lines(first)          # §P: empty for no-preset styles
+    if preset_lines:
+        parts += ["", *preset_lines]
     parts += [
         "",
         "Per-section layout guidance (the resolver's picks for this style):",

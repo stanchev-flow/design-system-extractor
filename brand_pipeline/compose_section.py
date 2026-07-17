@@ -217,6 +217,11 @@ def attach_asset_inventory(doc: dict, brand_dir: Path) -> dict:
         doc[ASSET_TAGS_KEY] = tags
         doc[MEDIA_TREATMENT_RULES_KEY] = rules
         attach_accent_devices(doc, brand_dir)
+        # media-assets.v1 registry (media semantics 2026-07): per-asset
+        # treatmentDefaults + logical-asset ids for the renderer/gates. Fact-gated:
+        # brands without media-assets.yaml attach None and behave byte-identically.
+        import media_semantics as _ms
+        _ms.attach_media_assets(doc, brand_dir)
     return doc
 
 
@@ -1903,6 +1908,8 @@ def _inline_props(contract, role, usage, ctx):
         return {"src": u.get("src"), "alt": u.get("alt", ""),
                 "variant": u.get("variant", ""), "absolute": bool(u.get("absolute")),
                 "aspect": u.get("aspect"),
+                # masked-media clip (media semantics 2026-07) — declared-only
+                "mask": u.get("mask"),
                 "placeholder": u.get("placeholder", "IMAGE / RADIUS 0")}
     if c == "logo":
         # IMAGE mode when the slot carries a disk-backed asset (AS-30: the payload is
@@ -2117,9 +2124,14 @@ def _layer_img(doc, ctx, layer: dict, *, variant: str, fallback) -> str:
     kind, preferred = fallback
     src = layer.get("src") or _brand_art(doc, kind, *preferred)
     brand_name = (doc.get("brand") or {}).get("name") or "Brand"
-    return cr.render_image(doc, ctx, {
-        "src": src, "variant": variant, "aspect": layer.get("aspect"),
-        "alt": layer.get("alt") or f"{brand_name} photography"})
+    props = {"src": src, "variant": variant, "aspect": layer.get("aspect"),
+             "alt": layer.get("alt") or f"{brand_name} photography"}
+    # masked-media (media semantics 2026-07): the layer clips inside a brand
+    # accent-shape/logo silhouette. Declared-only; layers without a mask are
+    # byte-identical.
+    if layer.get("mask"):
+        props["mask"] = layer["mask"]
+    return cr.render_image(doc, ctx, props)
 
 
 def _stack_hero_layered(doc, ctx, layers: list[dict], *, eyebrow_html, title_html,
