@@ -40,6 +40,13 @@ if str(_HERE) not in sys.path:
 
 import archetype_library as al  # noqa: E402  (variantKnobs vocabulary — data, not enum)
 
+_GROUPED_ITEM_CONTRACTS = {"feature-item", "content-block", "card", "testimonial"}
+_ACTION_CONTRACTS = {"button", "cta", "form", "input"}
+_VISUAL_CONTRACTS = {
+    "image", "video", "stat", "stat-block", "testimonial", "quote",
+    "logo", "logo-bar", "feature-item", "content-block", "card",
+}
+
 # ── the CODE-CONSUMER registry ──────────────────────────────────────────────────────
 # Knob name -> {"consumer": "<module.device>", "values": <closed vocab or None=open>}.
 # Every entry names REAL consuming code (test-pinned by literal source grep in
@@ -213,9 +220,179 @@ def lint_redundancy(comp: dict) -> list[tuple[str, str]]:
     return hits
 
 
-def lint_composition(comp: dict) -> list[tuple[str, str, str]]:
+def _visible_strings(value, role: str, section_id: str):
+    """Yield normalized substantive strings with their visible role."""
+    if isinstance(value, str):
+        text = " ".join(value.split()).strip()
+        if len(text.split()) >= 5:
+            yield re.sub(r"[^a-z0-9 ]+", "", text.lower()).strip(), role, section_id
+    elif isinstance(value, dict):
+        for key, child in value.items():
+            if key not in {"asset", "src", "alt", "href", "styleHint", "family"}:
+                yield from _visible_strings(child, f"{role}.{key}", section_id)
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            yield from _visible_strings(child, f"{role}[{index}]", section_id)
+
+
+def lint_cross_slot_duplicates(comp: dict) -> list[tuple[str, str]]:
+    """Substantive visible copy cannot repeat across roles/sections without a license."""
+    seen: dict[str, tuple[str, str]] = {}
+    hits: list[tuple[str, str]] = []
+    for sec in comp.get("sections") or []:
+        if not isinstance(sec, dict):
+            continue
+        sid = str(sec.get("id") or sec.get("useCase") or "section")
+        licenses = {re.sub(r"[^a-z0-9 ]+", "", str(x).lower()).strip()
+                    for x in (sec.get("repeatedProofLicense") or [])}
+        for slot in sec.get("slots") or []:
+            if not isinstance(slot, dict):
+                continue
+            role = str(slot.get("name") or slot.get("role") or "slot")
+            for normalized, visible_role, owner in _visible_strings(slot.get("copy"), role, sid):
+                if normalized in licenses:
+                    continue
+                prior = seen.get(normalized)
+                if prior and prior != (owner, visible_role):
+                    hits.append((sid, f"substantive copy repeats in `{prior[0]}.{prior[1]}` "
+                                      f"and `{owner}.{visible_role}` without a repeated-proof license"))
+                else:
+                    seen[normalized] = (owner, visible_role)
+    return hits
+
+
+def lint_grouping(comp: dict) -> list[tuple[str, str]]:
+    """AS-68: repeated semantic records stay atomic, never become a primitive waterfall."""
+    hits: list[tuple[str, str]] = []
+    for sec in comp.get("sections") or []:
+        if not isinstance(sec, dict):
+            continue
+        sid = str(sec.get("id") or sec.get("useCase") or "section")
+        orphan_labels = 0
+        orphan_bodies = 0
+        for slot in sec.get("slots") or []:
+            if not isinstance(slot, dict):
+                continue
+            contract = str(slot.get("contract") or "").lower()
+            copy = slot.get("copy")
+            if contract in {"eyebrow", "label", "caption"} and isinstance(copy, str):
+                orphan_labels += 1
+            if contract == "paragraph" and isinstance(copy, str):
+                orphan_bodies += 1
+            if not isinstance(copy, list) or len(copy) < 2:
+                continue
+            records = [x for x in copy if isinstance(x, dict)]
+            semantic = len(records) >= 2 and all(
+                any(str(item.get(k) or "").strip() for k in ("eyebrow", "heading", "title", "label"))
+                and any(str(item.get(k) or "").strip() for k in ("text", "body", "action", "cta"))
+                for item in records)
+            if semantic and contract not in _GROUPED_ITEM_CONTRACTS:
+                hits.append((sid, f"`{slot.get('name') or slot.get('role')}` carries "
+                                  f"{len(records)} semantic records but contract `{contract}` "
+                                  "would flatten them; bind one repeatable feature-item/"
+                                  "content-block/card slot"))
+        # Only the alternating waterfall shape is illegal. Multiple independent
+        # labels (pricing toggles, metadata rails, filters) are valid when they are
+        # not paired with a sibling run of loose paragraph bodies.
+        if orphan_labels >= 2 and orphan_bodies >= 2:
+            hits.append((sid, f"{orphan_labels} sibling label/eyebrow primitives form a "
+                              "waterfall; bind them with their bodies as repeated item records"))
+    return hits
+
+
+def lint_wireframe_quality(comp: dict, wireframe: dict) -> list[tuple[str, str, str]]:
+    """AS-69..72: completeness, visual rhythm, hero balance, required consumption."""
+    hits: list[tuple[str, str, str]] = []
+    by_id = {str(s.get("id")): s for s in comp.get("sections") or [] if isinstance(s, dict)}
+    wf_sections = [s for s in (wireframe.get("sections") or []) if isinstance(s, dict)]
+    sparse = 0
+    for wf in wf_sections:
+        sid = str(wf.get("id") or "section")
+        sec = by_id.get(sid, {})
+        slots = [s for s in sec.get("slots") or [] if isinstance(s, dict)]
+        names = {str(s.get("name") or s.get("role") or "slot") for s in slots}
+        contracts = {str(s.get("contract") or "").lower() for s in slots}
+        missing = [n for n in wf.get("requiredSlots") or [] if n not in names]
+        if missing:
+            hits.append((sid, "wireframe-consumption",
+                         f"required wireframe slots are not consumed: {missing}"))
+        if wf.get("ctaRequired") and not (contracts & _ACTION_CONTRACTS):
+            hits.append((sid, "section-completeness",
+                         "conversion job requires a rendered action"))
+        if wf.get("proofRequired") and not (contracts & _VISUAL_CONTRACTS):
+            hits.append((sid, "section-completeness",
+                         "proof/story job requires proof, media, or a component cluster"))
+        anchored = bool(wf.get("visualAnchor")) or bool(wf.get("licensedTextOnly"))
+        sparse = 0 if anchored else sparse + 1
+        if not anchored:
+            hits.append((sid, "visual-anchor",
+                         "substantive section has no visual anchor or licensed text-only monument"))
+        if sparse > 1:
+            hits.append((sid, "page-rhythm",
+                         "consecutive visually sparse substantive sections are forbidden"))
+        if str(sec.get("useCase") or "").lower() == "hero":
+            counter = str((sec.get("alignment") or {}).get("counterweight") or "")
+            if counter:
+                counter_slot = next((s for s in slots
+                                     if str(s.get("name") or s.get("role") or "") == counter), None)
+                if not counter_slot or str(counter_slot.get("contract") or "").lower() \
+                        not in _VISUAL_CONTRACTS:
+                    hits.append((sid, "hero-balance",
+                                 f"side hero counterweight `{counter}` is not a painted device"))
+        for collection in wf.get("collections") or []:
+            fit = collection.get("componentFit") or {}
+            candidates = fit.get("candidateWidths") or []
+            chosen = int(collection.get("columns") or 0)
+            selected = next((c for c in candidates
+                             if int(c.get("columns") or 0) == chosen), None)
+            if not selected or not selected.get("feasible"):
+                hits.append((sid, "component-fit",
+                             "collection columns do not select a feasible content-demand candidate"))
+            if fit.get("internalAnatomy") not in {
+                    "icon-top", "icon-inline", "media-top", "text-stack"}:
+                hits.append((sid, "component-fit",
+                             "component family has no coherent internal anatomy"))
+            strategy = str(collection.get("fillStrategy") or "")
+            columns = max(1, int(collection.get("columns") or 1))
+            spans = [int(item.get("span") or 1) for item in collection.get("items") or []]
+            counterweight = collection.get("balancingCounterweight")
+            licensed = (
+                strategy == "licensed-asymmetry"
+                and isinstance(counterweight, dict)
+                and bool(str(counterweight.get("role") or counterweight.get("contract") or ""))
+                and any(counterweight.get(key)
+                        for key in ("asset", "contract", "component", "visual"))
+            )
+            used = 0
+            orphan = False
+            for span in spans:
+                if span < 1 or span > columns or (used and used + span > columns):
+                    orphan = True
+                    break
+                used = (used + span) % columns
+            if (used or orphan) and not licensed:
+                hits.append((sid, "grid-fill",
+                             "collection leaves unused final-row tracks without a "
+                             "declared strategy and painted counterweight"))
+        testimonial = wf.get("testimonial")
+        if testimonial is not None:
+            if testimonial.get("componentContract") != "testimonial" \
+                    or not testimonial.get("complete"):
+                hits.append((sid, "testimonial-integrity",
+                             "testimonial intent must preserve quote + attribution in one component"))
+            if testimonial.get("assetStatus") not in {"bound", "requested"}:
+                hits.append((sid, "testimonial-integrity",
+                             "compatible testimonial media was neither bound nor requested"))
+    return hits
+
+
+def lint_composition(comp: dict, wireframe: dict | None = None) -> list[tuple[str, str, str]]:
     """All hard composition lints: [(section_id, rule, message)].
     rule ∈ {"knob-consumption", "content-redundancy"} (AS-63 / AS-65)."""
     out = [(sid, "knob-consumption", msg) for sid, msg in lint_knobs(comp or {})]
     out += [(sid, "content-redundancy", msg) for sid, msg in lint_redundancy(comp or {})]
+    out += [(sid, "duplicate-copy", msg) for sid, msg in lint_cross_slot_duplicates(comp or {})]
+    out += [(sid, "semantic-grouping", msg) for sid, msg in lint_grouping(comp or {})]
+    if wireframe:
+        out += lint_wireframe_quality(comp or {}, wireframe)
     return out

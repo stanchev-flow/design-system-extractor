@@ -337,6 +337,7 @@ def main() -> int:
                 layout=hero_layout_id(brand_yaml),
                 force_off_grid=True,
                 # BASELINE: guidance flag stays at the pipeline default (False).
+                enforce_gates=False,             # isolated eval matrix — opts out of the flow gate
             )
             row["generateSeconds"] = round(time.time() - t0, 1)
             row["attempts"] = res.attempts

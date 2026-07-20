@@ -213,10 +213,47 @@ _EXTRACT_JS = r"""
   const inAsideRegion = (node, panel) => {
     let n = node;
     while (n && n !== panel) {
-      if (ASIDE_CLS.test(n.getAttribute && (n.getAttribute("class") || ""))) return true;
+      const cls = n.getAttribute && (n.getAttribute("class") || "");
+      // A vertical-TAB layout wrapper (e.g. `global-nav-sidebar cl-tabs`) matches
+      // the `sidebar` token but is a tabbed CONTENT layout, not a secondary rail —
+      // its panels are the MAIN region (fix 2026-07). Skip such a wrapper: the rail
+      // is captured separately as menu.sidebarTabs.
+      if (ASIDE_CLS.test(cls) &&
+          !(n.querySelector && n.querySelector("[role='tablist'], [role='tab']"))) {
+        return true;
+      }
       n = n.parentElement;
     }
     return false;
+  };
+
+  // A menu-card's DESCRIPTION line often sits OUTSIDE the title anchor (a sibling
+  // <p> in the card wrapper: title link + description paragraph). linkDescription
+  // only reads inside the anchor, so also look at the nearest card/list-item
+  // container for a description/subtitle node that isn't itself a link (generic
+  // across "title link + sibling description" card grammars). fix 2026-07.
+  const cardDescription = (a, titleText) => {
+    const inA = linkDescription(a, titleText);
+    if (inA) return inA;
+    // Climb a few levels from the title link and, at each wrapper, look for a
+    // description/subtitle node that is not itself a link. The NEAREST wrapper
+    // holding this card's own copy wins (a `card-title` <h3> holds none; its
+    // `card-text-wrapper` parent holds the sibling <p>). Bounded climb so we never
+    // reach a neighbouring card. Generic across "title link + sibling desc" cards.
+    let n = a.parentElement;
+    for (let i = 0; i < 5 && n; i++) {
+      if (n.tagName !== "A") {
+        const d = n.querySelector("[class*='desc' i], [class*='subtitle' i], [class*='caption' i], p, small");
+        if (d && !d.closest("a[href]")) {
+          const t = collapse(d.textContent || "").slice(0, 200);
+          if (t && t !== titleText && t.indexOf(titleText) !== 0) {
+            return { text: t, open: true };
+          }
+        }
+      }
+      n = n.parentElement;
+    }
+    return null;
   };
 
   // Harvest the panel's PROMO/FEATURE CARD (the right-side object): a bounded
@@ -272,7 +309,8 @@ _EXTRACT_JS = r"""
       cta: cta,
       href: href,
       image: img ? { src: img.currentSrc || img.src || "", alt: img.getAttribute("alt") || "" } : null,
-      area: inAsideRegion(card, panel) ? "aside" : "main",
+      area: (panel.querySelector("[role='tablist'], [role='tab']") ? "main"
+             : (inAsideRegion(card, panel) ? "aside" : "main")),
       surface: { bg: cs.backgroundColor, radius: px(cs.borderTopLeftRadius) },
     } };
   };
@@ -312,6 +350,13 @@ _EXTRACT_JS = r"""
     }
     if (!panel) return null;
 
+    // A tabbed mega layout renders a vertical RAIL (role=tablist) beside its tab
+    // panels; the panels are the MAIN content region, so the `sidebar` aside token
+    // must not fire inside such a panel (the rail is captured as sidebarTabs). fix
+    // 2026-07 — brands whose panels have no tablist keep the full aside heuristic.
+    const hasRail = !!panel.querySelector("[role='tablist'], [role='tab']");
+    const areaOf = (node) => (!hasRail && inAsideRegion(node, panel)) ? "aside" : "main";
+
     // featured / banner / promo links (kept separate from the columns)
     const featuredSet = new Set();
     const featured = [];
@@ -340,9 +385,14 @@ _EXTRACT_JS = r"""
     const cardHit = harvestPanelCard(panel, featuredSet);
     const card = cardHit ? cardHit.fact : null;
     const cardEl = cardHit ? cardHit.el : null;
+    // A heading candidate that WRAPS its own link (e.g. `<h3 class=card-title><a>
+    // …</a></h3>`) is that CARD's title, not a column heading — promoting it split
+    // every card into its own one-item column (fix 2026-07). Real group headings
+    // (e.g. `<h2 class=…-sublinks-title>Marketing</h2>`) carry no link.
     const heads0 = Array.from(
       panel.querySelectorAll("h1,h2,h3,h4,h5,h6,[class*='title' i],[class*='heading' i]")
-    ).filter((h) => !h.closest("a[href]") && !(cardEl && cardEl.contains(h)));
+    ).filter((h) => !h.closest("a[href]") && !h.querySelector("a[href]") &&
+                    !(cardEl && cardEl.contains(h)));
     const heads = heads0.filter((h) => !heads0.some((o) => o !== h && h.contains(o)));
     const allLinks = Array.from(panel.querySelectorAll("a[href]")).filter(
       (a) => !featuredSet.has(a) && !(cardEl && cardEl.contains(a))
@@ -380,7 +430,7 @@ _EXTRACT_JS = r"""
           // per-link ANATOMY facts (fid4 2026-07): icon + description are part of
           // the menu-card grammar; captured only when the DOM carries them.
           const item = { label: t, href: href };
-          const desc = linkDescription(a, t);
+          const desc = cardDescription(a, t);
           if (desc) { item.description = desc.text; if (!desc.open) item.descriptionOnHover = true; }
           const ic = iconSource(a);
           if (ic) item.icon = ic;
@@ -390,7 +440,7 @@ _EXTRACT_JS = r"""
           const col = { heading: anyLabel(head), links: items };
           // AREA fact (fid4 2026-07): which panel region the group lives in —
           // 'main' columns vs the 'aside' secondary rail (compact links / promo).
-          col.area = inAsideRegion(head, panel) ? "aside" : "main";
+          col.area = areaOf(head);
           columns.push(col);
         }
       }
@@ -406,7 +456,7 @@ _EXTRACT_JS = r"""
         if (seenL.has(k)) continue;
         seenL.add(k);
         const item = { label: t, href: href };
-        const desc = linkDescription(a, t);
+        const desc = cardDescription(a, t);
         if (desc) { item.description = desc.text; if (!desc.open) item.descriptionOnHover = true; }
         const ic = iconSource(a);
         if (ic) item.icon = ic;
@@ -428,6 +478,22 @@ _EXTRACT_JS = r"""
     if (!columns.length && !featured.length && !card) return null;
     const out = { columns: columns.slice(0, 16), featured: featured.slice(0, 12) };
     if (card) out.card = card;
+    // SIDEBAR RAIL (fix 2026-07): a vertical category rail rendered as a tablist
+    // inside the panel (e.g. "By Use Case / By Team Size / Why HubSpot?"). Captured
+    // as ordered labels so the renderer can draw the left rail; brands without a
+    // tablist rail get no key (byte-identical). Structure-from-DOM — the panels are
+    // present-but-hidden, so this reads straight from markup, no hover.
+    const railBtns = Array.from(panel.querySelectorAll("[role='tab']"));
+    const railSeen = new Set();
+    const sidebarTabs = [];
+    for (const rb of railBtns) {
+      const t = anyLabel(rb);
+      const k = t.toLowerCase();
+      if (!t || t.length > 40 || railSeen.has(k)) continue;
+      railSeen.add(k);
+      sidebarTabs.push(t);
+    }
+    if (sidebarTabs.length >= 2) out.sidebarTabs = sidebarTabs.slice(0, 8);
     return out;
   };
 
@@ -596,7 +662,29 @@ _EXTRACT_JS = r"""
     return null;
   };
   const origin = location.origin;
-  const outer_or = (svg) => { const o = svg.outerHTML || ""; return o.length <= 12000 ? o : ""; };
+  const outer_or = (svg) => {
+    let o = svg.outerHTML || "";
+    // Resolve a shared-sprite <use href="#id"> reference into a STANDALONE svg: the
+    // <symbol id> lives elsewhere in the document (a hidden sprite map), so a bare
+    // <use> paints NOTHING once extracted. Inline the referenced symbol's viewBox +
+    // children as a single-ink (currentColor) svg so it materializes as real glyph
+    // artwork. Generic — social glyphs, carets, any sprite icon. fix 2026-07.
+    try {
+      const use = svg.querySelector("use");
+      const ownArt = svg.querySelector("path,polygon,circle,rect,ellipse,line,polyline,g");
+      if (use && !ownArt) {
+        let ref = use.getAttribute("href") || use.getAttribute("xlink:href") || "";
+        const hash = ref.indexOf("#");
+        const sym = hash >= 0 ? document.getElementById(ref.slice(hash + 1)) : null;
+        if (sym && /symbol/i.test(sym.tagName) && sym.innerHTML.trim()) {
+          const vb = sym.getAttribute("viewBox") || svg.getAttribute("viewBox") || "0 0 24 24";
+          o = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="' + vb +
+              '" fill="currentColor">' + sym.innerHTML + '</svg>';
+        }
+      }
+    } catch (e) { /* fall back to the raw outerHTML */ }
+    return o.length <= 12000 ? o : "";
+  };
   const SOCIAL = /facebook|twitter|linkedin|youtube|instagram|tiktok|github|x\.com|threads|glassdoor/i;
 
   // Resolved background-image URL (getComputedStyle returns it absolute + safely
@@ -639,7 +727,19 @@ _EXTRACT_JS = r"""
     scope.querySelectorAll("a[href], [class*='logo' i], [class*='brand' i]").forEach((e) => consider.add(e));
     for (const el of consider) {
       if (!isVisible(el)) continue;
-      const a = el.closest("a") || el;
+      // A logo LINK wraps only its mark — never a bar-wide layout container that
+      // also holds the primary nav tabs / CTAs. Generic guard (fix 2026-07):
+      // class substrings like `-burger-logo-slide-left` make a full-width bar
+      // wrapper match `[class*='logo']`; with no ancestor <a> the anchor would
+      // become that container and the main loop's `logoAnchor.contains(el)` would
+      // then swallow every real tab/CTA. Reject any candidate that itself holds
+      // more than one link/button (a mark wrapper holds none).
+      const a0 = el.closest("a");
+      if (!a0) {
+        const innerActionable = el.querySelectorAll("a[href], button").length;
+        if (innerActionable > 1) continue;
+      }
+      const a = a0 || el;
       const href = (a.getAttribute && a.getAttribute("href")) || "";
       const baseHay = href + " " + (el.getAttribute("class") || "") + " " + (el.getAttribute("id") || "") +
         " " + (el.getAttribute("aria-label") || "") + " " + ((a.getAttribute && a.getAttribute("aria-label")) || "");
@@ -968,7 +1068,12 @@ _EXTRACT_JS = r"""
     let triggerFacts = null;
     for (const l of navLinks) {
       if (!l.menu || !l._el) continue;
-      const ch = triggerChevron(l._el);
+      // The chevron glyph lives on the tab's TOGGLE BUTTON, a sibling of the
+      // title span (fix 2026-07) — search the tab item container, not just the
+      // label span (which carries no svg), so menu-owning tabs harvest the caret.
+      const trigEl = l._el.closest(
+        "li, [class*='nav-tab' i], [class*='nav-item' i], [class*='navLink' i]") || l._el;
+      const ch = triggerChevron(trigEl);
       if (ch) { if (!triggerFacts) triggerFacts = { chevron: ch }; l.hasChevron = true; }
     }
 
@@ -1017,6 +1122,75 @@ _EXTRACT_JS = r"""
         const ariaL = aria.toLowerCase();
         if (/sign-?in|log-?in|account/.test(hrefL)) l.role = "login";
         else if (/language|locale/.test(ariaL)) l.role = "language";
+      }
+    }
+
+    // Utility-item DROPDOWN items: the collapsed submenu a locale/account/about
+    // control opens. The panel is present-but-hidden in the saved DOM (portals on
+    // open), so read the associated list straight from markup via aria-controls
+    // (the control OR a toggle in its item points at the panel id). Structure only —
+    // the open-state PAINT (w/h/bg) is not in a static snapshot, so the panel stays
+    // notObserved (the author marks dropdownNotObserved). fix 2026-07.
+    const utilDropdownItems = (el) => {
+      let controls = el.getAttribute("aria-controls") || "";
+      const item = (el.parentElement || el).closest(
+        "li, [class*='nav-item' i], [class*='navLink' i], [class*='has-dropdown' i]");
+      if (!controls && item) {
+        const tog = item.querySelector("[aria-controls]");
+        if (tog) controls = tog.getAttribute("aria-controls") || "";
+      }
+      const panel = controls ? document.getElementById(controls) : null;
+      const scope = panel || (item && item.querySelector("ul, [role='menu'], [class*='submenu' i], [class*='dropdown' i]"));
+      if (!scope || scope.contains(el) && scope === el) return [];
+      const items = [];
+      const seen = new Set();
+      for (const a of scope.querySelectorAll("a[href]")) {
+        const t = anyLabel(a);
+        const href = a.getAttribute("href") || "";
+        const k = (t + "|" + href).toLowerCase();
+        if (!t || t.length > 60 || seen.has(k)) continue;
+        seen.add(k);
+        const it = { label: t, href: href };
+        const lang = a.getAttribute("lang") || a.getAttribute("hreflang");
+        if (lang) it.lang = lang;
+        if ((a.getAttribute("aria-current") || "").trim()) it.current = true;
+        items.push(it);
+      }
+      return items.slice(0, 24);
+    };
+    // Annotate EVERY utility-tier control with its anatomy (kind/role/icon/chevron/
+    // collapsed label/dropdown items) — not only the reclassified trailing cluster.
+    // The top-bar (leading) utility run carries the locale switcher + support links.
+    for (const l of navLinks) {
+      if (l.tier !== "utility" || !l._el) continue;
+      if (!l.icon) { const ic = iconSource(l._el); if (ic) l.icon = ic; }
+      const aria = l._el.getAttribute("aria-label") || "";
+      if (aria && !l.ariaLabel) l.ariaLabel = aria;
+      const expandable = l._el.getAttribute("aria-expanded") !== null ||
+                         l._el.getAttribute("aria-haspopup") !== null ||
+                         !!(l._el.closest("[class*='has-dropdown' i], [class*='hasSubNav' i]"));
+      if (!l.kind) l.kind = expandable ? "dropdown" : "link";
+      if (l.kind === "dropdown") {
+        if (!l.chevron) { const ch = triggerChevron(
+          l._el.closest("li, [class*='navLink' i], [class*='nav-item' i]") || l._el);
+          if (ch) l.chevron = ch; }
+        if (!l.collapsedLabel) {
+          const spans = Array.from(l._el.querySelectorAll("span")).filter(isVisible);
+          const shown = spans.map((sp) => (sp.textContent || "").trim())
+            .filter((t) => t && t.length <= 24);
+          if (shown.length) l.collapsedLabel = shown[0];
+        }
+        if (!l.dropdown || !(l.dropdown.items || []).length) {
+          const items = utilDropdownItems(l._el);
+          if (items.length) l.dropdown = { items: items, panelNotObserved: true };
+        }
+      }
+      const hrefL = (l.href || "").toLowerCase();
+      const ariaL = (aria + " " + (l.label || "")).toLowerCase();
+      if (!l.role) {
+        if (/sign-?in|log-?in|account/.test(hrefL)) l.role = "login";
+        else if (/language|locale|english|español|deutsch|français|português/.test(ariaL)) l.role = "language";
+        else if (/about/.test((l.label || "").toLowerCase())) l.role = "menu";
       }
     }
 

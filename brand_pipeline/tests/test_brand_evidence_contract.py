@@ -171,7 +171,8 @@ FIXTURE_LIBRARY = {
 FIXTURE_COPY = {
     "sectionCopy": {"wordmark": "Fixture", "eyebrow": "SYNTHETIC"},
     "layoutCopy": {"hero-split": {"heading": "A real heading",
-                                  "body": "Real fixture body copy."}},
+                                  "body": "Real fixture body copy.",
+                                  "cta": "Start now"}},
     # the hero split's media slot binds REAL on-disk art (C11: srcless media slots
     # compose placeholder plates, which the smoke check rejects)
     "defaultArt": {"hero": ["art-hero.webp"]},
@@ -1404,6 +1405,86 @@ class BrandEvidenceContractTests(unittest.TestCase):
         rep = self._validate()
         self.assertFalse(any(w.startswith("C22") for w in rep.warnings),
                          rep.warnings)
+
+    # ── C4 join-key integrity + C29 internal-id leak (hubspot-v3 regression
+    #    2026-07: staged author emitted slots without `type: content`, keyed
+    #    layoutCopy by invented names, minted an unconsumed `sourceCopy:`
+    #    indirection, and briefly wrote the lane slug as brand.name — all of
+    #    which validated green and rendered internal ids as display copy) ────
+
+    def test_layoutcopy_without_any_content_slot_fails_c4(self):
+        # strip `type:` from every slot — the coverage check must fail loud,
+        # not silently skip every layout
+        def mut(d):
+            for lay in d["layouts"]:
+                for s in lay.get("slots") or []:
+                    s.pop("type", None)
+        self._mutate_brand(mut)
+        rep = self._validate()
+        self.assertFalse(rep.ok)
+        msg = self._joined(rep.errors)
+        self.assertIn("type: content", msg)
+        self.assertTrue(any(e.startswith("C4") for e in rep.errors))
+
+    def test_orphan_layoutcopy_keys_fail_c4(self):
+        copy_doc = yaml.safe_load(
+            (self.brand_dir / "section-copy.yaml").read_text())
+        copy_doc["layoutCopy"]["heroCamelKey"] = {"heading": "Orphaned"}
+        (self.brand_dir / "section-copy.yaml").write_text(
+            yaml.safe_dump(copy_doc))
+        rep = self._validate()
+        self.assertFalse(rep.ok)
+        msg = self._joined(rep.errors)
+        self.assertIn("heroCamelKey", msg)
+        self.assertIn("NO layout id", msg)
+
+    def test_sourcecopy_indirection_fails_c4(self):
+        self._mutate_brand(lambda d: d["layouts"][0]["slots"][0].__setitem__(
+            "sourceCopy", "layoutCopy.hero.heading"))
+        rep = self._validate()
+        self.assertFalse(rep.ok)
+        msg = self._joined(rep.errors)
+        self.assertIn("sourceCopy", msg)
+        self.assertTrue(any(e.startswith("C4") for e in rep.errors))
+
+    def _clone_fixture_under_lane(self, lane: str) -> Path:
+        lane_dir = self.root / lane
+        lane_dir.mkdir()
+        cloned = lane_dir / "brand"
+        shutil.copytree(self.brand_dir, cloned)
+        return cloned
+
+    def test_lane_slug_as_brand_name_fails_c29(self):
+        cloned = self._clone_fixture_under_lane("acme-v3")
+        doc = yaml.safe_load((cloned / "brand.yaml").read_text())
+        doc["brand"]["name"] = "acme-v3"
+        (cloned / "brand.yaml").write_text(yaml.safe_dump(doc))
+        rep = vbe.validate_brand_dir(cloned, contracts_path=self.contracts,
+                                     smoke=False)
+        self.assertTrue(any(e.startswith("C29") for e in rep.errors),
+                        rep.errors)
+
+    def test_lane_slug_as_wordmark_fails_c29(self):
+        cloned = self._clone_fixture_under_lane("acme-v7")
+        copy_doc = yaml.safe_load((cloned / "section-copy.yaml").read_text())
+        copy_doc["sectionCopy"]["wordmark"] = "acme-v7"
+        (cloned / "section-copy.yaml").write_text(yaml.safe_dump(copy_doc))
+        rep = vbe.validate_brand_dir(cloned, contracts_path=self.contracts,
+                                     smoke=False)
+        self.assertTrue(any(e.startswith("C29") for e in rep.errors),
+                        rep.errors)
+
+    def test_markerless_lane_named_after_brand_passes_c29(self):
+        # runs/remote -> brand "Remote" is legitimate: no version/scratch
+        # marker in the slug means no leak, even though name == slug
+        cloned = self._clone_fixture_under_lane("fixture")
+        doc = yaml.safe_load((cloned / "brand.yaml").read_text())
+        doc["brand"]["name"] = "Fixture"
+        (cloned / "brand.yaml").write_text(yaml.safe_dump(doc))
+        rep = vbe.validate_brand_dir(cloned, contracts_path=self.contracts,
+                                     smoke=False)
+        self.assertFalse(any(e.startswith("C29") for e in rep.errors),
+                         rep.errors)
 
 
 if __name__ == "__main__":

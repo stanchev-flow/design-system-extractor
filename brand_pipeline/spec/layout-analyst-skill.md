@@ -12,11 +12,12 @@ description: >-
 
 # brand-layout-analyst (the evidence-first Layout Analyst)
 
-> This is a **spec** for a skill any agent can invoke, NOT a hardcoded pipeline step.
-> It is the AUTHORING arm of the Brand Extractor: it turns the machine-mined evidence
-> bundle into the canonical brand files. It never touches a live site and never
-> hand-edits rendered projections (`brand.md`, chrome preview HTML — both are
-> regenerated from canonical data).
+> This is the normative authoring spec consumed by the executable
+> `brand_pipeline/author_brand.py` stage. It is the AUTHORING arm of the Brand
+> Extractor: it turns the machine-mined evidence bundle into the canonical brand
+> files through the configured repository model provider. It never touches a live
+> site and never hand-edits rendered projections (`brand.md` and
+> `style-scale.yaml` are regenerated from canonical data).
 >
 > **The contract is explicit: you owe exactly what the validator checks.** A brand
 > folder is not "done" when the YAML looks plausible — it is done when

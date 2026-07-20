@@ -1,0 +1,4659 @@
+schemaVersion: relume-responsive-evidence.v1
+source: Relume Library MCP get_components
+method: Representative TSX inspection; Tailwind breakpoints are recorded as semantic transitions.
+categoryFindings:
+  navbars:
+    componentCount: 32
+    inspectedRepresentatives:
+    - navbar1
+    - navbar4
+    - navbar5
+    - navbar20
+    - navbar24
+    familiesCovered:
+    - standard-nav
+    - overlay-menu
+    - mega-menu
+  footers:
+    componentCount: 17
+    inspectedRepresentatives:
+    - footer1
+    - footer2
+    - footer3
+    - footer4
+    - footer5
+    - footer6
+    - footer7
+    - footer8
+    - footer9
+    - footer10
+    - footer11
+    - footer12
+    - footer13
+    - footer14
+    - footer15
+    - footer16
+    - footer17
+    familiesCovered:
+    - newsletter-columns
+    - contact-columns
+    - compact-centered
+    - inset-columns
+    - link-columns
+    mobileAccordionObserved: false
+    note: Footer link groups remain expanded; columns collapse into stacked or reduced-column grids.
+observations:
+- componentSlug: application-shell1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - logo
+    - navLinks
+    primitives:
+    - button
+    - dropdown-menu
+    - input
+    mechanics:
+    - sticky
+    - scroll-container
+    - breakpoint-state
+    - conditional-motion
+  rules:
+  - axis: display
+    scope: element-2
+    base: flex
+    at: lg
+    value: hidden
+  - axis: order
+    scope: element-6
+    base: default
+    at: lg
+    value: last
+  - axis: display
+    scope: element-7
+    base: hidden
+    at: lg
+    value: block
+  - axis: display
+    scope: element-11
+    base: default
+    at: lg
+    value: hidden
+  - axis: display
+    scope: element-13
+    base: flex
+    at: lg
+    value: hidden
+  - axis: height
+    scope: element-24
+    base: full
+    value: full
+  - axis: overflow
+    scope: element-24
+    base: auto
+    value: auto
+  - axis: mediaCrop
+    scope: element-36
+    base: cover
+    value: cover
+  - axis: overflow
+    scope: element-39
+    base: hidden
+    value: hidden
+  - axis: order
+    scope: element-39
+    base: default
+    at: lg
+    value: '2'
+  - axis: display
+    scope: element-40
+    base: default
+    at: lg
+    value: flex
+  - axis: height
+    scope: element-46
+    base: screen
+    value: screen
+  - axis: breakpointQuery
+    base: mobile
+    at: lg
+    value: desktop
+    query: '(max-width: 991px)'
+  - axis: interaction
+    base: tap-or-click
+    at: lg
+    value: hover-or-click
+  - axis: sticky
+    base: enabled
+    value: enabled
+  - axis: conditionalMotion
+    base: animated-presence
+    value: animated-presence
+- componentSlug: application-shell10
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props: []
+    primitives:
+    - accordion
+    - badge
+    - button
+    - dropdown-menu
+    - input
+    - sidebar
+    mechanics:
+    - accordion
+    - sticky
+    - scroll-container
+    - conditional-motion
+  rules:
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: md
+    value: '[1fr_0.5fr]'
+  - axis: height
+    scope: element-3
+    base: screen
+    value: screen
+  - axis: height
+    scope: element-4
+    base: screen
+    value: screen
+  - axis: display
+    scope: element-5
+    base: hidden
+    at: lg
+    value: flex
+  - axis: height
+    scope: element-5
+    base: auto
+    value: auto
+  - axis: columns
+    scope: element-6
+    base: '1'
+    at: lg
+    value: '[1fr_max-content]'
+  - axis: display
+    scope: element-7
+    base: hidden
+    at: lg
+    value: block
+  - axis: display
+    scope: element-10
+    base: flex
+    at: lg
+    value: hidden
+  - axis: display
+    scope: element-13
+    base: flex
+    at: lg
+    value: hidden
+  - axis: display
+    scope: element-18
+    base: default
+    at: lg
+    value: hidden
+  - axis: height
+    scope: element-27
+    base: full
+    value: full
+  - axis: overflow
+    scope: element-27
+    base: auto
+    value: auto
+  - axis: mediaCrop
+    scope: element-39
+    base: cover
+    value: cover
+  - axis: display
+    scope: element-40
+    base: hidden
+    at: md
+    value: flex
+  - axis: display
+    scope: element-44
+    base: hidden
+    at: lg
+    value: block
+  - axis: minHeight
+    scope: element-61
+    base: screen
+    value: screen
+  - axis: sticky
+    base: enabled
+    value: enabled
+  - axis: conditionalMotion
+    base: animated-presence
+    value: animated-presence
+- componentSlug: banner10
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - headingEnd
+    - headingStart
+    - link
+    primitives: []
+    mechanics: []
+  rules:
+  - axis: responsiveInvariant
+    base: no-breakpoint-transition-observed
+    value: no-breakpoint-transition-observed
+- componentSlug: blog-post-header1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - author
+    - breadcrumbs
+    - heading
+    - image
+    - socialMediaLinks
+    primitives:
+    - breadcrumb
+    mechanics: []
+  rules:
+  - axis: flexDirection
+    scope: element-5
+    base: col
+    at: sm
+    value: row
+  - axis: overflow
+    scope: element-7
+    base: hidden
+    value: hidden
+  - axis: mediaCrop
+    scope: element-8
+    base: cover
+    value: cover
+  - axis: overflow
+    scope: element-16
+    base: hidden
+    value: hidden
+  - axis: mediaAspect
+    scope: element-17
+    base: '[2]'
+    value: '[2]'
+  - axis: mediaCrop
+    scope: element-17
+    base: cover
+    value: cover
+- componentSlug: blog-post-header3
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - author
+    - breadcrumbs
+    - heading
+    - image
+    - socialMediaLinks
+    primitives:
+    - breadcrumb
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-2
+    base: default
+    at: md
+    value: '[.75fr_1fr]'
+  - axis: overflow
+    scope: element-17
+    base: hidden
+    value: hidden
+  - axis: mediaAspect
+    scope: element-18
+    base: '[3/2]'
+    value: '[3/2]'
+  - axis: mediaCrop
+    scope: element-18
+    base: cover
+    value: cover
+- componentSlug: blog-post-header5
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - author
+    - category
+    - heading
+    - image
+    primitives: []
+    mechanics: []
+  rules:
+  - axis: overflow
+    scope: element-8
+    base: hidden
+    value: hidden
+  - axis: mediaCrop
+    scope: element-9
+    base: cover
+    value: cover
+  - axis: mediaCrop
+    scope: element-17
+    base: cover
+    value: cover
+- componentSlug: blog1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - tabs
+    - tagline
+    primitives:
+    - tabs
+    mechanics:
+    - tabs
+  rules:
+  - axis: overflow
+    scope: element-8
+    base: scroll
+    at: md
+    value: hidden
+  - axis: columns
+    scope: element-11
+    base: '1'
+    at: md
+    value: '2'
+    atLg: '3'
+  - axis: overflow
+    scope: element-13
+    base: hidden
+    value: hidden
+  - axis: mediaAspect
+    scope: element-14
+    base: '[3/2]'
+    value: '[3/2]'
+  - axis: mediaCrop
+    scope: element-14
+    base: cover
+    value: cover
+  - axis: overflow
+    scope: element-19
+    base: hidden
+    value: hidden
+  - axis: mediaCrop
+    scope: element-20
+    base: cover
+    value: cover
+- componentSlug: blog27
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - selects
+    - tagline
+    primitives:
+    - select
+    mechanics:
+    - conditional-motion
+  rules:
+  - axis: overflow
+    scope: element-12
+    base: hidden
+    value: hidden
+  - axis: mediaAspect
+    scope: element-13
+    base: video
+    value: video
+  - axis: mediaCrop
+    scope: element-13
+    base: cover
+    value: cover
+  - axis: overflow
+    scope: element-18
+    base: hidden
+    value: hidden
+  - axis: mediaCrop
+    scope: element-19
+    base: cover
+    value: cover
+  - axis: conditionalMotion
+    base: animated-presence
+    value: animated-presence
+- componentSlug: blog33
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - blogPosts
+    - button
+    - description
+    - heading
+    - tagline
+    primitives:
+    - button
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-7
+    base: '1'
+    at: md
+    value: '2'
+    atLg: '3'
+  - axis: overflow
+    scope: element-9
+    base: hidden
+    value: hidden
+  - axis: mediaAspect
+    scope: element-10
+    base: '[3/2]'
+    value: '[3/2]'
+  - axis: mediaCrop
+    scope: element-10
+    base: cover
+    value: cover
+  - axis: overflow
+    scope: element-15
+    base: hidden
+    value: hidden
+  - axis: mediaCrop
+    scope: element-16
+    base: cover
+    value: cover
+- componentSlug: blog66
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - blogPosts
+    - button
+    - description
+    - heading
+    - tagline
+    primitives:
+    - badge
+    - button
+    - carousel
+    mechanics:
+    - carousel
+  rules:
+  - axis: overflow
+    scope: element-0
+    base: hidden
+    value: hidden
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: md
+    value: '[1fr_max-content]'
+  - axis: display
+    scope: element-8
+    base: hidden
+    at: md
+    value: flex
+  - axis: itemBasis
+    scope: element-10
+    base: '[95%]'
+    at: sm
+    value: 4/5
+    atMd: 1/3
+  - axis: mediaAspect
+    scope: element-13
+    base: '[3/2]'
+    value: '[3/2]'
+  - axis: mediaCrop
+    scope: element-13
+    base: cover
+    value: cover
+  - axis: display
+    scope: element-26
+    base: flex
+    at: md
+    value: hidden
+  - axis: carouselInteraction
+    base: swipe-or-controls
+    at: md
+    value: drag-or-controls
+- componentSlug: card-header1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    - options
+    primitives:
+    - button
+    - dropdown-menu
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-0
+    base: '1'
+    at: md
+    value: '[1fr_max-content]'
+- componentSlug: career1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - jobDepartments
+    - tagline
+    primitives:
+    - accordion
+    - button
+    mechanics:
+    - accordion
+  rules:
+  - axis: display
+    scope: element-10
+    base: default
+    at: sm
+    value: flex
+- componentSlug: career10
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - positions
+    - tagline
+    primitives:
+    - badge
+    - button
+    mechanics: []
+  rules:
+  - axis: responsiveInvariant
+    base: no-breakpoint-transition-observed
+    value: no-breakpoint-transition-observed
+- componentSlug: career12
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - positions
+    - tagline
+    primitives:
+    - badge
+    - button
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-2
+    base: default
+    at: md
+    value: '2'
+    atLg: '[0.75fr_1fr]'
+- componentSlug: career19
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - tabs
+    - tagline
+    primitives:
+    - badge
+    - button
+    - card
+    - tabs
+    mechanics:
+    - tabs
+    - scroll-container
+  rules:
+  - axis: overflow
+    scope: element-7
+    base: auto
+    at: md
+    value: hidden
+- componentSlug: career26
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - image
+    - positions
+    - tagline
+    primitives:
+    - badge
+    - button
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-6
+    base: default
+    at: md
+    value: '2'
+  - axis: mediaAspect
+    scope: element-7
+    base: square
+    value: square
+  - axis: mediaCrop
+    scope: element-8
+    base: cover
+    value: cover
+- componentSlug: comparison1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - comparisonProducts
+    - description
+    - features
+    - heading
+    - tagline
+    primitives:
+    - button
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-7
+    base: '2'
+    at: md
+    value: '[1.5fr_1fr_1fr]'
+  - axis: display
+    scope: element-8
+    base: hidden
+    at: md
+    value: flex
+  - axis: height
+    scope: element-8
+    base: full
+    value: full
+  - axis: columns
+    scope: element-14
+    base: '2'
+    at: md
+    value: '[1.5fr_1fr_1fr]'
+- componentSlug: contact-modal1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - button
+    - description
+    - heading
+    primitives:
+    - button
+    - checkbox
+    - input
+    - label
+    - sheet
+    - textarea
+    mechanics:
+    - scroll-container
+    - breakpoint-state
+  rules:
+  - axis: height
+    scope: element-3
+    base: screen
+    value: screen
+  - axis: overflow
+    scope: element-14
+    base: auto
+    value: auto
+  - axis: breakpointQuery
+    base: mobile
+    at: lg
+    value: desktop
+    query: '(max-width: 767px)'
+- componentSlug: contact1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - button
+    - description
+    - heading
+    - tagline
+    primitives:
+    - button
+    - checkbox
+    - input
+    - label
+    - textarea
+    mechanics:
+    - scroll-container
+  rules:
+  - axis: overflow
+    scope: element-13
+    base: auto
+    value: auto
+- componentSlug: contact10
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - button
+    - description
+    - heading
+    - image
+    - tagline
+    primitives:
+    - button
+    - checkbox
+    - input
+    - label
+    - textarea
+    mechanics:
+    - scroll-container
+  rules:
+  - axis: columns
+    scope: element-1
+    base: '1'
+    at: md
+    value: '2'
+  - axis: mediaCrop
+    scope: element-2
+    base: cover
+    value: cover
+  - axis: overflow
+    scope: element-14
+    base: auto
+    value: auto
+- componentSlug: contact13
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - contacts
+    - description
+    - heading
+    - image
+    - tagline
+    primitives:
+    - button
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-6
+    base: '1'
+    at: sm
+    value: '2'
+    atLg: '[0.5fr_1fr]'
+  - axis: mediaCrop
+    scope: element-13
+    base: cover
+    value: cover
+- componentSlug: contact29
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - tabs
+    - tagline
+    primitives:
+    - button
+    - tabs
+    mechanics:
+    - tabs
+  rules:
+  - axis: columns
+    scope: element-6
+    base: '1'
+    at: md
+    value: '[.5fr_1fr]'
+  - axis: height
+    scope: element-7
+    base: full
+    value: full
+  - axis: mediaCrop
+    scope: element-16
+    base: cover
+    value: cover
+- componentSlug: content1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - children
+    - heading
+    - image
+    primitives: []
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: md
+    value: '2'
+  - axis: mediaCrop
+    scope: element-5
+    base: cover
+    value: cover
+- componentSlug: content10
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - children
+    - heading
+    - image
+    - video
+    primitives:
+    - dialog
+    mechanics:
+    - dialog
+  rules:
+  - axis: overflow
+    scope: element-6
+    base: hidden
+    value: hidden
+  - axis: mediaAspect
+    scope: element-7
+    base: video
+    value: video
+  - axis: mediaCrop
+    scope: element-7
+    base: cover
+    value: cover
+  - axis: dialogInteraction
+    base: tap-trigger
+    at: lg
+    value: click-trigger
+- componentSlug: content17
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - children
+    - heading
+    primitives: []
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: md
+    value: '[1fr_1.5fr]'
+- componentSlug: cookie1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props: []
+    primitives:
+    - button
+    - dialog
+    - label
+    - switch
+    mechanics:
+    - dialog
+    - conditional-motion
+  rules:
+  - axis: height
+    scope: element-0
+    base: screen
+    value: screen
+  - axis: overflow
+    scope: element-4
+    base: scroll
+    value: scroll
+  - axis: flexDirection
+    scope: element-25
+    base: col
+    at: lg
+    value: row
+  - axis: overflow
+    scope: element-25
+    base: hidden
+    value: hidden
+  - axis: dialogInteraction
+    base: tap-trigger
+    at: lg
+    value: click-trigger
+  - axis: conditionalMotion
+    base: animated-presence
+    value: animated-presence
+- componentSlug: cta1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    - image
+    primitives:
+    - button
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: lg
+    value: '2'
+  - axis: mediaCrop
+    scope: element-6
+    base: cover
+    value: cover
+- componentSlug: cta10
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - button
+    - description
+    - heading
+    - image
+    - inputPlaceholder
+    - termsAndConditions
+    primitives:
+    - button
+    - input
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: lg
+    value: '[1fr_max-content]'
+  - axis: columns
+    scope: element-6
+    base: '1'
+    at: sm
+    value: '[1fr_max-content]'
+  - axis: mediaCrop
+    scope: element-8
+    base: cover
+    value: cover
+- componentSlug: cta13
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    primitives:
+    - button
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-1
+    base: default
+    at: md
+    value: '2'
+- componentSlug: cta19
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    primitives:
+    - button
+    mechanics: []
+  rules:
+  - axis: responsiveInvariant
+    base: no-breakpoint-transition-observed
+    value: no-breakpoint-transition-observed
+- componentSlug: cta67
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - button
+    - description
+    - heading
+    - images
+    primitives:
+    - button
+    mechanics:
+    - sticky
+  rules:
+  - axis: mediaCrop
+    scope: element-1
+    base: cover
+    value: cover
+  - axis: height
+    scope: element-3
+    base: '[calc(100vh-8.75rem)]'
+    at: md
+    value: '[calc(100vh-10.25rem)]'
+    atLg: auto
+  - axis: overflow
+    scope: element-9
+    base: hidden
+    value: hidden
+  - axis: sticky
+    base: enabled
+    value: enabled
+- componentSlug: description-list1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - listItems
+    - title
+    primitives: []
+    mechanics: []
+  rules:
+  - axis: responsiveInvariant
+    base: no-breakpoint-transition-observed
+    value: no-breakpoint-transition-observed
+- componentSlug: event-header1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - event
+    - heading
+    - tabs
+    - tagline
+    primitives:
+    - badge
+    - button
+    - card
+    - tabs
+    mechanics:
+    - tabs
+    - scroll-container
+  rules:
+  - axis: columns
+    scope: element-6
+    base: '1'
+    at: lg
+    value: '2'
+  - axis: overflow
+    scope: element-8
+    base: hidden
+    value: hidden
+  - axis: mediaAspect
+    scope: element-9
+    base: '[3/2]'
+    value: '[3/2]'
+  - axis: mediaCrop
+    scope: element-9
+    base: cover
+    value: cover
+  - axis: overflow
+    scope: element-19
+    base: auto
+    at: md
+    value: hidden
+  - axis: columns
+    scope: element-22
+    base: '1'
+    at: md
+    value: '[max-content_1fr_max-content]'
+  - axis: overflow
+    scope: element-22
+    base: hidden
+    value: hidden
+- componentSlug: event-header2
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - event
+    - featuredEvents
+    - heading
+    - tagline
+    primitives:
+    - badge
+    - button
+    - card
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-7
+    base: '1'
+    at: lg
+    value: '2'
+  - axis: mediaAspect
+    scope: element-8
+    base: '[4/3]'
+    value: '[4/3]'
+  - axis: mediaCrop
+    scope: element-9
+    base: cover
+    value: cover
+  - axis: columns
+    scope: element-25
+    base: default
+    at: md
+    value: '2'
+    atLg: '3'
+  - axis: mediaAspect
+    scope: element-27
+    base: '[3/2]'
+    value: '[3/2]'
+  - axis: mediaCrop
+    scope: element-28
+    base: cover
+    value: cover
+- componentSlug: event-header3
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - event
+    - featuredEvents
+    - heading
+    - tagline
+    primitives:
+    - badge
+    - button
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-6
+    base: '1'
+    at: lg
+    value: '2'
+  - axis: mediaAspect
+    scope: element-7
+    base: '[3/2]'
+    value: '[3/2]'
+  - axis: mediaCrop
+    scope: element-8
+    base: cover
+    value: cover
+  - axis: flexDirection
+    scope: element-20
+    base: col
+    at: md
+    value: row
+  - axis: overflow
+    scope: element-20
+    base: hidden
+    value: hidden
+  - axis: itemBasis
+    scope: element-21
+    base: 2/5
+    value: 2/5
+  - axis: overflow
+    scope: element-21
+    base: hidden
+    value: hidden
+  - axis: mediaAspect
+    scope: element-22
+    base: '[3/2]'
+    at: md
+    value: square
+  - axis: mediaCrop
+    scope: element-22
+    base: cover
+    value: cover
+- componentSlug: event-item-header1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - amountLeft
+    - backLink
+    - button
+    - countdownValues
+    - date
+    - description
+    - heading
+    - image
+    - inputPlaceholder
+    - termsAndConditions
+    primitives:
+    - badge
+    - button
+    - card
+    - input
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: lg
+    value: '2'
+  - axis: display
+    scope: element-11
+    base: hidden
+    at: sm
+    value: block
+  - axis: display
+    scope: element-14
+    base: hidden
+    at: sm
+    value: block
+  - axis: display
+    scope: element-17
+    base: hidden
+    at: sm
+    value: block
+  - axis: columns
+    scope: element-21
+    base: '1'
+    at: sm
+    value: '[1fr_max-content]'
+  - axis: mediaAspect
+    scope: element-23
+    base: square
+    value: square
+  - axis: mediaCrop
+    scope: element-24
+    base: cover
+    value: cover
+- componentSlug: event-item-header10
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - breadcrumbs
+    - buttons
+    - date
+    - description
+    - heading
+    - image
+    - location
+    - speaker
+    - type
+    primitives:
+    - breadcrumb
+    - button
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: md
+    value: '[1.5fr_1fr]'
+  - axis: mediaCrop
+    scope: element-16
+    base: cover
+    value: cover
+- componentSlug: event-item-header11
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - breadcrumbs
+    - button
+    - date
+    - description
+    - heading
+    - location
+    - speakers
+    primitives:
+    - breadcrumb
+    - button
+    - card
+    - checkbox
+    - input
+    - label
+    - select
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: lg
+    value: '2'
+  - axis: columns
+    scope: element-21
+    base: '1'
+    at: md
+    value: '2'
+- componentSlug: event-item-header2
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - amountLeft
+    - button
+    - countdownValues
+    - date
+    - description
+    - heading
+    - inputPlaceholder
+    - tagline
+    - termsAndConditions
+    primitives:
+    - badge
+    - button
+    - card
+    - input
+    mechanics: []
+  rules:
+  - axis: display
+    scope: element-10
+    base: hidden
+    at: sm
+    value: block
+  - axis: display
+    scope: element-13
+    base: hidden
+    at: sm
+    value: block
+  - axis: display
+    scope: element-16
+    base: hidden
+    at: sm
+    value: block
+  - axis: columns
+    scope: element-20
+    base: '1'
+    at: sm
+    value: '[1fr_max-content]'
+- componentSlug: event1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - tabs
+    - tagline
+    primitives:
+    - badge
+    - button
+    - card
+    - tabs
+    mechanics:
+    - tabs
+    - scroll-container
+  rules:
+  - axis: overflow
+    scope: element-8
+    base: auto
+    at: md
+    value: hidden
+  - axis: columns
+    scope: element-11
+    base: '1'
+    at: md
+    value: '[max-content_1fr_max-content]'
+  - axis: overflow
+    scope: element-11
+    base: hidden
+    value: hidden
+- componentSlug: event10
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - button
+    - description
+    - featuredEvents
+    - heading
+    - tagline
+    primitives:
+    - badge
+    - button
+    - card
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: md
+    value: '[1fr_max-content]'
+  - axis: display
+    scope: element-7
+    base: hidden
+    at: md
+    value: flex
+  - axis: columns
+    scope: element-8
+    base: '1'
+    at: md
+    value: '2'
+    atLg: '3'
+  - axis: display
+    scope: element-9
+    base: flex
+    at: md
+    value: hidden
+  - axis: mediaAspect
+    scope: element-11
+    base: '[3/2]'
+    value: '[3/2]'
+  - axis: mediaCrop
+    scope: element-12
+    base: cover
+    value: cover
+- componentSlug: event15
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - button
+    - description
+    - featuredEvents
+    - heading
+    - tagline
+    primitives:
+    - badge
+    - button
+    - carousel
+    mechanics:
+    - carousel
+  rules:
+  - axis: overflow
+    scope: element-0
+    base: hidden
+    value: hidden
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: md
+    value: '[1fr_max-content]'
+  - axis: display
+    scope: element-7
+    base: hidden
+    at: md
+    value: flex
+  - axis: itemBasis
+    scope: element-9
+    base: '[95%]'
+    at: sm
+    value: 4/5
+    atMd: 1/2
+    atLg: 1/3
+  - axis: display
+    scope: element-15
+    base: flex
+    at: md
+    value: hidden
+  - axis: mediaAspect
+    scope: element-17
+    base: '[3/2]'
+    value: '[3/2]'
+  - axis: mediaCrop
+    scope: element-18
+    base: cover
+    value: cover
+  - axis: carouselInteraction
+    base: swipe-or-controls
+    at: md
+    value: drag-or-controls
+- componentSlug: faq1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - button
+    - description
+    - footerDescription
+    - footerHeading
+    - heading
+    - questions
+    primitives:
+    - accordion
+    - button
+    mechanics:
+    - accordion
+  rules:
+  - axis: responsiveInvariant
+    base: no-breakpoint-transition-observed
+    value: no-breakpoint-transition-observed
+- componentSlug: faq12
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - button
+    - description
+    - footerDescription
+    - footerHeading
+    - heading
+    - questions
+    primitives:
+    - button
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-5
+    base: '1'
+    at: md
+    value: '2'
+- componentSlug: faq7
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - button
+    - description
+    - footerDescription
+    - footerHeading
+    - heading
+    - questions
+    primitives:
+    - button
+    mechanics: []
+  rules:
+  - axis: responsiveInvariant
+    base: no-breakpoint-transition-observed
+    value: no-breakpoint-transition-observed
+- componentSlug: filters1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props: []
+    primitives:
+    - accordion
+    - badge
+    - button
+    - checkbox
+    - dropdown-menu
+    - input
+    - label
+    - radio-group
+    - select
+    - sheet
+    - slider
+    - switch
+    mechanics:
+    - accordion
+    - sticky
+    - breakpoint-state
+  rules:
+  - axis: columns
+    scope: element-5
+    base: '1'
+    at: lg
+    value: '[max-content_1fr]'
+  - axis: display
+    scope: element-6
+    base: default
+    at: lg
+    value: hidden
+  - axis: height
+    scope: element-10
+    base: screen
+    value: screen
+  - axis: height
+    scope: element-19
+    base: auto
+    value: auto
+  - axis: display
+    scope: element-20
+    base: hidden
+    at: lg
+    value: block
+  - axis: minHeight
+    scope: element-33
+    base: '[200vh]'
+    value: '[200vh]'
+  - axis: breakpointQuery
+    base: mobile
+    at: lg
+    value: desktop
+    query: '(max-width: 991px)'
+  - axis: sticky
+    base: enabled
+    value: enabled
+- componentSlug: filters3
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props: []
+    primitives:
+    - badge
+    - button
+    - checkbox
+    - dropdown-menu
+    - input
+    - label
+    - radio-group
+    - select
+    - sheet
+    - slider
+    - switch
+    mechanics:
+    - sticky
+  rules:
+  - axis: overflow
+    scope: element-11
+    base: scroll
+    value: scroll
+  - axis: minHeight
+    scope: element-24
+    base: '[200vh]'
+    value: '[200vh]'
+  - axis: sticky
+    base: enabled
+    value: enabled
+- componentSlug: footer1
+  category: footers
+  anatomy:
+    primary:
+    - logo
+    - newsletter
+    - newsletter-consent
+    - link-columns
+    secondary:
+    - divider
+    - copyright
+    - legal-links
+    optional:
+    - social-links-inside-column
+  rules:
+  - axis: primaryColumns
+    base: 1
+    at: lg
+    value: newsletter-plus-link-grid
+  - axis: newsletterForm
+    base: stacked
+    at: sm
+    value: input-plus-button
+  - axis: linkColumns
+    base: 1
+    at: sm
+    value: 3
+  - axis: legalRowOrder
+    base: legal-before-copyright
+    at: md
+    value: copyright-left-legal-right
+  - axis: legalLinksLayout
+    base: vertical
+    at: md
+    value: horizontal
+  - axis: columnDisclosure
+    base: expanded-static
+    value: expanded-static
+- componentSlug: footer12
+  category: footers
+  anatomy:
+    primary:
+    - heading
+    - actions
+    - link-columns
+    - social-links
+    secondary:
+    - divider
+    - copyright
+    - legal-links
+  rules:
+  - axis: actionHeader
+    base: stacked
+    at: lg
+    value: copy-left-actions-right
+  - axis: linkColumns
+    base: 1
+    at: sm
+    value: 3
+    atLg: 6
+  - axis: socialPlacement
+    base: below-links
+    at: sm
+    value: beside-logo-row
+  - axis: legalLinksLayout
+    base: vertical
+    at: md
+    value: horizontal
+  - axis: columnDisclosure
+    base: expanded-static
+    value: expanded-static
+- componentSlug: footer13
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - columnLinks
+    - description
+    - footerLinks
+    - footerText
+    - heading
+    - logo
+    - socialMediaLinks
+    primitives:
+    - button
+    - card
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: lg
+    value: '[1fr_0.5fr]'
+  - axis: columns
+    scope: element-10
+    base: '1'
+    at: sm
+    value: '2'
+  - axis: flexDirection
+    scope: element-13
+    base: col-reverse
+    at: md
+    value: row
+- componentSlug: footer16
+  category: footers
+  anatomy:
+    primary:
+    - logo
+    - newsletter
+    - newsletter-consent
+    - link-columns
+    brandRow:
+    - company-art
+    secondary:
+    - divider
+    - copyright
+    - legal-links
+  rules:
+  - axis: primaryColumns
+    base: 1
+    at: lg
+    value: newsletter-plus-link-grid
+  - axis: newsletterForm
+    base: stacked
+    at: sm
+    value: input-plus-button
+  - axis: linkColumns
+    base: 1
+    at: sm
+    value: 3
+  - axis: companyArt
+    base: full-row
+    value: full-row
+  - axis: legalRowOrder
+    base: legal-before-copyright
+    at: md
+    value: copyright-left-legal-right
+  - axis: legalLinksLayout
+    base: vertical
+    at: md
+    value: horizontal
+  - axis: columnDisclosure
+    base: expanded-static
+    value: expanded-static
+- componentSlug: footer3
+  category: footers
+  anatomy:
+    primary:
+    - logo
+    - address
+    - contact
+    - social-links
+    - link-columns
+    secondary:
+    - divider
+    - copyright
+    - legal-links
+  rules:
+  - axis: primaryColumns
+    base: 1
+    at: lg
+    value: contact-plus-links
+  - axis: linkColumns
+    base: 1
+    at: md
+    value: 2
+  - axis: legalRowOrder
+    base: legal-before-copyright
+    at: md
+    value: copyright-left-legal-right
+  - axis: legalLinksLayout
+    base: vertical
+    at: md
+    value: horizontal
+  - axis: columnDisclosure
+    base: expanded-static
+    value: expanded-static
+- componentSlug: footer4
+  category: footers
+  anatomy:
+    primary:
+    - logo
+    - inline-links
+    - social-links
+    secondary:
+    - divider
+    - copyright
+    - legal-links
+  rules:
+  - axis: primaryColumns
+    base: centered-stack
+    at: lg
+    value: logo-links-social-three-region
+  - axis: navigationLinks
+    base: vertical
+    at: md
+    value: horizontal
+  - axis: legalRow
+    base: centered-stack
+    at: md
+    value: centered-inline
+  - axis: columnDisclosure
+    base: expanded-static
+    value: expanded-static
+- componentSlug: form10
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    - plans
+    primitives:
+    - button
+    - input
+    - label
+    - radio-group
+    - select
+    - tooltip
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-1
+    base: '1'
+    at: sm
+    value: '[1fr_max-content]'
+  - axis: columns
+    scope: element-5
+    base: default
+    at: md
+    value: '[0.5fr_1fr]'
+    atLg: '[0.75fr_1fr]'
+  - axis: columns
+    scope: element-8
+    base: default
+    at: md
+    value: '[0.5fr_1fr]'
+    atLg: '[0.75fr_1fr]'
+  - axis: columns
+    scope: element-16
+    base: default
+    at: md
+    value: '[0.5fr_1fr]'
+    atLg: '[0.75fr_1fr]'
+  - axis: columns
+    scope: element-19
+    base: default
+    at: md
+    value: '[0.5fr_1fr]'
+    atLg: '[0.75fr_1fr]'
+  - axis: columns
+    scope: element-26
+    base: default
+    at: md
+    value: '[0.5fr_1fr]'
+    atLg: '[0.75fr_1fr]'
+  - axis: columns
+    scope: element-30
+    base: default
+    at: md
+    value: '[0.5fr_1fr]'
+    atLg: '[0.75fr_1fr]'
+  - axis: columns
+    scope: element-33
+    base: default
+    at: md
+    value: '[0.5fr_1fr]'
+    atLg: '[0.75fr_1fr]'
+  - axis: columns
+    scope: element-36
+    base: default
+    at: md
+    value: '[0.5fr_1fr]'
+    atLg: '[0.75fr_1fr]'
+  - axis: columns
+    scope: element-39
+    base: default
+    at: md
+    value: '[0.5fr_1fr]'
+    atLg: '[0.75fr_1fr]'
+  - axis: columns
+    scope: element-42
+    base: default
+    at: md
+    value: '[0.5fr_1fr]'
+    atLg: '[0.75fr_1fr]'
+  - axis: columns
+    scope: element-45
+    base: '1'
+    at: md
+    value: '[.75fr_1fr]'
+- componentSlug: form13
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    primitives:
+    - button
+    - checkbox
+    - label
+    - radio-group
+    - switch
+    mechanics: []
+  rules:
+  - axis: responsiveInvariant
+    base: no-breakpoint-transition-observed
+    value: no-breakpoint-transition-observed
+- componentSlug: gallery1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - images
+    primitives: []
+    mechanics: []
+  rules:
+  - axis: overflow
+    scope: element-8
+    base: hidden
+    value: hidden
+  - axis: mediaAspect
+    scope: element-9
+    base: video
+    value: video
+  - axis: mediaCrop
+    scope: element-9
+    base: cover
+    value: cover
+- componentSlug: gallery10
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - images
+    primitives: []
+    mechanics: []
+  rules:
+  - axis: mediaCrop
+    scope: element-7
+    base: cover
+    value: cover
+- componentSlug: gallery13
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - images
+    primitives:
+    - carousel
+    mechanics:
+    - carousel
+  rules:
+  - axis: overflow
+    scope: element-4
+    base: hidden
+    value: hidden
+  - axis: height
+    scope: element-6
+    base: dvh
+    value: dvh
+  - axis: mediaCrop
+    scope: element-7
+    base: cover
+    value: cover
+  - axis: display
+    scope: element-8
+    base: hidden
+    at: lg
+    value: flex
+  - axis: display
+    scope: element-9
+    base: hidden
+    at: lg
+    value: flex
+  - axis: carouselInteraction
+    base: swipe-or-controls
+    at: md
+    value: drag-or-controls
+- componentSlug: gallery24
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - images
+    primitives: []
+    mechanics:
+    - sticky
+  rules:
+  - axis: height
+    scope: element-4
+    base: '[400vh]'
+    value: '[400vh]'
+  - axis: height
+    scope: element-5
+    base: screen
+    value: screen
+  - axis: overflow
+    scope: element-5
+    base: hidden
+    value: hidden
+  - axis: overflow
+    scope: element-8
+    base: hidden
+    value: hidden
+  - axis: height
+    scope: element-9
+    base: '[80vh]'
+    value: '[80vh]'
+  - axis: mediaCrop
+    scope: element-9
+    base: cover
+    value: cover
+  - axis: sticky
+    base: enabled
+    value: enabled
+- componentSlug: gallery25
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - images
+    primitives:
+    - carousel
+    mechanics:
+    - carousel
+  rules:
+  - axis: overflow
+    scope: element-0
+    base: hidden
+    value: hidden
+  - axis: columns
+    scope: element-1
+    base: '1'
+    at: lg
+    value: '2'
+  - axis: overflow
+    scope: element-6
+    base: hidden
+    value: hidden
+  - axis: itemBasis
+    scope: element-8
+    base: '[95%]'
+    at: sm
+    value: 4/5
+    atMd: 1/2
+    atLg: 4/5
+  - axis: mediaCrop
+    scope: element-9
+    base: cover
+    value: cover
+  - axis: carouselInteraction
+    base: swipe-or-controls
+    at: md
+    value: drag-or-controls
+- componentSlug: grid-list10
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - courses
+    - description
+    - heading
+    - options
+    primitives:
+    - button
+    - dialog
+    - dropdown-menu
+    mechanics:
+    - dialog
+  rules:
+  - axis: columns
+    scope: element-0
+    base: '1'
+    at: md
+    value: '[1fr_max-content]'
+  - axis: columns
+    scope: element-7
+    base: '1'
+    at: md
+    value: '2'
+    atLg: '3'
+  - axis: mediaAspect
+    scope: element-10
+    base: video
+    value: video
+  - axis: mediaCrop
+    scope: element-10
+    base: cover
+    value: cover
+  - axis: dialogInteraction
+    base: tap-trigger
+    at: lg
+    value: click-trigger
+- componentSlug: grid-list6
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - inputIcon
+    - properties
+    - selectItems
+    - selectPlaceholder
+    primitives:
+    - button
+    - input
+    - select
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-0
+    base: '1'
+    at: md
+    value: '[1fr_max-content]'
+  - axis: columns
+    scope: element-7
+    base: '1'
+    at: lg
+    value: '2'
+  - axis: columns
+    scope: element-8
+    base: '1'
+    at: md
+    value: '[0.5fr_1fr]'
+  - axis: overflow
+    scope: element-9
+    base: hidden
+    value: hidden
+  - axis: mediaAspect
+    scope: element-10
+    base: square
+    value: square
+  - axis: mediaCrop
+    scope: element-10
+    base: cover
+    value: cover
+- componentSlug: header1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    - image
+    primitives:
+    - button
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: lg
+    value: '2'
+  - axis: mediaCrop
+    scope: element-6
+    base: cover
+    value: cover
+- componentSlug: header10
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - button
+    - description
+    - heading
+    - image
+    - inputPlaceholder
+    - termsAndConditions
+    primitives:
+    - button
+    - input
+    mechanics: []
+  rules:
+  - axis: height
+    scope: element-0
+    base: svh
+    value: svh
+  - axis: minHeight
+    scope: element-0
+    base: svh
+    value: svh
+  - axis: mediaCrop
+    scope: element-3
+    base: cover
+    value: cover
+  - axis: columns
+    scope: element-6
+    base: default
+    at: md
+    value: '2'
+  - axis: columns
+    scope: element-10
+    base: '1'
+    at: sm
+    value: '[1fr_max-content]'
+- componentSlug: header100
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    - video
+    - videoType
+    primitives:
+    - button
+    - card
+    mechanics: []
+  rules:
+  - axis: mediaAspect
+    scope: element-8
+    base: video
+    value: video
+  - axis: mediaCrop
+    scope: element-8
+    base: cover
+    value: cover
+- componentSlug: header102
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - carouselDescription
+    - carouselHeading
+    - description
+    - heading
+    - images
+    primitives:
+    - button
+    - carousel
+    mechanics:
+    - carousel
+    - scroll-container
+  rules:
+  - axis: columns
+    scope: element-0
+    base: '1'
+    at: lg
+    value: '[50%_50%]'
+  - axis: overflow
+    scope: element-0
+    base: hidden
+    at: sm
+    value: auto
+  - axis: minHeight
+    scope: element-5
+    base: screen
+    value: screen
+  - axis: height
+    scope: element-6
+    base: full
+    value: full
+  - axis: overflow
+    scope: element-6
+    base: hidden
+    value: hidden
+  - axis: height
+    scope: element-9
+    base: screen
+    value: screen
+  - axis: mediaCrop
+    scope: element-11
+    base: cover
+    value: cover
+  - axis: carouselInteraction
+    base: swipe-or-controls
+    at: md
+    value: drag-or-controls
+- componentSlug: header103
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - defaultTabValue
+    - tabs
+    primitives:
+    - button
+    - tabs
+    mechanics:
+    - tabs
+    - conditional-motion
+  rules:
+  - axis: minHeight
+    scope: element-0
+    base: screen
+    value: screen
+  - axis: minHeight
+    scope: element-1
+    base: screen
+    value: screen
+  - axis: overflow
+    scope: element-1
+    base: visible
+    value: visible
+  - axis: height
+    scope: element-5
+    base: full
+    value: full
+  - axis: height
+    scope: element-6
+    base: screen
+    value: screen
+  - axis: mediaCrop
+    scope: element-14
+    base: cover
+    value: cover
+  - axis: conditionalMotion
+    base: animated-presence
+    value: animated-presence
+- componentSlug: header104
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - headers
+    primitives:
+    - button
+    mechanics: []
+  rules:
+  - axis: overflow
+    scope: element-1
+    base: hidden
+    value: hidden
+- componentSlug: header155
+  category: hero-header-sections
+  anatomy:
+    content:
+    - heading
+    - description
+    - actions
+    media:
+    - video-thumbnail
+    - play-control
+    - dialog
+    mechanics:
+    - scroll-stage
+    - sticky-viewport
+  rules:
+  - axis: height
+    base: 200vh-scroll-stage
+    value: 200vh-scroll-stage
+  - axis: sticky
+    base: sticky-top-min-screen
+    value: sticky-top-min-screen
+  - axis: motion
+    base: content-translates-0-to-negative-100-percent
+    value: scroll-coupled
+  - axis: mediaLayer
+    base: absolute-full-stage
+    value: absolute-full-stage
+  - axis: mediaCrop
+    base: aspect-video-object-cover
+    value: aspect-video-object-cover
+  - axis: dialogWidth
+    base: container
+    at: md
+    value: 738px
+    atLg: 940px
+- componentSlug: header44
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    - tagline
+    primitives:
+    - button
+    mechanics: []
+  rules:
+  - axis: responsiveInvariant
+    base: no-breakpoint-transition-observed
+    value: no-breakpoint-transition-observed
+- componentSlug: header47
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    - tagline
+    primitives:
+    - button
+    mechanics: []
+  rules:
+  - axis: flexDirection
+    scope: element-2
+    base: col
+    at: md
+    value: row
+- componentSlug: header50
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    - image
+    - tagline
+    primitives:
+    - button
+    mechanics: []
+  rules:
+  - axis: mediaCrop
+    scope: element-8
+    base: cover
+    value: cover
+- componentSlug: layout100
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - image
+    - subHeadings
+    - video
+    primitives:
+    - dialog
+    mechanics:
+    - dialog
+  rules:
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: md
+    value: '2'
+  - axis: columns
+    scope: element-5
+    base: '1'
+    at: lg
+    value: '2'
+  - axis: overflow
+    scope: element-10
+    base: hidden
+    value: hidden
+  - axis: mediaCrop
+    scope: element-11
+    base: cover
+    value: cover
+  - axis: dialogInteraction
+    base: tap-trigger
+    at: lg
+    value: click-trigger
+- componentSlug: layout123
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - image
+    - sections
+    primitives:
+    - button
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: md
+    value: '2'
+  - axis: mediaCrop
+    scope: element-8
+    base: cover
+    value: cover
+- componentSlug: layout134
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    - tagline
+    primitives:
+    - button
+    mechanics: []
+  rules:
+  - axis: responsiveInvariant
+    base: no-breakpoint-transition-observed
+    value: no-breakpoint-transition-observed
+- componentSlug: layout219
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - defaultTabValue
+    - tabs
+    primitives:
+    - dialog
+    - tabs
+    mechanics:
+    - dialog
+    - tabs
+  rules:
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: md
+    value: '2'
+  - axis: order
+    scope: element-3
+    base: last
+    at: md
+    value: first
+  - axis: overflow
+    scope: element-3
+    base: hidden
+    value: hidden
+  - axis: mediaCrop
+    scope: element-5
+    base: cover
+    value: cover
+  - axis: overflow
+    scope: element-6
+    base: hidden
+    value: hidden
+  - axis: overflow
+    scope: element-7
+    base: hidden
+    value: hidden
+  - axis: mediaCrop
+    scope: element-7
+    base: cover
+    value: cover
+  - axis: order
+    scope: element-11
+    base: first
+    at: md
+    value: last
+  - axis: dialogInteraction
+    base: tap-trigger
+    at: lg
+    value: click-trigger
+- componentSlug: layout351
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - features
+    - heading
+    - tagline
+    primitives:
+    - card
+    mechanics:
+    - scroll-container
+    - breakpoint-state
+  rules:
+  - axis: flexDirection
+    scope: element-6
+    base: col
+    at: lg
+    value: row
+  - axis: overflow
+    scope: element-6
+    base: hidden
+    value: hidden
+  - axis: height
+    scope: element-6
+    base: default
+    at: lg
+    value: '[90vh]'
+  - axis: flexDirection
+    scope: element-7
+    base: col
+    at: lg
+    value: row
+  - axis: overflow
+    scope: element-7
+    base: hidden
+    value: hidden
+  - axis: height
+    scope: element-7
+    base: default
+    at: lg
+    value: '[90vh]'
+  - axis: height
+    scope: element-8
+    base: default
+    at: lg
+    value: '[90vh]'
+  - axis: flexDirection
+    scope: element-8
+    base: default
+    at: lg
+    value: col
+  - axis: display
+    scope: element-10
+    base: hidden
+    at: lg
+    value: block
+  - axis: display
+    scope: element-11
+    base: default
+    at: lg
+    value: hidden
+  - axis: overflow
+    scope: element-12
+    base: hidden
+    at: lg
+    value: auto
+  - axis: height
+    scope: element-12
+    base: default
+    at: lg
+    value: full
+  - axis: mediaCrop
+    scope: element-17
+    base: cover
+    value: cover
+  - axis: overflow
+    scope: element-18
+    base: hidden
+    at: lg
+    value: auto
+  - axis: height
+    scope: element-18
+    base: default
+    at: lg
+    value: full
+  - axis: height
+    scope: element-19
+    base: full
+    value: full
+  - axis: mediaCrop
+    scope: element-23
+    base: cover
+    value: cover
+  - axis: breakpointQuery
+    base: mobile
+    at: lg
+    value: desktop
+    query: '(max-width: 991px)'
+- componentSlug: layout421
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    - images
+    - tagline
+    primitives:
+    - button
+    mechanics:
+    - sticky
+    - breakpoint-state
+  rules:
+  - axis: minHeight
+    scope: element-1
+    base: default
+    at: md
+    value: '[auto]'
+  - axis: height
+    scope: element-8
+    base: '[60svh]'
+    at: sm
+    value: '[80svh]'
+    atMd: '[70svh]'
+    atLg: '[120vh]'
+  - axis: breakpointQuery
+    base: mobile
+    at: lg
+    value: desktop
+    query: '(max-width: 479px)'
+  - axis: sticky
+    base: enabled
+    value: enabled
+- componentSlug: layout635
+  category: feature-sections
+  anatomy:
+    content:
+    - tagline
+    - heading
+    - description
+    - actions
+    media:
+    - image
+  rules:
+  - axis: columns
+    base: 1
+    at: md
+    value: 2
+  - axis: order
+    base: content-then-media
+    at: md
+    value: content-left-media-right
+  - axis: mediaCrop
+    base: object-cover-full-cell
+    at: md
+    value: object-cover-full-cell
+  - axis: actions
+    base: wrap
+    at: md
+    value: wrap
+- componentSlug: layout636
+  category: feature-sections
+  anatomy:
+    content:
+    - tagline
+    - heading
+    - description
+    - actions
+    media:
+    - video-thumbnail
+    - play-control
+    - dialog
+  rules:
+  - axis: columns
+    base: 1
+    at: md
+    value: 2
+  - axis: order
+    base: content-then-media
+    at: md
+    value: content-left-media-right
+  - axis: mediaCrop
+    base: object-cover-full-cell
+    at: md
+    value: object-cover-full-cell
+  - axis: interaction
+    base: tap-opens-video-dialog
+    at: lg
+    value: click-opens-video-dialog
+  - axis: dialogWidth
+    base: container
+    at: md
+    value: 738px
+    atLg: 940px
+- componentSlug: layout659
+  category: feature-sections
+  anatomy:
+    content:
+    - tagline
+    - heading
+    - description
+    - actions
+    media:
+    - image
+  rules:
+  - axis: columns
+    base: 1
+    at: md
+    value: 2
+  - axis: order
+    base: media-then-content
+    at: md
+    value: media-left-content-right
+  - axis: mediaCrop
+    base: object-cover-full-cell
+    at: md
+    value: object-cover-full-cell
+- componentSlug: links1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - author
+    - categories
+    - newsLetterCard
+    - newsLetterDialog
+    - socialLinks
+    primitives:
+    - button
+    - card
+    - dialog
+    - input
+    mechanics:
+    - dialog
+  rules:
+  - axis: overflow
+    scope: element-3
+    base: hidden
+    value: hidden
+  - axis: mediaCrop
+    scope: element-4
+    base: cover
+    value: cover
+  - axis: dialogInteraction
+    base: tap-trigger
+    at: lg
+    value: click-trigger
+- componentSlug: loader1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props: []
+    primitives: []
+    mechanics: []
+  rules:
+  - axis: height
+    scope: element-0
+    base: screen
+    value: screen
+  - axis: overflow
+    scope: element-0
+    base: hidden
+    value: hidden
+- componentSlug: login-modal1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - footerText
+    - forgotPassword
+    - logInButton
+    - logInWithGoogleButton
+    - signUpLink
+    - signUpText
+    - title
+    primitives:
+    - button
+    - dialog
+    - input
+    - label
+    mechanics:
+    - dialog
+    - breakpoint-state
+  rules:
+  - axis: height
+    scope: element-2
+    base: screen
+    at: md
+    value: auto
+  - axis: overflow
+    scope: element-2
+    base: y-scroll
+    value: y-scroll
+  - axis: breakpointQuery
+    base: mobile
+    at: lg
+    value: desktop
+    query: '(max-width: 767px)'
+  - axis: dialogInteraction
+    base: tap-trigger
+    at: lg
+    value: click-trigger
+- componentSlug: login1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - footerText
+    - forgotPassword
+    - logInButton
+    - logInWithGoogleButton
+    - logo
+    - signUpLink
+    - signUpText
+    - title
+    primitives:
+    - button
+    - input
+    - label
+    mechanics:
+    - scroll-container
+  rules:
+  - axis: minHeight
+    scope: element-1
+    base: svh
+    value: svh
+  - axis: overflow
+    scope: element-1
+    base: auto
+    value: auto
+  - axis: display
+    scope: element-4
+    base: hidden
+    at: md
+    value: block
+- componentSlug: login5
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - footerText
+    - forgotPassword
+    - logInButton
+    - logInWithGoogleButton
+    - logo
+    - signUpLink
+    - signUpText
+    - testimonials
+    - title
+    primitives:
+    - button
+    - carousel
+    - input
+    - label
+    mechanics:
+    - carousel
+    - scroll-container
+  rules:
+  - axis: minHeight
+    scope: element-0
+    base: screen
+    value: screen
+  - axis: columns
+    scope: element-0
+    base: '1'
+    at: lg
+    value: '2'
+  - axis: overflow
+    scope: element-0
+    base: auto
+    value: auto
+  - axis: overflow
+    scope: element-19
+    base: hidden
+    value: hidden
+  - axis: height
+    scope: element-22
+    base: full
+    value: full
+  - axis: flexDirection
+    scope: element-26
+    base: col
+    at: md
+    value: row
+  - axis: mediaCrop
+    scope: element-28
+    base: cover
+    value: cover
+  - axis: display
+    scope: element-31
+    base: hidden
+    at: md
+    value: block
+  - axis: display
+    scope: element-35
+    base: hidden
+    at: md
+    value: flex
+  - axis: display
+    scope: element-37
+    base: hidden
+    at: md
+    value: flex
+  - axis: carouselInteraction
+    base: swipe-or-controls
+    at: md
+    value: drag-or-controls
+- componentSlug: login7
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - footerText
+    - forgotPassword
+    - image
+    - logInButton
+    - logInWithGoogleButton
+    - logo
+    - signUpLink
+    - signUpText
+    - title
+    primitives:
+    - button
+    - input
+    - label
+    mechanics:
+    - scroll-container
+  rules:
+  - axis: minHeight
+    scope: element-0
+    base: screen
+    value: screen
+  - axis: columns
+    scope: element-0
+    base: '1'
+    at: lg
+    value: '2'
+  - axis: overflow
+    scope: element-0
+    base: auto
+    value: auto
+  - axis: display
+    scope: element-18
+    base: hidden
+    at: lg
+    value: block
+  - axis: mediaCrop
+    scope: element-19
+    base: cover
+    value: cover
+- componentSlug: logo1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - heading
+    - logos
+    primitives: []
+    mechanics: []
+  rules:
+  - axis: responsiveInvariant
+    base: no-breakpoint-transition-observed
+    value: no-breakpoint-transition-observed
+- componentSlug: logo3
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - heading
+    - logo1
+    - logo10
+    - logo11
+    - logo12
+    - logo13
+    - logo14
+    - logo15
+    - logo16
+    - logo2
+    - logo3
+    - logo4
+    - logo5
+    - logo6
+    - logo7
+    - logo8
+    - logo9
+    primitives: []
+    mechanics: []
+  rules:
+  - axis: overflow
+    scope: element-0
+    base: hidden
+    value: hidden
+- componentSlug: multi-form1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - footerText
+    - logo
+    - navButton
+    - navText
+    primitives:
+    - button
+    - calendar
+    - form
+    - input
+    - popover
+    - select
+    mechanics: []
+  rules:
+  - axis: minHeight
+    scope: element-0
+    base: dvh
+    value: dvh
+  - axis: height
+    scope: element-12
+    base: full
+    value: full
+- componentSlug: navbar1
+  category: navbars
+  anatomy:
+    desktop:
+    - logo
+    - inline-links
+    - optional-dropdown
+    - action-group
+    mobile:
+    - logo
+    - menu-toggle
+    - stacked-links
+    - nested-disclosure
+    - stacked-actions
+  rules:
+  - axis: breakpoint
+    base: mobile
+    at: lg
+    value: desktop
+    query: max-width-991px
+  - axis: menuVisibility
+    base: collapsed-height-zero
+    open: 100dvh
+    at: lg
+    value: auto-visible
+  - axis: menuToggle
+    base: visible
+    at: lg
+    value: hidden
+  - axis: linksLayout
+    base: stacked
+    at: lg
+    value: inline
+  - axis: actionsLayout
+    base: full-width-column
+    at: lg
+    value: inline-row
+  - axis: dropdownInteraction
+    base: tap-disclosure
+    at: lg
+    value: hover-or-click
+  - axis: dropdownPlacement
+    base: in-flow-indented
+    at: lg
+    value: absolute-popover
+  - axis: overflow
+    base: viewport-menu
+    at: lg
+    value: visible-bar
+- componentSlug: navbar20
+  category: navbars
+  anatomy:
+    desktop:
+    - logo
+    - inline-links
+    - menu-toggle
+    mobile:
+    - logo
+    - menu-toggle
+    overlayMenu:
+    - large-links
+    - contact-details
+    - social-links
+    - newsletter
+    - legal
+  rules:
+  - axis: primaryLinksVisibility
+    base: hidden
+    at: lg
+    value: visible-when-overlay-closed
+  - axis: menuToggle
+    base: visible
+    at: lg
+    value: visible
+  - axis: overlayHeight
+    base: calc-100vh-minus-header
+    at: md
+    value: calc-100vh-minus-taller-header
+  - axis: overflow
+    base: overlay-scroll
+    at: lg
+    value: overlay-scroll
+  - axis: dropdownInteraction
+    base: tap
+    at: lg
+    value: hover-or-click
+  - axis: overlayAnatomy
+    base: stacked-operational-content
+    at: lg
+    value: multi-region-operational-content
+- componentSlug: navbar24
+  category: navbars
+  anatomy:
+    desktop:
+    - logo
+    - center-menu
+    - right-menu
+    - mega-menu
+    mobile:
+    - logo
+    - menu-toggle
+    - stacked-menu
+    - mega-menu-disclosures
+  rules:
+  - axis: breakpoint
+    base: mobile
+    at: lg
+    value: desktop
+    query: max-width-991px
+  - axis: menuToggle
+    base: visible
+    at: lg
+    value: hidden
+  - axis: megaMenuInteraction
+    base: tap-disclosure
+    at: lg
+    value: hover-or-click
+  - axis: megaMenuPlacement
+    base: in-flow
+    at: lg
+    value: absolute-wide-panel
+  - axis: menuRegions
+    base: merged-stack
+    at: lg
+    value: center-and-right-regions
+- componentSlug: navbar4
+  category: navbars
+  anatomy:
+    desktop:
+    - logo
+    - persistent-cta
+    - menu-toggle
+    - fullscreen-overlay
+    mobile:
+    - logo
+    - persistent-cta
+    - menu-toggle
+    - fullscreen-overlay
+  rules:
+  - axis: menuToggle
+    base: visible
+    at: lg
+    value: visible
+  - axis: ctaVisibility
+    base: visible
+    at: lg
+    value: visible
+  - axis: overlayHeight
+    base: 100dvh
+    at: lg
+    value: 100dvh
+  - axis: overlayMotion
+    base: translate-negative-100-to-zero
+    value: slide-down
+  - axis: linksLayout
+    base: vertical-display-links
+    at: lg
+    value: vertical-display-links-centered
+  - axis: overflow
+    base: overlay-scroll
+    at: lg
+    value: overlay-scroll
+- componentSlug: navbar5
+  category: navbars
+  anatomy:
+    desktop:
+    - logo
+    - inline-links
+    - mega-menu
+    - desktop-actions
+    mobile:
+    - logo
+    - menu-toggle
+    - stacked-links
+    - mega-menu-disclosures
+    - mobile-actions
+    megaMenu:
+    - category-groups
+    - icon-links
+    - featured-media-links
+    - trailing-action
+  rules:
+  - axis: breakpoint
+    base: mobile
+    at: lg
+    value: desktop
+    query: max-width-991px
+  - axis: menuVisibility
+    base: collapsed-height-zero
+    open: 100dvh
+    at: lg
+    value: auto-visible
+  - axis: menuToggle
+    base: visible
+    at: lg
+    value: hidden
+  - axis: ctaVisibility
+    base: mobile-copy-visible
+    at: lg
+    value: desktop-copy-visible
+  - axis: megaMenuInteraction
+    base: tap-disclosure
+    at: lg
+    value: hover-or-click
+  - axis: megaMenuPlacement
+    base: in-flow-height-disclosure
+    at: lg
+    value: absolute-full-viewport-width
+  - axis: megaMenuColumns
+    base: 1
+    at: md
+    value: 2
+  - axis: linkDescriptions
+    base: hidden
+    at: md
+    value: shown
+  - axis: featuredLinkLayout
+    base: stacked
+    at: md
+    value: media-text-grid
+  - axis: overflow
+    base: mobile-menu-scroll
+    at: lg
+    value: visible-mega-panel
+- componentSlug: onboarding1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - footerText
+    - logo
+    - navButton
+    - navText
+    primitives:
+    - button
+    - form
+    - input
+    - select
+    mechanics: []
+  rules:
+  - axis: minHeight
+    scope: element-0
+    base: dvh
+    value: dvh
+  - axis: height
+    scope: element-12
+    base: full
+    value: full
+- componentSlug: page-header1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - breadcrumbs
+    - buttons
+    - description
+    - heading
+    - inputIcon
+    - inputPlaceholder
+    primitives:
+    - breadcrumb
+    - button
+    - input
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-5
+    base: '1'
+    at: lg
+    value: '[1fr_max-content]'
+  - axis: flexDirection
+    scope: element-10
+    base: col
+    at: md
+    value: row
+- componentSlug: portfolio-header1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - tags
+    primitives:
+    - badge
+    mechanics: []
+  rules:
+  - axis: responsiveInvariant
+    base: no-breakpoint-transition-observed
+    value: no-breakpoint-transition-observed
+- componentSlug: portfolio-header10
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - image
+    - tags
+    primitives:
+    - badge
+    mechanics: []
+  rules:
+  - axis: minHeight
+    scope: element-0
+    base: svh
+    value: svh
+  - axis: mediaCrop
+    scope: element-2
+    base: cover
+    value: cover
+  - axis: columns
+    scope: element-5
+    base: '1'
+    at: md
+    value: '2'
+- componentSlug: portfolio-header12
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - image
+    - tags
+    primitives:
+    - badge
+    mechanics: []
+  rules:
+  - axis: mediaCrop
+    scope: element-2
+    base: cover
+    value: cover
+  - axis: minHeight
+    scope: element-4
+    base: svh
+    value: svh
+  - axis: columns
+    scope: element-6
+    base: '1'
+    at: md
+    value: '2'
+- componentSlug: portfolio1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - button
+    - description
+    - heading
+    - projects
+    - tagline
+    primitives:
+    - button
+    mechanics: []
+  rules:
+  - axis: mediaCrop
+    scope: element-8
+    base: cover
+    value: cover
+  - axis: columns
+    scope: element-9
+    base: '1'
+    at: md
+    value: '[1fr_max-content]'
+- componentSlug: portfolio11
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - button
+    - description
+    - heading
+    - projects
+    - tagline
+    primitives:
+    - badge
+    - button
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-6
+    base: '1'
+    at: md
+    value: '2'
+    atLg: '3'
+  - axis: mediaCrop
+    scope: element-9
+    base: cover
+    value: cover
+- componentSlug: portfolio15
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - button
+    - description
+    - heading
+    - projects
+    - tagline
+    primitives:
+    - badge
+    - button
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-7
+    base: '1'
+    at: md
+    value: '2'
+  - axis: mediaAspect
+    scope: element-11
+    base: '[4/3]'
+    value: '[4/3]'
+  - axis: mediaCrop
+    scope: element-12
+    base: cover
+    value: cover
+- componentSlug: portfolio17
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - projects
+    primitives:
+    - button
+    mechanics:
+    - sticky
+  rules:
+  - axis: height
+    scope: element-0
+    base: screen
+    value: screen
+  - axis: mediaCrop
+    scope: element-2
+    base: cover
+    value: cover
+  - axis: sticky
+    base: enabled
+    value: enabled
+- componentSlug: pricing1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - pricingPlan
+    - tagline
+    primitives:
+    - button
+    - card
+    mechanics: []
+  rules:
+  - axis: height
+    scope: element-7
+    base: full
+    value: full
+- componentSlug: pricing10
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - pricingPlans
+    - tagline
+    primitives:
+    - button
+    - card
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-6
+    base: '1'
+    at: md
+    value: '2'
+  - axis: height
+    scope: element-7
+    base: full
+    value: full
+- componentSlug: pricing21
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - featureCategories
+    - heading
+    - pricingPlans
+    - tagline
+    primitives:
+    - button
+    mechanics:
+    - sticky
+  rules:
+  - axis: columns
+    scope: element-7
+    base: '3'
+    at: md
+    value: '[1.5fr_1fr_1fr_1fr]'
+  - axis: display
+    scope: element-8
+    base: hidden
+    at: md
+    value: block
+  - axis: columns
+    scope: element-17
+    base: '3'
+    at: md
+    value: '[1.5fr_1fr_1fr_1fr]'
+  - axis: sticky
+    base: enabled
+    value: enabled
+- componentSlug: pricing43
+  category: pricing-sections
+  anatomy:
+    content:
+    - tagline
+    - heading
+    - description
+    controls:
+    - billing-tabs
+    repeatedItem:
+    - plan-name
+    - description
+    - price
+    - action
+    - feature-list
+  rules:
+  - axis: headerColumns
+    base: 1
+    at: lg
+    value: 2
+  - axis: tabsAlignment
+    base: start
+    at: lg
+    value: end
+  - axis: planColumns
+    base: 1
+    at: lg
+    value: 3
+  - axis: interaction
+    base: tap-tabs
+    at: lg
+    value: click-tabs
+  - axis: cards
+    base: stacked-equal-width
+    at: lg
+    value: equal-height-grid
+- componentSlug: product-header1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - breadcrumbs
+    - buttons
+    - description
+    - freeShipping
+    - heading
+    - images
+    - options
+    - price
+    - quantityInputPlaceholder
+    - questions
+    - rating
+    - selectVariants
+    primitives:
+    - accordion
+    - breadcrumb
+    - button
+    - carousel
+    - input
+    - label
+    - select
+    mechanics:
+    - carousel
+    - accordion
+  rules:
+  - axis: columns
+    scope: element-3
+    base: '1'
+    at: lg
+    value: '[1.25fr_1fr]'
+  - axis: columns
+    scope: element-28
+    base: '1'
+    at: md
+    value: '[5rem_1fr]'
+  - axis: display
+    scope: element-29
+    base: hidden
+    at: md
+    value: block
+  - axis: height
+    scope: element-29
+    base: full
+    value: full
+  - axis: overflow
+    scope: element-30
+    base: y-auto
+    value: y-auto
+  - axis: mediaAspect
+    scope: element-34
+    base: '[5/6]'
+    value: '[5/6]'
+  - axis: mediaCrop
+    scope: element-34
+    base: cover
+    value: cover
+  - axis: overflow
+    scope: element-35
+    base: hidden
+    value: hidden
+  - axis: itemBasis
+    scope: element-38
+    base: full
+    value: full
+  - axis: mediaAspect
+    scope: element-39
+    base: '[5/6]'
+    value: '[5/6]'
+  - axis: mediaCrop
+    scope: element-39
+    base: cover
+    value: cover
+  - axis: carouselInteraction
+    base: swipe-or-controls
+    at: md
+    value: drag-or-controls
+- componentSlug: product-header2
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - breadcrumbs
+    - buttons
+    - defaultTabValue
+    - description
+    - freeShipping
+    - galleryImages
+    - heading
+    - list
+    - options
+    - price
+    - quantityInputPlaceholder
+    - rating
+    - showAllButton
+    - tabs
+    primitives:
+    - breadcrumb
+    - button
+    - carousel
+    - dialog
+    - input
+    - label
+    - sheet
+    - tabs
+    mechanics:
+    - carousel
+    - dialog
+    - tabs
+  rules:
+  - axis: order
+    scope: element-3
+    base: last
+    at: md
+    value: none
+  - axis: columns
+    scope: element-4
+    base: '1'
+    at: md
+    value: '[1fr_16rem]'
+    atLg: '[1fr_0.5fr]'
+  - axis: display
+    scope: element-5
+    base: hidden
+    at: md
+    value: block
+  - axis: order
+    scope: element-8
+    base: first
+    at: md
+    value: none
+  - axis: display
+    scope: element-9
+    base: default
+    at: md
+    value: hidden
+  - axis: columns
+    scope: element-28
+    base: '1'
+    at: md
+    value: '2'
+  - axis: mediaAspect
+    scope: element-30
+    base: '[5/4]'
+    value: '[5/4]'
+  - axis: mediaCrop
+    scope: element-30
+    base: cover
+    value: cover
+  - axis: display
+    scope: element-31
+    base: hidden
+    at: md
+    value: grid
+  - axis: columns
+    scope: element-31
+    base: default
+    at: md
+    value: '2'
+  - axis: mediaAspect
+    scope: element-33
+    base: '[5/4]'
+    value: '[5/4]'
+  - axis: mediaCrop
+    scope: element-33
+    base: cover
+    value: cover
+  - axis: mediaAspect
+    scope: element-40
+    base: '[5/4]'
+    value: '[5/4]'
+  - axis: mediaCrop
+    scope: element-40
+    base: cover
+    value: cover
+  - axis: height
+    scope: element-41
+    base: screen
+    value: screen
+  - axis: overflow
+    scope: element-44
+    base: hidden
+    value: hidden
+  - axis: display
+    scope: element-50
+    base: hidden
+    at: md
+    value: flex
+  - axis: display
+    scope: element-51
+    base: hidden
+    at: md
+    value: flex
+  - axis: overflow
+    scope: element-52
+    base: hidden
+    value: hidden
+  - axis: carouselInteraction
+    base: swipe-or-controls
+    at: md
+    value: drag-or-controls
+  - axis: dialogInteraction
+    base: tap-trigger
+    at: lg
+    value: click-trigger
+- componentSlug: product-header9
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - breadcrumbs
+    - buttons
+    - description
+    - features
+    - guarantee
+    - heading
+    - image
+    - price
+    - questions
+    - rating
+    - video
+    primitives:
+    - accordion
+    - breadcrumb
+    - button
+    - dialog
+    mechanics:
+    - dialog
+    - accordion
+    - sticky
+  rules:
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: lg
+    value: '[1.25fr_0.5fr]'
+  - axis: columns
+    scope: element-8
+    base: '1'
+    at: md
+    value: '2'
+  - axis: mediaCrop
+    scope: element-18
+    base: cover
+    value: cover
+  - axis: flexDirection
+    scope: element-22
+    base: col
+    at: sm
+    value: row
+  - axis: display
+    scope: element-24
+    base: hidden
+    at: sm
+    value: block
+  - axis: dialogInteraction
+    base: tap-trigger
+    at: lg
+    value: click-trigger
+  - axis: sticky
+    base: enabled
+    value: enabled
+- componentSlug: product1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - products
+    - tagline
+    - viewAllButton
+    primitives:
+    - button
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: md
+    value: '[1fr_max-content]'
+  - axis: display
+    scope: element-7
+    base: hidden
+    at: md
+    value: block
+  - axis: columns
+    scope: element-8
+    base: '2'
+    at: lg
+    value: '4'
+  - axis: mediaAspect
+    scope: element-10
+    base: '[10/12]'
+    value: '[10/12]'
+  - axis: mediaCrop
+    scope: element-10
+    base: cover
+    value: cover
+- componentSlug: product11
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - button
+    - description
+    - heading
+    - products
+    - tagline
+    primitives:
+    - button
+    - carousel
+    mechanics:
+    - carousel
+  rules:
+  - axis: overflow
+    scope: element-0
+    base: hidden
+    value: hidden
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: md
+    value: '[1fr_max-content]'
+  - axis: display
+    scope: element-7
+    base: hidden
+    at: md
+    value: flex
+  - axis: itemBasis
+    scope: element-10
+    base: '[95%]'
+    at: sm
+    value: 4/5
+    atMd: 1/2
+    atLg: '[33%]'
+  - axis: mediaAspect
+    scope: element-17
+    base: '[5/6]'
+    value: '[5/6]'
+  - axis: mediaCrop
+    scope: element-18
+    base: cover
+    value: cover
+  - axis: carouselInteraction
+    base: swipe-or-controls
+    at: md
+    value: drag-or-controls
+- componentSlug: section-header1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    - options
+    primitives:
+    - button
+    - dropdown-menu
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-1
+    base: '1'
+    at: md
+    value: '[1fr_max-content]'
+- componentSlug: section-header3
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    - options
+    - tabs
+    primitives:
+    - button
+    - dropdown-menu
+    - tabs
+    mechanics:
+    - tabs
+    - scroll-container
+  rules:
+  - axis: columns
+    scope: element-1
+    base: '1'
+    at: md
+    value: '[1fr_max-content]'
+  - axis: overflow
+    scope: element-9
+    base: auto
+    value: auto
+- componentSlug: sidebar1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props: []
+    primitives:
+    - accordion
+    - badge
+    - dropdown-menu
+    - sidebar
+    mechanics:
+    - accordion
+  rules:
+  - axis: mediaCrop
+    scope: element-22
+    base: cover
+    value: cover
+  - axis: minHeight
+    scope: element-27
+    base: screen
+    value: screen
+  - axis: display
+    scope: element-28
+    base: flex
+    at: lg
+    value: hidden
+- componentSlug: stacked-list10
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - inputIcon
+    - inputPlaceholder
+    - lists
+    - sortMenu
+    primitives:
+    - dropdown-menu
+    - input
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-1
+    base: '1'
+    at: md
+    value: '[1fr_max-content]'
+- componentSlug: stat1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    - options
+    - stats
+    primitives:
+    - badge
+    - button
+    - dropdown-menu
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-0
+    base: '1'
+    at: md
+    value: '[1fr_max-content]'
+- componentSlug: stats1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    - stats
+    - tagline
+    primitives:
+    - button
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: md
+    value: '2'
+  - axis: columns
+    scope: element-7
+    base: '1'
+    at: md
+    value: '3'
+- componentSlug: stats10
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - heading
+    - image
+    - stats
+    primitives: []
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-4
+    base: '1'
+    at: md
+    value: '3'
+  - axis: mediaCrop
+    scope: element-9
+    base: cover
+    value: cover
+- componentSlug: stats19
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - image
+    - stats
+    - tagline
+    primitives: []
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-6
+    base: '1'
+    at: lg
+    value: '[1fr_0.5fr]'
+  - axis: mediaAspect
+    scope: element-7
+    base: '[3/2]'
+    value: '[3/2]'
+  - axis: mediaCrop
+    scope: element-7
+    base: cover
+    value: cover
+  - axis: columns
+    scope: element-8
+    base: '1'
+    at: md
+    value: '3'
+    atLg: '1'
+- componentSlug: table1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - headerDescription
+    - headerTitle
+    - paginationItems
+    - tableHeaders
+    - tableRows
+    primitives:
+    - button
+    - pagination
+    - table
+    mechanics: []
+  rules:
+  - axis: flexDirection
+    scope: element-2
+    base: col
+    at: sm
+    value: row
+  - axis: display
+    scope: element-9
+    base: hidden
+    at: md
+    value: block
+- componentSlug: team1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - footer
+    - heading
+    - tagline
+    - teamMembers
+    primitives:
+    - button
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-6
+    base: '1'
+    at: md
+    value: '2'
+    atLg: '4'
+  - axis: overflow
+    scope: element-13
+    base: hidden
+    value: hidden
+  - axis: mediaCrop
+    scope: element-14
+    base: cover
+    value: cover
+- componentSlug: team10
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - footer
+    - heading
+    - tagline
+    - teamMembers
+    primitives:
+    - button
+    - carousel
+    mechanics:
+    - carousel
+  rules:
+  - axis: overflow
+    scope: element-0
+    base: hidden
+    value: hidden
+  - axis: itemBasis
+    scope: element-7
+    base: '[95%]'
+    at: sm
+    value: 4/5
+    atMd: 1/2
+    atLg: 1/3
+  - axis: mediaAspect
+    scope: element-18
+    base: square
+    value: square
+  - axis: overflow
+    scope: element-18
+    base: hidden
+    value: hidden
+  - axis: mediaCrop
+    scope: element-19
+    base: cover
+    value: cover
+  - axis: carouselInteraction
+    base: swipe-or-controls
+    at: md
+    value: drag-or-controls
+- componentSlug: testimonial1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - avatar
+    - companyName
+    - logo
+    - name
+    - position
+    - quote
+    primitives: []
+    mechanics: []
+  rules:
+  - axis: overflow
+    scope: element-7
+    base: hidden
+    value: hidden
+  - axis: mediaCrop
+    scope: element-8
+    base: cover
+    value: cover
+- componentSlug: testimonial13
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - image
+    - logo
+    - name
+    - numberOfStars
+    - position
+    - quote
+    primitives: []
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: md
+    value: '2'
+  - axis: order
+    scope: element-3
+    base: last
+    at: md
+    value: first
+  - axis: mediaAspect
+    scope: element-4
+    base: square
+    value: square
+  - axis: mediaCrop
+    scope: element-4
+    base: cover
+    value: cover
+  - axis: display
+    scope: element-11
+    base: hidden
+    at: sm
+    value: block
+- componentSlug: testimonial17
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - testimonials
+    primitives:
+    - card
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-5
+    base: '1'
+    at: md
+    value: '2'
+    atLg: '3'
+  - axis: flexDirection
+    scope: element-11
+    base: col
+    at: md
+    value: row
+  - axis: overflow
+    scope: element-12
+    base: hidden
+    value: hidden
+  - axis: mediaCrop
+    scope: element-13
+    base: cover
+    value: cover
+- componentSlug: testimonial34
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - tabs
+    primitives:
+    - card
+    - tabs
+    mechanics:
+    - tabs
+  rules:
+  - axis: flexDirection
+    scope: element-8
+    base: col
+    at: md
+    value: row
+  - axis: overflow
+    scope: element-18
+    base: hidden
+    value: hidden
+  - axis: mediaCrop
+    scope: element-19
+    base: cover
+    value: cover
+- componentSlug: testimonial36
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - description
+    - heading
+    - testimonialCards
+    primitives:
+    - button
+    - card
+    mechanics: []
+  rules:
+  - axis: columns
+    scope: element-6
+    base: default
+    at: md
+    value: '2'
+    atLg: '4'
+  - axis: height
+    scope: element-7
+    base: full
+    value: full
+  - axis: mediaCrop
+    scope: element-11
+    base: cover
+    value: cover
+  - axis: flexDirection
+    scope: element-18
+    base: col
+    at: md
+    value: row
+  - axis: mediaCrop
+    scope: element-19
+    base: cover
+    value: cover
+- componentSlug: testimonial48
+  category: testimonial-sections
+  anatomy:
+    content:
+    - heading
+    - description
+    repeatedItem:
+    - image
+    - quote
+    - author
+    - rating
+    controls:
+    - dots
+    - previous
+    - next
+  rules:
+  - axis: overflow
+    base: section-hidden-carousel-visible-track
+    value: clipped-peek
+  - axis: itemBasis
+    base: 95-percent
+    at: sm
+    value: 80-percent
+    atMd: 50-percent
+  - axis: controls
+    base: dots-and-arrows-visible
+    value: dots-and-arrows-visible
+  - axis: cardAuthorLayout
+    base: column
+    at: lg
+    value: row-space-between
+  - axis: mediaAspect
+    base: 3-by-2
+    value: 3-by-2
+  - axis: interaction
+    base: swipe-or-controls
+    at: md
+    value: drag-or-controls
+- componentSlug: timeline1
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    - tagline
+    - timelines
+    primitives:
+    - button
+    mechanics:
+    - sticky
+  rules:
+  - axis: columns
+    scope: element-2
+    base: '1'
+    at: md
+    value: '2'
+  - axis: height
+    scope: element-8
+    base: full
+    value: full
+  - axis: height
+    scope: element-10
+    base: '[50vh]'
+    value: '[50vh]'
+  - axis: height
+    scope: element-11
+    base: full
+    value: full
+  - axis: height
+    scope: element-13
+    base: '[50vh]'
+    value: '[50vh]'
+  - axis: height
+    scope: element-16
+    base: full
+    value: full
+  - axis: sticky
+    base: enabled
+    value: enabled
+- componentSlug: timeline10
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    - tagline
+    - timelineItems
+    primitives:
+    - button
+    - card
+    mechanics:
+    - sticky
+  rules:
+  - axis: height
+    scope: element-10
+    base: full
+    value: full
+  - axis: height
+    scope: element-12
+    base: '[50vh]'
+    value: '[50vh]'
+  - axis: height
+    scope: element-13
+    base: full
+    value: full
+  - axis: height
+    scope: element-15
+    base: '[50vh]'
+    value: '[50vh]'
+  - axis: columns
+    scope: element-16
+    base: '[max-content_1fr]'
+    at: md
+    value: '[1fr_max-content_1fr]'
+  - axis: display
+    scope: element-17
+    base: hidden
+    at: md
+    value: block
+  - axis: order
+    scope: element-18
+    base: first
+    at: md
+    value: none
+  - axis: display
+    scope: element-19
+    base: hidden
+    at: md
+    value: block
+  - axis: sticky
+    base: enabled
+    value: enabled
+- componentSlug: timeline14
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - tabs
+    primitives:
+    - button
+    - tabs
+    mechanics:
+    - tabs
+  rules:
+  - axis: columns
+    scope: element-11
+    base: '1'
+    at: md
+    value: '2'
+  - axis: mediaCrop
+    scope: element-16
+    base: cover
+    value: cover
+- componentSlug: timeline16
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    - tagline
+    - timelineItems
+    primitives:
+    - button
+    - carousel
+    mechanics:
+    - carousel
+  rules:
+  - axis: overflow
+    scope: element-0
+    base: hidden
+    value: hidden
+  - axis: height
+    scope: element-8
+    base: full
+    value: full
+  - axis: overflow
+    scope: element-8
+    base: hidden
+    value: hidden
+  - axis: itemBasis
+    scope: element-11
+    base: full
+    at: sm
+    value: 1/2
+    atMd: 1/3
+  - axis: carouselInteraction
+    base: swipe-or-controls
+    at: md
+    value: drag-or-controls
+- componentSlug: timeline6
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    - tagline
+    - timelineItems
+    primitives:
+    - button
+    - card
+    mechanics:
+    - sticky
+  rules:
+  - axis: height
+    scope: element-9
+    base: full
+    value: full
+  - axis: height
+    scope: element-11
+    base: '[50vh]'
+    value: '[50vh]'
+  - axis: height
+    scope: element-12
+    base: full
+    value: full
+  - axis: height
+    scope: element-14
+    base: '[50vh]'
+    value: '[50vh]'
+  - axis: height
+    scope: element-17
+    base: full
+    value: full
+  - axis: sticky
+    base: enabled
+    value: enabled
+- componentSlug: timeline7
+  inspection: deterministic-tsx-responsive-parser.v1
+  anatomy:
+    props:
+    - buttons
+    - description
+    - heading
+    - tagline
+    - timelineItems
+    primitives:
+    - button
+    mechanics:
+    - sticky
+  rules:
+  - axis: height
+    scope: element-9
+    base: full
+    value: full
+  - axis: height
+    scope: element-11
+    base: '[50vh]'
+    value: '[50vh]'
+  - axis: height
+    scope: element-12
+    base: full
+    value: full
+  - axis: height
+    scope: element-14
+    base: '[50vh]'
+    value: '[50vh]'
+  - axis: height
+    scope: element-17
+    base: full
+    value: full
+  - axis: overflow
+    scope: element-23
+    base: hidden
+    value: hidden
+  - axis: sticky
+    base: enabled
+    value: enabled
+- componentSlug: topbar1
+  inspection: manual-tsx-responsive-review
+  anatomy:
+    desktop:
+    - logo
+    - inline-links
+    - persistent-search
+    - notifications
+    - profile-menu
+    mobile:
+    - menu-toggle
+    - logo
+    - search-toggle
+    - notifications
+    - profile-menu
+    - collapsible-links
+    controls:
+    - search
+    - dropdowns
+    - notifications
+    - profile
+  rules:
+  - axis: menuToggle
+    base: visible
+    at: lg
+    value: hidden
+  - axis: searchControl
+    base: toggle-plus-overlay-input
+    at: lg
+    value: persistent-inline-input
+  - axis: menuVisibility
+    base: collapsed-height-zero
+    at: lg
+    value: auto-visible
+  - axis: linksLayout
+    base: stacked
+    at: lg
+    value: inline
+  - axis: dropdownInteraction
+    base: tap-or-click
+    at: lg
+    value: hover-or-click
+  - axis: topbarOrder
+    base: identity-actions-links
+    at: lg
+    value: identity-links-actions
+  - axis: notificationOverflow
+    base: bounded-scroll-panel
+    value: bounded-scroll-panel
+  - axis: conditionalMotion
+    base: animated-presence
+    value: animated-presence

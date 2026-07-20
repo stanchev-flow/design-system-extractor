@@ -3,6 +3,24 @@
 (Older Remote work is logged in the root `changes.md` — P0/P1/P2, fid-series,
 fix-series entries. This lane file starts at pass1.)
 
+## 2026-07-20 — measured testimonial hydration safety restored
+
+- HubSpot v3 harness work broadened `_demo_section_for_pattern` collection
+  inference to treat any slot role containing `mark`/`badge` as a logo run.
+  Remote's `cards` role includes the phrase `company marks`, so its complete
+  three-record testimonial data was flattened into seven media-only modules.
+- Isolated score delta: testimonial `sec-7` **0.9577 → 0.8283**; overall
+  **0.9509 → 0.9364**. No other band score changed.
+- Generic fix: authored repeated records now outrank incidental mark/badge
+  anatomy prose. Explicit canonical collection names (`logo-row`,
+  `mark-collage`, `badge-row`, etc.) retain collection routing for projected
+  lanes.
+- Replica rebuilt from unchanged Remote brand/copy/library data: testimonial
+  **0.9577**, overall **0.9509**, and 7,288px replica height are restored exactly.
+  Regression coverage pins the real lane's three quote cards, attribution,
+  company marks, avatars, and copy. Focused tests: **27 passed**. Full suite:
+  **1,657 passed + 4 subtests**, 8 existing warnings, zero losses.
+
 ## pass1 — signatures · derived scale · voice facts · new gates (2026-07-14)
 
 Evidence-first authoring from EXISTING capture (no re-extraction). Root log:

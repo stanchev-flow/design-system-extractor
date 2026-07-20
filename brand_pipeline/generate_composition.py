@@ -141,6 +141,59 @@ def candidate_use_cases(doc: dict) -> list[str]:
     return seen
 
 
+def brief_use_cases(brief_text: str) -> list[str]:
+    """Infer requested canonical jobs from Markdown headings, preserving page order."""
+    aliases = {
+        "hero": "hero", "header": "hero", "features": "features", "feature": "features",
+        "story": "about", "about": "about", "results": "features", "pricing": "pricing",
+        "plans": "pricing", "testimonial": "testimonial", "testimonials": "testimonial",
+        "gallery": "gallery", "closing": "cta", "cta": "cta", "faq": "faq",
+        "logos": "logos", "footer": "footer",
+    }
+    found: list[str] = []
+    for heading in re.findall(r"(?m)^#{1,6}\s+(.+?)\s*$", brief_text):
+        words = re.findall(r"[a-z]+", heading.lower())
+        use_case = next((aliases[word] for word in words if word in aliases), None)
+        if use_case and use_case not in found:
+            found.append(use_case)
+    return found
+
+
+def relume_precedence_lint(
+    composition: dict,
+    selections: dict[str, list[str]],
+    higher_tier: dict[str, str],
+) -> list[tuple[str, str]]:
+    """Fail any fallback that competes with a compatible higher-tier source."""
+    hits: list[tuple[str, str]] = []
+    for section in composition.get("sections") or []:
+        if not isinstance(section, dict):
+            continue
+        sid = str(section.get("id") or "section")
+        use_case = str(section.get("useCase") or "")
+        provenance = str(section.get("structureProvenance") or "")
+        recipe_id = section.get("structureRecipeId")
+        if provenance == "relume-fallback":
+            if use_case in higher_tier:
+                hits.append((sid, f"Relume cannot override {higher_tier[use_case]} for {use_case}"))
+            allowed = selections.get(use_case) or []
+            if not recipe_id or recipe_id not in allowed:
+                hits.append((sid, f"fallback recipe must be one of {allowed or '(none)'}"))
+            if section.get("seededFrom"):
+                hits.append((sid, "Relume fallback cannot also carry a measured seededFrom"))
+        elif recipe_id is not None:
+            hits.append((sid, "structureRecipeId is only legal for relume-fallback"))
+    return hits
+
+
+# Existing drawable archetypes have complete generic anatomy for these jobs. Specialist
+# jobs (currently pricing and FAQ/disclosure) require a measured/designed recipe or the
+# final structural fallback; merely having a drawable stack/cards shell is not compatible.
+_GENERIC_ARCHETYPE_USE_CASES = {
+    "hero", "features", "testimonial", "gallery", "cta", "about", "logos", "footer",
+}
+
+
 def seed_patterns(doc: dict, brand_yaml_path: Path | str,
                   use_cases: list[str] | None = None,
                   lp_dir: Path | None = None) -> SeedResult:
@@ -480,6 +533,19 @@ _COPY_QUALITY_RULES = """- COPY QUALITY (HARD): copy is REAL, specific and non-r
   extracted footer chrome to every page, so a model-authored footer renders as a DUPLICATE.
   Omit "footer" from `sections` even when the brief mentions footer content."""
 
+_WIREFRAME_RULES = """
+- SECTION WIREFRAME (HARD; a deterministic wireframe.v1 planner validates before render):
+  - Every substantive section needs a painted visual anchor: media, proof/stat device,
+    meaningful component collection, action cluster, or an explicitly licensed text monument.
+  - Preserve repeated semantic records as ONE array on a repeatable `feature-item`,
+    `content-block`, `card`, or `testimonial` slot. Never emit their label/body fields as
+    sibling primitives in one stack; the item is atomic and responsive collapse preserves it.
+  - A side-anchored hero names a real painted counterweight whose complete required slots
+    (media/proof/action) have a consuming renderer path. Unsupported skeletons are rejected.
+  - Conversion jobs render actions; proof/story jobs render proof, media, or a component
+    cluster. Avoid consecutive sparse/text-only sections and alternate density/surface cadence.
+"""
+
 
 # ── PASS 3 (stage 2): pass-1 facts injected as prompt-shaping constraints ──────────
 # Pass 2's A/B eval proved pass-1 facts POLICED generation (gates) but never SHAPED
@@ -724,7 +790,8 @@ def build_prompt(brief_text: str, brand_yaml_path: Path | str, style_id: str,
                  hero_candidates: str | None = None,
                  used_surfaces: "list[str] | tuple[str, ...] | None" = None,
                  conversion_guidance: str | None = None,
-                 style_directives: str | None = None) -> str:
+                 style_directives: str | None = None,
+                 section_recipe_guidance: str | None = None) -> str:
     """Deterministically assemble the system/user prompt for the composition generator.
 
     Assembly order (mirrors styles/composition-rules.md ``## Assembly``):
@@ -747,6 +814,8 @@ def build_prompt(brief_text: str, brand_yaml_path: Path | str, style_id: str,
           directive rendered by style_resolver.render_style_directive_block, riding
           [[PASS3-STYLE:BEGIN/END]] sentinels. Absent -> byte-identical. Guidance
           only: it never outranks brand facts/neverDo or the gate battery.)
+      5d. SECTION RECIPE CANDIDATES (Relume-derived structural priors normalized into
+          recipe families + responsive transitions; absent -> byte-identical)
       6. the brief copy [+ 6b. CONVERSION-STRUCTURE guidance — only when the caller
          resolved one via conversion_structure.render_guidance_block; same fact-gated
          byte-identity contract as 5b, riding WITH the brief in the user prompt]
@@ -856,6 +925,12 @@ three-tier precedence (base-style invariants → composition-rules → brand nev
     if style_directives:
         system += "\n" + style_directives.strip() + "\n"
 
+    # 5d. external section-recipe priors — metadata/source-derived structure only.
+    # They guide archetype/slots/knobs and responsive behavior; they never supply
+    # styling, copy, tokens, or a seededFrom ref.
+    if section_recipe_guidance:
+        system += "\n" + section_recipe_guidance.strip() + "\n"
+
     # valid seededFrom refs (the model must pick from these or use null) — from the seeds.
     seed_refs = []
     if isinstance(seeds, SeedResult):
@@ -913,6 +988,8 @@ A <section> is EXACTLY (no other keys; do NOT nest sections):
   "novelty": one of ["reuse","adapt","novel"],
   "seededFrom": one of these objects, or null (NOT a string):
       {seed_refs_line}
+  "structureProvenance": one of ["measured-brand-pattern","designed-brand-pattern","brand-style-archetype","relume-fallback"],
+  "structureRecipeId": "<selected Relume recipe id>" ONLY for relume-fallback, otherwise null,
   "slots": [ <slot>, ... ],          // >=1, FLAT — a slot NEVER contains a "slots" array
   "treatments": [ <treatment>, ... ], // may be []
   "knobs": {{ ... }},                  // optional, e.g. {{"columns":"3","align":"left"}}
@@ -1025,7 +1102,7 @@ RULES:
   `asset` explicitly, as a bare-string filename inside that module's copy object); reserve
   `asset: null` for slots where nothing in the list fits.{media_rules}
 {_brand_fidelity_rules(doc, single_accent,
-                       creative_hero_used=((used_surfaces or []) if hero_candidates else None))}{_COPY_QUALITY_RULES}
+                       creative_hero_used=((used_surfaces or []) if hero_candidates else None))}{_COPY_QUALITY_RULES}{_WIREFRAME_RULES}
 """
     return system + "\n" + user
 
@@ -1438,10 +1515,25 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
                          used_surfaces: tuple[str, ...] = (),
                          inject_conversion_guidance: bool = False,
                          style_directives: str | None = None,
+                         section_recipe_guidance: str | None = None,
+                         enable_relume_fallback: bool = False,
+                         enforce_gates: bool = True,
+                         replica_bar: float | None = None,
                          log=print) -> GenerationResult:
     """Generate a validated + on-brand ``composition.v1`` for the brief via ONE structured
     call to the repo's Anthropic client, then a bounded validate → neverDo-prefilter →
     render → gate → repair loop (≤ ``max_repairs`` retries).
+
+    FAIL-CLOSED (2026-07-17): when ``enforce_gates`` is True (the default), page
+    generation REFUSES to run for a brand whose lane has not cleared the canonical
+    ordered gates (G1 extraction → G2 validation → G3 harness → G4 replica ≥ bar).
+    The refusal reads the lane's ``flow-report.json`` (written by the orchestrator,
+    ``pipeline_flow.run_flow``) or falls back to ``manifest.json`` — a
+    ``needs_iteration`` / ``blocked`` lane, a below-bar replica, or a lane with no
+    flow record raises ``pipeline_flow.GenerationBlocked``. This closes the exact
+    hole that let a run go extract → generation on a 0.543 replica. Pass
+    ``enforce_gates=False`` only for isolated experiments that deliberately skip
+    the gate.
 
     Pipeline per attempt:
       1. build_prompt(brief, brand, style, seeds)  [+ varietyDirective] [+ REPAIR note]
@@ -1456,9 +1548,18 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
     ``out_dir``. Logs token/latency per call (never secrets)."""
     import compose_from_composition as cfc
 
+    brand_yaml_path = Path(brand_yaml_path)
+    # FAIL-CLOSED GATE: refuse to generate for a lane that has not cleared the
+    # canonical ordered gates. Checked BEFORE any output dir / model work so an
+    # ungated lane never produces a page. (pipeline_flow imported lazily to avoid
+    # an import cycle — it imports this module for its own G5.)
+    if enforce_gates:
+        import pipeline_flow as _pf
+        bar = _pf.DEFAULT_REPLICA_BAR if replica_bar is None else replica_bar
+        _pf.assert_generation_allowed(brand_yaml_path.parent, bar)
+
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    brand_yaml_path = Path(brand_yaml_path)
     doc = load_brand(brand_yaml_path)
     schema = _load_schema()
     if seeds is None:
@@ -1521,13 +1622,57 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
         log("  style directives: injected "
             f"({len(style_directives)} chars)")
 
+    # SECTION RECIPE guidance. Explicit caller input wins (including "" to suppress).
+    # Automatic resolution is strictly fallback-only: jobs with measured seeds or a
+    # compatible injected archetype are excluded before Relume retrieval.
+    relume_selections: dict[str, list[str]] = {}
+    higher_tier = {
+        use_case: "measured-brand-pattern"
+        for use_case in (seeds.matches if isinstance(seeds, SeedResult) else {})
+    }
+    for use_case in _GENERIC_ARCHETYPE_USE_CASES:
+        higher_tier.setdefault(use_case, "brand-style-archetype")
+    if hero_candidates:
+        higher_tier.setdefault("hero", "brand-style-archetype")
+    if section_recipe_guidance is None and enable_relume_fallback:
+        try:
+            import relume_recipe_catalog as recipe_catalog
+            requested = brief_use_cases(brief_body)
+            ingredients = {
+                use_case: tuple(
+                    ingredient for ingredient, marker in (
+                        ("cards", "card"), ("actions", "action"), ("media", "asset"),
+                        ("plans", "pricing"), ("form", "form"), ("logos", "logo"),
+                    ) if marker in brief_body.lower()
+                )
+                for use_case in requested
+            }
+            section_recipe_guidance, relume_selections = recipe_catalog.fallback_guidance(
+                requested,
+                higher_tier=higher_tier,
+                ingredients_by_use_case=ingredients,
+                top_k=3,
+            )
+            section_recipe_guidance = section_recipe_guidance or None
+        except Exception as exc:
+            raise RuntimeError(
+                f"Relume fallback resolution failed closed: {type(exc).__name__}: {exc}"
+            ) from exc
+    elif section_recipe_guidance is None:
+        section_recipe_guidance = None
+    if section_recipe_guidance:
+        import relume_recipe_catalog as recipe_catalog
+        recipe_catalog.assert_prompt_safe(section_recipe_guidance)
+        log(f"  section recipes: injected ({len(section_recipe_guidance)} chars)")
+
     base_prompt = build_prompt(brief_body, brand_yaml_path, style_id, seeds,
                                off_grid_expansion=off_grid,
                                hero_candidates=hero_candidates,
                                used_surfaces=tuple(meta.get("usedSurfaces") or ())
                                or tuple(used_surfaces or ()),
                                conversion_guidance=conv_guidance,
-                               style_directives=style_directives)
+                               style_directives=style_directives,
+                               section_recipe_guidance=section_recipe_guidance)
 
     if provider is None:
         if not load_api_keys():
@@ -1613,6 +1758,18 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
                 repair_note = _repair_note([], [], failures)
                 continue
 
+        precedence_hits = relume_precedence_lint(comp, relume_selections, higher_tier)
+        if precedence_hits:
+            failures = [
+                ("relume-precedence", f"section `{sid}`: {message}")
+                for sid, message in precedence_hits
+            ]
+            tele["stage"] = "relume-precedence-fail"
+            telemetry.append(tele)
+            log(f"    Relume precedence: {precedence_hits}")
+            repair_note = _repair_note([], [], failures)
+            continue
+
         # 4. neverDo pre-filter (cheap, before render)
         nd_hits = neverdo_prefilter(comp, doc)
         if nd_hits:
@@ -1662,6 +1819,29 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
             log(f"    media lint: {[(s, r) for s, r, _ in media_hits]}")
             repair_note = _repair_note([], [], failures)
             continue
+
+        # 4e. WHOLE-PAGE WIREFRAME (wireframe.v1): deterministic copy-shape/job/media
+        # planning runs after the structured composition exists but BEFORE any HTML is
+        # designed.  It validates renderer capability, semantic grouping, visual
+        # anchors/cadence, and required-slot consumption.  The artifact is persisted
+        # only for a buildable attempt; a failure is repairable and never reaches HTML.
+        import section_wireframe as sw
+        wireframe = sw.plan_wireframe(comp)
+        wire_errors = sw.validate_wireframe(wireframe, comp)
+        advanced_hits = composition_lint.lint_wireframe_quality(comp, wireframe)
+        if wire_errors or advanced_hits:
+            failures = [
+                ("wireframe", message) for message in wire_errors
+            ] + [
+                (f"composition-lint:{rule}", f"section `{sid}`: {message}")
+                for sid, rule, message in advanced_hits
+            ]
+            tele["stage"] = "wireframe-fail"
+            telemetry.append(tele)
+            log(f"    wireframe: {len(failures)} hard failure(s)")
+            repair_note = _repair_note([], [], failures)
+            continue
+        (out_dir / "wireframe.json").write_text(json.dumps(wireframe, indent=2) + "\n")
 
         # 5. render (via the Phase-2 adapter)
         try:

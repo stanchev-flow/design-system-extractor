@@ -112,6 +112,12 @@ class FooterGrammar(unittest.TestCase):
         doc["footer"] = {"columns": [{"links": [{"label": "Pricing", "href": "#"}]}]}
         self.assertEqual(cr.footer_grammar(doc), "columns")
 
+    def test_measured_columns_outrank_compact_footer_link_tier(self):
+        doc = copy.deepcopy(FIXTURE)
+        doc["tokens"]["type"]["footer-sitemap-link"] = {"sizeRem": {"base": 0.75}}
+        doc["footer"] = {"columns": [{"links": [{"label": "Pricing", "href": "#"}]}]}
+        self.assertEqual(cr.footer_grammar(doc), "columns")
+
     def test_default_is_display_links(self):
         self.assertEqual(cr.footer_grammar(copy.deepcopy(FIXTURE)), "display-links")
 

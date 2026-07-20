@@ -913,6 +913,39 @@ blocks:
     confidence: high; source: creation; scope: design-language; changelog: []
 ```
 
+### 5.5 `notObserved` → DESIGNED synthesis in the harness catalog (render-time)
+
+A standard-catalog component the source page genuinely never showed is recorded with
+the explicit absence marker `notObserved: true` (§5, §10). That marker is the honest
+system of record and is **never rewritten** — it is not silently invented into an
+observation. But a COMPLETE brand harness should still show every catalog component,
+so the harness catalog / component-preview **synthesizes a `designed`
+(synthesized-from-brand-signals) component from each `notObserved` entry at render
+time** (`designed_components.synthesize`), rather than leaving a blank `"?"` slot:
+
+- The synthesized definition is **licensed from MEASURED SIGNALS ONLY** — the signal
+  FAMILIES the brand actually measured (color/type/spacing/radius/border-shadow/surface/
+  imagery/motion tokens, button + actionGroup facts, accent devices, signatures, measured
+  recipes), detected by PRESENCE, never by value. No invention from nowhere, no
+  cross-brand borrowing.
+- It carries the same provenance discipline as a hand-authored `designed` entry:
+  `origin: designed` (a.k.a. `provenance: synthesized-from-brand-signals`), a
+  `designedFrom` note citing the licensing signals + the honest absence evidence, the
+  `licensedSignals` list, a `confidence` that is **always lower than an extracted
+  observation** (never `high`), `overridable: true`, and `notInReplica: true`.
+- It is **structurally excluded from the measured replica**: the replica composes only
+  from `layouts[]` + provenance-backed `layout-library.patterns` and never reads
+  `blocks`/`primitives` or `layout-library.synthesizedComponents`. Designed components
+  therefore cannot contaminate measured facts or replica scores.
+- The harness renders it **populated and clearly badged `designed`/`synthesized`**,
+  visually distinct from `extracted` (measured) components, so a reviewer can tell at a
+  glance what came from the source vs what the system designed on-brand.
+
+This behavior is generic and palette-agnostic: it applies to any brand.yaml carrying
+`notObserved` catalog markers, encodes no brand/color/section/content specifics, and
+promotes to `extracted` under the normal override rule (§5.3) the moment the component
+is actually observed on a future page.
+
 ## 6. `recipePolicy`, `provenanceIndex`, `indexes`
 
 `recipePolicy` is in §4.3. `provenanceIndex` maps each `sectionId` to its source

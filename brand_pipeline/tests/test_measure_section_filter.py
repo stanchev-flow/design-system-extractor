@@ -108,5 +108,68 @@ class SectionFilterTests(unittest.TestCase):
         self.assertEqual(names, {"header", "footer"})
 
 
+class ActionLabelEvidenceTests(unittest.TestCase):
+    def _group(self, inner: str, attrs: str = "", width: int = 160) -> dict:
+        facts = _measure(f"""<!doctype html><html><head><style>
+        .btn {{ display:inline-block; box-sizing:border-box; width:{width}px;
+                padding:8px 16px; font:500 14px Arial; }}
+        .sr-only {{ position:absolute; width:1px; height:1px; overflow:hidden;
+                    clip:rect(0,0,0,0); clip-path:inset(50%); }}
+        </style></head><body><a class="btn" {attrs}>{inner}</a></body></html>""")
+        return facts["actionGroups"][0]
+
+    def test_visible_span_excludes_sr_only_suffix(self):
+        row = self._group(
+            '<span>Start now</span><span class="sr-only"> with the complete platform</span>')
+        self.assertEqual(row["visibleLabel"], "Start now")
+        self.assertEqual(row["accessibleName"], "Start now with the complete platform")
+        self.assertTrue(row["labelFit"]["visibleFits"])
+        self.assertTrue(row["labelFit"]["likelyHiddenTextConflation"])
+
+    def test_long_aria_label_is_accessible_only(self):
+        row = self._group("<span>Demo</span>",
+                          'aria-label="Request a personalized product demonstration"')
+        self.assertEqual(row["visibleLabel"], "Demo")
+        self.assertEqual(row["accessibleName"],
+                         "Request a personalized product demonstration")
+        self.assertEqual(row["ariaLabel"],
+                         "Request a personalized product demonstration")
+
+    def test_hidden_descendants_are_excluded(self):
+        row = self._group(
+            '<span>Continue</span><span style="display:none"> display</span>'
+            '<span style="visibility:hidden"> visibility</span>'
+            '<span aria-hidden="true"> aria</span>')
+        self.assertEqual(row["visibleLabel"], "Continue")
+        self.assertIn("display", row["accessibleName"])
+
+    def test_labelledby_sets_accessible_name(self):
+        facts = _measure("""<!doctype html><html><body>
+        <span id="short">Open</span><span id="detail">Open account settings</span>
+        <button class="btn" aria-labelledby="detail"><span>Open</span></button>
+        </body></html>""")
+        row = facts["actionGroups"][0]
+        self.assertEqual(row["visibleLabel"], "Open")
+        self.assertEqual(row["accessibleName"], "Open account settings")
+        self.assertEqual(row["labelledBy"], "detail")
+
+    def test_width_sanity_flags_semantic_text_not_visible_text(self):
+        row = self._group(
+            '<span>Go</span><span class="sr-only"> to the detailed onboarding workflow</span>',
+            width=72)
+        self.assertTrue(row["labelFit"]["visibleFits"])
+        self.assertGreater(row["labelFit"]["semanticEstimatedWidth"],
+                           row["labelFit"]["hostWidth"])
+
+    def test_hubspot_v3_control_geometry_fixture(self):
+        row = self._group(
+            '<span>Get a demo</span><span class="sr-only"> of HubSpot\'s premium software</span>',
+            width=113)
+        self.assertEqual(row["visibleLabel"], "Get a demo")
+        self.assertEqual(row["accessibleName"],
+                         "Get a demo of HubSpot's premium software")
+        self.assertTrue(row["labelFit"]["visibleFits"])
+
+
 if __name__ == "__main__":
     unittest.main()

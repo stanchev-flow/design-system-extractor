@@ -21,7 +21,7 @@
 | sec-7 | testimonial-tabs — section-7 | **0.961** | 0.960 | 0.944 | 0.990 | 0.842 | 714px | 707px | [side-by-side](diff/sec-7.png) |
 | sec-8 | badge-row — Voted #1 in 526 G2 Reports | **0.950** | 0.968 | 0.954 | 0.900 | 0.944 | 216px | 240px | [side-by-side](diff/sec-8.png) |
 | sec-9 | closing-cta — Make impossible growth feel impossibly easy, with HubSpot | **0.973** | 0.978 | 0.960 | 0.979 | 0.568 | 335px | 328px | [side-by-side](diff/sec-9.png) |
-| footer | footer (closing bookend) | **0.966** | 0.980 | 0.971 | 0.924 | 0.971 | 656px | 606px | [side-by-side](diff/footer.png) |
+| footer | footer (closing bookend) | **0.966** | 0.981 | 0.971 | 0.924 | 0.971 | 656px | 606px | [side-by-side](diff/footer.png) |
 
 ![strip](diff/strip.png)
 

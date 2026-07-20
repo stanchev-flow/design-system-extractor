@@ -1,0 +1,269 @@
+{
+  "schemaVersion": "relume-inventory.v1",
+  "categories": [
+    {
+      "slug": "loaders",
+      "name": "Loaders",
+      "components": [
+        {
+          "slug": "loader1",
+          "name": "Loader 1",
+          "tags": ["Loading Animation"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/6448fa13b2153309d8f11b94_g2QVmP9vZxSjYEC5ZKlHUIB79DEWI_VfwShHVQLKwtE.png"
+        },
+        {
+          "slug": "loader2",
+          "name": "Loader 2",
+          "tags": ["Text Align Center", "Text Only"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/6448fa120c93faa2cf19b4cd_PfxheNN7gM5v1q_YA0-vKGflqIsK1jao54Qt8vCbC1k.png"
+        },
+        {
+          "slug": "loader3",
+          "name": "Loader 3",
+          "tags": ["Logo Center", "Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/6448fa1103d1e5cc2307c9ab_KpQF5B1f3iCva938yPnN21MvSqejAyznvqYwNjo_Frk.png"
+        },
+        {
+          "slug": "loader4",
+          "name": "Loader 4",
+          "tags": ["Text Align Left", "Progress Bar"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/6448fa10c45811eb9e1ae676_dNxtnzJIFSce00Tl4pesbYgC4I-Qcod8D4YFxFe5jfI.png"
+        },
+        {
+          "slug": "loader5",
+          "name": "Loader 5",
+          "tags": ["Progress Bar"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/6448fa0f4e7271eb625c59f8_k4Sr_PGHCucqgIOi_3j3mKHe-c3m3qEqkraojUTTjCY.png"
+        }
+      ]
+    },
+    {
+      "slug": "application-shells",
+      "name": "Application Shells",
+      "components": [
+        {
+          "slug": "application-shell13",
+          "name": "Application Shell 13",
+          "tags": ["2 Columns", "Topbar", "Side Panel", "Buttons", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/649cff198aeae2926e42228e_application-shell13.png"
+        },
+        {
+          "slug": "application-shell1",
+          "name": "Application Shell 1",
+          "tags": ["1 Column", "Topbar", "Buttons", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/649cff19bde1d143d5be2b3e_application-shell1.png"
+        },
+        {
+          "slug": "application-shell12",
+          "name": "Application Shell 12",
+          "tags": ["2 Columns", "Topbar", "Sidebar", "Buttons", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/649cff198aeae2926e4222ab_application-shell12.png"
+        },
+        {
+          "slug": "application-shell15",
+          "name": "Application Shell 15",
+          "tags": ["2 Columns", "Sidebar", "Side Panel", "Buttons", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/649cff198b2660e3b532486e_application-shell15.png"
+        },
+        {
+          "slug": "application-shell7",
+          "name": "Application Shell 7",
+          "tags": ["2 Columns", "Sidebar", "Buttons", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/649cff1905505718a70c0076_application-shell7.png"
+        },
+        {
+          "slug": "application-shell6",
+          "name": "Application Shell 6",
+          "tags": ["2 Columns", "Topbar", "Buttons", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/649cff19c5f64a6a2f6137dc_application-shell6.png"
+        },
+        {
+          "slug": "application-shell14",
+          "name": "Application Shell 14",
+          "tags": ["2 Columns", "Topbar", "Side Panel", "Buttons", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/649cff1a6c76fa917aa10f80_application-shell14.png"
+        },
+        {
+          "slug": "application-shell9",
+          "name": "Application Shell 9",
+          "tags": ["2 Columns", "Topbar", "Sidebar", "Buttons", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/649cff1a822d7825f2bbbf4d_application-shell9.png"
+        },
+        {
+          "slug": "application-shell5",
+          "name": "Application Shell 5",
+          "tags": ["2 Columns", "Topbar", "Buttons", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/649cff1adeb97c4a8df078f4_application-shell5.png"
+        },
+        {
+          "slug": "application-shell16",
+          "name": "Application Shell 16",
+          "tags": ["2 Columns", "Sidebar", "Side Panel", "Buttons", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/649cff1a1c92b85a2e4b467c_application-shell16.png"
+        },
+        {
+          "slug": "application-shell4",
+          "name": "Application Shell 4",
+          "tags": ["1 Column", "Topbar", "Sidebar", "Buttons", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/649cff1af5c7aa41f58ae2cd_application-shell4.png"
+        },
+        {
+          "slug": "application-shell3",
+          "name": "Application Shell 3",
+          "tags": ["1 Column", "Topbar", "Sidebar", "Buttons", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/649cff1abde1d143d5be2cdd_application-shell3.png"
+        },
+        {
+          "slug": "application-shell8",
+          "name": "Application Shell 8",
+          "tags": ["2 Columns", "Sidebar", "Buttons", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/649cff1bd1e5dbcc492b0998_application-shell8.png"
+        },
+        {
+          "slug": "application-shell11",
+          "name": "Application Shell 11",
+          "tags": ["2 Columns", "Topbar", "Sidebar", "Buttons", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/649cff1bbde1d143d5be2d00_application-shell11.png"
+        },
+        {
+          "slug": "application-shell10",
+          "name": "Application Shell 10",
+          "tags": ["2 Columns", "Topbar", "Sidebar", "Buttons", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/649cff1b42f0800f8be47e02_application-shell10.png"
+        },
+        {
+          "slug": "application-shell2",
+          "name": "Application Shell 2",
+          "tags": ["1 Column", "Sidebar", "Buttons", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/649cff1b2e2ca9bf626343cc_application-shell2.png"
+        }
+      ]
+    },
+    {
+      "slug": "sidebars",
+      "name": "Sidebars",
+      "components": [
+        {
+          "slug": "sidebar4_component",
+          "name": "Sidebar 4",
+          "tags": ["Buttons"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64a79e5ebcb9aef935c1f246_ERXoVOkpLNHLeCLvGxzpn270KuZxhOPdt2b0NB3SQms.png"
+        },
+        {
+          "slug": "sidebar5_component",
+          "name": "Sidebar 5",
+          "tags": ["Buttons"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64a79e5d31190aaff883a135_r1WUVVqv13bRXAE5fnv24Cucl10KZmqQ-DdkVc0ohv4.png"
+        },
+        {
+          "slug": "sidebar2_component",
+          "name": "Sidebar 2",
+          "tags": ["Buttons", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64a79e5c4b37a457d99c19fb_UzP2deeu3jc2IaUHEE2CpjmgZNe90usVxZ7rOlW4Xc8.png"
+        },
+        {
+          "slug": "sidebar9_component",
+          "name": "Sidebar 9",
+          "tags": ["Buttons"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64a79e58b1108ebb5e3ec639_FMJHjSlDl5XWheiGMZsEKaS4FGopk5gKVkYQcGAL9kM.png"
+        },
+        {
+          "slug": "sidebar3_component",
+          "name": "Sidebar 3",
+          "tags": ["Buttons", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64a79e5731190aaff8839d57_3jouFpyrYqgQXES8aKJfi-dmO_9iwzWWcrskuCsuNEA.png"
+        },
+        {
+          "slug": "sidebar1_component",
+          "name": "Sidebar 1",
+          "tags": ["Buttons", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64a79e56bb27996a3a0c0b1a_2-2fpR3nluR-U9_wVjMwRXomgNoTFu0s7a7vFTjbYw0.png"
+        },
+        {
+          "slug": "sidebar6_component",
+          "name": "Sidebar 6",
+          "tags": ["Buttons"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64a79e5426917da969eb33ce_dt-y0VGlqfKgerh9fBbPcOQBF3EwDYFAmgsgbvYfj2A.png"
+        },
+        {
+          "slug": "sidebar7_component",
+          "name": "Sidebar 7",
+          "tags": ["Buttons"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64a79e53a4b723be3ba27d33_CgU62ebKM7dE_Z3CzZIcRBE9ki5oqmNyzs-AWpXpj0Y.png"
+        },
+        {
+          "slug": "sidebar8_component",
+          "name": "Sidebar 8",
+          "tags": ["Buttons"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64a79e4fbf7f27215b23c996_KjJHeIrmgmrqN-YEM8TF4wu3wDaTLi5rkxCMgMaYACw.png"
+        }
+      ]
+    },
+    {
+      "slug": "topbars",
+      "name": "Topbars",
+      "components": [
+        {
+          "slug": "topbar4_component",
+          "name": "Topbar 4",
+          "tags": ["Topbar", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64a79e62dd4ea3535a7dec04_KMxXOZxLmIUk5QFbpKnwQhWq3tzUye3QNcVDj_L3Mqs.png"
+        },
+        {
+          "slug": "topbar3_component",
+          "name": "Topbar 3",
+          "tags": ["Topbar", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64a79e5fb187c2b309a2cfa5_6jmRhv_MccRNWhKmSpVCswFdxzbiLc98pNiZ1A1nRF0.png"
+        },
+        {
+          "slug": "topbar2_component",
+          "name": "Topbar 2",
+          "tags": ["Topbar", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64a79e5926917da969eb36ff_15h0ZnXHdBs5xoCVgEkr3L6ReChE3cBbTcPeTHUUZ10.png"
+        },
+        {
+          "slug": "topbar1_component",
+          "name": "Topbar 1",
+          "tags": ["Topbar", "Buttons", "Search Bar", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64a79e517904dd70e674d4d6_PCba3IdtQ5bGyHdDlWMdaDwdz8aJPWi_PumB9l-ufoQ.png"
+        }
+      ]
+    },
+    {
+      "slug": "page-headers",
+      "name": "Page Headers",
+      "components": [
+        {
+          "slug": "section_page-header4",
+          "name": "Page Header 4",
+          "tags": ["Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64a79e7e8f76fd2858764866_zjSuu14BK5PxJbNElpYjEiRTnDxLmE2hoywt6OftsV0.png"
+        },
+        {
+          "slug": "section_page-header5",
+          "name": "Page Header 5",
+          "tags": ["Image", "Avatar Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64a79e7dbb27996a3a0c422e_Rsmyvfs822Mv811Y8tItGq3HXAUppCRKqSsdx9CRrCU.png"
+        },
+        {
+          "slug": "section_page-header2",
+          "name": "Page Header 2",
+          "tags": ["Icons"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64a79e7c61c938812a28baa7_JXhjUNA53QkoQ_Tu5VqCnX21rHCM71wLnW56AeAKTYY.png"
+        },
+        {
+          "slug": "section_page-header3",
+          "name": "Page Header 3",
+          "tags": ["Image"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64a79e795d3a49b983fa6b76_lheCPvP_yk_i9fBSmgh0dyV5wBm2_2SOR8LzXxpBO6E.png"
+        },
+        {
+          "slug": "section_page-header1",
+          "name": "Page Header 1",
+          "tags": ["Text Only"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64a79e78f4bf33c1d8f962d7_pYkxV0sdHYUhSU9N6QTBRUHzIByzbZkmE_97MJGUoFU.png"
+        }
+      ]
+    }
+  ]
+}

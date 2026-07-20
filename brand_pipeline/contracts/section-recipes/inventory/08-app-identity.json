@@ -1,0 +1,305 @@
+{
+  "schemaVersion": "relume-inventory.v1",
+  "categories": [
+    {
+      "slug": "section-headers",
+      "name": "Section Headers",
+      "components": [
+        {
+          "slug": "section-header3",
+          "name": "Section Header 3",
+          "tags": ["Buttons", "Tabs"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64f5c8a1206779d7d724123a_TT7VMsvCB4cBUbwEN0baYcVOSpMkLg3wtM3NChS64p0.png"
+        },
+        {
+          "slug": "section-header4",
+          "name": "Section Header 4",
+          "tags": ["Search Bar", "Dropdown", "Tabs"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64f5c88dbac6b207284ddcc3_q3oReRNL-hq_4tw_s0IlA1mqmYgW-JJSpChRxX20Ptc.png"
+        },
+        {
+          "slug": "section-header2",
+          "name": "Section Header 2",
+          "tags": ["Search Bar", "Dropdown"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64f5c8877f440653218187b3_RdP4SCbsEcyuxRN2s24rVAoxVVQ67N1YGolxWZu7YHI.png"
+        },
+        {
+          "slug": "section-header1",
+          "name": "Section Header 1",
+          "tags": ["Buttons"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64f5c85f6097693d5c2f06ef_dhoaNbXAEw2-VBu-BBApM4N-mbsUlsjHzYoaDoylcBg.png"
+        }
+      ]
+    },
+    {
+      "slug": "card-headers",
+      "name": "Card Headers",
+      "components": [
+        {
+          "slug": "card-header1_component",
+          "name": "Card Header 1",
+          "tags": ["Buttons"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64f5c8afa2610c7e793021b6_fpM7OhEdaArtnXMHJYuQ8GZa7WmsqdrU6maGPsp_glE.png"
+        },
+        {
+          "slug": "card-header2_component",
+          "name": "Card Header 2",
+          "tags": ["Search Bar", "Dropdown"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/64f5c8aeab7251c58e5fc698_T1n5Y6qrfp_VpKLSlVJNLrLstBMzhvEeppvAlkD-FXI.png"
+        }
+      ]
+    },
+    {
+      "slug": "signup-login-pages",
+      "name": "Sign Up and Log In Pages",
+      "components": [
+        {
+          "slug": "section_login1",
+          "name": "Log In 1",
+          "tags": ["Text Align Center", "Logo Left", "1 Column", "Buttons", "Form"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/621da3511819154a9b6c158d_section-login1.png"
+        },
+        {
+          "slug": "section_login2",
+          "name": "Log In 2",
+          "tags": ["Text Align Center", "Logo Left", "1 Column", "Buttons", "Form"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/621da352c53247199f6c0298_section-login2.png"
+        },
+        {
+          "slug": "section_login3",
+          "name": "Log In 3",
+          "tags": ["Text Align Center", "Logo Center", "1 Column", "Buttons", "Form"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/621da35344481361f54db56d_section-login3.png"
+        },
+        {
+          "slug": "section_login4",
+          "name": "Log In 4",
+          "tags": ["Text Align Center", "Logo Center", "1 Column", "Buttons", "Form"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/621da3543daaa80a9423d92f_section-login4.png"
+        },
+        {
+          "slug": "section_login5",
+          "name": "Log In 5",
+          "tags": ["Text Align Center", "Logo Left", "2 Columns", "Buttons", "Form", "Slider"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/65446236f6ed417d8d84e33a_yiI4FE1n4hQuB31UiBp0duwxJp7X_yH3ev0Ehyz84xU.png"
+        },
+        {
+          "slug": "section_login6",
+          "name": "Log In 6",
+          "tags": ["Text Align Center", "Logo Left", "2 Columns", "Buttons", "Form", "Slider"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/654462356e1db2ef8babc57f_YwkGPm34H9zHPfMzUkJBuboZJHg__YYwx8gTzH6578o.png"
+        },
+        {
+          "slug": "section_login7",
+          "name": "Log In 7",
+          "tags": ["Text Align Center", "Logo Left", "2 Columns", "Image/Video Right", "Buttons", "Form"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/621da3583868801682cda372_section-login7.png"
+        },
+        {
+          "slug": "section_login8",
+          "name": "Log In 8",
+          "tags": ["Text Align Center", "Logo Left", "2 Columns", "Image/Video Right", "Buttons", "Form"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/621da359db3c83f3cee88138_section-login8.png"
+        },
+        {
+          "slug": "section_signup1",
+          "name": "Sign Up 1",
+          "tags": ["Text Align Center", "Logo Left", "1 Column", "Buttons", "Form"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/621da35ac53247b77c6c02a7_section-signup1.png"
+        },
+        {
+          "slug": "section_signup2",
+          "name": "Sign Up 2",
+          "tags": ["Text Align Center", "Logo Left", "1 Column", "Buttons", "Form"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/621da35c853bfeb825af1a38_section-signup2.png"
+        },
+        {
+          "slug": "section_signup3",
+          "name": "Sign Up 3",
+          "tags": ["Text Align Center", "Logo Center", "1 Column", "Buttons", "Form"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/621da35da7ca9976ffb02ef4_section-signup3.png"
+        },
+        {
+          "slug": "section_signup4",
+          "name": "Sign Up 4",
+          "tags": ["Text Align Center", "Logo Center", "1 Column", "Buttons", "Form"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/621da360baeeb4ef0152fb74_section-signup4.png"
+        },
+        {
+          "slug": "section_signup5",
+          "name": "Sign Up 5",
+          "tags": ["Text Align Center", "Logo Left", "2 Columns", "Buttons", "Form", "Slider"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/6544622c8b2a61fc8c6fb829_pjxb9oPBQtTgLWok5jbCOe8ofN6EoCvs-gjsl3uINbo.png"
+        },
+        {
+          "slug": "section_signup6",
+          "name": "Sign Up 6",
+          "tags": ["Text Align Center", "Logo Left", "2 Columns", "Buttons", "Form", "Slider"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/6544622a7f02959a5023dcd1_HGP9VTz_mBU2vZe3DCjgPOk9Hx9Gbag1MFiBiZeadOU.png"
+        },
+        {
+          "slug": "section_signup7",
+          "name": "Sign Up 7",
+          "tags": ["Text Align Center", "Logo Left", "2 Columns", "Image/Video Right", "Buttons", "Form"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/621da3643c13b74447296f5b_section-signup7.png"
+        },
+        {
+          "slug": "section_signup8",
+          "name": "Sign Up 8",
+          "tags": ["Text Align Center", "Logo Left", "2 Columns", "Image/Video Right", "Buttons", "Form"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/621da366c53247a00b6c02ed_section-signup8.png"
+        },
+        {
+          "slug": "section_signup9",
+          "name": "Sign Up 9",
+          "tags": ["Text Align Center", "Logo Left", "1 Column", "Buttons", "Form"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/621da36799a5f24b265d2a50_section-signup9.png"
+        }
+      ]
+    },
+    {
+      "slug": "onboarding-forms",
+      "name": "Onboarding Forms",
+      "components": [
+        {
+          "slug": "section_onboarding1",
+          "name": "Onboarding 1",
+          "tags": ["1 Column", "Text Align Center", "Buttons", "Form", "Progress Bar", "Radio Buttons"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/65b850a86adfe57469ffe376_5e7JOEmBtC8QWTW96qgOhw10NRCv-s3GMHAyqTKDW78.png"
+        },
+        {
+          "slug": "section_onboarding3",
+          "name": "Onboarding 3",
+          "tags": ["1 Column", "Text Align Center", "Buttons", "Form", "Progress Bar", "Radio Buttons"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/65b850ab76fbe79880fe6fa6_BJA0o1wvDy2HsCbpbTiiWSiIoPHSn77FzzoEcIXHwTo.png"
+        },
+        {
+          "slug": "section_onboarding4",
+          "name": "Onboarding 4",
+          "tags": ["1 Column", "Text Align Center", "Buttons", "Form", "Progress Bar", "Radio Buttons"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/65b850ac89547bc03f98cf05_cO7zeuKKXjCKjmH2TlfaEvEpeZ1XIHviT3v55TjEcg0.png"
+        },
+        {
+          "slug": "section_onboarding2",
+          "name": "Onboarding 2",
+          "tags": ["1 Column", "Text Align Center", "Buttons", "Form", "Progress Bar", "Radio Buttons"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/65b850aae3c03757707f4aa0_EjrBaB-6tof8YN0ZDUSMuP8b-H68ZlJW3DSTu4HvfII.png"
+        },
+        {
+          "slug": "section_onboarding6",
+          "name": "Onboarding 6",
+          "tags": ["1 Column", "Text Align Center", "Buttons", "Form", "Progress Bar", "Radio Buttons"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/65b850ae0ab35c156d5cc634_Foe6O_kwmfGWBcI3L0-L6yxlPPg3PlVuKRc4bCwhboU.png"
+        },
+        {
+          "slug": "section_onboarding8",
+          "name": "Onboarding 8",
+          "tags": ["2 Columns", "Image/Video Right", "Text Align Left", "Buttons", "Form", "Progress Bar"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/65b850b2b70ab25c51dd398b_GnXuXivPUlZtJFtj0V0VDx-jKbmN64ZXE4FZDA5Z9Sw.png"
+        },
+        {
+          "slug": "section_onboarding7",
+          "name": "Onboarding 7",
+          "tags": ["2 Columns", "Image/Video Right", "Text Align Left", "Buttons", "Form", "Progress Bar"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/65b850af3b040c503a70727b_DpEJWzryAnHovoH9aQUYRM8tMmCl7YBzqpm87kcDDhQ.png"
+        },
+        {
+          "slug": "section_onboarding10",
+          "name": "Onboarding 10",
+          "tags": ["2 Columns", "Image/Video Right", "Text Align Left", "Buttons", "Form", "Progress Bar"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/65b850b4b2bccf272aa05584_OKvrNiQyuD0zk4ogyRhk-PuBkL_gw6yr35-Yn1IwCFM.png"
+        },
+        {
+          "slug": "section_onboarding9",
+          "name": "Onboarding 9",
+          "tags": ["2 Columns", "Image/Video Right", "Text Align Left", "Buttons", "Form", "Progress Bar"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/65b850b36adfe57469ffedc9__pyDHFr4ykRPFrdu6VV3ZNr0eOevEGK-nP2MFd8fQ7o.png"
+        },
+        {
+          "slug": "section_onboarding5",
+          "name": "Onboarding 5",
+          "tags": ["1 Column", "Text Align Center", "Buttons", "Form", "Progress Bar", "Radio Buttons"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/65b850ade298891c74bd52fb_GnfOQ5qci8_BTiAlBMxDhVHhA00nXMq6JhLWk3KSeow.png"
+        },
+        {
+          "slug": "section_onboarding11",
+          "name": "Onboarding 11",
+          "tags": ["2 Columns", "Image/Video Right", "Text Align Left", "Buttons", "Form", "Progress Bar"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/65b850653dd81480053e6e68_AVSt6i55eRPSU8Tg8dQag6fBfXRJypPfEw02KEa1Fhs.png"
+        },
+        {
+          "slug": "section_onboarding12",
+          "name": "Onboarding 12",
+          "tags": ["2 Columns", "Image/Video Right", "Text Align Left", "Buttons", "Form", "Progress Bar"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/65b850675e683337d1b7505d_1jq8_QWbsIGFhHmUWA8yEaaxOuJYA0K9sdI1bIv_UY4.png"
+        },
+        {
+          "slug": "section_onboarding14",
+          "name": "Onboarding 14",
+          "tags": ["2 Columns", "Image/Video Right", "Text Align Left", "Buttons", "Form", "Progress Bar"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/65b850b94631bad4de721072_9VShgi9yn0_zbANMCAUdiisNIr1KEWyNop4p77ChD6o.png"
+        },
+        {
+          "slug": "section_onboarding15",
+          "name": "Onboarding 15",
+          "tags": ["1 Column", "Text Align Left", "Buttons", "Form", "Progress Bar", "Radio Buttons"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/65b850ba2b52beebf7871bcd_V-LDT6IiPOBWGMh4F4NMqni4k8CBbdZSO0vKePUCtro.png"
+        },
+        {
+          "slug": "section_onboarding13",
+          "name": "Onboarding 13",
+          "tags": ["2 Columns", "Image/Video Right", "Text Align Left", "Buttons", "Form", "Progress Bar"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/65b850b835c39853e7d1e89e_UJrk0coWqR57yOcEC796B4LlifMXMCNa1eeBY3VmJo8.png"
+        },
+        {
+          "slug": "section_onboarding16",
+          "name": "Onboarding 16",
+          "tags": ["1 Column", "Text Align Left", "Buttons", "Form", "Progress Bar", "Radio Buttons"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/65b850bc0de4759c2d7b06f2_ldyQTTCEqZNEbsmWN_NIINTAatD0wsrLKVR-NraDPWY.png"
+        },
+        {
+          "slug": "section_onboarding17",
+          "name": "Onboarding 17",
+          "tags": ["1 Column", "Text Align Left", "Buttons", "Form", "Progress Bar", "Radio Buttons"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/65b850be0de4759c2d7b0811_VkgJlW_O0TyrwlYQze1YGgYMP2TEGs9-_SX7v0cgddg.png"
+        }
+      ]
+    },
+    {
+      "slug": "signup-login-modals",
+      "name": "Sign Up and Log In Modals",
+      "components": [
+        {
+          "slug": "section_login-modal1",
+          "name": "Log In Modal 1",
+          "tags": ["Text Align Center", "1 Column", "Buttons", "Form", "Modal"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/624ada3a45d35597a70c6525_621dbfe6999a5734e4691112_image-login-modal1.png"
+        },
+        {
+          "slug": "section_login-modal2",
+          "name": "Log In Modal 2",
+          "tags": ["Text Align Center", "1 Column", "Buttons", "Form", "Modal"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/624ada3bf8a7c0731e71b4de_621dbfef181915705f6ccffb_image-login-modal2.png"
+        },
+        {
+          "slug": "section_signup-modal1",
+          "name": "Sign Up Modal 1",
+          "tags": ["Text Align Center", "1 Column", "Buttons", "Form", "Modal"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/624ada7d382ca18028c93491_621dbff9a3a4352d98ba5405_image-signup-modal1.png"
+        },
+        {
+          "slug": "section_signup-modal2",
+          "name": "Sign Up Modal 2",
+          "tags": ["Text Align Center", "1 Column", "Buttons", "Form", "Modal"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/624ada7e26246aac9547f14c_621dc004bd85627e43cd5e67_image-signup-modal2.png"
+        },
+        {
+          "slug": "section_signup-modal3",
+          "name": "Sign Up Modal 3",
+          "tags": ["Text Align Center", "1 Column", "Buttons", "Form", "Modal"],
+          "preview": "https://cdn.prod.website-files.com/61789b489343c8242282a0ae/624ada7f46db42a20aad7d66_621dc00ed343dd581d1b74d8_image-signup-modal3.png"
+        }
+      ]
+    }
+  ]
+}

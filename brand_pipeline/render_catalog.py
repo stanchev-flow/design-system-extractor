@@ -33,10 +33,18 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
+
+# Generic designed-component synthesis (shared with the components-preview gallery and
+# the Studio origin catalog). Imported, never inlined, so measured-vs-designed
+# provenance stays defined in ONE place. Robust to launch dir like the sibling scripts.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import designed_components as dc  # noqa: E402
+from artifact_digest import projection_input_digest  # noqa: E402
 
 
 # ── token resolvers (copied from render_section.py, kept read-only there) ───────
@@ -208,35 +216,54 @@ def _as_list(value):
     return [s] if s else []
 
 
-def _origin_item(name, spec):
+def _origin_item(name, spec, doc=None):
     """One catalog row from a brand.yaml primitives/blocks/scaffolds entry.
 
     Returns None for malformed entries. Pulls the key supporting detail per origin:
-    extracted → provenance + conflictsWith; designed → designedFrom.note + overridable.
+    extracted → provenance + conflictsWith; designed → designedFrom.note + confidence
+    + licensedSignals + overridable.
+
+    An un-measured catalog component recorded with the schema's ``notObserved`` absence
+    marker (brand-schema §5/§10) is PROMOTED to a ``designed`` component synthesized on
+    -brand from the brand's measured signals (``designed_components.synthesize``), so the
+    catalog renders it populated + badged instead of a bare ``"?"``. The synthesis is
+    licensed from MEASURED SIGNALS ONLY and is never admitted to the measured replica.
     """
     if not isinstance(spec, dict):
         return None
-    origin = spec.get("origin") or ""
+    kind = dc.classify(spec)
     item = {
         "name": name,
-        "origin": origin,
+        "origin": kind,
         "use": spec.get("use") or "",
         "variant": spec.get("variant") or "",
         "confidence": spec.get("confidence") or "",
         "provenance": [],
         "conflictsWith": [],
         "designedFrom": "",
+        "licensedSignals": [],
+        "notObserved": bool(spec.get("notObserved")),
         "overridable": bool(spec.get("overridable", False)),
     }
-    if origin == "extracted":
+    if kind == "extracted":
         item["provenance"] = _as_list(spec.get("provenance"))
         item["conflictsWith"] = _as_list(spec.get("conflictsWith"))
-    elif origin == "designed":
+    elif kind == "designed":
+        # Prefer an author-written designedFrom; otherwise synthesize from signals.
         df = spec.get("designedFrom")
-        if isinstance(df, dict):
-            item["designedFrom"] = df.get("note") or ""
-        elif isinstance(df, str):
+        if isinstance(df, dict) and df.get("note"):
+            item["designedFrom"] = df.get("note")
+            item["licensedSignals"] = _as_list(spec.get("licensedSignals"))
+            item["confidence"] = spec.get("confidence") or item["confidence"]
+        elif isinstance(df, str) and df.strip():
             item["designedFrom"] = df
+        else:
+            synth = dc.synthesize(name, spec, doc or {})
+            item["designedFrom"] = synth["designedFrom"]["note"]
+            item["licensedSignals"] = synth["licensedSignals"]
+            item["confidence"] = item["confidence"] or synth["confidence"]
+        item["conflictsWith"] = _as_list(spec.get("conflictsWith"))
+        item["overridable"] = True
     return item
 
 
@@ -255,7 +282,7 @@ def build_origin_catalog(doc):
             continue
         items = []
         for name, spec in section.items():
-            row = _origin_item(name, spec)
+            row = _origin_item(name, spec, doc)
             if row is not None:
                 items.append(row)
         if not any(it["origin"] for it in items):
@@ -305,11 +332,17 @@ def build_catalog_model(doc):
             for s in (layout.get("slots") or [])
         }
 
-        # Unified mapping list: prefer componentMapping (WoodWave shape); otherwise
-        # derive mapping-like entries from slots[].mappedComponent (HubSpot shape).
-        # Brand-agnostic: a layout that has componentMapping is untouched.
+        # Unified mapping list: canonical blockMapping first, then legacy
+        # componentMapping, then slots[].mappedComponent.
         raw_maps = layout.get("componentMapping")
-        if raw_maps:
+        block_maps = layout.get("blockMapping")
+        if block_maps:
+            maps = [{
+                "slot": m.get("slot", ""),
+                "role": m.get("role", ""),
+                "component": m.get("contract", ""),
+            } for m in block_maps if isinstance(m, dict)]
+        elif raw_maps:
             maps = [dict(m) for m in raw_maps]
         else:
             maps = []
@@ -490,8 +523,11 @@ def _origin_item_html(it):
     elif it["origin"] == "designed":
         note = it["designedFrom"] or "synthesized from brand rules + tokens"
         bits.append(f'<div class="cat-origin-detail">{html.escape(note)}</div>')
-        if it["overridable"]:
-            bits.append('<div class="cat-origin-over">overridable</div>')
+        conf = it.get("confidence")
+        over = "overridable" if it.get("overridable") else ""
+        tail = " &middot; ".join(x for x in (f"confidence: {html.escape(conf)}" if conf else "", over) if x)
+        if tail:
+            bits.append(f'<div class="cat-origin-over">{tail}</div>')
     use = f' <span class="cat-origin-use">({html.escape(it["use"])})</span>' if it["use"] else ""
     variant = f' <span class="cat-origin-use">&middot; {html.escape(it["variant"])}</span>' if it["variant"] else ""
     return f"""      <div class="cat-origin-item">
@@ -820,8 +856,12 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
 
     model = build_catalog_model(doc)
+    input_digest = projection_input_digest(args.brand_yaml.parent)
+    model["inputDigest"] = input_digest
+    page = render_html(doc, model).replace(
+        "<html", f'<html data-projection-input-digest="{input_digest}"', 1)
     (out / "catalog.json").write_text(json.dumps(model, indent=2), encoding="utf-8")
-    (out / "index.html").write_text(render_html(doc, model), encoding="utf-8")
+    (out / "index.html").write_text(page, encoding="utf-8")
 
     print(f"Wrote {out / 'index.html'}")
     print(f"Wrote {out / 'catalog.json'}")

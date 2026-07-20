@@ -499,6 +499,15 @@
         "archetypeRef": { "type": "string", "description": "OPTIONAL genre-archetype id from contracts/archetypes/*.yaml (spec/archetype-library.md) \u2014 the structural skeleton this section instantiates. The renderer normalizes the section against the archetype BEFORE brand adaptation (brand recipes win), and demotes to the brand's own evidenced anatomy when the id is unknown or a physics fact family cannot bind (fail closed). Only offered by the generator when hero structure candidates were injected." },
         "surfaceIntent": { "$ref": "#/$defs/surfaceIntent" },
         "seededFrom": { "$ref": "#/$defs/seededFrom" },
+        "structureProvenance": {
+          "type": "string",
+          "enum": ["measured-brand-pattern", "designed-brand-pattern", "brand-style-archetype", "relume-fallback"],
+          "description": "Machine-readable structural source. Relume is legal only as the final fallback after measured, designed-from-brand, and compatible brand/style archetype sources are absent."
+        },
+        "structureRecipeId": {
+          "type": ["string", "null"],
+          "description": "Prompt-safe structural recipe id when structureProvenance is relume-fallback; null otherwise."
+        },
         "novelty": { "$ref": "#/$defs/novelty" },
         "grid": { "$ref": "#/$defs/grid" },
         "alignment": { "$ref": "#/$defs/alignment" },

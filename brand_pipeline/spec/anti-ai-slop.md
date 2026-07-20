@@ -2153,6 +2153,130 @@ are never flagged.
 
 ---
 
+## AS-75 — Repeated components squeezed below content demand
+
+**Rule**: repeated components negotiate visible copy, child roles, padding,
+gutter, and available container allocation before choosing tracks. Use the
+maximum feasible count; step down `3 → 2 → 1` when minimum item width, line
+caps, or unbreakable-token fit fails. One component family uses one internal
+anatomy; narrow icon/text items use icon-top rather than incoherent inline
+baselines.
+
+**Why it happens**: item count is mistaken for column count. Three records
+become three tracks even when an adjacent intro rail leaves only half a
+container, so prose wraps into tall letter-width columns and sibling icons
+float against different text lines.
+
+**Caught here**: the customer-story challenge band requested three columns
+inside a counterweight allocation. The fit plan records each candidate width
+and rejects the three-track squeeze before rendering.
+
+**Verify**: `wireframe.v1 componentFit` records demand, candidate widths,
+rejections, chosen columns/anatomy, and derived breakpoints.
+`slop_audit.mjs` measures each stamped item against its declared minimum and
+line caps, checks overflow, and rejects unlicensed sibling-anatomy divergence.
+
+---
+
+## AS-76 — Testimonial intent flattened into loose text
+
+**Rule**: a testimonial/quote with attribution renders as one testimonial
+component containing quote + author/role and compatible bound media when
+available. If no compatible asset exists, emit an asset request and use an
+intentional no-photo anatomy. Bare paragraph/caption pairs, silently dropped
+media, and excessive unexplained section whitespace are hard failures.
+
+**Why it happens**: a generic-flow safety adapter can preserve every string yet
+erase the semantic component. The resulting quote paragraph and uppercase
+caption technically satisfy content-presence gates while losing portrait,
+surface, attribution grouping, quote measure, and intentional section balance.
+
+**Caught here**: the customer-story testimonial carried Whitney Hallock's quote
+and Angel City FC attribution, while the extracted media registry already held
+the compatible Angel City client photo. The adapter flattened the contract into
+paragraph + caption and never asked the testimonial renderer to bind the image.
+
+**Verify**: wireframe testimonial completeness requires quote + attribution and
+`assetStatus: bound|requested`; the renderer stamps
+`data-component-contract="testimonial"`. `slop_audit.mjs` rejects missing
+wrapper/content, a bound asset without an image, and an empty-space ratio over
+the declared cap unless a monument archetype is licensed.
+
+---
+
+## AS-77 — Orphan final-row grid void
+
+**Rule**: after feasible grid tracks are selected, repeated components must fill
+their final row. Use an explicit `lead-span`, `tail-span`, or `single-column`
+plan; use higher columns only when AS-75 passes. A partial row is allowed only
+as licensed asymmetry with a real painted balancing counterweight.
+
+**Why it happens**: stepping down from squeezed tracks fixes item readability
+but can create a new composition defect. Three equal cards in two columns leave
+an unexplained fourth-cell void when normal wrapping is mistaken for a balanced
+layout.
+
+**Caught here**: the HubSpot customer-story challenge correctly rejected three
+184px tracks and selected two 292px tracks, but its third peer item previously
+occupied only the first track of row two. The peer collection now uses an
+explicit tail span with a constrained internal reading measure.
+
+**Verify**: `wireframe.v1` records fill candidates, rejection reasons, the
+chosen strategy, and each item span. `slop_audit.mjs` groups rendered cards by
+row and fails when the final row's painted width leaves unused tracks, when a
+declared span does not render full-row, or when asymmetry has no counterweight.
+
+---
+
+## AS-78 — Circle integrity
+
+**Rule**: a component declared round/circular is icon-, image-, or avatar-only and
+computes approximately square. Text-bearing controls use a pill/capsule family;
+`border-radius: 50%` on a non-square text host is a hard failure. Hover, pressed,
+focus rings, and pseudo layers preserve the host aspect and radius without
+changing layout geometry.
+
+**Why it happens**: a renderer reuses the normal CTA label inside a circular
+carousel family. The text expands the host horizontally while the percentage
+radius follows the new rectangle, creating a giant ellipse; an outline then
+makes the malformed shape more visible.
+
+**Caught here**: a measured icon-only round control was previewed with the
+generic “Get started free” specimen label. Its 50% radius wrapped the text-sized
+rectangle and the focus state became an oversized oval.
+
+**Verify**: `slop_audit.mjs` inspects semantic round hosts and computed geometry
+at runtime: aspect deviation must stay within 6%/3px, visible text is forbidden
+unless the host is explicitly a pill, and computed 50% elliptical hosts fail.
+Focus outline/pseudo geometry must remain shape-compatible and layout-neutral.
+
+---
+
+## AS-79 — Control-family coherence
+
+**Rule**: toggle, switch, input, and button controls inherit the active brand's
+control grammar: radius family, stroke, surface/contrast roles, focus treatment,
+disabled opacity, motion timing/easing, and target sizing. An unobserved toggle
+is explicitly designed from those facts. Its track is a capsule, its knob is
+circular and square with a coherent inset, and every state remains branded.
+Raw browser/default or neutral catalog controls are hard failures.
+
+**Why it happens**: catalog completeness supplies a generic square switch after
+the measured control family has already established rounded corners, branded
+surfaces, and motion. Metadata says “designed,” but the specimen never consumes
+the licensed signals.
+
+**Caught here**: the synthesized toggle used square track and knob geometry,
+generic light/dark paint, and catalog-local transitions despite a measured
+rounded HubSpot control family.
+
+**Verify**: `slop_audit.mjs` checks computed track/knob aspect, capsule/circle
+radii, inset, focus ring, target size, and non-default state paint/motion.
+Harness G3 additionally verifies designed-control provenance and brand-radius
+consumption against `brand.yaml`.
+
+---
+
 ## Adding a new entry
 
 Copy this shape: **Rule** (the imperative, one or two sentences) / **Why it happens** (the

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html data-projection-input-digest="95e514cb1241f1e0a3f37a2c2d615396bdb4ca52b64d9656c77ce684b30226a1" lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -781,6 +781,9 @@ p { text-wrap-style: balance; }
   font-weight: var(--cf-head-weight, 500); color: var(--cf-head-ink, var(--c-ink-muted));
   text-transform: var(--cf-head-case, none); letter-spacing: var(--cf-head-ls, normal);
   margin-bottom: 0.25em; }
+/* continuation column: an invisible heading-row spacer so its first link aligns
+   with the headed columns' first links (shared link-start baseline). */
+.c-foot-col-head--spacer { visibility: hidden; }
 .c-foot-cell { display: flex; flex-direction: column;
   gap: var(--cf-cell-gap, 2rem);
   flex: 1 1 9rem; min-width: 9rem; max-width: 16rem; }
@@ -915,6 +918,18 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-mega-inner { max-width: 76rem; margin: 0 auto;
   padding: 2rem var(--c-section-pad-x, 2.5rem) 2.5rem;
   display: flex; gap: 2.5rem; align-items: stretch; }
+/* left CATEGORY RAIL (menu.sidebarTabs) — a vertical tab list beside the column
+   groups; inert for brands whose menu carries no rail (no element emitted). */
+.cs-mega-rail { flex: 0 0 15rem; max-width: 15rem;
+  border-right: 1px solid rgba(0,0,0,0.08); padding-right: 1.25rem; }
+.cs-mega-rail ul { list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 0.25rem; }
+.cs-mega-rail-item { display: flex; align-items: center;
+  justify-content: space-between; gap: 0.5rem;
+  padding: 0.5rem 0.6rem; border-radius: 8px; font-family: var(--c-font-body);
+  font-size: 14px; font-weight: 500; color: rgb(56, 58, 61); }
+.cs-mega-rail-item--active { background: rgba(0,0,0,0.05); }
+.cs-mega-rail-chev { opacity: 0.5; }
 .cs-mega-main { flex: 1 1 auto; min-width: 0; display: flex;
   flex-direction: column; gap: 1.5rem; }
 .cs-mega-group ul { list-style: none; margin: 0; padding: 0;
@@ -1417,6 +1432,12 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   grid-column: var(--c-col-3, 1 / span var(--c-span-a, 7));
   margin-block-start: var(--c-drop-3, 0); }
 .cs-module-media { margin: 0; width: 100%; overflow: hidden; border-radius: 0; }
+/* An explicitly classified mark stays a bounded glyph row even when this brand
+   uses flat modules instead of Container card plates. */
+.cs-modules .cs-module-media--mark { display: flex; align-items: center;
+  justify-content: flex-start; height: 2.25rem; }
+.cs-modules .cs-module-media--mark .c-image { width: auto; height: 100%;
+  max-width: 12rem; object-fit: contain; }
 /* geometry belongs to the WELL/PLATE, never the bitmap (fid13: the source's card
    images are square — the plate's own radius clips the visible corners; an image
    carrying the global radius rounds all four corners INSIDE the well). */
@@ -1428,6 +1449,14 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-modules--cols > .cs-module:nth-child(even), .cs-modules--cols > .cs-module:nth-child(1),
 .cs-modules--cols > .cs-module:nth-child(2), .cs-modules--cols > .cs-module:nth-child(3) {
   grid-column: auto; margin-block-start: 0; }
+/* WIREFRAME GRID FILL (AS-77): explicit per-item spans own occupancy after the
+   component-fit solver selects tracks. Structural nth-child stagger rules above
+   cannot override this plan. A spanning card may retain a readable internal
+   measure while its painted plate fills the full row. */
+.cs-modules--cols > .cs-module[data-grid-span] {
+  grid-column: span var(--cs-grid-span, 1); }
+.cs-modules--cols > .cs-module[data-grid-span]:not([data-grid-span="1"]) > * {
+  max-width: var(--cs-span-content-measure, none); }
 /* a declared-gutter N-up grid is UNIFORM: wrap rows ride the same measured gutter
    (fid6 2026-07 — --grid-gutter-row is emitted by layout_placement_css only when the
    section's evidence declares a grid gap; without it the editorial row rhythm holds).
@@ -1486,7 +1515,9 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 [data-align="centered"] .cs-modules-actions { justify-content: center; }
 @media (max-width: 767px) { .cs-modules { grid-template-columns: 1fr; gap: 2.5rem; }
   .cs-modules > .cs-module:nth-child(odd), .cs-modules > .cs-module:nth-child(even) {
-    grid-column: 1; margin-block-start: 0; } }
+    grid-column: 1; margin-block-start: 0; }
+  .cs-modules--cols > .cs-module[data-grid-span] { grid-column: 1; }
+  .cs-modules--cols > .cs-module[data-grid-span] > * { max-width: none; } }
 .cs-media-split { display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--grid-gutter); align-items: center; }
@@ -1553,6 +1584,10 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-ov-canvas--framed { margin-inline: auto; }
 /* flat surface-toned wash (sanctioned text-on-media mitigation; never a gradient). */
 .cs-ov-scrim { position: absolute; inset: 0; z-index: 1; }
+.cs-ov-onmedia { position: absolute; inset: 0; z-index: 2; display: flex;
+  flex-direction: column; align-items: center; justify-content: center;
+  gap: var(--c-block-gap); padding: var(--c-section-pad); text-align: center; }
+.cs-ov-onmedia .cs-ov-foot-item { max-width: 46rem; }
 /* panel-on-media (G1): a SOLID panel floated over the canvas — the sanctioned
    panel-over-media pair. Own opaque surface scope (like the split's .cs-panel), so its
    text never composites against the photograph. Flat: no shadow, no radius. */
@@ -1670,6 +1705,33 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-flow-item--prose { max-width: var(--space-body-measure, 62ch); }
 .cs-flow-media { width: 100%; }
 .cs-flow-media .c-image { width: 100%; height: auto; }
+/* TESTIMONIAL COMPONENT (AS-76): quote, attribution, and optional compatible
+   media stay atomic. The photo-side variant uses the brand panel/hairline/type
+   registers; no-photo fallback collapses to one intentional quote card and
+   therefore reserves no dead media column. */
+.cs-testimonial { width: 100%; display: grid;
+  grid-template-columns: minmax(16rem, 0.56fr) minmax(0, 1fr);
+  align-items: stretch; background: var(--c-panel, var(--c-paper));
+  border: 1px solid var(--c-hairline); }
+.cs-testimonial-copy { min-width: 0; display: flex; flex-direction: column;
+  justify-content: center; padding: var(--space-panel-padding, 2rem); }
+.cs-testimonial-media { min-width: 0; margin: 0; overflow: hidden; }
+.cs-testimonial-media .c-image { width: 100%; height: 100%; min-height: 18rem;
+  object-fit: cover; display: block; }
+.cs-testimonial-quote { margin: 0; }
+.cs-testimonial-quote .c-paragraph { font-family: var(--c-font-display);
+  font-size: var(--type-h4-size, var(--c-heading-size));
+  line-height: var(--type-h4-line-height, var(--c-heading-line)); color: var(--c-ink); }
+.cs-testimonial-mark { color: var(--c-accent); font-family: var(--c-font-display);
+  font-size: clamp(2.5rem, 5cqw, 4rem); line-height: 0.8; margin-bottom: 1rem; }
+.cs-testimonial .c-person { margin-top: var(--space-quote-to-attribution,
+  var(--c-block-gap)); }
+.cs-testimonial--quote-card { display: block; max-width: 58rem; }
+@media (max-width: 767px) {
+  .cs-testimonial { grid-template-columns: 1fr; }
+  .cs-testimonial-media .c-image { min-height: 0; aspect-ratio: var(--c-aspect-landscape); }
+  .cs-testimonial-copy { padding: var(--space-panel-padding, 1.5rem); }
+}
 /* logo-strip device (AS-33): a HORIZONTAL row of partner/customer logo images —
    disk-backed extracted assets only (the adapter routes file-less entries to text
    captions instead). Gap rides the brand rhythm. Emphasis treatment (grayscale/…) is

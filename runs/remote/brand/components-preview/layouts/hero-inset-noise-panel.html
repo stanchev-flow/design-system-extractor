@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-pattern="hero-inset-noise-panel" data-pattern-lib="project" data-pattern-match="ref" data-align="left" data-align-source="pattern" data-align-counterweight="media">
+<html data-projection-input-digest="95e514cb1241f1e0a3f37a2c2d615396bdb4ca52b64d9656c77ce684b30226a1" lang="en" data-pattern="hero-inset-noise-panel" data-pattern-lib="project" data-pattern-match="ref" data-align="left" data-align-source="pattern" data-align-counterweight="media">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lexend+Deca:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style id="tokens">
-/* Remote — generated design tokens (layer 1). Source: brand.yaml sha256=ceb152c8b48d; generator tokens_css.py v1.0.0; style=none; tokens=256; disabledDevices=counter-display,ghost-watermark,footer-display-links. Regenerate via the compose CLI — never hand-edit. */
+/* Remote — generated design tokens (layer 1). Source: brand.yaml sha256=3e5434ecf431; generator tokens_css.py v1.0.0; style=none; tokens=256; disabledDevices=counter-display,ghost-watermark,footer-display-links. Regenerate via the compose CLI — never hand-edit. */
 :root {
   --color-ink-primary: #141415;
   --color-ink-body: #383a3d;
@@ -618,8 +618,13 @@ p { text-wrap-style: balance; }
 /* stat primitive (contracts/primitives.yaml `stat`, W4): a big metric VALUE on the
    brand's own heading register + a muted supporting LABEL on the body register.
    The value rides the measured h2 tier by default (--c-stat-size override wins when a
-   brand ever measures a dedicated stat tier) — display stays reserved for the hero. */
-.c-stat { display: flex; flex-direction: column; gap: var(--space-eyebrow-to-heading, 0.5rem); }
+   brand ever measures a dedicated stat tier) — display stays reserved for the hero.
+   STAT PAIR BINDING (fix7 punch 4): the value→label seam is the statPair rung — the
+   TIGHTEST gap in any block the stat sits in (a brand-authored `stat-pair` spacing
+   token wins; the 0.5rem structural default already satisfies the <= 0.5x-sibling-gap
+   law everywhere). The old eyebrow-to-heading ride-along re-registered the pair to a
+   24px header seam, collapsing the value/label hierarchy against its siblings. */
+.c-stat { display: flex; flex-direction: column; gap: var(--space-stat-pair, 0.5rem); }
 .c-stat-value { font-family: var(--c-stat-font, var(--c-font-heading)); color: var(--c-ink);
   text-transform: var(--c-case-heading);
   font-weight: var(--c-heading-weight, var(--c-display-weight));
@@ -627,6 +632,31 @@ p { text-wrap-style: balance; }
 .c-stat-label { font-family: var(--c-font-body); font-size: var(--c-body-size);
   font-weight: var(--c-body-weight); line-height: 1.5em; color: var(--c-ink-muted);
   max-width: var(--space-body-measure, 34ch); }
+
+/* marked list (fix7 punch 3 — the checklist device): content-block items rendered as
+   a REAL list when the composition declares list intent. Hanging indent by grid
+   construction (marker track + text track); item stride rides the brand's own
+   list-item-gap rung. The MARKER is the brand's licensed glyph in the accent role
+   (inline-SVG channel) where an accentDevices marked-list-glyph license exists —
+   license-less brands keep the typographic dot at ink (semantic, never invented). */
+.c-marked-list { list-style: none; margin: 0; padding: 0; display: flex;
+  flex-direction: column; gap: var(--space-list-item-gap, 0.75rem);
+  font-family: var(--c-font-body); font-size: var(--c-body-size);
+  font-weight: var(--c-body-weight); line-height: 1.5em; color: var(--c-ink);
+  max-width: var(--c-measure, 62ch); }
+.c-marked-list > li { display: grid;
+  grid-template-columns: var(--c-list-marker-size, 1em) minmax(0, 1fr);
+  column-gap: 0.6em; align-items: start; }
+.c-list-marker { display: inline-flex; width: var(--c-list-marker-size, 1em);
+  height: var(--c-list-marker-size, 1em); margin-top: 0.22em;
+  color: var(--c-accent-mark, var(--c-ink)); }
+.c-list-marker svg { width: 100%; height: 100%; display: block; }
+
+/* punctuation-accent device (fix7 punch 1): a landmark heading's licensed terminal
+   mark in the device's own accent role — scheme-stable (--c-accent-mark is emitted
+   from the LICENSE's role token, never the surface accent, so a light-surface hero
+   paints the same mark the brand's landmarks evidence). */
+.c-accent-mark { color: var(--c-accent-mark, var(--c-accent)); }
 
 /* table block (contracts/blocks.yaml `table`, W4): semantic tabular data on the same
    ruled-row discipline as .c-rows — 1px hairline per row, label register for column
@@ -1021,6 +1051,9 @@ span.c-foot-wordmark { background: currentColor;
    overlap margin has nothing to overlap, so the title-to-body seam rides the block
    rhythm instead of the negative pull. Collage heroes are untouched. */
 .cs-hero-layered--flat .cs-title { margin-bottom: 0; }
+/* STACKED archetype hero (genre skeleton without an overlap device): the title-to-
+   media seam rides the block rhythm — no negative pull into the collage. */
+.cs-hero--stacked .cs-title { margin-bottom: 0; }
 .cs-collage--layered > .c-image, .cs-collage--layered > .c-image-ph {
   position: relative; z-index: 1; margin-inline: auto; }
 .cs-ov { position: absolute; }
@@ -1048,6 +1081,34 @@ span.c-foot-wordmark { background: currentColor;
 .cs-hero-actions { display: flex; flex-wrap: wrap; align-items: center;
   gap: 1em; justify-content: flex-start; }
 .cs-foot .cs-hero-actions { justify-content: center; }
+/* hero MARK RAIL (fix6): an archetype anatomy's agenda/track/award row after the
+   actions — the shared logo-strip device + one caption line, following the foot's
+   stance (centered foot centers the rail; anchored packs re-anchor like actions).
+   The rail's marks are the BRAND'S OWN iconography (an agenda/track row), not a
+   third-party proof wall — the style layer's logoStrip emphasis treatment
+   (grayscale/reduced) does not apply inside the rail; marks render as shipped. */
+.cs-hero-rail { display: flex; flex-direction: column;
+  gap: var(--space-cluster-gap, var(--c-cluster-gap, 0.75rem)); }
+.cs-foot .cs-hero-rail .cs-logo-strip { justify-content: center; }
+.cs-hero-rail .c-caption { margin: 0; }
+.cs-hero-rail .cs-logo-strip .c-logo-img { filter: none; opacity: 1; }
+/* hero form + quiet link rail (fix6, archetype anatomy devices): the form block
+   caps at the CTA/control measure inside the foot; the link rail is one wrapping
+   row of arrow links at a quiet register. */
+/* one mechanic owns the width: the foot column is already capped at the hero's
+   measured stack measure, so the form fills it (no second competing cap). */
+.cs-hero-form { width: 100%; display: flex; flex-direction: column;
+  gap: var(--space-field-label-gap, 0.5em); }
+.cs-hero-form .c-form { margin: 0; }
+.cs-hero-form .c-paragraph { margin: 0; }
+/* the form NOTE attaches to its control (fix7 punch 6/7): caption register BELOW the
+   field, capped to the control's own width (the wrapper's), balanced wrap — a meta
+   line inside an anchored stack honors the stack anchor, never a ragged floater.
+   (.c-caption already carries text-wrap: balance in the component base.) */
+.cs-hero-form .c-caption { margin: 0; max-width: 100%; align-self: stretch; }
+.cs-hero-links { display: flex; flex-wrap: wrap; align-items: center;
+  justify-content: center; column-gap: var(--c-cluster-gap, 1rem);
+  row-gap: 0.5rem; }
 @media (max-width: 991px) { .cs-navlinks { display: none; } }
 @media (max-width: 767px) { .cs-section {
     /* provenance: structural — mobile floor insets (tap-safe minimum section padding on
@@ -1071,7 +1132,12 @@ span.c-foot-wordmark { background: currentColor;
   border-radius: var(--radius-panel, var(--radius));
   background-color: var(--c-panel-bg, var(--c-paper));
   background-size: cover; background-position: center top; overflow: hidden;
-  padding: var(--c-module-gap, 6rem) var(--c-module-gap, 6rem); }
+  /* PANEL INSET = the brand's measured panel-padding fact (fix7, pass-3 follow-up
+     4): the spacing law (hero.panel-inset) always expected it; the device padded
+     the module-gap rhythm instead — first composed instantiation exposed the
+     mismatch. Brands without the fact keep the module-gap degrade. */
+  padding: var(--space-panel-padding, var(--c-module-gap, 6rem))
+           var(--space-panel-padding, var(--c-module-gap, 6rem)); }
 .cs-hero-panel--solo { grid-template-columns: minmax(0, 1fr); }
 .cs-hero-panel-content { display: flex; flex-direction: column; align-items: flex-start;
   justify-content: center; gap: var(--c-block-gap); text-align: left; }
@@ -1138,6 +1204,8 @@ body .cs-collage { margin-inline: 0 auto; }
 body .c-heading--display { text-align: left; margin-inline: 0 auto; }
 body .cs-flow { align-items: flex-start; text-align: left; }
 body .cs-hero-actions { justify-content: flex-start; }
+body .cs-hero-rail .cs-logo-strip { justify-content: flex-start; }
+body .cs-hero-links { justify-content: flex-start; }
 body .cs-gallery-intro { text-align: left; }
 body .cs-gallery-caption { text-align: left; }
 body .cs-modules-intro { text-align: left; }

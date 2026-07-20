@@ -57,6 +57,7 @@ import compose_page as cp               # noqa: E402
 import compose_section as cs            # noqa: E402
 import render_components_preview as rp  # noqa: E402
 import tokens_css                       # noqa: E402
+from artifact_digest import projection_input_digest  # noqa: E402
 from styles import inactive_context     # noqa: E402
 
 REPO_ROOT = _HERE.parent
@@ -88,6 +89,13 @@ def source_order_sections(doc: dict, patterns: list[dict]) -> list[tuple[dict, d
     unmapped: list[str] = []
     for pat in patterns:
         prov = [str(p) for p in (pat.get("provenance") or []) if p]
+        # Footer chrome is rendered once by compose_page from the measured
+        # ``footer`` contract. Some authoring lanes also project the footer crop
+        # into a layout-library pattern; treating that pattern as an ordinary
+        # section duplicates the closing bookend and shifts every band pairing.
+        if any(p.lower() in {"footer", "chrome.footer"} or
+               p.lower().endswith("-footer") for p in prov):
+            continue
         lid = next((p for p in prov if p in by_id), None)
         if lid is None:
             # fall back to the first layout whose patternRef points here
@@ -158,6 +166,11 @@ def build_replica_page(brand_yaml: Path, out_dir: Path) -> dict:
     order = [l["id"] for l in adapted_layouts]
     page_doc = dict(doc)
     page_doc["layouts"] = adapted_layouts
+    # A replica always rebuilds the captured full page, including measured
+    # chrome. compose_page's historical opener-family heuristic intentionally
+    # omits chrome for standalone section renders; this marker selects its
+    # existing composed-page chrome path without changing section semantics.
+    page_doc["_composedPage"] = True
 
     style_ctx = inactive_context()
     saved_layout_copy = cs.LAYOUT_COPY
@@ -170,6 +183,9 @@ def build_replica_page(brand_yaml: Path, out_dir: Path) -> dict:
         # fact stays this lane's truth.
         html = cp.build_page(page_doc, brand_yaml, order, style_ctx,
                              honor_curation=False)
+        input_digest = projection_input_digest(brand_dir)
+        html = html.replace(
+            "<html", f'<html data-projection-input-digest="{input_digest}"', 1)
         (out_dir / "index.html").write_text(html)
         tokens_css.write_manifest(
             out_dir, tokens_css.build_page_tokens(page_doc, style_ctx,
@@ -502,10 +518,17 @@ def _chrome_gaps(doc: dict, brand_dir: Path, replica_html: str) -> list[dict]:
     if fam:
         fonts_dir = brand_dir / "assets" / "fonts"
         # match space-insensitively: files ship PostScript-style stems
-        # ("HubSpotSerif-Book") while the family is spaced ("HubSpot Serif").
-        fam_key = fam.lower().replace(" ", "")
+        # ("HubSpotSerif-Book") while each CSS-stack member is spaced
+        # ("HubSpot Serif"). Compare concrete members, not the serialized stack.
+        fam_keys = [
+            part.strip().strip("\"'").lower().replace(" ", "")
+            for part in fam.split(",")
+            if part.strip().strip("\"'").lower() not in {
+                "serif", "sans-serif", "monospace", "system-ui"
+            }
+        ]
         local = fonts_dir.is_dir() and any(
-            fam_key in f.stem.lower().replace(" ", "")
+            any(key in f.stem.lower().replace(" ", "") for key in fam_keys)
             for f in fonts_dir.glob("*.woff2"))
         if fam not in cs.loadable_proxies(doc) and not local:
             out.append({"section": "page", "capability": f"display font ({fam})",
@@ -552,7 +575,8 @@ def build_report(out_dir: Path, rows: list[dict], punch: list[dict],
     lines += ["", "Diagnostic, not blocking — re-run with `--fail-under <score>` to gate.", ""]
     (out_dir / "replica-report.md").write_text("\n".join(lines))
     (out_dir / "replica-report.json").write_text(json.dumps(
-        {"schemaVersion": "replica-report.v1", "overall": overall, "bands": rows,
+        {"schemaVersion": "replica-report.v1",
+         "overall": overall, "bands": rows,
          "punchList": punch, **meta}, indent=1) + "\n")
 
 
@@ -669,7 +693,8 @@ def run_diff(brand_dir: Path, out_dir: Path, doc: dict,
                     and g["section"] == "navbar"), None)
         punch.append({**g, "score": (row or {}).get("score")})
 
-    meta = {"sourceShot": str(src_shot_path),
+    meta = {"inputDigest": projection_input_digest(brand_dir),
+            "sourceShot": str(src_shot_path),
             "sourceHeight": src_im.height, "replicaHeight": rep_im.height}
     return rows, punch, overall, meta
 
