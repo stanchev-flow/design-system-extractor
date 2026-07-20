@@ -83,10 +83,28 @@ def _origin_detail(entry: dict) -> str:
     return df.get("note", "") if isinstance(df, dict) else ""
 
 
-def _origin_summary(items: dict) -> str:
+def _origin_items(items) -> list[tuple[str, dict]]:
+    """Named primitive/block entries from canonical maps or legacy id lists.
+
+    The renderer remains a projection reader: accepting the legacy list does not
+    rewrite it into canonical brand data, so validation can still reject it.
+    """
+    if isinstance(items, dict):
+        return [(str(key), value) for key, value in items.items()
+                if isinstance(value, dict)]
+    if isinstance(items, list):
+        return [
+            (str(value.get("id") or value.get("name") or index), value)
+            for index, value in enumerate(items) if isinstance(value, dict)
+        ]
+    raise TypeError("primitives/blocks must be a mapping or legacy list")
+
+
+def _origin_summary(items) -> str:
     """`N extracted / M designed` counts for a primitives/blocks map."""
-    ex = sum(1 for v in items.values() if v.get("origin") == "extracted")
-    de = sum(1 for v in items.values() if v.get("origin") == "designed")
+    entries = _origin_items(items)
+    ex = sum(1 for _, v in entries if v.get("origin") == "extracted")
+    de = sum(1 for _, v in entries if v.get("origin") == "designed")
     return f"{ex} extracted / {de} designed"
 
 
@@ -156,9 +174,14 @@ def render(doc: dict, brand_dir=None) -> str:
               "rules at seams.")
         else:
             w(f"Section transitions are **{trans}**.")
-    for nest in sg.get("nesting", []):
-        w(f"Nesting: `{nest['child']}` allowed only inside "
-          + ", ".join(f"`{p}`" for p in nest.get("allowedParents", [])) + ".")
+    nesting = sg.get("nesting", [])
+    if isinstance(nesting, str) and nesting.strip():
+        w(f"Nesting: {nesting.strip()}.")
+    elif isinstance(nesting, list):
+        for nest in nesting:
+            if isinstance(nest, dict):
+                w(f"Nesting: `{nest.get('child', '?')}` allowed only inside "
+                  + ", ".join(f"`{p}`" for p in nest.get("allowedParents", [])) + ".")
     w("")
 
     # 3. Color tokens (library-agnostic: semantic role + value)
@@ -208,8 +231,15 @@ def render(doc: dict, brand_dir=None) -> str:
         w("")
         w("| slot | role | contract |")
         w("|---|---|---|")
-        for m in lay.get("blockMapping", []):
-            w(f"| {m.get('slot','')} | {m.get('role','')} | `{m.get('contract','')}` |")
+        mappings = lay.get("blockMapping", [])
+        if mappings:
+            for m in mappings:
+                w(f"| {m.get('slot','')} | {m.get('role','')} | `{m.get('contract','')}` |")
+        else:
+            for slot in lay.get("slots", []):
+                if isinstance(slot, dict):
+                    w(f"| {slot.get('name','')} | {_slot_use(slot)} | "
+                      f"`{_slot_component(slot, lay) or _slot_type(slot)}` |")
         w("")
 
     # 8. Composition mechanics
@@ -253,7 +283,7 @@ def render(doc: dict, brand_dir=None) -> str:
         if prims:
             w("")
             w(f"**Primitives** ({_origin_summary(prims)})")
-            for key, p in prims.items():
+            for key, p in _origin_items(prims):
                 bits = [_origin_badge(p)] if p.get("origin") else []
                 if p.get("use"):
                     bits.append(f"use: {p['use']}")
@@ -272,7 +302,7 @@ def render(doc: dict, brand_dir=None) -> str:
         if blks:
             w("")
             w(f"**Blocks** ({_origin_summary(blks)})")
-            for key, blk in blks.items():
+            for key, blk in _origin_items(blks):
                 bits = [_origin_badge(blk)] if blk.get("origin") else []
                 slot_bits = []
                 for sname, sdef in (blk.get("slots", {}) or {}).items():

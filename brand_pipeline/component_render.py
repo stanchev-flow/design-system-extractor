@@ -1051,6 +1051,9 @@ _FOOT_COLUMNS_CSS = """
   font-weight: var(--cf-head-weight, 500); color: var(--cf-head-ink, var(--c-ink-muted));
   text-transform: var(--cf-head-case, none); letter-spacing: var(--cf-head-ls, normal);
   margin-bottom: 0.25em; }
+/* continuation column: an invisible heading-row spacer so its first link aligns
+   with the headed columns' first links (shared link-start baseline). */
+.c-foot-col-head--spacer { visibility: hidden; }
 .c-foot-cell { display: flex; flex-direction: column;
   gap: var(--cf-cell-gap, 2rem);
   flex: 1 1 9rem; min-width: 9rem; max-width: 16rem; }
@@ -1665,6 +1668,18 @@ button.cs-nav-trigger {{ -webkit-appearance: none; appearance: none;
 .cs-mega-inner {{ max-width: 76rem; margin: 0 auto;
   padding: 2rem var(--c-section-pad-x, 2.5rem) 2.5rem;
   display: flex; gap: 2.5rem; align-items: stretch; }}
+/* left CATEGORY RAIL (menu.sidebarTabs) — a vertical tab list beside the column
+   groups; inert for brands whose menu carries no rail (no element emitted). */
+.cs-mega-rail {{ flex: 0 0 15rem; max-width: 15rem;
+  border-right: 1px solid rgba(0,0,0,0.08); padding-right: 1.25rem; }}
+.cs-mega-rail ul {{ list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 0.25rem; }}
+.cs-mega-rail-item {{ display: flex; align-items: center;
+  justify-content: space-between; gap: 0.5rem;
+  padding: 0.5rem 0.6rem; border-radius: 8px; font-family: var(--c-font-body);
+  font-size: 14px; font-weight: 500; color: {gt_color}; }}
+.cs-mega-rail-item--active {{ background: rgba(0,0,0,0.05); }}
+.cs-mega-rail-chev {{ opacity: 0.5; }}
 .cs-mega-main {{ flex: 1 1 auto; min-width: 0; display: flex;
   flex-direction: column; gap: 1.5rem; }}
 .cs-mega-group ul {{ list-style: none; margin: 0; padding: 0;
@@ -1777,7 +1792,21 @@ def _mega_panel_fragment(menu: dict, panel_id: str = "") -> str:
                       + "".join(group_html(c) for c in aside_cols)
                       + card_html + "</div>")
     id_attr = f' id="{esc(panel_id)}"' if panel_id else ""
+    # LEFT CATEGORY RAIL (fid4-rail 2026-07): a tabbed mega layout renders a vertical
+    # category rail beside its column groups (menu.sidebarTabs — captured structurally
+    # from the hidden DOM). The first entry reads as the active tab. Fact-gated:
+    # brands whose menu carries no rail emit byte-identical markup (no rail element).
+    rail = [str(t).strip() for t in (menu.get("sidebarTabs") or []) if str(t).strip()]
+    rail_html = ""
+    if rail:
+        items = "".join(
+            f'<li class="cs-mega-rail-item{" cs-mega-rail-item--active" if i == 0 else ""}">'
+            f'<span class="cs-mega-rail-label">{esc(t)}</span>'
+            f'<span class="cs-mega-rail-chev" aria-hidden="true">&rsaquo;</span></li>'
+            for i, t in enumerate(rail))
+        rail_html = f'<nav class="cs-mega-rail" aria-label="Categories"><ul>{items}</ul></nav>'
     return (f'<div class="cs-mega"{id_attr}><div class="cs-mega-inner">'
+            f'{rail_html}'
             f'<div class="cs-mega-main">{"".join(group_html(c) for c in main)}</div>'
             f'{aside_html}</div></div>')
 
@@ -2258,6 +2287,13 @@ def footer_grammar(doc) -> str:
     register) selects the oversized display-links device; an extracted multi-column
     footer (footer.columns) selects the measured directory. Brands carrying neither
     keep display-links — the legacy bookend default — so existing renders are stable."""
+    # Explicit measured directory anatomy outranks a typography role whose name
+    # happens to contain "footer". A compact ``footer-sitemap-link`` token
+    # describes links inside a column directory; it is not evidence for the
+    # oversized display-links variant.
+    cols = (doc.get("footer") or {}).get("columns")
+    if isinstance(cols, list) and cols:
+        return "columns"
     types = (doc.get("tokens", {}) or {}).get("type", {}) or {}
     keys = set(types.keys()) if isinstance(types, dict) else set()
     scale = types.get("scale") if isinstance(types, dict) else None
@@ -2265,9 +2301,6 @@ def footer_grammar(doc) -> str:
         keys |= set(scale.keys())
     if any("footer" in str(k).lower() for k in keys):
         return "display-links"
-    cols = (doc.get("footer") or {}).get("columns")
-    if isinstance(cols, list) and cols:
-        return "columns"
     return "display-links"
 
 
@@ -2460,6 +2493,28 @@ def button_family_for_style(doc, hint: str) -> str | None:
         if _norm(name) & words:
             return name
     return None
+
+
+def _accessible_name_for_label(doc, label: str, family: str | None = None) -> str:
+    """Resolve a longer measured accessible name without changing painted copy."""
+    buttons = (doc or {}).get("buttons") or {}
+    candidates = []
+    if family and isinstance(buttons.get(family), dict):
+        candidates.append(buttons[family])
+    if family is None and isinstance(buttons.get("primary"), dict):
+        candidates.append(buttons["primary"])
+    candidates.extend(
+        facts for name, facts in buttons.items()
+        if isinstance(facts, dict) and facts not in candidates
+    )
+    normalized = " ".join(str(label or "").split())
+    for facts in candidates:
+        visible = " ".join(str(facts.get("visibleLabel") or "").split())
+        if visible and visible == normalized:
+            return str(
+                facts.get("ariaLabel") or facts.get("accessibleName") or ""
+            ).strip()
+    return ""
 
 
 def _button_family_override_css(doc) -> str:
@@ -2852,7 +2907,12 @@ def render_arrow_link(doc, ctx: ComponentContext, props=None) -> str:
                  f' --c-arrow-glyph-size: {esc(g["size"])}"></span>')
     else:
         arrow = '<span class="c-arrow" aria-hidden="true">&rarr;</span>'
-    return f'<a class="c-arrow-link{accent}" href="{href}">{esc(label)} {arrow}</a>'
+    accessible = str(
+        props.get("ariaLabel") or props.get("accessibleName")
+        or _accessible_name_for_label(doc, label)
+    ).strip()
+    aria = f' aria-label="{esc(accessible)}"' if accessible and accessible != label else ""
+    return f'<a class="c-arrow-link{accent}" href="{href}"{aria}>{esc(label)} {arrow}</a>'
 
 
 def render_button(doc, ctx: ComponentContext, props=None) -> str:
@@ -2879,7 +2939,12 @@ def render_button(doc, ctx: ComponentContext, props=None) -> str:
         family = button_family_for_style(doc, props.get("familyHint", ""))
     fam_cls = f" c-button--{_slug(family)}" if family else ""
     href = esc(props.get("href", "#"))
-    return (f'<a class="c-button{fam_cls}" href="{href}" role="button">'
+    accessible = str(
+        props.get("ariaLabel") or props.get("accessibleName")
+        or _accessible_name_for_label(doc, props.get("label", "Get started"), family)
+    ).strip()
+    aria = f' aria-label="{esc(accessible)}"' if accessible else ""
+    return (f'<a class="c-button{fam_cls}" href="{href}" role="button"{aria}>'
             f'{esc(props.get("label", "Get started"))}</a>')
 
 
@@ -3185,9 +3250,24 @@ def render_footer(doc, ctx: ComponentContext, props=None) -> str:
             if not items:
                 return ""
             head = (col.get("heading") or col.get("title") or "") if isinstance(col, dict) else ""
-            head_html = f'<span class="c-foot-col-head">{esc(str(head))}</span>' if str(head).strip() else ""
+            if str(head).strip():
+                head_html = f'<span class="c-foot-col-head">{esc(str(head))}</span>'
+            elif _has_headed_col:
+                # CONTINUATION column (a headed group's link list overflowing into a
+                # second, headingless column): reserve the heading-row height so its
+                # first link shares the link-start baseline with the headed columns —
+                # otherwise it floats to y=0 above the others. aria-hidden spacer;
+                # only when sibling columns ARE headed (fact-gated, byte-stable for
+                # footers with no headed columns). fix 2026-07.
+                head_html = ('<span class="c-foot-col-head c-foot-col-head--spacer" '
+                             'aria-hidden="true">&nbsp;</span>')
+            else:
+                head_html = ""
             return f'<div class="c-foot-col">{head_html}{items}</div>'
 
+        _has_headed_col = any(
+            str((c.get("heading") or c.get("title") or "")).strip()
+            for c in columns if isinstance(c, dict))
         groups = [_group_html(c) for c in columns]
         groups = [g for g in groups if g]
         cells = props.get("cells") or []
@@ -3523,7 +3603,8 @@ def render_navbar(doc, ctx: ComponentContext, props=None) -> str:
 
     navlinks = sep.join(_link(n, i) for i, n in enumerate(links))
 
-    def _measured_action(label: str, href: str, facts: dict) -> str:
+    def _measured_action(label: str, href: str, facts: dict,
+                         accessible_name: str = "") -> str:
         """One bar action drawn from its own MEASURED register facts via the scoped
         navcta consumption vars (the fid2 device, extended fix1 item-12b with the
         border channel so an outlined secondary register renders its captured
@@ -3541,7 +3622,9 @@ def render_navbar(doc, ctx: ComponentContext, props=None) -> str:
             decls.append(f"--navcta-pad-x: {_px(facts['padX'])}")
         if facts.get("fontSize"):
             decls.append(f"--navcta-size: {_px(facts['fontSize'])}")
-        return (f'<a class="c-button c-button--navcta" role="button" '
+        aria = (f' aria-label="{esc(accessible_name)}"'
+                if accessible_name and accessible_name != label else "")
+        return (f'<a class="c-button c-button--navcta" role="button"{aria} '
                 f'style="{"; ".join(decls)}" href="{esc(href or "#")}">'
                 f'{esc(label)}</a>')
 
@@ -3562,10 +3645,13 @@ def render_navbar(doc, ctx: ComponentContext, props=None) -> str:
             st = a.get("style") if isinstance(a.get("style"), dict) else {}
             if st.get("bg"):
                 frags.append(_measured_action(str(a["label"]),
-                                              str(a.get("href") or "#"), st))
+                                              str(a.get("href") or "#"), st,
+                                              str(a.get("ariaLabel")
+                                                  or a.get("accessibleName") or "")))
             else:
                 frags.append(render_button(doc, ctx, {
                     "label": a["label"], "href": a.get("href", "#"),
+                    "ariaLabel": a.get("ariaLabel") or a.get("accessibleName"),
                     "accent": False}))
         cta = f'<span class="cs-nav-actions">{"".join(frags)}</span>'
     elif props.get("cta"):
@@ -3587,12 +3673,16 @@ def render_navbar(doc, ctx: ComponentContext, props=None) -> str:
                 decls.append(f"--navcta-pad-x: {_px(facts['padX'])}")
             if facts.get("fontSize"):
                 decls.append(f"--navcta-size: {_px(facts['fontSize'])}")
-            cta = (f'<a class="c-button c-button--navcta" role="button" '
+            accessible = str(props.get("ctaAriaLabel") or "").strip()
+            aria = (f' aria-label="{esc(accessible)}"'
+                    if accessible and accessible != str(props["cta"]) else "")
+            cta = (f'<a class="c-button c-button--navcta" role="button"{aria} '
                    f'style="{"; ".join(decls)}" href="{esc(props.get("ctaHref", "#"))}">'
                    f'{esc(props["cta"])}</a>')
         else:
             cta = render_button(doc, ctx, {
                 "label": props["cta"], "href": props.get("ctaHref", "#"),
+                "ariaLabel": props.get("ctaAriaLabel"),
                 "accent": props.get("ctaAccent", False)})
     # TWO-TIER bar (fix1 2026-07 item-12a/c): gated on the EXPLICIT opt-in
     # `navbar.utilityTier` contract — never on `twoTier` alone (a brand can

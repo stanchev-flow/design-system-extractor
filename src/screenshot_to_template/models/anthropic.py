@@ -7,10 +7,12 @@ from ..tracking import log_usage_if_context
 
 
 class AnthropicProvider(LLMProvider):
-    def __init__(self, model: str = "claude-opus-4-1-20250805", reasoning_effort: str | None = None):
+    def __init__(self, model: str = "claude-opus-4-1-20250805",
+                 reasoning_effort: str | None = None, timeout: float = 300.0,
+                 max_retries: int = 2):
         super().__init__(model)
         # HTML generation can stream for a while; use an explicit, longer timeout.
-        self.client = anthropic.Anthropic(timeout=300.0, max_retries=2)
+        self.client = anthropic.Anthropic(timeout=timeout, max_retries=max_retries)
         self.reasoning_effort = reasoning_effort
 
     def _clamp_max_tokens(self, max_tokens: int) -> int:

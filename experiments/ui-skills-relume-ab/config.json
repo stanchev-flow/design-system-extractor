@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "ui-skills-relume-ab.v1",
+  "brand": "hubspot-v2",
+  "brandYaml": "../../runs/hubspot-v2/brand/brand.yaml",
+  "brief": "fixed-brief.md",
+  "baseStyleId": "corporate-saas-clean",
+  "presetStyleId": "saas-product",
+  "model": "claude-opus-4-8",
+  "reasoningEffort": "high",
+  "temperature": null,
+  "maxRepairs": 7,
+  "maxTokens": 16000,
+  "forceOffGrid": true,
+  "fixedInputs": [
+    "brief",
+    "brand",
+    "base style",
+    "preset directive",
+    "asset inventory",
+    "model",
+    "reasoning effort",
+    "repair budget",
+    "token budget"
+  ],
+  "laneA": {
+    "sectionRecipeGuidance": "disabled",
+    "skillGuidance": "disabled"
+  },
+  "laneB": {
+    "sectionRecipeGuidance": "production fallback resolver: pricing-only, topK=3, structure-only",
+    "skillGuidance": "disabled"
+  },
+  "causalityLimitation": "The Anthropic API exposes no seed here and temperature is left at provider default; model sampling is not deterministic. A single paired sample cannot establish promotion."
+}

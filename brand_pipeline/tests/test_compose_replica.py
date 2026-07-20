@@ -58,6 +58,13 @@ class SourceOrderTests(unittest.TestCase):
         pairs = cx.source_order_sections(doc, patterns)
         self.assertNotIn("navbar", [l["id"] for l, _ in pairs])
 
+    def test_footer_crop_pattern_is_not_duplicated_as_section(self):
+        doc = _doc(["hero", "sitemap-footer"])
+        patterns = [{"id": "pat-hero", "provenance": ["hero"]},
+                    {"id": "pat-footer", "provenance": ["section-10-footer"]}]
+        pairs = cx.source_order_sections(doc, patterns)
+        self.assertEqual([l["id"] for l, _ in pairs], ["hero"])
+
 
 class BandSimilarityTests(unittest.TestCase):
     def _im(self, color, size=(200, 100)):
@@ -130,6 +137,17 @@ class ChromeGapsTests(unittest.TestCase):
             fonts = Path(td) / "assets" / "fonts"
             fonts.mkdir(parents=True)
             (fonts / "HubSpotSerif-Book.woff2").write_bytes(b"\0")
+            gaps = cx._chrome_gaps(doc, Path(td), "<html></html>")
+        self.assertFalse(any("display font" in g["capability"] for g in gaps))
+
+    def test_full_css_stack_matches_registered_font_file(self):
+        import tempfile
+        doc = {"tokens": {"type": {"display-hero": {
+            "family": '"HubSpot Serif Page Header Human", "HubSpot Serif", serif'}}}}
+        with tempfile.TemporaryDirectory() as td:
+            fonts = Path(td) / "assets" / "fonts"
+            fonts.mkdir(parents=True)
+            (fonts / "HubSpotSerif-Medium.woff2").write_bytes(b"\0")
             gaps = cx._chrome_gaps(doc, Path(td), "<html></html>")
         self.assertFalse(any("display font" in g["capability"] for g in gaps))
 

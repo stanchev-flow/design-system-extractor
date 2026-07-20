@@ -1,0 +1,341 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "hubspot-customer-evidence",
+    "name": "Customer evidence page",
+    "useCasesRequested": [
+      "hero",
+      "features",
+      "testimonial",
+      "pricing",
+      "cta"
+    ]
+  },
+  "brand": {
+    "ref": "/Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/brand.yaml"
+  },
+  "style": {
+    "id": "corporate-saas-clean"
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "structureProvenance": "brand-style-archetype",
+      "structureRecipeId": null,
+      "archetypeRef": "hero-case-lead",
+      "slots": [
+        {
+          "name": "kicker",
+          "role": "eyebrow",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "colStart": 7,
+          "colSpan": 6,
+          "copy": "Customer stories"
+        },
+        {
+          "name": "heading",
+          "role": "headline",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "colStart": 7,
+          "colSpan": 6,
+          "copy": "See how teams grow on HubSpot."
+        },
+        {
+          "name": "subheading",
+          "role": "lede",
+          "contract": "paragraph",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "colStart": 7,
+          "colSpan": 5,
+          "copy": "Real results from marketing, sales, and service teams that run on one platform."
+        },
+        {
+          "name": "case",
+          "role": "featured-proof",
+          "contract": "card",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "media",
+          "mediaAspect": "landscape",
+          "z": "mid",
+          "colStart": 1,
+          "colSpan": 5,
+          "asset": {
+            "src": "046-angel-fc.png",
+            "alt": "Angel City FC",
+            "ratio": "landscape"
+          },
+          "copy": {
+            "eyebrow": "Angel City FC",
+            "heading": "300%+",
+            "text": "Angel City FC grew its fanbase without losing the personal touch.",
+            "meta": [
+              "Fan database growth in two years"
+            ],
+            "cta": "Read the story"
+          }
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "mediaSide": "left"
+      },
+      "grid": {
+        "columns": 12,
+        "gutter": "2rem"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "case"
+      }
+    },
+    {
+      "id": "story",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "structureProvenance": "brand-style-archetype",
+      "structureRecipeId": null,
+      "slots": [
+        {
+          "name": "story-heading",
+          "role": "section-heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": "Grow the fanbase, keep the connection."
+        },
+        {
+          "name": "story-items",
+          "role": "feature-run",
+          "contract": "feature-item",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "heading": "A growing club, scattered fan data.",
+              "text": "Fan sign-ups lived across ticketing, email, and social, with no single view of the supporter."
+            },
+            {
+              "heading": "One platform for marketing and service.",
+              "text": "Marketing Hub and Smart CRM put every fan interaction in one place for the whole team."
+            },
+            {
+              "heading": "Personal at scale.",
+              "text": "Automated journeys stayed on-brand, so every fan still felt spoken to directly."
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "columns": "3"
+      },
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "results",
+      "useCase": "features",
+      "archetype": "stack",
+      "surfaceIntent": "panel",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "structureProvenance": "brand-style-archetype",
+      "structureRecipeId": null,
+      "slots": [
+        {
+          "name": "results-heading",
+          "role": "section-heading",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": "The results."
+        },
+        {
+          "name": "results-stats",
+          "role": "metric-run",
+          "contract": "stat",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "value": "300%+",
+              "label": "fan database growth"
+            },
+            {
+              "value": "350+",
+              "label": "new fans a week"
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "testimonial",
+      "useCase": "testimonial",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "testimonial-tab-stats"
+      },
+      "structureProvenance": "designed-brand-pattern",
+      "structureRecipeId": null,
+      "slots": [
+        {
+          "name": "quote",
+          "role": "testimonial",
+          "contract": "testimonial",
+          "textLen": "long",
+          "sizeClass": "title",
+          "width": "stretch",
+          "z": "front",
+          "copy": {
+            "quote": "HubSpot gave us the tools we needed to grow without losing the personal connection with our fans. Their support has been vital to our continued marketing success.",
+            "name": "Whitney Hallock",
+            "role": "Director of Marketing & Experience, Angel City FC"
+          }
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "pricing",
+      "useCase": "pricing",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "novel",
+      "seededFrom": null,
+      "structureProvenance": "brand-style-archetype",
+      "structureRecipeId": null,
+      "slots": [
+        {
+          "name": "pricing-heading",
+          "role": "section-heading",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "hug",
+          "z": "front",
+          "copy": "Choose the plan that fits your team."
+        },
+        {
+          "name": "plan-cards",
+          "role": "plan-run",
+          "contract": "card",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "heading": "Starter",
+              "text": "For small teams building a shared customer foundation.",
+              "cta": "Start free"
+            },
+            {
+              "heading": "Professional",
+              "text": "For growing teams coordinating campaigns and service.",
+              "cta": "See Professional"
+            },
+            {
+              "heading": "Enterprise",
+              "text": "For organizations that need governance across teams.",
+              "cta": "Talk to sales"
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "closing",
+      "useCase": "cta",
+      "archetype": "stack",
+      "surfaceIntent": "inverse",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "closing-cta-dark"
+      },
+      "structureProvenance": "designed-brand-pattern",
+      "structureRecipeId": null,
+      "slots": [
+        {
+          "name": "closing-heading",
+          "role": "headline",
+          "contract": "heading",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "hug",
+          "z": "front",
+          "copy": "Make your growth story impossibly easy, with HubSpot."
+        },
+        {
+          "name": "actions",
+          "role": "action-group",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": [
+            {
+              "label": "Get a demo",
+              "variant": "filled"
+            },
+            {
+              "label": "Get started free",
+              "variant": "outline"
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "actions"
+      }
+    }
+  ],
+  "rationale": "Copy-first customer-evidence page in HubSpot's serif-display/sans-body register. The hero uses the hero-case-lead archetype (split-right per the SaaS directive): a right-hand heading column carrying the licensed orange-period landmark mark, balanced by a real Angel City FC case card (046-angel-fc.png) as the painted counterweight holding the 300%+ pulled stat, outcome line, and the quiet 'Read the story' action so the band keeps one action register (AS-59). Story renders the three atomic records as ONE feature-item array (3-up cards). Results carries the two facts as a single stat array on a cream panel to break surface cadence. Testimonial is a verbatim attributed quote on the page canvas. Pricing is intentionally novel (absent from the measured library) as one atomic card array with three complete records and per-record action variants, no table and no knobs. Closing reuses closing-cta-dark: a deep-teal inverse band (dark reserved for the closing sequence only) with a serif heading closed by the licensed period and the filled+outline action pair carried as one array. All headings stay sentence case at weight 500 or below; accent orange lives only in marks and controls."
+}

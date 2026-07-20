@@ -1,0 +1,17 @@
+{
+  "status": "no-render",
+  "model": "claude-opus-4-8",
+  "maxRepairs": 2,
+  "laneA": {
+    "attempts": 3,
+    "stages": ["schema-fail", "lint-fail", "schema-fail"],
+    "lastObservedIssue": "schema validation"
+  },
+  "laneB": {
+    "attempts": 3,
+    "stages": ["lint-fail", "schema-fail", "lint-fail"],
+    "lastObservedIssue": "closing knob-consumption"
+  },
+  "interpretation": "Neither lane produced renderable HTML; this run cannot compare visual quality or gates.",
+  "followUp": "Repeat both lanes with identical explicit no-invented-knobs brief wording and maxRepairs=4."
+}

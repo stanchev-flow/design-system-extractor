@@ -248,6 +248,29 @@ ASPECT_CSS = {
     "freeform": None,
 }
 
+# MEASURED ASPECT RATIO (fact-gated renderer support 2026-07): a media slot whose
+# pattern recorded the source frame's MEASURED aspect (``mediaAspect: "W / H"`` — e.g.
+# a full-bleed hero canvas whose band measured 1440×772 = ``36 / 19``) is honored
+# verbatim, so the band renders at its measured height instead of snapping to one of
+# the coarse ``wide``/``landscape`` enum classes. The five named classes above stay
+# the default vocabulary; only an explicit ``W / H`` string engages this path, so a
+# pattern that names an enum class (every existing lane) is byte-identical.
+_ASPECT_RATIO_RE = re.compile(r"^\s*\d+(?:\.\d+)?\s*/\s*\d+(?:\.\d+)?\s*$")
+
+
+def _aspect_css(media_aspect) -> str | None:
+    """Resolve a slot's ``mediaAspect`` to CSS ``aspect-ratio``. Accepts either a named
+    enum class (portrait/square/wide/pano/landscape/freeform) OR a measured ``W / H``
+    ratio string. Unknown/blank ⇒ None (intrinsic default), never raises."""
+    v = str(media_aspect or "").strip()
+    low = v.lower()
+    if low in ASPECT_CSS:
+        return ASPECT_CSS[low]
+    if _ASPECT_RATIO_RE.match(v):
+        a, b = (part.strip() for part in v.split("/"))
+        return f"{a} / {b}"
+    return None
+
 
 def _slot_placement(slot: dict) -> dict:
     """The slot's declared placement fields (empty dict when it carries none)."""
@@ -358,8 +381,8 @@ def _media_layers(section: dict) -> list[dict] | None:
         p = _slot_placement(s)
         align_to = p.get("alignTo") if isinstance(p.get("alignTo"), dict) else None
         registration = p.get("registration") if isinstance(p.get("registration"), dict) else None
-        z = (s.get("z") or "").lower()
-        full_bleed = (s.get("width") or "").lower() == "full-bleed"
+        z = str(s.get("z") or "").lower()
+        full_bleed = str(s.get("width") or "").lower() == "full-bleed"
         layer = {
             "name": name,
             "role": s.get("role") or name,
@@ -367,7 +390,7 @@ def _media_layers(section: dict) -> list[dict] | None:
             "alt": ((s.get("asset") or {}) or {}).get("alt") if isinstance(s.get("asset"), dict) else None,
             # masked-media clip (media semantics 2026-07) — declared-only passthrough
             "mask": ((s.get("asset") or {}) or {}).get("mask") if isinstance(s.get("asset"), dict) else None,
-            "aspect": ASPECT_CSS.get((s.get("mediaAspect") or "").lower()),
+            "aspect": _aspect_css(s.get("mediaAspect")),
             "colStart": p.get("colStart"),
             "colSpan": p.get("colSpan"),
             "offsetCols": p.get("offsetCols"),
@@ -438,7 +461,7 @@ def _slot_to_mapping(slot: dict) -> dict:
     for k in ("textLen", "sizeClass", "width", "mediaAspect", "z") + _PLACEMENT_KEYS:
         if slot.get(k) is not None:
             usage[k] = slot[k]
-    aspect = ASPECT_CSS.get((slot.get("mediaAspect") or "").lower())
+    aspect = _aspect_css(slot.get("mediaAspect"))
     if aspect and _is_media_slot(slot):
         usage["aspect"] = aspect               # honored by render_image as aspect-ratio
     copyval = slot.get("copy")
@@ -858,6 +881,24 @@ def _cta_mapping(section: dict) -> list[dict]:
     ]
     buttons = _button_slots(section)
     for i, b in enumerate(buttons):
+        items = b.get("copy") if isinstance(b.get("copy"), list) else None
+        if items:
+            for item in (x for x in items if isinstance(x, dict)):
+                label = _text(item, "label", "cta", "text")
+                if not label:
+                    continue
+                usage = {"label": label, "accent": False}
+                for key in ("family", "styleHint"):
+                    if str(item.get(key) or "").strip():
+                        usage[key] = item[key]
+                if len(mapping) > 1 and "family" not in usage and "styleHint" not in usage:
+                    usage["styleHint"] = "secondary outlined quiet"
+                mapping.append({
+                    "slot": "main",
+                    "role": "cta-primary" if len(mapping) == 1 else "cta-secondary",
+                    "contract": "button", "usage": usage,
+                })
+            continue
         label = _slot_text(b, "label", "cta", "text") or "Get started"
         mapping.append({
             "slot": "main",
@@ -892,13 +933,13 @@ def _cards_copy(section: dict) -> dict:
     slots = _slots(section)
     header = _by_role(slots, "section-title", "title", "heading") or _by_contract(slots, "header")
     module_slot = _by_role(slots, "module", "value-prop", "feature", "card", "prop") \
-        or _by_contract(slots, "testimonial", "quote", "feature-item", "card")
+        or _by_contract(slots, "testimonial", "quote", "feature-item", "content-block", "card")
     modules = _repeatable_copy(module_slot)
     # DECLARED slot mediaAspect (hubspot-v2 2026-07): a module slot whose pattern
     # recorded the card-media frame (e.g. `mediaAspect: square` measured from the
     # source's 1:1 product-UI wells) is honored as the per-card fallback — a module's
     # own `aspect:` still wins. Slots without the fact keep the composer default.
-    slot_aspect = ASPECT_CSS.get(str((module_slot or {}).get("mediaAspect") or "").lower())
+    slot_aspect = _aspect_css((module_slot or {}).get("mediaAspect"))
     if not modules:  # fall back: each non-intro slot is a module
         modules = [s.get("copy") for s in slots
                    if isinstance(s.get("copy"), dict) and s is not header]
@@ -953,7 +994,7 @@ def _cards_copy(section: dict) -> dict:
     hdr_copy = (header or {}).get("copy")
     return {
         "eyebrow": _slot_text(_by_role(slots, "eyebrow"), "eyebrow", "text")
-        or _text(hdr_copy, "eyebrow"),
+        or (_text(hdr_copy, "eyebrow") if isinstance(hdr_copy, dict) else None),
         "heading": _slot_text(header, "heading", "text") or "",
         # intro SUBHEAD (event-scaffolds 2026-07): the module composers already
         # render layout-copy `subhead` under the intro header — the translator now
@@ -977,7 +1018,7 @@ def _cards_mapping(section: dict) -> list[dict]:
         contract = (s.get("contract") or "").lower()
         role = (s.get("role") or "").lower()
         modules = _repeatable_copy(s)
-        if contract in ("feature-item", "card") or (len(modules) > 1):
+        if contract in ("feature-item", "content-block", "card") or (len(modules) > 1):
             for i, m in enumerate(modules):
                 cap = m.get("heading") or m.get("caption") or m.get("title") or ""
                 body = m.get("text") or m.get("body") or ""
@@ -1455,6 +1496,41 @@ def _split_copy(section: dict) -> dict:
     return out
 
 
+def _single_case_card(section: dict) -> dict | None:
+    """Normalize one media-bearing case/story card for the split counterweight.
+
+    The old adapter treated ``card`` as a traceability-only primitive.  A split
+    composer therefore saw neither its nested asset nor its proof/action copy and
+    silently painted an empty/default media half.  This payload keeps the semantic
+    card atomic and gives the split composer one explicit consuming path.
+    """
+    slots = _slots(section)
+    cards = [s for s in slots if (s.get("contract") or "").lower() == "card"]
+    if len(cards) != 1:
+        return None
+    slot = cards[0]
+    c = slot.get("copy") if isinstance(slot.get("copy"), dict) else {}
+    asset = _asset_src(slot)
+    if not asset:
+        nested = c.get("asset")
+        asset = nested.get("src") if isinstance(nested, dict) else nested
+    if not asset:
+        return None
+    return {
+        "slot": str(slot.get("name") or slot.get("role") or "case"),
+        "asset": asset,
+        "alt": ((slot.get("asset") or {}).get("alt")
+                if isinstance(slot.get("asset"), dict) else None)
+        or str(c.get("eyebrow") or c.get("heading") or "Customer story"),
+        "eyebrow": str(c.get("eyebrow") or ""),
+        "heading": str(c.get("heading") or c.get("title") or ""),
+        "meta": str(c.get("meta") or c.get("label") or ""),
+        "body": str(c.get("text") or c.get("body") or ""),
+        "cta": str(c.get("cta") or c.get("action") or ""),
+        "aspect": _aspect_css(slot.get("mediaAspect")) or "16 / 10",
+    }
+
+
 def _gallery_copy(section: dict) -> dict:
     """stack-fullbleed → compose_gallery_showcase. Besides the band's utility copy
     (eyebrow/counter/caption), the translator now ALSO surfaces heading/body/cta: a
@@ -1517,7 +1593,7 @@ def _interlock_copy(section: dict) -> dict:
     aspect = None
     alt = ""
     if isinstance(media, dict):
-        aspect = ASPECT_CSS.get((media.get("mediaAspect") or "").lower())
+        aspect = _aspect_css(media.get("mediaAspect"))
         # AUTHORED ALT (W9, stress-playbook 2026-07): the slot's own asset.alt rides
         # through — the composer used to fall straight to its brand-default alt,
         # overwriting the composition's authored description.
@@ -1565,13 +1641,13 @@ def _overlay_payload(section: dict) -> dict:
         slots.append({
             "name": s.get("name") or s.get("role") or "slot",
             "role": s.get("role") or "",
-            "contract": (s.get("contract") or "").lower(),
-            "z": (s.get("z") or "").lower() or None,
-            "width": (s.get("width") or "").lower() or None,
-            "sizeClass": (s.get("sizeClass") or "").lower() or None,
-            "textLen": (s.get("textLen") or "").lower() or None,
-            "mediaAspect": (s.get("mediaAspect") or "").lower() or None,
-            "aspect": ASPECT_CSS.get((s.get("mediaAspect") or "").lower()),
+            "contract": str(s.get("contract") or "").lower(),
+            "z": str(s.get("z") or "").lower() or None,
+            "width": str(s.get("width") or "").lower() or None,
+            "sizeClass": str(s.get("sizeClass") or "").lower() or None,
+            "textLen": str(s.get("textLen") or "").lower() or None,
+            "mediaAspect": str(s.get("mediaAspect") or "").lower() or None,
+            "aspect": _aspect_css(s.get("mediaAspect")),
             "media": _is_media_slot(s),
             "src": _asset_src(s),
             "alt": ((s.get("asset") or {}).get("alt")
@@ -1621,7 +1697,7 @@ def _overlay_mapping(section: dict) -> list[dict]:
             continue                      # structural shell (panel/rail): composer-drawn
         e = _slot_to_mapping(s)
         contract = (e.get("contract") or "").lower()
-        sc = (s.get("sizeClass") or "").lower()
+        sc = str(s.get("sizeClass") or "").lower()
         if contract in ("link", "cta"):
             e["contract"] = "link"
             e["usage"].setdefault("label", e["usage"].get("text")
@@ -1651,13 +1727,33 @@ def composition_to_layout(section: dict) -> dict:
     novelty = (section.get("novelty") or "reuse").lower()
     raw_intent = (section.get("surfaceIntent") or "any").strip().lower()
     surface_intent = SURFACE_INTENT_MAP.get(raw_intent) or f"surface/{raw_intent}"
+    slots = _slots(section)
+    has_card_collection = any(
+        str(slot.get("contract") or "").lower() == "card"
+        and len(_repeatable_copy(slot)) >= 2 for slot in slots)
+    explicit_card_device = any(
+        any(word in f"{slot.get('name', '')} {slot.get('role', '')}".lower()
+            for word in ("card-grid", "card-carousel"))
+        for slot in slots)
+    has_logo_collection = any(
+        str(slot.get("contract") or "").lower() == "logo"
+        and isinstance(slot.get("copy"), list) and len(slot["copy"]) >= 2
+        for slot in slots)
 
     # renderer archetype: per the schema, a `novelty:novel` section still RECOMPOSES WITHIN a
     # drawable archetype — so it renders via that archetype's bespoke composer (novelty only
     # flags promotion-eligibility, not a different render path). Only an archetype WITHOUT a
     # bespoke composer (none of the six today) degrades to the generic-flow safety net so it
     # still renders its exact slots instead of erroring.
-    if archetype in _BESPOKE_ARCHETYPES:
+    if section.get("_requiresHydration") is True \
+            and has_card_collection and explicit_card_device:
+        # A repeated measured card collection is substantive anatomy. Route it
+        # through the card device even when the author describes the outer band
+        # as split/row/band; generic-flow flattens module assets into prose.
+        renderer_archetype = "cards"
+    elif has_logo_collection and archetype not in _BESPOKE_ARCHETYPES:
+        renderer_archetype = _GENERIC_FLOW
+    elif archetype in _BESPOKE_ARCHETYPES:
         renderer_archetype = archetype
     else:
         renderer_archetype = _GENERIC_FLOW
@@ -1670,6 +1766,31 @@ def composition_to_layout(section: dict) -> dict:
         "gridRules": grid,
         "overlapRules": overlap,
     }
+    wf_section = section.get("_wireframeSection") \
+        if isinstance(section.get("_wireframeSection"), dict) else {}
+    wf_collections = [c for c in (wf_section.get("collections") or [])
+                      if isinstance(c, dict)]
+    wf_collection = wf_collections[0] if wf_collections else None
+    wf_testimonial = wf_section.get("testimonial") \
+        if isinstance(wf_section.get("testimonial"), dict) else None
+    if wf_collection:
+        layout["_componentFit"] = wf_collection.get("componentFit") or {}
+        layout["_collectionAnatomy"] = (
+            (wf_collection.get("componentFit") or {}).get("internalAnatomy") or "text-stack")
+        layout["_collectionFill"] = {
+            "strategy": wf_collection.get("fillStrategy"),
+            "items": [
+                {
+                    "span": item.get("span", 1),
+                    "contentMeasureCh": item.get("contentMeasureCh"),
+                }
+                for item in (wf_collection.get("items") or []) if isinstance(item, dict)
+            ],
+            "balancingCounterweight": wf_collection.get("balancingCounterweight"),
+        }
+    if wf_testimonial:
+        layout["_testimonial"] = wf_testimonial
+        layout["_testimonialIntent"] = True
     # ARCHETYPE-declared header context rides through first (fix5 2026-07): the
     # skeleton's anatomy states its own grammar rung (apply_archetype_skeleton
     # stamps it on the section) — an explicit structural fact, so it outranks the
@@ -1732,6 +1853,13 @@ def composition_to_layout(section: dict) -> dict:
         layout["_moduleCols"] = n
         if "_grid" not in layout:
             layout["_grid"] = {"columns": n, "source": "knob"}
+    # The wireframe component-fit solver is the final owner of repeated-item
+    # tracks. A raw item-count/knob default may request more columns, but cannot
+    # override the content-demand feasibility decision.
+    if wf_collection:
+        fit_columns = int(wf_collection.get("columns") or 1)
+        layout["_moduleCols"] = fit_columns
+        layout["_grid"] = {"columns": fit_columns, "source": "component-fit"}
     # per-slot placement (kept keyed by slot name for composers/scaffolds that read it).
     placement = {}
     for s in _slots(section):
@@ -1747,6 +1875,9 @@ def composition_to_layout(section: dict) -> dict:
     # trigger the layered/scrim path off that same slot.
     use_case = (section.get("useCase") or "").lower()
     art_panel = _art_panel_payload(section) if use_case == "hero" else None
+    case_card = _single_case_card(section) if archetype == "split" else None
+    if case_card is not None:
+        layout["_caseCard"] = case_card
     layers = _media_layers(section) if (archetype == "stack" and art_panel is None) else None
     if layers is not None:
         layout["_mediaLayers"] = layers
@@ -1847,6 +1978,12 @@ def composition_to_layout(section: dict) -> dict:
                for s in _slots(section)):
             layout["_logoWall"] = True
         mapping = []
+        # Testimonial intent is one atomic component, never a paragraph + caption
+        # waterfall. The dedicated flow composer consumes this payload directly.
+        if wf_testimonial:
+            layout["blockMapping"] = []
+            layout["_composerCopy"] = {}
+            return layout
         for s in _slots(section):
             c_low = (s.get("contract") or "").lower()
             copyval = s.get("copy")
@@ -2002,7 +2139,7 @@ def composition_to_layout(section: dict) -> dict:
         if isinstance(section.get("bands"), dict):
             layout["_bands"] = section["bands"]
     else:  # collage / split / cards / stack-fullbleed / interlock
-        if archetype == "cards":
+        if renderer_archetype == "cards":
             layout["blockMapping"] = _cards_mapping(section)
         else:
             # list-copy LOGO slots expand per-item (AS-33 evidence routing — the same
@@ -2012,7 +2149,23 @@ def composition_to_layout(section: dict) -> dict:
             # composer saw no media and invented editorial art over the bound marks.
             mapping = []
             for s in _slots(section):
-                if (s.get("contract") or "").lower().startswith("logo") \
+                contract = (s.get("contract") or "").lower()
+                if contract == "card" and case_card is not None:
+                    # The case card's nested asset is real counterweight media.  Emit
+                    # it as an image fragment for the split renderer; its copy remains
+                    # atomic in ``_caseCard`` and is rendered inside the same wrapper.
+                    mapping.append({
+                        "slot": str(s.get("name") or "case"),
+                        "role": "case-card media",
+                        "contract": "image",
+                        "usage": {
+                            "src": case_card["asset"],
+                            "alt": case_card["alt"],
+                            "aspect": case_card["aspect"],
+                            "mediaRole": "case-card-media",
+                        },
+                    })
+                elif contract.startswith("logo") \
                         and isinstance(s.get("copy"), list):
                     for it in s["copy"]:
                         entry = _logo_item_mapping(it)
@@ -2022,7 +2175,7 @@ def composition_to_layout(section: dict) -> dict:
                 else:
                     mapping.append(_slot_to_mapping(s))
             layout["blockMapping"] = mapping
-        translator = _COPY_TRANSLATORS.get(archetype)
+        translator = _COPY_TRANSLATORS.get(renderer_archetype)
         layout["_composerCopy"] = translator(section) if translator else {}
         # FORM-SPLIT hero (fix6, `hero-form-split` anatomy): a split HERO binding a
         # validated multi-field form slot stamps the same `_formFields` payload the
@@ -2163,6 +2316,27 @@ def adapt_brand_section(section: dict, doc: dict) -> tuple[dict, dict, dict | No
     # same id coincidence (see the creative note above).
     authored = {} if creative else dict(cs.brand_layout_copy(doc).get(layout.get("id")) or {})
     merged = {**(sect_copy or {}), **composer_copy, **authored}
+    # Authored copy owns words, but must not erase measured media bindings the
+    # hydrated composition attached to the same repeated items. Merge structural
+    # media fields by index; this is copy-first precedence without asset loss.
+    authored_items = authored.get("items") if isinstance(authored.get("items"), list) else None
+    composer_items = composer_copy.get("items") \
+        if isinstance(composer_copy.get("items"), list) else composer_copy.get("cards")
+    measured_card_device = section.get("_requiresHydration") is True and any(
+        any(word in f"{slot.get('name', '')} {slot.get('role', '')}".lower()
+            for word in ("card-grid", "card-carousel"))
+        for slot in _slots(section))
+    if measured_card_device and authored_items is not None and isinstance(composer_items, list):
+        enriched = []
+        for index, item in enumerate(authored_items):
+            row = dict(item) if isinstance(item, dict) else {"body": str(item)}
+            structural = composer_items[index] if index < len(composer_items) \
+                and isinstance(composer_items[index], dict) else {}
+            for key in ("asset", "alt", "aspect", "avatar", "media"):
+                if structural.get(key) is not None and row.get(key) is None:
+                    row[key] = structural[key]
+            enriched.append(row)
+        merged["items"] = enriched
     # HEADING-LEVEL DEMOTION below the hero (W5, stress-playbook 2026-07): only the
     # hero rides the display tier — a NON-HERO section's heading/header slot that
     # declares no level demotes to the brand's measured section tier
@@ -2271,6 +2445,17 @@ def render_composition(comp: dict, brand_yaml_path: Path | str, outdir: Path | s
     import media_semantics as ms
     registry = ms.load_media_assets(brand_dir)
     render_comp = ms.apply_media_composition(comp, registry)
+    # Run the same planner that persisted wireframe.json and attach its decisions
+    # in-memory. This is the only track/anatomy decision source; renderers consume
+    # it instead of re-deriving columns from item count.
+    import section_wireframe as sw
+    wireframe = sw.plan_wireframe(render_comp, brand_dir=brand_dir)
+    wf_by_id = {str(s.get("id")): s for s in wireframe.get("sections") or []
+                if isinstance(s, dict)}
+    render_comp = _copy.deepcopy(render_comp)
+    for section in render_comp.get("sections") or []:
+        if isinstance(section, dict) and str(section.get("id")) in wf_by_id:
+            section["_wireframeSection"] = wf_by_id[str(section.get("id"))]
     # defensively drop hallucinated asset srcs so a bad filename can't fail asset fidelity
     # (renderer falls back to brand photography). Provenance copy below keeps the original.
     render_comp = _sanitize_assets(render_comp, brand_dir)
@@ -2313,6 +2498,9 @@ def render_composition(comp: dict, brand_yaml_path: Path | str, outdir: Path | s
 
     # persist the composition JSON next to the render for provenance/round-trip.
     (outdir / "composition.json").write_text(json.dumps(comp, indent=2) + "\n")
+    # Persist the exact plan consumed by this render. Re-renders must not leave a
+    # stale wireframe beside newer HTML (the hard composition gates read this file).
+    (outdir / "wireframe.json").write_text(json.dumps(wireframe, indent=2) + "\n")
 
     # ASSET-REQUEST MANIFEST (media semantics 2026-07, spec §6 ladder rung 2):
     # declared media gaps land beside the render so a human/agent can source the

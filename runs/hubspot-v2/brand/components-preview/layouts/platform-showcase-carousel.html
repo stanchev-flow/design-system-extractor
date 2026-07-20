@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-pattern="platform-showcase-carousel" data-pattern-lib="project" data-pattern-match="ref" data-align="centered" data-align-source="section">
+<html data-projection-input-digest="92d60be505a237687e7cfa5bdfb3ed9a500a178b3db25d0982d8a44d79972a4d" lang="en" data-pattern="platform-showcase-carousel" data-pattern-lib="project" data-pattern-match="ref" data-align="centered" data-align-source="section">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
 <style id="tokens">
-/* HubSpot — generated design tokens (layer 1). Source: brand.yaml sha256=5725d6131176; generator tokens_css.py v1.0.0; style=none; tokens=273; disabledDevices=counter-display,ghost-watermark,footer-display-links. Regenerate via the compose CLI — never hand-edit. */
+/* HubSpot — generated design tokens (layer 1). Source: brand.yaml sha256=a5945199f111; generator tokens_css.py v1.0.0; style=none; tokens=273; disabledDevices=counter-display,ghost-watermark,footer-display-links. Regenerate via the compose CLI — never hand-edit. */
 :root {
   --color-ink-primary: #1f1f1f;
   --color-ink-secondary: rgba(0, 0, 0, 0.62);
@@ -644,8 +644,13 @@ p { text-wrap-style: balance; }
 /* stat primitive (contracts/primitives.yaml `stat`, W4): a big metric VALUE on the
    brand's own heading register + a muted supporting LABEL on the body register.
    The value rides the measured h2 tier by default (--c-stat-size override wins when a
-   brand ever measures a dedicated stat tier) — display stays reserved for the hero. */
-.c-stat { display: flex; flex-direction: column; gap: var(--space-eyebrow-to-heading, 0.5rem); }
+   brand ever measures a dedicated stat tier) — display stays reserved for the hero.
+   STAT PAIR BINDING (fix7 punch 4): the value→label seam is the statPair rung — the
+   TIGHTEST gap in any block the stat sits in (a brand-authored `stat-pair` spacing
+   token wins; the 0.5rem structural default already satisfies the <= 0.5x-sibling-gap
+   law everywhere). The old eyebrow-to-heading ride-along re-registered the pair to a
+   24px header seam, collapsing the value/label hierarchy against its siblings. */
+.c-stat { display: flex; flex-direction: column; gap: var(--space-stat-pair, 0.5rem); }
 .c-stat-value { font-family: var(--c-stat-font, var(--c-font-heading)); color: var(--c-ink);
   text-transform: var(--c-case-heading);
   font-weight: var(--c-heading-weight, var(--c-display-weight));
@@ -653,6 +658,31 @@ p { text-wrap-style: balance; }
 .c-stat-label { font-family: var(--c-font-body); font-size: var(--c-body-size);
   font-weight: var(--c-body-weight); line-height: 1.5em; color: var(--c-ink-muted);
   max-width: var(--space-body-measure, 34ch); }
+
+/* marked list (fix7 punch 3 — the checklist device): content-block items rendered as
+   a REAL list when the composition declares list intent. Hanging indent by grid
+   construction (marker track + text track); item stride rides the brand's own
+   list-item-gap rung. The MARKER is the brand's licensed glyph in the accent role
+   (inline-SVG channel) where an accentDevices marked-list-glyph license exists —
+   license-less brands keep the typographic dot at ink (semantic, never invented). */
+.c-marked-list { list-style: none; margin: 0; padding: 0; display: flex;
+  flex-direction: column; gap: var(--space-list-item-gap, 0.75rem);
+  font-family: var(--c-font-body); font-size: var(--c-body-size);
+  font-weight: var(--c-body-weight); line-height: 1.5em; color: var(--c-ink);
+  max-width: var(--c-measure, 62ch); }
+.c-marked-list > li { display: grid;
+  grid-template-columns: var(--c-list-marker-size, 1em) minmax(0, 1fr);
+  column-gap: 0.6em; align-items: start; }
+.c-list-marker { display: inline-flex; width: var(--c-list-marker-size, 1em);
+  height: var(--c-list-marker-size, 1em); margin-top: 0.22em;
+  color: var(--c-accent-mark, var(--c-ink)); }
+.c-list-marker svg { width: 100%; height: 100%; display: block; }
+
+/* punctuation-accent device (fix7 punch 1): a landmark heading's licensed terminal
+   mark in the device's own accent role — scheme-stable (--c-accent-mark is emitted
+   from the LICENSE's role token, never the surface accent, so a light-surface hero
+   paints the same mark the brand's landmarks evidence). */
+.c-accent-mark { color: var(--c-accent-mark, var(--c-accent)); }
 
 /* table block (contracts/blocks.yaml `table`, W4): semantic tabular data on the same
    ruled-row discipline as .c-rows — 1px hairline per row, label register for column
@@ -786,7 +816,7 @@ p { text-wrap-style: balance; }
 .c-button--secondary { --c-button-bg: var(--button-secondary-bg); --c-button-fg: var(--button-secondary-fg); --c-button-bg-hover: var(--button-secondary-bg-hover); --c-button-fg-hover: var(--button-secondary-fg-hover); --c-button-pad: var(--button-secondary-pad); --c-button-radius: var(--button-secondary-radius); --c-button-weight: var(--button-secondary-weight); --c-button-height: var(--button-secondary-height); border: var(--button-secondary-border); }
 .c-button--tertiary { --c-button-bg: var(--button-tertiary-bg); --c-button-fg: var(--button-tertiary-fg); --c-button-bg-hover: var(--button-tertiary-bg-hover); --c-button-fg-hover: var(--button-tertiary-fg-hover); --c-button-pad: var(--button-tertiary-pad); --c-button-radius: var(--button-tertiary-radius); --c-button-weight: var(--button-tertiary-weight); --c-button-height: var(--button-tertiary-height); border: var(--button-tertiary-border); }
 
-[data-surface="surface/inverse"] .c-button--secondary, [data-surface="surface/inverse-strong"] .c-button--secondary { --c-button-bg: var(--button-secondary-oninverse-bg); --c-button-fg: var(--button-secondary-oninverse-fg); --c-button-bg-hover: var(--button-secondary-oninverse-bg-hover); --c-button-fg-hover: var(--button-secondary-oninverse-fg-hover); border: var(--button-secondary-oninverse-border); }
+[data-surface="surface/inverse"] .c-button--secondary:not(.cs-ov-panel .c-button--secondary), [data-surface="surface/inverse-strong"] .c-button--secondary:not(.cs-ov-panel .c-button--secondary) { --c-button-bg: var(--button-secondary-oninverse-bg); --c-button-fg: var(--button-secondary-oninverse-fg); --c-button-bg-hover: var(--button-secondary-oninverse-bg-hover); --c-button-fg-hover: var(--button-secondary-oninverse-fg-hover); border: var(--button-secondary-oninverse-border); }
 
 .c-card { display: flex; flex-direction: column; align-items: stretch; overflow: hidden;
   background: var(--c-card-bg, var(--surface-panel, var(--c-paper)));
@@ -910,6 +940,8 @@ span.c-foot-wordmark { background: currentColor;
 .c-foot-cstack .c-foot-policy-link + .c-foot-policy-link {
   border-left: 1px solid var(--cf-rule, var(--c-hairline)); }
 
+/* licensed accent devices (fix7): the device role's own token paints the mark */
+:root { --c-accent-mark: var(--color-accent-highlight); --c-list-marker-size: 1em; }
 
 :root { --c-section-pad-top: 4rem; --c-section-pad-bottom: 4rem; --c-section-pad: 4rem; --c-block-gap: 2.5rem; --c-module-gap: 4rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 0rem; }
 .cs-section { background: var(--c-paper); color: var(--c-ink);
@@ -1039,8 +1071,42 @@ span.c-foot-wordmark { background: currentColor;
   --c-hairline: var(--c-panel-hairline); }
 .cs-panel-title { margin-bottom: 1.25rem; }
 .cs-panel-foot { margin-top: 1.5rem; display: flex; justify-content: flex-end; }
+/* FORM-SPLIT hero (fix6): copy column | capture panel. The copy column takes the
+   reading half, the panel the counterweight half with the brand's column gutter
+   between; formSide:left mirrors the pair. Field/panel anatomy is the signup
+   scaffold's (SCAFFOLD_SIGNUP_CSS) — nothing new is styled here but placement. */
+.cs-split--form { column-gap: var(--space-column-to-column, 2rem);
+  align-items: center; }
+/* adjacent halves: the brand's column-to-column token IS the visible gap
+   (an empty registration column would re-register the seam off the ladder). */
+.cs-split--form > .cs-split-body { grid-column: 1 / span 6; grid-row: 1; }
+.cs-split--form > .cs-form-split-panel { grid-column: 7 / -1; grid-row: 1; }
+.cs-split--form-left > .cs-split-body { grid-column: 7 / -1; }
+.cs-split--form-left > .cs-form-split-panel { grid-column: 1 / span 6; }
+.cs-form-split-points { list-style: none; margin: 0; padding: 0; width: 100%;
+  max-width: var(--cs-stack-measure, 34rem);
+  font-family: var(--c-font-body); font-size: var(--c-body-size, 1rem);
+  line-height: 1.5; color: var(--c-ink); }
+.cs-form-split-points li { padding: 0.65em 0;
+  border-top: 1px solid var(--c-hairline); }
+.cs-form-split-points li:last-child { border-bottom: 1px solid var(--c-hairline); }
+.cs-form-split-note { margin: 0; }
+/* HEADING FIT-TO-MEASURE (fix7 punch 5): a stepped display heading re-registers its
+   SIZE to the stamped rung of the brand's own ladder — class/semantics/budget stay
+   display (the pass1 overlay-panel channel); the leading is the display tier's own
+   em-relative value so it scales with the step. Stamp-less columns are inert. */
+[data-fit-rung="h1"] .c-heading--display { font-size: var(--c-h1-size); }
+[data-fit-rung="h2"] .c-heading--display { font-size: var(--c-h2-size); }
+/* STAT PAIR SEPARATION (fix7 punch 4): a stat device separates from the preceding
+   block by >= 1.5x the column's sibling gap — the parent flex gap (heading-to-body
+   rung) supplies 1x, this margin adds the other 0.5x, so the bound value+label pair
+   reads as its OWN block instead of another list row. */
+.cs-split-body > * + .c-stat { margin-block-start:
+  calc(0.5 * var(--space-heading-to-body, var(--c-block-gap, 1.5rem))); }
 @media (max-width: 767px) { .cs-split { grid-template-columns: 1fr; }
   .cs-split-media, .cs-split > .cs-panel, .cs-split > .cs-split-body { grid-column: 1; }
+  .cs-split--form > .cs-split-body, .cs-split--form > .cs-form-split-panel {
+    grid-column: 1; grid-row: auto; }
   .cs-split-media .c-image { /* provenance: structural — mobile recrop: the stacked
     split half needs a bounded height (device geometry, not a brand ratio) */
     aspect-ratio: 4 / 3; } }
@@ -1140,6 +1206,8 @@ body .cs-collage { margin-inline: auto; }
 body .c-heading--display { text-align: center; margin-inline: auto; }
 body .cs-flow { align-items: center; text-align: center; }
 body .cs-hero-actions { justify-content: center; }
+body .cs-hero-rail .cs-logo-strip { justify-content: center; }
+body .cs-hero-links { justify-content: center; }
 body .cs-gallery-intro { text-align: center; }
 body .cs-gallery-caption { text-align: center; }
 body .cs-modules-intro { text-align: center; }

@@ -1,0 +1,146 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "wireframe.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "page", "sections"],
+  "properties": {
+    "schemaVersion": {"const": "wireframe.v1"},
+    "page": {
+      "type": "object",
+      "required": ["storyRhythm", "densitySequence", "surfaceSequence", "maxConsecutiveTextOnly", "brandPrecedence"],
+      "properties": {
+        "storyRhythm": {"type": "array", "items": {"type": "string"}},
+        "densitySequence": {"type": "array", "items": {"enum": ["open", "balanced", "dense"]}},
+        "surfaceSequence": {"type": "array", "items": {"type": "string"}},
+        "maxConsecutiveTextOnly": {"type": "integer", "minimum": 0},
+        "brandPrecedence": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "sections": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id", "job", "density", "surfaceRole", "visualAnchor",
+          "conversionRole", "skeleton", "requiredSlots", "collections",
+          "responsive", "rendererCapabilities"
+        ],
+        "properties": {
+          "id": {"type": "string"},
+          "job": {"type": "string"},
+          "density": {"enum": ["open", "balanced", "dense"]},
+          "surfaceRole": {"type": "string"},
+          "visualAnchor": {"type": "array", "items": {"type": "string"}},
+          "conversionRole": {"enum": ["none", "supporting", "primary"]},
+          "skeleton": {"type": "string"},
+          "structureProvenance": {
+            "enum": ["measured-brand-pattern", "designed-brand-pattern", "brand-style-archetype", "relume-fallback"]
+          },
+          "structureRecipeId": {"type": ["string", "null"]},
+          "requiredSlots": {"type": "array", "items": {"type": "string"}},
+          "collections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["slot", "itemContract", "items", "layout", "columns", "wrap", "fillStrategy", "fillCandidates", "componentFit", "responsive"],
+              "properties": {
+                "slot": {"type": "string"},
+                "itemContract": {"enum": ["feature-item", "content-block", "card", "testimonial"]},
+                "items": {
+                  "type": "array",
+                  "minItems": 2,
+                  "items": {
+                    "type": "object",
+                    "required": ["span"],
+                    "properties": {
+                      "span": {"type": "integer", "minimum": 1},
+                      "contentMeasureCh": {"type": "number", "exclusiveMinimum": 0}
+                    }
+                  }
+                },
+                "layout": {"enum": ["grid", "stacked-list", "rail", "open-cards"]},
+                "columns": {"type": "integer", "minimum": 1},
+                "wrap": {"type": "boolean"},
+                "fillStrategy": {
+                  "enum": ["complete-rows", "lead-span", "tail-span", "single-column", "licensed-asymmetry"]
+                },
+                "fillCandidates": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+                "balancingCounterweight": {"type": ["object", "null"]},
+                "componentFit": {
+                  "type": "object",
+                  "required": [
+                    "contentDemand", "containerWidth", "availableWidth", "gutter",
+                    "itemPadding", "minItemWidth", "preferredMeasureCh",
+                    "maxHeadingLines", "maxBodyLines", "candidateWidths",
+                    "chosenColumns", "internalAnatomy", "fillStrategy",
+                    "fillCandidates", "itemSpans", "responsiveBreakpoints"
+                  ],
+                  "properties": {
+                    "contentDemand": {"type": "array", "items": {"type": "object"}},
+                    "containerWidth": {"type": "number", "exclusiveMinimum": 0},
+                    "availableWidth": {"type": "number", "exclusiveMinimum": 0},
+                    "gutter": {"type": "number", "minimum": 0},
+                    "itemPadding": {"type": "number", "minimum": 0},
+                    "minItemWidth": {"type": "number", "exclusiveMinimum": 0},
+                    "preferredMeasureCh": {"type": "number", "exclusiveMinimum": 0},
+                    "maxHeadingLines": {"type": "integer", "minimum": 1},
+                    "maxBodyLines": {"type": "integer", "minimum": 1},
+                    "candidateWidths": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+                    "chosenColumns": {"type": "integer", "minimum": 1},
+                    "internalAnatomy": {"enum": ["icon-top", "icon-inline", "media-top", "text-stack"]},
+                    "fillStrategy": {
+                      "enum": ["complete-rows", "lead-span", "tail-span", "single-column", "licensed-asymmetry"]
+                    },
+                    "fillCandidates": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+                    "itemSpans": {"type": "array", "items": {"type": "integer", "minimum": 1}},
+                    "fullSpanContentMeasureCh": {"type": ["number", "null"], "exclusiveMinimum": 0},
+                    "balancingCounterweight": {"type": ["object", "null"]},
+                    "responsiveBreakpoints": {"type": "array", "items": {"type": "object"}}
+                  }
+                },
+                "responsive": {
+                  "type": "object",
+                  "required": ["mobileColumns", "collapse"],
+                  "properties": {
+                    "mobileColumns": {"const": 1},
+                    "collapse": {"const": "preserve-item"}
+                  }
+                }
+              }
+            }
+          },
+          "testimonial": {
+            "type": ["object", "null"],
+            "properties": {
+              "componentContract": {"const": "testimonial"},
+              "complete": {"type": "boolean"},
+              "quote": {"type": "string"},
+              "attribution": {"type": "object"},
+              "asset": {"type": ["string", "null"]},
+              "assetStatus": {"enum": ["bound", "requested"]},
+              "assetRequest": {"type": ["object", "null"]},
+              "internalAnatomy": {
+                "enum": ["portrait-side", "avatar-top", "quote-card", "logo-quote", "stat-quote"]
+              }
+            }
+          },
+          "responsive": {"type": "object"},
+          "rendererCapabilities": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["slot", "consumable", "path"],
+              "properties": {
+                "slot": {"type": "string"},
+                "consumable": {"const": true},
+                "path": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

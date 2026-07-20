@@ -469,6 +469,12 @@ def _strip_nav_link(link: dict[str, Any]) -> dict[str, Any]:
                 for f in (menu.get("featured") or [])
             ],
         }
+        # SIDEBAR RAIL (fix 2026-07): the vertical category tabs (left rail) that a
+        # tabbed mega layout renders beside its column groups — ordered labels only,
+        # captured structurally from the hidden DOM. Absent ⇒ no key.
+        rail = [str(t).strip() for t in (menu.get("sidebarTabs") or []) if str(t).strip()]
+        if rail:
+            out["menu"]["sidebarTabs"] = rail
         card = menu.get("card") if isinstance(menu.get("card"), dict) else None
         if card:
             img = card.get("image") if isinstance(card.get("image"), dict) else None

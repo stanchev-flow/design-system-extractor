@@ -1,0 +1,21 @@
+$ node /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/brand_pipeline/slop_audit.mjs /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/ui-skills-relume-ab/lane-a/index.html
+
+--- stdout ---
+FLAG lane-a/index.html @1440px  (6)
+  AS-75 sec-1: component item 195px wide below declared 288px minimum
+  AS-75 sec-1: component body renders 6 lines against 5-line fit cap
+  AS-75 sec-1: component item 195px wide below declared 288px minimum
+  AS-75 sec-1: component body renders 6 lines against 5-line fit cap
+  AS-75 sec-1: component item 195px wide below declared 288px minimum
+  AS-75 sec-1: component body renders 6 lines against 5-line fit cap
+FLAG lane-a/index.html @1180px  (6)
+  AS-75 sec-1: component item 195px wide below declared 288px minimum
+  AS-75 sec-1: component body renders 6 lines against 5-line fit cap
+  AS-75 sec-1: component item 195px wide below declared 288px minimum
+  AS-75 sec-1: component body renders 6 lines against 5-line fit cap
+  AS-75 sec-1: component item 195px wide below declared 288px minimum
+  AS-75 sec-1: component body renders 6 lines against 5-line fit cap
+
+--- stderr ---
+
+--- exit=1 ---

@@ -1,0 +1,74 @@
+{
+  "layout": "hero",
+  "brand": "HubSpot",
+  "composition_mode": true,
+  "neverDo": {
+    "never-heavy-headings": true,
+    "never-dark-mid-page": true,
+    "never-text-logos": true
+  },
+  "neverDo_allowed": [],
+  "fidelity": {
+    "pass": true,
+    "checks": {
+      "Surface = a brand surface role (creative-mode scope)": true,
+      "Display family present (HubSpot Serif)": true,
+      "Authored display heading present (creative-mode scope)": true,
+      "Brand accent surfaced (#ff4800)": true,
+      "Brand assets present (not placeholder)": true
+    }
+  },
+  "slop": {
+    "pass": true,
+    "checks": {
+      "No default/system display font": true,
+      "No off-palette hex colors": true,
+      "No lorem/placeholder copy": true,
+      "All brand image assets present": true,
+      "Rounding matches brand radius scale": true,
+      "No foreign-brand content literals (alt/aria/title)": true,
+      "No foreign-brand asset references": true,
+      "Webfonts loaded (no silent system fallback)": true
+    }
+  },
+  "invariants": {
+    "mode": "hard",
+    "pass": true,
+    "checks": {
+      "single-accent": true,
+      "primitive-only": true,
+      "rhythm": true,
+      "data-composition": true,
+      "slot-resolution": true,
+      "text-contrast": true,
+      "decoration-salience": true,
+      "occlusion": true,
+      "band-attribution": true,
+      "alignment-resolution": true,
+      "media-registration": true,
+      "interaction-contrast": true,
+      "token-provenance": true,
+      "logo-wall-integrity": true,
+      "archetype-physics:hero": true,
+      "knob-consumption": true,
+      "content-redundancy": true,
+      "duplicate-copy": true,
+      "semantic-grouping": true,
+      "section-completeness": true,
+      "visual-anchor": true,
+      "page-rhythm": true,
+      "hero-balance": true,
+      "wireframe-consumption": true,
+      "component-fit": true,
+      "testimonial-integrity": true,
+      "grid-fill": true,
+      "media-binding": true,
+      "mark-legality": true
+    },
+    "details": {
+      "text-contrast": "105 text elements measured against their effective background (surface + decoration layer); worst = page-nav/c-button.c-button--navcta('Get a demo') at 3.4 (floor 4.5); skipped=72; 4 element(s) exempt as MEASURED brand pairs (#ff4800 on #ffffff; #ffffff on #ff4800)",
+      "decoration-salience": "no decoration layers (ghost word / watermark) in this render"
+    }
+  },
+  "overall": true
+}

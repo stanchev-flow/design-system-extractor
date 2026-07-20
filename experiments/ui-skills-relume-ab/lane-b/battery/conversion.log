@@ -1,0 +1,9 @@
+$ /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/venv/bin/python /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/brand_pipeline/conversion_audit.py /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/ui-skills-relume-ab/lane-b --brand /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand --strict --out /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/ui-skills-relume-ab/lane-b/battery/conversion
+
+--- stdout ---
+[conversion] /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/ui-skills-relume-ab/lane-b: SKIP — no campaignType declared (brief frontmatter / composition) — fact-gated skip
+[conversion] report: /Users/stanchev/Webflow/campaigns-hackathon/design-system-extractor-mine/experiments/ui-skills-relume-ab/lane-b/battery/conversion/report.md
+
+--- stderr ---
+
+--- exit=0 ---

@@ -99,7 +99,8 @@
      "sanctioned": true,
      "note": "~20px-rounded panel inset on the canvas; art texture covers 100%; ink text on it"
     }
-   ]
+   ],
+   "_requiresHydration": false
   },
   {
    "id": "logo-wall",
@@ -148,6 +149,7 @@
     }
    ],
    "treatments": [],
+   "_requiresHydration": false,
    "alignment": {
     "anchor": "centered"
    }
@@ -243,7 +245,8 @@
      "contract": "image"
     }
    ],
-   "treatments": []
+   "treatments": [],
+   "_requiresHydration": false
   },
   {
    "id": "infra-panel",
@@ -307,7 +310,8 @@
      }
     }
    ],
-   "treatments": []
+   "treatments": [],
+   "_requiresHydration": false
   },
   {
    "id": "banner-cta",
@@ -354,6 +358,7 @@
      "note": "rounded inner panel (~20px); soft green radial glow at lower edge (grounding section-04)"
     }
    ],
+   "_requiresHydration": false,
    "alignment": {
     "anchor": "centered"
    }
@@ -418,6 +423,7 @@
     }
    ],
    "treatments": [],
+   "_requiresHydration": false,
    "grid": {
     "columns": 3,
     "gutter": "2rem",
@@ -506,6 +512,7 @@
     }
    ],
    "treatments": [],
+   "_requiresHydration": false,
    "alignment": {
     "anchor": "centered"
    }
@@ -586,6 +593,7 @@
     }
    ],
    "treatments": [],
+   "_requiresHydration": false,
    "grid": {
     "columns": 3,
     "gutter": "2rem"
@@ -661,6 +669,7 @@
     }
    ],
    "treatments": [],
+   "_requiresHydration": false,
    "alignment": {
     "anchor": "centered"
    }
@@ -716,6 +725,7 @@
     }
    ],
    "treatments": [],
+   "_requiresHydration": false,
    "alignment": {
     "anchor": "centered"
    }

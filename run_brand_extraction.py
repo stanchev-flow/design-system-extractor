@@ -17,12 +17,11 @@ gates the authored brand data behind a fail-loud output contract:
       evidence/grounding/             per-section VISION grounding YAMLs
       assets/ + assets-manifest.json  curated capture assets (incl. inline-SVG logos)
 
-The `author` stage is agent work, not a script: brand.yaml, section-copy.yaml,
-layout-library.yaml and assets-tagged.json are hand-authored FROM the evidence
-(per brand_pipeline/spec/ layout-analyst-skill.md, brand-schema.md,
-section-copy-schema.md). `validate` then enforces the contract
-(tools/extract/validate_brand_evidence.py) — the gaps that broke the Remote run
-fail loud here instead of rendering as empty sections.
+The executable `author` stage calls the configured repository model provider to
+author brand.yaml, section-copy.yaml, layout-library.yaml, assets-tagged.json and
+the companion artifacts FROM this lane's evidence. It runs a bounded C1-C28
+validation-repair loop and fails at AUTHOR (before nested validation) when no
+provider is configured or output remains invalid.
 
 Each stage reads only upstream artifacts, so stages re-run independently:
 
@@ -77,6 +76,19 @@ def parse_args(argv=None) -> argparse.Namespace:
     # curate
     ap.add_argument("--manifest", type=Path, help="curate: explicit curation.yaml")
     ap.add_argument("--min-bytes", type=int, default=800)
+    # author
+    ap.add_argument("--force-author", action="store_true",
+                    help="re-author even when complete C1-C28-valid artifacts exist")
+    ap.add_argument("--force-author-stage",
+                    choices=("foundation", "copy-chrome", "patterns-recipes",
+                             "media", "projections"),
+                    help="re-run one author DAG stage and its descendants")
+    ap.add_argument("--author-timeout", type=float, default=300.0,
+                    help="model-provider timeout in seconds")
+    ap.add_argument("--author-max-repairs", type=int, default=2,
+                    help="bounded C1-C28 repair attempts")
+    ap.add_argument("--author-max-tokens", type=int, default=32000,
+                    help="maximum output tokens per author call")
     # validate
     ap.add_argument("--allow-no-vision", action="store_true")
     ap.add_argument("--min-logo-assets", type=int, default=3)
@@ -201,18 +213,24 @@ def main(argv=None) -> int:
             tool_argv.append("--force")
         run_stage("curate", "curate_assets", tool_argv)
 
-    # 7) author — agent work, not a script: report what exists vs what's owed
+    # 7) author — executable evidence -> canonical-artifact model pass
     if "author" in args.stage_list:
-        print("[info] author: hand-authoring stage (extraction agent) — inputs are "
-              "the evidence files above; specs:")
-        for spec in ("layout-analyst-skill.md", "brand-schema.md",
-                     "section-copy-schema.md", "extraction-grounding-prompt.md"):
-            print(f"         - {(SPEC_DIR / spec).relative_to(PROJECT_DIR)}")
-        owed = ["brand.yaml", "section-copy.yaml", "layout-library.yaml",
-                "assets-tagged.json", "brand.md", "voice.md"]
-        for name in owed:
-            state = "present" if (brand_dir / name).exists() else "MISSING"
-            print(f"         {name:24s} {state}")
+        sys.path.insert(0, str(PROJECT_DIR / "brand_pipeline"))
+        from author_brand import AuthorBlocked, author_brand
+        try:
+            author_brand(
+                brand_dir,
+                model=args.model,
+                reasoning_effort=args.reasoning_effort,
+                timeout=args.author_timeout,
+                max_repairs=args.author_max_repairs,
+                max_tokens=args.author_max_tokens,
+                force=args.force_author,
+                force_stage=args.force_author_stage,
+            )
+        except AuthorBlocked as exc:
+            print(f"[fail] author: {exc}", file=sys.stderr)
+            return 2
 
     # 8) validate — fail-loud output contract
     if "validate" in args.stage_list:

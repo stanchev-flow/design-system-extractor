@@ -816,7 +816,11 @@ def _known_brand_names() -> list[str]:
                     d = yaml.safe_load(by.read_text()) or {}
                 except Exception:
                     continue
-                n = ((d.get("brand") or {}).get("name") or "").strip()
+                brand = d.get("brand")
+                n = (
+                    brand.get("name") if isinstance(brand, dict) else brand
+                ) or ""
+                n = str(n).strip()
                 if n and n not in names:
                     names.append(n)
         _BRAND_NAMES_CACHE = names
@@ -846,7 +850,11 @@ def _brand_asset_corpus() -> dict:
                     d = yaml.safe_load(by.read_text()) or {}
                 except Exception:
                     continue
-                name = ((d.get("brand") or {}).get("name") or "").strip().lower()
+                brand = d.get("brand")
+                name = (
+                    brand.get("name") if isinstance(brand, dict) else brand
+                ) or ""
+                name = str(name).strip().lower()
                 if not name:
                     continue
                 names = set()
@@ -1321,13 +1329,32 @@ def check_composition_lints(render_dir):
         return []
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     import composition_lint  # noqa: E402
-    hits = composition_lint.lint_composition(comp)
+    wireframe = None
+    try:
+        wireframe = json.loads((Path(render_dir) / "wireframe.json").read_text())
+    except (OSError, ValueError, TypeError):
+        pass
+    hits = composition_lint.lint_composition(comp, wireframe=wireframe)
     rows = []
-    for rule in ("knob-consumption", "content-redundancy"):
+    rules = [
+        ("knob-consumption", "Every declared knob has a consumer (AS-63)"),
+        ("content-redundancy", "No sibling-slot content redundancy (AS-65)"),
+    ]
+    if wireframe is not None:
+        rules += [
+            ("duplicate-copy", "No cross-slot duplicate substantive copy (AS-68)"),
+            ("semantic-grouping", "Repeated semantic records stay grouped (AS-69)"),
+            ("section-completeness", "Substantive section jobs render required devices (AS-70)"),
+            ("visual-anchor", "Every substantive section has a visual anchor (AS-71)"),
+            ("page-rhythm", "Page rhythm forbids consecutive sparse sections (AS-72)"),
+            ("hero-balance", "Side heroes paint their declared counterweight (AS-73)"),
+            ("wireframe-consumption", "Every required wireframe slot is consumed (AS-74)"),
+            ("component-fit", "Repeated components fit their declared tracks (AS-75)"),
+            ("testimonial-integrity", "Testimonial intent renders one complete component (AS-76)"),
+            ("grid-fill", "Repeated components leave no orphan final-row void (AS-77)"),
+        ]
+    for rule, label in rules:
         mine = [(sid, msg) for sid, r, msg in hits if r == rule]
-        label = ("Every declared knob has a consumer (AS-63)"
-                 if rule == "knob-consumption" else
-                 "No sibling-slot content redundancy (AS-65)")
         detail = "; ".join(f"{sid}: {msg}" for sid, msg in mine[:4]) \
             or "composition lints clean"
         rows.append((rule, label, not mine, detail))

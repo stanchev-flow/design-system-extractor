@@ -1,0 +1,5910 @@
+schemaVersion: section-recipes.structural.v1
+sourceCatalogSchemaVersion: section-recipes.v1
+policy: structure-only-fallback
+recipes:
+- id: app-page-header-content-stack
+  sectionType: app-page-header
+  builderUseCase: hero
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - avatar
+    - icons
+    - media
+  variantAxes:
+    mediaMode:
+    - image
+    ingredients:
+    - avatar
+    - icons
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: lg
+      value: content-plus-auto
+    - axis: flexDirection
+      base: col
+      at: md
+      value: row
+  provenance:
+    sourceRecipeId: app-page-header-content-stack
+- id: application-shell-content-stack
+  sectionType: application-shell
+  builderUseCase: null
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required: []
+    optional:
+    - actions
+    - avatar
+    - media
+    - search
+  variantAxes:
+    columns:
+    - 1
+    mediaMode:
+    - image
+    interaction:
+    - search
+    ingredients:
+    - actions
+    - avatar
+    - search
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: display
+      base: flex
+      at: lg
+      value: hidden
+    - axis: order
+      base: default
+      at: lg
+      value: last
+    - axis: display
+      base: hidden
+      at: lg
+      value: block
+    - axis: display
+      base: default
+      at: lg
+      value: hidden
+    - axis: display
+      base: flex
+      at: lg
+      value: hidden
+    - axis: overflow
+      base: auto
+      value: auto
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: order
+      base: default
+      at: lg
+      value: '2'
+    - axis: display
+      base: default
+      at: lg
+      value: flex
+    - axis: breakpointTier
+      base: mobile
+      at: lg
+      value: desktop
+    - axis: interaction
+      base: tap-or-click
+      at: lg
+      value: hover-or-click
+    - axis: sticky
+      base: enabled
+      value: enabled
+    - axis: conditionalMotion
+      base: animated-presence
+      value: animated-presence
+  provenance:
+    sourceRecipeId: application-shell-content-stack
+- id: application-shell-repeated-grid
+  sectionType: application-shell
+  builderUseCase: null
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required: []
+    optional:
+    - actions
+    - avatar
+    - media
+    - search
+  variantAxes:
+    columns:
+    - 2
+    mediaMode:
+    - image
+    interaction:
+    - search
+    ingredients:
+    - actions
+    - avatar
+    - search
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: asymmetric-2-column
+    - axis: display
+      base: hidden
+      at: lg
+      value: flex
+    - axis: columns
+      base: '1'
+      at: lg
+      value: content-plus-auto
+    - axis: display
+      base: hidden
+      at: lg
+      value: block
+    - axis: display
+      base: flex
+      at: lg
+      value: hidden
+    - axis: display
+      base: flex
+      at: lg
+      value: hidden
+    - axis: display
+      base: default
+      at: lg
+      value: hidden
+    - axis: overflow
+      base: auto
+      value: auto
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: display
+      base: hidden
+      at: md
+      value: flex
+    - axis: display
+      base: hidden
+      at: lg
+      value: block
+    - axis: sticky
+      base: enabled
+      value: enabled
+    - axis: conditionalMotion
+      base: animated-presence
+      value: animated-presence
+  provenance:
+    sourceRecipeId: application-shell-repeated-grid
+- id: authentication-carousel
+  sectionType: authentication
+  builderUseCase: cta
+  structure:
+    skeleton: carousel
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - form
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - center
+    interaction:
+    - carousel
+    ingredients:
+    - actions
+    - form
+    logoPosition:
+    - left
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: lg
+      value: '2'
+    - axis: overflow
+      base: auto
+      value: auto
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: flexDirection
+      base: col
+      at: md
+      value: row
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: display
+      base: hidden
+      at: md
+      value: block
+    - axis: display
+      base: hidden
+      at: md
+      value: flex
+    - axis: display
+      base: hidden
+      at: md
+      value: flex
+    - axis: carouselInteraction
+      base: swipe-or-controls
+      at: md
+      value: drag-or-controls
+  provenance:
+    sourceRecipeId: authentication-carousel
+- id: authentication-content-media-split
+  sectionType: authentication
+  builderUseCase: cta
+  structure:
+    skeleton: content-media-split
+    archetype: split
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - form
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - center
+    mediaSide:
+    - right
+    ingredients:
+    - actions
+    - form
+    logoPosition:
+    - left
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: '1'
+      at: lg
+      value: '2'
+    - axis: overflow
+      base: auto
+      value: auto
+    - axis: display
+      base: hidden
+      at: lg
+      value: block
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: authentication-content-media-split
+- id: authentication-content-stack
+  sectionType: authentication
+  builderUseCase: cta
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - form
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    ingredients:
+    - actions
+    - form
+    logoPosition:
+    - center
+    - left
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: auto
+      value: auto
+    - axis: display
+      base: hidden
+      at: md
+      value: block
+  provenance:
+    sourceRecipeId: authentication-content-stack
+- id: authentication-modal-modal
+  sectionType: authentication-modal
+  builderUseCase: cta
+  structure:
+    skeleton: modal
+    archetype: overlay
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - form
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    interaction:
+    - modal
+    ingredients:
+    - actions
+    - form
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: y-scroll
+      value: y-scroll
+    - axis: breakpointTier
+      base: mobile
+      at: lg
+      value: desktop
+    - axis: dialogInteraction
+      base: tap-trigger
+      at: lg
+      value: click-trigger
+  provenance:
+    sourceRecipeId: authentication-modal-modal
+- id: banner-content-stack
+  sectionType: banner
+  builderUseCase: cta
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - icons
+    - media
+    - newsletter
+  variantAxes:
+    textAlign:
+    - center
+    - left
+    mediaMode:
+    - image
+    ingredients:
+    - actions
+    - icons
+    - newsletter
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: responsiveInvariant
+      base: no-breakpoint-transition-observed
+      value: no-breakpoint-transition-observed
+  provenance:
+    sourceRecipeId: banner-content-stack
+- id: card-header-content-stack
+  sectionType: card-header
+  builderUseCase: features
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - dropdown
+    - search
+  variantAxes:
+    interaction:
+    - search
+    ingredients:
+    - actions
+    - dropdown
+    - search
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: content-plus-auto
+  provenance:
+    sourceRecipeId: card-header-content-stack
+- id: careers-content-media-split
+  sectionType: careers
+  builderUseCase: about
+  structure:
+    skeleton: content-media-split
+    archetype: split
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - icons
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - right
+    ingredients:
+    - actions
+    - icons
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: default
+      at: md
+      value: '2'
+    - axis: mediaAspect
+      base: square
+      value: square
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: careers-content-media-split
+- id: careers-content-stack
+  sectionType: careers
+  builderUseCase: about
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - icons
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    - left
+    ingredients:
+    - actions
+    - icons
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: responsiveInvariant
+      base: no-breakpoint-transition-observed
+      value: no-breakpoint-transition-observed
+  provenance:
+    sourceRecipeId: careers-content-stack
+- id: careers-disclosure-list
+  sectionType: careers
+  builderUseCase: about
+  structure:
+    skeleton: disclosure-list
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - disclosure-list
+  variantAxes:
+    columns:
+    - 1
+    - 2
+    textAlign:
+    - center
+    - left
+    interaction:
+    - disclosure
+    ingredients:
+    - actions
+    - disclosure-list
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: display
+      base: default
+      at: sm
+      value: flex
+  provenance:
+    sourceRecipeId: careers-disclosure-list
+- id: careers-repeated-grid
+  sectionType: careers
+  builderUseCase: about
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - icons
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - center
+    - left
+    ingredients:
+    - actions
+    - icons
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: default
+      at: md
+      value: '2'
+      atLg: asymmetric-2-column
+  provenance:
+    sourceRecipeId: careers-repeated-grid
+- id: careers-tabs
+  sectionType: careers
+  builderUseCase: about
+  structure:
+    skeleton: tabs
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - icons
+  variantAxes:
+    columns:
+    - 1
+    - 2
+    textAlign:
+    - center
+    - left
+    interaction:
+    - tabs
+    ingredients:
+    - actions
+    - icons
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: auto
+      at: md
+      value: hidden
+  provenance:
+    sourceRecipeId: careers-tabs
+- id: category-filter-filterable-content
+  sectionType: category-filter
+  builderUseCase: gallery
+  structure:
+    skeleton: filterable-content
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - filters
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    interaction:
+    - filter
+    ingredients:
+    - actions
+    - filters
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: lg
+      value: content-plus-auto
+    - axis: display
+      base: default
+      at: lg
+      value: hidden
+    - axis: display
+      base: hidden
+      at: lg
+      value: block
+    - axis: scrollStage
+      base: long
+      value: long
+    - axis: breakpointTier
+      base: mobile
+      at: lg
+      value: desktop
+    - axis: sticky
+      base: enabled
+      value: enabled
+  provenance:
+    sourceRecipeId: category-filter-filterable-content
+- id: category-filter-modal
+  sectionType: category-filter
+  builderUseCase: gallery
+  structure:
+    skeleton: modal
+    archetype: overlay
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - filters
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    - left
+    interaction:
+    - filter
+    - modal
+    ingredients:
+    - actions
+    - filters
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: scroll
+      value: scroll
+    - axis: scrollStage
+      base: long
+      value: long
+    - axis: sticky
+      base: enabled
+      value: enabled
+  provenance:
+    sourceRecipeId: category-filter-modal
+- id: comparison-repeated-grid
+  sectionType: comparison
+  builderUseCase: pricing
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - icons
+    - list
+    - logos
+    - media
+  variantAxes:
+    columns:
+    - 2
+    - 3
+    textAlign:
+    - center
+    mediaSide:
+    - top
+    mediaMode:
+    - image
+    ingredients:
+    - actions
+    - icons
+    - list
+    - logos
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '2'
+      at: md
+      value: asymmetric-3-column
+    - axis: display
+      base: hidden
+      at: md
+      value: flex
+    - axis: columns
+      base: '2'
+      at: md
+      value: asymmetric-3-column
+  provenance:
+    sourceRecipeId: comparison-repeated-grid
+- id: contact-content-media-split
+  sectionType: contact
+  builderUseCase: cta
+  structure:
+    skeleton: content-media-split
+    archetype: split
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - form
+    - icons
+    - media
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - bottom
+    - left
+    - right
+    mediaMode:
+    - image
+    - multiple-images
+    ingredients:
+    - actions
+    - form
+    - icons
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: '1'
+      at: sm
+      value: '2'
+      atLg: asymmetric-2-column
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: contact-content-media-split
+- id: contact-content-stack
+  sectionType: contact
+  builderUseCase: cta
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - form
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    - left
+    ingredients:
+    - form
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: auto
+      value: auto
+  provenance:
+    sourceRecipeId: contact-content-stack
+- id: contact-modal-modal
+  sectionType: contact-modal
+  builderUseCase: cta
+  structure:
+    skeleton: modal
+    archetype: overlay
+  slots:
+    required:
+    - heading
+    optional:
+    - form
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    interaction:
+    - modal
+    ingredients:
+    - form
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: auto
+      value: auto
+    - axis: breakpointTier
+      base: mobile
+      at: lg
+      value: desktop
+  provenance:
+    sourceRecipeId: contact-modal-modal
+- id: contact-repeated-grid
+  sectionType: contact
+  builderUseCase: cta
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - form
+    - icons
+    - media
+  variantAxes:
+    columns:
+    - 2
+    - 3
+    - 4
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - bottom
+    - center
+    mediaMode:
+    - image
+    ingredients:
+    - actions
+    - form
+    - icons
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: overflow
+      base: auto
+      value: auto
+  provenance:
+    sourceRecipeId: contact-repeated-grid
+- id: contact-tabs
+  sectionType: contact
+  builderUseCase: cta
+  structure:
+    skeleton: tabs
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - media
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    mediaSide:
+    - bottom
+    - right
+    mediaMode:
+    - image
+    interaction:
+    - tabs
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: asymmetric-2-column
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: contact-tabs
+- id: content-detail-header-content-stack
+  sectionType: content-detail-header
+  builderUseCase: hero
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - author
+    - avatar
+    - date
+    - media
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - left
+    mediaMode:
+    - image
+    ingredients:
+    - author
+    - avatar
+    - date
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: flexDirection
+      base: col
+      at: sm
+      value: row
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaAspect
+      base: landscape
+      value: landscape
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: content-detail-header-content-stack
+- id: content-detail-header-media-background
+  sectionType: content-detail-header
+  builderUseCase: hero
+  structure:
+    skeleton: media-background
+    archetype: overlay
+  slots:
+    required:
+    - heading
+    optional:
+    - author
+    - avatar
+    - date
+    - media
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    mediaSide:
+    - background
+    mediaMode:
+    - background-image
+    - image
+    ingredients:
+    - author
+    - avatar
+    - date
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: content-detail-header-media-background
+- id: content-detail-header-repeated-grid
+  sectionType: content-detail-header
+  builderUseCase: hero
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - author
+    - date
+    - media
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    mediaMode:
+    - image
+    ingredients:
+    - author
+    - date
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: default
+      at: md
+      value: asymmetric-2-column
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaAspect
+      base: landscape
+      value: landscape
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: content-detail-header-repeated-grid
+- id: content-feed-carousel
+  sectionType: content-feed
+  builderUseCase: gallery
+  structure:
+    skeleton: carousel
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - media
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    mediaMode:
+    - image
+    - multiple-images
+    interaction:
+    - carousel
+    ingredients:
+    - actions
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: columns
+      base: '1'
+      at: md
+      value: content-plus-auto
+    - axis: display
+      base: hidden
+      at: md
+      value: flex
+    - axis: itemBasis
+      base: partial-track
+      at: sm
+      value: 4/5
+      atMd: 1/3
+    - axis: mediaAspect
+      base: landscape
+      value: landscape
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: display
+      base: flex
+      at: md
+      value: hidden
+    - axis: carouselInteraction
+      base: swipe-or-controls
+      at: md
+      value: drag-or-controls
+  provenance:
+    sourceRecipeId: content-feed-carousel
+- id: content-feed-repeated-grid
+  sectionType: content-feed
+  builderUseCase: gallery
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - author
+    - date
+    - media
+  variantAxes:
+    columns:
+    - 2
+    - 3
+    textAlign:
+    - center
+    - left
+    mediaMode:
+    - image
+    - multiple-images
+    ingredients:
+    - actions
+    - author
+    - date
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+      atLg: '3'
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaAspect
+      base: landscape
+      value: landscape
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: content-feed-repeated-grid
+- id: content-header-media-collage
+  sectionType: content-header
+  builderUseCase: hero
+  structure:
+    skeleton: media-collage
+    archetype: collage
+  slots:
+    required:
+    - heading
+    optional:
+    - author
+    - dropdown
+    - media
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    - left
+    mediaMode:
+    - image
+    - multiple-images
+    ingredients:
+    - author
+    - dropdown
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaAspect
+      base: video
+      value: video
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: conditionalMotion
+      base: animated-presence
+      value: animated-presence
+  provenance:
+    sourceRecipeId: content-header-media-collage
+- id: content-header-repeated-grid
+  sectionType: content-header
+  builderUseCase: hero
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - author
+    - avatar
+    - date
+    - featured-content
+    - media
+  variantAxes:
+    columns:
+    - 2
+    - 3
+    textAlign:
+    - center
+    - left
+    mediaMode:
+    - image
+    - multiple-images
+    ingredients:
+    - author
+    - avatar
+    - date
+    - featured-content
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: scroll
+      at: md
+      value: hidden
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+      atLg: '3'
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaAspect
+      base: landscape
+      value: landscape
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: content-header-repeated-grid
+- id: cookie-consent-modal
+  sectionType: cookie-consent
+  builderUseCase: null
+  structure:
+    skeleton: modal
+    archetype: overlay
+  slots:
+    required: []
+    optional: []
+  variantAxes:
+    interaction:
+    - modal
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: scroll
+      value: scroll
+    - axis: flexDirection
+      base: col
+      at: lg
+      value: row
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: dialogInteraction
+      base: tap-trigger
+      at: lg
+      value: click-trigger
+    - axis: conditionalMotion
+      base: animated-presence
+      value: animated-presence
+  provenance:
+    sourceRecipeId: cookie-consent-modal
+- id: cta-content-media-split
+  sectionType: cta
+  builderUseCase: cta
+  structure:
+    skeleton: content-media-split
+    archetype: split
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - form
+    - media
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    mediaSide:
+    - right
+    mediaMode:
+    - image
+    ingredients:
+    - actions
+    - form
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: '1'
+      at: lg
+      value: '2'
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: cta-content-media-split
+- id: cta-content-stack
+  sectionType: cta
+  builderUseCase: cta
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - cards
+    - form
+    - logos
+    - media
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - bottom
+    - center
+    - right
+    mediaMode:
+    - image
+    ingredients:
+    - actions
+    - cards
+    - form
+    - logos
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: responsiveInvariant
+      base: no-breakpoint-transition-observed
+      value: no-breakpoint-transition-observed
+  provenance:
+    sourceRecipeId: cta-content-stack
+- id: cta-media-background
+  sectionType: cta
+  builderUseCase: cta
+  structure:
+    skeleton: media-background
+    archetype: overlay
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - cards
+    - form
+    - media
+  variantAxes:
+    columns:
+    - 1
+    - 2
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - background
+    mediaMode:
+    - background-image
+    - background-video
+    ingredients:
+    - actions
+    - cards
+    - form
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: lg
+      value: content-plus-auto
+    - axis: columns
+      base: '1'
+      at: sm
+      value: content-plus-auto
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: cta-media-background
+- id: cta-media-collage
+  sectionType: cta
+  builderUseCase: cta
+  structure:
+    skeleton: media-collage
+    archetype: collage
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - media
+  variantAxes:
+    textAlign:
+    - center
+    mediaSide:
+    - bottom
+    mediaMode:
+    - multiple-images
+    ingredients:
+    - actions
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: viewportHeight
+      base: viewport-minus-header
+      value: viewport-minus-header
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: sticky
+      base: enabled
+      value: enabled
+  provenance:
+    sourceRecipeId: cta-media-collage
+- id: cta-repeated-grid
+  sectionType: cta
+  builderUseCase: cta
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - form
+    - icons
+    - media
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - bottom
+    - center
+    mediaMode:
+    - image
+    ingredients:
+    - actions
+    - form
+    - icons
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: default
+      at: md
+      value: '2'
+  provenance:
+    sourceRecipeId: cta-repeated-grid
+- id: description-list-repeated-grid
+  sectionType: description-list
+  builderUseCase: features
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - cards
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    ingredients:
+    - cards
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: responsiveInvariant
+      base: no-breakpoint-transition-observed
+      value: no-breakpoint-transition-observed
+  provenance:
+    sourceRecipeId: description-list-repeated-grid
+- id: event-detail-header-content-media-split
+  sectionType: event-detail-header
+  builderUseCase: hero
+  structure:
+    skeleton: content-media-split
+    archetype: split
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - date
+    - form
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    mediaSide:
+    - right
+    ingredients:
+    - actions
+    - date
+    - form
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: '1'
+      at: lg
+      value: '2'
+    - axis: display
+      base: hidden
+      at: sm
+      value: block
+    - axis: display
+      base: hidden
+      at: sm
+      value: block
+    - axis: display
+      base: hidden
+      at: sm
+      value: block
+    - axis: columns
+      base: '1'
+      at: sm
+      value: content-plus-auto
+    - axis: mediaAspect
+      base: square
+      value: square
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: event-detail-header-content-media-split
+- id: event-detail-header-content-stack
+  sectionType: event-detail-header
+  builderUseCase: hero
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - date
+    - form
+    - icons
+    - media
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    mediaSide:
+    - bottom
+    mediaMode:
+    - image
+    ingredients:
+    - actions
+    - date
+    - form
+    - icons
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: display
+      base: hidden
+      at: sm
+      value: block
+    - axis: display
+      base: hidden
+      at: sm
+      value: block
+    - axis: display
+      base: hidden
+      at: sm
+      value: block
+    - axis: columns
+      base: '1'
+      at: sm
+      value: content-plus-auto
+  provenance:
+    sourceRecipeId: event-detail-header-content-stack
+- id: event-detail-header-media-background
+  sectionType: event-detail-header
+  builderUseCase: hero
+  structure:
+    skeleton: media-background
+    archetype: overlay
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - date
+    - form
+    - media
+  variantAxes:
+    columns:
+    - 1
+    - 2
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - background
+    mediaMode:
+    - background-image
+    ingredients:
+    - actions
+    - date
+    - form
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: asymmetric-2-column
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: event-detail-header-media-background
+- id: event-detail-header-repeated-grid
+  sectionType: event-detail-header
+  builderUseCase: hero
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - date
+    - form
+    - icons
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    mediaSide:
+    - bottom
+    ingredients:
+    - actions
+    - date
+    - form
+    - icons
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: lg
+      value: '2'
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+  provenance:
+    sourceRecipeId: event-detail-header-repeated-grid
+- id: event-header-content-media-split
+  sectionType: event-header
+  builderUseCase: hero
+  structure:
+    skeleton: content-media-split
+    archetype: split
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - date
+    - tags
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    mediaSide:
+    - left
+    ingredients:
+    - actions
+    - date
+    - tags
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: '1'
+      at: lg
+      value: '2'
+    - axis: mediaAspect
+      base: landscape
+      value: landscape
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: flexDirection
+      base: col
+      at: md
+      value: row
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: itemBasis
+      base: 2/5
+      value: 2/5
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaAspect
+      base: landscape
+      at: md
+      value: square
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: event-header-content-media-split
+- id: event-header-content-stack
+  sectionType: event-header
+  builderUseCase: hero
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - date
+    - tags
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - left
+    mediaSide:
+    - left
+    ingredients:
+    - actions
+    - date
+    - tags
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: '1'
+      at: lg
+      value: '2'
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaAspect
+      base: landscape
+      value: landscape
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: overflow
+      base: auto
+      at: md
+      value: hidden
+    - axis: columns
+      base: '1'
+      at: md
+      value: content-plus-auto
+    - axis: overflow
+      base: hidden
+      value: hidden
+  provenance:
+    sourceRecipeId: event-header-content-stack
+- id: event-header-repeated-grid
+  sectionType: event-header
+  builderUseCase: hero
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - date
+    - tags
+  variantAxes:
+    columns:
+    - 3
+    textAlign:
+    - left
+    mediaSide:
+    - left
+    ingredients:
+    - actions
+    - date
+    - tags
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: '1'
+      at: lg
+      value: '2'
+    - axis: mediaAspect
+      base: landscape
+      value: landscape
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: columns
+      base: default
+      at: md
+      value: '2'
+      atLg: '3'
+    - axis: mediaAspect
+      base: landscape
+      value: landscape
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: event-header-repeated-grid
+- id: events-feed-filterable-content
+  sectionType: events-feed
+  builderUseCase: gallery
+  structure:
+    skeleton: filterable-content
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - date
+    - filters
+    - tags
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - left
+    - right
+    interaction:
+    - filter
+    ingredients:
+    - actions
+    - date
+    - filters
+    - tags
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: overflow
+      base: auto
+      at: md
+      value: hidden
+    - axis: columns
+      base: '1'
+      at: md
+      value: content-plus-auto
+    - axis: overflow
+      base: hidden
+      value: hidden
+  provenance:
+    sourceRecipeId: events-feed-filterable-content
+- id: events-feed-media-collage
+  sectionType: events-feed
+  builderUseCase: gallery
+  structure:
+    skeleton: media-collage
+    archetype: collage
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - date
+    - list
+    - media
+    - tags
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    - left
+    mediaMode:
+    - multiple-images
+    ingredients:
+    - actions
+    - date
+    - list
+    - tags
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: columns
+      base: '1'
+      at: md
+      value: content-plus-auto
+    - axis: display
+      base: hidden
+      at: md
+      value: flex
+    - axis: itemBasis
+      base: partial-track
+      at: sm
+      value: 4/5
+      atMd: 1/2
+      atLg: 1/3
+    - axis: display
+      base: flex
+      at: md
+      value: hidden
+    - axis: mediaAspect
+      base: landscape
+      value: landscape
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: carouselInteraction
+      base: swipe-or-controls
+      at: md
+      value: drag-or-controls
+  provenance:
+    sourceRecipeId: events-feed-media-collage
+- id: events-feed-repeated-grid
+  sectionType: events-feed
+  builderUseCase: gallery
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - date
+    - media
+    - tags
+  variantAxes:
+    columns:
+    - 2
+    - 3
+    textAlign:
+    - center
+    - left
+    mediaMode:
+    - multiple-images
+    ingredients:
+    - actions
+    - date
+    - tags
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: content-plus-auto
+    - axis: display
+      base: hidden
+      at: md
+      value: flex
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+      atLg: '3'
+    - axis: display
+      base: flex
+      at: md
+      value: hidden
+    - axis: mediaAspect
+      base: landscape
+      value: landscape
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: events-feed-repeated-grid
+- id: faq-content-stack
+  sectionType: faq
+  builderUseCase: faq
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    - left
+    ingredients:
+    - actions
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: responsiveInvariant
+      base: no-breakpoint-transition-observed
+      value: no-breakpoint-transition-observed
+  provenance:
+    sourceRecipeId: faq-content-stack
+- id: faq-disclosure-list
+  sectionType: faq
+  builderUseCase: faq
+  structure:
+    skeleton: disclosure-list
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - disclosure-list
+  variantAxes:
+    columns:
+    - 1
+    - 2
+    textAlign:
+    - center
+    - left
+    interaction:
+    - disclosure
+    ingredients:
+    - actions
+    - disclosure-list
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: responsiveInvariant
+      base: no-breakpoint-transition-observed
+      value: no-breakpoint-transition-observed
+  provenance:
+    sourceRecipeId: faq-disclosure-list
+- id: faq-repeated-grid
+  sectionType: faq
+  builderUseCase: faq
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - icons
+  variantAxes:
+    columns:
+    - 2
+    - 3
+    textAlign:
+    - center
+    - left
+    ingredients:
+    - actions
+    - icons
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+  provenance:
+    sourceRecipeId: faq-repeated-grid
+- id: feature-content-media-split
+  sectionType: feature
+  builderUseCase: features
+  structure:
+    skeleton: content-media-split
+    archetype: split
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - cards
+    - icons
+    - list
+    - logos
+    - media
+  variantAxes:
+    columns:
+    - 2
+    - 3
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - bottom
+    - center
+    - left
+    - right
+    - top
+    mediaMode:
+    - image
+    - multiple-images
+    - video-lightbox
+    interaction:
+    - dialog
+    ingredients:
+    - actions
+    - cards
+    - icons
+    - list
+    - logos
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: 1
+      at: md
+      value: 2
+    - axis: order
+      base: content-then-media
+      at: md
+      value: content-left-media-right
+    - axis: mediaCrop
+      base: object-cover-full-cell
+      at: md
+      value: object-cover-full-cell
+    - axis: interaction
+      base: tap-opens-video-dialog
+      at: lg
+      value: click-opens-video-dialog
+    - axis: containerWidth
+      base: medium
+      at: lg
+      value: large
+    - axis: order
+      base: media-then-content
+      at: md
+      value: media-left-content-right
+  provenance:
+    sourceRecipeId: feature-content-media-split
+- id: feature-content-stack
+  sectionType: feature
+  builderUseCase: features
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - cards
+    - icons
+    - logos
+    - media
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - bottom
+    - center
+    - left
+    - right
+    - top
+    mediaMode:
+    - image
+    - video-lightbox
+    interaction:
+    - dialog
+    ingredients:
+    - actions
+    - cards
+    - icons
+    - logos
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: responsiveInvariant
+      base: no-breakpoint-transition-observed
+      value: no-breakpoint-transition-observed
+  provenance:
+    sourceRecipeId: feature-content-stack
+- id: feature-disclosure-list
+  sectionType: feature
+  builderUseCase: features
+  structure:
+    skeleton: disclosure-list
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - disclosure-list
+    - media
+  variantAxes:
+    columns:
+    - 4
+    textAlign:
+    - left
+    mediaMode:
+    - image
+    interaction:
+    - disclosure
+    ingredients:
+    - disclosure-list
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: flexDirection
+      base: col
+      at: lg
+      value: row
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: flexDirection
+      base: col
+      at: lg
+      value: row
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: flexDirection
+      base: default
+      at: lg
+      value: col
+    - axis: display
+      base: hidden
+      at: lg
+      value: block
+    - axis: display
+      base: default
+      at: lg
+      value: hidden
+    - axis: overflow
+      base: hidden
+      at: lg
+      value: auto
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: overflow
+      base: hidden
+      at: lg
+      value: auto
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: breakpointTier
+      base: mobile
+      at: lg
+      value: desktop
+  provenance:
+    sourceRecipeId: feature-disclosure-list
+- id: feature-media-background
+  sectionType: feature
+  builderUseCase: features
+  structure:
+    skeleton: media-background
+    archetype: overlay
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - cards
+    - icons
+    - list
+    - logos
+    - media
+  variantAxes:
+    columns:
+    - 1
+    - 2
+    - 3
+    - 4
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - background
+    - center
+    - right
+    mediaMode:
+    - background-image
+    - background-video
+    - image
+    - multiple-images
+    - video-lightbox
+    interaction:
+    - dialog
+    ingredients:
+    - actions
+    - cards
+    - icons
+    - list
+    - logos
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: feature-media-background
+- id: feature-media-collage
+  sectionType: feature
+  builderUseCase: features
+  structure:
+    skeleton: media-collage
+    archetype: collage
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - media
+    - overlapping-images
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - bottom
+    mediaMode:
+    - image
+    - multiple-images
+    - overlapping-images
+    ingredients:
+    - actions
+    - overlapping-images
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: breakpointTier
+      base: mobile
+      at: lg
+      value: desktop
+    - axis: sticky
+      base: enabled
+      value: enabled
+  provenance:
+    sourceRecipeId: feature-media-collage
+- id: feature-repeated-grid
+  sectionType: feature
+  builderUseCase: features
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - cards
+    - icons
+    - list
+    - media
+    - overlapping-images
+  variantAxes:
+    columns:
+    - 2
+    - 3
+    - 4
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - bottom
+    - center
+    - left
+    - right
+    - top
+    mediaMode:
+    - image
+    - multiple-images
+    - overlapping-images
+    - video-lightbox
+    interaction:
+    - dialog
+    ingredients:
+    - actions
+    - cards
+    - icons
+    - list
+    - overlapping-images
+    logoPosition:
+    - left
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+    - axis: columns
+      base: '1'
+      at: lg
+      value: '2'
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: dialogInteraction
+      base: tap-trigger
+      at: lg
+      value: click-trigger
+  provenance:
+    sourceRecipeId: feature-repeated-grid
+- id: feature-tabs
+  sectionType: feature
+  builderUseCase: features
+  structure:
+    skeleton: tabs
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - media
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - left
+    - right
+    mediaMode:
+    - image
+    - multiple-images
+    interaction:
+    - tabs
+    ingredients:
+    - actions
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+    - axis: order
+      base: last
+      at: md
+      value: first
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: order
+      base: first
+      at: md
+      value: last
+    - axis: dialogInteraction
+      base: tap-trigger
+      at: lg
+      value: click-trigger
+  provenance:
+    sourceRecipeId: feature-tabs
+- id: footer-compact-centered
+  sectionType: footer
+  builderUseCase: footer
+  structure:
+    skeleton: compact-centered
+    archetype: stack
+  slots:
+    required:
+    - logo
+    - linkColumns
+    optional:
+    - actions
+    - brandArt
+    - contactDetails
+    - legalLinks
+    - newsletter
+    - newsletterConsent
+    - socialLinks
+  variantAxes:
+    textAlign:
+    - center
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules: []
+  provenance:
+    sourceRecipeId: footer-compact-centered
+- id: footer-contact-columns
+  sectionType: footer
+  builderUseCase: footer
+  structure:
+    skeleton: contact-columns
+    archetype: split
+  slots:
+    required:
+    - logo
+    - linkColumns
+    optional:
+    - actions
+    - brandArt
+    - contactDetails
+    - legalLinks
+    - newsletter
+    - newsletterConsent
+    - socialLinks
+  variantAxes:
+    columns:
+    - 3
+    textAlign:
+    - left
+    ingredients:
+    - cards
+    - contact-details
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules: []
+  provenance:
+    sourceRecipeId: footer-contact-columns
+- id: footer-inset-columns
+  sectionType: footer
+  builderUseCase: footer
+  structure:
+    skeleton: inset-columns
+    archetype: cards
+  slots:
+    required:
+    - logo
+    - linkColumns
+    optional:
+    - actions
+    - brandArt
+    - contactDetails
+    - legalLinks
+    - newsletter
+    - newsletterConsent
+    - socialLinks
+  variantAxes:
+    columns:
+    - 3
+    textAlign:
+    - left
+    ingredients:
+    - actions
+    - cards
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: lg
+      value: asymmetric-2-column
+    - axis: columns
+      base: '1'
+      at: sm
+      value: '2'
+    - axis: flexDirection
+      base: col-reverse
+      at: md
+      value: row
+  provenance:
+    sourceRecipeId: footer-inset-columns
+- id: footer-link-columns
+  sectionType: footer
+  builderUseCase: footer
+  structure:
+    skeleton: link-columns
+    archetype: cards
+  slots:
+    required:
+    - logo
+    - linkColumns
+    optional:
+    - actions
+    - brandArt
+    - contactDetails
+    - legalLinks
+    - newsletter
+    - newsletterConsent
+    - socialLinks
+  variantAxes:
+    columns:
+    - 3
+    - 5
+    textAlign:
+    - left
+    ingredients:
+    - actions
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules: []
+  provenance:
+    sourceRecipeId: footer-link-columns
+- id: footer-newsletter-columns
+  sectionType: footer
+  builderUseCase: footer
+  structure:
+    skeleton: newsletter-columns
+    archetype: split
+  slots:
+    required:
+    - logo
+    - linkColumns
+    optional:
+    - actions
+    - brandArt
+    - contactDetails
+    - legalLinks
+    - newsletter
+    - newsletterConsent
+    - socialLinks
+  variantAxes:
+    columns:
+    - 4
+    - 5
+    textAlign:
+    - left
+    ingredients:
+    - cards
+    - newsletter
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules: []
+  provenance:
+    sourceRecipeId: footer-newsletter-columns
+- id: form-content-stack
+  sectionType: form
+  builderUseCase: cta
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - avatar
+    - checkbox-group
+    - form
+    - media
+    - radio-group
+    - toggles
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - left
+    mediaMode:
+    - image
+    ingredients:
+    - avatar
+    - checkbox-group
+    - form
+    - radio-group
+    - toggles
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: responsiveInvariant
+      base: no-breakpoint-transition-observed
+      value: no-breakpoint-transition-observed
+  provenance:
+    sourceRecipeId: form-content-stack
+- id: form-repeated-grid
+  sectionType: form
+  builderUseCase: cta
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - avatar
+    - checkbox-group
+    - form
+    - media
+    - radio-group
+    - toggles
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    mediaMode:
+    - image
+    ingredients:
+    - avatar
+    - checkbox-group
+    - form
+    - radio-group
+    - toggles
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: sm
+      value: content-plus-auto
+    - axis: columns
+      base: default
+      at: md
+      value: asymmetric-2-column
+      atLg: asymmetric-2-column
+    - axis: columns
+      base: default
+      at: md
+      value: asymmetric-2-column
+      atLg: asymmetric-2-column
+    - axis: columns
+      base: default
+      at: md
+      value: asymmetric-2-column
+      atLg: asymmetric-2-column
+    - axis: columns
+      base: default
+      at: md
+      value: asymmetric-2-column
+      atLg: asymmetric-2-column
+    - axis: columns
+      base: default
+      at: md
+      value: asymmetric-2-column
+      atLg: asymmetric-2-column
+    - axis: columns
+      base: default
+      at: md
+      value: asymmetric-2-column
+      atLg: asymmetric-2-column
+    - axis: columns
+      base: default
+      at: md
+      value: asymmetric-2-column
+      atLg: asymmetric-2-column
+    - axis: columns
+      base: default
+      at: md
+      value: asymmetric-2-column
+      atLg: asymmetric-2-column
+    - axis: columns
+      base: default
+      at: md
+      value: asymmetric-2-column
+      atLg: asymmetric-2-column
+    - axis: columns
+      base: default
+      at: md
+      value: asymmetric-2-column
+      atLg: asymmetric-2-column
+    - axis: columns
+      base: '1'
+      at: md
+      value: asymmetric-2-column
+  provenance:
+    sourceRecipeId: form-repeated-grid
+- id: gallery-carousel
+  sectionType: gallery
+  builderUseCase: gallery
+  structure:
+    skeleton: carousel
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - media
+  variantAxes:
+    columns:
+    - 1
+    - 2
+    - 3
+    - 4
+    textAlign:
+    - center
+    - left
+    mediaMode:
+    - image
+    - image-lightbox
+    - multiple-images
+    interaction:
+    - carousel
+    - dialog
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: display
+      base: hidden
+      at: lg
+      value: flex
+    - axis: display
+      base: hidden
+      at: lg
+      value: flex
+    - axis: carouselInteraction
+      base: swipe-or-controls
+      at: md
+      value: drag-or-controls
+  provenance:
+    sourceRecipeId: gallery-carousel
+- id: gallery-content-media-split
+  sectionType: gallery
+  builderUseCase: gallery
+  structure:
+    skeleton: content-media-split
+    archetype: split
+  slots:
+    required:
+    - heading
+    optional:
+    - media
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    mediaSide:
+    - right
+    mediaMode:
+    - image
+    - image-lightbox
+    - multiple-images
+    interaction:
+    - dialog
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: columns
+      base: '1'
+      at: lg
+      value: '2'
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: itemBasis
+      base: partial-track
+      at: sm
+      value: 4/5
+      atMd: 1/2
+      atLg: 4/5
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: carouselInteraction
+      base: swipe-or-controls
+      at: md
+      value: drag-or-controls
+  provenance:
+    sourceRecipeId: gallery-content-media-split
+- id: gallery-content-stack
+  sectionType: gallery
+  builderUseCase: gallery
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - media
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    mediaMode:
+    - image-lightbox
+    interaction:
+    - dialog
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaAspect
+      base: video
+      value: video
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: gallery-content-stack
+- id: gallery-media-collage
+  sectionType: gallery
+  builderUseCase: gallery
+  structure:
+    skeleton: media-collage
+    archetype: collage
+  slots:
+    required:
+    - heading
+    optional:
+    - media
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    mediaMode:
+    - image
+    - image-lightbox
+    - multiple-images
+    interaction:
+    - dialog
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: scrollStage
+      base: extended
+      value: extended
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: sticky
+      base: enabled
+      value: enabled
+  provenance:
+    sourceRecipeId: gallery-media-collage
+- id: gallery-repeated-grid
+  sectionType: gallery
+  builderUseCase: gallery
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - media
+  variantAxes:
+    columns:
+    - 2
+    - 3
+    - 4
+    textAlign:
+    - center
+    mediaMode:
+    - image
+    - image-lightbox
+    - multiple-images
+    interaction:
+    - dialog
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: gallery-repeated-grid
+- id: grid-list-content-media-split
+  sectionType: grid-list
+  builderUseCase: gallery
+  structure:
+    skeleton: content-media-split
+    archetype: split
+  slots:
+    required:
+    - heading
+    optional:
+    - dropdown
+    - icons
+    - media
+    - search
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    mediaSide:
+    - left
+    mediaMode:
+    - image
+    interaction:
+    - search
+    ingredients:
+    - dropdown
+    - icons
+    - search
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: content-plus-auto
+    - axis: columns
+      base: '1'
+      at: lg
+      value: '2'
+    - axis: columns
+      base: '1'
+      at: md
+      value: asymmetric-2-column
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaAspect
+      base: square
+      value: square
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: grid-list-content-media-split
+- id: grid-list-repeated-grid
+  sectionType: grid-list
+  builderUseCase: gallery
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - avatar
+    - dropdown
+    - icons
+    - media
+    - rating
+    - search
+  variantAxes:
+    columns:
+    - 3
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - top
+    mediaMode:
+    - image
+    - video-lightbox
+    interaction:
+    - dialog
+    - search
+    ingredients:
+    - actions
+    - avatar
+    - dropdown
+    - icons
+    - rating
+    - search
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: content-plus-auto
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+      atLg: '3'
+    - axis: mediaAspect
+      base: video
+      value: video
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: dialogInteraction
+      base: tap-trigger
+      at: lg
+      value: click-trigger
+  provenance:
+    sourceRecipeId: grid-list-repeated-grid
+- id: header-content-stack
+  sectionType: header
+  builderUseCase: hero
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - form
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    - left
+    ingredients:
+    - actions
+    - form
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: responsiveInvariant
+      base: no-breakpoint-transition-observed
+      value: no-breakpoint-transition-observed
+  provenance:
+    sourceRecipeId: header-content-stack
+- id: header-media-background
+  sectionType: header
+  builderUseCase: hero
+  structure:
+    skeleton: media-background
+    archetype: overlay
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - form
+    - media
+  variantAxes:
+    columns:
+    - 1
+    - 2
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - background
+    - center
+    mediaMode:
+    - background-image
+    - background-video
+    ingredients:
+    - actions
+    - form
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: header-media-background
+- id: header-repeated-grid
+  sectionType: header
+  builderUseCase: hero
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - form
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    ingredients:
+    - actions
+    - form
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: flexDirection
+      base: col
+      at: md
+      value: row
+  provenance:
+    sourceRecipeId: header-repeated-grid
+- id: hero-carousel
+  sectionType: hero
+  builderUseCase: hero
+  structure:
+    skeleton: carousel
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - media
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    mediaSide:
+    - right
+    mediaMode:
+    - image
+    interaction:
+    - carousel
+    ingredients:
+    - actions
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: '1'
+      at: lg
+      value: asymmetric-2-column
+    - axis: overflow
+      base: hidden
+      at: sm
+      value: auto
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: carouselInteraction
+      base: swipe-or-controls
+      at: md
+      value: drag-or-controls
+  provenance:
+    sourceRecipeId: hero-carousel
+- id: hero-content-media-split
+  sectionType: hero
+  builderUseCase: hero
+  structure:
+    skeleton: content-media-split
+    archetype: split
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - form
+    - media
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    mediaSide:
+    - left
+    - right
+    mediaMode:
+    - image
+    - multiple-images
+    - video-lightbox
+    interaction:
+    - dialog
+    ingredients:
+    - actions
+    - form
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: '1'
+      at: lg
+      value: '2'
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: hero-content-media-split
+- id: hero-content-stack
+  sectionType: hero
+  builderUseCase: hero
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - cards
+    - form
+    - media
+    - newsletter
+    - search
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - bottom
+    - center
+    - left
+    - right
+    - top
+    mediaMode:
+    - image
+    - video-lightbox
+    interaction:
+    - dialog
+    - search
+    ingredients:
+    - actions
+    - cards
+    - form
+    - newsletter
+    - search
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: scrollStage
+      base: long
+      value: long
+    - axis: sticky
+      base: sticky-top-min-screen
+      value: sticky-top-min-screen
+    - axis: mediaCrop
+      base: aspect-video-object-cover
+      value: aspect-video-object-cover
+    - axis: containerWidth
+      base: medium
+      at: lg
+      value: large
+  provenance:
+    sourceRecipeId: hero-content-stack
+- id: hero-media-background
+  sectionType: hero
+  builderUseCase: hero
+  structure:
+    skeleton: media-background
+    archetype: overlay
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - cards
+    - form
+    - media
+    - search
+  variantAxes:
+    columns:
+    - 1
+    - 2
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - background
+    - center
+    - right
+    - top
+    mediaMode:
+    - background-image
+    - background-video
+    - image
+    - multiple-images
+    - video-lightbox
+    interaction:
+    - dialog
+    - search
+    ingredients:
+    - actions
+    - cards
+    - form
+    - search
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: mediaAspect
+      base: video
+      value: video
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: hero-media-background
+- id: hero-media-collage
+  sectionType: hero
+  builderUseCase: hero
+  structure:
+    skeleton: media-collage
+    archetype: collage
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - media
+    - overlapping-images
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - bottom
+    - center
+    mediaMode:
+    - image
+    - image-lightbox
+    - multiple-images
+    - overlapping-images
+    interaction:
+    - dialog
+    ingredients:
+    - actions
+    - overlapping-images
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: hidden
+      value: hidden
+  provenance:
+    sourceRecipeId: hero-media-collage
+- id: hero-repeated-grid
+  sectionType: hero
+  builderUseCase: hero
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - form
+    - media
+    - overlapping-images
+  variantAxes:
+    columns:
+    - 2
+    - 3
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - bottom
+    - center
+    - right
+    - top
+    mediaMode:
+    - image
+    - multiple-images
+    - overlapping-images
+    - video-lightbox
+    interaction:
+    - dialog
+    ingredients:
+    - actions
+    - form
+    - overlapping-images
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: columns
+      base: default
+      at: md
+      value: '2'
+    - axis: columns
+      base: '1'
+      at: sm
+      value: content-plus-auto
+  provenance:
+    sourceRecipeId: hero-repeated-grid
+- id: hero-tabs
+  sectionType: hero
+  builderUseCase: hero
+  structure:
+    skeleton: tabs
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - media
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    mediaSide:
+    - background
+    mediaMode:
+    - background-image
+    - image
+    interaction:
+    - tabs
+    ingredients:
+    - actions
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: visible
+      value: visible
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: conditionalMotion
+      base: animated-presence
+      value: animated-presence
+  provenance:
+    sourceRecipeId: hero-tabs
+- id: links-page-modal
+  sectionType: links-page
+  builderUseCase: gallery
+  structure:
+    skeleton: modal
+    archetype: overlay
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - media
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    mediaSide:
+    - background
+    - center
+    mediaMode:
+    - background-image
+    interaction:
+    - carousel
+    - modal
+    ingredients:
+    - actions
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: dialogInteraction
+      base: tap-trigger
+      at: lg
+      value: click-trigger
+  provenance:
+    sourceRecipeId: links-page-modal
+- id: loader-content-stack
+  sectionType: loader
+  builderUseCase: null
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required: []
+    optional:
+    - media
+    - progress
+  variantAxes:
+    textAlign:
+    - center
+    - left
+    mediaMode:
+    - image
+    ingredients:
+    - progress
+    logoPosition:
+    - center
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: hidden
+      value: hidden
+  provenance:
+    sourceRecipeId: loader-content-stack
+- id: logo-wall-carousel
+  sectionType: logo-wall
+  builderUseCase: logos
+  structure:
+    skeleton: carousel
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - logos
+  variantAxes:
+    columns:
+    - 5
+    textAlign:
+    - center
+    interaction:
+    - carousel
+    ingredients:
+    - logos
+    logoPosition:
+    - list-section
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: hidden
+      value: hidden
+  provenance:
+    sourceRecipeId: logo-wall-carousel
+- id: logo-wall-repeated-grid
+  sectionType: logo-wall
+  builderUseCase: logos
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - logos
+  variantAxes:
+    columns:
+    - 2
+    - 3
+    - 5
+    textAlign:
+    - center
+    - left
+    ingredients:
+    - actions
+    - logos
+    logoPosition:
+    - list-section
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: responsiveInvariant
+      base: no-breakpoint-transition-observed
+      value: no-breakpoint-transition-observed
+  provenance:
+    sourceRecipeId: logo-wall-repeated-grid
+- id: long-form-content-content-media-split
+  sectionType: long-form-content
+  builderUseCase: about
+  structure:
+    skeleton: content-media-split
+    archetype: split
+  slots:
+    required:
+    - heading
+    optional:
+    - media
+    - rich-text
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    mediaSide:
+    - left
+    - right
+    mediaMode:
+    - image
+    - multiple-images
+    - video-lightbox
+    interaction:
+    - dialog
+    ingredients:
+    - rich-text
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: long-form-content-content-media-split
+- id: long-form-content-content-stack
+  sectionType: long-form-content
+  builderUseCase: about
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - author
+    - avatar
+    - media
+    - rich-text
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - left
+    mediaSide:
+    - bottom
+    - top
+    mediaMode:
+    - image
+    - video-lightbox
+    interaction:
+    - dialog
+    ingredients:
+    - author
+    - avatar
+    - rich-text
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaAspect
+      base: video
+      value: video
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: dialogInteraction
+      base: tap-trigger
+      at: lg
+      value: click-trigger
+  provenance:
+    sourceRecipeId: long-form-content-content-stack
+- id: long-form-content-repeated-grid
+  sectionType: long-form-content
+  builderUseCase: about
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - author
+    - media
+    - newsletter
+    - rich-text
+    - table-of-contents
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    mediaSide:
+    - bottom
+    - top
+    mediaMode:
+    - image
+    - video-lightbox
+    interaction:
+    - dialog
+    ingredients:
+    - author
+    - newsletter
+    - rich-text
+    - table-of-contents
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: asymmetric-2-column
+  provenance:
+    sourceRecipeId: long-form-content-repeated-grid
+- id: multi-step-form-multi-step
+  sectionType: multi-step-form
+  builderUseCase: cta
+  structure:
+    skeleton: multi-step
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - form
+    - progress
+    - radio-group
+  variantAxes:
+    columns:
+    - 1
+    - 2
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - right
+    ingredients:
+    - actions
+    - form
+    - progress
+    - radio-group
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules: []
+  provenance:
+    sourceRecipeId: multi-step-form-multi-step
+- id: navigation-mega-menu
+  sectionType: navigation
+  builderUseCase: null
+  structure:
+    skeleton: mega-menu
+    archetype: overlay
+  slots:
+    required:
+    - logo
+    - links
+    - mobileMenuToggle
+    optional:
+    - actions
+    - contactDetails
+    - dropdown
+    - featuredContent
+    - form
+    - megaMenu
+    - newsletter
+    - socialLinks
+  variantAxes:
+    mediaSide:
+    - background
+    mediaMode:
+    - background-image
+    - image
+    - multiple-images
+    ingredients:
+    - mega-menu
+    logoPosition:
+    - left
+    menuPosition:
+    - center
+    - left
+    - right
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: mobile-menu-scroll
+      at: lg
+      value: visible-mega-panel
+  provenance:
+    sourceRecipeId: navigation-mega-menu
+- id: navigation-overlay-menu
+  sectionType: navigation
+  builderUseCase: null
+  structure:
+    skeleton: overlay-menu
+    archetype: overlay
+  slots:
+    required:
+    - logo
+    - links
+    - mobileMenuToggle
+    optional:
+    - actions
+    - contactDetails
+    - dropdown
+    - featuredContent
+    - form
+    - megaMenu
+    - newsletter
+    - socialLinks
+  variantAxes:
+    ingredients:
+    - desktop-menu-toggle
+    - featured-content
+    - form
+    - mega-menu
+    - newsletter
+    logoPosition:
+    - left
+    menuPosition:
+    - center
+    - right
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: overlay-scroll
+      at: lg
+      value: overlay-scroll
+  provenance:
+    sourceRecipeId: navigation-overlay-menu
+- id: navigation-standard-nav
+  sectionType: navigation
+  builderUseCase: null
+  structure:
+    skeleton: standard-nav
+    archetype: stack
+  slots:
+    required:
+    - logo
+    - links
+    - mobileMenuToggle
+    optional:
+    - actions
+    - contactDetails
+    - dropdown
+    - featuredContent
+    - form
+    - megaMenu
+    - newsletter
+    - socialLinks
+  variantAxes:
+    logoPosition:
+    - center
+    - left
+    menuPosition:
+    - center
+    - left
+    - right
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: viewport-menu
+      at: lg
+      value: visible-bar
+  provenance:
+    sourceRecipeId: navigation-standard-nav
+- id: onboarding-multi-step
+  sectionType: onboarding
+  builderUseCase: cta
+  structure:
+    skeleton: multi-step
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - form
+    - progress
+    - radio-group
+  variantAxes:
+    columns:
+    - 1
+    - 2
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - right
+    ingredients:
+    - actions
+    - form
+    - progress
+    - radio-group
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules: []
+  provenance:
+    sourceRecipeId: onboarding-multi-step
+- id: portfolio-content-media-split
+  sectionType: portfolio
+  builderUseCase: gallery
+  structure:
+    skeleton: content-media-split
+    archetype: split
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - cards
+    - media
+    - tags
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    mediaSide:
+    - left
+    - right
+    mediaMode:
+    - image
+    - multiple-images
+    ingredients:
+    - actions
+    - cards
+    - tags
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+    - axis: mediaAspect
+      base: landscape
+      value: landscape
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: portfolio-content-media-split
+- id: portfolio-header-content-stack
+  sectionType: portfolio-header
+  builderUseCase: hero
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - media
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    mediaSide:
+    - bottom
+    - top
+    mediaMode:
+    - image
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: responsiveInvariant
+      base: no-breakpoint-transition-observed
+      value: no-breakpoint-transition-observed
+  provenance:
+    sourceRecipeId: portfolio-header-content-stack
+- id: portfolio-header-media-background
+  sectionType: portfolio-header
+  builderUseCase: hero
+  structure:
+    skeleton: media-background
+    archetype: overlay
+  slots:
+    required:
+    - heading
+    optional:
+    - media
+  variantAxes:
+    columns:
+    - 1
+    - 2
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - background
+    - center
+    mediaMode:
+    - background-image
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+  provenance:
+    sourceRecipeId: portfolio-header-media-background
+- id: portfolio-header-repeated-grid
+  sectionType: portfolio-header
+  builderUseCase: hero
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - media
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    mediaSide:
+    - bottom
+    - top
+    mediaMode:
+    - image
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+  provenance:
+    sourceRecipeId: portfolio-header-repeated-grid
+- id: portfolio-media-background
+  sectionType: portfolio
+  builderUseCase: gallery
+  structure:
+    skeleton: media-background
+    archetype: overlay
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - media
+    - tags
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    mediaSide:
+    - background
+    - center
+    mediaMode:
+    - background-image
+    - multiple-images
+    ingredients:
+    - actions
+    - tags
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: sticky
+      base: enabled
+      value: enabled
+  provenance:
+    sourceRecipeId: portfolio-media-background
+- id: portfolio-media-collage
+  sectionType: portfolio
+  builderUseCase: gallery
+  structure:
+    skeleton: media-collage
+    archetype: collage
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - media
+    - overlapping-images
+    - tags
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - top
+    mediaMode:
+    - image
+    - multiple-images
+    - overlapping-images
+    ingredients:
+    - actions
+    - overlapping-images
+    - tags
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: columns
+      base: '1'
+      at: md
+      value: content-plus-auto
+  provenance:
+    sourceRecipeId: portfolio-media-collage
+- id: portfolio-repeated-grid
+  sectionType: portfolio
+  builderUseCase: gallery
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - media
+  variantAxes:
+    columns:
+    - 2
+    - 3
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - top
+    mediaMode:
+    - multiple-images
+    ingredients:
+    - actions
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+      atLg: '3'
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: portfolio-repeated-grid
+- id: pricing-content-stack
+  sectionType: pricing
+  builderUseCase: pricing
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - icons
+    - list
+    - plans
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    - left
+    ingredients:
+    - actions
+    - icons
+    - list
+    - plans
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules: []
+  provenance:
+    sourceRecipeId: pricing-content-stack
+- id: pricing-repeated-grid
+  sectionType: pricing
+  builderUseCase: pricing
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - comparison
+    - icons
+    - list
+    - plans
+  variantAxes:
+    columns:
+    - 1
+    - 2
+    - 3
+    - 4
+    textAlign:
+    - center
+    - left
+    ingredients:
+    - actions
+    - comparison
+    - icons
+    - list
+    - plans
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+  provenance:
+    sourceRecipeId: pricing-repeated-grid
+- id: pricing-table
+  sectionType: pricing
+  builderUseCase: pricing
+  structure:
+    skeleton: table
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - comparison
+    - plans
+    - table
+  variantAxes:
+    textAlign:
+    - center
+    - left
+    interaction:
+    - tabs
+    ingredients:
+    - actions
+    - comparison
+    - plans
+    - table
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '3'
+      at: md
+      value: asymmetric-4-column
+    - axis: display
+      base: hidden
+      at: md
+      value: block
+    - axis: columns
+      base: '3'
+      at: md
+      value: asymmetric-4-column
+    - axis: sticky
+      base: enabled
+      value: enabled
+  provenance:
+    sourceRecipeId: pricing-table
+- id: pricing-tabs
+  sectionType: pricing
+  builderUseCase: pricing
+  structure:
+    skeleton: tabs
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - comparison
+    - icons
+    - list
+    - plans
+  variantAxes:
+    columns:
+    - 1
+    - 2
+    - 3
+    - 4
+    textAlign:
+    - center
+    - left
+    interaction:
+    - tabs
+    ingredients:
+    - actions
+    - comparison
+    - icons
+    - list
+    - plans
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: interaction
+      base: tap-tabs
+      at: lg
+      value: click-tabs
+  provenance:
+    sourceRecipeId: pricing-tabs
+- id: product-header-content-media-split
+  sectionType: product-header
+  builderUseCase: hero
+  structure:
+    skeleton: content-media-split
+    archetype: split
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - media
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    mediaSide:
+    - left
+    - right
+    mediaMode:
+    - image-lightbox
+    - multiple-images
+    interaction:
+    - dialog
+    ingredients:
+    - actions
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: '1'
+      at: lg
+      value: asymmetric-2-column
+    - axis: columns
+      base: '1'
+      at: md
+      value: asymmetric-2-column
+    - axis: display
+      base: hidden
+      at: md
+      value: block
+    - axis: overflow
+      base: y-auto
+      value: y-auto
+    - axis: mediaAspect
+      base: portrait
+      value: portrait
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: itemBasis
+      base: full
+      value: full
+    - axis: mediaAspect
+      base: portrait
+      value: portrait
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: carouselInteraction
+      base: swipe-or-controls
+      at: md
+      value: drag-or-controls
+  provenance:
+    sourceRecipeId: product-header-content-media-split
+- id: product-header-disclosure-list
+  sectionType: product-header
+  builderUseCase: hero
+  structure:
+    skeleton: disclosure-list
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - disclosure-list
+    - media
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    mediaSide:
+    - left
+    mediaMode:
+    - video-lightbox
+    interaction:
+    - dialog
+    - disclosure
+    ingredients:
+    - actions
+    - disclosure-list
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: '1'
+      at: lg
+      value: asymmetric-2-column
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: flexDirection
+      base: col
+      at: sm
+      value: row
+    - axis: display
+      base: hidden
+      at: sm
+      value: block
+    - axis: dialogInteraction
+      base: tap-trigger
+      at: lg
+      value: click-trigger
+    - axis: sticky
+      base: enabled
+      value: enabled
+  provenance:
+    sourceRecipeId: product-header-disclosure-list
+- id: product-header-repeated-grid
+  sectionType: product-header
+  builderUseCase: hero
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - media
+  variantAxes:
+    columns:
+    - 2
+    - 3
+    textAlign:
+    - left
+    mediaSide:
+    - center
+    - top
+    mediaMode:
+    - image-lightbox
+    - multiple-images
+    interaction:
+    - dialog
+    ingredients:
+    - actions
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: order
+      base: last
+      at: md
+      value: none
+    - axis: columns
+      base: '1'
+      at: md
+      value: asymmetric-2-column
+      atLg: asymmetric-2-column
+    - axis: display
+      base: hidden
+      at: md
+      value: block
+    - axis: order
+      base: first
+      at: md
+      value: none
+    - axis: display
+      base: default
+      at: md
+      value: hidden
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+    - axis: mediaAspect
+      base: landscape
+      value: landscape
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: display
+      base: hidden
+      at: md
+      value: grid
+    - axis: columns
+      base: default
+      at: md
+      value: '2'
+    - axis: mediaAspect
+      base: landscape
+      value: landscape
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: mediaAspect
+      base: landscape
+      value: landscape
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: display
+      base: hidden
+      at: md
+      value: flex
+    - axis: display
+      base: hidden
+      at: md
+      value: flex
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: carouselInteraction
+      base: swipe-or-controls
+      at: md
+      value: drag-or-controls
+    - axis: dialogInteraction
+      base: tap-trigger
+      at: lg
+      value: click-trigger
+  provenance:
+    sourceRecipeId: product-header-repeated-grid
+- id: product-list-carousel
+  sectionType: product-list
+  builderUseCase: gallery
+  structure:
+    skeleton: carousel
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - media
+  variantAxes:
+    columns:
+    - 3
+    - 4
+    textAlign:
+    - left
+    mediaMode:
+    - image
+    - multiple-images
+    interaction:
+    - carousel
+    ingredients:
+    - actions
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: columns
+      base: '1'
+      at: md
+      value: content-plus-auto
+    - axis: display
+      base: hidden
+      at: md
+      value: flex
+    - axis: itemBasis
+      base: partial-track
+      at: sm
+      value: 4/5
+      atMd: 1/2
+      atLg: partial-track
+    - axis: mediaAspect
+      base: portrait
+      value: portrait
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: carouselInteraction
+      base: swipe-or-controls
+      at: md
+      value: drag-or-controls
+  provenance:
+    sourceRecipeId: product-list-carousel
+- id: product-list-repeated-grid
+  sectionType: product-list
+  builderUseCase: gallery
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - media
+  variantAxes:
+    columns:
+    - 3
+    - 4
+    textAlign:
+    - center
+    - left
+    mediaMode:
+    - image
+    - multiple-images
+    ingredients:
+    - actions
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: content-plus-auto
+    - axis: display
+      base: hidden
+      at: md
+      value: block
+    - axis: columns
+      base: '2'
+      at: lg
+      value: '4'
+    - axis: mediaAspect
+      base: portrait
+      value: portrait
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: product-list-repeated-grid
+- id: section-header-content-stack
+  sectionType: section-header
+  builderUseCase: features
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - dropdown
+    - search
+  variantAxes:
+    interaction:
+    - search
+    ingredients:
+    - actions
+    - dropdown
+    - search
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: content-plus-auto
+  provenance:
+    sourceRecipeId: section-header-content-stack
+- id: section-header-tabs
+  sectionType: section-header
+  builderUseCase: features
+  structure:
+    skeleton: tabs
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - dropdown
+    - search
+  variantAxes:
+    interaction:
+    - search
+    - tabs
+    ingredients:
+    - actions
+    - dropdown
+    - search
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: content-plus-auto
+    - axis: overflow
+      base: auto
+      value: auto
+  provenance:
+    sourceRecipeId: section-header-tabs
+- id: sidebar-content-stack
+  sectionType: sidebar
+  builderUseCase: null
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - avatar
+    - media
+    - search
+  variantAxes:
+    mediaMode:
+    - image
+    interaction:
+    - search
+    ingredients:
+    - actions
+    - avatar
+    - search
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: display
+      base: flex
+      at: lg
+      value: hidden
+  provenance:
+    sourceRecipeId: sidebar-content-stack
+- id: stacked-list-content-stack
+  sectionType: stacked-list
+  builderUseCase: features
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - avatar
+    - dropdown
+    - icons
+    - media
+    - progress
+    - search
+    - tags
+  variantAxes:
+    textAlign:
+    - left
+    mediaMode:
+    - image
+    interaction:
+    - search
+    ingredients:
+    - actions
+    - avatar
+    - dropdown
+    - icons
+    - progress
+    - search
+    - tags
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: content-plus-auto
+  provenance:
+    sourceRecipeId: stacked-list-content-stack
+- id: stat-cards-repeated-grid
+  sectionType: stat-cards
+  builderUseCase: features
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - icons
+    - progress
+  variantAxes:
+    columns:
+    - 3
+    - 4
+    textAlign:
+    - left
+    ingredients:
+    - actions
+    - icons
+    - progress
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: content-plus-auto
+  provenance:
+    sourceRecipeId: stat-cards-repeated-grid
+- id: stats-content-media-split
+  sectionType: stats
+  builderUseCase: features
+  structure:
+    skeleton: content-media-split
+    archetype: split
+  slots:
+    required:
+    - heading
+    optional:
+    - cards
+    - media
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - left
+    - right
+    mediaMode:
+    - image
+    - video-lightbox
+    interaction:
+    - dialog
+    ingredients:
+    - cards
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: '1'
+      at: lg
+      value: asymmetric-2-column
+    - axis: mediaAspect
+      base: landscape
+      value: landscape
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: columns
+      base: '1'
+      at: md
+      value: '3'
+      atLg: '1'
+  provenance:
+    sourceRecipeId: stats-content-media-split
+- id: stats-media-background
+  sectionType: stats
+  builderUseCase: features
+  structure:
+    skeleton: media-background
+    archetype: overlay
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - media
+  variantAxes:
+    columns:
+    - 2
+    - 3
+    textAlign:
+    - left
+    mediaSide:
+    - background
+    mediaMode:
+    - background-image
+    - background-video
+    ingredients:
+    - actions
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: '3'
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: stats-media-background
+- id: stats-repeated-grid
+  sectionType: stats
+  builderUseCase: features
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - cards
+    - media
+  variantAxes:
+    columns:
+    - 2
+    - 3
+    textAlign:
+    - left
+    mediaMode:
+    - image
+    - multiple-images
+    ingredients:
+    - actions
+    - cards
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+    - axis: columns
+      base: '1'
+      at: md
+      value: '3'
+  provenance:
+    sourceRecipeId: stats-repeated-grid
+- id: table-table
+  sectionType: table
+  builderUseCase: features
+  structure:
+    skeleton: table
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - filters
+    - pagination
+    - table
+  variantAxes:
+    textAlign:
+    - left
+    interaction:
+    - filter
+    - pagination
+    ingredients:
+    - actions
+    - filters
+    - pagination
+    - table
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: flexDirection
+      base: col
+      at: sm
+      value: row
+    - axis: display
+      base: hidden
+      at: md
+      value: block
+  provenance:
+    sourceRecipeId: table-table
+- id: team-carousel
+  sectionType: team
+  builderUseCase: about
+  structure:
+    skeleton: carousel
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - avatar
+    - media
+  variantAxes:
+    columns:
+    - 3
+    textAlign:
+    - left
+    mediaMode:
+    - image
+    interaction:
+    - carousel
+    ingredients:
+    - actions
+    - avatar
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: itemBasis
+      base: partial-track
+      at: sm
+      value: 4/5
+      atMd: 1/2
+      atLg: 1/3
+    - axis: mediaAspect
+      base: square
+      value: square
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: carouselInteraction
+      base: swipe-or-controls
+      at: md
+      value: drag-or-controls
+  provenance:
+    sourceRecipeId: team-carousel
+- id: team-repeated-grid
+  sectionType: team
+  builderUseCase: about
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - avatar
+    - media
+  variantAxes:
+    columns:
+    - 2
+    - 3
+    - 4
+    textAlign:
+    - center
+    - left
+    mediaMode:
+    - image
+    - multiple-images
+    ingredients:
+    - actions
+    - avatar
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+      atLg: '4'
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: team-repeated-grid
+- id: testimonial-carousel
+  sectionType: testimonial
+  builderUseCase: testimonial
+  structure:
+    skeleton: carousel
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - avatar
+    - cards
+    - logos
+    - media
+    - rating
+  variantAxes:
+    columns:
+    - 1
+    - 2
+    - 3
+    textAlign:
+    - center
+    - left
+    mediaMode:
+    - image
+    - multiple-images
+    interaction:
+    - carousel
+    ingredients:
+    - actions
+    - avatar
+    - cards
+    - logos
+    - rating
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: section-hidden-carousel-visible-track
+      value: clipped-peek
+    - axis: itemBasis
+      base: 95-percent
+      at: sm
+      value: 80-percent
+      atMd: 50-percent
+    - axis: mediaAspect
+      base: 3-by-2
+      value: 3-by-2
+    - axis: interaction
+      base: swipe-or-controls
+      at: md
+      value: drag-or-controls
+  provenance:
+    sourceRecipeId: testimonial-carousel
+- id: testimonial-content-media-split
+  sectionType: testimonial
+  builderUseCase: testimonial
+  structure:
+    skeleton: content-media-split
+    archetype: split
+  slots:
+    required:
+    - heading
+    optional:
+    - logos
+    - media
+    - rating
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    mediaSide:
+    - left
+    mediaMode:
+    - image
+    - video-lightbox
+    interaction:
+    - dialog
+    ingredients:
+    - logos
+    - rating
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: true
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+    - axis: order
+      base: last
+      at: md
+      value: first
+    - axis: mediaAspect
+      base: square
+      value: square
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: display
+      base: hidden
+      at: sm
+      value: block
+  provenance:
+    sourceRecipeId: testimonial-content-media-split
+- id: testimonial-content-stack
+  sectionType: testimonial
+  builderUseCase: testimonial
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - avatar
+    - logos
+    - media
+    - rating
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - center
+    mediaMode:
+    - image
+    ingredients:
+    - avatar
+    - logos
+    - rating
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: testimonial-content-stack
+- id: testimonial-media-background
+  sectionType: testimonial
+  builderUseCase: testimonial
+  structure:
+    skeleton: media-background
+    archetype: overlay
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - cards
+    - icons
+    - logos
+    - media
+    - rating
+  variantAxes:
+    columns:
+    - 2
+    - 3
+    - 4
+    textAlign:
+    - center
+    - left
+    mediaSide:
+    - background
+    mediaMode:
+    - background-image
+    - multiple-images
+    ingredients:
+    - actions
+    - cards
+    - icons
+    - logos
+    - rating
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: default
+      at: md
+      value: '2'
+      atLg: '4'
+    - axis: mediaCrop
+      base: cover
+      value: cover
+    - axis: flexDirection
+      base: col
+      at: md
+      value: row
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: testimonial-media-background
+- id: testimonial-repeated-grid
+  sectionType: testimonial
+  builderUseCase: testimonial
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - avatar
+    - cards
+    - logos
+    - media
+    - rating
+  variantAxes:
+    columns:
+    - 2
+    - 3
+    - 4
+    textAlign:
+    - center
+    - left
+    mediaMode:
+    - image
+    - multiple-images
+    - video-lightbox
+    interaction:
+    - dialog
+    ingredients:
+    - actions
+    - avatar
+    - cards
+    - logos
+    - rating
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+      atLg: '3'
+    - axis: flexDirection
+      base: col
+      at: md
+      value: row
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: testimonial-repeated-grid
+- id: testimonial-tabs
+  sectionType: testimonial
+  builderUseCase: testimonial
+  structure:
+    skeleton: tabs
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - logos
+  variantAxes:
+    columns:
+    - 1
+    - 2
+    textAlign:
+    - center
+    - left
+    interaction:
+    - tabs
+    ingredients:
+    - actions
+    - logos
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: flexDirection
+      base: col
+      at: md
+      value: row
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: testimonial-tabs
+- id: timeline-carousel
+  sectionType: timeline
+  builderUseCase: features
+  structure:
+    skeleton: carousel
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - date
+    - media
+  variantAxes:
+    columns:
+    - 3
+    textAlign:
+    - center
+    mediaMode:
+    - multiple-images
+    interaction:
+    - carousel
+    ingredients:
+    - actions
+    - date
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: itemBasis
+      base: full
+      at: sm
+      value: 1/2
+      atMd: 1/3
+    - axis: carouselInteraction
+      base: swipe-or-controls
+      at: md
+      value: drag-or-controls
+  provenance:
+    sourceRecipeId: timeline-carousel
+- id: timeline-content-stack
+  sectionType: timeline
+  builderUseCase: features
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - cards
+    - date
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - left
+    ingredients:
+    - actions
+    - cards
+    - date
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: sticky
+      base: enabled
+      value: enabled
+  provenance:
+    sourceRecipeId: timeline-content-stack
+- id: timeline-media-collage
+  sectionType: timeline
+  builderUseCase: features
+  structure:
+    skeleton: media-collage
+    archetype: collage
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - cards
+    - date
+    - media
+  variantAxes:
+    columns:
+    - 1
+    textAlign:
+    - left
+    mediaMode:
+    - image
+    - multiple-images
+    ingredients:
+    - actions
+    - cards
+    - date
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: overflow
+      base: hidden
+      value: hidden
+    - axis: sticky
+      base: enabled
+      value: enabled
+  provenance:
+    sourceRecipeId: timeline-media-collage
+- id: timeline-repeated-grid
+  sectionType: timeline
+  builderUseCase: features
+  structure:
+    skeleton: repeated-grid
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - cards
+    - date
+    - media
+  variantAxes:
+    columns:
+    - 2
+    - 5
+    textAlign:
+    - center
+    - left
+    mediaMode:
+    - image
+    - multiple-images
+    ingredients:
+    - actions
+    - cards
+    - date
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: content-plus-auto
+      at: md
+      value: content-plus-auto
+    - axis: display
+      base: hidden
+      at: md
+      value: block
+    - axis: order
+      base: first
+      at: md
+      value: none
+    - axis: display
+      base: hidden
+      at: md
+      value: block
+    - axis: sticky
+      base: enabled
+      value: enabled
+  provenance:
+    sourceRecipeId: timeline-repeated-grid
+- id: timeline-tabs
+  sectionType: timeline
+  builderUseCase: features
+  structure:
+    skeleton: tabs
+    archetype: cards
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - date
+    - media
+  variantAxes:
+    columns:
+    - 2
+    textAlign:
+    - left
+    mediaMode:
+    - image
+    interaction:
+    - tabs
+    ingredients:
+    - actions
+    - date
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+    - axis: mediaCrop
+      base: cover
+      value: cover
+  provenance:
+    sourceRecipeId: timeline-tabs
+- id: timeline-timeline
+  sectionType: timeline
+  builderUseCase: features
+  structure:
+    skeleton: timeline
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - date
+  variantAxes:
+    columns:
+    - 1
+    - 2
+    - 5
+    textAlign:
+    - center
+    - left
+    ingredients:
+    - actions
+    - date
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: columns
+      base: '1'
+      at: md
+      value: '2'
+    - axis: sticky
+      base: enabled
+      value: enabled
+  provenance:
+    sourceRecipeId: timeline-timeline
+- id: topbar-content-stack
+  sectionType: topbar
+  builderUseCase: null
+  structure:
+    skeleton: content-stack
+    archetype: stack
+  slots:
+    required:
+    - heading
+    optional:
+    - actions
+    - avatar
+    - media
+    - search
+  variantAxes:
+    mediaMode:
+    - image
+    interaction:
+    - search
+    ingredients:
+    - actions
+    - avatar
+    - search
+  responsive:
+    breakpointModel: semantic-mobile-first
+    orientationIsVariant: false
+    rules:
+    - axis: conditionalMotion
+      base: animated-presence
+      value: animated-presence
+  provenance:
+    sourceRecipeId: topbar-content-stack

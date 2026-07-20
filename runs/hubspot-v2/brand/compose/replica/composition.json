@@ -107,6 +107,7 @@
      "note": "cream ink (#f8f5ee) over the photo behind a MEASURED flat scrim rgba(0,0,0,0.4) (css-rules: the page-header background-image ::after gradient resolves to one flat wash); no blur"
     }
    ],
+   "_requiresHydration": false,
    "alignment": {
     "anchor": "centered"
    }
@@ -152,6 +153,7 @@
     }
    ],
    "treatments": [],
+   "_requiresHydration": false,
    "alignment": {
     "anchor": "centered"
    }
@@ -236,6 +238,7 @@
     }
    ],
    "treatments": [],
+   "_requiresHydration": false,
    "alignment": {
     "anchor": "centered"
    }
@@ -394,6 +397,7 @@
     }
    ],
    "treatments": [],
+   "_requiresHydration": false,
    "grid": {
     "columns": 2,
     "gutter": "2rem"
@@ -494,6 +498,7 @@
     }
    ],
    "treatments": [],
+   "_requiresHydration": false,
    "grid": {
     "columns": 3,
     "gutter": "2rem"
@@ -552,7 +557,8 @@
      ]
     }
    ],
-   "treatments": []
+   "treatments": [],
+   "_requiresHydration": false
   },
   {
    "id": "case-study-header",
@@ -604,7 +610,8 @@
      }
     }
    ],
-   "treatments": []
+   "treatments": [],
+   "_requiresHydration": false
   },
   {
    "id": "testimonial-tabs",
@@ -676,7 +683,8 @@
      ]
     }
    ],
-   "treatments": []
+   "treatments": [],
+   "_requiresHydration": false
   },
   {
    "id": "badge-row",
@@ -719,7 +727,8 @@
      ]
     }
    ],
-   "treatments": []
+   "treatments": [],
+   "_requiresHydration": false
   },
   {
    "id": "closing-cta",
@@ -767,7 +776,8 @@
      }
     }
    ],
-   "treatments": []
+   "treatments": [],
+   "_requiresHydration": false
   }
  ],
  "errors": {}

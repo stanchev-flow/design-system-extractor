@@ -136,6 +136,72 @@ for (const target of process.argv.slice(2)) {
       }
     };
 
+    // AS-78: circle integrity — semantic round controls are square and icon-only.
+    for (const host of document.querySelectorAll(
+      '[data-control-shape="round"],[data-shape="circle"],.c-button--round,.btnf-round'
+    )) {
+      if (!visible(host)) continue;
+      const r = host.getBoundingClientRect();
+      const tol = Math.max(3, Math.max(r.width, r.height) * 0.06);
+      const pill = host.matches('[data-control-shape="pill"],[data-shape="pill"],.is-pill');
+      const hasMedia = !!host.querySelector('img,svg,[aria-hidden="true"]');
+      const text = realText(host).replace(/[\s←→‹›«»+\-×]/g, "");
+      if (!pill && Math.abs(r.width - r.height) > tol)
+        out.push(`AS-78 circle: round host is ${Math.round(r.width)}×${Math.round(r.height)}px (must be approximately square)`);
+      if (!pill && text && !hasMedia)
+        out.push(`AS-78 circle: text-bearing control uses round/circle semantics instead of pill semantics`);
+      const cs = getComputedStyle(host);
+      const radii = cs.borderTopLeftRadius.split(/\s+/).map(parseFloat).filter(Number.isFinite);
+      if (!pill && r.width !== r.height && radii.some(v => v >= Math.min(r.width, r.height) * 0.45))
+        out.push(`AS-78 circle: percentage/circular radius paints an ellipse on a non-square host`);
+      if (host.matches('.is-focus,:focus-visible')) {
+        const before = getComputedStyle(host, "::before");
+        const after = getComputedStyle(host, "::after");
+        for (const pseudo of [before, after]) {
+          if (pseudo.content && pseudo.content !== "none" && pseudo.content !== '""') {
+            const pw = parseFloat(pseudo.width), ph = parseFloat(pseudo.height);
+            if ((Number.isFinite(pw) && pw > r.width + 6) ||
+                (Number.isFinite(ph) && ph > r.height + 6))
+              out.push(`AS-78 circle: focus pseudo layer exceeds host geometry`);
+          }
+        }
+        if ((parseFloat(cs.outlineOffset) || 0) > 6)
+          out.push(`AS-78 circle: focus ring is not bounded to host geometry`);
+      }
+    }
+
+    // AS-79: designed toggle/control-family coherence.
+    for (const toggle of document.querySelectorAll(
+      '[data-control-kind="toggle"],.ex-switch'
+    )) {
+      if (!visible(toggle)) continue;
+      const track = toggle.querySelector('.track,[data-toggle-track]');
+      const knob = toggle.querySelector('.knob,[data-toggle-knob]');
+      if (!track || !knob || !visible(track) || !visible(knob)) {
+        out.push(`AS-79 toggle: missing explicit track/knob anatomy`);
+        continue;
+      }
+      const tr = track.getBoundingClientRect(), kr = knob.getBoundingClientRect();
+      const ts = getComputedStyle(track), ks = getComputedStyle(knob);
+      const trackRadius = parseFloat(ts.borderTopLeftRadius) || 0;
+      const knobRadius = parseFloat(ks.borderTopLeftRadius) || 0;
+      if (trackRadius < tr.height / 2 - 1)
+        out.push(`AS-79 toggle: track is not a capsule (${Math.round(tr.width)}×${Math.round(tr.height)}px, radius ${Math.round(trackRadius)}px)`);
+      if (Math.abs(kr.width - kr.height) > 2 || knobRadius < Math.min(kr.width, kr.height) / 2 - 1)
+        out.push(`AS-79 toggle: knob is not a coherent circle`);
+      const inset = Math.min(
+        Math.abs(kr.left - tr.left), Math.abs(tr.right - kr.right),
+        Math.abs(kr.top - tr.top), Math.abs(tr.bottom - kr.bottom));
+      if (inset < 1 || inset > tr.height * 0.3)
+        out.push(`AS-79 toggle: knob inset ${Math.round(inset)}px is incoherent with track`);
+      if (toggle.closest('[data-origin="designed"]') &&
+          !getComputedStyle(toggle).getPropertyValue('--radius').trim() &&
+          !getComputedStyle(toggle).getPropertyValue('--button-radius').trim())
+        out.push(`AS-79 toggle: designed control does not consume brand control-radius facts`);
+      if (toggle.matches('.is-focus') && (parseFloat(ts.outlineWidth) || 0) < 1)
+        out.push(`AS-79 toggle: focus state has no explicit branded focus treatment`);
+    }
+
     for (const sec of scope) {
       const id = sec.id || "page";
       if (sec.querySelector(".c-footer")) continue;   // footer is a chrome bookend, not a content section
@@ -320,6 +386,102 @@ for (const target of process.argv.slice(2)) {
         const lines = Math.max(1, Math.round(h.getBoundingClientRect().height / lh));
         if (lines > cap)
           out.push(`AS-66 ${id}: heading renders ${lines} lines against its stamped fit cap ${cap} (rung ${box.getAttribute("data-fit-rung") || "display"}) — the register step-down did not fit the measure`);
+      }
+
+      // AS-75: component-fit feasibility. The wireframe solver stamps its chosen
+      // minimum width, line caps, and family anatomy on repeated collections;
+      // rendered geometry must honor the declaration (never squeeze silently).
+      for (const group of sec.querySelectorAll('[data-component-fit="collection"]')) {
+        const minWidth = parseFloat(group.getAttribute("data-fit-min-item")) || 0;
+        const hCap = parseInt(group.getAttribute("data-fit-max-heading-lines"), 10) || 0;
+        const bCap = parseInt(group.getAttribute("data-fit-max-body-lines"), 10) || 0;
+        const declaredAnatomy = group.getAttribute("data-fit-anatomy") || "";
+        const anatomies = new Set();
+        for (const item of group.querySelectorAll(":scope > .cs-module")) {
+          const r = item.getBoundingClientRect();
+          const anatomy = item.getAttribute("data-internal-anatomy") || "";
+          if (anatomy) anatomies.add(anatomy);
+          if (minWidth && r.width + 1 < minWidth)
+            out.push(`AS-75 ${id}: component item ${Math.round(r.width)}px wide below declared ${Math.round(minWidth)}px minimum`);
+          for (const [el, cap, role] of [
+            [item.querySelector(".c-heading"), hCap, "heading"],
+            [item.querySelector(".c-paragraph"), bCap, "body"],
+          ]) {
+            if (!el || !cap || !visible(el)) continue;
+            const cs = getComputedStyle(el);
+            const lh = parseFloat(cs.lineHeight) || 1.2 * parseFloat(cs.fontSize);
+            const lines = Math.max(1, Math.round(el.getBoundingClientRect().height / lh));
+            if (lines > cap)
+              out.push(`AS-75 ${id}: component ${role} renders ${lines} lines against ${cap}-line fit cap`);
+          }
+          if (item.scrollWidth > item.clientWidth + 1)
+            out.push(`AS-75 ${id}: component content overflows its item box (likely unbreakable token)`);
+        }
+        if (anatomies.size > 1 || (declaredAnatomy && anatomies.size &&
+            !anatomies.has(declaredAnatomy)))
+          out.push(`AS-75 ${id}: sibling component anatomy differs (${[...anatomies].join(", ")}) without a licensed family variant`);
+      }
+
+      // AS-77: rendered grid occupancy. A feasible track count may still leave a
+      // visible orphan void in its final row. The wireframe must fill that row via
+      // explicit item spans, select one column, or license asymmetry with a real
+      // painted counterweight; CSS positional selectors cannot invent a repair.
+      for (const group of sec.querySelectorAll('[data-component-fit="collection"]')) {
+        const columns = parseInt(group.getAttribute("data-fit-columns"), 10) || 1;
+        if (columns <= 1) continue;
+        const strategy = group.getAttribute("data-fill-strategy") || "";
+        const counterweight = group.getAttribute("data-fill-counterweight") || "";
+        const items = [...group.querySelectorAll(":scope > .cs-module")].filter(visible);
+        const rows = [];
+        for (const item of items) {
+          const rect = item.getBoundingClientRect();
+          let row = rows.find(entry => Math.abs(entry.top - rect.top) <= 2);
+          if (!row) {
+            row = {top: rect.top, items: []};
+            rows.push(row);
+          }
+          row.items.push({item, rect});
+        }
+        rows.sort((a, b) => a.top - b.top);
+        const last = rows[rows.length - 1];
+        if (!last) continue;
+        const style = getComputedStyle(group);
+        const gap = parseFloat(style.columnGap) || 0;
+        const painted = last.items.reduce((sum, entry) => sum + entry.rect.width, 0)
+          + gap * Math.max(0, last.items.length - 1);
+        const unused = Math.max(0, group.getBoundingClientRect().width - painted);
+        const licensed = strategy === "licensed-asymmetry" && counterweight;
+        if (unused > 3 && !licensed)
+          out.push(`AS-77 ${id}: final component row leaves ${Math.round(unused)}px of unused grid tracks (${strategy || "no fill strategy"})`);
+        if (strategy === "licensed-asymmetry" && !counterweight)
+          out.push(`AS-77 ${id}: licensed grid asymmetry has no painted balancing counterweight`);
+        for (const {item, rect} of last.items) {
+          const span = parseInt(item.getAttribute("data-grid-span"), 10) || 1;
+          if (span > 1 && rect.width < group.getBoundingClientRect().width - 3 &&
+              last.items.length === 1)
+            out.push(`AS-77 ${id}: declared ${span}-track item span did not fill its rendered row`);
+        }
+      }
+
+      // AS-76: testimonial semantic integrity + section balance.
+      for (const host of sec.querySelectorAll('[data-testimonial-intent="true"]')) {
+        const component = host.querySelector('[data-component-contract="testimonial"]');
+        if (!component) {
+          out.push(`AS-76 ${id}: testimonial intent rendered without a testimonial component wrapper`);
+          continue;
+        }
+        if (!realText(component.querySelector(".cs-testimonial-quote") || {textContent: ""}) ||
+            !realText(component.querySelector(".c-person") || {textContent: ""}))
+          out.push(`AS-76 ${id}: testimonial component is missing quote or attribution`);
+        if (component.getAttribute("data-testimonial-asset") === "bound" &&
+            !component.querySelector("img"))
+          out.push(`AS-76 ${id}: compatible testimonial media was bound but silently dropped`);
+        const maxEmpty = parseFloat(component.getAttribute("data-testimonial-max-empty")) || 0.68;
+        const sr = host.getBoundingClientRect();
+        const cr = component.getBoundingClientRect();
+        const emptyRatio = sr.height > 0 ? Math.max(0, sr.height - cr.height) / sr.height : 0;
+        if (emptyRatio > maxEmpty && !host.hasAttribute("data-monument-archetype"))
+          out.push(`AS-76 ${id}: testimonial section empty-space ratio ${emptyRatio.toFixed(2)} exceeds ${maxEmpty.toFixed(2)} without a monument license`);
       }
 
       // AS-59: multi-action hierarchy — one primary register per action group

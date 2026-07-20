@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html data-projection-input-digest="95e514cb1241f1e0a3f37a2c2d615396bdb4ca52b64d9656c77ce684b30226a1" lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lexend+Deca:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style id="tokens">
-/* Remote — generated design tokens (layer 1). Source: brand.yaml sha256=ceb152c8b48d; generator tokens_css.py v1.0.0; style=none; tokens=256; disabledDevices=counter-display,ghost-watermark,footer-display-links. Regenerate via the compose CLI — never hand-edit. */
+/* Remote — generated design tokens (layer 1). Source: brand.yaml sha256=3e5434ecf431; generator tokens_css.py v1.0.0; style=none; tokens=256; disabledDevices=counter-display,ghost-watermark,footer-display-links. Regenerate via the compose CLI — never hand-edit. */
 :root {
   --color-ink-primary: #141415;
   --color-ink-body: #383a3d;
@@ -907,6 +907,7 @@ body {
 .cmp-note { font-size: var(--eyebrow-size); letter-spacing: 0.04em; line-height: 1.45em;
   color: var(--ink-muted); }
 .cmp-note strong { color: var(--ink); font-weight: 600; }
+.cmp-note-conf { opacity: 0.72; font-style: italic; }
 
 /* Dark sub-surface for component examples the brand renders on its inverse bands
    (badge, banner, tooltip, code demos); the surface colors are the brand's own
@@ -1079,7 +1080,7 @@ body {
 .strike::after { content: ""; position: absolute; left: -4%; right: -4%; top: 50%; height: 1px;
   background: var(--ink-muted); transform: rotate(-8deg); }
 
-/* checkbox / radio / toggle — square, radius 0, hairline + flat dark fill.
+/* checkbox / radio / toggle — inherit the brand's measured control radius.
    OFF/default is an EMPTY cream control with a 1px hairline outline (no fill, no
    glyph shown); ON is the flat dark fill. Knob/box are a fixed size so the state
    row stays aligned. */
@@ -1087,7 +1088,7 @@ body {
   font-family: var(--font-body); font-size: var(--body-size); color: var(--ink); }
 /* OFF: empty cream box, hairline outline, no visible check. */
 .ex-check .box { width: 1.15rem; height: 1.15rem; box-sizing: border-box;
-  border: 1px solid var(--hairline); border-radius: 0; background: var(--surface-primary);
+  border: 1px solid var(--hairline); border-radius: var(--radius, 0); background: var(--surface-primary);
   display: inline-flex; align-items: center; justify-content: center; color: transparent;
   font-size: 0.8rem; line-height: 1; transition: background var(--ease) ease, border-color var(--ease) ease; }
 /* ON: flat dark fill with a light check. */
@@ -1104,10 +1105,10 @@ body {
 /* OFF/default: empty cream track + hairline outline, dark knob pushed LEFT — an
    obviously empty switch, never a solid block. */
 .ex-switch .track { width: 2.8rem; height: 1.4rem; box-sizing: border-box;
-  background: var(--surface-primary); border: 1px solid var(--hairline); border-radius: 0;
+  background: var(--surface-primary); border: 1px solid var(--hairline); border-radius: 999px;
   position: relative; transition: background var(--ease) ease, border-color var(--ease) ease; }
 .ex-switch .knob { position: absolute; top: 50%; transform: translateY(-50%); left: 2px;
-  width: 1rem; height: 1rem; background: var(--ink); border-radius: 0;
+  width: 1rem; height: 1rem; background: var(--ink); border-radius: 50%;
   transition: left var(--ease) ease, background var(--ease) ease; }
 /* ON: flat dark fill, knob pushed RIGHT (light knob for contrast on the dark track). */
 .ex-switch.is-on .track, .ex-switch input:checked + .track { background: var(--surface-inverse);
@@ -1535,8 +1536,13 @@ p { text-wrap-style: balance; }
 /* stat primitive (contracts/primitives.yaml `stat`, W4): a big metric VALUE on the
    brand's own heading register + a muted supporting LABEL on the body register.
    The value rides the measured h2 tier by default (--c-stat-size override wins when a
-   brand ever measures a dedicated stat tier) — display stays reserved for the hero. */
-.c-stat { display: flex; flex-direction: column; gap: var(--space-eyebrow-to-heading, 0.5rem); }
+   brand ever measures a dedicated stat tier) — display stays reserved for the hero.
+   STAT PAIR BINDING (fix7 punch 4): the value→label seam is the statPair rung — the
+   TIGHTEST gap in any block the stat sits in (a brand-authored `stat-pair` spacing
+   token wins; the 0.5rem structural default already satisfies the <= 0.5x-sibling-gap
+   law everywhere). The old eyebrow-to-heading ride-along re-registered the pair to a
+   24px header seam, collapsing the value/label hierarchy against its siblings. */
+.c-stat { display: flex; flex-direction: column; gap: var(--space-stat-pair, 0.5rem); }
 .c-stat-value { font-family: var(--c-stat-font, var(--c-font-heading)); color: var(--c-ink);
   text-transform: var(--c-case-heading);
   font-weight: var(--c-heading-weight, var(--c-display-weight));
@@ -1544,6 +1550,31 @@ p { text-wrap-style: balance; }
 .c-stat-label { font-family: var(--c-font-body); font-size: var(--c-body-size);
   font-weight: var(--c-body-weight); line-height: 1.5em; color: var(--c-ink-muted);
   max-width: var(--space-body-measure, 34ch); }
+
+/* marked list (fix7 punch 3 — the checklist device): content-block items rendered as
+   a REAL list when the composition declares list intent. Hanging indent by grid
+   construction (marker track + text track); item stride rides the brand's own
+   list-item-gap rung. The MARKER is the brand's licensed glyph in the accent role
+   (inline-SVG channel) where an accentDevices marked-list-glyph license exists —
+   license-less brands keep the typographic dot at ink (semantic, never invented). */
+.c-marked-list { list-style: none; margin: 0; padding: 0; display: flex;
+  flex-direction: column; gap: var(--space-list-item-gap, 0.75rem);
+  font-family: var(--c-font-body); font-size: var(--c-body-size);
+  font-weight: var(--c-body-weight); line-height: 1.5em; color: var(--c-ink);
+  max-width: var(--c-measure, 62ch); }
+.c-marked-list > li { display: grid;
+  grid-template-columns: var(--c-list-marker-size, 1em) minmax(0, 1fr);
+  column-gap: 0.6em; align-items: start; }
+.c-list-marker { display: inline-flex; width: var(--c-list-marker-size, 1em);
+  height: var(--c-list-marker-size, 1em); margin-top: 0.22em;
+  color: var(--c-accent-mark, var(--c-ink)); }
+.c-list-marker svg { width: 100%; height: 100%; display: block; }
+
+/* punctuation-accent device (fix7 punch 1): a landmark heading's licensed terminal
+   mark in the device's own accent role — scheme-stable (--c-accent-mark is emitted
+   from the LICENSE's role token, never the surface accent, so a light-surface hero
+   paints the same mark the brand's landmarks evidence). */
+.c-accent-mark { color: var(--c-accent-mark, var(--c-accent)); }
 
 /* table block (contracts/blocks.yaml `table`, W4): semantic tabular data on the same
    ruled-row discipline as .c-rows — 1px hairline per row, label register for column
@@ -1840,7 +1871,7 @@ span.c-foot-wordmark { background: currentColor;
 .cs-nav-chev {
   display: inline-block; width: 16px; height: 16px; margin-left: 4px;
   vertical-align: -0.125em; flex: 0 0 auto;
-  transition: transform 0.2s;
+  transition: none;
 }
 .cs-nav-chev > svg { display: block; width: 100%; height: 100%; }
 .cs-nav-chev--mask {
@@ -2285,7 +2316,7 @@ span.c-foot-wordmark { background: currentColor;
           
         </div>
         <div class="cmp-intent">A cluster of metrics, optionally titled.</div>
-        <div class="cmp-note"><strong>Designed / not used on page.</strong></div>
+        <div class="cmp-note"><strong>Designed / not used on page.</strong> No stat-block was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no standalone numeric stat block on the captured page — the closest devices are review-score rows (platform glyph + stars + 4.6/5) inside the awards strip, extracted under blocks.logo-bar/badge evidence <span class="cmp-note-conf">(confidence: medium, overridable)</span></div>
       </div>
       <div class="cmp-example">
         <div class="cmp-stage"><div style="display:flex;gap:2.5rem"><div><div class="ex-counter">12</div><div class="ex-eyebrow">Products</div></div><div><div class="ex-counter">40k</div><div class="ex-eyebrow">Solutions</div></div><div><div class="ex-counter">6</div><div class="ex-eyebrow">Resources</div></div></div><div class="ex-caption">Row of display-register numerals + eyebrow labels; open, no boxes</div></div>
@@ -2366,7 +2397,7 @@ span.c-foot-wordmark { background: currentColor;
           
         </div>
         <div class="cmp-intent">A set of switchable panels behind tab triggers.</div>
-        <div class="cmp-note"><strong>Designed / not used on page.</strong></div>
+        <div class="cmp-note"><strong>Designed / not used on page.</strong> No tabs was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no tab device on the captured homepage <span class="cmp-note-conf">(confidence: medium, overridable)</span></div>
       </div>
       <div class="cmp-example">
         <div class="cmp-stage"><div style="display:flex;gap:1.5rem"><span class="ex-label" style="border-bottom:2px solid var(--ink);padding-bottom:0.3rem">Products</span><span class="ex-label" style="color:var(--ink-muted)">Solutions</span><span class="ex-label" style="color:var(--ink-muted)">Resources</span></div><div class="ex-caption">Typographic triggers, underline active state</div></div>
@@ -2408,7 +2439,7 @@ span.c-foot-wordmark { background: currentColor;
           
         </div>
         <div class="cmp-intent">A plan/tier tile: name, price, feature list, and a CTA.</div>
-        <div class="cmp-note"><strong>Designed / not used on page.</strong></div>
+        <div class="cmp-note"><strong>Designed / not used on page.</strong> No pricing-card was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no pricing device on the captured homepage (pricing lives on a separate route) <span class="cmp-note-conf">(confidence: medium, overridable)</span></div>
       </div>
       <div class="cmp-example">
         <div class="cmp-stage"><div class="ex-rows"><div class="ex-row" style="padding-top:0"><div><span class="ex-counter" style="font-size:1.5rem">01</span> <span class="ex-eyebrow">Products</span></div><a class="act " href="#" tabindex="-1">Book demo <span class="arrow">&rarr;</span></a></div></div><div class="ex-caption">Plan as a ruled action row (numeral + label + action)</div></div>
@@ -2436,7 +2467,7 @@ span.c-foot-wordmark { background: currentColor;
           
         </div>
         <div class="cmp-intent">An overlay panel/dialog above the page. (alias: dialog)</div>
-        <div class="cmp-note"><strong>Designed / not used on page.</strong></div>
+        <div class="cmp-note"><strong>Designed / not used on page.</strong> No modal was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: form-modal CSS exists in the sheet (closeButton hover scale 1.08) but no modal renders on the captured page <span class="cmp-note-conf">(confidence: medium, overridable)</span></div>
       </div>
       <div class="cmp-example">
         <div class="cmp-stage"><div style="background:rgba(0,0,0,0.55);padding:1.25rem"><div class="surface-panel"><div style="display:flex;justify-content:space-between;align-items:start"><div class="ex-h3">Before you go</div><span style="font-family:var(--font-heading)">&times;</span></div><p class="ex-body" style="margin-top:0.5rem">A panel at the brand radius on a flat scrim.</p><a class="act " href="#" tabindex="-1">Got it <span class="arrow">&rarr;</span></a></div></div><div class="ex-caption">Panel per the brand radius law, no shadow; flat scrim; typographic close</div></div>
@@ -2464,7 +2495,7 @@ span.c-foot-wordmark { background: currentColor;
           
         </div>
         <div class="cmp-intent">A path trail of ancestor links to the current page.</div>
-        <div class="cmp-note"><strong>Designed / not used on page.</strong></div>
+        <div class="cmp-note"><strong>Designed / not used on page.</strong> No breadcrumb was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: breadcrumb-module CSS carried in the sheet; not rendered on the captured homepage <span class="cmp-note-conf">(confidence: medium, overridable)</span></div>
       </div>
       <div class="cmp-example">
         <div class="cmp-stage"><div class="ex-eyebrow">Home <span style="opacity:.5">/</span> Products <span style="opacity:.5">/</span> Solutions</div><div class="ex-caption">Uppercase trail with the brand separator; muted</div></div>
@@ -2478,7 +2509,7 @@ span.c-foot-wordmark { background: currentColor;
           
         </div>
         <div class="cmp-intent">Page-to-page navigation control.</div>
-        <div class="cmp-note"><strong>Designed / not used on page.</strong></div>
+        <div class="cmp-note"><strong>Designed / not used on page.</strong> No pagination was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: numbered-pagination CSS backs the carousel arrow controls; no numbered pagination renders on the captured page <span class="cmp-note-conf">(confidence: medium, overridable)</span></div>
       </div>
       <div class="cmp-example">
         <div class="cmp-stage"><div style="display:flex;align-items:center;gap:1.5rem"><a class="act" href="#"><span class="arrow" style="transform:scaleX(-1)">&rarr;</span> Prev</a><span class="ex-counter" style="font-size:1.25rem">1 / 6</span><a class="act " href="#" tabindex="-1">Next <span class="arrow">&rarr;</span></a></div><div class="ex-caption">Fraction counter + prev/next arrow links; no numbered chips</div></div>
@@ -2492,7 +2523,7 @@ span.c-foot-wordmark { background: currentColor;
           
         </div>
         <div class="cmp-intent">Tabular data: header columns and data rows.</div>
-        <div class="cmp-note"><strong>Designed / not used on page.</strong></div>
+        <div class="cmp-note"><strong>Designed / not used on page.</strong> No table was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: table tokens exist in the sheet (--zora-table-*); no table renders on the captured homepage <span class="cmp-note-conf">(confidence: medium, overridable)</span></div>
       </div>
       <div class="cmp-example">
         <div class="cmp-stage"><div class="ex-rows"><div class="ex-row" style="padding-top:0"><span class="ex-eyebrow">Day</span><span class="ex-eyebrow">Hours</span></div><div class="ex-row"><span class="ex-body" style="max-width:none">Tue&ndash;Fri</span><span class="ex-body" style="max-width:none">10&ndash;18</span></div><div class="ex-row"><span class="ex-body" style="max-width:none">Sat&ndash;Sun</span><span class="ex-body" style="max-width:none">09&ndash;20</span></div></div><div class="ex-caption">Rows on 1px ruled bars; eyebrow column headers; no zebra/borders</div></div>
@@ -2520,7 +2551,7 @@ span.c-foot-wordmark { background: currentColor;
           
         </div>
         <div class="cmp-intent">An ordered sequence of steps/process stages. (alias: process)</div>
-        <div class="cmp-note"><strong>Designed / not used on page.</strong></div>
+        <div class="cmp-note"><strong>Designed / not used on page.</strong> No steps was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no numbered step sequence on the captured homepage <span class="cmp-note-conf">(confidence: medium, overridable)</span></div>
       </div>
       <div class="cmp-example">
         <div class="cmp-stage"><div class="ex-rows"><div class="ex-row" style="padding-top:0"><span class="ex-counter" style="font-size:1.5rem">01</span><span class="ex-h3" style="font-size:1.125rem;flex:1;margin-left:1rem">Book online</span></div><div class="ex-row"><span class="ex-counter" style="font-size:1.5rem">02</span><span class="ex-h3" style="font-size:1.125rem;flex:1;margin-left:1rem">Arrive & scan</span></div></div><div class="ex-caption">Display-register numerals + heading-register labels on ruled bars; never boxed</div></div>
@@ -2534,7 +2565,7 @@ span.c-foot-wordmark { background: currentColor;
           
         </div>
         <div class="cmp-intent">One stage of a steps/process block: number/icon + title + text.</div>
-        <div class="cmp-note"><strong>Designed / not used on page.</strong></div>
+        <div class="cmp-note"><strong>Designed / not used on page.</strong> No step-item was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no numbered step sequence on the captured homepage <span class="cmp-note-conf">(confidence: medium, overridable)</span></div>
       </div>
       <div class="cmp-example">
         <div class="cmp-stage"><div style="display:flex;gap:1rem;align-items:baseline"><span class="ex-counter" style="font-size:1.75rem">01</span><div><div class="ex-h3" style="font-size:1.125rem">Book online</div><p class="ex-body">Choose a date and time slot in advance.</p></div></div><div class="ex-caption">Didone numeral + heading + Inter body; no circular badge</div></div>

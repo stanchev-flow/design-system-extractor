@@ -83,6 +83,75 @@ JS = r"""
   };
   const q = (sel) => { try { return document.querySelector(sel); } catch (e) { return null; } };
 
+  // Painted text and accessible names are different evidence channels. A common
+  // CTA pattern appends an sr-only descriptive suffix inside the anchor; raw
+  // textContent then looks like the visible label even though it cannot fit the
+  // measured host. Keep the semantic name, but never let hidden text affect paint.
+  const collapse = (value) => String(value || '').replace(/\s+/g, ' ').trim();
+  const isHiddenTextContainer = (node, root) => {
+    for (let el = node; el && el.nodeType === Node.ELEMENT_NODE; el = el.parentElement) {
+      if (el.hidden || el.getAttribute('aria-hidden') === 'true') return true;
+      const cls = String((el.className && el.className.baseVal !== undefined)
+        ? el.className.baseVal : (el.className || ''));
+      if (/(^|\s)(?:sr-only|visually-hidden|screen-reader-text|u-sr-only)(?:\s|$)/i.test(cls)) {
+        return true;
+      }
+      const s = getComputedStyle(el);
+      if (s.display === 'none' || s.visibility === 'hidden') return true;
+      const clipped = (
+        (s.clip && s.clip !== 'auto' && s.clip !== 'rect(auto, auto, auto, auto)')
+        || (s.clipPath && s.clipPath !== 'none')
+      );
+      const r = el.getBoundingClientRect();
+      if (clipped && r.width <= 1 && r.height <= 1) return true;
+      if (el === root) break;
+    }
+    return false;
+  };
+  const visibleLabel = (el) => {
+    const parts = [];
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) {
+      const text = collapse(walker.currentNode.nodeValue);
+      const parent = walker.currentNode.parentElement;
+      if (text && parent && !isHiddenTextContainer(parent, el)) parts.push(text);
+    }
+    return collapse(parts.join(' '));
+  };
+  const accessibleLabel = (el) => {
+    const ariaLabel = collapse(el.getAttribute('aria-label'));
+    const labelledBy = collapse(el.getAttribute('aria-labelledby'));
+    if (ariaLabel) return { accessibleName: ariaLabel, ariaLabel, labelledBy };
+    if (labelledBy) {
+      const name = collapse(labelledBy.split(/\s+/).map((id) => {
+        const ref = document.getElementById(id);
+        return ref ? ref.textContent : '';
+      }).join(' '));
+      if (name) return { accessibleName: name, ariaLabel: '', labelledBy };
+    }
+    return { accessibleName: collapse(el.textContent), ariaLabel: '', labelledBy };
+  };
+  const labelFit = (el, label, semanticText, measured) => {
+    const cs = getComputedStyle(el);
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    context.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+    const textWidth = (text) => context.measureText(text || '').width;
+    const pad = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+    const host = measured && measured._rect ? measured._rect.w : el.getBoundingClientRect().width;
+    const visibleEstimate = textWidth(label) + pad;
+    const semanticEstimate = textWidth(semanticText) + pad;
+    const tolerance = Math.max(4, host * 0.08);
+    return {
+      hostWidth: Math.round(host * 1000) / 1000,
+      horizontalPadding: Math.round(pad * 1000) / 1000,
+      visibleEstimatedWidth: Math.round(visibleEstimate * 1000) / 1000,
+      semanticEstimatedWidth: Math.round(semanticEstimate * 1000) / 1000,
+      visibleFits: visibleEstimate <= host + tolerance,
+      likelyHiddenTextConflation: semanticEstimate > host + tolerance && visibleEstimate <= host + tolerance,
+    };
+  };
+
   // chrome
   const header = q('header') || q('[class*="header"]');
   const footer = (() => { const f = document.querySelectorAll('footer');
@@ -112,6 +181,9 @@ JS = r"""
     const key = el.tagName.toLowerCase() + '.' + cls.split(/\s+/).sort().join('.');
     if (!groups[key]) {
       const measured = pick(el, BTN_PROPS);
+      const visible = visibleLabel(el);
+      const semanticText = collapse(el.textContent);
+      const accessibility = accessibleLabel(el);
       let widthBehavior = null;
       if (measured && el.parentElement) {
         const pr = el.parentElement.getBoundingClientRect();
@@ -121,7 +193,12 @@ JS = r"""
         }
       }
       groups[key] = { classes: cls.slice(0, 140), tag: el.tagName.toLowerCase(),
-        count: 0, sample: (el.textContent || '').trim().slice(0, 40),
+        count: 0, sample: visible.slice(0, 120), visibleLabel: visible.slice(0, 240),
+        accessibleName: accessibility.accessibleName.slice(0, 500),
+        ariaLabel: accessibility.ariaLabel.slice(0, 500),
+        labelledBy: accessibility.labelledBy.slice(0, 240),
+        semanticText: semanticText.slice(0, 500),
+        labelFit: labelFit(el, visible, semanticText, measured),
         widthBehavior, measured };
     }
     groups[key].count += 1;

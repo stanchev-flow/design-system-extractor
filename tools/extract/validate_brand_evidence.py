@@ -18,7 +18,14 @@ Checks (E = error, W = warning):
         must also measure `fgHover` (any value, incl. "unchanged"); a FILLED
         family (style filled* or opaque bg) must measure `height` + `padding`
   C4 E  section-copy.yaml present, schema-conformant, wordmark set; every
-        content-bearing non-chrome layout has a layoutCopy entry
+        content-bearing non-chrome layout has a layoutCopy entry.
+        JOIN-KEY INTEGRITY (hubspot-v3 regression 2026-07): layouts that
+        declare text slots but no `type: content` blind the coverage check —
+        if NO non-chrome layout declares a content slot while layoutCopy is
+        authored, that is an error, not a skip; layoutCopy keys that match no
+        layout id are orphaned copy (join-key drift between staged-author
+        calls); slot `sourceCopy:` refs are NOT consumed by any renderer
+        (binding is layoutCopy[layout.id]) and error when present
   C5 E/W layout<->pattern coverage: non-chrome layouts carry patternRef (or
         `noPatternReason`); orphan patterns warn; observed-section breadth warns
   C6 E  logo evidence: a logos use-case requires >= --min-logo-assets on-disk
@@ -143,6 +150,14 @@ Checks (E = error, W = warning):
         separate logical assets should collapse into one entry's variants[];
         a variant out-resolving its canonical (higher pixel count) warns —
         canonical = highest-res
+  C29 E internal-id leak (hubspot-v3 regression 2026-07): the lane/run
+        directory slug is an internal id and must never be renderable brand
+        copy — `brand.name` and `sectionCopy.wordmark` equal to the lane slug
+        (runs/<lane>/brand -> <lane>) are hard errors; specimen/wordmark
+        fallbacks project these fields into customer-facing headings, alt
+        text, and nav wordmarks. Marker-gated: fires only for slugs carrying
+        version/scratch markers (-v3, -test, -wip); a lane legitimately named
+        after the brand (runs/remote -> "Remote") is not a leak
 
 Importable API (used by brand_pipeline/tests/test_brand_evidence_contract.py):
     report = validate_brand_dir(brand_dir, contracts_path=..., ...)
@@ -304,6 +319,12 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
     if not isinstance(doc, dict):
         rep.error("C1", f"{brand_yaml} top level is not a mapping")
         return rep
+    identity = doc.get("brand")
+    if not isinstance(identity, dict):
+        rep.error("C1", "brand.yaml `brand` must be the canonical identity mapping "
+                         "(for example `brand: {name: ...}`), not a scalar")
+    elif not str(identity.get("name") or "").strip():
+        rep.error("C1", "brand.yaml `brand.name` must be a non-empty string")
 
     # C2 — every contract block type attempted (evidence or explicit notObserved)
     if not contracts_path.is_file():
@@ -377,6 +398,57 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
                             "`buttons.singleVariantConfirmed: true` after re-checking "
                             "the grounding evidence.")
 
+        # Painted CTA labels must fit the measured host. Older evidence used raw
+        # element.textContent, which can include sr-only descriptive suffixes and
+        # silently turn an accessible name into visible copy. New evidence carries
+        # browser-measured labelFit; the conservative estimate keeps old captures
+        # repairable and catches only gross impossibilities.
+        computed_path = brand_dir / "evidence" / "computed-styles.json"
+        if computed_path.is_file():
+            try:
+                computed_doc = json.loads(computed_path.read_text())
+            except Exception:
+                computed_doc = {}
+            bad_labels = []
+            for row in computed_doc.get("actionGroups") or []:
+                if not isinstance(row, dict):
+                    continue
+                measured = row.get("measured") if isinstance(row.get("measured"), dict) else {}
+                rect = measured.get("_rect") if isinstance(measured.get("_rect"), dict) else {}
+                host = float(rect.get("w") or 0)
+                visible = str(row.get("visibleLabel") or row.get("sample") or "").strip()
+                fit = row.get("labelFit") if isinstance(row.get("labelFit"), dict) else {}
+                if fit and float(fit.get("hostWidth") or 0) > 0 \
+                        and fit.get("visibleFits") is False:
+                    bad_labels.append(f"{row.get('classes')}: {visible!r}")
+                    continue
+                if not fit and host > 0 and visible:
+                    size_match = re.search(r"[\d.]+", str(measured.get("font-size") or ""))
+                    font_px = float(size_match.group()) if size_match else 16.0
+                    padding = [
+                        float(v) for v in re.findall(
+                            r"[\d.]+", str(measured.get("padding") or ""))
+                    ]
+                    horizontal_pad = (
+                        padding[1] * 2 if len(padding) == 2
+                        else padding[1] + padding[3] if len(padding) >= 4
+                        else padding[0] * 2 if len(padding) == 1 else 0
+                    )
+                    estimated = len(visible) * font_px * 0.52 + horizontal_pad
+                    # Legacy captures lack descendant visibility facts, so only
+                    # flag a gross long-label impossibility. Short labels on broad
+                    # nav/card containers are not safely classifiable from this
+                    # old shape. Fresh captures use the exact browser fit above.
+                    if len(visible) >= 28 and estimated > host * 1.8:
+                        bad_labels.append(f"{row.get('classes')}: {visible!r}")
+            if bad_labels:
+                rep.error(
+                    "C3", "button visible label grossly exceeds its measured host; "
+                    "likely hidden accessibility text was conflated with painted copy: "
+                    + "; ".join(bad_labels[:6])
+                    + ". Re-run computed measurement against the captured HTML to "
+                    "separate visibleLabel from accessibleName.")
+
     # C4 — section-copy.yaml
     copy_path = brand_dir / "section-copy.yaml"
     layouts = [l for l in doc.get("layouts") or [] if isinstance(l, dict)]
@@ -416,6 +488,146 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
                                 f"layout(s): {', '.join(map(str, uncovered))} — bind "
                                 "each section's REAL verbatim copy (grounding "
                                 "`copy` blocks), or the composers render them empty.")
+            missing_roles = []
+            for layout in layouts:
+                if _is_chrome_layout(layout):
+                    continue
+                payload = layout_copy.get(layout.get("id"))
+                if not isinstance(payload, dict):
+                    continue
+                for slot in layout.get("slots") or []:
+                    if not isinstance(slot, dict) or slot.get("type") != "content":
+                        continue
+                    label = f"{slot.get('name', '')} {slot.get('role', '')}".lower()
+                    expected = None
+                    aliases = ()
+                    if any(word in label for word in ("heading", "display", "title", "h1", "h2", "h3")):
+                        expected, aliases = "heading", ("title",)
+                    elif "eyebrow" in label and (
+                            slot.get("textLen") or not slot.get("assets")):
+                        expected, aliases = "eyebrow", ("label",)
+                    elif "quote" in label:
+                        expected, aliases = "quote", ("body",)
+                    elif any(word in label for word in ("body", "subhead", "lede")):
+                        expected, aliases = "body", ("subhead", "text")
+                    elif any(word in label for word in ("action", "cta", "button", "link")):
+                        expected, aliases = "cta", ("ghost", "action")
+                    item_quote = expected == "quote" and any(
+                        isinstance(item, dict) and item.get("quote")
+                        for item in (payload.get("items") or []))
+                    if expected and not item_quote \
+                            and not any(payload.get(key) for key in (expected, *aliases)):
+                        missing_roles.append(
+                            f"{layout.get('id')}.{slot.get('name') or slot.get('role')}")
+            if missing_roles:
+                rep.error(
+                    "C4", "layoutCopy entries do not consume required content slot roles: "
+                    + ", ".join(missing_roles[:12]))
+            # C4 join-key integrity (hubspot-v3 regression 2026-07): the staged
+            # author emitted slots without `type: content`, which made every
+            # layout invisible to the coverage check above while ZERO copy
+            # bound at runtime — the check must fail loud, not skip.
+            non_chrome = [l for l in layouts if not _is_chrome_layout(l)]
+            allowed_slot_types = {
+                "content", "media", "image", "video", "logo",
+                "action", "structural",
+            }
+            bad_slot_types = [
+                f"{layout.get('id')}.{slot.get('name') or slot.get('role') or 'slot'}"
+                for layout in non_chrome for slot in (layout.get("slots") or [])
+                if isinstance(slot, dict) and slot.get("type") not in allowed_slot_types
+            ]
+            if bad_slot_types:
+                rep.error(
+                    "C4", "layout slots require canonical type "
+                    "(content|media|image|video|logo|action|structural): "
+                    + ", ".join(bad_slot_types[:12]))
+            texty = [l for l in non_chrome
+                     if any(isinstance(s, dict)
+                            and (s.get("textLen") or s.get("sizeClass")
+                                 or s.get("sourceCopy"))
+                            for s in (l.get("slots") or []))]
+            if (layout_copy and non_chrome
+                    and not any(_has_content_slot(l) for l in non_chrome)):
+                rep.error("C4", "layoutCopy is authored but NO non-chrome layout "
+                                "declares a `type: content` slot — the copy-coverage "
+                                "check cannot engage and the composers bind nothing. "
+                                f"Stamp `type: content` on the text slots of: "
+                                f"{', '.join(str(l.get('id')) for l in texty) or 'the content layouts'}.")
+            layout_ids = {str(l.get("id")) for l in layouts if l.get("id")}
+            orphan_keys = [k for k in layout_copy if str(k) not in layout_ids]
+            if orphan_keys:
+                rep.error("C4", "layoutCopy: key(s) matching NO layout id: "
+                                f"{', '.join(map(str, sorted(orphan_keys)))} — the runtime "
+                                "binds layoutCopy[layout.id]; keys minted in a "
+                                "different authoring call never render (join-key "
+                                f"drift). Layout ids: {', '.join(sorted(layout_ids)) or 'none'}.")
+            source_copy_refs = [
+                (str(l.get("id")), str(s.get("sourceCopy")))
+                for l in layouts for s in (l.get("slots") or [])
+                if isinstance(s, dict) and s.get("sourceCopy")]
+            if source_copy_refs:
+                sample = "; ".join(f"{lid}: {ref}" for lid, ref in source_copy_refs[:3])
+                rep.error("C4", f"{len(source_copy_refs)} slot(s) carry `sourceCopy:` "
+                                f"refs ({sample}{'; …' if len(source_copy_refs) > 3 else ''}) — "
+                                "NO renderer consumes that field. Key layoutCopy "
+                                "entries by the layout id itself and delete the "
+                                "indirection.")
+            lane_slug = brand_dir.parent.name.lower()
+            public_name = str((doc.get("brand") or {}).get("name") or "").lower()
+            if lane_slug and lane_slug != public_name:
+                leaked = []
+
+                def scan_public(value, path=""):
+                    if isinstance(value, dict):
+                        for key, child in value.items():
+                            scan_public(child, f"{path}.{key}" if path else str(key))
+                    elif isinstance(value, list):
+                        for index, child in enumerate(value):
+                            scan_public(child, f"{path}[{index}]")
+                    elif isinstance(value, str) and lane_slug in value.lower():
+                        leaked.append(path)
+
+                scan_public({
+                    "sectionCopy": copy_doc.get("sectionCopy"),
+                    "layoutCopy": copy_doc.get("layoutCopy"),
+                    "layouts": layouts,
+                })
+                if leaked:
+                    rep.error(
+                        "C4", f"internal lane id {lane_slug!r} appears in renderable "
+                        f"public content at: {', '.join(leaked[:8])} — measured copy "
+                        "requires source provenance; internal run ids never render.")
+
+    # C29 — internal-id leak (hubspot-v3 regression 2026-07): brand.name held the
+    # lane slug during a corrupt authoring window and the specimen/wordmark
+    # fallback chain rendered it as customer-facing display copy. Marker-gated:
+    # a lane legitimately named after the brand (runs/remote -> "Remote") is not
+    # a leak; a slug carrying version/scratch markers (-v3, -test, -wip) is.
+    lane_slug = brand_dir.resolve().parent.name.strip().lower()
+    internal_marker = re.search(
+        r"[-_]v?\d+$|[-_](?:test|tmp|draft|wip|exp|experiment|scratch|copy)\d*$",
+        lane_slug)
+    if lane_slug and internal_marker:
+        brand_block = doc.get("brand")
+        brand_name = str((brand_block or {}).get("name")
+                         if isinstance(brand_block, dict) else brand_block or "").strip()
+        if brand_name and brand_name.lower() == lane_slug:
+            rep.error("C29", f"brand.name '{brand_name}' equals the internal lane "
+                             "slug — internal project ids must never be renderable "
+                             "brand copy (specimen headings, alt text, and nav "
+                             "wordmarks all degrade to brand.name).")
+        if copy_path.is_file():
+            try:
+                _c29_copy = _load_yaml(copy_path)
+            except Exception:
+                _c29_copy = None
+            wordmark = str((((_c29_copy or {}).get("sectionCopy") or {})
+                            .get("wordmark")) or "").strip()
+            if wordmark and wordmark.lower() == lane_slug:
+                rep.error("C29", f"sectionCopy.wordmark '{wordmark}' equals the "
+                                 "internal lane slug — the nav/logo device renders "
+                                 "it verbatim as the site wordmark.")
 
     # C5 — layout<->pattern coverage
     lib_path = brand_dir / "layout-library.yaml"

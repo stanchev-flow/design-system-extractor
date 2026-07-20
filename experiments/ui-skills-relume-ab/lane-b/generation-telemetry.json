@@ -1,0 +1,64 @@
+{
+  "attempts": 7,
+  "telemetry": [
+    {
+      "attempt": 0,
+      "latency_s": 100.7,
+      "input_tokens": 28399,
+      "output_tokens": 8465,
+      "temperature": null,
+      "stage": "wireframe-fail"
+    },
+    {
+      "attempt": 1,
+      "latency_s": 50.43,
+      "input_tokens": 28521,
+      "output_tokens": 4731,
+      "temperature": null,
+      "stage": "schema-fail"
+    },
+    {
+      "attempt": 2,
+      "latency_s": 37.95,
+      "input_tokens": 28530,
+      "output_tokens": 3929,
+      "temperature": null,
+      "stage": "wireframe-fail"
+    },
+    {
+      "attempt": 3,
+      "latency_s": 65.57,
+      "input_tokens": 28519,
+      "output_tokens": 5836,
+      "temperature": null,
+      "stage": "schema-fail"
+    },
+    {
+      "attempt": 4,
+      "latency_s": 37.17,
+      "input_tokens": 28530,
+      "output_tokens": 3807,
+      "temperature": null,
+      "stage": "wireframe-fail"
+    },
+    {
+      "attempt": 5,
+      "latency_s": 61.39,
+      "input_tokens": 28519,
+      "output_tokens": 5455,
+      "temperature": null,
+      "stage": "schema-fail"
+    },
+    {
+      "attempt": 6,
+      "latency_s": 37.66,
+      "input_tokens": 28530,
+      "output_tokens": 3828,
+      "temperature": null,
+      "stage": "gated",
+      "gate_pass": true
+    }
+  ],
+  "model": "claude-opus-4-8",
+  "offGridExpansion": true
+}

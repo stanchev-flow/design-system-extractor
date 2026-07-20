@@ -320,6 +320,12 @@ class SelfHostedFontRegistry(unittest.TestCase):
     def test_family_detected_for_display_role(self):
         self.assertIn("Bossa", cs.self_hosted_families(self._doc()))
 
+    def test_registered_faces_resolve_from_full_css_stack(self):
+        doc = self._doc()
+        doc["tokens"]["type"]["display-hero"]["family"] = (
+            '"Bossa", "Fallback Serif", serif')
+        self.assertEqual(cs.self_hosted_families(doc), ["Bossa"])
+
     def test_absent_files_emit_no_font_face(self):
         with tempfile.TemporaryDirectory() as td:
             css = cs.font_face_css(Path(td), self._doc())

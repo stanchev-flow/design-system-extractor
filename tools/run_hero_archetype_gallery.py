@@ -302,6 +302,7 @@ def main() -> int:
             force_off_grid=True,                 # lane-level lever; style pin untouched
             exclude_archetypes=exclude,
             used_surfaces=used_surf,
+            enforce_gates=False,                 # isolated bakeoff harness — opts out of the flow gate
         )
         refs = sorted({str(s.get("archetypeRef"))
                        for s in ((res.composition or {}).get("sections") or [])

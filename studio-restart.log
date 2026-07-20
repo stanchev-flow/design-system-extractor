@@ -1,0 +1,4 @@
+Port 1500 is already in use.
+  Stop the other server first (often: python3 -m http.server 1500).
+  lsof -i :1500
+  Or pick another port: STUDIO_PORT=8800 ./venv/bin/python studio_server.py

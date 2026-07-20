@@ -703,6 +703,13 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
             var_blocks.append(
                 f"#page-nav .cs-nav {{ max-width: calc({int(cmw)}px"
                 f" + 2 * var(--c-section-pad-x)); margin-inline: auto; }}")
+        nav_h = ((doc.get("navbar") or {}).get("measured") or {}).get("height")
+        if isinstance(nav_h, (int, float)) and nav_h > 0:
+            # Fact-gated full chrome box: two-tier source headers need their
+            # measured vertical extent even when the compact renderer places
+            # utility and primary controls in one responsive flex bar.
+            var_blocks.append(
+                f"#page-nav .cs-nav {{ min-height: {int(nav_h)}px; }}")
 
     # UTILITY BANNER above the nav (P2, evidence-gated): rendered ONLY when the brand's
     # extracted chrome declares navbar.utilityBanner with observed text — absent/empty

@@ -51,6 +51,7 @@ from __future__ import annotations
 
 import argparse
 import html
+import json
 import re
 import sys
 from pathlib import Path
@@ -64,6 +65,7 @@ import yaml
 # on sys.path[0]; we also insert it explicitly to be robust to other launch dirs.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import tokens_css  # noqa: E402
+from artifact_digest import projection_input_digest  # noqa: E402
 from tokens_css import (  # noqa: E402
     base_size,
     color_value,
@@ -80,6 +82,7 @@ import compose_section as cs  # noqa: E402  (shared self-hosted-font copy + @fon
 import layout_library as ll  # noqa: E402  (brand recipes: spec-book recipe chapter)
 import compose_page as cp  # noqa: E402  (chrome footer surface-role resolution)
 import compose_from_composition as cfc  # noqa: E402  (Tier-3 demo hydration adapter)
+import designed_components as dc  # noqa: E402  (generic designed-component synthesis)
 
 # Gallery render context (RP-1): rebound per brand in main() via _bind_gallery_ctx —
 # the canvas is the BRAND's primary surface, so is_dark/accent-legality come from the
@@ -148,6 +151,15 @@ def _button_families(doc) -> dict:
         if isinstance(fam, dict) and any(fam.get(k) for k in ("bg", "fg", "border", "style")):
             fams[name] = fam
     return fams
+
+
+def _family_specimen(fam: dict, fallback: str) -> tuple[str, str]:
+    """Return painted label and optional longer accessible name independently."""
+    visible = str(fam.get("visibleLabel") or fallback).strip() or fallback
+    accessible = str(
+        fam.get("ariaLabel") or fam.get("accessibleName") or visible
+    ).strip()
+    return visible, accessible
 
 
 # layer-1 (tokens_css.build_page_tokens) emits --button[-<family>]-* custom properties
@@ -234,6 +246,8 @@ def button_family_css(doc) -> str:
                     f"padding: {_v('padding', '0.7rem 1.4rem')}; "
                     f"font-family: var(--font-body); font-size: {size}; "
                     f"font-weight: {_v('weight', '400')};")
+            if name == "round" and fam.get("height"):
+                base += f" width: {_v('diameter', _v('height', 'auto'))};"
             hover = f"background: {_v('bgHover', _v('bg', 'transparent'))};"
             press = f"background: {_v('bgPressed', _v('bgHover', _v('bg', 'transparent')))};"
             if fam.get("fgHover"):
@@ -460,6 +474,7 @@ body {
 .cmp-note { font-size: var(--eyebrow-size); letter-spacing: 0.04em; line-height: 1.45em;
   color: var(--ink-muted); }
 .cmp-note strong { color: var(--ink); font-weight: 600; }
+.cmp-note-conf { opacity: 0.72; font-style: italic; }
 
 /* Dark sub-surface for component examples the brand renders on its inverse bands
    (badge, banner, tooltip, code demos); the surface colors are the brand's own
@@ -632,7 +647,7 @@ body {
 .strike::after { content: ""; position: absolute; left: -4%; right: -4%; top: 50%; height: 1px;
   background: var(--ink-muted); transform: rotate(-8deg); }
 
-/* checkbox / radio / toggle — square, radius 0, hairline + flat dark fill.
+/* checkbox / radio / toggle — inherit the brand's measured control radius.
    OFF/default is an EMPTY cream control with a 1px hairline outline (no fill, no
    glyph shown); ON is the flat dark fill. Knob/box are a fixed size so the state
    row stays aligned. */
@@ -640,7 +655,7 @@ body {
   font-family: var(--font-body); font-size: var(--body-size); color: var(--ink); }
 /* OFF: empty cream box, hairline outline, no visible check. */
 .ex-check .box { width: 1.15rem; height: 1.15rem; box-sizing: border-box;
-  border: 1px solid var(--hairline); border-radius: 0; background: var(--surface-primary);
+  border: 1px solid var(--hairline); border-radius: var(--radius, 0); background: var(--surface-primary);
   display: inline-flex; align-items: center; justify-content: center; color: transparent;
   font-size: 0.8rem; line-height: 1; transition: background var(--ease) ease, border-color var(--ease) ease; }
 /* ON: flat dark fill with a light check. */
@@ -657,10 +672,10 @@ body {
 /* OFF/default: empty cream track + hairline outline, dark knob pushed LEFT — an
    obviously empty switch, never a solid block. */
 .ex-switch .track { width: 2.8rem; height: 1.4rem; box-sizing: border-box;
-  background: var(--surface-primary); border: 1px solid var(--hairline); border-radius: 0;
+  background: var(--surface-primary); border: 1px solid var(--hairline); border-radius: 999px;
   position: relative; transition: background var(--ease) ease, border-color var(--ease) ease; }
 .ex-switch .knob { position: absolute; top: 50%; transform: translateY(-50%); left: 2px;
-  width: 1rem; height: 1rem; background: var(--ink); border-radius: 0;
+  width: 1rem; height: 1rem; background: var(--ink); border-radius: 50%;
   transition: left var(--ease) ease, background var(--ease) ease; }
 /* ON: flat dark fill, knob pushed RIGHT (light knob for contrast on the dark track). */
 .ex-switch.is-on .track, .ex-switch input:checked + .track { background: var(--surface-inverse);
@@ -892,11 +907,23 @@ def render_button(doc, key, item):
                             f'{style_word}; demos through the arrow-link device</div>{matrix}')
                 continue
             slug = _fam_slug(name)
-            def _sw(cls, slug=slug):
-                return (f'<a class="btnf btnf-{slug} {cls}" href="#" tabindex="-1">'
-                        f'{esc(_SPEC_CTA)}</a>')
-            live = (f'<a class="btnf btnf-{slug} live" href="#">{esc(_SPEC_CTA)}</a>'
-                    f'<button class="btnf btnf-{slug} live" disabled>{esc(_SPEC_CTA)}</button>')
+            icon_only = name == "round" or (
+                str(fam.get("radius") or fam.get("borderRadius") or "").strip() == "50%"
+                and fam.get("diameter")
+            )
+            label, accessible = (
+                ("\u2192", "Next") if icon_only
+                else _family_specimen(fam, _SPEC_CTA)
+            )
+            aria = (
+                f' aria-label="{esc(accessible)}"'
+                if accessible and accessible != label else ""
+            )
+            def _sw(cls, slug=slug, label=label, aria=aria):
+                return (f'<a class="btnf btnf-{slug} {cls}" href="#" tabindex="-1"{aria}>'
+                        f'{esc(label)}</a>')
+            live = (f'<a class="btnf btnf-{slug} live" href="#"{aria}>{esc(label)}</a>'
+                    f'<button class="btnf btnf-{slug} live" disabled{aria}>{esc(label)}</button>')
             rows.append(
                 f'<div class="ex-caption"><strong>{esc(name)}</strong> &mdash; {style_word}; '
                 'content-hugging (inline-flex, non-stretch stage)</div>'
@@ -1446,6 +1473,37 @@ def render_generic(doc, key, item, contract):
     return "".join(parts)
 
 
+def _measured_block_renderer(item: dict):
+    """Resolve a staged-author custom block to a real generic block device.
+
+    Universal contract names already have exact renderers. Extracted lanes may
+    additionally name measured clusters (for example a hero-media or
+    integration-collage block); those must render anatomy, not degrade to a
+    heading-only placeholder.
+    """
+    archetype = str((item or {}).get("archetype") or "").lower()
+    slots = {str(name).lower() for name in ((item or {}).get("slots") or {})}
+    if "hero" in archetype:
+        return render_b_media_text
+    if any(word in archetype for word in ("logo", "badge")):
+        return render_b_logo_bar
+    if "card-grid" in archetype:
+        return render_b_card
+    if any(word in archetype for word in ("feature", "carousel", "illustration")):
+        return render_b_card if any("card" in name for name in slots) else render_b_carousel
+    if "cta" in archetype:
+        return render_b_cta_block
+    if any(word in archetype for word in ("content", "headrail", "header")):
+        return render_b_header
+    if "testimonial" in archetype:
+        return render_b_testimonial
+    if any(word in archetype for word in ("footer", "sitemap")):
+        return render_b_footer
+    if "collage" in archetype:
+        return render_b_logo_bar
+    return None
+
+
 # ── Tier 3: extracted layout patterns (project-tier layout-library.yaml) ─────────
 # Each pattern is rendered through the REAL archetype composers: we find a brand.yaml
 # layout that references the pattern (patternRef.id) and run it through
@@ -1506,7 +1564,9 @@ def _layout_needs_asset_hydration(doc, layout) -> bool:
     ``componentMapping`` layout still hydrates: its mapping's Text props are the
     v1 schema's partial copy, and the adapter path is how its pattern demos
     rendered before the brand's copy layers were authored."""
-    if not isinstance(layout, dict) or layout.get("blockMapping"):
+    if not isinstance(layout, dict):
+        return False
+    if layout.get("blockMapping") and layout.get("requiresHydration") is not True:
         return False
     if any(isinstance(s, dict) and s.get("assets") for s in (layout.get("slots") or [])):
         return True
@@ -1577,6 +1637,24 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
     pid = pat.get("id", "")
     use = str(pat.get("useCase") or "section")
     authored = dict(cs.brand_layout_copy(doc).get(layout.get("id")) or {})
+    # A measured pattern may use a stable pattern id different from the source
+    # copy key. Its slots carry explicit sourceCopy paths; resolve those paths
+    # instead of falling back to generic specimen prose or the run id.
+    copy_layers = cs.brand_layout_copy(doc)
+    source_roots = []
+    for shape in ((pat.get("contentShape") or {}).get("slots") or []):
+        if not isinstance(shape, dict):
+            continue
+        refs = shape.get("sourceCopy")
+        refs = refs if isinstance(refs, list) else [refs]
+        for ref in refs:
+            match = re.match(r"^layoutCopy\.([^.]+)", str(ref or ""))
+            if match and match.group(1) not in source_roots:
+                source_roots.append(match.group(1))
+    for root in source_roots:
+        payload = copy_layers.get(root)
+        if isinstance(payload, dict):
+            authored = {**authored, **payload}
     authored_items = authored.get("items") if isinstance(authored.get("items"), list) else None
     shape_slots = {s.get("name"): s for s in ((pat.get("contentShape") or {}).get("slots") or [])
                    if isinstance(s, dict) and s.get("name")}
@@ -1615,8 +1693,21 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
         # (hubspot-v2 2026-07): a card run whose art is entirely product ICONS
         # (all marks) is still a card run when the brand extracted per-card copy —
         # authored evidence > filename kind. An explicit "logo" role keeps the strip.
-        items_override = bool(authored_items) and len(assets) >= 2 and "logo" not in lower
-        if (is_media or assets) and ("logo" in lower or all_marks) and not items_override:
+        # Authored repeated records are stronger evidence than incidental words
+        # inside a card anatomy description ("company marks", "badge on card").
+        # Only a slot explicitly named/typed as a collection may override them.
+        # This preserves projected lanes' canonical logo-row / badge-row /
+        # mark-collage routing without flattening complete legacy testimonial
+        # cards into a bare asset strip.
+        collection_words = ("logo-row", "logo-wall", "logo-strip", "logo-collage",
+                            "mark-row", "mark-wall", "mark-strip", "mark-collage",
+                            "badge-row", "badge-strip", "badge-wall")
+        explicit_mark_collection = any(word in lower for word in collection_words)
+        items_override = (bool(authored_items) and len(assets) >= 2
+                          and not explicit_mark_collection)
+        if (is_media or assets) and (
+                "logo" in lower or "mark" in lower or "badge" in lower or all_marks
+        ) and not items_override:
             entry["contract"] = "logo"
             entry["copy"] = list(assets)  # coerced to asset items by _sanitize_assets
         elif len(assets) >= 2:
@@ -1837,12 +1928,18 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
         "seededFrom": {"lib": "project", "id": pid},
         "slots": slots,
         "treatments": treatments,
+        "_requiresHydration": layout.get("requiresHydration") is True,
     }
     # the brand's DECLARED module-grid track count rides §4.6.5 (sysfix 2026-07:
     # gridRules.columns was extracted but never consumed — a measured 3-up card grid
     # demoed as the harvested 7/5 stagger). Cards archetype only: split "1fr 1fr" and
     # footer directory counts describe other grids the cards scaffold must not eat.
-    if archetype == "cards":
+    explicit_card_device = any(
+        isinstance(slot, dict) and any(
+            word in f"{slot.get('name', '')} {slot.get('role', '')}".lower()
+            for word in ("card-grid", "card-carousel"))
+        for slot in (layout.get("slots") or []))
+    if archetype == "cards" or explicit_card_device:
         n = _rules_grid_columns(layout)
         if n:
             section["grid"] = {"columns": n}
@@ -1888,10 +1985,16 @@ def compose_pattern_docs(doc, patterns, brand_yaml: Path, out_dir: Path) -> dict
     import copy as _copy
     layouts_dir = out_dir / "layouts"
     layouts_dir.mkdir(parents=True, exist_ok=True)
+    expected = {f"{str(pattern.get('id'))}.html" for pattern in patterns
+                if isinstance(pattern, dict) and pattern.get("id")}
+    for stale in layouts_dir.glob("*.html"):
+        if stale.name not in expected:
+            stale.unlink()
     style_ctx = cs.inactive_context()
     # One shared assets/ dir beside the per-pattern documents (they reference
     # 'assets/<file>' relatively, same convention as compose_section main()).
     cdoc = _copy.deepcopy(doc)
+    input_digest = projection_input_digest(brand_yaml.parent)
     cs.prepare_nav_logo(cdoc, brand_yaml.parent, layouts_dir / "assets")
     cs.copy_assets(brand_yaml.parent, layouts_dir / "assets")
     cs.copy_fonts(brand_yaml.parent, layouts_dir / "assets", cdoc)
@@ -1929,6 +2032,8 @@ def compose_pattern_docs(doc, patterns, brand_yaml: Path, out_dir: Path) -> dict
                     use_layout, demo = layout, False  # demo synth never takes the tier down
             try:
                 html_doc = cs.build_document(cdoc, use_layout, brand_yaml, style_ctx)
+                html_doc = html_doc.replace(
+                    "<html", f'<html data-projection-input-digest="{input_digest}"', 1)
                 (layouts_dir / f"{pid}.html").write_text(html_doc)
                 results[pid] = {"href": f"layouts/{pid}.html", "layout": layout.get("id"),
                                 **({"demo": True} if demo else {})}
@@ -2598,11 +2703,22 @@ def spec_buttons_surfaces_chapter(doc) -> str:
             style_word = esc(fam.get("style") or ("filled" if filled_ctas else "text"))
             if filled_ctas and not _is_text_button_family(fam):
                 slug = _fam_slug(name)
+                icon_only = name == "round" or (
+                    str(fam.get("radius") or fam.get("borderRadius") or "").strip() == "50%"
+                    and fam.get("diameter"))
+                label, accessible = (
+                    ("\u2192", "Next") if icon_only
+                    else _family_specimen(fam, _SPEC_CTA)
+                )
+                aria = (
+                    f' aria-label="{esc(accessible)}"'
+                    if accessible and accessible != label else ""
+                )
 
-                def _sw(cls, slug=slug):
-                    return (f'<a class="btnf btnf-{slug} {cls}" href="#" tabindex="-1">'
-                            f'{esc(_SPEC_CTA)}</a>')
-                live = (f'<a class="btnf btnf-{slug} live" href="#">{esc(_SPEC_CTA)}</a>')
+                def _sw(cls, slug=slug, label=label, aria=aria):
+                    return (f'<a class="btnf btnf-{slug} {cls}" href="#" tabindex="-1"{aria}>'
+                            f'{esc(label)}</a>')
+                live = (f'<a class="btnf btnf-{slug} live" href="#"{aria}>{esc(label)}</a>')
                 # the row wrapper MUST close (fid3 2026-07-08): the old unclosed <div>
                 # here swallowed everything after it, so each next surface band nested
                 # INSIDE the previous band (panels-within-panels with compounding
@@ -2727,19 +2843,33 @@ def build_spec_book(doc, brand_yaml=None) -> str:
 
 # ── card + page assembly ────────────────────────────────────────────────────────
 
+def _card_origin(item):
+    """extracted vs designed for a catalog card. An un-measured entry (explicit
+    ``notObserved`` absence marker or ``origin: designed``) is a DESIGNED
+    (synthesized-from-brand-signals) harness component."""
+    kind = dc.classify(item or {})
+    return "extracted" if kind == "extracted" else "designed"
+
+
 def _origin_badge(item):
-    origin = (item or {}).get("origin", "designed")
-    if origin == "extracted":
+    if _card_origin(item) == "extracted":
         return '<span class="badge badge-extracted">extracted</span>'
     return '<span class="badge badge-designed">synthesized</span>'
 
 
-def _designed_note(item):
+def _designed_note(doc, key, item):
+    """The 'Designed' provenance note for a synthesized card. Prefers an author-written
+    designedFrom.note; otherwise cites the measured signals the component is licensed
+    from (generic synthesis) + confidence, and preserves any absence evidence."""
     df = (item or {}).get("designedFrom") or {}
-    note = df.get("note")
-    if note:
-        return f'<div class="cmp-note"><strong>Designed / not used on page.</strong> {esc(note)}</div>'
-    return '<div class="cmp-note"><strong>Designed / not used on page.</strong></div>'
+    note = df.get("note") if isinstance(df, dict) else None
+    if not note:
+        synth = dc.synthesize(key, item if isinstance(item, dict) else {}, doc or {})
+        note = synth["designedFrom"]["note"]
+        conf = synth["confidence"]
+        return (f'<div class="cmp-note"><strong>Designed / not used on page.</strong> '
+                f'{esc(note)} <span class="cmp-note-conf">(confidence: {esc(conf)}, overridable)</span></div>')
+    return f'<div class="cmp-note"><strong>Designed / not used on page.</strong> {esc(note)}</div>'
 
 
 def _rules_note(item):
@@ -2753,11 +2883,13 @@ def _rules_note(item):
 
 
 def build_card(doc, key, item, contract, renderers):
-    origin = (item or {}).get("origin", "designed")
+    origin = _card_origin(item)
     use = (item or {}).get("use")
     intent = (contract or {}).get("intent", "")
 
     renderer = renderers.get(key)
+    if renderer is None and renderers is BLOCK_RENDERERS and isinstance(item, dict):
+        renderer = _measured_block_renderer(item)
     stage = renderer(doc, key, item) if renderer else render_generic(doc, key, item, contract)
 
     tags = []
@@ -2770,7 +2902,7 @@ def build_card(doc, key, item, contract, renderers):
         tags.append('<span class="tag">stateful</span>')
     tags_html = "".join(tags)
 
-    note = _designed_note(item) if origin == "designed" else _rules_note(item)
+    note = _designed_note(doc, key, item) if origin == "designed" else _rules_note(item)
 
     return f"""    <article class="cmp" data-origin="{esc(origin)}">
       <div class="cmp-meta">
@@ -2850,7 +2982,13 @@ def build_page(doc, prim_items, prim_contracts, block_items, block_contracts, br
     # brand's gallery, directly contradicting e.g. HubSpot's rounded/filled system.
     _nd = [str(r.get("id", "")).replace("no-", "no ").replace("never-", "never ").replace("-", " ")
            for r in (doc.get("neverDo") or []) if isinstance(r, dict)]
-    rule_chips = " · ".join(_nd[:4]) if _nd else "brand rules: see brand.yaml neverDo"
+    _sig = [
+        str(r.get("description") or r.get("claim") or r.get("name") or "").strip()
+        for r in (doc.get("signatures") or []) if isinstance(r, dict)
+        and str(r.get("description") or r.get("claim") or r.get("name") or "").strip()
+    ]
+    rule_chips = " · ".join((_nd or _sig)[:4]) if (_nd or _sig) \
+        else "brand rules: see brand.yaml"
 
     n_actions = sum(1 for k in prim_items if k in ACTION_KINDS)
 
@@ -3035,6 +3173,102 @@ def _brand_law(doc):
     }
 
 
+def _px_number(value) -> float | None:
+    match = re.fullmatch(r"\s*([\d.]+)(?:px)?\s*", str(value or ""))
+    return float(match.group(1)) if match else None
+
+
+def harness_quality_issues(doc: dict, patterns: list[dict], composed: dict,
+                           out_dir: Path, page: str) -> list[str]:
+    """Hard rendered-substance checks for the Studio harness."""
+    issues: list[str] = []
+    snapshot = (((doc.get("brand") or {}).get("snapshot") or {}).get("value")
+                if isinstance((doc.get("brand") or {}).get("snapshot"), dict)
+                else (doc.get("brand") or {}).get("snapshot"))
+    if len(str(snapshot or "").strip()) < 120:
+        issues.append("brand snapshot is missing or not a rich factual narrative")
+    public_name = str((doc.get("brand") or {}).get("name") or "")
+    if re.search(r"(?:^|[-_\s])v\d+$", public_name, re.I):
+        issues.append("public specimen copy uses a versioned run/lane id")
+
+    for name, fam in (doc.get("buttons") or {}).items():
+        if not isinstance(fam, dict) or name == "singleVariantConfirmed":
+            continue
+        height = _px_number(fam.get("height"))
+        tiers = fam.get("sizes") if isinstance(fam.get("sizes"), dict) else {}
+        expected = []
+        for tier in tiers.values():
+            if not isinstance(tier, dict):
+                continue
+            font = _px_number(tier.get("fontSize")) or 16
+            pad = _px_number(tier.get("padY")) or 0
+            expected.append(font + 2 * pad)
+        if height and expected and height > 2 * max(expected):
+            issues.append(
+                f"buttons.{name}.height {height:g}px exceeds its measured control tier")
+    if "btnf-round" in page and re.search(
+            r'class="btnf btnf-round[^"]*"[^>]*>Get started free<', page):
+        issues.append("round control renders CTA text instead of bounded icon geometry")
+    if "border-radius: var(--radius, 0)" not in page:
+        issues.append("designed controls do not inherit the brand control radius")
+
+    custom_extracted = [
+        (name, item) for name, item in (doc.get("blocks") or {}).items()
+        if isinstance(item, dict) and item.get("origin") == "extracted"
+        and name not in BLOCK_RENDERERS
+    ]
+    for name, item in custom_extracted:
+        if _measured_block_renderer(item) is None:
+            issues.append(f"Tier 2 measured block '{name}' has no real specimen renderer")
+
+    signatures = set()
+    layouts = {
+        (row.get("patternRef") or {}).get("id"): row
+        for row in (doc.get("layouts") or []) if isinstance(row, dict)
+    }
+    for pattern in patterns:
+        pid = str(pattern.get("id") or "?")
+        slots = [
+            slot for slot in ((pattern.get("contentShape") or {}).get("slots") or [])
+            if isinstance(slot, dict)
+        ]
+        if not slots:
+            issues.append(f"Tier 3 pattern '{pid}' has no canonical slots")
+        layout = layouts.get(pid)
+        if not isinstance(layout, dict) or not (layout.get("slots") or layout.get("blockMapping")):
+            issues.append(f"Tier 3 pattern '{pid}' has no populated brand layout")
+        info = composed.get(pid) or {}
+        if not info.get("href"):
+            issues.append(f"Tier 3 pattern '{pid}' did not compose")
+            continue
+        pattern_html = out_dir.joinpath(info["href"]).read_text(errors="replace")
+        body_html = pattern_html.split("<body", 1)[-1]
+        semantic = re.search(
+            r'<(?:img|video)\b|class="[^"]*(?:c-heading|c-card|c-logo|c-button|'
+            r'c-paragraph|cs-tabs|cs-testimonial|cs-split|cs-modules)',
+            body_html)
+        visible_text = re.sub(r"<[^>]+>", " ", body_html)
+        visible_text = re.sub(r"\s+", " ", html.unescape(visible_text)).strip()
+        media_count = len(re.findall(r"<(?:img|video)\b", body_html))
+        if not semantic or (len(visible_text) < 30 and media_count < 2):
+            issues.append(f"Tier 3 pattern '{pid}' rendered no substantive anatomy")
+        if "Structural demo copy:" in pattern_html:
+            issues.append(
+                f"Tier 3 pattern '{pid}' leaked generic fallback copy without source provenance")
+        assets = [Path(str(asset)).name for slot in slots for asset in (slot.get("assets") or [])]
+        if assets and not any(asset in pattern_html for asset in assets):
+            issues.append(f"Tier 3 pattern '{pid}' consumed none of its declared assets")
+        signatures.add((
+            str(pattern.get("archetypeRef") or ""),
+            tuple(str(slot.get("name") or slot.get("role") or "") for slot in slots),
+            tuple(assets),
+            str(pattern.get("surfaceIntent") or ""),
+        ))
+    if patterns and len(signatures) < max(3, (len(patterns) + 1) // 2):
+        issues.append("Tier 3 patterns collapse to insufficiently distinct anatomy signatures")
+    return issues
+
+
 def main():
     ap = argparse.ArgumentParser(description="Render a brand-styled component preview gallery.")
     ap.add_argument("brand_yaml", type=Path, help="path to a brand.yaml")
@@ -3081,9 +3315,28 @@ def main():
                       layout_patterns=layout_patterns, composed=composed,
                       standard_patterns=standard_patterns,
                       tokens_html=tokens_css.style_tag(bundle))
+    input_digest = projection_input_digest(args.brand_yaml.parent)
+    page = page.replace(
+        "<html", f'<html data-projection-input-digest="{input_digest}"', 1)
+    issues = harness_quality_issues(doc, layout_patterns, composed, args.out, page)
+    if issues:
+        raise RuntimeError("harness quality failed:\n- " + "\n- ".join(issues))
 
     out_file = args.out / "index.html"
     out_file.write_text(page)
+    (args.out / "harness-quality.json").write_text(json.dumps({
+        "schemaVersion": "harness-quality.v1",
+        "ok": True,
+        "inputDigest": input_digest,
+        "checks": {
+            "richSnapshot": True,
+            "controlGeometry": True,
+            "designedControlGrammar": True,
+            "tier2Substance": True,
+            "tier3SlotsAssetsDistinct": True,
+            "publicCopyProvenance": True,
+        },
+    }, indent=2) + "\n")
     cs.copy_fonts(args.brand_yaml.parent, args.out / "assets", doc)
 
     n_actions = sum(1 for k in prim_items if k in ACTION_KINDS)

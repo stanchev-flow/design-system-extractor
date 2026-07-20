@@ -33,6 +33,7 @@ import os
 import re
 import shutil
 import sys
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
@@ -417,10 +418,15 @@ def self_hosted_families(doc: dict) -> list[str]:
     reg = brand_self_hosted_fonts(doc)
     fams, seen = [], set()
     for role in _DISPLAY_FONT_ROLES:
-        fam = type_role(doc, role).get("family")
-        if fam in reg and fam not in seen:
-            seen.add(fam)
-            fams.append(fam)
+        stack = str(type_role(doc, role).get("family") or "")
+        # Type roles carry a complete CSS stack while the registry is keyed by one
+        # concrete face. Resolve every quoted/unquoted stack member in order so a
+        # measured value such as `"Brand Display", "Brand Serif", serif` can bind
+        # either captured family without requiring a non-CSS duplicate role value.
+        for member in (part.strip().strip("\"'") for part in stack.split(",")):
+            if member in reg and member not in seen:
+                seen.add(member)
+                fams.append(member)
     return fams
 
 
@@ -1649,6 +1655,22 @@ def _copy_logo_file(brand_dir: Path, src: str, out_assets: Path):
     Prefers a LOCAL copy of the extracted asset (runs/<brand>/assets/source_complete/... or
     elsewhere under the run) matched by the src's basename; falls back to downloading from
     the CDN URL only if no local copy exists. Returns the local filename or None (no crash)."""
+    out_assets.mkdir(parents=True, exist_ok=True)
+    dest = out_assets / NAV_LOGO_LOCAL
+    # DATA-URI logo (fix 2026-07): "Save Page As" captures often INLINE the logo as
+    # `data:image/svg+xml;base64,…` (the real captured mark, not a placeholder).
+    # Decode it to the local asset so the composed nav renders the true logo instead
+    # of degrading to the text wordmark. Generic — any brand whose logo is inlined.
+    if src.startswith("data:"):
+        try:
+            import base64 as _b64
+            header, _, payload = src.partition(",")
+            data = _b64.b64decode(payload) if ";base64" in header else \
+                urllib.parse.unquote(payload).encode("utf-8")
+            dest.write_bytes(data)
+            return NAV_LOGO_LOCAL
+        except Exception:
+            return None
     filename = src.split("/")[-1].split("?")[0] or NAV_LOGO_LOCAL
     run_dir = brand_dir.parent  # runs/<brand>/brand -> runs/<brand>
     candidates = [
@@ -1656,8 +1678,6 @@ def _copy_logo_file(brand_dir: Path, src: str, out_assets: Path):
         run_dir / "assets" / filename,
     ]
     candidates += sorted(run_dir.glob(f"**/{filename}"))
-    out_assets.mkdir(parents=True, exist_ok=True)
-    dest = out_assets / NAV_LOGO_LOCAL
     for c in candidates:
         if c.exists() and c.is_file():
             shutil.copy2(c, dest)
@@ -1743,6 +1763,10 @@ def _navbar_props(doc: dict) -> dict:
         "links": links or sc.get("nav") or [],
         "cta": cta["label"] if cta else (sc.get("cta") or None),
         "ctaHref": cta.get("href", "#") if cta else "#",
+        "ctaAriaLabel": (
+            cta.get("ariaLabel") or cta.get("accessibleName")
+            if cta else None
+        ),
     }
     # ACTION GROUP (fix1 2026-07 item-12b): when the evidence declares MULTIPLE bar
     # actions (navbar.ctas[] length ≥ 2), every action rides along with its own
@@ -1751,12 +1775,25 @@ def _navbar_props(doc: dict) -> dict:
     all_ctas = [c for c in (nav.get("ctas") or [])
                 if isinstance(c, dict) and c.get("label")]
     if len(all_ctas) >= 2:
+        projected_lane = any(
+            isinstance(layout, dict) and layout.get("requiresHydration") is True
+            for layout in (doc.get("layouts") or []))
+        families = doc.get("buttons") if isinstance(doc.get("buttons"), dict) else {}
         props["actions"] = [{
             "label": c["label"], "href": c.get("href", "#"),
+            "ariaLabel": c.get("ariaLabel") or c.get("accessibleName"),
             "style": {
-                "bg": c.get("bg"), "color": c.get("color"),
-                "border": c.get("border"), "radius": c.get("borderRadius"),
-                "height": c.get("height"), "padX": c.get("padX"),
+                "bg": c.get("bg") or (
+                    (families.get(c.get("style")) or {}).get("bg") if projected_lane else None),
+                "color": c.get("color") or (
+                    (families.get(c.get("style")) or {}).get("fg") if projected_lane else None),
+                "border": c.get("border") or (
+                    (families.get(c.get("style")) or {}).get("border") if projected_lane else None),
+                "radius": c.get("borderRadius") or (
+                    (families.get(c.get("style")) or {}).get("radius") if projected_lane else None),
+                "height": c.get("height") or (
+                    (families.get(c.get("style")) or {}).get("height") if projected_lane else None),
+                "padX": c.get("padX"),
                 "fontSize": c.get("fontSize"),
             }} for c in all_ctas]
     # MEASURED chrome-CTA facts (fid2 2026-07): the extracted nav CTA's own computed
@@ -2696,6 +2733,46 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
         if str(copy.get("attribution") or "").strip():
             band_body += "\n    " + cr.render_caption(
                 doc, ctx, {"text": copy["attribution"]})
+    # SINGLE CASE-STUDY COUNTERWEIGHT.  A media-bearing card in a split is one
+    # atomic component, not a text primitive plus an unrelated/default image.
+    # The adapter stamps only a real bound asset, so this branch cannot invent a
+    # painted half.  Existing split sections have no stamp and remain unchanged.
+    case_card = layout.get("_caseCard") if isinstance(layout.get("_caseCard"), dict) else None
+    if case_card is not None:
+        is_landmark = str(((layout.get("_composition") or {}).get("useCase")
+                           or "")).lower() == "hero"
+        lead = cr.render_header(doc, ctx, {
+            "eyebrow": copy["eyebrow"], "heading": copy["heading"], "level": "display",
+            "accent": False, "landmark": is_landmark})
+        support = (cr.render_paragraph(
+            doc, ctx, {"text": copy["body"], "measure": "48ch"})
+            if str(copy["body"]).strip() else "")
+        case_eyebrow = (cr.render_eyebrow(doc, ctx, {"text": case_card.get("eyebrow")})
+                         if str(case_card.get("eyebrow") or "").strip() else "")
+        case_heading = (cr.render_heading(
+            doc, ctx, {"text": case_card.get("heading"), "level": "h2", "tag": "h2"})
+            if str(case_card.get("heading") or "").strip() else "")
+        case_meta = (cr.render_caption(doc, ctx, {"text": case_card.get("meta")})
+                     if str(case_card.get("meta") or "").strip() else "")
+        case_body = (cr.render_paragraph(
+            doc, ctx, {"text": case_card.get("body"), "measure": "40ch"})
+            if str(case_card.get("body") or "").strip() else "")
+        case_action = (cr.render_arrow_link(
+            doc, ctx, {"label": case_card.get("cta"), "accent": False})
+            if str(case_card.get("cta") or "").strip() else "")
+        return f"""<section class="cs-section cs-split-sec cs-caselead-sec">
+  <div class="cs-media-split cs-caselead">
+    <div class="cs-media-split-copy cs-caselead-copy">
+      {lead}{support}
+    </div>
+    <article class="cs-module cs-module--plate cs-module--anatomy cs-media-split-media cs-caselead-card">
+      <figure class="cs-module-media" style="aspect-ratio: {cr.esc(case_card.get('aspect') or '16 / 10')};">{media_html}</figure>
+      <div class="cs-caselead-card-copy">
+        {case_eyebrow}{case_heading}{case_meta}{case_body}{case_action}
+      </div>
+    </article>
+  </div>
+</section>"""
     # ACCORDION OPEN-STATE (P2, replica-gate punch list): a split whose reused pattern
     # declares the sanctioned `inset-emphasis` list treatment composes its rows as a
     # native single-open accordion (<details name=…> — exclusive by the platform, no
@@ -3959,6 +4036,18 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
         card_head_level = pat_register
     modules = []
     for i, card in enumerate(cards):
+        fill = layout.get("_collectionFill") \
+            if isinstance(layout.get("_collectionFill"), dict) else {}
+        fill_items = fill.get("items") if isinstance(fill.get("items"), list) else []
+        fill_item = fill_items[i] if i < len(fill_items) and isinstance(fill_items[i], dict) else {}
+        try:
+            grid_span = max(1, int(fill_item.get("span") or 1))
+        except (TypeError, ValueError):
+            grid_span = 1
+        try:
+            content_measure = float(fill_item.get("contentMeasureCh") or 0)
+        except (TypeError, ValueError):
+            content_measure = 0
         # asset may be a bare name, an already-prefixed path, or a sanitized {src, alt}
         # dict (fix-batch 2026-07, N1-asset: interpolating the dict produced the literal
         # `assets/{'src': …}` path the fidelity gate flagged). Alt resolves from the
@@ -4057,6 +4146,7 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
             anatomy = True
         body_html = cr.render_paragraph(doc, ctx, {"text": card.get("body", ""), "measure": "44ch"})
         link_html = cr.render_arrow_link(doc, ctx, {"label": card["link"]}) if card.get("link") else ""
+        _headrow = False
         if edgecut_mark:
             # card-plate anatomy: the company mark sits at MARK height (device frame
             # geometry, same discipline as the logo strip), quote leads, the person
@@ -4077,7 +4167,8 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
             # fact folds mark + heading into a flex headrow at the icon slot's
             # measured size. Devices without the fact keep the stacked mark row.
             _icon_slot = _card_slots.get("icon") if isinstance(_card_slots, dict) else None
-            _headrow = isinstance(_icon_slot, dict) \
+            chosen_anatomy = str(layout.get("_collectionAnatomy") or "")
+            _headrow = chosen_anatomy != "icon-top" and isinstance(_icon_slot, dict) \
                 and str(_icon_slot.get("placement") or "").strip() == "heading-row" \
                 and bool(card_head_html) and not card_eyebrow_html
             if _headrow:
@@ -4105,8 +4196,20 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
         plate = " cs-module--plate" if plated else ""
         anatomy_cls = " cs-module--anatomy" if anatomy else ""
         quote_cls = " cs-module--quote" if is_quote_card else ""
+        family_anatomy = str(layout.get("_collectionAnatomy") or (
+            "icon-inline" if _headrow else "icon-top" if mark_media else "text-stack"))
+        anatomy_attr = (f' data-internal-anatomy="{cr.esc(family_anatomy)}"'
+                        if layout.get("_componentFit") else "")
+        span_attr = ""
+        if fill:
+            span_style = f' style="--cs-grid-span: {grid_span}'
+            if content_measure > 0:
+                span_style += f"; --cs-span-content-measure: {content_measure:g}ch"
+            span_style += '"'
+            span_attr = f' data-grid-span="{grid_span}"{span_style}'
         modules.append(
-            f'    <article class="cs-module{plate}{anatomy_cls}{quote_cls}">\n'
+            f'    <article class="cs-module{plate}{anatomy_cls}{quote_cls}"'
+            f'{anatomy_attr}{span_attr}>\n'
             f'{inner}\n    </article>')
     # SECTION HEADROW RAIL (fix1 2026-07 item-8, stamped from the pattern's
     # sanctioned `dotted-rule-rail` treatment): leading chip (the rail slot's own
@@ -4190,8 +4293,25 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
         card_decls.append(f"--cs-edgecut-card-w: {cr.esc(_pat_geo['cardWidth'])}")
     if edgecut and _pat_geo.get("cardGap"):
         card_decls.append(f"--cs-edgecut-gap: {cr.esc(_pat_geo['cardGap'])}")
+    fit = layout.get("_componentFit") if isinstance(layout.get("_componentFit"), dict) else {}
+    fit_attrs = ""
+    if fit:
+        fill = layout.get("_collectionFill") \
+            if isinstance(layout.get("_collectionFill"), dict) else {}
+        counterweight = fill.get("balancingCounterweight") \
+            if isinstance(fill.get("balancingCounterweight"), dict) else {}
+        fit_attrs = (
+            f' data-component-fit="collection"'
+            f' data-fit-min-item="{cr.esc(fit.get("minItemWidth"))}"'
+            f' data-fit-max-heading-lines="{cr.esc(fit.get("maxHeadingLines"))}"'
+            f' data-fit-max-body-lines="{cr.esc(fit.get("maxBodyLines"))}"'
+            f' data-fit-anatomy="{cr.esc(fit.get("internalAnatomy"))}"'
+            f' data-fit-columns="{cr.esc(fit.get("chosenColumns"))}"'
+            f' data-fill-strategy="{cr.esc(fill.get("strategy") or "")}"'
+            f' data-fill-counterweight="'
+            f'{cr.esc(counterweight.get("role") or counterweight.get("contract") or "")}"')
     track_style = f' style="{"; ".join(card_decls)}"' if card_decls else ""
-    track = f"""<div class="{track_cls}"{track_style}>
+    track = f"""<div class="{track_cls}"{track_style}{fit_attrs}>
 {chr(10).join(modules)}
   </div>"""
     if edgecut:
@@ -4647,6 +4767,52 @@ def compose_generic_flow(doc, layout, ctx, rendered, style_ctx):
     ordinary caption flow items. A ``_logoWall`` layout stamps the RESOLVED device on the
     section element (``data-logo-device="image|text|empty"``) so the gate can verify the
     section carries either real images or real text — never an empty frame."""
+    testimonial = layout.get("_testimonial") \
+        if isinstance(layout.get("_testimonial"), dict) else None
+    if testimonial is not None:
+        quote_text = str(testimonial.get("quote") or "").strip()
+        attribution = testimonial.get("attribution") \
+            if isinstance(testimonial.get("attribution"), dict) else {}
+        name = str(attribution.get("name") or "").strip()
+        role = str(attribution.get("role") or "").strip()
+        quote_html = cr.render_paragraph(
+            doc, ctx, {"text": quote_text,
+                       "measure": f'{int(testimonial.get("preferredMeasureCh") or 58)}ch'})
+        person = (
+            f'<div class="c-person"><span class="c-person-meta">'
+            f'<span class="c-person-name">{cr.esc(name)}</span>'
+            f'<span class="c-person-role">{cr.esc(role)}</span>'
+            f'</span></div>')
+        asset = str(testimonial.get("asset") or "").strip()
+        media = ""
+        if asset:
+            src = asset if asset.startswith(("assets/", "http://", "https://", "data:")) \
+                else f"assets/{asset}"
+            image = cr.render_image(doc, ctx, {
+                "src": src,
+                "alt": f"{name}, {role}".strip(", "),
+                "mediaRole": "card-media",
+            })
+            media = f'<figure class="cs-testimonial-media">{image}</figure>'
+        anatomy = str(testimonial.get("internalAnatomy") or "quote-card")
+        accent = (
+            '<span class="cs-testimonial-mark" data-accent-device="testimonial-quote-mark" '
+            'aria-hidden="true">“</span>'
+            if testimonial.get("accentLicensed") else "")
+        asset_state = "bound" if asset else "requested"
+        return f"""<section class="cs-section cs-testimonial-sec" data-testimonial-intent="true">
+  <div class="cs-flow">
+    <article class="cs-testimonial cs-testimonial--{cr.esc(anatomy)}"
+      data-component-contract="testimonial" data-testimonial-anatomy="{cr.esc(anatomy)}"
+      data-testimonial-asset="{asset_state}" data-testimonial-max-empty="{cr.esc(testimonial.get("maxEmptySpaceRatio") or 0.68)}">
+      {media}
+      <div class="cs-testimonial-copy">
+        {accent}<blockquote class="cs-testimonial-quote">{quote_html}</blockquote>
+        {person}
+      </div>
+    </article>
+  </div>
+</section>"""
     parts: list[str | None] = []
     # SECTION HEADROW RAIL + SPLIT INTRO (fix1 2026-07 item-8; same stamps as the
     # cards composer): a flow section whose pattern declares the dotted-rule-rail
@@ -4812,7 +4978,8 @@ def compose_generic_flow(doc, layout, ctx, rendered, style_ctx):
                 parts[g["pos"]] = (
                     f'    <div class="cs-logo-strip cs-logo-strip--itembox" '
                     f'style="--cs-strip-item-w: {cr.esc(item_box["width"])}; '
-                    f'--cs-strip-item-h: {cr.esc(item_box["height"])};{gap_var}">\n'
+                    f'--cs-strip-item-h: {cr.esc(item_box["height"])};{gap_var} '
+                    f'flex-wrap: wrap; max-width: 100%;">\n'
                     + "\n".join(g["items"]) + "\n    </div>")
                 continue
             if scale and scale.get("fraction") and g["items"]:
@@ -5597,6 +5764,11 @@ def compose_overlay(doc, layout, ctx, rendered, style_ctx):
     # sanctioned text-on-media over the raw canvas gets the flat surface scrim (the same
     # mitigation the layered hero applies) UNLESS a panel/scrim already carries the text.
     tom = _ov_treatment(treatments, "text-on-media")
+    if tom is not None and canvas is not None and foot_items:
+        canvas_children.append(
+            '\n      <div class="cs-ov-onmedia">'
+            + "".join(foot_items) + "\n      </div>")
+        foot_items = []
     needs_scrim = bool(canvas_children) and not panel_html and not scrim_html and tom is not None
     scrim_wash = (f'\n      <div class="cs-ov-scrim" style="background: '
                   f'{_rgba_css(surf.get("bg"), 0.45)}" aria-hidden="true"></div>'
@@ -6627,6 +6799,12 @@ SCAFFOLD_CARDS_CSS = """.cs-modules-sec { position: relative; }
   grid-column: var(--c-col-3, 1 / span var(--c-span-a, 7));
   margin-block-start: var(--c-drop-3, 0); }
 .cs-module-media { margin: 0; width: 100%; overflow: hidden; border-radius: 0; }
+/* An explicitly classified mark stays a bounded glyph row even when this brand
+   uses flat modules instead of Container card plates. */
+.cs-modules .cs-module-media--mark { display: flex; align-items: center;
+  justify-content: flex-start; height: 2.25rem; }
+.cs-modules .cs-module-media--mark .c-image { width: auto; height: 100%;
+  max-width: 12rem; object-fit: contain; }
 /* geometry belongs to the WELL/PLATE, never the bitmap (fid13: the source's card
    images are square — the plate's own radius clips the visible corners; an image
    carrying the global radius rounds all four corners INSIDE the well). */
@@ -6638,6 +6816,14 @@ SCAFFOLD_CARDS_CSS = """.cs-modules-sec { position: relative; }
 .cs-modules--cols > .cs-module:nth-child(even), .cs-modules--cols > .cs-module:nth-child(1),
 .cs-modules--cols > .cs-module:nth-child(2), .cs-modules--cols > .cs-module:nth-child(3) {
   grid-column: auto; margin-block-start: 0; }
+/* WIREFRAME GRID FILL (AS-77): explicit per-item spans own occupancy after the
+   component-fit solver selects tracks. Structural nth-child stagger rules above
+   cannot override this plan. A spanning card may retain a readable internal
+   measure while its painted plate fills the full row. */
+.cs-modules--cols > .cs-module[data-grid-span] {
+  grid-column: span var(--cs-grid-span, 1); }
+.cs-modules--cols > .cs-module[data-grid-span]:not([data-grid-span="1"]) > * {
+  max-width: var(--cs-span-content-measure, none); }
 /* a declared-gutter N-up grid is UNIFORM: wrap rows ride the same measured gutter
    (fid6 2026-07 — --grid-gutter-row is emitted by layout_placement_css only when the
    section's evidence declares a grid gap; without it the editorial row rhythm holds).
@@ -6696,7 +6882,9 @@ SCAFFOLD_CARDS_CSS = """.cs-modules-sec { position: relative; }
 [data-align="centered"] .cs-modules-actions { justify-content: center; }
 @media (max-width: 767px) { .cs-modules { grid-template-columns: 1fr; gap: 2.5rem; }
   .cs-modules > .cs-module:nth-child(odd), .cs-modules > .cs-module:nth-child(even) {
-    grid-column: 1; margin-block-start: 0; } }"""
+    grid-column: 1; margin-block-start: 0; }
+  .cs-modules--cols > .cs-module[data-grid-span] { grid-column: 1; }
+  .cs-modules--cols > .cs-module[data-grid-span] > * { max-width: none; } }"""
 
 # interlock (float-wrap statement + inset image — editorial-interlocking-inset, Claude
 # Design #11): the image FLOATS to one side (--c-float-side / --c-inset-width / --c-inset-
@@ -6765,6 +6953,10 @@ SCAFFOLD_OVERLAY_CSS = """.cs-overlay-sec { position: relative; }
 .cs-ov-canvas--framed { margin-inline: auto; }
 /* flat surface-toned wash (sanctioned text-on-media mitigation; never a gradient). */
 .cs-ov-scrim { position: absolute; inset: 0; z-index: 1; }
+.cs-ov-onmedia { position: absolute; inset: 0; z-index: 2; display: flex;
+  flex-direction: column; align-items: center; justify-content: center;
+  gap: var(--c-block-gap); padding: var(--c-section-pad); text-align: center; }
+.cs-ov-onmedia .cs-ov-foot-item { max-width: 46rem; }
 /* panel-on-media (G1): a SOLID panel floated over the canvas — the sanctioned
    panel-over-media pair. Own opaque surface scope (like the split's .cs-panel), so its
    text never composites against the photograph. Flat: no shadow, no radius. */
@@ -6894,6 +7086,33 @@ SCAFFOLD_FLOW_CSS = """.cs-flow { display: flex; flex-direction: column;
 .cs-flow-item--prose { max-width: var(--space-body-measure, 62ch); }
 .cs-flow-media { width: 100%; }
 .cs-flow-media .c-image { width: 100%; height: auto; }
+/* TESTIMONIAL COMPONENT (AS-76): quote, attribution, and optional compatible
+   media stay atomic. The photo-side variant uses the brand panel/hairline/type
+   registers; no-photo fallback collapses to one intentional quote card and
+   therefore reserves no dead media column. */
+.cs-testimonial { width: 100%; display: grid;
+  grid-template-columns: minmax(16rem, 0.56fr) minmax(0, 1fr);
+  align-items: stretch; background: var(--c-panel, var(--c-paper));
+  border: 1px solid var(--c-hairline); }
+.cs-testimonial-copy { min-width: 0; display: flex; flex-direction: column;
+  justify-content: center; padding: var(--space-panel-padding, 2rem); }
+.cs-testimonial-media { min-width: 0; margin: 0; overflow: hidden; }
+.cs-testimonial-media .c-image { width: 100%; height: 100%; min-height: 18rem;
+  object-fit: cover; display: block; }
+.cs-testimonial-quote { margin: 0; }
+.cs-testimonial-quote .c-paragraph { font-family: var(--c-font-display);
+  font-size: var(--type-h4-size, var(--c-heading-size));
+  line-height: var(--type-h4-line-height, var(--c-heading-line)); color: var(--c-ink); }
+.cs-testimonial-mark { color: var(--c-accent); font-family: var(--c-font-display);
+  font-size: clamp(2.5rem, 5cqw, 4rem); line-height: 0.8; margin-bottom: 1rem; }
+.cs-testimonial .c-person { margin-top: var(--space-quote-to-attribution,
+  var(--c-block-gap)); }
+.cs-testimonial--quote-card { display: block; max-width: 58rem; }
+@media (max-width: 767px) {
+  .cs-testimonial { grid-template-columns: 1fr; }
+  .cs-testimonial-media .c-image { min-height: 0; aspect-ratio: var(--c-aspect-landscape); }
+  .cs-testimonial-copy { padding: var(--space-panel-padding, 1.5rem); }
+}
 /* logo-strip device (AS-33): a HORIZONTAL row of partner/customer logo images —
    disk-backed extracted assets only (the adapter routes file-less entries to text
    captions instead). Gap rides the brand rhythm. Emphasis treatment (grayscale/…) is

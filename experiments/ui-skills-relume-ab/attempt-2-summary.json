@@ -1,0 +1,20 @@
+{
+  "status": "no-render",
+  "model": "claude-opus-4-8",
+  "maxRepairs": 4,
+  "laneA": {
+    "attempts": 5,
+    "stages": ["wireframe-fail", "wireframe-fail", "wireframe-fail", "wireframe-fail", "wireframe-fail"],
+    "finalFailure": "faq accordion item contract requires cards collection path"
+  },
+  "laneB": {
+    "attempts": 5,
+    "stages": ["schema-fail", "wireframe-fail", "schema-fail", "wireframe-fail", "wireframe-fail"],
+    "finalFailures": [
+      "results stat collection was emitted in unsupported cards anatomy",
+      "faq accordion item contract requires cards collection path"
+    ]
+  },
+  "interpretation": "The chosen missing FAQ use case has no consuming renderer path, so neither lane can render. This is a renderer-capability blocker, not evidence for Relume or UI-skill guidance.",
+  "followUp": "Use an also-unmeasured pricing job expressed as atomic cards, which the renderer capability registry supports."
+}

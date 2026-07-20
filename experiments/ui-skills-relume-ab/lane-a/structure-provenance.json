@@ -1,0 +1,74 @@
+[
+  {
+    "sectionId": "hero",
+    "useCase": "hero",
+    "structureProvenance": "brand-style-archetype",
+    "seededFrom": null,
+    "archetype": "split",
+    "archetypeRef": "hero-case-lead",
+    "relumeCandidateIds": [],
+    "structureRecipeId": null,
+    "stampMethod": "composition.v1 first-class provenance"
+  },
+  {
+    "sectionId": "story",
+    "useCase": "features",
+    "structureProvenance": "brand-style-archetype",
+    "seededFrom": null,
+    "archetype": "cards",
+    "archetypeRef": null,
+    "relumeCandidateIds": [],
+    "structureRecipeId": null,
+    "stampMethod": "composition.v1 first-class provenance"
+  },
+  {
+    "sectionId": "results",
+    "useCase": "features",
+    "structureProvenance": "brand-style-archetype",
+    "seededFrom": null,
+    "archetype": "stack",
+    "archetypeRef": null,
+    "relumeCandidateIds": [],
+    "structureRecipeId": null,
+    "stampMethod": "composition.v1 first-class provenance"
+  },
+  {
+    "sectionId": "testimonial",
+    "useCase": "testimonial",
+    "structureProvenance": "measured-brand-pattern",
+    "seededFrom": {
+      "lib": "project",
+      "id": "testimonial-tab-stats"
+    },
+    "archetype": "stack",
+    "archetypeRef": null,
+    "relumeCandidateIds": [],
+    "structureRecipeId": null,
+    "stampMethod": "composition.v1 first-class provenance"
+  },
+  {
+    "sectionId": "pricing",
+    "useCase": "pricing",
+    "structureProvenance": "brand-style-archetype",
+    "seededFrom": null,
+    "archetype": "cards",
+    "archetypeRef": null,
+    "relumeCandidateIds": [],
+    "structureRecipeId": null,
+    "stampMethod": "composition.v1 first-class provenance"
+  },
+  {
+    "sectionId": "closing",
+    "useCase": "cta",
+    "structureProvenance": "measured-brand-pattern",
+    "seededFrom": {
+      "lib": "project",
+      "id": "closing-cta-dark"
+    },
+    "archetype": "stack",
+    "archetypeRef": null,
+    "relumeCandidateIds": [],
+    "structureRecipeId": null,
+    "stampMethod": "composition.v1 first-class provenance"
+  }
+]

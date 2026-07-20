@@ -1,5 +1,313 @@
 # Changes
 
+## 2026-07-20 — convergence loop: G4 repair-hook core (`replica_repair.py`) + system spec
+
+System-level 1:1 convergence layer, phase 1 (deterministic core; spec `brand_pipeline/spec/convergence-loop.md`). `pipeline_flow.gate_g4_replica` already ran a bounded score→repair→re-score loop with plateau detection — but its `repair_hook` slot was empty, so every below-bar lane stopped after one scoring pass. This lands the hook's deterministic brain as a NEW, dependency-light module (nothing imports it yet — wiring into `run_pipeline_flow.py --converge` is deferred until the parallel re-author session lands and the tree is committed).
+
+- **NEW `brand_pipeline/replica_repair.py`** — `classify_capability` (punch `capability`/note → gap type: authoring / evidence / renderer / asset; renderer = shared-code capability, NEVER self-fixed — filed as ledger work orders); `band_candidates` (below-bar bands joined with punchList, worst-first; un-punched failing bands still surface); loop ledger (`loop-ledger.json`: rounds, trajectory, work orders, noSelfFix); snapshot/revert of the three canon files (`.loop/iter-NNN/`); `make_repair_hook(repair_call, bar, bands_per_round, validator)` — bounded worst-first rounds with the RATCHET protocol: a round whose re-score DROPS (>0.001) or whose validator breaks is auto-reverted and its bands marked no-self-fix (the v3 "repair 3 kept a 0.870→0.859 regression" failure mode is now structurally impossible); renderer-only remainder ⇒ honest stop (`False`), mirroring G4's "don't game the metric".
+- **NEW `brand_pipeline/spec/convergence-loop.md`** — the L1–L4 loop taxonomy (evidence / authoring / replica / drift), gap-classification table, ratchet + ledger contracts, exit criteria (PASS vs NEEDS-CAPABILITY; the ~0.95–0.97 still-page score ceiling), CLI surface (`--converge`, no behavior change without it), test plan, ownership/serialization rules.
+- Tests: NEW `test_replica_repair.py` (15) — classification table, worst-first candidates, snapshot+ledger, ratchet revert on regression, improved-round kept, validator-failure revert, repair-exception revert, noSelfFix exclusion, renderer-only honest stop. All with FAKE repair calls (no LLM/Playwright).
+- Live proof (read-only): classifier over the current hubspot-v3 replica-report → 3 authoring candidates (width/fidelity) + 1 renderer work order (composite hero art); report overall **0.901 ≥ 0.90 bar** after the parallel session's measured-geometry re-author.
+- Deferred to phase 2 (after commit checkpoint): `--converge` wiring in `run_pipeline_flow.py`, the LLM band-repair adapter reusing `staged_author`'s fragment machinery, and the L1 targeted re-extract trigger.
+
+## 2026-07-20 — validator hardening: C4 join-key integrity + C29 internal-id leak (hubspot-v3 regression)
+
+Root-caused the hubspot-v3 "Powered by AI / hubspot-v3" screenshot: it was NOT the replica — it was the stale Jul-19 pre-repair `components-preview/` layout demos (provable via the token-header sha `805e2167ce4e` vs then-current brand.yaml), rendered while (a) the staged author had written the lane slug into `brand.name` (specimen fallback projected it as display copy) and (b) zero authored copy bound because the three staged-author calls minted three disjoint id namespaces (layouts[].id vs layoutCopy keys vs pattern ids) plus an unconsumed `sourceCopy:` indirection, and (c) C4's coverage check silently skipped every layout because the author omitted `type: content` on slots — so the total binding failure validated green.
+
+- `tools/extract/validate_brand_evidence.py`: **C4 join-key integrity** — three new errors: layoutCopy authored but NO non-chrome layout declares a `type: content` slot (the blind spot; names the layouts to stamp); layoutCopy keys matching no layout id (join-key drift, lists both key sets); slots carrying `sourceCopy:` refs (no renderer consumes the field — binding is `layoutCopy[layout.id]`). **NEW C29** — internal-id leak: `brand.name` / `sectionCopy.wordmark` equal to the lane slug (`runs/<lane>/brand`) is a hard error, marker-gated to version/scratch slugs (`-v3`, `-test`, `-wip`) so a lane legitimately named after its brand (`runs/remote` → "Remote") is not flagged.
+- Tests: `test_brand_evidence_contract.py` +6 (content-slot blindness, orphan keys, sourceCopy indirection, lane-slug-as-name, lane-slug-as-wordmark, markerless-lane negative). Suite: **1678 passed** (119 in the contract file). One transient `test_pipeline_flow` real-lane failure during the run was a concurrent-write race with the parallel v3 lane repair; green on re-run ×2.
+- Verification: hubspot-v2 / remote / woodwave-v2 PASS unchanged; pre-repair hubspot-v3 failed loud with exactly the diagnosed defects (3×C4); post-repair hubspot-v3 (16:58 lane rekey, done in the parallel Cursor session) PASSES the hardened validator.
+- Follow-ups owned by the parallel repair session: `measure_computed.py` visibleLabel/accessibleName split (hidden a11y text captured as button sample), regenerating the stale v3 `components-preview/`+`catalog/` projections, and the G4 replica bar.
+
+## 2026-07-20 — final HubSpot v3 G4 evidence pass
+
+- Ranked remaining weighted replica deficits and corrected the largest factual
+  routing mismatch: section-04 now consumes its measured generic soft-accent
+  surface, split headrail, and edge-cut carousel track.
+- Full CSS font stacks now resolve captured self-hosted registry faces; HubSpot
+  v3 emits and copies its fresh Sans/Serif WOFF2 files.
+- One bounded repair improved HubSpot v3 **0.8891 → 0.8955**, still below G4's
+  0.90 bar, so all three requested pages remained blocked.
+- C1-C28: 0 errors; digest-current G3: pass; Remote **0.9509** and HubSpot v2
+  **0.9567** held; full suite **1,676 passed** with zero losses.
+
+## 2026-07-20 — visible CTA labels vs accessible names
+
+- Fixed computed-style action evidence to traverse painted descendant text and
+  exclude hidden, aria-hidden, sr-only, clipped, and non-visible descendants.
+  `visibleLabel`, `accessibleName`, `ariaLabel`, `labelledBy`, semantic text, and
+  geometry-based label-fit facts are now recorded separately.
+- Added a hard C3 fit check for visible labels that grossly exceed measured
+  control width, plus staged-author rules preventing descriptive accessibility
+  text from expanding painted CTA copy.
+- Projection now repairs authored chrome and button families from those generic
+  evidence channels. Renderers paint `visibleLabel` and apply a differing
+  accessible name only as `aria-label`.
+- Re-measured and regenerated HubSpot v3 without recapture. The harness displays
+  `Get a demo` / `Get started free`; their longer descriptions remain accessible
+  names. The refreshed replica improved **0.8633 → 0.8891** but remains below
+  G4's 0.90 bar. Targeted tests: 53 passed; full suite: 1,674 passed + 4 subtests.
+
+## 2026-07-20 — harness join integrity and projection freshness
+
+- Added hard C4/staged-author checks for canonical slot types, exact
+  layout/layoutCopy joins, consumed copy roles, unsupported `sourceCopy`, and
+  internal lane-id leaks.
+- Added composite input digests for components previews, layout demos, catalogs,
+  and replica artifacts; G3 regenerates stale outputs and rejects mismatches.
+- Added AS-78 circle integrity and AS-79 control-family coherence machine gates.
+- Fixed measured button-family selection, icon-only round specimens, designed
+  toggle grammar, substantive Tier 2 rendering, and measured Tier 3 hydration.
+- Verified HubSpot v3 C1-C28 and G3; full suite 1,655 passed + 4 subtests.
+
+### Remote replica safety regression repair
+
+- Exact cause: the harness repair broadened Tier-3 asset classification in
+  `render_components_preview._demo_section_for_pattern` from explicit logo
+  collections to any slot role containing `mark` or `badge`. Remote's complete
+  testimonial slot says `quote cards w/ avatars + company marks`; despite three
+  authored testimonial records, it was reclassified from `card` to `logo` and
+  flattened into seven empty media modules.
+- The only material score delta was Remote `sec-7` testimonials:
+  **0.9577 → 0.8283**; overall **0.9509 → 0.9364**. Other band scores were
+  unchanged.
+- Fixed the generic precedence rule: authored repeated records outrank incidental
+  mark/badge anatomy wording. Only canonical collection roles/names
+  (`logo-row`, `mark-collage`, `badge-row`, etc.) override them, preserving the
+  projected HubSpot v3 lane behavior.
+- Added real-lane regression coverage that builds Remote into a temporary output
+  and pins the three atomic quote cards, names, company marks, avatars, and copy;
+  a second arm pins HubSpot v3's canonical hydrated `logo-row` routing.
+- Re-rendered/scored replicas: Remote **0.9509** restored exactly (testimonial
+  **0.9577**); HubSpot v2 **0.9567** held. HubSpot v3 is semantically unaffected
+  by the narrowed classifier and remains recorded at **0.8633** below the
+  unchanged 0.90 gate.
+- Verification: focused replica/harness tests **27 passed**; full
+  `brand_pipeline/tests` **1,657 passed + 4 subtests** (baseline 1,655 plus the
+  two new safety arms), with 8 existing Pillow deprecation warnings and zero
+  losses.
+
+## 2026-07-19 — RELUME STRUCTURE-ONLY fallback precedence
+
+- Split raw Relume evidence/catalog data from generated prompt-safe
+  `catalog.structural.yaml`; added semantic geometry normalization and a fail-closed
+  all-family forbidden-value scanner.
+- Composition generation now retrieves at most three Relume candidates only for brief
+  jobs left unsupported by measured brand seeds or compatible injected archetypes.
+- Added `structureProvenance` / `structureRecipeId` to composition and wireframe
+  contracts and a hard pre-render precedence lint.
+- Re-ran the isolated HubSpot A/B with both lanes rendered and full screenshot/battery
+  artifacts. Both lanes passed 7/9 checks and failed identical component-fit/spacing
+  checks, so fallback remains disabled by default pending revision.
+- Updated recipe/wireframe specs and focused regressions. No measured replica renderer
+  or viewer path changed.
+- Verification: all 132 prompt families scan clean; focused tests 27 passed; full
+  `brand_pipeline/tests` 1,643 passed with 8 existing Pillow warnings.
+
+## 2026-07-17 — EXECUTABLE AUTHOR stage repairs fresh single-intent flow
+
+- Added `brand_pipeline/author_brand.py`: builds a current-lane-only evidence/spec
+  bundle, invokes the existing Anthropic provider in bounded artifact groups,
+  syntax-checks each complete response transaction before atomic install, derives
+  `brand.md` / `style-scale.yaml`, and runs C1-C28 with at most two structured
+  repair calls. Author reports and manifest telemetry record the exact model,
+  calls and returned usage fields; unavailable credentials block before validation.
+- Wired `run_brand_extraction.py --stage author` and the canonical orchestrator to
+  the executable stage. Evidence-complete lanes resume at author without repeating
+  capture/mine/ground/curate; `--force-author`, model, timeout and repair-budget
+  controls are exposed. Extraction failures now become a reported blocked G1
+  result instead of an uncaught `RuntimeError`.
+- Added isolated fake-provider tests for bundle construction, expected outputs,
+  transactional parsing, provider blocking, bounded repairs, idempotent/forced
+  resume, validation ordering, golden artifacts, and flow-report persistence.
+- Live HubSpot v3 resume correctly stopped at the repaired AUTHOR/G1 boundary:
+  `claude-opus-4-8` returned no complete response or usage before the configured
+  wall-clock budget, so no candidate files were installed and validation/harness/
+  replica/generation did not run. Author providers now disable SDK retries so the
+  stage's explicit timeout and repair budget remain the only bounds.
+- Verification: focused author/flow tests **34 passed**; full
+  `brand_pipeline/tests` **1,611 passed**, 8 existing Pillow warnings.
+- Viewer files and existing completed run data were not changed.
+
+## 2026-07-17 — GRID-FILL feasibility after component fit
+
+- Extended the AS-75 component-fit planner with a second row-fill decision:
+  higher columns are eligible only when width/line fit passes; partial rows now
+  score `lead-span`, `tail-span`, and `single-column`, with explicit hierarchy,
+  content/visual demand, preferred measure, and row occupancy recorded in
+  `wireframe.json`. Licensed asymmetry requires a real painted counterweight.
+- The grouped renderer consumes `collection.fillStrategy` and each item's
+  explicit `span`; spanning cards fill the row while retaining a constrained
+  internal reading measure. Positional nth-child CSS cannot override the plan,
+  and mobile collapse resets every item to one track.
+- Added hard AS-77 (no orphan final-row grid void) to composition/on-brand and
+  rendered-browser gates. The browser gate measures final-row painted occupancy
+  and rejects unused tracks or ineffective declared spans.
+- Regenerated the HubSpot customer-story page and desktop/mobile/contact-sheet
+  proofs. Its three equal-hierarchy challenge items now use `tail-span`
+  (`1,1,2`) because no item declares lead/primary hierarchy and the final item
+  carries a real mark; its internal copy remains capped at 28ch.
+- Verification: strict customer-story battery **9/9 GREEN**; full
+  `brand_pipeline/tests` **1602 passed**, 8 existing Pillow warnings (baseline
+  1596 + 6 grid-fill regressions). Replica safety is unchanged: wireframe fill
+  metadata is attached only by generated creative `render_composition`; measured
+  replica composition does not enter that path.
+
+## 2026-07-17 — COMPONENT FIT + testimonial semantic integrity
+
+- Extended `wireframe.v1` with a brand-agnostic component feasibility solver:
+  visible content demand, longest token, child roles, preferred measure, line
+  caps, container allocation, gutter/padding, minimum item width, candidate
+  widths/rejections, chosen tracks/anatomy, and derived responsive thresholds.
+- Collection renderers now consume the wireframe's chosen columns and one
+  family-wide anatomy. They no longer let `item-count=3` or a card
+  `heading-row` fact override a failed fit decision.
+- Added atomic testimonial planning/rendering: quote + attribution stay grouped;
+  compatible portrait/client media binds by subject from `media-assets.v1`;
+  absent media emits an asset request and uses a deliberate no-photo quote card.
+- Added AS-75 (no squeezed components) and AS-76 (testimonial integrity and
+  empty-space balance) to composition and rendered-browser hard gates.
+- Regenerated the HubSpot customer-story proof: the challenge collection selects
+  2 columns at desktop (third item normal-wraps) and `icon-top`, then 1 column at
+  375px; the Whitney Hallock quote uses the extracted Angel City client photo in
+  a portrait-side testimonial panel. Updated desktop/mobile shots and contact
+  sheet under the lane.
+- Updated schema/spec, anti-ai-slop rules, focused solver/renderer/gate
+  regressions, root/lane changelogs. `viewer.html` and `run_pipeline.py` remain
+  untouched.
+- Verification: full strict customer-story battery **9/9 GREEN**; full
+  `brand_pipeline/tests` **1596 passed** (baseline 1581 + 15), 8 existing Pillow
+  warnings. Replica render/scoring was not rerun: fit/testimonial metadata is
+  attached only in generated `render_composition` and both renderer branches are
+  gated on that metadata; `compose_replica` never enters the path.
+
+## 2026-07-17 — SECTION WIREFRAME + anti-waterfall quality system
+
+- Added deterministic `wireframe.v1` planning before composition render:
+  `brand_pipeline/section_wireframe.py`,
+  `brand_pipeline/spec/wireframe.v1.schema.json`, and
+  `brand_pipeline/spec/section-wireframing.md`.
+- Whole-page plans now carry jobs, density/surface cadence, visual anchors,
+  conversion/proof obligations, required slots, media requirements/requests,
+  responsive behavior, renderer-capability checks, and brand precedence.
+- Repeated semantic records carry an existing atomic item contract
+  (`feature-item`/`content-block`/`card`/`testimonial`) plus collection layout,
+  columns, wrapping, and item-preserving responsive collapse.
+- Added hard composition quality checks AS-68–AS-74: cross-slot duplicate copy,
+  anti-waterfall grouping, section completeness, visual anchors, consecutive
+  sparse-section rhythm, hero painted counterweight, and wireframe consumption.
+- Fixed the generic single-case split path so a bound card photo/media and its
+  proof/action copy render as one balanced counterweight; fixed cards heading
+  fallback duplication and conversion actionGroup-array expansion.
+- Regenerated `runs/hubspot-v2/brand/compose/customer-story/` through
+  `wireframe.json`; refreshed the full-page screenshot/contact sheet. Strict gate
+  battery is 9/9 green.
+- Verification: `1581 passed`; hubspot-v2 replica `0.9567` (0.957 rounded);
+  Remote replica `0.9509` (0.951 rounded); Studio proof URL HTTP 200.
+- `viewer.html` and `run_pipeline.py` were not touched.
+
+## 2026-07-17 — CANONICAL ORDERED FLOW baked in as a fail-closed orchestrator (extract → validate → harness → replica → generate, HARD gates between)
+
+- PROBLEM: the pipeline stages (extraction, validation, harness render, replica
+  score, generation) existed as separate scripts an operator invoked by name.
+  Nothing enforced their ORDER or their quality bars, so a run went
+  `extract → page generation` — skipping the harness build and accepting a 0.543
+  replica — because the flow depended on the operator naming each sub-step.
+- NEW `brand_pipeline/pipeline_flow.py`: a first-class orchestrator with HARD,
+  FAIL-CLOSED gates. `run_flow` executes the ordered spine and STOPS at the first
+  gate it can't clear, writing an honest `flow-report.json`/`.md` (status +
+  blocking gate + reason + per-gate timings) into the lane and leaving generation
+  refused. Gates:
+  - G1 extraction — every evidence + authored artifact present (names what's missing).
+  - G2 validation — `validate_brand_evidence` (C1–C28) → 0 errors (warnings/notes recorded).
+  - G3 harness — components-preview spec book present at the canonical Studio path;
+    slot-contract catalog built when missing; optional HTTP-200 probe via `--studio-url`.
+  - G4 replica — `compose_replica` overall ≥ bar (default 0.90) via a BOUNDED
+    diagnose→repair→re-score loop; below bar ⇒ `needs_iteration` + per-band diagnostics.
+  - G5 generation — runs ONLY after G1–G4 pass.
+- THRESHOLD: `DEFAULT_REPLICA_BAR = 0.90` (single source of truth; configurable via
+  `--replica-bar`). Passes hubspot-v2 (0.957) + remote (0.951), blocks woodwave-v2 (0.767).
+- NEW `run_pipeline_flow.py` (root CLI): one high-level entry. `--brand <key>` or a
+  free-text `--intent "build replica for <lane>"` / `"extract brand <url>"` runs the
+  whole ordered flow from the right entry stage. `--capture` runs a fresh extraction
+  first; `--from G2|G3|G4` resumes a lane past its passing gates (idempotent);
+  `--generate --brief` adds G5.
+- `brand_pipeline/generate_composition.py`: `generate_composition(enforce_gates=True,
+  replica_bar=…)` now calls `pipeline_flow.assert_generation_allowed` BEFORE any
+  output/model work — page generation raises `GenerationBlocked` for a lane whose
+  recorded flow state (flow-report.json → manifest.json) is not cleared. Isolated
+  bakeoff drivers (`tools/run_eval_matrix.py`, `tools/run_hero_archetype_gallery.py`)
+  pass `enforce_gates=False` to opt out deliberately.
+- VERIFIED end-to-end against the committed lanes (real replica shoot, no re-extract):
+  hubspot-v2 → COMPLETED (G4 0.957, generation ALLOWED); remote → COMPLETED
+  (G4 0.951, generation ALLOWED); woodwave-v2 → NEEDS_ITERATION (G4 0.767 < 0.90,
+  generation REFUSED, band diagnostics recorded). Measured replicas held
+  byte-stable (0.957 / 0.951 match the recorded values — measured rendering path
+  untouched). Flow reports written into each lane; manifests status-updated.
+- NEW spec `brand_pipeline/spec/pipeline-flow.md` (ordered stages, each gate's pass
+  condition, threshold + rationale, fail-closed + resume semantics, intent→flow map).
+- NEW tests `brand_pipeline/tests/test_pipeline_flow.py` (25): threshold calibration,
+  real-lane pass/block proof, fail-closed ordering (G5 never reached on a failed
+  spine), G4 iteration bound, resume/idempotency, and the generation refusal.
+  Full suite: 1541 → 1566 passed, zero regressions. No Playwright / no live model in
+  the tests (G4 uses trusted-score + synthetic report fixtures; orchestration tests
+  inject fake gates).
+- FALLBACK / not fully automated: the G3 Studio HTTP-200 check runs only when
+  `--studio-url` is supplied; otherwise G3 verifies the file/route contract (the
+  preview at the exact path `studio_server.static_brand_lanes` serves). The G4
+  repair step is a hook (agent/data repair is not scripted); without a hook the
+  bounded loop scores once and blocks honestly rather than gaming the metric.
+
+## 2026-07-17 — DESIGNED-component synthesis: un-measured standard-catalog components render populated + badged "designed" (synthesized-from-brand-signals) instead of a bare "?" placeholder
+
+- ROOT CAUSE: the Studio project-detail "Catalog by tier — origin" panel
+  (`studio_server.py` `renderOriginCatalog`/`originBadge` line ~1816, backed by
+  `render_catalog.build_origin_catalog`) and the static catalog HTML
+  (`render_catalog._origin_pill`, line ~479) both printed `origin || "?"`. Standard-
+  catalog components a brand did not measure are recorded with the schema's explicit
+  absence marker `notObserved: true` (brand-schema §5/§10) and carry NO `origin`, so
+  every such component (WoodWave 13 blocks, HubSpot 8, Remote 9) rendered as a blank
+  `"?"`. The component-preview gallery already defaulted missing-origin to designed and
+  rendered specimens, so the two views were inconsistent.
+- NEW `brand_pipeline/designed_components.py`: generic, palette-agnostic synthesis of
+  `designed` (synthesized-from-brand-signals) provenance for any un-measured standard-
+  catalog component. Licenses ONLY the measured signal FAMILIES the brand actually
+  carries (detected by presence, never value): color/type/spacing/radius/border-shadow/
+  surface/imagery/motion tokens, button facts, accent devices, signatures, measured
+  recipes. Emits `origin: designed` + `designedFrom` (do/avoid/neverDo/tokens/signatures
+  + note) + `licensedSignals` + `confidence` (never `high`) + `overridable: true` +
+  `notInReplica: true`. Loads the universal vocabulary from `contracts/`. No brand/
+  color/section/content specifics; no cross-brand borrowing.
+- `render_catalog.py`: `_origin_item` promotes `notObserved`/`designed` entries to a
+  synthesized designed row (note + licensedSignals + confidence); `build_origin_catalog`
+  threads the doc; `_origin_item_html` shows confidence · overridable. The static
+  catalog + the Studio origin panel now render every catalog component populated +
+  badged, extracted vs designed, with zero `"?"`.
+- `render_components_preview.py`: `_card_origin`/`_origin_badge`/`_designed_note` route
+  through the shared synthesis so each designed card's note cites the licensing signals
+  + confidence. MEASURED (extracted) cards render byte-identically (same renderer, same
+  badge, same note path).
+- `studio_server.py`: `originDetail` designed branch now shows `confidence · overridable`.
+- HARD INVARIANT (verified + tested): designed components NEVER enter the measured
+  replica. `compose_replica` composes only from `layouts[]` + provenance-backed
+  `layout-library.patterns`; it never reads `blocks`/`primitives` or
+  `layout-library.synthesizedComponents`. Measured brand.yaml facts are byte-untouched
+  (synthesis is render-time only; `notObserved` stays the system of record).
+- SCHEMA: `brand_pipeline/spec/brand-schema.md` §5.5 documents the generic
+  notObserved→designed render-time synthesis policy (measured-signals-only, badged,
+  overridable, replica-excluded, promotes under the §5.3 override rule).
+- TESTS (new, +15): `tests/test_designed_components.py` (synthesis from signals,
+  measured-vs-designed split, no cross-brand borrowing, never-high confidence),
+  `tests/test_origin_catalog_designed.py` (no `"?"` in any tier, measured unchanged +
+  not relabeled, designed carry note/confidence, badge rendering),
+  `tests/test_designed_replica_exclusion.py` (replica sources only measured layouts,
+  synthesizedComponents excluded, notInReplica). Full suite: 1541 passed, 0 failed.
+- DATA REGEN (woodwave-v2, `needs_iteration` lane): regenerated
+  `runs/woodwave-v2/brand/catalog/` and `components-preview/`; 13 `"?"` → 13 badged
+  designed. Screenshot `runs/woodwave-v2/brand/shots/designed-catalog-origin.png`.
+  hubspot-v2/remote NOT regenerated and replicas NOT re-run (no measured-rendering path
+  changed; their origin panels populate live via `build_origin_catalog`).
+
 ## 2026-07-17 — STYLE AUTO-RESOLUTION wired into the DEFAULT generate path: presets now shape every generation, not just opt-in lanes (fact-gated, byte-identical, explicit-wins, fail-open)
 
 - `brand_pipeline/generate_composition.py`: the pass-3 stage-2 style block is no

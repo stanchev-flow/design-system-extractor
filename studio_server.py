@@ -1824,8 +1824,9 @@ function originDetail(it) {
   }
   if (it.origin === "designed") {
     const note = it.designedFrom || "synthesized from brand rules + tokens";
+    const tail = [it.confidence ? ("confidence: " + esc(it.confidence)) : "", it.overridable ? "overridable" : ""].filter(Boolean).join(" · ");
     return `<div class="text-[10px] text-zinc-500 leading-snug" title="${esc(note)}">${esc(note)}</div>`
-      + (it.overridable ? `<div class="text-[10px] uppercase tracking-wider text-sky-400/80 mt-0.5">overridable</div>` : "");
+      + (tail ? `<div class="text-[10px] uppercase tracking-wider text-sky-400/80 mt-0.5">${tail}</div>` : "");
   }
   return "";
 }
