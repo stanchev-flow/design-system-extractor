@@ -1759,6 +1759,69 @@ Rules:
 - **Degrade.** No facts ⇒ no stamps, no law emission — the structural defaults hold
   byte-identical.
 
+### 4.4h `responsive` — measured RESPONSIVE mechanics (hero + footer slice, 2026-07)
+
+How a component RE-FLOWS across the viewport ladder is a measured fact, not a scaffold
+habit. The computed-CSS property-diff harness (`css_fidelity.py`, Phase 1b) surfaces two
+MISSING-FACT divergences the SSIM screenshot gate is blind to: a hero rendered at a
+FIXED px band instead of the source's `calc(100dvh - navheight)`, and a footer directory
+that never reflows while the source has `@media(width>=900){column-count:2}`. The
+`responsive` block carries the mechanic the renderer needs to close them.
+
+WHERE IT LIVES: a `responsive` block nests under the HERO layout (`layouts[].responsive`)
+and the FOOTER (`footer.responsive`). It is derived from `evidence/joined-evidence.json`
+(the per-element `computedLadder` + bound `cssRules`) by `responsive_facts.py`,
+materialized into a sibling `responsive-facts.yaml`, and merged into the in-memory doc at
+`compose_page.load_doc` (`apply_responsive_facts`) so every `brand.yaml` stays
+byte-identical. Keys are GENERIC reusable patterns (never section/content-specific token
+names) and every value carries `provenance`.
+
+```yaml
+# on the HERO layout (layouts[] entry with useCase: hero)
+responsive:
+  heightRule: viewport-minus-nav        # enum: viewport-minus-nav | viewport | none
+  navOffset:                            # measured nav-height the viewport height subtracts
+    var: <source nav-height custom prop> # informational (the source var the calc referenced)
+    base: <CSS len>                     # narrow-viewport nav height (e.g. 56px)
+    wide: <CSS len>                     # wide-viewport nav height (e.g. 128px)
+    wideMinWidth: <int px>              # breakpoint where `wide` takes over (e.g. 1080)
+  headingSizeLadder:                    # measured heading shrink at narrow viewports
+    - { maxWidth: <int px>, fontSize: <CSS len>, lineHeight: <CSS len> }  # below breakpoint
+    - { minWidth: <int px>, fontSize: <CSS len>, lineHeight: <CSS len> }  # at/above
+  provenance: { origin: extracted, source: <elementId>, heightRule: <note>, … }
+
+# on footer (brand.yaml footer:)
+responsive:
+  grid:
+    breakpoint: <int px>                # stacked below, multi-column at/above (e.g. 900)
+    columnsBelow: 1
+    columnsAtOrAbove: <int>             # from the measured column-count / directory tracks
+    columnGap: <int px>                 # OPTIONAL measured gaps (omitted when 0/unmeasured)
+    rowGap: <int px>
+  maxWidth: <int px>                    # REAL measured CONTENT cap (inner layout container)
+  provenance: { origin: extracted, source: chrome-footer, grid: <note>, maxWidth: <note> }
+```
+
+Rules:
+
+- **Provenance = layout + motion, not just color.** The token-provenance doctrine
+  (SPEC §D) extends here: every layout/motion value the composer emits for the hero or
+  footer must trace to a measured fact or a declared structural constant. The invented
+  footer band `max-width` cap (the source band measured `max-width: none`) is PURGED —
+  the band paints full-bleed and the inner content caps at the REAL measured `maxWidth`.
+- **Consumption.** `component_render.hero_responsive_css` / `footer_responsive_css` emit
+  the grounded CSS (hero: `calc(100dvh - <nav>)` full-bleed viewport band + heading
+  shrink; footer: `@media` column reflow + measured content cap), scoped to the section
+  id. Wired into `compose_page.build_page` per hero layout / the footer section.
+- **Fact-gated + byte-stable.** Both emitters return `""` when the block is absent, so a
+  brand/component without a `responsive` block renders byte-for-byte as before (proven for
+  hubspot-v2 / remote). This is a VERTICAL SLICE (hero + footer only); generalizing to the
+  other components is the next step.
+- **Harness equivalence.** `css_fidelity.vp_height_signature` compares the viewport-height
+  MECHANIC (`calc(100dvh - var(nav))`), not the source-specific var name, so our generic
+  `--c-hero-nav-offset` and the source's own nav var read as the same grounded mechanic; a
+  bare `100dvh` that drops the nav subtraction is still flagged.
+
 ### 4.4g `mediaComposition` on pattern slots + the media-assets layer (media semantics 2026-07)
 
 The MEDIA SEMANTICS SYSTEM (normative spec: `spec/media-assets-schema.md`) separates

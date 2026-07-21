@@ -152,6 +152,12 @@ def build_replica_page(brand_yaml: Path, out_dir: Path) -> dict:
                 adapted, merged, _ = cfc.adapt_brand_section(comp["sections"][0], doc)
                 if merged:
                     layout_copy[adapted["id"]] = merged
+                # carry the Phase-2 RESPONSIVE fact block through adaptation (the demo
+                # hydration / composition adapter builds a fresh layout object that would
+                # otherwise drop it, leaving the composed hero non-responsive).
+                if isinstance(layout, dict) and layout.get("responsive") \
+                        and isinstance(adapted, dict) and "responsive" not in adapted:
+                    adapted["responsive"] = layout["responsive"]
                 comp_sections.append(sec)
                 adapted_layouts.append(adapted)
             else:

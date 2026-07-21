@@ -453,6 +453,135 @@ def link_hover_css(doc) -> str:
 """
 
 
+# ── RESPONSIVE render (Phase 4, hero + footer slice) ────────────────────────────────
+#
+# The composer's default hero band is a FIXED px height and its footer directory a
+# NON-responsive grid — two missing-fact divergences the computed-CSS property-diff
+# harness (css_fidelity.py) surfaces. These two emitters consume the Phase-2
+# ``responsive`` fact block (layouts[].responsive / footer.responsive, merged from the
+# responsive-facts.yaml sidecar at load) and emit the grounded responsive CSS.
+#
+# FACT-GATED + BYTE-STABLE: each returns "" when the fact block is absent, so every
+# brand/component without a ``responsive`` block renders byte-for-byte as before. The
+# rules are SCOPED to the hero/footer section id, so no other component is touched.
+# Every value traces to a measured fact (provenance rides in the sidecar) — the
+# token-provenance doctrine extended from color to layout + motion for these paths.
+
+def _resp_len(value) -> str | None:
+    """A whitelisted CSS length token (``48px`` / ``55px`` / ``128px``) from a fact,
+    or None. Guards the fact→CSS boundary so only measured length literals emit."""
+    if isinstance(value, (int, float)):
+        return f"{int(value)}px" if float(value).is_integer() else f"{value}px"
+    m = re.fullmatch(r"\s*(-?\d*\.?\d+)(px|rem|em|dvh|svh|vh|%)\s*", str(value or ""))
+    return f"{m.group(1)}{m.group(2)}" if m else None
+
+
+def hero_responsive_css(responsive, sec_sel: str) -> str:
+    """Grounded responsive CSS for a hero section from its ``responsive`` fact block:
+
+      * ``heightRule: viewport-minus-nav`` → the hero media canvas fills the viewport
+        minus the measured nav offset (``calc(100dvh - <nav>)``, dvh like the source),
+        flex-centering its on-media content (already the .cs-ov-onmedia default);
+      * ``headingSizeLadder`` → the measured heading font-size/line-height SHRINK below
+        the measured breakpoint (desktop rung is left to the brand's own type scale, so
+        wide-viewport output stays byte-identical).
+
+    Returns "" when the block is absent/none (fact-gate)."""
+    if not isinstance(responsive, dict):
+        return ""
+    parts: list[str] = []
+    rule = responsive.get("heightRule")
+    if rule in ("viewport-minus-nav", "viewport"):
+        nav = responsive.get("navOffset") or {}
+        base = _resp_len(nav.get("base")) or "0px"
+        wide = _resp_len(nav.get("wide"))
+        wide_min = nav.get("wideMinWidth")
+        if rule == "viewport-minus-nav":
+            parts.append(f"{sec_sel} {{ --c-hero-nav-offset: {base}; }}")
+            if wide and isinstance(wide_min, (int, float)):
+                parts.append(f"@media (min-width: {int(wide_min)}px) {{ "
+                             f"{sec_sel} {{ --c-hero-nav-offset: {wide}; }} }}")
+            expr = "calc(100dvh - var(--c-hero-nav-offset, 0px))"
+        else:
+            expr = "100dvh"
+        # A viewport-height hero is FULL-BLEED (like the source header): the inner
+        # .cs-section drops its padding so the band is exactly the viewport-height
+        # (border-box) and spans edge-to-edge; the frame releases the shared measure so
+        # the media canvas covers the full width at every viewport. The on-media overlay
+        # (inset:0, justify-center) keeps its own padding, centering the heading/CTAs.
+        parts.append(f"{sec_sel} .cs-section {{ min-height: {expr}; "
+                     "padding-block: 0; padding-inline: 0; }")
+        parts.append(f"{sec_sel} .cs-ov-frame {{ max-width: none; }}")
+        # The canvas is a DEFINITE viewport-height box (height, not just min-height) so
+        # the covering photo has a height to fill; its AUTHORED aspect-ratio (set inline)
+        # is neutralized (`auto !important` beats the inline value) so it can't drive the
+        # width to height × ratio and overflow. The image COVERS the full-bleed box.
+        parts.append(f"{sec_sel} .cs-ov-canvas {{ min-height: {expr}; height: {expr}; "
+                     "aspect-ratio: auto !important; }")
+        parts.append(f"{sec_sel} .cs-ov-canvas > .c-image, "
+                     f"{sec_sel} .cs-ov-canvas > .c-image-ph "
+                     f"{{ aspect-ratio: auto !important; width: 100%; height: 100%; "
+                     "object-fit: cover; }")
+    ladder = responsive.get("headingSizeLadder")
+    if isinstance(ladder, list):
+        small = next((e for e in ladder if isinstance(e, dict) and e.get("maxWidth")),
+                     None)
+        if small:
+            fs = _resp_len(small.get("fontSize"))
+            lh = _resp_len(small.get("lineHeight"))
+            decls = []
+            if fs:
+                decls.append(f"font-size: {fs}")
+            if lh:
+                decls.append(f"line-height: {lh}")
+            if decls:
+                parts.append(
+                    f"@media (max-width: {int(small['maxWidth'])}px) {{ "
+                    f"{sec_sel} :is(h1, .c-heading--display) {{ {'; '.join(decls)}; }} }}")
+    if not parts:
+        return ""
+    head = ("/* responsive hero (fact-gated: layouts[].responsive) — viewport-minus-nav "
+            "height + measured heading shrink; provenance in responsive-facts.yaml. */")
+    return head + "\n" + "\n".join(parts) + "\n"
+
+
+def footer_responsive_css(doc, sec_sel: str) -> str:
+    """Grounded responsive CSS for the closing-bookend footer from
+    ``footer.responsive``:
+
+      * ``grid`` → the directory RE-FLOWS at the measured breakpoint (stacked to one
+        column below it, the composer's multi-column layout at/above), matching the
+        source's ``@media`` column reflow;
+      * ``maxWidth`` → the inner content caps at the REAL measured content width and the
+        band paints FULL-BLEED (the invented band max-width cap is purged — Phase 3).
+
+    Returns "" when the block is absent (fact-gate)."""
+    resp = (doc.get("footer") or {}).get("responsive") if isinstance(doc, dict) else None
+    if not isinstance(resp, dict):
+        return ""
+    parts: list[str] = []
+    # Phase 3 purge + measured cap: un-cap the band (source band max-width:none); cap the
+    # inner content wrappers at the measured contentMaxWidth via --cf-cols-max (cols /
+    # bottom-bar / centered-stack all read it) so the visible content width is unchanged.
+    cmw = _resp_len((resp.get("maxWidth")))
+    band_decls = ["max-width: none"]
+    if cmw:
+        band_decls.append(f"--cf-cols-max: {cmw}")
+    parts.append(f"{sec_sel} .c-footer {{ {'; '.join(band_decls)}; }}")
+    grid = resp.get("grid") or {}
+    bp = grid.get("breakpoint")
+    below = grid.get("columnsBelow", 1)
+    if isinstance(bp, (int, float)) and int(below) <= 1:
+        # stacked → multi-column reflow: below the breakpoint the directory is one
+        # column (the source's mobile stack); at/above it keeps the composer's grid.
+        parts.append(
+            f"@media (max-width: {float(bp) - 0.02:g}px) {{ "
+            f"{sec_sel} .c-foot-cols {{ grid-template-columns: 1fr; }} }}")
+    head = ("/* responsive footer (fact-gated: footer.responsive) — @media column reflow "
+            "+ measured content cap; band full-bleed (invented max-width purged). */")
+    return head + "\n" + "\n".join(parts) + "\n"
+
+
 # ── scroll-parallax motion treatment (brand-level; voice.motionSpec.imageParallax) ──
 #
 # SINGLE SOURCE OF TRUTH for both build_page (compose_page.py) and build_document

@@ -246,7 +246,12 @@ def load_doc(brand_yaml: Path) -> dict:
     doc = yaml.safe_load(Path(brand_yaml).read_text())
     # active-brand image inventory (AS-34) + authored section copy; in-memory only.
     cs.attach_brand_copy(doc, Path(brand_yaml).parent)
-    return cs.attach_asset_inventory(doc, Path(brand_yaml).parent)
+    doc = cs.attach_asset_inventory(doc, Path(brand_yaml).parent)
+    # Phase-2 RESPONSIVE facts (hero + footer): merge the evidence-derived
+    # responsive-facts.yaml sidecar into the hero layout + footer (in-memory only).
+    # A brand without the sidecar is untouched — byte-identical output.
+    import responsive_facts as _rf
+    return _rf.apply_responsive_facts(doc, Path(brand_yaml).parent)
 
 
 def section_pad(doc, surf_role) -> str:
@@ -659,6 +664,13 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
                                                        honor_curation=honor_curation)
         blocks.append(block)
         var_blocks.append(vars_css)
+        # RESPONSIVE hero (Phase 4, fact-gated on layouts[].responsive) — emits the
+        # viewport-minus-nav height + measured heading shrink, scoped to this section
+        # id. "" for layouts without the block (byte-identical output).
+        hero_resp = cr.hero_responsive_css((layout or {}).get("responsive"),
+                                           f"#sec-{idx}")
+        if hero_resp:
+            var_blocks.append(hero_resp)
 
     # PAGE-LEVEL NAVBAR (hoisted out of the hero). The nav was previously rendered INSIDE
     # #sec-0 by compose_stack_hero, so it inherited the hero section's padding-block-start
@@ -861,6 +873,12 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
     var_blocks.append(section_vars(doc, f"#sec-{foot_idx}", foot_surf, display_size=None,
                                    accent_on=foot_keep_accent, surf_role=foot_role,
                                    style_ctx=style_ctx))
+    # RESPONSIVE footer (Phase 4, fact-gated on footer.responsive) — @media column
+    # reflow + measured content cap; the band goes full-bleed (invented max-width
+    # purged, Phase 3). "" for brands without the block (byte-identical output).
+    foot_resp = cr.footer_responsive_css(doc, f"#sec-{foot_idx}")
+    if foot_resp:
+        var_blocks.append(foot_resp)
 
     gf = google_fonts_link(cs.loadable_proxies(doc))
     face_css = cs.font_face_css(Path(brand_yaml).parent, doc)
