@@ -2321,6 +2321,45 @@ default remain byte-identical. Tests:
 
 ---
 
+## AS-81 — Declared multi-panel / stat device flattened to a plain block
+
+**Rule**: a section whose DECLARATION names a tabbed / multi-panel switcher or a stat
+device MUST render that anatomy — a tab rail of controls (`role="tab"`) for a tabbed
+section, and stat items for a stat section. A declared tabbed-testimonial that renders as
+a single plain quote (no tab rail, no stats) FAILS. This is the structural companion to
+AS-80: AS-80 guards asset-kind↔slot-role; AS-81 guards declared-device↔rendered-device.
+
+**Why it happens**: the composer routes a section to a generic archetype fallback (e.g. a
+plain info-band / quote split) when the interaction DEVICE that should fire was never
+armed — the pattern's tab treatment wasn't `sanctioned`, or the section copy never carried
+the switcher's `panels`/`tabs`, so the tab composer's guard is false and the section
+silently degrades to heading + body + one image. The markup is valid and the CSS is legal,
+so a CSS-property diff sees nothing wrong; only comparing the DECLARED device against the
+RENDERED controls surfaces the missing rail and the dropped stat footer.
+
+**Caught here**: HubSpot v3 `tabbed-testimonial-with-stats` (source: HubSpot "Breeze Agents
+tabbed testimonials", `section-07`). The measured anatomy is a 3-tab rail
+(Enterprise/Mid-Sized Business/Small Business, first active, 4px `#ff4800` underline), a
+photo-left / quote+author-right card, and a stat footer (2 stats on the active panel, 3 on
+the others). It rendered as a plain single quote — no tab rail, no stats — because the
+layout-library treatment was `tabbed-content-swap` (not the sanctioned `tabs` the renderer
+stamps) and section-copy carried no `panels`. Fix: author the three panels + tab labels in
+section-copy, promote the treatment to a sanctioned `tabs` (+ `stat-rule`) so the existing
+WAI-ARIA APG tab device composes the full anatomy; nothing invented (all three panels are
+DOM-verbatim).
+
+**Verify**: `onbrand_check.anatomy_presence_hits(comp, html)` (surfaced by
+`check_anatomy_presence`, wired into the composition-invariant rows). It reads the generated
+`composition.json`, flags every section whose slots/treatments/useCase declare a tab or
+stat device (word-anchored so "sans stat heading" and "deep-accent active state" never
+misfire), order-aligns declared sections to rendered non-chrome `<section>`s, and FAILS a
+declared tab section with <2 `role="tab"` controls or a declared stat section with no
+`c-stat-value`/`cs-tabcard-stat` items. Fails OPEN on count mismatch (no false positives)
+and is [] for composition-less lanes. Tests:
+`brand_pipeline/tests/test_anatomy_presence.py`.
+
+---
+
 ## Adding a new entry
 
 Copy this shape: **Rule** (the imperative, one or two sentences) / **Why it happens** (the
