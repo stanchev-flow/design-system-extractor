@@ -450,6 +450,250 @@ def _lh_ratio(value) -> float | None:
     return None
 
 
+# ── SPACING / RADIUS / COLOR TOKEN-TIER AUDITS: authored tokens vs CSS-VARIABLE truth ─
+# The same hole the heading-tier audit closes for the type scale exists for the other
+# token families: an authored spacing step / radius / surface color that DRIFTED from the
+# source's declared custom-property truth renders self-consistently and slips past both
+# the SSIM gate and the per-property replica diff (which measures the source's single
+# first-instance, not the declared scale). These audits diff the authored brand.yaml
+# tokens against the css-variable-first truth produced by tools/extract/token_families.py
+# (evidence/{spacing,radius,color}-*.json). Brand-agnostic — they read whatever roles the
+# truth carries and never assume a specific palette or var name.
+
+def load_spacing_truth(brand_dir: Path) -> dict | None:
+    return _load_truth(brand_dir / "evidence" / "spacing-scale.json")
+
+
+def load_radius_truth(brand_dir: Path) -> dict | None:
+    return _load_truth(brand_dir / "evidence" / "radius-scale.json")
+
+
+def load_color_truth(brand_dir: Path) -> dict | None:
+    return _load_truth(brand_dir / "evidence" / "color-roles.json")
+
+
+def _load_truth(p: Path) -> dict | None:
+    if not p.is_file():
+        return None
+    try:
+        return json.loads(p.read_text())
+    except (ValueError, OSError):
+        return None
+
+
+def _authored_token_block(brand_yaml: Path, *keys) -> dict:
+    import yaml
+    doc = yaml.safe_load(brand_yaml.read_text()) or {}
+    node = doc.get("tokens") or {}
+    for k in keys:
+        node = (node or {}).get(k) or {}
+    return node
+
+
+def _px_of(value) -> float | None:
+    """A length string / number → px (rem×16, bare number as px)."""
+    if value is None:
+        return None
+    if isinstance(value, (int, float)):
+        return float(value)
+    m = re.fullmatch(r"\s*(-?[\d.]+)\s*(rem|em|px)?\s*", str(value))
+    if not m:
+        return None
+    n = float(m.group(1))
+    return round(n * _ROOT_PX, 2) if m.group(2) in ("rem", "em") else round(n, 2)
+
+
+def _authored_spacing_px_pool(authored_spacing: dict) -> list[tuple[str, float]]:
+    """Every authored spacing value as (role, px) — resolving the ``value`` and the
+    per-mode ladder so a base value and its mobile variant both register."""
+    out = []
+    for role, node in (authored_spacing or {}).items():
+        if not isinstance(node, dict):
+            continue
+        for tag, v in (("value", node.get("value")),):
+            px = _px_of(v)
+            if px is not None:
+                out.append((role, px))
+        for mode, v in (node.get("modeLadder") or {}).items():
+            px = _px_of(v)
+            if px is not None:
+                out.append((f"{role}.{mode}", px))
+    return out
+
+
+def _declared_spacing_steps(truth: dict) -> list[float]:
+    """The union of every DECLARED spacing step px in the source truth (section rhythm +
+    content padding + named gaps + the corpus step ladder + control padding axes)."""
+    steps: set[float] = set()
+    for scale in ("sectionRhythm", "contentPadding"):
+        for _label, node in (truth.get(scale) or {}).items():
+            if isinstance(node, dict) and node.get("px") is not None:
+                steps.add(round(float(node["px"]), 1))
+    for _label, node in (truth.get("namedGaps") or {}).items():
+        if isinstance(node, dict) and node.get("px") is not None:
+            steps.add(round(float(node["px"]), 1))
+    for node in (truth.get("stepScale") or []):
+        if node.get("px") is not None:
+            steps.add(round(float(node["px"]), 1))
+    for _k, node in (truth.get("controlPadding") or {}).items():
+        for axis in ("blockPx", "inlinePx"):
+            if isinstance(node, dict) and node.get(axis) is not None:
+                steps.add(round(float(node[axis]), 1))
+    return sorted(steps)
+
+
+def spacing_tier_divergences(authored_spacing: dict, truth: dict,
+                             tol: float = 2.0) -> list[dict]:
+    """Authored spacing values that are NOT a member of the source's declared step
+    ladder (off-ladder spacing the source never declares). Advisory (medium): a spacing
+    step is a softer signal than a collapsed type tier, but a value far from every
+    declared step is invented rhythm worth surfacing."""
+    divs: list[dict] = []
+    steps = _declared_spacing_steps(truth)
+    if not steps:
+        return divs
+    # ignore container/max-width style tokens (not part of the rhythm ladder)
+    skip = re.compile(r"container|max|span|width", re.I)
+    for role, px in _authored_spacing_px_pool(authored_spacing):
+        if skip.search(role) or px <= 0:
+            continue
+        nearest = min(steps, key=lambda s: abs(s - px))
+        if abs(nearest - px) > tol:
+            divs.append(_mk_div(f"spacing/{role}", "step", f"{px}px",
+                                f"nearest declared {nearest}px", PRIMARY_VIEWPORT,
+                                "medium", "wrong-value", kind="spacing-scale"))
+    return divs
+
+
+def _authored_radius_px(authored_radius: dict, authored_spacing: dict) -> dict:
+    """Authored radius per role, px. Reads a dedicated ``tokens.radius`` block when
+    present, else falls back to the legacy single ``spacing.radius-global``."""
+    out: dict[str, float] = {}
+    for role, node in (authored_radius or {}).items():
+        px = _px_of(node.get("value") if isinstance(node, dict) else node)
+        if px is not None:
+            out[role] = px
+    if not out:
+        glob = (authored_spacing or {}).get("radius-global")
+        px = _px_of(glob.get("value") if isinstance(glob, dict) else glob)
+        if px is not None:
+            out["control"] = px
+    return out
+
+
+def radius_tier_divergences(authored_radius: dict, authored_spacing: dict,
+                            truth: dict, tol: float = 1.0) -> list[dict]:
+    """Authored control/card/input radius vs the CSS-variable radius scale. font-size's
+    analogue for corners: a control radius authored 8px when the source declares 4px, or
+    a card authored 8px when the source's ``--*radius-container*`` is 16px, is flagged."""
+    divs: list[dict] = []
+    roles = (truth or {}).get("canonicalRoles") or {}
+    authored = _authored_radius_px(authored_radius, authored_spacing)
+    for role in ("control", "input", "card", "pill"):
+        css = roles.get(role)
+        css_px = (css or {}).get("px")
+        if not isinstance(css_px, (int, float)):
+            continue
+        a_px = authored.get(role)
+        if a_px is None:
+            # a single global radius stands in for control; only flag card/input when the
+            # source clearly declares a DISTINCT value the authored global does not carry.
+            glob = authored.get("control")
+            if glob is not None and abs(glob - css_px) > tol and role in ("card", "input"):
+                divs.append(_mk_div(f"radius/{role}", "border-radius",
+                                    f"{glob}px (global)", f"{css_px}px", PRIMARY_VIEWPORT,
+                                    "medium", "wrong-value", kind="radius-scale"))
+            continue
+        if abs(a_px - css_px) > tol:
+            sev = "high" if role in ("control", "card") else "medium"
+            divs.append(_mk_div(f"radius/{role}", "border-radius", f"{a_px}px",
+                                f"{css_px}px", PRIMARY_VIEWPORT, sev, "wrong-value",
+                                kind="radius-scale"))
+    return divs
+
+
+def _authored_color_values(brand_yaml: Path) -> list[tuple[str, str]]:
+    """(role, value) for every authored color + surface bg — the pool a truth role/band
+    is matched against."""
+    out: list[tuple[str, str]] = []
+    for role, node in _authored_token_block(brand_yaml, "colors").items():
+        v = node.get("value") if isinstance(node, dict) else node
+        if isinstance(v, str):
+            out.append((role, v))
+    for role, node in _authored_token_block(brand_yaml, "surfaces").items():
+        v = node.get("bg") if isinstance(node, dict) else None
+        if isinstance(v, str):
+            out.append((f"surface:{role}", v))
+    return out
+
+
+def _rgb_any(value: str):
+    """A color literal (hex #rgb/#rrggbb/#rrggbbaa OR rgb/rgba) → (r,g,b,a). ``_color_tuple``
+    only parses rgb(); band + palette truth values are hex, so hex must resolve too or a
+    hex-vs-hex comparison collapses to string equality and drifts get mis-flagged."""
+    if value is None:
+        return None
+    v = _norm(value).lower()
+    m = re.fullmatch(r"#([0-9a-f]{3})", v)
+    if m:
+        return tuple(int(c * 2, 16) for c in m.group(1)) + (1.0,)
+    m = re.fullmatch(r"#([0-9a-f]{6})", v)
+    if m:
+        h = m.group(1)
+        return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16), 1.0)
+    m = re.fullmatch(r"#([0-9a-f]{8})", v)
+    if m:
+        h = m.group(1)
+        return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16), int(h[6:8], 16) / 255)
+    return _color_tuple(value)
+
+
+def _color_close(a: str, b: str, chan: int = 8, alpha: float = 0.12) -> bool:
+    ca, cb = _rgb_any(a), _rgb_any(b)
+    if ca and cb:
+        return (all(abs(x - y) <= chan for x, y in zip(ca[:3], cb[:3]))
+                and abs(ca[3] - cb[3]) <= alpha)
+    return _norm_color(a) == _norm_color(b)
+
+
+def color_role_divergences(brand_yaml: Path, truth: dict) -> list[dict]:
+    """Two checks, brand-agnostic:
+      * CANONICAL ROLE — each truth role's css-var color must exist among the authored
+        colors/surfaces (within perceptual tolerance), else the role drifted / is missing;
+      * BAND SURFACE — each MEASURED section band color must have a matching authored
+        surface, else a section paints a surface the source never uses (the section-4
+        ``#f9c9c0`` vs source ``#fcded2`` drift). Section band surfaces are matched as a
+        generic pattern (by value + the sections that use them), never by section name."""
+    divs: list[dict] = []
+    authored = _authored_color_values(brand_yaml)
+    if not authored:
+        return divs
+    roles = (truth or {}).get("canonicalRoles") or {}
+    role_sev = {"accent": "high", "background": "high", "surface": "high",
+                "text": "high", "surfaceInverse": "high"}
+    for role, node in roles.items():
+        val = (node or {}).get("value")
+        if not val:
+            continue
+        if any(_color_close(val, av) for _r, av in authored):
+            continue
+        divs.append(_mk_div(f"color/{role}", "value", "(no authored match)", val,
+                            PRIMARY_VIEWPORT, role_sev.get(role, "medium"),
+                            "missing-fact", kind="color-role"))
+    surfaces = [(r, v) for r, v in authored if r.startswith("surface:")]
+    for band in (truth or {}).get("bandSurfaces") or []:
+        val = band.get("value")
+        if not val or (band.get("alpha") is not None and band["alpha"] < 0.95):
+            continue
+        if any(_color_close(val, sv) for _r, sv in surfaces):
+            continue
+        secs = ",".join(band.get("sections") or [])
+        divs.append(_mk_div(f"band/{secs or 'section'}", "background-color",
+                            "(no authored surface)", val, PRIMARY_VIEWPORT,
+                            "high", "wrong-value", kind="band-surface"))
+    return divs
+
+
 def heading_tier_divergences(authored_type: dict, truth: dict) -> list[dict]:
     """Per-heading-tier divergences of the AUTHORED scale vs the CSS-variable truth.
     font-size divergence is HIGH (this is the collapse bug); line-height MEDIUM."""
@@ -841,6 +1085,7 @@ def build_docs(brand: str, divs: list[dict], matches: list[dict], acc: dict,
         "severityCounts": counts,
         "acceptance": {k: v["found"] for k, v in acc.items()},
         "headingTierAudit": meta.get("headingTierAudit"),
+        "tokenTierAudits": meta.get("tokenTierAudits"),
         "matches": matches,
         "divergences": divs,
     }
@@ -880,6 +1125,22 @@ def build_docs(brand: str, divs: list[dict], matches: list[dict], acc: dict,
         for d in ht_divs:
             lines.append(f"| {d['element']} | `{d['property']}` | {_md(d['ours'])} | "
                          f"{_md(d['source'])} | {d['severity']} |")
+    # spacing / radius / color token-tier audits
+    tta = meta.get("tokenTierAudits") or {}
+    for fam in ("spacing", "radius", "color"):
+        aud = tta.get(fam) or {}
+        fam_divs = aud.get("divergences") or []
+        lines += ["", f"## {fam.capitalize()}-token audit (authored vs CSS-variable truth)",
+                  "",
+                  f"- truth: `{aud.get('source') or '—'}` (method `{aud.get('method') or '—'}`)",
+                  f"- **{len(fam_divs)} {fam}-token divergence(s)** — 0 means the authored "
+                  f"{fam} tokens match the source's declared custom-property truth"]
+        if fam_divs:
+            lines += ["", "| role | property | authored | css-var | severity |",
+                      "|---|---|---|---|---|"]
+            for d in fam_divs:
+                lines.append(f"| {d['element']} | `{d['property']}` | {_md(d['ours'])} | "
+                             f"{_md(d['source'])} | {d['severity']} |")
     lines += ["", "## Ranked divergences", "",
               "| # | element | property | severity | cause | viewport | ours | source | rank |",
               "|---|---|---|---|---|---|---|---|---|"]
@@ -932,6 +1193,29 @@ def run(brand_yaml: Path, out_dir: Path, viewports: tuple[int, ...],
         heading_tier_divs = heading_tier_divergences(_authored_type(brand_yaml), truth)
         divs.extend(heading_tier_divs)
 
+    # SPACING / RADIUS / COLOR token-tier audits — authored brand.yaml tokens vs the
+    # css-variable-first truth (token_families.py). Same construction as the heading-tier
+    # audit; they catch a drifted spacing step / radius / surface color that renders
+    # self-consistently and would otherwise slip past both gates.
+    spacing_truth = load_spacing_truth(brand_dir)
+    spacing_tier_divs: list[dict] = []
+    if spacing_truth:
+        spacing_tier_divs = spacing_tier_divergences(
+            _authored_token_block(brand_yaml, "spacing"), spacing_truth)
+        divs.extend(spacing_tier_divs)
+    radius_truth = load_radius_truth(brand_dir)
+    radius_tier_divs: list[dict] = []
+    if radius_truth:
+        radius_tier_divs = radius_tier_divergences(
+            _authored_token_block(brand_yaml, "radius"),
+            _authored_token_block(brand_yaml, "spacing"), radius_truth)
+        divs.extend(radius_tier_divs)
+    color_truth = load_color_truth(brand_dir)
+    color_role_divs: list[dict] = []
+    if color_truth:
+        color_role_divs = color_role_divergences(brand_yaml, color_truth)
+        divs.extend(color_role_divs)
+
     divs = rank(divs)
     acc = acceptance(divs)
 
@@ -945,6 +1229,23 @@ def run(brand_yaml: Path, out_dir: Path, viewports: tuple[int, ...],
         "source": str(brand_dir / "evidence" / "type-scale.json") if truth else None,
         "method": (truth or {}).get("method"),
         "divergences": heading_tier_divs,
+    }
+    meta["tokenTierAudits"] = {
+        "spacing": {
+            "source": str(brand_dir / "evidence" / "spacing-scale.json") if spacing_truth else None,
+            "method": (spacing_truth or {}).get("method"),
+            "divergences": spacing_tier_divs,
+        },
+        "radius": {
+            "source": str(brand_dir / "evidence" / "radius-scale.json") if radius_truth else None,
+            "method": (radius_truth or {}).get("method"),
+            "divergences": radius_tier_divs,
+        },
+        "color": {
+            "source": str(brand_dir / "evidence" / "color-roles.json") if color_truth else None,
+            "method": (color_truth or {}).get("method"),
+            "divergences": color_role_divs,
+        },
     }
     out_doc, md = build_docs(brand_name, divs, matches, acc, meta)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -976,6 +1277,15 @@ def print_summary(doc: dict) -> None:
     for d in ht_divs:
         print(f"    {d['severity']:<8} {d['element']}.{d['property']} "
               f"authored={_norm(d['ours'])!r} css-var={_norm(d['source'])!r}")
+    tta = doc.get("tokenTierAudits") or {}
+    for fam in ("spacing", "radius", "color"):
+        aud = tta.get(fam) or {}
+        fam_divs = aud.get("divergences") or []
+        print(f"[css-diff] {fam}-token audit (authored vs css-var): "
+              f"{len(fam_divs)} divergence(s)")
+        for d in fam_divs:
+            print(f"    {d['severity']:<8} {d['element']}.{d['property']} "
+                  f"authored={_norm(d['ours'])!r} css-var={_norm(d['source'])!r}")
     print("[css-diff] top divergences:")
     for d in doc["divergences"][:8]:
         print(f"    {d['rankScore']:>5} {d['severity']:<8} {d['element']}."
