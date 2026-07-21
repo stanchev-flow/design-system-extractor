@@ -6948,14 +6948,22 @@ SCAFFOLD_OVERLAY_CSS = """.cs-overlay-sec { position: relative; }
    the shared measure by design (a release, not a private containment copy). */
 .cs-ov--bleed .cs-ov-frame { max-width: none; }
 .cs-ov-canvas { position: relative; margin: 0; min-height: calc(48 * var(--baseline)); }
+/* FULL-HEIGHT bleed hero (2026-07): a full-bleed photo hero fills the viewport like
+   the source, not a short wide band. The hero image must COVER this taller canvas —
+   its authored wide aspect-ratio would otherwise pin it to a short strip. */
+.cs-ov--bleed .cs-ov-canvas { min-height: min(90svh, 54rem); }
 .cs-ov-canvas > .c-image, .cs-ov-canvas > .c-image-ph {
   width: 100%; height: 100%; min-height: inherit; object-fit: cover; }
+.cs-ov--bleed .cs-ov-canvas > .c-image { aspect-ratio: auto; height: 100%; }
 /* framed (G4): page margins visible on ALL sides — the frame is an inset canvas other
    slots register against (never edge-to-edge, never a border). */
 .cs-ov-canvas--framed { margin-inline: auto; }
 /* flat surface-toned wash (sanctioned text-on-media mitigation; never a gradient). */
 .cs-ov-scrim { position: absolute; inset: 0; z-index: 1; }
-.cs-ov-onmedia { position: absolute; inset: 0; z-index: 2; display: flex;
+/* z-index 3 (2026-07): the on-media heading must paint ABOVE the cs-ov-scrimband
+   (z-index 2), which is placed AFTER it in the figure and otherwise covered the
+   heading with its dark wash, graying the text out. */
+.cs-ov-onmedia { position: absolute; inset: 0; z-index: 3; display: flex;
   flex-direction: column; align-items: center; justify-content: center;
   gap: var(--c-block-gap); padding: var(--c-section-pad); text-align: center; }
 .cs-ov-onmedia .cs-ov-foot-item { max-width: 46rem; }

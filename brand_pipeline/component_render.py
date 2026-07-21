@@ -696,7 +696,10 @@ p { text-wrap-style: balance; }
   font-size: var(--navcta-size, var(--c-control-size));
   display: inline-flex; align-items: center; }
 .c-button.c-button--navcta:hover, .c-button.c-button--navcta:focus-visible {
-  background: var(--navcta-bg); filter: brightness(1.18); }
+  /* keep the CTA's own ink on hover — the generic .c-button:hover otherwise sets
+     color to --c-paper (white on a white nav), turning an unfilled orange-ink CTA
+     white-on-white on hover (2026-07). */
+  background: var(--navcta-bg); color: var(--navcta-ink, #fff); filter: brightness(1.06); }
 
 .c-arrow { transition: transform var(--c-motion-fast) var(--c-ease); }
 .c-arrow-link:hover .c-arrow { transform: translateX(0.35rem); }
@@ -1047,11 +1050,14 @@ _FOOT_COLUMNS_CSS = """
    extracted footer is a dense sitemap of small links, not a display device. Register
    (size/weight) rides the brand's measured chrome tokens via --c-foot-link-size;
    layout mechanics (wrap/gaps/measure) are structural. */
-.c-foot-cols { display: flex; flex-wrap: wrap; justify-content: center; text-align: left;
+/* GRID sitemap (2026-07): flex-wrap staggered the columns into ragged rows
+   (5+1) with misaligned left edges. A grid keeps every column on a shared track
+   so wrapped rows stay column-aligned, like the real directory footer. */
+.c-foot-cols { display: grid; justify-content: center; text-align: left;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
   gap: var(--c-block-gap, 2.5rem) clamp(2rem, 5cqw, 4rem); max-width: 72rem; margin: 0 auto; }
 .c-foot-col { display: flex; flex-direction: column;
-  gap: var(--cf-link-gap, 0.6em);
-  flex: 1 1 10rem; min-width: 10rem; max-width: 16rem; }
+  gap: var(--cf-link-gap, 0.6em); min-width: 0; }
 .c-foot-col-link { font-family: var(--c-font-body);
   font-size: var(--c-foot-link-size, var(--c-control-size));
   font-weight: var(--c-foot-link-weight, var(--c-body-weight));
