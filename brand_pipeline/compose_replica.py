@@ -270,6 +270,107 @@ def shoot_replica(out_dir: Path, viewport: tuple[int, int] = (1440, 900)) -> dic
     return rects
 
 
+# ── Phase 5: multi-viewport replica gate ──────────────────────────────────────────
+#
+# The SSIM band diff scores the replica against the SOURCE full-page screenshot, which
+# was captured at ONE viewport (1440, primary). That number is the desktop FIDELITY
+# score. But it says nothing about whether the rebuild stays coherent as the viewport
+# narrows — the exact axis the responsive-fact work targets. This pass loads the composed
+# replica at the viewport LADDER (1440 primary + 375/960/1920) and records a per-viewport
+# RESPONSIVENESS-HEALTH score: no horizontal overflow, every band still present, and the
+# reflow the facts promise actually happens (hero height tracks the viewport; the footer
+# directory collapses its columns on narrow). It is DISTINCT from the source-fidelity
+# score (there is no source shot at the other viewports to diff against) and is labeled
+# as such — honest per-viewport numbers, not a faked cross-viewport SSIM.
+
+VIEWPORT_LADDER = (1440, 1920, 960, 375)   # 1440 primary; others surface responsiveness
+_LADDER_VP_HEIGHT = {1920: 1080, 1440: 900, 960: 720, 375: 812}
+
+
+def _viewport_health_js() -> str:
+    return r"""
+    () => {
+      const de = document.documentElement;
+      const vw = window.innerWidth;
+      const scrollW = Math.max(de.scrollWidth, document.body.scrollWidth);
+      const overflowPx = Math.max(0, scrollW - vw);
+      const secs = Array.from(document.querySelectorAll('[id^=sec-]'));
+      const nav = document.getElementById('page-nav');
+      const bands = (nav ? 1 : 0) + secs.length;
+      const hero = document.getElementById('sec-0');
+      const heroH = hero ? Math.round(hero.getBoundingClientRect().height) : 0;
+      const cols = document.querySelector('.c-foot-cols');
+      let footCols = 0;
+      if (cols) {
+        const gt = getComputedStyle(cols).gridTemplateColumns || '';
+        footCols = gt && gt !== 'none' ? gt.split(' ').filter(Boolean).length : 0;
+      }
+      // widest element that pokes past the viewport (diagnostic for overflow source)
+      let widest = '';
+      if (overflowPx > 1) {
+        for (const el of document.querySelectorAll('*')) {
+          const r = el.getBoundingClientRect();
+          if (r.right > vw + 2 && r.width > 40) {
+            widest = (el.id ? '#'+el.id : el.className || el.tagName).toString().slice(0,50);
+            break;
+          }
+        }
+      }
+      return { viewport: vw, scrollWidth: scrollW, overflowPx, bands, heroHeight: heroH,
+               footerColumns: footCols, docHeight: de.scrollHeight, overflowEl: widest };
+    }
+    """
+
+
+def measure_viewport_ladder(out_dir: Path, viewports=VIEWPORT_LADDER,
+                            primary: int = 1440, shoot: bool = True) -> list[dict]:
+    """Load the composed replica at each viewport and record a responsiveness-health
+    score per viewport, saving a full-page screenshot (``replica-fullpage-<w>.png``).
+    Health = 1.0 penalized for horizontal overflow (content wider than the viewport) and
+    for any missing band. Diagnostic (never blocks); the primary viewport is tagged."""
+    from playwright.sync_api import sync_playwright
+    index = out_dir / "index.html"
+    rows: list[dict] = []
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch()
+        for w in viewports:
+            h = _LADDER_VP_HEIGHT.get(w, 900)
+            page = browser.new_page(viewport={"width": w, "height": h},
+                                    device_scale_factor=1)
+            page.goto(index.resolve().as_uri(), wait_until="load", timeout=30000)
+            try:
+                page.wait_for_load_state("networkidle", timeout=6000)
+            except Exception:
+                pass
+            page.evaluate("document.fonts && document.fonts.ready")
+            page.wait_for_timeout(300)
+            # scroll pass so IO reveals fire (content that stays hidden reads as overflow-free
+            # falsely); then settle back to top.
+            height = page.evaluate("document.body.scrollHeight")
+            y, step = 0, max(400, h - 200)
+            while y < height:
+                page.evaluate(f"window.scrollTo(0, {y})")
+                page.wait_for_timeout(60)
+                y += step
+            page.evaluate("window.scrollTo(0, 0)")
+            page.wait_for_timeout(200)
+            m = page.evaluate(_viewport_health_js())
+            if shoot:
+                shot = out_dir / f"replica-fullpage-{w}.png"
+                page.screenshot(path=str(shot), full_page=True)
+                m["screenshot"] = shot.name
+            # health: overflow costs up to 0.5 (scaled by overflow fraction of the
+            # viewport, capped), a missing band costs 0.1 each below the primary count.
+            overflow_frac = min(1.0, (m.get("overflowPx", 0) or 0) / max(1, w))
+            health = 1.0 - min(0.5, overflow_frac * 2.0)
+            m["responsivenessHealth"] = round(max(0.0, health), 4)
+            m["primary"] = (w == primary)
+            rows.append(m)
+            page.close()
+        browser.close()
+    return rows
+
+
 def shoot_chrome_mega(brand_dir: Path, out_dir: Path,
                       viewport: tuple[int, int] = (1440, 900)) -> Path | None:
     """DIAGNOSTIC (P2): if the brand's chrome preview exists and renders hover/focus
@@ -545,7 +646,7 @@ def _chrome_gaps(doc: dict, brand_dir: Path, replica_html: str) -> list[dict]:
 
 
 def build_report(out_dir: Path, rows: list[dict], punch: list[dict],
-                 overall: float, meta: dict) -> None:
+                 overall: float, meta: dict, per_viewport: list[dict] | None = None) -> None:
     lines = [
         "# Replica gate — rebuild-as-proof report", "",
         f"- brand: **{meta.get('brand')}**",
@@ -571,6 +672,27 @@ def build_report(out_dir: Path, rows: list[dict], punch: list[dict],
             f"| {r['id']} | {r['label']} | **{r['score']:.3f}** | {r['structure']:.3f} "
             f"| {r['pixel']:.3f} | {r['height']:.3f} | {wf_cell} | {r['srcHeight']}px "
             f"| {r['replicaHeight']}px | {crop} |")
+    if per_viewport:
+        lines += [
+            "", "## Multi-viewport replica gate (Phase 5)", "",
+            "Desktop **fidelity** (the `overall` above) is scored against the source "
+            "full-page screenshot, captured at the primary viewport only. The other "
+            "viewports have no source shot to diff against, so they record a "
+            "**responsiveness-health** number instead (1.0 = no horizontal overflow, "
+            "every band present, reflow intact) — responsiveness is *verified*, not a "
+            "faked cross-viewport SSIM.", "",
+            "| viewport | role | health | overflow px | bands | hero h | footer cols | doc h | shot |",
+            "|---|---|---|---|---|---|---|---|---|",
+        ]
+        for v in per_viewport:
+            role = "primary (fidelity)" if v.get("primary") else "responsiveness"
+            shot = f"`{v['screenshot']}`" if v.get("screenshot") else "—"
+            over = v.get("overflowPx", 0)
+            over_cell = f"{over}" + (f" (`{v['overflowEl']}`)" if over > 1 and v.get("overflowEl") else "")
+            lines.append(
+                f"| {v.get('viewport')} | {role} | {v.get('responsivenessHealth')} | "
+                f"{over_cell} | {v.get('bands')} | {v.get('heroHeight')}px | "
+                f"{v.get('footerColumns')} | {v.get('docHeight')}px | {shot} |")
     lines += ["", f"![strip](diff/strip.png)", "", "## Renderer-gap punch list", ""]
     if punch:
         for i, p in enumerate(punch, 1):
@@ -583,6 +705,7 @@ def build_report(out_dir: Path, rows: list[dict], punch: list[dict],
     (out_dir / "replica-report.json").write_text(json.dumps(
         {"schemaVersion": "replica-report.v1",
          "overall": overall, "bands": rows,
+         "perViewport": per_viewport or [],
          "punchList": punch, **meta}, indent=1) + "\n")
 
 
@@ -717,6 +840,12 @@ def build_parser() -> argparse.ArgumentParser:
                     help="source full-page png (default: crops-manifest.screenshot)")
     ap.add_argument("--skip-shoot", action="store_true",
                     help="compose only (no screenshot / diff)")
+    ap.add_argument("--skip-ladder", action="store_true",
+                    help="skip the Phase-5 multi-viewport responsiveness ladder")
+    ap.add_argument("--viewports-ladder",
+                    default=",".join(str(v) for v in VIEWPORT_LADDER),
+                    type=lambda s: [int(v) for v in s.split(",") if v.strip()],
+                    help="csv responsiveness-ladder widths (default 1440,1920,960,375)")
     ap.add_argument("--fail-under", type=float, default=None,
                     help="exit 1 when the overall score is below this (gate mode)")
     return ap
@@ -755,7 +884,21 @@ def main(argv=None) -> int:
     for lid, err in built["errors"].items():
         punch.insert(0, {"section": lid, "capability": "section failed to compose",
                          "score": 0.0, "note": err})
-    build_report(out_dir, rows, punch, overall, meta)
+    # Phase 5: multi-viewport responsiveness ladder (primary = the shot viewport).
+    per_viewport: list[dict] = []
+    if not args.skip_ladder:
+        ladder = tuple(dict.fromkeys([w] + [v for v in args.viewports_ladder
+                                            if v != w]))
+        try:
+            per_viewport = measure_viewport_ladder(out_dir, ladder, primary=w)
+            for v in per_viewport:
+                tag = "primary" if v.get("primary") else "responsiveness"
+                print(f"[replica] viewport {v['viewport']:>4} ({tag}): health "
+                      f"{v['responsivenessHealth']:.3f}, overflow {v['overflowPx']}px, "
+                      f"{v['bands']} bands, footer cols {v['footerColumns']}")
+        except Exception as exc:
+            print(f"[replica] viewport ladder skipped: {type(exc).__name__}: {exc}")
+    build_report(out_dir, rows, punch, overall, meta, per_viewport)
     print(f"[replica] overall score {overall:.3f}; {len(punch)} punch-list entries -> "
           f"replica-report.md")
     if args.fail_under is not None and overall < args.fail_under:

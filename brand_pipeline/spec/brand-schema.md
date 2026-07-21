@@ -1759,7 +1759,7 @@ Rules:
 - **Degrade.** No facts ⇒ no stamps, no law emission — the structural defaults hold
   byte-identical.
 
-### 4.4h `responsive` — measured RESPONSIVE mechanics (hero + footer slice, 2026-07)
+### 4.4h `responsive` — measured RESPONSIVE mechanics (hero + footer slice 2026-07; generalized to nav / button / headings 2026-07-21)
 
 How a component RE-FLOWS across the viewport ladder is a measured fact, not a scaffold
 habit. The computed-CSS property-diff harness (`css_fidelity.py`, Phase 1b) surfaces two
@@ -1800,6 +1800,35 @@ responsive:
     rowGap: <int px>
   maxWidth: <int px>                    # REAL measured CONTENT cap (inner layout container)
   provenance: { origin: extracted, source: chrome-footer, grid: <note>, maxWidth: <note> }
+
+# GENERALIZED blocks (2026-07-21) — same discipline, other components. All GENERIC roles
+# (never section/content-specific names), all provenance-tagged, all fact-gated.
+
+# on the HERO layout, alongside heightRule/headingSizeLadder:
+responsive:
+  primaryButton:                        # the hero PRIMARY action's measured control box
+    fontSize: <CSS len>                 # measured @1440 (composer left it at the small tier)
+    lineHeight: <CSS len>
+    padding: <CSS len shorthand>
+    border: <w> solid transparent       # a transparent measured border still RESERVES width
+    display: <keyword>                   # informational (emitter keeps the centered pill box)
+    motionPurge: { hoverTransform: true } # source state rules declare no transform
+    provenance: { origin: extracted, source: <actionId>, geometry: <note>, motionPurge: <note> }
+
+# merged onto the doc under a single `responsive:` namespace (in-memory only):
+responsive:
+  nav:
+    panelSurface: { background: <resolved colour> }  # mega-nav PANEL CONTAINER sheet surface,
+                                        # CSS-var chain resolved to a literal; preferred only
+                                        # when the measured megaPanel.surface reads transparent
+    provenance: { origin: extracted, source: chrome-header, panelSurface: <note> }
+  buttons:
+    purgeHoverTransform: true           # brand-wide: measured buttons carry no hover transform,
+                                        # so the composer translateY lift is un-grounded MOTION
+    provenance: { origin: extracted, source: <actionId>, purgeHoverTransform: <note> }
+  headings:
+    lineHeights: { h1: <CSS len>, h2: <CSS len>, … }  # measured per GENERIC heading tag
+    provenance: { origin: extracted, source: <headingIds>, lineHeights: <note> }
 ```
 
 Rules:
@@ -1809,18 +1838,31 @@ Rules:
   footer must trace to a measured fact or a declared structural constant. The invented
   footer band `max-width` cap (the source band measured `max-width: none`) is PURGED —
   the band paints full-bleed and the inner content caps at the REAL measured `maxWidth`.
+  The doctrine is now brand-wide for MOTION too: `buttons.purgeHoverTransform` removes the
+  composer's `translateY(-1px)` hover lift for any brand whose measured buttons carry no
+  hover transform (byte-stable for brands without the fact).
 - **Consumption.** `component_render.hero_responsive_css` / `footer_responsive_css` emit
   the grounded CSS (hero: `calc(100dvh - <nav>)` full-bleed viewport band + heading
   shrink; footer: `@media` column reflow + measured content cap), scoped to the section
-  id. Wired into `compose_page.build_page` per hero layout / the footer section.
-- **Fact-gated + byte-stable.** Both emitters return `""` when the block is absent, so a
-  brand/component without a `responsive` block renders byte-for-byte as before (proven for
-  hubspot-v2 / remote). This is a VERTICAL SLICE (hero + footer only); generalizing to the
-  other components is the next step.
+  id. The GENERALIZED emitters follow the same discipline: `hero_primary_button_css`
+  (scoped `#sec-N .c-button:not(.c-button--navcta)`), `heading_responsive_css`
+  (`:is(<tag>, .c-heading--<tag>)`, emitted after the base heading rules so the measured
+  value wins), `nav_mega_css` (prefers `responsive.nav.panelSurface` when the measured
+  megaPanel surface reads transparent), and `_button_variant_css` (drops the hover-lift
+  line under `responsive.buttons.purgeHoverTransform`). Wired into `compose_page.build_page`.
+- **Fact-gated + byte-stable.** Every emitter returns `""` (or the unmodified base) when
+  its block is absent, so a brand/component without a `responsive` block renders
+  byte-for-byte as before (proven byte-identical for hubspot-v2 / remote with the code
+  active vs disabled). The slice is now GENERALIZED to the nav mega-panel, hero primary
+  button, and headings; components still lacking a block stay byte-stable.
 - **Harness equivalence.** `css_fidelity.vp_height_signature` compares the viewport-height
   MECHANIC (`calc(100dvh - var(nav))`), not the source-specific var name, so our generic
   `--c-hero-nav-offset` and the source's own nav var read as the same grounded mechanic; a
   bare `100dvh` that drops the nav subtraction is still flagged.
+- **Multi-viewport gate (Phase 5).** `compose_replica.measure_viewport_ladder` scores the
+  replica at the viewport ladder (1440 primary + 1920/960/375). 1440 is the source-FIDELITY
+  score; the other viewports record a RESPONSIVENESS-HEALTH number (no source shot to SSIM
+  against) — verified, never faked. `replica-report.{md,json}` carry a per-viewport section.
 
 ### 4.4g `mediaComposition` on pattern slots + the media-assets layer (media semantics 2026-07)
 

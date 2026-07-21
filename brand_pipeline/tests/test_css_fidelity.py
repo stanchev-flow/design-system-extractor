@@ -366,17 +366,20 @@ class HubspotV3ArtifactTests(unittest.TestCase):
         self.assertEqual(self.doc["schemaVersion"], cf.SCHEMA)
         self.assertGreater(self.doc["totalDivergences"], 0)
 
-    def test_hero_footer_slice_resolved_others_still_found(self):
-        # After the HERO + FOOTER vertical slice (Phase 2→4), the hero height-rule and
-        # footer responsive-columns divergences are RESOLVED, while the out-of-slice
-        # button hover-transform + nav panel-background remain (the generalize step).
+    def test_all_four_acceptance_divergences_resolved(self):
+        # After GENERALIZING the responsive-fact mechanism (hero + footer slice extended
+        # to nav panel surface + hero primary button geometry/motion), all FOUR known
+        # acceptance divergences are RESOLVED: hero height-rule, footer responsive
+        # columns, button hover-transform (purged), and the nav mega-panel background.
         acc = self.doc["acceptance"]
         self.assertFalse(acc["hero_height_calc_vs_px"],
-                         "hero height-rule should be resolved by the slice")
+                         "hero height-rule should be resolved")
         self.assertFalse(acc["footer_responsive_columns"],
-                         "footer responsive-columns should be resolved by the slice")
-        self.assertTrue(acc["button_hover_transform"])
-        self.assertTrue(acc["nav_panel_background"])
+                         "footer responsive-columns should be resolved")
+        self.assertFalse(acc["button_hover_transform"],
+                         "button hover-transform should be purged (un-grounded motion)")
+        self.assertFalse(acc["nav_panel_background"],
+                         "nav mega-panel background should be painted from the fact")
 
     def test_no_hero_footer_height_or_column_divergence(self):
         for d in self.doc["divergences"]:
@@ -387,14 +390,23 @@ class HubspotV3ArtifactTests(unittest.TestCase):
                                  ("responsive-columns", "grid-template-columns",
                                   "max-width"))
 
-    def test_button_hover_transform_is_invented_default(self):
+    def test_button_hover_transform_purged(self):
+        # the un-grounded translateY hover lift is gone from the report (purged
+        # brand-wide by the responsive.buttons.purgeHoverTransform fact).
         hit = next((d for d in self.doc["divergences"]
                     if d["element"] == "button-primary"
                     and d["property"] == "transform:hover"), None)
-        self.assertIsNotNone(hit)
-        self.assertEqual(hit["likelyCause"], "invented-default")
-        self.assertIn("translatey", hit["ours"].lower())
-        self.assertEqual(hit["source"], "none")
+        self.assertIsNone(hit, "button hover-transform divergence should be purged")
+
+    def test_nav_panel_background_and_critical_resolved(self):
+        # the CRITICAL mega-nav panel-background divergence is gone, and the report
+        # carries no remaining critical rows (the generalization cleared the last one).
+        panel = next((d for d in self.doc["divergences"]
+                      if d["element"] == "nav" and d["property"] == "panel-background"),
+                     None)
+        self.assertIsNone(panel, "nav panel-background should be resolved")
+        self.assertEqual(self.doc["severityCounts"]["critical"], 0,
+                         "no critical divergences should remain after generalization")
 
 
 if __name__ == "__main__":

@@ -391,6 +391,96 @@ def source_bundles(doc: dict, max_sections: int = 10) -> dict[str, dict]:
     return bundles
 
 
+# ── HEADING-TIER AUDIT: authored type scale vs CSS-VARIABLE truth ─────────────────
+# The SSIM gate and the per-property replica diff both compare RENDERED output; neither
+# catches an authored type-scale that COLLAPSED at authoring time (h2 authored 18px when
+# the source's --cl-font-size-h2 declares 40px) — because the collapsed token renders
+# self-consistently. This audit closes that hole by construction: it diffs the authored
+# brand.yaml heading tiers against the CSS-variable-first type-scale truth
+# (evidence/type-scale.json, produced by tools/extract/type_scale.py). It is
+# brand-agnostic — it reads whatever heading roles the truth carries.
+
+_HEADING_TIER_ROLES = ("h1", "h2", "h3", "h4", "h5", "h6", "body")
+_ROOT_PX = 16.0
+
+
+def load_type_scale_truth(brand_dir: Path) -> dict | None:
+    p = brand_dir / "evidence" / "type-scale.json"
+    if not p.is_file():
+        return None
+    try:
+        return json.loads(p.read_text())
+    except (ValueError, OSError):
+        return None
+
+
+def _authored_type(brand_yaml: Path) -> dict:
+    import yaml
+    doc = yaml.safe_load(brand_yaml.read_text()) or {}
+    return ((doc.get("tokens") or {}).get("type") or {})
+
+
+def _authored_tier_px(node: dict) -> float | None:
+    """The authored canonical (1440) font-size px of a flat type role: the w1440 tier
+    stamp if present, else sizeRem.base × root."""
+    if not isinstance(node, dict):
+        return None
+    tiers = node.get("tiers") if isinstance(node.get("tiers"), dict) else {}
+    w1440 = tiers.get("w1440") or tiers.get(f"w{int(PRIMARY_VIEWPORT)}")
+    if isinstance(w1440, dict) and w1440.get("px") is not None:
+        try:
+            return float(w1440["px"])
+        except (TypeError, ValueError):
+            pass
+    size = node.get("sizeRem")
+    base = size.get("base") if isinstance(size, dict) else size
+    try:
+        return round(float(base) * _ROOT_PX, 2) if base is not None else None
+    except (TypeError, ValueError):
+        return None
+
+
+def _lh_ratio(value) -> float | None:
+    """Normalize a line-height (unitless / '1.15em' / px vs a size) to a bare ratio."""
+    if value is None:
+        return None
+    m = re.match(r"^\s*(-?\d*\.?\d+)\s*(em|)?\s*$", str(value))
+    if m:
+        return round(float(m.group(1)), 3)
+    return None
+
+
+def heading_tier_divergences(authored_type: dict, truth: dict) -> list[dict]:
+    """Per-heading-tier divergences of the AUTHORED scale vs the CSS-variable truth.
+    font-size divergence is HIGH (this is the collapse bug); line-height MEDIUM."""
+    divs: list[dict] = []
+    roles = (truth or {}).get("canonicalRoles") or {}
+    for tag in _HEADING_TIER_ROLES:
+        css = roles.get(tag)
+        css_px = (css or {}).get("sizePx")
+        if css_px is None:
+            continue
+        role = f"heading-{tag}"
+        node = authored_type.get(tag)
+        if not isinstance(node, dict):
+            divs.append(_mk_div(role, "font-size", "(role absent)", f"{css_px}px",
+                                PRIMARY_VIEWPORT, "high", "missing-fact",
+                                kind="type-scale"))
+            continue
+        a_px = _authored_tier_px(node)
+        if a_px is not None and abs(a_px - float(css_px)) > 1.5:
+            divs.append(_mk_div(role, "font-size", f"{a_px}px", f"{css_px}px",
+                                PRIMARY_VIEWPORT, "high", "wrong-value",
+                                kind="type-scale"))
+        a_lh = _lh_ratio(node.get("lineHeight"))
+        c_lh = _lh_ratio((css or {}).get("lineHeight"))
+        if a_lh is not None and c_lh is not None and abs(a_lh - c_lh) > 0.06:
+            divs.append(_mk_div(role, "line-height", str(a_lh), str(c_lh),
+                                PRIMARY_VIEWPORT, "medium", "wrong-value",
+                                kind="type-scale"))
+    return divs
+
+
 # ── OUR side: compose the replica + measure computed styles per viewport ──────────
 
 # Probes: role -> {selector, prefer descendant of, kind}. Selectors are OUR composer's
@@ -402,9 +492,11 @@ def _our_probes(section_count: int) -> list[dict]:
         {"role": "hero", "selector": "#sec-0"},
         {"role": "button-primary",
          "selector": "#sec-0 .c-button:not(.c-button--navcta)"},
-        {"role": "heading-h1", "selector": "h1"},
-        {"role": "heading-h2", "selector": "h2"},
     ]
+    # HEADING-TIER PROBES: every heading level, not just h1/h2 — so a collapsed or
+    # mis-authored heading register (the h2=18px bug) surfaces at the rendered level.
+    for tag in ("h1", "h2", "h3", "h4", "h5", "h6"):
+        probes.append({"role": f"heading-{tag}", "selector": tag})
     for i in range(1, section_count):
         probes.append({"role": f"section-{i}", "selector": f"#sec-{i}"})
     return probes
@@ -748,6 +840,7 @@ def build_docs(brand: str, divs: list[dict], matches: list[dict], acc: dict,
         "totalDivergences": len(divs),
         "severityCounts": counts,
         "acceptance": {k: v["found"] for k, v in acc.items()},
+        "headingTierAudit": meta.get("headingTierAudit"),
         "matches": matches,
         "divergences": divs,
     }
@@ -774,6 +867,19 @@ def build_docs(brand: str, divs: list[dict], matches: list[dict], acc: dict,
     for key, label in labels.items():
         mark = "FOUND" if acc[key]["found"] else "NOT FOUND"
         lines.append(f"- [{mark}] {label}")
+    # heading-tier audit (authored scale vs CSS-variable truth)
+    hta = meta.get("headingTierAudit") or {}
+    ht_divs = hta.get("divergences") or []
+    lines += ["", "## Heading-tier audit (authored vs CSS-variable truth)", "",
+              f"- truth: `{hta.get('source') or '—'}` (method `{hta.get('method') or '—'}`)",
+              f"- **{len(ht_divs)} heading-tier divergence(s)** "
+              f"— 0 means the authored ladder matches the source's declared font-size tokens"]
+    if ht_divs:
+        lines += ["", "| tier | property | authored | css-var | severity |",
+                  "|---|---|---|---|---|"]
+        for d in ht_divs:
+            lines.append(f"| {d['element']} | `{d['property']}` | {_md(d['ours'])} | "
+                         f"{_md(d['source'])} | {d['severity']} |")
     lines += ["", "## Ranked divergences", "",
               "| # | element | property | severity | cause | viewport | ours | source | rank |",
               "|---|---|---|---|---|---|---|---|---|"]
@@ -816,6 +922,16 @@ def run(brand_yaml: Path, out_dir: Path, viewports: tuple[int, ...],
     our_bundles = measure_our_replica(index_html, probes, viewports)
 
     divs, matches = match_and_diff(our_bundles, src_bundles)
+
+    # HEADING-TIER AUDIT: authored brand.yaml scale vs the CSS-variable truth. These
+    # divergences catch a collapsed/mis-authored type ladder that renders
+    # self-consistently and would otherwise slip past both gates.
+    truth = load_type_scale_truth(brand_dir)
+    heading_tier_divs: list[dict] = []
+    if truth:
+        heading_tier_divs = heading_tier_divergences(_authored_type(brand_yaml), truth)
+        divs.extend(heading_tier_divs)
+
     divs = rank(divs)
     acc = acceptance(divs)
 
@@ -824,6 +940,11 @@ def run(brand_yaml: Path, out_dir: Path, viewports: tuple[int, ...],
         "viewports": list(viewports),
         "replicaIndex": str(index_html),
         "joinedEvidence": str(brand_dir / "evidence" / "joined-evidence.json"),
+    }
+    meta["headingTierAudit"] = {
+        "source": str(brand_dir / "evidence" / "type-scale.json") if truth else None,
+        "method": (truth or {}).get("method"),
+        "divergences": heading_tier_divs,
     }
     out_doc, md = build_docs(brand_name, divs, matches, acc, meta)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -848,6 +969,13 @@ def print_summary(doc: dict) -> None:
     for key, label in labels.items():
         mark = "FOUND    " if doc["acceptance"].get(key) else "NOT FOUND"
         print(f"    [{mark}] {label}")
+    hta = doc.get("headingTierAudit") or {}
+    ht_divs = hta.get("divergences") or []
+    print(f"[css-diff] heading-tier audit (authored vs css-var): "
+          f"{len(ht_divs)} divergence(s)")
+    for d in ht_divs:
+        print(f"    {d['severity']:<8} {d['element']}.{d['property']} "
+              f"authored={_norm(d['ours'])!r} css-var={_norm(d['source'])!r}")
     print("[css-diff] top divergences:")
     for d in doc["divergences"][:8]:
         print(f"    {d['rankScore']:>5} {d['severity']:<8} {d['element']}."

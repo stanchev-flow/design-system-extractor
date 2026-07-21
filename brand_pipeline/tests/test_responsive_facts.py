@@ -60,6 +60,34 @@ def _synthetic_joined():
                  {"selector": ".footer__nav", "decls": "display:flex;flex-direction:row",
                   "media": "@media(width >= 900px)"},
              ]},
+            {"elementId": "chrome-header", "kind": "chrome", "visionRole": "nav",
+             "domSelector": ".nav",
+             "customProperties": {
+                 "--container-01": [{"media": "", "value": "var(--light-container)"}],
+                 "--light-container": [{"media": "", "value": "#ffffff"}]},
+             "cssRules": [
+                 {"selector": ".global-nav-main .global-nav-main-inner",
+                  "decls": "background:var(--container-01);position:absolute", "media": ""},
+                 {"selector": ".global-nav-tab-dropdown-content-wrapper .mega-card",
+                  "decls": "background:#eee", "media": ""},
+                 {"selector": ".global-nav-main-inner:hover",
+                  "decls": "background:#f5f5f5", "media": "", "pseudo": [":hover"]},
+             ]},
+            {"elementId": "action-40", "kind": "action", "visionRole": "hero",
+             "classes": "cl-button -primary -large",
+             "computedLadder": {"1440": {"measured": {
+                 "display": "block", "font-size": "18px", "line-height": "32px",
+                 "border": "2px solid rgba(0, 0, 0, 0)", "padding": "16px 40px"}}},
+             "cssRules": [
+                 {"selector": ".cl-button", "decls": "background:var(--fill)", "media": ""},
+                 {"selector": ".cl-button:hover,.cl-button:focus-visible",
+                  "decls": "background:var(--hover);color:var(--ink)",
+                  "media": "", "pseudo": [":hover"]},
+             ]},
+            {"elementId": "heading-h2", "kind": "heading",
+             "computedLadder": {
+                 "1440": {"line-height": "28px", "font-size": "18px"},
+                 "375": {"line-height": "28px", "font-size": "18px"}}},
         ]
     }
 
@@ -105,6 +133,103 @@ class ExtractorTests(unittest.TestCase):
              "cssRules": [{"selector": ".f", "decls": "display:flex", "media": ""}]},
         ]}
         self.assertEqual(rf.build_sidecar(joined, {}), {})
+
+
+class GeneralizedExtractorTests(unittest.TestCase):
+    """The generalized fact blocks: nav mega-panel surface, hero primary button
+    geometry + brand-wide hover-transform purge, and heading line-heights."""
+
+    def setUp(self):
+        self.sidecar = rf.build_sidecar(_synthetic_joined(), {"contentMaxWidth": 1080})
+
+    def test_nav_panel_surface_resolved(self):
+        nav = self.sidecar["nav"]
+        # the panel container paints var(--container-01) → resolved through the var
+        # chain to the measured literal; child cards + hover washes are excluded.
+        self.assertEqual(nav["panelSurface"]["background"], "#ffffff")
+        self.assertEqual(nav["provenance"]["origin"], "extracted")
+
+    def test_hero_primary_button_geometry(self):
+        btn = self.sidecar["hero"]["primaryButton"]
+        self.assertEqual(btn["fontSize"], "18px")
+        self.assertEqual(btn["lineHeight"], "32px")
+        self.assertEqual(btn["padding"], "16px 40px")
+        # a transparent measured border is normalized colour-agnostically (no palette leak)
+        self.assertEqual(btn["border"], "2px solid transparent")
+        self.assertTrue(btn["motionPurge"]["hoverTransform"])
+
+    def test_brand_wide_hover_transform_purge_flag(self):
+        # the source button state rules swap bg/color only → purge the composer lift
+        self.assertTrue(self.sidecar["buttons"]["purgeHoverTransform"])
+
+    def test_hover_transform_kept_when_source_has_one(self):
+        j = _synthetic_joined()
+        for e in j["elements"]:
+            if e["elementId"] == "action-40":
+                e["cssRules"][1]["decls"] += ";transform:translateY(-2px)"
+        sidecar = rf.build_sidecar(j, {})
+        self.assertNotIn("buttons", sidecar)  # grounded hover transform → no purge
+        self.assertNotIn("motionPurge", sidecar["hero"]["primaryButton"])
+
+    def test_heading_line_heights(self):
+        lhs = self.sidecar["headings"]["lineHeights"]
+        self.assertEqual(lhs["h2"], "28px")
+
+
+class GeneralizedEmitterTests(unittest.TestCase):
+    """Fact-gated emitters for the generalized components (byte-stable without a block)."""
+
+    def test_hero_primary_button_css_gated(self):
+        self.assertEqual(cr.hero_primary_button_css(None, "#sec-0"), "")
+        self.assertEqual(cr.hero_primary_button_css({}, "#sec-0"), "")
+        self.assertEqual(cr.hero_primary_button_css({"primaryButton": {}}, "#sec-0"), "")
+
+    def test_hero_primary_button_css_emits_measured_box(self):
+        block = {"primaryButton": {"fontSize": "18px", "lineHeight": "32px",
+                                   "padding": "16px 40px",
+                                   "border": "2px solid transparent"}}
+        css = cr.hero_primary_button_css(block, "#sec-0")
+        self.assertIn("#sec-0 .c-button:not(.c-button--navcta)", css)
+        self.assertIn("font-size: 18px", css)
+        self.assertIn("line-height: 32px", css)
+        self.assertIn("border: 2px solid transparent", css)
+
+    def test_heading_css_gated_and_emits(self):
+        self.assertEqual(cr.heading_responsive_css({}), "")
+        self.assertEqual(cr.heading_responsive_css(
+            {"responsive": {"headings": {}}}), "")
+        css = cr.heading_responsive_css(
+            {"responsive": {"headings": {"lineHeights": {"h2": "28px"}}}})
+        self.assertIn(":is(h2, .c-heading--h2)", css)
+        self.assertIn("line-height: 28px", css)
+
+    def test_button_variant_purge_is_fact_gated(self):
+        # without the fact the hover lift stays (byte-identical to the base variant)
+        self.assertEqual(cr._button_variant_css({}), cr._BUTTON_VARIANT_CSS)
+        self.assertIn("translateY(-1px)", cr._button_variant_css({}))
+        # with the purge fact the un-grounded lift is dropped, bg/color swap kept
+        purged = cr._button_variant_css(
+            {"responsive": {"buttons": {"purgeHoverTransform": True}}})
+        self.assertNotIn("translateY(-1px)", purged)
+        self.assertIn(".c-button:hover", purged)
+        self.assertIn("--c-button-bg-hover", purged)
+
+    def test_nav_mega_panel_prefers_responsive_surface(self):
+        # a doc whose measured megaPanel surface is transparent but carries a responsive
+        # nav panel-surface fact paints the resolved colour on .cs-mega.
+        doc = {
+            "navbar": {"primary": [{"label": "Products",
+                                    "menu": {"columns": [{"title": "A", "links": []}]}}],
+                       "measured": {"megaPanel": {"surface": {"bg": "rgba(0, 0, 0, 0)"}}}},
+            "responsive": {"nav": {"panelSurface": {"background": "#ffffff"}}},
+        }
+        css = cr.nav_mega_css(doc)
+        self.assertIn(".cs-mega", css)
+        self.assertIn("background: #ffffff", css)
+        # without the responsive fact the transparent measured surface is unchanged
+        doc.pop("responsive")
+        css2 = cr.nav_mega_css(doc)
+        self.assertIn("background: rgba(0, 0, 0, 0)", css2)
 
 
 class EmitterGateTests(unittest.TestCase):
