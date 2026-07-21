@@ -285,6 +285,7 @@ def legacy_root_vars(doc, surf, *, display_size) -> str:
   --c-ghost: var(--color-text-ghost-on-primary);
   --c-panel: var(--surface-surface-panel);
   --c-panel-ink: var(--color-text-on-primary);
+  --c-panel-ink-muted: var(--color-text-on-primary-muted);
   --c-panel-hairline: var(--color-border-hairline-on-primary);
   /* ONE shared page grid + baseline (alignment quick wins) — mirrors
      compose_section.root_vars: all section scaffolds place onto these SHARED tracks
