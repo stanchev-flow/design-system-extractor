@@ -763,16 +763,29 @@ def stamp_pattern_devices(doc, layout, brand_yaml) -> None:
             # rides the treatment fact — never the page accent var).
             if t.get("activeUnderline"):
                 hint["activeUnderline"] = str(t["activeUnderline"])
-            for s in pattern.slots:
-                if isinstance(s, dict) and str(s.get("name") or "") == "media":
-                    ms = s.get("mediaScale") if isinstance(s.get("mediaScale"), dict) else {}
-                    try:
-                        f = float(ms.get("fraction"))
-                        if 0 < f < 1:
-                            hint["mediaFraction"] = f
-                    except (TypeError, ValueError):
-                        pass
-                    break
+            # panel photo column share: prefer the slot literally named ``media``
+            # (v2 authoring), else fall back to the panel's media slot by ROLE
+            # (portrait/photo/media/image) so a pattern that named its swap slot
+            # e.g. ``portrait`` still carries the measured fraction. Name-first keeps
+            # existing tabs patterns byte-identical.
+            media_slots = [s for s in pattern.slots if isinstance(s, dict)]
+            slot = next((s for s in media_slots
+                         if str(s.get("name") or "") == "media"), None)
+            if slot is None:
+                slot = next(
+                    (s for s in media_slots
+                     if isinstance(s.get("mediaScale"), dict)
+                     and re.search(r"portrait|photo|media|image",
+                                   f"{s.get('name', '')} {s.get('role', '')}", re.I)),
+                    None)
+            if slot is not None:
+                ms = slot.get("mediaScale") if isinstance(slot.get("mediaScale"), dict) else {}
+                try:
+                    f = float(ms.get("fraction"))
+                    if 0 < f < 1:
+                        hint["mediaFraction"] = f
+                except (TypeError, ValueError):
+                    pass
             layout.setdefault("_tabs", hint)
         elif kind == "dotted-rule-rail":
             # SECTION HEADROW RAIL (fix1 2026-07 item-8): a leading chip/pill joined

@@ -1425,6 +1425,140 @@ def _check_token_provenance(doc, html, facts):
         return True, f"provenance scan unavailable ({type(exc).__name__}: {exc})"
 
 
+# ── AS-81 anatomy presence (declared multi-panel / stat devices must render) ─────────
+#
+# A structural companion to AS-80 (which guards asset-kind ↔ slot-role), scoped to the
+# opposite failure: a section whose DECLARATION names a tabbed / multi-panel switcher or
+# a stat device, but whose RENDER collapses to a plain single block — no tab controls, no
+# stat items. That is a renderer/anatomy CAPABILITY GAP, invisible to a CSS-property diff
+# (the flattened markup is valid CSS); only comparing the declared device against the
+# rendered controls catches it. Fact-gated: [] for lanes without a generated composition;
+# a section whose declaration names neither device is never checked; the alignment guard
+# fails OPEN (never a false positive) when declared/rendered section counts diverge.
+
+# device-declaration signals — WORD-ANCHORED so "sans stat heading" (a heading) and
+# "deep-accent active state" (an accordion state) never read as stat/tab devices.
+_DECL_TAB_NAME_RX = re.compile(
+    r"^(tab|tabs|tab-row|tab-rows|tab-list|tablist|tab-rail|tab-control)$", re.I)
+_DECL_TAB_ROLE_RX = re.compile(
+    r"\btab(bed| pills?| run| rail| control| row| list| strip)?\b|\btabs\b"
+    r"|multi-?panel|content-swap|tab-switch|switcher", re.I)
+_DECL_STAT_NAME_RX = re.compile(
+    r"^(stat|stats|stat-row|stat-rows|stat-pair|stat-block|statistic|statistics)$", re.I)
+_DECL_STAT_ROLE_RX = re.compile(
+    r"\bstats?\s+(list|row|rows|pair|block|numerals?|divider|rule|footer)\b"
+    r"|number-over-caption|\bstatistics?\b", re.I)
+_DECL_TAB_TREAT = {"tabs", "tabbed-content-swap", "tab-switch", "tab-switcher"}
+_DECL_STAT_TREAT = {"stat-rule", "stat-divider", "stat-row", "stat-pair", "stat-block"}
+
+
+def _declares_devices(section: dict) -> tuple[bool, bool]:
+    """(wants_tabs, wants_stats) for one composition section from its DECLARATION —
+    slot names/roles (word-anchored) plus any device treatment kind. Pattern-agnostic:
+    keyed on the generic tab/stat vocabulary, never on a brand id or section name."""
+    wants_tabs = wants_stats = False
+    for slot in (section.get("slots") or []):
+        if not isinstance(slot, dict):
+            continue
+        name = str(slot.get("name") or "").strip()
+        role = str(slot.get("role") or "")
+        if _DECL_TAB_NAME_RX.match(name) or _DECL_TAB_ROLE_RX.search(role):
+            wants_tabs = True
+        if _DECL_STAT_NAME_RX.match(name) or _DECL_STAT_ROLE_RX.search(role):
+            wants_stats = True
+    for t in (section.get("treatments") or []):
+        kind = str((t or {}).get("kind") if isinstance(t, dict) else t or "").lower()
+        if kind in _DECL_TAB_TREAT:
+            wants_tabs = True
+        if kind in _DECL_STAT_TREAT:
+            wants_stats = True
+    # a `useCase`/id that literally names the tabbed-testimonial family also counts as a
+    # tab+stat declaration even if a lossy composition dropped the slot vocabulary.
+    probe = f"{section.get('useCase') or ''} {section.get('id') or ''}".lower()
+    if re.search(r"tabbed", probe):
+        wants_tabs = True
+    return wants_tabs, wants_stats
+
+
+def _iter_body_sections(html: str) -> list:
+    """Rendered non-chrome ``<section>`` bodies in page order (nav is a <header>; the
+    closing footer section is excluded). Sections are not nested in composed pages, so
+    the next ``</section>`` closes each one."""
+    out = []
+    for m in re.finditer(r"<section\b[^>]*>", html):
+        tag = m.group(0)
+        cm = re.search(r'class="([^"]*)"', tag)
+        cls = cm.group(1) if cm else ""
+        if re.search(r"cs-footer-sec|cs-nav\b|\bfooter\b|\bnav-", cls):
+            continue
+        end = html.find("</section>", m.start())
+        out.append(html[m.start(): (end + len("</section>")) if end != -1 else len(html)])
+    return out
+
+
+def _rendered_tab_controls(body: str) -> int:
+    return len(re.findall(r'role="tab"', body))
+
+
+def _rendered_stat_items(body: str) -> int:
+    return len(re.findall(r'\bc-stat-value\b', body)) + len(re.findall(r'\bcs-tabcard-stat\b', body))
+
+
+def anatomy_presence_hits(comp: dict, html: str) -> list:
+    """AS-81 core: [(section_id, rule, message)] for every DECLARED tab/stat device that
+    did not RENDER its controls. Pure (comp + html in, hits out) so it is unit-testable
+    with synthetic inputs. Order-aligns declared composition sections to rendered non-
+    chrome sections; when the counts diverge it returns [] (fails OPEN — a structural
+    audit must not raise a false alarm from an unmappable page)."""
+    if not isinstance(comp, dict):
+        return []
+    sections = [s for s in (comp.get("sections") or []) if isinstance(s, dict)]
+    declared = [(s, _declares_devices(s)) for s in sections]
+    if not any(wt or ws for _s, (wt, ws) in declared):
+        return []
+    bodies = _iter_body_sections(html or "")
+    if len(bodies) != len(sections):
+        return []  # unmappable — fail open (no false positives)
+    hits = []
+    for (sec, (wants_tabs, wants_stats)), body in zip(declared, bodies):
+        sid = str(sec.get("id") or sec.get("useCase") or "section")
+        if wants_tabs and _rendered_tab_controls(body) < 2:
+            hits.append((sid, "anatomy-tab-controls",
+                         "declared a tabbed/multi-panel device but rendered no tab rail "
+                         "(needs >=2 role=tab controls) — collapsed to a single panel"))
+        if wants_stats and _rendered_stat_items(body) < 1:
+            hits.append((sid, "anatomy-stat-items",
+                         "declared a stat device but rendered no stat items "
+                         "(needs >=1 c-stat-value / cs-tabcard-stat)"))
+    return hits
+
+
+def check_anatomy_presence(render_dir, html=None, comp=None):
+    """AS-81 gate rows (analogous to check_media_bindings / the logo-wall row): a section
+    whose declared pattern is a tabbed/multi-panel or stat device MUST render its tab
+    controls and its stat items. Fact-gated: [] for lanes without a generated
+    composition, and [] when no section declares such a device."""
+    comp = comp if comp is not None else _generated_composition(render_dir)
+    if comp is None:
+        return []
+    if html is None:
+        try:
+            html = (Path(render_dir) / "index.html").read_text()
+        except (OSError, ValueError, TypeError):
+            return []
+    hits = anatomy_presence_hits(comp, html)
+    rows = []
+    for rule, label in (("anatomy-tab-controls",
+                         "Declared tab/multi-panel sections render their tab rail (AS-81)"),
+                        ("anatomy-stat-items",
+                         "Declared stat sections render their stat items (AS-81)")):
+        mine = [(sid, msg) for sid, r, msg in hits if r == rule]
+        detail = "; ".join(f"{sid}: {msg}" for sid, msg in mine[:4]) \
+            or "declared device anatomy present"
+        rows.append((rule, label, not mine, detail))
+    return rows
+
+
 # ── G14 logo-wall integrity (AS-33) ──────────────────────────────────────────────────
 
 def _check_logo_wall(html, facts):
@@ -2154,6 +2288,10 @@ def main():
     # or declares its gap + third-party-mark legality. DOUBLY fact-gated ([] without
     # a generated composition AND without the brand's media-assets.yaml).
     inv += check_media_bindings(args.render_dir)
+    # anatomy-presence rows (AS-81): a section whose declared pattern is a tabbed/
+    # multi-panel or stat device must RENDER its tab controls + stat items. [] for
+    # composition-less lanes and for pages that declare no such device.
+    inv += check_anatomy_presence(args.render_dir, html=html)
 
     style = style_checks = None
     if args.style:
