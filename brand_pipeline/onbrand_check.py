@@ -1391,7 +1391,9 @@ def check_media_bindings(render_dir, comp=None):
     for rule, label in (("media-binding",
                          "Every media slot resolves or declares its gap"),
                         ("mark-legality",
-                         "Third-party marks in factual proof contexts only (AS-67)")):
+                         "Third-party marks in factual proof contexts only (AS-67)"),
+                        ("slot-role-eligibility",
+                         "Icon-family assets never bound as lead/hero media (AS-80)")):
         mine = [(sid, msg) for sid, r, msg in hits if r == rule]
         detail = "; ".join(f"{sid}: {msg}" for sid, msg in mine[:4]) \
             or "media bindings clean"

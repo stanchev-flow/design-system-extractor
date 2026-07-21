@@ -321,7 +321,8 @@ class EndToEndLadderWalkthrough(unittest.TestCase):
 
     def test_gate_media_rows_clean(self):
         rows = oc.check_media_bindings(self.tmp)
-        self.assertEqual({r[0] for r in rows}, {"media-binding", "mark-legality"})
+        self.assertEqual({r[0] for r in rows},
+                         {"media-binding", "mark-legality", "slot-role-eligibility"})
         for rid, _label, passed, detail in rows:
             self.assertTrue(passed, f"{rid}: {detail}")
 
