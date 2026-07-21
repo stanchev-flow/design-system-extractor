@@ -92,6 +92,86 @@ _BADGE_ROLE_RE = re.compile(r"badge|award|rating", re.IGNORECASE)
 _ATTRIBUTION_KEYS = ("name", "author", "attribution", "company", "source")
 
 
+# ── asset-kind ↔ slot-role ELIGIBILITY (spec §6.1; AS-80) ────────────────────────────
+#
+# GENERIC, brand-agnostic, DECLARATIVE. Two families of media slot roles exist:
+#
+#   IMAGE (media-well) roles — hero-media, card-lead-media, full-bleed background,
+#     feature-image, product-shot, portrait/illustration/split media — paint a
+#     visual that FILLS a slot (fit: cover|contain). They accept ONLY image-family
+#     kinds (photograph/portrait/illustration/product-ui-screenshot/packshot/
+#     3d-render/diagram/background-art/…).
+#   ICON/MARK roles — a content-scale glyph that sits at MARK height (above a
+#     heading, inline in a headline, in a nav/social/proof row). They carry the
+#     ICON-family kinds (spot-icon/ui-glyph/social-icon/logo marks).
+#
+# The eligibility law: an ICON-family kind must render at `mark` height and is
+# NEVER blown up to fill an image/lead/full-bleed media well; an image role with
+# no compatible image-family asset must declare its gap (asset-request), never
+# substitute an icon. Other brands INHERIT this table unchanged — no brand,
+# palette, section, or content knowledge lives in it.
+ICON_FAMILY_KINDS = frozenset({
+    "spot-icon", "ui-glyph", "social-icon", "logo-own", "logo-third-party",
+})
+IMAGE_FAMILY_KINDS = frozenset({
+    "photograph", "portrait", "avatar", "team-photo", "client-photo",
+    "product-packshot", "product-ui-screenshot", "device-framed-mockup",
+    "product-ui-collage", "diagram", "chart", "illustration",
+    "background-art", "texture-noise", "pattern-tile", "accent-shape",
+    "3d-render", "map", "social-proof-screenshot", "video-poster",
+})
+# a media-well fit FILLS an image slot; an icon/mark asset resolved this way is
+# the mis-scale (icon artwork stretched to lead-media dimensions) AS-80 catches.
+MEDIA_WELL_FITS = frozenset({"cover", "contain"})
+# generic role words that DEMAND an image-family asset (a full media well / lead /
+# hero visual). Never section or content names — reusable across brands.
+_IMAGE_LEAD_ROLE_RE = re.compile(
+    r"hero|lead|full-?bleed|feature-image|product-shot|background-media|"
+    r"portrait-media|illustration-media|split-media|photo|cover-media",
+    re.IGNORECASE)
+
+
+def kind_family(kind: str | None) -> str:
+    """Coarse family for the eligibility table: ``icon`` (icon/mark-family),
+    ``badge`` (award/compliance/appstore marks), ``image`` (media-well-eligible),
+    or ``other`` (video/animation/generated — governed elsewhere)."""
+    k = str(kind or "").strip().lower()
+    if k in ICON_FAMILY_KINDS:
+        return "icon"
+    if k in BADGE_KINDS:
+        return "badge"
+    if k in IMAGE_FAMILY_KINDS:
+        return "image"
+    return "other"
+
+
+def is_icon_family(kind: str | None) -> bool:
+    return kind_family(kind) == "icon"
+
+
+def role_demands_image(role_probe: str | None) -> bool:
+    """True when a slot's generic role words name an IMAGE/lead/full-bleed media
+    role (the roles that require an image-family asset, never an icon)."""
+    return bool(_IMAGE_LEAD_ROLE_RE.search(str(role_probe or "")))
+
+
+def eligible_render_mode(kind: str | None, fit: str | None) -> str:
+    """The ELIGIBLE render fit for an asset given its KIND and an EXPLICITLY
+    resolved fit (``cover|contain|mark``). The render-time arm of the
+    asset-kind↔slot-role eligibility rule: an ICON/MARK-family kind is never
+    rendered as a media well — an EXPLICIT ``cover``/``contain`` fit authored on an
+    icon/mark asset is coerced to ``mark`` so a content-scale glyph can never be
+    blown up to fill a lead/hero image slot. Image-family kinds pass through
+    unchanged. The unset/absent case ("") is NOT coerced here — the renderer keeps
+    its historical ``cover`` default so brands whose icon/mark assets legitimately
+    fall to that default stay byte-identical; the AS-80 gate row flags those. Byte-
+    identity for every existing explicit binding that is not an icon media-well."""
+    f = str(fit or "").strip().lower()
+    if is_icon_family(kind) and f in MEDIA_WELL_FITS:
+        return "mark"
+    return f
+
+
 # ── loading + indexes (fact-gated) ───────────────────────────────────────────────────
 
 def load_media_assets(brand_dir: Path | str | None) -> dict | None:
@@ -181,15 +261,36 @@ def fit_map(registry: dict | None) -> dict[str, str]:
     return out
 
 
+def kind_map(registry: dict | None) -> dict[str, str]:
+    """filename → assetSemantics.kind for every registered file (canonical +
+    variants). Feeds the render-time asset-kind↔slot-role eligibility coercion so
+    the renderer can classify a bound file's FAMILY without re-reading disk."""
+    out: dict[str, str] = {}
+    for a in asset_entries(registry):
+        sem = a.get("assetSemantics") if isinstance(a.get("assetSemantics"), dict) else {}
+        k = str(sem.get("kind") or "").strip().lower()
+        if not k:
+            continue
+        names = [str(a.get("file") or "")]
+        names += [str(v.get("file") or "") for v in (a.get("variants") or [])
+                  if isinstance(v, dict)]
+        for n in names:
+            n = Path(n).name
+            if n:
+                out.setdefault(n, k)
+    return out
+
+
 def attach_media_assets(doc: dict, brand_dir: Path | str) -> dict:
     """Attach the ACTIVE brand's media-assets registry to the in-memory doc
-    (``_mediaAssets`` raw + ``_mediaAssetsFit`` filename→fit). Brands without the
-    artifact attach None/{} — every consumer then behaves byte-identically.
-    Idempotent; returns the doc for chaining."""
+    (``_mediaAssets`` raw + ``_mediaAssetsFit`` filename→fit + ``_mediaAssetsKind``
+    filename→kind). Brands without the artifact attach None/{} — every consumer
+    then behaves byte-identically. Idempotent; returns the doc for chaining."""
     if isinstance(doc, dict):
         registry = load_media_assets(brand_dir)
         doc["_mediaAssets"] = registry
         doc["_mediaAssetsFit"] = fit_map(registry)
+        doc["_mediaAssetsKind"] = kind_map(registry)
     return doc
 
 
@@ -516,6 +617,43 @@ def _slot_refs(slot: dict) -> list[str]:
     return refs
 
 
+def _bound_asset_entries(slot: dict, idx: dict[str, dict],
+                         files: dict[str, dict]) -> list[dict]:
+    """Every registry entry a slot actually binds — its own ``assetRef`` +
+    ``asset.src`` filename, its ``mediaComposition`` layer refs, and any repeatable
+    ``copy[]`` item assets (the card-grid/carousel item media channel). Deduped by
+    id, in binding order. Unresolvable refs are skipped here (they fail loud in the
+    media-binding rule already)."""
+    out: list[dict] = []
+    seen: set[str] = set()
+
+    def _add(entry: dict | None) -> None:
+        if isinstance(entry, dict):
+            eid = str(entry.get("id") or id(entry))
+            if eid not in seen:
+                seen.add(eid)
+                out.append(entry)
+
+    for ref in _slot_refs(slot):
+        _add(idx.get(ref))
+    a = slot.get("asset")
+    if isinstance(a, dict) and a.get("src"):
+        _add(files.get(Path(str(a["src"])).name))
+    elif isinstance(a, str) and a.strip():
+        _add(files.get(Path(a).name))
+    c = slot.get("copy")
+    if isinstance(c, list):
+        for item in c:
+            if not isinstance(item, dict):
+                continue
+            ia = item.get("asset")
+            if isinstance(ia, dict) and ia.get("src"):
+                _add(files.get(Path(str(ia["src"])).name))
+            elif isinstance(ia, str) and ia.strip():
+                _add(files.get(Path(ia).name))
+    return out
+
+
 def lint_media_bindings(comp: dict, registry: dict | None) -> list[tuple[str, str, str]]:
     """[(section_id, rule, message)] — the composed-lane media lints. Registry None
     → [] (artifact-less brands are never flagged; the same fact-gating as every
@@ -529,7 +667,14 @@ def lint_media_bindings(comp: dict, registry: dict | None) -> list[tuple[str, st
     rule ``mark-legality``   — AS-67: third-party marks only in factual proof
         contexts; testimonial marks require attribution copy; badge-role slots
         never fabricate (registry marks or a declared gap — a placeholder recipe
-        cannot stand in for a badge)."""
+        cannot stand in for a badge).
+    rule ``slot-role-eligibility`` — AS-80: asset-kind↔slot-role eligibility. An
+        ICON/MARK-family asset (spot-icon/ui-glyph/social-icon/logo mark) is never
+        bound into an IMAGE/hero-lead/full-bleed role, and never carries an explicit
+        media-well fit (cover/contain) — a content-scale glyph must render at mark
+        height, never blown up to fill a lead/hero image slot. An image role with
+        no compatible image-family asset must declare its gap, not substitute an
+        icon (spec §6.1)."""
     if not registry or not isinstance(comp, dict):
         return []
     idx = asset_index(registry)
@@ -607,6 +752,34 @@ def lint_media_bindings(comp: dict, registry: dict | None) -> list[tuple[str, st
                              "a factual proof context (use-case "
                              f"`{use_case or '?'}`) — client/partner/press marks "
                              "belong in proof strips, not decoration (AS-67)"))
+            # AS-80 asset-kind↔slot-role eligibility: an icon/mark-family asset must
+            # never be bound as a card's hero/lead image or carry a media-well fit.
+            slot_is_image_role = (str(slot.get("contract") or "").lower() == "image"
+                                  or role_demands_image(role_probe))
+            for entry in _bound_asset_entries(slot, idx, files):
+                sem = entry.get("assetSemantics") \
+                    if isinstance(entry.get("assetSemantics"), dict) else {}
+                if not is_icon_family(sem.get("kind")):
+                    continue
+                ekind = str(sem.get("kind") or "").strip().lower()
+                eid = str(entry.get("id") or "?")
+                if slot_is_image_role:
+                    hits.append((sid, "slot-role-eligibility",
+                                 f"slot `{sname}` binds icon-family asset `{eid}` "
+                                 f"({ekind}) into an image/hero-lead/full-bleed role "
+                                 "— icons render at mark height, never as lead media; "
+                                 "bind an image-family asset or declare "
+                                 "noCompatibleAsset {requiredKind: <image kind>}"))
+                    continue
+                td = entry.get("treatmentDefaults") \
+                    if isinstance(entry.get("treatmentDefaults"), dict) else {}
+                efit = str(td.get("fit") or "").strip().lower()
+                if efit in MEDIA_WELL_FITS:
+                    hits.append((sid, "slot-role-eligibility",
+                                 f"slot `{sname}` binds icon-family asset `{eid}` "
+                                 f"({ekind}) with fit `{efit}` — a content-scale glyph "
+                                 "stretched to a media well is a mis-scaled icon; an "
+                                 "icon/mark asset must render `fit: mark`"))
             # fabricated badge via a raw invented src (registry-bearing brands):
             a = slot.get("asset")
             src_name = Path(str(a.get("src"))).name \

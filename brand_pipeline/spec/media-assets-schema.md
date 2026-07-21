@@ -6,7 +6,8 @@
 > patterns (§4.4g) and `composition.v1` slots (§4.6.7) share. Enforced by
 > validator checks **C26/C27/C28** (`tools/extract/validate_brand_evidence.py`),
 > the composed-lane media-binding rows (`onbrand_check --composition` via
-> `brand_pipeline/media_semantics.py`), and anti-slop rule **AS-67**.
+> `brand_pipeline/media_semantics.py`), and anti-slop rules **AS-67** (mark legality)
+> and **AS-80** (asset-kind↔slot-role eligibility, §6.1).
 
 ## 0. The three families (why this artifact exists)
 
@@ -313,6 +314,32 @@ exists.
 nothing is the #1 recurring defect class this system exists to close; the composed
 lane fails it loud (`media-binding` row).
 
+### 6.1 ASSET-KIND ↔ SLOT-ROLE eligibility (AS-80)
+
+Asset-kind and slot-role are an eligibility pair. The table is GENERIC and
+brand-agnostic — every brand inherits it unchanged (no palette, section, or content
+knowledge lives in it).
+
+| slot-role family | generic role words | eligible asset kinds |
+|---|---|---|
+| **IMAGE / media-well** | hero-media, card-lead-media, full-bleed background, feature-image, product-shot, portrait/illustration/split media | image-family only: `photograph` `portrait` `avatar` `team-photo` `client-photo` `product-packshot` `product-ui-screenshot` `device-framed-mockup` `product-ui-collage` `diagram` `chart` `illustration` `background-art` `3d-render` `map` `social-proof-screenshot` `video-poster` |
+| **ICON / MARK** | spot / inline / above-heading / nav / social / proof-strip | icon-family only: `spot-icon` `ui-glyph` `social-icon` `logo-own` `logo-third-party` (+ the badge kinds in their proof/badge roles) |
+
+- An ICON/MARK-family kind renders at **mark** height and is NEVER stretched to fill
+  a media well (`fit: cover|contain`). An icon may sit INSIDE a card (a small glyph
+  above the heading); it must never BE the card's lead/hero/full-bleed image.
+- An IMAGE role with no compatible image-family asset declares its gap
+  (`noCompatibleAsset {requiredKind: <image kind>}` → asset-request manifest). It
+  never substitutes, or blows up, an icon to fill the slot.
+- **Render arm** (`component_render.asset_render_mode` via
+  `media_semantics.eligible_render_mode`): an EXPLICIT media-well fit authored on an
+  icon/mark asset is coerced to `mark`; the unset/default `cover` is left untouched
+  (held-baseline byte-identity — brands whose icon/mark assets legitimately fall to
+  the cover default stay byte-identical, and the gate row below flags them).
+- **Gate arm** (`media_semantics.lint_media_bindings` → `slot-role-eligibility`
+  row): an icon-family asset bound into an image/hero-lead/full-bleed role FAILS; an
+  icon-family asset carrying an explicit media-well fit FAILS (a mis-scaled icon).
+
 ## 7. Enforcement map
 
 | layer | check | severity |
@@ -320,8 +347,9 @@ lane fails it loud (`media-binding` row).
 | `validate_brand_evidence.py` C26 | artifact shape: parses, ids unique/slug-form, files on disk, `kind` in enum, `usageRights` present, provenance present, generated-visual poster discipline | error (absence = note) |
 | `validate_brand_evidence.py` C27 | reference integrity: `mediaComposition` layer `assetRef`/`maskRef` resolve into the registry; `componentRef.contract` exists in contracts; pattern-bound `assets:` files registered (no orphan bound assets); state-swap items resolve | error (fact-gated on artifact presence) |
 | `validate_brand_evidence.py` C28 | variant dedupe sanity: byte-identical files under two ids; a variant higher-res than its canonical; dangling variant files | advisory |
-| `media_semantics.lint_media_bindings` | composed-lane: every media slot resolves (`assetRef`/real `asset.src`) or declares `noCompatibleAsset {reason}`; refs resolve; placeholder recipes licensed; AS-67 mark legality | generation prefilter (repairable) + HARD gate rows under `--composition` |
+| `media_semantics.lint_media_bindings` | composed-lane: every media slot resolves (`assetRef`/real `asset.src`) or declares `noCompatibleAsset {reason}`; refs resolve; placeholder recipes licensed; AS-67 mark legality; AS-80 asset-kind↔slot-role eligibility | generation prefilter (repairable) + HARD gate rows under `--composition` |
 | `anti-ai-slop.md` AS-67 | third-party-mark legality (usageRights × slot use-case) | slop registry + machine arm in the media lint |
+| `anti-ai-slop.md` AS-80 | asset-kind↔slot-role eligibility (§6.1): icon/mark-family never bound as lead/hero/full-bleed media nor blown up to a media well | slop registry + `slot-role-eligibility` row in the media lint + render coercion in `asset_render_mode` |
 
 ## 8. Authoring rules (Layout Analyst contract — see layout-analyst-skill.md)
 

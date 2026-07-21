@@ -2277,6 +2277,50 @@ consumption against `brand.yaml`.
 
 ---
 
+## AS-80 — Icon-family asset blown up as a card's hero/lead media
+
+**Rule**: asset-kind and slot-role are an eligibility pair. IMAGE/media-well roles
+(hero-media, card-lead-media, full-bleed background, feature-image, product-shot,
+portrait/illustration/split media) accept ONLY image-family kinds
+(photograph/portrait/illustration/product-ui-screenshot/product-packshot/3d-render/
+diagram/background-art). ICON/MARK-family kinds (spot-icon/ui-glyph/social-icon/logo
+marks) are content-scale glyphs: they render at MARK height (above a heading, inline
+in a headline, in a nav/social/proof row) and are NEVER stretched to fill a lead/hero
+image slot. An icon may sit INSIDE a card; it must never BE the card's lead visual.
+If an image role has no compatible image-family asset, declare the gap
+(`noCompatibleAsset {requiredKind}` → asset-request manifest) — never substitute or
+blow up an icon.
+
+**Why it happens**: the card/media renderer keys its fit off the asset's captured
+kind — a photograph/screenshot covers the well, a mark sits at mark height. When an
+asset that is REALLY an icon is mis-tagged as `photograph` (or any image kind), it
+inherits the `cover` default and is stretched to the full media-well dimensions.
+Nothing in a CSS-property diff catches it: the markup is valid, the fit is a legal
+value, only the KIND↔ROLE pairing is wrong. Two cards in the SAME grid can then read
+completely differently — small spot icons above the heading on the correctly-tagged
+cards, a giant blown-up glyph as the lead visual on the mis-tagged ones.
+
+**Caught here**: the HubSpot v3 product-platform card grid. `009-small-business.svg`
+(a 22×26 orange sprocket) and `027-ai-20sparkle.svg` (a 16×17 gradient sparkle) were
+tagged `assetKind: photograph`, so they fell to the `cover` default and rendered in a
+`16 / 10` media well — huge lead glyphs — while the eight product-hub `spot-icon`
+cards beside them (`fit: mark`) rendered as small icons above the heading. The source
+DOM shows ALL these product cards using the same small `global-nav-card-icon` glyph
+(`width="22" height="26"`), never a photograph. Fix: reclassify the two glyphs to
+their true `spot-icon` kind (`fit: mark`) so they render as marks like their siblings.
+
+**Verify**: `media_semantics.lint_media_bindings` emits a `slot-role-eligibility`
+row (surfaced by `onbrand_check.check_media_bindings`): an icon-family asset bound
+into an image/hero-lead/full-bleed role FAILS, and an icon-family asset carrying an
+explicit media-well fit (`cover`/`contain`) FAILS (a mis-scaled icon). The render arm
+`component_render.asset_render_mode` coerces an EXPLICIT media-well fit authored on an
+icon/mark asset to `mark` (`media_semantics.eligible_render_mode`); the unset default
+stays `cover` so held baselines whose icon/mark assets legitimately fall to that
+default remain byte-identical. Tests:
+`brand_pipeline/tests/test_asset_kind_role_eligibility.py`.
+
+---
+
 ## Adding a new entry
 
 Copy this shape: **Rule** (the imperative, one or two sentences) / **Why it happens** (the

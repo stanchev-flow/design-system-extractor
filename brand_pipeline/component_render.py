@@ -3019,20 +3019,33 @@ def asset_render_mode(doc, src, role: str = "") -> str:
     name = Path(str(src or "")).name
     if not name:
         return "cover"
+    # ASSET-KIND ↔ SLOT-ROLE ELIGIBILITY (media semantics 2026-07, AS-80): an
+    # ICON/MARK-family kind (spot-icon/ui-glyph/social-icon/logo mark) is NEVER
+    # blown up to fill a media well — whatever fit resolves below, a cover/contain
+    # (or unset⇒cover) resolution is coerced to `mark` so a content-scale glyph
+    # can never render as a card's lead/hero/full-bleed image. Fact-gated on the
+    # asset's captured kind; image-family kinds pass through byte-identically. The
+    # registry kind drives ONLY this coercion — the mediaTreatmentRules below still
+    # match on the assets-tagged `assetKind` vocabulary exactly as before.
+    import media_semantics as _ms
+    kind_map = (doc or {}).get("_mediaAssetsKind") if isinstance(doc, dict) else None
+    reg_kind = str(kind_map.get(name) or "").strip().lower() \
+        if isinstance(kind_map, dict) else ""
     ms_fit = (doc or {}).get("_mediaAssetsFit") if isinstance(doc, dict) else None
     if isinstance(ms_fit, dict):
         fit = str(ms_fit.get(name) or "").strip().lower()
         if fit in ("cover", "contain", "mark"):
-            return fit
+            return _ms.eligible_render_mode(reg_kind, fit) or fit
     tags = (doc or {}).get("_assetTags") if isinstance(doc, dict) else None
     fact = tags.get(name) if isinstance(tags, dict) else None
     if isinstance(fact, dict):
+        kind = str(fact.get("assetKind") or fact.get("useCase") or "").strip().lower()
+        eff_kind = reg_kind or kind
         direct = fact.get("mediaTreatment")
         fit = str((direct or {}).get("fit") or "").strip().lower() \
             if isinstance(direct, dict) else ""
         if fit in ("cover", "contain", "mark"):
-            return fit
-        kind = str(fact.get("assetKind") or fact.get("useCase") or "").strip().lower()
+            return _ms.eligible_render_mode(eff_kind, fit) or fit
         wanted_role = str(role or "").strip().lower()
         rules = (doc or {}).get("_mediaTreatmentRules") or []
         for rule in rules:
@@ -3044,7 +3057,13 @@ def asset_render_mode(doc, src, role: str = "") -> str:
                 continue
             fit = str(rule.get("fit") or "").strip().lower()
             if fit in ("cover", "contain", "mark"):
-                return fit
+                return _ms.eligible_render_mode(eff_kind, fit) or fit
+    # NO fit fact resolved: keep the historical `cover` default byte-identically
+    # for EVERY kind (icons included). The coercion above only rewrites an EXPLICIT
+    # media-well fit authored on an icon/mark asset — it must never rewrite this
+    # unset default, so brands whose icon/mark assets legitimately fall to the
+    # cover default (held baselines) stay byte-identical; the AS-80 gate row is the
+    # arm that flags an icon left to blow up here.
     return "cover"
 
 
