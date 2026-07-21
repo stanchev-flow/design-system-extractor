@@ -299,6 +299,10 @@ def _stage_system(stage: Stage) -> str:
             "references only; never claim unevidenced patterns as measured. Every extracted "
             "pattern must carry distinct canonical contentShape.slots[] with `name`, `role`, "
             "geometry, source-copy binding semantics, and all observed curated asset filenames. "
+            "EVERY slot MUST carry `type:` chosen from exactly: content, media, image, video, "
+            "logo, action, structural (text-bearing slots are `content`; CTA/button slots are "
+            "`action`; a missing or invented type blocks the stage). Every extracted pattern id "
+            "must exactly match a layoutCopy key from the copy-chrome stage. "
             "Do not collapse different sections to generic-flow. The deterministic projector "
             "creates layout instances by PRESERVING these slots/assets and validates cross-file ids."),
         "media": (
@@ -320,7 +324,15 @@ def _stage_system(stage: Stage) -> str:
         "Use only supplied facts and upstream summaries. Never copy another lane. "
         "Use generic reusable role names, not section-specific token names. "
         f"{specifics} Return ONLY JSON: {{\"files\":{{\"filename\":\"complete contents\"}}}}. "
-        "Every requested file must be complete and parseable; no markdown fences."
+        "Every requested file must be complete and parseable; no markdown fences. "
+        "YAML SYNTAX LAW: emit BLOCK-STYLE YAML only. Mappings: one key per "
+        "line, nested by indentation. Lists: block sequences with `- ` items — "
+        "block sequences are REQUIRED wherever the schema says list (e.g. "
+        "`patterns:` is a list of `- id: …` entries, never a mapping keyed by "
+        "id). ONLY inline/flow syntax is forbidden: no {…} flow mappings, no "
+        "[…] flow sequences. Any scalar containing [ ] { } : , # or -> must be "
+        "quoted. (Flow-mapping scalars like `border: 1px #ececec` or "
+        "`copyBinding: items[].cta` are YAML parse errors that block the stage.)"
     )
 
 

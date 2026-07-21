@@ -1413,11 +1413,22 @@ def _call_model(provider, system_prompt: str, user_prompt: str, *, max_tokens: i
 
 def _repair_note(schema_errs: list[str], nd_hits: list[tuple[str, str]],
                  gate_failures: list[tuple[str, str]],
-                 offgrid_hits: list[tuple[str, str]] | None = None) -> str:
+                 offgrid_hits: list[tuple[str, str]] | None = None,
+                 also_keep: list[str] | None = None) -> str:
     """Assemble the SPECIFIC failing checks (ids + details) into a repair instruction the
-    model can act on. No secrets, no HTML — just the contract failures."""
+    model can act on. No secrets, no HTML — just the contract failures.
+
+    ``also_keep`` carries the DISTINCT constraint families that failed in EARLIER
+    attempts and are now satisfied — the model must not regress them while fixing
+    the current set. Without this reminder the loop oscillates: it fixes the
+    wireframe, forgets the on-brand gate it just satisfied, and trades one for the
+    other (product-launch generation, 2026-07)."""
     lines = ["# REPAIR — your previous composition FAILED these checks. Fix ONLY these,",
              "# keep everything that passed, and re-emit ONE corrected composition.v1 object."]
+    if also_keep:
+        lines.append("\n## MUST ALSO KEEP SATISFYING (you fixed these in an earlier "
+                     "attempt — do NOT reintroduce them while fixing the below):")
+        lines += [f"- {fam}" for fam in also_keep]
     if schema_errs:
         lines.append("\n## schema errors (composition.v1.schema.json):")
         lines += [f"- {e}" for e in schema_errs[:20]]
@@ -1501,7 +1512,10 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
                          temperature: float | None = None,
                          variety_directive: str | None = None,
                          brief_id: str = "brief",
-                         max_repairs: int = 2,
+                         # a page must clear schema + neverDo + offgrid + wireframe +
+                         # on-brand gate SIMULTANEOUSLY; 2 repairs (3 attempts) runs out
+                         # of rounds before the joint constraint converges (2026-07).
+                         max_repairs: int = 4,
                          layout: str | None = None,
                          provider=None,
                          seeds: "SeedResult | None" = None,
@@ -1696,6 +1710,19 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
     failures: list[tuple[str, str]] = []
     comp: dict | None = None
     repair_note = ""
+    # DISTINCT constraint families that have failed at least once across attempts.
+    # Once a family is in here, every later repair note reminds the model to keep
+    # satisfying it (anti-oscillation — see _repair_note.also_keep).
+    constraint_memory: list[str] = []
+
+    def _remember(*current_families: str) -> list[str]:
+        """Record the families that failed this attempt; return the families that
+        failed in EARLIER attempts but NOT this one (the ones to keep satisfying)."""
+        cur = {f for f in current_families if f}
+        for fam in cur:
+            if fam not in constraint_memory:
+                constraint_memory.append(fam)
+        return [f for f in constraint_memory if f not in cur]
 
     for attempt in range(max_repairs + 1):
         system_prompt = base_prompt
@@ -1730,14 +1757,14 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
             nd_hits, failures = [], []
             tele["stage"] = "parse-fail"
             telemetry.append(tele)
-            repair_note = _repair_note(schema_errs, [], [])
+            repair_note = _repair_note(schema_errs, [], [], also_keep=_remember("schema"))
             continue
         schema_errs = validate_schema(comp, schema)
         if schema_errs:
             tele["stage"] = "schema-fail"
             telemetry.append(tele)
             log(f"    schema: {len(schema_errs)} error(s)")
-            repair_note = _repair_note(schema_errs, [], [])
+            repair_note = _repair_note(schema_errs, [], [], also_keep=_remember("schema"))
             continue
 
         # 3b. archetype-selection contract (gallery/structure lanes): when the brief
@@ -1755,7 +1782,7 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
                 tele["stage"] = "archetype-fail"
                 telemetry.append(tele)
                 log(f"    archetype selection: {failures[0][1]}")
-                repair_note = _repair_note([], [], failures)
+                repair_note = _repair_note([], [], failures, also_keep=_remember(*{str(c).split(":",1)[0] for c,_ in failures}))
                 continue
 
         precedence_hits = relume_precedence_lint(comp, relume_selections, higher_tier)
@@ -1767,7 +1794,7 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
             tele["stage"] = "relume-precedence-fail"
             telemetry.append(tele)
             log(f"    Relume precedence: {precedence_hits}")
-            repair_note = _repair_note([], [], failures)
+            repair_note = _repair_note([], [], failures, also_keep=_remember(*{str(c).split(":",1)[0] for c,_ in failures}))
             continue
 
         # 4. neverDo pre-filter (cheap, before render)
@@ -1776,7 +1803,7 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
             tele["stage"] = "neverdo-fail"
             telemetry.append(tele)
             log(f"    neverDo prefilter: {nd_hits}")
-            repair_note = _repair_note([], nd_hits, [])
+            repair_note = _repair_note([], nd_hits, [], also_keep=_remember("neverDo"))
             continue
 
         # 4b. off-grid EXPANSION capability pre-filter (cheap, before render). When the
@@ -1786,7 +1813,7 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
             tele["stage"] = "offgrid-fail"
             telemetry.append(tele)
             log(f"    offGrid prefilter (flag off): {og_hits}")
-            repair_note = _repair_note([], [], [], offgrid_hits=og_hits)
+            repair_note = _repair_note([], [], [], offgrid_hits=og_hits, also_keep=_remember("offgrid"))
             continue
 
         # 4c. composition lints (fix7 AS-63/AS-65, cheap, before render): a knob with
@@ -1801,7 +1828,7 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
             tele["stage"] = "lint-fail"
             telemetry.append(tele)
             log(f"    composition lint: {[(s, r) for s, r, _ in lint_hits]}")
-            repair_note = _repair_note([], [], failures)
+            repair_note = _repair_note([], [], failures, also_keep=_remember(*{str(c).split(":",1)[0] for c,_ in failures}))
             continue
 
         # 4d. media-binding lints (media semantics 2026-07, AS-67): every media slot
@@ -1817,7 +1844,7 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
             tele["stage"] = "media-lint-fail"
             telemetry.append(tele)
             log(f"    media lint: {[(s, r) for s, r, _ in media_hits]}")
-            repair_note = _repair_note([], [], failures)
+            repair_note = _repair_note([], [], failures, also_keep=_remember(*{str(c).split(":",1)[0] for c,_ in failures}))
             continue
 
         # 4e. WHOLE-PAGE WIREFRAME (wireframe.v1): deterministic copy-shape/job/media
@@ -1839,7 +1866,7 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
             tele["stage"] = "wireframe-fail"
             telemetry.append(tele)
             log(f"    wireframe: {len(failures)} hard failure(s)")
-            repair_note = _repair_note([], [], failures)
+            repair_note = _repair_note([], [], failures, also_keep=_remember(*{str(c).split(":",1)[0] for c,_ in failures}))
             continue
         (out_dir / "wireframe.json").write_text(json.dumps(wireframe, indent=2) + "\n")
 
@@ -1852,7 +1879,7 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
             tele["stage"] = "render-fail"
             telemetry.append(tele)
             log(f"    render failed: {type(exc).__name__}: {exc}")
-            repair_note = _repair_note([], [], failures)
+            repair_note = _repair_note([], [], failures, also_keep=_remember(*{str(c).split(":",1)[0] for c,_ in failures}))
             continue
 
         # 6. gate (HARD invariants)
@@ -1874,7 +1901,7 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
                                     telemetry=telemetry, prompt_chars=len(prompt),
                                     off_grid_expansion=off_grid, offgrid_hits=[])
         log(f"    gate: FAIL {[c for c, _ in failures]}")
-        repair_note = _repair_note([], [], failures)
+        repair_note = _repair_note([], [], failures, also_keep=_remember(*{str(c).split(":",1)[0] for c,_ in failures}))
 
     # exhausted retries — persist the last attempt for inspection
     if comp is not None:

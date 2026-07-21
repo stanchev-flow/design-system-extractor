@@ -128,7 +128,32 @@ def build_parser() -> argparse.ArgumentParser:
                     help="re-run one author DAG stage and all descendants")
     ap.add_argument("--no-smoke", action="store_true",
                     help="skip the validator C11 composed-demo smoke check")
+    ap.add_argument("--converge", action="store_true",
+                    help="wire the convergence repair hook into G4 "
+                         "(spec/convergence-loop.md §7): below-bar bands get "
+                         "bounded evidence-fenced repairs, ratchet-protected")
+    ap.add_argument("--converge-bands-per-round", type=int, default=None,
+                    help="bands repaired per G4 iteration (default: "
+                         "replica_repair.DEFAULT_BANDS_PER_ROUND)")
     return ap
+
+
+def build_converge_hook(args):
+    """The --converge wiring (spec §7.2): None unless the flag is set, so the
+    no-flag flow is byte-identical to pre-converge behavior."""
+    if not getattr(args, "converge", False):
+        return None
+    from replica_repair import make_repair_hook, DEFAULT_BANDS_PER_ROUND
+    from band_repair import make_llm_repair_call
+    sys.path.insert(0, str(PROJECT_DIR / "tools" / "extract"))
+    from validate_brand_evidence import validate_brand_dir
+    bands = args.converge_bands_per_round or DEFAULT_BANDS_PER_ROUND
+    return make_repair_hook(
+        make_llm_repair_call(model=args.author_model,
+                             timeout=args.author_timeout),
+        bar=args.replica_bar,
+        bands_per_round=bands,
+        validator=lambda d: validate_brand_dir(d, smoke=False))
 
 
 def _norm_stage(s: str) -> str:
@@ -175,6 +200,7 @@ def main(argv=None) -> int:
         author_max_repairs=args.author_max_repairs,
         force_author=args.force_author,
         force_author_stage=args.force_author_stage,
+        repair_hook=build_converge_hook(args),
     )
 
     print()

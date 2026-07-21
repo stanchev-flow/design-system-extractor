@@ -244,9 +244,15 @@ def render(doc: dict, brand_dir=None) -> str:
 
     # 8. Composition mechanics
     w("## 8. Composition mechanics")
-    for rule in doc.get("compositionRules", []):
+    for i, rule in enumerate(doc.get("compositionRules", [])):
+        if not isinstance(rule, dict):
+            continue
         flag = " _(low confidence)_" if _is_low(rule) else ""
-        w(f"- **{rule['id']}**: {rule.get('statement','')}{flag}")
+        # a projection must never crash the pipeline on a missing id — the
+        # id-less rule renders with a positional label and the canon-quality
+        # gap stays visible for the validator/author to fix.
+        rid = rule.get("id") or f"rule-{i + 1} (id missing)"
+        w(f"- **{rid}**: {rule.get('statement','')}{flag}")
     w("")
 
     # 9. Do (positive house style)
