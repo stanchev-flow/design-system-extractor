@@ -671,6 +671,13 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
                                            f"#sec-{idx}")
         if hero_resp:
             var_blocks.append(hero_resp)
+        # RESPONSIVE hero primary button (fact-gated on layouts[].responsive.
+        # primaryButton) — measured control box, scoped to this section's non-nav
+        # button. "" without the fact (byte-identical output).
+        btn_resp = cr.hero_primary_button_css((layout or {}).get("responsive"),
+                                              f"#sec-{idx}")
+        if btn_resp:
+            var_blocks.append(btn_resp)
 
     # PAGE-LEVEL NAVBAR (hoisted out of the hero). The nav was previously rendered INSIDE
     # #sec-0 by compose_stack_hero, so it inherited the hero section's padding-block-start
@@ -879,6 +886,12 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
     foot_resp = cr.footer_responsive_css(doc, f"#sec-{foot_idx}")
     if foot_resp:
         var_blocks.append(foot_resp)
+    # RESPONSIVE headings (fact-gated on responsive.headings) — measured heading
+    # line-heights the composer type scale mis-derived, emitted once after the base
+    # heading rules so the measured value wins. "" without the block.
+    heading_resp = cr.heading_responsive_css(doc)
+    if heading_resp:
+        var_blocks.append(heading_resp)
 
     gf = google_fonts_link(cs.loadable_proxies(doc))
     face_css = cs.font_face_css(Path(brand_yaml).parent, doc)

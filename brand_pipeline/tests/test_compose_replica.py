@@ -159,5 +159,53 @@ class ChromeGapsTests(unittest.TestCase):
         self.assertTrue(any("display font" in g["capability"] for g in gaps))
 
 
+class MultiViewportGateTests(unittest.TestCase):
+    """Phase 5: the multi-viewport replica gate records per-viewport responsiveness
+    numbers (no browser needed for the report shape / ladder constant)."""
+
+    def test_ladder_constant_primary_first(self):
+        self.assertEqual(cx.VIEWPORT_LADDER[0], 1440)
+        self.assertIn(375, cx.VIEWPORT_LADDER)
+        self.assertIn(960, cx.VIEWPORT_LADDER)
+        self.assertIn(1920, cx.VIEWPORT_LADDER)
+
+    def test_report_renders_per_viewport_section(self):
+        import json
+        import tempfile
+        per_viewport = [
+            {"viewport": 1440, "primary": True, "responsivenessHealth": 1.0,
+             "overflowPx": 0, "bands": 12, "heroHeight": 800, "footerColumns": 5,
+             "docHeight": 6000, "overflowEl": "", "screenshot": "replica-fullpage-1440.png"},
+            {"viewport": 375, "primary": False, "responsivenessHealth": 0.5,
+             "overflowPx": 389, "bands": 12, "heroHeight": 700, "footerColumns": 1,
+             "docHeight": 9000, "overflowEl": "cs-nav-util",
+             "screenshot": "replica-fullpage-375.png"},
+        ]
+        with tempfile.TemporaryDirectory() as td:
+            out = Path(td)
+            cx.build_report(out, [], [], 0.911,
+                            {"brand": "x", "sourceShot": "s.png", "sourceHeight": 1,
+                             "replicaHeight": 1},
+                            per_viewport)
+            md = (out / "replica-report.md").read_text()
+            doc = json.loads((out / "replica-report.json").read_text())
+        self.assertIn("Multi-viewport replica gate", md)
+        self.assertIn("responsiveness", md)
+        self.assertIn("primary (fidelity)", md)
+        self.assertIn("cs-nav-util", md)          # overflow culprit surfaced honestly
+        self.assertEqual(len(doc["perViewport"]), 2)
+        self.assertTrue(doc["perViewport"][0]["primary"])
+
+    def test_report_omits_section_when_no_ladder(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            out = Path(td)
+            cx.build_report(out, [], [], 0.9,
+                            {"brand": "x", "sourceShot": "s.png", "sourceHeight": 1,
+                             "replicaHeight": 1})
+            md = (out / "replica-report.md").read_text()
+        self.assertNotIn("Multi-viewport replica gate", md)
+
+
 if __name__ == "__main__":
     unittest.main()

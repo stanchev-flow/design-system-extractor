@@ -582,6 +582,62 @@ def footer_responsive_css(doc, sec_sel: str) -> str:
     return head + "\n" + "\n".join(parts) + "\n"
 
 
+def hero_primary_button_css(responsive, sec_sel: str) -> str:
+    """Grounded geometry for the hero PRIMARY button from ``responsive.primaryButton``
+    (measured @1440): font-size / line-height / border / padding the composer left
+    un-grounded (14px vs the source's 18px, no reserved border box). Scoped to the hero
+    section's non-nav button so no other control is touched. "" without the block."""
+    if not isinstance(responsive, dict):
+        return ""
+    btn = responsive.get("primaryButton")
+    if not isinstance(btn, dict):
+        return ""
+    decls: list[str] = []
+    fs = _resp_len(btn.get("fontSize"))
+    lh = _resp_len(btn.get("lineHeight"))
+    if fs:
+        decls.append(f"font-size: {fs}")
+    if lh:
+        decls.append(f"line-height: {lh}")
+    pad = str(btn.get("padding") or "").strip()
+    if re.fullmatch(r"(?:-?\d*\.?\d+(?:px|rem|em)\s*){1,4}", pad or ""):
+        decls.append(f"padding: {pad}")
+    border = str(btn.get("border") or "").strip()
+    # accept a measured border shorthand (width style colour) — colour is normalized to
+    # transparent upstream, so no palette leaks; the border only RESERVES the box width.
+    if re.fullmatch(r"\d*\.?\d+px\s+(?:solid|dashed|dotted)\s+[\w#().,%\s-]+", border):
+        decls.append(f"border: {border}")
+    if not decls:
+        return ""
+    sel = f"{sec_sel} .c-button:not(.c-button--navcta)"
+    head = ("/* responsive hero primary button (fact-gated: layouts[].responsive."
+            "primaryButton) — measured control box (font-size/line-height/border/"
+            "padding); the composer left it at the small control tier. */")
+    return f"{head}\n{sel} {{ {'; '.join(decls)}; }}\n"
+
+
+def heading_responsive_css(doc) -> str:
+    """Grounded heading line-heights from ``responsive.headings.lineHeights`` (measured
+    per generic heading tag). The composer type scale mis-derives some heading
+    line-heights (h2 23.4px vs the measured 28px); this pins the measured value on the
+    generic heading role. "" without the block (fact-gate; v2/remote unchanged)."""
+    resp = ((doc or {}).get("responsive") or {}).get("headings") \
+        if isinstance(doc, dict) else None
+    if not isinstance(resp, dict):
+        return ""
+    lhs = resp.get("lineHeights") if isinstance(resp.get("lineHeights"), dict) else {}
+    parts: list[str] = []
+    for tag in ("h1", "h2", "h3", "h4"):
+        lh = _resp_len(lhs.get(tag))
+        if lh:
+            parts.append(f":is({tag}, .c-heading--{tag}) {{ line-height: {lh}; }}")
+    if not parts:
+        return ""
+    head = ("/* responsive headings (fact-gated: responsive.headings.lineHeights) — "
+            "measured heading line-heights the composer type scale mis-derived. */")
+    return head + "\n" + "\n".join(parts) + "\n"
+
+
 # ── scroll-parallax motion treatment (brand-level; voice.motionSpec.imageParallax) ──
 #
 # SINGLE SOURCE OF TRUTH for both build_page (compose_page.py) and build_document
@@ -1748,6 +1804,19 @@ def nav_mega_css(doc) -> str:
     desc_dur = _mega_first(desc_m.get("duration"), "0.25s")
     surface = facts.get("surface") if isinstance(facts.get("surface"), dict) else {}
     bg = str(surface.get("bg") or "").strip() or "var(--c-paper)"
+    # RESPONSIVE fact override (fact-gated: responsive.nav.panelSurface): the measured
+    # megaPanel.surface.bg often captures the transparent OUTER wrapper, not the painted
+    # panel sheet (the computed-CSS harness flags this as a CRITICAL missing surface). A
+    # derived panel-surface fact carries the REAL resolved container colour; prefer it
+    # when the measured surface reads transparent. "" of the block ⇒ unchanged (v2/remote).
+    _resp_nav = ((doc or {}).get("responsive") or {}).get("nav") \
+        if isinstance(doc, dict) else None
+    if isinstance(_resp_nav, dict):
+        _panel_bg = str(((_resp_nav.get("panelSurface") or {}).get("background")
+                         or "")).strip()
+        _bg_norm = re.sub(r"\s+", "", bg).lower()
+        if _panel_bg and _bg_norm in ("rgba(0,0,0,0)", "transparent", "none", ""):
+            bg = _panel_bg
     border_top = str(surface.get("borderTop") or "").strip()
     border_css = (f"border-top: 1px solid {border_top.split(' ', 1)[1]};"
                   if " " in border_top else "border-top: 1px solid var(--c-hairline);")
@@ -2725,6 +2794,21 @@ def _button_oninverse_css(doc) -> str:
     return ("\n" + "\n".join(rules) + "\n") if rules else ""
 
 
+def _button_variant_css(doc) -> str:
+    """``_BUTTON_VARIANT_CSS`` with the un-grounded hover LIFT purged when the brand's
+    measured buttons carry no hover transform (fact-gated: responsive.buttons.
+    purgeHoverTransform, provenance doctrine extended to MOTION). A brand without the
+    fact keeps the line — byte-identical output (v2/remote unchanged)."""
+    resp = ((doc or {}).get("responsive") or {}).get("buttons") \
+        if isinstance(doc, dict) else None
+    if isinstance(resp, dict) and resp.get("purgeHoverTransform"):
+        # drop the trailing hover ``transform: translateY(-1px)`` (the composer default
+        # the source never had); the measured bg/color swap stays.
+        return _BUTTON_VARIANT_CSS.replace("\n  transform: translateY(-1px); }",
+                                           " }")
+    return _BUTTON_VARIANT_CSS
+
+
 def structural_variant_css(doc, include_all: bool = False) -> str:
     """The §C.3 variant rules THIS brand's structural flags select (appended after
     COMPONENT_CSS by both composers). ``include_all=True`` is the gallery/harness mode:
@@ -2732,7 +2816,7 @@ def structural_variant_css(doc, include_all: bool = False) -> str:
     variant's CSS regardless of the brand's flags."""
     parts = []
     if include_all or cta_shape(doc) == "filled":
-        parts.append(_BUTTON_VARIANT_CSS)
+        parts.append(_button_variant_css(doc))
         parts.append(_button_family_override_css(doc))
         parts.append(_button_oninverse_css(doc))
     if include_all or input_shape(doc) == "boxed":

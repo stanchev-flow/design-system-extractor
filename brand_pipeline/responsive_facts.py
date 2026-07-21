@@ -304,25 +304,256 @@ def footer_responsive_from_evidence(footer: dict,
     return out
 
 
+# ── NAV panel surface fact ──────────────────────────────────────────────────────────
+#
+# The computed-CSS harness surfaces a CRITICAL missing-fact: the source mega-nav PANEL
+# CONTAINER is painted a solid surface (its dropdown/flyout sheet), while our composed
+# `.cs-mega` measures transparent (`navbar.measured.megaPanel.surface.bg` captured the
+# transparent OUTER wrapper, not the painted inner panel). This derives the REAL panel
+# surface color from the source's panel-container rules — the same GENERIC surface role
+# the harness's `panel_background_rules` detector keys on — resolving any CSS-var chain
+# against the element's measured customProperties. Generic key (`panelSurface`), never a
+# section/content-specific name.
+
+_PANEL_CONTAINER_RE = re.compile(
+    r"flyout|dropdown|submenu|nav-tab-dropdown|nav-main-inner|burger-menu"
+    r"|mega(?!-(?:card|link|item|rail|icon|title|body|cta|head|group|chev|desc"
+    r"|aside|toggle|button|arrow|badge|img|image|list|main))", re.I)
+_PANEL_PART_RE = re.compile(
+    r"card|link|item|rail|icon|title|body|cta|head|group|chev|desc|aside|toggle"
+    r"|button|arrow|badge|img|image|-list", re.I)
+_STATE_PSEUDO_RE = re.compile(
+    r"::?(?:hover|focus-visible|focus-within|focus|active|visited|target|checked)\b")
+_EMPTY_BG = {"", "none", "transparent", "rgba(0, 0, 0, 0)", "rgba(0,0,0,0)",
+             "initial", "unset", "inherit"}
+
+
+def _resolve_var(value: str, custom: dict, depth: int = 0) -> str:
+    """Resolve a ``var(--x)`` chain against measured customProperties (first
+    non-@media entry wins), so a panel painted ``var(--container-01)`` collapses to
+    its measured literal (e.g. ``#ffffff``). Non-var values pass through."""
+    val = (value or "").strip()
+    if depth > 6:
+        return val
+    m = re.fullmatch(r"var\(\s*(--[\w-]+)\s*(?:,[^)]*)?\)", val)
+    if not m or m.group(1) not in (custom or {}):
+        return val
+    entries = custom[m.group(1)] or []
+    base = next((e.get("value") for e in entries if not e.get("media")),
+                entries[0].get("value") if entries else None)
+    return _resolve_var(base or "", custom, depth + 1)
+
+
+def nav_responsive_from_evidence(nav: dict) -> dict | None:
+    """Generic ``panelSurface`` fact for the nav mega-panel: the measured background
+    of the source's panel CONTAINER sheet (dropdown/flyout/mega wrapper), resolved to a
+    literal. None when the nav paints no solid panel container (fact-gate)."""
+    if not isinstance(nav, dict):
+        return None
+    custom = nav.get("customProperties") or {}
+    for r in nav.get("cssRules") or []:
+        sel = r.get("selector") or ""
+        if not _PANEL_CONTAINER_RE.search(sel):
+            continue
+        if _PANEL_PART_RE.search(sel) or _STATE_PSEUDO_RE.search(sel):
+            continue
+        bg = _decl(r.get("decls", ""), "background") \
+            or _decl(r.get("decls", ""), "background-color")
+        if not bg:
+            continue
+        resolved = _resolve_var(bg.split("!")[0].strip(), custom)
+        if resolved.lower() in _EMPTY_BG:
+            continue
+        return {
+            "schema": SCHEMA,
+            "panelSurface": {"background": resolved},
+            "provenance": {
+                "origin": "extracted",
+                "source": nav.get("elementId") or nav.get("domSelector"),
+                "panelSurface": (
+                    f"mega-nav panel container ({sel[:48]}) paints {bg.strip()[:32]}"
+                    f" → resolved {resolved}; our .cs-mega measured transparent"),
+            },
+        }
+    return None
+
+
+# ── HERO primary-button fact (geometry + motion purge) ───────────────────────────────
+#
+# The harness flags the hero primary button on several static properties (font-size
+# 14→18, line-height, border, width) AND an INVENTED hover ``transform: translateY(-1px)``
+# the source never had. The geometry rows are missing measured facts; the transform is an
+# un-grounded composer default (the provenance doctrine, extended to MOTION). This derives
+# the measured button geometry and a motion-purge flag from the source primary button.
+
+def _find_source_hero_button(els: dict) -> dict | None:
+    prefer = None
+    for e in els.values():
+        if e.get("kind") != "action":
+            continue
+        cls = e.get("classes") or ""
+        if e.get("visionRole") == "hero" and "-primary" in cls:
+            return e
+        if "-primary" in cls and "cl-button" in cls and prefer is None \
+                and "nav" not in cls:
+            prefer = e
+    return prefer
+
+
+def _button_has_hover_transform(btn: dict) -> bool:
+    """True when the source button declares a real hover/focus transform (so ours is
+    grounded); False when every state rule swaps bg/border/color only (our translateY
+    lift is un-grounded and must be purged)."""
+    for r in btn.get("cssRules") or []:
+        ps = r.get("pseudo") or []
+        sel = (r.get("selector") or "")
+        is_state = any(p.strip(":") in ("hover", "focus", "focus-visible",
+                                        "focus-within") for p in ps) \
+            or _STATE_PSEUDO_RE.search(sel)
+        if not is_state:
+            continue
+        t = _decl(r.get("decls", ""), "transform")
+        if t and t.strip().lower() not in ("none", ""):
+            return True
+    return False
+
+
+def hero_button_from_evidence(btn: dict) -> tuple[dict | None, bool]:
+    """(primaryButton geometry block | None, purgeHoverTransform bool) from the source
+    hero primary button's measured @1440 matrix + its bound state rules."""
+    if not isinstance(btn, dict):
+        return None, False
+    rec = ((btn.get("computedLadder") or {}).get("1440") or {}).get("measured") or {}
+    keep = {}
+    fs = str(rec.get("font-size") or "").strip()
+    lh = str(rec.get("line-height") or "").strip()
+    disp = str(rec.get("display") or "").strip()
+    border = str(rec.get("border") or "").strip()
+    pad = str(rec.get("padding") or "").strip()
+    if fs:
+        keep["fontSize"] = fs
+    if lh and lh.lower() != "normal":
+        keep["lineHeight"] = lh
+    if disp:
+        keep["display"] = disp
+    if pad:
+        keep["padding"] = pad
+    # a transparent measured border still RESERVES layout width — carry it as a
+    # transparent border (generic, colour-agnostic) so the button's box matches.
+    m = re.match(r"(\d*\.?\d+)px\s+(solid|dashed|dotted)\b", border)
+    if m:
+        from_alpha = re.search(r"rgba?\([^)]*,\s*0(?:\.0+)?\s*\)$", border)
+        keep["border"] = (f"{m.group(1)}px {m.group(2)} transparent"
+                          if from_alpha else border)
+    purge = not _button_has_hover_transform(btn)
+    if not keep and not purge:
+        return None, False
+    block = {"schema": SCHEMA}
+    if keep:
+        block.update(keep)
+    if purge:
+        block["motionPurge"] = {"hoverTransform": True}
+    block["provenance"] = {
+        "origin": "extracted",
+        "source": btn.get("elementId"),
+        "geometry": ("primary action measured @1440 (display/font-size/line-height/"
+                     "border/padding) — the button box the composer left un-grounded"),
+        "motionPurge": ("source hover/focus rules swap bg/border/color only, no "
+                        "transform; composer translateY lift is un-grounded motion")
+        if purge else None,
+    }
+    if block["provenance"].get("motionPurge") is None:
+        block["provenance"].pop("motionPurge")
+    return block, purge
+
+
+# ── HEADING line-height fact ──────────────────────────────────────────────────────────
+#
+# The harness flags heading line-heights the composer's type scale mis-derives (h2
+# 23.4px vs measured 28px). These are measured type facts, not scaffold ratios — carried
+# per generic heading tag (h1/h2/…, not section/content names).
+
+def heading_line_heights_from_evidence(els: dict) -> dict | None:
+    out: dict = {}
+    prov_src: list[str] = []
+    for tag in ("h1", "h2", "h3"):
+        h = els.get(f"heading-{tag}")
+        if not isinstance(h, dict):
+            continue
+        ladder = h.get("computedLadder") or {}
+        lhs = {str((rec or {}).get("line-height") or "").strip()
+               for rec in ladder.values() if isinstance(rec, dict)}
+        lhs = {v for v in lhs if v and v.lower() != "normal"}
+        if len(lhs) == 1:  # a single measured line-height (stable across the ladder)
+            out[tag] = next(iter(lhs))
+            prov_src.append(f"heading-{tag}")
+    if not out:
+        return None
+    return {
+        "schema": SCHEMA,
+        "lineHeights": out,
+        "provenance": {
+            "origin": "extracted",
+            "source": ",".join(prov_src),
+            "lineHeights": ("measured heading computedLadder line-heights (stable "
+                            "across the viewport ladder) the composer type scale "
+                            "mis-derived"),
+        },
+    }
+
+
 # ── sidecar build + merge-at-load ──────────────────────────────────────────────────
 
 SIDECAR_NAME = "responsive-facts.yaml"
 
 
 def build_sidecar(joined: dict, footer_measured: dict | None = None) -> dict:
-    """The ``{hero, footer}`` responsive sidecar derived from joined-evidence. Empty
-    dict when neither component carries a measured responsive mechanic."""
+    """The responsive/measured-fact sidecar derived from joined-evidence, spanning the
+    hero, footer, nav mega-panel, hero primary button, and heading line-heights. Empty
+    dict when no component carries a measured fact the composer left un-grounded.
+
+    Every block is GENERIC (reusable surface/typography/control roles, never a section-
+    or content-specific name) and provenance-tagged; each emitter is fact-gated so a
+    brand without a block renders byte-for-byte as before."""
     els = _by_id(joined)
     out: dict = {}
     hero_el = _find_source_hero(els)
     hero_block = hero_responsive_from_evidence(hero_el) if hero_el else None
+    # hero primary-button geometry + hover-transform purge fold into the hero block
+    # (its emitter is scoped to the hero section) plus a doc-level purge flag (the
+    # button hover rule is brand-wide, so the purge is brand-wide when grounded).
+    btn_el = _find_source_hero_button(els)
+    btn_block, purge = hero_button_from_evidence(btn_el) if btn_el else (None, False)
+    if btn_block:
+        hero_block = hero_block or {"schema": SCHEMA,
+                                    "provenance": {"origin": "extracted"}}
+        hero_block["primaryButton"] = btn_block
     if hero_block:
         out["hero"] = hero_block
+    if purge:
+        out["buttons"] = {
+            "schema": SCHEMA, "purgeHoverTransform": True,
+            "provenance": {
+                "origin": "extracted",
+                "source": (btn_el or {}).get("elementId"),
+                "purgeHoverTransform": (
+                    "source button hover/focus rules declare no transform (bg/border/"
+                    "color swap only); the composer translateY(-1px) lift is "
+                    "un-grounded motion — purged brand-wide (provenance doctrine)"),
+            },
+        }
     footer_el = els.get("chrome-footer")
     footer_block = (footer_responsive_from_evidence(footer_el, footer_measured or {})
                     if footer_el else None)
     if footer_block:
         out["footer"] = footer_block
+    nav_el = els.get("chrome-header")
+    nav_block = nav_responsive_from_evidence(nav_el) if nav_el else None
+    if nav_block:
+        out["nav"] = nav_block
+    heading_block = heading_line_heights_from_evidence(els)
+    if heading_block:
+        out["headings"] = heading_block
     return out
 
 
@@ -351,6 +582,16 @@ def apply_responsive_facts(doc: dict, brand_dir: Path) -> dict:
     if isinstance(footer_block, dict) and isinstance(doc.get("footer"), dict) \
             and "responsive" not in doc["footer"]:
         doc["footer"]["responsive"] = footer_block
+    # nav mega-panel surface, brand-wide button motion-purge, and heading line-heights
+    # merge onto the doc under a single ``responsive`` namespace (in-memory only). Each
+    # consumer is fact-gated; a brand without the sidecar leaves the doc untouched.
+    resp = doc.get("responsive") if isinstance(doc.get("responsive"), dict) else {}
+    for key in ("nav", "buttons", "headings"):
+        block = sidecar.get(key)
+        if isinstance(block, dict) and key not in resp:
+            resp[key] = block
+    if resp:
+        doc.setdefault("responsive", resp)
     return doc
 
 
@@ -384,7 +625,8 @@ def main(argv=None) -> int:
     out_p.write_text(header + yaml.safe_dump({"schemaVersion": SCHEMA, **sidecar},
                                              sort_keys=False, allow_unicode=True,
                                              width=100000))
-    report = {"hero": bool(sidecar.get("hero")), "footer": bool(sidecar.get("footer"))}
+    report = {k: bool(sidecar.get(k))
+              for k in ("hero", "footer", "nav", "buttons", "headings")}
     print(f"[responsive] {brand_dir.parent.name}: wrote {out_p.name} {json.dumps(report)}")
     return 0
 
