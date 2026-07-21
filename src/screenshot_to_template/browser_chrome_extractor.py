@@ -964,6 +964,14 @@ _EXTRACT_JS = r"""
           fontWeight: s.fontWeight,
           hasIcon: hasIconChild(el),
           filled: filled,
+          // measured box geometry (2026-07): without these the composer fell back
+          // to a too-narrow generic chip and could not wire the button's real size.
+          paddingTop: px(s.paddingTop),
+          paddingBottom: px(s.paddingBottom),
+          paddingLeft: px(s.paddingLeft),
+          paddingRight: px(s.paddingRight),
+          height: Math.round(el.getBoundingClientRect().height),
+          fontSize: px(s.fontSize),
           _el: el,
         });
       } else {

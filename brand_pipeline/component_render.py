@@ -689,7 +689,10 @@ p { text-wrap-style: balance; }
      existing single-cta brand's computed style identical. */
   border: var(--navcta-border, none); border-radius: var(--navcta-radius, 999px);
   height: var(--navcta-height, auto);
-  padding: 0 var(--navcta-pad-x, 1.5rem);
+  /* pad-y default (2026-07): a measured-facts-less CTA had `0` vertical padding
+     and relied on height:auto, collapsing to a too-narrow text-height chip.
+     A 0.5rem vertical floor gives a real button box; measured padY overrides it. */
+  padding: var(--navcta-pad-y, 0.5rem) var(--navcta-pad-x, 1.25rem);
   font-size: var(--navcta-size, var(--c-control-size));
   display: inline-flex; align-items: center; }
 .c-button.c-button--navcta:hover, .c-button.c-button--navcta:focus-visible {
@@ -3626,8 +3629,24 @@ def render_navbar(doc, ctx: ComponentContext, props=None) -> str:
         border channel so an outlined secondary register renders its captured
         stroke — the var defaults keep existing single-cta brands byte-identical)."""
         decls = [f"--navcta-bg: {esc(str(facts['bg']))}"]
-        if facts.get("color"):
-            decls.append(f"--navcta-ink: {esc(str(facts['color']))}")
+        # SAFE INK: when the measured fg wasn't captured, never fall back to the
+        # CSS `#fff` default — a white/light-bg CTA (an unfilled "Get started free")
+        # then rendered white-on-white at idle AND on hover. Derive the ink from the
+        # bg luminance: dark fill → white, light/transparent fill → the brand accent
+        # (the conventional text/outline-CTA ink). (product-launch nav CTAs, 2026-07)
+        ink = facts.get("color")
+        if not ink:
+            _bg = str(facts.get("bg") or "").strip().lower()
+            _rgb = re.search(r"(\d+)\D+(\d+)\D+(\d+)", _bg)
+            _hex = re.match(r"^#([0-9a-f]{6})$", _bg)
+            if _rgb:
+                _dark = sum(int(_rgb.group(i)) for i in (1, 2, 3)) < 384
+            elif _hex:
+                _dark = sum(int(_hex.group(1)[i:i+2], 16) for i in (0, 2, 4)) < 384
+            else:
+                _dark = not _bg.startswith(("#fff", "rgb(255", "white", "transparent"))
+            ink = "#ffffff" if _dark else "var(--c-accent)"
+        decls.append(f"--navcta-ink: {esc(str(ink))}")
         if facts.get("border"):
             decls.append(f"--navcta-border: {esc(str(facts['border']))}")
         if facts.get("radius") is not None:
