@@ -162,6 +162,17 @@ def component_vars(doc, surf, *, selector=":root", display_size=None,
     text = _color_ref(doc, surf.get("textPrimary")) or "var(--color-text-on-primary)"
     accent = _color_ref(doc, surf.get("textAccent")) or text
     bg = surf.get("bg") or "#ffffff"
+    # DARK-SURFACE TEST from the raw bg luminance — NOT `surf.get("textAccent")`.
+    # textAccent merely NAMES the accent color role and is present on light and dark
+    # surfaces alike (v2/remote stamp it on 3 dark surfaces; a mis-authored brand can
+    # stamp it on all 7). Using it as a dark proxy made every light section inherit the
+    # INVERSE muted ink / inverse hairline / dark link-hover — white-on-white muted
+    # text on light panels (product-launch text-contrast, 2026-07). A non-hex bg
+    # (descriptive "image + dark scrim") resolves to the darkest brand color → dark.
+    _raw_bg = str(surf.get("bg") or "#ffffff").strip()
+    _m = re.match(r"^#([0-9a-fA-F]{6})$", _raw_bg)
+    is_dark_surface = (sum(int(_m.group(1)[i:i+2], 16) for i in (0, 2, 4)) < 384
+                       if _m else not re.match(r"^(rgb|hsl|var\()", _raw_bg))
     if re.match(r"^(#|rgb|hsl)", str(bg).strip()) and surface_role:
         bg = f"var(--surface-{_slug(surface_role)})"
     elif not re.match(r"^(#|rgb|hsl|var\()", str(bg).strip()):
@@ -182,7 +193,7 @@ def component_vars(doc, surf, *, selector=":root", display_size=None,
     # carries the contrast; no 62% register exists on that surface) declares it —
     # surfaces without the key keep the global muted-role resolution unchanged.
     muted = _color_ref(doc, surf.get("textSecondary")) \
-        or _color_ref(doc, "text/on-inverse-muted" if surf.get("textAccent")
+        or _color_ref(doc, "text/on-inverse-muted" if is_dark_surface
                       else "text/on-primary-muted") or text
 
     # the brand's single ruled-line hairline (underline fields + ruled action rows):
@@ -190,19 +201,19 @@ def component_vars(doc, surf, *, selector=":root", display_size=None,
     # back to `muted`, which is already resolved per-surface above). Token EXISTENCE is
     # checked directly — color_value()'s pass-through-on-missing return is truthy (the
     # AS-02 invisible-hairline trap this block previously documented at length).
-    _hairline_tok = "border/hairline-on-inverse" if surf.get("textAccent") else "border/hairline-on-primary"
+    _hairline_tok = "border/hairline-on-inverse" if is_dark_surface else "border/hairline-on-primary"
     hairline = f"var(--color-{_slug(_hairline_tok)})" if _hairline_tok in colors else muted
     # PER-SURFACE link-hover (anti-ai-slop.md AS-10/AS-20): the measured hover color was
     # measured on a DARK surface — it applies ONLY on dark/textAccent-bearing surfaces
     # (incl. re-scoping panels/cards); every light surface hovers in its own ink.
     link_hover = ("var(--chrome-link-hover)"
-                  if (surf.get("textAccent") and link_hover_color(doc)) else text)
+                  if (is_dark_surface and link_hover_color(doc)) else text)
     # BRAND LINK TOKENS win when carried (sysfix 2026-07): a brand with an authored
     # text/link(+hover) pair binds its typographic-action color per surface — idle
     # `--c-action-color` + hover `--c-link-hover` — from ITS OWN tokens (the on-inverse
     # twins on dark surfaces). Token-less brands keep the resolutions above unchanged.
     _link_tok, _link_hover_tok = (("text/link-on-inverse", "text/link-hover-on-inverse")
-                                  if surf.get("textAccent")
+                                  if is_dark_surface
                                   else ("text/link", "text/link-hover"))
     action_color = (f"var(--color-{_slug(_link_tok)})"
                     if _link_tok in colors else None)
@@ -1671,13 +1682,18 @@ button.cs-nav-trigger {{ -webkit-appearance: none; appearance: none;
 /* left CATEGORY RAIL (menu.sidebarTabs) — a vertical tab list beside the column
    groups; inert for brands whose menu carries no rail (no element emitted). */
 .cs-mega-rail {{ flex: 0 0 15rem; max-width: 15rem;
+  /* provenance: structural — mega-menu category-rail separator hairline (chrome
+     device geometry, not a brand color role) */
   border-right: 1px solid rgba(0,0,0,0.08); padding-right: 1.25rem; }}
 .cs-mega-rail ul {{ list-style: none; margin: 0; padding: 0;
   display: flex; flex-direction: column; gap: 0.25rem; }}
 .cs-mega-rail-item {{ display: flex; align-items: center;
   justify-content: space-between; gap: 0.5rem;
   padding: 0.5rem 0.6rem; border-radius: 8px; font-family: var(--c-font-body);
+  /* provenance: structural — mega-menu utility-list item size (nav chrome density,
+     not a brand type tier) */
   font-size: 14px; font-weight: 500; color: {gt_color}; }}
+/* provenance: structural — mega-menu active-item hover wash (chrome state tint) */
 .cs-mega-rail-item--active {{ background: rgba(0,0,0,0.05); }}
 .cs-mega-rail-chev {{ opacity: 0.5; }}
 .cs-mega-main {{ flex: 1 1 auto; min-width: 0; display: flex;

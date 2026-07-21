@@ -6911,6 +6911,8 @@ SCAFFOLD_INTERLOCK_CSS = """.cs-interlock { position: relative; display: grid;
   line-height: 1.06em; }
 @media (max-width: 767px) {
   .cs-interlock { grid-template-columns: 1fr; }
+  /* provenance: structural — mobile media recrop ratio (layout geometry, not a
+     brand token; coincidentally equals Remote's landscape aspect) */
   .cs-interlock-media { aspect-ratio: 3 / 2; }
 }"""
 
@@ -7104,6 +7106,8 @@ SCAFFOLD_FLOW_CSS = """.cs-flow { display: flex; flex-direction: column;
   font-size: var(--type-h4-size, var(--c-heading-size));
   line-height: var(--type-h4-line-height, var(--c-heading-line)); color: var(--c-ink); }
 .cs-testimonial-mark { color: var(--c-accent); font-family: var(--c-font-display);
+  /* provenance: structural — decorative pull-quote glyph scale (a device size
+     ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */
   font-size: clamp(2.5rem, 5cqw, 4rem); line-height: 0.8; margin-bottom: 1rem; }
 .cs-testimonial .c-person { margin-top: var(--space-quote-to-attribution,
   var(--c-block-gap)); }
@@ -7305,6 +7309,12 @@ SCAFFOLD_ACCORDION_CSS = """.cs-acc-split .cs-acc-col { grid-column: 1 / span 6;
 # see card_panel_role). Values are the brand's own panel/radius vars, never literals.
 SCAFFOLD_CARD_PLATE_CSS = """.cs-module--plate { background: var(--c-panel); color: var(--c-panel-ink);
   --c-ink: var(--c-panel-ink); --c-accent: var(--c-panel-ink);
+  /* re-scope the MUTED ink to the panel too — body/caption text uses
+     --c-ink-muted, not --c-ink; without this a plate that sits after an inverse
+     section kept the surrounding (near-white) muted ink and rendered
+     white-on-white on its own light panel (product-launch text-contrast, 2026-07).
+     Matches the cs-panel / band-panel devices which already re-scope it. */
+  --c-ink-muted: var(--c-panel-ink-muted, var(--c-panel-ink));
   --c-hairline: var(--c-panel-hairline);
   /* plate inset rides the brand's measured panel-padding token when authored
      (fid6 2026-07); the 4-baseline structural default is unchanged without it. */
@@ -8458,6 +8468,7 @@ def root_vars(doc, surf, *, display_size, title_overlap, surface_role=None) -> s
   --c-ghost: var(--color-text-ghost-on-primary);
   --c-panel: var(--surface-surface-panel);
   --c-panel-ink: var(--color-text-on-primary);
+  --c-panel-ink-muted: var(--color-text-on-primary-muted);
   --c-panel-hairline: var(--color-border-hairline-on-primary);
   /* ONE shared page grid + baseline (alignment quick wins): every archetype scaffold
      places onto THESE tracks instead of private per-section grids, and every offset
