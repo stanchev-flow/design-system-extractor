@@ -5739,6 +5739,30 @@ def compose_overlay(doc, layout, ctx, rendered, style_ctx):
     for s in slots:
         if s.get("media") or s["name"] in claimed:
             continue
+        # ACTION-GROUP slot (button contract): render the hero CTAs (2026-07). The
+        # overlay composer previously dropped them — _ov_text() is empty for a
+        # button-LIST slot, so it was claimed+skipped and the hero shipped with no
+        # CTA (the source hero carries "Get a demo" + "Get started free").
+        _contract = str(s.get("contract") or "").lower()
+        _role = str(s.get("role") or "").lower()
+        if _contract == "button" or "action" in _role:
+            _copy = s.get("copy")
+            _btns = _copy if isinstance(_copy, list) else ([_copy] if _copy else [])
+            _frags = []
+            for _i, _b in enumerate(_btns):
+                if not isinstance(_b, dict) or not _b.get("label"):
+                    continue
+                _var = str(_b.get("variant") or "").lower()
+                _outline = _i > 0 or _var.startswith(("out", "sec", "ghost", "text"))
+                _frags.append(cr.render_button(doc, ctx, {
+                    "label": _b.get("label"), "href": _b.get("href", "#"),
+                    "accent": not _outline,
+                    "familyHint": "outlined secondary" if _outline else "filled primary"}))
+            if _frags:
+                foot_items.append('\n    <div class="cs-ov-foot-item cs-ov-actions">'
+                                  + "".join(_frags) + "</div>")
+            claimed.add(s["name"])
+            continue
         if not _ov_text(s):
             claimed.add(s["name"])
             continue
@@ -6967,6 +6991,9 @@ SCAFFOLD_OVERLAY_CSS = """.cs-overlay-sec { position: relative; }
   flex-direction: column; align-items: center; justify-content: center;
   gap: var(--c-block-gap); padding: var(--c-section-pad); text-align: center; }
 .cs-ov-onmedia .cs-ov-foot-item { max-width: 46rem; }
+/* hero action row (2026-07): the composed CTA group sits under the lede. */
+.cs-ov-actions { display: flex; flex-wrap: wrap; gap: 1rem;
+  justify-content: center; align-items: center; max-width: none; }
 /* panel-on-media (G1): a SOLID panel floated over the canvas — the sanctioned
    panel-over-media pair. Own opaque surface scope (like the split's .cs-panel), so its
    text never composites against the photograph. Flat: no shadow, no radius. */
