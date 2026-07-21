@@ -260,9 +260,14 @@ def extract_facts(doc, html, layout, render_dir):
     low = html.lower()
     f = {}
 
-    radii = re.findall(r"border-radius:\s*([^;]+);", low)
+    # terminate on ; " } { — a radius in an INLINE style attribute
+    # (`style="border-radius: 8px"`) has no trailing `;`, so a bare `[^;]+`
+    # greedily swallowed the closing quote and the following `href` URL until it
+    # hit a `;` in the query string, hallucinating an off-scale radius token
+    # (product-launch generation false-FAIL, 2026-07).
+    radii = re.findall(r'border-radius:\s*([^;"}{]+)', low)
     f["radii"] = [r.strip() for r in radii]
-    f["radius_vars"] = dict(re.findall(r"(--[a-z0-9-]*radius[a-z0-9-]*):\s*([^;]+);", low))
+    f["radius_vars"] = dict(re.findall(r'(--[a-z0-9-]*radius[a-z0-9-]*):\s*([^;"}{]+)', low))
     # EVERY custom-property declaration (last one wins, mirroring the cascade for the
     # common same-specificity case) — the lookup table for var()-chain resolution
     # (fix-batch 2026-07, N6: `var(--button-radius)` must resolve to its 0.5rem layer-1

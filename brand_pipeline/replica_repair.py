@@ -33,6 +33,9 @@ SCHEMA_VERSION = "loop-ledger.v1"
 DEFAULT_BAR = 0.90            # mirrors pipeline_flow.DEFAULT_REPLICA_BAR
 DEFAULT_BANDS_PER_ROUND = 2   # bounded: worst-first, small steps
 RATCHET_EPS = 0.001           # score drop below this is metric noise, not regression
+MAX_BAND_ATTEMPTS = 2         # transient failures (truncation, provider errors)
+                              # get one retry; a SCORE REGRESSION quarantines
+                              # immediately (that verdict is real evidence)
 
 # canon files the loop may mutate (via repair calls) and must snapshot/revert
 CANON_FILES = ("brand.yaml", "layout-library.yaml", "section-copy.yaml")
@@ -148,7 +151,7 @@ def load_ledger(brand_dir: Path) -> dict:
         except Exception:
             pass
     return {"schemaVersion": SCHEMA_VERSION, "rounds": [],
-            "rendererWorkOrders": [], "noSelfFix": []}
+            "rendererWorkOrders": [], "noSelfFix": [], "attempts": {}}
 
 
 def save_ledger(brand_dir: Path, ledger: dict) -> None:
@@ -203,9 +206,17 @@ def make_repair_hook(
         ledger = load_ledger(brand_dir)
         rounds: list[dict] = ledger["rounds"]
         no_self_fix: set[str] = set(ledger.get("noSelfFix") or [])
+        attempts: dict[str, int] = dict(ledger.get("attempts") or {})
         overall = report.get("overall")
 
+        def _charge_attempt(section: str) -> None:
+            """Transient failure: burn one attempt; quarantine at the cap."""
+            attempts[section] = attempts.get(section, 0) + 1
+            if attempts[section] >= MAX_BAND_ATTEMPTS:
+                no_self_fix.add(section)
+
         # ── ratchet: settle the PREVIOUS round against this fresh score ──
+        zero_delta_demoted: list[str] = []
         if rounds and rounds[-1].get("overallAfter") is None:
             prev = rounds[-1]
             prev["overallAfter"] = overall
@@ -218,6 +229,16 @@ def make_repair_hook(
                 restore_snapshot(brand_dir, int(prev["iteration"]))
                 for section in prev.get("bandsAttempted") or []:
                     no_self_fix.add(section)
+            elif (overall is not None and before is not None
+                    and prev.get("changed")
+                    and abs(float(overall) - float(before)) < RATCHET_EPS):
+                # applied authoring facts moved the render by nothing: the gap
+                # is not authoring — demote the bands to renderer work orders
+                # instead of retrying a theory the score just disproved.
+                prev["demotedForNoEffect"] = True
+                for section in prev.get("bandsAttempted") or []:
+                    no_self_fix.add(section)
+                    zero_delta_demoted.append(section)
 
         candidates = band_candidates(report, bar)
         renderer = [c for c in candidates if c["gap"] == GAP_RENDERER]
@@ -233,8 +254,23 @@ def make_repair_hook(
                 orders.append({k: c[k] for k in
                                ("section", "capability", "score", "note")})
                 known.add(key)
+
+        def _demote_to_order(section: str, why: str) -> None:
+            cand = next((c for c in candidates if c["section"] == section), None)
+            capability = cand["capability"] if cand else "unknown"
+            key = (section, capability)
+            if key not in known:
+                orders.append({"section": section, "capability": capability,
+                               "score": cand.get("score") if cand else None,
+                               "note": f"demoted: {why}"
+                                       + (f" — {cand['note']}" if cand else "")})
+                known.add(key)
+
+        for section in zero_delta_demoted:
+            _demote_to_order(section, "applied authoring facts had no render effect")
         ledger["rendererWorkOrders"] = orders
         ledger["noSelfFix"] = sorted(no_self_fix)
+        ledger["attempts"] = attempts
 
         if not fixable:
             ledger["stopped"] = {
@@ -250,10 +286,11 @@ def make_repair_hook(
         snapshot_canon(brand_dir, iteration)
         attempted: list[str] = []
         changed_any = False
+        demoted_now: list[str] = []
         for cand in fixable[:max(1, bands_per_round)]:
             attempted.append(cand["section"])
             try:
-                changed = bool(repair_call(brand_dir, cand))
+                result = repair_call(brand_dir, cand)
             except Exception as exc:
                 rounds.append({
                     "iteration": iteration, "overallBefore": overall,
@@ -262,18 +299,38 @@ def make_repair_hook(
                 })
                 restore_snapshot(brand_dir, iteration)
                 for section in attempted:
-                    no_self_fix.add(section)
+                    _charge_attempt(section)
                 ledger["noSelfFix"] = sorted(no_self_fix)
+                ledger["attempts"] = attempts
                 save_ledger(brand_dir, ledger)
-                return False
-            changed_any = changed_any or changed
+                # transient failure with retry budget left → let G4 re-invoke
+                return any(attempts.get(s, 0) < MAX_BAND_ATTEMPTS
+                           for s in attempted)
+            if result == "demote":
+                # the model's legal verdict: no authoring fix exists — the gap
+                # is renderer behavior. File the work order; never retry.
+                no_self_fix.add(cand["section"])
+                demoted_now.append(cand["section"])
+                _demote_to_order(cand["section"],
+                                 "no authoring fix (model verdict)")
+                continue
+            changed_any = changed_any or bool(result)
 
         if not changed_any:
+            # a False repair result is DETERMINISTIC (unjoinable band, gap not
+            # repairable by this adapter) — retrying cannot change it, so the
+            # attempted bands quarantine immediately (demoted ones already did).
+            for section in attempted:
+                no_self_fix.add(section)
             rounds.append({"iteration": iteration, "overallBefore": overall,
                            "overallAfter": overall,
-                           "bandsAttempted": attempted, "changed": False})
+                           "bandsAttempted": attempted, "changed": False,
+                           "demoted": demoted_now})
+            ledger["noSelfFix"] = sorted(no_self_fix)
+            ledger["attempts"] = attempts
             save_ledger(brand_dir, ledger)
-            return False
+            # more fixable candidates may remain beyond this round's batch
+            return any(c["section"] not in no_self_fix for c in fixable)
 
         if validator is not None:
             rep = validator(brand_dir)
@@ -281,7 +338,7 @@ def make_repair_hook(
             if errors:
                 restore_snapshot(brand_dir, iteration)
                 for section in attempted:
-                    no_self_fix.add(section)
+                    _charge_attempt(section)
                 rounds.append({
                     "iteration": iteration, "overallBefore": overall,
                     "overallAfter": overall, "bandsAttempted": attempted,
@@ -290,13 +347,18 @@ def make_repair_hook(
                     "validatorErrors": errors[:5],
                 })
                 ledger["noSelfFix"] = sorted(no_self_fix)
+                ledger["attempts"] = attempts
                 save_ledger(brand_dir, ledger)
-                return False
+                return any(attempts.get(s, 0) < MAX_BAND_ATTEMPTS
+                           for s in attempted)
 
         rounds.append({"iteration": iteration, "overallBefore": overall,
                        "overallAfter": None,   # settled by the NEXT invocation
                        "bandsAttempted": attempted, "changed": True,
+                       "demoted": demoted_now,
                        "gaps": [c["gap"] for c in fixable[:max(1, bands_per_round)]]})
+        ledger["noSelfFix"] = sorted(no_self_fix)
+        ledger["attempts"] = attempts
         save_ledger(brand_dir, ledger)
         return True
 

@@ -215,7 +215,13 @@ def parse_model_files(raw: str, requested: tuple[str, ...]) -> dict[str, str]:
     try:
         doc = json.loads(text)
     except Exception as exc:
-        raise AuthorBlocked(f"author response is not JSON: {exc}") from exc
+        # models occasionally emit a literal control character (raw newline/tab)
+        # inside a JSON string; strict=False accepts those without changing any
+        # other parse semantics. Only a still-broken response blocks.
+        try:
+            doc = json.loads(text, strict=False)
+        except Exception:
+            raise AuthorBlocked(f"author response is not JSON: {exc}") from exc
     files = doc.get("files") if isinstance(doc, dict) else None
     if not isinstance(files, dict):
         raise AuthorBlocked("author response missing object key 'files'")

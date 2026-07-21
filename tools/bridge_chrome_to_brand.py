@@ -808,17 +808,20 @@ def _write_brand_yaml_atomic(
     # every other section (and its comments) is byte-preserved. navbar/footer are
     # emitted last by this pipeline; find the first of them at column 0.
     lines = raw.splitlines(keepends=True)
-    cut = None
-    for i, ln in enumerate(lines):
-        if ln.startswith("navbar:") or ln.startswith("footer:"):
-            cut = i
-            break
-    # Keep everything before navbar/footer BYTE-IDENTICAL. navbar/footer are the
-    # trailing top-level blocks, so `head` already carries its own separator
-    # newlines; appending the regenerated block directly is idempotent (a second
-    # run produces the same bytes — no creeping blank lines before navbar).
-    head = "".join(lines[:cut]) if cut is not None else raw
-    if cut is None and head and not head.endswith("\n"):
+    # Excise ONLY the navbar/footer top-level blocks (wherever they sit) and
+    # keep every other block byte-identical. The original cut-at-first-and-drop-
+    # rest assumed chrome blocks were trailing; staged-author brand.yaml carries
+    # sections AFTER them (e.g. `contracts:`), which the atomic guard then
+    # correctly reported as dropped (hubspot-v4 regression 2026-07).
+    keep: list[str] = []
+    skipping = False
+    for ln in lines:
+        if re.match(r"^[A-Za-z_][A-Za-z0-9_-]*:", ln):
+            skipping = ln.startswith("navbar:") or ln.startswith("footer:")
+        if not skipping:
+            keep.append(ln)
+    head = "".join(keep)
+    if head and not head.endswith("\n"):
         head += "\n"
 
     block = yaml.safe_dump(

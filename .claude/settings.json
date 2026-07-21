@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./venv/bin/python run_pipeline_flow.py *)",
+      "Bash(./venv/bin/python -m pytest *)",
+      "Bash(./venv/bin/python tools/extract/validate_brand_evidence.py *)",
+      "Bash(./venv/bin/python -m py_compile *)",
+      "Bash(npm view *)",
+      "mcp__Claude_Preview__preview_screenshot",
+      "mcp__Claude_Preview__preview_console_logs",
+      "mcp__Claude_Preview__preview_list",
+      "mcp__Claude_Preview__preview_network",
+      "mcp__Claude_in_Chrome__tabs_context_mcp"
+    ]
+  }
+}

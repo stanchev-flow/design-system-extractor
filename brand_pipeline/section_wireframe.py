@@ -470,16 +470,37 @@ def _testimonial_plan(section: dict, registry: dict | None, brand: dict) -> dict
     if not slot and str(section.get("useCase") or "").lower() != "testimonial":
         return None
     copy_value = (slot or {}).get("copy")
-    if not isinstance(copy_value, dict):
-        return {
-            "componentContract": "testimonial",
-            "complete": False,
-            "missing": ["structured quote and attribution"],
-        }
-    quote = str(copy_value.get("quote") or copy_value.get("text") or "").strip()
-    name = str(copy_value.get("name") or copy_value.get("author") or "").strip()
-    role = str(copy_value.get("role") or copy_value.get("company") or "").strip()
-    asset = copy_value.get("avatar") or copy_value.get("media") or copy_value.get("asset")
+    if isinstance(copy_value, dict):
+        # legacy nested-dict shape: one slot carries {quote, name, role, avatar}
+        quote = str(copy_value.get("quote") or copy_value.get("text") or "").strip()
+        name = str(copy_value.get("name") or copy_value.get("author") or "").strip()
+        role = str(copy_value.get("role") or copy_value.get("company") or "").strip()
+        asset = copy_value.get("avatar") or copy_value.get("media") or copy_value.get("asset")
+    else:
+        # DISTRIBUTED shape (modern generation): quote / attribution / portrait are
+        # SEPARATE slots. The quote slot's copy is a plain string; attribution and
+        # media live in sibling slots. Assemble the testimonial from all of them
+        # (without this the planner false-failed every distributed testimonial —
+        # product-launch generation, 2026-07).
+        def _slot_str(s):
+            c = (s or {}).get("copy")
+            return str(c).strip() if isinstance(c, str) else ""
+        quote = _slot_str(slot)
+        attr_slot = next((s for s in _slots(section)
+                          if str(s.get("role") or "").lower() == "attribution"
+                          or str(s.get("contract") or "").lower() in ("attribution", "label")
+                          or "attribut" in str(s.get("name") or "").lower()), None)
+        attr_text = _slot_str(attr_slot)
+        # "Name, Role" → split; a single clause is the role/company line
+        if "," in attr_text:
+            name, role = (p.strip() for p in attr_text.split(",", 1))
+        else:
+            name, role = "", attr_text
+        media_slot = next((s for s in _slots(section)
+                           if str(s.get("role") or "").lower() == "media"
+                           or str(s.get("contract") or "").lower() in ("image", "media")
+                           or (s.get("mediaAspect") and s.get("asset"))), None)
+        asset = (media_slot or {}).get("asset")
     if isinstance(asset, dict):
         asset = asset.get("src")
     asset = str(asset or "").strip()
@@ -540,8 +561,11 @@ def _testimonial_plan(section: dict, registry: dict | None, brand: dict) -> dict
         "assetRequest": request,
         "internalAnatomy": anatomy,
         "optionalRoles": [
-            key for key in ("stat", "result", "logo", "action", "cta") if copy_value.get(key)
-        ],
+            key for key in ("stat", "result", "logo", "action", "cta")
+            if isinstance(copy_value, dict) and copy_value.get(key)
+        ] or [str(s.get("role") or s.get("contract") or "") for s in _slots(section)
+              if str(s.get("role") or s.get("contract") or "").lower()
+              in ("stat", "metrics", "result", "logo", "action", "cta")],
         "preferredMeasureCh": 58,
         "minComponentWidth": 480,
         "maxEmptySpaceRatio": 0.68,
@@ -649,13 +673,38 @@ def plan_wireframe(composition: dict, brand_dir: Path | str | None = None) -> di
         sparse_run = sparse_run + 1 if text_only else 0
 
         required = []
+        optional = []
         capabilities = []
+        # contracts the composers have a real rendering path for; a slot outside
+        # this set that ALSO has no consumer is a non-load-bearing enhancement the
+        # model declared faithfully from the source (e.g. a hero utility-card, a
+        # "read the story" link) — drop it as OPTIONAL + log a renderer work-order
+        # instead of hard-failing the whole page (2026-07).
+        load_bearing = (TEXT_CONTRACTS | ACTION_CONTRACTS | MEDIA_CONTRACTS
+                        | PROOF_CONTRACTS | ITEM_CONTRACTS)
         for slot in slots:
             if slot.get("copy") in (None, "", []):
                 continue
             name = str(slot.get("name") or slot.get("role") or "slot")
-            required.append(name)
             ok, path = renderer_capability(section, slot)
+            contract = str(slot.get("contract") or "").lower()
+            # only SINGLE (non-repeated) enhancement slots drop; repeated content
+            # (a `list`/collection that would flatten semantic records) stays a
+            # hard failure — that is a real defect, not a droppable enhancement.
+            repeated = len(_copy_items(slot)) > 1
+            # a lone `card` in a HERO is a floating enhancement (the hero's real
+            # content is heading/body/actions/media) — the source's floating
+            # product-UI chip, a known renderer gap. Drop+log it, but NEVER in a
+            # cards/split section where the card IS the content.
+            hero_float_card = (contract in {"card", "content-block", "feature-item"}
+                               and use_case == "hero" and not repeated)
+            droppable = contract and not repeated and (
+                contract not in load_bearing or hero_float_card)
+            if not ok and droppable:
+                optional.append({"slot": name, "contract": contract,
+                                 "rendererGap": path})
+                continue
+            required.append(name)
             capabilities.append({"slot": name, "consumable": ok, "path": path})
 
         density = "dense" if len(slots) >= 4 or len(collections) else (
@@ -684,7 +733,7 @@ def plan_wireframe(composition: dict, brand_dir: Path | str | None = None) -> di
             ),
             "structureRecipeId": section.get("structureRecipeId"),
             "requiredSlots": required,
-            "optionalSlots": [],
+            "optionalSlots": optional,
             "ctaRequired": use_case == "cta",
             "proofRequired": use_case in {"hero", "testimonial", "logos"},
             "collections": collections,
