@@ -150,6 +150,28 @@ class ComparatorTests(unittest.TestCase):
         self.assertIn("translatey(-1px)", cf.hover_transform(ours).lower())
         self.assertEqual(cf.hover_transform(src), "none")
 
+    def test_vp_height_signature_mechanic_equivalence(self):
+        # our generic nav var and the source's differ by NAME but are the SAME mechanic
+        self.assertEqual(
+            cf.vp_height_signature("calc(100dvh - var(--c-hero-nav-offset, 0px))"),
+            cf.vp_height_signature("calc(100dvh - var(--global-nav-header-height))"))
+        self.assertEqual(cf.vp_height_signature("calc(100dvh - var(--x))"),
+                         "viewport-minus-var")
+        # a bare viewport height is a DIFFERENT mechanic (no nav subtraction) — still flagged
+        self.assertNotEqual(cf.vp_height_signature("100dvh"),
+                            cf.vp_height_signature("calc(100dvh - var(--nav))"))
+        self.assertEqual(cf.vp_height_signature("min(90svh, 54rem)"), "viewport")
+
+    def test_hero_height_rule_no_divergence_when_same_mechanic(self):
+        # our hero emits calc(100dvh - var(--c-hero-nav-offset)); source uses its own var
+        ours = _our_bundles(hero_calc=True)
+        ours["hero"]["boundRules"] = [_rule(
+            "#sec-0 .cs-ov-canvas",
+            "min-height:calc(100dvh - var(--c-hero-nav-offset, 0px))")]
+        divs, _ = cf.match_and_diff(ours, _source_bundles())
+        self.assertFalse([d for d in divs
+                          if d["element"] == "hero" and d["property"] == "height-rule"])
+
     def test_viewport_relative_height_detector(self):
         src = _source_bundles()["hero"]
         self.assertTrue(cf.viewport_relative_height(src["boundRules"],
@@ -343,14 +365,27 @@ class HubspotV3ArtifactTests(unittest.TestCase):
     def test_schema_and_counts(self):
         self.assertEqual(self.doc["schemaVersion"], cf.SCHEMA)
         self.assertGreater(self.doc["totalDivergences"], 0)
-        self.assertGreaterEqual(self.doc["severityCounts"]["critical"], 3)
 
-    def test_all_four_known_divergences_found(self):
+    def test_hero_footer_slice_resolved_others_still_found(self):
+        # After the HERO + FOOTER vertical slice (Phase 2→4), the hero height-rule and
+        # footer responsive-columns divergences are RESOLVED, while the out-of-slice
+        # button hover-transform + nav panel-background remain (the generalize step).
         acc = self.doc["acceptance"]
+        self.assertFalse(acc["hero_height_calc_vs_px"],
+                         "hero height-rule should be resolved by the slice")
+        self.assertFalse(acc["footer_responsive_columns"],
+                         "footer responsive-columns should be resolved by the slice")
         self.assertTrue(acc["button_hover_transform"])
-        self.assertTrue(acc["hero_height_calc_vs_px"])
         self.assertTrue(acc["nav_panel_background"])
-        self.assertTrue(acc["footer_responsive_columns"])
+
+    def test_no_hero_footer_height_or_column_divergence(self):
+        for d in self.doc["divergences"]:
+            if d["element"] == "hero":
+                self.assertNotEqual(d["property"], "height-rule")
+            if d["element"] == "footer":
+                self.assertNotIn(d["property"],
+                                 ("responsive-columns", "grid-template-columns",
+                                  "max-width"))
 
     def test_button_hover_transform_is_invented_default(self):
         hit = next((d for d in self.doc["divergences"]

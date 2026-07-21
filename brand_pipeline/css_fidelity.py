@@ -227,6 +227,23 @@ def viewport_relative_height(bound_rules: list[dict],
     return None
 
 
+def vp_height_signature(value: str) -> str:
+    """Canonical MECHANIC of a viewport-relative height, so two independently authored
+    design systems compare like-for-like (our generic ``var(--c-hero-nav-offset)`` vs the
+    source's ``var(--global-nav-header-height)`` are the SAME mechanic; requiring
+    byte-identical var names across two systems is not a fidelity signal). The mechanic
+    stays meaningful: a bare ``100dvh`` and ``calc(100dvh - var(nav))`` still differ, so
+    a hero that fills the viewport but DROPS the nav subtraction is still flagged."""
+    v = _norm(value).lower()
+    if re.search(r"calc\(\s*\d*\.?\d*(?:dvh|svh|lvh|vh)\s*-\s*var\(", v):
+        return "viewport-minus-var"
+    if re.search(r"calc\(\s*\d*\.?\d*(?:dvh|svh|lvh|vh)\s*-\s*\d", v):
+        return "viewport-minus-length"
+    if _VP_UNIT_RE.search(v):
+        return "viewport"
+    return v
+
+
 def responsive_layout_rules(bound_rules: list[dict]) -> list[dict]:
     """@media rules that RE-FLOW layout (column-count/grid/flex/display). The count
     is the footer's responsiveness signal."""
@@ -613,7 +630,9 @@ def diff_pair(role: str, ours: dict, source: dict) -> list[dict]:
             fixed = (o_vp.get(PRIMARY_VIEWPORT) or {}).get("height", "fixed px")
             divs.append(_mk_div(role, "height-rule", f"{fixed} (fixed px)", s_h,
                                 "all", "critical", "missing-fact", kind="behavior"))
-        elif s_h and o_h and _norm(s_h).lower() != _norm(o_h).lower():
+        elif s_h and o_h and vp_height_signature(o_h) != vp_height_signature(s_h):
+            # both viewport-relative but a DIFFERENT mechanic (e.g. bare 100dvh vs the
+            # source's viewport-minus-nav) — still a real divergence.
             divs.append(_mk_div(role, "height-rule", o_h, s_h, "all",
                                 "high", "wrong-value", kind="behavior"))
 
