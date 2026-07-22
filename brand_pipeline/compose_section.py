@@ -4184,7 +4184,13 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
     # 20px h5-register card heading measured in the capture DOM). The register picks
     # the CLASS tier; the TAG stays h3 (document outline). h3 register = the default
     # for brands without the fact.
-    _card_slots = (cr.block_device(doc, "card") or {}).get("slots") or {}
+    _card_dev = cr.block_device(doc, "card") or {}
+    _card_slots = _card_dev.get("slots") or {}
+    # CARD HEADER DIVIDER (inset-card-on-canvas, 2026-07): the brand's card grammar may
+    # rule a resting hairline between the icon+title header and the body (the classic
+    # feature-card divider the capture shows). Fact-gated on the card device's
+    # `headerDivider`; absent ⇒ no rule, so every other card family stays byte-identical.
+    _head_divider_fact = bool(_card_dev.get("headerDivider"))
     _head_slot = _card_slots.get("heading") if isinstance(_card_slots, dict) else None
     _reg = str((_head_slot or {}).get("register") or "").strip().lower() \
         if isinstance(_head_slot, dict) else ""
@@ -4311,6 +4317,10 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
             anatomy = True
         body_html = cr.render_paragraph(doc, ctx, {"text": card.get("body", ""), "measure": "44ch"})
         link_html = cr.render_arrow_link(doc, ctx, {"label": card["link"]}) if card.get("link") else ""
+        # a header rule only draws when the card actually renders a header + a body, so
+        # caption/quote cards (no card heading) are untouched even if the fact is present.
+        _hdr_div = ('\n      <hr class="cs-module-divider" aria-hidden="true">'
+                    if _head_divider_fact and card_head_html and body_html else "")
         _headrow = False
         if edgecut_mark:
             # card-plate anatomy: the company mark sits at MARK height (device frame
@@ -4341,13 +4351,13 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
                 _sz_style = (f' style="--cs-headrow-mark: {cr.esc(_sz)}"'
                              if re.fullmatch(r"[\d.]+(?:rem|em|px)", _sz) else "")
                 inner = (f'      <div class="cs-module-headrow"{_sz_style}>\n'
-                         f'  {figure}        {card_head_html}\n      </div>\n'
+                         f'  {figure}        {card_head_html}\n      </div>{_hdr_div}\n'
                          f'      {body_html}\n      '
                          f'{person_html}\n      {link_html}')
             else:
                 lead = (f'{card_eyebrow_html}\n      {card_head_html}' if anatomy
                         else caption_html)
-                inner = (f'{figure}      {lead}\n      {body_html}\n      '
+                inner = (f'{figure}      {lead}{_hdr_div}\n      {body_html}\n      '
                          f'{person_html}\n      {link_html}')
         else:
             # a media-less quote card composes text-first — no empty frame (W7).
@@ -4356,7 +4366,7 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
                       if img_html else "")
             lead = (f'{card_eyebrow_html}\n      {card_head_html}' if anatomy
                     else caption_html)
-            inner = (f'{figure}      {lead}\n      {body_html}\n      '
+            inner = (f'{figure}      {lead}{_hdr_div}\n      {body_html}\n      '
                      f'{person_html}\n      {link_html}')
         plate = " cs-module--plate" if plated else ""
         anatomy_cls = " cs-module--anatomy" if anatomy else ""
@@ -4454,6 +4464,33 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
         # the knob's CONTENT track count re-scopes the module grid only — the
         # section keeps its registration --grid-cols for placed devices (fix7).
         card_decls.append(f"--grid-cols: {module_cols}")
+    # CARD SURFACE + OUTLINE (inset-card-on-canvas, 2026-07): a plated grid whose
+    # brand declares a CONTAINER surface role DISTINCT from the page panel re-points
+    # the plate background at that role's own surface var, and — when that surface's
+    # grammar records a resting hairline `border` — draws the card outline. This is
+    # the generic "white/measured card floating on a warmer canvas" relationship: the
+    # plate CSS already resolves ink/hairline/radius/padding, so only the fill + the
+    # optional outline need the section-scoped override. Fact-gated on BOTH counts:
+    #   * a brand whose container role already IS the page panel (--c-panel binds
+    #     surface/panel) emits no bg override → byte-identical;
+    #   * a surface with no `border` fact draws no outline (shadow-elevated / flat
+    #     card families are unchanged) → byte-identical.
+    # No section- or content-specific token names — the fill/outline ride the brand's
+    # own surface-role grammar (AS-02: surfaces are law).
+    panel_role = card_panel_role(doc)
+    if plated and panel_role:
+        _surfaces = ((doc or {}).get("tokens") or {}).get("surfaces") or {}
+        _surf = _surfaces.get(panel_role) if isinstance(_surfaces.get(panel_role), dict) else {}
+        if tokens_css._slug(panel_role) != "surface-panel":
+            card_decls.append(f"--c-card-plate-bg: {tokens_css.surface_var(panel_role)}")
+        _bd = _surf.get("border")
+        if _bd:
+            if isinstance(_bd, str) and re.match(r"^\d", _bd.strip()):
+                # an explicit CSS border value rides verbatim
+                card_decls.append(f"--c-card-plate-border: {cr.esc(_bd.strip())}")
+            else:
+                # a keyword/role (`hairline`) resolves to the brand's measured hairline
+                card_decls.append("--c-card-plate-border: 1px solid var(--c-panel-hairline)")
     if edgecut and _pat_geo.get("cardWidth"):
         card_decls.append(f"--cs-edgecut-card-w: {cr.esc(_pat_geo['cardWidth'])}")
     if edgecut and _pat_geo.get("cardGap"):
@@ -7599,7 +7636,14 @@ SCAFFOLD_ACCORDION_CSS = """.cs-acc-split .cs-acc-col { grid-column: 1 / span 6;
 # card PLATE + PERSON-ROW anatomy (shared by the edge-cut track and — fid2 2026-07 —
 # the contained card grid of any brand whose card device rides a Container surface;
 # see card_panel_role). Values are the brand's own panel/radius vars, never literals.
-SCAFFOLD_CARD_PLATE_CSS = """.cs-module--plate { background: var(--c-panel); color: var(--c-panel-ink);
+SCAFFOLD_CARD_PLATE_CSS = """.cs-module--plate {
+  /* CARD SURFACE (fid 2026-07, inset-card-on-canvas): the plate paints the brand's
+     DECLARED container surface. Default is the page panel role (--c-panel); a brand
+     whose card/container surface is a DISTINCT role from the page panel (e.g. white
+     cards floating on a warmer off-white canvas) re-points --c-card-plate-bg at that
+     role via the module-grid scope. Fact-gated: absent override ⇒ --c-panel, byte-
+     identical for brands whose container role already IS the page panel. */
+  background: var(--c-card-plate-bg, var(--c-panel)); color: var(--c-panel-ink);
   --c-ink: var(--c-panel-ink); --c-accent: var(--c-panel-ink);
   /* re-scope the MUTED ink to the panel too — body/caption text uses
      --c-ink-muted, not --c-ink; without this a plate that sits after an inverse
@@ -7611,7 +7655,13 @@ SCAFFOLD_CARD_PLATE_CSS = """.cs-module--plate { background: var(--c-panel); col
   /* plate inset rides the brand's measured panel-padding token when authored
      (fid6 2026-07); the 4-baseline structural default is unchanged without it. */
   --c-plate-pad: var(--space-panel-padding, calc(4 * var(--baseline)));
-  border-radius: var(--radius-card, 0); padding: var(--c-plate-pad); }
+  border-radius: var(--radius-card, 0); padding: var(--c-plate-pad);
+  /* CARD OUTLINE (inset-card-on-canvas): a container surface whose grammar declares
+     a resting hairline border renders it so the card reads as an outlined plate on a
+     low-contrast canvas (the classic white-card-on-cream anatomy). Fact-gated —
+     --c-card-plate-border defaults to `none`, so shadow-elevated / borderless card
+     families (and every current plated brand) stay byte-identical. */
+  border: var(--c-card-plate-border, none); }
 /* FULL-BLEED MEDIA WELL (fid6 2026-07): a plated module's leading media frame runs
    flush to the card's top + side edges (rounded top corners only — the classic card
    anatomy the capture shows: media well INSIDE the plate, bleeding to its edges);
@@ -7650,7 +7700,14 @@ SCAFFOLD_CARD_PLATE_CSS = """.cs-module--plate { background: var(--c-panel); col
 .cs-modules .cs-module-headrow .cs-module-media--mark,
 .cs-modules--edgecut .cs-module-headrow .cs-module-media--mark {
   height: var(--cs-headrow-mark, 1.5rem); flex: 0 0 auto; width: auto; }
-.cs-module-headrow .c-heading { margin: 0; flex: 1 1 auto; }"""
+.cs-module-headrow .c-heading { margin: 0; flex: 1 1 auto; }
+/* CARD HEADER RULE (inset-card-on-canvas): a hairline separating the icon+title
+   header from the card body — rendered only when the brand's card grammar declares
+   `headerDivider` (the <hr> is emitted fact-gated), so control-less card families
+   never gain a rule. Rides the plate's own re-scoped hairline; vertical rhythm is the
+   anatomy ladder's owl margin (header→rule→body), so it never double-counts spacing. */
+.cs-modules .cs-module-divider { border: 0; height: 0;
+  border-top: 1px solid var(--c-hairline); width: 100%; }"""
 
 SCAFFOLD_EDGECUT_CSS = """.cs-edgecut { overflow-x: auto; scrollbar-width: none;
   margin-inline-end: calc(-1 * var(--c-section-pad-x, 0rem));
