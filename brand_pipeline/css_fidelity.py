@@ -725,6 +725,51 @@ def heading_tier_divergences(authored_type: dict, truth: dict) -> list[dict]:
     return divs
 
 
+# ── UNITS-ETHOS LINT: type line-height must be UNITLESS (or em), never absolute px ─
+#
+# A type-role line-height carried as absolute px (``line-height: 28px``) FREEZES: it
+# stops scaling with font-size, so a composed heading rendered larger than the measured
+# source element gets a line box SMALLER than its glyphs and the lines overlap. Type
+# line-height is authored + rendered UNITLESS (a ratio) or in em. This deterministic
+# string lint scans the composed stylesheet and FAILS on any px line-height bound to a
+# type-role selector so the renderer can never regress to a frozen px box. Brand-agnostic
+# — it keys off generic component/type selectors, never a palette or content name.
+
+# Generic TYPE-role selector markers (headings + running text + typographic controls).
+# Matched as whole tokens so ``.c-heading`` / ``:is(h2, …)`` / a bare ``h3`` all count,
+# while a non-type box (``.cs-ov-canvas``) never does.
+_TYPE_ROLE_SELECTOR = re.compile(
+    r"(?:(?<![\w-])h[1-6](?![\w-])"
+    r"|\.c-heading|\.c-eyebrow|\.c-paragraph|\.c-body|\.c-lead|\.c-caption"
+    r"|\.c-quote|\.c-blockquote|\.c-stat|\.c-label|\.c-link|\.c-arrow-link"
+    r"|\.c-list|\.c-faq-q|\.c-faq-a|\.c-row-value|\.c-person-name)",
+    re.I)
+_LINE_HEIGHT_PX = re.compile(r"line-height\s*:\s*(-?\d*\.?\d+)\s*px", re.I)
+# an inner ``selector { decls }`` rule (decls carry no nested braces; @media/@supports
+# preludes carry no line-height decl so they are skipped, their inner rules still match).
+_CSS_RULE = re.compile(r"([^{}]+)\{([^{}]*)\}")
+_CSS_COMMENT = re.compile(r"/\*.*?\*/", re.S)
+
+
+def type_line_height_px_lint(css_text: str) -> list[dict]:
+    """Every offending rule (selector + px value) where a TYPE-role line-height is
+    emitted as absolute px. Empty list ⇒ clean (units-ethos honoured). Pure string
+    analysis — no browser, no evidence needed."""
+    findings: list[dict] = []
+    if not css_text:
+        return findings
+    body = _CSS_COMMENT.sub("", str(css_text))
+    for m in _CSS_RULE.finditer(body):
+        selector, decls = m.group(1).strip(), m.group(2)
+        if not _TYPE_ROLE_SELECTOR.search(selector):
+            continue
+        lh = _LINE_HEIGHT_PX.search(decls)
+        if lh:
+            findings.append({"selector": " ".join(selector.split()),
+                             "value": f"{lh.group(1)}px"})
+    return findings
+
+
 # ── OUR side: compose the replica + measure computed styles per viewport ──────────
 
 # Probes: role -> {selector, prefer descendant of, kind}. Selectors are OUR composer's

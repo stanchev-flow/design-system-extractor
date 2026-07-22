@@ -2360,6 +2360,47 @@ and is [] for composition-less lanes. Tests:
 
 ---
 
+## AS-82 — Type line-height frozen as absolute px (units ethos)
+
+**Rule**: type line-height is authored AND rendered UNITLESS (a ratio, e.g. `1.1`) or in
+`em` — NEVER as an absolute px length. This is the type-scale sibling of the layout units
+ethos (container-query `cqw/cqh/cqi` and `rem`, never viewport units — AS-04): a length
+that should scale relative to its own context must carry a *relative* unit. A unitless
+line-height multiplies by whatever font-size the element renders at, so it is correct at
+every tier by construction; an absolute px line-height (`line-height: 28px`) is FROZEN —
+it no longer tracks font-size, so the same declaration mis-sizes every tier that isn't the
+one it was measured at.
+
+**Why it happens**: a per-property measurement pins the SOURCE element's *computed* line
+box (a px number the browser resolved from the source's own unitless ratio × the source's
+own font-size) and emits that px verbatim onto a generic type role. It looks grounded — it
+is a real measured value — but it silently converts a scaling ratio into a fixed box. When
+a composed heading renders LARGER than the measured source element (a composed 40px h2 vs a
+measured 18px source heading, both tagged `h2`), the frozen `28px` line box is now SMALLER
+than the 40px glyphs and consecutive lines OVERLAP. The markup and CSS are valid and a
+single-tier screenshot at the measured size looks fine, so only cross-tier reasoning
+(or the lint below) surfaces it.
+
+**Caught here**: `component_render.heading_responsive_css` emitted
+`:is(h2, .c-heading--h2) { line-height: 28px; }` from the measured `responsive.headings.
+lineHeights` fact (a source sub-heading measured 18px/28px). The generic `h2` role renders
+at the design-system tier size (40px), so the frozen 28px box overlapped multi-line
+headings — the reason the generation path had to WITHHOLD the heading register facts from
+composed pages. Fix: emit the brand's OWN authored ratio (`tokens.type[tier].lineHeight`,
+already unitless — the source's own `--line-height-*` declaration) so the box scales; the
+hero heading-shrink ladder and the primary-button control box likewise emit
+`lineHeightPx / fontSizePx` as a unitless ratio (byte-identical at the measured size, since
+the companion measured font-size sits on the same rule).
+
+**Verify**: `css_fidelity.type_line_height_px_lint(css_text)` — a deterministic string lint
+that scans the composed stylesheet and returns one finding per rule whose selector targets
+a type role (heading tag/class, paragraph, eyebrow, caption, lead, quote, stat, link, …)
+carrying a `line-height: <n>px` declaration. Empty list ⇒ clean. Tests:
+`brand_pipeline/tests/test_responsive_facts.py` (unitless emission) and
+`brand_pipeline/tests/test_css_fidelity.py` (the lint).
+
+---
+
 ## Adding a new entry
 
 Copy this shape: **Rule** (the imperative, one or two sentences) / **Why it happens** (the

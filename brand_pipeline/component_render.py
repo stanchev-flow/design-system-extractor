@@ -476,6 +476,88 @@ def _resp_len(value) -> str | None:
     return f"{m.group(1)}{m.group(2)}" if m else None
 
 
+# ── UNITS-ETHOS: type line-height is UNITLESS (a ratio), never absolute px ─────────
+#
+# A measured/derived line-height carried as absolute px (``28px``) FREEZES: it stops
+# scaling with font-size, so a composed heading rendered LARGER than the source's
+# measured element gets a line box SMALLER than its glyphs → overlapping lines. A
+# UNITLESS ratio (``line-height: 1.1``) multiplies by whatever font-size the element
+# renders at, so it is byte-equivalent at the measured size AND scales for every other
+# tier by construction. These helpers convert the fact→CSS boundary to always emit a
+# ratio (see spec/anti-ai-slop.md "type line-height ethos" + css_fidelity px-line-height
+# lint). `em` is an acceptable ratio unit; an absolute px line-height for a type role is
+# never emitted.
+
+def _px_val(value) -> float | None:
+    """The bare px magnitude of an absolute px length (``18px`` → 18.0), else None
+    (rem/em/unitless/other are NOT absolute px and don't need converting)."""
+    if isinstance(value, (int, float)):
+        return float(value)
+    m = re.fullmatch(r"\s*(-?\d*\.?\d+)px\s*", str(value or ""))
+    return float(m.group(1)) if m else None
+
+
+def _fmt_ratio(x: float) -> str:
+    """A trimmed unitless ratio literal (1.145833… → ``1.1458``, 1.75 → ``1.75``)."""
+    return f"{round(x, 4):g}"
+
+
+def _lh_ratio(line_height, font_size) -> str | None:
+    """A UNITLESS line-height ratio (lineHeightPx / fontSizePx) for a measured px pair,
+    or None when either side is not an absolute px length. Used where the fact carries a
+    companion measured font-size on the SAME rule (hero heading ladder, primary button)
+    so the ratio × that font-size is byte-identical to the measured px, yet scales."""
+    lh = _px_val(line_height)
+    fs = _px_val(font_size)
+    if lh is None or fs is None or fs == 0:
+        return None
+    return _fmt_ratio(lh / fs)
+
+
+def _relative_lh(value) -> str | None:
+    """Pass through a line-height that is ALREADY relative (bare unitless number or an
+    ``*em`` value); None for px / anything else. Lets an already-unitless fact ride
+    unchanged while an absolute px value is refused at the boundary."""
+    s = str(value if value is not None else "").strip()
+    if re.fullmatch(r"-?\d*\.?\d+", s):        # bare unitless ratio (1.1, 1.42)
+        return f"{float(s):g}"
+    if re.fullmatch(r"-?\d*\.?\d+em", s):      # em is an acceptable ratio unit
+        return s
+    return None
+
+
+def _type_lh_ratio(doc, tier, measured=None) -> str | None:
+    """UNITLESS line-height ratio for a heading/type TIER. Prefers the AUTHORED
+    ``tokens.type[tier].lineHeight`` — already a unitless ratio (the source's own
+    ``--line-height-*`` declaration, e.g. h2 ``1.1``, h3 ``1.42``) — so the composed
+    heading scales instead of freezing at the measured px box. Falls back to converting
+    an authored px line-height against the tier's authored base size, then to converting
+    a measured px line-height against a measured px font-size carried in the fact. Never
+    returns an absolute px value (units-ethos)."""
+    t = type_role(doc, tier) if isinstance(doc, dict) else {}
+    t = t if isinstance(t, dict) else {}
+    authored = t.get("lineHeight")
+    rel = _relative_lh(authored)
+    if rel is not None:
+        return rel
+    # authored px line-height → ratio against the tier's authored base size (rem→px)
+    apx = _px_val(authored)
+    if apx is not None:
+        base = base_size(t)
+        if isinstance(base, (int, float)) and float(base) > 0:
+            return _fmt_ratio(apx / (float(base) * 16.0))
+    # last resort: a measured px pair carried in the fact (lineHeight + fontSize)
+    if isinstance(measured, dict):
+        r = _lh_ratio(measured.get("lineHeight"), measured.get("fontSize"))
+        if r is not None:
+            return r
+    else:
+        r = _relative_lh(measured)
+        if r is not None:
+            return r
+    return None
+
+
 def hero_responsive_css(responsive, sec_sel: str) -> str:
     """Grounded responsive CSS for a hero section from its ``responsive`` fact block:
 
@@ -528,7 +610,11 @@ def hero_responsive_css(responsive, sec_sel: str) -> str:
                      None)
         if small:
             fs = _resp_len(small.get("fontSize"))
-            lh = _resp_len(small.get("lineHeight"))
+            # UNITS-ETHOS: emit the measured line-height as a UNITLESS ratio against the
+            # measured font-size on this SAME rule (byte-identical at the measured size,
+            # yet scales) — never an absolute px line-height that freezes the box.
+            lh = (_lh_ratio(small.get("lineHeight"), small.get("fontSize"))
+                  or _relative_lh(small.get("lineHeight")))
             decls = []
             if fs:
                 decls.append(f"font-size: {fs}")
@@ -594,7 +680,11 @@ def hero_primary_button_css(responsive, sec_sel: str) -> str:
         return ""
     decls: list[str] = []
     fs = _resp_len(btn.get("fontSize"))
-    lh = _resp_len(btn.get("lineHeight"))
+    # UNITS-ETHOS: the control's measured line-height is emitted as a UNITLESS ratio
+    # against its measured font-size (identical box at the measured size, scales
+    # otherwise) — never an absolute px line-height.
+    lh = (_lh_ratio(btn.get("lineHeight"), btn.get("fontSize"))
+          or _relative_lh(btn.get("lineHeight")))
     if fs:
         decls.append(f"font-size: {fs}")
     if lh:
@@ -619,8 +709,15 @@ def hero_primary_button_css(responsive, sec_sel: str) -> str:
 def heading_responsive_css(doc) -> str:
     """Grounded heading line-heights from ``responsive.headings.lineHeights`` (measured
     per generic heading tag). The composer type scale mis-derives some heading
-    line-heights (h2 23.4px vs the measured 28px); this pins the measured value on the
-    generic heading role. "" without the block (fact-gate; v2/remote unchanged)."""
+    line-heights; this corrects the generic heading role to the brand's OWN line-height.
+
+    UNITS-ETHOS (2026-07): the correction is emitted as a UNITLESS ratio — the brand's
+    authored ``tokens.type[tier].lineHeight`` (the source's own ``--line-height-*``
+    ratio, e.g. h2 ``1.1``) — NEVER the measured absolute px. An absolute px line-height
+    freezes the box: a composed h2 rendered larger than the source's measured element
+    would get a line box SMALLER than its glyphs and overlap. A ratio scales by
+    construction (40px h2 → 44px line box). "" without the block (fact-gate; v2/remote
+    carry no headings fact so they stay byte-identical)."""
     resp = ((doc or {}).get("responsive") or {}).get("headings") \
         if isinstance(doc, dict) else None
     if not isinstance(resp, dict):
@@ -628,13 +725,17 @@ def heading_responsive_css(doc) -> str:
     lhs = resp.get("lineHeights") if isinstance(resp.get("lineHeights"), dict) else {}
     parts: list[str] = []
     for tag in ("h1", "h2", "h3", "h4"):
-        lh = _resp_len(lhs.get(tag))
-        if lh:
-            parts.append(f":is({tag}, .c-heading--{tag}) {{ line-height: {lh}; }}")
+        if tag not in lhs:
+            continue
+        ratio = _type_lh_ratio(doc, tag, lhs.get(tag))
+        if ratio:
+            parts.append(f":is({tag}, .c-heading--{tag}) {{ line-height: {ratio}; }}")
     if not parts:
         return ""
-    head = ("/* responsive headings (fact-gated: responsive.headings.lineHeights) — "
-            "measured heading line-heights the composer type scale mis-derived. */")
+    head = ("/* responsive headings (fact-gated: responsive.headings.lineHeights) — the "
+            "brand's own heading line-heights the composer type scale mis-derived, "
+            "emitted UNITLESS (ratio) so composed headings scale instead of freezing at "
+            "an absolute px box (units-ethos: type line-height is never px). */")
     return head + "\n" + "\n".join(parts) + "\n"
 
 

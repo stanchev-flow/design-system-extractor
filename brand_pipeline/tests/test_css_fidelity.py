@@ -319,6 +319,52 @@ class SyntheticDiffTests(unittest.TestCase):
         self.assertTrue(acc["footer_responsive_columns"]["found"])
 
 
+# ── UNITS-ETHOS lint: type line-height must be unitless / em, never px (AS-82) ────
+
+class TypeLineHeightPxLintTests(unittest.TestCase):
+    def test_flags_px_line_height_on_type_selectors(self):
+        css = (":is(h2, .c-heading--h2) { line-height: 28px; }\n"
+               ".c-paragraph { font-size: 1rem; line-height: 24px; }\n")
+        hits = cf.type_line_height_px_lint(css)
+        sels = {h["selector"] for h in hits}
+        self.assertIn(":is(h2, .c-heading--h2)", sels)
+        self.assertTrue(any(".c-paragraph" in s for s in sels))
+        self.assertTrue(all(h["value"].endswith("px") for h in hits))
+
+    def test_passes_unitless_and_em_line_height(self):
+        css = (":is(h2, .c-heading--h2) { line-height: 1.1; }\n"
+               ".c-heading--h3 { line-height: 1.42; }\n"
+               ".c-paragraph { line-height: 1.55em; }\n"
+               "#sec-0 .c-button:not(.c-button--navcta) { line-height: 1.7778; }\n")
+        self.assertEqual(cf.type_line_height_px_lint(css), [])
+
+    def test_ignores_px_line_height_on_non_type_boxes(self):
+        # a non-type box (a spacer / canvas) is out of scope — the ethos is TYPE roles.
+        css = ".cs-ov-canvas { line-height: 0px; }\n.cs-spacer { line-height: 10px; }\n"
+        self.assertEqual(cf.type_line_height_px_lint(css), [])
+
+    def test_finds_px_inside_media_block(self):
+        css = ("@media (max-width: 599px) { #sec-0 :is(h1, .c-heading--display) "
+               "{ font-size: 48px; line-height: 55px; } }\n")
+        hits = cf.type_line_height_px_lint(css)
+        self.assertEqual(len(hits), 1)
+        self.assertEqual(hits[0]["value"], "55px")
+
+    def test_ignores_comments(self):
+        css = ("/* line-height: 28px was frozen here */\n"
+               ":is(h2, .c-heading--h2) { line-height: 1.1; }\n")
+        self.assertEqual(cf.type_line_height_px_lint(css), [])
+
+    def test_real_v3_replica_css_is_unitless(self):
+        # the composed v3 replica stylesheet must carry NO px line-height on type roles.
+        p = (_REPO / "runs" / "hubspot-v3" / "brand" / "compose" / "replica"
+             / "index.html")
+        if not p.is_file():
+            raise unittest.SkipTest("v3 replica not composed")
+        hits = cf.type_line_height_px_lint(p.read_text())
+        self.assertEqual(hits, [], f"px line-height on type roles: {hits}")
+
+
 # ── real hubspot-v3 source facts (no browser) ─────────────────────────────────────
 
 class HubspotV3SourceFactsTests(unittest.TestCase):

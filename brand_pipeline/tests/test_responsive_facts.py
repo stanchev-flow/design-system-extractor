@@ -191,17 +191,42 @@ class GeneralizedEmitterTests(unittest.TestCase):
         css = cr.hero_primary_button_css(block, "#sec-0")
         self.assertIn("#sec-0 .c-button:not(.c-button--navcta)", css)
         self.assertIn("font-size: 18px", css)
-        self.assertIn("line-height: 32px", css)
+        # UNITS-ETHOS: the measured 32px/18px box is emitted as a UNITLESS ratio
+        # (32/18 = 1.7778) so the control scales — never an absolute px line-height.
+        self.assertIn("line-height: 1.7778", css)
+        self.assertNotRegex(css, r"line-height:\s*\d+(?:\.\d+)?px")
         self.assertIn("border: 2px solid transparent", css)
 
     def test_heading_css_gated_and_emits(self):
         self.assertEqual(cr.heading_responsive_css({}), "")
         self.assertEqual(cr.heading_responsive_css(
             {"responsive": {"headings": {}}}), "")
+        # UNITS-ETHOS: with the brand's authored tokens.type ratios present, the fact-
+        # flagged tiers emit the AUTHORED unitless ratio (h2 1.1, h3 1.42) — never px.
+        doc = {"tokens": {"type": {"h2": {"sizeRem": {"base": 2.5}, "lineHeight": 1.1},
+                                   "h3": {"sizeRem": {"base": 1.5}, "lineHeight": 1.42}}},
+               "responsive": {"headings": {"lineHeights": {"h2": "28px", "h3": "28px"}}}}
+        css = cr.heading_responsive_css(doc)
+        self.assertIn(":is(h2, .c-heading--h2) { line-height: 1.1; }", css)
+        self.assertIn(":is(h3, .c-heading--h3) { line-height: 1.42; }", css)
+        self.assertNotRegex(css, r"line-height:\s*\d+(?:\.\d+)?px")
+
+    def test_heading_css_never_emits_px_without_a_resolvable_ratio(self):
+        # a px-only fact with NO authored tokens.type ratio and no companion font-size
+        # cannot be expressed unitless → the tier is skipped rather than frozen in px.
         css = cr.heading_responsive_css(
             {"responsive": {"headings": {"lineHeights": {"h2": "28px"}}}})
-        self.assertIn(":is(h2, .c-heading--h2)", css)
-        self.assertIn("line-height: 28px", css)
+        self.assertEqual(css, "")
+
+    def test_heading_css_converts_authored_px_lineheight_to_ratio(self):
+        # a brand that authored its h2 line-height in px is converted to a ratio against
+        # the tier's authored base size (44px / (2.5rem × 16) = 1.1), never emitted px.
+        doc = {"tokens": {"type": {"h2": {"sizeRem": {"base": 2.5},
+                                          "lineHeight": "44px"}}},
+               "responsive": {"headings": {"lineHeights": {"h2": "28px"}}}}
+        css = cr.heading_responsive_css(doc)
+        self.assertIn(":is(h2, .c-heading--h2) { line-height: 1.1; }", css)
+        self.assertNotRegex(css, r"line-height:\s*\d+(?:\.\d+)?px")
 
     def test_button_variant_purge_is_fact_gated(self):
         # without the fact the hover lift stays (byte-identical to the base variant)
@@ -259,7 +284,11 @@ class EmitterGateTests(unittest.TestCase):
         # heading shrink applies BELOW the breakpoint only (desktop left to the scale)
         self.assertIn("@media (max-width: 599px)", css)
         self.assertIn("font-size: 48px", css)
-        self.assertIn("line-height: 55px", css)
+        # UNITS-ETHOS: the measured 55px/48px shrink rung is emitted as a UNITLESS ratio
+        # (55/48 = 1.1458) on the SAME rule as font-size:48px → byte-identical box, yet
+        # scales; never an absolute px line-height.
+        self.assertIn("line-height: 1.1458", css)
+        self.assertNotRegex(css, r"line-height:\s*\d+(?:\.\d+)?px")
         # scoped to the hero section id (no global bleed)
         self.assertTrue(all(line.startswith(("#sec-0", "@media", "/*"))
                             for line in css.strip().splitlines()))

@@ -150,7 +150,10 @@ tokens:
       tiers:                         # per-viewport MEASURED stamps (canonical-tier ladder,
         w1440: { px: …, source: computed|saved-css }   # measure stage `tiers` samples)
         w960:  { px: …, source: … }  # every stamp names the tier it was measured at
-      lineHeight:   "<em|unitless>"
+      lineHeight:   "<em|unitless>"   # a RATIO, never absolute px — authored AND rendered
+                                     # unitless (or em) so it scales with font-size at every
+                                     # tier; an absolute px line-height freezes the box and
+                                     # overlaps larger composed tiers (AS-82, units ethos)
       weight:       <int>            # REQUIRED on EVERY tier — the measured computed font-weight
       letterSpacing:"<rem|em>"
       case:         uppercase|sentence|none
