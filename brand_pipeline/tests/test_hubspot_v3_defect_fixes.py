@@ -16,8 +16,15 @@ Six user-reported defects, each fixed at the shared renderer/composition level
   D5 badge sizing     — an award/mark row with a measured `mediaScale.item` box (no
                         container fraction, bare-px values) renders at that measured
                         box, not the structural logo height.
-  D6 tab alignment    — a tabbed section's rail follows the section's resolved anchor
-                        (left/right) instead of the hardcoded centered default.
+  D6 tab alignment    — tab-rail alignment is its OWN captured fact, independent of
+                        the section text anchor. With no measured `tabAlignment` fact
+                        the rail keeps the centered scaffold default (a side-anchored
+                        header can still center its rail). NOTE: an earlier iteration
+                        of this fix coupled the rail to the section anchor and forced
+                        `flex-start`; that broke the real hubspot-v3 proof region
+                        (left header, genuinely centered rail) and was reverted per
+                        header-cta-tab-diagnostic.md D3 — the pin below now guards the
+                        corrected fact-driven behavior.
 
 The generated D2 pin renders the frozen composition deterministically; the replica
 pins build the v3 source-order page. Both reuse the shipped composers (no fixtures).
@@ -90,16 +97,19 @@ class ReplicaProofSectionFixes(unittest.TestCase):
         self.assertIn("--cs-strip-item-w: 96px", band)
         self.assertIn("--cs-strip-item-h: 132px", band)
 
-    def test_d6_tab_rail_follows_left_anchor(self):
-        # the tabbed testimonial's rail follows the section's left anchor instead of
-        # the hardcoded centered default (arbitrary left-header + centered-tabs mix).
+    def test_d6_tab_rail_is_fact_driven_not_anchor_coupled(self):
+        # header-cta-tab-diagnostic.md D3: the v3 proof region genuinely pairs a
+        # LEFT-anchored header with a CENTER-anchored tab rail. With no measured
+        # `tabAlignment` fact captured on the tab device, the rail must keep the
+        # centered scaffold default — NO per-section justify-content override may be
+        # derived from the section text anchor (that coupling was the reverted
+        # regression). The tabbed section itself still renders.
         tabs = self._section("tabbed-testimonial-with-stats")
-        # the section wrapper id drives the per-section rule; find its #sec-N id.
+        self.assertIn("cs-tablist", tabs)
         import re
         sid = re.search(r'id="(sec-\d+)"[^>]*data-layout="tabbed-testimonial', self.html)
         self.assertIsNotNone(sid)
-        self.assertIn(f"#{sid.group(1)} .cs-tablist {{ justify-content: flex-start; }}",
-                      self.html)
+        self.assertNotIn(f"#{sid.group(1)} .cs-tablist {{ justify-content:", self.html)
 
 
 @unittest.skipUnless(V3_BRAND_YAML.is_file(), "hubspot-v3 brand fixture required")

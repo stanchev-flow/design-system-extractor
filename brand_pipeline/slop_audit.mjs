@@ -74,6 +74,37 @@ for (const target of process.argv.slice(2)) {
       if (dupes.length)
         out.push(`AS-59 ${where}: ${filled.length} same-register filled actions in one group (${dupes[0].slice(7)}) — exactly one primary; siblings take the measured secondary/ghost/text register`);
     };
+    // AS-59 SPLIT-GROUP guard (fix 2026-07): a multi-action pair authored as
+    // SEPARATE single-button `*-actions` groups (e.g. an `actions` slot + a sibling
+    // `actions-secondary` slot) escapes the per-group check above — each group holds
+    // one button, so `dupes` is empty and the two-filled slop passes. Treat DOM-
+    // adjacent sibling action groups as ONE logical group and flag when they share
+    // the same filled register. ADVISORY only (never an exit flag): the register
+    // hierarchy law lives in the renderer; this surfaces the split-slot shape the
+    // grouped audit is structurally blind to. Palette-agnostic (computed registers).
+    const auditSplitActionGroups = (root, where) => {
+      const groups = [...root.querySelectorAll('[class*="-actions"], .c-actions')]
+        .filter(g => !g.closest(".cs-nav") && visible(g));
+      const seen = new Set();
+      for (const g of groups) {
+        if (seen.has(g)) continue;
+        const run = [g];
+        let n = g.nextElementSibling;
+        while (n && n.matches('[class*="-actions"], .c-actions') && visible(n)) {
+          run.push(n);
+          n = n.nextElementSibling;
+        }
+        run.forEach((x) => seen.add(x));
+        if (run.length < 2) continue;   // a single group is already covered above
+        const btns = run.flatMap((x) =>
+          [...x.querySelectorAll('.c-button, a[role="button"]')].filter(visible));
+        if (btns.length < 2) continue;
+        const filled = btns.map(actionRegister).filter((r) => r.startsWith("filled:"));
+        const dupes = filled.filter((r, i) => filled.indexOf(r) !== i);
+        if (dupes.length)
+          advisories.push(`AS-59 ${where}: ${filled.length} same-register filled actions across ${run.length} adjacent single-action groups (${dupes[0].slice(7)}) — a split-slot action pair still owes exactly one primary; siblings take the measured secondary/ghost/text register`);
+      }
+    };
 
     // AS-60: scaffold-habit action-group layout. A rendered multi-action group
     // that STAMPS its measured layout declaration (data-ag-gap / data-ag-align,
@@ -512,6 +543,8 @@ for (const target of process.argv.slice(2)) {
         if (g.closest(".cs-nav")) continue;
         auditActionGroup(g, id);
       }
+      // split-slot pairs (adjacent single-action groups) — advisory backstop
+      auditSplitActionGroups(sec, id);
 
       // AS-60: stamped action-group facts must be what actually computes.
       for (const g of sec.querySelectorAll("[data-ag-gap], [data-ag-align]"))

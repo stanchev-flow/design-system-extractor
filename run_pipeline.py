@@ -4160,6 +4160,11 @@ def classify_manifest_mode(version_dir: Path, mode_data: dict | None) -> str | N
 
 def classify_manifest_entry(version_dir: Path, entry: dict) -> str | None:
     """Classify one screenshot entry, supporting both nested and legacy manifests."""
+    # a manifest may carry a bare-string screenshot entry (legacy/plain-path shape)
+    # instead of the nested dict — it declares no structural/DS mode, so it can't be
+    # classified. Guard defensively so one malformed entry never aborts viewer regen.
+    if not isinstance(entry, dict):
+        return None
     mode_label = classify_manifest_mode(version_dir, entry.get("single"))
     if mode_label:
         return mode_label
@@ -4217,6 +4222,10 @@ def manifest_mode_has_generated_site(version_dir: Path, mode_data: dict | None) 
 
 def manifest_entry_has_generated_site(version_dir: Path, entry: dict) -> bool:
     """Detect design-system-based site output in nested or legacy manifest entries."""
+    # bare-string entries (legacy/plain-path shape) declare no generated site — guard
+    # defensively so a malformed entry never aborts viewer regen.
+    if not isinstance(entry, dict):
+        return False
     if manifest_mode_has_generated_site(version_dir, entry.get("single")):
         return True
     return manifest_mode_has_generated_site(version_dir, {
@@ -4388,6 +4397,11 @@ def generate_viewer(runs_dir: Path, output_path: Path):
         has_gpt55_direct = False
         has_framework_sites = False
         for entry in manifest["screenshots"]:
+            # skip bare-string (legacy/plain-path) entries — they carry no name/
+            # screenshot fields the viewer card needs (defensive: one malformed
+            # entry must never abort viewer regen).
+            if not isinstance(entry, dict):
+                continue
             name = entry["name"]
 
             # Read screenshot as data URI

@@ -672,6 +672,32 @@ def _token_var_slug(role) -> str:
     return re.sub(r"[^a-z0-9]+", "-", str(role or "").lower()).strip("-")
 
 
+# CANONICAL treatment vocabulary (fix 2026-07): the grounding/archaeologist step
+# coins device synonyms that drift from the renderer's dispatch tokens — e.g. a
+# "dotted leader rule" headrail spelled ``dotted-leader-rule`` never matched the
+# ``dotted-rule-rail`` dispatch, so the whole rail composite (pill + rule + trailing
+# action) was silently dropped. Normalize a treatment ``kind`` to its canonical
+# dispatch token here so downstream code sees one spelling. Brand/palette-agnostic:
+# a synonym MAP keyed on the reusable device shape, never a brand/section name.
+_TREATMENT_KIND_SYNONYMS = {
+    "dotted-leader-rule": "dotted-rule-rail",
+    "dotted-leader": "dotted-rule-rail",
+    "leader-rule": "dotted-rule-rail",
+    "header-rail": "dotted-rule-rail",
+    "head-rail": "dotted-rule-rail",
+    "headrail": "dotted-rule-rail",
+    "section-headrail": "dotted-rule-rail",
+}
+
+
+def _canonical_treatment_kind(kind) -> str:
+    """Normalize a special-treatment ``kind`` to the renderer's canonical dispatch
+    token, mapping the known device synonyms (see ``_TREATMENT_KIND_SYNONYMS``) onto
+    one spelling. Unknown kinds pass through unchanged (lower-cased)."""
+    k = str(kind or "").strip().lower()
+    return _TREATMENT_KIND_SYNONYMS.get(k, k)
+
+
 def stamp_pattern_devices(doc, layout, brand_yaml) -> None:
     """Stamp the resolved pattern's sanctioned interaction-device treatments onto the
     layout as private hints the archetype composers read (same private-key discipline
@@ -684,9 +710,24 @@ def stamp_pattern_devices(doc, layout, brand_yaml) -> None:
     if pattern is None:
         return
     for t in (pattern.special_treatments or []):
-        if not isinstance(t, dict) or not t.get("sanctioned"):
+        if not isinstance(t, dict):
             continue
-        kind = str(t.get("kind") or "").lower()
+        kind = _canonical_treatment_kind(t.get("kind"))
+        # A recipe-BOUND rail slot is a curated, explicit brand fact: the recipe
+        # binding on the treatment's target slot sanctions the rail device even when
+        # the treatment mapping itself omits the ``sanctioned`` flag (capture drift
+        # authored the flag on one sibling section and not another). Generic +
+        # brand-agnostic: keyed on the PRESENCE of a slot ``recipeRef``, never a
+        # brand/section name or a specific recipe id.
+        _sanctioned = bool(t.get("sanctioned"))
+        if not _sanctioned and kind == "dotted-rule-rail":
+            _tgt = str(t.get("target") or "eyebrow")
+            _slot = next((s for s in pattern.slots if isinstance(s, dict)
+                          and str(s.get("name") or "") == _tgt), {})
+            if isinstance(_slot, dict) and isinstance(_slot.get("recipeRef"), dict):
+                _sanctioned = True
+        if not _sanctioned:
+            continue
         if kind == "marquee":
             hint: dict = {"target": t.get("target")}
             # MEASURED period (fid2 2026-07): the brand's marquee signature move may
@@ -790,6 +831,17 @@ def stamp_pattern_devices(doc, layout, brand_yaml) -> None:
             # rides the treatment fact — never the page accent var).
             if t.get("activeUnderline"):
                 hint["activeUnderline"] = str(t["activeUnderline"])
+            # TAB-RAIL ALIGNMENT as its OWN measured fact (fix 2026-07, D3/D6
+            # regression): the tablist's own justify/text-align, captured
+            # INDEPENDENTLY of the section's header text anchor — a side-anchored
+            # header can still center (or otherwise independently align) its tab
+            # rail, so tab justification must never be inferred from the section
+            # anchor. Accept the measured synonyms, normalize to start|center|end;
+            # ABSENT ⇒ the composer keeps the centered scaffold default.
+            _talign = _normalize_tab_alignment(
+                t.get("tabAlignment") or t.get("railAlignment") or t.get("alignment"))
+            if _talign:
+                hint["tabAlignment"] = _talign
             # panel photo column share: prefer the slot literally named ``media``
             # (v2 authoring), else fall back to the panel's media slot by ROLE
             # (portrait/photo/media/image) so a pattern that named its swap slot
@@ -840,6 +892,21 @@ def stamp_pattern_devices(doc, layout, brand_yaml) -> None:
                 rail_stamp["geometry"] = dict(recipe.geometry or {})
                 rail_stamp["variant"] = {k: v for k, v in variant.items() if k != "id"}
                 rail_stamp["variantId"] = str(variant.get("id") or "")
+            # PROSE-recipe fallback (fix 2026-07): some libraries author the rail
+            # recipe as PROSE (a variant NAME + leadingMarker/trailingAction text) on
+            # a slot-level ``recipeRef`` rather than the structured kicker/rule/trail
+            # facts the shared helper reads. When the target slot binds a recipe, fold
+            # the captured device vocabulary — the (pre-canonical) treatment kind and
+            # the bound recipe/variant name — into the rail's prose so the helper's
+            # measured-prose paths (pill kicker, dotted leader, outlined trailing
+            # register) light up from REAL facts, inventing nothing. Structured
+            # variant facts, when present, still take precedence in _headrail_html;
+            # slot-less-recipeRef patterns (pattern-level recipes) are untouched.
+            _rref = slot.get("recipeRef") if isinstance(slot.get("recipeRef"), dict) else None
+            if _rref:
+                _prose = [str(rail_stamp.get("note") or ""), str(t.get("kind") or ""),
+                          str(_rref.get("recipe") or ""), str(_rref.get("variant") or "")]
+                rail_stamp["note"] = " ".join(p for p in _prose if p).strip() or None
             layout.setdefault("_headRail", rail_stamp)
         elif kind == "panel-on-media":
             # INSET CONVERSION PANEL (fid2 2026-07): a conversion/banner pattern whose
@@ -5613,6 +5680,63 @@ def _overlay_type_behind_media(doc, layout, ctx, slots, treatments, tbm):
 </section>"""
 
 
+def _action_register_outlined(seq):
+    """AS-59 register hierarchy for ONE coalesced action group. Given an ordered list
+    of ``(button-copy-dict, slot-role)`` members, return a parallel list of booleans:
+    ``True`` = render the OUTLINED/secondary register, ``False`` = the filled PRIMARY
+    register. The law: exactly one filled primary per group; every sibling takes its
+    MEASURED secondary register (outlined/ghost/text), read from the authored
+    ``styleHint``/``variant`` (or a ``secondary`` role word) — never a hardcoded slot
+    or brand hex. Fallback for list-authored pairs that carry no distinguishing hint:
+    the first member is primary and later members demote (the historical ``_i > 0``
+    rule). A group whose members are ALL an explicit secondary register keeps them all
+    secondary (nothing is promoted to a primary that the source never painted)."""
+    _SECONDARY = ("out", "sec", "ghost", "text", "tert", "quiet", "subtle", "link")
+    result: list[bool] = []
+    primary_taken = False
+    for btn, role in seq:
+        reg = str((btn or {}).get("styleHint") or (btn or {}).get("variant") or "").lower()
+        role_l = str(role or "").lower()
+        explicit_secondary = (reg.startswith(_SECONDARY) or "outlin" in reg
+                              or "secondary" in role_l)
+        if explicit_secondary:
+            outlined = True
+        elif not primary_taken:
+            outlined = False
+            primary_taken = True
+        else:
+            outlined = True   # AS-59: siblings after the one primary demote
+        result.append(outlined)
+    return result
+
+
+def _ov_actions_html(doc, ctx, action_slots):
+    """Build ONE coalesced ``cs-ov-actions`` container for a hero/section's action
+    slots (fix 2026-07, D1/AS-59): sibling action slots (e.g. ``actions`` +
+    ``actions-secondary``) — and any list-authored pair inside a single slot — are
+    flattened into ONE ordered group so the register-hierarchy law applies across the
+    whole group and the buttons share a single container. Returns "" when no action
+    carries a label. Brand/palette-agnostic: the register is read per action from its
+    authored ``styleHint``/``variant``/role, never a hardcoded slot or brand."""
+    seq = []
+    for s in action_slots:
+        c = s.get("copy")
+        for b in (c if isinstance(c, list) else ([c] if c else [])):
+            if isinstance(b, dict) and b.get("label"):
+                seq.append((b, s.get("role")))
+    if not seq:
+        return ""
+    outlined = _action_register_outlined(seq)
+    frags = []
+    for (b, _role), ol in zip(seq, outlined):
+        frags.append(cr.render_button(doc, ctx, {
+            "label": b.get("label"), "href": b.get("href", "#"),
+            "accent": not ol,
+            "familyHint": "outlined secondary" if ol else "filled primary"}))
+    return ('\n    <div class="cs-ov-foot-item cs-ov-actions">'
+            + "".join(frags) + "</div>")
+
+
 def compose_overlay(doc, layout, ctx, rendered, style_ctx):
     """`overlay` archetype (editorial-harvest-2026-07): ONE positioning context — an
     in-flow media CANVAS (full-bleed or `framed`) with grid-registered layers over it:
@@ -5867,6 +5991,17 @@ def compose_overlay(doc, layout, ctx, rendered, style_ctx):
             f'width: {_span_width_css(target.get("colSpan") or 2)}">{img}</div>')
 
     # ── remaining placed/corner slots: in-frame annotations, cues, corner support ──
+    # COALESCED action group (fix 2026-07, D1/AS-59): the hero/section CTAs authored
+    # across sibling action slots (e.g. `actions` + `actions-secondary`) form ONE
+    # action group so the register-hierarchy law applies across the whole group —
+    # exactly one filled primary, every sibling takes its measured secondary register
+    # — and they share a single `-actions` container. Emitted at the FIRST action
+    # slot's position; every action slot is then claimed.
+    _action_slots = [s for s in slots
+                     if not s.get("media") and s["name"] not in claimed
+                     and (str(s.get("contract") or "").lower() == "button"
+                          or "action" in str(s.get("role") or "").lower())]
+    _actions_emitted = False
     foot_items = []
     for s in slots:
         if s.get("media") or s["name"] in claimed:
@@ -5878,21 +6013,11 @@ def compose_overlay(doc, layout, ctx, rendered, style_ctx):
         _contract = str(s.get("contract") or "").lower()
         _role = str(s.get("role") or "").lower()
         if _contract == "button" or "action" in _role:
-            _copy = s.get("copy")
-            _btns = _copy if isinstance(_copy, list) else ([_copy] if _copy else [])
-            _frags = []
-            for _i, _b in enumerate(_btns):
-                if not isinstance(_b, dict) or not _b.get("label"):
-                    continue
-                _var = str(_b.get("variant") or "").lower()
-                _outline = _i > 0 or _var.startswith(("out", "sec", "ghost", "text"))
-                _frags.append(cr.render_button(doc, ctx, {
-                    "label": _b.get("label"), "href": _b.get("href", "#"),
-                    "accent": not _outline,
-                    "familyHint": "outlined secondary" if _outline else "filled primary"}))
-            if _frags:
-                foot_items.append('\n    <div class="cs-ov-foot-item cs-ov-actions">'
-                                  + "".join(_frags) + "</div>")
+            if not _actions_emitted:
+                _grp = _ov_actions_html(doc, ctx, _action_slots)
+                if _grp:
+                    foot_items.append(_grp)
+                _actions_emitted = True
             claimed.add(s["name"])
             continue
         if not _ov_text(s):
@@ -8027,6 +8152,27 @@ _ANCHOR_FLEX = {
     "right": ("flex-end", "right"),
 }
 
+# Tab-rail alignment is a MEASURED fact independent of the section text anchor
+# (fix 2026-07, D3/D6 regression): a section may read left for its header yet
+# center its tab rail. Normalized to start|center|end, then mapped to the tablist's
+# justify-content. ABSENT ⇒ the centered scaffold default stands (nothing emitted);
+# tab justification is NEVER derived from the section's resolved text anchor.
+_TAB_ALIGN_FLEX = {"start": "flex-start", "center": "center", "end": "flex-end"}
+
+
+def _normalize_tab_alignment(value):
+    """Normalize a measured tab-rail alignment to ``start|center|end`` (or None when
+    absent/unrecognized). Accepts the css/flex/reading synonyms
+    (left/right/flex-start/flex-end/centre)."""
+    v = str(value or "").strip().lower()
+    if v in ("start", "left", "flex-start"):
+        return "start"
+    if v in ("center", "centre"):
+        return "center"
+    if v in ("end", "right", "flex-end"):
+        return "end"
+    return None
+
 
 def _anchor_css(sel: str, anchor: str) -> str:
     """Anchor CSS covering EVERY archetype's markup (AS-18: a declared anchor used to
@@ -8172,20 +8318,19 @@ def layout_placement_css(sel: str, layout, resolved=None) -> str:
                        + (f", counterweight: {resolved['counterweight']}"
                           if resolved.get("counterweight") else "")
                        + ") — resolved, never fall-through (AS-18) */\n" + css)
-    # TAB RAIL ALIGNMENT (fix 2026-07): a tabbed section used to CENTER its tab rail
-    # (the hardcoded scaffold default) even when its own header/body read left — the
-    # arbitrary left+center mix inside one proof region. The rail now follows the
-    # section's RESOLVED alignment anchor: a side-anchored section left/right-aligns its
-    # rail to match its header; a `mixed`/per-slot section (dominated by its side-
-    # anchored header + split content) resolves to the leading edge. A CENTERED section
-    # emits nothing so it keeps the scaffold's centered rail (byte-identical), and the
-    # rule is emitted ONLY for sections that carry the tab device — non-tab sections and
-    # centered-tab brands stay byte-identical.
+    # TAB-RAIL ALIGNMENT is its OWN captured fact (fix 2026-07 — reverts the D6
+    # regression that coupled it to the section text anchor): a section may be
+    # side-anchored for its header text yet independently align (commonly center) its
+    # tab rail. Drive the tablist justify-content ONLY from the measured `tabAlignment`
+    # fact (start|center|end) captured on the tab device; when the fact is absent (or
+    # center) emit NOTHING so the centered scaffold default stands (byte-identical).
+    # Never infer tab justification from `resolved.anchor` — that coupling snapped a
+    # genuinely centered rail under a left-reading header to the leading edge.
     if layout.get("_tabs") is not None:
-        _tab_anchor = (resolved or {}).get("anchor")
-        _tab_justify = _ANCHOR_FLEX[_tab_anchor][0] \
-            if _tab_anchor in _ANCHOR_FLEX else "flex-start"
-        if _tab_justify != "center":
+        _tabs = layout.get("_tabs") if isinstance(layout.get("_tabs"), dict) else {}
+        _tab_align = _normalize_tab_alignment(_tabs.get("tabAlignment"))
+        _tab_justify = _TAB_ALIGN_FLEX.get(_tab_align) if _tab_align else None
+        if _tab_justify and _tab_justify != "center":
             out.append(f"{sel} .cs-tablist {{ justify-content: {_tab_justify}; }}")
     decls: list[str] = []
     g = layout.get("_grid") or {}
