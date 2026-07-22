@@ -675,42 +675,141 @@ def build_sidecar(joined: dict, footer_measured: dict | None = None) -> dict:
     return out
 
 
-def apply_responsive_facts(doc: dict, brand_dir: Path) -> dict:
-    """MERGE the ``responsive-facts.yaml`` sidecar (if present) into the in-memory doc:
-    the hero layout's ``responsive`` block + the footer's ``responsive`` block. A brand
-    without the sidecar is untouched (byte-identical). Returns the doc for chaining.
+# ── ONE canonical fact-merge path (replica AND generation share it) ─────────────────
+#
+# The "captured but not consumed" bug class (nav bg, nav collapse, sticky column, hero
+# alignment, per-section surface, line-height) recurred because the REPLICA merged the
+# measured ``responsive-facts.yaml`` sidecar (via ``compose_page.load_doc`` →
+# ``apply_responsive_facts``) while the GENERATION doc builder
+# (``compose_from_composition.composition_to_doc``) merged a DIFFERENT, hand-maintained
+# subset — so a fact measured for both silently reached only the replica. Individual
+# fixes patched one family at a time; the class recurred because there were TWO merge
+# paths and no gate. ``merge_brand_facts`` is the SINGLE routine both paths now call, so
+# every fact family is merged IDENTICALLY for the replica and a composed page — the only
+# per-target difference is an EXPLICIT, DOCUMENTED, TESTED exclusion set (never a silent
+# drop). The fact-consumption audit (AS-83, ``fact_consumption_audit.py``) is the paired
+# gate that fails loud when a captured measured fact is not consumed in the output.
 
-    Never overwrites an already-present ``responsive`` block (a future in-yaml fact
-    wins over the sidecar)."""
+# Fact families withheld from a COMPOSED page's merged doc, with the REASON each is
+# generation-unsafe. These are NOT silent drops: the AS-83 audit reads this table and
+# reports an excluded family as a DOCUMENTED-EXCLUSION PASS on generated pages (provenance
+# aware), and flags the SAME families as still-unconsumed FINDINGS on the replica so the
+# queued generation-path batch is driven by the audit, not by guesswork.
+#
+# ``hero``/``headings`` pin the SOURCE's own type/height REGISTER (absolute viewport
+# height, the source h1 font-size shrink ladder, the source heading line-heights). A
+# composed page's sections choose a DIFFERENT (often larger) type scale, so forcing the
+# source's absolute register mis-sizes a composed heading/hero (the AS-16 overlap class).
+# AS-82 made type line-height render UNITLESS, which removes the frozen-px overlap for the
+# line-height fact specifically — but the hero ``headingSizeLadder`` (absolute font-size)
+# and ``heightRule`` (absolute band height) remain register-bearing, so the hero+headings
+# families stay generation-excluded THIS pass. Promoting them into generation is the
+# queued batch the AS-83 audit is meant to drive (see harness-regression-audit.md AS-82).
+GENERATION_UNSAFE_FAMILIES: dict[str, str] = {
+    "hero": ("hero heightRule (absolute viewport band height) + headingSizeLadder "
+             "(absolute source h1 font-size shrink) pin the SOURCE's register; a composed "
+             "hero uses its own type/height scale, so the source's absolute values "
+             "mis-size it (AS-16 register overlap). Geometry-bearing, unlike chrome facts."),
+    "headings": ("source heading line-heights are measured against the SOURCE's heading "
+                 "register; correcting a composed page's larger h2 to the source ratio is a "
+                 "register the composed type scale did not choose. AS-82 made line-height "
+                 "unitless (no frozen-px overlap) so this is now a candidate for the queued "
+                 "generation-path batch — driven by the AS-83 audit, not merged here."),
+}
+
+# The merge targets. ``replica`` is source-register faithful (merges everything);
+# ``generation`` withholds the register-bearing families above.
+_MERGE_TARGETS = ("replica", "generation")
+
+
+def excluded_families_for(target: str) -> dict[str, str]:
+    """The {family: reason} exclusion table for a merge/audit ``target``. ``replica``
+    excludes nothing (source-faithful); ``generation`` withholds the register-bearing
+    families. A single source of truth shared by ``merge_brand_facts`` and the AS-83
+    fact-consumption audit so the merge and the gate can never disagree about what is a
+    documented exclusion vs a silent drop."""
+    if target == "generation":
+        return dict(GENERATION_UNSAFE_FAMILIES)
+    return {}
+
+
+def load_sidecar(brand_dir: Path) -> dict:
+    """The parsed ``responsive-facts.yaml`` measured-fact sidecar for a brand, or ``{}``
+    when absent/unreadable (fact-gate: a brand without the sidecar merges nothing)."""
     try:
         import yaml
         sidecar_p = Path(brand_dir) / SIDECAR_NAME
         if not sidecar_p.is_file():
-            return doc
-        sidecar = yaml.safe_load(sidecar_p.read_text()) or {}
+            return {}
+        return yaml.safe_load(sidecar_p.read_text()) or {}
     except Exception:
+        return {}
+
+
+def merge_brand_facts(doc: dict, brand_dir: Path, *, target: str = "replica") -> dict:
+    """THE canonical measured-fact merge — the SINGLE path both the replica loader
+    (``compose_page.load_doc``, ``target="replica"``) and the generation doc builder
+    (``compose_from_composition.composition_to_doc``, ``target="generation"``) call, so
+    every fact family is merged IDENTICALLY for both. Merges the ``responsive-facts.yaml``
+    sidecar into the in-memory doc:
+
+      * ``hero``     → the hero layout's ``responsive`` block (+ nested ``primaryButton``);
+      * ``footer``   → ``footer.responsive``;
+      * ``nav`` / ``buttons`` / ``headings`` → ``doc.responsive.<key>``.
+
+    ``target`` selects the EXPLICIT, DOCUMENTED exclusion set (``excluded_families_for``):
+    ``replica`` merges every family; ``generation`` withholds the register-bearing
+    ``hero``/``headings`` families (documented in ``GENERATION_UNSAFE_FAMILIES``, surfaced
+    by the AS-83 audit as a documented-exclusion PASS — never a silent drop). A brand
+    without the sidecar, or a family the brand did not measure, is a no-op → byte-identical
+    output. Never overwrites an already-present ``responsive`` block (an in-yaml fact wins
+    over the sidecar). Returns the doc for chaining."""
+    if target not in _MERGE_TARGETS:
+        raise ValueError(f"merge_brand_facts: unknown target {target!r} "
+                         f"(expected one of {_MERGE_TARGETS})")
+    sidecar = load_sidecar(brand_dir)
+    if not sidecar:
         return doc
-    hero_block = sidecar.get("hero")
-    if isinstance(hero_block, dict):
-        hero_layout = next((l for l in (doc.get("layouts") or [])
-                            if isinstance(l, dict) and l.get("useCase") == "hero"), None)
-        if hero_layout is not None and "responsive" not in hero_layout:
-            hero_layout["responsive"] = hero_block
-    footer_block = sidecar.get("footer")
-    if isinstance(footer_block, dict) and isinstance(doc.get("footer"), dict) \
-            and "responsive" not in doc["footer"]:
-        doc["footer"]["responsive"] = footer_block
-    # nav mega-panel surface, brand-wide button motion-purge, and heading line-heights
-    # merge onto the doc under a single ``responsive`` namespace (in-memory only). Each
-    # consumer is fact-gated; a brand without the sidecar leaves the doc untouched.
+    excluded = excluded_families_for(target)
+
+    # hero → the hero layout's own ``responsive`` block (carries heightRule / heading
+    # ladder / primaryButton; register-bearing → generation-excluded).
+    if "hero" not in excluded:
+        hero_block = sidecar.get("hero")
+        if isinstance(hero_block, dict):
+            hero_layout = next(
+                (l for l in (doc.get("layouts") or [])
+                 if isinstance(l, dict) and l.get("useCase") == "hero"), None)
+            if hero_layout is not None and "responsive" not in hero_layout:
+                hero_layout["responsive"] = hero_block
+
+    # footer → footer.responsive (geometry-neutral column reflow + measured content cap).
+    if "footer" not in excluded:
+        footer_block = sidecar.get("footer")
+        if isinstance(footer_block, dict) and isinstance(doc.get("footer"), dict) \
+                and "responsive" not in doc["footer"]:
+            doc["footer"]["responsive"] = footer_block
+
+    # nav mega-panel surface + mobile-collapse, brand-wide button motion-purge, and heading
+    # line-heights merge onto the doc under a single ``responsive`` namespace (in-memory
+    # only). Each consumer is fact-gated; a family the brand did not measure is skipped.
     resp = doc.get("responsive") if isinstance(doc.get("responsive"), dict) else {}
     for key in ("nav", "buttons", "headings"):
+        if key in excluded:
+            continue
         block = sidecar.get(key)
         if isinstance(block, dict) and key not in resp:
             resp[key] = block
     if resp:
         doc.setdefault("responsive", resp)
     return doc
+
+
+def apply_responsive_facts(doc: dict, brand_dir: Path) -> dict:
+    """Backward-compatible REPLICA-target alias for :func:`merge_brand_facts` (kept so the
+    existing ``compose_page.load_doc`` call site and its tests read unchanged). Merges
+    every measured fact family (the replica is source-register faithful)."""
+    return merge_brand_facts(doc, brand_dir, target="replica")
 
 
 def main(argv=None) -> int:

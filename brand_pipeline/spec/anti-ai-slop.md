@@ -2401,6 +2401,48 @@ carrying a `line-height: <n>px` declaration. Empty list ⇒ clean. Tests:
 
 ---
 
+## AS-83 — Captured measured fact silently not consumed in the output
+
+**Rule**: every measured fact that is CAPTURED into a brand's facts (a Phase-1/2 measured
+value merged into the doc a renderer consumes) MUST be CONSUMED in the rendered output, or
+be a DOCUMENTED, provenance-tagged exclusion. A measured fact that reaches the doc but no
+code path reads is a silent drop — the single most common defect class in this pipeline
+(nav background, nav collapse, sticky column, hero alignment, per-section surface,
+line-height all shared this shape). Merge facts through ONE path
+(`responsive_facts.merge_brand_facts`, shared by the replica loader and the generation doc
+builder) and GATE consumption; never maintain two divergent merge paths.
+
+**Why it happens**: a fact is measured and merged into the doc the REPLICA consumes, but a
+second, hand-maintained code path (the generation composed-doc builder) merges a different
+subset — so the fact silently reaches only one output. It is invisible to a screenshot gate
+(the missing rule simply isn't drawn) and to a CSS-property diff (the property is absent,
+not wrong). Each recurrence was patched one fact at a time because there was no single merge
+path and no gate that a captured fact was actually used.
+
+**Caught here**: `compose_from_composition.composition_to_doc` merged `footer`/`nav`/
+`buttons` responsive facts but NOT the `hero`/`headings` families the replica got via
+`compose_page.load_doc`; earlier, it merged NONE of them. Both paths now call the single
+`responsive_facts.merge_brand_facts(doc, brand_dir, target=…)`, whose ONLY per-target
+difference is the explicit, documented `GENERATION_UNSAFE_FAMILIES` exclusion table (the
+register-bearing `hero`/`headings` families, withheld from composed pages with a stated
+reason — never a silent drop).
+
+**Verify**: `fact_consumption_audit.py` (the AS-83 audit) enumerates the captured measured
+fact families (responsive hero/footer/nav/heading/button facts, layout interaction devices
+like `sticky-column`, per-section surfaces) and checks each is consumed — via the fact-gated
+CSS comment marker each consumer emits, or a structural signal (`.cs-mega` panel paint,
+`position: sticky`, `data-surface`). A captured MEASURED fact (provenance `origin ∈
+{extracted, measured}`) with no consumption evidence is an ERROR; a documented exclusion is
+a PASS; a family owned by a sibling gate is a delegated PASS. Provenance-aware: an authored
+value the composer chose not to use is not a defect. Surfaced as advisory rows by
+`onbrand_check.check_fact_consumption` and as a loud standalone gate
+(`python brand_pipeline/fact_consumption_audit.py <brand.yaml> <render_dir>`, non-zero exit
+on a silent drop; writes `fact-consumption-audit.{json,md}` beside the render). Tests:
+`brand_pipeline/tests/test_fact_consumption_audit.py` (merge parity, factless byte-identity,
+planted consumed/unconsumed facts, honored exclusions).
+
+---
+
 ## Adding a new entry
 
 Copy this shape: **Rule** (the imperative, one or two sentences) / **Why it happens** (the

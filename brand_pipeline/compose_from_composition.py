@@ -2455,41 +2455,22 @@ def composition_to_doc(comp: dict, brand_yaml_path: Path | str) -> tuple[dict, l
             accent_layout_id = layout["id"]
 
     doc["layouts"] = layouts
-    # RESPONSIVE CHROME facts (Phase-2 sidecar): merge the measured facts the replica
-    # assembler consumes at compose_page.load_doc that are BRAND-CHROME/motion facts —
-    # identical on every page regardless of its section type scale:
-    #   * responsive.nav  → mega-panel background (panelSurface) + mobile-collapse
-    #     breakpoint (the transparent mega-nav / non-collapsing-nav defects);
-    #   * responsive.buttons → the un-grounded hover-transform purge (brand-wide);
-    #   * footer.responsive → the measured footer grid reflow breakpoint.
-    # The generative doc builder previously skipped ALL responsive facts, so composed
-    # pages rendered a transparent mega-panel and a non-collapsing nav while the replica
-    # got both. Fully fact-gated: a brand without the sidecar is byte-identical.
+    # MEASURED FACTS — the ONE canonical merge path (responsive_facts.merge_brand_facts),
+    # the SAME routine the replica loader (compose_page.load_doc) uses, called here with
+    # target="generation" so the replica and a composed page merge every fact family
+    # IDENTICALLY. Previously this builder hand-maintained a DIFFERENT subset, so a fact
+    # measured for both silently reached only the replica (the "captured but not consumed"
+    # bug class). Fully fact-gated: a brand without the sidecar is byte-identical.
     #
-    # DELIBERATELY EXCLUDED: `hero` and `headings`. Those pin the SOURCE's exact
-    # heading line-heights / hero height, measured against the source's own heading
-    # REGISTER. A composed page's sections use a different (often larger) h2 tier, so
-    # forcing the source's absolute line-height (e.g. 28px onto a 40px composed h2)
-    # crashes the lines into each other and into adjacent media (AS-16). Chrome facts
-    # are geometry-neutral; type-register facts are not, so they stay replica-only.
+    # The ONLY per-target difference is the EXPLICIT, DOCUMENTED, TESTED exclusion set
+    # (responsive_facts.GENERATION_UNSAFE_FAMILIES): the register-bearing `hero`/`headings`
+    # families are withheld from a composed page (their absolute type/height register
+    # mis-sizes a composed page's larger heading tier — AS-16). This is NOT a silent drop:
+    # the AS-83 fact-consumption audit reads the same exclusion table and reports these as a
+    # documented-exclusion PASS on generated pages, and as still-unconsumed FINDINGS on the
+    # replica to drive the queued generation-path batch.
     import responsive_facts as _rf
-    _sidecar_p = Path(brand_yaml_path).parent / _rf.SIDECAR_NAME
-    if _sidecar_p.is_file():
-        try:
-            _sidecar = yaml.safe_load(_sidecar_p.read_text()) or {}
-        except Exception:
-            _sidecar = {}
-        _fb = _sidecar.get("footer")
-        if isinstance(_fb, dict) and isinstance(doc.get("footer"), dict) \
-                and "responsive" not in doc["footer"]:
-            doc["footer"]["responsive"] = _fb
-        _resp = doc.get("responsive") if isinstance(doc.get("responsive"), dict) else {}
-        for _k in ("nav", "buttons"):
-            _blk = _sidecar.get(_k)
-            if isinstance(_blk, dict) and _k not in _resp:
-                _resp[_k] = _blk
-        if _resp:
-            doc["responsive"] = _resp
+    _rf.merge_brand_facts(doc, Path(brand_yaml_path).parent, target="generation")
     doc["_hybridCopy"] = {
         "section_copy": section_copy or {},
         "layout_copy": layout_copy,

@@ -1,5 +1,55 @@
 # Changes
 
+## 2026-07-22 — Unified fact-merge path + fact-consumption audit (AS-83) — the two durable fixes for the "captured but not consumed" bug class
+
+Two systemic, generic, brand-agnostic fixes so the recurring silent-drop class (nav bg, nav
+collapse, sticky column, hero alignment, per-section surface, line-height) can't ship again.
+Held for review (no commit/push); hubspot-v2/remote + v3 replica baselines protected
+(byte-identical).
+
+**Root cause (proven).** The replica loader (`compose_page.load_doc` →
+`apply_responsive_facts`) merged the measured `responsive-facts.yaml` sidecar for every
+family, but the generation doc builder (`compose_from_composition.composition_to_doc`)
+hand-maintained a DIFFERENT subset — so a fact measured for both silently reached only the
+replica. Two divergent merge paths, no consumption gate → the class recurred one fix at a
+time.
+
+- **Deliverable A — ONE canonical merge path.** `responsive_facts.merge_brand_facts(doc,
+  brand_dir, *, target)` is the SINGLE routine both `compose_page.load_doc`
+  (`target="replica"`) and `composition_to_doc` (`target="generation"`) call; every fact
+  family (hero/footer/nav/buttons/headings) merges IDENTICALLY. The ONLY per-target
+  difference is the explicit, documented, tested `GENERATION_UNSAFE_FAMILIES` table (the
+  register-bearing `hero` + `headings` families withheld from composed pages with a stated
+  reason — the AS-83 audit reports them as a documented-exclusion PASS, never a silent drop).
+  `apply_responsive_facts` is now a thin replica-target alias; `excluded_families_for()` +
+  `load_sidecar()` are the shared seam. The generation render is BYTE-IDENTICAL with the new
+  unified merge vs the old inline logic — the unification changes no output, only the path.
+- **Deliverable B — fact-consumption audit (AS-83, `brand_pipeline/fact_consumption_audit.py`).**
+  Generalizes knob-consumption (AS-63) + declared-copy lints to ALL measured fact families:
+  enumerates every captured MEASURED fact (responsive hero/footer/nav/heading/button facts,
+  layout interaction devices like `sticky-column`, per-section surfaces) and verifies
+  consumption in the emitted HTML/CSS via each consumer's fact-gated CSS comment marker or a
+  structural signal (`.cs-mega` panel paint / `position: sticky` / `data-surface`).
+  Provenance-aware: a captured measured fact with no consumer is an ERROR; a documented
+  exclusion / sibling-gate-owned family is a PASS. Wired as ADVISORY rows via
+  `onbrand_check.check_fact_consumption` (never flips OVERALL — a known queued unconsumed
+  fact is flagged, not fatal) + a LOUD standalone CLI (non-zero exit; writes
+  `fact-consumption-audit.{json,md}` beside the render). Registered `spec/anti-ai-slop.md`
+  AS-83.
+- **Audit inventory (driver list for the next batch).** v3 REPLICA: 18 consumed / 1
+  unconsumed / 5 delegated — the **driver** is `layout.specialTreatment.sticky-column`
+  (captured `origin: extracted`, no `position: sticky` rendered). ai-product-launch
+  generated page: 0 unconsumed / 3 documented exclusions (hero + primaryButton + headings) /
+  the rest consumed or delegated — no silent drops.
+- **Verification.** C1–C28 **0 errors** (v3/v2/remote). All three replicas re-render
+  BYTE-IDENTICAL (v3 SSIM 0.9239 ≥0.90; v2 0.9556; remote 0.9509 held). Full suite **0 NEW
+  failures**, +15 new tests (`brand_pipeline/tests/test_fact_consumption_audit.py`: merge
+  parity, factless byte-identity, planted consumed/unconsumed facts, honored exclusions,
+  sticky-column flag, generation delegation, real-v3 integration).
+- **Scope guard.** Built the unified path + the audit ONLY — did NOT fix the individual
+  unconsumed-fact renderers (sticky-column / hero-alignment / per-section-surface); the audit
+  FLAGS them so the next batch is driven by its output.
+
 ## 2026-07-22 — Studio project view surfaces brand-surface PAGES (measured replica ⇆ harness-generated) for side-by-side compare
 
 Studio-server **presentation only** — no change to how pages render, no lane/artifact edits, and the render/compose path (`component_render.py`, `compose_from_composition.py`, generation composition, the `ai-product-launch` lane) was left untouched (that path is owned by a concurrent worker). All edits are confined to `studio_server.py` + a new test.

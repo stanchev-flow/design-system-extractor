@@ -1401,6 +1401,50 @@ def check_media_bindings(render_dir, comp=None):
     return rows
 
 
+def check_fact_consumption(render_dir, brand_yaml):
+    """Fact-consumption audit rows (AS-83 — brand_pipeline/fact_consumption_audit.py):
+    every CAPTURED MEASURED fact (responsive chrome/hero/footer/heading facts, layout
+    interaction devices, per-section surfaces) must be CONSUMED in the emitted output, or
+    be a DOCUMENTED generation exclusion / delegated to a named sibling gate. Generalizes
+    the knob-consumption (AS-63) + declared-copy lints to ALL measured fact families so the
+    "captured but not consumed" silent-drop class fails loud. Fact-gated: [] for renders
+    with no measured facts. ADVISORY (like the other composition invariants) so a known,
+    queued unconsumed fact is FLAGGED and reported without regressing a held baseline —
+    the standalone CLI (non-zero exit) + the per-render `fact-consumption-audit.md` report
+    are the hard driver for the queued batch."""
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import fact_consumption_audit as fca  # noqa: E402
+        target = fca._infer_target(render_dir)
+        findings = fca.audit_render(brand_yaml, render_dir, target=target)
+    except Exception as exc:  # the audit must never crash the gate
+        return [("fact-consumption",
+                 "Every captured measured fact is consumed (AS-83)", True,
+                 f"audit unavailable ({type(exc).__name__}: {exc})")]
+    # fact-gate: only surface rows when the brand actually carries directly-probed measured
+    # facts (a responsive sidecar / interaction device / per-section surface). Delegated-only
+    # renders (tokens present but nothing measured to probe here) stay silent.
+    probed = [f for f in findings if f.status in (fca.CONSUMED, fca.UNCONSUMED)]
+    if not probed:
+        return []
+    unconsumed = [f for f in findings if f.is_error]
+    consumed_n = sum(1 for f in findings if f.status == fca.CONSUMED)
+    excluded_n = sum(1 for f in findings if f.status == fca.EXCLUDED)
+    detail = (f"{consumed_n} consumed / {len(unconsumed)} unconsumed / {excluded_n} "
+              f"excluded (target={target})")
+    if unconsumed:
+        detail += " — unconsumed: " + ", ".join(f.family for f in unconsumed[:6])
+    rows = [("fact-consumption",
+             "Every captured measured fact is consumed (AS-83)",
+             not unconsumed, detail)]
+    # one row per unconsumed measured fact so the driver list is individually visible
+    for f in unconsumed:
+        rows.append((f"fact-consumption:{f.family}",
+                     f"{f.family} consumed (AS-83)", False,
+                     f"{f.detail} (consumer: {f.consumer}; evidence: {f.evidence})"))
+    return rows
+
+
 _RUNS_ROOT = Path(__file__).resolve().parent.parent / "runs"
 
 
@@ -2292,6 +2336,11 @@ def main():
     # multi-panel or stat device must RENDER its tab controls + stat items. [] for
     # composition-less lanes and for pages that declare no such device.
     inv += check_anatomy_presence(args.render_dir, html=html)
+    # fact-consumption rows (AS-83): every CAPTURED MEASURED fact merged into the doc
+    # (the SAME canonical merge the replica + generation now share) must be CONSUMED in
+    # the output, or be a documented generation exclusion / delegated to a sibling gate.
+    # ADVISORY (never flips OVERALL): a known queued unconsumed fact is flagged, not fatal.
+    inv += check_fact_consumption(args.render_dir, args.brand_yaml)
 
     style = style_checks = None
     if args.style:
