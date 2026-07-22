@@ -277,7 +277,7 @@ def detect_families(sections: list[SectionCtx]) -> None:
         if (uc == "hero" or sec.archetype.startswith("hero-")
                 or (sec is first_content and n.select_one(".c-heading--display"))):
             fams.add("hero")
-        if n.select_one(".cs-stat-band") or len(n.select(".c-stat")) >= 2:
+        if n.select_one(".cs-stat-band") or len(_flat_stats(n)) >= 2:
             fams.add("stat-band")
         if n.select_one(".cs-logo-strip") or uc == "logos":
             fams.add("logo-strip")
@@ -700,9 +700,24 @@ def check_hero_05(rule: dict, lane: LaneCtx) -> list[dict]:
 
 # ── checkers: stat-band ──────────────────────────────────────────────────────────
 
+def _flat_stats(node):
+    """`.c-stat` nodes that form a flat STAT BAND — excluding stats nested inside a
+    tab/carousel switcher device (the tabbed-testimonial's per-panel case stats). A
+    tabbed component shows only one panel's stats at a time, so its stats are card
+    anatomy, not a section-level stat run — counting the hidden-panel aggregate
+    mis-classified the whole tabbed testimonial as an over-budget stat band."""
+    out = []
+    for stat in node.select(".c-stat"):
+        if stat.find_parent(class_="cs-tabs") or stat.find_parent(class_="cs-tabpanel") \
+                or stat.find_parent(class_="cs-panelcar"):
+            continue
+        out.append(stat)
+    return out
+
+
 def _stat_items(sec: SectionCtx) -> list[tuple[str, str]]:
     items = []
-    for stat in sec.node.select(".c-stat"):
+    for stat in _flat_stats(sec.node):
         v = stat.select_one(".c-stat-value")
         l = stat.select_one(".c-stat-label")
         items.append((_txt(v) if v else "", _txt(l) if l else ""))

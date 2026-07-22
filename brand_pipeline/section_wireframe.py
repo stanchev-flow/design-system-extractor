@@ -22,6 +22,9 @@ ACTION_CONTRACTS = {"button", "cta", "form", "input"}
 MEDIA_CONTRACTS = {"image", "video"}
 PROOF_CONTRACTS = {"stat", "stat-block", "testimonial", "quote", "logo", "logo-bar"}
 ITEM_CONTRACTS = {"feature-item", "content-block", "card", "testimonial"}
+# a tab/panel switcher is a substantive VISUAL component cluster (the tabbed
+# testimonial device): its rendered tab rail + case panels anchor the section.
+TAB_CONTRACTS = {"tabs", "tab-panels", "tab-switcher"}
 TEXT_CONTRACTS = {"heading", "header", "eyebrow", "paragraph", "caption", "label"}
 TESTIMONIAL_CONTRACTS = {"testimonial", "quote"}
 DEFAULT_CONTAINER_WIDTH = 1080.0
@@ -57,11 +60,16 @@ def _has_asset(value) -> bool:
 
 def _slot_has_visual(slot: dict) -> bool:
     contract = str(slot.get("contract") or "").lower()
-    if contract in MEDIA_CONTRACTS | PROOF_CONTRACTS | ACTION_CONTRACTS:
+    if contract in MEDIA_CONTRACTS | PROOF_CONTRACTS | ACTION_CONTRACTS | TAB_CONTRACTS:
         return True
     if _has_asset(slot):
         return True
-    return any(_has_asset(item) for item in _copy_items(slot))
+    # a tab/panel record may carry its own case photo under `media` (not `asset`) —
+    # the tabbed-testimonial device — which still makes the slot a visual anchor.
+    if any(_has_asset(item) or str(item.get("media") or "").strip()
+           for item in _copy_items(slot)):
+        return True
+    return False
 
 
 def _length_px(value, default: float) -> float:
@@ -470,7 +478,30 @@ def _testimonial_plan(section: dict, registry: dict | None, brand: dict) -> dict
     if not slot and str(section.get("useCase") or "").lower() != "testimonial":
         return None
     copy_value = (slot or {}).get("copy")
-    if isinstance(copy_value, dict):
+    # TABBED testimonial (tabs device): a `tabs`/`tab-panels` slot carries a LIST of
+    # case panels, each a complete testimonial {label, quote, name, role, media, stats}.
+    # The active (first) panel is the JS-off truth — plan the component from it so the
+    # tabbed switcher counts as ONE complete testimonial with a bound case photo (the
+    # tabbed-testimonial-with-stats device). Without this every tabbed testimonial
+    # false-failed testimonial-integrity/visual-anchor (2026-07 tabs consumer).
+    panels_slot = next((s for s in _slots(section)
+                        if str(s.get("contract") or "").lower() in TAB_CONTRACTS
+                        or str(s.get("name") or "").lower() in ("panels", "tabs")), None)
+    panels = [p for p in ((panels_slot or {}).get("copy") or []) if isinstance(p, dict)] \
+        if isinstance((panels_slot or {}).get("copy"), list) else []
+    if len(panels) >= 2:
+        first = panels[0]
+        quote = str(first.get("quote") or first.get("text") or "").strip()
+        name = str(first.get("name") or "").strip()
+        role = str(first.get("role") or "").strip()
+        if not (name or role):
+            cap = str(first.get("caption") or "").strip()
+            if "," in cap:
+                name, role = (p.strip() for p in cap.split(",", 1))
+            else:
+                role = cap
+        asset = first.get("media") or first.get("asset")
+    elif isinstance(copy_value, dict):
         # legacy nested-dict shape: one slot carries {quote, name, role, avatar}
         quote = str(copy_value.get("quote") or copy_value.get("text") or "").strip()
         name = str(copy_value.get("name") or copy_value.get("author") or "").strip()

@@ -1466,10 +1466,22 @@ def _split_copy(section: dict) -> dict:
     # Role keywords first (unchanged); the declared `paragraph` contract is the
     # honest fallback (same doctrine as the header lookup above — the model authors
     # domain role words like "hub-promise", but the contract IS the body claim).
-    out["body"] = _slot_text(_by_role(slots, "body", "statement", "lede", "support",
-                                      "attribution"), "text", "body") \
-        or _slot_text(_by_contract(slots, "paragraph"), "text", "body") \
-        or first("text", "body") or first("attribution")
+    # NOTE: "attribution" is intentionally NOT in the body role list — a testimonial's
+    # name-line is a caption, not the body; folding it into `body` shadowed the real
+    # quote (silent-drop fix 2026-07). It is captured as `attribution` below.
+    body_slot = _by_role(slots, "body", "statement", "lede", "support") \
+        or _by_contract(slots, "paragraph")
+    out["body"] = _slot_text(body_slot, "text", "body") or first("text", "body")
+    # SUBHEADING (silent-drop fix 2026-07): a split that authors a DISTINCT subheading
+    # slot (subheading/subhead role or name) BESIDE its body used to drop it — the split
+    # copy translator carried only one `body` key, so the info-band rendered heading+body
+    # and the subheading vanished. Captured as a slot DIFFERENT from the one the body
+    # already consumed, so a lone lede stays the body (fix6-era behavior, no double
+    # render). Empty for splits without a distinct subheading slot (byte-identical).
+    subhead_slot = next(
+        (s for s in slots if s is not body_slot
+         and re.search(r"subhead", f"{s.get('role', '')} {s.get('name', '')}", re.I)), None)
+    out["subheading"] = _slot_text(subhead_slot, "text", "body", "subheading") or ""
     # TESTIMONIAL contract in the split copy path (fix7, pass-3 follow-up 7): the
     # quote binds by its declared CONTRACT too — role keywords miss the natural
     # authoring ("pull-quote", "customer-proof"), which left the split's copy column
@@ -1477,14 +1489,46 @@ def _split_copy(section: dict) -> dict:
     # attribution (name — role) rides beside it for the split composer's caption.
     tslot = _by_contract(slots, "testimonial", "quote")
     tcopy = (tslot or {}).get("copy") if isinstance((tslot or {}).get("copy"), dict) else {}
-    out["quote"] = _slot_text(_by_role(slots, "quote"), "quote", "text") \
-        or _text(tcopy, "quote", "text") or first("quote") or out["heading"]
+    quote_slot = _by_role(slots, "quote")
+    out["quote"] = _slot_text(quote_slot, "quote", "text") \
+        or _text(tcopy, "quote", "text") or first("quote")
+    # `hasQuote` is the render gate: a real quote/testimonial slot is present (never the
+    # heading-fallback). The info-band renders `quote` ONLY when this is true, so a plain
+    # split that borrowed the heading as a quote fallback stays byte-identical.
+    out["hasQuote"] = bool(quote_slot or tslot or first("quote"))
+    if not out["quote"]:
+        out["quote"] = out["heading"]
+    # ATTRIBUTION (silent-drop fix 2026-07): the name-line comes from the testimonial
+    # slot's own name/role dict, else the DISTINCT attribution slot (role/contract).
+    # Previously only the dict form was read, so a testimonial that authored a plain
+    # string attribution slot lost it AND had the info-band mis-bind it as the body.
     attribution = " — ".join(
         x for x in (str(tcopy.get("name") or "").strip(),
                     str(tcopy.get("role") or "").strip()) if x)
-    out["attribution"] = attribution
+    out["attribution"] = attribution \
+        or _slot_text(_by_role(slots, "attribution", "byline", "credit"), "text", "label") \
+        or _slot_text(_by_contract(slots, "attribution", "label"), "text", "label") or ""
     if not out["body"] and _text(tcopy, "quote", "text"):
         out["body"] = _text(tcopy, "quote", "text")
+    # TAB PANELS (tabs device consumer, 2026-07): a split seeded from a tab pattern
+    # declares its switcher panels as a repeatable slot (contract `tabs`/`tab-panels`,
+    # or a slot named `panels`/`tabs`). Surface the panel records + their labels verbatim
+    # so compose_info_band composes the REAL WAI-ARIA tab device (`_compose_tab_split`)
+    # instead of degrading to a flat single-quote block — the recurring "tabs contract
+    # has no generation consumer" gap. Empty for splits without the slot (byte-identical:
+    # compose_info_band only enters the tab branch when `_tabs` is ALSO stamped from the
+    # seeded pattern's sanctioned `tabs` treatment). Panel keys pass through as the tab
+    # renderer expects them (quote/name/role/caption/media/cta/stats).
+    panel_slot = _by_contract(slots, "tabs", "tab-panels", "tab-switcher") \
+        or _by_name(slots, "panels", "tabs", "tab-row")
+    tab_panels = _repeatable_copy(panel_slot)
+    if len(tab_panels) >= 2:
+        out["panels"] = [dict(p) for p in tab_panels]
+        out["tabs"] = [str(p.get("label") or p.get("heading") or "").strip()
+                       for p in tab_panels]
+    else:
+        out["panels"] = []
+        out["tabs"] = []
     # visit-band aliases (read only when the section routes to compose_visit_band).
     out["mapCaption"] = out["caption"]
     out["ticketsTitle"] = out["panelTitle"]
@@ -2411,6 +2455,41 @@ def composition_to_doc(comp: dict, brand_yaml_path: Path | str) -> tuple[dict, l
             accent_layout_id = layout["id"]
 
     doc["layouts"] = layouts
+    # RESPONSIVE CHROME facts (Phase-2 sidecar): merge the measured facts the replica
+    # assembler consumes at compose_page.load_doc that are BRAND-CHROME/motion facts —
+    # identical on every page regardless of its section type scale:
+    #   * responsive.nav  → mega-panel background (panelSurface) + mobile-collapse
+    #     breakpoint (the transparent mega-nav / non-collapsing-nav defects);
+    #   * responsive.buttons → the un-grounded hover-transform purge (brand-wide);
+    #   * footer.responsive → the measured footer grid reflow breakpoint.
+    # The generative doc builder previously skipped ALL responsive facts, so composed
+    # pages rendered a transparent mega-panel and a non-collapsing nav while the replica
+    # got both. Fully fact-gated: a brand without the sidecar is byte-identical.
+    #
+    # DELIBERATELY EXCLUDED: `hero` and `headings`. Those pin the SOURCE's exact
+    # heading line-heights / hero height, measured against the source's own heading
+    # REGISTER. A composed page's sections use a different (often larger) h2 tier, so
+    # forcing the source's absolute line-height (e.g. 28px onto a 40px composed h2)
+    # crashes the lines into each other and into adjacent media (AS-16). Chrome facts
+    # are geometry-neutral; type-register facts are not, so they stay replica-only.
+    import responsive_facts as _rf
+    _sidecar_p = Path(brand_yaml_path).parent / _rf.SIDECAR_NAME
+    if _sidecar_p.is_file():
+        try:
+            _sidecar = yaml.safe_load(_sidecar_p.read_text()) or {}
+        except Exception:
+            _sidecar = {}
+        _fb = _sidecar.get("footer")
+        if isinstance(_fb, dict) and isinstance(doc.get("footer"), dict) \
+                and "responsive" not in doc["footer"]:
+            doc["footer"]["responsive"] = _fb
+        _resp = doc.get("responsive") if isinstance(doc.get("responsive"), dict) else {}
+        for _k in ("nav", "buttons"):
+            _blk = _sidecar.get(_k)
+            if isinstance(_blk, dict) and _k not in _resp:
+                _resp[_k] = _blk
+        if _resp:
+            doc["responsive"] = _resp
     doc["_hybridCopy"] = {
         "section_copy": section_copy or {},
         "layout_copy": layout_copy,
@@ -2514,8 +2593,80 @@ def render_composition(comp: dict, brand_yaml_path: Path | str, outdir: Path | s
     # feature-item rows drawn by the accordion device) — phantom "unresolved: 2"
     # while the shipped HTML carried zero markers.
     unresolved = html.count("<!-- unresolved slot")
+    # LOUD silent-drop copy lint (2026-07): declared copy that never reached the page is
+    # the recurring silent-drop class. Persist a report beside the render and shout on
+    # stderr so a regression is impossible to miss (non-fatal — the render still ships,
+    # but the miss is recorded and surfaced in the summary).
+    copy_misses = lint_declared_copy(comp, html)
+    (outdir / "copy-lint.json").write_text(json.dumps(
+        {"misses": copy_misses, "ok": not copy_misses}, indent=2) + "\n")
+    if copy_misses:
+        sys.stderr.write(
+            f"[copy-lint] WARNING: {len(copy_misses)} declared copy string(s) did NOT "
+            f"render (silent drop):\n")
+        for m in copy_misses[:12]:
+            sys.stderr.write(
+                f"  - {m['section']}.{m['slot']} [{m['key']}]: {m['text']!r}\n")
     return {"out": str(outdir / "index.html"), "order": order, "unresolved": unresolved,
-            "accent_layout": hybrid["accent_layout_id"], "assets": copied}
+            "accent_layout": hybrid["accent_layout_id"], "assets": copied,
+            "copyMisses": copy_misses}
+
+
+_COPY_LINT_KEYS = ("heading", "subheading", "body", "text", "label", "value",
+                   "quote", "caption", "eyebrow", "title", "attribution")
+
+
+def lint_declared_copy(comp: dict, html: str) -> list[dict]:
+    """LOUD silent-drop lint (2026-07): every human-readable copy string a composition
+    DECLARES must appear in the rendered HTML. A declared copy key that never reaches the
+    page is the recurring silent-drop class (a subheading/quote/proof line bound to a slot
+    the composer forgot to render). Returns a list of {section, slot, key, text} misses;
+    empty when every declared string rendered. Brand-agnostic: it reads only the
+    composition's own copy, and matches on a normalized distinctive prefix so entity
+    escaping / whitespace reflow don't cause false positives."""
+    import html as _html
+
+    def _norm(s: str) -> str:
+        return re.sub(r"\s+", " ", _html.unescape(str(s))).strip()
+
+    hay = _norm(html)
+    misses: list[dict] = []
+
+    def _probe(text, section_id, slot_name, key):
+        if not isinstance(text, str):
+            return
+        frag = _norm(text)
+        if len(frag) < 4:
+            return                      # too short to attribute reliably (icons/single chars)
+        probe = frag[:40]
+        if probe not in hay:
+            misses.append({"section": section_id, "slot": slot_name,
+                           "key": key, "text": frag[:100]})
+
+    for sec in (comp.get("sections") or []):
+        if not isinstance(sec, dict):
+            continue
+        sid = str(sec.get("id") or "?")
+        for slot in (sec.get("slots") or []):
+            if not isinstance(slot, dict):
+                continue
+            name = str(slot.get("name") or slot.get("role") or "?")
+            c = slot.get("copy")
+            if isinstance(c, str):
+                _probe(c, sid, name, "copy")
+            elif isinstance(c, dict):
+                for k, v in c.items():
+                    if k in _COPY_LINT_KEYS and isinstance(v, str):
+                        _probe(v, sid, name, k)
+            elif isinstance(c, list):
+                for i, item in enumerate(c):
+                    if isinstance(item, dict):
+                        for k, v in item.items():
+                            if k in _COPY_LINT_KEYS and isinstance(v, str):
+                                _probe(v, sid, name, f"[{i}].{k}")
+                    elif isinstance(item, str):
+                        _probe(item, sid, name, f"[{i}]")
+    return misses
 
 
 def _declared_asset_names(comp: dict) -> set[str]:

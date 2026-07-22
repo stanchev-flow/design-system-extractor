@@ -255,7 +255,13 @@ def load_brand_facts(brand_dir: Path, viewport_w: int = DEFAULT_VIEWPORT[0],
                  else shape.get("stackMeasure"))
             gaps = []
             for slot in shape.get("slots") or []:
-                ms = slot.get("mediaScale") or {}
+                # mediaScale may be a string (object-fit keyword `cover`/`contain`
+                # for a single media slot) or a dict (measured item box / gap for a
+                # mark strip). Only the dict form carries a strip gap fact; the
+                # string form has no gap to mine, so treat it as empty.
+                ms = slot.get("mediaScale")
+                if not isinstance(ms, dict):
+                    ms = {}
                 g = parse_length(ms.get("gap"), rem_px, viewport_w)
                 if g is not None:
                     gaps.append(g)

@@ -2752,15 +2752,33 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
     # DROPPED (copy["body"] was never read on this route); render it under the band
     # heading. Sections without one render byte-identically (the block elides).
     band_body = ""
-    if str(copy["body"]).strip():
-        band_body = "\n    " + cr.render_paragraph(
+    # SUBHEADING lede (silent-drop fix 2026-07): a split that declared a DISTINCT
+    # subheading slot beside its body used to drop the subheading (the split copy
+    # translator carried only one `body` key). Render it as a lede paragraph above the
+    # body. Fact-gated on the key — only the composition split translator sets
+    # `subheading`; brand/replica splits keep byte-identical output.
+    if str(copy.get("subheading") or "").strip():
+        band_body += "\n    " + cr.render_paragraph(
+            doc, ctx, {"text": copy["subheading"], "measure": "50ch"})
+    # QUOTE (testimonial split, silent-drop fix 2026-07): a split whose slots carry a
+    # real quote renders the quote as the copy-column paragraph. Previously the split
+    # dropped copy["quote"] entirely (compose_info_band never read it) and the body
+    # lookup mis-bound the attribution line as the body — so the quote vanished and the
+    # name showed as the paragraph. `hasQuote` gates it (a plain split that borrowed the
+    # heading as a quote fallback never sets it, so it stays byte-identical).
+    if copy.get("hasQuote") and str(copy.get("quote") or "").strip():
+        band_body += "\n    " + cr.render_paragraph(
+            doc, ctx, {"text": copy["quote"], "measure": "50ch"})
+    elif str(copy["body"]).strip():
+        band_body += "\n    " + cr.render_paragraph(
             doc, ctx, {"text": copy["body"], "measure": "50ch"})
-        # QUOTE ATTRIBUTION (fix7, pass-3 follow-up 7): a testimonial-contract split
-        # carries its name — role line as the caption under the quote copy (the same
-        # person register the stack path renders); attribution-less splits elide.
-        if str(copy.get("attribution") or "").strip():
-            band_body += "\n    " + cr.render_caption(
-                doc, ctx, {"text": copy["attribution"]})
+    # QUOTE ATTRIBUTION (fix7, pass-3 follow-up 7): a testimonial-contract split
+    # carries its name — role line as the caption under the quote/body copy (the same
+    # person register the stack path renders); attribution-less splits elide.
+    if (copy.get("hasQuote") or str(copy["body"]).strip()) \
+            and str(copy.get("attribution") or "").strip():
+        band_body += "\n    " + cr.render_caption(
+            doc, ctx, {"text": copy["attribution"]})
     # SINGLE CASE-STUDY COUNTERWEIGHT.  A media-bearing card in a split is one
     # atomic component, not a text primitive plus an unrelated/default image.
     # The adapter stamps only a real bound asset, so this branch cannot invent a
@@ -5301,6 +5319,19 @@ def _ov_render_text(doc, ctx, slot, *, heading_props=None):
     contract = (slot.get("contract") or "").lower()
     sc = (slot.get("sizeClass") or "").lower()
     txt = _ov_text(slot)
+    # MULTI-FIELD CARD/PROOF slot (silent-drop fix 2026-07): a floating proof/utility
+    # card authors a copy DICT with both a heading claim and a supporting line. The
+    # primitive dispatch below reads only the FIRST field (heading) and silently drops
+    # the supporting line. Render the whole stack (claim + caption) for card/proof-role
+    # slots only; string copy and single-field dicts fall through unchanged.
+    _cc = slot.get("copy")
+    if isinstance(_cc, dict) and (contract == "card"
+                                  or any(k in role for k in ("proof", "card", "utility"))):
+        _head = _cc.get("heading") or _cc.get("title")
+        _sub = _cc.get("text") or _cc.get("body")
+        if str(_head or "").strip() and str(_sub or "").strip():
+            return (cr.render_paragraph(doc, ctx, {"text": _head, "measure": "38ch"})
+                    + cr.render_caption(doc, ctx, {"text": _sub}))
     if contract in ("link", "cta") or "cta" in role or "action" in role \
             or (slot.get("name") or "") == "action":
         return cr.render_arrow_link(doc, ctx, {"label": txt or "Learn more", "accent": False})

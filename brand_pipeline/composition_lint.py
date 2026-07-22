@@ -45,6 +45,9 @@ _ACTION_CONTRACTS = {"button", "cta", "form", "input"}
 _VISUAL_CONTRACTS = {
     "image", "video", "stat", "stat-block", "testimonial", "quote",
     "logo", "logo-bar", "feature-item", "content-block", "card",
+    # a tab/panel switcher (tabbed-testimonial device) is a substantive visual
+    # component cluster — its rendered tab rail + case panels anchor the section.
+    "tabs", "tab-panels", "tab-switcher",
 }
 
 # ── the CODE-CONSUMER registry ──────────────────────────────────────────────────────
