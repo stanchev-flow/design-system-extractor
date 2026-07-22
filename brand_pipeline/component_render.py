@@ -799,6 +799,339 @@ def nav_collapse_css(doc) -> str:
     return head + "\n" + base + "\n" + media + "\n"
 
 
+# ── NEW interaction-fact consumers (interaction-facts.yaml → fact-gated CSS/JS) ──────
+#
+# The Archaeologist capture-prompt upgrades added schema slots for structured carousel
+# timing, exhaustive per-component states, the mobile hamburger→drawer contract, the
+# sticky/scroll-shrink nav register, shadow/z-index scales, and a footer locale selector.
+# `capture_interaction_facts.py` derives them from measured evidence into
+# `interaction-facts.yaml`; `responsive_facts.merge_interaction_facts` merges them into
+# the doc at the canonical brand-schema paths. THESE are the consumers — each is fact-
+# gated (absent fact → "" → byte-identical output) and emits a
+# `/* … (fact-gated: <path>) … */` marker so the AS-83 fact-consumption audit can prove
+# the fact reached the render. Every emitted value is sanitized (hex/rgb/rgba colour,
+# box-shadow shorthand, ms integer, easing keyword) so no free-text leaks into the CSS.
+
+# value sanitizers — reject anything that isn't a recognised, safe CSS token.
+_COLOR_OK = re.compile(
+    r"^(?:#[0-9a-fA-F]{3,8}|rgba?\([0-9.,\s%]+\)|hsla?\([0-9.,\s%]+\)|transparent|"
+    r"currentColor|[a-z]{3,20})$")
+_SHADOW_OK = re.compile(r"^[-0-9.\s]+px(?:[-0-9.\s]+px){0,3}\s+rgba?\([0-9.,\s%]+\)"
+                        r"|^(?:[-0-9.]+px\s+){2,4}rgba?\([0-9.,\s%]+\)")
+_EASING_OK = re.compile(r"^(?:cubic-bezier\([0-9.,\s-]+\)|ease-in-out|ease-in|ease-out|"
+                        r"ease|linear|steps\([^)]+\))$")
+
+
+def _ok_color(v) -> str | None:
+    v = str(v or "").strip()
+    return v if v and _COLOR_OK.match(v) else None
+
+
+def _ok_shadow(v) -> str | None:
+    v = re.sub(r"\s+", " ", str(v or "").strip())
+    return v if v and _SHADOW_OK.match(v) else None
+
+
+def _ok_easing(v) -> str | None:
+    v = str(v or "").strip()
+    return v if v and _EASING_OK.match(v) else None
+
+
+def _ok_ms(v) -> int | None:
+    return int(v) if isinstance(v, (int, float)) and not isinstance(v, bool) and 0 < v <= 4000 else None
+
+
+def _ifacts(doc) -> dict:
+    """The PRIVATE interaction-fact namespace populated ONLY by the interaction-facts.yaml
+    sidecar merge (``responsive_facts.merge_interaction_facts``). Consumers read from here
+    — never the canonical brand.yaml paths — so a brand that authored a same-named key but
+    has no sidecar (its fact was never consumed) stays byte-identical."""
+    f = doc.get("_interactionFacts") if isinstance(doc, dict) else None
+    return f if isinstance(f, dict) else {}
+
+
+def _iface_navbar(doc) -> dict:
+    n = _ifacts(doc).get("navbar")
+    return n if isinstance(n, dict) else {}
+
+
+def navbar_sticky_css(doc) -> str:
+    """Grounded STICKY / SCROLL-SHRINK nav CSS from ``navbar.sticky`` (structured
+    register). The bar becomes ``position: sticky`` at the top; once scrolled past the
+    top it adopts the measured scrolled register (background + elevation shadow) via a
+    ``.is-scrolled`` class the interaction script toggles, transitioning at the measured
+    duration/easing. Fact-gated: "" when ``navbar.sticky`` is absent or not a structured
+    register (a legacy ``sticky: false`` bool stays byte-identical)."""
+    st = _iface_navbar(doc).get("sticky")
+    if not isinstance(st, dict):
+        return ""
+    behavior = str(st.get("behavior") or "").strip()
+    if behavior not in ("sticky", "scroll-shrink", "hide-on-scroll"):
+        return ""
+    to = st.get("toRegister") if isinstance(st.get("toRegister"), dict) else {}
+    bg = _ok_color(to.get("bg"))
+    shadow = _ok_shadow(to.get("shadow"))
+    ms = _ok_ms(st.get("transitionMs"))
+    easing = _ok_easing(st.get("easing")) or "ease"
+    scrolled_decls = []
+    if bg:
+        scrolled_decls.append(f"background: {bg}")
+    if shadow:
+        scrolled_decls.append(f"box-shadow: {shadow}")
+    head = (f"/* nav sticky/scroll-shrink (fact-gated: navbar.sticky) — measured "
+            f"{behavior}; bar sticks to the top and adopts a scrolled register "
+            f"(bg/shadow) once stuck. provenance in interaction-facts.yaml. */")
+    parts = [head,
+             "#page-nav { position: sticky; top: 0; "
+             + (f"transition: box-shadow {ms}ms {easing}, background {ms}ms {easing}; "
+                if ms else "")
+             + "}"]
+    if scrolled_decls:
+        parts.append("#page-nav.is-scrolled { " + "; ".join(scrolled_decls) + "; }")
+    return "\n".join(parts) + "\n"
+
+
+def navbar_mobile_drawer_css(doc) -> str:
+    """Grounded MOBILE DRAWER CSS from ``navbar.mobile`` (hamburger→drawer contract): the
+    burger's drawer adopts the measured drawer SURFACE (background) and SLIDES IN with the
+    measured duration/easing when opened (``aria-expanded`` toggles ``.cs-nav-drawer``,
+    already wired by ``interaction_script``). Fact-gated + additive: the burger scaffold
+    itself is emitted by ``nav_collapse_css``; this only paints + animates the drawer when
+    the mobile contract was measured. "" when ``navbar.mobile`` is absent."""
+    mob = _iface_navbar(doc).get("mobile")
+    if not isinstance(mob, dict):
+        return ""
+    surf = mob.get("drawerSurface") if isinstance(mob.get("drawerSurface"), dict) else {}
+    anim = mob.get("drawerAnim") if isinstance(mob.get("drawerAnim"), dict) else {}
+    bg = _ok_color(surf.get("bg"))
+    ms = _ok_ms(anim.get("durationMs"))
+    easing = _ok_easing(anim.get("easing")) or "ease"
+    decls = []
+    if bg:
+        decls.append(f"background: {bg}")
+    head = ("/* nav mobile drawer (fact-gated: navbar.mobile) — measured hamburger→drawer "
+            "surface + slide-in animation (duration/easing); the burger toggle + closed "
+            "state come from nav_collapse_css. provenance in interaction-facts.yaml. */")
+    parts = [head]
+    # the drawer paints its measured surface + slides down from the bar when opened.
+    drawer = "#page-nav .cs-nav-drawer { "
+    if decls:
+        drawer += "; ".join(decls) + "; "
+    if ms:
+        drawer += (f"transition: transform {ms}ms {easing}, opacity {ms}ms {easing}; "
+                   "transform: translateY(-0.5rem); opacity: 0; ")
+    drawer += "}"
+    parts.append(drawer)
+    if ms:
+        parts.append("#page-nav .cs-nav-drawer:not([hidden]) { transform: translateY(0); "
+                     "opacity: 1; }")
+    return "\n".join(parts) + "\n"
+
+
+def carousel_timing_css(doc) -> str:
+    """Grounded CAROUSEL timing CSS from ``blocks.carousel.carousel`` (structured recipe):
+    the measured transition duration/easing become the carousel device's slide-change
+    timing (a CSS custom-property pair the carousel/slider devices read), and a measured
+    ``dots`` affordance makes the device's pagination visible. Fact-gated: "" when no
+    carousel recipe was captured (JS-owned ``intervalMs`` is never synthesised, so no
+    fake autoplay timer is emitted)."""
+    car = _ifacts(doc).get("carousel")
+    if not isinstance(car, dict):
+        return ""
+    ms = _ok_ms(car.get("transitionMs"))
+    easing = _ok_easing(car.get("easing")) or "ease"
+    controls = car.get("controls") if isinstance(car.get("controls"), list) else []
+    dots = bool(car.get("dots"))
+    if ms is None and not controls:
+        return ""
+    head = ("/* carousel timing (fact-gated: blocks.carousel.carousel) — measured slide "
+            "transition duration/easing + control affordances; JS autoplay interval is "
+            "not captured by the static evidence so no timer is synthesised. */")
+    root = [":root {"]
+    if ms is not None:
+        root.append(f" --cs-carousel-duration: {ms}ms;")
+    root.append(f" --cs-carousel-easing: {easing}; }}")
+    parts = [head, "".join(root)]
+    # the edge-cut + panel carousel tracks read the measured timing for smooth navigation.
+    if ms is not None:
+        parts.append(".cs-edgecut, .cs-panelcar-track { scroll-behavior: smooth; }")
+        parts.append(".cs-panelcar-track { transition: transform "
+                     "var(--cs-carousel-duration) var(--cs-carousel-easing); }")
+    if dots or "dots" in controls:
+        # a captured dots affordance is made visible on the device that carries one.
+        parts.append(".cs-panelcar-dots, .cs-carousel-dots { display: flex; }")
+    return "\n".join(parts) + "\n"
+
+
+def interaction_states_css(doc) -> str:
+    """Grounded exhaustive per-component STATE CSS from ``interactionStates`` (brand-schema
+    §10.2b): measured active(pressed)/focus/disabled paint deltas for the generic
+    interactive component roles the composer renders (buttons + links). Hover is already
+    emitted by the button/link families; this ADDS the previously-dropped focus-visible
+    ring, pressed and disabled registers. Fact-gated: "" when no states were captured."""
+    states = _ifacts(doc).get("interactionStates")
+    if not isinstance(states, dict):
+        return ""
+    role_sel = {"button": ".c-button", "link": ".c-body a, .c-richtext a, .c-prose a"}
+    parts: list[str] = []
+    for role, sel in role_sel.items():
+        block = states.get(role)
+        if not isinstance(block, dict):
+            continue
+        for state in ("focus", "active", "disabled"):
+            delta = block.get(state)
+            if not isinstance(delta, dict):
+                continue
+            decls = []
+            bg = _ok_color(delta.get("background"))
+            fg = _ok_color(delta.get("color"))
+            outline = delta.get("outline")
+            off = delta.get("outlineOffset")
+            if bg:
+                decls.append(f"background: {bg}")
+            if fg:
+                decls.append(f"color: {fg}")
+            if state == "focus" and isinstance(outline, str) \
+                    and re.match(r"^[0-9.]+px\s+(solid|dashed|dotted)\s+", outline.strip()):
+                # only the colour token part is untrusted; validate the colour tail.
+                oc = _ok_color(outline.strip().split()[-1])
+                if oc:
+                    decls.append(f"outline: {outline.strip().rsplit(' ',1)[0]} {oc}")
+                    if isinstance(off, str) and re.match(r"^-?[0-9.]+px$", off.strip()):
+                        decls.append(f"outline-offset: {off.strip()}")
+            if state == "disabled":
+                decls.append("cursor: not-allowed")
+            if not decls:
+                continue
+            pseudo = {"focus": ":focus-visible", "active": ":active",
+                      "disabled": ":disabled, " + sel + "[aria-disabled=\"true\"]"}[state]
+            target = sel + pseudo if state != "disabled" else \
+                sel + ":disabled, " + sel + "[aria-disabled=\"true\"]"
+            parts.append(f"{target} {{ {'; '.join(decls)}; }}")
+    if not parts:
+        return ""
+    head = ("/* interaction states (fact-gated: interactionStates) — measured "
+            "focus-visible / pressed / disabled paint registers for buttons + links the "
+            "composer previously left un-grounded. provenance in interaction-facts.yaml. */")
+    return head + "\n" + "\n".join(parts) + "\n"
+
+
+def elevation_tokens_css(doc) -> str:
+    """Grounded ELEVATION + STACKING scales from ``tokens.shadow`` / ``tokens.zIndex``:
+    emit the measured box-shadow scale as ``--c-shadow-<role>`` custom properties (and map
+    the ``sticky-nav`` elevation onto the page nav) and the z-index scale as ``--c-z-<role>``
+    (mapping ``sticky-nav`` onto the page nav's stacking). Fact-gated: "" without either
+    scale (brands keep their structural z-ladder + shadowless surfaces byte-identically)."""
+    tokens = _ifacts(doc).get("tokens")
+    if not isinstance(tokens, dict):
+        return ""
+    shadow = tokens.get("shadow") if isinstance(tokens.get("shadow"), dict) else {}
+    zidx = tokens.get("zIndex") if isinstance(tokens.get("zIndex"), dict) else {}
+    root_decls: list[str] = []
+    nav_shadow = None
+    for role, spec in shadow.items():
+        if role == "provenance" or not isinstance(spec, dict):
+            continue
+        val = _ok_shadow(spec.get("value"))
+        if not val:
+            continue
+        root_decls.append(f"--c-shadow-{role}: {val}")
+        if role == "sticky-nav":
+            nav_shadow = val
+    nav_z = None
+    for role, spec in zidx.items():
+        if role == "provenance" or not isinstance(spec, dict):
+            continue
+        v = spec.get("value")
+        if isinstance(v, int) and not isinstance(v, bool):
+            root_decls.append(f"--c-z-{role}: {v}")
+            if role == "sticky-nav":
+                nav_z = v
+    if not root_decls:
+        return ""
+    head = ("/* elevation + stacking scales (fact-gated: tokens.shadow) (fact-gated: "
+            "tokens.zIndex) — measured box-shadow + z-index roles emitted as custom "
+            "properties; sticky-nav role mapped onto the page nav. */")
+    parts = [head, ":root { " + "; ".join(root_decls) + "; }"]
+    nav_rule = []
+    if nav_z is not None:
+        nav_rule.append(f"z-index: var(--c-z-sticky-nav, {nav_z})")
+    if nav_rule:
+        # applied at rest; the scrolled register (navbar_sticky_css) paints the shadow.
+        parts.append("#page-nav { " + "; ".join(nav_rule) + "; }")
+    return "\n".join(parts) + "\n"
+
+
+def footer_locale_selector_html(doc) -> str:
+    """Rendered FOOTER locale control from ``footer.localeSelector`` (measured language
+    options). A native ``<details>`` disclosure (no JS needed, keyboard-accessible) listing
+    the measured language options. Fact-gated: "" when no locale selector was captured."""
+    ls = (_ifacts(doc).get("footer") or {}).get("localeSelector")
+    if not isinstance(ls, dict):
+        return ""
+    opts = ls.get("options") if isinstance(ls.get("options"), list) else []
+    opts = [o for o in opts if isinstance(o, dict) and o.get("label")]
+    if not opts:
+        return ""
+    aria = esc(str(ls.get("ariaLabel") or "Select a language"))
+    current = next((o for o in opts if o.get("current")), opts[0])
+    items = []
+    for o in opts[:24]:
+        href = str(o.get("href") or "#")
+        safe_href = href if re.match(r"^(?:https?:)?//|^/|^#", href) else "#"
+        items.append(f'<li class="cs-foot-locale-item"><a href="{esc(safe_href)}">'
+                     f'{esc(str(o.get("label")))}</a></li>')
+    # marker rides in an HTML comment so the AS-83 audit + tests see the consumption.
+    return (
+        '<!-- footer locale selector (fact-gated: footer.localeSelector) — measured '
+        'language options rendered as a native disclosure control. -->\n'
+        f'<details class="cs-foot-locale" data-locale-selector>'
+        f'<summary class="cs-foot-locale-summary" aria-label="{aria}">'
+        f'\U0001F310 {esc(str(current.get("label")))}</summary>'
+        f'<ul class="cs-foot-locale-list">{"".join(items)}</ul></details>')
+
+
+FOOTER_LOCALE_CSS = """
+/* footer locale selector (fact-gated: footer.localeSelector) */
+.cs-foot-locale { margin-top: 1rem; font-size: 0.875rem; }
+.cs-foot-locale-summary { cursor: pointer; display: inline-flex; align-items: center;
+  gap: 0.375rem; list-style: none; }
+.cs-foot-locale-summary::-webkit-details-marker { display: none; }
+.cs-foot-locale-list { list-style: none; margin: 0.5rem 0 0; padding: 0; display: grid;
+  grid-template-columns: repeat(2, auto); gap: 0.25rem 1.5rem; }
+.cs-foot-locale-item a { color: inherit; text-decoration: none; opacity: 0.85; }
+.cs-foot-locale-item a:hover { opacity: 1; text-decoration: underline; }
+"""
+
+
+NAV_STICKY_SCRIPT = """<script>
+/* nav sticky/scroll-shrink (fact-gated: navbar.sticky): toggle .is-scrolled on the
+   page nav once the page is scrolled past the top, so the measured scrolled register
+   (bg/shadow) paints. No-op with JS off (the bar is still position:sticky). */
+(function () {
+  var nav = document.getElementById('page-nav');
+  if (!nav) return;
+  var onScroll = function () {
+    nav.classList.toggle('is-scrolled', (window.scrollY || window.pageYOffset || 0) > 4);
+  };
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+})();
+</script>"""
+
+
+def navbar_sticky_script(doc) -> str:
+    """The scroll listener that toggles ``#page-nav.is-scrolled`` — emitted only when the
+    brand carries a structured ``navbar.sticky`` register (fact-gated)."""
+    st = _iface_navbar(doc).get("sticky")
+    if not isinstance(st, dict) or str(st.get("behavior") or "") not in (
+            "sticky", "scroll-shrink", "hide-on-scroll"):
+        return ""
+    if not isinstance(st.get("toRegister"), dict):
+        return ""
+    return NAV_STICKY_SCRIPT
+
+
 # ── scroll-parallax motion treatment (brand-level; voice.motionSpec.imageParallax) ──
 #
 # SINGLE SOURCE OF TRUTH for both build_page (compose_page.py) and build_document

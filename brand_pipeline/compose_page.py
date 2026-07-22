@@ -875,10 +875,17 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
     foot_align = cs.align_stamp_attrs(
         cs.resolve_alignment({"id": "closing-bookend", "archetype": "footer"},
                              None, style_ctx))
+    # footer locale selector (fact-gated: footer.localeSelector) — the measured language
+    # control rendered as a native disclosure inside the closing bookend. "" without the
+    # fact (byte-identical footer for brands with no locale selector).
+    foot_locale = cr.footer_locale_selector_html(doc)
+    # empty-safe: a brand without the locale fact adds NOTHING (byte-identical footer).
+    foot_locale_block = f"\n{foot_locale}" if foot_locale else ""
     blocks.append(
         f'<div id="sec-{foot_idx}" class="cs-surface" data-layout="closing-bookend" '
         f'data-surface="{cr.esc(foot_role)}"{foot_align}>\n'
-        f'<section class="cs-section cs-footer-sec">\n{foot_html}\n</section>\n</div>')
+        f'<section class="cs-section cs-footer-sec">\n{foot_html}{foot_locale_block}\n'
+        f'</section>\n</div>')
     # Do NOT collapse the footer accent to ink when the brand carries a MEASURED link-hover
     # color (color-shift): the footer sits on the near-black strong surface, so keeping the
     # committed gold accent there is on-brand (gold-on-dark) and lets the footer link hover
@@ -934,6 +941,20 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
         # mobile bar; the burger is display:none at/above it (desktop byte-identical).
         # Appended after the nav base/affordance CSS so the #page-nav-scoped @media wins.
         *([cr.nav_collapse_css(doc)] if nav_block and cr.nav_collapse_css(doc) else []),
+        # NEW interaction-fact consumers (interaction-facts.yaml). Each is fact-gated →
+        # "" for brands without the fact, so v2/remote/woodwave-v2 stay byte-identical.
+        # nav sticky/scroll-shrink register + mobile drawer surface/slide animation.
+        *([cr.navbar_sticky_css(doc)] if nav_block and cr.navbar_sticky_css(doc) else []),
+        *([cr.navbar_mobile_drawer_css(doc)]
+          if nav_block and cr.navbar_mobile_drawer_css(doc) else []),
+        # measured carousel slide-transition timing + control affordances.
+        *([cr.carousel_timing_css(doc)] if cr.carousel_timing_css(doc) else []),
+        # exhaustive per-component focus/pressed/disabled state registers.
+        *([cr.interaction_states_css(doc)] if cr.interaction_states_css(doc) else []),
+        # measured elevation (box-shadow) + stacking (z-index) scales as custom props.
+        *([cr.elevation_tokens_css(doc)] if cr.elevation_tokens_css(doc) else []),
+        # footer locale-selector chrome (rides only when the locale control was rendered).
+        *([cr.FOOTER_LOCALE_CSS] if foot_locale else []),
         page_scaffold_css(),
     ]
     # AS-37: the inset art-panel device CSS ships ONLY when a section on THIS page
@@ -1018,6 +1039,9 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
     # keyboard/AT-parity script (interaction remediation 2026-07): guarded blocks
     # keyed off the assembled body — pages without the components ship no script.
     ix_script = cr.interaction_script("\n".join((banner_block, nav_block, sections)))
+    # nav sticky/scroll-shrink listener (fact-gated: navbar.sticky) — appended onto the
+    # interaction script so a brand without the fact adds NO new line (byte-identical).
+    ix_script = ix_script + cr.navbar_sticky_script(doc)
     return f"""<!doctype html>
 <html lang="en"{html_attr}{parallax_attr}>
 <head>

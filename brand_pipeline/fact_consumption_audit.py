@@ -258,6 +258,82 @@ _RESPONSIVE_FAMILIES = [
 ]
 
 
+# ── INTERACTION measured-fact families (interaction-facts.yaml) ──────────────────────
+#
+# The capture-prompt upgrades derive structured carousel timing, exhaustive per-component
+# states, the mobile hamburger→drawer contract, the sticky/scroll-shrink nav register, and
+# shadow/z-index scales + a footer locale selector into ``interaction-facts.yaml``, merged
+# into the doc's PRIVATE ``_interactionFacts`` namespace (rf.merge_interaction_facts) so a
+# brand that authored a same-named key but has no sidecar stays byte-identical. Each family
+# is CONSUMED by a fact-gated ``component_render`` emitter that writes a
+# ``/* … (fact-gated: <path>) … */`` marker; the probe checks that marker.
+
+
+def _ifacts(doc: dict) -> dict:
+    f = doc.get("_interactionFacts") if isinstance(doc, dict) else None
+    return f if isinstance(f, dict) else {}
+
+
+_INTERACTION_FAMILIES = [
+    {
+        "family": "interaction.carousel",
+        "path": "blocks.carousel.carousel (structured slider timing recipe)",
+        "capture": lambda d: _ifacts(d).get("carousel"),
+        "consumer": "component_render.carousel_timing_css",
+        "evidence": "CSS marker '(fact-gated: blocks.carousel.carousel)'",
+        "probe": lambda html: _marker_present(html, "fact-gated: blocks.carousel.carousel)"),
+    },
+    {
+        "family": "interaction.states",
+        "path": "interactionStates (per-component hover/active/focus/disabled)",
+        "capture": lambda d: _ifacts(d).get("interactionStates"),
+        "consumer": "component_render.interaction_states_css",
+        "evidence": "CSS marker '(fact-gated: interactionStates)'",
+        "probe": lambda html: _marker_present(html, "fact-gated: interactionStates)"),
+    },
+    {
+        "family": "interaction.navbar.mobile",
+        "path": "navbar.mobile (hamburger→drawer contract)",
+        "capture": lambda d: (_ifacts(d).get("navbar") or {}).get("mobile"),
+        "consumer": "component_render.navbar_mobile_drawer_css",
+        "evidence": "CSS marker '(fact-gated: navbar.mobile)'",
+        "probe": lambda html: _marker_present(html, "fact-gated: navbar.mobile)"),
+    },
+    {
+        "family": "interaction.navbar.sticky",
+        "path": "navbar.sticky (sticky / scroll-shrink register)",
+        "capture": lambda d: (_ifacts(d).get("navbar") or {}).get("sticky"),
+        "consumer": "component_render.navbar_sticky_css + navbar_sticky_script",
+        "evidence": "CSS marker '(fact-gated: navbar.sticky)'",
+        "probe": lambda html: _marker_present(html, "fact-gated: navbar.sticky)"),
+    },
+    {
+        "family": "interaction.tokens.shadow",
+        "path": "tokens.shadow (measured elevation scale)",
+        "capture": lambda d: (_ifacts(d).get("tokens") or {}).get("shadow"),
+        "consumer": "component_render.elevation_tokens_css",
+        "evidence": "CSS marker '(fact-gated: tokens.shadow)'",
+        "probe": lambda html: _marker_present(html, "fact-gated: tokens.shadow)"),
+    },
+    {
+        "family": "interaction.tokens.zIndex",
+        "path": "tokens.zIndex (measured stacking scale)",
+        "capture": lambda d: (_ifacts(d).get("tokens") or {}).get("zIndex"),
+        "consumer": "component_render.elevation_tokens_css",
+        "evidence": "CSS marker '(fact-gated: tokens.zIndex)'",
+        "probe": lambda html: _marker_present(html, "fact-gated: tokens.zIndex)"),
+    },
+    {
+        "family": "interaction.footer.localeSelector",
+        "path": "footer.localeSelector (language/region control)",
+        "capture": lambda d: (_ifacts(d).get("footer") or {}).get("localeSelector"),
+        "consumer": "component_render.footer_locale_selector_html",
+        "evidence": "HTML marker '(fact-gated: footer.localeSelector)'",
+        "probe": lambda html: _marker_present(html, "fact-gated: footer.localeSelector)"),
+    },
+]
+
+
 # ── LAYOUT interaction-device measured facts (sticky column & siblings) ──────────────
 #
 # ``specialTreatments`` live in the layout-library sidecar beside brand.yaml; a treatment
@@ -404,6 +480,26 @@ def audit_facts(*, sidecar: dict, doc: dict, library: dict, html: str,
             consumer=spec["consumer"], evidence=spec["evidence"],
             detail=("consumer evidence present" if consumed else
                     "CAPTURED measured fact with NO consumer evidence in the output"),
+            provenance=prov))
+
+    # 1b) INTERACTION measured-fact families (interaction-facts.yaml → _interactionFacts).
+    #     Each is captured when the sidecar-merged private namespace carries the family and
+    #     consumed when its fact-gated CSS/HTML marker is present. These families are
+    #     register-neutral, so they are audited identically for replica and generation.
+    for spec in _INTERACTION_FAMILIES:
+        block = spec["capture"](doc)
+        if not isinstance(block, dict) or not block:
+            continue  # fact-gate: family not captured for this brand → not reported
+        origin = _origin_of(block) if _origin_of(block) != "unknown" else "extracted"
+        prov = _prov_note(block) or "evidence-derived interaction fact"
+        consumed = bool(spec["probe"](html))
+        findings.append(Finding(
+            family=spec["family"], path=spec["path"],
+            status=CONSUMED if consumed else UNCONSUMED, origin=origin,
+            consumer=spec["consumer"], evidence=spec["evidence"],
+            detail=("consumer evidence present" if consumed else
+                    "CAPTURED measured interaction fact with NO consumer evidence in the "
+                    "output"),
             provenance=prov))
 
     # 2) layout interaction-device facts (sticky-column & siblings) from the library.

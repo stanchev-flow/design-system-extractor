@@ -809,6 +809,105 @@ def merge_brand_facts(doc: dict, brand_dir: Path, *, target: str = "replica") ->
             resp[key] = block
     if resp:
         doc.setdefault("responsive", resp)
+
+    # interaction facts (carousel timing, per-component states, mobile-drawer + sticky
+    # nav, shadow/z-index scales, footer locale) share this one canonical merge path so
+    # replica AND generation see them identically; fact-gated (no sidecar → no-op).
+    merge_interaction_facts(doc, brand_dir, target=target)
+    return doc
+
+
+INTERACTION_SIDECAR_NAME = "interaction-facts.yaml"
+
+
+def load_interaction_facts(brand_dir: Path) -> dict:
+    """The parsed ``interaction-facts.yaml`` sidecar (carousel timing, per-component
+    states, mobile-drawer + sticky nav, shadow/z-index scales, footer locale selector),
+    or ``{}`` when absent (fact-gate: a brand without the sidecar merges nothing)."""
+    try:
+        import yaml
+        p = Path(brand_dir) / INTERACTION_SIDECAR_NAME
+        if not p.is_file():
+            return {}
+        return yaml.safe_load(p.read_text()) or {}
+    except Exception:
+        return {}
+
+
+def merge_interaction_facts(doc: dict, brand_dir: Path, *, target: str = "replica") -> dict:
+    """Merge the ``interaction-facts.yaml`` sidecar into the in-memory doc at the
+    canonical brand-schema paths, fact-gated + backward-compatible:
+
+      * ``carousel``          → ``blocks.carousel.carousel`` (structured timing recipe);
+      * ``interactionStates`` → ``doc.interactionStates`` (per generic component role);
+      * ``navbar.mobile``     → ``navbar.mobile`` (hamburger→drawer contract);
+      * ``navbar.sticky``     → ``navbar.sticky`` (replaces a bool/absent with the struct);
+      * ``tokens.shadow``     → ``tokens.shadow`` (elevation scale);
+      * ``tokens.zIndex``     → ``tokens.zIndex`` (stacking scale);
+      * ``footer.localeSelector`` → ``footer.localeSelector``.
+
+    Every family is generic (reusable roles, never section/content names). A brand without
+    the sidecar, or a path already carrying a real (non-bool) value, is a no-op so existing
+    brands render byte-for-byte as before. These families are register-neutral (they do not
+    pin the source's absolute type/height scale), so they merge IDENTICALLY for replica and
+    generation — no per-target exclusion. Returns the doc for chaining."""
+    facts = load_interaction_facts(brand_dir)
+    if not facts:
+        return doc
+
+    # Stash the whole sidecar under a PRIVATE namespace the consumers read from. This is
+    # what makes consumption strictly fact-gated: an existing brand may already carry
+    # AUTHORED ``tokens.shadow`` / ``navbar.mobile`` etc. at the canonical paths (captured
+    # but never consumed), so a consumer must NOT read those paths directly or it would
+    # change that brand's byte-identical output. Reading ``_interactionFacts`` (populated
+    # ONLY when this sidecar exists) guarantees sidecar-less brands stay byte-identical.
+    doc.setdefault("_interactionFacts", {k: v for k, v in facts.items()
+                                         if k != "schemaVersion"})
+
+    car = facts.get("carousel")
+    if isinstance(car, dict):
+        blocks = doc.setdefault("blocks", {}) if isinstance(doc.get("blocks"), (dict, type(None))) else doc.get("blocks")
+        if isinstance(blocks, dict):
+            cblk = blocks.get("carousel")
+            if not isinstance(cblk, dict):
+                cblk = {}
+                blocks["carousel"] = cblk
+            if "carousel" not in cblk:
+                cblk["carousel"] = car
+
+    states = facts.get("interactionStates")
+    if isinstance(states, dict) and "interactionStates" not in doc:
+        doc["interactionStates"] = states
+
+    nav_facts = facts.get("navbar") or {}
+    if isinstance(nav_facts, dict) and nav_facts:
+        navbar = doc.get("navbar")
+        if isinstance(navbar, dict):
+            mobile = nav_facts.get("mobile")
+            if isinstance(mobile, dict) and not isinstance(navbar.get("mobile"), dict):
+                navbar["mobile"] = mobile
+            sticky = nav_facts.get("sticky")
+            # replace an absent/boolean legacy ``sticky`` with the structured register;
+            # never clobber an already-structured (dict) sticky fact.
+            if isinstance(sticky, dict) and not isinstance(navbar.get("sticky"), dict):
+                navbar["sticky"] = sticky
+
+    tok_facts = facts.get("tokens") or {}
+    if isinstance(tok_facts, dict) and tok_facts:
+        tokens = doc.get("tokens")
+        if isinstance(tokens, dict):
+            for key in ("shadow", "zIndex"):
+                block = tok_facts.get(key)
+                if isinstance(block, dict) and key not in tokens:
+                    tokens[key] = block
+
+    ft_facts = facts.get("footer") or {}
+    if isinstance(ft_facts, dict):
+        locale = ft_facts.get("localeSelector")
+        footer = doc.get("footer")
+        if isinstance(locale, dict) and isinstance(footer, dict) \
+                and "localeSelector" not in footer:
+            footer["localeSelector"] = locale
     return doc
 
 
