@@ -2328,6 +2328,13 @@ def adapt_brand_section(section: dict, doc: dict) -> tuple[dict, dict, dict | No
     """
     section, art_notes = al.apply_archetype_skeleton(section, doc)
     layout = composition_to_layout(section)
+    # carry the section's useCase onto the layout (top-level, informational — the
+    # composers read layout["_composition"]["useCase"], so this is byte-neutral for
+    # rendering) so the canonical measured-fact merge can identify the HERO layout and
+    # attach its responsive block (the viewport-minus-nav height mechanic). Set on the
+    # SHARED adaptation so the replica-direct and catalog lanes stay parity-identical.
+    if layout.get("useCase") is None and section.get("useCase"):
+        layout["useCase"] = section.get("useCase")
     if art_notes:
         layout["_archetypeNotes"] = art_notes
     composer_copy = layout.pop("_composerCopy", {}) or {}

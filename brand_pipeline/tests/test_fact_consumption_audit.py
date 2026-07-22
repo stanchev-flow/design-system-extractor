@@ -78,11 +78,20 @@ class MergeParity(unittest.TestCase):
     def test_generation_excludes_only_the_documented_register_families(self):
         doc = rf.merge_brand_facts(_doc_with_hero_footer(), Path("/x"),
                                    target="generation")
-        # fix2 2026-07: hero is the ONLY withheld family now (headings promoted, AS-82
-        # unitless); footer/nav/buttons/headings all cross over identically to the replica.
+        # fix3 2026-07: the hero HEIGHT mechanic is promoted into generation (only the
+        # register-bearing headingSizeLadder / primaryButton sub-facts are withheld), so
+        # the hero layout DOES carry a responsive block now; footer/nav/buttons/headings
+        # all cross over identically to the replica.
         self.assertEqual(self._facts(doc), {
-            "hero.responsive": False, "footer.responsive": True,
+            "hero.responsive": True, "footer.responsive": True,
             "responsive": ["buttons", "headings", "nav"]})
+        # the generation hero block keeps the geometry-neutral height + the hero-scoped
+        # heading shrink ladder, and drops only the measured primary-button box.
+        hero = next(l for l in doc["layouts"] if l.get("useCase") == "hero")
+        self.assertIn("heightRule", hero["responsive"])
+        self.assertIn("navOffset", hero["responsive"])
+        self.assertIn("headingSizeLadder", hero["responsive"])
+        self.assertNotIn("primaryButton", hero["responsive"])
 
     def test_shared_families_are_byte_identical_across_targets(self):
         rep = rf.merge_brand_facts(_doc_with_hero_footer(), Path("/x"), target="replica")
@@ -95,9 +104,11 @@ class MergeParity(unittest.TestCase):
 
     def test_excluded_families_table_is_the_single_source_of_truth(self):
         self.assertEqual(rf.excluded_families_for("replica"), {})
-        # fix2 2026-07: headings PROMOTED into generation (AS-82 unitless line-height);
-        # hero stays excluded (its absolute register fact has no generation consumer).
-        self.assertEqual(set(rf.excluded_families_for("generation")), {"hero"})
+        # fix3 2026-07: the hero HEIGHT mechanic + the hero-scoped heading-shrink ladder are
+        # promoted into generation; only the measured primary-button control box stays
+        # excluded. headings were promoted earlier (AS-82 unitless line-height).
+        self.assertEqual(set(rf.excluded_families_for("generation")),
+                         {"hero.primaryButton"})
         # the exclusion carries a documented REASON (never a silent, reasonless drop)
         for fam, reason in rf.excluded_families_for("generation").items():
             self.assertTrue(isinstance(reason, str) and len(reason) > 20, fam)
@@ -183,12 +194,14 @@ class AuditConsumption(unittest.TestCase):
         self.assertFalse(fca.summarize(findings)["ok"])
 
     def test_documented_exclusion_is_a_pass_not_a_failure(self):
-        # under generation, the hero family is a documented exclusion → EXCLUDED, never a
-        # silent drop and never an error, EVEN with a page that consumed nothing.
+        # under generation, the register-bearing hero primaryButton is a documented
+        # exclusion → EXCLUDED, never a silent drop and never an error, EVEN with a page
+        # that consumed nothing. fix3 2026-07: the hero HEIGHT is now a promoted (audited)
+        # family, so a page that DROPPED it is a loud UNCONSUMED error (as intended).
         findings = fca.audit_facts(sidecar=_FULL_SIDECAR, doc={}, library={},
                                    html=_DROPPED_HTML, target="generation")
         by = {f.family: f for f in findings}
-        self.assertEqual(by["responsive.hero"].status, fca.EXCLUDED)
+        self.assertEqual(by["responsive.hero"].status, fca.UNCONSUMED)
         self.assertEqual(by["responsive.hero.primaryButton"].status, fca.EXCLUDED)
         # fix2 2026-07: headings is PROMOTED into generation now — it is a real audited
         # family, not an exclusion, so a page that dropped it is a loud UNCONSUMED error.
@@ -268,13 +281,16 @@ class AuditRealArtifacts(unittest.TestCase):
         if not (brand.is_file() and (gen / "index.html").is_file()):
             self.skipTest("hubspot-v3 generated page fixture not present")
         findings = fca.audit_render(brand, gen, target="generation")
-        # fix2 2026-07: hero is the sole documented exclusion; headings is now PROMOTED and
-        # CONSUMED (unitless line-height). Everything else consumed/delegated → no
-        # captured-but-unconsumed measured fact on the generated page.
+        # fix3 2026-07: the hero HEIGHT mechanic is promoted + CONSUMED on the generated
+        # page (viewport-minus-nav), headings promoted + CONSUMED (unitless line-height);
+        # the measured primary-button box is the sole remaining documented exclusion.
+        # Everything else consumed/delegated → no captured-but-unconsumed measured fact.
         self.assertTrue(fca.summarize(findings)["ok"],
                         [f.family for f in findings if f.is_error])
         excluded = {f.family for f in findings if f.status == fca.EXCLUDED}
-        self.assertEqual(excluded, {"responsive.hero", "responsive.hero.primaryButton"})
+        self.assertEqual(excluded, {"responsive.hero.primaryButton"})
+        hero_h = [f for f in findings if f.family == "responsive.hero"]
+        self.assertEqual(hero_h[0].status, fca.CONSUMED)
         headings = [f for f in findings
                     if f.family == "responsive.headings.lineHeights"]
         self.assertEqual(headings[0].status, fca.CONSUMED)

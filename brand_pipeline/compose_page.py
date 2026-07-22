@@ -957,6 +957,12 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
         *([cr.FOOTER_LOCALE_CSS] if foot_locale else []),
         page_scaffold_css(),
     ]
+    # overlay copy stack (2026-07): the co-column stack rule ships ONLY when an overlay
+    # hero on THIS page actually grouped a reading stack (the emitted block carries
+    # `cs-ov-placed--stack`). A page with no grouped stack — every replica, every
+    # non-overlay page — is byte-identical (the rule never rides along).
+    if any("cs-ov-placed--stack" in b for b in blocks):
+        css_parts.append(cs.SCAFFOLD_OVERLAY_STACK_CSS)
     # AS-37: the inset art-panel device CSS ships ONLY when a section on THIS page
     # actually renders it — its rounded-panel rule must never ride along on pages of
     # brands whose neverDo forbids radius (the static no-radius check reads page text).

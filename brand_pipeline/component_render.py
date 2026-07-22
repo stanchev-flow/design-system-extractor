@@ -244,9 +244,16 @@ def component_vars(doc, surf, *, selector=":root", display_size=None,
                 "weight": "--button-weight", "height": "--button-height"}
         parts = [f"\n  --c-button-{suffix.removeprefix('--button-')}: var({suffix});"
                  for src, suffix in _btn.items() if b.get(src) is not None]
-        if b.get("sizeRem") is not None:
+        # measured font size / weight / family — accept BOTH capture schemas
+        # (``sizeRem``/``weight``/``font`` OR the raw ``fontSize``/``fontWeight``/
+        # ``fontFamily``) so tokens_css's emitted --button-size/-weight/-font are bound
+        # instead of leaking the control-text size (0.875rem) and heading weight onto
+        # the measured CTA.
+        if b.get("sizeRem") is not None or b.get("fontSize") is not None:
             parts.append("\n  --c-button-size: var(--button-size);")
-        if b.get("font"):
+        if b.get("weight") is None and b.get("fontWeight") is not None:
+            parts.append("\n  --c-button-weight: var(--button-weight);")
+        if b.get("font") or b.get("fontFamily"):
             parts.append("\n  --c-button-font: var(--button-font);")
         btn_css = "".join(parts)
 
@@ -1644,7 +1651,11 @@ _BUTTON_VARIANT_CSS = """
   height: var(--c-button-height, auto);
   padding: var(--c-button-pad, 0.8em 1.6em); /* provenance: structural — em-relative
      control inset fallback (shape, not magnitude: scales with the button's own size) */
-  border-radius: var(--c-button-radius, var(--radius)); border: none;
+  /* measured control border (sysfix 2026-07): the primary rides the base rule, so its
+     measured `buttons.primary.border` (e.g. a transparent 2px reserve keeping the filled
+     and outline families the same box, or a hairline stroke) must flow through here.
+     Fallback `none` keeps brands without a primary border fact byte-identical. */
+  border-radius: var(--c-button-radius, var(--radius)); border: var(--c-button-border, none);
   transition: background var(--c-motion-fast) var(--c-ease),
               color var(--c-motion-fast) var(--c-ease),
               transform var(--c-motion-fast) var(--c-ease); }
@@ -3264,7 +3275,8 @@ def _button_family_override_css(doc) -> str:
     """Per-family `.c-button--<family>` override rules for the brand's declared extra
     button families: every declaration re-points the shared `--c-button-*` consumption
     vars at that family's OWN Layer-1 tokens (only keys the family measured emit).
-    An outline family also gets its measured border (the base rule is border: none)."""
+    An outline family also gets its measured border (the base rule now consumes the
+    PRIMARY family's `--c-button-border`, defaulting to `none` when absent)."""
     rules = []
     for name, facts in sorted(_button_families(doc).items()):
         sel = f".c-button--{_slug(name)}"

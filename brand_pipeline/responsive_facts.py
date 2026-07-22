@@ -696,26 +696,30 @@ def build_sidecar(joined: dict, footer_measured: dict | None = None) -> dict:
 # aware), and flags the SAME families as still-unconsumed FINDINGS on the replica so the
 # queued generation-path batch is driven by the audit, not by guesswork.
 #
-# ``hero``/``headings`` pin the SOURCE's own type/height REGISTER (absolute viewport
-# height, the source h1 font-size shrink ladder, the source heading line-heights). A
-# composed page's sections choose a DIFFERENT (often larger) type scale, so forcing the
-# source's absolute register mis-sizes a composed heading/hero (the AS-16 overlap class).
-# AS-82 made type line-height render UNITLESS, which removes the frozen-px overlap for the
-# line-height fact specifically — but the hero ``headingSizeLadder`` (absolute font-size)
-# and ``heightRule`` (absolute band height) remain register-bearing, so the hero+headings
-# families stay generation-excluded THIS pass. Promoting them into generation is the
-# queued batch the AS-83 audit is meant to drive (see harness-regression-audit.md AS-82).
+# Only the SOURCE primary-button control box (absolute font-size/line-height/padding/border)
+# stays withheld: a composed hero owns its CTA through its own button tokens, so forcing the
+# source's absolute box re-registers it. AS-82 made type line-height render UNITLESS
+# (headings promoted); fix3 2026-07 split the hero family so BOTH its geometry-neutral HEIGHT
+# mechanic (heightRule + navOffset = viewport-relative `calc(100dvh - navoffset)`) and its
+# hero-SCOPED headingSizeLadder (a `#sec-<hero>`-only h1 shrink at the small-viewport
+# breakpoint — unreachable by an interior composed heading, so no AS-16 re-trigger) are
+# promoted into generation and consumed by hero_responsive_css.
 GENERATION_UNSAFE_FAMILIES: dict[str, str] = {
-    "hero": ("hero heightRule (absolute viewport band height) + headingSizeLadder "
-             "(absolute source h1 font-size shrink) pin the SOURCE's register; a composed "
-             "hero uses its own type/height scale, so the source's absolute values "
-             "mis-size it (AS-16 register overlap). Geometry-bearing, unlike chrome facts. "
-             "The generation hero composers (hero-product-canvas-panel etc.) do NOT consume "
-             "this block — a composed hero's MEASURED alignment (e.g. full-bleed-photo-hero "
-             "= centered) is inherited from its layout-library archetype, not this fact — so "
-             "promoting hero would only manufacture an AS-83 captured-but-unconsumed drop "
-             "(fix2 2026-07: verified empirically; hero stays excluded until a generation "
-             "hero composer consumes it)."),
+    # fix3 2026-07: the hero family is now SPLIT. Its geometry-neutral HEIGHT mechanic
+    # (heightRule + navOffset → `calc(100dvh - navoffset)`, viewport-relative) AND its
+    # hero-scoped headingSizeLadder (the measured h1 SHRINK below the small-viewport
+    # breakpoint — emitted only as `#sec-<hero> :is(h1,.c-heading--display)` at max-width,
+    # so it can NOT reach an interior composed heading and re-trigger AS-16) both cross
+    # over to generation and are CONSUMED by component_render.hero_responsive_css — so a
+    # composed full-bleed hero fills the same measured band as the replica AND shrinks its
+    # display heading on a narrow viewport instead of overflowing the viewport-height band.
+    # Only the measured primary-button control box stays generation-excluded:
+    "hero.primaryButton": (
+        "the measured SOURCE primary-button box (absolute font-size/line-height/padding/ "
+        "border) is a control register the composed hero owns through its own button "
+        "tokens; forcing the source's absolute box onto a composed CTA re-registers it. "
+        "Geometry-neutral chrome facts (nav/footer) still cross over; this absolute "
+        "control box stays composer-owned on generation."),
     # headings PROMOTED into generation (fix2 2026-07): AS-82 made heading line-height render
     # UNITLESS (a ratio, not an absolute px box), so merging the source's measured heading
     # line-heights into a composed page no longer freezes a larger composed h2/h3 at the
@@ -724,8 +728,13 @@ GENERATION_UNSAFE_FAMILIES: dict[str, str] = {
     # composed headings the source's correct measured line-height register.
 }
 
+# A hero ``responsive`` block is worth attaching only when it carries at least one fact a
+# consumer reads; a block reduced to schema/provenance by the generation sub-fact filter
+# attaches nothing (byte-identical).
+_HERO_CONSUMABLE_KEYS = ("heightRule", "navOffset", "headingSizeLadder", "primaryButton")
+
 # The merge targets. ``replica`` is source-register faithful (merges everything);
-# ``generation`` withholds the register-bearing families above.
+# ``generation`` withholds the register-bearing sub-families above.
 _MERGE_TARGETS = ("replica", "generation")
 
 
@@ -779,16 +788,24 @@ def merge_brand_facts(doc: dict, brand_dir: Path, *, target: str = "replica") ->
         return doc
     excluded = excluded_families_for(target)
 
-    # hero → the hero layout's own ``responsive`` block (carries heightRule / heading
-    # ladder / primaryButton; register-bearing → generation-excluded).
-    if "hero" not in excluded:
-        hero_block = sidecar.get("hero")
-        if isinstance(hero_block, dict):
-            hero_layout = next(
-                (l for l in (doc.get("layouts") or [])
-                 if isinstance(l, dict) and l.get("useCase") == "hero"), None)
-            if hero_layout is not None and "responsive" not in hero_layout:
-                hero_layout["responsive"] = hero_block
+    # hero → the hero layout's own ``responsive`` block. The geometry-neutral height
+    # mechanic (heightRule + navOffset) crosses over to BOTH targets so a composed
+    # full-bleed hero fills the SAME measured band as the replica (consumed by
+    # component_render.hero_responsive_css). Only the register-bearing sub-facts named
+    # ``hero.<sub>`` in the exclusion table (headingSizeLadder / primaryButton) are
+    # withheld on generation (AS-16 register-overlap protection); replica merges the whole
+    # block. A brand whose hero carries only withheld sub-facts attaches nothing on
+    # generation → byte-identical.
+    hero_block = sidecar.get("hero")
+    if isinstance(hero_block, dict):
+        merged_hero = {k: v for k, v in hero_block.items()
+                       if f"hero.{k}" not in excluded}
+        hero_layout = next(
+            (l for l in (doc.get("layouts") or [])
+             if isinstance(l, dict) and l.get("useCase") == "hero"), None)
+        if hero_layout is not None and "responsive" not in hero_layout \
+                and any(k in merged_hero for k in _HERO_CONSUMABLE_KEYS):
+            hero_layout["responsive"] = merged_hero
 
     # footer → footer.responsive (geometry-neutral column reflow + measured content cap).
     if "footer" not in excluded:

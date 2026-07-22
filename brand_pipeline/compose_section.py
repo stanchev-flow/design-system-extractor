@@ -5474,6 +5474,14 @@ def _ov_left_css(col_start) -> str:
     return f"calc({cs_ - 1} * (var(--col) + var(--grid-gutter, 6rem)))"
 
 
+# content-container left inset for a FULL-BLEED hero's left-edge copy column: the shared
+# page gutter (--c-section-pad-x) or, on a wide viewport, half the leftover outside the
+# content measure — whichever is larger. Keeps left-anchored copy off the viewport glass
+# (the archetype's `containment: content-container`) without a per-brand value.
+_OV_BLEED_LEAD_INSET = ("max(var(--c-section-pad-x, 2.5rem), "
+                        "calc((100% - var(--content-measure, 86rem)) / 2))")
+
+
 def _ov_rel_left(col_start, base_col=1) -> str:
     """Left inset of a 1-based colStart RELATIVE to a positioning context that itself
     starts at base_col (an inset canvas) — may be negative (a child reaching back over
@@ -6038,23 +6046,33 @@ def compose_overlay(doc, layout, ctx, rendered, style_ctx):
                      if not s.get("media") and s["name"] not in claimed
                      and (str(s.get("contract") or "").lower() == "button"
                           or "action" in str(s.get("role") or "").lower())]
-    _actions_emitted = False
+    # the CTA group's column anchor (first action slot that declares one): used to FOLD
+    # the CTAs into a co-anchored copy stack instead of a separately-centered on-media row.
+    _action_col = next((s.get("colStart") for s in _action_slots
+                        if s.get("colStart") is not None), None)
+    _actions_html = _ov_actions_html(doc, ctx, _action_slots) if _action_slots else ""
+    _actions_folded = False
+
+    # COLUMN-REGISTERED COPY STACK (overlay-hero alignment fix 2026-07): free front text
+    # slots that declare a colStart are ONE reading stack anchored at that column — NOT
+    # independent absolutely-placed layers. The old per-slot emit dropped every one at the
+    # SAME `top`, so a hero's eyebrow/heading/subheading PILED on top of each other
+    # (overlap) while the CTA group centered separately (split alignment). Group the
+    # co-column slots into ONE flowing stack per column (a lone single-slot column stays
+    # byte-identical), fold the co-anchored CTA group into its column, and anchor each
+    # stack at its column left. Corner-registered cues + column-less support keep their
+    # exact paths. Brand/palette-agnostic: reads only declared placement, no brand values.
+    placed_cols: list = []          # distinct colStarts in first-appearance order
+    placed_by_col: dict = {}        # colStart -> {"items": [html], "span": maxColSpan}
     foot_items = []
     for s in slots:
         if s.get("media") or s["name"] in claimed:
             continue
-        # ACTION-GROUP slot (button contract): render the hero CTAs (2026-07). The
-        # overlay composer previously dropped them — _ov_text() is empty for a
-        # button-LIST slot, so it was claimed+skipped and the hero shipped with no
-        # CTA (the source hero carries "Get a demo" + "Get started free").
+        # ACTION-GROUP slot (button contract): the hero CTAs are the coalesced group,
+        # emitted once (into its co-anchored copy stack below, else the on-media foot).
         _contract = str(s.get("contract") or "").lower()
         _role = str(s.get("role") or "").lower()
         if _contract == "button" or "action" in _role:
-            if not _actions_emitted:
-                _grp = _ov_actions_html(doc, ctx, _action_slots)
-                if _grp:
-                    foot_items.append(_grp)
-                _actions_emitted = True
             claimed.add(s["name"])
             continue
         if not _ov_text(s):
@@ -6071,13 +6089,53 @@ def compose_overlay(doc, layout, ctx, rendered, style_ctx):
                 f'{x}: calc(4 * var(--baseline)); {y}: calc(4 * var(--baseline)); '
                 f'max-width: {_span_width_css(s.get("colSpan") or 2)}">{frag}</div>')
         elif s.get("colStart") is not None:
-            canvas_children.append(
-                f'\n      <div class="cs-ov-placed" style="left: {_ov_rel_left(s.get("colStart"), canvas_col)}; '
-                f'top: calc(6 * var(--baseline)); max-width: '
-                f'{_span_width_css(s.get("colSpan") or 2)}">{frag}</div>')
+            col = s.get("colStart")
+            g = placed_by_col.get(col)
+            if g is None:
+                g = placed_by_col[col] = {"items": [], "span": 0, "hasActions": False}
+                placed_cols.append(col)
+            g["items"].append(frag)
+            g["span"] = max(g["span"], int(s.get("colSpan") or 2))
         else:
             foot_items.append(f'\n    <div class="cs-ov-foot-item">{frag}</div>')
         claimed.add(s["name"])
+
+    # fold the co-anchored CTA group into ITS column stack AFTER the copy (hero reading
+    # order: eyebrow/heading/support, then the action row). A CTA group whose column has
+    # no copy stack, or that declares no column, keeps the sanctioned on-media foot row.
+    if _actions_html and _action_col is not None and _action_col in placed_by_col:
+        g = placed_by_col[_action_col]
+        g["items"].append(_actions_html)
+        g["hasActions"] = True
+        _actions_folded = True
+
+    # emit one container per column stack (single text-only column = byte-identical single
+    # div; a 2+-item or CTA-bearing column becomes a flowing `--stack`). CONTENT-CONTAINER
+    # inset (2026-07): in a FULL-BLEED hero the registration grid spans the viewport, so a
+    # left-edge (colStart 1) copy column would jam against the glass. The archetype declares
+    # `containment: content-container`, so a left-edge column insets to the page gutter
+    # (the shared content-container margin) instead of x:0. Non-bleed overlays keep left:0
+    # (byte-identical); a column already inset by its colStart is untouched.
+    bleed = "cs-ov--bleed" in sec_mods
+    for col in placed_cols:
+        g = placed_by_col[col]
+        left = _ov_rel_left(col, canvas_col)
+        if bleed and left == "0":
+            left = _OV_BLEED_LEAD_INSET
+        span = _span_width_css(g["span"] or 2)
+        if len(g["items"]) == 1 and not g["hasActions"]:
+            canvas_children.append(
+                f'\n      <div class="cs-ov-placed" style="left: {left}; '
+                f'top: calc(6 * var(--baseline)); max-width: {span}">{g["items"][0]}</div>')
+        else:
+            canvas_children.append(
+                f'\n      <div class="cs-ov-placed cs-ov-placed--stack" style="left: {left}; '
+                f'top: calc(6 * var(--baseline)); max-width: {span}">'
+                f'{"".join(g["items"])}</div>')
+
+    # an UN-anchored (or column-less) CTA group keeps the sanctioned centered on-media row.
+    if _actions_html and not _actions_folded:
+        foot_items.append(_actions_html)
 
     # sanctioned text-on-media over the raw canvas gets the flat surface scrim (the same
     # mitigation the layered hero applies) UNLESS a panel/scrim already carries the text.
@@ -7371,6 +7429,26 @@ SCAFFOLD_OVERLAY_CSS = """.cs-overlay-sec { position: relative; }
   .cs-ov-flank { position: static; max-width: none; margin-top: 1.25rem; }
   .cs-ov-detail { position: static; width: 60% !important; margin-top: 0.75rem; }
   .cs-ov-canvas { min-height: 0; } }"""
+
+# co-column COPY STACK (overlay-hero alignment fix 2026-07). Ships ONLY on a page whose
+# overlay hero actually GROUPED a co-column reading stack (build_page gate: the emitted
+# block contains `cs-ov-placed--stack`), so a page with no such stack — every replica and
+# every non-overlay page — is byte-identical (this CSS never rides along). The stack's
+# reading order (eyebrow/heading/support + a co-anchored CTA row) flows in ONE anchored
+# column instead of piling at a shared top; the CTA row aligns to the column edge. On a
+# NARROW viewport a viewport-height full-bleed hero keeps the stack positioned OVER the
+# photo (anchored low-left, gutter-inset) rather than flowing past the fixed-height canvas
+# — the counterweight card (a non-stack placed cue) steps aside so the copy stays legible.
+SCAFFOLD_OVERLAY_STACK_CSS = """/* overlay copy stack (fact-gated: rides only when a hero
+   grouped a co-column stack) */
+.cs-ov-placed--stack { display: flex; flex-direction: column; gap: var(--c-block-gap); }
+.cs-ov-placed--stack > .cs-ov-actions { justify-content: flex-start; margin: 0;
+  max-width: none; }
+@media (max-width: 767px) {
+  .cs-ov-placed--stack { position: absolute; left: max(var(--c-section-pad-x, 1.25rem),
+      calc((100% - var(--content-measure, 86rem)) / 2)); right: var(--c-section-pad-x, 1.25rem);
+    top: auto; bottom: calc(3 * var(--baseline)); max-width: none !important; margin: 0; }
+  .cs-ov-placed:not(.cs-ov-placed--stack) { display: none; } }"""
 
 # banded (G9): TWO stacked full-width surface bands with a hard horizontal seam — the
 # 90°-rotation of the split's flush halves. The straddler pulls up across the seam by a

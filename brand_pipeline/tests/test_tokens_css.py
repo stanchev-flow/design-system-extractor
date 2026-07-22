@@ -258,5 +258,133 @@ class DeterminismChromeTests(unittest.TestCase):
         self.assertIn("generated design tokens (layer 1)", tag)
 
 
+class FontStackShapeTests(unittest.TestCase):
+    """Regression: a DECLARED multi-member family stack (a self-hosted brand face that
+    already ships its own generic fallback, e.g. ``"HubSpot Sans", sans-serif``) must be
+    emitted VERBATIM — never re-wrapped in an extra layer of quotes (which produced one
+    invalid family name that fell through to a serif proxy), and the generic-family
+    classifier must not read the "serif" substring inside "sans-serif"."""
+
+    def test_generic_family_not_fooled_by_sans_serif_suffix(self):
+        self.assertEqual(tc._generic_family('"HubSpot Sans", sans-serif', ""),
+                         "sans-serif")
+        self.assertEqual(tc._generic_family('"HS Serif", serif', ""), "serif")
+        # bare names (no trailing generic keyword) still use the hint heuristic + proxy
+        self.assertEqual(tc._generic_family("Melodrama", "Playfair Display"), "serif")
+        self.assertEqual(tc._generic_family("Satoshi", "Manrope"), "sans-serif")
+
+    def test_declared_stack_preserved_verbatim_no_proxy(self):
+        stack, used = tc._family_css('"HubSpot Sans", sans-serif', None)
+        self.assertEqual(stack, '"HubSpot Sans", sans-serif')
+        self.assertEqual(used, set())            # no off-brand Google proxy injected
+        self.assertNotIn("', '", stack)          # not a re-wrapped single-token stack
+        multi, _ = tc._family_css('"A Serif Face", "B Serif", serif', None)
+        self.assertEqual(multi, '"A Serif Face", "B Serif", serif')
+
+    def test_bare_family_legacy_emission_byte_stable(self):
+        # single bare name keeps the historical single-quoted family + loadable proxy
+        self.assertEqual(tc._family_css("Inter", "Inter")[0], "'Inter', sans-serif")
+        self.assertEqual(tc._family_css("Bossa", "Lexend Deca")[0],
+                         "'Bossa', 'Lexend Deca', sans-serif")
+        stack, used = tc._family_css("Melodrama", "Playfair Display")
+        self.assertEqual(stack, "'Melodrama', 'Playfair Display', serif")
+        self.assertIn("Playfair Display", used)
+
+    def test_emit_layer1_declared_stack_font_tokens(self):
+        doc = copy.deepcopy(FIXTURE)
+        doc["tokens"]["type"]["body"]["family"] = '"Brandika Sans", sans-serif'
+        doc["tokens"]["type"]["display-hero"]["family"] = '"Brandika Serif", serif'
+        _, _, index, _, _ = tc.emit_layer1(doc)
+        self.assertEqual(index["--font-body"], '"Brandika Sans", sans-serif')
+        self.assertEqual(index["--font-display-hero"], '"Brandika Serif", serif')
+        self.assertNotIn("Source Serif 4", index["--font-body"])   # no serif proxy
+
+    def test_declared_stack_role_loads_no_google_proxy(self):
+        doc = copy.deepcopy(FIXTURE)
+        doc["tokens"]["type"]["body"]["family"] = '"Brandika Sans", sans-serif'
+        _, used = tc.font_stack(doc, "body")
+        self.assertEqual(used, set())
+
+
+class ButtonFontFactSchemaTests(unittest.TestCase):
+    """Regression: the measured button font-size / weight must bind whether the capture
+    carries them as authored ``sizeRem``/``weight`` OR the raw computed ``fontSize`` (px
+    string) / ``fontWeight`` — otherwise a measured 18px CTA silently rendered at the
+    control-text size (0.875rem) and the heading weight."""
+
+    def test_computed_px_schema_binds_size_and_weight(self):
+        doc = copy.deepcopy(FIXTURE)
+        doc["buttons"] = {"primary": {"bg": "#111111", "fg": "#ffffff",
+                                      "padding": "16px 40px", "radius": "8px",
+                                      "height": "68px", "fontSize": "18px",
+                                      "fontWeight": 500}}
+        _, _, index, _, _ = tc.emit_layer1(doc)
+        self.assertEqual(index["--button-size"], "1.125rem")   # 18px → rem
+        self.assertEqual(index["--button-weight"], "500")
+
+    def test_authored_rem_schema_stays_byte_stable(self):
+        _, _, index, _, _ = tc.emit_layer1(FIXTURE)
+        self.assertEqual(index["--button-size"], "1.0rem")     # sizeRem: 1.0
+        self.assertEqual(index["--button-weight"], "600")
+
+    def test_measured_button_family_absent_rides_body(self):
+        # HubSpot-shape primary carries NO font family — the button must not emit
+        # --button-font (it rides the body sans face via the consumer fallback).
+        doc = copy.deepcopy(FIXTURE)
+        doc["buttons"] = {"primary": {"bg": "#111111", "fg": "#ffffff",
+                                      "padding": "16px 40px", "radius": "8px",
+                                      "fontSize": "18px", "fontWeight": 500}}
+        _, _, index, _, _ = tc.emit_layer1(doc)
+        self.assertNotIn("--button-font", index)
+
+
+class ButtonGeometryCorrectionTests(unittest.TestCase):
+    """Regression (button-geometry fix, held-for-review 2026-07): the emitted layer-1
+    button vars are a FAITHFUL pass-through of the measured ``buttons.primary`` facts —
+    so a captured control measured at the modal ``-medium`` size (16px / 12px 24px /
+    56px / border 2px solid transparent, radius 8px, weight 500) emits exactly those
+    magnitudes and never inflates them. Guards against the earlier hubspot-v3 regression
+    where extraction selected the oversized ``-large`` hero CTA (18px / 16px 40px / 68px)
+    as the representative primary. Palette/brand-agnostic: the fixture uses generic
+    values, and the assertion is on the fact→var pass-through, not any hex."""
+
+    _MEDIUM_PRIMARY = {
+        "bg": "#ff4800", "fg": "#ffffff", "bgHover": "#c93700",
+        "border": "2px solid transparent", "padding": "12px 24px", "radius": "8px",
+        "height": "56px", "fontSize": "16px", "fontWeight": 500,
+    }
+
+    def test_medium_geometry_passes_through_unscaled(self):
+        doc = copy.deepcopy(FIXTURE)
+        doc["buttons"] = {"primary": copy.deepcopy(self._MEDIUM_PRIMARY)}
+        _, _, index, _, _ = tc.emit_layer1(doc)
+        self.assertEqual(index["--button-size"], "1rem")        # 16px → rem, not 1.125rem
+        self.assertEqual(index["--button-pad"], "12px 24px")    # not 16px 40px
+        self.assertEqual(index["--button-height"], "56px")      # not 68px
+        self.assertEqual(index["--button-radius"], "8px")
+        self.assertEqual(index["--button-weight"], "500")
+
+    def test_measured_primary_border_is_emitted(self):
+        # the measured control border (e.g. a transparent 2px reserve keeping filled and
+        # outline families the same box) must reach layer 1 so the base .c-button can
+        # consume it — dropping it silently downgraded the primary to a borderless box.
+        doc = copy.deepcopy(FIXTURE)
+        doc["buttons"] = {"primary": copy.deepcopy(self._MEDIUM_PRIMARY)}
+        _, _, index, _, _ = tc.emit_layer1(doc)
+        self.assertEqual(index["--button-border"], "2px solid transparent")
+
+    def test_hubspot_v2_reference_geometry_intact(self):
+        # hubspot-v2 (tracked) captured the modal -medium control correctly and is the
+        # cross-run reference for the corrected v3 geometry: 3.5rem (56px) tall, 12/24
+        # padding, and a transparent 2px border reserve.
+        p = _BRAND_PIPELINE.parent / "runs" / "hubspot-v2" / "brand" / "brand.yaml"
+        if not p.exists():
+            self.skipTest("hubspot-v2 fixture not present")
+        _, _, index, _, _ = tc.emit_layer1(_load(p))
+        self.assertEqual(index["--button-height"], "3.5rem")
+        self.assertEqual(index["--button-pad"], "0.75rem 1.5rem")
+        self.assertEqual(index["--button-border"], "2px solid transparent")
+
+
 if __name__ == "__main__":
     unittest.main()

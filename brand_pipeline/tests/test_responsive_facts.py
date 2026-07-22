@@ -228,6 +228,18 @@ class GeneralizedEmitterTests(unittest.TestCase):
         self.assertIn(":is(h2, .c-heading--h2) { line-height: 1.1; }", css)
         self.assertNotRegex(css, r"line-height:\s*\d+(?:\.\d+)?px")
 
+    def test_base_button_consumes_measured_border(self):
+        # button-geometry fix (held-for-review 2026-07): the PRIMARY rides the base
+        # .c-button rule, so its measured border must flow through --c-button-border
+        # (aliased by component_vars only when buttons.primary.border is present).
+        # Fallback `none` keeps brands without a primary border fact byte-identical;
+        # brands carrying one (transparent reserve OR a real hairline) stop silently
+        # rendering a borderless box.
+        base = cr._button_variant_css({})
+        self.assertIn("border: var(--c-button-border, none);", base)
+        self.assertNotIn("border-radius: var(--c-button-radius, var(--radius)); border: none;",
+                         base)
+
     def test_button_variant_purge_is_fact_gated(self):
         # without the fact the hover lift stays (byte-identical to the base variant)
         self.assertEqual(cr._button_variant_css({}), cr._BUTTON_VARIANT_CSS)

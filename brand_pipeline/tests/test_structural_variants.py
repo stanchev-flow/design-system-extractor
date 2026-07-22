@@ -135,6 +135,25 @@ class PerSurfaceAliases(unittest.TestCase):
         self.assertNotRegex(css, r"\b\d+ms\b")
         self.assertIn("var(--motion-fast)", css)
 
+    def test_button_size_weight_bound_from_authored_facts(self):
+        # FIXTURE primary carries sizeRem + weight → both consumption aliases bind so
+        # the button never leaks the control-text size / heading weight.
+        css = self._vars("surface/primary")
+        self.assertIn("--c-button-size: var(--button-size)", css)
+        self.assertIn("--c-button-weight: var(--button-weight)", css)
+
+    def test_button_size_weight_bound_from_computed_px_schema(self):
+        # a capture carrying the raw computed fontSize/fontWeight (no sizeRem/weight)
+        # must still bind --c-button-size / --c-button-weight.
+        doc = copy.deepcopy(FIXTURE)
+        doc["buttons"] = {"primary": {"bg": "#111111", "fg": "#ffffff",
+                                      "padding": "16px 40px", "radius": "8px",
+                                      "fontSize": "18px", "fontWeight": 500}}
+        surf = doc["tokens"]["surfaces"]["surface/primary"]
+        css = cr.component_vars(doc, surf, selector=".t", surface_role="surface/primary")
+        self.assertIn("--c-button-size: var(--button-size)", css)
+        self.assertIn("--c-button-weight: var(--button-weight)", css)
+
     def test_link_hover_rescopes_per_surface(self):
         doc = copy.deepcopy(FIXTURE)
         # measured hover exists (footer.measured.linkHoverColor) — dark surface gets the

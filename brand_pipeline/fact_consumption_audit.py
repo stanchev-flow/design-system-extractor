@@ -187,9 +187,12 @@ def _cap_buttons_purge(sc: dict):
 # catch, so never add one speculatively.
 _RESPONSIVE_FAMILIES = [
     {
+        # fix3 2026-07: the hero HEIGHT mechanic is promoted into generation (viewport-
+        # relative `calc(100dvh - navoffset)`, geometry-neutral), so this family is now a
+        # real audited family on BOTH targets — not a documented exclusion.
         "family": "responsive.hero",
-        "path": "layouts[hero].responsive (heightRule / headingSizeLadder / navOffset)",
-        "exclusion_key": "hero",
+        "path": "layouts[hero].responsive (heightRule / navOffset)",
+        "exclusion_key": None,
         "capture": _cap_hero,
         "consumer": "component_render.hero_responsive_css",
         "evidence": "CSS marker '(fact-gated: layouts[].responsive)'",
@@ -198,7 +201,7 @@ _RESPONSIVE_FAMILIES = [
     {
         "family": "responsive.hero.primaryButton",
         "path": "layouts[hero].responsive.primaryButton",
-        "exclusion_key": "hero",
+        "exclusion_key": "hero.primaryButton",
         "capture": _cap_hero_button,
         "consumer": "component_render.hero_primary_button_css",
         "evidence": "CSS marker '(fact-gated: layouts[].responsive.primaryButton)'",

@@ -174,30 +174,101 @@ _PROXY_GF = {
 }
 _SERIF_HINTS = ("serif", "playfair", "didone", "georgia")
 
+# CSS generic font-family keywords. A declared family stack that already ends in one
+# of these carries its OWN resolved generic — the substring serif-hint heuristic below
+# must NOT be consulted (it false-positives on "sans-serif", which contains "serif").
+_CSS_GENERICS = ("serif", "sans-serif", "monospace", "cursive", "fantasy",
+                 "system-ui", "ui-serif", "ui-sans-serif", "ui-monospace",
+                 "ui-rounded", "math", "emoji", "fangsong")
+
+
+def _split_families(stack) -> list[str]:
+    """Split a CSS font-family declaration into member tokens, respecting quotes.
+    ``'"HubSpot Sans", sans-serif'`` (a declared stack) → ``['"HubSpot Sans"',
+    'sans-serif']``; a bare ``Inter`` → ``['Inter']``."""
+    out, buf, q = [], [], ""
+    for ch in str(stack):
+        if q:
+            buf.append(ch)
+            if ch == q:
+                q = ""
+        elif ch in "'\"":
+            q = ch
+            buf.append(ch)
+        elif ch == ",":
+            tok = "".join(buf).strip()
+            if tok:
+                out.append(tok)
+            buf = []
+        else:
+            buf.append(ch)
+    tok = "".join(buf).strip()
+    if tok:
+        out.append(tok)
+    return out
+
+
+def _unquote_family(tok: str) -> str:
+    tok = str(tok).strip()
+    if len(tok) >= 2 and tok[0] == tok[-1] and tok[0] in "'\"":
+        return tok[1:-1].strip()
+    return tok
+
 
 def _generic_family(family, proxy):
+    # A declared stack that ends in a CSS generic keyword IS its own truth — return it
+    # verbatim (fixes the "sans-serif"→serif substring false-positive that mis-classed
+    # a sans body/control family as serif and pulled a serif proxy in front of it).
+    members = _split_families(family)
+    if members and _unquote_family(members[-1]).lower() in _CSS_GENERICS:
+        return _unquote_family(members[-1]).lower()
     base = f"{family} {proxy}".lower()
     return "serif" if any(h in base for h in _SERIF_HINTS) else "sans-serif"
+
+
+def _family_css(fam: str, render_proxy: str | None):
+    """Build a CSS font-family value + the set of Google proxies to load for a declared
+    family. Two shapes, both fact-gated and byte-stable:
+
+    * a BARE single family name (``Inter``, ``Melodrama``) keeps the historical
+      single-quoted emission plus an auto-loadable Google proxy so the preview reads
+      on-brand instead of a raw system fallback;
+    * a declared MULTI-MEMBER stack (``"HubSpot Sans", sans-serif`` — e.g. a
+      self-hosted brand face that already ships its own generic fallback) is preserved
+      VERBATIM. Its members are already valid family tokens, so they are emitted as-is
+      (never re-wrapped in an extra layer of quotes, which produced one invalid family
+      name) and NO off-brand auto-proxy is injected ahead of the brand's own face."""
+    generic = _generic_family(fam, render_proxy or "")
+    members = _split_families(fam)
+    used: set[str] = set()
+    is_stack = len(members) > 1 or "'" in fam or '"' in fam
+    if is_stack:
+        if members and _unquote_family(members[-1]).lower() in _CSS_GENERICS:
+            members = members[:-1]
+        parts = list(members)
+        # only an explicitly AUTHORED proxy joins a declared stack (the auto proxy is
+        # for bare names that would otherwise fall back to a system font).
+        if render_proxy and _unquote_family(render_proxy) not in {
+                _unquote_family(m) for m in members}:
+            parts.append(f"'{render_proxy}'")
+            used.add(render_proxy)
+        parts.append(generic)
+        return ", ".join(parts), used
+    proxy = render_proxy or _PROXY_FOR_GENERIC.get(generic)
+    parts = [f"'{fam}'"]
+    if proxy and proxy != fam:
+        parts.append(f"'{proxy}'")
+        used.add(proxy)
+    parts.append(generic)
+    return ", ".join(parts), used
 
 
 def font_stack(doc, role, fallback_family="sans-serif"):
     t = type_role(doc, role)
     fam = t.get("family")
-    proxy = t.get("renderProxy")
     if not fam:
         return fallback_family, set()
-    generic = _generic_family(fam, proxy or "")
-    if not proxy:
-        # No explicit renderProxy (families+scale shape): pick a loadable proxy so
-        # the preview reads on-brand instead of silently falling back to a system font.
-        proxy = _PROXY_FOR_GENERIC.get(generic)
-    parts = [f"'{fam}'"]
-    used = set()
-    if proxy:
-        parts.append(f"'{proxy}'")
-        used.add(proxy)
-    parts.append(generic)
-    return ", ".join(parts), used
+    return _family_css(fam, t.get("renderProxy"))
 
 
 def google_fonts_link(proxies):
@@ -247,6 +318,21 @@ def _px_to_rem(px) -> str | None:
         return None
 
 
+def _button_size_rem(b: dict) -> str | None:
+    """Measured button font-size as a CSS length: prefer the authored ``sizeRem`` (rem),
+    else the raw computed ``fontSize`` ("18px" → rem; an already-rem/other length passes
+    through). Byte-stable for brands that only carry ``sizeRem``."""
+    if b.get("sizeRem") is not None:
+        return f"{b['sizeRem']}rem"
+    fs = b.get("fontSize")
+    if fs is None:
+        return None
+    s = str(fs).strip()
+    if s.endswith("px"):
+        return _px_to_rem(s[:-2].strip()) or s
+    return s
+
+
 # text-transform value per measured case: sentence/none render as `none` (initial),
 # uppercase stays, title-case maps to capitalize. Always emitted for a resolved tier so
 # `text-transform: var(--c-case-*)` never silently drops (CR-1 closure).
@@ -270,15 +356,7 @@ def _emit_type_tier(role_slug: str, t: dict, lines, bp_lines, index):
     """Emit the full --font/-size/-weight/-leading/-case/-tracking set for ONE tier."""
     fam = t.get("family")
     if fam:
-        proxy = t.get("renderProxy")
-        generic = _generic_family(fam, proxy or "")
-        if not proxy:
-            proxy = _PROXY_FOR_GENERIC.get(generic)
-        parts = [f"'{fam}'"]
-        if proxy and proxy != fam:
-            parts.append(f"'{proxy}'")
-        parts.append(generic)
-        stack = ", ".join(parts)
+        stack, _ = _family_css(fam, t.get("renderProxy"))
         lines.append(f"  --font-{role_slug}: {stack};")
         index[f"--font-{role_slug}"] = stack
     size = t.get("sizeRem")
@@ -474,13 +552,25 @@ def emit_layer1(doc: dict) -> tuple[list[str], dict[str, list[str]], dict, list,
                 if b.get(src) is not None:
                     lines.append(f"  {prefix}-{suffix}: {b[src]};")
                     index[f"{prefix}-{suffix}"] = str(b[src])
-            if b.get("sizeRem") is not None:
-                lines.append(f"  {prefix}-size: {b['sizeRem']}rem;")
-                index[f"{prefix}-size"] = f"{b['sizeRem']}rem"
-            if b.get("font"):
-                generic = _generic_family(b["font"], "")
-                proxy = _PROXY_FOR_GENERIC.get(generic)
-                stack = f"'{b['font']}'" + (f", '{proxy}'" if proxy else "") + f", {generic}"
+            # measured font WEIGHT: some captures carry it as ``weight`` (handled by the
+            # pairs loop above), others as the raw computed ``fontWeight`` — bind either
+            # so the button never silently falls back to the heading weight.
+            if b.get("weight") is None and b.get("fontWeight") is not None:
+                lines.append(f"  {prefix}-weight: {b['fontWeight']};")
+                index[f"{prefix}-weight"] = str(b["fontWeight"])
+            # measured font SIZE: ``sizeRem`` (rem) or the raw computed ``fontSize``
+            # (e.g. "18px") — both are real button facts; without this the control-text
+            # size (0.875rem) leaked onto a 18px measured CTA.
+            _bsize = _button_size_rem(b)
+            if _bsize is not None:
+                lines.append(f"  {prefix}-size: {_bsize};")
+                index[f"{prefix}-size"] = _bsize
+            # measured font FAMILY (``font`` or the raw ``fontFamily``): absent ⇒ the
+            # button rides the body sans family (correct for brands whose CTA uses the
+            # body face). A declared family is composed via the shared stack builder.
+            _bfont = b.get("font") or b.get("fontFamily")
+            if _bfont:
+                stack, _ = _family_css(_bfont, None)
                 lines.append(f"  {prefix}-font: {stack};")
                 index[f"{prefix}-font"] = stack
             # measured DARK-SURFACE variant (fix1 2026-07 item-10): a family's
