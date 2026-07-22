@@ -284,6 +284,189 @@ class EmitterGateTests(unittest.TestCase):
         self.assertEqual(cr._resp_len(128), "128px")
 
 
+class NavCollapseExtractorTests(unittest.TestCase):
+    """The nav mobile-collapse fact: a burger control hidden at/above a measured
+    breakpoint + desktop rows that are mobile-first hidden and shown at/above it.
+    Brand-agnostic across kebab (`.-mobile-only`) and camelCase (`menuToggle`) names."""
+
+    def _kebab_nav(self):
+        # HubSpot-shape: mobile-first rows (display:none at base, display:flex @>=1080),
+        # a burger group shown at base and hidden at/above the breakpoint.
+        return {
+            "elementId": "chrome-header", "kind": "chrome", "visionRole": "nav",
+            "cssRules": [
+                {"selector": ".global-nav-top-bar", "decls": "display:none", "media": ""},
+                {"selector": ".global-nav-top-bar",
+                 "decls": "display:flex", "media": "@media(width >= 1080px)"},
+                {"selector": ".global-nav-main-tab-list",
+                 "decls": "display:none", "media": ""},
+                {"selector": ".global-nav-main-tab-list",
+                 "decls": "display:flex", "media": "@media(width >= 1080px)"},
+                {"selector": ".global-nav-main .global-nav-main-group.-mobile-only",
+                 "decls": "display:flex", "media": ""},
+                {"selector": ".global-nav-header .global-nav-main .-mobile-only",
+                 "decls": "display:none", "media": "@media(width >= 1080px)"},
+                {"selector": ".global-nav-burger-btn", "decls": "display:block",
+                 "media": ""},
+            ]}
+
+    def _camel_nav(self):
+        # CSS-module (camelCase) shape at a different breakpoint — same mechanic.
+        return {
+            "elementId": "chrome-header", "kind": "chrome", "visionRole": "nav",
+            "cssRules": [
+                {"selector": ".mod__mainNav", "decls": "display:none", "media": ""},
+                {"selector": ".mod__mainNav", "decls": "display:flex",
+                 "media": "@media (min-width:1200px)"},
+                {"selector": ".mod__menuToggle", "decls": "display:flex", "media": ""},
+                {"selector": ".mod__menuToggle", "decls": "display:none",
+                 "media": "@media (min-width:1200px)"},
+                {"selector": ".mod__navMobileBar", "decls": "display:flex", "media": ""},
+                {"selector": ".mod__navMobileBar", "decls": "display:none",
+                 "media": "@media (min-width:1200px)"},
+            ]}
+
+    def test_kebab_collapse_breakpoint_and_burger(self):
+        c = rf._nav_collapse_from_evidence(self._kebab_nav())
+        self.assertEqual(c["breakpoint"], 1080)
+        self.assertTrue(c["burger"])
+
+    def test_camelcase_collapse_breakpoint_and_burger(self):
+        c = rf._nav_collapse_from_evidence(self._camel_nav())
+        self.assertEqual(c["breakpoint"], 1200)
+        self.assertTrue(c["burger"])
+
+    def test_nav_block_carries_collapse(self):
+        block = rf.nav_responsive_from_evidence(self._kebab_nav())
+        self.assertEqual(block["collapse"]["breakpoint"], 1080)
+        self.assertIn("collapse", block["provenance"])
+
+    def test_no_collapse_without_mechanic(self):
+        # a nav with only a static bar (no mobile-first rows, no burger) → None
+        nav = {"elementId": "chrome-header", "cssRules": [
+            {"selector": ".nav", "decls": "display:flex", "media": ""},
+            {"selector": ".nav-links", "decls": "display:flex", "media": ""}]}
+        self.assertIsNone(rf._nav_collapse_from_evidence(nav))
+
+    def test_real_brands_collapse(self):
+        # the two captured sources (hubspot 1080, remote 1200) both carry the mechanic.
+        for run, bp in (("hubspot-v3", 1080), ("hubspot-v2", 1080), ("remote", 1200)):
+            p = (_REPO / "runs" / run / "brand" / "evidence" / "joined-evidence.json")
+            if not p.is_file():
+                continue
+            joined = json.loads(p.read_text())
+            nav = next((e for e in joined.get("elements", [])
+                        if e.get("elementId") == "chrome-header"), None)
+            c = rf._nav_collapse_from_evidence(nav)
+            self.assertIsNotNone(c, f"{run} nav collapse not detected")
+            self.assertEqual(c["breakpoint"], bp, f"{run} breakpoint")
+            self.assertTrue(c["burger"], f"{run} burger")
+
+
+class NavCollapseEmitterTests(unittest.TestCase):
+    """nav_collapse_css: fact-gated, byte-stable without the block; emits a #page-nav
+    scoped @media that hides the desktop rows + shows the burger below the breakpoint."""
+
+    def test_gated_empty_without_fact(self):
+        self.assertEqual(cr.nav_collapse_css({}), "")
+        self.assertEqual(cr.nav_collapse_css({"responsive": {}}), "")
+        self.assertEqual(cr.nav_collapse_css({"responsive": {"nav": {}}}), "")
+        self.assertEqual(
+            cr.nav_collapse_css({"responsive": {"nav": {"collapse": {}}}}), "")
+
+    def test_emits_media_and_burger(self):
+        css = cr.nav_collapse_css(
+            {"responsive": {"nav": {"collapse": {"breakpoint": 1080}}}})
+        self.assertIn("@media (max-width: 1079px)", css)
+        self.assertIn("#page-nav .cs-nav-tier--utility { display: none; }", css)
+        self.assertIn("#page-nav .cs-navlinks { display: none; }", css)
+        self.assertIn("#page-nav .cs-nav-util { display: none; }", css)
+        self.assertIn("#page-nav .cs-nav-actions { display: none; }", css)
+        self.assertIn("#page-nav .cs-nav-burger { display: inline-flex; }", css)
+        # burger hidden by default (desktop byte-identical) + drawer closed at rest
+        self.assertIn("#page-nav .cs-nav-burger { display: none;", css)
+        self.assertIn("#page-nav .cs-nav-drawer { display: none;", css)
+
+    def test_breakpoint_rides_the_fact(self):
+        css = cr.nav_collapse_css(
+            {"responsive": {"nav": {"collapse": {"breakpoint": 1200}}}})
+        self.assertIn("@media (max-width: 1199px)", css)
+        self.assertNotIn("1079", css)
+
+
+class NavCollapseRenderTests(unittest.TestCase):
+    """render_navbar emits the burger + drawer ONLY when the mobileCollapse prop is
+    present (fact-gated); a bar without it is byte-identical (no burger/drawer)."""
+
+    def _doc(self):
+        return {"brand": {"name": "Acme"}, "tokens": {"surfaces": {}}}
+
+    def _ctx(self):
+        return cr.make_context(self._doc(), "surface/primary", {})
+
+    def test_no_burger_without_prop(self):
+        html = cr.render_navbar(self._doc(), self._ctx(),
+                                {"wordmark": "Acme", "links": ["A", "B"], "cta": "Go"})
+        self.assertNotIn("cs-nav-burger", html)
+        self.assertNotIn("cs-nav-drawer", html)
+
+    def test_burger_and_drawer_with_prop(self):
+        html = cr.render_navbar(self._doc(), self._ctx(), {
+            "wordmark": "Acme", "links": [{"label": "Products", "href": "/p"}],
+            "cta": "Go",
+            "mobileCollapse": {"breakpoint": 1080, "burgerLabel": "Menu"}})
+        self.assertIn('class="cs-nav-burger"', html)
+        self.assertIn('aria-expanded="false"', html)
+        self.assertIn('aria-controls="cs-nav-drawer"', html)
+        self.assertIn('aria-label="Menu"', html)
+        self.assertIn('id="cs-nav-drawer"', html)
+        self.assertIn("hidden>", html)          # drawer closed at rest (adds no width)
+        self.assertIn("Products", html)         # top-level link mirrored into the drawer
+
+    def test_burger_byte_stability(self):
+        # the ONLY delta between with/without the prop is the burger + drawer markup;
+        # everything else (logo/links/cta) is byte-identical.
+        base = {"wordmark": "Acme", "links": [{"label": "Products", "href": "/p"}],
+                "cta": "Go"}
+        without = cr.render_navbar(self._doc(), self._ctx(), dict(base))
+        withp = cr.render_navbar(self._doc(), self._ctx(),
+                                 {**base, "mobileCollapse": {"breakpoint": 1080}})
+        # stripping the added burger + drawer from the with-prop markup recovers the
+        # without-prop markup exactly (pure superset, nothing else changed).
+        import re as _re
+        stripped = _re.sub(r'<button type="button" class="cs-nav-burger".*?</button>',
+                           "", withp, flags=_re.S)
+        stripped = _re.sub(r'<div id="cs-nav-drawer".*?</div>', "", stripped,
+                           flags=_re.S)
+        self.assertEqual(stripped, without)
+
+
+class NavbarPropsCollapseTests(unittest.TestCase):
+    """_navbar_props surfaces the mobileCollapse prop from responsive.nav.collapse
+    (fact-gated) with the captured mobile-burger label."""
+
+    def test_props_gated_on_collapse_fact(self):
+        import compose_section as cs
+        doc = {"brand": {"name": "Acme"},
+               "navbar": {"primary": [{"label": "P"}],
+                          "utilityControls": [{"role": "mobile-burger",
+                                               "label": "Open menu"}]},
+               "responsive": {"nav": {"collapse": {"breakpoint": 1080}}}}
+        props = cs._navbar_props(doc)
+        self.assertEqual(props["mobileCollapse"]["breakpoint"], 1080)
+        self.assertEqual(props["mobileCollapse"]["burgerLabel"], "Open menu")
+        # no collapse fact → no prop (byte-identical bar)
+        doc.pop("responsive")
+        self.assertNotIn("mobileCollapse", cs._navbar_props(doc))
+
+    def test_burger_label_defaults_to_menu(self):
+        import compose_section as cs
+        doc = {"brand": {"name": "Acme"}, "navbar": {"primary": [{"label": "P"}]},
+               "responsive": {"nav": {"collapse": {"breakpoint": 1200}}}}
+        props = cs._navbar_props(doc)
+        self.assertEqual(props["mobileCollapse"]["burgerLabel"], "Menu")
+
+
 class ApplyMergeTests(unittest.TestCase):
     def test_apply_is_noop_without_sidecar(self):
         doc = {"layouts": [{"id": "h", "useCase": "hero"}], "footer": {}}

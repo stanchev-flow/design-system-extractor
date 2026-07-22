@@ -1187,6 +1187,10 @@ def render_b_navbar(doc, key, item):
     ctx = cr.make_context(doc, role, surfaces.get(role) or {})
     props = dict(cs._navbar_props(doc))
     props.pop("logo", None)  # image logo files live beside the composed page, not here
+    # the mobile-collapse burger/drawer + its @media live on the composed page (scoped
+    # to #page-nav); the gallery demo bar has no such scope, so drop the prop here to
+    # keep the demo bar byte-identical (no orphan burger without its collapse CSS).
+    props.pop("mobileCollapse", None)
     nav = cr.render_navbar(doc, ctx, props)
     return (f'<div class="cmp-chrome-demo" data-surface-frame="{esc(role)}">{nav}</div>'
             f'<div class="ex-caption">Bar on the brand&rsquo;s extracted chrome surface '

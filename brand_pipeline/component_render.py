@@ -638,6 +638,66 @@ def heading_responsive_css(doc) -> str:
     return head + "\n" + "\n".join(parts) + "\n"
 
 
+def nav_collapse_css(doc) -> str:
+    """Grounded MOBILE-COLLAPSE CSS for the page nav from ``responsive.nav.collapse``:
+
+      * below the measured ``breakpoint`` the desktop utility row + primary link rail +
+        bar CTA cluster HIDE (matching the source's mobile-first ``display:none`` rows),
+        and the burger control SHOWS — the bar becomes a logo + burger mobile bar;
+      * at/above the breakpoint nothing changes (the burger is ``display:none`` at rest),
+        so the DESKTOP render is byte-for-byte identical.
+
+    Scoped to ``#page-nav`` (higher specificity than the two-tier base rules, so the
+    utility tier's ``display:inline-flex`` is overridden below the breakpoint). Every
+    length traces to the measured breakpoint fact. "" without the block (fact-gate;
+    brands with no collapse fact keep byte-identical page CSS)."""
+    collapse = ((doc or {}).get("responsive") or {}).get("nav", {}).get("collapse") \
+        if isinstance(doc, dict) and isinstance(doc.get("responsive"), dict) else None
+    if not isinstance(collapse, dict):
+        return ""
+    bp = collapse.get("breakpoint")
+    if not isinstance(bp, (int, float)) or bp <= 0:
+        return ""
+    bp = int(bp)
+    head = ("/* nav mobile collapse (fact-gated: responsive.nav.collapse) — below the "
+            f"measured {bp}px breakpoint the desktop utility + primary rows collapse to "
+            "a logo + burger mobile bar; the burger is display:none at/above it so "
+            "desktop is byte-identical. */")
+    # burger base chrome + the drawer's resting (closed) state — all page-scoped so the
+    # shared scaffold CSS stays untouched (fact-less brands keep byte-identical output).
+    base = (
+        "#page-nav .cs-nav-burger { display: none; align-items: center; "
+        "justify-content: center; width: 2.5rem; height: 2.5rem; padding: 0; "
+        "border: 0; background: none; color: currentColor; cursor: pointer; "
+        "flex: 0 0 auto; }\n"
+        "#page-nav .cs-nav-burger-box { position: relative; display: block; "
+        "width: 1.5rem; height: 1rem; }\n"
+        "#page-nav .cs-nav-burger-line, #page-nav .cs-nav-burger-line::before, "
+        "#page-nav .cs-nav-burger-line::after { position: absolute; left: 0; "
+        "width: 100%; height: 2px; background: currentColor; }\n"
+        "#page-nav .cs-nav-burger-line { top: 50%; transform: translateY(-50%); }\n"
+        "#page-nav .cs-nav-burger-line::before { content: \"\"; top: -0.5rem; }\n"
+        "#page-nav .cs-nav-burger-line::after { content: \"\"; top: 0.5rem; }\n"
+        "#page-nav .cs-nav-drawer { display: none; flex-direction: column; "
+        "gap: 0.25rem; width: 100%; padding: 0.5rem 0; }\n"
+        "#page-nav .cs-nav-drawer[hidden] { display: none; }\n"
+        "#page-nav .cs-nav-drawer:not([hidden]) { display: flex; }\n"
+        "#page-nav .cs-nav-drawer-link { color: currentColor; text-decoration: none; "
+        "padding: 0.5rem 0; }")
+    # the collapse @media: below the breakpoint the desktop rows leave the bar and the
+    # burger appears. #page-nav specificity beats `.cs-nav-tier--utility .cs-nav-util`.
+    media = (
+        f"@media (max-width: {bp - 1}px) {{\n"
+        "  #page-nav .cs-nav-tier--utility { display: none; }\n"
+        "  #page-nav .cs-navlinks { display: none; }\n"
+        "  #page-nav .cs-nav-util { display: none; }\n"
+        "  #page-nav .cs-nav-actions { display: none; }\n"
+        "  #page-nav .cs-nav .c-button--navcta { display: none; }\n"
+        "  #page-nav .cs-nav-burger { display: inline-flex; }\n"
+        "}")
+    return head + "\n" + base + "\n" + media + "\n"
+
+
 # ── scroll-parallax motion treatment (brand-level; voice.motionSpec.imageParallax) ──
 #
 # SINGLE SOURCE OF TRUTH for both build_page (compose_page.py) and build_document
@@ -2460,6 +2520,30 @@ _IX_PANELCAR_JS = """
     });
   });"""
 
+_IX_BURGER_JS = """
+  /* mobile nav burger (nav responsive collapse): the disclosure control shown below
+     the measured breakpoint toggles the mobile drawer ([hidden] flips) and mirrors
+     aria-expanded; Escape closes and restores focus. CSS-only fallback: with JS off
+     the burger still shows (no overflow) and the drawer stays closed. */
+  document.querySelectorAll('.cs-nav-burger').forEach(function (btn) {
+    var drawer = document.getElementById(btn.getAttribute('aria-controls') || '');
+    if (!drawer) return;
+    var set = function (open) {
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) { drawer.removeAttribute('hidden'); } else { drawer.hidden = true; }
+    };
+    btn.addEventListener('click', function () {
+      set(btn.getAttribute('aria-expanded') !== 'true');
+    });
+    btn.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (btn.getAttribute('aria-expanded') === 'true') { set(false); btn.focus(); }
+    });
+    drawer.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { set(false); btn.focus(); }
+    });
+  });"""
+
 _IX_IMAGE_JS = """
   /* Image placeholder lifecycle (AS-23): attribute absent = unresolved/loading,
      loaded = remove the hatch completely, error = retain the hatch fallback.
@@ -2495,6 +2579,8 @@ def interaction_script(markup: str) -> str:
         blocks.append(_IX_TABS_JS)
     if "data-panelcar" in markup:
         blocks.append(_IX_PANELCAR_JS)
+    if "cs-nav-burger" in markup:
+        blocks.append(_IX_BURGER_JS)
     if '<img class="c-image' in markup:
         blocks.append(_IX_IMAGE_JS)
     if not blocks:
@@ -3957,6 +4043,39 @@ def render_navbar(doc, ctx: ComponentContext, props=None) -> str:
                 "label": props["cta"], "href": props.get("ctaHref", "#"),
                 "ariaLabel": props.get("ctaAriaLabel"),
                 "accent": props.get("ctaAccent", False)})
+    # MOBILE COLLAPSE (nav responsive fact): below the measured breakpoint the desktop
+    # utility + primary rows collapse to a logo + burger mobile bar. The burger is the
+    # captured mobile control; it draws a static disclosure <button> (aria-expanded +
+    # aria-controls) over a mobile drawer of the top-level primary + utility labels
+    # (interaction_script toggles it; closed at rest so it adds no width). Fact-gated on
+    # props["mobileCollapse"] — brands without it emit no burger/drawer (byte-identical
+    # bar markup); the burger is display:none at/above the breakpoint (compose_page's
+    # fact-gated @media), so DESKTOP renders byte-for-byte as before.
+    mc = props.get("mobileCollapse") if isinstance(props.get("mobileCollapse"), dict) \
+        else None
+    burger = ""
+    drawer = ""
+    if mc:
+        blabel = esc(str(mc.get("burgerLabel") or "Menu"))
+        burger = ('<button type="button" class="cs-nav-burger" '
+                  f'aria-label="{blabel}" aria-expanded="false" '
+                  'aria-controls="cs-nav-drawer"><span class="cs-nav-burger-box" '
+                  'aria-hidden="true"><span class="cs-nav-burger-line"></span>'
+                  '</span></button>')
+        drawer_links: list[tuple[str, str]] = []
+        for n in links:
+            if isinstance(n, dict) and str(n.get("label") or "").strip():
+                drawer_links.append((str(n["label"]), str(n.get("href") or "#")))
+            elif isinstance(n, str) and n.strip():
+                drawer_links.append((n, "#"))
+        for u in _nav_utility(doc):
+            lab = str(u.get("label") or u.get("shownLabel") or "").strip()
+            if lab:
+                drawer_links.append((lab, str(u.get("href") or "#")))
+        items = "".join(f'<a class="cs-nav-drawer-link" href="{esc(h)}">{esc(l)}</a>'
+                        for l, h in drawer_links)
+        drawer = f'<div id="cs-nav-drawer" class="cs-nav-drawer" hidden>{items}</div>'
+
     # TWO-TIER bar (fix1 2026-07 item-12a/c): gated on the EXPLICIT opt-in
     # `navbar.utilityTier` contract — never on `twoTier` alone (a brand can
     # declare twoTier with a measured utilityBarHeight of 0; its bar stays
@@ -3992,9 +4111,11 @@ def render_navbar(doc, ctx: ComponentContext, props=None) -> str:
         return (f'<nav class="cs-nav cs-nav--twotier"{style}>'
                 f'<div class="cs-nav-tier cs-nav-tier--utility">{lead}{trail}</div>'
                 f'<div class="cs-nav-tier cs-nav-tier--primary">{logo}'
-                f'<span class="cs-navlinks">{navlinks}</span>{cta}</div></nav>')
+                f'<span class="cs-navlinks">{navlinks}</span>{cta}{burger}</div>'
+                f'{drawer}</nav>')
     return (f'<nav class="cs-nav">{logo}'
-            f'<span class="cs-navlinks">{navlinks}</span>{utility}{cta}</nav>')
+            f'<span class="cs-navlinks">{navlinks}</span>{utility}{cta}{burger}'
+            f'{drawer}</nav>')
 
 
 # ── registry: catalog contract -> shared renderer ───────────────────────────────
