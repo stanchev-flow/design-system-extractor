@@ -1837,6 +1837,21 @@ def _navbar_props(doc: dict) -> dict:
         }
     else:
         props["wordmark"] = sc.get("wordmark") or brand_name or "Brand"
+    # MOBILE COLLAPSE (nav responsive fact): below the measured breakpoint the desktop
+    # utility + primary rows collapse to a logo + burger mobile bar (render_navbar emits
+    # the burger; compose_page emits the fact-gated @media). Fact-gated on the merged
+    # responsive.nav.collapse block — brands without it never build this key (their bar
+    # markup stays byte-identical). The burger label rides the captured mobile-burger
+    # utilityControl when present, else a generic default.
+    collapse = ((doc.get("responsive") or {}).get("nav") or {}).get("collapse") \
+        if isinstance(doc.get("responsive"), dict) else None
+    if isinstance(collapse, dict) and isinstance(collapse.get("breakpoint"), (int, float)):
+        burger_label = next(
+            (str(c.get("label")).strip() for c in (nav.get("utilityControls") or [])
+             if isinstance(c, dict) and c.get("role") == "mobile-burger"
+             and str(c.get("label") or "").strip()), "Menu")
+        props["mobileCollapse"] = {"breakpoint": int(collapse["breakpoint"]),
+                                   "burgerLabel": burger_label}
     return props
 
 

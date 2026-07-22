@@ -344,12 +344,10 @@ def _resolve_var(value: str, custom: dict, depth: int = 0) -> str:
     return _resolve_var(base or "", custom, depth + 1)
 
 
-def nav_responsive_from_evidence(nav: dict) -> dict | None:
-    """Generic ``panelSurface`` fact for the nav mega-panel: the measured background
-    of the source's panel CONTAINER sheet (dropdown/flyout/mega wrapper), resolved to a
-    literal. None when the nav paints no solid panel container (fact-gate)."""
-    if not isinstance(nav, dict):
-        return None
+def _nav_panel_surface_from_evidence(nav: dict) -> tuple[dict, str, str] | None:
+    """(panelSurface, source-selector, background-literal) for the nav mega-panel: the
+    measured background of the source's panel CONTAINER sheet (dropdown/flyout/mega
+    wrapper), resolved to a literal. None when the nav paints no solid panel container."""
     custom = nav.get("customProperties") or {}
     for r in nav.get("cssRules") or []:
         sel = r.get("selector") or ""
@@ -364,18 +362,138 @@ def nav_responsive_from_evidence(nav: dict) -> dict | None:
         resolved = _resolve_var(bg.split("!")[0].strip(), custom)
         if resolved.lower() in _EMPTY_BG:
             continue
-        return {
-            "schema": SCHEMA,
-            "panelSurface": {"background": resolved},
-            "provenance": {
-                "origin": "extracted",
-                "source": nav.get("elementId") or nav.get("domSelector"),
-                "panelSurface": (
-                    f"mega-nav panel container ({sel[:48]}) paints {bg.strip()[:32]}"
-                    f" → resolved {resolved}; our .cs-mega measured transparent"),
-            },
-        }
+        return ({"background": resolved}, sel, bg.strip())
     return None
+
+
+# ── NAV responsive collapse fact ─────────────────────────────────────────────────
+#
+# The computed-CSS + multi-viewport harness surfaces a CRITICAL missing-fact: the
+# source nav COLLAPSES to a mobile bar (logo + burger) below a measured breakpoint —
+# the desktop utility row + primary link rail are MOBILE-FIRST hidden (`display:none`
+# at base, `display:flex` only inside an `@media(width >= N)`), and a burger control
+# (`.-mobile-only` / `*burger*`) shows below N (hidden at/above via `@media(width >= N)
+# display:none`). Our composed nav never implemented this, so every narrow viewport
+# overflowed (the utility + primary rows never left the bar). This derives the GENERIC,
+# BRAND-AGNOSTIC collapse mechanic — the measured breakpoint + the presence of a burger
+# control — so the renderer can hide the desktop rows and show the mobile bar below it.
+# Generic keys (`breakpoint`, `burger`), never section/content-specific names.
+
+# a mobile-only affordance: the burger button/group shown on narrow, hidden on desktop.
+# Separators are optional so both kebab (`.-mobile-only`) and camelCase (`menuToggle`,
+# `navMobileBar`) module class names match — the same mechanic, any naming convention.
+_BURGER_RE = re.compile(
+    r"burger|hamburger"
+    r"|mobile[-_ ]?(?:only|menu|nav|bar|toggle|trigger|icon|drawer)"
+    r"|menu[-_ ]?(?:toggle|trigger|button|btn|icon)"
+    r"|nav[-_ ]?(?:toggle|mobile)", re.I)
+# a desktop nav ROW that is mobile-first hidden and only shown at/above the breakpoint
+# (the utility top-bar strip + the primary link/tab rail). Generic role words only,
+# separators optional (kebab or camelCase module names).
+_NAV_ROW_RE = re.compile(
+    r"top[-_ ]?bar|tab[-_ ]?list|nav[-_ ]?links|nav[-_ ]?list|nav[-_ ]?main[-_ ]?tab"
+    r"|main[-_ ]?nav|primary[-_ ]?nav|secondary[-_ ]?nav|desktop[-_ ]?(?:nav|panel|menu)"
+    r"|utility(?:[-_ ]?(?:bar|row|nav))?|nav[-_ ]?menu[-_ ]?list", re.I)
+_SHOW_DISPLAY_RE = re.compile(r"display\s*:\s*(flex|grid|block|inline-flex|table)", re.I)
+_HIDE_DISPLAY_RE = re.compile(r"display\s*:\s*none\b", re.I)
+
+
+def _min_width(media: str) -> int | None:
+    return _media_min_width(media or "")
+
+
+def _nav_collapse_from_evidence(nav: dict) -> dict | None:
+    """Generic ``collapse`` fact for the nav: ``{breakpoint, burger}`` when the source
+    declares a mobile-collapse mechanic — a burger control that hides at/above a
+    breakpoint AND/OR desktop nav rows that are mobile-first hidden and only shown
+    at/above it. None when no such mechanic is measured (fact-gate)."""
+    rules = nav.get("cssRules") or []
+    # base (non-@media) display state per selector — a row that is display:none at base
+    # and display:flex inside a min-width @media is the mobile-first collapse signal.
+    base_hidden: set[str] = set()
+    burger_present = False
+    for r in rules:
+        if r.get("media") or _STATE_PSEUDO_RE.search(r.get("selector") or ""):
+            continue
+        sel = r.get("selector") or ""
+        decls = r.get("decls", "")
+        if _HIDE_DISPLAY_RE.search(decls):
+            base_hidden.add(sel)
+        if _BURGER_RE.search(sel) and _decl(decls, "display") \
+                and not _HIDE_DISPLAY_RE.search(decls):
+            burger_present = True
+
+    burger_hide_bps: list[int] = []   # widths where the mobile-only burger hides
+    row_show_bps: list[int] = []      # widths where a base-hidden desktop row shows
+    for r in rules:
+        media = r.get("media") or ""
+        mw = _min_width(media)
+        if not mw:
+            continue
+        sel = r.get("selector") or ""
+        decls = r.get("decls", "")
+        if _STATE_PSEUDO_RE.search(sel):
+            continue
+        if _BURGER_RE.search(sel) and _HIDE_DISPLAY_RE.search(decls):
+            burger_hide_bps.append(mw)
+        if _NAV_ROW_RE.search(sel) and _SHOW_DISPLAY_RE.search(decls) \
+                and sel in base_hidden:
+            row_show_bps.append(mw)
+
+    # the collapse breakpoint: the definitive "desktop engages here" line. Prefer the
+    # width where the mobile-only burger is hidden; else where the base-hidden desktop
+    # rows turn visible. Among candidates take the most common (mode), tie → the widest.
+    def _pick(bps: list[int]) -> int | None:
+        if not bps:
+            return None
+        counts: dict[int, int] = {}
+        for b in bps:
+            counts[b] = counts.get(b, 0) + 1
+        top = max(counts.values())
+        return max(b for b, c in counts.items() if c == top)
+
+    breakpoint = _pick(burger_hide_bps) or _pick(row_show_bps)
+    # a genuine collapse needs both a breakpoint AND the rows that disappear below it;
+    # a burger is the mobile trigger. Emit only when the mechanic is real (fact-gate):
+    # a breakpoint from the row-show/burger-hide evidence, and at least one of a burger
+    # control or a base-hidden desktop row that reappears at the breakpoint.
+    if not breakpoint or not (burger_present or row_show_bps):
+        return None
+    return {"breakpoint": int(breakpoint),
+            "burger": bool(burger_present),
+            "_bpSource": "burger-hide" if burger_hide_bps else "row-show"}
+
+
+def nav_responsive_from_evidence(nav: dict) -> dict | None:
+    """Generic nav ``responsive`` fact: the mega-panel ``panelSurface`` (measured panel
+    container background) + the mobile ``collapse`` mechanic (measured breakpoint +
+    burger presence). None when the nav carries neither (fact-gate)."""
+    if not isinstance(nav, dict):
+        return None
+    surf = _nav_panel_surface_from_evidence(nav)
+    collapse = _nav_collapse_from_evidence(nav)
+    if not surf and not collapse:
+        return None
+    out: dict = {"schema": SCHEMA}
+    prov: dict = {"origin": "extracted",
+                  "source": nav.get("elementId") or nav.get("domSelector")}
+    if surf:
+        panel, sel, bg = surf
+        out["panelSurface"] = panel
+        prov["panelSurface"] = (
+            f"mega-nav panel container ({sel[:48]}) paints {bg[:32]}"
+            f" → resolved {panel['background']}; our .cs-mega measured transparent")
+    if collapse:
+        bp_src = collapse.pop("_bpSource", "")
+        out["collapse"] = collapse
+        prov["collapse"] = (
+            f"source nav rows are mobile-first (display:none at base, display:flex only "
+            f"in @media(width >= {collapse['breakpoint']}px)); a burger control shows "
+            f"below the breakpoint and hides at/above it. Below {collapse['breakpoint']}"
+            f"px the desktop utility + primary rows collapse to a logo + burger mobile "
+            f"bar (breakpoint from {bp_src or 'measured @media'}).")
+    out["provenance"] = prov
+    return out
 
 
 # ── HERO primary-button fact (geometry + motion purge) ───────────────────────────────

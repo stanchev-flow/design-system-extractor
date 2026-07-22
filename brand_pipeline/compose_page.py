@@ -921,6 +921,11 @@ def build_page(doc, brand_yaml, order, style_ctx: RenderContext,
         *([cr.nav_affordance_css(doc, honor_curation=honor_curation)]
           if nav_block and cr.nav_affordance_css(doc, honor_curation=honor_curation)
           else []),
+        # nav mobile collapse (fact-gated: responsive.nav.collapse) — below the measured
+        # breakpoint the desktop utility + primary rows collapse to a logo + burger
+        # mobile bar; the burger is display:none at/above it (desktop byte-identical).
+        # Appended after the nav base/affordance CSS so the #page-nav-scoped @media wins.
+        *([cr.nav_collapse_css(doc)] if nav_block and cr.nav_collapse_css(doc) else []),
         page_scaffold_css(),
     ]
     # AS-37: the inset art-panel device CSS ships ONLY when a section on THIS page
