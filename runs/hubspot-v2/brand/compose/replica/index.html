@@ -330,6 +330,7 @@ body { min-height: 100%; container-type: size; container-name: frame; }
   --c-ghost: var(--color-text-ghost-on-primary);
   --c-panel: var(--surface-surface-panel);
   --c-panel-ink: var(--color-text-on-primary);
+  --c-panel-ink-muted: var(--color-text-on-primary-muted);
   --c-panel-hairline: var(--color-border-hairline-on-primary);
   /* ONE shared page grid + baseline (alignment quick wins) — mirrors
      compose_section.root_vars: all section scaffolds place onto these SHARED tracks
@@ -481,11 +482,17 @@ p { text-wrap-style: balance; }
      existing single-cta brand's computed style identical. */
   border: var(--navcta-border, none); border-radius: var(--navcta-radius, 999px);
   height: var(--navcta-height, auto);
-  padding: 0 var(--navcta-pad-x, 1.5rem);
+  /* pad-y default (2026-07): a measured-facts-less CTA had `0` vertical padding
+     and relied on height:auto, collapsing to a too-narrow text-height chip.
+     A 0.5rem vertical floor gives a real button box; measured padY overrides it. */
+  padding: var(--navcta-pad-y, 0.5rem) var(--navcta-pad-x, 1.25rem);
   font-size: var(--navcta-size, var(--c-control-size));
   display: inline-flex; align-items: center; }
 .c-button.c-button--navcta:hover, .c-button.c-button--navcta:focus-visible {
-  background: var(--navcta-bg); filter: brightness(1.18); }
+  /* keep the CTA's own ink on hover — the generic .c-button:hover otherwise sets
+     color to --c-paper (white on a white nav), turning an unfilled orange-ink CTA
+     white-on-white on hover (2026-07). */
+  background: var(--navcta-bg); color: var(--navcta-ink, #fff); filter: brightness(1.06); }
 
 .c-arrow { transition: transform var(--c-motion-fast) var(--c-ease); }
 .c-arrow-link:hover .c-arrow { transform: translateX(0.35rem); }
@@ -781,11 +788,14 @@ p { text-wrap-style: balance; }
    extracted footer is a dense sitemap of small links, not a display device. Register
    (size/weight) rides the brand's measured chrome tokens via --c-foot-link-size;
    layout mechanics (wrap/gaps/measure) are structural. */
-.c-foot-cols { display: flex; flex-wrap: wrap; justify-content: center; text-align: left;
+/* GRID sitemap (2026-07): flex-wrap staggered the columns into ragged rows
+   (5+1) with misaligned left edges. A grid keeps every column on a shared track
+   so wrapped rows stay column-aligned, like the real directory footer. */
+.c-foot-cols { display: grid; justify-content: center; text-align: left;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
   gap: var(--c-block-gap, 2.5rem) clamp(2rem, 5cqw, 4rem); max-width: 72rem; margin: 0 auto; }
 .c-foot-col { display: flex; flex-direction: column;
-  gap: var(--cf-link-gap, 0.6em);
-  flex: 1 1 10rem; min-width: 10rem; max-width: 16rem; }
+  gap: var(--cf-link-gap, 0.6em); min-width: 0; }
 .c-foot-col-link { font-family: var(--c-font-body);
   font-size: var(--c-foot-link-size, var(--c-control-size));
   font-weight: var(--c-foot-link-weight, var(--c-body-weight));
@@ -922,13 +932,18 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 /* left CATEGORY RAIL (menu.sidebarTabs) — a vertical tab list beside the column
    groups; inert for brands whose menu carries no rail (no element emitted). */
 .cs-mega-rail { flex: 0 0 15rem; max-width: 15rem;
+  /* provenance: structural — mega-menu category-rail separator hairline (chrome
+     device geometry, not a brand color role) */
   border-right: 1px solid rgba(0,0,0,0.08); padding-right: 1.25rem; }
 .cs-mega-rail ul { list-style: none; margin: 0; padding: 0;
   display: flex; flex-direction: column; gap: 0.25rem; }
 .cs-mega-rail-item { display: flex; align-items: center;
   justify-content: space-between; gap: 0.5rem;
   padding: 0.5rem 0.6rem; border-radius: 8px; font-family: var(--c-font-body);
+  /* provenance: structural — mega-menu utility-list item size (nav chrome density,
+     not a brand type tier) */
   font-size: 14px; font-weight: 500; color: var(--c-ink-muted); }
+/* provenance: structural — mega-menu active-item hover wash (chrome state tint) */
 .cs-mega-rail-item--active { background: rgba(0,0,0,0.05); }
 .cs-mega-rail-chev { opacity: 0.5; }
 .cs-mega-main { flex: 1 1 auto; min-width: 0; display: flex;
@@ -1045,6 +1060,26 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 }
 .cs-nav-lang-item[aria-current] { background: var(--c-ink); color: var(--c-paper); }
 @media (max-width: 991px) { .cs-nav-util { display: none; } }
+/* nav mobile collapse (fact-gated: responsive.nav.collapse) — below the measured 1080px breakpoint the desktop utility + primary rows collapse to a logo + burger mobile bar; the burger is display:none at/above it so desktop is byte-identical. */
+#page-nav .cs-nav-burger { display: none; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; padding: 0; border: 0; background: none; color: currentColor; cursor: pointer; flex: 0 0 auto; }
+#page-nav .cs-nav-burger-box { position: relative; display: block; width: 1.5rem; height: 1rem; }
+#page-nav .cs-nav-burger-line, #page-nav .cs-nav-burger-line::before, #page-nav .cs-nav-burger-line::after { position: absolute; left: 0; width: 100%; height: 2px; background: currentColor; }
+#page-nav .cs-nav-burger-line { top: 50%; transform: translateY(-50%); }
+#page-nav .cs-nav-burger-line::before { content: ""; top: -0.5rem; }
+#page-nav .cs-nav-burger-line::after { content: ""; top: 0.5rem; }
+#page-nav .cs-nav-drawer { display: none; flex-direction: column; gap: 0.25rem; width: 100%; padding: 0.5rem 0; }
+#page-nav .cs-nav-drawer[hidden] { display: none; }
+#page-nav .cs-nav-drawer:not([hidden]) { display: flex; }
+#page-nav .cs-nav-drawer-link { color: currentColor; text-decoration: none; padding: 0.5rem 0; }
+@media (max-width: 1079px) {
+  #page-nav .cs-nav-tier--utility { display: none; }
+  #page-nav .cs-navlinks { display: none; }
+  #page-nav .cs-nav-util { display: none; }
+  #page-nav .cs-nav-actions { display: none; }
+  #page-nav .cs-nav .c-button--navcta { display: none; }
+  #page-nav .cs-nav-burger { display: inline-flex; }
+}
+
 .cs-section { background: var(--c-paper); color: var(--c-ink);
   padding: var(--c-section-pad-top) var(--c-section-pad-x)
            var(--c-section-pad-bottom); }
@@ -1552,6 +1587,8 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   line-height: 1.06em; }
 @media (max-width: 767px) {
   .cs-interlock { grid-template-columns: 1fr; }
+  /* provenance: structural — mobile media recrop ratio (layout geometry, not a
+     brand token; coincidentally equals Remote's landscape aspect) */
   .cs-interlock-media { aspect-ratio: 3 / 2; }
 }
 .cs-media-split { display: grid;
@@ -1578,17 +1615,28 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
    the shared measure by design (a release, not a private containment copy). */
 .cs-ov--bleed .cs-ov-frame { max-width: none; }
 .cs-ov-canvas { position: relative; margin: 0; min-height: calc(48 * var(--baseline)); }
+/* FULL-HEIGHT bleed hero (2026-07): a full-bleed photo hero fills the viewport like
+   the source, not a short wide band. The hero image must COVER this taller canvas —
+   its authored wide aspect-ratio would otherwise pin it to a short strip. */
+.cs-ov--bleed .cs-ov-canvas { min-height: min(90svh, 54rem); }
 .cs-ov-canvas > .c-image, .cs-ov-canvas > .c-image-ph {
   width: 100%; height: 100%; min-height: inherit; object-fit: cover; }
+.cs-ov--bleed .cs-ov-canvas > .c-image { aspect-ratio: auto; height: 100%; }
 /* framed (G4): page margins visible on ALL sides — the frame is an inset canvas other
    slots register against (never edge-to-edge, never a border). */
 .cs-ov-canvas--framed { margin-inline: auto; }
 /* flat surface-toned wash (sanctioned text-on-media mitigation; never a gradient). */
 .cs-ov-scrim { position: absolute; inset: 0; z-index: 1; }
-.cs-ov-onmedia { position: absolute; inset: 0; z-index: 2; display: flex;
+/* z-index 3 (2026-07): the on-media heading must paint ABOVE the cs-ov-scrimband
+   (z-index 2), which is placed AFTER it in the figure and otherwise covered the
+   heading with its dark wash, graying the text out. */
+.cs-ov-onmedia { position: absolute; inset: 0; z-index: 3; display: flex;
   flex-direction: column; align-items: center; justify-content: center;
   gap: var(--c-block-gap); padding: var(--c-section-pad); text-align: center; }
 .cs-ov-onmedia .cs-ov-foot-item { max-width: 46rem; }
+/* hero action row (2026-07): the composed CTA group sits under the lede. */
+.cs-ov-actions { display: flex; flex-wrap: wrap; gap: 1rem;
+  justify-content: center; align-items: center; max-width: none; }
 /* panel-on-media (G1): a SOLID panel floated over the canvas — the sanctioned
    panel-over-media pair. Own opaque surface scope (like the split's .cs-panel), so its
    text never composites against the photograph. Flat: no shadow, no radius. */
@@ -1724,6 +1772,8 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   font-size: var(--type-h4-size, var(--c-heading-size));
   line-height: var(--type-h4-line-height, var(--c-heading-line)); color: var(--c-ink); }
 .cs-testimonial-mark { color: var(--c-accent); font-family: var(--c-font-display);
+  /* provenance: structural — decorative pull-quote glyph scale (a device size
+     ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */
   font-size: clamp(2.5rem, 5cqw, 4rem); line-height: 0.8; margin-bottom: 1rem; }
 .cs-testimonial .c-person { margin-top: var(--space-quote-to-attribution,
   var(--c-block-gap)); }
@@ -2041,6 +2091,12 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 #sec-0 .cs-section { min-height: 100cqh; }
 .cs-module--plate { background: var(--c-panel); color: var(--c-panel-ink);
   --c-ink: var(--c-panel-ink); --c-accent: var(--c-panel-ink);
+  /* re-scope the MUTED ink to the panel too — body/caption text uses
+     --c-ink-muted, not --c-ink; without this a plate that sits after an inverse
+     section kept the surrounding (near-white) muted ink and rendered
+     white-on-white on its own light panel (product-launch text-contrast, 2026-07).
+     Matches the cs-panel / band-panel devices which already re-scope it. */
+  --c-ink-muted: var(--c-panel-ink-muted, var(--c-panel-ink));
   --c-hairline: var(--c-panel-hairline);
   /* plate inset rides the brand's measured panel-padding token when authored
      (fid6 2026-07); the 4-baseline structural default is unchanged without it. */
@@ -2130,6 +2186,12 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   .cs-modules--edgecut > .cs-module { flex-basis: min(86cqw, 24rem); } }
 .cs-module--plate { background: var(--c-panel); color: var(--c-panel-ink);
   --c-ink: var(--c-panel-ink); --c-accent: var(--c-panel-ink);
+  /* re-scope the MUTED ink to the panel too — body/caption text uses
+     --c-ink-muted, not --c-ink; without this a plate that sits after an inverse
+     section kept the surrounding (near-white) muted ink and rendered
+     white-on-white on its own light panel (product-launch text-contrast, 2026-07).
+     Matches the cs-panel / band-panel devices which already re-scope it. */
+  --c-ink-muted: var(--c-panel-ink-muted, var(--c-panel-ink));
   --c-hairline: var(--c-panel-hairline);
   /* plate inset rides the brand's measured panel-padding token when authored
      (fid6 2026-07); the 4-baseline structural default is unchanged without it. */
@@ -3361,7 +3423,7 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   <path d="M16.29 22.43c-.29 0-.58-.11-.81-.33L5.19 11.81c-.45-.45-.45-1.17 0-1.62s1.17-.45 1.62 0l9.48 9.48 9.48-9.48c.45-.45 1.17-.45 1.62 0s.45 1.17 0 1.62L17.1 22.1c-.22.22-.52.33-.81.33"></path>
 </svg></span></button><div class="cs-mega" id="cs-mega-2"><div class="cs-mega-inner"><nav class="cs-mega-rail" aria-label="Categories"><ul><li class="cs-mega-rail-item cs-mega-rail-item--active"><span class="cs-mega-rail-label">By Use Case</span><span class="cs-mega-rail-chev" aria-hidden="true">&rsaquo;</span></li><li class="cs-mega-rail-item"><span class="cs-mega-rail-label">By Team Size</span><span class="cs-mega-rail-chev" aria-hidden="true">&rsaquo;</span></li><li class="cs-mega-rail-item"><span class="cs-mega-rail-label">Why HubSpot?</span><span class="cs-mega-rail-chev" aria-hidden="true">&rsaquo;</span></li></ul></nav><div class="cs-mega-main"><div class="cs-mega-group"><h4 class="cs-mega-head">Marketing</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/generate-leads"><span><span class="cs-mega-link-title">Generate leads</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/automate-marketing"><span><span class="cs-mega-link-title">Automate marketing</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Sales</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/build-sales-pipeline"><span><span class="cs-mega-link-title">Build pipeline</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/close-more-deals"><span><span class="cs-mega-link-title">Close deals</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Customer Service</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/scale-customer-service-support"><span><span class="cs-mega-link-title">Scale support</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/drive-customer-satisfaction"><span><span class="cs-mega-link-title">Drive retention</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Content</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/create-content-for-customer-journey"><span><span class="cs-mega-link-title">Create content</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/manage-content"><span><span class="cs-mega-link-title">Manage content</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Startups &amp; Small Businesses</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/find-and-reach-customers"><span><span class="cs-mega-link-title">Find and reach customers</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/grow-sales-and-get-paid-faster"><span><span class="cs-mega-link-title">Grow sales and get paid</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/understand-and-organize-customer-data"><span><span class="cs-mega-link-title">Organize customer data</span></span></a></li></ul></div></div><div class="cs-mega-aside"><div class="cs-mega-group"><h4 class="cs-mega-head">AI Agents</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/products/artificial-intelligence/ai-customer-service-agent"><span><span class="cs-mega-link-title">Resolve customer queries 24/7</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/products/sales/ai-prospecting-agent"><span><span class="cs-mega-link-title">Automate sales prospecting</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/products/artificial-intelligence/ai-data-agent"><span><span class="cs-mega-link-title">Research customers faster</span></span></a></li></ul></div></div></div></div></span> <a class="c-arrow-link" href="https://www.hubspot.com/pricing" style="gap:0">Pricing</a> <span class="cs-nav-tab"><button type="button" class="c-arrow-link cs-nav-trigger" aria-expanded="false" aria-controls="cs-mega-4" style="gap:0">Resources<span class="cs-nav-chev" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
   <path d="M16.29 22.43c-.29 0-.58-.11-.81-.33L5.19 11.81c-.45-.45-.45-1.17 0-1.62s1.17-.45 1.62 0l9.48 9.48 9.48-9.48c.45-.45 1.17-.45 1.62 0s.45 1.17 0 1.62L17.1 22.1c-.22.22-.52.33-.81.33"></path>
-</svg></span></button><div class="cs-mega" id="cs-mega-4"><div class="cs-mega-inner"><div class="cs-mega-main"><div class="cs-mega-group"><h4 class="cs-mega-head">Featured Links</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/spotlight"><span><span class="cs-mega-link-title">Spotlight: Product Updates</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/new"><span><span class="cs-mega-link-title">What&#x27;s New in HubSpot</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/why-choose-hubspot"><span><span class="cs-mega-link-title">Why Choose HubSpot?</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/sustainability"><span><span class="cs-mega-link-title">Sustainability</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Community &amp; Events</h4><ul><li><a class="cs-mega-link" href="https://www.inbound.com/"><span><span class="cs-mega-link-title">INBOUND Event</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/resources/webinar"><span><span class="cs-mega-link-title">Webinars</span></span></a></li><li><a class="cs-mega-link" href="https://community.hubspot.com/"><span><span class="cs-mega-link-title">HubSpot Community</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/hubspot-user-groups"><span><span class="cs-mega-link-title">HubSpot User Groups</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Partners</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/partners/solutions"><span><span class="cs-mega-link-title">Solutions Partner Program</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/partners/app"><span><span class="cs-mega-link-title">Technology Partner Program</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/partners/affiliates"><span><span class="cs-mega-link-title">Affiliate Partner Program</span></span></a></li><li><a class="cs-mega-link" href="https://academy.hubspot.com/education-partner-program"><span><span class="cs-mega-link-title">Education Partner Program</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/startups/partners"><span><span class="cs-mega-link-title">Startup Partner Program</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Education</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/loop-marketing"><span><span class="cs-mega-link-title">The Loop Marketing Playbook</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/inbound-marketing"><span><span class="cs-mega-link-title">What Is Inbound Marketing?</span></span></a></li><li><a class="cs-mega-link" href="https://blog.hubspot.com/"><span><span class="cs-mega-link-title">HubSpot Blogs</span></span></a></li><li><a class="cs-mega-link" href="https://academy.hubspot.com/"><span><span class="cs-mega-link-title">Free Courses &amp; Certifications</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/resources"><span><span class="cs-mega-link-title">Ebooks, Guides &amp; More</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Tools &amp; Services</h4><ul><li><a class="cs-mega-link" href="https://ecosystem.hubspot.com/marketplace/templates"><span><span class="cs-mega-link-title">Website Templates</span></span></a></li><li><a class="cs-mega-link" href="https://developers.hubspot.com/"><span><span class="cs-mega-link-title">Developer Tools</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/services/onboarding"><span><span class="cs-mega-link-title">Onboarding</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/services/premium-support"><span><span class="cs-mega-link-title">Premium Support</span></span></a></li><li><a class="cs-mega-link" href="https://ecosystem.hubspot.com/marketplace/solutions"><span><span class="cs-mega-link-title">Hire a Solutions Partner</span></span></a></li></ul></div></div></div></div></span></span><span class="cs-nav-actions"><a class="c-button c-button--navcta" role="button" style="--navcta-bg: rgb(255, 72, 0); --navcta-ink: rgb(255, 255, 255); --navcta-radius: 8px; --navcta-height: 42px; --navcta-pad-x: 16px; --navcta-size: 14px" href="https://offers.hubspot.com/crm-platform-demo">Get a demo</a><a class="c-button c-button--navcta" role="button" style="--navcta-bg: rgb(255, 255, 255); --navcta-ink: rgb(255, 72, 0); --navcta-border: 2px solid rgb(255, 72, 0); --navcta-radius: 8px; --navcta-height: 42px; --navcta-pad-x: 16px; --navcta-size: 14px" href="https://app.hubspot.com/signup-hubspot/crm">Get started free</a></span></div></nav>
+</svg></span></button><div class="cs-mega" id="cs-mega-4"><div class="cs-mega-inner"><div class="cs-mega-main"><div class="cs-mega-group"><h4 class="cs-mega-head">Featured Links</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/spotlight"><span><span class="cs-mega-link-title">Spotlight: Product Updates</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/new"><span><span class="cs-mega-link-title">What&#x27;s New in HubSpot</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/why-choose-hubspot"><span><span class="cs-mega-link-title">Why Choose HubSpot?</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/sustainability"><span><span class="cs-mega-link-title">Sustainability</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Community &amp; Events</h4><ul><li><a class="cs-mega-link" href="https://www.inbound.com/"><span><span class="cs-mega-link-title">INBOUND Event</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/resources/webinar"><span><span class="cs-mega-link-title">Webinars</span></span></a></li><li><a class="cs-mega-link" href="https://community.hubspot.com/"><span><span class="cs-mega-link-title">HubSpot Community</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/hubspot-user-groups"><span><span class="cs-mega-link-title">HubSpot User Groups</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Partners</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/partners/solutions"><span><span class="cs-mega-link-title">Solutions Partner Program</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/partners/app"><span><span class="cs-mega-link-title">Technology Partner Program</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/partners/affiliates"><span><span class="cs-mega-link-title">Affiliate Partner Program</span></span></a></li><li><a class="cs-mega-link" href="https://academy.hubspot.com/education-partner-program"><span><span class="cs-mega-link-title">Education Partner Program</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/startups/partners"><span><span class="cs-mega-link-title">Startup Partner Program</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Education</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/loop-marketing"><span><span class="cs-mega-link-title">The Loop Marketing Playbook</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/inbound-marketing"><span><span class="cs-mega-link-title">What Is Inbound Marketing?</span></span></a></li><li><a class="cs-mega-link" href="https://blog.hubspot.com/"><span><span class="cs-mega-link-title">HubSpot Blogs</span></span></a></li><li><a class="cs-mega-link" href="https://academy.hubspot.com/"><span><span class="cs-mega-link-title">Free Courses &amp; Certifications</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/resources"><span><span class="cs-mega-link-title">Ebooks, Guides &amp; More</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Tools &amp; Services</h4><ul><li><a class="cs-mega-link" href="https://ecosystem.hubspot.com/marketplace/templates"><span><span class="cs-mega-link-title">Website Templates</span></span></a></li><li><a class="cs-mega-link" href="https://developers.hubspot.com/"><span><span class="cs-mega-link-title">Developer Tools</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/services/onboarding"><span><span class="cs-mega-link-title">Onboarding</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/services/premium-support"><span><span class="cs-mega-link-title">Premium Support</span></span></a></li><li><a class="cs-mega-link" href="https://ecosystem.hubspot.com/marketplace/solutions"><span><span class="cs-mega-link-title">Hire a Solutions Partner</span></span></a></li></ul></div></div></div></div></span></span><span class="cs-nav-actions"><a class="c-button c-button--navcta" role="button" style="--navcta-bg: rgb(255, 72, 0); --navcta-ink: rgb(255, 255, 255); --navcta-radius: 8px; --navcta-height: 42px; --navcta-pad-x: 16px; --navcta-size: 14px" href="https://offers.hubspot.com/crm-platform-demo">Get a demo</a><a class="c-button c-button--navcta" role="button" style="--navcta-bg: rgb(255, 255, 255); --navcta-ink: rgb(255, 72, 0); --navcta-border: 2px solid rgb(255, 72, 0); --navcta-radius: 8px; --navcta-height: 42px; --navcta-pad-x: 16px; --navcta-size: 14px" href="https://app.hubspot.com/signup-hubspot/crm">Get started free</a></span><button type="button" class="cs-nav-burger" aria-label="Menu" aria-expanded="false" aria-controls="cs-nav-drawer"><span class="cs-nav-burger-box" aria-hidden="true"><span class="cs-nav-burger-line"></span></span></button></div><div id="cs-nav-drawer" class="cs-nav-drawer" hidden><a class="cs-nav-drawer-link" href="#">Products</a><a class="cs-nav-drawer-link" href="#">Solutions</a><a class="cs-nav-drawer-link" href="https://www.hubspot.com/pricing">Pricing</a><a class="cs-nav-drawer-link" href="#">Resources</a><a class="cs-nav-drawer-link" href="#">English</a><a class="cs-nav-drawer-link" href="#">High Contrast</a><a class="cs-nav-drawer-link" href="https://help.hubspot.com/">Customer Support</a><a class="cs-nav-drawer-link" href="https://offers.hubspot.com/contact-sales">Contact Sales</a><a class="cs-nav-drawer-link" href="https://app.hubspot.com/login">Log in</a><a class="cs-nav-drawer-link" href="#">About</a><a class="cs-nav-drawer-link" href="#">Search</a></div></nav>
 </div>
 <div id="sec-0" class="cs-surface" data-layout="hero" data-surface="surface/photo-hero" data-pattern="hero-photo-overlay" data-pattern-lib="project" data-pattern-match="ref" data-align="centered" data-align-source="section">
 <section class="cs-section cs-hero-layered cs-hero-layered--flat" style="--c-section-pad-top: 11rem; --c-section-pad-bottom: 11rem; --c-eyebrow-gap: 0.625rem; --c-block-gap: 1.75rem; --cs-hero-foot-gap: 2.75rem; --cs-stack-measure: 49rem;">
@@ -3878,6 +3940,28 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
     if (next) next.addEventListener('click', function () { show(current + 1); });
     dots.forEach(function (d, j) {
       d.addEventListener('click', function () { show(j); });
+    });
+  });
+  /* mobile nav burger (nav responsive collapse): the disclosure control shown below
+     the measured breakpoint toggles the mobile drawer ([hidden] flips) and mirrors
+     aria-expanded; Escape closes and restores focus. CSS-only fallback: with JS off
+     the burger still shows (no overflow) and the drawer stays closed. */
+  document.querySelectorAll('.cs-nav-burger').forEach(function (btn) {
+    var drawer = document.getElementById(btn.getAttribute('aria-controls') || '');
+    if (!drawer) return;
+    var set = function (open) {
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) { drawer.removeAttribute('hidden'); } else { drawer.hidden = true; }
+    };
+    btn.addEventListener('click', function () {
+      set(btn.getAttribute('aria-expanded') !== 'true');
+    });
+    btn.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (btn.getAttribute('aria-expanded') === 'true') { set(false); btn.focus(); }
+    });
+    drawer.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { set(false); btn.focus(); }
     });
   });
   /* Image placeholder lifecycle (AS-23): attribute absent = unresolved/loading,

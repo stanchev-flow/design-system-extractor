@@ -2231,10 +2231,21 @@ declared span does not render full-row, or when asymmetry has no counterweight.
 ## AS-78 — Circle integrity
 
 **Rule**: a component declared round/circular is icon-, image-, or avatar-only and
-computes approximately square. Text-bearing controls use a pill/capsule family;
-`border-radius: 50%` on a non-square text host is a hard failure. Hover, pressed,
-focus rings, and pseudo layers preserve the host aspect and radius without
-changing layout geometry.
+computes approximately square, and its single glyph/icon is optically CENTERED
+(flex-centered — an off-center `→`/chevron is the round-button glyph defect).
+Text-bearing controls use a pill/capsule family; `border-radius: 50%` on a
+non-square text host is a hard failure. Hover, pressed, focus rings, and pseudo
+layers preserve the host aspect and radius without changing layout geometry.
+
+**Coverage (fix4 2026-07)**: the audit inspects the DECLARED round families
+(`data-control-shape="round"` / `.c-button--round` / `.btnf-round`) AND the
+structural composed-page round chrome the composers draw — edge-cut and
+panel-carousel paddles + the autoplay pause, and the active-item circle-arrow go
+affordance (`.cs-edgecut-arrow`, `.cs-panelcar-arrow`, `.cs-edgecut-pause`,
+`.c-acc-go`). Glyph centering tolerance scales with the control (max(2px, 12% of
+the diameter)), so hairline sub-pixel drift is fine but a mis-set line box or a
+non-flex host that shoves the glyph is caught. Analyzer-only — no rendered bytes
+move, so measured-centered brands (v2/remote/v3) stay byte-identical and pass.
 
 **Why it happens**: a renderer reuses the normal CTA label inside a circular
 carousel family. The text expands the host horizontally while the percentage
@@ -2440,6 +2451,39 @@ value the composer chose not to use is not a defect. Surfaced as advisory rows b
 on a silent drop; writes `fact-consumption-audit.{json,md}` beside the render). Tests:
 `brand_pipeline/tests/test_fact_consumption_audit.py` (merge parity, factless byte-identity,
 planted consumed/unconsumed facts, honored exclusions).
+
+---
+
+## AS-84 — One measured copy string bound to two roles in one section
+
+**Rule**: a single MEASURED copy string must render at most ONCE within a section — it must
+not appear in two roles (e.g. as a microlabel/eyebrow ABOVE the heading AND again as a
+dek/subhead BELOW it). Each measured string owns one slot; a section header reads
+eyebrow → heading → body, with distinct copy per rung.
+
+**Why it happens**: a section-header composer has more text SLOTS (headrail/kicker + heading
++ body) than the brand authored distinct strings for, and an unclassified rail/kicker slot
+falls through to the generic paragraph/body branch — so the body copy is emitted a second
+time as the rail's text while the real microlabel (`eyebrow`/kicker copy) never binds. The
+duplicated line reads as obvious AI slop (the same sentence twice, once small-above and once
+small-below the H2).
+
+**Caught here**: hubspot-v3 `headrail-two-col-header` (proof band, `#sec-6`) rendered
+"Scale your business with HubSpot. The proof is in our customers' success." TWICE — once
+above the H2 "Remarkable results for every size business." and once below — while the
+authored `eyebrow: Case Studies` never appeared. Root cause: the demo-section builder
+(`render_components_preview._demo_section_for_pattern`) classified the `headrail`/kicker slot
+as a body `paragraph` (the final `else`) instead of the eyebrow register, so the body string
+bound to two slots. Fixed at TWO levels: (1) a headrail/kicker slot now classifies as an
+`eyebrow` (binds the microlabel register, never the body); (2) a brand-agnostic single-voice
+guard in the flow composer (`compose_section` generic-flow) drops any later text row whose
+visible copy exactly repeats an earlier text row in the same section.
+
+**Verify**: the flow composer normalizes each text row's visible copy
+(`eyebrow`/`heading`/`header`/`paragraph`/`caption`) and keeps only the first occurrence per
+section (reading order); media/logo/stat rows are exempt (repeat marks + numbers are
+legitimate). Regression pin: a section whose copy binds the same string to two text slots
+emits that string once. Brand-agnostic: reads only the section's own composed copy.
 
 ---
 

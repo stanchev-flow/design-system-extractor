@@ -709,12 +709,19 @@ GENERATION_UNSAFE_FAMILIES: dict[str, str] = {
     "hero": ("hero heightRule (absolute viewport band height) + headingSizeLadder "
              "(absolute source h1 font-size shrink) pin the SOURCE's register; a composed "
              "hero uses its own type/height scale, so the source's absolute values "
-             "mis-size it (AS-16 register overlap). Geometry-bearing, unlike chrome facts."),
-    "headings": ("source heading line-heights are measured against the SOURCE's heading "
-                 "register; correcting a composed page's larger h2 to the source ratio is a "
-                 "register the composed type scale did not choose. AS-82 made line-height "
-                 "unitless (no frozen-px overlap) so this is now a candidate for the queued "
-                 "generation-path batch — driven by the AS-83 audit, not merged here."),
+             "mis-size it (AS-16 register overlap). Geometry-bearing, unlike chrome facts. "
+             "The generation hero composers (hero-product-canvas-panel etc.) do NOT consume "
+             "this block — a composed hero's MEASURED alignment (e.g. full-bleed-photo-hero "
+             "= centered) is inherited from its layout-library archetype, not this fact — so "
+             "promoting hero would only manufacture an AS-83 captured-but-unconsumed drop "
+             "(fix2 2026-07: verified empirically; hero stays excluded until a generation "
+             "hero composer consumes it)."),
+    # headings PROMOTED into generation (fix2 2026-07): AS-82 made heading line-height render
+    # UNITLESS (a ratio, not an absolute px box), so merging the source's measured heading
+    # line-heights into a composed page no longer freezes a larger composed h2/h3 at the
+    # source's px box (the AS-16 register-overlap risk is gone). The heading register fact is
+    # now CONSUMED on generated pages (component_render.heading_responsive_css marker), giving
+    # composed headings the source's correct measured line-height register.
 }
 
 # The merge targets. ``replica`` is source-register faithful (merges everything);

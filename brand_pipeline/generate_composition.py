@@ -107,6 +107,17 @@ def load_brand(brand_yaml_path: Path | str) -> dict:
     return yaml.safe_load(p.read_text()) or {}
 
 
+def _brand_essence(doc: dict) -> str:
+    """The brand's one-paragraph identity thesis (`brand.snapshot`, brand-schema
+    §1010), unwrapped from its rule-envelope. "" when absent — the caller then
+    omits the essence block so the prompt stays byte-identical to the pre-essence
+    assembly (same fact-gating contract as the pass-1 facts block)."""
+    snap = (doc.get("brand") or {}).get("snapshot")
+    if isinstance(snap, dict):
+        snap = snap.get("value")
+    return " ".join(str(snap).split()) if snap else ""
+
+
 def _load_yaml(path: Path) -> dict:
     if not path.exists():
         return {}
@@ -884,6 +895,19 @@ def build_prompt(brief_text: str, brand_yaml_path: Path | str, style_id: str,
     p1_block = pass1_facts_block(doc, Path(brand_yaml_path).parent)
     pass1_section = f"\n{p1_block}\n" if p1_block else ""
 
+    # 0. BRAND ESSENCE — the one-line identity anchor LEADS the prompt so the model
+    # composes toward the brand's look first (Claude-distillation #1). Prose FRAMING
+    # only: brand neverDo + the gate battery still rank hardest (precedence is stated
+    # below). Fact-gated: no snapshot → "" → prompt byte-identical to the pre-essence
+    # assembly.
+    essence = _brand_essence(doc)
+    essence_block = (
+        "## Brand essence (rebuild the look from THIS first)\n"
+        f"{essence}\n"
+        "This frames the target identity; it never outranks brand neverDo or the "
+        "gate battery.\n\n"
+    ) if essence else ""
+
     system = f"""# SYSTEM — Composition generator ({facts['name'] or 'brand'} · style {style_id})
 
 You author a page as a STRUCTURED `composition.v1` object (see the schema contract at the
@@ -891,7 +915,7 @@ end). You NEVER write HTML/CSS and NEVER re-author a primitive: a deterministic 
 draws your object and an on-brand gate validates it. Arrange the vocabulary well; obey the
 three-tier precedence (base-style invariants → composition-rules → brand neverDo HARD).
 
-## Composition grammar (universal)
+{essence_block}## Composition grammar (universal)
 {grammar}
 
 {_expansion_capability_block(off_grid_expansion)}

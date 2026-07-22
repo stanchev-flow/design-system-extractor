@@ -22,6 +22,17 @@
 | sec-9 | closing-cta — Global employment is hard. We built the infrastructure to do it right. | **0.953** | 0.952 | 0.934 | 0.986 | 0.579 | 440px | 434px | [side-by-side](diff/sec-9.png) |
 | footer | footer (closing bookend) | **0.962** | 0.969 | 0.956 | 0.952 | 0.992 | 869px | 913px | [side-by-side](diff/footer.png) |
 
+## Multi-viewport replica gate (Phase 5)
+
+Desktop **fidelity** (the `overall` above) is scored against the source full-page screenshot, captured at the primary viewport only. The other viewports have no source shot to diff against, so they record a **responsiveness-health** number instead (1.0 = no horizontal overflow, every band present, reflow intact) — responsiveness is *verified*, not a faked cross-viewport SSIM.
+
+| viewport | role | health | overflow px | bands | hero h | footer cols | doc h | shot |
+|---|---|---|---|---|---|---|---|---|
+| 1440 | primary (fidelity) | 1.0 | 0 | 12 | 689px | 7 | 7288px | `replica-fullpage-1440.png` |
+| 1920 | responsiveness | 1.0 | 0 | 12 | 884px | 7 | 7782px | `replica-fullpage-1920.png` |
+| 960 | responsiveness | 0.7417 | 124 (`cs-marquee-track`) | 12 | 604px | 6 | 7863px | `replica-fullpage-960.png` |
+| 375 | responsiveness | 0.5 | 654 (`cs-marquee-track`) | 12 | 994px | 6 | 10070px | `replica-fullpage-375.png` |
+
 ![strip](diff/strip.png)
 
 ## Renderer-gap punch list

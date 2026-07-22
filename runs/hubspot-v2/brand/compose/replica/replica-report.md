@@ -2,10 +2,10 @@
 
 - brand: **HubSpot**
 - source screenshot: `/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot-fullpage.png`
-- replica page: `index.html` → `replica-fullpage.png` (doc 6985px vs source 6986px)
+- replica page: `index.html` → `replica-fullpage.png` (doc 6947px vs source 6986px)
 - metric: score = 0.5·structure + 0.3·pixel + 0.2·height (Pillow RGB MAE; structure at 64px, pixel at 720px)
 - `width` = content-span ratio (diagnostic, not in score): detected content width fraction of each band, min/max ratio — catches centered stacks collapsed to a fraction of the source's content width, which the averaged pixel metric barely registers
-- **overall score (height-weighted): 0.957**
+- **overall score (height-weighted): 0.956**
 
 | band | source section | score | structure | pixel | height | width | src h | replica h | crops |
 |---|---|---|---|---|---|---|---|---|---|
@@ -21,7 +21,18 @@
 | sec-7 | testimonial-tabs — section-7 | **0.961** | 0.960 | 0.944 | 0.990 | 0.842 | 714px | 707px | [side-by-side](diff/sec-7.png) |
 | sec-8 | badge-row — Voted #1 in 526 G2 Reports | **0.950** | 0.968 | 0.954 | 0.900 | 0.944 | 216px | 240px | [side-by-side](diff/sec-8.png) |
 | sec-9 | closing-cta — Make impossible growth feel impossibly easy, with HubSpot | **0.973** | 0.978 | 0.960 | 0.979 | 0.568 | 335px | 328px | [side-by-side](diff/sec-9.png) |
-| footer | footer (closing bookend) | **0.966** | 0.981 | 0.971 | 0.924 | 0.971 | 656px | 606px | [side-by-side](diff/footer.png) |
+| footer | footer (closing bookend) | **0.954** | 0.981 | 0.970 | 0.866 | 0.967 | 656px | 568px | [side-by-side](diff/footer.png) |
+
+## Multi-viewport replica gate (Phase 5)
+
+Desktop **fidelity** (the `overall` above) is scored against the source full-page screenshot, captured at the primary viewport only. The other viewports have no source shot to diff against, so they record a **responsiveness-health** number instead (1.0 = no horizontal overflow, every band present, reflow intact) — responsiveness is *verified*, not a faked cross-viewport SSIM.
+
+| viewport | role | health | overflow px | bands | hero h | footer cols | doc h | shot |
+|---|---|---|---|---|---|---|---|---|
+| 1440 | primary (fidelity) | 1.0 | 0 | 12 | 750px | 5 | 6947px | `replica-fullpage-1440.png` |
+| 1920 | responsiveness | 1.0 | 0 | 12 | 750px | 5 | 6947px | `replica-fullpage-1920.png` |
+| 960 | responsiveness | 0.9833 | 8 (`cs-module cs-module--plate cs-module--anatomy`) | 12 | 750px | 5 | 7380px | `replica-fullpage-960.png` |
+| 375 | responsiveness | 0.5 | 573 (`cs-edgecut`) | 12 | 861px | 5 | 10507px | `replica-fullpage-375.png` |
 
 ![strip](diff/strip.png)
 

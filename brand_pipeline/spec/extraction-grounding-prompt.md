@@ -8,6 +8,12 @@
 
 Design intent (repo conventions this prompt encodes):
 
+- **Show-before-build contract.** This grounding is the FIRST stage of a fixed
+  order — evidence → author → validate → render. Every fact a later build/compose
+  step consumes must first be surfaced here (or in the canonical files authored
+  from here) with provenance; a build step never introduces a value that was not
+  shown in capture. Report the fact when the crop shows it; record the gap when it
+  does not — never let a downstream step invent the value silently.
 - **Detailed factual inventory, not an evidence summary.** Approximate hex/rgb
   values, concrete typography, component anatomy, and parent/child surface
   relationships are the dominant output — never "local only / low confidence"
@@ -49,6 +55,9 @@ wins: approximate values are required, vagueness is a defect.
 
 Rules:
 
+- **Sample, don't invent.** Every value you report is READ from this crop. When a
+  value is not legible in the crop, mark it estimated (`~`) or record the gap in
+  `notes` — never fabricate a value to fill a field.
 - Report only what is VISIBLE in this crop. No hover states, no responsive
   guesses, no hidden content, no business commentary. The crop may be compressed
   or cut at its edges — note truncation in `notes` instead of inventing.
@@ -91,6 +100,9 @@ surfaces:
     parent: <role of the surface it sits on, or page>
     radiusPx: <n or 0>
     borderApprox: <"1px #rrggbb" or none>
+    shadowApprox: <"soft drop, ~0 8px 24px rgba(0,0,0,.12)" or none>   # visible
+      # elevation on THIS surface — feeds the tokens.shadow elevation scale. `none`
+      # is a real fact (flat brand); omit only when the crop cannot resolve it.
     inkApprox: "#rrggbb"          # dominant text color ON this surface
 typography:
   - role: <display|h1|h2|h3|eyebrow|body|caption|control-label|footer-link|nav-link>
@@ -121,6 +133,14 @@ components:
     surfaceApprox: "#rrggbb or transparent"
     inkApprox: "#rrggbb"
     caseTreatment: sentence|upper|title
+    stateVisible: idle|hover|active|pressed|focus|disabled|open|expanded|current
+      # OMIT when the crop shows the resting/idle control. Record the NON-IDLE
+      # state ONLY when the still frame actually caught it — an open accordion row,
+      # the active/current tab or carousel slide, a selected pill, a greyed/disabled
+      # field, a control mid-hover. This is the still-frame half of the exhaustive
+      # state census; the full hover/active/pressed/disabled enumeration is authored
+      # downstream from css-facts.json (never guessed from a still). Never invent a
+      # state the crop does not show.
 copy:
   eyebrow: <verbatim or null>
   heading: <verbatim or null>
@@ -185,6 +205,13 @@ chrome:            # ONLY for navbar/footer sections, else omit entirely
   surfaceApprox: "#rrggbb"
   linkTreatment: <e.g. "14px #383a3d, darken+underline available cues visible">
   ctaTreatment: <e.g. "near-black filled pill, hugging content">
+  mobileTrigger: <navbar only; OMIT if not visible: the collapsed-nav affordance
+    when the crop shows one — "hamburger glyph, 3 bars, top-right" / "MENU text
+    label". Feeds the navbar.mobile drawer contract authored downstream.>
+  localeSelector: <navbar/footer; OMIT if none: a language/region control visible in
+    this chrome — "globe icon + 'EN' chevron, trailing cluster" / "'United States /
+    English' dropdown link". Report the visible label + affordance generically; feeds
+    the navbar.utility / footer.localeSelector slot downstream.>
 componentAnatomies:   # OMIT when the crop shows none. Named multi-slot component
   # RUNS that read as reusable house devices — especially the run that OPENS the
   # section (kicker/eyebrow devices, leader rules, trailing quiet CTAs) and any
@@ -205,7 +232,11 @@ motionHints: [ <motion AFFORDANCES the still frame betrays — report every one 
   expand), arrow-in-pill icons beside CTA labels (hover icon-slide affordance),
   stacked cards with peeking edges (swipe/drag), play buttons or video stills
   (embedded motion). Name the affordance generically — never invent timings; the
-  CSS motion audit owns durations/easings.> ]
+  CSS motion audit owns durations/easings. For a carousel/slider specifically, the
+  visible CONTROL affordances (arrows present, pagination dots present, a slide
+  cropped mid-track that betrays autoplay) feed the STRUCTURED `carousel:` recipe
+  the Layout Analyst authors downstream (brand-schema §10.3g) — report each control
+  you can see; the interval/easing come from the JS timing audit, not this frame.> ]
 confidence: high|medium|low
 notes: [ <truncation, ambiguity, cross-crop references — short factual strings> ]
 ```

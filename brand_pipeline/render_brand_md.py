@@ -129,6 +129,66 @@ def _slot_component(slot, layout) -> str:
     return ", ".join(comps)
 
 
+def _signature_rows(doc: dict) -> list[tuple[str, str, str]]:
+    """Project brand.yaml `signatures:` (brand-schema §4.7) into human-readable
+    (tag, claim, kind) rows. Handles BOTH the structured dict shape
+    (id/kind/mode/claim) and the legacy plain-string shape. Pure projection: it
+    only surfaces entries that already carry a claim — a brand with weak/absent
+    signatures shows fewer rows (an extraction gap the C25 advisory owns), never
+    an invented rule."""
+    rows: list[tuple[str, str, str]] = []
+    for sig in (doc.get("signatures") or []):
+        if isinstance(sig, dict):
+            claim = " ".join(str(sig.get("claim") or "").split())
+            if not claim:
+                continue
+            mode = sig.get("mode")
+            tag = f"[{mode}] " if mode in ("always", "never") else ""
+            kind = str(sig.get("kind") or "").strip()
+            rows.append((tag, claim, kind))
+        elif isinstance(sig, str) and sig.strip():
+            rows.append(("", " ".join(sig.split()), ""))
+    return rows
+
+
+def _confidence_of(entry) -> str | None:
+    """Tolerant confidence read: the entry's own `confidence`, else its
+    `provenance.confidence` envelope. Brand-agnostic."""
+    if not isinstance(entry, dict):
+        return None
+    if entry.get("confidence"):
+        return entry["confidence"]
+    prov = entry.get("provenance")
+    if isinstance(prov, dict) and prov.get("confidence"):
+        return prov["confidence"]
+    return None
+
+
+def _is_assumed(entry) -> bool:
+    """An entry is `assumed` (designed/inferred) when it is authored rather than
+    measured (`origin: designed`) or carries low/medium confidence."""
+    if not isinstance(entry, dict):
+        return False
+    if entry.get("origin") == "designed":
+        return True
+    return _confidence_of(entry) in ("low", "medium")
+
+
+def _load_media_assets(brand_dir) -> dict:
+    """Parsed sibling media-assets.yaml, or {} (absent/invalid). Read-only."""
+    if not brand_dir:
+        return {}
+    from pathlib import Path as _P
+    path = _P(brand_dir) / "media-assets.yaml"
+    if not path.exists():
+        return {}
+    try:
+        data = yaml.safe_load(path.read_text())
+    except Exception:  # pragma: no cover - defensive
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
 def render(doc: dict, brand_dir=None) -> str:
     b = doc.get("brand", {})
     name = b.get("name", "Brand")
@@ -151,6 +211,23 @@ def render(doc: dict, brand_dir=None) -> str:
     snap = _val(b.get("snapshot", "")).strip()
     w(f"{name} is {snap[0].lower() + snap[1:] if snap else ''}")
     w("")
+
+    # Signature moves — the human half of the machine-checkable `signatures:`
+    # (brand-schema §4.7). Invariant-first ordering: the 3-5 recognizable moves
+    # that carry the look lead the document. Pure projection of `signatures:`
+    # claims (NOT a parallel 5-rules structure); the signature_check gate verifies
+    # each. Fact-gated: a brand with no signatures omits the section entirely.
+    sig_rows = _signature_rows(doc)
+    if sig_rows:
+        w("## Signature moves — the rules that carry the look")
+        w("")
+        w("The recognizable moves that make this brand identifiable, projected from "
+          "`brand.yaml` `signatures:` (each is a machine-checkable claim the "
+          "`signature_check` gate verifies). Rebuild the look from these first.")
+        w("")
+        for tag, claim, kind in sig_rows:
+            w(f"- {tag}{claim}" + (f" _({kind})_" if kind else ""))
+        w("")
 
     # 2. Surface grammar
     sg = doc.get("surfaceGrammar", {})
@@ -378,28 +455,101 @@ def render(doc: dict, brand_dir=None) -> str:
         w(f"- `{k}`: {_val(v)}")
     w("")
 
-    # 15. Confidence flags
-    flags: list[str] = []
+    # 15. Provenance & confidence ledger — the four honest buckets (sampled /
+    # assumed / substitute / needs-licensing). CRUCIAL FRAMING: every asset and
+    # value below is RENDERED. The buckets annotate HOW a fact was obtained and
+    # where a production swap may later be needed — a flag is metadata on an asset
+    # we still render, NEVER a replacement, substitution, or omission.
+    assumed: list[str] = []
     if _is_low(b.get("snapshot")):
-        flags.append("brand snapshot")
+        assumed.append("brand snapshot: designed/interpreted thesis")
     for d in ("variance", "motion", "density"):
         if d in dials and _is_low(dials[d]):
             cl = dials[d].get("changelog") or [{}]
             note = cl[-1].get("note", "") if cl else ""
-            flags.append(f"{d.upper()} dial: {dials[d].get('confidence')} confidence"
-                         + (f" - {note}" if note else ""))
+            assumed.append(f"{d.upper()} dial: {dials[d].get('confidence')} confidence"
+                           + (f" - {note}" if note else ""))
     for rule in doc.get("compositionRules", []):
         if _is_low(rule):
-            flags.append(f"{rule['id']}: {rule.get('confidence')} confidence")
+            assumed.append(f"{rule['id']}: {rule.get('confidence')} confidence")
     for lay in doc.get("layouts", []):
         if lay.get("confidence") in ("low", "medium"):
-            flags.append(f"layout {lay['id']}: {lay['confidence']} confidence")
-    w("## 15. Confidence flags")
-    if flags:
-        for f in flags:
-            w(f"- {f}")
+            assumed.append(f"layout {lay['id']}: {lay['confidence']} confidence")
+    # Designed primitives/blocks are structural contract defaults — summarize as
+    # counts (not one line each) so the ledger stays a signal, not a re-dump of §12.
+    for _label, _map in (("primitive", prims), ("block", blks)):
+        n_designed = sum(1 for _, e in _origin_items(_map) if e.get("origin") == "designed")
+        if n_designed:
+            assumed.append(f"{n_designed} {_label}(s): designed contract defaults "
+                           "(overridable; see §12)")
+
+    # Sampled: token families whose provenance is measured/extracted (i.e. not
+    # designed and not low/medium confidence). Counts, so the ledger stays a
+    # summary rather than a re-dump of §3–§5.
+    def _sampled(mapping) -> int:
+        return sum(1 for v in (mapping or {}).values()
+                   if isinstance(v, dict) and not _is_assumed(v))
+
+    n_colors, n_types, n_spacing = _sampled(colors), _sampled(types), _sampled(spacing)
+
+    # Substitute: type roles carrying a `renderProxy`, grouped by (family, proxy)
+    # pair. The REAL family is still named + loaded; the proxy is only the fallback
+    # (unlike a substitute-by-default posture, where only the proxy would render).
+    substitute: dict[tuple, list[str]] = {}
+    for role, t in (types or {}).items():
+        if isinstance(t, dict) and t.get("renderProxy"):
+            substitute.setdefault((t.get("family"), t.get("renderProxy")), []).append(role)
+
+    # Needs-licensing: media-assets.yaml assets flagged as third-party marks, plus
+    # own logos. All are RENDERED as captured and flagged for a later licensed swap.
+    media = _load_media_assets(brand_dir)
+    third_party, own_logos = [], []
+    for a in (media.get("assets") or []):
+        if not isinstance(a, dict):
+            continue
+        kind = str((a.get("assetSemantics") or {}).get("kind") or "")
+        aid = str(a.get("id") or a.get("file") or "?")
+        if a.get("usageRights") == "third-party-mark":
+            third_party.append(aid)
+        elif kind.startswith("logo"):
+            own_logos.append(aid)
+
+    w("## 15. Provenance & confidence ledger")
+    w("")
+    w("Every asset and value below is **rendered**. These four buckets annotate how "
+      "each fact was obtained and where a production swap may later be needed — a "
+      "flag is never a replacement, substitution, or omission.")
+    w("")
+    w("**Sampled (measured / extracted from source).** "
+      f"{n_colors} color tokens, {n_types} type roles, {n_spacing} spacing steps carry "
+      "evidence-backed provenance (see §3-§5).")
+    w("")
+    w("**Assumed (designed or inferred — flagged, still rendered).**")
+    if assumed:
+        for a in assumed:
+            w(f"- {a}")
     else:
         w("- None.")
+    w("")
+    w("**Substitute (real family loaded; proxy is the fallback only).**")
+    if substitute:
+        for (fam, proxy), roles in substitute.items():
+            roles_s = ", ".join(f"`{r}`" for r in roles)
+            w(f"- {roles_s}: render `{fam}`; proxy `{proxy}` is the loaded fallback only.")
+    else:
+        w("- None — every type role renders its real family.")
+    w("")
+    w("**Needs-licensing (rendered as captured, flagged for production swap).**")
+    if third_party or own_logos:
+        if third_party:
+            w(f"- {len(third_party)} third-party mark(s) in `media-assets.yaml` "
+              "(`usageRights: third-party-mark`) — rendered as captured, flagged for a "
+              "licensed swap; never auto-substituted.")
+        if own_logos:
+            w(f"- {len(own_logos)} own logo mark(s) — rendered, flagged for production "
+              "review.")
+    else:
+        w("- None flagged.")
     w("")
 
     # 16. Section catalog (slot contracts)

@@ -2355,6 +2355,22 @@ def adapt_brand_section(section: dict, doc: dict) -> tuple[dict, dict, dict | No
     b_surf = str((brand_layout or {}).get("surfaceIntent") or "")
     if b_surf and b_surf in ((doc.get("tokens") or {}).get("surfaces") or {}):
         layout["surfaceIntent"] = b_surf
+    # DARK BOOKEND SURFACE (fix 2026-07): the composition enum's coarse `inverse`
+    # intent resolves to the generic `surface/inverse` role, but a brand whose measured
+    # surface grammar names a DISTINCT dark bookend band (`surfaceGrammar.bookend` — the
+    # dark CONTENT band that frames the hero + closing CTA, often a brand-hued dark
+    # rather than the neutral footer inverse) should paint a composed dark SECTION with
+    # THAT measured role. The footer/closing bookend chrome keeps `surfaceGrammar.footer`
+    # (it is composed separately, not through this adapter), so this only re-roles a
+    # composed inverse content section. Fact-gated: fires only when the brand declares a
+    # bookend role its `tokens.surfaces` actually carries AND that differs from the plain
+    # inverse — brands without the distinction (bookend == inverse, or none) stay
+    # byte-identical, and a section already resolved to a specific role is left alone.
+    _surfaces = ((doc.get("tokens") or {}).get("surfaces") or {})
+    _bookend = str(((doc.get("surfaceGrammar") or {}).get("bookend") or "")).strip()
+    if layout.get("surfaceIntent") == "surface/inverse" and _bookend \
+            and _bookend != "surface/inverse" and _bookend in _surfaces:
+        layout["surfaceIntent"] = _bookend
     # authored layoutCopy heals lossy REPLICA translations by id; a creative section
     # authors its OWN copy — the source section's voice must not overwrite it via the
     # same id coincidence (see the creative note above).

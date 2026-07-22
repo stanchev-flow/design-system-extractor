@@ -78,10 +78,11 @@ class MergeParity(unittest.TestCase):
     def test_generation_excludes_only_the_documented_register_families(self):
         doc = rf.merge_brand_facts(_doc_with_hero_footer(), Path("/x"),
                                    target="generation")
-        # hero + headings are the ONLY difference; footer/nav/buttons cross over identically
+        # fix2 2026-07: hero is the ONLY withheld family now (headings promoted, AS-82
+        # unitless); footer/nav/buttons/headings all cross over identically to the replica.
         self.assertEqual(self._facts(doc), {
             "hero.responsive": False, "footer.responsive": True,
-            "responsive": ["buttons", "nav"]})
+            "responsive": ["buttons", "headings", "nav"]})
 
     def test_shared_families_are_byte_identical_across_targets(self):
         rep = rf.merge_brand_facts(_doc_with_hero_footer(), Path("/x"), target="replica")
@@ -94,7 +95,9 @@ class MergeParity(unittest.TestCase):
 
     def test_excluded_families_table_is_the_single_source_of_truth(self):
         self.assertEqual(rf.excluded_families_for("replica"), {})
-        self.assertEqual(set(rf.excluded_families_for("generation")), {"hero", "headings"})
+        # fix2 2026-07: headings PROMOTED into generation (AS-82 unitless line-height);
+        # hero stays excluded (its absolute register fact has no generation consumer).
+        self.assertEqual(set(rf.excluded_families_for("generation")), {"hero"})
         # the exclusion carries a documented REASON (never a silent, reasonless drop)
         for fam, reason in rf.excluded_families_for("generation").items():
             self.assertTrue(isinstance(reason, str) and len(reason) > 20, fam)
@@ -180,14 +183,16 @@ class AuditConsumption(unittest.TestCase):
         self.assertFalse(fca.summarize(findings)["ok"])
 
     def test_documented_exclusion_is_a_pass_not_a_failure(self):
-        # under generation, hero + headings are documented exclusions → EXCLUDED, never a
+        # under generation, the hero family is a documented exclusion → EXCLUDED, never a
         # silent drop and never an error, EVEN with a page that consumed nothing.
         findings = fca.audit_facts(sidecar=_FULL_SIDECAR, doc={}, library={},
                                    html=_DROPPED_HTML, target="generation")
         by = {f.family: f for f in findings}
         self.assertEqual(by["responsive.hero"].status, fca.EXCLUDED)
         self.assertEqual(by["responsive.hero.primaryButton"].status, fca.EXCLUDED)
-        self.assertEqual(by["responsive.headings.lineHeights"].status, fca.EXCLUDED)
+        # fix2 2026-07: headings is PROMOTED into generation now — it is a real audited
+        # family, not an exclusion, so a page that dropped it is a loud UNCONSUMED error.
+        self.assertEqual(by["responsive.headings.lineHeights"].status, fca.UNCONSUMED)
         excluded_fams = {f.family for f in findings if f.status == fca.EXCLUDED}
         errors = {f.family for f in findings if f.is_error}
         self.assertFalse(excluded_fams & errors)  # an excluded fact is never an error
@@ -240,16 +245,22 @@ class AuditRealArtifacts(unittest.TestCase):
     """Integration smoke tests against the real v3 replica + generated page (skipped when
     the fixtures are absent)."""
 
-    def test_v3_replica_flags_sticky_column_only(self):
+    def test_v3_replica_sticky_column_now_consumed(self):
+        # AS-83 sticky-column-now-consumed assertion (fix1 2026-07): the sticky-copy
+        # column device is the queued driver the AS-83 audit flagged; once the renderer
+        # emits `position: sticky` (side-rail device + measured per-section pin) it is
+        # CONSUMED, so the v3 replica has ZERO captured-but-unconsumed measured facts.
         brand = REPO / "runs" / "hubspot-v3" / "brand" / "brand.yaml"
         rep = REPO / "runs" / "hubspot-v3" / "brand" / "compose" / "replica"
         if not (brand.is_file() and (rep / "index.html").is_file()):
             self.skipTest("hubspot-v3 replica fixture not present")
         findings = fca.audit_render(brand, rep, target="replica")
         errors = {f.family for f in findings if f.is_error}
-        # the responsive chrome/hero/footer/heading facts + per-section surfaces are all
-        # consumed on the replica; sticky-column is the queued unconsumed driver.
-        self.assertEqual(errors, {"layout.specialTreatment.sticky-column"})
+        self.assertEqual(errors, set(), f"unexpected unconsumed measured facts: {errors}")
+        sticky = [f for f in findings
+                  if f.family == "layout.specialTreatment.sticky-column"]
+        self.assertEqual(len(sticky), 1)
+        self.assertEqual(sticky[0].status, fca.CONSUMED)
 
     def test_v3_generation_has_no_silent_drops(self):
         brand = REPO / "runs" / "hubspot-v3" / "brand" / "brand.yaml"
@@ -257,13 +268,16 @@ class AuditRealArtifacts(unittest.TestCase):
         if not (brand.is_file() and (gen / "index.html").is_file()):
             self.skipTest("hubspot-v3 generated page fixture not present")
         findings = fca.audit_render(brand, gen, target="generation")
-        # hero + headings are documented exclusions; everything else consumed/delegated →
-        # no captured-but-unconsumed measured fact on the generated page.
+        # fix2 2026-07: hero is the sole documented exclusion; headings is now PROMOTED and
+        # CONSUMED (unitless line-height). Everything else consumed/delegated → no
+        # captured-but-unconsumed measured fact on the generated page.
         self.assertTrue(fca.summarize(findings)["ok"],
                         [f.family for f in findings if f.is_error])
         excluded = {f.family for f in findings if f.status == fca.EXCLUDED}
-        self.assertEqual(excluded, {"responsive.hero", "responsive.hero.primaryButton",
-                                    "responsive.headings.lineHeights"})
+        self.assertEqual(excluded, {"responsive.hero", "responsive.hero.primaryButton"})
+        headings = [f for f in findings
+                    if f.family == "responsive.headings.lineHeights"]
+        self.assertEqual(headings[0].status, fca.CONSUMED)
 
 
 if __name__ == "__main__":

@@ -165,7 +165,7 @@ class TypeTierDemotion(unittest.TestCase):
 
 
 class NavResponsiveChromeFacts(unittest.TestCase):
-    def test_generation_doc_gets_nav_panel_and_collapse_not_headings(self):
+    def test_generation_doc_gets_nav_panel_collapse_and_promoted_headings(self):
         brand_yaml = REPO / "runs" / "hubspot-v3" / "brand" / "brand.yaml"
         if not brand_yaml.is_file():
             self.skipTest("hubspot-v3 brand fixture not present")
@@ -179,9 +179,12 @@ class NavResponsiveChromeFacts(unittest.TestCase):
         self.assertIn("nav", resp)
         self.assertTrue((resp["nav"].get("panelSurface") or {}).get("background"))
         self.assertIn("collapse", resp["nav"])
-        # ...but the SOURCE-register heading line-heights must NOT (they mis-size a
-        # composed page's larger h2 — AS-16 overlap). Chrome facts only.
-        self.assertNotIn("headings", resp)
+        # ...and heading line-heights are now PROMOTED into generation (fix2 2026-07):
+        # AS-82 made line-height UNITLESS (a ratio, not a frozen-px box), removing the
+        # AS-16 register-overlap risk, so the source's measured heading register crosses
+        # into composed pages. (The hero family stays excluded — geometry-bearing.)
+        self.assertIn("headings", resp)
+        self.assertTrue((resp["headings"].get("lineHeights") or {}))
 
 
 class AccordionCollapsedByDefault(unittest.TestCase):

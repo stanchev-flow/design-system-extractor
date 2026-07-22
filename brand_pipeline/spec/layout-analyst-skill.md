@@ -29,6 +29,18 @@ description: >-
 > values, rules, rhythms, hexes, or ids into a new extraction. A brand with the
 > opposite aesthetic follows the same method and produces entirely different entries.
 
+> **Capture is a SHOW-BEFORE-BUILD contract (transparency ordering law).** The pipeline
+> runs in a fixed stage order — **evidence → author → validate → render** — and that
+> order is normative, not incidental. Every token, component recipe, state, timing value,
+> and asset a later build/compose step consumes MUST first appear in the captured
+> evidence bundle (or the canonical files authored from it) with provenance. **A build
+> step may not introduce a value that was not first surfaced during capture.** If the
+> renderer needs a fact, that fact is authored here as an inspectable, provenance-tagged
+> entry — never conjured downstream. When a needed value is genuinely unreadable from the
+> source, record it as `notObserved: true` with where-you-looked, so the gap is visible
+> rather than silently filled at render time. This makes the transparency our system
+> already mostly follows *mandatory*: surface every fact before anything builds on it.
+
 ## Inputs — the Phase-A evidence bundle
 
 All under `runs/<brand>/brand/evidence/` (plus the capture itself). Produced by the
@@ -165,6 +177,21 @@ against `css-facts.json` and the crops: separators, casing per type tier, link-h
 wash, which primary item is the ACTION (evidence ladder, schema §3 note). Fix
 `footer.legal` to the normative `text:` key if the contract used a synonym.
 
+Also capture (all OPTIONAL, fact-gated — a source lacking the behavior records
+`notObserved: true` and the renderer keeps its default byte-identically):
+
+- **Mobile drawer + sticky/scroll-shrink nav (schema chrome §, `navbar.mobile` /
+  `navbar.sticky`).** Record the mobile hamburger→drawer contract (`trigger`,
+  `drawerSurface`, `drawerAnim`, `closeAffordance`, open/closed states) and the
+  sticky/scroll-shrink register (`behavior`, `shrinkAt`, `fromRegister`/`toRegister`,
+  `transitionMs`) from `source-chrome.v2.json` + the Playwright/collapse passes. A
+  nav that never collapses / never sticks records `notObserved`. Capture-side only —
+  renderer consumption of the drawer + scroll-shrink transition is a deferred
+  follow-up.
+- **Footer locale selector (schema footer §, `footer.localeSelector`).** When the
+  footer carries a language/region control, enumerate it as a first-class footer
+  slot (`{kind, options?, ariaLabel?}`); a footer without one records `notObserved`.
+
 ### Phase 1 — Section census + surface rhythm
 
 Walk `dom-sections.json` top→bottom against the crops. A section = a full-width band
@@ -185,11 +212,33 @@ incremental save discipline applies through every phase.
 
 ### Phase 2 — Tokens + component matrices (computed-first)
 
+**Active-vs-decoy theme resolution (do this BEFORE sampling any token).** A saved
+marketing page usually ships MORE than one token system — a live theme plus legacy,
+product, or experiment themes that are present in the CSS but never applied. Resolve
+the ONE system that actually cascades to `<body>`: read the theme/brand attributes on
+`<html>`/`<body>` and determine which `:root` or scoped custom-property block wins the
+cascade at `<body>`. Sample colors, type, spacing, and surfaces ONLY from that active
+system; treat every other shipped token set as a **decoy** and never draw a value from
+it (a decoy palette bleeding into the brand is a silent fidelity failure). Record the
+resolved active system + the down-ranked decoys in `provenanceIndex` so the choice is
+auditable. Single-theme captures: this is a no-op. This is discipline, not a new
+required field — palette-agnostic, it holds for any source regardless of its attribute
+or variable names.
+
 1. **Tokens** from `computed-styles.json`: colors→semantic roles, every `tokens.type`
    tier with measured `weight` (REQUIRED — default 400 only when genuinely
    undeclared) and `case`, spacing tiers with real section padding / module gaps,
    `tokens.surfaces` with `textPrimary`/`textAccent` per role, imagery
    `aspectPalette` from real image dimensions.
+   - **Shadow + z-index scales (OPTIONAL, when observed).** When the source layers
+     elevation, author `tokens.shadow` as a role→value scale (generic elevation
+     roles: raised/overlay/sticky-nav/dropdown/modal — never section names) from the
+     measured `box-shadow` values in `css-facts.json`; a flat brand records
+     `shadow: {notObserved: true, reason: …}` (its `no-shadows` neverDo already
+     carries the prohibition). When the source's stacking is meaningful, author
+     `tokens.zIndex` as a role→value ladder so the composition z-ladder is grounded
+     in a captured scale. Both are fact-gated and backward-compatible (absent ⇒
+     byte-identical).
    - **Canonical tier + per-tier ladders (C14).** Declare `meta.canonicalTier`
      (`{viewport, label, note}`) — the measured breakpoint every canonical value
      (`sizeRem.base`, spacing `value:`) refers to. Author every sized type role's
@@ -217,6 +266,21 @@ incremental save discipline applies through every phase.
    `radius`, padding, type facts, and ≥ 1 state fact (bgHover/fgHover/decoration/
    focus). One family only + `singleVariantConfirmed: true` ONLY after re-scanning
    grounding + css-facts for the families sites almost always carry.
+   - **Exhaustive per-component STATES (REQUIRED, not "≥ 1 state").** Every
+     interactive component — button/link families here, plus tabs, accordions,
+     carousels, form fields, and nav controls in Phase 3 — enumerates the FULL
+     applicable interaction-state set, not just one hover fact. For controls that
+     is `hover`, `active`/`pressed`, `focus`, and `disabled`; for disclosure
+     components (accordion/tabs/dropdown/modal/mega-menu/carousel) add
+     `open`/`expanded`/`current` where applicable. Author each observed state as an
+     evidenced fact from `css-facts.json` hoverRules / transitions / computed
+     samples; a state the source truly does not define is recorded as
+     `state: notObserved` with where-you-looked (which selector/pseudo-class was
+     checked), never silently omitted. Mirror the existing `bgHover ⇒ fgHover`
+     pairing discipline for every state that changes fill. A control that genuinely
+     ships a single visual register records `statesObserved: [idle]` after
+     re-checking — a claim, not a default. Fact-gated: a component with no
+     enumerable states beyond idle stays byte-identical.
 3. **Blocks — attempt every contract type.** For each key in `contracts/blocks.yaml`:
    extract the brand's usage (origin/use/slots/provenance) or mark
    `notObserved: true` with a note of where you looked. Card anatomy (media-well,
@@ -241,6 +305,18 @@ incremental save discipline applies through every phase.
      but never silence.
    Interactive block entries (accordion/carousel/tabs/modal…) name their observed
    timing (or `notObserved`) so the component contract carries its own motion fact.
+   - **Structured carousel/slider recipe (REQUIRED when a slide track is observed).**
+     A carousel/slider/slideshow records its interaction timing as the STRUCTURED
+     `carousel:` recipe (brand-schema §10.3g), not as free prose: `autoplay`,
+     `intervalMs` (slide dwell), `transitionMs` + `easing` (slide transition),
+     `controls` (`[arrows|dots|none]`), `dots`, `pauseOnHover`, `loop`,
+     `slidesPerView` — each fed from `motion-audit.json` `jsTimingNotes` (autoplay
+     intervals JS owns) + the crops' `motionHints` (arrows/dots affordances). This
+     REPLACES relying on prose `jsTimingNotes`/`motionHints` for the carousel
+     contract. Any field JS timing does not expose is `notObserved` (or omitted),
+     never guessed; a component with no readable timing records
+     `carousel: {notObserved: true, reason: …}`. Optional/backward-compatible: a
+     brand with no carousel owes nothing and renders exactly as before.
 
 ### Phase 3 — Per-section layout + pattern authoring
 

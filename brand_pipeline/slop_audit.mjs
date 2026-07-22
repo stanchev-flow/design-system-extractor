@@ -136,9 +136,14 @@ for (const target of process.argv.slice(2)) {
       }
     };
 
-    // AS-78: circle integrity — semantic round controls are square and icon-only.
+    // AS-78: circle integrity — semantic round controls are square, icon-only, and
+    // their glyph is optically CENTERED. Covers the declared round families
+    // (data-control-shape / .c-button--round / .btnf-round) AND the structural
+    // composed-page round controls (edge-cut / panel-carousel paddles + pause, the
+    // active-item circle-arrow go affordance) — the round chrome the composers draw.
     for (const host of document.querySelectorAll(
-      '[data-control-shape="round"],[data-shape="circle"],.c-button--round,.btnf-round'
+      '[data-control-shape="round"],[data-shape="circle"],.c-button--round,.btnf-round,'
+      + '.cs-edgecut-arrow,.cs-panelcar-arrow,.cs-edgecut-pause,.c-acc-go'
     )) {
       if (!visible(host)) continue;
       const r = host.getBoundingClientRect();
@@ -154,6 +159,23 @@ for (const target of process.argv.slice(2)) {
       const radii = cs.borderTopLeftRadius.split(/\s+/).map(parseFloat).filter(Number.isFinite);
       if (!pill && r.width !== r.height && radii.some(v => v >= Math.min(r.width, r.height) * 0.45))
         out.push(`AS-78 circle: percentage/circular radius paints an ellipse on a non-square host`);
+      // GLYPH CENTERING (fix4 2026-07): a round control's single icon/glyph must be
+      // flex-centered (the `→`/chevron sitting off-center is the round-button glyph
+      // defect). Only a lone visible media/glyph child is checked (a labelled pill is
+      // exempt); tolerance scales with the control so a hairline sub-pixel drift is
+      // fine but a mis-set line-box / non-flex host that shoves the glyph is caught.
+      if (!pill) {
+        const glyphs = [...host.querySelectorAll(':scope > svg, :scope > img, '
+          + ':scope > span, :scope > i, :scope > [aria-hidden="true"]')].filter(visible);
+        if (glyphs.length === 1) {
+          const gr = glyphs[0].getBoundingClientRect();
+          const dx = Math.abs((gr.left + gr.right) / 2 - (r.left + r.right) / 2);
+          const dy = Math.abs((gr.top + gr.bottom) / 2 - (r.top + r.bottom) / 2);
+          const ctol = Math.max(2, Math.min(r.width, r.height) * 0.12);
+          if (dx > ctol || dy > ctol)
+            out.push(`AS-78 circle: glyph is ${Math.round(dx)}×${Math.round(dy)}px off the round control center (must be flex-centered)`);
+        }
+      }
       if (host.matches('.is-focus,:focus-visible')) {
         const before = getComputedStyle(host, "::before");
         const after = getComputedStyle(host, "::after");

@@ -56,7 +56,11 @@ Checks (E = error, W = warning):
         blocks (accordion/tabs/modal/dropdown-menu/carousel) that are evidenced
         must name a timing fact (any `Nms`/`N.Ns` value or a `motion:` note) or
         declare their motion `notObserved`. Authored from
-        evidence/motion-audit.json (mine_motion.py stage)
+        evidence/motion-audit.json (mine_motion.py stage). An OPTIONAL structured
+        `carousel:` recipe (brand-schema §10.3g) satisfies the interactive-block
+        timing fact when it carries a numeric `intervalMs`/`transitionMs`; a
+        present-but-malformed recipe (bad `controls` vocab, non-numeric ms,
+        non-boolean flag, notObserved without reason) warns (advisory)
   C14 E canonical-tier discipline: when tokens.type carries sized roles the
         brand declares `meta.canonicalTier` (which measured breakpoint every
         canonical value refers to), and every sized type role carries a
@@ -202,6 +206,43 @@ EASING_LITERAL = re.compile(r"\bease(?:-in|-out|-in-out)?\b|\blinear\b"
 # entries owe a timing fact (C13)
 INTERACTIVE_BLOCK_TYPES = ("accordion", "tabs", "modal", "dropdown-menu",
                            "carousel")
+# closed control-affordance vocabulary for the structured carousel recipe (§10.3g)
+CAROUSEL_CONTROLS = {"arrows", "dots", "none"}
+CAROUSEL_NUMERIC_FIELDS = ("intervalMs", "transitionMs", "slidesPerView")
+CAROUSEL_BOOL_FIELDS = ("autoplay", "dots", "pauseOnHover", "loop")
+
+
+def _check_carousel_recipe(rep: "Report", btype: str, recipe: dict) -> bool:
+    """Validate an OPTIONAL structured `carousel:` recipe (brand-schema §10.3g).
+
+    Fact-gated + backward-compatible: only called when a recipe dict is present and
+    not `notObserved`. Malformed shapes warn (advisory) — they never hard-fail a
+    brand that lacks the field. Returns True when the recipe supplies a numeric
+    timing (intervalMs/transitionMs) that satisfies the C13 interactive-block
+    timing fact.
+    """
+    controls = recipe.get("controls")
+    if controls is not None:
+        if not isinstance(controls, list) or any(
+            c not in CAROUSEL_CONTROLS for c in controls
+        ):
+            rep.warn("C13", f"blocks.{btype}.carousel.controls must be a list drawn "
+                            f"from {sorted(CAROUSEL_CONTROLS)} (generic affordance "
+                            "names, never content names).")
+    for key in CAROUSEL_NUMERIC_FIELDS:
+        val = recipe.get(key)
+        if val is not None and (isinstance(val, bool) or not isinstance(val, (int, float))):
+            rep.warn("C13", f"blocks.{btype}.carousel.{key} must be numeric "
+                            "(ms integer / slide count), not a string or boolean.")
+    for key in CAROUSEL_BOOL_FIELDS:
+        val = recipe.get(key)
+        if val is not None and not isinstance(val, bool):
+            rep.warn("C13", f"blocks.{btype}.carousel.{key} must be a boolean.")
+    has_numeric_timing = any(
+        isinstance(recipe.get(k), (int, float)) and not isinstance(recipe.get(k), bool)
+        for k in ("intervalMs", "transitionMs")
+    )
+    return has_numeric_timing
 # a RELATIONAL spacing token names the gap between two content roles (C15):
 # eyebrow-to-heading, heading-to-body, body-to-cta, label-to-field, …
 RELATIONAL_KEY = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*-to-[a-z0-9]+(?:-[a-z0-9]+)*$")
@@ -933,6 +974,17 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
         has_timing = bool(TIME_LITERAL.search(blob))
         motion_note = blk.get("motion")
         motion_declared_absent = isinstance(motion_note, dict) and motion_note.get("notObserved")
+        # OPTIONAL structured carousel/slider recipe (brand-schema §10.3g): fact-gated,
+        # backward-compatible. A well-formed recipe with numeric timing satisfies the
+        # interactive-block timing fact; a malformed present recipe warns (advisory).
+        recipe = blk.get("carousel")
+        if isinstance(recipe, dict) and recipe.get("notObserved"):
+            if not str(recipe.get("reason") or "").strip():
+                rep.warn("C13", f"blocks.{btype}.carousel.notObserved requires a "
+                                "`reason` naming why the JS timing is unreadable.")
+        elif isinstance(recipe, dict) and recipe:
+            if _check_carousel_recipe(rep, btype, recipe):
+                has_timing = True
         if not has_timing and not motion_declared_absent:
             rep.error("C13", f"blocks.{btype}: evidenced interactive block without "
                              "a timing fact — name its observed duration/easing "

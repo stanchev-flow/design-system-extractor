@@ -724,6 +724,33 @@ def stamp_pattern_devices(doc, layout, brand_yaml) -> None:
                 layout.setdefault("_edgeCut", {"controls": dict(t["controls"])})
             else:
                 layout.setdefault("_edgeCut", True)
+        elif kind == "sticky-column":
+            # STICKY COPY COLUMN (fix1 2026-07, AS-83 driver; fact:
+            # patterns[].specialTreatments sticky-column): the source pins the copy
+            # column while the counterweight card grid scrolls — measured
+            # `.…-sticky-sidebar { position:sticky; height:fit-content;
+            # top:calc(nav-height + offset) }`. Render the copy-LEFT / grid-RIGHT rail
+            # (reuse the side-rail device, which already owns position:sticky + the
+            # desktop/mobile engage) and carry the MEASURED nav-height + offset so the
+            # per-section override pins the column at the source's real top. Fact-less
+            # or measure-less sticky treatments keep the structural side-rail pin.
+            layout.setdefault("_sideRail", True)
+            sticky: dict = {}
+            offset = str(t.get("offset") or "").strip()
+            if re.fullmatch(r"[\d.]+(?:px|rem|em)", offset):
+                sticky["offset"] = offset
+            nh = t.get("navHeight") if isinstance(t.get("navHeight"), dict) else {}
+            for k in ("base", "wide"):
+                v = str(nh.get(k) or "").strip()
+                if re.fullmatch(r"[\d.]+(?:px|rem|em)", v):
+                    sticky[k] = v
+            try:
+                wmw = int(nh.get("wideMinWidth"))
+                if wmw > 0:
+                    sticky["wideMinWidth"] = wmw
+            except (TypeError, ValueError):
+                pass
+            layout.setdefault("_stickyColumn", sticky)
         elif kind == "carousel":
             # SPLIT-PANEL CAROUSEL statics (fix1 2026-07 item-6): a split section whose
             # sanctioned treatment declares a panel carousel over its list slot renders
@@ -842,40 +869,65 @@ def stamp_pattern_devices(doc, layout, brand_yaml) -> None:
     # mark rows without "logo" anywhere in their name, which the fid6 probe missed and
     # left them collapsed at the structural height cap. No fraction fact / unreadable
     # assets ⇒ no stamp for that row (structural strip is the degrade).
+    def _css_len(v) -> str | None:
+        """A measured length as a CSS length string. A value carrying a unit passes
+        through; a BARE number is a pixel measurement (the schema records mark-frame
+        boxes / gaps as raw px, e.g. `item: {width: 96, height: 132}`) and is coerced to
+        `<n>px`. Anything else → None (the fact-less degrade)."""
+        s = str(v if v is not None else "").strip()
+        if re.fullmatch(r"[\d.]+(?:rem|em|px)", s):
+            return s
+        if re.fullmatch(r"[\d.]+", s):
+            return f"{s}px"
+        return None
+
     _scales: dict = {}
     for s in pattern.slots:
         if not isinstance(s, dict):
             continue
         ms = s.get("mediaScale") if isinstance(s.get("mediaScale"), dict) else {}
-        if str(ms.get("of") or "").lower() != "container":
-            continue
         probe = f"{s.get('name') or ''} {s.get('role') or ''}".lower()
         assets = [str(a) for a in (s.get("assets") or []) if a]
         marky = any(k in probe for k in ("logo", "mark", "badge", "rating", "award")) \
             or (bool(assets) and all(_is_mark_asset(a) for a in assets))
         if not marky:
             continue
-        try:
-            fraction = float(ms.get("fraction"))
-        except (TypeError, ValueError):
-            continue
-        if not 0 < fraction <= 1:
-            continue
-        aspects = _asset_aspects(Path(brand_yaml).parent if brand_yaml else None, assets)
-        entry: dict = {"fraction": fraction, "aspects": aspects}
-        gap = str(ms.get("gap") or "").strip()
-        if re.fullmatch(r"[\d.]+(?:rem|em|px)", gap):
-            entry["gap"] = gap
-        # MEASURED ITEM BOX (fix2 2026-07, brand-schema mediaScale.item): the strip's
-        # uniform mark frame (width × height) measured on the capture — when present
-        # the renderer draws fixed contain-fit boxes instead of distributing widths.
+        entry: dict = {}
+        # MEASURED CONTAINER-RELATIVE ROW SCALE (fid6): an `of: container` fraction
+        # draws an aspect-weighted, equal-height row spanning the measured fraction.
+        if str(ms.get("of") or "").lower() == "container":
+            try:
+                fraction = float(ms.get("fraction"))
+            except (TypeError, ValueError):
+                fraction = 0.0
+            if 0 < fraction <= 1:
+                entry["fraction"] = fraction
+                entry["aspects"] = _asset_aspects(
+                    Path(brand_yaml).parent if brand_yaml else None, assets)
+        # MEASURED ITEM BOX (fix2 2026-07, brand-schema mediaScale.item; fix 2026-07:
+        # captured INDEPENDENT of a container fraction + accepting bare-px values): the
+        # strip's uniform mark frame (width × height) measured on the capture. An AWARD-
+        # BADGE row records its measured plaque box here WITHOUT a container fraction —
+        # so gating the item box behind `of: container`+`fraction` left the badges at
+        # the structural logo height (tiny cramped chips). When present the renderer
+        # draws fixed contain-fit boxes at the measured size.
         item = ms.get("item") if isinstance(ms.get("item"), dict) else {}
-        item_box = {k: str(item.get(k) or "").strip() for k in ("width", "height")}
-        item_box = {k: v for k, v in item_box.items()
-                    if re.fullmatch(r"[\d.]+(?:rem|em|px)", v)}
+        item_box = {}
+        for k in ("width", "height"):
+            length = _css_len(item.get(k))
+            if length:
+                item_box[k] = length
         if item_box:
             entry["item"] = item_box
-        _scales[str(s.get("name") or "logos")] = entry
+        # measured inter-mark gap (fid7) — pattern `mediaScale.gap` or the slot's own
+        # `gap` (award rows record the row gap beside the item box); bare px accepted.
+        gap = _css_len(ms.get("gap")) or _css_len(s.get("gap"))
+        if gap:
+            entry["gap"] = gap
+        # stamp only when a MEASURED scale fact was found (a fraction OR an item box);
+        # a marky slot with neither keeps the structural strip (byte-identical degrade).
+        if "fraction" in entry or "item" in entry:
+            _scales[str(s.get("name") or "logos")] = entry
     if _scales:
         layout.setdefault("_logoScale", _scales)
     # MEASURED STACK MEASURE (fid7 2026-07): a centered-stack pattern whose contentShape
@@ -4915,6 +4967,18 @@ def compose_generic_flow(doc, layout, ctx, rendered, style_ctx):
     # metrics read as a row of value/label columns, not a vertical caption stack.
     stat_groups: dict[str, dict] = {}      # group -> {"pos": int, "items": [html]}
     logo_text_items = 0
+    # AS-84 SINGLE-VOICE SLOT DEDUP (fix 2026-07): one MEASURED copy string must not
+    # render in two roles within one section (the recurring "eyebrow-above + subhead-
+    # below" slop — the same line bound to a microlabel AND a dek/body). Track the
+    # normalized inner text of each text-bearing content row and drop a later row whose
+    # visible text exactly repeats an earlier one. Brand-agnostic: it reads only the
+    # section's own already-composed copy, keeps the FIRST occurrence (reading order),
+    # and never touches media/logo/stat rows (repeat marks + numbers are legitimate).
+    _seen_text: set[str] = set()
+
+    def _visible_text(html_frag: str) -> str:
+        return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", html_frag)).strip()
+
     for r_idx, r in enumerate(rendered):
         if r_idx in consumed:              # folded into the headrail / split intro
             continue
@@ -4922,6 +4986,15 @@ def compose_generic_flow(doc, layout, ctx, rendered, style_ctx):
         if not frag.strip() or "unresolved slot" in frag:
             continue
         role = (r.get("role") or "").lower()
+        # single-voice dedup: a text row (eyebrow/heading/body/caption) whose visible
+        # copy already appeared in this section is a duplicated-slot binding — skip it.
+        if (r.get("contract") or "") in (
+                "eyebrow", "heading", "header", "paragraph", "caption"):
+            _vt = _visible_text(frag)
+            if len(_vt) >= 8:
+                if _vt in _seen_text:
+                    continue
+                _seen_text.add(_vt)
         if r.get("slot") == "logo-strip" and r.get("contract") == "logo":
             group = str(r.get("group") or "logo-strip")
             g = strip_groups.get(group)
@@ -7672,6 +7745,44 @@ SCAFFOLD_SIDERAIL_CSS = """/* SIDE-RAIL CARD COUNTERWEIGHT (fix1 2026-07 item-7)
   .cs-siderail > .cs-siderail-copy { position: static; } }
 """
 
+
+def sticky_column_css(layout, sel: str) -> str:
+    """Per-section MEASURED sticky copy-column override (fix1 2026-07, AS-83 driver;
+    fact-gated: patterns[].specialTreatments sticky-column). The side-rail device
+    already owns ``position: sticky`` on ``.cs-siderail-copy`` (and its desktop/mobile
+    engage); this ONLY supplies the source's MEASURED pin — ``top: calc(nav-height +
+    offset)`` across the measured nav-height ladder and ``height: fit-content`` — scoped
+    to THIS section (id-specificity outranks the shared scaffold's structural default).
+
+    Emitted only when ``stamp_pattern_devices`` stamped a ``_stickyColumn`` fact with a
+    measured length, so a brand without the sticky-column treatment ships byte-identical
+    side-rail CSS (the shared scaffold is untouched — v2/remote parity preserved)."""
+    sc = layout.get("_stickyColumn")
+    if not isinstance(sc, dict):
+        return ""
+    offset = str(sc.get("offset") or "").strip()
+
+    def _top(nav: str) -> str:
+        nav = str(nav or "").strip()
+        if nav and offset:
+            return f"calc({nav} + {offset})"
+        return nav or offset or ""
+
+    base_top = _top(sc.get("base"))
+    if not base_top:
+        return ""
+    marker = ("/* (fact-gated: patterns[].specialTreatments sticky-column) measured "
+              "sticky copy column — top = nav-height + offset, height fit-content */")
+    out = [marker,
+           f"{sel} .cs-siderail-copy {{ height: fit-content; top: {base_top}; }}"]
+    wide_top = _top(sc.get("wide"))
+    wmw = sc.get("wideMinWidth")
+    if wide_top and wide_top != base_top and isinstance(wmw, int) and wmw > 0:
+        out.append(f"@media (min-width: {wmw}px) {{ {sel} .cs-siderail-copy "
+                   f"{{ top: {wide_top}; }} }}")
+    return "\n".join(out)
+
+
 _ARCHETYPE_SCAFFOLD = {
     "stack": SCAFFOLD_HERO_CSS,          # the hero stack; conversion stack uses its own block below
     "collage": SCAFFOLD_COLLAGE_CSS,
@@ -8061,6 +8172,21 @@ def layout_placement_css(sel: str, layout, resolved=None) -> str:
                        + (f", counterweight: {resolved['counterweight']}"
                           if resolved.get("counterweight") else "")
                        + ") — resolved, never fall-through (AS-18) */\n" + css)
+    # TAB RAIL ALIGNMENT (fix 2026-07): a tabbed section used to CENTER its tab rail
+    # (the hardcoded scaffold default) even when its own header/body read left — the
+    # arbitrary left+center mix inside one proof region. The rail now follows the
+    # section's RESOLVED alignment anchor: a side-anchored section left/right-aligns its
+    # rail to match its header; a `mixed`/per-slot section (dominated by its side-
+    # anchored header + split content) resolves to the leading edge. A CENTERED section
+    # emits nothing so it keeps the scaffold's centered rail (byte-identical), and the
+    # rule is emitted ONLY for sections that carry the tab device — non-tab sections and
+    # centered-tab brands stay byte-identical.
+    if layout.get("_tabs") is not None:
+        _tab_anchor = (resolved or {}).get("anchor")
+        _tab_justify = _ANCHOR_FLEX[_tab_anchor][0] \
+            if _tab_anchor in _ANCHOR_FLEX else "flex-start"
+        if _tab_justify != "center":
+            out.append(f"{sel} .cs-tablist {{ justify-content: {_tab_justify}; }}")
     decls: list[str] = []
     g = layout.get("_grid") or {}
     if g.get("columns"):

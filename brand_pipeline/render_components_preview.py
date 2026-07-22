@@ -1779,9 +1779,17 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
                               "text": it.get("body") or it.get("text") or "",
                               **({"link": it["cta"]} if it.get("cta") else {})}
                              for it in authored_items]
-        elif any(k in lower for k in ("eyebrow", "microlabel", "caption", "label")):
+        elif any(k in lower for k in ("eyebrow", "microlabel", "caption", "label",
+                                       "headrail", "kicker")):
             # single-key copy: a `text` twin here would echo into the translators'
             # lede/body fallbacks (a v1 header dict carries its lede under `text`).
+            # A section HEADRAIL / kicker slot (a leading microlabel joined by a rule
+            # to a trailing quiet action) is a MICROLABEL rail, not body prose — it
+            # binds the section's eyebrow register (fix 2026-07): without this the
+            # rail slot fell through to the paragraph `else` and rendered the section
+            # BODY a second time (the same measured copy string in two roles — the
+            # eyebrow-above + subhead-below duplicate). Generic slot vocabulary, so
+            # any brand's headrail/kicker binds the microlabel, never a second body.
             entry["contract"] = "eyebrow"
             entry["copy"] = {"eyebrow": _demo_text(role, "eyebrow", sp, use, authored)}
         elif any(k in lower for k in ("heading", "title", "display", "h1", "h2", "header")):
@@ -1802,6 +1810,33 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
         elif any(k in lower for k in ("action", "cta", "button", "pill")):
             entry["contract"] = "button"
             entry["copy"] = {"label": _demo_text(role, "cta", sp, use, authored) or sp["cta"]}
+            # ACTION-GROUP EXPANSION (fix 2026-07): a slot bound to the brand's measured
+            # actionGroup (an `actionGroupRef`, or an "action-group" role) renders ONE
+            # button per action in the group's DECLARED order — the source's dual-CTA
+            # pair (filled primary leads, outlined secondary follows) must not collapse
+            # to the lead CTA alone (the hero + closing CTA shipped with the secondary
+            # "ghost" button silently dropped). The measured `doc.actionGroup` fact
+            # (order + per-role labels) drives the pair; the authored cta/ghost copy
+            # supplies the words. Fact-gated: fires only when the brand declares a
+            # >=2-action group AND a secondary label resolves; other action slots keep
+            # the single button (byte-identical). Emitted as a companion `-secondary`
+            # slot so both the overlay hero row and the flow CTA row render the pair.
+            agref = ls.get("actionGroupRef") or shape.get("actionGroupRef")
+            ag = doc.get("actionGroup") if isinstance(doc.get("actionGroup"), dict) else {}
+            ag_order = [str(o).strip() for o in (ag.get("order") or []) if str(o).strip()]
+            is_group = bool(agref) or "action-group" in lower or "action group" in lower
+            sec_label = (authored.get("ghost") or authored.get("secondaryCta")
+                         or ag.get("secondaryLabel"))
+            if is_group and len(ag_order) >= 2 and str(sec_label or "").strip():
+                entry["copy"]["label"] = (authored.get("cta") or ag.get("primaryLabel")
+                                          or entry["copy"]["label"])
+                entry["copy"]["styleHint"] = "filled"
+                slots.append(entry)
+                slots.append({"name": f"{name}-secondary", "role": "secondary action",
+                              "contract": "button",
+                              "copy": {"label": str(sec_label).strip(),
+                                       "styleHint": "outlined"}})
+                continue
             slots.append(entry)
             # a role naming BOTH a primary and a secondary action gets two demo
             # buttons IN DECLARED ORDER (primary first). The pair's treatments are
@@ -1875,7 +1910,10 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
         # layout slots — the old paragraph-for-everything fold rendered a pattern's
         # eyebrow slot as a body paragraph (the body fallback), duplicating the
         # section body and dropping the eyebrow register entirely.
-        elif any(k in lower for k in ("eyebrow", "microlabel", "caption", "label")):
+        elif any(k in lower for k in ("eyebrow", "microlabel", "caption", "label",
+                                       "headrail", "kicker")):
+            # a shape-only headrail/kicker microlabel binds the eyebrow register too
+            # (same rule as the layout-slot loop above) — never the body fallback.
             entry["contract"] = "eyebrow"
             entry["copy"] = {"eyebrow": _demo_text(role, "eyebrow", sp, use, authored)}
         elif any(k in lower for k in ("heading", "title", "display", "h1", "h2", "header")):

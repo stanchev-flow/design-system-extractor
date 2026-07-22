@@ -554,6 +554,14 @@ def compose_section_block(doc, layout, idx, style_ctx, brand_yaml=None, accent_i
     # this section's vertical padding to another rung of the brand's OWN section-rhythm
     # ladder. "" for every layout without the hint (byte-identical degrade).
     vars_css += cs.band_height_css(doc, layout, sel, role, style_ctx)
+    # STICKY COPY COLUMN (fix1 2026-07, AS-83 driver): a section whose pattern declares a
+    # sanctioned `sticky-column` treatment (stamped as `_stickyColumn` by
+    # stamp_pattern_devices) pins its side-rail copy column at the MEASURED nav-height +
+    # offset (height:fit-content). "" for every section without the measured fact, so the
+    # shared side-rail scaffold — and v2/remote — stay byte-identical.
+    _sticky_css = cs.sticky_column_css(layout, sel)
+    if _sticky_css:
+        vars_css += "\n" + _sticky_css
 
     # Reuse-before-create: resolve the reusable layout PATTERN + scope its pattern-driven
     # special-treatment vars to THIS section (#sec-N) so the ghost/stagger geometry comes

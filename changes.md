@@ -1,5 +1,50 @@
 # Changes
 
+## 2026-07-22 — Generation-path fidelity batch (AS-83-driven): sticky column CONSUMED, headings register promoted, round-glyph gate
+
+Driven by the AS-83 fact-consumption audit + the css_fidelity diff (not by eye). Every change is
+generic, brand-agnostic, and fact-gated. Held for review (no commit/push). hubspot-v2 (0.9556) /
+remote (0.9509) + the v3 replica baselines protected (byte-identical where they were before).
+
+- **Fix 1 — Sticky copy column (the AS-83 driver, 1→0 unconsumed).** The single unconsumed measured
+  fact on the v3 replica was `layout.specialTreatment.sticky-column`. `stamp_pattern_devices` now
+  handles a sanctioned `sticky-column` treatment by reusing the side-rail device (copy-left /
+  grid-right, which already owns `position: sticky`) and stamping `_stickyColumn` with the measured
+  nav-height ladder + offset; `compose_page._render_section` emits a fact-gated per-section pin
+  (`#sec-N .cs-siderail-copy { height: fit-content; top: calc(56px|76px + 2rem) }`, from the
+  measured `.wf-product-platform__container-main.-sticky-sidebar`). AS-83 v3 replica **18/1 → 19/0
+  unconsumed**; replica SSIM **0.9239 → 0.9267** (≥0.90). v2/remote replicas BYTE-IDENTICAL.
+- **Fix 2 — Heading register promoted into generation.** `responsive_facts.GENERATION_UNSAFE_FAMILIES`
+  no longer withholds `headings` (AS-82 made line-height UNITLESS → no frozen-px AS-16 overlap). The
+  generated `ai-product-launch` page now CONSUMES the source heading register (`h2` line-height 1.1,
+  `h3` 1.42). AS-83 generation audit **0 unconsumed** (headings EXCLUDED→CONSUMED). `hero` stays
+  EXCLUDED: its absolute heightRule/headingSizeLadder have no generation consumer, so promoting it
+  would only manufacture a captured-but-unconsumed drop; a composed hero's measured alignment is
+  inherited from its layout-library archetype, not this fact (verified empirically).
+- **Fix 4 — Round-control glyph centering (AS-78 extended, analyzer-only, byte-safe).** AS-78 now
+  inspects the structural composed-page round chrome (`.cs-edgecut-arrow`, `.cs-panelcar-arrow`,
+  `.cs-edgecut-pause`, `.c-acc-go`) and asserts the single glyph is flex-centered (the off-center
+  `→` class). No rendered bytes move; all controls measure dx/dy=0 → 0 flags across v2/remote/v3 +
+  generated. Focus ring stays bounded to the host (existing AS-78 outline-offset check).
+- **Fix 3 — Per-section surface (verified already correct, no change).** Light sections render the
+  measured cream `#fcfcfa` (surface/primary = background-01), dark bookends inverse-teal `#002b28`,
+  accent `#fcded2` — NOT pure white — on both replica and generated. `resolve_surface_intent`
+  defaults to surface/primary (cream), never the container/white token.
+- **Fix 6 — Integrations as composed marks (verified already correct, no change).** The generated
+  integrations banner renders 6 INDIVIDUAL bound logo marks (gmail/shopify/mailchimp/zapier/
+  google-ads/slack, `cs-logo-strip-item`), not one flattened image (AS-80 roles).
+- **Fix 5 — Contained center-emphasis "Breeze Agents" slider — NOT completed.** The generated
+  agents section still uses the edge-cut carousel; building a new contained 3-card center-emphasis
+  slider device (center opaque+larger, sides peek+transparent, contained) remains outstanding.
+- **Verification.** C1–C28 **0 errors** (v3/v2/remote). Full suite **2010 passed, 3 pre-existing
+  failures** (relume prompt-guidance ×2, runtime model-defaults — none reference the changed
+  modules), **zero new**. Regenerated v3 replica (shoot+diff) + ai-product-launch (deterministic
+  rebuild, `--style corporate-saas-clean`). New tests: `test_fix_sticky_column.py`,
+  `test_fix_round_glyph.py`; updated `test_fact_consumption_audit.py` (AS-83 sticky-column-now-consumed
+  + headings-promoted) + `test_generation_path_fixes.py`. Reports refreshed:
+  `compose/replica/fact-consumption-audit.{json,md}`, `compose/ai-product-launch/fact-consumption-audit.{json,md}`,
+  `brand/harness-regression-audit.md`.
+
 ## 2026-07-22 — Unified fact-merge path + fact-consumption audit (AS-83) — the two durable fixes for the "captured but not consumed" bug class
 
 Two systemic, generic, brand-agnostic fixes so the recurring silent-drop class (nav bg, nav

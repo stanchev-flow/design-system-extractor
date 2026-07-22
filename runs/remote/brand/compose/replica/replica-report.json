@@ -171,6 +171,60 @@
    "pair": "diff/footer.png"
   }
  ],
+ "perViewport": [
+  {
+   "viewport": 1440,
+   "scrollWidth": 1440,
+   "overflowPx": 0,
+   "bands": 12,
+   "heroHeight": 689,
+   "footerColumns": 7,
+   "docHeight": 7288,
+   "overflowEl": "",
+   "screenshot": "replica-fullpage-1440.png",
+   "responsivenessHealth": 1.0,
+   "primary": true
+  },
+  {
+   "viewport": 1920,
+   "scrollWidth": 1920,
+   "overflowPx": 0,
+   "bands": 12,
+   "heroHeight": 884,
+   "footerColumns": 7,
+   "docHeight": 7782,
+   "overflowEl": "",
+   "screenshot": "replica-fullpage-1920.png",
+   "responsivenessHealth": 1.0,
+   "primary": false
+  },
+  {
+   "viewport": 960,
+   "scrollWidth": 1084,
+   "overflowPx": 124,
+   "bands": 12,
+   "heroHeight": 604,
+   "footerColumns": 6,
+   "docHeight": 7863,
+   "overflowEl": "cs-marquee-track",
+   "screenshot": "replica-fullpage-960.png",
+   "responsivenessHealth": 0.7417,
+   "primary": false
+  },
+  {
+   "viewport": 375,
+   "scrollWidth": 1029,
+   "overflowPx": 654,
+   "bands": 12,
+   "heroHeight": 994,
+   "footerColumns": 6,
+   "docHeight": 10070,
+   "overflowEl": "cs-marquee-track",
+   "screenshot": "replica-fullpage-375.png",
+   "responsivenessHealth": 0.5,
+   "primary": false
+  }
+ ],
  "punchList": [
   {
    "section": "hero",

@@ -5,6 +5,16 @@
 ## 1. Brand snapshot
 Remote is a light, systematic SaaS marketing system on a cool gray canvas (#eff0f0) led by a single vivid blue (#0564ff — the site's own sea-blue-500 token). Every heading tier is Bossa (a geometric grotesque) at weight 400, sentence case; hierarchy comes from size, not weight. Inter carries body, UI, buttons, and the footer. All CTAs are fully-rounded 48px-tall pills (40px radius token): blue filled primary, outlined secondary in deep blue (#003284) that FILLS blue on hover, near-black neutral pill for chrome (nav CTA), and blue arrow text-links. Eyebrows are uppercase tracked microlabels color-coded by the section's theme scope (sea-blue #0047bc-family, red-brand crimson #a52d44, neutral gray #595b5f). Content sits in pure-white rounded cards that are FLAT at idle and gain a soft shadow + tint only on hover. Dark surfaces never appear as section bands: deep navy (#00235c, the sea-blue-800 accent step) backs media wells INSIDE white cards, and deep maroon (#511621, red-brand-800) inverts the active item of the feature accordion. The hero sits on an inset 10px-rounded panel painted with a pastel grey-green-blue noise-gradient; the closing CTA repeats the gradient as a full-bleed band; text on both stays dark ink. The footer is LIGHT (#f6f7f8): an 8-group link directory in 6 visual columns, ink links that soften + underline on hover, circular social icons, app badges.
 
+## Signature moves — the rules that carry the look
+
+The recognizable moves that make this brand identifiable, projected from `brand.yaml` `signatures:` (each is a machine-checkable claim the `signature_check` gate verifies). Rebuild the look from these first.
+
+- [never] The sea-blue action family (#0564ff / #0047bc / #003284) is a CONTROL ink: pill fills, secondary pill ink/borders, inline links + arrow glyphs, and the deep-blue eyebrow register. It never paints body copy, headings, or section surfaces. _(accent-scope)_
+- [always] Every button is a PILL — fixed 48px height, fully-rounded 40px radius, 0/24px inset. The pill silhouette is the brand's most recognizable control shape. _(shape-motif)_
+- [always] One display family end to end — every heading rank speaks Bossa (proxy Lexend Deca) at weight ≤ 500; running text and controls speak Inter. No rank ever goes bold(700): hierarchy is size, never weight. _(type-treatment)_
+- [never] The crimson/maroon family (#a52d44 / #511621 / #742030) is the STORYTELLING emphasis family — the one inverted deep-maroon card, icon strokes, warm wash chips. It never paints an action control: conversion stays blue. _(accent-scope)_
+- [always] Sections live on ONE continuous light canvas (#eff0f0 / #f6f7f8 / #ffffff / pastel noise-art #dae2e8) — separation is breathing room, never a surface cut. Deep navy and crimson appear only as NESTED plates (media windows, the one maroon card), never as a section surface. _(surface-habit)_
+
 ## 2. Surface grammar
 7 surface roles:
 - `surface/primary` - bg `#eff0f0`, intent `cool gray page canvas (bg-surface-01)`, text `text/on-primary`
@@ -143,61 +153,98 @@ Nesting: `surface/accent` allowed only inside `surface/primary`, `surface/panel`
 
 | slot | role | contract |
 |---|---|---|
+| brand | Remote wordmark | `media` |
+| navlinks | primary nav triggers (pill hover wash #e7e8e9, radius 40) | `content` |
+| actions | Login link + neutral filled Book demo pill | `content` |
 
 ### hero
 
 | slot | role | contract |
 |---|---|---|
+| heading | display heading (Bossa 400 sentence) | `content` |
+| body | supporting paragraph | `content` |
+| actions | primary filled pill + secondary outlined pill | `content` |
+| media | globe/product illustration | `media` |
 
 ### logo-wall
 
 | slot | role | contract |
 |---|---|---|
+| caption | uppercase microlabel ('GLOBAL COMPANIES GROW WITH REMOTE') | `content` |
+| logos | 12 monochrome ink logo SVGs, spaced row | `media` |
 
 ### feature-accordion
 
 | slot | role | contract |
 |---|---|---|
+| eyebrow | crimson uppercase label ('HOW WE DO IT') | `content` |
+| heading | section h2 | `content` |
+| list | accordion items w/ deep-accent active state | `content` |
+| media | product UI collage (profile card + task list) | `media` |
 
 ### infra-panel
 
 | slot | role | contract |
 |---|---|---|
+| media | stacked product-UI proof cards | `media` |
+| eyebrow | blue uppercase label ('INTELLIGENT INFRASTRUCTURE') | `content` |
+| heading | section h2 | `content` |
+| body | supporting copy w/ compliance proof terms | `content` |
 
 ### banner-cta
 
 | slot | role | contract |
 |---|---|---|
+| heading | centered h2 (question form) | `content` |
+| action | single filled blue pill | `content` |
 
 ### workflow-cards
 
 | slot | role | contract |
 |---|---|---|
+| heading | section header stack (eyebrow + heading) | `content` |
+| cards | white cards w/ navy media wells | `content` |
 
 ### partner-logos
 
 | slot | role | contract |
 |---|---|---|
+| heading | centered header stack ('THE GLOBAL PAYROLL BACKBONE') | `content` |
+| logos | 4 partner logos (colored) | `media` |
+| action | outlined pill ('Become a Partner') | `content` |
 
 ### testimonials
 
 | slot | role | contract |
 |---|---|---|
+| heading | centered header ('A word from our customers') | `content` |
+| cards | quote cards w/ avatars + company marks | `content` |
+| action | outlined pill ('Hear from our customers') | `content` |
 
 ### badge-strip
 
 | slot | role | contract |
 |---|---|---|
+| heading | centered heading | `content` |
+| badges | award shield badges (~100px row) | `media` |
+| ratings | review-platform rating chips (glyph + stars + score) | `media` |
+| action | outlined pill | `content` |
 
 ### closing-cta
 
 | slot | role | contract |
 |---|---|---|
+| heading | centered h2 | `content` |
+| body | supporting paragraph | `content` |
+| action | single filled blue pill | `content` |
 
 ### footer
 
 | slot | role | contract |
 |---|---|---|
+| linkcols | 8 grouped link columns (6 visual) | `content` |
+| legal | copyright + disclaimer + policy links | `content` |
+| social | circle social icons (YouTube/LinkedIn/X/Instagram) | `content` |
 
 ## 8. Composition mechanics
 - **inset-panel-hero**: The hero sits on an INSET rounded panel (10px = --zora-radius-x3, the brand's ONE surface radius) painted with the brand's pastel noise-gradient art; text on the art stays dark ink (no scrim, no blur, no white text). The closing CTA repeats the gradient as a full-bleed band.
@@ -292,8 +339,22 @@ Motion is an authored spec (state: defined); intensity stays `medium` (calm/edit
 - `themeViaModes`: True
 - `slotsTakeInstancesOnly`: True
 
-## 15. Confidence flags
+## 15. Provenance & confidence ledger
+
+Every asset and value below is **rendered**. These four buckets annotate how each fact was obtained and where a production swap may later be needed — a flag is never a replacement, substitution, or omission.
+
+**Sampled (measured / extracted from source).** 50 color tokens, 12 type roles, 29 spacing steps carry evidence-backed provenance (see §3-§5).
+
+**Assumed (designed or inferred — flagged, still rendered).**
 - None.
+
+**Substitute (real family loaded; proxy is the fallback only).**
+- `display-hero`, `h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `eyebrow`: render `Bossa`; proxy `Lexend Deca` is the loaded fallback only.
+- `body`, `body-sm`, `control-text`: render `Inter`; proxy `Inter` is the loaded fallback only.
+
+**Needs-licensing (rendered as captured, flagged for production swap).**
+- 31 third-party mark(s) in `media-assets.yaml` (`usageRights: third-party-mark`) — rendered as captured, flagged for a licensed swap; never auto-substituted.
+- 1 own logo mark(s) — rendered, flagged for production review.
 
 ## 16. Section catalog (slot contracts)
 

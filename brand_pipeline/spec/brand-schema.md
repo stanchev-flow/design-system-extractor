@@ -210,6 +210,23 @@ tokens:
                                      # global text/on-*-muted resolution applies.
       textAccent:   "<token ref|null>"
       provenance:   [<sectionId>…]
+  shadow:                            # OPTIONAL elevation SCALE (role→value, when observed)
+    <role>:                          # generic elevation roles: raised, overlay,
+                                     # sticky-nav, dropdown, modal, … (never section names)
+      value:        "<css box-shadow>"
+      role:         "<short intent>" # e.g. "resting card lift", "floating panel"
+      provenance:   [<sectionId>…]
+    # A flat/no-shadow brand records `shadow: {notObserved: true, reason: …}` — its
+    # `no-shadows` neverDo already carries the prohibition; this scale is the positive
+    # capture for brands that DO layer elevation.
+  zIndex:                            # OPTIONAL stacking SCALE (role→value) so the
+    <role>:                          # composition z-ladder is grounded in a captured
+                                     # scale, not implicit. Generic roles: base, raised,
+                                     # sticky-nav, dropdown, overlay, modal, toast, …
+      value:        <int>
+      role:         "<short intent>"
+      provenance:   [<sectionId>…]
+    # Absent ⇒ the renderer keeps its structural z-ladder (fact-gated, byte-identical).
 ```
 
 > **Typography weight — EVERY tier carries a measured `weight`.** `weight` is a
@@ -334,6 +351,13 @@ tokens:
 >   `icon {kind: svg|mask|img|bg, asset, size?, ink?}` + optional `box {width, height,
 >   radius?, bg?}` (the tappable box). No artwork harvested ⇒ author `kind: text`;
 >   renderers degrade to accessible text links, never invented glyphs.
+> - `footer.localeSelector` — OPTIONAL language/region control in the footer, a
+>   first-class slot when observed: `{kind: dropdown|links|button, options?:
+>   [{label, href?, lang?, current?}], ariaLabel?, icon?: {kind: svg|img|mask|bg,
+>   asset, size?}}`. A footer without a locale control records `notObserved: true`
+>   (or omits the key). Options come from the source DOM; an unharvested glyph
+>   degrades to a text control. Capture-side slot — renderer consumption is a
+>   deferred follow-up.
 > - **Single-color glyph RENDERING CONTRACT (fix4 2026-07)** — the chrome's SVG
 >   glyph facts above (trigger/utility chevrons, utility icons, banner arrow/close,
 >   social icons) and the text-CTA `glyph` (§10.2) all emit as SANITIZED INLINE
@@ -398,6 +422,36 @@ tokens:
 >   (`navbar.measured.utilityBarHeight` > 0) but the authored contract lacks
 >   `navbar.utilityTier`, advise (not error): the tier is evidence the authoring
 >   should declare.
+
+> **Mobile drawer + sticky/scroll-shrink nav facts (2026-07 — first-class chrome).**
+> Two nav behaviors were not first-class captured facts: the mobile hamburger→drawer
+> contract, and the sticky / scroll-shrink register the bar adopts on scroll. Both are
+> OPTIONAL and fact-gated — a non-sticky, no-drawer nav records `notObserved: true`
+> and the renderer keeps its default byte-identically. The measured evidence usually
+> already exists in `source-chrome.v2.json` / the Playwright passes; this is an
+> authoring-mandate + schema slot, not new capture tooling. Keys are GENERIC roles
+> (never section/content names) and every value carries provenance.
+>
+> - `navbar.mobile` — the hamburger→drawer contract:
+>   `{trigger: {kind: hamburger|icon|text, asset?, ariaLabel?, box?: {w, h}},
+>   drawerSurface: {bg, ink?, width?: <CSS len|fraction>, side: left|right|top|full,
+>   radius?, shadow?}, drawerAnim: {property, durationMs, easing},
+>   closeAffordance: {kind: x-glyph|text|overlay-tap, asset?, ariaLabel?},
+>   states?: {closed?: {…}, open?: {…}}}`. A `trigger.kind` glyph whose artwork was
+>   not harvested degrades to an accessible text/box trigger (never invented artwork).
+>   A nav that never collapses to a drawer records `navbar.mobile: {notObserved: true,
+>   reason: …}`.
+> - `navbar.sticky` — the sticky / scroll-shrink register:
+>   `{behavior: sticky|scroll-shrink|hide-on-scroll|static, shrinkAt?: <int px scroll
+>   depth>, fromRegister?: {height?, bg?, paddingY?, logoScale?}, toRegister?:
+>   {height?, bg?, paddingY?, logoScale?}, transitionMs?, easing?}`. `fromRegister`
+>   is the at-rest pose, `toRegister` the scrolled/shrunk pose; a plain sticky bar
+>   with no shrink carries only `behavior: sticky`. A static bar records
+>   `navbar.sticky: {behavior: static}` or `{notObserved: true, reason: …}`.
+> - **Capture-side only for now.** These define the schema slots + capture mandate;
+>   RENDERER CONSUMPTION (driving an actual composed drawer + scroll-shrink transition)
+>   is a deferred follow-up — it touches the compose/renderer files under concurrent
+>   edit.
 
 > **Vertical rhythm (spacing) — STYLE owns the scale, BRAND owns the measured values.**
 > The active STYLE layer (`styles/<id>.md`, front-matter `spacing:` — authoritative — with
@@ -2141,6 +2195,46 @@ A composition slot whose evidence prose names an outline/ghost/quiet treatment s
 the family whose `style:` fact matches (component_render.button_family_for_style) — the
 `style:` word is therefore normative vocabulary, not a free-text note.
 
+### 10.2b Exhaustive per-component interaction STATES (capture contract, 2026-07)
+
+The button matrix (§10.2) requires state facts on action families; this contract
+generalizes that discipline to EVERY interactive component — links, tabs,
+accordions, carousels, form fields (inputs/selects/checkboxes), and nav controls.
+Each such component enumerates its FULL applicable interaction-state set, not a
+single hover fact. Where a component carries per-state paint/geometry, author it as
+an OPTIONAL generic `states:` map (fact-gated, backward-compatible — absent ⇒
+byte-identical):
+
+```yaml
+<interactive-component>:            # buttons.<family>, blocks.tabs, blocks.accordion,
+                                    # blocks.form field, navbar controls, …
+  states:                          # OPTIONAL — the observed interaction-state register set
+    hover:    { <measured paint/geometry deltas> }
+    active:   { … }                # a.k.a. pressed — use one generic key consistently
+    focus:    { <ring/outline facts> }
+    disabled: { <muted paint facts> }
+    open:     { … }                # disclosure components: open|expanded|current as applicable
+  statesObserved: [idle]           # ONLY when the source truly ships a single register,
+                                    # after re-checking css-facts.json (a claim, not a default)
+```
+
+Rules (capture-side; renderer consumption is deferred where a component does not
+already read states):
+
+- **Enumerate, don't sample once.** The applicable set is `hover`,
+  `active`/`pressed`, `focus`, `disabled` for controls, plus
+  `open`/`expanded`/`current` for disclosure components
+  (accordion/tabs/dropdown/modal/mega-menu/carousel).
+- **Evidence or explicit absence.** Every listed state is an evidenced fact from
+  `css-facts.json` hoverRules / transitions / computed samples, OR the state is
+  recorded `notObserved` with where-you-looked — never silently dropped. Mirror the
+  §10.2 `bgHover ⇒ fgHover` pairing for any state that changes a fill.
+- **Fact-gated.** A component with no register beyond idle records
+  `statesObserved: [idle]`; a component that carries no `states:` map renders
+  exactly as before. Existing `buttons.<family>` state keys (`bgHover`, `bgPressed`,
+  `fgHover`, `focus`, `decoration`) remain the normative button shape — the generic
+  `states:` map is the additive superset for components that lack a bespoke slot.
+
 ### 10.3 `footer.legal.text` — the normative legal-line key (C7)
 
 The composers read the footer legal line from `footer.legal.text`
@@ -2229,6 +2323,48 @@ with meaningful outer silhouette generally evidence `contain`; photos,
 screenshots, and product-UI collages authored as full-bleed regions generally
 evidence `cover`. Exact source decisions remain curator/evidence facts rather
 than universal filename conventions.
+
+### 10.3g `carousel:` — the structured slider/slideshow interaction recipe (2026-07)
+
+Carousel/slider/slideshow timing was previously reachable only as prose
+`jsTimingNotes` + vision `motionHints`. This OPTIONAL structured recipe replaces
+prose reliance with a gate-checkable fact. It lives on the observed carousel/slider
+block (`blocks.carousel.carousel`, or an analogous slider/slideshow interactive
+block) and is fed from `motion-audit.json` `jsTimingNotes` (autoplay intervals JS
+owns) + the crops' `motionHints` (arrows/dots affordances):
+
+```yaml
+blocks:
+  carousel:
+    # … existing block facts (origin/use/slots/provenance/motion timing) …
+    carousel:                        # OPTIONAL structured recipe — omit entirely when absent
+      autoplay:      true|false      # does the track advance on a timer
+      intervalMs:    <int>           # slide DWELL between auto-advances (JS timing)
+      transitionMs:  <int>           # slide TRANSITION duration
+      easing:        "<keyword|cubic-bezier(...)>"   # transition easing
+      controls:      [arrows|dots|none]   # observed control affordances (closed vocab)
+      dots:          true|false      # pagination dots present
+      pauseOnHover:  true|false      # timer pauses on pointer hover
+      loop:          true|false      # wraps past the last slide
+      slidesPerView: <number>        # slides visible at the canonical tier
+      # A field JS timing does not expose is OMITTED (never guessed). A track whose
+      # timing is wholly unreadable records the whole recipe as absent OR:
+      # carousel: { notObserved: true, reason: "<where you looked / why unreadable>" }
+```
+
+Rules:
+
+- **Closed control vocabulary.** `controls[]` entries come from
+  `{arrows, dots, none}` only — generic affordance names, never brand/content names.
+- **Fact-gated + backward-compatible.** Absent recipe ⇒ the block behaves exactly as
+  before (the §10.3e C13 interactive-block timing fact still applies). A present
+  recipe that carries `intervalMs`/`transitionMs` also SATISFIES the C13
+  interactive-block timing requirement for that block.
+- **Numbers are numeric.** `intervalMs`/`transitionMs`/`slidesPerView` are numbers
+  (ms integers / a count); `autoplay`/`dots`/`pauseOnHover`/`loop` are booleans.
+- **Capture-side only for now.** This defines the schema + capture instruction; the
+  RENDERER CONSUMPTION of the recipe (driving an actual composed slider's timing) is
+  a deferred follow-up (it touches the compose/renderer files under concurrent edit).
 
 ### 10.4 Required sibling outputs (C4–C6, C8–C9)
 

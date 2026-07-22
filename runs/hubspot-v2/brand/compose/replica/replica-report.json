@@ -1,6 +1,6 @@
 {
  "schemaVersion": "replica-report.v1",
- "overall": 0.9567,
+ "overall": 0.9556,
  "bands": [
   {
    "id": "page-nav",
@@ -159,16 +159,70 @@
   {
    "id": "footer",
    "label": "footer (closing bookend)",
-   "structure": 0.9807,
-   "pixel": 0.9706,
-   "height": 0.9238,
-   "score": 0.9663,
-   "widthFidelity": 0.9707,
+   "structure": 0.9808,
+   "pixel": 0.9695,
+   "height": 0.8659,
+   "score": 0.9544,
+   "widthFidelity": 0.967,
    "srcContentFrac": 0.6406,
-   "replicaContentFrac": 0.6219,
+   "replicaContentFrac": 0.6625,
    "srcHeight": 656,
-   "replicaHeight": 606,
+   "replicaHeight": 568,
    "pair": "diff/footer.png"
+  }
+ ],
+ "perViewport": [
+  {
+   "viewport": 1440,
+   "scrollWidth": 1440,
+   "overflowPx": 0,
+   "bands": 12,
+   "heroHeight": 750,
+   "footerColumns": 5,
+   "docHeight": 6947,
+   "overflowEl": "",
+   "screenshot": "replica-fullpage-1440.png",
+   "responsivenessHealth": 1.0,
+   "primary": true
+  },
+  {
+   "viewport": 1920,
+   "scrollWidth": 1920,
+   "overflowPx": 0,
+   "bands": 12,
+   "heroHeight": 750,
+   "footerColumns": 5,
+   "docHeight": 6947,
+   "overflowEl": "",
+   "screenshot": "replica-fullpage-1920.png",
+   "responsivenessHealth": 1.0,
+   "primary": false
+  },
+  {
+   "viewport": 960,
+   "scrollWidth": 968,
+   "overflowPx": 8,
+   "bands": 12,
+   "heroHeight": 750,
+   "footerColumns": 5,
+   "docHeight": 7380,
+   "overflowEl": "cs-module cs-module--plate cs-module--anatomy",
+   "screenshot": "replica-fullpage-960.png",
+   "responsivenessHealth": 0.9833,
+   "primary": false
+  },
+  {
+   "viewport": 375,
+   "scrollWidth": 948,
+   "overflowPx": 573,
+   "bands": 12,
+   "heroHeight": 861,
+   "footerColumns": 5,
+   "docHeight": 10507,
+   "overflowEl": "cs-edgecut",
+   "screenshot": "replica-fullpage-375.png",
+   "responsivenessHealth": 0.5,
+   "primary": false
   }
  ],
  "punchList": [
@@ -200,6 +254,6 @@
  "inputDigest": "92d60be505a237687e7cfa5bdfb3ed9a500a178b3db25d0982d8a44d79972a4d",
  "sourceShot": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot-fullpage.png",
  "sourceHeight": 6986,
- "replicaHeight": 6985,
+ "replicaHeight": 6947,
  "brand": "HubSpot"
 }
