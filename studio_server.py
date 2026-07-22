@@ -290,6 +290,89 @@ def compose_pages(version: str) -> list[dict]:
     return out
 
 
+# Image extensions we treat as a lane's screenshot thumbnail.
+_THUMB_EXTS = {".png", ".jpg", ".jpeg", ".webp", ".avif", ".gif"}
+
+
+def _lane_thumb(lane_dir: Path) -> str:
+    """Best-effort representative screenshot for a compose lane.
+
+    Looks in the lane's `shots/` dir first, then the lane dir itself, for an
+    image. Prefers a full-page desktop capture (name hints "fullpage"/desktop
+    widths) and avoids diff/contact-sheet composites so the thumbnail shows the
+    page itself. Returns a site-relative URL, or "" when the lane has no image.
+
+    Generic over brand/lane: purely name + location heuristics, no hardcoding.
+    """
+
+    def score(p: Path) -> tuple:
+        n = p.name.lower()
+        is_page = "diff" not in n and "vs-source" not in n and "contact" not in n
+        return (
+            is_page,
+            "fullpage" in n or "full" in n,
+            "1440" in n or "1920" in n or "desktop" in n,
+            p.stat().st_mtime,
+        )
+
+    candidates: list[Path] = []
+    shots = lane_dir / "shots"
+    if shots.is_dir():
+        candidates += [
+            p for p in shots.iterdir() if p.is_file() and p.suffix.lower() in _THUMB_EXTS
+        ]
+    candidates += [
+        p for p in lane_dir.iterdir() if p.is_file() and p.suffix.lower() in _THUMB_EXTS
+    ]
+    if not candidates:
+        return ""
+    best = max(candidates, key=score)
+    return "/" + str(best.relative_to(PROJECT_DIR)).replace("\\", "/")
+
+
+def brand_pages(version: str) -> dict:
+    """Browsable brand-surface PAGES for the project view (step-2 vs step-3).
+
+    Scans `runs/<version>/brand/compose/<lane>/index.html` (the page composer
+    output) and classifies each lane that has a direct `index.html`:
+
+      - the measured REPLICA — lane dir named "replica", the 1:1 rebuild from
+        measured tokens (step 2);
+      - harness-GENERATED pages — every other lane (e.g. "ai-product-launch"),
+        composed by the generation harness (step 3).
+
+    Generic over brand + lane names (never hardcodes a project or lane), and
+    degrades to empty lists when nothing is composed yet. Returns:
+
+        {"replica": <page|None>, "generated": [<page>, ...]}
+
+    where each page is {"lane", "kind", "label", "url", "thumb"}. `url`/`thumb`
+    are site-relative paths served by the existing runs/** static route.
+    """
+    compose_dir = RUNS_DIR / version / "brand" / "compose"
+    replica: dict | None = None
+    generated: list[dict] = []
+    if not compose_dir.is_dir():
+        return {"replica": None, "generated": []}
+    for lane_dir in sorted(p for p in compose_dir.iterdir() if p.is_dir()):
+        index = lane_dir / "index.html"
+        if not index.exists():
+            continue
+        is_replica = lane_dir.name.lower() == "replica"
+        page = {
+            "lane": lane_dir.name,
+            "kind": "replica" if is_replica else "generated",
+            "label": "Replica (measured)" if is_replica else lane_dir.name,
+            "url": "/" + str(index.relative_to(PROJECT_DIR)).replace("\\", "/"),
+            "thumb": _lane_thumb(lane_dir),
+        }
+        if is_replica:
+            replica = page
+        else:
+            generated.append(page)
+    return {"replica": replica, "generated": generated}
+
+
 # Friendly labels for the variance-dial hero variants (render_hero_variants.py).
 _VARIANT_LABELS = {
     "a": "Variant A — Safe",
@@ -689,6 +772,7 @@ def project_detail(version: str) -> dict:
         "composed_pages": compose_pages(version),
         "variant_pages": variant_pages(version),
         "static_lanes": static_brand_lanes(version),
+        "brand_pages": brand_pages(version),
         "lanes": lanes,
         # Back-compat keys
         "contract": docs["contract"],
@@ -1328,6 +1412,9 @@ class StudioHandler(SimpleHTTPRequestHandler):
         if path.startswith("/project/"):
             version = unquote(path.rsplit("/", 1)[-1])
             return self._send_html(render_detail(version))
+        if path.startswith("/compare/"):
+            version = unquote(path.rsplit("/", 1)[-1])
+            return self._send_html(render_compare(version))
         # The pipeline viewer and old compare page are now the unified project canvas.
         if path in ("/compare-frameworks.html", "/compare-frameworks", "/viewer.html", "/viewer"):
             qs = parse_qs(urlparse(self.path).query)
@@ -1788,7 +1875,52 @@ const catalogTabs = hasCatalog ? [["catalog","Catalog (" + ((C.counts && C.count
 const brandFileTabs = [];
 if (D.brand_yaml_url) brandFileTabs.push(["brandyaml","brand.yaml"]);
 if (D.brand_md_url) brandFileTabs.push(["brandmd","brand.md"]);
-const sideTabs = catalogTabs.concat(onbrandTabs).concat(brandFileTabs).concat(sideTabsBase).concat([["assets","Assets (" + (D.assets.total||0) + ")"]]);
+// Browsable brand-surface pages: measured replica (step 2) + harness-generated
+// pages (step 3). Listed first so it is the default tab when either exists.
+const BP = D.brand_pages || {};
+const bpCount = (BP.replica ? 1 : 0) + ((BP.generated || []).length);
+const pagesTabs = bpCount ? [["pages","Pages (" + bpCount + ")"]] : [];
+const sideTabs = pagesTabs.concat(catalogTabs).concat(onbrandTabs).concat(brandFileTabs).concat(sideTabsBase).concat([["assets","Assets (" + (D.assets.total||0) + ")"]]);
+
+// ---- brand pages: measured replica (step 2) vs harness-generated (step 3) ----
+function pageCard(p, sub) {
+  const thumb = p.thumb
+    ? `<div class="bg-white rounded-lg overflow-hidden ring-1 ring-white/10 mb-2"><img src="${p.thumb}" loading="lazy" class="w-full block" onerror="this.parentElement.style.display='none'"></div>`
+    : `<div class="grid place-items-center bg-black/30 rounded-lg h-24 text-zinc-600 text-[11px] mb-2">no screenshot yet</div>`;
+  return `<section class="card p-3 mb-3">
+    <div class="flex items-center justify-between gap-2 mb-1">
+      <div class="text-sm font-semibold text-zinc-100 truncate" title="${esc(p.label)}">${esc(p.label)}</div>
+      <span class="badge ${p.kind === "replica" ? "b-done" : "b-idle"}">${esc(p.kind)}</span>
+    </div>
+    <div class="text-[10px] uppercase tracking-[0.14em] text-zinc-500 mb-2">${sub}</div>
+    ${thumb}
+    <div class="flex flex-wrap gap-1">
+      <a href="${p.url}" target="_blank" class="btn btn-primary" style="height:28px;padding:0 10px;font-size:11px">Open page ↗</a>
+    </div>
+  </section>`;
+}
+function renderPages() {
+  const P = D.brand_pages || {};
+  const rep = P.replica;
+  const gen = P.generated || [];
+  if (!rep && !gen.length) {
+    return '<div class="card p-6 text-sm text-zinc-500">No composed pages yet. They appear automatically once <code>runs/' + esc(D.version) + '/brand/compose/&lt;lane&gt;/index.html</code> exists (measured <code>replica</code> = step 2, harness lanes = step 3).</div>';
+  }
+  const compareBtn = (rep && gen.length)
+    ? `<a href="/compare/${encodeURIComponent(D.version)}" target="_blank" class="btn btn-primary" style="height:30px;padding:0 12px;font-size:12px">Compare replica ⇆ generated ↗</a>`
+    : "";
+  const head = `<div class="mb-3">
+      <div class="text-xs text-zinc-400 leading-relaxed mb-2">Measured <b class="text-zinc-200">replica</b> (step-2 1:1 rebuild from measured tokens) vs harness-<b class="text-zinc-200">generated</b> pages (step 3). Open either, or view them side by side.</div>
+      ${compareBtn}
+    </div>`;
+  const repHtml = rep
+    ? `<h3 class="text-xs uppercase tracking-wider text-zinc-400 mb-2 mt-1">Replica (measured)</h3>${pageCard(rep, "compose/" + esc(rep.lane) + "/index.html · measured-token rebuild")}`
+    : `<div class="card p-3 text-[11px] text-zinc-500 mb-3">No measured replica (<code>compose/replica/index.html</code>) yet.</div>`;
+  const genHtml = gen.length
+    ? `<h3 class="text-xs uppercase tracking-wider text-zinc-400 mb-2 mt-2">Generated <span class="badge b-idle">${gen.length}</span></h3>` + gen.map(p => pageCard(p, "compose/" + esc(p.lane) + "/index.html · harness-generated")).join("")
+    : `<div class="card p-3 text-[11px] text-zinc-500">No harness-generated pages yet.</div>`;
+  return head + repHtml + genHtml;
+}
 
 function renderAssets() {
   const A = D.assets;
@@ -2234,6 +2366,7 @@ function paintSideTab(active) {
   currentSideTab = active;
   $("side-tabs").querySelectorAll("button").forEach(x => x.classList.toggle("on", x.dataset.s === active));
   const body = $("side-body");
+  if (active === "pages") { body.innerHTML = renderPages(); return; }
   if (active === "assets") { body.innerHTML = renderAssets(); return; }
   if (active === "catalog") { body.innerHTML = renderCatalog(); return; }
   if (active === "onbrand") { body.innerHTML = renderOnbrand(); return; }
@@ -2253,6 +2386,135 @@ $("info-toggle").onclick = () => {
   $("info-toggle").textContent = sideOpen ? "Info ◂" : "Info ▸";
   setTimeout(fitAll, 60);
 };
+</script></body></html>""".replace("__DATA__", data_json)
+
+
+def render_compare(version: str) -> str:
+    """Side-by-side comparison page: measured REPLICA (left) vs a harness-GENERATED
+    page (right), each in its own iframe rendered at desktop width and scaled to
+    fit. Generic over brand/lane via brand_pages(); the generated lane is chosen
+    from the ?gen=<lane> query param (default: first generated lane). Degrades to
+    a friendly message when the replica or a generated page is missing.
+    """
+    pages = brand_pages(version)
+    payload = {
+        "version": version,
+        "replica": pages.get("replica"),
+        "generated": pages.get("generated") or [],
+    }
+    data_json = (
+        json.dumps(payload)
+        .replace("</", "<\\/")
+        .replace("\u2028", "\\u2028")
+        .replace("\u2029", "\\u2029")
+    )
+    return PAGE_HEAD + """
+<div class="h-screen flex flex-col">
+  <div class="flex items-center justify-between gap-3 px-5 py-3 border-b border-zinc-800 shrink-0">
+    <div class="min-w-0">
+      <a id="c-back" class="text-xs text-zinc-400 hover:text-white">← Project</a>
+      <div class="flex items-baseline gap-3 min-w-0">
+        <h1 class="text-lg font-bold tracking-tight truncate">Replica ⇆ Generated</h1>
+        <span id="c-version" class="text-xs text-zinc-500 truncate"></span>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <label class="text-[11px] text-zinc-400">Generated lane</label>
+      <select id="c-gen" class="min-w-0" style="max-width:260px"></select>
+    </div>
+  </div>
+  <div id="c-lanes" class="flex-1 flex gap-3 p-3 min-h-0">
+    <section class="lane card overflow-hidden flex flex-col flex-1 min-w-0">
+      <div class="px-3 py-2 border-b border-zinc-800 flex items-center justify-between gap-2 shrink-0" style="height:46px">
+        <span class="text-xs font-semibold text-zinc-300">Replica (measured) <span class="badge b-done">step 2</span></span>
+        <a id="c-left-open" target="_blank" class="text-[11px] text-emerald-400 hover:underline" style="display:none">open ↗</a>
+      </div>
+      <div class="lane-body flex-1 min-h-0 bg-white">
+        <div class="lane-sizer" data-lane="left"><iframe data-lane="left" class="lane-frame" style="border:0"></iframe></div>
+        <div id="c-left-empty" class="p-6 text-sm text-zinc-500" style="display:none">No measured replica (compose/replica/index.html) yet.</div>
+      </div>
+    </section>
+    <section class="lane card overflow-hidden flex flex-col flex-1 min-w-0">
+      <div class="px-3 py-2 border-b border-zinc-800 flex items-center justify-between gap-2 shrink-0" style="height:46px">
+        <span id="c-right-label" class="text-xs font-semibold text-zinc-300 truncate">Generated <span class="badge b-idle">step 3</span></span>
+        <a id="c-right-open" target="_blank" class="text-[11px] text-emerald-400 hover:underline" style="display:none">open ↗</a>
+      </div>
+      <div class="lane-body flex-1 min-h-0 bg-white">
+        <div class="lane-sizer" data-lane="right"><iframe data-lane="right" class="lane-frame" style="border:0"></iframe></div>
+        <div id="c-right-empty" class="p-6 text-sm text-zinc-500" style="display:none">No harness-generated page yet.</div>
+      </div>
+    </section>
+  </div>
+</div>
+<script>
+const D = __DATA__;
+const $ = (id) => document.getElementById(id);
+$("c-version").textContent = D.version;
+$("c-back").href = "/project/" + encodeURIComponent(D.version);
+const params = new URLSearchParams(location.search);
+
+const bust = (src) => src + (src.includes("?") ? "&" : "?") + "t=" + Date.now();
+function fitLane(lane) {
+  const sizer = document.querySelector(`.lane-sizer[data-lane="${lane}"]`);
+  const frame = document.querySelector(`iframe[data-lane="${lane}"]`);
+  if (!sizer || !frame || sizer.style.display === "none") return;
+  const w = sizer.parentElement.clientWidth;
+  if (!w) return;
+  const s = w / 1400;
+  let docH = 1600;
+  try {
+    const dd = frame.contentDocument;
+    if (dd) docH = Math.max(dd.body ? dd.body.scrollHeight : 0, dd.documentElement ? dd.documentElement.scrollHeight : 0, 1600);
+  } catch (e) {}
+  frame.style.height = docH + "px";
+  frame.style.transform = "scale(" + s + ")";
+  sizer.style.height = (docH * s) + "px";
+}
+function loadFrame(lane, url) {
+  const sizer = document.querySelector(`.lane-sizer[data-lane="${lane}"]`);
+  const frame = document.querySelector(`iframe[data-lane="${lane}"]`);
+  const empty = $("c-" + lane + "-empty");
+  const open = $("c-" + lane + "-open");
+  if (!url) {
+    sizer.style.display = "none";
+    if (empty) empty.style.display = "block";
+    return;
+  }
+  sizer.style.display = "block";
+  if (empty) empty.style.display = "none";
+  if (open) { open.href = url; open.style.display = "inline"; }
+  frame.onload = () => fitLane(lane);
+  frame.src = bust(url);
+}
+
+// left = measured replica
+loadFrame("left", D.replica ? D.replica.url : "");
+
+// right = harness-generated, selectable
+const gen = D.generated || [];
+const sel = $("c-gen");
+if (!gen.length) {
+  sel.innerHTML = '<option>No generated pages</option>';
+  sel.disabled = true;
+  loadFrame("right", "");
+} else {
+  sel.innerHTML = gen.map((g, i) => `<option value="${i}">${g.label}</option>`).join("");
+  const wanted = params.get("gen");
+  const idx = Math.max(0, gen.findIndex(g => g.lane === wanted));
+  sel.value = idx;
+  const applyRight = () => {
+    const g = gen[sel.value];
+    $("c-right-label").innerHTML = 'Generated: ' + (g.label) + ' <span class="badge b-idle">step 3</span>';
+    loadFrame("right", g.url);
+  };
+  sel.onchange = applyRight;
+  applyRight();
+}
+
+function fitAll() { fitLane("left"); fitLane("right"); }
+window.addEventListener("resize", fitAll);
+setTimeout(fitAll, 300);
+setTimeout(fitAll, 1200);
 </script></body></html>""".replace("__DATA__", data_json)
 
 
