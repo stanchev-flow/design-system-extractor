@@ -51,6 +51,21 @@ STUDIO_DIR = RUNS_DIR / ".studio"
 BASE_CONFIG = PROJECT_DIR / "config-anthropic.yaml"
 PY = sys.executable
 
+# Optional registry of EXTERNAL framework (e.g. shadcn) builds. These are separate
+# Vite apps served on their own ports — Studio can't serve them under runs/, so they
+# are surfaced as external-link entries only. Ports live in this file, never in code,
+# so a build can be re-pointed without touching the server. Shape (JSON array):
+#   [{"version": "<project>", "label": "<human name>", "url": "http://localhost:PORT/"}]
+FRAMEWORK_BUILDS_REGISTRY = STUDIO_DIR / "framework-builds.json"
+# Seed used only to bootstrap the registry the first time it is missing, so the
+# feature is demonstrable out of the box. Once the file exists it is the source of
+# truth and this seed is ignored.
+_DEFAULT_FRAMEWORK_BUILDS = [
+    {"version": "greenhouse-v2", "label": "shadcn harness", "url": "http://localhost:5181/"},
+    {"version": "hubspot-v3", "label": "shadcn full page", "url": "http://localhost:5179/"},
+    {"version": "woodwave-v2", "label": "shadcn full page", "url": "http://localhost:5180/"},
+]
+
 sys.path.insert(0, str(PROJECT_DIR / "tools"))
 sys.path.insert(0, str(PROJECT_DIR / "src"))
 sys.path.insert(0, str(PROJECT_DIR / "brand_pipeline"))
@@ -154,6 +169,172 @@ def resolve_shots_dir(version: str) -> Path | None:
             shutil.copy2(shot, dest)
         return shots
     return None
+
+
+# Extensions we accept as an original-source screenshot. Superset of IMAGE_EXTS
+# (which the run pipeline uses) because live captures also produce .avif.
+SOURCE_IMAGE_EXTS = (".png", ".webp", ".jpg", ".jpeg", ".avif")
+
+
+def load_project_manifest(version: str) -> dict:
+    """Best-effort project manifest for a run.
+
+    A completed run's manifest lives at either `runs/<version>/manifest.json`
+    (multi-page live captures) or `runs/<version>/brand/manifest.json` (brand
+    pipeline runs). Returns {} when neither exists or parses. Generic: no brand
+    or path is hardcoded.
+    """
+    for p in (RUNS_DIR / version / "manifest.json", RUNS_DIR / version / "brand" / "manifest.json"):
+        if p.exists():
+            try:
+                return json.loads(p.read_text())
+            except Exception:
+                pass
+    return {}
+
+
+def _project_source_url(version: str, manifest: dict) -> str:
+    """Live URL for a project: manifest.source_url, else the studio-project.json url."""
+    url = str(manifest.get("source_url") or "").strip()
+    if url:
+        return url
+    meta_path = RUNS_DIR / version / "studio-project.json"
+    if meta_path.exists():
+        try:
+            return str((json.loads(meta_path.read_text()) or {}).get("url") or "").strip()
+        except Exception:
+            return ""
+    return ""
+
+
+def _rel_url(path: Path | None) -> str:
+    """Site-relative URL under PROJECT_DIR for a file, or "" if outside/absent."""
+    if not path:
+        return ""
+    try:
+        return "/" + str(path.resolve().relative_to(PROJECT_DIR)).replace("\\", "/")
+    except Exception:
+        return ""
+
+
+def _primary_page_key(manifest: dict) -> str | None:
+    """Primary/home page key from manifest.source_pages, if declared.
+
+    Prefers an entry whose role mentions "primary"; else the first declared page.
+    Generic over brand + page naming.
+    """
+    pages = manifest.get("source_pages")
+    if isinstance(pages, list):
+        for pg in pages:
+            if isinstance(pg, dict) and "primary" in str(pg.get("role", "")).lower() and pg.get("key"):
+                return str(pg["key"])
+        for pg in pages:
+            if isinstance(pg, dict) and pg.get("key"):
+                return str(pg["key"])
+    return None
+
+
+def resolve_source_image(version: str) -> dict:
+    """Resolve the best available ORIGINAL SOURCE full-page screenshot for a project.
+
+    Generic over brand + capture layout — purely filesystem + manifest heuristics,
+    no project is hardcoded. Tries, in order:
+      1. Multi-page live capture: screenshots/<version>/<page>/<page>-fullpage.<ext>
+         (primary page from manifest.source_pages, else "home"/"index", else the
+         first page dir — e.g. screenshots/greenhouse-v2/home/home-fullpage.png).
+      2. Single full-page snapshot at the capture root:
+         screenshots/<version>/*fullpage*.<ext>, preferring the un-suffixed base
+         file over width variants (e.g. hubspot-fullpage.png over -1920).
+      3. Any root-level image in screenshots/<version>/ (brand-name match first).
+      4. Brand-level snapshot: screenshots/<brand>/<brand>.<ext> where <brand> is
+         <version> with a trailing -vN stripped (e.g. greenhouse), else any image.
+      5. Replica source crop: runs/<version>/brand/compose/replica/diff/*.png
+         (top-of-page crop) as a last-resort partial source.
+
+    Returns {"url", "source_url", "label", "kind"}: url is a site-relative path or
+    "" when nothing is found; label is "Source — <url>" (or "Source"); kind is one
+    of fullpage/snapshot/crop (or "" when no image resolved).
+    """
+    manifest = load_project_manifest(version)
+    source_url = _project_source_url(version, manifest)
+
+    def result(path: Path | None, kind: str) -> dict:
+        url = _rel_url(path)
+        label = ("Source — " + source_url) if source_url else "Source"
+        return {"url": url, "source_url": source_url, "label": label, "kind": kind if url else ""}
+
+    cap = SCREENSHOTS_DIR / version
+
+    # 1) multi-page live capture: <page>/<page>-fullpage.<ext>
+    if cap.is_dir():
+        page_dirs = [
+            p for p in sorted(cap.iterdir()) if p.is_dir() and not p.name.endswith("_files")
+        ]
+        ranked: list[Path] = []
+        seen: set[str] = set()
+        for name in [_primary_page_key(manifest), "home", "index"]:
+            if not name:
+                continue
+            d = cap / name
+            if d.is_dir() and d.name not in seen:
+                ranked.append(d)
+                seen.add(d.name)
+        for d in page_dirs:
+            if d.name not in seen:
+                ranked.append(d)
+                seen.add(d.name)
+        for d in ranked:
+            shot = next(
+                (d / f"{d.name}-fullpage{ext}" for ext in SOURCE_IMAGE_EXTS if (d / f"{d.name}-fullpage{ext}").is_file()),
+                None,
+            )
+            if shot:
+                return result(shot, "fullpage")
+
+    # 2) single full-page snapshot at the capture root
+    if cap.is_dir():
+        full = [
+            p
+            for p in sorted(cap.iterdir())
+            if p.is_file() and "fullpage" in p.stem.lower() and p.suffix.lower() in SOURCE_IMAGE_EXTS
+        ]
+        if full:
+            # Prefer the base capture (no trailing "-<width>") over viewport variants.
+            base = [p for p in full if not re.search(r"-\d+$", p.stem)]
+            return result((base or full)[0], "fullpage")
+
+    # 3) any root-level image in the capture dir (brand-name match first)
+    if cap.is_dir():
+        imgs = [p for p in sorted(cap.iterdir()) if p.is_file() and p.suffix.lower() in SOURCE_IMAGE_EXTS]
+        if imgs:
+            vkey = version.lower().replace("-", "").replace("_", "")
+            pick = next(
+                (p for p in imgs if vkey in p.stem.lower().replace("-", "").replace("_", "")),
+                None,
+            ) or imgs[0]
+            return result(pick, "snapshot")
+
+    # 4) brand-level snapshot: screenshots/<brand>/
+    brand = re.sub(r"-v\d+$", "", version)
+    if brand and brand != version:
+        bdir = SCREENSHOTS_DIR / brand
+        if bdir.is_dir():
+            named = bdir / f"{brand}.png"
+            if named.is_file():
+                return result(named, "snapshot")
+            imgs = [p for p in sorted(bdir.iterdir()) if p.is_file() and p.suffix.lower() in SOURCE_IMAGE_EXTS]
+            if imgs:
+                return result(imgs[0], "snapshot")
+
+    # 5) replica source crops (partial source), top-of-page first
+    diff = RUNS_DIR / version / "brand" / "compose" / "replica" / "diff"
+    if diff.is_dir():
+        crops = [p for p in sorted(diff.iterdir()) if p.is_file() and p.suffix.lower() in SOURCE_IMAGE_EXTS]
+        top = next((p for p in crops if p.stem.lower() in ("sec-0", "strip", "page-nav")), None)
+        if top or crops:
+            return result(top or crops[0], "crop")
+
+    return result(None, "")
 
 
 def project_meta(version: str) -> dict:
@@ -411,6 +592,191 @@ def variant_pages(version: str) -> list[dict]:
             {
                 "label": label,
                 "url": "/" + str(index.relative_to(PROJECT_DIR)).replace("\\", "/"),
+            }
+        )
+    return out
+
+
+def harness_pages(version: str) -> list[dict]:
+    """Raw three-tier harness spec book for the lane dropdown.
+
+    Discovers `runs/<version>/brand/harness/index.html` (the generation harness's
+    raw spec book) and returns a single selectable lane option pointing at the HTML
+    via the existing runs/** static route. Mirrors compose_pages()/variant_pages():
+    generic over brand/version, degrades to [] when no harness page exists (e.g. a
+    harness dir with only screenshots and no index.html). Thumb comes from the
+    lane's `shots/` dir when present.
+    """
+    index = RUNS_DIR / version / "brand" / "harness" / "index.html"
+    if not index.exists():
+        return []
+    return [
+        {
+            "label": "Harness (raw)",
+            "url": "/" + str(index.relative_to(PROJECT_DIR)).replace("\\", "/"),
+            "kind": "harness",
+            "thumb": _lane_thumb(index.parent),
+        }
+    ]
+
+
+def sections_pages(version: str) -> list[dict]:
+    """Relume 25-section bakeoff gallery for the lane dropdown.
+
+    Discovers `runs/<version>/brand/sections/index.html` (the sections bakeoff
+    gallery) and returns a single selectable lane option pointing at the HTML via
+    the existing runs/** static route. Mirrors compose_pages()/variant_pages():
+    generic over brand/version, degrades to [] when absent. Prefers the dedicated
+    `sections/shots/gallery.png` thumbnail, falling back to the generic lane thumb.
+    """
+    index = RUNS_DIR / version / "brand" / "sections" / "index.html"
+    if not index.exists():
+        return []
+    gallery = index.parent / "shots" / "gallery.png"
+    thumb = (
+        "/" + str(gallery.relative_to(PROJECT_DIR)).replace("\\", "/")
+        if gallery.exists()
+        else _lane_thumb(index.parent)
+    )
+    return [
+        {
+            "label": "Sections (relume)",
+            "url": "/" + str(index.relative_to(PROJECT_DIR)).replace("\\", "/"),
+            "kind": "sections",
+            "thumb": thumb,
+        }
+    ]
+
+
+def _load_framework_registry() -> list[dict]:
+    """Load (bootstrapping on first use) the external framework-builds registry.
+
+    Returns the parsed JSON array from `runs/.studio/framework-builds.json`. If the
+    file does not exist it is created with `_DEFAULT_FRAMEWORK_BUILDS` so the feature
+    is demonstrable; once present the file is the source of truth. Degrades to [] on
+    any read/parse error rather than crashing the payload.
+    """
+    try:
+        STUDIO_DIR.mkdir(parents=True, exist_ok=True)
+        if not FRAMEWORK_BUILDS_REGISTRY.exists():
+            FRAMEWORK_BUILDS_REGISTRY.write_text(
+                json.dumps(_DEFAULT_FRAMEWORK_BUILDS, indent=2) + "\n"
+            )
+        data = json.loads(FRAMEWORK_BUILDS_REGISTRY.read_text())
+    except Exception:
+        return []
+    return data if isinstance(data, list) else []
+
+
+def framework_builds(version: str) -> list[dict]:
+    """External framework (e.g. shadcn) builds for a project, from the registry.
+
+    Reads `runs/.studio/framework-builds.json` and returns the entries whose
+    `version` matches this project as external-link lane options (open in a new
+    tab). Ports come entirely from the registry file, never hardcoded here, so the
+    same code works for any project/port. Degrades to [] when the registry is
+    absent/empty or has no matching entry. Each entry is normalized to
+    `{"label", "url", "kind": "framework", "external": True, "port"}`.
+    """
+    out: list[dict] = []
+    for entry in _load_framework_registry():
+        if not isinstance(entry, dict):
+            continue
+        if str(entry.get("version", "")) != version:
+            continue
+        url = str(entry.get("url", "")).strip()
+        if not url:
+            continue
+        name = str(entry.get("label", "")).strip()
+        port = urlparse(url).port
+        port_tag = f":{port}" if port else ""
+        label = f"Framework build{(' — ' + name) if name else ''} {port_tag} \u2197".strip()
+        out.append(
+            {
+                "label": label,
+                "url": url,
+                "kind": "framework",
+                "external": True,
+                "port": port,
+            }
+        )
+    return out
+
+
+def project_build_links(version: str) -> list[dict]:
+    """Flat, grouped-ready list of EVERY accessible build link for one project.
+
+    This is the single index that powers the global right sidebar. Each entry is
+    `{"kind", "label", "url", "external"}`:
+      - Studio-served entries (source, replica, generated, harness, sections,
+        variants) are only included when their target actually exists on disk, so
+        the sidebar never shows a dead link.
+      - Framework builds come from the registry and are always marked external
+        (`external=True`), since Studio can't verify a port is up — they open in a
+        new tab and are clearly port-labeled.
+
+    Generic over project: nothing here hardcodes a brand or port.
+    """
+    out: list[dict] = []
+
+    # Source (original site) — resolved full-page capture; link to the live URL when
+    # known, else the captured image.
+    src = resolve_source_image(version)
+    src_url = src.get("source_url") or src.get("url") or ""
+    if src_url:
+        out.append(
+            {
+                "kind": "source",
+                "label": "Source (original site)",
+                "url": src_url,
+                "external": bool(src.get("source_url")),
+            }
+        )
+
+    # Replica (measured) + generated pages — from the compose lanes.
+    bp = brand_pages(version)
+    if bp.get("replica"):
+        out.append(
+            {"kind": "replica", "label": "Replica (measured)", "url": bp["replica"]["url"], "external": False}
+        )
+    for page in bp.get("generated", []):
+        out.append(
+            {"kind": "generated", "label": f"Generated: {page['lane']}", "url": page["url"], "external": False}
+        )
+
+    # Harness (raw) + Sections (relume).
+    for page in harness_pages(version):
+        out.append({"kind": "harness", "label": page["label"], "url": page["url"], "external": False})
+    for page in sections_pages(version):
+        out.append({"kind": "sections", "label": page["label"], "url": page["url"], "external": False})
+
+    # Variants.
+    for page in variant_pages(version):
+        out.append({"kind": "variant", "label": f"Variant: {page['label']}", "url": page["url"], "external": False})
+
+    # External framework builds (registry-driven, port-dependent).
+    for fb in framework_builds(version):
+        out.append({"kind": "framework", "label": fb["label"], "url": fb["url"], "external": True})
+
+    return out
+
+
+def build_index() -> list[dict]:
+    """Global index of build links for EVERY project, grouped by project.
+
+    Iterates all discovered projects (via list_projects()) and attaches each one's
+    `project_build_links()`. Projects with no accessible links are still listed (so
+    the index is a faithful map of runs/), but callers may choose to skip empties.
+    Returns `[{"version", "title", "links": [...]}]`.
+    """
+    out: list[dict] = []
+    for p in list_projects():
+        version = p["version"]
+        out.append(
+            {
+                "version": version,
+                "title": p.get("title") or version,
+                "links": project_build_links(version),
             }
         )
     return out
@@ -744,9 +1110,18 @@ def project_detail(version: str) -> dict:
     _raw_lanes = [{"label": lbl, "url": url} for lbl, url in _raw_site_lanes if url]
     _raw_lanes += variant_pages(version)
     _raw_lanes += compose_pages(version)
+    # Raw harness spec book + relume sections gallery are runs-served, so they slot
+    # in as ordinary iframe lanes (the version prefix is applied by mtime like the
+    # rest). External framework builds are NOT added here — they live on other ports
+    # and are surfaced as external links in the payload / build index instead.
+    _harness = harness_pages(version)
+    _sections = sections_pages(version)
+    _raw_lanes += [{"label": p["label"], "url": p["url"]} for p in _harness]
+    _raw_lanes += [{"label": p["label"], "url": p["url"]} for p in _sections]
     _raw_lanes += static_brand_lanes(version)
     _raw_lanes += hero_gallery_lanes(version)
     lanes = versioned_lanes(_raw_lanes)
+    _framework_builds = framework_builds(version)
 
     # On-brand review: per-section renders + links to the canonical brand docs.
     renders = brand_renders(version)
@@ -764,6 +1139,10 @@ def project_detail(version: str) -> dict:
         "brand_md_url": brand_doc_url("brand.md"),
         "catalog": load_catalog(version),
         "screenshot": ("/" + str(shot.relative_to(PROJECT_DIR)).replace("\\", "/")) if shot else "",
+        # Best available ORIGINAL SOURCE full-page capture (multi-page live shot,
+        # single fullpage snapshot, or a graceful fallback). Powers the left
+        # "Source" lane in both the project canvas and the compare view.
+        "source": resolve_source_image(version),
         "site_claude": site_rel(version, item, "claude") if item else "",
         "site_gpt55": site_rel(version, item, "gpt55") if item else "",
         "site_claude_framework": site_rel(version, item, "claude", framework=True) if item else "",
@@ -771,9 +1150,13 @@ def project_detail(version: str) -> dict:
         "site_gemini": site_rel(version, item, "gemini") if item else "",
         "composed_pages": compose_pages(version),
         "variant_pages": variant_pages(version),
+        "harness_page": _harness[0] if _harness else None,
+        "sections_page": _sections[0] if _sections else None,
+        "framework_builds": _framework_builds,
         "static_lanes": static_brand_lanes(version),
         "brand_pages": brand_pages(version),
         "lanes": lanes,
+        "build_links": project_build_links(version),
         # Back-compat keys
         "contract": docs["contract"],
         "contract_audit": docs["contract_audit"],
@@ -1393,6 +1776,8 @@ class StudioHandler(SimpleHTTPRequestHandler):
             return self._send_html(render_dashboard())
         if path == "/api/projects":
             return self._send_json({"projects": list_projects()})
+        if path == "/api/build-index":
+            return self._send_json({"projects": build_index()})
         if path.startswith("/api/jobs/"):
             job_id = unquote(path.rsplit("/", 1)[-1])
             with JOBS_LOCK:
@@ -1536,9 +1921,95 @@ PAGE_HEAD = """<!doctype html><html lang="en"><head><meta charset="utf-8">
 </style></head><body class="antialiased">"""
 
 
+_KIND_STYLE = {
+    "source": ("Source", "text-sky-300"),
+    "replica": ("Replica", "text-emerald-300"),
+    "generated": ("Generated", "text-teal-300"),
+    "harness": ("Harness", "text-amber-300"),
+    "sections": ("Sections", "text-fuchsia-300"),
+    "variant": ("Variant", "text-indigo-300"),
+    "framework": ("Framework", "text-orange-300"),
+}
+
+
+def _esc_attr(text: str) -> str:
+    return (
+        (text or "")
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+    )
+
+
+def _render_build_link_rows(links: list[dict]) -> str:
+    """Server-render one project's build links as hover rows (kind chip + label).
+
+    Shared by the global dashboard index and the per-project sidebar so the two
+    never drift. Empty → a muted "no builds yet" placeholder.
+    """
+    rows: list[str] = []
+    for l in links:
+        label, cls = _KIND_STYLE.get(l["kind"], ("Link", "text-zinc-300"))
+        ext = ' <span class="text-[10px] text-orange-400">\u2197 external</span>' if l.get("external") else ""
+        rows.append(
+            f'<a href="{_esc_attr(l["url"])}" target="_blank" rel="noopener" '
+            'class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-white/5 transition-colors group">'
+            f'<span class="text-[10px] uppercase tracking-wider {cls} shrink-0" style="width:74px">{label}</span>'
+            f'<span class="text-xs text-zinc-300 group-hover:text-zinc-100 truncate flex-1" title="{_esc_attr(l["label"])}">{_esc_attr(l["label"])}</span>'
+            f"{ext}</a>"
+        )
+    return "".join(rows) if rows else '<div class="px-2 py-1 text-[11px] text-zinc-600">no builds yet</div>'
+
+
+def render_project_builds_html(version: str, title: str | None = None) -> str:
+    """Server-render the per-project builds panel for the /project/<version> sidebar.
+
+    Scoped to ONE project (its `project_build_links(version)`), labeled with the
+    project name. Links are present in the initial HTML (no client fetch needed) and
+    only include targets that exist on disk; framework builds are external/port-
+    labeled from the registry. Generic over project — nothing brand-specific here.
+    """
+    links = project_build_links(version)
+    name = title or version
+    return (
+        '<div class="flex items-center justify-between gap-2 px-1 mb-2">'
+        f'<div class="text-xs font-semibold text-zinc-100 truncate" title="{_esc_attr(name)} — builds">{_esc_attr(name)} <span class="text-zinc-500">— builds</span></div>'
+        f'<span class="text-[10px] text-zinc-600 shrink-0">{len(links)}</span>'
+        "</div>"
+        f'<div class="rounded-lg border border-zinc-800/70 divide-y divide-zinc-800/50 overflow-hidden">{_render_build_link_rows(links)}</div>'
+    )
+
+
+def render_build_index_html() -> str:
+    """Server-render the global build index (used as the dashboard sidebar content).
+
+    Rendering server-side means the links are present in the very first HTML
+    response (so a plain GET / already contains every project's build links); the
+    client-side loadBuildIndex() still refreshes it live afterwards. Mirrors the JS
+    renderer exactly so the two never drift visibly.
+    """
+    projects = sorted(build_index(), key=lambda p: len(p["links"]), reverse=True)
+    blocks: list[str] = []
+    for p in projects:
+        links = p["links"]
+        body = _render_build_link_rows(links)
+        blocks.append(
+            '<section class="mb-3">'
+            '<div class="flex items-center justify-between gap-2 px-1 mb-1">'
+            f'<a href="/project/{quote(p["version"])}" class="text-xs font-semibold text-zinc-100 hover:text-emerald-300 truncate" title="{_esc_attr(p["title"])}">{_esc_attr(p["title"])}</a>'
+            f'<span class="text-[10px] text-zinc-600 shrink-0">{len(links)}</span>'
+            "</div>"
+            f'<div class="rounded-lg border border-zinc-800/70 divide-y divide-zinc-800/50 overflow-hidden">{body}</div>'
+            "</section>"
+        )
+    return "".join(blocks) or '<div class="text-zinc-500 text-xs">No builds discovered.</div>'
+
+
 def render_dashboard() -> str:
-    return PAGE_HEAD + """
-<div class="max-w-6xl mx-auto px-6 py-8">
+    return (PAGE_HEAD + """
+<div class="flex min-h-screen">
+<div class="flex-1 min-w-0 max-w-6xl mx-auto px-6 py-8">
   <div class="flex items-center justify-between mb-6">
     <div>
       <h1 class="text-2xl font-bold tracking-tight">Design System Studio</h1>
@@ -1590,6 +2061,18 @@ def render_dashboard() -> str:
 
   <h2 class="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3">Projects</h2>
   <div id="projects" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+</div>
+
+<aside id="build-sidebar" class="shrink-0 border-l border-zinc-800 bg-zinc-950/40 flex flex-col" style="width:360px;position:sticky;top:0;height:100vh">
+  <div class="px-4 py-3 border-b border-zinc-800 shrink-0 flex items-center justify-between gap-2">
+    <div>
+      <div class="text-sm font-semibold text-zinc-100">All builds</div>
+      <div class="text-[11px] text-zinc-500">Every accessible link, grouped by project</div>
+    </div>
+    <button id="bi-refresh" class="btn btn-ghost" style="height:26px;padding:0 8px;font-size:11px">↻</button>
+  </div>
+  <div id="build-index-body" class="flex-1 overflow-auto p-3 text-sm min-h-0">__BUILD_INDEX__</div>
+</aside>
 </div>
 
 <script>
@@ -1674,7 +2157,57 @@ async function loadProjects() {
   }).join("") || '<div class="text-zinc-500 text-sm">No projects yet. Click “New project”.</div>';
 }
 loadProjects();
-</script></body></html>"""
+
+// ---- global build index: every accessible link, grouped by project ----
+const escB = (s) => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+// Visual style per build kind (label chip color). Generic — no brand names.
+const KIND_STYLE = {
+  source:    ["Source",    "text-sky-300"],
+  replica:   ["Replica",   "text-emerald-300"],
+  generated: ["Generated", "text-teal-300"],
+  harness:   ["Harness",   "text-amber-300"],
+  sections:  ["Sections",  "text-fuchsia-300"],
+  variant:   ["Variant",   "text-indigo-300"],
+  framework: ["Framework", "text-orange-300"],
+};
+function linkRow(l) {
+  const style = KIND_STYLE[l.kind] || ["Link", "text-zinc-300"];
+  const ext = l.external ? ' <span class="text-[10px] text-orange-400">↗ external</span>' : "";
+  return `<a href="${escB(l.url)}" target="_blank" rel="noopener"
+    class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-white/5 transition-colors group">
+    <span class="text-[10px] uppercase tracking-wider ${style[1]} shrink-0" style="width:74px">${style[0]}</span>
+    <span class="text-xs text-zinc-300 group-hover:text-zinc-100 truncate flex-1" title="${escB(l.label)}">${escB(l.label)}</span>
+    ${ext}
+  </a>`;
+}
+function projectBlock(p) {
+  const links = (p.links || []);
+  const body = links.length
+    ? links.map(linkRow).join("")
+    : '<div class="px-2 py-1 text-[11px] text-zinc-600">no builds yet</div>';
+  return `<section class="mb-3">
+    <div class="flex items-center justify-between gap-2 px-1 mb-1">
+      <a href="/project/${encodeURIComponent(p.version)}" class="text-xs font-semibold text-zinc-100 hover:text-emerald-300 truncate" title="${escB(p.title)}">${escB(p.title)}</a>
+      <span class="text-[10px] text-zinc-600 shrink-0">${links.length}</span>
+    </div>
+    <div class="rounded-lg border border-zinc-800/70 divide-y divide-zinc-800/50 overflow-hidden">${body}</div>
+  </section>`;
+}
+async function loadBuildIndex() {
+  const body = document.getElementById("build-index-body");
+  try {
+    const r = await fetch("/api/build-index");
+    const { projects } = await r.json();
+    // Projects with at least one accessible link float to the top; empties still listed.
+    const ranked = (projects || []).slice().sort((a,b) => (b.links||[]).length - (a.links||[]).length);
+    body.innerHTML = ranked.map(projectBlock).join("") || '<div class="text-zinc-500 text-xs">No builds discovered.</div>';
+  } catch (e) {
+    body.innerHTML = '<div class="text-red-400 text-xs">Failed to load build index.</div>';
+  }
+}
+document.getElementById("bi-refresh").onclick = loadBuildIndex;
+loadBuildIndex();
+</script></body></html>""").replace("__BUILD_INDEX__", render_build_index_html())
 
 
 def render_detail(version: str) -> str:
@@ -1708,8 +2241,8 @@ def render_detail(version: str) -> str:
     <div id="lanes" class="flex-1 flex gap-3 p-3 min-h-0 overflow-x-auto">
       <section class="lane card overflow-hidden flex flex-col min-w-[320px] flex-1">
         <div class="px-3 py-2 border-b border-zinc-800 flex items-center justify-between gap-2 shrink-0" style="height:46px">
-          <span class="text-xs font-semibold text-zinc-300">Original site</span>
-          <a id="orig-link" target="_blank" class="text-[11px] text-emerald-400 hover:underline" style="display:none">live ↗</a>
+          <span id="o-title" class="text-xs font-semibold text-zinc-300 truncate" title="Original source screenshot">Original site</span>
+          <a id="orig-link" target="_blank" class="text-[11px] text-emerald-400 hover:underline shrink-0" style="display:none">live ↗</a>
         </div>
         <div class="flex-1 overflow-auto bg-white min-h-0">
           <img id="o-shot" class="w-full block" style="display:none">
@@ -1739,6 +2272,7 @@ def render_detail(version: str) -> str:
     </div>
 
     <aside id="sidebar" class="shrink-0 border-l border-zinc-800 flex flex-col min-h-0" style="width:440px">
+      <div id="project-builds" class="border-b border-zinc-800 shrink-0 p-3 bg-zinc-950/40 max-h-[38vh] overflow-auto">__PROJECT_BUILDS__</div>
       <div class="flex flex-wrap gap-1 p-2 border-b border-zinc-800 shrink-0" id="side-tabs"></div>
       <div class="flex-1 overflow-auto p-3 min-h-0" id="side-body"></div>
     </aside>
@@ -1767,9 +2301,20 @@ statusBadgeEl(D.pipeline_status);
   sw.onchange = () => { location.href = "/project/" + encodeURIComponent(sw.value); };
 })();
 
-// ---- lane 1: original site ----
-if (D.screenshot) { $("o-shot").src = D.screenshot; $("o-shot").style.display="block"; $("o-shot-empty").style.display="none"; }
-if (D.url) { const ol=$("orig-link"); ol.href=D.url; ol.style.display="inline"; }
+// ---- lane 1: original SOURCE site ----
+// Prefer the resolved original-source full-page capture (multi-page live shot or
+// single fullpage snapshot); fall back to the legacy single-screenshot field.
+const SRC = D.source || {};
+const srcUrl = SRC.url || D.screenshot || "";
+if (srcUrl) {
+  $("o-shot").src = srcUrl; $("o-shot").style.display="block"; $("o-shot-empty").style.display="none";
+} else {
+  $("o-shot").style.display="none"; $("o-shot-empty").style.display="block";
+  $("o-shot-empty").textContent = "No source captured.";
+}
+if (SRC.label) $("o-title").textContent = SRC.label;
+const srcLive = SRC.source_url || D.url || "";
+if (srcLive) { const ol=$("orig-link"); ol.href=srcLive; ol.style.display="inline"; }
 
 // ---- lanes 2 & 3: any approach via dropdown, rendered at desktop width and scaled ----
 // Prefer the server's unified, recency-sorted + version-prefixed lane list
@@ -2386,7 +2931,9 @@ $("info-toggle").onclick = () => {
   $("info-toggle").textContent = sideOpen ? "Info ◂" : "Info ▸";
   setTimeout(fitAll, 60);
 };
-</script></body></html>""".replace("__DATA__", data_json)
+</script></body></html>""".replace("__DATA__", data_json).replace(
+        "__PROJECT_BUILDS__", render_project_builds_html(version, d.get("title"))
+    )
 
 
 def render_compare(version: str) -> str:
@@ -2399,6 +2946,8 @@ def render_compare(version: str) -> str:
     pages = brand_pages(version)
     payload = {
         "version": version,
+        # Original source capture for the LEFT lane (source ↔ replica ↔ generated).
+        "source": resolve_source_image(version),
         "replica": pages.get("replica"),
         "generated": pages.get("generated") or [],
     }
@@ -2423,7 +2972,17 @@ def render_compare(version: str) -> str:
       <select id="c-gen" class="min-w-0" style="max-width:260px"></select>
     </div>
   </div>
-  <div id="c-lanes" class="flex-1 flex gap-3 p-3 min-h-0">
+  <div id="c-lanes" class="flex-1 flex gap-3 p-3 min-h-0 overflow-x-auto">
+    <section class="lane card overflow-hidden flex flex-col flex-1 min-w-0">
+      <div class="px-3 py-2 border-b border-zinc-800 flex items-center justify-between gap-2 shrink-0" style="height:46px">
+        <span id="c-src-label" class="text-xs font-semibold text-zinc-300 truncate" title="Original source screenshot">Source <span class="badge b-idle">original</span></span>
+        <a id="c-src-open" target="_blank" class="text-[11px] text-emerald-400 hover:underline shrink-0" style="display:none">live ↗</a>
+      </div>
+      <div class="lane-body flex-1 min-h-0 bg-white overflow-auto">
+        <img id="c-src-img" class="w-full block" style="display:none">
+        <div id="c-src-empty" class="p-6 text-sm text-zinc-500" style="display:none">No source captured.</div>
+      </div>
+    </section>
     <section class="lane card overflow-hidden flex flex-col flex-1 min-w-0">
       <div class="px-3 py-2 border-b border-zinc-800 flex items-center justify-between gap-2 shrink-0" style="height:46px">
         <span class="text-xs font-semibold text-zinc-300">Replica (measured) <span class="badge b-done">step 2</span></span>
@@ -2487,7 +3046,17 @@ function loadFrame(lane, url) {
   frame.src = bust(url);
 }
 
-// left = measured replica
+// left-most lane = ORIGINAL SOURCE capture (an image, not an iframe)
+(function(){
+  const SRC = D.source || {};
+  const img = $("c-src-img"), empty = $("c-src-empty"), open = $("c-src-open"), label = $("c-src-label");
+  if (SRC.label) label.textContent = SRC.label;
+  if (SRC.url) { img.src = bust(SRC.url); img.style.display = "block"; empty.style.display = "none"; }
+  else { img.style.display = "none"; empty.style.display = "block"; }
+  if (SRC.source_url) { open.href = SRC.source_url; open.style.display = "inline"; }
+})();
+
+// middle lane = measured replica
 loadFrame("left", D.replica ? D.replica.url : "");
 
 // right = harness-generated, selectable

@@ -301,7 +301,7 @@ body { min-height: 100%; container-type: size; container-name: frame; }
   --display-size: 2.875rem;
   --radius: 0.625rem;
   --font-heading: 'Bossa', 'Lexend Deca', sans-serif;
-  --font-body: 'Inter', 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
   /* brand-constant aliases for the collage ghost + the cream split panel (layer-1 refs) */
   --c-ghost: var(--color-text-ghost-on-primary);
   --c-panel: var(--surface-surface-panel);
@@ -723,7 +723,11 @@ p { text-wrap-style: balance; }
   height: var(--c-button-height, auto);
   padding: var(--c-button-pad, 0.8em 1.6em); /* provenance: structural — em-relative
      control inset fallback (shape, not magnitude: scales with the button's own size) */
-  border-radius: var(--c-button-radius, var(--radius)); border: none;
+  /* measured control border (sysfix 2026-07): the primary rides the base rule, so its
+     measured `buttons.primary.border` (e.g. a transparent 2px reserve keeping the filled
+     and outline families the same box, or a hairline stroke) must flow through here.
+     Fallback `none` keeps brands without a primary border fact byte-identical. */
+  border-radius: var(--c-button-radius, var(--radius)); border: var(--c-button-border, none);
   transition: background var(--c-motion-fast) var(--c-ease),
               color var(--c-motion-fast) var(--c-ease),
               transform var(--c-motion-fast) var(--c-ease); }
@@ -2135,7 +2139,14 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-conversion-band-art { position: absolute; inset: 0; width: 100%; height: 100%;
   object-fit: cover; z-index: 0; }
 .cs-conversion-sec--band > .cs-conversion { position: relative; z-index: 1; }
-.cs-module--plate { background: var(--c-panel); color: var(--c-panel-ink);
+.cs-module--plate {
+  /* CARD SURFACE (fid 2026-07, inset-card-on-canvas): the plate paints the brand's
+     DECLARED container surface. Default is the page panel role (--c-panel); a brand
+     whose card/container surface is a DISTINCT role from the page panel (e.g. white
+     cards floating on a warmer off-white canvas) re-points --c-card-plate-bg at that
+     role via the module-grid scope. Fact-gated: absent override ⇒ --c-panel, byte-
+     identical for brands whose container role already IS the page panel. */
+  background: var(--c-card-plate-bg, var(--c-panel)); color: var(--c-panel-ink);
   --c-ink: var(--c-panel-ink); --c-accent: var(--c-panel-ink);
   /* re-scope the MUTED ink to the panel too — body/caption text uses
      --c-ink-muted, not --c-ink; without this a plate that sits after an inverse
@@ -2147,7 +2158,13 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   /* plate inset rides the brand's measured panel-padding token when authored
      (fid6 2026-07); the 4-baseline structural default is unchanged without it. */
   --c-plate-pad: var(--space-panel-padding, calc(4 * var(--baseline)));
-  border-radius: var(--radius-card, 0); padding: var(--c-plate-pad); }
+  border-radius: var(--radius-card, 0); padding: var(--c-plate-pad);
+  /* CARD OUTLINE (inset-card-on-canvas): a container surface whose grammar declares
+     a resting hairline border renders it so the card reads as an outlined plate on a
+     low-contrast canvas (the classic white-card-on-cream anatomy). Fact-gated —
+     --c-card-plate-border defaults to `none`, so shadow-elevated / borderless card
+     families (and every current plated brand) stay byte-identical. */
+  border: var(--c-card-plate-border, none); }
 /* FULL-BLEED MEDIA WELL (fid6 2026-07): a plated module's leading media frame runs
    flush to the card's top + side edges (rounded top corners only — the classic card
    anatomy the capture shows: media well INSIDE the plate, bleeding to its edges);
@@ -2187,6 +2204,13 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-modules--edgecut .cs-module-headrow .cs-module-media--mark {
   height: var(--cs-headrow-mark, 1.5rem); flex: 0 0 auto; width: auto; }
 .cs-module-headrow .c-heading { margin: 0; flex: 1 1 auto; }
+/* CARD HEADER RULE (inset-card-on-canvas): a hairline separating the icon+title
+   header from the card body — rendered only when the brand's card grammar declares
+   `headerDivider` (the <hr> is emitted fact-gated), so control-less card families
+   never gain a rule. Rides the plate's own re-scoped hairline; vertical rhythm is the
+   anatomy ladder's owl margin (header→rule→body), so it never double-counts spacing. */
+.cs-modules .cs-module-divider { border: 0; height: 0;
+  border-top: 1px solid var(--c-hairline); width: 100%; }
 
 .cs-marquee { display: block; overflow: hidden; max-width: none;
   /* pin the viewport box to its column (a flex item would otherwise size to the
@@ -2343,7 +2367,14 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 @media (max-width: 767px) {
   .cs-modules--edgecut { gap: 1.25rem; }
   .cs-modules--edgecut > .cs-module { flex-basis: min(86cqw, 24rem); } }
-.cs-module--plate { background: var(--c-panel); color: var(--c-panel-ink);
+.cs-module--plate {
+  /* CARD SURFACE (fid 2026-07, inset-card-on-canvas): the plate paints the brand's
+     DECLARED container surface. Default is the page panel role (--c-panel); a brand
+     whose card/container surface is a DISTINCT role from the page panel (e.g. white
+     cards floating on a warmer off-white canvas) re-points --c-card-plate-bg at that
+     role via the module-grid scope. Fact-gated: absent override ⇒ --c-panel, byte-
+     identical for brands whose container role already IS the page panel. */
+  background: var(--c-card-plate-bg, var(--c-panel)); color: var(--c-panel-ink);
   --c-ink: var(--c-panel-ink); --c-accent: var(--c-panel-ink);
   /* re-scope the MUTED ink to the panel too — body/caption text uses
      --c-ink-muted, not --c-ink; without this a plate that sits after an inverse
@@ -2355,7 +2386,13 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   /* plate inset rides the brand's measured panel-padding token when authored
      (fid6 2026-07); the 4-baseline structural default is unchanged without it. */
   --c-plate-pad: var(--space-panel-padding, calc(4 * var(--baseline)));
-  border-radius: var(--radius-card, 0); padding: var(--c-plate-pad); }
+  border-radius: var(--radius-card, 0); padding: var(--c-plate-pad);
+  /* CARD OUTLINE (inset-card-on-canvas): a container surface whose grammar declares
+     a resting hairline border renders it so the card reads as an outlined plate on a
+     low-contrast canvas (the classic white-card-on-cream anatomy). Fact-gated —
+     --c-card-plate-border defaults to `none`, so shadow-elevated / borderless card
+     families (and every current plated brand) stay byte-identical. */
+  border: var(--c-card-plate-border, none); }
 /* FULL-BLEED MEDIA WELL (fid6 2026-07): a plated module's leading media frame runs
    flush to the card's top + side edges (rounded top corners only — the classic card
    anatomy the capture shows: media well INSIDE the plate, bleeding to its edges);
@@ -2395,6 +2432,13 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-modules--edgecut .cs-module-headrow .cs-module-media--mark {
   height: var(--cs-headrow-mark, 1.5rem); flex: 0 0 auto; width: auto; }
 .cs-module-headrow .c-heading { margin: 0; flex: 1 1 auto; }
+/* CARD HEADER RULE (inset-card-on-canvas): a hairline separating the icon+title
+   header from the card body — rendered only when the brand's card grammar declares
+   `headerDivider` (the <hr> is emitted fact-gated), so control-less card families
+   never gain a rule. Rides the plate's own re-scoped hairline; vertical rhythm is the
+   anatomy ladder's owl margin (header→rule→body), so it never double-counts spacing. */
+.cs-modules .cs-module-divider { border: 0; height: 0;
+  border-top: 1px solid var(--c-hairline); width: 100%; }
 
 /* ANIMATED DISCLOSURE (shared source, AS-47): state fade on the brand's fast tier,
    marker turn + panel height on the structural-collapse tier, brand primary curve. */

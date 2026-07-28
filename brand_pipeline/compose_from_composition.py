@@ -76,6 +76,142 @@ _BESPOKE_ARCHETYPES = ("stack", "collage", "split", "media-split", "stack-fullbl
 
 _GENERIC_FLOW = "generic-flow"
 
+# generic STRUCTURAL vocabulary an author may use to DESCRIBE a two-column band when
+# they don't declare a drawable archetype ("copy-left … right", "side-by-side", a
+# "comparison" of two columns). Brand-/section-agnostic: these are layout descriptors,
+# never brand or content names.
+_TWO_COLUMN_WORDS = (
+    "split", "side-by-side", "side by side", "two-column", "two column",
+    "two-col", "copy-left", "copy left", "copy-right", "copy right",
+    "comparison", "compare", " versus ", " vs ")
+
+# a short numeric FIGURE (percent / count / abbreviated magnitude) — the label of a
+# stat/metric column. Palette- and brand-agnostic (numerals are universal).
+_STAT_FIGURE_RE = re.compile(
+    r"^[\s~<>+±$€£¥]*\d[\d\s.,]*\s*(?:%|k|m|b|bn|x|\+|st|nd|rd|th)?[\s+]*$",
+    re.IGNORECASE)
+
+
+def _is_stat_figure(text) -> bool:
+    s = str(text or "").strip()
+    return bool(s) and len(s) <= 12 and bool(_STAT_FIGURE_RE.match(s))
+
+
+# number words → count, for a declared column hint ("three-column …", "2-up grid").
+_COLUMN_WORD = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6}
+_COLUMN_HINT_RE = re.compile(
+    r"(\d+|one|two|three|four|five|six)[\s-]*(?:column|col|up)\b", re.IGNORECASE)
+
+
+def _declared_column_count(probe: str) -> int:
+    """Column count the author DESCRIBED in the section's structural label ("three-
+    column …", "3-up card row"). Generic structural vocabulary, brand-agnostic. 0 when
+    the label states none."""
+    m = _COLUMN_HINT_RE.search(probe or "")
+    if not m:
+        return 0
+    tok = m.group(1).lower()
+    try:
+        n = int(tok)
+    except ValueError:
+        n = _COLUMN_WORD.get(tok, 0)
+    return n if 1 <= n <= 6 else 0
+
+
+def _numeric_stat_list(slots: list[dict]) -> bool:
+    """True when a repeated LIST collection reads as a STAT/figure band (the majority
+    of its items' labels are short numerals) — those belong in the horizontal stat
+    band (generic-flow), never a caption stack or a card grid."""
+    for s in slots:
+        if str(s.get("contract") or "").lower() != "list":
+            continue
+        items = _repeatable_copy(s)
+        if len(items) < 2:
+            continue
+        figures = sum(1 for it in items
+                      if _is_stat_figure(_text(it, "label", "title", "value", "figure")))
+        if figures * 2 >= len(items):
+            return True
+    return False
+
+
+def _is_hero_like(archetype: str, section: dict, slots: list[dict]) -> bool:
+    """A section DESCRIBED as a hero by a non-drawable structural label (e.g.
+    ``centered-copy-with-floating-media`` + useCase "…opening hero…"). Without routing
+    it through the real hero composer it collapses into the generic-flow / conversion
+    stack (a full-bleed collage asset stacked at full width, 2–3x too tall). Fact-gated
+    and brand-agnostic: the whole word "hero" in the archetype/useCase PLUS a heading
+    and a media OR action slot — never brand or content names."""
+    probe = (str(archetype) + " " + str(section.get("useCase") or "")).lower()
+    if not re.search(r"\bhero\b", probe):
+        return False
+    has_heading = any(str(s.get("contract") or "").lower() in ("heading", "header")
+                      for s in slots)
+    has_media = any(_is_media_slot(s) for s in slots)
+    has_cta = any(str(s.get("contract") or "").lower() == "button" for s in slots)
+    return has_heading and (has_media or has_cta)
+
+
+def _infer_drawable_archetype(section: dict, slots: list[dict],
+                              has_card_collection: bool) -> str | None:
+    """Best DRAWABLE archetype for a section whose DECLARED archetype is not one the
+    renderer can draw (a descriptive/structural label such as
+    ``three-column-media-top-cards``). Without this, every such section collapses into
+    the single-column ``generic-flow`` safety net — a page of authored multi-column
+    modules stacked into one narrow column. Fact-driven and brand-agnostic: it reads
+    the section's OWN slot anatomy (repeated collections, media/list counterweights)
+    plus the generic STRUCTURAL vocabulary in the declared archetype/useCase — never
+    brand, palette, or section-specific names. Returns a drawable ``ARCHETYPE_COMPOSERS``
+    key, or None so the caller keeps the (unchanged) generic-flow degrade.
+
+    Absent any measured facts the bias is a MULTI-COLUMN default, never a collapse:
+      * a repeated CARD collection → the ``cards`` module grid (feature cards, quote
+        cards, number-over-caption columns …);
+      * a repeated numeric/stat/quote LIST collection → the ``cards`` grid too (so the
+        columns read as a row, not a vertical ruled list);
+      * explicit two-column / comparison vocabulary + a real media OR list
+        counterweight → the ``split`` composer.
+    """
+    probe = " ".join([
+        str(section.get("archetype") or ""),
+        str(section.get("useCase") or ""),
+    ]).lower()
+    # 1. a substantive repeated CARD collection is a multi-up module grid, whatever the
+    #    outer band is described as.
+    if has_card_collection:
+        return "cards"
+    # 2. explicit two-column / comparison structural vocabulary + a real counterweight
+    #    (a media panel or a content list beside the copy) → the two-column split.
+    #    (Checked before the list route so a side-by-side comparison list reads as two
+    #    columns, not a vertical card grid.)
+    if any(w in probe for w in _TWO_COLUMN_WORDS):
+        has_media = any(
+            _is_media_slot(s)
+            and not str(s.get("contract") or "").lower().startswith("logo")
+            for s in slots)
+        has_list = any(str(s.get("contract") or "").lower() in ("list", "table")
+                       for s in slots)
+        if has_media or has_list:
+            return "split"
+    # 3. a repeated NON-numeric LIST collection whose items each carry their OWN
+    #    heading/label + body is a feature/quote COLUMN RUN — route it to the module
+    #    grid so the columns render side-by-side. A majority-numeric list is a stat
+    #    band and stays in generic-flow (its purpose-built horizontal stat device).
+    if not _numeric_stat_list(slots):
+        for s in slots:
+            if str(s.get("contract") or "").lower() != "list":
+                continue
+            items = _repeatable_copy(s)
+            if len(items) < 2:
+                continue
+            multifield = sum(1 for it in items
+                             if isinstance(it, dict)
+                             and _text(it, "text", "body", "quote")
+                             and _text(it, "label", "title", "heading"))
+            if multifield * 2 >= len(items):
+                return "cards"
+    return None
+
 
 # ── small copy helpers ────────────────────────────────────────────────────────────
 
@@ -932,9 +1068,30 @@ def _cards_copy(section: dict) -> dict:
     pattern seeds) is the same module shape: quote→body, name (+ role)→caption."""
     slots = _slots(section)
     header = _by_role(slots, "section-title", "title", "heading") or _by_contract(slots, "header")
-    module_slot = _by_role(slots, "module", "value-prop", "feature", "card", "prop") \
-        or _by_contract(slots, "testimonial", "quote", "feature-item", "content-block", "card")
+    # MODULE SLOT = the slot that actually carries the repeated module collection.
+    # Prefer a module-family CONTRACT holding >=2 repeatable items over a role-keyword
+    # match: a media WELL whose role merely contains "card" (e.g. "card-media-well")
+    # must never be mistaken for the card collection (composer-collapse fix 2026-07 —
+    # that mis-pick left the whole card grid empty and only the intro heading rendered).
+    module_contracts = ("card", "list", "testimonial", "quote", "feature-item",
+                        "content-block")
+    module_slot = next(
+        (s for s in slots
+         if str(s.get("contract") or "").lower() in module_contracts
+         and len(_repeatable_copy(s)) >= 2), None) \
+        or _by_role(slots, "module", "value-prop", "feature", "card", "prop") \
+        or _by_contract(slots, "testimonial", "quote", "feature-item", "content-block",
+                        "card", "list")
     modules = _repeatable_copy(module_slot)
+    # QUOTE/TESTIMONIAL context (composer-collapse fix 2026-07): a quote-card grid seeds
+    # its modules as name+quote pairs (the attribution lives in the module's heading, no
+    # per-card asset). Detected from the section's own structural vocabulary + slot roles
+    # — brand-/section-agnostic. In this context a module's heading is the ATTRIBUTION
+    # NAME (a person row), not a card heading, and no media well is backfilled.
+    quote_ctx = any(w in " ".join([
+        str(section.get("archetype") or ""), str(section.get("useCase") or ""),
+        " ".join(str(s.get("role") or "") for s in slots)]).lower()
+        for w in ("quote", "testimonial", "attribution"))
     # DECLARED slot mediaAspect (hubspot-v2 2026-07): a module slot whose pattern
     # recorded the card-media frame (e.g. `mediaAspect: square` measured from the
     # source's 1:1 product-UI wells) is honored as the per-card fallback — a module's
@@ -955,9 +1112,16 @@ def _cards_copy(section: dict) -> dict:
             alt = alt or asset.get("alt")
             asset = asset.get("src")
         name = (m.get("name") or "").strip()
+        # in a quote context the module's heading IS the attribution name (there is no
+        # per-card heading and no media well) — promote it so the composer draws the
+        # quote-card person row instead of a feature card with backfilled art.
+        quote_card = quote_ctx and not asset and not m.get("avatar")
+        if quote_card and not name:
+            name = str(m.get("name") or m.get("heading") or m.get("title") or "").strip()
         who = ", ".join(x for x in (name, (m.get("role") or "").strip()) if x)
         card = {
-            "caption": m.get("heading") or m.get("caption") or m.get("title") or who,
+            "caption": "" if quote_card else (
+                m.get("heading") or m.get("caption") or m.get("title") or who),
             "body": m.get("text") or m.get("body") or m.get("quote") or "",
             "link": m.get("link") or m.get("cta"),
             "asset": asset,
@@ -968,7 +1132,9 @@ def _cards_copy(section: dict) -> dict:
         # carries eyebrow + heading as separate registers — the composer renders the
         # eyebrow→heading→body→cta ladder instead of folding the heading into the
         # caption tier. Modules without an eyebrow keep the caption fold unchanged.
-        if str(m.get("eyebrow") or "").strip():
+        if quote_card:
+            pass  # attribution rides card["name"] (set below); no card heading/caption
+        elif str(m.get("eyebrow") or "").strip():
             card["eyebrow"] = str(m["eyebrow"]).strip()
             card["heading"] = m.get("heading") or m.get("title") or ""
         elif str(m.get("heading") or m.get("title") or "").strip():
@@ -991,6 +1157,29 @@ def _cards_copy(section: dict) -> dict:
         if str(m.get("personRole") or m.get("role") or "").strip():
             card["role"] = str(m.get("personRole") or m.get("role")).strip()
         cards.append(card)
+    # SIBLING MEDIA-WELL distribution (composer-collapse fix 2026-07): a card grid
+    # whose per-card media lives in a SEPARATE image slot (featureGrid-style
+    # `itemMedia` / card-media-well) — the card items binding no asset of their own —
+    # distributes that slot's assets across the media-less cards (cycled). Consumes the
+    # declared media (harness), fills the card wells with REAL brand art, and avoids the
+    # default-art / srcless-placeholder degrade (C11). Quote cards never take a well.
+    if not quote_ctx and any(not c.get("asset") for c in cards):
+        well_assets: list[str] = []
+        for s in slots:
+            if s is module_slot or str(s.get("contract") or "").lower() != "image":
+                continue
+            src = _asset_src(s)
+            if not src:
+                a = s.get("assets")
+                src = str(a[0]) if isinstance(a, list) and a else None
+            if src and src not in well_assets:
+                well_assets.append(src)
+        if well_assets:
+            k = 0
+            for c in cards:
+                if not c.get("asset"):
+                    c["asset"] = well_assets[k % len(well_assets)]
+                    k += 1
     hdr_copy = (header or {}).get("copy")
     return {
         "eyebrow": _slot_text(_by_role(slots, "eyebrow"), "eyebrow", "text")
@@ -1768,10 +1957,19 @@ def composition_to_layout(section: dict) -> dict:
     overrides). Both are consumed by ``composition_to_doc`` and never written to disk."""
     sid = section.get("id") or section.get("useCase") or "section"
     archetype = (section.get("archetype") or "stack").lower()
+    declared_archetype = archetype  # kept for _composition provenance
     novelty = (section.get("novelty") or "reuse").lower()
     raw_intent = (section.get("surfaceIntent") or "any").strip().lower()
     surface_intent = SURFACE_INTENT_MAP.get(raw_intent) or f"surface/{raw_intent}"
     slots = _slots(section)
+    # HERO NORMALIZATION (composer-collapse fix 2026-07): a hero described by a
+    # non-drawable structural label routes through the real hero composer instead of
+    # collapsing to the generic-flow / conversion stack (full-bleed collage stacked at
+    # full width, 2–3x too tall). Fact-gated (see _is_hero_like); drawable-archetype
+    # heroes and every other section are byte-identical.
+    if archetype not in _BESPOKE_ARCHETYPES and _is_hero_like(archetype, section, slots):
+        archetype = "stack"
+        section = {**section, "useCase": "hero"}
     has_card_collection = any(
         str(slot.get("contract") or "").lower() == "card"
         and len(_repeatable_copy(slot)) >= 2 for slot in slots)
@@ -1800,7 +1998,12 @@ def composition_to_layout(section: dict) -> dict:
     elif archetype in _BESPOKE_ARCHETYPES:
         renderer_archetype = archetype
     else:
-        renderer_archetype = _GENERIC_FLOW
+        # NON-DRAWABLE archetype (a descriptive/structural label the renderer has no
+        # bespoke composer for). Rather than collapse every module into the single-
+        # column generic-flow safety net, infer the closest DRAWABLE archetype from
+        # the section's own anatomy facts so multi-column module geometry survives.
+        renderer_archetype = _infer_drawable_archetype(
+            section, slots, has_card_collection) or _GENERIC_FLOW
 
     grid, overlap = _treatments_to_rules(section)
     layout: dict = {
@@ -1904,6 +2107,44 @@ def composition_to_layout(section: dict) -> dict:
         fit_columns = int(wf_collection.get("columns") or 1)
         layout["_moduleCols"] = fit_columns
         layout["_grid"] = {"columns": fit_columns, "source": "component-fit"}
+    # INFERRED module grid (composer-collapse fix 2026-07): a section routed to the
+    # `cards` grid ONLY because its non-drawable archetype was normalized (no measured
+    # gridRules / knobs.columns to consume) still needs a track count, or the module
+    # grid degrades to the harvested editorial STAGGER (one wide column). Absent facts,
+    # the count is the author's DECLARED column hint ("three-column …", "3-up") clamped
+    # to the module count, else a sensible multi-up default (min(items, 3)) — never a
+    # single column. Fact-first: sections that already carry a measured/knob/fit grid
+    # are untouched, and this fires only for the inferred-cards path.
+    if renderer_archetype == "cards" and "_grid" not in layout \
+            and section.get("archetype", "").lower() not in _BESPOKE_ARCHETYPES:
+        module_count = max(
+            [len(_repeatable_copy(s)) for s in slots
+             if str(s.get("contract") or "").lower() in ("card", "list")
+             and len(_repeatable_copy(s)) >= 2] or [0])
+        if module_count >= 2:
+            declared = _declared_column_count(" ".join([
+                str(section.get("archetype") or ""),
+                str(section.get("useCase") or "")]))
+            cols = declared or min(module_count, 3)
+            cols = max(2, min(cols, module_count))
+            layout["_moduleCols"] = cols
+            layout["_grid"] = {"columns": cols, "source": "inferred"}
+            # no per-card media bound AND no sibling media-well slot to distribute →
+            # text-only cards (the composer must not backfill default art / a srcless
+            # placeholder, C11). A collection that binds per-card assets OR has a
+            # media-well slot keeps its media wells (see the distribution in _cards_copy).
+            module_items = [it for s in slots
+                            if str(s.get("contract") or "").lower() in ("card", "list")
+                            for it in _repeatable_copy(s)]
+            item_has_asset = any(
+                isinstance(it, dict) and (it.get("asset") or it.get("media")
+                                          or it.get("avatar")) for it in module_items)
+            well_has_asset = any(
+                str(s.get("contract") or "").lower() == "image"
+                and (_asset_src(s) or s.get("assets"))
+                for s in slots)
+            if module_items and not item_has_asset and not well_has_asset:
+                layout["_cardsNoMedia"] = True
     # per-slot placement (kept keyed by slot name for composers/scaffolds that read it).
     placement = {}
     for s in _slots(section):
@@ -1957,7 +2198,7 @@ def composition_to_layout(section: dict) -> dict:
         layout["_floatSide"] = side
     # composition provenance (advisory, stamped on the section wrapper via data-* if desired)
     layout["_composition"] = {"useCase": section.get("useCase"), "novelty": novelty,
-                              "archetype": archetype}
+                              "archetype": declared_archetype}
 
     # blockMapping + composer copy. Disambiguate the `stack` archetype by EVIDENCE
     # (fix-batch 2026-07, N2: the old rule forced EVERY non-hero stack into the
@@ -2071,6 +2312,26 @@ def composition_to_layout(section: dict) -> dict:
                                     or m.get("caption") or m.get("title") or "").strip()
                         label = str(m.get("label") or m.get("text")
                                     or m.get("body") or "").strip()
+                        if not value:
+                            continue
+                        mapping.append({"slot": s.get("name") or "stats",
+                                        "role": f"stat {i + 1}", "contract": "stat",
+                                        "usage": {"value": value, "label": label},
+                                        "group": str(s.get("name") or "stats")})
+                elif c_low == "list" and len(items) >= 2 and sum(
+                        1 for it in items if _is_stat_figure(
+                            _text(it, "label", "title", "value", "figure"))
+                        ) * 2 >= len(items):
+                    # NUMERIC list = a STAT/figure band (composer-collapse fix 2026-07):
+                    # a repeated list whose items are majority short numerals is a row of
+                    # figure columns, not a vertical ruled list. Route each to the REAL
+                    # stat renderer (value at the display register, label on the body
+                    # register) so generic-flow bands them horizontally — the same device
+                    # a `stat` contract uses. Non-numeric lists keep the caption/body fold.
+                    for i, m in enumerate(items):
+                        value = str(_text(m, "label", "title", "value", "figure")
+                                    or "").strip()
+                        label = str(_text(m, "text", "body") or "").strip()
                         if not value:
                             continue
                         mapping.append({"slot": s.get("name") or "stats",

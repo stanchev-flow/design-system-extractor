@@ -2839,6 +2839,18 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
             doc, ctx, {"src": _composer_art(doc, layout, "hero"),
                        "variant": "hero",
                        "alt": f"{_brand_name} editorial photography"})
+    # BOUND BADGE/MARK beside a media half (composer-collapse fix 2026-07): a split that
+    # binds an award/review badge or partner mark AS WELL AS a media panel (the source's
+    # badge-over-media overlay) used to DROP the mark entirely once a media image
+    # occupied the half. Render the bound marks as a contained logo-strip cluster inside
+    # the media column so the evidence survives (fact-gated: fires only when marks are
+    # bound and the half already carries media; the mark-row branch above owns the
+    # media-less case, so this never double-renders).
+    badge_html = ""
+    if logo_frags and not mark_row:
+        badge_items = "".join(f'<div class="cs-logo-strip-item">{f}</div>'
+                              for f in logo_frags)
+        badge_html = (f'<div class="cs-logo-strip cs-split-badges">{badge_items}</div>')
     # sysfix 2026-07: panel title / cta ELIDE when the section authored none — the
     # adapter no longer invents "Details"/"Learn more", so an empty string here must
     # not render an empty <h3>/bare arrow (fail-visible was wrong for OPTIONAL slots).
@@ -3016,8 +3028,8 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
             f" --c-section-pad-{k}: {cr.esc(bp[k])};" for k in ("top", "bottom") if bp.get(k))
         sec_style = f' style="{pad_decls.strip()}"' if pad_decls else ""
         # a mark row is a flex strip, not an image — no mask frame around it.
-        media_cell = media_html if mark_row \
-            else f'<div class="c-image-mask">{media_html}</div>'
+        media_cell = (media_html if mark_row
+                      else f'<div class="c-image-mask">{media_html}</div>') + badge_html
         return f"""<section class="cs-section cs-split-sec"{sec_style}>
   <div class="cs-split">
     <div class="cs-split-media{media_cls}"{media_style}>{media_cell}</div>
@@ -3045,7 +3057,7 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
     {band_heading}{band_body}{actions_html}
   </div>
   <div class="cs-split cs-split--panel">
-    <div class="cs-split-media"><div class="c-image-mask">{media_html}</div></div>
+    <div class="cs-split-media"><div class="c-image-mask">{media_html}</div>{badge_html}</div>
     <div class="cs-panel">
       {title_html}
       <div class="c-rows c-rows--table">{rows}</div>
@@ -4234,11 +4246,18 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
         # inherits the defaultArt backfill; only an EXPLICITLY bound asset renders.
         # Generic content-shape detection, no section names, no brand specifics.
         is_quote_card = bool(card.get("name") or card.get("avatar") or card.get("role"))
+        # MEDIA-LESS card collection (composer-collapse fix 2026-07): a collection
+        # INFERRED into the card grid whose items bind NO per-card asset has no measured
+        # per-card media — the honest render is a text card (caption/heading → body →
+        # link), NEVER a fabricated default-art plate or a srcless placeholder (C11).
+        # Fact-gated on the inferred-cards flag; explicit `cards` archetypes keep the
+        # brand default-art backfill byte-identically.
+        cards_no_media = bool(layout.get("_cardsNoMedia"))
         if raw:
             src = raw if str(raw).startswith(("assets/", "http://", "https://", "data:")) \
                 else f"assets/{raw}"
-        elif is_quote_card:
-            src = None            # text-first quote card: no media well at all
+        elif is_quote_card or cards_no_media:
+            src = None            # text-first card: no media well at all
         else:
             src = _assets[i % len(_assets)]
         if not alt:
@@ -4268,7 +4287,7 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
         contain = " cs-module-media--contain" if contained_media else ""
         # only the QUOTE card goes media-less (W7); a non-quote module with no
         # resolvable art keeps the srcless placeholder chip exactly as before.
-        img_html = "" if (is_quote_card and not src) \
+        img_html = "" if ((is_quote_card or cards_no_media) and not src) \
             else cr.render_image(doc, ctx, {"src": src, "alt": alt,
                                             "mediaRole": "card-media"})
         # PERSON attribution row (fid2 2026-07): a module carrying an avatar and/or an
@@ -6415,8 +6434,9 @@ SCAFFOLD_BASE_CSS = """.cs-section { background: var(--c-paper); color: var(--c-
   display: grid; grid-template-columns: repeat(var(--grid-cols, 12), minmax(0, 1fr));
   column-gap: var(--grid-gutter, 6rem); }""" + "\n" + CONTAINMENT_LAW_CSS
 
-# stack hero (opening-bookend): centered display title over the media collage.
-SCAFFOLD_HERO_CSS = """.cs-section { min-height: 100cqh; }
+# stack hero (opening-bookend): content-sized by default. Viewport/tall min-height is
+# applied only when brand responsive facts or measured bandHeight license it.
+SCAFFOLD_HERO_CSS = """.cs-section { min-height: auto; }
 .cs-slot { display: flex; flex-direction: column; align-items: center; }
 .cs-eyebrow-wrap { margin-bottom: var(--c-eyebrow-gap); text-align: center; }
 .cs-title { position: relative; z-index: 2; text-align: center;
@@ -7324,10 +7344,9 @@ SCAFFOLD_OVERLAY_CSS = """.cs-overlay-sec { position: relative; }
    the shared measure by design (a release, not a private containment copy). */
 .cs-ov--bleed .cs-ov-frame { max-width: none; }
 .cs-ov-canvas { position: relative; margin: 0; min-height: calc(48 * var(--baseline)); }
-/* FULL-HEIGHT bleed hero (2026-07): a full-bleed photo hero fills the viewport like
-   the source, not a short wide band. The hero image must COVER this taller canvas —
-   its authored wide aspect-ratio would otherwise pin it to a short strip. */
-.cs-ov--bleed .cs-ov-canvas { min-height: min(90svh, 54rem); }
+/* Bleed canvas is content-sized from the brand media / measured floor above. Viewport-tall
+   bleed is applied only when brand responsive heightRule (viewport / viewport-minus-nav)
+   licenses it via component_render — never as a HubSpot-era unconditional 90svh default. */
 .cs-ov-canvas > .c-image, .cs-ov-canvas > .c-image-ph {
   width: 100%; height: 100%; min-height: inherit; object-fit: cover; }
 .cs-ov--bleed .cs-ov-canvas > .c-image { aspect-ratio: auto; height: 100%; }
@@ -7457,7 +7476,7 @@ SCAFFOLD_BANDED_CSS = """.cs-banded-sec { padding: 0; }
 .cs-band { position: relative; }
 .cs-band--top .cs-band-media { margin: 0; }
 .cs-band--top .c-image, .cs-band--top .c-image-ph { width: 100%;
-  height: calc(56 * var(--baseline)); object-fit: cover; display: block; }
+  height: auto; display: block; object-fit: cover; }
 /* the on-photo caption rides a small solid panel CHIP (sanctioned panel-over-media) —
    never bare text on the photograph. */
 .cs-band-chip { position: absolute; top: calc(5 * var(--baseline));
@@ -7472,7 +7491,6 @@ SCAFFOLD_BANDED_CSS = """.cs-banded-sec { padding: 0; }
   display: flex; flex-direction: column; gap: var(--c-block-gap);
   padding-top: var(--c-block-gap); }
 @media (max-width: 767px) {
-  .cs-band--top .c-image, .cs-band--top .c-image-ph { height: calc(36 * var(--baseline)); }
   .cs-band-straddler { width: 100% !important; margin-inline: 0 !important;
     --c-seam-rise: calc(6 * var(--baseline)); } }"""
 

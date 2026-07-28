@@ -3287,7 +3287,7 @@ def harness_quality_issues(doc: dict, patterns: list[dict], composed: dict,
         body_html = pattern_html.split("<body", 1)[-1]
         semantic = re.search(
             r'<(?:img|video)\b|class="[^"]*(?:c-heading|c-card|c-logo|c-button|'
-            r'c-paragraph|cs-tabs|cs-testimonial|cs-split|cs-modules)',
+            r'c-paragraph|c-stat|cs-tabs|cs-testimonial|cs-split|cs-modules|cs-stat-band)',
             body_html)
         visible_text = re.sub(r"<[^>]+>", " ", body_html)
         visible_text = re.sub(r"\s+", " ", html.unescape(visible_text)).strip()

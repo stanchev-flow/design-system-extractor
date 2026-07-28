@@ -82,7 +82,9 @@ freedom_envelope:
   column_ratios: ["1:1", "1.2:1", "1.6:1", "2:1"]     # asymmetric preferred; even only in hero/cta
   z_order: author-freely-within-ladder                # ghost-watermark→media→panels→text
   emphasis: one-display-tier-and-one-accent-per-section
-  section_select_and_order: author-freely             # SELECT + ORDER the sections
+  # Reuse captured brand layouts in source select/order. Free select/order only when
+  # inventing sections absent from the brand layout library (novelty / net-new bands).
+  section_select_and_order: reuse-captured-order-invent-freely
   novel_pattern: gated-by-offGridExpansion            # novelty:novel ONLY when the base style unlocks it
   promotion: novel-green-eligible-for-project-library # gates green → promote to layout-library.yaml
   # ── off-grid EXPANSION capability gate (Part B) ──
@@ -479,13 +481,16 @@ invariant you MAY freely choose:
 - **Z-order:** author the layering within the ladder.
 - **Emphasis:** choose WHICH slot gets the display tier and WHICH single element carries the
   one accent (respecting the brand's accent-scope rules where carried).
-- **Section select + order:** SELECT which use-cases the brief needs and ORDER them (this
-  replaces the hardcoded story order).
+- **Section select + order:** When reusing captured brand layouts, KEEP the brand's measured
+  section select and order (and each layout's slot anatomy). Free SELECT + ORDER applies only
+  when inventing sections absent from the layout library (net-new heroes/bands, or
+  `novelty: novel`). Do not rewrite a known brand section sequence into a generic SaaS story.
 - **Propose a NOVEL pattern:** set `novelty: novel` and `seededFrom: null` when the brief
   needs a structure the library lacks. A novel section MUST still (a) validate against
   `composition.v1.schema.json` and (b) pass the brand `neverDo`. If it then **gates green**,
   it is eligible for promotion into the project `layout-library.yaml` (`layout_library.promote`)
-  — novelty compounds into the library over time.
+  — novelty compounds into the library over time. Fresh-composition freedom applies to these
+  invented sections only.
 
 ### 5a. Off-grid EXPANSION capability (Part B — style-gated)
 

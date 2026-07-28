@@ -611,8 +611,10 @@ def _render_layout_patterns(w, brand_dir) -> None:
     w("| pattern | use case | archetype | surface | special treatments | origin |")
     w("|---|---|---|---|---|---|")
     for p in pats:
-        treatments = ", ".join(sorted({str(t.get("kind")) for t in
-                                       (p.get("specialTreatments") or []) if t.get("kind")})) or "-"
+        treatments = ", ".join(sorted({
+            str(t.get("kind")) if isinstance(t, dict) else str(t)
+            for t in (p.get("specialTreatments") or [])
+            if (t.get("kind") if isinstance(t, dict) else t)})) or "-"
         w(f"| `{p.get('id','')}` | {p.get('useCase','')} | {p.get('archetypeRef','')} | "
           f"{p.get('surfaceIntent','')} | {treatments} | {p.get('origin','')} |")
     w("")

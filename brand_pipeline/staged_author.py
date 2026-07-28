@@ -284,7 +284,8 @@ def _stage_system(stage: Stage) -> str:
             "`visibleLabel` (painted text) separate from `accessibleName`/`ariaLabel`; when "
             "they differ both fields are required, and visibleLabel must fit the measured "
             "host geometry. Never expand painted copy with screen-reader-only text. "
-            "Also author structured voice-facts.yaml."),
+            "Also author structured voice-facts.yaml; it MUST include a top-level "
+            "`schemaVersion` (set it exactly to voice-facts.v1) plus the evidenced voice facts."),
         "copy-chrome": (
             "Author brand-chrome.yaml as a merge patch containing only evidence-backed "
             "navbar/footer/chrome anatomy (do not repeat foundation tokens or blocks). "

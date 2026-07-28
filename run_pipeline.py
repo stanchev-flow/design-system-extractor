@@ -94,10 +94,10 @@ Requirements:
 - Treat the design system as a reusable system, not as a screenshot reconstruction
 - Create a realistic, professional-looking landing page with placeholder content that matches the described system
 - The page should have a navigation bar, a footer, and enough content sections to reflect the described page rhythm and module density
-- Prefer roughly 6-9 sections when the design system describes a long or highly sectional page
-- Each section should feel like it belongs to the same system while still being a fresh composition
-- Do not copy the source screenshot's exact section list, exact section order, or exact component positions. Use only recurring layout tendencies and surface grammar from the design system unless an explicit separate layouts artifact is intentionally supplied for source reconstruction.
-- Vary section composition within the design system: reuse broad scaffolds such as centered intro stacks, two-column splits, wide rails, card rails, inset panels, and selector rows, but do not reproduce the original page as a one-to-one sequence.
+- Prefer roughly 6-9 sections when the design system describes a long or highly sectional page; when a layouts artifact or measured section inventory is present, prefer that section count and order over a generic 6-9 SaaS outline
+- Each section should feel like it belongs to the same system
+- When a layouts artifact or measured section inventory is present, preserve that section list, order, and slot anatomy. Fresh composition (new heroes, net-new bands, novel arrangements) applies only to sections you invent beyond the captured library — not to rewriting known brand sections into a different story order.
+- Without a layouts artifact, vary section composition within the design system: reuse broad scaffolds such as centered intro stacks, two-column splits, wide rails, card rails, inset panels, and selector rows, without inventing proof/stats sections the system does not describe.
 - Preserve the dominant container behavior, spacing rhythm, alignment discipline, and layout tension from the design system
 - Preserve recurring section-group behavior, long surface runs, and inset-panel patterns rather than collapsing everything into isolated generic sections
 - Preserve grounded surface-run continuity: when adjacent modules are described as sharing one parent canvas, keep that parent canvas continuous and place contrasting, tinted, or neutral fills only on child modules that are explicitly described as inset/foreground. If the grounding or design system defines a full-width gray, tinted, dark, or otherwise distinct section reset, preserve that reset.
@@ -1199,11 +1199,12 @@ def strip_source_provenance_for_site_generation(markdown: str) -> str:
     text = strip_source_subject_metadata_for_site_generation(text).strip()
     text += (
         "\n\n## Fresh Composition Contract\n\n"
-        "- Treat the design system above as an unordered library of reusable surfaces, components, imagery styles, and layout grammar.\n"
-        "- Do not infer page order from the order of tokens, surfaces, components, patterns, or evidence in this artifact.\n"
-        "- Build a fresh landing-page composition: navigation and footer may remain conventional bookends, but the body sections must be selected and ordered as a new composition.\n"
-        "- Preserve reusable surface ownership, component recipes, typography, imagery style, and spacing rhythm without reconstructing the source page's section sequence.\n"
-        "- If an artifact still contains a trace hint, treat it only as non-rendered metadata and do not use it for class names, section names, or page order.\n"
+        "- Treat tokens, surfaces, components, imagery styles, and layout grammar as a reusable brand library.\n"
+        "- When the design system or a companion layouts artifact describes measured sections, preserve that section list, order, and slot anatomy for those known sections.\n"
+        "- Fresh composition applies only when inventing sections absent from the captured library (new heroes, net-new bands, novel arrangements). Do not rewrite known brand sections into a generic SaaS story order.\n"
+        "- Without a measured section inventory, select and order body sections from the brand's recurring layout tendencies — still preserve surface ownership, component recipes, typography, imagery style, and spacing rhythm.\n"
+        "- Do not invent proof/stats/media devices just to fill a template; only include them when the brand library or brief requires them.\n"
+        "- If an artifact still contains a trace hint, treat it only as non-rendered metadata and do not use it for class names or section names.\n"
     )
     return text.rstrip() + "\n"
 
@@ -4402,6 +4403,10 @@ def generate_viewer(runs_dir: Path, output_path: Path):
             # entry must never abort viewer regen).
             if not isinstance(entry, dict):
                 continue
+            # defensive: a dict entry missing the name/screenshot fields the viewer
+            # card needs (e.g. multi-page/status manifests) must never abort regen.
+            if "name" not in entry or "screenshot" not in entry:
+                continue
             name = entry["name"]
 
             # Read screenshot as data URI
@@ -6172,8 +6177,8 @@ def run_pipeline(
         "## Site Generation Layout Freshness",
         """## Site Generation Layout Freshness
 
-- Do not copy the source screenshot's exact section list, exact section order, or exact component positions.
-- Use broad layout tendencies and surface grammar from the design system, but make a fresh page composition unless a separate `layouts.yaml` artifact is explicitly provided and requested for source reconstruction.
+- When a `layouts.yaml` or measured section inventory is present, preserve that section list, order, and slot anatomy. Fresh composition is for inventing sections absent from that library only (new heroes / net-new bands), not for rewriting known brand sections.
+- Without a layouts artifact, use broad layout tendencies and surface grammar from the design system; do not invent proof/stats sections the system does not describe.
 - Keep grounded shared parent surface runs from turning into new full-width section resets; neutral, tinted, inverse, or contrasting fills should remain child/inset foreground modules only when that is what the design system says.
 - Center compact eyebrows/pills inside centered intro or CTA stacks; do not apply a global `align-self:flex-start` to every compact label.
 - Use defined circular icon-action variants as actual circles with centered arrows/icons, not loose arrow glyphs.

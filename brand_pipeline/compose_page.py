@@ -420,9 +420,10 @@ def page_scaffold_css() -> str:
         "#page-nav { background: var(--c-paper); color: var(--c-ink); }",
         "#page-nav .cs-nav { margin-bottom: 0;"
         " padding: var(--c-nav-pad-block) var(--c-section-pad-x); }",
-        "/* page: only the opening section is full-frame; others size to content. */",
+        "/* page: sections size to content. Viewport/tall opening height is applied only",
+        "   when brand responsive facts or measured bandHeight license it (component_render /",
+        "   band_height_css) — never as a HubSpot-era unconditional full-frame default. */",
         ".cs-section { min-height: auto; }",
-        "#sec-0 .cs-section { min-height: 100cqh; }",
     ]
     return "\n".join(parts)
 

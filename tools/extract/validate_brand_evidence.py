@@ -768,7 +768,8 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
     else:
         if not (nav.get("primary") or nav.get("links")):
             rep.error("C7", "navbar: no primary/links — nav renders wordmark-only.")
-        if not ((nav.get("surface") or {}).get("bg")):
+        nav_surface = nav.get("surface") if isinstance(nav.get("surface"), dict) else {}
+        if not nav_surface.get("bg"):
             rep.error("C7", "navbar.surface.bg missing — the chrome bar color must "
                             "be measured, not defaulted.")
         has_presentation = isinstance(nav.get("presentation"), dict)
