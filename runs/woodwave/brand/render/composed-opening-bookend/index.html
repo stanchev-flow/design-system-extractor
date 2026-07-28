@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en" data-style="radical-editorial">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WoodWave Gallery - opening-bookend (composed from catalog)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+img { display: block; max-width: 100%; }
+/* iframe-safe container context: cq* length units resolve against this sized box. */
+html { background: var(--c-paper); height: 100%; }
+html, body { background: var(--c-paper); color: var(--c-ink); font-family: var(--c-font-body);
+  -webkit-font-smoothing: antialiased; }
+body { min-height: 100%; container-type: size; container-name: frame; }
+:root {
+  /* gate-readable legacy brand vars (authoritative token VALUES) */
+  --bg: #3A2F23;
+  --text: #F5EDE2;
+  --accent: #E9DC8C;
+  --display-size: 6rem;
+  --radius: 0rem;
+  --font-heading: 'Playfair Display', 'Source Serif 4', serif;
+  --font-body: 'Inter', 'Lexend Deca', sans-serif;
+  /* component aliases — the shared c-* classes (component_render.py) read these */
+  --c-paper: var(--bg);
+  --c-ink: var(--text);
+  --c-ink-muted: #C9BFB2;
+  --c-accent: var(--accent);
+  --c-hairline: rgba(31, 26, 20, 0.30);
+  --c-font-heading: var(--font-heading);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--display-size);
+  --c-display-lh: 1.05em;
+  --c-display-ls: 0rem;
+  --c-display-weight: 400;
+  --c-h2-size: 2.25rem;
+  --c-h3-size: 1.625rem;
+  --c-body-size: 0.875rem;
+  --c-eyebrow-size: 0.6875rem;
+  --c-eyebrow-ls: 0.08em;
+  --c-control-size: 0.875rem;
+  --c-control-ls: 0.08em;
+  --c-eyebrow-gap: 1.5rem;
+  --c-title-overlap: -2.75rem;
+}
+
+/* ── shared catalog components (single source of truth) ── */
+.c-heading { font-family: var(--c-font-heading); color: var(--c-ink); margin: 0;
+  text-transform: uppercase; font-weight: var(--c-display-weight); }
+.c-heading--display { font-size: var(--c-display-size); line-height: var(--c-display-lh);
+  letter-spacing: var(--c-display-ls); }
+.c-heading--h2 { font-size: var(--c-h2-size); line-height: 1.3em; }
+.c-heading--h3 { font-size: var(--c-h3-size); line-height: 1.3em; }
+.c-heading--accent { color: var(--c-accent); }
+
+.c-eyebrow { font-family: var(--c-font-body); font-size: var(--c-eyebrow-size);
+  letter-spacing: var(--c-eyebrow-ls); text-transform: uppercase; color: var(--c-ink-muted);
+  margin: 0; }
+
+.c-image { display: block; width: 100%; border: none; box-shadow: none;
+  border-radius: var(--radius); object-fit: cover; }
+.c-image--hero { aspect-ratio: 1355 / 570; }
+.c-image--overlap { aspect-ratio: 785 / 620; }
+/* placeholder used by the gallery when no real asset is bound (keeps the gallery
+   self-contained); composed sections always bind a real image src. */
+.c-image-ph { display: flex; align-items: center; justify-content: center;
+  background: var(--c-ink); color: var(--c-paper); border-radius: var(--radius);
+  aspect-ratio: 4 / 3; font-family: var(--c-font-body); font-size: var(--c-eyebrow-size);
+  letter-spacing: var(--c-eyebrow-ls); text-transform: uppercase; }
+
+.c-arrow-link { font-family: var(--c-font-body); font-size: var(--c-control-size);
+  letter-spacing: var(--c-control-ls); text-transform: uppercase; text-decoration: none;
+  color: var(--c-action-color, currentColor); display: inline-flex; align-items: center;
+  gap: 0.5rem; background: none; border: none; cursor: pointer; padding: 0; }
+.c-arrow-link--accent { color: var(--c-accent); }
+.c-arrow { transition: transform 180ms ease; }
+.c-arrow-link:hover .c-arrow { transform: translateX(0.35rem); }
+
+.c-logo { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--c-font-body);
+  font-weight: 600; font-size: var(--c-control-size); letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--c-logo-color, var(--c-accent)); }
+.c-logo .c-glyph { font-family: var(--c-font-heading); font-size: 1.1rem; }
+
+/* header block: eyebrow -> heading (+ optional subhead/cta) typographic cluster */
+.c-header { display: flex; flex-direction: column; gap: var(--c-eyebrow-gap); }
+
+/* paragraph primitive: narrow offset body, Inter sentence case, generous leading. */
+.c-paragraph { font-family: var(--c-font-body); font-size: var(--c-body-size);
+  line-height: 1.55em; color: var(--c-ink-muted); max-width: var(--c-measure, 34ch); margin: 0; }
+
+/* caption primitive: muted uppercase margin micro-text (never over media). */
+.c-caption { font-family: var(--c-font-body); font-size: var(--c-eyebrow-size);
+  letter-spacing: var(--c-eyebrow-ls); text-transform: uppercase; color: var(--c-ink-muted);
+  margin: 0; }
+
+/* form block + underline field: NO box, NO fill, NO border — the single 1px rule is a
+   pseudo-element (height:1px+background), so it never reads as a boxed input or a section
+   hairline (honors WoodWave no-boxed-inputs / no-section-hairlines). */
+.c-form { display: flex; flex-direction: column; gap: 1.25rem; }
+.c-field { position: relative; display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 1rem; padding-bottom: 0.5rem; }
+.c-field::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: var(--c-hairline); }
+.c-field-text { font-family: var(--c-font-body); font-size: var(--c-body-size);
+  text-transform: uppercase; letter-spacing: var(--c-control-ls); color: var(--c-ink-muted); }
+
+/* ruled action rows (the divider primitive): label left, value/action right, separated by a
+   1px pseudo-rule INSIDE a panel only — never as a section seam. */
+.c-rows { display: flex; flex-direction: column; }
+.c-row { position: relative; display: flex; align-items: baseline; justify-content: space-between;
+  gap: 1rem; padding: 0.85rem 0; }
+.c-row::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px;
+  background: var(--c-hairline); }
+.c-row-label { font-family: var(--c-font-body); font-size: var(--c-control-size);
+  letter-spacing: var(--c-control-ls); text-transform: uppercase; color: var(--c-ink); }
+.c-row-value { font-family: var(--c-font-heading); font-size: var(--c-h3-size); color: var(--c-ink); }
+
+:root { --c-section-pad: 6.25rem; }
+.cs-section { background: var(--c-paper); color: var(--c-ink);
+  padding: 1.75rem 2.5rem var(--c-section-pad, 6.25rem); }
+.cs-nav { display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+  margin-bottom: clamp(2rem, 6cqw, 5rem); }
+.cs-navlinks { display: flex; gap: 0.55rem; flex: 1; justify-content: center; }
+.cs-navlinks .sep { opacity: 0.55; }
+.cs-section { min-height: 100cqh; }
+.cs-slot { display: flex; flex-direction: column; align-items: center; }
+.cs-eyebrow-wrap { margin-bottom: var(--c-eyebrow-gap); text-align: center; }
+.cs-title { position: relative; z-index: 2; text-align: center;
+  margin-bottom: var(--c-title-overlap); }
+.cs-collage { position: relative; width: 100%; max-width: 80rem; margin: 0 auto; }
+.c-image--overlap.is-abs { position: absolute; width: 34%; right: 4%; bottom: -28%; z-index: 1; }
+.cs-spacer { height: 22cqw; }
+.cs-foot { display: flex; flex-direction: column; align-items: center; gap: 1.75rem;
+  text-align: center; margin-top: 2.5rem; }
+.cs-sub { font-family: var(--c-font-body); font-size: 1rem; line-height: 1.55em;
+  color: var(--c-ink-muted); max-width: 42rem; }
+@media (max-width: 991px) { .cs-navlinks { display: none; } }
+@media (max-width: 767px) { .cs-section { padding: 1.25rem 1.25rem 3rem; }
+  .c-image--overlap.is-abs { width: 46%; right: 2%; bottom: -18%; } .cs-spacer { height: 30cqw; } }
+
+/* ===================================================================== */
+/* STYLE: radical-editorial (structure) layered OVER brand (hues+fonts). */
+/* ===================================================================== */
+:root {
+  --c-paper: #FAF0E8;
+  --c-ink: #1F1A14;
+  --c-accent: #E9DC8C;
+  --c-radius: 0;
+  --c-display-size: clamp(9rem, 12cqw, 16.2rem);
+  --c-display-lh: 0.936;
+  --c-display-ls: -0.02em;
+  --c-font-heading: 'Playfair Display', Georgia, serif;
+  --c-font-body: 'Inter', system-ui, sans-serif;
+}
+/* density: asymmetric, never centered-everything; type is load-bearing left-anchored. */
+.cs-section { padding: 3rem 12cqw 6rem 6cqw; }
+.cs-slot, .cs-foot, .cs-eyebrow-wrap, .cs-title { align-items: flex-start; text-align: left; }
+.cs-collage { margin: 0; max-width: 64cqw; }
+.c-heading--display { text-align: left; max-width: 18ch; }
+/* color deployment: single committed accent (the eyebrow slug); everything else ink. */
+.c-heading--accent { color: var(--c-ink); }
+.c-eyebrow { color: var(--c-accent); }
+
+</style>
+</head>
+<body>
+<!-- Section composed from the brand catalog: each slot is a catalog component rendered
+     by component_render.py (the SAME renderers the components-preview gallery uses). -->
+<section class="cs-section">
+  <nav class="cs-nav"><span class="c-logo"><span class="c-glyph" aria-hidden="true">&#9697;</span> WoodWave</span><span class="cs-navlinks"><a class="c-arrow-link" href="#" style="gap:0">About</a> <span class="sep">/</span> <a class="c-arrow-link" href="#" style="gap:0">Gallery</a> <span class="sep">/</span> <a class="c-arrow-link" href="#" style="gap:0">Exhibition</a> <span class="sep">/</span> <a class="c-arrow-link" href="#" style="gap:0">Visit</a></span><a class="c-arrow-link c-arrow-link--accent" href="#">Buy Tickets <span class="c-arrow" aria-hidden="true">&rarr;</span></a></nav>
+  <div class="cs-slot">
+    <div class="cs-eyebrow-wrap"><p class="c-eyebrow">Est. 2019 — Portland, Oregon</p></div>
+    <div class="cs-title"><div class="c-header"><h1 class="c-heading c-heading--display c-heading--accent">WOODWAVE<br>GALLERY</h1></div></div>
+    <div class="cs-collage">
+      <img class="c-image c-image--hero" src="assets/hero-staircase.jpg" alt="WoodWave editorial photography">
+      <img class="c-image c-image--overlap is-abs" src="assets/overlap-vase.jpg" alt="WoodWave detail photography">
+    </div>
+    <div class="cs-spacer"></div>
+    <div class="cs-foot">
+      <p class="cs-sub">An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade.</p>
+      <a class="c-arrow-link c-arrow-link--accent" href="#">Buy Tickets <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
+    </div>
+  </div>
+</section>
+</body>
+</html>

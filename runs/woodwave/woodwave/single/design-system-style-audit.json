@@ -1,0 +1,124 @@
+{
+  "close_match_threshold": 14.0,
+  "before": {
+    "unsupported_colors": [
+      "#1B150F",
+      "#1F1A14",
+      "#3A2F23",
+      "#4A4239",
+      "#B9B5B0",
+      "#C9BFB2",
+      "#E9DC8C",
+      "#F5EDE2",
+      "#F7EFE6",
+      "#FAF0E8",
+      "rgba(31,26,20,0.06)",
+      "rgba(31,26,20,0.25)",
+      "rgba(31,26,20,0.30)",
+      "transparent"
+    ],
+    "unsupported_color_count": 14,
+    "unsupported_fonts": [],
+    "raw_source_but_not_generation_safe": [],
+    "retained_approximate_values": [],
+    "role_mismatch_warnings": []
+  },
+  "after": {
+    "unsupported_colors": [
+      "#1B150F",
+      "#1F1A14",
+      "#3A2F23",
+      "#4A4239",
+      "#B9B5B0",
+      "#C9BFB2",
+      "#E9DC8C",
+      "#F5EDE2",
+      "#F7EFE6",
+      "#FAF0E8",
+      "rgba(31,26,20,0.06)",
+      "rgba(31,26,20,0.25)",
+      "rgba(31,26,20,0.30)",
+      "transparent"
+    ],
+    "unsupported_color_count": 14,
+    "unsupported_fonts": [],
+    "raw_source_but_not_generation_safe": [],
+    "retained_approximate_values": [],
+    "role_mismatch_warnings": []
+  },
+  "replaced_with_close_source_match": [],
+  "retained_approximate_no_close_source_match": [],
+  "unresolved_no_role_compatible_match": [
+    {
+      "value": "#1B150F",
+      "role": null,
+      "reason": "no_generation_palette_candidates"
+    },
+    {
+      "value": "#1F1A14",
+      "role": null,
+      "reason": "no_generation_palette_candidates"
+    },
+    {
+      "value": "#3A2F23",
+      "role": null,
+      "reason": "no_generation_palette_candidates"
+    },
+    {
+      "value": "#4A4239",
+      "role": null,
+      "reason": "no_generation_palette_candidates"
+    },
+    {
+      "value": "#B9B5B0",
+      "role": null,
+      "reason": "no_generation_palette_candidates"
+    },
+    {
+      "value": "#C9BFB2",
+      "role": null,
+      "reason": "no_generation_palette_candidates"
+    },
+    {
+      "value": "#E9DC8C",
+      "role": null,
+      "reason": "no_generation_palette_candidates"
+    },
+    {
+      "value": "#F5EDE2",
+      "role": null,
+      "reason": "no_generation_palette_candidates"
+    },
+    {
+      "value": "#F7EFE6",
+      "role": "surface",
+      "reason": "no_generation_palette_candidates"
+    },
+    {
+      "value": "#FAF0E8",
+      "role": null,
+      "reason": "no_generation_palette_candidates"
+    },
+    {
+      "value": "rgba(31,26,20,0.06)",
+      "role": null,
+      "reason": "no_generation_palette_candidates"
+    },
+    {
+      "value": "rgba(31,26,20,0.25)",
+      "role": "surface",
+      "reason": "no_generation_palette_candidates"
+    },
+    {
+      "value": "rgba(31,26,20,0.30)",
+      "role": null,
+      "reason": "no_generation_palette_candidates"
+    },
+    {
+      "value": "transparent",
+      "role": "surface",
+      "reason": "no_generation_palette_candidates"
+    }
+  ],
+  "replacement_count": 0
+}

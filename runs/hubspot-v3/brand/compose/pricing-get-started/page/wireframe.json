@@ -1,0 +1,638 @@
+{
+  "schemaVersion": "wireframe.v1",
+  "page": {
+    "storyRhythm": [
+      "orient-and-prove",
+      "explain-or-prove",
+      "human-proof",
+      "scale-proof",
+      "convert"
+    ],
+    "densitySequence": [
+      "dense",
+      "dense",
+      "dense",
+      "open",
+      "open"
+    ],
+    "surfaceSequence": [
+      "inverse",
+      "primary",
+      "panel",
+      "primary",
+      "panel"
+    ],
+    "maxConsecutiveTextOnly": 1,
+    "brandPrecedence": [
+      "measured-pattern-or-recipe",
+      "designed-from-brand-component-or-pattern",
+      "brand-style-archetype",
+      "relume-structural-fallback"
+    ]
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "index": 0,
+      "job": "orient-and-prove",
+      "density": "dense",
+      "surfaceRole": "inverse",
+      "visualAnchor": [
+        "background-media",
+        "actions"
+      ],
+      "conversionRole": "supporting",
+      "skeleton": "overlay",
+      "componentFamily": "hero",
+      "structureProvenance": "measured-brand-pattern",
+      "structureRecipeId": null,
+      "requiredSlots": [
+        "eyebrow",
+        "heading",
+        "actions"
+      ],
+      "optionalSlots": [
+        {
+          "slot": "body",
+          "contract": "subheading",
+          "rendererGap": "no registered consumer for contract 'subheading' in 'overlay'"
+        }
+      ],
+      "ctaRequired": false,
+      "proofRequired": true,
+      "collections": [],
+      "testimonial": null,
+      "responsive": {
+        "collapse": "single-column",
+        "preserveGrouping": true
+      },
+      "assetRequirements": [
+        {
+          "slot": "background-media",
+          "status": "bound"
+        },
+        {
+          "slot": "actions",
+          "status": "bound"
+        }
+      ],
+      "assetRequests": [],
+      "rendererCapabilities": [
+        {
+          "slot": "eyebrow",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "heading",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "actions",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        }
+      ],
+      "licensedTextOnly": false,
+      "sparseRun": 0
+    },
+    {
+      "id": "pricing-tiers",
+      "index": 1,
+      "job": "explain-or-prove",
+      "density": "dense",
+      "surfaceRole": "primary",
+      "visualAnchor": [
+        "component-cluster:tiers"
+      ],
+      "conversionRole": "none",
+      "skeleton": "cards",
+      "componentFamily": "collection",
+      "structureProvenance": "brand-style-archetype",
+      "structureRecipeId": null,
+      "requiredSlots": [
+        "section-header",
+        "tiers",
+        "footnote"
+      ],
+      "optionalSlots": [],
+      "ctaRequired": false,
+      "proofRequired": false,
+      "collections": [
+        {
+          "slot": "tiers",
+          "itemContract": "card",
+          "items": [
+            {
+              "eyebrow": "For up to 5 seats",
+              "heading": "Free",
+              "text": "Full core product for up to 5 seats. Free forever.",
+              "cta": {
+                "label": "Start free",
+                "variant": "outline"
+              },
+              "span": 1
+            },
+            {
+              "eyebrow": "Per-seat, monthly",
+              "heading": "Growth",
+              "text": "Unlimited seats, automation, and reporting. Priced per seat, billed monthly.",
+              "cta": {
+                "label": "Start free",
+                "variant": "filled"
+              },
+              "span": 1
+            },
+            {
+              "eyebrow": "Custom terms",
+              "heading": "Enterprise",
+              "text": "SSO, audit logs, dedicated support, and custom contract terms.",
+              "cta": {
+                "label": "Talk to sales",
+                "variant": "ghost"
+              },
+              "span": 1
+            }
+          ],
+          "layout": "stacked-list",
+          "columns": 1,
+          "wrap": true,
+          "fillStrategy": "single-column",
+          "fillCandidates": [
+            {
+              "strategy": "higher-columns",
+              "columns": 3,
+              "feasible": false,
+              "score": 0,
+              "reasons": [
+                "item width 184.0px < family minimum 288.0px",
+                "item 2 body projects to 7 lines"
+              ]
+            },
+            {
+              "strategy": "licensed-asymmetry",
+              "columns": 2,
+              "feasible": false,
+              "score": 0,
+              "reasons": [
+                "partial rows require an explicit license and real balancing counterweight"
+              ]
+            },
+            {
+              "strategy": "lead-span",
+              "columns": 2,
+              "targetIndex": 0,
+              "feasible": false,
+              "score": 0,
+              "reasons": [
+                "lead-span requires one explicitly strongest lead/primary item",
+                "full-span inner measure 69.0ch is excessive for 28.0ch preferred measure without a visual counterweight"
+              ],
+              "hierarchy": [
+                0,
+                0,
+                0
+              ],
+              "demandScores": [
+                54.0,
+                82.0,
+                72.0
+              ],
+              "fullSpanInnerMeasureCh": 69.0,
+              "preferredMeasureCh": 28.0
+            },
+            {
+              "strategy": "tail-span",
+              "columns": 2,
+              "targetIndex": 2,
+              "feasible": false,
+              "score": 0,
+              "reasons": [
+                "full-span inner measure 69.0ch is excessive for 28.0ch preferred measure without a visual counterweight"
+              ],
+              "hierarchy": [
+                0,
+                0,
+                0
+              ],
+              "demandScores": [
+                54.0,
+                82.0,
+                72.0
+              ],
+              "fullSpanInnerMeasureCh": 69.0,
+              "preferredMeasureCh": 28.0
+            },
+            {
+              "strategy": "single-column",
+              "columns": 1,
+              "feasible": true,
+              "score": 94,
+              "reasons": [
+                "stacked reading avoids an excessively wide unbalanced span"
+              ]
+            }
+          ],
+          "balancingCounterweight": null,
+          "componentFit": {
+            "contentDemand": [
+              {
+                "headingChars": 4,
+                "bodyChars": 50,
+                "longestUnbreakableToken": 10,
+                "childRoles": [
+                  "eyebrow",
+                  "heading",
+                  "text",
+                  "cta"
+                ],
+                "preferredMeasureCh": 24,
+                "maxHeadingLines": 3,
+                "maxBodyLines": 5,
+                "minItemWidth": 256.0
+              },
+              {
+                "headingChars": 6,
+                "bodyChars": 76,
+                "longestUnbreakableToken": 11,
+                "childRoles": [
+                  "eyebrow",
+                  "heading",
+                  "text",
+                  "cta"
+                ],
+                "preferredMeasureCh": 28,
+                "maxHeadingLines": 3,
+                "maxBodyLines": 5,
+                "minItemWidth": 288.0
+              },
+              {
+                "headingChars": 10,
+                "bodyChars": 62,
+                "longestUnbreakableToken": 10,
+                "childRoles": [
+                  "eyebrow",
+                  "heading",
+                  "text",
+                  "cta"
+                ],
+                "preferredMeasureCh": 24,
+                "maxHeadingLines": 3,
+                "maxBodyLines": 5,
+                "minItemWidth": 256.0
+              }
+            ],
+            "containerWidth": 1080.0,
+            "availableWidth": 616.0,
+            "allocation": "counterweight-column",
+            "gutter": 32.0,
+            "itemPadding": 32.0,
+            "minItemWidth": 288.0,
+            "preferredMeasureCh": 28,
+            "maxHeadingLines": 3,
+            "maxBodyLines": 5,
+            "requestedColumns": 3,
+            "candidateWidths": [
+              {
+                "columns": 3,
+                "itemWidth": 184.0,
+                "innerMeasureCh": 15.0,
+                "feasible": false,
+                "reasons": [
+                  "item width 184.0px < family minimum 288.0px",
+                  "item 2 body projects to 7 lines"
+                ]
+              },
+              {
+                "columns": 2,
+                "itemWidth": 292.0,
+                "innerMeasureCh": 28.5,
+                "feasible": true,
+                "reasons": []
+              },
+              {
+                "columns": 1,
+                "itemWidth": 616.0,
+                "innerMeasureCh": 69.0,
+                "feasible": true,
+                "reasons": []
+              }
+            ],
+            "chosenColumns": 1,
+            "internalAnatomy": "text-stack",
+            "familyAnatomyUniform": true,
+            "responsiveBreakpoints": [
+              {
+                "minContainerWidth": 320.0,
+                "columns": 1
+              }
+            ],
+            "fillStrategy": "single-column",
+            "fillCandidates": [
+              {
+                "strategy": "higher-columns",
+                "columns": 3,
+                "feasible": false,
+                "score": 0,
+                "reasons": [
+                  "item width 184.0px < family minimum 288.0px",
+                  "item 2 body projects to 7 lines"
+                ]
+              },
+              {
+                "strategy": "licensed-asymmetry",
+                "columns": 2,
+                "feasible": false,
+                "score": 0,
+                "reasons": [
+                  "partial rows require an explicit license and real balancing counterweight"
+                ]
+              },
+              {
+                "strategy": "lead-span",
+                "columns": 2,
+                "targetIndex": 0,
+                "feasible": false,
+                "score": 0,
+                "reasons": [
+                  "lead-span requires one explicitly strongest lead/primary item",
+                  "full-span inner measure 69.0ch is excessive for 28.0ch preferred measure without a visual counterweight"
+                ],
+                "hierarchy": [
+                  0,
+                  0,
+                  0
+                ],
+                "demandScores": [
+                  54.0,
+                  82.0,
+                  72.0
+                ],
+                "fullSpanInnerMeasureCh": 69.0,
+                "preferredMeasureCh": 28.0
+              },
+              {
+                "strategy": "tail-span",
+                "columns": 2,
+                "targetIndex": 2,
+                "feasible": false,
+                "score": 0,
+                "reasons": [
+                  "full-span inner measure 69.0ch is excessive for 28.0ch preferred measure without a visual counterweight"
+                ],
+                "hierarchy": [
+                  0,
+                  0,
+                  0
+                ],
+                "demandScores": [
+                  54.0,
+                  82.0,
+                  72.0
+                ],
+                "fullSpanInnerMeasureCh": 69.0,
+                "preferredMeasureCh": 28.0
+              },
+              {
+                "strategy": "single-column",
+                "columns": 1,
+                "feasible": true,
+                "score": 94,
+                "reasons": [
+                  "stacked reading avoids an excessively wide unbalanced span"
+                ]
+              }
+            ],
+            "itemSpans": [
+              1,
+              1,
+              1
+            ],
+            "fullSpanContentMeasureCh": null,
+            "balancingCounterweight": null
+          },
+          "responsive": {
+            "mobileColumns": 1,
+            "collapse": "preserve-item",
+            "breakpoints": [
+              {
+                "minContainerWidth": 320.0,
+                "columns": 1
+              }
+            ]
+          }
+        }
+      ],
+      "testimonial": null,
+      "responsive": {
+        "collapse": "single-column",
+        "preserveGrouping": true
+      },
+      "assetRequirements": [],
+      "assetRequests": [],
+      "rendererCapabilities": [
+        {
+          "slot": "section-header",
+          "consumable": true,
+          "path": "cards adapter + grouped module renderer"
+        },
+        {
+          "slot": "tiers",
+          "consumable": true,
+          "path": "cards adapter + grouped module renderer"
+        },
+        {
+          "slot": "footnote",
+          "consumable": true,
+          "path": "cards adapter + grouped module renderer"
+        }
+      ],
+      "licensedTextOnly": false,
+      "sparseRun": 0
+    },
+    {
+      "id": "social-proof",
+      "index": 2,
+      "job": "human-proof",
+      "density": "dense",
+      "surfaceRole": "panel",
+      "visualAnchor": [
+        "portrait",
+        "quote",
+        "stat-row"
+      ],
+      "conversionRole": "none",
+      "skeleton": "split",
+      "componentFamily": "testimonial",
+      "structureProvenance": "measured-brand-pattern",
+      "structureRecipeId": null,
+      "requiredSlots": [
+        "quote",
+        "attribution",
+        "stat-row"
+      ],
+      "optionalSlots": [],
+      "ctaRequired": false,
+      "proofRequired": true,
+      "collections": [],
+      "testimonial": {
+        "componentContract": "testimonial",
+        "complete": true,
+        "quote": "We outgrew the free plan in six months \u2014 best sales pitch is no pitch.",
+        "attribution": {
+          "name": "Co-founder",
+          "role": "40-person team"
+        },
+        "asset": "045-unipart-1.png",
+        "assetStatus": "bound",
+        "assetSource": "composition",
+        "assetRequest": null,
+        "internalAnatomy": "portrait-side",
+        "optionalRoles": [
+          "stat"
+        ],
+        "preferredMeasureCh": 58,
+        "minComponentWidth": 480,
+        "maxEmptySpaceRatio": 0.68,
+        "accentLicensed": false
+      },
+      "responsive": {
+        "collapse": "single-column",
+        "preserveGrouping": true
+      },
+      "assetRequirements": [
+        {
+          "slot": "portrait",
+          "status": "bound"
+        },
+        {
+          "slot": "quote",
+          "status": "bound"
+        },
+        {
+          "slot": "stat-row",
+          "status": "bound"
+        }
+      ],
+      "assetRequests": [],
+      "rendererCapabilities": [
+        {
+          "slot": "quote",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "attribution",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "stat-row",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        }
+      ],
+      "licensedTextOnly": false,
+      "sparseRun": 0
+    },
+    {
+      "id": "logos",
+      "index": 3,
+      "job": "scale-proof",
+      "density": "open",
+      "surfaceRole": "primary",
+      "visualAnchor": [
+        "logo-wall"
+      ],
+      "conversionRole": "none",
+      "skeleton": "stack",
+      "componentFamily": "logos",
+      "structureProvenance": "brand-style-archetype",
+      "structureRecipeId": null,
+      "requiredSlots": [
+        "logo-caption",
+        "logo-wall"
+      ],
+      "optionalSlots": [],
+      "ctaRequired": false,
+      "proofRequired": true,
+      "collections": [],
+      "testimonial": null,
+      "responsive": {
+        "collapse": "single-column",
+        "preserveGrouping": true
+      },
+      "assetRequirements": [
+        {
+          "slot": "logo-wall",
+          "status": "bound"
+        }
+      ],
+      "assetRequests": [],
+      "rendererCapabilities": [
+        {
+          "slot": "logo-caption",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "logo-wall",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        }
+      ],
+      "licensedTextOnly": false,
+      "sparseRun": 0
+    },
+    {
+      "id": "get-started-cta",
+      "index": 4,
+      "job": "convert",
+      "density": "open",
+      "surfaceRole": "panel",
+      "visualAnchor": [
+        "cta-actions"
+      ],
+      "conversionRole": "primary",
+      "skeleton": "stack",
+      "componentFamily": "cta",
+      "structureProvenance": "brand-style-archetype",
+      "structureRecipeId": null,
+      "requiredSlots": [
+        "cta-header",
+        "cta-actions"
+      ],
+      "optionalSlots": [],
+      "ctaRequired": true,
+      "proofRequired": false,
+      "collections": [],
+      "testimonial": null,
+      "responsive": {
+        "collapse": "single-column",
+        "preserveGrouping": true
+      },
+      "assetRequirements": [
+        {
+          "slot": "cta-actions",
+          "status": "bound"
+        }
+      ],
+      "assetRequests": [],
+      "rendererCapabilities": [
+        {
+          "slot": "cta-header",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "cta-actions",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        }
+      ],
+      "licensedTextOnly": false,
+      "sparseRun": 0
+    }
+  ]
+}

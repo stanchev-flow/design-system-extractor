@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "relume-test.verification.v1",
+  "item": "06 Remote Variant — Proof & Conversion",
+  "status": "pass",
+  "servedUrl": "http://127.0.0.1:1500/runs/relume-test/brand/compose/06%20Remote%20Variant%20%E2%80%94%20Proof%20%26%20Conversion/index.html",
+  "thresholds": {
+    "normalTextContrast": 4.5,
+    "largeTextContrast": 3.0,
+    "horizontalOverflow": 0,
+    "brokenAssets": 0,
+    "genericFourByThreeOverrides": 0
+  },
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 1000,
+      "httpStatus": 200,
+      "checkedTextRegions": 104,
+      "checkedControls": 10,
+      "worstTextContrast": 4.91,
+      "contrastFailures": [],
+      "horizontalOverflow": false,
+      "brokenAssets": [],
+      "genericFourByThreeOverrides": [],
+      "consoleErrors": [],
+      "requestFailures": [],
+      "heroMedia": {"naturalWidth": 1498, "naturalHeight": 1100, "alignSelf": "center", "fit": "contain"},
+      "faqMedia": {"naturalWidth": 1068, "naturalHeight": 1068, "alignSelf": "center", "fit": "contain"},
+      "interactions": {"faqOpened": true, "customerRailMoved": true}
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844,
+      "httpStatus": 200,
+      "checkedTextRegions": 99,
+      "checkedControls": 10,
+      "worstTextContrast": 4.91,
+      "contrastFailures": [],
+      "horizontalOverflow": false,
+      "brokenAssets": [],
+      "genericFourByThreeOverrides": [],
+      "consoleErrors": [],
+      "requestFailures": [],
+      "heroMedia": {"naturalWidth": 1498, "naturalHeight": 1100, "alignSelf": "center", "fit": "contain"},
+      "faqMedia": {"naturalWidth": 1068, "naturalHeight": 1068, "alignSelf": "center", "fit": "contain"},
+      "interactions": {"menuOpened": true, "faqOpened": true, "customerRailMoved": true}
+    }
+  ],
+  "geometryAndRhythm": {
+    "container": "76rem",
+    "sectionPaddingDesktop": "5rem",
+    "sectionPaddingMobile": "3rem",
+    "columnGapDesktop": "3rem",
+    "columnGapMobile": "1.5rem",
+    "gridGap": "2rem",
+    "actionGap": "1rem",
+    "eyebrowToHeading": ".75rem",
+    "headingToBody": "1rem",
+    "bodyToAction": "2rem",
+    "nonStretchAlignment": "pass"
+  },
+  "componentFidelity": {
+    "source": "runs/remote/brand/brand.yaml#buttons",
+    "primaryStates": ["idle", "hover", "active", "disabled", "focus-visible"],
+    "secondaryStates": ["idle", "hover", "active", "disabled", "focus-visible", "inverse-surface"],
+    "neutralStates": ["idle", "hover", "active", "focus-visible"],
+    "textLinkStates": ["idle", "hover", "focus-visible"],
+    "menu": "neutral contract",
+    "rail": "secondary contract",
+    "status": "pass"
+  },
+  "assetCheck": {
+    "renderedImageCount": 27,
+    "policy": "existing extracted Remote assets only",
+    "generatedMedia": 0,
+    "placeholderMedia": 0,
+    "status": "pass"
+  }
+}

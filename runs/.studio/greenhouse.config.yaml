@@ -1,0 +1,12 @@
+provider: anthropic
+model: claude-opus-4-8
+reasoning-effort: high
+section-detection-provider: anthropic
+section-detection-model: claude-opus-4-8
+section-detection-reasoning-effort: high
+site-asset-generation-enabled: false
+framework-generation-enabled: true
+vanilla-site-generation-enabled: false
+surface-map-mode: contract
+run-reviews: false
+brand-assets-manifest: runs/greenhouse/assets/brand-assets.json

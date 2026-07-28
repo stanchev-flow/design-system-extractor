@@ -1,0 +1,155 @@
+{
+  "as": "AS-83",
+  "ok": true,
+  "counts": {
+    "total": 14,
+    "consumed": 5,
+    "unconsumed": 0,
+    "excluded": 2,
+    "delegated": 7
+  },
+  "unconsumed": [],
+  "findings": [
+    {
+      "family": "responsive.hero",
+      "path": "layouts[hero].responsive (heightRule / headingSizeLadder / navOffset)",
+      "status": "excluded",
+      "origin": "extracted",
+      "consumer": "component_render.hero_responsive_css",
+      "evidence": "CSS marker '(fact-gated: layouts[].responsive)'",
+      "detail": "documented generation exclusion (hero): hero heightRule (absolute viewport band height) + headingSizeLadder (absolute source h1 font-size shrink) pin the SOURCE's register; a composed hero uses its own type/height scale, so the source's abs",
+      "provenance": "hero bound height mechanic is viewport-relative (viewport-minus-nav); nav offset from measured --global-nav-header-height"
+    },
+    {
+      "family": "responsive.hero.primaryButton",
+      "path": "layouts[hero].responsive.primaryButton",
+      "status": "excluded",
+      "origin": "extracted",
+      "consumer": "component_render.hero_primary_button_css",
+      "evidence": "CSS marker '(fact-gated: layouts[].responsive.primaryButton)'",
+      "detail": "documented generation exclusion (hero): hero heightRule (absolute viewport band height) + headingSizeLadder (absolute source h1 font-size shrink) pin the SOURCE's register; a composed hero uses its own type/height scale, so the source's abs",
+      "provenance": "primary action measured @1440 (display/font-size/line-height/border/padding) \u2014 the button box the composer left un-grounded"
+    },
+    {
+      "family": "responsive.footer",
+      "path": "footer.responsive (grid reflow + measured content cap)",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "component_render.footer_responsive_css",
+      "evidence": "CSS marker '(fact-gated: footer.responsive)'",
+      "detail": "consumer evidence present",
+      "provenance": "1 measured @media reflow breakpoint(s); stacked below 900px, 2 column(s) at/above (@media(width >= 900px) column-count:2)"
+    },
+    {
+      "family": "responsive.headings.lineHeights",
+      "path": "responsive.headings.lineHeights",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "component_render.heading_responsive_css",
+      "evidence": "CSS marker '(fact-gated: responsive.headings.lineHeights)'",
+      "detail": "consumer evidence present",
+      "provenance": "measured heading computedLadder line-heights (stable across the viewport ladder) the composer type scale mis-derived"
+    },
+    {
+      "family": "responsive.nav.collapse",
+      "path": "responsive.nav.collapse (mobile breakpoint + burger)",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "component_render.nav_collapse_css + compose_section._navbar_props",
+      "evidence": "CSS marker '(fact-gated: responsive.nav.collapse)'",
+      "detail": "consumer evidence present",
+      "provenance": "mega-nav panel container (.global-nav-main .global-nav-main-inner) paints var(--cl-color-container-01) \u2192 resolved #ffffff; our .cs-mega measured transparent"
+    },
+    {
+      "family": "responsive.nav.panelSurface",
+      "path": "responsive.nav.panelSurface.background",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "component_render.render_mega (panel surface override)",
+      "evidence": ".cs-mega { background: <resolved panel literal> }",
+      "detail": "consumer evidence present",
+      "provenance": "mega-nav panel container (.global-nav-main .global-nav-main-inner) paints var(--cl-color-container-01) \u2192 resolved #ffffff; our .cs-mega measured transparent"
+    },
+    {
+      "family": "responsive.buttons.purgeHoverTransform",
+      "path": "responsive.buttons.purgeHoverTransform",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "component_render._button_variant_css (motion purge)",
+      "evidence": "no 'transform: translateY(-1px)' in the emitted button CSS",
+      "detail": "consumer evidence present",
+      "provenance": "source button hover/focus rules declare no transform (bg/border/color swap only); the composer translateY(-1px) lift is un-grounded motion \u2014 purged brand-wide (provenance doctrine)"
+    },
+    {
+      "family": "layout.specialTreatment",
+      "path": "composition sections' devices",
+      "status": "delegated",
+      "origin": "extracted",
+      "consumer": "onbrand_check.check_anatomy_presence (AS-81) + composition invariants",
+      "evidence": "verified by the owning sibling gate",
+      "detail": "delegated for generation: a composed page seeds its own patterns, not the source's specialTreatment patterns",
+      "provenance": "enumerated fact family"
+    },
+    {
+      "family": "layout.surfaceIntent",
+      "path": "composition sections' surfaceIntent",
+      "status": "delegated",
+      "origin": "extracted",
+      "consumer": "onbrand fidelity (composed sections paint their own surfaces)",
+      "evidence": "verified by the owning sibling gate",
+      "detail": "delegated for generation: a composed page uses its own sections, not the source's per-section surface layouts",
+      "provenance": "enumerated fact family"
+    },
+    {
+      "family": "tokens.type",
+      "path": "tokens.type",
+      "status": "delegated",
+      "origin": "extracted",
+      "consumer": "css_fidelity.heading_tier_divergences (C-checks)",
+      "evidence": "verified by the owning sibling gate",
+      "detail": "delegated to css_fidelity.heading_tier_divergences (C-checks)",
+      "provenance": "enumerated fact family"
+    },
+    {
+      "family": "tokens.spacing",
+      "path": "tokens.spacing",
+      "status": "delegated",
+      "origin": "extracted",
+      "consumer": "css_fidelity.spacing_tier_divergences (C-checks)",
+      "evidence": "verified by the owning sibling gate",
+      "detail": "delegated to css_fidelity.spacing_tier_divergences (C-checks)",
+      "provenance": "enumerated fact family"
+    },
+    {
+      "family": "tokens.radius",
+      "path": "tokens.radius",
+      "status": "delegated",
+      "origin": "extracted",
+      "consumer": "css_fidelity.radius_tier_divergences (C-checks)",
+      "evidence": "verified by the owning sibling gate",
+      "detail": "delegated to css_fidelity.radius_tier_divergences (C-checks)",
+      "provenance": "enumerated fact family"
+    },
+    {
+      "family": "tokens.colors",
+      "path": "tokens.colors",
+      "status": "delegated",
+      "origin": "extracted",
+      "consumer": "css_fidelity.color_role_divergences (C-checks)",
+      "evidence": "verified by the owning sibling gate",
+      "detail": "delegated to css_fidelity.color_role_divergences (C-checks)",
+      "provenance": "enumerated fact family"
+    },
+    {
+      "family": "layoutGrammar.actionGroup",
+      "path": "actionGroup",
+      "status": "delegated",
+      "origin": "designed",
+      "consumer": "composition_lint.lint_knobs (AS-63) + onbrand fidelity",
+      "evidence": "verified by the owning sibling gate",
+      "detail": "delegated to composition_lint.lint_knobs (AS-63) + onbrand fidelity",
+      "provenance": "enumerated fact family"
+    }
+  ],
+  "target": "generation"
+}

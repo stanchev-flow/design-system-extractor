@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "relume-test.component-fidelity.v1",
+  "item": "01 HubSpot",
+  "contractSource": "runs/hubspot-v2/brand/brand.yaml#buttons",
+  "checkedProperties": 332,
+  "components": [
+    "primary",
+    "secondary",
+    "tertiary",
+    "textCta",
+    "menu",
+    "icon"
+  ],
+  "degradations": [
+    {
+      "component": "secondary",
+      "state": "disabled",
+      "to": "primary disabled",
+      "reason": "canonical disabled state absent"
+    },
+    {
+      "component": "secondary",
+      "state": "focus",
+      "to": "primary focus",
+      "reason": "variant focus absent"
+    },
+    {
+      "component": "secondary",
+      "surface": "inverse",
+      "state": "pressed",
+      "to": "inverse hover",
+      "reason": "canonical inverse pressed state absent"
+    },
+    {
+      "component": "secondary",
+      "surface": "inverse",
+      "state": "disabled",
+      "to": "inverse rest",
+      "reason": "canonical inverse disabled state absent"
+    },
+    {
+      "component": "tertiary",
+      "state": "disabled",
+      "to": "primary disabled",
+      "reason": "canonical disabled state absent"
+    },
+    {
+      "component": "tertiary",
+      "state": "focus",
+      "to": "primary focus",
+      "reason": "variant focus absent"
+    },
+    {
+      "component": "textCta",
+      "state": "pressed",
+      "to": "hover",
+      "reason": "canonical pressed state absent"
+    },
+    {
+      "component": "textCta",
+      "state": "disabled",
+      "to": "primary disabled",
+      "reason": "canonical disabled state absent"
+    },
+    {
+      "component": "textCta",
+      "state": "focus",
+      "to": "primary focus",
+      "reason": "variant focus absent"
+    },
+    {
+      "component": "menu",
+      "state": "all",
+      "to": "tertiary",
+      "reason": "no independent menu-control matrix; nearest declared brand control"
+    }
+  ],
+  "failures": [],
+  "status": "pass"
+}

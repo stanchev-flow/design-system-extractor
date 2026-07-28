@@ -1,0 +1,847 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WoodWave Gallery &mdash; Studio Catalog (slot contracts)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --page-bg: #fbf4ed;
+  --page-text: #32271a;
+  --font-heading: 'Melodrama', 'Playfair Display', serif;
+  --font-body: 'Satoshi', 'Manrope', sans-serif;
+  --radius: 0rem;
+  --hair: color-mix(in srgb, var(--page-text) 16%, transparent);
+  --hair-strong: color-mix(in srgb, var(--page-text) 30%, transparent);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: var(--page-bg); color: var(--page-text);
+  font-family: var(--font-body); -webkit-font-smoothing: antialiased; }
+.cat-wrap { max-width: 1180px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+.cat-top { border-bottom: 1px solid var(--hair-strong); padding-bottom: 1.5rem; margin-bottom: 2.5rem; }
+.cat-kicker { text-transform: uppercase; letter-spacing: 0.18em; font-size: 0.7rem; opacity: 0.6; }
+.cat-title { font-family: var(--font-heading); font-size: 2.6rem; line-height: 1.05; margin-top: 0.5rem; }
+.cat-sub { margin-top: 0.65rem; font-size: 0.9rem; max-width: 60ch; opacity: 0.8; line-height: 1.5; }
+.cat-counts { display: flex; gap: 1.5rem; margin-top: 1.1rem; font-size: 0.8rem; }
+.cat-counts b { font-family: var(--font-heading); font-size: 1.4rem; display: block; }
+
+.cat-h2 { font-family: var(--font-heading); font-size: 1.5rem; text-transform: uppercase;
+  letter-spacing: 0.02em; margin: 2.8rem 0 1.2rem; }
+.cat-lead { font-size: 0.85rem; opacity: 0.7; margin: -0.6rem 0 1.4rem; max-width: 66ch; line-height: 1.5; }
+
+/* components gallery */
+.cat-comps { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+.cat-comp { border: 1px solid var(--hair); background: color-mix(in srgb, var(--page-text) 3%, transparent);
+  border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; }
+.cat-comp-preview { height: 96px; display: grid; place-items: center; padding: 0.75rem;
+  border-bottom: 1px solid var(--hair); background: color-mix(in srgb, var(--page-text) 4%, transparent); }
+.cat-comp-meta { padding: 0.7rem 0.8rem 0.85rem; }
+.cat-comp-name { font-weight: 600; font-size: 0.9rem; }
+.cat-comp-chips { display: flex; gap: 0.4rem; margin: 0.45rem 0; flex-wrap: wrap; }
+.cat-comp-used { font-size: 0.68rem; opacity: 0.6; line-height: 1.4; }
+
+.cat-chip { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 0.18rem 0.5rem; border: 1px solid var(--hair-strong); border-radius: 999px; white-space: nowrap; }
+.cat-chip-mode { display: inline-flex; align-items: center; gap: 0.4rem; }
+.cat-chip-mode::before { content: ""; width: 0.7rem; height: 0.7rem; border-radius: 50%;
+  background: var(--swatch); border: 1px solid var(--hair-strong); display: inline-block; }
+.cat-type { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700;
+  padding: 0.16rem 0.45rem; border-radius: 999px; }
+.cat-type-content { background: #2563eb1f; color: #1d4ed8; }
+.cat-type-media { background: #c026631f; color: #be185d; }
+
+/* origin catalog (extracted vs designed) */
+.cat-origin-tier { margin-bottom: 1.6rem; }
+.cat-origin-tierhead { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap;
+  font-family: var(--font-heading); font-size: 1.05rem; text-transform: uppercase;
+  letter-spacing: 0.02em; margin: 0 0 0.7rem; }
+.cat-origin-counts { font-family: var(--font-body); font-size: 0.72rem; text-transform: none;
+  letter-spacing: 0; opacity: 0.65; }
+.cat-origin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.7rem; }
+.cat-origin-item { border: 1px solid var(--hair); border-radius: var(--radius);
+  padding: 0.7rem 0.8rem; background: color-mix(in srgb, var(--page-text) 3%, transparent); }
+.cat-origin-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; }
+.cat-origin-name { font-weight: 600; font-size: 0.86rem; }
+.cat-origin-use { font-size: 0.66rem; opacity: 0.55; }
+.cat-origin-detail { font-size: 0.68rem; opacity: 0.7; margin-top: 0.35rem; line-height: 1.45; }
+.cat-origin-conflict { font-size: 0.66rem; margin-top: 0.25rem; color: #b45309; }
+.cat-origin-over { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em;
+  opacity: 0.7; margin-top: 0.25rem; }
+.cat-pill { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700;
+  padding: 0.16rem 0.5rem; border-radius: 999px; white-space: nowrap; }
+.cat-pill-extracted { background: #16a34a26; color: #15803d; border: 1px solid #16a34a55; }
+.cat-pill-designed { background: transparent; color: #2563eb; border: 1px dashed #2563eb88; }
+.cat-origin-legend { display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center;
+  font-size: 0.72rem; opacity: 0.75; margin: -0.4rem 0 1.2rem; }
+.cat-origin-legend span.lg { display: inline-flex; align-items: center; gap: 0.4rem; }
+
+.cat-specimen-text { text-align: center; }
+.cat-specimen-text .cat-line { height: 0.42rem; background: currentColor; opacity: 0.28; margin: 0.28rem auto; border-radius: 2px; }
+.cat-specimen-media { width: 80%; height: 66px; }
+.cat-specimen-form { display: flex; align-items: center; gap: 0.5rem; border-bottom: 1.5px solid currentColor;
+  padding-bottom: 0.3rem; font-size: 0.75rem; opacity: 0.85; }
+.cat-specimen-form .cat-submit { margin-left: auto; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+
+/* typed placeholders (slots + media/content specimens) */
+.cat-ph { position: relative; display: grid; place-items: center; border-radius: var(--radius);
+  width: 100%; min-height: 70px; }
+.cat-ph-media { background:
+    repeating-linear-gradient(45deg, color-mix(in srgb, currentColor 12%, transparent) 0 8px,
+    transparent 8px 16px); border: 1.5px dashed color-mix(in srgb, currentColor 45%, transparent); }
+.cat-ph-content { background: color-mix(in srgb, currentColor 7%, transparent);
+  border: 1.5px solid color-mix(in srgb, currentColor 30%, transparent); }
+.cat-ph-tag { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  opacity: 0.7; }
+
+/* sections */
+.cat-section { border: 1px solid var(--hair); border-radius: var(--radius); overflow: hidden; margin-bottom: 1.6rem; }
+.cat-section-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+  flex-wrap: wrap; padding: 1rem 1.2rem; background: color-mix(in srgb, var(--page-text) 4%, transparent);
+  border-bottom: 1px solid var(--hair); }
+.cat-section-name { font-family: var(--font-heading); font-size: 1.25rem; text-transform: uppercase; letter-spacing: 0.01em; }
+.cat-section-sub { font-size: 0.74rem; opacity: 0.6; margin-top: 0.2rem; }
+.cat-section-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+.cat-surface { padding: 1.6rem 1.4rem 1.8rem; position: relative; }
+.cat-surface-label { position: absolute; top: 0.55rem; right: 0.8rem; font-size: 0.6rem;
+  text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.5; font-family: var(--font-body); }
+.cat-slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-top: 0.6rem; }
+.cat-slot { margin: 0; }
+.cat-slot .cat-ph { min-height: 84px; }
+.cat-slot-meta { margin-top: 0.55rem; }
+.cat-slot-name { font-weight: 600; font-size: 0.82rem; display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; }
+.cat-slot-use { font-size: 0.72rem; opacity: 0.75; margin-top: 0.18rem; line-height: 1.4; }
+.cat-slot-comp { font-size: 0.68rem; opacity: 0.6; margin-top: 0.22rem; }
+.cat-struct { opacity: 0.55; }
+
+/* inference note */
+.cat-note { border: 1px solid var(--hair); border-radius: var(--radius); padding: 1.1rem 1.2rem; margin-top: 1rem;
+  background: color-mix(in srgb, var(--page-text) 3%, transparent); font-size: 0.8rem; line-height: 1.5; }
+.cat-note code { font-family: ui-monospace, Menlo, monospace; font-size: 0.74rem; }
+.cat-kw { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-top: 0.5rem; }
+.cat-kw span { font-size: 0.64rem; padding: 0.12rem 0.4rem; border: 1px solid var(--hair); border-radius: 4px; opacity: 0.8; }
+.cat-amb-list { margin: 0.5rem 0 0 1.1rem; font-size: 0.78rem; }
+.cat-note-ok { margin-top: 0.5rem; opacity: 0.8; }
+
+</style>
+</head>
+<body>
+<div class="cat-wrap">
+  <header class="cat-top">
+    <div class="cat-kicker">Studio Catalog &middot; Slot Contracts</div>
+    <h1 class="cat-title">WoodWave Gallery</h1>
+    <p class="cat-sub">Every unique component and section the brand extracted, validated as an
+    abstract slot contract &mdash; rendered with the brand's real color &amp; type tokens, but with
+    NEUTRAL typed placeholders instead of real copy or photos. Validate structure, types, surface
+    and layout before any Webflow build.</p>
+    <div class="cat-counts">
+      <div><b>0</b> components</div>
+      <div><b>8</b> sections</div>
+      <div><b>0</b> content &middot; <b>0</b> media</div>
+    </div>
+  </header>
+
+  <section>
+    <h2 class="cat-h2">Components</h2>
+    <p class="cat-lead">Unique leaf/library components referenced across all sections' component
+    mappings. Each is shown as a small on-brand specimen with its library group and inferred type.</p>
+    <div class="cat-comps">
+
+    </div>
+  </section>
+
+  <section>
+    <h2 class="cat-h2">Catalog by tier &mdash; origin</h2>
+    <p class="cat-lead">The brand's FULL component vocabulary grouped by tier. Each item is tagged
+    <b>extracted</b> (observed on the live page, with its provenance section ids and any neverDo
+    conflicts) or <b>designed</b> (synthesized brand-consistent from rules + tokens, not on the page,
+    and overridable).</p>
+    <div class="cat-origin-legend"><span class="lg"><span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span> observed on the page</span><span class="lg"><span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span> synthesized brand-consistent &middot; overridable</span></div>
+    <div class="cat-origin-tier">
+      <div class="cat-origin-tierhead">Tier 1 &middot; Primitives
+        <span class="cat-origin-counts">&mdash; 8 extracted / 0 designed</span>
+      </div>
+      <div class="cat-origin-grid">
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">button <span class="cat-origin-use">&middot; filled-primary</span> <span class="cat-origin-use">(sparingly)</span></div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: nav, hero</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">eyebrow <span class="cat-origin-use">(always)</span></div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: about, visit, newsletter, gallery-slider</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">heading <span class="cat-origin-use">(always)</span></div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: hero, about, visit, newsletter, footer</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">image <span class="cat-origin-use">(always)</span></div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: hero, about, gallery-slider, founder-story, visit</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">input <span class="cat-origin-use">(forms)</span></div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: newsletter</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">link <span class="cat-origin-use">(text-links-only)</span></div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: nav, visit, newsletter, footer</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">logo <span class="cat-origin-use">(always)</span></div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: nav, footer</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">paragraph <span class="cat-origin-use">(always)</span></div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: about, founder-story, visit</div>
+      </div>
+      </div>
+    </div>
+    <div class="cat-origin-tier">
+      <div class="cat-origin-tierhead">Tier 2 &middot; Blocks
+        <span class="cat-origin-counts">&mdash; 12 extracted / 13 designed</span>
+      </div>
+      <div class="cat-origin-grid">
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">card <span class="cat-origin-use">(always)</span></div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: visit, about, gallery-slider</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">carousel</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: gallery-slider</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">content-block <span class="cat-origin-use">(always)</span></div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: about, founder-story, visit, newsletter</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">cta-block <span class="cat-origin-use">(always)</span></div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: newsletter</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">feature-item</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: about, visit</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">footer</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: footer</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">form <span class="cat-origin-use">(newsletter)</span></div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: newsletter</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">header</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: about, visit, newsletter</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">media-text</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: about, founder-story, visit</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">navbar</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: nav</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">pagination <span class="cat-origin-use">(carousel-progress)</span></div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: gallery-slider</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">pricing-card <span class="cat-origin-use">(tickets)</span></div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: visit</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">accordion</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No accordion was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no accordion on the source homepage (a synthesized FAQ accordion is defined in layout-library synthesizedComponents, derived from the ruled-row + arrow-glyph grammar)</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">accordion-item</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No accordion-item was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no accordion on the source homepage</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">banner</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No banner was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no promo banner on the source homepage</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">breadcrumb</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No breadcrumb was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no breadcrumb on the source homepage</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">dropdown-menu</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No dropdown-menu was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no content dropdown; the mobile nav toggles a full-screen menu (chrome, not a content dropdown)</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">logo-bar</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No logo-bar was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no partner/customer logo wall — an art gallery, not a SaaS proof strip</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">modal</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No modal was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: the gallery slider uses a Webflow lightbox (library chrome) — no brand modal device</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">stat-block</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No stat-block was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no stat block on the source homepage (a synthesized gallery-stat band is defined in layout-library synthesizedComponents)</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">step-item</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No step-item was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no numbered step sequence on the source homepage</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">steps</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No steps was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no numbered step sequence on the source homepage</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">table</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No table was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no data table on the source homepage (a synthesized exhibition-programme table is defined in synthesizedComponents, derived from the ruled-row grammar)</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">tabs</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No tabs was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no tab device on the source homepage (the gallery slider is a carousel, not tabs)</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">testimonial</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No testimonial was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no testimonial/quote block on the source homepage (a synthesized press-quote is defined in layout-library synthesizedComponents, provenance synthesized-from-brand-signals)</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="cat-h2">Sections &mdash; Slot Contracts</h2>
+    <p class="cat-lead">Each section is an abstract contract: archetype name, its mode/surface
+    (chip + reflected surface color), its layout scaffold, and the typed slots it exposes.
+    Slots are neutral CONTENT / MEDIA placeholders &mdash; structure over content.</p>
+    <article class="cat-section">
+      <header class="cat-section-head">
+        <div>
+          <div class="cat-section-name">navbar / Nav</div>
+          <div class="cat-section-sub"></div>
+        </div>
+        <div class="cat-section-chips">
+          <span class="cat-chip cat-chip-mode" style="--swatch:#32271a">mode: Inverse</span>
+          <span class="cat-chip">layout: nav</span>
+          <span class="cat-chip">surface/inverse</span>
+        </div>
+      </header>
+      <div class="cat-surface" style="background:#32271a;color:#fbf4ed;--accent:#edd580">
+        <div class="cat-surface-label">surface surface/inverse &middot; #32271a</div>
+        <div class="cat-slots">
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-media">
+          <span class="cat-ph-tag">MEDIA</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">brand <span class="cat-type cat-type-media">media</span></div>
+          <div class="cat-slot-use">gold wavy-lines mark + WOODWAVE wordmark</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[brand]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">navlinks <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">slash-separated uppercase nav (18px Satoshi, hover → gold)</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[navlinks]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">actions <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">BUY TICKETS text-arrow</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[actions]</span></div>
+        </figcaption>
+      </figure>
+        </div>
+      </div>
+    </article>
+    <article class="cat-section">
+      <header class="cat-section-head">
+        <div>
+          <div class="cat-section-name">hero / Stack</div>
+          <div class="cat-section-sub"></div>
+        </div>
+        <div class="cat-section-chips">
+          <span class="cat-chip cat-chip-mode" style="--swatch:#32271a">mode: Inverse</span>
+          <span class="cat-chip">layout: stack</span>
+          <span class="cat-chip">surface/inverse</span>
+        </div>
+      </header>
+      <div class="cat-surface" style="background:#32271a;color:#fbf4ed;--accent:#edd580">
+        <div class="cat-surface-label">surface surface/inverse &middot; #32271a</div>
+        <div class="cat-slots">
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">heading <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">giant gold Melodrama wordmark (uppercase)</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[heading]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-media">
+          <span class="cat-ph-tag">MEDIA</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">background <span class="cat-type cat-type-media">media</span></div>
+          <div class="cat-slot-use">full-bleed warm staircase photo + overlapping cluster</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[background]</span></div>
+        </figcaption>
+      </figure>
+        </div>
+      </div>
+    </article>
+    <article class="cat-section">
+      <header class="cat-section-head">
+        <div>
+          <div class="cat-section-name">about / Stack</div>
+          <div class="cat-section-sub"></div>
+        </div>
+        <div class="cat-section-chips">
+          <span class="cat-chip cat-chip-mode" style="--swatch:#fbf4ed">mode: base (Primary)</span>
+          <span class="cat-chip">layout: stack</span>
+          <span class="cat-chip">surface/primary</span>
+        </div>
+      </header>
+      <div class="cat-surface" style="background:#fbf4ed;color:#32271a;--accent:#32271a">
+        <div class="cat-surface-label">surface surface/primary &middot; #fbf4ed</div>
+        <div class="cat-slots">
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">eyebrow <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">uppercase Satoshi eyebrow (&#x27;ABOUT&#x27;)</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[eyebrow]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">heading <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">80px Melodrama uppercase heading</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[heading]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">body <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">lede paragraph (Satoshi 24-28px)</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[body]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-media">
+          <span class="cat-ph-tag">MEDIA</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">media <span class="cat-type cat-type-media">media</span></div>
+          <div class="cat-slot-use">alternating gallery/architecture photos</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[media]</span></div>
+        </figcaption>
+      </figure>
+        </div>
+      </div>
+    </article>
+    <article class="cat-section">
+      <header class="cat-section-head">
+        <div>
+          <div class="cat-section-name">gallery-slider / Stack</div>
+          <div class="cat-section-sub"></div>
+        </div>
+        <div class="cat-section-chips">
+          <span class="cat-chip cat-chip-mode" style="--swatch:#32271a">mode: Inverse</span>
+          <span class="cat-chip">layout: stack</span>
+          <span class="cat-chip">surface/inverse</span>
+        </div>
+      </header>
+      <div class="cat-surface" style="background:#32271a;color:#fbf4ed;--accent:#edd580">
+        <div class="cat-surface-label">surface surface/inverse &middot; #32271a</div>
+        <div class="cat-slots">
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">eyebrow <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">chrome eyebrow (&#x27;GALLERY&#x27;) over the photo</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[eyebrow]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-media">
+          <span class="cat-ph-tag">MEDIA</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">media <span class="cat-type cat-type-media">media</span></div>
+          <div class="cat-slot-use">6 full-bleed gallery photos</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[media]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">controls <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">slide counter (1/6) + numeric dot rail + circular arrow</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[controls]</span></div>
+        </figcaption>
+      </figure>
+        </div>
+      </div>
+    </article>
+    <article class="cat-section">
+      <header class="cat-section-head">
+        <div>
+          <div class="cat-section-name">founder-story / Split</div>
+          <div class="cat-section-sub"></div>
+        </div>
+        <div class="cat-section-chips">
+          <span class="cat-chip cat-chip-mode" style="--swatch:#fbf4ed">mode: base (Primary)</span>
+          <span class="cat-chip">layout: split</span>
+          <span class="cat-chip">surface/primary</span>
+        </div>
+      </header>
+      <div class="cat-surface" style="background:#fbf4ed;color:#32271a;--accent:#32271a">
+        <div class="cat-surface-label">surface surface/primary &middot; #fbf4ed</div>
+        <div class="cat-slots">
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">heading <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">Melodrama uppercase heading (left)</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[heading]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">body <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">founder narrative paragraph (right)</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[body]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-media">
+          <span class="cat-ph-tag">MEDIA</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">media <span class="cat-type cat-type-media">media</span></div>
+          <div class="cat-slot-use">seated founder portrait</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[media]</span></div>
+        </figcaption>
+      </figure>
+        </div>
+      </div>
+    </article>
+    <article class="cat-section">
+      <header class="cat-section-head">
+        <div>
+          <div class="cat-section-name">visit / Split</div>
+          <div class="cat-section-sub"></div>
+        </div>
+        <div class="cat-section-chips">
+          <span class="cat-chip cat-chip-mode" style="--swatch:#32271a">mode: Inverse</span>
+          <span class="cat-chip">layout: split</span>
+          <span class="cat-chip">surface/inverse</span>
+        </div>
+      </header>
+      <div class="cat-surface" style="background:#32271a;color:#fbf4ed;--accent:#edd580">
+        <div class="cat-surface-label">surface surface/inverse &middot; #32271a</div>
+        <div class="cat-slots">
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">eyebrow <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">uppercase eyebrow (&#x27;VISIT&#x27;)</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[eyebrow]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">heading <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">Melodrama display (&#x27;WELCOME TO THE GALLERY&#x27;)</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[heading]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-media">
+          <span class="cat-ph-tag">MEDIA</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">media <span class="cat-type cat-type-media">media</span></div>
+          <div class="cat-slot-use">greyscale map band + wood-interior photo</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[media]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">card <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">cream info card (address + open hours ruled rows)</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[card]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">pricing <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">ruled ticket-price rows w/ BUY TICKETS text-arrows</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[pricing]</span></div>
+        </figcaption>
+      </figure>
+        </div>
+      </div>
+    </article>
+    <article class="cat-section">
+      <header class="cat-section-head">
+        <div>
+          <div class="cat-section-name">newsletter / Stack</div>
+          <div class="cat-section-sub"></div>
+        </div>
+        <div class="cat-section-chips">
+          <span class="cat-chip cat-chip-mode" style="--swatch:#fbf4ed">mode: base (Primary)</span>
+          <span class="cat-chip">layout: stack</span>
+          <span class="cat-chip">surface/primary</span>
+        </div>
+      </header>
+      <div class="cat-surface" style="background:#fbf4ed;color:#32271a;--accent:#32271a">
+        <div class="cat-surface-label">surface surface/primary &middot; #fbf4ed</div>
+        <div class="cat-slots">
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">eyebrow <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">uppercase eyebrow (&#x27;STAY UPDATED&#x27;)</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[eyebrow]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">heading <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">Melodrama display heading</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[heading]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">form <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">underline email field + SUBSCRIBE text-arrow</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[form]</span></div>
+        </figcaption>
+      </figure>
+        </div>
+      </div>
+    </article>
+    <article class="cat-section">
+      <header class="cat-section-head">
+        <div>
+          <div class="cat-section-name">footer / Stack</div>
+          <div class="cat-section-sub"></div>
+        </div>
+        <div class="cat-section-chips">
+          <span class="cat-chip cat-chip-mode" style="--swatch:#32271a">mode: Inverse</span>
+          <span class="cat-chip">layout: stack</span>
+          <span class="cat-chip">surface/inverse</span>
+        </div>
+      </header>
+      <div class="cat-surface" style="background:#32271a;color:#fbf4ed;--accent:#edd580">
+        <div class="cat-surface-label">surface surface/inverse &middot; #32271a</div>
+        <div class="cat-slots">
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">navheadline <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">giant Melodrama slash-nav headline (2 lines)</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[navheadline]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">social <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">slash-separated social row (INSTAGRAM / FACEBOOK / YOUTUBE / TWITTER)</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[social]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">legal <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">copyright + policy links on a pale strip</div>
+          <div class="cat-slot-comp">&rarr;  <span class="cat-struct">[legal]</span></div>
+        </figcaption>
+      </figure>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section>
+    <h2 class="cat-h2">Slot type inference</h2>
+    <div class="cat-note">
+      <div>Check the mapped component name first, then the slot&#x27;s semantic role, against a media keyword set and a content keyword set. media wins on a media-keyword hit (Image/Logo/photo/icon/...); otherwise content on a content-keyword hit (Heading/Eyebrow/Rich Text/Link/Form/...). Unmatched slots default to &#x27;content&#x27; and are flagged ambiguous.</div>
+      <div style="margin-top:0.7rem"><code>media</code> keywords:</div>
+      <div class="cat-kw"><span>image</span><span>media</span><span>photo</span><span>photography</span><span>picture</span><span>logo</span><span>wordmark</span><span>avatar</span><span>icon</span><span>video</span><span>gallery</span><span>illustration</span><span>graphic</span><span>map</span><span>thumbnail</span></div>
+      <div style="margin-top:0.6rem"><code>content</code> keywords:</div>
+      <div class="cat-kw"><span>heading</span><span>title</span><span>eyebrow</span><span>paragraph</span><span>rich text</span><span>richtext</span><span>text</span><span>link</span><span>form</span><span>button</span><span>label</span><span>action</span><span>caption</span><span>body</span><span>cta</span><span>quote</span><span>stat</span><span>counter</span><span>list</span><span>input</span><span>field</span><span>nav</span></div>
+      <div style="margin-top:0.8rem"><b>Ambiguous slots</b></div>
+      <p class='cat-note-ok'>No ambiguous slots &mdash; every slot resolved cleanly via component or role keywords.</p>
+    </div>
+  </section>
+</div>
+</body>
+</html>

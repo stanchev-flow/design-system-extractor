@@ -1,0 +1,100 @@
+{
+  "steps": {
+    "source_style_extraction": {
+      "status": "completed",
+      "meta": {},
+      "updated_at": "2026-06-03T17:48:56.768508"
+    },
+    "run_complete": {
+      "status": "completed",
+      "meta": {},
+      "updated_at": "2026-06-03T18:06:19.683755"
+    },
+    "site_generation_input": {
+      "status": "completed",
+      "meta": {
+        "label": "site generation input"
+      },
+      "updated_at": "2026-06-03T18:04:47.071602"
+    },
+    "site_generation_claude": {
+      "status": "completed",
+      "meta": {},
+      "updated_at": "2026-06-03T01:25:50.706698"
+    },
+    "site_generation_gpt55": {
+      "status": "completed",
+      "meta": {},
+      "updated_at": "2026-06-03T01:25:50.707351"
+    },
+    "design_system_conversion_review": {
+      "status": "skipped",
+      "meta": {
+        "reason": "reviews disabled"
+      },
+      "updated_at": "2026-06-03T18:04:47.074379"
+    },
+    "design_system_review": {
+      "status": "skipped",
+      "meta": {
+        "reason": "disabled for this run"
+      },
+      "updated_at": "2026-06-03T18:04:47.074006"
+    },
+    "section_grounding_pipeline": {
+      "status": "completed",
+      "meta": {},
+      "updated_at": "2026-06-03T18:02:34.164010"
+    },
+    "section_detection": {
+      "status": "completed",
+      "meta": {
+        "sections_detected": 9
+      },
+      "updated_at": "2026-06-03T17:49:21.080927"
+    },
+    "global_site_grounding": {
+      "status": "completed",
+      "meta": {},
+      "updated_at": "2026-06-03T17:50:02.340710"
+    },
+    "grounding_merge": {
+      "status": "completed",
+      "meta": {
+        "fallback": true
+      },
+      "updated_at": "2026-06-03T18:02:34.158190"
+    },
+    "grounding_style_sync": {
+      "status": "completed",
+      "meta": {},
+      "updated_at": "2026-06-03T18:02:34.183518"
+    },
+    "surface_component_map": {
+      "status": "completed",
+      "meta": {
+        "source": "contract",
+        "contract_passed": false
+      },
+      "updated_at": "2026-06-03T18:02:34.377817"
+    },
+    "surface_component_contract": {
+      "status": "completed",
+      "meta": {
+        "passed": false,
+        "mode": "contract"
+      },
+      "updated_at": "2026-06-03T18:02:34.377335"
+    },
+    "framework_site_generation_claude": {
+      "status": "completed",
+      "meta": {},
+      "updated_at": "2026-06-03T18:06:19.682730"
+    },
+    "framework_site_generation_gpt55": {
+      "status": "completed",
+      "meta": {},
+      "updated_at": "2026-06-03T18:06:19.683138"
+    }
+  }
+}

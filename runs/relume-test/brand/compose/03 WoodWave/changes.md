@@ -1,0 +1,22 @@
+# 03 WoodWave
+
+- Built from the approved Relume-test structural sequence.
+- Brand facts source: `runs/woodwave-v2/brand`.
+- Every media slot was validated against `assets-tagged.json` and the on-disk `assets/` directory.
+- Resolved media slots: 25.
+- Declared unavailable media slots: 8.
+- Canonical status: Available extracted facts · canonical run needs_iteration.
+- Acceptance status: blocked: exact extracted light-surface text-link hover gold is 1.34:1; canonical brand run also remains needs_iteration.
+- Typography status: Extracted Melodrama and Satoshi files loaded from available canonical brand assets.
+- Surface sequence: `surface/photo-hero → surface/primary → surface/primary → surface/primary → surface/primary → surface/photo-hero → surface/primary → surface/primary → surface/primary → surface/inverse → surface/inverse-strong`.
+- Rhythm: section `7.5rem`, hero `9.375rem / 9.375rem`, container `81.25rem`, eyebrow→heading `2.5rem`, heading→body `5rem`, body→CTA `2.5rem`, block `4rem`, columns `4rem`, grid `2rem`, actions `1.5rem`.
+- Rhythm sources: canonical `brand.yaml` surfaceGrammar/pageRhythm, tokens.spacing, and layoutGrammar.actionGroup; style-scale unavailable in the WIP canonical lane.
+- Component contracts: primary, secondary, tertiary/text, menu, and rail controls resolve from canonical `brand.yaml#buttons`; 12 missing state/control mappings are declared in `composition.json` rather than receiving generic styling.
+- Split media geometry: no generic ratio or minimum height; wrappers use intrinsic extracted asset dimensions, per-slot fit, `min-size: 0`, and centered self-alignment. Details are recorded in `composition.json#mediaGeometry`.
+- Browser verification: desktop and 390px mobile loaded successfully; mobile navigation opened by keyboard/click control.
+- Asset verification: every rendered image URL returned HTTP 200.
+- Preview artifacts: `preview.png` and `preview-mobile.png`.
+- Media geometry: PASS at desktop/mobile for both feature splits. Generic 4:3 and 430px minimum were removed; extracted intrinsic ratios now resolve as 800:923 (editorial photo) and 500:652 (founder portrait), with the extracted `cover` treatment retained but no invented crop box.
+- Grid-row max-content sizing, centered sibling alignment, 64px/32px desktop/mobile split gaps, section padding, and 40/80/40px feature relational gaps all matched available canonical facts.
+- Regression report: `media-geometry-report.{json,md}` (0 failures).
+- Component fidelity remains PASS (368 properties, 0 mismatches); on-brand PASS. Rest-state readability remains 5.24:1, with only the exact extracted gold-on-cream hover conflict still blocked.

@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "relume-test.component-fidelity.v1",
+  "item": "02 Remote",
+  "contractSource": "runs/remote/brand/brand.yaml#buttons",
+  "checkedProperties": 284,
+  "components": [
+    "primary",
+    "secondary",
+    "tertiary",
+    "textCta",
+    "menu",
+    "icon"
+  ],
+  "degradations": [
+    {
+      "component": "secondary",
+      "state": "disabled",
+      "to": "primary disabled",
+      "reason": "canonical disabled state absent"
+    },
+    {
+      "component": "secondary",
+      "state": "focus",
+      "to": "primary focus",
+      "reason": "variant focus absent"
+    },
+    {
+      "component": "tertiary",
+      "state": "focus",
+      "to": "primary focus",
+      "reason": "variant focus absent"
+    },
+    {
+      "component": "textCta",
+      "state": "pressed",
+      "to": "hover",
+      "reason": "canonical pressed state absent"
+    },
+    {
+      "component": "textCta",
+      "state": "disabled",
+      "to": "primary disabled",
+      "reason": "canonical disabled state absent"
+    },
+    {
+      "component": "textCta",
+      "state": "focus",
+      "to": "primary focus",
+      "reason": "variant focus absent"
+    },
+    {
+      "component": "menu",
+      "state": "all",
+      "to": "tertiary",
+      "reason": "no independent menu-control matrix; nearest declared brand control"
+    },
+    {
+      "component": "icon",
+      "state": "all",
+      "to": "secondary",
+      "reason": "no independent rail-control matrix; nearest declared brand control"
+    }
+  ],
+  "failures": [],
+  "status": "pass"
+}

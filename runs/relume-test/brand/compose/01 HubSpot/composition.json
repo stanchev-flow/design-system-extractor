@@ -1,0 +1,707 @@
+{
+  "schemaVersion": "composition.v1",
+  "name": "01 HubSpot",
+  "brandSource": "runs/hubspot-v2/brand",
+  "canonicalStatus": "Canonical extraction completed \u00b7 assets validated",
+  "structure": [
+    "navigation",
+    "hero-content-media-split",
+    "trust-logo-strip",
+    "feature-disclosure-split",
+    "feature-content-media-split",
+    "centered-cta",
+    "resource-card-grid",
+    "centered-proof-testimonial",
+    "horizontal-testimonial-rail",
+    "awards-logo-rail",
+    "closing-cta",
+    "multi-column-footer"
+  ],
+  "sections": [
+    {
+      "id": "hero",
+      "surfaceIntent": "surface/photo-hero",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "Where go-to-market teams go to grow."
+        }
+      ]
+    },
+    {
+      "id": "trust",
+      "surfaceIntent": "surface/primary",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "299,000+ customers in over 135 countries grow their businesses with HubSpot."
+        }
+      ]
+    },
+    {
+      "id": "feature-disclosure",
+      "surfaceIntent": "surface/primary",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "Growing a business is hard. HubSpot makes it easier."
+        }
+      ]
+    },
+    {
+      "id": "feature-split",
+      "surfaceIntent": "surface/primary",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "Built-in AI agents that work for you 24/7."
+        }
+      ]
+    },
+    {
+      "id": "mid-cta",
+      "surfaceIntent": "surface/accent-wash",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "Works with the tools you already use. 2,000+ integrations."
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "surfaceIntent": "surface/primary",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "Always-on teammates for every team"
+        }
+      ]
+    },
+    {
+      "id": "proof",
+      "surfaceIntent": "surface/primary",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "HubSpot took the time to understand our business needs fully. The pre-sales and subsequent support really stood out from the start."
+        }
+      ]
+    },
+    {
+      "id": "testimonial-rail",
+      "surfaceIntent": "surface/primary",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "Remarkable results for every size business."
+        }
+      ]
+    },
+    {
+      "id": "awards",
+      "surfaceIntent": "surface/primary",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "Voted #1 in 526 G2 Reports"
+        }
+      ]
+    },
+    {
+      "id": "closing-cta",
+      "surfaceIntent": "surface/inverse",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "Make impossible growth feel impossibly easy, with HubSpot."
+        }
+      ]
+    },
+    {
+      "id": "footer",
+      "surfaceIntent": "surface/inverse-strong",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "Unite marketing, sales, and customer service on one agentic customer platform."
+        }
+      ]
+    }
+  ],
+  "mediaPolicy": "existing-extracted-assets-only",
+  "mediaGeometryPolicy": "canonical ratio only when explicitly declared; otherwise intrinsic extracted asset ratio with no CSS aspect-ratio",
+  "mediaGeometry": [
+    {
+      "slot": "hero",
+      "asset": "018-hs-full-bleed-1-optmised.webp",
+      "fit": "cover",
+      "cssAspectRatio": "auto",
+      "ratioSource": "intrinsic extracted hero asset 2160x1440",
+      "intrinsicWidth": 2160,
+      "intrinsicHeight": 1440,
+      "intrinsicRatio": 1.5
+    },
+    {
+      "slot": "feature-disclosure",
+      "asset": "024-customer-20platform-20graphic-20-20smart-20crm1-5x-20-1.png",
+      "fit": "contain",
+      "cssAspectRatio": "auto",
+      "ratioSource": "intrinsic extracted platform graphic 604x353",
+      "intrinsicWidth": 604,
+      "intrinsicHeight": 353,
+      "intrinsicRatio": 1.711048
+    },
+    {
+      "slot": "feature-secondary",
+      "asset": "036-customer-agent-en-2x.png",
+      "fit": "contain",
+      "cssAspectRatio": "auto",
+      "ratioSource": "intrinsic extracted product UI 640x640",
+      "intrinsicWidth": 640,
+      "intrinsicHeight": 640,
+      "intrinsicRatio": 1.0
+    }
+  ],
+  "surfaceSequence": [
+    "surface/photo-hero",
+    "surface/primary",
+    "surface/primary",
+    "surface/primary",
+    "surface/accent-wash",
+    "surface/primary",
+    "surface/primary",
+    "surface/primary",
+    "surface/primary",
+    "surface/inverse",
+    "surface/inverse-strong"
+  ],
+  "rhythmSources": {
+    "surfaceSequence": "runs/hubspot-v2/brand/brand.yaml#surfaceGrammar.pageRhythm",
+    "sectionPadding": "runs/hubspot-v2/brand/brand.yaml#tokens.spacing",
+    "container": "runs/hubspot-v2/brand/brand.yaml#tokens.spacing.container-max",
+    "relationalGaps": "runs/hubspot-v2/brand/brand.yaml#tokens.spacing + layoutGrammar.actionGroup",
+    "styleScale": "runs/hubspot-v2/brand/style-scale.yaml"
+  },
+  "typographyStatus": "Extracted HubSpot Sans and HubSpot Serif files loaded from canonical brand assets.",
+  "componentContractSource": "runs/hubspot-v2/brand/brand.yaml#buttons",
+  "acceptanceStatus": "blocked: exact extracted primary control is 3.40:1 and transparent border yields 2.68:1 on accent-wash",
+  "componentContracts": {
+    "primary": {
+      "style": "filled",
+      "bg": "#ff4800",
+      "bgHover": "#c93700",
+      "fgHover": "#ffffff",
+      "bgPressed": "#9f2800",
+      "bgDisabled": "rgba(0, 0, 0, 0.02)",
+      "fg": "#ffffff",
+      "border": "2px solid transparent",
+      "radius": "0.5rem",
+      "padding": "0.75rem 1.5rem",
+      "height": "3.5rem",
+      "font": "HubSpot Sans",
+      "weight": 500,
+      "sizeRem": 1,
+      "focus": "outline 2px solid #2f7579; outline-offset 2px",
+      "confidence": "high",
+      "source": [
+        "saved-css",
+        "computed",
+        "vision"
+      ],
+      "provenance": [
+        "hero",
+        "product-grid",
+        "closing-cta",
+        "navbar"
+      ],
+      "note": "Measured .cl-button.-primary: bg rgb(255,72,0), white label, r8, border 2px transparent; hover/pressed from the site's own light-theme button tokens; identical fill family on dark surfaces (dark-theme tokens repeat #ff4800/#c93700/#9f2800).",
+      "fgPressed": "#ffffff",
+      "fgDisabled": "#ffffff",
+      "onInverse": {}
+    },
+    "secondary": {
+      "style": "outline",
+      "bg": "#ffffff",
+      "border": "2px solid #ff4800",
+      "fg": "#ff4800",
+      "bgHover": "#fcece6",
+      "fgHover": "#c93700",
+      "bgPressed": "#fcc6b1",
+      "radius": "0.5rem",
+      "padding": "0.75rem 1.5rem",
+      "height": "3.5rem",
+      "font": "HubSpot Sans",
+      "weight": 500,
+      "sizeRem": 1,
+      "onInverse": {
+        "border": "2px solid #f8f5ee",
+        "fg": "#f8f5ee",
+        "bg": "transparent",
+        "bgHover": "rgba(0, 0, 0, 0.2)",
+        "fgHover": "#f8f5ee",
+        "note": "dark-surface variant (--dark-theme-button-secondary-border/-text: cream outline on the deep-teal band \u2014 grounding section-10 outlined white); hover affordance is the dark bg wash, the cream label HOLDS (without fgHover the family's light-surface hover ink #c93700 leaks in at 3.29:1 on the deep teal)",
+        "bgPressed": "rgba(0, 0, 0, 0.2)",
+        "fgPressed": "#f8f5ee",
+        "bgDisabled": "transparent",
+        "fgDisabled": "#f8f5ee",
+        "focus": "outline 2px solid #2f7579; outline-offset 2px"
+      },
+      "confidence": "high",
+      "source": [
+        "saved-css",
+        "computed",
+        "vision"
+      ],
+      "provenance": [
+        "hero",
+        "product-grid",
+        "closing-cta",
+        "navbar"
+      ],
+      "note": "'Get started free' family \u2014 white fill + 2px orange border + orange label on light; cream outline on dark bands.",
+      "fgPressed": "#c93700",
+      "bgDisabled": "rgba(0, 0, 0, 0.02)",
+      "fgDisabled": "#ff4800",
+      "focus": "outline 2px solid #2f7579; outline-offset 2px"
+    },
+    "tertiary": {
+      "style": "outline-ink",
+      "bg": "transparent",
+      "border": "2px solid #1f1f1f",
+      "fg": "#1f1f1f",
+      "bgHover": "rgba(0, 0, 0, 0.05)",
+      "fgHover": "#1f1f1f",
+      "bgPressed": "rgba(0, 0, 0, 0.06)",
+      "radius": "0.5rem",
+      "padding": "0.75rem 1.5rem",
+      "height": "3.5rem",
+      "font": "HubSpot Sans",
+      "weight": 500,
+      "sizeRem": 1,
+      "confidence": "high",
+      "source": [
+        "saved-css",
+        "computed"
+      ],
+      "provenance": [
+        "agent-carousel",
+        "case-study-header"
+      ],
+      "note": "the quiet ink-outlined family ('Explore Breeze Agents', 'See all case studies'); the FILLED near-black neutral (#1f1f1f fill, white label \u2014 skip-link + tertiary-fill tokens) exists as its chrome sibling.",
+      "fgPressed": "#1f1f1f",
+      "bgDisabled": "rgba(0, 0, 0, 0.02)",
+      "fgDisabled": "#1f1f1f",
+      "focus": "outline 2px solid #2f7579; outline-offset 2px",
+      "onInverse": {}
+    },
+    "textCta": {
+      "style": "text-link-arrow",
+      "fg": "#1f1f1f",
+      "fgHover": "#1f1f1f",
+      "decoration": "orange underline (--light-theme-text-link-underline-01 #ff4800) on standing links; card text-arrows are clean w/ a trailing arrow glyph that slides 5px right on hover",
+      "radius": "0",
+      "font": "HubSpot Sans",
+      "weight": 500,
+      "sizeRem": 1,
+      "glyph": {
+        "asset": "icon-next.svg",
+        "size": "1rem",
+        "source": "computed"
+      },
+      "confidence": "high",
+      "source": [
+        "saved-css",
+        "computed",
+        "vision"
+      ],
+      "provenance": [
+        "product-grid",
+        "integration-banner",
+        "testimonial-tabs"
+      ],
+      "note": "'Learn more \u2192' card links (arrow translateX(5px) hover); 'See all app integrations' / 'Read full case study' standing links w/ the orange underline device.",
+      "border": "none",
+      "padding": "0",
+      "height": "auto",
+      "bg": "transparent",
+      "bgHover": "transparent",
+      "bgPressed": "transparent",
+      "fgPressed": "#1f1f1f",
+      "bgDisabled": "rgba(0, 0, 0, 0.02)",
+      "fgDisabled": "#1f1f1f",
+      "focus": "outline 2px solid #2f7579; outline-offset 2px",
+      "onInverse": {}
+    },
+    "menu": {
+      "style": "outline-ink",
+      "bg": "transparent",
+      "border": "2px solid #1f1f1f",
+      "fg": "#1f1f1f",
+      "bgHover": "rgba(0, 0, 0, 0.05)",
+      "fgHover": "#1f1f1f",
+      "bgPressed": "rgba(0, 0, 0, 0.06)",
+      "radius": "0.5rem",
+      "padding": "0.75rem 1.5rem",
+      "height": "3.5rem",
+      "font": "HubSpot Sans",
+      "weight": 500,
+      "sizeRem": 1,
+      "confidence": "high",
+      "source": [
+        "saved-css",
+        "computed"
+      ],
+      "provenance": [
+        "agent-carousel",
+        "case-study-header"
+      ],
+      "note": "the quiet ink-outlined family ('Explore Breeze Agents', 'See all case studies'); the FILLED near-black neutral (#1f1f1f fill, white label \u2014 skip-link + tertiary-fill tokens) exists as its chrome sibling.",
+      "fgPressed": "#1f1f1f",
+      "bgDisabled": "rgba(0, 0, 0, 0.02)",
+      "fgDisabled": "#1f1f1f",
+      "focus": "outline 2px solid #2f7579; outline-offset 2px",
+      "onInverse": {},
+      "degradedFrom": "tertiary"
+    },
+    "icon": {
+      "style": "icon-control",
+      "bg": "#ffffff",
+      "fg": "#1f1f1f",
+      "border": "none",
+      "radius": "50%",
+      "padding": "0",
+      "height": "3.5rem",
+      "size": "3.5rem",
+      "iconSize": "1rem",
+      "bgHover": "rgba(0, 0, 0, 0.05)",
+      "fgHover": "#1f1f1f",
+      "bgPressed": "rgba(0, 0, 0, 0.06)",
+      "fgPressed": "#1f1f1f",
+      "bgDisabled": "rgba(0, 0, 0, 0.02)",
+      "fgDisabled": "rgba(0, 0, 0, 0.4)",
+      "focus": "outline 2px solid #2f7579; outline-offset 2px",
+      "onInverse": {},
+      "font": "HubSpot Sans",
+      "weight": "500",
+      "sizeRem": 1
+    }
+  },
+  "componentDegradations": [
+    {
+      "component": "secondary",
+      "state": "disabled",
+      "to": "primary disabled",
+      "reason": "canonical disabled state absent"
+    },
+    {
+      "component": "secondary",
+      "state": "focus",
+      "to": "primary focus",
+      "reason": "variant focus absent"
+    },
+    {
+      "component": "secondary",
+      "surface": "inverse",
+      "state": "pressed",
+      "to": "inverse hover",
+      "reason": "canonical inverse pressed state absent"
+    },
+    {
+      "component": "secondary",
+      "surface": "inverse",
+      "state": "disabled",
+      "to": "inverse rest",
+      "reason": "canonical inverse disabled state absent"
+    },
+    {
+      "component": "tertiary",
+      "state": "disabled",
+      "to": "primary disabled",
+      "reason": "canonical disabled state absent"
+    },
+    {
+      "component": "tertiary",
+      "state": "focus",
+      "to": "primary focus",
+      "reason": "variant focus absent"
+    },
+    {
+      "component": "textCta",
+      "state": "pressed",
+      "to": "hover",
+      "reason": "canonical pressed state absent"
+    },
+    {
+      "component": "textCta",
+      "state": "disabled",
+      "to": "primary disabled",
+      "reason": "canonical disabled state absent"
+    },
+    {
+      "component": "textCta",
+      "state": "focus",
+      "to": "primary focus",
+      "reason": "variant focus absent"
+    },
+    {
+      "component": "menu",
+      "state": "all",
+      "to": "tertiary",
+      "reason": "no independent menu-control matrix; nearest declared brand control"
+    }
+  ],
+  "resolvedRhythm": {
+    "sectionPadding": "4rem",
+    "heroPadding": {
+      "top": "11rem",
+      "bottom": "11rem"
+    },
+    "container": "67.5rem",
+    "eyebrowToHeading": "1.5rem",
+    "headingToBody": "2rem",
+    "bodyToCta": "2.5rem",
+    "blockGap": "2.5rem",
+    "columnGap": "5rem",
+    "gridGap": "2rem",
+    "actionGap": "1rem"
+  },
+  "mediaBindings": [
+    {
+      "slot": "testimonial-1-media",
+      "status": "resolved",
+      "asset": "045-unipart-1.png",
+      "useCase": "case-study-photo",
+      "intendedSlot": "testimonial tab photo (Enterprise)"
+    },
+    {
+      "slot": "control-1-glyph",
+      "status": "resolved",
+      "asset": "icon-next.svg",
+      "useCase": "ui-glyph",
+      "intendedSlot": "carousel next control"
+    },
+    {
+      "slot": "testimonial-2-media",
+      "status": "resolved",
+      "asset": "046-angel-fc.png",
+      "useCase": "case-study-photo",
+      "intendedSlot": "testimonial tab photo (Mid-Sized)"
+    },
+    {
+      "slot": "control-2-glyph",
+      "status": "resolved",
+      "asset": "icon-next.svg",
+      "useCase": "ui-glyph",
+      "intendedSlot": "carousel next control"
+    },
+    {
+      "slot": "testimonial-3-media",
+      "status": "resolved",
+      "asset": "047-youth-on-course.png",
+      "useCase": "case-study-photo",
+      "intendedSlot": "testimonial tab photo (Small Business)"
+    },
+    {
+      "slot": "control-3-glyph",
+      "status": "resolved",
+      "asset": "icon-next.svg",
+      "useCase": "ui-glyph",
+      "intendedSlot": "carousel next control"
+    },
+    {
+      "slot": "navigation-wordmark",
+      "status": "resolved",
+      "asset": "hubspot-wordmark.svg",
+      "useCase": "logo",
+      "intendedSlot": "nav/footer wordmark"
+    },
+    {
+      "slot": "hero-media",
+      "status": "resolved",
+      "asset": "018-hs-full-bleed-1-optmised.webp",
+      "useCase": "background-art",
+      "intendedSlot": "hero full-bleed photograph"
+    },
+    {
+      "slot": "trust-logo-1",
+      "status": "resolved",
+      "asset": "019-ebay-logo.svg",
+      "useCase": "logo-wall-logo",
+      "intendedSlot": "customer logo row"
+    },
+    {
+      "slot": "trust-logo-2",
+      "status": "resolved",
+      "asset": "020-doordash-logo.svg",
+      "useCase": "logo-wall-logo",
+      "intendedSlot": "customer logo row"
+    },
+    {
+      "slot": "trust-logo-3",
+      "status": "resolved",
+      "asset": "021-reddit-logo.svg",
+      "useCase": "logo-wall-logo",
+      "intendedSlot": "customer logo row"
+    },
+    {
+      "slot": "trust-logo-4",
+      "status": "resolved",
+      "asset": "022-tripadvisor-logo.svg",
+      "useCase": "logo-wall-logo",
+      "intendedSlot": "customer logo row"
+    },
+    {
+      "slot": "trust-logo-5",
+      "status": "resolved",
+      "asset": "023-eventbrite-logo.svg",
+      "useCase": "logo-wall-logo",
+      "intendedSlot": "customer logo row"
+    },
+    {
+      "slot": "disclosure-feature-media",
+      "status": "resolved",
+      "asset": "024-customer-20platform-20graphic-20-20smart-20crm1-5x-20-1.png",
+      "useCase": "product-graphic",
+      "intendedSlot": "platform carousel slide 1 media"
+    },
+    {
+      "slot": "second-feature-media",
+      "status": "resolved",
+      "asset": "036-customer-agent-en-2x.png",
+      "useCase": "product-UI",
+      "intendedSlot": "agent card media well"
+    },
+    {
+      "slot": "control-8-glyph",
+      "status": "resolved",
+      "asset": "icon-next.svg",
+      "useCase": "ui-glyph",
+      "intendedSlot": "carousel next control"
+    },
+    {
+      "slot": "resource-1-media",
+      "status": "resolved",
+      "asset": "036-customer-agent-en-2x.png",
+      "useCase": "product-UI",
+      "intendedSlot": "agent card media well"
+    },
+    {
+      "slot": "control-9-glyph",
+      "status": "resolved",
+      "asset": "icon-next.svg",
+      "useCase": "ui-glyph",
+      "intendedSlot": "carousel next control"
+    },
+    {
+      "slot": "resource-2-media",
+      "status": "resolved",
+      "asset": "037-prospecting-agent-en-2x.png",
+      "useCase": "product-UI",
+      "intendedSlot": "agent card media well"
+    },
+    {
+      "slot": "control-10-glyph",
+      "status": "resolved",
+      "asset": "icon-next.svg",
+      "useCase": "ui-glyph",
+      "intendedSlot": "carousel next control"
+    },
+    {
+      "slot": "resource-3-media",
+      "status": "resolved",
+      "asset": "038-data-hub-en-2x.png",
+      "useCase": "product-UI",
+      "intendedSlot": "agent card media well"
+    },
+    {
+      "slot": "control-11-glyph",
+      "status": "resolved",
+      "asset": "icon-next.svg",
+      "useCase": "ui-glyph",
+      "intendedSlot": "carousel next control"
+    },
+    {
+      "slot": "centered-proof-media",
+      "status": "resolved",
+      "asset": "045-unipart-1.png",
+      "useCase": "case-study-photo",
+      "intendedSlot": "testimonial tab photo (Enterprise)"
+    },
+    {
+      "slot": "rail-previous-icon",
+      "status": "resolved",
+      "asset": "icon-previous.svg",
+      "useCase": "ui-glyph",
+      "intendedSlot": "carousel prev control"
+    },
+    {
+      "slot": "rail-next-icon",
+      "status": "resolved",
+      "asset": "icon-next.svg",
+      "useCase": "ui-glyph",
+      "intendedSlot": "carousel next control"
+    },
+    {
+      "slot": "award-1",
+      "status": "resolved",
+      "asset": "048-badge-leader-small-business.png",
+      "useCase": "award-badge",
+      "intendedSlot": "G2 badge row"
+    },
+    {
+      "slot": "award-2",
+      "status": "resolved",
+      "asset": "049-badge-most-implementable.png",
+      "useCase": "award-badge",
+      "intendedSlot": "G2 badge row"
+    },
+    {
+      "slot": "award-3",
+      "status": "resolved",
+      "asset": "050-badge-best-relationships-small-business.png",
+      "useCase": "award-badge",
+      "intendedSlot": "G2 badge row"
+    },
+    {
+      "slot": "award-4",
+      "status": "resolved",
+      "asset": "051-badge-best-support-enterprise.png",
+      "useCase": "award-badge",
+      "intendedSlot": "G2 badge row"
+    },
+    {
+      "slot": "award-5",
+      "status": "resolved",
+      "asset": "052-badge-best-results-mid-market.png",
+      "useCase": "award-badge",
+      "intendedSlot": "G2 badge row"
+    },
+    {
+      "slot": "award-6",
+      "status": "resolved",
+      "asset": "053-badge-best-usability-enterprise.png",
+      "useCase": "award-badge",
+      "intendedSlot": "G2 badge row"
+    },
+    {
+      "slot": "footer-wordmark",
+      "status": "resolved",
+      "asset": "hubspot-wordmark.svg",
+      "useCase": "logo",
+      "intendedSlot": "nav/footer wordmark"
+    }
+  ],
+  "gaps": []
+}

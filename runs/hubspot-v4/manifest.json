@@ -1,0 +1,42 @@
+{
+  "lane": "hubspot-v4",
+  "status": "completed",
+  "pipeline_run_completed": true,
+  "baseline_commit": "30f52c3",
+  "purpose": "Re-extract hubspot with the upgraded Archaeologist capture prompt so the NEW fact families are captured, then wire renderer consumption so they produce VISIBLE results.",
+  "base": {
+    "from_lane": "hubspot-v3",
+    "note": "brand.yaml + evidence + assets + sidecars copied from the committed hubspot-v3 lane (same source capture bundle). New-fact families are added on top via interaction-facts.yaml; all v3 base facts are preserved."
+  },
+  "new_fact_families": [
+    "blocks.carousel.carousel (structured slider timing recipe)",
+    "interactionStates (hover/active/focus/disabled per generic component role)",
+    "navbar.mobile (hamburger->drawer contract)",
+    "navbar.sticky (sticky / scroll-shrink register)",
+    "tokens.shadow (elevation scale)",
+    "tokens.zIndex (stacking scale)",
+    "footer.localeSelector"
+  ],
+  "capture_artifact": "brand/interaction-facts.yaml",
+  "capture_tool": "tools/extract/capture_interaction_facts.py",
+  "validation": { "checks": "C1-C28", "result": "PASS (0 errors, 11 warnings — same warnings as v3 base)" },
+  "replica": {
+    "overall_score": 0.921,
+    "baseline_score": 0.922,
+    "fact_consumption_audit": "AS-83 target=replica: 26 consumed / 0 unconsumed (all 7 new interaction families CONSUMED)",
+    "viewport_health": { "1440": 1.0, "1920": 1.0, "960": 1.0, "375": 0.893 }
+  },
+  "generated_page": {
+    "dir": "brand/compose/ai-product-launch",
+    "fact_consumption_audit": "AS-83 target=generation: 12 consumed / 0 unconsumed"
+  },
+  "screenshots": [
+    "brand/compose/replica/replica-fullpage-1440.png",
+    "brand/compose/replica/replica-fullpage-375.png",
+    "brand/compose/replica/interaction-demo/m375-drawer-open.png",
+    "brand/compose/replica/interaction-demo/m375-nav-closed.png",
+    "brand/compose/replica/interaction-demo/d1440-nav-scrolled.png",
+    "brand/compose/replica/interaction-demo/d1440-footer-locale.png"
+  ],
+  "byte_identical_guarantee": "v2/v3/remote/woodwave-v2 replica HTML byte-identical with-vs-without these changes (fact-gated; verified)"
+}

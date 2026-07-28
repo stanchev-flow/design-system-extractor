@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "composition.v1",
+  "name": "05 Remote Variant — Product Story",
+  "brandSource": "runs/remote/brand",
+  "recipeCatalogSource": "brand_pipeline/contracts/section-recipes/catalog.generated.yaml",
+  "variant": "B",
+  "acceptanceStatus": "pass",
+  "structure": [
+    "navigation-standard-nav",
+    "product-header-content-media-split",
+    "logo-wall-carousel",
+    "feature-tabs",
+    "feature-content-media-split",
+    "feature-content-media-split",
+    "feature-content-media-split",
+    "feature-repeated-grid",
+    "timeline-timeline",
+    "testimonial-carousel",
+    "cta-media-background",
+    "footer-link-columns"
+  ],
+  "sections": [
+    {"id":"opener","recipe":"product-header-content-media-split","surfaceIntent":"surface/hero-noise","mediaSide":"right"},
+    {"id":"interface-proof","recipe":"logo-wall-carousel","surfaceIntent":"surface/primary","interaction":"horizontal-scroll"},
+    {"id":"platform","recipe":"feature-tabs","surfaceIntent":"surface/primary","interaction":"tabs-state-swap","mediaSide":"right"},
+    {"id":"api","recipe":"feature-content-media-split","surfaceIntent":"surface/primary","mediaSide":"left"},
+    {"id":"integrations","recipe":"feature-content-media-split","surfaceIntent":"surface/primary","mediaSide":"right"},
+    {"id":"mcp","recipe":"feature-content-media-split","surfaceIntent":"surface/primary","mediaSide":"left"},
+    {"id":"capabilities","recipe":"feature-repeated-grid","surfaceIntent":"surface/primary","layout":"asymmetric-bento"},
+    {"id":"process","recipe":"timeline-timeline","surfaceIntent":"surface/primary","steps":4},
+    {"id":"customers","recipe":"testimonial-carousel","surfaceIntent":"surface/primary","interaction":"carousel"},
+    {"id":"closing","recipe":"cta-media-background","surfaceIntent":"surface/hero-noise"},
+    {"id":"footer","recipe":"footer-link-columns","surfaceIntent":"surface/raised"}
+  ],
+  "surfaceSequence": [
+    "surface/hero-noise",
+    "surface/primary",
+    "surface/primary",
+    "surface/primary",
+    "surface/primary",
+    "surface/primary",
+    "surface/primary",
+    "surface/primary",
+    "surface/primary",
+    "surface/hero-noise",
+    "surface/raised"
+  ],
+  "resolvedRhythm": {
+    "sectionPadding": "3rem",
+    "sectionPaddingMobile": "2rem",
+    "heroPadding": {"top":"5rem","bottom":"5rem"},
+    "container": "76rem",
+    "eyebrowToHeading": ".75rem",
+    "headingToBody": "1rem",
+    "bodyToCta": "2rem",
+    "columnGap": "3rem",
+    "columnGapMobile": "1.5rem",
+    "gridGap": "2rem",
+    "actionGap": "1rem"
+  },
+  "mediaPolicy": "existing-extracted-assets-only",
+  "mediaGeometryPolicy": "intrinsic extracted dimensions; no generic aspect-ratio; grid children use centered self-alignment and min-size zero",
+  "mediaGeometry": [
+    {"slot":"opener","asset":"panel-infrastructure-ui-snippet.webp","intrinsicWidth":1526,"intrinsicHeight":1100,"fit":"contain","cssAspectRatio":"auto"},
+    {"slot":"state-swap-eor","asset":"collage-eor-ui.webp","intrinsicWidth":1068,"intrinsicHeight":1068,"fit":"contain","cssAspectRatio":"auto"},
+    {"slot":"state-swap-payroll","asset":"collage-global-payroll-ui.webp","intrinsicWidth":1068,"intrinsicHeight":1068,"fit":"contain","cssAspectRatio":"auto"},
+    {"slot":"state-swap-cor","asset":"collage-contractor-of-record-ui.webp","intrinsicWidth":1068,"intrinsicHeight":1068,"fit":"contain","cssAspectRatio":"auto"},
+    {"slot":"state-swap-contractors","asset":"collage-contractor-management-ui.webp","intrinsicWidth":1068,"intrinsicHeight":1068,"fit":"contain","cssAspectRatio":"auto"},
+    {"slot":"state-swap-peo","asset":"collage-peo-ui.webp","intrinsicWidth":1068,"intrinsicHeight":1068,"fit":"contain","cssAspectRatio":"auto"},
+    {"slot":"feature-api","asset":"card-api-first.webp","intrinsicWidth":1200,"intrinsicHeight":1100,"fit":"contain","cssAspectRatio":"auto"},
+    {"slot":"feature-integrations","asset":"card-integrations.webp","intrinsicWidth":1200,"intrinsicHeight":1100,"fit":"contain","cssAspectRatio":"auto"},
+    {"slot":"feature-mcp","asset":"card-mcp-agents.webp","intrinsicWidth":1200,"intrinsicHeight":1100,"fit":"contain","cssAspectRatio":"auto"}
+  ],
+  "interactionContracts": {
+    "navigation": "button toggles aria-expanded and mobile action visibility",
+    "tabs": "ARIA tablist; click plus ArrowLeft/Right/Up/Down, Home, End; roving tabindex; state-specific extracted media",
+    "carousel": "focusable horizontal snap track; previous/next controls; native keyboard scrolling",
+    "reducedMotion": "smooth scrolling disabled when prefers-reduced-motion is active"
+  },
+  "componentContractSource": "runs/remote/brand/brand.yaml#buttons",
+  "typographyStatus": "Bossa roles use the declared Lexend Deca render proxy with Inter body and control text.",
+  "gaps": []
+}

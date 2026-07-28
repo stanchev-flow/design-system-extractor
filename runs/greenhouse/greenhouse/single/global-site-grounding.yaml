@@ -1,0 +1,65 @@
+schema_version: global_site_grounding.v1
+type: global_site_grounding
+page_layer_model:
+  dominant_canvas: "White/near-white parent canvas owns the mid-page content band (sections 5-7); page opens on a mint opening surface and closes on a dark-green inverse run"
+  section_groups:
+    - name: opening_surface_run
+      sections: [3, 4]
+      shared_layer: "Hero mint field directly capped by a full-width dark-green acquisition band; both bleed edge-to-edge as one stacked opening block under the white nav"
+      boundary_behavior: "Mint settles into a hard dark-green band with no gutter; the dark band is the bottom of the opening run, not a standalone strip"
+      confidence: 0.82
+      why: "Prevents synthesizing the acquisition bar as an isolated section; it is the closing edge of the hero surface run"
+    - name: shared_light_canvas_run
+      sections: [5, 6, 7]
+      shared_layer: "Single continuous white canvas spanning product cards, customer logos, and best-teams columns; inter-section gutters stay white"
+      boundary_behavior: "No background change across the three; only foreground modules (cards, logo grid, image columns) change"
+      confidence: 0.9
+      why: "These should inherit one parent white surface; their internal panels must not be promoted to section backgrounds"
+    - name: inverse_closing_run
+      sections: [8, 9]
+      shared_layer: "Continuous dark forest-green field running from CTA banner through footer; no white gutter separates them"
+      boundary_behavior: "White canvas above terminates at a hard top edge into dark green; CTA green flows into footer green as one inverse block"
+      confidence: 0.85
+      why: "CTA and footer share one dark closing surface; treat as a single inverse run with shared light-on-dark typography"
+  hard_resets:
+    - "Nav white bar to hero mint at y=58 (full-width color reset)"
+    - "Hero/acquisition dark-green run to white canvas at y=445 (full-width reset to light)"
+    - "White canvas to dark-green CTA at y=4150 (full-width reset to dark, entry from white/near-white)"
+  continuous_runs:
+    - "Opening run: mint (top) settling into dark green band (sections 3-4)"
+    - "Light run: flat white (sections 5-7)"
+    - "Closing run: dark forest green entering from white at y=4150 and holding through footer (sections 8-9)"
+  global_motifs:
+    - "Mint/green label pills with small leading icons floating over imagery (hero)"
+    - "Leaf/plant line-art fingerprint motif embossed in CTA banner dark field"
+    - "Rounded-rectangle media frames for all photography"
+    - "Thin vertical container rail divider separating heading from logo grid (section 6)"
+  container_rhythm:
+    - "Centered max-width content column with generous side gutters held consistently across white sections"
+    - "Three-column module grid reused in sections 5 and 7"
+    - "Full-bleed color bands (announcement, acquisition, CTA, footer) break the contained column to edge-to-edge"
+  typography_scale_observations:
+    - "Serif display headings dominate hero, best-teams, and CTA (largest scale on dark and mint surfaces)"
+    - "Sans-serif body and nav/labels provide secondary hierarchy"
+    - "Light-on-dark heading treatment reused in opening dark band, CTA, and footer; dark-on-light in white run"
+  imagery_creative_directions:
+    icons:
+      - "Simple single-color line icons (currentColor/library SVG candidates) inside mint pill labels and footer social row"
+      - "Customer logo row are logo/wordmark slots: NFL (multi-color mark), coursera/anthropic/datavant/revlon (mono wordmarks), seatgeek (red wordmark) — not generated-image candidates, approximate as body-color text/marks"
+    illustrations:
+      - "Sparse flat line-art botanical/fingerprint motif rendered as low-contrast texture on dark green; decorative, not detailed; do not overcomplicate"
+    interfaces:
+      - "Abstracted product UI snippets (candidate cards, chart/report panel, scorecard tray) shown as small floating rounded frames, not full literal screenshots"
+    photography:
+      - "Editorial/documentary workplace portraits, warm natural lighting; pixels fill rounded-rectangle frames edge-to-edge; the page rounding/clip is the frame, do not add inner card/matte/poster border"
+  critical_global_relationships:
+    - "White nav is its own surface and must not be merged into the mint hero below it"
+    - "Acquisition dark band belongs to the hero opening run, not the white content run"
+    - "CTA banner and footer are one continuous dark surface; the dark closing field enters from white above"
+do_not_generalize:
+  - "Do not treat the dark acquisition strip or CTA leaf field as page-wide background; they are bounded band/run surfaces"
+  - "Do not promote product cards, logo grid, or the Real Talent dark card to section backgrounds; they are inset foreground modules on the white canvas"
+  - "Do not let the customer logo marks define the generated imagery palette"
+open_questions:
+  - "Exact green delta between CTA banner and footer (slightly lighter footer tint) — likely a subtle shift within one dark run rather than a hard reset"
+  - "Whether announcement bar (section 1) and footer share an identical darkest-green token"

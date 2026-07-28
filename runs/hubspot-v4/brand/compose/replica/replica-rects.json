@@ -1,0 +1,138 @@
+{
+ "docHeight": 7655,
+ "bands": [
+  {
+   "id": "page-nav",
+   "kind": "nav",
+   "layout": "navbar",
+   "rect": {
+    "x": 0,
+    "y": 0,
+    "w": 1440,
+    "h": 128
+   }
+  },
+  {
+   "id": "sec-0",
+   "kind": "section",
+   "layout": "full-bleed-photo-hero",
+   "rect": {
+    "x": 0,
+    "y": 128,
+    "w": 1440,
+    "h": 772
+   }
+  },
+  {
+   "id": "sec-1",
+   "kind": "section",
+   "layout": "centered-heading-over-logo-row",
+   "rect": {
+    "x": 0,
+    "y": 900,
+    "w": 1440,
+    "h": 466
+   }
+  },
+  {
+   "id": "sec-2",
+   "kind": "section",
+   "layout": "copy-left-illustration-right-carousel",
+   "rect": {
+    "x": 0,
+    "y": 1366,
+    "w": 1440,
+    "h": 485.59375
+   }
+  },
+  {
+   "id": "sec-3",
+   "kind": "section",
+   "layout": "sticky-copy-with-card-grid",
+   "rect": {
+    "x": 0,
+    "y": 1851.59375,
+    "w": 1440,
+    "h": 2049.53125
+   }
+  },
+  {
+   "id": "sec-4",
+   "kind": "section",
+   "layout": "headrail-split-with-card-carousel",
+   "rect": {
+    "x": 0,
+    "y": 3901.125,
+    "w": 1440,
+    "h": 883.734375
+   }
+  },
+  {
+   "id": "sec-5",
+   "kind": "section",
+   "layout": "copy-left-logo-collage-inset",
+   "rect": {
+    "x": 0,
+    "y": 4784.859375,
+    "w": 1440,
+    "h": 342
+   }
+  },
+  {
+   "id": "sec-6",
+   "kind": "section",
+   "layout": "headrail-two-col-header",
+   "rect": {
+    "x": 0,
+    "y": 5126.859375,
+    "w": 1440,
+    "h": 283.390625
+   }
+  },
+  {
+   "id": "sec-7",
+   "kind": "section",
+   "layout": "tabbed-testimonial-with-stats",
+   "rect": {
+    "x": 0,
+    "y": 5410.25,
+    "w": 1440,
+    "h": 704.484375
+   }
+  },
+  {
+   "id": "sec-8",
+   "kind": "section",
+   "layout": "heading-left-award-badges-right",
+   "rect": {
+    "x": 0,
+    "y": 6114.734375,
+    "w": 1440,
+    "h": 318
+   }
+  },
+  {
+   "id": "sec-9",
+   "kind": "section",
+   "layout": "dark-band-cta",
+   "rect": {
+    "x": 0,
+    "y": 6432.734375,
+    "w": 1440,
+    "h": 402
+   }
+  },
+  {
+   "id": "sec-10",
+   "kind": "section",
+   "layout": "closing-bookend",
+   "rect": {
+    "x": 0,
+    "y": 6834.734375,
+    "w": 1440,
+    "h": 820.546875
+   }
+  }
+ ],
+ "schemaVersion": "replica-rects.v1"
+}

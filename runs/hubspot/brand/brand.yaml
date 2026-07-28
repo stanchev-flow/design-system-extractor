@@ -1,0 +1,1586 @@
+# brand.yaml — canonical design language for HubSpot
+# Authored by the brand-layout-analyst skill (Phases 1-4, source: creation).
+# This file is CANONICAL. brand.md is a rendered projection — run render_brand_md.py.
+# (SIGN-OFF #6) This file INDEXES the existing build artifacts listed under `indexes`;
+# it references them and does NOT supersede or replace them.
+#
+# GROUND TRUTH: re-extracted from the locally saved "Save Page As, Complete" capture
+# (real DOM + 26 CSS files + assets), NOT from the screenshot. Tokens are parsed from
+# the page's --cl-* / --light-theme-* custom properties; sections are in real DOM order.
+# HubSpot is the near-inverse of WoodWave: rounded SaaS cards on a near-white canvas,
+# FILLED orange primary CTAs, a centered hero over a dark-scrim photo (NO blur),
+# serif (HubSpot Serif) headings + HubSpot Sans body, generous soft-seam whitespace.
+
+version: "1.0"
+
+brand:
+  name: "HubSpot"
+  sourceUrl: "https://hubspot.com"
+  targetSite: { name: "AISB v2 - test 1", siteId: "6a2b244f98ab655811c13cc2" }
+  # ── BASE STYLE declaration (2026-07-02) — the style-layer identity this brand renders
+  #    under: rounded/clean/centered SaaS, NOT the editorial grammar. NOTE (wiring gap,
+  #    documented in REPORT.md): nothing in brand_pipeline consumes a brand-declared base
+  #    style today — generate_composition takes --style per call, and
+  #    render_components_preview.py builds its gallery with styles.inactive_context()
+  #    (no style layer at all), so the gallery falls through to component_render/gallery
+  #    CSS defaults that encode WoodWave's editorial DNA. This key states the intent so
+  #    the wiring can land pipeline-side.
+  baseStyle: corporate-saas-clean
+  snapshot:
+    value: >-
+      A bright, rounded SaaS marketing system on a near-white canvas (#fcfcfa) led by
+      a single vivid orange (#ff4800). Headings and large display copy use HubSpot
+      Serif (the hero page-header uses HubSpot Serif Page Header Human at ~65px, weight
+      300); HubSpot Sans carries body, UI, and buttons. Content sits in pure-white
+      (#ffffff), 16px-rounded, borderless cards with dashed internal dividers, floating
+      on near-white/cream surfaces and separated by generous vertical whitespace with
+      gentle (non-hard-cut) soft transitions. The hero is a centered eyebrow→animated
+      heading→body→single-primary-button stack over a full-bleed photograph darkened by
+      a flat dark scrim (no blur). The primary action is a FILLED orange button with
+      white text; the design system also defines an orange-outline white-fill secondary
+      and a dark tertiary. Text links are DARK (#1f1f1f) and underlined — orange is
+      reserved for the primary fill, brand borders (active-tab underline), check icons,
+      and the rotating hero word. Dark (#1f1f1f) is reserved for the closing CTA band
+      and the footer.
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-06-16T01:50:00Z", action: created, from: null,
+          to: "rounded orange SaaS marketing system (saved-page ground truth)", by: creation, signalId: null,
+          note: "full re-extraction from the local Save-Page-As capture (DOM + 26 CSS + assets); replaces the screenshot-only pass" }
+      - { ts: "2026-07-02T00:00:00Z", action: updated, from: "v1 extraction (no motion spec, hover states only on buttons)",
+          to: "full-schema refresh: measured motionSpec, hover/interaction color tokens (incl. @media-nested footer link hover), tertiary button hover/pressed fills, re-bridged nav+footer measured chrome, canonical render-role alias tokens (surface/primary, accent/highlight, text/on-*, border/hairline-on-*, radius-global et al) so the shared renderers resolve real values", by: creation, signalId: null,
+          note: "2026-07-02 end-to-end refresh from runs/hubspot/'captured page' via extract_chrome_saved.py + bridge_chrome_to_brand.py + captured-CSS interaction scan; pre-refresh snapshot at brand.yaml.pre-refresh-20260702.bak" }
+
+# (SIGN-OFF #6) brand.yaml sits ABOVE these artifacts as a referencing index.
+indexes:
+  assetsTagged:     "./assets-tagged.json"                                   # tagged assets by use-case/slot (READ-ONLY)
+  assetsTaggedMd:   "./assets-tagged.md"                                     # human projection of assets-tagged.json
+  savedPageHtml:    "../../../screenshots/hubspot/HubSpot/HubSpot _ Software & Tools for your Business - Homepage.html"
+  savedPageAssets:  "../../../screenshots/hubspot/HubSpot/HubSpot _ Software & Tools for your Business - Homepage_files/"
+  themeCss:         "../../../screenshots/hubspot/HubSpot/HubSpot _ Software & Tools for your Business - Homepage_files/hubspot-theme.stable.css"
+  inventoryDir:     "../../../../docs/design-system-inventory/hubspot.com/"  # tokens.css/json, sections.json, patterns.json, descriptor.json, assets/
+  voice:            "./voice.md"
+  sourceScreenshot: "../../../screenshots/hubspot/HubSpot-Software-Tools-for-your-Business-Homepage-06-15-2026_11_58_PM copy.webp"
+  # run-local capture (same Save-Page-As snapshot; used by the 2026-07-02 extraction refresh)
+  capturedPageHtml:   "../captured page/HubSpot _ Software & Tools for your Business - Homepage.html"
+  capturedPageAssets: "../captured page/HubSpot _ Software & Tools for your Business - Homepage_files/"
+  runScreenshot:      "../hubspot/screenshot.webp"
+  chromeContract:     "../assets/source-chrome.v2.json"
+
+tokens:
+  colors:
+    # brand orange family — parsed from --light-theme-button-primary-* / --light-theme-border-brand-01
+    brand/primary:        { value: "#ff4800", mapsTo: "Core Brand/Brand Primary",       role: "action-primary-bg / brand border / accent", status: mapped, source: saved-css, provenance: [hero, product-platform, case-studies-tabbed, elevated-cta] }
+    brand/primary-hover:  { value: "#c93700", mapsTo: "Core Brand/Brand Primary Hover",  role: "action-primary-bg-hover / secondary text hover", status: mapped, source: saved-css, provenance: [hero] }
+    brand/primary-pressed: { value: "#9f2800", mapsTo: "Core Brand/Brand Primary Pressed", role: "action-primary-bg-pressed", status: mapped, source: saved-css, provenance: [hero] }
+    brand/sprocket:       { value: "#ff7a59", mapsTo: "Core Brand/Brand Sprocket",       role: "legacy coral accent (illustrations, decoration)", status: mapped, source: saved-css, provenance: [breeze-agents-carousel] }
+    brand/soft:           { value: "#fcece6", mapsTo: "Core Brand/Brand Soft",           role: "secondary-button hover fill / soft peach", status: mapped, source: saved-css, provenance: [hero] }
+    # neutrals / surfaces — parsed from --light-theme-background-* / --light-theme-container-*
+    neutral/surface-base:    { value: "#fcfcfa", mapsTo: "Core Neutral/Neutral Primary",   role: "surface-base (page canvas)", status: mapped, source: saved-css, provenance: [logo-carousel, customer-platform, breeze-agents-carousel] }
+    neutral/surface-raised:  { value: "#f8f5ee", mapsTo: "Core Neutral/Neutral Secondary", role: "surface-raised (alt section band)", status: mapped, source: saved-css, provenance: [product-platform] }
+    neutral/container:       { value: "#ffffff", mapsTo: "Core Neutral/Neutral Container", role: "card surface (container-01)", status: mapped, source: saved-css, provenance: [product-platform, case-studies-tabbed] }
+    neutral/inverse:         { value: "#1f1f1f", mapsTo: "Core Neutral/Neutral Inverse",   role: "surface-inverted (cta/footer/container-inverse-01)", status: mapped, source: saved-css, provenance: [elevated-cta, footer] }
+    # text — parsed from --light-theme-text-* / --light-theme-link-*
+    text/default:         { value: "#1f1f1f", mapsTo: "Core Text Color/Text Primary",   role: "text-default (text-01)", status: mapped, source: saved-css, provenance: [customer-platform, product-platform] }
+    text/muted:           { value: "rgba(0,0,0,0.62)", mapsTo: "Core Text Color/Text Secondary", role: "text-muted (text-02)", status: mapped, source: saved-css, provenance: [product-platform, customer-platform] }
+    text/inverted:        { value: "#ffffff", mapsTo: "Core Text Color/Text On Inverse", role: "text-inverted / on-color (text-on-color-01)", status: mapped, source: saved-css, provenance: [elevated-cta, footer] }
+    text/on-image:        { value: "#ffffff", mapsTo: "Core Text Color/Text On Image",  role: "text-on-overlay", status: mapped, source: [saved-css, screenshot], provenance: [hero] }
+    text/link:            { value: "#1f1f1f", mapsTo: "Core Text Color/Text Link",      role: "text-link (link-01) — DARK + underline, NOT orange", status: mapped, source: saved-css, provenance: [product-platform, integrations-rotating, case-studies-tabbed] }
+    # borders — parsed from --light-theme-border-*
+    border/default:       { value: "rgba(0,0,0,0.11)", mapsTo: "Core Border/Border Primary", role: "border-default / dashed card dividers (border-03)", status: mapped, source: saved-css, provenance: [product-platform, case-studies-tabbed] }
+    border/medium:        { value: "rgba(0,0,0,0.47)", mapsTo: "Core Border/Border Secondary", role: "border-medium (border-02)", status: mapped, source: saved-css, provenance: [product-platform] }
+    border/strong:        { value: "#1f1f1f", mapsTo: "Core Border/Border Strong",      role: "border-strong (border-01)", status: mapped, source: saved-css, provenance: [case-studies-tabbed] }
+    border/brand:         { value: "#ff4800", mapsTo: "Core Border/Border Brand",       role: "brand border / active-tab underline (border-brand-01)", status: mapped, source: saved-css, provenance: [case-studies-tabbed] }
+    # decorative pastel accent backdrops — parsed from --light-theme-background-accent-*
+    accent/sage:          { value: "#b9cdbe", mapsTo: "Core Accent/Accent Sage",        role: "illustration/elevated-cta backdrop (background-accent-01)", status: mapped, source: saved-css, provenance: [customer-platform] }
+    accent/lilac:         { value: "#d6c2d9", mapsTo: "Core Accent/Accent Lilac",       role: "illustration/elevated-cta backdrop (background-accent-02)", status: mapped, source: saved-css, provenance: [customer-platform] }
+    accent/pink:          { value: "#fcc3dc", mapsTo: "Core Accent/Accent Pink",        role: "illustration/elevated-cta backdrop (background-accent-03)", status: mapped, source: saved-css, provenance: [customer-platform] }
+    # overlay — hero darkening; screenshot ground-truth (flat dark scrim, NO blur)
+    overlay/scrim:        { value: "rgba(0,0,0,0.5)", mapsTo: "Core Overlay/Scrim",     role: "surface-overlay-scrim (hero darkening, NO blur)", status: mapped, source: [saved-css, screenshot], provenance: [hero] }
+    # action mappings (button system uses these)
+    action/primary-fg:    { value: "#ffffff", mapsTo: "Core Action/Primary FG",         role: "action-primary-fg (button-primary-text-color)", status: mapped, source: saved-css, provenance: [hero, elevated-cta] }
+    # interaction / hover states — measured from the captured CSS (2026-07-02 refresh; incl. @media-nested rules)
+    text/link-hover-on-inverse: { value: "#f8f5ee", mapsTo: "Core Text Color/Text Link Hover Inverse", role: "link hover on dark surfaces (footer/cta)", status: mapped, source: saved-css, provenance: [footer], note: "--dark-theme-hover-link-01; the governing rule '.global-footer a:not([class*=cl-button]):hover' is NESTED inside @media(width >= 900px) in template_footer-core-critical.min.css — also carried as footer.measured.linkHoverColor" }
+    text/link-hover:            { value: "#1f1f1f", mapsTo: "Core Text Color/Text Link Hover", role: "link hover on light surfaces — SAME dark ink as idle; the hover signal is the underline/offset shift + arrow nudge, never an orange color swap", status: mapped, source: saved-css, provenance: [product-platform, integrations-rotating], note: "--light-theme-hover-link-01 == --light-theme-link-01 (#1f1f1f)" }
+    overlay/hover-wash:         { value: "rgba(0,0,0,0.05)", mapsTo: "Core Overlay/Hover Wash", role: "hover wash on light surfaces (nav links, tabs, hoverable cards; --cl-color-hover-01)", status: mapped, source: saved-css, provenance: [navbar, case-studies-tabbed], note: "--light-theme-hover-01 rgba(0,0,0,0.0509…); cards add a 1px var(--cl-card-border-color) ring on hover" }
+    overlay/hover-wash-inverse: { value: "rgba(255,255,255,0.05)", mapsTo: "Core Overlay/Hover Wash Inverse", role: "hover wash on dark surfaces (--dark-theme-hover-01)", status: mapped, source: saved-css, provenance: [elevated-cta, footer] }
+    # ── canonical render-role ALIASES (2026-07-02 refresh) ─────────────────────────
+    # The shared renderers (render_section / render_components_preview / compose_section /
+    # component_render) resolve these EXACT role names via color_value(); a missing name
+    # passes through as a raw string and the browser drops the declaration. Each alias
+    # carries the SAME measured value as its HubSpot-named twin above (single source:
+    # the captured CSS) — they are role bindings, not new colors.
+    surface/primary:            { value: "#fcfcfa", mapsTo: "Background Color/Background Primary", role: "ALIAS of neutral/surface-base — canonical page-canvas role consumed by the renderers", status: mapped, source: saved-css, provenance: [logo-carousel, customer-platform, results-header] }
+    surface/panel:              { value: "#f8f5ee", mapsTo: "Background Color/Background Secondary", role: "ALIAS of neutral/surface-raised — canonical panel/tint role", status: mapped, source: saved-css, provenance: [product-platform] }
+    surface/inverse:            { value: "#1f1f1f", mapsTo: "Background Color/Background Inverse", role: "ALIAS of neutral/inverse — canonical dark-band role (footer, elevated CTA)", status: mapped, source: saved-css, provenance: [elevated-cta, footer] }
+    surface/inverse-strong:     { value: "#1f1f1f", mapsTo: "Background Color/Background Inverse", role: "ALIAS — HubSpot has ONE dark surface; strong == inverse (#1f1f1f)", status: mapped, source: saved-css, provenance: [footer] }
+    accent/highlight:           { value: "#ff4800", mapsTo: "Core Action/Primary", role: "ALIAS of brand/primary — canonical accent role (HubSpot orange; used on light AND dark surfaces, unlike WoodWave's dark-only gold)", status: mapped, source: saved-css, provenance: [hero, elevated-cta] }
+    text/on-primary:            { value: "#1f1f1f", mapsTo: "Core Text Color/Text Primary", role: "ALIAS of text/default — canonical ink-on-light role", status: mapped, source: saved-css }
+    text/on-primary-muted:      { value: "rgba(0,0,0,0.62)", mapsTo: "Core Text Color/Text Secondary", role: "ALIAS of text/muted — canonical muted-ink-on-light role", status: mapped, source: saved-css }
+    text/on-inverse:            { value: "#ffffff", mapsTo: "Core Text Color/Text Inverted", role: "ALIAS of text/inverted — canonical ink-on-dark role", status: mapped, source: saved-css, provenance: [elevated-cta, footer] }
+    text/on-inverse-muted:      { value: "rgba(255,255,255,0.62)", mapsTo: "Core Text Color/Text Inverted Secondary", role: "canonical muted-ink-on-dark role — measured footer idle link color (footer.measured.link.color)", status: mapped, source: saved-css, provenance: [footer] }
+    text/on-accent:             { value: "#ffffff", mapsTo: "Core Action/Primary FG", role: "ALIAS of action/primary-fg — label color on the orange accent fill", status: mapped, source: saved-css, provenance: [hero, elevated-cta] }
+    text/ghost-on-primary:      { value: "rgba(0,0,0,0.05)", mapsTo: "Core Overlay/Hover Wash", role: "canonical ghost/watermark-on-light role — HubSpot has no ghost-type device; bound to the measured light hover-wash alpha so any renderer fallback stays on-palette", status: mapped, source: saved-css }
+    border/hairline-on-primary: { value: "rgba(0,0,0,0.11)", mapsTo: "Core Border Color/Border", role: "ALIAS of border/default — canonical hairline-on-light role (--light-theme-border-03)", status: mapped, source: saved-css, provenance: [case-studies-tabbed, badges] }
+    border/hairline-on-inverse: { value: "rgba(255,255,255,0.4)", mapsTo: "Core Border Color/Border Inverse", role: "canonical hairline-on-dark role — --dark-theme-border-02 (footer nav-column dividers .global-footer__nav-column border-bottom)", status: mapped, source: saved-css, provenance: [footer] }
+  type:
+    families:
+      sans:    { value: "HubSpot Sans", mapsTo: "Font/Body Font", role: "--cl-font-family (body, UI, buttons, paragraphs)", source: saved-css }
+      button:  { value: "HubSpot Sans", mapsTo: "Font/Button Font", role: "--cl-font-family for .cl-button", source: saved-css }
+      display: { value: "HubSpot Serif", mapsTo: "Font/Heading Font", role: "--cl-font-family-display / --cl-font-family-heading (headings + display)", source: saved-css }
+      heroDisplay: { value: "HubSpot Serif Page Header Human", mapsTo: "Font/Heading Font", role: "hero page-header heading face only", source: saved-css }
+    scale:
+      display-hero: { family: heroDisplay, sizeRem: 4.0625, line: 1.05, weight: 300, case: sentence, mapsTo: "H0 Heading/H0 Size", source: saved-css, note: "wf-page-header heading custom font-size 65px desktop / 80px max / 48px mobile" }
+      # display-01 (--cl-font-size-display-01, 7rem/112px, family display, weight 500) exists in the
+      # captured CSS variables but is RESERVED — never used on the homepage body. Kept out of the
+      # active scale because render_section._pick_scale_entry resolves display/h1/counter roles to the
+      # LARGEST display-family size, which made every rendered display/H1 7rem instead of the
+      # page-observed 4.0625rem hero / 3rem h1 (2026-07-02 refresh).
+      display-02:   { family: display, sizeRem: 4.5,    line: 1.05, weight: 500, case: sentence, mapsTo: "H1 Heading/H1 Size", source: saved-css, note: "--cl-font-size-display-02 (72px)" }
+      h1:           { family: display, sizeRem: 3.0,    line: 1.15, weight: 500, case: sentence, mapsTo: "H1 Heading/H1 Size", source: saved-css, note: "--cl-font-size-h1 3rem desktop / 2.5rem small" }
+      h2:           { family: display, sizeRem: 2.5,    line: 1.1,  weight: 500, case: sentence, mapsTo: "H2 Heading/H2 Size", source: saved-css, note: "--cl-font-size-h2 2.5rem desktop / 2rem small" }
+      h3:           { family: display, sizeRem: 1.5,    line: 1.42, weight: 500, case: sentence, mapsTo: "H3 Heading/H3 Size", source: saved-css }
+      h4:           { family: display, sizeRem: 1.375,  line: 1.45, weight: 500, case: sentence, mapsTo: "H4 Heading/H4 Size", source: saved-css, note: "product/case card headings" }
+      body-lg:      { family: sans,    sizeRem: 1.125,  line: 1.5,  weight: 300, case: sentence, mapsTo: "Text LG/LG Text Size", source: saved-css, note: "--cl-font-size-p-large, weight light(300)" }
+      body-md:      { family: sans,    sizeRem: 1.0,    line: 1.5,  weight: 300, case: sentence, mapsTo: "Text MD/MD Text Size", source: saved-css }
+      body-sm:      { family: sans,    sizeRem: 0.875,  line: 1.5,  weight: 300, case: sentence, mapsTo: "Text SM/SM Text Size", source: saved-css, note: "card feature bullets" }
+      eyebrow:      { family: sans,    sizeRem: 0.875,  line: 1.5,  weight: 500, letterSpacing: "0.04em", case: none, mapsTo: "Eyebrow/Eyebrow Size", source: saved-css, note: "cl-p -microheading (hero tagline)" }
+      button-md:    { family: button,  sizeRem: 1.0,    line: 1.5,  weight: 500, letterSpacing: "0em", case: none, mapsTo: "Button Font/Button Size", source: saved-css, note: "--cl-button-font-size medium; normal tracking (.cl-button sets no letter-spacing)" }
+      button-lg:    { family: button,  sizeRem: 1.125,  line: 1.5,  weight: 500, letterSpacing: "0em", case: none, mapsTo: "Button Font/Button Size", source: saved-css, note: "-large button; normal tracking" }
+  spacing:
+    section-y-md:        { value: "4rem",   mapsTo: "Section/Section Padding Vertical", modeLadder: { base: "2.5rem", desktop: "4rem" }, status: mapped, source: saved-css, note: "csol -padding-top/bottom-md 40px mobile / 64px desktop (default tier on this page)" }
+    section-y-lg:        { value: "6rem",   mapsTo: "Section/Section Padding Vertical (spacious)", modeLadder: { base: "4rem", desktop: "6rem" }, status: mapped, source: saved-css, note: "csol -padding-lg 64px / 96px" }
+    section-y-s:         { value: "2.5rem", mapsTo: "Section/Section Padding Vertical (tight)", modeLadder: { base: "1.5rem", desktop: "2.5rem" }, status: mapped, source: saved-css, note: "csol -padding-s 24px / 40px" }
+    container-max:       { value: "67.5rem", mapsTo: "Container/Width XL", status: mapped, source: saved-css, note: "csol-section-wrapper max-width 1080px" }
+    card-padding:        { value: "2rem 2rem 1.5rem", mapsTo: "Spacing/Card Inset", status: mapped, source: saved-css, note: "wf-product-platform__card padding" }
+    grid-gap:            { value: "1.5rem", mapsTo: "Spacing/1.5x", status: mapped, source: saved-css, note: "card grid + content gap" }
+    stack-md:            { value: "1rem",   mapsTo: "Spacing/1x", status: mapped, source: saved-css }
+    stack-lg:            { value: "1.5rem", mapsTo: "Spacing/1.5x", status: mapped, source: saved-css }
+    button-inset:        { value: "0.75rem 1.5rem", mapsTo: "Spacing/Button Inset", status: mapped, source: saved-css, note: "--cl-button-padding-medium (y x); -large = 1rem 2.5rem" }
+    # ── canonical render-role ALIASES (2026-07-02 refresh) — same rationale as the color
+    #    aliases: spacing_value() looks these names up directly (composer + preview :root).
+    radius-global:       { value: "1rem", mapsTo: "Card Radius", status: mapped, source: saved-css, note: "ALIAS of radius/card+image (16px, the brand's signature rounding). LIMITATION: the renderers carry ONE --radius var, so buttons render at 1rem instead of their measured 0.5rem — the two-tier radius system (radius/button 0.5rem vs radius/card 1rem) is not representable; see tokens.radius for the real per-element values" }
+    panel-padding:       { value: "2rem", mapsTo: "Spacing/Card Inset", status: mapped, source: saved-css, note: "ALIAS of card-padding leading edge (wf-product-platform__card 2rem)" }
+    eyebrow-to-heading:  { value: "1rem", mapsTo: "Spacing/1x", status: mapped, source: saved-css, note: "ALIAS of stack-md — measured hero microheading -> heading gap" }
+    module-gap-editorial: { value: "6rem", mapsTo: "Section/Section Padding Vertical (spacious)", status: mapped, source: saved-css, note: "ALIAS of section-y-lg (96px desktop) — the preview/composer module rhythm" }
+  radius:
+    # ROUNDED system — parsed from --cl-border-radius-* (the inverse of WoodWave's zeroed radius)
+    card:    { value: "1rem",    mapsTo: "Card Radius",   var: "--cl-border-radius-container", status: mapped, source: saved-css, note: "16px container radius on cards" }
+    button:  { value: "0.5rem",  mapsTo: "Button Radius", var: "--cl-border-radius-medium",    status: mapped, source: saved-css, note: "8px softly-rounded buttons (NOT pill)" }
+    input:   { value: "0.25rem", mapsTo: "Input Radius",  var: "--cl-border-radius-input",     status: mapped, source: saved-css, note: "4px" }
+    image:   { value: "1rem",    mapsTo: "Image Radius",  var: "--cl-border-radius-container",  status: mapped, source: saved-css, note: "16px; testimonial thumbnail uses 4px" }
+    small:   { value: "0.5rem",  mapsTo: "Radius SM",     var: "--cl-border-radius-container-small", status: mapped, source: saved-css, note: "8px" }
+    pill:    { value: "999999px", mapsTo: "Radius Full",  var: "--cl-border-radius-full",       status: mapped, source: saved-css, note: "full pill — tags / Breeze core components ONLY, never marketing buttons" }
+  shadow:
+    # Cards are primarily flat white panels (borderless) with rounded corners + dashed
+    # dividers; elevation is subtle. Scale parsed from --trellis-box-shadow-* for hover/float.
+    sm:        { value: "0px 1px 0px 0px rgba(20,20,20,0.24)", mapsTo: "Shadow/SM",   var: "--trellis-box-shadow-100", status: mapped, source: saved-css }
+    card:      { value: "0px 8px 16px 0px rgba(20,20,20,0.16)", mapsTo: "Shadow/Card", var: "--trellis-box-shadow-200", status: mapped, source: saved-css, note: "used for floating/hover cards; default product cards are flat + dashed-divider" }
+    lg:        { value: "0px 16px 32px 0px rgba(20,20,20,0.24)", mapsTo: "Shadow/LG", var: "--trellis-box-shadow-300", status: mapped, source: saved-css }
+  surfaces:
+    # NOTE (2026-07-02 correction): LIGHT surfaces carry NO textAccent. Two reasons:
+    #  (a) factual — HubSpot never colors TEXT orange on light surfaces (text links are dark
+    #      #1f1f1f + underline; neverDo.never-orange-text-link). Orange on light is a FILL
+    #      (the primary button), which the button system carries, not the surface.
+    #  (b) pipeline semantics — compose_section.root_vars uses surf.textAccent presence as
+    #      its dark-surface heuristic (muted -> text/on-inverse-muted when set). With
+    #      textAccent on a light surface the muted ink resolved to WHITE-on-near-white
+    #      (measured 1.02:1 by the gate's text-contrast check on the 2026-07-02 live run).
+    surface/base:    { bg: "#fcfcfa", schemeMode: "base (Primary)", textPrimary: text/default,  provenance: [logo-carousel, customer-platform, breeze-agents-carousel, integrations-rotating, results-header, case-studies-tabbed, badges] }
+    surface/raised:  { bg: "#f8f5ee", schemeMode: "Secondary",      textPrimary: text/default,  provenance: [product-platform] }
+    surface/card:    { bg: "#ffffff", schemeMode: "Container",      textPrimary: text/default,  provenance: [product-platform, case-studies-tabbed] }
+    surface/image:   { bg: "image + dark scrim", schemeMode: "On Image", textPrimary: text/on-image, textAccent: brand/primary, overlay: overlay/scrim, blur: none, provenance: [hero] }
+    surface/inverse: { bg: "#1f1f1f", schemeMode: "Inverse",        textPrimary: text/inverted, textAccent: brand/primary, provenance: [elevated-cta, footer] }
+    # canonical render-role ALIASES (2026-07-02): the composer paths resolve intent words to
+    # these EXACT role keys (compose_from_composition.SURFACE_INTENT_MAP: primary/panel/
+    # inverse/inverse-strong; compose_page.FOOTER_SURFACE indexes surfaces["surface/
+    # inverse-strong"] directly — a missing key is a hard KeyError, hit on the 2026-07-02
+    # live run). Same measured values as their HubSpot-named twins; HubSpot has ONE dark
+    # surface, so inverse-strong == inverse (#1f1f1f).
+    surface/primary:        { bg: "#fcfcfa", schemeMode: "base (Primary)", textPrimary: text/default,  note: "ALIAS of surface/base (light: no textAccent — see note above)", provenance: [logo-carousel, customer-platform, results-header] }
+    surface/panel:          { bg: "#f8f5ee", schemeMode: "Secondary",      textPrimary: text/default,  note: "ALIAS of surface/raised (light: no textAccent)", provenance: [product-platform] }
+    surface/inverse-strong: { bg: "#1f1f1f", schemeMode: "Inverse",        textPrimary: text/inverted, textAccent: brand/primary, note: "ALIAS of surface/inverse — single dark surface brand", provenance: [footer] }
+
+# Hero background uses a flat dark overlay/scrim to darken the photo for white text.
+# There is NO blur. This is a data field a later render reads; DO NOT render here.
+heroTreatment:
+  value:
+    background: full-bleed-photo
+    asset: "HS_Full_Bleed_1_optmised.webp"   # saved _files: hero full-bleed background (dark scrim, no blur)
+    overlay: { type: scrim, color: "rgba(0,0,0,0.5)", token: overlay/scrim }
+    blur: none
+    textColor: "#ffffff"
+    align: center
+  confidence: high
+  source: [screenshot, saved-css]
+  scope: design-language
+  changelog:
+    - { ts: "2026-06-16T01:50:00Z", action: created, from: null, to: "dark scrim, no blur, centered white text", by: creation, signalId: null, note: "screenshot ground-truth; hero is wf-page-header-human with data-cl-theme=dark over full-bleed photo" }
+
+surfaceGrammar:
+  roles: [ surface/base, surface/raised, surface/card, surface/image, surface/inverse ]
+  pageRhythm:
+    value: [ surface/image, surface/base, surface/base, surface/raised, surface/base, surface/base, surface/base, surface/base, surface/base, surface/inverse, surface/inverse ]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-06-16T01:50:00Z", action: created, from: null, to: "image-hero → long near-white run (one raised band) → inverse cta + footer", by: creation, signalId: null, note: "per-section data-cl-theme parsed from saved DOM: hero=dark, body=light/white, elevated-cta=dark, footer=dark" }
+  transition:
+    value: "soft"
+    confidence: high
+    source: [screenshot, saved-css]
+    scope: design-language
+    changelog:
+      - { ts: "2026-06-16T01:50:00Z", action: created, from: null, to: "soft", by: creation, signalId: null, note: "generous csol padding tiers + gentle surface tint shifts; no hard editorial cuts or hairline section rules" }
+  nesting:
+    - { child: surface/card, allowedParents: [ surface/base, surface/raised ], confidence: high, source: creation, scope: design-language,
+        changelog: [ { ts: "2026-06-16T01:50:00Z", action: created, from: null, to: "white 16px-rounded cards float on near-white/cream surfaces", by: creation, signalId: null, note: "cl-card container-01 white on background-01/02" } ] }
+
+buttons:
+  renderHint: { useFilledButton: true, note: "Renderer MUST emit real FILLED button components, NOT typographic links. HubSpot primary CTAs are solid orange buttons; text links are a separate dark/underline tertiary." }
+  primary:
+    style: filled
+    bg: "#ff4800"            # brand/primary
+    bgHover: "#c93700"       # brand/primary-hover
+    bgPressed: "#9f2800"     # brand/primary-pressed
+    fg: "#ffffff"            # action/primary-fg
+    radius: "0.5rem"         # radius/button (8px)
+    padding: "0.75rem 1.5rem" # -medium; hero/cta use -large 1rem 2.5rem
+    font: "HubSpot Sans"
+    weight: 500
+    sizeRem: 1.0
+    mappedComponent: { name: "Button / Primary", componentId: "7c4861f5-0c24-5e7b-196f-3d19344c9cba", props: { Style: "primary", Size: "lg", Label: "Get a demo" } }
+    confidence: high
+    source: [saved-css, screenshot]
+    provenance: [hero, navbar, elevated-cta]
+  secondary:
+    style: outline
+    bg: "#ffffff"                  # white fill (button-secondary-fill-idle)
+    border: "1px solid #ff4800"    # brand orange outline (button-secondary-border)
+    fg: "#1f1f1f"                  # brand/dark text idle
+    fgHover: "#c93700"             # button-secondary-text-color-hover
+    bgHover: "#fcece6"             # button-secondary-fill-hover (soft peach)
+    radius: "0.5rem"
+    padding: "0.75rem 1.5rem"
+    font: "HubSpot Sans"
+    weight: 500
+    sizeRem: 1.0
+    mappedComponent: { name: "Button / Secondary", componentId: "380dc5ca-3d2b-b910-b1a3-612ca6346eec", props: { Style: "outline", Size: "md", Label: "Get started free" } }
+    confidence: high
+    source: saved-css
+    note: "White-filled button with an ORANGE outline + dark idle text (parsed from --light-theme-button-secondary-*). Present in the design system; the saved homepage hero/elevated-cta render a SINGLE primary button rather than a primary+secondary pair."
+    provenance: [navbar]
+  tertiary:
+    style: filled-dark
+    bg: "#1f1f1f"                  # button-tertiary-fill-idle
+    bgHover: "rgba(0,0,0,0.62)"    # button-tertiary-fill-hover (--light-theme-button-tertiary-fill-hover)
+    bgPressed: "rgba(0,0,0,0.47)"  # button-tertiary-fill-pressed
+    fg: "#ffffff"
+    radius: "0.5rem"
+    padding: "0.75rem 1.5rem"
+    font: "HubSpot Sans"
+    weight: 500
+    mappedComponent: { name: "Button / Secondary", componentId: "380dc5ca-3d2b-b910-b1a3-612ca6346eec", props: { Style: "dark", Size: "md", Label: "Sign in" } }
+    confidence: medium
+    source: saved-css
+    note: "Dark tertiary button (nav 'sign in' / inverse contexts)."
+    provenance: [navbar]
+  textCta:
+    style: text-link-arrow
+    fg: "#1f1f1f"                  # link-01 — DARK, NOT orange
+    decoration: "underline; arrow icon translates +5px on hover"
+    font: "HubSpot Sans"
+    weight: 500
+    mappedComponent: { name: "Link / Secondary", componentId: "75c4556a-b7c2-b1f3-2d05-0ea2dbee7fc8", props: { Style: "arrow", Label: "Learn more" } }
+    confidence: high
+    source: saved-css
+    note: "Tertiary text link only (card 'Learn more about X', 'See all integrations'); DARK #1f1f1f with arrow, NEVER orange and NEVER a substitute for the filled primary CTA."
+    provenance: [product-platform, integrations-rotating, case-studies-tabbed]
+  group:
+    mappedComponent: { name: "Button Group / Primary, Secondary", componentId: "0ed82c56-77ca-835d-a9ed-0c9d658bf91e", props: { Direction: "horizontal", Alignment: "center" } }
+    note: "Available for paired filled-primary + orange-outline-secondary contexts; the saved homepage hero/elevated-cta use a single primary instead."
+
+# ── v2 CATALOG (consolidation pass 2026-07-02): primitives/blocks overrides against the
+# shared contracts — added so the components gallery, composers, and the kit have a real
+# catalog (the layouts below keep their original v1 componentMapping shape; the composer's
+# v1 adapter normalizes them). Rules mirror the brand's own neverDo: FILLED buttons are
+# the primary action grammar (never typographic), radius is 16px-rounded, text links dark.
+contracts:
+  primitives: "../../../brand_pipeline/contracts/primitives.yaml"
+  blocks:     "../../../brand_pipeline/contracts/blocks.yaml"
+
+primitives:
+  heading:
+    origin: extracted
+    use: always
+    rules: [ "display tiers use HubSpot Serif, sentence case (neverDo.no-allcaps-display)" ]
+    provenance: [hero, results-header]
+    confidence: high
+  eyebrow:
+    origin: extracted
+    use: always
+    rules: [ "microheading tagline register (e.g. 'Customer Platform')" ]
+    provenance: [hero]
+    confidence: high
+  paragraph:
+    origin: extracted
+    use: always
+    provenance: [hero, customer-platform]
+    confidence: high
+  button:
+    origin: extracted
+    use: always
+    variant: filled-primary
+    rules: [ "PRIMARY actions are FILLED orange buttons with white text — never typographic (neverDo.never-typographic-primary); secondary is orange-outline white-fill" ]
+    provenance: [hero, elevated-cta]
+    confidence: high
+  link:
+    origin: extracted
+    use: text-links-only
+    rules: [ "text links are DARK (#1f1f1f) and underlined — orange is reserved for the primary fill (neverDo.no-orange-links)" ]
+    provenance: [customer-platform]
+    confidence: high
+  image:
+    origin: extracted
+    use: always
+    rules: [ "photography full-bleed with flat dark scrim in the hero (no blur — neverDo.no-hero-blur); rounded 16px inside cards" ]
+    provenance: [hero, case-studies-tabbed]
+    confidence: high
+  logo:
+    origin: extracted
+    use: always
+    provenance: [navbar, logo-carousel]
+    confidence: high
+  input:
+    origin: designed
+    use: <when>
+    designedFrom: { note: "no form observed on the captured page; synthesized as a rounded, bordered field to match the card system", neverDo: [no-brutalism], tokens: [accent/primary] }
+    overridable: true
+    confidence: low
+
+blocks:
+  header:
+    origin: extracted
+    slots:
+      eyebrow: { use: optional }
+      heading: { use: require }
+      cta:     { use: optional, note: "FILLED primary button (see primitives.button)" }
+    provenance: [hero, results-header]
+    confidence: high
+  navbar:
+    origin: extracted
+    provenance: [navbar]
+    confidence: high
+  footer:
+    origin: extracted
+    provenance: [footer]
+    confidence: high
+  form:
+    origin: designed
+    designedFrom: { note: "no lead form on the captured page; synthesized rounded field + filled submit to match the system" }
+    overridable: true
+    confidence: low
+
+layouts:
+  - id: navbar
+    archetype: nav
+    index: 0
+    scaffold: { component: "Layout / Row", componentId: "77ad6397-b708-c48f-7bc0-fba0c89e23cb" }
+    surfaceMode: { mode: "base (Primary)", modeId: null }
+    useCase: "Top navigation: wordmark left, dropdown nav links center, dark tertiary 'Sign in' + filled orange primary CTA right."
+    whenToUse: "Always — global chrome at top of every page."
+    slots:
+      - { name: "brand",   type: media,   role: "HubSpot wordmark", useCase: "HubSpot wordmark", mappedComponent: { name: "Logo", componentId: "1f142114-d0bc-50f6-98b5-e2a46fb70d44" }, asset: "hubspot-wordmark.svg" }
+      - { name: "navlinks", type: content, role: "primary nav dropdown links", useCase: "Products / Pricing / Resources nav links", mappedComponent: { name: "Link / Secondary", componentId: "75c4556a-b7c2-b1f3-2d05-0ea2dbee7fc8" } }
+      - { name: "actions", type: content, role: "sign-in + primary CTA", useCase: "dark tertiary 'Sign in' + filled orange primary CTA", mappedComponent: { name: "Button / Primary", componentId: "7c4861f5-0c24-5e7b-196f-3d19344c9cba" } }
+    gridRules:  { columns: "auto", justify: "space-between", align: center }
+    widthRules: { container: "full", measure: "edge-to-edge with gutter" }
+    overlapRules: { types: [], zOrder: [ nav ] }
+    surface: surface/base
+    componentMapping:
+      - { slot: "brand",    role: "wordmark",        component: "Logo",            componentId: "1f142114-d0bc-50f6-98b5-e2a46fb70d44", props: { Color: "default" } }
+      - { slot: "navlinks", role: "nav link",        component: "Link / Secondary", componentId: "75c4556a-b7c2-b1f3-2d05-0ea2dbee7fc8", props: { Style: "plain" } }
+      - { slot: "actions",  role: "sign-in text link", component: "Link / Secondary", componentId: "75c4556a-b7c2-b1f3-2d05-0ea2dbee7fc8", props: { Label: "Sign in" } }
+      - { slot: "actions",  role: "primary CTA button", component: "Button / Primary", componentId: "7c4861f5-0c24-5e7b-196f-3d19344c9cba", props: { Style: "primary", Label: "Get a demo" } }
+    confidence: high
+    provenance: [navbar]
+  - id: hero
+    patternRef: { lib: project, id: hero-scrim-filled-cta }   # -> layout-library.yaml (consolidation 2026-07-02)
+    archetype: stack
+    index: 1
+    scaffold: { component: "Section / Stack / Full bleed / Content and media", componentId: "b5c9aa7f-160f-7d95-c514-07e16adcd0e8" }
+    surfaceMode: { mode: "On Image", modeId: null }
+    useCase: "Centered eyebrow→animated heading→body→single FILLED primary button stack over a full-bleed photo darkened by a flat dark scrim (NO blur). Heading uses HubSpot Serif Page Header Human with a rotating brand-orange final word."
+    whenToUse: "Page hero — the single highest-emphasis section."
+    slots:
+      - { name: "eyebrow",    type: content, role: "product-line tagline", useCase: "microheading tagline ('Customer Platform')", mappedComponent: { name: "Eyebrow", componentId: "0add895d-ff42-8ef4-91cb-0eff2e60b2f6" } }
+      - { name: "heading",    type: content, role: "animated display headline", useCase: "large serif display headline with rotating orange word, white", mappedComponent: { name: "Heading", componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h1", Style: "display" } } }
+      - { name: "body",       type: content, role: "supporting paragraph", useCase: "supporting paragraph (-large), white", mappedComponent: { name: "Paragraph", componentId: "f35e6556-63c1-8370-d16e-42722ebffd11" } }
+      - { name: "actions",    type: content, role: "single primary CTA", useCase: "single FILLED orange primary button ('Get a demo')", mappedComponent: { name: "Button / Primary", componentId: "7c4861f5-0c24-5e7b-196f-3d19344c9cba" } }
+      - { name: "background", type: media,   role: "full-bleed hero photo", useCase: "full-bleed photo + flat dark scrim (no blur)", mappedComponent: { name: "Image", componentId: "abb0f607-d4f3-9dbd-b285-a92cf7e61685" }, asset: "HS_Full_Bleed_1_optmised.webp" }
+    gridRules:  { columns: 1, align: center, stagger: false, overlap: true }
+    widthRules: { container: "full-bleed", measure: "centered, ~Width MD text column" }
+    overlapRules: { types: [ text-over-image ], zOrder: [ image, scrim, text ], note: "scrim is a flat dark overlay, NOT a blur" }
+    surface: surface/image
+    componentMapping:
+      - { slot: "background", role: "hero photography", component: "Image",   componentId: "abb0f607-d4f3-9dbd-b285-a92cf7e61685", props: { Radius: false, "Aspect ratio": "landscape", Overlay: "scrim" } }
+      - { slot: "eyebrow",    role: "tagline eyebrow",  component: "Eyebrow", componentId: "0add895d-ff42-8ef4-91cb-0eff2e60b2f6", props: { Text: "Customer Platform" } }
+      - { slot: "heading",    role: "display heading",  component: "Heading", componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h1", Style: "display", Text: "Where go-to-market teams go to grow" } }
+      - { slot: "body",       role: "supporting paragraph", component: "Paragraph", componentId: "f35e6556-63c1-8370-d16e-42722ebffd11", props: { Size: "lg" } }
+      - { slot: "actions",    role: "primary CTA button", component: "Button / Primary", componentId: "7c4861f5-0c24-5e7b-196f-3d19344c9cba", props: { Style: "primary", Size: "lg", Label: "Get a demo" } }
+    confidence: high
+    provenance: [hero]
+  - id: logo-carousel
+    archetype: logos
+    index: 2
+    scaffold: { component: "Logos Wrapper", componentId: "f375ff98-6eb2-826d-0e70-4b45d0fd6fc2" }
+    surfaceMode: { mode: "base (Primary)", modeId: null }
+    useCase: "Trust strip: centered proof heading (h4) above an auto-scrolling carousel of monochrome customer logos (DoorDash, eBay, Eventbrite, TripAdvisor, Reddit…)."
+    whenToUse: "Directly under the hero to establish credibility."
+    slots:
+      - { name: "heading", type: content, role: "customer proof heading", useCase: "centered customer-proof line (h4)", mappedComponent: { name: "Heading", componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h4" } } }
+      - { name: "logos",   type: media,   role: "customer logo carousel", useCase: "row/carousel of monochrome customer logos", mappedComponent: { name: "Logos Wrapper", componentId: "f375ff98-6eb2-826d-0e70-4b45d0fd6fc2" }, assets: [ "doordash-logo.svg", "ebay-logo.svg", "eventbrite-logo.svg", "tripadvisor-logo.svg", "reddit-logo.svg" ] }
+    gridRules:  { columns: "carousel", align: center, gap: { value: "1.5rem", var: "Spacing/1.5x" }, slidesPerView: 5 }
+    widthRules: { container: "Width XL", measure: "centered" }
+    overlapRules: { types: [], zOrder: [ logos ] }
+    surface: surface/base
+    componentMapping:
+      - { slot: "heading", role: "proof heading", component: "Heading", componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h4" } }
+      - { slot: "logos",   role: "customer logo bar", component: "Logos Wrapper", componentId: "f375ff98-6eb2-826d-0e70-4b45d0fd6fc2", props: { Monochrome: true } }
+    confidence: high
+    provenance: [logo-carousel]
+  - id: customer-platform
+    archetype: split
+    index: 3
+    scaffold: { component: "Section / Split / Content and media", componentId: "464eadea-7e5a-f915-2967-4a8d53b13c44" }
+    surfaceMode: { mode: "base (Primary)", modeId: null }
+    useCase: "Customer-platform showcase: intro header (h1, h2-on-mobile) + description, paired with an animated carousel of big feature statements (each an h2 over a colorful product graphic): 'A CRM that's really smart.', 'Products that connect to everything.', 'Breeze: AI that gets your work done.'"
+    whenToUse: "Lead product narrative — rotating big-idea statements with supporting product imagery."
+    slots:
+      - { name: "intro",   type: content, role: "platform intro heading + description", useCase: "intro heading (h1) + description (-medium), left", mappedComponent: { name: "Heading", componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h1" } } }
+      - { name: "feature", type: content, role: "rotating feature statement", useCase: "animated feature statement (h2) per carousel slide", mappedComponent: { name: "Heading", componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h2" } } }
+      - { name: "media",   type: media,   role: "product platform graphic", useCase: "colorful product graphic per slide (soft accent backdrop)", mappedComponent: { name: "Image", componentId: "abb0f607-d4f3-9dbd-b285-a92cf7e61685" }, assets: [ "Customer Platform Graphic - Smart CRM1.5x (1).png", "Customer Platform Graphic - Hubs1.5x (1).png", "customer-platform-graphic-breeze.png" ] }
+    gridRules:  { columns: 2, ratio: "1:1", align: center, overlap: false }
+    widthRules: { container: "Width XL", measure: "split halves; media is an animated carousel" }
+    overlapRules: { types: [], zOrder: [ media, text ] }
+    surface: surface/base
+    componentMapping:
+      - { slot: "intro",   role: "platform intro heading", component: "Heading",   componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h1" } }
+      - { slot: "intro",   role: "platform description",   component: "Paragraph", componentId: "f35e6556-63c1-8370-d16e-42722ebffd11", props: { Size: "md" } }
+      - { slot: "feature", role: "rotating feature heading", component: "Heading", componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h2" } }
+      - { slot: "media",   role: "product platform graphic", component: "Image",   componentId: "abb0f607-d4f3-9dbd-b285-a92cf7e61685", props: { Radius: true, "Aspect ratio": "landscape" } }
+    confidence: high
+    provenance: [customer-platform]
+  - id: product-platform
+    patternRef: { lib: project, id: features-rounded-card-grid }   # -> layout-library.yaml (consolidation 2026-07-02)
+    archetype: grid
+    index: 4
+    scaffold: { component: "Layout / Grid", componentId: "d5fba640-4fbd-f78e-5787-c9d5ef9bc1c6" }
+    surfaceMode: { mode: "Secondary", modeId: null }
+    useCase: "Sticky 1fr/2fr split: left section header (h2 'Growing a business is hard. HubSpot makes it easier.') beside a 2-column grid of six product-hub cards (orange icon + trademarked hub name + dashed divider + 2-item feature list with orange check icons + dashed divider + 'Learn more' dark text link)."
+    whenToUse: "Primary product/hub overview listing every hub as an equal card."
+    slots:
+      - { name: "intro",     type: content, role: "section header", useCase: "section header (h2), sticky left sidebar", mappedComponent: { name: "Heading", componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h2" } } }
+      - { name: "cards",     type: content, role: "product-hub cards", useCase: "2-column grid of 6 product-hub cards (white, 16px radius)", mappedComponent: { name: "Card / Left With Icon", componentId: "7752cc9a-f70e-b0a8-87b6-beb4c27c1273" } }
+      - { name: "card-icon", type: media,   role: "product hub icon", useCase: "orange product-hub glyph (24px)", mappedComponent: { name: "Image", componentId: "abb0f607-d4f3-9dbd-b285-a92cf7e61685" }, assets: [ "ProductIcons_MarketingHub_Icon_Orange.webp", "ProductIcons_SalesHub_Icon_Orange.webp", "ProductIcons_ServiceHub_Icon_Orange.webp", "ProductIcons_ContentHub_Icon_Orange.webp", "ProductIcons_DataHub_Icon_Orange.webp", "ProductIcons_CommerceHub_Icon_Orange.webp" ] }
+      - { name: "card-cta",  type: content, role: "learn-more text link", useCase: "per-card 'Learn more about X' dark arrow text link", mappedComponent: { name: "Link / Secondary", componentId: "75c4556a-b7c2-b1f3-2d05-0ea2dbee7fc8" } }
+    gridRules:  { columns: 2, rows: 3, gap: { value: "1.5rem", var: "Spacing/1.5x" }, align: stretch, sidebar: "1fr / 2fr (intro / cards) at >=900px" }
+    widthRules: { container: "Width XL", measure: "1/3 sticky intro / 2/3 card grid" }
+    overlapRules: { types: [], zOrder: [ cards ] }
+    surface: surface/raised
+    componentMapping:
+      - { slot: "intro",     role: "section heading",     component: "Heading",          componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h2" } }
+      - { slot: "cards",     role: "product-hub card",    component: "Card / Left With Icon", componentId: "7752cc9a-f70e-b0a8-87b6-beb4c27c1273", props: { Radius: true } }
+      - { slot: "card-icon", role: "product hub icon",    component: "Image",            componentId: "abb0f607-d4f3-9dbd-b285-a92cf7e61685", props: { Radius: false } }
+      - { slot: "cards",     role: "card heading",        component: "Heading",          componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h4" } }
+      - { slot: "cards",     role: "card feature bullets", component: "Rich Text",       componentId: "168eb097-8c4f-7053-ad79-34bc90c5d144", props: {} }
+      - { slot: "card-cta",  role: "learn-more link",     component: "Link / Secondary", componentId: "75c4556a-b7c2-b1f3-2d05-0ea2dbee7fc8", props: { Style: "arrow", Label: "Learn more" } }
+    confidence: high
+    provenance: [product-platform]
+  - id: breeze-agents-carousel
+    archetype: stack
+    index: 5
+    scaffold: { component: "Section / Stack", componentId: "185a3d3a-0806-d61b-7c06-c5fdd636b093" }
+    surfaceMode: { mode: "base (Primary)", modeId: null }
+    useCase: "Breeze AI section: centered heading (h2 'Built-in AI agents that work for you 24/7.') above an animated card carousel of AI-agent product cards (icon + name + description), light surface with sprocket-coral accents."
+    whenToUse: "Big-idea moment introducing the Breeze AI agents."
+    slots:
+      - { name: "heading", type: content, role: "section heading", useCase: "centered heading (h2)", mappedComponent: { name: "Heading", componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h2" } } }
+      - { name: "cards",   type: content, role: "AI agent cards", useCase: "animated carousel of AI-agent cards", mappedComponent: { name: "Card / Left With Icon", componentId: "7752cc9a-f70e-b0a8-87b6-beb4c27c1273" } }
+      - { name: "card-media", type: media, role: "agent icon", useCase: "Breeze agent glyph", mappedComponent: { name: "Image", componentId: "abb0f607-d4f3-9dbd-b285-a92cf7e61685" }, assets: [ "Breeze Icon.svg", "Breeze-Symbol_RGB-Gradient.svg", "customer-agent-en@2x.png", "prospecting-agent-en@2x.png" ] }
+    gridRules:  { columns: "carousel", align: center, gap: { value: "1.5rem", var: "Spacing/1.5x" } }
+    widthRules: { container: "Width XL", measure: "centered heading; full-width carousel" }
+    overlapRules: { types: [], zOrder: [ cards, text ] }
+    surface: surface/base
+    componentMapping:
+      - { slot: "heading",    role: "section heading", component: "Heading",   componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h2" } }
+      - { slot: "cards",      role: "AI agent card",   component: "Card / Left With Icon", componentId: "7752cc9a-f70e-b0a8-87b6-beb4c27c1273", props: { Radius: true } }
+      - { slot: "card-media", role: "agent icon",      component: "Image",     componentId: "abb0f607-d4f3-9dbd-b285-a92cf7e61685", props: { Radius: true } }
+      - { slot: "cards",      role: "agent description", component: "Paragraph", componentId: "f35e6556-63c1-8370-d16e-42722ebffd11", props: { Size: "md" } }
+    confidence: high
+    provenance: [breeze-agents-carousel]
+  - id: integrations-rotating
+    archetype: split
+    index: 6
+    scaffold: { component: "Section / Split / Content and media", componentId: "464eadea-7e5a-f915-2967-4a8d53b13c44" }
+    surfaceMode: { mode: "base (Primary)", modeId: null }
+    useCase: "Integrations strip: left header (h3 'Works with the tools you already use. 2,000+ integrations.') + 'See all integrations' dark text link, beside a right-side rotating-SVG grid of colorful integration logos (Gmail, Slack, Shopify, Mailchimp, Zapier, Google Ads…)."
+    whenToUse: "Show ecosystem breadth via integration logos."
+    slots:
+      - { name: "heading", type: content, role: "integrations heading", useCase: "integrations heading (h3)", mappedComponent: { name: "Heading", componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h3" } } }
+      - { name: "cta",     type: content, role: "see-all text link", useCase: "'See all app integrations' dark arrow text link", mappedComponent: { name: "Link / Secondary", componentId: "75c4556a-b7c2-b1f3-2d05-0ea2dbee7fc8" } }
+      - { name: "logos",   type: media,   role: "integration logo grid", useCase: "rotating colorful integration logos", mappedComponent: { name: "Logos Wrapper", componentId: "f375ff98-6eb2-826d-0e70-4b45d0fd6fc2" }, assets: [ "gmail-icon-3.svg", "slack-icon-2.svg", "shopify-icon-3.svg", "mailchimp-icon-3.svg", "zapier-icon-2.svg", "google-ads-icon-2.svg" ] }
+    gridRules:  { columns: 2, ratio: "1:1", align: center, wrap: true }
+    widthRules: { container: "Width XL", measure: "split halves" }
+    overlapRules: { types: [], zOrder: [ logos ] }
+    surface: surface/base
+    componentMapping:
+      - { slot: "heading", role: "integrations heading", component: "Heading",       componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h3" } }
+      - { slot: "cta",     role: "see-all link",         component: "Link / Secondary", componentId: "75c4556a-b7c2-b1f3-2d05-0ea2dbee7fc8", props: { Style: "arrow", Label: "See all integrations" } }
+      - { slot: "logos",   role: "integration logo grid", component: "Logos Wrapper", componentId: "f375ff98-6eb2-826d-0e70-4b45d0fd6fc2", props: { Monochrome: false } }
+    confidence: high
+    provenance: [integrations-rotating]
+  - id: results-header
+    archetype: header
+    index: 7
+    scaffold: { component: "Header", componentId: "7cc94828-56bc-5805-4bf2-64a022801e5e" }
+    surfaceMode: { mode: "base (Primary)", modeId: null }
+    useCase: "Standalone centered section header (h2 'Remarkable results for every size business.') that introduces the case-study tab switcher below it."
+    whenToUse: "Heading band that sets up a social-proof / results section."
+    slots:
+      - { name: "heading", type: content, role: "results section heading", useCase: "centered section heading (h2)", mappedComponent: { name: "Heading", componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h2" } } }
+    gridRules:  { columns: 1, align: center }
+    widthRules: { container: "Width LG", measure: "centered, ~50ch measure" }
+    overlapRules: { types: [], zOrder: [ text ] }
+    surface: surface/base
+    componentMapping:
+      - { slot: "heading", role: "section heading", component: "Heading", componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h2" } }
+    confidence: high
+    provenance: [results-header]
+  - id: case-studies-tabbed
+    archetype: split
+    index: 8
+    scaffold: { component: "Section / Split / Content and media", componentId: "464eadea-7e5a-f915-2967-4a8d53b13c44" }
+    surfaceMode: { mode: "base (Primary)", modeId: null }
+    useCase: "Tabbed testimonials with statistics: a tab switcher (Enterprise / Mid-market / Small business; active tab gets an orange underline) over a card pairing a customer photo + quote + author name/title + 'Read case study' text link with a row of two-to-three large statistic blocks ('300%+', '~350', '59%', '17%') divided by hairlines."
+    whenToUse: "Segmented social proof — case studies by company size with quantified outcomes."
+    slots:
+      - { name: "tabs",     type: content, role: "segment tab switcher", useCase: "Enterprise / Mid-market / Small business tabs (orange active underline)", mappedComponent: { name: "Link / Secondary", componentId: "75c4556a-b7c2-b1f3-2d05-0ea2dbee7fc8" } }
+      - { name: "quote",    type: content, role: "testimonial quote card", useCase: "customer photo + quote + author (testimonial card)", mappedComponent: { name: "Testimonial / Split", componentId: "104dd794-bb63-0cb6-44f1-ca3edb141f7d" } }
+      - { name: "avatar",   type: media,   role: "customer photo", useCase: "customer/case portrait", mappedComponent: { name: "Image", componentId: "abb0f607-d4f3-9dbd-b285-a92cf7e61685" }, assets: [ "Enterprise.webp", "Small Businesses & Start ups.webp", "Case Studies.webp" ] }
+      - { name: "metrics",  type: content, role: "outcome stat blocks", useCase: "two-to-three large stat blocks (value + description)", mappedComponent: { name: "Metrics / Card", componentId: "69406c74-89b1-a098-d03e-570158b8547b" } }
+      - { name: "cta",      type: content, role: "read-case-study link", useCase: "'Read case study' dark arrow text link", mappedComponent: { name: "Link / Secondary", componentId: "75c4556a-b7c2-b1f3-2d05-0ea2dbee7fc8" } }
+    gridRules:  { columns: 2, ratio: "1:1", align: center, metricsColumns: 3 }
+    widthRules: { container: "Width XL", measure: "tabs over split card; metrics row beneath quote" }
+    overlapRules: { types: [], zOrder: [ card, text ] }
+    surface: surface/base
+    componentMapping:
+      - { slot: "tabs",    role: "segment tab control", component: "Link / Secondary", componentId: "75c4556a-b7c2-b1f3-2d05-0ea2dbee7fc8", props: { Style: "tab" } }
+      - { slot: "quote",   role: "testimonial quote card", component: "Testimonial / Split", componentId: "104dd794-bb63-0cb6-44f1-ca3edb141f7d", props: {} }
+      - { slot: "avatar",  role: "customer photo",     component: "Image",   componentId: "abb0f607-d4f3-9dbd-b285-a92cf7e61685", props: { Radius: true } }
+      - { slot: "metrics", role: "outcome stat blocks", component: "Metrics / Card", componentId: "69406c74-89b1-a098-d03e-570158b8547b", props: { Columns: 3 } }
+      - { slot: "cta",     role: "read-case-study link", component: "Link / Secondary", componentId: "75c4556a-b7c2-b1f3-2d05-0ea2dbee7fc8", props: { Style: "arrow", Label: "Read case study" } }
+    confidence: high
+    provenance: [case-studies-tabbed]
+  - id: badges
+    archetype: grid
+    index: 9
+    scaffold: { component: "Layout / Grid", componentId: "d5fba640-4fbd-f78e-5787-c9d5ef9bc1c6" }
+    surfaceMode: { mode: "base (Primary)", modeId: null }
+    useCase: "Awards proof: centered heading (h3 'Voted #1 in 526 G2 Reports') above a grid of six G2 award badge images."
+    whenToUse: "Reinforce credibility with third-party award badges."
+    slots:
+      - { name: "heading", type: content, role: "awards heading", useCase: "centered awards heading (h3)", mappedComponent: { name: "Heading", componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h3" } } }
+      - { name: "badges",  type: media,   role: "G2 award badges", useCase: "grid of 6 G2 badge images", mappedComponent: { name: "Image", componentId: "abb0f607-d4f3-9dbd-b285-a92cf7e61685" }, assets: [ "badge-best-results-mid-market.png", "badge-best-usability-enterprise.png", "badge-leader-small-business.png", "bagde-most-implementable.png", "best-relationships-small-business.png", "best-support-enterprise.png" ] }
+    gridRules:  { columns: 6, align: center, gap: { value: "1.5rem", var: "Spacing/1.5x" }, wrap: true }
+    widthRules: { container: "Width XL", measure: "centered badge row" }
+    overlapRules: { types: [], zOrder: [ badges ] }
+    surface: surface/base
+    componentMapping:
+      - { slot: "heading", role: "awards heading", component: "Heading", componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h3" } }
+      - { slot: "badges",  role: "award badge image", component: "Image", componentId: "abb0f607-d4f3-9dbd-b285-a92cf7e61685", props: { Radius: false } }
+    confidence: high
+    provenance: [badges]
+  - id: elevated-cta
+    patternRef: { lib: project, id: cta-elevated-card }   # -> layout-library.yaml (consolidation 2026-07-02)
+    archetype: stack
+    index: 10
+    scaffold: { component: "Section / Stack", componentId: "185a3d3a-0806-d61b-7c06-c5fdd636b093" }
+    surfaceMode: { mode: "Inverse", modeId: null }
+    useCase: "Dark inverted (#1f1f1f) closing band: centered large heading (h1 'Make impossible growth feel impossibly easy, with HubSpot.') above a single FILLED orange primary CTA ('Get a demo of HubSpot's premium software')."
+    whenToUse: "Final conversion push before the footer."
+    slots:
+      - { name: "heading", type: content, role: "closing headline", useCase: "large closing headline (h1), white", mappedComponent: { name: "Heading", componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h1" } } }
+      - { name: "actions", type: content, role: "single primary CTA", useCase: "single FILLED orange primary button", mappedComponent: { name: "Button / Primary", componentId: "7c4861f5-0c24-5e7b-196f-3d19344c9cba" } }
+    gridRules:  { columns: 1, align: center }
+    widthRules: { container: "Width LG", measure: "centered headline + CTA" }
+    overlapRules: { types: [], zOrder: [ text ] }
+    surface: surface/inverse
+    componentMapping:
+      - { slot: "heading", role: "closing headline", component: "Heading", componentId: "b2fd0399-aede-b4e1-bd06-56c8171fc86e", props: { Tag: "h1" } }
+      - { slot: "actions", role: "primary CTA button", component: "Button / Primary", componentId: "7c4861f5-0c24-5e7b-196f-3d19344c9cba", props: { Style: "primary", Size: "lg", Label: "Get a demo" } }
+    confidence: high
+    provenance: [elevated-cta]
+  - id: footer
+    archetype: grid
+    index: 11
+    scaffold: { component: "Layout / Grid", componentId: "d5fba640-4fbd-f78e-5787-c9d5ef9bc1c6" }
+    surfaceMode: { mode: "Inverse", modeId: null }
+    useCase: "Dark (#1f1f1f) multi-column footer: wordmark + utility row, several columns of grouped nav text links, social/app-store row, and a bottom legal/branding bar."
+    whenToUse: "Global site footer."
+    slots:
+      - { name: "brand",    type: media,   role: "footer wordmark", useCase: "HubSpot wordmark (light on dark)", mappedComponent: { name: "Logo", componentId: "1f142114-d0bc-50f6-98b5-e2a46fb70d44" }, asset: "hubspot-wordmark.svg" }
+      - { name: "linkcols", type: content, role: "footer nav link columns", useCase: "columns of grouped footer nav links", mappedComponent: { name: "Link / Secondary", componentId: "75c4556a-b7c2-b1f3-2d05-0ea2dbee7fc8" } }
+      - { name: "legal",    type: content, role: "legal / copyright text", useCase: "bottom legal + copyright bar", mappedComponent: { name: "Rich Text", componentId: "168eb097-8c4f-7053-ad79-34bc90c5d144" } }
+    gridRules:  { columns: 5, align: start, gap: { value: "1.5rem", var: "Spacing/1.5x" } }
+    widthRules: { container: "full", measure: "edge-to-edge" }
+    overlapRules: { types: [], zOrder: [ links ] }
+    surface: surface/inverse
+    componentMapping:
+      - { slot: "brand",    role: "footer wordmark", component: "Logo",            componentId: "1f142114-d0bc-50f6-98b5-e2a46fb70d44", props: { Color: "inverse" } }
+      - { slot: "linkcols", role: "footer nav link", component: "Link / Secondary", componentId: "75c4556a-b7c2-b1f3-2d05-0ea2dbee7fc8", props: { Style: "plain" } }
+      - { slot: "legal",    role: "legal copy",      component: "Rich Text",       componentId: "168eb097-8c4f-7053-ad79-34bc90c5d144", props: {} }
+    confidence: high
+    provenance: [footer]
+
+compositionRules:
+  - id: rounded-white-cards
+    statement: "Content cards are pure white (#ffffff container-01), 16px-rounded, borderless, with DASHED internal dividers (1px rgba(0,0,0,0.11)); they float on near-white/cream surfaces. Elevation is subtle (rounding + contrast), not heavy shadow."
+    value: { radius: "1rem", bg: "#ffffff", divider: "1px dashed rgba(0,0,0,0.11)", border: none, shadow: subtle }
+    confidence: high
+    source: saved-css
+    scope: design-language
+    changelog: [ { ts: "2026-06-16T01:50:00Z", action: created, from: null, to: "white 16px rounded borderless cards w/ dashed dividers", by: creation, signalId: null, note: "wf-product-platform__card + cl-card" } ]
+  - id: filled-orange-primary
+    statement: "The primary action is always a FILLED orange button (#ff4800 bg, #ffffff text, 8px radius). Secondary is a white-fill orange-outline button; tertiary is a DARK (#1f1f1f) underlined arrow text link. Never demote a primary CTA to a typographic link."
+    value: { primary: filled, secondary: outline-white, tertiary: text-arrow-dark }
+    confidence: high
+    source: saved-css
+    scope: design-language
+    changelog: [ { ts: "2026-06-16T01:50:00Z", action: created, from: null, to: "filled/outline/dark-text ladder", by: creation, signalId: null, note: "parsed --light-theme-button-* and --light-theme-link-01" } ]
+  - id: centered-hero-scrim
+    statement: "The hero is a centered text stack over a full-bleed photo darkened by a flat dark scrim (rgba(0,0,0,0.5)); NO blur is applied. The final heading word rotates in brand orange."
+    value: { align: center, overlay: scrim, blur: none }
+    confidence: high
+    source: [screenshot, saved-css]
+    scope: design-language
+    changelog: [ { ts: "2026-06-16T01:50:00Z", action: created, from: null, to: "centered, dark-scrim, no-blur hero", by: creation, signalId: null, note: "screenshot ground-truth; wf-page-header-human dark theme over photo" } ]
+  - id: serif-headings-sans-body
+    statement: "Headings and large display copy use HubSpot Serif (display); body, UI labels, buttons, and paragraphs use HubSpot Sans. The hero page-header uses HubSpot Serif Page Header Human."
+    value: { headings: "HubSpot Serif", body: "HubSpot Sans", hero: "HubSpot Serif Page Header Human" }
+    confidence: high
+    source: saved-css
+    scope: design-language
+    changelog: [ { ts: "2026-06-16T01:50:00Z", action: created, from: null, to: "serif headings + sans body", by: creation, signalId: null, note: "--cl-font-family-heading = --cl-font-family-display = HubSpot Serif; --cl-font-family = HubSpot Sans" } ]
+  - id: multicol-card-grids
+    statement: "Feature/product sets are presented as multi-column card grids (product hubs = 2-column grid of 6 cards), not single long lists; the lead grid pairs a sticky 1/3 intro with a 2/3 card grid."
+    value: { columns: 2, productCards: 6, sidebar: "1fr/2fr" }
+    confidence: high
+    source: saved-css
+    scope: design-language
+    changelog: [ { ts: "2026-06-16T01:50:00Z", action: created, from: null, to: "2-col card grids, 1fr/2fr lead split", by: creation, signalId: null, note: "wf-product-platform-container grid-template-columns 1fr 2fr; cards repeat(2)" } ]
+  - id: generous-whitespace-soft-seams
+    statement: "Sections breathe with generous vertical padding (csol -md = 40/64px up to -lg = 64/96px) and transition softly via surface tint shifts — no hard editorial cuts or hairline dividers between light sections."
+    value: { sectionY: "2.5rem–6rem", transition: soft }
+    confidence: high
+    source: saved-css
+    scope: design-language
+    changelog: [ { ts: "2026-06-16T01:50:00Z", action: created, from: null, to: "generous whitespace, soft seams", by: creation, signalId: null, note: "csol padding tiers" } ]
+  - id: dark-bookend-only
+    statement: "Dark inverted (#1f1f1f) surfaces are reserved for the closing elevated-CTA band and the footer; the entire body run is near-white/cream/white."
+    value: { darkSections: [ elevated-cta, footer ] }
+    confidence: high
+    source: saved-css
+    scope: design-language
+    changelog: [ { ts: "2026-06-16T01:50:00Z", action: created, from: null, to: "dark reserved for cta + footer", by: creation, signalId: null, note: "per-section data-cl-theme parse" } ]
+
+do:
+  - { id: rounded-white-cards,   statement: "Use pure-white (#ffffff), 16px-rounded, borderless cards with dashed internal dividers, floating on near-white/cream surfaces.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: filled-primary-cta,    statement: "Make the primary CTA a FILLED orange button (#ff4800 / white text, 8px radius); secondary a white-fill orange-outline button.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: centered-hero,         statement: "Center the hero text stack over a full-bleed photo with a flat dark scrim (no blur); rotate the final heading word in orange.", value: true, confidence: high, source: [screenshot, saved-css], scope: design-language, changelog: [] }
+  - { id: serif-headings,        statement: "Set headings and display copy in HubSpot Serif; set body, buttons, and UI in HubSpot Sans (weight 300 body / 500 headings).", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: multicol-grids,        statement: "Present features and product hubs as multi-column card grids (2-col grid of 6 hub cards), with a sticky 1/3 intro beside a 2/3 grid.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: generous-whitespace,   statement: "Use generous vertical whitespace (csol md→lg tiers) and soft surface-tint transitions between sections.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: focused-orange-accent, statement: "Use the single vivid orange (#ff4800) as a focused accent: primary buttons, brand borders / active-tab underline, feature check icons, and the rotating hero word.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: dark-text-links,       statement: "Render text links DARK (#1f1f1f) with an underline and a hover arrow; reserve orange for fills/borders/icons.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: dark-bookend,          statement: "Use dark (#1f1f1f) inverted surfaces only for the closing CTA band and the footer.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+
+avoid:
+  - { id: no-brutalism,         statement: "No hard-edged editorial brutalism; HubSpot is soft, rounded, friendly SaaS.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: no-allcaps-display,   statement: "No all-caps didone/serif display at every tier; HubSpot Serif headings are sentence-case, and the serif Page-Header face is hero-only.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: no-typographic-cta,   statement: "No typographic-only primary CTA; the primary action must be a FILLED button, never just an arrow/underline link.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: no-zero-radius,       statement: "No zero-radius / sharp corners on cards (16px), buttons (8px), inputs (4px), or media.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: no-orange-links,      statement: "Do NOT color text links orange; links are dark (#1f1f1f) underlined. Orange is for fills, brand borders, icons, and the rotating hero word only.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: no-hero-blur,         statement: "Do NOT blur the hero background; darken it with a flat dark scrim only.", value: true, confidence: high, source: [screenshot], scope: design-language, changelog: [] }
+  - { id: no-hard-cuts,         statement: "No hard-cut/contrast seams or hairline dividers between light sections; transition softly.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: no-accent-overload,   statement: "Do not flood section surfaces with orange or pastels; keep large fields near-white/cream and use color as a focused accent / illustration backdrop.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: no-pill-buttons,      statement: "Marketing CTAs are 8px-rounded, NOT full pills; the 999999px pill radius is reserved for tags / Breeze core components.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+
+neverDo:
+  - { id: never-typographic-primary, statement: "Never render the primary CTA as a typographic link; it is always a filled orange button.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: never-zero-radius,         statement: "Never zero out radius; the system is rounded (cards 16px, buttons 8px).", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: never-blur-hero,           statement: "Never apply blur to the hero background photo (flat dark scrim only).", value: true, confidence: high, source: [screenshot], scope: design-language, changelog: [] }
+  - { id: never-orange-text-link,    statement: "Never color text links orange; text links are dark (#1f1f1f) and underlined.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: never-allcaps-headings,    statement: "Never set headings in all-caps; HubSpot headings are sentence-case serif.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+
+voice:
+  ref: "./voice.md"
+  # ── MOTION spec (MEASURED, DEFINED) — gentle/reassuring SaaS motion, no bounce. Values
+  #    are the real transition/animation numbers parsed from the captured CSS (2026-07-02
+  #    refresh). Consumed by the composer (component_render.motion_vars_css -> --c-* vars)
+  #    and projected into brand.md (render_brand_md §Motion).
+  motionSpec:
+    state: defined
+    easing:
+      primary: "ease-in-out"   # dominant easing in the captured sheets (transforms, underline-offset); buttons use linear for pure color/bg swaps (.cl-button transition: background-color .15s linear, color .15s linear)
+    durations:
+      fast: "150ms"   # button bg/color swap (.cl-button, measured .15s linear)
+      base: "200ms"   # micro-transforms (text-link arrow icon transform .2s ease-in-out)
+      slow: "300ms"   # underline-offset draw (.cl-textLink .3s ease-in-out) + nav slide keyframes (300ms)
+    link:
+      mode: underline-draw     # HubSpot links keep the underline device; hover color does NOT swap on light surfaces (#1f1f1f -> #1f1f1f); the arrow icon nudges translateX(5px)
+      value: "underline-offset-shift + arrow translateX(5px)"
+    scrollReveal:
+      value: "fade-translateY"
+      translateY: "16px"       # gentle fade-and-rise per the clean-SaaS motion stance; no measured scroll-reveal in the saved CSS (carousels/tab switches are the observed motion)
+    imageParallax:
+      enabled: false           # NOT observed — HubSpot module imagery is static; motion lives in carousels (logo rail, card carousel, rotating-SVG ring) and the animated hero word
+      origin: extracted
+      provenance: [logo-carousel, customer-platform, integrations-rotating]
+    reducedMotion: "respect"   # 5 prefers-reduced-motion @media rules in the captured CSS (reduce -> transitions/animations off)
+    confidence: high
+    source: saved-css
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-02T00:00:00Z", action: created, from: null,
+          to: "measured motion spec (ease-in-out/linear + 150/200/300ms + underline-draw link + arrow nudge; reduced-motion respected; no parallax)",
+          by: creation, signalId: null, note: "2026-07-02 extraction refresh: durations/easings parsed from .cl-button/.cl-textLink/keyframes in the captured page CSS" }
+  dials:
+    variance: { value: low,    confidence: high, source: creation, scope: design-language, changelog: [] }
+    motion:   { value: medium, confidence: high, state: defined, source: creation, scope: design-language, changelog: [ { ts: "2026-06-16T01:50:00Z", action: created, from: null, to: medium, by: creation, signalId: null, note: "observed: animated rotating hero word, logo carousel, customer-platform card carousel, rotating-SVG integrations, tabbed switcher, hover arrow translate" }, { ts: "2026-07-02T00:00:00Z", action: updated, from: "medium (inferred devices)", to: "medium (DEFINED — measured spec)", by: creation, signalId: null, note: "intensity unchanged; now backed by the authored voice.motionSpec with measured durations/easings" } ] }
+    density:  { value: medium, confidence: high, source: creation, scope: design-language, changelog: [] }
+
+recipePolicy:
+  scaffoldFirst:         { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  reuseBeforeCreate:     { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  composeFromPrimitives: { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  themeViaModes:         { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  slotsTakeInstancesOnly: { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+
+provenanceIndex:
+  navbar:                 { url: "https://hubspot.com", node: "header.global-nav", screenshot: "../../../screenshots/hubspot/HubSpot-Software-Tools-for-your-Business-Homepage-06-15-2026_11_58_PM copy.webp#nav", domByte: 0 }
+  hero:                   { url: "https://hubspot.com", node: "section.wf-page-header-human", screenshot: "#hero", domByte: 532618 }
+  logo-carousel:          { url: "https://hubspot.com", node: "section.csol-logo-carousel", screenshot: "#logos", domByte: 535707 }
+  customer-platform:      { url: "https://hubspot.com", node: "section.wf-customer-platform", screenshot: "#customer-platform", domByte: 541761 }
+  product-platform:       { url: "https://hubspot.com", node: "section.wf-product-platform", screenshot: "#product-platform", domByte: 553864 }
+  breeze-agents-carousel: { url: "https://hubspot.com", node: "section.wf-animated-carousel-section.-breeze", screenshot: "#breeze", domByte: 591333 }
+  integrations-rotating:  { url: "https://hubspot.com", node: "section.wf-rotating-svg", screenshot: "#integrations", domByte: 616628 }
+  results-header:         { url: "https://hubspot.com", node: "section.csol-section (results header)", screenshot: "#results", domByte: 634471 }
+  case-studies-tabbed:    { url: "https://hubspot.com", node: "section.breeze-agents-tabbed-testimonials.-statistics-variation", screenshot: "#case-studies", domByte: 636123 }
+  badges:                 { url: "https://hubspot.com", node: "section.wf-badges", screenshot: "#badges", domByte: 649273 }
+  elevated-cta:           { url: "https://hubspot.com", node: "section.wf-elevated-cta.-footer-1", screenshot: "#cta", domByte: 658471 }
+  footer:                 { url: "https://hubspot.com", node: "footer.hsg-footer.global-footer", screenshot: "#footer", domByte: 659375 }
+
+# ---- EXACT extracted site chrome (nav/footer) — source_chrome.v2 offline bridge ----
+
+
+navbar:
+  origin: extracted
+  source: extracted
+  scope: site-chrome
+  confidence: high
+  provenance:
+    node: header.global-nav
+    sourceUrl: https://www.hubspot.com
+    savedPage: ../../../screenshots/hubspot/HubSpot/HubSpot _ Software & Tools for your Business - Homepage.html
+    contract: ../assets/source-chrome.v2.json
+    extractor: source_chrome.v2 (offline Playwright computed-style extraction)
+  archetype: nav
+  sticky: false
+  surface:
+    bg: rgb(255, 255, 255)
+    color: rgb(31, 31, 31)
+    height: 128
+  logo:
+    kind: img
+    alt: HubSpot
+    href: https://www.hubspot.com/?hubs_content=www.hubspot.com/products/sales&hubs_content-cta=HubSpot&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    width: 100
+    height: 28
+    srcContract: ../assets/source-chrome.v2.json#nav.logo.src
+  slots:
+  - name: brand
+    type: media
+    role: nav wordmark / home link
+    source: extracted
+  - name: navlinks
+    type: content
+    role: utility + primary nav links
+    source: extracted
+  - name: actions
+    type: content
+    role: primary CTA button
+    source: extracted
+  links:
+  - label: English
+    href: ''
+  - label: Customer Support
+    href: https://help.hubspot.com/?hubs_content=www.hubspot.com/&hubs_content-cta=nav-utility-support&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+  - label: Contact Sales
+    href: https://offers.hubspot.com/contact-sales?hubs_signup-url=www.hubspot.com/&hubs_signup-cta=nav-utility-contactsales&hubs_content=www.hubspot.com/&hubs_content-cta=nav-utility-contactsales&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+  - label: Log in
+    href: https://app.hubspot.com/login?hubs_signup-url=www.hubspot.com%2F&hubs_signup-cta=nav-utility-login&hubs_content=www.hubspot.com%2F&hubs_content-cta=nav-utility-login&wfoid=6b00e3c002.1774020198&uuid=4959372e-21b7-454c-a10d-cb86b531fb77&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+  - label: About
+    href: ''
+  - label: Products
+    href: ''
+    menu:
+      columns:
+      - heading: Marketing Hub
+        links:
+        - label: Free and premium plans
+          href: https://www.hubspot.com/products/marketing?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-marketing&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Sales Hub
+        links:
+        - label: Free and premium plans
+          href: https://www.hubspot.com/products/sales?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-sales&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Service Hub
+        links:
+        - label: Free and premium plans
+          href: https://www.hubspot.com/products/service?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-service&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Content Hub
+        links:
+        - label: Free and premium plans
+          href: https://www.hubspot.com/products/content?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-content&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Data Hub
+        links:
+        - label: Free and premium plans
+          href: https://www.hubspot.com/products/data?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-data&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Revenue Hub
+        links:
+        - label: Free and premium plans
+          href: https://www.hubspot.com/products/revenue?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-revenue&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Smart CRM
+        links:
+        - label: Learn more
+          href: https://www.hubspot.com/products/crm/ai-crm?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-smartcrm&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Small Business Bundle
+        links:
+        - label: Learn more
+          href: https://www.hubspot.com/products/crm/starter?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-starter&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      featured:
+      - label: Free HubSpot CRM
+        href: https://www.hubspot.com/products/crm?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-freecrm&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - label: Overview of all products
+        href: https://www.hubspot.com/products/get-started?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-platform&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - label: Learn more
+        href: https://www.hubspot.com/products/artificial-intelligence?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-ai&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - label: Learn more
+        href: https://www.hubspot.com/products/aeo?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-aeo&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - label: See all integrations
+        href: https://ecosystem.hubspot.com/marketplace/apps?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-marketplace&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+  - label: Solutions
+    href: ''
+    menu:
+      columns:
+      - heading: For Small Businesses & Startups
+        links:
+        - label: Learn more
+          href: https://www.hubspot.com/products/crm/starter?hubs_content=www.hubspot.com/&hubs_content-cta=nav-solutions-smallbiz&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: For Enterprises
+        links:
+        - label: Learn more
+          href: https://www.hubspot.com/products/crm/enterprise?hubs_content=www.hubspot.com/&hubs_content-cta=nav-solutions-enterprise&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Why Choose HubSpot?
+        links:
+        - label: Learn more
+          href: https://www.hubspot.com/why-choose-hubspot?hubs_content=www.hubspot.com/&hubs_content-cta=nav-solutions-wch&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Case Studies
+        links:
+        - label: See all case studies
+          href: https://www.hubspot.com/case-studies?hubs_content=www.hubspot.com/&hubs_content-cta=nav-solutions-casestudies&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: 'Spotlight: Product Updates'
+        links:
+        - label: Explore product updates
+          href: https://www.hubspot.com/spotlight?hubs_content=www.hubspot.com/&hubs_content-cta=nav-solutions-spotlight&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      featured: []
+  - label: Pricing
+    href: https://www.hubspot.com/pricing/marketing?hubs_content=www.hubspot.com/&hubs_content-cta=nav-pricing&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+  - label: Resources
+    href: ''
+    menu:
+      columns:
+      - heading: Featured Links
+        links:
+        - label: 'Spotlight: Product Updates'
+          href: https://www.hubspot.com/spotlight?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-spotlight&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: What's New in HubSpot
+          href: https://www.hubspot.com/new?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-new&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Why Choose HubSpot?
+          href: https://www.hubspot.com/why-choose-hubspot?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-wch&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Sustainability
+          href: https://www.hubspot.com/sustainability?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-sustainability&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Community & Events
+        links:
+        - label: INBOUND Event
+          href: https://www.inbound.com/?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-inbound&wfoid=6b00e3c002.1774020198
+        - label: Webinars
+          href: https://www.hubspot.com/resources/webinar?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-webinars&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3#resource-library-page-headers
+        - label: HubSpot Community
+          href: https://community.hubspot.com/?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-community&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: HubSpot User Groups
+          href: https://www.hubspot.com/hubspot-user-groups?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-usergroups&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Partners
+        links:
+        - label: Solutions Partner Program
+          href: https://www.hubspot.com/partners/solutions?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-solutions&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Technology Partner Program
+          href: https://www.hubspot.com/partners/app?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-tech&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Affiliate Partner Program
+          href: https://www.hubspot.com/partners/affiliates?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-affiliate&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Education Partner Program
+          href: https://academy.hubspot.com/education-partner-program?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-education&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Startup Partner Program
+          href: https://www.hubspot.com/startups/partners?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-startup&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Education
+        links:
+        - label: The Loop Marketing Playbook
+          href: https://www.hubspot.com/loop-marketing?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-loopmarketing&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: What Is Inbound Marketing?
+          href: https://www.hubspot.com/inbound-marketing?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-inboundmarketing&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: HubSpot Blogs
+          href: https://blog.hubspot.com/?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-blogs&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Free Courses & Certifications
+          href: https://academy.hubspot.com/?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-academy&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Ebooks, Guides & More
+          href: https://www.hubspot.com/resources?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-resources&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: HubSpot Knowledge Base
+          href: https://knowledge.hubspot.com/?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-knowledge&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Tools
+        links:
+        - label: Website Templates
+          href: https://ecosystem.hubspot.com/marketplace/templates?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-templates&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Developer Tools
+          href: https://developers.hubspot.com/?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-devtools&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Services
+        links:
+        - label: Onboarding
+          href: https://www.hubspot.com/services/onboarding?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-onboarding&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Migration
+          href: https://www.hubspot.com/services/professional/migrations?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-migration&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Premium Support
+          href: https://www.hubspot.com/services/premium-support?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-support&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Hire a Solutions Partner
+          href: https://ecosystem.hubspot.com/marketplace/solutions?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-hirepartner&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      featured: []
+  ctas:
+  - label: Get a demo
+    href: https://offers.hubspot.com/crm-platform-demo?hubs_signup-url=www.hubspot.com/&hubs_signup-cta=homepage-hp-nav-knownupmarket&hubs_content=www.hubspot.com/products/sales&hubs_content-cta=HubSpot&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    filled: true
+    hasIcon: false
+    bg: rgb(255, 72, 0)
+    color: rgb(255, 255, 255)
+    borderRadius: 8
+  rules:
+    layout: split
+    tiers: utility-over-primary
+    justify: space-between
+    align: center
+    anyButtonHasIcon: false
+  changelog:
+  - ts: '2026-06-30T13:10:33Z'
+    action: created
+    from: null
+    to: extracted nav (5 links, 1 cta, logo=yes) from saved HubSpot homepage
+    by: chrome-extractor
+    signalId: null
+    note: bridged from source_chrome.v2 offline saved-page extraction
+  - ts: '2026-06-30T17:48:14Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 5 utility + 4 primary links, 1 cta'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (tab-title/menuitem candidates, a11y toggle excluded, utility/primary tier split)
+  - ts: '2026-06-30T17:49:24Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 5 utility + 4 primary links, 1 cta'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (tab-title/menuitem candidates, a11y toggle excluded, utility/primary tier split)
+  - ts: '2026-06-30T18:23:23Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 5 utility + 4 primary links (3 with mega-menu), 1 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-06-30T18:23:35Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 5 utility + 4 primary links (3 with mega-menu), 1 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-06-30T18:26:34Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 5 utility + 4 primary links (3 with mega-menu), 1 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-06-30T18:26:34Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 5 utility + 4 primary links (3 with mega-menu), 1 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-06-30T18:29:06Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 5 utility + 4 primary links (3 with mega-menu), 1 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-06-30T21:50:28Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 5 utility + 4 primary links (3 with mega-menu), 1 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-06-30T21:50:48Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 5 utility + 4 primary links (3 with mega-menu), 1 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-06-30T22:14:18Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 5 utility + 4 primary links (3 with mega-menu), 1 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-06-30T22:30:28Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 5 utility + 4 primary links (3 with mega-menu), 1 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  - ts: '2026-07-02T17:45:48Z'
+    action: updated
+    from: null
+    to: 'two-tier nav: 5 utility + 4 primary links (3 with mega-menu), 1 cta, measured=yes'
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (mega-menu columns/featured via aria-controls + measured computed styles carried)
+  twoTier: true
+  utility:
+  - label: English
+    href: ''
+  - label: Customer Support
+    href: https://help.hubspot.com/?hubs_content=www.hubspot.com/&hubs_content-cta=nav-utility-support&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+  - label: Contact Sales
+    href: https://offers.hubspot.com/contact-sales?hubs_signup-url=www.hubspot.com/&hubs_signup-cta=nav-utility-contactsales&hubs_content=www.hubspot.com/&hubs_content-cta=nav-utility-contactsales&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+  - label: Log in
+    href: https://app.hubspot.com/login?hubs_signup-url=www.hubspot.com%2F&hubs_signup-cta=nav-utility-login&hubs_content=www.hubspot.com%2F&hubs_content-cta=nav-utility-login&wfoid=6b00e3c002.1774020198&uuid=4959372e-21b7-454c-a10d-cb86b531fb77&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+  - label: About
+    href: ''
+  primary:
+  - label: Products
+    href: ''
+    menu:
+      columns:
+      - heading: Marketing Hub
+        links:
+        - label: Free and premium plans
+          href: https://www.hubspot.com/products/marketing?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-marketing&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Sales Hub
+        links:
+        - label: Free and premium plans
+          href: https://www.hubspot.com/products/sales?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-sales&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Service Hub
+        links:
+        - label: Free and premium plans
+          href: https://www.hubspot.com/products/service?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-service&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Content Hub
+        links:
+        - label: Free and premium plans
+          href: https://www.hubspot.com/products/content?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-content&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Data Hub
+        links:
+        - label: Free and premium plans
+          href: https://www.hubspot.com/products/data?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-data&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Revenue Hub
+        links:
+        - label: Free and premium plans
+          href: https://www.hubspot.com/products/revenue?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-revenue&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Smart CRM
+        links:
+        - label: Learn more
+          href: https://www.hubspot.com/products/crm/ai-crm?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-smartcrm&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Small Business Bundle
+        links:
+        - label: Learn more
+          href: https://www.hubspot.com/products/crm/starter?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-starter&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      featured:
+      - label: Free HubSpot CRM
+        href: https://www.hubspot.com/products/crm?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-freecrm&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - label: Overview of all products
+        href: https://www.hubspot.com/products/get-started?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-platform&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - label: Learn more
+        href: https://www.hubspot.com/products/artificial-intelligence?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-ai&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - label: Learn more
+        href: https://www.hubspot.com/products/aeo?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-aeo&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - label: See all integrations
+        href: https://ecosystem.hubspot.com/marketplace/apps?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-marketplace&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+  - label: Solutions
+    href: ''
+    menu:
+      columns:
+      - heading: For Small Businesses & Startups
+        links:
+        - label: Learn more
+          href: https://www.hubspot.com/products/crm/starter?hubs_content=www.hubspot.com/&hubs_content-cta=nav-solutions-smallbiz&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: For Enterprises
+        links:
+        - label: Learn more
+          href: https://www.hubspot.com/products/crm/enterprise?hubs_content=www.hubspot.com/&hubs_content-cta=nav-solutions-enterprise&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Why Choose HubSpot?
+        links:
+        - label: Learn more
+          href: https://www.hubspot.com/why-choose-hubspot?hubs_content=www.hubspot.com/&hubs_content-cta=nav-solutions-wch&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Case Studies
+        links:
+        - label: See all case studies
+          href: https://www.hubspot.com/case-studies?hubs_content=www.hubspot.com/&hubs_content-cta=nav-solutions-casestudies&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: 'Spotlight: Product Updates'
+        links:
+        - label: Explore product updates
+          href: https://www.hubspot.com/spotlight?hubs_content=www.hubspot.com/&hubs_content-cta=nav-solutions-spotlight&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      featured: []
+  - label: Pricing
+    href: https://www.hubspot.com/pricing/marketing?hubs_content=www.hubspot.com/&hubs_content-cta=nav-pricing&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+  - label: Resources
+    href: ''
+    menu:
+      columns:
+      - heading: Featured Links
+        links:
+        - label: 'Spotlight: Product Updates'
+          href: https://www.hubspot.com/spotlight?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-spotlight&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: What's New in HubSpot
+          href: https://www.hubspot.com/new?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-new&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Why Choose HubSpot?
+          href: https://www.hubspot.com/why-choose-hubspot?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-wch&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Sustainability
+          href: https://www.hubspot.com/sustainability?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-sustainability&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Community & Events
+        links:
+        - label: INBOUND Event
+          href: https://www.inbound.com/?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-inbound&wfoid=6b00e3c002.1774020198
+        - label: Webinars
+          href: https://www.hubspot.com/resources/webinar?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-webinars&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3#resource-library-page-headers
+        - label: HubSpot Community
+          href: https://community.hubspot.com/?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-community&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: HubSpot User Groups
+          href: https://www.hubspot.com/hubspot-user-groups?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-usergroups&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Partners
+        links:
+        - label: Solutions Partner Program
+          href: https://www.hubspot.com/partners/solutions?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-solutions&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Technology Partner Program
+          href: https://www.hubspot.com/partners/app?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-tech&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Affiliate Partner Program
+          href: https://www.hubspot.com/partners/affiliates?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-affiliate&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Education Partner Program
+          href: https://academy.hubspot.com/education-partner-program?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-education&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Startup Partner Program
+          href: https://www.hubspot.com/startups/partners?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-startup&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Education
+        links:
+        - label: The Loop Marketing Playbook
+          href: https://www.hubspot.com/loop-marketing?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-loopmarketing&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: What Is Inbound Marketing?
+          href: https://www.hubspot.com/inbound-marketing?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-inboundmarketing&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: HubSpot Blogs
+          href: https://blog.hubspot.com/?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-blogs&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Free Courses & Certifications
+          href: https://academy.hubspot.com/?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-academy&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Ebooks, Guides & More
+          href: https://www.hubspot.com/resources?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-resources&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: HubSpot Knowledge Base
+          href: https://knowledge.hubspot.com/?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-knowledge&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Tools
+        links:
+        - label: Website Templates
+          href: https://ecosystem.hubspot.com/marketplace/templates?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-templates&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Developer Tools
+          href: https://developers.hubspot.com/?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-devtools&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      - heading: Services
+        links:
+        - label: Onboarding
+          href: https://www.hubspot.com/services/onboarding?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-onboarding&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Migration
+          href: https://www.hubspot.com/services/professional/migrations?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-migration&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Premium Support
+          href: https://www.hubspot.com/services/premium-support?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-support&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+        - label: Hire a Solutions Partner
+          href: https://ecosystem.hubspot.com/marketplace/solutions?hubs_content=www.hubspot.com/&hubs_content-cta=nav-resources-hirepartner&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+      featured: []
+  measured:
+    _provenance: getComputedStyle (rendered px / CSS strings) from saved DOM
+    bar:
+      bg: rgb(255, 255, 255)
+      height: 128
+      paddingTop: 0
+      paddingBottom: 0
+      paddingLeft: 0
+      paddingRight: 0
+    utilityBarHeight: 76
+    primaryBarHeight: 52
+    contentMaxWidth: 1080
+    logo:
+      width: 100
+      height: 28
+    link:
+      fontSize: 16
+      fontWeight: '500'
+      color: rgb(31, 31, 31)
+      lineHeight: 28px
+    linkGap: 0
+    utilityLink:
+      fontSize: 16
+      fontWeight: '400'
+      color: rgb(31, 31, 31)
+    cta:
+      bg: rgb(255, 72, 0)
+      color: rgb(255, 255, 255)
+      fontSize: 14
+      fontWeight: '500'
+      paddingTop: 8
+      paddingBottom: 8
+      paddingLeft: 16
+      paddingRight: 16
+      radius: 8
+footer:
+  origin: extracted
+  source: extracted
+  scope: site-chrome
+  confidence: high
+  provenance:
+    node: footer.hsg-footer.global-footer
+    sourceUrl: https://www.hubspot.com
+    savedPage: ../../../screenshots/hubspot/HubSpot/HubSpot _ Software & Tools for your Business - Homepage.html
+    contract: ../assets/source-chrome.v2.json
+    extractor: source_chrome.v2 (offline Playwright computed-style extraction)
+  archetype: grid
+  surface:
+    bg: rgb(31, 31, 31)
+    color: rgb(248, 245, 238)
+  logo:
+    kind: img
+    alt: HubSpot
+    href: https://www.hubspot.com/
+    width: 100
+    height: 30
+    srcContract: ../assets/source-chrome.v2.json#footer.logo.src
+  slots:
+  - name: brand
+    type: media
+    role: footer wordmark
+    source: extracted
+  - name: linkcols
+    type: content
+    role: grouped footer nav columns
+    source: extracted
+  - name: social
+    type: content
+    role: social profile links
+    source: extracted
+  - name: legal
+    type: content
+    role: copyright + legal links
+    source: extracted
+  columns:
+  - heading: Popular Features
+    links:
+    - label: All Products and Features
+      href: https://www.hubspot.com/products?hubs_content=www.hubspot.com/&hubs_content-cta=footer&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: HubSpot AEO
+      href: https://www.hubspot.com/products/aeo?hubs_content=www.hubspot.com/&hubs_content-cta=footer-aeo&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Free Meeting Scheduler App
+      href: https://www.hubspot.com/products/sales/schedule-meeting?hubs_content=www.hubspot.com/&hubs_content-cta=free-meeting-scheduler-app&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Breeze AI Tools
+      href: https://www.hubspot.com/products/artificial-intelligence?hubs_content=www.hubspot.com/&hubs_content-cta=footer-features-breeze&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Email Tracking Software
+      href: https://www.hubspot.com/products/sales/email-tracking?hubs_content=www.hubspot.com/&hubs_content-cta=email-tracking-software&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: AI Content Writer
+      href: https://www.hubspot.com/products/cms/ai-content-writer?hubs_content=www.hubspot.com/&hubs_content-cta=ai-content-writer&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: AI Website Generator
+      href: https://www.hubspot.com/products/cms/ai-website-generator?hubs_content=www.hubspot.com/&hubs_content-cta=ai-website-generator&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Email Marketing Software
+      href: https://www.hubspot.com/products/marketing/email?hubs_content=www.hubspot.com/&hubs_content-cta=email-marketing-software&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Lead Management Software
+      href: https://www.hubspot.com/products/crm/lead-management?hubs_content=www.hubspot.com/&hubs_content-cta=lead-management-software&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: AI Prospecting Agent
+      href: https://www.hubspot.com/products/sales/ai-prospecting-agent?hubs_content=www.hubspot.com/&hubs_content-cta=ai-prospecting-agent&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Free Website Builder
+      href: https://www.hubspot.com/products/cms/drag-and-drop-website-builder?hubs_content=www.hubspot.com/&hubs_content-cta=free-website-builder&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Landing Pages
+      href: https://www.hubspot.com/products/marketing/landing-pages?hubs_content=www.hubspot.com/&hubs_content-cta=landing-pages&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Free Online Form Builder
+      href: https://www.hubspot.com/products/marketing/forms?hubs_content=www.hubspot.com/&hubs_content-cta=free-online-form-builder&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Free Chatbot Builder
+      href: https://www.hubspot.com/products/crm/chatbot-builder?hubs_content=www.hubspot.com/&hubs_content-cta=free-chatbot-builder&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Free Live Chat Software
+      href: https://www.hubspot.com/products/crm/live-chat?hubs_content=www.hubspot.com/&hubs_content-cta=free-live-chat-software&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Marketing Analytics
+      href: https://www.hubspot.com/products/marketing/analytics?hubs_content=www.hubspot.com/&hubs_content-cta=marketing-analytics&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Free Landing Page Builder
+      href: https://www.hubspot.com/products/marketing/landing-pages?hubs_content=www.hubspot.com/&hubs_content-cta=free-landing-page-builder&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Free Web Hosting
+      href: https://www.hubspot.com/products/cms/web-hosting?hubs_content=www.hubspot.com/&hubs_content-cta=free-web-hosting&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+  - heading: Free Tools
+    links:
+    - label: See All Free Business Tools
+      href: https://www.hubspot.com/free-business-tools?hubs_content=www.hubspot.com/&hubs_content-cta=see-all-free-business-tools&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: AEO Grader
+      href: https://www.hubspot.com/aeo-grader?hubs_content=www.hubspot.com/&hubs_content-cta=aeo-grader&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: AI Search Sensor
+      href: https://www.hubspot.com/aeo-sensor?hubs_content=www.hubspot.com/&hubs_content-cta=ai-search-sensor&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Make My Persona
+      href: https://www.hubspot.com/make-my-persona?hubs_content=www.hubspot.com/&hubs_content-cta=make-my-persona&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Email Signature Generator
+      href: https://www.hubspot.com/email-signature-generator?hubs_content=www.hubspot.com/&hubs_content-cta=email-signature-generator&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Free Business Templates
+      href: https://www.hubspot.com/resources/templates?hubs_content=www.hubspot.com/&hubs_content-cta=footer-tools-businesstemplates&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Software Comparisons Library
+      href: https://www.hubspot.com/comparisons?hubs_content=www.hubspot.com/&hubs_content-cta=software-comparisons-library&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Website Templates
+      href: https://ecosystem.hubspot.com/marketplace/website?hubs_content=www.hubspot.com/&hubs_content-cta=website-templates&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+  - heading: Company
+    links:
+    - label: About Us
+      href: https://www.hubspot.com/our-story?hubs_content=www.hubspot.com/&hubs_content-cta=about-us&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Careers
+      href: https://www.hubspot.com/careers?hubs_content=www.hubspot.com/&hubs_content-cta=careers&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Management Team
+      href: https://www.hubspot.com/company/management?hubs_content=www.hubspot.com/&hubs_content-cta=management-team&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Board of Directors
+      href: https://www.hubspot.com/company/board-of-directors?hubs_content=www.hubspot.com/&hubs_content-cta=board-of-directors&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Investor Relations
+      href: https://ir.hubspot.com/?_ga=2.262843276.12874469.1592422655-430007000.1592422655&hubs_content=www.hubspot.com/&hubs_content-cta=investor-relations&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Blog
+      href: https://blog.hubspot.com/?hubs_content=www.hubspot.com/&hubs_content-cta=blog&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Sustainability
+      href: https://www.hubspot.com/sustainability?hubs_content=www.hubspot.com/&hubs_content-cta=footer-company-sustainability&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Contact Us
+      href: https://www.hubspot.com/company/contact?hubs_content=www.hubspot.com/&hubs_content-cta=contact-us&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+  - heading: Customers
+    links:
+    - label: Customer Support
+      href: https://help.hubspot.com/?hubs_content=www.hubspot.com/&hubs_content-cta=customer-support&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Join a Local User Group
+      href: https://www.hubspot.com/hubspot-user-groups?hubs_content=www.hubspot.com/&hubs_content-cta=join-a-local-user-group&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+  - heading: Partners
+    links:
+    - label: All Partner Programs
+      href: https://www.hubspot.com/partners?hubs_content=www.hubspot.com/&hubs_content-cta=all-partner-programs&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Solutions Partner Program
+      href: https://www.hubspot.com/partners/solutions?hubs_content=www.hubspot.com/&hubs_content-cta=solutions-partner-program&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Technology Partner Program
+      href: https://www.hubspot.com/partners/app?hubs_content=www.hubspot.com/&hubs_content-cta=technology-partner-program&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: HubSpot for Startups
+      href: https://www.hubspot.com/startups/partners?hubs_content=www.hubspot.com/&hubs_content-cta=hubspot-for-startups&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Affiliate Program
+      href: https://www.hubspot.com/partners/affiliates?hubs_content=www.hubspot.com/&hubs_content-cta=affiliate-program&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+  social:
+  - network: facebook
+    kind: icon
+    href: https://www.facebook.com/hubspot?hubs_content=www.hubspot.com/&hubs_content-cta=hstc_facebook&wfoid=6b00e3c002.1774020198
+  - network: instagram
+    kind: icon
+    href: https://www.instagram.com/hubspot/?hubs_content=www.hubspot.com/&hubs_content-cta=hstc_instagram&wfoid=6b00e3c002.1774020198
+  - network: youtube
+    kind: icon
+    href: https://youtube.com/user/HubSpot?hubs_content=www.hubspot.com/&hubs_content-cta=hstc_youtube&wfoid=6b00e3c002.1774020198
+  - network: twitter
+    kind: icon
+    href: https://x.com/HubSpot?hubs_content=www.hubspot.com/&hubs_content-cta=hstc_twitter&wfoid=6b00e3c002.1774020198
+  - network: linkedin
+    kind: icon
+    href: https://www.linkedin.com/company/hubspot?hubs_content=www.hubspot.com/&hubs_content-cta=hstc_linkedin&wfoid=6b00e3c002.1774020198
+  - network: reddit
+    kind: icon
+    href: https://www.reddit.com/r/hubspot?hubs_content=www.hubspot.com/&hubs_content-cta=hstc_reddit&wfoid=6b00e3c002.1774020198
+  - network: tiktok
+    kind: icon
+    href: https://www.tiktok.com/@hubspot?hubs_content=www.hubspot.com/&hubs_content-cta=hstc_medium&wfoid=6b00e3c002.1774020198
+  legal:
+    text: Copyright © 2026 HubSpot, Inc.
+    links:
+    - label: Legal Center
+      href: https://legal.hubspot.com/legal-center?hubs_content=www.hubspot.com/&hubs_content-cta=legal-center&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Privacy Policy
+      href: https://legal.hubspot.com/privacy-policy?hubs_content=www.hubspot.com/&hubs_content-cta=privacy-policy&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Security
+      href: https://legal.hubspot.com/security?hubs_content=www.hubspot.com/&hubs_content-cta=security&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Website Accessibility
+      href: https://legal.hubspot.com/website-accessibility?hubs_content=www.hubspot.com/&hubs_content-cta=website-accessibility&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+    - label: Manage Cookies
+      href: https://www.hubspot.com/?hubs_content=www.hubspot.com%2Fproducts%2Fsales&hubs_content-cta=HubSpot&wfoid=6b00e3c002.1774020198&__hstc=19301799.44645a73a04665d19bcf1ce84b3559a7.1783014195263.1783014195263.1783014195263.1&__hssc=19301799.1.1783014195263&__hsfp=daf2954966921a1301f2b7f246a527f3
+  newsletter:
+    present: false
+  rules:
+    columns: 5
+    layout: grid
+    hasColumnHeadings: true
+    align: center-bottom
+    darkInverse: true
+    socialStyle: icon
+  changelog:
+  - ts: '2026-06-30T13:10:33Z'
+    action: created
+    from: null
+    to: extracted footer (5 cols, 7 social, 4 legal links, newsletter=none) from saved HubSpot homepage
+    by: chrome-extractor
+    signalId: null
+    note: bridged from source_chrome.v2 offline saved-page extraction
+  - ts: '2026-06-30T17:48:14Z'
+    action: updated
+    from: null
+    to: footer 5 cols (max 18 links/col), 7 social, 4 legal links
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap raised to 20; icon socials + centered bottom block)
+  - ts: '2026-06-30T17:49:24Z'
+    action: updated
+    from: null
+    to: footer 5 cols (max 18 links/col), 7 social, 4 legal links
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap raised to 20; icon socials + centered bottom block)
+  - ts: '2026-06-30T18:23:23Z'
+    action: updated
+    from: null
+    to: footer 5 cols (max 18 links/col), 7 social, 6 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-06-30T18:23:35Z'
+    action: updated
+    from: null
+    to: footer 5 cols (max 18 links/col), 7 social, 6 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-06-30T18:26:34Z'
+    action: updated
+    from: null
+    to: footer 5 cols (max 18 links/col), 7 social, 5 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-06-30T18:26:34Z'
+    action: updated
+    from: null
+    to: footer 5 cols (max 18 links/col), 7 social, 5 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-06-30T18:29:06Z'
+    action: updated
+    from: null
+    to: footer 5 cols (max 18 links/col), 7 social, 5 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-06-30T21:50:28Z'
+    action: updated
+    from: null
+    to: footer 5 cols (max 18 links/col), 7 social, 5 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-06-30T21:50:48Z'
+    action: updated
+    from: null
+    to: footer 5 cols (max 18 links/col), 7 social, 5 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-06-30T22:14:18Z'
+    action: updated
+    from: null
+    to: footer 5 cols (max 18 links/col), 7 social, 5 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-06-30T22:30:28Z'
+    action: updated
+    from: null
+    to: footer 5 cols (max 18 links/col), 7 social, 5 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  - ts: '2026-07-02T17:45:48Z'
+    action: updated
+    from: null
+    to: footer 5 cols (max 18 links/col), 7 social, 5 legal links, measured=yes
+    by: chrome-bridge
+    signalId: null
+    note: re-bridged from source_chrome.v2 (per-column cap removed; legal walks copyright nav so Security is captured; measured computed styles carried)
+  measured:
+    _provenance: getComputedStyle (rendered px / CSS strings) from saved DOM
+    bg: rgb(31, 31, 31)
+    color: rgb(248, 245, 238)
+    padding:
+      top: 48
+      bottom: 48
+      left: 32
+      right: 32
+    contentMaxWidth: 1080
+    grid:
+      display: flex
+      templateColumns: ''
+      columnGap: 0
+      rowGap: 0
+      columnCount: 5
+    heading:
+      fontSize: 22
+      fontWeight: '500'
+      lineHeight: 35.2px
+      color: rgb(248, 245, 238)
+    link:
+      fontSize: 12
+      fontWeight: '500'
+      lineHeight: 28.8px
+      color: rgba(255, 255, 255, 0.62)
+    linkHoverColor: '#f8f5ee'
+    logo:
+      width: 100
+      height: 30
+    social:
+      kind: icon
+      size: 26
+      fontSize: 16
+      fontWeight: '500'
+      color: rgba(255, 255, 255, 0.62)
+      letterSpacing: normal
+      textTransform: none
+    bottom:
+      textAlign: center
+    legal:
+      fontSize: 16
+      fontWeight: '300'
+      lineHeight: 28px
+      color: rgb(248, 245, 238)

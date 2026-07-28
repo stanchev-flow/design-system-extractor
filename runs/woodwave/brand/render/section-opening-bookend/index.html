@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WoodWave Gallery - opening-bookend (brand.yaml render)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #3A2F23;
+  --text: #F5EDE2;
+  --accent: #E9DC8C;
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --display-size: 6rem;
+  --display-lh: 1.05em;
+  --display-ls: 0rem;
+  --ctrl-size: 0.875rem;
+  --ctrl-ls: 0.08em;
+  --radius: 0rem;
+  --section-pad: 6.25rem;
+  --eyebrow-ls: 0.08em;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: var(--bg); color: var(--text); font-family: var(--font-body); -webkit-font-smoothing: antialiased; }
+
+/* Section / Stack scaffold (full-bleed, surface mode = Inverse) */
+.wd-section {
+  background: var(--bg);
+  color: var(--text);
+  padding: 1.75rem 2.5rem var(--section-pad);
+  min-height: 100vh;
+}
+
+/* Nav row: Logo + slash nav (control-text) - zero chrome */
+.wd-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 2rem; margin-bottom: clamp(2rem, 6vw, 5.5rem);
+}
+.wd-logo {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: var(--font-body); font-weight: 600;
+  font-size: var(--ctrl-size); letter-spacing: var(--ctrl-ls);
+  text-transform: uppercase; color: var(--accent);
+}
+.wd-logo .glyph { font-family: var(--font-heading); font-size: 1.1rem; }
+.wd-navlinks { display: flex; gap: 0.55rem; flex: 1; justify-content: center; }
+.wd-navlinks a, .wd-cta {
+  font-family: var(--font-body); font-size: var(--ctrl-size);
+  letter-spacing: var(--ctrl-ls); text-transform: uppercase;
+  text-decoration: none; color: var(--text); white-space: nowrap;
+}
+.wd-navlinks .sep { color: var(--text); opacity: 0.55; }
+.wd-cta { color: var(--accent); }
+
+/* Stack slot: centered display title over layered media */
+.wd-slot { display: flex; flex-direction: column; align-items: center; }
+
+/* Heading / Style: display - the only sanctioned text-over-media */
+.wd-heading.is-display {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: var(--display-size);
+  line-height: var(--display-lh);
+  letter-spacing: var(--display-ls);
+  text-transform: uppercase;
+  color: var(--accent);
+  text-align: center;
+  position: relative; z-index: 2;
+  margin-bottom: -2.75rem;
+}
+
+/* media-over-media composite: absolute offsets inside the Stack slot (SIGN-OFF #5) */
+.wd-collage { position: relative; width: 100%; max-width: 80rem; }
+.wd-media { display: block; width: 100%; border-radius: var(--radius);
+  border: none; box-shadow: none; }
+.wd-media.is-hero { aspect-ratio: 1355 / 570; object-fit: cover; }
+.wd-media.is-overlap {
+  position: absolute;
+  width: 34%;
+  right: 4%;
+  bottom: -28%;
+  aspect-ratio: 785 / 620;
+  object-fit: cover;
+  z-index: 1;
+}
+.wd-spacer { height: 22vw; }
+
+@media (max-width: 991px) {
+  :root { --display-size: 4.5rem; }
+  .wd-navlinks { display: none; }
+}
+@media (max-width: 767px) {
+  :root { --display-size: 3rem; }
+  .wd-section { padding: 1.25rem 1.25rem 3rem; }
+  .wd-media.is-overlap { width: 46%; right: 2%; bottom: -18%; }
+  .wd-spacer { height: 30vw; }
+}
+
+</style>
+</head>
+<body>
+<!-- Section / Stack (componentId 185a3d3a-0806-d61b-7c06-c5fdd636b093), surface mode: Inverse -->
+<section class="wd-section">
+  <!-- Logo (1f142114) wordmark + slash nav (control-text) - neverDo:no-buttons honored -->
+  <nav class="wd-nav">
+    <span class="wd-logo"><span class="glyph">&#9697;</span> WoodWave</span>
+    <span class="wd-navlinks"><a href="#">About</a> <span class="sep">/</span> <a href="#">Gallery</a> <span class="sep">/</span> <a href="#">Exhibition</a> <span class="sep">/</span> <a href="#">Visit</a></span>
+    <a class="wd-cta" href="#">Buy Tickets</a>
+  </nav>
+
+  <!-- Stack Slot: display title over layered photo collage -->
+  <div class="wd-slot">
+    <!-- Heading (b2fd0399) Style:display - display-text-over-media overlap -->
+    <h1 class="wd-heading is-display">WOODWAVE<br>GALLERY</h1>
+
+    <!-- media-over-media via absolute offsets (SIGN-OFF #5) -->
+    <div class="wd-collage">
+      <!-- Image (abb0f607) hero landscape, Radius:false -->
+      <img class="wd-media is-hero" src="assets/hero-staircase.jpg"
+           alt="Spiral wooden staircase shot from above">
+      <!-- Image (abb0f607) overlap portrait, Radius:false, anchored center-right crossing bottom -->
+      <img class="wd-media is-overlap" src="assets/overlap-vase.jpg"
+           alt="Terracotta vase on a wooden ledge">
+    </div>
+    <div class="wd-spacer"></div>
+  </div>
+</section>
+</body>
+</html>

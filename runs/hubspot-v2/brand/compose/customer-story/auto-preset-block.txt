@@ -1,0 +1,129 @@
+[[PASS3-STYLE:BEGIN]]
+## STYLE DIRECTIVE — SaaS / Product (style-library `saas-product`, resolved per section)
+This run composes in a PICKED STYLE. The directive below RERANKS layout
+choices and sets compositional posture. It NEVER outranks brand facts,
+brand neverDo, or the gate battery: where a directive value conflicts
+with a measured brand fact, the brand fact wins (dissents listed below).
+
+Style constraints (compositional posture, brand tokens still paint):
+  - accentUsage: moderate
+  - border: hairline
+  - case: sentence
+  - contrast: normal
+  - density: balanced
+  - imagery: screenshot
+  - motion: 150–500ms band, easing ease
+  - palette: duo
+  - radius: 4px(small) · 8px(button,card) · 16px(panel), policy tiered
+  - scaleRatio: 1.125
+  - shadow: soft
+  - tracking: normal
+  - typeBody: HubSpot Sans
+  - typeDisplay: HubSpot Serif
+Style signature moves (make these READABLE in the composition):
+  - product screenshots in frames
+  - gradient/soft accent surfaces
+  - clear single primary CTA per view
+
+Style preset — authored defaults (uncalibrated) — any measured brand
+fact beats these. Expert-authored level-2 defaults, not measurements;
+check thresholds refine over time via the style-calibration workflow.
+  - type: line-height display 1.15 / body 1.55 · measure body 62ch / lead 42ch
+  - shape: border 1px · shadow 0 4px 16px rgba(0,0,0,.08)
+  - layout: max-width 1280 · gutter 24px · columns 12
+  - imagery art direction: subjects — product UI screenshots in browser/device frames · lighting — n/a · backdrop — soft gradient blob or mesh behind the framed screenshot · treatment — crisp screen capture, subtle color-wash background · aspects 16:10, 4:3
+Style preset signatures (always/never guidance; check thresholds UNCALIBRATED):
+  - [always] framed-product-screenshot-hero (shape-motif): A literal browser/device chrome frames a UI screenshot as the hero visual. [check: cards=radiusPx=14]
+  - [always] soft-gradient-mesh-accent (surface-habit): A blurred colorful blob/mesh sits behind key content as ambient color, never a hard shape. [check: sectionMinLuminance=0.85, shadow=allowed]
+  - [always] single-cta-per-view (accent-scope): Exactly one high-contrast primary button visible per screen section. [check: allowedRoles=action-primary, maxPaintSharePct=5]
+  - [always] ambient-not-elevation-shadow (surface-habit): Shadow reads as soft glow, not a stepped elevation system. [check: shadow=allowed]
+  - [always] indigo-violet-default-accent (accent-scope): The archetypal SaaS blue-violet accent. [check: maxPaintSharePct=5]
+Preset slots suppressed by measured brand facts (brand wins):
+  - font.display: authored default → brand fact HubSpot Serif WINS (brand.yaml tokens.type (measured family))
+  - font.body: authored default → brand fact HubSpot Sans WINS (brand.yaml tokens.type (measured family))
+  - type.scaleRatio: authored default → brand fact 1.125 WINS (style-scale.yaml type (pass-1 derived over measured ladder))
+  - type.baseSizePx: authored default → brand fact 16.0 WINS (style-scale.yaml type (pass-1 derived over measured ladder))
+  - space: authored default → brand fact base 4px; steps(px): 4, 8, 16, 20, 24, 32, 40, 64, 80, 96; section rhythm(px): 24, 40, 64, 96 WINS (style-scale.yaml space (pass-1 derived over measured ladder))
+  - shape.radiusPx: authored default → brand fact 4px(small) · 8px(button,card) · 16px(panel), policy tiered WINS (style-scale.yaml radius (measured tokens.radius modes))
+  - color: authored default → brand fact brand-owned palette WINS (brand.yaml tokens.colors/surfaces (measured palette))
+
+Per-section layout guidance (the resolver's picks for this style):
+- announcement-bar: layout `sticky-bar` — Pinned horizontal bar.
+    rules: ≤ 1 short sentence; at most one link
+    soft defaults (brand evidence may override): single line only; dismissible must persist; never covers nav
+- nav: layout `sticky-bar` — Pinned horizontal bar.
+    rules: links are destinations, not actions; CTA visually distinct from links
+    soft defaults (brand evidence may override): logo present; ≤ 7 top-level links; mobile collapses to toggle
+- hero: layout `split-right` — Two columns, media left / text right. Compose as archetype "split" (media left / text right).
+    rules: headline states the value, not the feature; media supports, never competes with, the headline
+    soft defaults (brand evidence may override): ≤ 2 supporting lines
+    if HERO STRUCTURE CANDIDATES are offered above, prefer the candidate whose skeleton is closest to this layout — the copy plan still picks
+- logo-wall: layout `grid-4` — Four-up grid. Compose as archetype "cards" (columns: 4).
+    rules: no single logo dominates; one-line eyebrow max
+    soft defaults (brand evidence may override): logos monochrome or unified treatment; ≥ 4 logos
+- feature-trio: layout `grid-3` — Three-up grid. Compose as archetype "cards" (columns: 3).
+    rules: parallel grammar across items; no item longer than the others
+    soft defaults (brand evidence may override): items are parallel in structure; each item: title + one line; icon optional but consistent
+- feature-alternating: layout `split-right` — Two columns, media left / text right. Compose as archetype "split" (media left / text right).
+    rules: each row earns its space with a distinct idea
+    soft defaults (brand evidence may override): media side alternates each row; one idea per row
+- product-split: layout `split-right` — Two columns, media left / text right. Compose as archetype "split" (media left / text right).
+    rules: show the product doing the thing
+    soft defaults (brand evidence may override): media is the visual anchor; one primary message
+- how-it-works: layout `grid-3` — Three-up grid. Compose as archetype "cards" (columns: 3).
+    rules: each step is one action; progression reads left→right or top→bottom
+    soft defaults (brand evidence may override): steps numbered/ordered; 3–5 steps; order is meaningful
+- metrics-band: layout `grid-3` — Three-up grid. Compose as archetype "cards" (columns: 3).
+    rules: round, credible numbers; units consistent
+    soft defaults (brand evidence may override): number is the hero of each cell; label ≤ 4 words; 3–4 metrics
+- testimonial: layout `grid-3` — Three-up grid. Compose as archetype "cards" (columns: 3).
+    rules: one strong quote beats many weak ones; no invented quotes
+    soft defaults (brand evidence may override): quote is verbatim and central; attribution present (name + role/co)
+- case-study: layout `split-left` — Two columns, text left / media right. Compose as archetype "split" (text left / media right).
+    rules: outcome first, story second
+    soft defaults (brand evidence may override): names a real customer; leads with the outcome/metric
+- pricing: layout `grid-3` — Three-up grid. Compose as archetype "cards" (columns: 3).
+    rules: price is scannable; one clear default choice
+    soft defaults (brand evidence may override): each tier: name, price, CTA; one recommended tier highlighted (unless style forbids); feature lists parallel
+- comparison-table: layout `table` — Aligned columns/rows for comparison. Compose as the table block inside a stack section.
+    rules: truthful, comparable rows only
+    soft defaults (brand evidence may override): header row/col pinned on scroll; boolean cells use one consistent glyph
+- integrations-grid: layout `bento` — Mixed-size tiles on a shared grid. Compose as archetype "collage" (mixed-size tiles on one grid).
+    rules: group by category when > 12
+    soft defaults (brand evidence may override): logos legible at tile size
+- faq: layout `accordion` — Collapsible stacked items. Compose as the accordion block inside a stack section.
+    rules: real questions, plain answers; no marketing in answers
+    soft defaults (brand evidence may override): question then answer
+- security-trust: layout `grid-3` — Three-up grid. Compose as archetype "cards" (columns: 3).
+    rules: specific certifications beat vague assurances
+    soft defaults (brand evidence may override): only claims that are true/certified; badges from issuers
+- team: layout `grid-3` — Three-up grid. Compose as archetype "cards" (columns: 3).
+    rules: uniform crop and lighting across photos
+    soft defaults (brand evidence may override): consistent photo treatment; name + role each
+- blog-resources: layout `grid-3` — Three-up grid. Compose as archetype "cards" (columns: 3).
+    rules: most recent or most relevant first
+    soft defaults (brand evidence may override): each post: title + meta; consistent thumbnail ratio
+- newsletter: layout `center-stack` — Centered vertical stack: eyebrow, headline, sub, CTAs. Compose as archetype "stack" (centered header stack).
+    rules: ask for the minimum (email only)
+    soft defaults (brand evidence may override): single email field; one submit action; privacy/consent note
+- cta-band: layout `center-stack` — Centered vertical stack: eyebrow, headline, sub, CTAs. Compose as archetype "stack" (centered header stack).
+    rules: short, imperative headline
+    soft defaults (brand evidence may override): restates the core value
+- footer: layout `columns-footer` — Multi-column link groups + base row.
+    rules: group links by purpose; legal row always last
+    soft defaults (brand evidence may override): legal + copyright present; link groups labeled; logo/brand mark
+
+Alignment contract (HARD — the alignment-resolution gate enforces it):
+  declare `alignment` EXPLICITLY on every section. An asymmetric anchor
+  ({"anchor":"left"|"right"}) MUST name a real slot as `counterweight`;
+  a section left undeclared inherits its reused pattern's own asymmetric
+  stance WITHOUT a counterweight and FAILS the gate. Where this style's
+  posture is flush-asymmetric, declare the anchor AND the counterweight
+  slot; where no balancing slot exists, declare {"anchor":"centered"}.
+
+Brand-evidence dissents (brand facts that beat the directive):
+  - typeDisplay: directive said grotesk sans → brand fact HubSpot Serif WINS (brand.yaml tokens.type (measured family))
+  - typeBody: directive said neutral sans → brand fact HubSpot Sans WINS (brand.yaml tokens.type (measured family))
+  - case: directive said mixed → brand fact sentence WINS (voice-facts.yaml casing.headings (measured corpus))
+  - radius: directive said md → brand fact 4px(small) · 8px(button,card) · 16px(panel), policy tiered WINS (style-scale.yaml radius (measured tokens.radius modes))
+[[PASS3-STYLE:END]]

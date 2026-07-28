@@ -8,6 +8,7 @@ git. Both look fine in a diff.
 
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
@@ -72,6 +73,45 @@ def test_gitignore_opens_every_parent_before_naming_a_file():
     for opened in ("runs", "runs/p", "runs/p/brand", "runs/p/brand/catalog"):
         assert lines.index(f"!{opened}/") + 1 == lines.index(f"{opened}/*")
     assert lines[-1] == "!runs/p/brand/catalog/catalog.json"
+
+
+def test_only_shown_images_survive(tmp_path):
+    """A lane keeps its media and one thumbnail; its spare captures do not."""
+    run = tmp_path / "proj"
+    lane = run / "brand" / "compose" / "replica"
+    (lane / "assets").mkdir(parents=True)
+    (lane / "shots").mkdir()
+    (lane / "index.html").write_text('<img src="assets/hero.png"><img src="inline-diagram.png">')
+    (lane / "assets" / "hero.png").write_bytes(b"a")
+    (lane / "inline-diagram.png").write_bytes(b"b")
+    (lane / "replica-fullpage-375.png").write_bytes(b"d")
+    (lane / "replica-fullpage.png").write_bytes(b"c")
+    (lane / "shots" / "contact-sheet.png").write_bytes(b"e")
+    # The server breaks a scoring tie on mtime, so pin them rather than racing.
+    os.utime(lane / "replica-fullpage-375.png", (1, 1))
+    os.utime(lane / "replica-fullpage.png", (2, 2))
+    os.utime(lane / "shots" / "contact-sheet.png", (3, 3))
+
+    kept = {p.name for p, _, _ in tss.classify_run(run)["kept"]}
+    assert kept == {"index.html", "hero.png", "inline-diagram.png", "replica-fullpage.png"}
+
+
+def test_sections_gallery_thumbnail_is_kept_alongside_the_generic_pick(tmp_path):
+    run = tmp_path / "proj"
+    lane = run / "brand" / "sections"
+    (lane / "shots").mkdir(parents=True)
+    (lane / "index.html").write_text("<html></html>")
+    (lane / "shots" / "gallery.png").write_bytes(b"g")
+    (lane / "after-fullpage-1440.png").write_bytes(b"f")
+
+    kept = {p.name for p, _, _ in tss.classify_run(run)["kept"]}
+    assert kept == {"index.html", "gallery.png", "after-fullpage-1440.png"}
+
+
+def test_title_keeps_the_version_token_lowercase():
+    assert tss._pretty_title("hubspot-v3", "HubSpot") == "HubSpot v3"
+    assert tss._pretty_title("hubspot-v3", "") == "Hubspot v3"
+    assert tss._pretty_title("relume-test", "") == "Relume Test"
 
 
 def _fake_plan(rels: list[str]) -> dict:

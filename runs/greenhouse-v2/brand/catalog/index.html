@@ -1,0 +1,1260 @@
+<!doctype html>
+<html data-projection-input-digest="dba5b79bb00761b02c9f8764eb4f6acda3dd251d8e0f1fa1239ec4b953b13a7d" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Greenhouse &mdash; Studio Catalog (slot contracts)</title>
+
+<style>
+:root {
+  --page-bg: #ffffff;
+  --page-text: #15372c;
+  --font-heading: 'Untitled Serif, Georgia, sans-serif', serif;
+  --font-body: 'Untitled Sans, Arial, sans-serif', serif;
+  --radius: 24px;
+  --hair: color-mix(in srgb, var(--page-text) 16%, transparent);
+  --hair-strong: color-mix(in srgb, var(--page-text) 30%, transparent);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: var(--page-bg); color: var(--page-text);
+  font-family: var(--font-body); -webkit-font-smoothing: antialiased; }
+.cat-wrap { max-width: 1180px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+.cat-top { border-bottom: 1px solid var(--hair-strong); padding-bottom: 1.5rem; margin-bottom: 2.5rem; }
+.cat-kicker { text-transform: uppercase; letter-spacing: 0.18em; font-size: 0.7rem; opacity: 0.6; }
+.cat-title { font-family: var(--font-heading); font-size: 2.6rem; line-height: 1.05; margin-top: 0.5rem; }
+.cat-sub { margin-top: 0.65rem; font-size: 0.9rem; max-width: 60ch; opacity: 0.8; line-height: 1.5; }
+.cat-counts { display: flex; gap: 1.5rem; margin-top: 1.1rem; font-size: 0.8rem; }
+.cat-counts b { font-family: var(--font-heading); font-size: 1.4rem; display: block; }
+
+.cat-h2 { font-family: var(--font-heading); font-size: 1.5rem; text-transform: uppercase;
+  letter-spacing: 0.02em; margin: 2.8rem 0 1.2rem; }
+.cat-lead { font-size: 0.85rem; opacity: 0.7; margin: -0.6rem 0 1.4rem; max-width: 66ch; line-height: 1.5; }
+
+/* components gallery */
+.cat-comps { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+.cat-comp { border: 1px solid var(--hair); background: color-mix(in srgb, var(--page-text) 3%, transparent);
+  border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; }
+.cat-comp-preview { height: 96px; display: grid; place-items: center; padding: 0.75rem;
+  border-bottom: 1px solid var(--hair); background: color-mix(in srgb, var(--page-text) 4%, transparent); }
+.cat-comp-meta { padding: 0.7rem 0.8rem 0.85rem; }
+.cat-comp-name { font-weight: 600; font-size: 0.9rem; }
+.cat-comp-chips { display: flex; gap: 0.4rem; margin: 0.45rem 0; flex-wrap: wrap; }
+.cat-comp-used { font-size: 0.68rem; opacity: 0.6; line-height: 1.4; }
+
+.cat-chip { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 0.18rem 0.5rem; border: 1px solid var(--hair-strong); border-radius: 999px; white-space: nowrap; }
+.cat-chip-mode { display: inline-flex; align-items: center; gap: 0.4rem; }
+.cat-chip-mode::before { content: ""; width: 0.7rem; height: 0.7rem; border-radius: 50%;
+  background: var(--swatch); border: 1px solid var(--hair-strong); display: inline-block; }
+.cat-type { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700;
+  padding: 0.16rem 0.45rem; border-radius: 999px; }
+.cat-type-content { background: #2563eb1f; color: #1d4ed8; }
+.cat-type-media { background: #c026631f; color: #be185d; }
+
+/* origin catalog (extracted vs designed) */
+.cat-origin-tier { margin-bottom: 1.6rem; }
+.cat-origin-tierhead { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap;
+  font-family: var(--font-heading); font-size: 1.05rem; text-transform: uppercase;
+  letter-spacing: 0.02em; margin: 0 0 0.7rem; }
+.cat-origin-counts { font-family: var(--font-body); font-size: 0.72rem; text-transform: none;
+  letter-spacing: 0; opacity: 0.65; }
+.cat-origin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.7rem; }
+.cat-origin-item { border: 1px solid var(--hair); border-radius: var(--radius);
+  padding: 0.7rem 0.8rem; background: color-mix(in srgb, var(--page-text) 3%, transparent); }
+.cat-origin-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; }
+.cat-origin-name { font-weight: 600; font-size: 0.86rem; }
+.cat-origin-use { font-size: 0.66rem; opacity: 0.55; }
+.cat-origin-detail { font-size: 0.68rem; opacity: 0.7; margin-top: 0.35rem; line-height: 1.45; }
+.cat-origin-conflict { font-size: 0.66rem; margin-top: 0.25rem; color: #b45309; }
+.cat-origin-over { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em;
+  opacity: 0.7; margin-top: 0.25rem; }
+.cat-pill { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700;
+  padding: 0.16rem 0.5rem; border-radius: 999px; white-space: nowrap; }
+.cat-pill-extracted { background: #16a34a26; color: #15803d; border: 1px solid #16a34a55; }
+.cat-pill-designed { background: transparent; color: #2563eb; border: 1px dashed #2563eb88; }
+.cat-origin-legend { display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center;
+  font-size: 0.72rem; opacity: 0.75; margin: -0.4rem 0 1.2rem; }
+.cat-origin-legend span.lg { display: inline-flex; align-items: center; gap: 0.4rem; }
+
+.cat-specimen-text { text-align: center; }
+.cat-specimen-text .cat-line { height: 0.42rem; background: currentColor; opacity: 0.28; margin: 0.28rem auto; border-radius: 2px; }
+.cat-specimen-media { width: 80%; height: 66px; }
+.cat-specimen-form { display: flex; align-items: center; gap: 0.5rem; border-bottom: 1.5px solid currentColor;
+  padding-bottom: 0.3rem; font-size: 0.75rem; opacity: 0.85; }
+.cat-specimen-form .cat-submit { margin-left: auto; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+
+/* typed placeholders (slots + media/content specimens) */
+.cat-ph { position: relative; display: grid; place-items: center; border-radius: var(--radius);
+  width: 100%; min-height: 70px; }
+.cat-ph-media { background:
+    repeating-linear-gradient(45deg, color-mix(in srgb, currentColor 12%, transparent) 0 8px,
+    transparent 8px 16px); border: 1.5px dashed color-mix(in srgb, currentColor 45%, transparent); }
+.cat-ph-content { background: color-mix(in srgb, currentColor 7%, transparent);
+  border: 1.5px solid color-mix(in srgb, currentColor 30%, transparent); }
+.cat-ph-tag { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  opacity: 0.7; }
+
+/* sections */
+.cat-section { border: 1px solid var(--hair); border-radius: var(--radius); overflow: hidden; margin-bottom: 1.6rem; }
+.cat-section-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+  flex-wrap: wrap; padding: 1rem 1.2rem; background: color-mix(in srgb, var(--page-text) 4%, transparent);
+  border-bottom: 1px solid var(--hair); }
+.cat-section-name { font-family: var(--font-heading); font-size: 1.25rem; text-transform: uppercase; letter-spacing: 0.01em; }
+.cat-section-sub { font-size: 0.74rem; opacity: 0.6; margin-top: 0.2rem; }
+.cat-section-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+.cat-surface { padding: 1.6rem 1.4rem 1.8rem; position: relative; }
+.cat-surface-label { position: absolute; top: 0.55rem; right: 0.8rem; font-size: 0.6rem;
+  text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.5; font-family: var(--font-body); }
+.cat-slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-top: 0.6rem; }
+.cat-slot { margin: 0; }
+.cat-slot .cat-ph { min-height: 84px; }
+.cat-slot-meta { margin-top: 0.55rem; }
+.cat-slot-name { font-weight: 600; font-size: 0.82rem; display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; }
+.cat-slot-use { font-size: 0.72rem; opacity: 0.75; margin-top: 0.18rem; line-height: 1.4; }
+.cat-slot-comp { font-size: 0.68rem; opacity: 0.6; margin-top: 0.22rem; }
+.cat-struct { opacity: 0.55; }
+
+/* inference note */
+.cat-note { border: 1px solid var(--hair); border-radius: var(--radius); padding: 1.1rem 1.2rem; margin-top: 1rem;
+  background: color-mix(in srgb, var(--page-text) 3%, transparent); font-size: 0.8rem; line-height: 1.5; }
+.cat-note code { font-family: ui-monospace, Menlo, monospace; font-size: 0.74rem; }
+.cat-kw { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-top: 0.5rem; }
+.cat-kw span { font-size: 0.64rem; padding: 0.12rem 0.4rem; border: 1px solid var(--hair); border-radius: 4px; opacity: 0.8; }
+.cat-amb-list { margin: 0.5rem 0 0 1.1rem; font-size: 0.78rem; }
+.cat-note-ok { margin-top: 0.5rem; opacity: 0.8; }
+
+</style>
+</head>
+<body>
+<div class="cat-wrap">
+  <header class="cat-top">
+    <div class="cat-kicker">Studio Catalog &middot; Slot Contracts</div>
+    <h1 class="cat-title">Greenhouse</h1>
+    <p class="cat-sub">Every unique component and section the brand extracted, validated as an
+    abstract slot contract &mdash; rendered with the brand's real color &amp; type tokens, but with
+    NEUTRAL typed placeholders instead of real copy or photos. Validate structure, types, surface
+    and layout before any Webflow build.</p>
+    <div class="cat-counts">
+      <div><b>7</b> components</div>
+      <div><b>7</b> sections</div>
+      <div><b>5</b> content &middot; <b>2</b> media</div>
+    </div>
+  </header>
+
+  <section>
+    <h2 class="cat-h2">Components</h2>
+    <p class="cat-lead">Unique leaf/library components referenced across all sections' component
+    mappings. Each is shown as a small on-brand specimen with its library group and inferred type.</p>
+    <div class="cat-comps">
+    <article class="cat-comp">
+      <div class="cat-comp-preview"><div class="cat-specimen-text" style="font-family:'Untitled Sans, Arial, sans-serif', serif;text-transform:uppercase;letter-spacing:0.08em;font-size:0.78rem;font-weight:600">Action &rarr;</div></div>
+      <div class="cat-comp-meta">
+        <div class="cat-comp-name">button</div>
+        <div class="cat-comp-chips">
+          <span class="cat-chip">Primitive</span>
+          <span class="cat-type cat-type-content">content</span>
+        </div>
+        <div class="cat-comp-used" title="hero → primary-action, hero → secondary-action, logos → primary-action, comparison → filter-action-group, ctaBand → primary-action">used in: hero → primary-action, hero → secondary-action, logos → primary-action, comparison → filter-action-group +1</div>
+      </div>
+    </article>
+    <article class="cat-comp">
+      <div class="cat-comp-preview"><div class="cat-ph cat-ph-content cat-specimen-media"><span class="cat-ph-tag">CONTENT</span></div></div>
+      <div class="cat-comp-meta">
+        <div class="cat-comp-name">card</div>
+        <div class="cat-comp-chips">
+          <span class="cat-chip">Primitive</span>
+          <span class="cat-type cat-type-content">content</span>
+        </div>
+        <div class="cat-comp-used" title="testimonial → testimonial-card-list (quote -&gt; name -&gt; meta)">used in: testimonial → testimonial-card-list (quote -&gt; name -&gt; meta)</div>
+      </div>
+    </article>
+    <article class="cat-comp">
+      <div class="cat-comp-preview"><div class="cat-ph cat-ph-content cat-specimen-media"><span class="cat-ph-tag">CONTENT</span></div></div>
+      <div class="cat-comp-meta">
+        <div class="cat-comp-name">content-block</div>
+        <div class="cat-comp-chips">
+          <span class="cat-chip">Primitive</span>
+          <span class="cat-type cat-type-content">content</span>
+        </div>
+        <div class="cat-comp-used" title="hero → supporting-body, comparison → supporting-body, comparison → comparison-list">used in: hero → supporting-body, comparison → supporting-body, comparison → comparison-list</div>
+      </div>
+    </article>
+    <article class="cat-comp">
+      <div class="cat-comp-preview"><div class="cat-ph cat-ph-content cat-specimen-media"><span class="cat-ph-tag">CONTENT</span></div></div>
+      <div class="cat-comp-meta">
+        <div class="cat-comp-name">header</div>
+        <div class="cat-comp-chips">
+          <span class="cat-chip">Primitive</span>
+          <span class="cat-type cat-type-content">content</span>
+        </div>
+        <div class="cat-comp-used" title="hero → primary-heading, featureGrid → section-heading, logos → section-heading, comparison → eyebrow, comparison → section-heading, comparison → subheading, testimonial → section-heading, ctaBand → band-heading">used in: hero → primary-heading, featureGrid → section-heading, logos → section-heading, comparison → eyebrow +4</div>
+      </div>
+    </article>
+    <article class="cat-comp">
+      <div class="cat-comp-preview"><div class="cat-ph cat-ph-content cat-specimen-media"><span class="cat-ph-tag">CONTENT</span></div></div>
+      <div class="cat-comp-meta">
+        <div class="cat-comp-name">stat-block</div>
+        <div class="cat-comp-chips">
+          <span class="cat-chip">Primitive</span>
+          <span class="cat-type cat-type-content">content</span>
+        </div>
+        <div class="cat-comp-used" title="stats → stat-column-list: figure plus description and source citation">used in: stats → stat-column-list: figure plus description and source citation</div>
+      </div>
+    </article>
+    <article class="cat-comp">
+      <div class="cat-comp-preview"><div class="cat-ph cat-ph-media cat-specimen-media"><span class="cat-ph-tag">MEDIA</span></div></div>
+      <div class="cat-comp-meta">
+        <div class="cat-comp-name">image</div>
+        <div class="cat-comp-chips">
+          <span class="cat-chip">Primitive</span>
+          <span class="cat-type cat-type-media">media</span>
+        </div>
+        <div class="cat-comp-used" title="hero → decorative-media-collage, featureGrid → card-media-well, featureGrid → feature-card-list (media-well -&gt; heading -&gt; body -&gt; action), comparison → decorative-media-well">used in: hero → decorative-media-collage, featureGrid → card-media-well, featureGrid → feature-card-list (media-well -&gt; heading -&gt; body -&gt; action), comparison → decorative-media-well</div>
+      </div>
+    </article>
+    <article class="cat-comp">
+      <div class="cat-comp-preview"><div class="cat-ph cat-ph-media cat-specimen-media"><span class="cat-ph-tag">MEDIA</span></div></div>
+      <div class="cat-comp-meta">
+        <div class="cat-comp-name">logo-bar</div>
+        <div class="cat-comp-chips">
+          <span class="cat-chip">Primitive</span>
+          <span class="cat-type cat-type-media">media</span>
+        </div>
+        <div class="cat-comp-used" title="logos → partner-logo-wall, comparison → review-award-badge">used in: logos → partner-logo-wall, comparison → review-award-badge</div>
+      </div>
+    </article>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="cat-h2">Catalog by tier &mdash; origin</h2>
+    <p class="cat-lead">The brand's FULL component vocabulary grouped by tier. Each item is tagged
+    <b>extracted</b> (observed on the live page, with its provenance section ids and any neverDo
+    conflicts) or <b>designed</b> (synthesized brand-consistent from rules + tokens, not on the page,
+    and overridable).</p>
+    <div class="cat-origin-legend"><span class="lg"><span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span> observed on the page</span><span class="lg"><span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span> synthesized brand-consistent &middot; overridable</span></div>
+    <div class="cat-origin-tier">
+      <div class="cat-origin-tierhead">Tier 1 &middot; Primitives
+        <span class="cat-origin-counts">&mdash; 17 extracted / 19 designed</span>
+      </div>
+      <div class="cat-origin-grid">
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">avatar</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: evidence/grounding/*.yaml#components[]</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">badge</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: brand.yaml#measured-block-slots</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">button</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: evidence/grounding/*.yaml#components[]</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">caption</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: brand.yaml#measured-block-slots</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">cta</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: brand.yaml#measured-block-slots</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">eyebrow</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: brand.yaml#measured-block-slots</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">heading</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: brand.yaml#measured-block-slots</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">icon</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: evidence/grounding/*.yaml#components[]</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">input</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: evidence/grounding/*.yaml#components[]</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">link</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: evidence/grounding/*.yaml#components[]</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">list</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: brand.yaml#measured-block-slots</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">logo</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: brand.yaml#measured-block-slots</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">paragraph</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: brand.yaml#measured-block-slots</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">pill</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: brand.yaml#measured-block-slots</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">quote</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: brand.yaml#measured-block-slots</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">stat</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: brand.yaml#measured-block-slots</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">subheading</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: brand.yaml#measured-block-slots</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">checkbox</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No checkbox was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">code</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No code was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">divider</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No divider was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">file-upload</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No file-upload was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">form-field</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No form-field was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">icon-button</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No icon-button was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">illustration</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No illustration was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">image</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No image was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">label</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No label was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">progress</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No progress was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">radio</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No radio was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">rating</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No rating was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">select</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No select was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">slider</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No slider was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">spacer</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No spacer was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">textarea</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No textarea was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">toggle</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No toggle was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">tooltip</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No tooltip was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">video</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No video was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      </div>
+    </div>
+    <div class="cat-origin-tier">
+      <div class="cat-origin-tierhead">Tier 2 &middot; Blocks
+        <span class="cat-origin-counts">&mdash; 1 extracted / 30 designed</span>
+      </div>
+      <div class="cat-origin-grid">
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">card</div>
+          <span class="cat-pill cat-pill-extracted" title="observed on the live page">extracted</span>
+        </div>
+<div class="cat-origin-detail">from: evidence/grounding/*.yaml#components[]</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">accordion</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No accordion was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">accordion-item</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No accordion-item was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">banner</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No banner was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">breadcrumb</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No breadcrumb was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">carousel</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No carousel was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">comparison</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No comparison was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">content-block</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No content-block was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">cta-block</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No cta-block was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">ctaBand</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No ctaBand was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">dropdown-menu</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No dropdown-menu was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">feature-item</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No feature-item was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">featureGrid</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No featureGrid was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">footer</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No footer was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">form</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No form was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">header</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No header was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">hero</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No hero was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">logo-bar</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No logo-bar was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">logos</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No logos was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">media-text</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No media-text was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">modal</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No modal was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">navbar</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No navbar was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">pagination</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No pagination was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">pricing-card</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No pricing-card was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">stat-block</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No stat-block was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">stats</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No stats was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">step-item</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No step-item was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">steps</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No steps was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">table</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No table was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">tabs</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No tabs was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">testimonial</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No testimonial was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      </div>
+    </div>
+    <div class="cat-origin-tier">
+      <div class="cat-origin-tierhead">Tier 3 &middot; Scaffolds
+        <span class="cat-origin-counts">&mdash; 0 extracted / 12 designed</span>
+      </div>
+      <div class="cat-origin-grid">
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">header-scaffold</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No header-scaffold was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">layout-bento</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No layout-bento was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">layout-grid</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No layout-grid was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">layout-row</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No layout-row was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">layout-split</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No layout-split was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">layout-stack</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No layout-stack was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">logos-wrapper</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No logos-wrapper was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">section-split</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No section-split was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">section-split-content-form</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No section-split-content-form was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">section-split-fullbleed</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No section-split-fullbleed was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">section-stack</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No section-stack was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      <div class="cat-origin-item">
+        <div class="cat-origin-top">
+          <div class="cat-origin-name">section-stack-fullbleed</div>
+          <span class="cat-pill cat-pill-designed" title="synthesized brand-consistent, overridable">designed</span>
+        </div>
+<div class="cat-origin-detail">No section-stack-fullbleed was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.</div>
+<div class="cat-origin-over">confidence: medium &middot; overridable</div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="cat-h2">Sections &mdash; Slot Contracts</h2>
+    <p class="cat-lead">Each section is an abstract contract: archetype name, its mode/surface
+    (chip + reflected surface color), its layout scaffold, and the typed slots it exposes.
+    Slots are neutral CONTENT / MEDIA placeholders &mdash; structure over content.</p>
+    <article class="cat-section">
+      <header class="cat-section-head">
+        <div>
+          <div class="cat-section-name">hero / Centered-Copy-With-Floating-Media</div>
+          <div class="cat-section-sub"></div>
+        </div>
+        <div class="cat-section-chips">
+          <span class="cat-chip cat-chip-mode" style="--swatch:#ffffff">mode: surface/primary</span>
+          <span class="cat-chip">layout: centered-copy-with-floating-media</span>
+          <span class="cat-chip">surface/primary</span>
+        </div>
+      </header>
+      <div class="cat-surface" style="background:#ffffff;color:#15372c;--accent:#008561">
+        <div class="cat-surface-label">surface surface/primary &middot; #ffffff</div>
+        <div class="cat-slots">
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">primary-heading <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">primary-heading</div>
+          <div class="cat-slot-comp">&rarr; header <span class="cat-struct">[heading]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">supporting-body <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">supporting-body</div>
+          <div class="cat-slot-comp">&rarr; content-block <span class="cat-struct">[body]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">primary-action <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">primary-action</div>
+          <div class="cat-slot-comp">&rarr; button <span class="cat-struct">[primaryCta]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">secondary-action <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">secondary-action</div>
+          <div class="cat-slot-comp">&rarr; button <span class="cat-struct">[ghostCta]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-media">
+          <span class="cat-ph-tag">MEDIA</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">decorative-media-collage <span class="cat-type cat-type-media">media</span></div>
+          <div class="cat-slot-use">decorative-media-collage</div>
+          <div class="cat-slot-comp">&rarr; image <span class="cat-struct">[floatingPortraits]</span></div>
+        </figcaption>
+      </figure>
+        </div>
+      </div>
+    </article>
+    <article class="cat-section">
+      <header class="cat-section-head">
+        <div>
+          <div class="cat-section-name">featureGrid / Three-Column-Media-Top-Cards</div>
+          <div class="cat-section-sub"></div>
+        </div>
+        <div class="cat-section-chips">
+          <span class="cat-chip cat-chip-mode" style="--swatch:#ffffff">mode: surface/primary</span>
+          <span class="cat-chip">layout: three-column-media-top-cards</span>
+          <span class="cat-chip">surface/primary</span>
+        </div>
+      </header>
+      <div class="cat-surface" style="background:#ffffff;color:#15372c;--accent:#008561">
+        <div class="cat-surface-label">surface surface/primary &middot; #ffffff</div>
+        <div class="cat-slots">
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">section-heading <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">section-heading</div>
+          <div class="cat-slot-comp">&rarr; header <span class="cat-struct">[heading]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-media">
+          <span class="cat-ph-tag">MEDIA</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">card-media-well <span class="cat-type cat-type-media">media</span></div>
+          <div class="cat-slot-use">card-media-well</div>
+          <div class="cat-slot-comp">&rarr; image <span class="cat-struct">[itemMedia]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-media">
+          <span class="cat-ph-tag">MEDIA</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">feature-card-list (media-well -&gt; heading -&gt; body -&gt; action) <span class="cat-type cat-type-media">media</span></div>
+          <div class="cat-slot-use">feature-card-list (media-well -&gt; heading -&gt; body -&gt; action)</div>
+          <div class="cat-slot-comp">&rarr; image <span class="cat-struct">[items]</span></div>
+        </figcaption>
+      </figure>
+        </div>
+      </div>
+    </article>
+    <article class="cat-section">
+      <header class="cat-section-head">
+        <div>
+          <div class="cat-section-name">logos / Split-Copy-And-Logo-Grid</div>
+          <div class="cat-section-sub"></div>
+        </div>
+        <div class="cat-section-chips">
+          <span class="cat-chip cat-chip-mode" style="--swatch:#ffffff">mode: surface/primary</span>
+          <span class="cat-chip">layout: split-copy-and-logo-grid</span>
+          <span class="cat-chip">surface/primary</span>
+        </div>
+      </header>
+      <div class="cat-surface" style="background:#ffffff;color:#15372c;--accent:#008561">
+        <div class="cat-surface-label">surface surface/primary &middot; #ffffff</div>
+        <div class="cat-slots">
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">section-heading <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">section-heading</div>
+          <div class="cat-slot-comp">&rarr; header <span class="cat-struct">[heading]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">primary-action <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">primary-action</div>
+          <div class="cat-slot-comp">&rarr; button <span class="cat-struct">[cta]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-media">
+          <span class="cat-ph-tag">MEDIA</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">partner-logo-wall <span class="cat-type cat-type-media">media</span></div>
+          <div class="cat-slot-use">partner-logo-wall</div>
+          <div class="cat-slot-comp">&rarr; logo-bar <span class="cat-struct">[logoGrid]</span></div>
+        </figcaption>
+      </figure>
+        </div>
+      </div>
+    </article>
+    <article class="cat-section">
+      <header class="cat-section-head">
+        <div>
+          <div class="cat-section-name">comparison / Pill-Filtered-Comparison-Card</div>
+          <div class="cat-section-sub"></div>
+        </div>
+        <div class="cat-section-chips">
+          <span class="cat-chip cat-chip-mode" style="--swatch:#ffffff">mode: surface/primary</span>
+          <span class="cat-chip">layout: pill-filtered-comparison-card</span>
+          <span class="cat-chip">surface/primary</span>
+        </div>
+      </header>
+      <div class="cat-surface" style="background:#ffffff;color:#15372c;--accent:#008561">
+        <div class="cat-surface-label">surface surface/primary &middot; #ffffff</div>
+        <div class="cat-slots">
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">eyebrow <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">eyebrow</div>
+          <div class="cat-slot-comp">&rarr; header <span class="cat-struct">[eyebrow]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">section-heading <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">section-heading</div>
+          <div class="cat-slot-comp">&rarr; header <span class="cat-struct">[heading]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">subheading <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">subheading</div>
+          <div class="cat-slot-comp">&rarr; header <span class="cat-struct">[subhead]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">supporting-body <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">supporting-body</div>
+          <div class="cat-slot-comp">&rarr; content-block <span class="cat-struct">[body]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">filter-action-group <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">filter-action-group</div>
+          <div class="cat-slot-comp">&rarr; button <span class="cat-struct">[filters]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">comparison-list <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">comparison-list</div>
+          <div class="cat-slot-comp">&rarr; content-block <span class="cat-struct">[comparisonRows]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-media">
+          <span class="cat-ph-tag">MEDIA</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">decorative-media-well <span class="cat-type cat-type-media">media</span></div>
+          <div class="cat-slot-use">decorative-media-well</div>
+          <div class="cat-slot-comp">&rarr; image <span class="cat-struct">[mediaPanel]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-media">
+          <span class="cat-ph-tag">MEDIA</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">review-award-badge <span class="cat-type cat-type-media">media</span></div>
+          <div class="cat-slot-use">review-award-badge</div>
+          <div class="cat-slot-comp">&rarr; logo-bar <span class="cat-struct">[awardBadge]</span></div>
+        </figcaption>
+      </figure>
+        </div>
+      </div>
+    </article>
+    <article class="cat-section">
+      <header class="cat-section-head">
+        <div>
+          <div class="cat-section-name">stats / Three-Column-Number-Over-Caption</div>
+          <div class="cat-section-sub"></div>
+        </div>
+        <div class="cat-section-chips">
+          <span class="cat-chip cat-chip-mode" style="--swatch:#ffffff">mode: surface/primary</span>
+          <span class="cat-chip">layout: three-column-number-over-caption</span>
+          <span class="cat-chip">surface/primary</span>
+        </div>
+      </header>
+      <div class="cat-surface" style="background:#ffffff;color:#15372c;--accent:#008561">
+        <div class="cat-surface-label">surface surface/primary &middot; #ffffff</div>
+        <div class="cat-slots">
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">stat-column-list: figure plus description and source citation <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">stat-column-list: figure plus description and source citation</div>
+          <div class="cat-slot-comp">&rarr; stat-block <span class="cat-struct">[items]</span></div>
+        </figcaption>
+      </figure>
+        </div>
+      </div>
+    </article>
+    <article class="cat-section">
+      <header class="cat-section-head">
+        <div>
+          <div class="cat-section-name">testimonial / Three-Column-Quote-Blocks</div>
+          <div class="cat-section-sub"></div>
+        </div>
+        <div class="cat-section-chips">
+          <span class="cat-chip cat-chip-mode" style="--swatch:#ffffff">mode: surface/primary</span>
+          <span class="cat-chip">layout: three-column-quote-blocks</span>
+          <span class="cat-chip">surface/primary</span>
+        </div>
+      </header>
+      <div class="cat-surface" style="background:#ffffff;color:#15372c;--accent:#008561">
+        <div class="cat-surface-label">surface surface/primary &middot; #ffffff</div>
+        <div class="cat-slots">
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">section-heading <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">section-heading</div>
+          <div class="cat-slot-comp">&rarr; header <span class="cat-struct">[heading]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">testimonial-card-list (quote -&gt; name -&gt; meta) <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">testimonial-card-list (quote -&gt; name -&gt; meta)</div>
+          <div class="cat-slot-comp">&rarr; card <span class="cat-struct">[items]</span></div>
+        </figcaption>
+      </figure>
+        </div>
+      </div>
+    </article>
+    <article class="cat-section">
+      <header class="cat-section-head">
+        <div>
+          <div class="cat-section-name">ctaBand / Copy-Left-Decorative-Art-Right</div>
+          <div class="cat-section-sub"></div>
+        </div>
+        <div class="cat-section-chips">
+          <span class="cat-chip cat-chip-mode" style="--swatch:#ffffff">mode: surface/primary</span>
+          <span class="cat-chip">layout: copy-left-decorative-art-right</span>
+          <span class="cat-chip">surface/primary</span>
+        </div>
+      </header>
+      <div class="cat-surface" style="background:#ffffff;color:#15372c;--accent:#008561">
+        <div class="cat-surface-label">surface surface/primary &middot; #ffffff</div>
+        <div class="cat-slots">
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">band-heading <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">band-heading</div>
+          <div class="cat-slot-comp">&rarr; header <span class="cat-struct">[heading]</span></div>
+        </figcaption>
+      </figure>
+      <figure class="cat-slot">
+        <div class="cat-ph cat-ph-content">
+          <span class="cat-ph-tag">CONTENT</span>
+        </div>
+        <figcaption class="cat-slot-meta">
+          <div class="cat-slot-name">primary-action <span class="cat-type cat-type-content">content</span></div>
+          <div class="cat-slot-use">primary-action</div>
+          <div class="cat-slot-comp">&rarr; button <span class="cat-struct">[cta]</span></div>
+        </figcaption>
+      </figure>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section>
+    <h2 class="cat-h2">Slot type inference</h2>
+    <div class="cat-note">
+      <div>Check the mapped component name first, then the slot&#x27;s semantic role, against a media keyword set and a content keyword set. media wins on a media-keyword hit (Image/Logo/photo/icon/...); otherwise content on a content-keyword hit (Heading/Eyebrow/Rich Text/Link/Form/...). Unmatched slots default to &#x27;content&#x27; and are flagged ambiguous.</div>
+      <div style="margin-top:0.7rem"><code>media</code> keywords:</div>
+      <div class="cat-kw"><span>image</span><span>media</span><span>photo</span><span>photography</span><span>picture</span><span>logo</span><span>wordmark</span><span>avatar</span><span>icon</span><span>video</span><span>gallery</span><span>illustration</span><span>graphic</span><span>map</span><span>thumbnail</span></div>
+      <div style="margin-top:0.6rem"><code>content</code> keywords:</div>
+      <div class="cat-kw"><span>heading</span><span>title</span><span>eyebrow</span><span>paragraph</span><span>rich text</span><span>richtext</span><span>text</span><span>link</span><span>form</span><span>button</span><span>label</span><span>action</span><span>caption</span><span>body</span><span>cta</span><span>quote</span><span>stat</span><span>counter</span><span>list</span><span>input</span><span>field</span><span>nav</span></div>
+      <div style="margin-top:0.8rem"><b>Ambiguous slots</b></div>
+      <p class='cat-note-ok'>No ambiguous slots &mdash; every slot resolved cleanly via component or role keywords.</p>
+    </div>
+  </section>
+</div>
+</body>
+</html>

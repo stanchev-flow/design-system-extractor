@@ -1,0 +1,116 @@
+{
+  "schemaVersion": "relume-test.readability.v1",
+  "item": "02 Remote",
+  "thresholds": {
+    "normalText": 4.5,
+    "largeText": 3.0,
+    "controlBoundary": 3.0
+  },
+  "viewports": [
+    {
+      "checkedTextRegions": 93,
+      "checkedControls": 43,
+      "worstTextContrast": 4.91,
+      "failures": [],
+      "viewport": "desktop",
+      "computedRhythm": {
+        "surfaces": [
+          "surface/hero-noise",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/hero-noise",
+          "surface/raised"
+        ],
+        "sectionPaddingPx": [
+          80,
+          48,
+          48,
+          48,
+          48,
+          48,
+          48,
+          48,
+          48,
+          48
+        ],
+        "containerWidthPx": 1216,
+        "columnGapPx": 48,
+        "gridGapPx": 32,
+        "actionGapPx": 16,
+        "eyebrowToHeadingPx": 12,
+        "headingToBodyPx": 16,
+        "declared": {
+          "section": "3rem",
+          "sectionMobile": "2rem",
+          "container": "76rem",
+          "column": "3rem",
+          "columnMobile": "1.5rem",
+          "grid": "2rem",
+          "gridMobile": "2rem",
+          "action": "1rem"
+        },
+        "failures": []
+      },
+      "stateFailures": []
+    },
+    {
+      "checkedTextRegions": 88,
+      "checkedControls": 38,
+      "worstTextContrast": 4.91,
+      "failures": [],
+      "viewport": "mobile",
+      "computedRhythm": {
+        "surfaces": [
+          "surface/hero-noise",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/hero-noise",
+          "surface/raised"
+        ],
+        "sectionPaddingPx": [
+          80,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32
+        ],
+        "containerWidthPx": 326,
+        "columnGapPx": 24,
+        "gridGapPx": 32,
+        "actionGapPx": 16,
+        "eyebrowToHeadingPx": 8,
+        "headingToBodyPx": 12,
+        "declared": {
+          "section": "3rem",
+          "sectionMobile": "2rem",
+          "container": "76rem",
+          "column": "3rem",
+          "columnMobile": "1.5rem",
+          "grid": "2rem",
+          "gridMobile": "2rem",
+          "action": "1rem"
+        },
+        "failures": []
+      },
+      "stateFailures": []
+    }
+  ],
+  "status": "pass"
+}

@@ -1,0 +1,39 @@
+{
+  "project": "greenhouse-v2",
+  "brand": "Greenhouse",
+  "status": "completed",
+  "pipeline_run_completed": true,
+  "extraction_kind": "multi-page-live",
+  "source_url": "https://www.greenhouse.com/",
+  "generationAllowed": false,
+  "generationAllowedNote": "G1-G3 pass; G4 replica 0.746 < 0.90 bar (needs_iteration). Brand FACTS are complete + C1-C28 clean; downstream fact-consumers are not gated on the replica bar.",
+  "source_pages": [
+    { "key": "home", "url": "https://www.greenhouse.com/", "role": "primary/replica-target", "capture_status": "ok", "page_px": "1440x5031", "css_saved": 6, "imgs_saved": 64 },
+    { "key": "talent-sourcing", "url": "https://www.greenhouse.com/talent-sourcing", "role": "feature/product page", "capture_status": "ok", "page_px": "1440x9339", "css_saved": 6, "imgs_saved": 55 },
+    { "key": "compare", "url": "https://www.greenhouse.com/compare", "role": "comparison page", "capture_status": "ok", "page_px": "1440x8101", "css_saved": 6, "imgs_saved": 55 }
+  ],
+  "fallback_snapshot": "screenshots/greenhouse/greenhouse.html",
+  "capture": "screenshots/greenhouse-v2",
+  "validation": { "checks": "C1-C28", "errors": 0, "warnings": 11 },
+  "replica": { "overall": 0.7458, "bar": 0.90, "primaryViewportHealth": 1.0, "primaryViewport": 1440, "report": "brand/compose/replica/replica-report.json" },
+  "grounded_sections": { "home": 6, "talent-sourcing": 11, "compare": 9, "canonical_merged": 11 },
+  "screenshots": [
+    {
+      "name": "greenhouse-v2",
+      "source_pages": ["home", "talent-sourcing", "compare"],
+      "brand_yaml": "brand/brand.yaml",
+      "brand_md": "brand/brand.md",
+      "layout_library": "brand/layout-library.yaml",
+      "section_copy": "brand/section-copy.yaml",
+      "media_assets": "brand/media-assets.yaml",
+      "assets_tagged": "brand/assets-tagged.json",
+      "tokens_manifest": "brand/components-preview/tokens.manifest.json",
+      "components_preview": "brand/components-preview/index.html",
+      "catalog": "brand/catalog/index.html",
+      "replica": "brand/compose/replica/index.html",
+      "replica_fullpage": "brand/compose/replica/replica-fullpage.png",
+      "source_fullpage": "../../screenshots/greenhouse-v2/home/home-fullpage.png"
+    }
+  ],
+  "notes": "Fresh multi-page extraction synthesized into ONE unified brand. Does NOT clobber runs/greenhouse. STAGE 1 gating output for downstream raw/framework/relume workstreams."
+}

@@ -1,0 +1,24 @@
+{
+  "status": "repaired",
+  "replacement_count": 2,
+  "replacements": [
+    {
+      "property": "width",
+      "original": "width:min(520px,48vw);",
+      "replacement": "width: min(520px,48%);"
+    },
+    {
+      "property": "width",
+      "original": "width:78vw;",
+      "replacement": "width: 78%;"
+    }
+  ],
+  "remaining_viewport_units": [
+    "3vw",
+    "4vw",
+    "6vw",
+    "7vw",
+    "8vw",
+    "9vw"
+  ]
+}

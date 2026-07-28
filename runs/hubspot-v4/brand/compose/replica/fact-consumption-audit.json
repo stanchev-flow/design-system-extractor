@@ -1,0 +1,325 @@
+{
+  "as": "AS-83",
+  "ok": true,
+  "counts": {
+    "total": 31,
+    "consumed": 26,
+    "unconsumed": 0,
+    "excluded": 0,
+    "delegated": 5
+  },
+  "unconsumed": [],
+  "findings": [
+    {
+      "family": "responsive.hero",
+      "path": "layouts[hero].responsive (heightRule / headingSizeLadder / navOffset)",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "component_render.hero_responsive_css",
+      "evidence": "CSS marker '(fact-gated: layouts[].responsive)'",
+      "detail": "consumer evidence present",
+      "provenance": "hero bound height mechanic is viewport-relative (viewport-minus-nav); nav offset from measured --global-nav-header-height"
+    },
+    {
+      "family": "responsive.hero.primaryButton",
+      "path": "layouts[hero].responsive.primaryButton",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "component_render.hero_primary_button_css",
+      "evidence": "CSS marker '(fact-gated: layouts[].responsive.primaryButton)'",
+      "detail": "consumer evidence present",
+      "provenance": "primary action measured @1440 (display/font-size/line-height/border/padding) \u2014 the button box the composer left un-grounded"
+    },
+    {
+      "family": "responsive.footer",
+      "path": "footer.responsive (grid reflow + measured content cap)",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "component_render.footer_responsive_css",
+      "evidence": "CSS marker '(fact-gated: footer.responsive)'",
+      "detail": "consumer evidence present",
+      "provenance": "1 measured @media reflow breakpoint(s); stacked below 900px, 2 column(s) at/above (@media(width >= 900px) column-count:2)"
+    },
+    {
+      "family": "responsive.headings.lineHeights",
+      "path": "responsive.headings.lineHeights",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "component_render.heading_responsive_css",
+      "evidence": "CSS marker '(fact-gated: responsive.headings.lineHeights)'",
+      "detail": "consumer evidence present",
+      "provenance": "measured heading computedLadder line-heights (stable across the viewport ladder) the composer type scale mis-derived"
+    },
+    {
+      "family": "responsive.nav.collapse",
+      "path": "responsive.nav.collapse (mobile breakpoint + burger)",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "component_render.nav_collapse_css + compose_section._navbar_props",
+      "evidence": "CSS marker '(fact-gated: responsive.nav.collapse)'",
+      "detail": "consumer evidence present",
+      "provenance": "mega-nav panel container (.global-nav-main .global-nav-main-inner) paints var(--cl-color-container-01) \u2192 resolved #ffffff; our .cs-mega measured transparent"
+    },
+    {
+      "family": "responsive.nav.panelSurface",
+      "path": "responsive.nav.panelSurface.background",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "component_render.render_mega (panel surface override)",
+      "evidence": ".cs-mega { background: <resolved panel literal> }",
+      "detail": "consumer evidence present",
+      "provenance": "mega-nav panel container (.global-nav-main .global-nav-main-inner) paints var(--cl-color-container-01) \u2192 resolved #ffffff; our .cs-mega measured transparent"
+    },
+    {
+      "family": "responsive.buttons.purgeHoverTransform",
+      "path": "responsive.buttons.purgeHoverTransform",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "component_render._button_variant_css (motion purge)",
+      "evidence": "no 'transform: translateY(-1px)' in the emitted button CSS",
+      "detail": "consumer evidence present",
+      "provenance": "source button hover/focus rules declare no transform (bg/border/color swap only); the composer translateY(-1px) lift is un-grounded motion \u2014 purged brand-wide (provenance doctrine)"
+    },
+    {
+      "family": "interaction.carousel",
+      "path": "blocks.carousel.carousel (structured slider timing recipe)",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "component_render.carousel_timing_css",
+      "evidence": "CSS marker '(fact-gated: blocks.carousel.carousel)'",
+      "detail": "consumer evidence present",
+      "provenance": "measured slider timing/geometry from the source's carousel CSS custom properties + control-affordance selectors; intervalMs (JS autoplay timer) is not exposed by the static capture and is omitted (never guessed)."
+    },
+    {
+      "family": "interaction.states",
+      "path": "interactionStates (per-component hover/active/focus/disabled)",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "component_render.interaction_states_css",
+      "evidence": "CSS marker '(fact-gated: interactionStates)'",
+      "detail": "consumer evidence present",
+      "provenance": "measured per-component interaction-state paint deltas (hover/active/focus/disabled/open) from the source's state rules, resolved against the measured color tokens; generic component roles only."
+    },
+    {
+      "family": "interaction.navbar.mobile",
+      "path": "navbar.mobile (hamburger\u2192drawer contract)",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "component_render.navbar_mobile_drawer_css",
+      "evidence": "CSS marker '(fact-gated: navbar.mobile)'",
+      "detail": "consumer evidence present",
+      "provenance": "measured hamburger\u2192drawer contract: a burger trigger toggles a full-viewport mobile menu surface; the burger morphs to an X on expand (x-glyph close). Drawer bg + slide transition resolved from the source's mobile-menu r"
+    },
+    {
+      "family": "interaction.navbar.sticky",
+      "path": "navbar.sticky (sticky / scroll-shrink register)",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "component_render.navbar_sticky_css + navbar_sticky_script",
+      "evidence": "CSS marker '(fact-gated: navbar.sticky)'",
+      "detail": "consumer evidence present",
+      "provenance": "nav bar measured scroll-shrink: bar is position:fixed/sticky at rest; adopts a scrolled register (bg/shadow) once stuck"
+    },
+    {
+      "family": "interaction.tokens.shadow",
+      "path": "tokens.shadow (measured elevation scale)",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "component_render.elevation_tokens_css",
+      "evidence": "CSS marker '(fact-gated: tokens.shadow)'",
+      "detail": "consumer evidence present",
+      "provenance": "measured elevation scale: generic roles (sticky-nav / raised / overlay) mapped from the source's box-shadow census by blur radius and consuming context; ring/inset shadows excluded."
+    },
+    {
+      "family": "interaction.tokens.zIndex",
+      "path": "tokens.zIndex (measured stacking scale)",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "component_render.elevation_tokens_css",
+      "evidence": "CSS marker '(fact-gated: tokens.zIndex)'",
+      "detail": "consumer evidence present",
+      "provenance": "measured stacking scale: generic roles (sticky-nav / dropdown / overlay / modal / banner) mapped from the source's z-index census on chrome + overlay selectors; 3rd-party outliers excluded."
+    },
+    {
+      "family": "interaction.footer.localeSelector",
+      "path": "footer.localeSelector (language/region control)",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "component_render.footer_locale_selector_html",
+      "evidence": "HTML marker '(fact-gated: footer.localeSelector)'",
+      "detail": "consumer evidence present",
+      "provenance": "measured locale-link cluster (6 language options with locale hrefs) observed in the source chrome (header); materialized at the footer locale slot."
+    },
+    {
+      "family": "layout.specialTreatment.sticky-column",
+      "path": "patterns[sticky-copy-with-card-grid].specialTreatments",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "compose_section.stamp_pattern_devices (sticky-column device)",
+      "evidence": "'position: sticky' present in the emitted markup",
+      "detail": "device rendered",
+      "provenance": "layout-library specialTreatment kind=sticky-column (origin=extracted)"
+    },
+    {
+      "family": "layout.specialTreatment.edge-cut",
+      "path": "patterns[headrail-split-with-card-carousel].specialTreatments",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "compose_section.stamp_pattern_devices (edge-cut device)",
+      "evidence": "'cs-edgecut' present in the emitted markup",
+      "detail": "device rendered",
+      "provenance": "layout-library specialTreatment kind=edge-cut (origin=extracted)"
+    },
+    {
+      "family": "layout.surfaceIntent",
+      "path": "layouts[full-bleed-photo-hero].surfaceIntent=surface/inverse-teal",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "compose_section.resolve_surface \u2192 section paint",
+      "evidence": "data-surface=\"surface/inverse-teal\" on the rendered section",
+      "detail": "section painted its measured surface",
+      "provenance": "layout surfaceIntent (origin=extracted)"
+    },
+    {
+      "family": "layout.surfaceIntent",
+      "path": "layouts[centered-heading-over-logo-row].surfaceIntent=surface/primary",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "compose_section.resolve_surface \u2192 section paint",
+      "evidence": "data-surface=\"surface/primary\" on the rendered section",
+      "detail": "section painted its measured surface",
+      "provenance": "layout surfaceIntent (origin=extracted)"
+    },
+    {
+      "family": "layout.surfaceIntent",
+      "path": "layouts[copy-left-illustration-right-carousel].surfaceIntent=surface/primary",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "compose_section.resolve_surface \u2192 section paint",
+      "evidence": "data-surface=\"surface/primary\" on the rendered section",
+      "detail": "section painted its measured surface",
+      "provenance": "layout surfaceIntent (origin=extracted)"
+    },
+    {
+      "family": "layout.surfaceIntent",
+      "path": "layouts[sticky-copy-with-card-grid].surfaceIntent=surface/primary",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "compose_section.resolve_surface \u2192 section paint",
+      "evidence": "data-surface=\"surface/primary\" on the rendered section",
+      "detail": "section painted its measured surface",
+      "provenance": "layout surfaceIntent (origin=extracted)"
+    },
+    {
+      "family": "layout.surfaceIntent",
+      "path": "layouts[headrail-split-with-card-carousel].surfaceIntent=surface/accent-soft",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "compose_section.resolve_surface \u2192 section paint",
+      "evidence": "data-surface=\"surface/accent-soft\" on the rendered section",
+      "detail": "section painted its measured surface",
+      "provenance": "layout surfaceIntent (origin=extracted)"
+    },
+    {
+      "family": "layout.surfaceIntent",
+      "path": "layouts[copy-left-logo-collage-inset].surfaceIntent=surface/primary",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "compose_section.resolve_surface \u2192 section paint",
+      "evidence": "data-surface=\"surface/primary\" on the rendered section",
+      "detail": "section painted its measured surface",
+      "provenance": "layout surfaceIntent (origin=extracted)"
+    },
+    {
+      "family": "layout.surfaceIntent",
+      "path": "layouts[headrail-two-col-header].surfaceIntent=surface/primary",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "compose_section.resolve_surface \u2192 section paint",
+      "evidence": "data-surface=\"surface/primary\" on the rendered section",
+      "detail": "section painted its measured surface",
+      "provenance": "layout surfaceIntent (origin=extracted)"
+    },
+    {
+      "family": "layout.surfaceIntent",
+      "path": "layouts[tabbed-testimonial-with-stats].surfaceIntent=surface/primary",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "compose_section.resolve_surface \u2192 section paint",
+      "evidence": "data-surface=\"surface/primary\" on the rendered section",
+      "detail": "section painted its measured surface",
+      "provenance": "layout surfaceIntent (origin=extracted)"
+    },
+    {
+      "family": "layout.surfaceIntent",
+      "path": "layouts[heading-left-award-badges-right].surfaceIntent=surface/primary",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "compose_section.resolve_surface \u2192 section paint",
+      "evidence": "data-surface=\"surface/primary\" on the rendered section",
+      "detail": "section painted its measured surface",
+      "provenance": "layout surfaceIntent (origin=extracted)"
+    },
+    {
+      "family": "layout.surfaceIntent",
+      "path": "layouts[dark-band-cta].surfaceIntent=surface/inverse-teal",
+      "status": "consumed",
+      "origin": "extracted",
+      "consumer": "compose_section.resolve_surface \u2192 section paint",
+      "evidence": "data-surface=\"surface/inverse-teal\" on the rendered section",
+      "detail": "section painted its measured surface",
+      "provenance": "layout surfaceIntent (origin=extracted)"
+    },
+    {
+      "family": "tokens.type",
+      "path": "tokens.type",
+      "status": "delegated",
+      "origin": "extracted",
+      "consumer": "css_fidelity.heading_tier_divergences (C-checks)",
+      "evidence": "verified by the owning sibling gate",
+      "detail": "delegated to css_fidelity.heading_tier_divergences (C-checks)",
+      "provenance": "enumerated fact family"
+    },
+    {
+      "family": "tokens.spacing",
+      "path": "tokens.spacing",
+      "status": "delegated",
+      "origin": "extracted",
+      "consumer": "css_fidelity.spacing_tier_divergences (C-checks)",
+      "evidence": "verified by the owning sibling gate",
+      "detail": "delegated to css_fidelity.spacing_tier_divergences (C-checks)",
+      "provenance": "enumerated fact family"
+    },
+    {
+      "family": "tokens.radius",
+      "path": "tokens.radius",
+      "status": "delegated",
+      "origin": "extracted",
+      "consumer": "css_fidelity.radius_tier_divergences (C-checks)",
+      "evidence": "verified by the owning sibling gate",
+      "detail": "delegated to css_fidelity.radius_tier_divergences (C-checks)",
+      "provenance": "enumerated fact family"
+    },
+    {
+      "family": "tokens.colors",
+      "path": "tokens.colors",
+      "status": "delegated",
+      "origin": "extracted",
+      "consumer": "css_fidelity.color_role_divergences (C-checks)",
+      "evidence": "verified by the owning sibling gate",
+      "detail": "delegated to css_fidelity.color_role_divergences (C-checks)",
+      "provenance": "enumerated fact family"
+    },
+    {
+      "family": "layoutGrammar.actionGroup",
+      "path": "actionGroup",
+      "status": "delegated",
+      "origin": "designed",
+      "consumer": "composition_lint.lint_knobs (AS-63) + onbrand fidelity",
+      "evidence": "verified by the owning sibling gate",
+      "detail": "delegated to composition_lint.lint_knobs (AS-63) + onbrand fidelity",
+      "provenance": "enumerated fact family"
+    }
+  ],
+  "target": "replica"
+}

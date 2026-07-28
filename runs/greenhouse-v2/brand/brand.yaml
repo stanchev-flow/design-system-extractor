@@ -1,0 +1,3567 @@
+version: '2.0'
+brand:
+  name: Greenhouse
+  sourceUrl: https://www.greenhouse.com/
+  snapshot:
+    value: Greenhouse is a hiring platform whose marketing site pairs a warm sage-green canvas with a
+      deep forest-green ink (#15372c) and a confident emerald accent (#008561), using the Untitled Serif
+      family for large editorial display and headings and Untitled Sans for body, navigation and controls.
+      Its interface language is built from fully rounded pill buttons (24-25px radius) in green, blue
+      and outline variants, generous section padding, floating white product-UI cards over tinted panels,
+      and dark forest-green bookend bands for CTA and footer regions.
+tokens:
+  colors:
+    text/primary:
+      value: '#15372c'
+      role: primary forest-green ink on light canvas
+      provenance:
+      - home-section-00
+      - compare-section-01
+    text/on-inverse:
+      value: '#ffffff'
+      role: body and link text on dark green bands
+      provenance:
+      - home-section-05
+    accent/primary:
+      value: '#008561'
+      role: primary emerald action fill and link ink
+      provenance:
+      - home-section-00
+      - home-section-02
+    accent/secondary:
+      value: '#3574d6'
+      role: blue demo-request action fill
+      provenance:
+      - home-section-00
+      - home-section-04
+    accent/soft:
+      value: '#4cb398'
+      role: lighter green hover/hover-border tint
+      provenance:
+      - compare-section-02
+    surface/canvas:
+      value: '#ffffff'
+      role: default page canvas
+      provenance:
+      - home-section-01
+    surface/tint:
+      value: '#c9f0e6'
+      role: mint tinted card/panel fill
+      provenance:
+      - compare-section-02
+    surface/inverse:
+      value: '#15372c'
+      role: dark forest-green bookend band and footer
+      provenance:
+      - home-section-04
+      - home-section-05
+    surface/muted:
+      value: '#f5f5f5'
+      role: neutral grey section panel
+      provenance:
+      - talent-sourcing-section-06
+    text/on-primary:
+      value: '#15372c'
+      role: primary forest-green ink on light canvas
+      provenance:
+      - home-section-00
+      - compare-section-01
+      canonicalAliasOf: text/primary
+      projectionProvenance: existing measured color role
+    text/on-primary-muted:
+      value: rgba(21, 55, 44, 0.66)
+      role: muted forest-green ink on light canvas (secondary/supporting text)
+      provenance:
+      - home-section-01
+      - compare-section-01
+      source: computed-derived
+    text/on-inverse-muted:
+      value: rgba(255, 255, 255, 0.72)
+      role: muted text/link on dark forest-green bands and footer
+      provenance:
+      - home-section-05
+      source: computed-derived
+    border/hairline-on-primary:
+      value: rgba(21, 55, 44, 0.12)
+      role: hairline divider/border on light canvas (logo-grid rule, card edges)
+      provenance:
+      - home-section-02
+      source: computed-derived
+    text/ghost-on-primary:
+      value: rgba(21, 55, 44, 0.06)
+      role: ghost wash / faint fill on light canvas fallback
+      provenance:
+      - home-section-01
+      source: computed-derived
+  type:
+    display-hero:
+      family: Untitled Serif, Georgia, sans-serif
+      sizeRem:
+        base: 4.375
+        tablet: 3.0
+        mobile: 3.0
+      tiers:
+        w1440:
+          px: 70
+          source: computed
+        w960:
+          px: 48
+          source: computed
+        w375:
+          px: 48
+          source: computed
+      lineHeight: '1.05'
+      weight: 400
+      letterSpacing: -0.01em
+      case: sentence
+    h1:
+      family: Untitled Serif, Georgia, sans-serif
+      sizeRem:
+        base: 4.375
+        mobile: 3.0
+      tiers:
+        w1440:
+          px: 70
+          source: computed
+        w375:
+          px: 48
+          source: computed
+      lineHeight: '1.05'
+      weight: 400
+      letterSpacing: -0.01em
+      case: sentence
+    h2:
+      family: Untitled Serif, Georgia, sans-serif
+      sizeRem:
+        base: 2.875
+        mobile: 1.75
+      tiers:
+        w1440:
+          px: 46
+          source: computed
+        w375:
+          px: 28
+          source: computed
+      lineHeight: '1.18'
+      weight: 400
+      letterSpacing: -0.01em
+      case: sentence
+    h3:
+      family: Untitled Sans, Arial, sans-serif
+      sizeRem:
+        base: 1.1875
+      singleTierConfirmed: true
+      tiers:
+        w1440:
+          px: 19
+          source: computed
+      lineHeight: '1.7'
+      weight: 400
+      letterSpacing: normal
+      case: sentence
+    h4:
+      family: Untitled Sans, Arial, Helvetica, sans-serif
+      sizeRem:
+        base: 1.0
+      singleTierConfirmed: true
+      tiers:
+        w1440:
+          px: 16
+          source: computed
+      lineHeight: '1.5'
+      weight: 600
+      letterSpacing: normal
+      case: sentence
+    body:
+      family: Untitled Sans, Arial, sans-serif
+      sizeRem:
+        base: 1.1875
+        mobile: 1.125
+      tiers:
+        w1440:
+          px: 19
+          source: computed
+        w375:
+          px: 18
+          source: computed
+      lineHeight: '1.7'
+      weight: 400
+      letterSpacing: normal
+      case: sentence
+    control-text:
+      family: Untitled Sans, Arial, sans-serif
+      sizeRem:
+        base: 0.9375
+      singleTierConfirmed: true
+      tiers:
+        w1440:
+          px: 15
+          source: computed
+      lineHeight: '1.0'
+      weight: 400
+      letterSpacing: normal
+      case: sentence
+    nav-link:
+      family: Untitled Sans, Arial, sans-serif
+      sizeRem:
+        base: 1.0
+      singleTierConfirmed: true
+      tiers:
+        w1440:
+          px: 16
+          source: computed
+      lineHeight: '1.6'
+      weight: 400
+      letterSpacing: -0.01em
+      case: sentence
+    footer-sitemap-link:
+      family: Untitled Serif, Georgia, sans-serif
+      sizeRem:
+        base: 1.25
+      singleTierConfirmed: true
+      tiers:
+        w1440:
+          px: 20
+          source: computed
+      lineHeight: '1.3'
+      weight: 400
+      letterSpacing: normal
+      case: sentence
+    eyebrow:
+      family: Untitled Sans
+      sizeRem:
+        base: 0.875
+        tablet: 0.875
+        mobileL: 0.875
+        mobile: 0.875
+      lineHeight: 1.4em
+      weight: 600
+      letterSpacing: 0.02em
+      case: sentence
+      note: small section eyebrow/label register (e.g. 'Why Greenhouse', 'Proven leadership') — sentence
+        case sans microlabel above section headings
+      source: vision
+  spacing:
+    section-padding-light:
+      value: 8.125rem
+      role: contained feature section top/bottom padding
+      modeLadder:
+        base: 8.125rem
+        mobile: 4rem
+    section-padding-band:
+      value: 12.5rem
+      role: dark CTA band vertical padding
+      modeLadder:
+        base: 12.5rem
+        mobile: 5rem
+    footer-padding:
+      value: 6.25rem
+      role: footer top padding above sitemap
+    module-gap:
+      value: 3.75rem
+      role: column gap between feature cards
+    heading-to-body:
+      value: 2.75rem
+      role: grounding headingToBody 44px
+    body-to-cta:
+      value: 3.75rem
+      role: grounding bodyToCta 60px
+    container-max:
+      value: 90rem
+    container-span:
+      value: min(100cqw, 90rem)
+    radius-global:
+      value: 24px
+      role: shared control and component radius
+      provenance:
+        source: buttons.primary-green.radius
+        confidence: high
+    eyebrow-to-heading:
+      value: 1.5rem
+      role: eyebrow→heading gap (grounding gapPx ~24-28px)
+      modeLadder:
+        base: 1.5rem
+        mobile: 1rem
+      source: vision
+    panel-padding:
+      value: 2rem
+      role: card/panel inset (white product-UI card padding ~32px)
+      source: vision
+  surfaces:
+    surface/primary:
+      bg: '#ffffff'
+      intent: default canvas
+      textPrimary: text/primary
+      textSecondary: null
+      textAccent: accent/primary
+      provenance:
+      - home-section-01
+    surface/tint:
+      bg: '#c9f0e6'
+      intent: mint card panel
+      textPrimary: text/primary
+      textAccent: accent/primary
+      provenance:
+      - compare-section-02
+    surface/muted:
+      bg: '#f5f5f5'
+      intent: neutral grey feature panel
+      textPrimary: text/primary
+      provenance:
+      - talent-sourcing-section-06
+    surface/inverse:
+      bg: '#15372c'
+      intent: dark forest-green bookend band and footer
+      textPrimary: text/on-inverse
+      textAccent: accent/soft
+      provenance:
+      - home-section-04
+      - home-section-05
+    surface/panel:
+      bg: '#ffffff'
+      intent: default canvas
+      textPrimary: text/primary
+      textSecondary: null
+      textAccent: accent/primary
+      provenance:
+      - home-section-01
+      canonicalAliasOf: surface/primary
+      projectionProvenance: existing measured surface role
+    surface/inverse-strong:
+      bg: '#15372c'
+      intent: dark forest-green bookend band and footer
+      textPrimary: text/on-inverse
+      textAccent: accent/soft
+      provenance:
+      - home-section-04
+      - home-section-05
+      canonicalAliasOf: surface/inverse
+      projectionProvenance: existing measured surface role
+  shadow:
+    raised:
+      value: 0 8px 24px rgba(0, 0, 0, 0.10)
+      role: floating product-UI card lift
+      provenance:
+      - home-section-00
+    subtle:
+      value: 0 4px 12px rgba(0, 0, 0, 0.08)
+      role: resting media-well card lift
+      provenance:
+      - talent-sourcing-section-06
+  motion:
+    buttonTransition: all .15s
+    primaryButtonTransition: all .2s
+    linkColorTransition: color .5s linear
+    dominantDuration: 150ms
+    dominantEasing: ease
+    easings:
+      standard: ease
+    principle: Restrained, short interaction transitions on buttons and links; staged scroll-reveal of
+      floating hero cards.
+surfaceGrammar:
+  roles:
+  - surface/primary
+  - surface/tint
+  - surface/muted
+  - surface/inverse
+  transitions:
+  - light canvas sections alternate with dark forest-green bookend bands (CTA, footer)
+  - tinted mint and grey panels nest inside the light canvas for feature and comparison modules
+  nesting:
+  - white product-UI cards and media-wells float over both tint and canvas surfaces
+  confidence: high
+  source: creation
+  scope: design-language
+typography:
+  value:
+    displayFamily: Untitled Serif, Georgia, sans-serif
+    textFamily: Untitled Sans, Arial, sans-serif
+    headingWeight: 400
+    emphasisWeight: 500
+    principle: Large serif display and headings paired with humanist grotesque sans for body, navigation
+      and controls; headings run sentence case with tight negative tracking.
+  confidence: high
+  source: creation
+  scope: design-language
+spacing:
+  value:
+    rhythm: Generous vertical rhythm — contained feature sections ~130px, dark CTA bands ~200px, footer
+      ~120px top padding.
+    columnGap: 3.75rem
+  confidence: high
+  source: creation
+  scope: design-language
+surfaces:
+  value:
+    canvas: surface/primary
+    bookend: surface/inverse
+    panels:
+    - surface/tint
+    - surface/muted
+  confidence: high
+  source: creation
+  scope: design-language
+buttons:
+  primary-green:
+    role: primary emerald action
+    background: '#008561'
+    color: '#ffffff'
+    border: '1px solid #008561'
+    radius: 24px
+    padding: 12px 32px
+    fontFamily: Untitled Sans, Arial, sans-serif
+    fontSize: 15px
+    widthBehavior: hug
+    hoverBackground: '#006147'
+    confidence: high
+    style: filled
+    bg: '#008561'
+    fg: '#ffffff'
+    bgHover: '#006147'
+    fgHover: '#ffffff'
+    focus: 'hover/focus share green-800 fill (border+bg #006147)'
+    height:
+      notObserved: true
+      reason: no control height in css-facts hoverRules measurement source
+  primary-blue:
+    role: demo-request action
+    background: '#3574d6'
+    color: '#ffffff'
+    border: '1px solid #3574d6'
+    radius: 24px
+    padding: 12px 32px
+    fontFamily: Untitled Sans, Arial, sans-serif
+    fontSize: 15px
+    widthBehavior: hug
+    hoverBackground: '#3860be'
+    confidence: high
+    style: filled
+    bg: '#3574d6'
+    fg: '#ffffff'
+    bgHover: '#3860be'
+    fgHover: '#ffffff'
+    focus: 'hover/focus share blue-600 fill (border+bg #3860be)'
+    height:
+      notObserved: true
+      reason: no control height in css-facts hoverRules measurement source
+  outline-dark:
+    role: secondary outline action on light
+    background: transparent
+    color: '#15372c'
+    border: '1px solid #15372c'
+    radius: 24px
+    padding: 12px 32px
+    fontFamily: Untitled Sans, Arial, sans-serif
+    fontSize: 15px
+    widthBehavior: hug
+    hoverBackground: '#15372c'
+    hoverColor: '#ffffff'
+    confidence: high
+    style: outline
+    bg: transparent
+    fg: '#15372c'
+    bgHover: '#15372c'
+    fgHover: '#ffffff'
+    focus: 'hover/focus share green-950 fill, label #fff'
+  outline-white:
+    role: secondary outline action on dark bands
+    background: transparent
+    color: '#ffffff'
+    border: '1px solid #ffffff'
+    radius: 24px
+    padding: 12px 30px
+    fontFamily: Untitled Sans, Arial, sans-serif
+    fontSize: 14px
+    widthBehavior: hug
+    hoverBackground: '#ffffff'
+    hoverColor: '#15372c'
+    confidence: high
+    style: outline
+    bg: transparent
+    fg: '#ffffff'
+    bgHover: '#ffffff'
+    fgHover: '#15372c'
+    focus: hover fills white, label green-950
+  text-green:
+    role: inline text action in emerald
+    background: transparent
+    color: '#008561'
+    border: none
+    radius: '0'
+    padding: '0'
+    fontFamily: Untitled Sans, Arial, sans-serif
+    fontSize: 15px
+    widthBehavior: hug
+    hoverColor: '#006b4a'
+    confidence: high
+    style: text-link
+    bg: transparent
+    fg: '#008561'
+    fgHover: '#006b4a'
+    decoration: no underline idle; hover text-decoration:none, ink shifts to green-700
+blocks:
+  hero:
+    archetype: centered-copy-with-floating-media
+    surface: surface/tint
+    headingRole: display-hero
+    bodyRole: body
+    actions:
+    - primary-green
+    - text-green
+    note: centered copy stack with floating portrait photos and product-UI chips scattered around
+    origin: designed
+    confidence: medium
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No hero was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    overridable: true
+    notInReplica: true
+  featureGrid:
+    archetype: three-column-media-top-cards
+    surface: surface/primary
+    columns: 3
+    headingRole: h3
+    bodyRole: body
+    actions:
+    - outline-dark
+    - text-green
+    origin: designed
+    confidence: medium
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No featureGrid was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    overridable: true
+    notInReplica: true
+  logos:
+    archetype: split-copy-and-logo-grid
+    surface: surface/primary
+    headingRole: h2
+    actions:
+    - primary-green
+    origin: designed
+    confidence: medium
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No logos was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    overridable: true
+    notInReplica: true
+  comparison:
+    archetype: pill-filtered-comparison-card
+    surface: surface/tint
+    headingRole: h1
+    controlRole: control-text
+    origin: designed
+    confidence: medium
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No comparison was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    overridable: true
+    notInReplica: true
+  stats:
+    archetype: three-column-number-over-caption
+    surface: surface/muted
+    headingRole: display-hero
+    bodyRole: body
+    actions:
+    - text-green
+    origin: designed
+    confidence: medium
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No stats was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    overridable: true
+    notInReplica: true
+  testimonial:
+    archetype: three-column-quote-blocks
+    surface: surface/primary
+    headingRole: h1
+    bodyRole: body
+    origin: designed
+    confidence: medium
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No testimonial was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    overridable: true
+    notInReplica: true
+  ctaBand:
+    archetype: copy-left-decorative-art-right
+    surface: surface/inverse
+    headingRole: h1
+    actions:
+    - primary-blue
+    origin: designed
+    confidence: medium
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No ctaBand was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    overridable: true
+    notInReplica: true
+  footer:
+    archetype: multi-column-sitemap-with-newsletter
+    surface: surface/inverse
+    linkRole: footer-sitemap-link
+    actions:
+    - outline-white
+    origin: designed
+    confidence: medium
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No footer was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    overridable: true
+    notInReplica: true
+  header:
+    notObserved: true
+    reason: Universal block contract 'header' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No header was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  content-block:
+    notObserved: true
+    reason: Universal block contract 'content-block' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No content-block was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  card:
+    origin: extracted
+    provenance:
+    - evidence/grounding/*.yaml#components[]
+    confidence: medium
+    note: Observed in fresh grounding or a measured extracted block archetype.
+    variants:
+    - id: media-well
+      anatomy: media-well top -> heading -> body -> CTA (outlined pill or underlined text link)
+      surfaceApprox: transparent
+    - id: filled-surface
+      anatomy: filled panel/white card holding media-well (screenshot or UI fragments) -> heading -> body
+      surfaceApprox: '#f2f2f0/#ffffff'
+    - id: text-only
+      anatomy: quote mark -> multi-line quote body -> serif attribution name -> role meta caption
+      surfaceApprox: transparent
+  form:
+    notObserved: true
+    reason: Universal block contract 'form' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No form was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  stat-block:
+    notObserved: true
+    reason: Universal block contract 'stat-block' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No stat-block was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  navbar:
+    notObserved: true
+    reason: Universal block contract 'navbar' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No navbar was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  accordion:
+    notObserved: true
+    reason: Universal block contract 'accordion' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No accordion was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  accordion-item:
+    notObserved: true
+    reason: Universal block contract 'accordion-item' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No accordion-item was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  tabs:
+    notObserved: true
+    reason: Universal block contract 'tabs' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No tabs was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  logo-bar:
+    notObserved: true
+    reason: Universal block contract 'logo-bar' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No logo-bar was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  feature-item:
+    notObserved: true
+    reason: Universal block contract 'feature-item' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No feature-item was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  pricing-card:
+    notObserved: true
+    reason: Universal block contract 'pricing-card' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No pricing-card was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  banner:
+    notObserved: true
+    reason: Universal block contract 'banner' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No banner was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  modal:
+    notObserved: true
+    reason: Universal block contract 'modal' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No modal was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  dropdown-menu:
+    notObserved: true
+    reason: Universal block contract 'dropdown-menu' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No dropdown-menu was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  breadcrumb:
+    notObserved: true
+    reason: Universal block contract 'breadcrumb' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No breadcrumb was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  pagination:
+    notObserved: true
+    reason: Universal block contract 'pagination' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No pagination was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  table:
+    notObserved: true
+    reason: Universal block contract 'table' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No table was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  carousel:
+    notObserved: true
+    reason: Universal block contract 'carousel' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No carousel was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  steps:
+    notObserved: true
+    reason: Universal block contract 'steps' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No steps was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  step-item:
+    notObserved: true
+    reason: Universal block contract 'step-item' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No step-item was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  cta-block:
+    notObserved: true
+    reason: Universal block contract 'cta-block' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No cta-block was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  media-text:
+    notObserved: true
+    reason: Universal block contract 'media-text' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No media-text was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+actionGroup:
+  families:
+  - id: primary-green
+    visibleLabel: Explore platform
+    accessibleName: Explore platform
+    host: filled-pill
+    measuredWidth: 182.953
+  - id: primary-blue
+    visibleLabel: Request a demo
+    accessibleName: Request a demo
+    host: filled-pill
+    measuredWidth: 178.656
+  - id: outline-dark
+    visibleLabel: See AI features
+    accessibleName: See AI features
+    host: outline-pill
+    measuredWidth: 171.391
+  - id: nav-sign-in
+    visibleLabel: Sign In
+    accessibleName: Sign In
+    host: outline-pill
+    measuredWidth: 135.453
+  - id: nav-dropdown-trigger
+    visibleLabel: Platform
+    accessibleName: Platform
+    ariaLabel: ''
+    host: nav-text-trigger
+    measuredWidth: 63
+    note: source accessibleName conflates hidden 'Open menu for' screen-reader text; painted label is
+      'Platform' only and must not be expanded
+  origin: designed
+  confidence: high
+  provenance: []
+signatures:
+- Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+- Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint canvas
+- Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf line
+  art
+- Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+- Circular emerald brand badge with a lowercase g glyph
+voice:
+  value:
+    ref: voice-facts.yaml
+    tone: confident, plain-spoken, benefit-led
+    dials:
+      variance: low
+      motion: restrained
+      density: medium
+  confidence: high
+  source: creation
+  scope: design-language
+  motionSpec:
+    durations:
+      fast: 150ms
+      base: 300ms
+      slow: 500ms
+    easing:
+      primary: cubic-bezier(0.645, 0.045, 0.355, 1)
+    reducedMotion: declared
+    source: motion-audit
+    confidence: high
+    note: durations from transitionCensus (all .15s dominant; .3s cubic-bezier color/border tweens); easing
+      from the source's dominant cubic-bezier
+motion:
+  value:
+    buttonTransition: all .15s
+    primaryButtonTransition: all .2s
+    linkColorTransition: color .5s linear
+    dominantDuration: 150ms
+    dominantEasing: ease
+    easings:
+    - ease
+    - ease-in
+    - cubic-bezier(.645, .045, .355, 1)
+    principle: Restrained, short interaction transitions on buttons and links; staged scroll-reveal of
+      floating hero cards.
+  confidence: high
+  source: creation
+  scope: design-language
+navbar:
+  archetype: wordmark-left-links-center-actions-right
+  surface:
+    bg: '#ffffff'
+    color: '#15372c'
+    note: chrome bar effective bg (header background-color measured transparent over the white page canvas;
+      ink navLink rgb(21,55,44))
+  casing: sentence
+  separators: whitespace-only
+  wordmark:
+    label: greenhouse
+    href: /
+    ariaLabel: Greenhouse Home Link
+  utilityLinks:
+  - label: Skip to Content
+    href: '#main'
+    role: skip-link
+  primary:
+  - label: Platform
+    role: dropdown-trigger
+    note: painted label only; hidden 'Open menu for' screen-reader text is not painted
+    utilityNotObserved: true
+  - label: Why Greenhouse
+    role: dropdown-trigger
+    utilityNotObserved: true
+  - label: Resources
+    role: dropdown-trigger
+    utilityNotObserved: true
+  - label: About
+    role: dropdown-trigger
+    utilityNotObserved: true
+  - label: Community
+    role: dropdown-trigger
+    utilityNotObserved: true
+  actions:
+  - id: nav-sign-in
+    label: Sign In
+    href: https://app.greenhouse.io/users/sign_in
+    role: secondary-outline
+  - id: nav-demo
+    label: Request a demo
+    href: /demo
+    role: primary-filled
+  trailing:
+  - role: search-glyph
+    note: magnifier icon at far right of navbar
+  utility: []
+  measured:
+    link:
+      fontSize: 14
+      fontWeight: 400
+      color: rgb(21, 55, 44)
+      fontFamily: Untitled Sans
+      lineHeight: 20px
+      _provenance: computed-styles.json chrome.navLink
+footer:
+  archetype: multi-column-sitemap-with-newsletter
+  surface:
+    bg:
+      notObserved: true
+      reason: no measured chrome-bar bg color in evidence scan
+  casing: sentence
+  linkRole: footer-sitemap-link
+  columns:
+  - heading: Platform
+    links:
+    - label: Only in Greenhouse
+      href: /platform
+    - label: Latest product features
+      href: /greenhouse-latest-features
+    - label: Pricing
+      href: /pricing
+    - label: Security
+      href: /security
+    - label: Ethical principles
+      href: /ethical-principles
+    - label: AI principles
+      href: /ai-principles
+    - label: Bias audit statement
+      href: /bias-audit-statement
+    - label: APIs
+      href: /api
+  - heading: Solutions
+    links:
+    - label: AI recruiting
+      href: /ai-recruiting
+    - label: Talent sourcing
+      href: /talent-sourcing
+    - label: Scalable workflows
+      href: /scalable-workflows
+    - label: Candidate experience
+      href: /candidate-experience
+    - label: Interviewing & decision-making
+      href: /interviewing-decision-making
+    - label: Talent matching
+      href: /real-talent-candidate-matching
+    - label: Onboarding
+      href: /onboarding
+    - label: Reporting & insights
+      href: /reporting-insights
+    - label: Integrations
+      href: https://integrations.greenhouse.com/
+  - heading: Why Greenhouse
+    links:
+    - label: How we compare
+      href: /compare
+    - label: Return on your hiring investment
+      href: /roi-with-greenhouse
+    - label: Your partner in success
+      href: /customer-success
+  - heading: Greenhouse for
+    links:
+    - label: Early-stage business
+      href: /early-stage
+    - label: Scaling company
+      href: /scaling-company
+    - label: Enterprise
+      href: /enterprise
+    - label: Job seekers
+      href: https://my.greenhouse.com/
+  - heading: Resources
+    links:
+    - label: Blog
+      href: /blog
+    - label: Guidance
+      href: /guidance
+    - label: Customer stories
+      href: /customer-stories
+    - label: Hiring glossary
+      href: /resources/glossary
+  - heading: About
+    links:
+    - label: Company
+      href: /company
+    - label: Press & awards
+      href: /press
+    - label: Newsroom
+      href: /newsroom
+    - label: Careers
+      href: /careers
+    - label: Contact
+      href: /contact
+  - heading: Community
+    links:
+    - label: Events & webinars
+      href: /events
+    - label: Open
+      href: /greenhouse-open-thank-you
+    - label: Talent Makers
+      href: /talent-makers
+    - label: Newsletter
+      href: /newsletter
+    - label: Partnerships
+      href: /greenhouse-partner-resource-center
+  - heading: Support
+    links:
+    - label: Learn Greenhouse
+      href: https://learn.greenhouse.io/
+    - label: Customer support
+      href: https://support.greenhouse.io/hc/en-us
+    - label: Developer resources
+      href: https://developers.greenhouse.io/
+  newsletter:
+    heading: Modern Recruiter newsletter
+    body: Our bi-weekly newsletter full of inspiration, podcasts, trends and news.
+    fieldLabel: Email address
+    action:
+      label: Subscribe
+      role: secondary-outline
+  localeSelector:
+    heading: Choose your language
+    options:
+    - label: English (US)
+      state: current
+    - label: English (UK)
+    - label: Deutsch
+  social:
+  - network: Facebook
+    href: https://www.facebook.com/greenhouse.io/
+  - network: LinkedIn
+    href: https://www.linkedin.com/company/greenhouse-inc-/
+  - network: YouTube
+    href: https://www.youtube.com/channel/UCwLlhrx5lFssgTwKCHEuC8g
+  - network: Instagram
+    href: https://www.instagram.com/greenhousesoftware/
+  - network: TikTok
+    href: https://www.tiktok.com/@greenhouse_software
+  legalLinks:
+  - label: Cookie preferences
+    role: text
+  - label: Privacy policy
+    href: /privacy-policy
+  - label: Terms of service
+    href: /legal
+  legalText: © 2026 Greenhouse Software, Inc. All rights reserved. Greenhouse, the G Logo, “Hire for what’s
+    next,” “The/your all-together hiring platform,” “Talent Makers,” “Real Talent” and “Strong Yes” are
+    among the trademarks of Greenhouse Software, Inc.
+  presentation:
+    notObserved: true
+    reason: no presentation block or measured.link facts in evidence scan
+  legal:
+    text: © 2026 Greenhouse Software, Inc. All rights reserved. Greenhouse, the G Logo, “Hire for what’s
+      next,” “The/your all-together hiring platform,” “Talent Makers,” “Real Talent” and “Strong Yes”
+      are among the trademarks of Greenhouse Software, Inc.
+layouts:
+- id: hero
+  archetype: centered-copy-with-floating-media
+  useCase: 'Full-bleed opening hero: centered copy stack in the middle with floating portrait photos and
+    product-UI chips scattered left/right over a mint canvas, navbar pinned top.'
+  patternRef:
+    lib: project
+    id: hero
+  slots:
+  - name: heading
+    role: primary-heading
+    type: content
+    textLen: medium
+    sizeClass: display
+    geometry: centered, display serif ~96px
+    copyBinding: layoutCopy.hero.heading
+  - name: body
+    role: supporting-body
+    type: content
+    textLen: medium
+    sizeClass: body
+    geometry: centered under heading, ~21px
+    copyBinding: layoutCopy.hero.body
+  - name: primaryCta
+    role: primary-action
+    type: action
+    textLen: word
+    sizeClass: control
+    width: hug
+    geometry: filled green pill, radius 28, padding 18 40
+    copyBinding: layoutCopy.hero.cta
+  - name: ghostCta
+    role: secondary-action
+    type: action
+    textLen: short
+    sizeClass: control
+    width: hug
+    geometry: text-underline link
+    copyBinding: layoutCopy.hero.ghost
+  - name: floatingPortraits
+    role: decorative-media-collage
+    type: image
+    mediaAspect: portrait
+    z: front
+    geometry: circle/rounded-rect cropped portraits floating on canvas
+    copyBinding: none
+    assets:
+    - 030-689610cd7418c453485571fd-home-hero-m-clusters-of-three-solutions-workflows-with-photos-of-ui-and-people-working-402x.png
+  blockMapping:
+  - slot: heading
+    role: primary-heading
+    contract: header
+  - slot: body
+    role: supporting-body
+    contract: content-block
+  - slot: primaryCta
+    role: primary-action
+    contract: button
+  - slot: ghostCta
+    role: secondary-action
+    contract: button
+  - slot: floatingPortraits
+    role: decorative-media-collage
+    contract: image
+  requiresHydration: true
+  surfaceIntent: surface/tint
+  origin: extracted
+  provenance:
+  - home-section-00
+- id: featureGrid
+  archetype: three-column-media-top-cards
+  useCase: 'Heading full-width top, then a 3-up card row below; each card: media-well top -> serif heading
+    -> body -> trailing text link/CTA.'
+  patternRef:
+    lib: project
+    id: featureGrid
+  slots:
+  - name: heading
+    role: section-heading
+    type: content
+    textLen: long
+    sizeClass: hero
+    geometry: full-width serif ~66px, tight tracking
+    copyBinding: layoutCopy.featureGrid.heading
+  - name: itemMedia
+    role: card-media-well
+    type: image
+    mediaAspect: landscape
+    z: back
+    geometry: rounded landscape photo, radius 6, one per card
+    copyBinding: layoutCopy.featureGrid.items[].media
+    assets:
+    - 046-6849817eafb5f7300bca18d3-revlon.png
+  - name: items
+    type: content
+    role: feature-card-list (media-well -> heading -> body -> action)
+  blockMapping:
+  - slot: heading
+    role: section-heading
+    contract: header
+  - slot: itemMedia
+    role: card-media-well
+    contract: image
+  - slot: items
+    role: feature-card-list (media-well -> heading -> body -> action)
+    contract: image
+  requiresHydration: true
+  surfaceIntent: surface/primary
+  origin: extracted
+  provenance:
+  - home-section-03
+  - home-section-01
+- id: logos
+  archetype: split-copy-and-logo-grid
+  useCase: 'Split ~50/50 band: copy left (heading + primary CTA) and a 2-column brand logo grid right,
+    divided by a vertical rule.'
+  patternRef:
+    lib: project
+    id: logos
+  slots:
+  - name: heading
+    role: section-heading
+    type: content
+    textLen: short
+    sizeClass: title
+    geometry: serif ~44px, left column
+    copyBinding: layoutCopy.logos.heading
+  - name: cta
+    role: primary-action
+    type: action
+    textLen: short
+    sizeClass: control
+    width: hug
+    geometry: filled green pill, radius 28, padding 16 36
+    copyBinding: layoutCopy.logos.cta
+  - name: logoGrid
+    role: partner-logo-wall
+    type: logo
+    mediaAspect: freeform
+    z: back
+    geometry: 2-column grid, 6 logotypes centered in cells
+    copyBinding: layoutCopy.logos.logos[]
+    assets:
+    - 046-6849817eafb5f7300bca18d3-revlon.png
+  blockMapping:
+  - slot: heading
+    role: section-heading
+    contract: header
+  - slot: cta
+    role: primary-action
+    contract: button
+  - slot: logoGrid
+    role: partner-logo-wall
+    contract: logo-bar
+  requiresHydration: true
+  surfaceIntent: surface/primary
+  origin: extracted
+  provenance:
+  - home-section-02
+- id: comparison
+  archetype: pill-filtered-comparison-card
+  useCase: Heading + body top, a pill filter row, then a split comparison card left and a decorative media
+    panel right with a review-award badge.
+  patternRef:
+    lib: project
+    id: comparison
+  slots:
+  - name: eyebrow
+    role: eyebrow
+    type: content
+    textLen: short
+    sizeClass: caption
+    geometry: emerald eyebrow ~15px
+    copyBinding: layoutCopy.comparison.eyebrow
+  - name: heading
+    role: section-heading
+    type: content
+    textLen: short
+    sizeClass: hero
+    geometry: serif ~72px
+    copyBinding: layoutCopy.comparison.heading
+  - name: subhead
+    role: subheading
+    type: content
+    textLen: short
+    sizeClass: title
+    geometry: serif ~32px
+    copyBinding: layoutCopy.comparison.subhead
+  - name: body
+    role: supporting-body
+    type: content
+    textLen: medium
+    sizeClass: body
+    geometry: humanist sans ~17px
+    copyBinding: layoutCopy.comparison.body
+  - name: filters
+    role: filter-action-group
+    type: action
+    textLen: short
+    sizeClass: control
+    width: hug
+    geometry: 'pill row: 1 filled-primary current + 8 outlined idle, radius 24'
+    copyBinding: layoutCopy.comparison.filters[]
+  - name: comparisonRows
+    role: comparison-list
+    type: content
+    textLen: medium
+    sizeClass: body
+    z: back
+    geometry: 'mint card radius 16; rows: label -> brand dot -> HRIS dot -> ATS dot, divider between'
+    copyBinding: layoutCopy.comparison.items[]
+  - name: mediaPanel
+    role: decorative-media-well
+    type: media
+    mediaAspect: portrait
+    z: back
+    geometry: green media-well radius 16, fingerprint/leaf line-art with portrait chip overlay
+    copyBinding: none
+    assets: []
+  - name: awardBadge
+    role: review-award-badge
+    type: image
+    mediaAspect: portrait
+    z: front
+    geometry: G2 Users Love Us pennant badge, radius 4
+    copyBinding: none
+    assets:
+    - 018-69c3d50704945b1ced848f24-d-us-why-greenhouse-image-of-g2-badge-best-software-leader-spring-2026-nav-image-213x207.jpg
+  blockMapping:
+  - slot: eyebrow
+    role: eyebrow
+    contract: header
+  - slot: heading
+    role: section-heading
+    contract: header
+  - slot: subhead
+    role: subheading
+    contract: header
+  - slot: body
+    role: supporting-body
+    contract: content-block
+  - slot: filters
+    role: filter-action-group
+    contract: button
+  - slot: comparisonRows
+    role: comparison-list
+    contract: content-block
+  - slot: mediaPanel
+    role: decorative-media-well
+    contract: image
+  - slot: awardBadge
+    role: review-award-badge
+    contract: logo-bar
+  requiresHydration: true
+  surfaceIntent: surface/tint
+  origin: extracted
+  provenance:
+  - compare-section-02
+- id: stats
+  archetype: three-column-number-over-caption
+  useCase: 'Three equal centered columns; each column: big serif number -> description -> underlined text
+    link.'
+  patternRef:
+    lib: project
+    id: stats
+  slots:
+  - name: items
+    type: content
+    role: 'stat-column-list: figure plus description and source citation'
+  blockMapping:
+  - slot: items
+    role: 'stat-column-list: figure plus description and source citation'
+    contract: stat-block
+  requiresHydration: true
+  surfaceIntent: surface/muted
+  origin: extracted
+  provenance:
+  - talent-sourcing-section-07
+- id: testimonial
+  archetype: three-column-quote-blocks
+  useCase: 'Heading top-left, then a 3-column testimonial row below; each column: opening quote mark ->
+    quote body -> attribution name -> role meta caption.'
+  patternRef:
+    lib: project
+    id: testimonial
+  slots:
+  - name: heading
+    role: section-heading
+    type: content
+    textLen: short
+    sizeClass: hero
+    geometry: serif ~76px, top-left
+    copyBinding: layoutCopy.testimonial.heading
+  - name: items
+    type: content
+    role: testimonial-card-list (quote -> name -> meta)
+  blockMapping:
+  - slot: heading
+    role: section-heading
+    contract: header
+  - slot: items
+    role: testimonial-card-list (quote -> name -> meta)
+    contract: card
+  requiresHydration: true
+  surfaceIntent: surface/primary
+  origin: extracted
+  provenance:
+  - compare-section-05
+- id: ctaBand
+  archetype: copy-left-decorative-art-right
+  useCase: 'Full-bleed dark forest-green closing band: copy left (heading + filled CTA), decorative fingerprint-flower
+    line art right.'
+  patternRef:
+    lib: project
+    id: ctaBand
+  slots:
+  - name: heading
+    role: band-heading
+    type: content
+    textLen: short
+    sizeClass: hero
+    geometry: serif ~72px on dark band
+    copyBinding: layoutCopy.ctaBand.heading
+  - name: cta
+    role: primary-action
+    type: action
+    textLen: short
+    sizeClass: control
+    width: hug
+    geometry: filled blue pill, radius 24, padding 14 32
+    copyBinding: layoutCopy.ctaBand.cta
+  blockMapping:
+  - slot: heading
+    role: band-heading
+    contract: header
+  - slot: cta
+    role: primary-action
+    contract: button
+  requiresHydration: true
+  surfaceIntent: surface/inverse
+  origin: extracted
+  provenance:
+  - home-section-04
+primitives:
+  heading:
+    origin: extracted
+    provenance:
+    - brand.yaml#measured-block-slots
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live in the owning
+      family.
+  subheading:
+    origin: extracted
+    provenance:
+    - brand.yaml#measured-block-slots
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live in the owning
+      family.
+  eyebrow:
+    origin: extracted
+    provenance:
+    - brand.yaml#measured-block-slots
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live in the owning
+      family.
+  paragraph:
+    origin: extracted
+    provenance:
+    - brand.yaml#measured-block-slots
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live in the owning
+      family.
+  label:
+    notObserved: true
+    reason: Universal primitives contract 'label' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No label was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  button:
+    origin: extracted
+    provenance:
+    - evidence/grounding/*.yaml#components[]
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live in the owning
+      family.
+  link:
+    origin: extracted
+    provenance:
+    - evidence/grounding/*.yaml#components[]
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live in the owning
+      family.
+  cta:
+    origin: extracted
+    provenance:
+    - brand.yaml#measured-block-slots
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live in the owning
+      family.
+  image:
+    notObserved: true
+    reason: Universal primitives contract 'image' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No image was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  icon:
+    origin: extracted
+    provenance:
+    - evidence/grounding/*.yaml#components[]
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live in the owning
+      family.
+  logo:
+    origin: extracted
+    provenance:
+    - brand.yaml#measured-block-slots
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live in the owning
+      family.
+  pill:
+    origin: extracted
+    provenance:
+    - brand.yaml#measured-block-slots
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live in the owning
+      family.
+  badge:
+    origin: extracted
+    provenance:
+    - brand.yaml#measured-block-slots
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live in the owning
+      family.
+  input:
+    origin: extracted
+    provenance:
+    - evidence/grounding/*.yaml#components[]
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live in the owning
+      family.
+  form-field:
+    notObserved: true
+    reason: Universal primitives contract 'form-field' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No form-field was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  toggle:
+    notObserved: true
+    reason: Universal primitives contract 'toggle' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No toggle was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  select:
+    notObserved: true
+    reason: Universal primitives contract 'select' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No select was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  checkbox:
+    notObserved: true
+    reason: Universal primitives contract 'checkbox' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No checkbox was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  radio:
+    notObserved: true
+    reason: Universal primitives contract 'radio' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No radio was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  quote:
+    origin: extracted
+    provenance:
+    - brand.yaml#measured-block-slots
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live in the owning
+      family.
+  avatar:
+    origin: extracted
+    provenance:
+    - evidence/grounding/*.yaml#components[]
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live in the owning
+      family.
+  rating:
+    notObserved: true
+    reason: Universal primitives contract 'rating' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No rating was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  video:
+    notObserved: true
+    reason: Universal primitives contract 'video' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No video was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  divider:
+    notObserved: true
+    reason: Universal primitives contract 'divider' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No divider was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  stat:
+    origin: extracted
+    provenance:
+    - brand.yaml#measured-block-slots
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live in the owning
+      family.
+  caption:
+    origin: extracted
+    provenance:
+    - brand.yaml#measured-block-slots
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live in the owning
+      family.
+  list:
+    origin: extracted
+    provenance:
+    - brand.yaml#measured-block-slots
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live in the owning
+      family.
+  code:
+    notObserved: true
+    reason: Universal primitives contract 'code' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No code was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  icon-button:
+    notObserved: true
+    reason: Universal primitives contract 'icon-button' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No icon-button was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  illustration:
+    notObserved: true
+    reason: Universal primitives contract 'illustration' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No illustration was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  progress:
+    notObserved: true
+    reason: Universal primitives contract 'progress' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No progress was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  tooltip:
+    notObserved: true
+    reason: Universal primitives contract 'tooltip' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No tooltip was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  spacer:
+    notObserved: true
+    reason: Universal primitives contract 'spacer' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No spacer was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  textarea:
+    notObserved: true
+    reason: Universal primitives contract 'textarea' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No textarea was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  slider:
+    notObserved: true
+    reason: Universal primitives contract 'slider' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No slider was observed on the source page; synthesized on-brand from measured signals (color
+        token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role
+        grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used
+        in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  file-upload:
+    notObserved: true
+    reason: Universal primitives contract 'file-upload' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No file-upload was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+scaffolds:
+  section-stack:
+    notObserved: true
+    reason: Universal scaffolds contract 'section-stack' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No section-stack was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  section-split:
+    notObserved: true
+    reason: Universal scaffolds contract 'section-split' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No section-split was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  section-split-content-form:
+    notObserved: true
+    reason: Universal scaffolds contract 'section-split-content-form' was not present in fresh grounding
+      components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No section-split-content-form was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border / shadow
+        grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand
+        signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  section-split-fullbleed:
+    notObserved: true
+    reason: Universal scaffolds contract 'section-split-fullbleed' was not present in fresh grounding
+      components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No section-split-fullbleed was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border / shadow
+        grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand
+        signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  section-stack-fullbleed:
+    notObserved: true
+    reason: Universal scaffolds contract 'section-stack-fullbleed' was not present in fresh grounding
+      components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No section-stack-fullbleed was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border / shadow
+        grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand
+        signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  layout-grid:
+    notObserved: true
+    reason: Universal scaffolds contract 'layout-grid' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No layout-grid was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  layout-bento:
+    notObserved: true
+    reason: Universal scaffolds contract 'layout-bento' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No layout-bento was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  layout-row:
+    notObserved: true
+    reason: Universal scaffolds contract 'layout-row' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No layout-row was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  layout-stack:
+    notObserved: true
+    reason: Universal scaffolds contract 'layout-stack' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No layout-stack was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  layout-split:
+    notObserved: true
+    reason: Universal scaffolds contract 'layout-split' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No layout-split was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  header-scaffold:
+    notObserved: true
+    reason: Universal scaffolds contract 'header-scaffold' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No header-scaffold was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  logos-wrapper:
+    notObserved: true
+    reason: Universal scaffolds contract 'logos-wrapper' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - Fully rounded pill action buttons (24-25px radius) in emerald green, blue and outline variants
+      - Large Untitled Serif sentence-case display headings with tight negative tracking on a sage/mint
+        canvas
+      - Dark forest-green (#15372c) bookend bands for CTA and footer, with decorative fingerprint-leaf
+        line art
+      - Floating white product-UI cards and circle-cropped portraits scattered over tinted panels
+      note: No logos-wrapper was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow grammar,
+        surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures).
+        Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+meta:
+  canonicalTier:
+    viewport: 1440
+    note: canonical values measured from evidence/section-rects.json
+contracts:
+  primitives: ../../../brand_pipeline/contracts/primitives.yaml
+  blocks: ../../../brand_pipeline/contracts/blocks.yaml
+  scaffolds: ../../../brand_pipeline/contracts/scaffolds.yaml
+checks:
+  C27:
+    notObserved: true
+    reason: No supplied spec sections, affected-field evidence, or component fragments define C27 anatomy;
+      registry bindings are owned by media-assets.yaml, outside the allowed patch path.

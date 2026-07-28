@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "relume-test.readability.v1",
+  "item": "01 HubSpot",
+  "thresholds": {
+    "normalText": 4.5,
+    "largeText": 3.0,
+    "controlBoundary": 3.0
+  },
+  "viewports": [
+    {
+      "checkedTextRegions": 93,
+      "checkedControls": 41,
+      "worstTextContrast": 3.4,
+      "failures": [
+        {
+          "kind": "text",
+          "state": "rest",
+          "selector": "a.c-button.c-button--primary",
+          "text": "Get a demo",
+          "ratio": 3.4,
+          "threshold": 4.5,
+          "fg": "rgb(255, 255, 255)",
+          "bg": "rgb(255,72,0)",
+          "fontSize": 16
+        },
+        {
+          "kind": "text",
+          "state": "rest",
+          "selector": "a.c-button.c-button--primary",
+          "text": "Get a demo",
+          "ratio": 3.4,
+          "threshold": 4.5,
+          "fg": "rgb(255, 255, 255)",
+          "bg": "rgb(255,72,0)",
+          "fontSize": 16
+        },
+        {
+          "kind": "text",
+          "state": "rest",
+          "selector": "a.c-button.c-button--primary",
+          "text": "Get a demo",
+          "ratio": 3.4,
+          "threshold": 4.5,
+          "fg": "rgb(255, 255, 255)",
+          "bg": "rgb(255,72,0)",
+          "fontSize": 16
+        },
+        {
+          "kind": "control-boundary",
+          "state": "rest",
+          "selector": "a.c-button.c-button--primary",
+          "ratio": 2.68,
+          "threshold": 3
+        }
+      ],
+      "viewport": "desktop",
+      "computedRhythm": {
+        "surfaces": [
+          "surface/photo-hero",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/accent-wash",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/inverse",
+          "surface/inverse-strong"
+        ],
+        "sectionPaddingPx": [
+          176,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64
+        ],
+        "containerWidthPx": 1080,
+        "columnGapPx": 80,
+        "gridGapPx": 32,
+        "actionGapPx": 16,
+        "eyebrowToHeadingPx": 24,
+        "headingToBodyPx": 32,
+        "declared": {
+          "section": "4rem",
+          "sectionMobile": "2.5rem",
+          "container": "67.5rem",
+          "column": "5rem",
+          "columnMobile": "2rem",
+          "grid": "2rem",
+          "gridMobile": "2rem",
+          "action": "1rem"
+        },
+        "failures": []
+      },
+      "stateFailures": []
+    },
+    {
+      "checkedTextRegions": 88,
+      "checkedControls": 36,
+      "worstTextContrast": 3.4,
+      "failures": [
+        {
+          "kind": "text",
+          "state": "rest",
+          "selector": "a.c-button.c-button--primary",
+          "text": "Get a demo",
+          "ratio": 3.4,
+          "threshold": 4.5,
+          "fg": "rgb(255, 255, 255)",
+          "bg": "rgb(255,72,0)",
+          "fontSize": 16
+        },
+        {
+          "kind": "text",
+          "state": "rest",
+          "selector": "a.c-button.c-button--primary",
+          "text": "Get a demo",
+          "ratio": 3.4,
+          "threshold": 4.5,
+          "fg": "rgb(255, 255, 255)",
+          "bg": "rgb(255,72,0)",
+          "fontSize": 16
+        },
+        {
+          "kind": "control-boundary",
+          "state": "rest",
+          "selector": "a.c-button.c-button--primary",
+          "ratio": 2.68,
+          "threshold": 3
+        }
+      ],
+      "viewport": "mobile",
+      "computedRhythm": {
+        "surfaces": [
+          "surface/photo-hero",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/accent-wash",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/inverse",
+          "surface/inverse-strong"
+        ],
+        "sectionPaddingPx": [
+          64,
+          40,
+          40,
+          40,
+          40,
+          40,
+          40,
+          40,
+          40,
+          40
+        ],
+        "containerWidthPx": 358,
+        "columnGapPx": 32,
+        "gridGapPx": 32,
+        "actionGapPx": 16,
+        "eyebrowToHeadingPx": 16,
+        "headingToBodyPx": 24,
+        "declared": {
+          "section": "4rem",
+          "sectionMobile": "2.5rem",
+          "container": "67.5rem",
+          "column": "5rem",
+          "columnMobile": "2rem",
+          "grid": "2rem",
+          "gridMobile": "2rem",
+          "action": "1rem"
+        },
+        "failures": []
+      },
+      "stateFailures": []
+    }
+  ],
+  "status": "fail"
+}

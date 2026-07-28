@@ -1,0 +1,59 @@
+{
+  "layout": "gallery-showcase",
+  "brand": "WoodWave Gallery",
+  "composition_mode": false,
+  "neverDo": {
+    "no-buttons": true,
+    "no-radius": true,
+    "no-shadows": true,
+    "no-gradients": true,
+    "no-cards-on-cream": true,
+    "no-accent-on-light": true,
+    "no-boxed-inputs": true,
+    "no-text-on-photos": true,
+    "no-section-hairlines": true,
+    "no-default-fonts": true,
+    "no-centered-everything": true
+  },
+  "neverDo_allowed": [],
+  "fidelity": {
+    "pass": true,
+    "checks": {
+      "Surface = brand surface/primary (#FAF0E8)": true,
+      "Display family present (Melodrama)": true,
+      "Brand media present (expect ~1)": true,
+      "Brand assets present (not placeholder)": true
+    }
+  },
+  "slop": {
+    "pass": true,
+    "checks": {
+      "No default/system display font": true,
+      "No off-palette hex colors": true,
+      "No lorem/placeholder copy": true,
+      "All brand image assets present": true,
+      "Rounding matches brand radius scale": true,
+      "Webfonts loaded (no silent system fallback)": true
+    }
+  },
+  "invariants": {
+    "mode": "advisory",
+    "pass": true,
+    "checks": {
+      "single-accent": true,
+      "primitive-only": true,
+      "rhythm": true,
+      "data-composition": true,
+      "slot-resolution": true,
+      "text-contrast": true,
+      "decoration-salience": true,
+      "occlusion": true,
+      "band-attribution": true
+    },
+    "details": {
+      "text-contrast": "3 text elements measured against their effective background (surface + decoration layer); worst = -/c-caption('Central nave') at 8.78 (floor 4.5); skipped=0",
+      "decoration-salience": "no decoration layers (ghost word / watermark) in this render"
+    }
+  },
+  "overall": true
+}

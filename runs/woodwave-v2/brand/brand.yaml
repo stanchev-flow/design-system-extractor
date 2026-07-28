@@ -1,0 +1,1095 @@
+# brand.yaml — canonical design language for WoodWave Gallery
+# (woodwavegallery.webflow.io) — "WoodWave v2"
+# Authored 2026-07-17 by the extraction agent from a FRESH LIVE capture
+# (screenshots/woodwave-v2/, Playwright 1440x900) through the evidence-first flow
+# (run_brand_extraction.py mine-dom → mine-css → mine-motion → measure → slice →
+# ground → curate; spec/layout-analyst-skill.md authoring protocol).
+#
+# MEASUREMENT SOURCES (evidence/ bundle, all reproducible):
+#  - evidence/css-facts.json + evidence/css-rules.json: the site's OWN custom
+#    properties --yellow #edd580 / --white #fbf4ed / --dark #32271a /
+#    --footer #181313; buy-button hover #1d170f; radius census (brand controls 0);
+#    text-transform census (16 uppercase); letter-spacing 1px/2px.
+#  - evidence/computed-styles.json — JS-off getComputedStyle @1440 + the
+#    1920/1440/960/375 tier ladder: hero H1 Melodrama 175.68px gold uppercase;
+#    section H3 Melodrama 80px espresso uppercase; body Satoshi 24px; container
+#    1300px at every tier; footer bg #181313; 2 action families (buy-button filled,
+#    submit text).
+#  - evidence/motion-audit.json — 10 transition rules, 1 animation, 1 keyframe;
+#    duration census 100/200/250/300/800ms; easings linear + ease-in-out.
+#  - evidence/grounding/*.yaml — 7 per-section VISION grounding files
+#    (claude-opus-4-8): surfaces w/ parents, per-section type + component inventory,
+#    verbatim copy, media creative direction, mediaComposition modes.
+#
+# WoodWave reads as a WARM, EDITORIAL ART-GALLERY system, DARK-FIRST: a deep
+# espresso canvas (#32271a) alternating with warm cream bands (#fbf4ed), a single
+# GOLD accent (#edd580) carrying the hero wordmark + hover states + the logo, a
+# high-contrast Melodrama display face set OVERSIZED and UPPERCASE (the hero
+# wordmark fills the band), a Satoshi grotesque body at a generous 24px, SHARP
+# corners everywhere (radius 0 — a signature), slash-separated nav + footer link
+# rows, oversized pale ghost-watermark type behind headings, uppercase text-arrow
+# link CTAs (BUY TICKETS / SUBSCRIBE), and a near-black footer (#181313) with
+# muted-warm-grey links that brighten to gold.
+
+version: "1.1"
+
+brand:
+  name: "WoodWave Gallery"
+  sourceUrl: "https://woodwavegallery.webflow.io"
+  baseStyle: editorial-gallery-warm-dark
+  snapshot:
+    value: >-
+      A warm, editorial art-gallery system on a DARK-FIRST rhythm: a deep espresso
+      canvas (#32271a — the site's own --dark token) alternates band-by-band with
+      warm cream (#fbf4ed — --white) and closes on a near-black footer (#181313 —
+      --footer). One GOLD accent (#edd580 — --yellow) carries the hero wordmark, the
+      logo mark, and every hover state (nav/footer links brighten to gold). Display
+      voice is Melodrama — a high-contrast didone-style serif set OVERSIZED and
+      UPPERCASE: the hero wordmark paints at ~176px filling the band; section
+      headings run 80px uppercase with 2px tracking. Working voice is Satoshi, a
+      geometric grotesque, at a generous 24px/1.4 body and an 18px uppercase
+      1px-tracked eyebrow/control register. Corners are SHARP everywhere (radius 0 —
+      the one filled button, a dark espresso plate with a 1px cream hairline border,
+      is a hard rectangle). CTAs are typographic: uppercase text-arrow links
+      (BUY TICKETS, SUBSCRIBE) trailing a small arrow glyph; nav and footer link
+      rows are slash-separated. Sections open with an uppercase Satoshi eyebrow over
+      a Melodrama display heading, frequently backed by an OVERSIZED pale
+      ghost-watermark word (ABOUT / 1974-2023). Media is warm-toned gallery
+      photography — spiral wooden interiors, sculpture halls, terracotta vessels —
+      placed as full-bleed bands, overlapping clusters, and a counted slider (1/6).
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-17T13:45:00Z", action: created, from: null,
+          to: "warm editorial gallery, dark-first espresso/cream/gold, Melodrama display + Satoshi body, sharp corners, slash nav, ghost watermarks, text-arrow CTAs",
+          by: creation, signalId: null,
+          note: "first extraction for the woodwave-v2 lane — evidence-first from the site's own --dark/--white/--yellow/--footer tokens + JS-off measures + 7 vision groundings" }
+
+meta:
+  # canonical-tier discipline (validator C14): every canonical value in this file
+  # (sizeRem.base, spacing value:, radius value:) refers to the 1440px measured tier
+  # unless a tier ladder says otherwise. measure sampled 1920/1440/960/375
+  # (evidence/computed-styles.json `tiers`).
+  canonicalTier:
+    viewport: 1440
+    label: base
+    note: "sizeRem.base == computed @1440; the espresso/cream registers are stable
+      1440→1920 (container caps at 1300px); the Melodrama display + body step down
+      at 960 and 375 per the measured ladder"
+    measuredTiers: [1920, 1440, 960, 375]
+    source: computed
+    provenance: [evidence/computed-styles.json]
+
+indexes:
+  assetsTagged:     "./assets-tagged.json"
+  savedPageHtml:    "../../../screenshots/woodwave-v2/woodwave.html"
+  savedPageAssets:  "../../../screenshots/woodwave-v2/woodwave_files/"
+  sourceScreenshot: "../../../screenshots/woodwave-v2/woodwave-fullpage.png"
+  voice:            "./voice.md"
+  layoutLibrary:    "./layout-library.yaml"
+  sectionCopy:      "./section-copy.yaml"
+  mediaAssets:      "./media-assets.yaml"
+  evidenceBundle:   "./evidence/"
+  cssFacts:         "./evidence/css-facts.json"
+  cssRules:         "./evidence/css-rules.json"
+  computedStyles:   "./evidence/computed-styles.json"
+  domCensus:        "./evidence/dom-sections.json"
+  motionAudit:      "./evidence/motion-audit.json"
+  visionGrounding:  "./evidence/grounding/"
+
+tokens:
+  colors:
+    # ── ink / neutrals ──
+    ink/primary:      { value: "#32271a", role: "espresso — heading + body ink on cream surfaces (measured h3/p/body color rgb(50,39,26))", status: mapped, source: [saved-css, computed], provenance: [about, founder-story, newsletter] }
+    ink/muted:        { value: "#6b5d50", role: "muted warm ink — placeholder / control-label on cream (grounding newsletter control-label #6b5d50)", status: mapped, source: vision, provenance: [newsletter] }
+    ink/on-dark:      { value: "#fbf4ed", role: "cream ink on the espresso/near-black bands (--white; hero/visit/footer ink)", status: mapped, source: [saved-css, vision], provenance: [hero, visit, footer] }
+    ink/on-dark-muted: { value: "#a09a94", role: "muted warm-grey link ink on the footer band (grounding footer nav/social #a09a94)", status: mapped, source: vision, provenance: [footer] }
+    # ── surfaces ──
+    neutral/cream:    { value: "#fbf4ed", role: "warm cream — the light content canvas + cream cards (--white; about/newsletter canvas, info card)", status: mapped, source: [saved-css, vision], provenance: [about, newsletter, visit] }
+    neutral/cream-raised: { value: "#f7efe8", role: "raised cream step (grounding about/newsletter canvas #f7ede6/#f7efe8)", status: mapped, source: vision, provenance: [about, newsletter] }
+    surface/espresso: { value: "#32271a", role: "deep espresso dark band (--dark; hero + visit canvas; measured body background rgb(50,39,26))", status: mapped, source: [saved-css, computed], provenance: [hero, visit] }
+    surface/near-black: { value: "#181313", role: "near-black footer band (--footer; measured footer bg rgb(24,19,19))", status: mapped, source: [saved-css, computed], provenance: [footer] }
+    # ── gold accent — the brand's ONE accent ──
+    accent/gold:      { value: "#edd580", role: "gold accent (--yellow): the hero wordmark ink, the logo mark, and EVERY link hover (nav/footer links brighten to gold — css hoverRules color: var(--yellow))", status: mapped, source: [saved-css, computed], provenance: [hero, footer] }
+    # ── interaction / borders ──
+    action/primary-hover: { value: "#1d170f", role: "the filled buy-button's measured hover fill (.buy-button:hover background-color #1d170f)", status: mapped, source: saved-css, provenance: [nav] }
+    border/hairline:  { value: "rgba(50, 39, 26, 0.2)", role: "hairline divider on cream (footer legal rules, ruled price rows) — the espresso ink at low alpha (#32271a33 in the css color census)", status: mapped, source: saved-css, provenance: [visit, footer] }
+    border/on-dark:   { value: "#fbf4ed", role: "cream hairline border — the filled button's 1px border on the espresso plate (measured buy-button border 1px solid rgb(251,244,237))", status: mapped, source: computed, provenance: [nav, hero] }
+    border/hairline-on-inverse: { value: "rgba(251, 244, 237, 0.2)", role: "cream hairline at low alpha — footer social/legal divider rules on the near-black band", status: mapped, source: vision, provenance: [footer] }
+    media/map-grey:   { value: "#8a8a8a", role: "greyscale street-map fill (third-party map media well)", status: mapped, source: vision, provenance: [visit] }
+    # ── canonical render-role ALIASES — the shared renderers resolve these EXACT names ──
+    surface/primary:        { value: "#fbf4ed", role: "ALIAS of neutral/cream — canonical page-canvas role (the warm cream content surface)", status: mapped, source: saved-css, provenance: [about, newsletter] }
+    surface/panel:          { value: "#fbf4ed", role: "ALIAS of neutral/cream — canonical panel/card role (cream cards float on the dark bands: the visit info card, gallery frames)", status: mapped, source: [saved-css, vision], provenance: [visit] }
+    surface/raised:         { value: "#f7efe8", role: "ALIAS of neutral/cream-raised — canonical raised-light role", status: mapped, source: vision, provenance: [about] }
+    surface/inverse:        { value: "#32271a", role: "ALIAS of surface/espresso — canonical dark band role (hero, visit)", status: mapped, source: [saved-css, computed], provenance: [hero, visit] }
+    surface/inverse-strong: { value: "#181313", role: "ALIAS of surface/near-black — the near-black chrome dark (footer)", status: mapped, source: [saved-css, computed], provenance: [footer] }
+    accent/highlight:            { value: "#edd580", role: "ALIAS of accent/gold — canonical accent role (the one gold; display ink on dark, logo mark, link-hover)", status: mapped, source: saved-css, provenance: [hero, footer] }
+    accent/highlight-on-inverse: { value: "#edd580", role: "accent ON dark surfaces — the gold is scheme-stable (hero wordmark + footer logo both gold on dark)", status: mapped, source: [saved-css, computed], provenance: [hero, footer] }
+    text/on-primary:        { value: "#32271a", role: "ALIAS of ink/primary — canonical ink-on-light role", status: mapped, source: computed }
+    text/on-primary-muted:  { value: "#6b5d50", role: "ALIAS of ink/muted — canonical muted-ink-on-light role", status: mapped, source: vision }
+    text/on-inverse:        { value: "#fbf4ed", role: "canonical ink-on-dark role (cream; hero/visit/footer headings measured cream)", status: mapped, source: [saved-css, vision], provenance: [hero, visit, footer] }
+    text/on-inverse-muted:  { value: "#a09a94", role: "canonical muted-ink-on-dark role (footer links #a09a94)", status: mapped, source: vision, provenance: [footer] }
+    text/on-accent:         { value: "#32271a", role: "ink on the gold accent — espresso reads on gold (contrast)", status: mapped, source: creation }
+    text/ghost-on-primary:  { value: "rgba(50, 39, 26, 0.05)", role: "canonical ghost-on-light role — bound to a faint espresso wash so any ghost/placeholder fallback stays on-palette (WoodWave has no ghost-button device)", status: mapped, source: creation }
+    color/photo-tint:       { value: "#2a2018", role: "sampled warm-dark tint of the photographic bands (hero/gallery) — the band's fallback underlay while the photo paints; generic photographic-surface tint role", status: mapped, source: screenshot, provenance: [hero, gallery-slider] }
+    border/hairline-on-primary: { value: "rgba(50, 39, 26, 0.2)", role: "ALIAS of border/hairline — canonical hairline-on-light role", status: mapped, source: saved-css, provenance: [visit] }
+  type:
+    # FLAT role shape so each role can declare a loadable renderProxy. Melodrama +
+    # Satoshi are the brand's OWN Fontshare faces, downloaded from the source's own
+    # @font-face .ttf URLs into assets/fonts/ and SELF-HOSTED via selfHostedFonts.
+    # renderProxy declares the measured fallback family class: a high-contrast
+    # display serif for Melodrama, a geometric grotesque for Satoshi.
+    display-hero:
+      { family: "Melodrama", renderProxy: "Playfair Display", sizeRem: { base: 11, tablet: 8.4, mobileL: 5, mobile: 3.28 }, lineHeight: "0.9em", weight: 500, letterSpacing: "0em", case: uppercase,
+        tiers: { w1920: { px: 234, source: computed }, w1440: { px: 176, source: computed }, w960: { px: 134, source: computed }, w375: { px: 52, source: computed } },
+        note: "hero wordmark measured 175.68px/158.1 @1440 Melodrama w500 uppercase gold; the display fills the band (234px @1920, 52px @375 per the tier ladder)" }
+    h1:
+      { family: "Melodrama", renderProxy: "Playfair Display", sizeRem: { base: 5, tablet: 5, mobileL: 4, mobile: 2.75 }, lineHeight: "1.2em", weight: 400, letterSpacing: "0.125rem", case: uppercase,
+        tiers: { w1920: { px: 80, source: computed }, w1440: { px: 80, source: computed }, w960: { px: 64, source: computed }, w375: { px: 44, source: computed } },
+        note: "the section display register: about/visit/newsletter/footer headings measured 80px/96 Melodrama w400 uppercase, 2px tracking (== computed h3); 64px @960, 44px @375" }
+    h2:
+      { family: "Melodrama", renderProxy: "Playfair Display", sizeRem: { base: 3.5, tablet: 3.5, mobileL: 3, mobile: 2.25 }, lineHeight: "1.2em", weight: 400, letterSpacing: "0.125rem", case: uppercase,
+        singleTierConfirmed: true,
+        note: "intermediate display register (56px) — derived one rung below h1 for mid-scale headings (founder-story heading vision ~66px sits between h1 80 and this); measured constant across the tier ladder for the 80px register it derives from" }
+    h3:
+      { family: "Melodrama", renderProxy: "Playfair Display", sizeRem: { base: 2, tablet: 2, mobileL: 1.75, mobile: 1.5 }, lineHeight: "1.25em", weight: 400, letterSpacing: "0.0625rem", case: uppercase,
+        singleTierConfirmed: true,
+        note: "small Melodrama sub-heading (32px) — the about section's item headlines (PERSPECTIVE HALL / PANORAPEAK VIEWPOINT) ride a compact display register below the 80px band heading" }
+    h4:
+      { family: "Satoshi", renderProxy: "Manrope", sizeRem: { base: 1.5, tablet: 1.5, mobileL: 1.375, mobile: 1.25 }, lineHeight: "1.3em", weight: 500, letterSpacing: "0em", case: none,
+        singleTierConfirmed: true,
+        note: "sans statement heading (24px) — card/list headings that speak the working face rather than the display serif" }
+    h5:
+      { family: "Satoshi", renderProxy: "Manrope", sizeRem: { base: 1.125, tablet: 1.125, mobileL: 1, mobile: 1 }, lineHeight: "1.2em", weight: 500, letterSpacing: "0.0625rem", case: uppercase,
+        tiers: { w1920: { px: 18, source: computed }, w1440: { px: 18, source: computed }, w960: { px: 18, source: saved-css }, w375: { px: 14, source: computed } },
+        note: "uppercase Satoshi label heading (18px, 1px tracking) — the section eyebrow register measured @1440 (h5); steps to 14px @375" }
+    h6:
+      { family: "Satoshi", renderProxy: "Manrope", sizeRem: { base: 1, tablet: 1, mobileL: 1, mobile: 1 }, lineHeight: "1.2em", weight: 500, letterSpacing: "0.0625rem", case: uppercase,
+        singleTierConfirmed: true,
+        note: "smallest uppercase label register (16px) — captions, footer legal caps" }
+    eyebrow:
+      { family: "Satoshi", renderProxy: "Manrope", sizeRem: { base: 1.125, tablet: 1.125, mobileL: 1, mobile: 0.875 }, lineHeight: "1.2em", weight: 500, letterSpacing: "0.0625rem", case: uppercase,
+        tiers: { w1920: { px: 18, source: computed }, w1440: { px: 18, source: computed }, w960: { px: 18, source: saved-css }, w375: { px: 14, source: computed } },
+        note: "the uppercase Satoshi eyebrow (ABOUT / VISIT / STAY UPDATED / GALLERY) measured 18px w400-500, 1px tracking (== h5 register)" }
+    body:
+      { family: "Satoshi", renderProxy: "Manrope", sizeRem: { base: 1.5, tablet: 1.5, mobileL: 1.25, mobile: 1.125 }, lineHeight: "1.4em", weight: 400, case: sentence,
+        tiers: { w1920: { px: 24, source: computed }, w1440: { px: 24, source: computed }, w960: { px: 24, source: computed }, w375: { px: 18, source: computed } },
+        note: "body measured 24px/33.6 Satoshi w400 — a GENEROUS body is a brand signature (the gallery reads unhurried); 18px @375" }
+    body-lg:
+      { family: "Satoshi", renderProxy: "Manrope", sizeRem: { base: 1.75, tablet: 1.75, mobileL: 1.5, mobile: 1.25 }, lineHeight: "1.4em", weight: 400, case: sentence,
+        singleTierConfirmed: true,
+        note: "large body / lede register (28px) — the about section lead paragraph" }
+    control-text:
+      { family: "Satoshi", renderProxy: "Manrope", sizeRem: { base: 1.125, tablet: 1.125, mobileL: 1.125, mobile: 1 }, lineHeight: "1.2em", weight: 400, letterSpacing: "0.0625rem", case: uppercase,
+        tiers: { w1920: { px: 18, source: computed }, w1440: { px: 18, source: computed }, w960: { px: 18, source: computed }, w375: { px: 16, source: saved-css } },
+        note: "UI control register — the buy-button + submit + text-arrow CTA labels measured 18px Satoshi, 1px tracking, uppercase" }
+    micro:
+      { family: "Satoshi", renderProxy: "Manrope", sizeRem: { base: 0.75, tablet: 0.75, mobileL: 0.75, mobile: 0.75 }, lineHeight: "1.2em", weight: 500, letterSpacing: "0.0625rem", case: uppercase,
+        singleTierConfirmed: true,
+        note: "fine-print / micro-label register (12px) — the smallest tracked caps tier (footer template attribution, utility-scale chrome labels); measured constant across the tier ladder" }
+    stat-display:
+      { family: "Melodrama", renderProxy: "Playfair Display", sizeRem: { base: 4, tablet: 4, mobileL: 3, mobile: 2.5 }, lineHeight: "1.05em", weight: 400, letterSpacing: "0em", case: uppercase,
+        singleTierConfirmed: true, source: derived,
+        note: "SYNTHESIZED stat numeral register (64px Melodrama) — derived from the display face for the synthesized stat band (not measured on source: the gallery shows no stat block; provenance: synthesized-from-brand-signals)" }
+    # emphasis-inside-heading law: no <strong>/<b> renders inside any h1–h6 at any
+    # measured tier (computed tier ladder headingEmphasis: zero hits). Hierarchy is
+    # size + family (Melodrama display vs Satoshi labels), never inline bolding.
+    headingEmphasis: { notObserved: true, reason: "0 strong/b-in-heading hits at 1920/1440/960/375 (computed tier ladder headingEmphasis empty)", source: computed }
+  spacing:
+    # The section rhythm is generous (an art gallery breathes). Vision groundings
+    # read section pads 40–200px; snapped to the 8px grid into a section ladder.
+    section-padding-light: { value: "7.5rem", role: "the workhorse vertical section rhythm (~120px; grounding about/visit/newsletter top pads 90–200, bottom 40–130 — the mid rung)", modeLadder: { base: "7.5rem", tablet: "6rem", mobileL: "4rem", mobile: "3rem" }, status: mapped, source: vision }
+    section-y-sm:          { value: "4rem", role: "short section tier (~64px; tighter bands e.g. gallery/footer)", modeLadder: { base: "4rem", tablet: "3rem", mobileL: "2.5rem", mobile: "2rem" }, status: mapped, source: vision }
+    section-y-lg:          { value: "9.375rem", role: "spacious tier (~150px; the newsletter band top pad 150 / visit top 200)", modeLadder: { base: "9.375rem", tablet: "7.5rem", mobileL: "5rem", mobile: "4rem" }, status: mapped, source: vision }
+    module-gap-editorial:  { value: "7.5rem", role: "ALIAS of section-padding-light — preview/composer module rhythm", status: mapped, source: vision }
+    # ── relational ladder (validator C15): named gaps BETWEEN content roles, from the
+    # vision groundings' measured relational reads (visit + newsletter each carry
+    # eyebrowToHeading + headingToBody), snapped to the 8px grid.
+    eyebrow-to-heading:    { value: "2.5rem", role: "eyebrow→heading gap (grounding visit + newsletter relationalSpacingPx eyebrowToHeading 40px)", modeLadder: { base: "2.5rem", tablet: "2rem", mobileL: "1.5rem", mobile: "1rem" }, status: mapped, source: vision }
+    heading-to-body:       { value: "5rem", role: "heading→body gap (grounding visit headingToBody 100 / newsletter 80 → canonical 80px)", modeLadder: { base: "5rem", tablet: "3.5rem", mobileL: "2.5rem", mobile: "2rem" }, status: mapped, source: vision }
+    body-to-cta:           { value: "2.5rem", role: "body→actions gap (grounding gapPx ~40 between copy and the text-arrow CTA rows)", modeLadder: { base: "2.5rem", tablet: "2rem", mobileL: "1.5rem", mobile: "1.5rem" }, status: mapped, source: vision }
+    block-to-block:        { value: "4rem", role: "header-stack→content rhythm inside sections (grounding gapPx 40–64 between the opener and the media/blocks)", modeLadder: { base: "4rem", tablet: "3rem", mobileL: "2.5rem", mobile: "2rem" }, status: mapped, source: vision }
+    column-to-column:      { value: "4rem", role: "split-row column gutter (grounding visit gapPx 64 photo↔price card; about gapPx 60)", modeLadder: { base: "4rem", tablet: "3rem", mobileL: "2rem", mobile: "2rem" }, status: mapped, source: vision }
+    grid-gap:              { value: "2rem", role: "card/media grid gap (about alternating blocks; synthesized grids)", status: mapped, source: vision }
+    panel-padding:         { value: "2.5rem", role: "card/panel inset (grounding visit info card pad 40x40)", status: mapped, source: vision }
+    list-item-gap:         { value: "1.125rem", role: "ruled row rhythm (grounding visit price rows pad 18x0 above dividers)", status: mapped, source: vision }
+    button-inset:          { value: "0.5625rem 0.9375rem", role: "the filled button inset 9x15 (measured buy-button padding 9px 15px)", status: mapped, source: computed }
+    container-max:         { value: "81.25rem", role: "content max-width 1300px measured at every tier (container cssMaxWidth 1300; --container)", status: mapped, source: computed }
+    container-span:        { value: "min(100vw - 2.5rem, 81.25rem)", role: "the container LAW as one CSS expression: 1300px cap, ~20px side gutters below the cap (tier facts: used 1300 @1440/1920, full-width minus gutters @960/375)", status: mapped, source: computed }
+    radius-global:         { value: "0rem", role: "ALIAS of radius/sharp — the brand's working corner is SHARP (0) — the signature", status: mapped, source: [saved-css, computed] }
+  radius:
+    # The brand's OWN controls are SHARP (0): buy-button + submit measured
+    # border-radius 0. The radiusCensus 50%/3px/100% entries are Webflow LIGHTBOX /
+    # slider-dot library chrome, not brand rungs. Media frames carry a hair of
+    # rounding (grounding info card/map radiusPx 2-4).
+    sharp:  { value: "0rem", var: "the brand control corner (0px)", role: "ALL buttons + the newsletter field + section plates — SHARP corners, the signature", status: mapped, source: [saved-css, computed] }
+    small:  { value: "0.25rem", var: "media-frame rounding (grounding info card 2px / map 4px)", role: "media frames (map well, info card) carry a hair of rounding", status: mapped, source: vision }
+    circle: { value: "50%", var: "border-radius: 50% (radiusCensus)", role: "webflow slider dots / lightbox controls (library chrome, not a brand device)", status: mapped, source: saved-css }
+  shadow:
+    # The brand is FLAT — no drop shadows anywhere in the census. Depth comes from
+    # surface contrast (espresso vs cream) and overlapping media, not elevation.
+    none: { value: "none", role: "no drop shadows — depth is surface contrast + overlapping photo clusters, never elevation", status: mapped, source: [saved-css, vision] }
+  motion:
+    # Authored from evidence/motion-audit.json (10 transition rules, 1 animation,
+    # 1 keyframe). The brand's motion is QUIET: color fades on links + a background
+    # fade on the one filled button; no transforms except the webflow slider.
+    durations:
+      quick:     { value: "100ms", role: "the fastest tier — slider-dot bg/color swap (.w-slider-dot background-color .1s, color .1s)", census: 2, source: motion-audit }
+      state:     { value: "200ms", role: "THE control tier — nav/menu link color fades (color .2s), footer bottom-link span (color .2s)", census: 3, source: motion-audit }
+      reveal:    { value: "300ms", role: "the DOMINANT tier — buy-button background fade (background-color .3s), footer bottom-link (color .3s), lightbox controls (all .3s)", census: 3, source: motion-audit }
+      settle:    { value: "800ms", role: "slow choreography — the footer nav-link color fade (.footer-nav-link transition color .8s) + the lightbox spinner keyframe (.8s linear infinite)", census: 2, source: motion-audit }
+    easings:
+      - { value: "ease-in-out", use: "the footer social-link color fade (color .25s ease-in-out) — the one measured named curve for hover transitions", census: 1, source: motion-audit }
+      - { value: "linear", use: "the lightbox spinner keyframe (.8s linear infinite spin) — library chrome, the only animation on the page", census: 1, source: motion-audit }
+    signatureMoves:
+      - name: link-color-warm-to-gold
+        move: "nav + footer + menu links fade their color to the gold accent (--yellow #edd580) on hover; footer bottom links fade to cream (--white)"
+        timing: "color .2s (nav/menu) → .25s ease-in-out (social) → .8s (footer nav) — a slow, warm warm-up"
+        sourceSelectors: [".footer-nav-link:hover", ".footer-social-link:hover", ".nav-link:hover", ".nav-menu-social-link:hover"]
+      - name: button-fill-deepen
+        move: "the one filled button (buy-button) deepens its espresso fill on hover (#32271a → #1d170f) on the reveal tier; the label + cream border hold"
+        timing: "background-color .3s (.buy-button)"
+        sourceSelectors: [".buy-button", ".buy-button:hover"]
+      - name: link-underline-reveal
+        move: "standing text links (paragraph link spans, license links) reveal an underline on hover — the quiet editorial link decoration"
+        timing: "rides the color tier"
+        sourceSelectors: [".paragraph-link-span:hover", ".license-link:hover"]
+    reducedMotion: { value: "not-declared", role: "no prefers-reduced-motion guard mined; motion is minimal (color fades + one library spinner) so the exposure is low", source: motion-audit }
+    provenance: [evidence/motion-audit.json]
+    confidence: high
+    source: saved-css
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-17T13:45:00Z", action: created, from: null, to: "quiet warm motion: color-to-gold link fades, button fill deepen, underline reveal", by: creation, signalId: null, note: "from the mine-motion output (10 transitions, durations 100/200/300/800ms, easings ease-in-out + linear)" }
+  imagery:
+    aspectPalette:
+      wide:      { value: "16 / 9", role: "full-bleed gallery photography (hero staircase, gallery slider band, map)", provenance: [hero, gallery-slider, visit], source: vision }
+      landscape: { value: "3 / 2", role: "gallery interior + about architecture photos", provenance: [about, gallery-slider], source: vision }
+      portrait:  { value: "3 / 4", role: "founder portrait + terracotta vessel + about-column photos", provenance: [hero, founder-story, about], source: vision }
+      square:    { value: "1 / 1", role: "compact framed works (synthesized artist/work grid)", provenance: [], source: creation }
+  surfaces:
+    # DARK-FIRST alternation: the page opens on espresso, alternates band-by-band
+    # with cream, and closes near-black. Cream cards float on the dark bands (the
+    # visit info card). GOLD is the ink accent on dark, never a surface fill.
+    surface/primary:        { bg: "#fbf4ed", schemeMode: "base (Primary)", intent: "warm cream content canvas (--white; about + newsletter bands)", textPrimary: text/on-primary, textAccent: null, provenance: [about, newsletter] }
+    surface/panel:          { bg: "#fbf4ed", schemeMode: "Container",      intent: "cream card/panel (radius 0 plate, hair of rounding on media frames; FLAT — no shadow); floats on the dark bands (visit info card) and on cream", textPrimary: text/on-primary, textAccent: null, provenance: [visit] }
+    surface/raised:         { bg: "#f7efe8", schemeMode: "Secondary",      intent: "raised cream step off the canvas", textPrimary: text/on-primary, textAccent: null, provenance: [about] }
+    surface/inverse:        { bg: "#32271a", schemeMode: "Inverse",        intent: "deep espresso dark band (--dark; hero + visit): cream ink, GOLD display accent, cream-bordered filled button; cream cards float on it", textPrimary: text/on-inverse, textAccent: accent/highlight-on-inverse, controls: onInverse, provenance: [hero, visit] }
+    surface/inverse-strong: { bg: "#181313", schemeMode: "Inverse",        intent: "near-black footer band (--footer): cream/gold headings, muted-warm-grey links that brighten to gold", textPrimary: text/on-inverse, textAccent: accent/highlight-on-inverse, controls: onInverse, provenance: [footer] }
+    surface/photo-hero:     { bg: "#2a2018", schemeMode: "Inverse",        intent: "full-bleed photographic band (hero staircase cluster; gallery slider) — warm-dark underlay while the photo paints, CREAM ink + GOLD display on it", textPrimary: text/on-inverse, textSecondary: text/on-inverse, textAccent: accent/highlight-on-inverse, overlay: none, blur: none, note: "the hero photographs carry their own warm-dark tone; the espresso underlay (#2a2018, sampled from the hero band) holds cream/gold ink legibly with no separate scrim measured", provenance: [hero, gallery-slider] }
+
+heroTreatment:
+  value:
+    background: full-bleed-photo
+    asset: "001-657acd8d782ab334f6b2e5dc-hero-img-main-p-1600.jpg"   # warm wooden spiral staircase, top-down
+    overlay: none
+    blur: none
+    textColor: "#edd580"
+    align: center
+    media: { asset: "002-657acd8d782ab334f6b2e5db-hero-img-2-p-1080.jpg", position: overlap, note: "the giant GOLD Melodrama wordmark 'WOODWAVE GALLERY' sits over a full-bleed warm staircase photo, with a smaller terracotta-vessel photo overlapping lower-center and a corner figure photo bottom-left — an overlapping photo cluster (grounding section-00 mediaComposition overlapping-cluster)" }
+  confidence: high
+  source: [vision, computed, saved-css]
+  scope: design-language
+  changelog:
+    - { ts: "2026-07-17T13:45:00Z", action: created, from: null, to: "full-bleed warm staircase photo + overlapping vessel/figure cluster, centered giant gold Melodrama wordmark", by: creation, signalId: null, note: "grounding section-00: overlapping-cluster; measured h1 175.68px Melodrama gold uppercase" }
+
+surfaceGrammar:
+  roles: [ surface/primary, surface/panel, surface/raised, surface/inverse, surface/inverse-strong, surface/photo-hero ]
+  pageRhythm:
+    value: [ surface/photo-hero, surface/primary, surface/photo-hero, surface/primary, surface/inverse, surface/primary, surface/inverse-strong ]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-17T13:45:00Z", action: created, from: null, to: "photo hero → cream about → photo gallery band → cream founder → espresso visit → cream newsletter → near-black footer", by: creation, signalId: null, note: "7 grounded sections: DARK-FIRST alternation (espresso/photo dark bands interleaved with cream), near-black footer close" }
+  transition:
+    value: "hard"
+    confidence: high
+    source: [vision, saved-css]
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-17T13:45:00Z", action: created, from: null, to: "hard", by: creation, signalId: null, note: "band cuts are clean edges (espresso→cream→photo→cream→espresso→cream→near-black); no gradient seams" }
+  nesting:
+    - { child: surface/panel, allowedParents: [ surface/inverse, surface/primary ], note: "cream cards float on the espresso visit band (info card) AND on the cream canvas (grounding section-04)", confidence: high, source: creation, scope: design-language, changelog: [] }
+    - { child: surface/inverse, allowedParents: [ surface/primary ], note: "the espresso band cuts straight off the cream run (grounding: hero→about, founder→visit)", confidence: high, source: creation, scope: design-language, changelog: [] }
+    - { child: surface/inverse-strong, allowedParents: [ surface/primary ], note: "the near-black footer cuts off the cream newsletter band", confidence: high, source: creation, scope: design-language, changelog: [] }
+
+# CONTEXTUAL header-alignment grammar (brand-schema §4.4b). Split sections anchor
+# the copy column LEFT with a media counterweight (visit map/card, ticket rows).
+# The standalone opener bands (hero, newsletter) center their stacks.
+layoutGrammar:
+  headerContext:
+    splitColumn:
+      anchor: left
+      counterweight: media
+      evidence: "the 2 split patterns anchor copy left with a media counterweight (visit-map-card + ticket-pricing-rows: alignment.value=left, counterweight media)"
+    standaloneStack:
+      anchor: centered
+      evidence: "the standalone opener bands center their stacks (grounding hero + newsletter: alignment center); the editorial about/founder bands anchor left as explicit pattern facts (outrank this default by resolution order)"
+    confidence: high
+    source: [vision, computed]
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-17T13:45:00Z", action: created, from: null, to: "splitColumn=left / standaloneStack=centered", by: creation, signalId: null, note: "derived from the 7 grounded sections' header alignment by layout context" }
+  actionGroup:
+    gap: 1.5rem
+    orientation: row
+    wrap: wrap
+    align: start
+    marginAbove: ladder
+    registers: [primary, secondary]
+    source: vision
+    provenance: [visit, newsletter]
+    confidence: medium
+    changelog:
+      - { ts: "2026-07-17T13:45:00Z", action: created, from: null, to: "gap 1.5rem / wrap / start / marginAbove ladder", by: creation, signalId: null, note: "the gallery's actions are mostly single text-arrow links; the pricing rows stack BUY TICKETS links at ~24px rhythm (grounding visit)" }
+
+buttons:
+  renderHint: { useFilledButton: true, note: "The brand's ONE filled control is the buy-button — a dark espresso plate with a 1px CREAM hairline border and cream uppercase label, SHARP corners (radius 0). Most gallery CTAs are typographic text-arrow links (BUY TICKETS / SUBSCRIBE). Renderer MUST emit the filled rectangle for primary actions and the uppercase text-arrow for quiet actions; NEVER a pill." }
+  primary:
+    style: filled
+    bg: "#32271a"              # measured .buy-button background rgb(50,39,26)
+    bgHover: "#1d170f"         # measured .buy-button:hover background-color #1d170f
+    fgHover: "#fbf4ed"         # cream label holds through the darken
+    fg: "#fbf4ed"             # measured cream label rgb(251,244,237)
+    border: "1px solid #fbf4ed"  # measured 1px solid rgb(251,244,237) cream hairline
+    radius: "0rem"            # SHARP — measured border-radius 0
+    padding: "0.5625rem 0.9375rem"  # measured 9px 15px
+    height: "2.625rem"        # 42px measured (_rect h 41.59)
+    font: "Satoshi"
+    weight: 400
+    sizeRem: 1.125            # 18px measured
+    letterSpacing: "0.0625rem"  # 1px measured
+    case: none                # measured text-transform none
+    confidence: high
+    source: [saved-css, computed]
+    provenance: [nav, hero]
+    note: "the espresso-plate filled button with a cream hairline border and cream label — the gallery's one solid control (measured .buy-button)."
+  secondary:
+    style: outline
+    bg: "transparent"
+    border: "1px solid #32271a"   # the inverse on cream: espresso hairline
+    fg: "#32271a"
+    bgHover: "#32271a"            # hover FILLS with espresso
+    fgHover: "#fbf4ed"           # label flips to cream on the fill
+    radius: "0rem"
+    padding: "0.5625rem 0.9375rem"
+    height: "2.625rem"
+    font: "Satoshi"
+    weight: 400
+    sizeRem: 1.125
+    letterSpacing: "0.0625rem"
+    case: none
+    onInverse: { border: "1px solid #fbf4ed", fg: "#fbf4ed", bg: "transparent", bgHover: "#fbf4ed", fgHover: "#32271a", note: "on the espresso/near-black bands the outline is CREAM and hover fills cream with espresso label (the buy-button's own on-dark register)" }
+    confidence: medium
+    source: derived
+    provenance: [hero, visit]
+    note: "the on-cream inverse of the filled button (espresso hairline, hover fills espresso) — the brand shows the filled register on dark; this is the sanctioned light-surface sibling."
+  textCta:
+    style: text-link-arrow
+    fg: "#32271a"             # ink on cream (BUY TICKETS / SUBSCRIBE labels)
+    fgHover: "#edd580"        # links warm to gold on hover (css hoverRules color: var(--yellow))
+    decoration: "uppercase label + trailing arrow glyph; standing links reveal an underline on hover; on dark bands the ink is cream warming to gold"
+    radius: "0rem"
+    font: "Satoshi"
+    weight: 400
+    sizeRem: 1.125
+    letterSpacing: "0.0625rem"
+    case: uppercase
+    glyph: { asset: 018-arrow-right-dark.svg, size: 1rem, source: computed }
+    confidence: high
+    source: [saved-css, computed, vision]
+    provenance: [visit, newsletter, nav]
+    note: "the gallery's dominant CTA: uppercase 'BUY TICKETS' / 'SUBSCRIBE' with a trailing arrow glyph (018-arrow-right-dark.svg); ink warms to gold on hover."
+
+contracts:
+  primitives: "../../../brand_pipeline/contracts/primitives.yaml"
+  blocks:     "../../../brand_pipeline/contracts/blocks.yaml"
+
+primitives:
+  heading:
+    origin: extracted
+    use: always
+    rules: [ "display headings are Melodrama (high-contrast didone serif), UPPERCASE, with letter tracking — the hero wordmark at ~176px, section headings at 80px w400 with 2px tracking; hierarchy is SIZE, never weight jumps", "the hero display paints GOLD (#edd580) on the dark band; section headings paint espresso on cream / cream on dark" ]
+    provenance: [hero, about, visit, newsletter, footer]
+    confidence: high
+  eyebrow:
+    origin: extracted
+    use: always
+    rules: [ "uppercase Satoshi microlabel, 18px w500, 1px tracking (ABOUT / VISIT / GALLERY / STAY UPDATED) — sits above the Melodrama display heading with a ~40px gap" ]
+    provenance: [about, visit, newsletter, gallery-slider]
+    confidence: high
+  paragraph:
+    origin: extracted
+    use: always
+    rules: [ "Satoshi w400 at a GENEROUS 24px/33.6 — espresso ink #32271a on cream, cream #fbf4ed on the dark bands; the gallery reads unhurried" ]
+    provenance: [about, founder-story, visit]
+    confidence: high
+  button:
+    origin: extracted
+    use: sparingly
+    variant: filled-primary
+    rules: [ "the ONE filled control is a dark espresso plate with a 1px CREAM hairline border + cream uppercase label, SHARP corners (radius 0); most CTAs are typographic text-arrow links — orange/pill buttons are off-brand" ]
+    provenance: [nav, hero]
+    confidence: high
+  link:
+    origin: extracted
+    use: text-links-only
+    rules: [ "text links are the dominant CTA: uppercase Satoshi with a trailing arrow glyph (BUY TICKETS / SUBSCRIBE), or slash-separated nav rows; ink warms to GOLD on hover; standing links reveal an underline" ]
+    provenance: [nav, visit, newsletter, footer]
+    confidence: high
+  image:
+    origin: extracted
+    use: always
+    rules: [ "photography = warm-toned gallery interiors, sculpture halls, spiral wooden architecture, terracotta vessels, seated portraits; placed full-bleed, in overlapping clusters, and in a counted slider; SHARP frames (hair of rounding on the map/info well)" ]
+    provenance: [hero, about, gallery-slider, founder-story, visit]
+    confidence: high
+  logo:
+    origin: extracted
+    use: always
+    rules: [ "the WoodWave mark is a wavy-lines glyph + wordmark, set in GOLD on dark (hero + footer) and espresso on cream; ~26px tall vector (000-logo.svg)" ]
+    provenance: [nav, footer]
+    confidence: high
+  input:
+    origin: extracted
+    use: forms
+    rules: [ "the newsletter field is a borderless UNDERLINE input: uppercase placeholder label, a 1px rule beneath spanning full width, transparent fill, SHARP (radius 0); the submit is an uppercase text-arrow" ]
+    provenance: [newsletter]
+    confidence: high
+
+blocks:
+  # C2 coverage: every contract block type attempted — extracted evidence or an
+  # explicit notObserved marker.
+  header:
+    origin: extracted
+    slots:
+      eyebrow: { use: optional, note: "uppercase Satoshi microlabel" }
+      heading: { use: require, note: "Melodrama uppercase display" }
+      cta:     { use: optional, note: "text-arrow link or the filled button" }
+    provenance: [about, visit, newsletter]
+    confidence: high
+  content-block:
+    origin: extracted
+    use: always
+    slots:
+      eyebrow: { use: optional }
+      heading: { use: require }
+      body:    { use: optional }
+      actions: { use: optional }
+    provenance: [about, founder-story, visit, newsletter]
+    confidence: high
+    note: "eyebrow → Melodrama heading → Satoshi body → text-arrow actions (relational ladder 40/80/40 at 1440)."
+  card:
+    origin: extracted
+    use: always
+    anatomy: "cream plate (SHARP or hair-rounded 4px) on the espresso band — the visit info card holds a label → address/hours ruled rows; gallery frames are full-bleed cream-bordered photo plates; FLAT (no shadow)"
+    variants:
+      - { id: info-card, note: "visit info card: cream plate (#fbf4ed, r2), ADDRESS label → address lines → OPEN HOURS label → two ruled hour rows (grounding section-04)" }
+      - { id: media-frame, note: "gallery/about photo frame: full-bleed rectangular photo, SHARP corners, no border (grounding about/gallery)" }
+    slots:
+      media:   { use: optional }
+      heading: { use: optional, register: h4 }
+      body:    { use: optional }
+      action:  { use: optional, note: "text-arrow link" }
+    motion: { hover: "quiet — link ink warms to gold; no elevation", source: "motion-audit color-fade family" }
+    provenance: [visit, about, gallery-slider]
+    confidence: high
+  form:
+    origin: extracted
+    use: newsletter
+    anatomy: "the newsletter subscribe form: a borderless underline email field (uppercase placeholder, 1px rule) + an uppercase SUBSCRIBE text-arrow submit (grounding section-05)"
+    overridable: true
+    provenance: [newsletter]
+    confidence: high
+  testimonial:
+    notObserved: true
+    note: "no testimonial/quote block on the source homepage (a synthesized press-quote is defined in layout-library synthesizedComponents, provenance synthesized-from-brand-signals)"
+  stat-block:
+    notObserved: true
+    note: "no stat block on the source homepage (a synthesized gallery-stat band is defined in layout-library synthesizedComponents)"
+  navbar:
+    origin: extracted
+    provenance: [nav]
+    confidence: high
+  footer:
+    origin: extracted
+    provenance: [footer]
+    confidence: high
+  accordion:
+    notObserved: true
+    note: "no accordion on the source homepage (a synthesized FAQ accordion is defined in layout-library synthesizedComponents, derived from the ruled-row + arrow-glyph grammar)"
+  accordion-item:
+    notObserved: true
+    note: "no accordion on the source homepage"
+  tabs:
+    notObserved: true
+    note: "no tab device on the source homepage (the gallery slider is a carousel, not tabs)"
+  logo-bar:
+    notObserved: true
+    note: "no partner/customer logo wall — an art gallery, not a SaaS proof strip"
+  feature-item:
+    origin: extracted
+    anatomy: "the about section's alternating photo/copy blocks + the ruled price rows read as feature items: heading/label → body/value, paired with a photo or a text-arrow"
+    provenance: [about, visit]
+    confidence: high
+  pricing-card:
+    origin: extracted
+    use: tickets
+    anatomy: "ticket pricing is shown as RULED ROWS (not cards): price + tier label LEFT, a BUY TICKETS text-arrow link RIGHT, above a hairline divider ($20 adult / $16 student / $14 group) — grounding section-04"
+    provenance: [visit]
+    confidence: high
+  banner:
+    notObserved: true
+    note: "no promo banner on the source homepage"
+  modal:
+    notObserved: true
+    note: "the gallery slider uses a Webflow lightbox (library chrome) — no brand modal device"
+  dropdown-menu:
+    notObserved: true
+    note: "no content dropdown; the mobile nav toggles a full-screen menu (chrome, not a content dropdown)"
+  breadcrumb:
+    notObserved: true
+    note: "no breadcrumb on the source homepage"
+  pagination:
+    origin: extracted
+    use: carousel-progress
+    anatomy: "the gallery slider carries a '1/6' counter (top-right, over the photo) + a numeric 1-6 dot rail and an arrow control (grounding section-02)"
+    provenance: [gallery-slider]
+    confidence: high
+  table:
+    notObserved: true
+    note: "no data table on the source homepage (a synthesized exhibition-programme table is defined in synthesizedComponents, derived from the ruled-row grammar)"
+  carousel:
+    origin: extracted
+    anatomy: "the gallery slider: a full-bleed photo band with a chrome eyebrow (GALLERY) + slide counter (1/6) over it, a circular slider-arrow control, and 6 frames (grounding section-02)"
+    motion: { slide: "webflow slider (transform); dot bg/color .1s", source: "motion-audit .w-slider-dot" }
+    provenance: [gallery-slider]
+    confidence: high
+  steps:
+    notObserved: true
+    note: "no numbered step sequence on the source homepage"
+  step-item:
+    notObserved: true
+    note: "no numbered step sequence on the source homepage"
+  cta-block:
+    origin: extracted
+    use: always
+    anatomy: "the newsletter band: centered uppercase eyebrow → Melodrama display heading → underline email field + SUBSCRIBE text-arrow (grounding section-05)"
+    provenance: [newsletter]
+    confidence: high
+  media-text:
+    origin: extracted
+    anatomy: "split rows: the about alternating photo/copy blocks, the founder portrait + body, the visit map+card / photo+price splits (grounding about/founder/visit)"
+    provenance: [about, founder-story, visit]
+    confidence: high
+
+layouts:
+  - id: navbar
+    archetype: nav
+    index: 0
+    surfaceMode: { mode: "Inverse" }
+    useCase: "Chrome on the espresso band: gold wavy-mark + WOODWAVE wordmark left; center slash-separated nav (ABOUT / GALLERY / EXHIBITION / VISIT); a BUY TICKETS text-arrow at the far right. Mobile collapses to a hamburger → full-screen menu with a social grid."
+    whenToUse: "Always — global chrome."
+    slots:
+      - { name: "brand",    type: media,   role: "gold wavy-lines mark + WOODWAVE wordmark", asset: "000-657acd8d782ab334f6b2e5f3-logo.svg" }
+      - { name: "navlinks", type: content, role: "slash-separated uppercase nav (18px Satoshi, hover → gold)" }
+      - { name: "actions",  type: content, role: "BUY TICKETS text-arrow" }
+    gridRules:  { columns: "auto", justify: "space-between", align: center }
+    widthRules: { container: "contained", measure: "1300px content max" }
+  - id: hero
+    archetype: stack
+    index: 1
+    patternRef: { lib: project, id: hero-gallery-overlay }
+    surfaceMode: { mode: "Inverse", note: "full-bleed warm photo band; gold display, cream ink" }
+    surfaceIntent: surface/photo-hero
+    useCase: "Gallery hero: a giant GOLD Melodrama wordmark 'WOODWAVE GALLERY' centered over a full-bleed warm staircase photo, with an overlapping terracotta-vessel photo and a corner figure photo."
+    whenToUse: "Page opener."
+    slots:
+      - { name: "heading", type: content, role: "giant gold Melodrama wordmark (uppercase)" }
+      - { name: "background", type: media, role: "full-bleed warm staircase photo + overlapping cluster", assets: [ "001-657acd8d782ab334f6b2e5dc-hero-img-main-p-1600.jpg" ] }
+    gridRules:  { columns: "single", justify: "center", align: center }
+    widthRules: { container: "full-bleed", measure: "centered display" }
+  - id: about
+    archetype: stack
+    index: 2
+    patternRef: { lib: project, id: about-editorial-ghost }
+    surfaceMode: { mode: "base (Primary)" }
+    surfaceIntent: surface/primary
+    useCase: "Editorial about band on cream: uppercase eyebrow → 80px Melodrama heading backed by an OVERSIZED pale ghost 'ABOUT' watermark; a lede paragraph and alternating photo/copy blocks."
+    whenToUse: "After the hero."
+    slots:
+      - { name: "eyebrow", type: content, role: "uppercase Satoshi eyebrow ('ABOUT')" }
+      - { name: "heading", type: content, role: "80px Melodrama uppercase heading" }
+      - { name: "body",    type: content, role: "lede paragraph (Satoshi 24-28px)" }
+      - { name: "media",   type: media,   role: "alternating gallery/architecture photos", assets: [ "004-657acd8d782ab334f6b2e5d2-about-img-1-p-800.jpg", "005-657acd8d782ab334f6b2e5d4-about-img-2-p-1600.jpg", "006-657acd8d782ab334f6b2e5d5-about-img-3-p-1080.jpg", "007-657acd8d782ab334f6b2e5d3-about-img-4-p-500.jpg" ] }
+    gridRules:  { columns: "editorial 2-col", justify: "start", align: start }
+    widthRules: { container: "contained" }
+  - id: gallery-slider
+    archetype: stack
+    index: 3
+    patternRef: { lib: project, id: gallery-slider-band }
+    surfaceMode: { mode: "Inverse", note: "full-bleed photo band" }
+    surfaceIntent: surface/photo-hero
+    useCase: "Gallery carousel: a full-bleed warm interior photo with a chrome eyebrow (GALLERY) and a slide counter (1/6) over it, a circular slider-arrow control, 6 frames."
+    whenToUse: "Gallery showcase."
+    slots:
+      - { name: "eyebrow", type: content, role: "chrome eyebrow ('GALLERY') over the photo" }
+      - { name: "media",   type: media,   role: "6 full-bleed gallery photos", assets: [ "009-657acd8d782ab334f6b2e5e5-web-gallery-1-p-1600.jpg", "010-657acd8d782ab334f6b2e5e6-web-gallery-2-p-1600.jpg", "011-657acd8d782ab334f6b2e5e7-web-gallery-3-p-1600.jpg", "012-657acd8d782ab334f6b2e5e8-web-gallery-4.jpg", "013-657acd8d782ab334f6b2e5e9-web-gallery-5.jpg", "014-657acd8d782ab334f6b2e5f2-web-gallery-6.jpg" ] }
+      - { name: "controls", type: content, role: "slide counter (1/6) + numeric dot rail + circular arrow" }
+    gridRules:  { columns: "single", justify: "stretch", align: stretch }
+    widthRules: { container: "full-bleed" }
+  - id: founder-story
+    archetype: split
+    index: 4
+    patternRef: { lib: project, id: founder-story-watermark }
+    surfaceMode: { mode: "base (Primary)" }
+    surfaceIntent: surface/primary
+    useCase: "Founder story on cream: a large Melodrama heading top-left, a seated portrait + body copy lower-right, an OVERSIZED pale '1974-2023' year watermark behind."
+    whenToUse: "Heritage / narrative moment."
+    slots:
+      - { name: "heading", type: content, role: "Melodrama uppercase heading (left)" }
+      - { name: "body",    type: content, role: "founder narrative paragraph (right)" }
+      - { name: "media",   type: media,   role: "seated founder portrait", assets: [ "016-657acd8d782ab334f6b2e5dd-about-img-5-p-500.jpg" ] }
+    gridRules:  { columns: "1fr 1fr", justify: "space-between", align: start }
+    widthRules: { container: "contained" }
+  - id: visit
+    archetype: split
+    index: 5
+    patternRef: { lib: project, id: visit-map-card }
+    surfaceMode: { mode: "Inverse", note: "espresso band; cream info card floats on it" }
+    surfaceIntent: surface/inverse
+    useCase: "Visit band on espresso: uppercase eyebrow (VISIT) → Melodrama display (WELCOME TO THE GALLERY) → a greyscale map band with an overlapping cream info card (ADDRESS + OPEN HOURS); then TICKET PRICES — a wood-interior photo left / ruled price rows right (each with a BUY TICKETS text-arrow)."
+    whenToUse: "Practical / conversion band."
+    slots:
+      - { name: "eyebrow", type: content, role: "uppercase eyebrow ('VISIT')" }
+      - { name: "heading", type: content, role: "Melodrama display ('WELCOME TO THE GALLERY')" }
+      - { name: "media",   type: media,   role: "greyscale map band + wood-interior photo", assets: [ "017-657acd8d782ab334f6b2e5de-map-p-1600.jpg" ] }
+      - { name: "card",    type: content, role: "cream info card (address + open hours ruled rows)" }
+      - { name: "pricing", type: content, role: "ruled ticket-price rows w/ BUY TICKETS text-arrows" }
+    gridRules:  { columns: "1fr 1fr", justify: "space-between", align: start }
+    widthRules: { container: "contained", measure: "~64px column gap" }
+  - id: newsletter
+    archetype: stack
+    index: 6
+    patternRef: { lib: project, id: newsletter-subscribe }
+    surfaceMode: { mode: "base (Primary)" }
+    surfaceIntent: surface/primary
+    useCase: "Subscribe band on cream: centered uppercase eyebrow (STAY UPDATED) → Melodrama display heading → a borderless underline email field + SUBSCRIBE text-arrow."
+    whenToUse: "Newsletter capture, before the footer."
+    slots:
+      - { name: "eyebrow", type: content, role: "uppercase eyebrow ('STAY UPDATED')" }
+      - { name: "heading", type: content, role: "Melodrama display heading" }
+      - { name: "form",    type: content, role: "underline email field + SUBSCRIBE text-arrow" }
+    gridRules:  { columns: "single", justify: "center", align: center }
+    widthRules: { container: "contained", measure: "centered ~60rem" }
+  - id: footer
+    archetype: stack
+    index: 7
+    surfaceMode: { mode: "Inverse", note: "near-black #181313" }
+    useCase: "Centered footer stack: gold logo → giant Melodrama nav headline (ABOUT / GALLERY / EXHIBITION / VISIT / BUY TICKETS) → social slash row → legal bar on a pale strip."
+    whenToUse: "Always — global chrome."
+    slots:
+      - { name: "navheadline", type: content, role: "giant Melodrama slash-nav headline (2 lines)" }
+      - { name: "social", type: content, role: "slash-separated social row (INSTAGRAM / FACEBOOK / YOUTUBE / TWITTER)" }
+      - { name: "legal",  type: content, role: "copyright + policy links on a pale strip" }
+    gridRules:  { columns: "single", justify: "center", align: center }
+    widthRules: { container: "contained", measure: "1300px" }
+
+compositionRules:
+  - id: dark-first-alternation
+    statement: "The page runs DARK-FIRST: it opens on espresso (#32271a), alternates band-by-band with warm cream (#fbf4ed), and closes on the near-black footer (#181313). Dark bands take cream ink + a gold display accent; cream bands take espresso ink."
+    value: { dark: "#32271a", cream: "#fbf4ed", footer: "#181313", rhythm: "alternating" }
+    confidence: high
+    source: [vision, computed]
+    scope: design-language
+    changelog: []
+  - id: melodrama-display-satoshi-body
+    statement: "Display voice is Melodrama — a high-contrast didone serif set OVERSIZED and UPPERCASE with letter tracking (the hero wordmark fills the band). Working voice is Satoshi, a grotesque, at a generous 24px body + 18px uppercase labels. Hierarchy is SIZE, never weight jumps or a sans display."
+    value: { display: "Melodrama uppercase tracked", body: "Satoshi 24px", eyebrow: "Satoshi 18px uppercase" }
+    confidence: high
+    source: computed
+    scope: design-language
+    changelog: []
+  - id: sharp-corner-controls
+    statement: "Every control corners SHARP (radius 0) — the one filled button is a hard espresso rectangle with a 1px cream border; the newsletter field is a bare underline. NEVER pills or soft rectangles (the 50%/3px radii in the census are Webflow lightbox/slider chrome)."
+    value: { radius: "0", neverPill: true }
+    confidence: high
+    source: [saved-css, computed]
+    scope: design-language
+    changelog: []
+  - id: gold-is-the-one-accent
+    statement: "ONE gold (#edd580 — the site's --yellow token) is the accent: the hero wordmark ink, the logo mark, and EVERY link hover (nav/footer links warm to gold). It never fills a section surface and never paints body copy."
+    value: { gold: "#edd580", deployment: "display ink + mark + link-hover only" }
+    confidence: high
+    source: [saved-css, computed]
+    scope: design-language
+    changelog: []
+  - id: text-arrow-cta-system
+    statement: "CTAs are typographic: uppercase Satoshi labels trailing a small arrow glyph (BUY TICKETS / SUBSCRIBE), ink warming to gold on hover. The filled button is used sparingly; nav and footer link rows are slash-separated."
+    value: { device: "uppercase label + arrow glyph", glyph: "018-arrow-right-dark.svg", separator: "/" }
+    confidence: high
+    source: [vision, computed]
+    scope: design-language
+    changelog: []
+  - id: ghost-watermark-headings
+    statement: "Editorial bands back their heading with an OVERSIZED pale ghost watermark word set in the display face (ABOUT behind the about heading; 1974-2023 behind the founder story) — a tone-on-tone type device, one per band, never a raster."
+    value: { device: "oversized pale display word behind the heading", tone: "tone-on-tone pale" }
+    confidence: high
+    source: vision
+    scope: design-language
+    changelog: []
+  - id: warm-gallery-photography
+    statement: "Imagery is warm-toned gallery photography — spiral wooden interiors, sculpture halls, terracotta vessels, seated portraits — placed full-bleed, in overlapping clusters, and in a counted slider; SHARP frames (a hair of rounding only on the map/info well)."
+    value: { subject: "warm gallery interiors + works + people", placement: "full-bleed / cluster / slider", frame: "sharp" }
+    confidence: high
+    source: vision
+    scope: design-language
+    changelog: []
+  - id: near-black-footer-close
+    statement: "The page closes on a near-black footer (#181313): a gold logo, a GIANT Melodrama slash-nav headline, a muted-warm-grey social slash row that brightens to gold, and a pale legal strip."
+    value: { bg: "#181313", accent: "#edd580", links: "#a09a94 → gold" }
+    confidence: high
+    source: [saved-css, vision]
+    scope: design-language
+    changelog: []
+
+do:
+  - { id: melodrama-display, statement: "Open bands with OVERSIZED uppercase Melodrama display headings, tracked; let the hero wordmark fill the band.", value: true, confidence: high, source: computed, scope: design-language, changelog: [] }
+  - { id: generous-body, statement: "Keep body copy generous (Satoshi 24px/1.4) — the unhurried body is the gallery's texture.", value: true, confidence: high, source: computed, scope: design-language, changelog: [] }
+  - { id: sharp-controls, statement: "Corner every control SHARP (radius 0); the one filled button is an espresso plate with a 1px cream border.", value: true, confidence: high, source: computed, scope: design-language, changelog: [] }
+  - { id: warm-dark-alternation, statement: "Alternate espresso and cream bands; close near-black.", value: true, confidence: high, source: vision, scope: design-language, changelog: [] }
+  - { id: text-arrow-ctas, statement: "Make CTAs uppercase text-arrow links (label + arrow glyph); warm ink to gold on hover.", value: true, confidence: high, source: vision, scope: design-language, changelog: [] }
+  - { id: ghost-watermarks, statement: "Back editorial headings with an oversized pale ghost display word.", value: true, confidence: high, source: vision, scope: design-language, changelog: [] }
+avoid:
+  - { id: avoid-pill-buttons, statement: "Avoid rounded/pill buttons — WoodWave controls are SHARP rectangles.", value: true, confidence: high, source: computed, scope: design-language, changelog: [] }
+  - { id: avoid-gold-body, statement: "Avoid gold body/heading-on-cream text — gold is display-on-dark, the mark, and link-hover only.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+  - { id: avoid-shadows, statement: "Avoid drop shadows/elevation — depth is surface contrast + overlapping media.", value: true, confidence: high, source: vision, scope: design-language, changelog: [] }
+  - { id: avoid-cold-neutrals, statement: "Avoid cool greys/blues as surfaces — the neutral family is warm (espresso/cream); the only grey is the third-party map.", value: true, confidence: high, source: saved-css, scope: design-language, changelog: [] }
+neverDo:
+  - { id: never-sans-display, statement: "Never set display headings in the sans — the Melodrama serif IS the brand's editorial voice.", value: true, confidence: high, source: computed, scope: design-language, changelog: [] }
+  - { id: never-lowercase-display, statement: "Never lowercase the display headings/eyebrows — the register is uppercase + tracked.", value: true, confidence: high, source: computed, scope: design-language, changelog: [] }
+  - { id: never-rounded-controls, statement: "Never round the controls — sharp corners are a signature.", value: true, confidence: high, source: computed, scope: design-language, changelog: [] }
+
+# BRAND SIGNATURES (brand-schema §4.7) — the 4 moves that make WoodWave
+# recognizable, each a MACHINE-CHECKABLE always/never rule for signature_audit.py.
+signatures:
+  - id: melodrama-display-satoshi-body
+    kind: type-treatment
+    mode: always
+    claim: >-
+      Display ranks speak Melodrama (proxy Playfair Display) UPPERCASE; running text
+      and controls speak Satoshi (proxy Manrope). A sans display or a serif body
+      breaks the gallery's editorial register.
+    check:
+      probes:
+        - { "on": display, familyIncludesAny: ["Melodrama", "Playfair"] }
+        - { "on": body, familyIncludesAny: ["Satoshi", "Manrope"] }
+        - { "on": button, familyIncludesAny: ["Satoshi", "Manrope"] }
+    evidence:
+      - "computed-styles.json headings: h1 'Melodrama' 175.68px, h3 'Melodrama' 80px; body/p 'Satoshi' 24px"
+      - "tokens.type: display-hero/h1/h2/h3 family Melodrama; body/eyebrow/control-text Satoshi"
+    confidence: high
+    source: [computed, saved-css]
+    changelog:
+      - { ts: "2026-07-17T13:45:00Z", action: created, from: null, to: authored, by: creation, signalId: null, note: "authored from computed type facts" }
+  - id: sharp-corner-controls
+    kind: shape-motif
+    mode: always
+    claim: >-
+      Controls corner SHARP (0px) — buttons, fields and plates are hard rectangles,
+      NEVER pills or soft rectangles. The 0 radius is the working surface corner.
+    check:
+      buttons: { radiusPx: 0, tolerancePx: 1.5 }
+      neverPill: true
+    evidence:
+      - "computed-styles.json actionGroups: buy-button + submit border-radius 0px"
+      - "tokens.radius.sharp 0rem (the brand control corner); the 50%/3px census entries are webflow lightbox/slider chrome"
+    confidence: high
+    source: [computed, saved-css]
+    changelog:
+      - { ts: "2026-07-17T13:45:00Z", action: created, from: null, to: authored, by: creation, signalId: null, note: "authored from measured control radii" }
+  - id: warm-dark-surface-family
+    kind: surface-habit
+    mode: never
+    claim: >-
+      Dark surfaces come ONLY from the licensed warm-dark family — espresso #32271a
+      and the near-black footer #181313 (photo bands underlay #2a2018). Never a
+      generic black, navy, or cool grey as a section surface.
+    check:
+      darkMaxLuminance: 0.22
+      darkAllowedColors: ["#32271a", "#181313", "#2a2018"]
+    evidence:
+      - "tokens.surfaces: inverse #32271a, inverse-strong #181313, photo-hero #2a2018 (schemeMode Inverse)"
+      - "measured body background rgb(50,39,26); footer bg rgb(24,19,19); the site's --dark/--footer tokens"
+    confidence: high
+    source: [computed, saved-css]
+    changelog:
+      - { ts: "2026-07-17T13:45:00Z", action: created, from: null, to: authored, by: creation, signalId: null, note: "authored from the site's own dark tokens" }
+  - id: uppercase-tracked-labels
+    kind: type-treatment
+    mode: always
+    claim: >-
+      Eyebrows, nav, and control labels are UPPERCASE Satoshi with positive letter
+      tracking (~1px); the display headings are uppercase Melodrama with 2px
+      tracking. Sentence-case labels or untracked caps break the register.
+    check:
+      probes:
+        - { "on": eyebrow, caseIs: uppercase }
+        - { "on": button, caseIs: uppercase }
+    evidence:
+      - "css-facts textTransformCensus: 16 uppercase; letterSpacingCensus: 1px x8, 2px x1"
+      - "computed h5/eyebrow 18px uppercase ls 1px; h1/h3 uppercase ls 2px; control-text uppercase"
+    confidence: high
+    source: [computed, saved-css]
+    changelog:
+      - { ts: "2026-07-17T13:45:00Z", action: created, from: null, to: authored, by: creation, signalId: null, note: "authored from the uppercase + tracking censuses" }
+
+# LICENSED ACCENT DEVICES (brand-schema §4.11) — WoodWave's small recognizable
+# accent MOVES as machine-applicable licenses. Roster entries (no floors) so the
+# renderer may apply them where a composition declares the context; kept generic.
+accentDevices:
+  - id: slash-separator
+    kind: separator-glyph
+    mark: "/"
+    role: text/on-inverse-muted
+    contexts:
+      - { context: nav-row }
+      - { context: footer-row }
+    evidence:
+      - "dom-sections: nav + footer link rows use ' / ' separators (footer-nav-separator, footer-social-separator)"
+      - "grounding chrome.separators: '/' on nav + footer"
+    confidence: high
+    source: [vision, saved-css]
+    changelog:
+      - { ts: "2026-07-17T13:45:00Z", action: created, from: null, to: authored, by: creation, signalId: null, note: "the slash divider between inline link labels — a recognizable WoodWave chrome move" }
+  - id: arrow-cta-glyph
+    kind: link-glyph
+    glyph: { asset: 018-arrow-right-dark.svg, size: 1em }
+    role: accent/highlight
+    contexts:
+      - { context: text-cta }
+    evidence:
+      - "grounding visit + newsletter: BUY TICKETS / SUBSCRIBE labels trail an arrow-right glyph (018-arrow-right-dark.svg on disk)"
+      - "buttons.textCta.glyph binds the same asset"
+    confidence: high
+    source: [vision, computed]
+    changelog:
+      - { ts: "2026-07-17T13:45:00Z", action: created, from: null, to: authored, by: creation, signalId: null, note: "the trailing arrow on text-arrow CTAs" }
+  - id: ghost-watermark-word
+    kind: background-type
+    role: surface/raised
+    contexts:
+      - { context: editorial-band }
+    evidence:
+      - "grounding about (ghost 'ABOUT' watermark) + founder-story ('1974-2023' year watermark): oversized pale display word behind the heading"
+      - "generatedVisuals ghost-watermark-word (media-assets.yaml) records the css-text recipe + poster"
+    confidence: high
+    source: vision
+    changelog:
+      - { ts: "2026-07-17T13:45:00Z", action: created, from: null, to: authored, by: creation, signalId: null, note: "the oversized pale ghost display word behind editorial headings" }
+
+voice:
+  ref: "./voice.md"
+  factsRef: "./voice-facts.yaml"
+  motionSpec:
+    state: defined
+    easing:
+      primary: "ease-in-out"
+    durations:
+      fast: "200ms"
+      base: "300ms"
+      slow: "800ms"
+    link:
+      mode: color-shift
+      value: "link ink warms to gold (#edd580) on hover (color .2s → .8s); standing links reveal an underline"
+    scrollReveal:
+      value: "fade"
+    marquee:
+      value: "the gallery slider advances frames (webflow slider); dots swap on .1s"
+    imageParallax:
+      enabled: false
+      origin: extracted
+      provenance: [hero, gallery-slider]
+    reducedMotion: "not-declared"
+    confidence: high
+    source: saved-css
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-17T13:45:00Z", action: created, from: null, to: "200/300/800ms tiers + color-shift links", by: creation, signalId: null, note: "from motion-audit censuses" }
+  dials:
+    variance: { value: medium, confidence: high, source: creation, scope: design-language, changelog: [] }
+    motion:   { value: low, confidence: high, state: defined, source: creation, scope: design-language, changelog: [ { ts: "2026-07-17T13:45:00Z", action: created, from: null, to: low, by: creation, signalId: null, note: "quiet motion — color fades + one library slider, no transforms" } ] }
+    density:  { value: low, confidence: high, source: creation, scope: design-language, changelog: [] }
+
+recipePolicy:
+  scaffoldFirst:          { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  reuseBeforeCreate:      { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  composeFromPrimitives:  { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  themeViaModes:          { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+  slotsTakeInstancesOnly: { value: true, confidence: high, source: creation, scope: design-language, changelog: [] }
+
+provenanceIndex:
+  navbar:         { url: "https://woodwavegallery.webflow.io", node: "div.navbar.w-nav (slash nav + BUY TICKETS + mobile menu)", evidence: "evidence/grounding/section-00-*.yaml + evidence/computed-styles.json#chrome" }
+  hero:           { url: "https://woodwavegallery.webflow.io", node: "section.hero (full-bleed photo cluster)", evidence: "evidence/grounding/section-00-*.yaml + evidence/crops/section-00-*.png" }
+  about:          { url: "https://woodwavegallery.webflow.io", node: "section.about#about (editorial + ghost watermark)", evidence: "evidence/grounding/section-01-*.yaml" }
+  gallery-slider: { url: "https://woodwavegallery.webflow.io", node: "section.slider (counted photo carousel)", evidence: "evidence/grounding/section-02-*.yaml" }
+  founder-story:  { url: "https://woodwavegallery.webflow.io", node: "section.about (founder story + year watermark)", evidence: "evidence/grounding/section-03-*.yaml" }
+  visit:          { url: "https://woodwavegallery.webflow.io", node: "section.contact#visit (map + info card + price rows)", evidence: "evidence/grounding/section-04-*.yaml" }
+  newsletter:     { url: "https://woodwavegallery.webflow.io", node: "section.newsletter#exhibition (underline field + SUBSCRIBE)", evidence: "evidence/grounding/section-05-*.yaml" }
+  footer:         { url: "https://woodwavegallery.webflow.io", node: "section.footer (centered stack, giant slash-nav headline)", evidence: "evidence/grounding/section-06-*.yaml + evidence/computed-styles.json#chrome" }
+
+# ── self-hosted font registry ──────────────────────────────────────────────────────
+# The brand's own Fontshare faces (Melodrama display, Satoshi grotesque) were
+# downloaded from the source's @font-face .ttf URLs (Webflow CDN) into assets/fonts/.
+# The source CSS also carries them (data at those URLs), so the replica renders the
+# real faces; the generation path resolves renderProxy (Playfair Display / Manrope)
+# when the local faces cannot load.
+selfHostedFonts:
+  - family: Melodrama
+    faces:
+      - weight: 400
+        files: [Melodrama-400.ttf]
+      - weight: 500
+        files: [Melodrama-500.ttf]
+      - weight: 600
+        files: [Melodrama-600.ttf]
+  - family: Satoshi
+    faces:
+      - weight: 400
+        files: [Satoshi-400.ttf]
+      - weight: 500
+        files: [Satoshi-500.ttf]
+      - weight: 700
+        files: [Satoshi-700.ttf]
+
+# ---- EXACT extracted site chrome (nav/footer) ----
+
+navbar:
+  origin: extracted
+  source: extracted
+  scope: site-chrome
+  confidence: high
+  provenance:
+    node: div.navbar.w-nav
+    sourceUrl: https://woodwavegallery.webflow.io
+    savedPage: ../../../screenshots/woodwave-v2/woodwave.html
+    extractor: tools/extract/measure_computed.py (JS-off, 1440x900) + grounding section-00
+  archetype: nav
+  sticky: false
+  twoTier: false
+  surface:
+    bg: "#32271a"
+    color: "#fbf4ed"
+    height: 96
+  utilityBanner:
+    notObserved: true
+    note: "no utility/promo banner above the nav"
+  logo:
+    kind: svg
+    alt: WoodWave Gallery
+    src: 000-657acd8d782ab334f6b2e5f3-logo.svg
+    width: 175
+    height: 26
+    href: "/"
+  slots:
+    - { name: brand,    type: media,   role: "gold wavy-mark + WOODWAVE wordmark", source: extracted }
+    - { name: navlinks, type: content, role: "slash-separated uppercase nav (hover → gold)", source: extracted }
+    - { name: actions,  type: content, role: "BUY TICKETS text-arrow", source: extracted }
+  presentation:
+    casing: uppercase
+    separator: "/"
+    linkTreatment: "18px Satoshi uppercase cream, slash separators between center links, hover → gold"
+    ctaTreatment: "BUY TICKETS text-arrow at the far right (no fill)"
+  links:
+    - { label: "ABOUT", href: "#about" }
+    - { label: "GALLERY", href: "#gallery" }
+    - { label: "EXHIBITION", href: "#exhibition" }
+    - { label: "VISIT", href: "#visit" }
+  primary:
+    - { label: "ABOUT", href: "#about", tier: primary }
+    - { label: "GALLERY", href: "#gallery", tier: primary }
+    - { label: "EXHIBITION", href: "#exhibition", tier: primary }
+    - { label: "VISIT", href: "#visit", tier: primary }
+  ctas:
+    - { label: "BUY TICKETS", href: "#visit", style: textCta, size: medium,
+        color: "#fbf4ed", fontSize: 18,
+        note: "uppercase text-arrow CTA at the bar's right edge; hover → gold" }
+  anyButtonHasIcon: true
+  mobile:
+    note: "below 991px the bar collapses to a hamburger (w-nav-button) opening a full-screen menu with the nav links + a social grid (instagram/facebook/youtube/twitter); links hover → gold"
+  measured:
+    _provenance: getComputedStyle (JS-off) from the saved DOM + grounding section-00
+    bar: { bg: "#32271a", effectiveBg: "#32271a", height: 96 }
+    contentMaxWidth: 1300
+    link: { fontSize: 18, fontWeight: 400, color: "#fbf4ed" }
+    utilityBarHeight: 0
+    linkGap: 0
+
+footer:
+  origin: extracted
+  source: extracted
+  scope: site-chrome
+  confidence: high
+  provenance:
+    node: section.footer
+    sourceUrl: https://woodwavegallery.webflow.io
+    savedPage: ../../../screenshots/woodwave-v2/woodwave.html
+    extractor: tools/extract/measure_computed.py + grounding section-06
+  archetype: stack
+  surface:
+    bg: "#181313"
+    color: "#fbf4ed"
+  slots:
+    - { name: navheadline, type: content, role: "giant Melodrama slash-nav headline", source: extracted }
+    - { name: social,      type: content, role: "slash-separated social row", source: extracted }
+    - { name: legal,       type: content, role: "copyright + policy links on a pale strip", source: extracted }
+  logo:
+    kind: svg
+    alt: WoodWave Gallery
+    src: 000-657acd8d782ab334f6b2e5f3-logo.svg
+    height: 26
+    note: "gold wavy-mark + wordmark, centered above the nav headline"
+  presentation:
+    casing: uppercase
+    separator: "/"
+    headings:
+      color: "#fbf4ed"
+      size: 86
+      weight: 400
+      note: "the footer's giant Melodrama slash-nav headline (ABOUT / GALLERY / EXHIBITION / VISIT / BUY TICKETS) measured ~86px uppercase"
+  measured:
+    _provenance: getComputedStyle (JS-off) from the saved DOM + grounding section-06
+    bg: "#181313"
+    color: "#fbf4ed"
+    contentMaxWidth: 1300
+    padding: { top: 30, bottom: 30, left: 70, right: 70 }
+    link: { fontSize: 24, fontWeight: 400, color: "#a09a94", hoverColorOnDark: "#edd580", note: "footer nav links measured 24px Satoshi cream-grey #a09a94; hover → gold (css hoverRules color: var(--yellow))" }
+    social: { kind: text, color: "#a09a94", note: "social row is TEXT links (INSTAGRAM / FACEBOOK / YOUTUBE / TWITTER), slash-separated, hover → gold — not glyph icons" }
+    bottom: { textAlign: center }
+    legal: { fontSize: 15, fontWeight: 400, color: "#a09a94", note: "legal bar on a pale strip below the dark band" }
+  links:
+    - { label: "ABOUT", href: "#about" }
+    - { label: "GALLERY", href: "#gallery" }
+    - { label: "EXHIBITION", href: "#exhibition" }
+    - { label: "VISIT", href: "#visit" }
+    - { label: "BUY TICKETS", href: "#visit" }
+  social:
+    - { network: instagram, href: "https://instagram.com/", kind: text }
+    - { network: facebook,  href: "https://facebook.com/",  kind: text }
+    - { network: youtube,   href: "https://youtube.com/",   kind: text }
+    - { network: twitter,   href: "https://twitter.com/",   kind: text }
+  legal:
+    text: "© 2023. WoodWave Gallery"
+    links:
+      - { label: "Privacy Policy", href: "#" }
+      - { label: "Changelog", href: "#" }
+      - { label: "Licenses", href: "#" }
+  bottomBar:
+    anatomy: centered-stack
+    divider: { present: true, color: "rgba(251, 244, 237, 0.2)", note: "hairline rules flank the social row on the near-black band; the legal bar sits on a pale strip" }
+    policyLinks:
+      - { label: "Privacy Policy", href: "#" }
+      - { label: "Changelog", href: "#" }
+      - { label: "Licenses", href: "#" }
+    note: "policy links + copyright caps on a pale strip; the source also carries Webflow template attribution (powered by webflow / more templates by unroot.design) which is template-store chrome, not gallery brand"

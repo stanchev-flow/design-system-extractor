@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "composition.v1",
+  "name": "06 Remote Variant — Proof & Conversion",
+  "brandSource": "runs/remote/brand",
+  "canonicalStatus": "Canonical manifest requested but absent; available brand, media, voice, scale, and recipe facts used",
+  "brief": "Proof/conversion-led alternate Remote page, intentionally distinct from editorial and product-led variants.",
+  "recipeSequence": [
+    "navbar-link-columns",
+    "hero-content-media-split",
+    "logo-wall-carousel",
+    "stats-repeated-grid",
+    "comparison-repeated-grid",
+    "faq-disclosure-list + companion intrinsic media",
+    "testimonial-carousel",
+    "logo-wall-repeated-grid",
+    "cta-content-media-split",
+    "footer-link-columns"
+  ],
+  "surfaceSequence": [
+    "surface/hero-noise",
+    "surface/primary",
+    "surface/raised",
+    "surface/primary",
+    "surface/raised",
+    "surface/primary",
+    "surface/hero-noise",
+    "surface/raised"
+  ],
+  "resolvedRhythm": {
+    "sectionPadding": "5rem",
+    "sectionPaddingMobile": "3rem",
+    "container": "76rem",
+    "eyebrowToHeading": ".75rem",
+    "headingToBody": "1rem",
+    "bodyToCta": "2rem",
+    "blockGap": "4rem",
+    "columnGap": "3rem",
+    "columnGapMobile": "1.5rem",
+    "gridGap": "2rem",
+    "actionGap": "1rem"
+  },
+  "componentContracts": {
+    "primary": {
+      "idle": {"background": "#0564ff", "foreground": "#ffffff"},
+      "hover": {"background": "#0047bc", "foreground": "#ffffff"},
+      "pressed": {"background": "#003284", "foreground": "#ffffff"},
+      "disabled": {"background": "#ccdfff", "foreground": "#ffffff"},
+      "focus": "3px #9bc1ff outline",
+      "height": "3rem",
+      "radius": "2.5rem",
+      "paddingInline": "1.5rem"
+    },
+    "secondary": {
+      "idle": {"background": "transparent", "foreground": "#003284", "border": "#003284"},
+      "hover": {"background": "#0564ff", "foreground": "#ffffff"},
+      "pressed": {"background": "#0047bc", "foreground": "#ffffff"},
+      "focus": "3px #9bc1ff outline",
+      "height": "3rem",
+      "radius": "2.5rem"
+    },
+    "neutral": {
+      "idle": {"background": "#232325", "foreground": "#ffffff"},
+      "hover": {"background": "#595b5f", "foreground": "#ffffff"},
+      "pressed": {"background": "#383a3d", "foreground": "#ffffff"},
+      "height": "3rem",
+      "radius": "2.5rem"
+    },
+    "textLink": {
+      "idle": {"foreground": "#0564ff", "underline": false},
+      "hover": {"foreground": "#0047bc", "underline": true},
+      "width": "fit-content"
+    },
+    "railControl": {
+      "basis": "secondary",
+      "width": "3rem",
+      "height": "3rem",
+      "radius": "2.5rem"
+    }
+  },
+  "mediaPolicy": "existing-extracted-assets-only",
+  "mediaGeometryPolicy": "No generic 4:3 ratio. Intrinsic dimensions or explicit extracted role treatment only; split wrappers use min-size:0 and align-self:center.",
+  "mediaGeometry": [
+    {"slot": "hero-proof", "asset": "hero-globe-illustration.webp", "intrinsicWidth": 1498, "intrinsicHeight": 1100, "fit": "contain", "cssAspectRatio": "auto"},
+    {"slot": "faq-companion", "asset": "collage-eor-ui.webp", "intrinsicWidth": 1068, "intrinsicHeight": 1068, "fit": "contain", "cssAspectRatio": "auto"},
+    {"slot": "customer-portraits", "assets": ["avatar-luke-mckinlay.webp", "avatar-marisol-jimenez.webp", "avatar-maria-shkaruppa.webp"], "intrinsicWidth": 2000, "intrinsicHeight": 1468, "fit": "cover", "cssAspectRatio": "2000 / 1468", "reason": "extracted testimonial portrait family"},
+    {"slot": "review-ratings", "assets": ["rating-g2.webp", "rating-trustpilot.webp", "rating-capterra.webp"], "intrinsicHeight": 48, "fit": "contain", "cssAspectRatio": "auto"},
+    {"slot": "award-badges", "intrinsicWidth": 280, "intrinsicHeight": 323, "fit": "contain", "cssAspectRatio": "auto"}
+  ],
+  "factSources": [
+    "runs/remote/brand/changes.md",
+    "runs/remote/brand/brand.yaml",
+    "runs/remote/brand/assets-tagged.json",
+    "runs/remote/brand/media-assets.yaml",
+    "runs/remote/brand/style-scale.yaml",
+    "runs/remote/brand/voice-facts.yaml",
+    "brand_pipeline/contracts/section-recipes/catalog.generated.yaml"
+  ],
+  "gaps": [
+    {
+      "requested": "runs/remote/brand/manifest.json",
+      "status": "absent",
+      "handling": "No manifest claims invented; available canonical lane files used and gap disclosed."
+    },
+    {
+      "requested": "Bossa font file",
+      "status": "not present in extracted assets",
+      "handling": "Canonical declared Lexend Deca render proxy used."
+    }
+  ]
+}

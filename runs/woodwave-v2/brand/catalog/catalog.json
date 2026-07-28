@@ -1,0 +1,1046 @@
+{
+  "brand": "WoodWave Gallery",
+  "sourceUrl": "https://woodwavegallery.webflow.io",
+  "generated": "2026-07-17T14:10:37.929087+00:00",
+  "typeInference": {
+    "rule": "Check the mapped component name first, then the slot's semantic role, against a media keyword set and a content keyword set. media wins on a media-keyword hit (Image/Logo/photo/icon/...); otherwise content on a content-keyword hit (Heading/Eyebrow/Rich Text/Link/Form/...). Unmatched slots default to 'content' and are flagged ambiguous.",
+    "mediaKeywords": [
+      "image",
+      "media",
+      "photo",
+      "photography",
+      "picture",
+      "logo",
+      "wordmark",
+      "avatar",
+      "icon",
+      "video",
+      "gallery",
+      "illustration",
+      "graphic",
+      "map",
+      "thumbnail"
+    ],
+    "contentKeywords": [
+      "heading",
+      "title",
+      "eyebrow",
+      "paragraph",
+      "rich text",
+      "richtext",
+      "text",
+      "link",
+      "form",
+      "button",
+      "label",
+      "action",
+      "caption",
+      "body",
+      "cta",
+      "quote",
+      "stat",
+      "counter",
+      "list",
+      "input",
+      "field",
+      "nav"
+    ]
+  },
+  "ambiguousSlots": [],
+  "components": [],
+  "sections": [
+    {
+      "name": "navbar / Nav",
+      "id": "navbar",
+      "layoutArchetype": "nav",
+      "scaffold": "",
+      "mode": "Inverse",
+      "surface": {
+        "role": "surface/inverse",
+        "bg": "#32271a",
+        "text": "#fbf4ed",
+        "accent": "#edd580"
+      },
+      "slots": [
+        {
+          "name": "brand",
+          "type": "media",
+          "useCase": "gold wavy-lines mark + WOODWAVE wordmark",
+          "mappedComponent": "",
+          "structuralSlot": "brand"
+        },
+        {
+          "name": "navlinks",
+          "type": "content",
+          "useCase": "slash-separated uppercase nav (18px Satoshi, hover \u2192 gold)",
+          "mappedComponent": "",
+          "structuralSlot": "navlinks"
+        },
+        {
+          "name": "actions",
+          "type": "content",
+          "useCase": "BUY TICKETS text-arrow",
+          "mappedComponent": "",
+          "structuralSlot": "actions"
+        }
+      ]
+    },
+    {
+      "name": "hero / Stack",
+      "id": "hero",
+      "layoutArchetype": "stack",
+      "scaffold": "",
+      "mode": "Inverse",
+      "surface": {
+        "role": "surface/inverse",
+        "bg": "#32271a",
+        "text": "#fbf4ed",
+        "accent": "#edd580"
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "type": "content",
+          "useCase": "giant gold Melodrama wordmark (uppercase)",
+          "mappedComponent": "",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "background",
+          "type": "media",
+          "useCase": "full-bleed warm staircase photo + overlapping cluster",
+          "mappedComponent": "",
+          "structuralSlot": "background"
+        }
+      ]
+    },
+    {
+      "name": "about / Stack",
+      "id": "about",
+      "layoutArchetype": "stack",
+      "scaffold": "",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/primary",
+        "bg": "#fbf4ed",
+        "text": "#32271a",
+        "accent": null
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "type": "content",
+          "useCase": "uppercase Satoshi eyebrow ('ABOUT')",
+          "mappedComponent": "",
+          "structuralSlot": "eyebrow"
+        },
+        {
+          "name": "heading",
+          "type": "content",
+          "useCase": "80px Melodrama uppercase heading",
+          "mappedComponent": "",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "body",
+          "type": "content",
+          "useCase": "lede paragraph (Satoshi 24-28px)",
+          "mappedComponent": "",
+          "structuralSlot": "body"
+        },
+        {
+          "name": "media",
+          "type": "media",
+          "useCase": "alternating gallery/architecture photos",
+          "mappedComponent": "",
+          "structuralSlot": "media"
+        }
+      ]
+    },
+    {
+      "name": "gallery-slider / Stack",
+      "id": "gallery-slider",
+      "layoutArchetype": "stack",
+      "scaffold": "",
+      "mode": "Inverse",
+      "surface": {
+        "role": "surface/inverse",
+        "bg": "#32271a",
+        "text": "#fbf4ed",
+        "accent": "#edd580"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "type": "content",
+          "useCase": "chrome eyebrow ('GALLERY') over the photo",
+          "mappedComponent": "",
+          "structuralSlot": "eyebrow"
+        },
+        {
+          "name": "media",
+          "type": "media",
+          "useCase": "6 full-bleed gallery photos",
+          "mappedComponent": "",
+          "structuralSlot": "media"
+        },
+        {
+          "name": "controls",
+          "type": "content",
+          "useCase": "slide counter (1/6) + numeric dot rail + circular arrow",
+          "mappedComponent": "",
+          "structuralSlot": "controls"
+        }
+      ]
+    },
+    {
+      "name": "founder-story / Split",
+      "id": "founder-story",
+      "layoutArchetype": "split",
+      "scaffold": "",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/primary",
+        "bg": "#fbf4ed",
+        "text": "#32271a",
+        "accent": null
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "type": "content",
+          "useCase": "Melodrama uppercase heading (left)",
+          "mappedComponent": "",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "body",
+          "type": "content",
+          "useCase": "founder narrative paragraph (right)",
+          "mappedComponent": "",
+          "structuralSlot": "body"
+        },
+        {
+          "name": "media",
+          "type": "media",
+          "useCase": "seated founder portrait",
+          "mappedComponent": "",
+          "structuralSlot": "media"
+        }
+      ]
+    },
+    {
+      "name": "visit / Split",
+      "id": "visit",
+      "layoutArchetype": "split",
+      "scaffold": "",
+      "mode": "Inverse",
+      "surface": {
+        "role": "surface/inverse",
+        "bg": "#32271a",
+        "text": "#fbf4ed",
+        "accent": "#edd580"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "type": "content",
+          "useCase": "uppercase eyebrow ('VISIT')",
+          "mappedComponent": "",
+          "structuralSlot": "eyebrow"
+        },
+        {
+          "name": "heading",
+          "type": "content",
+          "useCase": "Melodrama display ('WELCOME TO THE GALLERY')",
+          "mappedComponent": "",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "media",
+          "type": "media",
+          "useCase": "greyscale map band + wood-interior photo",
+          "mappedComponent": "",
+          "structuralSlot": "media"
+        },
+        {
+          "name": "card",
+          "type": "content",
+          "useCase": "cream info card (address + open hours ruled rows)",
+          "mappedComponent": "",
+          "structuralSlot": "card"
+        },
+        {
+          "name": "pricing",
+          "type": "content",
+          "useCase": "ruled ticket-price rows w/ BUY TICKETS text-arrows",
+          "mappedComponent": "",
+          "structuralSlot": "pricing"
+        }
+      ]
+    },
+    {
+      "name": "newsletter / Stack",
+      "id": "newsletter",
+      "layoutArchetype": "stack",
+      "scaffold": "",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/primary",
+        "bg": "#fbf4ed",
+        "text": "#32271a",
+        "accent": null
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "type": "content",
+          "useCase": "uppercase eyebrow ('STAY UPDATED')",
+          "mappedComponent": "",
+          "structuralSlot": "eyebrow"
+        },
+        {
+          "name": "heading",
+          "type": "content",
+          "useCase": "Melodrama display heading",
+          "mappedComponent": "",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "form",
+          "type": "content",
+          "useCase": "underline email field + SUBSCRIBE text-arrow",
+          "mappedComponent": "",
+          "structuralSlot": "form"
+        }
+      ]
+    },
+    {
+      "name": "footer / Stack",
+      "id": "footer",
+      "layoutArchetype": "stack",
+      "scaffold": "",
+      "mode": "Inverse",
+      "surface": {
+        "role": "surface/inverse",
+        "bg": "#32271a",
+        "text": "#fbf4ed",
+        "accent": "#edd580"
+      },
+      "slots": [
+        {
+          "name": "navheadline",
+          "type": "content",
+          "useCase": "giant Melodrama slash-nav headline (2 lines)",
+          "mappedComponent": "",
+          "structuralSlot": "navheadline"
+        },
+        {
+          "name": "social",
+          "type": "content",
+          "useCase": "slash-separated social row (INSTAGRAM / FACEBOOK / YOUTUBE / TWITTER)",
+          "mappedComponent": "",
+          "structuralSlot": "social"
+        },
+        {
+          "name": "legal",
+          "type": "content",
+          "useCase": "copyright + policy links on a pale strip",
+          "mappedComponent": "",
+          "structuralSlot": "legal"
+        }
+      ]
+    }
+  ],
+  "originCatalog": {
+    "hasOrigin": true,
+    "tiers": [
+      {
+        "key": "primitives",
+        "label": "Primitives",
+        "tier": 1,
+        "extracted": 8,
+        "designed": 0,
+        "total": 8,
+        "items": [
+          {
+            "name": "button",
+            "origin": "extracted",
+            "use": "sparingly",
+            "variant": "filled-primary",
+            "confidence": "high",
+            "provenance": [
+              "nav",
+              "hero"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "eyebrow",
+            "origin": "extracted",
+            "use": "always",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "about",
+              "visit",
+              "newsletter",
+              "gallery-slider"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "heading",
+            "origin": "extracted",
+            "use": "always",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "hero",
+              "about",
+              "visit",
+              "newsletter",
+              "footer"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "image",
+            "origin": "extracted",
+            "use": "always",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "hero",
+              "about",
+              "gallery-slider",
+              "founder-story",
+              "visit"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "input",
+            "origin": "extracted",
+            "use": "forms",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "newsletter"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "link",
+            "origin": "extracted",
+            "use": "text-links-only",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "nav",
+              "visit",
+              "newsletter",
+              "footer"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "logo",
+            "origin": "extracted",
+            "use": "always",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "nav",
+              "footer"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "paragraph",
+            "origin": "extracted",
+            "use": "always",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "about",
+              "founder-story",
+              "visit"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          }
+        ]
+      },
+      {
+        "key": "blocks",
+        "label": "Blocks",
+        "tier": 2,
+        "extracted": 12,
+        "designed": 13,
+        "total": 25,
+        "items": [
+          {
+            "name": "card",
+            "origin": "extracted",
+            "use": "always",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "visit",
+              "about",
+              "gallery-slider"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "carousel",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "gallery-slider"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "content-block",
+            "origin": "extracted",
+            "use": "always",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "about",
+              "founder-story",
+              "visit",
+              "newsletter"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "cta-block",
+            "origin": "extracted",
+            "use": "always",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "newsletter"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "feature-item",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "about",
+              "visit"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "footer",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "footer"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "form",
+            "origin": "extracted",
+            "use": "newsletter",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "newsletter"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": true
+          },
+          {
+            "name": "header",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "about",
+              "visit",
+              "newsletter"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "media-text",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "about",
+              "founder-story",
+              "visit"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "navbar",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "nav"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "pagination",
+            "origin": "extracted",
+            "use": "carousel-progress",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "gallery-slider"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "pricing-card",
+            "origin": "extracted",
+            "use": "tickets",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "visit"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "accordion",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No accordion was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no accordion on the source homepage (a synthesized FAQ accordion is defined in layout-library synthesizedComponents, derived from the ruled-row + arrow-glyph grammar)",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "accent devices",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "accordion-item",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No accordion-item was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no accordion on the source homepage",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "accent devices",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "banner",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No banner was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no promo banner on the source homepage",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "accent devices",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "breadcrumb",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No breadcrumb was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no breadcrumb on the source homepage",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "accent devices",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "dropdown-menu",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No dropdown-menu was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no content dropdown; the mobile nav toggles a full-screen menu (chrome, not a content dropdown)",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "accent devices",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "logo-bar",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No logo-bar was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no partner/customer logo wall \u2014 an art gallery, not a SaaS proof strip",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "accent devices",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "modal",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No modal was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: the gallery slider uses a Webflow lightbox (library chrome) \u2014 no brand modal device",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "accent devices",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "stat-block",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No stat-block was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no stat block on the source homepage (a synthesized gallery-stat band is defined in layout-library synthesizedComponents)",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "accent devices",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "step-item",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No step-item was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no numbered step sequence on the source homepage",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "accent devices",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "steps",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No steps was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no numbered step sequence on the source homepage",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "accent devices",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "table",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No table was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no data table on the source homepage (a synthesized exhibition-programme table is defined in synthesizedComponents, derived from the ruled-row grammar)",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "accent devices",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "tabs",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No tabs was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no tab device on the source homepage (the gallery slider is a carousel, not tabs)",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "accent devices",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "testimonial",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No testimonial was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, accent devices, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no testimonial/quote block on the source homepage (a synthesized press-quote is defined in layout-library synthesizedComponents, provenance synthesized-from-brand-signals)",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "accent devices",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          }
+        ]
+      }
+    ]
+  }
+}

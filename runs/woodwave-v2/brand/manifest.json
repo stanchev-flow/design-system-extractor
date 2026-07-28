@@ -1,0 +1,124 @@
+{
+  "project": "WoodWave v2",
+  "brand": "woodwave-v2",
+  "status": "needs_iteration",
+  "pipeline_run_completed": false,
+  "source_url": "https://woodwavegallery.webflow.io",
+  "capture_dir": "screenshots/woodwave-v2",
+  "capture_mode": "fresh live capture at 1440x900; saved HTML/CSS/assets and 1440x12182 source screenshot",
+  "reconciliation": {
+    "reason": "two workers collided in runs/woodwave-v2/brand",
+    "authoritativeSelection": "original authored harness and HEARTWOOD page retained; duplicate re-extraction evidence retained where it is a complete fresh run against the same source; duplicate-only synthesized additions removed",
+    "archived": "_reconciliation-discarded/duplicate-recovery-root-output",
+    "timings": "not_instrumented; duplicate-worker timings are not attributed to the authoritative run"
+  },
+  "coverage": {
+    "measuredPatterns": 6,
+    "chrome": 2,
+    "measuredRecipes": 3,
+    "synthesizedFromBrandSignals": 5,
+    "designedCatalogBlocks": 13,
+    "measuredCatalogBlocks": 12,
+    "groundedCrops": 7,
+    "curatedAssets": 19
+  },
+  "validation": {
+    "command": [
+      "./venv/bin/python",
+      "tools/extract/validate_brand_evidence.py",
+      "--brand-dir",
+      "runs/woodwave-v2/brand"
+    ],
+    "status": "pass",
+    "checks": "C1-C28",
+    "errors": 0,
+    "warnings": 2,
+    "notes": 1,
+    "warningSummary": [
+      "C5: 32 mined module sections vs 6 non-chrome authored layouts",
+      "C18: about-editorial-ghost left alignment dissents from corroborated centered grammar; source-verified and recorded"
+    ],
+    "noteSummary": [
+      "C24: optional style-scale.yaml absent"
+    ]
+  },
+  "replica": {
+    "scope": "measured patterns only; synthesizedComponents excluded",
+    "status": "blocked_below_quality_bar",
+    "overall": 0.7673,
+    "qualityBar": 0.9,
+    "sourceSections": 6,
+    "unmappedBands": 0,
+    "iterationTrajectory": [
+      0.5435,
+      0.7673
+    ],
+    "blocker": "The generic measured-pattern renderer drops required multi-part anatomy: hero overlap layers, about alternating media/copy rows, gallery full-bleed carousel chrome, visit ticket-pricing row, founder watermark geometry, and footer display-link stack. Further lane-only padding or score-band edits would game the metric rather than repair fidelity.",
+    "command": [
+      "./venv/bin/python",
+      "brand_pipeline/compose_replica.py",
+      "runs/woodwave-v2/brand/brand.yaml",
+      "--source-shot",
+      "screenshots/woodwave-v2/woodwave-fullpage.png",
+      "-o",
+      "runs/woodwave-v2/brand/compose/replica"
+    ],
+    "report": "compose/replica/replica-report.json"
+  },
+  "harness": {
+    "status": "available",
+    "path": "components-preview/index.html",
+    "catalog": "catalog/index.html",
+    "screenshot": "shots/spec-book-fullpage.png",
+    "catalogScreenshot": "shots/designed-catalog-origin.png",
+    "catalogOrigin": "12 measured (extracted) blocks + 13 designed (synthesized-from-brand-signals) blocks; 0 unpopulated placeholders",
+    "studioProjectUrl": "http://127.0.0.1:1500/project/woodwave-v2",
+    "studioPreviewUrl": "http://127.0.0.1:1500/runs/woodwave-v2/brand/components-preview/index.html",
+    "httpStatus": 200
+  },
+  "generation": {
+    "scenario": "HEARTWOOD \u2014 Ten Makers, One Material",
+    "baseStyle": "editorial-luxury",
+    "resolvedPreset": "luxury-fashion",
+    "stylePresetSentinel": true,
+    "mediaFactsSentinel": true,
+    "repairIterations": 2,
+    "brief": "compose/exhibition-storybrand/copy-brief.md",
+    "page": "compose/exhibition-storybrand/page/index.html",
+    "composition": "compose/exhibition-storybrand/page/composition.json",
+    "prompt": "compose/exhibition-storybrand/page/assembled-prompt.md",
+    "tokenManifest": "compose/exhibition-storybrand/page/tokens.manifest.json",
+    "screenshot": "shots/heartwood-exhibition-fullpage.png",
+    "onbrandReport": "compose/exhibition-storybrand/page/onbrand-report.json",
+    "gateReport": "compose/exhibition-storybrand/page/gate-reconciliation.json"
+  },
+  "gates": {
+    "onbrand": "pass",
+    "slop": "fail: AS-12 sec-4 empty column at 1440px and 1180px",
+    "spacing": "fail: strict exit 1; 3 wrong-step + 1 off-ladder",
+    "signature": "pass",
+    "voice": "pass",
+    "sectionRules": "pass with 4 advisories",
+    "conversion": "skip: fact-gated",
+    "mediaBinding": "pass",
+    "markLegality": "pass"
+  },
+  "timings": {
+    "status": "not_instrumented",
+    "reason": "duplicate recovery timings cannot be safely attributed to the authoritative lane"
+  },
+  "requiredArtifacts": {
+    "brand": "brand.yaml",
+    "brandNarrative": "brand.md",
+    "sectionCopy": "section-copy.yaml",
+    "layoutLibrary": "layout-library.yaml",
+    "assetsTagged": "assets-tagged.json",
+    "mediaAssets": "media-assets.yaml",
+    "evidence": "evidence/",
+    "curatedAssets": "assets/"
+  },
+  "completedAt": null,
+  "completionNote": "Harness is accessible and validated, but the measured-only replica remains below the 0.90 quality bar (0.7673). Lane is not review-ready.",
+  "flowReport": "flow-report.json",
+  "generationAllowed": false
+}

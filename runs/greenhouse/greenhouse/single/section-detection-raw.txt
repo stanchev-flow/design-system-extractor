@@ -1,0 +1,14 @@
+{
+  "image_height": 6171,
+  "sections": [
+    {"label": "Announcement Bar", "y_start": 0, "y_end": 22},
+    {"label": "Navigation / Header", "y_start": 22, "y_end": 58},
+    {"label": "Hero", "y_start": 58, "y_end": 390},
+    {"label": "Acquisition Notice Bar", "y_start": 390, "y_end": 445},
+    {"label": "Three Product Feature Cards", "y_start": 445, "y_end": 2250},
+    {"label": "Customer Logos", "y_start": 2250, "y_end": 2960},
+    {"label": "Best Teams Feature Section", "y_start": 2960, "y_end": 4150},
+    {"label": "CTA Banner", "y_start": 4150, "y_end": 4985},
+    {"label": "Footer", "y_start": 4985, "y_end": 6171}
+  ]
+}

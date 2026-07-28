@@ -1,0 +1,22 @@
+# 01 HubSpot
+
+- Built from the approved Relume-test structural sequence.
+- Brand facts source: `runs/hubspot-v2/brand`.
+- Every media slot was validated against `assets-tagged.json` and the on-disk `assets/` directory.
+- Resolved media slots: 32.
+- Declared unavailable media slots: 0.
+- Canonical status: Canonical extraction completed · assets validated.
+- Acceptance status: blocked: exact extracted primary control is 3.40:1 and transparent border yields 2.68:1 on accent-wash.
+- Typography status: Extracted HubSpot Sans and HubSpot Serif files loaded from canonical brand assets.
+- Surface sequence: `surface/photo-hero → surface/primary → surface/primary → surface/primary → surface/accent-wash → surface/primary → surface/primary → surface/primary → surface/primary → surface/inverse → surface/inverse-strong`.
+- Rhythm: section `4rem`, hero `11rem / 11rem`, container `67.5rem`, eyebrow→heading `1.5rem`, heading→body `2rem`, body→CTA `2.5rem`, block `2.5rem`, columns `5rem`, grid `2rem`, actions `1rem`.
+- Rhythm sources: canonical `brand.yaml` surfaceGrammar/pageRhythm, tokens.spacing, and layoutGrammar.actionGroup; style-scale.yaml.
+- Component contracts: primary, secondary, tertiary/text, menu, and rail controls resolve from canonical `brand.yaml#buttons`; 10 missing state/control mappings are declared in `composition.json` rather than receiving generic styling.
+- Split media geometry: no generic ratio or minimum height; wrappers use intrinsic extracted asset dimensions, per-slot fit, `min-size: 0`, and centered self-alignment. Details are recorded in `composition.json#mediaGeometry`.
+- Browser verification: desktop and 390px mobile loaded successfully; mobile navigation opened by keyboard/click control.
+- Asset verification: every rendered image URL returned HTTP 200.
+- Preview artifacts: `preview.png` and `preview-mobile.png`.
+- Media geometry: PASS at desktop/mobile for both feature splits. Generic 4:3 and 430px minimum were removed; extracted intrinsic ratios now resolve as 604:353 (platform graphic) and 1:1 (agent UI), with `contain` fit.
+- Grid-row max-content sizing, centered sibling alignment, 80px/32px desktop/mobile split gaps, section padding, and 24/32/40px feature relational gaps all matched their declared tokens.
+- Regression report: `media-geometry-report.{json,md}` (0 failures).
+- Component fidelity remains PASS (332 properties, 0 mismatches); on-brand PASS. Readability remains blocked only by the exact source primary-button contrast recorded previously.

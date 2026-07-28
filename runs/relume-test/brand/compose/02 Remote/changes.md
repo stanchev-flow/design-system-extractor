@@ -1,0 +1,22 @@
+# 02 Remote
+
+- Built from the approved Relume-test structural sequence.
+- Brand facts source: `runs/remote/brand`.
+- Every media slot was validated against `assets-tagged.json` and the on-disk `assets/` directory.
+- Resolved media slots: 24.
+- Declared unavailable media slots: 0.
+- Canonical status: Available canonical extracted facts · assets validated.
+- Acceptance status: pass.
+- Typography status: Canonical Bossa/Inter stacks applied; no Bossa font file exists in the extracted asset directory, so the declared render-proxy/fallback stack is used.
+- Surface sequence: `surface/hero-noise → surface/primary → surface/primary → surface/primary → surface/primary → surface/primary → surface/primary → surface/primary → surface/primary → surface/hero-noise → surface/raised`.
+- Rhythm: section `3rem`, hero `5rem / 5rem`, container `76rem`, eyebrow→heading `.75rem`, heading→body `1rem`, body→CTA `2rem`, block `4rem`, columns `3rem`, grid `2rem`, actions `1rem`.
+- Rhythm sources: canonical `brand.yaml` surfaceGrammar/pageRhythm, tokens.spacing, and layoutGrammar.actionGroup; style-scale.yaml.
+- Component contracts: primary, secondary, tertiary/text, menu, and rail controls resolve from canonical `brand.yaml#buttons`; 8 missing state/control mappings are declared in `composition.json` rather than receiving generic styling.
+- Split media geometry: no generic ratio or minimum height; wrappers use intrinsic extracted asset dimensions, per-slot fit, `min-size: 0`, and centered self-alignment. Details are recorded in `composition.json#mediaGeometry`.
+- Browser verification: desktop and 390px mobile loaded successfully; mobile navigation opened by keyboard/click control.
+- Asset verification: every rendered image URL returned HTTP 200.
+- Preview artifacts: `preview.png` and `preview-mobile.png`.
+- Media geometry: PASS at desktop/mobile for both feature splits. Generic 4:3 and 430px minimum were removed; extracted intrinsic ratios now resolve as 1:1 (accordion collage) and 1526:1100 (infrastructure UI), with `contain` fit.
+- Grid-row max-content sizing, centered sibling alignment, 48px/24px desktop/mobile split gaps, section padding, and 12/16/32px feature relational gaps all matched their declared tokens.
+- Regression report: `media-geometry-report.{json,md}` (0 failures).
+- Component fidelity remains PASS (284 properties, 0 mismatches); readability/rhythm PASS; on-brand PASS.

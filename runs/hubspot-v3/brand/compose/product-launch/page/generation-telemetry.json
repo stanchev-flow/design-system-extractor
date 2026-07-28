@@ -1,0 +1,34 @@
+{
+  "attempts": 3,
+  "telemetry": [
+    {
+      "attempt": 0,
+      "latency_s": 70.36,
+      "input_tokens": 19539,
+      "output_tokens": 6673,
+      "temperature": null,
+      "stage": "gated",
+      "gate_pass": false
+    },
+    {
+      "attempt": 1,
+      "latency_s": 50.31,
+      "input_tokens": 19779,
+      "output_tokens": 4676,
+      "temperature": null,
+      "stage": "gated",
+      "gate_pass": false
+    },
+    {
+      "attempt": 2,
+      "latency_s": 42.15,
+      "input_tokens": 19758,
+      "output_tokens": 3970,
+      "temperature": null,
+      "stage": "gated",
+      "gate_pass": true
+    }
+  ],
+  "model": "claude-opus-4-8",
+  "offGridExpansion": true
+}

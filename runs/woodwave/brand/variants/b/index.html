@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WoodWave Gallery - opening-bookend - Variant B (Bold)</title>
+<!-- Tailwind (CDN) + inline brand config; shadcn-style markup. Token VALUES from brand.yaml. -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  "theme": {
+    "extend": {
+      "colors": {
+        "cream": "#FAF0E8",
+        "panel": "#F7EFE6",
+        "inverse": "#3A2F23",
+        "inverse-strong": "#1B150F",
+        "accent": "#E9DC8C",
+        "ink": "#1F1A14",
+        "ink-inverse": "#F5EDE2",
+        "ink-muted": "#C9BFB2"
+      },
+      "fontFamily": {
+        "heading": [
+          "Playfair Display",
+          "Georgia",
+          "serif"
+        ],
+        "body": [
+          "Inter",
+          "system-ui",
+          "sans-serif"
+        ]
+      },
+      "borderRadius": {
+        "brand": "0rem"
+      }
+    }
+  }
+};
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #3A2F23;
+  --text: #F5EDE2;
+  --accent: #E9DC8C;
+  --muted: #C9BFB2;
+  --on-accent: #1F1A14;
+  --radius: 0rem;
+  --display-size: clamp(6rem, 9cqw, 7.5rem);
+  --section-pad: 6.25rem;
+  --eyebrow-gap: 1.5rem;
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+img { display: block; max-width: 100%; }
+html { background: var(--bg); height: 100%; }
+/* iframe-safe container context: cq* length units resolve against this sized box.
+   Studio renders this HTML inside an iframe where viewport-relative length units
+   misbehave, so the top-level wrapper establishes an explicit sized container. */
+body { background: var(--bg); color: var(--text); font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased; min-height: 100%;
+  container-type: size; container-name: frame; }
+
+/* opening-bookend scaffold (archetype stack, surface mode Inverse), full-bleed */
+.hv-section { background: var(--bg); color: var(--text);
+  padding: 1.75rem 2.5rem var(--section-pad); min-height: 100cqh; }
+
+/* zero-chrome slash nav: wordmark + typographic links (neverDo:no-buttons honored in A/B) */
+.hv-nav { display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+  margin-bottom: clamp(2rem, 6cqw, 5rem); }
+.hv-logo { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-body);
+  font-weight: 600; font-size: 0.875rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent); }
+.hv-logo .glyph { font-family: var(--font-heading); font-size: 1.1rem; }
+.hv-navlinks { display: flex; gap: 0.55rem; flex: 1; justify-content: center; }
+.hv-navlinks a { font-family: var(--font-body); font-size: 0.875rem; letter-spacing: 0.08em;
+  text-transform: uppercase; text-decoration: none; color: var(--text); white-space: nowrap; }
+.hv-navlinks .sep { color: var(--text); opacity: 0.55; }
+.hv-nav-cta { font-family: var(--font-body); font-size: 0.875rem; letter-spacing: 0.08em;
+  text-transform: uppercase; text-decoration: none; color: var(--accent); white-space: nowrap; }
+
+/* stack slot: centered display title over layered media (bookend centering is sanctioned) */
+.hv-slot { display: flex; flex-direction: column; align-items: center; }
+.hv-eyebrow { font-family: var(--font-body); font-size: 0.6875rem; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted); text-align: center;
+  margin-bottom: var(--eyebrow-gap); }
+
+/* Heading Style:display - the sanctioned display-text-over-media overlap */
+.hv-title.is-display { font-family: var(--font-heading); font-weight: 400;
+  font-size: var(--display-size); line-height: 1.05em;
+  letter-spacing: 0rem; text-transform: uppercase;
+  color: var(--accent); text-align: center; position: relative; z-index: 2;
+  margin-bottom: -3.25rem; }
+
+/* media: hard-edged photography (radius 0, no shadow/border/mat) */
+.hv-collage { position: relative; width: 100%; max-width: 80rem; margin: 0 auto; }
+.hv-media { display: block; width: 100%; border-radius: var(--radius); }
+.hv-media.is-hero { aspect-ratio: 1355 / 570; object-fit: cover; }
+.hv-media.is-overlap-abs { position: absolute; width: 34%; right: 4%; bottom: -50%;
+  aspect-ratio: 785 / 620; object-fit: cover; z-index: 1; }
+.hv-spacer { height: 22cqw; }
+
+/* A: portrait as a margin figure with an uppercase micro-caption (no media-over-media) */
+.hv-figure { display: flex; align-items: flex-end; gap: 0.75rem; max-width: 80rem;
+  margin: 2.5rem auto 0; justify-content: flex-end; }
+.hv-figure img { width: 26%; border-radius: var(--radius); aspect-ratio: 785 / 620;
+  object-fit: cover; }
+.hv-cap { font-family: var(--font-body); font-size: 0.6875rem; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted); writing-mode: vertical-rl; }
+
+/* hero foot: subhead + CTA */
+.hv-foot { display: flex; flex-direction: column; align-items: center; gap: 1.75rem;
+  text-align: center; margin-top: 2.5rem; }
+.hv-sub { font-family: var(--font-body); font-size: 1rem; line-height: 1.55em;
+  color: var(--muted); max-width: 42rem; }
+.hv-action { font-family: var(--font-body); font-size: 0.875rem; letter-spacing: 0.08em;
+  text-transform: uppercase; text-decoration: none; color: var(--accent); }
+
+/* C only: filled gold CTA button - hard-edged (radius 0), no shadow/border.
+   This is the WILDCARD one-off that relaxes neverDo:no-buttons. */
+.hv-cta-btn { font-family: var(--font-body); font-size: 0.875rem; letter-spacing: 0.08em;
+  text-transform: uppercase; cursor: pointer; background: var(--accent); color: var(--on-accent);
+  border-radius: var(--radius); padding: 0.9rem 2rem; display: inline-flex; align-items: center;
+  gap: 0.5rem; }
+
+@media (max-width: 991px) {
+  :root { --display-size: 4.5rem; }
+  .hv-navlinks { display: none; }
+}
+@media (max-width: 767px) {
+  :root { --display-size: 3rem; }
+  .hv-section { padding: 1.25rem 1.25rem 3rem; }
+  .hv-media.is-overlap-abs { width: 46%; right: 2%; bottom: -18%; }
+  .hv-spacer { height: 30cqw; }
+  .hv-figure img { width: 40%; }
+}
+
+</style>
+</head>
+<body class="font-body bg-inverse text-ink-inverse antialiased">
+<!-- opening-bookend (archetype stack), surface mode Inverse -->
+<section class="hv-section">
+  <!-- Logo wordmark + slash nav -->
+  <nav class="hv-nav">
+    <span class="hv-logo"><span class="glyph">&#9697;</span> WoodWave</span>
+    <span class="hv-navlinks"><a href="#">About</a> <span class="sep">/</span> <a href="#">Gallery</a> <span class="sep">/</span> <a href="#">Exhibition</a> <span class="sep">/</span> <a href="#">Visit</a></span>
+    <a class="hv-nav-cta" href="#">Buy Tickets</a>
+  </nav>
+
+  <!-- Stack slot: eyebrow -> display title over layered photo collage -->
+  <div class="hv-slot">
+    <p class="hv-eyebrow">Est. 2019 — Portland, Oregon</p>
+    <!-- Heading Style:display - display-text-over-media (sanctioned overlap) -->
+    <h1 class="hv-title is-display">WOODWAVE<br>GALLERY</h1>
+  <!-- media-over-media via absolute offsets: sanctioned overlap (compositionRules) -->
+  <div class="hv-collage">
+    <img class="hv-media is-hero" src="assets/hero-staircase.jpg"
+         alt="Spiral wooden staircase shot from above">
+    <img class="hv-media is-overlap-abs" src="assets/overlap-vase.jpg"
+         alt="Terracotta vase on a wooden ledge">
+  </div>
+  <div class="hv-spacer"></div>
+    <div class="hv-foot">
+      <p class="hv-sub">An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade.</p>
+      <a class="hv-action" href="#">Buy Tickets &rarr;</a>
+    </div>
+  </div>
+</section>
+</body>
+</html>

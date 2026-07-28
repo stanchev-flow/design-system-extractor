@@ -1,0 +1,410 @@
+{
+  "schemaVersion": "composition.v1",
+  "name": "04 Remote Variant \u2014 Editorial Flow",
+  "displayName": "Remote Variant \u2014 Editorial Flow",
+  "brandSource": "runs/remote/brand",
+  "canonicalStatus": "Available canonical extracted facts \u00b7 assets validated",
+  "structure": [
+    "navigation",
+    "type-led-offset-media-opener",
+    "staggered-logo-proof-rail",
+    "asymmetric-feature-narrative",
+    "numbered-product-chapters",
+    "vertical-employment-process-timeline",
+    "editorial-resource-card-composition",
+    "offset-quote-media-treatment",
+    "awards-proof-band",
+    "asymmetric-infrastructure-note",
+    "strong-closing-band",
+    "multi-column-footer"
+  ],
+  "recipeSequence": [
+    {
+      "recipe": "hero-header-media-collage",
+      "adaptation": "type-led offset media"
+    },
+    {
+      "recipe": "logo-repeated-grid",
+      "adaptation": "staggered horizontal proof rail"
+    },
+    {
+      "recipe": "feature-media-collage",
+      "adaptation": "asymmetric narrative"
+    },
+    {
+      "recipe": "feature-content-stack",
+      "adaptation": "numbered editorial chapters"
+    },
+    {
+      "recipe": "timeline-timeline",
+      "adaptation": "vertical process"
+    },
+    {
+      "recipe": "feature-repeated-grid",
+      "adaptation": "editorial card composition"
+    },
+    {
+      "recipe": "testimonial-media-collage",
+      "adaptation": "offset quote and portrait"
+    },
+    {
+      "recipe": "logo-repeated-grid",
+      "adaptation": "awards proof band"
+    },
+    {
+      "recipe": "feature-content-stack",
+      "adaptation": "asymmetric infrastructure note"
+    },
+    {
+      "recipe": "cta-content-stack",
+      "adaptation": "strong closing band"
+    },
+    {
+      "recipe": "footer-content-stack",
+      "adaptation": "canonical multi-column footer"
+    }
+  ],
+  "surfaceSequence": [
+    "surface/hero-noise",
+    "surface/primary",
+    "surface/primary",
+    "surface/primary",
+    "surface/primary",
+    "surface/primary",
+    "surface/primary",
+    "surface/primary",
+    "surface/primary",
+    "surface/hero-noise",
+    "surface/raised"
+  ],
+  "resolvedRhythm": {
+    "sectionPadding": "3rem",
+    "heroPadding": {
+      "top": "5rem",
+      "bottom": "5rem"
+    },
+    "container": "76rem",
+    "eyebrowToHeading": ".75rem",
+    "headingToBody": "1rem",
+    "bodyToCta": "2rem",
+    "blockGap": "4rem",
+    "columnGap": "3rem",
+    "gridGap": "2rem",
+    "actionGap": "1rem"
+  },
+  "rhythmSources": {
+    "surfaceSequence": "runs/remote/brand/brand.yaml#surfaceGrammar.pageRhythm",
+    "sectionPadding": "runs/remote/brand/brand.yaml#tokens.spacing",
+    "container": "runs/remote/brand/brand.yaml#tokens.spacing.container-max",
+    "relationalGaps": "runs/remote/brand/brand.yaml#tokens.spacing + layoutGrammar.actionGroup",
+    "styleScale": "runs/remote/brand/style-scale.yaml"
+  },
+  "typographyStatus": "Canonical Bossa/Inter stacks applied; no Bossa font file exists in the extracted asset directory, so the declared render-proxy/fallback stack is used.",
+  "componentContractSource": "runs/remote/brand/brand.yaml#buttons",
+  "componentContracts": {
+    "primary": {
+      "style": "filled",
+      "bg": "#0564ff",
+      "bgHover": "#0047bc",
+      "fgHover": "#ffffff",
+      "bgPressed": "#003284",
+      "bgDisabled": "#ccdfff",
+      "fg": "#ffffff",
+      "border": "none",
+      "radius": "2.5rem",
+      "padding": "0 1.5rem",
+      "height": "3rem",
+      "font": "Inter",
+      "weight": 500,
+      "sizeRem": 1.125,
+      "focus": "outline 2px solid #9bc1ff; outline-offset 2px",
+      "confidence": "high",
+      "source": [
+        "saved-css",
+        "computed",
+        "vision"
+      ],
+      "provenance": [
+        "hero",
+        "banner-cta",
+        "closing-cta"
+      ],
+      "note": "Measured .button-module .primary under [data-zora-theme=sea-blue]: fill sea-blue-500, hover 600, pressed 700, disabled 100/300; pill h48 r40 pad 0 24 (computed census); label swap animation on hover (::after translate, --zora-btn-duration tokens).",
+      "fgPressed": "#ffffff",
+      "fgDisabled": "#ffffff",
+      "onInverse": {}
+    },
+    "secondary": {
+      "style": "outline",
+      "bg": "transparent",
+      "border": "1px solid #003284",
+      "fg": "#003284",
+      "bgHover": "#0564ff",
+      "fgHover": "#ffffff",
+      "bgPressed": "#0047bc",
+      "radius": "2.5rem",
+      "padding": "0 1.5rem",
+      "height": "3rem",
+      "font": "Inter",
+      "weight": 500,
+      "sizeRem": 1.125,
+      "confidence": "high",
+      "source": [
+        "saved-css",
+        "computed",
+        "vision"
+      ],
+      "provenance": [
+        "hero",
+        "partner-logos",
+        "testimonials",
+        "badge-strip"
+      ],
+      "note": "Hero 'Sign up' + the quiet proof-section pills ('Become a Partner', 'Hear from our customers', '4,000+ reviews'). Vision reads the quiet pills with near-ink labels \u2014 same outlined family on neutral scope (border/label #141415-family); the sea-blue scope yields the deep-blue variant.",
+      "fgPressed": "#ffffff",
+      "bgDisabled": "#ccdfff",
+      "fgDisabled": "#003284",
+      "focus": "outline 2px solid #9bc1ff; outline-offset 2px",
+      "onInverse": {}
+    },
+    "tertiary": {
+      "style": "filled-neutral",
+      "bg": "#232325",
+      "bgHover": "#595b5f",
+      "fgHover": "#ffffff",
+      "bgPressed": "#383a3d",
+      "bgDisabled": "#d2d3d5",
+      "fg": "#ffffff",
+      "radius": "2.5rem",
+      "padding": "0 1.5rem",
+      "height": "3rem",
+      "font": "Inter",
+      "weight": 500,
+      "sizeRem": 1.125,
+      "confidence": "high",
+      "source": [
+        "saved-css",
+        "computed"
+      ],
+      "provenance": [
+        "navbar"
+      ],
+      "note": "The default .button at :root scope \u2014 near-black neutral pill (nav 'Book demo', measured white label + r40 + h48).",
+      "border": "none",
+      "fgPressed": "#ffffff",
+      "fgDisabled": "#ffffff",
+      "focus": "outline 2px solid #9bc1ff; outline-offset 2px",
+      "onInverse": {}
+    },
+    "textCta": {
+      "style": "text-link-arrow",
+      "fg": "#0564ff",
+      "fgHover": "#0047bc",
+      "decoration": "no underline idle; hover darkens to #0047bc; trailing arrow glyph rides inline",
+      "radius": "0",
+      "font": "Inter",
+      "weight": 500,
+      "sizeRem": 1,
+      "glyph": {
+        "asset": "icon-arrow-link.svg",
+        "size": "1rem",
+        "source": "computed"
+      },
+      "confidence": "high",
+      "source": [
+        "saved-css",
+        "vision"
+      ],
+      "provenance": [
+        "workflow-cards",
+        "testimonials"
+      ],
+      "note": "'Learn more \u2192' / 'See all integrations \u2192' / 'Read customer story \u2192' links (link-module + testimonial-card link: hover color --zora-link-hover). 16px w500.",
+      "border": "none",
+      "padding": "0",
+      "height": "auto",
+      "bg": "transparent",
+      "bgHover": "transparent",
+      "bgPressed": "transparent",
+      "fgPressed": "#0047bc",
+      "bgDisabled": "#ccdfff",
+      "fgDisabled": "#0564ff",
+      "focus": "outline 2px solid #9bc1ff; outline-offset 2px",
+      "onInverse": {}
+    },
+    "menu": {
+      "style": "filled-neutral",
+      "bg": "#232325",
+      "bgHover": "#595b5f",
+      "fgHover": "#ffffff",
+      "bgPressed": "#383a3d",
+      "bgDisabled": "#d2d3d5",
+      "fg": "#ffffff",
+      "radius": "2.5rem",
+      "padding": "0 1.5rem",
+      "height": "3rem",
+      "font": "Inter",
+      "weight": 500,
+      "sizeRem": 1.125,
+      "confidence": "high",
+      "source": [
+        "saved-css",
+        "computed"
+      ],
+      "provenance": [
+        "navbar"
+      ],
+      "note": "The default .button at :root scope \u2014 near-black neutral pill (nav 'Book demo', measured white label + r40 + h48).",
+      "border": "none",
+      "fgPressed": "#ffffff",
+      "fgDisabled": "#ffffff",
+      "focus": "outline 2px solid #9bc1ff; outline-offset 2px",
+      "onInverse": {},
+      "degradedFrom": "tertiary"
+    },
+    "icon": {
+      "style": "outline",
+      "bg": "transparent",
+      "border": "1px solid #003284",
+      "fg": "#003284",
+      "bgHover": "#0564ff",
+      "fgHover": "#ffffff",
+      "bgPressed": "#0047bc",
+      "radius": "2.5rem",
+      "padding": "0 1.5rem",
+      "height": "3rem",
+      "font": "Inter",
+      "weight": 500,
+      "sizeRem": 1.125,
+      "confidence": "high",
+      "source": [
+        "saved-css",
+        "computed",
+        "vision"
+      ],
+      "provenance": [
+        "hero",
+        "partner-logos",
+        "testimonials",
+        "badge-strip"
+      ],
+      "note": "Hero 'Sign up' + the quiet proof-section pills ('Become a Partner', 'Hear from our customers', '4,000+ reviews'). Vision reads the quiet pills with near-ink labels \u2014 same outlined family on neutral scope (border/label #141415-family); the sea-blue scope yields the deep-blue variant.",
+      "fgPressed": "#ffffff",
+      "bgDisabled": "#ccdfff",
+      "fgDisabled": "#003284",
+      "focus": "outline 2px solid #9bc1ff; outline-offset 2px",
+      "onInverse": {},
+      "degradedFrom": "secondary"
+    }
+  },
+  "componentDegradations": [
+    {
+      "component": "secondary",
+      "state": "disabled",
+      "to": "primary disabled",
+      "reason": "canonical disabled state absent"
+    },
+    {
+      "component": "secondary",
+      "state": "focus",
+      "to": "primary focus",
+      "reason": "variant focus absent"
+    },
+    {
+      "component": "tertiary",
+      "state": "focus",
+      "to": "primary focus",
+      "reason": "variant focus absent"
+    },
+    {
+      "component": "textCta",
+      "state": "pressed",
+      "to": "hover",
+      "reason": "canonical pressed state absent"
+    },
+    {
+      "component": "textCta",
+      "state": "disabled",
+      "to": "primary disabled",
+      "reason": "canonical disabled state absent"
+    },
+    {
+      "component": "textCta",
+      "state": "focus",
+      "to": "primary focus",
+      "reason": "variant focus absent"
+    },
+    {
+      "component": "menu",
+      "state": "all",
+      "to": "tertiary",
+      "reason": "no independent menu-control matrix; nearest declared brand control"
+    },
+    {
+      "component": "icon",
+      "state": "all",
+      "to": "secondary",
+      "reason": "no independent rail-control matrix; nearest declared brand control"
+    }
+  ],
+  "mediaPolicy": "existing-extracted-assets-only",
+  "mediaGeometryPolicy": "intrinsic extracted dimensions; no generic 4:3 ratios; grid children align without stretch",
+  "mediaBindings": [
+    {
+      "slot": "navigation-wordmark",
+      "status": "resolved",
+      "asset": "remote-wordmark.svg",
+      "useCase": "logo"
+    },
+    {
+      "slot": "opener-media",
+      "status": "resolved",
+      "asset": "hero-globe-illustration.webp",
+      "useCase": "hero-illustration"
+    },
+    {
+      "slot": "feature-media",
+      "status": "resolved",
+      "asset": "collage-eor-ui.webp",
+      "useCase": "product-UI"
+    },
+    {
+      "slot": "chapter-media",
+      "status": "resolved",
+      "asset": "panel-infrastructure-ui-snippet.webp",
+      "useCase": "product-graphic"
+    },
+    {
+      "slot": "resource-mcp",
+      "status": "resolved",
+      "asset": "card-mcp-agents.webp",
+      "useCase": "product-graphic"
+    },
+    {
+      "slot": "resource-integrations",
+      "status": "resolved",
+      "asset": "card-integrations.webp",
+      "useCase": "product-graphic"
+    },
+    {
+      "slot": "resource-api",
+      "status": "resolved",
+      "asset": "card-api-first.webp",
+      "useCase": "product-graphic"
+    },
+    {
+      "slot": "quote-media",
+      "status": "resolved",
+      "asset": "avatar-luke-mckinlay.webp",
+      "useCase": "testimonial-avatar"
+    },
+    {
+      "slot": "footer-wordmark",
+      "status": "resolved",
+      "asset": "remote-wordmark.svg",
+      "useCase": "logo"
+    }
+  ],
+  "gaps": [],
+  "acceptanceStatus": "pass"
+}

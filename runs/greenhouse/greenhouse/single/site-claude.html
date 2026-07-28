@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verdant — Botanic Wellbeing System</title>
+<script>document.documentElement.classList.add('motion-prep');</script>
+<style>
+:root{
+  --surface-primary:#FFFFFF;
+  --surface-secondary:#CFE9DE;
+  --surface-inverse:#19392B;
+  --surface-inverse-soft:#1F4233;
+  --text-primary:#1B3A2C;
+  --text-muted:#4A5A50;
+  --text-on-inverse:#F2F6F2;
+  --text-on-inverse-muted:#9DB7A6;
+  --text-accent:#1E7A4D;
+  --border-on-primary:#1B3A2C;
+  --border-on-inverse:#3A5949;
+  --divider:#C9D4CC;
+  --accent-primary:#1E7A4D;
+  --accent-secondary:#2F6BE0;
+  --accent-soft:#BFE0D2;
+  --tint-chip:#A9D6C4;
+  --line-motif:#234A38;
+  --shadow-card:0 8px 24px rgba(20,40,30,0.12);
+  --ease:cubic-bezier(0.22,0.61,0.36,1);
+  --serif:Georgia,'Times New Roman',serif;
+  --sans:'Segoe UI',system-ui,-apple-system,Helvetica,Arial,sans-serif;
+  --container:1180px;
+  --pad-y:96px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);font-size:16px;line-height:1.55;color:var(--text-primary);background:var(--surface-primary);-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+.container{max-width:var(--container);margin:0 auto;padding:0 32px}
+
+h1,h2,h3{font-family:var(--serif);font-weight:400;color:var(--text-primary)}
+h1{font-size:56px;line-height:1.1;letter-spacing:-0.01em}
+h2{font-size:40px;line-height:1.15;letter-spacing:-0.005em}
+h3{font-size:24px;line-height:1.2}
+.display{font-family:var(--serif);font-weight:400;font-size:60px;line-height:1.05;letter-spacing:-0.01em}
+.italic-accent{font-style:italic}
+p{color:var(--text-primary)}
+.muted{color:var(--text-muted);font-size:15px;line-height:1.5}
+.eyebrow{font-size:14px;font-weight:500;letter-spacing:0.01em;color:var(--text-muted);display:inline-flex;width:max-content;max-width:100%}
+
+/* buttons */
+.btn{font-family:var(--sans);font-size:16px;font-weight:500;line-height:1;padding:12px 24px;border-radius:999px;display:inline-flex;align-items:center;gap:8px;width:max-content;max-width:100%;white-space:nowrap;flex:0 0 auto;cursor:pointer;border:1px solid transparent;text-decoration:none;transition:transform var(--ease) .15s,background var(--ease) .3s,opacity .3s}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--accent-primary);color:#fff}
+.btn-primary-blue{background:var(--accent-secondary);color:#fff}
+.btn-outline{background:transparent;color:var(--text-primary);border-color:var(--border-on-primary)}
+.btn-outline:hover{background:rgba(27,58,44,0.05)}
+
+.tlink{font-family:var(--sans);font-size:16px;font-weight:500;color:var(--accent-primary);text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.tlink:hover{text-decoration:underline}
+.tlink.on-inverse{color:var(--text-on-inverse)}
+
+.nav-item{font-family:var(--sans);font-size:16px;font-weight:500;color:var(--text-primary);text-decoration:none;padding:8px 12px;display:inline-flex;width:max-content;white-space:nowrap}
+.nav-item:hover{color:var(--accent-primary)}
+
+.icon-btn{width:40px;height:40px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;background:transparent;border:none;cursor:pointer;color:var(--text-primary)}
+.icon-btn svg{width:20px;height:20px}
+
+/* nav */
+.topbar{background:var(--surface-inverse);color:var(--text-on-inverse)}
+.topbar .container{display:flex;align-items:center;justify-content:center;gap:10px;padding-top:10px;padding-bottom:10px;font-size:14px;flex-wrap:wrap}
+.topbar a{color:var(--text-on-inverse);text-decoration:underline;font-weight:500}
+
+header.nav{position:sticky;top:0;z-index:50;background:var(--surface-primary);border-bottom:1px solid var(--divider)}
+header.nav .container{display:flex;align-items:center;justify-content:space-between;height:76px;gap:24px}
+.logo{font-family:var(--serif);font-size:24px;color:var(--text-primary);text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-right{display:flex;align-items:center;gap:12px}
+@media(max-width:860px){.nav-links{display:none}}
+
+section{padding:var(--pad-y) 0}
+
+/* hero / tint collage */
+.tint-run{background:linear-gradient(180deg,#FFFFFF 0%,#CFE9DE 22%);position:relative;overflow:hidden}
+.hero-inner{text-align:center;max-width:720px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px;position:relative;z-index:2}
+.hero-inner .eyebrow{align-self:center}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.collage{position:relative;margin-top:56px;height:auto}
+.collage-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;align-items:start}
+.float-card{background:#fff;border-radius:8px;box-shadow:var(--shadow-card);overflow:hidden}
+.float-card img{width:100%;aspect-ratio:3/4;object-fit:cover}
+.float-card.lift1{margin-top:-30px}
+.float-card.lift2{margin-top:36px}
+.float-card.lift3{margin-top:-12px}
+.tint-chip{background:var(--tint-chip);color:var(--text-primary);font-size:14px;font-weight:500;padding:6px 12px;border-radius:999px;display:inline-flex;align-items:center;gap:6px;width:max-content}
+.connector{position:absolute;inset:0;pointer-events:none;z-index:1;opacity:.5}
+@media(max-width:760px){.collage-grid{grid-template-columns:repeat(2,1fr)}.float-card.lift1,.float-card.lift2,.float-card.lift3{margin-top:0}}
+
+/* media card grid */
+.section-head{max-width:660px;margin-bottom:48px;display:flex;flex-direction:column;gap:16px;align-items:flex-start}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+@media(max-width:820px){.grid-3{grid-template-columns:1fr}}
+.media-card{display:flex;flex-direction:column;gap:14px}
+.media-frame{position:relative;border-radius:8px;overflow:hidden}
+.media-frame img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.caption-chip{position:absolute;left:14px;bottom:14px;background:#fff;color:var(--text-primary);font-size:14px;font-weight:500;padding:6px 12px;border-radius:999px;display:inline-flex;align-items:center;gap:6px;width:max-content}
+.caption-chip svg{width:15px;height:15px}
+.media-card h3{margin-top:2px}
+.media-card .card-action{margin-top:4px;align-self:flex-start}
+
+/* two col split with spine */
+.split{display:grid;grid-template-columns:1fr 1px 1.2fr;gap:48px;align-items:center}
+.spine{background:var(--divider);width:1px;height:100%;min-height:200px}
+.split-left{display:flex;flex-direction:column;gap:20px;align-items:flex-start}
+.proof-matrix{display:grid;grid-template-columns:repeat(3,1fr);gap:28px 32px}
+.proof-cell{display:flex;flex-direction:column;gap:6px}
+.proof-cell .num{font-family:var(--serif);font-size:40px;line-height:1}
+.logo-block{height:36px;background:rgba(27,58,44,0.12);border-radius:6px}
+@media(max-width:820px){.split{grid-template-columns:1fr}.spine{display:none}.proof-matrix{grid-template-columns:repeat(2,1fr)}}
+
+/* wide feature */
+.feature-wide{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
+.feature-wide .media-frame img{aspect-ratio:5/4}
+.feature-text{display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.feature-list{list-style:none;display:flex;flex-direction:column;gap:14px;margin-top:6px}
+.feature-list li{display:flex;gap:12px;align-items:flex-start;color:var(--text-muted);font-size:15px}
+.feature-list svg{width:22px;height:22px;color:var(--accent-primary);flex:0 0 auto;margin-top:1px}
+@media(max-width:820px){.feature-wide{grid-template-columns:1fr}}
+
+/* showcase interface band on tint */
+.tint-flat{background:var(--surface-secondary)}
+.showcase{display:grid;grid-template-columns:1fr 1.1fr;gap:48px;align-items:center}
+.showcase-text{display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.showcase .float-card{padding:0}
+.showcase .float-card img{width:100%;aspect-ratio:4/3;object-fit:cover}
+@media(max-width:820px){.showcase{grid-template-columns:1fr}}
+
+/* inverse closing */
+.inverse-run{background:linear-gradient(180deg,#19392B 0%,#1F4233 100%);color:var(--text-on-inverse);position:relative;overflow:hidden}
+.inverse-run h2,.inverse-run h3{color:var(--text-on-inverse)}
+.closing{position:relative;z-index:2;max-width:640px;display:flex;flex-direction:column;gap:22px;align-items:flex-start}
+.closing .eyebrow{color:var(--accent-soft)}
+.closing p{color:var(--text-on-inverse-muted)}
+.line-motif{position:absolute;right:-60px;top:0;bottom:0;width:50%;z-index:1;opacity:.5;color:var(--border-on-inverse);display:flex;align-items:center}
+.line-motif svg{width:100%;height:auto}
+@media(max-width:760px){.line-motif{display:none}}
+
+/* newsletter on inverse inside footer flow */
+.footer-run{background:var(--surface-inverse-soft);color:var(--text-on-inverse)}
+.footer-top{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;padding-bottom:56px}
+.footer-brand{display:flex;flex-direction:column;gap:16px}
+.footer-brand .logo{color:var(--text-on-inverse)}
+.footer-brand p{color:var(--text-on-inverse-muted);font-size:15px;max-width:280px}
+.footer-col h4{font-family:var(--sans);font-size:14px;font-weight:500;letter-spacing:0.01em;color:var(--accent-soft);margin-bottom:8px}
+.footer-link{font-family:var(--sans);font-size:16px;font-weight:500;color:var(--text-on-inverse);text-decoration:none;padding:4px 0;display:inline-flex;width:max-content}
+.footer-link:hover{text-decoration:underline}
+.newsletter{margin-top:8px}
+.newsletter label{font-size:15px;display:block;margin-bottom:8px;color:var(--text-on-inverse)}
+.newsletter label .req{color:#7FBFA1}
+.news-row{display:flex;gap:10px;flex-wrap:wrap}
+.email-input{font-family:var(--sans);font-size:16px;padding:12px 16px;border-radius:4px;border:none;background:#fff;color:var(--text-primary);width:100%;max-width:300px;flex:1 1 200px}
+.social-row{display:flex;gap:10px;margin-top:6px}
+.social-btn{width:40px;height:40px;border-radius:999px;border:1px solid #7FBFA1;color:#7FBFA1;background:transparent;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;cursor:pointer}
+.social-btn svg{width:18px;height:18px}
+.footer-bottom{border-top:1px solid var(--border-on-inverse);padding-top:28px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+.footer-bottom .legal{font-size:14px;color:var(--text-on-inverse-muted)}
+.footer-bottom .legal a{color:var(--text-on-inverse-muted);text-decoration:underline}
+@media(max-width:860px){.footer-top{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.footer-top{grid-template-columns:1fr}}
+
+html.motion-prep [data-reveal]{opacity:0;visibility:hidden;transform:translateY(24px)}
+@media(prefers-reduced-motion:reduce){html.motion-prep [data-reveal]{opacity:1;visibility:visible;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="container">
+    <span>New: our Spring restorative collection is open for early access —</span>
+    <a href="#">Reserve your place</a>
+  </div>
+</div>
+
+<header class="nav">
+  <div class="container">
+    <a href="#" class="logo">
+      <svg width="22" height="22" viewBox="0 0 256 256" fill="currentColor"><path d="M223.5,48.5a8,8,0,0,0-8-8C133,40.5,68.6,77.4,40.7,135.6,28.9,160.5,28,186.3,38,208a8,8,0,0,0,14.6-6.6c-7-15.3-7.4-33.4-1.3-51.9C75.2,77.8,140.4,57.8,207.5,56.6,206,123.6,186,188.8,113.7,212.7c-18.5,6.1-36.6,5.7-51.9-1.3a8,8,0,1,0-6.6,14.6c11.4,5.2,23.7,7.8,36.5,7.8a116,116,0,0,0,36.5-6.1C242.4,201.4,279.3,137,279.3,54.5Z" transform="translate(-23.5 -8.5)"/></svg>
+      Verdant
+    </a>
+    <nav class="nav-links">
+      <a class="nav-item" href="#">Programs</a>
+      <a class="nav-item" href="#">Approach</a>
+      <a class="nav-item" href="#">Spaces</a>
+      <a class="nav-item" href="#">Stories</a>
+    </nav>
+    <div class="nav-right">
+      <button class="icon-btn" aria-label="Search">
+        <svg viewBox="0 0 256 256" fill="currentColor"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></svg>
+      </button>
+      <a class="btn btn-outline" href="#">Sign in</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO: tint collage -->
+<section class="tint-run">
+  <div class="container">
+    <div class="hero-inner" data-reveal>
+      <span class="eyebrow">A calmer way to work and rest</span>
+      <h1 class="display">Cultivating <span class="italic-accent">balance</span> in the spaces where people grow.</h1>
+      <p class="muted">Verdant brings botanic stillness into modern workplaces — restorative programs, daylight-filled rooms, and rituals designed for steady, sustainable wellbeing.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#">Explore programs</a>
+        <a class="btn btn-outline" href="#">Book a tour</a>
+      </div>
+    </div>
+    <div class="collage" data-reveal>
+      <svg class="connector" viewBox="0 0 1000 400" fill="none" stroke="var(--line-motif)" stroke-width="1.5">
+        <path d="M120,300 C300,180 420,360 560,200 S820,120 920,260"/>
+        <path d="M180,120 C340,260 600,80 760,300"/>
+      </svg>
+      <div class="collage-grid">
+        <div class="float-card lift1">
+          <img src="https://cdn.prod.website-files.com/6668a687e71e2722fccb8357/66ccc7a3c9045b79b105b8c6_prefooter-image11%402x.avif" alt="Colleague pausing by a sunlit window with plants" data-stt-asset-brief="Candid warm daylight photo of a person pausing thoughtfully beside a sunlit window with leafy plants in a calm office; neutral-warm editorial tones sitting beside green surfaces; soft natural light; photo content fills entire image edge-to-edge with no inner frame, border, matte, or padding.">
+        </div>
+        <div class="float-card lift2">
+          <img src="https://cdn.prod.website-files.com/6668a687e71e2722fccb8357/69c5c87ffa110534a57f10da_D-EN-CG-Home-Two-office-workers-discussing-content-on-tablet-bright-space.avif" alt="Hands tending a small potted plant" data-stt-asset-brief="Close candid photo of hands tending a small potted plant on a wooden desk; warm natural daylight; neutral-warm editorial palette; photo fills entire image edge-to-edge with no inner frame or border.">
+        </div>
+        <div class="float-card lift3">
+          <img src="https://cdn.prod.website-files.com/6668a687e71e2722fccb8357/6a063cdcba100ecc20453980_D-EN-CG-Home-Woman-in-suit-on-laptop-smiling-setup-job-alert-ui.avif" alt="Group in a calm bright meeting room" data-stt-asset-brief="Candid photo of a small group sitting in a bright, plant-filled calm meeting room with soft daylight; warm authentic framing; neutral-warm tones beside green; photo fills entire image edge-to-edge with no inner frame, matte, or padding.">
+        </div>
+        <div class="float-card lift1">
+          <img src="https://cdn.prod.website-files.com/6668a687e71e2722fccb8357/66ce09f23bfc5382e0a79e3a_content-gallery-1.webp" alt="Person reading in a quiet daylit nook" data-stt-asset-brief="Candid editorial photo of a person reading quietly in a daylit corner nook with greenery; warm soft light; authentic candid framing; neutral-warm palette; photo fills entire image edge-to-edge with no inner frame or border.">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THREE COLUMN MEDIA CARDS -->
+<section class="page-canvas">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">Our programs</span>
+      <h2>Restorative practices, shaped to fit the rhythm of real teams.</h2>
+    </div>
+    <div class="grid-3" data-reveal-group>
+      <article class="media-card">
+        <div class="media-frame">
+          <img src="https://cdn.prod.website-files.com/6668a687e71e2722fccb8357/66ce09efcca27fafac5199b7_content-gallery-2.webp" alt="Morning mobility session in a daylit studio" data-stt-asset-brief="Warm candid photo of a small morning mobility session in a daylit studio with plants; soft natural light; authentic editorial framing; neutral-warm tones beside green; photo fills entire image edge-to-edge with no inner frame.">
+          <span class="caption-chip">
+            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M128,40a96,96,0,1,0,96,96A96.11,96.11,0,0,0,128,40Zm0,176a80,80,0,1,1,80-80A80.09,80.09,0,0,1,128,216Zm56-80a8,8,0,0,1-8,8H128a8,8,0,0,1-8-8V88a8,8,0,0,1,16,0v40h40A8,8,0,0,1,184,136Z"/></svg>
+            25 min
+          </span>
+        </div>
+        <h3>Morning Reset</h3>
+        <p class="muted">Gentle mobility and breathwork to open the day with steadiness rather than rush.</p>
+        <a class="tlink card-action" href="#">Learn more →</a>
+      </article>
+      <article class="media-card">
+        <div class="media-frame">
+          <img src="https://cdn.prod.website-files.com/6668a687e71e2722fccb8357/66ce09ec544c15c6fafaf9aa_content-gallery-3.webp" alt="Quiet focus room with plants and soft light" data-stt-asset-brief="Candid photo of a quiet focus room with plants, a person working calmly at a desk in soft daylight; warm editorial tone; neutral-warm palette beside green; photo fills entire image edge-to-edge with no inner frame or border.">
+          <span class="caption-chip">
+            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M128,40a96,96,0,1,0,96,96A96.11,96.11,0,0,0,128,40Zm0,176a80,80,0,1,1,80-80A80.09,80.09,0,0,1,128,216Zm56-80a8,8,0,0,1-8,8H128a8,8,0,0,1-8-8V88a8,8,0,0,1,16,0v40h40A8,8,0,0,1,184,136Z"/></svg>
+            Daily
+          </span>
+        </div>
+        <h3>Deep Focus Rooms</h3>
+        <p class="muted">Designed spaces with daylight and greenery for uninterrupted, restorative concentration.</p>
+        <a class="btn btn-outline card-action" href="#">Reserve a room</a>
+      </article>
+      <article class="media-card">
+        <div class="media-frame">
+          <img src="https://cdn.prod.website-files.com/6668a687e71e2722fccb8357/67efd43464d16af5036f1d20_Talent-Makers-Badge-and-coworkers-smiling-in-warm-office.png" alt="Group sharing a meal around a long table" data-stt-asset-brief="Warm candid photo of a small group sharing a meal around a long table near windows with plants; authentic daylight framing; neutral-warm editorial palette beside green; photo fills entire image edge-to-edge with no inner frame.">
+          <span class="caption-chip">
+            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M128,40a96,96,0,1,0,96,96A96.11,96.11,0,0,0,128,40Zm0,176a80,80,0,1,1,80-80A80.09,80.09,0,0,1,128,216Zm56-80a8,8,0,0,1-8,8H128a8,8,0,0,1-8-8V88a8,8,0,0,1,16,0v40h40A8,8,0,0,1,184,136Z"/></svg>
+            Weekly
+          </span>
+        </div>
+        <h3>Shared Tables</h3>
+        <p class="muted">Slow, communal moments that rebuild connection and ease the cadence of the week.</p>
+        <a class="tlink card-action" href="#">Learn more →</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- TWO COLUMN SPLIT WITH SPINE -->
+<section class="page-canvas" style="padding-top:0">
+  <div class="container">
+    <div class="split" data-reveal>
+      <div class="split-left">
+        <span class="eyebrow">Trusted by considered teams</span>
+        <h2>Built with people who care about how their work feels.</h2>
+        <p class="muted">We partner with studios, foundations, and growing companies who treat wellbeing as a practice, not a perk.</p>
+        <a class="btn btn-primary" href="#">See partnerships</a>
+      </div>
+      <div class="spine" aria-hidden="true"></div>
+      <div>
+        <div class="proof-matrix">
+          <div class="proof-cell"><span class="num">94%</span><span class="muted">report calmer days</span></div>
+          <div class="proof-cell"><span class="num">120+</span><span class="muted">spaces designed</span></div>
+          <div class="proof-cell"><span class="num">8 yrs</span><span class="muted">of practice</span></div>
+          <div class="proof-cell"><div class="logo-block"></div></div>
+          <div class="proof-cell"><div class="logo-block"></div></div>
+          <div class="proof-cell"><div class="logo-block"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WIDE FEATURE -->
+<section class="page-canvas">
+  <div class="container">
+    <div class="feature-wide" data-reveal>
+      <div class="media-frame">
+        <img src="https://cdn.prod.website-files.com/6668a687e71e2722fccb8357/67efd527799ef5b318d5e31c_Learn-Greenhouse-Website-and-Leaf-Fingerprint-collag.png" alt="Designed wellbeing space with plants and warm daylight" data-stt-asset-brief="Editorial photo of a thoughtfully designed wellbeing space with abundant plants, natural wood, and warm daylight; calm authentic framing; neutral-warm tones beside green surfaces; photo fills entire image edge-to-edge with no inner frame, border or padding.">
+      </div>
+      <div class="feature-text">
+        <span class="eyebrow">The approach</span>
+        <h2>Less intensity. More <span class="italic-accent">attention</span>.</h2>
+        <p class="muted">We design for the small repeatable moments that compound into wellbeing — light, greenery, breath, and unhurried rhythm woven into the working day.</p>
+        <ul class="feature-list">
+          <li><svg viewBox="0 0 256 256" fill="currentColor"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg> Rooms shaped around daylight and quiet.</li>
+          <li><svg viewBox="0 0 256 256" fill="currentColor"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg> Practices that fit between meetings, not against them.</li>
+          <li><svg viewBox="0 0 256 256" fill="currentColor"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg> Measured, gentle progress over dramatic resets.</li>
+        </ul>
+        <a class="tlink" href="#">Read our principles →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE ON FLAT TINT -->
+<section class="tint-flat">
+  <div class="container">
+    <div class="showcase" data-reveal>
+      <div class="showcase-text">
+        <span class="eyebrow">Inside the app</span>
+        <h2>A quiet companion for the working week.</h2>
+        <p class="muted">Track your rhythm, book restorative spaces, and follow gentle daily prompts — all without the noise of a typical productivity tool.</p>
+        <a class="btn btn-primary" href="#">Get early access</a>
+      </div>
+      <div class="float-card">
+        <img src="https://cdn.prod.website-files.com/6668a687e71e2722fccb8357/6a063cdddfe47d8d3429a902_D-EN-CG-Home-Real-Talent-Fraud-Detection-Candidate-Cards.avif" alt="Stylized wellbeing app dashboard showing daily rhythm summary" data-stt-asset-brief="Stylized white app dashboard UI snippet showing a calm daily rhythm summary, a small line chart, a list of restorative sessions and a small avatar cluster; green-family accents matching the system; moderate detail; rounded clean panels; interface mockup, not real page UI; image fills frame edge-to-edge.">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING INVERSE BAND -->
+<section class="inverse-run">
+  <div class="line-motif" aria-hidden="true">
+    <svg viewBox="0 0 600 600" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M300,560 C300,420 200,360 200,260 C200,180 260,140 300,40 C340,140 400,180 400,260 C400,360 300,420 300,560Z"/>
+      <path d="M300,300 C360,280 420,300 470,260"/>
+      <path d="M300,360 C240,340 180,360 130,320"/>
+      <path d="M300,240 C350,225 400,235 440,205"/>
+    </svg>
+  </div>
+  <div class="container">
+    <div class="closing" data-reveal>
+      <span class="eyebrow">Begin gently</span>
+      <h2>Bring a little more stillness into your team's week.</h2>
+      <p>Start with a single space or a short program. We'll help you find the rhythm that fits.</p>
+      <a class="btn btn-primary-blue" href="#">Start a conversation</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer-run">
+  <div class="container" style="padding-top:72px;padding-bottom:40px">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <svg width="22" height="22" viewBox="0 0 256 256" fill="currentColor"><path d="M223.5,48.5a8,8,0,0,0-8-8C133,40.5,68.6,77.4,40.7,135.6,28.9,160.5,28,186.3,38,208a8,8,0,0,0,14.6-6.6c-7-15.3-7.4-33.4-1.3-51.9C75.2,77.8,140.4,57.8,207.5,56.6,206,123.6,186,188.8,113.7,212.7c-18.5,6.1-36.6,5.7-51.9-1.3a8,8,0,1,0-6.6,14.6c11.4,5.2,23.7,7.8,36.5,7.8a116,116,0,0,0,36.5-6.1C242.4,201.4,279.3,137,279.3,54.5Z" transform="translate(-23.5 -8.5)"/></svg>
+          Verdant
+        </a>
+        <p>A botanic wellbeing practice for the spaces where people work, rest, and grow.</p>
+        <div class="newsletter">
+          <label>Stay in the loop <span class="req">*</span></label>
+          <div class="news-row">
+            <input class="email-input" type="email" placeholder="you@studio.com" required>
+            <button class="btn btn-primary-blue" type="submit">Subscribe</button>
+          </div>
+        </div>
+        <div class="social-row">
+          <button class="social-btn" aria-label="Instagram"><svg viewBox="0 0 256 256" fill="currentColor"><path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160ZM176,24H80A56.06,56.06,0,0,0,24,80v96a56.06,56.06,0,0,0,56,56h96a56.06,56.06,0,0,0,56-56V80A56.06,56.06,0,0,0,176,24Zm40,152a40,40,0,0,1-40,40H80a40,40,0,0,1-40-40V80A40,40,0,0,1,80,40h96a40,40,0,0,1,40,40Zm-24-96a12,12,0,1,1-12-12A12,12,0,0,1,192,80Z"/></svg></button>
+          <button class="social-btn" aria-label="LinkedIn"><svg viewBox="0 0 256 256" fill="currentColor"><path d="M216,24H40A16,16,0,0,0,24,40V216a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V40A16,16,0,0,0,216,24ZM96,176a8,8,0,0,1-16,0V112a8,8,0,0,1,16,0Zm-8-84a12,12,0,1,1,12-12A12,12,0,0,1,88,92Zm96,84a8,8,0,0,1-16,0V140a20,20,0,0,0-40,0v36a8,8,0,0,1-16,0V112a8,8,0,0,1,15.79-1.78A36,36,0,0,1,184,140Z"/></svg></button>
+          <button class="social-btn" aria-label="Email"><svg viewBox="0 0 256 256" fill="currentColor"><path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM203.43,64,128,133.15,52.57,64ZM216,192H40V74.19l82.59,75.71a8,8,0,0,0,10.82,0L216,74.19V192Z"/></svg></button>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Programs</h4>
+        <a class="footer-link" href="#">Morning Reset</a>
+        <a class="footer-link" href="#">Focus Rooms</a>
+        <a class="footer-link" href="#">Shared Tables</a>
+        <a class="footer-link" href="#">Retreats</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a class="footer-link" href="#">Our approach</a>
+        <a class="footer-link" href="#">Spaces</a>
+        <a class="footer-link" href="#">Stories</a>
+        <a class="footer-link" href="#">Careers</a>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <a class="footer-link" href="#">Guides</a>
+        <a class="footer-link" href="#">Research</a>
+        <a class="footer-link" href="#">Support</a>
+        <a class="footer-link" href="#">Contact</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="legal">© 2024 Verdant Wellbeing. All rights reserved.</span>
+      <span class="legal"><a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="#">English</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  var root=document.documentElement;
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealEls=Array.from(document.querySelectorAll('[data-reveal]'));
+  var groups=Array.from(document.querySelectorAll('[data-reveal-group]'));
+  function showFinal(){
+    root.classList.remove('motion-prep');
+    revealEls.concat(groups).forEach(function(el){el.style.opacity='';el.style.visibility='';el.style.transform='';});
+  }
+  if(reduce||!window.gsap){showFinal();return;}
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.set(revealEls,{autoAlpha:0,y:24});
+  root.classList.remove('motion-prep');
+  revealEls.forEach(function(el){
+    gsap.to(el,{autoAlpha:1,y:0,duration:0.65,ease:'power2.out',scrollTrigger:{trigger:el,start:'top 88%',once:true}});
+  });
+  groups.forEach(function(group){
+    var children=Array.from(group.children);
+    gsap.set(children,{autoAlpha:0,y:18});
+    gsap.to(children,{autoAlpha:1,y:0,duration:0.55,stagger:0.08,ease:'power2.out',scrollTrigger:{trigger:group,start:'top 86%',once:true}});
+  });
+  window.addEventListener('load',function(){ScrollTrigger.refresh();});
+})();
+</script>
+</body>
+</html>

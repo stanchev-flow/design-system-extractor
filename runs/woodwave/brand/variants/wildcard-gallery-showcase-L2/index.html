@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en" data-style="radical-editorial" data-pattern="gallery-fullbleed-counter-band" data-pattern-lib="project" data-parallax-images="true">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WoodWave Gallery - gallery-showcase (composed from catalog)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* self-hosted brand display face(s) — copied into assets/ for offline use */
+@font-face { font-family: 'Melodrama'; src: url('assets/Melodrama-Light.woff2') format('woff2'), url('assets/Melodrama-Light.ttf') format('truetype'); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Melodrama'; src: url('assets/Melodrama-Regular.woff2') format('woff2'), url('assets/Melodrama-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Melodrama'; src: url('assets/Melodrama-Medium.woff2') format('woff2'), url('assets/Melodrama-Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Melodrama'; src: url('assets/Melodrama-Semibold.woff2') format('woff2'), url('assets/Melodrama-Semibold.ttf') format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Melodrama'; src: url('assets/Melodrama-Bold.woff2') format('woff2'), url('assets/Melodrama-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+img { display: block; max-width: 100%; }
+/* iframe-safe container context: cq* length units resolve against this sized box. */
+html { background: var(--c-paper); height: 100%; }
+html, body { background: var(--c-paper); color: var(--c-ink); font-family: var(--c-font-body);
+  -webkit-font-smoothing: antialiased; }
+body { min-height: 100%; container-type: size; container-name: frame; }
+:root {
+  /* gate-readable legacy brand vars (authoritative token VALUES) */
+  --bg: #FAF0E8;
+  --text: #1F1A14;
+  --accent: #1F1A14;
+  --display-size: 6rem;
+  --radius: 0rem;
+  --font-heading: 'Melodrama', 'Playfair Display', serif;
+  --font-body: 'Inter', 'Lexend Deca', sans-serif;
+  /* component aliases — the shared c-* classes (component_render.py) read these */
+  --c-paper: var(--bg);
+  --c-ink: var(--text);
+  --c-ink-muted: #4A4239;
+  --c-accent: var(--accent);
+  --c-hairline: rgba(31, 26, 20, 0.30);
+  --c-link-hover: #1F1A14;
+  --c-font-heading: var(--font-heading);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--display-size);
+  --c-display-lh: 1.05em;
+  --c-display-ls: 0rem;
+  --c-display-weight: 500;
+  --c-heading-weight: 400;
+  --c-h2-size: 2.25rem;
+  --c-h3-size: 1.625rem;
+  --c-body-size: 0.875rem;
+  --c-eyebrow-size: 0.6875rem;
+  --c-eyebrow-ls: 0.08em;
+  --c-control-size: 0.875rem;
+  --c-control-ls: 0.08em;
+  --c-eyebrow-gap: 1.5rem;
+  --c-title-overlap: -2.75rem;
+  /* ONE shared page grid + baseline (alignment quick wins): every archetype scaffold
+     places onto THESE tracks instead of private per-section grids, and every offset
+     scalar snaps to --baseline / one --col so staggered elements REGISTER to shared
+     lines instead of floating. --col resolves its 100% against the element it is used
+     on (the section's shared-measure container). */
+  --grid-cols: 12;
+  --grid-gutter: 6rem;
+  --content-measure: 86rem;
+  --baseline: 0.5rem;
+  --col: calc((100% - 11 * var(--grid-gutter)) / 12);
+}
+
+/* ── shared catalog components (single source of truth) ── */
+.c-heading { font-family: var(--c-font-heading); color: var(--c-ink); margin: 0;
+  text-transform: uppercase; font-weight: var(--c-heading-weight, var(--c-display-weight)); }
+.c-heading--display { font-size: var(--c-display-size); line-height: var(--c-display-lh);
+  letter-spacing: var(--c-display-ls); }
+.c-heading--h2 { font-size: var(--c-h2-size); line-height: 1.3em; }
+.c-heading--h3 { font-size: var(--c-h3-size); line-height: 1.3em; }
+.c-heading--accent { color: var(--c-accent); }
+/* stepped-lines (G7): each authored line is a block; the scaffold sets the per-line
+   registered indent via --c-step-N (half-column multiples of the shared grid). */
+.c-heading-line { display: block; }
+/* mixed-face (G5): face contrast INSIDE one heading. Default is weight contrast (safe
+   for brands with no italic cut — never a synthesized italic); a brand shipping a real
+   italic sets --c-alt-style: italic. */
+.c-heading-alt { font-style: var(--c-alt-style, normal);
+  font-weight: var(--c-alt-weight, 500); }
+
+.c-eyebrow { font-family: var(--c-font-body); font-size: var(--c-eyebrow-size);
+  letter-spacing: var(--c-eyebrow-ls); text-transform: uppercase; color: var(--c-ink-muted);
+  margin: 0; }
+
+.c-image { display: block; width: 100%; border: none; box-shadow: none;
+  border-radius: var(--radius); object-fit: cover; }
+.c-image--hero { aspect-ratio: 1355 / 570; }
+.c-image--overlap { aspect-ratio: 785 / 620; }
+/* the CANONICAL mask-pan wrapper — wraps ONLY the <img>, never a sibling caption, so the
+   scroll-parallax scale/translate (parallax_css/parallax_script_tags) can never bleed into
+   caption text sitting beside it in the same figure/div. Structural, always present
+   (harmless when parallax is disabled: overflow:hidden around an unscaled, untransformed
+   image is visually a no-op — a plain wrapper). See brand-schema.md §4.4.1. */
+.c-image-mask { display: block; overflow: hidden; }
+/* placeholder used by the gallery when no real asset is bound (keeps the gallery
+   self-contained); composed sections always bind a real image src. */
+.c-image-ph { display: flex; align-items: center; justify-content: center;
+  background: var(--c-ink); color: var(--c-paper); border-radius: var(--radius);
+  aspect-ratio: 4 / 3; font-family: var(--c-font-body); font-size: var(--c-eyebrow-size);
+  letter-spacing: var(--c-eyebrow-ls); text-transform: uppercase; }
+
+.c-arrow-link { font-family: var(--c-font-body); font-size: var(--c-control-size);
+  letter-spacing: var(--c-control-ls); text-transform: uppercase; text-decoration: none;
+  color: var(--c-action-color, currentColor); display: inline-flex; align-items: center;
+  gap: 0.5rem; background: none; border: none; cursor: pointer; padding: 0; }
+.c-arrow-link--accent { color: var(--c-accent); }
+.c-arrow { transition: transform var(--c-motion-fast, 320ms) var(--c-ease, cubic-bezier(.22, 1, .36, 1)); }
+.c-arrow-link:hover .c-arrow { transform: translateX(0.35rem); }
+
+.c-logo { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--c-font-body);
+  font-weight: 600; font-size: var(--c-control-size); letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--c-logo-color, var(--c-accent)); }
+.c-logo .c-glyph { font-family: var(--c-font-heading); font-size: 1.1rem; }
+/* image logo (composed nav): the extracted brand logo as a plain linked <img>, no chip,
+   no border, no radius. Sized from the extracted 175x26 proportions (height-capped so it
+   scales down gracefully); width:auto keeps the aspect ratio. The WoodWave source SVG is
+   already the brand gold, so it reads on the dark hero surface with no filter needed. */
+.c-logo--img { display: inline-flex; align-items: center; text-decoration: none;
+  border: none; border-radius: 0; }
+.c-logo-img { display: block; height: 1.625rem; width: auto; max-width: 12rem; }
+
+/* header block: eyebrow -> heading (+ optional subhead/cta) typographic cluster */
+.c-header { display: flex; flex-direction: column; gap: var(--c-eyebrow-gap); }
+
+/* paragraph primitive: narrow offset body, Inter sentence case, generous leading. */
+.c-paragraph { font-family: var(--c-font-body); font-size: var(--c-body-size);
+  line-height: 1.55em; color: var(--c-ink-muted); max-width: var(--c-measure, 34ch); margin: 0; }
+
+/* caption primitive: muted uppercase margin micro-text (never over media). */
+.c-caption { font-family: var(--c-font-body); font-size: var(--c-eyebrow-size);
+  letter-spacing: var(--c-eyebrow-ls); text-transform: uppercase; color: var(--c-ink-muted);
+  margin: 0; }
+
+/* form block + underline field: NO box, NO fill, NO border — the single 1px rule is a
+   pseudo-element (height:1px+background), so it never reads as a boxed input or a section
+   hairline (honors WoodWave no-boxed-inputs / no-section-hairlines). */
+.c-form { display: flex; flex-direction: column; gap: var(--c-form-gap, 1.25rem); }
+.c-field { position: relative; display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 1rem; padding-bottom: 0.5rem; }
+.c-field::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: var(--c-hairline); }
+.c-field-text { font-family: var(--c-font-body); font-size: var(--c-body-size);
+  text-transform: uppercase; letter-spacing: var(--c-control-ls); color: var(--c-ink-muted); }
+
+/* ruled action rows (the divider primitive): label left, value/action right, separated by a
+   1px pseudo-rule INSIDE a panel only — never as a section seam. */
+.c-rows { display: flex; flex-direction: column; }
+.c-row { position: relative; display: flex; align-items: baseline; justify-content: space-between;
+  gap: 1rem; padding: 0.85rem 0; }
+.c-row::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px;
+  background: var(--c-hairline); }
+.c-row-label { font-family: var(--c-font-body); font-size: var(--c-control-size);
+  letter-spacing: var(--c-control-ls); text-transform: uppercase; color: var(--c-ink); }
+.c-row-value { font-family: var(--c-font-heading); font-size: var(--c-h3-size); color: var(--c-ink); }
+
+/* footer block (closing bookend): a CENTERED oversized didone slash sitemap + TEXT
+   social links (slash-separated, no icons) + a centered muted legal line. Reuses the
+   brand's typographic vocabulary — the sitemap is the heading (didone) treatment, the
+   social row is the control-text slash-link treatment, legal is muted micro-text. No
+   boxes, borders, shadows, or radius (honors WoodWave neverDo). cq/rem units only.
+   The whole cluster is CENTERED (flex centering + centered nav rows + centered legal),
+   and uses the rhythm scale's inter-block gap so its vertical spacing matches the page.
+   The sitemap link is a CONTAINED oversized clamp: clearly larger than body editorial
+   display, but right-sized for a footer context — never the gigantic ~80px it was. */
+.c-footer { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--c-block-gap, 2.5rem); }
+.c-foot-sitemap { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center;
+  gap: 0.4rem 1.5rem; max-width: 60rem; margin: 0 auto; }
+.c-foot-sitemap-link { font-family: var(--c-font-heading); text-transform: uppercase;
+  font-weight: var(--c-heading-weight, var(--c-display-weight));
+  font-size: var(--c-footer-link-size, clamp(1.75rem, 3.5cqw, 3rem));
+  line-height: 1.2em; color: var(--c-ink); text-decoration: none; }
+.c-foot-sep { color: var(--c-ink-muted); font-family: var(--c-font-heading); }
+.c-foot-social { display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 0.4rem 0.9rem; margin: 0 auto; }
+.c-foot-social-link { font-family: var(--c-font-body); font-size: var(--c-control-size);
+  letter-spacing: var(--c-control-ls); text-transform: uppercase; color: var(--c-ink-muted);
+  text-decoration: none; }
+.c-foot-social .c-foot-sep { font-family: var(--c-font-body); }
+.c-foot-legal { font-family: var(--c-font-body); font-size: var(--c-eyebrow-size);
+  letter-spacing: var(--c-eyebrow-ls); color: var(--c-ink-muted); margin: 0; }
+
+/* ── MOTION (calm / editorial) ── authored brand spec (brand.yaml voice.motionSpec):
+   expressive ease-out, durations ~320-620ms, NO bounce/spring/overshoot/snap. Easing +
+   durations come from the brand's --c-* motion vars (component_render.motion_vars_css),
+   each with an inline calm-editorial fallback so the rules still read if a caller omits
+   them. Motion is time + transform only — no viewport units, no new color/shadow/radius. */
+
+/* typographic links: an underline that DRAWS IN (scaleX 0->100%, origin left), NOT a
+   color swap — consistent with WoodWave's typographic-link aesthetic. The rule is a 1px
+   pseudo-element (height+background), never a border, so it adds no border/hairline. */
+.c-arrow-link, .c-foot-sitemap-link, .c-foot-social-link { position: relative; }
+.c-arrow-link::after, .c-foot-sitemap-link::after, .c-foot-social-link::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -0.08em; height: 1px;
+  background: currentColor; transform: scaleX(0); transform-origin: left center;
+  transition: transform var(--c-motion-base, 480ms) var(--c-ease, cubic-bezier(.22, 1, .36, 1)); }
+.c-arrow-link:hover::after, .c-arrow-link:focus-visible::after,
+.c-foot-sitemap-link:hover::after, .c-foot-sitemap-link:focus-visible::after,
+.c-foot-social-link:hover::after, .c-foot-social-link:focus-visible::after {
+  transform: scaleX(1); }
+
+/* calm scroll reveal: opacity + small translateY (no scale pop, no rotation). The hidden
+   initial state is GATED on `.cs-motion-ready` (added by the page's tiny IntersectionObserver
+   script) so content is fully visible if JS/IO is unavailable; `.is-in` reveals it. */
+.cs-motion-ready .cs-reveal {
+  opacity: 0; transform: translateY(var(--c-reveal-shift, 16px));
+  transition: opacity var(--c-motion-slow, 620ms) var(--c-ease, cubic-bezier(.22, 1, .36, 1)),
+              transform var(--c-motion-slow, 620ms) var(--c-ease, cubic-bezier(.22, 1, .36, 1));
+  transition-delay: calc(var(--cs-reveal-i, 0) * 60ms); will-change: opacity, transform; }
+.cs-motion-ready .cs-reveal.is-in { opacity: 1; transform: none; }
+
+/* respect prefers-reduced-motion: reduce — neutralize all transitions/reveals + the arrow
+   nudge, and force revealed content fully visible. */
+@media (prefers-reduced-motion: reduce) {
+  .c-arrow,
+  .c-arrow-link::after, .c-foot-sitemap-link::after, .c-foot-social-link::after,
+  .cs-motion-ready .cs-reveal { transition: none !important; animation: none !important; }
+  .c-arrow-link:hover .c-arrow { transform: none !important; }
+  .cs-reveal, .cs-motion-ready .cs-reveal { opacity: 1 !important; transform: none !important; }
+}
+
+
+/* link hover (color-shift mode) -- SAFE default here; the real per-surface value (accent
+   on dark, ink on light) is set by component_vars/root_vars (anti-ai-slop.md AS-10). */
+:root { --c-link-hover: var(--c-ink); }
+.c-arrow-link, .c-foot-sitemap-link, .c-foot-social-link {
+  transition: color var(--c-motion-fast, 320ms) var(--c-ease, cubic-bezier(.22, 1, .36, 1)); }
+.c-arrow-link:hover, .c-arrow-link:focus-visible,
+.c-foot-sitemap-link:hover, .c-foot-sitemap-link:focus-visible,
+.c-foot-social-link:hover, .c-foot-social-link:focus-visible { color: var(--c-link-hover); }
+/* color-shift REPLACES the underline draw-in for these links (no double signal). */
+.c-arrow-link::after, .c-foot-sitemap-link::after, .c-foot-social-link::after { content: none; }
+
+:root { --c-section-pad-top: 6.875rem; --c-section-pad-bottom: 6.875rem; --c-section-pad: 6.875rem; --c-block-gap: 2.5rem; --c-module-gap: 7.5rem; }
+.cs-section { background: var(--c-paper); color: var(--c-ink);
+  padding: var(--c-section-pad-top, 1.75rem) var(--c-section-pad-x, 2.5rem)
+           var(--c-section-pad-bottom, var(--c-section-pad, 6.25rem)); }
+.cs-nav { display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+  margin-bottom: clamp(2rem, 6cqw, 5rem); }
+.cs-navlinks { display: flex; gap: 0.55rem; flex: 1; justify-content: center; }
+.cs-navlinks .cs-sep { opacity: 0.55; }
+/* shared content container: ONE measure, identical section edges page-wide. */
+.cs-collage-grid, .cs-statement-grid, .cs-quote-grid, .cs-visit-panels,
+.cs-modules-intro, .cs-modules, .cs-interlock {
+  max-width: var(--content-measure, 86rem); margin-inline: auto; }
+/* shared 12-col registration grid (column-gap IS the shared gutter). */
+.cs-collage-grid, .cs-statement-grid, .cs-quote-grid, .cs-modules {
+  display: grid; grid-template-columns: repeat(var(--grid-cols, 12), minmax(0, 1fr));
+  column-gap: var(--grid-gutter, 6rem); }
+.cs-gallery-sec { padding-left: 0; padding-right: 0; }
+.cs-gallery-utility { display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem; margin-bottom: 1.25rem; }
+.cs-gallery-media { margin: 0; }
+.cs-gallery-media .c-image { width: 100%; aspect-ratio: 16 / 7; object-fit: cover; display: block; }
+.cs-gallery-caption { padding: 1rem 2.5rem 0; }
+@media (max-width: 767px) { .cs-gallery-utility, .cs-gallery-caption { padding-left: 1.25rem;
+  padding-right: 1.25rem; } .cs-gallery-media .c-image { aspect-ratio: 4 / 5; } }
+
+/* ===================================================================== */
+/* STYLE: radical-editorial (structure) layered OVER brand (hues+fonts). */
+/* ===================================================================== */
+:root {
+  --c-paper: #FAF0E8;
+  --c-ink: #1F1A14;
+  --c-accent: #edd580;
+  --c-radius: 0rem;
+  --c-display-size: clamp(9rem, 12cqw, 16.2rem);
+  --c-display-lh: 0.936;
+  --c-display-ls: -0.02em;
+  --c-font-heading: 'Melodrama', Georgia, serif;
+  --c-font-body: 'Inter', system-ui, sans-serif;
+}
+/* density: asymmetric, never centered-everything; type is load-bearing left-anchored.
+   Vertical padding comes from the rhythm scale / brand tokens (symmetric top=bottom),
+   not ad-hoc literals; horizontal stays the style's asymmetric cqw inset. */
+.cs-section { padding: var(--c-section-pad-top, 3rem) 12cqw
+                        var(--c-section-pad-bottom, 6rem) 6cqw; }
+.cs-slot, .cs-foot, .cs-eyebrow-wrap, .cs-title { align-items: flex-start; text-align: left; }
+.cs-collage { margin: 0; max-width: 64cqw; }
+.c-heading--display { text-align: left; max-width: 18ch; }
+/* color deployment: single committed accent (the eyebrow slug); everything else ink. */
+.c-heading--accent { color: var(--c-ink); }
+.c-eyebrow { color: var(--c-accent); }
+
+:root { --c-accent: var(--c-ink); /* no-accent-on-light */ }
+
+/* scroll-parallax (brand motion treatment; voice.motionSpec.imageParallax) */
+[data-parallax-images] .c-image-mask .c-image { transform: scale(1.12); will-change: transform; }
+@media (prefers-reduced-motion: reduce) {
+  [data-parallax-images] .c-image-mask .c-image { transform: none !important; }
+}
+
+
+/* WILDCARD budget L2 */
+.cs-gallery-counter .c-caption { font-family: var(--c-font-heading); font-size: 2.25rem; color: var(--c-ink); }
+
+</style>
+</head>
+<body>
+<!-- layout pattern REUSED (ref): project:gallery-fullbleed-counter-band — Full-bleed interior photograph, no overlay text. A thin utility row (eyebrow far left, static counter far right) frames the band; a short caption sits in the margin below. No slider/carousel controls — the counter is a static label. -->
+<!-- Section composed from the brand catalog: each slot is a catalog component rendered
+     by component_render.py (the SAME renderers the components-preview gallery uses). -->
+<section class="cs-section cs-gallery-sec">
+  <div class="cs-gallery-utility">
+    <span class="cs-gallery-eyebrow"><p class="c-eyebrow">Inside the hall</p></span>
+    <span class="cs-gallery-counter"><p class="c-caption">1/6</p></span>
+  </div>
+  <figure class="cs-gallery-media">
+    <div class="c-image-mask"><img class="c-image c-image--hero" src="assets/Web-gallery-1.jpg" alt="WoodWave — Web gallery 1"></div>
+  </figure>
+  <div class="cs-gallery-caption"><p class="c-caption">Central nave</p></div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  var mq = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (mq && mq.matches) return;                 // reduced motion: no parallax, all static
+  if (!window.gsap || !window.ScrollTrigger) return;
+  gsap.registerPlugin(ScrollTrigger);
+  var AMT = 6;                    // base yPercent unit (brand amount class)
+
+  // 1) MASK-PAN — one image per `.c-image-mask` wrapper, pans within its own frame. The
+  // wrapper (not the image) is the ScrollTrigger trigger AND the clip boundary, so the
+  // caption sitting outside the mask (a sibling in the parent figure) is never touched.
+  document.querySelectorAll('.c-image-mask').forEach(function (wrap) {
+    var img = wrap.querySelector('.c-image');
+    if (!img) return;
+    gsap.fromTo(img, { yPercent: -AMT }, { yPercent: AMT, ease: 'none',
+      scrollTrigger: { trigger: wrap, start: 'top bottom', end: 'bottom top', scrub: 0.5 } });
+  });
+
+  // 2) DEPTH — the hero's overlapping media pair moves at DIFFERENT rates (motion
+  // counterpart of the `overlap` special treatment; scoped to `.cs-collage` so it never
+  // catches a plain module photo that happens to reuse the same variant class).
+  var heroCollage = document.querySelector('.cs-collage');
+  if (heroCollage) {
+    var base = heroCollage.querySelector('.c-image--hero');
+    var front = heroCollage.querySelector('.c-image--overlap');
+    if (base) gsap.fromTo(base, { yPercent: -AMT * 0.4 }, { yPercent: AMT * 0.4, ease: 'none',
+      scrollTrigger: { trigger: heroCollage, start: 'top bottom', end: 'bottom top', scrub: 0.5 } });
+    if (front) gsap.fromTo(front, { yPercent: -AMT * 1.2 }, { yPercent: AMT * 1.2, ease: 'none',
+      scrollTrigger: { trigger: heroCollage, start: 'top bottom', end: 'bottom top', scrub: 0.5 } });
+  }
+})();
+</script>
+</body>
+</html>

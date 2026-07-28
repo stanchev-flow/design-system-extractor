@@ -1,0 +1,74 @@
+{
+  "ok": false,
+  "attempts": 3,
+  "archetypes": [
+    "hero-case-lead"
+  ],
+  "seconds": 243.9,
+  "failures": [
+    [
+      "Authored display heading present (creative-mode scope)",
+      "source-copy identity re-scoped: the composition's own display copy must render \u2014 authored 6, missing: ['More proof, more industries.']"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "split",
+      "archetypeRef": "hero-case-lead",
+      "surfaceIntent": "primary"
+    },
+    {
+      "id": "story",
+      "useCase": "features",
+      "archetype": "stack",
+      "archetypeRef": null,
+      "surfaceIntent": "primary"
+    },
+    {
+      "id": "results",
+      "useCase": "features",
+      "archetype": "stack",
+      "archetypeRef": null,
+      "surfaceIntent": "primary"
+    },
+    {
+      "id": "quote",
+      "useCase": "testimonial",
+      "archetype": "stack",
+      "archetypeRef": null,
+      "surfaceIntent": "panel"
+    },
+    {
+      "id": "more-stories",
+      "useCase": "gallery",
+      "archetype": "cards",
+      "archetypeRef": null,
+      "surfaceIntent": "primary"
+    },
+    {
+      "id": "logos",
+      "useCase": "logos",
+      "archetype": "stack",
+      "archetypeRef": null,
+      "surfaceIntent": "primary"
+    },
+    {
+      "id": "closing",
+      "useCase": "cta",
+      "archetype": "stack",
+      "archetypeRef": null,
+      "surfaceIntent": "inverse"
+    }
+  ],
+  "promptSentinels": {
+    "auto_preset_fired": true,
+    "auto_preset_chars": 10462,
+    "PASS3-STYLE": true,
+    "MEDIA-FACTS": true,
+    "PASS3-FACTS": true,
+    "hero_candidates": true,
+    "prompt_chars": 77934
+  }
+}

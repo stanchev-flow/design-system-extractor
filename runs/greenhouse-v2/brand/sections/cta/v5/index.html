@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Greenhouse — CTA band v5 (cta-media-collage)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style id="tokens">
+/* Greenhouse measured design tokens — sourced verbatim from
+   runs/greenhouse-v2/brand/components-preview/tokens.manifest.json. */
+:root {
+  --color-text-primary: #15372c;
+  --color-text-on-inverse: #ffffff;
+  --color-accent-primary: #008561;
+  --color-accent-secondary: #3574d6;
+  --color-accent-soft: #4cb398;
+  --color-surface-canvas: #ffffff;
+  --color-surface-tint: #c9f0e6;
+  --color-surface-inverse: #15372c;
+  --color-surface-muted: #f5f5f5;
+  --color-text-on-primary: #15372c;
+  --color-text-on-primary-muted: rgba(21, 55, 44, 0.66);
+  --color-text-on-inverse-muted: rgba(255, 255, 255, 0.72);
+  --color-border-hairline-on-primary: rgba(21, 55, 44, 0.12);
+  --color-text-ghost-on-primary: rgba(21, 55, 44, 0.06);
+  --surface-surface-primary: #ffffff;
+  --surface-surface-tint: #c9f0e6;
+  --surface-surface-muted: #f5f5f5;
+  --surface-surface-inverse: #15372c;
+  --surface-surface-panel: #ffffff;
+  --surface-surface-inverse-strong: #15372c;
+  --font-display-hero: Untitled Serif, Georgia, sans-serif;
+  --size-display-hero: 4.375rem;
+  --size-display-hero-base: 4.375rem;
+  --weight-display-hero: 400;
+  --leading-display-hero: 1.05;
+  --case-display-hero: none;
+  --tracking-display-hero: -0.01em;
+  --font-h1: Untitled Serif, Georgia, sans-serif;
+  --size-h1: 4.375rem;
+  --size-h1-base: 4.375rem;
+  --weight-h1: 400;
+  --leading-h1: 1.05;
+  --case-h1: none;
+  --tracking-h1: -0.01em;
+  --font-h2: Untitled Serif, Georgia, sans-serif;
+  --size-h2: 2.875rem;
+  --size-h2-base: 2.875rem;
+  --weight-h2: 400;
+  --leading-h2: 1.18;
+  --case-h2: none;
+  --tracking-h2: -0.01em;
+  --font-h3: Untitled Sans, Arial, sans-serif;
+  --size-h3: 1.1875rem;
+  --size-h3-base: 1.1875rem;
+  --weight-h3: 400;
+  --leading-h3: 1.7;
+  --case-h3: none;
+  --tracking-h3: normal;
+  --font-body: Untitled Sans, Arial, sans-serif;
+  --size-body: 1.1875rem;
+  --size-body-base: 1.1875rem;
+  --weight-body: 400;
+  --leading-body: 1.7;
+  --case-body: none;
+  --tracking-body: normal;
+  --font-eyebrow: 'Untitled Sans', 'Lexend Deca', sans-serif;
+  --size-eyebrow: 0.875rem;
+  --size-eyebrow-base: 0.875rem;
+  --weight-eyebrow: 600;
+  --leading-eyebrow: 1.4em;
+  --case-eyebrow: none;
+  --tracking-eyebrow: 0.02em;
+  --font-control-text: Untitled Sans, Arial, sans-serif;
+  --size-control-text: 0.9375rem;
+  --size-control-text-base: 0.9375rem;
+  --weight-control-text: 400;
+  --leading-control-text: 1.0;
+  --case-control-text: none;
+  --tracking-control-text: normal;
+  --font-footer-sitemap-link: Untitled Serif, Georgia, sans-serif;
+  --size-footer-sitemap-link: 1.25rem;
+  --size-footer-sitemap-link-base: 1.25rem;
+  --weight-footer-sitemap-link: 400;
+  --leading-footer-sitemap-link: 1.3;
+  --case-footer-sitemap-link: none;
+  --tracking-footer-sitemap-link: normal;
+  --font-h4: Untitled Sans, Arial, Helvetica, sans-serif;
+  --size-h4: 1.0rem;
+  --size-h4-base: 1.0rem;
+  --weight-h4: 600;
+  --leading-h4: 1.5;
+  --case-h4: none;
+  --tracking-h4: normal;
+  --font-nav-link: Untitled Sans, Arial, sans-serif;
+  --size-nav-link: 1.0rem;
+  --size-nav-link-base: 1.0rem;
+  --weight-nav-link: 400;
+  --leading-nav-link: 1.6;
+  --case-nav-link: none;
+  --tracking-nav-link: -0.01em;
+  --space-section-padding-light: 8.125rem;
+  --space-section-padding-band: 12.5rem;
+  --space-footer-padding: 6.25rem;
+  --space-module-gap: 3.75rem;
+  --space-heading-to-body: 2.75rem;
+  --space-body-to-cta: 3.75rem;
+  --space-container-max: 90rem;
+  --space-container-span: min(100cqw, 90rem);
+  --space-radius-global: 24px;
+  --space-eyebrow-to-heading: 1.5rem;
+  --space-panel-padding: 2rem;
+  --radius-global: 24px;
+  --shadow-raised: 0 8px 24px rgba(0, 0, 0, 0.10);
+  --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --motion-fast: 150ms;
+  --motion-base: 300ms;
+  --motion-slow: 500ms;
+  --motion-ease: cubic-bezier(0.645, 0.045, 0.355, 1);
+  --size-nav: 0.875rem;
+  --chrome-nav-link-weight: 400;
+}
+@media (max-width: 991px) { :root {
+  --size-display-hero: 3.0rem;
+  --size-eyebrow: 0.875rem;
+} }
+@media (max-width: 479px) { :root {
+  --size-display-hero: 3.0rem;
+  --size-h1: 3.0rem;
+  --size-h2: 1.75rem;
+  --size-body: 1.125rem;
+  --size-eyebrow: 0.875rem;
+} }
+</style>
+<style id="brand">
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+img, svg { display: block; max-width: 100%; }
+html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+body {
+  font-family: "Untitled Sans", "Inter", Arial, sans-serif;
+  color: var(--color-text-primary);
+  background: var(--color-surface-canvas);
+  font-size: var(--size-body);
+  line-height: var(--leading-body);
+}
+a { color: inherit; }
+
+/* brand family aliases: measured family first, close free stand-in second */
+:root {
+  --gh-serif: "Untitled Serif", "Fraunces", Georgia, "Times New Roman", serif;
+  --gh-sans:  "Untitled Sans", "Inter", Arial, sans-serif;
+  --gh-maxw: 1200px;            /* measured content column ~1216px */
+  --gh-pad-x: clamp(1.5rem, 5vw, 5rem);
+}
+
+/* ---- surfaces (surface grammar: canvas / tint / muted / inverse) ---- */
+.gh-sec { padding: clamp(4rem, 8vw, 8.125rem) var(--gh-pad-x); position: relative; overflow: hidden; }
+.gh-sec--band { padding-top: clamp(6rem, 11vw, 12.5rem); padding-bottom: clamp(6rem, 11vw, 12.5rem); }
+.surf-canvas  { background: var(--color-surface-canvas); color: var(--color-text-primary); }
+.surf-tint    { background: var(--color-surface-tint);   color: var(--color-text-primary); }
+.surf-muted   { background: var(--color-surface-muted);  color: var(--color-text-primary); }
+.surf-inverse { background: var(--color-surface-inverse); color: var(--color-text-on-inverse); }
+.gh-wrap { max-width: var(--gh-maxw); margin-inline: auto; position: relative; z-index: 2; }
+.gh-wrap--wide { max-width: 1320px; }
+
+/* ---- typography ---- */
+.gh-eyebrow {
+  font-family: var(--gh-sans); font-size: var(--size-eyebrow); font-weight: 600;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--color-accent-primary);
+  display: inline-block;
+}
+.surf-inverse .gh-eyebrow { color: var(--color-accent-soft); }
+.gh-display {
+  font-family: var(--gh-serif); font-weight: 400; font-size: var(--size-display-hero);
+  line-height: var(--leading-display-hero); letter-spacing: var(--tracking-display-hero);
+  color: inherit;
+}
+.gh-h2 {
+  font-family: var(--gh-serif); font-weight: 400; font-size: var(--size-h2);
+  line-height: var(--leading-h2); letter-spacing: var(--tracking-h2); color: inherit;
+}
+.gh-h3 {
+  font-family: var(--gh-serif); font-weight: 400; font-size: 1.75rem;
+  line-height: 1.2; letter-spacing: -0.01em; color: inherit;
+}
+.gh-body {
+  font-family: var(--gh-sans); font-size: var(--size-body); line-height: var(--leading-body);
+  color: var(--color-text-on-primary-muted); max-width: 42ch;
+}
+.surf-inverse .gh-body { color: var(--color-text-on-inverse-muted); }
+.gh-body--wide { max-width: 60ch; }
+.gh-lead { font-size: 1.3125rem; }
+
+/* ---- pill buttons (measured button matrix, radius 24px, pad 12/32) ---- */
+.gh-btn {
+  display: inline-flex; align-items: center; gap: .5rem; cursor: pointer;
+  font-family: var(--gh-sans); font-size: 15px; font-weight: 500; line-height: 1;
+  padding: 14px 32px; border-radius: var(--radius-global); border: 1px solid transparent;
+  text-decoration: none; transition: background var(--motion-base) var(--motion-ease),
+    color var(--motion-base) var(--motion-ease), border-color var(--motion-base) var(--motion-ease);
+  white-space: nowrap;
+}
+.gh-btn--green  { background: var(--color-accent-primary); color: #fff; border-color: var(--color-accent-primary); }
+.gh-btn--green:hover  { background: #006147; border-color: #006147; }
+.gh-btn--blue   { background: var(--color-accent-secondary); color: #fff; border-color: var(--color-accent-secondary); }
+.gh-btn--blue:hover   { background: #3860be; border-color: #3860be; }
+.gh-btn--outline-dark  { background: transparent; color: var(--color-text-primary); border-color: var(--color-text-primary); }
+.gh-btn--outline-dark:hover  { background: var(--color-text-primary); color: #fff; }
+.gh-btn--outline-white { background: transparent; color: #fff; border-color: rgba(255,255,255,.7); }
+.gh-btn--outline-white:hover { background: #fff; color: var(--color-text-primary); }
+
+/* ghost / arrow text link */
+.gh-link {
+  font-family: var(--gh-sans); font-size: 15px; font-weight: 500; text-decoration: none;
+  color: var(--color-accent-primary); display: inline-flex; align-items: center; gap: .4rem;
+  position: relative;
+}
+.surf-inverse .gh-link { color: var(--color-accent-soft); }
+.gh-link .gh-arrow { transition: transform var(--motion-fast) var(--motion-ease); }
+.gh-link:hover .gh-arrow { transform: translateX(.3rem); }
+.gh-link--ink { color: var(--color-text-primary); }
+.surf-inverse .gh-link--ink { color: #fff; }
+
+.gh-actions { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
+.gh-actions--center { justify-content: center; }
+
+/* ---- cards / media wells / floating product-UI ---- */
+.gh-card {
+  background: #fff; border-radius: 18px; overflow: hidden;
+  box-shadow: var(--shadow-subtle); display: flex; flex-direction: column;
+  border: 1px solid var(--color-border-hairline-on-primary);
+}
+.gh-card__media { aspect-ratio: 16/10; background: var(--color-surface-muted); overflow: hidden; }
+.gh-card__media img { width: 100%; height: 100%; object-fit: cover; }
+.gh-card__body { padding: 1.75rem; display: flex; flex-direction: column; gap: .75rem; align-items: flex-start; }
+.gh-card__body .gh-body { max-width: none; }
+
+.gh-media-well {
+  border-radius: 22px; overflow: hidden; background: var(--color-surface-tint);
+  box-shadow: var(--shadow-raised);
+}
+.gh-media-well img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* floating product-UI chip + circle portrait (signature float device) */
+.gh-float { position: absolute; border-radius: 18px; overflow: hidden; box-shadow: var(--shadow-raised);
+  background: #fff; z-index: 3; }
+.gh-float img { width: 100%; height: 100%; object-fit: cover; }
+.gh-portrait { position: absolute; border-radius: 999px; overflow: hidden; box-shadow: var(--shadow-raised);
+  z-index: 3; background: var(--color-surface-tint); }
+.gh-portrait img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ---- circular emerald brand badge (lowercase g) ---- */
+.gh-badge { width: var(--sz,3rem); height: var(--sz,3rem); border-radius: 999px;
+  background: var(--color-accent-primary); display: inline-flex; align-items: center;
+  justify-content: center; flex: none; }
+.gh-badge-g { font-family: var(--gh-serif); color: #fff; font-size: calc(var(--sz,3rem) * .58);
+  line-height: 1; font-weight: 500; transform: translateY(-.02em); }
+
+/* ---- fingerprint-leaf decorative art ---- */
+.gh-fingerprint { position: absolute; pointer-events: none; z-index: 1; }
+
+/* ---- grids ---- */
+.gh-grid { display: grid; gap: 2.5rem; }
+.gh-grid--2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+.gh-grid--3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+.gh-grid--4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
+.gh-split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2.5rem, 6vw, 6rem); align-items: center; }
+.gh-split--wide-media { grid-template-columns: 0.9fr 1.1fr; }
+.gh-split--wide-copy  { grid-template-columns: 1.1fr 0.9fr; }
+
+.gh-stack { display: flex; flex-direction: column; }
+.gh-stack--center { align-items: center; text-align: center; }
+.gh-eyebrow-gap { margin-bottom: var(--space-eyebrow-to-heading); }
+.gh-heading-gap { margin-top: var(--space-heading-to-body); }
+.gh-cta-gap { margin-top: var(--space-body-to-cta); }
+.gh-vrule { width: 1px; background: var(--color-border-hairline-on-primary); align-self: stretch; }
+.surf-inverse .gh-vrule { background: rgba(255,255,255,.18); }
+
+/* ---- quote / testimonial ---- */
+.gh-quote-mark { font-family: var(--gh-serif); font-size: 4rem; line-height: .6; color: var(--color-accent-primary);
+  display: block; height: 2.2rem; }
+.surf-inverse .gh-quote-mark { color: var(--color-accent-soft); }
+.gh-quote { font-family: var(--gh-serif); font-size: 1.375rem; line-height: 1.4; color: inherit; font-weight: 400; }
+.gh-person { display: flex; align-items: center; gap: .85rem; }
+.gh-person__avatar { width: 3rem; height: 3rem; border-radius: 999px; background: var(--color-surface-tint);
+  overflow: hidden; flex: none; display:flex; align-items:center; justify-content:center; }
+.gh-person__avatar img { width: 100%; height: 100%; object-fit: cover; }
+.gh-person__name { font-family: var(--gh-sans); font-weight: 600; font-size: 1rem; }
+.gh-person__meta { font-family: var(--gh-sans); font-size: .875rem; color: var(--color-text-on-primary-muted); }
+.surf-inverse .gh-person__meta { color: var(--color-text-on-inverse-muted); }
+
+/* ---- logo wall ---- */
+.gh-logogrid { display: grid; gap: clamp(1.5rem,3vw,2.5rem) clamp(2rem,4vw,3.5rem);
+  align-items: center; justify-items: center; }
+.gh-logogrid img { max-height: 2.6rem; max-width: 100%; width: auto; object-fit: contain; }
+.gh-logorow { display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+  gap: clamp(2rem,5vw,4.5rem); }
+.gh-logorow img { max-height: 2.4rem; width: auto; object-fit: contain; }
+.surf-inverse .gh-logo-knockout { filter: brightness(0) invert(1); opacity: .9; }
+.gh-logo-card { background:#fff; border-radius: 16px; padding: 1.5rem 2rem;
+  display:flex; align-items:center; justify-content:center; box-shadow: var(--shadow-subtle);
+  border: 1px solid var(--color-border-hairline-on-primary); min-height: 6rem; }
+.gh-logo-card img { max-height: 2.4rem; width:auto; }
+
+/* ---- stat / metric ---- */
+.gh-stat-value { font-family: var(--gh-serif); font-size: clamp(3rem,6vw,4.5rem); line-height: 1;
+  color: var(--color-accent-primary); font-weight: 400; }
+.surf-inverse .gh-stat-value { color: var(--color-accent-soft); }
+
+/* ---- pill filter row ---- */
+.gh-pills { display:flex; flex-wrap:wrap; gap:.6rem; }
+.gh-pill { font-family: var(--gh-sans); font-size:.875rem; padding:.5rem 1.1rem; border-radius:999px;
+  border:1px solid var(--color-border-hairline-on-primary); color: var(--color-text-on-primary-muted);
+  background:#fff; }
+.gh-pill--on { background: var(--color-accent-primary); color:#fff; border-color: var(--color-accent-primary); }
+
+/* ---- tabs ---- */
+.gh-tabs { display:flex; gap:.5rem; flex-wrap:wrap; }
+.gh-tab { font-family: var(--gh-sans); font-size:.95rem; font-weight:500; padding:.7rem 1.4rem;
+  border-radius:999px; border:1px solid var(--color-border-hairline-on-primary);
+  background:#fff; color: var(--color-text-on-primary-muted); cursor:pointer; }
+.gh-tab--on { background: var(--color-text-primary); color:#fff; border-color: var(--color-text-primary); }
+
+/* ---- badges strip ---- */
+.gh-badges { display:flex; gap:1.25rem; flex-wrap:wrap; align-items:center; }
+.gh-badges img { height: 5.5rem; width:auto; }
+
+@media (max-width: 900px) {
+  .gh-split, .gh-grid--2, .gh-grid--3, .gh-grid--4 { grid-template-columns: 1fr; }
+  .gh-float, .gh-portrait { display: none; }
+}
+
+</style>
+</head>
+<body>
+
+<section class="gh-sec surf-tint" style="padding-bottom:0;min-height:560px;">
+  <div class="gh-wrap gh-stack gh-stack--center" style="max-width:760px;">
+    <span class="gh-eyebrow gh-eyebrow-gap ">The all-together hiring platform</span>
+    <h2 class="gh-h2 gh-display">Everything you need to get better at hiring</h2>
+    <div class="gh-actions gh-actions--center gh-cta-gap"><a class="gh-btn gh-btn--green" href="#">Request a demo</a><a class="gh-link gh-link--ink" href="#">Explore platform<span class="gh-arrow" aria-hidden="true">&rarr;</span></a></div>
+  </div>
+  <div class="gh-wrap gh-wrap--wide" style="position:relative;height:220px;margin-top:2.5rem;">
+    <div class="gh-float" style="left:4%;bottom:-40px;width:280px;height:190px;"><img src="../../assets/037-66fede4422f8f7c1d1cb3f92-internal-job-board-and-add-a-referral-ui-with-green-fingerprint-collage-png.webp" alt="Greenhouse UI"></div>
+    <div class="gh-float" style="left:36%;bottom:0;width:300px;height:200px;z-index:4;"><img src="../../assets/031-6a20cd945dce24bd4f73b612-d-en-hero-greenhouse-ai-notetaker-tool.avif" alt="Greenhouse AI"></div>
+    <div class="gh-float" style="right:4%;bottom:-30px;width:280px;height:190px;"><img src="../../assets/034-6a063cdddfe47d8d3429a902-d-en-cg-home-real-talent-fraud-detection-candidate-cards.avif" alt="Greenhouse Real Talent"></div>
+  </div>
+</section>
+
+</body>
+</html>

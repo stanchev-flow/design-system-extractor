@@ -1,0 +1,17 @@
+[ai-product-launch] base=corporate-saas-clean preset=saas-product gate-layout=full-bleed-photo-hero preset-block=10534chars max_repairs=5 gates=ENFORCED
+  offGridExpansion=True (forced True)
+  hero archetype candidates (heroes-saas/product): ['hero-demo-media-proof', 'hero-integration-constellation', 'hero-product-canvas-panel']
+  style directives: injected (10534 chars)
+  [attempt 0] 78.67s  in=30744 out=7667
+    gate: FAIL ['Authored display heading present (creative-mode scope)']
+  [attempt 1] 80.09s  in=30889 out=7994
+    gate: PASS
+[ai-product-launch] PASS after 2 attempt(s) in 299.1s
+    hero           overlay  inverse      measured-brand-pattern
+    customer-proof stack    primary      designed-brand-pattern
+    product-education split    primary      brand-style-archetype
+    feature-proof  cards    accent-soft  measured-brand-pattern
+    integrations   split    primary      designed-brand-pattern
+    results        stack    primary      designed-brand-pattern
+    testimonial    split    primary      measured-brand-pattern
+    closing        stack    inverse      measured-brand-pattern

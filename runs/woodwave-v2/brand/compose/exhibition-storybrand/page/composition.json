@@ -1,0 +1,557 @@
+{
+  "schemaVersion": "composition.v1",
+  "brief": {
+    "id": "heartwood-exhibition",
+    "name": "HEARTWOOD \u2014 Ten Makers, One Material",
+    "useCasesRequested": [
+      "hero",
+      "about",
+      "features",
+      "testimonial",
+      "pricing",
+      "faq",
+      "cta"
+    ]
+  },
+  "brand": {
+    "ref": "runs/woodwave-v2/brand/brand.yaml"
+  },
+  "style": {
+    "id": "editorial-luxury"
+  },
+  "sections": [
+    {
+      "id": "hook-hero",
+      "useCase": "hero",
+      "archetype": "stack-fullbleed",
+      "surfaceIntent": "inverse",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "hero-gallery-overlay"
+      },
+      "slots": [
+        {
+          "name": "background",
+          "role": "hero-photograph",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "hero",
+          "width": "full-bleed",
+          "mediaAspect": "wide",
+          "z": "back",
+          "asset": {
+            "src": "001-657acd8d782ab334f6b2e5dc-hero-img-main-p-1600.jpg",
+            "alt": "Warm timber sculpture rising through the gallery's spiral staircase",
+            "ratio": "landscape"
+          }
+        },
+        {
+          "name": "eyebrow",
+          "role": "kicker",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Winter exhibition \u00b7 Nov 14 \u2014 Feb 28"
+        },
+        {
+          "name": "heading",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "word",
+          "sizeClass": "colossal",
+          "width": "hug",
+          "z": "front",
+          "copy": "Heartwood"
+        },
+        {
+          "name": "subheading",
+          "role": "lede",
+          "contract": "subheading",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Ten makers. One material. A room grown slow."
+        },
+        {
+          "name": "cta",
+          "role": "primary-action",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Buy tickets"
+        }
+      ],
+      "treatments": [
+        {
+          "kind": "text-on-media",
+          "target": "heading",
+          "over": "background",
+          "sanctioned": true,
+          "amount": {
+            "class": "medium"
+          }
+        }
+      ],
+      "alignment": {
+        "anchor": "centered"
+      }
+    },
+    {
+      "id": "stakes",
+      "useCase": "about",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "kicker",
+          "contract": "eyebrow",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Why now"
+        },
+        {
+          "name": "heading",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "copy": "You rarely stand before something made slowly"
+        },
+        {
+          "name": "body",
+          "role": "body",
+          "contract": "paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": "We spend our days in front of glass that forgets us the moment we look away. Heartwood is the opposite of a feed \u2014 ten makers who let a material take the years it needs, and ask only that you give it a little of your attention in return."
+        },
+        {
+          "name": "media",
+          "role": "supporting-photograph",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "z": "mid",
+          "asset": {
+            "src": "011-657acd8d782ab334f6b2e5e7-web-gallery-3-p-1600.jpg",
+            "alt": "A single carved timber work standing in a quiet gallery room",
+            "ratio": "landscape"
+          }
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "media"
+      }
+    },
+    {
+      "id": "guide",
+      "useCase": "about",
+      "archetype": "split",
+      "surfaceIntent": "panel",
+      "novelty": "reuse",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "media",
+          "role": "founder-portrait",
+          "contract": "image",
+          "textLen": "none",
+          "sizeClass": "body",
+          "width": "media",
+          "mediaAspect": "portrait",
+          "z": "mid",
+          "asset": {
+            "src": "007-657acd8d782ab334f6b2e5d3-about-img-4-p-500.jpg",
+            "alt": "Portrait of founder Margaret Woodwave in the gallery",
+            "ratio": "portrait"
+          }
+        },
+        {
+          "name": "heading",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "medium",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "copy": "We have championed makers since 1974"
+        },
+        {
+          "name": "body",
+          "role": "body",
+          "contract": "paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": "Founded by Margaret Woodwave on a single conviction \u2014 that the room around the work shapes how deeply we feel it \u2014 the gallery has spent fifty years giving slow craft the space it deserves. Heartwood gathers a generation of wood artists we have followed, argued with, and grown alongside."
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "right",
+        "counterweight": "media"
+      }
+    },
+    {
+      "id": "plan",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "kicker",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "How to visit"
+        },
+        {
+          "name": "heading",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "copy": "Three steps into the grain"
+        },
+        {
+          "name": "steps",
+          "role": "step-cards",
+          "contract": "card",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "heading": "Reserve a ticket",
+              "text": "Choose an adult, student, or group pass; timed entry keeps the rooms quiet."
+            },
+            {
+              "heading": "Come and wander",
+              "text": "Arrive when you like, or join a maker-led tour at noon and four."
+            },
+            {
+              "heading": "Take it with you",
+              "text": "Leave with the material under your skin \u2014 and a print or a small work, if it will not let you go."
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "columns": "3"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "steps"
+      }
+    },
+    {
+      "id": "proof",
+      "useCase": "testimonial",
+      "archetype": "stack",
+      "surfaceIntent": "panel",
+      "novelty": "reuse",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "quote",
+          "role": "press-pull-quote",
+          "contract": "quote",
+          "textLen": "medium",
+          "sizeClass": "title",
+          "width": "stretch",
+          "z": "front",
+          "copy": "The most quietly moving room in the city this winter \u2014 you leave slower than you arrived."
+        },
+        {
+          "name": "attribution",
+          "role": "source",
+          "contract": "label",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "The Evening Review"
+        },
+        {
+          "name": "stats",
+          "role": "stat-run",
+          "contract": "stat",
+          "textLen": "short",
+          "sizeClass": "title",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "value": "10",
+              "label": "makers"
+            },
+            {
+              "value": "60",
+              "label": "works"
+            },
+            {
+              "value": "52",
+              "label": "years of championing craft"
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "stats"
+      }
+    },
+    {
+      "id": "offer",
+      "useCase": "pricing",
+      "archetype": "cards",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "kicker",
+          "contract": "eyebrow",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Programme"
+        },
+        {
+          "name": "heading",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "copy": "Come and wander"
+        },
+        {
+          "name": "programme",
+          "role": "programme-cards",
+          "contract": "card",
+          "textLen": "medium",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "heading": "Nov 14 \u2014 Opening night, makers in conversation",
+              "text": "Main Hall"
+            },
+            {
+              "heading": "Dec 06 \u2014 Salvage & grain, a carving demonstration",
+              "text": "Workshop"
+            },
+            {
+              "heading": "Jan 17 \u2014 Slow-looking, guided in silence",
+              "text": "Sphere"
+            },
+            {
+              "heading": "Feb 21 \u2014 Closing weekend, last light on the timber",
+              "text": "Main Hall"
+            }
+          ]
+        },
+        {
+          "name": "tickets",
+          "role": "ticket-rows",
+          "contract": "card",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "heading": "$24 \u00b7 Adult",
+              "cta": "Buy tickets"
+            },
+            {
+              "heading": "$18 \u00b7 Student",
+              "cta": "Buy tickets"
+            },
+            {
+              "heading": "$16* \u00b7 Group of 5 (*per person)",
+              "cta": "Buy tickets"
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "columns": "2"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "programme"
+      }
+    },
+    {
+      "id": "objection",
+      "useCase": "faq",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "reuse",
+      "seededFrom": null,
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "kicker",
+          "contract": "eyebrow",
+          "textLen": "short",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Before you come"
+        },
+        {
+          "name": "heading",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "short",
+          "sizeClass": "display",
+          "width": "stretch",
+          "z": "front",
+          "copy": "Questions, answered"
+        },
+        {
+          "name": "faq",
+          "role": "faq-items",
+          "contract": "accordion",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": [
+            {
+              "heading": "Is Heartwood for me if I know nothing about wood?",
+              "text": "Especially then. The work asks for attention, not expertise; the tours are written for first-time lookers."
+            },
+            {
+              "heading": "Can I bring children?",
+              "text": "Gladly. Under-12s enter free, and the Workshop room keeps a table of offcuts for small hands."
+            },
+            {
+              "heading": "Is the gallery accessible?",
+              "text": "Every room, the tours, and the Sphere are step-free; assistance is available at the door."
+            },
+            {
+              "heading": "May I photograph the works?",
+              "text": "Without flash, and never for resale \u2014 the makers keep the rights to their pieces."
+            }
+          ]
+        }
+      ],
+      "treatments": [],
+      "knobs": {
+        "faq": "accordion"
+      },
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "faq"
+      }
+    },
+    {
+      "id": "close",
+      "useCase": "cta",
+      "archetype": "stack",
+      "surfaceIntent": "panel",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "newsletter-subscribe"
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "role": "kicker",
+          "contract": "eyebrow",
+          "textLen": "word",
+          "sizeClass": "caption",
+          "width": "hug",
+          "z": "front",
+          "copy": "Stay close"
+        },
+        {
+          "name": "heading",
+          "role": "display-title",
+          "contract": "heading",
+          "textLen": "medium",
+          "sizeClass": "hero",
+          "width": "stretch",
+          "z": "front",
+          "copy": "Do not let the season end without you"
+        },
+        {
+          "name": "body",
+          "role": "body",
+          "contract": "paragraph",
+          "textLen": "long",
+          "sizeClass": "body",
+          "width": "stretch",
+          "z": "front",
+          "copy": "Heartwood closes on the twenty-eighth of February, and the timber goes home with its makers. Reserve a ticket, or leave us your address and we will write you when the doors open."
+        },
+        {
+          "name": "cta-primary",
+          "role": "primary-action",
+          "contract": "button",
+          "textLen": "short",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Buy tickets"
+        },
+        {
+          "name": "cta-secondary",
+          "role": "transitional-action",
+          "contract": "link",
+          "textLen": "word",
+          "sizeClass": "body",
+          "width": "hug",
+          "z": "front",
+          "copy": "Subscribe"
+        }
+      ],
+      "treatments": [],
+      "alignment": {
+        "anchor": "left",
+        "counterweight": "heading"
+      }
+    }
+  ],
+  "rationale": "Sections follow the StoryBrand arc hook\u2192stakes\u2192guide\u2192plan\u2192proof\u2192offer\u2192objection\u2192close. The dark photographic hero is the only inverse band and the only accent carrier (gold Melodrama 'Heartwood' set directly on the sanctioned full-bleed staircase photo). The observed dark-first rhythm then alternates primary and panel cream/espresso bands; no footer is authored (renderer appends brand chrome). PLAN and OFFER render as card runs per the rendering contract (steps, programme, ruled ticket rows with Buy-tickets arrows); PROOF pairs the press pull-quote with a three-value stat run; OBJECTION uses a four-item accordion each carrying its answer. Every display heading is uppercase Melodrama by tier, controls stay sharp-cornered, and no second accent appears \u2014 honouring the brand's never-sans-display, never-lowercase-display, and never-rounded-controls rules by construction."
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "harness-quality.v1",
+  "ok": true,
+  "inputDigest": "92d60be505a237687e7cfa5bdfb3ed9a500a178b3db25d0982d8a44d79972a4d",
+  "checks": {
+    "richSnapshot": true,
+    "controlGeometry": true,
+    "designedControlGrammar": true,
+    "tier2Substance": true,
+    "tier3SlotsAssetsDistinct": true,
+    "publicCopyProvenance": true
+  }
+}

@@ -1,0 +1,862 @@
+{
+  "schemaVersion": "wireframe.v1",
+  "page": {
+    "storyRhythm": [
+      "orient-and-prove",
+      "explain-or-prove",
+      "explain-or-prove",
+      "human-proof",
+      "explain-or-prove",
+      "scale-proof",
+      "convert"
+    ],
+    "densitySequence": [
+      "dense",
+      "dense",
+      "open",
+      "open",
+      "dense",
+      "open",
+      "open"
+    ],
+    "surfaceSequence": [
+      "primary",
+      "primary",
+      "primary",
+      "panel",
+      "primary",
+      "primary",
+      "inverse"
+    ],
+    "maxConsecutiveTextOnly": 1,
+    "brandPrecedence": [
+      "measured-pattern-or-recipe",
+      "designed-brand-component",
+      "shared-archetype"
+    ]
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "index": 0,
+      "job": "orient-and-prove",
+      "density": "dense",
+      "surfaceRole": "primary",
+      "visualAnchor": [
+        "case"
+      ],
+      "conversionRole": "none",
+      "skeleton": "hero-case-lead",
+      "componentFamily": "hero",
+      "requiredSlots": [
+        "kicker",
+        "heading",
+        "subheading",
+        "case"
+      ],
+      "optionalSlots": [],
+      "ctaRequired": false,
+      "proofRequired": true,
+      "collections": [],
+      "testimonial": null,
+      "responsive": {
+        "collapse": "single-column",
+        "preserveGrouping": true
+      },
+      "assetRequirements": [
+        {
+          "slot": "case",
+          "status": "bound"
+        }
+      ],
+      "assetRequests": [],
+      "rendererCapabilities": [
+        {
+          "slot": "kicker",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "heading",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "subheading",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "case",
+          "consumable": true,
+          "path": "split single-case adapter + case-card renderer"
+        }
+      ],
+      "licensedTextOnly": false,
+      "sparseRun": 0
+    },
+    {
+      "id": "story",
+      "index": 1,
+      "job": "explain-or-prove",
+      "density": "dense",
+      "surfaceRole": "primary",
+      "visualAnchor": [
+        "storylist",
+        "action",
+        "component-cluster:storylist"
+      ],
+      "conversionRole": "supporting",
+      "skeleton": "cards",
+      "componentFamily": "collection",
+      "requiredSlots": [
+        "eyebrow",
+        "heading",
+        "storylist",
+        "action"
+      ],
+      "optionalSlots": [],
+      "ctaRequired": false,
+      "proofRequired": false,
+      "collections": [
+        {
+          "slot": "storylist",
+          "itemContract": "feature-item",
+          "items": [
+            {
+              "heading": "A growing club, scattered fan data.",
+              "text": "Fan sign-ups lived across ticketing, email, and social, with no single view of the supporter.",
+              "asset": "002-marketing-hub.svg",
+              "span": 1
+            },
+            {
+              "heading": "One platform for marketing and service.",
+              "text": "Marketing Hub and Smart CRM put every fan interaction in one place for the whole team.",
+              "asset": "035-breeze-20icon.svg",
+              "span": 1
+            },
+            {
+              "heading": "Personal at scale.",
+              "text": "Automated journeys stayed on-brand, so every fan still felt spoken to directly.",
+              "asset": "010-breeze-symbol-rgb-gradient.svg",
+              "span": 2,
+              "contentMeasureCh": 28.0
+            }
+          ],
+          "layout": "grid",
+          "columns": 2,
+          "wrap": true,
+          "fillStrategy": "tail-span",
+          "fillCandidates": [
+            {
+              "strategy": "higher-columns",
+              "columns": 3,
+              "feasible": false,
+              "score": 0,
+              "reasons": [
+                "item width 184.0px < family minimum 288.0px",
+                "item 1 body projects to 7 lines",
+                "item 2 body projects to 6 lines",
+                "item 3 body projects to 6 lines"
+              ]
+            },
+            {
+              "strategy": "licensed-asymmetry",
+              "columns": 2,
+              "feasible": false,
+              "score": 0,
+              "reasons": [
+                "partial rows require an explicit license and real balancing counterweight"
+              ]
+            },
+            {
+              "strategy": "lead-span",
+              "columns": 2,
+              "targetIndex": 0,
+              "feasible": false,
+              "score": 0,
+              "reasons": [
+                "lead-span requires one explicitly strongest lead/primary item"
+              ],
+              "hierarchy": [
+                0,
+                0,
+                0
+              ],
+              "demandScores": [
+                152.0,
+                149.0,
+                121.0
+              ],
+              "fullSpanInnerMeasureCh": 69.0,
+              "preferredMeasureCh": 28.0
+            },
+            {
+              "strategy": "tail-span",
+              "columns": 2,
+              "targetIndex": 2,
+              "feasible": true,
+              "score": 79,
+              "reasons": [
+                "constrain full-span content to 28.0ch inside the filled card"
+              ],
+              "hierarchy": [
+                0,
+                0,
+                0
+              ],
+              "demandScores": [
+                152.0,
+                149.0,
+                121.0
+              ],
+              "fullSpanInnerMeasureCh": 69.0,
+              "preferredMeasureCh": 28.0
+            },
+            {
+              "strategy": "single-column",
+              "columns": 1,
+              "feasible": true,
+              "score": 72,
+              "reasons": [
+                "row-complete fallback with the strongest stacked reading order"
+              ]
+            }
+          ],
+          "balancingCounterweight": null,
+          "componentFit": {
+            "contentDemand": [
+              {
+                "headingChars": 35,
+                "bodyChars": 93,
+                "longestUnbreakableToken": 10,
+                "childRoles": [
+                  "asset",
+                  "heading",
+                  "text"
+                ],
+                "preferredMeasureCh": 28,
+                "maxHeadingLines": 3,
+                "maxBodyLines": 5,
+                "minItemWidth": 288.0
+              },
+              {
+                "headingChars": 39,
+                "bodyChars": 86,
+                "longestUnbreakableToken": 11,
+                "childRoles": [
+                  "asset",
+                  "heading",
+                  "text"
+                ],
+                "preferredMeasureCh": 28,
+                "maxHeadingLines": 3,
+                "maxBodyLines": 5,
+                "minItemWidth": 288.0
+              },
+              {
+                "headingChars": 18,
+                "bodyChars": 79,
+                "longestUnbreakableToken": 9,
+                "childRoles": [
+                  "asset",
+                  "heading",
+                  "text"
+                ],
+                "preferredMeasureCh": 28,
+                "maxHeadingLines": 3,
+                "maxBodyLines": 5,
+                "minItemWidth": 288.0
+              }
+            ],
+            "containerWidth": 1080.0,
+            "availableWidth": 616.0,
+            "allocation": "counterweight-column",
+            "gutter": 32.0,
+            "itemPadding": 32.0,
+            "minItemWidth": 288.0,
+            "preferredMeasureCh": 28,
+            "maxHeadingLines": 3,
+            "maxBodyLines": 5,
+            "requestedColumns": 3,
+            "candidateWidths": [
+              {
+                "columns": 3,
+                "itemWidth": 184.0,
+                "innerMeasureCh": 15.0,
+                "feasible": false,
+                "reasons": [
+                  "item width 184.0px < family minimum 288.0px",
+                  "item 1 body projects to 7 lines",
+                  "item 2 body projects to 6 lines",
+                  "item 3 body projects to 6 lines"
+                ]
+              },
+              {
+                "columns": 2,
+                "itemWidth": 292.0,
+                "innerMeasureCh": 28.5,
+                "feasible": true,
+                "reasons": []
+              },
+              {
+                "columns": 1,
+                "itemWidth": 616.0,
+                "innerMeasureCh": 69.0,
+                "feasible": true,
+                "reasons": []
+              }
+            ],
+            "chosenColumns": 2,
+            "internalAnatomy": "icon-top",
+            "familyAnatomyUniform": true,
+            "responsiveBreakpoints": [
+              {
+                "minContainerWidth": 320.0,
+                "columns": 1
+              },
+              {
+                "minContainerWidth": 608.0,
+                "columns": 2
+              }
+            ],
+            "fillStrategy": "tail-span",
+            "fillCandidates": [
+              {
+                "strategy": "higher-columns",
+                "columns": 3,
+                "feasible": false,
+                "score": 0,
+                "reasons": [
+                  "item width 184.0px < family minimum 288.0px",
+                  "item 1 body projects to 7 lines",
+                  "item 2 body projects to 6 lines",
+                  "item 3 body projects to 6 lines"
+                ]
+              },
+              {
+                "strategy": "licensed-asymmetry",
+                "columns": 2,
+                "feasible": false,
+                "score": 0,
+                "reasons": [
+                  "partial rows require an explicit license and real balancing counterweight"
+                ]
+              },
+              {
+                "strategy": "lead-span",
+                "columns": 2,
+                "targetIndex": 0,
+                "feasible": false,
+                "score": 0,
+                "reasons": [
+                  "lead-span requires one explicitly strongest lead/primary item"
+                ],
+                "hierarchy": [
+                  0,
+                  0,
+                  0
+                ],
+                "demandScores": [
+                  152.0,
+                  149.0,
+                  121.0
+                ],
+                "fullSpanInnerMeasureCh": 69.0,
+                "preferredMeasureCh": 28.0
+              },
+              {
+                "strategy": "tail-span",
+                "columns": 2,
+                "targetIndex": 2,
+                "feasible": true,
+                "score": 79,
+                "reasons": [
+                  "constrain full-span content to 28.0ch inside the filled card"
+                ],
+                "hierarchy": [
+                  0,
+                  0,
+                  0
+                ],
+                "demandScores": [
+                  152.0,
+                  149.0,
+                  121.0
+                ],
+                "fullSpanInnerMeasureCh": 69.0,
+                "preferredMeasureCh": 28.0
+              },
+              {
+                "strategy": "single-column",
+                "columns": 1,
+                "feasible": true,
+                "score": 72,
+                "reasons": [
+                  "row-complete fallback with the strongest stacked reading order"
+                ]
+              }
+            ],
+            "itemSpans": [
+              1,
+              1,
+              2
+            ],
+            "fullSpanContentMeasureCh": 28.0,
+            "balancingCounterweight": null
+          },
+          "responsive": {
+            "mobileColumns": 1,
+            "collapse": "preserve-item",
+            "breakpoints": [
+              {
+                "minContainerWidth": 320.0,
+                "columns": 1
+              },
+              {
+                "minContainerWidth": 608.0,
+                "columns": 2
+              }
+            ]
+          }
+        }
+      ],
+      "testimonial": null,
+      "responsive": {
+        "collapse": "single-column",
+        "preserveGrouping": true
+      },
+      "assetRequirements": [
+        {
+          "slot": "storylist",
+          "status": "bound"
+        },
+        {
+          "slot": "action",
+          "status": "bound"
+        }
+      ],
+      "assetRequests": [],
+      "rendererCapabilities": [
+        {
+          "slot": "eyebrow",
+          "consumable": true,
+          "path": "cards adapter + grouped module renderer"
+        },
+        {
+          "slot": "heading",
+          "consumable": true,
+          "path": "cards adapter + grouped module renderer"
+        },
+        {
+          "slot": "storylist",
+          "consumable": true,
+          "path": "cards adapter + grouped module renderer"
+        },
+        {
+          "slot": "action",
+          "consumable": true,
+          "path": "cards adapter + grouped module renderer"
+        }
+      ],
+      "licensedTextOnly": false,
+      "sparseRun": 0
+    },
+    {
+      "id": "results",
+      "index": 2,
+      "job": "explain-or-prove",
+      "density": "open",
+      "surfaceRole": "primary",
+      "visualAnchor": [
+        "stats"
+      ],
+      "conversionRole": "none",
+      "skeleton": "stack",
+      "componentFamily": "features",
+      "requiredSlots": [
+        "heading",
+        "stats"
+      ],
+      "optionalSlots": [],
+      "ctaRequired": false,
+      "proofRequired": false,
+      "collections": [],
+      "testimonial": null,
+      "responsive": {
+        "collapse": "single-column",
+        "preserveGrouping": true
+      },
+      "assetRequirements": [
+        {
+          "slot": "stats",
+          "status": "bound"
+        }
+      ],
+      "assetRequests": [],
+      "rendererCapabilities": [
+        {
+          "slot": "heading",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "stats",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        }
+      ],
+      "licensedTextOnly": false,
+      "sparseRun": 0
+    },
+    {
+      "id": "quote",
+      "index": 3,
+      "job": "human-proof",
+      "density": "open",
+      "surfaceRole": "panel",
+      "visualAnchor": [
+        "testimonial"
+      ],
+      "conversionRole": "none",
+      "skeleton": "stack",
+      "componentFamily": "testimonial",
+      "requiredSlots": [
+        "testimonial"
+      ],
+      "optionalSlots": [],
+      "ctaRequired": false,
+      "proofRequired": true,
+      "collections": [],
+      "testimonial": {
+        "componentContract": "testimonial",
+        "complete": true,
+        "quote": "HubSpot gave us the tools we needed to grow without losing the personal connection with our fans. Their support has been vital to our continued marketing success.",
+        "attribution": {
+          "name": "Whitney Hallock",
+          "role": "Director of Marketing & Experience, Angel City FC"
+        },
+        "asset": "046-angel-fc.png",
+        "assetStatus": "bound",
+        "assetSource": "media-assets-subject-match",
+        "assetRequest": null,
+        "internalAnatomy": "portrait-side",
+        "optionalRoles": [],
+        "preferredMeasureCh": 58,
+        "minComponentWidth": 480,
+        "maxEmptySpaceRatio": 0.68,
+        "accentLicensed": true
+      },
+      "responsive": {
+        "collapse": "single-column",
+        "preserveGrouping": true
+      },
+      "assetRequirements": [
+        {
+          "slot": "testimonial",
+          "status": "bound"
+        }
+      ],
+      "assetRequests": [],
+      "rendererCapabilities": [
+        {
+          "slot": "testimonial",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        }
+      ],
+      "licensedTextOnly": false,
+      "sparseRun": 0
+    },
+    {
+      "id": "more-stories",
+      "index": 4,
+      "job": "explain-or-prove",
+      "density": "dense",
+      "surfaceRole": "primary",
+      "visualAnchor": [
+        "cards",
+        "component-cluster:cards"
+      ],
+      "conversionRole": "none",
+      "skeleton": "cards",
+      "componentFamily": "collection",
+      "requiredSlots": [
+        "heading",
+        "cards"
+      ],
+      "optionalSlots": [],
+      "ctaRequired": false,
+      "proofRequired": false,
+      "collections": [
+        {
+          "slot": "cards",
+          "itemContract": "card",
+          "items": [
+            {
+              "eyebrow": "Unipart",
+              "heading": "Millions \u2192 billions",
+              "text": "Unipart grew its pipeline from millions to billions in twelve months.",
+              "meta": "Adam Jones, Unipart",
+              "cta": "Read the story",
+              "asset": "045-unipart-1.png",
+              "span": 1
+            },
+            {
+              "eyebrow": "Youth on Course",
+              "heading": "59%",
+              "text": "Youth on Course lifted membership 59% year over year with a Breeze Customer Agent.",
+              "meta": "John Mothershead, Youth on Course",
+              "cta": "Read the story",
+              "asset": "047-youth-on-course.png",
+              "span": 1
+            }
+          ],
+          "layout": "grid",
+          "columns": 2,
+          "wrap": true,
+          "fillStrategy": "complete-rows",
+          "fillCandidates": [
+            {
+              "strategy": "complete-rows",
+              "columns": 2,
+              "feasible": true,
+              "score": 100,
+              "reasons": [
+                "item count fills every selected track"
+              ]
+            }
+          ],
+          "balancingCounterweight": null,
+          "componentFit": {
+            "contentDemand": [
+              {
+                "headingChars": 19,
+                "bodyChars": 69,
+                "longestUnbreakableToken": 8,
+                "childRoles": [
+                  "asset",
+                  "eyebrow",
+                  "heading",
+                  "text",
+                  "cta"
+                ],
+                "preferredMeasureCh": 28,
+                "maxHeadingLines": 3,
+                "maxBodyLines": 5,
+                "minItemWidth": 288.0
+              },
+              {
+                "headingChars": 3,
+                "bodyChars": 82,
+                "longestUnbreakableToken": 10,
+                "childRoles": [
+                  "asset",
+                  "eyebrow",
+                  "heading",
+                  "text",
+                  "cta"
+                ],
+                "preferredMeasureCh": 28,
+                "maxHeadingLines": 3,
+                "maxBodyLines": 5,
+                "minItemWidth": 288.0
+              }
+            ],
+            "containerWidth": 1080.0,
+            "availableWidth": 616.0,
+            "allocation": "counterweight-column",
+            "gutter": 32.0,
+            "itemPadding": 32.0,
+            "minItemWidth": 288.0,
+            "preferredMeasureCh": 28,
+            "maxHeadingLines": 3,
+            "maxBodyLines": 5,
+            "requestedColumns": 2,
+            "candidateWidths": [
+              {
+                "columns": 2,
+                "itemWidth": 292.0,
+                "innerMeasureCh": 28.5,
+                "feasible": true,
+                "reasons": []
+              },
+              {
+                "columns": 1,
+                "itemWidth": 616.0,
+                "innerMeasureCh": 69.0,
+                "feasible": true,
+                "reasons": []
+              }
+            ],
+            "chosenColumns": 2,
+            "internalAnatomy": "icon-top",
+            "familyAnatomyUniform": true,
+            "responsiveBreakpoints": [
+              {
+                "minContainerWidth": 320.0,
+                "columns": 1
+              },
+              {
+                "minContainerWidth": 608.0,
+                "columns": 2
+              }
+            ],
+            "fillStrategy": "complete-rows",
+            "fillCandidates": [
+              {
+                "strategy": "complete-rows",
+                "columns": 2,
+                "feasible": true,
+                "score": 100,
+                "reasons": [
+                  "item count fills every selected track"
+                ]
+              }
+            ],
+            "itemSpans": [
+              1,
+              1
+            ],
+            "fullSpanContentMeasureCh": null,
+            "balancingCounterweight": null
+          },
+          "responsive": {
+            "mobileColumns": 1,
+            "collapse": "preserve-item",
+            "breakpoints": [
+              {
+                "minContainerWidth": 320.0,
+                "columns": 1
+              },
+              {
+                "minContainerWidth": 608.0,
+                "columns": 2
+              }
+            ]
+          }
+        }
+      ],
+      "testimonial": null,
+      "responsive": {
+        "collapse": "single-column",
+        "preserveGrouping": true
+      },
+      "assetRequirements": [
+        {
+          "slot": "cards",
+          "status": "bound"
+        }
+      ],
+      "assetRequests": [],
+      "rendererCapabilities": [
+        {
+          "slot": "heading",
+          "consumable": true,
+          "path": "cards adapter + grouped module renderer"
+        },
+        {
+          "slot": "cards",
+          "consumable": true,
+          "path": "cards adapter + grouped module renderer"
+        }
+      ],
+      "licensedTextOnly": false,
+      "sparseRun": 0
+    },
+    {
+      "id": "logos",
+      "index": 5,
+      "job": "scale-proof",
+      "density": "open",
+      "surfaceRole": "primary",
+      "visualAnchor": [
+        "logos"
+      ],
+      "conversionRole": "none",
+      "skeleton": "stack",
+      "componentFamily": "logos",
+      "requiredSlots": [
+        "heading",
+        "logos"
+      ],
+      "optionalSlots": [],
+      "ctaRequired": false,
+      "proofRequired": true,
+      "collections": [],
+      "testimonial": null,
+      "responsive": {
+        "collapse": "single-column",
+        "preserveGrouping": true
+      },
+      "assetRequirements": [
+        {
+          "slot": "logos",
+          "status": "bound"
+        }
+      ],
+      "assetRequests": [],
+      "rendererCapabilities": [
+        {
+          "slot": "heading",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "logos",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        }
+      ],
+      "licensedTextOnly": false,
+      "sparseRun": 0
+    },
+    {
+      "id": "closing",
+      "index": 6,
+      "job": "convert",
+      "density": "open",
+      "surfaceRole": "inverse",
+      "visualAnchor": [
+        "actions"
+      ],
+      "conversionRole": "primary",
+      "skeleton": "stack",
+      "componentFamily": "cta",
+      "requiredSlots": [
+        "heading",
+        "actions"
+      ],
+      "optionalSlots": [],
+      "ctaRequired": true,
+      "proofRequired": false,
+      "collections": [],
+      "testimonial": null,
+      "responsive": {
+        "collapse": "single-column",
+        "preserveGrouping": true
+      },
+      "assetRequirements": [
+        {
+          "slot": "actions",
+          "status": "bound"
+        }
+      ],
+      "assetRequests": [],
+      "rendererCapabilities": [
+        {
+          "slot": "heading",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "actions",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        }
+      ],
+      "licensedTextOnly": false,
+      "sparseRun": 0
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "version": "woodwave",
+  "timestamp": "2026-06-11T23:53:28.571792",
+  "screenshots": [
+    {
+      "name": "woodwave",
+      "screenshot": "woodwave/screenshot.webp",
+      "single": {
+        "structural_analysis": "woodwave/single/structural-analysis.md",
+        "layouts": "",
+        "design_system": "woodwave/single/design-system.md",
+        "site_generation_input": "woodwave/single/site-generation-input.md",
+        "surface_component_contract": "",
+        "surface_component_contract_audit": "",
+        "source_style_ledger": "woodwave/single/source-style-ledger.yaml",
+        "design_system_style_audit": "woodwave/single/design-system-style-audit.json",
+        "design_system_review": "woodwave/single/design-system-review.md",
+        "design_system_conversion_review": "woodwave/single/design-system-conversion-review.md",
+        "site_claude": "woodwave/single/site-claude.html",
+        "site_gemini": "woodwave/single/site-gemini.html",
+        "site_gpt55": "woodwave/single/site-gpt54.html",
+        "site_claude_framework": "woodwave/single/site-claude-framework.html",
+        "site_gpt55_framework": "woodwave/single/site-gpt55-framework.html",
+        "site_generation_input_grounding": "",
+        "site_claude_grounding": "",
+        "site_gpt55_grounding": ""
+      },
+      "site_gpt55_direct": ""
+    }
+  ]
+}

@@ -23,8 +23,11 @@ Usage:
 By default this only measures and prints. `--write-gitignore` rewrites a marked
 block in `.gitignore` (never touching the surrounding rules, and never removing
 the `runs/` rule itself), and `--stage` runs `git add` over the resolved paths.
-Both are idempotent: re-running after a project regenerates its artifacts adds
-what appeared and drops what vanished.
+Both are idempotent, and additive: re-running after a project regenerates its
+artifacts picks up whatever appeared. Taking something back OUT of tracking is
+deliberately not automatic — a path that is already committed stays committed
+until someone runs `git rm --cached` on it, so a rule change here can never
+quietly delete history someone else is relying on.
 
 Every project is handled by the same rules — no brand, lane or page name is
 hardcoded anywhere in this file.
@@ -40,6 +43,7 @@ import subprocess
 import sys
 from functools import lru_cache
 from pathlib import Path
+from urllib.parse import quote, unquote
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 RUNS_DIR = REPO_ROOT / "runs"
@@ -228,9 +232,86 @@ def classify_run(run_dir: Path, *, allow_local_paths: bool = False) -> dict:
 
         kept.append((path, size, why_include))
 
+    kept = _prune_unshown_images(run_dir, kept, dropped)
     kept.sort(key=lambda t: -t[1])
     dropped.sort(key=lambda t: -t[1])
     return {"kept": kept, "dropped": dropped, "redundant": _redundant_bytes(kept)}
+
+
+# A lane's own capture dir. `_lane_thumb()` in studio_server.py picks exactly one
+# image out of here (or out of the lane root) to illustrate the lane; the rest of
+# the dir is contact sheets, per-viewport re-shoots and diff composites that no
+# route ever serves.
+_SHOTS_DIR = "shots"
+# `sections_pages()` prefers this exact file over the generic thumb pick.
+_GALLERY_THUMB = "gallery.png"
+
+
+def _thumb_pick(lane_dir: Path) -> Path | None:
+    """The one image `_lane_thumb()` would choose for a lane. Mirrors its scoring."""
+
+    def score(p: Path) -> tuple:
+        n = p.name.lower()
+        is_page = "diff" not in n and "vs-source" not in n and "contact" not in n
+        return (
+            is_page,
+            "fullpage" in n or "full" in n,
+            "1440" in n or "1920" in n or "desktop" in n,
+            p.stat().st_mtime,
+        )
+
+    candidates: list[Path] = []
+    shots = lane_dir / _SHOTS_DIR
+    if shots.is_dir():
+        candidates += [p for p in shots.iterdir() if p.is_file() and p.suffix.lower() in IMAGE_EXTS]
+    candidates += [p for p in lane_dir.iterdir() if p.is_file() and p.suffix.lower() in IMAGE_EXTS]
+    return max(candidates, key=score) if candidates else None
+
+
+IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".webp", ".avif", ".gif", ".svg"}
+
+
+def _prune_unshown_images(
+    run_dir: Path, kept: list[tuple[Path, int, str]], dropped: list[tuple[Path, int, str]]
+) -> list[tuple[Path, int, str]]:
+    """Drop images that no tracked page loads and no lane uses as its thumbnail.
+
+    A lane directory accumulates captures: the page at several viewport widths,
+    contact sheets, before/after pairs, re-shoots. The Studio shows ONE of them,
+    and the pages themselves load their media from an `assets/` dir. Everything
+    else is inert — and on image-heavy runs it is most of the weight.
+
+    Kept, in order of precedence: anything under an `assets/` dir (that is what
+    the pages reference), anything whose filename appears in a tracked HTML or
+    CSS file, and each lane's single thumbnail. Anything else goes, and the
+    clean-clone check catches a mistake here as a broken image on a real page.
+    """
+    text = "\n".join(
+        path.read_text(encoding="utf-8", errors="ignore")
+        for path, _, _ in kept
+        if path.suffix.lower() in {".html", ".htm", ".css"}
+    )
+    lanes = {p.parent for p in run_dir.rglob("index.html") if p.is_file()}
+    thumbs: set[Path] = set()
+    for lane in lanes:
+        pick = _thumb_pick(lane)
+        if pick:
+            thumbs.add(pick)
+        gallery = lane / _SHOTS_DIR / _GALLERY_THUMB
+        if gallery.is_file():
+            thumbs.add(gallery)
+
+    survivors: list[tuple[Path, int, str]] = []
+    for path, size, why in kept:
+        if path.suffix.lower() not in IMAGE_EXTS:
+            survivors.append((path, size, why))
+        elif "assets" in path.parts or path.name in text or quote(path.name) in text:
+            survivors.append((path, size, why))
+        elif path in thumbs:
+            survivors.append((path, size, "the lane's thumbnail"))
+        else:
+            dropped.append((path, size, "image no tracked page loads and no lane shows"))
+    return survivors
 
 
 def _redundant_bytes(kept: list[tuple[Path, int, str]]) -> int:
@@ -420,12 +501,178 @@ def write_gitignore(plans: list[dict]) -> bool:
     return True
 
 
-def stage(plans: list[dict]) -> int:
-    """git add every planned path, one explicit path at a time."""
+def dirty_paths() -> set[str]:
+    """Tracked paths with uncommitted worktree edits."""
+    out = subprocess.run(
+        ["git", "diff", "--name-only", "HEAD"], cwd=REPO_ROOT, capture_output=True, text=True
+    )
+    return {line for line in out.stdout.split("\n") if line}
+
+
+def stage(plans: list[dict]) -> tuple[int, list[str]]:
+    """git add every planned path, one explicit path at a time.
+
+    Paths that are already tracked AND have uncommitted edits are skipped: this
+    tool's job is to bring files under tracking, not to decide that someone's
+    half-finished edit is ready to commit. Returns (staged, skipped).
+    """
     rels = sorted({p.relative_to(REPO_ROOT).as_posix() for pl in plans for p in tracked_paths(pl)})
+    dirty = dirty_paths()
+    skipped = [r for r in rels if r in dirty]
+    rels = [r for r in rels if r not in dirty]
     for i in range(0, len(rels), 200):
         subprocess.run(["git", "add", "--", *rels[i : i + 200]], cwd=REPO_ROOT, check=True)
-    return len(rels)
+    return len(rels), skipped
+
+
+_VERSION_TOKEN = re.compile(r"^v\d+$")
+
+
+def _pretty_title(project: str, brand: str) -> str:
+    """Human label for a run: the manifest's brand name plus the version token.
+
+    `hubspot-v3` → "HubSpot v3" when the manifest names the brand, "Hubspot v3"
+    when it does not. The version token stays lowercase so a project reads as a
+    version of a brand rather than as a different brand.
+    """
+    tokens = project.split("-")
+    words = [t if _VERSION_TOKEN.match(t) else t.capitalize() for t in tokens]
+    if brand and tokens and tokens[0].lower() == brand.split()[0].lower():
+        words[0] = brand.split()[0]
+    return " ".join(words)
+
+
+def ensure_registered(project: str) -> Path | None:
+    """Write a minimal `studio-project.json` when a run has none.
+
+    Without it the Studio still lists the run, but with no title and no link back
+    to the site it came from. Title and url are derived from the run's own
+    manifest, never invented; a run with no discoverable source url still gets a
+    title. Idempotent: an existing file is left exactly as it is.
+    """
+    meta_path = RUNS_DIR / project / "studio-project.json"
+    if meta_path.exists():
+        return None
+    manifest: dict = {}
+    for candidate in (RUNS_DIR / project / "manifest.json", RUNS_DIR / project / "brand" / "manifest.json"):
+        if candidate.is_file():
+            try:
+                manifest = json.loads(candidate.read_text()) or {}
+            except ValueError:
+                manifest = {}
+            if manifest.get("source_url"):
+                break
+    title = _pretty_title(project, str(manifest.get("brand") or "").strip())
+    url = str(manifest.get("source_url") or "").strip() or _brand_source_url(project)
+    meta_path.write_text(
+        json.dumps({"url": url, "title": title, "brand": project}, indent=2) + "\n"
+    )
+    return meta_path
+
+
+def _brand_source_url(project: str) -> str:
+    """`sourceUrl` from a run's brand.yaml — the fallback when no manifest has one."""
+    path = RUNS_DIR / project / "brand" / "brand.yaml"
+    if not path.is_file():
+        return ""
+    for line in path.read_text(encoding="utf-8", errors="ignore").splitlines()[:200]:
+        match = re.match(r"^\s*sourceUrl:\s*(\S+)\s*$", line)
+        if match:
+            return match.group(1).strip("'\"")
+    return ""
+
+
+# ── completeness check ────────────────────────────────────────────────────────
+# Local references a browser will actually fetch. Deliberately not a parser: the
+# point is to be over-inclusive about what might 404, not to model HTML.
+_REF_RE = re.compile(
+    r"""(?:src|href|poster|data-src)\s*=\s*["']([^"']+)["']|url\(\s*["']?([^"')]+)["']?\s*\)""",
+    re.IGNORECASE,
+)
+_EXTERNAL = ("http://", "https://", "//", "data:", "#", "mailto:", "tel:", "javascript:", "blob:")
+
+
+def _page_references(plans: list[dict]):
+    """Yield (page, reference, resolved path, repo-relative target) per local ref."""
+    for pl in plans:
+        for path, _, _ in pl["run"]["kept"]:
+            if path.suffix.lower() not in {".html", ".htm", ".css"}:
+                continue
+            text = path.read_text(encoding="utf-8", errors="ignore")
+            for raw in sorted({m[0] or m[1] for m in _REF_RE.findall(text)}):
+                ref = unquote(raw.split("?")[0].split("#")[0]).strip()
+                if not ref or ref.startswith(_EXTERNAL):
+                    continue
+                # Composed pages carry the source site's own navigation (`/de-de`,
+                # `/blog/…`). Those are links to pages that never existed in this
+                # repo and 404 identically for the author; only extensioned refs
+                # are files this subset is responsible for shipping.
+                if "." not in ref.rsplit("/", 1)[-1]:
+                    continue
+                base = REPO_ROOT if ref.startswith("/") else path.parent
+                target = (base / ref.lstrip("/")).resolve()
+                try:
+                    rel = target.relative_to(REPO_ROOT).as_posix()
+                except ValueError:
+                    continue
+                yield path, ref, target, rel
+
+
+def _available(plans: list[dict]) -> set[str]:
+    planned = {p.relative_to(REPO_ROOT).as_posix() for pl in plans for p in tracked_paths(pl)}
+    already = set(
+        subprocess.run(
+            ["git", "ls-files"], cwd=REPO_ROOT, capture_output=True, text=True
+        ).stdout.split("\n")
+    )
+    return planned | already
+
+
+def rescue_references(plans: list[dict]) -> list[Path]:
+    """Pull in files a tracked page loads that the include rules would have skipped.
+
+    Lanes borrow across runs — a composed page can point at another project's
+    harvested asset pool — and no static include list predicts that. Rather than
+    widen the rules until they cover every case (and drag in the pools nobody
+    reads), the references win: whatever a page we ship actually loads gets
+    shipped with it, attributed to the plan for the run it lives in.
+    """
+    added: list[Path] = []
+    by_run = {pl["run_dir"]: pl for pl in plans}
+    for _ in range(4):  # rescued CSS can itself reference more files
+        available = _available(plans)
+        round_added = []
+        for _page, _ref, target, rel in _page_references(plans):
+            if rel in available or not target.is_file():
+                continue
+            owner = next((d for d in by_run if d in target.parents), None)
+            if owner is None:
+                continue
+            size = target.stat().st_size
+            by_run[owner]["run"]["kept"].append((target, size, "loaded by a tracked page"))
+            by_run[owner]["run_kept_bytes"] += size
+            available.add(rel)
+            round_added.append(target)
+        added += round_added
+        if not round_added:
+            break
+    return added
+
+
+def check_references(plans: list[dict]) -> list[tuple[str, str]]:
+    """Every local file a tracked page loads must itself be tracked.
+
+    This is the check that separates "the project is in the repo" from "the
+    project works in the repo". It resolves each reference the way the Studio
+    serves it — root-relative against the repo, otherwise against the page — and
+    reports the ones that would 404 in a clone. Returns [(page, reference)].
+    """
+    available = _available(plans)
+    return [
+        (page.relative_to(REPO_ROOT).as_posix(), ref)
+        for page, ref, target, rel in _page_references(plans)
+        if rel not in available and not target.is_dir()
+    ]
 
 
 # ── reporting ─────────────────────────────────────────────────────────────────
@@ -474,7 +721,17 @@ def main() -> None:
     ap.add_argument("--files", action="store_true", help="list every file that would be tracked")
     ap.add_argument("--write-gitignore", action="store_true", help="rewrite the managed .gitignore block")
     ap.add_argument("--stage", action="store_true", help="git add the planned paths")
+    ap.add_argument(
+        "--register",
+        action="store_true",
+        help="write a minimal studio-project.json for any run that has none",
+    )
     ap.add_argument("--json", action="store_true", help="emit the plan as JSON instead of a table")
+    ap.add_argument(
+        "--check",
+        action="store_true",
+        help="report local references from tracked pages that would 404 in a clone",
+    )
     args = ap.parse_args()
 
     projects = [Path(r).name for r in args.run]
@@ -486,6 +743,12 @@ def main() -> None:
     if not projects:
         ap.error("pass --run runs/<project> or --all")
 
+    if args.register:
+        for v in projects:
+            written = ensure_registered(v)
+            if written:
+                print(f"registered {written.relative_to(REPO_ROOT).as_posix()}")
+
     plans = [
         plan(
             v,
@@ -494,6 +757,9 @@ def main() -> None:
         )
         for v in projects
     ]
+    rescued = rescue_references(plans)
+    if rescued:
+        print(f"pulled in {len(rescued)} file(s) referenced by a tracked page but not matched by the rules")
 
     if args.json:
         print(
@@ -519,11 +785,30 @@ def main() -> None:
     total = sum(p["run_kept_bytes"] + p["config_bytes"] + p["capture_kept_bytes"] for p in plans)
     print(f"\nCOMBINED TOTAL TO TRACK: {fmt_bytes(total)} across {len(plans)} project(s)")
 
+    if args.check:
+        broken = check_references(plans)
+        if not broken:
+            print("reference check: every local reference from a tracked page resolves")
+        else:
+            by_page: dict[str, list[str]] = {}
+            for page, ref in broken:
+                by_page.setdefault(page, []).append(ref)
+            print(f"reference check: {len(broken)} references would 404, across {len(by_page)} pages")
+            for page, refs in sorted(by_page.items(), key=lambda kv: -len(kv[1]))[:15]:
+                print(f"  {page}  ({len(refs)})")
+                for ref in sorted(refs)[:4]:
+                    print(f"      {ref}")
+
     if args.write_gitignore:
         changed = write_gitignore(plans)
         print(f".gitignore: {'updated' if changed else 'already current'}")
     if args.stage:
-        print(f"staged {stage(plans)} paths")
+        staged, skipped = stage(plans)
+        print(f"staged {staged} paths")
+        if skipped:
+            print(f"skipped {len(skipped)} tracked paths with uncommitted edits (not ours to commit):")
+            for rel in skipped[:20]:
+                print(f"  {rel}")
 
 
 if __name__ == "__main__":

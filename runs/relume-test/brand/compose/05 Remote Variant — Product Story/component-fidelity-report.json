@@ -1,0 +1,235 @@
+{
+  "schemaVersion": "remote-product-story.component-fidelity.v1",
+  "source": "runs/remote/brand/brand.yaml#buttons + extracted accordion state colors",
+  "checks": [
+    {
+      "component": "primary",
+      "state": "rest",
+      "expected": {
+        "background": "rgb(5, 100, 255)",
+        "color": "rgb(255, 255, 255)",
+        "border": "0px none rgb(255, 255, 255)",
+        "borderRadius": "40px",
+        "height": "48px",
+        "padding": "0px 24px"
+      },
+      "computed": {
+        "background": "rgb(5, 100, 255)",
+        "color": "rgb(255, 255, 255)",
+        "border": "0px none rgb(255, 255, 255)",
+        "outline": "rgb(255, 255, 255) none 3px",
+        "borderRadius": "40px",
+        "height": "48px",
+        "padding": "0px 24px"
+      },
+      "status": "pass"
+    },
+    {
+      "component": "primary",
+      "state": "hover",
+      "expected": {
+        "background": "rgb(0, 71, 188)",
+        "color": "rgb(255, 255, 255)"
+      },
+      "computed": {
+        "background": "rgb(0, 71, 188)",
+        "color": "rgb(255, 255, 255)",
+        "border": "0px none rgb(255, 255, 255)",
+        "outline": "rgb(255, 255, 255) none 3px",
+        "borderRadius": "40px",
+        "height": "48px",
+        "padding": "0px 24px"
+      },
+      "status": "pass"
+    },
+    {
+      "component": "primary",
+      "state": "pressed",
+      "expected": {
+        "background": "rgb(0, 50, 132)",
+        "color": "rgb(255, 255, 255)"
+      },
+      "computed": {
+        "background": "rgb(0, 50, 132)",
+        "color": "rgb(255, 255, 255)",
+        "border": "0px none rgb(255, 255, 255)",
+        "outline": "rgb(255, 255, 255) none 3px",
+        "borderRadius": "40px",
+        "height": "48px",
+        "padding": "0px 24px"
+      },
+      "status": "pass"
+    },
+    {
+      "component": "primary",
+      "state": "focus",
+      "expected": {
+        "outline": "rgb(155, 193, 255) solid 2px"
+      },
+      "computed": {
+        "background": "rgb(5, 100, 255)",
+        "color": "rgb(255, 255, 255)",
+        "border": "0px none rgb(255, 255, 255)",
+        "outline": "rgb(155, 193, 255) solid 2px",
+        "borderRadius": "40px",
+        "height": "48px",
+        "padding": "0px 24px"
+      },
+      "status": "pass"
+    },
+    {
+      "component": "secondary",
+      "state": "rest",
+      "expected": {
+        "background": "rgba(0, 0, 0, 0)",
+        "color": "rgb(0, 50, 132)",
+        "border": "1px solid rgb(0, 50, 132)",
+        "borderRadius": "40px",
+        "height": "48px",
+        "padding": "0px 24px"
+      },
+      "computed": {
+        "background": "rgba(0, 0, 0, 0)",
+        "color": "rgb(0, 50, 132)",
+        "border": "1px solid rgb(0, 50, 132)",
+        "outline": "rgb(0, 50, 132) none 3px",
+        "borderRadius": "40px",
+        "height": "48px",
+        "padding": "0px 24px"
+      },
+      "status": "pass"
+    },
+    {
+      "component": "secondary",
+      "state": "hover",
+      "expected": {
+        "background": "rgb(5, 100, 255)",
+        "color": "rgb(255, 255, 255)"
+      },
+      "computed": {
+        "background": "rgb(5, 100, 255)",
+        "color": "rgb(255, 255, 255)",
+        "border": "1px solid rgb(5, 100, 255)",
+        "outline": "rgb(255, 255, 255) none 3px",
+        "borderRadius": "40px",
+        "height": "48px",
+        "padding": "0px 24px"
+      },
+      "status": "pass"
+    },
+    {
+      "component": "secondary",
+      "state": "pressed",
+      "expected": {
+        "background": "rgb(0, 71, 188)",
+        "color": "rgb(255, 255, 255)"
+      },
+      "computed": {
+        "background": "rgb(0, 71, 188)",
+        "color": "rgb(255, 255, 255)",
+        "border": "1px solid rgb(0, 71, 188)",
+        "outline": "rgb(255, 255, 255) none 3px",
+        "borderRadius": "40px",
+        "height": "48px",
+        "padding": "0px 24px"
+      },
+      "status": "pass"
+    },
+    {
+      "component": "tertiary",
+      "state": "rest",
+      "expected": {
+        "background": "rgb(35, 35, 37)",
+        "color": "rgb(255, 255, 255)",
+        "borderRadius": "40px",
+        "height": "48px",
+        "padding": "0px 24px"
+      },
+      "computed": {
+        "background": "rgb(35, 35, 37)",
+        "color": "rgb(255, 255, 255)",
+        "border": "0px none rgb(255, 255, 255)",
+        "outline": "rgb(255, 255, 255) none 3px",
+        "borderRadius": "40px",
+        "height": "48px",
+        "padding": "0px 24px"
+      },
+      "status": "pass"
+    },
+    {
+      "component": "tertiary",
+      "state": "hover",
+      "expected": {
+        "background": "rgb(89, 91, 95)",
+        "color": "rgb(255, 255, 255)"
+      },
+      "computed": {
+        "background": "rgb(89, 91, 95)",
+        "color": "rgb(255, 255, 255)",
+        "border": "0px none rgb(255, 255, 255)",
+        "outline": "rgb(255, 255, 255) none 3px",
+        "borderRadius": "40px",
+        "height": "48px",
+        "padding": "0px 24px"
+      },
+      "status": "pass"
+    },
+    {
+      "component": "tertiary",
+      "state": "pressed",
+      "expected": {
+        "background": "rgb(56, 58, 61)",
+        "color": "rgb(255, 255, 255)"
+      },
+      "computed": {
+        "background": "rgb(56, 58, 61)",
+        "color": "rgb(255, 255, 255)",
+        "border": "0px none rgb(255, 255, 255)",
+        "outline": "rgb(255, 255, 255) none 3px",
+        "borderRadius": "40px",
+        "height": "48px",
+        "padding": "0px 24px"
+      },
+      "status": "pass"
+    },
+    {
+      "component": "product-tab",
+      "state": "rest",
+      "expected": {
+        "background": "rgb(81, 22, 33)",
+        "color": "rgb(255, 255, 255)"
+      },
+      "computed": {
+        "background": "rgb(81, 22, 33)",
+        "color": "rgb(255, 255, 255)",
+        "border": "0px none rgb(255, 255, 255)",
+        "outline": "rgb(255, 255, 255) none 3px",
+        "borderRadius": "10px",
+        "height": "80.2188px",
+        "padding": "16px"
+      },
+      "status": "pass"
+    },
+    {
+      "component": "product-tab",
+      "state": "hover",
+      "expected": {
+        "background": "rgb(252, 238, 241)",
+        "color": "rgb(20, 20, 21)"
+      },
+      "computed": {
+        "background": "rgb(252, 238, 241)",
+        "color": "rgb(20, 20, 21)",
+        "border": "0px none rgb(20, 20, 21)",
+        "outline": "rgb(20, 20, 21) none 3px",
+        "borderRadius": "10px",
+        "height": "80.2188px",
+        "padding": "16px"
+      },
+      "status": "pass"
+    }
+  ],
+  "checkedProperties": 34,
+  "failures": 0,
+  "status": "pass"
+}

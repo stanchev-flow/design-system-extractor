@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "relume-test.editorial-variant-verification.v1",
+  "item": "04 Remote Variant \u2014 Editorial Flow",
+  "url": "http://127.0.0.1:1500/runs/relume-test/brand/compose/04%20Remote%20Variant%20%E2%80%94%20Editorial%20Flow/index.html",
+  "status": "pass",
+  "viewports": [
+    {
+      "viewport": "desktop",
+      "readability": {
+        "checkedTextRegions": 99,
+        "checkedControls": 34,
+        "worstTextContrast": 4.91,
+        "failures": []
+      },
+      "geometry": {
+        "horizontalOverflow": false,
+        "surfaces": [
+          "surface/hero-noise",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/hero-noise",
+          "surface/raised"
+        ],
+        "mediaStretchFailures": 0
+      },
+      "assetsChecked": 21,
+      "assetFailures": [],
+      "interaction": {
+        "menu": "not-applicable"
+      }
+    },
+    {
+      "viewport": "mobile",
+      "readability": {
+        "checkedTextRegions": 94,
+        "checkedControls": 29,
+        "worstTextContrast": 4.91,
+        "failures": []
+      },
+      "geometry": {
+        "horizontalOverflow": false,
+        "surfaces": [
+          "surface/hero-noise",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/hero-noise",
+          "surface/raised"
+        ],
+        "mediaStretchFailures": 0
+      },
+      "assetsChecked": 21,
+      "assetFailures": [],
+      "interaction": {
+        "menu": {
+          "expanded": "true",
+          "actionsVisible": true
+        }
+      }
+    }
+  ],
+  "componentFidelity": {
+    "checkedProperties": 236,
+    "failures": []
+  },
+  "genericFourThreeRatio": false,
+  "failures": []
+}

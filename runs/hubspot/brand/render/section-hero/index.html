@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HubSpot - hero (brand.yaml render)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+img { display: block; max-width: 100%; }
+:root {
+  --bg: #fcfcfa;
+  --text: #ffffff;
+  --accent: #ff4800;
+  --btn-bg: #ff4800;
+  --btn-fg: #fcfcfa;
+  --btn-hover: #d13f05;
+  --font-heading: 'HubSpot Serif Page Header Human', 'Source Serif 4', serif;
+  --font-body: 'HubSpot Sans', 'Lexend Deca', sans-serif;
+  --font-eyebrow: 'HubSpot Sans', 'Lexend Deca', sans-serif;
+  --font-button: 'HubSpot Sans', 'Lexend Deca', sans-serif;
+  --display-size: 4.0625rem;
+  --radius-button: 0.5rem;
+  --section-pad: 5rem;
+  --gap: 1.5rem;
+  --shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+html, body { background: var(--bg); color: var(--text); font-family: var(--font-body); -webkit-font-smoothing: antialiased; }
+
+/* Section / Stack scaffold, surface mode On Image, full-bleed photo + flat dark scrim (NO blur) */
+.hs-hero {
+  position: relative; min-height: 100vh; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  padding: calc(var(--section-pad) + 3rem) 1.5rem var(--section-pad);
+  background: var(--bg); color: var(--text);
+}
+.hs-bg { position: absolute; inset: 0; z-index: 0; background: url('assets/02cc38.webp') center/cover no-repeat; }
+.hs-scrim { position: absolute; inset: 0; background: rgba(0,0,0,0.5); z-index: 0; }
+
+/* Stack Slot: centered hero cluster (~prose width) */
+.hs-cluster {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--gap); max-width: 52rem;
+}
+.hs-eyebrow {
+  font-family: var(--font-eyebrow); font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--text); opacity: 0.95;
+}
+.hs-heading {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: var(--display-size);
+  line-height: 1.2;
+  /* sentence case - NO uppercase transform */
+  color: var(--text); max-width: 20ch;
+}
+.hs-body {
+  font-family: var(--font-body); font-weight: 400;
+  font-size: 1.125rem;
+  line-height: 1.5; color: var(--text); opacity: 0.92; max-width: 42rem;
+}
+
+/* Button Group - FILLED primary + outline secondary, ROUNDED with soft shadow */
+.hs-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-top: 0.5rem; }
+.btn {
+  font-family: var(--font-button); font-weight: 600;
+  font-size: 0.9375rem;
+  border-radius: var(--radius-button);
+  padding: 0.75rem 1.5rem; text-decoration: none; cursor: pointer;
+  display: inline-flex; align-items: center; line-height: 1.5;
+  transition: background 200ms, transform 120ms;
+}
+.btn-primary { background: var(--btn-bg); color: var(--btn-fg); border: none; box-shadow: var(--shadow); }
+.btn-primary:hover { background: var(--btn-hover); }
+.btn-secondary { background: transparent; color: var(--text); border: 1px solid #ff4800; }
+
+@media (max-width: 767px) {
+  :root { --display-size: 2.5rem; }
+}
+
+</style>
+</head>
+<body>
+<!-- Section / Stack / Full bleed / Content and media (b5c9aa7f-160f-7d95-c514-07e16adcd0e8), surface mode On Image: full-bleed photo + flat dark scrim, NO blur -->
+<section class="hs-hero">
+  <div class="hs-bg" aria-hidden="true"></div>
+  <div class="hs-scrim" aria-hidden="true"></div>
+  <!-- Stack Slot: centered hero cluster -->
+  <div class="hs-cluster">
+    <p class="hs-eyebrow">HUBSPOT AGENTIC CUSTOMER PLATFORM</p>
+    <!-- Heading: display tier, sentence case -->
+    <h1 class="hs-heading">AI knows a lot about the world. You need a platform that knows your world</h1>
+    <p class="hs-body">The more you know about your customers, the better every interaction gets. With HubSpot, your teams and AI work from the same customer data. Marketing is more personal, sales outreach is more insightful, and service issues are resolved faster.</p>
+    <!-- Button Group: FILLED primary + outline secondary -->
+    <div class="hs-actions">
+      <a class="btn btn-primary" href="#">Get a demo</a>
+      <a class="btn btn-secondary" href="#">Get started free</a>
+    </div>
+  </div>
+</section>
+</body>
+</html>

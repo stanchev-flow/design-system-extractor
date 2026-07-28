@@ -1,0 +1,1124 @@
+{
+  "brand": "Remote",
+  "sourceUrl": "https://remote.com",
+  "generated": "2026-07-20T13:19:04.226355+00:00",
+  "typeInference": {
+    "rule": "Check the mapped component name first, then the slot's semantic role, against a media keyword set and a content keyword set. media wins on a media-keyword hit (Image/Logo/photo/icon/...); otherwise content on a content-keyword hit (Heading/Eyebrow/Rich Text/Link/Form/...). Unmatched slots default to 'content' and are flagged ambiguous.",
+    "mediaKeywords": [
+      "image",
+      "media",
+      "photo",
+      "photography",
+      "picture",
+      "logo",
+      "wordmark",
+      "avatar",
+      "icon",
+      "video",
+      "gallery",
+      "illustration",
+      "graphic",
+      "map",
+      "thumbnail"
+    ],
+    "contentKeywords": [
+      "heading",
+      "title",
+      "eyebrow",
+      "paragraph",
+      "rich text",
+      "richtext",
+      "text",
+      "link",
+      "form",
+      "button",
+      "label",
+      "action",
+      "caption",
+      "body",
+      "cta",
+      "quote",
+      "stat",
+      "counter",
+      "list",
+      "input",
+      "field",
+      "nav"
+    ]
+  },
+  "ambiguousSlots": [],
+  "components": [],
+  "sections": [
+    {
+      "name": "navbar / Nav",
+      "id": "navbar",
+      "layoutArchetype": "nav",
+      "scaffold": "",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/primary",
+        "bg": "#eff0f0",
+        "text": "#141415",
+        "accent": null
+      },
+      "slots": [
+        {
+          "name": "brand",
+          "type": "media",
+          "useCase": "Remote wordmark",
+          "mappedComponent": "",
+          "structuralSlot": "brand"
+        },
+        {
+          "name": "navlinks",
+          "type": "content",
+          "useCase": "primary nav triggers (pill hover wash #e7e8e9, radius 40)",
+          "mappedComponent": "",
+          "structuralSlot": "navlinks"
+        },
+        {
+          "name": "actions",
+          "type": "content",
+          "useCase": "Login link + neutral filled Book demo pill",
+          "mappedComponent": "",
+          "structuralSlot": "actions"
+        }
+      ]
+    },
+    {
+      "name": "hero / Split",
+      "id": "hero",
+      "layoutArchetype": "split",
+      "scaffold": "",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/primary",
+        "bg": "#eff0f0",
+        "text": "#141415",
+        "accent": null
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "type": "content",
+          "useCase": "display heading (Bossa 400 sentence)",
+          "mappedComponent": "",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "body",
+          "type": "content",
+          "useCase": "supporting paragraph",
+          "mappedComponent": "",
+          "structuralSlot": "body"
+        },
+        {
+          "name": "actions",
+          "type": "content",
+          "useCase": "primary filled pill + secondary outlined pill",
+          "mappedComponent": "",
+          "structuralSlot": "actions"
+        },
+        {
+          "name": "media",
+          "type": "media",
+          "useCase": "globe/product illustration",
+          "mappedComponent": "",
+          "structuralSlot": "media"
+        }
+      ]
+    },
+    {
+      "name": "logo-wall / Stack",
+      "id": "logo-wall",
+      "layoutArchetype": "stack",
+      "scaffold": "",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/primary",
+        "bg": "#eff0f0",
+        "text": "#141415",
+        "accent": null
+      },
+      "slots": [
+        {
+          "name": "caption",
+          "type": "content",
+          "useCase": "uppercase microlabel ('GLOBAL COMPANIES GROW WITH REMOTE')",
+          "mappedComponent": "",
+          "structuralSlot": "caption"
+        },
+        {
+          "name": "logos",
+          "type": "media",
+          "useCase": "12 monochrome ink logo SVGs, spaced row",
+          "mappedComponent": "",
+          "structuralSlot": "logos"
+        }
+      ]
+    },
+    {
+      "name": "feature-accordion / Split",
+      "id": "feature-accordion",
+      "layoutArchetype": "split",
+      "scaffold": "",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/primary",
+        "bg": "#eff0f0",
+        "text": "#141415",
+        "accent": null
+      },
+      "slots": [
+        {
+          "name": "eyebrow",
+          "type": "content",
+          "useCase": "crimson uppercase label ('HOW WE DO IT')",
+          "mappedComponent": "",
+          "structuralSlot": "eyebrow"
+        },
+        {
+          "name": "heading",
+          "type": "content",
+          "useCase": "section h2",
+          "mappedComponent": "",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "list",
+          "type": "content",
+          "useCase": "accordion items w/ deep-accent active state",
+          "mappedComponent": "",
+          "structuralSlot": "list"
+        },
+        {
+          "name": "media",
+          "type": "media",
+          "useCase": "product UI collage (profile card + task list)",
+          "mappedComponent": "",
+          "structuralSlot": "media"
+        }
+      ]
+    },
+    {
+      "name": "infra-panel / Split",
+      "id": "infra-panel",
+      "layoutArchetype": "split",
+      "scaffold": "",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/primary",
+        "bg": "#eff0f0",
+        "text": "#141415",
+        "accent": null
+      },
+      "slots": [
+        {
+          "name": "media",
+          "type": "media",
+          "useCase": "stacked product-UI proof cards",
+          "mappedComponent": "",
+          "structuralSlot": "media"
+        },
+        {
+          "name": "eyebrow",
+          "type": "content",
+          "useCase": "blue uppercase label ('INTELLIGENT INFRASTRUCTURE')",
+          "mappedComponent": "",
+          "structuralSlot": "eyebrow"
+        },
+        {
+          "name": "heading",
+          "type": "content",
+          "useCase": "section h2",
+          "mappedComponent": "",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "body",
+          "type": "content",
+          "useCase": "supporting copy w/ compliance proof terms",
+          "mappedComponent": "",
+          "structuralSlot": "body"
+        }
+      ]
+    },
+    {
+      "name": "banner-cta / Stack",
+      "id": "banner-cta",
+      "layoutArchetype": "stack",
+      "scaffold": "",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/primary",
+        "bg": "#eff0f0",
+        "text": "#141415",
+        "accent": null
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "type": "content",
+          "useCase": "centered h2 (question form)",
+          "mappedComponent": "",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "action",
+          "type": "content",
+          "useCase": "single filled blue pill",
+          "mappedComponent": "",
+          "structuralSlot": "action"
+        }
+      ]
+    },
+    {
+      "name": "workflow-cards / Cards",
+      "id": "workflow-cards",
+      "layoutArchetype": "cards",
+      "scaffold": "",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/primary",
+        "bg": "#eff0f0",
+        "text": "#141415",
+        "accent": null
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "type": "content",
+          "useCase": "section header stack (eyebrow + heading)",
+          "mappedComponent": "",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "cards",
+          "type": "content",
+          "useCase": "white cards w/ navy media wells",
+          "mappedComponent": "",
+          "structuralSlot": "cards"
+        }
+      ]
+    },
+    {
+      "name": "partner-logos / Stack",
+      "id": "partner-logos",
+      "layoutArchetype": "stack",
+      "scaffold": "",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/primary",
+        "bg": "#eff0f0",
+        "text": "#141415",
+        "accent": null
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "type": "content",
+          "useCase": "centered header stack ('THE GLOBAL PAYROLL BACKBONE')",
+          "mappedComponent": "",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "logos",
+          "type": "media",
+          "useCase": "4 partner logos (colored)",
+          "mappedComponent": "",
+          "structuralSlot": "logos"
+        },
+        {
+          "name": "action",
+          "type": "content",
+          "useCase": "outlined pill ('Become a Partner')",
+          "mappedComponent": "",
+          "structuralSlot": "action"
+        }
+      ]
+    },
+    {
+      "name": "testimonials / Cards",
+      "id": "testimonials",
+      "layoutArchetype": "cards",
+      "scaffold": "",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/primary",
+        "bg": "#eff0f0",
+        "text": "#141415",
+        "accent": null
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "type": "content",
+          "useCase": "centered header ('A word from our customers')",
+          "mappedComponent": "",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "cards",
+          "type": "content",
+          "useCase": "quote cards w/ avatars + company marks",
+          "mappedComponent": "",
+          "structuralSlot": "cards"
+        },
+        {
+          "name": "action",
+          "type": "content",
+          "useCase": "outlined pill ('Hear from our customers')",
+          "mappedComponent": "",
+          "structuralSlot": "action"
+        }
+      ]
+    },
+    {
+      "name": "badge-strip / Stack",
+      "id": "badge-strip",
+      "layoutArchetype": "stack",
+      "scaffold": "",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/primary",
+        "bg": "#eff0f0",
+        "text": "#141415",
+        "accent": null
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "type": "content",
+          "useCase": "centered heading",
+          "mappedComponent": "",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "badges",
+          "type": "media",
+          "useCase": "award shield badges (~100px row)",
+          "mappedComponent": "",
+          "structuralSlot": "badges"
+        },
+        {
+          "name": "ratings",
+          "type": "media",
+          "useCase": "review-platform rating chips (glyph + stars + score)",
+          "mappedComponent": "",
+          "structuralSlot": "ratings"
+        },
+        {
+          "name": "action",
+          "type": "content",
+          "useCase": "outlined pill",
+          "mappedComponent": "",
+          "structuralSlot": "action"
+        }
+      ]
+    },
+    {
+      "name": "closing-cta / Stack",
+      "id": "closing-cta",
+      "layoutArchetype": "stack",
+      "scaffold": "",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/primary",
+        "bg": "#eff0f0",
+        "text": "#141415",
+        "accent": null
+      },
+      "slots": [
+        {
+          "name": "heading",
+          "type": "content",
+          "useCase": "centered h2",
+          "mappedComponent": "",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "body",
+          "type": "content",
+          "useCase": "supporting paragraph",
+          "mappedComponent": "",
+          "structuralSlot": "body"
+        },
+        {
+          "name": "action",
+          "type": "content",
+          "useCase": "single filled blue pill",
+          "mappedComponent": "",
+          "structuralSlot": "action"
+        }
+      ]
+    },
+    {
+      "name": "footer / Grid",
+      "id": "footer",
+      "layoutArchetype": "grid",
+      "scaffold": "",
+      "mode": "Secondary",
+      "surface": {
+        "role": "surface/raised",
+        "bg": "#f6f7f8",
+        "text": "#141415",
+        "accent": null
+      },
+      "slots": [
+        {
+          "name": "linkcols",
+          "type": "content",
+          "useCase": "8 grouped link columns (6 visual)",
+          "mappedComponent": "",
+          "structuralSlot": "linkcols"
+        },
+        {
+          "name": "legal",
+          "type": "content",
+          "useCase": "copyright + disclaimer + policy links",
+          "mappedComponent": "",
+          "structuralSlot": "legal"
+        },
+        {
+          "name": "social",
+          "type": "content",
+          "useCase": "circle social icons (YouTube/LinkedIn/X/Instagram)",
+          "mappedComponent": "",
+          "structuralSlot": "social"
+        }
+      ]
+    }
+  ],
+  "originCatalog": {
+    "hasOrigin": true,
+    "tiers": [
+      {
+        "key": "primitives",
+        "label": "Primitives",
+        "tier": 1,
+        "extracted": 8,
+        "designed": 0,
+        "total": 8,
+        "items": [
+          {
+            "name": "button",
+            "origin": "extracted",
+            "use": "always",
+            "variant": "filled-primary",
+            "confidence": "high",
+            "provenance": [
+              "hero",
+              "banner-cta",
+              "closing-cta",
+              "navbar"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "eyebrow",
+            "origin": "extracted",
+            "use": "always",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "accordion-features",
+              "infra-panel",
+              "workflow-cards",
+              "logo-wall"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "heading",
+            "origin": "extracted",
+            "use": "always",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "hero",
+              "accordion-features",
+              "banner-cta"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "image",
+            "origin": "extracted",
+            "use": "always",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "hero",
+              "workflow-cards",
+              "testimonials"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "input",
+            "origin": "extracted",
+            "use": "forms",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [
+              "popup-forms"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "link",
+            "origin": "extracted",
+            "use": "text-links-only",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "workflow-cards",
+              "testimonials"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "logo",
+            "origin": "extracted",
+            "use": "always",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "logo-wall"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "paragraph",
+            "origin": "extracted",
+            "use": "always",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "hero",
+              "infra-panel",
+              "testimonials"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          }
+        ]
+      },
+      {
+        "key": "blocks",
+        "label": "Blocks",
+        "tier": 2,
+        "extracted": 16,
+        "designed": 9,
+        "total": 25,
+        "items": [
+          {
+            "name": "accordion",
+            "origin": "extracted",
+            "use": "feature-exploration",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "accordion-features"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "accordion-item",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "accordion-features"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "banner",
+            "origin": "extracted",
+            "use": "conversion-moments",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "banner-cta"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "card",
+            "origin": "extracted",
+            "use": "always",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "workflow-cards",
+              "testimonials",
+              "infra-panel"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "carousel",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "testimonials"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "content-block",
+            "origin": "extracted",
+            "use": "always",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "infra-panel",
+              "closing-cta"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "cta-block",
+            "origin": "extracted",
+            "use": "always",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "banner-cta",
+              "closing-cta"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "dropdown-menu",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "navbar"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "feature-item",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "accordion-features",
+              "workflow-cards"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "footer",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "footer"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "form",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": true
+          },
+          {
+            "name": "header",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "hero",
+              "banner-cta"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "logo-bar",
+            "origin": "extracted",
+            "use": "always",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "logo-wall",
+              "partner-logos",
+              "badge-strip"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "media-text",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "hero",
+              "infra-panel",
+              "accordion-features"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "navbar",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "navbar"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "testimonial",
+            "origin": "extracted",
+            "use": "always",
+            "variant": "",
+            "confidence": "high",
+            "provenance": [
+              "testimonials"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "breadcrumb",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No breadcrumb was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: breadcrumb-module CSS carried in the sheet; not rendered on the captured homepage",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "modal",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No modal was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: form-modal CSS exists in the sheet (closeButton hover scale 1.08) but no modal renders on the captured page",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "pagination",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No pagination was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: numbered-pagination CSS backs the carousel arrow controls; no numbered pagination renders on the captured page",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "pricing-card",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No pricing-card was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no pricing device on the captured homepage (pricing lives on a separate route)",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "stat-block",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No stat-block was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no standalone numeric stat block on the captured page \u2014 the closest devices are review-score rows (platform glyph + stars + 4.6/5) inside the awards strip, extracted under blocks.logo-bar/badge evidence",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "step-item",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No step-item was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no numbered step sequence on the captured homepage",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "steps",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No steps was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no numbered step sequence on the captured homepage",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "table",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No table was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: table tokens exist in the sheet (--zora-table-*); no table renders on the captured homepage",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "tabs",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No tabs was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, radius / corner grammar, border / shadow grammar, surface-role grammar, imagery / media grammar, motion duration / easing axis, button family + state facts, brand signatures, measured layout recipes). Not used in the measured replica. Absence evidence: no tab device on the captured homepage",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "radius / corner grammar",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "imagery / media grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures",
+              "measured layout recipes"
+            ],
+            "notObserved": true,
+            "overridable": true
+          }
+        ]
+      }
+    ]
+  },
+  "inputDigest": "95e514cb1241f1e0a3f37a2c2d615396bdb4ca52b64d9656c77ce684b30226a1"
+}

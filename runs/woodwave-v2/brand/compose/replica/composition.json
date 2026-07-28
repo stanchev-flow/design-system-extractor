@@ -1,0 +1,430 @@
+{
+ "schemaVersion": "replica-composition.v1",
+ "order": [
+  "hero",
+  "about",
+  "gallery-slider",
+  "founder-story",
+  "visit",
+  "newsletter"
+ ],
+ "sections": [
+  {
+   "id": "hero",
+   "useCase": "hero",
+   "archetype": "stack",
+   "surfaceIntent": "any",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "hero-gallery-overlay"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 giant gold Melodrama wordmark (uppercase)",
+     "textLen": "short",
+     "sizeClass": "display",
+     "width": "hug",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "WoodWave Gallery"
+     }
+    },
+    {
+     "name": "background",
+     "role": "background \u2014 full-bleed warm staircase photo + overlapping cluster",
+     "width": "full-bleed",
+     "z": "back",
+     "mediaAspect": "wide",
+     "contract": "image",
+     "asset": {
+      "src": "001-657acd8d782ab334f6b2e5dc-hero-img-main-p-1600.jpg",
+      "alt": "WoodWave Gallery background"
+     }
+    }
+   ],
+   "treatments": [
+    {
+     "kind": "text-on-media",
+     "target": "background",
+     "sanctioned": true,
+     "note": "gold Melodrama wordmark over the warm-dark photo cluster; the photos carry their own warm-dark tone, no separate scrim measured"
+    }
+   ],
+   "_requiresHydration": false,
+   "alignment": {
+    "anchor": "centered"
+   }
+  },
+  {
+   "id": "about",
+   "useCase": "about",
+   "archetype": "stack",
+   "surfaceIntent": "primary",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "about-editorial-ghost"
+   },
+   "slots": [
+    {
+     "name": "eyebrow",
+     "role": "eyebrow \u2014 uppercase Satoshi eyebrow ('ABOUT')",
+     "textLen": "short",
+     "sizeClass": "caption",
+     "width": "hug",
+     "z": "front",
+     "contract": "eyebrow",
+     "copy": {
+      "eyebrow": "About"
+     }
+    },
+    {
+     "name": "heading",
+     "role": "heading \u2014 80px Melodrama uppercase heading",
+     "textLen": "medium",
+     "sizeClass": "display",
+     "width": "hug",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "Space as a muse: unleash your creativity and get inspired with us"
+     }
+    },
+    {
+     "name": "body",
+     "role": "body \u2014 lede paragraph (Satoshi 24-28px)",
+     "textLen": "long",
+     "sizeClass": "body",
+     "width": "hug",
+     "z": "front",
+     "contract": "paragraph",
+     "copy": {
+      "text": "At WoodWave Gallery, we hold a profound belief in the transformative influence of artistic environments on the boundless human imagination. Explore our one-of-a-kind space, where innovation and inspiration harmoniously converge, and set out on an enriching journey towards infinite creativity.",
+      "body": "At WoodWave Gallery, we hold a profound belief in the transformative influence of artistic environments on the boundless human imagination. Explore our one-of-a-kind space, where innovation and inspiration harmoniously converge, and set out on an enriching journey towards infinite creativity."
+     }
+    },
+    {
+     "name": "media",
+     "role": "media \u2014 alternating gallery/architecture photos",
+     "width": "half",
+     "z": "front",
+     "mediaAspect": "landscape",
+     "contract": "card",
+     "copy": [
+      {
+       "heading": "Perspective Hall",
+       "text": "ArtUnveil space by Isabella St.",
+       "asset": "004-657acd8d782ab334f6b2e5d2-about-img-1-p-800.jpg",
+       "alt": "004 657acd8d782ab334f6b2e5d2 about img 1 p 800"
+      },
+      {
+       "heading": "Panorapeak Viewpoint",
+       "text": "Our uniqueness lies in the seamless blend of contemporary design with the organic, crafting a distinctive environment for boundless artistic expression.",
+       "asset": "005-657acd8d782ab334f6b2e5d4-about-img-2-p-1600.jpg",
+       "alt": "005 657acd8d782ab334f6b2e5d4 about img 2 p 1600"
+      },
+      {
+       "heading": "006 657acd8d782ab334f6b2e5d5 about img 3 p 1080",
+       "text": "At the heart of our artistic haven, you'll discover our crowning jewel \u2014 a cutting-edge sphere housing the future of interactive contemporary art. Immerse yourself in a one-of-a-kind experience where technology and creativity converge, inviting visitors to explore and engage with the art of tomorrow.",
+       "asset": "006-657acd8d782ab334f6b2e5d5-about-img-3-p-1080.jpg",
+       "alt": "006 657acd8d782ab334f6b2e5d5 about img 3 p 1080"
+      }
+     ]
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": false
+  },
+  {
+   "id": "gallery-slider",
+   "useCase": "gallery",
+   "archetype": "stack",
+   "surfaceIntent": "any",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "gallery-slider-band"
+   },
+   "slots": [
+    {
+     "name": "eyebrow",
+     "role": "eyebrow \u2014 chrome eyebrow ('GALLERY') over the photo",
+     "textLen": "short",
+     "sizeClass": "caption",
+     "width": "hug",
+     "z": "front",
+     "contract": "eyebrow",
+     "copy": {
+      "eyebrow": "Gallery"
+     }
+    },
+    {
+     "name": "media",
+     "role": "media \u2014 6 full-bleed gallery photos",
+     "width": "full-bleed",
+     "z": "back",
+     "mediaAspect": "wide",
+     "contract": "card",
+     "copy": [
+      {
+       "heading": "009 657acd8d782ab334f6b2e5e5 web gallery 1 p 1600",
+       "text": "",
+       "asset": "009-657acd8d782ab334f6b2e5e5-web-gallery-1-p-1600.jpg",
+       "alt": "009 657acd8d782ab334f6b2e5e5 web gallery 1 p 1600"
+      },
+      {
+       "heading": "010 657acd8d782ab334f6b2e5e6 web gallery 2 p 1600",
+       "text": "",
+       "asset": "010-657acd8d782ab334f6b2e5e6-web-gallery-2-p-1600.jpg",
+       "alt": "010 657acd8d782ab334f6b2e5e6 web gallery 2 p 1600"
+      },
+      {
+       "heading": "011 657acd8d782ab334f6b2e5e7 web gallery 3 p 1600",
+       "text": "",
+       "asset": "011-657acd8d782ab334f6b2e5e7-web-gallery-3-p-1600.jpg",
+       "alt": "011 657acd8d782ab334f6b2e5e7 web gallery 3 p 1600"
+      },
+      {
+       "heading": "012 657acd8d782ab334f6b2e5e8 web gallery 4",
+       "text": "",
+       "asset": "012-657acd8d782ab334f6b2e5e8-web-gallery-4.jpg",
+       "alt": "012 657acd8d782ab334f6b2e5e8 web gallery 4"
+      },
+      {
+       "heading": "013 657acd8d782ab334f6b2e5e9 web gallery 5",
+       "text": "",
+       "asset": "013-657acd8d782ab334f6b2e5e9-web-gallery-5.jpg",
+       "alt": "013 657acd8d782ab334f6b2e5e9 web gallery 5"
+      },
+      {
+       "heading": "014 657acd8d782ab334f6b2e5f2 web gallery 6",
+       "text": "",
+       "asset": "014-657acd8d782ab334f6b2e5f2-web-gallery-6.jpg",
+       "alt": "014 657acd8d782ab334f6b2e5f2 web gallery 6"
+      }
+     ]
+    },
+    {
+     "name": "controls",
+     "role": "controls \u2014 slide counter (1/6) + numeric dot rail + circular arrow",
+     "textLen": "short",
+     "sizeClass": "control",
+     "width": "hug",
+     "z": "front",
+     "contract": "paragraph",
+     "copy": {
+      "text": "",
+      "body": ""
+     }
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": false,
+   "alignment": {
+    "anchor": "centered"
+   }
+  },
+  {
+   "id": "founder-story",
+   "useCase": "content",
+   "archetype": "split",
+   "surfaceIntent": "primary",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "founder-story-watermark"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 Melodrama uppercase heading (left)",
+     "textLen": "medium",
+     "sizeClass": "display",
+     "width": "half",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "WoodWave Gallery is a tribute to decades of creative excellence, fostering the flourishing of art from the late 20th century to the present day"
+     }
+    },
+    {
+     "name": "body",
+     "role": "body \u2014 founder narrative paragraph (right)",
+     "textLen": "long",
+     "sizeClass": "body",
+     "width": "half",
+     "z": "front",
+     "contract": "paragraph",
+     "copy": {
+      "text": "Founded by the visionary Margaret Woodwave in 1974, the WoodWave Gallery has been on a journey of constant evolution. Setting itself apart through the seamless blend of traditional and innovative artistic approaches, it has blossomed into a cultural landmark.",
+      "body": "Founded by the visionary Margaret Woodwave in 1974, the WoodWave Gallery has been on a journey of constant evolution. Setting itself apart through the seamless blend of traditional and innovative artistic approaches, it has blossomed into a cultural landmark."
+     }
+    },
+    {
+     "name": "media",
+     "role": "media \u2014 seated founder portrait",
+     "width": "half",
+     "z": "front",
+     "mediaAspect": "portrait",
+     "contract": "image",
+     "asset": {
+      "src": "016-657acd8d782ab334f6b2e5dd-about-img-5-p-500.jpg",
+      "alt": "WoodWave Gallery media"
+     }
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": false
+  },
+  {
+   "id": "visit",
+   "useCase": "content",
+   "archetype": "split",
+   "surfaceIntent": "inverse",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "visit-map-card"
+   },
+   "slots": [
+    {
+     "name": "eyebrow",
+     "role": "eyebrow \u2014 uppercase eyebrow ('VISIT')",
+     "textLen": "short",
+     "sizeClass": "caption",
+     "width": "hug",
+     "z": "front",
+     "contract": "eyebrow",
+     "copy": {
+      "eyebrow": "Visit"
+     }
+    },
+    {
+     "name": "heading",
+     "role": "heading \u2014 Melodrama display ('WELCOME TO THE GALLERY')",
+     "textLen": "medium",
+     "sizeClass": "display",
+     "width": "hug",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "Welcome to the gallery"
+     }
+    },
+    {
+     "name": "media",
+     "role": "media \u2014 greyscale map band + wood-interior photo",
+     "width": "full",
+     "z": "back",
+     "mediaAspect": "wide",
+     "contract": "image",
+     "asset": {
+      "src": "017-657acd8d782ab334f6b2e5de-map-p-1600.jpg",
+      "alt": "WoodWave Gallery media"
+     }
+    },
+    {
+     "name": "card",
+     "role": "card \u2014 cream info card (address + open hours ruled rows)",
+     "textLen": "medium",
+     "sizeClass": "body",
+     "width": "half",
+     "z": "front",
+     "contract": "card",
+     "copy": [
+      {
+       "heading": "Address",
+       "text": "Art Boulevard, 123 USA, New-Yourk / info@wwgallery.com / +1 123 456 789"
+      },
+      {
+       "heading": "Open hours",
+       "text": "Mon \u2014 Thu 9:00-19:00 / Fri \u2014 Sun 11:00-17:00"
+      }
+     ]
+    },
+    {
+     "name": "pricing",
+     "role": "pricing \u2014 ruled ticket-price rows w/ BUY TICKETS text-arrows",
+     "textLen": "medium",
+     "sizeClass": "body",
+     "width": "half",
+     "z": "front",
+     "contract": "list",
+     "copy": [
+      {
+       "label": "Address",
+       "title": "Address",
+       "text": "Art Boulevard, 123 USA, New-Yourk / info@wwgallery.com / +1 123 456 789"
+      },
+      {
+       "label": "Open hours",
+       "title": "Open hours",
+       "text": "Mon \u2014 Thu 9:00-19:00 / Fri \u2014 Sun 11:00-17:00"
+      }
+     ]
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": false
+  },
+  {
+   "id": "newsletter",
+   "useCase": "cta",
+   "archetype": "stack",
+   "surfaceIntent": "primary",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "newsletter-subscribe"
+   },
+   "slots": [
+    {
+     "name": "eyebrow",
+     "role": "eyebrow \u2014 uppercase eyebrow ('STAY UPDATED')",
+     "textLen": "short",
+     "sizeClass": "caption",
+     "width": "hug",
+     "z": "front",
+     "contract": "eyebrow",
+     "copy": {
+      "eyebrow": "Stay updated"
+     }
+    },
+    {
+     "name": "heading",
+     "role": "heading \u2014 Melodrama display heading",
+     "textLen": "medium",
+     "sizeClass": "display",
+     "width": "hug",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "Subscribe now for exclusive updates and invitations to special exhibitions"
+     }
+    },
+    {
+     "name": "form",
+     "role": "form \u2014 underline email field + SUBSCRIBE text-arrow",
+     "textLen": "short",
+     "sizeClass": "control",
+     "width": "hug",
+     "z": "front",
+     "contract": "paragraph",
+     "copy": {
+      "text": "",
+      "body": ""
+     }
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": false,
+   "alignment": {
+    "anchor": "centered"
+   }
+  }
+ ],
+ "errors": {}
+}

@@ -1,0 +1,199 @@
+{
+  "schemaVersion": "relume-test.media-geometry.v1",
+  "item": "01 HubSpot",
+  "policy": "canonical ratio only when explicitly declared; otherwise intrinsic extracted asset ratio with no CSS aspect-ratio",
+  "viewports": [
+    {
+      "viewport": "desktop",
+      "measures": [
+        {
+          "id": "disclosure",
+          "aspectRatio": "auto",
+          "minHeight": "0px",
+          "alignSelf": "center",
+          "frame": {
+            "w": 500,
+            "h": 292.203125,
+            "top": 1425.3125
+          },
+          "image": {
+            "w": 500,
+            "h": 292.203125,
+            "naturalWidth": 604,
+            "naturalHeight": 353
+          },
+          "stack": {
+            "w": 500,
+            "h": 621.75,
+            "top": 1260.546875
+          },
+          "split": {
+            "w": 1080,
+            "h": 621.75,
+            "top": 1260.546875
+          },
+          "frameCenterDelta": 0.0078125,
+          "stackCenterDelta": 0,
+          "eyebrowHeadingGap": 24,
+          "headingTailGap": 40,
+          "headingBodyGap": null,
+          "bodyActionsGap": null,
+          "sectionPaddingTop": 64,
+          "sectionPaddingBottom": 64,
+          "gridColumnGap": 80,
+          "gridRowGap": 80,
+          "expected": {
+            "eyebrowHeading": 24,
+            "headingBody": 32,
+            "bodyActions": 40,
+            "block": 40,
+            "section": 64,
+            "splitGap": 80
+          }
+        },
+        {
+          "id": "secondary",
+          "aspectRatio": "auto",
+          "minHeight": "0px",
+          "alignSelf": "center",
+          "frame": {
+            "w": 500,
+            "h": 500,
+            "top": 2010.296875
+          },
+          "image": {
+            "w": 500,
+            "h": 500,
+            "naturalWidth": 640,
+            "naturalHeight": 640
+          },
+          "stack": {
+            "w": 500,
+            "h": 373.171875,
+            "top": 2073.703125
+          },
+          "split": {
+            "w": 1080,
+            "h": 500,
+            "top": 2010.296875
+          },
+          "frameCenterDelta": 0,
+          "stackCenterDelta": 0.0078125,
+          "eyebrowHeadingGap": 24,
+          "headingTailGap": 32,
+          "headingBodyGap": 32,
+          "bodyActionsGap": 40,
+          "sectionPaddingTop": 64,
+          "sectionPaddingBottom": 64,
+          "gridColumnGap": 80,
+          "gridRowGap": 80,
+          "expected": {
+            "eyebrowHeading": 24,
+            "headingBody": 32,
+            "bodyActions": 40,
+            "block": 40,
+            "section": 64,
+            "splitGap": 80
+          }
+        }
+      ]
+    },
+    {
+      "viewport": "mobile",
+      "measures": [
+        {
+          "id": "disclosure",
+          "aspectRatio": "auto",
+          "minHeight": "0px",
+          "alignSelf": "center",
+          "frame": {
+            "w": 358,
+            "h": 209.21875,
+            "top": 1756.84375
+          },
+          "image": {
+            "w": 358,
+            "h": 209.21875,
+            "naturalWidth": 604,
+            "naturalHeight": 353
+          },
+          "stack": {
+            "w": 358,
+            "h": 551.59375,
+            "top": 1173.25
+          },
+          "split": {
+            "w": 358,
+            "h": 792.8125,
+            "top": 1173.25
+          },
+          "frameCenterDelta": 291.796875,
+          "stackCenterDelta": 120.609375,
+          "eyebrowHeadingGap": 16,
+          "headingTailGap": 32,
+          "headingBodyGap": null,
+          "bodyActionsGap": null,
+          "sectionPaddingTop": 40,
+          "sectionPaddingBottom": 40,
+          "gridColumnGap": 32,
+          "gridRowGap": 32,
+          "expected": {
+            "eyebrowHeading": 16,
+            "headingBody": 24,
+            "bodyActions": 32,
+            "block": 32,
+            "section": 40,
+            "splitGap": 32
+          }
+        },
+        {
+          "id": "secondary",
+          "aspectRatio": "auto",
+          "minHeight": "0px",
+          "alignSelf": "center",
+          "frame": {
+            "w": 358,
+            "h": 358,
+            "top": 2046.0625
+          },
+          "image": {
+            "w": 358,
+            "h": 358,
+            "naturalWidth": 640,
+            "naturalHeight": 640
+          },
+          "stack": {
+            "w": 358,
+            "h": 334.90625,
+            "top": 2436.0625
+          },
+          "split": {
+            "w": 358,
+            "h": 724.90625,
+            "top": 2046.0625
+          },
+          "frameCenterDelta": 183.453125,
+          "stackCenterDelta": 195,
+          "eyebrowHeadingGap": 16,
+          "headingTailGap": 24,
+          "headingBodyGap": 24,
+          "bodyActionsGap": 32,
+          "sectionPaddingTop": 40,
+          "sectionPaddingBottom": 40,
+          "gridColumnGap": 32,
+          "gridRowGap": 32,
+          "expected": {
+            "eyebrowHeading": 16,
+            "headingBody": 24,
+            "bodyActions": 32,
+            "block": 32,
+            "section": 40,
+            "splitGap": 32
+          }
+        }
+      ]
+    }
+  ],
+  "failures": [],
+  "status": "pass"
+}

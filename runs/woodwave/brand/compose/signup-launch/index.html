@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WoodWave Gallery - composed page (brand.yaml render)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #3A2F23;
+  --text: #F5EDE2;
+  --accent: #E9DC8C;
+  --radius: 0rem;
+  --display-size: 6rem;
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+img { display: block; max-width: 100%; }
+html, body { background: var(--bg); color: var(--text); font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased; }
+
+/* === opening-bookend (hero) === */
+.cx-hero { background: #3A2F23; color: #F5EDE2;
+  padding: 1.75rem 2.5rem 6.25rem; }
+.cx-nav { display:flex; align-items:center; justify-content:space-between; gap:2rem;
+  margin-bottom: clamp(2rem,6vw,4.5rem); }
+.cx-logo { display:inline-flex; align-items:center; gap:0.5rem; font-family: var(--font-body);
+  font-weight:600; font-size:0.875rem;
+  letter-spacing:0.08em; text-transform:uppercase; color:#E9DC8C; }
+.cx-glyph { font-family: var(--font-heading); font-size:1.1rem; }
+.cx-navlinks { display:flex; gap:0.55rem; flex:1; justify-content:center; }
+.cx-navlinks a, .cx-nav-cta { font-family: var(--font-body);
+  font-size:0.875rem; letter-spacing:0.08em;
+  text-transform:uppercase; text-decoration:none; color:#F5EDE2; white-space:nowrap; }
+.cx-navlinks .cx-sep { color:#F5EDE2; opacity:0.55; }
+.cx-nav-cta { color:#E9DC8C; }
+.cx-hero-eyebrow { font-family: var(--font-body); font-size:0.6875rem;
+  letter-spacing:0.08em; text-transform:uppercase; color:#C9BFB2; text-align:center;
+  margin-bottom:1.5rem; }
+.cx-hero-title { font-family: var(--font-heading); font-weight:400;
+  font-size: var(--display-size); line-height:1.05em;
+  letter-spacing:0rem; text-transform:uppercase; color:#E9DC8C;
+  text-align:center; position:relative; z-index:2;
+  margin-bottom:-2.75rem; }
+.cx-collage { position:relative; width:100%; max-width:80rem; margin:0 auto; }
+.cx-media { display:block; width:100%; border:none; box-shadow:none;
+  border-radius: var(--radius); }
+.cx-media.is-hero { aspect-ratio: 1355 / 570; object-fit:cover; }
+.cx-media.is-overlap { position:absolute; width:34%; right:4%; bottom:-28%;
+  aspect-ratio:785 / 620; object-fit:cover; z-index:1; }
+.cx-hero-spacer { height:22vw; }
+.cx-hero-foot { display:flex; flex-direction:column; align-items:center; gap:1.5rem;
+  text-align:center; }
+.cx-hero-sub { font-family: var(--font-body); font-size:1rem; line-height:1.55em;
+  color:#C9BFB2; max-width:42rem; }
+.cx-actions { display:flex; gap:1.75rem; flex-wrap:wrap; justify-content:center; }
+.cx-action { font-family: var(--font-body);
+  font-size:0.875rem; letter-spacing:0.08em;
+  text-transform:uppercase; text-decoration:none; color:#F5EDE2; }
+.cx-action.is-primary { color:#E9DC8C; }
+@media (max-width:991px) { .cx-hero { --display-size:4.5rem; }
+  .cx-navlinks { display:none; } }
+@media (max-width:767px) { .cx-hero { --display-size:3rem; padding:1.25rem 1.25rem 3rem; }
+  .cx-media.is-overlap { width:46%; right:2%; bottom:-18%; } .cx-hero-spacer { height:30vw; } }
+
+/* === editorial-collage (value_props) === */
+.cx-edit { position:relative; overflow:hidden; background:#FAF0E8; color:#1F1A14;
+  padding:6.875rem 2.5rem; }
+.cx-edit-ghost { position:absolute; top:6%; left:-2%; z-index:0; pointer-events:none;
+  font-family: var(--font-heading); font-weight:400; text-transform:uppercase;
+  line-height:1; color:rgba(31, 26, 20, 0.06); font-size:clamp(6rem,18vw,26.25rem); white-space:nowrap; }
+.cx-edit-inner { position:relative; z-index:1; max-width:72rem; margin:0 auto;
+  display:flex; flex-direction:column; gap:7.5rem; }
+.cx-module { display:flex; align-items:center; gap:3.5rem; }
+.cx-module.anchor-left { flex-direction:row; margin-right:18%; }
+.cx-module.anchor-right { flex-direction:row-reverse; margin-left:18%; }
+.cx-module-text { flex:0 0 34%; }
+.cx-module-media { flex:1; }
+.cx-module-media img { width:100%; border:none; box-shadow:none; border-radius: var(--radius);
+  aspect-ratio:4 / 3; object-fit:cover; }
+.cx-cap { font-family: var(--font-body); font-size:0.6875rem;
+  letter-spacing:0.08em; text-transform:uppercase; color:#4A4239; margin-bottom:0.75rem; }
+.cx-mtitle { font-family: var(--font-heading); font-weight:400;
+  font-size:1.625rem; line-height:1.3em;
+  text-transform:uppercase; color:#1F1A14; margin-bottom:1rem; }
+.cx-mbody { font-family: var(--font-body); font-size:0.875rem;
+  line-height:1.55em; color:#4A4239; }
+@media (max-width:767px) { .cx-module, .cx-module.anchor-left, .cx-module.anchor-right {
+  flex-direction:column; margin:0; align-items:flex-start; gap:1.25rem; }
+  .cx-module-text { flex:1 1 auto; } }
+
+/* === info-band (social_proof) === */
+.cx-band { display:grid; grid-template-columns:1fr 1fr; background:#3A2F23;
+  align-items:stretch; }
+.cx-band-media { overflow:hidden; }
+.cx-band-media img { width:100%; height:100%; min-height:24rem; object-fit:cover;
+  border:none; box-shadow:none; border-radius: var(--radius); }
+.cx-band-panel { background:#F7EFE6; color:#1F1A14; padding:6.25rem 3rem;
+  display:flex; flex-direction:column; justify-content:center; gap:1.5rem; }
+.cx-band-eyebrow { font-family: var(--font-body); font-size:0.6875rem;
+  letter-spacing:0.08em; text-transform:uppercase; color:#4A4239; }
+.cx-band-title { font-family: var(--font-heading); font-weight:400;
+  font-size:1.625rem; line-height:1.3em;
+  text-transform:uppercase; color:#1F1A14; }
+.cx-band-quote { font-family: var(--font-heading); font-weight:400; font-size:1.5rem;
+  line-height:1.4em; color:#1F1A14; }
+.cx-band-attr { font-family: var(--font-body); font-size:0.6875rem;
+  letter-spacing:0.08em; text-transform:uppercase; color:#4A4239; }
+.cx-rows { display:flex; flex-direction:column; margin-top:0.5rem; }
+.cx-row { position:relative; display:flex; align-items:center; justify-content:space-between;
+  gap:1rem; padding:1rem 0; }
+.cx-row-rule { position:absolute; left:0; right:0; top:0; height:1px; background:rgba(31, 26, 20, 0.30); }
+.cx-row a { font-family: var(--font-body);
+  font-size:0.875rem; letter-spacing:0.08em;
+  text-transform:uppercase; text-decoration:none; color:#1F1A14; }
+@media (max-width:767px) { .cx-band { grid-template-columns:1fr; }
+  .cx-band-media img { min-height:16rem; } .cx-band-panel { padding:3rem 1.5rem; } }
+
+/* === conversion-stack (conversion) === */
+.cx-conv { background:#FAF0E8; color:#1F1A14; padding:6.875rem 1.5rem;
+  display:flex; justify-content:center; }
+.cx-conv-inner { width:50%; min-width:320px; max-width:36rem; display:flex; flex-direction:column;
+  align-items:center; text-align:center; gap:1.5rem; }
+.cx-conv-eyebrow { font-family: var(--font-body); font-size:0.6875rem;
+  letter-spacing:0.08em; text-transform:uppercase; color:#4A4239; }
+.cx-conv-title { font-family: var(--font-heading); font-weight:400;
+  font-size:2.25rem; line-height:1.3em;
+  text-transform:uppercase; color:#1F1A14; }
+.cx-field { position:relative; width:100%; display:flex; align-items:flex-end;
+  justify-content:space-between; gap:1rem; padding-bottom:0.6rem; margin-top:0.5rem; }
+.cx-field-rule { position:absolute; left:0; right:0; bottom:0; height:1px; background:rgba(31, 26, 20, 0.30); }
+.cx-input { flex:1; font-family: var(--font-body);
+  font-size:0.875rem; color:#4A4239; text-align:left;
+  outline:none; border:none; background:transparent; min-height:1.4rem; }
+.cx-submit { font-family: var(--font-body);
+  font-size:0.875rem; letter-spacing:0.08em;
+  text-transform:uppercase; text-decoration:none; color:#1F1A14; white-space:nowrap; }
+.cx-conv-sub { font-family: var(--font-body); font-size:0.875rem;
+  letter-spacing:0.08em; text-transform:uppercase; text-decoration:none; color:#4A4239; }
+
+</style>
+</head>
+<body>
+<!-- Section / Stack (185a3d3a-0806-d61b-7c06-c5fdd636b093) - surface mode Inverse: opening-bookend hero -->
+<section class="cx-hero">
+  <nav class="cx-nav">
+    <span class="cx-logo"><span class="cx-glyph">&#9697;</span> WoodWave Gallery</span>
+    <span class="cx-navlinks"><a href="#">About</a> <span class="cx-sep">/</span> <a href="#">Product</a> <span class="cx-sep">/</span> <a href="#">Pricing</a></span>
+    <a class="cx-nav-cta" href="#">Start free</a>
+  </nav>
+    <p class="cx-hero-eyebrow">Introducing</p>
+  <!-- Heading Style:display - display-text-over-media (sanctioned overlap) -->
+  <h1 class="cx-hero-title">Everything in one place</h1>
+  <!-- media-over-media via absolute offsets (SIGN-OFF #5), Radius:false -->
+  <div class="cx-collage">
+    <img class="cx-media is-hero" src="assets/hero-staircase.jpg" alt="WoodWave editorial photography">
+    <img class="cx-media is-overlap" src="assets/overlap-vase.jpg" alt="WoodWave detail photography">
+  </div>
+  <div class="cx-hero-spacer"></div>
+  <div class="cx-hero-foot">
+      <p class="cx-hero-sub">A simpler way to get started — built for how you actually work.</p>
+      <div class="cx-actions"><a class="cx-action is-primary" href="#">Start free &rarr;</a><a class="cx-action" href="#">See how it works &rarr;</a></div>
+  </div>
+</section>
+
+<!-- Section / Stack - surface mode base (Primary): editorial-collage value-prop modules -->
+<section class="cx-edit">
+  <div class="cx-edit-ghost" aria-hidden="true">EVERYTHING</div>
+  <div class="cx-edit-inner">
+    <div class="cx-module anchor-left">
+      <div class="cx-module-text">
+        <p class="cx-cap">/ 01</p>
+        <h3 class="cx-mtitle">Set up in minutes</h3>
+        <p class="cx-mbody">No manual wiring — you&#x27;re live the same day.</p>
+      </div>
+      <div class="cx-module-media"><img src="assets/hero-staircase.jpg" alt="Set up in minutes"></div>
+    </div>
+    <div class="cx-module anchor-right">
+      <div class="cx-module-text">
+        <p class="cx-cap">/ 02</p>
+        <h3 class="cx-mtitle">One source of truth</h3>
+        <p class="cx-mbody">Everyone sees the same thing, always up to date.</p>
+      </div>
+      <div class="cx-module-media"><img src="assets/overlap-vase.jpg" alt="One source of truth"></div>
+    </div>
+    <div class="cx-module anchor-left">
+      <div class="cx-module-text">
+        <p class="cx-cap">/ 03</p>
+        <h3 class="cx-mtitle">Scales with you</h3>
+        <p class="cx-mbody">From your first project to your thousandth.</p>
+      </div>
+      <div class="cx-module-media"><img src="assets/hero-staircase.jpg" alt="Scales with you"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Section / Split / Content and media - surface mode Inverse: info-band social proof, cream panel child of inverse -->
+<section class="cx-band">
+  <!-- Image (flush hard-edged photo), Radius:false -->
+  <div class="cx-band-media"><img src="assets/hero-staircase.jpg" alt="WoodWave editorial photography"></div>
+  <!-- cream panel (surface/panel) nested on inverse: title + quote + ruled action rows -->
+  <div class="cx-band-panel">
+    <p class="cx-band-eyebrow">Trusted by 10,000+ teams</p>
+    <h3 class="cx-band-title">A simpler way to get started — built for how you actually work.</h3>
+    <p class="cx-band-quote">&ldquo;We replaced three tools in a week and never looked back.&rdquo;</p>
+    <p class="cx-band-attr">Operations lead, mid-market team</p>
+    <div class="cx-rows">
+      <div class="cx-row"><span class="cx-row-rule"></span><a href="#">Start free</a><a href="#">&rarr;</a></div>
+      <div class="cx-row"><span class="cx-row-rule"></span><a href="#">See how it works</a><a href="#">&rarr;</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- Section / Stack - surface mode base (Primary): conversion-stack, underline-only field, inline text submit -->
+<section class="cx-conv">
+  <div class="cx-conv-inner">
+  <p class="cx-conv-eyebrow">Introducing</p>
+    <!-- Eyebrow -> Heading (Tag h2) -->
+    <h2 class="cx-conv-title">Everything in one place</h2>
+    <!-- Form / Webflow / Lead (Style:underline) - unboxed underline field + inline text submit (neverDo:no-boxed-inputs) -->
+    <div class="cx-field">
+      <span class="cx-field-rule"></span>
+      <span class="cx-input" role="textbox" contenteditable="true" aria-label="Email address">you@company.com</span>
+      <a class="cx-submit" href="#">Start free &rarr;</a>
+    </div>
+  <a class="cx-conv-sub" href="#">See how it works &rarr;</a>
+  </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,752 @@
+{
+  "schemaVersion": "composition.v1",
+  "name": "03 WoodWave",
+  "brandSource": "runs/woodwave-v2/brand",
+  "canonicalStatus": "Available extracted facts \u00b7 canonical run needs_iteration",
+  "structure": [
+    "navigation",
+    "hero-content-media-split",
+    "trust-logo-strip",
+    "feature-disclosure-split",
+    "feature-content-media-split",
+    "centered-cta",
+    "resource-card-grid",
+    "centered-proof-testimonial",
+    "horizontal-testimonial-rail",
+    "awards-logo-rail",
+    "closing-cta",
+    "multi-column-footer"
+  ],
+  "sections": [
+    {
+      "id": "hero",
+      "surfaceIntent": "surface/photo-hero",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "WoodWave Gallery"
+        }
+      ]
+    },
+    {
+      "id": "trust",
+      "surfaceIntent": "surface/primary",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "WOODWAVE GALLERY"
+        }
+      ]
+    },
+    {
+      "id": "feature-disclosure",
+      "surfaceIntent": "surface/primary",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "Space as a muse: unleash your creativity and get inspired with us"
+        }
+      ]
+    },
+    {
+      "id": "feature-split",
+      "surfaceIntent": "surface/primary",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "A tribute to decades of creative excellence"
+        }
+      ]
+    },
+    {
+      "id": "mid-cta",
+      "surfaceIntent": "surface/primary",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "Subscribe now for exclusive updates and invitations to special exhibitions"
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "surfaceIntent": "surface/photo-hero",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "Explore the gallery"
+        }
+      ]
+    },
+    {
+      "id": "proof",
+      "surfaceIntent": "surface/primary",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "Founded by the visionary Margaret Woodwave in 1974, the WoodWave Gallery has been on a journey of constant evolution."
+        }
+      ]
+    },
+    {
+      "id": "testimonial-rail",
+      "surfaceIntent": "surface/primary",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "Space as a muse"
+        }
+      ]
+    },
+    {
+      "id": "awards",
+      "surfaceIntent": "surface/primary",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "EXTRACTED MARKS AND RECOGNITION"
+        }
+      ]
+    },
+    {
+      "id": "closing-cta",
+      "surfaceIntent": "surface/inverse",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "Welcome to the gallery"
+        }
+      ]
+    },
+    {
+      "id": "footer",
+      "surfaceIntent": "surface/inverse-strong",
+      "slots": [
+        {
+          "contract": "heading",
+          "sizeClass": "display",
+          "copy": "Where design, nature, and boundless creativity harmoniously converge."
+        }
+      ]
+    }
+  ],
+  "mediaPolicy": "existing-extracted-assets-only",
+  "mediaGeometryPolicy": "canonical ratio only when explicitly declared; otherwise intrinsic extracted asset ratio with no CSS aspect-ratio",
+  "mediaGeometry": [
+    {
+      "slot": "hero",
+      "asset": "001-657acd8d782ab334f6b2e5dc-hero-img-main-p-1600.jpg",
+      "fit": "cover",
+      "cssAspectRatio": "auto",
+      "ratioSource": "intrinsic extracted hero photo 1600x997",
+      "intrinsicWidth": 1600,
+      "intrinsicHeight": 997,
+      "intrinsicRatio": 1.604814
+    },
+    {
+      "slot": "feature-disclosure",
+      "asset": "004-657acd8d782ab334f6b2e5d2-about-img-1-p-800.jpg",
+      "fit": "cover",
+      "cssAspectRatio": "auto",
+      "ratioSource": "intrinsic extracted editorial photo 800x923",
+      "intrinsicWidth": 800,
+      "intrinsicHeight": 923,
+      "intrinsicRatio": 0.866739
+    },
+    {
+      "slot": "feature-secondary",
+      "asset": "016-657acd8d782ab334f6b2e5dd-about-img-5-p-500.jpg",
+      "fit": "cover",
+      "cssAspectRatio": "auto",
+      "ratioSource": "intrinsic extracted portrait 500x652",
+      "intrinsicWidth": 500,
+      "intrinsicHeight": 652,
+      "intrinsicRatio": 0.766871
+    }
+  ],
+  "surfaceSequence": [
+    "surface/photo-hero",
+    "surface/primary",
+    "surface/primary",
+    "surface/primary",
+    "surface/primary",
+    "surface/photo-hero",
+    "surface/primary",
+    "surface/primary",
+    "surface/primary",
+    "surface/inverse",
+    "surface/inverse-strong"
+  ],
+  "rhythmSources": {
+    "surfaceSequence": "runs/woodwave-v2/brand/brand.yaml#surfaceGrammar.pageRhythm",
+    "sectionPadding": "runs/woodwave-v2/brand/brand.yaml#tokens.spacing",
+    "container": "runs/woodwave-v2/brand/brand.yaml#tokens.spacing.container-max",
+    "relationalGaps": "runs/woodwave-v2/brand/brand.yaml#tokens.spacing + layoutGrammar.actionGroup",
+    "styleScale": "unavailable (WoodWave canonical manifest notes optional C24 style-scale absent)"
+  },
+  "typographyStatus": "Extracted Melodrama and Satoshi files loaded from available canonical brand assets.",
+  "componentContractSource": "runs/woodwave-v2/brand/brand.yaml#buttons",
+  "acceptanceStatus": "blocked: exact extracted light-surface text-link hover gold is 1.34:1; canonical brand run also remains needs_iteration",
+  "componentContracts": {
+    "primary": {
+      "style": "filled",
+      "bg": "#32271a",
+      "bgHover": "#1d170f",
+      "fgHover": "#fbf4ed",
+      "fg": "#fbf4ed",
+      "border": "1px solid #fbf4ed",
+      "radius": "0rem",
+      "padding": "0.5625rem 0.9375rem",
+      "height": "2.625rem",
+      "font": "Satoshi",
+      "weight": 400,
+      "sizeRem": 1.125,
+      "letterSpacing": "0.0625rem",
+      "case": "none",
+      "confidence": "high",
+      "source": [
+        "saved-css",
+        "computed"
+      ],
+      "provenance": [
+        "nav",
+        "hero"
+      ],
+      "note": "the espresso-plate filled button with a cream hairline border and cream label \u2014 the gallery's one solid control (measured .buy-button).",
+      "bgPressed": "#1d170f",
+      "fgPressed": "#fbf4ed",
+      "bgDisabled": "#32271a",
+      "fgDisabled": "#fbf4ed",
+      "focus": "outline 2px solid #edd580; outline-offset 2px",
+      "onInverse": {}
+    },
+    "secondary": {
+      "style": "outline",
+      "bg": "transparent",
+      "border": "1px solid #32271a",
+      "fg": "#32271a",
+      "bgHover": "#32271a",
+      "fgHover": "#fbf4ed",
+      "radius": "0rem",
+      "padding": "0.5625rem 0.9375rem",
+      "height": "2.625rem",
+      "font": "Satoshi",
+      "weight": 400,
+      "sizeRem": 1.125,
+      "letterSpacing": "0.0625rem",
+      "case": "none",
+      "onInverse": {
+        "border": "1px solid #fbf4ed",
+        "fg": "#fbf4ed",
+        "bg": "transparent",
+        "bgHover": "#fbf4ed",
+        "fgHover": "#32271a",
+        "note": "on the espresso/near-black bands the outline is CREAM and hover fills cream with espresso label (the buy-button's own on-dark register)",
+        "bgPressed": "#fbf4ed",
+        "fgPressed": "#32271a",
+        "bgDisabled": "transparent",
+        "fgDisabled": "#fbf4ed",
+        "focus": "outline 2px solid #edd580; outline-offset 2px"
+      },
+      "confidence": "medium",
+      "source": "derived",
+      "provenance": [
+        "hero",
+        "visit"
+      ],
+      "note": "the on-cream inverse of the filled button (espresso hairline, hover fills espresso) \u2014 the brand shows the filled register on dark; this is the sanctioned light-surface sibling.",
+      "bgPressed": "#32271a",
+      "fgPressed": "#fbf4ed",
+      "bgDisabled": "transparent",
+      "fgDisabled": "#32271a",
+      "focus": "outline 2px solid #edd580; outline-offset 2px"
+    },
+    "textCta": {
+      "style": "text-link-arrow",
+      "fg": "#32271a",
+      "fgHover": "#edd580",
+      "decoration": "uppercase label + trailing arrow glyph; standing links reveal an underline on hover; on dark bands the ink is cream warming to gold",
+      "radius": "0rem",
+      "font": "Satoshi",
+      "weight": 400,
+      "sizeRem": 1.125,
+      "letterSpacing": "0.0625rem",
+      "case": "uppercase",
+      "glyph": {
+        "asset": "018-arrow-right-dark.svg",
+        "size": "1rem",
+        "source": "computed"
+      },
+      "confidence": "high",
+      "source": [
+        "saved-css",
+        "computed",
+        "vision"
+      ],
+      "provenance": [
+        "visit",
+        "newsletter",
+        "nav"
+      ],
+      "note": "the gallery's dominant CTA: uppercase 'BUY TICKETS' / 'SUBSCRIBE' with a trailing arrow glyph (018-arrow-right-dark.svg); ink warms to gold on hover.",
+      "border": "none",
+      "padding": "0",
+      "height": "auto",
+      "bg": "transparent",
+      "bgHover": "transparent",
+      "bgPressed": "transparent",
+      "fgPressed": "#edd580",
+      "bgDisabled": "transparent",
+      "fgDisabled": "#32271a",
+      "focus": "outline 2px solid #edd580; outline-offset 2px",
+      "onInverse": {
+        "bg": "transparent",
+        "fg": "#fbf4ed",
+        "border": "none",
+        "bgHover": "transparent",
+        "fgHover": "#edd580",
+        "bgPressed": "transparent",
+        "fgPressed": "#edd580",
+        "bgDisabled": "transparent",
+        "fgDisabled": "#a09a94",
+        "focus": "outline 2px solid #edd580; outline-offset 2px",
+        "source": "brand.yaml buttons.textCta decoration/note + text/on-inverse and accent/highlight-on-inverse"
+      }
+    },
+    "menu": {
+      "style": "text-link-arrow",
+      "fg": "#32271a",
+      "fgHover": "#edd580",
+      "decoration": "uppercase label + trailing arrow glyph; standing links reveal an underline on hover; on dark bands the ink is cream warming to gold",
+      "radius": "0rem",
+      "font": "Satoshi",
+      "weight": 400,
+      "sizeRem": 1.125,
+      "letterSpacing": "0.0625rem",
+      "case": "uppercase",
+      "glyph": {
+        "asset": "018-arrow-right-dark.svg",
+        "size": "1rem",
+        "source": "computed"
+      },
+      "confidence": "high",
+      "source": [
+        "saved-css",
+        "computed",
+        "vision"
+      ],
+      "provenance": [
+        "visit",
+        "newsletter",
+        "nav"
+      ],
+      "note": "the gallery's dominant CTA: uppercase 'BUY TICKETS' / 'SUBSCRIBE' with a trailing arrow glyph (018-arrow-right-dark.svg); ink warms to gold on hover.",
+      "border": "none",
+      "padding": "0",
+      "height": "auto",
+      "bg": "transparent",
+      "bgHover": "transparent",
+      "bgPressed": "transparent",
+      "fgPressed": "#edd580",
+      "bgDisabled": "transparent",
+      "fgDisabled": "#32271a",
+      "focus": "outline 2px solid #edd580; outline-offset 2px",
+      "onInverse": {
+        "bg": "transparent",
+        "fg": "#fbf4ed",
+        "border": "none",
+        "bgHover": "transparent",
+        "fgHover": "#edd580",
+        "bgPressed": "transparent",
+        "fgPressed": "#edd580",
+        "bgDisabled": "transparent",
+        "fgDisabled": "#a09a94",
+        "focus": "outline 2px solid #edd580; outline-offset 2px",
+        "source": "brand.yaml buttons.textCta decoration/note + text/on-inverse and accent/highlight-on-inverse"
+      },
+      "degradedFrom": "textCta"
+    },
+    "icon": {
+      "style": "icon-control",
+      "bg": "transparent",
+      "fg": "#32271a",
+      "border": "none",
+      "radius": "0rem",
+      "padding": "0",
+      "height": "2.625rem",
+      "size": "2.625rem",
+      "iconSize": "1rem",
+      "bgHover": "transparent",
+      "fgHover": "#edd580",
+      "bgPressed": "transparent",
+      "fgPressed": "#edd580",
+      "bgDisabled": "transparent",
+      "fgDisabled": "#6b5d50",
+      "focus": "outline 2px solid #32271a; outline-offset 2px",
+      "onInverse": {},
+      "font": "Satoshi",
+      "weight": "400",
+      "sizeRem": 1
+    }
+  },
+  "componentDegradations": [
+    {
+      "component": "primary",
+      "state": "pressed",
+      "to": "hover",
+      "reason": "canonical pressed state absent"
+    },
+    {
+      "component": "primary",
+      "state": "disabled",
+      "to": "rest",
+      "reason": "canonical disabled state absent"
+    },
+    {
+      "component": "primary",
+      "state": "focus",
+      "to": "primary focus",
+      "reason": "variant focus absent"
+    },
+    {
+      "component": "secondary",
+      "state": "pressed",
+      "to": "hover",
+      "reason": "canonical pressed state absent"
+    },
+    {
+      "component": "secondary",
+      "state": "disabled",
+      "to": "rest",
+      "reason": "canonical disabled state absent"
+    },
+    {
+      "component": "secondary",
+      "state": "focus",
+      "to": "primary focus",
+      "reason": "variant focus absent"
+    },
+    {
+      "component": "secondary",
+      "surface": "inverse",
+      "state": "pressed",
+      "to": "inverse hover",
+      "reason": "canonical inverse pressed state absent"
+    },
+    {
+      "component": "secondary",
+      "surface": "inverse",
+      "state": "disabled",
+      "to": "inverse rest",
+      "reason": "canonical inverse disabled state absent"
+    },
+    {
+      "component": "textCta",
+      "state": "pressed",
+      "to": "hover",
+      "reason": "canonical pressed state absent"
+    },
+    {
+      "component": "textCta",
+      "state": "disabled",
+      "to": "rest",
+      "reason": "canonical disabled state absent"
+    },
+    {
+      "component": "textCta",
+      "state": "focus",
+      "to": "primary focus",
+      "reason": "variant focus absent"
+    },
+    {
+      "component": "menu",
+      "state": "all",
+      "to": "textCta",
+      "reason": "no independent menu-control matrix; nearest declared brand control"
+    }
+  ],
+  "resolvedRhythm": {
+    "sectionPadding": "7.5rem",
+    "heroPadding": {
+      "top": "9.375rem",
+      "bottom": "9.375rem"
+    },
+    "container": "81.25rem",
+    "eyebrowToHeading": "2.5rem",
+    "headingToBody": "5rem",
+    "bodyToCta": "2.5rem",
+    "blockGap": "4rem",
+    "columnGap": "4rem",
+    "gridGap": "2rem",
+    "actionGap": "1.5rem"
+  },
+  "mediaBindings": [
+    {
+      "slot": "testimonial-1-media",
+      "status": "resolved",
+      "asset": "004-657acd8d782ab334f6b2e5d2-about-img-1-p-800.jpg",
+      "useCase": "editorial-photo",
+      "intendedSlot": "about frame"
+    },
+    {
+      "slot": "control-1-glyph",
+      "status": "resolved",
+      "asset": "018-arrow-right-dark.svg",
+      "useCase": "ui-glyph",
+      "intendedSlot": "text-cta glyph"
+    },
+    {
+      "slot": "testimonial-2-media",
+      "status": "resolved",
+      "asset": "005-657acd8d782ab334f6b2e5d4-about-img-2-p-1600.jpg",
+      "useCase": "editorial-photo",
+      "intendedSlot": "about frame"
+    },
+    {
+      "slot": "control-2-glyph",
+      "status": "resolved",
+      "asset": "018-arrow-right-dark.svg",
+      "useCase": "ui-glyph",
+      "intendedSlot": "text-cta glyph"
+    },
+    {
+      "slot": "testimonial-3-media",
+      "status": "resolved",
+      "asset": "007-657acd8d782ab334f6b2e5d3-about-img-4-p-500.jpg",
+      "useCase": "editorial-photo",
+      "intendedSlot": "about frame"
+    },
+    {
+      "slot": "control-3-glyph",
+      "status": "resolved",
+      "asset": "018-arrow-right-dark.svg",
+      "useCase": "ui-glyph",
+      "intendedSlot": "text-cta glyph"
+    },
+    {
+      "slot": "navigation-wordmark",
+      "status": "resolved",
+      "asset": "000-657acd8d782ab334f6b2e5f3-logo.svg",
+      "useCase": "logo",
+      "intendedSlot": "nav/footer wordmark"
+    },
+    {
+      "slot": "hero-media",
+      "status": "resolved",
+      "asset": "001-657acd8d782ab334f6b2e5dc-hero-img-main-p-1600.jpg",
+      "useCase": "background-art",
+      "intendedSlot": "hero background"
+    },
+    {
+      "slot": "trust-logo-1",
+      "status": "resolved",
+      "asset": "000-657acd8d782ab334f6b2e5f3-logo.svg",
+      "useCase": "logo",
+      "intendedSlot": "nav/footer wordmark"
+    },
+    {
+      "slot": "trust-logo-2",
+      "status": "unavailable",
+      "reason": "no compatible extracted asset"
+    },
+    {
+      "slot": "trust-logo-3",
+      "status": "unavailable",
+      "reason": "no compatible extracted asset"
+    },
+    {
+      "slot": "trust-logo-4",
+      "status": "unavailable",
+      "reason": "no compatible extracted asset"
+    },
+    {
+      "slot": "trust-logo-5",
+      "status": "unavailable",
+      "reason": "no compatible extracted asset"
+    },
+    {
+      "slot": "disclosure-feature-media",
+      "status": "resolved",
+      "asset": "004-657acd8d782ab334f6b2e5d2-about-img-1-p-800.jpg",
+      "useCase": "editorial-photo",
+      "intendedSlot": "about frame"
+    },
+    {
+      "slot": "second-feature-media",
+      "status": "resolved",
+      "asset": "016-657acd8d782ab334f6b2e5dd-about-img-5-p-500.jpg",
+      "useCase": "portrait-photo",
+      "intendedSlot": "founder portrait"
+    },
+    {
+      "slot": "control-7-glyph",
+      "status": "resolved",
+      "asset": "018-arrow-right-dark.svg",
+      "useCase": "ui-glyph",
+      "intendedSlot": "text-cta glyph"
+    },
+    {
+      "slot": "control-8-glyph",
+      "status": "resolved",
+      "asset": "018-arrow-right-dark.svg",
+      "useCase": "ui-glyph",
+      "intendedSlot": "text-cta glyph"
+    },
+    {
+      "slot": "resource-1-media",
+      "status": "resolved",
+      "asset": "009-657acd8d782ab334f6b2e5e5-web-gallery-1-p-1600.jpg",
+      "useCase": "gallery-photo",
+      "intendedSlot": "slider frame"
+    },
+    {
+      "slot": "control-9-glyph",
+      "status": "resolved",
+      "asset": "018-arrow-right-dark.svg",
+      "useCase": "ui-glyph",
+      "intendedSlot": "text-cta glyph"
+    },
+    {
+      "slot": "resource-2-media",
+      "status": "resolved",
+      "asset": "010-657acd8d782ab334f6b2e5e6-web-gallery-2-p-1600.jpg",
+      "useCase": "gallery-photo",
+      "intendedSlot": "slider frame"
+    },
+    {
+      "slot": "control-10-glyph",
+      "status": "resolved",
+      "asset": "018-arrow-right-dark.svg",
+      "useCase": "ui-glyph",
+      "intendedSlot": "text-cta glyph"
+    },
+    {
+      "slot": "resource-3-media",
+      "status": "resolved",
+      "asset": "011-657acd8d782ab334f6b2e5e7-web-gallery-3-p-1600.jpg",
+      "useCase": "gallery-photo",
+      "intendedSlot": "slider frame"
+    },
+    {
+      "slot": "control-11-glyph",
+      "status": "resolved",
+      "asset": "018-arrow-right-dark.svg",
+      "useCase": "ui-glyph",
+      "intendedSlot": "text-cta glyph"
+    },
+    {
+      "slot": "centered-proof-media",
+      "status": "resolved",
+      "asset": "016-657acd8d782ab334f6b2e5dd-about-img-5-p-500.jpg",
+      "useCase": "portrait-photo",
+      "intendedSlot": "founder portrait"
+    },
+    {
+      "slot": "rail-previous-icon",
+      "status": "resolved",
+      "asset": "008-slider-arrow.svg",
+      "useCase": "ui-glyph",
+      "intendedSlot": "carousel control"
+    },
+    {
+      "slot": "rail-next-icon",
+      "status": "resolved",
+      "asset": "008-slider-arrow.svg",
+      "useCase": "ui-glyph",
+      "intendedSlot": "carousel control"
+    },
+    {
+      "slot": "award-1",
+      "status": "resolved",
+      "asset": "000-657acd8d782ab334f6b2e5f3-logo.svg",
+      "useCase": "logo",
+      "intendedSlot": "nav/footer wordmark"
+    },
+    {
+      "slot": "award-2",
+      "status": "unavailable",
+      "reason": "no compatible extracted asset"
+    },
+    {
+      "slot": "award-3",
+      "status": "unavailable",
+      "reason": "no compatible extracted asset"
+    },
+    {
+      "slot": "award-4",
+      "status": "unavailable",
+      "reason": "no compatible extracted asset"
+    },
+    {
+      "slot": "award-5",
+      "status": "unavailable",
+      "reason": "no compatible extracted asset"
+    },
+    {
+      "slot": "control-12-glyph",
+      "status": "resolved",
+      "asset": "018-arrow-right-dark.svg",
+      "useCase": "ui-glyph",
+      "intendedSlot": "text-cta glyph"
+    },
+    {
+      "slot": "footer-wordmark",
+      "status": "resolved",
+      "asset": "000-657acd8d782ab334f6b2e5f3-logo.svg",
+      "useCase": "logo",
+      "intendedSlot": "nav/footer wordmark"
+    }
+  ],
+  "gaps": [
+    {
+      "slot": "trust-logo-2",
+      "status": "unavailable",
+      "reason": "no compatible extracted asset"
+    },
+    {
+      "slot": "trust-logo-3",
+      "status": "unavailable",
+      "reason": "no compatible extracted asset"
+    },
+    {
+      "slot": "trust-logo-4",
+      "status": "unavailable",
+      "reason": "no compatible extracted asset"
+    },
+    {
+      "slot": "trust-logo-5",
+      "status": "unavailable",
+      "reason": "no compatible extracted asset"
+    },
+    {
+      "slot": "award-2",
+      "status": "unavailable",
+      "reason": "no compatible extracted asset"
+    },
+    {
+      "slot": "award-3",
+      "status": "unavailable",
+      "reason": "no compatible extracted asset"
+    },
+    {
+      "slot": "award-4",
+      "status": "unavailable",
+      "reason": "no compatible extracted asset"
+    },
+    {
+      "slot": "award-5",
+      "status": "unavailable",
+      "reason": "no compatible extracted asset"
+    }
+  ]
+}

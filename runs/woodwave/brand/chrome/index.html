@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>woodwave — exact nav/footer (extracted)</title>
+<meta name="robots" content="noindex" />
+<style>
+  /* Tokens + MEASURED computed styles from runs/woodwave/brand/brand.yaml
+     (navbar.measured / footer.measured) + source-chrome.v2.json. Measured px
+     values render as px; ONLY viewport-relative sizing uses cqi/cqh — never vh/vw/dvh. */
+  :root {
+    --brand-primary: #E9DC8C;
+    --brand-primary-hover: #E9DC8C;
+    --nav-link-hover: #E9DC8C;
+    --footer-link-hover: #edd580;
+    --action-primary-fg: #ffffff;
+    --surface-base: #ffffff;
+    --text-default: #1f1f1f;
+    --text-inverted: rgb(255, 255, 255);
+    --footer-link: rgb(255, 255, 255);
+    --border-default: rgba(0,0,0,0.11);
+    --footer-border: rgba(255,255,255,0.16);
+    --radius-input: 0.25rem;
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    --font-display: "Inter", Georgia, "Times New Roman", serif;
+    --nav-bg: rgba(255, 255, 255, 0);
+    --nav-color: rgb(255, 255, 255);
+    --footer-bg: rgb(24, 19, 19);
+  }
+
+  /* CRITICAL: container-query frame. ONLY cqw/cqh/cqi sizing — never vh/vw/dvh. */
+  html, body {
+    container-type: size;
+    container-name: frame;
+    margin: 0;
+  }
+  html { height: 100%; }
+  body {
+    height: 100cqh;
+    overflow-y: auto;
+    background: var(--surface-base);
+    color: var(--text-default);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+  * { box-sizing: border-box; }
+  a { text-decoration: none; color: inherit; }
+
+  .wrap { width: 100cqi; }
+  .inner {
+    width: min(1300px, 92cqi);
+    margin: 0 auto;
+    padding-inline: 4cqi;
+  }
+
+  /* ---- NAV (two tiers: utility row above the primary bar) — measured px ---- */
+  header.nav {
+    background: var(--nav-bg);
+    color: var(--nav-color);
+    border-bottom: 1px solid var(--border-default);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .nav-utility { border-bottom: 1px solid var(--border-default); }
+  .nav-utility-inner {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 2.2cqi;
+    min-height: 40px;
+  }
+  .util-link {
+    font-size: 13px;
+    font-weight: 400;
+    color: rgb(255, 255, 255);
+    opacity: 0.82;
+    white-space: nowrap;
+  }
+  .util-link:hover { opacity: 1; color: var(--nav-link-hover); }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    gap: 3cqi;
+    min-height: 102px;
+  }
+  .nav-logo { display: inline-flex; align-items: center; }
+  .nav-logo img { height: 26px; width: auto; max-width: 175px; display: block; }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1 1 auto;
+  }
+  .nav-tab { position: static; }
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--nav-color);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .nav-link:hover { color: var(--nav-link-hover); }
+  .nav-link .caret { font-size: 0.7em; opacity: 0.6; }
+  .nav-actions { display: flex; align-items: center; gap: 1.5cqi; margin-left: auto; }
+  .nav-cta {
+    background: #E9DC8C;
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 8px 16px 8px 16px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+  .nav-cta:hover { filter: brightness(0.92); }
+
+  /* ---- mega-menu panel: shows on hover/focus of a primary tab ---- */
+  .mega-panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    background: var(--nav-bg);
+    border-top: 1px solid var(--border-default);
+    border-bottom: 1px solid var(--border-default);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.10);
+    display: none;
+    z-index: 20;
+  }
+  .nav-tab.has-menu:hover .mega-panel,
+  .nav-tab.has-menu:focus-within .mega-panel { display: block; }
+  .mega-inner {
+    width: min(1300px, 92cqi);
+    margin: 0 auto;
+    padding: 3cqh 4cqi;
+    display: flex;
+    gap: 4cqi;
+    align-items: flex-start;
+  }
+  .mega-cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 2cqh 3cqi;
+    flex: 1 1 auto;
+  }
+  .mega-featured { flex: 0 0 auto; min-width: 180px; }
+  .mega-col-head {
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--nav-color);
+    margin: 0 0 0.8cqh;
+  }
+  .mega-panel ul { list-style: none; margin: 0; padding: 0; }
+  .mega-panel li { margin-bottom: 0.6cqh; }
+  .mega-panel a { font-size: 16px; color: rgba(31,31,31,0.7); }
+  .mega-panel a:hover { color: var(--nav-link-hover); }
+
+  /* ---- spacer band so the frame shows page surface between chrome ---- */
+  .spacer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 26cqh;
+    color: rgba(0,0,0,0.28);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+  }
+
+  /* ---- FOOTER (measured proportions) ---- */
+  footer.footer {
+    background: var(--footer-bg);
+    color: var(--text-inverted);
+    padding-block: 48px 48px;
+  }
+  footer.footer .inner { width: min(1080px, 92cqi); }
+  .footer-cols {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .footer-cell-stack { display: flex; flex-direction: column; gap: 4cqh; }
+  /* the link-heavy first column flows into two sub-columns */
+  .cell-wide .footer-col ul { columns: 2; column-gap: 32px; }
+  .footer-col .col-head {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0 0 1.4cqh;
+    color: var(--text-inverted);
+  }
+  .footer-col ul { list-style: none; margin: 0; padding: 0; }
+  .footer-col li { margin-bottom: 0.6cqh; break-inside: avoid; }
+  .footer-col a { font-size: 80px; font-weight: 400; line-height: 96px; color: var(--footer-link); }
+  .footer-col a:hover { color: var(--text-inverted); }
+
+  /* ---- bottom block (alignment driven by measured textAlign) ---- */
+  .footer-bottom {
+    margin-top: 6cqh;
+    padding-top: 4cqh;
+    border-top: 1px solid var(--footer-border);
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 3cqh;
+    text-align: left;
+    flex-wrap: wrap;
+  }
+  .footer-bottom-brand { display: flex; flex-direction: column; gap: 2cqh; align-items: flex-start; }
+  .social-row { display: flex; align-items: center; gap: 2cqi; flex-wrap: wrap; }
+  .social {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--footer-link);
+  }
+  .social svg { width: 22px; height: 22px; fill: currentColor; }
+  .social:hover { color: var(--text-inverted); }
+  .footer-brand img { height: 26px; width: auto; max-width: 175px; display: block; }
+  .footer-legal {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1.6cqi;
+    flex-wrap: wrap;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--footer-link);
+  }
+  .footer-legal a { color: var(--footer-link); }
+  .footer-legal a:hover { color: var(--text-inverted); }
+
+  /* ---- TEXT social links (only when the SOURCE used text, not icon glyphs) ---- */
+  .social-text {
+    font-size: 18px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--footer-link);
+    white-space: nowrap;
+  }
+  .social-sep { color: var(--footer-link); opacity: 0.5; }
+
+  /* ---- CENTERED flat footer (no column headings; e.g. WoodWave) ---- */
+  footer.footer-centered .inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 5cqh;
+  }
+  footer.footer-centered .footer-sitemap {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: baseline;
+    gap: 0.2em 0.5em;
+    max-width: 100%;
+  }
+  footer.footer-centered .sitemap-link {
+    font-family: var(--font-display);
+    font-size: 80px;
+    line-height: 1.05;
+    font-weight: 400;
+    color: var(--text-inverted);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  footer.footer-centered .sitemap-link:hover { color: var(--footer-link-hover); }
+  footer.footer-centered .sitemap-sep {
+    font-family: var(--font-display);
+    font-size: 80px;
+    line-height: 1.05;
+    color: var(--text-inverted);
+    opacity: 0.55;
+  }
+  footer.footer-centered .footer-social-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0 1.4cqi;
+  }
+  footer.footer-centered .footer-rule {
+    width: 100%;
+    height: 1px;
+    background: var(--footer-border);
+  }
+  footer.footer-centered .footer-legal-center {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2cqh;
+  }
+  footer.footer-centered .footer-legal-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.6cqi;
+  }
+  footer.footer-centered .footer-copy {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--footer-link);
+    opacity: 0.8;
+  }
+  footer.footer-centered .footer-brand img { margin: 0 auto; }
+</style>
+</head>
+<body>
+  <!-- EXACT extracted nav/footer — content is 1:1 from the saved woodwave homepage
+       (source_chrome.v2 offline extraction); proportions from measured computed styles. -->
+  <header class="nav">
+  <div class="nav-primary"><div class="inner nav-inner">
+      <a class="nav-logo" href="https://woodwavegallery.webflow.io/">
+        <img src="https://cdn.prod.website-files.com/657acd8d782ab334f6b2e5a6/657acd8d782ab334f6b2e5f3_Logo.svg" alt="woodwave" />
+      </a>
+      <nav class="nav-links">
+      <a class="nav-link" href="https://woodwavegallery.webflow.io/#about">about</a>
+      <a class="nav-link" href="https://woodwavegallery.webflow.io/#gallery">gallery</a>
+      <a class="nav-link" href="https://woodwavegallery.webflow.io/#exhibition">exhibition</a>
+      <a class="nav-link" href="https://woodwavegallery.webflow.io/#visit">visit</a>
+      <a class="nav-link" href="https://webflow.com/templates/html/woodwave-photography-website-template">buy tickets</a>
+      </nav>
+      <div class="nav-actions">
+
+      </div>
+  </div></div>
+  </header>
+
+  <div class="wrap">
+    <div class="inner spacer">woodwave — extracted site chrome preview</div>
+  </div>
+
+  <footer class="footer footer-centered">
+    <div class="inner">
+      <a class="footer-brand" href="https://woodwavegallery.webflow.io/">
+        <img src="https://cdn.prod.website-files.com/657acd8d782ab334f6b2e5a6/657acd8d782ab334f6b2e5f3_Logo.svg" alt="woodwave" />
+      </a>
+      <nav class="footer-sitemap">
+          <a class="sitemap-link" href="https://woodwavegallery.webflow.io/#about">about</a>
+          <span class="sitemap-sep" aria-hidden="true">/</span>
+          <a class="sitemap-link" href="https://woodwavegallery.webflow.io/#gallery">gallery</a>
+          <span class="sitemap-sep" aria-hidden="true">/</span>
+          <a class="sitemap-link" href="https://woodwavegallery.webflow.io/#exhibition">exhibition</a>
+          <span class="sitemap-sep" aria-hidden="true">/</span>
+          <a class="sitemap-link" href="https://woodwavegallery.webflow.io/#visit">visit</a>
+          <span class="sitemap-sep" aria-hidden="true">/</span>
+          <a class="sitemap-link" href="https://woodwavegallery.webflow.io/#buy-tickets">buy tickets</a>
+      </nav>
+      <div class="footer-social-row">
+          <a class="social social-text" href="https://instagram.com">instagram</a>
+          <span class="social-sep" aria-hidden="true">/</span>
+          <a class="social social-text" href="https://facebook.com">facebook</a>
+          <span class="social-sep" aria-hidden="true">/</span>
+          <a class="social social-text" href="https://youtube.com">youtube</a>
+          <span class="social-sep" aria-hidden="true">/</span>
+          <a class="social social-text" href="https://twitter.com">twitter</a>
+      </div>
+      <div class="footer-rule"></div>
+      <div class="footer-legal footer-legal-center">
+        <div class="footer-legal-links">
+        <a href="https://woodwavegallery.webflow.io/privacy-policy">Privacy Policy</a>
+        <a href="https://woodwavegallery.webflow.io/template-info/changelog">Changelog</a>
+        <a href="https://woodwavegallery.webflow.io/template-info/licenses">Licenses</a>
+        <a href="https://webflow.com">webflow</a>
+        <a href="https://webflow.com/templates/designers/unroot-design">unroot.design</a>
+        </div>
+        <div class="footer-copy">© 2023. woodwave gallery template</div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,549 @@
+{
+  "schemaVersion": "remote-product-story.verification.v1",
+  "item": "05 Remote Variant \u2014 Product Story",
+  "url": "http://127.0.0.1:1500/runs/relume-test/brand/compose/05%20Remote%20Variant%20%E2%80%94%20Product%20Story/index.html",
+  "viewports": [
+    {
+      "name": "desktop",
+      "size": [
+        1440,
+        1000
+      ],
+      "geometry": {
+        "documentWidth": 1440,
+        "viewportWidth": 1440,
+        "overflow": false,
+        "images": [
+          {
+            "src": "../../../../remote/brand/assets/remote-wordmark.svg",
+            "ok": true,
+            "width": 94,
+            "height": 30
+          },
+          {
+            "src": "../../../../remote/brand/assets/panel-infrastructure-ui-snippet.webp",
+            "ok": true,
+            "width": 1526,
+            "height": 1100
+          },
+          {
+            "src": "../../../../remote/brand/assets/logo-anthropic.svg",
+            "ok": true,
+            "width": 179,
+            "height": 40
+          },
+          {
+            "src": "../../../../remote/brand/assets/logo-gitlab.svg",
+            "ok": true,
+            "width": 130,
+            "height": 40
+          },
+          {
+            "src": "../../../../remote/brand/assets/logo-vercel.svg",
+            "ok": true,
+            "width": 136,
+            "height": 40
+          },
+          {
+            "src": "../../../../remote/brand/assets/rating-g2.webp",
+            "ok": true,
+            "width": 308,
+            "height": 48
+          },
+          {
+            "src": "../../../../remote/brand/assets/rating-trustpilot.webp",
+            "ok": true,
+            "width": 429,
+            "height": 48
+          },
+          {
+            "src": "../../../../remote/brand/assets/icon-eor.webp",
+            "ok": true,
+            "width": 64,
+            "height": 64
+          },
+          {
+            "src": "../../../../remote/brand/assets/icon-global-payroll.webp",
+            "ok": true,
+            "width": 64,
+            "height": 64
+          },
+          {
+            "src": "../../../../remote/brand/assets/icon-contractor-of-record.webp",
+            "ok": true,
+            "width": 64,
+            "height": 64
+          },
+          {
+            "src": "../../../../remote/brand/assets/icon-contractor-management.webp",
+            "ok": true,
+            "width": 64,
+            "height": 64
+          },
+          {
+            "src": "../../../../remote/brand/assets/icon-peo.webp",
+            "ok": true,
+            "width": 64,
+            "height": 64
+          },
+          {
+            "src": "../../../../remote/brand/assets/collage-eor-ui.webp",
+            "ok": true,
+            "width": 1068,
+            "height": 1068
+          },
+          {
+            "src": "../../../../remote/brand/assets/collage-global-payroll-ui.webp",
+            "ok": true,
+            "width": 1068,
+            "height": 1068
+          },
+          {
+            "src": "../../../../remote/brand/assets/collage-contractor-of-record-ui.webp",
+            "ok": true,
+            "width": 1068,
+            "height": 1068
+          },
+          {
+            "src": "../../../../remote/brand/assets/collage-contractor-management-ui.webp",
+            "ok": true,
+            "width": 1068,
+            "height": 1068
+          },
+          {
+            "src": "../../../../remote/brand/assets/collage-peo-ui.webp",
+            "ok": true,
+            "width": 1068,
+            "height": 1068
+          },
+          {
+            "src": "../../../../remote/brand/assets/card-api-first.webp",
+            "ok": true,
+            "width": 1200,
+            "height": 1100
+          },
+          {
+            "src": "../../../../remote/brand/assets/card-integrations.webp",
+            "ok": true,
+            "width": 1200,
+            "height": 1100
+          },
+          {
+            "src": "../../../../remote/brand/assets/card-mcp-agents.webp",
+            "ok": true,
+            "width": 1200,
+            "height": 1100
+          },
+          {
+            "src": "../../../../remote/brand/assets/icon-eor.webp",
+            "ok": true,
+            "width": 64,
+            "height": 64
+          },
+          {
+            "src": "../../../../remote/brand/assets/collage-eor-ui.webp",
+            "ok": true,
+            "width": 1068,
+            "height": 1068
+          },
+          {
+            "src": "../../../../remote/brand/assets/icon-global-payroll.webp",
+            "ok": true,
+            "width": 64,
+            "height": 64
+          },
+          {
+            "src": "../../../../remote/brand/assets/icon-contractor-management.webp",
+            "ok": true,
+            "width": 64,
+            "height": 64
+          },
+          {
+            "src": "../../../../remote/brand/assets/icon-check-star-stamp.webp",
+            "ok": true,
+            "width": 132,
+            "height": 128
+          },
+          {
+            "src": "../../../../remote/brand/assets/avatar-luke-mckinlay.webp",
+            "ok": true,
+            "width": 2000,
+            "height": 1468
+          },
+          {
+            "src": "../../../../remote/brand/assets/logo-fountain.svg",
+            "ok": true,
+            "width": 125,
+            "height": 40
+          },
+          {
+            "src": "../../../../remote/brand/assets/avatar-marisol-jimenez.webp",
+            "ok": true,
+            "width": 2000,
+            "height": 1468
+          },
+          {
+            "src": "../../../../remote/brand/assets/logo-reversetech.svg",
+            "ok": true,
+            "width": 179,
+            "height": 40
+          },
+          {
+            "src": "../../../../remote/brand/assets/avatar-maria-shkaruppa.webp",
+            "ok": true,
+            "width": 2000,
+            "height": 1468
+          },
+          {
+            "src": "../../../../remote/brand/assets/logo-homeproject.svg",
+            "ok": true,
+            "width": 168,
+            "height": 40
+          },
+          {
+            "src": "../../../../remote/brand/assets/remote-wordmark.svg",
+            "ok": true,
+            "width": 94,
+            "height": 30
+          },
+          {
+            "src": "../../../../remote/brand/assets/badge-app-store.svg",
+            "ok": true,
+            "width": 139,
+            "height": 40
+          },
+          {
+            "src": "../../../../remote/brand/assets/badge-google-play.svg",
+            "ok": true,
+            "width": 139,
+            "height": 40
+          }
+        ],
+        "media": [
+          {
+            "slot": "opener",
+            "align": "center",
+            "aspect": "auto",
+            "width": 584,
+            "height": 434
+          },
+          {
+            "slot": "panel-eor",
+            "align": "center",
+            "aspect": "auto",
+            "width": 759,
+            "height": 759
+          },
+          {
+            "slot": "feature-api",
+            "align": "center",
+            "aspect": "auto",
+            "width": 584,
+            "height": 535
+          },
+          {
+            "slot": "feature-integrations",
+            "align": "center",
+            "aspect": "auto",
+            "width": 584,
+            "height": 535
+          },
+          {
+            "slot": "feature-mcp",
+            "align": "center",
+            "aspect": "auto",
+            "width": 584,
+            "height": 535
+          },
+          {
+            "slot": "capability-art",
+            "align": "auto",
+            "aspect": "auto",
+            "width": 399,
+            "height": 399
+          }
+        ]
+      },
+      "consoleErrors": [],
+      "failedRequests": [],
+      "contrastFailures": [],
+      "interactionChecks": {
+        "tabsKeyboard": true,
+        "carouselControl": true
+      },
+      "failures": [],
+      "status": "pass"
+    },
+    {
+      "name": "mobile",
+      "size": [
+        390,
+        844
+      ],
+      "geometry": {
+        "documentWidth": 390,
+        "viewportWidth": 390,
+        "overflow": false,
+        "images": [
+          {
+            "src": "../../../../remote/brand/assets/remote-wordmark.svg",
+            "ok": true,
+            "width": 94,
+            "height": 30
+          },
+          {
+            "src": "../../../../remote/brand/assets/panel-infrastructure-ui-snippet.webp",
+            "ok": true,
+            "width": 1526,
+            "height": 1100
+          },
+          {
+            "src": "../../../../remote/brand/assets/logo-anthropic.svg",
+            "ok": true,
+            "width": 179,
+            "height": 40
+          },
+          {
+            "src": "../../../../remote/brand/assets/logo-gitlab.svg",
+            "ok": true,
+            "width": 130,
+            "height": 40
+          },
+          {
+            "src": "../../../../remote/brand/assets/logo-vercel.svg",
+            "ok": true,
+            "width": 136,
+            "height": 40
+          },
+          {
+            "src": "../../../../remote/brand/assets/rating-g2.webp",
+            "ok": true,
+            "width": 308,
+            "height": 48
+          },
+          {
+            "src": "../../../../remote/brand/assets/rating-trustpilot.webp",
+            "ok": true,
+            "width": 429,
+            "height": 48
+          },
+          {
+            "src": "../../../../remote/brand/assets/icon-eor.webp",
+            "ok": true,
+            "width": 64,
+            "height": 64
+          },
+          {
+            "src": "../../../../remote/brand/assets/icon-global-payroll.webp",
+            "ok": true,
+            "width": 64,
+            "height": 64
+          },
+          {
+            "src": "../../../../remote/brand/assets/icon-contractor-of-record.webp",
+            "ok": true,
+            "width": 64,
+            "height": 64
+          },
+          {
+            "src": "../../../../remote/brand/assets/icon-contractor-management.webp",
+            "ok": true,
+            "width": 64,
+            "height": 64
+          },
+          {
+            "src": "../../../../remote/brand/assets/icon-peo.webp",
+            "ok": true,
+            "width": 64,
+            "height": 64
+          },
+          {
+            "src": "../../../../remote/brand/assets/collage-eor-ui.webp",
+            "ok": true,
+            "width": 1068,
+            "height": 1068
+          },
+          {
+            "src": "../../../../remote/brand/assets/collage-global-payroll-ui.webp",
+            "ok": true,
+            "width": 1068,
+            "height": 1068
+          },
+          {
+            "src": "../../../../remote/brand/assets/collage-contractor-of-record-ui.webp",
+            "ok": true,
+            "width": 1068,
+            "height": 1068
+          },
+          {
+            "src": "../../../../remote/brand/assets/collage-contractor-management-ui.webp",
+            "ok": true,
+            "width": 1068,
+            "height": 1068
+          },
+          {
+            "src": "../../../../remote/brand/assets/collage-peo-ui.webp",
+            "ok": true,
+            "width": 1068,
+            "height": 1068
+          },
+          {
+            "src": "../../../../remote/brand/assets/card-api-first.webp",
+            "ok": true,
+            "width": 1200,
+            "height": 1100
+          },
+          {
+            "src": "../../../../remote/brand/assets/card-integrations.webp",
+            "ok": true,
+            "width": 1200,
+            "height": 1100
+          },
+          {
+            "src": "../../../../remote/brand/assets/card-mcp-agents.webp",
+            "ok": true,
+            "width": 1200,
+            "height": 1100
+          },
+          {
+            "src": "../../../../remote/brand/assets/icon-eor.webp",
+            "ok": true,
+            "width": 64,
+            "height": 64
+          },
+          {
+            "src": "../../../../remote/brand/assets/collage-eor-ui.webp",
+            "ok": true,
+            "width": 1068,
+            "height": 1068
+          },
+          {
+            "src": "../../../../remote/brand/assets/icon-global-payroll.webp",
+            "ok": true,
+            "width": 64,
+            "height": 64
+          },
+          {
+            "src": "../../../../remote/brand/assets/icon-contractor-management.webp",
+            "ok": true,
+            "width": 64,
+            "height": 64
+          },
+          {
+            "src": "../../../../remote/brand/assets/icon-check-star-stamp.webp",
+            "ok": true,
+            "width": 132,
+            "height": 128
+          },
+          {
+            "src": "../../../../remote/brand/assets/avatar-luke-mckinlay.webp",
+            "ok": true,
+            "width": 2000,
+            "height": 1468
+          },
+          {
+            "src": "../../../../remote/brand/assets/logo-fountain.svg",
+            "ok": true,
+            "width": 125,
+            "height": 40
+          },
+          {
+            "src": "../../../../remote/brand/assets/avatar-marisol-jimenez.webp",
+            "ok": true,
+            "width": 2000,
+            "height": 1468
+          },
+          {
+            "src": "../../../../remote/brand/assets/logo-reversetech.svg",
+            "ok": true,
+            "width": 179,
+            "height": 40
+          },
+          {
+            "src": "../../../../remote/brand/assets/avatar-maria-shkaruppa.webp",
+            "ok": true,
+            "width": 2000,
+            "height": 1468
+          },
+          {
+            "src": "../../../../remote/brand/assets/logo-homeproject.svg",
+            "ok": true,
+            "width": 168,
+            "height": 40
+          },
+          {
+            "src": "../../../../remote/brand/assets/remote-wordmark.svg",
+            "ok": true,
+            "width": 94,
+            "height": 30
+          },
+          {
+            "src": "../../../../remote/brand/assets/badge-app-store.svg",
+            "ok": true,
+            "width": 139,
+            "height": 40
+          },
+          {
+            "src": "../../../../remote/brand/assets/badge-google-play.svg",
+            "ok": true,
+            "width": 139,
+            "height": 40
+          }
+        ],
+        "media": [
+          {
+            "slot": "opener",
+            "align": "center",
+            "aspect": "auto",
+            "width": 326,
+            "height": 248
+          },
+          {
+            "slot": "panel-eor",
+            "align": "center",
+            "aspect": "auto",
+            "width": 326,
+            "height": 326
+          },
+          {
+            "slot": "feature-api",
+            "align": "center",
+            "aspect": "auto",
+            "width": 326,
+            "height": 299
+          },
+          {
+            "slot": "feature-integrations",
+            "align": "center",
+            "aspect": "auto",
+            "width": 326,
+            "height": 299
+          },
+          {
+            "slot": "feature-mcp",
+            "align": "center",
+            "aspect": "auto",
+            "width": 326,
+            "height": 299
+          },
+          {
+            "slot": "capability-art",
+            "align": "auto",
+            "aspect": "auto",
+            "width": 260,
+            "height": 260
+          }
+        ]
+      },
+      "consoleErrors": [],
+      "failedRequests": [],
+      "contrastFailures": [],
+      "interactionChecks": {
+        "mobileMenuKeyboard": true
+      },
+      "failures": [],
+      "status": "pass"
+    }
+  ],
+  "status": "pass"
+}

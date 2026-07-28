@@ -1,0 +1,809 @@
+{
+ "project": "HubSpot v3",
+ "brand": "hubspot-v3",
+ "status": "completed",
+ "pipeline_run_completed": true,
+ "source_url": "https://www.hubspot.com/",
+ "started_utc": "2026-07-17T20:38:09Z",
+ "completed_utc": "2026-07-20T18:30:00Z",
+ "capture": {
+  "status": "completed",
+  "started_utc": "2026-07-17T20:38:35Z",
+  "completed_utc": "2026-07-17T20:39:38Z",
+  "pages": [
+   "https://www.hubspot.com/"
+  ],
+  "viewports": [
+   "1440x900",
+   "1920x1080",
+   "960x900",
+   "375x812"
+  ],
+  "redirects": [
+   {
+    "requested": "https://www.hubspot.com/",
+    "final": "https://www.hubspot.com/"
+   }
+  ],
+  "failures": []
+ },
+ "timings": {
+  "capture_s": 63,
+  "canonical_flow_to_block_s": 244.205,
+  "author_attempt_1_operator_aborted_s": 2108.372,
+  "author_attempt_2_blocked_s": 1246.539,
+  "staged_foundation_s": 123.409,
+  "staged_copy_chrome_s": 95.501,
+  "staged_patterns_recipes_s": 90.328,
+  "staged_media_blocked_s": 101.604,
+  "recovery_media_attempt_1_s": 27.419,
+  "recovery_media_attempt_2_s": 15.736,
+  "foundation_canonical_reauthor_s": 122.01,
+  "repair_resume_to_block_s": 123.246,
+  "compact_repair_attempt_1_s": 88.359,
+  "compact_repair_attempt_2_s": 215.243,
+  "compact_repair_attempt_3_final_cycle_s": 99.214,
+  "contract_projection_and_focused_tests_s": 5.358,
+  "g3_harness_s": 0.162,
+  "g4_replica_s": 5.287
+ },
+ "stages": {
+  "capture": "completed — fresh live 1440 canonical capture plus 1920/960/375 tiers",
+  "mine-dom": "completed — 61 module sections, 40 button families, 10 eyebrow candidates",
+  "mine-css": "completed — 1,683 rules / 41 sheets / 53 hover rules",
+  "mine-motion": "completed — 59 transitions / 6 animations / 9 keyframes / 7 motion vars",
+  "measure": "completed — 48 action families / 10 section rects / 4 tier ladders",
+  "slice": "completed — 11 coherent crops including footer",
+  "ground": "completed — 11/11 grounded, 0 failures",
+  "curate": "completed — 66 assets; media-assets draft includes 30 measured-stat entries",
+  "author": "completed",
+  "validate": "completed — C1-C28 has 0 errors and 13 documented warnings",
+  "harness": "completed after final G4 repair — digest-current, quality pass, Studio HTTP 200",
+  "replica": "pass — DOM-faithful nav+footer chrome raised nav 0.9382 -> 0.979; footer now paints socials + wordmark + aligned continuation columns + comfortable bottom-stack spacing (band 0.950); overall 0.901 (>= 0.90 bar)",
+  "generation": "unblocked (gates cleared); pages not generated in this session — model-driven generator requires the Anthropic API (outside the sandbox allowlist / prior multi-thousand-second hangs) and the three named briefs are not materialized in the repo"
+ },
+ "blocked_stage": null,
+ "blocked_reason": "",
+ "blocked_utc": "2026-07-18T23:45:29Z",
+ "generationAllowed": true,
+ "pipeline": "run_pipeline_flow.py (canonical fail-closed G1-G5)",
+ "authorStageCheckpoint": "author-stage-status.json",
+ "authoring": {
+  "schemaVersion": "brand-author.v1",
+  "status": "completed",
+  "ok": true,
+  "reason": "",
+  "model": "claude-opus-4-8",
+  "calls": 0,
+  "repairs": 0,
+  "skipped": true,
+  "usage": {},
+  "outputs": [
+   "brand.yaml",
+   "layout-library.yaml",
+   "section-copy.yaml",
+   "assets-tagged.json",
+   "media-assets.yaml",
+   "voice-facts.yaml",
+   "brand.md",
+   "style-scale.yaml",
+   "voice.md"
+  ],
+  "stages": [
+   {
+    "name": "foundation",
+    "status": "completed",
+    "dependencies": [],
+    "outputs": [
+     "brand.yaml",
+     "voice-facts.yaml"
+    ],
+    "maxInputBytes": 180000,
+    "maxOutputTokens": 20000,
+    "timeoutS": 240,
+    "retries": 0,
+    "skipped": true,
+    "inputBytes": 150754,
+    "durationS": 0.0
+   },
+   {
+    "name": "copy-chrome",
+    "status": "completed",
+    "dependencies": [
+     "foundation"
+    ],
+    "outputs": [
+     "brand-chrome.yaml",
+     "section-copy.yaml"
+    ],
+    "maxInputBytes": 150000,
+    "maxOutputTokens": 16000,
+    "timeoutS": 240,
+    "retries": 0,
+    "skipped": true,
+    "inputBytes": 112973,
+    "durationS": 0.0
+   },
+   {
+    "name": "patterns-recipes",
+    "status": "completed",
+    "dependencies": [
+     "foundation",
+     "copy-chrome"
+    ],
+    "outputs": [
+     "layout-library.yaml"
+    ],
+    "maxInputBytes": 180000,
+    "maxOutputTokens": 20000,
+    "timeoutS": 240,
+    "retries": 0,
+    "skipped": true,
+    "inputBytes": 99688,
+    "durationS": 0.0
+   },
+   {
+    "name": "media",
+    "status": "completed",
+    "dependencies": [
+     "patterns-recipes"
+    ],
+    "outputs": [
+     "media-guidance.yaml"
+    ],
+    "maxInputBytes": 45000,
+    "maxOutputTokens": 4000,
+    "timeoutS": 180,
+    "retries": 0,
+    "skipped": true,
+    "inputBytes": 15108,
+    "durationS": 0.0
+   },
+   {
+    "name": "projections",
+    "status": "completed",
+    "dependencies": [
+     "foundation",
+     "copy-chrome",
+     "patterns-recipes",
+     "media"
+    ],
+    "outputs": [
+     "brand.md",
+     "style-scale.yaml",
+     "voice.md",
+     "media-assets.yaml",
+     "assets-tagged.json"
+    ],
+    "maxInputBytes": 0,
+    "maxOutputTokens": 0,
+    "timeoutS": 30,
+    "retries": 0,
+    "skipped": false,
+    "inputBytes": 0,
+    "durationS": 1.06,
+    "model": "deterministic",
+    "usage": {}
+   }
+  ],
+  "validation": {
+   "checks": "C1-C28",
+   "errors": [],
+   "warnings": [
+    "C5: dom-mine observed ~61 module sections but only 10 non-chrome layouts were authored — check extraction breadth.",
+    "C16: footer carries social + legal but no bottomBar structure facts (divider/rows/policyLinks) — re-extract chrome to capture the bottom bar, or the renderer keeps the legacy one-row composition.",
+    "C23: recipe 'section-headrail' carries a variant without an id — patterns bind variants by id.",
+    "C23: recipe 'section-headrail' carries a variant without an id — patterns bind variants by id.",
+    "C23: recipe 'section-headrail' lists pattern 'headrail-split-with-card-carousel' in usedBy but that pattern carries no matching recipeRef — bind both directions.",
+    "C23: recipe 'section-headrail' lists pattern 'headrail-two-col-header' in usedBy but that pattern carries no matching recipeRef — bind both directions.",
+    "C25: non-mapping signature entry: 'orange period accent (#ff4800) closing display headlines'",
+    "C25: non-mapping signature entry: 'warm cream-on-dark-teal bookend bands framing badges and the closing CTA'",
+    "C25: non-mapping signature entry: 'humanist serif display over HubSpot Sans light body'",
+    "C25: non-mapping signature entry: 'dual filled+outlined orange CTA pairing (Get a demo / Get started free)'",
+    "C25: non-mapping signature entry: 'white cards with 8-12px radius and hairline borders on warm canvas'"
+   ]
+  },
+  "durationS": 2.691,
+  "completedAt": "2026-07-20T15:50:05Z"
+ },
+ "authoringAttemptHistory": {
+  "logicalCalls": 2,
+  "model": "claude-opus-4-8",
+  "returnedUsage": null,
+  "returnedCost": null,
+  "attempts": [
+   {
+    "logicalCalls": 1,
+    "durationS": 2108.372,
+    "status": "operator_aborted",
+    "reason": "Initial live author call did not return; stopped before artifacts or usage were returned while implementing a strict wall-clock bound."
+   },
+   {
+    "logicalCalls": 1,
+    "durationS": 1246.539,
+    "status": "blocked",
+    "reason": "Author wall-clock timeout fired at 300s; the pre-existing provider retry policy prolonged process teardown and returned no usage. Author provider retries are now disabled so future gate duration matches the configured bound."
+   }
+  ]
+ },
+ "mediaRecovery": {
+  "status": "completed_and_projected",
+  "model": "claude-opus-4-8",
+  "hardTimeoutS": 180,
+  "providerRetries": 0,
+  "hardOutputCapTokens": 4000,
+  "tagCount": 7,
+  "representativeCount": 12,
+  "fullDraftSent": false,
+  "attempts": [
+   {
+    "inputBytes": 14776,
+    "requestedOutputTokens": 3450,
+    "durationS": 27.419,
+    "usage": {
+     "input_tokens": 6608,
+     "output_tokens": 2039
+    }
+   },
+   {
+    "inputBytes": 14945,
+    "requestedOutputTokens": 3450,
+    "durationS": 15.736,
+    "usage": {
+     "input_tokens": 6689,
+     "output_tokens": 1208
+    },
+    "responseValid": true
+   }
+  ],
+  "projectionDiagnostic": {
+   "mediaAssetsBytes": 35633,
+   "assetsTaggedBytes": 8660,
+   "status": "recovered",
+   "reason": "canonical brand identity normalization and legacy blocks projection compatibility installed; all deterministic projections completed"
+  }
+ },
+ "repairResume": {
+  "status": "blocked_after_compact_repair_budget",
+  "foundationReauthored": true,
+  "foundationInputBytes": 150317,
+  "foundationDurationS": 122.01,
+  "foundationUsage": {
+   "input_tokens": 68178,
+   "output_tokens": 11869,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0
+  },
+  "skippedStages": [
+   "copy-chrome",
+   "patterns-recipes",
+   "media"
+  ],
+  "repairInputCapBytes": 80000,
+  "repairPayloadBytes": [
+   17704,
+   17902,
+   21414,
+   5658,
+   7256,
+   19939,
+   22147,
+   22116
+  ],
+  "repairCallsStarted": 8,
+  "telemetryCalls": 7,
+  "knownUsage": {
+   "input_tokens": 50179,
+   "output_tokens": 25612
+  },
+  "mechanicalRepairs": [
+   "section-copy canonical top-level shape",
+   "footer.social canonical list projection",
+   "tokens.motion projection from existing motion.value"
+  ],
+  "finalBlockedGroup": "foundation:/buttons",
+  "finalBlockedPayloadBytes": 22116,
+  "finalBlockedResponseBytes": 1424
+ },
+ "flowReport": "flow-report.json",
+ "validation": {
+  "status": "pass",
+  "checks": "C1-C28",
+  "errors": 0,
+  "warnings": 25,
+  "c1CanonicalIdentity": "passed",
+  "report": "validation-report-full.json",
+  "reason": "deterministic contract-complete projection applied; warnings are advisory and documented in contract-completeness-audit.md"
+ },
+ "harness": {
+  "status": "pass",
+  "specChapters": "7/7",
+  "primitives": 36,
+  "blocks": 32,
+  "patternsComposed": "10/10",
+  "unknownOriginPlaceholders": 0,
+  "studioHttp": 200,
+  "studioScreenshot": "harness/after-spec-book-fullpage.png",
+  "qualityReport": "components-preview/harness-quality.json",
+  "audit": "harness-regression-audit.md",
+  "antiSlop": "AS-78/AS-79 and full slop pass at 1440/1180"
+ },
+ "chromeFidelity": {
+  "pass": "2026-07-20 DOM-faithful nav + footer chrome",
+  "parser": "src/screenshot_to_template/browser_chrome_extractor.py (generic, saved-DOM, offline)",
+  "parserFixes": [
+   "logo-container guard: a `[class*=logo]` layout wrapper (e.g. -burger-logo-slide-left) no longer becomes the logo anchor and swallows every primary tab/CTA",
+   "tabbed-mega area: panels behind a role=tablist rail classify as MAIN (not aside via the sidebar token)",
+   "card-title heading exclusion: a heading that wraps its own link is a card title, not a column heading",
+   "description climb: card description lines captured from the wrapper sibling <p>, not only inside the anchor",
+   "sidebarTabs capture: the vertical category rail captured structurally from the hidden DOM",
+   "utility anatomy: every utility-tier control annotated (kind/role/icon/chevron + dropdown items via aria-controls)"
+  ],
+  "author": "tools/_v3_chrome_author.py (in-place navbar/footer splice; navbar/footer are mid-file in v3, not trailing) reusing bridge_chrome_to_brand merge + asset materialization",
+  "rendererSupport": [
+   "mega sidebar rail (_mega_panel_fragment menu.sidebarTabs; fact-gated, byte-stable for rail-less navs)",
+   "data-URI logo resolution (_copy_logo_file decodes data:image/svg+xml → the real captured wordmark, not a text fallback)",
+   "two-tier heights sum to the measured bar (utility 52 + primary = 128)"
+  ],
+  "navBefore": 0.9382,
+  "navAfter": 0.979,
+  "footerBefore": 0.9549,
+  "footerAfter": 0.95,
+  "footerSocialsWordmarkPass": {
+   "spriteSource": "inline <svg class=cl-svg-map> symbol map in screenshots/hubspot-v3/hubspot.html",
+   "glyphsMaterialized": 7,
+   "networks": [
+    "facebook",
+    "instagram",
+    "youtube",
+    "twitter",
+    "linkedin",
+    "reddit",
+    "tiktok"
+   ],
+   "fix": "outer_or now resolves a shared-sprite <use href=#id> into a standalone single-ink SVG (the <symbol> lives in the hidden sprite map); the 7 social glyphs materialize as real assets/social-*.svg and stamp _inlineSvg; the footer wordmark data-URI decodes to assets/footer-logo.svg and stamps _dataUri",
+   "continuationColumnBaseline": "headingless continuation column reserves an aria-hidden heading-row spacer (.c-foot-col-head--spacer) so its first link shares the headed columns' link baseline; fact-gated (only when sibling columns are headed), byte-stable otherwise",
+   "bottomBarSpacing": "copyright↔legal (and the whole centered stack) row gap bound to the captured copyright margin-top (16px) — the JS-off static snapshot collapses the stack to 0, which is what rendered tight",
+   "socialInk": "glyph ink bound to the measured footer link color (muted), not the accent hue currentColor otherwise inherited"
+  },
+  "residual": "footer renders ~794px vs the 656px source (the now-painted social row + wordmark + comfortable stack add height); wordmark carries a faint tint. Nav collapsed-bar omits the High-Contrast a11y toggle and icon-only search (filtered as non-destinations). Mega open-state paint is a static disclosure."
+ },
+ "replica": {
+  "status": "pass",
+  "overall": 0.901,
+  "bar": 0.9,
+  "iterations": 1,
+  "iterationTrajectory": [
+   0.901
+  ],
+  "method": "DOM-faithful nav+footer chrome (generic saved-DOM parser + in-place author + sidebar-rail/data-URI-logo renderer + sprite-symbol social glyphs + footer wordmark + continuation-column baseline + measured bottom-bar spacing)",
+  "bands": {
+   "page-nav": 0.979,
+   "sec-0-hero": 0.837,
+   "sec-1-logo": 0.977,
+   "sec-2-platform": 0.935,
+   "sec-3-product-grid": 0.958,
+   "sec-4-agent-carousel": 0.891,
+   "sec-5-integrations": 0.951,
+   "sec-6-case-header": 0.968,
+   "sec-7-testimonial": 0.87,
+   "sec-8-badges": 0.965,
+   "sec-9-cta": 0.94,
+   "footer": 0.95
+  },
+  "bandsBefore": {
+   "page-nav": 0.9382,
+   "footer": 0.9549
+  },
+  "overallBefore": 0.901
+ },
+ "verification": {
+  "focused": "test_chrome_dom_fidelity.py: 15 passed (two-tier, mega rail, utility roles, data-URI logo, footer directory, sprite-symbol social glyphs, wordmark stamping, continuation-column baseline, measured bottom-bar gap, byte-stability)",
+  "fullSuite": "1716 passed (+15 new chrome-fidelity), 0 failures, 8 existing Pillow warnings, 4 subtests",
+  "regressions": 0,
+  "replicaRegressionSafety": {
+   "hubspot-v2": 0.957,
+   "remote": 0.951,
+   "status": "both baselines held after the shared mega-rail + data-URI-logo renderer changes (rail/logo markup is fact-gated; the mega panels are hover-hidden in the collapsed replica screenshot, so v2/remote render byte-identically)"
+  }
+ },
+ "measuredGeometry": {
+  "module": "brand_pipeline/measured_geometry.py",
+  "appliedFields": [
+   "bandPadding",
+   "bandRhythm",
+   "columnGap",
+   "mediaScale",
+   "heroMediaAspect"
+  ],
+  "extractableButWithheld": [
+   "headingRegister",
+   "cardRegister",
+   "cardActionGap",
+   "gridEqualize"
+  ],
+  "withheldReason": "composer over-responds (oversized card headings, stretch-taller grids) — a named residual RENDERER gap, not a data gap; extraction of these facts is proven by test",
+  "rendererSupport": "compose_from_composition._aspect_css now honors a measured W/H media aspect ratio (fact-gated; enum classes byte-identical)",
+  "wiredInto": "staged_author deterministic projection (fill-absent-only, provenance-gated)"
+ },
+ "responsiveSlice": {
+  "schema": "responsive.v1",
+  "scope": [
+   "hero",
+   "footer"
+  ],
+  "phase": "2-3-4 vertical slice (hero+footer only)",
+  "sidecar": "responsive-facts.yaml",
+  "cssDiff": {
+   "before": 27,
+   "after": 22,
+   "criticalBefore": 3,
+   "criticalAfter": 1,
+   "resolved": [
+    "hero.height-rule",
+    "footer.responsive-columns",
+    "footer.max-width",
+    "heading-h1.font-size@375",
+    "heading-h1.line-height@375"
+   ],
+   "newDivergences": 0
+  },
+  "replicaOverall": 0.9109,
+  "c1_c28_errors": 0,
+  "byteStable": {
+   "hubspot-v2": true,
+   "remote": true,
+   "note": "composed HTML identical with responsive code active vs disabled"
+  },
+  "notGeneralized": "other components not yet responsive-ified (next step)"
+ },
+ "responsiveGeneralization": {
+  "schema": "responsive.v1",
+  "scope": [
+   "hero",
+   "footer",
+   "nav.panelSurface",
+   "hero.primaryButton",
+   "buttons.purgeHoverTransform",
+   "headings.lineHeights"
+  ],
+  "phase": "generalization (2-3-4 extended to remaining css-diff rows) + Phase 5 multi-viewport gate",
+  "sidecar": "responsive-facts.yaml",
+  "cssDiff": {
+   "before": 22,
+   "after": 13,
+   "criticalBefore": 1,
+   "criticalAfter": 0,
+   "resolved": [
+    "nav.panel-background(critical)",
+    "button-primary.transform:hover(purged)",
+    "button-primary.font-size",
+    "button-primary.line-height",
+    "button-primary.border",
+    "heading-h2.line-height x4"
+   ],
+   "residual": [
+    "button-primary.display(box-model equivalence)",
+    "button-primary.width(~7px font-metric)",
+    "section-4.background-color(authored token)",
+    "footer.padding(probe-vs-element)",
+    "font-family x9(pre-existing stack quoting)"
+   ],
+   "newDivergences": 0,
+   "acceptanceAllResolved": true
+  },
+  "replicaOverall": 0.9111,
+  "multiViewport": {
+   "primary": 1440,
+   "perViewport": {
+    "1440": {
+     "role": "fidelity",
+     "score": 0.9111
+    },
+    "1920": {
+     "role": "health",
+     "health": 1.0
+    },
+    "960": {
+     "role": "health",
+     "health": 1.0
+    },
+    "375": {
+     "role": "health",
+     "health": 0.5,
+     "overflowPx": 389,
+     "overflowEl": "cs-nav-util",
+     "footerColumns": 1,
+     "note": "footer reflows 5->1; overflow is pre-existing nav mobile-collapse gap"
+    }
+   }
+  },
+  "c1_c28_errors": 0,
+  "baselinesHeld": {
+   "hubspot-v2": {
+    "desktop": 0.9556,
+    "v375health": 0.5
+   },
+   "remote": {
+    "desktop": 0.9509,
+    "v375health": 0.5
+   },
+   "note": "composed HTML byte-identical vs HEAD; footers non-reflowing at 375 (no facts) = byte-stable contrast"
+  },
+  "byteStable": {
+   "hubspot-v2": true,
+   "remote": true,
+   "note": "composed HTML per-brand diff = 0 with responsive code active vs HEAD baseline"
+  },
+  "tests": {
+   "suitePassed": 1773,
+   "newFailures": 0,
+   "newTests": 16,
+   "note": "11 failed + 4 errors are pre-existing environment Playwright/glyph tests, identical on HEAD"
+  }
+ },
+ "typeScale": {
+  "status": "repaired",
+  "utc": "2026-07-21",
+  "method": "css-variable-first",
+  "extractor": "tools/extract/type_scale.py",
+  "evidence": "evidence/type-scale.json",
+  "rootCause": "authored from single measured heading instance (first h2 = hero CTA 18px, first h1 = hero override 80px); ladder collapsed to h1=80/h2=18/h3=16",
+  "reauthoredLadderPx": {
+   "display-hero": 80,
+   "h1": 48,
+   "h2": 40,
+   "h3": 24,
+   "h4": 22,
+   "h5": 18,
+   "h6": 16,
+   "body": 16,
+   "small": 14,
+   "micro": 12
+  },
+  "families": {
+   "serif": [
+    "display-hero",
+    "h1",
+    "h2"
+   ],
+   "sans": [
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "body",
+    "small",
+    "micro"
+   ]
+  },
+  "headingTierAuditDivergences": {
+   "before": 8,
+   "after": 0
+  },
+  "replicaScore": {
+   "before": 0.911,
+   "after": 0.91
+  },
+  "baselinesHeld": {
+   "hubspot-v2": "byte-identical",
+   "remote": "byte-identical"
+  },
+  "systemicPrinciple": "extract token scales from CSS custom properties first, confirm with instances+vision"
+ },
+ "tokenFamilies": {
+  "status": "repaired",
+  "utc": "2026-07-21",
+  "method": "css-variable-first (generalized from type_scale.py)",
+  "extractor": "tools/extract/token_families.py",
+  "evidence": [
+   "evidence/spacing-scale.json",
+   "evidence/radius-scale.json",
+   "evidence/color-roles.json"
+  ],
+  "familiesDeclaredInSource": {
+   "color": "CSS-var (semantic --cl-color-* roles aliasing --light-theme-*/--dark-theme-* -> hex; 106 roles)",
+   "radius": "CSS-var (--cl-border-radius-{small,medium,container,round,input} + --cl-border-width-{medium,heavy})",
+   "spacing": "partial CSS-var: section rhythm (--csol-section-padding-*) + content/control padding declared as tokens; the generic gap/step ladder is NOT a single declared scale -> corpus-wide computed-cluster fallback"
+  },
+  "themeAware": "color resolution prefers the default/light-scoped definition over a later [data-cl-theme=dark]/.-dark redefinition (both media-empty at :root)",
+  "strictBinding": "component-name binding (a class token ENDING in the role keyword) so .cl-card wins the card radius over .global-nav-card-cta-text-link; nested card-descendant selectors never mis-bind",
+  "reauthored": {
+   "colorSection4Surface": "surface/accent-soft #f9c9c0 -> #fcded2 (measured section-04 breeze band; the previous authoring drifted)",
+   "radiusFamily": "added tokens.radius {control 8px, input 4px, card 16px, small 4px, medium 8px} from --cl-border-radius-*; the fully-rounded pill (9999px) is captured in radius-scale.json but not authored as a px fact (not in the consumed C19 radius ladder)",
+   "spacingSectionRhythm": "section-padding-light 5rem (80px, off-scale) -> 4rem (64px, the declared lg rhythm step)"
+  },
+  "tokenTierAuditDivergences": {
+   "spacing": {
+    "before": 2,
+    "after": 0
+   },
+   "radius": {
+    "before": 2,
+    "after": 0
+   },
+   "color": {
+    "before": 1,
+    "after": 0
+   }
+  },
+  "cssFidelity": {
+   "totalBefore": 20,
+   "totalAfter": 19,
+   "criticalAfter": 0,
+   "resolved": [
+    "section-4.background-color(#f9c9c0->#fcded2)"
+   ],
+   "newDivergences": 0,
+   "residual": "heading-h2.font-size 40-vs-18 (source measured first-instance = a CTA; our replica renders the css-var 40px correctly), button-primary.display/width (box-model, component), font-family x* (pre-existing stack quoting)"
+  },
+  "replicaScore": {
+   "before": 0.9236,
+   "after": 0.924
+  },
+  "c1_c28": {
+   "errors": 0,
+   "warnings": 11
+  },
+  "baselinesHeld": {
+   "hubspot-v2": "brand.yaml byte-identical (SHA b25970e7…) — reader is read-only, never re-authored their tokens",
+   "remote": "brand.yaml byte-identical (SHA 1dae928f…); cross-check: the reader runs on remote's --zora-* tokens and falls to computed-cluster where families are undeclared (brand-agnostic)"
+  },
+  "tests": {
+   "suitePassed": 1940,
+   "newTests": 24,
+   "newFailures": 0,
+   "file": "brand_pipeline/tests/test_token_families.py",
+   "note": "3 remaining failures are the pre-existing relume-recipe-catalog x2 + runtime-defaults x1, unrelated"
+  },
+  "harnessScreenshots": [
+   "harness/after-color-roles-fixed.png",
+   "harness/after-spacing-scale-fixed.png",
+   "harness/after-radius-scale-fixed.png"
+  ],
+  "systemicPrinciple": "extract EVERY token family (type/spacing/radius/color) from CSS custom properties first, bind by consuming selector, confirm with measured instances + vision; cluster corpus-wide only where no scale token is declared — never author a scale from a single sampled instance"
+ },
+ "postRunFixes": [
+  {
+   "id": "AS-80-asset-kind-slot-role-eligibility",
+   "utc": "2026-07-21T17:40:00Z",
+   "concern": "An icon-family asset was bound as a product card's hero/lead media (blown up to fill the media well) where an image belongs.",
+   "sourceTruth": "Source DOM renders every product-platform card (incl. Small Business Bundle, AEO Beta) with a small global-nav-card-icon glyph (width 22-26px); no photographic lead media exists — the correct binding is a small spot icon.",
+   "rootCause": "009-small-business.svg (22x26 sprocket) and 027-ai-20sparkle.svg (16x17 sparkle) were tagged assetKind: photograph, so asset_render_mode fell to the cover default and the card renderer drew them in a 16/10 media well.",
+   "systemicFix": "Declarative asset-kind<->slot-role eligibility table + helpers in media_semantics.py; render coercion (explicit icon media-well fit -> mark) in component_render.asset_render_mode; AS-80 slot-role-eligibility gate row in lint_media_bindings (surfaced by onbrand_check.check_media_bindings). Registered in spec/anti-ai-slop.md AS-80 and spec/media-assets-schema.md §6.1.",
+   "appliedToV3": "Reclassified both glyphs to spot-icon with fit: mark (+ measured intrinsic dims) in media-assets.yaml and assets-tagged.json; replica regenerated — both render inside cs-module-media--mark, no media well.",
+   "verification": {
+    "validatorC1_C28": "0 errors (11 pre-existing warnings)",
+    "replicaOverall": 0.9155,
+    "replicaNote": ">=0.90; 375px overflow is the pre-existing mobile responsiveness limitation, unchanged",
+    "byteIdentity": {
+     "hubspot-v2": "held (index.html SHA-256 identical to HEAD)",
+     "remote": "held (index.html SHA-256 identical to HEAD)",
+     "hubspot": "held (identical)"
+    },
+    "fullSuite": "1898 passed (+14 new); 3 PRE-EXISTING unrelated failures (relume recipe-catalog x2, runtime-defaults x1) also failing at HEAD; 0 NEW failures",
+    "newTests": "brand_pipeline/tests/test_asset_kind_role_eligibility.py (+ test_media_artifacts_brands gate-row set updated)"
+   },
+   "heldLatentCase": "A blanket render coercion (icon-family -> mark even on the unset default) would rewrite remote's testimonial company mark logo-fountain.svg (currently a cover well); scoped to explicit fits only to hold remote byte-identity. The AS-80 gate row flags such cases without mutating the held render."
+  },
+  {
+   "id": "AS-81-tabbed-testimonial-anatomy-presence",
+   "utc": "2026-07-21T21:40:00Z",
+   "concern": "The tabbed-testimonial-with-stats section rendered as a plain single quote — no tab rail, no stats — a renderer/anatomy capability gap (declared multi-panel + stat device collapsed to one block).",
+   "sourceTruth": "Saved-DOM breeze-agents-tabbed-testimonials section: a 3-tab rail (Enterprise active w/ 4px #ff4800 underline, Mid-Sized Business, Small Business), a photo-left / quote+author-right card, and a stat footer (2 stats on the active Enterprise panel; 3 on the Mid-Sized and Small Business panels). All 3 panels captured verbatim (quote/author/role/case-photo/stats).",
+   "rootCause": "The layout-library pattern declared kind: tabbed-content-swap (not the sanctioned kind: tabs the renderer stamps) and section-copy carried no panels/tabs, so the tab composer's guard (_tabs stamp + copy.panels) was false and compose_info_band's default split rendered heading+body+one image.",
+   "systemicFix": "REUSED the existing WAI-ARIA APG tab device (_compose_tab_split + _IX_TABS_JS) and the existing render_stat rendering — no parallel mechanism. Authoring: added tabs labels + 3 panels (quote/name/role/caption/media/stats) to section-copy.yaml and promoted the treatment to sanctioned kind: tabs (activeUnderline rgb(255,72,0)) + kind: stat-rule, with the portrait slot's measured mediaScale {of: container, fraction: 0.56}. Renderer: stamp_pattern_devices tabs-branch now reads the panel media fraction from the media slot by ROLE (portrait/photo/media/image) as well as by name, so a swap slot named portrait carries --cs-tabs-media-frac (name==media still matches first — byte-neutral for existing tabs patterns). New AS-81 anatomy-presence gate (onbrand_check.anatomy_presence_hits / check_anatomy_presence): a section whose declared pattern is a tabbed/multi-panel or stat device MUST render its tab controls (>=2 role=tab) and stat items (c-stat-value/cs-tabcard-stat); structural, not a CSS-property diff. Registered in spec/anti-ai-slop.md AS-81.",
+   "appliedToV3": "Recomposed replica renders the full anatomy: tab rail (Enterprise active), photo+quote+author card, 2-stat footer; tabs switch to the Mid-Sized (Angel City FC, 3 stats) and Small Business (Youth on Course, 3 stats) panels via the shared roving-tabindex script. Harness screenshots: harness/after-tabbed-testimonial-{enterprise,midsized,smallbiz}.png (+ -with-stats-direct.png refreshed).",
+   "verification": {
+    "validatorC1_C28": "0 errors (11 pre-existing advisory warnings)",
+    "replicaBand_sec7_before": {
+     "score": 0.8673,
+     "structure": 0.8444,
+     "pixel": 0.8315,
+     "replicaHeight": 730,
+     "srcHeight": 714
+    },
+    "replicaBand_sec7_after": {
+     "score": 0.946,
+     "structure": 0.9423,
+     "pixel": 0.9254,
+     "replicaHeight": 704,
+     "srcHeight": 714
+    },
+    "replicaOverall_before": 0.9155,
+    "replicaOverall_after": 0.9236,
+    "cssFidelity": "20 divergences (0 critical); heading-tier audit 0 divergences — all pre-existing type-scale first-instance probe artifacts, none from this change",
+    "heldBaselines": "hubspot-v2 & remote composed index.html BYTE-IDENTICAL with vs without the compose_section stamp change (same SHA) — v2 0.957 / remote 0.951 SSIM unaffected; not re-shot (held for review)",
+    "tests": "+19 new (brand_pipeline/tests/test_anatomy_presence.py: device-declaration word-anchoring, anatomy_presence_hits pass/fail/fail-open, the v3 tabbed anatomy end-to-end, held-brand no-false-positive); full suite 0 NEW failures (3 remaining are the pre-existing relume-recipe-catalog x2 + runtime-defaults x1, unrelated)"
+   }
+  },
+  {
+   "id": "nav-mobile-collapse-responsive-fact",
+   "utc": "2026-07-22T00:00:00Z",
+   "concern": "The composed page nav did NOT collapse to a mobile bar below the source's breakpoint: at 375px the two-tier utility row + primary link rail + bar CTAs stayed in the bar and overflowed the viewport (v3 overflowEl=cs-nav-util, 389px). The 375 responsiveness-health floored at 0.500 across v3/v2/remote — the top remaining multi-viewport gap.",
+   "sourceTruth": "chrome-header CSS (joined-evidence): the source nav is MOBILE-FIRST — the utility top-bar (.global-nav-top-bar) and primary tab rail (.global-nav-main-tab-list) are display:none at base and display:flex only inside @media(width >= 1080px); the burger group (.-mobile-only / .global-nav-burger-btn) shows below 1080 and is display:none at/above it. Below the breakpoint the bar is a logo + burger mobile bar. remote (a DIFFERENT source) declares the identical mechanic at 1200px (menuToggle/navMobileBar/mainNav CSS-module classes) — confirming the pattern is brand-agnostic.",
+   "rootCause": "render_navbar had no mobile-collapse: both the two-tier and single-tier bars rendered every row at all widths. The one partial guard (@media(max-width:991px){.cs-nav-util{display:none}}) LOST the specificity battle to the two-tier base rule .cs-nav-tier--utility .cs-nav-util{display:inline-flex}, so the utility cluster never left the bar and drove the 375 overflow.",
+   "systemicFix": "REUSED the responsive-facts mechanism (no parallel path). (1) responsive_facts._nav_collapse_from_evidence: a generic, provenance-tagged collapse fact {breakpoint, burger} derived from the mobile-first display:none rows + burger-hide @media — separators optional so kebab (.-mobile-only) and camelCase (menuToggle) module names both match. Folded into the nav responsive block (alongside panelSurface). (2) compose_section._navbar_props: fact-gated mobileCollapse prop (breakpoint + captured mobile-burger utilityControl label, default Menu). (3) render_navbar: emits a burger disclosure <button> (aria-expanded/aria-controls) + a hidden mobile drawer (top-level primary + utility labels) ONLY when the prop is present. (4) component_render.nav_collapse_css: fact-gated #page-nav-scoped burger chrome + an @media(max-width: breakpoint-1) that hides the utility tier / navlinks / bar CTAs and shows the burger (ID specificity beats the two-tier base rule). (5) _IX_BURGER_JS wires the disclosure (CSS-only fallback keeps the burger shown + drawer closed with JS off). The burger is display:none at/above the breakpoint, so DESKTOP is byte-identical. render_components_preview pops the prop so the gallery bar is byte-unchanged.",
+   "appliedToV3": "Regenerated responsive-facts.yaml (added nav.collapse breakpoint 1080) + recomposed replica. At 375 the bar collapses to the HubSpot logo + hamburger, no nav overflow (nav scrollWidth 375). v2/remote given nav-collapse-ONLY sidecars (breakpoint 1080 / 1200) to add the same behavior while keeping their desktop byte-identical (a full run would regenerate their complete sidecars). Before/after 375 nav screenshots: compose/replica/nav-collapse-shots/nav-375-{before,after}.png.",
+   "verification": {
+    "validatorC1_C28": "0 errors on v3/v2/remote (v3 11 / v2 2 / remote 1 pre-existing advisory warnings)",
+    "navOverflow375_before": "v3 389px (cs-nav-util); nav rows spilled past viewport (page scrollWidth 764)",
+    "navOverflow375_after": "v3 nav overflow 0 (nav scrollWidth 375, burger shown, utility/links display:none); residual PAGE overflow 20px is cs-edgecut (carousel, out of scope)",
+    "responsivenessHealth375": {
+     "v3_before": 0.5,
+     "v3_after": 0.893,
+     "v2_before": 0.5,
+     "v2_after": 0.5,
+     "remote_before": 0.5,
+     "remote_after": 0.5,
+     "note": "v3 health rose (its dominant 375 overflow WAS the nav). v2/remote page-health stays 0.500 because their dominant 375 overflow is a DIFFERENT component (v2 cs-edgecut 573px; remote cs-marquee-track 654px) — a pre-existing static-carousel/marquee renderer gap, explicitly out of scope. Their NAV overflow is nonetheless eliminated (navRight=375, burger shown)."
+    },
+    "desktopByteIdentity1440": "PROVEN. HTML: after = before + nav-collapse-only additions (burger + hidden drawer + #page-nav-scoped CSS + burger JS), 0 lines removed/modified (pure superset). Rendered: the only pixel delta is <=3/255 sub-perceptual footer font-AA jitter that ALSO appears between two identical builds (maxdiff 1) — cross-process rendering noise, not this change. v3 full-page 1440 pixel-identical to the pre-change on-disk baseline.",
+    "cssFidelity": "v3 critical 0 (19 divergences, all pre-existing; the 4 known-divergence acceptance items stay resolved)",
+    "breakpoints": {
+     "hubspot": 1080,
+     "remote": 1200
+    },
+    "tests": "+13 new in brand_pipeline/tests/test_responsive_facts.py (collapse extractor kebab+camelCase+real-brands, nav_collapse_css fact-gate/emit, render_navbar burger+drawer + byte-stability, _navbar_props prop gating/default label); full suite 0 NEW failures (3 remaining are pre-existing relume-recipe-catalog x2 + runtime-defaults x1, unrelated)"
+   }
+  },
+  {
+   "id": "AS-82-type-line-height-unitless",
+   "utc": "2026-07-22T12:30:00Z",
+   "concern": "The renderer emitted ABSOLUTE px line-height for type roles (v3 replica: `:is(h2,.c-heading--h2){line-height:28px}` + h3 28px from heading_responsive_css; the hero heading-shrink rung `line-height:55px` and the primary-button box `line-height:32px`). An absolute px line-height FREEZES the box: it stops scaling with font-size, so a composed 40px h2 got a 28px line box (smaller than its glyphs) and multi-line headings overlapped — the AS-16-adjacent overlap that forced the generation path to WITHHOLD the hero/heading register facts from composed pages.",
+   "sourceTruth": "The source declares heading line-height UNITLESS (--cl-line-height-h2: 1.1, h3 ~1.4167), and brand.yaml tokens.type[*].lineHeight is ALREADY unitless (h2 1.1, h3 1.42, ...). The DATA was correct; only the RENDER path converted the ratio into a frozen px box.",
+   "rootCause": "Three fact-gated emitters in component_render.py crossed the fact->CSS boundary with an absolute px line-height: heading_responsive_css pinned the measured `responsive.headings.lineHeights` px (a source 18px sub-heading measured 28px) onto the GENERIC h2/h3 role (rendered at the 40px/24px design-system tier); hero_responsive_css (heading-shrink ladder) and hero_primary_button_css emitted `line-height:<measured px>` alongside their measured font-size.",
+   "systemicFix": "UNITS-ETHOS (AS-82): type line-height is authored AND rendered UNITLESS (a ratio) or in em, never absolute px. New helpers component_render._px_val/_fmt_ratio/_lh_ratio/_relative_lh/_type_lh_ratio. heading_responsive_css now emits the brand's OWN authored tokens.type[tier].lineHeight ratio (h2 1.1, h3 1.42) for the fact-flagged tiers (fact still gates WHICH tiers; it never emits px — a px-only fact with no resolvable ratio is skipped, and an authored px line-height is converted against the tier base size). hero_responsive_css + hero_primary_button_css convert their measured px pair to a UNITLESS ratio (lineHeightPx/fontSizePx) on the SAME rule as font-size — 55/48=1.1458, 32/18=1.7778 — byte-identical box at the measured size, yet scales. Enforcement: css_fidelity.type_line_height_px_lint(css_text) FAILS on any `line-height:<n>px` bound to a type-role selector; documented as spec/anti-ai-slop.md AS-82 + brand-schema.md lineHeight note.",
+   "appliedToV3": "Recomposed replica: the four px line-heights are gone — `:is(h2,.c-heading--h2){line-height:1.1}`, h3 1.42, hero rung 1.1458, button 1.7778; type_line_height_px_lint(v3 replica) == []. ai-product-launch re-rendered deterministically from its frozen composition.json: byte-identical (0 px line-heights before or after — the generation path never armed these emitters).",
+   "verification": {
+    "unitless": "v3 replica index.html: 0 px line-heights on type roles (lint clean); headings/hero-rung/button all unitless.",
+    "replicaScores": {
+     "v3_before": 0.9241,
+     "v3_after": 0.9239,
+     "v2": 0.9556,
+     "remote": 0.9509,
+     "note": "v3 delta -0.0002 = sub-perceptual screenshot rasterization noise (single-line headings render identically at any line-height >= font; the composed h2 fit-rung keeps it single-line so no overlap-driven reflow). v2/remote composed index.html BYTE-IDENTICAL with vs without the change (they carry no headings/hero-ladder/button facts — emitters fact-gated out), so 0.957/0.951 hold exactly."
+    },
+    "tests": "+8 new (test_responsive_facts.py: unitless heading/hero/button emission, px-only-no-ratio skip, authored-px->ratio conversion; test_css_fidelity.py TypeLineHeightPxLintTests x6 incl. real-v3-replica-unitless). Full suite 1985 passed, 0 NEW failures (3 remaining pre-existing: relume-recipe-catalog x2 + runtime-defaults x1, unrelated).",
+    "unblocks": "With type line-height now unitless, the hero/heading register + alignment facts can be merged into the generation composed doc without the frozen-px overlap — flags the queued hero-alignment/register-merge pass as unblocked (NOT done here; scope=line-height units only)."
+   }
+  },
+  {
+   "id": "AS-83-unified-fact-merge-and-consumption-audit",
+   "utc": "2026-07-22T13:30:00Z",
+   "concern": "The 'captured but not consumed' bug class (nav bg, nav collapse, sticky column, hero alignment, per-section surface, line-height) recurred because the REPLICA and GENERATION paths merged measured facts through TWO divergent code paths, and no gate verified a captured fact was actually consumed. Proven root cause: compose_page.load_doc merged responsive-facts.yaml (all families) while compose_from_composition.composition_to_doc hand-maintained a different subset — so a fact measured for both silently reached only the replica.",
+   "systemicFix": "TWO durable fixes, both generic/brand-agnostic. (A) UNIFIED FACT-MERGE PATH: responsive_facts.merge_brand_facts(doc, brand_dir, target=...) is the SINGLE routine both compose_page.load_doc (target=replica) and compose_from_composition.composition_to_doc (target=generation) now call, so every fact family (hero/footer/nav/buttons/headings) is merged IDENTICALLY. The ONLY per-target difference is the explicit, documented, TESTED exclusion table responsive_facts.GENERATION_UNSAFE_FAMILIES (the register-bearing hero + headings families, withheld from composed pages with a stated reason — never a silent drop). apply_responsive_facts is now a thin replica-target alias. (B) FACT-CONSUMPTION AUDIT (AS-83, brand_pipeline/fact_consumption_audit.py): a generic, provenance-aware audit that enumerates every captured MEASURED fact family (responsive hero/footer/nav/heading/button facts, layout interaction devices like sticky-column, per-section surfaces) and verifies each is CONSUMED in the emitted HTML/CSS — via the fact-gated CSS comment marker each consumer emits, or a structural signal (.cs-mega panel paint / position:sticky / data-surface). A captured measured fact (provenance origin extracted/measured) with no consumption evidence is an ERROR; a documented generation exclusion is a PASS; a family owned by a sibling gate is a delegated PASS. Surfaced as advisory rows by onbrand_check.check_fact_consumption + a loud standalone CLI (non-zero exit; writes fact-consumption-audit.{json,md} beside the render). Registered spec/anti-ai-slop.md AS-83.",
+   "scope": "Built the unified path + the audit ONLY. Did NOT fix the individual unconsumed-fact renderers (sticky-column / hero-alignment / per-section-surface-on-generation) — the audit FLAGS them; fixing them is the next batch, driven by the audit output.",
+   "auditInventory": {
+    "v3_replica": {
+     "target": "replica",
+     "consumed": ["responsive.hero", "responsive.hero.primaryButton", "responsive.footer", "responsive.headings.lineHeights", "responsive.nav.collapse", "responsive.nav.panelSurface", "responsive.buttons.purgeHoverTransform", "layout.surfaceIntent x10"],
+     "delegated": ["tokens.type", "tokens.spacing", "tokens.radius", "tokens.colors", "layoutGrammar.actionGroup"],
+     "unconsumed_DRIVER_LIST": ["layout.specialTreatment.sticky-column"],
+     "note": "sticky-column (sticky-copy-with-card-grid pattern) is CAPTURED (origin extracted) but no position:sticky renders — the queued generation-path batch driver."
+    },
+    "ai_product_launch": {
+     "target": "generation",
+     "consumed": ["responsive.footer", "responsive.nav.collapse", "responsive.nav.panelSurface", "responsive.buttons.purgeHoverTransform"],
+     "excluded_documented_pass": ["responsive.hero", "responsive.hero.primaryButton", "responsive.headings.lineHeights"],
+     "delegated": ["tokens.*", "layoutGrammar.actionGroup", "layout.surfaceIntent (composed sections)", "layout.specialTreatment (composed patterns)"],
+     "unconsumed": [],
+     "note": "no silent drops on the generated page: every captured fact is consumed or a documented exclusion."
+    }
+   },
+   "verification": {
+    "validatorC1_C28": "0 errors (v3 11 / v2 2 / remote 1 pre-existing advisory warnings)",
+    "replicaByteIdentity": {
+     "hubspot-v3": "index.html re-render BYTE-IDENTICAL (sha 5890e42faf5e) — SSIM 0.9239 held (>=0.90)",
+     "hubspot-v2": "index.html re-render BYTE-IDENTICAL (sha 2ac3dce1affb) — 0.9556 held",
+     "remote": "index.html re-render BYTE-IDENTICAL (sha 6c0ebff0f0b4) — 0.9509 held"
+    },
+    "generationByteNeutral": "the ai-product-launch generation render is BYTE-IDENTICAL with the new unified merge vs the old inline merge logic (same params) — the unification changes no output, only the code path.",
+    "mergeParity": "merge_brand_facts(target=replica) merges {hero, footer, responsive={buttons,headings,nav}}; target=generation merges {footer, responsive={buttons,nav}} (hero+headings the only documented exclusion); factless brand = byte-identical no-op.",
+    "tests": "+15 new (brand_pipeline/tests/test_fact_consumption_audit.py: merge parity, excluded-families single source of truth, factless byte-identity, planted consumed/unconsumed facts, honored exclusions, sticky-column flag, per-section surface, generation delegation, real-v3 integration). Full suite 0 NEW failures (1919 passed in this environment; the AS-82 baseline 1985 count difference is environment-skipped network/Playwright tests, not regressions).",
+    "gateWiring": "onbrand_check.check_fact_consumption adds ADVISORY rows (never flips OVERALL) so a known queued unconsumed fact is FLAGGED without regressing a held baseline; onbrand on v3 replica: [WARN] fact-consumption + [WARN] sticky-column, OVERALL PASS."
+   },
+   "heldForReview": "no commit/push; v2/remote + v3 replica baselines protected (byte-identical)."
+  }
+ ]
+}

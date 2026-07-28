@@ -1,0 +1,658 @@
+{
+  "brand": "HubSpot",
+  "sourceUrl": "https://hubspot.com",
+  "generated": "2026-06-16T00:11:31.442388+00:00",
+  "typeInference": {
+    "rule": "Check the mapped component name first, then the slot's semantic role, against a media keyword set and a content keyword set. media wins on a media-keyword hit (Image/Logo/photo/icon/...); otherwise content on a content-keyword hit (Heading/Eyebrow/Rich Text/Link/Form/...). Unmatched slots default to 'content' and are flagged ambiguous.",
+    "mediaKeywords": [
+      "image",
+      "media",
+      "photo",
+      "photography",
+      "picture",
+      "logo",
+      "wordmark",
+      "avatar",
+      "icon",
+      "video",
+      "gallery",
+      "illustration",
+      "graphic",
+      "map",
+      "thumbnail"
+    ],
+    "contentKeywords": [
+      "heading",
+      "title",
+      "eyebrow",
+      "paragraph",
+      "rich text",
+      "richtext",
+      "text",
+      "link",
+      "form",
+      "button",
+      "label",
+      "action",
+      "caption",
+      "body",
+      "cta",
+      "quote",
+      "stat",
+      "counter",
+      "list",
+      "input",
+      "field",
+      "nav"
+    ]
+  },
+  "ambiguousSlots": [],
+  "components": [
+    {
+      "name": "Button / Primary",
+      "componentId": "7c4861f5-0c24-5e7b-196f-3d19344c9cba",
+      "group": "Button",
+      "type": "content",
+      "usedInSlots": [
+        "navbar \u2192 primary CTA button",
+        "hero \u2192 primary CTA button",
+        "elevated-cta \u2192 primary CTA button"
+      ]
+    },
+    {
+      "name": "Eyebrow",
+      "componentId": "0add895d-ff42-8ef4-91cb-0eff2e60b2f6",
+      "group": "Primitive",
+      "type": "content",
+      "usedInSlots": [
+        "hero \u2192 tagline eyebrow"
+      ]
+    },
+    {
+      "name": "Heading",
+      "componentId": "b2fd0399-aede-b4e1-bd06-56c8171fc86e",
+      "group": "Primitive",
+      "type": "content",
+      "usedInSlots": [
+        "hero \u2192 display heading",
+        "logo-carousel \u2192 proof heading",
+        "customer-platform \u2192 platform intro heading",
+        "customer-platform \u2192 rotating feature heading",
+        "product-platform \u2192 section heading",
+        "product-platform \u2192 card heading",
+        "breeze-agents-carousel \u2192 section heading",
+        "integrations-rotating \u2192 integrations heading",
+        "results-header \u2192 section heading",
+        "badges \u2192 awards heading",
+        "elevated-cta \u2192 closing headline"
+      ]
+    },
+    {
+      "name": "Link / Secondary",
+      "componentId": "75c4556a-b7c2-b1f3-2d05-0ea2dbee7fc8",
+      "group": "Link",
+      "type": "content",
+      "usedInSlots": [
+        "navbar \u2192 nav link",
+        "navbar \u2192 sign-in text link",
+        "product-platform \u2192 learn-more link",
+        "integrations-rotating \u2192 see-all link",
+        "case-studies-tabbed \u2192 segment tab control",
+        "case-studies-tabbed \u2192 read-case-study link",
+        "footer \u2192 footer nav link"
+      ]
+    },
+    {
+      "name": "Metrics / Card",
+      "componentId": "69406c74-89b1-a098-d03e-570158b8547b",
+      "group": "Metrics",
+      "type": "content",
+      "usedInSlots": [
+        "case-studies-tabbed \u2192 outcome stat blocks"
+      ]
+    },
+    {
+      "name": "Paragraph",
+      "componentId": "f35e6556-63c1-8370-d16e-42722ebffd11",
+      "group": "Primitive",
+      "type": "content",
+      "usedInSlots": [
+        "hero \u2192 supporting paragraph",
+        "customer-platform \u2192 platform description",
+        "breeze-agents-carousel \u2192 agent description"
+      ]
+    },
+    {
+      "name": "Rich Text",
+      "componentId": "168eb097-8c4f-7053-ad79-34bc90c5d144",
+      "group": "Primitive",
+      "type": "content",
+      "usedInSlots": [
+        "product-platform \u2192 card feature bullets",
+        "footer \u2192 legal copy"
+      ]
+    },
+    {
+      "name": "Testimonial / Split",
+      "componentId": "104dd794-bb63-0cb6-44f1-ca3edb141f7d",
+      "group": "Testimonial",
+      "type": "content",
+      "usedInSlots": [
+        "case-studies-tabbed \u2192 testimonial quote card"
+      ]
+    },
+    {
+      "name": "Card / Left With Icon",
+      "componentId": "7752cc9a-f70e-b0a8-87b6-beb4c27c1273",
+      "group": "Card",
+      "type": "media",
+      "usedInSlots": [
+        "product-platform \u2192 product-hub card",
+        "breeze-agents-carousel \u2192 AI agent card"
+      ]
+    },
+    {
+      "name": "Image",
+      "componentId": "abb0f607-d4f3-9dbd-b285-a92cf7e61685",
+      "group": "Primitive",
+      "type": "media",
+      "usedInSlots": [
+        "hero \u2192 hero photography",
+        "customer-platform \u2192 product platform graphic",
+        "product-platform \u2192 product hub icon",
+        "breeze-agents-carousel \u2192 agent icon",
+        "case-studies-tabbed \u2192 customer photo",
+        "badges \u2192 award badge image"
+      ]
+    },
+    {
+      "name": "Logo",
+      "componentId": "1f142114-d0bc-50f6-98b5-e2a46fb70d44",
+      "group": "Primitive",
+      "type": "media",
+      "usedInSlots": [
+        "navbar \u2192 wordmark",
+        "footer \u2192 footer wordmark"
+      ]
+    },
+    {
+      "name": "Logos Wrapper",
+      "componentId": "f375ff98-6eb2-826d-0e70-4b45d0fd6fc2",
+      "group": "Primitive",
+      "type": "media",
+      "usedInSlots": [
+        "logo-carousel \u2192 customer logo bar",
+        "integrations-rotating \u2192 integration logo grid"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "name": "navbar / Nav",
+      "id": "navbar",
+      "layoutArchetype": "nav",
+      "scaffold": "Layout / Row",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/base",
+        "bg": "#fcfcfa",
+        "text": "#1f1f1f",
+        "accent": "#ff4800"
+      },
+      "slots": [
+        {
+          "name": "wordmark",
+          "type": "media",
+          "useCase": "HubSpot wordmark",
+          "mappedComponent": "Logo",
+          "structuralSlot": "brand"
+        },
+        {
+          "name": "nav link",
+          "type": "content",
+          "useCase": "primary nav dropdown links",
+          "mappedComponent": "Link / Secondary",
+          "structuralSlot": "navlinks"
+        },
+        {
+          "name": "sign-in text link",
+          "type": "content",
+          "useCase": "sign-in + primary CTA",
+          "mappedComponent": "Link / Secondary",
+          "structuralSlot": "actions"
+        },
+        {
+          "name": "primary CTA button",
+          "type": "content",
+          "useCase": "sign-in + primary CTA",
+          "mappedComponent": "Button / Primary",
+          "structuralSlot": "actions"
+        }
+      ]
+    },
+    {
+      "name": "hero / Stack",
+      "id": "hero",
+      "layoutArchetype": "stack",
+      "scaffold": "Section / Stack / Full bleed / Content and media",
+      "mode": "On Image",
+      "surface": {
+        "role": "surface/image",
+        "bg": "image + dark scrim",
+        "text": "#ffffff",
+        "accent": "#ff4800"
+      },
+      "slots": [
+        {
+          "name": "hero photography",
+          "type": "media",
+          "useCase": "full-bleed hero photo",
+          "mappedComponent": "Image",
+          "structuralSlot": "background"
+        },
+        {
+          "name": "tagline eyebrow",
+          "type": "content",
+          "useCase": "product-line tagline",
+          "mappedComponent": "Eyebrow",
+          "structuralSlot": "eyebrow"
+        },
+        {
+          "name": "display heading",
+          "type": "content",
+          "useCase": "animated display headline",
+          "mappedComponent": "Heading",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "supporting paragraph",
+          "type": "content",
+          "useCase": "supporting paragraph",
+          "mappedComponent": "Paragraph",
+          "structuralSlot": "body"
+        },
+        {
+          "name": "primary CTA button",
+          "type": "content",
+          "useCase": "single primary CTA",
+          "mappedComponent": "Button / Primary",
+          "structuralSlot": "actions"
+        }
+      ]
+    },
+    {
+      "name": "logo-carousel / Logos",
+      "id": "logo-carousel",
+      "layoutArchetype": "logos",
+      "scaffold": "Logos Wrapper",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/base",
+        "bg": "#fcfcfa",
+        "text": "#1f1f1f",
+        "accent": "#ff4800"
+      },
+      "slots": [
+        {
+          "name": "proof heading",
+          "type": "content",
+          "useCase": "customer proof heading",
+          "mappedComponent": "Heading",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "customer logo bar",
+          "type": "media",
+          "useCase": "customer logo carousel",
+          "mappedComponent": "Logos Wrapper",
+          "structuralSlot": "logos"
+        }
+      ]
+    },
+    {
+      "name": "customer-platform / Split",
+      "id": "customer-platform",
+      "layoutArchetype": "split",
+      "scaffold": "Section / Split / Content and media",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/base",
+        "bg": "#fcfcfa",
+        "text": "#1f1f1f",
+        "accent": "#ff4800"
+      },
+      "slots": [
+        {
+          "name": "platform intro heading",
+          "type": "content",
+          "useCase": "platform intro heading + description",
+          "mappedComponent": "Heading",
+          "structuralSlot": "intro"
+        },
+        {
+          "name": "platform description",
+          "type": "content",
+          "useCase": "platform intro heading + description",
+          "mappedComponent": "Paragraph",
+          "structuralSlot": "intro"
+        },
+        {
+          "name": "rotating feature heading",
+          "type": "content",
+          "useCase": "rotating feature statement",
+          "mappedComponent": "Heading",
+          "structuralSlot": "feature"
+        },
+        {
+          "name": "product platform graphic",
+          "type": "media",
+          "useCase": "product platform graphic",
+          "mappedComponent": "Image",
+          "structuralSlot": "media"
+        }
+      ]
+    },
+    {
+      "name": "product-platform / Grid",
+      "id": "product-platform",
+      "layoutArchetype": "grid",
+      "scaffold": "Layout / Grid",
+      "mode": "Secondary",
+      "surface": {
+        "role": "surface/raised",
+        "bg": "#f8f5ee",
+        "text": "#1f1f1f",
+        "accent": "#ff4800"
+      },
+      "slots": [
+        {
+          "name": "section heading",
+          "type": "content",
+          "useCase": "section header",
+          "mappedComponent": "Heading",
+          "structuralSlot": "intro"
+        },
+        {
+          "name": "product-hub card",
+          "type": "media",
+          "useCase": "product-hub cards",
+          "mappedComponent": "Card / Left With Icon",
+          "structuralSlot": "cards"
+        },
+        {
+          "name": "product hub icon",
+          "type": "media",
+          "useCase": "product hub icon",
+          "mappedComponent": "Image",
+          "structuralSlot": "card-icon"
+        },
+        {
+          "name": "card heading",
+          "type": "content",
+          "useCase": "product-hub cards",
+          "mappedComponent": "Heading",
+          "structuralSlot": "cards"
+        },
+        {
+          "name": "card feature bullets",
+          "type": "content",
+          "useCase": "product-hub cards",
+          "mappedComponent": "Rich Text",
+          "structuralSlot": "cards"
+        },
+        {
+          "name": "learn-more link",
+          "type": "content",
+          "useCase": "learn-more text link",
+          "mappedComponent": "Link / Secondary",
+          "structuralSlot": "card-cta"
+        }
+      ]
+    },
+    {
+      "name": "breeze-agents-carousel / Stack",
+      "id": "breeze-agents-carousel",
+      "layoutArchetype": "stack",
+      "scaffold": "Section / Stack",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/base",
+        "bg": "#fcfcfa",
+        "text": "#1f1f1f",
+        "accent": "#ff4800"
+      },
+      "slots": [
+        {
+          "name": "section heading",
+          "type": "content",
+          "useCase": "section heading",
+          "mappedComponent": "Heading",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "AI agent card",
+          "type": "media",
+          "useCase": "AI agent cards",
+          "mappedComponent": "Card / Left With Icon",
+          "structuralSlot": "cards"
+        },
+        {
+          "name": "agent icon",
+          "type": "media",
+          "useCase": "agent icon",
+          "mappedComponent": "Image",
+          "structuralSlot": "card-media"
+        },
+        {
+          "name": "agent description",
+          "type": "content",
+          "useCase": "AI agent cards",
+          "mappedComponent": "Paragraph",
+          "structuralSlot": "cards"
+        }
+      ]
+    },
+    {
+      "name": "integrations-rotating / Split",
+      "id": "integrations-rotating",
+      "layoutArchetype": "split",
+      "scaffold": "Section / Split / Content and media",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/base",
+        "bg": "#fcfcfa",
+        "text": "#1f1f1f",
+        "accent": "#ff4800"
+      },
+      "slots": [
+        {
+          "name": "integrations heading",
+          "type": "content",
+          "useCase": "integrations heading",
+          "mappedComponent": "Heading",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "see-all link",
+          "type": "content",
+          "useCase": "see-all text link",
+          "mappedComponent": "Link / Secondary",
+          "structuralSlot": "cta"
+        },
+        {
+          "name": "integration logo grid",
+          "type": "media",
+          "useCase": "integration logo grid",
+          "mappedComponent": "Logos Wrapper",
+          "structuralSlot": "logos"
+        }
+      ]
+    },
+    {
+      "name": "results-header / Header",
+      "id": "results-header",
+      "layoutArchetype": "header",
+      "scaffold": "Header",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/base",
+        "bg": "#fcfcfa",
+        "text": "#1f1f1f",
+        "accent": "#ff4800"
+      },
+      "slots": [
+        {
+          "name": "section heading",
+          "type": "content",
+          "useCase": "results section heading",
+          "mappedComponent": "Heading",
+          "structuralSlot": "heading"
+        }
+      ]
+    },
+    {
+      "name": "case-studies-tabbed / Split",
+      "id": "case-studies-tabbed",
+      "layoutArchetype": "split",
+      "scaffold": "Section / Split / Content and media",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/base",
+        "bg": "#fcfcfa",
+        "text": "#1f1f1f",
+        "accent": "#ff4800"
+      },
+      "slots": [
+        {
+          "name": "segment tab control",
+          "type": "content",
+          "useCase": "segment tab switcher",
+          "mappedComponent": "Link / Secondary",
+          "structuralSlot": "tabs"
+        },
+        {
+          "name": "testimonial quote card",
+          "type": "content",
+          "useCase": "testimonial quote card",
+          "mappedComponent": "Testimonial / Split",
+          "structuralSlot": "quote"
+        },
+        {
+          "name": "customer photo",
+          "type": "media",
+          "useCase": "customer photo",
+          "mappedComponent": "Image",
+          "structuralSlot": "avatar"
+        },
+        {
+          "name": "outcome stat blocks",
+          "type": "content",
+          "useCase": "outcome stat blocks",
+          "mappedComponent": "Metrics / Card",
+          "structuralSlot": "metrics"
+        },
+        {
+          "name": "read-case-study link",
+          "type": "content",
+          "useCase": "read-case-study link",
+          "mappedComponent": "Link / Secondary",
+          "structuralSlot": "cta"
+        }
+      ]
+    },
+    {
+      "name": "badges / Grid",
+      "id": "badges",
+      "layoutArchetype": "grid",
+      "scaffold": "Layout / Grid",
+      "mode": "base (Primary)",
+      "surface": {
+        "role": "surface/base",
+        "bg": "#fcfcfa",
+        "text": "#1f1f1f",
+        "accent": "#ff4800"
+      },
+      "slots": [
+        {
+          "name": "awards heading",
+          "type": "content",
+          "useCase": "awards heading",
+          "mappedComponent": "Heading",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "award badge image",
+          "type": "media",
+          "useCase": "G2 award badges",
+          "mappedComponent": "Image",
+          "structuralSlot": "badges"
+        }
+      ]
+    },
+    {
+      "name": "elevated-cta / Stack",
+      "id": "elevated-cta",
+      "layoutArchetype": "stack",
+      "scaffold": "Section / Stack",
+      "mode": "Inverse",
+      "surface": {
+        "role": "surface/inverse",
+        "bg": "#1f1f1f",
+        "text": "#ffffff",
+        "accent": "#ff4800"
+      },
+      "slots": [
+        {
+          "name": "closing headline",
+          "type": "content",
+          "useCase": "closing headline",
+          "mappedComponent": "Heading",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "primary CTA button",
+          "type": "content",
+          "useCase": "single primary CTA",
+          "mappedComponent": "Button / Primary",
+          "structuralSlot": "actions"
+        }
+      ]
+    },
+    {
+      "name": "footer / Grid",
+      "id": "footer",
+      "layoutArchetype": "grid",
+      "scaffold": "Layout / Grid",
+      "mode": "Inverse",
+      "surface": {
+        "role": "surface/inverse",
+        "bg": "#1f1f1f",
+        "text": "#ffffff",
+        "accent": "#ff4800"
+      },
+      "slots": [
+        {
+          "name": "footer wordmark",
+          "type": "media",
+          "useCase": "footer wordmark",
+          "mappedComponent": "Logo",
+          "structuralSlot": "brand"
+        },
+        {
+          "name": "footer nav link",
+          "type": "content",
+          "useCase": "footer nav link columns",
+          "mappedComponent": "Link / Secondary",
+          "structuralSlot": "linkcols"
+        },
+        {
+          "name": "legal copy",
+          "type": "content",
+          "useCase": "legal / copyright text",
+          "mappedComponent": "Rich Text",
+          "structuralSlot": "legal"
+        }
+      ]
+    }
+  ]
+}

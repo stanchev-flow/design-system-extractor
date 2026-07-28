@@ -1,0 +1,252 @@
+[
+  {
+    "type": "hero",
+    "label": "Hero",
+    "v": 1,
+    "recipe_id": "hero-media-collage",
+    "structure": "media-collage / collage",
+    "desc": "Signature centered serif display on mint canvas with floating product-UI cards + circle portraits.",
+    "path": "hero/v1/index.html",
+    "shot": "shots/hero-v1.png"
+  },
+  {
+    "type": "hero",
+    "label": "Hero",
+    "v": 2,
+    "recipe_id": "hero-content-media-split",
+    "structure": "content-media-split / split",
+    "desc": "Copy-left with a floating product-UI card cluster on the white canvas.",
+    "path": "hero/v2/index.html",
+    "shot": "shots/hero-v2.png"
+  },
+  {
+    "type": "hero",
+    "label": "Hero",
+    "v": 3,
+    "recipe_id": "hero-content-stack",
+    "structure": "content-stack / stack",
+    "desc": "Centered editorial copy stack over one wide platform illustration.",
+    "path": "hero/v3/index.html",
+    "shot": "shots/hero-v3.png"
+  },
+  {
+    "type": "hero",
+    "label": "Hero",
+    "v": 4,
+    "recipe_id": "hero-media-background",
+    "structure": "media-background / overlay",
+    "desc": "Inverse forest-green hero band, copy-left over a Real Talent product visual.",
+    "path": "hero/v4/index.html",
+    "shot": "shots/hero-v4.png"
+  },
+  {
+    "type": "hero",
+    "label": "Hero",
+    "v": 5,
+    "recipe_id": "hero-repeated-grid",
+    "structure": "repeated-grid / cards",
+    "desc": "Headline over a 3-up row of product entry-point cards.",
+    "path": "hero/v5/index.html",
+    "shot": "shots/hero-v5.png"
+  },
+  {
+    "type": "feature",
+    "label": "Feature grid",
+    "v": 1,
+    "recipe_id": "feature-repeated-grid",
+    "structure": "repeated-grid / cards",
+    "desc": "Measured greenhouse feature grid: 3-up media-top cards with trailing links.",
+    "path": "feature/v1/index.html",
+    "shot": "shots/feature-v1.png"
+  },
+  {
+    "type": "feature",
+    "label": "Feature grid",
+    "v": 2,
+    "recipe_id": "feature-content-media-split",
+    "structure": "content-media-split / split",
+    "desc": "Alternating media/content feature rows (order flips per row).",
+    "path": "feature/v2/index.html",
+    "shot": "shots/feature-v2.png"
+  },
+  {
+    "type": "feature",
+    "label": "Feature grid",
+    "v": 3,
+    "recipe_id": "feature-tabs",
+    "structure": "tabs / cards",
+    "desc": "Tabbed feature switcher with a product-UI panel.",
+    "path": "feature/v3/index.html",
+    "shot": "shots/feature-v3.png"
+  },
+  {
+    "type": "feature",
+    "label": "Feature grid",
+    "v": 4,
+    "recipe_id": "feature-media-collage",
+    "structure": "media-collage / collage",
+    "desc": "Single feature with a floating product-UI collage on mint.",
+    "path": "feature/v4/index.html",
+    "shot": "shots/feature-v4.png"
+  },
+  {
+    "type": "feature",
+    "label": "Feature grid",
+    "v": 5,
+    "recipe_id": "feature-media-background",
+    "structure": "media-background / overlay",
+    "desc": "Inverse forest feature band with a 3-up icon-led feature set.",
+    "path": "feature/v5/index.html",
+    "shot": "shots/feature-v5.png"
+  },
+  {
+    "type": "testimonial",
+    "label": "Testimonial",
+    "v": 1,
+    "recipe_id": "testimonial-repeated-grid",
+    "structure": "repeated-grid / cards",
+    "desc": "Measured greenhouse: heading top-left over 3-up quote blocks.",
+    "path": "testimonial/v1/index.html",
+    "shot": "shots/testimonial-v1.png"
+  },
+  {
+    "type": "testimonial",
+    "label": "Testimonial",
+    "v": 2,
+    "recipe_id": "testimonial-content-media-split",
+    "structure": "content-media-split / split",
+    "desc": "Single large quote beside a customer portrait panel.",
+    "path": "testimonial/v2/index.html",
+    "shot": "shots/testimonial-v2.png"
+  },
+  {
+    "type": "testimonial",
+    "label": "Testimonial",
+    "v": 3,
+    "recipe_id": "testimonial-carousel",
+    "structure": "carousel / cards",
+    "desc": "Peeking carousel of quote cards with prev/next controls.",
+    "path": "testimonial/v3/index.html",
+    "shot": "shots/testimonial-v3.png"
+  },
+  {
+    "type": "testimonial",
+    "label": "Testimonial",
+    "v": 4,
+    "recipe_id": "testimonial-content-stack",
+    "structure": "content-stack / stack",
+    "desc": "Centered single large pull-quote with avatar attribution.",
+    "path": "testimonial/v4/index.html",
+    "shot": "shots/testimonial-v4.png"
+  },
+  {
+    "type": "testimonial",
+    "label": "Testimonial",
+    "v": 5,
+    "recipe_id": "testimonial-media-background",
+    "structure": "media-background / overlay",
+    "desc": "Quote on an inverse forest band flanked by G2 review-award badges.",
+    "path": "testimonial/v5/index.html",
+    "shot": "shots/testimonial-v5.png"
+  },
+  {
+    "type": "logos",
+    "label": "Logo wall",
+    "v": 1,
+    "recipe_id": "logo-wall-repeated-grid",
+    "structure": "repeated-grid / cards (cols=2)",
+    "desc": "Measured greenhouse split: copy-left + 2-col logo grid right, vertical rule.",
+    "path": "logos/v1/index.html",
+    "shot": "shots/logos-v1.png"
+  },
+  {
+    "type": "logos",
+    "label": "Logo wall",
+    "v": 2,
+    "recipe_id": "logo-wall-repeated-grid",
+    "structure": "repeated-grid / cards (cols=5, center)",
+    "desc": "Centered heading over a 5-up logo row on the mint canvas.",
+    "path": "logos/v2/index.html",
+    "shot": "shots/logos-v2.png"
+  },
+  {
+    "type": "logos",
+    "label": "Logo wall",
+    "v": 3,
+    "recipe_id": "logo-wall-repeated-grid",
+    "structure": "repeated-grid / cards (cols=3, inset cards)",
+    "desc": "6 logos in white inset cards on a grey band.",
+    "path": "logos/v3/index.html",
+    "shot": "shots/logos-v3.png"
+  },
+  {
+    "type": "logos",
+    "label": "Logo wall",
+    "v": 4,
+    "recipe_id": "logo-wall-carousel",
+    "structure": "carousel / cards",
+    "desc": "Marquee logo strip on an inverse forest band (white chips preserve mark colours).",
+    "path": "logos/v4/index.html",
+    "shot": "shots/logos-v4.png"
+  },
+  {
+    "type": "logos",
+    "label": "Logo wall",
+    "v": 5,
+    "recipe_id": "logo-wall-repeated-grid",
+    "structure": "repeated-grid / cards (cols=4 + actions)",
+    "desc": "Trust wall pairing customer logos with G2 review-award badges.",
+    "path": "logos/v5/index.html",
+    "shot": "shots/logos-v5.png"
+  },
+  {
+    "type": "cta",
+    "label": "CTA band",
+    "v": 1,
+    "recipe_id": "cta-content-media-split",
+    "structure": "content-media-split / split",
+    "desc": "Measured greenhouse CTA band: forest inverse, copy-left + blue pill, fingerprint-leaf art.",
+    "path": "cta/v1/index.html",
+    "shot": "shots/cta-v1.png"
+  },
+  {
+    "type": "cta",
+    "label": "CTA band",
+    "v": 2,
+    "recipe_id": "cta-content-stack",
+    "structure": "content-stack / stack",
+    "desc": "Centered CTA stack on a forest band, primary pill + ghost.",
+    "path": "cta/v2/index.html",
+    "shot": "shots/cta-v2.png"
+  },
+  {
+    "type": "cta",
+    "label": "CTA band",
+    "v": 3,
+    "recipe_id": "cta-media-background",
+    "structure": "media-background / overlay",
+    "desc": "CTA over a photographic background with a forest overlay.",
+    "path": "cta/v3/index.html",
+    "shot": "shots/cta-v3.png"
+  },
+  {
+    "type": "cta",
+    "label": "CTA band",
+    "v": 4,
+    "recipe_id": "cta-repeated-grid",
+    "structure": "repeated-grid / cards",
+    "desc": "CTA heading over two option cards on mint.",
+    "path": "cta/v4/index.html",
+    "shot": "shots/cta-v4.png"
+  },
+  {
+    "type": "cta",
+    "label": "CTA band",
+    "v": 5,
+    "recipe_id": "cta-media-collage",
+    "structure": "media-collage / collage",
+    "desc": "CTA with a floating product-UI collage anchored to the band base.",
+    "path": "cta/v5/index.html",
+    "shot": "shots/cta-v5.png"
+  }
+]

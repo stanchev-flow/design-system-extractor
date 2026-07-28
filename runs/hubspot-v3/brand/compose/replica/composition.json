@@ -1,0 +1,761 @@
+{
+ "schemaVersion": "replica-composition.v1",
+ "order": [
+  "full-bleed-photo-hero",
+  "centered-heading-over-logo-row",
+  "copy-left-illustration-right-carousel",
+  "sticky-copy-with-card-grid",
+  "headrail-split-with-card-carousel",
+  "copy-left-logo-collage-inset",
+  "headrail-two-col-header",
+  "tabbed-testimonial-with-stats",
+  "heading-left-award-badges-right",
+  "dark-band-cta"
+ ],
+ "sections": [
+  {
+   "id": "full-bleed-photo-hero",
+   "useCase": "hero",
+   "archetype": "overlay",
+   "surfaceIntent": "surface/inverse-teal",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "full-bleed-photo-hero"
+   },
+   "slots": [
+    {
+     "name": "eyebrow",
+     "role": "eyebrow",
+     "textLen": "short",
+     "sizeClass": "caption",
+     "z": "front",
+     "contract": "eyebrow",
+     "copy": {
+      "eyebrow": "HubSpot Agentic Customer Platform"
+     }
+    },
+    {
+     "name": "heading",
+     "role": "heading \u2014 display",
+     "textLen": "medium",
+     "sizeClass": "hero",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "Where go-to-market teams go to grow."
+     }
+    },
+    {
+     "name": "body",
+     "role": "body",
+     "textLen": "medium",
+     "sizeClass": "body",
+     "z": "front",
+     "contract": "paragraph",
+     "copy": {
+      "text": "Unite marketing, sales, and customer service on one agentic customer platform that delivers results fast.",
+      "body": "Unite marketing, sales, and customer service on one agentic customer platform that delivers results fast."
+     }
+    },
+    {
+     "name": "actions",
+     "role": "actions \u2014 action-group",
+     "sizeClass": "control",
+     "width": "hug",
+     "z": "front",
+     "contract": "button",
+     "copy": {
+      "label": "Get a demo",
+      "styleHint": "filled"
+     }
+    },
+    {
+     "name": "actions-secondary",
+     "role": "secondary action",
+     "contract": "button",
+     "copy": {
+      "label": "Get started free",
+      "styleHint": "outlined"
+     }
+    },
+    {
+     "name": "background-media",
+     "role": "background-media",
+     "z": "back",
+     "mediaAspect": "1440 / 772",
+     "contract": "image",
+     "asset": {
+      "src": "018-hs-full-bleed-1-optmised.webp",
+      "alt": "HubSpot background-media"
+     }
+    },
+    {
+     "name": "utility-card",
+     "role": "utility-card \u2014 floating-card",
+     "textLen": "short",
+     "sizeClass": "caption",
+     "width": "fixed",
+     "z": "front",
+     "contract": "card",
+     "copy": [
+      {
+       "heading": "",
+       "text": "\ud83d\udc4b Want to chat about HubSpot? I\u2019m here to help you find your way."
+      }
+     ]
+    }
+   ],
+   "treatments": [
+    {
+     "kind": "text-on-media",
+     "target": "heading",
+     "amountClass": "full-scrim"
+    }
+   ],
+   "_requiresHydration": true,
+   "alignment": {
+    "anchor": "centered"
+   }
+  },
+  {
+   "id": "centered-heading-over-logo-row",
+   "useCase": "logos",
+   "archetype": "row",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "centered-heading-over-logo-row"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 h2",
+     "textLen": "medium",
+     "sizeClass": "title",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "299,000+ customers in over 135 countries grow their businesses with HubSpot.",
+      "level": "h2"
+     }
+    },
+    {
+     "name": "logo-row",
+     "role": "logo-row \u2014 mark-row",
+     "z": "front",
+     "mediaAspect": "wide",
+     "contract": "logo",
+     "copy": [
+      "019-ebay-logo.svg",
+      "020-doordash-logo.svg",
+      "021-reddit-logo.svg",
+      "022-tripadvisor-logo.svg",
+      "023-eventbrite-logo.svg"
+     ]
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true,
+   "alignment": {
+    "anchor": "centered"
+   }
+  },
+  {
+   "id": "copy-left-illustration-right-carousel",
+   "useCase": "features",
+   "archetype": "split",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "copy-left-illustration-right-carousel"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 h2",
+     "textLen": "short",
+     "sizeClass": "display",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "HubSpot's Agentic Customer Platform"
+     }
+    },
+    {
+     "name": "subheading",
+     "role": "subheading \u2014 body",
+     "textLen": "medium",
+     "sizeClass": "body",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "HubSpot's Agentic Customer Platform"
+     }
+    },
+    {
+     "name": "item-heading",
+     "role": "item-heading \u2014 h3",
+     "textLen": "short",
+     "sizeClass": "title",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "HubSpot's Agentic Customer Platform",
+      "level": "h2"
+     }
+    },
+    {
+     "name": "item-body",
+     "role": "item-body \u2014 body",
+     "textLen": "medium",
+     "sizeClass": "body",
+     "z": "front",
+     "contract": "paragraph",
+     "copy": {
+      "text": "Connected data and tools make it easier to know, do, and connect everything across your business.",
+      "body": "Connected data and tools make it easier to know, do, and connect everything across your business."
+     }
+    },
+    {
+     "name": "illustration",
+     "role": "illustration \u2014 illustration-media",
+     "z": "front",
+     "mediaAspect": "landscape",
+     "contract": "image",
+     "asset": {
+      "src": "024-customer-20platform-20graphic-20-20smart-20crm1-5x-20-1.png",
+      "alt": "HubSpot illustration"
+     }
+    },
+    {
+     "name": "carousel-nav",
+     "role": "carousel-nav \u2014 carousel-control",
+     "sizeClass": "control",
+     "width": "hug",
+     "z": "front",
+     "contract": "paragraph",
+     "copy": {
+      "text": "Connected data and tools make it easier to know, do, and connect everything across your business.",
+      "body": "Connected data and tools make it easier to know, do, and connect everything across your business."
+     }
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true
+  },
+  {
+   "id": "sticky-copy-with-card-grid",
+   "useCase": "features",
+   "archetype": "split",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "sticky-copy-with-card-grid"
+   },
+   "slots": [
+    {
+     "name": "eyebrow",
+     "role": "eyebrow",
+     "textLen": "short",
+     "sizeClass": "caption",
+     "z": "front",
+     "contract": "eyebrow",
+     "copy": {
+      "eyebrow": "Powered by AI"
+     }
+    },
+    {
+     "name": "heading",
+     "role": "heading \u2014 display",
+     "textLen": "medium",
+     "sizeClass": "display",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "Growing a business is hard. HubSpot makes it easier."
+     }
+    },
+    {
+     "name": "body",
+     "role": "body",
+     "textLen": "long",
+     "sizeClass": "body",
+     "z": "front",
+     "contract": "paragraph",
+     "copy": {
+      "text": "Disconnected tools and data slow you down. HubSpot connects everything \u2014 and everyone \u2014 in one place to make growing a business easier than you think.",
+      "body": "Disconnected tools and data slow you down. HubSpot connects everything \u2014 and everyone \u2014 in one place to make growing a business easier than you think."
+     }
+    },
+    {
+     "name": "actions",
+     "role": "actions \u2014 action-group",
+     "sizeClass": "control",
+     "width": "hug",
+     "z": "front",
+     "contract": "button",
+     "copy": {
+      "label": "Get a demo",
+      "styleHint": "filled"
+     }
+    },
+    {
+     "name": "actions-secondary",
+     "role": "secondary action",
+     "contract": "button",
+     "copy": {
+      "label": "Get started free",
+      "styleHint": "outlined"
+     }
+    },
+    {
+     "name": "card-grid",
+     "role": "card-grid",
+     "z": "front",
+     "contract": "card",
+     "copy": [
+      {
+       "heading": "Marketing Hub\u00ae",
+       "text": "Attract and convert the right leads. Run campaigns, personalize content, and track it all.",
+       "link": "Learn more",
+       "asset": "028-producticons-marketinghub-icon-orange.webp",
+       "alt": "028 producticons marketinghub icon orange"
+      },
+      {
+       "heading": "Sales Hub\u00ae",
+       "text": "Generate quality leads and close deals, faster. Automate prospecting, manage pipeline, and accelerate revenue growth.",
+       "link": "Learn more",
+       "asset": "029-producticons-saleshub-icon-orange.webp",
+       "alt": "029 producticons saleshub icon orange"
+      },
+      {
+       "heading": "Service Hub\u00ae",
+       "text": "Streamline and scale support to serve customers faster. Drive retention with actionable insights, customer health scores, and real-time usage data.",
+       "link": "Learn more",
+       "asset": "030-producticons-servicehub-icon-orange.webp",
+       "alt": "030 producticons servicehub icon orange"
+      },
+      {
+       "heading": "Content Hub\u2122",
+       "text": "Create content that clicks with your audience. Build pages, publish content across channels, and stay on brand.",
+       "link": "Learn more",
+       "asset": "031-producticons-contenthub-icon-orange.webp",
+       "alt": "031 producticons contenthub icon orange"
+      },
+      {
+       "heading": "Data Hub\u2122",
+       "text": "Turn scattered data into unified intelligence. Combine, clean, and activate your customer data across every team and tool.",
+       "link": "Learn more",
+       "asset": "032-producticons-datahub-icon-orange.webp",
+       "alt": "032 producticons datahub icon orange"
+      },
+      {
+       "heading": "Revenue Hub\u2122",
+       "text": "Make it easy for customers to pay you. Send quotes, collect payments, and manage subscriptions.",
+       "link": "Learn more",
+       "asset": "033-producticons-commercehub-icon-orange.webp",
+       "alt": "033 producticons commercehub icon orange"
+      },
+      {
+       "heading": "Smart CRM\u2122",
+       "text": "All your customer data in one place. Keep your data clean, connected, and actionable.",
+       "link": "Learn more",
+       "asset": "034-producticons-smartcrm-icon-orange.webp",
+       "alt": "034 producticons smartcrm icon orange"
+      },
+      {
+       "heading": "Breeze\u2122",
+       "text": "AI that works with you, and for you. Agents & assistants everywhere you need them.",
+       "link": "Learn more",
+       "asset": "035-breeze-20icon.svg",
+       "alt": "035 breeze 20icon"
+      },
+      {
+       "heading": "Small Business Bundle",
+       "text": "The Starter edition of each product, at one low price.",
+       "link": "Learn more",
+       "asset": "009-small-business.svg",
+       "alt": "009 small business"
+      },
+      {
+       "heading": "AEO (Beta)",
+       "text": "See where your brand shows up in AI results. Get recommendations to improve your visibility.",
+       "link": "Learn more",
+       "asset": "027-ai-20sparkle.svg",
+       "alt": "027 ai 20sparkle"
+      }
+     ]
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true,
+   "grid": {
+    "columns": 2,
+    "gutter": "32px"
+   }
+  },
+  {
+   "id": "headrail-split-with-card-carousel",
+   "useCase": "features",
+   "archetype": "band",
+   "surfaceIntent": "surface/accent-soft",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "headrail-split-with-card-carousel"
+   },
+   "slots": [
+    {
+     "name": "headrail",
+     "role": "headrail \u2014 section-headrail",
+     "z": "front",
+     "contract": "eyebrow",
+     "copy": {
+      "eyebrow": "Explore Breeze Agents built-in AI that do work for you"
+     }
+    },
+    {
+     "name": "heading",
+     "role": "heading \u2014 h2",
+     "textLen": "short",
+     "sizeClass": "display",
+     "width": "half",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "Built-in AI agents that work for you 24/7."
+     }
+    },
+    {
+     "name": "body",
+     "role": "body",
+     "textLen": "medium",
+     "sizeClass": "body",
+     "width": "half",
+     "z": "front",
+     "contract": "paragraph",
+     "copy": {
+      "text": "Breeze Agents are your always-on teammates. They can resolve over 65% of customer inquiries, accelerate your sales pipeline, and whip up quality content in no time.",
+      "body": "Breeze Agents are your always-on teammates. They can resolve over 65% of customer inquiries, accelerate your sales pipeline, and whip up quality content in no time."
+     }
+    },
+    {
+     "name": "card-carousel",
+     "role": "card-carousel",
+     "z": "front",
+     "contract": "card",
+     "copy": [
+      {
+       "heading": "Customer Agent",
+       "text": "Resolve 65% of your customer inquiries automatically.",
+       "link": "Learn more about Customer Agent",
+       "asset": "036-customer-agent-en-2x.png",
+       "alt": "036 customer agent en 2x"
+      },
+      {
+       "heading": "Prospecting Agent",
+       "text": "Spot buying signals, source contacts, and launch personalized outreach \u2014 instantly.",
+       "asset": "037-prospecting-agent-en-2x.png",
+       "alt": "037 prospecting agent en 2x"
+      },
+      {
+       "heading": "Data Agent",
+       "text": "Get instant answers to customer questions about your customer data.",
+       "asset": "038-data-hub-en-2x.png",
+       "alt": "038 data hub en 2x"
+      }
+     ]
+    }
+   ],
+   "treatments": [
+    {
+     "kind": "bleed",
+     "target": "card-carousel",
+     "amountClass": "edge-cropped-cards"
+    }
+   ],
+   "_requiresHydration": true,
+   "grid": {
+    "columns": 2,
+    "gutter": "40px"
+   }
+  },
+  {
+   "id": "copy-left-logo-collage-inset",
+   "useCase": "integrations",
+   "archetype": "split",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "copy-left-logo-collage-inset"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 h2",
+     "textLen": "medium",
+     "sizeClass": "title",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "Works with the tools you already use. 2,000+ integrations.",
+      "level": "h2"
+     }
+    },
+    {
+     "name": "link",
+     "role": "link \u2014 text-underline-link",
+     "sizeClass": "control",
+     "width": "hug",
+     "z": "front",
+     "contract": "paragraph",
+     "copy": {
+      "text": "",
+      "body": ""
+     }
+    },
+    {
+     "name": "logo-collage",
+     "role": "logo-collage \u2014 mark-collage",
+     "z": "front",
+     "mediaAspect": "landscape",
+     "contract": "logo",
+     "copy": [
+      "044-slack-icon-2.svg",
+      "042-zapier-icon-2.svg",
+      "040-shopify-icon-3.svg",
+      "041-mailchimp-icon-3.svg",
+      "043-google-ads-icon-2.svg",
+      "039-gmail-icon-3.svg"
+     ]
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true
+  },
+  {
+   "id": "headrail-two-col-header",
+   "useCase": "content",
+   "archetype": "band",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "headrail-two-col-header"
+   },
+   "slots": [
+    {
+     "name": "headrail",
+     "role": "headrail \u2014 section-headrail",
+     "z": "front",
+     "contract": "eyebrow",
+     "copy": {
+      "eyebrow": "Case Studies"
+     }
+    },
+    {
+     "name": "heading",
+     "role": "heading \u2014 display",
+     "textLen": "medium",
+     "sizeClass": "display",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "Remarkable results for every size business."
+     }
+    },
+    {
+     "name": "body",
+     "role": "body",
+     "textLen": "medium",
+     "sizeClass": "body",
+     "z": "front",
+     "contract": "paragraph",
+     "copy": {
+      "text": "Scale your business with HubSpot. The proof is in our customers\u2019 success.",
+      "body": "Scale your business with HubSpot. The proof is in our customers\u2019 success."
+     }
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true
+  },
+  {
+   "id": "tabbed-testimonial-with-stats",
+   "useCase": "testimonial",
+   "archetype": "split",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "tabbed-testimonial-with-stats"
+   },
+   "slots": [
+    {
+     "name": "tab-row",
+     "role": "tab-row",
+     "z": "front",
+     "contract": "paragraph",
+     "copy": {
+      "text": "",
+      "body": ""
+     }
+    },
+    {
+     "name": "portrait",
+     "role": "portrait \u2014 portrait-media",
+     "z": "front",
+     "mediaAspect": "landscape",
+     "contract": "image",
+     "asset": {
+      "src": "045-unipart-1.png",
+      "alt": "HubSpot portrait"
+     }
+    },
+    {
+     "name": "quote",
+     "role": "quote \u2014 body",
+     "textLen": "long",
+     "sizeClass": "body",
+     "z": "front",
+     "contract": "testimonial",
+     "copy": {
+      "quote": "\u201cHubSpot took the time to understand our business needs fully. The pre-sales and subsequent support really stood out from the start. They committed to engage with us deeply and work side-by-side with us on the implementation. They\u2019ve since more than met this commitment.\u201d",
+      "name": "Adam Jones, Director of Business Development, Unipart",
+      "role": ""
+     }
+    },
+    {
+     "name": "attribution",
+     "role": "attribution \u2014 caption",
+     "textLen": "short",
+     "sizeClass": "caption",
+     "z": "front",
+     "contract": "eyebrow",
+     "copy": {
+      "eyebrow": "Adam Jones, Director of Business Development, Unipart"
+     }
+    },
+    {
+     "name": "link",
+     "role": "link \u2014 text-underline-link",
+     "sizeClass": "control",
+     "width": "hug",
+     "z": "front",
+     "contract": "paragraph",
+     "copy": {
+      "text": "",
+      "body": ""
+     }
+    },
+    {
+     "name": "stat-row",
+     "role": "stat-row",
+     "z": "front",
+     "contract": "paragraph",
+     "copy": {
+      "text": "",
+      "body": ""
+     }
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true
+  },
+  {
+   "id": "heading-left-award-badges-right",
+   "useCase": "logos",
+   "archetype": "row",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "heading-left-award-badges-right"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 h2",
+     "textLen": "short",
+     "sizeClass": "title",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "Voted #1 in 526 G2 Reports",
+      "level": "h2"
+     }
+    },
+    {
+     "name": "badge-row",
+     "role": "badge-row \u2014 mark-row",
+     "z": "front",
+     "mediaAspect": "portrait",
+     "contract": "logo",
+     "copy": [
+      "048-badge-leader-small-business.png",
+      "049-bagde-most-implementable.png",
+      "050-best-relationships-small-business.png",
+      "051-best-support-enterprise.png",
+      "052-badge-best-results-mid-market.png",
+      "053-badge-best-usability-enterprise.png"
+     ]
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true
+  },
+  {
+   "id": "dark-band-cta",
+   "useCase": "cta",
+   "archetype": "band",
+   "surfaceIntent": "surface/inverse-teal",
+   "novelty": "reuse",
+   "seededFrom": {
+    "lib": "project",
+    "id": "dark-band-cta"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 display",
+     "textLen": "medium",
+     "sizeClass": "display",
+     "z": "front",
+     "contract": "heading",
+     "copy": {
+      "heading": "Make impossible growth feel impossibly easy, with HubSpot."
+     }
+    },
+    {
+     "name": "actions",
+     "role": "actions \u2014 action-group",
+     "sizeClass": "control",
+     "width": "hug",
+     "z": "front",
+     "contract": "button",
+     "copy": {
+      "label": "Get a demo",
+      "styleHint": "filled"
+     }
+    },
+    {
+     "name": "actions-secondary",
+     "role": "secondary action",
+     "contract": "button",
+     "copy": {
+      "label": "Get started free",
+      "styleHint": "outlined"
+     }
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true
+  }
+ ],
+ "errors": {}
+}

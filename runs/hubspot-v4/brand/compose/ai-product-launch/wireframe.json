@@ -1,0 +1,804 @@
+{
+  "schemaVersion": "wireframe.v1",
+  "page": {
+    "storyRhythm": [
+      "orient-and-prove",
+      "scale-proof",
+      "explain-or-prove",
+      "explain-or-prove",
+      "scale-proof",
+      "explain-or-prove",
+      "human-proof",
+      "convert"
+    ],
+    "densitySequence": [
+      "dense",
+      "open",
+      "dense",
+      "dense",
+      "balanced",
+      "balanced",
+      "open",
+      "open"
+    ],
+    "surfaceSequence": [
+      "inverse",
+      "primary",
+      "primary",
+      "accent-soft",
+      "primary",
+      "primary",
+      "primary",
+      "inverse"
+    ],
+    "maxConsecutiveTextOnly": 1,
+    "brandPrecedence": [
+      "measured-pattern-or-recipe",
+      "designed-from-brand-component-or-pattern",
+      "brand-style-archetype",
+      "relume-structural-fallback"
+    ]
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "index": 0,
+      "job": "orient-and-prove",
+      "density": "dense",
+      "surfaceRole": "inverse",
+      "visualAnchor": [
+        "background-media",
+        "actions"
+      ],
+      "conversionRole": "supporting",
+      "skeleton": "hero-product-canvas-panel",
+      "componentFamily": "hero",
+      "structureProvenance": "measured-brand-pattern",
+      "structureRecipeId": null,
+      "requiredSlots": [
+        "eyebrow",
+        "heading",
+        "subheading",
+        "actions"
+      ],
+      "optionalSlots": [
+        {
+          "slot": "utility-card",
+          "contract": "card",
+          "rendererGap": "item contracts require the cards collection path"
+        }
+      ],
+      "ctaRequired": false,
+      "proofRequired": true,
+      "collections": [],
+      "testimonial": null,
+      "responsive": {
+        "collapse": "single-column",
+        "preserveGrouping": true
+      },
+      "assetRequirements": [
+        {
+          "slot": "background-media",
+          "status": "bound"
+        },
+        {
+          "slot": "actions",
+          "status": "bound"
+        }
+      ],
+      "assetRequests": [],
+      "rendererCapabilities": [
+        {
+          "slot": "eyebrow",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "heading",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "subheading",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "actions",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        }
+      ],
+      "licensedTextOnly": false,
+      "sparseRun": 0
+    },
+    {
+      "id": "customer-proof",
+      "index": 1,
+      "job": "scale-proof",
+      "density": "open",
+      "surfaceRole": "primary",
+      "visualAnchor": [
+        "logo-row"
+      ],
+      "conversionRole": "none",
+      "skeleton": "stack",
+      "componentFamily": "logos",
+      "structureProvenance": "designed-brand-pattern",
+      "structureRecipeId": null,
+      "requiredSlots": [
+        "heading",
+        "logo-row"
+      ],
+      "optionalSlots": [],
+      "ctaRequired": false,
+      "proofRequired": true,
+      "collections": [],
+      "testimonial": null,
+      "responsive": {
+        "collapse": "single-column",
+        "preserveGrouping": true
+      },
+      "assetRequirements": [
+        {
+          "slot": "logo-row",
+          "status": "bound"
+        }
+      ],
+      "assetRequests": [],
+      "rendererCapabilities": [
+        {
+          "slot": "heading",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "logo-row",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        }
+      ],
+      "licensedTextOnly": false,
+      "sparseRun": 0
+    },
+    {
+      "id": "product-education",
+      "index": 2,
+      "job": "explain-or-prove",
+      "density": "dense",
+      "surfaceRole": "primary",
+      "visualAnchor": [
+        "illustration"
+      ],
+      "conversionRole": "none",
+      "skeleton": "split",
+      "componentFamily": "features",
+      "structureProvenance": "brand-style-archetype",
+      "structureRecipeId": null,
+      "requiredSlots": [
+        "heading",
+        "subheading",
+        "body"
+      ],
+      "optionalSlots": [],
+      "ctaRequired": false,
+      "proofRequired": false,
+      "collections": [],
+      "testimonial": null,
+      "responsive": {
+        "collapse": "single-column",
+        "preserveGrouping": true
+      },
+      "assetRequirements": [
+        {
+          "slot": "illustration",
+          "status": "bound"
+        }
+      ],
+      "assetRequests": [],
+      "rendererCapabilities": [
+        {
+          "slot": "heading",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "subheading",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "body",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        }
+      ],
+      "licensedTextOnly": false,
+      "sparseRun": 0
+    },
+    {
+      "id": "feature-proof",
+      "index": 3,
+      "job": "explain-or-prove",
+      "density": "dense",
+      "surfaceRole": "accent-soft",
+      "visualAnchor": [
+        "card-carousel",
+        "component-cluster:card-carousel"
+      ],
+      "conversionRole": "none",
+      "skeleton": "cards",
+      "componentFamily": "collection",
+      "structureProvenance": "measured-brand-pattern",
+      "structureRecipeId": null,
+      "requiredSlots": [
+        "headrail",
+        "heading",
+        "body",
+        "card-carousel"
+      ],
+      "optionalSlots": [],
+      "ctaRequired": false,
+      "proofRequired": false,
+      "collections": [
+        {
+          "slot": "card-carousel",
+          "itemContract": "card",
+          "items": [
+            {
+              "heading": "Customer Agent",
+              "body": "Resolve over 65% of your customer inquiries automatically, around the clock.",
+              "asset": "036-customer-agent-en-2x.png",
+              "span": 1
+            },
+            {
+              "heading": "Prospecting Agent",
+              "body": "Spot buying signals, source contacts, and launch personalized outreach \u2014 instantly.",
+              "asset": "037-prospecting-agent-en-2x.png",
+              "span": 1
+            },
+            {
+              "heading": "Data Agent",
+              "body": "Get instant answers to questions about your customer data, in plain language.",
+              "asset": "038-data-hub-en-2x.png",
+              "span": 2,
+              "contentMeasureCh": 28.0
+            }
+          ],
+          "layout": "grid",
+          "columns": 2,
+          "wrap": true,
+          "fillStrategy": "tail-span",
+          "fillCandidates": [
+            {
+              "strategy": "higher-columns",
+              "columns": 3,
+              "feasible": false,
+              "score": 0,
+              "reasons": [
+                "item width 184.0px < family minimum 288.0px",
+                "item 1 body projects to 7 lines",
+                "item 2 body projects to 7 lines",
+                "item 3 body projects to 6 lines"
+              ]
+            },
+            {
+              "strategy": "licensed-asymmetry",
+              "columns": 2,
+              "feasible": false,
+              "score": 0,
+              "reasons": [
+                "partial rows require an explicit license and real balancing counterweight"
+              ]
+            },
+            {
+              "strategy": "lead-span",
+              "columns": 2,
+              "targetIndex": 0,
+              "feasible": false,
+              "score": 0,
+              "reasons": [
+                "lead-span requires one explicitly strongest lead/primary item"
+              ],
+              "hierarchy": [
+                0,
+                0,
+                0
+              ],
+              "demandScores": [
+                114.0,
+                124.0,
+                111.0
+              ],
+              "fullSpanInnerMeasureCh": 69.0,
+              "preferredMeasureCh": 28.0
+            },
+            {
+              "strategy": "tail-span",
+              "columns": 2,
+              "targetIndex": 2,
+              "feasible": true,
+              "score": 78,
+              "reasons": [
+                "constrain full-span content to 28.0ch inside the filled card"
+              ],
+              "hierarchy": [
+                0,
+                0,
+                0
+              ],
+              "demandScores": [
+                114.0,
+                124.0,
+                111.0
+              ],
+              "fullSpanInnerMeasureCh": 69.0,
+              "preferredMeasureCh": 28.0
+            },
+            {
+              "strategy": "single-column",
+              "columns": 1,
+              "feasible": true,
+              "score": 72,
+              "reasons": [
+                "row-complete fallback with the strongest stacked reading order"
+              ]
+            }
+          ],
+          "balancingCounterweight": null,
+          "componentFit": {
+            "contentDemand": [
+              {
+                "headingChars": 14,
+                "bodyChars": 76,
+                "longestUnbreakableToken": 14,
+                "childRoles": [
+                  "asset",
+                  "heading",
+                  "body"
+                ],
+                "preferredMeasureCh": 28,
+                "maxHeadingLines": 3,
+                "maxBodyLines": 5,
+                "minItemWidth": 288.0
+              },
+              {
+                "headingChars": 17,
+                "bodyChars": 83,
+                "longestUnbreakableToken": 12,
+                "childRoles": [
+                  "asset",
+                  "heading",
+                  "body"
+                ],
+                "preferredMeasureCh": 28,
+                "maxHeadingLines": 3,
+                "maxBodyLines": 5,
+                "minItemWidth": 288.0
+              },
+              {
+                "headingChars": 10,
+                "bodyChars": 77,
+                "longestUnbreakableToken": 9,
+                "childRoles": [
+                  "asset",
+                  "heading",
+                  "body"
+                ],
+                "preferredMeasureCh": 28,
+                "maxHeadingLines": 3,
+                "maxBodyLines": 5,
+                "minItemWidth": 288.0
+              }
+            ],
+            "containerWidth": 1080.0,
+            "availableWidth": 616.0,
+            "allocation": "counterweight-column",
+            "gutter": 32.0,
+            "itemPadding": 32.0,
+            "minItemWidth": 288.0,
+            "preferredMeasureCh": 28,
+            "maxHeadingLines": 3,
+            "maxBodyLines": 5,
+            "requestedColumns": 3,
+            "candidateWidths": [
+              {
+                "columns": 3,
+                "itemWidth": 184.0,
+                "innerMeasureCh": 15.0,
+                "feasible": false,
+                "reasons": [
+                  "item width 184.0px < family minimum 288.0px",
+                  "item 1 body projects to 7 lines",
+                  "item 2 body projects to 7 lines",
+                  "item 3 body projects to 6 lines"
+                ]
+              },
+              {
+                "columns": 2,
+                "itemWidth": 292.0,
+                "innerMeasureCh": 28.5,
+                "feasible": true,
+                "reasons": []
+              },
+              {
+                "columns": 1,
+                "itemWidth": 616.0,
+                "innerMeasureCh": 69.0,
+                "feasible": true,
+                "reasons": []
+              }
+            ],
+            "chosenColumns": 2,
+            "internalAnatomy": "icon-top",
+            "familyAnatomyUniform": true,
+            "responsiveBreakpoints": [
+              {
+                "minContainerWidth": 320.0,
+                "columns": 1
+              },
+              {
+                "minContainerWidth": 608.0,
+                "columns": 2
+              }
+            ],
+            "fillStrategy": "tail-span",
+            "fillCandidates": [
+              {
+                "strategy": "higher-columns",
+                "columns": 3,
+                "feasible": false,
+                "score": 0,
+                "reasons": [
+                  "item width 184.0px < family minimum 288.0px",
+                  "item 1 body projects to 7 lines",
+                  "item 2 body projects to 7 lines",
+                  "item 3 body projects to 6 lines"
+                ]
+              },
+              {
+                "strategy": "licensed-asymmetry",
+                "columns": 2,
+                "feasible": false,
+                "score": 0,
+                "reasons": [
+                  "partial rows require an explicit license and real balancing counterweight"
+                ]
+              },
+              {
+                "strategy": "lead-span",
+                "columns": 2,
+                "targetIndex": 0,
+                "feasible": false,
+                "score": 0,
+                "reasons": [
+                  "lead-span requires one explicitly strongest lead/primary item"
+                ],
+                "hierarchy": [
+                  0,
+                  0,
+                  0
+                ],
+                "demandScores": [
+                  114.0,
+                  124.0,
+                  111.0
+                ],
+                "fullSpanInnerMeasureCh": 69.0,
+                "preferredMeasureCh": 28.0
+              },
+              {
+                "strategy": "tail-span",
+                "columns": 2,
+                "targetIndex": 2,
+                "feasible": true,
+                "score": 78,
+                "reasons": [
+                  "constrain full-span content to 28.0ch inside the filled card"
+                ],
+                "hierarchy": [
+                  0,
+                  0,
+                  0
+                ],
+                "demandScores": [
+                  114.0,
+                  124.0,
+                  111.0
+                ],
+                "fullSpanInnerMeasureCh": 69.0,
+                "preferredMeasureCh": 28.0
+              },
+              {
+                "strategy": "single-column",
+                "columns": 1,
+                "feasible": true,
+                "score": 72,
+                "reasons": [
+                  "row-complete fallback with the strongest stacked reading order"
+                ]
+              }
+            ],
+            "itemSpans": [
+              1,
+              1,
+              2
+            ],
+            "fullSpanContentMeasureCh": 28.0,
+            "balancingCounterweight": null
+          },
+          "responsive": {
+            "mobileColumns": 1,
+            "collapse": "preserve-item",
+            "breakpoints": [
+              {
+                "minContainerWidth": 320.0,
+                "columns": 1
+              },
+              {
+                "minContainerWidth": 608.0,
+                "columns": 2
+              }
+            ]
+          }
+        }
+      ],
+      "testimonial": null,
+      "responsive": {
+        "collapse": "single-column",
+        "preserveGrouping": true
+      },
+      "assetRequirements": [
+        {
+          "slot": "card-carousel",
+          "status": "bound"
+        }
+      ],
+      "assetRequests": [],
+      "rendererCapabilities": [
+        {
+          "slot": "headrail",
+          "consumable": true,
+          "path": "cards adapter + grouped module renderer"
+        },
+        {
+          "slot": "heading",
+          "consumable": true,
+          "path": "cards adapter + grouped module renderer"
+        },
+        {
+          "slot": "body",
+          "consumable": true,
+          "path": "cards adapter + grouped module renderer"
+        },
+        {
+          "slot": "card-carousel",
+          "consumable": true,
+          "path": "cards adapter + grouped module renderer"
+        }
+      ],
+      "licensedTextOnly": false,
+      "sparseRun": 0
+    },
+    {
+      "id": "integrations",
+      "index": 4,
+      "job": "scale-proof",
+      "density": "balanced",
+      "surfaceRole": "primary",
+      "visualAnchor": [
+        "logo-collage"
+      ],
+      "conversionRole": "none",
+      "skeleton": "split",
+      "componentFamily": "logos",
+      "structureProvenance": "designed-brand-pattern",
+      "structureRecipeId": null,
+      "requiredSlots": [
+        "heading",
+        "logo-collage"
+      ],
+      "optionalSlots": [
+        {
+          "slot": "read-link",
+          "contract": "link",
+          "rendererGap": "no registered consumer for contract 'link' in 'split'"
+        }
+      ],
+      "ctaRequired": false,
+      "proofRequired": true,
+      "collections": [],
+      "testimonial": null,
+      "responsive": {
+        "collapse": "single-column",
+        "preserveGrouping": true
+      },
+      "assetRequirements": [
+        {
+          "slot": "logo-collage",
+          "status": "bound"
+        }
+      ],
+      "assetRequests": [],
+      "rendererCapabilities": [
+        {
+          "slot": "heading",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "logo-collage",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        }
+      ],
+      "licensedTextOnly": false,
+      "sparseRun": 0
+    },
+    {
+      "id": "results",
+      "index": 5,
+      "job": "explain-or-prove",
+      "density": "balanced",
+      "surfaceRole": "primary",
+      "visualAnchor": [
+        "stats"
+      ],
+      "conversionRole": "none",
+      "skeleton": "stack",
+      "componentFamily": "gallery",
+      "structureProvenance": "designed-brand-pattern",
+      "structureRecipeId": null,
+      "requiredSlots": [
+        "eyebrow",
+        "heading",
+        "stats"
+      ],
+      "optionalSlots": [],
+      "ctaRequired": false,
+      "proofRequired": false,
+      "collections": [],
+      "testimonial": null,
+      "responsive": {
+        "collapse": "single-column",
+        "preserveGrouping": true
+      },
+      "assetRequirements": [
+        {
+          "slot": "stats",
+          "status": "bound"
+        }
+      ],
+      "assetRequests": [],
+      "rendererCapabilities": [
+        {
+          "slot": "eyebrow",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "heading",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "stats",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        }
+      ],
+      "licensedTextOnly": false,
+      "sparseRun": 0
+    },
+    {
+      "id": "testimonial",
+      "index": 6,
+      "job": "human-proof",
+      "density": "open",
+      "surfaceRole": "primary",
+      "visualAnchor": [
+        "panels"
+      ],
+      "conversionRole": "none",
+      "skeleton": "split",
+      "componentFamily": "testimonial",
+      "structureProvenance": "measured-brand-pattern",
+      "structureRecipeId": null,
+      "requiredSlots": [
+        "panels"
+      ],
+      "optionalSlots": [],
+      "ctaRequired": false,
+      "proofRequired": true,
+      "collections": [],
+      "testimonial": {
+        "componentContract": "testimonial",
+        "complete": true,
+        "quote": "HubSpot took the time to understand our business needs fully. The pre-sales and subsequent support really stood out from the start. They committed to engage with us deeply and work side-by-side with us on the implementation.",
+        "attribution": {
+          "name": "Adam Jones",
+          "role": "Director of Business Development, Unipart"
+        },
+        "asset": "045-unipart-1.png",
+        "assetStatus": "bound",
+        "assetSource": "composition",
+        "assetRequest": null,
+        "internalAnatomy": "portrait-side",
+        "optionalRoles": [],
+        "preferredMeasureCh": 58,
+        "minComponentWidth": 480,
+        "maxEmptySpaceRatio": 0.68,
+        "accentLicensed": true
+      },
+      "responsive": {
+        "collapse": "single-column",
+        "preserveGrouping": true
+      },
+      "assetRequirements": [
+        {
+          "slot": "panels",
+          "status": "bound"
+        }
+      ],
+      "assetRequests": [],
+      "rendererCapabilities": [
+        {
+          "slot": "panels",
+          "consumable": false,
+          "path": "no registered consumer for contract 'tabs' in 'split'"
+        }
+      ],
+      "licensedTextOnly": false,
+      "sparseRun": 0
+    },
+    {
+      "id": "closing",
+      "index": 7,
+      "job": "convert",
+      "density": "open",
+      "surfaceRole": "inverse",
+      "visualAnchor": [
+        "actions"
+      ],
+      "conversionRole": "primary",
+      "skeleton": "stack",
+      "componentFamily": "cta",
+      "structureProvenance": "measured-brand-pattern",
+      "structureRecipeId": null,
+      "requiredSlots": [
+        "heading",
+        "actions"
+      ],
+      "optionalSlots": [],
+      "ctaRequired": true,
+      "proofRequired": false,
+      "collections": [],
+      "testimonial": null,
+      "responsive": {
+        "collapse": "single-column",
+        "preserveGrouping": true
+      },
+      "assetRequirements": [
+        {
+          "slot": "actions",
+          "status": "bound"
+        }
+      ],
+      "assetRequests": [],
+      "rendererCapabilities": [
+        {
+          "slot": "heading",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        },
+        {
+          "slot": "actions",
+          "consumable": true,
+          "path": "shared primitive/block renderer"
+        }
+      ],
+      "licensedTextOnly": false,
+      "sparseRun": 0
+    }
+  ]
+}

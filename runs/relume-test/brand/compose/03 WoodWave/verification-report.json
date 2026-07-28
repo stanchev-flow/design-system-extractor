@@ -1,0 +1,246 @@
+{
+  "schemaVersion": "relume-test.readability.v1",
+  "item": "03 WoodWave",
+  "thresholds": {
+    "normalText": 4.5,
+    "largeText": 3.0,
+    "controlBoundary": 3.0
+  },
+  "viewports": [
+    {
+      "checkedTextRegions": 108,
+      "checkedControls": 42,
+      "worstTextContrast": 5.24,
+      "failures": [],
+      "viewport": "desktop",
+      "computedRhythm": {
+        "surfaces": [
+          "surface/photo-hero",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/photo-hero",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/inverse",
+          "surface/inverse-strong"
+        ],
+        "sectionPaddingPx": [
+          150,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120
+        ],
+        "containerWidthPx": 1300,
+        "columnGapPx": 64,
+        "gridGapPx": 32,
+        "actionGapPx": 24,
+        "eyebrowToHeadingPx": 40,
+        "headingToBodyPx": 80,
+        "declared": {
+          "section": "7.5rem",
+          "sectionMobile": "3rem",
+          "container": "81.25rem",
+          "column": "4rem",
+          "columnMobile": "2rem",
+          "grid": "2rem",
+          "gridMobile": "2rem",
+          "action": "1.5rem"
+        },
+        "failures": []
+      },
+      "stateFailures": [
+        {
+          "kind": "text",
+          "state": "hover",
+          "ratio": 1.335037688421596,
+          "threshold": 4.5,
+          "text": "VISIT",
+          "selector": "a.c-arrow-link.control"
+        },
+        {
+          "kind": "text",
+          "state": "hover",
+          "ratio": 1.335037688421596,
+          "threshold": 4.5,
+          "text": "SUBSCRIBE",
+          "selector": "a.c-arrow-link.control"
+        },
+        {
+          "kind": "text",
+          "state": "hover",
+          "ratio": 1.335037688421596,
+          "threshold": 4.5,
+          "text": "BUY TICKETS",
+          "selector": "a.c-arrow-link.control"
+        },
+        {
+          "kind": "text",
+          "state": "hover",
+          "ratio": 1.335037688421596,
+          "threshold": 4.5,
+          "text": "BUY TICKETS",
+          "selector": "a.c-arrow-link.control"
+        },
+        {
+          "kind": "text",
+          "state": "hover",
+          "ratio": 1.335037688421596,
+          "threshold": 4.5,
+          "text": "BUY TICKETS",
+          "selector": "a.c-arrow-link.control"
+        },
+        {
+          "kind": "text",
+          "state": "hover",
+          "ratio": 1.335037688421596,
+          "threshold": 4.5,
+          "text": "BUY TICKETS",
+          "selector": "a.c-arrow-link.control"
+        },
+        {
+          "kind": "text",
+          "state": "hover",
+          "ratio": 1.335037688421596,
+          "threshold": 4.5,
+          "text": "BUY TICKETS",
+          "selector": "a.c-arrow-link.control"
+        },
+        {
+          "kind": "text",
+          "state": "hover",
+          "ratio": 1.335037688421596,
+          "threshold": 4.5,
+          "text": "BUY TICKETS",
+          "selector": "a.c-arrow-link.control"
+        }
+      ]
+    },
+    {
+      "checkedTextRegions": 103,
+      "checkedControls": 37,
+      "worstTextContrast": 5.24,
+      "failures": [],
+      "viewport": "mobile",
+      "computedRhythm": {
+        "surfaces": [
+          "surface/photo-hero",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/photo-hero",
+          "surface/primary",
+          "surface/primary",
+          "surface/primary",
+          "surface/inverse",
+          "surface/inverse-strong"
+        ],
+        "sectionPaddingPx": [
+          64,
+          48,
+          48,
+          48,
+          48,
+          48,
+          48,
+          48,
+          48,
+          48
+        ],
+        "containerWidthPx": 350,
+        "columnGapPx": 32,
+        "gridGapPx": 32,
+        "actionGapPx": 24,
+        "eyebrowToHeadingPx": 16,
+        "headingToBodyPx": 32,
+        "declared": {
+          "section": "7.5rem",
+          "sectionMobile": "3rem",
+          "container": "81.25rem",
+          "column": "4rem",
+          "columnMobile": "2rem",
+          "grid": "2rem",
+          "gridMobile": "2rem",
+          "action": "1.5rem"
+        },
+        "failures": []
+      },
+      "stateFailures": [
+        {
+          "kind": "text",
+          "state": "hover",
+          "ratio": 1.335037688421596,
+          "threshold": 4.5,
+          "text": "VISIT",
+          "selector": "a.c-arrow-link.control"
+        },
+        {
+          "kind": "text",
+          "state": "hover",
+          "ratio": 1.335037688421596,
+          "threshold": 4.5,
+          "text": "SUBSCRIBE",
+          "selector": "a.c-arrow-link.control"
+        },
+        {
+          "kind": "text",
+          "state": "hover",
+          "ratio": 1.335037688421596,
+          "threshold": 4.5,
+          "text": "BUY TICKETS",
+          "selector": "a.c-arrow-link.control"
+        },
+        {
+          "kind": "text",
+          "state": "hover",
+          "ratio": 1.335037688421596,
+          "threshold": 4.5,
+          "text": "BUY TICKETS",
+          "selector": "a.c-arrow-link.control"
+        },
+        {
+          "kind": "text",
+          "state": "hover",
+          "ratio": 1.335037688421596,
+          "threshold": 4.5,
+          "text": "BUY TICKETS",
+          "selector": "a.c-arrow-link.control"
+        },
+        {
+          "kind": "text",
+          "state": "hover",
+          "ratio": 1.335037688421596,
+          "threshold": 4.5,
+          "text": "BUY TICKETS",
+          "selector": "a.c-arrow-link.control"
+        },
+        {
+          "kind": "text",
+          "state": "hover",
+          "ratio": 1.335037688421596,
+          "threshold": 4.5,
+          "text": "BUY TICKETS",
+          "selector": "a.c-arrow-link.control"
+        },
+        {
+          "kind": "text",
+          "state": "hover",
+          "ratio": 1.335037688421596,
+          "threshold": 4.5,
+          "text": "BUY TICKETS",
+          "selector": "a.c-arrow-link.control"
+        }
+      ]
+    }
+  ],
+  "status": "fail"
+}

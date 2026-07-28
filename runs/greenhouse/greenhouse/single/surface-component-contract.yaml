@@ -1,0 +1,1644 @@
+schema_version: surface_component_contract.v1
+type: surface_component_contract
+source:
+  section_grounding_schema: raw_section_yaml.v1
+  source_style_ledger: source-style-ledger.yaml
+  section_count: 7
+contracts:
+  host_surfaces:
+  - trace_id: section_01.root
+    generation_role: section_feature
+    frequency: occasional
+    host:
+      generation_role: section_feature
+      kind: section
+      surface_role: canvas
+      semantic_role: promo_announcement_strip
+      background: &id004
+        grounded: '#16332A'
+        source_backed: '#15372C'
+        decision: use_source_backed
+        delta: 4.58
+        role_compatible: true
+      layout:
+        direction: horizontal
+        width: full_bleed
+        height: very_short_strip
+    children:
+    - trace_id: section_01.announcement_link
+      generation_role: control_text_link
+      kind: control
+      semantic_role: inline_text_link
+      text: inverse_light_text_high_emphasis
+      typography:
+        font_weight: bold
+      evidence_visibility: generation_safe
+      control_role: text_link
+  - trace_id: section_04.root
+    generation_role: section_feature
+    frequency: occasional
+    host:
+      generation_role: section_feature
+      kind: section
+      surface_role: canvas
+      semantic_role: generic_full_width_band
+      background:
+        value: pale_mint_green
+        note: light desaturated teal/mint fills the full-width band; reads as section/hero canvas color
+        confidence: medium
+      layout:
+        width: full_bleed
+        height: very_short_band
+    children: []
+  - trace_id: section_05.root
+    generation_role: section_feature
+    frequency: occasional
+    host:
+      generation_role: section_feature
+      kind: section
+      surface_role: canvas
+      semantic_role: feature_grid_section
+      background: &id005
+        role: section_canvas
+        value: white / near-white
+        confidence: high
+      layout:
+        width: full_bleed
+        height: tall
+    children:
+    - trace_id: section_05.upper_continuation_band
+      generation_role: layout_row
+      kind: layout
+      semantic_role: previous_section_bleed
+      evidence_visibility: generation_safe
+      layout_role: row
+    - trace_id: section_05.hero_mint_panel_tail
+      generation_role: surface_module
+      kind: surface
+      semantic_role: hero_surface_tail
+      fill: &id001
+        value: pale mint green
+        confidence: high
+      evidence_visibility: generation_safe
+      surface_role: module
+    - trace_id: section_05.acquisition_notice_bar
+      generation_role: surface_module
+      kind: surface
+      semantic_role: notice_band
+      fill: &id002
+        value: very dark green
+        confidence: high
+      evidence_visibility: generation_safe
+      surface_role: module
+    - trace_id: section_05.feature_cards_row
+      generation_role: layout_grid
+      kind: layout
+      semantic_role: card_grid
+      fill: &id006
+        value: transparent over white canvas
+      layout:
+        gap: medium
+        width: constrained
+      evidence_visibility: generation_safe
+      layout_role: grid
+    - trace_id: section_05.feature_card
+      generation_role: surface_card
+      kind: surface
+      semantic_role: feature_card
+      fill: &id003
+        value: transparent (no card surface fill; image + text stacked on white)
+        confidence: medium
+      layout:
+        gap: small_to_medium
+      evidence_visibility: generation_safe
+      surface_role: card
+  - trace_id: section_05.hero_mint_panel_tail
+    generation_role: surface_module
+    frequency: occasional
+    host:
+      generation_role: surface_module
+      kind: surface
+      surface_role: module
+      semantic_role: hero_surface_tail
+      background: *id001
+    children:
+    - trace_id: section_05.hero_headline
+      generation_role: text_body
+      kind: text
+      semantic_role: display_heading
+      text: deep green
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_05.hero_subcopy
+      generation_role: text_body
+      kind: text
+      semantic_role: body_text
+      text: deep green
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_05.hero_primary_cta
+      generation_role: control_button
+      kind: control
+      semantic_role: primary_button
+      fill: deep green
+      text: white
+      evidence_visibility: generation_safe
+      control_role: button
+    - trace_id: section_05.hero_secondary_cta
+      generation_role: control_text_link
+      kind: control
+      semantic_role: text_link
+      text: deep green
+      evidence_visibility: generation_safe
+      control_role: text_link
+    - trace_id: section_05.hero_floating_chip_1
+      generation_role: control_badge_status
+      kind: control
+      semantic_role: floating_label_chip
+      fill: muted green
+      text: deep green
+      evidence_visibility: generation_safe
+      control_role: badge_status
+    - trace_id: section_05.hero_floating_chip_2
+      generation_role: control_badge_status
+      kind: control
+      semantic_role: floating_label_chip
+      fill: muted green
+      text: deep green
+      evidence_visibility: generation_safe
+      control_role: badge_status
+    - trace_id: section_05.hero_floating_card_candidates
+      generation_role: surface_card
+      kind: surface
+      semantic_role: floating_ui_card
+      evidence_visibility: generation_safe
+      surface_role: card
+    - trace_id: section_05.hero_floating_card_report
+      generation_role: surface_card
+      kind: surface
+      semantic_role: floating_ui_card
+      evidence_visibility: generation_safe
+      surface_role: card
+    - trace_id: section_05.hero_photo_topleft
+      generation_role: media_unknown
+      kind: media
+      semantic_role: photo_portrait
+      evidence_visibility: generation_safe
+      media_category: unknown
+    - trace_id: section_05.hero_photo_bottomright
+      generation_role: media_unknown
+      kind: media
+      semantic_role: photo_group
+      evidence_visibility: generation_safe
+      media_category: unknown
+  - trace_id: section_05.hero_floating_card_candidates
+    generation_role: surface_card
+    frequency: occasional
+    host:
+      generation_role: surface_card
+      kind: surface
+      surface_role: card
+      semantic_role: floating_ui_card
+    children: []
+  - trace_id: section_05.hero_floating_card_report
+    generation_role: surface_card
+    frequency: occasional
+    host:
+      generation_role: surface_card
+      kind: surface
+      surface_role: card
+      semantic_role: floating_ui_card
+    children: []
+  - trace_id: section_05.acquisition_notice_bar
+    generation_role: surface_module
+    frequency: occasional
+    host:
+      generation_role: surface_module
+      kind: surface
+      surface_role: module
+      semantic_role: notice_band
+      background: *id002
+    children:
+    - trace_id: section_05.notice_text
+      generation_role: text_body
+      kind: text
+      semantic_role: body_text
+      text: off-white
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_05.notice_link
+      generation_role: control_text_link
+      kind: control
+      semantic_role: text_link
+      text: white
+      evidence_visibility: generation_safe
+      control_role: text_link
+  - trace_id: section_05.feature_card
+    generation_role: surface_card
+    frequency: occasional
+    host:
+      generation_role: surface_card
+      kind: surface
+      surface_role: card
+      semantic_role: feature_card
+      background: *id003
+      layout:
+        gap: small_to_medium
+    children:
+    - trace_id: section_05.card_media_well
+      generation_role: media_unknown
+      kind: media
+      semantic_role: feature_media
+      radius: medium
+      evidence_visibility: generation_safe
+      media_category: unknown
+    - trace_id: section_05.media_overlay_pill
+      generation_role: control_badge_status
+      kind: control
+      semantic_role: overlay_label_chip
+      fill: white
+      text: deep green / dark
+      evidence_visibility: generation_safe
+      control_role: badge_status
+    - trace_id: section_05.card_heading
+      generation_role: text_body
+      kind: text
+      semantic_role: card_title
+      text: deep green / near-black green
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_05.card_body
+      generation_role: text_body
+      kind: text
+      semantic_role: body_text
+      text: dark gray-green
+      typography:
+        line_height: comfortable
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_05.card_cta
+      generation_role: control_button
+      kind: control
+      semantic_role: secondary_button
+      fill: transparent
+      text: deep green / dark
+      border: thin solid muted border
+      evidence_visibility: generation_safe
+      control_role: button
+  - trace_id: section_06.root
+    generation_role: section_feature
+    frequency: occasional
+    host:
+      generation_role: section_feature
+      kind: section
+      surface_role: canvas
+      semantic_role: generic_section_role
+      background: &id007
+        grounded: '#FFFFFF'
+        source_backed: '#FFFFFF'
+        decision: use_source_backed
+        delta: 0.0
+        role_compatible: true
+      layout:
+        width: full_bleed
+        height: tall_band
+    children:
+    - trace_id: section_06.left_text_column
+      generation_role: layout_container
+      kind: layout
+      semantic_role: heading_and_cta_stack
+      layout:
+        gap: medium
+      evidence_visibility: generation_safe
+      layout_role: container
+    - trace_id: section_06.heading_block
+      generation_role: text_body
+      kind: text
+      semantic_role: section_heading
+      text: &id008
+        grounded: '#1F3D2F'
+        decision: use_grounded
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_06.cta_button
+      generation_role: control_button
+      kind: control
+      semantic_role: primary_pill_button
+      text: &id009
+        grounded: '#FFFFFF'
+        source_backed: '#FFFFFF'
+        decision: use_source_backed
+        delta: 0.0
+        role_compatible: true
+      radius: full_pill
+      evidence_visibility: generation_safe
+      control_role: button
+    - trace_id: section_06.vertical_divider
+      generation_role: divider_separator
+      kind: divider
+      semantic_role: column_separator
+      text: &id010
+        grounded: '#D8E0DB'
+        decision: use_grounded
+      evidence_visibility: generation_safe
+    - trace_id: section_06.right_logo_grid
+      generation_role: layout_container
+      kind: layout
+      semantic_role: customer_logo_grid
+      layout:
+        gap: large
+      evidence_visibility: generation_safe
+      layout_role: container
+    - trace_id: section_06.logo_cell_representative
+      generation_role: media_unknown
+      kind: media
+      semantic_role: customer_logo_slot
+      evidence_visibility: generation_safe
+      media_category: unknown
+  - trace_id: section_07.root
+    generation_role: section_feature
+    frequency: occasional
+    host:
+      generation_role: section_feature
+      kind: section
+      surface_role: canvas
+      semantic_role: feature_grid_section
+      background: white_or_near_white
+      layout:
+        width: full_bleed
+        height: tall_section
+    children:
+    - trace_id: section_07.feature_grid
+      generation_role: layout_grid
+      kind: layout
+      semantic_role: three_column_feature_grid
+      evidence_visibility: generation_safe
+      layout_role: grid
+    - trace_id: section_07.feature_card_representative
+      generation_role: surface_card
+      kind: surface
+      semantic_role: feature_item
+      fill: transparent_inherits_section
+      layout:
+        gap: small_medium
+      evidence_visibility: generation_safe
+      surface_role: card
+  - trace_id: section_07.feature_card_representative
+    generation_role: surface_card
+    frequency: occasional
+    host:
+      generation_role: surface_card
+      kind: surface
+      surface_role: card
+      semantic_role: feature_item
+      background: transparent_inherits_section
+      layout:
+        gap: small_medium
+    children:
+    - trace_id: section_07.feature_photo
+      generation_role: media_photo
+      kind: media
+      semantic_role: photographic_asset
+      evidence_visibility: generation_safe
+      media_category: photo
+    - trace_id: section_07.feature_title
+      generation_role: text_body
+      kind: text
+      semantic_role: card_heading
+      text: dark_green
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_07.feature_body
+      generation_role: text_body
+      kind: text
+      semantic_role: card_body
+      text: dark_neutral_gray
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_07.feature_link
+      generation_role: control_text_link
+      kind: control
+      semantic_role: text_link
+      text: dark_green
+      evidence_visibility: generation_safe
+      control_role: text_link
+  - trace_id: section_08.root
+    generation_role: section_feature
+    frequency: occasional
+    host:
+      generation_role: section_feature
+      kind: section
+      surface_role: canvas
+      semantic_role: call_to_action_section
+      background: &id011
+        grounded: '#163328'
+        source_backed: '#133026'
+        decision: use_source_backed
+        delta: 4.69
+        role_compatible: true
+      layout:
+        width: full_bleed
+        height: tall_banner
+    children:
+    - trace_id: section_08.content_column
+      generation_role: layout_container
+      kind: layout
+      semantic_role: text_and_action_stack
+      fill: transparent
+      evidence_visibility: generation_safe
+      layout_role: container
+    - trace_id: section_08.headline
+      generation_role: text_body
+      kind: text
+      semantic_role: section_heading
+      text: &id012
+        grounded: '#F3F1EA'
+        decision: use_grounded
+      typography:
+        line_height: tight
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_08.cta_button
+      generation_role: control_button
+      kind: control
+      semantic_role: primary_action
+      fill: &id013
+        grounded: '#2F6FE0'
+        decision: use_grounded
+      text: &id014
+        grounded: '#FFFFFF'
+        source_backed: '#FFFFFF'
+        decision: use_source_backed
+        delta: 0.0
+        role_compatible: true
+      evidence_visibility: generation_safe
+      control_role: button
+    - trace_id: section_08.graphic_zone
+      generation_role: layout_container
+      kind: layout
+      semantic_role: decorative_media_zone
+      fill: transparent
+      evidence_visibility: generation_safe
+      layout_role: container
+    - trace_id: section_08.fingerprint_flower_motif
+      generation_role: media_illustration_graphic
+      kind: media
+      semantic_role: brand_decorative_illustration
+      text: marginally darker green than band
+      evidence_visibility: generation_safe
+      media_category: illustration_graphic
+    - trace_id: section_08.top_white_continuation_strip
+      generation_role: surface_module
+      kind: surface
+      semantic_role: neighbor_continuation
+      fill: &id015
+        grounded: '#FFFFFF'
+        source_backed: '#FFFFFF'
+        decision: use_source_backed
+        delta: 0.0
+        role_compatible: true
+      evidence_visibility: generation_safe
+      surface_role: module
+    - trace_id: section_08.main_dark_band
+      generation_role: surface_module
+      kind: surface
+      semantic_role: primary_background
+      fill: &id016
+        grounded: '#163328'
+        source_backed: '#133026'
+        decision: use_source_backed
+        delta: 4.69
+        role_compatible: true
+      evidence_visibility: generation_safe
+      surface_role: module
+    - trace_id: section_08.bottom_tonal_band
+      generation_role: surface_module
+      kind: surface
+      semantic_role: lower_tonal_shift
+      fill: &id017
+        grounded: '#1D4034'
+        decision: use_grounded
+      evidence_visibility: generation_safe
+      surface_role: module
+    - trace_id: section_08.decorative_fingerprint_graphic
+      generation_role: media_illustration_graphic
+      kind: media
+      semantic_role: decorative_background_motif
+      evidence_visibility: generation_safe
+      media_category: illustration_graphic
+  - trace_id: section_08.top_white_continuation_strip
+    generation_role: surface_module
+    frequency: occasional
+    host:
+      generation_role: surface_module
+      kind: surface
+      surface_role: module
+      semantic_role: neighbor_continuation
+      background:
+        grounded: '#FFFFFF'
+        source_backed: '#FFFFFF'
+        decision: use_source_backed
+        delta: 0.0
+        role_compatible: true
+    children: []
+  - trace_id: section_08.main_dark_band
+    generation_role: surface_module
+    frequency: occasional
+    host:
+      generation_role: surface_module
+      kind: surface
+      surface_role: module
+      semantic_role: primary_background
+      background:
+        grounded: '#163328'
+        source_backed: '#133026'
+        decision: use_source_backed
+        delta: 4.69
+        role_compatible: true
+    children: []
+  - trace_id: section_08.bottom_tonal_band
+    generation_role: surface_module
+    frequency: occasional
+    host:
+      generation_role: surface_module
+      kind: surface
+      surface_role: module
+      semantic_role: lower_tonal_shift
+      background:
+        grounded: '#1D4034'
+        decision: use_grounded
+    children: []
+  - trace_id: section_09.root
+    generation_role: section_feature
+    frequency: occasional
+    host:
+      generation_role: section_feature
+      kind: section
+      surface_role: canvas
+      semantic_role: site_footer
+      background: &id018
+        grounded: '#14352B'
+        source_backed: '#15372C'
+        decision: use_source_backed
+        delta: 2.45
+        role_compatible: true
+      layout:
+        width: full_bleed
+        height: tall
+    children:
+    - trace_id: section_09.link_columns_cluster
+      generation_role: layout_container
+      kind: layout
+      semantic_role: navigation_link_grid
+      fill: inherit_transparent
+      layout:
+        gap: large
+      evidence_visibility: generation_safe
+      layout_role: container
+    - trace_id: section_09.link_column_1
+      generation_role: layout_container
+      kind: layout
+      semantic_role: footer_link_column
+      layout:
+        gap: small
+      evidence_visibility: generation_safe
+      layout_role: container
+    - trace_id: section_09.group_heading_a
+      generation_role: text_body
+      kind: text
+      semantic_role: column_group_eyebrow
+      text: &id019
+        grounded: '#5F9C84'
+        decision: use_grounded
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_09.link_list_a
+      generation_role: layout_row
+      kind: layout
+      semantic_role: footer_link_list
+      layout:
+        gap: small
+      evidence_visibility: generation_safe
+      layout_role: row
+    - trace_id: section_09.group_heading_a2
+      generation_role: text_body
+      kind: text
+      semantic_role: column_group_eyebrow
+      text: muted_green
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_09.link_list_a2
+      generation_role: layout_row
+      kind: layout
+      semantic_role: footer_link_list
+      evidence_visibility: generation_safe
+      layout_role: row
+    - trace_id: section_09.link_column_2
+      generation_role: layout_container
+      kind: layout
+      semantic_role: footer_link_column
+      layout:
+        gap: small
+      evidence_visibility: generation_safe
+      layout_role: container
+    - trace_id: section_09.group_heading_b
+      generation_role: text_body
+      kind: text
+      semantic_role: column_group_eyebrow
+      text: muted_green
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_09.link_list_b
+      generation_role: layout_row
+      kind: layout
+      semantic_role: footer_link_list
+      evidence_visibility: generation_safe
+      layout_role: row
+    - trace_id: section_09.group_heading_b2
+      generation_role: text_body
+      kind: text
+      semantic_role: column_group_eyebrow
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_09.link_list_b2
+      generation_role: layout_row
+      kind: layout
+      semantic_role: footer_link_list
+      evidence_visibility: generation_safe
+      layout_role: row
+    - trace_id: section_09.group_heading_b3
+      generation_role: text_body
+      kind: text
+      semantic_role: column_group_eyebrow
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_09.link_list_b3
+      generation_role: layout_row
+      kind: layout
+      semantic_role: footer_link_list
+      evidence_visibility: generation_safe
+      layout_role: row
+    - trace_id: section_09.link_column_3
+      generation_role: layout_container
+      kind: layout
+      semantic_role: footer_link_column
+      layout:
+        gap: small
+      evidence_visibility: generation_safe
+      layout_role: container
+    - trace_id: section_09.group_heading_c
+      generation_role: text_body
+      kind: text
+      semantic_role: column_group_eyebrow
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_09.link_list_c
+      generation_role: layout_row
+      kind: layout
+      semantic_role: footer_link_list
+      evidence_visibility: generation_safe
+      layout_role: row
+    - trace_id: section_09.group_heading_c2
+      generation_role: text_body
+      kind: text
+      semantic_role: column_group_eyebrow
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_09.link_list_c2
+      generation_role: layout_row
+      kind: layout
+      semantic_role: footer_link_list
+      evidence_visibility: generation_safe
+      layout_role: row
+    - trace_id: section_09.group_heading_c3
+      generation_role: text_body
+      kind: text
+      semantic_role: column_group_eyebrow
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_09.link_list_c3
+      generation_role: layout_row
+      kind: layout
+      semantic_role: footer_link_list
+      evidence_visibility: generation_safe
+      layout_role: row
+    - trace_id: section_09.newsletter_aside
+      generation_role: layout_container
+      kind: layout
+      semantic_role: newsletter_signup_block
+      layout:
+        gap: medium
+      evidence_visibility: generation_safe
+      layout_role: container
+    - trace_id: section_09.newsletter_heading
+      generation_role: text_body
+      kind: text
+      semantic_role: block_title
+      text: pale_cream
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_09.newsletter_subtext
+      generation_role: text_body
+      kind: text
+      semantic_role: supporting_paragraph
+      text: pale_cream
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_09.email_field_group
+      generation_role: layout_container
+      kind: layout
+      semantic_role: form_field
+      layout:
+        gap: x_small
+      evidence_visibility: generation_safe
+      layout_role: container
+    - trace_id: section_09.email_label
+      generation_role: text_body
+      kind: text
+      semantic_role: input_label
+      text: pale_cream
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_09.email_input
+      generation_role: control_input
+      kind: control
+      semantic_role: text_input
+      fill: &id020
+        grounded: '#FFFFFF'
+        source_backed: '#FFFFFF'
+        decision: use_source_backed
+        delta: 0.0
+        role_compatible: true
+      border: none_visible
+      radius: medium
+      evidence_visibility: generation_safe
+      control_role: input
+    - trace_id: section_09.subscribe_button
+      generation_role: control_button
+      kind: control
+      semantic_role: secondary_submit_button
+      fill: transparent
+      text: pale_cream
+      border: 1px solid pale outline (estimate)
+      radius: pill
+      evidence_visibility: generation_safe
+      control_role: button
+    - trace_id: section_09.language_selector
+      generation_role: layout_container
+      kind: layout
+      semantic_role: language_switcher
+      layout:
+        gap: x_small
+      evidence_visibility: generation_safe
+      layout_role: container
+    - trace_id: section_09.language_label
+      generation_role: text_body
+      kind: text
+      semantic_role: group_label
+      text: pale_cream
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_09.language_options
+      generation_role: layout_row
+      kind: layout
+      semantic_role: language_option_list
+      evidence_visibility: generation_safe
+      layout_role: row
+    - trace_id: section_09.footer_bottom_row
+      generation_role: layout_container
+      kind: layout
+      semantic_role: footer_utility_row
+      evidence_visibility: generation_safe
+      layout_role: container
+    - trace_id: section_09.social_icons_row
+      generation_role: layout_row
+      kind: layout
+      semantic_role: social_link_row
+      layout:
+        gap: small
+      evidence_visibility: generation_safe
+      layout_role: row
+    - trace_id: section_09.copyright_block
+      generation_role: text_body
+      kind: text
+      semantic_role: legal_copyright
+      text: pale_cream
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_09.legal_links_row
+      generation_role: layout_row
+      kind: layout
+      semantic_role: legal_link_row
+      layout:
+        gap: large
+      evidence_visibility: generation_safe
+      layout_role: row
+    - trace_id: section_09.brand_mark_corner
+      generation_role: media_icon
+      kind: media
+      semantic_role: brand_logo_mark
+      fill: &id021
+        grounded: '#5F9C84'
+        decision: use_grounded
+      evidence_visibility: generation_safe
+      media_category: icon
+    - trace_id: section_09.chat_widget_overlay
+      generation_role: layout_container
+      kind: layout
+      semantic_role: floating_chat_widget
+      fill: &id022
+        grounded: '#FFFFFF'
+        source_backed: '#FFFFFF'
+        decision: use_source_backed
+        delta: 0.0
+        role_compatible: true
+      shadow: soft_elevated
+      radius: medium
+      evidence_visibility: generation_safe
+      layout_role: container
+    - trace_id: section_09.chat_title
+      generation_role: text_body
+      kind: text
+      semantic_role: widget_title
+      text: near_black
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_09.chat_prompt
+      generation_role: text_body
+      kind: text
+      semantic_role: widget_subtext
+      text: dark_gray
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+    - trace_id: section_09.chat_disclaimer
+      generation_role: text_body
+      kind: text
+      semantic_role: fine_print
+      text: gray
+      typography:
+        text_role: body
+        text_scale: unknown
+      evidence_visibility: generation_safe
+      text_role: body
+  critical_pairings:
+  - host_generation_role: section_feature
+    host_background: *id004
+    child_generation_role: control_text_link
+    child_kind: control
+    child_fill: null
+    child_text: inverse_light_text_high_emphasis
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id005
+    child_generation_role: surface_module
+    child_kind: surface
+    child_fill: *id001
+    child_text: null
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id005
+    child_generation_role: surface_module
+    child_kind: surface
+    child_fill: *id002
+    child_text: null
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id005
+    child_generation_role: layout_grid
+    child_kind: layout
+    child_fill: *id006
+    child_text: null
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id005
+    child_generation_role: surface_card
+    child_kind: surface
+    child_fill: *id003
+    child_text: null
+    child_border: null
+  - host_generation_role: surface_module
+    host_background: *id001
+    child_generation_role: text_body
+    child_kind: text
+    child_fill: null
+    child_text: deep green
+    child_border: null
+  - host_generation_role: surface_module
+    host_background: *id001
+    child_generation_role: text_body
+    child_kind: text
+    child_fill: null
+    child_text: deep green
+    child_border: null
+  - host_generation_role: surface_module
+    host_background: *id001
+    child_generation_role: control_button
+    child_kind: control
+    child_fill: deep green
+    child_text: white
+    child_border: null
+  - host_generation_role: surface_module
+    host_background: *id001
+    child_generation_role: control_text_link
+    child_kind: control
+    child_fill: null
+    child_text: deep green
+    child_border: null
+  - host_generation_role: surface_module
+    host_background: *id001
+    child_generation_role: control_badge_status
+    child_kind: control
+    child_fill: muted green
+    child_text: deep green
+    child_border: null
+  - host_generation_role: surface_module
+    host_background: *id001
+    child_generation_role: control_badge_status
+    child_kind: control
+    child_fill: muted green
+    child_text: deep green
+    child_border: null
+  - host_generation_role: surface_module
+    host_background: *id002
+    child_generation_role: text_body
+    child_kind: text
+    child_fill: null
+    child_text: off-white
+    child_border: null
+  - host_generation_role: surface_module
+    host_background: *id002
+    child_generation_role: control_text_link
+    child_kind: control
+    child_fill: null
+    child_text: white
+    child_border: null
+  - host_generation_role: surface_card
+    host_background: *id003
+    child_generation_role: media_unknown
+    child_kind: media
+    child_fill: null
+    child_text: null
+    child_border: null
+  - host_generation_role: surface_card
+    host_background: *id003
+    child_generation_role: control_badge_status
+    child_kind: control
+    child_fill: white
+    child_text: deep green / dark
+    child_border: null
+  - host_generation_role: surface_card
+    host_background: *id003
+    child_generation_role: text_body
+    child_kind: text
+    child_fill: null
+    child_text: deep green / near-black green
+    child_border: null
+  - host_generation_role: surface_card
+    host_background: *id003
+    child_generation_role: text_body
+    child_kind: text
+    child_fill: null
+    child_text: dark gray-green
+    child_border: null
+  - host_generation_role: surface_card
+    host_background: *id003
+    child_generation_role: control_button
+    child_kind: control
+    child_fill: transparent
+    child_text: deep green / dark
+    child_border: thin solid muted border
+  - host_generation_role: section_feature
+    host_background: *id007
+    child_generation_role: text_body
+    child_kind: text
+    child_fill: null
+    child_text: *id008
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id007
+    child_generation_role: control_button
+    child_kind: control
+    child_fill: null
+    child_text: *id009
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id007
+    child_generation_role: divider_separator
+    child_kind: divider
+    child_fill: null
+    child_text: *id010
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: white_or_near_white
+    child_generation_role: surface_card
+    child_kind: surface
+    child_fill: transparent_inherits_section
+    child_text: null
+    child_border: null
+  - host_generation_role: surface_card
+    host_background: transparent_inherits_section
+    child_generation_role: text_body
+    child_kind: text
+    child_fill: null
+    child_text: dark_green
+    child_border: null
+  - host_generation_role: surface_card
+    host_background: transparent_inherits_section
+    child_generation_role: text_body
+    child_kind: text
+    child_fill: null
+    child_text: dark_neutral_gray
+    child_border: null
+  - host_generation_role: surface_card
+    host_background: transparent_inherits_section
+    child_generation_role: control_text_link
+    child_kind: control
+    child_fill: null
+    child_text: dark_green
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id011
+    child_generation_role: layout_container
+    child_kind: layout
+    child_fill: transparent
+    child_text: null
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id011
+    child_generation_role: text_body
+    child_kind: text
+    child_fill: null
+    child_text: *id012
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id011
+    child_generation_role: control_button
+    child_kind: control
+    child_fill: *id013
+    child_text: *id014
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id011
+    child_generation_role: layout_container
+    child_kind: layout
+    child_fill: transparent
+    child_text: null
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id011
+    child_generation_role: media_illustration_graphic
+    child_kind: media
+    child_fill: null
+    child_text: marginally darker green than band
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id011
+    child_generation_role: surface_module
+    child_kind: surface
+    child_fill: *id015
+    child_text: null
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id011
+    child_generation_role: surface_module
+    child_kind: surface
+    child_fill: *id016
+    child_text: null
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id011
+    child_generation_role: surface_module
+    child_kind: surface
+    child_fill: *id017
+    child_text: null
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id018
+    child_generation_role: layout_container
+    child_kind: layout
+    child_fill: inherit_transparent
+    child_text: null
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id018
+    child_generation_role: text_body
+    child_kind: text
+    child_fill: null
+    child_text: *id019
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id018
+    child_generation_role: text_body
+    child_kind: text
+    child_fill: null
+    child_text: muted_green
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id018
+    child_generation_role: text_body
+    child_kind: text
+    child_fill: null
+    child_text: muted_green
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id018
+    child_generation_role: text_body
+    child_kind: text
+    child_fill: null
+    child_text: pale_cream
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id018
+    child_generation_role: text_body
+    child_kind: text
+    child_fill: null
+    child_text: pale_cream
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id018
+    child_generation_role: text_body
+    child_kind: text
+    child_fill: null
+    child_text: pale_cream
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id018
+    child_generation_role: control_input
+    child_kind: control
+    child_fill: *id020
+    child_text: null
+    child_border: none_visible
+  - host_generation_role: section_feature
+    host_background: *id018
+    child_generation_role: control_button
+    child_kind: control
+    child_fill: transparent
+    child_text: pale_cream
+    child_border: 1px solid pale outline (estimate)
+  - host_generation_role: section_feature
+    host_background: *id018
+    child_generation_role: text_body
+    child_kind: text
+    child_fill: null
+    child_text: pale_cream
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id018
+    child_generation_role: text_body
+    child_kind: text
+    child_fill: null
+    child_text: pale_cream
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id018
+    child_generation_role: media_icon
+    child_kind: media
+    child_fill: *id021
+    child_text: null
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id018
+    child_generation_role: layout_container
+    child_kind: layout
+    child_fill: *id022
+    child_text: null
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id018
+    child_generation_role: text_body
+    child_kind: text
+    child_fill: null
+    child_text: near_black
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id018
+    child_generation_role: text_body
+    child_kind: text
+    child_fill: null
+    child_text: dark_gray
+    child_border: null
+  - host_generation_role: section_feature
+    host_background: *id018
+    child_generation_role: text_body
+    child_kind: text
+    child_fill: null
+    child_text: gray
+    child_border: null
+  typography_pairings:
+  - host_generation_role: surface_module
+    text_role: body
+    text_scale: unknown
+    color: deep green
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: surface_module
+    text_role: body
+    text_scale: unknown
+    color: deep green
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: surface_module
+    text_role: body
+    text_scale: unknown
+    color: off-white
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: surface_card
+    text_role: body
+    text_scale: unknown
+    color: deep green / near-black green
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: surface_card
+    text_role: body
+    text_scale: unknown
+    color: dark gray-green
+    typography:
+      line_height: comfortable
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: section_feature
+    text_role: body
+    text_scale: unknown
+    color:
+      grounded: '#1F3D2F'
+      decision: use_grounded
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: surface_card
+    text_role: body
+    text_scale: unknown
+    color: dark_green
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: surface_card
+    text_role: body
+    text_scale: unknown
+    color: dark_neutral_gray
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: section_feature
+    text_role: body
+    text_scale: unknown
+    color:
+      grounded: '#F3F1EA'
+      decision: use_grounded
+    typography:
+      line_height: tight
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: section_feature
+    text_role: body
+    text_scale: unknown
+    color:
+      grounded: '#5F9C84'
+      decision: use_grounded
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: section_feature
+    text_role: body
+    text_scale: unknown
+    color: muted_green
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: section_feature
+    text_role: body
+    text_scale: unknown
+    color: muted_green
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: section_feature
+    text_role: body
+    text_scale: unknown
+    color: null
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: section_feature
+    text_role: body
+    text_scale: unknown
+    color: null
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: section_feature
+    text_role: body
+    text_scale: unknown
+    color: null
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: section_feature
+    text_role: body
+    text_scale: unknown
+    color: null
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: section_feature
+    text_role: body
+    text_scale: unknown
+    color: null
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: section_feature
+    text_role: body
+    text_scale: unknown
+    color: pale_cream
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: section_feature
+    text_role: body
+    text_scale: unknown
+    color: pale_cream
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: section_feature
+    text_role: body
+    text_scale: unknown
+    color: pale_cream
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: section_feature
+    text_role: body
+    text_scale: unknown
+    color: pale_cream
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: section_feature
+    text_role: body
+    text_scale: unknown
+    color: pale_cream
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: section_feature
+    text_role: body
+    text_scale: unknown
+    color: near_black
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: section_feature
+    text_role: body
+    text_scale: unknown
+    color: dark_gray
+    typography:
+      text_role: body
+      text_scale: unknown
+  - host_generation_role: section_feature
+    text_role: body
+    text_scale: unknown
+    color: gray
+    typography:
+      text_role: body
+      text_scale: unknown
+  graphics_depth_edge_recipes:
+  - generation_role: media_unknown
+    kind: media
+  - generation_role: media_unknown
+    kind: media
+  - generation_role: media_unknown
+    kind: media
+    edge: radius medium
+  - generation_role: control_button
+    kind: control
+    edge: border thin solid muted border
+  - generation_role: control_button
+    kind: control
+    edge: radius full_pill
+  - generation_role: divider_separator
+    kind: divider
+  - generation_role: media_unknown
+    kind: media
+  - generation_role: unknown_unknown
+    kind: unknown
+    edge: radius small_rounded_corners
+  - generation_role: media_photo
+    kind: media
+  - generation_role: media_illustration_graphic
+    kind: media
+  - generation_role: media_illustration_graphic
+    kind: media
+  - generation_role: control_input
+    kind: control
+    edge: radius medium; border none_visible
+  - generation_role: control_button
+    kind: control
+    edge: radius pill; border 1px solid pale outline (estimate)
+  - generation_role: media_icon
+    kind: media
+  - generation_role: layout_container
+    kind: layout
+    edge: radius medium; depth soft_elevated
+  imagery_creative_directions:
+    unknown:
+    - likely_raster_image
+    photo:
+    - photographic_asset
+    illustration_graphic:
+    - likely_svg_or_canvas_graphic
+    icon:
+    - likely_svg_or_canvas_graphic
+  repeated_layout_patterns:
+  - layout_role: container
+    frequency: 13
+  - layout_role: row
+    frequency: 12
+  - layout_role: grid
+    frequency: 2
+  do_not_generalize: []
+  ambiguities: &id023
+  - "parse_errors: block 2: while parsing a block collection\n  in \"<unicode string>\", line 117, column 5:\n        - logo_wordmark\n\
+    \        ^\nexpected <block end>, but found '?'\n  in \"<unicode string>\", line 122, column 5:\n        note: >\n   \
+    \     ^"
+  - "parse_errors: block 3: while parsing a flow mapping\n  in \"<unicode string>\", line 206, column 7:\n        - { id:\
+    \ canvas_mint, role: section ... \n          ^\nexpected ',' or '}', but got '['\n  in \"<unicode string>\", line 206,\
+    \ column 96:\n     ... : \"#CDEBDD\", path: tree.children[1].style.background_color, conf ... \n                     \
+    \                    ^"
+  - 'raw_kind_violations: section_01.tree.layers[0].kind=background_layer'
+  - 'raw_kind_violations: section_01.tree.children[0].kind=text_block'
+  - 'raw_kind_violations: section_01.tree.children[0].children[0].kind=link'
+  - 'raw_kind_violations: section_01.tree.children[1].kind=icon_button'
+  - 'raw_kind_violations: section_04.tree.children[0].kind=image_fragment'
+  - 'raw_kind_violations: section_04.tree.children[1].kind=image_fragment'
+  - 'raw_kind_violations: section_04.tree.children[2].kind=spacer'
+  - 'raw_kind_violations: section_05.tree.children[0].kind=group'
+  - 'raw_kind_violations: section_05.tree.children[0].children[0].kind=panel'
+  - 'raw_kind_violations: section_05.tree.children[0].children[0].children[2].kind=button'
+  - 'raw_kind_violations: section_05.tree.children[0].children[0].children[3].kind=link'
+  - 'raw_kind_violations: section_05.tree.children[0].children[0].children[4].kind=badge'
+  - 'raw_kind_violations: section_05.tree.children[0].children[0].children[5].kind=badge'
+  - 'raw_kind_violations: section_05.tree.children[0].children[0].children[6].kind=card'
+  - 'raw_kind_violations: section_05.tree.children[0].children[0].children[7].kind=card'
+  - 'raw_kind_violations: section_05.tree.children[0].children[0].children[8].kind=image'
+  - 'raw_kind_violations: section_05.tree.children[0].children[0].children[9].kind=image'
+  - 'raw_kind_violations: section_05.tree.children[0].children[1].kind=panel'
+  - 'raw_kind_violations: section_05.tree.children[0].children[1].children[1].kind=link'
+  - 'raw_kind_violations: section_05.tree.children[1].kind=group'
+  - 'missing_role_field: section_01.tree.section_role'
+  - 'missing_role_field: section_04.tree.section_role'
+  - 'missing_role_field: section_05.tree.section_role'
+  - 'missing_role_field: section_05.tree.children[0].children[0].children[0].text_role'
+  - 'missing_role_field: section_05.tree.children[0].children[0].children[0].text_scale'
+  - 'missing_role_field: section_05.tree.children[0].children[0].children[1].text_role'
+  - 'missing_role_field: section_05.tree.children[0].children[0].children[1].text_scale'
+  - 'missing_role_field: section_05.tree.children[0].children[1].children[0].text_role'
+  - 'missing_role_field: section_05.tree.children[0].children[1].children[0].text_scale'
+  - 'missing_role_field: section_05.tree.children[1].items[0].children[1].text_role'
+  - 'missing_role_field: section_05.tree.children[1].items[0].children[1].text_scale'
+  - 'missing_role_field: section_05.tree.children[1].items[0].children[2].text_role'
+  - 'missing_role_field: section_05.tree.children[1].items[0].children[2].text_scale'
+  - 'missing_role_field: section_06.tree.section_role'
+  - 'missing_role_field: section_06.tree.children[0].children[0].text_role'
+  - 'missing_role_field: section_06.tree.children[0].children[0].text_scale'
+  - 'missing_role_field: section_07.tree.section_role'
+  - 'missing_role_field: section_07.tree.children[1].children[0].children[1].text_role'
+  - 'missing_role_field: section_07.tree.children[1].children[0].children[1].text_scale'
+  - 'missing_role_field: section_07.tree.children[1].children[0].children[2].text_role'
+  - 'none_placeholder_paths: section_05.tree.children[1].items[0].style.border'
+  - 'none_placeholder_paths: section_05.tree.children[1].items[0].style.shadow'
+  - 'none_placeholder_paths: section_07.tree.children[1].children[0].style.border'
+  - 'none_placeholder_paths: section_07.tree.children[1].children[0].style.shadow'
+  - 'none_placeholder_paths: section_08.tree.children[0].children[0].style.transform'
+  - 'none_placeholder_paths: section_08.tree.children[0].children[1].style.border'
+  - 'none_placeholder_paths: section_08.tree.children[0].children[1].style.shadow'
+  - 'none_placeholder_paths: section_09.tree.children[0].children[0].children[0].style.case'
+  - 'none_placeholder_paths: section_09.tree.children[0].children[0].children[1].items.representative_child.style.underline'
+  - 'none_placeholder_paths: section_09.tree.children[1].children[2].children[1].style.shadow'
+  - 'default_visibility_paths: section_01.tree.visibility'
+  - 'default_visibility_paths: section_01.tree.children[0].visibility'
+  - 'default_visibility_paths: section_01.tree.children[0].children[0].visibility'
+  - 'default_visibility_paths: section_04.tree.visibility'
+  - 'default_visibility_paths: section_04.tree.children[0].visibility'
+  - 'default_visibility_paths: section_04.tree.children[1].visibility'
+  - 'default_visibility_paths: section_04.tree.children[2].visibility'
+  - 'default_visibility_paths: section_05.tree.visibility'
+  - 'default_visibility_paths: section_05.tree.children[0].visibility'
+  - 'default_visibility_paths: section_05.tree.children[1].visibility'
+  - 'default_visibility_paths: section_06.tree.visibility'
+  - 'default_visibility_paths: section_07.tree.visibility'
+  - 'default_visibility_paths: section_07.tree.children[0].visibility'
+  - 'default_visibility_paths: section_07.tree.children[1].visibility'
+  - 'default_visibility_paths: section_07.tree.children[1].children[0].visibility'
+  - 'default_visibility_paths: section_07.tree.children[1].children[0].children[0].visibility'
+  - 'default_visibility_paths: section_08.tree.visibility'
+  - 'default_visibility_paths: section_09.tree.visibility'
+  - 'uncertain_implementation_values: section_01.tree.position.sticky'
+  - 'uncertain_implementation_values: section_04.tree.size.note'
+  - 'uncertain_implementation_values: section_05.tree.children[0].note'
+  - 'uncertain_implementation_values: section_08.tree.size.note'
+audits:
+  passed: false
+  coverage:
+    total_sections: 7
+    parsed_sections: 5
+    visual_node_count: 104
+    host_surface_count: 16
+    child_recipe_count: 83
+    sections_with_host_surface: 7
+    sections_with_tree_children: 7
+    sections_with_nested_children: 6
+    nested_child_coverage: 0.857
+    explicit_colors_observed: 12
+    explicit_colors_preserved: 10
+  validity:
+    parse_all_section_yaml: false
+    raw_schema_uses_closed_kind_enum: false
+    raw_schema_uses_kind_specific_role_fields: false
+    raw_schema_omits_none_placeholders: false
+    raw_schema_omits_default_visible: false
+    raw_schema_uses_clean_implementation_values: false
+    unknown_roles_explain_why: true
+    extract_at_least_one_host_per_section: true
+    extract_nested_children_for_90_percent: false
+    extract_nonempty_child_recipes: true
+  source_order_leakage:
+    generation_facing_renderer_strips_trace_ids: true
+    contract_file_keeps_trace_ids_for_debug: true
+  ambiguities: *id023

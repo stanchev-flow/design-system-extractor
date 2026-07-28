@@ -1,0 +1,40 @@
+{
+  "steps": {
+    "source_style_extraction": {
+      "status": "completed",
+      "meta": {},
+      "updated_at": "2026-06-11T23:28:50.016549"
+    },
+    "site_generation_input": {
+      "status": "completed",
+      "meta": {
+        "label": "site generation input"
+      },
+      "updated_at": "2026-06-11T23:33:20.755513"
+    },
+    "framework_site_generation_claude": {
+      "status": "completed",
+      "meta": {},
+      "updated_at": "2026-06-11T23:34:23.471999"
+    },
+    "design_system_conversion_review": {
+      "status": "skipped",
+      "meta": {
+        "reason": "reviews disabled"
+      },
+      "updated_at": "2026-06-11T23:33:20.756862"
+    },
+    "design_system_review": {
+      "status": "skipped",
+      "meta": {
+        "reason": "disabled for this run"
+      },
+      "updated_at": "2026-06-11T23:33:20.757281"
+    },
+    "run_complete": {
+      "status": "completed",
+      "meta": {},
+      "updated_at": "2026-06-11T23:34:23.472647"
+    }
+  }
+}

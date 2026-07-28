@@ -1,0 +1,100 @@
+{
+  "ok": true,
+  "attempts": 2,
+  "seconds": 299.1,
+  "failures": [],
+  "schemaErrors": [],
+  "sections": [
+    {
+      "id": "hero",
+      "useCase": "hero",
+      "archetype": "overlay",
+      "surfaceIntent": "inverse",
+      "novelty": "reuse",
+      "seededFrom": {
+        "lib": "project",
+        "id": "full-bleed-photo-hero"
+      },
+      "structureProvenance": "measured-brand-pattern",
+      "archetypeRef": "hero-product-canvas-panel"
+    },
+    {
+      "id": "customer-proof",
+      "useCase": "logos",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "structureProvenance": "designed-brand-pattern",
+      "archetypeRef": null
+    },
+    {
+      "id": "product-education",
+      "useCase": "features",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "structureProvenance": "brand-style-archetype",
+      "archetypeRef": null
+    },
+    {
+      "id": "feature-proof",
+      "useCase": "features",
+      "archetype": "cards",
+      "surfaceIntent": "accent-soft",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "headrail-split-with-card-carousel"
+      },
+      "structureProvenance": "measured-brand-pattern",
+      "archetypeRef": null
+    },
+    {
+      "id": "integrations",
+      "useCase": "logos",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "structureProvenance": "designed-brand-pattern",
+      "archetypeRef": null
+    },
+    {
+      "id": "results",
+      "useCase": "gallery",
+      "archetype": "stack",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": null,
+      "structureProvenance": "designed-brand-pattern",
+      "archetypeRef": null
+    },
+    {
+      "id": "testimonial",
+      "useCase": "testimonial",
+      "archetype": "split",
+      "surfaceIntent": "primary",
+      "novelty": "adapt",
+      "seededFrom": {
+        "lib": "project",
+        "id": "tabbed-testimonial-with-stats"
+      },
+      "structureProvenance": "measured-brand-pattern",
+      "archetypeRef": null
+    },
+    {
+      "id": "closing",
+      "useCase": "cta",
+      "archetype": "stack",
+      "surfaceIntent": "inverse",
+      "novelty": "reuse",
+      "seededFrom": null,
+      "structureProvenance": "measured-brand-pattern",
+      "archetypeRef": null
+    }
+  ],
+  "preset": "saas-product",
+  "baseStyle": "corporate-saas-clean"
+}

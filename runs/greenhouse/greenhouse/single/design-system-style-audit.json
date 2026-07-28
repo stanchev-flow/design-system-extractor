@@ -1,0 +1,148 @@
+{
+  "close_match_threshold": 14.0,
+  "before": {
+    "unsupported_colors": [
+      "#4A5A52",
+      "rgba(0,0,0,0.08)",
+      "rgba(0,0,0,0.16)",
+      "rgba(243,241,234,0.4)",
+      "rgba(243,241,234,0.5)",
+      "rgba(243,241,234,0.7)"
+    ],
+    "unsupported_color_count": 6,
+    "unsupported_fonts": [],
+    "raw_source_but_not_generation_safe": [],
+    "retained_approximate_values": [
+      "#14352B",
+      "#163328",
+      "#1D4034",
+      "#2F6FE0",
+      "#5F9C84",
+      "#CDEBDD",
+      "#D8E0DB",
+      "#F3F1EA"
+    ],
+    "role_mismatch_warnings": [
+      {
+        "value": "#15372C",
+        "document_role": "text",
+        "ledger_role_families": [
+          "surface"
+        ],
+        "warning": "source-backed value appears in a suspicious role context"
+      }
+    ]
+  },
+  "after": {
+    "unsupported_colors": [
+      "#4A5A52",
+      "rgba(0,0,0,0.16)",
+      "rgba(243,241,234,0.4)",
+      "rgba(243,241,234,0.5)",
+      "rgba(243,241,234,0.7)"
+    ],
+    "unsupported_color_count": 5,
+    "unsupported_fonts": [],
+    "raw_source_but_not_generation_safe": [],
+    "retained_approximate_values": [
+      "#14352B",
+      "#163328",
+      "#1D4034",
+      "#2F6FE0",
+      "#5F9C84",
+      "#CDEBDD",
+      "#D8E0DB",
+      "#F3F1EA"
+    ],
+    "role_mismatch_warnings": [
+      {
+        "value": "#15372C",
+        "document_role": "text",
+        "ledger_role_families": [
+          "surface"
+        ],
+        "warning": "source-backed value appears in a suspicious role context"
+      }
+    ]
+  },
+  "replaced_with_close_source_match": [
+    {
+      "value": "rgba(0,0,0,0.08)",
+      "role": "surface",
+      "candidate": "transparent",
+      "candidate_role_families": [
+        "surface"
+      ],
+      "perceptual_distance": 8.0,
+      "threshold": 14.0,
+      "role_unknown": false
+    }
+  ],
+  "retained_approximate_no_close_source_match": [],
+  "unresolved_no_role_compatible_match": [
+    {
+      "value": "#4A5A52",
+      "role": null,
+      "candidate": "#15372C",
+      "candidate_role_families": [
+        "surface"
+      ],
+      "perceptual_distance": 18.073,
+      "threshold": 14.0,
+      "role_unknown": true,
+      "reason": "no_close_role_compatible_match"
+    },
+    {
+      "value": "rgba(0,0,0,0.16)",
+      "role": "shadow",
+      "candidate": "transparent",
+      "candidate_role_families": [
+        "surface"
+      ],
+      "perceptual_distance": 16.0,
+      "threshold": 14.0,
+      "role_unknown": false,
+      "reason": "no_close_role_compatible_match"
+    },
+    {
+      "value": "rgba(243,241,234,0.4)",
+      "role": "border",
+      "candidate": "#FFFFFF",
+      "candidate_role_families": [
+        "border",
+        "text"
+      ],
+      "perceptual_distance": 60.309,
+      "threshold": 14.0,
+      "role_unknown": false,
+      "reason": "no_close_role_compatible_match"
+    },
+    {
+      "value": "rgba(243,241,234,0.5)",
+      "role": "border",
+      "candidate": "#FFFFFF",
+      "candidate_role_families": [
+        "border",
+        "text"
+      ],
+      "perceptual_distance": 50.37,
+      "threshold": 14.0,
+      "role_unknown": false,
+      "reason": "no_close_role_compatible_match"
+    },
+    {
+      "value": "rgba(243,241,234,0.7)",
+      "role": null,
+      "candidate": "#FFFFFF",
+      "candidate_role_families": [
+        "border",
+        "text"
+      ],
+      "perceptual_distance": 30.612,
+      "threshold": 14.0,
+      "role_unknown": true,
+      "reason": "no_close_role_compatible_match"
+    }
+  ],
+  "replacement_count": 1
+}

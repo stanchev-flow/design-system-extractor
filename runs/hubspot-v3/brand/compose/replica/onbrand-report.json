@@ -1,0 +1,57 @@
+{
+  "layout": "full-bleed-photo-hero",
+  "brand": "HubSpot",
+  "composition_mode": false,
+  "neverDo": {},
+  "neverDo_allowed": [],
+  "fidelity": {
+    "pass": true,
+    "checks": {
+      "Surface = brand surface/inverse-teal (#002b28)": true,
+      "Display family present (\"HubSpot Serif Page Header Human\", \"HubSpot Serif\", serif)": true,
+      "Brand accent surfaced (#ff4800)": true,
+      "Brand media present (expect ~1)": true,
+      "Brand assets present (not placeholder)": true
+    }
+  },
+  "slop": {
+    "pass": true,
+    "checks": {
+      "No default/system display font": true,
+      "No off-palette hex colors": true,
+      "No lorem/placeholder copy": true,
+      "All brand image assets present": true,
+      "Rounding matches brand radius scale": true,
+      "No foreign-brand content literals (alt/aria/title)": true,
+      "No foreign-brand asset references": true,
+      "Webfonts loaded (no silent system fallback)": true
+    }
+  },
+  "invariants": {
+    "mode": "advisory",
+    "pass": false,
+    "checks": {
+      "single-accent": true,
+      "primitive-only": true,
+      "rhythm": true,
+      "data-composition": true,
+      "slot-resolution": true,
+      "text-contrast": true,
+      "decoration-salience": true,
+      "occlusion": true,
+      "band-attribution": true,
+      "alignment-resolution": true,
+      "media-registration": true,
+      "interaction-contrast": true,
+      "token-provenance": false,
+      "logo-wall-integrity": true,
+      "fact-consumption": false,
+      "fact-consumption:layout.specialTreatment.sticky-column": false
+    },
+    "details": {
+      "text-contrast": "162 text elements measured against their effective background (surface + decoration layer); worst = page-nav/c-button.c-button--navcta('Get a demo') at 3.4 (floor 4.5); skipped=114; 6 element(s) exempt as MEASURED brand pairs (#ff4800 on #ffffff; #ffffff on #ff4800)",
+      "decoration-salience": "no decoration layers (ghost word / watermark) in this render"
+    }
+  },
+  "overall": true
+}

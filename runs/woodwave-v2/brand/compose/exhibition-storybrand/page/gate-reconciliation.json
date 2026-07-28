@@ -1,0 +1,58 @@
+{
+  "generatedAt": "2026-07-17T13:29:00Z",
+  "canonicalPage": "runs/woodwave-v2/brand/compose/exhibition-storybrand/page/index.html",
+  "onbrand": {
+    "status": "pass",
+    "exitCode": 0,
+    "report": "onbrand-report.json"
+  },
+  "slop": {
+    "status": "fail",
+    "exitCode": 1,
+    "residuals": [
+      "AS-12 sec-4: multi-column layout with an empty column (1 of 3 empty) at 1440px and 1180px"
+    ]
+  },
+  "spacing": {
+    "status": "fail",
+    "exitCode": 1,
+    "report": "../../../spacing-baseline/report.json",
+    "summary": "79 conform, 3 wrong-step, 1 off-ladder, 5 unmapped; 4 strict hard fails",
+    "residuals": [
+      "split.column-gap 108.33px vs 64px in stakes and guide",
+      "container.stack-width 832px vs 960px in objection",
+      "container.stack-width 1300px vs 960px in close"
+    ]
+  },
+  "signature": {
+    "status": "pass",
+    "exitCode": 0,
+    "report": "../../../signature-baseline/report.json"
+  },
+  "voice": {
+    "status": "pass",
+    "exitCode": 0,
+    "report": "../../../voice-baseline/report.json"
+  },
+  "sectionRules": {
+    "status": "pass",
+    "exitCode": 0,
+    "report": "../../../section-rules-baseline/report.json",
+    "advisories": 4
+  },
+  "conversion": {
+    "status": "skip",
+    "exitCode": 0,
+    "report": "../../../conversion-baseline/report.json",
+    "reason": "no campaignType declared; fact-gated skip"
+  },
+  "mediaBinding": {
+    "status": "pass",
+    "source": "onbrand composition invariant"
+  },
+  "markLegality": {
+    "status": "pass",
+    "source": "onbrand composition invariant"
+  },
+  "note": "The earlier spacing PASS claim was caused by a piped command reporting tail's exit code. Reconciliation reran the strict command without masking and records the real exit code 1. No design iteration was performed."
+}
