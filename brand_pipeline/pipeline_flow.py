@@ -346,6 +346,20 @@ def read_replica_overall(brand_dir: Path,
     return None, {}
 
 
+def measured_replica_overall(lane_dir: Path) -> float | None:
+    """The measured replica score for a lane dir OR its run root.
+
+    ``manifest.json`` lives at the brand dir in some runs and at the run root in
+    others, while the measured report always sits under ``<brand>/compose/replica``.
+    Resolving both shapes keeps the score's single source of truth reachable from
+    whichever dir the caller handed us."""
+    lane_dir = Path(lane_dir)
+    overall, _ = read_replica_overall(lane_dir)
+    if overall is None and (lane_dir / "brand" / "brand.yaml").is_file():
+        overall, _ = read_replica_overall(lane_dir / "brand")
+    return overall
+
+
 def _default_replica_runner(brand_dir: Path, out_dir: Path,
                             source_shot: Path | None, bar: float) -> float:
     """Run compose_replica (Playwright shoot + diff) and return the overall score.
@@ -466,65 +480,164 @@ def gate_g4_replica(brand_dir: Path, *, bar: float = DEFAULT_REPLICA_BAR,
 
 # ── G5 refusal guard ──────────────────────────────────────────────────────────
 
-def generation_gate_status(brand_dir: Path,
-                           bar: float = DEFAULT_REPLICA_BAR) -> tuple[bool, str]:
-    """(allowed, reason) for creative page generation on a lane.
+def _gate_detail(allowed: bool, reason: str, *, source: str,
+                 blocked_gate: str | None = None, bar: float,
+                 replica: float | None = None,
+                 recorded_replica: float | None = None) -> dict:
+    return {
+        "allowed": allowed,
+        "reason": reason,
+        "blockedGate": blocked_gate,
+        "gateName": GATE_NAMES.get(blocked_gate or "") or None,
+        "source": source,
+        "bar": bar,
+        "replica": replica,
+        "recordedReplica": recorded_replica,
+    }
+
+
+def generation_gate_detail(brand_dir: Path,
+                           bar: float = DEFAULT_REPLICA_BAR) -> dict:
+    """Structured gate state for creative generation on a lane.
+
+    Same fail-closed decision as :func:`generation_gate_status`, but it also
+    names WHICH gate blocks (``blockedGate`` / ``gateName``) and WHICH record it
+    read (``source``), so a caller can refuse with a message an operator can act
+    on instead of a bare "not allowed".
 
     Priority: the orchestrator's ``flow-report.json`` (authoritative) → the run
-    ``manifest.json`` → no record. Allowed ONLY when the recorded state shows
-    G1–G4 cleared. FAIL-CLOSED: a lane with no record, a blocked/needs_iteration
-    status, or a below-bar replica is REFUSED."""
+    ``manifest.json`` → no record.
+
+    The measured ``compose/replica/replica-report.json`` is the SINGLE SOURCE OF
+    TRUTH for the replica score. ``manifest.json`` is a cache of it and can go
+    stale (a lane re-composed after the manifest was written keeps claiming the
+    older, better number). When the two disagree the measured report wins.
+    """
     brand_dir = Path(brand_dir)
     report = brand_dir / FLOW_REPORT_JSON
     if report.is_file():
         try:
             data = json.loads(report.read_text())
         except Exception:
-            return False, f"{FLOW_REPORT_JSON} is unreadable — re-run the flow"
+            return _gate_detail(
+                False, f"{FLOW_REPORT_JSON} is unreadable — re-run the flow",
+                source=FLOW_REPORT_JSON, bar=bar)
         if data.get("generationAllowed") is True:
-            return True, "gates cleared (flow-report.json)"
-        gate = data.get("blockedGate") or "a gate"
+            return _gate_detail(True, "gates cleared (flow-report.json)",
+                                source=FLOW_REPORT_JSON, bar=bar)
+        gate = data.get("blockedGate")
+        gate_label = gate or "a gate"
+        if gate and GATE_NAMES.get(gate):
+            gate_label = f"{gate} ({GATE_NAMES[gate]})"
         status = data.get("status") or "not_cleared"
-        return False, (f"flow status '{status}': {gate} not cleared — "
-                       f"run run_pipeline_flow.py to clear the gates")
+        blocking = next((g for g in (data.get("gates") or [])
+                         if isinstance(g, dict) and g.get("gate") == gate), {})
+        why = str(blocking.get("reason") or "").strip()
+        return _gate_detail(
+            False,
+            f"flow status '{status}': {gate_label} not cleared"
+            + (f" — {why}" if why else "")
+            + " — run run_pipeline_flow.py to clear the gates",
+            source=FLOW_REPORT_JSON, blocked_gate=gate, bar=bar)
+
     manifest = brand_dir / "manifest.json"
     if manifest.is_file():
         try:
             m = json.loads(manifest.read_text())
         except Exception:
-            return False, "manifest.json unreadable"
+            return _gate_detail(False, "manifest.json unreadable",
+                                source="manifest.json", bar=bar)
         status = str(m.get("status") or "")
-        replica = (m.get("replica") or {}).get("overall")
-        val_errors = ((m.get("validation") or {}).get("errors"))
+        recorded = (m.get("replica") or {}).get("overall")
+        recorded = recorded if isinstance(recorded, (int, float)) else None
+        measured = measured_replica_overall(brand_dir)
+        replica = measured if measured is not None else recorded
+        stale_score = (measured is not None and recorded is not None
+                       and abs(measured - recorded) > 5e-4)
+        validation = m.get("validation") if isinstance(m.get("validation"), dict) else {}
+        # manifests have used both vocabularies for the C1–C28 error count
+        val_errors = validation.get("errors")
+        if val_errors is None:
+            val_errors = validation.get("c1_c28_errors")
         harness_ok = str((m.get("harness") or {}).get("status") or "") in (
             "available", "pass", "ok")
         below = isinstance(replica, (int, float)) and replica < bar
-        if status == "completed" and not below and (val_errors in (0, None)) \
-                and (harness_ok or m.get("harness") is None):
-            return True, "manifest status 'completed' with cleared gates"
-        why = []
+        claims_run = m.get("pipeline_run_completed")
+        why: list[str] = []
+        blocked_gate: str | None = None
         if status and status != "completed":
             why.append(f"status '{status}'")
-        if below:
-            why.append(f"replica {replica} < bar {bar}")
+        if claims_run is False:
+            why.append("pipeline_run_completed: false")
         if val_errors not in (0, None):
             why.append(f"{val_errors} validation error(s)")
-        return False, ("manifest shows the lane is not cleared: "
-                       + (", ".join(why) or "no completion recorded"))
-    return False, ("no flow-report.json or manifest.json — the lane has not been "
-                   "run through the gated flow (run run_pipeline_flow.py first)")
+            blocked_gate = "G2"
+        if m.get("harness") is not None and not harness_ok:
+            why.append("harness not available")
+            blocked_gate = blocked_gate or "G3"
+        if below:
+            why.append(f"replica {replica} < bar {bar}")
+            blocked_gate = blocked_gate or "G4"
+        if stale_score:
+            why.append(f"manifest replica {recorded} is stale — the measured "
+                       f"replica-report.json says {measured}")
+        if not why and status == "completed":
+            note = "manifest status 'completed' with cleared gates"
+            if stale_score:
+                note += f" (score taken from replica-report.json: {measured})"
+            return _gate_detail(True, note, source="manifest.json", bar=bar,
+                                replica=replica, recorded_replica=recorded)
+        blocked_gate = blocked_gate or m.get("blockedGate")
+        if blocked_gate not in GATE_NAMES:
+            blocked_gate = None
+        return _gate_detail(
+            False, "manifest shows the lane is not cleared: "
+                   + (", ".join(why) or "no completion recorded"),
+            source="manifest.json", blocked_gate=blocked_gate, bar=bar,
+            replica=replica, recorded_replica=recorded)
+
+    # No record in the lane itself. Some runs keep manifest.json at the run root
+    # instead; read it ONLY to explain the refusal (never to grant generation —
+    # a record outside the lane is not the lane's gate state).
+    extra = ""
+    if brand_dir.name == "brand" and (brand_dir.parent / "manifest.json").is_file():
+        root = generation_gate_detail(brand_dir.parent, bar)
+        if not root["allowed"]:
+            extra = f" — the run-root manifest.json says: {root['reason']}"
+    return _gate_detail(
+        False, "no flow-report.json or manifest.json — the lane has not been "
+               "run through the gated flow (run run_pipeline_flow.py first)"
+               + extra,
+        source="none", bar=bar)
+
+
+def generation_gate_status(brand_dir: Path,
+                           bar: float = DEFAULT_REPLICA_BAR) -> tuple[bool, str]:
+    """(allowed, reason) for creative page generation on a lane.
+
+    Thin tuple view over :func:`generation_gate_detail`. FAIL-CLOSED: a lane
+    with no record, a blocked/needs_iteration status, or a below-bar replica is
+    REFUSED."""
+    detail = generation_gate_detail(brand_dir, bar)
+    return bool(detail["allowed"]), str(detail["reason"])
 
 
 def assert_generation_allowed(brand_dir: Path,
-                              bar: float = DEFAULT_REPLICA_BAR) -> None:
+                              bar: float = DEFAULT_REPLICA_BAR) -> dict:
     """Raise ``GenerationBlocked`` when the lane has not cleared the gates. The
-    fail-closed refusal wired into generate_composition."""
-    allowed, reason = generation_gate_status(brand_dir, bar)
-    if not allowed:
+    fail-closed refusal wired into generate_composition and the framework lane.
+
+    Returns the gate record on success so a caller can persist WHY it was
+    allowed to generate."""
+    detail = generation_gate_detail(brand_dir, bar)
+    if not detail["allowed"]:
         bd = Path(brand_dir)
         lane = bd.parent.name if bd.name == "brand" else bd.name
+        gate = detail.get("blockedGate")
+        at = f" at {gate} ({GATE_NAMES[gate]})" if gate in GATE_NAMES else ""
         raise GenerationBlocked(
-            f"page generation refused for {lane}: {reason}")
+            f"page generation refused for {lane}{at}: {detail['reason']}")
+    return detail
 
 
 # ── module CLI helper ─────────────────────────────────────────────────────────
@@ -609,6 +722,40 @@ def write_flow_report(result: FlowResult) -> Path:
     return jpath
 
 
+def honest_manifest_fields(brand_dir: Path, result: FlowResult) -> dict:
+    """The manifest fields the flow OWNS, derived from the gate outcome.
+
+    A run that failed a gate must not be able to describe itself as finished, so
+    ``status`` / ``pipeline_run_completed`` / ``generationAllowed`` are all
+    derived from the same gate outcome rather than authored by hand. The replica
+    score is copied from the measured ``replica-report.json`` (its single source
+    of truth) so the manifest can never drift into claiming a better number than
+    the one the lane actually scored."""
+    completed = bool(result.status == "completed" and result.generation_allowed)
+    fields: dict = {
+        "status": result.status,
+        "pipeline_run_completed": completed,
+        "generationAllowed": result.generation_allowed,
+        "blockedGate": result.blocked_gate,
+        "flowReport": FLOW_REPORT_JSON,
+    }
+    measured = measured_replica_overall(brand_dir)
+    if measured is not None:
+        fields["replica"] = {
+            "overall": round(float(measured), 4),
+            "bar": result.replica_bar,
+            "source": "compose/replica/replica-report.json",
+        }
+    g2 = next((g for g in result.gates if g.gate == "G2"), None)
+    if g2 is not None and isinstance(g2.detail.get("errors"), list):
+        fields["validation"] = {
+            "errors": len(g2.detail["errors"]),
+            "warnings": len(g2.detail.get("warnings") or []),
+            "checks": g2.detail.get("checks", "C1-C28"),
+        }
+    return fields
+
+
 def _update_manifest_status(brand_dir: Path, result: FlowResult) -> None:
     """Best-effort honest status write-through into manifest.json (if present).
     Never fails the flow on a manifest write problem."""
@@ -619,9 +766,16 @@ def _update_manifest_status(brand_dir: Path, result: FlowResult) -> None:
         m = json.loads(manifest.read_text())
     except Exception:
         return
-    m["status"] = result.status
-    m["flowReport"] = FLOW_REPORT_JSON
-    m["generationAllowed"] = result.generation_allowed
+    fields = honest_manifest_fields(brand_dir, result)
+    replica = fields.pop("replica", None)
+    if replica is not None:
+        existing = m.get("replica") if isinstance(m.get("replica"), dict) else {}
+        m["replica"] = {**existing, **replica}
+    validation = fields.pop("validation", None)
+    if validation is not None:
+        existing = m.get("validation") if isinstance(m.get("validation"), dict) else {}
+        m["validation"] = {**existing, **validation}
+    m.update(fields)
     try:
         manifest.write_text(json.dumps(m, indent=2) + "\n")
     except Exception:

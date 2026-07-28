@@ -38,6 +38,9 @@ class AppConfig:
     brand_assets_manifest: str = ""
     # Framework-first: build React/Tailwind packages; vanilla one-shot HTML off by default.
     framework_generation_enabled: bool = True
+    # Opt-in escape hatch for the fail-closed framework generation gate. Default
+    # OFF: a lane that failed G1–G4 refuses to generate a framework page.
+    framework_generation_allow_ungated: bool = False
     vanilla_site_generation_enabled: bool = False
     # Optional path to source_chrome.json (nav/footer 1:1 contract from live URL).
     source_chrome_contract: str = ""

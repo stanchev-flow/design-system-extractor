@@ -6073,6 +6073,10 @@ def run_pipeline(
     framework_generation_enabled = bool(
         getattr(config, "framework_generation_enabled", True) or framework_sites
     )
+    # Opt-in, default-OFF override for the fail-closed framework generation gate.
+    framework_allow_ungated = bool(
+        getattr(config, "framework_generation_allow_ungated", False)
+    )
     skip_vanilla_html = bool(framework_sites and sites_only) or (
         framework_generation_enabled and not vanilla_site_generation_enabled
     )
@@ -6620,6 +6624,7 @@ def run_pipeline(
                         brand_assets_manifest=brand_manifest,
                         chrome_contract_path=chrome_path,
                         generation_label=generation_label,
+                        allow_ungated=framework_allow_ungated,
                         log=log,
                     )
                 apply_site_assets(

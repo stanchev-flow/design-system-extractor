@@ -6,14 +6,28 @@ design-system YAML front matter, asks an LLM for App.tsx (and optional CSS),
 builds with vite-plugin-singlefile, and copies dist/index.html into the
 pipeline's single/ folder for viewer embedding. Do not ship shadcn-as-shipped
 skin — headless behavior + brand tokens only.
+
+This module is the ONE tracked entry point every framework generation goes
+through (run_pipeline.py and per-run lane scripts both call
+``generate_framework_site``), so the gate lives here:
+
+  * FAIL-CLOSED GATE — generation refuses for a brand lane that has not cleared
+    the ordered gates (pipeline_flow G1–G4). Default-OFF override:
+    ``FRAMEWORK_GENERATION_ALLOW_UNGATED=1`` / ``framework-generation-allow-ungated``.
+  * FROZEN INPUTS — the exact assembled payload and the prompt used are written
+    into the run before the model call.
+  * TYPECHECK — the build runs ``tsc -b`` (no ``build:nocheck`` shortcut), so a
+    type error in generated code fails the lane instead of shipping silently.
 """
 
 from __future__ import annotations
 
 import json
+import os
 import re
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -32,12 +46,119 @@ FRAMEWORK_GEN_MAX_TOKENS = 32768
 
 SCAFFOLD_SKIP = {"node_modules", "dist", ".git", "tsconfig.tsbuildinfo"}
 
+# Documented, opt-in, default-OFF override for the fail-closed gate below. Set to
+# 1/true/yes/on to generate a framework page from a lane that has NOT cleared the
+# ordered gates. Equivalent config key: `framework-generation-allow-ungated`.
+FRAMEWORK_ALLOW_UNGATED_ENV = "FRAMEWORK_GENERATION_ALLOW_UNGATED"
+
+# The per-run snapshot the framework lane freezes before it calls a model, so a
+# later "why did it invent that section?" is a diff instead of a code read.
+GENERATION_INPUT_FILENAME = "site-generation-input.md"
+GENERATION_PROMPT_FILENAME = "site-generation-prompt.md"
+GENERATION_REQUEST_FILENAME = "site-generation-request.json"
+
 
 def load_framework_prompt(prompt_path: Path | None = None) -> str:
     path = prompt_path or DEFAULT_FRAMEWORK_PROMPT_PATH
     if path.exists():
         return path.read_text(encoding="utf-8").strip()
     raise FileNotFoundError(f"Framework generation prompt not found: {path}")
+
+
+# ── fail-closed generation gate ───────────────────────────────────────────────
+# The framework lane is model work on a brand lane, so it obeys the SAME ordered
+# gates as every other page generation (pipeline_flow G1 extraction → G2
+# validation → G3 harness → G4 replica ≥ bar). It used to be the one generation
+# path with no gate at all, which is how blank pages, invented bands and
+# wrong-slot assets got produced from lanes that had already failed a gate.
+
+
+def resolve_brand_lane_dir(start: Path) -> Path | None:
+    """Nearest ancestor of ``start`` that is a brand lane (holds ``brand.yaml``).
+
+    The framework lane writes into ``<lane>/framework/single/…``, so walking up
+    from the output dir finds the lane whose gate state governs it. Returns None
+    when there is no brand lane above the output dir — the legacy
+    screenshot→template pipeline, which has no G1–G4 state to consult."""
+    try:
+        current = Path(start).resolve()
+    except OSError:
+        return None
+    for candidate in (current, *current.parents):
+        if (candidate / "brand.yaml").is_file():
+            return candidate
+        if candidate == PROJECT_DIR:
+            break
+    return None
+
+
+def _import_pipeline_flow():
+    """pipeline_flow lives in brand_pipeline/ (imported as a top-level module by
+    every other caller). Imported lazily so this module stays cheap."""
+    flow_dir = str(PROJECT_DIR / "brand_pipeline")
+    if flow_dir not in sys.path:
+        sys.path.insert(0, flow_dir)
+    import pipeline_flow  # noqa: PLC0415
+
+    return pipeline_flow
+
+
+def framework_ungated_override(explicit: bool | None = None) -> bool:
+    """Whether the operator has explicitly opted out of the gate.
+
+    Precedence: the explicit argument (config / CLI) wins; otherwise the
+    ``FRAMEWORK_GENERATION_ALLOW_UNGATED`` env var. Defaults to False — the
+    override is never implied and never silent."""
+    if explicit is not None:
+        return bool(explicit)
+    return os.environ.get(FRAMEWORK_ALLOW_UNGATED_ENV, "").strip().lower() in {
+        "1", "true", "yes", "on",
+    }
+
+
+def assert_framework_generation_allowed(
+    brand_dir: Path | None,
+    *,
+    replica_bar: float | None = None,
+    allow_ungated: bool | None = None,
+    log=print,
+) -> dict:
+    """Refuse framework generation for a lane that has not cleared the gates.
+
+    Raises ``pipeline_flow.GenerationBlocked`` naming the blocking gate and why
+    (e.g. "G3 (harness)" / "G4 (replica) 0.7437 < bar 0.90"). Returns the gate
+    record so the caller can persist WHY generation was permitted.
+
+    ``allow_ungated`` (or ``FRAMEWORK_GENERATION_ALLOW_UNGATED=1``) generates
+    anyway; the refusal is logged in full and recorded in the returned record so
+    the override is auditable rather than invisible."""
+    override = framework_ungated_override(allow_ungated)
+    if brand_dir is None:
+        return {"enforced": False, "allowed": True,
+                "reason": "no brand lane above the output dir — no G1–G4 state "
+                          "to consult (legacy screenshot lane)",
+                "override": override, "brandDir": None}
+    flow = _import_pipeline_flow()
+    bar = flow.DEFAULT_REPLICA_BAR if replica_bar is None else replica_bar
+    detail = flow.generation_gate_detail(brand_dir, bar)
+    record = {"enforced": True, "override": override,
+              "brandDir": str(brand_dir), **detail}
+    if detail["allowed"]:
+        return record
+    gate = detail.get("blockedGate")
+    where = f"{gate} ({flow.GATE_NAMES[gate]})" if gate in flow.GATE_NAMES \
+        else "an uncleared gate"
+    lane_dir = Path(brand_dir)
+    lane_name = lane_dir.parent.name if lane_dir.name == "brand" else lane_dir.name
+    message = (f"framework generation refused for {lane_name} at "
+               f"{where}: {detail['reason']}")
+    if not override:
+        raise flow.GenerationBlocked(
+            message + f"\n  (to generate anyway, knowing the lane is failing, set "
+                      f"{FRAMEWORK_ALLOW_UNGATED_ENV}=1 or "
+                      f"framework-generation-allow-ungated: true)")
+    log(f"  framework — GATE OVERRIDDEN ({FRAMEWORK_ALLOW_UNGATED_ENV}): {message}")
+    return record
 
 
 def parse_design_system_front_matter(markdown: str) -> dict[str, Any]:
@@ -589,6 +710,47 @@ def extract_json_payload(text: str) -> dict[str, Any]:
     raise ValueError("Framework generation response did not contain a JSON object")
 
 
+def freeze_generation_snapshot(
+    snapshot_dir: Path,
+    *,
+    system_prompt: str,
+    user_prompt: str,
+    provider_name: str,
+    generation_label: str,
+    prompt_path: Path | None = None,
+) -> dict[str, str]:
+    """Write the EXACT payload sent to the model + the prompt used, into the run.
+
+    Frozen BEFORE the model call so a failed or surprising generation still
+    leaves the inputs on disk. Attributing an invented section is then a diff of
+    ``site-generation-input.md`` rather than a re-read of the assembly code.
+    Only prompt/brief text is written — never credentials or provider config."""
+    snapshot_dir = Path(snapshot_dir)
+    snapshot_dir.mkdir(parents=True, exist_ok=True)
+    (snapshot_dir / GENERATION_INPUT_FILENAME).write_text(
+        user_prompt.rstrip() + "\n", encoding="utf-8")
+    (snapshot_dir / GENERATION_PROMPT_FILENAME).write_text(
+        system_prompt.rstrip() + "\n", encoding="utf-8")
+    (snapshot_dir / GENERATION_REQUEST_FILENAME).write_text(
+        json.dumps({
+            "provider": provider_name,
+            "generationLabel": generation_label,
+            "maxTokens": FRAMEWORK_GEN_MAX_TOKENS,
+            "promptPath": str(prompt_path) if prompt_path else "",
+            "promptChars": len(system_prompt),
+            "payloadChars": len(user_prompt),
+            "payload": GENERATION_INPUT_FILENAME,
+            "prompt": GENERATION_PROMPT_FILENAME,
+        }, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return {
+        "payload": str(snapshot_dir / GENERATION_INPUT_FILENAME),
+        "prompt": str(snapshot_dir / GENERATION_PROMPT_FILENAME),
+        "request": str(snapshot_dir / GENERATION_REQUEST_FILENAME),
+    }
+
+
 def generate_framework_files(
     generation_markdown: str,
     provider_name: str,
@@ -598,6 +760,7 @@ def generate_framework_files(
     generation_label: str = "design system",
     brand_assets_manifest: Path | None = None,
     chrome_contract: dict[str, Any] | None = None,
+    snapshot_dir: Path | None = None,
 ) -> dict[str, Any]:
     """Ask the LLM for React source files and write them into the framework package."""
     prompt = framework_prompt or load_framework_prompt()
@@ -653,6 +816,16 @@ def generate_framework_files(
         f"Here is the {generation_label} to implement:\n\n{generation_markdown}"
     )
 
+    snapshot: dict[str, str] = {}
+    if snapshot_dir is not None:
+        snapshot = freeze_generation_snapshot(
+            snapshot_dir,
+            system_prompt=prompt,
+            user_prompt=user_prompt,
+            provider_name=provider_name,
+            generation_label=generation_label,
+        )
+
     if provider_name == "claude":
         provider = AnthropicProvider("claude-opus-4-8")
         result = provider.text_query(
@@ -697,7 +870,8 @@ def generate_framework_files(
             generation_markdown,
         )
 
-    return {"written": written, "notes": payload.get("notes", "")}
+    return {"written": written, "notes": payload.get("notes", ""),
+            "snapshot": snapshot}
 
 
 def npm_install_if_needed(framework_dir: Path, log=print) -> None:
@@ -714,19 +888,27 @@ def npm_install_if_needed(framework_dir: Path, log=print) -> None:
 
 
 def build_framework_project(framework_dir: Path, *, log=print) -> Path:
-    """Run npm ci (if needed) + vite singlefile build; return dist/index.html."""
+    """Run npm ci (if needed) + typecheck + vite singlefile build; return
+    dist/index.html.
+
+    `npm run build` is `tsc -b && vite build`: the typecheck is PART of the gate.
+    The lane used to run `build:nocheck` to tolerate "minor TS issues" in
+    generated App.tsx, which hid real defects — a prop the scaffold did not
+    accept typechecked away silently and shipped an unstyled component. A type
+    error in generated code is a generation defect: fix the scaffold or the
+    prompt, never the check."""
     npm_install_if_needed(framework_dir, log=log)
-    # LLM-generated App.tsx often has minor TS issues; skip tsc for the pipeline artifact.
-    log(f"  framework — npm run build:nocheck in {framework_dir.name}/")
+    log(f"  framework — npm run build (tsc -b && vite build) in {framework_dir.name}/")
     proc = subprocess.run(
-        ["npm", "run", "build:nocheck"],
+        ["npm", "run", "build"],
         cwd=str(framework_dir),
         capture_output=True,
         text=True,
     )
     if proc.returncode != 0:
         raise RuntimeError(
-            "Framework build failed:\n"
+            "Framework build failed (typecheck is enabled — fix the scaffold or "
+            "the generation prompt, do not skip tsc):\n"
             + (proc.stderr or proc.stdout or "")[-4000:]
         )
     dist_html = framework_dir / "dist" / "index.html"
@@ -745,9 +927,31 @@ def generate_framework_site(
     brand_assets_manifest: Path | None = None,
     chrome_contract_path: Path | None = None,
     generation_label: str = "design system",
+    brand_dir: Path | None = None,
+    enforce_gates: bool = True,
+    allow_ungated: bool | None = None,
+    replica_bar: float | None = None,
+    snapshot_dir: Path | None = None,
     log=print,
 ) -> dict[str, Any]:
-    """Full framework path: scaffold → tokens → LLM → build → copy single-file HTML."""
+    """Full framework path: GATE → scaffold → tokens → freeze inputs → LLM →
+    typecheck+build → copy single-file HTML.
+
+    FAIL-CLOSED: when ``enforce_gates`` (the default) and the output dir sits
+    under a brand lane, the lane must have cleared G1–G4 or this raises
+    ``pipeline_flow.GenerationBlocked`` BEFORE any scaffold or model work. Pass
+    ``allow_ungated=True`` (or set ``FRAMEWORK_GENERATION_ALLOW_UNGATED=1``) to
+    knowingly generate from a failing lane.
+    """
+    single_dir = Path(single_dir)
+    lane = Path(brand_dir) if brand_dir else resolve_brand_lane_dir(single_dir)
+    gate: dict[str, Any] = {"enforced": False, "allowed": True,
+                            "reason": "enforce_gates=False"}
+    if enforce_gates:
+        gate = assert_framework_generation_allowed(
+            lane, replica_bar=replica_bar, allow_ungated=allow_ungated, log=log)
+        if gate.get("enforced"):
+            log(f"  framework — gate: {gate.get('reason')}")
     framework_dir = single_dir / f"framework-{provider_name}"
     scaffold_framework_project(
         framework_dir,
@@ -773,6 +977,7 @@ def generate_framework_site(
         generation_label=generation_label,
         brand_assets_manifest=brand_assets_manifest,
         chrome_contract=chrome_contract,
+        snapshot_dir=Path(snapshot_dir) if snapshot_dir else single_dir,
     )
     dist_html = build_framework_project(framework_dir, log=log)
     shutil.copy2(dist_html, output_html_path)
@@ -786,6 +991,8 @@ def generate_framework_site(
         "chrome_files": chrome_written,
         "chrome_contract": str(chrome_contract_path) if chrome_contract_path else "",
         "notes": gen_meta.get("notes", ""),
+        "generation_snapshot": gen_meta.get("snapshot", {}),
+        "gate": gate,
     }
     output_html_path.with_suffix(".framework.json").write_text(
         json.dumps(report, indent=2) + "\n",

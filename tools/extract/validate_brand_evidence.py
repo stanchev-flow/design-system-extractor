@@ -181,6 +181,7 @@ import argparse
 import hashlib
 import json
 import math
+import os
 import re
 import sys
 import tempfile
@@ -195,6 +196,18 @@ DEFAULT_CONTRACTS = REPO_ROOT / "brand_pipeline" / "contracts" / "blocks.yaml"
 # a literal double-escaped HTML entity in GENERATED html (e.g. "&amp;mdash;")
 # renders as visible "&mdash;" text — always an escaping bug, never content.
 DOUBLE_ESCAPED_ENTITY = re.compile(r"&amp;[a-zA-Z]+;")
+# a literal "\u2019" in GENERATED JSX/TSX source. JSX text children and JSX
+# attribute strings do NOT process JS escapes, so the six characters render
+# verbatim. Generated copy must be literal UTF-8 characters.
+LITERAL_UNICODE_ESCAPE = re.compile(r"\\u[0-9a-fA-F]{4}")
+# Generated-artifact dirs C12 scans for escape hygiene. `framework` holds the
+# React lane's package + its built single-file page.
+GENERATED_ARTIFACT_DIRS = ("components-preview", "chrome", "framework")
+# Never scan installed dependencies: a minified vendor bundle legitimately
+# carries \uXXXX regex literals (React's XML-name char classes alone account for
+# ~50), which is exactly why the escape scan is scoped to authored source.
+VENDOR_DIR_NAMES = {"node_modules", ".vite", ".cache"}
+GENERATED_SOURCE_SUFFIXES = {".tsx", ".ts", ".jsx", ".css"}
 # third-party store/review badge art masquerading as the brand's footer logo
 APP_BADGE_PATTERN = re.compile(r"app.?store|google.?play|play.?store|badge|rating",
                                re.IGNORECASE)
@@ -341,6 +354,60 @@ def _mentions_logos(doc: dict, patterns: list[dict]) -> bool:
             if isinstance(s, dict) and "logo" in str(s.get("name") or "").lower():
                 return True
     return any(str(p.get("useCase") or "").lower() == "logos" for p in patterns)
+
+
+def _walk_authored(root: Path):
+    """Files under ``root``, pruning installed dependencies as we descend.
+
+    A framework lane's dir contains node_modules (tens of thousands of files), so
+    the vendor prune has to happen during the walk, not as a filter after it."""
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = sorted(d for d in dirnames if d not in VENDOR_DIR_NAMES)
+        base = Path(dirpath)
+        for name in sorted(filenames):
+            yield base / name
+
+
+def _check_escape_hygiene(rep: "Report", brand_dir: Path) -> None:
+    """C12 — escape hygiene across EVERY generated artifact in the brand dir.
+
+    Two scans with deliberately different scopes, because the framework lane's
+    shipped page is a single file with the whole minified vendor bundle inlined:
+
+    * double-escaped HTML entities — scanned in the rendered ``*.html`` of every
+      generated dir INCLUDING the framework page. Measured false positives on a
+      real framework bundle: zero.
+    * literal ``\\uXXXX`` escapes — scanned in the model-authored framework
+      SOURCE (``**/src/**`` .tsx/.ts/.jsx/.css) only, never the built bundle. A
+      production React bundle legitimately contains dozens of ``\\uXXXX`` regex
+      literals, so scanning the bundle would report ~50 false positives per run;
+      the generated source has no legitimate use for the escape at all (the
+      framework prompt requires literal UTF-8 copy), so any hit there is the
+      defect that shipped ``you\\u2019ll`` as visible text.
+    """
+    for gen in GENERATED_ARTIFACT_DIRS:
+        gen_dir = brand_dir / gen
+        if not gen_dir.is_dir():
+            continue
+        for f in _walk_authored(gen_dir):
+            rel = f.relative_to(gen_dir)
+            if f.suffix == ".html":
+                hits = DOUBLE_ESCAPED_ENTITY.findall(f.read_text(errors="replace"))
+                if hits:
+                    rep.error("C12", f"{f.relative_to(brand_dir)}: double-escaped "
+                                     f"entity text {sorted(set(hits))} — an entity "
+                                     "was escaped again (author literal characters, "
+                                     "e.g. '—', not '&mdash;', in copy fed to "
+                                     "renderers).")
+            elif f.suffix in GENERATED_SOURCE_SUFFIXES and "src" in rel.parts:
+                hits = LITERAL_UNICODE_ESCAPE.findall(f.read_text(errors="replace"))
+                if hits:
+                    rep.error("C12", f"{f.relative_to(brand_dir)}: literal unicode "
+                                     f"escape(s) {sorted(set(hits))} in generated "
+                                     "source — JSX text and JSX attribute strings "
+                                     "do NOT decode \\uXXXX, so it renders "
+                                     "verbatim. Author the character itself (e.g. "
+                                     "'’', '—').")
 
 
 def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = None,
@@ -934,17 +1001,7 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
         _smoke_compose(rep, brand_dir, doc, patterns)
 
     # C12 — escape hygiene in generated artifacts already living in the brand dir
-    for gen in ("components-preview", "chrome"):
-        gen_dir = brand_dir / gen
-        if not gen_dir.is_dir():
-            continue
-        for f in sorted(gen_dir.rglob("*.html")):
-            hits = DOUBLE_ESCAPED_ENTITY.findall(f.read_text(errors="replace"))
-            if hits:
-                rep.error("C12", f"{f.relative_to(brand_dir)}: double-escaped "
-                                 f"entity text {sorted(set(hits))} — an entity was "
-                                 "escaped again (author literal characters, e.g. "
-                                 "'—', not '&mdash;', in copy fed to renderers).")
+    _check_escape_hygiene(rep, brand_dir)
 
     # C13 — motion evidence: the brand's timing system is part of the extraction
     # contract (the motion-audit gap). tokens.motion must carry at least one

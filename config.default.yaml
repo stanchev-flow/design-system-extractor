@@ -9,6 +9,12 @@ site-asset-generation-enabled: true
 # brand compose (token CSS + static HTML) is the canonical product path.
 # When enabled, do NOT use shadcn-as-shipped skin; prefer headless behavior + owned tokens.
 framework-generation-enabled: false
+# Framework generation is FAIL-CLOSED: it refuses to run for a brand lane that
+# has not cleared the ordered gates (G1 extraction → G2 validation → G3 harness →
+# G4 replica >= bar). Set this to true ONLY to knowingly generate from a failing
+# lane; the refusal is then logged and recorded in framework-report.json instead
+# of blocking. Equivalent env var: FRAMEWORK_GENERATION_ALLOW_UNGATED=1.
+framework-generation-allow-ungated: false
 # Vanilla one-shot HTML (site-claude.html / site-gpt55.html). Off by default; use --vanilla-sites to enable.
 vanilla-site-generation-enabled: false
 site-asset-image-model: gpt-image-2
