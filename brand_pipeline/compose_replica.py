@@ -670,6 +670,21 @@ def shoot_chrome_mega(brand_dir: Path, out_dir: Path,
 
 # ── 3) per-section diff vs the source screenshot ──────────────────────────────────
 
+def report_path(path: Path) -> str:
+    """A path as the REPORT should record it: repo-relative when it is in the repo.
+
+    The report is a text artifact of a public repo, so writing the checkout's
+    absolute path both leaks the machine it was produced on and makes the file
+    untrackable. Repo-relative keeps it a usable reference for anyone with the
+    repo; a genuinely external path is recorded as-is, since shortening it would
+    make it meaningless.
+    """
+    try:
+        return path.resolve().relative_to(REPO_ROOT.resolve()).as_posix()
+    except (ValueError, OSError):
+        return str(path)
+
+
 def load_source_bands(brand_dir: Path) -> tuple[Path, list[dict]]:
     """(source screenshot path, bands) from the extraction evidence. Bands are the
     measured section rects in y order, with the chrome header/footer as their own
@@ -1355,7 +1370,7 @@ def run_diff(brand_dir: Path, out_dir: Path, doc: dict,
                       "score": None, "note": reason})
 
     meta = {"inputDigest": projection_input_digest(brand_dir),
-            "sourceShot": str(src_shot_path),
+            "sourceShot": report_path(src_shot_path),
             "sourceHeight": src_im.height, "replicaHeight": rep_im.height,
             "bandAlignment": align_census,
             "structuralGate": gate}

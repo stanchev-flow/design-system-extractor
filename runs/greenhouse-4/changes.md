@@ -421,3 +421,134 @@ when absent.
   wrote `brand/assets-manifest.json` instead.
 - **No framework lane.** `has_site` globs `*/single/site-*.html`, one level above this
   run's `brand/framework/single/`, so the Studio never offered the lane anyway.
+
+## 2026-07-28 — the Studio shows a brand-lane run
+
+Closes the three "known gaps" recorded above, which were all one root cause: the
+Studio was written against the older `screenshot_to_template` lane and read
+`runs/<project>/<item>/single/`. A brand-lane run never creates that directory, so
+`first_item_dir()` returned `None`, all thirteen document lookups returned `""`,
+and `availableDocs` filtered every tab away.
+
+### Brand-lane documents are their own tab set (`studio_server.py`)
+A new `BRAND_DOCS` registry sits ALONGSIDE the old `DOCS` list rather than
+replacing it, so an old-lane project is untouched. Each entry names the brand
+artifact that now carries what the old document carried:
+
+| tab | reads | present in |
+| --- | --- | --- |
+| Structural evidence | `brand/evidence/{dom-sections,css-facts,computed-styles,motion-audit}.json` | greenhouse-4, remote, hubspot-v2 |
+| Grounding | `brand/evidence/grounding/*.yaml` (11 / 19 / 12 files) | greenhouse-4, remote, hubspot-v2 |
+| Ledger | `brand/style-scale.yaml` | greenhouse-4, remote, hubspot-v2 |
+| Contract audit | `brand/contract-projection-audit.json` | greenhouse-4 only |
+| Sections | `brand/layout-library.yaml` + `brand/section-copy.yaml` | all four lanes |
+| Validation | `validate-final.log`, else `brand/validation-report.md` | greenhouse-4, hubspot-v2 |
+| Author report | `brand/author-report.json` + `brand/author-stage-status.json` | greenhouse-4 only |
+| Replica fidelity | `brand/compose/replica/replica-report.md` | greenhouse-4, remote, hubspot-v2 |
+| Voice | `brand/voice.md` + `brand/voice-facts.yaml` | all four lanes |
+| Changelog | `changes.md`, else `brand/changes.md` | greenhouse-4, remote, hubspot-v2 |
+
+Mechanics worth knowing:
+
+- `groups` is a tuple of ALTERNATE GROUPS: every group contributes a file, and
+  within a group the first pattern that resolves wins. That is what lets one entry
+  concatenate several files while still tolerating a lane that puts its changelog
+  at the run root instead of under `brand/`.
+- Every backing file is emitted under a `===== <path> =====` header, so a
+  multi-file tab reads as one document and a single-file tab still says which of
+  the alternates it found.
+- A zero-byte file counts as absent, so availability and content always agree —
+  no tab can render blank.
+- `supersedes` names the old-lane `docs` key an entry stands in for. When a project
+  has both (an old-lane run that later grew a `brand/` dir, e.g. `runs/woodwave`)
+  the original wins and the successor is dropped, so no label appears twice.
+- Bodies are NOT embedded in the project payload; the tab row is metadata only and
+  the body is fetched from a new `/api/rundoc?version=&doc=` endpoint, the same way
+  `brand.yaml` / `brand.md` already load. Structural evidence alone is 147 KB for
+  this run, and 162 KB for hubspot-v2.
+
+Deliberately NOT wired: no "design system" document is synthesized from parts
+(`brand.yaml` / `brand.md` already have their own tabs), `brand/catalog/catalog.json`
+is left to the existing Catalog tab rather than duplicated into Sections, and the
+old `Contract`, `Generation input` and `Prompts` tabs have no brand-lane equivalent
+to show.
+
+### Assets counter and gallery (`studio_server.py`)
+`load_assets()` read only `runs/<project>/assets/assets-manifest.json` with the old
+`total_logical_assets` / `assets[]` keys, so this run reported `Assets (0)`. It now
+tries that manifest first (old-lane behaviour byte for byte) and falls back to the
+brand lane's `brand/assets-manifest.json` (`assets-curation.v1`, an `entries[]`
+array). Real counts: greenhouse-4 **68**, hubspot-v2 66, remote 34.
+
+Each entry maps to the gallery as: group by `tagGuess` (present on 100% of entries
+in all three lanes); badge = the authored `assetSemantics.kind` from
+`brand/media-assets.yaml` when it binds that file, else `unbound` — which surfaces
+the 65-of-68 binding gap instead of hiding it; `url` resolves `dest` against
+`brand/assets/` and then every `brand/compose/*/assets/` directory, because the
+curation pool is not in the committed subset while the lane copies are.
+
+Also fixed a latent bug this made reachable: the gallery's inline
+`onerror="…innerHTML='<span class=\'…\'>load failed</span>'"` needed a quote nested
+four deep (Python → JS template literal → HTML attribute → JS string) and lost a
+backslash, so the handler was a syntax error. A failed image rendered as a blank
+tile plus a console error instead of a caption. Replaced with a named
+`imgFailed(el, cls)` function; no nested quoting.
+
+### Dashboard thumbnail (`studio_server.py`)
+`project_meta()` looked for a run-item `screenshot.*` and then a ROOT-LEVEL image in
+`screenshots/<project>/`. A modern capture has only per-page subdirectories, so
+neither matched and the card said "no preview" — while the project page's Source
+pane worked, because `resolve_source_image()` does handle them. `project_meta()` now
+falls back to that same resolver. For this run the capture folder is a SYMLINK
+(`screenshots/greenhouse-4` → `screenshots/greenhouse-v2`) and the resolver maps the
+target back under the project dir, so the card renders
+`/screenshots/greenhouse-v2/home/home-fullpage.png`. Across the dashboard this took
+"no preview" from 29 cards down to 3, and those 3 are prompt-version folders
+(`v178`, `style-calibration`, `claude-distillation`) with no capture at all.
+
+### `/project/<unknown>` returns 404 (`studio_server.py`)
+It used to answer 200 with a fully rendered page, so a link pasted from a machine
+with more runs than yours produced a plausible-looking project whose every pane was
+empty. It now returns a real 404 naming the missing version and listing the projects
+this checkout does have. The check is `run_dir_for()`, which keys off the run
+DIRECTORY, never off how much is in it — a project with almost nothing generated
+still renders — and doubles as the traversal guard for the new `/api/rundoc`.
+
+### Replica report records the compared source repo-relative (`compose_replica.py`)
+The absolute-path exposure noted above is fixed at the source: `report_path()`
+writes a path inside the repo relative to the repo root
+(`screenshots/greenhouse-v2/home/home-fullpage.png`) and leaves a genuinely external
+path alone. One field, `meta.sourceShot`, feeds both the `.json` and the `.md`.
+
+Existing stored reports are deliberately NOT migrated — the next re-score
+regenerates them. Verified with the tracker's own `leaks_local_path()` gate: freshly
+written reports pass, the stored ones still fail. **16 of the 20** existing
+`replica-report.{json,md}` files across 8 projects carry the absolute path, and in
+every one of them it is this single field, so a re-score unblocks all 16 for
+tracking. (The larger held-back counts for `woodwave`/`remote` come from other
+producers — `onbrand-report.md`, `composition.json`, `css-diff.json`, battery
+reports — which this change does not touch.)
+
+### Verification
+- `tests/test_studio_brand_pages.py` grew from 8 to 40 tests (brand-doc resolution,
+  alternates, dedupe-vs-old-lane, both manifest shapes, thumbnail incl. the symlink
+  case, `run_dir_for`). New `tests/test_studio_http_routes.py` (12) runs a real
+  server on an ephemeral port for the 404 and `/api/rundoc`. New
+  `tests/test_compose_replica_report_path.py` (6). `tests/` is 195 passed / 0 failed.
+- Headless Chromium against a Studio on port 1577 (NOT 1500): greenhouse-4 shows 15
+  tabs, remote 12, hubspot-v2 13, and old-lane `runs/greenhouse` still shows its
+  original 15 — no tab has an empty body, and there are no console errors on any of
+  them. All 68 greenhouse-4 and 34 remote asset images load; 6 of hubspot-v2's 66 do
+  not, and now say "load failed" — they are DOM-harvested inline `<svg>` fragments
+  written without an `xmlns` attribute (`brand/assets/logo-inline-0[2-7].svg`), which
+  no browser will render as a standalone image. That is a defect in that run's
+  harvested data, not in the Studio, and is left alone.
+
+### Still open
+- `brand/evidence/`, `brand/style-scale.yaml`, `brand/layout-library.yaml`,
+  `brand/section-copy.yaml`, `brand/author-report.json`,
+  `brand/contract-projection-audit.json` and `validate-final.log` are not in the
+  committed subset, so on a CLEAN CLONE those tabs are correctly absent rather than
+  broken. Closing that needs include rules in `tools/track_studio_subset.py` plus a
+  regenerated `.gitignore` block; both were owned by another agent during this
+  change and were left untouched.

@@ -35,6 +35,7 @@ import sys
 import threading
 import time
 import uuid
+from collections import namedtuple
 from datetime import datetime
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -361,24 +362,15 @@ def project_meta(version: str) -> dict:
             if shot and not thumb:
                 thumb = "/" + str(shot.relative_to(PROJECT_DIR)).replace("\\", "/")
             items.append({"name": item_dir.name, "has_shot": bool(shot)})
-    # Fall back to the local-folder input (screenshots/<version>/) when no run
-    # item had a screenshot.* — mirrors the project_detail left-lane fix.
+    # Fall back to the resolved SOURCE capture when no run item had a screenshot.*.
+    # This is the same resolver the project page's Source pane uses, which is why
+    # that pane worked while the dashboard card said "no preview": a modern capture
+    # only has per-page subdirectories (screenshots/<v>/<page>/<page>-fullpage.png),
+    # and the card used to look only for a root-level image. Resolving through the
+    # shared helper also covers a capture folder that is a symlink to another
+    # project's, since it maps the target back under PROJECT_DIR.
     if not thumb:
-        shots = SCREENSHOTS_DIR / version
-        if shots.is_dir():
-            imgs = [
-                p
-                for p in sorted(shots.iterdir())
-                if p.is_file()
-                and p.suffix.lower() in {".png", ".jpg", ".jpeg", ".webp", ".gif", ".avif"}
-            ]
-            vkey = version.lower().replace("-", "").replace("_", "")
-            pick = next(
-                (p for p in imgs if vkey in p.stem.lower().replace("-", "").replace("_", "")),
-                None,
-            ) or (imgs[0] if imgs else None)
-            if pick:
-                thumb = "/" + str(pick.relative_to(PROJECT_DIR)).replace("\\", "/")
+        thumb = resolve_source_image(version).get("url", "")
     has_site = any((RUNS_DIR / version).glob("*/single/site-*.html"))
     created = meta.get("created", "")
     return {
@@ -1102,6 +1094,165 @@ def parse_design_tokens(design_system_md: str) -> dict:
     return out
 
 
+# ── brand-lane documents (the successors to the old <item>/single/ artifacts) ──
+# The older screenshot_to_template lane wrote every document into
+# `runs/<project>/<item>/single/`. The brand lane never creates that directory, so
+# on a brand-lane project all of those tabs resolve empty and disappear. These
+# entries surface the brand-lane artifact that now carries the same information.
+#
+# `groups` is a tuple of ALTERNATE GROUPS. Every group contributes to the doc, and
+# within a group the FIRST pattern that resolves wins — so a doc can concatenate
+# several files (structural evidence, layout + copy) while still tolerating a lane
+# that names its equivalent differently (`changes.md` at the run root vs under
+# `brand/`). Patterns are globs relative to `runs/<project>/`.
+#
+# `supersedes` names the old-lane `docs` key this stands in for. When a project has
+# BOTH (some runs are hybrids — an old-lane project that later grew a brand dir)
+# the original wins and this entry is dropped, so a label never appears twice.
+BrandDoc = namedtuple("BrandDoc", "key label supersedes groups")
+
+BRAND_DOCS: tuple[BrandDoc, ...] = (
+    BrandDoc(
+        "brand_structural",
+        "Structural evidence",
+        "structural",
+        (
+            ("brand/evidence/dom-sections.json",),
+            ("brand/evidence/css-facts.json",),
+            ("brand/evidence/computed-styles.json",),
+            ("brand/evidence/motion-audit.json",),
+        ),
+    ),
+    BrandDoc(
+        "brand_grounding",
+        "Grounding",
+        "grounding",
+        (("brand/evidence/grounding/*.yaml",),),
+    ),
+    BrandDoc("brand_ledger", "Ledger", "ledger", (("brand/style-scale.yaml",),)),
+    BrandDoc(
+        "brand_contract_audit",
+        "Contract audit",
+        "contract_audit",
+        (("brand/contract-projection-audit.json",),),
+    ),
+    BrandDoc(
+        "brand_sections",
+        "Sections",
+        "section_inventory",
+        (("brand/layout-library.yaml",), ("brand/section-copy.yaml",)),
+    ),
+    BrandDoc(
+        "brand_validation",
+        "Validation",
+        "style_audit",
+        (("validate-final.log", "brand/validation-report.md"),),
+    ),
+    BrandDoc(
+        "brand_author",
+        "Author report",
+        "review",
+        (("brand/author-report.json",), ("brand/author-stage-status.json",)),
+    ),
+    BrandDoc(
+        "brand_replica",
+        "Replica fidelity",
+        "conversion_review",
+        (
+            (
+                "brand/compose/replica/replica-report.md",
+                "brand/compose/replica/replica-report.json",
+            ),
+        ),
+    ),
+    BrandDoc("brand_voice", "Voice", "", (("brand/voice.md",), ("brand/voice-facts.yaml",))),
+    BrandDoc("brand_changelog", "Changelog", "learnings", (("changes.md", "brand/changes.md"),)),
+)
+
+
+def run_dir_for(version: str) -> Path | None:
+    """`runs/<version>` when it is a real directory INSIDE RUNS_DIR, else None.
+
+    The version reaches us from a URL, so this is also the traversal guard: a
+    version of `../../etc` resolves outside RUNS_DIR and is refused.
+    """
+    if not version:
+        return None
+    root = RUNS_DIR.resolve()
+    try:
+        vdir = (RUNS_DIR / version).resolve()
+    except OSError:
+        return None
+    if root not in vdir.parents or not vdir.is_dir():
+        return None
+    return RUNS_DIR / version
+
+
+def brand_doc_files(version: str, doc: BrandDoc) -> list[Path]:
+    """Non-empty files backing one BrandDoc, in registry order.
+
+    Empty files are dropped here so availability and content agree: a tab must
+    never appear for a doc that would render blank.
+    """
+    vdir = run_dir_for(version)
+    if vdir is None:
+        return []
+    out: list[Path] = []
+    for group in doc.groups:
+        for pattern in group:
+            try:
+                hits = sorted(p for p in vdir.glob(pattern) if p.is_file() and p.stat().st_size)
+            except OSError:
+                hits = []
+            if hits:
+                out += hits
+                break
+    return out
+
+
+def brand_docs_available(version: str, docs: dict) -> list[dict]:
+    """Which BrandDocs this project can actually show: [{key, label, files}].
+
+    Content is NOT included — the tabs are built from this list and the body is
+    fetched on demand via /api/rundoc, the same way brand.yaml/brand.md already
+    load. Keeps a project payload small even though the evidence dumps behind
+    these tabs run to hundreds of kilobytes.
+    """
+    out: list[dict] = []
+    for doc in BRAND_DOCS:
+        if doc.supersedes and (docs.get(doc.supersedes) or "").strip():
+            continue
+        files = brand_doc_files(version, doc)
+        if not files:
+            continue
+        out.append({"key": doc.key, "label": doc.label, "files": len(files)})
+    return out
+
+
+def brand_doc_text(version: str, key: str) -> str:
+    """One BrandDoc as text, each backing file under a `===== <path> =====` header.
+
+    The header is emitted even for a single-file doc: it names which of the
+    alternates resolved, and it is what makes a multi-file doc (the grounding
+    YAMLs, the structural evidence dumps) readable as one scrollable document.
+    """
+    doc = next((d for d in BRAND_DOCS if d.key == key), None)
+    if doc is None:
+        return ""
+    vdir = RUNS_DIR / version
+    parts = []
+    for path in brand_doc_files(version, doc):
+        body = read_text(path).strip()
+        if not body:
+            continue
+        try:
+            rel = path.relative_to(vdir).as_posix()
+        except ValueError:
+            rel = path.name
+        parts.append(f"===== {rel} =====\n\n{body}")
+    return "\n\n\n".join(parts)
+
+
 def project_detail(version: str) -> dict:
     m = project_meta(version)
     item_dir = first_item_dir(version)
@@ -1249,22 +1400,54 @@ def project_detail(version: str) -> dict:
         "design_system": docs["design_system"],
         "design_tokens": parse_design_tokens(docs["design_system"]),
         "docs": docs,
+        # Brand-lane successors to the old <item>/single/ docs: tab metadata only,
+        # bodies fetched on demand from /api/rundoc.
+        "brand_docs": brand_docs_available(version, docs),
         "assets": assets,
         "projects": [{"version": p["version"], "title": p.get("title") or p["version"]} for p in list_projects()],
         "framework_first": framework_first_mode(version),
     }
 
 
-def load_assets(version: str) -> dict:
-    path = RUNS_DIR / version / "assets" / "assets-manifest.json"
-    if not path.exists():
-        return {"total": 0, "by_role": {}, "roles": []}
+EMPTY_ASSETS = {"total": 0, "by_role": {}, "roles": []}
+
+
+def _read_json(path: Path) -> dict:
+    """Parsed JSON object at `path`, or {} when it is missing or unreadable."""
+    if not path.is_file():
+        return {}
     try:
         data = json.loads(path.read_text())
     except Exception:
-        return {"total": 0, "by_role": {}, "roles": []}
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def _asset_gallery(by_role: dict[str, list[dict]], total: int) -> dict:
+    """Gallery payload: roles ordered by size, so the biggest group renders first."""
+    if not by_role:
+        return dict(EMPTY_ASSETS)
+    return {
+        "total": total,
+        "by_role": by_role,
+        "roles": sorted(by_role, key=lambda k: -len(by_role[k])),
+    }
+
+
+def _harvest_assets_gallery(version: str) -> dict:
+    """Gallery for the HARVESTED manifest: runs/<v>/assets/assets-manifest.json.
+
+    The old shape: `total_logical_assets` plus an `assets[]` array of live-site
+    records, each already carrying an absolute `url` (or an inline SVG).
+    """
+    data = _read_json(RUNS_DIR / version / "assets" / "assets-manifest.json")
+    records = data.get("assets")
+    if not isinstance(records, list) or not records:
+        return dict(EMPTY_ASSETS)
     by_role: dict[str, list[dict]] = {}
-    for r in data.get("assets", []):
+    for r in records:
+        if not isinstance(r, dict):
+            continue
         by_role.setdefault(r.get("role", "content"), []).append(
             {
                 "url": r.get("url", ""),
@@ -1274,8 +1457,87 @@ def load_assets(version: str) -> dict:
                 "landmark": (r.get("placement") or {}).get("landmark", ""),
             }
         )
-    roles = sorted(by_role, key=lambda k: -len(by_role[k]))
-    return {"total": data.get("total_logical_assets", 0), "by_role": by_role, "roles": roles}
+    return _asset_gallery(by_role, data.get("total_logical_assets", 0))
+
+
+def _curated_asset_dirs(version: str) -> list[Path]:
+    """Where a curated asset's `dest` filename can be found, best copy first.
+
+    `brand/assets/` is the curation pool the manifest describes. Every compose
+    lane also keeps its OWN copy of the files it uses (a lane's page references
+    `assets/<name>` relative to itself), which matters because the pool is not
+    part of the committed subset while the lanes are — so on a clean clone the
+    lane copy is the one that exists.
+    """
+    brand = RUNS_DIR / version / "brand"
+    dirs = [brand / "assets"]
+    compose = brand / "compose"
+    if compose.is_dir():
+        dirs += sorted(p / "assets" for p in compose.iterdir() if (p / "assets").is_dir())
+    return [d for d in dirs if d.is_dir()]
+
+
+def _curated_assets_gallery(version: str) -> dict:
+    """Gallery for the CURATED manifest: runs/<v>/brand/assets-manifest.json.
+
+    Schema `assets-curation.v1`: an `entries[]` array of files copied out of the
+    capture, each with a `dest` filename, a curation `tagGuess`, and the pages it
+    appeared on. Grouping is by `tagGuess` (present on every entry); the badge
+    shows the authored media semantics from `brand/media-assets.yaml` when that
+    file binds this one, and `unbound` when it does not — which is how the gallery
+    shows the curated-vs-bound gap instead of hiding it.
+    """
+    data = _read_json(RUNS_DIR / version / "brand" / "assets-manifest.json")
+    entries = data.get("entries")
+    if not isinstance(entries, list) or not entries:
+        return dict(EMPTY_ASSETS)
+
+    bound: dict[str, str] = {}
+    media = RUNS_DIR / version / "brand" / "media-assets.yaml"
+    if media.is_file():
+        try:
+            doc = yaml.safe_load(media.read_text()) or {}
+            for a in doc.get("assets") or []:
+                if isinstance(a, dict) and a.get("file"):
+                    kind = (a.get("assetSemantics") or {}).get("kind") or ""
+                    bound[str(a["file"])] = str(kind)
+        except Exception:
+            bound = {}
+
+    dirs = _curated_asset_dirs(version)
+    by_role: dict[str, list[dict]] = {}
+    for e in entries:
+        if not isinstance(e, dict):
+            continue
+        dest = str(e.get("dest") or "")
+        if not dest:
+            continue
+        found = next((d / dest for d in dirs if (d / dest).is_file()), None)
+        pages = [str(p) for p in (e.get("pages") or []) if p]
+        by_role.setdefault(str(e.get("tagGuess") or "content"), []).append(
+            {
+                "url": _rel_url(found),
+                "type": bound.get(dest) or ("unbound" if bound else ""),
+                "name": dest[:48],
+                "svg": "",
+                "landmark": ", ".join(pages),
+            }
+        )
+    return _asset_gallery(by_role, len(entries))
+
+
+def load_assets(version: str) -> dict:
+    """Assets gallery for a project, from whichever manifest the lane wrote.
+
+    Two shapes exist and both are real: the old harvested manifest under
+    `runs/<v>/assets/`, and the brand lane's curated manifest under
+    `runs/<v>/brand/`. The harvested one is tried first so an old-lane project
+    behaves exactly as before; the curated one is the fallback.
+    """
+    harvested = _harvest_assets_gallery(version)
+    if harvested["total"] or harvested["by_role"]:
+        return harvested
+    return _curated_assets_gallery(version)
 
 
 # ── on-brand render review (brand thin-spine outputs) ──────────────────────────
@@ -1845,6 +2107,21 @@ class StudioHandler(SimpleHTTPRequestHandler):
             return self._send_text("not generated yet", status=404)
         return self._send_text(read_text(target))
 
+    def _send_rundoc(self, version: str, key: str) -> None:
+        """Serve one BRAND_DOCS entry as raw text for inline viewing.
+
+        Bodies are fetched here rather than embedded in the project payload
+        because the evidence dumps behind these tabs are large. `key` must name a
+        registry entry, and the registry only ever globs inside `runs/<version>/`;
+        `run_dir_for` refuses a version that escapes RUNS_DIR.
+        """
+        if not any(d.key == key for d in BRAND_DOCS):
+            return self._send_text("unknown doc", status=400)
+        text = brand_doc_text(version, key)
+        if not text.strip():
+            return self._send_text("not generated yet", status=404)
+        return self._send_text(text)
+
     def do_GET(self):  # noqa: N802
         path = urlparse(self.path).path
         # Liveness probe: instant, lock-free, no filesystem. threads is the
@@ -1877,11 +2154,20 @@ class StudioHandler(SimpleHTTPRequestHandler):
             version = unquote((qs.get("version") or [""])[0])
             which = (qs.get("which") or [""])[0]
             return self._send_brandfile(version, which)
+        if path == "/api/rundoc":
+            qs = parse_qs(urlparse(self.path).query)
+            version = unquote((qs.get("version") or [""])[0])
+            return self._send_rundoc(version, (qs.get("doc") or [""])[0])
         if path.startswith("/api/project/"):
             version = unquote(path.rsplit("/", 1)[-1])
             return self._send_json(project_detail(version))
         if path.startswith("/project/"):
             version = unquote(path.rsplit("/", 1)[-1])
+            # A project that has no run directory is a 404, not an empty page. A
+            # pasted link to a project that only exists in someone else's clone
+            # used to render a plausible-looking shell with every pane blank.
+            if run_dir_for(version) is None:
+                return self._send_html(render_project_missing(version), status=404)
             return self._send_html(render_detail(version))
         if path.startswith("/compare/"):
             version = unquote(path.rsplit("/", 1)[-1])
@@ -2354,6 +2640,42 @@ loadBuildIndex();
     )
 
 
+def render_project_missing(version: str) -> str:
+    """The body of the 404 for /project/<unknown>.
+
+    Names the version that was asked for and lists what this checkout actually
+    has, because the usual way to land here is a link pasted from a machine whose
+    `runs/` holds more projects than the reader's does.
+    """
+    have = list_projects()
+    listing = (
+        "".join(
+            f'<li class="mb-1"><a class="text-emerald-400 hover:underline" '
+            f'href="/project/{quote(p["version"])}">{_esc_attr(p.get("title") or p["version"])}</a>'
+            f' <span class="text-zinc-600 text-xs">{_esc_attr(p["version"])}</span></li>'
+            for p in have
+        )
+        if have
+        else '<li class="text-zinc-500">none — create one from the Studio dashboard</li>'
+    )
+    return PAGE_HEAD + f"""
+<div class="max-w-2xl mx-auto p-8">
+  <a href="/studio" class="text-xs text-zinc-400 hover:text-white">← Studio</a>
+  <h1 class="text-2xl font-bold tracking-tight mt-2 mb-2">Project not found</h1>
+  <p class="text-sm text-zinc-400 mb-6">
+    There is no <code class="text-zinc-200">runs/{_esc_attr(version)}</code> in this checkout,
+    so there is nothing to show. <code class="text-zinc-200">runs/</code> is mostly gitignored:
+    a link that works on one machine will not resolve on another unless that project's
+    artifacts are part of the committed subset.
+  </p>
+  <section class="card p-4">
+    <h2 class="text-xs uppercase tracking-wider text-zinc-400 mb-2">Projects in this checkout</h2>
+    <ul class="text-sm">{listing}</ul>
+  </section>
+</div>
+</body></html>"""
+
+
 def render_detail(version: str) -> str:
     d = project_detail(version)
     # Safe for embedding in an inline <script>: neutralize </script> breakouts
@@ -2569,7 +2891,11 @@ if (D.brand_md_url) brandFileTabs.push(["brandmd","brand.md"]);
 const BP = D.brand_pages || {};
 const bpCount = (BP.replica ? 1 : 0) + ((BP.generated || []).length);
 const pagesTabs = bpCount ? [["pages","Pages (" + bpCount + ")"]] : [];
-const sideTabs = pagesTabs.concat(catalogTabs).concat(onbrandTabs).concat(brandFileTabs).concat(sideTabsBase).concat([["assets","Assets (" + (D.assets.total||0) + ")"]]);
+// Brand-lane document tabs (the successors to the old <item>/single/ docs). The
+// server already filtered these to the ones whose files resolve, so every tab
+// here has a body; the body itself is fetched on demand.
+const brandDocTabs = (D.brand_docs || []).map(x => ["rd:" + x.key, x.label]);
+const sideTabs = pagesTabs.concat(catalogTabs).concat(onbrandTabs).concat(brandFileTabs).concat(sideTabsBase).concat(brandDocTabs).concat([["assets","Assets (" + (D.assets.total||0) + ")"]]);
 
 // ---- brand pages: measured replica (step 2) vs harness-generated (step 3) ----
 function pageCard(p, sub) {
@@ -2611,6 +2937,20 @@ function renderPages() {
   return head + repHtml + genHtml;
 }
 
+// An <img> that will not decode is replaced by a caption in place. Done from a
+// named function because the alternative — building the replacement markup inside
+// an inline onerror="" attribute — needs a quote nested three deep (Python string
+// → JS template literal → HTML attribute → JS string) and silently lost a
+// backslash, so the handler itself was a syntax error and a broken image rendered
+// as a blank tile with a console error instead of a caption.
+function imgFailed(el, cls) {
+  const span = document.createElement("span");
+  span.className = cls || "text-zinc-600 text-xs";
+  span.textContent = "load failed";
+  const host = el.parentElement || el;
+  host.replaceChildren(span);
+}
+
 function renderAssets() {
   const A = D.assets;
   if (!A.total) return '<div class="card p-6 text-sm text-zinc-500">No assets harvested. Add a reachable URL when creating the project to populate this.</div>';
@@ -2618,7 +2958,7 @@ function renderAssets() {
     const items = A.by_role[role];
     const cells = items.map(a => {
       const media = a.svg ? `<div class="h-24 grid place-items-center p-3 text-zinc-200">${a.svg}</div>`
-        : a.url ? `<div class="h-24 grid place-items-center bg-black/30 p-2"><img src="${a.url}" loading="lazy" onerror="this.parentElement.innerHTML='<span class=\\'text-zinc-600 text-xs\\'>load failed</span>'" class="max-h-full max-w-full object-contain"></div>`
+        : a.url ? `<div class="h-24 grid place-items-center bg-black/30 p-2"><img src="${a.url}" loading="lazy" onerror="imgFailed(this)" class="max-h-full max-w-full object-contain"></div>`
         : `<div class="h-24 grid place-items-center text-zinc-600">—</div>`;
       return `<figure class="card overflow-hidden m-0">${media}<figcaption class="p-2"><span class="badge b-idle">${a.type}</span><div class="text-[11px] text-zinc-400 truncate mt-1">${a.name}</div></figcaption></figure>`;
     }).join("");
@@ -2760,7 +3100,7 @@ function obFigure(label, url, missing) {
   if (!url) return `<div class="grid place-items-center bg-black/30 rounded-lg h-24 text-zinc-600 text-[11px]">${missing}</div>`;
   return `<figure class="m-0">
     <figcaption class="text-[10px] uppercase tracking-[0.14em] text-zinc-500 mb-1">${label}</figcaption>
-    <div class="bg-black/30 rounded-lg overflow-hidden ring-1 ring-white/10"><img src="${url}" loading="lazy" class="w-full block" onerror="this.parentElement.innerHTML='<span class=\\'text-zinc-600 text-[11px] p-2 block\\'>load failed</span>'"></div>
+    <div class="bg-black/30 rounded-lg overflow-hidden ring-1 ring-white/10"><img src="${url}" loading="lazy" class="w-full block" onerror="imgFailed(this, 'text-zinc-600 text-[11px] p-2 block')"></div>
   </figure>`;
 }
 function renderOnbrand() {
@@ -3051,6 +3391,33 @@ async function renderBrandFile(which) {
   }
 }
 
+// ---- brand-lane run docs (fetched on demand, same pattern as brand.yaml) ----
+const runDocCache = {};
+async function renderRunDoc(key) {
+  const tabKey = "rd:" + key;
+  const meta = (D.brand_docs || []).find(x => x.key === key) || {};
+  const body = $("side-body");
+  const files = meta.files > 1 ? ` <span class="badge b-idle">${meta.files} files</span>` : "";
+  const head = `<div class="flex items-center gap-2 mb-2"><span class="text-xs font-semibold text-zinc-300">${esc(meta.label || key)}</span>${files}</div>`;
+  if (runDocCache[key] === undefined) {
+    body.innerHTML = head + '<div class="text-xs text-zinc-500">Loading…</div>';
+    try {
+      const r = await fetch("/api/rundoc?version=" + encodeURIComponent(D.version) + "&doc=" + encodeURIComponent(key));
+      if (!r.ok) throw new Error("status " + r.status);
+      runDocCache[key] = await r.text();
+    } catch (e) {
+      runDocCache[key] = null;
+    }
+  }
+  if (currentSideTab !== tabKey) return;  // user switched tabs while we awaited
+  const text = runDocCache[key];
+  if (text == null || !text.trim()) {
+    body.innerHTML = head + '<div class="card p-6 text-sm text-zinc-500">Not generated yet.</div>';
+    return;
+  }
+  body.innerHTML = head + `<pre class="text-xs text-zinc-200 font-mono leading-relaxed" style="white-space:pre-wrap;word-break:break-word;margin:0;padding:10px;background:rgba(0,0,0,.25);border-radius:8px;${SCROLL_MAX}">${esc(text)}</pre>`;
+}
+
 function paintSideTab(active) {
   currentSideTab = active;
   $("side-tabs").querySelectorAll("button").forEach(x => x.classList.toggle("on", x.dataset.s === active));
@@ -3062,6 +3429,7 @@ function paintSideTab(active) {
   if (active === "visual") { body.innerHTML = renderVisual(); return; }
   if (active === "brandyaml") { renderBrandFile("yaml"); return; }
   if (active === "brandmd") { renderBrandFile("md"); return; }
+  if (active.startsWith("rd:")) { renderRunDoc(active.slice(3)); return; }
   body.innerHTML = `<pre class="text-xs text-zinc-200 whitespace-pre-wrap leading-relaxed">${esc(docs[active] || "Not produced for this run.")}</pre>`;
 }
 $("side-tabs").innerHTML = sideTabs.map(t => `<button data-s="${t[0]}" class="btn btn-ghost" style="height:28px;padding:0 9px;font-size:11px">${t[1]}</button>`).join("");
