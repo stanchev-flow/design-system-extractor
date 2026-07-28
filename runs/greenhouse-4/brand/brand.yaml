@@ -1,0 +1,3618 @@
+version: '2.0'
+meta:
+  canonicalTier:
+    viewport: 1440
+    label: desktop
+    note: All canonical type/spacing values measured at the 1440px capture tier; ladders trace
+      to the 1920/1440/960/375 sample set.
+brand:
+  name: Greenhouse
+  legalName: Greenhouse Software, Inc.
+  sourceUrl: https://www.greenhouse.com
+  snapshot:
+    value: Greenhouse is a hiring platform whose marketing site presents itself as an end-to-end,
+      AI-powered recruiting solution spanning sourcing to onboarding, anchored by the serif
+      display line 'The only hiring platform you'll ever need' set in a deep forest green
+      (#15372c) on a mint canvas (#cdeadf). The visual system pairs the Untitled Serif family
+      for editorial headings with Untitled Sans for body and controls, uses rounded pill buttons
+      in a primary green (#008561) and a blue demo-request accent (#3574d6), and closes pages
+      on a dark green footer band with a 'Modern Recruiter newsletter' signup and a lowercase
+      sprout 'g' wordmark.
+    confidence: high
+    source: creation
+    scope: design-language
+tokens:
+  colors:
+    text/primary:
+      value: '#15372c'
+      role: primary body and heading ink on light surfaces
+      provenance:
+      - home-section-00
+      - compare-section-01
+    text/on-inverse:
+      value: '#ffffff'
+      role: text on dark green bands and colored buttons
+      provenance:
+      - home-section-04
+      - home-section-05
+    surface/canvas:
+      value: '#ffffff'
+      role: default page canvas
+      provenance:
+      - home-section-01
+      - home-section-03
+    surface/mint:
+      value: '#cdeadf'
+      role: hero mint canvas
+      provenance:
+      - home-section-00
+    surface/inverse:
+      value: '#15372c'
+      role: dark green bookend band and footer
+      provenance:
+      - home-section-04
+      - home-section-05
+      - footer
+    surface/muted:
+      value: '#f5f5f5'
+      role: light warm-grey feature/stat canvas
+      provenance:
+      - compare-section-01
+      - talent-sourcing-section-07
+    accent/primary:
+      value: '#008561'
+      role: primary green action and text-link accent
+      provenance:
+      - home-section-00
+      - home-section-02
+    accent/blue:
+      value: '#3574d6'
+      role: demo-request call-to-action fill
+      provenance:
+      - home-section-00
+      - home-section-04
+    accent/green-hover:
+      value: '#006147'
+      role: green button hover / darker green
+      provenance:
+      - css-facts
+    accent/mint-soft:
+      value: '#c9f0e6'
+      role: soft mint inset panel on comparison card
+      provenance:
+      - compare-section-02
+    text/on-primary:
+      value: '#15372c'
+      role: primary body and heading ink on light surfaces
+      provenance:
+      - home-section-00
+      - compare-section-01
+      canonicalAliasOf: text/primary
+      projectionProvenance: existing measured color role
+    text/on-primary-muted:
+      value: rgba(21, 55, 44, 0.66)
+      role: muted forest-green ink on light canvas (secondary/supporting text)
+      provenance:
+      - home-section-01
+      - compare-section-01
+      source: computed-derived
+    text/on-inverse-muted:
+      value: rgba(255, 255, 255, 0.72)
+      role: muted text/link on dark forest-green bands and footer
+      provenance:
+      - home-section-05
+      source: computed-derived
+    border/hairline-on-primary:
+      value: rgba(21, 55, 44, 0.12)
+      role: hairline divider/border on light canvas (logo-grid rule, card edges)
+      provenance:
+      - home-section-02
+      source: computed-derived
+    text/ghost-on-primary:
+      value: rgba(21, 55, 44, 0.06)
+      role: ghost wash / faint fill on light canvas fallback
+      provenance:
+      - home-section-01
+      source: computed-derived
+  type:
+    display-hero:
+      family: '''Untitled Serif'', Georgia, serif'
+      sizeRem:
+        base: 4.375
+        tablet: 3.0
+        mobileL: 3.0
+        mobile: 3.0
+      tiers:
+        w1920:
+          px: 70
+          source: computed
+        w1440:
+          px: 70
+          source: computed
+        w960:
+          px: 48
+          source: computed
+        w375:
+          px: 48
+          source: computed
+      lineHeight: '1.05'
+      weight: 400
+      letterSpacing: -0.01em
+      case: sentence
+    h2:
+      family: '''Untitled Serif'', Georgia, serif'
+      sizeRem:
+        base: 2.875
+        tablet: 2.875
+        mobileL: 1.75
+        mobile: 1.75
+      tiers:
+        w1440:
+          px: 46
+          source: computed
+        w375:
+          px: 28
+          source: computed
+      lineHeight: '1.18'
+      weight: 400
+      letterSpacing: -0.01em
+      case: sentence
+    h3:
+      family: '''Untitled Sans'', Arial, sans-serif'
+      sizeRem:
+        base: 1.1875
+        tablet: 1.1875
+        mobileL: 1.1875
+        mobile: 1.1875
+      singleTierConfirmed: true
+      tiers:
+        w1440:
+          px: 19
+          source: computed
+      lineHeight: '1.7'
+      weight: 400
+      letterSpacing: normal
+      case: none
+    h4:
+      family: '''Untitled Sans'', Arial, Helvetica, sans-serif'
+      sizeRem:
+        base: 1.0
+        tablet: 1.0
+        mobileL: 1.0
+        mobile: 1.0
+      singleTierConfirmed: true
+      tiers:
+        w1440:
+          px: 16
+          source: computed
+      lineHeight: '1.5'
+      weight: 600
+      letterSpacing: normal
+      case: none
+    body:
+      family: '''Untitled Sans'', Arial, sans-serif'
+      sizeRem:
+        base: 1.1875
+        tablet: 1.1875
+        mobileL: 1.125
+        mobile: 1.125
+      tiers:
+        w1440:
+          px: 19
+          source: computed
+        w375:
+          px: 18
+          source: computed
+      lineHeight: '1.7'
+      weight: 400
+      letterSpacing: normal
+      case: none
+    control-text:
+      family: '''Untitled Sans'', Arial, sans-serif'
+      sizeRem:
+        base: 0.9375
+        tablet: 0.9375
+        mobileL: 0.9375
+        mobile: 0.9375
+      singleTierConfirmed: true
+      tiers:
+        w1440:
+          px: 15
+          source: computed
+      lineHeight: '1.0'
+      weight: 400
+      letterSpacing: normal
+      case: none
+    nav-link:
+      family: '''Untitled Sans'', Arial, sans-serif'
+      sizeRem:
+        base: 1.0
+        tablet: 1.0
+        mobileL: 1.0
+        mobile: 1.0
+      singleTierConfirmed: true
+      tiers:
+        w1440:
+          px: 16
+          source: computed
+      lineHeight: '1.6'
+      weight: 400
+      letterSpacing: -0.01em
+      case: none
+    footer-sitemap-link:
+      family: '''Untitled Serif'', Georgia, sans-serif'
+      sizeRem:
+        base: 1.25
+        tablet: 1.25
+        mobileL: 1.25
+        mobile: 1.25
+      singleTierConfirmed: true
+      tiers:
+        w1440:
+          px: 20
+          source: computed
+      lineHeight: '1.3'
+      weight: 400
+      letterSpacing: normal
+      case: none
+    eyebrow:
+      family: Untitled Sans
+      sizeRem:
+        base: 0.875
+        tablet: 0.875
+        mobileL: 0.875
+        mobile: 0.875
+      lineHeight: 1.4em
+      weight: 600
+      letterSpacing: 0.02em
+      case: sentence
+      note: small section eyebrow/label register (e.g. 'Why Greenhouse', 'Proven leadership')
+        — sentence case sans microlabel above section headings
+      source: vision
+    h1:
+      family: '''Untitled Serif'', Georgia, serif'
+      sizeRem:
+        base: 4.375
+        tablet: 3.0
+        mobileL: 3.0
+        mobile: 3.0
+      tiers:
+        w1920:
+          px: 70.0
+          source: computed
+        w1440:
+          px: 70.0
+          source: computed
+        w960:
+          px: 48.0
+          source: computed
+        w375:
+          px: 48.0
+          source: computed
+      lineHeight: '1.05'
+      weight: 400
+      letterSpacing: -0.01em
+      case: sentence
+      projectionProvenance: display-hero family + measured h1 tier ladder
+  spacing:
+    section-padding-dark:
+      value: 6.25rem
+      role: footer band top padding (100px)
+      modeLadder:
+        base: 6.25rem
+        tablet: 4rem
+        mobileL: 3rem
+        mobile: 3rem
+    section-padding-light:
+      value: 7.5rem
+      role: contained feature/testimonial section top padding (~120-140px)
+      modeLadder:
+        base: 7.5rem
+        tablet: 5rem
+        mobileL: 3.5rem
+        mobile: 3.5rem
+    module-gap:
+      value: 2.5rem
+      role: inter-card column gap in 3-column grids (~40px)
+      modeLadder:
+        base: 2.5rem
+        tablet: 2rem
+        mobileL: 1.5rem
+        mobile: 1.5rem
+    heading-to-body:
+      value: 2.75rem
+      role: hero display to intro copy (~44px, home-section-00)
+      modeLadder:
+        base: 2.75rem
+        tablet: 2rem
+        mobileL: 1.5rem
+        mobile: 1.5rem
+    body-to-cta:
+      value: 3.75rem
+      role: intro copy to primary action row (~60px, home-section-00)
+      modeLadder:
+        base: 3.75rem
+        tablet: 2.5rem
+        mobileL: 2rem
+        mobile: 2rem
+    container-max:
+      value: 90rem
+      role: measured nav/footer/content container cap (1440px)
+    radius-global:
+      value: 24px
+      role: shared control and component radius
+      provenance:
+        source: buttons.primary-green.radius
+        confidence: high
+    eyebrow-to-heading:
+      value: 1.5rem
+      role: eyebrow→heading gap (grounding gapPx ~24-28px)
+      modeLadder:
+        base: 1.5rem
+        mobile: 1rem
+      source: vision
+    panel-padding:
+      value: 2rem
+      role: card/panel inset (white product-UI card padding ~32px)
+      source: vision
+  surfaces:
+    surface/primary:
+      bg: '#ffffff'
+      intent: default light canvas
+      textPrimary: text/primary
+      textSecondary: text/primary
+      textAccent: accent/primary
+      provenance:
+      - home-section-01
+      - home-section-03
+    surface/hero:
+      bg: '#cdeadf'
+      intent: mint hero canvas
+      textPrimary: text/primary
+      textAccent: accent/primary
+      provenance:
+      - home-section-00
+    surface/inverse:
+      bg: '#15372c'
+      intent: dark green bookend band and footer
+      textPrimary: text/on-inverse
+      textSecondary: text/on-inverse
+      textAccent: accent/blue
+      provenance:
+      - home-section-04
+      - footer
+    surface/muted:
+      bg: '#f5f5f5'
+      intent: warm light-grey feature/stat canvas
+      textPrimary: text/primary
+      provenance:
+      - compare-section-01
+      - talent-sourcing-section-07
+    surface/panel:
+      bg: '#ffffff'
+      intent: default light canvas
+      textPrimary: text/primary
+      textSecondary: text/primary
+      textAccent: accent/primary
+      provenance:
+      - home-section-01
+      - home-section-03
+      canonicalAliasOf: surface/primary
+      projectionProvenance: existing measured surface role
+    surface/inverse-strong:
+      bg: '#15372c'
+      intent: dark green bookend band and footer
+      textPrimary: text/on-inverse
+      textSecondary: text/on-inverse
+      textAccent: accent/blue
+      provenance:
+      - home-section-04
+      - footer
+      canonicalAliasOf: surface/inverse
+      projectionProvenance: existing measured surface role
+  shadow:
+    raised:
+      value: 0 6px 18px rgba(0, 0, 0, 0.10)
+      role: resting card lift on light canvas
+      provenance:
+      - home-section-01
+      - home-section-00
+    overlay:
+      value: 0 8px 24px rgba(0, 0, 0, 0.10)
+      role: floating product-UI chip on hero canvas
+      provenance:
+      - home-section-00
+  motion:
+    defaultTransition: all 0.15s
+    primaryButtonTransition: all 0.2s
+    signatureEasing: cubic-bezier(0.645, 0.045, 0.355, 1)
+    notes: Buttons animate all properties in 150ms; the primary family uses 200ms; accordions
+      and background washes use longer 0.3s-1.2s eases. Nav link underline uses a scale transform
+      on hover.
+    confidence: high
+    source: creation
+    scope: design-language
+surfaceGrammar:
+  defaultSurface: surface/primary
+  bookend: surface/inverse
+  heroSurface: surface/hero
+  transitions: Light canvas sections alternate white and warm grey; pages open on the mint
+    hero and close on the dark green footer band.
+  confidence: high
+  source: creation
+  scope: design-language
+typography:
+  pairing:
+    value: Untitled Serif for editorial display and headings; Untitled Sans for body, controls,
+      nav and footer utility text.
+    confidence: high
+    source: creation
+    scope: design-language
+  headingFamily: '''Untitled Serif'', Georgia, serif'
+  bodyFamily: '''Untitled Sans'', Arial, sans-serif'
+buttons:
+  primary-green:
+    role: primary green action
+    surface: '#008561'
+    ink: '#ffffff'
+    border: '1px solid #008561'
+    radius: 24px
+    padding: 12px 32px
+    fontFamily: '''Untitled Sans'', Arial, sans-serif'
+    fontSize: 15px
+    fontWeight: 400
+    widthBehavior: hug
+    hover:
+      surface: '#006147'
+      border: '1px solid #006147'
+    provenance:
+    - home-section-00
+    - compare-section-02
+    style: filled
+    bg: '#008561'
+    fg: '#ffffff'
+    height:
+      notObserved: true
+      reason: no control height in css-facts hoverRules measurement source
+  primary-blue:
+    role: demo-request call-to-action
+    surface: '#3574d6'
+    ink: '#ffffff'
+    border: '1px solid #3574d6'
+    radius: 24px
+    padding: 12px 32px
+    fontFamily: '''Untitled Sans'', Arial, sans-serif'
+    fontSize: 15px
+    fontWeight: 400
+    widthBehavior: hug
+    hover:
+      surface: '#2e65ba'
+      border: '1px solid #2e65ba'
+    provenance:
+    - home-section-04
+    - navbar
+    style: filled
+    bg: '#3574d6'
+    fg: '#ffffff'
+    height:
+      notObserved: true
+      reason: no control height in css-facts hoverRules measurement source
+  outline-dark:
+    role: secondary outlined action on light surfaces
+    surface: transparent
+    ink: '#15372c'
+    border: '1px solid #15372c'
+    radius: 24px
+    padding: 12px 32px
+    fontFamily: '''Untitled Sans'', Arial, sans-serif'
+    fontSize: 15px
+    fontWeight: 400
+    widthBehavior: hug
+    hover:
+      surface: '#031c17'
+      ink: '#ffffff'
+    provenance:
+    - home-section-01
+    - talent-sourcing
+    style: outline
+    bg: transparent
+    fg: '#15372c'
+  outline-inverse:
+    role: outlined action on dark surfaces
+    surface: transparent
+    ink: '#ffffff'
+    border: '1px solid #ffffff'
+    radius: 24px
+    padding: 12px 30px
+    fontFamily: '''Untitled Sans'', Arial, sans-serif'
+    fontSize: 15px
+    fontWeight: 400
+    widthBehavior: hug
+    hover:
+      surface: '#ffffff'
+      ink: '#15372c'
+    provenance:
+    - footer
+    - home-section-00
+    style: outline
+    bg: transparent
+    fg: '#ffffff'
+  text-accent:
+    role: inline text link action in accent green
+    surface: transparent
+    ink: '#008561'
+    border: 0px none
+    radius: 0px
+    padding: 0px
+    fontFamily: '''Untitled Sans'', Arial, sans-serif'
+    fontSize: 15px
+    fontWeight: 400
+    widthBehavior: hug
+    hover:
+      ink: '#15372c'
+    provenance:
+    - home-section-03
+    - home-section-00
+    style: text-link
+    bg: transparent
+    fg: '#008561'
+  nav-tertiary:
+    role: navbar outlined sign-in control
+    surface: transparent
+    ink: '#15372c'
+    border: '1px solid #15372c'
+    radius: 25px
+    padding: 9px 41px 11px
+    fontFamily: '''Untitled Sans'', Arial, sans-serif'
+    fontSize: 16px
+    fontWeight: 400
+    widthBehavior: hug
+    hover:
+      ink: '#008561'
+      border: '1px solid #008561'
+    provenance:
+    - navbar
+    style: outline
+    bg: transparent
+    fg: '#15372c'
+actionGroup:
+  controls:
+  - role: primary-green
+    visibleLabel: Explore platform
+    accessibleName: Explore platform
+    hostWidthPx: 182.953
+    fits: true
+  - role: primary-blue
+    visibleLabel: Request a demo
+    accessibleName: Request a demo
+    hostWidthPx: 178.656
+    fits: true
+  - role: outline-dark
+    visibleLabel: See AI features
+    accessibleName: See AI features
+    hostWidthPx: 171.391
+    fits: true
+  - role: nav-tertiary
+    visibleLabel: Sign In
+    accessibleName: Sign In
+    hostWidthPx: 135.453
+    fits: true
+  - role: nav-menu-trigger
+    visibleLabel: Platform
+    accessibleName: Platform, open menu
+    note: Measured accessibleName conflated the label with hidden trigger text ('PlatformOpen
+      menu for'); visibleLabel is the painted 'Platform' only.
+    hostWidthPx: 63
+    fits: true
+  - role: outline-inverse
+    visibleLabel: Learn more
+    accessibleName: Learn more
+    note: Featured nav CTA paints icon-first at rest; accessible name carries the 'Learn more'
+      label.
+    hostWidthPx: 147.438
+    fits: true
+  confidence: null
+  source: creation
+  scope: design-language
+  origin: designed
+  provenance: []
+blocks:
+  hero:
+    contract: hero
+    usage:
+      value: Centered serif display with intro sans body over mint canvas; primary green action
+        paired with underlined demo-request text link, with floating product-UI chips orbiting
+        the copy.
+      confidence: high
+      source: creation
+      scope: design-language
+  featureGrid:
+    contract: features
+    usage:
+      value: Three-column card grid, each card media-well top then serif heading, sans body
+        and an outlined or text-link action; used across home and talent-sourcing.
+      confidence: high
+      source: creation
+      scope: design-language
+  logoWall:
+    contract: logos
+    usage:
+      value: Split layout with serif heading and primary-green action left, a 2x3 monochrome
+        customer-logo grid right, divided by a hairline rule.
+      confidence: high
+      source: creation
+      scope: design-language
+  stats:
+    contract: stats
+    usage:
+      value: Three centered numeric stat stacks in serif on warm-grey canvas, each with a
+        big percentage, serif body and underlined text link.
+      confidence: high
+      source: creation
+      scope: design-language
+  testimonial:
+    origin: extracted
+    provenance:
+    - brand.yaml#measured-block-archetypes
+    confidence: medium
+    note: Observed in fresh grounding or a measured extracted block archetype.
+  cta:
+    contract: cta
+    usage:
+      value: Full-bleed dark green band with left serif heading and blue demo-request action,
+        decorative tone-on-tone fingerprint-flower art at right.
+      confidence: high
+      source: creation
+      scope: design-language
+  footer:
+    origin: extracted
+    provenance:
+    - brand.yaml#measured-block-archetypes
+    confidence: medium
+    note: Observed in fresh grounding or a measured extracted block archetype.
+  header:
+    notObserved: true
+    reason: Universal block contract 'header' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No header was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  content-block:
+    notObserved: true
+    reason: Universal block contract 'content-block' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No content-block was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  card:
+    origin: extracted
+    provenance:
+    - evidence/grounding/*.yaml#components[]
+    confidence: medium
+    note: Observed in fresh grounding or a measured extracted block archetype.
+    variants:
+    - media-well
+  form:
+    notObserved: true
+    reason: Universal block contract 'form' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No form was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow
+        grammar, surface-role grammar, motion duration / easing axis, button family + state
+        facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  stat-block:
+    notObserved: true
+    reason: Universal block contract 'stat-block' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No stat-block was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  navbar:
+    notObserved: true
+    reason: Universal block contract 'navbar' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No navbar was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  accordion:
+    notObserved: true
+    reason: Universal block contract 'accordion' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No accordion was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  accordion-item:
+    notObserved: true
+    reason: Universal block contract 'accordion-item' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No accordion-item was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  tabs:
+    notObserved: true
+    reason: Universal block contract 'tabs' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No tabs was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow
+        grammar, surface-role grammar, motion duration / easing axis, button family + state
+        facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  logo-bar:
+    notObserved: true
+    reason: Universal block contract 'logo-bar' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No logo-bar was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  feature-item:
+    notObserved: true
+    reason: Universal block contract 'feature-item' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No feature-item was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  pricing-card:
+    notObserved: true
+    reason: Universal block contract 'pricing-card' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No pricing-card was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  banner:
+    notObserved: true
+    reason: Universal block contract 'banner' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No banner was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  modal:
+    notObserved: true
+    reason: Universal block contract 'modal' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No modal was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow
+        grammar, surface-role grammar, motion duration / easing axis, button family + state
+        facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  dropdown-menu:
+    notObserved: true
+    reason: Universal block contract 'dropdown-menu' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No dropdown-menu was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  breadcrumb:
+    notObserved: true
+    reason: Universal block contract 'breadcrumb' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No breadcrumb was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  pagination:
+    notObserved: true
+    reason: Universal block contract 'pagination' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No pagination was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  table:
+    notObserved: true
+    reason: Universal block contract 'table' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No table was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow
+        grammar, surface-role grammar, motion duration / easing axis, button family + state
+        facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  carousel:
+    notObserved: true
+    reason: Universal block contract 'carousel' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No carousel was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  steps:
+    notObserved: true
+    reason: Universal block contract 'steps' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No steps was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow
+        grammar, surface-role grammar, motion duration / easing axis, button family + state
+        facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  step-item:
+    notObserved: true
+    reason: Universal block contract 'step-item' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No step-item was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  cta-block:
+    notObserved: true
+    reason: Universal block contract 'cta-block' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No cta-block was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  media-text:
+    notObserved: true
+    reason: Universal block contract 'media-text' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No media-text was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+signatures:
+- id: serif-mint-hero
+  description: Editorial serif display in deep green over a pale mint canvas with orbiting
+    product-UI chips.
+- id: green-blue-pill-duo
+  description: Rounded pill actions split between a primary green (#008561) and a blue demo-request
+    accent (#3574d6).
+- id: dark-green-bookend
+  description: Pages close on a full-bleed dark green (#15372c) CTA band and footer with a
+    lowercase sprout 'g' wordmark.
+voice:
+  ref: voice-facts.yaml
+  dials:
+    value:
+      variance: low
+      motion: restrained
+      density: medium
+    confidence: high
+    source: creation
+    scope: design-language
+  motionSpec:
+    durations:
+      fast: 150ms
+      base: 300ms
+      slow: 500ms
+    easing:
+      primary: cubic-bezier(0.645, 0.045, 0.355, 1)
+    reducedMotion: declared
+    source: motion-audit
+    confidence: high
+    note: durations from transitionCensus (all .15s dominant; .3s cubic-bezier color/border
+      tweens); easing from the source's dominant cubic-bezier
+motion:
+  value:
+    defaultTransition: all 0.15s
+    primaryButtonTransition: all 0.2s
+    signatureEasing: cubic-bezier(0.645, 0.045, 0.355, 1)
+    notes: Buttons animate all properties in 150ms; the primary family uses 200ms; accordions
+      and background washes use longer 0.3s-1.2s eases. Nav link underline uses a scale transform
+      on hover.
+    confidence: high
+    source: creation
+    scope: design-language
+navbar:
+  utility:
+  - label: Skip to Content
+    href: '#main'
+  - label: Close mobile sub-navigation
+    href: '#'
+  primary:
+  - label: Platform
+    ariaLabel: Platform, open menu
+    hasMenu: true
+    groups:
+    - eyebrow: Platform
+      links:
+      - label: Only in Greenhouse
+        href: /platform
+    - eyebrow: Solutions
+      links:
+      - label: AI recruiting
+        href: /ai-recruiting
+      - label: Talent sourcing
+        href: /talent-sourcing
+      - label: Candidate experience
+        href: /candidate-experience
+      - label: Scalable workflows
+        href: /scalable-workflows
+      - label: Interviewing & decision-making
+        href: /interviewing-decision-making
+      - label: Talent matching
+        href: /real-talent-candidate-matching
+      - label: Onboarding
+        href: /onboarding
+      - label: Reporting & insights
+        href: /reporting-insights
+      - label: Integrations
+        href: https://integrations.greenhouse.com/
+    - eyebrow: Greenhouse for
+      links:
+      - label: Early-stage business
+        href: /early-stage
+      - label: Scaling company
+        href: /scaling-company
+      - label: Modern enterprise
+        href: /enterprise
+      - label: Job seekers
+        href: https://my.greenhouse.com/
+    - eyebrow: What's new
+      links:
+      - label: Latest product features
+        href: /greenhouse-latest-features
+    role: dropdown-trigger
+    utilityNotObserved: true
+  - label: Why Greenhouse
+    ariaLabel: Why Greenhouse, open menu
+    hasMenu: true
+    groups:
+    - eyebrow: Why Greenhouse
+      links:
+      - label: How we compare
+        href: /compare
+      - label: Return on your hiring investment
+        href: /roi-with-greenhouse
+      - label: Your partner in success
+        href: /customer-success
+    role: dropdown-trigger
+    utilityNotObserved: true
+  - label: Resources
+    ariaLabel: Resources, open menu
+    hasMenu: true
+    groups:
+    - eyebrow: Types
+      links:
+      - label: Blog
+        href: /blog
+      - label: Guidance
+        href: /guidance
+      - label: Events & Webinars
+        href: /events
+    role: dropdown-trigger
+    utilityNotObserved: true
+  featuredContent:
+  - eyebrow: Awards & accolades
+    cta:
+      label: Learn more
+      href: /blog/g2-2026-awards-best-software-spring
+  - eyebrow: People first
+    cta:
+      label: Read the blog
+      href: /blog/the-future-belongs-to-people-first-companies-constructing-a-people-first-culture
+  - eyebrow: Webinar
+    cta:
+      label: Watch on demand
+      href: /events/beyond-ai-hype-a-framework-for-evaluating-ai-in-a-hiring-platform
+  actions:
+  - role: nav-tertiary
+    label: Sign In
+    href: https://app.greenhouse.io/users/sign_in
+  - role: primary-blue
+    label: Request a demo
+    href: /demo
+  surface:
+    bg: '#ffffff'
+    color: '#15372c'
+    note: chrome bar effective bg (header background-color measured transparent over the white
+      page canvas; ink navLink rgb(21,55,44))
+  measured:
+    link:
+      fontSize: 14
+      fontWeight: 400
+      color: rgb(21, 55, 44)
+      fontFamily: Untitled Sans
+      lineHeight: 20px
+      _provenance: computed-styles.json chrome.navLink
+footer:
+  columns:
+  - heading: Platform
+    links:
+    - label: Only in Greenhouse
+      href: /platform
+    - label: Latest product features
+      href: /greenhouse-latest-features
+    - label: Pricing
+      href: /pricing
+    - label: Security
+      href: /security
+    - label: Ethical principles
+      href: /ethical-principles
+    - label: AI principles
+      href: /ai-principles
+    - label: Bias audit statement
+      href: /bias-audit-statement
+    - label: APIs
+      href: /api
+  - heading: Solutions
+    links:
+    - label: AI recruiting
+      href: /ai-recruiting
+    - label: Talent sourcing
+      href: /talent-sourcing
+    - label: Scalable workflows
+      href: /scalable-workflows
+    - label: Candidate experience
+      href: /candidate-experience
+    - label: Interviewing & decision-making
+      href: /interviewing-decision-making
+    - label: Talent matching
+      href: /real-talent-candidate-matching
+    - label: Onboarding
+      href: /onboarding
+    - label: Reporting & insights
+      href: /reporting-insights
+    - label: Integrations
+      href: https://integrations.greenhouse.com/
+  - heading: Why Greenhouse
+    links:
+    - label: How we compare
+      href: /compare
+    - label: Return on your hiring investment
+      href: /roi-with-greenhouse
+    - label: Your partner in success
+      href: /customer-success
+  - heading: Greenhouse for
+    links:
+    - label: Early-stage business
+      href: /early-stage
+    - label: Scaling company
+      href: /scaling-company
+    - label: Enterprise
+      href: /enterprise
+    - label: Job seekers
+      href: https://my.greenhouse.com/
+  - heading: Resources
+    links:
+    - label: Blog
+      href: /blog
+    - label: Guidance
+      href: /guidance
+    - label: Customer stories
+      href: /customer-stories
+    - label: Hiring glossary
+      href: /resources/glossary
+  - heading: About
+    links:
+    - label: Company
+      href: /company
+    - label: Press & awards
+      href: /press
+    - label: Newsroom
+      href: /newsroom
+    - label: Careers
+      href: /careers
+    - label: Contact
+      href: /contact
+  - heading: Community
+    links:
+    - label: Events & webinars
+      href: /events
+    - label: Open
+      href: /greenhouse-open-thank-you
+    - label: Talent Makers
+      href: /talent-makers
+    - label: Newsletter
+      href: /newsletter
+    - label: Partnerships
+      href: /greenhouse-partner-resource-center
+  - heading: Support
+    links:
+    - label: Learn Greenhouse
+      href: https://learn.greenhouse.io/
+    - label: Customer support
+      href: https://support.greenhouse.io/hc/en-us
+    - label: Developer resources
+      href: https://developers.greenhouse.io/
+  newsletter:
+    heading: Modern Recruiter newsletter
+    body: Our bi-weekly newsletter full of inspiration, podcasts, trends and news.
+    fieldLabel: Email address
+    action:
+      label: Subscribe
+      role: outline-inverse
+  localeSelector:
+    prompt: Choose your language
+    options:
+    - label: English (US)
+      current: true
+    - label: English (UK)
+    - label: Deutsch
+  social:
+  - network: Facebook
+    href: https://www.facebook.com/greenhouse.io/
+  - network: LinkedIn
+    href: https://www.linkedin.com/company/greenhouse-inc-/
+  - network: YouTube
+    href: https://www.youtube.com/channel/UCwLlhrx5lFssgTwKCHEuC8g
+  - network: Instagram
+    href: https://www.instagram.com/greenhousesoftware/
+  - network: TikTok
+    href: https://www.tiktok.com/@greenhouse_software
+  legal:
+    links:
+    - label: Cookie preferences
+    - label: Privacy policy
+      href: /privacy-policy
+    - label: Terms of service
+      href: /legal
+    text: © 2026 Greenhouse Software, Inc. All rights reserved. Greenhouse, the G Logo, "Hire
+      for what's next," "The/your all-together hiring platform," "Talent Makers," "Real Talent"
+      and "Strong Yes" are among the trademarks of Greenhouse Software, Inc.
+layouts:
+- id: hero
+  archetype: centered-copy-with-floating-media
+  useCase: hero
+  patternRef:
+    lib: project
+    id: hero
+  slots:
+  - name: heading
+    role: primary-heading
+    type: content
+    sizeClass: hero
+    textLen: short
+    copyBinding: layoutCopy.hero.heading
+    geometry:
+      approxSizePx: 92
+      weightApprox: 500
+      case: sentence
+      align: center
+  - name: body
+    role: intro-body
+    type: content
+    sizeClass: body
+    textLen: medium
+    copyBinding: layoutCopy.hero.body
+    geometry:
+      approxSizePx: 21
+      weightApprox: 400
+      align: center
+      headingToBodyPx: 44
+  - name: primaryAction
+    role: primary-action
+    type: action
+    sizeClass: control
+    textLen: word
+    copyBinding: layoutCopy.hero.cta
+    width: hug
+    geometry:
+      paddingPx: 18 44
+      radiusPx: 28
+      bodyToCtaPx: 60
+  - name: ghostAction
+    role: secondary-action
+    type: action
+    sizeClass: control
+    textLen: short
+    copyBinding: layoutCopy.hero.ghost
+    width: hug
+    geometry:
+      style: text-underline
+  - name: mediaCluster
+    role: decorative-media-cluster
+    type: media
+    mediaAspect: freeform
+    z: front
+    copyBinding: none
+    geometry:
+      approxFractionOfSection: 0.2
+      shadow: 0 8px 24px rgba(0,0,0,.10)
+    assets:
+    - 030-689610cd7418c453485571fd-home-hero-m-clusters-of-three-solutions-workflows-with-photos-of-ui-and-people-working-402x.png
+  blockMapping:
+  - slot: heading
+    role: primary-heading
+    contract: header
+  - slot: body
+    role: supporting-body
+    contract: content-block
+  - slot: primaryAction
+    role: primary-action
+    contract: button
+  - slot: ghostAction
+    role: secondary-action
+    contract: button
+  - slot: mediaCluster
+    role: decorative-media-collage
+    contract: image
+  requiresHydration: true
+  surfaceIntent: surface/hero
+  origin: extracted
+  provenance:
+  - home-section-00
+  sourcePages:
+  - home
+- id: featureGrid
+  archetype: three-column-media-top-cards
+  useCase: features
+  patternRef:
+    lib: project
+    id: featureGrid
+  slots:
+  - name: heading
+    role: section-heading
+    type: content
+    textLen: long
+  - name: itemMedia
+    role: card-media-well
+    type: image
+    assets:
+    - 048-66ce09f23bfc5382e0a79e3a-content-gallery-1.webp
+    - 049-66ce09efcca27fafac5199b7-content-gallery-2.webp
+    - 050-66ce09ec544c15c6fafaf9aa-content-gallery-3.webp
+  - name: items
+    role: feature-card-list (media-well -> heading -> body -> action)
+    type: content
+  blockMapping:
+  - slot: heading
+    role: section-heading
+    contract: header
+  - slot: itemMedia
+    role: card-media-well
+    contract: image
+  - slot: items
+    role: feature-card-list (media-well -> heading -> body -> action)
+    contract: image
+  requiresHydration: true
+  surfaceIntent: surface/primary
+  origin: extracted
+  provenance:
+  - home-section-03
+  sourcePages:
+  - home
+- id: logoWall
+  archetype: split-copy-plus-logo-grid
+  useCase: logos
+  patternRef:
+    lib: project
+    id: logoWall
+  slots:
+  - name: heading
+    role: section-heading
+    type: content
+    sizeClass: display
+    textLen: short
+    copyBinding: layoutCopy.logoWall.heading
+    geometry:
+      approxSizePx: 46
+      weightApprox: 400
+      case: sentence
+      align: left
+  - name: primaryAction
+    role: primary-action
+    type: action
+    sizeClass: control
+    textLen: short
+    copyBinding: layoutCopy.logoWall.cta
+    width: hug
+    geometry:
+      paddingPx: 16 32
+      radiusPx: 28
+      headingToCtaPx: 46
+  - name: logoGrid
+    role: logo-grid
+    type: logo
+    mediaAspect: landscape
+    z: back
+    copyBinding: sectionCopy.logosLegible
+    geometry:
+      columns: 3
+      rows: 2
+      countObserved: 6
+      approxFractionOfSection: 0.4
+    assets:
+    - 042-684b22ea4479a38eba02bb7a-nfl-240x74-20-1.png
+    - 043-66db2afc7f4ffa8dac7d63af-coursera-2024-02-22-193551-bfgg.avif
+    - 044-684b1591b49b84db80e1e68b-logo-anthropic.png
+    - 045-684b154b7f3a0b8ea13a87db-logo-datavant.png
+    - 046-6849817eafb5f7300bca18d3-revlon.png
+    - 047-66db2b583c8c62fd585f04a3-seatgeek-2024-02-22-193550-wvza.avif
+  blockMapping:
+  - slot: heading
+    role: section-heading
+    contract: header
+  - slot: primaryAction
+    role: primary-action
+    contract: button
+  - slot: logoGrid
+    role: logo-grid
+    contract: logo-bar
+  requiresHydration: true
+  surfaceIntent: surface/primary
+  origin: extracted
+  provenance:
+  - home-section-02
+  sourcePages:
+  - home
+- id: stats
+  archetype: three-column-number-over-caption
+  useCase: 'Three equal centered columns; each column: big serif number -> description ->
+    underlined text link.'
+  patternRef:
+    lib: project
+    id: stats
+  slots:
+  - name: items
+    type: content
+    role: 'stat-column-list: figure plus description and source citation'
+  blockMapping:
+  - slot: items
+    role: 'stat-column-list: figure plus description and source citation'
+    contract: stat-block
+  requiresHydration: true
+  surfaceIntent: surface/muted
+  origin: extracted
+  provenance:
+  - talent-sourcing-section-07
+  sourcePages:
+  - talent-sourcing
+- id: testimonial
+  archetype: three-column-quote-blocks
+  useCase: testimonial
+  patternRef:
+    lib: project
+    id: testimonial
+  slots:
+  - name: heading
+    role: section-heading
+    type: content
+    textLen: short
+  - name: items
+    role: testimonial-card-list (quote -> name -> meta)
+    type: content
+  blockMapping:
+  - slot: heading
+    role: section-heading
+    contract: header
+  - slot: items
+    role: testimonial-card-list (quote -> name -> meta)
+    contract: card
+  requiresHydration: true
+  surfaceIntent: surface/primary
+  origin: extracted
+  provenance:
+  - compare-section-05
+  sourcePages:
+  - compare
+- id: cta
+  archetype: full-bleed-dark-band-copy-left-art-right
+  useCase: cta
+  patternRef:
+    lib: project
+    id: cta
+  slots:
+  - name: heading
+    role: section-heading
+    type: content
+    sizeClass: display
+    textLen: short
+    copyBinding: layoutCopy.cta.heading
+    geometry:
+      approxSizePx: 68
+      weightApprox: 400
+      align: left
+      headingToBodyPx: 66
+  - name: primaryAction
+    role: primary-action
+    type: action
+    sizeClass: control
+    textLen: short
+    copyBinding: layoutCopy.cta.cta
+    width: hug
+    geometry:
+      paddingPx: 15 32
+      radiusPx: 24
+      surfaceApprox: '#2f6bd6'
+  blockMapping:
+  - slot: heading
+    role: section-heading
+    contract: header
+  - slot: primaryAction
+    role: primary-action
+    contract: button
+  - slot: decorativeArt
+    role: decorative-background-art
+    contract: image
+  requiresHydration: true
+  surfaceIntent: surface/inverse
+  origin: extracted
+  provenance:
+  - home-section-04
+  sourcePages:
+  - home
+- id: heroSplit5050
+  archetype: two-column-cards
+  archetypeRef: two-column-cards
+  useCase: hero
+  patternRef:
+    lib: project
+    id: heroSplit5050
+  slots:
+  - name: eyebrow
+    role: section-eyebrow
+    type: content
+  - name: heading
+    role: section-heading
+    type: content
+    textLen: short
+  - name: body
+    role: section-body
+    type: content
+  - name: items
+    role: hero-item-list
+    type: content
+  - name: primaryAction
+    role: outlined-action
+    type: action
+  - name: secondaryAction
+    role: filled-primary-action
+    type: action
+  requiresHydration: false
+  surfaceIntent: surface/inverse
+  origin: extracted
+  provenance:
+  - compare-section-00-div
+  - talent-sourcing-section-00-text-with-image
+  sourcePages:
+  - compare
+  - talent-sourcing
+- id: features
+  archetype: three-column
+  archetypeRef: three-column
+  useCase: features
+  patternRef:
+    lib: project
+    id: features
+  slots:
+  - name: heading
+    role: section-heading
+    type: content
+    textLen: short
+  - name: body
+    role: section-body
+    type: content
+  - name: items
+    role: features-item-list
+    type: content
+  requiresHydration: false
+  surfaceIntent: surface/primary
+  origin: extracted
+  provenance:
+  - compare-section-01-bg-grey
+  sourcePages:
+  - compare
+- id: featuresHeadingBodyTop
+  archetype: two-column-with-media
+  archetypeRef: two-column-with-media
+  useCase: features
+  patternRef:
+    lib: project
+    id: featuresHeadingBodyTop
+  slots:
+  - name: eyebrow
+    role: section-eyebrow
+    type: content
+  - name: heading
+    role: section-heading
+    type: content
+    textLen: short
+  - name: subheading
+    role: section-subheading
+    type: content
+  - name: body
+    role: section-body
+    type: content
+  - name: items
+    role: features-card-list
+    type: content
+    assets:
+    - 032-6a4bfc62b24be85dc1ffa3a6-single-20platform-20image.png
+  - name: itemIcon
+    role: inline-spot-icon
+    type: image
+  requiresHydration: true
+  surfaceIntent: surface/primary
+  origin: extracted
+  provenance:
+  - compare-section-02-video-component
+  sourcePages:
+  - compare
+- id: featuresSectionHeadingTop
+  archetype: three-column
+  archetypeRef: three-column
+  useCase: features
+  patternRef:
+    lib: project
+    id: featuresSectionHeadingTop
+  slots:
+  - name: heading
+    role: section-heading
+    type: content
+    textLen: short
+  - name: items
+    role: features-item-list
+    type: content
+  requiresHydration: false
+  surfaceIntent: surface/primary
+  origin: extracted
+  provenance:
+  - compare-section-03-div
+  - talent-sourcing-section-06-content-gallery-component-is-showing
+  sourcePages:
+  - compare
+  - talent-sourcing
+- id: content
+  archetype: two-column-with-media
+  archetypeRef: two-column-with-media
+  useCase: content
+  patternRef:
+    lib: project
+    id: content
+  slots:
+  - name: heading
+    role: section-heading
+    type: content
+    textLen: short
+  - name: body
+    role: section-body
+    type: content
+  - name: items
+    role: content-item-list
+    type: content
+  - name: media
+    role: section-lead-media
+    type: media
+    assets:
+    - 041-675b1b254dcfbdcac88895be-greenhouse-g2-grid-report.avif
+  requiresHydration: true
+  surfaceIntent: surface/primary
+  origin: extracted
+  provenance:
+  - compare-section-04-side-by-side-2-component-is-showing
+  sourcePages:
+  - compare
+- id: gallery
+  archetype: three-column-cards
+  archetypeRef: three-column-cards
+  useCase: gallery
+  patternRef:
+    lib: project
+    id: gallery
+  slots:
+  - name: items
+    role: gallery-card-list
+    type: content
+    assets:
+    - 042-6a1895bc83e54d86cbd45bbe-d-us-awards-image-g2-ent-leader-summer-2026-on-marigold-background.png
+    - 043-6a1895bc8f2d9491ce3db846-d-us-awards-image-g2-mm-leader-summer-2026-on-marigold-background.png
+    - 044-6a1895bc5ecfc15c4fdec10a-d-us-awards-image-g2-leader-europe-summer-2026-on-marigold-background.png
+  requiresHydration: true
+  surfaceIntent: surface/primary
+  origin: extracted
+  provenance:
+  - compare-section-06-content-gallery-component-is-showing
+  sourcePages:
+  - compare
+- id: ctaSplit5050
+  archetype: two-column-with-media
+  archetypeRef: two-column-with-media
+  useCase: cta
+  patternRef:
+    lib: project
+    id: ctaSplit5050
+  slots:
+  - name: heading
+    role: section-heading
+    type: content
+    textLen: short
+  - name: media
+    role: section-lead-media
+    type: media
+    assets:
+    - 045-66ccc7a3c9045b79b105b8c6-prefooter-image11-402x.avif
+  - name: primaryAction
+    role: filled-primary-action
+    type: action
+  requiresHydration: true
+  surfaceIntent: surface/inverse
+  origin: extracted
+  provenance:
+  - compare-section-07-cta-bg-green-750-component-is-showing
+  - talent-sourcing-section-09-cta-bg-green-750-component-is-showing
+  sourcePages:
+  - compare
+  - talent-sourcing
+- id: featuresThreeColumnCard
+  archetype: three-column-cards
+  archetypeRef: three-column-cards
+  useCase: features
+  patternRef:
+    lib: project
+    id: featuresThreeColumnCard
+  slots:
+  - name: items
+    role: features-card-list
+    type: content
+    assets:
+    - 033-6a298fd15eb091333bcbe885-d-en-cg-home-two-office-workers-discussing-content-on-tablet-bright-space.png
+    - 034-6a063cdddfe47d8d3429a902-d-en-cg-home-real-talent-fraud-detection-candidate-cards.avif
+    - 035-6a063cdcba100ecc20453980-d-en-cg-home-woman-in-suit-on-laptop-smiling-setup-job-alert-ui.avif
+  - name: primaryAction
+    role: outlined-action
+    type: action
+  requiresHydration: true
+  surfaceIntent: surface/primary
+  origin: extracted
+  provenance:
+  - home-section-01-div
+  sourcePages:
+  - home
+- id: featuresSplit5050
+  archetype: two-column-with-media
+  archetypeRef: two-column-with-media
+  useCase: features
+  patternRef:
+    lib: project
+    id: featuresSplit5050
+  slots:
+  - name: heading
+    role: section-heading
+    type: content
+    textLen: short
+  - name: items
+    role: features-item-list
+    type: content
+  - name: media
+    role: section-lead-media
+    type: media
+    assets:
+    - 032-676afa936f2bdcaefd2b096b-collage-of-job-ad-market-ui-and-partner-campaign-ui-with-fingerprint-leaf-m.avif
+  - name: primaryAction
+    role: filled-primary-action
+    type: action
+  requiresHydration: true
+  surfaceIntent: surface/primary
+  origin: extracted
+  provenance:
+  - talent-sourcing-section-01-text-with-image-component-is-showing
+  - talent-sourcing-section-02-text-with-image-component-is-showing
+  - talent-sourcing-section-04-text-with-image-component-is-showing
+  - talent-sourcing-section-05-text-with-image-component-is-showing
+  sourcePages:
+  - talent-sourcing
+- id: featuresSplit5050Media
+  archetype: two-column-with-media
+  archetypeRef: two-column-with-media
+  useCase: features
+  patternRef:
+    lib: project
+    id: featuresSplit5050Media
+  slots:
+  - name: heading
+    role: section-heading
+    type: content
+    textLen: long
+  - name: items
+    role: features-item-list
+    type: content
+  - name: media
+    role: section-lead-media
+    type: media
+    assets:
+    - 035-66feddedc6644300cc8975d4-collage-of-company-job-board-page-on-desktop-and-mobile-with-fingerprint-leaf-png.webp
+  requiresHydration: true
+  surfaceIntent: surface/primary
+  origin: extracted
+  provenance:
+  - talent-sourcing-section-03-text-with-image-component-is-showing
+  sourcePages:
+  - talent-sourcing
+- id: featuresHeadingFullWidth
+  archetype: two-column-cards
+  archetypeRef: two-column-cards
+  useCase: features
+  patternRef:
+    lib: project
+    id: featuresHeadingFullWidth
+  slots:
+  - name: heading
+    role: section-heading
+    type: content
+    textLen: short
+  - name: items
+    role: features-card-list
+    type: content
+    assets:
+    - 043-6a0e3ad39c65e202b43df73c-d-en-sbs-greenhouse-candidate-engagement-ui.avif
+    - 044-6a0e3ad247f2a601a20756cb-d-en-sbs-greenhouse-integrations-ui.avif
+  - name: primaryAction
+    role: outlined-action
+    type: action
+  requiresHydration: true
+  surfaceIntent: surface/primary
+  origin: extracted
+  provenance:
+  - talent-sourcing-section-08-side-by-side-2-component-is-showing
+  sourcePages:
+  - talent-sourcing
+primitives:
+  heading:
+    origin: extracted
+    provenance:
+    - brand.yaml#measured-block-slots
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live
+      in the owning family.
+  subheading:
+    notObserved: true
+    reason: Universal primitives contract 'subheading' was not present in fresh grounding
+      components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No subheading was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  eyebrow:
+    notObserved: true
+    reason: Universal primitives contract 'eyebrow' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No eyebrow was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  paragraph:
+    origin: extracted
+    provenance:
+    - brand.yaml#measured-block-slots
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live
+      in the owning family.
+  label:
+    notObserved: true
+    reason: Universal primitives contract 'label' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No label was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow
+        grammar, surface-role grammar, motion duration / easing axis, button family + state
+        facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  button:
+    origin: extracted
+    provenance:
+    - evidence/grounding/*.yaml#components[]
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live
+      in the owning family.
+  link:
+    origin: extracted
+    provenance:
+    - evidence/grounding/*.yaml#components[]
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live
+      in the owning family.
+  cta:
+    notObserved: true
+    reason: Universal primitives contract 'cta' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No cta was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow
+        grammar, surface-role grammar, motion duration / easing axis, button family + state
+        facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  image:
+    notObserved: true
+    reason: Universal primitives contract 'image' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No image was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow
+        grammar, surface-role grammar, motion duration / easing axis, button family + state
+        facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  icon:
+    origin: extracted
+    provenance:
+    - evidence/grounding/*.yaml#components[]
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live
+      in the owning family.
+  logo:
+    origin: extracted
+    provenance:
+    - brand.yaml#measured-block-slots
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live
+      in the owning family.
+  pill:
+    origin: extracted
+    provenance:
+    - evidence/grounding/*.yaml#components[]
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live
+      in the owning family.
+  badge:
+    origin: extracted
+    provenance:
+    - evidence/grounding/*.yaml#components[]
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live
+      in the owning family.
+  input:
+    origin: extracted
+    provenance:
+    - evidence/grounding/*.yaml#components[]
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live
+      in the owning family.
+  form-field:
+    notObserved: true
+    reason: Universal primitives contract 'form-field' was not present in fresh grounding
+      components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No form-field was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  toggle:
+    notObserved: true
+    reason: Universal primitives contract 'toggle' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No toggle was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  select:
+    notObserved: true
+    reason: Universal primitives contract 'select' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No select was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  checkbox:
+    notObserved: true
+    reason: Universal primitives contract 'checkbox' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No checkbox was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  radio:
+    notObserved: true
+    reason: Universal primitives contract 'radio' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No radio was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow
+        grammar, surface-role grammar, motion duration / easing axis, button family + state
+        facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  quote:
+    origin: extracted
+    provenance:
+    - brand.yaml#measured-block-slots
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live
+      in the owning family.
+  avatar:
+    origin: extracted
+    provenance:
+    - evidence/grounding/*.yaml#components[]
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live
+      in the owning family.
+  rating:
+    notObserved: true
+    reason: Universal primitives contract 'rating' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No rating was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  video:
+    notObserved: true
+    reason: Universal primitives contract 'video' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No video was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow
+        grammar, surface-role grammar, motion duration / easing axis, button family + state
+        facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  divider:
+    notObserved: true
+    reason: Universal primitives contract 'divider' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No divider was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  stat:
+    origin: extracted
+    provenance:
+    - brand.yaml#measured-block-slots
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live
+      in the owning family.
+  caption:
+    origin: extracted
+    provenance:
+    - brand.yaml#measured-block-slots
+    confidence: medium
+    note: Observed in fresh grounding or measured block/layout slots; detailed facts live
+      in the owning family.
+  list:
+    notObserved: true
+    reason: Universal primitives contract 'list' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No list was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow
+        grammar, surface-role grammar, motion duration / easing axis, button family + state
+        facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  code:
+    notObserved: true
+    reason: Universal primitives contract 'code' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No code was observed on the source page; synthesized on-brand from measured signals
+        (color token families, measured type scale, relational spacing ladder, border / shadow
+        grammar, surface-role grammar, motion duration / easing axis, button family + state
+        facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  icon-button:
+    notObserved: true
+    reason: Universal primitives contract 'icon-button' was not present in fresh grounding
+      components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No icon-button was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  illustration:
+    notObserved: true
+    reason: Universal primitives contract 'illustration' was not present in fresh grounding
+      components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No illustration was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  progress:
+    notObserved: true
+    reason: Universal primitives contract 'progress' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No progress was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  tooltip:
+    notObserved: true
+    reason: Universal primitives contract 'tooltip' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No tooltip was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  spacer:
+    notObserved: true
+    reason: Universal primitives contract 'spacer' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No spacer was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  textarea:
+    notObserved: true
+    reason: Universal primitives contract 'textarea' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No textarea was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  slider:
+    notObserved: true
+    reason: Universal primitives contract 'slider' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No slider was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  file-upload:
+    notObserved: true
+    reason: Universal primitives contract 'file-upload' was not present in fresh grounding
+      components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No file-upload was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+scaffolds:
+  section-stack:
+    notObserved: true
+    reason: Universal scaffolds contract 'section-stack' was not present in fresh grounding
+      components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No section-stack was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  section-split:
+    notObserved: true
+    reason: Universal scaffolds contract 'section-split' was not present in fresh grounding
+      components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No section-split was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  section-split-content-form:
+    notObserved: true
+    reason: Universal scaffolds contract 'section-split-content-form' was not present in fresh
+      grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No section-split-content-form was observed on the source page; synthesized on-brand
+        from measured signals (color token families, measured type scale, relational spacing
+        ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis,
+        button family + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  section-split-fullbleed:
+    notObserved: true
+    reason: Universal scaffolds contract 'section-split-fullbleed' was not present in fresh
+      grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No section-split-fullbleed was observed on the source page; synthesized on-brand
+        from measured signals (color token families, measured type scale, relational spacing
+        ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis,
+        button family + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  section-stack-fullbleed:
+    notObserved: true
+    reason: Universal scaffolds contract 'section-stack-fullbleed' was not present in fresh
+      grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No section-stack-fullbleed was observed on the source page; synthesized on-brand
+        from measured signals (color token families, measured type scale, relational spacing
+        ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis,
+        button family + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  layout-grid:
+    notObserved: true
+    reason: Universal scaffolds contract 'layout-grid' was not present in fresh grounding
+      components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No layout-grid was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  layout-bento:
+    notObserved: true
+    reason: Universal scaffolds contract 'layout-bento' was not present in fresh grounding
+      components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No layout-bento was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  layout-row:
+    notObserved: true
+    reason: Universal scaffolds contract 'layout-row' was not present in fresh grounding components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No layout-row was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  layout-stack:
+    notObserved: true
+    reason: Universal scaffolds contract 'layout-stack' was not present in fresh grounding
+      components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No layout-stack was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  layout-split:
+    notObserved: true
+    reason: Universal scaffolds contract 'layout-split' was not present in fresh grounding
+      components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No layout-split was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  header-scaffold:
+    notObserved: true
+    reason: Universal scaffolds contract 'header-scaffold' was not present in fresh grounding
+      components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No header-scaffold was observed on the source page; synthesized on-brand from
+        measured signals (color token families, measured type scale, relational spacing ladder,
+        border / shadow grammar, surface-role grammar, motion duration / easing axis, button
+        family + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+  logos-wrapper:
+    notObserved: true
+    reason: Universal scaffolds contract 'logos-wrapper' was not present in fresh grounding
+      components[].
+    origin: designed
+    provenance: synthesized-from-brand-signals
+    designedFrom:
+      do: []
+      avoid: []
+      neverDo: []
+      tokens:
+      - colors
+      - type
+      - spacing
+      - surfaces
+      signatures:
+      - serif-mint-hero
+      - green-blue-pill-duo
+      - dark-green-bookend
+      note: No logos-wrapper was observed on the source page; synthesized on-brand from measured
+        signals (color token families, measured type scale, relational spacing ladder, border
+        / shadow grammar, surface-role grammar, motion duration / easing axis, button family
+        + state facts, brand signatures). Not used in the measured replica.
+    licensedSignals:
+    - color token families
+    - measured type scale
+    - relational spacing ladder
+    - border / shadow grammar
+    - surface-role grammar
+    - motion duration / easing axis
+    - button family + state facts
+    - brand signatures
+    confidence: medium
+    overridable: true
+    notInReplica: true
+contracts:
+  primitives: ../../../brand_pipeline/contracts/primitives.yaml
+  blocks: ../../../brand_pipeline/contracts/blocks.yaml
+  scaffolds: ../../../brand_pipeline/contracts/scaffolds.yaml

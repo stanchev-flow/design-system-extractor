@@ -1,0 +1,1931 @@
+{
+  "brand": "Greenhouse",
+  "sourceUrl": "https://www.greenhouse.com",
+  "generated": "2026-07-28T12:51:35.938286+00:00",
+  "typeInference": {
+    "rule": "Check the mapped component name first, then the slot's semantic role, against a media keyword set and a content keyword set. media wins on a media-keyword hit (Image/Logo/photo/icon/...); otherwise content on a content-keyword hit (Heading/Eyebrow/Rich Text/Link/Form/...). Unmatched slots default to 'content' and are flagged ambiguous.",
+    "mediaKeywords": [
+      "image",
+      "media",
+      "photo",
+      "photography",
+      "picture",
+      "logo",
+      "wordmark",
+      "avatar",
+      "icon",
+      "video",
+      "gallery",
+      "illustration",
+      "graphic",
+      "map",
+      "thumbnail"
+    ],
+    "contentKeywords": [
+      "heading",
+      "title",
+      "eyebrow",
+      "paragraph",
+      "rich text",
+      "richtext",
+      "text",
+      "link",
+      "form",
+      "button",
+      "label",
+      "action",
+      "caption",
+      "body",
+      "cta",
+      "quote",
+      "stat",
+      "counter",
+      "list",
+      "input",
+      "field",
+      "nav"
+    ]
+  },
+  "ambiguousSlots": [],
+  "components": [
+    {
+      "name": "button",
+      "componentId": "",
+      "group": "Primitive",
+      "type": "content",
+      "usedInSlots": [
+        "hero \u2192 primary-action",
+        "hero \u2192 secondary-action",
+        "logoWall \u2192 primary-action",
+        "cta \u2192 primary-action"
+      ]
+    },
+    {
+      "name": "card",
+      "componentId": "",
+      "group": "Primitive",
+      "type": "content",
+      "usedInSlots": [
+        "testimonial \u2192 testimonial-card-list (quote -> name -> meta)"
+      ]
+    },
+    {
+      "name": "content-block",
+      "componentId": "",
+      "group": "Primitive",
+      "type": "content",
+      "usedInSlots": [
+        "hero \u2192 supporting-body"
+      ]
+    },
+    {
+      "name": "header",
+      "componentId": "",
+      "group": "Primitive",
+      "type": "content",
+      "usedInSlots": [
+        "hero \u2192 primary-heading",
+        "featureGrid \u2192 section-heading",
+        "logoWall \u2192 section-heading",
+        "testimonial \u2192 section-heading",
+        "cta \u2192 section-heading"
+      ]
+    },
+    {
+      "name": "stat-block",
+      "componentId": "",
+      "group": "Primitive",
+      "type": "content",
+      "usedInSlots": [
+        "stats \u2192 stat-column-list: figure plus description and source citation"
+      ]
+    },
+    {
+      "name": "image",
+      "componentId": "",
+      "group": "Primitive",
+      "type": "media",
+      "usedInSlots": [
+        "hero \u2192 decorative-media-collage",
+        "featureGrid \u2192 card-media-well",
+        "featureGrid \u2192 feature-card-list (media-well -> heading -> body -> action)",
+        "cta \u2192 decorative-background-art"
+      ]
+    },
+    {
+      "name": "logo-bar",
+      "componentId": "",
+      "group": "Primitive",
+      "type": "media",
+      "usedInSlots": [
+        "logoWall \u2192 logo-grid"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "name": "hero / Centered-Copy-With-Floating-Media",
+      "id": "hero",
+      "layoutArchetype": "centered-copy-with-floating-media",
+      "scaffold": "",
+      "mode": "surface/primary",
+      "surface": {
+        "role": "surface/primary",
+        "bg": "#ffffff",
+        "text": "#15372c",
+        "accent": "#008561"
+      },
+      "slots": [
+        {
+          "name": "primary-heading",
+          "type": "content",
+          "useCase": "primary-heading",
+          "mappedComponent": "header",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "supporting-body",
+          "type": "content",
+          "useCase": "intro-body",
+          "mappedComponent": "content-block",
+          "structuralSlot": "body"
+        },
+        {
+          "name": "primary-action",
+          "type": "content",
+          "useCase": "primary-action",
+          "mappedComponent": "button",
+          "structuralSlot": "primaryAction"
+        },
+        {
+          "name": "secondary-action",
+          "type": "content",
+          "useCase": "secondary-action",
+          "mappedComponent": "button",
+          "structuralSlot": "ghostAction"
+        },
+        {
+          "name": "decorative-media-collage",
+          "type": "media",
+          "useCase": "decorative-media-cluster",
+          "mappedComponent": "image",
+          "structuralSlot": "mediaCluster"
+        }
+      ]
+    },
+    {
+      "name": "featureGrid / Three-Column-Media-Top-Cards",
+      "id": "featureGrid",
+      "layoutArchetype": "three-column-media-top-cards",
+      "scaffold": "",
+      "mode": "surface/primary",
+      "surface": {
+        "role": "surface/primary",
+        "bg": "#ffffff",
+        "text": "#15372c",
+        "accent": "#008561"
+      },
+      "slots": [
+        {
+          "name": "section-heading",
+          "type": "content",
+          "useCase": "section-heading",
+          "mappedComponent": "header",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "card-media-well",
+          "type": "media",
+          "useCase": "card-media-well",
+          "mappedComponent": "image",
+          "structuralSlot": "itemMedia"
+        },
+        {
+          "name": "feature-card-list (media-well -> heading -> body -> action)",
+          "type": "media",
+          "useCase": "feature-card-list (media-well -> heading -> body -> action)",
+          "mappedComponent": "image",
+          "structuralSlot": "items"
+        }
+      ]
+    },
+    {
+      "name": "logoWall / Split-Copy-Plus-Logo-Grid",
+      "id": "logoWall",
+      "layoutArchetype": "split-copy-plus-logo-grid",
+      "scaffold": "",
+      "mode": "surface/primary",
+      "surface": {
+        "role": "surface/primary",
+        "bg": "#ffffff",
+        "text": "#15372c",
+        "accent": "#008561"
+      },
+      "slots": [
+        {
+          "name": "section-heading",
+          "type": "content",
+          "useCase": "section-heading",
+          "mappedComponent": "header",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "primary-action",
+          "type": "content",
+          "useCase": "primary-action",
+          "mappedComponent": "button",
+          "structuralSlot": "primaryAction"
+        },
+        {
+          "name": "logo-grid",
+          "type": "media",
+          "useCase": "logo-grid",
+          "mappedComponent": "logo-bar",
+          "structuralSlot": "logoGrid"
+        }
+      ]
+    },
+    {
+      "name": "stats / Three-Column-Number-Over-Caption",
+      "id": "stats",
+      "layoutArchetype": "three-column-number-over-caption",
+      "scaffold": "",
+      "mode": "surface/primary",
+      "surface": {
+        "role": "surface/primary",
+        "bg": "#ffffff",
+        "text": "#15372c",
+        "accent": "#008561"
+      },
+      "slots": [
+        {
+          "name": "stat-column-list: figure plus description and source citation",
+          "type": "content",
+          "useCase": "stat-column-list: figure plus description and source citation",
+          "mappedComponent": "stat-block",
+          "structuralSlot": "items"
+        }
+      ]
+    },
+    {
+      "name": "testimonial / Three-Column-Quote-Blocks",
+      "id": "testimonial",
+      "layoutArchetype": "three-column-quote-blocks",
+      "scaffold": "",
+      "mode": "surface/primary",
+      "surface": {
+        "role": "surface/primary",
+        "bg": "#ffffff",
+        "text": "#15372c",
+        "accent": "#008561"
+      },
+      "slots": [
+        {
+          "name": "section-heading",
+          "type": "content",
+          "useCase": "section-heading",
+          "mappedComponent": "header",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "testimonial-card-list (quote -> name -> meta)",
+          "type": "content",
+          "useCase": "testimonial-card-list (quote -> name -> meta)",
+          "mappedComponent": "card",
+          "structuralSlot": "items"
+        }
+      ]
+    },
+    {
+      "name": "cta / Full-Bleed-Dark-Band-Copy-Left-Art-Right",
+      "id": "cta",
+      "layoutArchetype": "full-bleed-dark-band-copy-left-art-right",
+      "scaffold": "",
+      "mode": "surface/primary",
+      "surface": {
+        "role": "surface/primary",
+        "bg": "#ffffff",
+        "text": "#15372c",
+        "accent": "#008561"
+      },
+      "slots": [
+        {
+          "name": "section-heading",
+          "type": "content",
+          "useCase": "section-heading",
+          "mappedComponent": "header",
+          "structuralSlot": "heading"
+        },
+        {
+          "name": "primary-action",
+          "type": "content",
+          "useCase": "primary-action",
+          "mappedComponent": "button",
+          "structuralSlot": "primaryAction"
+        },
+        {
+          "name": "decorative-background-art",
+          "type": "media",
+          "useCase": "decorative-background-art",
+          "mappedComponent": "image",
+          "structuralSlot": "decorativeArt"
+        }
+      ]
+    }
+  ],
+  "originCatalog": {
+    "hasOrigin": true,
+    "tiers": [
+      {
+        "key": "primitives",
+        "label": "Primitives",
+        "tier": 1,
+        "extracted": 13,
+        "designed": 23,
+        "total": 36,
+        "items": [
+          {
+            "name": "avatar",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [
+              "evidence/grounding/*.yaml#components[]"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "badge",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [
+              "evidence/grounding/*.yaml#components[]"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "button",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [
+              "evidence/grounding/*.yaml#components[]"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "caption",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [
+              "brand.yaml#measured-block-slots"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "heading",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [
+              "brand.yaml#measured-block-slots"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "icon",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [
+              "evidence/grounding/*.yaml#components[]"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "input",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [
+              "evidence/grounding/*.yaml#components[]"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "link",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [
+              "evidence/grounding/*.yaml#components[]"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "logo",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [
+              "brand.yaml#measured-block-slots"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "paragraph",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [
+              "brand.yaml#measured-block-slots"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "pill",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [
+              "evidence/grounding/*.yaml#components[]"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "quote",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [
+              "brand.yaml#measured-block-slots"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "stat",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [
+              "brand.yaml#measured-block-slots"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "checkbox",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No checkbox was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "code",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No code was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "cta",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No cta was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "divider",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No divider was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "eyebrow",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No eyebrow was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "file-upload",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No file-upload was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "form-field",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No form-field was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "icon-button",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No icon-button was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "illustration",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No illustration was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "image",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No image was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "label",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No label was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "list",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No list was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "progress",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No progress was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "radio",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No radio was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "rating",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No rating was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "select",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No select was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "slider",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No slider was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "spacer",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No spacer was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "subheading",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No subheading was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "textarea",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No textarea was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "toggle",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No toggle was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "tooltip",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No tooltip was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "video",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No video was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          }
+        ]
+      },
+      {
+        "key": "blocks",
+        "label": "Blocks",
+        "tier": 2,
+        "extracted": 3,
+        "designed": 22,
+        "total": 30,
+        "items": [
+          {
+            "name": "card",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [
+              "evidence/grounding/*.yaml#components[]"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "footer",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [
+              "brand.yaml#measured-block-archetypes"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "testimonial",
+            "origin": "extracted",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [
+              "brand.yaml#measured-block-archetypes"
+            ],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "accordion",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No accordion was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "accordion-item",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No accordion-item was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "banner",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No banner was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "breadcrumb",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No breadcrumb was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "carousel",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No carousel was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "content-block",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No content-block was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "cta-block",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No cta-block was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "dropdown-menu",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No dropdown-menu was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "feature-item",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No feature-item was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "form",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No form was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "header",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No header was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "logo-bar",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No logo-bar was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "media-text",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No media-text was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "modal",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No modal was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "navbar",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No navbar was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "pagination",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No pagination was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "pricing-card",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No pricing-card was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "stat-block",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No stat-block was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "step-item",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No step-item was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "steps",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No steps was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "table",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No table was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "tabs",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No tabs was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "cta",
+            "origin": "",
+            "use": "",
+            "variant": "",
+            "confidence": "",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "featureGrid",
+            "origin": "",
+            "use": "",
+            "variant": "",
+            "confidence": "",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "hero",
+            "origin": "",
+            "use": "",
+            "variant": "",
+            "confidence": "",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "logoWall",
+            "origin": "",
+            "use": "",
+            "variant": "",
+            "confidence": "",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          },
+          {
+            "name": "stats",
+            "origin": "",
+            "use": "",
+            "variant": "",
+            "confidence": "",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "",
+            "licensedSignals": [],
+            "notObserved": false,
+            "overridable": false
+          }
+        ]
+      },
+      {
+        "key": "scaffolds",
+        "label": "Scaffolds",
+        "tier": 3,
+        "extracted": 0,
+        "designed": 12,
+        "total": 12,
+        "items": [
+          {
+            "name": "header-scaffold",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No header-scaffold was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "layout-bento",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No layout-bento was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "layout-grid",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No layout-grid was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "layout-row",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No layout-row was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "layout-split",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No layout-split was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "layout-stack",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No layout-stack was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "logos-wrapper",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No logos-wrapper was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "section-split",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No section-split was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "section-split-content-form",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No section-split-content-form was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "section-split-fullbleed",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No section-split-fullbleed was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "section-stack",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No section-stack was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          },
+          {
+            "name": "section-stack-fullbleed",
+            "origin": "designed",
+            "use": "",
+            "variant": "",
+            "confidence": "medium",
+            "provenance": [],
+            "conflictsWith": [],
+            "designedFrom": "No section-stack-fullbleed was observed on the source page; synthesized on-brand from measured signals (color token families, measured type scale, relational spacing ladder, border / shadow grammar, surface-role grammar, motion duration / easing axis, button family + state facts, brand signatures). Not used in the measured replica.",
+            "licensedSignals": [
+              "color token families",
+              "measured type scale",
+              "relational spacing ladder",
+              "border / shadow grammar",
+              "surface-role grammar",
+              "motion duration / easing axis",
+              "button family + state facts",
+              "brand signatures"
+            ],
+            "notObserved": true,
+            "overridable": true
+          }
+        ]
+      }
+    ]
+  },
+  "inputDigest": "1068640cc1a56ccd77dd8f6d99ecf96bd840abe6b0f2ba706df4c918ae76945b"
+}
