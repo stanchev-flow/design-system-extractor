@@ -5,8 +5,8 @@
   "brand": "Greenhouse",
   "title": "Greenhouse 4",
   "source_url": "https://www.greenhouse.com/",
-  "published_at": "2026-07-28T20:09:17Z",
-  "replica_overall": 0.7437,
+  "published_at": "2026-07-28T20:54:18Z",
+  "replica_overall": 0.8733,
   "status": {
     "verdict": "not-passed",
     "headline": "This run did not pass its own quality gates. The artifacts below are its current best output, published for browsing and review \u2014 not a certified-good build.",
@@ -24,40 +24,30 @@
       "run_path": "flow-g3g4.log"
     },
     "fidelity": {
-      "overall": 0.7437,
+      "overall": 0.8733,
       "bar": 0.9,
       "bar_source": "manifest.json (declared bar)",
       "meets_bar": false,
       "bands_below_bar": [
         {
           "id": "sec-1",
-          "label": "featureGrid",
-          "score": 0.2783
+          "label": "(unauthored)",
+          "score": 0.0
         },
         {
-          "id": "sec-4",
-          "label": "testimonial",
-          "score": 0.3088
+          "id": "sec-2",
+          "label": "featuresThreeColumnCard",
+          "score": 0.8555
         },
         {
           "id": "sec-0",
           "label": "hero",
-          "score": 0.7719
+          "score": 0.8622
         },
         {
-          "id": "sec-2",
-          "label": "logoWall",
-          "score": 0.7977
-        },
-        {
-          "id": "sec-5",
-          "label": "cta",
-          "score": 0.8683
-        },
-        {
-          "id": "sec-3",
-          "label": "stats",
-          "score": 0.8847
+          "id": "sec-4",
+          "label": "featureGrid",
+          "score": 0.8625
         }
       ],
       "bands_unmeasurable": [
@@ -66,7 +56,7 @@
     },
     "manifest_disagreements": [
       "the run manifest records status \"completed\" / pipeline_run_completed true, which the gate evidence above does not support",
-      "the manifest's replica score (0.8206) predates the replica that is published here (0.7437 in the report beside the page)"
+      "the manifest's replica score (0.8206) predates the replica that is published here (0.8733 in the report beside the page)"
     ],
     "facts": [
       {
@@ -78,15 +68,15 @@
         "source": "logs/flow-g3g4.log"
       },
       {
-        "text": "Replica fidelity is 0.7437 against this run's 0.90 bar \u2014 below the bar.",
+        "text": "Replica fidelity is 0.8733 against this run's 0.90 bar \u2014 below the bar.",
         "source": "replica/replica-report.json"
       },
       {
-        "text": "The gate did flag the weakest sections numerically: featureGrid 0.2783, testimonial 0.3088, hero 0.7719. Low band scores are where the composed page diverges most from the source (1 band with no measurable source height is left out of this list).",
+        "text": "The gate did flag the weakest sections numerically: (unauthored) 0.0, featuresThreeColumnCard 0.8555, hero 0.8622. Low band scores are where the composed page diverges most from the source (1 band with no measurable source height is left out of this list).",
         "source": "replica/replica-report.md"
       },
       {
-        "text": "Do not trust the run manifest over the report beside the page: the run manifest records status \"completed\" / pipeline_run_completed true, which the gate evidence above does not support; and the manifest's replica score (0.8206) predates the replica that is published here (0.7437 in the report beside the page).",
+        "text": "Do not trust the run manifest over the report beside the page: the run manifest records status \"completed\" / pipeline_run_completed true, which the gate evidence above does not support; and the manifest's replica score (0.8206) predates the replica that is published here (0.8733 in the report beside the page).",
         "source": "logs/manifest.json"
       },
       {
@@ -95,12 +85,18 @@
       }
     ]
   },
+  "site": {
+    "kind": "framework",
+    "path": "index.html",
+    "source": "runs/greenhouse-4/brand/framework/single/framework-claude/dist/index.html"
+  },
+  "details": "pipeline.html",
   "lanes": [
     {
       "kind": "replica",
       "label": "Composed replica of the source page",
       "path": "replica/index.html",
-      "note": "Rebuilt from the extracted facts alone. Fidelity score 0.7437 against the source capture; per-band scores and the punch list are in replica-report.md.",
+      "note": "Rebuilt from the extracted facts alone. Fidelity score 0.8733 against the source capture; per-band scores and the punch list are in replica-report.md.",
       "extras": [
         {
           "label": "Fidelity report (markdown)",
@@ -126,9 +122,9 @@
     },
     {
       "kind": "framework",
-      "label": "Framework build (React + Vite, single file)",
-      "path": "framework/index.html",
-      "note": "The opt-in framework lane: a real React + Tailwind app generated from the same facts, built to one self-contained HTML file. Source stays in the run dir (runs/greenhouse-4/brand/framework/single/framework-claude)."
+      "label": "Generated site (React + Vite)",
+      "path": "index.html",
+      "note": "The framework lane: a real React + Tailwind app generated from the same facts, built to one self-contained HTML file. It is this bundle's front page. Source stays in the run dir (runs/greenhouse-4/brand/framework/single/framework-claude)."
     }
   ],
   "facts": [
@@ -289,31 +285,31 @@
     },
     {
       "token": "remote",
-      "file": "framework/index.html",
+      "file": "index.html",
       "kind": "asset-name",
       "in_comment": false,
       "context": "ad-media\",\"visible\":true}]},{\"id\":\"67abc305add47300764f9fd2-remote-logo\",\"file\":\"040-67abc305add47300764f9fd2-remote-log"
     },
     {
       "token": "remote",
-      "file": "framework/index.html",
+      "file": "index.html",
       "kind": "asset-name",
       "in_comment": false,
       "context": "0764f9fd2-remote-logo\",\"file\":\"040-67abc305add47300764f9fd2-remote-logo.avif\",\"type\":\"logo-third-party\",\"role\":\"unplaced"
     },
     {
       "token": "remote",
-      "file": "framework/index.html",
+      "file": "index.html",
       "kind": "asset-name",
       "in_comment": false,
-      "context": "\":\"\",\"alt\":\"\",\"url\":\"../assets/040-67abc305add47300764f9fd2-remote-logo.avif\",\"displayUrl\":\"../assets/040-67abc305add473"
+      "context": "bel\":\"\",\"alt\":\"\",\"url\":\"assets/040-67abc305add47300764f9fd2-remote-logo.avif\",\"displayUrl\":\"assets/040-67abc305add473007"
     },
     {
       "token": "remote",
-      "file": "framework/index.html",
+      "file": "index.html",
       "kind": "asset-name",
       "in_comment": false,
-      "context": ".avif\",\"displayUrl\":\"../assets/040-67abc305add47300764f9fd2-remote-logo.avif\",\"inlineSvg\":\"\",\"iconOrIllustration\":\"na\",\""
+      "context": "ogo.avif\",\"displayUrl\":\"assets/040-67abc305add47300764f9fd2-remote-logo.avif\",\"inlineSvg\":\"\",\"iconOrIllustration\":\"na\",\""
     },
     {
       "token": "fieldnote",
@@ -459,5 +455,5 @@
     ],
     "notes": "Fresh multi-page extract from existing captures. Studio project Greenhouse 4. Framework lane is opt-in token skin (no shadcn defaults; native chrome, no Radix)."
   },
-  "bytes": 20383088
+  "bytes": 19812570
 }

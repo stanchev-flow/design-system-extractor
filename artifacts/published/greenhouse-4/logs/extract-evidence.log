@@ -53,9 +53,9 @@
   section-04-cta-bg-green-750-component-is-showing.png  y 3334-4011  (677px)
   section-05-footer.png  y 3963-5031  (1068px)
 [done] slice: 6 crops (rects) -> runs/greenhouse-4/brand/evidence/pages/home/crops
-/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/tools/extract/curate_assets.py:250: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+<repo>/tools/extract/curate_assets.py:250: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
   px = list(small.getdata())
-/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/tools/extract/curate_assets.py:254: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+<repo>/tools/extract/curate_assets.py:254: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
   hsv = list(small.convert("HSV").getdata())
   extracted 0 inline SVGs (deduped)
 [done] curate: 37 assets in runs/greenhouse-4/brand/assets -> assets-manifest.json
@@ -108,9 +108,9 @@
   section-09-cta-bg-green-750-component-is-showing.png  y 7642-8319  (677px)
   section-10-footer.png  y 8271-9339  (1068px)
 [done] slice: 11 crops (rects) -> runs/greenhouse-4/brand/evidence/pages/talent-sourcing/crops
-/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/tools/extract/curate_assets.py:250: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+<repo>/tools/extract/curate_assets.py:250: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
   px = list(small.getdata())
-/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/tools/extract/curate_assets.py:254: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+<repo>/tools/extract/curate_assets.py:254: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
   hsv = list(small.convert("HSV").getdata())
   extracted 0 inline SVGs (deduped)
 [done] curate: 27 assets in runs/greenhouse-4/brand/assets -> assets-manifest.json
@@ -163,9 +163,9 @@
   section-07-cta-bg-green-750-component-is-showing.png  y 6404-7081  (677px)
   section-08-footer.png  y 7033-8101  (1068px)
 [done] slice: 9 crops (rects) -> runs/greenhouse-4/brand/evidence/pages/compare/crops
-/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/tools/extract/curate_assets.py:250: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+<repo>/tools/extract/curate_assets.py:250: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
   px = list(small.getdata())
-/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/tools/extract/curate_assets.py:254: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+<repo>/tools/extract/curate_assets.py:254: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
   hsv = list(small.convert("HSV").getdata())
   extracted 0 inline SVGs (deduped)
 [done] curate: 28 assets in runs/greenhouse-4/brand/assets -> assets-manifest.json

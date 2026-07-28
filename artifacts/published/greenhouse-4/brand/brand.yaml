@@ -1794,7 +1794,7 @@ layouts:
     role: decorative-media-collage
     contract: image
   requiresHydration: true
-  surfaceIntent: surface/primary
+  surfaceIntent: surface/hero
   origin: extracted
   provenance:
   - home-section-00
@@ -2111,7 +2111,7 @@ layouts:
     role: features-item-list
     type: content
   requiresHydration: false
-  surfaceIntent: surface/inverse
+  surfaceIntent: surface/primary
   origin: extracted
   provenance:
   - compare-section-03-div
@@ -2165,7 +2165,7 @@ layouts:
     - 043-6a1895bc8f2d9491ce3db846-d-us-awards-image-g2-mm-leader-summer-2026-on-marigold-background.png
     - 044-6a1895bc5ecfc15c4fdec10a-d-us-awards-image-g2-leader-europe-summer-2026-on-marigold-background.png
   requiresHydration: true
-  surfaceIntent: surface/inverse
+  surfaceIntent: surface/primary
   origin: extracted
   provenance:
   - compare-section-06-content-gallery-component-is-showing
@@ -2219,7 +2219,7 @@ layouts:
     role: outlined-action
     type: action
   requiresHydration: true
-  surfaceIntent: surface/inverse
+  surfaceIntent: surface/primary
   origin: extracted
   provenance:
   - home-section-01-div
@@ -2249,7 +2249,7 @@ layouts:
     role: filled-primary-action
     type: action
   requiresHydration: true
-  surfaceIntent: surface/inverse
+  surfaceIntent: surface/primary
   origin: extracted
   provenance:
   - talent-sourcing-section-01-text-with-image-component-is-showing
@@ -2279,7 +2279,7 @@ layouts:
     assets:
     - 035-66feddedc6644300cc8975d4-collage-of-company-job-board-page-on-desktop-and-mobile-with-fingerprint-leaf-png.webp
   requiresHydration: true
-  surfaceIntent: surface/inverse
+  surfaceIntent: surface/primary
   origin: extracted
   provenance:
   - talent-sourcing-section-03-text-with-image-component-is-showing
@@ -2307,7 +2307,7 @@ layouts:
     role: outlined-action
     type: action
   requiresHydration: true
-  surfaceIntent: surface/inverse
+  surfaceIntent: surface/primary
   origin: extracted
   provenance:
   - talent-sourcing-section-08-side-by-side-2-component-is-showing

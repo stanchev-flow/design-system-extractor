@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Greenhouse — published extraction results</title>
+<style>
+:root { color-scheme: dark; --bg:#0b0b0d; --card:#14141a; --line:#26262f; --ink:#f4f4f5;
+        --muted:#a1a1aa; --accent:#34d399; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.6 ui-sans-serif,-apple-system,"Segoe UI",Inter,sans-serif; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 48px 24px 72px; }
+h1 { font-size: 30px; letter-spacing:-.02em; margin: 0 0 6px; }
+h2 { font-size: 13px; text-transform: uppercase; letter-spacing:.12em; color:var(--muted); margin: 40px 0 14px; font-weight:600; }
+a { color: var(--accent); }
+.sub { color: var(--muted); margin: 0 0 4px; }
+.grid { display:grid; gap:16px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; }
+.card .shot { display:block; background:#000; aspect-ratio: 16/10; object-fit: cover; object-position: top center; width:100%; border-bottom:1px solid var(--line); }
+.card .body { padding:16px 18px 18px; }
+.card h3 { margin:0 0 6px; font-size:16px; }
+.card h3 a { text-decoration:none; }
+.card p { margin:0; color:var(--muted); font-size:13px; }
+.chip { display:inline-block; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:#0b0b0d;
+        background:var(--accent); border-radius:999px; padding:2px 8px; margin-bottom:10px; font-weight:700; }
+.extras { margin:10px 0 0; padding:0; list-style:none; font-size:12px; }
+.extras li { margin-top:4px; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th, td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { color:var(--muted); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.08em; }
+td code { color:var(--ink); }
+.meta { display:flex; flex-wrap:wrap; gap:8px 20px; color:var(--muted); font-size:13px; margin:14px 0 0; }
+.status { margin:26px 0 0; padding:18px 20px; border-radius:14px; background:#16161c;
+          border:1px solid var(--line); border-left:4px solid var(--st); }
+.status.warn { --st:#d99a34; } .status.ok { --st:#34d399; } .status.unknown { --st:#8b8b96; }
+.status .kicker { font-size:11px; text-transform:uppercase; letter-spacing:.12em; color:var(--st); font-weight:700; }
+.status .headline { margin:6px 0 0; font-size:15px; font-weight:600; color:var(--ink); }
+.status ul { margin:12px 0 0; padding:0 0 0 18px; font-size:13px; color:#d4d4d8; }
+.status li { margin-top:7px; }
+.status .src { color:#71717a; font-size:11px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+.note { color:var(--muted); font-size:13px; max-width:70ch; }
+.backlinks { margin:0 0 20px; font-size:13px; display:flex; gap:18px; flex-wrap:wrap; }
+footer { margin-top:48px; color:#71717a; font-size:12px; }
+</style></head>
+<body><div class="wrap">
+<p class="backlinks"><a href="index.html">← Back to the generated site</a><a href="../brands.html">All published brands</a></p>
+<h1>Greenhouse — published extraction results</h1>
+<p class="sub">Everything below was generated from screenshots and DOM/CSS measurements of the
+source site. No hand-written page code: the design system is extracted into facts, and the pages
+are composed back out of those facts, so the pages double as a check on the facts.</p>
+<div class="meta">
+  <span>source: <a href="https://www.greenhouse.com/" rel="noopener">https://www.greenhouse.com/</a></span>
+  <span>run: <code>runs/greenhouse-4</code></span>
+  <span>published: 2026-07-28T20:54:18Z</span>
+  <span>replica fidelity (report): <strong>0.8733</strong></span>
+  <span>schema validation (run manifest): 0 errors / 14 warnings</span>
+  <span>media: 65 files</span>
+</div>
+
+<section class="status warn"><div class="kicker">Run status — gates not passed</div><p class="headline">This run did not pass its own quality gates. The artifacts below are its current best output, published for browsing and review — not a certified-good build.</p><ul><li>The orchestrator writes a flow report when it finishes its gate spine, and this run has none — so the run never reached the end of that spine. <span class="src">brand/flow-report.json (missing)</span></li><li>The last recorded flow run crashed at gate G3 (harness): render_components_preview failed (exit 1) — harness quality failed. <span class="src">logs/flow-g3g4.log</span></li><li>Replica fidelity is 0.8733 against this run&#x27;s 0.90 bar — below the bar. <span class="src">replica/replica-report.json</span></li><li>The gate did flag the weakest sections numerically: (unauthored) 0.0, featuresThreeColumnCard 0.8555, hero 0.8622. Low band scores are where the composed page diverges most from the source (1 band with no measurable source height is left out of this list). <span class="src">replica/replica-report.md</span></li><li>Do not trust the run manifest over the report beside the page: the run manifest records status &quot;completed&quot; / pipeline_run_completed true, which the gate evidence above does not support; and the manifest&#x27;s replica score (0.8206) predates the replica that is published here (0.8733 in the report beside the page). <span class="src">logs/manifest.json</span></li><li>The harness quality artifact on disk reports ok=true — it was written after the flow log above, so it reflects a later rebuild rather than a passing flow run. <span class="src">harness/harness-quality.json</span></li></ul></section>
+
+<h2>Rendered results</h2>
+<div class="grid"><article class="card"><img class="shot" src="previews/replica.png" alt="Composed replica of the source page preview" loading="lazy"><div class="body"><span class="chip">replica</span><h3><a href="replica/index.html">Composed replica of the source page →</a></h3><p>Rebuilt from the extracted facts alone. Fidelity score 0.8733 against the source capture; per-band scores and the punch list are in replica-report.md.</p><ul class="extras"><li><a href="replica/replica-report.md">Fidelity report (markdown)</a></li><li><a href="replica/replica-fullpage.png">Full-page render (PNG)</a></li></ul></div></article><article class="card"><img class="shot" src="previews/harness.png" alt="Components &amp; layout harness preview" loading="lazy"><div class="body"><span class="chip">harness</span><h3><a href="harness/index.html">Components &amp; layout harness →</a></h3><p>Primitives, surfaces, blocks and every measured layout pattern rendered from the design system. Each pattern is also a standalone page under harness/layouts/.</p></div></article><article class="card"><img class="shot" src="previews/catalog.png" alt="Component catalog preview" loading="lazy"><div class="body"><span class="chip">catalog</span><h3><a href="catalog/index.html">Component catalog →</a></h3><p>Machine-readable inventory of the components the extraction declared.</p></div></article><article class="card"><img class="shot" src="previews/framework.png" alt="Generated site (React + Vite) preview" loading="lazy"><div class="body"><span class="chip">framework</span><h3><a href="index.html">Generated site (React + Vite) →</a></h3><p>The framework lane: a real React + Tailwind app generated from the same facts, built to one self-contained HTML file. It is this bundle&#x27;s front page. Source stays in the run dir (runs/greenhouse-4/brand/framework/single/framework-claude).</p></div></article></div>
+
+<h2>Brand facts — the extraction output</h2>
+<p class="note">These files are the deliverable; every rendered page above is derived from them.</p>
+<table><thead><tr><th>file</th><th>what it is</th><th>size</th></tr></thead><tbody><tr><td><a href="brand/brand.yaml"><code>brand.yaml</code></a></td><td>Authored brand facts: tokens, surfaces, components, section patterns.</td><td>106.6 KB</td></tr><tr><td><a href="brand/brand.md"><code>brand.md</code></a></td><td>The same design system as a readable document.</td><td>25.7 KB</td></tr><tr><td><a href="brand/layout-library.yaml"><code>layout-library.yaml</code></a></td><td>Measured layout patterns (one entry per composable section shape).</td><td>23.0 KB</td></tr><tr><td><a href="brand/section-copy.yaml"><code>section-copy.yaml</code></a></td><td>Verbatim copy captured per section.</td><td>12.1 KB</td></tr><tr><td><a href="brand/media-assets.yaml"><code>media-assets.yaml</code></a></td><td>Media registry: every asset with role, geometry and section binding.</td><td>73.0 KB</td></tr><tr><td><a href="brand/brand-chrome.yaml"><code>brand-chrome.yaml</code></a></td><td>Measured nav/footer facts (links are captured, never invented).</td><td>6.9 KB</td></tr><tr><td><a href="brand/style-scale.yaml"><code>style-scale.yaml</code></a></td><td>Normalised type/space scales.</td><td>4.4 KB</td></tr><tr><td><a href="brand/voice-facts.yaml"><code>voice-facts.yaml</code></a></td><td>Voice evidence extracted from the source copy.</td><td>2.9 KB</td></tr><tr><td><a href="brand/voice.md"><code>voice.md</code></a></td><td>Voice guidance derived from those facts.</td><td>2.8 KB</td></tr><tr><td><a href="brand/assets-manifest.json"><code>assets-manifest.json</code></a></td><td>Curated asset manifest (source URL → local file, with tags).</td><td>22.9 KB</td></tr><tr><td><a href="brand/media-guidance.yaml"><code>media-guidance.yaml</code></a></td><td>Art-direction guidance for generated media slots.</td><td>673 B</td></tr><tr><td><a href="brand/asset-placements.json"><code>asset-placements.json</code></a></td><td>Measured on-page placements for each asset.</td><td>78.2 KB</td></tr></tbody></table>
+
+<h2>What happened — logs &amp; manifest</h2>
+<table><thead><tr><th>file</th><th>size</th></tr></thead><tbody>
+<tr><td><a href="logs/changes.md"><code>changes.md</code></a></td><td>21.3 KB</td></tr>
+<tr><td><a href="logs/manifest.json"><code>manifest.json</code></a></td><td>1.8 KB</td></tr>
+<tr><td><a href="logs/author.log"><code>author.log</code></a></td><td>429 B</td></tr><tr><td><a href="logs/catalog-build.log"><code>catalog-build.log</code></a></td><td>160 B</td></tr><tr><td><a href="logs/extract-evidence.log"><code>extract-evidence.log</code></a></td><td>8.6 KB</td></tr><tr><td><a href="logs/extract-ground.log"><code>extract-ground.log</code></a></td><td>3.4 KB</td></tr><tr><td><a href="logs/flow-g3g4.log"><code>flow-g3g4.log</code></a></td><td>1.3 KB</td></tr><tr><td><a href="logs/framework-build.log"><code>framework-build.log</code></a></td><td>385 B</td></tr><tr><td><a href="logs/framework-vite.log"><code>framework-vite.log</code></a></td><td>483 B</td></tr><tr><td><a href="logs/harness-build.log"><code>harness-build.log</code></a></td><td>400 B</td></tr><tr><td><a href="logs/replica-build.log"><code>replica-build.log</code></a></td><td>837 B</td></tr><tr><td><a href="logs/replica-home-only.log"><code>replica-home-only.log</code></a></td><td>660 B</td></tr><tr><td><a href="logs/validate-final.log"><code>validate-final.log</code></a></td><td>12.6 KB</td></tr><tr><td><a href="logs/validate-post-fix.log"><code>validate-post-fix.log</code></a></td><td>4.4 KB</td></tr><tr><td><a href="logs/validate-post-fix2.log"><code>validate-post-fix2.log</code></a></td><td>3.1 KB</td></tr><tr><td><a href="logs/validate-post-fix3.log"><code>validate-post-fix3.log</code></a></td><td>2.8 KB</td></tr><tr><td><a href="logs/validate-pre-fix.log"><code>validate-pre-fix.log</code></a></td><td>7.4 KB</td></tr></tbody></table>
+
+<footer>Exported with <code>tools/publish_run_bundle.py</code> from <code>runs/greenhouse-4</code>.
+Re-run: <code>./venv/bin/python tools/publish_run_bundle.py --run runs/greenhouse-4</code>.
+The full run (source captures, crops, evidence, app sources, node_modules) stays local — it is
+gitignored and ~300&nbsp;MB.</footer>
+</div></body></html>

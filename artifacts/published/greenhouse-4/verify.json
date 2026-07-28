@@ -1,12 +1,12 @@
 {
-  "checked_at": "2026-07-28T20:09:48Z",
+  "checked_at": "2026-07-28T20:54:51Z",
   "base": "file://",
   "pages": [
     {
       "page": "replica/index.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/replica/index.html",
-      "text": 3130,
-      "nodes": 195,
+      "url": "file://<repo>/artifacts/published/greenhouse-4/replica/index.html",
+      "text": 3093,
+      "nodes": 198,
       "images": 13,
       "broken": [],
       "failed_requests": [],
@@ -15,7 +15,7 @@
     },
     {
       "page": "harness/index.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/harness/index.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/harness/index.html",
       "text": 44042,
       "nodes": 2096,
       "images": 0,
@@ -26,7 +26,7 @@
     },
     {
       "page": "catalog/index.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/catalog/index.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/catalog/index.html",
       "text": 27492,
       "nodes": 836,
       "images": 0,
@@ -36,10 +36,10 @@
       "ok": true
     },
     {
-      "page": "framework/index.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/framework/index.html",
-      "text": 3215,
-      "nodes": 234,
+      "page": "index.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/index.html",
+      "text": 3351,
+      "nodes": 237,
       "images": 13,
       "broken": [],
       "failed_requests": [],
@@ -48,7 +48,7 @@
     },
     {
       "page": "harness/layouts/content.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/harness/layouts/content.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/harness/layouts/content.html",
       "text": 188,
       "nodes": 18,
       "images": 1,
@@ -59,7 +59,7 @@
     },
     {
       "page": "harness/layouts/cta.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/harness/layouts/cta.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/harness/layouts/cta.html",
       "text": 60,
       "nodes": 16,
       "images": 0,
@@ -70,7 +70,7 @@
     },
     {
       "page": "harness/layouts/ctaSplit5050.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/harness/layouts/ctaSplit5050.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/harness/layouts/ctaSplit5050.html",
       "text": 65,
       "nodes": 19,
       "images": 1,
@@ -81,7 +81,7 @@
     },
     {
       "page": "harness/layouts/featureGrid.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/harness/layouts/featureGrid.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/harness/layouts/featureGrid.html",
       "text": 780,
       "nodes": 30,
       "images": 3,
@@ -92,7 +92,7 @@
     },
     {
       "page": "harness/layouts/features.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/harness/layouts/features.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/harness/layouts/features.html",
       "text": 416,
       "nodes": 15,
       "images": 0,
@@ -103,7 +103,7 @@
     },
     {
       "page": "harness/layouts/featuresHeadingBodyTop.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/harness/layouts/featuresHeadingBodyTop.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/harness/layouts/featuresHeadingBodyTop.html",
       "text": 179,
       "nodes": 20,
       "images": 1,
@@ -114,7 +114,7 @@
     },
     {
       "page": "harness/layouts/featuresHeadingFullWidth.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/harness/layouts/featuresHeadingFullWidth.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/harness/layouts/featuresHeadingFullWidth.html",
       "text": 323,
       "nodes": 30,
       "images": 2,
@@ -125,7 +125,7 @@
     },
     {
       "page": "harness/layouts/featuresSectionHeadingTop.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/harness/layouts/featuresSectionHeadingTop.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/harness/layouts/featuresSectionHeadingTop.html",
       "text": 39,
       "nodes": 13,
       "images": 0,
@@ -136,7 +136,7 @@
     },
     {
       "page": "harness/layouts/featuresSplit5050.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/harness/layouts/featuresSplit5050.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/harness/layouts/featuresSplit5050.html",
       "text": 42,
       "nodes": 19,
       "images": 1,
@@ -147,7 +147,7 @@
     },
     {
       "page": "harness/layouts/featuresSplit5050Media.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/harness/layouts/featuresSplit5050Media.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/harness/layouts/featuresSplit5050Media.html",
       "text": 54,
       "nodes": 16,
       "images": 1,
@@ -158,7 +158,7 @@
     },
     {
       "page": "harness/layouts/featuresThreeColumnCard.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/harness/layouts/featuresThreeColumnCard.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/harness/layouts/featuresThreeColumnCard.html",
       "text": 829,
       "nodes": 32,
       "images": 3,
@@ -169,7 +169,7 @@
     },
     {
       "page": "harness/layouts/gallery.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/harness/layouts/gallery.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/harness/layouts/gallery.html",
       "text": 295,
       "nodes": 27,
       "images": 3,
@@ -180,7 +180,7 @@
     },
     {
       "page": "harness/layouts/hero.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/harness/layouts/hero.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/harness/layouts/hero.html",
       "text": 246,
       "nodes": 26,
       "images": 1,
@@ -191,7 +191,7 @@
     },
     {
       "page": "harness/layouts/heroSplit5050.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/harness/layouts/heroSplit5050.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/harness/layouts/heroSplit5050.html",
       "text": 317,
       "nodes": 30,
       "images": 1,
@@ -202,7 +202,7 @@
     },
     {
       "page": "harness/layouts/logoWall.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/harness/layouts/logoWall.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/harness/layouts/logoWall.html",
       "text": 53,
       "nodes": 35,
       "images": 6,
@@ -213,7 +213,7 @@
     },
     {
       "page": "harness/layouts/stats.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/harness/layouts/stats.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/harness/layouts/stats.html",
       "text": 199,
       "nodes": 24,
       "images": 0,
@@ -224,7 +224,7 @@
     },
     {
       "page": "harness/layouts/testimonial.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/harness/layouts/testimonial.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/harness/layouts/testimonial.html",
       "text": 33,
       "nodes": 17,
       "images": 0,
@@ -234,10 +234,32 @@
       "ok": true
     },
     {
-      "page": "index.html",
-      "url": "file:///Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/artifacts/published/greenhouse-4/index.html",
-      "text": 4530,
-      "nodes": 249,
+      "page": "../index.html",
+      "url": "file://<repo>/artifacts/published/index.html",
+      "text": 3351,
+      "nodes": 237,
+      "images": 13,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "../brands.html",
+      "url": "file://<repo>/artifacts/published/brands.html",
+      "text": 358,
+      "nodes": 24,
+      "images": 0,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "pipeline.html",
+      "url": "file://<repo>/artifacts/published/greenhouse-4/pipeline.html",
+      "text": 4602,
+      "nodes": 252,
       "images": 4,
       "broken": [],
       "failed_requests": [],

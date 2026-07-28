@@ -7,24 +7,43 @@ This script exports only the finished deliverables of one run into a browsable
 directory that is committed to the repo and served as-is by the Studio server
 (`studio_server.py` serves the repo root, so the bundle needs no new routes).
 
+The bundle leads with the DELIVERABLE, not with the process: `index.html` is the
+generated site itself, and every pipeline artifact sits one discreet footer link
+away on `pipeline.html`. Nothing is dropped — only re-ordered.
+
 What lands in the bundle:
+  index.html   the generated site (the framework build), served as a real page
+  pipeline.html  every artifact + the run's full gate-status disclosure
   replica/     the composed replica of the source page + its fidelity report
   harness/     the components/harness preview + the per-pattern layout pages
   catalog/     the component catalog page (when the run produced one)
-  framework/   the built React/Vite framework app (single-file `dist/index.html`)
+  framework/   the framework build's own reports (the page itself is index.html)
   brand/       the authored brand facts (yaml/json) — the extraction deliverable
   logs/        run logs + manifest so a reader can see what passed
   assets/      ONE deduped copy of the media the pages above actually reference
-  index.html   landing page explaining and linking every artifact
-  README.md    the same, for readers on GitHub
+  README.md    the artifact index, for readers on GitHub
   published.json  machine-readable manifest the Studio dashboard discovers
+
+And beside the bundles, in `artifacts/published/`:
+  index.html   the newest bundle's generated site, re-pathed to this depth
+  brands.html  every published bundle, when a visitor wants a different one
+
+The bundle is browsed locally: over the Studio, or straight off disk from
+`file://`. There is no public deployment — see README.md for why.
+
+Machine-local absolute paths are redacted out of everything textual on the way in
+(logs and result JSON quote them freely), so the committed bundle names no one's
+home directory. Only the prefix goes; the rest of each path is kept so it is still
+a usable debugging reference.
 
 Relocation is the interesting part: the run's pages reference media three
 different ways (`assets/x.png` next to the page, `/runs/<run>/brand/assets/x.png`
 absolute from the framework build, and `assets/x.png` from nested layout pages).
 Every copied HTML/CSS file is rewritten to point at the single bundle-level
-`assets/` dir via a relative path, so the bundle browses identically over the
-Studio, over any static host, and from `file://`.
+`assets/` dir via a relative path COMPUTED FROM WHERE THAT PAGE LANDS, so the
+bundle browses identically over the Studio, over any static host, and from
+`file://`. The generated site is written at two depths (bundle root and published
+root); both are derived, never assumed.
 
 Usage:
     ./venv/bin/python tools/publish_run_bundle.py --run runs/greenhouse-4
@@ -33,7 +52,7 @@ Usage:
 
 Every page is loaded in headless Chromium afterwards (unless `--no-verify`): that
 asserts each one renders content with no broken images or 404s, and produces the
-landing page's preview thumbnails. Pass `--base-url` to check it over the running
+details page's preview thumbnails. Pass `--base-url` to check it over the running
 Studio instead of `file://`.
 
 Re-runnable: managed subdirectories are replaced on each run, so a second
@@ -59,6 +78,12 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 # `previews/` is deliberately absent: it is owned by the verification pass, so a
 # --no-verify re-export keeps the previews it cannot regenerate.
 MANAGED_DIRS = ("assets", "replica", "harness", "catalog", "framework", "brand", "logs")
+
+# Entry points, by role. The generated site owns `index.html` in the bundle AND in
+# the published root; everything about how it was made lives on the details page.
+SITE_PAGE = "index.html"
+DETAILS_PAGE = "pipeline.html"
+BRANDS_PAGE = "brands.html"
 
 # Media referenced by the exported pages. Extensions only — names come from the
 # pages themselves, never from a directory listing, so nothing unreferenced ships.
@@ -207,9 +232,10 @@ def normalise_title(text: str, title: str) -> str:
 
 
 # Published bundles are a working record, not content anyone should find by search.
-# Emitted by the export so the committed bundle carries it, instead of only the
-# deploy-time staged copy. Asking crawlers is not access control: the repo and the
-# Pages site stay readable to anyone with the URL.
+# There is no public deployment of them any more — they are browsed locally, over
+# the Studio or straight off disk — so this tag no longer has a crawler to talk to.
+# It is kept because it costs nothing and the repo itself is readable: if a bundle
+# is ever served somewhere, it should not want to be indexed.
 ROBOTS_META = '<meta name="robots" content="noindex, nofollow">'
 HEAD_OPEN_RE = re.compile(r"<head\b[^>]*>", re.IGNORECASE)
 
@@ -224,19 +250,56 @@ def inject_noindex(text: str) -> str:
     return f"{text[:match.end()]}\n{ROBOTS_META}{text[match.end():]}"
 
 
+# ── machine-local paths ────────────────────────────────────────────────────────
+# A run's logs and result JSON quote the absolute paths of the machine that
+# produced them, and a published bundle is committed to a repo that other people
+# read. Only the PREFIX has to go: `<repo>/runs/x/brand/…` still tells whoever is
+# debugging exactly which file a line is about, so nothing diagnostic is lost.
+
+
+def local_path_prefixes() -> list[tuple[str, str]]:
+    """Absolute prefixes to redact, longest first so nesting resolves correctly."""
+    candidates = [(str(REPO_ROOT), "<repo>"), (str(Path.home()), "<home>")]
+    return sorted(
+        ((prefix, token) for prefix, token in candidates if len(prefix) > 1),
+        key=lambda kv: -len(kv[0]),
+    )
+
+
+def redact_local_paths(text: str) -> str:
+    """Swap machine-local absolute path prefixes for stable placeholders.
+
+    Substring replacement on purpose: it reaches paths wherever they appear — bare
+    in a log line, inside a `file://` URL, or as a JSON string value — and the
+    placeholders contain nothing that needs escaping, so JSON stays valid.
+    """
+    for prefix, token in local_path_prefixes():
+        text = text.replace(prefix, token)
+    return text
+
+
 def copy_page(src: Path, dest: Path, out_dir: Path, pool: AssetPool, *, title: str | None = None) -> None:
     dest.parent.mkdir(parents=True, exist_ok=True)
     text = src.read_text(encoding="utf-8", errors="replace")
     text, _ = rewrite_asset_refs(text, dest, out_dir, pool, near=src.parent)
     if title:
         text = normalise_title(text, title)
-    dest.write_text(inject_noindex(text), encoding="utf-8")
+    dest.write_text(redact_local_paths(inject_noindex(text)), encoding="utf-8")
 
 
 def copy_plain(src: Path, dest: Path) -> bool:
+    """Copy a file verbatim — unless it is text carrying machine-local paths."""
     if not src.is_file():
         return False
     dest.parent.mkdir(parents=True, exist_ok=True)
+    if src.suffix.lower() in TEXT_SUFFIXES:
+        original = src.read_text(encoding="utf-8", errors="replace")
+        redacted = redact_local_paths(original)
+        # Only rewrite when there was something to redact, so a text file with odd
+        # bytes is still copied byte-for-byte in the common case.
+        if redacted != original:
+            dest.write_text(redacted, encoding="utf-8")
+            return True
     shutil.copy2(src, dest)
     return True
 
@@ -574,7 +637,7 @@ def scan_foreign_strings(out_dir: Path, brand: str, run_name: str) -> list[dict]
     # The bundle's own generated entry points are skipped: their content is derived
     # from the payload (published.json even carries these findings), so including them
     # would just report the report.
-    generated = {"index.html", "README.md", "published.json", "verify.json"}
+    generated = {DETAILS_PAGE, "README.md", "published.json", "verify.json"}
     findings: list[dict] = []
     for path in sorted(out_dir.rglob("*")):
         if not path.is_file() or path.suffix.lower() not in TEXT_SUFFIXES:
@@ -770,7 +833,10 @@ def export(run_dir: Path, out_dir: Path) -> dict:
             }
         )
 
-    # ── framework: the built React app. Prefer the app's own dist/ over any copy.
+    # ── framework: the built React app — the bundle's front page.
+    # It lands at the bundle ROOT (index.html), not under framework/, so a visitor
+    # opening the bundle sees the generated site and nothing else. Its own reports
+    # still travel under framework/. Prefer the app's own dist/ over any copy.
     fw_src = brand_dir / "framework"
     fw_build = next(
         (
@@ -783,25 +849,29 @@ def export(run_dir: Path, out_dir: Path) -> dict:
         ),
         None,
     )
+    site: dict | None = None
     if fw_build is not None:
-        copy_page(
-            fw_build,
-            out_dir / "framework" / "index.html",
-            out_dir,
-            pool,
-            title=f"{meta['brand']} — framework build (React + Vite)",
-        )
+        # Depth changed (framework/index.html -> index.html), so the asset prefix is
+        # re-derived by copy_page from the destination — never carried over.
+        # Title is the brand alone: this page is the site, so it should not announce
+        # its own lane the way the review pages under the details page do.
+        copy_page(fw_build, out_dir / SITE_PAGE, out_dir, pool, title=meta["brand"])
         copy_plain(fw_src / "framework-report.json", out_dir / "framework" / "framework-report.json")
         copy_plain(fw_src / "brand-assets.json", out_dir / "framework" / "brand-assets.json")
+        site = {
+            "kind": "framework",
+            "path": SITE_PAGE,
+            "source": str(fw_build.relative_to(REPO_ROOT)) if fw_build.is_relative_to(REPO_ROOT) else str(fw_build),
+        }
         lanes.append(
             {
                 "kind": "framework",
-                "label": "Framework build (React + Vite, single file)",
-                "path": "framework/index.html",
+                "label": "Generated site (React + Vite)",
+                "path": SITE_PAGE,
                 "note": (
-                    "The opt-in framework lane: a real React + Tailwind app generated from the "
-                    "same facts, built to one self-contained HTML file. Source stays in the run "
-                    f"dir ({fw_build.parent.parent.relative_to(REPO_ROOT)})."
+                    "The framework lane: a real React + Tailwind app generated from the "
+                    "same facts, built to one self-contained HTML file. It is this bundle's "
+                    f"front page. Source stays in the run dir ({fw_build.parent.parent.relative_to(REPO_ROOT)})."
                 ),
             }
         )
@@ -833,6 +903,11 @@ def export(run_dir: Path, out_dir: Path) -> dict:
         "published_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "replica_overall": replica_report.get("overall"),
         "status": derive_run_status(run_dir, brand_dir, meta, replica_report),
+        # What a visitor lands on, and where the process lives. `site` is null when
+        # the run produced no generated site — then the details page IS the front
+        # page, so a bundle without a framework lane still opens to something.
+        "site": site,
+        "details": DETAILS_PAGE,
         "lanes": lanes,
         "facts": facts,
         "logs": logs,
@@ -846,11 +921,27 @@ def export(run_dir: Path, out_dir: Path) -> dict:
 
 
 def finalize(manifest: dict, out_dir: Path) -> None:
-    """(Re)write the human + machine entry points once the payload is final."""
+    """(Re)write the human + machine entry points once the payload is final.
+
+    `index.html` is the generated site, already copied by export() at this depth —
+    finalize only stamps its provenance footer, which is why re-running is safe.
+    When the run produced no site, the details page takes the front-page slot so a
+    bundle never opens to a 404.
+    """
     manifest["bytes"] = size_of(out_dir)
-    (out_dir / "index.html").write_text(render_landing(manifest, out_dir))
-    (out_dir / "README.md").write_text(render_readme(manifest, out_dir))
-    (out_dir / "published.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    details = redact_local_paths(render_landing(manifest, out_dir))
+    (out_dir / DETAILS_PAGE).write_text(details)
+    site_page = out_dir / SITE_PAGE
+    if manifest.get("site") and site_page.is_file():
+        site_page.write_text(
+            stamp_provenance(site_page.read_text(encoding="utf-8"), provenance_footer(manifest, DETAILS_PAGE)),
+            encoding="utf-8",
+        )
+    else:
+        site_page.write_text(details)
+    (out_dir / "README.md").write_text(redact_local_paths(render_readme(manifest, out_dir)))
+    # The manifest embeds the run's own manifest.json, which can quote local paths.
+    (out_dir / "published.json").write_text(redact_local_paths(json.dumps(manifest, indent=2) + "\n"))
     write_published_index(out_dir.parent)
 
 
@@ -891,6 +982,7 @@ td code { color:var(--ink); }
 .status li { margin-top:7px; }
 .status .src { color:#71717a; font-size:11px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
 .note { color:var(--muted); font-size:13px; max-width:70ch; }
+.backlinks { margin:0 0 20px; font-size:13px; display:flex; gap:18px; flex-wrap:wrap; }
 footer { margin-top:48px; color:#71717a; font-size:12px; }
 """
 
@@ -904,6 +996,86 @@ _STATUS_STYLE = {
     "not-passed": ("warn", "Run status — gates not passed"),
     "undetermined": ("unknown", "Run status — undetermined"),
 }
+
+
+# ── the generated site's one line of provenance ────────────────────────────────
+# The published site leads with the deliverable, so the whole pipeline is
+# represented on it by exactly this: one sentence and a link. It states what the
+# run's gates said in a single clause and never implies the build is certified;
+# the full, unabridged disclosure lives on the details page it links to, where it
+# is rendered exactly as it always was.
+PROVENANCE_ID = "published-provenance"
+PROVENANCE_RE = re.compile(rf'\s*<footer id="{PROVENANCE_ID}".*?</footer>', re.S)
+BODY_CLOSE_RE = re.compile(r"</body\s*>", re.IGNORECASE)
+
+PROVENANCE_LEAD = {
+    "passed": "Generated automatically from measurements of {source}. The run passed its own quality gates.",
+    "not-passed": "Generated automatically from measurements of {source}. The run did not pass its own quality gates.",
+    "undetermined": "Generated automatically from measurements of {source}. Whether the run passed its own "
+    "quality gates could not be determined.",
+}
+
+# Single-quoted font name on purpose: this whole string is an HTML style="…"
+# attribute value, so a double quote inside it would terminate the attribute.
+_PROV_BOX = (
+    "margin:0;padding:16px 20px;background:#0b0b0d;color:#8b8b96;border-top:1px solid #26262f;"
+    "font:400 12px/1.7 ui-sans-serif,-apple-system,'Segoe UI',Inter,sans-serif;text-align:center;"
+)
+_PROV_LINK = "color:#a1a1aa;text-decoration:underline;text-underline-offset:2px;"
+
+# The footer is appended AFTER the app's own markup, which means the app's mount
+# node has to size to its content or the footer lands mid-document under it. Vite
+# scaffolds routinely pin that node to the viewport height (`#root{height:100%}`)
+# and let the app overflow it visibly, which looks fine until something follows it.
+# `min-height` keeps the fill-the-viewport intent for a short page. Carried inside
+# the footer element so removing the footer removes the rule with it.
+_PROV_RESET = f"body>:not(#{PROVENANCE_ID}){{height:auto;min-height:100vh}}"
+
+
+def provenance_footer(manifest: dict, details_href: str, brands_href: str | None = None) -> str:
+    """The single line of process the clean site carries, plus its way in."""
+    verdict = (manifest.get("status") or {}).get("verdict", "")
+    source = manifest.get("source_url") or ""
+    lead = PROVENANCE_LEAD.get(verdict, PROVENANCE_LEAD["undetermined"]).format(source=source or "a source site")
+    links = f'<a href="{_e(details_href)}" style="{_PROV_LINK}">Pipeline details</a>'
+    if brands_href:
+        links += f' · <a href="{_e(brands_href)}" style="{_PROV_LINK}">All published brands</a>'
+    return (
+        f'\n<footer id="{PROVENANCE_ID}" style="{_PROV_BOX}">'
+        f"<style>{_PROV_RESET}</style>{_e(lead)} {links}</footer>\n"
+    )
+
+
+def stamp_provenance(text: str, footer: str) -> str:
+    """Put (or replace) the provenance footer just before </body>. Idempotent."""
+    text = PROVENANCE_RE.sub("", text)
+    closes = list(BODY_CLOSE_RE.finditer(text))
+    if not closes:
+        return text + footer
+    cut = closes[-1].start()
+    return text[:cut] + footer + text[cut:]
+
+
+def repoint_assets(text: str, assets_dir: Path, page: Path) -> tuple[str, int]:
+    """Repoint every `.../assets/<file>` reference at `assets_dir`, from `page`.
+
+    Used when an already-exported page is written out again at a DIFFERENT depth
+    (the generated site is served both at the bundle root and at the published
+    root). The prefix is derived from where the page lands, and a reference only
+    moves when the file it names really exists in that pool — so an external URL,
+    or a name that is not ours, is left exactly as it was.
+    """
+    prefix = os.path.relpath(assets_dir, page.parent).replace(os.sep, "/")
+    hits = 0
+
+    def sub(m: re.Match[str]) -> str:
+        nonlocal hits
+        if not (assets_dir / m.group("name")).is_file():
+            return m.group("ref")
+        hits += 1
+        return f"{prefix}/{m.group('name')}"
+
+    return ASSET_REF_RE.sub(sub, text), hits
 
 
 def render_status_html(status: dict) -> str:
@@ -942,6 +1114,11 @@ def render_status_markdown(status: dict) -> list[str]:
 
 
 def render_landing(manifest: dict, out_dir: Path) -> str:
+    """The details page: every artifact, and the run's full status disclosure.
+
+    This is what used to be the bundle's front page. Nothing was removed from it —
+    it simply moved behind the generated site, which now owns `index.html`.
+    """
     rm = manifest.get("run_manifest") or {}
     replica = manifest.get("replica_overall")
     validation = rm.get("validation") or {}
@@ -977,6 +1154,11 @@ def render_landing(manifest: dict, out_dir: Path) -> str:
     )
     source = manifest.get("source_url") or ""
     source_link = f'<a href="{_e(source)}" rel="noopener">{_e(source)}</a>' if source else "—"
+    site_link = (
+        f'<a href="{_e(SITE_PAGE)}">← Back to the generated site</a>'
+        if manifest.get("site")
+        else ""
+    )
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 {ROBOTS_META}
@@ -984,6 +1166,7 @@ def render_landing(manifest: dict, out_dir: Path) -> str:
 <title>{_e(manifest["brand"])} — published extraction results</title>
 <style>{LANDING_CSS}</style></head>
 <body><div class="wrap">
+<p class="backlinks">{site_link}<a href="../{_e(BRANDS_PAGE)}">All published brands</a></p>
 <h1>{_e(manifest["brand"])} — published extraction results</h1>
 <p class="sub">Everything below was generated from screenshots and DOM/CSS measurements of the
 source site. No hand-written page code: the design system is extracted into facts, and the pages
@@ -1033,13 +1216,20 @@ def render_readme(manifest: dict, out_dir: Path) -> str:
     if replica is not None:
         lines.append(f"- replica fidelity score: {replica} (from the report beside the published page)")
     lines += [""]
+    lines += [
+        f"`{SITE_PAGE}` is the generated site itself. Everything about how it was made — every",
+        f"artifact below, and the run-status disclosure — is on `{DETAILS_PAGE}`, one link away in",
+        "the site's footer.",
+        "",
+    ]
     lines += render_status_markdown(manifest.get("status") or {})
     lines += [
         "Browse it through the local Studio server (`./start-studio.sh`, port 1500):",
         "",
-        f"    http://127.0.0.1:1500/{out_dir.relative_to(REPO_ROOT).as_posix()}/index.html",
+        f"    http://127.0.0.1:1500/{out_dir.relative_to(REPO_ROOT).as_posix()}/{SITE_PAGE}",
+        f"    http://127.0.0.1:1500/{out_dir.relative_to(REPO_ROOT).as_posix()}/{DETAILS_PAGE}",
         "",
-        "Or open `index.html` directly — every path in the bundle is relative, so it also works",
+        f"Or open `{SITE_PAGE}` directly — every path in the bundle is relative, so it also works",
         "from `file://` or any static host.",
         "",
         "## Contents",
@@ -1048,6 +1238,8 @@ def render_readme(manifest: dict, out_dir: Path) -> str:
     for lane in manifest["lanes"]:
         lines.append(f"- **{lane['label']}** — `{lane['path']}`  \n  {lane.get('note', '')}")
     lines += [
+        f"- **Pipeline details** — `{DETAILS_PAGE}`  \n  Run status, every rendered lane, the brand "
+        "facts and the logs, in one page.",
         "- **Brand facts** — `brand/`  \n  The authored extraction output (yaml/json); every page above is derived from it.",
         "- **Logs & manifest** — `logs/`  \n  Run logs, schema validation output, and `changes.md`.",
         "- **Media** — `assets/`  \n  One deduped copy of the media the pages actually reference.",
@@ -1068,39 +1260,85 @@ def render_readme(manifest: dict, out_dir: Path) -> str:
     return "\n".join(lines)
 
 
-def write_published_index(root: Path) -> None:
-    """Directory landing page listing every published bundle under `root`."""
+def load_published_bundles(root: Path) -> list[dict]:
+    """Every bundle manifest under `root`, newest first (name breaks ties)."""
     bundles = []
     for manifest_path in sorted(root.glob("*/published.json")):
         try:
             bundles.append(json.loads(manifest_path.read_text()))
         except Exception:  # noqa: BLE001
             continue
-    if not bundles:
-        return
+    return sorted(bundles, key=lambda b: (b.get("published_at", ""), b.get("name", "")), reverse=True)
+
+
+def render_brands_page(bundles: list[dict]) -> str:
+    """The list of every published bundle — a site link and a details link each."""
     rows = "".join(
         f'<article class="card"><div class="body">'
-        f'<h3><a href="{_e(b["name"])}/index.html">{_e(b["brand"])} →</a></h3>'
+        f'<h3><a href="{_e(b["name"])}/{_e((b.get("site") or {}).get("path") or SITE_PAGE)}">'
+        f'{_e(b["brand"])} →</a></h3>'
         f'<p>{_e(b.get("source_url") or "")}<br>published {_e(b.get("published_at"))} · '
         f'{fmt_size(b.get("bytes", 0))} · {len(b.get("lanes", []))} rendered lanes<br>'
         f'gates: <strong>{_e((b.get("status") or {}).get("verdict", "undetermined"))}</strong></p>'
+        f'<ul class="extras"><li><a href="{_e(b["name"])}/{_e(b.get("details") or DETAILS_PAGE)}">'
+        "Pipeline details</a></li></ul>"
         "</div></article>"
         for b in bundles
     )
-    (root / "index.html").write_text(
-        f"""<!doctype html>
+    return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 {ROBOTS_META}
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Published extraction results</title><style>{LANDING_CSS}</style></head>
+<title>Published generated sites</title><style>{LANDING_CSS}</style></head>
 <body><div class="wrap">
-<h1>Published extraction results</h1>
-<p class="sub">Self-contained exports of finished pipeline runs — committed to the repo and served
-by the Studio, so they need no local run data.</p>
-<h2>Bundles</h2>
+<h1>Published generated sites</h1>
+<p class="sub">Each entry opens the site that run generated. The pipeline artifacts behind it — the
+replica, the harness, the brand facts, the logs and the run's gate status — are on its details page.</p>
+<h2>Brands</h2>
 <div class="grid">{rows}</div>
 </div></body></html>
 """
+
+
+def write_published_index(root: Path) -> None:
+    """Write the published root: the newest brand's site, plus the brand list.
+
+    A bare URL should open the deliverable, not a chooser, so `index.html` here is
+    the newest bundle's generated site re-written for THIS depth — the asset prefix
+    is derived from where the page lands, not inherited from the bundle copy. The
+    other brands stay one footer link away on `brands.html`, which is also what the
+    root falls back to if no bundle has a generated site yet.
+    """
+    bundles = load_published_bundles(root)
+    if not bundles:
+        return
+    (root / BRANDS_PAGE).write_text(render_brands_page(bundles))
+
+    primary = next(
+        (
+            b
+            for b in bundles
+            if b.get("site") and (root / b["name"] / ((b.get("site") or {}).get("path") or SITE_PAGE)).is_file()
+        ),
+        None,
+    )
+    if primary is None:
+        (root / "index.html").write_text(render_brands_page(bundles))
+        return
+    bundle_dir = root / primary["name"]
+    site_src = bundle_dir / ((primary.get("site") or {}).get("path") or SITE_PAGE)
+    root_index = root / "index.html"
+    text, _ = repoint_assets(site_src.read_text(encoding="utf-8"), bundle_dir / "assets", root_index)
+    root_index.write_text(
+        stamp_provenance(
+            text,
+            provenance_footer(
+                primary,
+                f"{primary['name']}/{primary.get('details') or DETAILS_PAGE}",
+                BRANDS_PAGE if len(bundles) > 1 else None,
+            ),
+        ),
+        encoding="utf-8",
     )
 
 
@@ -1113,7 +1351,7 @@ def verify(out_dir: Path, manifest: dict, base_url: str | None) -> dict:
     """Load every exported page in headless Chromium; assert content + assets.
 
     Writes `verify.json` and, for each rendered lane, a downscaled preview PNG
-    used by the landing page. Returns the report. Skips (loudly) when Playwright
+    used by the details page. Returns the report. Skips (loudly) when Playwright
     or its browser is unavailable, so the export itself never depends on it.
     """
     try:
@@ -1122,16 +1360,24 @@ def verify(out_dir: Path, manifest: dict, base_url: str | None) -> dict:
         print("  verify: playwright not installed — skipped")
         return {}
 
-    full_pages = ["index.html"] + [lane["path"] for lane in manifest["lanes"]]
-    # The landing page is checked LAST, because its thumbnails are the screenshots
+    # Pages outside the bundle that the export also owns: the published root serves
+    # the primary bundle's site at a different depth, so it is exactly where a
+    # re-derived asset path would silently break, and it gets checked like any other.
+    root_pages = [p for p in (out_dir.parent / "index.html", out_dir.parent / BRANDS_PAGE) if p.is_file()]
+    # Full pages must be substantial; a single composed section can legitimately be
+    # one heading and a button, so only these have to carry real content.
+    full_pages = {SITE_PAGE, DETAILS_PAGE, *(lane["path"] for lane in manifest["lanes"])} | {
+        os.path.relpath(p, out_dir).replace(os.sep, "/") for p in root_pages
+    }
+    # The details page is checked LAST, because its thumbnails are the screenshots
     # taken while checking the lanes — verified before they exist, it would always
     # report its own previews as broken images.
     pages = (
-        [lane["path"] for lane in manifest["lanes"]]
-        + sorted(str(p.relative_to(out_dir)) for p in (out_dir / "harness" / "layouts").glob("*.html"))
-        + ["index.html"]
+        [out_dir / lane["path"] for lane in manifest["lanes"]]
+        + sorted((out_dir / "harness" / "layouts").glob("*.html"))
+        + root_pages
+        + [out_dir / DETAILS_PAGE]
     )
-    rel_root = out_dir.relative_to(REPO_ROOT).as_posix()
     results: list[dict] = []
     shutil.rmtree(out_dir / "previews", ignore_errors=True)
 
@@ -1142,19 +1388,28 @@ def verify(out_dir: Path, manifest: dict, base_url: str | None) -> dict:
             print(f"  verify: chromium unavailable ({exc}) — skipped")
             return {}
         ctx = browser.new_context(viewport={"width": 1440, "height": 900}, device_scale_factor=1)
-        for rel in pages:
-            if rel == "index.html":
+        # Local == anything under artifacts/published/, so the root pages' requests
+        # into a sibling bundle's assets/ are judged too. Third-party (webfonts) is
+        # still out of scope: it depends on the reader's network, not the export.
+        published_root = out_dir.parent
+        local_prefix = (
+            f"{base_url.rstrip('/')}/{published_root.relative_to(REPO_ROOT).as_posix()}/"
+            if base_url
+            else published_root.as_uri()
+        )
+        for path in pages:
+            rel = os.path.relpath(path, out_dir).replace(os.sep, "/")
+            if path == out_dir / DETAILS_PAGE:
                 # Re-render with the previews now on disk, so what gets checked is what
                 # ships (finalize() rewrites it again only to update the size figures).
-                (out_dir / "index.html").write_text(render_landing(manifest, out_dir), encoding="utf-8")
+                path.write_text(render_landing(manifest, out_dir), encoding="utf-8")
             page = ctx.new_page()
             failed: list[str] = []
             errors: list[str] = []
-            local_prefix = f"{base_url.rstrip('/')}/{rel_root}/" if base_url else out_dir.as_uri()
 
             def note_failure(url: str, detail: str, sink=failed, prefix=local_prefix) -> None:
-                # Only the bundle's own resources are the bundle's problem; webfonts
-                # and other third-party requests depend on the reader's network.
+                # Only our own resources are our problem; webfonts and other
+                # third-party requests depend on the reader's network.
                 if url.startswith(prefix):
                     sink.append(detail)
 
@@ -1164,7 +1419,11 @@ def verify(out_dir: Path, manifest: dict, base_url: str | None) -> dict:
                 lambda res: note_failure(res.url, f"{res.status} {res.url}") if res.status >= 400 else None,
             )
             page.on("console", lambda msg: errors.append(msg.text) if msg.type == "error" else None)
-            url = f"{base_url.rstrip('/')}/{rel_root}/{rel}" if base_url else (out_dir / rel).as_uri()
+            url = (
+                f"{base_url.rstrip('/')}/{path.relative_to(REPO_ROOT).as_posix()}"
+                if base_url
+                else path.as_uri()
+            )
             entry = {"page": rel, "url": url}
             try:
                 page.goto(url, wait_until="load", timeout=45_000)
@@ -1195,10 +1454,8 @@ def verify(out_dir: Path, manifest: dict, base_url: str | None) -> dict:
                     and not stats["broken"]
                     and not entry["failed_requests"]
                 )
-                lane_kind = next(
-                    (l["kind"] for l in manifest["lanes"] if l["path"] == rel), "landing" if rel == "index.html" else None
-                )
-                if lane_kind and lane_kind != "landing":
+                lane_kind = next((l["kind"] for l in manifest["lanes"] if l["path"] == rel), None)
+                if lane_kind:
                     shot = out_dir / "previews" / f"{lane_kind}.png"
                     shot.parent.mkdir(parents=True, exist_ok=True)
                     page.screenshot(path=str(shot))
@@ -1215,7 +1472,8 @@ def verify(out_dir: Path, manifest: dict, base_url: str | None) -> dict:
         "pages": results,
         "ok": all(r.get("ok") for r in results),
     }
-    (out_dir / "verify.json").write_text(json.dumps(report, indent=2) + "\n")
+    # Every `file://` URL here is an absolute path on this machine.
+    (out_dir / "verify.json").write_text(redact_local_paths(json.dumps(report, indent=2) + "\n"))
     bad = [r for r in results if not r.get("ok")]
     print(f"  verify: {len(results) - len(bad)}/{len(results)} pages ok ({report['base']})")
     for r in bad:
@@ -1248,7 +1506,7 @@ def main(argv: list[str] | None = None) -> int:
         "--no-verify",
         dest="verify",
         action="store_false",
-        help="skip the headless-Chromium pass (it is what proves the bundle browses, and it builds the landing-page previews)",
+        help="skip the headless-Chromium pass (it is what proves the bundle browses, and it builds the details-page previews)",
     )
     ap.add_argument("--base-url", default=None, help="verify over HTTP through this origin instead of file://")
     args = ap.parse_args(argv)
@@ -1284,7 +1542,9 @@ def main(argv: list[str] | None = None) -> int:
     for child in sorted(out_dir.iterdir(), key=lambda p: -size_of(p)):
         print(f"    {fmt_size(size_of(child)):>9}  {child.name}")
     print(f"  TOTAL: {fmt_size(total)}")
-    print(f"  open: http://127.0.0.1:1500/{out_dir.relative_to(REPO_ROOT).as_posix()}/index.html")
+    rel_root = out_dir.relative_to(REPO_ROOT).as_posix()
+    print(f"  site:    http://127.0.0.1:1500/{rel_root}/{SITE_PAGE}")
+    print(f"  details: http://127.0.0.1:1500/{rel_root}/{DETAILS_PAGE}")
     if report and not report.get("ok"):
         return 1
     return 0

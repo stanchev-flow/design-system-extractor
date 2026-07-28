@@ -12,7 +12,7 @@
    "id": "hero",
    "useCase": "hero",
    "archetype": "centered-copy-with-floating-media",
-   "surfaceIntent": "surface/primary",
+   "surfaceIntent": "surface/hero",
    "novelty": "reuse",
    "archetypeRef": "centered-copy-with-floating-media",
    "seededFrom": {
@@ -82,13 +82,23 @@
      "note": "'only' rendered in italic serif within the heading"
     }
    ],
-   "_requiresHydration": true
+   "_requiresHydration": true,
+   "_patternLayout": {
+    "structure": "centered copy stack with scattered orbiting media cluster",
+    "alignment": "center",
+    "containerWidth": "full-bleed",
+    "approxPaddingPx": {
+     "top": 84,
+     "bottom": 96
+    },
+    "gapPx": 32
+   }
   },
   {
    "id": "featuresThreeColumnCard",
    "useCase": "features",
    "archetype": "three-column-cards",
-   "surfaceIntent": "surface/inverse",
+   "surfaceIntent": "surface/primary",
    "novelty": "reuse",
    "archetypeRef": "three-column-cards",
    "seededFrom": {
@@ -141,7 +151,18 @@
     }
    ],
    "treatments": [],
-   "_requiresHydration": true
+   "_requiresHydration": true,
+   "_patternLayout": {
+    "structure": "3-column card grid, each card: media-well top -> heading -> body -> outlined CTA",
+    "columns": 3,
+    "alignment": "left",
+    "approxPaddingPx": {
+     "top": 40,
+     "bottom": 40
+    },
+    "gapPx": 80,
+    "containerWidth": "contained"
+   }
   },
   {
    "id": "logoWall",
@@ -193,7 +214,18 @@
     }
    ],
    "treatments": [],
-   "_requiresHydration": true
+   "_requiresHydration": true,
+   "_patternLayout": {
+    "structure": "split copy left / 2x3 logo grid right with vertical rule",
+    "alignment": "left",
+    "columns": 2,
+    "containerWidth": "contained",
+    "approxPaddingPx": {
+     "top": 140,
+     "bottom": 120
+    },
+    "gapPx": 150
+   }
   },
   {
    "id": "featureGrid",
@@ -261,7 +293,18 @@
     }
    ],
    "treatments": [],
-   "_requiresHydration": true
+   "_requiresHydration": true,
+   "_patternLayout": {
+    "structure": "heading full-width top then 3-column card row",
+    "alignment": "left",
+    "columns": 3,
+    "containerWidth": "contained",
+    "approxPaddingPx": {
+     "top": 40,
+     "bottom": 80
+    },
+    "gapPx": 40
+   }
   },
   {
    "id": "cta",
@@ -298,8 +341,25 @@
     }
    ],
    "treatments": [],
-   "_requiresHydration": true
+   "_requiresHydration": true,
+   "_patternLayout": {
+    "structure": "copy stack left, decorative art right, full-bleed dark band",
+    "alignment": "left",
+    "columns": 2,
+    "containerWidth": "full-bleed",
+    "approxPaddingPx": {
+     "top": 180,
+     "bottom": 160
+    }
+   }
   }
  ],
+ "drawableArchetypes": {
+  "hero": "collage",
+  "featuresThreeColumnCard": "cards",
+  "logoWall": "split",
+  "featureGrid": "cards",
+  "cta": "generic-flow"
+ },
  "errors": {}
 }

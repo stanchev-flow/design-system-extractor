@@ -1,16 +1,83 @@
 {
   "brand": "Greenhouse",
-  "brand_yaml_sha256": "c35b5478b9e09ea55c8df7f4672105eb816f6a0469a7be0f4386cf14b29e6d42",
+  "brand_yaml_sha256": "f9bb26090936021ba9153ab085337e0f4ab44454ac3b833e535606b6affc0223",
   "style_id": "",
   "style_md_sha256": "",
   "generator_version": "1.0.0",
-  "generated_at": "2026-07-28T19:49:09+00:00",
+  "generated_at": "2026-07-28T20:53:31+00:00",
   "token_count": 139,
   "disabledDevices": [
     "counter-display",
     "ghost-watermark",
     "aspect-palette",
     "filled-button"
+  ],
+  "typographyDelivery": [
+    {
+      "family": "Untitled Sans",
+      "declared": "'Untitled Sans', Arial, Helvetica, sans-serif",
+      "roles": [
+        "h4"
+      ],
+      "generic": "sans-serif",
+      "selfHosted": false,
+      "status": "proxy-substituted",
+      "proxy": "Lexend Deca",
+      "proxySource": "generic-default"
+    },
+    {
+      "family": "Untitled Sans",
+      "declared": "'Untitled Sans', Arial, sans-serif",
+      "roles": [
+        "h3",
+        "body",
+        "control-text",
+        "nav-link"
+      ],
+      "generic": "sans-serif",
+      "selfHosted": false,
+      "status": "proxy-substituted",
+      "proxy": "Lexend Deca",
+      "proxySource": "generic-default"
+    },
+    {
+      "family": "Untitled Sans",
+      "declared": "Untitled Sans",
+      "roles": [
+        "eyebrow"
+      ],
+      "generic": "sans-serif",
+      "selfHosted": false,
+      "status": "proxy-substituted",
+      "proxy": "Lexend Deca",
+      "proxySource": "generic-default"
+    },
+    {
+      "family": "Untitled Serif",
+      "declared": "'Untitled Serif', Georgia, sans-serif",
+      "roles": [
+        "footer-sitemap-link"
+      ],
+      "generic": "sans-serif",
+      "selfHosted": false,
+      "status": "proxy-substituted",
+      "proxy": "Source Serif 4",
+      "proxySource": "generic-default"
+    },
+    {
+      "family": "Untitled Serif",
+      "declared": "'Untitled Serif', Georgia, serif",
+      "roles": [
+        "display-hero",
+        "h1",
+        "h2"
+      ],
+      "generic": "serif",
+      "selfHosted": false,
+      "status": "proxy-substituted",
+      "proxy": "Source Serif 4",
+      "proxySource": "generic-default"
+    }
   ],
   "index": {
     "--color-text-primary": "#15372c",
@@ -34,7 +101,7 @@
     "--surface-surface-muted": "#f5f5f5",
     "--surface-surface-panel": "#ffffff",
     "--surface-surface-inverse-strong": "#15372c",
-    "--font-display-hero": "'Untitled Serif', Georgia, serif",
+    "--font-display-hero": "'Untitled Serif', 'Source Serif 4', Georgia, serif",
     "--size-display-hero": "4.375rem",
     "--size-display-hero-base": "4.375rem",
     "--size-display-hero@tablet": "3.0rem",
@@ -44,7 +111,7 @@
     "--leading-display-hero": "1.05",
     "--case-display-hero": "none",
     "--tracking-display-hero": "-0.01em",
-    "--font-h1": "'Untitled Serif', Georgia, serif",
+    "--font-h1": "'Untitled Serif', 'Source Serif 4', Georgia, serif",
     "--size-h1": "4.375rem",
     "--size-h1-base": "4.375rem",
     "--size-h1@tablet": "3.0rem",
@@ -54,7 +121,7 @@
     "--leading-h1": "1.05",
     "--case-h1": "none",
     "--tracking-h1": "-0.01em",
-    "--font-h2": "'Untitled Serif', Georgia, serif",
+    "--font-h2": "'Untitled Serif', 'Source Serif 4', Georgia, serif",
     "--size-h2": "2.875rem",
     "--size-h2-base": "2.875rem",
     "--size-h2@tablet": "2.875rem",
@@ -64,7 +131,7 @@
     "--leading-h2": "1.18",
     "--case-h2": "none",
     "--tracking-h2": "-0.01em",
-    "--font-h3": "'Untitled Sans', Arial, sans-serif",
+    "--font-h3": "'Untitled Sans', 'Lexend Deca', Arial, sans-serif",
     "--size-h3": "1.1875rem",
     "--size-h3-base": "1.1875rem",
     "--size-h3@tablet": "1.1875rem",
@@ -74,7 +141,7 @@
     "--leading-h3": "1.7",
     "--case-h3": "none",
     "--tracking-h3": "normal",
-    "--font-body": "'Untitled Sans', Arial, sans-serif",
+    "--font-body": "'Untitled Sans', 'Lexend Deca', Arial, sans-serif",
     "--size-body": "1.1875rem",
     "--size-body-base": "1.1875rem",
     "--size-body@tablet": "1.1875rem",
@@ -94,7 +161,7 @@
     "--leading-eyebrow": "1.4em",
     "--case-eyebrow": "none",
     "--tracking-eyebrow": "0.02em",
-    "--font-control-text": "'Untitled Sans', Arial, sans-serif",
+    "--font-control-text": "'Untitled Sans', 'Lexend Deca', Arial, sans-serif",
     "--size-control-text": "0.9375rem",
     "--size-control-text-base": "0.9375rem",
     "--size-control-text@tablet": "0.9375rem",
@@ -104,7 +171,7 @@
     "--leading-control-text": "1.0",
     "--case-control-text": "none",
     "--tracking-control-text": "normal",
-    "--font-footer-sitemap-link": "'Untitled Serif', Georgia, sans-serif",
+    "--font-footer-sitemap-link": "'Untitled Serif', 'Source Serif 4', Georgia, sans-serif",
     "--size-footer-sitemap-link": "1.25rem",
     "--size-footer-sitemap-link-base": "1.25rem",
     "--size-footer-sitemap-link@tablet": "1.25rem",
@@ -114,7 +181,7 @@
     "--leading-footer-sitemap-link": "1.3",
     "--case-footer-sitemap-link": "none",
     "--tracking-footer-sitemap-link": "normal",
-    "--font-h4": "'Untitled Sans', Arial, Helvetica, sans-serif",
+    "--font-h4": "'Untitled Sans', 'Lexend Deca', Arial, Helvetica, sans-serif",
     "--size-h4": "1.0rem",
     "--size-h4-base": "1.0rem",
     "--size-h4@tablet": "1.0rem",
@@ -124,7 +191,7 @@
     "--leading-h4": "1.5",
     "--case-h4": "none",
     "--tracking-h4": "normal",
-    "--font-nav-link": "'Untitled Sans', Arial, sans-serif",
+    "--font-nav-link": "'Untitled Sans', 'Lexend Deca', Arial, sans-serif",
     "--size-nav-link": "1.0rem",
     "--size-nav-link-base": "1.0rem",
     "--size-nav-link@tablet": "1.0rem",

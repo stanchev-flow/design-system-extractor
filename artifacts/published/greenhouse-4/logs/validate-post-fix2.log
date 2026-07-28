@@ -1,8 +1,8 @@
 Brand extraction: greenhouse-4
-Capture: /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/greenhouse-4
+Capture: <repo>/screenshots/greenhouse-4
 Output:  runs/greenhouse-4/brand
 
-[run ] validate: validate_brand_evidence --brand-dir /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/greenhouse-4/brand --min-logo-assets 3
+[run ] validate: validate_brand_evidence --brand-dir <repo>/runs/greenhouse-4/brand --min-logo-assets 3
 WARN  C5: dom-mine observed ~70 module sections but only 6 non-chrome layouts were authored — check extraction breadth.
 WARN  C16: footer carries social + legal but no bottomBar structure facts (divider/rows/policyLinks) — re-extract chrome to capture the bottom bar, or the renderer keeps the legacy one-row composition.
 WARN  C24: style-scale.yaml is STALE — sourceDigest sha256:8ac31397b60e != current brand.yaml sha256:4d9e472d1916; re-run the normalizer so derived steps track the facts.
@@ -21,4 +21,4 @@ WARN  C25: signature 'dark-green-bookend' cites no evidence provenance — every
 ERROR C26: assets[home-hero-media-cluster]: assetSemantics.kind '' is not in the media-assets kind enum (spec §2.1) — the taxonomy is closed; extend the spec before inventing a kind.
 ERROR C26: assets[home-hero-media-cluster]: usageRights must be one of ['own', 'stock', 'third-party-mark'] — the rights flag is what makes AS-67 machine-checkable.
 ERROR C26: assets[home-hero-media-cluster]: provenance needs source + confidence (capture-files | inline-svg | disclosure-crop | vision-inferred).
-[FAIL] /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/greenhouse-4/brand: 3 error(s), 15 warning(s), 0 note(s)
+[FAIL] <repo>/runs/greenhouse-4/brand: 3 error(s), 15 warning(s), 0 note(s)

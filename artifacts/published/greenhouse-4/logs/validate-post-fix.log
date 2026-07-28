@@ -1,8 +1,8 @@
 Brand extraction: greenhouse-4
-Capture: /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/greenhouse-4
+Capture: <repo>/screenshots/greenhouse-4
 Output:  runs/greenhouse-4/brand
 
-[run ] validate: validate_brand_evidence --brand-dir /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/greenhouse-4/brand --min-logo-assets 3
+[run ] validate: validate_brand_evidence --brand-dir <repo>/runs/greenhouse-4/brand --min-logo-assets 3
 WARN  C5: dom-mine observed ~70 module sections but only 6 non-chrome layouts were authored — check extraction breadth.
 WARN  C24: style-scale.yaml is STALE — sourceDigest sha256:8ac31397b60e != current brand.yaml sha256:04bd4f4aec58; re-run the normalizer so derived steps track the facts.
 WARN  C25: signature 'serif-mint-hero' kind '' is not a known rule kind (accent-scope, shape-motif, spacing-habit, surface-habit, type-treatment) — the signature auditor cannot verify it.
@@ -28,4 +28,4 @@ ERROR C21: navbar.primary entry 'Platform' has no destination href and no menu �
 ERROR C21: navbar.primary entry 'Why Greenhouse' has no destination href and no menu — an in-bar CONTROL flattened into the nav-destination tier; classify it under navbar.utility (kind/role/glyph/dropdown anatomy) or mark utilityNotObserved: true.
 ERROR C21: navbar.primary entry 'Resources' has no destination href and no menu — an in-bar CONTROL flattened into the nav-destination tier; classify it under navbar.utility (kind/role/glyph/dropdown anatomy) or mark utilityNotObserved: true.
 ERROR C27: pattern 'hero' slot 'mediaCluster' binds '030-689610cd7418c453485571fd-home-hero-m-clusters-of-three-solutions-workflows-with-photos-of-ui-and-people-working-402x.png' which media-assets.yaml does not register — the registry is the superset; register the file (or its logical asset).
-[FAIL] /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/greenhouse-4/brand: 11 error(s), 14 warning(s), 0 note(s)
+[FAIL] <repo>/runs/greenhouse-4/brand: 11 error(s), 14 warning(s), 0 note(s)

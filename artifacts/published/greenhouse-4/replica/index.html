@@ -1,13 +1,16 @@
 <!doctype html>
-<html data-projection-input-digest="ca63a5ddba5a1787de1f5361df474685abac514a6eff1bb053cc0aa3944fc525" lang="en">
+<html data-projection-input-digest="31840f3341384296b95a6a7679f2de1d161a339f0446021678a4bef85906bf40" lang="en">
 <head>
 <meta name="robots" content="noindex, nofollow">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Greenhouse — composed replica</title>
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
 <style id="tokens">
-/* Greenhouse — generated design tokens (layer 1). Source: brand.yaml sha256=c35b5478b9e0; generator tokens_css.py v1.0.0; style=none; tokens=139; disabledDevices=counter-display,ghost-watermark,aspect-palette,filled-button. Regenerate via the compose CLI — never hand-edit. */
+/* Greenhouse — generated design tokens (layer 1). Source: brand.yaml sha256=f9bb26090936; generator tokens_css.py v1.0.0; style=none; tokens=139; disabledDevices=counter-display,ghost-watermark,aspect-palette,filled-button. Regenerate via the compose CLI — never hand-edit. */
+/* typography delivery — declared families this brand does NOT self-host, and what renders instead: Untitled Sans -> Lexend Deca (generic-default); Untitled Serif -> Source Serif 4 (generic-default). */
 :root {
   --color-text-primary: #15372c;
   --color-text-on-inverse: #ffffff;
@@ -30,35 +33,35 @@
   --surface-surface-muted: #f5f5f5;
   --surface-surface-panel: #ffffff;
   --surface-surface-inverse-strong: #15372c;
-  --font-display-hero: 'Untitled Serif', Georgia, serif;
+  --font-display-hero: 'Untitled Serif', 'Source Serif 4', Georgia, serif;
   --size-display-hero: 4.375rem;
   --size-display-hero-base: 4.375rem;
   --weight-display-hero: 400;
   --leading-display-hero: 1.05;
   --case-display-hero: none;
   --tracking-display-hero: -0.01em;
-  --font-h1: 'Untitled Serif', Georgia, serif;
+  --font-h1: 'Untitled Serif', 'Source Serif 4', Georgia, serif;
   --size-h1: 4.375rem;
   --size-h1-base: 4.375rem;
   --weight-h1: 400;
   --leading-h1: 1.05;
   --case-h1: none;
   --tracking-h1: -0.01em;
-  --font-h2: 'Untitled Serif', Georgia, serif;
+  --font-h2: 'Untitled Serif', 'Source Serif 4', Georgia, serif;
   --size-h2: 2.875rem;
   --size-h2-base: 2.875rem;
   --weight-h2: 400;
   --leading-h2: 1.18;
   --case-h2: none;
   --tracking-h2: -0.01em;
-  --font-h3: 'Untitled Sans', Arial, sans-serif;
+  --font-h3: 'Untitled Sans', 'Lexend Deca', Arial, sans-serif;
   --size-h3: 1.1875rem;
   --size-h3-base: 1.1875rem;
   --weight-h3: 400;
   --leading-h3: 1.7;
   --case-h3: none;
   --tracking-h3: normal;
-  --font-body: 'Untitled Sans', Arial, sans-serif;
+  --font-body: 'Untitled Sans', 'Lexend Deca', Arial, sans-serif;
   --size-body: 1.1875rem;
   --size-body-base: 1.1875rem;
   --weight-body: 400;
@@ -72,28 +75,28 @@
   --leading-eyebrow: 1.4em;
   --case-eyebrow: none;
   --tracking-eyebrow: 0.02em;
-  --font-control-text: 'Untitled Sans', Arial, sans-serif;
+  --font-control-text: 'Untitled Sans', 'Lexend Deca', Arial, sans-serif;
   --size-control-text: 0.9375rem;
   --size-control-text-base: 0.9375rem;
   --weight-control-text: 400;
   --leading-control-text: 1.0;
   --case-control-text: none;
   --tracking-control-text: normal;
-  --font-footer-sitemap-link: 'Untitled Serif', Georgia, sans-serif;
+  --font-footer-sitemap-link: 'Untitled Serif', 'Source Serif 4', Georgia, sans-serif;
   --size-footer-sitemap-link: 1.25rem;
   --size-footer-sitemap-link-base: 1.25rem;
   --weight-footer-sitemap-link: 400;
   --leading-footer-sitemap-link: 1.3;
   --case-footer-sitemap-link: none;
   --tracking-footer-sitemap-link: normal;
-  --font-h4: 'Untitled Sans', Arial, Helvetica, sans-serif;
+  --font-h4: 'Untitled Sans', 'Lexend Deca', Arial, Helvetica, sans-serif;
   --size-h4: 1.0rem;
   --size-h4-base: 1.0rem;
   --weight-h4: 600;
   --leading-h4: 1.5;
   --case-h4: none;
   --tracking-h4: normal;
-  --font-nav-link: 'Untitled Sans', Arial, sans-serif;
+  --font-nav-link: 'Untitled Sans', 'Lexend Deca', Arial, sans-serif;
   --size-nav-link: 1.0rem;
   --size-nav-link-base: 1.0rem;
   --weight-nav-link: 400;
@@ -176,14 +179,14 @@ html, body { background: var(--bg); color: var(--text); font-family: var(--c-fon
 body { min-height: 100%; container-type: size; container-name: frame; }
 .cs-surface { display: block; }
 :root {
-  /* gate-readable legacy brand vars (authoritative VALUES; page opens on #ffffff) */
-  --bg: #ffffff;
+  /* gate-readable legacy brand vars (authoritative VALUES; page opens on #cdeadf) */
+  --bg: #cdeadf;
   --text: #15372c;
   --accent: #008561;
   --display-size: 4.375rem;
   --radius: 24px;
-  --font-heading: 'Untitled Serif', Georgia, serif;
-  --font-body: 'Untitled Sans', Arial, sans-serif;
+  --font-heading: 'Untitled Serif', 'Source Serif 4', Georgia, serif;
+  --font-body: 'Untitled Sans', 'Lexend Deca', Arial, sans-serif;
   /* brand-constant aliases for the collage ghost + the cream split panel (layer-1 refs) */
   --c-ghost: var(--color-text-ghost-on-primary);
   --c-panel: var(--surface-surface-panel);
@@ -1810,9 +1813,9 @@ span.c-foot-wordmark { background: currentColor;
 .cs-modules-actions { margin-block-start: var(--space-block-to-block, var(--c-block-gap)); }
 .cs-faq { max-width: var(--space-header-measure, 52rem); }
 #sec-0 {
-  --c-paper: var(--surface-surface-primary);
+  --c-paper: var(--surface-surface-hero);
   --c-ink: var(--color-text-primary);
-  --c-ink-muted: var(--color-text-primary);
+  --c-ink-muted: var(--color-text-on-primary-muted);
   --c-accent: var(--color-accent-primary);
   --c-hairline: var(--color-border-hairline-on-primary);
   --c-link-hover: var(--color-text-primary);
@@ -1846,15 +1849,16 @@ span.c-foot-wordmark { background: currentColor;
   --c-h4-font: var(--font-h4);
 }
 #sec-0 { --c-section-pad-top: 7.5rem; --c-section-pad-bottom: 7.5rem; --c-section-pad: 7.5rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
+#sec-0 { --c-accent: var(--c-ink); }
 /* pattern-driven special treatments + knobs (from the reused layout pattern) */
 #sec-0 { --c-ghost-size: clamp(calc(var(--size-ghost-watermark-base) * 0.381), 40cqw, calc(var(--size-ghost-watermark-base) * 1.219)); }
 #sec-1 {
-  --c-paper: var(--surface-surface-inverse);
-  --c-ink: var(--color-text-on-inverse);
-  --c-ink-muted: var(--color-text-on-inverse);
-  --c-accent: var(--color-accent-blue);
-  --c-hairline: var(--color-text-on-inverse);
-  --c-link-hover: var(--color-text-on-inverse);
+  --c-paper: var(--surface-surface-primary);
+  --c-ink: var(--color-text-primary);
+  --c-ink-muted: var(--color-text-primary);
+  --c-accent: var(--color-accent-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-primary);
   --c-font-heading: var(--font-display-hero);
   --c-font-body: var(--font-body);
   --c-display-size: var(--size-display-hero-base);
@@ -1884,7 +1888,7 @@ span.c-foot-wordmark { background: currentColor;
   --c-h3-font: var(--font-h3);
   --c-h4-font: var(--font-h4);
 }
-#sec-1 { --c-section-pad-top: 6.25rem; --c-section-pad-bottom: 6.25rem; --c-section-pad: 6.25rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
+#sec-1 { --c-section-pad-top: 7.5rem; --c-section-pad-bottom: 7.5rem; --c-section-pad: 7.5rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
 #sec-1 { --c-accent: var(--c-ink); }
 /* per-section placement (composition.v1 §4.6.5) */
 #sec-1 { --grid-cols: 3; --col: calc((100% - 2 * var(--grid-gutter, 6rem)) / 3); }
@@ -2003,7 +2007,7 @@ span.c-foot-wordmark { background: currentColor;
   --c-h4-font: var(--font-h4);
 }
 #sec-4 { --c-section-pad-top: 6.25rem; --c-section-pad-bottom: 6.25rem; --c-section-pad: 6.25rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
-#sec-4 { --c-accent: var(--c-ink); }
+#sec-4 { --c-eyebrow-color: var(--c-ink); /* accent 2.86:1 on this surface — eyebrow rides primary ink */ }
 #page-nav {
   --c-paper: var(--surface-surface-primary);
   --c-ink: var(--color-text-primary);
@@ -2041,6 +2045,7 @@ span.c-foot-wordmark { background: currentColor;
   --c-h4-font: var(--font-h4);
 }
 #page-nav { --c-section-pad-top: 7.5rem; --c-section-pad-bottom: 7.5rem; --c-section-pad: 7.5rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
+#page-nav { --c-accent: var(--c-ink); }
 #sec-5 {
   --c-paper: var(--surface-surface-inverse-strong);
   --c-ink: var(--color-text-on-inverse);
@@ -2091,28 +2096,24 @@ span.c-foot-wordmark { background: currentColor;
 <div id="page-nav" class="cs-surface" data-surface="surface/primary">
 <nav class="cs-nav"><span class="c-logo"><span class="c-glyph" aria-hidden="true">&#9697;</span> greenhouse</span><span class="cs-navlinks"><a class="c-arrow-link" href="#" style="gap:0">Platform</a> <a class="c-arrow-link" href="#" style="gap:0">Why Greenhouse</a> <a class="c-arrow-link" href="#" style="gap:0">Resources</a></span><span class="cs-nav-util"><a class="cs-nav-util-link" href="#main"><span>Skip to Content</span></a><a class="cs-nav-util-link" href="#"><span>Close mobile sub-navigation</span></a></span><a class="c-arrow-link" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a></nav>
 </div>
-<div id="sec-0" class="cs-surface" data-layout="hero" data-surface="surface/primary" data-pattern="hero" data-pattern-lib="project" data-pattern-match="ref">
-<section class="cs-section">
-  <div class="cs-slot">
-    <div class="cs-eyebrow-wrap"><p class="c-eyebrow">Proven leadership</p></div>
-    <div class="cs-title"><h1 class="c-heading c-heading--display">The only hiring platform you’ll ever need</h1></div>
-    <div class="cs-collage">
-      <img class="c-image" src="../assets/030-689610cd7418c453485571fd-home-hero-m-clusters-of-three-solutions-workflows-with-photos-of-ui-and-people-working-402x.png" alt="">
-      
-    </div>
-    <div class="cs-spacer"></div>
-    <div class="cs-foot">
-      <p class="cs-sub">Save more, hire with confidence and move faster with AI-powered tools that streamline every step of the hiring process – from sourcing to onboarding.</p>
-      
-      <div class="cs-hero-actions"><a class="c-arrow-link" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a><a class="c-arrow-link" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div>
-      
-      
+<div id="sec-0" class="cs-surface" data-layout="hero" data-surface="surface/hero" data-pattern="hero" data-pattern-lib="project" data-pattern-match="ref">
+<section class="cs-section cs-collage-sec">
+  <div class="cs-collage-grid">
+    <div class="cs-ghost" aria-hidden="true"></div>
+    <div class="cs-collage-head"><div class="c-header"><h1 class="c-heading c-heading--display">The only hiring platform you’ll ever need</h1></div></div>
+    <figure class="cs-collage-media">
+      <div class="c-image-mask"><img class="c-image" src="../assets/030-689610cd7418c453485571fd-home-hero-m-clusters-of-three-solutions-workflows-with-photos-of-ui-and-people-working-402x.png" alt="Greenhouse mediaCluster"></div>
+      <p class="c-caption"></p>
+    </figure>
+    <div class="cs-collage-body">
+      <p class="c-paragraph" style="--c-measure:34ch">Save more, hire with confidence and move faster with AI-powered tools that streamline every step of the hiring process – from sourcing to onboarding.</p>
+      <a class="c-arrow-link" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
     </div>
   </div>
 </section>
 </div>
-<div id="sec-1" class="cs-surface" data-layout="featuresThreeColumnCard" data-surface="surface/inverse" data-pattern="featuresThreeColumnCard" data-pattern-lib="project" data-pattern-match="ref">
-<section class="cs-section cs-modules-sec">
+<div id="sec-1" class="cs-surface" data-layout="featuresThreeColumnCard" data-surface="surface/primary" data-pattern="featuresThreeColumnCard" data-pattern-lib="project" data-pattern-match="ref">
+<section class="cs-section cs-modules-sec" style="--c-section-pad-top: 2.5rem; --c-section-pad-bottom: 2.5rem;">
   <div class="cs-modules cs-modules--cols" style="--grid-cols: 3">
     <article class="cs-module">
       <figure class="cs-module-media" style="aspect-ratio: 16 / 10;"><img class="c-image" src="../assets/033-6a298fd15eb091333bcbe885-d-en-cg-home-two-office-workers-discussing-content-on-tablet-bright-space.png" alt="033 6a298fd15eb091333bcbe885 d en cg home two office workers discussing content on tablet bright space"></figure>
@@ -2136,27 +2137,29 @@ span.c-foot-wordmark { background: currentColor;
       
     </article>
   </div>
-  <div class="cs-modules-actions"><a class="c-arrow-link c-arrow-link--accent" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a><a class="c-arrow-link c-arrow-link--accent" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div>
+  <div class="cs-modules-actions"><a class="c-arrow-link" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a><a class="c-arrow-link" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div>
 </section>
 </div>
 <div id="sec-2" class="cs-surface" data-layout="logoWall" data-surface="surface/primary" data-pattern="logoWall" data-pattern-lib="project" data-pattern-match="ref">
-<section class="cs-section cs-flow-sec" data-logo-device="image">
-  <div class="cs-flow">
-    <div class="cs-flow-item" data-row="heading"><h2 class="c-heading c-heading--h2">Great companies hire with Greenhouse</h2></div>
-    <div class="cs-flow-item" data-row="action"><a class="c-arrow-link" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div>
-    <div class="cs-logo-strip">
+<section class="cs-section cs-split-sec" style="--c-section-pad-top: 8.75rem; --c-section-pad-bottom: 7.5rem;">
+  <div class="cs-split">
+    <div class="cs-split-body">
+      <div class="c-header"><h2 class="c-heading c-heading--h2">Great companies hire with Greenhouse</h2></div>
+    <div class="cs-hero-actions"><a class="c-arrow-link" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div>
+    </div>
+    <div class="cs-split-media"><div class="cs-logo-strip">
       <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="../assets/042-684b22ea4479a38eba02bb7a-nfl-240x74-20-1.png" alt="042 684b22ea4479a38eba02bb7a nfl 240x74 20 1"></a></div>
       <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="../assets/043-66db2afc7f4ffa8dac7d63af-coursera-2024-02-22-193551-bfgg.avif" alt="043 66db2afc7f4ffa8dac7d63af coursera 2024 02 22 193551 bfgg"></a></div>
       <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="../assets/044-684b1591b49b84db80e1e68b-logo-anthropic.png" alt="044 684b1591b49b84db80e1e68b logo anthropic"></a></div>
       <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="../assets/045-684b154b7f3a0b8ea13a87db-logo-datavant.png" alt="045 684b154b7f3a0b8ea13a87db logo datavant"></a></div>
       <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="../assets/046-6849817eafb5f7300bca18d3-revlon.png" alt="046 6849817eafb5f7300bca18d3 revlon"></a></div>
       <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="../assets/047-66db2b583c8c62fd585f04a3-seatgeek-2024-02-22-193550-wvza.avif" alt="047 66db2b583c8c62fd585f04a3 seatgeek 2024 02 22 193550 wvza"></a></div>
-    </div>
+    </div></div>
   </div>
 </section>
 </div>
 <div id="sec-3" class="cs-surface" data-layout="featureGrid" data-surface="surface/primary" data-pattern="featureGrid" data-pattern-lib="project" data-pattern-match="ref">
-<section class="cs-section cs-modules-sec">
+<section class="cs-section cs-modules-sec" style="--c-section-pad-top: 2.5rem; --c-section-pad-bottom: 5rem;">
   <div class="cs-modules-intro"><div class="c-header"><h2 class="c-heading c-heading--h2">The best teams start with hiring – and the best hiring starts with Greenhouse</h2></div></div>
   <div class="cs-modules cs-modules--cols" style="--grid-cols: 3">
     <article class="cs-module">
@@ -2184,7 +2187,7 @@ span.c-foot-wordmark { background: currentColor;
 </section>
 </div>
 <div id="sec-4" class="cs-surface" data-layout="cta" data-surface="surface/inverse" data-pattern="cta" data-pattern-lib="project" data-pattern-match="ref">
-<section class="cs-section cs-flow-sec">
+<section class="cs-section cs-flow-sec" style="--c-section-pad-top: 11.25rem; --c-section-pad-bottom: 10rem;">
   <div class="cs-flow">
     <div class="cs-flow-item" data-row="heading"><h2 class="c-heading c-heading--h2 c-heading--accent">Everything you need to get better at hiring</h2></div>
     <div class="cs-flow-item" data-row="action"><a class="c-arrow-link c-arrow-link--accent" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div>

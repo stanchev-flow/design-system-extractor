@@ -715,6 +715,10 @@ def published_bundles() -> list[dict]:
     build link with a Studio-servable URL. Generic over brand: discovery is purely
     by directory, and a bundle with an unreadable manifest is skipped rather than
     breaking the dashboard.
+
+    A bundle's `index.html` is the generated site, and everything about how it was
+    made lives on the details page the manifest names (`details`). Both URLs are
+    returned, because the Studio is where a reviewer wants the second one.
     """
     out: list[dict] = []
     for manifest_path in sorted(PUBLISHED_DIR.glob("*/published.json")):
@@ -746,6 +750,7 @@ def published_bundles() -> list[dict]:
                 # shows it so a browsable export is never mistaken for a green build.
                 "verdict": (data.get("status") or {}).get("verdict", "undetermined"),
                 "url": f"{base}/index.html",
+                "details_url": f"{base}/{data.get('details') or 'pipeline.html'}",
                 "links": links,
             }
         )
@@ -753,7 +758,11 @@ def published_bundles() -> list[dict]:
 
 
 def published_links(version: str) -> list[dict]:
-    """Published-bundle links belonging to one project (matched by run or name)."""
+    """Published-bundle links belonging to one project (matched by run or name).
+
+    Two entries per bundle: the generated site it leads with, and the details page
+    holding the artifacts and the run's gate status.
+    """
     out: list[dict] = []
     for bundle in published_bundles():
         if version not in (bundle["name"], Path(bundle.get("run", "")).name):
@@ -761,8 +770,16 @@ def published_links(version: str) -> list[dict]:
         out.append(
             {
                 "kind": "published",
-                "label": f"Published bundle — {bundle['title']} (shareable)",
+                "label": f"Published site — {bundle['title']} (shareable)",
                 "url": bundle["url"],
+                "external": False,
+            }
+        )
+        out.append(
+            {
+                "kind": "published",
+                "label": f"Published pipeline details — {bundle['title']}",
+                "url": bundle["details_url"],
                 "external": False,
             }
         )
@@ -2104,19 +2121,24 @@ def render_published_html() -> str:
         meta = " · ".join(x for x in (b["published_at"][:10], _fmt_bytes(b["bytes"])) if x)
         badge_class, badge_text = verdict_badge.get(b["verdict"], verdict_badge["undetermined"])
         cards.append(
-            f'<a href="{_esc_attr(b["url"])}" target="_blank" rel="noopener" '
-            'class="card p-4 block hover:border-lime-400/40 transition-colors">'
+            '<div class="card p-4 hover:border-lime-400/40 transition-colors">'
             '<div class="flex items-center justify-between gap-2 mb-1">'
-            f'<div class="font-semibold truncate">{_esc_attr(b["title"])}</div>'
+            f'<a href="{_esc_attr(b["url"])}" target="_blank" rel="noopener" '
+            f'class="font-semibold truncate">{_esc_attr(b["title"])}</a>'
             f'<span class="badge {badge_class}">{_esc_attr(badge_text)}</span></div>'
             f'<div class="text-xs text-zinc-500 truncate">{_esc_attr(b["source_url"] or b["run"])}</div>'
             f'<div class="text-xs text-zinc-400 mt-2">{_esc_attr(lanes)}</div>'
-            f'<div class="text-[11px] text-zinc-600 mt-1">{_esc_attr(meta)}</div></a>'
+            f'<div class="text-[11px] text-zinc-600 mt-1">{_esc_attr(meta)}</div>'
+            f'<div class="text-xs mt-2 flex gap-3"><a href="{_esc_attr(b["url"])}" target="_blank" '
+            'rel="noopener" class="text-lime-300">Open site ↗</a>'
+            f'<a href="{_esc_attr(b["details_url"])}" target="_blank" rel="noopener" '
+            'class="text-zinc-400">Pipeline details ↗</a></div></div>'
         )
     return (
         '<h2 class="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-1">Published results</h2>'
         '<p class="text-xs text-zinc-500 mb-3">Self-contained exports of finished runs — committed to the repo, '
-        'so they browse without any local run data.</p>'
+        'so they browse without any local run data. Each one opens on the site that run generated; the '
+        'artifacts and the run\'s gate status are on its details page.</p>'
         f'<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">{"".join(cards)}</div>'
     )
 
@@ -2131,7 +2153,7 @@ def render_dashboard() -> str:
       <p class="text-sm text-zinc-400 mt-1">Add a site, run the full extraction pipeline, and explore the design system, contract, and brand assets.</p>
     </div>
     <div class="flex gap-2">
-      <a href="/artifacts/published/" target="_blank" class="btn btn-ghost">Published results ↗</a>
+      <a href="/artifacts/published/" target="_blank" class="btn btn-ghost">Published sites ↗</a>
       <a href="/viewer.html" target="_blank" class="btn btn-ghost">Open comparison viewer ↗</a>
       <button id="new-btn" class="btn btn-primary">+ New project</button>
     </div>

@@ -5,7 +5,7 @@ patterns:
   origin: extracted
   useCase: hero
   archetypeRef: centered-copy-with-floating-media
-  surfaceIntent: surface/primary
+  surfaceIntent: surface/hero
   confidence: high
   provenance:
   - home-section-00
@@ -79,6 +79,12 @@ patterns:
       assets:
       - 030-689610cd7418c453485571fd-home-hero-m-clusters-of-three-solutions-workflows-with-photos-of-ui-and-people-working-402x.png
     assets: []
+    bandPadding:
+      top: 5.25rem
+      bottom: 6rem
+    bandRhythm:
+      headingToBody: 2.75rem
+      bodyToCta: 3.75rem
   specialTreatments:
   - kind: scattered-cluster
     note: portrait photos and product-UI chips orbit the copy with curved connector lines
@@ -126,6 +132,14 @@ patterns:
       type: content
       role: feature-card-list (media-well -> heading -> body -> action)
     assets: []
+    bandPadding:
+      top: 2.5rem
+      bottom: 5rem
+    bandRhythm:
+      headingToBody: 1.25rem
+      bodyToCta: 1.75rem
+    deviceGeometry:
+      columnGap: 2.5rem
   specialTreatments:
   - kind: media-top-card
     note: each card leads with a rounded landscape photograph media-well
@@ -196,6 +210,9 @@ patterns:
       - 046-6849817eafb5f7300bca18d3-revlon.png
       - 047-66db2b583c8c62fd585f04a3-seatgeek-2024-02-22-193550-wvza.avif
     assets: []
+    bandPadding:
+      top: 8.75rem
+      bottom: 7.5rem
   specialTreatments:
   - kind: vertical-rule
     note: ~1px light grey-green rule separates copy column from logo grid
@@ -230,6 +247,14 @@ patterns:
       type: content
       role: 'stat-column-list: figure plus description and source citation'
     assets: []
+    bandPadding:
+      top: 8.125rem
+      bottom: 8.125rem
+    bandRhythm:
+      headingToBody: 3.5rem
+      bodyToCta: 2.5rem
+    deviceGeometry:
+      columnGap: 3.75rem
   specialTreatments:
   - kind: number-over-caption
   - kind: centered-columns
@@ -274,6 +299,14 @@ patterns:
       type: content
       role: testimonial-card-list (quote -> name -> meta)
     assets: []
+    bandPadding:
+      top: 8.75rem
+      bottom: 7.5rem
+    bandRhythm:
+      headingToBody: 5.625rem
+      bodyToCta: 2.8125rem
+    deviceGeometry:
+      columnGap: 4rem
   specialTreatments:
   - kind: leading-quote-glyph
     target: quoteBody
@@ -326,6 +359,11 @@ patterns:
         radiusPx: 24
         surfaceApprox: '#2f6bd6'
     assets: []
+    bandPadding:
+      top: 11.25rem
+      bottom: 10rem
+    bandRhythm:
+      headingToBody: 4.125rem
   specialTreatments:
   - kind: tone-on-tone-art
     target: decorativeArt
@@ -374,6 +412,13 @@ patterns:
       role: filled-primary-action
       type: action
     assets: []
+    bandPadding:
+      top: 8.125rem
+      bottom: 2.5rem
+    bandRhythm:
+      eyebrowToHeading: 1.5rem
+      headingToBody: 3.25rem
+      bodyToCta: 4rem
   sourcePages:
   - compare
   - talent-sourcing
@@ -410,6 +455,11 @@ patterns:
       role: features-item-list
       type: content
     assets: []
+    bandPadding:
+      top: 7.5rem
+      bottom: 5rem
+    deviceGeometry:
+      columnGap: 5.625rem
   sourcePages:
   - compare
 - id: featuresHeadingBodyTop
@@ -456,13 +506,21 @@ patterns:
       role: inline-spot-icon
       type: image
     assets: []
+    bandPadding:
+      top: 6.875rem
+      bottom: 2.5rem
+    bandRhythm:
+      headingToBody: 4.25rem
+      bodyToCta: 3.75rem
+    deviceGeometry:
+      columnGap: 2.5rem
   sourcePages:
   - compare
 - id: featuresSectionHeadingTop
   origin: extracted
   useCase: features
   archetypeRef: three-column
-  surfaceIntent: surface/inverse
+  surfaceIntent: surface/primary
   confidence: high
   provenance:
   - compare-section-03-div
@@ -489,6 +547,13 @@ patterns:
       role: features-item-list
       type: content
     assets: []
+    bandPadding:
+      top: 2.5rem
+      bottom: 5rem
+    bandRhythm:
+      headingToBody: 2.8125rem
+    deviceGeometry:
+      columnGap: 2.5rem
   sourcePages:
   - compare
   - talent-sourcing
@@ -528,13 +593,19 @@ patterns:
       assets:
       - 041-675b1b254dcfbdcac88895be-greenhouse-g2-grid-report.avif
     assets: []
+    bandPadding:
+      top: 12.5rem
+      bottom: 12.5rem
+    bandRhythm:
+      headingToBody: 2.125rem
+      bodyToCta: 2.125rem
   sourcePages:
   - compare
 - id: gallery
   origin: extracted
   useCase: gallery
   archetypeRef: three-column-cards
-  surfaceIntent: surface/inverse
+  surfaceIntent: surface/primary
   confidence: high
   provenance:
   - compare-section-06-content-gallery-component-is-showing
@@ -560,6 +631,11 @@ patterns:
       - 043-6a1895bc8f2d9491ce3db846-d-us-awards-image-g2-mm-leader-summer-2026-on-marigold-background.png
       - 044-6a1895bc5ecfc15c4fdec10a-d-us-awards-image-g2-leader-europe-summer-2026-on-marigold-background.png
     assets: []
+    bandPadding:
+      top: 1.25rem
+      bottom: 2.5rem
+    deviceGeometry:
+      columnGap: 2.5rem
   sourcePages:
   - compare
 - id: ctaSplit5050
@@ -597,6 +673,11 @@ patterns:
       role: filled-primary-action
       type: action
     assets: []
+    bandPadding:
+      top: 11.25rem
+      bottom: 11.25rem
+    bandRhythm:
+      headingToBody: 3.5rem
   sourcePages:
   - compare
   - talent-sourcing
@@ -604,7 +685,7 @@ patterns:
   origin: extracted
   useCase: features
   archetypeRef: three-column-cards
-  surfaceIntent: surface/inverse
+  surfaceIntent: surface/primary
   confidence: high
   provenance:
   - home-section-01-div
@@ -633,13 +714,21 @@ patterns:
       role: outlined-action
       type: action
     assets: []
+    bandPadding:
+      top: 2.5rem
+      bottom: 2.5rem
+    bandRhythm:
+      headingToBody: 2.125rem
+      bodyToCta: 2.125rem
+    deviceGeometry:
+      columnGap: 5rem
   sourcePages:
   - home
 - id: featuresSplit5050
   origin: extracted
   useCase: features
   archetypeRef: two-column-with-media
-  surfaceIntent: surface/inverse
+  surfaceIntent: surface/primary
   confidence: high
   provenance:
   - talent-sourcing-section-01-text-with-image-component-is-showing
@@ -674,13 +763,18 @@ patterns:
       role: filled-primary-action
       type: action
     assets: []
+    bandPadding:
+      top: 2.5rem
+      bottom: 2.5rem
+    bandRhythm:
+      headingToBody: 3rem
   sourcePages:
   - talent-sourcing
 - id: featuresSplit5050Media
   origin: extracted
   useCase: features
   archetypeRef: two-column-with-media
-  surfaceIntent: surface/inverse
+  surfaceIntent: surface/primary
   confidence: high
   provenance:
   - talent-sourcing-section-03-text-with-image-component-is-showing
@@ -711,13 +805,19 @@ patterns:
       assets:
       - 035-66feddedc6644300cc8975d4-collage-of-company-job-board-page-on-desktop-and-mobile-with-fingerprint-leaf-png.webp
     assets: []
+    bandPadding:
+      top: 2.5rem
+      bottom: 2.5rem
+    bandRhythm:
+      headingToBody: 3.5rem
+      bodyToCta: 0rem
   sourcePages:
   - talent-sourcing
 - id: featuresHeadingFullWidth
   origin: extracted
   useCase: features
   archetypeRef: two-column-cards
-  surfaceIntent: surface/inverse
+  surfaceIntent: surface/primary
   confidence: high
   provenance:
   - talent-sourcing-section-08-side-by-side-2-component-is-showing
@@ -749,5 +849,13 @@ patterns:
       role: outlined-action
       type: action
     assets: []
+    bandPadding:
+      top: 8.125rem
+      bottom: 7.5rem
+    bandRhythm:
+      headingToBody: 1.75rem
+      bodyToCta: 2.5rem
+    deviceGeometry:
+      columnGap: 5rem
   sourcePages:
   - talent-sourcing

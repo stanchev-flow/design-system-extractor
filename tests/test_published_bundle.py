@@ -10,6 +10,7 @@ run existing on disk.
 """
 
 import json
+import shutil
 import sys
 import unittest
 from pathlib import Path
@@ -113,7 +114,7 @@ class ExportTests(unittest.TestCase):
         )
         for lane in self.manifest["lanes"]:
             self.assertTrue((self.out / lane["path"]).is_file(), lane["path"])
-        for entry in ("index.html", "README.md", "published.json"):
+        for entry in ("index.html", "pipeline.html", "README.md", "published.json"):
             self.assertTrue((self.out / entry).is_file(), entry)
 
     def test_relative_refs_are_repointed_at_the_bundle_asset_pool(self) -> None:
@@ -126,9 +127,13 @@ class ExportTests(unittest.TestCase):
         )
 
     def test_run_absolute_refs_survive_relocation(self) -> None:
-        framework = (self.out / "framework" / "index.html").read_text()
-        self.assertIn('src="../assets/hero.png"', framework)
-        self.assertNotIn("/runs/acme-co/", framework)
+        # The generated site sits at the bundle ROOT, so its prefix is bare
+        # `assets/` — re-derived from where the page lands, not the framework/ depth
+        # it used to be written at.
+        site = (self.out / "index.html").read_text()
+        self.assertIn('src="assets/hero.png"', site)
+        self.assertNotIn("/runs/acme-co/", site)
+        self.assertNotIn("../assets/hero.png", site)
 
     def test_third_party_urls_are_left_alone(self) -> None:
         self.assertIn(
@@ -147,7 +152,10 @@ class ExportTests(unittest.TestCase):
 
     def test_relocated_pages_get_an_honest_title(self) -> None:
         self.assertIn("<title>Acme — composed replica</title>", (self.out / "replica" / "index.html").read_text())
-        self.assertNotIn("scaffold-name", (self.out / "framework" / "index.html").read_text())
+        # The site is titled with the brand alone: it is the deliverable, not a lane.
+        site = (self.out / "index.html").read_text()
+        self.assertIn("<title>Acme</title>", site)
+        self.assertNotIn("scaffold-name", site)
 
     def test_logs_and_facts_travel_with_the_bundle(self) -> None:
         self.assertTrue((self.out / "logs" / "changes.md").is_file())
@@ -156,21 +164,219 @@ class ExportTests(unittest.TestCase):
         self.assertTrue((self.out / "brand" / "asset-placements.json").is_file())
 
     def test_re_export_is_idempotent_and_drops_stale_files(self) -> None:
+        # The entry points carry the export timestamp, so they are compared for
+        # existence elsewhere; everything that is payload must be byte-identical.
+        timestamped = ("published.json", "pipeline.html", "README.md")
         stale = self.out / "harness" / "layouts" / "removed-upstream.html"
         stale.write_text("<html></html>", encoding="utf-8")
         before = {
             p.relative_to(self.out): p.read_bytes()
             for p in self.out.rglob("*")
-            if p.is_file() and p.name not in ("published.json", "index.html", "README.md") and p != stale
+            if p.is_file() and p.name not in timestamped and p != stale
         }
         prb.export(self.run.run_dir, self.out)
         after = {
             p.relative_to(self.out): p.read_bytes()
             for p in self.out.rglob("*")
-            if p.is_file() and p.name not in ("published.json", "index.html", "README.md")
+            if p.is_file() and p.name not in timestamped
         }
         self.assertEqual(before, after)
         self.assertFalse(stale.exists())
+
+
+class FrontPageTests(unittest.TestCase):
+    """The bundle leads with the generated site; the process is one link away."""
+
+    def setUp(self) -> None:
+        self._tmp = TemporaryDirectory()
+        self.root = Path(self._tmp.name)
+        self._patch = mock.patch.object(prb, "REPO_ROOT", self.root)
+        self._patch.start()
+        self.published = self.root / "artifacts" / "published"
+
+    def tearDown(self) -> None:
+        self._patch.stop()
+        self._tmp.cleanup()
+
+    def _publish(self, name: str = "acme-co", **kwargs) -> tuple[dict, Path]:
+        run = SyntheticRun(self.root, name, **kwargs)
+        out = self.published / name
+        return prb.export(run.run_dir, out), out
+
+    def test_the_bundle_front_page_is_the_generated_site(self) -> None:
+        manifest, out = self._publish()
+        self.assertEqual(manifest["site"], {"kind": "framework", "path": "index.html", "source": mock.ANY})
+        site = (out / "index.html").read_text()
+        # The site's own markup, not a review page: no artifact tables, no status block.
+        self.assertIn('src="assets/hero.png"', site)
+        self.assertNotIn("Rendered results", site)
+        self.assertNotIn('class="status', site)
+
+    def test_the_site_carries_one_provenance_line_that_reaches_the_disclosure(self) -> None:
+        _, out = self._publish(flow_log=CRASHED_FLOW_LOG)
+        site = (out / "index.html").read_text()
+        self.assertEqual(site.count('id="published-provenance"'), 1)
+        self.assertIn("did not pass its own quality gates", site)
+        self.assertIn('href="pipeline.html"', site)
+        # A footnote, not a banner, and never a claim of approval.
+        self.assertLess(site.index("<footer"), site.index("</body>"))
+        for forbidden in ("certified", "verified", "approved"):
+            self.assertNotIn(forbidden, site.lower())
+        # The footer is styled inline so it cannot inherit (or fight) the app's CSS.
+        # Those styles go in a style="…" attribute, so a double quote anywhere in
+        # them would close the attribute early and spill CSS into the page.
+        for inline in (prb._PROV_BOX, prb._PROV_LINK):
+            self.assertNotIn('"', inline)
+        self.assertIn(f'style="{prb._PROV_BOX}"', site)
+        # The footer follows the app's mount node, which scaffolds pin to the
+        # viewport height — without this the footer renders mid-document, under
+        # the app's own overflowing content.
+        self.assertIn(f"<style>{prb._PROV_RESET}</style>", site)
+        self.assertIn("height:auto", prb._PROV_RESET)
+
+    def test_the_provenance_line_tracks_the_verdict_it_was_given(self) -> None:
+        # One run dir per case: gate evidence is read off disk, so a shared run would
+        # let one case's flow report decide the next case's verdict.
+        for name, kwargs, expected in (
+            ("crashed-co", {"flow_log": CRASHED_FLOW_LOG}, "did not pass its own quality gates"),
+            (
+                "clean-co",
+                {"flow_report": PASSING_FLOW_REPORT, "replica_report": {"overall": 0.93, "bands": []}},
+                "passed its own quality gates",
+            ),
+            ("quiet-co", {"flow_log": "[flow] G1 extraction …\n[flow] G1 PASS\n"}, "could not be determined"),
+        ):
+            with self.subTest(expected=expected):
+                _, out = self._publish(name, **kwargs)
+                self.assertIn(expected, (out / "index.html").read_text())
+
+    def test_the_details_page_keeps_everything_that_was_on_the_old_landing(self) -> None:
+        _, out = self._publish(flow_log=CRASHED_FLOW_LOG)
+        details = (out / "pipeline.html").read_text()
+        for section in ("Rendered results", "Brand facts", "logs &amp; manifest", 'class="status'):
+            self.assertIn(section, details)
+        # And it points back at the site and at the other brands.
+        self.assertIn('href="index.html"', details)
+        self.assertIn('href="../brands.html"', details)
+
+    def test_a_run_with_no_generated_site_still_opens_on_something(self) -> None:
+        run = SyntheticRun(self.root, "acme-co")
+        shutil.rmtree(run.brand / "framework")
+        manifest = prb.export(run.run_dir, self.published / "acme-co")
+        self.assertIsNone(manifest["site"])
+        index = (self.published / "acme-co" / "index.html").read_text()
+        self.assertIn("Rendered results", index)
+        self.assertEqual(index, (self.published / "acme-co" / "pipeline.html").read_text())
+
+    def test_the_published_root_serves_the_site_at_its_own_depth(self) -> None:
+        _, out = self._publish()
+        root_index = (self.published / "index.html").read_text()
+        # Same page, one directory up: the asset prefix is re-derived, not inherited.
+        self.assertIn('src="acme-co/assets/hero.png"', root_index)
+        self.assertNotIn('src="assets/hero.png"', root_index)
+        self.assertIn('href="acme-co/pipeline.html"', root_index)
+        self.assertIn("<title>Acme</title>", root_index)
+
+    def test_third_party_urls_survive_the_second_relocation(self) -> None:
+        # The re-path only moves names that exist in the pool it is pointed at.
+        text, hits = prb.repoint_assets(
+            '<img src="https://cdn.acme.test/assets/remote.png"><img src="assets/hero.png">'
+            '<img src="assets/never-published.png">',
+            self.root / "pool",
+            self.root / "page.html",
+        )
+        (self.root / "pool").mkdir()
+        (self.root / "pool" / "hero.png").write_text("PNG")
+        text, hits = prb.repoint_assets(text, self.root / "pool", self.root / "page.html")
+        self.assertIn('src="https://cdn.acme.test/assets/remote.png"', text)
+        self.assertIn('src="pool/hero.png"', text)
+        self.assertIn('src="assets/never-published.png"', text)
+        self.assertEqual(hits, 1)
+
+    def test_the_root_leads_with_the_newest_brand_and_keeps_the_others_reachable(self) -> None:
+        self._publish("acme-co")
+        self._publish("zeta-labs")
+        for name, when in (("acme-co", "2026-01-01T00:00:00Z"), ("zeta-labs", "2026-06-01T00:00:00Z")):
+            path = self.published / name / "published.json"
+            data = json.loads(path.read_text())
+            data["published_at"] = when
+            path.write_text(json.dumps(data))
+        prb.write_published_index(self.published)
+
+        root_index = (self.published / "index.html").read_text()
+        self.assertIn('src="zeta-labs/assets/hero.png"', root_index)
+        self.assertIn('href="zeta-labs/pipeline.html"', root_index)
+        # With a second brand on disk the root gains its one extra way out.
+        self.assertIn('href="brands.html"', root_index)
+        brands = (self.published / "brands.html").read_text()
+        for name in ("acme-co", "zeta-labs"):
+            self.assertIn(f'href="{name}/index.html"', brands)
+            self.assertIn(f'href="{name}/pipeline.html"', brands)
+
+    def test_a_lone_brand_gets_no_pointless_brand_switcher_link(self) -> None:
+        self._publish()
+        self.assertNotIn('href="brands.html"', (self.published / "index.html").read_text())
+        self.assertTrue((self.published / "brands.html").is_file())
+
+    def test_stamping_the_provenance_footer_twice_leaves_one(self) -> None:
+        page = "<html><body><p>hi</p></body></html>"
+        once = prb.stamp_provenance(page, prb.provenance_footer({}, "pipeline.html"))
+        twice = prb.stamp_provenance(once, prb.provenance_footer({}, "pipeline.html"))
+        self.assertEqual(twice.count('id="published-provenance"'), 1)
+        self.assertEqual(prb.stamp_provenance(twice, prb.provenance_footer({}, "pipeline.html")), twice)
+
+
+class LocalPathRedactionTests(unittest.TestCase):
+    """A committed bundle must not name the machine that produced it."""
+
+    def setUp(self) -> None:
+        self._tmp = TemporaryDirectory()
+        self.root = Path(self._tmp.name)
+        self._patch = mock.patch.object(prb, "REPO_ROOT", self.root)
+        self._patch.start()
+
+    def tearDown(self) -> None:
+        self._patch.stop()
+        self._tmp.cleanup()
+
+    def test_the_repo_prefix_goes_and_the_rest_of_the_path_stays(self) -> None:
+        line = f"ERROR at {self.root}/runs/acme/brand/x.yaml:12: bad value"
+        self.assertEqual(
+            prb.redact_local_paths(line), "ERROR at <repo>/runs/acme/brand/x.yaml:12: bad value"
+        )
+
+    def test_file_urls_and_json_values_are_reached_without_breaking_them(self) -> None:
+        payload = json.dumps({"page": f"file://{self.root}/artifacts/out/index.html", "ok": True})
+        restored = json.loads(prb.redact_local_paths(payload))
+        self.assertEqual(restored, {"page": "file://<repo>/artifacts/out/index.html", "ok": True})
+
+    def test_a_home_path_outside_the_repo_is_redacted_too(self) -> None:
+        with mock.patch.object(prb.Path, "home", staticmethod(lambda: self.root / "home")):
+            prb.REPO_ROOT = self.root / "home" / "work" / "repo"
+            text = f"cache {self.root}/home/Library/Caches/x and src {self.root}/home/work/repo/tools/y.py"
+            # Longest prefix first: the in-repo path must not be half-rewritten.
+            self.assertEqual(
+                prb.redact_local_paths(text), "cache <home>/Library/Caches/x and src <repo>/tools/y.py"
+            )
+
+    def test_exported_logs_and_reports_carry_no_local_paths(self) -> None:
+        run = SyntheticRun(self.root)
+        _write(run.run_dir / "build.log", f"wrote {self.root}/runs/acme-co/brand/framework/dist/index.html\n")
+        _write(
+            run.brand / "framework" / "framework-report.json",
+            json.dumps({"out": f"{self.root}/runs/acme-co/brand/framework/single/app"}),
+        )
+        out = self.root / "artifacts" / "published" / "acme-co"
+        prb.export(run.run_dir, out)
+        offenders = [
+            str(p.relative_to(out))
+            for p in out.rglob("*")
+            if p.is_file() and p.suffix.lower() in prb.TEXT_SUFFIXES and str(self.root) in p.read_text(errors="replace")
+        ]
+        self.assertEqual(offenders, [])
+        self.assertIn("<repo>/runs/acme-co/", (out / "logs" / "build.log").read_text())
+        report = json.loads((out / "framework" / "framework-report.json").read_text())
+        self.assertEqual(report["out"], "<repo>/runs/acme-co/brand/framework/single/app")
 
 
 CRASHED_FLOW_LOG = """[flow] G1 extraction …
@@ -214,7 +420,8 @@ class StatusDisclosureTests(unittest.TestCase):
         run = SyntheticRun(self.root, **kwargs)
         out = self.root / "artifacts" / "published" / run.run_dir.name
         manifest = prb.export(run.run_dir, out)
-        return manifest, (out / "index.html").read_text(), (out / "README.md").read_text()
+        # The disclosure lives on the details page now; its wording is unchanged.
+        return manifest, (out / "pipeline.html").read_text(), (out / "README.md").read_text()
 
     def test_crashed_run_is_disclosed_with_the_gate_it_died_on(self) -> None:
         manifest, page, readme = self._publish(
@@ -365,7 +572,7 @@ class ForeignStringScanTests(unittest.TestCase):
         found = self._scan(
             {
                 "replica/index.html": "<h1>Acme</h1><p>acme-co run</p>",
-                "index.html": "<p>WoodWave mentioned by the report itself</p>",
+                "pipeline.html": "<p>WoodWave mentioned by the report itself</p>",
                 "published.json": '{"token": "woodwave"}',
             }
         )
@@ -402,6 +609,8 @@ class StudioDiscoveryTests(unittest.TestCase):
                     "run": run or f"runs/{name}",
                     "published_at": published_at,
                     **({"status": status} if status else {}),
+                    "site": {"kind": "framework", "path": "index.html"},
+                    "details": "pipeline.html",
                     "bytes": 1024,
                     "lanes": [
                         {"kind": "replica", "label": "Composed replica", "path": "replica/index.html"},
@@ -420,6 +629,7 @@ class StudioDiscoveryTests(unittest.TestCase):
         self._bundle("acme-co", published_at="2026-01-01T00:00:00Z")
         (bundle,) = studio_server.published_bundles()
         self.assertEqual(bundle["url"], "/artifacts/published/acme-co/index.html")
+        self.assertEqual(bundle["details_url"], "/artifacts/published/acme-co/pipeline.html")
         self.assertEqual(
             [(l["kind"], l["url"]) for l in bundle["links"]],
             [
@@ -427,6 +637,14 @@ class StudioDiscoveryTests(unittest.TestCase):
                 ("published", "/artifacts/published/acme-co/other/index.html"),
             ],
         )
+
+    def test_a_bundle_predating_the_details_page_still_resolves_one(self) -> None:
+        _write(
+            self.published / "old" / "published.json",
+            json.dumps({"name": "old", "brand": "Old", "published_at": "2025-01-01T00:00:00Z", "lanes": []}),
+        )
+        (bundle,) = studio_server.published_bundles()
+        self.assertEqual(bundle["details_url"], "/artifacts/published/old/pipeline.html")
 
     def test_unreadable_manifest_is_skipped_not_fatal(self) -> None:
         _write(self.published / "broken" / "published.json", "{not json")
@@ -438,6 +656,16 @@ class StudioDiscoveryTests(unittest.TestCase):
         self.assertTrue(studio_server.published_links("acme-co"))
         self.assertTrue(studio_server.published_links("acme-co-final"))
         self.assertEqual(studio_server.published_links("someone-else"), [])
+
+    def test_the_sidebar_offers_the_site_and_the_details_page(self) -> None:
+        self._bundle("acme-co", published_at="2026-01-01T00:00:00Z")
+        self.assertEqual(
+            [(l["label"], l["url"]) for l in studio_server.published_links("acme-co")],
+            [
+                ("Published site — Acme-Co (shareable)", "/artifacts/published/acme-co/index.html"),
+                ("Published pipeline details — Acme-Co", "/artifacts/published/acme-co/pipeline.html"),
+            ],
+        )
 
     def test_dashboard_carries_the_published_run_gate_outcome(self) -> None:
         self._bundle("acme-co", published_at="2026-01-01T00:00:00Z", status={"verdict": "not-passed"})
@@ -457,6 +685,9 @@ class StudioDiscoveryTests(unittest.TestCase):
         band = studio_server.render_published_html()
         self.assertIn("Published results", band)
         self.assertIn("/artifacts/published/acme-co/index.html", band)
+        # Both destinations, so local browsing matches what the public site does.
+        self.assertIn("/artifacts/published/acme-co/pipeline.html", band)
+        self.assertIn("Open site", band)
 
 
 if __name__ == "__main__":

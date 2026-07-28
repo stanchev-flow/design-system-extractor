@@ -1,6 +1,6 @@
 {
  "schemaVersion": "replica-report.v1",
- "overall": 0.7437,
+ "overall": 0.8733,
  "bands": [
   {
    "id": "page-nav",
@@ -10,216 +10,243 @@
    "pixel": 0.0,
    "height": 0.0,
    "srcHeight": 0,
-   "replicaHeight": 77,
+   "replicaHeight": 81,
    "pair": null,
-   "note": "band missing on one side"
+   "scored": false,
+   "note": "excluded: no measured source header band"
   },
   {
    "id": "sec-0",
    "label": "hero \u2014 The only hiring platform you\u2019ll",
-   "structure": 0.8465,
-   "pixel": 0.8317,
-   "height": 0.4956,
-   "score": 0.7719,
-   "widthFidelity": 0.9135,
-   "srcContentFrac": 0.975,
-   "replicaContentFrac": 0.8906,
+   "structure": 0.8716,
+   "pixel": 0.8552,
+   "height": 0.8491,
+   "score": 0.8622,
+   "widthFidelity": 0.7125,
+   "srcContentFrac": 1.0,
+   "replicaContentFrac": 0.7125,
    "srcHeight": 900,
-   "replicaHeight": 1816,
+   "replicaHeight": 1060,
+   "scored": true,
    "pair": "diff/sec-0.png"
   },
   {
    "id": "sec-1",
-   "label": "featureGrid \u2014 Greenhouse introduces Voice AI following our acquisition of Ezra AI Labs, bringing conversational AI to the hiring proce",
-   "structure": 0.3126,
-   "pixel": 0.3012,
-   "height": 0.1581,
-   "score": 0.2783,
-   "widthFidelity": 0.755,
-   "srcContentFrac": 0.7125,
-   "replicaContentFrac": 0.9437,
+   "label": "(unauthored) \u2014 Greenhouse introduces Voice AI following our acquisition of Ezra AI Labs, bringing conversational AI to the hiring proce",
+   "score": 0.0,
+   "structure": 0.0,
+   "pixel": 0.0,
+   "height": 0.0,
    "srcHeight": 132,
-   "replicaHeight": 835,
-   "pair": "diff/sec-1.png"
+   "replicaHeight": 0,
+   "pair": null,
+   "scored": true,
+   "unauthored": true,
+   "note": "no authored pattern rebuilds this measured source band \u2014 the authoring census is short a section"
   },
   {
    "id": "sec-2",
-   "label": "logoWall \u2014 Real Talent",
-   "structure": 0.8204,
-   "pixel": 0.8145,
-   "height": 0.7161,
-   "score": 0.7977,
-   "widthFidelity": 0.6418,
+   "label": "featuresThreeColumnCard \u2014 Real Talent",
+   "structure": 0.8406,
+   "pixel": 0.8151,
+   "height": 0.9534,
+   "score": 0.8555,
+   "widthFidelity": 0.8816,
    "srcContentFrac": 0.8375,
-   "replicaContentFrac": 0.5375,
+   "replicaContentFrac": 0.95,
    "srcHeight": 634,
-   "replicaHeight": 454,
+   "replicaHeight": 665,
+   "scored": true,
    "pair": "diff/sec-2.png"
   },
   {
    "id": "sec-3",
-   "label": "stats \u2014 Great companies hire with Greenhouse",
-   "structure": 0.8724,
-   "pixel": 0.8675,
-   "height": 0.9413,
-   "score": 0.8847,
-   "widthFidelity": 0.8046,
-   "srcContentFrac": 0.7594,
-   "replicaContentFrac": 0.9437,
+   "label": "logoWall \u2014 Great companies hire with Greenhouse",
+   "structure": 0.9782,
+   "pixel": 0.9775,
+   "height": 0.7252,
+   "score": 0.9274,
+   "widthFidelity": 0.9182,
+   "srcContentFrac": 0.7719,
+   "replicaContentFrac": 0.8406,
    "srcHeight": 786,
-   "replicaHeight": 835,
+   "replicaHeight": 570,
+   "scored": true,
    "pair": "diff/sec-3.png"
   },
   {
    "id": "sec-4",
-   "label": "testimonial \u2014 The best teams start with hiring \u2013 and the best hiring starts with Greenhouse",
-   "structure": 0.2962,
-   "pixel": 0.2867,
-   "height": 0.3735,
-   "score": 0.3088,
-   "widthFidelity": 0.7079,
-   "srcContentFrac": 0.8344,
-   "replicaContentFrac": 0.5906,
+   "label": "featureGrid \u2014 The best teams start with hiring \u2013 and the best hiring starts with Greenhouse",
+   "structure": 0.8816,
+   "pixel": 0.8556,
+   "height": 0.8254,
+   "score": 0.8625,
+   "widthFidelity": 0.8816,
+   "srcContentFrac": 0.8375,
+   "replicaContentFrac": 0.95,
    "srcHeight": 905,
-   "replicaHeight": 338,
+   "replicaHeight": 747,
+   "scored": true,
    "pair": "diff/sec-4.png"
   },
   {
    "id": "sec-5",
    "label": "cta \u2014 Everything you need to get better at hiring",
-   "structure": 0.9533,
-   "pixel": 0.9478,
-   "height": 0.5365,
-   "score": 0.8683,
-   "widthFidelity": 0.6667,
-   "srcContentFrac": 0.3937,
-   "replicaContentFrac": 0.5906,
+   "structure": 0.9611,
+   "pixel": 0.9571,
+   "height": 0.7587,
+   "score": 0.9194,
+   "widthFidelity": 0.663,
+   "srcContentFrac": 0.8531,
+   "replicaContentFrac": 0.5656,
    "srcHeight": 630,
-   "replicaHeight": 338,
+   "replicaHeight": 478,
+   "scored": true,
    "pair": "diff/sec-5.png"
   },
   {
    "id": "footer",
    "label": "footer (closing bookend)",
-   "structure": 0.9688,
-   "pixel": 0.9615,
-   "height": 0.8428,
-   "score": 0.9414,
-   "widthFidelity": 0.4398,
-   "srcContentFrac": 0.8313,
-   "replicaContentFrac": 0.3656,
+   "structure": 0.9681,
+   "pixel": 0.9585,
+   "height": 0.8677,
+   "score": 0.9451,
+   "widthFidelity": 0.9519,
+   "srcContentFrac": 0.8438,
+   "replicaContentFrac": 0.8031,
    "srcHeight": 1043,
-   "replicaHeight": 879,
+   "replicaHeight": 905,
+   "scored": true,
    "pair": "diff/footer.png"
   }
  ],
- "perViewport": [
-  {
-   "viewport": 1440,
-   "scrollWidth": 1440,
-   "overflowPx": 0,
-   "bands": 7,
-   "heroHeight": 1816,
-   "footerColumns": 5,
-   "docHeight": 5150,
-   "overflowEl": "",
-   "screenshot": "replica-fullpage-1440.png",
-   "responsivenessHealth": 1.0,
-   "primary": true
-  },
-  {
-   "viewport": 1920,
-   "scrollWidth": 1920,
-   "overflowPx": 0,
-   "bands": 7,
-   "heroHeight": 1816,
-   "footerColumns": 5,
-   "docHeight": 5184,
-   "overflowEl": "",
-   "screenshot": "replica-fullpage-1920.png",
-   "responsivenessHealth": 1.0,
-   "primary": false
-  },
-  {
-   "viewport": 960,
-   "scrollWidth": 1144,
-   "overflowPx": 184,
-   "bands": 7,
-   "heroHeight": 1511,
-   "footerColumns": 6,
-   "docHeight": 5056,
-   "overflowEl": "c-foot-cols",
-   "screenshot": "replica-fullpage-960.png",
-   "responsivenessHealth": 0.6167,
-   "primary": false
-  },
-  {
-   "viewport": 375,
-   "scrollWidth": 1044,
-   "overflowPx": 669,
-   "bands": 7,
-   "heroHeight": 1072,
-   "footerColumns": 6,
-   "docHeight": 6411,
-   "overflowEl": "c-foot-cols",
-   "screenshot": "replica-fullpage-375.png",
-   "responsivenessHealth": 0.5,
-   "primary": false
-  }
- ],
+ "perViewport": [],
  "punchList": [
   {
    "section": "hero",
-   "capability": "fidelity below threshold",
-   "score": 0.7719,
-   "note": "band renders taller (1816px vs 900px)"
-  },
-  {
-   "section": "featureGrid",
-   "capability": "fidelity below threshold",
-   "score": 0.2783,
-   "note": "band renders taller (835px vs 132px); coarse layout structure diverges (module geometry / art direction); surface color / texture diverges"
-  },
-  {
-   "section": "logoWall",
    "capability": "content width diverges",
-   "score": 0.7977,
-   "note": "content span 0.54 of band vs source 0.84 (width fidelity 0.64) \u2014 check hug/measure collapse or over-wide container"
+   "score": 0.8622,
+   "note": "content span 0.71 of band vs source 1.00 (width fidelity 0.71) \u2014 check hug/measure collapse or over-wide container"
   },
   {
-   "section": "logoWall",
+   "section": "sec-1",
    "capability": "fidelity below threshold",
-   "score": 0.7977,
-   "note": "band renders shorter (454px vs 634px)"
-  },
-  {
-   "section": "testimonial",
-   "capability": "content width diverges",
-   "score": 0.3088,
-   "note": "content span 0.59 of band vs source 0.83 (width fidelity 0.71) \u2014 check hug/measure collapse or over-wide container"
-  },
-  {
-   "section": "testimonial",
-   "capability": "fidelity below threshold",
-   "score": 0.3088,
-   "note": "band renders shorter (338px vs 905px); coarse layout structure diverges (module geometry / art direction); surface color / texture diverges"
+   "score": 0.0,
+   "note": "band renders shorter (0px vs 132px); coarse layout structure diverges (module geometry / art direction); surface color / texture diverges"
   },
   {
    "section": "cta",
    "capability": "content width diverges",
-   "score": 0.8683,
-   "note": "content span 0.59 of band vs source 0.39 (width fidelity 0.67) \u2014 check hug/measure collapse or over-wide container"
+   "score": 0.9194,
+   "note": "content span 0.57 of band vs source 0.85 (width fidelity 0.66) \u2014 check hug/measure collapse or over-wide container"
   },
   {
    "section": "page",
    "capability": "display font ('Untitled Serif', Georgia, serif)",
    "note": "not self-hosted and not Google-loadable \u2014 headings render in the declared fallback stack; extract the woff2 files into assets/fonts/",
    "score": null
+  },
+  {
+   "section": "page",
+   "capability": "band census",
+   "score": null,
+   "note": "1 measured source band(s) have no authored pattern (index [1]) \u2014 scored as unauthored, not absorbed into a neighbour"
+  },
+  {
+   "section": "page",
+   "capability": "band census",
+   "score": null,
+   "note": "source chrome census has no measured header band \u2014 the page nav is excluded from scoring by declaration (its source pixels sit inside the first content band); fix the measure stage to score it"
+  },
+  {
+   "section": "page",
+   "capability": "structural gate",
+   "score": null,
+   "note": "bandCountAgreement: 0.8571 < floor 1.0 (1 of 7 band slots diverge \u2014 measured but unauthored: ['sec-1']; the score averages over a census that does not match the source page)"
+  },
+  {
+   "section": "page",
+   "capability": "structural gate",
+   "score": null,
+   "note": "archetypeFamilyAgreement: 0.75 < floor 1.0 (cta: measured 2 track(s) composed as 'generic-flow' \u2014 the authored section carries no slot able to occupy the secondary track, so the measured band's second occupant was lost in projection, not in routing)"
   }
  ],
- "inputDigest": "ca63a5ddba5a1787de1f5361df474685abac514a6eff1bb053cc0aa3944fc525",
- "sourceShot": "screenshots/greenhouse-4/home/home-fullpage.png",
+ "inputDigest": "31840f3341384296b95a6a7679f2de1d161a339f0446021678a4bef85906bf40",
+ "sourceShot": "<repo>/screenshots/greenhouse-v2/home/home-fullpage.png",
  "sourceHeight": 5031,
- "replicaHeight": 5150,
+ "replicaHeight": 4506,
+ "bandAlignment": {
+  "mode": "provenance-anchored",
+  "notes": [
+   "1 measured source band(s) have no authored pattern (index [1]) \u2014 scored as unauthored, not absorbed into a neighbour",
+   "source chrome census has no measured header band \u2014 the page nav is excluded from scoring by declaration (its source pixels sit inside the first content band); fix the measure stage to score it"
+  ],
+  "sectionOrdinals": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ]
+ },
+ "structuralGate": {
+  "ok": false,
+  "signals": {
+   "bandCountAgreement": {
+    "value": 0.8571,
+    "floor": 1.0,
+    "ok": false,
+    "scoredBands": 7,
+    "authoredSections": 5,
+    "unauthoredBands": [
+     "sec-1"
+    ],
+    "unpairedSections": [],
+    "detail": "1 of 7 band slots diverge \u2014 measured but unauthored: ['sec-1']; the score averages over a census that does not match the source page"
+   },
+   "archetypeFamilyAgreement": {
+    "value": 0.75,
+    "floor": 1.0,
+    "ok": false,
+    "checked": 4,
+    "agreed": 3,
+    "unmeasured": [
+     "hero"
+    ],
+    "mismatches": [
+     "cta: measured 2 track(s) composed as 'generic-flow' \u2014 the authored section carries no slot able to occupy the secondary track, so the measured band's second occupant was lost in projection, not in routing"
+    ],
+    "detail": "cta: measured 2 track(s) composed as 'generic-flow' \u2014 the authored section carries no slot able to occupy the secondary track, so the measured band's second occupant was lost in projection, not in routing"
+   },
+   "contentSpanFidelity": {
+    "value": 0.8433,
+    "floor": 0.8,
+    "ok": true,
+    "worstBands": [
+     {
+      "id": "sec-5",
+      "widthFidelity": 0.663
+     },
+     {
+      "id": "sec-0",
+      "widthFidelity": 0.7125
+     },
+     {
+      "id": "sec-2",
+      "widthFidelity": 0.8816
+     }
+    ],
+    "detail": "rebuilt content occupies the measured share of each band"
+   }
+  },
+  "blocking": [
+   "bandCountAgreement: 0.8571 < floor 1.0 (1 of 7 band slots diverge \u2014 measured but unauthored: ['sec-1']; the score averages over a census that does not match the source page)",
+   "archetypeFamilyAgreement: 0.75 < floor 1.0 (cta: measured 2 track(s) composed as 'generic-flow' \u2014 the authored section carries no slot able to occupy the secondary track, so the measured band's second occupant was lost in projection, not in routing)"
+  ],
+  "bandCensusNotes": [
+   "1 measured source band(s) have no authored pattern (index [1]) \u2014 scored as unauthored, not absorbed into a neighbour",
+   "source chrome census has no measured header band \u2014 the page nav is excluded from scoring by declaration (its source pixels sit inside the first content band); fix the measure stage to score it"
+  ]
+ },
  "brand": "Greenhouse"
 }
