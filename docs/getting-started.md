@@ -9,8 +9,9 @@ contain. Verified end to end on a clean clone of `origin/main`.
   and `src/screenshot_to_template/models/__init__.py` use PEP 701 f-strings, which
   earlier interpreters cannot parse at all. macOS ships Python 3.9, so the system
   interpreter will not work — check with `python3 --version` before anything else.
-- Roughly 2 GB of disk for the clone. A good part of that is two legacy runs that are
-  still tracked (see [What a clone gives you](#what-a-clone-gives-you)).
+- Roughly 2.5 GB of disk for the clone. A good part of that is run output committed
+  so the Studio has something to show (see
+  [What a clone gives you](#what-a-clone-gives-you)).
 - An API key only if you intend to run the pipeline. Browsing published results
   needs none.
 
@@ -84,26 +85,53 @@ Tracked, so you get it:
 - All the source: pipeline, `brand_pipeline/`, extraction tools, prompts, contracts.
 - `artifacts/published/` — self-contained exports of finished runs. Currently one:
   `greenhouse-4`.
-- `runs/remote/` and `runs/hubspot-v2/` — about 248 MB of run output committed before
-  `runs/` was gitignored. They are frozen legacy snapshots, not current output, and
-  the ignore rule means nothing else in `runs/` travels with the repo.
+- **Eleven working Studio projects.** `runs/` and `screenshots/` are gitignored, but
+  the parts of each brand lane that the Studio actually opens are negated back in:
+  `greenhouse`, `greenhouse-4`, `greenhouse-v2`, `hubspot`, `hubspot-v2`, `hubspot-v3`,
+  `hubspot-v4`, `relume-test`, `remote`, `woodwave`, `woodwave-v2`. Start the Studio
+  and they are all there, with thumbnails, source captures, catalogs, replica and
+  harness lanes, composed pages and their media. About 435 MB of the clone.
 
 Not tracked, so you do not get it:
 
-- **`screenshots/`** — every source capture. This is the input the pipeline needs, and
-  none of it is in the repo.
-- **`runs/`** beyond those two legacy folders — all real run output.
+- **Source captures beyond one full-page image per project.** The saved HTML page and
+  its `_files` mirror stay out, so you cannot re-run extraction from the clone.
+- **`brand/framework/`** — the built Vite app for each lane, hundreds of megabytes.
+  The Studio links framework builds by dev-server port, so those links are dead in a
+  clone.
+- **`brand/evidence/`** beyond the handful of files the document tabs read,
+  **`_archive/`**, per-page diff crops, and every extra viewport re-shoot of a lane.
+- **The experiment lanes and pipeline version folders** (`hubspot-sol`,
+  `style-calibration`, `v170`–`v178`, …). Brand lanes only.
 - **`viewer-data/`** — the viewer's payload files.
 
 Practical consequences:
 
-- The Studio project list shows only `remote` and `hubspot-v2` plus whatever is in
-  `artifacts/published/`. That is not a bug.
 - `viewer.html` is a stub that redirects into the Studio canvas. Opened as a file it
   cannot redirect anywhere and says so; served by the Studio with no `?version=`, it
   lands on `/studio`.
+- A few tabs are missing on a few projects because the file behind them records the
+  absolute path of the machine that produced it, and this repo is public. Notably
+  there is no Author report on `greenhouse-v2`/`hubspot-v3`/`hubspot-v4` and no
+  Replica fidelity on `greenhouse-4`/`greenhouse-v2`/`hubspot-v4`/`woodwave-v2`.
 - Re-running the pipeline against a source site means capturing that site yourself
   first. See [Re-running the pipeline](#re-running-the-pipeline).
+
+### Adding another project to the clone
+
+`tools/track_studio_subset.py` decides what a project needs, prices it, and writes the
+`.gitignore` negations. It never copies run data — the Studio reads `runs/` in place.
+
+```bash
+./venv/bin/python tools/track_studio_subset.py --run runs/<project>   # price it first
+./venv/bin/python tools/track_studio_subset.py --run runs/<project> \
+    --register --check --write-gitignore --stage
+```
+
+`--write-gitignore` regenerates the whole managed block from the runs you pass it, so
+pass every project that should stay tracked, not just the new one. `--check` reports
+any local reference from a tracked page that would 404 in someone else's clone; treat
+a non-empty result as a project that is not ready to commit.
 
 ## Browse the published results with no server
 
@@ -209,7 +237,8 @@ answer and needs no server, no key and no browser install.
 | Studio refuses to start with a Python version message | Same, caught early. Rebuild `venv` on 3.12+. |
 | `ModuleNotFoundError: playwright` | `pip install -e '.[dev]'` not run, or run against the wrong interpreter. |
 | `Executable doesn't exist … chromium` | `playwright install chromium` not run, or `PLAYWRIGHT_BROWSERS_PATH` points elsewhere. |
-| `Screenshots directory not found` | Expected on a clone — `screenshots/` is gitignored. Capture first. |
-| Studio shows only two projects | Expected. `runs/` is gitignored. |
+| `Screenshots directory not found` | Expected on a clone — only one full-page image per project is tracked. Capture first. |
+| A "Framework build" link opens nothing | Expected. Those point at `localhost:517x` dev servers that only exist on the machine that built the lane. |
+| A project's "Exact nav/footer" lane 404s | Expected. The Studio always offers the lane; only some runs generated one. |
 | Studio renders unstyled | No network; its Tailwind comes from a CDN. |
 | `git status` dirty right after install | Should no longer happen: `src/screenshot_to_template.egg-info/` is untracked and ignored. Anything else dirty is your own change. |

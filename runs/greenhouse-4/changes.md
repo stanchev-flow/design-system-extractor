@@ -573,3 +573,118 @@ and `media-assets.yaml`; `greenhouse-4`'s subset does not, so those tabs are
 correctly ABSENT rather than blank. Closing that needs include rules in
 `tools/track_studio_subset.py` and a regenerated `.gitignore` block — both owned by
 another agent during this change, so they were left untouched.
+
+## 2026-07-28 — every brand lane is now a real project in a clone
+
+The mechanism above is applied to the rest of the brand lanes. A clone now
+carries **eleven** Studio projects instead of `greenhouse-4` plus two half-empty
+legacy folders, and a headless walk of every project page and every lane in a
+fresh clone of `origin/main` is **identical to the same walk against the author's
+own Studio** — same lane counts, same catalogs, same tabs, same failures.
+
+### The set
+Brand lanes only. `greenhouse`, `greenhouse-4`, `greenhouse-v2`, `hubspot`,
+`hubspot-v2`, `hubspot-v3`, `hubspot-v4`, `relume-test`, `remote`, `woodwave`,
+`woodwave-v2`. Deliberately out: the experiment lanes (`hubspot-sol`,
+`hubspot-sol-clean-v2`, `style-calibration`, `claude-distillation`) and the
+pipeline version folders (`v170`–`v178`, `v200`–`v202-hatch`, `v300`/`v301-mine`).
+They still list on the dashboard from a local checkout; in a clone they are
+absent, which is correct.
+
+### Size
+
+| project | tracked subset | new bytes |
+| --- | --- | --- |
+| `greenhouse` | 12.0 MB | 12.0 MB |
+| `greenhouse-4` | 34.5 MB | 0.7 MB |
+| `greenhouse-v2` | 59.6 MB | 53.4 MB |
+| `hubspot` | 19.0 MB | 19.0 MB |
+| `hubspot-v2` | 68.0 MB | 9.9 MB |
+| `hubspot-v3` | 21.9 MB | 21.9 MB |
+| `hubspot-v4` | 13.2 MB | 13.2 MB |
+| `relume-test` | 14.4 MB | 14.4 MB |
+| `remote` | 49.3 MB | 5.4 MB |
+| `woodwave` | 124.8 MB | 124.8 MB |
+| `woodwave-v2` | 18.1 MB | 19.2 MB |
+| **total** | **434.9 MB** | **293 MB** |
+
+`hubspot-v2` and `remote` cost so little because 248 MB of them was already
+tracked from before the ignore rule; what they were missing was the catalog, the
+source capture and a handful of lane assets. `woodwave` is the outlier and it is
+not fat with waste — it is ten composed page lanes, each carrying the media its
+own page references. Git stores identical blobs once, so the 293 MB of new files
+is **162 MB of distinct content** in history; the rest is the working-tree cost
+of lane-relative asset copies. Clone measured at **2.5 GB** (867 MB of it `.git`).
+
+### Two tracking rules earned their keep
+
+**Only images something shows.** A lane directory accumulates the page at several
+viewport widths, contact sheets, before/after pairs and re-shoots. The Studio
+displays exactly ONE of them (`_lane_thumb()`) and the pages load their media
+from `assets/`. Images now survive only if a tracked page references them by
+name, or they are the lane's thumbnail — mirroring `_lane_thumb()`'s own scoring
+so the pick always matches what the Studio will ask for. That took the set from
+560 MB to 435 MB, `hubspot-v3` alone from 45.8 MB to 19.2 MB.
+
+**Whatever a tracked page loads gets tracked.** Lanes borrow across runs —
+`runs/relume-test/brand/compose/03 WoodWave/index.html` renders from
+`runs/woodwave-v2/brand/assets/`, a pool the rules exclude — and no static include
+list predicts that. The references win: `rescue_references()` pulls in 13 such
+files, and `--check` reports any local reference from a tracked page that would
+still 404 in a clone. The only two it still reports are files that do not exist
+on the author's disk either.
+
+### Five runs had no Studio identity
+`greenhouse-v2`, `hubspot-v2`, `hubspot-v3`, `hubspot-v4` and `woodwave-v2` had no
+`studio-project.json`, so they listed with a raw directory name and no link back
+to the site they came from. `--register` writes one, deriving the title and url
+from the run's own `manifest.json` or `brand/brand.yaml` — never inventing either.
+
+### The greenhouse card
+`screenshots/greenhouse-v2/` is a per-page capture, which `project_meta()` cannot
+thumbnail, so `greenhouse-4` and `greenhouse-v2` both showed "no preview" — in a
+clone AND locally. A 293 KB card poster cropped from that capture's own home page
+now sits at the capture root, which is the shape the resolver already looks for.
+Both cards render, and all eleven now have a real thumbnail.
+
+### Clean-clone verification
+Fresh `git clone` of `origin/main` into `/tmp`, venv on 3.14, Studio on port 1577,
+headless Chromium over the dashboard, all eleven project pages, and all 111 lanes
+they advertise, recording every request that 404'd or failed. The identical walk
+was run against the author's Studio on 1500 for comparison.
+
+- dashboard: 11 cards, every thumbnail 200, zero failed requests
+- every project page: zero failed requests
+- Source pane resolves for all ten projects that have a capture (`relume-test` is
+  a wireframe lane and has none, locally too)
+- catalogs, document tabs, asset counts and lane counts match local exactly
+
+Failures, all of which reproduce identically against the author's own Studio:
+
+| what | why |
+| --- | --- |
+| `brand/chrome/index.html` 404 on 8 projects | `static_lanes()` always offers the lane and lets it 404; only `hubspot`, `remote`, `woodwave` ever generated one |
+| "Framework build" links to `localhost:5179`–`5182` | `_DEFAULT_FRAMEWORK_BUILDS`, a hardcoded seed of dev-server ports; they are labelled external and are dead on any machine that is not running those servers |
+| `greenhouse-4`'s framework link | points into `brand/framework/`, a 144 MB Vite build tree that is deliberately not tracked |
+| `hubspot`'s `signup-launch-tokenized` 404s 3 images | the generated HTML contains `src="{'src': 'assets/….webp'}"` — a Python dict repr that leaked into the template at generation time |
+
+### Held back for embedding this checkout's absolute path
+237 files, 2.8 MB, across all eleven lanes. Consequences a teammate sees: no
+Author report tab on `greenhouse-v2`/`hubspot-v3`/`hubspot-v4`, no Replica
+fidelity tab on `greenhouse-4`/`greenhouse-v2`/`hubspot-v4`/`woodwave-v2`, and no
+Changelog tab on `relume-test`. `compose_replica.py` now writes that field
+repo-relative, so re-scoring unblocks the replica reports; `author-stage-status.json`,
+`composition.json`, `onbrand-report.md` and the battery `report.json`s need the
+same treatment at their producers. Secret scan over the whole tracked set
+(`sk-`/`sk-ant-`, `AKIA`, `gh[pous]_`, bearer tokens, `key|secret|token|password =`):
+one hit, the words "token-provenance" in a fidelity report. Nothing key-shaped.
+
+### Running it for the next project
+
+    ./venv/bin/python tools/track_studio_subset.py --run runs/<project> \
+        --register --check --write-gitignore --stage
+
+`--write-gitignore` regenerates the whole managed block from the plans it was
+given, so pass **every** tracked project, not just the new one. Staging skips any
+tracked path with uncommitted edits rather than committing someone else's
+in-progress work, and prints what it skipped.
