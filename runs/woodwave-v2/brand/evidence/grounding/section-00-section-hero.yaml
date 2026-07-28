@@ -1,0 +1,189 @@
+schemaVersion: section-grounding.v1
+sectionRole: hero
+layout:
+  structure: centered display title over stacked overlapping photos; navbar chrome atop; nav row across
+    top
+  columns: null
+  alignment: center
+  approxPaddingPx:
+    top: 30
+    bottom: 40
+  gapPx: null
+  containerWidth: full-bleed
+surfaces:
+- role: canvas
+  bgApprox: '#3a2c1c'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#f0e08a'
+- role: media-frame
+  bgApprox: 'image-fill: spiral wooden staircase from above'
+  parent: canvas
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#ffffff'
+- role: media-frame
+  bgApprox: 'image-fill: ceramic vessel on dark backdrop'
+  parent: canvas
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#ffffff'
+typography:
+- role: nav-link
+  approxSizePx: 17
+  weightApprox: 500
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#e9e2d2'
+  familyClass: geometric-sans
+- role: display
+  approxSizePx: 165
+  weightApprox: 400
+  case: upper
+  trackingApprox: tight
+  colorApprox: '#f0e08a'
+  familyClass: didone
+- role: control-label
+  approxSizePx: 17
+  weightApprox: 400
+  case: title
+  trackingApprox: normal
+  colorApprox: '#f4ede0'
+  familyClass: geometric-sans
+components:
+- kind: logo-item
+  variant: wordmark-with-glyph
+  countObserved: 1
+  anatomy: wave glyph mark -> WOODWAVE wordmark
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#f0e08a'
+  caseTreatment: upper
+- kind: link
+  variant: text-nav
+  countObserved: 4
+  anatomy: text label, slash separators between
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#e9e2d2'
+  caseTreatment: upper
+- kind: link
+  variant: text-cta
+  countObserved: 1
+  anatomy: BUY TICKETS text label at far right
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#f0e08a'
+  caseTreatment: upper
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: thin-bordered box with Buy $29 label, overlaid on staircase photo
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 10 18
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#f4ede0'
+  caseTreatment: title
+copy:
+  eyebrow: null
+  heading: WOODWAVE GALLERY
+  subheading: null
+  body: null
+  actions:
+  - label: BUY TICKETS
+    styleHint: text-cta
+  - label: Buy $29
+    styleHint: outlined
+  logosLegible: []
+  items:
+  - heading: ABOUT
+    body: null
+    meta: null
+  - heading: GALLERY
+    body: null
+    meta: null
+  - heading: EXHIBITION
+    body: null
+    meta: null
+  - heading: VISIT
+    body: null
+    meta: null
+media:
+- kind: photo
+  treatment: warm-toned aerial photo of spiral wooden staircase, full-width band
+  aspect: wide
+  approxFractionOfSection: 0.55
+- kind: photo
+  treatment: ceramic vessel on dark backdrop, overlapping lower-center, portrait crop
+  aspect: portrait
+  approxFractionOfSection: 0.2
+- kind: photo
+  treatment: figure viewing framed artwork in gallery, small crop at bottom-left edge, cut off
+  aspect: portrait
+  approxFractionOfSection: 0.05
+mediaAssets:
+- kind: photograph
+  subject: aerial spiral staircase in warm wood
+  rightsGuess: own
+  luminance: mid
+  busyness: high
+  aspect: wide
+  alphaEdge: false
+  countObserved: 1
+- kind: product-packshot
+  subject: handmade ceramic vessel on dark ground
+  rightsGuess: own
+  luminance: dark
+  busyness: low
+  aspect: portrait
+  alphaEdge: false
+  countObserved: 1
+- kind: photograph
+  subject: figure viewing framed artwork in a warm gallery
+  rightsGuess: own
+  luminance: mid
+  busyness: medium
+  aspect: portrait
+  alphaEdge: false
+  countObserved: 1
+mediaComposition:
+- mode: overlapping-cluster
+  layers: full-bleed staircase photo -> outlined Buy $29 button over its right edge -> ceramic vessel
+    photo overlapping lower edge -> gallery-viewer photo peeking at bottom-left; display title straddles
+    above/onto the staircase photo
+  bakedVsSeparable: each photo is a separable placed element; title and button are separate DOM elements
+    over media
+  componentsOverMedia: outlined price button over staircase photo
+chrome:
+  casing: upper
+  separators: /
+  iconShape: text-labels
+  surfaceApprox: '#3a2c1c'
+  linkTreatment: '17px #e9e2d2 upper, slash separators between center links'
+  ctaTreatment: gold text BUY TICKETS at far right, hugging content, no fill
+componentAnatomies:
+- name: top nav bar
+  parts: logo (glyph + wordmark) left -> centered link row with slash separators -> text CTA far right
+  styling: gold logo/CTA, off-white center links, all uppercase
+motionHints:
+- bottom-left photo cropped at frame edge (scroll-reveal / continuing gallery below)
+confidence: high
+notes:
+- display title overlaps top of staircase photo
+- bottom-left third photo cut off by crop edge
+_source:
+  crop: section-00-section-hero.png
+  domClasses: section hero
+  model: claude-opus-4-8

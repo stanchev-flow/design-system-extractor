@@ -1,0 +1,830 @@
+schemaVersion: layout-patterns.v1
+lane: hubspot-v3
+source: screenshots/hubspot-v3/hubspot.html
+viewport:
+  w: 1440
+  h: 900
+layoutGrammar:
+  actionGroup:
+    pattern: dual-cta
+    orientation: horizontal
+    order:
+    - primary
+    - secondary
+    gapPx: 16
+    wrap: wrap-below-tablet
+    alignment: inherits-block-alignment
+    seamAbovePx: 40
+    note: Observed multi-action rows pair exactly one filled orange primary with an outlined secondary,
+      primary leading. Measured on hero (section-00) and elevated CTA (section-09); both center/left inherit
+      the parent copy stack alignment. Single-action bands (sections 05, 06) collapse to one control.
+    provenance:
+    - section-00
+    - section-09
+patterns:
+- id: full-bleed-photo-hero
+  useCase: hero
+  archetypeRef: overlay
+  surfaceIntent: surface/inverse-teal
+  origin: extracted
+  confidence: high
+  provenance:
+  - section-00
+  contentShape:
+    containerWidth: full-bleed
+    alignment:
+      value: center
+      inheritance: heading-body-and-actions-all-center
+      siblingRule: Centered copy stack; dual CTA row centers under body. Floating chat card and toggle
+        are bottom-right utilities outside the centered stack.
+    approxPaddingPx:
+      top: 200
+      bottom: 80
+    gapPx: 24
+    slots:
+    - name: eyebrow
+      role: eyebrow
+      textLen: short
+      sizeClass: caption
+      case: upper
+      z: front
+      type: content
+    - name: heading
+      role: display
+      textLen: medium
+      sizeClass: hero
+      z: front
+      specialTreatment: orange-period-accent
+      type: content
+    - name: body
+      role: body
+      textLen: medium
+      sizeClass: body
+      z: front
+      type: content
+    - name: actions
+      role: action-group
+      sizeClass: control
+      width: hug
+      z: front
+      actionGroupRef: dual-cta
+      type: content
+    - name: background-media
+      role: background-media
+      mediaAspect: 1440 / 772
+      mediaScale: cover
+      opacityClass: full
+      z: back
+      assets:
+      - 018-hs-full-bleed-1-optmised.webp
+      assetBindingProvenance: assets-manifest.json + section-00
+      type: media
+    - name: utility-card
+      role: floating-card
+      textLen: short
+      sizeClass: caption
+      width: fixed
+      z: front
+      anchor: bottom-right
+      type: content
+    bandPadding:
+      top: 12.5rem
+      bottom: 5rem
+    bandRhythm:
+      eyebrowToHeading: 1.25rem
+      headingToBody: 2.5rem
+      bodyToCta: 2.5rem
+  specialTreatments:
+  - kind: text-on-media
+    target: heading
+    amountClass: full-scrim
+  - kind: orange-period-accent
+    target: heading
+  - kind: floating-utility
+    target: utility-card
+    anchor: bottom-right
+  mediaComposition:
+    mode: background-with-foreground
+    layers:
+    - assetRef: section-00-csol-section-wf-page-header-wf-page-header-human.png
+      role: background-media
+    - role: copy-stack
+    - role: action-group
+    - role: floating-utility-card
+  responsive:
+    base: centered stack over full-bleed photo, dual CTA horizontal
+    mobile: stacked CTA (wrap), reduced top padding
+- id: centered-heading-over-logo-row
+  useCase: logos
+  archetypeRef: row
+  surfaceIntent: surface/primary
+  origin: extracted
+  confidence: high
+  provenance:
+  - section-01
+  contentShape:
+    containerWidth: contained
+    alignment:
+      value: center
+      inheritance: heading-and-row-center
+    approxPaddingPx:
+      top: 70
+      bottom: 110
+    gapPx: 130
+    slots:
+    - name: heading
+      role: h2
+      textLen: medium
+      sizeClass: title
+      z: front
+      type: content
+    - name: logo-row
+      role: mark-row
+      mediaAspect: wide
+      z: front
+      mediaScale:
+        item:
+          width: 120
+          height: 28
+      gap: 130
+      assets:
+      - 019-ebay-logo.svg
+      - 020-doordash-logo.svg
+      - 021-reddit-logo.svg
+      - 022-tripadvisor-logo.svg
+      - 023-eventbrite-logo.svg
+      assetBindingProvenance: assets-manifest.json + section-01
+      type: media
+    bandPadding:
+      top: 4.375rem
+      bottom: 6.875rem
+  specialTreatments:
+  - kind: brand-colored-marks
+    target: logo-row
+  mediaComposition:
+    mode: tiled-grid
+    layers:
+    - role: mark-row
+      count: 5
+  responsive:
+    base: single row of 5 marks under centered heading
+    mobile: wrap to 2-3 per row
+- id: copy-left-illustration-right-carousel
+  useCase: features
+  archetypeRef: split
+  surfaceIntent: surface/primary
+  origin: extracted
+  confidence: high
+  provenance:
+  - section-02
+  contentShape:
+    containerWidth: contained
+    columns: 2
+    alignment:
+      value: mixed
+      inheritance: header-stack-center-then-split-left-right
+    approxPaddingPx:
+      top: 80
+      bottom: 90
+    gapPx: 64
+    slots:
+    - name: heading
+      role: h2
+      textLen: short
+      sizeClass: display
+      z: front
+      type: content
+    - name: subheading
+      role: body
+      textLen: medium
+      sizeClass: body
+      z: front
+      type: content
+    - name: item-heading
+      role: h3
+      textLen: short
+      sizeClass: title
+      z: front
+      type: content
+    - name: item-body
+      role: body
+      textLen: medium
+      sizeClass: body
+      z: front
+      type: content
+    - name: illustration
+      role: illustration-media
+      mediaAspect: landscape
+      mediaScale: contain
+      z: front
+      assets:
+      - 024-customer-20platform-20graphic-20-20smart-20crm1-5x-20-1.png
+      assetBindingProvenance: assets-manifest.json + section-02
+      type: media
+    - name: carousel-nav
+      role: carousel-control
+      sizeClass: control
+      width: hug
+      z: front
+      anchor: bottom
+      type: content
+    bandPadding:
+      top: 5rem
+      bottom: 5.625rem
+    deviceGeometry:
+      columnGap: 4rem
+  specialTreatments:
+  - kind: carousel
+    target: illustration
+    controls: circular-chevron-plus-dots
+    slideCount: 3
+    activeIndex: 0
+  mediaComposition:
+    mode: layered
+    layers:
+    - assetRef: section-02-csol-section-wf-customer-platform-padding-top-md.png
+      role: illustration-media
+  responsive:
+    base: copy left / layered 3D render right, nav below
+    mobile: illustration stacks under copy
+  gridRules:
+    columns: 2
+    gap: 64px
+- id: sticky-copy-with-card-grid
+  useCase: features
+  archetypeRef: split
+  surfaceIntent: surface/primary
+  origin: extracted
+  confidence: high
+  provenance:
+  - section-03
+  contentShape:
+    containerWidth: contained
+    columns: 2
+    splitRatio: 35/65
+    alignment:
+      value: left
+      inheritance: sticky-copy-left-grid-right
+    approxPaddingPx:
+      top: 80
+      bottom: 80
+    gapPx: 32
+    slots:
+    - name: eyebrow
+      role: eyebrow
+      textLen: short
+      sizeClass: caption
+      z: front
+      type: content
+    - name: heading
+      role: display
+      textLen: medium
+      sizeClass: display
+      z: front
+      type: content
+    - name: body
+      role: body
+      textLen: long
+      sizeClass: body
+      z: front
+      type: content
+    - name: actions
+      role: action-group
+      sizeClass: control
+      width: hug
+      z: front
+      actionGroupRef: dual-cta
+      type: content
+    - name: card-grid
+      role: card-grid
+      columns: 2
+      rows: 5
+      itemCount: 10
+      z: front
+      assets:
+      - 028-producticons-marketinghub-icon-orange.webp
+      - 029-producticons-saleshub-icon-orange.webp
+      - 030-producticons-servicehub-icon-orange.webp
+      - 031-producticons-contenthub-icon-orange.webp
+      - 032-producticons-datahub-icon-orange.webp
+      - 033-producticons-commercehub-icon-orange.webp
+      - 034-producticons-smartcrm-icon-orange.webp
+      - 035-breeze-20icon.svg
+      - 009-small-business.svg
+      - 027-ai-20sparkle.svg
+      assetBindingProvenance: assets-manifest.json + section-03
+      type: content
+    bandPadding:
+      top: 5rem
+      bottom: 5rem
+    bandRhythm:
+      eyebrowToHeading: 2.5rem
+      headingToBody: 2.5rem
+      bodyToCta: 3.5rem
+    deviceGeometry:
+      columnGap: 2rem
+  specialTreatments:
+  - kind: sticky-column
+    target: heading
+    sanctioned: true
+    navHeight:
+      base: 56px
+      wide: 76px
+      wideMinWidth: 1080
+    offset: 2rem
+    provenance: 'section-03 .wf-product-platform__container-main.-sticky-sidebar { position:sticky; height:fit-content; top:calc(var(--sticky-sidebar-nav-height) + 2rem) }; measured nav-height 56px base / 76px @media(width>=1080px); offset 2rem; the copy column pins while the card grid scrolls, relative below the desktop split'
+  - kind: dotted-divider
+    target: card-grid
+    note: dotted rules separate icon-header, bullet list, and link within each card
+  cardAnatomy:
+    slots:
+    - name: card-icon
+      role: spot-icon
+      mediaAspect: square
+    - name: card-heading
+      role: h3
+      sourceCopy: layoutCopy.featureGrid.items[].heading
+    - name: card-body
+      role: body
+      sourceCopy: layoutCopy.featureGrid.items[].body
+    - name: card-link
+      role: text-arrow-link
+      sourceCopy: layoutCopy.featureGrid.items[].cta
+    radiusPx: 12
+    borderApprox: 1px hairline
+  responsive:
+    base: sticky copy left, 2-col card grid right
+    mobile: copy stacks above single-column card list
+  gridRules:
+    columns: 2
+    gap: 32px
+    split: 35/65
+- id: headrail-split-with-card-carousel
+  useCase: features
+  archetypeRef: band
+  surfaceIntent: surface/accent-soft
+  origin: extracted
+  confidence: high
+  provenance:
+  - section-04
+  contentShape:
+    containerWidth: full-bleed
+    columns: 2
+    alignment:
+      value: left
+      inheritance: heading-left-body-right-then-full-width-carousel
+    approxPaddingPx:
+      top: 90
+      bottom: 60
+    gapPx: 40
+    slots:
+    - name: headrail
+      role: section-headrail
+      z: front
+      recipeRef:
+        recipe: section-headrail
+        variant: sparkle-chip
+      type: content
+    - name: heading
+      role: h2
+      textLen: short
+      sizeClass: display
+      z: front
+      type: content
+      width: half
+    - name: body
+      role: body
+      textLen: medium
+      sizeClass: body
+      z: front
+      type: content
+      width: half
+    - name: card-carousel
+      role: card-carousel
+      itemCount: 4
+      z: front
+      assets:
+      - 036-customer-agent-en-2x.png
+      - 037-prospecting-agent-en-2x.png
+      - 038-data-hub-en-2x.png
+      assetBindingProvenance: assets-manifest.json + section-04
+      type: content
+    bandPadding:
+      top: 5.625rem
+      bottom: 3.75rem
+    deviceGeometry:
+      columnGap: 2.5rem
+  specialTreatments:
+  - kind: carousel
+    target: card-carousel
+    controls: circular-chevron-plus-pause
+    autoAdvance: true
+  - kind: bleed
+    target: card-carousel
+    amountClass: edge-cropped-cards
+  - kind: dotted-rule-rail
+    target: headrail
+    sanctioned: true
+    note: measured icon chip, dotted leader, and trailing action
+  - kind: edge-cut
+    target: card-carousel
+    sanctioned: true
+    controls:
+      kind: round
+      pause: true
+  cardAnatomy:
+    slots:
+    - name: card-media
+      role: media-well
+      mediaAspect: landscape
+      asset: section-04-csol-section-wf-animated-carousel-section-breeze.png
+    - name: card-heading
+      role: h3
+      sourceCopy: layoutCopy.featureCarousel.items[].heading
+    - name: card-body
+      role: body
+      sourceCopy: layoutCopy.featureCarousel.items[].body
+    radiusPx: 18
+  mediaComposition:
+    mode: carousel
+    layers:
+    - role: card-track
+      assetRef: section-04-csol-section-wf-animated-carousel-section-breeze.png
+    - role: nav-control
+    - role: pause-control
+  responsive:
+    base: headrail + heading/body split, full-width card carousel below
+    mobile: single card visible, swipe track
+  gridRules:
+    columns: 2
+    gap: 40px
+- id: copy-left-logo-collage-inset
+  useCase: integrations
+  archetypeRef: split
+  surfaceIntent: surface/primary
+  origin: extracted
+  confidence: high
+  provenance:
+  - section-05
+  contentShape:
+    containerWidth: inset-panel
+    columns: 2
+    splitRatio: 50/50
+    alignment:
+      value: left
+      inheritance: copy-left-collage-right
+    approxPaddingPx:
+      top: 90
+      bottom: 60
+    gapPx: 40
+    slots:
+    - name: heading
+      role: h2
+      textLen: medium
+      sizeClass: title
+      z: front
+      type: content
+    - name: link
+      role: text-underline-link
+      sizeClass: control
+      width: hug
+      z: front
+      type: content
+    - name: logo-collage
+      role: mark-collage
+      mediaAspect: landscape
+      z: front
+      assets:
+      - 044-slack-icon-2.svg
+      - 042-zapier-icon-2.svg
+      - 040-shopify-icon-3.svg
+      - 041-mailchimp-icon-3.svg
+      - 043-google-ads-icon-2.svg
+      - 039-gmail-icon-3.svg
+      assetBindingProvenance: assets-manifest.json + section-05
+      type: media
+    bandPadding:
+      top: 5.625rem
+      bottom: 3.75rem
+    deviceGeometry:
+      columnGap: 2.5rem
+  specialTreatments:
+  - kind: scattered-cluster
+    target: logo-collage
+    note: rotated brand tiles scattered across white media-well
+  mediaComposition:
+    mode: scattered-cluster
+    layers:
+    - role: mark-collage
+      count: 10
+  responsive:
+    base: copy left / scattered logo collage right inside inset card
+    mobile: collage stacks under copy
+  gridRules:
+    columns: 2
+    gap: 40px
+    split: 50/50
+- id: headrail-two-col-header
+  useCase: content
+  archetypeRef: band
+  surfaceIntent: surface/primary
+  origin: extracted
+  confidence: high
+  provenance:
+  - section-06
+  contentShape:
+    containerWidth: contained
+    columns: 2
+    alignment:
+      value: left
+      inheritance: headrail-full-then-heading-left-body-right
+    approxPaddingPx:
+      top: 88
+      bottom: 0
+    gapPx: 48
+    slots:
+    - name: headrail
+      role: section-headrail
+      z: front
+      recipeRef:
+        recipe: section-headrail
+        variant: outlined-pill
+      type: content
+    - name: heading
+      role: display
+      textLen: medium
+      sizeClass: display
+      z: front
+      type: content
+    - name: body
+      role: body
+      textLen: medium
+      sizeClass: body
+      z: front
+      type: content
+    bandPadding:
+      top: 5.5rem
+      bottom: 0rem
+    bandRhythm:
+      eyebrowToHeading: 3.5rem
+    deviceGeometry:
+      columnGap: 3rem
+  specialTreatments:
+  - kind: dotted-leader-rule
+    target: headrail
+  responsive:
+    base: headrail row atop two-col header (display left / body right)
+    mobile: headrail wraps, header stacks single column
+  gridRules:
+    columns: 2
+    gap: 48px
+- id: tabbed-testimonial-with-stats
+  useCase: testimonial
+  archetypeRef: split
+  surfaceIntent: surface/primary
+  origin: extracted
+  confidence: high
+  provenance:
+  - section-07
+  contentShape:
+    containerWidth: contained
+    columns: 2
+    splitRatio: 55/45
+    alignment:
+      value: mixed
+      inheritance: tabs-top-then-photo-left-quote-right-stats-bottom
+    approxPaddingPx:
+      top: 24
+      bottom: 40
+    gapPx: 40
+    slots:
+    - name: tab-row
+      role: tab-row
+      itemCount: 3
+      z: front
+      type: content
+    - name: portrait
+      role: ACTIVE panel case-study photograph (rounded 6px), swaps with the selected tab
+      mediaAspect: landscape
+      mediaScale:
+        of: container
+        fraction: 0.56
+      z: front
+      assets:
+      - 045-unipart-1.png
+      assetBindingProvenance: assets-manifest.json + section-07
+      type: media
+      mediaComposition:
+        mode: state-swap
+        trigger: tab
+        layers:
+        - assetRef: unipart-1
+          forItem: Enterprise
+        - assetRef: angel-fc
+          forItem: Mid-Sized Business
+        - assetRef: youth-on-course
+          forItem: Small Business
+    - name: quote
+      role: body
+      textLen: long
+      sizeClass: body
+      z: front
+      type: content
+    - name: attribution
+      role: caption
+      textLen: short
+      sizeClass: caption
+      z: front
+      type: content
+    - name: link
+      role: text-underline-link
+      sizeClass: control
+      width: hug
+      z: front
+      type: content
+    - name: stat-row
+      role: stat-row
+      itemCount: 2
+      z: front
+      type: content
+    bandPadding:
+      top: 1.5rem
+      bottom: 2.5rem
+    deviceGeometry:
+      columnGap: 2.5rem
+  specialTreatments:
+  # Sanctioned TAB DEVICE (renderer stamps interaction devices from sanctioned
+  # treatments): 3 text tabs, first (Enterprise) active = the JS-off / static-
+  # capture truth. activeUnderline is the MEASURED active-tab rule color — the
+  # module override `[aria-selected=true].cl-tab-button` sets border-bottom-color
+  # to --cl-color-border-brand-01 (#ff4800 in the light theme; joined-evidence
+  # action-05 cssRules). The page's committed-accent law collapses --c-accent to
+  # ink on this band, so the device must ride the measured fact, not the page var.
+  - kind: tabs
+    target: tab-row
+    sanctioned: true
+    activeUnderline: rgb(255, 72, 0)
+    note: 'captured states: active tab = bolder ink + accent-highlight underline (#ff4800, 4px);
+      idle = muted-ink label; wash on hover/press. Tab labels/quotes/stats are the section''s own
+      3 authored panels (section-copy panels), first active is the JS-off truth.'
+  # Sanctioned STAT RULE: the stat pair/row spans the full card under photo+quote,
+  # centered cells split by a vertical hairline divider (grounding section-07).
+  - kind: stat-rule
+    target: stat-row
+    sanctioned: true
+    note: number-over-caption stats split by a vertical hairline divider (2 stats on the active
+      Enterprise panel; the other panels carry 3, per the source DOM)
+  mediaComposition:
+    mode: background-with-foreground
+    layers:
+    - assetRef: section-07-csol-section-breeze-agents-tabbed-testimonials-s.png
+      role: portrait-media
+  responsive:
+    base: tab row, photo left / quote right, stat row across bottom
+    mobile: photo stacks above quote, stats wrap
+  gridRules:
+    columns: 2
+    gap: 40px
+    split: 55/45
+- id: heading-left-award-badges-right
+  useCase: logos
+  archetypeRef: row
+  surfaceIntent: surface/primary
+  origin: extracted
+  confidence: high
+  provenance:
+  - section-08
+  contentShape:
+    containerWidth: contained
+    columns: 7
+    alignment:
+      value: mixed
+      inheritance: heading-left-badge-row-right
+    approxPaddingPx:
+      top: 40
+      bottom: 90
+    gapPx: 20
+    slots:
+    - name: heading
+      role: h2
+      textLen: short
+      sizeClass: title
+      z: front
+      type: content
+    - name: badge-row
+      role: mark-row
+      mediaAspect: portrait
+      itemCount: 6
+      z: front
+      mediaScale:
+        item:
+          width: 96
+          height: 132
+      gap: 20
+      assets:
+      - 048-badge-leader-small-business.png
+      - 049-bagde-most-implementable.png
+      - 050-best-relationships-small-business.png
+      - 051-best-support-enterprise.png
+      - 052-badge-best-results-mid-market.png
+      - 053-badge-best-usability-enterprise.png
+      assetBindingProvenance: assets-manifest.json + section-08
+      type: media
+    bandPadding:
+      top: 2.5rem
+      bottom: 5.625rem
+    deviceGeometry:
+      columnGap: 1.25rem
+  specialTreatments:
+  - kind: tiled-grid
+    target: badge-row
+  mediaComposition:
+    mode: tiled-grid
+    layers:
+    - role: mark-row
+      count: 6
+  responsive:
+    base: heading left, single row of 6 award badges right
+    mobile: heading stacks above wrapped badge grid
+  gridRules:
+    columns: 7
+    gap: 20px
+- id: dark-band-cta
+  useCase: cta
+  archetypeRef: band
+  surfaceIntent: surface/inverse-teal
+  origin: extracted
+  confidence: high
+  provenance:
+  - section-09
+  contentShape:
+    containerWidth: full-bleed
+    columns: 1
+    alignment:
+      value: left
+      inheritance: heading-and-actions-left
+    approxPaddingPx:
+      top: 90
+      bottom: 80
+    gapPx: 32
+    slots:
+    - name: heading
+      role: display
+      textLen: medium
+      sizeClass: display
+      z: front
+      specialTreatment: orange-period-accent
+      type: content
+    - name: actions
+      role: action-group
+      sizeClass: control
+      width: hug
+      z: front
+      actionGroupRef: dual-cta
+      type: content
+    bandPadding:
+      top: 5.625rem
+      bottom: 5rem
+  specialTreatments:
+  - kind: orange-period-accent
+    target: heading
+  responsive:
+    base: left-aligned copy stack with dual CTA on dark band
+    mobile: CTA row wraps to stack
+  gridRules:
+    columns: 1
+    gap: 32px
+recipes:
+- id: section-headrail
+  anatomy: leading marker + dotted leader rule + trailing quiet action
+  origin: extracted
+  confidence: high
+  geometry:
+    orientation: horizontal
+    fullWidth: true
+    ruleStyle: dotted
+    alignment: space-between
+  slots:
+  - name: leading-marker
+    role: marker
+  - name: leader-rule
+    role: divider
+  - name: trailing-action
+    role: quiet-action
+  variants:
+  - name: sparkle-chip
+    leadingMarker: sparkle icon inside white rounded square chip (~66px, r16)
+    trailingAction: outlined rounded-rect CTA (bordered, r14)
+    provenance:
+    - section-04
+  - name: outlined-pill
+    leadingMarker: outlined text label pill (thin border, r8)
+    trailingAction: outlined CTA button (thin border, r8)
+    provenance:
+    - section-06
+  usedBy:
+  - headrail-split-with-card-carousel
+  - headrail-two-col-header
+  provenance:
+  - section-04
+  - section-06

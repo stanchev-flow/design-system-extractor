@@ -1,0 +1,272 @@
+{
+  "schemaVersion": "brand-author.v1",
+  "status": "blocked",
+  "ok": false,
+  "reason": "repair response is not JSON: Expecting value: line 1 column 1 (char 0)",
+  "model": "claude-opus-4-8",
+  "calls": 7,
+  "repairs": 0,
+  "skipped": false,
+  "usage": {
+    "input_tokens": 187306,
+    "output_tokens": 34071,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0
+  },
+  "outputs": [
+    "brand.yaml",
+    "layout-library.yaml",
+    "section-copy.yaml",
+    "assets-tagged.json",
+    "media-assets.yaml",
+    "voice-facts.yaml",
+    "brand.md",
+    "style-scale.yaml",
+    "voice.md"
+  ],
+  "stages": [
+    {
+      "name": "foundation",
+      "status": "completed",
+      "dependencies": [],
+      "outputs": [
+        "brand.yaml",
+        "voice-facts.yaml"
+      ],
+      "maxInputBytes": 180000,
+      "maxOutputTokens": 20000,
+      "timeoutS": 240,
+      "retries": 0,
+      "skipped": false,
+      "inputBytes": 161036,
+      "durationS": 108.52,
+      "model": "claude-opus-4-8",
+      "usage": {
+        "input_tokens": 71855,
+        "output_tokens": 9988,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "requestedOutputTokens": 20000,
+      "completedAt": "2026-07-28T12:41:37Z",
+      "pathRepairs": [
+        {
+          "round": 1,
+          "groupId": "foundation:/buttons:a81d35e09400",
+          "schemaPath": "/buttons",
+          "checks": [
+            "C3",
+            "C3",
+            "C3",
+            "C3",
+            "C3",
+            "C3"
+          ],
+          "errors": [
+            "C3: buttons.primary-green: missing bg/fg/style \u2014 each family ships a usable state matrix (css-facts hoverRules is the measurement source).",
+            "C3: buttons.primary-blue: missing bg/fg/style \u2014 each family ships a usable state matrix (css-facts hoverRules is the measurement source).",
+            "C3: buttons.outline-dark: missing bg/fg/style \u2014 each family ships a usable state matrix (css-facts hoverRules is the measurement source).",
+            "C3: buttons.outline-inverse: missing bg/fg/style \u2014 each family ships a usable state matrix (css-facts hoverRules is the measurement source).",
+            "C3: buttons.text-accent: missing bg/fg/style \u2014 each family ships a usable state matrix (css-facts hoverRules is the measurement source).",
+            "C3: buttons.nav-tertiary: missing bg/fg/style \u2014 each family ships a usable state matrix (css-facts hoverRules is the measurement source)."
+          ],
+          "status": "completed",
+          "inputBytes": 18516,
+          "inputCapBytes": 80000,
+          "startedAt": "2026-07-28T12:45:13Z",
+          "model": "claude-opus-4-8",
+          "usage": {
+            "input_tokens": 7777,
+            "output_tokens": 1211,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0
+          },
+          "responseBytes": 783,
+          "touchedFiles": [
+            "brand.yaml"
+          ],
+          "durationS": 17.524,
+          "postValidationErrors": 16,
+          "postValidationWarnings": 13,
+          "completedAt": "2026-07-28T12:45:30Z"
+        }
+      ]
+    },
+    {
+      "name": "copy-chrome",
+      "status": "completed",
+      "dependencies": [
+        "foundation"
+      ],
+      "outputs": [
+        "brand-chrome.yaml",
+        "section-copy.yaml"
+      ],
+      "maxInputBytes": 150000,
+      "maxOutputTokens": 16000,
+      "timeoutS": 240,
+      "retries": 0,
+      "skipped": false,
+      "inputBytes": 119671,
+      "durationS": 121.765,
+      "model": "claude-opus-4-8",
+      "usage": {
+        "input_tokens": 51061,
+        "output_tokens": 11293,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "requestedOutputTokens": 16000,
+      "completedAt": "2026-07-28T12:43:39Z",
+      "pathRepairs": [
+        {
+          "round": 1,
+          "groupId": "copy-chrome:/:9dd29067510a",
+          "schemaPath": "/",
+          "checks": [
+            "C4"
+          ],
+          "errors": [
+            "C4: layoutCopy entries do not consume required content slot roles: featureGrid.cardBody, stats.statBody"
+          ],
+          "status": "completed",
+          "inputBytes": 5463,
+          "inputCapBytes": 80000,
+          "startedAt": "2026-07-28T12:45:30Z",
+          "model": "claude-opus-4-8",
+          "usage": {
+            "input_tokens": 2281,
+            "output_tokens": 1465,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0
+          },
+          "responseBytes": 429,
+          "touchedFiles": [
+            "section-copy.yaml"
+          ],
+          "durationS": 20.48,
+          "postValidationErrors": 16,
+          "postValidationWarnings": 13,
+          "completedAt": "2026-07-28T12:45:51Z"
+        },
+        {
+          "round": 1,
+          "groupId": "copy-chrome:/footer:b2e31002bbdc",
+          "schemaPath": "/footer",
+          "checks": [
+            "C7",
+            "C7",
+            "C7"
+          ],
+          "errors": [
+            "C7: navbar.surface.bg missing \u2014 the chrome bar color must be measured, not defaulted.",
+            "C7: navbar: no presentation evidence (neither `presentation:` nor `measured.link` facts) \u2014 casing/separators/CTA treatment must come from the source (grounding `chrome` block + computed styles), or the renderer's habits leak in.",
+            "C7: navbar.logo declared but not renderable \u2014 carry `src` (on-disk asset), `kind: svg` + markup/srcContract pointer, or drop the dict so the wordmark text device renders."
+          ],
+          "status": "blocked",
+          "inputBytes": 6408,
+          "inputCapBytes": 80000,
+          "startedAt": "2026-07-28T12:45:51Z",
+          "model": "claude-opus-4-8",
+          "usage": {
+            "input_tokens": 2756,
+            "output_tokens": 2156,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0
+          },
+          "responseBytes": 880,
+          "reason": "repair response is not JSON: Expecting value: line 1 column 1 (char 0)",
+          "rolledBack": true,
+          "durationS": 28.458,
+          "completedAt": "2026-07-28T12:46:19Z"
+        }
+      ]
+    },
+    {
+      "name": "patterns-recipes",
+      "status": "completed",
+      "dependencies": [
+        "foundation",
+        "copy-chrome"
+      ],
+      "outputs": [
+        "layout-library.yaml"
+      ],
+      "maxInputBytes": 180000,
+      "maxOutputTokens": 20000,
+      "timeoutS": 240,
+      "retries": 0,
+      "skipped": false,
+      "inputBytes": 104238,
+      "durationS": 62.841,
+      "model": "claude-opus-4-8",
+      "usage": {
+        "input_tokens": 43797,
+        "output_tokens": 5931,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "requestedOutputTokens": 20000,
+      "completedAt": "2026-07-28T12:44:42Z"
+    },
+    {
+      "name": "media",
+      "status": "completed",
+      "dependencies": [
+        "patterns-recipes"
+      ],
+      "outputs": [
+        "media-guidance.yaml"
+      ],
+      "maxInputBytes": 45000,
+      "maxOutputTokens": 4000,
+      "timeoutS": 180,
+      "retries": 0,
+      "skipped": false,
+      "inputBytes": 17678,
+      "durationS": 27.744,
+      "model": "claude-opus-4-8",
+      "usage": {
+        "input_tokens": 7779,
+        "output_tokens": 2027,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+      },
+      "requestedOutputTokens": 2400,
+      "completedAt": "2026-07-28T12:45:10Z"
+    },
+    {
+      "name": "projections",
+      "status": "completed",
+      "dependencies": [
+        "foundation",
+        "copy-chrome",
+        "patterns-recipes",
+        "media"
+      ],
+      "outputs": [
+        "brand.md",
+        "style-scale.yaml",
+        "voice.md",
+        "media-assets.yaml",
+        "assets-tagged.json"
+      ],
+      "maxInputBytes": 0,
+      "maxOutputTokens": 0,
+      "timeoutS": 30,
+      "retries": 0,
+      "skipped": false,
+      "inputBytes": 0,
+      "durationS": 0.63,
+      "model": "deterministic",
+      "usage": {}
+    }
+  ],
+  "validation": {
+    "checks": "C1-C28",
+    "errors": [],
+    "warnings": []
+  },
+  "durationS": 390.712,
+  "completedAt": "2026-07-28T12:46:19Z"
+}

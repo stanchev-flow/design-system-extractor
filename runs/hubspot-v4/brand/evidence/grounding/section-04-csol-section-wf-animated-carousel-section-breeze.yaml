@@ -1,0 +1,213 @@
+schemaVersion: section-grounding.v1
+sectionRole: features
+layout:
+  structure: headrail (icon chip + dotted rule + trailing CTA) -> heading left / body right split, then
+    full-width carousel of feature cards below
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 90
+    bottom: 60
+  gapPx: 40
+  containerWidth: full-bleed
+surfaces:
+- role: band
+  bgApprox: 'gradient(#f9c9c0 -> #f7a98d)'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#2a1416'
+- role: card
+  bgApprox: '#ffffff'
+  parent: band
+  radiusPx: 18
+  borderApprox: none
+  inkApprox: '#2a1416'
+- role: media-well
+  bgApprox: '#f2ece2'
+  parent: card
+  radiusPx: 12
+  borderApprox: none
+  inkApprox: '#2a1416'
+- role: chrome-bar
+  bgApprox: '#ffffff'
+  parent: band
+  radiusPx: 14
+  borderApprox: '1px #2a1416'
+  inkApprox: '#2a1416'
+typography:
+- role: h2
+  approxSizePx: 44
+  weightApprox: 500
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#241016'
+  familyClass: serif
+- role: body
+  approxSizePx: 16
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#3a2226'
+  familyClass: grotesque-sans
+- role: h3
+  approxSizePx: 24
+  weightApprox: 700
+  case: title
+  trackingApprox: normal
+  colorApprox: '#2a1416'
+  familyClass: grotesque-sans
+- role: control-label
+  approxSizePx: 15
+  weightApprox: 600
+  case: title
+  trackingApprox: normal
+  colorApprox: '#2a1416'
+  familyClass: grotesque-sans
+typography-note: card body 16px
+components:
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: text label inside bordered rounded rectangle
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 16 28
+    radiusPx: 14
+  surfaceApprox: '#ffffff'
+  inkApprox: '#2a1416'
+  caseTreatment: title
+- kind: card
+  variant: filled-neutral
+  countObserved: 4
+  anatomy: media-well top (product-ui screenshot) -> heading -> body -> optional Learn more link
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: 20 24
+    radiusPx: 18
+  surfaceApprox: '#ffffff'
+  inkApprox: '#2a1416'
+  caseTreatment: title
+- kind: link
+  variant: text-underline
+  countObserved: 1
+  anatomy: underlined text label
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#2a1416'
+  caseTreatment: sentence
+- kind: icon
+  variant: sparkle-chip
+  countObserved: 1
+  anatomy: orange four-point sparkle inside white rounded square
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 16
+  surfaceApprox: '#ffffff'
+  inkApprox: '#f26a3a'
+  caseTreatment: sentence
+- kind: button
+  variant: circular-nav
+  countObserved: 2
+  anatomy: chevron glyph in white circle
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 26
+  surfaceApprox: '#ffffff'
+  inkApprox: '#2a1416'
+  caseTreatment: sentence
+- kind: button
+  variant: pause-control
+  countObserved: 1
+  anatomy: pause glyph in white circle
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 20
+  surfaceApprox: '#ffffff'
+  inkApprox: '#2a1416'
+  caseTreatment: sentence
+copy:
+  eyebrow: null
+  heading: Built-in AI agents that work for you 24/7.
+  subheading: null
+  body: Breeze Agents are your always-on teammates. They can resolve over 65% of customer inquiries, accelerate
+    your sales pipeline, and whip up quality content in no time.
+  actions:
+  - label: Explore Breeze Agents
+    styleHint: outlined
+  - label: Learn more
+    styleHint: text-underline
+  items:
+  - heading: Customer Agent
+    body: Resolve 65% of your customer inquiries automatically.
+    meta: null
+  - heading: Prospecting Agent
+    body: Spot buying signals, source contacts, and launch personalized outreach — instantly.
+    meta: null
+  - heading: Data Agent
+    body: Get instant answers to cus… questions about your custo…
+    meta: null
+media:
+- kind: product-ui
+  treatment: chat/agent UI screenshots inside neutral media-wells at top of each card
+  aspect: landscape
+  approxFractionOfSection: 0.4
+mediaAssets:
+- kind: product-ui-screenshot
+  subject: AI chat assistant with avatar and question field
+  rightsGuess: own
+  luminance: light
+  busyness: medium
+  aspect: landscape
+  alphaEdge: false
+  countObserved: 4
+- kind: avatar
+  subject: circle-cropped portrait in chat UI
+  rightsGuess: own
+  luminance: mid
+  busyness: low
+  aspect: square
+  alphaEdge: true
+  countObserved: 1
+- kind: spot-icon
+  subject: four-point sparkle glyph
+  rightsGuess: own
+  luminance: mid
+  busyness: low
+  aspect: square
+  alphaEdge: true
+  countObserved: 3
+mediaComposition:
+- mode: carousel
+  layers: row of fixed-width cards, edge cards cropped at frame -> nav chevron circles overlaid left/right
+    -> pause control below
+  bakedVsSeparable: each card is a separate element; screenshots are baked raster within media-wells;
+    cursor arrows baked into screenshots
+  componentsOverMedia: circular prev/next nav buttons and pause control float over the carousel band
+generatedVisualDevices:
+- kind: mesh-gradient-blobs
+  evidence: soft warm hue blobs bleeding pink-to-peach across the band, no raster grain
+  params: '#f9c9c0 pink upper-left -> #f7a98d peach right, diffuse radial blend'
+  poster: peach/pink cloudy gradient field
+componentAnatomies:
+- name: section headrail
+  parts: sparkle icon chip (66px, r16, white) -> dotted leader rule -> trailing outlined CTA at far right
+  styling: chip is white rounded square with orange sparkle; rule is thin dotted; CTA is bordered rounded-rect
+motionHints:
+- carousel with prev/next chevron circles (slide advance)
+- pause control indicates auto-advancing carousel
+- edge cards cropped mid-item at frame (auto-scroll track)
+confidence: high
+notes:
+- left and right edge cards cropped by frame; partial 'perty' / 'Marketi…' and 'Data Agent' card truncated
+- Data Agent body cut off at right edge
+_source:
+  crop: section-04-csol-section-wf-animated-carousel-section-breeze.png
+  domClasses: csol-section wf-animated-carousel-section -breeze -padding-top-md -padding-bottom-md
+  model: claude-opus-4-8

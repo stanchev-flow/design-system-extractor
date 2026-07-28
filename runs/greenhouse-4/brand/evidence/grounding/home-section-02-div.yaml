@@ -1,0 +1,155 @@
+schemaVersion: section-grounding.v1
+sectionRole: logos
+layout:
+  structure: split ~50/50, copy left / 2x3 logo grid right, vertical rule divides columns
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 140
+    bottom: 120
+  gapPx: 150
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#ffffff'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#0f2e26'
+typography:
+- role: h2
+  approxSizePx: 46
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#12352b'
+  familyClass: serif
+- role: control-label
+  approxSizePx: 16
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#ffffff'
+  familyClass: grotesque-sans
+relationalSpacingPx:
+  headingToCta: 46
+components:
+- kind: button
+  variant: filled-primary
+  countObserved: 1
+  anatomy: text label centered in pill
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 16 32
+    radiusPx: 28
+  surfaceApprox: '#1a8a6b'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+  stateVisible: idle
+- kind: button
+  variant: outlined
+  countObserved: 2
+  anatomy: text label centered in pill (cropped at top edge)
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 16 28
+    radiusPx: 28
+  surfaceApprox: transparent
+  inkApprox: '#12352b'
+  caseTreatment: sentence
+  stateVisible: idle
+- kind: logo-item
+  variant: filled-neutral
+  countObserved: 6
+  anatomy: logo vector centered in grid cell
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#111111'
+  caseTreatment: upper
+copy:
+  heading: Great companies hire with Greenhouse
+  actions:
+  - label: Read customer stories
+    styleHint: filled-primary
+  - label: See AI features
+    styleHint: outlined
+  - label: Identify top talent
+    styleHint: outlined
+  logosLegible:
+  - NFL
+  - coursera
+  - ANTHROP\C
+  - datavant
+  - REVLON
+  - SEATGEEK
+media:
+- kind: logo-vector
+  treatment: brand logo vectors in a 2x3 grid, mixed colors (blue, red, black, orange)
+  aspect: landscape
+  approxFractionOfSection: 0.4
+mediaAssets:
+- kind: logo-third-party
+  subject: sports league shield mark
+  rightsGuess: third-party-mark
+  luminance: dark
+  busyness: medium
+  aspect: square
+  alphaEdge: true
+  countObserved: 1
+  notes: red/blue/black shield
+- kind: logo-third-party
+  subject: online-learning wordmark
+  rightsGuess: third-party-mark
+  luminance: mid
+  busyness: low
+  aspect: landscape
+  alphaEdge: true
+  countObserved: 1
+  notes: blue wordmark
+- kind: logo-third-party
+  subject: AI research wordmark
+  rightsGuess: third-party-mark
+  luminance: dark
+  busyness: low
+  aspect: landscape
+  alphaEdge: true
+  countObserved: 1
+- kind: logo-third-party
+  subject: data-platform wordmark
+  rightsGuess: third-party-mark
+  luminance: dark
+  busyness: low
+  aspect: landscape
+  alphaEdge: true
+  countObserved: 1
+- kind: logo-third-party
+  subject: cosmetics wordmark
+  rightsGuess: third-party-mark
+  luminance: dark
+  busyness: low
+  aspect: landscape
+  alphaEdge: true
+  countObserved: 1
+- kind: logo-third-party
+  subject: ticketing wordmark
+  rightsGuess: third-party-mark
+  luminance: mid
+  busyness: low
+  aspect: landscape
+  alphaEdge: true
+  countObserved: 1
+  notes: orange wordmark
+confidence: high
+notes:
+- Two outlined buttons at very top edge belong to prior section, cropped.
+- 'Vertical rule (~1px #cfd6d2) separates copy column from logo grid.'
+- Coursera/SeatGeek in brand color; other logos monochrome black.
+- Large serif heading cropped at bottom belongs to next section.
+_source:
+  crop: section-02-div.png
+  domClasses: ''
+  model: claude-opus-4-8

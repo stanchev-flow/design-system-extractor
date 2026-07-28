@@ -1,0 +1,138 @@
+{
+  "schemaVersion": "brand-author.v1",
+  "status": "completed",
+  "ok": true,
+  "reason": "",
+  "model": "claude-opus-4-8",
+  "calls": 0,
+  "repairs": 0,
+  "skipped": true,
+  "usage": {},
+  "outputs": [
+    "brand.yaml",
+    "layout-library.yaml",
+    "section-copy.yaml",
+    "assets-tagged.json",
+    "media-assets.yaml",
+    "voice-facts.yaml",
+    "brand.md",
+    "style-scale.yaml",
+    "voice.md"
+  ],
+  "stages": [
+    {
+      "name": "foundation",
+      "status": "completed",
+      "dependencies": [],
+      "outputs": [
+        "brand.yaml",
+        "voice-facts.yaml"
+      ],
+      "maxInputBytes": 180000,
+      "maxOutputTokens": 20000,
+      "timeoutS": 240,
+      "retries": 0,
+      "skipped": true,
+      "inputBytes": 150754,
+      "durationS": 0.0
+    },
+    {
+      "name": "copy-chrome",
+      "status": "completed",
+      "dependencies": [
+        "foundation"
+      ],
+      "outputs": [
+        "brand-chrome.yaml",
+        "section-copy.yaml"
+      ],
+      "maxInputBytes": 150000,
+      "maxOutputTokens": 16000,
+      "timeoutS": 240,
+      "retries": 0,
+      "skipped": true,
+      "inputBytes": 112973,
+      "durationS": 0.0
+    },
+    {
+      "name": "patterns-recipes",
+      "status": "completed",
+      "dependencies": [
+        "foundation",
+        "copy-chrome"
+      ],
+      "outputs": [
+        "layout-library.yaml"
+      ],
+      "maxInputBytes": 180000,
+      "maxOutputTokens": 20000,
+      "timeoutS": 240,
+      "retries": 0,
+      "skipped": true,
+      "inputBytes": 99688,
+      "durationS": 0.0
+    },
+    {
+      "name": "media",
+      "status": "completed",
+      "dependencies": [
+        "patterns-recipes"
+      ],
+      "outputs": [
+        "media-guidance.yaml"
+      ],
+      "maxInputBytes": 45000,
+      "maxOutputTokens": 4000,
+      "timeoutS": 180,
+      "retries": 0,
+      "skipped": true,
+      "inputBytes": 15108,
+      "durationS": 0.0
+    },
+    {
+      "name": "projections",
+      "status": "completed",
+      "dependencies": [
+        "foundation",
+        "copy-chrome",
+        "patterns-recipes",
+        "media"
+      ],
+      "outputs": [
+        "brand.md",
+        "style-scale.yaml",
+        "voice.md",
+        "media-assets.yaml",
+        "assets-tagged.json"
+      ],
+      "maxInputBytes": 0,
+      "maxOutputTokens": 0,
+      "timeoutS": 30,
+      "retries": 0,
+      "skipped": false,
+      "inputBytes": 0,
+      "durationS": 1.06,
+      "model": "deterministic",
+      "usage": {}
+    }
+  ],
+  "validation": {
+    "checks": "C1-C28",
+    "errors": [],
+    "warnings": [
+      "C5: dom-mine observed ~61 module sections but only 10 non-chrome layouts were authored \u2014 check extraction breadth.",
+      "C16: footer carries social + legal but no bottomBar structure facts (divider/rows/policyLinks) \u2014 re-extract chrome to capture the bottom bar, or the renderer keeps the legacy one-row composition.",
+      "C23: recipe 'section-headrail' carries a variant without an id \u2014 patterns bind variants by id.",
+      "C23: recipe 'section-headrail' carries a variant without an id \u2014 patterns bind variants by id.",
+      "C23: recipe 'section-headrail' lists pattern 'headrail-split-with-card-carousel' in usedBy but that pattern carries no matching recipeRef \u2014 bind both directions.",
+      "C23: recipe 'section-headrail' lists pattern 'headrail-two-col-header' in usedBy but that pattern carries no matching recipeRef \u2014 bind both directions.",
+      "C25: non-mapping signature entry: 'orange period accent (#ff4800) closing display headlines'",
+      "C25: non-mapping signature entry: 'warm cream-on-dark-teal bookend bands framing badges and the closing CTA'",
+      "C25: non-mapping signature entry: 'humanist serif display over HubSpot Sans light body'",
+      "C25: non-mapping signature entry: 'dual filled+outlined orange CTA pairing (Get a demo / Get started free)'",
+      "C25: non-mapping signature entry: 'white cards with 8-12px radius and hairline borders on warm canvas'"
+    ]
+  },
+  "durationS": 2.691,
+  "completedAt": "2026-07-20T15:50:05Z"
+}

@@ -1,0 +1,532 @@
+{
+ "schemaVersion": "css-mine.v1",
+ "pagesMerged": [
+  "home",
+  "talent-sourcing",
+  "compare"
+ ],
+ "radiusCensus": {
+  "12px": 99,
+  "4px": 96,
+  "0": 90,
+  "25px": 57,
+  "8px": 45,
+  "1.5rem": 42,
+  "100vw": 27,
+  "8px !important": 27,
+  "50%": 24,
+  "2px": 24,
+  "var(--size-6)": 24,
+  "var(--size-1)": 24,
+  ".75rem": 24,
+  "6px": 21,
+  "50px": 18,
+  "100px": 18,
+  "20px": 18,
+  "3px": 15,
+  "5px": 9,
+  "10px": 9,
+  "9px": 6,
+  "1rem": 6,
+  "26px": 6,
+  "50% !important": 6,
+  "2.5px": 6,
+  "unset": 3,
+  "3px!important": 3,
+  "100%": 3,
+  ".5rem": 3,
+  ".38rem": 3
+ },
+ "fontFamilyCensus": {
+  "Untitled Serif,Georgia,sans-serif": 423,
+  "Untitled Sans,Arial,sans-serif": 180,
+  "var(--font-serif)": 105,
+  "'Inter'": 105,
+  "\"Untitled Sans\", Arial, Helvetica, sans-serif": 42,
+  "inherit": 24,
+  "Untitled Sans": 18,
+  "var(--font-sans)": 9,
+  "Untitled Sans, Arial, Helvetica, sans-serif": 9,
+  "Untitled Serif": 6,
+  "\"Untitled Serif\", Georgia, serif": 6,
+  "Untitled Sans, Arial, Helvetica, sans-serif !important": 6,
+  "sans-serif": 3,
+  "monospace": 3,
+  "webflow-icons": 3,
+  "webflow-icons!important": 3,
+  "Arial,sans-serif": 3,
+  "unset": 3,
+  "serif": 3,
+  "Helvetica Neue,Helvetica,Ubuntu,Segoe UI,Verdana,sans-serif": 3
+ },
+ "fontWeightCensus": {
+  "400": 618,
+  "500": 237,
+  "bold": 66,
+  "700": 51,
+  "300": 51,
+  "600": 45,
+  "normal": 36,
+  "400 !important": 9,
+  "normal !important": 9,
+  "unset": 3,
+  "inherit": 3,
+  "100": 3
+ },
+ "transitionCensus": {
+  "all .15s": 54,
+  "opacity .2s": 9,
+  "background-color .3s cubic-bezier(.645,.045,.355,1)": 9,
+  "height 1.2s": 9,
+  "all 300ms ease-in 0s": 9,
+  "border-color .3s cubic-bezier(.645,.045,.355,1),background-color .3s cubic-bezie": 6,
+  "max-height .8s,opacity .6s": 6,
+  "background-color .2s": 6,
+  "opacity .2s ease-in-out": 6,
+  "all 0.15s ease": 6,
+  ".1s ease": 6,
+  ".25s ease-out": 6,
+  ".1s ease-in": 6,
+  "transform .6s ease": 6,
+  "background-color .2s ease": 6,
+  "unset": 3,
+  "background-color .1s,color .1s": 3,
+  "all .3s": 3,
+  "all .2s": 3,
+  "color .5s linear": 3,
+  "color .5s linear,background-color .5s linear": 3,
+  "transform .3s cubic-bezier(.645,.045,.355,1)": 3,
+  "max-height .4s": 3,
+  "width .2s,left .2s,opacity .2s": 3,
+  "opacity .4s": 3,
+  "height .2s,width .2s": 3,
+  "all .3s ease-in-out": 3,
+  "all .2s ease-in-out": 3,
+  "transform .25s cubic-bezier(.22,1,.36,1)": 3,
+  "transform .22s cubic-bezier(.34,1.56,.64,1),border-color .2s cubic-bezier(.33,1,": 3
+ },
+ "letterSpacingCensus": {
+  "-.01em": 408,
+  "0": 48,
+  "-.34px": 24,
+  "normal": 18,
+  "-.19px": 15,
+  "-.46px": 15,
+  ".01em": 12,
+  "-.01px": 9,
+  "-.1px": 9,
+  "-.7px": 9,
+  "-1px": 9,
+  "-.28px": 9,
+  "-.0125em": 9,
+  ".15px": 9,
+  "-.38px": 9,
+  ".25px": 6,
+  "-.5px": 6,
+  "unset": 3,
+  "2px": 3,
+  "-.62px": 3
+ },
+ "textTransformCensus": {
+  "none": 21,
+  "uppercase": 9,
+  "unset": 3
+ },
+ "colorCensus": {
+  "#fff": 584,
+  "#15372c": 489,
+  "#0000": 417,
+  "#008561": 276,
+  "#000": 198,
+  "#4cb39866": 111,
+  "#4cb398": 93,
+  "#d8d8d8": 87,
+  "#ffffff": 69,
+  "#006147": 66,
+  "#f5f5f5": 66,
+  "#ccc": 57,
+  "#133026": 48,
+  "#c9f0e6": 48,
+  "#3574d6": 42,
+  "#3860be": 39,
+  "#031c17": 36,
+  "#fff0": 33,
+  "#e2e2e2": 30,
+  "rgba(0,0,0,0)": 30,
+  "#efefef": 27,
+  "#15372c1a": 27,
+  "#006b4a": 27,
+  "#f49f6c": 27,
+  "#ec802f": 27,
+  "#ddd": 24,
+  "#f8f8f8": 24,
+  "#333": 21,
+  "#999": 18,
+  "#fafafa": 18,
+  "#222": 18,
+  "#e6fff8": 18,
+  "#90d1c2": 18,
+  "#c9f0e5": 18,
+  "#ffa52e": 18,
+  "#0050bd": 18,
+  "#e51b00": 18,
+  "#028d05": 18,
+  "#c7c5c7": 18,
+  "#75869600": 15,
+  "#a4ddce": 15,
+  "#d8372a": 15,
+  "#879c95": 15,
+  "#b52617": 15,
+  "#4cb39d66": 15,
+  "#007d04": 15,
+  "#68b631": 15,
+  "#c1c1c1": 15,
+  "#d7d7d7": 15,
+  "#3898ec": 12,
+  "#eee": 12,
+  "#c8c8c8": 12,
+  "#2e65ba": 12,
+  "#335247": 12,
+  "#24a47f": 12,
+  "#b5b5b5": 12,
+  "#15372c47": 12,
+  "#2b2b2b": 12,
+  "#ba1600": 12,
+  "rgba(0,0,0,0.65)": 12
+ },
+ "mediaBreakpoints": {
+  "@media screen and (max-width:991px)": 4656,
+  "@media screen and (max-width:767px)": 2472,
+  "@media screen and (max-width:479px)": 867,
+  "@media screen and (min-width:1280px)": 492,
+  "@media screen and (min-width:1440px)": 453,
+  "@media screen and (min-width:1920px)": 165,
+  "@media only screen and (max-width: 896px)and (max-height: 425px)and (orientation": 72,
+  "@media only screen and (min-width: 1024px)": 69,
+  "@media only screen and (min-width: 426px)and (max-width: 896px)": 60,
+  "@media only screen and (max-width: 530px)": 60,
+  "@media only screen and (max-width: 600px)": 54,
+  "@media only screen and (max-width: 480px)": 51,
+  "@media only screen and (max-width: 480px), only screen and (max-device-width: 48": 51,
+  "@media(min-width: 550px)": 51,
+  "@media only screen and (min-width: 768px)": 42,
+  "@media only screen and (max-width: 991px)": 30,
+  "@media only screen and (min-width: 992px)": 30,
+  "@media print": 27,
+  "@media (min-width:768px)": 24,
+  "@media only screen and (min-width: 1280px)": 21,
+  "@media only screen and (max-width: 425px)": 21,
+  "@media only screen and (max-width: 500px)": 18,
+  "@media screen and (max-height: 450px)": 15,
+  "@media only screen and (min-width: 425px)and (max-width: 550px)": 12,
+  "@media only screen and (min-width: 890px)": 12,
+  "@media only screen and (min-width: 1440px)": 12,
+  "@media only screen and (min-width: 897px)and (max-width: 1023px)": 9,
+  "@media only screen and (max-width: 550px)": 6,
+  "@media only screen and (min-width: 769px)": 6,
+  "@media(min-width: 768px)": 6
+ },
+ "hoverRules": [
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".button-main-nav-demo-request-cta.button-primary:hover",
+   "decls": "border-color:var(--blue-600);background-color:var(--blue-600)"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".button-main-nav-demo-request-cta.button-primary:hover",
+   "decls": "background-color:#2e65ba;border-color:#2e65ba"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".button-main-nav-demo-request-cta.button-tertiary:hover",
+   "decls": "color:var(--green-700)"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".button-main-nav-demo-request-cta.button-tertiary-copy:hover",
+   "decls": "color:var(--green-700)"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".nav-button.nav-link-2:hover",
+   "decls": "color:var(--green-500)"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".nav-button.nav-link:hover",
+   "decls": "color:#4cb398"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "@media screen and (max-width:991px)",
+   "selector": ".nav-button.nav-link-2:hover",
+   "decls": "text-decoration:none"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "@media screen and (max-width:991px)",
+   "selector": ".nav-button.nav-link:hover",
+   "decls": "text-decoration:none"
+  },
+  {
+   "file": "<inline-style-12>",
+   "media": "",
+   "selector": "#onetrust-banner-sdk button.ot-link-btn:hover,#onetrust-pc-sdk button.ot-link-btn:hover,#ot-sync-ntfy button.ot-link-btn:hover",
+   "decls": "text-decoration:underline;opacity:1"
+  },
+  {
+   "file": "<inline-style-12>",
+   "media": "",
+   "selector": "#onetrust-banner-sdk .ot-sdk-button:hover,#onetrust-banner-sdk :not(.ot-leg-btn-container):not(.ot-confirm-dialog-buttons)>button:not(.ot-link-btn):hover,#onetr",
+   "decls": "color:#333;border-color:#888;opacity:.9"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".buttoncomp.platform-overview-tab-link:hover,.buttoncomp.platform-overview-tab-link:focus",
+   "decls": "border-color:var(--white)"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".buttoncomp.platform-overview-tab-link.w--current:hover,.buttoncomp.platform-overview-tab-link.w--current:focus",
+   "decls": "border-color:#0000"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".buttoncomp.platform-overview-slider-link:hover,.buttoncomp.platform-overview-slider-link:focus",
+   "decls": "background-color:var(--green-900);border-color:#0000"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".buttoncomp.platform-overview-slider-link.w--current:hover,.buttoncomp.platform-overview-slider-link.w--current:focus",
+   "decls": "border-color:#0000"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".nav-link:hover",
+   "decls": "color:#1a1b1fbf"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".button-primary:hover",
+   "decls": "color:#fff;background-color:#32343a"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".nav-sign-in.button-tertiary-2:hover",
+   "decls": "border-color:var(--green-700);color:var(--green-700)"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".nav-sign-in.button-tertiary-copy:hover",
+   "decls": "color:var(--green-700)"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".nav-sign-in.button-tertiary:hover",
+   "decls": "color:#008561;border-color:#008561"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".buttoncomp-7.platform-overview-slider-link:hover,.buttoncomp-7.platform-overview-slider-link:focus",
+   "decls": "background-color:#335247;border-color:#0000"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".buttoncomp-7.platform-overview-slider-link.w--current:hover,.buttoncomp-7.platform-overview-slider-link.w--current:focus",
+   "decls": "border-color:#0000"
+  },
+  {
+   "file": "003-marketo-bigmarker-forms.css",
+   "media": "",
+   "selector": ".footer-footer-form .mktoForm .mktoButtonWrap.mktoGlow .mktoButton:hover,\n.nav__form .mktoForm .mktoButtonWrap.mktoGlow .mktoButton:hover",
+   "decls": "background-color: #fff !important;\n  color: #15372c !important;\n  border-color: #fff !important;"
+  },
+  {
+   "file": "<inline-style-12>",
+   "media": "",
+   "selector": "#onetrust-banner-sdk .ot-sdk-button.ot-sdk-button-primary:hover,#onetrust-banner-sdk button.ot-sdk-button-primary:hover,#onetrust-banner-sdk input[type=submit].",
+   "decls": "color:#fff;background-color:#1eaedb;border-color:#1eaedb"
+  },
+  {
+   "file": "<inline-style-16>",
+   "media": "",
+   "selector": ".nav.nav-active .button-tertiary:hover,\n    .nav.nav-search-active .button-tertiary:hover",
+   "decls": "border-color: #4cb398;\n        background-color: unset;\n        color: #4cb398;"
+  },
+  {
+   "file": "<inline-style-16>",
+   "media": "@media only screen and (min-width: 992px)",
+   "selector": ".nav-link:hover:after",
+   "decls": "transform: scale(1);"
+  },
+  {
+   "file": "<inline-style-16>",
+   "media": "",
+   "selector": ".nav.nav-active .nav-link:hover,\n    .nav.nav-search-active .nav-link:hover",
+   "decls": "color: #4cb398;"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".buttoncomp:hover:where(.w-variant-61ef722b-2f2f-6808-d316-a1ef444e2d28)",
+   "decls": "background-color:var(--green-950);color:var(--white)"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".buttoncomp.button-outline:hover,.buttoncomp.button-outline:focus",
+   "decls": "background-color:var(--green-950);color:#fff"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".buttoncomp.button-outline.transparent-hover:hover",
+   "decls": "color:#008561;background-color:#0000;border-color:#008561"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".buttoncomp.button-outline.white:hover",
+   "decls": "color:#4cb398;border-color:#4cb398"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".buttoncomp.button-green:hover,.buttoncomp.button-green:focus",
+   "decls": "border-color:var(--green-800);background-color:var(--green-800)"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".buttoncomp.button-blue:hover,.buttoncomp.button-blue:focus",
+   "decls": "border-color:var(--blue-600);background-color:var(--blue-600)"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".buttoncomp.button-outline-white:hover",
+   "decls": "border-color:var(--white);background-color:var(--white);color:var(--green-950)"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".buttoncomp.button-outline-white.transparent-hover:hover",
+   "decls": "color:#008561;background-color:#0000;border-color:#008561"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".buttoncomp.button-outline-white.white:hover",
+   "decls": "color:#4cb398;border-color:#4cb398"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".buttoncomp.button-text:hover",
+   "decls": "color:var(--green-950);background-color:#0000;text-decoration:none"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".buttoncomp.button-text-white:hover",
+   "decls": "color:var(--white);background-color:#0000;text-decoration:none"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".buttoncomp.button-text-green:hover",
+   "decls": "color:var(--green-700);background-color:#0000;text-decoration:none"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".buttoncomp.platform-overview-autoplay-control:hover",
+   "decls": "background-color:var(--green-900)"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".listing-item-link:hover",
+   "decls": "text-decoration:none"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".content-gallery-item-link:hover",
+   "decls": "text-decoration:none"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".bg-green-primary a:hover",
+   "decls": "text-decoration:none"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".logos-link:hover",
+   "decls": "opacity:.8"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".statistics-link:hover",
+   "decls": "text-decoration:none"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".nav-dropdown-toggle:hover",
+   "decls": "color:#1a1b1fbf"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".link-7:hover",
+   "decls": "border-bottom:1px solid var(--white);text-decoration:none"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".link-8:hover",
+   "decls": "text-decoration:underline"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".nav-topic-item:hover",
+   "decls": "text-decoration:underline"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".link-block-7:hover",
+   "decls": "text-decoration:underline"
+  },
+  {
+   "file": "000-www-greenhouse-com.shared.444928708.min.css",
+   "media": "",
+   "selector": ".link-10:hover",
+   "decls": "text-decoration:none"
+  }
+ ],
+ "hoverRulesTrimmedFrom": 229
+}

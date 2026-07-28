@@ -1,0 +1,192 @@
+sectionRole: features
+layout:
+  structure: '3-column card row, each: media-well top -> heading -> body -> outlined
+    pill CTA'
+  columns: 3
+  alignment: left
+  approxPaddingPx:
+    top: 60
+    bottom: 40
+  gapPx: 60
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#ffffff'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1c3327'
+- role: band
+  bgApprox: '#13361f'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#ffffff'
+- role: media-well
+  bgApprox: 'image-fill: warm indoor portrait photo'
+  parent: canvas
+  radiusPx: 4
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1c1c1c'
+- role: media-well
+  bgApprox: '#13361f'
+  parent: canvas
+  radiusPx: 4
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#ffffff'
+typography:
+- role: h2
+  approxSizePx: 34
+  weightApprox: 400
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1c3327'
+  familyClass: serif
+- role: body
+  approxSizePx: 16
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#2c3a30'
+  familyClass: grotesque-sans
+- role: control-label
+  approxSizePx: 15
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1c3327'
+  familyClass: grotesque-sans
+relationalSpacingPx:
+  headingToBody: 24
+  bodyToCta: 30
+components:
+- kind: card
+  variant: media-top-with-cta
+  countObserved: 3
+  anatomy: media-well top (with floating chip/badge) -> serif heading -> body -> outlined
+    pill CTA
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 4
+  surfaceApprox: transparent
+  inkApprox: '#1c3327'
+  caseTreatment: sentence
+- kind: button
+  variant: filled-neutral
+  countObserved: 2
+  anatomy: icon glyph -> label, on white floating pill over media
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 12 20
+    radiusPx: 6
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1c3327'
+  caseTreatment: title
+- kind: button
+  variant: outlined
+  countObserved: 3
+  anatomy: label centered inside pill outline
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 16 28
+    radiusPx: 26
+  surfaceApprox: transparent
+  inkApprox: '#1c3327'
+  caseTreatment: sentence
+- kind: avatar
+  variant: circle-cropped-portrait
+  countObserved: 5
+  anatomy: row of overlapping circular portraits, center one enlarged with name label
+    + risk badge
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 999
+  surfaceApprox: image-fill
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: badge
+  variant: pill-with-dot
+  countObserved: 1
+  anatomy: red dot glyph -> 'High risk fraud' label on white pill
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 6 12
+    radiusPx: 14
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1c3327'
+  caseTreatment: sentence
+copy:
+  heading: null
+  body: null
+  items:
+  - heading: Greenhouse AI
+    body: Hiring needs more than faster automation. It needs to be completely reimagined.
+      Explore the next wave of AI capabilities from Greenhouse, built to help teams
+      cut through noise, strengthen signal and make structured hiring easier to execute
+      – without losing human judgment.
+    meta: See AI features
+  - heading: Real Talent
+    body: Greenhouse Real Talent™ brings triple layers of trust to hiring with candidate
+      fraud detection, identity verification and candidate matching software, so you
+      can make more confident hiring decisions.
+    meta: See Real Talent
+  - heading: MyGreenhouse
+    body: MyGreenhouse is a powerful new candidate portal that transforms hiring from
+      robotic to remarkable. It keeps candidates informed with real-time updates,
+      surfaces new opportunities and makes applying seamless – while giving recruiters
+      the insights to quickly identify top talent.
+    meta: Identify top talent
+  actions:
+  - label: Connect your own AI
+    styleHint: filled-neutral
+  - label: Create a Job Alert
+    styleHint: filled-neutral
+  - label: See AI features
+    styleHint: outlined
+  - label: See Real Talent
+    styleHint: outlined
+  - label: Identify top talent
+    styleHint: outlined
+media:
+- kind: photo
+  treatment: warm indoor lifestyle portraits inside rounded media-wells, ~185px tall
+  aspect: landscape
+  approxFractionOfSection: 0.35
+- kind: illustration
+  treatment: green media-well with overlapping circular portrait cluster + name label
+    + risk badge
+  aspect: landscape
+  approxFractionOfSection: 0.12
+mediaAssets:
+- kind: photograph
+  subject: warm office collaboration scene, three people
+  rightsGuess: own
+  luminance: mid
+  busyness: medium
+  aspect: landscape
+  alphaEdge: false
+  countObserved: 1
+- kind: portrait
+  subject: person in yellow top, indoor plant behind
+  rightsGuess: own
+  luminance: light
+  busyness: medium
+  aspect: landscape
+  alphaEdge: false
+  countObserved: 1
+- kind: avatar
+  subject: cluster of circular candidate portraits over green panel
+  rightsGuess: own
+  luminance: mid
+  busyness: high
+  aspect: landscape
+  alphaEdge: true
+  countObserved: 5
+motionHints: []
+confidence: high

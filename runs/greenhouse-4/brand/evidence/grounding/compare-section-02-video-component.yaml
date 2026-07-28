@@ -1,0 +1,232 @@
+schemaVersion: section-grounding.v1
+sectionRole: features
+layout:
+  structure: 'heading + body top, pill filter row, then split comparison card: table left / badge media
+    right'
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 110
+    bottom: 40
+  gapPx: 40
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#ffffff'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1f3d2b'
+- role: card
+  bgApprox: '#e4f6ec'
+  parent: canvas
+  radiusPx: 16
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1f3d2b'
+- role: inset-panel
+  bgApprox: '#c9ecd7'
+  parent: card
+  radiusPx: 12
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1f7a4d'
+- role: media-well
+  bgApprox: '#8fd0ab'
+  parent: card
+  radiusPx: 16
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1f3d2b'
+typography:
+- role: display
+  approxSizePx: 72
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1f3d2b'
+  familyClass: serif
+- role: body
+  approxSizePx: 17
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#2f4a3a'
+  familyClass: grotesque-sans
+- role: eyebrow
+  approxSizePx: 15
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1f9b63'
+  familyClass: grotesque-sans
+- role: h3
+  approxSizePx: 30
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1f3d2b'
+  familyClass: serif
+- role: control-label
+  approxSizePx: 15
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1f3d2b'
+  familyClass: grotesque-sans
+- role: caption
+  approxSizePx: 15
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#2f4a3a'
+  familyClass: grotesque-sans
+relationalSpacingPx:
+  headingToBody: 68
+  bodyToCta: 60
+components:
+- kind: pill
+  variant: filled-primary
+  countObserved: 1
+  anatomy: text label centered in rounded pill
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 12 24
+    radiusPx: 22
+  surfaceApprox: '#1f7a4d'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+  stateVisible: current
+- kind: pill
+  variant: outlined
+  countObserved: 8
+  anatomy: text label centered in rounded outlined pill
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 12 24
+    radiusPx: 22
+  surfaceApprox: transparent
+  inkApprox: '#1f3d2b'
+  caseTreatment: sentence
+  stateVisible: idle
+- kind: list-item
+  variant: comparison-row
+  countObserved: 4
+  anatomy: row label left -> filled check (brand col) -> outline circle (All-in-one HRIS) -> outline circle
+    (Other ATS's)
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1f3d2b'
+  caseTreatment: sentence
+- kind: badge-review-award
+  variant: g2-users-love-us
+  countObserved: 1
+  anatomy: G2 red logo chip -> 'Users Love Us' text -> 5-star rating ribbon
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1f3d2b'
+  caseTreatment: title
+copy:
+  eyebrow: Proven leadership
+  heading: How we compare
+  subheading: Demonstrated industry leadership
+  body: When it comes to choosing your next ATS, it pays dividends to do your due diligence. Take a deep
+    dive into how the Greenhouse platform compares.
+  actions:
+  - label: Proven leadership
+    styleHint: filled-primary
+  - label: Single-platform solution
+    styleHint: outlined
+  - label: Ease of use
+    styleHint: outlined
+  - label: Scalable workflows
+    styleHint: outlined
+  - label: AI tools
+    styleHint: outlined
+  - label: Structured hiring
+    styleHint: outlined
+  - label: Reporting & insights
+    styleHint: outlined
+  - label: Integration ecosystem
+    styleHint: outlined
+  - label: Security & compliance
+    styleHint: outlined
+  items:
+  - heading: G2 98% customer satisfaction rating
+    body: null
+    meta: null
+  - heading: 1,600+ 5-star reviews
+    body: null
+    meta: null
+  - heading: Fosway and IDC leader
+    body: null
+    meta: null
+  - heading: Industry-first innovation in structured hiring and embedded DE&I
+    body: null
+    meta: null
+media:
+- kind: illustration
+  treatment: monochrome leaf/fingerprint line-art texture on green media-well
+  aspect: portrait
+  approxFractionOfSection: 0.3
+- kind: photo
+  treatment: small rounded portrait inset on media-well
+  aspect: portrait
+  approxFractionOfSection: 0.05
+- kind: logo-vector
+  treatment: G2 'Users Love Us' review badge with 5-star ribbon
+  aspect: portrait
+  approxFractionOfSection: 0.08
+mediaAssets:
+- kind: background-art
+  subject: leaf/fingerprint line-art texture
+  rightsGuess: own
+  luminance: mid
+  busyness: medium
+  aspect: portrait
+  alphaEdge: false
+  countObserved: 1
+- kind: portrait
+  subject: person in a quiet close-up scene
+  rightsGuess: own
+  luminance: mid
+  busyness: medium
+  aspect: portrait
+  alphaEdge: false
+  countObserved: 1
+- kind: badge-review-award
+  subject: G2 Users Love Us review badge
+  rightsGuess: third-party-mark
+  luminance: light
+  busyness: medium
+  aspect: portrait
+  alphaEdge: true
+  countObserved: 1
+mediaComposition:
+- mode: overlapping-cluster
+  layers: green media-well with baked leaf texture -> G2 shield badge (separate) -> portrait photo tile
+    (separate) -> star-rating ribbon (separate) overlapping badge lower-right
+  bakedVsSeparable: leaf texture baked into media-well; badge, portrait, ribbon are separable overlaid
+    elements
+  componentsOverMedia: review-award badge, portrait chip
+components_note: null
+chrome: null
+motionHints:
+- pill filter row implies tab-style panel swap (active pill drives comparison table content)
+confidence: high
+notes:
+- pill row functions as tab selector; 'Proven leadership' is the active/current selection matching shown
+  table
+- half-filled circle in 'Fosway and IDC leader' row under All-in-one HRIS column (partial-support indicator)
+- brand column marked by lowercase 'g' Greenhouse glyph in the inset-panel
+_source:
+  crop: section-02-video-component.png
+  domClasses: video-component
+  model: claude-opus-4-8

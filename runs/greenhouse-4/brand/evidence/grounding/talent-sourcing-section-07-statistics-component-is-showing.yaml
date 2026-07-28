@@ -1,0 +1,96 @@
+schemaVersion: section-grounding.v1
+sectionRole: stats
+layout:
+  structure: '3 equal columns, each centered stat stack: big number -> body -> link'
+  columns: 3
+  alignment: center
+  approxPaddingPx:
+    top: 130
+    bottom: 130
+  gapPx: 60
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#f4f4f2'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1e3d31'
+typography:
+- role: display
+  approxSizePx: 84
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1e3d31'
+  familyClass: serif
+- role: body
+  approxSizePx: 20
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1e3d31'
+  familyClass: serif
+- role: footer-link
+  approxSizePx: 16
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1e3d31'
+  familyClass: serif
+relationalSpacingPx:
+  headingToBody: 56
+  bodyToCta: 40
+components:
+- kind: stat
+  variant: numeric-with-caption
+  countObserved: 3
+  anatomy: big percentage number -> descriptive body -> underlined text link
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1e3d31'
+  caseTreatment: sentence
+- kind: link
+  variant: text-underline
+  countObserved: 3
+  anatomy: single underlined text label
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1e3d31'
+  caseTreatment: sentence
+copy:
+  eyebrow: null
+  heading: null
+  body: null
+  items:
+  - heading: 25%
+    body: Reduction in Major League Baseball’s time to hire vs. industry standard when using Greenhouse.
+    meta: Read MLB’s customer story
+  - heading: 39%
+    body: Lower spending on third-party recruiting
+    meta: 'IDC 2024: The business value of Greenhouse'
+  - heading: 92%
+    body: Reduction in candidate search firms used for Inizio
+    meta: Read Inizio’s customer story
+  actions:
+  - label: Read MLB’s customer story
+    styleHint: text-underline
+  - label: 'IDC 2024: The business value of Greenhouse'
+    styleHint: text-underline
+  - label: Read Inizio’s customer story
+    styleHint: text-underline
+confidence: high
+notes:
+- DOM wrapper 'statistics component-is-showing' suggests scroll-reveal animation state
+- All type is serif in dark green ink on light warm-grey canvas
+_source:
+  crop: section-07-statistics-component-is-showing.png
+  domClasses: statistics component-is-showing
+  model: claude-opus-4-8

@@ -1,0 +1,219 @@
+schemaVersion: section-grounding.v1
+sectionRole: footer
+layout:
+  structure: 4 link columns left + newsletter/language block right; social row and legal below
+  columns: 5
+  alignment: left
+  approxPaddingPx:
+    top: 120
+    bottom: 60
+  gapPx: 32
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#1c332a'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#e8 eeea'
+- role: boxed-field
+  bgApprox: '#ffffff'
+  parent: canvas
+  radiusPx: 8
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1c332a'
+typography:
+- role: eyebrow
+  approxSizePx: 14
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#6aa88a'
+  familyClass: grotesque-sans
+- role: footer-link
+  approxSizePx: 18
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#e6ede9'
+  familyClass: serif
+- role: h3
+  approxSizePx: 22
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#f0f4f1'
+  familyClass: serif
+- role: body
+  approxSizePx: 15
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#c9d6cf'
+  familyClass: grotesque-sans
+- role: control-label
+  approxSizePx: 15
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1c332a'
+  familyClass: grotesque-sans
+- role: caption
+  approxSizePx: 12
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#a9bab2'
+  familyClass: grotesque-sans
+components:
+- kind: link
+  variant: text
+  countObserved: 40
+  anatomy: column heading (green eyebrow) -> vertical stack of serif text links
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#e6ede9'
+  caseTreatment: sentence
+- kind: input
+  variant: boxed-field
+  countObserved: 1
+  anatomy: label 'Email address *' -> white rounded input
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: 16 20
+    radiusPx: 8
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1c332a'
+  caseTreatment: sentence
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: text label inside rounded pill outline
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 12 28
+    radiusPx: 24
+  surfaceApprox: transparent
+  inkApprox: '#e6ede9'
+  caseTreatment: sentence
+- kind: link
+  variant: text
+  countObserved: 3
+  anatomy: language options stacked; current underlined
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#e6ede9'
+  caseTreatment: sentence
+  stateVisible: current
+- kind: icon
+  variant: social-glyph
+  countObserved: 5
+  anatomy: circular outline glyphs in a row
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 999
+  surfaceApprox: transparent
+  inkApprox: '#6aa88a'
+  caseTreatment: sentence
+- kind: link
+  variant: text
+  countObserved: 3
+  anatomy: underlined legal links inline in a row
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#c9d6cf'
+  caseTreatment: sentence
+copy:
+  eyebrow: null
+  heading: Modern Recruiter newsletter
+  subheading: null
+  body: Our bi-weekly newsletter full of inspiration, podcasts, trends and news.
+  actions:
+  - label: Subscribe
+    styleHint: outlined pill
+  - label: English (US)
+    styleHint: text current
+  - label: English (UK)
+    styleHint: text
+  - label: Deutsch
+    styleHint: text
+  - label: Cookie preferences
+    styleHint: text underlined
+  - label: Privacy policy
+    styleHint: text underlined
+  - label: Terms of service
+    styleHint: text underlined
+  items:
+  - heading: Platform
+    body: Only in Greenhouse / Latest product features / Pricing / Security / Ethical principles / AI
+      principles / Bias audit statement / APIs
+    meta: null
+  - heading: Solutions
+    body: AI recruiting / Talent sourcing / Scalable workflows / Candidate experience / Interviewing &
+      decision-making / Talent matching / Onboarding / Reporting & insights / Integrations
+    meta: null
+  - heading: Why Greenhouse
+    body: How we compare / Return on your hiring investment / Your partner in success
+    meta: null
+  - heading: Greenhouse for
+    body: Early-stage business / Scaling company / Enterprise / Job seekers
+    meta: null
+  - heading: Resources
+    body: Blog / Guidance / Customer stories / Hiring glossary
+    meta: null
+  - heading: About
+    body: Company / Press & awards / Newsroom / Careers / Contact
+    meta: null
+  - heading: Community
+    body: Events & webinars / Open / Talent Makers / Newsletter / Partnerships
+    meta: null
+  - heading: Support
+    body: Learn Greenhouse / Customer support / Developer resources
+    meta: null
+  logosLegible: []
+chrome:
+  casing: sentence
+  separators: whitespace-only
+  iconShape: circular-glyph
+  surfaceApprox: '#1c332a'
+  linkTreatment: '18px serif #e6ede9, no underline at rest'
+  ctaTreatment: outlined pill 'Subscribe', hugging content, transparent fill
+  localeSelector: '''Choose your language'' with stacked English (US)/English (UK)/Deutsch; current is
+    underlined'
+media:
+- kind: icon-set
+  treatment: 5 circular monochrome social glyphs (Facebook, LinkedIn, YouTube, Instagram, TikTok) ~30px,
+    green on dark
+  aspect: landscape
+  approxFractionOfSection: 0.03
+mediaAssets:
+- kind: social-icon
+  subject: social platform glyphs in circular outlines
+  rightsGuess: third-party-mark
+  luminance: dark
+  busyness: low
+  aspect: landscape
+  alphaEdge: true
+  countObserved: 5
+copy_notes: null
+confidence: high
+notes:
+- 'Copyright line: ''©2026 Greenhouse Software, Inc.'' plus trademark legal text'
+- Link items grouped verbatim with ' / ' as separator for compactness
+- Top edge shows partial cut-off element (bottom of section above)
+_source:
+  crop: section-05-footer.png
+  domClasses: footer
+  model: claude-opus-4-8

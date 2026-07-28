@@ -1,0 +1,119 @@
+# HubSpot brand section data — REAL page copy layers (Phase D ride-along, 2026-07-07).
+#
+# Source of truth: the frozen saved homepage (screenshots/hubspot/HubSpot/…Homepage.html)
+# visible-text inventory + runs/hubspot/assets/source-live.json (hero heading sample).
+# Fixes validator C4: sectionCopy/layoutCopy were absent (only layoutImages), so the
+# components preview hydrated pattern demos with structural specimen prose. Authored
+# copy now replaces those specimens; nothing here is invented.
+
+sectionCopy:
+  wordmark: "HubSpot"
+  nav: [Products, Solutions, Pricing, Resources]
+  eyebrow: "HUBSPOT'S AGENTIC CUSTOMER PLATFORM"
+  subhead: "Unite marketing, sales, and customer service on one agentic customer platform that delivers results fast."
+  cta: "Get a demo"
+
+layoutCopy:
+  hero:
+    heading: "Where go-to-market teams go to grow"
+    body: >-
+      Unite marketing, sales, and customer service on one agentic customer
+      platform that delivers results fast.
+    cta: "Get a demo"
+  logo-carousel:
+    heading: "299,000+ customers in over 135 countries grow their businesses with HubSpot."
+    caption: "299,000+ customers in over 135 countries grow their businesses with HubSpot."
+  customer-platform:
+    heading: "HubSpot's Agentic Customer Platform"
+    body: >-
+      Connected data and tools make it easier to know, do, and connect
+      everything across your business.
+    items:
+      - heading: "A CRM that's really smart."
+        body: "HubSpot's Smart CRM is the single source of truth that connects all your business data."
+      - heading: "Products that connect to everything."
+        body: "Unify your teams to create content, find leads, close deals, and grow revenue."
+      - heading: "Breeze: AI that gets your work done."
+        body: "Built-in AI tools boost productivity, scale growth, and unlock insights."
+  product-platform:
+    heading: "Growing a business is hard. HubSpot makes it easier."
+    body: >-
+      Disconnected tools and data slow you down. HubSpot connects everything —
+      and everyone — in one place.
+    cta: "Get a demo"
+    items:
+      - heading: "Marketing Hub"
+        body: "Attract and convert the right leads. Run campaigns, personalize content, and track it all."
+        cta: "Learn more"
+      - heading: "Sales Hub"
+        body: "Generate quality leads and close deals, faster. Automate prospecting, manage pipeline, and accelerate revenue growth."
+        cta: "Learn more"
+      - heading: "Service Hub"
+        body: "Streamline and scale support to serve customers faster. Drive retention with actionable insights and real-time usage data."
+        cta: "Learn more"
+      - heading: "Content Hub"
+        body: "Create content that clicks with your audience. Build pages, publish content across channels, and stay on brand."
+        cta: "Learn more"
+      - heading: "Data Hub"
+        body: "Turn scattered data into unified intelligence. Combine, clean, and activate your customer data across every team and tool."
+        cta: "Learn more"
+      - heading: "Commerce Hub"
+        body: "Make it easy for customers to pay you. Send quotes, collect payments, and manage subscriptions."
+        cta: "Learn more"
+  breeze-agents-carousel:
+    eyebrow: "EXPLORE BREEZE AGENTS"
+    heading: "Built-in AI agents that work for you 24/7."
+    body: >-
+      Breeze Agents are your always-on teammates. They can resolve over 65% of
+      customer inquiries, accelerate your pipeline, and answer custom questions
+      about your customers.
+    items:
+      - heading: "Customer Agent"
+        body: "Resolve 65% of your customer inquiries automatically."
+        cta: "Learn more"
+      - heading: "Prospecting Agent"
+        body: "Spot buying signals, source contacts, and launch personalized outreach — instantly."
+        cta: "Learn more"
+      - heading: "Data Agent"
+        body: "Get instant answers to custom questions about your customers."
+        cta: "Learn more"
+  integrations-rotating:
+    heading: "Works with the tools you already use. 2,000+ integrations."
+    cta: "See all app integrations"
+  results-header:
+    eyebrow: "CASE STUDIES"
+    heading: "Remarkable results for every size business."
+    body: "Scale your business with HubSpot. The proof is in our customers' success."
+    cta: "See all case studies"
+  case-studies-tabbed:
+    heading: "Remarkable results for every size business."
+    quote: >-
+      HubSpot took the time to understand our business needs fully. The
+      pre-sales and subsequent support really stood out from other vendors.
+    caption: "Adam Jones, Director of Business Development, Unipart"
+    cta: "Read full case study"
+    items:
+      - quote: >-
+          HubSpot took the time to understand our business needs fully. The
+          pre-sales and subsequent support really stood out from other vendors.
+        caption: "Adam Jones, Director of Business Development, Unipart"
+      - quote: >-
+          HubSpot gave us the tools we needed to grow without losing the
+          personal connection with our fans. Their support has been remarkable.
+        caption: "Whitney Hallock, Director of Marketing & Experience, Angel City FC"
+      - quote: >-
+          Just like you'd train a new hire, we trained customer agent — and now
+          it's often more accurate than we were.
+        caption: "John Mothershead, Director of Member Success, Youth on Course"
+  badges:
+    heading: "Voted #1 in 526 G2 Reports"
+  elevated-cta:
+    heading: "Make impossible growth feel impossibly easy, with HubSpot."
+    cta: "Get a demo"
+
+# layoutImages: per-layout REAL photography — layout id -> {role-substring: filename}
+# (relocated from the old shared LAYOUT_IMAGES module dict, which carried this
+# hubspot v1 entry alongside another brand's). The v1 hero layout's own asset name
+# differs from the file on disk, so the role keyword maps it explicitly.
+layoutImages:
+  hero: {hero photography: hero-full-bleed.webp}

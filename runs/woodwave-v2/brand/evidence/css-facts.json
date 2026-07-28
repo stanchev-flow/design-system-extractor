@@ -1,0 +1,186 @@
+{
+ "schemaVersion": "css-mine.v1",
+ "hoverRules": [
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "@media (min-width: 768px)",
+   "selector": ".w-lightbox-control:hover",
+   "decls": "opacity: 1;"
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "",
+   "selector": ".w-lightbox-inactive, .w-lightbox-inactive:hover",
+   "decls": "opacity: 0;"
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "",
+   "selector": ".footer-nav-link:hover",
+   "decls": "color: var(--yellow);"
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "",
+   "selector": ".footer-social-link:hover",
+   "decls": "color: var(--yellow);"
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "",
+   "selector": ".footer-bottom-link:hover",
+   "decls": "color: var(--white);"
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "",
+   "selector": ".footer-bottom-link-span:hover",
+   "decls": "color: var(--white);"
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "",
+   "selector": ".license-link:hover",
+   "decls": "text-decoration: underline;"
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "",
+   "selector": "._404-home-link:hover",
+   "decls": "text-decoration: underline;"
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "",
+   "selector": ".paragraph-link-span:hover",
+   "decls": "text-decoration: underline;"
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "",
+   "selector": ".buy-button:hover",
+   "decls": "background-color: #1d170f;"
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "@media screen and (max-width: 991px)",
+   "selector": ".nav-link:hover",
+   "decls": "color: var(--yellow);"
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "@media screen and (max-width: 991px)",
+   "selector": ".nav-link.last:hover",
+   "decls": "color: var(--yellow);"
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "@media screen and (max-width: 991px)",
+   "selector": ".nav-menu-social-link:hover",
+   "decls": "color: var(--yellow);"
+  }
+ ],
+ "radiusCensus": {
+  "50%": 4,
+  "0": 2,
+  "3px !important": 1,
+  "3px": 1,
+  "100%": 1
+ },
+ "fontFamilyCensus": {
+  "Satoshi, sans-serif": 18,
+  "'Satoshi'": 10,
+  "Melodrama, sans-serif": 8,
+  "'Melodrama'": 5,
+  "sans-serif": 1,
+  "monospace": 1,
+  "webflow-icons": 1,
+  "webflow-icons !important": 1,
+  "Arial, sans-serif": 1,
+  "inherit": 1,
+  "serif": 1,
+  "Helvetica Neue, Helvetica, Ubuntu, Segoe UI, Verdana, sans-serif": 1
+ },
+ "fontWeightCensus": {
+  "400": 22,
+  "500": 9,
+  "normal": 6,
+  "bold": 4,
+  "300": 4,
+  "700": 3,
+  "900": 2,
+  "inherit": 1,
+  "600": 1
+ },
+ "transitionCensus": {
+  "color .2s": 3,
+  "none": 1,
+  "background-color .1s, color .1s": 1,
+  "all .3s": 1,
+  "color .8s": 1,
+  "color .25s ease-in-out": 1,
+  "color .3s": 1,
+  "background-color .3s": 1
+ },
+ "letterSpacingCensus": {
+  "1px": 8,
+  "inherit": 1,
+  "normal": 1,
+  "2px": 1
+ },
+ "textTransformCensus": {
+  "uppercase": 16,
+  "none": 3,
+  "inherit": 1
+ },
+ "colorCensus": {
+  "#0000": 16,
+  "#fff": 15,
+  "#ddd": 6,
+  "#fff0": 6,
+  "#222": 6,
+  "#333": 5,
+  "#75869600": 5,
+  "#ccc": 4,
+  "#fafafa": 3,
+  "#c8c8c8": 3,
+  "#3898ec": 2,
+  "#0000001a": 2,
+  "#999": 2,
+  "#5d6c7b": 2,
+  "#0082f3": 2,
+  "#0006": 2,
+  "#000": 1,
+  "#ff0": 1,
+  "#aaadb0": 1,
+  "#e2e2e2": 1,
+  "#ffdede": 1,
+  "#eee": 1,
+  "#f3f3f3": 1,
+  "#ea384c": 1,
+  "#758696": 1,
+  "#3336": 1,
+  "#2226": 1,
+  "#fff6": 1,
+  "#000000e6": 1,
+  "#2895f7": 1,
+  "#32271a": 1,
+  "#edd580": 1,
+  "#fbf4ed": 1,
+  "#32271a33": 1,
+  "#181313": 1,
+  "#fffc": 1,
+  "#ffffff1a": 1,
+  "#ffffffb3": 1,
+  "#ffffff80": 1,
+  "#1d170f": 1
+ },
+ "mediaBreakpoints": {
+  "@media screen and (max-width: 991px)": 93,
+  "@media screen and (max-width: 767px)": 91,
+  "@media screen and (max-width: 479px)": 48,
+  "@media (min-width: 768px)": 8,
+  "@media (min-width:992px)": 8,
+  "@media (max-width:991px) and (min-width:768px)": 7
+ }
+}

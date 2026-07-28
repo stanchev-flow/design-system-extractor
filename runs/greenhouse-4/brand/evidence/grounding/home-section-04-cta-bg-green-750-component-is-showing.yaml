@@ -1,0 +1,84 @@
+schemaVersion: section-grounding.v1
+sectionRole: cta
+layout:
+  structure: copy stack left, decorative fingerprint-flower art right, full-bleed dark band
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 180
+    bottom: 160
+  gapPx: null
+  containerWidth: full-bleed
+surfaces:
+- role: band
+  bgApprox: '#14311f'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#f4f2ec'
+typography:
+- role: h1
+  approxSizePx: 68
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#f4f2ec'
+  familyClass: serif
+- role: control-label
+  approxSizePx: 15
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#ffffff'
+  familyClass: grotesque-sans
+relationalSpacingPx:
+  headingToBody: 66
+components:
+- kind: button
+  variant: filled-primary
+  countObserved: 1
+  anatomy: text label centered in pill
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 15 32
+    radiusPx: 24
+  surfaceApprox: '#2f6bd6'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+  stateVisible: idle
+copy:
+  eyebrow: null
+  heading: Everything you need to get better at hiring
+  subheading: null
+  body: null
+  actions:
+  - label: Request a demo
+    styleHint: filled-primary
+media:
+- kind: illustration
+  treatment: tonal fingerprint-line flower motif, slightly lighter than dark green band, right half
+  aspect: portrait
+  approxFractionOfSection: 0.4
+mediaAssets:
+- kind: background-art
+  subject: fingerprint-line flower/plant motif
+  rightsGuess: own
+  luminance: dark
+  busyness: high
+  aspect: portrait
+  alphaEdge: true
+  countObserved: 1
+mediaComposition:
+- mode: background-with-foreground
+  layers: dark green band -> decorative fingerprint-flower art (right) -> copy stack + CTA (left); art
+    is a separate layered element
+  bakedVsSeparable: art separable from copy; band flat color
+confidence: high
+notes:
+- decorative art rendered in low-contrast tone-on-tone against band, barely lighter than background
+- crop cut at bottom seam, slightly darker sliver visible
+_source:
+  crop: section-04-cta-bg-green-750-component-is-showing.png
+  domClasses: cta bg-green-750 component-is-showing
+  model: claude-opus-4-8

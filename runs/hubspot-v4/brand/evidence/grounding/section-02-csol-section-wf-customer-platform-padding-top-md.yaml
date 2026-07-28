@@ -1,0 +1,136 @@
+schemaVersion: section-grounding.v1
+sectionRole: features
+layout:
+  structure: centered header stack on top; below a split — copy left / layered 3D illustration right;
+    carousel controls at bottom
+  columns: 2
+  alignment: mixed
+  approxPaddingPx:
+    top: 80
+    bottom: 90
+  gapPx: 64
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#faf9f5'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1c1c1a'
+typography:
+- role: h2
+  approxSizePx: 56
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1c1c1a'
+  familyClass: serif
+- role: body
+  approxSizePx: 17
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#33332f'
+  familyClass: grotesque-sans
+- role: h3
+  approxSizePx: 38
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1c1c1a'
+  familyClass: serif
+- role: caption
+  approxSizePx: 16
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#33332f'
+  familyClass: grotesque-sans
+components:
+- kind: button
+  variant: filled-neutral
+  countObserved: 2
+  anatomy: circular icon button with chevron glyph; left disabled/greyed, right active
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 28
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1c1c1a'
+  caseTreatment: sentence
+- kind: pill
+  variant: carousel-dots
+  countObserved: 3
+  anatomy: row of 3 dots; first filled dark (active), other two light grey
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 8
+  surfaceApprox: '#1c1c1a'
+  inkApprox: '#1c1c1a'
+  caseTreatment: sentence
+- kind: icon
+  variant: rounded-square-tiles
+  countObserved: 6
+  anatomy: orange rounded-square tiles each holding a monochrome line glyph (chat, phone, person, chart,
+    coin, etc.)
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 12
+  surfaceApprox: '#e8845f'
+  inkApprox: '#3a2a20'
+  caseTreatment: sentence
+copy:
+  eyebrow: null
+  heading: HubSpot's Agentic Customer Platform
+  subheading: Connected data and tools make it easier to know, do, and connect everything across your
+    business.
+  body: HubSpot's Smart CRM is the single source of truth that connects all your business data.
+  actions:
+  - label: ‹
+    styleHint: circular-neutral-icon-button
+  - label: ›
+    styleHint: circular-neutral-icon-button
+  items:
+  - heading: A CRM that’s really smart.
+    body: HubSpot's Smart CRM is the single source of truth that connects all your business data.
+    meta: null
+media:
+- kind: illustration
+  treatment: isometric layered glass panels (orange front, green, purple, lavender) with floating icon
+    tiles; labels 'Smart CRM', 'Hubs', 'Breeze'
+  aspect: landscape
+  approxFractionOfSection: 0.4
+mediaAssets:
+- kind: 3d-render
+  subject: stacked translucent isometric panels with floating rounded-square icon tiles
+  rightsGuess: own
+  luminance: light
+  busyness: medium
+  aspect: landscape
+  alphaEdge: true
+  countObserved: 1
+mediaComposition:
+- mode: layered
+  layers: back translucent lavender/purple panels -> mid green panel (Smart CRM) -> front orange panel
+    with floating icon tile cluster
+  bakedVsSeparable: reads as one baked 3D render artwork
+  componentsOverMedia: none
+generatedVisualDevices:
+- kind: css-gradient
+  evidence: translucent panel fills with soft graded tint suggest layered semi-opaque surfaces
+  params: 'orange #f04a1e front, mint-green #dfe9e0, lavender #e5dcec panels'
+  poster: stacked translucent isometric planes
+motionHints:
+- carousel dots (3, first active) indicate slide advance
+- prev/next circular chevron arrows for slide navigation
+- left arrow greyed suggests first slide of carousel
+confidence: high
+notes:
+- carousel active on slide 1 of 3
+- panel labels 'Smart CRM', 'Hubs', 'Breeze' set in italic sans
+_source:
+  crop: section-02-csol-section-wf-customer-platform-padding-top-md.png
+  domClasses: csol-section wf-customer-platform -padding-top-md -padding-bottom-md
+  model: claude-opus-4-8

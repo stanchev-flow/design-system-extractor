@@ -1,0 +1,145 @@
+schemaVersion: section-grounding.v1
+sectionRole: features
+layout:
+  structure: heading top-left, then 3-column card row below, each card with UI screenshot media-well +
+    heading + body beneath
+  columns: 3
+  alignment: left
+  approxPaddingPx:
+    top: 140
+    bottom: 80
+  gapPx: 40
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#ffffff'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1c3b2e'
+- role: card
+  bgApprox: '#f2f3f2'
+  parent: canvas
+  radiusPx: 4
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1c3b2e'
+- role: media-well
+  bgApprox: '#ffffff'
+  parent: card
+  radiusPx: 6
+  borderApprox: '1px #e5e7e6'
+  shadowApprox: soft drop, ~0 6px 18px rgba(0,0,0,.06)
+  inkApprox: '#2b2f2c'
+- role: chrome-bar
+  bgApprox: '#173d2f'
+  parent: media-well
+  radiusPx: 4
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#ffffff'
+typography:
+- role: h1
+  approxSizePx: 66
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1c3b2e'
+  familyClass: serif
+- role: h3
+  approxSizePx: 30
+  weightApprox: 400
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1c3b2e'
+  familyClass: serif
+- role: body
+  approxSizePx: 16
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#3f443f'
+  familyClass: grotesque-sans
+- role: caption
+  approxSizePx: 13
+  weightApprox: 600
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#ffffff'
+  familyClass: grotesque-sans
+relationalSpacingPx:
+  headingToBody: 20
+components:
+- kind: card
+  variant: filled-neutral
+  countObserved: 3
+  anatomy: media-well (chart/table UI) top -> heading -> body below card
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 32 32
+    radiusPx: 4
+  surfaceApprox: '#f2f3f2'
+  inkApprox: '#1c3b2e'
+  caseTreatment: title
+- kind: media-frame
+  variant: boxed-field
+  countObserved: 3
+  anatomy: dark title bar -> chart or data table body
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 6
+  surfaceApprox: '#ffffff'
+  inkApprox: '#2b2f2c'
+  caseTreatment: sentence
+copy:
+  eyebrow: null
+  heading: Ensure your sourcing effectiveness with data analytics
+  subheading: null
+  body: null
+  items:
+  - heading: Quantify
+    body: Understand the value of your sourcing efforts with detailed reports.
+    meta: null
+  - heading: Track
+    body: Monitor the effectiveness of recruiter outreach, candidate engagement and conversion rates.
+    meta: null
+  - heading: Consolidate
+    body: View all sourcing data in one place for easy data analysis.
+    meta: null
+media:
+- kind: product-ui
+  treatment: dashboard chart/table screenshots inside white media-well with dark green title bar
+  aspect: landscape
+  approxFractionOfSection: 0.35
+mediaAssets:
+- kind: product-ui-screenshot
+  subject: horizontal bar chart 'Candidate quality by source'
+  rightsGuess: own
+  luminance: light
+  busyness: medium
+  aspect: landscape
+  alphaEdge: false
+  countObserved: 2
+- kind: product-ui-screenshot
+  subject: data table 'Prospect conversion' with pool/prospects/candidates/hired columns
+  rightsGuess: own
+  luminance: light
+  busyness: medium
+  aspect: landscape
+  alphaEdge: false
+  countObserved: 1
+mediaComposition:
+- mode: single
+  layers: card surface -> centered product-UI media-well (dark title bar + light body); one flat screenshot
+    per card
+  bakedVsSeparable: media-well reads as one screenshot asset per card; card and heading are separate DOM
+confidence: high
+notes:
+- Section top edge truncated; small green fragment visible above heading from prior section
+- First and third cards show identical 'Candidate quality by source' bar chart
+_source:
+  crop: section-06-content-gallery-component-is-showing.png
+  domClasses: content-gallery component-is-showing
+  model: claude-opus-4-8

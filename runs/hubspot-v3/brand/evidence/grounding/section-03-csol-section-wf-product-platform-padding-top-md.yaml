@@ -1,0 +1,231 @@
+schemaVersion: section-grounding.v1
+sectionRole: features
+layout:
+  structure: split ~35/65, sticky copy stack left / 2-column card grid right
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 80
+    bottom: 80
+  gapPx: 32
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#fdfbf8'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+- role: card
+  bgApprox: '#ffffff'
+  parent: canvas
+  radiusPx: 12
+  borderApprox: '1px #ececec'
+  inkApprox: '#1a1a1a'
+- role: band
+  bgApprox: 'gradient(#f8c9d4 -> #f6d0b8)'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+typography:
+- role: eyebrow
+  approxSizePx: 15
+  weightApprox: 600
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: display
+  approxSizePx: 46
+  weightApprox: 400
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#1a1a1a'
+  familyClass: serif
+- role: body
+  approxSizePx: 17
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#3a3a3a'
+  familyClass: grotesque-sans
+- role: h3
+  approxSizePx: 20
+  weightApprox: 700
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: caption
+  approxSizePx: 15
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#3a3a3a'
+  familyClass: grotesque-sans
+- role: control-label
+  approxSizePx: 15
+  weightApprox: 600
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+relationalSpacingPx:
+  eyebrowToHeading: 40
+  headingToBody: 40
+  bodyToCta: 56
+components:
+- kind: button
+  variant: filled-primary
+  countObserved: 1
+  anatomy: text label centered
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 18 32
+    radiusPx: 6
+  surfaceApprox: '#f8531d'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: text label centered
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 18 32
+    radiusPx: 6
+  surfaceApprox: transparent
+  inkApprox: '#f8531d'
+  caseTreatment: sentence
+- kind: badge
+  variant: outlined-pill
+  countObserved: 1
+  anatomy: spark icon -> label
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 6 14
+    radiusPx: 6
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: card
+  variant: filled-neutral
+  countObserved: 10
+  anatomy: icon + heading -> dotted divider -> checkmark bullet list -> dotted divider -> text-arrow link
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 32 32
+    radiusPx: 12
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: link
+  variant: text-arrow
+  countObserved: 10
+  anatomy: label -> right arrow icon
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: sentence
+- kind: list-item
+  variant: check-bullet
+  countObserved: 19
+  anatomy: orange checkmark icon -> body text
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#3a3a3a'
+  caseTreatment: sentence
+- kind: icon
+  variant: outlined-glyph
+  countObserved: 10
+  anatomy: orange line-icon ~24px
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#f8531d'
+  caseTreatment: sentence
+copy:
+  eyebrow: Powered by AI
+  heading: Growing a business is hard. HubSpot makes it easier.
+  subheading: null
+  body: Disconnected tools and data slow you down. HubSpot connects everything — and everyone — in one
+    place to make growing a business easier than you think.
+  actions:
+  - label: Get a demo
+    styleHint: filled-primary
+  - label: Get started free
+    styleHint: outlined
+  items:
+  - heading: Marketing Hub®
+    body: Attract and convert the right leads. Run campaigns, personalize content, and track it all.
+    meta: Learn more
+  - heading: Sales Hub®
+    body: Generate quality leads and close deals, faster. Automate prospecting, manage pipeline, and accelerate
+      revenue growth.
+    meta: Learn more
+  - heading: Service Hub®
+    body: Streamline and scale support to serve customers faster. Drive retention with actionable insights,
+      customer health scores, and real-time usage data.
+    meta: Learn more
+  - heading: Content Hub™
+    body: Create content that clicks with your audience. Build pages, publish content across channels,
+      and stay on brand.
+    meta: Learn more
+  - heading: Data Hub™
+    body: Turn scattered data into unified intelligence. Combine, clean, and activate your customer data
+      across every team and tool.
+    meta: Learn more
+  - heading: Revenue Hub™
+    body: Make it easy for customers to pay you. Send quotes, collect payments, and manage subscriptions.
+    meta: Learn more
+  - heading: Smart CRM™
+    body: All your customer data in one place. Keep your data clean, connected, and actionable.
+    meta: Learn more
+  - heading: Breeze™
+    body: AI that works with you, and for you. Agents & assistants everywhere you need them.
+    meta: Learn more
+  - heading: Small Business Bundle
+    body: The Starter edition of each product, at one low price.
+    meta: Learn more
+  - heading: AEO (Beta)
+    body: See where your brand shows up in AI results. Get recommendations to improve your visibility.
+    meta: Learn more
+media:
+- kind: icon-set
+  treatment: orange line-icon glyphs ~24px, one per card header
+  aspect: square
+  approxFractionOfSection: 0.03
+mediaAssets:
+- kind: spot-icon
+  subject: abstract product-category glyphs (bolt, star, heart, arrows, chart)
+  rightsGuess: own
+  luminance: mid
+  busyness: low
+  aspect: square
+  alphaEdge: true
+  countObserved: 10
+generatedVisualDevices:
+- kind: css-gradient
+  evidence: smooth peach-to-pink band along the very bottom edge, no raster grain
+  params: '#f8c9d4 -> #f6d0b8, ~90deg horizontal'
+  poster: thin warm gradient strip at page bottom
+motionHints:
+- arrow-in-link icons beside 'Learn more' labels (hover icon-slide affordance)
+confidence: high
+notes:
+- Card grid is 2 columns x 5 rows; left copy column reads as sticky/standalone alongside grid
+- Bottom warm gradient band is cropped at frame edge — likely next-section seam
+- Dotted horizontal divider rules separate icon-header, bullet list, and Learn more link within each card
+_source:
+  crop: section-03-csol-section-wf-product-platform-padding-top-md.png
+  domClasses: csol-section wf-product-platform -padding-top-md -padding-bottom-md
+  model: claude-opus-4-8

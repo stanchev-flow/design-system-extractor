@@ -1,0 +1,251 @@
+schemaVersion: media-assets.v1
+brand: WoodWave v2
+source: >-
+  Authored 2026-07-17 (media semantics) from the fresh live capture's curated assets
+  (assets-tagged.json, 19 files), evidence/grounding/*.yaml, css-rules.json (the noise
+  overlay + tones), and Pillow-measured per-file stats (curate media-assets-draft.yaml).
+note: >-
+  assets-tagged.json remains the renderer-compat inventory; this artifact is the
+  richer semantic superset (stable logical-asset ids, closed kind taxonomy, usage
+  rights, measured stats, treatmentDefaults, generated visuals). Every file bound in a
+  layout-library pattern slot is registered here (C27). ui-glyphs (arrows) are
+  registered though bound via buttons.textCta / accentDevices rather than slot assets.
+
+# ── brand-level imagery grammar (spec §4) — measured via Pillow over the gallery
+# photographs (dominant hues 18-31 = warm amber/terracotta band; mid/dark key;
+# moderate-to-vivid saturation; matte, no gloss).
+photographyFingerprint:
+  measured:
+    temperatureCast: warm
+    keyExposure: mid-key
+    saturationBand: moderate
+    finish: matte
+    sampleSize: 15
+    source: measured
+  prose: >-
+    Warm, atmospheric gallery photography: spiral wooden interiors, sculpture halls,
+    latticed archways, terracotta vessels, seated portraits. Warm cast (amber/
+    terracotta dominant hues 18-31), mid-key-to-dark exposure, moderate-to-vivid
+    saturation, matte finish. Deployed full-bleed (hero, gallery slider), in
+    overlapping clusters (hero vessel/figure), and as sharp rectangular editorial
+    frames (about, founder). New photography briefs should stay in this family —
+    warm interior light, wood and stone materials, unhurried compositions.
+
+assets:
+  # ── the brand's own mark ──
+  - id: brand-logo
+    file: 000-657acd8d782ab334f6b2e5f3-logo.svg
+    assetSemantics: { kind: logo-own, logoVariant: wordmark, subject: "WoodWave wavy-lines glyph + wordmark (single-color vector)" }
+    facts: { intrinsic: { w: 175, h: 26 }, intrinsicAspect: 6.73, orientation: landscape, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "WoodWave Gallery" }
+    usageRights: own
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [nav-wordmark, footer-wordmark]
+    provenance: { source: capture-files, sections: [nav, footer], confidence: high }
+
+  # ── hero photo cluster ──
+  - id: hero-staircase
+    file: 001-657acd8d782ab334f6b2e5dc-hero-img-main-p-1600.jpg
+    assetSemantics: { kind: photograph, subject: "warm wooden spiral staircase viewed top-down" }
+    facts: { intrinsic: { w: 1600, h: 997 }, intrinsicAspect: 1.6048, orientation: landscape, alpha: false,
+             stats: { dominantHue: 18, luminanceBand: dark, busyness: high, saturationBand: vivid, source: measured },
+             focalPoint: center, safeCrop: null, altHarvested: "spiral wooden staircase" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [hero-background]
+    provenance: { source: capture-files, sections: [hero], confidence: high }
+  - id: hero-vessel
+    file: 002-657acd8d782ab334f6b2e5db-hero-img-2-p-1080.jpg
+    assetSemantics: { kind: product-packshot, subject: "terracotta vessel on a dark olive backdrop" }
+    facts: { intrinsic: { w: 1080, h: 842 }, intrinsicAspect: 1.2827, orientation: landscape, alpha: false,
+             stats: { dominantHue: 27, luminanceBand: dark, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: center, safeCrop: null, altHarvested: "terracotta vessel" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [hero-overlap]
+    provenance: { source: capture-files, sections: [hero], confidence: high }
+  - id: hero-figure
+    file: 003-657acd8d782ab334f6b2e5da-hero-img-3.jpg
+    assetSemantics: { kind: photograph, subject: "figure standing before framed wall art" }
+    facts: { intrinsic: { w: 400, h: 520 }, intrinsicAspect: 0.7692, orientation: portrait, alpha: false,
+             stats: { dominantHue: 23, luminanceBand: mid, busyness: medium, saturationBand: vivid, source: measured },
+             focalPoint: center, safeCrop: null, altHarvested: "figure before framed art" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [hero-overlap]
+    provenance: { source: capture-files, sections: [hero], confidence: high }
+
+  # ── about band photos ──
+  - id: about-arch
+    file: 004-657acd8d782ab334f6b2e5d2-about-img-1-p-800.jpg
+    assetSemantics: { kind: photograph, subject: "curved warm wooden interior architecture" }
+    facts: { intrinsic: { w: 800, h: 923 }, intrinsicAspect: 0.8667, orientation: portrait, alpha: false,
+             stats: { dominantHue: 26, luminanceBand: mid, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: center, safeCrop: null, altHarvested: "wooden interior architecture" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [editorial-frame]
+    provenance: { source: capture-files, sections: [about], confidence: high }
+  - id: about-hall
+    file: 005-657acd8d782ab334f6b2e5d4-about-img-2-p-1600.jpg
+    assetSemantics: { kind: photograph, subject: "museum gallery hall with sculpture and figures" }
+    facts: { intrinsic: { w: 1600, h: 1103 }, intrinsicAspect: 1.4506, orientation: landscape, alpha: false,
+             stats: { dominantHue: 29, luminanceBand: mid, busyness: low, saturationBand: moderate, source: measured },
+             focalPoint: center, safeCrop: null, altHarvested: "gallery hall with sculpture" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [editorial-frame]
+    provenance: { source: capture-files, sections: [about], confidence: high }
+  - id: about-archway
+    file: 006-657acd8d782ab334f6b2e5d5-about-img-3-p-1080.jpg
+    assetSemantics: { kind: photograph, subject: "organic lattice archway over a city skyline" }
+    facts: { intrinsic: { w: 1080, h: 480 }, intrinsicAspect: 2.25, orientation: landscape, alpha: false,
+             stats: { dominantHue: 28, luminanceBand: mid, busyness: high, saturationBand: moderate, source: measured },
+             focalPoint: center, safeCrop: null, altHarvested: "lattice archway over skyline" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [editorial-frame]
+    provenance: { source: capture-files, sections: [about], confidence: high }
+  - id: about-dome
+    file: 007-657acd8d782ab334f6b2e5d3-about-img-4-p-500.jpg
+    assetSemantics: { kind: photograph, subject: "interior dome with skylight and white sphere" }
+    facts: { intrinsic: { w: 500, h: 393 }, intrinsicAspect: 1.2723, orientation: landscape, alpha: false,
+             stats: { dominantHue: 30, luminanceBand: mid, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: center, safeCrop: null, altHarvested: "interior dome with sphere" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [editorial-frame]
+    provenance: { source: capture-files, sections: [about], confidence: high }
+
+  # ── gallery slider photos ──
+  - id: gallery-1
+    file: 009-657acd8d782ab334f6b2e5e5-web-gallery-1-p-1600.jpg
+    assetSemantics: { kind: photograph, subject: "dim interior room with framed artworks and viewers" }
+    facts: { intrinsic: { w: 1600, h: 914 }, intrinsicAspect: 1.7505, orientation: landscape, alpha: false,
+             stats: { dominantHue: 28, luminanceBand: dark, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: center, safeCrop: null, altHarvested: "gallery interior with artworks" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [slider-frame]
+    provenance: { source: capture-files, sections: [gallery-slider], confidence: high }
+  - id: gallery-2
+    file: 010-657acd8d782ab334f6b2e5e6-web-gallery-2-p-1600.jpg
+    assetSemantics: { kind: photograph, subject: "warm gallery interior scene" }
+    facts: { intrinsic: { w: 1600, h: 914 }, intrinsicAspect: 1.7505, orientation: landscape, alpha: false,
+             stats: { dominantHue: 21, luminanceBand: mid, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: center, safeCrop: null, altHarvested: "gallery interior" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [slider-frame]
+    provenance: { source: capture-files, sections: [gallery-slider], confidence: high }
+  - id: gallery-3
+    file: 011-657acd8d782ab334f6b2e5e7-web-gallery-3-p-1600.jpg
+    assetSemantics: { kind: photograph, subject: "warm gallery interior scene" }
+    facts: { intrinsic: { w: 1600, h: 914 }, intrinsicAspect: 1.7505, orientation: landscape, alpha: false,
+             stats: { dominantHue: 31, luminanceBand: mid, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: center, safeCrop: null, altHarvested: "gallery interior" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [slider-frame]
+    provenance: { source: capture-files, sections: [gallery-slider], confidence: high }
+  - id: gallery-4
+    file: 012-657acd8d782ab334f6b2e5e8-web-gallery-4.jpg
+    assetSemantics: { kind: photograph, subject: "warm gallery interior scene" }
+    facts: { intrinsic: { w: 2800, h: 1600 }, intrinsicAspect: 1.75, orientation: landscape, alpha: false,
+             stats: { dominantHue: 25, luminanceBand: mid, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: center, safeCrop: null, altHarvested: "gallery interior" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [slider-frame]
+    provenance: { source: capture-files, sections: [gallery-slider], confidence: high }
+  - id: gallery-5
+    file: 013-657acd8d782ab334f6b2e5e9-web-gallery-5.jpg
+    assetSemantics: { kind: photograph, subject: "dim gallery interior scene" }
+    facts: { intrinsic: { w: 2800, h: 1600 }, intrinsicAspect: 1.75, orientation: landscape, alpha: false,
+             stats: { dominantHue: 21, luminanceBand: dark, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: center, safeCrop: null, altHarvested: "gallery interior" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [slider-frame]
+    provenance: { source: capture-files, sections: [gallery-slider], confidence: high }
+  - id: gallery-6
+    file: 014-657acd8d782ab334f6b2e5f2-web-gallery-6.jpg
+    assetSemantics: { kind: photograph, subject: "warm gallery interior scene" }
+    facts: { intrinsic: { w: 2800, h: 1600 }, intrinsicAspect: 1.75, orientation: landscape, alpha: false,
+             stats: { dominantHue: 29, luminanceBand: dark, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: center, safeCrop: null, altHarvested: "gallery interior" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [slider-frame]
+    provenance: { source: capture-files, sections: [gallery-slider], confidence: high }
+
+  # ── founder portrait ──
+  - id: founder-portrait
+    file: 016-657acd8d782ab334f6b2e5dd-about-img-5-p-500.jpg
+    assetSemantics: { kind: portrait, subject: "seated person in dark attire against a neutral wall" }
+    facts: { intrinsic: { w: 500, h: 652 }, intrinsicAspect: 0.7669, orientation: portrait, alpha: false,
+             stats: { dominantHue: 29, luminanceBand: mid, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: center, safeCrop: null, altHarvested: "seated founder portrait" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [portrait-frame]
+    provenance: { source: capture-files, sections: [founder-story], confidence: high }
+
+  # ── visit map (third-party street map) ──
+  - id: visit-map
+    file: 017-657acd8d782ab334f6b2e5de-map-p-1600.jpg
+    assetSemantics: { kind: map, subject: "greyscale city street map with a centered location pin" }
+    facts: { intrinsic: { w: 1600, h: 738 }, intrinsicAspect: 2.168, orientation: landscape, alpha: false,
+             stats: { dominantHue: null, luminanceBand: mid, busyness: low, saturationBand: muted, source: measured },
+             focalPoint: center, safeCrop: null, altHarvested: "gallery location map" }
+    usageRights: third-party-mark
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [map-well]
+    provenance: { source: capture-files, sections: [visit], confidence: high }
+
+  # ── ui glyphs ──
+  - id: glyph-arrow-right
+    file: 018-arrow-right-dark.svg
+    assetSemantics: { kind: ui-glyph, subject: "arrow-right link glyph (single-ink vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "arrow right" }
+    usageRights: own
+    treatmentDefaults: { fit: mark, salience: content }
+    compositionRoles: [text-cta-glyph]
+    provenance: { source: capture-files, sections: [visit, newsletter, nav], confidence: high }
+  - id: glyph-slider-arrow
+    file: 008-slider-arrow.svg
+    assetSemantics: { kind: ui-glyph, subject: "circular slider control arrow (single-ink vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "slider arrow" }
+    usageRights: own
+    treatmentDefaults: { fit: mark, salience: content }
+    compositionRoles: [carousel-control-glyph]
+    provenance: { source: capture-files, sections: [gallery-slider], confidence: high }
+  - id: glyph-field-arrow
+    file: 015-password-form-arrow.svg
+    assetSemantics: { kind: ui-glyph, subject: "form submit arrow glyph (single-ink vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "form arrow" }
+    usageRights: own
+    treatmentDefaults: { fit: mark, salience: content }
+    compositionRoles: [form-submit-glyph]
+    provenance: { source: capture-files, sections: [newsletter], confidence: high }
+
+# ── generated-visual devices (code recipes, not files — spec §5) ──────────────────
+generatedVisuals:
+  - id: page-noise-grain
+    kind: noise-grain
+    recipe:
+      texture: tiling-noise
+      opacity: 0.05
+      blendMode: multiply
+      evidence: >-
+        The page carries a fixed full-viewport noise overlay (.fixed-noise-overlay,
+        background Noise-bg.gif tiled) that grains the warm surfaces — a subtle matte
+        tooth over the espresso/cream bands (css-rules: the noise-bg url + the
+        fixed-noise-overlay rule).
+    poster: null
+    posterNote: "self-rendering: a low-opacity tiling noise texture reproduces the grain from the recipe alone; no captured frame needed (spec §5.1 self-rendering kind)"
+    degrade: [live, omit]
+    provenance: { source: capture-files, sections: [hero, about, visit], confidence: medium }

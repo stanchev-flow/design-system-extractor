@@ -1,0 +1,404 @@
+schemaVersion: layout-patterns.v1
+lane: greenhouse-v2
+source: screenshots/greenhouse-v2/home/home.html
+note: One pattern per observed section shape. Pattern ids match layoutCopy keys from the copy-chrome stage.
+  Crops are references only; measured geometry is drawn from section-rects.v1 and vision grounding. Reusable
+  role names only.
+patterns:
+- id: hero
+  useCase: 'Full-bleed opening hero: centered copy stack in the middle with floating portrait photos and
+    product-UI chips scattered left/right over a mint canvas, navbar pinned top.'
+  archetypeRef: centered-copy-with-floating-media
+  surfaceIntent: surface/tint
+  provenance:
+  - home-section-00
+  cropRef: section-00-text-with-image-base-component-is-showing.png
+  responsive:
+    base: centered single-column copy stack with floating media collage at 1440w
+    mobile: copy stack stacks vertically, floating chips reduce/hide, full-bleed retained
+  geometry:
+    containerWidth: full-bleed
+    columns: 1
+    alignment: center
+    paddingTopPx: 84
+    paddingBottomPx: 120
+    gapPx: 28
+    sectionRectPx: x0 y1 w1440 h900
+  actionGroups:
+  - role: hero-primary-actions
+    members:
+    - primaryCta
+    - ghostCta
+  contentShape:
+    slots:
+    - name: heading
+      role: primary-heading
+      type: content
+      textLen: medium
+      sizeClass: display
+      geometry: centered, display serif ~96px
+      copyBinding: layoutCopy.hero.heading
+    - name: body
+      role: supporting-body
+      type: content
+      textLen: medium
+      sizeClass: body
+      geometry: centered under heading, ~21px
+      copyBinding: layoutCopy.hero.body
+    - name: primaryCta
+      role: primary-action
+      type: action
+      textLen: word
+      sizeClass: control
+      width: hug
+      geometry: filled green pill, radius 28, padding 18 40
+      copyBinding: layoutCopy.hero.cta
+    - name: ghostCta
+      role: secondary-action
+      type: action
+      textLen: short
+      sizeClass: control
+      width: hug
+      geometry: text-underline link
+      copyBinding: layoutCopy.hero.ghost
+    - name: floatingPortraits
+      role: decorative-media-collage
+      type: image
+      mediaAspect: portrait
+      z: front
+      geometry: circle/rounded-rect cropped portraits floating on canvas
+      copyBinding: none
+      assets:
+      - 030-689610cd7418c453485571fd-home-hero-m-clusters-of-three-solutions-workflows-with-photos-of-ui-and-people-working-402x.png
+  specialTreatments:
+  - kind: text-on-canvas
+  - kind: floating-media-collage
+  - kind: staged-scroll-reveal
+- id: featureGrid
+  useCase: 'Heading full-width top, then a 3-up card row below; each card: media-well top -> serif heading
+    -> body -> trailing text link/CTA.'
+  archetypeRef: three-column-media-top-cards
+  surfaceIntent: surface/primary
+  provenance:
+  - home-section-03
+  - home-section-01
+  cropRef: section-03-div.png
+  responsive:
+    base: 3-column card row at 1440w
+    mobile: cards stack to single column
+  geometry:
+    containerWidth: contained
+    columns: 3
+    alignment: left
+    paddingTopPx: 40
+    paddingBottomPx: 60
+    gapPx: 40
+    sectionRectPx: x0 y2452.98 w1440 h905.23
+  actionGroups:
+  - role: card-trailing-action
+    members:
+    - itemCta
+  contentShape:
+    slots:
+    - name: heading
+      role: section-heading
+      type: content
+      textLen: long
+      sizeClass: hero
+      geometry: full-width serif ~66px, tight tracking
+      copyBinding: layoutCopy.featureGrid.heading
+    - name: itemMedia
+      role: card-media-well
+      type: image
+      mediaAspect: landscape
+      z: back
+      geometry: rounded landscape photo, radius 6, one per card
+      copyBinding: layoutCopy.featureGrid.items[].media
+      assets:
+      - 046-6849817eafb5f7300bca18d3-revlon.png
+    - name: items
+      type: content
+      role: feature-card-list (media-well -> heading -> body -> action)
+  specialTreatments:
+  - kind: media-top-card
+  - kind: repeated-3-up
+- id: logos
+  useCase: 'Split ~50/50 band: copy left (heading + primary CTA) and a 2-column brand logo grid right,
+    divided by a vertical rule.'
+  archetypeRef: split-copy-and-logo-grid
+  surfaceIntent: surface/primary
+  provenance:
+  - home-section-02
+  cropRef: section-02-div.png
+  responsive:
+    base: 50/50 split copy-left logo-grid-right at 1440w
+    mobile: copy stacks above logo grid, grid collapses columns
+  geometry:
+    containerWidth: contained
+    columns: 2
+    alignment: left
+    paddingTopPx: 140
+    paddingBottomPx: 120
+    gapPx: 150
+    sectionRectPx: x0 y1666.98 w1440 h786
+  actionGroups:
+  - role: logos-primary-action
+    members:
+    - cta
+  contentShape:
+    slots:
+    - name: heading
+      role: section-heading
+      type: content
+      textLen: short
+      sizeClass: title
+      geometry: serif ~44px, left column
+      copyBinding: layoutCopy.logos.heading
+    - name: cta
+      role: primary-action
+      type: action
+      textLen: short
+      sizeClass: control
+      width: hug
+      geometry: filled green pill, radius 28, padding 16 36
+      copyBinding: layoutCopy.logos.cta
+    - name: logoGrid
+      role: partner-logo-wall
+      type: logo
+      mediaAspect: freeform
+      z: back
+      geometry: 2-column grid, 6 logotypes centered in cells
+      copyBinding: layoutCopy.logos.logos[]
+      assets:
+      - 046-6849817eafb5f7300bca18d3-revlon.png
+  specialTreatments:
+  - kind: vertical-divider-rule
+  - kind: logo-wall
+- id: comparison
+  useCase: Heading + body top, a pill filter row, then a split comparison card left and a decorative media
+    panel right with a review-award badge.
+  archetypeRef: pill-filtered-comparison-card
+  surfaceIntent: surface/tint
+  provenance:
+  - compare-section-02
+  cropRef: compare-section-02-video-component.yaml
+  responsive:
+    base: heading+body over pill row over 2-column comparison/media split
+    mobile: pill row scrolls horizontally, comparison card stacks above media panel
+  geometry:
+    containerWidth: contained
+    columns: 2
+    alignment: left
+    paddingTopPx: 110
+    paddingBottomPx: 40
+    gapPx: 32
+  actionGroups:
+  - role: comparison-filter-pills
+    members:
+    - filters
+  contentShape:
+    slots:
+    - name: eyebrow
+      role: eyebrow
+      type: content
+      textLen: short
+      sizeClass: caption
+      geometry: emerald eyebrow ~15px
+      copyBinding: layoutCopy.comparison.eyebrow
+    - name: heading
+      role: section-heading
+      type: content
+      textLen: short
+      sizeClass: hero
+      geometry: serif ~72px
+      copyBinding: layoutCopy.comparison.heading
+    - name: subhead
+      role: subheading
+      type: content
+      textLen: short
+      sizeClass: title
+      geometry: serif ~32px
+      copyBinding: layoutCopy.comparison.subhead
+    - name: body
+      role: supporting-body
+      type: content
+      textLen: medium
+      sizeClass: body
+      geometry: humanist sans ~17px
+      copyBinding: layoutCopy.comparison.body
+    - name: filters
+      role: filter-action-group
+      type: action
+      textLen: short
+      sizeClass: control
+      width: hug
+      geometry: 'pill row: 1 filled-primary current + 8 outlined idle, radius 24'
+      copyBinding: layoutCopy.comparison.filters[]
+    - name: comparisonRows
+      role: comparison-list
+      type: content
+      textLen: medium
+      sizeClass: body
+      z: back
+      geometry: 'mint card radius 16; rows: label -> brand dot -> HRIS dot -> ATS dot, divider between'
+      copyBinding: layoutCopy.comparison.items[]
+    - name: mediaPanel
+      role: decorative-media-well
+      type: media
+      mediaAspect: portrait
+      z: back
+      geometry: green media-well radius 16, fingerprint/leaf line-art with portrait chip overlay
+      copyBinding: none
+      assets: []
+    - name: awardBadge
+      role: review-award-badge
+      type: image
+      mediaAspect: portrait
+      z: front
+      geometry: G2 Users Love Us pennant badge, radius 4
+      copyBinding: none
+      assets:
+      - 018-69c3d50704945b1ced848f24-d-us-why-greenhouse-image-of-g2-badge-best-software-leader-spring-2026-nav-image-213x207.jpg
+  specialTreatments:
+  - kind: pill-filter-state-swap
+  - kind: text-on-media
+- id: stats
+  useCase: 'Three equal centered columns; each column: big serif number -> description -> underlined text
+    link.'
+  archetypeRef: three-column-number-over-caption
+  surfaceIntent: surface/muted
+  provenance:
+  - talent-sourcing-section-07
+  cropRef: talent-sourcing-section-07-statistics-component-is-showing.yaml
+  responsive:
+    base: 3 equal centered columns at 1440w
+    mobile: columns stack vertically, stay centered
+  geometry:
+    containerWidth: contained
+    columns: 3
+    alignment: center
+    paddingTopPx: 130
+    paddingBottomPx: 130
+    gapPx: 80
+  actionGroups:
+  - role: stat-trailing-action
+    members:
+    - itemCta
+  contentShape:
+    slots:
+    - name: items
+      type: content
+      role: 'stat-column-list: figure plus description and source citation'
+  specialTreatments:
+  - kind: number-over-caption
+  - kind: centered-columns
+- id: testimonial
+  useCase: 'Heading top-left, then a 3-column testimonial row below; each column: opening quote mark ->
+    quote body -> attribution name -> role meta caption.'
+  archetypeRef: three-column-quote-blocks
+  surfaceIntent: surface/primary
+  provenance:
+  - compare-section-05
+  cropRef: compare-section-05-div-block-145-component-is-showing.yaml
+  responsive:
+    base: heading over 3-column quote row at 1440w
+    mobile: quote columns stack to single column
+  geometry:
+    containerWidth: contained
+    columns: 3
+    alignment: left
+    paddingTopPx: 140
+    paddingBottomPx: 120
+    gapPx: 64
+  contentShape:
+    slots:
+    - name: heading
+      role: section-heading
+      type: content
+      textLen: short
+    - name: itemQuote
+      role: quote-body
+      type: content
+      textLen: long
+    - name: itemName
+      role: attribution-name
+      type: content
+      textLen: word
+    - name: itemCaption
+      role: attribution-meta
+      type: content
+      textLen: short
+  specialTreatments:
+  - kind: quote-block
+  - kind: repeated-3-up
+- id: ctaBand
+  useCase: 'Full-bleed dark forest-green closing band: copy left (heading + filled CTA), decorative fingerprint-flower
+    line art right.'
+  archetypeRef: copy-left-decorative-art-right
+  surfaceIntent: surface/inverse
+  provenance:
+  - home-section-04
+  cropRef: section-04-cta-bg-green-750-component-is-showing.png
+  responsive:
+    base: copy-left art-right split on dark band at 1440w
+    mobile: copy stacks, decorative art reduces/anchors behind
+  geometry:
+    containerWidth: full-bleed
+    columns: 2
+    alignment: left
+    paddingTopPx: 200
+    paddingBottomPx: 200
+    sectionRectPx: x0 y3358.22 w1440 h629.5
+  actionGroups:
+  - role: ctaBand-primary-action
+    members:
+    - cta
+  contentShape:
+    slots:
+    - name: heading
+      role: band-heading
+      type: content
+      textLen: short
+      sizeClass: hero
+      geometry: serif ~72px on dark band
+      copyBinding: layoutCopy.ctaBand.heading
+    - name: cta
+      role: primary-action
+      type: action
+      textLen: short
+      sizeClass: control
+      width: hug
+      geometry: filled blue pill, radius 24, padding 14 32
+      copyBinding: layoutCopy.ctaBand.cta
+  specialTreatments:
+  - kind: inverse-closing-band
+  - kind: decorative-line-art
+recipes:
+- id: media-top-card-with-trailing-action
+  anatomy: media-well top -> serif heading -> body -> trailing text/pill action
+  geometry:
+    radiusPx: 6
+    gapPx: 24
+  variants:
+  - name: text-link-trailing
+    trailingAction: underlined-green-text-link
+    usedBy:
+    - featureGrid
+  - name: outlined-pill-trailing
+    trailingAction: outlined-pill
+    usedBy:
+    - featureGrid
+  provenance:
+  - home-section-01
+  - home-section-03
+- id: number-over-caption-with-link
+  anatomy: large figure -> description -> underlined text link
+  geometry:
+    gapPx: 45
+  variants:
+  - name: centered-stat
+    alignment: center
+    usedBy:
+    - stats
+  provenance:
+  - talent-sourcing-section-07

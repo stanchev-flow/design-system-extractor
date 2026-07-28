@@ -1,0 +1,3251 @@
+schemaVersion: media-assets.v1
+brand: Greenhouse
+photographyFingerprint:
+  notObserved: true
+  reason: Measured stats give only mid luminance and moderate saturation with mixed dominant
+    hues; temperatureCast and finish were not consistently measurable across the photographic
+    family, so no reliable fingerprint could be derived.
+assets:
+- id: 69c3d50704945b1ced848f24-d-us-why-greenhouse-image-of-g2-badge-best-software-leader-spring-2026-nav-image-213x207
+  file: 018-69c3d50704945b1ced848f24-d-us-why-greenhouse-image-of-g2-badge-best-software-leader-spring-2026-nav-image-213x207.jpg
+  assetSemantics:
+    kind: badge-review-award
+    subject: null
+  facts:
+    intrinsic:
+      w: 426
+      h: 414
+    intrinsicAspect: 1.029
+    orientation: square
+    alpha: false
+    stats:
+      dominantHue: 30
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: null
+  compositionRoles:
+  - chrome-nav-media
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: high
+    pages:
+    - compare
+    - home
+    - talent-sourcing
+  tagGuess: award-badge
+  placements:
+  - page: compare
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 300
+      h: 292
+    position:
+      x: 540
+      y: -448
+    fractionOfSection: null
+    visible: true
+    alt: Greenhouse G2 Top 50 HR Products 2024 collage over image of coworkers sitting at
+      table2x
+  - page: home
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 300
+      h: 292
+    position:
+      x: 540
+      y: -448
+    fractionOfSection: null
+    visible: true
+    alt: Greenhouse G2 Top 50 HR Products 2024 collage over image of coworkers sitting at
+      table2x
+  - page: talent-sourcing
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 300
+      h: 292
+    position:
+      x: 540
+      y: -448
+    fractionOfSection: null
+    visible: true
+    alt: Greenhouse G2 Top 50 HR Products 2024 collage over image of coworkers sitting at
+      table2x
+  reusePolicy: site-chrome
+- id: 6716a7aa2b8818b873608ccb-greenhouse-dei-icon-and-office-worker-facing-cameria-in-collared-shirt
+  file: 019-6716a7aa2b8818b873608ccb-greenhouse-dei-icon-and-office-worker-facing-cameria-in-collared-shirt.webp
+  assetSemantics:
+    kind: spot-icon
+    subject: null
+  facts:
+    intrinsic:
+      w: 360
+      h: 240
+    intrinsicAspect: 1.5
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 106
+      luminanceBand: dark
+      busyness: medium
+      saturationBand: vivid
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - chrome-nav-media
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: high
+    pages:
+    - compare
+    - home
+    - talent-sourcing
+  tagGuess: feature-icon
+  placements:
+  - page: compare
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 180
+      h: 120
+    position:
+      x: 480
+      y: -412
+    fractionOfSection: null
+    visible: true
+    alt: Greenhouse DEI Icon and office worker facing camera in collared shirt
+  - page: home
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 180
+      h: 120
+    position:
+      x: 480
+      y: -412
+    fractionOfSection: null
+    visible: true
+    alt: Greenhouse DEI Icon and office worker facing camera in collared shirt
+  - page: talent-sourcing
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 180
+      h: 120
+    position:
+      x: 480
+      y: -412
+    fractionOfSection: null
+    visible: true
+    alt: Greenhouse DEI Icon and office worker facing camera in collared shirt
+  reusePolicy: site-chrome
+- id: 6716b79fb7517eec7624852b-greenhouse-scorecard-icon-thumbs-up-and-office-worker-waving-to-person-virtually
+  file: 020-6716b79fb7517eec7624852b-greenhouse-scorecard-icon-thumbs-up-and-office-worker-waving-to-person-virtually.webp
+  assetSemantics:
+    kind: spot-icon
+    subject: null
+  facts:
+    intrinsic:
+      w: 360
+      h: 240
+    intrinsicAspect: 1.5
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 132
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - chrome-nav-media
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: high
+    pages:
+    - compare
+    - home
+    - talent-sourcing
+  tagGuess: feature-icon
+  placements:
+  - page: compare
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 180
+      h: 120
+    position:
+      x: 720
+      y: -412
+    fractionOfSection: null
+    visible: true
+    alt: Greenhouse scorecard icon thumbs up and office worker waving to person virtually
+  - page: home
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 180
+      h: 120
+    position:
+      x: 720
+      y: -412
+    fractionOfSection: null
+    visible: true
+    alt: Greenhouse scorecard icon thumbs up and office worker waving to person virtually
+  - page: talent-sourcing
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 180
+      h: 120
+    position:
+      x: 720
+      y: -412
+    fractionOfSection: null
+    visible: true
+    alt: Greenhouse scorecard icon thumbs up and office worker waving to person virtually
+  reusePolicy: site-chrome
+- id: 6716b8508a5978331488f06f-greenhouse-ai-icon-and-office-worker-sitting-at-a-table
+  file: 021-6716b8508a5978331488f06f-greenhouse-ai-icon-and-office-worker-sitting-at-a-table.webp
+  assetSemantics:
+    kind: spot-icon
+    subject: null
+  facts:
+    intrinsic:
+      w: 360
+      h: 240
+    intrinsicAspect: 1.5
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 138
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - chrome-nav-media
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: high
+    pages:
+    - compare
+    - home
+    - talent-sourcing
+  tagGuess: feature-icon
+  placements:
+  - page: compare
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 180
+      h: 120
+    position:
+      x: 480
+      y: -207
+    fractionOfSection: null
+    visible: true
+    alt: Greenhouse AI icon and office worker sitting at a table
+  - page: home
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 180
+      h: 120
+    position:
+      x: 480
+      y: -207
+    fractionOfSection: null
+    visible: true
+    alt: Greenhouse AI icon and office worker sitting at a table
+  - page: talent-sourcing
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 180
+      h: 120
+    position:
+      x: 480
+      y: -207
+    fractionOfSection: null
+    visible: true
+    alt: Greenhouse AI icon and office worker sitting at a table
+  reusePolicy: site-chrome
+- id: 6716b884e5b3b85778949f5e-hiring-maturity-curve-and-woman-in-white-suit-in-brightly-lit-office
+  file: 022-6716b884e5b3b85778949f5e-hiring-maturity-curve-and-woman-in-white-suit-in-brightly-lit-office.webp
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 360
+      h: 240
+    intrinsicAspect: 1.5
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 128
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - chrome-nav-media
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: high
+    pages:
+    - compare
+    - home
+    - talent-sourcing
+  tagGuess: decorative
+  placements:
+  - page: compare
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 180
+      h: 120
+    position:
+      x: 720
+      y: -207
+    fractionOfSection: null
+    visible: true
+    alt: Hiring maturity curve and woman in white suit in brightly lit office
+  - page: home
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 180
+      h: 120
+    position:
+      x: 720
+      y: -207
+    fractionOfSection: null
+    visible: true
+    alt: Hiring maturity curve and woman in white suit in brightly lit office
+  - page: talent-sourcing
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 180
+      h: 120
+    position:
+      x: 720
+      y: -207
+    fractionOfSection: null
+    visible: true
+    alt: Hiring maturity curve and woman in white suit in brightly lit office
+  reusePolicy: site-chrome
+- id: 6a0f41318cffb1788f1a6f43-6a06331af6baf12400fd36cb-en-nav-two-office-workers-chatting-while-walking-through-office
+  file: 023-6a0f41318cffb1788f1a6f43-6a06331af6baf12400fd36cb-en-nav-two-office-workers-chatting-while-walking-through-office.avif
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 600
+      h: 618
+    intrinsicAspect: 0.9709
+    orientation: square
+    alpha: true
+    stats:
+      dominantHue: 29
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - chrome-nav-media
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: high
+    pages:
+    - compare
+    - home
+    - talent-sourcing
+  tagGuess: decorative
+  placements:
+  - page: compare
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 300
+      h: 309
+    position:
+      x: 540
+      y: -445
+    fractionOfSection: null
+    visible: true
+    alt: Two men sitting in an office space with warm tones2x
+  - page: home
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 300
+      h: 309
+    position:
+      x: 540
+      y: -445
+    fractionOfSection: null
+    visible: true
+    alt: Two men sitting in an office space with warm tones2x
+  - page: talent-sourcing
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 300
+      h: 309
+    position:
+      x: 540
+      y: -445
+    fractionOfSection: null
+    visible: true
+    alt: Two men sitting in an office space with warm tones2x
+  reusePolicy: site-chrome
+- id: 68dbdc1d5be3e4f3eb40d079-featured-nav-image-asset-402x
+  file: 024-68dbdc1d5be3e4f3eb40d079-featured-nav-image-asset-402x.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 852
+      h: 828
+    intrinsicAspect: 1.029
+    orientation: square
+    alpha: false
+    stats:
+      dominantHue: 51
+      luminanceBand: light
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - chrome-nav-media
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: high
+    pages:
+    - compare
+    - home
+    - talent-sourcing
+  tagGuess: decorative
+  placements:
+  - page: compare
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 300
+      h: 292
+    position:
+      x: 540
+      y: -472
+    fractionOfSection: null
+    visible: true
+    alt: Woman wearing patterned blouse in office setting with silo leaf motif marigold HR
+      Technology logo nav
+  - page: home
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 300
+      h: 292
+    position:
+      x: 540
+      y: -472
+    fractionOfSection: null
+    visible: true
+    alt: Woman wearing patterned blouse in office setting with silo leaf motif marigold HR
+      Technology logo nav
+  - page: talent-sourcing
+    section: null
+    zone: header
+    role: chrome-nav-media
+    occurrences: 1
+    rendered:
+      w: 300
+      h: 292
+    position:
+      x: 540
+      y: -472
+    fractionOfSection: null
+    visible: true
+    alt: Woman wearing patterned blouse in office setting with silo leaf motif marigold HR
+      Technology logo nav
+  reusePolicy: site-chrome
+- id: 67115f20230f1b71c1227254-facebook-200116-235458
+  file: 025-67115f20230f1b71c1227254-facebook-200116-235458.svg
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - chrome-footer-mark
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: high
+    pages:
+    - compare
+    - home
+    - talent-sourcing
+  tagGuess: decorative
+  placements:
+  - page: compare
+    section: null
+    zone: footer
+    role: chrome-footer-mark
+    occurrences: 1
+    rendered:
+      w: 30
+      h: 30
+    position:
+      x: 120
+      y: 7926
+    fractionOfSection: null
+    visible: true
+    alt: facebook
+  - page: home
+    section: null
+    zone: footer
+    role: chrome-footer-mark
+    occurrences: 1
+    rendered:
+      w: 30
+      h: 30
+    position:
+      x: 120
+      y: 4856
+    fractionOfSection: null
+    visible: true
+    alt: facebook
+  - page: talent-sourcing
+    section: null
+    zone: footer
+    role: chrome-footer-mark
+    occurrences: 1
+    rendered:
+      w: 30
+      h: 30
+    position:
+      x: 120
+      y: 9164
+    fractionOfSection: null
+    visible: true
+    alt: facebook
+  reusePolicy: site-chrome
+- id: 67115fc972e65ee91bb044b8-youtube
+  file: 027-67115fc972e65ee91bb044b8-youtube.svg
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - chrome-footer-mark
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: high
+    pages:
+    - compare
+    - home
+    - talent-sourcing
+  tagGuess: decorative
+  placements:
+  - page: compare
+    section: null
+    zone: footer
+    role: chrome-footer-mark
+    occurrences: 1
+    rendered:
+      w: 30
+      h: 30
+    position:
+      x: 206
+      y: 7926
+    fractionOfSection: null
+    visible: true
+    alt: youtube
+  - page: home
+    section: null
+    zone: footer
+    role: chrome-footer-mark
+    occurrences: 1
+    rendered:
+      w: 30
+      h: 30
+    position:
+      x: 206
+      y: 4856
+    fractionOfSection: null
+    visible: true
+    alt: youtube
+  - page: talent-sourcing
+    section: null
+    zone: footer
+    role: chrome-footer-mark
+    occurrences: 1
+    rendered:
+      w: 30
+      h: 30
+    position:
+      x: 206
+      y: 9164
+    fractionOfSection: null
+    visible: true
+    alt: youtube
+  reusePolicy: site-chrome
+- id: 67115ff4288cd64e56e2eb71-instagram-1
+  file: 028-67115ff4288cd64e56e2eb71-instagram-1.svg
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - chrome-footer-mark
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: high
+    pages:
+    - compare
+    - home
+    - talent-sourcing
+  tagGuess: decorative
+  placements:
+  - page: compare
+    section: null
+    zone: footer
+    role: chrome-footer-mark
+    occurrences: 1
+    rendered:
+      w: 30
+      h: 30
+    position:
+      x: 249
+      y: 7926
+    fractionOfSection: null
+    visible: true
+    alt: instagram
+  - page: home
+    section: null
+    zone: footer
+    role: chrome-footer-mark
+    occurrences: 1
+    rendered:
+      w: 30
+      h: 30
+    position:
+      x: 249
+      y: 4856
+    fractionOfSection: null
+    visible: true
+    alt: instagram
+  - page: talent-sourcing
+    section: null
+    zone: footer
+    role: chrome-footer-mark
+    occurrences: 1
+    rendered:
+      w: 30
+      h: 30
+    position:
+      x: 249
+      y: 9164
+    fractionOfSection: null
+    visible: true
+    alt: instagram
+  reusePolicy: site-chrome
+- id: 671160195a4bf20b7ab62ae0-tiktok-1
+  file: 029-671160195a4bf20b7ab62ae0-tiktok-1.svg
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - chrome-footer-mark
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: high
+    pages:
+    - compare
+    - home
+    - talent-sourcing
+  tagGuess: decorative
+  placements:
+  - page: compare
+    section: null
+    zone: footer
+    role: chrome-footer-mark
+    occurrences: 1
+    rendered:
+      w: 30
+      h: 30
+    position:
+      x: 292
+      y: 7926
+    fractionOfSection: null
+    visible: true
+    alt: tiktok
+  - page: home
+    section: null
+    zone: footer
+    role: chrome-footer-mark
+    occurrences: 1
+    rendered:
+      w: 30
+      h: 30
+    position:
+      x: 292
+      y: 4856
+    fractionOfSection: null
+    visible: true
+    alt: tiktok
+  - page: talent-sourcing
+    section: null
+    zone: footer
+    role: chrome-footer-mark
+    occurrences: 1
+    rendered:
+      w: 30
+      h: 30
+    position:
+      x: 292
+      y: 9164
+    fractionOfSection: null
+    visible: true
+    alt: tiktok
+  reusePolicy: site-chrome
+- id: 6a4bfc62b24be85dc1ffa3a3-greenhouse-icon-green
+  file: 031-6a4bfc62b24be85dc1ffa3a3-greenhouse-icon-green.svg
+  assetSemantics:
+    kind: spot-icon
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - inline-spot-icon
+  provenance:
+    source: capture-files
+    sections:
+    - compare-section-02-video-component
+    confidence: high
+    pages:
+    - compare
+  tagGuess: feature-icon
+  placements:
+  - page: compare
+    section: compare-section-02-video-component
+    zone: main
+    role: inline-spot-icon
+    occurrences: 1
+    rendered:
+      w: 74
+      h: 40
+    position:
+      x: 571
+      y: 2780
+    fractionOfSection: 0.051
+    visible: true
+    alt: Greenhouse Wordmark
+  reusePolicy: page-specific
+- id: 6a4bfc62b24be85dc1ffa3a6-single-20platform-20image
+  file: 032-6a4bfc62b24be85dc1ffa3a6-single-20platform-20image.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 956
+      h: 1280
+    intrinsicAspect: 0.7469
+    orientation: portrait
+    alpha: true
+    stats:
+      dominantHue: 153
+      luminanceBand: dark
+      busyness: medium
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - card-media-well
+  provenance:
+    source: capture-files
+    sections:
+    - compare-section-02-video-component
+    confidence: high
+    pages:
+    - compare
+  tagGuess: decorative
+  placements:
+  - page: compare
+    section: compare-section-02-video-component
+    zone: main
+    role: card-media-well
+    occurrences: 1
+    rendered:
+      w: 420
+      h: 575
+    position:
+      x: 900
+      y: 2641
+    fractionOfSection: 0.292
+    visible: true
+    alt: Greenhouse scorecard and man sitting outside in greenery
+  reusePolicy: page-specific
+- id: 6a4bfc62b24be85dc1ffa39f-single-20platform-20image-1
+  file: 033-6a4bfc62b24be85dc1ffa39f-single-20platform-20image-1.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 956
+      h: 1281
+    intrinsicAspect: 0.7463
+    orientation: portrait
+    alpha: true
+    stats:
+      dominantHue: 145
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles: []
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+    pages: []
+  tagGuess: decorative
+  placements: []
+  reusePolicy: unplaced
+- id: 6a4bfc62b24be85dc1ffa3ac-single-20platform-20image-2
+  file: 034-6a4bfc62b24be85dc1ffa3ac-single-20platform-20image-2.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 956
+      h: 1283
+    intrinsicAspect: 0.7451
+    orientation: portrait
+    alpha: true
+    stats:
+      dominantHue: 152
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles: []
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+    pages: []
+  tagGuess: decorative
+  placements: []
+  reusePolicy: unplaced
+- id: 6a4bfc62b24be85dc1ffa3b2-single-20platform-20image-3
+  file: 035-6a4bfc62b24be85dc1ffa3b2-single-20platform-20image-3.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 956
+      h: 1494
+    intrinsicAspect: 0.6399
+    orientation: portrait
+    alpha: true
+    stats:
+      dominantHue: 158
+      luminanceBand: dark
+      busyness: medium
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles: []
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+    pages: []
+  tagGuess: decorative
+  placements: []
+  reusePolicy: unplaced
+- id: 6a4bfc62b24be85dc1ffa3c4-single-20platform-20image-6
+  file: 036-6a4bfc62b24be85dc1ffa3c4-single-20platform-20image-6.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 956
+      h: 1326
+    intrinsicAspect: 0.721
+    orientation: portrait
+    alpha: true
+    stats:
+      dominantHue: 158
+      luminanceBand: mid
+      busyness: high
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles: []
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+    pages: []
+  tagGuess: decorative
+  placements: []
+  reusePolicy: unplaced
+- id: 6a4bfc62b24be85dc1ffa3b8-single-20platform-20image-4
+  file: 037-6a4bfc62b24be85dc1ffa3b8-single-20platform-20image-4.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 956
+      h: 1494
+    intrinsicAspect: 0.6399
+    orientation: portrait
+    alpha: true
+    stats:
+      dominantHue: 159
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles: []
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+    pages: []
+  tagGuess: decorative
+  placements: []
+  reusePolicy: unplaced
+- id: 6a4bfc62b24be85dc1ffa3ca-reporting
+  file: 038-6a4bfc62b24be85dc1ffa3ca-reporting.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 956
+      h: 1427
+    intrinsicAspect: 0.6699
+    orientation: portrait
+    alpha: true
+    stats:
+      dominantHue: 155
+      luminanceBand: mid
+      busyness: high
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles: []
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+    pages: []
+  tagGuess: decorative
+  placements: []
+  reusePolicy: unplaced
+- id: 6a4bfc62b24be85dc1ffa3d4-integrations
+  file: 039-6a4bfc62b24be85dc1ffa3d4-integrations.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 956
+      h: 1280
+    intrinsicAspect: 0.7469
+    orientation: portrait
+    alpha: true
+    stats:
+      dominantHue: 154
+      luminanceBand: dark
+      busyness: medium
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles: []
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+    pages: []
+  tagGuess: decorative
+  placements: []
+  reusePolicy: unplaced
+- id: 6a4bfc62b24be85dc1ffa3be-single-20platform-20image-5
+  file: 040-6a4bfc62b24be85dc1ffa3be-single-20platform-20image-5.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 956
+      h: 1426
+    intrinsicAspect: 0.6704
+    orientation: portrait
+    alpha: true
+    stats:
+      dominantHue: 162
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles: []
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+    pages: []
+  tagGuess: decorative
+  placements: []
+  reusePolicy: unplaced
+- id: 675b1b254dcfbdcac88895be-greenhouse-g2-grid-report
+  file: 041-675b1b254dcfbdcac88895be-greenhouse-g2-grid-report.avif
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 960
+      h: 836
+    intrinsicAspect: 1.1483
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 34
+      luminanceBand: light
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - section-lead-media
+  provenance:
+    source: capture-files
+    sections:
+    - compare-section-04-side-by-side-2-component-is-showing
+    confidence: high
+    pages:
+    - compare
+  tagGuess: decorative
+  placements:
+  - page: compare
+    section: compare-section-04-side-by-side-2-component-is-showing
+    zone: main
+    role: section-lead-media
+    occurrences: 1
+    rendered:
+      w: 480
+      h: 418
+    position:
+      x: 840
+      y: 4461
+    fractionOfSection: 0.333
+    visible: true
+    alt: Greenhouse G2 Grid report
+  reusePolicy: page-specific
+- id: 6a1895bc83e54d86cbd45bbe-d-us-awards-image-g2-ent-leader-summer-2026-on-marigold-background
+  file: 042-6a1895bc83e54d86cbd45bbe-d-us-awards-image-g2-ent-leader-summer-2026-on-marigold-background.png
+  assetSemantics:
+    kind: badge-review-award
+    subject: null
+  facts:
+    intrinsic:
+      w: 720
+      h: 520
+    intrinsicAspect: 1.3846
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: 33
+      luminanceBand: light
+      busyness: low
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: null
+  compositionRoles:
+  - card-media-well
+  provenance:
+    source: capture-files
+    sections:
+    - compare-section-06-content-gallery-component-is-showing
+    confidence: high
+    pages:
+    - compare
+  tagGuess: award-badge
+  placements:
+  - page: compare
+    section: compare-section-06-content-gallery-component-is-showing
+    zone: main
+    role: card-media-well
+    occurrences: 1
+    rendered:
+      w: 379
+      h: 273
+    position:
+      x: 120
+      y: 5912
+    fractionOfSection: 0.263
+    visible: true
+    alt: D-US-Awards-image-G2-ENT-leader-summer-2026-on-marigold-background
+  reusePolicy: page-specific
+- id: 6a1895bc8f2d9491ce3db846-d-us-awards-image-g2-mm-leader-summer-2026-on-marigold-background
+  file: 043-6a1895bc8f2d9491ce3db846-d-us-awards-image-g2-mm-leader-summer-2026-on-marigold-background.png
+  assetSemantics:
+    kind: badge-review-award
+    subject: null
+  facts:
+    intrinsic:
+      w: 720
+      h: 520
+    intrinsicAspect: 1.3846
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: 33
+      luminanceBand: light
+      busyness: low
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: null
+  compositionRoles:
+  - card-media-well
+  provenance:
+    source: capture-files
+    sections:
+    - compare-section-06-content-gallery-component-is-showing
+    confidence: high
+    pages:
+    - compare
+  tagGuess: award-badge
+  placements:
+  - page: compare
+    section: compare-section-06-content-gallery-component-is-showing
+    zone: main
+    role: card-media-well
+    occurrences: 1
+    rendered:
+      w: 379
+      h: 273
+    position:
+      x: 531
+      y: 5912
+    fractionOfSection: 0.263
+    visible: true
+    alt: D-US-Awards-image-G2-MM-leader-summer-2026-on-marigold-background
+  reusePolicy: page-specific
+- id: 6a1895bc5ecfc15c4fdec10a-d-us-awards-image-g2-leader-europe-summer-2026-on-marigold-background
+  file: 044-6a1895bc5ecfc15c4fdec10a-d-us-awards-image-g2-leader-europe-summer-2026-on-marigold-background.png
+  assetSemantics:
+    kind: badge-review-award
+    subject: null
+  facts:
+    intrinsic:
+      w: 720
+      h: 520
+    intrinsicAspect: 1.3846
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: 33
+      luminanceBand: light
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: null
+  compositionRoles:
+  - card-media-well
+  provenance:
+    source: capture-files
+    sections:
+    - compare-section-06-content-gallery-component-is-showing
+    confidence: high
+    pages:
+    - compare
+  tagGuess: award-badge
+  placements:
+  - page: compare
+    section: compare-section-06-content-gallery-component-is-showing
+    zone: main
+    role: card-media-well
+    occurrences: 1
+    rendered:
+      w: 379
+      h: 273
+    position:
+      x: 941
+      y: 5912
+    fractionOfSection: 0.263
+    visible: true
+    alt: D-US-Awards-image-G2-leader-Europe-summer-2026-on-marigold-background
+  reusePolicy: page-specific
+- id: 66ccc7a3c9045b79b105b8c6-prefooter-image11-402x
+  file: 045-66ccc7a3c9045b79b105b8c6-prefooter-image11-402x.avif
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 1038
+      h: 1092
+    intrinsicAspect: 0.9505
+    orientation: square
+    alpha: true
+    stats:
+      dominantHue: null
+      luminanceBand: dark
+      busyness: low
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - section-lead-media
+  provenance:
+    source: capture-files
+    sections:
+    - compare-section-07-cta-bg-green-750-component-is-showing
+    - home-section-04-cta-bg-green-750-component-is-showing
+    - talent-sourcing-section-09-cta-bg-green-750-component-is-showing
+    confidence: high
+    pages:
+    - compare
+    - home
+    - talent-sourcing
+  tagGuess: decorative
+  variants:
+  - file: 053-66ccc7a3c9045b79b105b8c6-prefooter-image11-402x.avif
+    relation: duplicate
+    scale: null
+    note: byte-identical to the canonical file (content-hash dedupe)
+  placements:
+  - page: compare
+    section: compare-section-07-cta-bg-green-750-component-is-showing
+    zone: main
+    role: section-lead-media
+    occurrences: 1
+    rendered:
+      w: 598
+      h: 630
+    position:
+      x: 752
+      y: 6428
+    fractionOfSection: 0.415
+    visible: true
+    alt: null
+  - page: home
+    section: home-section-04-cta-bg-green-750-component-is-showing
+    zone: main
+    role: section-lead-media
+    occurrences: 1
+    rendered:
+      w: 598
+      h: 630
+    position:
+      x: 752
+      y: 3358
+    fractionOfSection: 0.415
+    visible: true
+    alt: null
+  - page: talent-sourcing
+    section: talent-sourcing-section-09-cta-bg-green-750-component-is-showing
+    zone: main
+    role: section-lead-media
+    occurrences: 1
+    rendered:
+      w: 598
+      h: 630
+    position:
+      x: 752
+      y: 7666
+    fractionOfSection: 0.415
+    visible: true
+    alt: null
+  reusePolicy: cross-page
+- id: greenhouse-wordmark-green
+  file: 046-greenhouse-wordmark-green.png
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic:
+      w: 2212
+      h: 497
+    intrinsicAspect: 4.4507
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 162
+      luminanceBand: light
+      busyness: medium
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: null
+  compositionRoles: []
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+    pages: []
+  tagGuess: logo
+  variants:
+  - file: 054-greenhouse-wordmark-green.png
+    relation: duplicate
+    scale: null
+    note: byte-identical to the canonical file (content-hash dedupe)
+  placements: []
+  reusePolicy: unplaced
+- id: powered-by-logo
+  file: 047-powered-by-logo.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: null
+  compositionRoles: []
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+    pages: []
+  tagGuess: logo
+  variants:
+  - file: 055-powered-by-logo.svg
+    relation: duplicate
+    scale: null
+    note: byte-identical to the canonical file (content-hash dedupe)
+  placements: []
+  reusePolicy: unplaced
+- id: 689610cd7418c453485571fd-home-hero-m-clusters-of-three-solutions-workflows-with-photos-of-ui-and-people-working-402x
+  file: 030-689610cd7418c453485571fd-home-hero-m-clusters-of-three-solutions-workflows-with-photos-of-ui-and-people-working-402x.png
+  assetSemantics:
+    kind: illustration
+    subject: null
+  facts:
+    intrinsic:
+      w: 750
+      h: 640
+    intrinsicAspect: 1.1719
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: 63
+      luminanceBand: light
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - responsive-alternate
+  provenance:
+    source: capture-files
+    sections:
+    - home-section-00-text-with-image-base-component-is-showing
+    confidence: high
+    pages:
+    - home
+  tagGuess: hero-illustration
+  placements:
+  - page: home
+    section: home-section-00-text-with-image-base-component-is-showing
+    zone: main
+    role: responsive-alternate
+    occurrences: 1
+    rendered:
+      w: 0
+      h: 0
+    position:
+      x: 0
+      y: 0
+    fractionOfSection: 0.0
+    visible: false
+    alt: Mobile image of clusters of three solutions workflows with photos of UI and people
+      working
+  reusePolicy: page-specific
+  standsInFor:
+  - kind: lottie
+    ref: https://cdn.prod.website-files.com/6668a687e71e2722fccb8357/68960eb339b201ac3a0fa622_Home-Hero-clusters-of-three-solutions-workflows-with-UI-and-photos-of-people-working-together.json
+- id: 67115fa14af6293adb962bfd-linkedin
+  file: 026-67115fa14af6293adb962bfd-linkedin.svg
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - chrome-footer-mark
+  provenance:
+    source: capture-files
+    pages:
+    - compare
+    - home
+    - talent-sourcing
+    sections: []
+    confidence: high
+  tagGuess: decorative
+  placements:
+  - page: compare
+    section: null
+    zone: footer
+    role: chrome-footer-mark
+    occurrences: 1
+    rendered:
+      w: 30
+      h: 30
+    position:
+      x: 163
+      y: 7926
+    fractionOfSection: null
+    visible: true
+    alt: linkedin
+  - page: home
+    section: null
+    zone: footer
+    role: chrome-footer-mark
+    occurrences: 1
+    rendered:
+      w: 30
+      h: 30
+    position:
+      x: 163
+      y: 4856
+    fractionOfSection: null
+    visible: true
+    alt: linkedin
+  - page: talent-sourcing
+    section: null
+    zone: footer
+    role: chrome-footer-mark
+    occurrences: 1
+    rendered:
+      w: 30
+      h: 30
+    position:
+      x: 163
+      y: 9164
+    fractionOfSection: null
+    visible: true
+    alt: linkedin
+  reusePolicy: site-chrome
+- id: 6a20cd945dce24bd4f73b612-d-en-hero-greenhouse-ai-notetaker-tool
+  file: 031-6a20cd945dce24bd4f73b612-d-en-hero-greenhouse-ai-notetaker-tool.avif
+  assetSemantics:
+    kind: illustration
+    subject: null
+  facts:
+    intrinsic:
+      w: 1440
+      h: 1594
+    intrinsicAspect: 0.9034
+    orientation: square
+    alpha: true
+    stats:
+      dominantHue: 145
+      luminanceBand: dark
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles: []
+  provenance:
+    source: capture-files
+    pages: []
+    sections: []
+    confidence: low
+  tagGuess: hero-illustration
+  placements: []
+  reusePolicy: unplaced
+- id: 676afa936f2bdcaefd2b096b-collage-of-job-ad-market-ui-and-partner-campaign-ui-with-fingerprint-leaf-m
+  file: 032-676afa936f2bdcaefd2b096b-collage-of-job-ad-market-ui-and-partner-campaign-ui-with-fingerprint-leaf-m.avif
+  assetSemantics:
+    kind: product-ui-screenshot
+    subject: null
+  facts:
+    intrinsic:
+      w: 756
+      h: 840
+    intrinsicAspect: 0.9
+    orientation: square
+    alpha: false
+    stats:
+      dominantHue: 160
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: vivid
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - responsive-alternate
+  provenance:
+    source: capture-files
+    pages:
+    - talent-sourcing
+    sections:
+    - talent-sourcing-section-01-text-with-image-component-is-showing
+    confidence: high
+  tagGuess: product-graphic
+  placements:
+  - page: talent-sourcing
+    section: talent-sourcing-section-01-text-with-image-component-is-showing
+    zone: main
+    role: responsive-alternate
+    occurrences: 1
+    rendered:
+      w: 0
+      h: 0
+    position:
+      x: 0
+      y: 0
+    fractionOfSection: 0.0
+    visible: false
+    alt: Collage of Job ad market UI and Partner Campaign UI with fingerprint leaf M
+  reusePolicy: page-specific
+- id: 6a20cd9384412a3611e10c5b-m-en-hero-greenhouse-ai-notetaker-tool
+  file: 032-6a20cd9384412a3611e10c5b-m-en-hero-greenhouse-ai-notetaker-tool.avif
+  assetSemantics:
+    kind: illustration
+    subject: null
+  facts:
+    intrinsic:
+      w: 1125
+      h: 1245
+    intrinsicAspect: 0.9036
+    orientation: square
+    alpha: true
+    stats:
+      dominantHue: 147
+      luminanceBand: dark
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - responsive-alternate
+  provenance:
+    source: capture-files
+    pages:
+    - home
+    sections: []
+    confidence: high
+  tagGuess: hero-illustration
+  placements:
+  - page: home
+    section: null
+    zone: main
+    role: responsive-alternate
+    occurrences: 1
+    rendered:
+      w: 0
+      h: 0
+    position:
+      x: 0
+      y: 0
+    fractionOfSection: null
+    visible: false
+    alt: null
+  reusePolicy: page-specific
+- id: 66fedd7a62023763e2595fdc-collage-of-campaigin-pools-ui-and-fingerprint-leaf-png
+  file: 033-66fedd7a62023763e2595fdc-collage-of-campaigin-pools-ui-and-fingerprint-leaf-png.webp
+  assetSemantics:
+    kind: product-ui-screenshot
+    subject: null
+  facts:
+    intrinsic:
+      w: 1440
+      h: 1600
+    intrinsicAspect: 0.9
+    orientation: square
+    alpha: false
+    stats:
+      dominantHue: null
+      luminanceBand: light
+      busyness: low
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - section-lead-media
+  provenance:
+    source: capture-files
+    pages:
+    - talent-sourcing
+    sections:
+    - talent-sourcing-section-02-text-with-image-component-is-showing
+    confidence: high
+  tagGuess: product-graphic
+  placements:
+  - page: talent-sourcing
+    section: talent-sourcing-section-02-text-with-image-component-is-showing
+    zone: main
+    role: section-lead-media
+    occurrences: 1
+    rendered:
+      w: 720
+      h: 800
+    position:
+      x: 720
+      y: 1712
+    fractionOfSection: 0.5
+    visible: true
+    alt: Collage of Campaign pools ui and fingerprint leaf
+  reusePolicy: page-specific
+- id: 6a298fd15eb091333bcbe885-d-en-cg-home-two-office-workers-discussing-content-on-tablet-bright-space
+  file: 033-6a298fd15eb091333bcbe885-d-en-cg-home-two-office-workers-discussing-content-on-tablet-bright-space.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 1440
+      h: 960
+    intrinsicAspect: 1.5
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: 30
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - card-media-well
+  provenance:
+    source: capture-files
+    pages:
+    - home
+    sections:
+    - home-section-01-div
+    confidence: high
+  tagGuess: decorative
+  placements:
+  - page: home
+    section: home-section-01-div
+    zone: main
+    role: card-media-well
+    occurrences: 1
+    rendered:
+      w: 379
+      h: 252
+    position:
+      x: 120
+      y: 1113
+    fractionOfSection: 0.263
+    visible: true
+    alt: null
+  reusePolicy: page-specific
+- id: 676afb006db7e993e9bab875-collage-of-campaigin-pools-ui-and-fingerprint-leaf-m
+  file: 034-676afb006db7e993e9bab875-collage-of-campaigin-pools-ui-and-fingerprint-leaf-m.avif
+  assetSemantics:
+    kind: product-ui-screenshot
+    subject: null
+  facts:
+    intrinsic:
+      w: 756
+      h: 840
+    intrinsicAspect: 0.9
+    orientation: square
+    alpha: false
+    stats:
+      dominantHue: null
+      luminanceBand: light
+      busyness: low
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - responsive-alternate
+  provenance:
+    source: capture-files
+    pages:
+    - talent-sourcing
+    sections:
+    - talent-sourcing-section-02-text-with-image-component-is-showing
+    confidence: high
+  tagGuess: product-graphic
+  placements:
+  - page: talent-sourcing
+    section: talent-sourcing-section-02-text-with-image-component-is-showing
+    zone: main
+    role: responsive-alternate
+    occurrences: 1
+    rendered:
+      w: 0
+      h: 0
+    position:
+      x: 0
+      y: 0
+    fractionOfSection: 0.0
+    visible: false
+    alt: Collage of Campaign pools ui and fingerprint leaf M
+  reusePolicy: page-specific
+- id: 6a063cdddfe47d8d3429a902-d-en-cg-home-real-talent-fraud-detection-candidate-cards
+  file: 034-6a063cdddfe47d8d3429a902-d-en-cg-home-real-talent-fraud-detection-candidate-cards.avif
+  assetSemantics:
+    kind: product-ui-screenshot
+    subject: null
+  facts:
+    intrinsic:
+      w: 718
+      h: 480
+    intrinsicAspect: 1.4958
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 153
+      luminanceBand: dark
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - card-media-well
+  provenance:
+    source: capture-files
+    pages:
+    - home
+    sections:
+    - home-section-01-div
+    confidence: high
+  tagGuess: product-graphic
+  placements:
+  - page: home
+    section: home-section-01-div
+    zone: main
+    role: card-media-well
+    occurrences: 1
+    rendered:
+      w: 379
+      h: 253
+    position:
+      x: 531
+      y: 1113
+    fractionOfSection: 0.263
+    visible: true
+    alt: Greenhouse Real Talent features showing fraud detected on a candidate card
+  reusePolicy: page-specific
+- id: 66feddedc6644300cc8975d4-collage-of-company-job-board-page-on-desktop-and-mobile-with-fingerprint-leaf-png
+  file: 035-66feddedc6644300cc8975d4-collage-of-company-job-board-page-on-desktop-and-mobile-with-fingerprint-leaf-png.webp
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 1440
+      h: 1600
+    intrinsicAspect: 0.9
+    orientation: square
+    alpha: false
+    stats:
+      dominantHue: 164
+      luminanceBand: light
+      busyness: low
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - section-lead-media
+  provenance:
+    source: capture-files
+    pages:
+    - talent-sourcing
+    sections:
+    - talent-sourcing-section-03-text-with-image-component-is-showing
+    confidence: high
+  tagGuess: decorative
+  placements:
+  - page: talent-sourcing
+    section: talent-sourcing-section-03-text-with-image-component-is-showing
+    zone: main
+    role: section-lead-media
+    occurrences: 1
+    rendered:
+      w: 720
+      h: 800
+    position:
+      x: 0
+      y: 2512
+    fractionOfSection: 0.5
+    visible: true
+    alt: Collage of company job board page on desktop and mobile with fingerprint leaf
+  reusePolicy: page-specific
+- id: 6a063cdcba100ecc20453980-d-en-cg-home-woman-in-suit-on-laptop-smiling-setup-job-alert-ui
+  file: 035-6a063cdcba100ecc20453980-d-en-cg-home-woman-in-suit-on-laptop-smiling-setup-job-alert-ui.avif
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 718
+      h: 482
+    intrinsicAspect: 1.4896
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 37
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - card-media-well
+  provenance:
+    source: capture-files
+    pages:
+    - home
+    sections:
+    - home-section-01-div
+    confidence: high
+  tagGuess: decorative
+  placements:
+  - page: home
+    section: home-section-01-div
+    zone: main
+    role: card-media-well
+    occurrences: 1
+    rendered:
+      w: 379
+      h: 254
+    position:
+      x: 941
+      y: 1113
+    fractionOfSection: 0.263
+    visible: true
+    alt: Woman in yellow blouse in brightly lit office with a UI bubble overlaid that says
+      create a job alert
+  reusePolicy: page-specific
+- id: 676afb50456275e18565d8ed-collage-of-company-job-board-page-on-desktop-and-mobile-with-fingerprint-leaf-m
+  file: 036-676afb50456275e18565d8ed-collage-of-company-job-board-page-on-desktop-and-mobile-with-fingerprint-leaf-m.avif
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 750
+      h: 840
+    intrinsicAspect: 0.8929
+    orientation: portrait
+    alpha: false
+    stats:
+      dominantHue: 163
+      luminanceBand: light
+      busyness: low
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - responsive-alternate
+  provenance:
+    source: capture-files
+    pages:
+    - talent-sourcing
+    sections:
+    - talent-sourcing-section-03-text-with-image-component-is-showing
+    confidence: high
+  tagGuess: decorative
+  placements:
+  - page: talent-sourcing
+    section: talent-sourcing-section-03-text-with-image-component-is-showing
+    zone: main
+    role: responsive-alternate
+    occurrences: 1
+    rendered:
+      w: 0
+      h: 0
+    position:
+      x: 0
+      y: 0
+    fractionOfSection: 0.0
+    visible: false
+    alt: Collage of company job board page on desktop and mobile with fingerprint leaf M
+  reusePolicy: page-specific
+- id: 68b07bd107c5a9802f71177f-coupang-logo
+  file: 036-68b07bd107c5a9802f71177f-coupang-logo.png
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic:
+      w: 480
+      h: 120
+    intrinsicAspect: 4.0
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 41
+      luminanceBand: dark
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: null
+  compositionRoles: []
+  provenance:
+    source: capture-files
+    pages: []
+    sections: []
+    confidence: low
+  tagGuess: logo
+  placements: []
+  reusePolicy: unplaced
+- id: 66fede4422f8f7c1d1cb3f92-internal-job-board-and-add-a-referral-ui-with-green-fingerprint-collage-png
+  file: 037-66fede4422f8f7c1d1cb3f92-internal-job-board-and-add-a-referral-ui-with-green-fingerprint-collage-png.webp
+  assetSemantics:
+    kind: product-ui-screenshot
+    subject: null
+  facts:
+    intrinsic:
+      w: 1440
+      h: 1600
+    intrinsicAspect: 0.9
+    orientation: square
+    alpha: false
+    stats:
+      dominantHue: 162
+      luminanceBand: mid
+      busyness: low
+      saturationBand: vivid
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - section-lead-media
+  provenance:
+    source: capture-files
+    pages:
+    - talent-sourcing
+    sections:
+    - talent-sourcing-section-04-text-with-image-component-is-showing
+    confidence: high
+  tagGuess: product-graphic
+  placements:
+  - page: talent-sourcing
+    section: talent-sourcing-section-04-text-with-image-component-is-showing
+    zone: main
+    role: section-lead-media
+    occurrences: 1
+    rendered:
+      w: 720
+      h: 800
+    position:
+      x: 720
+      y: 3312
+    fractionOfSection: 0.5
+    visible: true
+    alt: Internal job board and add a referral UI with green fingerprint collage
+  reusePolicy: page-specific
+- id: 68b07c8b9ce3850b8412365a-trust-logo
+  file: 037-68b07c8b9ce3850b8412365a-trust-logo.png
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic:
+      w: 480
+      h: 120
+    intrinsicAspect: 4.0
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 201
+      luminanceBand: dark
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: null
+  compositionRoles: []
+  provenance:
+    source: capture-files
+    pages: []
+    sections: []
+    confidence: low
+  tagGuess: logo
+  placements: []
+  reusePolicy: unplaced
+- id: 676afb8b617314e296c07860-internal-job-board-and-add-a-referral-ui-with-green-fingerprint-collage-m
+  file: 038-676afb8b617314e296c07860-internal-job-board-and-add-a-referral-ui-with-green-fingerprint-collage-m.avif
+  assetSemantics:
+    kind: product-ui-screenshot
+    subject: null
+  facts:
+    intrinsic:
+      w: 756
+      h: 840
+    intrinsicAspect: 0.9
+    orientation: square
+    alpha: false
+    stats:
+      dominantHue: 161
+      luminanceBand: mid
+      busyness: low
+      saturationBand: vivid
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - responsive-alternate
+  provenance:
+    source: capture-files
+    pages:
+    - talent-sourcing
+    sections:
+    - talent-sourcing-section-04-text-with-image-component-is-showing
+    confidence: high
+  tagGuess: product-graphic
+  placements:
+  - page: talent-sourcing
+    section: talent-sourcing-section-04-text-with-image-component-is-showing
+    zone: main
+    role: responsive-alternate
+    occurrences: 1
+    rendered:
+      w: 0
+      h: 0
+    position:
+      x: 0
+      y: 0
+    fractionOfSection: 0.0
+    visible: false
+    alt: Internal job board and add a referral UI with green fingerprint collage M
+  reusePolicy: page-specific
+- id: 67abbfc7a18f878bd4fd4189-hellofresh-logo
+  file: 038-67abbfc7a18f878bd4fd4189-hellofresh-logo.avif
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic:
+      w: 480
+      h: 120
+    intrinsicAspect: 4.0
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 85
+      luminanceBand: dark
+      busyness: low
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: null
+  compositionRoles: []
+  provenance:
+    source: capture-files
+    pages: []
+    sections: []
+    confidence: low
+  tagGuess: logo
+  placements: []
+  reusePolicy: unplaced
+- id: 67264458a1a3be620e0a5033-trivago-company-logo
+  file: 039-67264458a1a3be620e0a5033-trivago-company-logo.avif
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic:
+      w: 480
+      h: 120
+    intrinsicAspect: 4.0
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 344
+      luminanceBand: dark
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: null
+  compositionRoles: []
+  provenance:
+    source: capture-files
+    pages: []
+    sections: []
+    confidence: low
+  tagGuess: logo
+  placements: []
+  reusePolicy: unplaced
+- id: 6a0e3ec6537430af02946a73-d-en-twi-texting-powered-by-grayscale
+  file: 039-6a0e3ec6537430af02946a73-d-en-twi-texting-powered-by-grayscale.avif
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 1440
+      h: 1580
+    intrinsicAspect: 0.9114
+    orientation: square
+    alpha: false
+    stats:
+      dominantHue: 6
+      luminanceBand: light
+      busyness: low
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - section-lead-media
+  provenance:
+    source: capture-files
+    pages:
+    - talent-sourcing
+    sections:
+    - talent-sourcing-section-05-text-with-image-component-is-showing
+    confidence: high
+  tagGuess: decorative
+  placements:
+  - page: talent-sourcing
+    section: talent-sourcing-section-05-text-with-image-component-is-showing
+    zone: main
+    role: section-lead-media
+    occurrences: 1
+    rendered:
+      w: 720
+      h: 848
+    position:
+      x: 0
+      y: 4112
+    fractionOfSection: 0.5
+    visible: true
+    alt: null
+  reusePolicy: page-specific
+- id: 67abc305add47300764f9fd2-remote-logo
+  file: 040-67abc305add47300764f9fd2-remote-logo.avif
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic:
+      w: 480
+      h: 121
+    intrinsicAspect: 3.9669
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 260
+      luminanceBand: mid
+      busyness: high
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: null
+  compositionRoles: []
+  provenance:
+    source: capture-files
+    pages: []
+    sections: []
+    confidence: low
+  tagGuess: logo
+  placements: []
+  reusePolicy: unplaced
+- id: 6a0e3ec62c25ebb983d9fe81-m-en-twi-texting-powered-by-grayscale
+  file: 040-6a0e3ec62c25ebb983d9fe81-m-en-twi-texting-powered-by-grayscale.avif
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 750
+      h: 800
+    intrinsicAspect: 0.9375
+    orientation: square
+    alpha: false
+    stats:
+      dominantHue: 8
+      luminanceBand: light
+      busyness: low
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - responsive-alternate
+  provenance:
+    source: capture-files
+    pages:
+    - talent-sourcing
+    sections:
+    - talent-sourcing-section-05-text-with-image-component-is-showing
+    confidence: high
+  tagGuess: decorative
+  placements:
+  - page: talent-sourcing
+    section: talent-sourcing-section-05-text-with-image-component-is-showing
+    zone: main
+    role: responsive-alternate
+    occurrences: 1
+    rendered:
+      w: 0
+      h: 0
+    position:
+      x: 0
+      y: 0
+    fractionOfSection: 0.0
+    visible: false
+    alt: null
+  reusePolicy: page-specific
+- id: 66ec4b43706ea909b580e4f3-candiate-quality-by-source-bar-chart-report
+  file: 041-66ec4b43706ea909b580e4f3-candiate-quality-by-source-bar-chart-report.avif
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 720
+      h: 480
+    intrinsicAspect: 1.5
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 160
+      luminanceBand: light
+      busyness: low
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - card-media-well
+  provenance:
+    source: capture-files
+    pages:
+    - talent-sourcing
+    sections:
+    - talent-sourcing-section-06-content-gallery-component-is-showing
+    confidence: high
+  tagGuess: decorative
+  placements:
+  - page: talent-sourcing
+    section: talent-sourcing-section-06-content-gallery-component-is-showing
+    zone: main
+    role: card-media-well
+    occurrences: 2
+    rendered:
+      w: 379
+      h: 252
+    position:
+      x: 120
+      y: 5380
+    fractionOfSection: 0.263
+    visible: true
+    alt: Candidate quality by source bar chart report
+  reusePolicy: page-specific
+- id: 6724ffc984cbe2b871361fbb-gong-logo-515-c3-97-160
+  file: 041-6724ffc984cbe2b871361fbb-gong-logo-515-c3-97-160.avif
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic:
+      w: 515
+      h: 160
+    intrinsicAspect: 3.2188
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 268
+      luminanceBand: light
+      busyness: high
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: null
+  compositionRoles: []
+  provenance:
+    source: capture-files
+    pages: []
+    sections: []
+    confidence: low
+  tagGuess: logo
+  placements: []
+  reusePolicy: unplaced
+- id: 66ec47c7962008dcf1c5f1d8-prospect-conversion-report-ui
+  file: 042-66ec47c7962008dcf1c5f1d8-prospect-conversion-report-ui.avif
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 720
+      h: 480
+    intrinsicAspect: 1.5
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 160
+      luminanceBand: light
+      busyness: low
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - card-media-well
+  provenance:
+    source: capture-files
+    pages:
+    - talent-sourcing
+    sections:
+    - talent-sourcing-section-06-content-gallery-component-is-showing
+    confidence: high
+  tagGuess: decorative
+  placements:
+  - page: talent-sourcing
+    section: talent-sourcing-section-06-content-gallery-component-is-showing
+    zone: main
+    role: card-media-well
+    occurrences: 1
+    rendered:
+      w: 379
+      h: 252
+    position:
+      x: 531
+      y: 5380
+    fractionOfSection: 0.263
+    visible: true
+    alt: Prospect conversion report UI
+  reusePolicy: page-specific
+- id: 684b22ea4479a38eba02bb7a-nfl-240x74-20-1
+  file: 042-684b22ea4479a38eba02bb7a-nfl-240x74-20-1.png
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+    subtype: client
+  facts:
+    intrinsic:
+      w: 480
+      h: 148
+    intrinsicAspect: 3.2432
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 249
+      luminanceBand: dark
+      busyness: medium
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: null
+  compositionRoles:
+  - proof-strip-mark
+  provenance:
+    source: capture-files
+    pages:
+    - home
+    sections:
+    - home-section-02-div
+    confidence: high
+  tagGuess: decorative
+  placements:
+  - page: home
+    section: home-section-02-div
+    zone: main
+    role: proof-strip-mark
+    occurrences: 1
+    rendered:
+      w: 176
+      h: 54
+    position:
+      x: 857
+      y: 1883
+    fractionOfSection: 0.122
+    visible: true
+    alt: NFL
+  reusePolicy: page-specific
+  kindCorrectedBy: measured-placement
+- id: 66db2afc7f4ffa8dac7d63af-coursera-2024-02-22-193551-bfgg
+  file: 043-66db2afc7f4ffa8dac7d63af-coursera-2024-02-22-193551-bfgg.avif
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+    subtype: client
+  facts:
+    intrinsic:
+      w: 430
+      h: 108
+    intrinsicAspect: 3.9815
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 214
+      luminanceBand: dark
+      busyness: low
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: null
+  compositionRoles:
+  - proof-strip-mark
+  provenance:
+    source: capture-files
+    pages:
+    - home
+    sections:
+    - home-section-02-div
+    confidence: high
+  tagGuess: decorative
+  placements:
+  - page: home
+    section: home-section-02-div
+    zone: main
+    role: proof-strip-mark
+    occurrences: 1
+    rendered:
+      w: 176
+      h: 44
+    position:
+      x: 1107
+      y: 1888
+    fractionOfSection: 0.122
+    visible: true
+    alt: Coursera
+  reusePolicy: page-specific
+  kindCorrectedBy: measured-placement
+- id: 6a0e3ad39c65e202b43df73c-d-en-sbs-greenhouse-candidate-engagement-ui
+  file: 043-6a0e3ad39c65e202b43df73c-d-en-sbs-greenhouse-candidate-engagement-ui.avif
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 960
+      h: 960
+    intrinsicAspect: 1.0
+    orientation: square
+    alpha: true
+    stats:
+      dominantHue: 158
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - card-media-well
+  provenance:
+    source: capture-files
+    pages:
+    - talent-sourcing
+    sections:
+    - talent-sourcing-section-08-side-by-side-2-component-is-showing
+    confidence: high
+  tagGuess: decorative
+  placements:
+  - page: talent-sourcing
+    section: talent-sourcing-section-08-side-by-side-2-component-is-showing
+    zone: main
+    role: card-media-well
+    occurrences: 1
+    rendered:
+      w: 480
+      h: 480
+    position:
+      x: 120
+      y: 6728
+    fractionOfSection: 0.333
+    visible: true
+    alt: null
+  reusePolicy: page-specific
+- id: 684b1591b49b84db80e1e68b-logo-anthropic
+  file: 044-684b1591b49b84db80e1e68b-logo-anthropic.png
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic:
+      w: 482
+      h: 120
+    intrinsicAspect: 4.0167
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: null
+      luminanceBand: dark
+      busyness: low
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: null
+  compositionRoles:
+  - proof-strip-mark
+  provenance:
+    source: capture-files
+    pages:
+    - home
+    sections:
+    - home-section-02-div
+    confidence: high
+  tagGuess: logo
+  placements:
+  - page: home
+    section: home-section-02-div
+    zone: main
+    role: proof-strip-mark
+    occurrences: 1
+    rendered:
+      w: 176
+      h: 44
+    position:
+      x: 857
+      y: 2038
+    fractionOfSection: 0.122
+    visible: true
+    alt: Anthropic
+  reusePolicy: page-specific
+- id: 6a0e3ad247f2a601a20756cb-d-en-sbs-greenhouse-integrations-ui
+  file: 044-6a0e3ad247f2a601a20756cb-d-en-sbs-greenhouse-integrations-ui.avif
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 960
+      h: 960
+    intrinsicAspect: 1.0
+    orientation: square
+    alpha: true
+    stats:
+      dominantHue: 150
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - card-media-well
+  provenance:
+    source: capture-files
+    pages:
+    - talent-sourcing
+    sections:
+    - talent-sourcing-section-08-side-by-side-2-component-is-showing
+    confidence: high
+  tagGuess: decorative
+  placements:
+  - page: talent-sourcing
+    section: talent-sourcing-section-08-side-by-side-2-component-is-showing
+    zone: main
+    role: card-media-well
+    occurrences: 1
+    rendered:
+      w: 480
+      h: 480
+    position:
+      x: 840
+      y: 6728
+    fractionOfSection: 0.333
+    visible: true
+    alt: null
+  reusePolicy: page-specific
+- id: 684b154b7f3a0b8ea13a87db-logo-datavant
+  file: 045-684b154b7f3a0b8ea13a87db-logo-datavant.png
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic:
+      w: 480
+      h: 120
+    intrinsicAspect: 4.0
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: null
+      luminanceBand: dark
+      busyness: low
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: null
+  compositionRoles:
+  - proof-strip-mark
+  provenance:
+    source: capture-files
+    pages:
+    - home
+    sections:
+    - home-section-02-div
+    confidence: high
+  tagGuess: logo
+  placements:
+  - page: home
+    section: home-section-02-div
+    zone: main
+    role: proof-strip-mark
+    occurrences: 1
+    rendered:
+      w: 176
+      h: 44
+    position:
+      x: 1107
+      y: 2038
+    fractionOfSection: 0.122
+    visible: true
+    alt: Datavant
+  reusePolicy: page-specific
+- id: 6849817eafb5f7300bca18d3-revlon
+  file: 046-6849817eafb5f7300bca18d3-revlon.png
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+    subtype: client
+  facts:
+    intrinsic:
+      w: 480
+      h: 120
+    intrinsicAspect: 4.0
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: null
+      luminanceBand: dark
+      busyness: low
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: null
+  compositionRoles:
+  - proof-strip-mark
+  provenance:
+    source: capture-files
+    pages:
+    - home
+    sections:
+    - home-section-02-div
+    confidence: high
+  tagGuess: decorative
+  placements:
+  - page: home
+    section: home-section-02-div
+    zone: main
+    role: proof-strip-mark
+    occurrences: 1
+    rendered:
+      w: 176
+      h: 44
+    position:
+      x: 857
+      y: 2188
+    fractionOfSection: 0.122
+    visible: true
+    alt: Revlon
+  reusePolicy: page-specific
+  kindCorrectedBy: measured-placement
+- id: 66db2b583c8c62fd585f04a3-seatgeek-2024-02-22-193550-wvza
+  file: 047-66db2b583c8c62fd585f04a3-seatgeek-2024-02-22-193550-wvza.avif
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+    subtype: client
+  facts:
+    intrinsic:
+      w: 430
+      h: 108
+    intrinsicAspect: 3.9815
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 5
+      luminanceBand: dark
+      busyness: low
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: null
+  compositionRoles:
+  - proof-strip-mark
+  provenance:
+    source: capture-files
+    pages:
+    - home
+    sections:
+    - home-section-02-div
+    confidence: high
+  tagGuess: decorative
+  placements:
+  - page: home
+    section: home-section-02-div
+    zone: main
+    role: proof-strip-mark
+    occurrences: 1
+    rendered:
+      w: 176
+      h: 44
+    position:
+      x: 1107
+      y: 2188
+    fractionOfSection: 0.122
+    visible: true
+    alt: Seatgeek
+  reusePolicy: page-specific
+  kindCorrectedBy: measured-placement
+- id: 66ce09f23bfc5382e0a79e3a-content-gallery-1
+  file: 048-66ce09f23bfc5382e0a79e3a-content-gallery-1.webp
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 722
+      h: 480
+    intrinsicAspect: 1.5042
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 18
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - card-media-well
+  provenance:
+    source: capture-files
+    pages:
+    - home
+    sections:
+    - home-section-03-div
+    confidence: high
+  tagGuess: decorative
+  placements:
+  - page: home
+    section: home-section-03-div
+    zone: main
+    role: card-media-well
+    occurrences: 1
+    rendered:
+      w: 379
+      h: 252
+    position:
+      x: 120
+      y: 2753
+    fractionOfSection: 0.263
+    visible: true
+    alt: null
+  reusePolicy: page-specific
+- id: 66ce09efcca27fafac5199b7-content-gallery-2
+  file: 049-66ce09efcca27fafac5199b7-content-gallery-2.webp
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 720
+      h: 480
+    intrinsicAspect: 1.5
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: 34
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - card-media-well
+  provenance:
+    source: capture-files
+    pages:
+    - home
+    sections:
+    - home-section-03-div
+    confidence: high
+  tagGuess: decorative
+  placements:
+  - page: home
+    section: home-section-03-div
+    zone: main
+    role: card-media-well
+    occurrences: 1
+    rendered:
+      w: 379
+      h: 252
+    position:
+      x: 531
+      y: 2753
+    fractionOfSection: 0.263
+    visible: true
+    alt: null
+  reusePolicy: page-specific
+- id: 66ce09ec544c15c6fafaf9aa-content-gallery-3
+  file: 050-66ce09ec544c15c6fafaf9aa-content-gallery-3.webp
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 720
+      h: 480
+    intrinsicAspect: 1.5
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 44
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - card-media-well
+  provenance:
+    source: capture-files
+    pages:
+    - home
+    sections:
+    - home-section-03-div
+    confidence: high
+  tagGuess: decorative
+  placements:
+  - page: home
+    section: home-section-03-div
+    zone: main
+    role: card-media-well
+    occurrences: 1
+    rendered:
+      w: 379
+      h: 252
+    position:
+      x: 941
+      y: 2753
+    fractionOfSection: 0.263
+    visible: true
+    alt: null
+  reusePolicy: page-specific
+- id: 67ae6cbf40adf97492caaeca-man-posing-wearing-glasses-and-gh-interview-kit-ui-fingerprint-leaf-illustration-uk
+  file: 051-67ae6cbf40adf97492caaeca-man-posing-wearing-glasses-and-gh-interview-kit-ui-fingerprint-leaf-illustration-uk.avif
+  assetSemantics:
+    kind: product-ui-screenshot
+    subject: null
+  facts:
+    intrinsic:
+      w: 1440
+      h: 1600
+    intrinsicAspect: 0.9
+    orientation: square
+    alpha: true
+    stats:
+      dominantHue: 136
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles: []
+  provenance:
+    source: capture-files
+    pages: []
+    sections: []
+    confidence: low
+  tagGuess: product-graphic
+  placements: []
+  reusePolicy: unplaced
+- id: 67ae6cbdf3fc1a49ef0f2cb0-man-posing-wearing-glasses-and-gh-interview-kit-ui-fingerprint-leaf-illustration-uk-m
+  file: 052-67ae6cbdf3fc1a49ef0f2cb0-man-posing-wearing-glasses-and-gh-interview-kit-ui-fingerprint-leaf-illustration-uk-m.avif
+  assetSemantics:
+    kind: product-ui-screenshot
+    subject: null
+  facts:
+    intrinsic:
+      w: 750
+      h: 840
+    intrinsicAspect: 0.8929
+    orientation: portrait
+    alpha: true
+    stats:
+      dominantHue: 137
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - responsive-alternate
+  provenance:
+    source: capture-files
+    pages:
+    - home
+    sections: []
+    confidence: high
+  tagGuess: product-graphic
+  placements:
+  - page: home
+    section: null
+    zone: main
+    role: responsive-alternate
+    occurrences: 1
+    rendered:
+      w: 0
+      h: 0
+    position:
+      x: 0
+      y: 0
+    fractionOfSection: null
+    visible: false
+    alt: A Greenhouse interview scorecard is displayed on a screen, with a small portrait
+      of a man with glasses and a beard in the upper right corner.
+  reusePolicy: page-specific

@@ -1,0 +1,442 @@
+schemaVersion: layout-patterns.v1
+# WoodWave v2 PROJECT layout library — authored 2026-07-17 from the fresh live
+# capture (screenshots/woodwave-v2/) through the canonical evidence flow: one
+# pattern per observed page section (evidence/grounding/section-00..06; navbar/footer
+# are chrome). Vision groundings: claude-opus-4-8, 7/7 crops. Deterministic facts:
+# JS-off computed @1440 (evidence/computed-styles.json) + the site's own token sheet.
+#
+# Two layers below:
+#   patterns:              MEASURED patterns (replica-faithful; the ONLY set the
+#                          source-homepage replica renders).
+#   synthesizedComponents: gap-fill components DERIVED FROM BRAND SIGNALS for
+#                          generation (NOT present on the source; provenance-stamped
+#                          synthesized-from-brand-signals; MUST NOT enter the replica).
+
+# ── Component recipes (brand-schema §4.4e) ───────────────────────────────────────
+# Brand-owned recurring component anatomies, written from the extraction evidence.
+# Patterns bind a recipe via `recipeRef: {recipe, variant}`.
+recipes:
+  - id: section-opener
+    name: section opener
+    intent: >-
+      The house band-opener: an uppercase Satoshi eyebrow (18px, 1px tracking) over
+      an oversized uppercase Melodrama display heading, a ~40px eyebrow→heading gap.
+      Four of the working bands open with it (about, gallery, visit, newsletter) —
+      the recurring identity move.
+    anatomy:
+      - { slot: eyebrow, role: uppercase Satoshi microlabel, required: true }
+      - { slot: heading, role: uppercase Melodrama display heading, required: true }
+    geometry:
+      eyebrowToHeading: 2.5rem   # measured vision relationalSpacingPx 40px (visit + newsletter)
+      source: vision
+    variants:
+      - id: left
+        useCase: "editorial / split bands — the opener anchors left (about, visit)"
+        align: left
+      - id: centered
+        useCase: "standalone bands — the opener centers (newsletter; gallery over the photo)"
+        align: center
+    usedBy: [about-editorial-ghost, visit-map-card, newsletter-subscribe, gallery-slider-band]
+    origin: extracted
+    provenance: [about, visit, newsletter, gallery-slider]
+    confidence: high
+    changelog:
+      - { ts: "2026-07-17T14:00:00Z", action: created, from: null, to: section-opener, by: creation, signalId: null, note: "eyebrow+Melodrama display opener recurring across 4 bands; eyebrow→heading 40px measured" }
+  - id: ghost-watermark-heading
+    name: ghost watermark heading
+    intent: >-
+      An OVERSIZED pale ghost word set in the display face behind the band heading,
+      tone-on-tone (ABOUT behind the about band, 1974-2023 behind the founder story).
+      A CSS text device — never a raster; sits at z:back behind the content stack.
+    anatomy:
+      - { slot: watermark, role: oversized pale Melodrama word behind the heading, required: true }
+      - { slot: heading, role: the band's Melodrama heading over it, required: true }
+    geometry:
+      watermarkScale: "200-520px display (grounding about ~200 / founder ~520)"
+      source: vision
+    variants:
+      - id: word
+        useCase: "a single pale word (ABOUT)"
+      - id: numerals
+        useCase: "pale year numerals (1974-2023)"
+    usedBy: [founder-story-watermark]   # about-editorial-ghost also carries this device but binds recipeRef section-opener (one recipeRef per pattern); the watermark rides its sanctioned specialTreatment there
+    origin: extracted
+    provenance: [about, founder-story]
+    confidence: high
+    changelog:
+      - { ts: "2026-07-17T14:00:00Z", action: created, from: null, to: ghost-watermark-heading, by: creation, signalId: null, note: "the oversized pale ghost display word behind editorial headings, 2 bands" }
+  - id: ruled-arrow-row
+    name: ruled arrow row
+    intent: >-
+      A full-width row above a 1px hairline divider: a label (and value) at the left,
+      an uppercase text-arrow action at the right. The ticket-price rows use it (price
+      + tier | BUY TICKETS →); the info card's open-hours rows use its label|value
+      ruled form. One anatomy, two stylings.
+    anatomy:
+      - { slot: label, role: left label/value (uppercase or sentence), required: true }
+      - { slot: trail, role: right-edge uppercase text-arrow action OR value, required: false }
+      - { slot: rule, role: 1px hairline divider beneath, required: true }
+    geometry:
+      rowPadding: "1.125rem 0"   # grounding visit price rows pad 18x0
+      source: vision
+    variants:
+      - id: price-row
+        useCase: "ticket pricing — price + tier left, BUY TICKETS text-arrow right"
+        trail: { present: true, family: textCta }
+      - id: hours-row
+        useCase: "info card open-hours — day range left, time right, no action"
+        trail: { present: true, family: value }
+    usedBy: []   # consumed by visit-map-card via its sanctioned ruled-rows specialTreatment (the pattern binds recipeRef section-opener) and by the synthesized exhibition-programme-table / faq-accordion; no direct recipeRef binding
+    origin: extracted
+    provenance: [visit]
+    confidence: high
+    changelog:
+      - { ts: "2026-07-17T14:00:00Z", action: created, from: null, to: ruled-arrow-row, by: creation, signalId: null, note: "ruled label|value / label|arrow rows — price rows + info-card hours" }
+
+patterns:
+  - id: hero-gallery-overlay
+    useCase: hero
+    archetypeRef: stack
+    surfaceIntent: any
+    intent: >-
+      Full-bleed photographic hero: a warm wooden spiral-staircase photo carries a
+      giant GOLD Melodrama wordmark ('WOODWAVE GALLERY', uppercase, ~176px) centered
+      over it, with a smaller terracotta-vessel photo overlapping lower-center and a
+      corner figure photo bottom-left — an overlapping photo cluster. No panel, no
+      card: the display type sits directly on the photograph.
+    contentShape:
+      alignment: { value: center, inheritance: block-inherits, rule: "single centered display over the full-bleed photo cluster" }
+      bandPadding: { top: 2.5rem, bottom: 0rem }
+      slots:
+        - { name: heading, role: giant gold Melodrama wordmark (uppercase), textLen: short, sizeClass: display, width: hug, z: front }
+        - name: background
+          role: full-bleed warm staircase photo + overlapping vessel/figure cluster
+          mediaAspect: wide
+          mediaScale: { of: container, fraction: 1.0 }
+          width: full-bleed
+          z: back
+          assets: [001-657acd8d782ab334f6b2e5dc-hero-img-main-p-1600.jpg, 002-657acd8d782ab334f6b2e5db-hero-img-2-p-1080.jpg, 003-657acd8d782ab334f6b2e5da-hero-img-3.jpg]
+          mediaComposition:
+            mode: overlapping-cluster
+            layers:
+              - { assetRef: hero-staircase, z: back, width: full-bleed }
+              - { assetRef: hero-vessel, z: front }
+              - { assetRef: hero-figure, z: front }
+    specialTreatments:
+      - { kind: text-on-media, target: background, sanctioned: true, note: "gold Melodrama wordmark over the warm-dark photo cluster; the photos carry their own warm-dark tone, no separate scrim measured" }
+    responsive: { collapse: stack, mediaFirst: false }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [hero]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-17T14:00:00Z", action: created, from: null, to: hero-gallery-overlay, by: creation, signalId: null, note: "grounding section-00: overlapping-cluster; measured h1 175.68px Melodrama gold uppercase" }
+  - id: about-editorial-ghost
+    useCase: about
+    archetypeRef: stack
+    surfaceIntent: primary
+    recipeRef: { recipe: section-opener, variant: left }
+    intent: >-
+      Editorial about band on cream: an uppercase eyebrow ('ABOUT') over an 80px
+      Melodrama heading, backed by an OVERSIZED pale ghost 'ABOUT' watermark; a lede
+      paragraph, then alternating photo/copy blocks (gallery interiors, archway,
+      dome) down the column.
+    contentShape:
+      alignment: { value: left, inheritance: block-inherits, counterweight: media, rule: "eyebrow + heading + body anchor left; photo/copy blocks alternate down the column" }
+      bandPadding: { top: 5.625rem, bottom: 3.75rem }   # grounding section-01 pad ~90/60
+      # the ghost 'ABOUT' watermark is a background TEXT device, driven by the
+      # sanctioned ghost-watermark specialTreatment below (not a rendered slot).
+      slots:
+        - { name: eyebrow, role: uppercase Satoshi eyebrow, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: heading, role: 80px Melodrama heading, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { name: body, role: lede paragraph (Satoshi 24-28px), textLen: long, sizeClass: body, width: hug, z: front }
+        - name: media
+          role: alternating gallery/architecture photos
+          mediaAspect: landscape
+          mediaScale: { of: container, fraction: 0.5 }
+          width: half
+          z: front
+          assets: [004-657acd8d782ab334f6b2e5d2-about-img-1-p-800.jpg, 005-657acd8d782ab334f6b2e5d4-about-img-2-p-1600.jpg, 006-657acd8d782ab334f6b2e5d5-about-img-3-p-1080.jpg, 007-657acd8d782ab334f6b2e5d3-about-img-4-p-500.jpg]
+          mediaComposition:
+            mode: tiled-grid
+            grid: { columns: 2, gap: 2rem }
+            layers:
+              - { assetRef: about-arch }
+              - { assetRef: about-hall }
+              - { assetRef: about-archway }
+              - { assetRef: about-dome }
+    specialTreatments:
+      - { kind: ghost-watermark, target: heading, sanctioned: true, note: "oversized pale 'ABOUT' display word behind the heading (recipe ghost-watermark-heading/word; generatedVisuals ghost-watermark-word)" }
+    responsive: { collapse: stack, mediaFirst: false }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [about]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-17T14:00:00Z", action: created, from: null, to: about-editorial-ghost, by: creation, signalId: null, note: "grounding section-01: eyebrow+Melodrama heading + ghost ABOUT watermark + alternating photo/copy" }
+      - { ts: "2026-07-17T14:20:00Z", action: confirmed, from: null, to: "alignment left (verified vs source)", by: creation, signalId: null, note: "C18 dissent verify: grounding section-01 alignment=left (editorial band); the eyebrow/heading/body anchor LEFT in the crop — the pattern fact is correct and outranks the standaloneStack=centered default (which is licensed by the hero/gallery/newsletter opener bands)" }
+  - id: gallery-slider-band
+    useCase: gallery
+    archetypeRef: stack
+    surfaceIntent: any
+    recipeRef: { recipe: section-opener, variant: centered }
+    intent: >-
+      Gallery carousel: a full-bleed warm interior photo band with a chrome eyebrow
+      ('GALLERY') at the left and a slide counter ('1/6') at the right over the photo;
+      a circular slider-arrow control and a numeric 1-6 dot rail; six frames.
+    contentShape:
+      alignment: { value: center, inheritance: self-only, rule: "chrome bar over a full-bleed photo band; counter right, eyebrow left" }
+      slots:
+        - { name: eyebrow, role: chrome eyebrow ('GALLERY') over the photo, textLen: short, sizeClass: caption, width: hug, z: front }
+        - name: media
+          role: 6 full-bleed gallery photos (slider frames)
+          mediaAspect: wide
+          mediaScale: { of: container, fraction: 1.0 }
+          width: full-bleed
+          z: back
+          assets: [009-657acd8d782ab334f6b2e5e5-web-gallery-1-p-1600.jpg, 010-657acd8d782ab334f6b2e5e6-web-gallery-2-p-1600.jpg, 011-657acd8d782ab334f6b2e5e7-web-gallery-3-p-1600.jpg, 012-657acd8d782ab334f6b2e5e8-web-gallery-4.jpg, 013-657acd8d782ab334f6b2e5e9-web-gallery-5.jpg, 014-657acd8d782ab334f6b2e5f2-web-gallery-6.jpg]
+          mediaComposition:
+            mode: carousel
+            layers:
+              - { assetRef: gallery-1 }
+              - { assetRef: gallery-2 }
+              - { assetRef: gallery-3 }
+              - { assetRef: gallery-4 }
+              - { assetRef: gallery-5 }
+              - { assetRef: gallery-6 }
+        - { name: controls, role: slide counter (1/6) + numeric dot rail + circular arrow, textLen: short, sizeClass: control, width: hug, z: front }
+    specialTreatments:
+      - { kind: carousel, target: media, sanctioned: true, controls: { placement: overlay, counter: true }, note: "webflow slider: 6 frames, '1/6' counter top-right, circular slider-arrow (008-slider-arrow.svg), dot bg/color .1s" }
+      - { kind: background-with-foreground, target: media, sanctioned: true, note: "the chrome eyebrow + counter are a separable overlay over the flat photo (grounding section-02)" }
+    responsive: { collapse: none, mediaFirst: true }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [gallery-slider]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-17T14:00:00Z", action: created, from: null, to: gallery-slider-band, by: creation, signalId: null, note: "grounding section-02: full-bleed photo band + chrome eyebrow + 1/6 counter + arrow, 6 frames" }
+  - id: founder-story-watermark
+    useCase: content
+    archetypeRef: split
+    surfaceIntent: primary
+    recipeRef: { recipe: ghost-watermark-heading, variant: numerals }
+    intent: >-
+      Founder story on cream: a large Melodrama heading top-left, a seated founder
+      portrait + narrative body copy lower-right, an OVERSIZED pale '1974-2023' year
+      watermark behind the content (tone-on-tone).
+    contentShape:
+      alignment: { value: left, inheritance: block-inherits, counterweight: media, rule: "heading top-left; portrait + body lower-right; watermark z-back" }
+      bandPadding: { top: 2.5rem, bottom: 2.5rem }
+      # the '1974-2023' watermark is a background TEXT device, driven by the
+      # sanctioned ghost-watermark specialTreatment below (not a rendered slot).
+      slots:
+        - { name: heading, role: Melodrama heading (left), textLen: medium, sizeClass: display, width: half, z: front }
+        - { name: body, role: founder narrative paragraph (right), textLen: long, sizeClass: body, width: half, z: front }
+        - name: media
+          role: seated founder portrait
+          mediaAspect: portrait
+          mediaScale: { of: container, fraction: 0.22 }
+          width: half
+          z: front
+          assets: [016-657acd8d782ab334f6b2e5dd-about-img-5-p-500.jpg]
+          mediaComposition:
+            mode: single
+            layers:
+              - { assetRef: founder-portrait }
+    specialTreatments:
+      - { kind: ghost-watermark, target: heading, sanctioned: true, note: "oversized pale '1974-2023' numerals behind the content (recipe ghost-watermark-heading/numerals)" }
+    responsive: { collapse: stack, mediaFirst: false }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [founder-story]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-17T14:00:00Z", action: created, from: null, to: founder-story-watermark, by: creation, signalId: null, note: "grounding section-03: heading + portrait + body + 1974-2023 year watermark" }
+  - id: visit-map-card
+    useCase: content
+    archetypeRef: split
+    surfaceIntent: inverse
+    recipeRef: { recipe: section-opener, variant: left }
+    intent: >-
+      Visit band on espresso: an uppercase eyebrow ('VISIT') over a Melodrama display
+      ('WELCOME TO THE GALLERY'); a greyscale street-map band with an overlapping cream
+      info card (ADDRESS + OPEN HOURS ruled rows); then TICKET PRICES — a wood-interior
+      photo left / three ruled price rows right (price + tier | BUY TICKETS text-arrow).
+    contentShape:
+      alignment: { value: left, inheritance: block-inherits, counterweight: media, rule: "opener left; map+card and photo+price-rows split rows below" }
+      bandPadding: { top: 9.375rem, bottom: 6rem }   # grounding section-04 pad ~200/120
+      slots:
+        - { name: eyebrow, role: uppercase eyebrow ('VISIT'), textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: heading, role: Melodrama display ('WELCOME TO THE GALLERY'), textLen: medium, sizeClass: display, width: hug, z: front }
+        - name: media
+          role: greyscale street-map band (info card overlaps its corner)
+          mediaAspect: wide
+          mediaScale: { of: container, fraction: 1.0 }
+          width: full
+          z: back
+          assets: [017-657acd8d782ab334f6b2e5de-map-p-1600.jpg]
+          mediaComposition:
+            mode: overlapping-cluster
+            layers:
+              - { assetRef: visit-map, z: back, width: full-bleed }
+              - { componentRef: { contract: card }, z: front }
+        - { name: card, role: cream info card (address + open-hours ruled rows), textLen: medium, sizeClass: body, width: half, z: front }
+        - { name: pricing, role: ruled ticket-price rows w/ BUY TICKETS text-arrows, textLen: medium, sizeClass: body, width: half, z: front }
+    specialTreatments:
+      - { kind: overlap-card, target: media, sanctioned: true, note: "cream info card overlaps the map band's lower-left corner (grounding section-04 overlapping-cluster)" }
+      - { kind: ruled-rows, target: pricing, sanctioned: true, note: "three ruled price rows (recipe ruled-arrow-row/price-row): price+tier left, BUY TICKETS text-arrow right, hairline divider beneath" }
+    responsive: { collapse: stack, mediaFirst: false }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [visit]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-17T14:00:00Z", action: created, from: null, to: visit-map-card, by: creation, signalId: null, note: "grounding section-04: eyebrow+display + map+info card overlap + ruled price rows w/ text-arrows" }
+  - id: newsletter-subscribe
+    useCase: cta
+    archetypeRef: stack
+    surfaceIntent: primary
+    recipeRef: { recipe: section-opener, variant: centered }
+    intent: >-
+      Subscribe band on cream: a centered uppercase eyebrow ('STAY UPDATED') over a
+      Melodrama display heading; a borderless underline email field with a SUBSCRIBE
+      text-arrow to its right, contained.
+    contentShape:
+      alignment: { value: center, inheritance: block-inherits, rule: "centered stack: eyebrow → heading → underline field + SUBSCRIBE" }
+      bandPadding: { top: 9.375rem, bottom: 8.125rem }   # grounding section-05 pad ~150/130
+      stackMeasure: { value: 60rem, source: vision }
+      slots:
+        - { name: eyebrow, role: uppercase eyebrow ('STAY UPDATED'), textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: heading, role: Melodrama display heading, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { name: form, role: underline email field + SUBSCRIBE text-arrow, textLen: short, sizeClass: control, width: hug, z: front }
+    specialTreatments:
+      - { kind: underline-field, target: form, sanctioned: true, note: "borderless email field with a 1px underline rule + uppercase SUBSCRIBE text-arrow (grounding section-05)" }
+    responsive: { collapse: stack, mediaFirst: false }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [newsletter]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-17T14:00:00Z", action: created, from: null, to: newsletter-subscribe, by: creation, signalId: null, note: "grounding section-05: centered eyebrow+display + underline field + SUBSCRIBE arrow" }
+
+# ── SYNTHESIZED COMPONENTS (gap synthesis) ───────────────────────────────────────
+# NOT present on the WoodWave source homepage. Each is DERIVED FROM BRAND SIGNALS
+# (tokens, type scale, spacing ladder, radius/border grammar, recipes, accent
+# devices) for the exhibition-page generation — NEVER invented from nowhere, NEVER
+# copied from another brand. Every entry stamps `provenance: synthesized-from-brand-
+# signals`, the `licensedSignals` that authorized each decision, and `confidence`.
+# These are kept DISTINCT from the measured `patterns:` above so the source-homepage
+# replica stays honest: synthesized components MUST NOT enter the replica.
+synthesizedComponents:
+  - id: exhibition-programme-table
+    useCase: schedule
+    archetypeRef: stack
+    provenance: synthesized-from-brand-signals
+    confidence: medium
+    intent: >-
+      A programme / schedule table for an exhibition run: ruled rows of date/time +
+      title + room + a BUY TICKETS text-arrow, under a section-opener. Built entirely
+      from the ruled-arrow-row recipe applied to tabular data.
+    licensedSignals:
+      - "recipe ruled-arrow-row (price-row variant): label/value left + text-arrow right + hairline divider — the exact ticket-price row grammar, generalized to schedule rows"
+      - "tokens.spacing list-item-gap 1.125rem + border/hairline rgba(50,39,26,0.2) (the ruled divider)"
+      - "buttons.textCta (BUY TICKETS arrow) + accentDevices.arrow-cta-glyph"
+      - "type: h4 Satoshi 24px row labels, body 24px values, control-text uppercase for the action"
+      - "signature sharp-corner-controls (radius 0) + uppercase-tracked-labels"
+    anatomy:
+      - { slot: eyebrow, role: uppercase Satoshi eyebrow }
+      - { slot: heading, role: Melodrama display heading }
+      - { slot: rows, role: ruled schedule rows (date/time + title + room + BUY TICKETS text-arrow) }
+    notInReplica: true
+    changelog:
+      - { ts: "2026-07-17T14:05:00Z", action: created, from: null, to: exhibition-programme-table, by: synthesis, signalId: null, note: "gap: source shows no schedule table; synthesized from the ruled-arrow-row recipe + spacing + textCta" }
+  - id: artist-work-grid
+    useCase: features
+    archetypeRef: cards
+    provenance: synthesized-from-brand-signals
+    confidence: medium
+    intent: >-
+      A grid of featured artists / works: a sharp cream (or espresso) media frame with
+      the work photo, a Melodrama sub-heading (artist/title), a Satoshi caption
+      (medium / year), and a text-arrow 'View' link.
+    licensedSignals:
+      - "blocks.card media-frame variant (full-bleed rectangular photo, SHARP corners) — the about/gallery photo-frame grammar"
+      - "type h3 Melodrama 32px sub-heading + body 24px caption; tokens.radius.sharp 0"
+      - "imagery aspectPalette square/portrait; surfaces surface/panel cream card"
+      - "buttons.textCta 'View' arrow + accentDevices.arrow-cta-glyph"
+    anatomy:
+      - { slot: heading, role: Melodrama display heading }
+      - { slot: cards, role: 3-4 work cards (photo frame + artist/title + medium/year + View arrow) }
+    notInReplica: true
+    changelog:
+      - { ts: "2026-07-17T14:05:00Z", action: created, from: null, to: artist-work-grid, by: synthesis, signalId: null, note: "gap: source shows gallery photos in a slider, not a labeled work grid; synthesized from the media-frame card + type scale" }
+  - id: faq-accordion
+    useCase: content
+    archetypeRef: stack
+    provenance: synthesized-from-brand-signals
+    confidence: medium
+    intent: >-
+      A visitor-FAQ accordion: ruled question rows (Satoshi h4) each with a trailing
+      arrow glyph that rotates on open to reveal a Satoshi body answer, hairline
+      dividers between — the ruled-row grammar made disclosable.
+    licensedSignals:
+      - "recipe ruled-arrow-row (the divider + trailing-glyph row form)"
+      - "accentDevices.arrow-cta-glyph (018-arrow-right-dark.svg) as the disclosure indicator"
+      - "border/hairline rgba(50,39,26,0.2) dividers; radius/sharp 0; type h4 24px question / body 24px answer"
+      - "motion: quiet color/reveal tier (no bounce) — matches the brand's low motion dial"
+    anatomy:
+      - { slot: eyebrow, role: uppercase Satoshi eyebrow }
+      - { slot: heading, role: Melodrama display heading }
+      - { slot: items, role: ruled question/answer disclosure rows w/ rotating arrow }
+    notInReplica: true
+    changelog:
+      - { ts: "2026-07-17T14:05:00Z", action: created, from: null, to: faq-accordion, by: synthesis, signalId: null, note: "gap: no accordion on source; synthesized from ruled rows + arrow glyph + quiet motion" }
+  - id: press-pull-quote
+    useCase: testimonial
+    archetypeRef: stack
+    provenance: synthesized-from-brand-signals
+    confidence: low
+    intent: >-
+      A press pull-quote band: an oversized Melodrama quotation (uppercase or title
+      case) in gold on an espresso band, with a Satoshi attribution caption — the
+      brand's display voice turned to a critic's words.
+    licensedSignals:
+      - "type display/h1 Melodrama + accent/gold on surface/inverse (the hero's gold-on-dark register)"
+      - "surfaces surface/inverse espresso band + text/on-inverse cream attribution"
+      - "signature melodrama-display-satoshi-body"
+    anatomy:
+      - { slot: quote, role: oversized Melodrama pull-quote (gold on espresso) }
+      - { slot: attribution, role: Satoshi caption (source/publication) }
+    notInReplica: true
+    changelog:
+      - { ts: "2026-07-17T14:05:00Z", action: created, from: null, to: press-pull-quote, by: synthesis, signalId: null, note: "gap: no testimonial on source; synthesized from the gold-Melodrama-on-espresso hero register" }
+  - id: gallery-stat-band
+    useCase: logos
+    archetypeRef: stack
+    provenance: synthesized-from-brand-signals
+    confidence: low
+    intent: >-
+      A stat band (works exhibited / visitors / years) — oversized Melodrama numerals
+      over uppercase Satoshi captions, slash- or rule-separated, on a cream or espresso
+      band.
+    licensedSignals:
+      - "type stat-display (Melodrama numerals, derived) + h6 uppercase caption"
+      - "accentDevices.slash-separator between stats; border/hairline rules"
+      - "surfaces cream/espresso alternation"
+    anatomy:
+      - { slot: stats, role: 3 Melodrama numeral + Satoshi caption pairs, slash/rule separated }
+    notInReplica: true
+    changelog:
+      - { ts: "2026-07-17T14:05:00Z", action: created, from: null, to: gallery-stat-band, by: synthesis, signalId: null, note: "gap: no stat block on source; synthesized from the display numerals + slash separator" }

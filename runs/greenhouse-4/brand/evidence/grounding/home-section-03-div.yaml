@@ -1,0 +1,163 @@
+schemaVersion: section-grounding.v1
+sectionRole: features
+layout:
+  structure: heading full-width top, then 3-column card row (photo -> heading -> body -> text link)
+  columns: 3
+  alignment: left
+  approxPaddingPx:
+    top: 40
+    bottom: 80
+  gapPx: 40
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#ffffff'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1c3a2e'
+- role: media-well
+  bgApprox: 'image-fill: photograph'
+  parent: canvas
+  radiusPx: 6
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#ffffff'
+- role: band
+  bgApprox: '#1c3a2e'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#ffffff'
+typography:
+- role: h2
+  approxSizePx: 68
+  weightApprox: 500
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#1c3a2e'
+  familyClass: serif
+- role: h3
+  approxSizePx: 30
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1c3a2e'
+  familyClass: serif
+- role: body
+  approxSizePx: 16
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#3a3a3a'
+  familyClass: grotesque-sans
+- role: link
+  approxSizePx: 16
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1c5a44'
+  familyClass: grotesque-sans
+relationalSpacingPx:
+  headingToBody: 20
+  bodyToCta: 28
+components:
+- kind: card
+  variant: media-top-text-link
+  countObserved: 3
+  anatomy: media-well top -> heading -> body -> underlined text link
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: null
+    radiusPx: 6
+  surfaceApprox: transparent
+  inkApprox: '#1c3a2e'
+  caseTreatment: sentence
+- kind: link
+  variant: text-underline
+  countObserved: 3
+  anatomy: underlined text label
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1c5a44'
+  caseTreatment: sentence
+- kind: media-frame
+  variant: rounded-photo
+  countObserved: 3
+  anatomy: landscape photo, rounded corners
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: null
+    radiusPx: 6
+  surfaceApprox: image-fill
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+copy:
+  eyebrow: null
+  heading: The best teams start with hiring – and the best hiring starts with Greenhouse
+  subheading: null
+  body: null
+  items:
+  - heading: Everything you need to hire, in one platform
+    body: Stop taking a risk with your recruiting budget and start saving money. Greenhouse offers an
+      end-to-end solution with everything you need to make the best possible hires, consistently and quickly.
+    meta: Explore platform
+  - heading: Flex and scale with ease
+    body: Greenhouse has everything you need for great hiring in one easy-to-use platform. Plus, you can
+      connect with business tools you already use and customize a tech stack with our hundreds of pre-built
+      integrations.
+    meta: View scalable workflows
+  - heading: Future-proof your hiring
+    body: Greenhouse has led the way in hiring innovation for over a decade – from pioneering structured
+      hiring to our latest advances in AI and our candidate portal, we’re always pushing what’s possible.
+    meta: Learn about AI recruiting
+  actions:
+  - label: Explore platform
+    styleHint: text-underline
+  - label: View scalable workflows
+    styleHint: text-underline
+  - label: Learn about AI recruiting
+    styleHint: text-underline
+media:
+- kind: photo
+  treatment: warm-toned candid people photos in rounded landscape frames, one per card
+  aspect: landscape
+  approxFractionOfSection: 0.3
+mediaAssets:
+- kind: photograph
+  subject: two people conversing at a desk
+  rightsGuess: own
+  luminance: mid
+  busyness: medium
+  aspect: landscape
+  alphaEdge: false
+  countObserved: 1
+- kind: photograph
+  subject: smiling person with plants behind
+  rightsGuess: own
+  luminance: mid
+  busyness: medium
+  aspect: landscape
+  alphaEdge: false
+  countObserved: 1
+- kind: photograph
+  subject: person placing sticky notes on wall
+  rightsGuess: own
+  luminance: light
+  busyness: medium
+  aspect: landscape
+  alphaEdge: false
+  countObserved: 1
+confidence: high
+notes:
+- dark green band at very bottom edge is start of next section (footer or CTA)
+- heading uses serif display face; body/link use sans
+_source:
+  crop: section-03-div.png
+  domClasses: ''
+  model: claude-opus-4-8

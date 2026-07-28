@@ -1,0 +1,210 @@
+schemaVersion: section-grounding.v1
+sectionRole: contact
+layout:
+  structure: eyebrow + display heading top; map block with overlaid info card; below, split pair photo
+    left / ticket-prices panel right
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 200
+    bottom: 120
+  gapPx: 60
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#2e241c'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#f6ece1'
+- role: media-well
+  bgApprox: 'image-fill: monochrome grey street map'
+  parent: canvas
+  radiusPx: 4
+  borderApprox: none
+  inkApprox: '#5a5a5a'
+- role: card
+  bgApprox: '#f7ece1'
+  parent: media-well
+  radiusPx: 2
+  borderApprox: none
+  inkApprox: '#2e241c'
+- role: card
+  bgApprox: '#f7ece1'
+  parent: canvas
+  radiusPx: 6
+  borderApprox: none
+  inkApprox: '#2e241c'
+- role: media-well
+  bgApprox: 'image-fill: warm-lit curved wood interior photo'
+  parent: canvas
+  radiusPx: 6
+  borderApprox: none
+  inkApprox: '#f6ece1'
+typography:
+- role: eyebrow
+  approxSizePx: 15
+  weightApprox: 500
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#f6ece1'
+  familyClass: geometric-sans
+- role: display
+  approxSizePx: 88
+  weightApprox: 400
+  case: upper
+  trackingApprox: normal
+  colorApprox: '#f6ece1'
+  familyClass: didone
+- role: h2
+  approxSizePx: 72
+  weightApprox: 400
+  case: upper
+  trackingApprox: normal
+  colorApprox: '#2e241c'
+  familyClass: didone
+- role: control-label
+  approxSizePx: 15
+  weightApprox: 600
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#2e241c'
+  familyClass: geometric-sans
+- role: body
+  approxSizePx: 20
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#2e241c'
+  familyClass: geometric-sans
+- role: caption
+  approxSizePx: 18
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#2e241c'
+  familyClass: geometric-sans
+relationalSpacingPx:
+  eyebrowToHeading: 48
+  headingToBody: 120
+components:
+- kind: card
+  variant: filled-neutral
+  countObserved: 1
+  anatomy: ADDRESS label -> address lines -> OPEN HOURS label -> two hour rows with divider
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: 40 40
+    radiusPx: 2
+  surfaceApprox: '#f7ece1'
+  inkApprox: '#2e241c'
+  caseTreatment: sentence
+- kind: list-item
+  variant: text-arrow
+  countObserved: 3
+  anatomy: price + tier label left -> BUY TICKETS + arrow right, divider rule beneath
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 18 0
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#2e241c'
+  caseTreatment: upper
+- kind: icon
+  variant: map-pin
+  countObserved: 1
+  anatomy: teardrop location pin centered on map
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: '#f7ece1'
+  inkApprox: '#f7ece1'
+  caseTreatment: sentence
+copy:
+  eyebrow: VISIT
+  heading: WELCOME TO THE GALLERY
+  subheading: TICKET PRICES
+  body: null
+  actions:
+  - label: BUY TICKETS
+    styleHint: text-arrow
+  - label: BUY TICKETS
+    styleHint: text-arrow
+  - label: BUY TICKETS
+    styleHint: text-arrow
+  items:
+  - heading: ADDRESS
+    body: Art Boulevard, 123 USA, New-Yourk / info@wwgallery.com / +1 123 456 789
+    meta: null
+  - heading: OPEN HOURS
+    body: Mon — Thu 9:00-19:00 / Fri — Sun 11:00-17:00
+    meta: null
+  - heading: $20  ADULT
+    body: null
+    meta: null
+  - heading: $16  STUDENT
+    body: null
+    meta: null
+  - heading: $14*  GROUP OF 5 PEOPLE (*PER PERSON)
+    body: null
+    meta: null
+media:
+- kind: map
+  treatment: monochrome grey street map with location pin, full-width block
+  aspect: wide
+  approxFractionOfSection: 0.4
+- kind: photo
+  treatment: warm-lit curved wooden interior architecture, left column of split pair
+  aspect: portrait
+  approxFractionOfSection: 0.18
+mediaAssets:
+- kind: map
+  subject: greyscale city street map with location pin
+  rightsGuess: third-party-mark
+  luminance: mid
+  busyness: high
+  aspect: wide
+  alphaEdge: false
+  countObserved: 1
+- kind: photograph
+  subject: warm-lit curved wooden interior architecture
+  rightsGuess: own
+  luminance: mid
+  busyness: medium
+  aspect: portrait
+  alphaEdge: false
+  countObserved: 1
+mediaComposition:
+- mode: background-with-foreground
+  layers: map media-well (full block) -> address/hours card overlaid at lower-left; card is SEPARATE element
+  bakedVsSeparable: map is one raster; info card and pin are separate placed elements
+  componentsOverMedia: address info card, map pin
+- mode: split-pair
+  layers: interior photo left -> ticket-prices card right, adjacent columns
+  bakedVsSeparable: photo and panel are separate; small notch cutouts at seam
+  componentsOverMedia: none
+chrome:
+  casing: upper
+  separators: whitespace-only
+  iconShape: none
+  surfaceApprox: '#2e241c'
+  linkTreatment: '15px #2e241c upper, trailing right arrow glyph, underline rule beneath row'
+  ctaTreatment: text-arrow link, no fill, hugging content
+componentAnatomies:
+- name: section headrail
+  parts: eyebrow (upper, wide-tracked) -> large didone display heading
+  styling: eyebrow 15px vs display ~88px didone caps
+- name: priced list row
+  parts: price+tier label left -> BUY TICKETS text-arrow at far right -> full-width divider rule beneath
+  styling: upper labels, thin arrow glyph, hairline underline
+motionHints:
+- text-arrow links beside labels (hover advance affordance)
+confidence: high
+notes:
+- small circular notch cutouts visible at top and bottom of split-pair seam
+- map labels are decorative street names, greyscale
+_source:
+  crop: section-04-section-contact.png
+  domClasses: section contact
+  model: claude-opus-4-8

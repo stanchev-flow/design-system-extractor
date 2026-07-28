@@ -1,0 +1,1217 @@
+schemaVersion: layout-patterns.v1
+patterns:
+- id: hero-display-over-staggered-media
+  useCase: hero
+  archetypeRef: stack
+  surfaceIntent: inverse
+  intent: Centered oversized didone display title layered over two hard-edged photos; the second, smaller
+    photo is offset and crosses the first's lower edge (media-over-media).
+  contentShape:
+    alignment: { value: centered, inheritance: block-inherits }
+    slots:
+    - name: wordmark
+      role: nav wordmark
+      textLen: word
+      sizeClass: caption
+      width: hug
+      z: front
+    - name: title
+      role: display title over media
+      textLen: medium
+      sizeClass: display
+      width: hug
+      z: front
+    - name: hero-media
+      role: hero photography
+      mediaAspect: landscape
+      mediaScale:
+        of: container
+        fraction: 0.8
+      width: media
+      z: mid
+    - name: overlap-media
+      role: overlap photography
+      mediaAspect: portrait
+      mediaScale:
+        of: hero-media
+        fraction: 0.34
+      width: media
+      z: front
+    - name: subhead
+      role: supporting lede
+      textLen: long
+      sizeClass: body
+      width: hug
+      z: front
+  specialTreatments:
+  - kind: overlap
+    pair:
+    - title
+    - hero-media
+    zOrder:
+    - hero-media
+    - overlap-media
+    - title
+    amount:
+      class: heavy
+    sanctioned: true
+  - kind: overlap
+    pair:
+    - overlap-media
+    - hero-media
+    zOrder:
+    - hero-media
+    - overlap-media
+    amount:
+      class: medium
+  - kind: stagger
+    target: overlap-media
+    axis: vertical
+    amount:
+      class: medium
+  responsive:
+    collapse: stack-below-tablet
+    mediaFirst: false
+  variantKnobs:
+    titleOverlap:
+      type: enum
+      values:
+      - light
+      - medium
+      - heavy
+      default: heavy
+    overlapMediaSide:
+      type: enum
+      values:
+      - left
+      - right
+      default: right
+  origin: extracted
+  provenance:
+  - opening-bookend
+  confidence: high
+  source: creation
+  scope: design-language
+  changelog:
+  - ts: '2026-07-01T00:00:00Z'
+    action: created
+    from: null
+    to: hero-display-over-staggered-media
+    by: creation
+    signalId: null
+    note: extracted from opening-bookend
+- id: editorial-ghostword-collage
+  useCase: about
+  archetypeRef: collage
+  surfaceIntent: primary
+  intent: 'Loose left-anchored editorial run: an oversized ghost watermark word behind a hard- edged photo
+    with a short margin micro-caption, and a long paragraph offset to ~1/3 the container beside it. Overlap
+    + alternating stagger are the only ornament.'
+  contentShape:
+    alignment: { value: left, counterweight: ghostword, inheritance: per-slot-override }
+    slots:
+    - name: ghostword
+      role: watermark display word
+      textLen: word
+      sizeClass: colossal
+      width: full-bleed
+      opacityClass: ghost
+      z: back
+    - name: eyebrow
+      role: section eyebrow
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+    - name: heading
+      role: display heading
+      textLen: medium
+      sizeClass: display
+      width: hug
+      z: front
+    - name: media
+      role: module photography
+      mediaAspect: freeform
+      mediaScale:
+        of: container
+        fraction: 0.45
+      width: media
+      z: mid
+    - name: caption
+      role: margin micro-caption
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+    - name: body
+      role: offset paragraph
+      textLen: long
+      sizeClass: body
+      width: hug
+      sizeRel:
+        to: container
+        ratio: 0.33
+        axis: width
+      z: front
+  specialTreatments:
+  - kind: ghost-word
+    target: ghostword
+    anchor: behind-media
+    bleed: partial
+  - kind: stagger
+    target: media
+    axis: horizontal
+    amount:
+      class: heavy
+  - kind: marginal-caption
+    target: caption
+    side: left
+  responsive:
+    collapse: stack-below-tablet
+    mediaFirst: false
+    ghostwordAt:
+      base: colossal
+      tablet: hero
+      mobile: hidden
+  variantKnobs:
+    ghostwordText:
+      type: string
+      from:
+      - section-title
+      - eyebrow
+      default: eyebrow
+    staggerAmount:
+      type: enum
+      values:
+      - light
+      - medium
+      - heavy
+      default: heavy
+    bodyMeasure:
+      type: enum
+      values:
+      - third
+      - half
+      default: third
+  origin: extracted
+  provenance:
+  - about-run
+  confidence: high
+  source: creation
+  scope: design-language
+  changelog:
+  - ts: '2026-07-01T00:00:00Z'
+    action: created
+    from: null
+    to: editorial-ghostword-collage
+    by: creation
+    signalId: null
+    note: "extracted from editorial-collage \u2014 captures ghost-word + short-caption/long-body size\
+      \ relationship"
+- id: features-flush-split-panel
+  useCase: features
+  archetypeRef: split
+  surfaceIntent: inverse
+  intent: 'Two flush halves (gap 0, hard cut): a full-height hard-edged photo beside a cream panel with
+    a didone title, 1px-ruled label/value rows, and an arrow link.'
+  contentShape:
+    alignment: { value: left, counterweight: opposite-panel, inheritance: per-slot-override }
+    slots:
+    - name: eyebrow
+      role: band eyebrow
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+    - name: band-heading
+      role: band display heading
+      textLen: medium
+      sizeClass: display
+      width: hug
+      z: front
+    - name: media
+      role: flush photo half
+      mediaAspect: portrait
+      mediaScale:
+        of: container
+        fraction: 0.5
+      width: stretch
+      z: mid
+    - name: panel-title
+      role: panel title
+      textLen: short
+      sizeClass: title
+      width: hug
+      z: front
+    - name: rows
+      role: ruled label/value rows
+      textLen: short
+      sizeClass: body
+      width: stretch
+      z: front
+    - name: action
+      role: arrow link
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+  specialTreatments:
+  - kind: bleed
+    target: media
+    edge: left
+  responsive:
+    collapse: stack-below-tablet
+    mediaFirst: true
+  variantKnobs:
+    mediaSide:
+      type: enum
+      values:
+      - left
+      - right
+      default: left
+  origin: extracted
+  provenance:
+  - info-band
+  confidence: high
+  source: creation
+  scope: design-language
+  changelog:
+  - ts: '2026-07-01T00:00:00Z'
+    action: created
+    from: null
+    to: features-flush-split-panel
+    by: creation
+    signalId: null
+    note: extracted from info-band
+- id: cta-underline-conversion-stack
+  useCase: cta
+  archetypeRef: stack
+  surfaceIntent: primary
+  intent: "Narrow CENTERED column (~50% container) \u2014 one of only two sanctioned centered stacks (with\
+    \ the hero). Eyebrow -> a FULL display-scale (H1) heading, multi-line, not a smaller title tier ->\
+    \ short body -> underline-only form (placeholder + inline arrow submit). Body AND form share the SAME\
+    \ measure (coherent centered column) \u2014 the form does NOT stretch to the full column width. No\
+    \ boxed inputs, no filled button."
+  contentShape:
+    alignment:
+      value: center
+      inheritance: block-inherits
+      rule: "CTA-type block: heading centered -> body + form centered, form measure = body measure (not\
+        \ full column width). Contrast: a section-level header block may center only the heading while\
+        \ the body run stays left-anchored \u2014 declare per-slot there instead of inheriting."
+    slots:
+    - name: eyebrow
+      role: eyebrow
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+    - name: heading
+      role: heading
+      textLen: medium
+      sizeClass: display
+      width: hug
+      z: front
+    - name: body
+      role: short body
+      textLen: long
+      sizeClass: body
+      width: hug
+      sizeRel:
+        to: container
+        ratio: 0.5
+        axis: width
+      z: front
+    - name: form
+      role: underline newsletter form
+      textLen: short
+      sizeClass: control
+      width: hug
+      sizeRel:
+        to: body
+        ratio: 1.0
+        axis: width
+      z: front
+  specialTreatments: []
+  responsive:
+    collapse: none
+    mediaFirst: false
+  variantKnobs:
+    align:
+      type: enum
+      values:
+      - center
+      - left
+      default: center
+  origin: extracted
+  provenance:
+  - conversion
+  confidence: high
+  source: creation
+  scope: design-language
+  changelog:
+  - ts: '2026-07-01T00:00:00Z'
+    action: created
+    from: null
+    to: cta-underline-conversion-stack
+    by: creation
+    signalId: null
+    note: extracted from conversion-stack
+  - ts: '2026-07-02T00:00:00Z'
+    action: updated
+    from: 'sizeClass: title, no centering applied'
+    to: 'sizeClass: display, centered column + full-width form row'
+    by: iteration
+    signalId: null
+    note: "fixed: composer/scaffold never implemented the recorded align:center knob, and heading sizeClass\
+      \ didn't match voice.md's explicit H1 designation \u2014 spotted by comparing rendered output against\
+      \ the source reference screenshot"
+  - ts: '2026-07-02T00:10:00Z'
+    action: updated
+    from: 'form width: stretch (full column)'
+    to: 'form width: hug, sizeRel to body (1.0) + alignment.rule captured'
+    by: iteration
+    signalId: null
+    note: "fixed: form was stretched to the full 46rem column instead of matching body's measure, reading\
+      \ visibly wider than the body text against the source reference \u2014 added the alignment-coherence\
+      \ field so this class of gap is captured going forward, not just patched here"
+- id: gallery-fullbleed-counter-band
+  useCase: gallery
+  archetypeRef: stack-fullbleed
+  surfaceIntent: primary
+  intent: "Full-bleed interior photograph, no overlay text. A thin utility row (eyebrow far left, static\
+    \ counter far right) frames the band; a short caption sits in the margin below. No slider/carousel\
+    \ controls \u2014 the counter is a static label."
+  contentShape:
+    alignment: { value: edge-to-edge, inheritance: per-slot-override }
+    slots:
+    - name: eyebrow
+      role: band eyebrow (far left)
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+    - name: counter
+      role: static index counter (far right)
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+    - name: media
+      role: full-bleed interior photography
+      mediaAspect: landscape
+      mediaScale:
+        of: container
+        fraction: 1.0
+      width: full-bleed
+      z: mid
+    - name: caption
+      role: margin caption below band
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+  specialTreatments:
+  - kind: bleed
+    target: media
+    edge: all
+  - kind: marginal-caption
+    target: caption
+    side: left
+  responsive:
+    collapse: none
+    mediaFirst: false
+  variantKnobs:
+    counterFormat:
+      type: string
+      default: N/M
+  origin: extracted
+  provenance:
+  - gallery-showcase
+  confidence: high
+  source: creation
+  scope: design-language
+  changelog:
+  - ts: '2026-07-01T00:00:00Z'
+    action: created
+    from: null
+    to: gallery-fullbleed-counter-band
+    by: creation
+    signalId: null
+    note: "extracted from voice.md \xA75 Gallery interior showcase"
+- id: about-anchored-statement
+  useCase: about
+  archetypeRef: split
+  surfaceIntent: primary
+  intent: "Left-anchored statement: eyebrow, display heading, body, arrow action beside a single flush\
+    \ media panel. Alternates horizontal anchor from the prior about-run module (stagger, no ghost word\
+    \ \u2014 the plain counterpart to the collage pattern)."
+  contentShape:
+    alignment: { value: left, counterweight: media, inheritance: per-slot-override }
+    slots:
+    - name: eyebrow
+      role: eyebrow
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+    - name: heading
+      role: display heading
+      textLen: medium
+      sizeClass: display
+      width: hug
+      z: front
+    - name: body
+      role: statement body
+      textLen: long
+      sizeClass: body
+      width: hug
+      sizeRel:
+        to: media
+        ratio: 0.5
+        axis: width
+      z: front
+    - name: action
+      role: arrow link
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+    - name: media
+      role: statement photography
+      mediaAspect: landscape
+      mediaScale:
+        of: container
+        fraction: 0.5
+      width: media
+      z: mid
+  specialTreatments:
+  - kind: stagger
+    target: media
+    axis: horizontal
+    amount:
+      class: medium
+  responsive:
+    collapse: stack-below-tablet
+    mediaFirst: false
+  variantKnobs:
+    mediaSide:
+      type: enum
+      values:
+      - left
+      - right
+      default: right
+  origin: extracted
+  provenance:
+  - mission-statement
+  confidence: high
+  source: creation
+  scope: design-language
+  changelog:
+  - ts: '2026-07-01T00:00:00Z'
+    action: created
+    from: null
+    to: about-anchored-statement
+    by: creation
+    signalId: null
+    note: "extracted from voice.md \xA75 Mission statement"
+- id: heritage-ghost-numerals-timeline
+  useCase: about
+  archetypeRef: collage
+  surfaceIntent: primary
+  intent: Ghost numerals (a year range) span near-full section width behind the heading and media; foreground
+    overlaps deliberately. Two short captions mark specific years.
+  contentShape:
+    alignment: { value: left, counterweight: ghost-numerals, inheritance: per-slot-override }
+    slots:
+    - name: ghostnumerals
+      role: watermark year range
+      textLen: word
+      sizeClass: colossal
+      width: full-bleed
+      opacityClass: ghost
+      contentType: numerals
+      z: back
+    - name: eyebrow
+      role: eyebrow
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+    - name: heading
+      role: display heading
+      textLen: medium
+      sizeClass: display
+      width: hug
+      z: front
+    - name: body
+      role: offset paragraph
+      textLen: long
+      sizeClass: body
+      width: hug
+      sizeRel:
+        to: container
+        ratio: 0.33
+        axis: width
+      z: front
+    - name: media
+      role: heritage photography
+      mediaAspect: freeform
+      mediaScale:
+        of: container
+        fraction: 0.45
+      width: media
+      z: mid
+    - name: caption
+      role: dated margin captions (two)
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+  specialTreatments:
+  - kind: ghost-word
+    target: ghostnumerals
+    anchor: behind-media
+    bleed: partial
+  - kind: overlap
+    pair:
+    - heading
+    - media
+    zOrder:
+    - ghostnumerals
+    - media
+    - heading
+    amount:
+      class: medium
+  - kind: marginal-caption
+    target: caption
+    side: right
+  responsive:
+    collapse: stack-below-tablet
+    mediaFirst: false
+    ghostwordAt:
+      base: colossal
+      tablet: hero
+      mobile: hidden
+  variantKnobs:
+    yearRangeSeparator:
+      type: enum
+      values:
+      - "\u2013"
+      - /
+      default: "\u2013"
+  origin: extracted
+  provenance:
+  - heritage-timeline
+  confidence: high
+  source: creation
+  scope: design-language
+  changelog:
+  - ts: '2026-07-01T00:00:00Z'
+    action: created
+    from: null
+    to: heritage-ghost-numerals-timeline
+    by: creation
+    signalId: null
+    note: "extracted from voice.md \xA75 Heritage/collection timeline \u2014 ghost-word device applied\
+      \ to numerals, not a word"
+- id: curator-quote-portrait-collage
+  useCase: testimonial
+  archetypeRef: split
+  surfaceIntent: primary
+  intent: A heading-scale quote (didone serif, quotation marks kept) beside a hard-edged portrait; a short
+    caption (the curator's name) sits in the margin beside the portrait.
+  contentShape:
+    alignment: { value: left, counterweight: portrait, inheritance: per-slot-override }
+    slots:
+    - name: eyebrow
+      role: eyebrow
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+    - name: quote
+      role: quote set as heading
+      textLen: medium
+      sizeClass: display
+      width: hug
+      z: front
+    - name: body
+      role: attribution body
+      textLen: long
+      sizeClass: body
+      width: hug
+      z: front
+    - name: portrait
+      role: curator portrait
+      mediaAspect: portrait
+      mediaScale:
+        of: container
+        fraction: 0.4
+      width: media
+      z: mid
+    - name: caption
+      role: name caption beside portrait
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+  specialTreatments:
+  - kind: marginal-caption
+    target: caption
+    side: right
+  responsive:
+    collapse: stack-below-tablet
+    mediaFirst: false
+  variantKnobs:
+    portraitSide:
+      type: enum
+      values:
+      - left
+      - right
+      default: right
+  origin: extracted
+  provenance:
+  - curator-quote
+  confidence: high
+  source: creation
+  scope: design-language
+  changelog:
+  - ts: '2026-07-01T00:00:00Z'
+    action: created
+    from: null
+    to: curator-quote-portrait-collage
+    by: creation
+    signalId: null
+    note: "extracted from voice.md \xA75 Curator quote with portrait"
+- id: visit-dual-panel-map
+  useCase: features
+  archetypeRef: split
+  surfaceIntent: inverse
+  intent: 'Intro heading over a band whose media half is a static desaturated map graphic with a pin,
+    overlapped by TWO cream panels: ticket prices (ruled rows + buy action) and hours/address (rows +
+    directions action). Panels keep cream/ink coloring regardless of the inverse parent.'
+  contentShape:
+    alignment: { value: left, counterweight: map-panel, inheritance: per-slot-override }
+    slots:
+    - name: eyebrow
+      role: band eyebrow
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+    - name: band-heading
+      role: band display heading
+      textLen: medium
+      sizeClass: display
+      width: hug
+      z: front
+    - name: map
+      role: static desaturated map with pin
+      mediaAspect: landscape
+      mediaScale:
+        of: container
+        fraction: 0.5
+      width: stretch
+      z: mid
+    - name: tickets-title
+      role: ticket panel title
+      textLen: short
+      sizeClass: title
+      width: hug
+      z: front
+    - name: tickets-rows
+      role: ticket ruled rows
+      textLen: short
+      sizeClass: body
+      width: stretch
+      z: front
+    - name: tickets-action
+      role: buy tickets arrow link
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+    - name: visit-title
+      role: hours/address panel title
+      textLen: short
+      sizeClass: title
+      width: hug
+      z: front
+    - name: visit-rows
+      role: hours/address rows
+      textLen: short
+      sizeClass: body
+      width: stretch
+      z: front
+    - name: visit-action
+      role: get directions arrow link
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+    - name: map-caption
+      role: map margin caption
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+  specialTreatments:
+  - kind: overlap
+    pair:
+    - tickets-title
+    - map
+    zOrder:
+    - map
+    - tickets-title
+    amount:
+      class: medium
+  - kind: overlap
+    pair:
+    - visit-title
+    - map
+    zOrder:
+    - map
+    - visit-title
+    amount:
+      class: medium
+  - kind: marginal-caption
+    target: map-caption
+    side: left
+  responsive:
+    collapse: stack-below-tablet
+    mediaFirst: true
+  variantKnobs:
+    panelOrder:
+      type: enum
+      values:
+      - tickets-first
+      - visit-first
+      default: tickets-first
+  origin: extracted
+  provenance:
+  - info-band
+  - visit-map-panel
+  confidence: high
+  source: creation
+  scope: design-language
+  changelog:
+  - ts: '2026-07-01T00:00:00Z'
+    action: created
+    from: null
+    to: visit-dual-panel-map
+    by: creation
+    signalId: null
+    note: "extracted from voice.md \xA75 Visit info \u2014 fuller two-panel variant of features-flush-split-panel;\
+      \ distinct pattern, not a knob"
+- id: features-staggered-caption-cards
+  useCase: features
+  archetypeRef: cards
+  surfaceIntent: primary
+  intent: "Two or three offset editorial feature modules on the cream field \u2014 each a module photo\
+    \ + a tracked uppercase caption + a short body \u2014 on an uneven 1.2:1 grid with the second module\
+    \ staggered downward so the columns never align. Structure harvested from the Claude Design layout\
+    \ library #04; kept hard-edged (no card chrome, radius, shadow, or pills \u2014 arrow links only,\
+    \ cq units, brand tokens)."
+  contentShape:
+    alignment: { value: left, counterweight: staggered-grid, inheritance: per-slot-override }
+    slots:
+    - name: card.image
+      role: module photography
+      mediaAspect: landscape
+      mediaScale:
+        of: slot
+        fraction: 1.0
+      width: media
+      z: mid
+    - name: card.caption
+      role: tracked module caption
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+    - name: card.body
+      role: module body
+      textLen: long
+      sizeClass: body
+      width: hug
+      sizeRel:
+        to: slot
+        ratio: 1.0
+        axis: width
+      z: front
+  specialTreatments:
+  - kind: stagger
+    target: card.image
+    axis: vertical
+    amount:
+      class: medium
+  responsive:
+    collapse: stack-below-tablet
+    mediaFirst: false
+  variantKnobs:
+    cardCount:
+      type: enum
+      values:
+      - 2
+      - 3
+      default: 2
+    columnRatio:
+      type: enum
+      values:
+      - 1.2fr 1fr
+      - 1fr 1fr
+      - 1.2fr 1fr 0.9fr
+      default: 1.2fr 1fr
+  origin: designed
+  provenance:
+  - claude-design-layout-library-dc
+  designedFrom:
+    note: "structure harvested from Claude Design 'Woodwave Layout Library' #04 Staggered Caption Cards\
+      \ \u2014 per-card slots (card.image 16/10\xB74/3 \u2192 landscape/cover, card.caption 18\u201340ch\
+      \ tracked 0.16em, card.body 100\u2013180ch ~44ch measure), uneven 1.2:1 columns + ~50px second-card\
+      \ offset \u2192 vertical stagger. Styling NOT copied (drops radius/shadow/pills/vw)."
+    sources:
+    - claude-design-layout-library-dc
+  overridable: true
+  confidence: high
+  source: creation
+  scope: design-language
+  changelog:
+  - ts: '2026-07-01T00:00:00Z'
+    action: created
+    from: null
+    to: features-staggered-caption-cards
+    by: creation
+    signalId: null
+    note: 'harvested STRUCTURE from Claude Design layout library #04; drives the new `cards` archetype
+      composer'
+- id: editorial-interlocking-inset
+  useCase: about
+  archetypeRef: interlock
+  surfaceIntent: primary
+  intent: "The signature editorial interlock: a two-line tracked caption pinned top-left, one landscape\
+    \ image floated into the upper-right, and a long serif statement heading that wraps around the image\
+    \ \u2014 narrow beside it, then full width beneath. A float-wrap device (NOT the ghost-word collage).\
+    \ Needs a 100+ch statement to interlock convincingly. Harvested from Claude Design layout library\
+    \ #11; kept hard-edged (no radius/shadow/pills, cq units, no viewport units)."
+  contentShape:
+    alignment: { value: left, counterweight: inset-media, inheritance: per-slot-override }
+    slots:
+    - name: caption
+      role: pinned two-line caption
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+    - name: inset
+      role: inset statement photography
+      mediaAspect: landscape
+      mediaScale:
+        of: container
+        fraction: 0.52
+      width: media
+      z: mid
+    - name: statement
+      role: wrapping statement heading
+      textLen: long
+      sizeClass: display
+      width: stretch
+      z: front
+  specialTreatments:
+  - kind: float-wrap
+    target: statement
+    around: inset
+    side: right
+    dropAfter: caption
+  - kind: inset
+    target: inset
+    side: right
+    widthRel:
+      to: container
+      ratio: 0.52
+  responsive:
+    collapse: stack-below-tablet
+    mediaFirst: false
+  variantKnobs:
+    floatSide:
+      type: enum
+      values:
+      - left
+      - right
+      default: right
+    insetMeasure:
+      type: enum
+      values:
+      - half
+      - wide
+      default: wide
+  origin: designed
+  provenance:
+  - claude-design-layout-library-dc
+  designedFrom:
+    note: "structure harvested from Claude Design 'Woodwave Layout Library' #11 Interlocking Statement\
+      \ + Inset Image \u2014 slots (caption \u226440ch/2 lines tracked; inset image 3/2\u2192landscape\
+      \ ~52% wide floated right; statement 100\u2013160ch serif heading wrapping around it), plus the\
+      \ 'drop the headline under the caption so first lines sit left of the image' interlock note. Styling\
+      \ NOT copied (drops radius/shadow/pills/vw)."
+    sources:
+    - claude-design-layout-library-dc
+  overridable: true
+  confidence: high
+  source: creation
+  scope: design-language
+  changelog:
+  - ts: '2026-07-01T00:00:00Z'
+    action: created
+    from: null
+    to: editorial-interlocking-inset
+    by: creation
+    signalId: null
+    note: 'harvested STRUCTURE from Claude Design layout library #11; drives the new `interlock` float-wrap
+      archetype composer (distinct from ghost-word collage)'
+- id: pricing-ruled-list-panel
+  useCase: pricing
+  archetypeRef: stack
+  surfaceIntent: primary
+  intent: "Centered eyebrow + heading + short intro line, then a flat list of ruled label/value rows (tier\
+    \ name left, price right) reusing the SAME ruled-row primitive already extracted for ticket/hours\
+    \ panels \u2014 no cards, no toggle, no elevated tier. One closing arrow action."
+  contentShape:
+    alignment: { value: centered, inheritance: block-inherits }
+    slots:
+    - name: eyebrow
+      role: eyebrow
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+    - name: heading
+      role: heading
+      textLen: medium
+      sizeClass: display
+      width: hug
+      z: front
+    - name: intro
+      role: short intro line
+      textLen: short
+      sizeClass: body
+      width: hug
+      z: front
+    - name: rows
+      role: ruled tier/price rows
+      textLen: short
+      sizeClass: body
+      width: hug
+      sizeRel:
+        to: heading
+        ratio: 0.5
+        axis: width
+      z: front
+    - name: action
+      role: arrow link
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+  specialTreatments: []
+  responsive:
+    collapse: none
+    mediaFirst: false
+  variantKnobs:
+    align:
+      type: enum
+      values:
+      - center
+      - left
+      default: center
+  origin: designed
+  designedFrom:
+    note: reuses the ruled-row primitive already extracted in features-flush-split-panel/visit-dual-panel-map;
+      the standard pricing library's card-based patterns were rejected by no-cards-on-cream during retrieval
+    rules:
+    - no-cards-on-cream
+    tokens: []
+  overridable: true
+  confidence: medium
+  source: creation
+  scope: design-language
+  changelog:
+  - ts: '2026-07-02T00:00:00Z'
+    action: created
+    from: null
+    to: pricing-ruled-list-panel
+    by: iteration
+    signalId: null
+    note: "promoted on miss for the Held in Wood exhibition brief \u2014 retrieval correctly rejected\
+      \ the 2 card-based standard patterns via neverDo before this was invented"
+- id: schedule-ruled-list-panel
+  useCase: features
+  archetypeRef: stack
+  surfaceIntent: inverse
+  intent: "Centered eyebrow + heading, then a flat list of ruled label/value rows (event name left, date/time\
+    \ right) \u2014 the exhibition schedule/key-dates device. `schedule`/`dates` is not a canonical use-case;\
+    \ this pattern is filed under `features` and reuses the identical ruled-row primitive as pricing-ruled-list-panel\
+    \ rather than inventing a calendar/date-picker widget."
+  contentShape:
+    alignment: { value: centered, inheritance: block-inherits }
+    slots:
+    - name: eyebrow
+      role: eyebrow
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+    - name: heading
+      role: heading
+      textLen: medium
+      sizeClass: display
+      width: hug
+      z: front
+    - name: rows
+      role: ruled event/date rows
+      textLen: short
+      sizeClass: body
+      width: hug
+      sizeRel:
+        to: heading
+        ratio: 0.5
+        axis: width
+      z: front
+  specialTreatments: []
+  responsive:
+    collapse: none
+    mediaFirst: false
+  variantKnobs:
+    align:
+      type: enum
+      values:
+      - center
+      - left
+      default: center
+  origin: designed
+  designedFrom:
+    note: reuses the ruled-row primitive already extracted in features-flush-split-panel/visit-dual-panel-map;
+      schedule/dates has no canonical use-case so filed under features
+    rules: []
+    tokens: []
+  overridable: true
+  confidence: medium
+  source: creation
+  scope: design-language
+  changelog:
+  - ts: '2026-07-02T00:00:00Z'
+    action: created
+    from: null
+    to: schedule-ruled-list-panel
+    by: iteration
+    signalId: null
+    note: "promoted for the Held in Wood exhibition brief \u2014 schedule/dates is not a canonical use-case,\
+      \ filed under features per brief instruction"
+- id: faq-accordion-list
+  useCase: faq
+  archetypeRef: stack
+  surfaceIntent: primary
+  intent: "Centered eyebrow + heading, then a stacked list of native disclosure rows (question as summary,\
+    \ answer revealed on toggle) \u2014 real interactivity via semantic <details>/<summary>, no JS required.\
+    \ No boxed/card treatment per no-cards-on-cream; rows are separated by the brand's existing hairline\
+    \ device, not a card border."
+  contentShape:
+    alignment: { value: centered, inheritance: block-inherits }
+    slots:
+    - name: eyebrow
+      role: eyebrow
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+    - name: heading
+      role: heading
+      textLen: medium
+      sizeClass: display
+      width: hug
+      z: front
+    - name: items
+      role: question/answer disclosure rows
+      textLen: long
+      sizeClass: body
+      width: hug
+      z: front
+  specialTreatments: []
+  responsive:
+    collapse: none
+    mediaFirst: false
+  variantKnobs:
+    openFirst:
+      type: enum
+      values:
+      - true
+      - false
+      default: false
+  origin: designed
+  designedFrom:
+    note: "no faq.yaml exists in the standard library \u2014 genuine miss; disclosure rows reuse the brand's\
+      \ existing hairline-rule device (c-row-style separators), never a card/box"
+    rules:
+    - no-cards-on-cream
+    - no-shadows
+    tokens: []
+  overridable: true
+  confidence: medium
+  source: creation
+  scope: design-language
+  changelog:
+  - ts: '2026-07-02T00:00:00Z'
+    action: created
+    from: null
+    to: faq-accordion-list
+    by: iteration
+    signalId: null
+    note: "promoted for the Held in Wood exhibition brief \u2014 no standard faq pattern exists at all"
+- id: logos-hairline-strip
+  useCase: logos
+  archetypeRef: row
+  surfaceIntent: primary
+  intent: "A single quiet row of press/partner wordmarks set in the control-text register, separated by\
+    \ the brand hairline device above and below \u2014 no logo images, typographic wordmarks only (matches\
+    \ the no-chrome discipline; invented in the field for a press section the main library had no pattern\
+    \ for)."
+  contentShape:
+    alignment: { value: space-between, inheritance: per-slot-override }
+    slots:
+    - name: eyebrow
+      role: eyebrow
+      textLen: short
+      sizeClass: caption
+      width: hug
+      z: front
+    - name: wordmarks
+      role: typographic wordmark row
+      textLen: short
+      sizeClass: control
+      width: stretch
+      z: front
+  specialTreatments: []
+  responsive:
+    collapse: reflow
+    mediaFirst: false
+  variantKnobs:
+    separator:
+      type: enum
+      values:
+      - slash
+      - space
+      default: slash
+  origin: designed
+  source: field
+  scope: one-off
+  confidence: medium
+  fieldSource: woodwave-kit-client
+  changelog:
+  - ts: 2026-07-02T14:42
+    action: ratified-from-field
+    from: pending
+    to: project library
+    by: iteration
+    signalId: null
+    note: field proposal (woodwave-kit-client) reviewed and ratified at home; ships in the next kit export

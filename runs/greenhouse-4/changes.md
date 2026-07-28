@@ -552,3 +552,24 @@ reports — which this change does not touch.)
   broken. Closing that needs include rules in `tools/track_studio_subset.py` plus a
   regenerated `.gitignore` block; both were owned by another agent during this
   change and were left untouched.
+
+### Clean-clone result (verified against a fresh `--depth 1` clone of `main`)
+The clone carries 11 projects, and the tab row is data-driven, so it degrades by
+project rather than breaking:
+
+| project | in the clone | vs local |
+| --- | --- | --- |
+| `remote` | 12 tabs, Assets (34), all 34 images load | identical |
+| `hubspot-v2` | 13 tabs, Assets (66) | identical |
+| `greenhouse-4` | 6 tabs — `Changelog` is its only brand doc, Assets (0) | loses 9 tabs |
+| `greenhouse` (old lane) | 14 tabs, Assets (39) | no brand tabs either way |
+| `woodwave` (hybrid) | 16 tabs, all old-lane | loses `Sections`, `Voice` |
+
+Zero console errors and no empty tab body on any of them, and all 11 dashboard
+cards render a thumbnail (`greenhouse-4`'s through the capture symlink). The gap
+is entirely about what is tracked: `remote` and `hubspot-v2` ship their
+`brand/evidence/`, `style-scale.yaml`, `layout-library.yaml`, `assets-manifest.json`
+and `media-assets.yaml`; `greenhouse-4`'s subset does not, so those tabs are
+correctly ABSENT rather than blank. Closing that needs include rules in
+`tools/track_studio_subset.py` and a regenerated `.gitignore` block — both owned by
+another agent during this change, so they were left untouched.

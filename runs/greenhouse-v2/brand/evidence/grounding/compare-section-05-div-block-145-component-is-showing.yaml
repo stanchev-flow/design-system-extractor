@@ -1,0 +1,98 @@
+sectionRole: testimonial
+layout:
+  structure: heading top-left, then 3-column testimonial row below (quote -> name
+    -> meta)
+  columns: 3
+  alignment: left
+  approxPaddingPx:
+    top: 140
+    bottom: 120
+  gapPx: 64
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#ffffff'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1b3a2f'
+- role: band
+  bgApprox: '#fcefda'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1b3a2f'
+typography:
+- role: h1
+  approxSizePx: 76
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1b3a2f'
+  familyClass: serif
+- role: h3
+  approxSizePx: 30
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#2c2c28'
+  familyClass: serif
+- role: body
+  approxSizePx: 16
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#2c2c28'
+  familyClass: humanist-sans
+- role: caption
+  approxSizePx: 14
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#4a4a45'
+  familyClass: humanist-sans
+relationalSpacingPx:
+  headingToBody: 90
+  bodyToCta: 45
+components:
+- kind: card
+  variant: quote-block
+  countObserved: 3
+  anatomy: opening quote mark -> multi-line quote body -> attribution name (serif)
+    -> role meta caption
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#2c2c28'
+  caseTreatment: sentence
+copy:
+  eyebrow: null
+  heading: What customers are saying
+  subheading: null
+  body: null
+  items:
+  - heading: Maciek K.
+    body: “Greenhouse has been a game-changer for me, making candidate interviewing
+      a breeze. Its intuitive interface and customizable features have enhanced efficiency
+      and collaboration within my hiring team, ultimately leading to more informed
+      hiring decisions.”
+    meta: European small business customer
+  - heading: Catherine X.
+    body: “What I like best about Greenhouse is its user-friendly interface, making
+      the hiring process more efficient. The platform’s robust analytics and reporting
+      tools provide valuable insights, helping to optimize recruiting strategies.
+      And its integration capabilities with other HR tools streamline the workflow,
+      making it a comprehensive solution”
+    meta: Enterprise customer
+  - heading: Krystal S.
+    body: “Greenhouse has been the best ATS we have used. It is not only easy to use
+      as a recruiter, but candidates rave about it from their experience. We love
+      the features Greenhouse offers candidates to be inclusive and remove the potential
+      for bias. Greenhouse is the easiest to use ATS out there from a candidate and
+      recruiter point of view.”
+    meta: Mid-market customer
+confidence: high

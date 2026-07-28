@@ -1,0 +1,211 @@
+schemaVersion: section-grounding.v1
+sectionRole: features
+layout:
+  structure: '3-column card grid, each card: media-well top -> heading -> body -> outlined CTA'
+  columns: 3
+  alignment: left
+  approxPaddingPx:
+    top: 40
+    bottom: 40
+  gapPx: 80
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#ffffff'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1c2b23'
+- role: band
+  bgApprox: '#183028'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#ffffff'
+- role: media-well
+  bgApprox: 'image-fill: office/portrait photograph'
+  parent: canvas
+  radiusPx: 4
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1c2b23'
+- role: media-well
+  bgApprox: '#1e3a2e'
+  parent: canvas
+  radiusPx: 4
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#ffffff'
+- role: card
+  bgApprox: '#ffffff'
+  parent: canvas
+  radiusPx: 8
+  borderApprox: '1px #cfd6d2'
+  shadowApprox: soft drop, ~0 6px 18px rgba(0,0,0,.10)
+  inkApprox: '#1c2b23'
+typography:
+- role: h2
+  approxSizePx: 34
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1c2b23'
+  familyClass: serif
+- role: body
+  approxSizePx: 16
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#2c3b33'
+  familyClass: grotesque-sans
+- role: control-label
+  approxSizePx: 15
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1c2b23'
+  familyClass: grotesque-sans
+- role: caption
+  approxSizePx: 13
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#ffffff'
+  familyClass: grotesque-sans
+relationalSpacingPx:
+  headingToBody: 34
+  bodyToCta: 34
+components:
+- kind: card
+  variant: filled-neutral
+  countObserved: 3
+  anatomy: media-well top -> heading -> body -> outlined CTA button
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: null
+    radiusPx: 4
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1c2b23'
+  caseTreatment: title
+- kind: button
+  variant: outlined
+  countObserved: 3
+  anatomy: text label centered in pill outline
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 16 32
+    radiusPx: 24
+  surfaceApprox: transparent
+  inkApprox: '#1c2b23'
+  caseTreatment: title
+- kind: badge
+  variant: filled-neutral
+  countObserved: 3
+  anatomy: icon + label inside floating white pill overlaid on media-well
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 10 18
+    radiusPx: 8
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1c2b23'
+  caseTreatment: title
+- kind: avatar
+  variant: circle-cropped portrait
+  countObserved: 6
+  anatomy: row of overlapping circular portraits with centered highlighted avatar
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 999
+  surfaceApprox: '#1e3a2e'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+copy:
+  eyebrow: null
+  heading: null
+  subheading: null
+  body: null
+  items:
+  - heading: Greenhouse AI
+    body: Hiring needs more than faster automation. It needs to be completely reimagined. Explore the
+      next wave of AI capabilities from Greenhouse, built to help teams cut through noise, strengthen
+      signal and make structured hiring easier to execute – without losing human judgment.
+    meta: Connect your own AI
+  - heading: Real Talent
+    body: Greenhouse Real Talent™ brings triple layers of trust to hiring with candidate fraud detection,
+      identity verification and candidate matching software, so you can make more confident hiring decisions.
+    meta: Adam Anderson / High risk fraud
+  - heading: MyGreenhouse
+    body: MyGreenhouse is a powerful new candidate portal that transforms hiring from robotic to remarkable.
+      It keeps candidates informed with real-time updates, surfaces new opportunities and makes applying
+      seamless – while giving recruiters the insights to quickly identify top talent.
+    meta: Create a Job Alert
+  actions:
+  - label: See AI features
+    styleHint: outlined
+  - label: See Real Talent
+    styleHint: outlined
+  - label: Identify top talent
+    styleHint: outlined
+media:
+- kind: photo
+  treatment: warm-toned office/portrait photographs filling card media-wells with floating white label
+    pill
+  aspect: landscape
+  approxFractionOfSection: 0.35
+- kind: illustration
+  treatment: dark green panel with overlapping circular portrait avatars and product-UI overlay badge
+  aspect: landscape
+  approxFractionOfSection: 0.12
+mediaAssets:
+- kind: photograph
+  subject: collaborative office scene, people conversing with tablet
+  rightsGuess: own
+  luminance: mid
+  busyness: medium
+  aspect: landscape
+  alphaEdge: false
+  countObserved: 1
+- kind: portrait
+  subject: single person portrait in warm indoor setting
+  rightsGuess: own
+  luminance: mid
+  busyness: medium
+  aspect: landscape
+  alphaEdge: false
+  countObserved: 1
+- kind: avatar
+  subject: row of circle-cropped face portraits, one centered/highlighted
+  rightsGuess: own
+  luminance: mid
+  busyness: medium
+  aspect: square
+  alphaEdge: true
+  countObserved: 6
+- kind: product-ui-screenshot
+  subject: candidate name label and risk-flag pill overlay
+  rightsGuess: own
+  luminance: dark
+  busyness: low
+  aspect: freeform
+  alphaEdge: true
+  countObserved: 1
+mediaComposition:
+- mode: background-with-foreground
+  layers: dark green panel (baked leaf motif) -> row of circular avatars -> centered highlighted portrait
+    -> floating name label + risk pill (separate UI elements)
+  bakedVsSeparable: panel + avatars read as composed image; name label and risk pill read as separable
+    UI overlays
+  componentsOverMedia: label chip, status/risk badge
+components_note: null
+confidence: high
+notes:
+- Section top edge shows dark green band remnant from prior section
+- Trademark symbol ™ present in Real Talent body copy
+- Center card media-well is dark green vs warm photos in outer cards
+_source:
+  crop: section-01-div.png
+  domClasses: ''
+  model: claude-opus-4-8

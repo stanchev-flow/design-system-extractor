@@ -1,0 +1,192 @@
+{
+ "schemaVersion": "motion-audit.v1",
+ "sourceRuleCount": 721,
+ "transitions": [
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "",
+   "selector": ".w-webflow-badge, .w-webflow-badge *",
+   "transitions": [
+    {
+     "property": "none",
+     "duration": null,
+     "easing": null,
+     "delay": null,
+     "raw": "none"
+    }
+   ]
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "",
+   "selector": ".w-slider-dot",
+   "transitions": [
+    {
+     "property": "background-color",
+     "duration": ".1s",
+     "easing": null,
+     "delay": null,
+     "raw": "background-color .1s"
+    },
+    {
+     "property": "color",
+     "duration": ".1s",
+     "easing": null,
+     "delay": null,
+     "raw": "color .1s"
+    }
+   ]
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "",
+   "selector": ".w-lightbox-control",
+   "transitions": [
+    {
+     "property": "all",
+     "duration": ".3s",
+     "easing": null,
+     "delay": null,
+     "raw": "all .3s"
+    }
+   ]
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "",
+   "selector": ".footer-nav-link",
+   "transitions": [
+    {
+     "property": "color",
+     "duration": ".8s",
+     "easing": null,
+     "delay": null,
+     "raw": "color .8s"
+    }
+   ]
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "",
+   "selector": ".footer-social-link",
+   "transitions": [
+    {
+     "property": "color",
+     "duration": ".25s",
+     "easing": "ease-in-out",
+     "delay": null,
+     "raw": "color .25s ease-in-out"
+    }
+   ]
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "",
+   "selector": ".footer-bottom-link",
+   "transitions": [
+    {
+     "property": "color",
+     "duration": ".3s",
+     "easing": null,
+     "delay": null,
+     "raw": "color .3s"
+    }
+   ]
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "",
+   "selector": ".footer-bottom-link-span",
+   "transitions": [
+    {
+     "property": "color",
+     "duration": ".2s",
+     "easing": null,
+     "delay": null,
+     "raw": "color .2s"
+    }
+   ]
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "",
+   "selector": ".buy-button",
+   "transitions": [
+    {
+     "property": "background-color",
+     "duration": ".3s",
+     "easing": null,
+     "delay": null,
+     "raw": "background-color .3s"
+    }
+   ]
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "@media screen and (max-width: 991px)",
+   "selector": ".nav-link",
+   "transitions": [
+    {
+     "property": "color",
+     "duration": ".2s",
+     "easing": null,
+     "delay": null,
+     "raw": "color .2s"
+    }
+   ]
+  },
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "@media screen and (max-width: 991px)",
+   "selector": ".nav-menu-social-link",
+   "transitions": [
+    {
+     "property": "color",
+     "duration": ".2s",
+     "easing": null,
+     "delay": null,
+     "raw": "color .2s"
+    }
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "media": "",
+   "selector": ".w-lightbox-spinner",
+   "animations": [
+    {
+     "name": "spin",
+     "duration": ".8s",
+     "easing": "linear",
+     "delay": null,
+     "extras": [
+      "infinite"
+     ],
+     "raw": ".8s linear infinite spin"
+    }
+   ]
+  }
+ ],
+ "keyframes": [
+  {
+   "file": "000-woodwavegallery.dff809c20.css",
+   "name": "spin",
+   "frames": "\n  0% {\n    transform: rotate(0);\n  }\n\n  100% {\n    transform: rotate(360deg);\n  }\n"
+  }
+ ],
+ "motionVars": {},
+ "durationCensus": {
+  "300ms": 3,
+  "200ms": 3,
+  "100ms": 2,
+  "800ms": 2,
+  "250ms": 1
+ },
+ "easingCensus": {
+  "linear": 1,
+  "ease-in-out": 1
+ },
+ "jsTimingNotes": []
+}

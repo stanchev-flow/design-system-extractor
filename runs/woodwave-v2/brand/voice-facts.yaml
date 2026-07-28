@@ -1,0 +1,78 @@
+# STRUCTURED VOICE FACTS (schema voice-facts.v1; brand-schema §4.8).
+# Derived from WoodWave's CAPTURED copy only — section-copy.yaml layoutCopy +
+# evidence/grounding section copy. voice.md is the prose companion; this is the
+# machine-checkable layer the voice gate (brand_pipeline/voice_audit.py) audits.
+schema: voice-facts.v1
+brand: woodwave-v2
+derivedFrom:
+  - section-copy.yaml (layoutCopy: ~9 unique headings, 8 bodies, 3 CTA labels)
+  - evidence/grounding/section-*.yaml (copy blocks, 7 sections)
+  - voice.md (tone descriptors — prose companion)
+
+tone:
+  descriptors: [evocative, romantic, unhurried, curatorial, invitational]
+  register: >-
+    Curatorial, evocative gallery prose in the FIRST PERSON PLURAL ("we hold a
+    profound belief", "our one-of-a-kind space") inviting the reader in; long,
+    flowing editorial sentences that reach for the transcendent (creativity,
+    imagination, inspiration) over the transactional.
+  source: voice.md Register/Patterns (derived from the same captured corpus)
+
+sentences:
+  corpus: ~14 sentences pooled from unique captured headings + bodies
+  meanWords: 17
+  medianWords: 19
+  p90Words: 22
+  maxWords: 23
+  gate:
+    # the gallery voice is deliberately LONG and flowing; budgets = measured
+    # envelope with modest headroom (the voice gate warns beyond these)
+    meanWordsMax: 22
+    p90WordsMax: 30
+
+readingLevel:
+  fleschKincaidGrade: 13
+  band: "12-14 (literary / editorial — evocative vocabulary carries the register)"
+  gate: { fkGradeMax: 16 }
+
+casing:
+  headings:
+    rule: sentence
+    note: >-
+      Copy is authored SENTENCE case; the Melodrama display + Satoshi eyebrow type
+      roles TRANSFORM it to uppercase at render (the register is uppercase display,
+      not uppercase source strings). Proper nouns capitalized mid-sentence.
+    brandTerms: [WoodWave, WoodWave Gallery, Margaret, Woodwave, Perspective Hall,
+                 Panorapeak, ArtUnveil, Isabella]
+  eyebrows:
+    rule: uppercase
+    note: >-
+      The eyebrow/section-label register (ABOUT / VISIT / GALLERY / STAY UPDATED)
+      renders uppercase via the eyebrow type token.
+  ctas: { rule: sentence, note: "Buy tickets / Subscribe — authored sentence case, rendered uppercase by the control-text token" }
+
+verbLed:
+  conversionCtaShare: 1.0
+  corpus: "2 conversion labels (Buy tickets, Subscribe) — both verb-led"
+  samples: [Buy tickets, Subscribe]
+  gate: { advisory: true, note: "share drops below ~0.5 in generated copy -> WARN" }
+
+punctuation:
+  exclamations: { measured: 0, gate: { max: 1 }, note: "no exclamation marks in the brand copy (the form's 'Thank you!' success string is a Webflow default, not brand voice)" }
+
+bannedHype:
+  # corporate/SaaS jargon the curatorial gallery voice would NEVER use (0 hits in
+  # the captured corpus). NOTE: the gallery's OWN evocative vocabulary — boundless,
+  # transformative, harmoniously, seamless, cutting-edge, unleash, immerse — is
+  # ON-brand and deliberately NOT banned.
+  lexicon: [leverage, synergy, ROI, KPI, SaaS, dashboard, onboarding, funnel,
+            stakeholder, bandwidth, scalable, turnkey, best-in-class, disruptive,
+            actionable, deliverable]
+  evidence: "0 hits across the captured heading/body/CTA corpus"
+
+provenance:
+  method: >-
+    deterministic text stats over the captured corpus (see header); no model in the
+    loop. Numbers regenerate from section-copy.yaml + grounding.
+  authoredBy: creation
+  ts: "2026-07-17T14:15:00Z"

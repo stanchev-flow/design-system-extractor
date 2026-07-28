@@ -1,0 +1,168 @@
+schemaVersion: section-grounding.v1
+sectionRole: about
+layout:
+  structure: 'editorial about section: eyebrow + display heading top, then alternating photo/body blocks
+    with large watermark type behind'
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 100
+    bottom: 120
+  gapPx: 60
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#f7ede6'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#2a2320'
+- role: band
+  bgApprox: '#231a14'
+  parent: canvas
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#f7ede6'
+- role: media-frame
+  bgApprox: 'image-fill: warm wooden curved interior'
+  parent: canvas
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#f7ede6'
+typography:
+- role: eyebrow
+  approxSizePx: 13
+  weightApprox: 500
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#2a2320'
+  familyClass: geometric-sans
+- role: display
+  approxSizePx: 46
+  weightApprox: 500
+  case: upper
+  trackingApprox: normal
+  colorApprox: '#2a2320'
+  familyClass: didone
+- role: h2
+  approxSizePx: 62
+  weightApprox: 500
+  case: upper
+  trackingApprox: normal
+  colorApprox: '#2a2320'
+  familyClass: didone
+- role: body
+  approxSizePx: 15
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#4a423d'
+  familyClass: geometric-sans
+- role: caption
+  approxSizePx: 12
+  weightApprox: 500
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#2a2320'
+  familyClass: geometric-sans
+- role: display
+  approxSizePx: 200
+  weightApprox: 400
+  case: upper
+  trackingApprox: normal
+  colorApprox: '#efe2d9'
+  familyClass: didone
+relationalSpacingPx:
+  eyebrowToHeading: 36
+  headingToBody: 40
+copy:
+  eyebrow: ABOUT
+  heading: 'SPACE AS A MUSE: UNLEASH YOUR CREATIVITY AND GET INSPIRED WITH US'
+  body: At WoodWave Gallery, we hold a profound belief in the transformative influence of artistic environments
+    on the boundless human imagination. Explore our one-of-a-kind space, where innovation and inspiration
+    harmoniously converge, and set out on an enriching journey towards infinite creativity.
+  items:
+  - heading: 'WOODWAVE GALLERY: WHERE DESIGN, NATURE, AND BOUNDLESS CREATIVITY HARMONIOUSLY CONVERGE,
+      INSPIRING IMAGINATION IN THE CITY''S HEART'
+    body: Our uniqueness lies in the seamless blend of contemporary design with the organic, crafting
+      a distinctive environment for boundless artistic expression.
+    meta: ERSPECTIVE HALL ARTUNVEIL SPACE BY ISABELLA ST.
+  - heading: null
+    body: At the heart of our artistic haven, you'll discover our crowning jewel - a cutting-edge sphere
+      housing the future of interactive contemporary art. Immerse yourself in a one-of-a-kind experience
+      where technology and creativity converge, inviting visitors to explore and engage with the art of
+      tomorrow.
+    meta: PANORAPEAK VIEWPOINT
+media:
+- kind: photo
+  treatment: warm-toned curved wooden architectural interior, full-frame left column
+  aspect: portrait
+  approxFractionOfSection: 0.2
+- kind: photo
+  treatment: gallery interior with sculpture and framed painting, right column
+  aspect: landscape
+  approxFractionOfSection: 0.18
+- kind: photo
+  treatment: organic lattice canopy framing a city skyline, left column
+  aspect: landscape
+  approxFractionOfSection: 0.15
+- kind: photo
+  treatment: domed architectural interior, right column
+  aspect: landscape
+  approxFractionOfSection: 0.12
+mediaAssets:
+- kind: photograph
+  subject: warm curved wooden architectural interior
+  rightsGuess: own
+  luminance: mid
+  busyness: medium
+  aspect: portrait
+  alphaEdge: false
+  countObserved: 1
+- kind: photograph
+  subject: museum gallery hall with sculpture and painting and visitor
+  rightsGuess: own
+  luminance: light
+  busyness: medium
+  aspect: landscape
+  alphaEdge: false
+  countObserved: 1
+- kind: photograph
+  subject: organic lattice canopy over city skyline
+  rightsGuess: own
+  luminance: mid
+  busyness: high
+  aspect: landscape
+  alphaEdge: false
+  countObserved: 1
+- kind: photograph
+  subject: domed architectural interior space
+  rightsGuess: own
+  luminance: light
+  busyness: medium
+  aspect: landscape
+  alphaEdge: false
+  countObserved: 1
+- kind: portrait
+  subject: cropped person portrait at top edge
+  rightsGuess: own
+  luminance: dark
+  busyness: low
+  aspect: square
+  alphaEdge: false
+  countObserved: 1
+generatedVisualDevices:
+- kind: css-gradient
+  evidence: large pale 'ABOUT' watermark word set behind heading in tint slightly lighter than canvas
+  params: 'flat #efe2d9 oversized didone letters, ~200px cap height'
+  poster: faint outline word ABOUT spanning full width behind top heading
+motionHints: []
+confidence: high
+notes:
+- top edge shows a dark band and a cropped portrait thumbnail bleeding from previous section
+- meta caption 'ERSPECTIVE HALL ARTUNVEIL' appears truncated at left (likely 'PERSPECTIVE HALL ART UNVEIL')
+- large 'ABOUT' watermark rendered in near-canvas tint behind the top heading
+_source:
+  crop: section-01-section-about.png
+  domClasses: section about
+  model: claude-opus-4-8

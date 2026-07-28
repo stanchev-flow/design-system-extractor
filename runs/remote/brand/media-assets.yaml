@@ -1,0 +1,682 @@
+schemaVersion: media-assets.v1
+brand: Remote
+source: >-
+  Authored 2026-07-16 (media semantics) FROM EXISTING EVIDENCE ONLY: the Phase-D
+  2026-07-07 capture's curated assets (assets-tagged.json, 58 files), the fid8
+  disclosure-state captures (per-item collages), evidence/grounding/*.yaml,
+  section-rects.json + the fullpage capture (poster crop), and Pillow-measured
+  per-file stats. No re-extraction.
+note: >-
+  assets-tagged.json remains the renderer-compat inventory (attach_asset_inventory
+  reads it; its mediaTreatmentRules stay the role-scoped fallback). This artifact is
+  the richer semantic SUPERSET: stable logical-asset ids, VARIANT DEDUPE
+  (content-hash-proven duplicate files collapse into one logical asset), the closed
+  kind taxonomy, usage rights (AS-67), measured luminance/busyness stats, and the
+  brand's generated-visual recipe. treatmentDefaults.fit mirrors the fit each
+  file's actual current usage resolves through the tagged rules, so rendering is
+  unchanged. Chrome-only nav-icon-*/nav-card-*/logo-inline-* files stay
+  unregistered except where they are byte-identical twins of registered assets
+  (recorded as variants).
+
+# ── brand-level imagery grammar (spec §4). Remote's page photography is limited to
+# the four testimonial portraits (avatars); everything else is illustration,
+# product-UI collage, or art surface. Measured over the four portrait files: cool
+# blue-teal environmental cast (hues 219-220), mid-key, vivid but controlled color.
+photographyFingerprint:
+  measured:
+    temperatureCast: cool
+    keyExposure: mid-key
+    saturationBand: vivid
+    finish: neutral
+    sampleSize: 4
+    source: measured
+  prose: >-
+    People photography appears only as testimonial portraits: color environmental
+    headshots on cool blue-teal backdrops, mid-key, clean neutral finish, cropped
+    to circles at render. The brand's visual mass otherwise comes from pastel
+    noise-gradient art surfaces, flat product illustration, and product-UI
+    collages on deep-navy plates — new photo briefs should stay in the cool,
+    saturated-but-clean portrait family and never introduce warm lifestyle scenes.
+
+assets:
+  # ── the brand's own mark ─────────────────────────────────────────────────────────
+  - id: brand-wordmark
+    file: remote-wordmark.svg
+    assetSemantics: { kind: logo-own, logoVariant: wordmark, subject: "brand wordmark with orbit mark (ink vector)" }
+    facts: { intrinsic: { w: 94, h: 30 }, intrinsicAspect: 3.1333, orientation: landscape,
+             alpha: true, stats: null, focalPoint: null, safeCrop: null,
+             altHarvested: "Remote Wordmark" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [nav-wordmark, footer-wordmark]
+    provenance: { source: capture-files, sections: [navbar, footer], confidence: high }
+
+  # ── testimonial portraits (rendered as circles) ──────────────────────────────────
+  - id: portrait-testimonial-a
+    file: avatar-erik-sveen.webp
+    assetSemantics: { kind: portrait, subject: "environmental headshot on cool backdrop" }
+    facts: { intrinsic: { w: 2000, h: 1468 }, intrinsicAspect: 1.3624, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 220, luminanceBand: mid, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Erik Sveen" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [testimonial-avatar]
+    provenance: { source: capture-files, sections: [testimonials], confidence: high }
+  - id: portrait-testimonial-b
+    file: avatar-luke-mckinlay.webp
+    assetSemantics: { kind: portrait, subject: "environmental headshot on cool backdrop" }
+    facts: { intrinsic: { w: 2000, h: 1468 }, intrinsicAspect: 1.3624, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 219, luminanceBand: mid, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Luke Mckinlay" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [testimonial-avatar]
+    provenance: { source: capture-files, sections: [testimonials], confidence: high }
+  - id: portrait-testimonial-c
+    file: avatar-maria-shkaruppa.webp
+    assetSemantics: { kind: portrait, subject: "environmental headshot on cool backdrop" }
+    facts: { intrinsic: { w: 2000, h: 1468 }, intrinsicAspect: 1.3624, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 219, luminanceBand: mid, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Maria Shkaruppa" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [testimonial-avatar]
+    provenance: { source: capture-files, sections: [testimonials], confidence: high }
+  - id: portrait-testimonial-d
+    file: avatar-marisol-jimenez.webp
+    assetSemantics: { kind: portrait, subject: "environmental headshot on cool backdrop" }
+    facts: { intrinsic: { w: 2000, h: 1468 }, intrinsicAspect: 1.3624, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 220, luminanceBand: mid, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Marisol Jimenez" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [testimonial-avatar]
+    provenance: { source: capture-files, sections: [testimonials], confidence: high }
+
+  # ── review-platform award badges + rating chips — third-party marks ──────────────
+  - id: award-badge-gep-leader
+    file: badge-g2-gep-leader.webp
+    assetSemantics: { kind: badge-review-award, subject: "review-platform award shield" }
+    facts: { intrinsic: { w: 280, h: 323 }, intrinsicAspect: 0.8669, orientation: portrait,
+             alpha: true,
+             stats: { dominantHue: 23, luminanceBand: light, busyness: high, saturationBand: muted, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "G2 Gep Leader" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [award-proof-mark]
+    provenance: { source: capture-files, sections: [badge-strip], confidence: high }
+  - id: award-badge-payroll-leader
+    file: badge-g2-payroll-leader.webp
+    assetSemantics: { kind: badge-review-award, subject: "review-platform award shield" }
+    facts: { intrinsic: { w: 280, h: 323 }, intrinsicAspect: 0.8669, orientation: portrait,
+             alpha: true,
+             stats: { dominantHue: 23, luminanceBand: light, busyness: medium, saturationBand: muted, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "G2 Payroll Leader" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [award-proof-mark]
+    provenance: { source: capture-files, sections: [badge-strip], confidence: high }
+  - id: award-badge-fastest-growing
+    file: badge-g2-top100-fastest-growing.webp
+    assetSemantics: { kind: badge-review-award, subject: "review-platform award shield" }
+    facts: { intrinsic: { w: 280, h: 323 }, intrinsicAspect: 0.8669, orientation: portrait,
+             alpha: true,
+             stats: { dominantHue: 5, luminanceBand: light, busyness: high, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "G2 Top100 Fastest Growing" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [award-proof-mark]
+    provenance: { source: capture-files, sections: [badge-strip], confidence: high }
+  - id: award-badge-global-sellers
+    file: badge-g2-top100-global-sellers.webp
+    assetSemantics: { kind: badge-review-award, subject: "review-platform award shield" }
+    facts: { intrinsic: { w: 560, h: 646 }, intrinsicAspect: 0.8669, orientation: portrait,
+             alpha: true,
+             stats: { dominantHue: 2, luminanceBand: light, busyness: high, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "G2 Top100 Global Sellers" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [award-proof-mark]
+    provenance: { source: capture-files, sections: [badge-strip], confidence: high }
+  - id: award-badge-top100-hr
+    file: badge-g2-top100-hr.webp
+    assetSemantics: { kind: badge-review-award, subject: "review-platform award shield" }
+    facts: { intrinsic: { w: 560, h: 646 }, intrinsicAspect: 0.8669, orientation: portrait,
+             alpha: true,
+             stats: { dominantHue: 2, luminanceBand: mid, busyness: high, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "G2 Top100 Hr" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [award-proof-mark]
+    provenance: { source: capture-files, sections: [badge-strip], confidence: high }
+  - id: award-badge-top50-hr
+    file: badge-g2-top50-hr.webp
+    assetSemantics: { kind: badge-review-award, subject: "review-platform award shield" }
+    facts: { intrinsic: { w: 280, h: 323 }, intrinsicAspect: 0.8669, orientation: portrait,
+             alpha: true,
+             stats: { dominantHue: 5, luminanceBand: light, busyness: high, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "G2 Top50 Hr" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [award-proof-mark]
+    provenance: { source: capture-files, sections: [badge-strip], confidence: high }
+  - id: rating-chip-g2
+    file: rating-g2.webp
+    assetSemantics: { kind: badge-review-award, subject: "review-platform rating chip (glyph + stars + score)" }
+    facts: { intrinsic: { w: 308, h: 48 }, intrinsicAspect: 6.4167, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 102, luminanceBand: mid, busyness: low, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "G2" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [rating-proof-chip]
+    provenance: { source: capture-files, sections: [badge-strip], confidence: high }
+  - id: rating-chip-trustpilot
+    file: rating-trustpilot.webp
+    assetSemantics: { kind: badge-review-award, subject: "review-platform rating chip (glyph + stars + score)" }
+    facts: { intrinsic: { w: 429, h: 48 }, intrinsicAspect: 8.9375, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 134, luminanceBand: mid, busyness: low, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Trustpilot" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [rating-proof-chip]
+    provenance: { source: capture-files, sections: [badge-strip], confidence: high }
+  - id: rating-chip-capterra
+    file: rating-capterra.webp
+    assetSemantics: { kind: badge-review-award, subject: "review-platform rating chip (glyph + stars + score)" }
+    facts: { intrinsic: { w: 432, h: 48 }, intrinsicAspect: 9.0, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 145, luminanceBand: mid, busyness: low, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Capterra" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [rating-proof-chip]
+    provenance: { source: capture-files, sections: [badge-strip], confidence: high }
+
+  # ── the pastel noise-gradient art surface — VARIANT DEDUPE (content-hash-proven:
+  # bg-noise-top-2x.webp is byte-identical to the canonical; both names are bound
+  # in patterns, so both stay registered under ONE logical asset) ──────────────────
+  - id: art-surface-noise-gradient
+    file: bg-noise-grey-green-blue-top.webp
+    variants:
+      - { file: bg-noise-top-2x.webp, relation: duplicate, scale: null,
+          note: "byte-identical re-capture (sha256 match); kept because patterns bind this name" }
+    assetSemantics: { kind: background-art, subject: "pastel noise-gradient wash (grey/green/blue), dark ink legal on it" }
+    facts: { intrinsic: { w: 4560, h: 2320 }, intrinsicAspect: 1.9655, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 203, luminanceBand: light, busyness: low, saturationBand: muted, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Noise Grey Green Blue Top" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: decorative }
+    compositionRoles: [hero-panel-art, closing-band-art]
+    provenance: { source: capture-files, sections: [hero, closing-cta], confidence: high }
+
+  # ── workflow/product card media (deep-navy plates) ───────────────────────────────
+  - id: product-art-api
+    file: card-api-first.webp
+    assetSemantics: { kind: product-ui-collage, decomposition: flat, subject: "product art on deep-navy plate (one flat artwork)" }
+    facts: { intrinsic: { w: 1200, h: 1100 }, intrinsicAspect: 1.0909, orientation: square,
+             alpha: false,
+             stats: { dominantHue: 218, luminanceBand: dark, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Api First" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [card-media-well]
+    provenance: { source: capture-files, sections: [workflow-cards], confidence: high }
+  - id: product-art-integrations
+    file: card-integrations.webp
+    assetSemantics: { kind: product-ui-collage, decomposition: flat, subject: "product art on deep-navy plate (one flat artwork)" }
+    facts: { intrinsic: { w: 1200, h: 1100 }, intrinsicAspect: 1.0909, orientation: square,
+             alpha: false,
+             stats: { dominantHue: 216, luminanceBand: dark, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Integrations" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [card-media-well]
+    provenance: { source: capture-files, sections: [workflow-cards], confidence: high }
+  - id: product-art-agents
+    file: card-mcp-agents.webp
+    assetSemantics: { kind: product-ui-collage, decomposition: flat, subject: "product art on deep-navy plate (one flat artwork)" }
+    facts: { intrinsic: { w: 1200, h: 1100 }, intrinsicAspect: 1.0909, orientation: square,
+             alpha: false,
+             stats: { dominantHue: 217, luminanceBand: dark, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Mcp Agents" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [card-media-well]
+    provenance: { source: capture-files, sections: [workflow-cards], confidence: high }
+  - id: story-collage-culture
+    file: card-customer-story-culture.webp
+    assetSemantics: { kind: product-ui-collage, decomposition: flat, subject: "photo collage on navy plate (one flat artwork)" }
+    facts: { intrinsic: { w: 1498, h: 1100 }, intrinsicAspect: 1.3618, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 259, luminanceBand: dark, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Customer Story Culture" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [card-media-well]
+    provenance: { source: capture-files, sections: [workflow-cards], confidence: high }
+  - id: story-collage-tech
+    file: card-customer-story-reverse-tech.webp
+    assetSemantics: { kind: product-ui-collage, decomposition: flat, subject: "photo collage on navy plate (one flat artwork)" }
+    facts: { intrinsic: { w: 1498, h: 1100 }, intrinsicAspect: 1.3618, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 260, luminanceBand: dark, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Customer Story Reverse Tech" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [card-media-well]
+    provenance: { source: capture-files, sections: [workflow-cards], confidence: high }
+
+  # ── hero + infrastructure media ──────────────────────────────────────────────────
+  - id: hero-orbit-illustration
+    file: hero-globe-illustration.webp
+    assetSemantics: { kind: illustration, subject: "globe illustration with orbiting product-UI chips" }
+    facts: { intrinsic: { w: 1498, h: 1100 }, intrinsicAspect: 1.3618, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 143, luminanceBand: mid, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Globe Illustration" }
+    usageRights: own
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [hero-media]
+    provenance: { source: capture-files, sections: [hero], confidence: high }
+  - id: product-ui-infrastructure
+    file: panel-infrastructure-ui-snippet.webp
+    assetSemantics: { kind: product-ui-screenshot, subject: "stacked product-UI proof cards on grid-lined well" }
+    facts: { intrinsic: { w: 1526, h: 1100 }, intrinsicAspect: 1.3873, orientation: landscape,
+             alpha: true,
+             stats: { dominantHue: 219, luminanceBand: mid, busyness: high, saturationBand: muted, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Infrastructure Ui Snippet" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [split-proof-media]
+    provenance: { source: capture-files, sections: [infra-panel], confidence: high }
+
+  # ── decorative stamp + product-family chips ──────────────────────────────────────
+  - id: spot-icon-star-stamp
+    file: icon-check-star-stamp.webp
+    assetSemantics: { kind: spot-icon, subject: "check-star stamp glyph (decorative accent)" }
+    facts: { intrinsic: { w: 132, h: 128 }, intrinsicAspect: 1.0312, orientation: square,
+             alpha: false,
+             stats: { dominantHue: 92, luminanceBand: light, busyness: medium, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Check Star Stamp" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [decorative-stamp]
+    provenance: { source: capture-files, sections: [badge-strip], confidence: high }
+  - id: spot-icon-contractor-mgmt
+    file: icon-contractor-management.webp
+    assetSemantics: { kind: spot-icon, subject: "product-family icon (pale-blue chip family)" }
+    facts: { intrinsic: { w: 64, h: 64 }, intrinsicAspect: 1.0, orientation: square,
+             alpha: true,
+             stats: { dominantHue: 331, luminanceBand: dark, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Contractor Management" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [product-family-chip]
+    provenance: { source: capture-files, sections: [closing-cta], confidence: high }
+  - id: spot-icon-contractor-record
+    file: icon-contractor-of-record.webp
+    assetSemantics: { kind: spot-icon, subject: "product-family icon (pale-blue chip family)" }
+    facts: { intrinsic: { w: 64, h: 64 }, intrinsicAspect: 1.0, orientation: square,
+             alpha: true,
+             stats: { dominantHue: 327, luminanceBand: dark, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Contractor Of Record" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [product-family-chip]
+    provenance: { source: capture-files, sections: [closing-cta], confidence: high }
+  - id: spot-icon-eor
+    file: icon-eor.webp
+    assetSemantics: { kind: spot-icon, subject: "product-family icon (pale-blue chip family)" }
+    facts: { intrinsic: { w: 64, h: 64 }, intrinsicAspect: 1.0, orientation: square,
+             alpha: true,
+             stats: { dominantHue: 340, luminanceBand: dark, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Eor" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [product-family-chip]
+    provenance: { source: capture-files, sections: [closing-cta], confidence: high }
+  - id: spot-icon-global-payroll
+    file: icon-global-payroll.webp
+    assetSemantics: { kind: spot-icon, subject: "product-family icon (pale-blue chip family)" }
+    facts: { intrinsic: { w: 64, h: 64 }, intrinsicAspect: 1.0, orientation: square,
+             alpha: true,
+             stats: { dominantHue: 331, luminanceBand: dark, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Global Payroll" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [product-family-chip]
+    provenance: { source: capture-files, sections: [closing-cta], confidence: high }
+  - id: spot-icon-peo
+    file: icon-peo.webp
+    assetSemantics: { kind: spot-icon, subject: "product-family icon (pale-blue chip family)" }
+    facts: { intrinsic: { w: 64, h: 64 }, intrinsicAspect: 1.0, orientation: square,
+             alpha: true,
+             stats: { dominantHue: 323, luminanceBand: dark, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Peo" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [product-family-chip]
+    provenance: { source: capture-files, sections: [closing-cta], confidence: high }
+  # accordion product icons — content-hash twins of the chrome nav icons (C28
+  # dedupe: the nav copies are byte-identical, registered as duplicate variants)
+  - id: spot-icon-eor-product
+    file: icon-eor-product.svg
+    variants:
+      - { file: nav-icon-employer-of-record.svg, relation: duplicate, scale: null,
+          note: "byte-identical chrome copy (sha256 match)" }
+    assetSemantics: { kind: spot-icon, subject: "product-family line icon (single-ink vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Employer of Record icon" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [disclosure-item-glyph, menu-link-glyph]
+    provenance: { source: capture-files, sections: [feature-accordion, navbar], confidence: high }
+  - id: spot-icon-contractor-product
+    file: icon-contractor-product.svg
+    variants:
+      - { file: nav-icon-contractor-management.svg, relation: duplicate, scale: null,
+          note: "byte-identical chrome copy (sha256 match)" }
+    assetSemantics: { kind: spot-icon, subject: "product-family line icon (single-ink vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Contractor Management icon" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [disclosure-item-glyph, menu-link-glyph]
+    provenance: { source: capture-files, sections: [feature-accordion, navbar], confidence: high }
+
+  # ── customer trust logos (marquee wall) — third-party marks ──────────────────────
+  - id: client-logo-anthropic
+    file: logo-anthropic.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "customer trust mark (monochrome ink vector)" }
+    facts: { intrinsic: { w: 179, h: 40 }, intrinsicAspect: 4.475, orientation: landscape,
+             alpha: true, stats: null, focalPoint: null, safeCrop: null, altHarvested: "Anthropic" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [proof-strip-mark]
+    provenance: { source: capture-files, sections: [logo-wall], confidence: high }
+  - id: client-logo-box
+    file: logo-box.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "customer trust mark (monochrome ink vector)" }
+    facts: { intrinsic: { w: 63, h: 40 }, intrinsicAspect: 1.575, orientation: landscape,
+             alpha: true, stats: null, focalPoint: null, safeCrop: null, altHarvested: "Box" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [proof-strip-mark]
+    provenance: { source: capture-files, sections: [logo-wall], confidence: high }
+  - id: client-logo-byd
+    file: logo-byd.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "customer trust mark (monochrome ink vector)" }
+    facts: { intrinsic: { w: 67, h: 40 }, intrinsicAspect: 1.675, orientation: landscape,
+             alpha: true, stats: null, focalPoint: null, safeCrop: null, altHarvested: "Byd" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [proof-strip-mark]
+    provenance: { source: capture-files, sections: [logo-wall], confidence: high }
+  - id: client-logo-datadog
+    file: logo-datadog.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "customer trust mark (monochrome ink vector)" }
+    facts: { intrinsic: { w: 158, h: 40 }, intrinsicAspect: 3.95, orientation: landscape,
+             alpha: true, stats: null, focalPoint: null, safeCrop: null, altHarvested: "Datadog" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [proof-strip-mark]
+    provenance: { source: capture-files, sections: [logo-wall], confidence: high }
+  - id: client-logo-gitlab
+    file: logo-gitlab.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "customer trust mark (monochrome ink vector)" }
+    facts: { intrinsic: { w: 130, h: 40 }, intrinsicAspect: 3.25, orientation: landscape,
+             alpha: true, stats: null, focalPoint: null, safeCrop: null, altHarvested: "Gitlab" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [proof-strip-mark]
+    provenance: { source: capture-files, sections: [logo-wall], confidence: high }
+  - id: client-logo-heineken
+    file: logo-heineken.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "customer trust mark (monochrome ink vector)" }
+    facts: { intrinsic: { w: 191, h: 40 }, intrinsicAspect: 4.775, orientation: landscape,
+             alpha: true, stats: null, focalPoint: null, safeCrop: null, altHarvested: "Heineken" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [proof-strip-mark]
+    provenance: { source: capture-files, sections: [logo-wall], confidence: high }
+  - id: client-logo-kfc
+    file: logo-kfc.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "customer trust mark (monochrome ink vector)" }
+    facts: { intrinsic: { w: 89, h: 40 }, intrinsicAspect: 2.225, orientation: landscape,
+             alpha: true, stats: null, focalPoint: null, safeCrop: null, altHarvested: "Kfc" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [proof-strip-mark]
+    provenance: { source: capture-files, sections: [logo-wall], confidence: high }
+  - id: client-logo-lovable
+    file: logo-lovable.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "customer trust mark (monochrome ink vector)" }
+    facts: { intrinsic: { w: 144, h: 40 }, intrinsicAspect: 3.6, orientation: landscape,
+             alpha: true, stats: null, focalPoint: null, safeCrop: null, altHarvested: "Lovable" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [proof-strip-mark]
+    provenance: { source: capture-files, sections: [logo-wall], confidence: high }
+  - id: client-logo-mercury
+    file: logo-mercury.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "customer trust mark (monochrome ink vector)" }
+    facts: { intrinsic: { w: 182, h: 40 }, intrinsicAspect: 4.55, orientation: landscape,
+             alpha: true, stats: null, focalPoint: null, safeCrop: null, altHarvested: "Mercury" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [proof-strip-mark]
+    provenance: { source: capture-files, sections: [logo-wall], confidence: high }
+  - id: client-logo-miro
+    file: logo-miro.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "customer trust mark (monochrome ink vector)" }
+    facts: { intrinsic: { w: 92, h: 40 }, intrinsicAspect: 2.3, orientation: landscape,
+             alpha: true, stats: null, focalPoint: null, safeCrop: null, altHarvested: "Miro" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [proof-strip-mark]
+    provenance: { source: capture-files, sections: [logo-wall], confidence: high }
+  - id: client-logo-mizuho
+    file: logo-mizuho.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "customer trust mark (monochrome ink vector)" }
+    facts: { intrinsic: { w: 103, h: 40 }, intrinsicAspect: 2.575, orientation: landscape,
+             alpha: true, stats: null, focalPoint: null, safeCrop: null, altHarvested: "Mizuho" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [proof-strip-mark]
+    provenance: { source: capture-files, sections: [logo-wall], confidence: high }
+  - id: client-logo-vercel
+    file: logo-vercel.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "customer trust mark (monochrome ink vector)" }
+    facts: { intrinsic: { w: 136, h: 40 }, intrinsicAspect: 3.4, orientation: landscape,
+             alpha: true, stats: null, focalPoint: null, safeCrop: null, altHarvested: "Vercel" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [proof-strip-mark]
+    provenance: { source: capture-files, sections: [logo-wall], confidence: high }
+
+  # ── partner/ecosystem logos (static colored row) — third-party marks ─────────────
+  - id: partner-logo-workday
+    file: logo-workday-certified.webp
+    assetSemantics: { kind: logo-third-party, subtype: partner, subject: "certified-partner mark in bordered card" }
+    facts: { intrinsic: { w: 600, h: 600 }, intrinsicAspect: 1.0, orientation: square,
+             alpha: true,
+             stats: { dominantHue: 218, luminanceBand: light, busyness: high, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Workday Certified" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [partner-proof-mark]
+    provenance: { source: capture-files, sections: [partner-logos], confidence: high }
+  - id: partner-logo-gusto
+    file: logo-gusto.webp
+    assetSemantics: { kind: logo-third-party, subtype: partner, subject: "ecosystem partner mark (color)" }
+    facts: { intrinsic: { w: 747, h: 600 }, intrinsicAspect: 1.245, orientation: landscape,
+             alpha: true,
+             stats: { dominantHue: 7, luminanceBand: dark, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Gusto" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [partner-proof-mark]
+    provenance: { source: capture-files, sections: [partner-logos], confidence: high }
+  - id: partner-logo-bamboohr
+    file: logo-bamboohr.webp
+    assetSemantics: { kind: logo-third-party, subtype: partner, subject: "ecosystem partner mark (color)" }
+    facts: { intrinsic: { w: 1380, h: 600 }, intrinsicAspect: 2.3, orientation: landscape,
+             alpha: true,
+             stats: { dominantHue: 89, luminanceBand: dark, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Bamboohr" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [partner-proof-mark]
+    provenance: { source: capture-files, sections: [partner-logos], confidence: high }
+  - id: partner-logo-personio
+    file: logo-personio.webp
+    assetSemantics: { kind: logo-third-party, subtype: partner, subject: "ecosystem partner mark (color)" }
+    facts: { intrinsic: { w: 1202, h: 600 }, intrinsicAspect: 2.0033, orientation: landscape,
+             alpha: true,
+             stats: { dominantHue: null, luminanceBand: dark, busyness: low, saturationBand: muted, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Personio" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [partner-proof-mark]
+    provenance: { source: capture-files, sections: [partner-logos], confidence: high }
+
+  # ── testimonial-card company marks — third-party marks (attributed quotes only) ──
+  - id: client-logo-fountain
+    file: logo-fountain.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "company mark atop attributed testimonial card (ink vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Fountain" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [testimonial-attribution-mark]
+    provenance: { source: capture-files, sections: [testimonials], confidence: high }
+  - id: client-logo-reversetech
+    file: logo-reversetech.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "company mark atop attributed testimonial card (ink vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Reverse Tech" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [testimonial-attribution-mark]
+    provenance: { source: capture-files, sections: [testimonials], confidence: high }
+  - id: client-logo-homeproject
+    file: logo-homeproject.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "company mark atop attributed testimonial card (ink vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "HomeProject" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [testimonial-attribution-mark]
+    provenance: { source: capture-files, sections: [testimonials], confidence: high }
+  - id: client-logo-semrush
+    file: logo-semrush.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "company mark atop attributed testimonial card (ink vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Semrush" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [testimonial-attribution-mark]
+    provenance: { source: capture-files, sections: [testimonials], confidence: high }
+
+  # ── app-store badges (footer) — third-party marks ────────────────────────────────
+  - id: appstore-badge-ios
+    file: badge-app-store.svg
+    assetSemantics: { kind: badge-appstore, subject: "app-store download badge" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "App Store badge" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [store-badge]
+    provenance: { source: capture-files, sections: [footer], confidence: high }
+  - id: appstore-badge-android
+    file: badge-google-play.svg
+    assetSemantics: { kind: badge-appstore, subject: "app-store download badge" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Google Play badge" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [store-badge]
+    provenance: { source: capture-files, sections: [footer], confidence: high }
+
+  # ── disclosure product-UI collages (fid8 per-item interaction captures) ──────────
+  - id: disclosure-collage-eor
+    file: collage-eor-ui.webp
+    assetSemantics: { kind: product-ui-collage, decomposition: flat, subject: "product-UI collage, settled disclosure state (one flat artwork)" }
+    facts: { intrinsic: { w: 1068, h: 1068 }, intrinsicAspect: 1.0, orientation: square,
+             alpha: false,
+             stats: { dominantHue: null, luminanceBand: light, busyness: low, saturationBand: muted, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Employer of Record collage" }
+    usageRights: own
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [disclosure-swap-media]
+    provenance: { source: disclosure-crop, sections: [feature-accordion], confidence: high }
+  - id: disclosure-collage-global-payroll
+    file: collage-global-payroll-ui.webp
+    assetSemantics: { kind: product-ui-collage, decomposition: flat, subject: "product-UI collage, settled disclosure state (one flat artwork)" }
+    facts: { intrinsic: { w: 1068, h: 1068 }, intrinsicAspect: 1.0, orientation: square,
+             alpha: false,
+             stats: { dominantHue: null, luminanceBand: light, busyness: low, saturationBand: muted, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Global Payroll collage" }
+    usageRights: own
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [disclosure-swap-media]
+    provenance: { source: disclosure-crop, sections: [feature-accordion], confidence: high }
+  - id: disclosure-collage-contractor-record
+    file: collage-contractor-of-record-ui.webp
+    assetSemantics: { kind: product-ui-collage, decomposition: flat, subject: "product-UI collage, settled disclosure state (one flat artwork)" }
+    facts: { intrinsic: { w: 1068, h: 1068 }, intrinsicAspect: 1.0, orientation: square,
+             alpha: false,
+             stats: { dominantHue: 24, luminanceBand: light, busyness: low, saturationBand: muted, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Contractor of Record collage" }
+    usageRights: own
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [disclosure-swap-media]
+    provenance: { source: disclosure-crop, sections: [feature-accordion], confidence: high }
+  - id: disclosure-collage-contractor-mgmt
+    file: collage-contractor-management-ui.webp
+    assetSemantics: { kind: product-ui-collage, decomposition: flat, subject: "product-UI collage, settled disclosure state (one flat artwork)" }
+    facts: { intrinsic: { w: 1068, h: 1068 }, intrinsicAspect: 1.0, orientation: square,
+             alpha: false,
+             stats: { dominantHue: 355, luminanceBand: light, busyness: medium, saturationBand: muted, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Contractor Management collage" }
+    usageRights: own
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [disclosure-swap-media]
+    provenance: { source: disclosure-crop, sections: [feature-accordion], confidence: high }
+  - id: disclosure-collage-peo
+    file: collage-peo-ui.webp
+    assetSemantics: { kind: product-ui-collage, decomposition: flat, subject: "product-UI collage, settled disclosure state (one flat artwork)" }
+    facts: { intrinsic: { w: 1068, h: 1068 }, intrinsicAspect: 1.0, orientation: square,
+             alpha: false,
+             stats: { dominantHue: null, luminanceBand: light, busyness: low, saturationBand: muted, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "PEO collage" }
+    usageRights: own
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [disclosure-swap-media]
+    provenance: { source: disclosure-crop, sections: [feature-accordion], confidence: high }
+
+# ── generated-visual devices (code recipes, not files — spec §5) ────────────────────
+generatedVisuals:
+  - id: panel-edge-soft-glow
+    kind: css-gradient
+    recipe:
+      shape: radial
+      position: "50% 100%"
+      stops: ["accent/positive-soft 0%", "transparent 70%"]
+      tokenRoles: [accent/positive-soft]
+      evidence: >-
+        Soft green radial glow at the inline conversion panel's lower edge
+        (grounding section-04: gradient #e6e8e7 -> #8fd6a8; the panel treatment's
+        "soft green radial glow at lower edge" fact). The glow is authored CSS on
+        the source, not a raster: the noise-art files carry no green cast at that
+        edge and the wash re-instantiates at any panel width.
+    poster: generated/gv-soft-glow-edge-poster.png
+    degrade: [live, poster, omit]
+    provenance: { source: capture-files, sections: [banner-cta], confidence: high }

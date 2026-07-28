@@ -1,0 +1,90 @@
+sectionRole: stats
+layout:
+  structure: '3 equal columns, each: big number -> description -> underlined link,
+    centered'
+  columns: 3
+  alignment: center
+  approxPaddingPx:
+    top: 130
+    bottom: 130
+  gapPx: 80
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#f4f4f2'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1f3d2b'
+typography:
+- role: display
+  approxSizePx: 88
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1f3d2b'
+  familyClass: serif
+- role: body
+  approxSizePx: 20
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1f3d2b'
+  familyClass: serif
+- role: footer-link
+  approxSizePx: 15
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1f3d2b'
+  familyClass: humanist-sans
+relationalSpacingPx:
+  headingToBody: 60
+  bodyToCta: 45
+components:
+- kind: stat
+  variant: number-over-caption-with-link
+  countObserved: 3
+  anatomy: large percentage number -> multi-line description -> underlined text link
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1f3d2b'
+  caseTreatment: sentence
+- kind: link
+  variant: text-underline
+  countObserved: 3
+  anatomy: single underlined text label
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1f3d2b'
+  caseTreatment: sentence
+copy:
+  eyebrow: null
+  heading: null
+  body: null
+  items:
+  - heading: 25%
+    body: Reduction in Major League Baseball’s time to hire vs. industry standard
+      when using Greenhouse.
+    meta: Read MLB’s customer story
+  - heading: 39%
+    body: Lower spending on third-party recruiting
+    meta: 'IDC 2024: The business value of Greenhouse'
+  - heading: 92%
+    body: Reduction in candidate search firms used for Inizio
+    meta: Read Inizio’s customer story
+  actions:
+  - label: Read MLB’s customer story
+    styleHint: text-underline
+  - label: 'IDC 2024: The business value of Greenhouse'
+    styleHint: text-underline
+  - label: Read Inizio’s customer story
+    styleHint: text-underline
+confidence: high

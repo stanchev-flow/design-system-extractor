@@ -1,0 +1,861 @@
+schemaVersion: layout-patterns.v1
+lane: greenhouse-4
+patterns:
+- id: hero
+  origin: extracted
+  useCase: hero
+  archetypeRef: centered-copy-with-floating-media
+  surfaceIntent: surface/hero
+  confidence: high
+  provenance:
+  - home-section-00
+  description: Centered serif display and sans intro copy stacked over a mint canvas, with
+    a primary filled action paired with an underlined text-link action; freeform portrait
+    photos and floating product-UI chips orbit the copy connected by thin curved leader lines.
+  layout:
+    structure: centered copy stack with scattered orbiting media cluster
+    alignment: center
+    containerWidth: full-bleed
+    approxPaddingPx:
+      top: 84
+      bottom: 96
+    gapPx: 32
+  responsive:
+    base: centered stack, media chips orbit around copy
+    narrow: copy stack retained, orbiting chips collapse or hide
+  contentShape:
+    slots:
+    - name: heading
+      role: primary-heading
+      type: content
+      sizeClass: hero
+      textLen: short
+      copyBinding: layoutCopy.hero.heading
+      geometry:
+        approxSizePx: 92
+        weightApprox: 500
+        case: sentence
+        align: center
+    - name: body
+      role: intro-body
+      type: content
+      sizeClass: body
+      textLen: medium
+      copyBinding: layoutCopy.hero.body
+      geometry:
+        approxSizePx: 21
+        weightApprox: 400
+        align: center
+        headingToBodyPx: 44
+    - name: primaryAction
+      role: primary-action
+      type: action
+      sizeClass: control
+      textLen: word
+      copyBinding: layoutCopy.hero.cta
+      width: hug
+      geometry:
+        paddingPx: 18 44
+        radiusPx: 28
+        bodyToCtaPx: 60
+    - name: ghostAction
+      role: secondary-action
+      type: action
+      sizeClass: control
+      textLen: short
+      copyBinding: layoutCopy.hero.ghost
+      width: hug
+      geometry:
+        style: text-underline
+    - name: mediaCluster
+      role: decorative-media-cluster
+      type: media
+      mediaAspect: freeform
+      z: front
+      copyBinding: none
+      geometry:
+        approxFractionOfSection: 0.2
+        shadow: 0 8px 24px rgba(0,0,0,.10)
+      assets:
+      - 030-689610cd7418c453485571fd-home-hero-m-clusters-of-three-solutions-workflows-with-photos-of-ui-and-people-working-402x.png
+    assets: []
+    bandPadding:
+      top: 5.25rem
+      bottom: 6rem
+    bandRhythm:
+      headingToBody: 2.75rem
+      bodyToCta: 3.75rem
+  specialTreatments:
+  - kind: scattered-cluster
+    note: portrait photos and product-UI chips orbit the copy with curved connector lines
+  - kind: ghost-word
+    target: heading
+    note: '''only'' rendered in italic serif within the heading'
+  sourcePages:
+  - home
+- id: featureGrid
+  origin: extracted
+  useCase: features
+  archetypeRef: three-column-media-top-cards
+  surfaceIntent: surface/primary
+  confidence: high
+  provenance:
+  - home-section-03
+  description: Full-width serif display heading over a three-column card row; each card is
+    a rounded landscape photo media-well, serif subheading, sans body and an underlined text-link
+    action.
+  layout:
+    structure: heading full-width top then 3-column card row
+    alignment: left
+    columns: 3
+    containerWidth: contained
+    approxPaddingPx:
+      top: 40
+      bottom: 80
+    gapPx: 40
+  responsive:
+    base: 3 columns
+    narrow: single column stack, cards full width
+  contentShape:
+    slots:
+    - name: heading
+      type: content
+      role: section-heading
+    - name: itemMedia
+      type: image
+      role: card-media-well
+      assets:
+      - 048-66ce09f23bfc5382e0a79e3a-content-gallery-1.webp
+      - 049-66ce09efcca27fafac5199b7-content-gallery-2.webp
+      - 050-66ce09ec544c15c6fafaf9aa-content-gallery-3.webp
+    - name: items
+      type: content
+      role: feature-card-list (media-well -> heading -> body -> action)
+    assets: []
+    bandPadding:
+      top: 2.5rem
+      bottom: 5rem
+    bandRhythm:
+      headingToBody: 1.25rem
+      bodyToCta: 1.75rem
+    deviceGeometry:
+      columnGap: 2.5rem
+  specialTreatments:
+  - kind: media-top-card
+    note: each card leads with a rounded landscape photograph media-well
+  sourcePages:
+  - home
+- id: logoWall
+  origin: extracted
+  useCase: logos
+  archetypeRef: split-copy-plus-logo-grid
+  surfaceIntent: surface/primary
+  confidence: high
+  provenance:
+  - home-section-02
+  description: 'Split ~50/50 layout: serif heading and a primary filled action on the left,
+    a 2x3 monochrome customer-logo grid on the right, divided by a hairline vertical rule.'
+  layout:
+    structure: split copy left / 2x3 logo grid right with vertical rule
+    alignment: left
+    columns: 2
+    containerWidth: contained
+    approxPaddingPx:
+      top: 140
+      bottom: 120
+    gapPx: 150
+  responsive:
+    base: split two-column
+    narrow: copy stacks above logo grid, grid reflows to 3x2 or 2-wide
+  contentShape:
+    slots:
+    - name: heading
+      role: section-heading
+      type: content
+      sizeClass: display
+      textLen: short
+      copyBinding: layoutCopy.logoWall.heading
+      geometry:
+        approxSizePx: 46
+        weightApprox: 400
+        case: sentence
+        align: left
+    - name: primaryAction
+      role: primary-action
+      type: action
+      sizeClass: control
+      textLen: short
+      copyBinding: layoutCopy.logoWall.cta
+      width: hug
+      geometry:
+        paddingPx: 16 32
+        radiusPx: 28
+        headingToCtaPx: 46
+    - name: logoGrid
+      role: logo-grid
+      type: logo
+      mediaAspect: landscape
+      z: back
+      copyBinding: sectionCopy.logosLegible
+      geometry:
+        columns: 3
+        rows: 2
+        countObserved: 6
+        approxFractionOfSection: 0.4
+      assets:
+      - 042-684b22ea4479a38eba02bb7a-nfl-240x74-20-1.png
+      - 043-66db2afc7f4ffa8dac7d63af-coursera-2024-02-22-193551-bfgg.avif
+      - 044-684b1591b49b84db80e1e68b-logo-anthropic.png
+      - 045-684b154b7f3a0b8ea13a87db-logo-datavant.png
+      - 046-6849817eafb5f7300bca18d3-revlon.png
+      - 047-66db2b583c8c62fd585f04a3-seatgeek-2024-02-22-193550-wvza.avif
+    assets: []
+    bandPadding:
+      top: 8.75rem
+      bottom: 7.5rem
+  specialTreatments:
+  - kind: vertical-rule
+    note: ~1px light grey-green rule separates copy column from logo grid
+  sourcePages:
+  - home
+- id: stats
+  origin: extracted
+  useCase: 'Three equal centered columns; each column: big serif number -> description ->
+    underlined text link.'
+  archetypeRef: three-column-number-over-caption
+  surfaceIntent: surface/muted
+  confidence: high
+  provenance:
+  - talent-sourcing-section-07
+  description: Three equal centered stat columns on a warm light-grey canvas; each column
+    stacks a large serif percentage, a serif descriptive body and an underlined text-link.
+  layout:
+    structure: 3 equal centered stat stacks
+    alignment: center
+    columns: 3
+    containerWidth: contained
+    approxPaddingPx:
+      top: 130
+      bottom: 130
+    gapPx: 60
+  responsive:
+    base: 3 columns
+    narrow: single column stacked stats
+  contentShape:
+    slots:
+    - name: items
+      type: content
+      role: 'stat-column-list: figure plus description and source citation'
+    assets: []
+    bandPadding:
+      top: 8.125rem
+      bottom: 8.125rem
+    bandRhythm:
+      headingToBody: 3.5rem
+      bodyToCta: 2.5rem
+    deviceGeometry:
+      columnGap: 3.75rem
+  specialTreatments:
+  - kind: number-over-caption
+  - kind: centered-columns
+  sourcePages:
+  - talent-sourcing
+- id: testimonial
+  origin: extracted
+  useCase: testimonial
+  archetypeRef: three-column-quote-blocks
+  surfaceIntent: surface/primary
+  confidence: high
+  provenance:
+  - compare-section-05
+  description: Serif heading top-left over a three-column text-only testimonial row; each
+    column leads with a quote glyph, quote body, serif author name and a caption role.
+  layout:
+    structure: heading top-left then 3-column testimonial row
+    alignment: left
+    columns: 3
+    containerWidth: contained
+    approxPaddingPx:
+      top: 140
+      bottom: 120
+    gapPx: 64
+  responsive:
+    base: 3 columns
+    narrow: single column stacked quotes
+  contentShape:
+    slots:
+    - name: heading
+      role: section-heading
+      type: content
+      sizeClass: display
+      textLen: short
+      copyBinding: layoutCopy.testimonial.heading
+      geometry:
+        approxSizePx: 72
+        weightApprox: 500
+        align: left
+        headingToBodyPx: 90
+    - name: items
+      type: content
+      role: testimonial-card-list (quote -> name -> meta)
+    assets: []
+    bandPadding:
+      top: 8.75rem
+      bottom: 7.5rem
+    bandRhythm:
+      headingToBody: 5.625rem
+      bodyToCta: 2.8125rem
+    deviceGeometry:
+      columnGap: 4rem
+  specialTreatments:
+  - kind: leading-quote-glyph
+    target: quoteBody
+    note: each column opens with a leading quotation glyph
+  sourcePages:
+  - compare
+- id: cta
+  origin: extracted
+  useCase: cta
+  archetypeRef: full-bleed-dark-band-copy-left-art-right
+  surfaceIntent: surface/inverse
+  confidence: high
+  provenance:
+  - home-section-04
+  description: Full-bleed dark green band with a left serif heading and a blue demo-request
+    action; tone-on-tone fingerprint-flower decorative art fills the right half.
+  layout:
+    structure: copy stack left, decorative art right, full-bleed dark band
+    alignment: left
+    columns: 2
+    containerWidth: full-bleed
+    approxPaddingPx:
+      top: 180
+      bottom: 160
+  responsive:
+    base: two-column copy left / art right
+    narrow: copy stack centered, art reduced or hidden
+  contentShape:
+    slots:
+    - name: heading
+      role: section-heading
+      type: content
+      sizeClass: display
+      textLen: short
+      copyBinding: layoutCopy.cta.heading
+      geometry:
+        approxSizePx: 68
+        weightApprox: 400
+        align: left
+        headingToBodyPx: 66
+    - name: primaryAction
+      role: primary-action
+      type: action
+      sizeClass: control
+      textLen: short
+      copyBinding: layoutCopy.cta.cta
+      width: hug
+      geometry:
+        paddingPx: 15 32
+        radiusPx: 24
+        surfaceApprox: '#2f6bd6'
+    assets: []
+    bandPadding:
+      top: 11.25rem
+      bottom: 10rem
+    bandRhythm:
+      headingToBody: 4.125rem
+  specialTreatments:
+  - kind: tone-on-tone-art
+    target: decorativeArt
+    note: low-contrast fingerprint-flower motif barely lighter than the dark band
+  sourcePages:
+  - home
+- id: heroSplit5050
+  origin: extracted
+  useCase: hero
+  archetypeRef: two-column-cards
+  surfaceIntent: surface/inverse
+  confidence: high
+  provenance:
+  - compare-section-00-div
+  - talent-sourcing-section-00-text-with-image
+  description: split ~50/50, navbar across top, copy left on dark panel / product-UI collage
+    right on mint band
+  layout:
+    structure: split ~50/50, navbar across top, copy left on dark panel / product-UI collage
+      right on mint band
+    columns: 2
+    alignment: left
+    approxPaddingPx:
+      top: 130
+      bottom: 40
+    containerWidth: full-bleed
+  contentShape:
+    slots:
+    - name: eyebrow
+      role: section-eyebrow
+      type: content
+    - name: heading
+      role: section-heading
+      type: content
+      textLen: short
+    - name: body
+      role: section-body
+      type: content
+    - name: items
+      role: hero-item-list
+      type: content
+    - name: primaryAction
+      role: outlined-action
+      type: action
+    - name: secondaryAction
+      role: filled-primary-action
+      type: action
+    assets: []
+    bandPadding:
+      top: 8.125rem
+      bottom: 2.5rem
+    bandRhythm:
+      eyebrowToHeading: 1.5rem
+      headingToBody: 3.25rem
+      bodyToCta: 4rem
+  sourcePages:
+  - compare
+  - talent-sourcing
+- id: features
+  origin: extracted
+  useCase: features
+  archetypeRef: three-column
+  surfaceIntent: surface/primary
+  confidence: high
+  provenance:
+  - compare-section-01-bg-grey
+  description: heading + intro copy stacked top, then 3-column feature list below, all left-aligned
+    in contained canvas
+  layout:
+    structure: heading + intro copy stacked top, then 3-column feature list below, all left-aligned
+      in contained canvas
+    columns: 3
+    alignment: left
+    approxPaddingPx:
+      top: 120
+      bottom: 80
+    gapPx: 90
+    containerWidth: contained
+  contentShape:
+    slots:
+    - name: heading
+      role: section-heading
+      type: content
+      textLen: short
+    - name: body
+      role: section-body
+      type: content
+    - name: items
+      role: features-item-list
+      type: content
+    assets: []
+    bandPadding:
+      top: 7.5rem
+      bottom: 5rem
+    deviceGeometry:
+      columnGap: 5.625rem
+  sourcePages:
+  - compare
+- id: featuresHeadingBodyTop
+  origin: extracted
+  useCase: features
+  archetypeRef: two-column-with-media
+  surfaceIntent: surface/primary
+  confidence: high
+  provenance:
+  - compare-section-02-video-component
+  description: 'heading + body top, pill filter row, then split comparison card: table left
+    / badge media right'
+  layout:
+    structure: 'heading + body top, pill filter row, then split comparison card: table left
+      / badge media right'
+    columns: 2
+    alignment: left
+    approxPaddingPx:
+      top: 110
+      bottom: 40
+    gapPx: 40
+    containerWidth: contained
+  contentShape:
+    slots:
+    - name: eyebrow
+      role: section-eyebrow
+      type: content
+    - name: heading
+      role: section-heading
+      type: content
+      textLen: short
+    - name: subheading
+      role: section-subheading
+      type: content
+    - name: body
+      role: section-body
+      type: content
+    - name: items
+      role: features-card-list
+      type: content
+      assets:
+      - 032-6a4bfc62b24be85dc1ffa3a6-single-20platform-20image.png
+    - name: itemIcon
+      role: inline-spot-icon
+      type: image
+    assets: []
+    bandPadding:
+      top: 6.875rem
+      bottom: 2.5rem
+    bandRhythm:
+      headingToBody: 4.25rem
+      bodyToCta: 3.75rem
+    deviceGeometry:
+      columnGap: 2.5rem
+  sourcePages:
+  - compare
+- id: featuresSectionHeadingTop
+  origin: extracted
+  useCase: features
+  archetypeRef: three-column
+  surfaceIntent: surface/primary
+  confidence: high
+  provenance:
+  - compare-section-03-div
+  - talent-sourcing-section-06-content-gallery-component-is-showing
+  description: section heading top-left, then 3-column grid of subheading + bulleted lists,
+    second row starts a 4th group
+  layout:
+    structure: section heading top-left, then 3-column grid of subheading + bulleted lists,
+      second row starts a 4th group
+    columns: 3
+    alignment: left
+    approxPaddingPx:
+      top: 40
+      bottom: 80
+    gapPx: 40
+    containerWidth: contained
+  contentShape:
+    slots:
+    - name: heading
+      role: section-heading
+      type: content
+      textLen: short
+    - name: items
+      role: features-item-list
+      type: content
+    assets: []
+    bandPadding:
+      top: 2.5rem
+      bottom: 5rem
+    bandRhythm:
+      headingToBody: 2.8125rem
+    deviceGeometry:
+      columnGap: 2.5rem
+  sourcePages:
+  - compare
+  - talent-sourcing
+- id: content
+  origin: extracted
+  useCase: content
+  archetypeRef: two-column-with-media
+  surfaceIntent: surface/primary
+  confidence: high
+  provenance:
+  - compare-section-04-side-by-side-2-component-is-showing
+  description: split ~50/50, copy left / media card right, thin vertical divider between
+  layout:
+    structure: split ~50/50, copy left / media card right, thin vertical divider between
+    columns: 2
+    alignment: left
+    approxPaddingPx:
+      top: 200
+      bottom: 200
+    gapPx: 120
+    containerWidth: contained
+  contentShape:
+    slots:
+    - name: heading
+      role: section-heading
+      type: content
+      textLen: short
+    - name: body
+      role: section-body
+      type: content
+    - name: items
+      role: content-item-list
+      type: content
+    - name: media
+      role: section-lead-media
+      type: media
+      assets:
+      - 041-675b1b254dcfbdcac88895be-greenhouse-g2-grid-report.avif
+    assets: []
+    bandPadding:
+      top: 12.5rem
+      bottom: 12.5rem
+    bandRhythm:
+      headingToBody: 2.125rem
+      bodyToCta: 2.125rem
+  sourcePages:
+  - compare
+- id: gallery
+  origin: extracted
+  useCase: gallery
+  archetypeRef: three-column-cards
+  surfaceIntent: surface/primary
+  confidence: high
+  provenance:
+  - compare-section-06-content-gallery-component-is-showing
+  description: 3-up card row, each card = badge media-well on top -> heading -> underlined
+    link
+  layout:
+    structure: 3-up card row, each card = badge media-well on top -> heading -> underlined
+      link
+    columns: 3
+    alignment: left
+    approxPaddingPx:
+      top: 20
+      bottom: 40
+    gapPx: 40
+    containerWidth: contained
+  contentShape:
+    slots:
+    - name: items
+      role: gallery-card-list
+      type: content
+      assets:
+      - 042-6a1895bc83e54d86cbd45bbe-d-us-awards-image-g2-ent-leader-summer-2026-on-marigold-background.png
+      - 043-6a1895bc8f2d9491ce3db846-d-us-awards-image-g2-mm-leader-summer-2026-on-marigold-background.png
+      - 044-6a1895bc5ecfc15c4fdec10a-d-us-awards-image-g2-leader-europe-summer-2026-on-marigold-background.png
+    assets: []
+    bandPadding:
+      top: 1.25rem
+      bottom: 2.5rem
+    deviceGeometry:
+      columnGap: 2.5rem
+  sourcePages:
+  - compare
+- id: ctaSplit5050
+  origin: extracted
+  useCase: cta
+  archetypeRef: two-column-with-media
+  surfaceIntent: surface/inverse
+  confidence: high
+  provenance:
+  - compare-section-07-cta-bg-green-750-component-is-showing
+  - talent-sourcing-section-09-cta-bg-green-750-component-is-showing
+  description: split ~50/50, copy left / fingerprint-flower illustration right, full-bleed
+    dark band
+  layout:
+    structure: split ~50/50, copy left / fingerprint-flower illustration right, full-bleed
+      dark band
+    columns: 2
+    alignment: left
+    approxPaddingPx:
+      top: 180
+      bottom: 180
+    containerWidth: full-bleed
+  contentShape:
+    slots:
+    - name: heading
+      role: section-heading
+      type: content
+      textLen: short
+    - name: media
+      role: section-lead-media
+      type: media
+      assets:
+      - 045-66ccc7a3c9045b79b105b8c6-prefooter-image11-402x.avif
+    - name: primaryAction
+      role: filled-primary-action
+      type: action
+    assets: []
+    bandPadding:
+      top: 11.25rem
+      bottom: 11.25rem
+    bandRhythm:
+      headingToBody: 3.5rem
+  sourcePages:
+  - compare
+  - talent-sourcing
+- id: featuresThreeColumnCard
+  origin: extracted
+  useCase: features
+  archetypeRef: three-column-cards
+  surfaceIntent: surface/primary
+  confidence: high
+  provenance:
+  - home-section-01-div
+  description: '3-column card grid, each card: media-well top -> heading -> body -> outlined
+    CTA'
+  layout:
+    structure: '3-column card grid, each card: media-well top -> heading -> body -> outlined
+      CTA'
+    columns: 3
+    alignment: left
+    approxPaddingPx:
+      top: 40
+      bottom: 40
+    gapPx: 80
+    containerWidth: contained
+  contentShape:
+    slots:
+    - name: items
+      role: features-card-list
+      type: content
+      assets:
+      - 033-6a298fd15eb091333bcbe885-d-en-cg-home-two-office-workers-discussing-content-on-tablet-bright-space.png
+      - 034-6a063cdddfe47d8d3429a902-d-en-cg-home-real-talent-fraud-detection-candidate-cards.avif
+      - 035-6a063cdcba100ecc20453980-d-en-cg-home-woman-in-suit-on-laptop-smiling-setup-job-alert-ui.avif
+    - name: primaryAction
+      role: outlined-action
+      type: action
+    assets: []
+    bandPadding:
+      top: 2.5rem
+      bottom: 2.5rem
+    bandRhythm:
+      headingToBody: 2.125rem
+      bodyToCta: 2.125rem
+    deviceGeometry:
+      columnGap: 5rem
+  sourcePages:
+  - home
+- id: featuresSplit5050
+  origin: extracted
+  useCase: features
+  archetypeRef: two-column-with-media
+  surfaceIntent: surface/primary
+  confidence: high
+  provenance:
+  - talent-sourcing-section-01-text-with-image-component-is-showing
+  - talent-sourcing-section-02-text-with-image-component-is-showing
+  - talent-sourcing-section-04-text-with-image-component-is-showing
+  - talent-sourcing-section-05-text-with-image-component-is-showing
+  description: split 50/50, product-UI mockups on dark canvas left / copy stack right
+  layout:
+    structure: split 50/50, product-UI mockups on dark canvas left / copy stack right
+    columns: 2
+    alignment: left
+    approxPaddingPx:
+      top: 40
+      bottom: 40
+    gapPx: 120
+    containerWidth: full-bleed
+  contentShape:
+    slots:
+    - name: heading
+      role: section-heading
+      type: content
+      textLen: short
+    - name: items
+      role: features-item-list
+      type: content
+    - name: media
+      role: section-lead-media
+      type: media
+      assets:
+      - 032-676afa936f2bdcaefd2b096b-collage-of-job-ad-market-ui-and-partner-campaign-ui-with-fingerprint-leaf-m.avif
+    - name: primaryAction
+      role: filled-primary-action
+      type: action
+    assets: []
+    bandPadding:
+      top: 2.5rem
+      bottom: 2.5rem
+    bandRhythm:
+      headingToBody: 3rem
+  sourcePages:
+  - talent-sourcing
+- id: featuresSplit5050Media
+  origin: extracted
+  useCase: features
+  archetypeRef: two-column-with-media
+  surfaceIntent: surface/primary
+  confidence: high
+  provenance:
+  - talent-sourcing-section-03-text-with-image-component-is-showing
+  description: split ~50/50, media panel left (green canvas with product-UI mockups) / copy
+    stack right
+  layout:
+    structure: split ~50/50, media panel left (green canvas with product-UI mockups) / copy
+      stack right
+    columns: 2
+    alignment: left
+    approxPaddingPx:
+      top: 40
+      bottom: 40
+    gapPx: 120
+    containerWidth: full-bleed
+  contentShape:
+    slots:
+    - name: heading
+      role: section-heading
+      type: content
+      textLen: long
+    - name: items
+      role: features-item-list
+      type: content
+    - name: media
+      role: section-lead-media
+      type: media
+      assets:
+      - 035-66feddedc6644300cc8975d4-collage-of-company-job-board-page-on-desktop-and-mobile-with-fingerprint-leaf-png.webp
+    assets: []
+    bandPadding:
+      top: 2.5rem
+      bottom: 2.5rem
+    bandRhythm:
+      headingToBody: 3.5rem
+      bodyToCta: 0rem
+  sourcePages:
+  - talent-sourcing
+- id: featuresHeadingFullWidth
+  origin: extracted
+  useCase: features
+  archetypeRef: two-column-cards
+  surfaceIntent: surface/primary
+  confidence: high
+  provenance:
+  - talent-sourcing-section-08-side-by-side-2-component-is-showing
+  description: heading full-width top, then two equal columns split by a vertical divider;
+    each column = media cluster top / copy stack bottom
+  layout:
+    structure: heading full-width top, then two equal columns split by a vertical divider;
+      each column = media cluster top / copy stack bottom
+    columns: 2
+    alignment: left
+    approxPaddingPx:
+      top: 130
+      bottom: 120
+    gapPx: 80
+    containerWidth: contained
+  contentShape:
+    slots:
+    - name: heading
+      role: section-heading
+      type: content
+      textLen: short
+    - name: items
+      role: features-card-list
+      type: content
+      assets:
+      - 043-6a0e3ad39c65e202b43df73c-d-en-sbs-greenhouse-candidate-engagement-ui.avif
+      - 044-6a0e3ad247f2a601a20756cb-d-en-sbs-greenhouse-integrations-ui.avif
+    - name: primaryAction
+      role: outlined-action
+      type: action
+    assets: []
+    bandPadding:
+      top: 8.125rem
+      bottom: 7.5rem
+    bandRhythm:
+      headingToBody: 1.75rem
+      bodyToCta: 2.5rem
+    deviceGeometry:
+      columnGap: 5rem
+  sourcePages:
+  - talent-sourcing

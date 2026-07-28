@@ -1,0 +1,108 @@
+schemaVersion: section-grounding.v1
+sectionRole: about
+layout:
+  structure: large display heading top-left, giant ghost year numerals watermark behind, centered portrait
+    with body copy tucked to its lower-right
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 200
+    bottom: 40
+  gapPx: 40
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#f7ece4'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#2b2622'
+- role: media-frame
+  bgApprox: 'image-fill: standing portrait of a person in dark clothing against pale wall'
+  parent: canvas
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#f0eae4'
+typography:
+- role: display
+  approxSizePx: 66
+  weightApprox: 400
+  case: upper
+  trackingApprox: normal
+  colorApprox: '#2b2622'
+  familyClass: didone
+- role: body
+  approxSizePx: 20
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#2b2622'
+  familyClass: grotesque-sans
+- role: display
+  approxSizePx: 520
+  weightApprox: 400
+  case: upper
+  trackingApprox: normal
+  colorApprox: '#efe3da'
+  familyClass: didone
+relationalSpacingPx:
+  headingToBody: 480
+components:
+- kind: media-frame
+  variant: portrait-image
+  countObserved: 1
+  anatomy: single vertical portrait photo, no border or radius
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: '#c9c4bf'
+  inkApprox: '#2b2622'
+  caseTreatment: sentence
+copy:
+  eyebrow: null
+  heading: WOODWAVE GALLERY IS A TRIBUTE TO DECADES OF CREATIVE EXCELLENCE, FOSTERING THE FLOURISHING
+    OF ART FROM THE LATE 20TH CENTURY TO THE PRESENT DAY
+  subheading: null
+  body: Founded by the visionary Margaret Woodwave in 1974, the WoodWave Gallery has been on a journey
+    of constant evolution. Setting itself apart through the seamless blend of traditional and innovative
+    artistic approaches, it has blossomed into a cultural landmark where the past, present, and future
+    of art come together, providing a distinctive and immersive experience.
+  actions: []
+media:
+- kind: photo
+  treatment: portrait of a standing figure in dark garment against pale wall, sharp-edged rectangle centered
+    in section
+  aspect: portrait
+  approxFractionOfSection: 0.2
+mediaAssets:
+- kind: portrait
+  subject: standing figure in dark clothing against neutral wall
+  rightsGuess: own
+  luminance: mid
+  busyness: medium
+  aspect: portrait
+  alphaEdge: false
+  countObserved: 1
+mediaComposition:
+- mode: layered
+  layers: giant ghost year numerals watermark (baked into canvas ink) -> portrait photo -> body copy block
+    overlapping photo's lower-right
+  bakedVsSeparable: watermark numerals are separate text elements; portrait and body copy are separate
+    layers
+  componentsOverMedia: body copy text overlaps the portrait's lower-right corner
+generatedVisualDevices:
+- kind: css-gradient
+  evidence: very light tonal numerals '1974' and '2023' set as oversized ghost type behind content
+  params: 'ghost ink ~#efe3da on #f7ece4 canvas'
+  poster: faint oversized numerals '1974' upper and '2023' lower
+motionHints: []
+confidence: medium
+notes:
+- Ghost watermark reads as year range '1974-2023' rendered as oversized faint numerals behind content
+- top edge shows a sliver of a warm wood-tone band from the preceding section
+- heading text truncated in DOM label but fully legible in crop
+_source:
+  crop: section-03-section-about.png
+  domClasses: section about
+  model: claude-opus-4-8

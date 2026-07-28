@@ -1,0 +1,119 @@
+schemaVersion: section-grounding.v1
+sectionRole: logos
+layout:
+  structure: heading left, row of 6 award badges right, single row
+  columns: 7
+  alignment: mixed
+  approxPaddingPx:
+    top: 40
+    bottom: 90
+  gapPx: 20
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#ffffff'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#0a2a28'
+- role: band
+  bgApprox: '#0a2a28'
+  parent: canvas
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#ffffff'
+typography:
+- role: h2
+  approxSizePx: 26
+  weightApprox: 700
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#0a2a28'
+  familyClass: grotesque-sans
+- role: caption
+  approxSizePx: 8
+  weightApprox: 600
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#5a5a5a'
+  familyClass: grotesque-sans
+- role: control-label
+  approxSizePx: 11
+  weightApprox: 700
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+components:
+- kind: badge
+  variant: award-review
+  countObserved: 6
+  anatomy: top ribbon (SUMMER 2026 + G2 red mark) -> center bold award title -> segment label -> colored
+    chevron base
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 4
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+copy:
+  eyebrow: null
+  heading: 'Voted #1 in 526 G2 Reports'
+  subheading: null
+  body: null
+  items:
+  - heading: Leader
+    body: SMALL BUSINESS
+    meta: SUMMER 2026
+  - heading: Most Implementable
+    body: null
+    meta: SUMMER 2026
+  - heading: Best Relationship
+    body: SMALL BUSINESS
+    meta: SUMMER 2026
+  - heading: Easiest Admin
+    body: ENTERPRISE
+    meta: SUMMER 2026
+  - heading: Best Results
+    body: MID-MARKET
+    meta: SUMMER 2026
+  - heading: Best Usability
+    body: ENTERPRISE
+    meta: SUMMER 2026
+  logosLegible:
+  - G2
+media:
+- kind: logo-vector
+  treatment: row of 6 G2 award badges, white cards with colored chevron bases (red, blue, teal, gold,
+    purple, gold)
+  aspect: portrait
+  approxFractionOfSection: 0.45
+mediaAssets:
+- kind: badge-review-award
+  subject: G2 seasonal award ribbon badges
+  rightsGuess: third-party-mark
+  luminance: light
+  busyness: medium
+  aspect: portrait
+  alphaEdge: true
+  countObserved: 6
+mediaComposition:
+- mode: tiled-grid
+  layers: single row of 6 separate badge assets, evenly spaced
+  bakedVsSeparable: each badge is a separate flat asset
+chrome:
+  casing: upper
+  separators: whitespace-only
+  iconShape: none
+  surfaceApprox: '#ffffff'
+  linkTreatment: none visible
+  ctaTreatment: none
+confidence: high
+notes:
+- dark band at very bottom is the next section (footer) beginning, cut off
+- 'badge chevron colors: red, blue, teal, gold, purple, gold left-to-right'
+_source:
+  crop: section-08-csol-section-wf-badges-padding-top-s-padding-bot.png
+  domClasses: csol-section wf-badges -padding-top-s -padding-bottom-lg
+  model: claude-opus-4-8

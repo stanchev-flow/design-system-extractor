@@ -1,0 +1,164 @@
+schemaVersion: section-grounding.v1
+sectionRole: testimonial
+layout:
+  structure: 'tabbed testimonial: tab row on top -> card with photo left / quote+attribution right (55/45),
+    stat row across card bottom'
+  columns: 2
+  alignment: mixed
+  approxPaddingPx:
+    top: 24
+    bottom: 40
+  gapPx: 40
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#fdfbf9'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1e1e1e'
+- role: card
+  bgApprox: '#ffffff'
+  parent: canvas
+  radiusPx: 12
+  borderApprox: '1px #e6e2dc'
+  inkApprox: '#1e1e1e'
+- role: media-well
+  bgApprox: 'image-fill: warehouse worker portrait scene'
+  parent: card
+  radiusPx: 6
+  borderApprox: none
+  inkApprox: '#ffffff'
+typography:
+- role: h2
+  approxSizePx: 40
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1e1e1e'
+  familyClass: serif
+- role: tab
+  approxSizePx: 16
+  weightApprox: 600
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1e1e1e'
+  familyClass: humanist-sans
+- role: body
+  approxSizePx: 18
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#33363a'
+  familyClass: humanist-sans
+- role: control-label
+  approxSizePx: 15
+  weightApprox: 700
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1e1e1e'
+  familyClass: humanist-sans
+- role: display
+  approxSizePx: 40
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1e1e1e'
+  familyClass: serif
+- role: caption
+  approxSizePx: 15
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#33363a'
+  familyClass: humanist-sans
+components:
+- kind: tab
+  variant: text-underline
+  countObserved: 3
+  anatomy: label -> active underline rule beneath (orange)
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 8 0
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1e1e1e'
+  caseTreatment: title
+- kind: link
+  variant: underlined-text
+  countObserved: 1
+  anatomy: bold label with orange underline
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1e1e1e'
+  caseTreatment: sentence
+- kind: stat
+  variant: number-over-caption
+  countObserved: 2
+  anatomy: large serif number -> caption line below, split by vertical divider
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1e1e1e'
+  caseTreatment: sentence
+- kind: media-frame
+  variant: rounded-photo
+  countObserved: 1
+  anatomy: single rounded portrait photo filling left column
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: null
+    radiusPx: 6
+  surfaceApprox: '#8a6a45'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+copy:
+  eyebrow: null
+  heading: every size business.
+  subheading: null
+  body: “HubSpot took the time to understand our business needs fully. The pre-sales and subsequent support
+    really stood out from the start. They committed to engage with us deeply and work side-by-side with
+    us on the implementation. They’ve since more than met this commitment.”
+  actions:
+  - label: Read full case study
+    styleHint: underlined-text
+  items:
+  - heading: '12'
+    body: months for the pipeline to grow from millions to billions
+    meta: null
+  - heading: '5'
+    body: point increase in net promoter score (NPS)
+    meta: null
+  attribution:
+  - name: Adam Jones
+    role: Director of Business Development, Unipart
+media:
+- kind: photo
+  treatment: rounded portrait photo, worker in hi-vis vest holding clipboard, warehouse backdrop
+  aspect: portrait
+  approxFractionOfSection: 0.35
+mediaAssets:
+- kind: photograph
+  subject: worker in safety vest in an industrial storage setting
+  rightsGuess: own
+  luminance: mid
+  busyness: medium
+  aspect: portrait
+  alphaEdge: false
+  countObserved: 1
+motionHints:
+- tab row with active underline (tab-switch content swap)
+confidence: high
+notes:
+- Heading 'every size business.' is truncated at top edge — continuation from prior crop
+- Photo shows partial red logo text on vest (illegible)
+_source:
+  crop: section-07-csol-section-breeze-agents-tabbed-testimonials-s.png
+  domClasses: csol-section breeze-agents-tabbed-testimonials__section -statistics-variation -padding-top-s
+    -padding-bottom-xs
+  model: claude-opus-4-8

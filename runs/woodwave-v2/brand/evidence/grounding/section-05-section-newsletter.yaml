@@ -1,0 +1,94 @@
+schemaVersion: section-grounding.v1
+sectionRole: cta
+layout:
+  structure: 'centered stack: eyebrow -> large heading -> inline email field + subscribe button on a rule'
+  columns: 1
+  alignment: center
+  approxPaddingPx:
+    top: 90
+    bottom: 110
+  gapPx: 40
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#f7efe8'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#2c1f18'
+- role: band
+  bgApprox: '#2a2018'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#f7efe8'
+typography:
+- role: eyebrow
+  approxSizePx: 15
+  weightApprox: 500
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#2c1f18'
+  familyClass: humanist-sans
+- role: display
+  approxSizePx: 78
+  weightApprox: 400
+  case: upper
+  trackingApprox: tight
+  colorApprox: '#2c1f18'
+  familyClass: didone
+- role: control-label
+  approxSizePx: 15
+  weightApprox: 400
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#6b5d52'
+  familyClass: humanist-sans
+typography_note: null
+relationalSpacingPx:
+  eyebrowToHeading: 40
+  headingToBody: 80
+components:
+- kind: input
+  variant: underlined-field
+  countObserved: 1
+  anatomy: placeholder text left, bottom rule only, no box
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 0 0 14
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#6b5d52'
+  caseTreatment: upper
+- kind: button
+  variant: text-arrow
+  countObserved: 1
+  anatomy: label -> right-arrow icon
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#2c1f18'
+  caseTreatment: upper
+copy:
+  eyebrow: STAY UPDATED
+  heading: SUBSCRIBE NOW FOR EXCLUSIVE UPDATES AND INVITATIONS TO SPECIAL EXHIBITIONS
+  body: null
+  actions:
+  - label: SUBSCRIBE
+    styleHint: text-arrow
+  items:
+  - heading: ENTER YOUR EMAIL
+    body: placeholder text in underlined input
+    meta: null
+motionHints:
+- arrow icon beside SUBSCRIBE label (hover icon-slide affordance)
+confidence: high
+notes:
+- dark band cropped at top and bottom edges (adjacent sections)
+- input and button share a single underline rule spanning contained width
+_source:
+  crop: section-05-section-newsletter.png
+  domClasses: section newsletter
+  model: claude-opus-4-8

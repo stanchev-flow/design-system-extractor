@@ -1,0 +1,94 @@
+schemaVersion: section-grounding.v1
+sectionRole: content
+layout:
+  structure: 'headrail row (pill left / dotted rule / CTA right) atop a two-col header: display heading
+    left, body right'
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 88
+    bottom: 0
+  gapPx: 48
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#fbfbf9'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#1a1a1a'
+typography:
+- role: eyebrow
+  approxSizePx: 15
+  weightApprox: 700
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+- role: display
+  approxSizePx: 46
+  weightApprox: 500
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#141414'
+  familyClass: serif
+- role: body
+  approxSizePx: 18
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#3a3a3a'
+  familyClass: grotesque-sans
+- role: control-label
+  approxSizePx: 15
+  weightApprox: 700
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1a1a1a'
+  familyClass: grotesque-sans
+components:
+- kind: pill
+  variant: outlined
+  countObserved: 1
+  anatomy: text label inside thin bordered rounded box
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 10 18
+    radiusPx: 8
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: title
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: text label inside bordered rounded box
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 16 26
+    radiusPx: 8
+  surfaceApprox: transparent
+  inkApprox: '#1a1a1a'
+  caseTreatment: sentence
+relationalSpacingPx:
+  eyebrowToHeading: 56
+copy:
+  eyebrow: Case Studies
+  heading: Remarkable results for every size business.
+  subheading: null
+  body: Scale your business with HubSpot. The proof is in our customers’ success.
+  actions:
+  - label: See all case studies
+    styleHint: outlined
+componentAnatomies:
+- name: section headrail
+  parts: outlined label pill (left) -> dotted leader rule (center) -> outlined CTA button (far right)
+  styling: pill and CTA share thin border + r8; leader is a horizontal dotted rule spanning the gap
+motionHints: []
+confidence: high
+notes:
+- dotted leader rule connects eyebrow pill to CTA across the row
+- section likely continues below crop (padding-bottom-none, heading appears cut at baseline)
+_source:
+  crop: section-06-csol-section-padding-top-md-padding-bottom-none.png
+  domClasses: csol-section -padding-top-md -padding-bottom-none
+  model: claude-opus-4-8

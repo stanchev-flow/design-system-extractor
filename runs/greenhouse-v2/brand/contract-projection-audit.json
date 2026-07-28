@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "contract-projection-audit.v1",
+  "entries": [
+    {
+      "family": "motion",
+      "id": "tokens.motion",
+      "owner": "deterministic-contract",
+      "source": "motion.value",
+      "action": "canonicalized"
+    },
+    {
+      "family": "layouts",
+      "id": "stats",
+      "owner": "deterministic-contract",
+      "source": "layout-library.yaml contentShape.slots",
+      "action": "synchronized measured slots/assets"
+    },
+    {
+      "family": "navbar-utility",
+      "id": "utility",
+      "owner": "deterministic-contract",
+      "source": "staged chrome factual delta",
+      "action": "canonical control list"
+    }
+  ],
+  "measuredGeometry": {}
+}

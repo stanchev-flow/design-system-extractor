@@ -1,0 +1,167 @@
+schemaVersion: section-grounding.v1
+sectionRole: footer
+layout:
+  structure: 'centered stack: logo -> large nav headline -> social row -> divider -> legal links row ->
+    divider -> bottom credits row'
+  columns: 1
+  alignment: center
+  approxPaddingPx:
+    top: 200
+    bottom: 40
+  gapPx: 40
+  containerWidth: full-bleed
+surfaces:
+- role: canvas
+  bgApprox: '#161210'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#f2ede8'
+- role: band
+  bgApprox: '#161210'
+  parent: canvas
+  radiusPx: 0
+  borderApprox: '1px #2a2521'
+  inkApprox: '#9a938c'
+typography:
+- role: display
+  approxSizePx: 84
+  weightApprox: 400
+  case: upper
+  trackingApprox: normal
+  colorApprox: '#f2ede8'
+  familyClass: didone
+- role: logo
+  approxSizePx: 34
+  weightApprox: 400
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#c9a24a'
+  familyClass: didone
+- role: nav-link
+  approxSizePx: 16
+  weightApprox: 500
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#c8c2bb'
+  familyClass: geometric-sans
+- role: footer-link
+  approxSizePx: 15
+  weightApprox: 400
+  case: title
+  trackingApprox: normal
+  colorApprox: '#9a938c'
+  familyClass: geometric-sans
+- role: caption
+  approxSizePx: 13
+  weightApprox: 400
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#7d766f'
+  familyClass: geometric-sans
+components:
+- kind: logo-item
+  variant: wordmark-with-icon
+  countObserved: 1
+  anatomy: waveform icon glyph -> wordmark 'WOODWAVE'
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#c9a24a'
+  caseTreatment: upper
+- kind: link
+  variant: text
+  countObserved: 4
+  anatomy: upper-case label separated by slash
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#c8c2bb'
+  caseTreatment: upper
+- kind: link
+  variant: text
+  countObserved: 3
+  anatomy: title-case legal link
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#9a938c'
+  caseTreatment: title
+- kind: link
+  variant: text
+  countObserved: 3
+  anatomy: upper-case credit label
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#7d766f'
+  caseTreatment: upper
+copy:
+  eyebrow: null
+  heading: ABOUT / GALLERY / EXHIBITION / VISIT / BUY TICKETS
+  subheading: null
+  body: null
+  actions:
+  - label: INSTAGRAM
+    styleHint: text link
+  - label: FACEBOOK
+    styleHint: text link
+  - label: YOUTUBE
+    styleHint: text link
+  - label: TWITTER
+    styleHint: text link
+  - label: Privacy Policy
+    styleHint: text link
+  - label: Changelog
+    styleHint: text link
+  - label: Licenses
+    styleHint: text link
+  items:
+  - heading: © 2023. WOODWAVE GALLERY TEMPLATE
+    body: null
+    meta: null
+  - heading: POWERED BY WEBFLOW
+    body: null
+    meta: null
+  - heading: MORE TEMPLATES BY UNROOT.DESIGN
+    body: null
+    meta: null
+media:
+- kind: logo-vector
+  treatment: gold waveform glyph beside gold wordmark, ~34px tall, centered
+  aspect: wide
+  approxFractionOfSection: 0.03
+mediaAssets:
+- kind: logo-own
+  subject: brand wordmark with waveform mark
+  rightsGuess: own
+  luminance: mid
+  busyness: low
+  aspect: wide
+  alphaEdge: true
+  countObserved: 1
+chrome:
+  casing: mixed
+  separators: /
+  iconShape: text-labels
+  surfaceApprox: '#161210'
+  linkTreatment: '16px upper #c8c2bb nav links with slash separators; 15px title-case #9a938c legal links'
+  ctaTreatment: none
+motionHints: []
+confidence: high
+notes:
+- Nav headline uses slash separators between routes as decorative dividers
+- Two thin horizontal divider rules separate legal row and credits row
+- Top edge shows cream/off-white band bleeding from prior section
+_source:
+  crop: section-06-footer.png
+  domClasses: footer
+  model: claude-opus-4-8

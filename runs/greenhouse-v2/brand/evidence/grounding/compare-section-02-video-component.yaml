@@ -1,0 +1,247 @@
+sectionRole: features
+layout:
+  structure: heading + body top, pill filter row, then split comparison card left
+    / decorative media panel right
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 110
+    bottom: 40
+  gapPx: 32
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#ffffff'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1f3d33'
+- role: card
+  bgApprox: '#e0f5ec'
+  parent: canvas
+  radiusPx: 16
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1f3d33'
+- role: inset-panel
+  bgApprox: '#c3ead4'
+  parent: card
+  radiusPx: 10
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1f6b4a'
+- role: media-well
+  bgApprox: '#9fd6b8'
+  parent: canvas
+  radiusPx: 16
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#ffffff'
+typography:
+- role: h1
+  approxSizePx: 72
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1f4736'
+  familyClass: serif
+- role: body
+  approxSizePx: 17
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#3a4a43'
+  familyClass: humanist-sans
+- role: eyebrow
+  approxSizePx: 15
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1f9d68'
+  familyClass: humanist-sans
+- role: h3
+  approxSizePx: 32
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1f4736'
+  familyClass: serif
+- role: control-label
+  approxSizePx: 15
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1f4736'
+  familyClass: humanist-sans
+- role: caption
+  approxSizePx: 15
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#3a4a43'
+  familyClass: humanist-sans
+relationalSpacingPx:
+  headingToBody: 44
+  headingToSubheading: 24
+components:
+- kind: pill
+  variant: filled-primary
+  countObserved: 1
+  anatomy: text label centered in rounded pill
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 12 24
+    radiusPx: 24
+  surfaceApprox: '#1f7a52'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+  stateVisible: current
+- kind: pill
+  variant: outlined
+  countObserved: 8
+  anatomy: text label centered in rounded pill with thin border
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 12 24
+    radiusPx: 24
+  surfaceApprox: transparent
+  inkApprox: '#1f4736'
+  caseTreatment: sentence
+  stateVisible: idle
+- kind: list-item
+  variant: comparison-row
+  countObserved: 4
+  anatomy: feature label left -> brand check cell -> All-in-one HRIS cell -> Other
+    ATS's cell, divider rule between rows
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 24 0
+    radiusPx: 0
+  surfaceApprox: '#e0f5ec'
+  inkApprox: '#1f4736'
+  caseTreatment: sentence
+  stateVisible: idle
+- kind: icon
+  variant: filled-check-dot
+  countObserved: 4
+  anatomy: solid green filled circle in brand column
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 999
+  surfaceApprox: '#1f7a52'
+  inkApprox: '#1f7a52'
+  caseTreatment: sentence
+- kind: icon
+  variant: outline-dot
+  countObserved: 7
+  anatomy: hollow green ring in competitor columns
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 999
+  surfaceApprox: transparent
+  inkApprox: '#1f7a52'
+  caseTreatment: sentence
+- kind: icon
+  variant: half-filled-dot
+  countObserved: 1
+  anatomy: half-filled green circle (partial support) in All-in-one HRIS column
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 999
+  surfaceApprox: '#1f7a52'
+  inkApprox: '#1f7a52'
+  caseTreatment: sentence
+- kind: badge
+  variant: review-award
+  countObserved: 1
+  anatomy: G2 red logo chip -> 'Users Love Us' text -> star -> pennant shield shape
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 4
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1f4736'
+  caseTreatment: title
+copy:
+  eyebrow: Proven leadership
+  heading: How we compare
+  subheading: Demonstrated industry leadership
+  body: When it comes to choosing your next ATS, it pays dividends to do your due
+    diligence. Take a deep dive into how the Greenhouse platform compares.
+  actions:
+  - label: Proven leadership
+    styleHint: filled-primary
+  - label: Single-platform solution
+    styleHint: outlined
+  - label: Ease of use
+    styleHint: outlined
+  - label: Scalable workflows
+    styleHint: outlined
+  - label: AI tools
+    styleHint: outlined
+  - label: Structured hiring
+    styleHint: outlined
+  - label: Reporting & insights
+    styleHint: outlined
+  - label: Integration ecosystem
+    styleHint: outlined
+  - label: Security & compliance
+    styleHint: outlined
+  items:
+  - heading: G2 98% customer satisfaction rating
+    body: null
+    meta: null
+  - heading: 1,600+ 5-star reviews
+    body: null
+    meta: null
+  - heading: Fosway and IDC leader
+    body: null
+    meta: null
+  - heading: Industry-first innovation in structured hiring and embedded DE&I
+    body: null
+    meta: null
+media:
+- kind: illustration
+  treatment: fingerprint/leaf line-art texture on green media-well
+  aspect: portrait
+  approxFractionOfSection: 0.3
+- kind: photo
+  treatment: portrait chip of person, rounded corners, overlaid on media-well
+  aspect: portrait
+  approxFractionOfSection: 0.05
+- kind: logo-vector
+  treatment: G2 'Users Love Us' award badge on white pennant
+  aspect: portrait
+  approxFractionOfSection: 0.06
+mediaAssets:
+- kind: background-art
+  subject: abstract fingerprint/leaf line pattern
+  rightsGuess: own
+  luminance: mid
+  busyness: medium
+  aspect: portrait
+  alphaEdge: false
+  countObserved: 1
+- kind: portrait
+  subject: seated person, casual pose
+  rightsGuess: own
+  luminance: mid
+  busyness: medium
+  aspect: portrait
+  alphaEdge: false
+  countObserved: 1
+- kind: badge-review-award
+  subject: G2 Users Love Us award pennant with 5 stars
+  rightsGuess: third-party-mark
+  luminance: light
+  busyness: medium
+  aspect: portrait
+  alphaEdge: true
+  countObserved: 1
+motionHints:
+- pill filter row implies tab/state-swap of comparison content
+confidence: high

@@ -1,0 +1,735 @@
+schemaVersion: media-assets.v1
+brand: HubSpot v2
+source: >-
+  Authored 2026-07-16 (media semantics) FROM EXISTING EVIDENCE ONLY: the 2026-07-10
+  capture's curated assets (assets-tagged.json, 66 files), evidence/grounding/*.yaml,
+  css-rules.json (band gradients), section-rects.json + the fullpage capture
+  (poster crops, pixel samples), and Pillow-measured per-file stats. No re-extraction.
+note: >-
+  assets-tagged.json remains the renderer-compat inventory (attach_asset_inventory
+  reads it; its mediaTreatmentRules stay the role-scoped fallback). This artifact is
+  the richer semantic SUPERSET: stable logical-asset ids, the closed kind taxonomy,
+  usage rights (AS-67), measured luminance/busyness stats, and the brand's
+  generated-visual recipes. treatmentDefaults.fit mirrors the fit each file's actual
+  current usage resolves through the tagged rules, so rendering is unchanged.
+  logo-inline-*.svg (uncurated inline-SVG harvest duplicates, tagged nowhere and
+  bound nowhere) are deliberately unregistered.
+
+# ── brand-level imagery grammar (spec §4) — measured via Pillow over the four real
+# photographs (018 hero + 045/046/047 case studies): dominant hues 24/33/5/49
+# (warm band), mid-key exposure, moderate saturation, no gloss/specular treatment.
+photographyFingerprint:
+  measured:
+    temperatureCast: warm
+    keyExposure: mid-key
+    saturationBand: moderate
+    finish: matte
+    sampleSize: 4
+    source: measured
+  prose: >-
+    Warm, people-forward workplace photography: real teams in real interiors, warm
+    cast (amber/orange dominant hues), mid-key exposure, moderate saturation, matte
+    finish. The hero deploys the family full-bleed under a measured flat dark scrim
+    (rgba(0,0,0,0.4)); proof contexts deploy it as rounded-corner card media. New
+    photography briefs should stay in this family — candid environments over studio
+    setups, warm light over cool, matte over glossy.
+
+assets:
+  # ── the brand's own mark ─────────────────────────────────────────────────────────
+  - id: brand-wordmark
+    file: hubspot-wordmark.svg
+    assetSemantics: { kind: logo-own, logoVariant: wordmark, subject: "brand wordmark with sprocket mark (single-color vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "HubSpot" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [nav-wordmark, footer-wordmark]
+    provenance: { source: capture-files, sections: [navbar, footer], confidence: high }
+
+  # ── customer trust logos (proof strip) — third-party marks, factual proof only ──
+  - id: client-logo-ebay
+    file: 019-ebay-logo.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "customer trust mark (color vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "eBay" }
+    usageRights: third-party-mark
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [proof-strip-mark]
+    provenance: { source: capture-files, sections: [logo-wall], confidence: high }
+  - id: client-logo-doordash
+    file: 020-doordash-logo.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "customer trust mark (color vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "DoorDash" }
+    usageRights: third-party-mark
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [proof-strip-mark]
+    provenance: { source: capture-files, sections: [logo-wall], confidence: high }
+  - id: client-logo-reddit
+    file: 021-reddit-logo.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "customer trust mark (color vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Reddit" }
+    usageRights: third-party-mark
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [proof-strip-mark]
+    provenance: { source: capture-files, sections: [logo-wall], confidence: high }
+  - id: client-logo-tripadvisor
+    file: 022-tripadvisor-logo.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "customer trust mark (color vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Tripadvisor" }
+    usageRights: third-party-mark
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [proof-strip-mark]
+    provenance: { source: capture-files, sections: [logo-wall], confidence: high }
+  - id: client-logo-eventbrite
+    file: 023-eventbrite-logo.svg
+    assetSemantics: { kind: logo-third-party, subtype: client, subject: "customer trust mark (color vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Eventbrite" }
+    usageRights: third-party-mark
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [proof-strip-mark]
+    provenance: { source: capture-files, sections: [logo-wall], confidence: high }
+
+  # ── layered platform illustrations (carousel media) ─────────────────────────────
+  - id: platform-illustration-crm
+    file: 024-customer-20platform-20graphic-20-20smart-20crm1-5x-20-1.png
+    assetSemantics: { kind: illustration, subject: "layered isometric translucent platform panels" }
+    facts: { intrinsic: { w: 604, h: 353 }, intrinsicAspect: 1.711, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 108, luminanceBand: mid, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Smart CRM layered platform graphic" }
+    usageRights: own
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [feature-slide-media]
+    provenance: { source: capture-files, sections: [platform-carousel], confidence: high }
+  - id: platform-illustration-hubs
+    file: 025-customer-20platform-20graphic-20-20hubs1-5x-20-1.png
+    assetSemantics: { kind: illustration, subject: "layered isometric translucent platform panels" }
+    facts: { intrinsic: { w: 604, h: 353 }, intrinsicAspect: 1.711, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 109, luminanceBand: mid, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Hubs layered platform graphic" }
+    usageRights: own
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [feature-slide-media]
+    provenance: { source: capture-files, sections: [platform-carousel], confidence: high }
+  - id: platform-illustration-agents
+    file: 026-customer-platform-graphic-breeze.png
+    assetSemantics: { kind: illustration, subject: "layered isometric translucent platform panels" }
+    facts: { intrinsic: { w: 604, h: 353 }, intrinsicAspect: 1.711, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 82, luminanceBand: mid, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Breeze layered platform graphic" }
+    usageRights: own
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [feature-slide-media]
+    provenance: { source: capture-files, sections: [platform-carousel], confidence: high }
+
+  # ── product-family spot icons (card glyph row + mega panels) ─────────────────────
+  - id: spot-icon-marketing
+    file: 028-producticons-marketinghub-icon-orange.webp
+    assetSemantics: { kind: spot-icon, subject: "product-family line icon (accent ink)" }
+    facts: { intrinsic: { w: 182, h: 239 }, intrinsicAspect: 0.7615, orientation: portrait,
+             alpha: false,
+             stats: { dominantHue: 97, luminanceBand: mid, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Marketing Hub" }
+    usageRights: own
+    treatmentDefaults: { fit: mark, salience: content }
+    compositionRoles: [card-glyph]
+    provenance: { source: capture-files, sections: [product-grid], confidence: high }
+  - id: spot-icon-sales
+    file: 029-producticons-saleshub-icon-orange.webp
+    assetSemantics: { kind: spot-icon, subject: "product-family line icon (accent ink)" }
+    facts: { intrinsic: { w: 224, h: 225 }, intrinsicAspect: 0.9956, orientation: square,
+             alpha: false,
+             stats: { dominantHue: 98, luminanceBand: mid, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Sales Hub" }
+    usageRights: own
+    treatmentDefaults: { fit: mark, salience: content }
+    compositionRoles: [card-glyph]
+    provenance: { source: capture-files, sections: [product-grid], confidence: high }
+  - id: spot-icon-service
+    file: 030-producticons-servicehub-icon-orange.webp
+    assetSemantics: { kind: spot-icon, subject: "product-family line icon (accent ink)" }
+    facts: { intrinsic: { w: 222, h: 186 }, intrinsicAspect: 1.1935, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 97, luminanceBand: mid, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Service Hub" }
+    usageRights: own
+    treatmentDefaults: { fit: mark, salience: content }
+    compositionRoles: [card-glyph]
+    provenance: { source: capture-files, sections: [product-grid], confidence: high }
+  - id: spot-icon-content
+    file: 031-producticons-contenthub-icon-orange.webp
+    assetSemantics: { kind: spot-icon, subject: "product-family line icon (accent ink)" }
+    facts: { intrinsic: { w: 206, h: 227 }, intrinsicAspect: 0.9075, orientation: square,
+             alpha: false,
+             stats: { dominantHue: 101, luminanceBand: mid, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Content Hub" }
+    usageRights: own
+    treatmentDefaults: { fit: mark, salience: content }
+    compositionRoles: [card-glyph]
+    provenance: { source: capture-files, sections: [product-grid], confidence: high }
+  - id: spot-icon-data
+    file: 032-producticons-datahub-icon-orange.webp
+    assetSemantics: { kind: spot-icon, subject: "product-family line icon (accent ink)" }
+    facts: { intrinsic: { w: 239, h: 208 }, intrinsicAspect: 1.149, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 101, luminanceBand: mid, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Data Hub" }
+    usageRights: own
+    treatmentDefaults: { fit: mark, salience: content }
+    compositionRoles: [card-glyph]
+    provenance: { source: capture-files, sections: [product-grid], confidence: high }
+  - id: spot-icon-commerce
+    file: 033-producticons-commercehub-icon-orange.webp
+    assetSemantics: { kind: spot-icon, subject: "product-family line icon (accent ink)" }
+    facts: { intrinsic: { w: 206, h: 213 }, intrinsicAspect: 0.9671, orientation: square,
+             alpha: false,
+             stats: { dominantHue: 96, luminanceBand: mid, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Revenue Hub" }
+    usageRights: own
+    treatmentDefaults: { fit: mark, salience: content }
+    compositionRoles: [card-glyph]
+    provenance: { source: capture-files, sections: [product-grid], confidence: high }
+  - id: spot-icon-crm
+    file: 034-producticons-smartcrm-icon-orange.webp
+    assetSemantics: { kind: spot-icon, subject: "product-family line icon (accent ink)" }
+    facts: { intrinsic: { w: 201, h: 201 }, intrinsicAspect: 1.0, orientation: square,
+             alpha: false,
+             stats: { dominantHue: 98, luminanceBand: mid, busyness: low, saturationBand: vivid, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Smart CRM" }
+    usageRights: own
+    treatmentDefaults: { fit: mark, salience: content }
+    compositionRoles: [card-glyph]
+    provenance: { source: capture-files, sections: [product-grid], confidence: high }
+  - id: spot-icon-ai-suite
+    file: 035-breeze-20icon.svg
+    assetSemantics: { kind: spot-icon, subject: "AI-suite mark (multi-point star vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Breeze" }
+    usageRights: own
+    treatmentDefaults: { fit: mark, salience: content }
+    compositionRoles: [card-glyph, headrail-chip-glyph]
+    provenance: { source: capture-files, sections: [product-grid, agent-carousel], confidence: high }
+  - id: spot-icon-small-business
+    file: 009-small-business.svg
+    assetSemantics: { kind: spot-icon, subject: "product-bundle line icon (vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Small Business Bundle" }
+    usageRights: own
+    treatmentDefaults: { fit: mark, salience: content }
+    compositionRoles: [card-glyph]
+    provenance: { source: capture-files, sections: [product-grid], confidence: high }
+  - id: spot-icon-ai-sparkle
+    file: 027-ai-20sparkle.svg
+    assetSemantics: { kind: spot-icon, subject: "sparkle glyph (small accent vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "AI sparkle" }
+    usageRights: own
+    treatmentDefaults: { fit: mark, salience: content }
+    compositionRoles: [card-glyph, eyebrow-badge-glyph]
+    provenance: { source: capture-files, sections: [product-grid, agent-carousel], confidence: high }
+  - id: spot-icon-marketing-nav
+    file: 002-marketing-hub.svg
+    assetSemantics: { kind: spot-icon, subject: "product-family glyph (mega-panel vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Marketing Hub (nav)" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [menu-link-glyph]
+    provenance: { source: capture-files, sections: [navbar], confidence: high }
+  - id: spot-icon-commerce-nav
+    file: 007-commerce-hub.svg
+    assetSemantics: { kind: spot-icon, subject: "product-family glyph (mega-panel vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Revenue Hub (nav)" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [menu-link-glyph]
+    provenance: { source: capture-files, sections: [navbar], confidence: high }
+  - id: spot-icon-ai-suite-gradient
+    file: 010-breeze-symbol-rgb-gradient.svg
+    assetSemantics: { kind: spot-icon, subject: "AI-suite mark, gradient-filled variant (vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Breeze gradient symbol" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [menu-link-glyph]
+    provenance: { source: capture-files, sections: [navbar], confidence: high }
+  - id: spot-icon-marketplace
+    file: 012-app-marketplace.svg
+    assetSemantics: { kind: spot-icon, subject: "marketplace glyph (mega-panel vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "App Marketplace" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [menu-link-glyph]
+    provenance: { source: capture-files, sections: [navbar], confidence: high }
+
+  # ── agent product-UI mockups (carousel card media wells) ─────────────────────────
+  - id: product-ui-agent-support
+    file: 036-customer-agent-en-2x.png
+    assetSemantics: { kind: product-ui-screenshot, subject: "product-UI mockup (chat/support surface) on soft field" }
+    facts: { intrinsic: { w: 640, h: 640 }, intrinsicAspect: 1.0, orientation: square,
+             alpha: false,
+             stats: { dominantHue: 327, luminanceBand: light, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Customer Agent UI mockup" }
+    usageRights: own
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [card-media-well]
+    provenance: { source: capture-files, sections: [agent-carousel], confidence: high }
+  - id: product-ui-agent-prospecting
+    file: 037-prospecting-agent-en-2x.png
+    assetSemantics: { kind: product-ui-screenshot, subject: "product-UI mockup (workflow surface) on soft field" }
+    facts: { intrinsic: { w: 640, h: 640 }, intrinsicAspect: 1.0, orientation: square,
+             alpha: false,
+             stats: { dominantHue: 327, luminanceBand: light, busyness: medium, saturationBand: muted, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Prospecting Agent UI mockup" }
+    usageRights: own
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [card-media-well]
+    provenance: { source: capture-files, sections: [agent-carousel], confidence: high }
+  - id: product-ui-agent-data
+    file: 038-data-hub-en-2x.png
+    assetSemantics: { kind: product-ui-screenshot, subject: "product-UI mockup (data surface) on soft field" }
+    facts: { intrinsic: { w: 640, h: 640 }, intrinsicAspect: 1.0, orientation: square,
+             alpha: false,
+             stats: { dominantHue: 325, luminanceBand: light, busyness: medium, saturationBand: muted, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Data Agent UI mockup" }
+    usageRights: own
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [card-media-well]
+    provenance: { source: capture-files, sections: [agent-carousel], confidence: high }
+
+  # ── integration ecosystem logos (collage tiles) — third-party marks ──────────────
+  - id: integration-logo-gmail
+    file: 039-gmail-icon-3.svg
+    assetSemantics: { kind: logo-third-party, subtype: integration, subject: "ecosystem app mark (color vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Gmail" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [integration-collage-tile]
+    provenance: { source: capture-files, sections: [integration-banner], confidence: high }
+  - id: integration-logo-shopify
+    file: 040-shopify-icon-3.svg
+    assetSemantics: { kind: logo-third-party, subtype: integration, subject: "ecosystem app mark (color vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Shopify" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [integration-collage-tile]
+    provenance: { source: capture-files, sections: [integration-banner], confidence: high }
+  - id: integration-logo-mailchimp
+    file: 041-mailchimp-icon-3.svg
+    assetSemantics: { kind: logo-third-party, subtype: integration, subject: "ecosystem app mark (color vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Mailchimp" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [integration-collage-tile]
+    provenance: { source: capture-files, sections: [integration-banner], confidence: high }
+  - id: integration-logo-zapier
+    file: 042-zapier-icon-2.svg
+    assetSemantics: { kind: logo-third-party, subtype: integration, subject: "ecosystem app mark (color vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Zapier" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [integration-collage-tile]
+    provenance: { source: capture-files, sections: [integration-banner], confidence: high }
+  - id: integration-logo-google-ads
+    file: 043-google-ads-icon-2.svg
+    assetSemantics: { kind: logo-third-party, subtype: integration, subject: "ecosystem app mark (color vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Google Ads" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [integration-collage-tile]
+    provenance: { source: capture-files, sections: [integration-banner], confidence: high }
+  - id: integration-logo-slack
+    file: 044-slack-icon-2.svg
+    assetSemantics: { kind: logo-third-party, subtype: integration, subject: "ecosystem app mark (color vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Slack" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [integration-collage-tile]
+    provenance: { source: capture-files, sections: [integration-banner], confidence: high }
+
+  # ── case-study photography (tabbed testimonial media) ────────────────────────────
+  - id: client-photo-enterprise-tab
+    file: 045-unipart-1.png
+    assetSemantics: { kind: client-photo, subject: "workplace photography, warm industrial interior" }
+    facts: { intrinsic: { w: 500, h: 328 }, intrinsicAspect: 1.5244, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 33, luminanceBand: mid, busyness: high, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Unipart" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [testimonial-panel-media]
+    provenance: { source: capture-files, sections: [testimonial-tabs], confidence: high }
+  - id: client-photo-midsize-tab
+    file: 046-angel-fc.png
+    assetSemantics: { kind: client-photo, subject: "workplace photography, stadium/team environment" }
+    facts: { intrinsic: { w: 495, h: 306 }, intrinsicAspect: 1.6176, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 5, luminanceBand: mid, busyness: high, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Angel City FC" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [testimonial-panel-media]
+    provenance: { source: capture-files, sections: [testimonial-tabs], confidence: high }
+  - id: client-photo-smallbiz-tab
+    file: 047-youth-on-course.png
+    assetSemantics: { kind: client-photo, subject: "workplace photography, outdoor program scene" }
+    facts: { intrinsic: { w: 500, h: 347 }, intrinsicAspect: 1.4409, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 49, luminanceBand: mid, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Youth on Course" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [testimonial-panel-media]
+    provenance: { source: capture-files, sections: [testimonial-tabs], confidence: high }
+
+  # ── review-platform award badges (proof row) — third-party marks ─────────────────
+  - id: award-badge-leader-smallbiz
+    file: 048-badge-leader-small-business.png
+    assetSemantics: { kind: badge-review-award, subject: "review-platform award shield (pennant)" }
+    facts: { intrinsic: { w: 69, h: 80 }, intrinsicAspect: 0.8625, orientation: portrait,
+             alpha: false,
+             stats: { dominantHue: 62, luminanceBand: light, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Leader — Small Business" }
+    usageRights: third-party-mark
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [award-proof-mark]
+    provenance: { source: capture-files, sections: [badge-row], confidence: high }
+  - id: award-badge-most-implementable
+    file: 049-badge-most-implementable.png
+    assetSemantics: { kind: badge-review-award, subject: "review-platform award shield (pennant)" }
+    facts: { intrinsic: { w: 69, h: 80 }, intrinsicAspect: 0.8625, orientation: portrait,
+             alpha: false,
+             stats: { dominantHue: 142, luminanceBand: light, busyness: medium, saturationBand: muted, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Most Implementable" }
+    usageRights: third-party-mark
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [award-proof-mark]
+    provenance: { source: capture-files, sections: [badge-row], confidence: high }
+  - id: award-badge-best-relationship
+    file: 050-badge-best-relationships-small-business.png
+    assetSemantics: { kind: badge-review-award, subject: "review-platform award shield (pennant)" }
+    facts: { intrinsic: { w: 69, h: 80 }, intrinsicAspect: 0.8625, orientation: portrait,
+             alpha: false,
+             stats: { dominantHue: 129, luminanceBand: light, busyness: high, saturationBand: muted, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Best Relationship — Small Business" }
+    usageRights: third-party-mark
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [award-proof-mark]
+    provenance: { source: capture-files, sections: [badge-row], confidence: high }
+  - id: award-badge-best-support
+    file: 051-badge-best-support-enterprise.png
+    assetSemantics: { kind: badge-review-award, subject: "review-platform award shield (pennant)" }
+    facts: { intrinsic: { w: 69, h: 80 }, intrinsicAspect: 0.8625, orientation: portrait,
+             alpha: false,
+             stats: { dominantHue: 83, luminanceBand: light, busyness: high, saturationBand: muted, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Best Support — Enterprise" }
+    usageRights: third-party-mark
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [award-proof-mark]
+    provenance: { source: capture-files, sections: [badge-row], confidence: high }
+  - id: award-badge-best-results
+    file: 052-badge-best-results-mid-market.png
+    assetSemantics: { kind: badge-review-award, subject: "review-platform award shield (pennant)" }
+    facts: { intrinsic: { w: 69, h: 80 }, intrinsicAspect: 0.8625, orientation: portrait,
+             alpha: false,
+             stats: { dominantHue: 135, luminanceBand: light, busyness: high, saturationBand: muted, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Best Results — Mid-Market" }
+    usageRights: third-party-mark
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [award-proof-mark]
+    provenance: { source: capture-files, sections: [badge-row], confidence: high }
+  - id: award-badge-best-usability
+    file: 053-badge-best-usability-enterprise.png
+    assetSemantics: { kind: badge-review-award, subject: "review-platform award shield (pennant)" }
+    facts: { intrinsic: { w: 69, h: 80 }, intrinsicAspect: 0.8625, orientation: portrait,
+             alpha: false,
+             stats: { dominantHue: 83, luminanceBand: light, busyness: high, saturationBand: muted, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Best Usability — Enterprise" }
+    usageRights: third-party-mark
+    treatmentDefaults: { fit: contain, salience: content }
+    compositionRoles: [award-proof-mark]
+    provenance: { source: capture-files, sections: [badge-row], confidence: high }
+
+  # ── the hero photograph (full-bleed band cover) ──────────────────────────────────
+  - id: hero-office-photo
+    file: 018-hs-full-bleed-1-optmised.webp
+    assetSemantics: { kind: photograph, subject: "warm office scene, wide interior with people" }
+    facts: { intrinsic: { w: 2160, h: 1440 }, intrinsicAspect: 1.5, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 24, luminanceBand: mid, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Warm office scene (hero)" }
+    usageRights: own
+    treatmentDefaults: { fit: cover, salience: content }
+    compositionRoles: [hero-background]
+    provenance: { source: capture-files, sections: [hero], confidence: high }
+
+  # ── mega-panel promo imagery (chrome asides) ─────────────────────────────────────
+  - id: promo-photo-smallbiz
+    file: 013-small-20businesses-20-26-20start-20ups.webp
+    assetSemantics: { kind: photograph, subject: "promo panel photography (warm workplace vignette)" }
+    facts: { intrinsic: { w: 1035, h: 450 }, intrinsicAspect: 2.3, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 27, luminanceBand: mid, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Small businesses & start-ups" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [menu-promo-media]
+    provenance: { source: capture-files, sections: [navbar], confidence: medium }
+  - id: promo-photo-enterprise
+    file: 014-enterprise.webp
+    assetSemantics: { kind: photograph, subject: "promo panel photography (warm workplace vignette)" }
+    facts: { intrinsic: { w: 1035, h: 450 }, intrinsicAspect: 2.3, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 24, luminanceBand: mid, busyness: high, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Enterprise" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [menu-promo-media]
+    provenance: { source: capture-files, sections: [navbar], confidence: medium }
+  - id: promo-photo-why-us
+    file: 015-why-20choose-20hubspot.webp
+    assetSemantics: { kind: photograph, subject: "promo panel photography (warm workplace vignette)" }
+    facts: { intrinsic: { w: 1035, h: 450 }, intrinsicAspect: 2.3, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 28, luminanceBand: mid, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Why choose HubSpot" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [menu-promo-media]
+    provenance: { source: capture-files, sections: [navbar], confidence: medium }
+  - id: promo-photo-case-studies
+    file: 016-case-20studies.webp
+    assetSemantics: { kind: photograph, subject: "promo panel photography (warm workplace vignette)" }
+    facts: { intrinsic: { w: 1035, h: 450 }, intrinsicAspect: 2.3, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 25, luminanceBand: mid, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Case studies" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [menu-promo-media]
+    provenance: { source: capture-files, sections: [navbar], confidence: medium }
+  - id: promo-collage-spotlight
+    file: 017-spotlight-resized-518x225.png
+    assetSemantics: { kind: product-ui-collage, decomposition: flat, subject: "dark promo collage with product fragments (one flat artwork)" }
+    facts: { intrinsic: { w: 518, h: 225 }, intrinsicAspect: 2.3022, orientation: landscape,
+             alpha: true,
+             stats: { dominantHue: 348, luminanceBand: dark, busyness: medium, saturationBand: moderate, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Spotlight" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [menu-promo-media]
+    provenance: { source: capture-files, sections: [navbar], confidence: medium }
+
+  # ── app-store badges (chrome promos) — third-party marks ─────────────────────────
+  - id: appstore-badge-ios
+    file: 054-app-20store-20high-20res.png
+    assetSemantics: { kind: badge-appstore, subject: "app-store download badge" }
+    facts: { intrinsic: { w: 136, h: 45 }, intrinsicAspect: 3.0222, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: null, luminanceBand: dark, busyness: high, saturationBand: muted, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "App Store" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [store-badge]
+    provenance: { source: capture-files, sections: [navbar], confidence: high }
+  - id: appstore-badge-android
+    file: 055-google-20play-20high-20res.png
+    assetSemantics: { kind: badge-appstore, subject: "app-store download badge" }
+    facts: { intrinsic: { w: 136, h: 40 }, intrinsicAspect: 3.4, orientation: landscape,
+             alpha: false,
+             stats: { dominantHue: 112, luminanceBand: dark, busyness: high, saturationBand: muted, source: measured },
+             focalPoint: null, safeCrop: null, altHarvested: "Google Play" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [store-badge]
+    provenance: { source: capture-files, sections: [navbar], confidence: high }
+
+  # ── footer social icons (mono glyph row) ─────────────────────────────────────────
+  - id: social-icon-facebook
+    file: social-facebook.svg
+    assetSemantics: { kind: social-icon, subject: "social-network glyph (monochrome vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Facebook" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [footer-social-glyph]
+    provenance: { source: inline-svg, sections: [footer], confidence: high }
+  - id: social-icon-instagram
+    file: social-instagram.svg
+    assetSemantics: { kind: social-icon, subject: "social-network glyph (monochrome vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Instagram" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [footer-social-glyph]
+    provenance: { source: inline-svg, sections: [footer], confidence: high }
+  - id: social-icon-youtube
+    file: social-youtube.svg
+    assetSemantics: { kind: social-icon, subject: "social-network glyph (monochrome vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "YouTube" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [footer-social-glyph]
+    provenance: { source: inline-svg, sections: [footer], confidence: high }
+  - id: social-icon-x
+    file: social-x.svg
+    assetSemantics: { kind: social-icon, subject: "social-network glyph (monochrome vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "X" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [footer-social-glyph]
+    provenance: { source: inline-svg, sections: [footer], confidence: high }
+  - id: social-icon-linkedin
+    file: social-linkedin.svg
+    assetSemantics: { kind: social-icon, subject: "social-network glyph (monochrome vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "LinkedIn" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [footer-social-glyph]
+    provenance: { source: inline-svg, sections: [footer], confidence: high }
+  - id: social-icon-reddit
+    file: social-reddit.svg
+    assetSemantics: { kind: social-icon, subject: "social-network glyph (monochrome vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "Reddit" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [footer-social-glyph]
+    provenance: { source: inline-svg, sections: [footer], confidence: high }
+  - id: social-icon-tiktok
+    file: social-tiktok.svg
+    assetSemantics: { kind: social-icon, subject: "social-network glyph (monochrome vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "TikTok" }
+    usageRights: third-party-mark
+    treatmentDefaults: null
+    compositionRoles: [footer-social-glyph]
+    provenance: { source: inline-svg, sections: [footer], confidence: high }
+
+  # ── chrome/control ui-glyphs (the site's own icon sprite) ────────────────────────
+  - id: ui-glyph-chevron-down
+    file: icon-down.svg
+    assetSemantics: { kind: ui-glyph, subject: "chevron-down control glyph (single-ink vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "chevron down" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [nav-trigger-glyph]
+    provenance: { source: capture-files, sections: [navbar], confidence: high }
+  - id: ui-glyph-globe
+    file: icon-globe.svg
+    assetSemantics: { kind: ui-glyph, subject: "globe control glyph (single-ink vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "globe" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [utility-control-glyph]
+    provenance: { source: capture-files, sections: [navbar], confidence: high }
+  - id: ui-glyph-search
+    file: icon-search.svg
+    assetSemantics: { kind: ui-glyph, subject: "search control glyph (single-ink vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "search" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [utility-control-glyph]
+    provenance: { source: capture-files, sections: [navbar], confidence: high }
+  - id: ui-glyph-arrow-right
+    file: icon-right.svg
+    assetSemantics: { kind: ui-glyph, subject: "arrow-right link glyph (single-ink vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "arrow right" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [text-cta-glyph]
+    provenance: { source: capture-files, sections: [product-grid], confidence: high }
+  - id: ui-glyph-carousel-next
+    file: icon-next.svg
+    assetSemantics: { kind: ui-glyph, subject: "carousel next control glyph (single-ink vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "next" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [carousel-control-glyph]
+    provenance: { source: capture-files, sections: [platform-carousel, agent-carousel], confidence: high }
+  - id: ui-glyph-carousel-previous
+    file: icon-previous.svg
+    assetSemantics: { kind: ui-glyph, subject: "carousel previous control glyph (single-ink vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "previous" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [carousel-control-glyph]
+    provenance: { source: capture-files, sections: [platform-carousel, agent-carousel], confidence: high }
+  - id: ui-glyph-pause
+    file: icon-pause.svg
+    assetSemantics: { kind: ui-glyph, subject: "pause control glyph (single-ink vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "pause" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [carousel-control-glyph]
+    provenance: { source: capture-files, sections: [agent-carousel], confidence: high }
+  - id: ui-glyph-checkmark
+    file: icon-success.svg
+    assetSemantics: { kind: ui-glyph, subject: "checkmark list glyph (single-ink vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "checkmark" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [list-marker-glyph]
+    provenance: { source: capture-files, sections: [product-grid], confidence: high }
+  - id: ui-glyph-close
+    file: icon-close.svg
+    assetSemantics: { kind: ui-glyph, subject: "dismiss control glyph (single-ink vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "close" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [dismiss-control-glyph]
+    provenance: { source: capture-files, sections: [navbar], confidence: high }
+  - id: ui-glyph-arrow-left
+    file: icon-left.svg
+    assetSemantics: { kind: ui-glyph, subject: "arrow-left control glyph (single-ink vector)" }
+    facts: { intrinsic: null, intrinsicAspect: null, orientation: null, alpha: true,
+             stats: null, focalPoint: null, safeCrop: null, altHarvested: "arrow left" }
+    usageRights: own
+    treatmentDefaults: null
+    compositionRoles: [carousel-control-glyph]
+    provenance: { source: capture-files, sections: [platform-carousel], confidence: high }
+
+# ── generated-visual devices (code recipes, not files — spec §5) ────────────────────
+generatedVisuals:
+  - id: warm-accent-band-wash
+    kind: css-gradient
+    recipe:
+      shape: linear
+      angle: 90
+      stops: ["accent/pink 0%", "accent/peach 55%", "accent/coral 100%"]
+      tokenRoles: [accent/pink, accent/peach, accent/coral]
+      evidence: >-
+        Horizontal warm wash painting the AI-agent band and seaming the product
+        grid's bottom edge. Pixel-sampled on the fullpage capture at y≈3520:
+        left rgb(252,203,209) [pink family #fcc3dc], center rgb(252,210,198)
+        [peach #fcc6b1], right rgb(253,199,177) [coral #ffa581] — the brand's own
+        accent-fill token steps (css-rules --light-theme-accent-* sheet).
+    poster: generated/gv-warm-accent-band-poster.png
+    degrade: [live, poster, omit]
+    provenance: { source: capture-files, sections: [product-grid, agent-carousel], confidence: high }

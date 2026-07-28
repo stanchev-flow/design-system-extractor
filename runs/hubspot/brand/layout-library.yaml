@@ -1,0 +1,80 @@
+schemaVersion: layout-patterns.v1
+# HubSpot PROJECT layout library — extracted from the brand's own v1 layouts[] during the
+# 2026-07-02 consolidation pass. Same precedence rules as any project tier.
+patterns:
+  - id: hero-scrim-filled-cta
+    useCase: hero
+    archetypeRef: stack-fullbleed
+    surfaceIntent: any
+    intent: >-
+      Centered stack over a full-bleed photo darkened by a FLAT dark scrim (no blur):
+      eyebrow -> serif display heading (rotating accent final word) -> supporting body ->
+      a single FILLED primary button. Text-over-image is this brand's sanctioned hero grammar.
+    contentShape:
+      alignment: { value: center, inheritance: block-inherits, rule: "hero stack: all slots centered, shared measure (~Width MD)" }
+      slots:
+        - { name: eyebrow, role: tagline eyebrow, textLen: short, sizeClass: caption, width: hug, z: front }
+        - { name: heading, role: animated display heading, textLen: medium, sizeClass: display, width: hug, z: front }
+        - { name: body, role: supporting paragraph, textLen: long, sizeClass: body, width: hug, z: front }
+        - { name: action, role: filled primary button, textLen: short, sizeClass: control, width: hug, z: front }
+        - { name: background, role: full-bleed hero photo + scrim, mediaAspect: landscape, mediaScale: { of: container, fraction: 1.0 }, width: full-bleed, z: back }
+    specialTreatments:
+      - { kind: text-on-media, target: heading, over: background, sanctioned: true, note: "flat dark scrim guarantees contrast — no blur" }
+      - { kind: scrim-band, target: background }
+    responsive: { collapse: none, mediaFirst: false }
+    variantKnobs:
+      rotatingWord: { type: enum, values: [on, off], default: on }
+    origin: extracted
+    provenance: [hero]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-02T00:00:00Z", action: created, from: null, to: hero-scrim-filled-cta, by: creation, signalId: null, note: "consolidation pass from v1 layouts.hero" }
+  - id: cta-elevated-card
+    useCase: cta
+    archetypeRef: stack
+    surfaceIntent: inverse
+    intent: >-
+      Closing CTA on the dark band: centered heading + body + filled primary button inside
+      an elevated rounded card floating over the surface seam.
+    contentShape:
+      alignment: { value: center, inheritance: block-inherits, rule: "CTA block: everything centered, button follows body measure" }
+      slots:
+        - { name: heading, role: cta heading, textLen: medium, sizeClass: title, width: hug, z: front }
+        - { name: body, role: supporting line, textLen: long, sizeClass: body, width: hug, z: front }
+        - { name: action, role: filled primary button, textLen: short, sizeClass: control, width: hug, z: front }
+    specialTreatments:
+      - { kind: panel-on-media, target: heading, note: "elevated rounded card straddles the section seam" }
+    responsive: { collapse: none, mediaFirst: false }
+    variantKnobs: {}
+    origin: extracted
+    provenance: [elevated-cta]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-02T00:00:00Z", action: created, from: null, to: cta-elevated-card, by: creation, signalId: null, note: "consolidation pass from v1 layouts.elevated-cta" }
+  - id: features-rounded-card-grid
+    useCase: features
+    archetypeRef: grid
+    surfaceIntent: primary
+    intent: >-
+      N-up grid of 16px-rounded, borderless white cards with dashed internal dividers on the
+      near-white canvas — the brand's core module device (rounded-white-cards).
+    contentShape:
+      slots:
+        - { name: heading, role: section heading, textLen: medium, sizeClass: title, width: hug, z: front }
+        - { name: cards, role: rounded white card cells, textLen: long, sizeClass: body, width: stretch, z: front }
+    specialTreatments:
+      - { kind: framed, target: cards, note: "soft rounded cards, no hard borders; dashed internal dividers" }
+    responsive: { collapse: stack-below-tablet, mediaFirst: false }
+    variantKnobs:
+      columns: { type: enum, values: ["2", "3", "4"], default: "3" }
+    origin: extracted
+    provenance: [product-platform, rounded-white-cards]
+    confidence: high
+    source: creation
+    scope: design-language
+    changelog:
+      - { ts: "2026-07-02T00:00:00Z", action: created, from: null, to: features-rounded-card-grid, by: creation, signalId: null, note: "consolidation pass from v1 layouts.product-platform + compositionRules.rounded-white-cards" }

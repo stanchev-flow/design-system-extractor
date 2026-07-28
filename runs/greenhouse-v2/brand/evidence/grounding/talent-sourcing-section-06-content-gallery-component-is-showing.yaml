@@ -1,0 +1,135 @@
+sectionRole: features
+layout:
+  structure: heading top-left, 3-column card grid below, each card = product-UI well
+    over grey panel + heading + body
+  columns: 3
+  alignment: left
+  approxPaddingPx:
+    top: 140
+    bottom: 80
+  gapPx: 40
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#ffffff'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1c3a2c'
+- role: card
+  bgApprox: '#f2f2f0'
+  parent: canvas
+  radiusPx: 4
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1c3a2c'
+- role: media-well
+  bgApprox: '#ffffff'
+  parent: card
+  radiusPx: 6
+  borderApprox: none
+  shadowApprox: soft drop, ~0 4px 12px rgba(0,0,0,.08)
+  inkApprox: '#333333'
+- role: chrome-bar
+  bgApprox: '#123024'
+  parent: media-well
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#ffffff'
+typography:
+- role: h1
+  approxSizePx: 68
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1c3a2c'
+  familyClass: serif
+- role: h3
+  approxSizePx: 34
+  weightApprox: 400
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1c3a2c'
+  familyClass: serif
+- role: body
+  approxSizePx: 16
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#3a3a3a'
+  familyClass: grotesque-sans
+- role: caption
+  approxSizePx: 12
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#444444'
+  familyClass: grotesque-sans
+relationalSpacingPx:
+  headingToBody: 18
+components:
+- kind: card
+  variant: filled-neutral
+  countObserved: 3
+  anatomy: media-well (UI screenshot with dark title bar) inside grey panel -> heading
+    -> body
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: 30 30
+    radiusPx: 4
+  surfaceApprox: '#f2f2f0'
+  inkApprox: '#1c3a2c'
+  caseTreatment: title
+- kind: media-frame
+  variant: product-ui
+  countObserved: 3
+  anatomy: dark green title bar -> chart or data table body on white
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 6
+  surfaceApprox: '#ffffff'
+  inkApprox: '#333333'
+  caseTreatment: sentence
+copy:
+  eyebrow: null
+  heading: Ensure your sourcing effectiveness with data analytics
+  subheading: null
+  body: null
+  items:
+  - heading: Quantify
+    body: Understand the value of your sourcing efforts with detailed reports.
+    meta: null
+  - heading: Track
+    body: Monitor the effectiveness of recruiter outreach, candidate engagement and
+      conversion rates.
+    meta: null
+  - heading: Consolidate
+    body: View all sourcing data in one place for easy data analysis.
+    meta: null
+media:
+- kind: product-ui
+  treatment: dashboard screenshots with dark green title bars over white cards; two
+    horizontal bar charts, one data table
+  aspect: landscape
+  approxFractionOfSection: 0.28
+mediaAssets:
+- kind: product-ui-screenshot
+  subject: candidate quality horizontal bar chart
+  rightsGuess: own
+  luminance: light
+  busyness: medium
+  aspect: landscape
+  alphaEdge: false
+  countObserved: 2
+- kind: product-ui-screenshot
+  subject: prospect conversion data table
+  rightsGuess: own
+  luminance: light
+  busyness: medium
+  aspect: landscape
+  alphaEdge: false
+  countObserved: 1
+confidence: high

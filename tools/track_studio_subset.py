@@ -79,6 +79,28 @@ INCLUDE_RULES: tuple[tuple[str, str], ...] = (
     ("brand/components-preview/**", "components preview lane"),
     ("brand/chrome/**", "exact nav/footer lane"),
     ("brand/render/**", "on-brand review panel (renders, crops, verdicts)"),
+    # The brand-lane document tabs (`BRAND_DOCS` in studio_server.py). Named file
+    # by file rather than by subtree: three of them sit inside brand/evidence/,
+    # which is otherwise a many-megabyte extraction dump nothing serves, and the
+    # tabs read these exact paths. 2.7 MB across every lane in this repo.
+    ("brand/evidence/dom-sections.json", "Structural evidence tab"),
+    ("brand/evidence/css-facts.json", "Structural evidence tab"),
+    ("brand/evidence/computed-styles.json", "Structural evidence tab"),
+    ("brand/evidence/motion-audit.json", "Structural evidence tab"),
+    ("brand/evidence/grounding/*.yaml", "Grounding tab"),
+    ("brand/style-scale.yaml", "Ledger tab"),
+    ("brand/layout-library.yaml", "Sections tab"),
+    ("brand/section-copy.yaml", "Sections tab"),
+    ("brand/voice.md", "Voice tab"),
+    ("brand/voice-facts.yaml", "Voice tab"),
+    ("brand/author-report.json", "Author report tab"),
+    ("brand/author-stage-status.json", "Author report tab"),
+    ("brand/contract-projection-audit.json", "Contract audit tab"),
+    ("brand/validation-report.md", "Validation tab"),
+    ("validate-final.log", "Validation tab (preferred over the brand report)"),
+    ("brand/changes.md", "Changelog tab, when the run keeps it under brand/"),
+    ("brand/assets-manifest.json", "Assets tab on a brand lane (entries[] shape)"),
+    ("brand/media-assets.yaml", "Assets tab badges (authored asset semantics)"),
 )
 
 # ── what never ships, and why ─────────────────────────────────────────────────

@@ -1,0 +1,90 @@
+schemaVersion: section-grounding.v1
+sectionRole: gallery
+layout:
+  structure: full-bleed photo slide with a light chrome bar on top holding eyebrow left and slide counter
+    right
+  columns: null
+  alignment: mixed
+  approxPaddingPx:
+    top: 0
+    bottom: 0
+  gapPx: null
+  containerWidth: full-bleed
+surfaces:
+- role: chrome-bar
+  bgApprox: '#f6efe6'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#2b2622'
+- role: band
+  bgApprox: 'image-fill: dim museum interior photo'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#e8e4dc'
+typography:
+- role: eyebrow
+  approxSizePx: 15
+  weightApprox: 500
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#2b2622'
+  familyClass: geometric-sans
+- role: display
+  approxSizePx: 84
+  weightApprox: 300
+  case: lower
+  trackingApprox: normal
+  colorApprox: '#2b2622'
+  familyClass: serif
+components:
+- kind: stat
+  variant: slide-counter
+  countObserved: 1
+  anatomy: large numeral '1/6' at far right of chrome bar
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#2b2622'
+  caseTreatment: sentence
+copy:
+  eyebrow: GALLERY
+  heading: 1/6
+  body: null
+  actions: []
+media:
+- kind: photo
+  treatment: full-bleed dim interior scene, warm low light, people viewing framed wall art
+  aspect: landscape
+  approxFractionOfSection: 0.88
+mediaAssets:
+- kind: photograph
+  subject: dim indoor exhibition hall with people standing before wall-mounted framed artworks and glass
+    display cases
+  rightsGuess: own
+  luminance: dark
+  busyness: high
+  aspect: landscape
+  alphaEdge: false
+  countObserved: 1
+mediaComposition:
+- mode: single
+  layers: full-bleed interior photo -> light chrome bar overlay strip on top edge (separate element)
+  bakedVsSeparable: photo is one flat artwork; chrome bar with eyebrow and counter is a separate DOM strip
+    above
+  componentsOverMedia: none over the photo itself
+motionHints:
+- slide counter '1/6' indicates a carousel/slider with multiple slides
+- DOM wrapper class 'slider' confirms slide-advance affordance
+confidence: high
+notes:
+- faint dark text on gallery wall reads 'Colonialism and Orientalism' baked into the photograph
+- no visible prev/next arrows or dots in this crop; advance affordance inferred from counter
+- chrome bar spans full width at very top
+_source:
+  crop: section-02-section-slider.png
+  domClasses: section slider
+  model: claude-opus-4-8

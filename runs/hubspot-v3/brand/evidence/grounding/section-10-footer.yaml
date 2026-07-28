@@ -1,0 +1,175 @@
+schemaVersion: section-grounding.v1
+sectionRole: footer
+layout:
+  structure: multi-column link menu (5 columns) over dark canvas, centered social icon row, centered logo
+    + legal links below
+  columns: 5
+  alignment: left
+  approxPaddingPx:
+    top: 60
+    bottom: 60
+  gapPx: 130
+  containerWidth: contained
+surfaces:
+- role: band
+  bgApprox: '#002b28'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#002b28'
+- role: canvas
+  bgApprox: '#1b1b1b'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#c9c9c9'
+typography:
+- role: h3
+  approxSizePx: 15
+  weightApprox: 700
+  case: title
+  trackingApprox: normal
+  colorApprox: '#ffffff'
+  familyClass: grotesque-sans
+- role: footer-link
+  approxSizePx: 14
+  weightApprox: 400
+  case: title
+  trackingApprox: normal
+  colorApprox: '#c4c4c4'
+  familyClass: grotesque-sans
+- role: caption
+  approxSizePx: 13
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#a8a8a8'
+  familyClass: grotesque-sans
+- role: control-label
+  approxSizePx: 14
+  weightApprox: 400
+  case: title
+  trackingApprox: normal
+  colorApprox: '#e0e0e0'
+  familyClass: grotesque-sans
+components:
+- kind: link
+  variant: text
+  countObserved: 40
+  anatomy: single-line text link in a vertical stack under a bold column heading
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#c4c4c4'
+  caseTreatment: title
+- kind: icon
+  variant: social-glyph
+  countObserved: 7
+  anatomy: monochrome social glyph in centered row
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#c4c4c4'
+  caseTreatment: sentence
+- kind: link
+  variant: text-underline
+  countObserved: 4
+  anatomy: underlined legal link separated by thin pipe dividers
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#e0e0e0'
+  caseTreatment: title
+- kind: logo-item
+  variant: wordmark
+  countObserved: 1
+  anatomy: HubSpot wordmark with sprocket, centered
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+copy:
+  eyebrow: null
+  heading: null
+  subheading: null
+  body: Copyright © 2026 HubSpot, Inc.
+  actions:
+  - label: Legal Center
+    styleHint: text-underline
+  - label: Privacy Policy
+    styleHint: text-underline
+  - label: Security
+    styleHint: text-underline
+  - label: Website Accessibility
+    styleHint: text-underline
+  - label: Manage Cookies
+    styleHint: text-underline
+  items:
+  - heading: Popular Features
+    body: All Products and Features / HubSpot AEO / Free Meeting Scheduler App / Breeze AI Tools / Email
+      Tracking Software / AI Content Writer / AI Website Generator / Email Marketing Software / Lead Management
+      Software
+    meta: null
+  - heading: Popular Features (col2)
+    body: AI Prospecting Agent / Free Website Builder / Landing Pages / Free Online Form Builder / Free
+      Chatbot Builder / Free Live Chat Software / Marketing Analytics / Free Landing Page Builder / Free
+      Web Hosting
+    meta: null
+  - heading: Free Tools
+    body: See All Free Business Tools / AEO Grader / AI Search Sensor / Make My Persona / Email Signature
+      Generator / Free Business Templates / Software Comparisons Library / Website Templates
+    meta: null
+  - heading: Company
+    body: About Us / Careers / Management Team / Board of Directors / Investor Relations / Blog / Sustainability
+      / Contact Us
+    meta: null
+  - heading: Customers
+    body: Customer Support / Join a Local User Group
+    meta: null
+  - heading: Partners
+    body: All Partner Programs / Solutions Partner Program / Technology Partner Program / HubSpot for
+      Startups / Affiliate Program
+    meta: null
+  logosLegible: []
+chrome:
+  casing: title
+  separators: pipe
+  iconShape: text-labels
+  surfaceApprox: '#1b1b1b'
+  linkTreatment: '14px #c4c4c4 title-case link stacks; legal links underlined #e0e0e0'
+  ctaTreatment: no filled CTA; underlined text legal links
+mediaAssets:
+- kind: logo-own
+  subject: HubSpot wordmark with sprocket
+  rightsGuess: own
+  luminance: light
+  busyness: low
+  aspect: wide
+  alphaEdge: true
+  countObserved: 1
+- kind: social-icon
+  subject: monochrome social platform glyphs (facebook, instagram, youtube, x, linkedin, reddit, tiktok)
+  rightsGuess: third-party-mark
+  luminance: light
+  busyness: low
+  aspect: square
+  alphaEdge: true
+  countObserved: 7
+confidence: high
+notes:
+- Top thin dark-teal band above main dark footer canvas
+- Two vertical divider rules flank the social icon row
+- First two link columns sit under a single 'Popular Features' heading
+_source:
+  crop: section-10-footer.png
+  domClasses: hsg-footer global-footer
+  model: claude-opus-4-8

@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "contract-projection-audit.v1",
+  "entries": [
+    {
+      "family": "section-copy",
+      "id": "action-labels",
+      "owner": "fresh-evidence-projector",
+      "source": "evidence/computed-styles.json",
+      "action": "separated 6 painted labels from accessible names"
+    },
+    {
+      "family": "motion",
+      "id": "tokens.motion",
+      "owner": "deterministic-contract",
+      "source": "motion.value",
+      "action": "canonicalized"
+    },
+    {
+      "family": "buttons",
+      "id": "primary",
+      "owner": "fresh-evidence-projector",
+      "source": "evidence/computed-styles.json",
+      "action": "separated visible and accessible labels"
+    },
+    {
+      "family": "buttons",
+      "id": "secondary",
+      "owner": "fresh-evidence-projector",
+      "source": "evidence/computed-styles.json",
+      "action": "separated visible and accessible labels"
+    },
+    {
+      "family": "buttons",
+      "id": "tertiary",
+      "owner": "fresh-evidence-projector",
+      "source": "evidence/computed-styles.json",
+      "action": "separated visible and accessible labels"
+    },
+    {
+      "family": "buttons",
+      "id": "round",
+      "owner": "fresh-evidence-projector",
+      "source": "evidence/computed-styles.json",
+      "action": "separated visible and accessible labels"
+    },
+    {
+      "family": "navbar-utility",
+      "id": "utility",
+      "owner": "deterministic-contract",
+      "source": "staged chrome factual delta",
+      "action": "explicit unobserved open-state markers"
+    }
+  ]
+}

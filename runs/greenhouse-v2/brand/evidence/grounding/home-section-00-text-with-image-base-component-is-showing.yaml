@@ -1,0 +1,321 @@
+sectionRole: hero
+layout:
+  structure: centered copy stack in the middle, floating portrait photos and product-UI
+    chips scattered left/right, navbar pinned top
+  columns: 1
+  alignment: center
+  approxPaddingPx:
+    top: 84
+    bottom: 120
+  gapPx: 28
+  containerWidth: full-bleed
+surfaces:
+- role: chrome-bar
+  bgApprox: '#ffffff'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1f2d27'
+- role: canvas
+  bgApprox: '#cdeadd'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#173d31'
+- role: card
+  bgApprox: '#ffffff'
+  parent: canvas
+  radiusPx: 8
+  borderApprox: none
+  shadowApprox: soft drop, ~0 8px 24px rgba(0,0,0,.10)
+  inkApprox: '#1f2d27'
+- role: band
+  bgApprox: '#173d31'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#ffffff'
+typography:
+- role: display
+  approxSizePx: 96
+  weightApprox: 500
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#12352a'
+  familyClass: serif
+- role: body
+  approxSizePx: 21
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1f3b31'
+  familyClass: humanist-sans
+- role: nav-link
+  approxSizePx: 17
+  weightApprox: 500
+  case: title
+  trackingApprox: normal
+  colorApprox: '#1f2d27'
+  familyClass: humanist-sans
+- role: control-label
+  approxSizePx: 16
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#173d31'
+  familyClass: humanist-sans
+- role: caption
+  approxSizePx: 13
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1f2d27'
+  familyClass: humanist-sans
+relationalSpacingPx:
+  headingToBody: 42
+  bodyToCta: 60
+components:
+- kind: logo-item
+  variant: wordmark
+  countObserved: 1
+  anatomy: lowercase 'greenhouse' wordmark with small circle accent under the g
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1f6f4f'
+  caseTreatment: sentence
+- kind: link
+  variant: nav-link
+  countObserved: 5
+  anatomy: 'text label row: Platform, Why Greenhouse, Resources, About, Community'
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1f2d27'
+  caseTreatment: title
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: Sign In text inside rounded pill outline
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 16 34
+    radiusPx: 28
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1f2d27'
+  caseTreatment: title
+- kind: button
+  variant: filled-primary
+  countObserved: 1
+  anatomy: Request a demo text inside filled blue pill
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 16 30
+    radiusPx: 28
+  surfaceApprox: '#3f6cf6'
+  inkApprox: '#ffffff'
+  caseTreatment: title
+- kind: icon
+  variant: search-glyph
+  countObserved: 1
+  anatomy: magnifier glyph at far right of navbar
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1f2d27'
+  caseTreatment: sentence
+- kind: button
+  variant: filled-primary
+  countObserved: 1
+  anatomy: Explore platform label in filled green pill
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 18 40
+    radiusPx: 28
+  surfaceApprox: '#1f6f4f'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: link
+  variant: text-underline
+  countObserved: 1
+  anatomy: Request a demo underlined text link
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#173d31'
+  caseTreatment: sentence
+- kind: pill
+  variant: filled-neutral
+  countObserved: 4
+  anatomy: small icon glyph -> label; sage-green rounded pill floating over canvas
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 10 16
+    radiusPx: 8
+  surfaceApprox: '#8fcbb0'
+  inkApprox: '#12352a'
+  caseTreatment: sentence
+- kind: card
+  variant: product-ui-chip
+  countObserved: 4
+  anatomy: white rounded card holding candidate/report UI fragments
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: 16 18
+    radiusPx: 8
+  surfaceApprox: '#ffffff'
+  inkApprox: '#1f2d27'
+  caseTreatment: sentence
+- kind: badge
+  variant: filled-neutral
+  countObserved: 2
+  anatomy: small icon + label inside green rounded rect ('Interested', 'Summarize
+    scorecards')
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 6 12
+    radiusPx: 4
+  surfaceApprox: '#1f6f4f'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: avatar
+  variant: circle-crop
+  countObserved: 5
+  anatomy: row of circle-cropped portrait thumbnails in candidate card
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 20
+  surfaceApprox: transparent
+  inkApprox: '#1f2d27'
+  caseTreatment: sentence
+copy:
+  eyebrow: null
+  heading: The only hiring platform you’ll ever need
+  subheading: null
+  body: Save more, hire with confidence and move faster with AI-powered tools that
+    streamline every step of the hiring process – from sourcing to onboarding.
+  actions:
+  - label: Sign In
+    styleHint: outlined pill
+  - label: Request a demo
+    styleHint: filled-primary blue pill
+  - label: Explore platform
+    styleHint: filled-primary green pill
+  - label: Request a demo
+    styleHint: text-underline link
+  items:
+  - heading: Julia Mendoza
+    body: Candidate
+    meta: Interested / Sentiment updated
+  - heading: View all candidates
+    body: null
+    meta: Summarize scorecards
+  - heading: Welcome to Greenhouse!
+    body: How can we help improve your hiring? This chat may be recorded and we may
+      send you emails to follow up on our discussion here. Please see our Privacy
+      Policy for more information.
+    meta: null
+  - heading: Candidates added by source
+    body: Total count / Bar chart
+    meta: Build a report
+  logosLegible: []
+media:
+- kind: photo
+  treatment: circle/rounded-rect cropped portraits floating on sage canvas
+  aspect: portrait
+  approxFractionOfSection: 0.25
+- kind: product-ui
+  treatment: white rounded UI fragment cards (candidate cards, chart, chat toast)
+    scattered around copy
+  aspect: freeform
+  approxFractionOfSection: 0.3
+mediaAssets:
+- kind: portrait
+  subject: smiling person in light blazer, close crop
+  rightsGuess: own
+  luminance: mid
+  busyness: medium
+  aspect: portrait
+  alphaEdge: false
+  countObserved: 1
+- kind: portrait
+  subject: seated person in dark jacket by window
+  rightsGuess: own
+  luminance: mid
+  busyness: medium
+  aspect: landscape
+  alphaEdge: false
+  countObserved: 1
+- kind: photograph
+  subject: workplace scene with people at a desk
+  rightsGuess: own
+  luminance: mid
+  busyness: high
+  aspect: portrait
+  alphaEdge: false
+  countObserved: 1
+- kind: product-ui-screenshot
+  subject: candidate profile card with sentiment badge
+  rightsGuess: own
+  luminance: light
+  busyness: medium
+  aspect: landscape
+  alphaEdge: true
+  countObserved: 1
+- kind: product-ui-screenshot
+  subject: report builder with bar chart and dropdowns
+  rightsGuess: own
+  luminance: light
+  busyness: medium
+  aspect: landscape
+  alphaEdge: true
+  countObserved: 1
+- kind: product-ui-screenshot
+  subject: candidate list card with avatar row
+  rightsGuess: own
+  luminance: light
+  busyness: medium
+  aspect: portrait
+  alphaEdge: true
+  countObserved: 1
+- kind: social-proof-screenshot
+  subject: chat/welcome notification toast
+  rightsGuess: own
+  luminance: light
+  busyness: low
+  aspect: landscape
+  alphaEdge: true
+  countObserved: 1
+- kind: avatar
+  subject: circle-cropped candidate thumbnails
+  rightsGuess: own
+  luminance: mid
+  busyness: medium
+  aspect: square
+  alphaEdge: true
+  countObserved: 5
+chrome:
+  casing: title
+  separators: whitespace-only
+  iconShape: none
+  surfaceApprox: '#ffffff'
+  linkTreatment: '17px #1f2d27 sans labels, evenly spaced'
+  ctaTreatment: outlined white pill (Sign In) + filled blue pill (Request a demo),
+    both hugging content
+motionHints:
+- arrow-free CTA pills with hover affordance
+- curved connector lines suggest animated draw-in of floating cards
+- chat toast + product chips suggest staged scroll-reveal
+confidence: high

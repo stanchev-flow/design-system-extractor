@@ -1,0 +1,90 @@
+schemaVersion: section-grounding.v1
+sectionRole: logos
+layout:
+  structure: centered heading above single row of 5 brand logos
+  columns: 5
+  alignment: center
+  approxPaddingPx:
+    top: 70
+    bottom: 110
+  gapPx: 130
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#fdfcfa'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#33291f'
+- role: band
+  bgApprox: 'image-fill: cropped photo of hands at a desk (top edge)'
+  parent: canvas
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#000000'
+typography:
+- role: h2
+  approxSizePx: 24
+  weightApprox: 700
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#33291f'
+  familyClass: grotesque-sans
+components:
+- kind: logo-item
+  variant: monochrome-brand-logo
+  countObserved: 5
+  anatomy: horizontal row of brand wordmarks/logos, evenly spaced
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#e64d2e'
+  caseTreatment: title
+copy:
+  eyebrow: null
+  heading: 299,000+ customers in over 135 countries grow their businesses with HubSpot.
+  subheading: null
+  body: null
+  logosLegible:
+  - eBay
+  - DOORDASH
+  - reddit
+  - Tripadvisor
+  - eventbrite
+media:
+- kind: logo-vector
+  treatment: brand-colored logo vectors ~28px tall in a single row
+  aspect: wide
+  approxFractionOfSection: 0.2
+- kind: photo
+  treatment: cropped photo strip at very top edge, hands at a desk
+  aspect: wide
+  approxFractionOfSection: 0.1
+mediaAssets:
+- kind: logo-third-party
+  subject: brand wordmarks in a customer-proof row
+  rightsGuess: third-party-mark
+  luminance: mid
+  busyness: low
+  aspect: wide
+  alphaEdge: true
+  countObserved: 5
+- kind: photograph
+  subject: warm workspace scene, hands near desk
+  rightsGuess: own
+  luminance: dark
+  busyness: medium
+  aspect: pano
+  alphaEdge: false
+  countObserved: 1
+confidence: high
+notes:
+- Top edge shows a sliver of a photo band cut off from the previous section above.
+- Logos rendered in native brand colors (eBay multicolor, DoorDash/reddit/eventbrite red-orange, Tripadvisor
+  black).
+_source:
+  crop: section-01-csol-section-csol-logo-carousel-large-padding-to.png
+  domClasses: csol-section csol-logo-carousel -large -padding-top-md -padding-bottom-md
+  model: claude-opus-4-8

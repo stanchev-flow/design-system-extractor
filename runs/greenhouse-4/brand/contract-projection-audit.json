@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "contract-projection-audit.v1",
+  "entries": [
+    {
+      "family": "motion",
+      "id": "tokens.motion",
+      "owner": "deterministic-contract",
+      "source": "motion.value",
+      "action": "canonicalized"
+    },
+    {
+      "family": "navbar-utility",
+      "id": "utility",
+      "owner": "deterministic-contract",
+      "source": "staged chrome factual delta",
+      "action": "explicit unobserved open-state markers"
+    }
+  ],
+  "measuredGeometry": {}
+}

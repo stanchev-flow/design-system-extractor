@@ -1,0 +1,1702 @@
+schemaVersion: media-assets.v1
+brand: HubSpot
+photographyFingerprint:
+  measured:
+    temperatureCast: warm
+    keyExposure: mid-key
+    saturationBand: moderate
+    finish: neutral
+    sampleSize: 3
+    source: vision-estimated
+  prose: Photographic scenes read warm and human, favouring people-in-workspace settings at mid-key exposure
+    with moderate saturation and a neutral, un-glossy finish. Darkening tints are acceptable where overlaid
+    text must stay legible.
+assets:
+- id: marketing-hub
+  file: 002-marketing-hub.svg
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: &id001
+    presentation: decorative
+    accessibleName: none
+  compositionRoles: &id002
+  - decorative-accent
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: commerce-hub
+  file: 007-commerce-hub.svg
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: small-business
+  file: 009-small-business.svg
+  assetSemantics:
+    kind: spot-icon
+    subject: null
+  facts:
+    intrinsic:
+      w: 22
+      h: 26
+    intrinsicAspect: 0.8462
+    orientation: portrait
+    alpha: true
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults:
+    fit: mark
+  compositionRoles:
+  - spot-glyph
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: feature-icon
+- id: breeze-symbol-rgb-gradient
+  file: 010-breeze-symbol-rgb-gradient.svg
+  assetSemantics:
+    kind: background-art
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: null
+  compositionRoles:
+  - ambient-backdrop
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: background-art
+- id: app-marketplace
+  file: 012-app-marketplace.svg
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: small-20businesses-20-26-20start-20ups
+  file: 013-small-20businesses-20-26-20start-20ups.webp
+  assetSemantics:
+    kind: badge-review-award
+    subject: null
+  facts:
+    intrinsic:
+      w: 1035
+      h: 450
+    intrinsicAspect: 2.3
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: 27
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults:
+    fit: mark
+  compositionRoles:
+  - endorsement-mark
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: rating-badge
+- id: enterprise
+  file: 014-enterprise.webp
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 1035
+      h: 450
+    intrinsicAspect: 2.3
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: 24
+      luminanceBand: mid
+      busyness: high
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: why-20choose-20hubspot
+  file: 015-why-20choose-20hubspot.webp
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 1035
+      h: 450
+    intrinsicAspect: 2.3
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: 28
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: case-20studies
+  file: 016-case-20studies.webp
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 1035
+      h: 450
+    intrinsicAspect: 2.3
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: 25
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: spotlight-resized-518x225
+  file: 017-spotlight-resized-518x225.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 518
+      h: 225
+    intrinsicAspect: 2.3022
+    orientation: landscape
+    alpha: true
+    stats:
+      dominantHue: 348
+      luminanceBand: dark
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: hs-full-bleed-1-optmised
+  file: 018-hs-full-bleed-1-optmised.webp
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 2160
+      h: 1440
+    intrinsicAspect: 1.5
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: 24
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: ebay-logo
+  file: 019-ebay-logo.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: &id003
+    recolor: forbidden
+    preserveAspect: true
+    fit: mark
+  compositionRoles: &id004
+  - brand-mark
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: logo
+- id: doordash-logo
+  file: 020-doordash-logo.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id003
+  compositionRoles: *id004
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: logo
+- id: reddit-logo
+  file: 021-reddit-logo.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id003
+  compositionRoles: *id004
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: logo
+- id: tripadvisor-logo
+  file: 022-tripadvisor-logo.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id003
+  compositionRoles: *id004
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: logo
+- id: eventbrite-logo
+  file: 023-eventbrite-logo.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id003
+  compositionRoles: *id004
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: logo
+- id: customer-20platform-20graphic-20-20smart-20crm1-5x-20-1
+  file: 024-customer-20platform-20graphic-20-20smart-20crm1-5x-20-1.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 604
+      h: 353
+    intrinsicAspect: 1.711
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: 108
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: customer-20platform-20graphic-20-20hubs1-5x-20-1
+  file: 025-customer-20platform-20graphic-20-20hubs1-5x-20-1.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 604
+      h: 353
+    intrinsicAspect: 1.711
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: 109
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: customer-platform-graphic-breeze
+  file: 026-customer-platform-graphic-breeze.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 604
+      h: 353
+    intrinsicAspect: 1.711
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: 82
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: ai-20sparkle
+  file: 027-ai-20sparkle.svg
+  assetSemantics:
+    kind: spot-icon
+    subject: null
+  facts:
+    intrinsic:
+      w: 16
+      h: 17
+    intrinsicAspect: 0.9412
+    orientation: portrait
+    alpha: true
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults:
+    fit: mark
+  compositionRoles:
+  - spot-glyph
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: feature-icon
+- id: producticons-marketinghub-icon-orange
+  file: 028-producticons-marketinghub-icon-orange.webp
+  assetSemantics:
+    kind: spot-icon
+    subject: null
+  facts:
+    intrinsic:
+      w: 182
+      h: 239
+    intrinsicAspect: 0.7615
+    orientation: portrait
+    alpha: false
+    stats:
+      dominantHue: 97
+      luminanceBand: mid
+      busyness: low
+      saturationBand: vivid
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: &id005
+    fit: mark
+  compositionRoles: &id006
+  - spot-glyph
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: feature-icon
+- id: producticons-saleshub-icon-orange
+  file: 029-producticons-saleshub-icon-orange.webp
+  assetSemantics:
+    kind: spot-icon
+    subject: null
+  facts:
+    intrinsic:
+      w: 224
+      h: 225
+    intrinsicAspect: 0.9956
+    orientation: square
+    alpha: false
+    stats:
+      dominantHue: 98
+      luminanceBand: mid
+      busyness: low
+      saturationBand: vivid
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id005
+  compositionRoles: *id006
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: feature-icon
+- id: producticons-servicehub-icon-orange
+  file: 030-producticons-servicehub-icon-orange.webp
+  assetSemantics:
+    kind: spot-icon
+    subject: null
+  facts:
+    intrinsic:
+      w: 222
+      h: 186
+    intrinsicAspect: 1.1935
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: 97
+      luminanceBand: mid
+      busyness: low
+      saturationBand: vivid
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id005
+  compositionRoles: *id006
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: feature-icon
+- id: producticons-contenthub-icon-orange
+  file: 031-producticons-contenthub-icon-orange.webp
+  assetSemantics:
+    kind: spot-icon
+    subject: null
+  facts:
+    intrinsic:
+      w: 206
+      h: 227
+    intrinsicAspect: 0.9075
+    orientation: square
+    alpha: false
+    stats:
+      dominantHue: 101
+      luminanceBand: mid
+      busyness: low
+      saturationBand: vivid
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id005
+  compositionRoles: *id006
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: feature-icon
+- id: producticons-datahub-icon-orange
+  file: 032-producticons-datahub-icon-orange.webp
+  assetSemantics:
+    kind: spot-icon
+    subject: null
+  facts:
+    intrinsic:
+      w: 239
+      h: 208
+    intrinsicAspect: 1.149
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: 101
+      luminanceBand: mid
+      busyness: low
+      saturationBand: vivid
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id005
+  compositionRoles: *id006
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: feature-icon
+- id: producticons-commercehub-icon-orange
+  file: 033-producticons-commercehub-icon-orange.webp
+  assetSemantics:
+    kind: spot-icon
+    subject: null
+  facts:
+    intrinsic:
+      w: 206
+      h: 213
+    intrinsicAspect: 0.9671
+    orientation: square
+    alpha: false
+    stats:
+      dominantHue: 96
+      luminanceBand: mid
+      busyness: low
+      saturationBand: vivid
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id005
+  compositionRoles: *id006
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: feature-icon
+- id: producticons-smartcrm-icon-orange
+  file: 034-producticons-smartcrm-icon-orange.webp
+  assetSemantics:
+    kind: spot-icon
+    subject: null
+  facts:
+    intrinsic:
+      w: 201
+      h: 201
+    intrinsicAspect: 1.0
+    orientation: square
+    alpha: false
+    stats:
+      dominantHue: 98
+      luminanceBand: mid
+      busyness: low
+      saturationBand: vivid
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id005
+  compositionRoles: *id006
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: feature-icon
+- id: breeze-20icon
+  file: 035-breeze-20icon.svg
+  assetSemantics:
+    kind: spot-icon
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id005
+  compositionRoles: *id006
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: feature-icon
+- id: customer-agent-en-2x
+  file: 036-customer-agent-en-2x.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 640
+      h: 640
+    intrinsicAspect: 1.0
+    orientation: square
+    alpha: false
+    stats:
+      dominantHue: 327
+      luminanceBand: light
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: prospecting-agent-en-2x
+  file: 037-prospecting-agent-en-2x.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 640
+      h: 640
+    intrinsicAspect: 1.0
+    orientation: square
+    alpha: false
+    stats:
+      dominantHue: 327
+      luminanceBand: light
+      busyness: medium
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: data-hub-en-2x
+  file: 038-data-hub-en-2x.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 640
+      h: 640
+    intrinsicAspect: 1.0
+    orientation: square
+    alpha: false
+    stats:
+      dominantHue: 325
+      luminanceBand: light
+      busyness: medium
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: gmail-icon-3
+  file: 039-gmail-icon-3.svg
+  assetSemantics:
+    kind: spot-icon
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id005
+  compositionRoles: *id006
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: feature-icon
+- id: shopify-icon-3
+  file: 040-shopify-icon-3.svg
+  assetSemantics:
+    kind: spot-icon
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id005
+  compositionRoles: *id006
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: feature-icon
+- id: mailchimp-icon-3
+  file: 041-mailchimp-icon-3.svg
+  assetSemantics:
+    kind: spot-icon
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id005
+  compositionRoles: *id006
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: feature-icon
+- id: zapier-icon-2
+  file: 042-zapier-icon-2.svg
+  assetSemantics:
+    kind: spot-icon
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id005
+  compositionRoles: *id006
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: feature-icon
+- id: google-ads-icon-2
+  file: 043-google-ads-icon-2.svg
+  assetSemantics:
+    kind: spot-icon
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id005
+  compositionRoles: *id006
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: feature-icon
+- id: slack-icon-2
+  file: 044-slack-icon-2.svg
+  assetSemantics:
+    kind: spot-icon
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id005
+  compositionRoles: *id006
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: feature-icon
+- id: unipart-1
+  file: 045-unipart-1.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 500
+      h: 328
+    intrinsicAspect: 1.5244
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: 33
+      luminanceBand: mid
+      busyness: high
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: angel-fc
+  file: 046-angel-fc.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 495
+      h: 306
+    intrinsicAspect: 1.6176
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: 5
+      luminanceBand: mid
+      busyness: high
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: youth-on-course
+  file: 047-youth-on-course.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 500
+      h: 347
+    intrinsicAspect: 1.4409
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: 49
+      luminanceBand: mid
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: badge-leader-small-business
+  file: 048-badge-leader-small-business.png
+  assetSemantics:
+    kind: badge-review-award
+    subject: null
+  facts:
+    intrinsic:
+      w: 69
+      h: 80
+    intrinsicAspect: 0.8625
+    orientation: portrait
+    alpha: false
+    stats:
+      dominantHue: 62
+      luminanceBand: light
+      busyness: medium
+      saturationBand: moderate
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: &id007
+    fit: mark
+  compositionRoles: &id008
+  - endorsement-mark
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: award-badge
+- id: bagde-most-implementable
+  file: 049-bagde-most-implementable.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 69
+      h: 80
+    intrinsicAspect: 0.8625
+    orientation: portrait
+    alpha: false
+    stats:
+      dominantHue: 142
+      luminanceBand: light
+      busyness: medium
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: best-relationships-small-business
+  file: 050-best-relationships-small-business.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 69
+      h: 80
+    intrinsicAspect: 0.8625
+    orientation: portrait
+    alpha: false
+    stats:
+      dominantHue: 129
+      luminanceBand: light
+      busyness: high
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: best-support-enterprise
+  file: 051-best-support-enterprise.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 69
+      h: 80
+    intrinsicAspect: 0.8625
+    orientation: portrait
+    alpha: false
+    stats:
+      dominantHue: 83
+      luminanceBand: light
+      busyness: high
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: badge-best-results-mid-market
+  file: 052-badge-best-results-mid-market.png
+  assetSemantics:
+    kind: badge-review-award
+    subject: null
+  facts:
+    intrinsic:
+      w: 69
+      h: 80
+    intrinsicAspect: 0.8625
+    orientation: portrait
+    alpha: false
+    stats:
+      dominantHue: 135
+      luminanceBand: light
+      busyness: high
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id007
+  compositionRoles: *id008
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: award-badge
+- id: badge-best-usability-enterprise
+  file: 053-badge-best-usability-enterprise.png
+  assetSemantics:
+    kind: badge-review-award
+    subject: null
+  facts:
+    intrinsic:
+      w: 69
+      h: 80
+    intrinsicAspect: 0.8625
+    orientation: portrait
+    alpha: false
+    stats:
+      dominantHue: 83
+      luminanceBand: light
+      busyness: high
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id007
+  compositionRoles: *id008
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: award-badge
+- id: app-20store-20high-20res
+  file: 054-app-20store-20high-20res.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 136
+      h: 45
+    intrinsicAspect: 3.0222
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: null
+      luminanceBand: dark
+      busyness: high
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: google-20play-20high-20res
+  file: 055-google-20play-20high-20res.png
+  assetSemantics:
+    kind: photograph
+    subject: null
+  facts:
+    intrinsic:
+      w: 136
+      h: 40
+    intrinsicAspect: 3.4
+    orientation: landscape
+    alpha: false
+    stats:
+      dominantHue: 112
+      luminanceBand: dark
+      busyness: high
+      saturationBand: muted
+      source: measured
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: own
+  treatmentDefaults: *id001
+  compositionRoles: *id002
+  provenance:
+    source: capture-files
+    sections: []
+    confidence: low
+  tagGuess: decorative
+- id: logo-inline-00
+  file: logo-inline-00.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: &id009
+    recolor: forbidden
+    preserveAspect: true
+    fit: mark
+  compositionRoles: &id010
+  - proof-wall-mark
+  provenance:
+    source: inline-svg
+    sections: []
+    confidence: low
+  tagGuess: logo-wall-logo
+- id: logo-inline-01
+  file: logo-inline-01.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id009
+  compositionRoles: *id010
+  provenance:
+    source: inline-svg
+    sections: []
+    confidence: low
+  tagGuess: logo-wall-logo
+- id: logo-inline-02
+  file: logo-inline-02.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id009
+  compositionRoles: *id010
+  provenance:
+    source: inline-svg
+    sections: []
+    confidence: low
+  tagGuess: logo-wall-logo
+- id: logo-inline-03
+  file: logo-inline-03.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id009
+  compositionRoles: *id010
+  provenance:
+    source: inline-svg
+    sections: []
+    confidence: low
+  tagGuess: logo-wall-logo
+- id: logo-inline-04
+  file: logo-inline-04.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id009
+  compositionRoles: *id010
+  provenance:
+    source: inline-svg
+    sections: []
+    confidence: low
+  tagGuess: logo-wall-logo
+- id: logo-inline-05
+  file: logo-inline-05.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id009
+  compositionRoles: *id010
+  provenance:
+    source: inline-svg
+    sections: []
+    confidence: low
+  tagGuess: logo-wall-logo
+- id: logo-inline-06
+  file: logo-inline-06.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id009
+  compositionRoles: *id010
+  provenance:
+    source: inline-svg
+    sections: []
+    confidence: low
+  tagGuess: logo-wall-logo
+- id: logo-inline-07
+  file: logo-inline-07.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id009
+  compositionRoles: *id010
+  provenance:
+    source: inline-svg
+    sections: []
+    confidence: low
+  tagGuess: logo-wall-logo
+- id: logo-inline-08
+  file: logo-inline-08.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id009
+  compositionRoles: *id010
+  provenance:
+    source: inline-svg
+    sections: []
+    confidence: low
+  tagGuess: logo-wall-logo
+- id: logo-inline-09
+  file: logo-inline-09.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id009
+  compositionRoles: *id010
+  provenance:
+    source: inline-svg
+    sections: []
+    confidence: low
+  tagGuess: logo-wall-logo
+- id: logo-inline-10
+  file: logo-inline-10.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id009
+  compositionRoles: *id010
+  provenance:
+    source: inline-svg
+    sections: []
+    confidence: low
+  tagGuess: logo-wall-logo
+- id: logo-inline-11
+  file: logo-inline-11.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id009
+  compositionRoles: *id010
+  provenance:
+    source: inline-svg
+    sections: []
+    confidence: low
+  tagGuess: logo-wall-logo
+- id: logo-inline-12
+  file: logo-inline-12.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id009
+  compositionRoles: *id010
+  provenance:
+    source: inline-svg
+    sections: []
+    confidence: low
+  tagGuess: logo-wall-logo
+- id: logo-inline-13
+  file: logo-inline-13.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id009
+  compositionRoles: *id010
+  provenance:
+    source: inline-svg
+    sections: []
+    confidence: low
+  tagGuess: logo-wall-logo
+- id: logo-inline-14
+  file: logo-inline-14.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id009
+  compositionRoles: *id010
+  provenance:
+    source: inline-svg
+    sections: []
+    confidence: low
+  tagGuess: logo-wall-logo
+- id: logo-inline-15
+  file: logo-inline-15.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id009
+  compositionRoles: *id010
+  provenance:
+    source: inline-svg
+    sections: []
+    confidence: low
+  tagGuess: logo-wall-logo
+- id: logo-inline-16
+  file: logo-inline-16.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id009
+  compositionRoles: *id010
+  provenance:
+    source: inline-svg
+    sections: []
+    confidence: low
+  tagGuess: logo-wall-logo
+- id: logo-inline-17
+  file: logo-inline-17.svg
+  assetSemantics:
+    kind: logo-third-party
+    subject: null
+  facts:
+    intrinsic: null
+    intrinsicAspect: null
+    orientation: null
+    alpha: null
+    stats: null
+    focalPoint: null
+    safeCrop: null
+    altHarvested: null
+  usageRights: third-party-mark
+  treatmentDefaults: *id009
+  compositionRoles: *id010
+  provenance:
+    source: inline-svg
+    sections: []
+    confidence: low
+  tagGuess: logo-wall-logo

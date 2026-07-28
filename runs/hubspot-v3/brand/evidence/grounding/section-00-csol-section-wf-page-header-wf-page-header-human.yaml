@@ -1,0 +1,168 @@
+schemaVersion: section-grounding.v1
+sectionRole: hero
+layout:
+  structure: full-bleed photo background, centered copy stack over media, dual CTA row
+  columns: 1
+  alignment: center
+  approxPaddingPx:
+    top: 200
+    bottom: 80
+  gapPx: 24
+  containerWidth: full-bleed
+surfaces:
+- role: band
+  bgApprox: 'image-fill: warm office scene with people, dark tinted'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  inkApprox: '#ffffff'
+- role: card
+  bgApprox: '#ffffff'
+  parent: band
+  radiusPx: 12
+  borderApprox: none
+  inkApprox: '#33475b'
+typography:
+- role: eyebrow
+  approxSizePx: 13
+  weightApprox: 700
+  case: upper
+  trackingApprox: wide
+  colorApprox: '#ffffff'
+  familyClass: geometric-sans
+- role: display
+  approxSizePx: 88
+  weightApprox: 400
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#ffffff'
+  familyClass: serif
+- role: body
+  approxSizePx: 20
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#ffffff'
+  familyClass: geometric-sans
+- role: control-label
+  approxSizePx: 17
+  weightApprox: 700
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#ffffff'
+  familyClass: geometric-sans
+relationalSpacingPx:
+  eyebrowToHeading: 20
+  headingToBody: 40
+  bodyToCta: 40
+components:
+- kind: button
+  variant: filled-primary
+  countObserved: 1
+  anatomy: text label centered in filled pill
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 20 32
+    radiusPx: 6
+  surfaceApprox: '#ff5c35'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: button
+  variant: outlined
+  countObserved: 1
+  anatomy: text label centered in outlined pill
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 20 32
+    radiusPx: 6
+  surfaceApprox: '#ffffff'
+  inkApprox: '#ff5c35'
+  caseTreatment: sentence
+- kind: card
+  variant: filled-neutral
+  countObserved: 1
+  anatomy: wave emoji + body text, close X top-right, avatar chip above
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: 20 24
+    radiusPx: 10
+  surfaceApprox: '#ffffff'
+  inkApprox: '#33475b'
+  caseTreatment: sentence
+- kind: avatar
+  variant: circular
+  countObserved: 1
+  anatomy: circular mascot avatar above chat card
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 24
+  surfaceApprox: '#ffffff'
+  inkApprox: '#ff5c35'
+  caseTreatment: sentence
+- kind: icon
+  variant: circular-glyph
+  countObserved: 1
+  anatomy: chat bubble glyph in dark circle, bottom-right
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 28
+  surfaceApprox: '#33475b'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+copy:
+  eyebrow: HUBSPOT AGENTIC CUSTOMER PLATFORM
+  heading: Where go-to-market teams go to grow.
+  subheading: null
+  body: Unite marketing, sales, and customer service on one agentic customer platform that delivers results
+    fast.
+  actions:
+  - label: Get a demo
+    styleHint: filled-primary
+  - label: Get started free
+    styleHint: outlined
+  items:
+  - heading: null
+    body: 👋 Want to chat about HubSpot? I’m here to help you find your way.
+    meta: null
+media:
+- kind: photo
+  treatment: full-bleed warm-toned office scene, dark tint for text legibility
+  aspect: wide
+  approxFractionOfSection: 1.0
+mediaAssets:
+- kind: photograph
+  subject: warm office scene with a group of people around a table
+  rightsGuess: own
+  luminance: mid
+  busyness: high
+  aspect: wide
+  alphaEdge: false
+  countObserved: 1
+- kind: avatar
+  subject: cartoon mascot chip above chat widget
+  rightsGuess: own
+  luminance: light
+  busyness: medium
+  aspect: square
+  alphaEdge: true
+  countObserved: 1
+mediaComposition:
+- mode: background-with-foreground
+  layers: full-bleed photo (baked tint) -> centered copy stack -> dual CTA row; bottom-right chat card
+    + toggle are SEPARATE floating components
+  bakedVsSeparable: photo and tint are one flat artwork; copy, CTAs, chat widget separately placed
+  componentsOverMedia: chat prompt card + circular chat toggle button
+motionHints:
+- chat prompt card with dismiss X (dismissible toast)
+confidence: high
+notes:
+- top edge shows partial CTA buttons from navbar, cut off at frame top
+- 'orange period accent at end of headline reads #ff5c35'
+- chat widget is a persistent site utility, not core hero content
+_source:
+  crop: section-00-csol-section-wf-page-header-wf-page-header-human.png
+  domClasses: csol-section wf-page-header wf-page-header-human -image-loaded -has-desktop-images -max-width-default
+    -padding-top-none -padding-b
+  model: claude-opus-4-8

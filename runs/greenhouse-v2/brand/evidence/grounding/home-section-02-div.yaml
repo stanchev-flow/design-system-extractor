@@ -1,0 +1,141 @@
+sectionRole: logos
+layout:
+  structure: split ~50/50, copy left / 2-column logo grid right, divided by vertical
+    rule
+  columns: 2
+  alignment: left
+  approxPaddingPx:
+    top: 140
+    bottom: 120
+  gapPx: 150
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#ffffff'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1c2b26'
+typography:
+- role: h2
+  approxSizePx: 44
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#1c2b26'
+  familyClass: serif
+- role: control-label
+  approxSizePx: 16
+  weightApprox: 500
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#ffffff'
+  familyClass: grotesque-sans
+components:
+- kind: button
+  variant: filled-primary
+  countObserved: 1
+  anatomy: single text label centered in pill
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 16 36
+    radiusPx: 28
+  surfaceApprox: '#1a8a6b'
+  inkApprox: '#ffffff'
+  caseTreatment: sentence
+- kind: button
+  variant: outlined
+  countObserved: 2
+  anatomy: text label in outlined pill (top of crop, partially cut)
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: 14 28
+    radiusPx: 28
+  surfaceApprox: transparent
+  inkApprox: '#1c2b26'
+  caseTreatment: sentence
+- kind: logo-item
+  variant: monochrome-and-color-mixed
+  countObserved: 6
+  anatomy: brand logotype/mark centered in each grid cell
+  sizing:
+    widthBehavior: hug
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#1c2b26'
+  caseTreatment: title
+copy:
+  heading: Great companies hire with Greenhouse
+  body: null
+  actions:
+  - label: Read customer stories
+    styleHint: filled-primary
+  - label: See AI features
+    styleHint: outlined
+  - label: Identify top talent
+    styleHint: outlined
+  logosLegible:
+  - NFL
+  - coursera
+  - ANTHROP\C
+  - datavant
+  - REVLON
+  - SEATGEEK
+media:
+- kind: logo-vector
+  treatment: brand logotypes in a 2-col grid; mix of mono (Anthropic, Datavant, Revlon)
+    and color (NFL red/navy, Coursera blue, SeatGeek orange)
+  aspect: freeform
+  approxFractionOfSection: 0.4
+mediaAssets:
+- kind: logo-third-party
+  subject: sports league shield mark
+  rightsGuess: third-party-mark
+  luminance: mid
+  busyness: medium
+  aspect: square
+  alphaEdge: true
+  countObserved: 1
+- kind: logo-third-party
+  subject: learning platform wordmark, blue
+  rightsGuess: third-party-mark
+  luminance: mid
+  busyness: low
+  aspect: landscape
+  alphaEdge: true
+  countObserved: 1
+- kind: logo-third-party
+  subject: AI research company wordmark, black
+  rightsGuess: third-party-mark
+  luminance: dark
+  busyness: low
+  aspect: landscape
+  alphaEdge: true
+  countObserved: 1
+- kind: logo-third-party
+  subject: data platform wordmark, black
+  rightsGuess: third-party-mark
+  luminance: dark
+  busyness: low
+  aspect: landscape
+  alphaEdge: true
+  countObserved: 1
+- kind: logo-third-party
+  subject: cosmetics brand wordmark, black serif
+  rightsGuess: third-party-mark
+  luminance: dark
+  busyness: low
+  aspect: landscape
+  alphaEdge: true
+  countObserved: 1
+- kind: logo-third-party
+  subject: ticketing brand wordmark, orange
+  rightsGuess: third-party-mark
+  luminance: mid
+  busyness: low
+  aspect: landscape
+  alphaEdge: true
+  countObserved: 1
+confidence: high

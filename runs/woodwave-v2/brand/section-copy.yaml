@@ -1,0 +1,86 @@
+# section-copy.yaml — WoodWave v2 brand copy layers (section-copy-schema.md v1)
+# Authored 2026-07-17. Source of truth: the per-section VISION grounding YAMLs'
+# verbatim `copy` blocks (evidence/grounding/section-*.yaml) cross-checked against a
+# JS-off DOM harvest of the saved page (screenshots/woodwave-v2/woodwave.html).
+# Real site voice only — nothing invented, nothing borrowed cross-brand. Display
+# copy renders UPPERCASE via the type roles; stored here in the source's own casing.
+
+sectionCopy:
+  wordmark: "WoodWave"
+  nav: [About, Gallery, Exhibition, Visit]
+  eyebrow: "About"
+  specimenEyebrow: "About"
+  subhead: "WoodWave Gallery: where design, nature, and boundless creativity harmoniously converge, inspiring imagination in the city's heart."
+  cta: "Buy tickets"
+  secondaryCta: "Visit"
+
+layoutCopy:
+  hero:
+    heading: "WoodWave Gallery"
+    body: null
+    cta: "Buy tickets"
+  about:
+    eyebrow: "About"
+    heading: "Space as a muse: unleash your creativity and get inspired with us"
+    subhead: "WoodWave Gallery: where design, nature, and boundless creativity harmoniously converge, inspiring imagination in the city's heart."
+    body: >-
+      At WoodWave Gallery, we hold a profound belief in the transformative
+      influence of artistic environments on the boundless human imagination.
+      Explore our one-of-a-kind space, where innovation and inspiration
+      harmoniously converge, and set out on an enriching journey towards infinite
+      creativity.
+    items:
+      - heading: "Perspective Hall"
+        body: "ArtUnveil space by Isabella St."
+      - heading: "Panorapeak Viewpoint"
+        body: "Our uniqueness lies in the seamless blend of contemporary design with the organic, crafting a distinctive environment for boundless artistic expression."
+      - heading: null
+        body: "At the heart of our artistic haven, you'll discover our crowning jewel — a cutting-edge sphere housing the future of interactive contemporary art. Immerse yourself in a one-of-a-kind experience where technology and creativity converge, inviting visitors to explore and engage with the art of tomorrow."
+  gallery-slider:
+    eyebrow: "Gallery"
+    heading: "Gallery"
+    # a 6-frame counted carousel; each frame is a gallery photograph (no per-frame copy)
+    items:
+      - { media: 009-657acd8d782ab334f6b2e5e5-web-gallery-1-p-1600.jpg }
+      - { media: 010-657acd8d782ab334f6b2e5e6-web-gallery-2-p-1600.jpg }
+      - { media: 011-657acd8d782ab334f6b2e5e7-web-gallery-3-p-1600.jpg }
+      - { media: 012-657acd8d782ab334f6b2e5e8-web-gallery-4.jpg }
+      - { media: 013-657acd8d782ab334f6b2e5e9-web-gallery-5.jpg }
+      - { media: 014-657acd8d782ab334f6b2e5f2-web-gallery-6.jpg }
+  founder-story:
+    heading: "WoodWave Gallery is a tribute to decades of creative excellence, fostering the flourishing of art from the late 20th century to the present day"
+    body: >-
+      Founded by the visionary Margaret Woodwave in 1974, the WoodWave Gallery has
+      been on a journey of constant evolution. Setting itself apart through the
+      seamless blend of traditional and innovative artistic approaches, it has
+      blossomed into a cultural landmark.
+    watermark: "1974-2023"
+  visit:
+    eyebrow: "Visit"
+    heading: "Welcome to the gallery"
+    subhead: "Ticket prices"
+    items:
+      - heading: "Address"
+        body: "Art Boulevard, 123 USA, New-Yourk / info@wwgallery.com / +1 123 456 789"
+      - heading: "Open hours"
+        body: "Mon — Thu 9:00-19:00 / Fri — Sun 11:00-17:00"
+    pricing:
+      - { price: "$20", tier: "Adult", cta: "Buy tickets" }
+      - { price: "$16", tier: "Student", cta: "Buy tickets" }
+      - { price: "$14*", tier: "Group of 5 people (*per person)", cta: "Buy tickets" }
+  newsletter:
+    eyebrow: "Stay updated"
+    heading: "Subscribe now for exclusive updates and invitations to special exhibitions"
+    cta: "Subscribe"
+    placeholder: "Enter your email"
+
+layoutImages:
+  hero: { photo: 001-657acd8d782ab334f6b2e5dc-hero-img-main-p-1600.jpg }
+  founder-story: { portrait: 016-657acd8d782ab334f6b2e5dd-about-img-5-p-500.jpg }
+  visit: { map: 017-657acd8d782ab334f6b2e5de-map-p-1600.jpg }
+
+defaultArt:
+  hero: [001-657acd8d782ab334f6b2e5dc-hero-img-main-p-1600.jpg, 002-657acd8d782ab334f6b2e5db-hero-img-2-p-1080.jpg]
+  detail: [009-657acd8d782ab334f6b2e5e5-web-gallery-1-p-1600.jpg, 011-657acd8d782ab334f6b2e5e7-web-gallery-3-p-1600.jpg]
+  portrait: [016-657acd8d782ab334f6b2e5dd-about-img-5-p-500.jpg, 003-657acd8d782ab334f6b2e5da-hero-img-3.jpg]
+  panel: [005-657acd8d782ab334f6b2e5d4-about-img-2-p-1600.jpg]

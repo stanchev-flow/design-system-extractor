@@ -1,0 +1,137 @@
+schemaVersion: section-grounding.v1
+sectionRole: features
+layout:
+  structure: heading + intro copy stacked top, then 3-column feature list below, all left-aligned in contained
+    canvas
+  columns: 3
+  alignment: left
+  approxPaddingPx:
+    top: 120
+    bottom: 80
+  gapPx: 90
+  containerWidth: contained
+surfaces:
+- role: canvas
+  bgApprox: '#f2f3f0'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#1e3d31'
+- role: chrome-bar
+  bgApprox: '#1e3d31'
+  parent: page
+  radiusPx: 0
+  borderApprox: none
+  shadowApprox: none
+  inkApprox: '#ffffff'
+typography:
+- role: display
+  approxSizePx: 68
+  weightApprox: 400
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#1e3d31'
+  familyClass: serif
+- role: body
+  approxSizePx: 19
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#2c3b34'
+  familyClass: humanist-sans
+- role: h3
+  approxSizePx: 30
+  weightApprox: 400
+  case: sentence
+  trackingApprox: tight
+  colorApprox: '#1e3d31'
+  familyClass: serif
+- role: caption
+  approxSizePx: 15
+  weightApprox: 400
+  case: sentence
+  trackingApprox: normal
+  colorApprox: '#2c3b34'
+  familyClass: humanist-sans
+components:
+- kind: list-item
+  variant: divided-text-block
+  countObserved: 13
+  anatomy: body line with bolded key phrase -> thin hairline divider between items
+  sizing:
+    widthBehavior: stretch
+    approxPaddingPx: null
+    radiusPx: 0
+  surfaceApprox: transparent
+  inkApprox: '#2c3b34'
+  caseTreatment: sentence
+- kind: logo-item
+  variant: monochrome-mark
+  countObserved: 1
+  anatomy: circular green badge with lowercase 'g' glyph, top-right
+  sizing:
+    widthBehavior: fixed
+    approxPaddingPx: null
+    radiusPx: 40
+  surfaceApprox: '#1e7a5a'
+  inkApprox: '#ffffff'
+  caseTreatment: lower
+copy:
+  eyebrow: null
+  heading: Your one-and-done hiring platform
+  subheading: null
+  body: 'What makes businesses thrive or fail? The people working there day to day. That''s why companies
+    spend so much time and money on hiring.
+
+
+    With Greenhouse, you won''t need to gamble that time and money on new solutions as technology evolves.
+    For 10+ years, we''ve been the industry leader in solving the challenges companies face in making
+    high-quality hires – in one scalable platform.'
+  items:
+  - heading: Increased hiring ROI
+    body: Consolidate your tech stack with a full workflow solution, from sourcing to onboarding · Work
+      smarter, not harder, with embedded AI tools that automate more of the process · Make objective,
+      data-driven hiring decisions for consistently better hires · Get immediate insights into your hiring
+      funnel, enabling quick adjustments and continuous improvement
+    meta: null
+  - heading: One easy-to-use platform
+    body: Manage every candidate touchpoint in one platform, from application to hire · Keep data structured
+      and accessible with advanced configurations · Flex and scale your hiring capabilities with native
+      solutions and integrations · Ensure security, compliance and governance without added complexity
+    meta: null
+  - heading: Proven industry leadership
+    body: Partner with an established leader and innovator in the hiring space for 10+ years · Get personalized
+      guidance and support, ensuring successful adoption and continuous improvement · Access 24/7 resources
+      and guidance to ensure your team is maximizing Greenhouse capabilities · Stay ahead of technology
+      trends, including 20+ AI features already in the platform, with more on the way
+    meta: null
+media:
+- kind: logo-vector
+  treatment: green circular badge with white lowercase 'g' mark, top-right corner
+  aspect: square
+  approxFractionOfSection: 0.01
+mediaAssets:
+- kind: logo-own
+  subject: brand circular mark, lowercase glyph
+  rightsGuess: own
+  luminance: dark
+  busyness: low
+  aspect: square
+  alphaEdge: true
+  countObserved: 1
+componentAnatomies:
+- name: feature column
+  parts: serif heading -> stacked body items each separated by thin hairline rule, bold key-phrase inline
+    within body
+  styling: vertical column divider between columns; hairline rules ~1px light grey-green between items
+confidence: high
+notes:
+- Top edge shows dark green chrome band and partial hero imagery bleeding from section above — truncated
+  at crop top
+- Feature columns separated by faint vertical rules
+- Bold phrases within body text emphasize key value words
+_source:
+  crop: section-01-bg-grey.png
+  domClasses: bg-grey
+  model: claude-opus-4-8

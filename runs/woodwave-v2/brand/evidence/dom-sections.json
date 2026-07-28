@@ -1,0 +1,337 @@
+{
+ "schemaVersion": "dom-mine.v1",
+ "source": "screenshots/woodwave-v2/woodwave.html",
+ "topLevel": [
+  {
+   "tag": "div",
+   "classes": "fixed-noise-overlay",
+   "id": ""
+  },
+  {
+   "tag": "div",
+   "classes": "navbar w-nav",
+   "id": ""
+  },
+  {
+   "tag": "section",
+   "classes": "section hero",
+   "id": ""
+  },
+  {
+   "tag": "section",
+   "classes": "section about",
+   "id": "about"
+  },
+  {
+   "tag": "section",
+   "classes": "section slider",
+   "id": ""
+  },
+  {
+   "tag": "section",
+   "classes": "section about",
+   "id": ""
+  },
+  {
+   "tag": "section",
+   "classes": "section contact",
+   "id": "visit"
+  },
+  {
+   "tag": "section",
+   "classes": "section newsletter",
+   "id": "exhibition"
+  },
+  {
+   "tag": "section",
+   "classes": "footer",
+   "id": ""
+  },
+  {
+   "tag": "div",
+   "classes": "buy-box",
+   "id": ""
+  }
+ ],
+ "sections": [
+  {
+   "index": 0,
+   "tag": "div",
+   "classes": "nav-menu-social-grid",
+   "id": "",
+   "heading": "",
+   "textSample": "instagram facebook youtube twitter"
+  },
+  {
+   "index": 1,
+   "tag": "section",
+   "classes": "section hero",
+   "id": "",
+   "heading": "woodwave gallery",
+   "textSample": "woodwave gallery"
+  },
+  {
+   "index": 2,
+   "tag": "div",
+   "classes": "hero-img-wrp",
+   "id": "",
+   "heading": "",
+   "textSample": ""
+  },
+  {
+   "index": 3,
+   "tag": "div",
+   "classes": "hero-first-img-wrp",
+   "id": "",
+   "heading": "",
+   "textSample": ""
+  },
+  {
+   "index": 4,
+   "tag": "div",
+   "classes": "hero-second-img-wrp",
+   "id": "",
+   "heading": "",
+   "textSample": ""
+  },
+  {
+   "index": 5,
+   "tag": "div",
+   "classes": "hero-third-img-wrp",
+   "id": "",
+   "heading": "",
+   "textSample": ""
+  },
+  {
+   "index": 6,
+   "tag": "section",
+   "classes": "section about",
+   "id": "about",
+   "heading": "about",
+   "textSample": "about about space as a muse: unleash your creativity and get inspired with us At WoodWave Gallery, we hold a profound belief in the transformative influence of artistic environments on the boundless h"
+  },
+  {
+   "index": 7,
+   "tag": "section",
+   "classes": "section slider",
+   "id": "",
+   "heading": "gallery",
+   "textSample": "gallery 1 /6 2 /6 3 /6 4 /6 5 /6 6 /6 1 2 3 4 5 6"
+  },
+  {
+   "index": 8,
+   "tag": "section",
+   "classes": "section contact",
+   "id": "visit",
+   "heading": "visit",
+   "textSample": "visit welcome to the gallery Address Art Boulevard, 123 USA, New-Yourk info@wwgallery.com +1 123 456 789 open hours Mon \u2014 Thu 9:00-19:00 Fri \u2014 Sun 11:00-17:00 ticket prices $20 adult buy tickets $16 s"
+  },
+  {
+   "index": 9,
+   "tag": "div",
+   "classes": "pricing-wrp",
+   "id": "",
+   "heading": "ticket prices",
+   "textSample": "ticket prices $20 adult buy tickets $16 student buy tickets $14* group of 5 people (*per person) buy tickets"
+  },
+  {
+   "index": 10,
+   "tag": "div",
+   "classes": "pricing-img-wrp",
+   "id": "",
+   "heading": "",
+   "textSample": ""
+  },
+  {
+   "index": 11,
+   "tag": "div",
+   "classes": "pricing-inner-wrp",
+   "id": "",
+   "heading": "ticket prices",
+   "textSample": "ticket prices $20 adult buy tickets $16 student buy tickets $14* group of 5 people (*per person) buy tickets"
+  },
+  {
+   "index": 12,
+   "tag": "div",
+   "classes": "pricing-decor-circle",
+   "id": "",
+   "heading": "",
+   "textSample": ""
+  },
+  {
+   "index": 13,
+   "tag": "div",
+   "classes": "pricing-decor-circle bottom",
+   "id": "",
+   "heading": "",
+   "textSample": ""
+  },
+  {
+   "index": 14,
+   "tag": "div",
+   "classes": "pricing-blocks-wrp",
+   "id": "",
+   "heading": "$20",
+   "textSample": "$20 adult buy tickets $16 student buy tickets $14* group of 5 people (*per person) buy tickets"
+  },
+  {
+   "index": 15,
+   "tag": "div",
+   "classes": "pricing-block",
+   "id": "",
+   "heading": "$20",
+   "textSample": "$20 adult buy tickets"
+  },
+  {
+   "index": 16,
+   "tag": "div",
+   "classes": "pricing-details",
+   "id": "",
+   "heading": "$20",
+   "textSample": "$20 adult"
+  },
+  {
+   "index": 17,
+   "tag": "div",
+   "classes": "pricing-link-text",
+   "id": "",
+   "heading": "",
+   "textSample": "buy tickets"
+  },
+  {
+   "index": 18,
+   "tag": "section",
+   "classes": "section newsletter",
+   "id": "exhibition",
+   "heading": "stay updated",
+   "textSample": "stay updated Subscribe now for exclusive updates and invitations to special exhibitions Thank you! Your submission has been received! Oops! Something went wrong while submitting the form."
+  },
+  {
+   "index": 19,
+   "tag": "section",
+   "classes": "footer",
+   "id": "",
+   "heading": "",
+   "textSample": "about / gallery / exhibition / visit / buy tickets instagram / facebook / youtube / twitter Privacy Policy Changelog Licenses \u00a9 2023. woodwave gallery template powered by webflow more templates by unr"
+  },
+  {
+   "index": 20,
+   "tag": "div",
+   "classes": "footer-top",
+   "id": "",
+   "heading": "",
+   "textSample": "about / gallery / exhibition / visit / buy tickets instagram / facebook / youtube / twitter"
+  },
+  {
+   "index": 21,
+   "tag": "div",
+   "classes": "container footer-cont",
+   "id": "",
+   "heading": "",
+   "textSample": "about / gallery / exhibition / visit / buy tickets instagram / facebook / youtube / twitter"
+  },
+  {
+   "index": 22,
+   "tag": "div",
+   "classes": "footer-nav",
+   "id": "",
+   "heading": "",
+   "textSample": "about / gallery / exhibition / visit / buy tickets"
+  },
+  {
+   "index": 23,
+   "tag": "div",
+   "classes": "footer-nav-block",
+   "id": "",
+   "heading": "",
+   "textSample": "about / gallery / exhibition /"
+  },
+  {
+   "index": 24,
+   "tag": "div",
+   "classes": "footer-nav-separator",
+   "id": "",
+   "heading": "",
+   "textSample": "/"
+  },
+  {
+   "index": 25,
+   "tag": "div",
+   "classes": "footer-social-wrapper",
+   "id": "",
+   "heading": "",
+   "textSample": "instagram / facebook / youtube / twitter"
+  },
+  {
+   "index": 26,
+   "tag": "div",
+   "classes": "footer-social-separator",
+   "id": "",
+   "heading": "",
+   "textSample": "/"
+  },
+  {
+   "index": 27,
+   "tag": "div",
+   "classes": "footer-bottom",
+   "id": "",
+   "heading": "",
+   "textSample": "Privacy Policy Changelog Licenses \u00a9 2023. woodwave gallery template powered by webflow more templates by unroot.design"
+  },
+  {
+   "index": 28,
+   "tag": "div",
+   "classes": "footer-bottom-block",
+   "id": "",
+   "heading": "",
+   "textSample": "Privacy Policy Changelog Licenses"
+  },
+  {
+   "index": 29,
+   "tag": "div",
+   "classes": "footer-bottom-links-wrp",
+   "id": "",
+   "heading": "",
+   "textSample": "Privacy Policy Changelog Licenses"
+  },
+  {
+   "index": 30,
+   "tag": "div",
+   "classes": "footer-bottom-links-wrp more-gap",
+   "id": "",
+   "heading": "",
+   "textSample": "\u00a9 2023. woodwave gallery template powered by webflow more templates by unroot.design"
+  },
+  {
+   "index": 31,
+   "tag": "div",
+   "classes": "footer-bottom-link second",
+   "id": "",
+   "heading": "",
+   "textSample": "\u00a9 2023. woodwave gallery template"
+  }
+ ],
+ "modeCensus": {},
+ "buttonCensus": [
+  {
+   "tag": "a",
+   "classes": "buy-button w-button",
+   "count": 1,
+   "samples": [
+    "Buy $29"
+   ]
+  }
+ ],
+ "eyebrowCandidates": [],
+ "chrome": {
+  "header": null,
+  "footer": {
+   "classes": "footer-bottom-link-span",
+   "columns": [],
+   "social": [],
+   "legalText": "",
+   "totalLinks": 0
+  }
+ },
+ "inlineStyleCensus": {}
+}
