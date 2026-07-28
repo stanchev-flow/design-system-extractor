@@ -134,6 +134,19 @@ before that rule.
   current output, and that untracking them is a separate unmade decision. **Nothing was
   deleted, untracked, or removed from the ignore rule.**
 
+### `pip install -e .` dirtied a fresh clone
+
+Caught on the origin clone: `src/screenshot_to_template.egg-info/` is tracked, and
+setuptools rewrites it during the documented install step, so a teammate's very first
+`git status` after following the instructions shows three modified files.
+
+- `.gitignore`: `*.egg-info/` added, with a comment noting that the already-tracked
+  copy still shows as modified until someone untracks it — a separate decision that was
+  not made here.
+- Documented as expected and harmless in `docs/getting-started.md`.
+- Suggested follow-up for the maintainer:
+  `git rm -r --cached src/screenshot_to_template.egg-info`.
+
 ### New documentation
 
 - `docs/getting-started.md` (new): requirements and the macOS `python3`-is-3.9 trap,
