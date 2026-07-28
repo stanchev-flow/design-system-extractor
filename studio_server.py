@@ -2960,9 +2960,12 @@ function renderAssets() {
       const media = a.svg ? `<div class="h-24 grid place-items-center p-3 text-zinc-200">${a.svg}</div>`
         : a.url ? `<div class="h-24 grid place-items-center bg-black/30 p-2"><img src="${a.url}" loading="lazy" onerror="imgFailed(this)" class="max-h-full max-w-full object-contain"></div>`
         : `<div class="h-24 grid place-items-center text-zinc-600">—</div>`;
-      return `<figure class="card overflow-hidden m-0">${media}<figcaption class="p-2"><span class="badge b-idle">${a.type}</span><div class="text-[11px] text-zinc-400 truncate mt-1">${a.name}</div></figcaption></figure>`;
+      // No badge at all rather than an empty pill: a curated manifest with no
+      // media-semantics file beside it has nothing to put in one.
+      const badge = a.type ? `<span class="badge b-idle">${esc(a.type)}</span>` : "";
+      return `<figure class="card overflow-hidden m-0">${media}<figcaption class="p-2">${badge}<div class="text-[11px] text-zinc-400 truncate mt-1">${esc(a.name)}</div></figcaption></figure>`;
     }).join("");
-    return `<section class="mb-6"><h3 class="text-xs uppercase tracking-wider text-zinc-400 mb-2">${role} <span class="badge b-done">${items.length}</span></h3><div class="grid grid-cols-2 gap-2">${cells}</div></section>`;
+    return `<section class="mb-6"><h3 class="text-xs uppercase tracking-wider text-zinc-400 mb-2">${esc(role)} <span class="badge b-done">${items.length}</span></h3><div class="grid grid-cols-2 gap-2">${cells}</div></section>`;
   }).join("");
 }
 
