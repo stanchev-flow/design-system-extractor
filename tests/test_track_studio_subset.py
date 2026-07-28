@@ -108,6 +108,30 @@ def test_sections_gallery_thumbnail_is_kept_alongside_the_generic_pick(tmp_path)
     assert kept == {"index.html", "gallery.png", "after-fullpage-1440.png"}
 
 
+def test_a_lane_that_is_a_link_into_the_repo_still_travels(tmp_path, monkeypatch):
+    """A lane symlinked to a tracked sibling is the link, not a copy of it."""
+    repo = tmp_path
+    monkeypatch.setattr(tss, "REPO_ROOT", repo)
+    real = repo / "experiments" / "arm-a"
+    real.mkdir(parents=True)
+    (real / "index.html").write_text("<html></html>")
+    run = repo / "runs" / "proj"
+    lane = run / "brand" / "variants" / "arm-a"
+    lane.mkdir(parents=True)
+    (lane / "index.html").symlink_to(real / "index.html")
+    (lane / "label.txt").write_text("arm a")
+    outside = lane / "elsewhere.html"
+    outside.symlink_to(tmp_path.parent / "not-in-the-repo.html")
+
+    out = tss.classify_run(run)
+    assert [p.name for p, _ in out["links"]] == ["index.html"]
+    assert ("elsewhere.html", "symlink to a path outside the repo") in [
+        (p.name, why) for p, _, why in out["dropped"]
+    ]
+    # The file behind the link is counted where it lives, not twice.
+    assert all("experiments" not in p.parts for p, _, _ in out["kept"])
+
+
 def test_title_keeps_the_version_token_lowercase():
     assert tss._pretty_title("hubspot-v3", "HubSpot") == "HubSpot v3"
     assert tss._pretty_title("hubspot-v3", "") == "Hubspot v3"

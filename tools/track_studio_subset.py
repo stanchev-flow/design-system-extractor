@@ -227,9 +227,27 @@ def classify_run(run_dir: Path, *, allow_local_paths: bool = False) -> dict:
     """
     kept: list[tuple[Path, int, str]] = []
     dropped: list[tuple[Path, int, str]] = []
+    links: list[tuple[Path, str]] = []
 
     for path in sorted(run_dir.rglob("*")):
-        if path.is_dir() or path.is_symlink():
+        if _under_symlink(path, run_dir):
+            continue
+        if path.is_symlink():
+            rel = path.relative_to(run_dir).as_posix()
+            why_include = next((why for pat, why in INCLUDE_RULES if _match(rel, pat)), None)
+            if why_include is None or _in_js_workspace(path, run_dir):
+                continue
+            # A lane can be a link to a sibling experiment rather than a copy of
+            # it. Git stores the link itself for nothing, and the target is
+            # tracked separately, so the lane travels; a link that leaves the
+            # repo cannot travel at all and is left behind loudly.
+            target = path.resolve()
+            if REPO_ROOT in target.parents:
+                links.append((path, f"{why_include} (symlink into the repo)"))
+            else:
+                dropped.append((path, 0, "symlink to a path outside the repo"))
+            continue
+        if path.is_dir():
             continue
         rel = path.relative_to(run_dir).as_posix()
         size = path.stat().st_size
@@ -257,7 +275,26 @@ def classify_run(run_dir: Path, *, allow_local_paths: bool = False) -> dict:
     kept = _prune_unshown_images(run_dir, kept, dropped)
     kept.sort(key=lambda t: -t[1])
     dropped.sort(key=lambda t: -t[1])
-    return {"kept": kept, "dropped": dropped, "redundant": _redundant_bytes(kept)}
+    return {
+        "kept": kept,
+        "dropped": dropped,
+        "links": links,
+        "redundant": _redundant_bytes(kept),
+    }
+
+
+def _under_symlink(path: Path, run_dir: Path) -> bool:
+    """True when reaching `path` means walking through a symlinked directory.
+
+    Git will not add a path that traverses a link, and the content on the other
+    side belongs to whatever the link points at, so it is counted there.
+    """
+    for parent in path.parents:
+        if parent == run_dir:
+            return False
+        if parent.is_symlink():
+            return True
+    return False
 
 
 # A lane's own capture dir. `_lane_thumb()` in studio_server.py picks exactly one
@@ -454,6 +491,7 @@ def plan(project: str, *, with_screenshots: bool = True, allow_local_paths: bool
 
 def tracked_paths(p: dict) -> list[Path]:
     paths = [f for f, _, _ in p["run"]["kept"]]
+    paths += [f for f, _ in p["run"].get("links", [])]
     paths += [f for f, _, _ in p["capture"]["kept"]]
     paths += p["config"]
     if p["capture"]["link"] is not None:
@@ -706,6 +744,8 @@ def report(p: dict, *, show_files: bool) -> None:
     print(f"  run subset to track  {fmt_bytes(kept_b + cfg_b):>10}   ({len(run['kept']) + len(p['config'])} files)")
     print(f"  + source capture     {fmt_bytes(cap_b):>10}   ({len(cap['kept'])} files, of {fmt_bytes(p['capture_total'])} on disk)")
     print(f"  TOTAL                {fmt_bytes(kept_b + cfg_b + cap_b):>10}")
+    if run.get("links"):
+        print(f"  + {len(run['links'])} symlink(s) into the repo — no bytes, but the lane is gone without them")
 
     by_reason: dict[str, list[int]] = {}
     for _, size, why in run["dropped"] + cap["dropped"]:
