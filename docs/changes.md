@@ -295,3 +295,164 @@ Staged file-by-file — `README.md`, `.gitignore`, `docs/getting-started.md`,
 work in `brand_pipeline/compose_replica.py`, `studio_server.py`, `tests/` and
 `runs/hubspot-v2/` in this tree. None of it was staged. No secrets in the diff; no key,
 token, or URL was added.
+
+## 2026-07-28 — A run says which site-generation lanes it took, and why it skipped the rest
+
+The README fix above exposed the real defect behind it. The flagless recipe built zero
+framework sites because `config.default.yaml` sets `framework-generation-enabled:
+false`, and **nothing in the run said so** — not the console, not `manifest.json`. The
+lane simply produced no file and the run reported success. Same silence for
+`vanilla-site-generation-enabled`. This is the repo's recurring failure class (a
+component declines to do its job while the layer above reports success), so it is fixed
+the same way the manifest/gate work was: derive the facts from what actually happened,
+and state them.
+
+The defaults are unchanged. `framework-generation-enabled: false` stays false, and
+`FrameworkDefaultOff` still pins it. This is a disclosure fix, not a behaviour flip.
+
+### The lanes, and how each is gated
+
+`run_pipeline.py` is the only entry point with site-generation lanes (the brand flow in
+`brand_pipeline/pipeline_flow.py` already discloses G1–G5 through `flow-report.json`).
+There are two, each gated independently:
+
+| lane | artifacts | gates |
+|---|---|---|
+| framework sites | `site-{claude,gpt55}-framework.html` | `framework-generation-enabled` OR `--framework-sites`; membership in `site-generation-providers.txt`; `--design-only` / `--surface-map-only`; then the fail-closed brand-lane gate (G1–G4) inside `generate_framework_site` |
+| vanilla one-shot HTML | `site-{claude,gemini,gpt55}.html` | `run_pipeline`'s `skip_vanilla_html`, i.e. skipped when `--sites-only --framework-sites`, or when framework generation is on and `vanilla-site-generation-enabled` is false; plus the same provider list and mode flags |
+
+Worth recording because it is not what the key names suggest:
+`vanilla-site-generation-enabled: false` does **not** switch the vanilla lane off. It
+only suppresses vanilla while framework generation is on. With the CLI baseline
+(framework off) the vanilla lane runs regardless of its own key — which is why the
+flagless recipe still produced HTML and looked successful. The disclosure says this in
+those words rather than implying the key was honoured.
+
+### `src/screenshot_to_template/lane_disclosure.py` (new)
+
+Owns the vocabulary and the derivation, and is unit-testable without a model call:
+
+- `plan_site_generation_lanes()` resolves both lanes' gate state once, before any model
+  work, mirroring `run_pipeline`'s own `framework_generation_enabled` /
+  `skip_vanilla_html` expressions so the disclosure cannot drift from the decision.
+- `LaneLedger` records one outcome per lane × provider × run item and **derives** the
+  lane-level outcome from those records. A lane can only claim it produced output if a
+  target reported a file it wrote; nothing is hand-authored.
+- Outcomes are kept distinct because the reader's next action differs: `produced`,
+  `skipped_disabled` (a switch), `skipped_not_requested` (provider list / mode),
+  `skipped_no_input` (`--sites-only` with nothing saved to rebuild from),
+  `skipped_gate` (the fail-closed G1–G4 refusal), `failed`, and `not_reached` for a lane
+  an earlier crash never got to.
+- The same rows render the console summary and the manifest payload, so the log and
+  `manifest.json` cannot disagree.
+
+### What a user now sees
+
+Up front, before any model work, and again at the end. For the documented default
+invocation (`./venv/bin/python run_pipeline.py --screenshots-dir … --version …`):
+
+```
+Site generation lane summary:
+  framework sites (React + Tailwind v4) — SKIPPED — disabled in config
+      framework-generation-enabled is false in the resolved config (config.default.yaml
+      is the always-loaded CLI baseline) — set framework-generation-enabled: true in a
+      --config override or pass --framework-sites
+      nothing built for provider(s): claude, gpt55
+  vanilla one-shot HTML — PRODUCED (1 file(s))
+      wrote hatch/single/site-claude.html
+```
+
+A skipped-because-disabled lane names its config key **and** the flag that would enable
+it, so the reader can act without opening source.
+
+### The manifest
+
+`manifest.json` gains `site_generation_lanes` (schema `site-generation-lanes.v1`) on
+both the full and `--sites-only` paths: `mode`, `expectsSiteOutput`,
+`producedOutputCount` / `producedAnyOutput`, and per lane `configKey`, `enableFlag`,
+`configValue`, `enabled`, `outcome`, `outcomeReason`, `outputs`, `unbuiltProviders` and
+the individual `targets`. Every field is derived from the recorded targets, following
+the existing pattern where the flow derives `status` / `pipeline_run_completed` /
+`generationAllowed` / `blockedGate` from real gate outcomes.
+
+### A run that produces no site output now fails
+
+Two guards, and both are scoped so they cannot break an invocation that never intended
+to generate a site — `--design-only`, `--surface-map-only` and `--assets-only` are
+exempt by construction (`expects_site_output=False`, or an early return before the
+plan):
+
+1. **Up front**, before any model work: if no lane is enabled, the run refuses and
+   prints each lane's reason. Today the interlock makes this unreachable (vanilla is
+   only suppressed while framework is on, and `parse_provider_list` never returns
+   empty), which a truth-table test pins. It is here because that interlock is
+   incidental: the moment someone makes `skip_vanilla_html` honour
+   `vanilla-site-generation-enabled` directly — the reading the key name invites —
+   both-false becomes a silently empty run. This turns that into a refusal.
+2. **At the end**: if no lane produced a single file, the run exits non-zero after
+   printing the summary and writing the manifest. This one is reachable today.
+   `--sites-only` against a run with no saved design-system input skipped every item and
+   still logged "Done! Site outputs refreshed", and a run where every provider errored
+   wrote error-page HTML and exited 0. Both now exit 1 with the lane summary explaining
+   which lane failed and why. `studio_server.py` already marks a non-zero pipeline exit
+   as an errored job, so the Studio degrades correctly rather than reporting a green run
+   with no site.
+
+### Also fixed while in there
+
+A framework gate refusal was being retried like a transient error, logged as "framework
+retry after error", and recorded as a failure. Retrying cannot change a lane's gate
+state, so `gen_framework_site` now breaks on the first refusal and discloses it as
+`skipped_gate` rather than `failed`. `framework_generator.generation_blocked_error()` is
+the new lazy accessor for that exception class, so a caller can tell a refusal from a
+failure without importing the orchestrator.
+
+### Verification
+
+```
+./venv/bin/python -m pytest tests/ -q                     # 221 passed
+./venv/bin/python -m pytest brand_pipeline/tests -q        # 2214 passed, 9 failed
+./venv/bin/python run_pipeline.py --sites-only --version v-lane-smoke \
+  --screenshots-dir /tmp/… --runs-dir /tmp/…               # exit 1 + full disclosure
+```
+
+`tests/test_lane_disclosure.py` (23 tests + a 16-case truth table) covers the plan for
+every flag/key combination, the derivation precedence, the exact user-facing strings for
+a skipped-because-disabled lane, summary/manifest agreement, and that
+`--design-only`-style runs are never failed for producing no site.
+
+The 9 `brand_pipeline` failures are pre-existing and unrelated — Playwright
+connection errors in `test_fix3_containment_alignment.py`, `test_fix4_inline_svg.py` and
+`test_fix5_gallery_defects.py`, confirmed identical with this change stashed.
+
+`viewer.html` regenerated per `AGENTS.md` (it reads `manifest["screenshots"]`, which is
+untouched, so its layout is unchanged).
+
+### Silent-success paths noticed and NOT fixed
+
+Recorded rather than fixed, to keep this change to one thing:
+
+- `process_single_mode`'s outer `except` writes error-page HTML into
+  `site-claude.html` / `site-gemini.html` / `site-gpt55.html`, so a failed item leaves
+  files that look like output to anything globbing for site HTML. It is now disclosed
+  (the lane reports `not_reached` and the run exits non-zero), but the placeholder
+  content is still indistinguishable from a real page by filename alone.
+- `apply_site_assets` swallows every asset-generation exception into a single
+  `asset generation ERROR` log line and returns `None`; the run's status is unaffected
+  and no artifact records the failure.
+- The surface/component map falls back to the deterministic draft on any synthesis
+  error (`surface/component map synthesis fell back to deterministic draft`), which is
+  logged but not recorded in the manifest, so a run whose map was never model-authored
+  cannot be told apart afterwards.
+- `parse_provider_list` silently drops `gemini` (it is in
+  `DISABLED_SITE_GENERATION_PROVIDERS`) and falls back to `["gpt55"]` for an
+  otherwise-empty list, so a version folder asking for `gemini` gets GPT-5.5 with no
+  warning.
+
+Staged file-by-file — `run_pipeline.py`,
+`src/screenshot_to_template/framework_generator.py`,
+`src/screenshot_to_template/lane_disclosure.py`, `tests/test_lane_disclosure.py`,
+`README.md` and `docs/changes.md` — because other agents have uncommitted work in
+`brand_pipeline/compose_replica.py`, `studio_server.py`, `tools/track_studio_subset.py`,
+`runs/hubspot-v2/` and `evals/matrix/runs/` in this tree. None of it was staged. No
+secrets in the diff; no key, token, or URL was added.

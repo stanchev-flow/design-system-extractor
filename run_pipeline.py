@@ -73,7 +73,20 @@ from screenshot_to_template.tracking import token_usage_context, update_step_sta
 from screenshot_to_template.framework_generator import (
     DEFAULT_FRAMEWORK_PROMPT_PATH,
     generate_framework_site,
+    generation_blocked_error,
     load_framework_prompt,
+)
+from screenshot_to_template.lane_disclosure import (
+    LANE_FRAMEWORK,
+    LANE_VANILLA,
+    OUTCOME_FAILED,
+    OUTCOME_PRODUCED,
+    OUTCOME_SKIPPED_DISABLED,
+    OUTCOME_SKIPPED_GATE,
+    OUTCOME_SKIPPED_NO_INPUT,
+    OUTCOME_SKIPPED_NOT_REQUESTED,
+    LaneLedger,
+    plan_site_generation_lanes,
 )
 
 
@@ -6099,6 +6112,9 @@ def run_pipeline(
     config.max_tokens = 16384
     reviews_enabled = config.run_reviews if run_reviews is None else bool(run_reviews)
     skip_design_system_review = skip_design_system_review or not reviews_enabled
+    # Captured before --vanilla-sites overwrites it, so the lane disclosure can
+    # report the config key's own value alongside the flag that overrode it.
+    vanilla_config_value = bool(getattr(config, "vanilla_site_generation_enabled", False))
     if vanilla_sites:
         config.vanilla_site_generation_enabled = True
     vanilla_site_generation_enabled = bool(getattr(config, "vanilla_site_generation_enabled", False))
@@ -6425,13 +6441,43 @@ def run_pipeline(
         log(f"Reusing cached section YAML groundings from: {reuse_section_groundings_from}")
     log(f"Generated sites will use: {'structural-analysis.md' if site_generation_source == 'grounding' else 'design-system artifact'}")
     log(f"Enabled site generators: {', '.join(site_generation_providers)}")
-    if framework_generation_enabled:
-        if skip_vanilla_html:
-            log("Framework-first: React + Tailwind v4 + shadcn-style (vanilla one-shot HTML skipped)")
-        else:
-            log("Framework + vanilla HTML generation both enabled")
-    elif not skip_vanilla_html:
-        log("Vanilla one-shot HTML only (framework generation disabled)")
+    # Which site-generation lanes this run will take, and for a lane it will not
+    # take, the config key and flag that would turn it on. Stated up front and
+    # again at the end, because a lane switched off in config used to leave no
+    # trace at all beyond a missing output file.
+    lane_ledger = LaneLedger(
+        plan_site_generation_lanes(
+            framework_config_value=bool(
+                getattr(config, "framework_generation_enabled", True)
+            ),
+            framework_flag=bool(framework_sites),
+            vanilla_config_value=vanilla_config_value,
+            vanilla_flag=bool(vanilla_sites),
+            providers=site_generation_providers,
+            sites_only=sites_only,
+            design_only=design_only,
+            surface_map_only=surface_map_only,
+        ),
+        expects_site_output=not (design_only or surface_map_only),
+        mode=(
+            "design-only" if design_only
+            else "surface-map-only" if surface_map_only
+            else "sites-only" if sites_only
+            else "full"
+        ),
+    )
+    for line in lane_ledger.plan_lines():
+        log(line)
+    if lane_ledger.expects_site_output and not any(
+        plan.enabled for plan in lane_ledger.plans
+    ):
+        # Refuse before any model work rather than spending a run to produce
+        # nothing. --design-only / --surface-map-only / --assets-only never reach
+        # this branch, so an extract-only invocation is unaffected.
+        log("No site-generation lane is enabled, so this run could produce no site output.")
+        for plan in lane_ledger.plans:
+            log(f"  {plan.label}: {plan.reason}")
+        sys.exit(1)
     log(f"Active site generation skills: {', '.join(site_generation_skill_names) if site_generation_skill_names else 'none'}")
 
     manifest = {
@@ -6511,6 +6557,33 @@ def run_pipeline(
             log(f"  {label} — asset generation ERROR: {exc}")
             return None
 
+    def record_lane(
+        lane: str,
+        provider_name: str,
+        output_path: Path,
+        outcome: str,
+        reason: str = "",
+    ) -> None:
+        """Record one lane target's real outcome.
+
+        The run item is taken from the output path (``<item>/single/site-*.html``)
+        so the generators keep their existing signatures, and ``output`` is only
+        set for a lane that actually wrote a site — that is what the summary and
+        the manifest count as produced output.
+        """
+        lane_ledger.record(
+            lane,
+            provider_name,
+            output_path.parent.parent.name,
+            outcome,
+            reason=reason,
+            output=(
+                str(output_path.relative_to(version_dir))
+                if outcome == OUTCOME_PRODUCED
+                else ""
+            ),
+        )
+
     def gen_site(
         generation_input: str,
         provider_name: str,
@@ -6562,6 +6635,7 @@ def run_pipeline(
                     f"site_asset_generation_{provider_name}",
                 )
                 log(f"  {label} — done")
+                record_lane(LANE_VANILLA, provider_name, output_path, OUTCOME_PRODUCED)
                 return
             except Exception as e:
                 last_error = e
@@ -6597,11 +6671,15 @@ def run_pipeline(
                         f"site_asset_generation_{provider_name}",
                     )
                     log(f"  {label} — recovered from pre-style-sync HTML after error: {last_error}")
+                    record_lane(LANE_VANILLA, provider_name, output_path, OUTCOME_PRODUCED)
                     return
             except Exception as recovery_error:
                 log(f"  {label} — pre-style-sync recovery failed: {recovery_error}")
         with open(output_path, "w") as f:
             f.write(f"<html><body><h1>Error</h1><p>{last_error}</p></body></html>")
+        record_lane(
+            LANE_VANILLA, provider_name, output_path, OUTCOME_FAILED, str(last_error)
+        )
 
     def resolve_brand_assets_manifest_path() -> Path | None:
         manifest_rel = (getattr(config, "brand_assets_manifest", "") or "").strip()
@@ -6636,6 +6714,13 @@ def run_pipeline(
     ):
         """Generate a framework-based site (React package → single-file HTML)."""
         last_error = None
+        gate_blocked = False
+        try:
+            blocked_error: type[BaseException] | tuple = generation_blocked_error()
+        except Exception:
+            # Resolved once, and an empty tuple matches nothing: a gate class we
+            # cannot import must never swallow the real generation error below.
+            blocked_error = ()
         brand_manifest = resolve_brand_assets_manifest_path()
         chrome_path = resolve_source_chrome_path()
         if chrome_path:
@@ -6669,7 +6754,16 @@ def run_pipeline(
                 if brand:
                     log(f"  {label} — brand assets applied to framework build")
                 log(f"  {label} — framework build done")
+                record_lane(LANE_FRAMEWORK, provider_name, output_path, OUTCOME_PRODUCED)
                 return
+            except blocked_error as blocked:
+                # The fail-closed G1–G4 refusal is a decision, not a transient
+                # error: retrying it cannot change the lane's gate state, and it
+                # is disclosed as blocked-by-a-gate rather than as a failure.
+                last_error = blocked
+                gate_blocked = True
+                log(f"  {label} — framework REFUSED by gate: {blocked}")
+                break
             except Exception as e:
                 last_error = e
                 if attempt < 2:
@@ -6678,6 +6772,13 @@ def run_pipeline(
                     log(f"  {label} — framework ERROR: {e}")
         with open(output_path, "w") as f:
             f.write(f"<html><body><h1>Framework Error</h1><p>{last_error}</p></body></html>")
+        record_lane(
+            LANE_FRAMEWORK,
+            provider_name,
+            output_path,
+            OUTCOME_SKIPPED_GATE if gate_blocked else OUTCOME_FAILED,
+            str(last_error),
+        )
 
     def write_site_skipped_output(output_path: Path, provider_label: str):
         """Write a placeholder when a generator is disabled for this run."""
@@ -7165,6 +7266,7 @@ def run_pipeline(
                             mode_dir / "design-system-conversion-review.md",
                             "Design-system conversion review skipped in surface-map-only mode.",
                         )
+                        lane_ledger.record_disabled_lane(name)
                         step_status("run_complete", "completed", {
                             "surface_component_map_review_score": (review or {}).get("weighted_score")
                         })
@@ -7425,6 +7527,7 @@ def run_pipeline(
             if design_only:
                 review = run_design_system_review()
                 conversion_review = run_design_system_conversion_review()
+                lane_ledger.record_disabled_lane(name)
                 for provider_name, filename, label in provider_targets:
                     write_site_skipped_output(mode_dir / filename, label)
                     step_status(f"site_generation_{provider_name}", "skipped", {"reason": "design-only mode"})
@@ -7442,6 +7545,7 @@ def run_pipeline(
             max_workers = max(1, enabled_count + 2)
             with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as pool:
                 futures: list[tuple[str, str, concurrent.futures.Future]] = []
+                lane_ledger.record_disabled_lane(name)
                 if not skip_vanilla_html:
                     for provider_name, filename, label in provider_targets:
                         output_path = mode_dir / filename
@@ -7463,6 +7567,14 @@ def run_pipeline(
                             ))
                         else:
                             write_site_skipped_output(output_path, label)
+                            record_lane(
+                                LANE_VANILLA,
+                                provider_name,
+                                output_path,
+                                OUTCOME_SKIPPED_NOT_REQUESTED,
+                                f"{provider_name} is not in this run's "
+                                "site-generation-providers.txt",
+                            )
                 if framework_generation_enabled:
                     for provider_name, filename, label in framework_provider_targets:
                         output_path = mode_dir / filename
@@ -7482,6 +7594,14 @@ def run_pipeline(
                             ))
                         else:
                             write_site_skipped_output(output_path, label)
+                            record_lane(
+                                LANE_FRAMEWORK,
+                                provider_name,
+                                output_path,
+                                OUTCOME_SKIPPED_NOT_REQUESTED,
+                                f"{provider_name} is not in this run's "
+                                "site-generation-providers.txt",
+                            )
                 futures.append(("review", "design-system review", pool.submit(run_design_system_review)))
                 futures.append(("conversion-review", "design-system conversion review", pool.submit(run_design_system_conversion_review)))
 
@@ -7563,14 +7683,36 @@ def run_pipeline(
                 generation_input_path = ds_path
                 generation_label = "design system"
 
+            def record_missing_input(detail: str) -> None:
+                """A sites-only item with nothing to regenerate from is a real lane
+                outcome, not an absence: without this the run reported success
+                having refreshed nothing."""
+                for plan in lane_ledger.plans:
+                    for provider_name in plan.spec.providers:
+                        lane_ledger.record(
+                            plan.lane,
+                            provider_name,
+                            name,
+                            OUTCOME_SKIPPED_NO_INPUT if plan.enabled
+                            else OUTCOME_SKIPPED_DISABLED,
+                            reason=detail if plan.enabled else plan.reason,
+                        )
+
             if not generation_input_path.exists():
                 log(f"  {name}/single — skipped (no {generation_label} input)")
+                record_missing_input(
+                    f"no saved {generation_label} input at "
+                    f"{generation_input_path.relative_to(version_dir)}"
+                )
                 continue
 
             design_review_input = generation_input_path.read_text().strip()
             generation_input = design_review_input
             if not generation_input or generation_input.startswith("# Error") or generation_input.startswith("# Skipped"):
                 log(f"  {name}/single — skipped ({generation_label} input is placeholder/error)")
+                record_missing_input(
+                    f"saved {generation_label} input is a placeholder or error stub"
+                )
                 continue
 
             extracted_source_styles = None
@@ -7654,6 +7796,14 @@ def run_pipeline(
                 if provider_name not in enabled_providers:
                     write_site_skipped_output(output_path, label)
                     log(f"  {name}/single/{label} — skipped by provider config")
+                    record_lane(
+                        LANE_VANILLA,
+                        provider_name,
+                        output_path,
+                        OUTCOME_SKIPPED_NOT_REQUESTED,
+                        f"{provider_name} is not in this run's "
+                        "site-generation-providers.txt",
+                    )
                     return
                 if not site_output_needs_regeneration(output_path):
                     viewport_unit_report = repair_html_file_viewport_layout_units(output_path)
@@ -7663,6 +7813,9 @@ def run_pipeline(
                             f"{viewport_unit_report['replacement_count']} viewport layout unit(s)"
                         )
                     log(f"  {name}/single/{label} — kept existing output")
+                    record_lane(
+                        LANE_VANILLA, provider_name, output_path, OUTCOME_PRODUCED
+                    )
                 else:
                     pre_sync_path = output_path.with_name(output_path.stem + ".pre-style-sync.html")
                     if pre_sync_path.exists() and extracted_source_styles:
@@ -7692,6 +7845,9 @@ def run_pipeline(
                                 f"site_asset_generation_{provider_name}",
                             )
                             log(f"  {name}/single/{label} — recovered from pre-style-sync HTML")
+                            record_lane(
+                                LANE_VANILLA, provider_name, output_path, OUTCOME_PRODUCED
+                            )
                             return
                     gen_site(
                         generation_input,
@@ -7708,9 +7864,20 @@ def run_pipeline(
                 if provider_name not in enabled_providers:
                     write_site_skipped_output(output_path, label)
                     log(f"  {name}/single/{label} — skipped by provider config")
+                    record_lane(
+                        LANE_FRAMEWORK,
+                        provider_name,
+                        output_path,
+                        OUTCOME_SKIPPED_NOT_REQUESTED,
+                        f"{provider_name} is not in this run's "
+                        "site-generation-providers.txt",
+                    )
                     return
                 if not site_output_needs_regeneration(output_path):
                     log(f"  {name}/single/{label} — kept existing framework output")
+                    record_lane(
+                        LANE_FRAMEWORK, provider_name, output_path, OUTCOME_PRODUCED
+                    )
                     return
                 gen_framework_site(
                     generation_input,
@@ -7725,6 +7892,7 @@ def run_pipeline(
                 worker_count += len(framework_provider_targets)
             with concurrent.futures.ThreadPoolExecutor(max_workers=worker_count) as pool:
                 futures = [("review", pool.submit(run_existing_design_system_review))]
+                lane_ledger.record_disabled_lane(name)
                 if not skip_vanilla_html:
                     futures.extend(
                         (label, pool.submit(refresh_provider_site, provider_name, filename, label))
@@ -7795,12 +7963,28 @@ def run_pipeline(
             },
         }
 
+    def disclose_lanes() -> str | None:
+        """Print the lane summary and return the no-output failure reason, if any.
+
+        Called on every exit path so the log and the manifest carry the same
+        derived facts whether the run generated, refreshed or skipped.
+        """
+        for line in lane_ledger.summary_lines():
+            log(line)
+        return lane_ledger.no_output_failure_reason()
+
     if sites_only:
         regenerate_existing_sites()
+        sites_manifest = infer_manifest_from_version_dir(version_dir)
+        sites_manifest["site_generation_lanes"] = lane_ledger.manifest_payload()
         with open(version_dir / "manifest.json", "w") as f:
-            json.dump(infer_manifest_from_version_dir(version_dir), f, indent=2)
+            json.dump(sites_manifest, f, indent=2)
         log("Generating viewer.html...")
         generate_viewer(RUNS_DIR, PROJECT_DIR / "viewer.html")
+        no_output = disclose_lanes()
+        if no_output:
+            log(f"Site refresh produced nothing: {no_output}")
+            sys.exit(1)
         log(f"Done! Site outputs refreshed in {version_dir}")
         return
 
@@ -7824,7 +8008,10 @@ def run_pipeline(
     # Sort manifest by name for consistent ordering
     manifest["screenshots"].sort(key=lambda x: x["name"])
 
-    # Save manifest
+    # Save manifest. The lane facts are derived from what each lane target
+    # reported, never authored, so manifest.json cannot claim a lane ran when the
+    # log says it was skipped.
+    manifest["site_generation_lanes"] = lane_ledger.manifest_payload()
     with open(version_dir / "manifest.json", "w") as f:
         json.dump(manifest, f, indent=2)
 
@@ -7832,8 +8019,12 @@ def run_pipeline(
     log("Generating viewer.html...")
     generate_viewer(RUNS_DIR, PROJECT_DIR / "viewer.html")
 
-    log(f"Done! Results saved to {version_dir}")
-    log(f"Open viewer.html in your browser to compare results.")
+    no_output = disclose_lanes()
+    log(f"Results saved to {version_dir}")
+    if no_output:
+        log(f"Run produced no site output: {no_output}")
+        sys.exit(1)
+    log("Done! Open viewer.html in your browser to compare results.")
 
 
 def main():

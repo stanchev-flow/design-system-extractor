@@ -104,6 +104,15 @@ def _import_pipeline_flow():
     return pipeline_flow
 
 
+def generation_blocked_error() -> type[BaseException]:
+    """The exception class the fail-closed gate raises.
+
+    Resolved lazily (it lives in ``brand_pipeline.pipeline_flow``) so a caller can
+    tell a gate REFUSAL apart from a generation FAILURE without importing the
+    orchestrator itself."""
+    return _import_pipeline_flow().GenerationBlocked
+
+
 def framework_ungated_override(explicit: bool | None = None) -> bool:
     """Whether the operator has explicitly opted out of the gate.
 

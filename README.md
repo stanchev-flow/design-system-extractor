@@ -470,6 +470,8 @@ runs/{version}/{item}/single/framework/          # full source package
 
 Defaults in `config.default.yaml`: `framework-generation-enabled: false`, `vanilla-site-generation-enabled: false`. That `false` is pinned by `brand_pipeline/tests/test_brand_signal_composition.py::FrameworkDefaultOff`. Studio projects are written with `framework-generation-enabled: true` into `runs/.studio/{version}.config.yaml`. (`AppConfig`'s dataclass default is `True`, but that only applies to a config constructed without `load_config()`, and `load_config()` always reads `config.default.yaml`.)
 
+You do not have to remember any of this at the terminal. Every run prints its site-generation lanes up front and again at the end — which lane produced what, which was skipped, and for a skipped lane the config key and the flag that would enable it — and records the same facts under `site_generation_lanes` in the run's `manifest.json`. A run that produces no site output at all exits non-zero (`--design-only`, `--surface-map-only` and `--assets-only` are exempt).
+
 ```bash
 # Full pipeline with framework sites (--framework-sites is the CLI opt-in, and
 # also forces framework on for a run whose saved config disabled it)
