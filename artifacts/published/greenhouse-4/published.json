@@ -5,8 +5,96 @@
   "brand": "Greenhouse",
   "title": "Greenhouse 4",
   "source_url": "https://www.greenhouse.com/",
-  "published_at": "2026-07-28T19:05:27Z",
+  "published_at": "2026-07-28T19:31:15Z",
   "replica_overall": 0.7437,
+  "status": {
+    "verdict": "not-passed",
+    "headline": "This run did not pass its own quality gates. The artifacts below are its current best output, published for browsing and review \u2014 not a certified-good build.",
+    "flow_report": {
+      "present": false,
+      "path": null
+    },
+    "gate_outcome": {
+      "determined": true,
+      "state": "crashed",
+      "gate": "G3",
+      "gate_name": "harness",
+      "reason": "render_components_preview failed (exit 1) \u2014 harness quality failed",
+      "source": "logs/flow-g3g4.log",
+      "run_path": "flow-g3g4.log"
+    },
+    "fidelity": {
+      "overall": 0.7437,
+      "bar": 0.9,
+      "bar_source": "manifest.json (declared bar)",
+      "meets_bar": false,
+      "bands_below_bar": [
+        {
+          "id": "sec-1",
+          "label": "featureGrid",
+          "score": 0.2783
+        },
+        {
+          "id": "sec-4",
+          "label": "testimonial",
+          "score": 0.3088
+        },
+        {
+          "id": "sec-0",
+          "label": "hero",
+          "score": 0.7719
+        },
+        {
+          "id": "sec-2",
+          "label": "logoWall",
+          "score": 0.7977
+        },
+        {
+          "id": "sec-5",
+          "label": "cta",
+          "score": 0.8683
+        },
+        {
+          "id": "sec-3",
+          "label": "stats",
+          "score": 0.8847
+        }
+      ],
+      "bands_unmeasurable": [
+        "page-nav"
+      ]
+    },
+    "manifest_disagreements": [
+      "the run manifest records status \"completed\" / pipeline_run_completed true, which the gate evidence above does not support",
+      "the manifest's replica score (0.8206) predates the replica that is published here (0.7437 in the report beside the page)"
+    ],
+    "facts": [
+      {
+        "text": "The orchestrator writes a flow report when it finishes its gate spine, and this run has none \u2014 so the run never reached the end of that spine.",
+        "source": "brand/flow-report.json (missing)"
+      },
+      {
+        "text": "The last recorded flow run crashed at gate G3 (harness): render_components_preview failed (exit 1) \u2014 harness quality failed.",
+        "source": "logs/flow-g3g4.log"
+      },
+      {
+        "text": "Replica fidelity is 0.7437 against this run's 0.90 bar \u2014 below the bar.",
+        "source": "replica/replica-report.json"
+      },
+      {
+        "text": "The gate did flag the weakest sections numerically: featureGrid 0.2783, testimonial 0.3088, hero 0.7719. Low band scores are where the composed page diverges most from the source (1 band with no measurable source height is left out of this list).",
+        "source": "replica/replica-report.md"
+      },
+      {
+        "text": "Do not trust the run manifest over the report beside the page: the run manifest records status \"completed\" / pipeline_run_completed true, which the gate evidence above does not support; and the manifest's replica score (0.8206) predates the replica that is published here (0.7437 in the report beside the page).",
+        "source": "logs/manifest.json"
+      },
+      {
+        "text": "The harness quality artifact on disk reports ok=true \u2014 it was written after the flow log above, so it reflects a later rebuild rather than a passing flow run.",
+        "source": "harness/harness-quality.json"
+      }
+    ]
+  },
   "lanes": [
     {
       "kind": "replica",
@@ -142,6 +230,302 @@
   ],
   "assets_published": 65,
   "assets_unresolved": [],
+  "foreign_strings": [
+    {
+      "token": "remote",
+      "file": "brand/assets-manifest.json",
+      "kind": "asset-name",
+      "in_comment": false,
+      "context": "are\" ] }, { \"dest\": \"040-67abc305add47300764f9fd2-remote-logo.avif\", \"source\": \"screenshots/greenhouse-4/ho"
+    },
+    {
+      "token": "remote",
+      "file": "brand/assets-manifest.json",
+      "kind": "data",
+      "in_comment": false,
+      "context": "s/greenhouse-4/home/home_files/040-67abc305add47300764f9fd2_Remote-logo.avif\", \"origin\": \"files\", \"bytes\": 2497,"
+    },
+    {
+      "token": "remote",
+      "file": "brand/media-assets.yaml",
+      "kind": "asset-name",
+      "in_comment": false,
+      "context": "reusePolicy: page-specific - id: 67abc305add47300764f9fd2-remote-logo file: 040-67abc305add47300764f9fd2-remote-logo"
+    },
+    {
+      "token": "remote",
+      "file": "brand/media-assets.yaml",
+      "kind": "asset-name",
+      "in_comment": false,
+      "context": "00764f9fd2-remote-logo file: 040-67abc305add47300764f9fd2-remote-logo.avif assetSemantics: kind: logo-third-part"
+    },
+    {
+      "token": "remote",
+      "file": "framework/brand-assets.json",
+      "kind": "asset-name",
+      "in_comment": false,
+      "context": "] }, { \"id\": \"67abc305add47300764f9fd2-remote-logo\", \"file\": \"040-67abc305add47300764f9fd2-re"
+    },
+    {
+      "token": "remote",
+      "file": "framework/brand-assets.json",
+      "kind": "asset-name",
+      "in_comment": false,
+      "context": "2-remote-logo\", \"file\": \"040-67abc305add47300764f9fd2-remote-logo.avif\", \"type\": \"logo-third-party\", \""
+    },
+    {
+      "token": "remote",
+      "file": "framework/brand-assets.json",
+      "kind": "asset-name",
+      "in_comment": false,
+      "context": "runs/greenhouse-4/brand/assets/040-67abc305add47300764f9fd2-remote-logo.avif\", \"displayUrl\": \"/runs/greenhouse-4/b"
+    },
+    {
+      "token": "remote",
+      "file": "framework/brand-assets.json",
+      "kind": "asset-name",
+      "in_comment": false,
+      "context": "runs/greenhouse-4/brand/assets/040-67abc305add47300764f9fd2-remote-logo.avif\", \"inlineSvg\": \"\", \"iconOrIllus"
+    },
+    {
+      "token": "remote",
+      "file": "framework/index.html",
+      "kind": "asset-name",
+      "in_comment": false,
+      "context": "ad-media\",\"visible\":true}]},{\"id\":\"67abc305add47300764f9fd2-remote-logo\",\"file\":\"040-67abc305add47300764f9fd2-remote-log"
+    },
+    {
+      "token": "remote",
+      "file": "framework/index.html",
+      "kind": "asset-name",
+      "in_comment": false,
+      "context": "0764f9fd2-remote-logo\",\"file\":\"040-67abc305add47300764f9fd2-remote-logo.avif\",\"type\":\"logo-third-party\",\"role\":\"unplaced"
+    },
+    {
+      "token": "remote",
+      "file": "framework/index.html",
+      "kind": "asset-name",
+      "in_comment": false,
+      "context": "\":\"\",\"alt\":\"\",\"url\":\"../assets/040-67abc305add47300764f9fd2-remote-logo.avif\",\"displayUrl\":\"../assets/040-67abc305add473"
+    },
+    {
+      "token": "remote",
+      "file": "framework/index.html",
+      "kind": "asset-name",
+      "in_comment": false,
+      "context": ".avif\",\"displayUrl\":\"../assets/040-67abc305add47300764f9fd2-remote-logo.avif\",\"inlineSvg\":\"\",\"iconOrIllustration\":\"na\",\""
+    },
+    {
+      "token": "remote",
+      "file": "harness/index.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "ON-STRETCH stage alignment (AGENTS.md flex-column mechanic, remote-fix Phase C): flex-column children stretch by defa"
+    },
+    {
+      "token": "remote",
+      "file": "harness/index.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "ar()-chained into the layer-1 --button[-<family>]-* tokens (remote-fix Phase C: the single-variant render hid the mea"
+    },
+    {
+      "token": "remote",
+      "file": "harness/index.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "e-level gray and never a cross-family muted color token (Remote's on-inverse-muted periwinkle was riding onto the mar"
+    },
+    {
+      "token": "remote",
+      "file": "harness/layouts/content.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
+    },
+    {
+      "token": "remote",
+      "file": "harness/layouts/cta.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
+    },
+    {
+      "token": "remote",
+      "file": "harness/layouts/ctaSplit5050.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
+    },
+    {
+      "token": "remote",
+      "file": "harness/layouts/features.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
+    },
+    {
+      "token": "remote",
+      "file": "harness/layouts/featuresHeadingBodyTop.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
+    },
+    {
+      "token": "remote",
+      "file": "harness/layouts/featuresSectionHeadingTop.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
+    },
+    {
+      "token": "remote",
+      "file": "harness/layouts/featuresSplit5050.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
+    },
+    {
+      "token": "remote",
+      "file": "harness/layouts/featuresSplit5050Media.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
+    },
+    {
+      "token": "remote",
+      "file": "harness/layouts/logoWall.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
+    },
+    {
+      "token": "remote",
+      "file": "harness/layouts/stats.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
+    },
+    {
+      "token": "remote",
+      "file": "harness/layouts/testimonial.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
+    },
+    {
+      "token": "fieldnote",
+      "file": "logs/changes.md",
+      "kind": "provenance",
+      "in_comment": false,
+      "context": "go; 5 are provenance mentions in `logs/changes.md` and the `fieldnote-design-system` package name in `logs/framework-vit"
+    },
+    {
+      "token": "hubspot",
+      "file": "logs/changes.md",
+      "kind": "provenance",
+      "in_comment": false,
+      "context": "eloper CSS comments in composed pages naming other brands (\"HubSpot-era\", \"Remote's landscape aspect\") emitted by the co"
+    },
+    {
+      "token": "remote",
+      "file": "logs/changes.md",
+      "kind": "provenance",
+      "in_comment": false,
+      "context": "ents in composed pages naming other brands (\"HubSpot-era\", \"Remote's landscape aspect\") emitted by the composer/harness"
+    },
+    {
+      "token": "remote",
+      "file": "logs/changes.md",
+      "kind": "asset-name",
+      "in_comment": false,
+      "context": "rator-side fix, not an export fix; 11 are the legitimate `\u2026-remote-logo.avif` customer logo; 5 are provenance mentions i"
+    },
+    {
+      "token": "woodwave",
+      "file": "logs/changes.md",
+      "kind": "provenance",
+      "in_comment": false,
+      "context": "## 2026-07-28 \u2014 fact-gate the title-over-media pull (leaked WoodWave hero offset) **Cause:** `component_render.componen"
+    },
+    {
+      "token": "woodwave",
+      "file": "logs/changes.md",
+      "kind": "provenance",
+      "in_comment": false,
+      "context": "ured `overlapRules.offsets.titleOverMediaTop` (`experiments/woodwave-ab/inputs/brand.yaml`, layout `opening-bookend`, `~"
+    },
+    {
+      "token": "woodwave",
+      "file": "logs/changes.md",
+      "kind": "provenance",
+      "in_comment": false,
+      "context": "on either, and the scaffold carries the `0rem` fallback. - WoodWave regression check: `compose_page experiments/woodwav"
+    },
+    {
+      "token": "woodwave",
+      "file": "logs/changes.md",
+      "kind": "provenance",
+      "in_comment": false,
+      "context": "ack. - WoodWave regression check: `compose_page experiments/woodwave-ab/inputs/brand.yaml` still emits `--c-title-over"
+    },
+    {
+      "token": "fieldnote",
+      "file": "logs/framework-vite.log",
+      "kind": "provenance",
+      "in_comment": false,
+      "context": "This will stop working in the next major version of npm. > fieldnote-design-system@0.1.0 build:nocheck > vite build vi"
+    },
+    {
+      "token": "hubspot",
+      "file": "replica/index.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "minus-nav) licenses it via component_render \u2014 never as a HubSpot-era unconditional 90svh default. */ .cs-ov-canvas >"
+    },
+    {
+      "token": "hubspot",
+      "file": "replica/index.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "ass1 2026-07, scale_adherence finding): the old 0.62 landed hubspot's panel heading at 49.6px \u2014 on NO ladder (measure"
+    },
+    {
+      "token": "hubspot",
+      "file": "replica/index.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "brand's own h1 rung for the evidenced display:h1 ratios (hubspot 80->48 = h1; remote 46->27.6 ~= h3 28) \u2014 quantized n"
+    },
+    {
+      "token": "hubspot",
+      "file": "replica/index.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "nse it (component_render / band_height_css) \u2014 never as a HubSpot-era unconditional full-frame default. */ .cs-section"
+    },
+    {
+      "token": "remote",
+      "file": "replica/index.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "out geometry, not a brand token; coincidentally equals Remote's landscape aspect) */ .cs-interlock-media { aspect"
+    },
+    {
+      "token": "remote",
+      "file": "replica/index.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "or the evidenced display:h1 ratios (hubspot 80->48 = h1; remote 46->27.6 ~= h3 28) \u2014 quantized new geometry, audited"
+    },
+    {
+      "token": "remote",
+      "file": "replica/index.html",
+      "kind": "page",
+      "in_comment": true,
+      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
+    }
+  ],
   "run_manifest": {
     "project": "greenhouse-4",
     "brand": "Greenhouse",
@@ -201,5 +585,5 @@
     ],
     "notes": "Fresh multi-page extract from existing captures. Studio project Greenhouse 4. Framework lane is opt-in token skin (no shadcn defaults; native chrome, no Radix)."
   },
-  "bytes": 20359253
+  "bytes": 20379045
 }

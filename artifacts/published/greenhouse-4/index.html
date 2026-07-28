@@ -28,6 +28,14 @@ th, td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line);
 th { color:var(--muted); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.08em; }
 td code { color:var(--ink); }
 .meta { display:flex; flex-wrap:wrap; gap:8px 20px; color:var(--muted); font-size:13px; margin:14px 0 0; }
+.status { margin:26px 0 0; padding:18px 20px; border-radius:14px; background:#16161c;
+          border:1px solid var(--line); border-left:4px solid var(--st); }
+.status.warn { --st:#d99a34; } .status.ok { --st:#34d399; } .status.unknown { --st:#8b8b96; }
+.status .kicker { font-size:11px; text-transform:uppercase; letter-spacing:.12em; color:var(--st); font-weight:700; }
+.status .headline { margin:6px 0 0; font-size:15px; font-weight:600; color:var(--ink); }
+.status ul { margin:12px 0 0; padding:0 0 0 18px; font-size:13px; color:#d4d4d8; }
+.status li { margin-top:7px; }
+.status .src { color:#71717a; font-size:11px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
 .note { color:var(--muted); font-size:13px; max-width:70ch; }
 footer { margin-top:48px; color:#71717a; font-size:12px; }
 </style></head>
@@ -35,15 +43,17 @@ footer { margin-top:48px; color:#71717a; font-size:12px; }
 <h1>Greenhouse — published extraction results</h1>
 <p class="sub">Everything below was generated from screenshots and DOM/CSS measurements of the
 source site. No hand-written page code: the design system is extracted into facts, and the pages
-are composed back out of those facts as proof the facts are complete.</p>
+are composed back out of those facts, so the pages double as a check on the facts.</p>
 <div class="meta">
   <span>source: <a href="https://www.greenhouse.com/" rel="noopener">https://www.greenhouse.com/</a></span>
   <span>run: <code>runs/greenhouse-4</code></span>
-  <span>published: 2026-07-28T19:05:27Z</span>
-  <span>replica fidelity: <strong>0.7437</strong></span>
-  <span>schema validation: 0 errors / 14 warnings</span>
+  <span>published: 2026-07-28T19:31:15Z</span>
+  <span>replica fidelity (report): <strong>0.7437</strong></span>
+  <span>schema validation (run manifest): 0 errors / 14 warnings</span>
   <span>media: 65 files</span>
 </div>
+
+<section class="status warn"><div class="kicker">Run status — gates not passed</div><p class="headline">This run did not pass its own quality gates. The artifacts below are its current best output, published for browsing and review — not a certified-good build.</p><ul><li>The orchestrator writes a flow report when it finishes its gate spine, and this run has none — so the run never reached the end of that spine. <span class="src">brand/flow-report.json (missing)</span></li><li>The last recorded flow run crashed at gate G3 (harness): render_components_preview failed (exit 1) — harness quality failed. <span class="src">logs/flow-g3g4.log</span></li><li>Replica fidelity is 0.7437 against this run&#x27;s 0.90 bar — below the bar. <span class="src">replica/replica-report.json</span></li><li>The gate did flag the weakest sections numerically: featureGrid 0.2783, testimonial 0.3088, hero 0.7719. Low band scores are where the composed page diverges most from the source (1 band with no measurable source height is left out of this list). <span class="src">replica/replica-report.md</span></li><li>Do not trust the run manifest over the report beside the page: the run manifest records status &quot;completed&quot; / pipeline_run_completed true, which the gate evidence above does not support; and the manifest&#x27;s replica score (0.8206) predates the replica that is published here (0.7437 in the report beside the page). <span class="src">logs/manifest.json</span></li><li>The harness quality artifact on disk reports ok=true — it was written after the flow log above, so it reflects a later rebuild rather than a passing flow run. <span class="src">harness/harness-quality.json</span></li></ul></section>
 
 <h2>Rendered results</h2>
 <div class="grid"><article class="card"><img class="shot" src="previews/replica.png" alt="Composed replica of the source page preview" loading="lazy"><div class="body"><span class="chip">replica</span><h3><a href="replica/index.html">Composed replica of the source page →</a></h3><p>Rebuilt from the extracted facts alone. Fidelity score 0.7437 against the source capture; per-band scores and the punch list are in replica-report.md.</p><ul class="extras"><li><a href="replica/replica-report.md">Fidelity report (markdown)</a></li><li><a href="replica/replica-fullpage.png">Full-page render (PNG)</a></li></ul></div></article><article class="card"><img class="shot" src="previews/harness.png" alt="Components &amp; layout harness preview" loading="lazy"><div class="body"><span class="chip">harness</span><h3><a href="harness/index.html">Components &amp; layout harness →</a></h3><p>Primitives, surfaces, blocks and every measured layout pattern rendered from the design system. Each pattern is also a standalone page under harness/layouts/.</p></div></article><article class="card"><img class="shot" src="previews/catalog.png" alt="Component catalog preview" loading="lazy"><div class="body"><span class="chip">catalog</span><h3><a href="catalog/index.html">Component catalog →</a></h3><p>Machine-readable inventory of the components the extraction declared.</p></div></article><article class="card"><img class="shot" src="previews/framework.png" alt="Framework build (React + Vite, single file) preview" loading="lazy"><div class="body"><span class="chip">framework</span><h3><a href="framework/index.html">Framework build (React + Vite, single file) →</a></h3><p>The opt-in framework lane: a real React + Tailwind app generated from the same facts, built to one self-contained HTML file. Source stays in the run dir (runs/greenhouse-4/brand/framework/single/framework-claude).</p></div></article></div>
@@ -54,7 +64,7 @@ are composed back out of those facts as proof the facts are complete.</p>
 
 <h2>What happened — logs &amp; manifest</h2>
 <table><thead><tr><th>file</th><th>size</th></tr></thead><tbody>
-<tr><td><a href="logs/changes.md"><code>changes.md</code></a></td><td>13.9 KB</td></tr>
+<tr><td><a href="logs/changes.md"><code>changes.md</code></a></td><td>15.9 KB</td></tr>
 <tr><td><a href="logs/manifest.json"><code>manifest.json</code></a></td><td>1.8 KB</td></tr>
 <tr><td><a href="logs/author.log"><code>author.log</code></a></td><td>495 B</td></tr><tr><td><a href="logs/catalog-build.log"><code>catalog-build.log</code></a></td><td>160 B</td></tr><tr><td><a href="logs/extract-evidence.log"><code>extract-evidence.log</code></a></td><td>8.9 KB</td></tr><tr><td><a href="logs/extract-ground.log"><code>extract-ground.log</code></a></td><td>3.4 KB</td></tr><tr><td><a href="logs/flow-g3g4.log"><code>flow-g3g4.log</code></a></td><td>1.8 KB</td></tr><tr><td><a href="logs/framework-build.log"><code>framework-build.log</code></a></td><td>517 B</td></tr><tr><td><a href="logs/framework-vite.log"><code>framework-vite.log</code></a></td><td>483 B</td></tr><tr><td><a href="logs/harness-build.log"><code>harness-build.log</code></a></td><td>400 B</td></tr><tr><td><a href="logs/replica-build.log"><code>replica-build.log</code></a></td><td>903 B</td></tr><tr><td><a href="logs/replica-home-only.log"><code>replica-home-only.log</code></a></td><td>726 B</td></tr><tr><td><a href="logs/validate-final.log"><code>validate-final.log</code></a></td><td>12.8 KB</td></tr><tr><td><a href="logs/validate-post-fix.log"><code>validate-post-fix.log</code></a></td><td>4.6 KB</td></tr><tr><td><a href="logs/validate-post-fix2.log"><code>validate-post-fix2.log</code></a></td><td>3.3 KB</td></tr><tr><td><a href="logs/validate-post-fix3.log"><code>validate-post-fix3.log</code></a></td><td>3.0 KB</td></tr><tr><td><a href="logs/validate-pre-fix.log"><code>validate-pre-fix.log</code></a></td><td>8.0 KB</td></tr></tbody></table>
 

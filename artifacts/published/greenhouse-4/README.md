@@ -2,9 +2,20 @@
 
 - source site: https://www.greenhouse.com/
 - run of record: `runs/greenhouse-4` (gitignored; this directory is the shareable export)
-- published: 2026-07-28T19:05:27Z
+- published: 2026-07-28T19:31:15Z
 - bundle size: 19.4 MB · 65 media files
-- replica fidelity score: 0.7437
+- replica fidelity score: 0.7437 (from the report beside the published page)
+
+## Run status — gates not passed
+
+This run did not pass its own quality gates. The artifacts below are its current best output, published for browsing and review — not a certified-good build.
+
+- The orchestrator writes a flow report when it finishes its gate spine, and this run has none — so the run never reached the end of that spine. (`brand/flow-report.json (missing)`)
+- The last recorded flow run crashed at gate G3 (harness): render_components_preview failed (exit 1) — harness quality failed. (`logs/flow-g3g4.log`)
+- Replica fidelity is 0.7437 against this run's 0.90 bar — below the bar. (`replica/replica-report.json`)
+- The gate did flag the weakest sections numerically: featureGrid 0.2783, testimonial 0.3088, hero 0.7719. Low band scores are where the composed page diverges most from the source (1 band with no measurable source height is left out of this list). (`replica/replica-report.md`)
+- Do not trust the run manifest over the report beside the page: the run manifest records status "completed" / pipeline_run_completed true, which the gate evidence above does not support; and the manifest's replica score (0.8206) predates the replica that is published here (0.7437 in the report beside the page). (`logs/manifest.json`)
+- The harness quality artifact on disk reports ok=true — it was written after the flow log above, so it reflects a later rebuild rather than a passing flow run. (`harness/harness-quality.json`)
 
 Browse it through the local Studio server (`./start-studio.sh`, port 1500):
 

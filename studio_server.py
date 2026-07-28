@@ -742,6 +742,9 @@ def published_bundles() -> list[dict]:
                 "published_at": data.get("published_at", ""),
                 "bytes": data.get("bytes", 0),
                 "run": data.get("run", ""),
+                # Bundles carry the published run's real gate outcome; the dashboard
+                # shows it so a browsable export is never mistaken for a green build.
+                "verdict": (data.get("status") or {}).get("verdict", "undetermined"),
                 "url": f"{base}/index.html",
                 "links": links,
             }
@@ -2090,16 +2093,22 @@ def render_published_html() -> str:
     bundles = published_bundles()
     if not bundles:
         return ""
+    verdict_badge = {
+        "passed": ("b-done", "gates passed"),
+        "not-passed": ("b-run", "gates not passed"),
+        "undetermined": ("b-idle", "gates unknown"),
+    }
     cards = []
     for b in bundles:
         lanes = ", ".join(_KIND_STYLE.get(l["kind"], ("link",))[0].lower() for l in b["links"]) or "—"
         meta = " · ".join(x for x in (b["published_at"][:10], _fmt_bytes(b["bytes"])) if x)
+        badge_class, badge_text = verdict_badge.get(b["verdict"], verdict_badge["undetermined"])
         cards.append(
             f'<a href="{_esc_attr(b["url"])}" target="_blank" rel="noopener" '
             'class="card p-4 block hover:border-lime-400/40 transition-colors">'
             '<div class="flex items-center justify-between gap-2 mb-1">'
             f'<div class="font-semibold truncate">{_esc_attr(b["title"])}</div>'
-            '<span class="badge b-done">published</span></div>'
+            f'<span class="badge {badge_class}">{_esc_attr(badge_text)}</span></div>'
             f'<div class="text-xs text-zinc-500 truncate">{_esc_attr(b["source_url"] or b["run"])}</div>'
             f'<div class="text-xs text-zinc-400 mt-2">{_esc_attr(lanes)}</div>'
             f'<div class="text-[11px] text-zinc-600 mt-1">{_esc_attr(meta)}</div></a>'

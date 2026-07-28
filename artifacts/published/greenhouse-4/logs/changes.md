@@ -248,3 +248,33 @@ the Studio serves as-is.
   earlier blank-page failure mode is not present
 - no run-absolute `/runs/greenhouse-4/...` reference survives in the bundle
 - `git check-ignore` over every bundle file: nothing ignored
+
+## 2026-07-28 — the published bundle now states this run's real gate outcome
+
+The bundle previously showed a fidelity number and nothing else, so a reader had no way
+to know the run was never green. `tools/publish_run_bundle.py` now derives the run's
+status from disk and renders it above the artifact links on the landing page, mirrors it
+into `README.md`, and records it structurally in `published.json` (`status`).
+
+**What it says for this run** (verdict `not-passed`)
+- no `brand/flow-report.json` exists, so the flow never reached the end of its gate spine
+- the last flow run crashed at gate **G3 (harness)**: `render_components_preview failed
+  (exit 1) — harness quality failed` (`logs/flow-g3g4.log`)
+- replica fidelity **0.7437** against this run's **0.90** bar — below the bar
+- weakest bands named: `featureGrid 0.2783`, `testimonial 0.3088`, `hero 0.7719`
+- the manifest's `status: completed` / `pipeline_run_completed: true` and its `0.8206`
+  score are contradicted by the evidence above and must not be trusted over the report
+  beside the page (`manifest.json` itself was left untouched — it is the record of what
+  happened; a separate change fixes the code that writes it)
+- `harness/harness-quality.json` reports `ok=true`, but it post-dates the flow log, so it
+  reflects a later rebuild rather than a passing flow run
+
+**Cross-brand scan** (new, report-only) — 38 matches in 19 files, none in visible content:
+21 are developer CSS comments in composed pages naming other brands ("HubSpot-era",
+"Remote's landscape aspect") emitted by the composer/harness renderers — generator-side
+fix, not an export fix; 11 are the legitimate `…-remote-logo.avif` customer logo; 5 are
+provenance mentions in `logs/changes.md` and the `fieldnote-design-system` package name in
+`logs/framework-vite.log`. The framework `<title>` is still normalised on relocation.
+
+**Verification** — 22/22 pages over `file://` and 22/22 over the Studio after the change
+(the landing page is now checked last, so its own lane previews exist when it is loaded).

@@ -30,12 +30,31 @@ def _write(path: Path, text: str) -> Path:
 
 
 class SyntheticRun:
-    """A minimal run tree with the three asset-reference styles a real run uses."""
+    """A minimal run tree with the three asset-reference styles a real run uses.
 
-    def __init__(self, root: Path, name: str = "acme-co"):
+    The gate-evidence inputs (flow report, flow log, manifest claims, replica report)
+    are parameters, so the status disclosure can be exercised for a crashed run, a
+    clean run, and a run whose logs say nothing conclusive.
+    """
+
+    def __init__(
+        self,
+        root: Path,
+        name: str = "acme-co",
+        *,
+        manifest_extra: dict | None = None,
+        replica_report: dict | None = None,
+        flow_report: dict | None = None,
+        flow_log: str | None = None,
+    ):
         self.run_dir = root / "runs" / name
         self.brand = self.run_dir / "brand"
-        _write(self.run_dir / "manifest.json", json.dumps({"brand": "Acme", "source_url": "https://acme.test/"}))
+        manifest = {"brand": "Acme", "source_url": "https://acme.test/", **(manifest_extra or {})}
+        _write(self.run_dir / "manifest.json", json.dumps(manifest))
+        if flow_report is not None:
+            _write(self.brand / "flow-report.json", json.dumps(flow_report))
+        if flow_log is not None:
+            _write(self.run_dir / "flow-g1g5.log", flow_log)
         _write(self.run_dir / "studio-project.json", json.dumps({"title": "Acme Co"}))
         _write(self.run_dir / "changes.md", "# acme-co\n")
         _write(self.run_dir / "build.log", "ok\n")
@@ -52,7 +71,10 @@ class SyntheticRun:
             '<img src="https://cdn.acme.test/assets/remote.png">'
             '<div style="background:url(assets/logo.svg)"></div></body></html>',
         )
-        _write(self.brand / "compose" / "replica" / "replica-report.json", json.dumps({"overall": 0.42}))
+        _write(
+            self.brand / "compose" / "replica" / "replica-report.json",
+            json.dumps(replica_report if replica_report is not None else {"overall": 0.42}),
+        )
         _write(self.brand / "compose" / "replica" / "replica-report.md", "# report\n")
 
         # Harness: an index plus a nested layout page (a deeper relative prefix).
@@ -151,6 +173,205 @@ class ExportTests(unittest.TestCase):
         self.assertFalse(stale.exists())
 
 
+CRASHED_FLOW_LOG = """[flow] G1 extraction …
+[flow] G1 PASS
+[flow] G2 validation …
+[flow] G2 PASS
+[flow] G3 harness …
+Traceback (most recent call last):
+  File "run_pipeline_flow.py", line 218, in <module>
+    sys.exit(main())
+RuntimeError: render_components_preview failed (exit 1): Traceback (most recent call last):
+  File "brand_pipeline/render_components_preview.py", line 3365, in main
+    raise RuntimeError("harness quality failed:
+"""
+
+PASSING_FLOW_REPORT = {
+    "schemaVersion": "pipeline-flow.v1",
+    "status": "completed",
+    "ok": True,
+    "generationAllowed": True,
+    "blockedGate": None,
+    "replicaBar": 0.9,
+    "gates": [{"gate": g, "ok": True, "status": "pass", "reason": ""} for g in ("G1", "G2", "G3", "G4")],
+}
+
+
+class StatusDisclosureTests(unittest.TestCase):
+    """The bundle has to state what the run's own gates said, from evidence on disk."""
+
+    def setUp(self) -> None:
+        self._tmp = TemporaryDirectory()
+        self.root = Path(self._tmp.name)
+        self._patch = mock.patch.object(prb, "REPO_ROOT", self.root)
+        self._patch.start()
+
+    def tearDown(self) -> None:
+        self._patch.stop()
+        self._tmp.cleanup()
+
+    def _publish(self, **kwargs) -> tuple[dict, str, str]:
+        run = SyntheticRun(self.root, **kwargs)
+        out = self.root / "artifacts" / "published" / run.run_dir.name
+        manifest = prb.export(run.run_dir, out)
+        return manifest, (out / "index.html").read_text(), (out / "README.md").read_text()
+
+    def test_crashed_run_is_disclosed_with_the_gate_it_died_on(self) -> None:
+        manifest, page, readme = self._publish(
+            manifest_extra={
+                "status": "completed",
+                "pipeline_run_completed": True,
+                "replica": {"overall": 0.82, "bar": 0.9},
+            },
+            replica_report={
+                "overall": 0.7437,
+                "bands": [
+                    {"id": "sec-0", "label": "navbar — chrome", "score": 0.0, "srcHeight": 0},
+                    {"id": "sec-1", "label": "featureGrid — invented copy", "score": 0.2783, "srcHeight": 132},
+                    {"id": "sec-2", "label": "footer — links", "score": 0.94, "srcHeight": 600},
+                ],
+            },
+            flow_log=CRASHED_FLOW_LOG,
+        )
+        status = manifest["status"]
+        self.assertEqual(status["verdict"], "not-passed")
+        self.assertFalse(status["flow_report"]["present"])
+        self.assertEqual((status["gate_outcome"]["state"], status["gate_outcome"]["gate"]), ("crashed", "G3"))
+        self.assertIn("harness quality failed", status["gate_outcome"]["reason"])
+        self.assertEqual(status["fidelity"]["overall"], 0.7437)
+        self.assertIs(status["fidelity"]["meets_bar"], False)
+        # A band with no source height to diff against is counted, never ranked.
+        self.assertEqual([b["id"] for b in status["fidelity"]["bands_below_bar"]], ["sec-1"])
+        self.assertEqual(status["fidelity"]["bands_unmeasurable"], ["sec-0"])
+        self.assertEqual(len(status["manifest_disagreements"]), 2)
+        for rendered in (page, readme):
+            self.assertIn("did not pass its own quality gates", rendered)
+            self.assertIn("crashed at gate G3", rendered)
+            self.assertIn("0.7437", rendered)
+            self.assertIn("0.90 bar", rendered)
+            self.assertIn("0.82", rendered)  # the stale manifest score, named as stale
+
+    def test_status_block_precedes_the_artifact_links(self) -> None:
+        _, page, _ = self._publish(flow_log=CRASHED_FLOW_LOG)
+        self.assertLess(page.index('class="status'), page.index("Rendered results"))
+
+    def test_passing_run_says_so_instead_of_inventing_a_problem(self) -> None:
+        manifest, page, readme = self._publish(
+            flow_report=PASSING_FLOW_REPORT,
+            replica_report={"overall": 0.93, "bands": [{"id": "sec-0", "score": 0.95, "srcHeight": 400}]},
+        )
+        status = manifest["status"]
+        self.assertEqual(status["verdict"], "passed")
+        self.assertTrue(status["flow_report"]["present"])
+        self.assertEqual(status["gate_outcome"]["state"], "completed")
+        self.assertIs(status["fidelity"]["meets_bar"], True)
+        self.assertEqual(status["fidelity"]["bar_source"], "brand/flow-report.json")
+        self.assertEqual(status["manifest_disagreements"], [])
+        for rendered in (page, readme):
+            self.assertIn("passed its own quality gates", rendered)
+            self.assertIn("cleared every gate (G1, G2, G3, G4)", rendered)
+            self.assertIn("the bar is met", rendered)
+            self.assertNotIn("did not pass", rendered)
+        self.assertIn('class="status ok"', page)
+
+    def test_blocked_gate_from_the_flow_report_is_reported_as_not_passed(self) -> None:
+        manifest, page, _ = self._publish(
+            flow_report={
+                **PASSING_FLOW_REPORT,
+                "status": "blocked",
+                "ok": False,
+                "blockedGate": "G4",
+                "gates": [{"gate": "G4", "ok": False, "status": "fail", "reason": "replica 0.71 below 0.90 bar"}],
+            },
+            replica_report={"overall": 0.71, "bands": []},
+        )
+        self.assertEqual(manifest["status"]["verdict"], "not-passed")
+        self.assertIn("stopped at gate G4: replica 0.71 below 0.90 bar", page)
+
+    def test_inconclusive_logs_say_so_rather_than_claiming_a_pass(self) -> None:
+        manifest, page, _ = self._publish(flow_log="[flow] G1 extraction …\n[flow] G1 PASS\n")
+        status = manifest["status"]
+        self.assertEqual(status["verdict"], "undetermined")
+        self.assertFalse(status["gate_outcome"]["determined"])
+        self.assertIn("could not be determined from run logs", page)
+        self.assertIn('class="status unknown"', page)
+
+    def test_a_foreign_flow_report_in_an_archive_never_certifies_this_run(self) -> None:
+        run = SyntheticRun(self.root, flow_log=CRASHED_FLOW_LOG)
+        _write(run.run_dir / "_archive" / "brand-copied-from-elsewhere" / "flow-report.json", json.dumps(PASSING_FLOW_REPORT))
+        manifest = prb.export(run.run_dir, self.root / "artifacts" / "published" / "acme-co")
+        self.assertEqual(manifest["status"]["verdict"], "not-passed")
+        self.assertFalse(manifest["status"]["flow_report"]["present"])
+
+    def test_a_stale_manifest_score_is_flagged_even_when_gates_passed(self) -> None:
+        manifest, _, _ = self._publish(
+            flow_report=PASSING_FLOW_REPORT,
+            manifest_extra={"replica": {"overall": 0.99, "bar": 0.9}},
+            replica_report={"overall": 0.93, "bands": []},
+        )
+        self.assertEqual(manifest["status"]["verdict"], "passed")
+        self.assertEqual(len(manifest["status"]["manifest_disagreements"]), 1)
+        self.assertIn("predates the replica that is published here", manifest["status"]["manifest_disagreements"][0])
+
+
+class ForeignStringScanTests(unittest.TestCase):
+    """Cross-brand and scaffold leakage is reported, with benign hits kept separate."""
+
+    def setUp(self) -> None:
+        self._tmp = TemporaryDirectory()
+        self.root = Path(self._tmp.name)
+        self._patch = mock.patch.object(prb, "REPO_ROOT", self.root)
+        self._patch.start()
+        (self.root / "runs" / "woodwave-v2").mkdir(parents=True)
+        (self.root / "runs" / "zeta-labs-3").mkdir(parents=True)
+
+    def tearDown(self) -> None:
+        self._patch.stop()
+        self._tmp.cleanup()
+
+    def _scan(self, files: dict[str, str], assets: tuple[str, ...] = ()) -> list[dict]:
+        out = self.root / "bundle"
+        for name in assets:
+            _write(out / "assets" / name, "DATA")
+        for rel, text in files.items():
+            _write(out / rel, text)
+        return prb.scan_foreign_strings(out, "Acme", "acme-co")
+
+    def test_flags_scaffold_defaults_and_other_run_names_in_markup(self) -> None:
+        found = self._scan(
+            {
+                "framework/index.html": "<title>Fieldnote</title><p>built for WoodWave</p>",
+                "logs/changes.md": "fixed a leaked woodwave offset",
+            }
+        )
+        by_token = {(f["token"], f["kind"], f["file"]) for f in found}
+        self.assertIn(("fieldnote", "page", "framework/index.html"), by_token)
+        self.assertIn(("woodwave", "page", "framework/index.html"), by_token)
+        self.assertIn(("woodwave", "provenance", "logs/changes.md"), by_token)
+
+    def test_separates_comment_leaks_from_visible_markup(self) -> None:
+        found = self._scan({"replica/index.html": "<style>/* a WoodWave-era default */</style><p>hello</p>"})
+        self.assertEqual([(f["kind"], f["in_comment"]) for f in found], [("page", True)])
+
+    def test_media_filenames_that_contain_a_brand_are_not_leaks(self) -> None:
+        found = self._scan(
+            {"replica/index.html": '<img src="../assets/040-abc-woodwave-logo.avif">'},
+            assets=("040-abc-woodwave-logo.avif",),
+        )
+        self.assertEqual({f["kind"] for f in found}, {"asset-name"})
+
+    def test_the_published_brand_and_generated_entry_points_are_never_flagged(self) -> None:
+        (self.root / "runs" / "acme-co").mkdir(parents=True)
+        found = self._scan(
+            {
+                "replica/index.html": "<h1>Acme</h1><p>acme-co run</p>",
+                "index.html": "<p>WoodWave mentioned by the report itself</p>",
+                "published.json": '{"token": "woodwave"}',
+            }
+        )
+        self.assertEqual(found, [])
+
+
 class StudioDiscoveryTests(unittest.TestCase):
     def setUp(self) -> None:
         self._tmp = TemporaryDirectory()
@@ -168,7 +389,9 @@ class StudioDiscoveryTests(unittest.TestCase):
             p.stop()
         self._tmp.cleanup()
 
-    def _bundle(self, name: str, *, published_at: str, run: str | None = None) -> None:
+    def _bundle(
+        self, name: str, *, published_at: str, run: str | None = None, status: dict | None = None
+    ) -> None:
         _write(
             self.published / name / "published.json",
             json.dumps(
@@ -178,6 +401,7 @@ class StudioDiscoveryTests(unittest.TestCase):
                     "brand": name.title(),
                     "run": run or f"runs/{name}",
                     "published_at": published_at,
+                    **({"status": status} if status else {}),
                     "bytes": 1024,
                     "lanes": [
                         {"kind": "replica", "label": "Composed replica", "path": "replica/index.html"},
@@ -214,6 +438,18 @@ class StudioDiscoveryTests(unittest.TestCase):
         self.assertTrue(studio_server.published_links("acme-co"))
         self.assertTrue(studio_server.published_links("acme-co-final"))
         self.assertEqual(studio_server.published_links("someone-else"), [])
+
+    def test_dashboard_carries_the_published_run_gate_outcome(self) -> None:
+        self._bundle("acme-co", published_at="2026-01-01T00:00:00Z", status={"verdict": "not-passed"})
+        self._bundle("zeta-labs", published_at="2026-02-01T00:00:00Z", status={"verdict": "passed"})
+        self._bundle("nostatus", published_at="2026-03-01T00:00:00Z")
+        self.assertEqual(
+            {b["name"]: b["verdict"] for b in studio_server.published_bundles()},
+            {"acme-co": "not-passed", "zeta-labs": "passed", "nostatus": "undetermined"},
+        )
+        band = studio_server.render_published_html()
+        for text in ("gates not passed", "gates passed", "gates unknown"):
+            self.assertIn(text, band)
 
     def test_dashboard_band_is_hidden_until_something_is_published(self) -> None:
         self.assertEqual(studio_server.render_published_html(), "")

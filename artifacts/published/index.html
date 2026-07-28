@@ -27,6 +27,14 @@ th, td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line);
 th { color:var(--muted); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.08em; }
 td code { color:var(--ink); }
 .meta { display:flex; flex-wrap:wrap; gap:8px 20px; color:var(--muted); font-size:13px; margin:14px 0 0; }
+.status { margin:26px 0 0; padding:18px 20px; border-radius:14px; background:#16161c;
+          border:1px solid var(--line); border-left:4px solid var(--st); }
+.status.warn { --st:#d99a34; } .status.ok { --st:#34d399; } .status.unknown { --st:#8b8b96; }
+.status .kicker { font-size:11px; text-transform:uppercase; letter-spacing:.12em; color:var(--st); font-weight:700; }
+.status .headline { margin:6px 0 0; font-size:15px; font-weight:600; color:var(--ink); }
+.status ul { margin:12px 0 0; padding:0 0 0 18px; font-size:13px; color:#d4d4d8; }
+.status li { margin-top:7px; }
+.status .src { color:#71717a; font-size:11px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
 .note { color:var(--muted); font-size:13px; max-width:70ch; }
 footer { margin-top:48px; color:#71717a; font-size:12px; }
 </style></head>
@@ -35,5 +43,5 @@ footer { margin-top:48px; color:#71717a; font-size:12px; }
 <p class="sub">Self-contained exports of finished pipeline runs — committed to the repo and served
 by the Studio, so they need no local run data.</p>
 <h2>Bundles</h2>
-<div class="grid"><article class="card"><div class="body"><h3><a href="greenhouse-4/index.html">Greenhouse →</a></h3><p>https://www.greenhouse.com/<br>published 2026-07-28T19:05:27Z · 19.4 MB · 4 rendered lanes</p></div></article></div>
+<div class="grid"><article class="card"><div class="body"><h3><a href="greenhouse-4/index.html">Greenhouse →</a></h3><p>https://www.greenhouse.com/<br>published 2026-07-28T19:31:15Z · 19.4 MB · 4 rendered lanes<br>gates: <strong>not-passed</strong></p></div></article></div>
 </div></body></html>

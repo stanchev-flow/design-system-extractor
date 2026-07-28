@@ -1,33 +1,7 @@
 {
-  "checked_at": "2026-07-28T19:05:57Z",
+  "checked_at": "2026-07-28T19:31:46Z",
   "base": "http://127.0.0.1:1500",
   "pages": [
-    {
-      "page": "index.html",
-      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/index.html",
-      "text": 3091,
-      "nodes": 232,
-      "images": 4,
-      "broken": [
-        "previews/replica.png",
-        "previews/harness.png",
-        "previews/catalog.png",
-        "previews/framework.png"
-      ],
-      "failed_requests": [
-        "404 http://127.0.0.1:1500/artifacts/published/greenhouse-4/previews/catalog.png",
-        "404 http://127.0.0.1:1500/artifacts/published/greenhouse-4/previews/framework.png",
-        "404 http://127.0.0.1:1500/artifacts/published/greenhouse-4/previews/harness.png",
-        "404 http://127.0.0.1:1500/artifacts/published/greenhouse-4/previews/replica.png"
-      ],
-      "console_errors": [
-        "Failed to load resource: the server responded with a status of 404 (File not found)",
-        "Failed to load resource: the server responded with a status of 404 (File not found)",
-        "Failed to load resource: the server responded with a status of 404 (File not found)",
-        "Failed to load resource: the server responded with a status of 404 (File not found)"
-      ],
-      "ok": false
-    },
     {
       "page": "replica/index.html",
       "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/replica/index.html",
@@ -258,7 +232,18 @@
       "failed_requests": [],
       "console_errors": [],
       "ok": true
+    },
+    {
+      "page": "index.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/index.html",
+      "text": 4530,
+      "nodes": 248,
+      "images": 4,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
     }
   ],
-  "ok": false
+  "ok": true
 }

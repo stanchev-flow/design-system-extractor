@@ -1,5 +1,50 @@
 # Changes
 
+## 2026-07-28 — Published bundles carry the run's real gate outcome, not just its artifacts
+
+A published bundle looked identical whether or not the run that produced it passed its own gates: a
+reader landed on a fidelity number with no provenance. The first bundle (greenhouse-4) was in fact a
+run that crashed at G3 and never met the replica bar, while its `manifest.json` claimed
+`status: completed`. Every bundle now discloses its own status, derived from disk.
+
+- **`tools/publish_run_bundle.py` — `derive_run_status()`.** Reads the outcome in authority order:
+  `brand/flow-report.json` (the orchestrator's own record: `ok`, `status`, `blockedGate`, per-gate
+  `reason`, `replicaBar`) → the flow log(s) → the replica report beside the published page. The run
+  `manifest.json` is never authoritative for status or score; it is only compared, so a stale or
+  over-optimistic manifest surfaces as a named disagreement instead of setting the headline. Verdict
+  is `passed` / `not-passed` / `undetermined`, and **absence of evidence is never read as a pass**:
+  logs that show only gates passing, or no gate outcome at all, yield "gate status could not be
+  determined from run logs". A `flow-report.json` found under `_archive/` (a copy carried over from
+  another run) is deliberately not accepted, so a foreign report cannot certify a crashed run.
+- **Rendered where a reader cannot miss it.** A status block sits above the artifact links on the
+  landing page (verified at y=240–625 in a 900px viewport, before the "Rendered results" heading),
+  mirrored into the bundle `README.md`, and recorded structurally in `published.json` under
+  `status` (verdict, flow-report presence, gate/state/reason, fidelity vs bar, per-band scores below
+  bar, manifest disagreements, rendered facts with their source paths). Tone is factual disclosure,
+  not a warning banner; each fact cites the file inside the bundle that supports it.
+  - Bands with no measurable source height are counted but never ranked as "weakest": a band the
+    source capture has nothing to diff against scores 0.0 for structural reasons, and listing it
+    would bury the real signal.
+- **`studio_server.py`.** `published_bundles()` exposes each bundle's `verdict`, and the dashboard's
+  "Published results" card shows it as a badge (`gates passed` / `gates not passed` /
+  `gates unknown`), so the Studio entry point can't present an unverified export as a green build.
+- **Cross-brand and scaffold leak scan (report-only), `scan_foreign_strings()`.** A published bundle
+  is scanned for scaffold placeholders and for the names of the repo's *other* runs, classified as
+  `page` / `data` / `asset-name` / `provenance` and flagged when inside a comment. Nothing is
+  rewritten: a hit in a changelog is expected provenance, and a hit in rendered markup needs a fix
+  in whichever generator emitted it. Findings land in `published.json` and in the CLI output.
+- **Verification ordering fix.** The landing page is now checked *last* and re-rendered immediately
+  before its check, because its thumbnails are the screenshots taken while checking the lanes —
+  checked first, it always reported its own previews as broken images.
+- **Tests** — `tests/test_published_bundle.py` grows to 26: crashed-gate disclosure, a genuinely
+  passing run (renders "gates passed", no invented problem), a `blockedGate` from a flow report,
+  inconclusive logs, an archived foreign flow report, a stale manifest score alongside passed gates,
+  status-block placement before the artifact links, the four scan classifications, and the Studio
+  verdict badge.
+
+Verification: `22/22` pages over `file://` and `22/22` over the Studio; 26/26 tests; the healthy-case
+fixture rendered and eyeballed.
+
 ## 2026-07-28 — Published bundles served publicly on GitHub Pages (indexing discouraged)
 
 The tracked bundles under `artifacts/published/` could only be browsed by cloning the repo and

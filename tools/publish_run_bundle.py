@@ -75,6 +75,28 @@ ASSET_REF_RE = re.compile(
     re.IGNORECASE,
 )
 
+# ── run status derivation ──────────────────────────────────────────────────────
+# The orchestrator (brand_pipeline/pipeline_flow.py) logs one line when a gate
+# starts and one when it resolves, and writes brand/flow-report.json when the run
+# finishes. A published bundle has to carry that outcome, because artifacts alone
+# look identical whether or not the run passed.
+FLOW_GATE_START_RE = re.compile(r"^\[flow\]\s+(G\d+)\s+([\w-]+)\s*[.…]", re.M)
+FLOW_GATE_RESULT_RE = re.compile(
+    r"^\[flow\]\s+(G\d+)\s+(PASS|FAIL|BLOCKED|NEEDS_ITERATION|SKIP)\b[ \t]*(?:—[ \t]*(.*))?$", re.M
+)
+CRASH_RE = re.compile(r"^Traceback \(most recent call last\):", re.M)
+ERROR_MSG_RE = re.compile(r"^\w*(?:Error|Exception):[ \t]*(.+)$", re.M)
+RAISED_MSG_RE = re.compile(r"""raise \w*(?:Error|Exception)\([ \t]*["'](.+?)["']?[ \t]*$""", re.M)
+
+# Scaffold defaults that must never survive into a published brand artifact. Kept
+# deliberately narrow: broad words like "placeholder" are legitimate design-system
+# vocabulary (input placeholder colors), so they would only produce noise.
+SCAFFOLD_TOKENS = ("fieldnote", "lorem ipsum", "your brand here", "brand-name-here", "replace-me")
+
+TEXT_SUFFIXES = {".html", ".htm", ".css", ".js", ".json", ".yaml", ".yml", ".md", ".log", ".sh", ".py", ".txt"}
+PAGE_SUFFIXES = {".html", ".htm", ".css", ".js"}
+DATA_SUFFIXES = {".json", ".yaml", ".yml"}
+
 # Brand fact files, in the order a reader should meet them. (filename, blurb).
 BRAND_FACTS = [
     ("brand.yaml", "Authored brand facts: tokens, surfaces, components, section patterns."),
@@ -196,6 +218,404 @@ def copy_plain(src: Path, dest: Path) -> bool:
     return True
 
 
+def _rel(path: Path, run_dir: Path) -> str:
+    try:
+        return path.relative_to(run_dir).as_posix()
+    except ValueError:
+        return path.name
+
+
+def _read_flow_report(run_dir: Path, brand_dir: Path) -> tuple[dict | None, str | None]:
+    """The orchestrator's own report, if it wrote one. Canonical locations only.
+
+    Archived copies (e.g. `_archive/<something>/flow-report.json` carried over from
+    another run) are deliberately NOT accepted: a report from a different run would
+    turn a crashed flow into a fake pass.
+    """
+    for candidate in (brand_dir / "flow-report.json", run_dir / "flow-report.json"):
+        if candidate.is_file():
+            try:
+                return json.loads(candidate.read_text()), _rel(candidate, run_dir)
+            except Exception as exc:  # noqa: BLE001
+                return None, f"{_rel(candidate, run_dir)} (unreadable: {exc})"
+    return None, None
+
+
+def _crash_reason(text: str) -> str:
+    """Best short description of a crash, preferring the innermost raised message."""
+    outer = ERROR_MSG_RE.search(text)
+    raised = RAISED_MSG_RE.findall(text)
+    parts = []
+    if outer:
+        first = outer.group(1).split("Traceback (most recent call last)")[0]
+        parts.append(first.strip().rstrip(":").strip()[:200])
+    if raised:
+        parts.append(raised[-1].strip().rstrip(":").strip()[:200])
+    return " — ".join(dict.fromkeys(p for p in parts if p))
+
+
+def _parse_flow_logs(run_dir: Path) -> dict:
+    """Derive the gate outcome from the flow log(s) when there is no flow report.
+
+    Returns `{"determined": bool, "state": ..., "gate", "gate_name", "reason",
+    "source"}`. A log that only shows gates PASSING is NOT treated as a completed
+    run: the spine length is not knowable from the log, so absence of a failure is
+    never read as success.
+    """
+    logs = sorted(run_dir.glob("*flow*.log"), key=lambda p: p.stat().st_mtime, reverse=True)
+    for log in logs:
+        text = log.read_text(errors="replace")
+        started = FLOW_GATE_START_RE.findall(text)
+        results = FLOW_GATE_RESULT_RE.findall(text)
+        failed = next((r for r in results if r[1] in ("FAIL", "BLOCKED", "NEEDS_ITERATION")), None)
+        # Sources are cited at their path INSIDE the bundle (run logs are copied to
+        # logs/), so a reader of the landing page can click through to the evidence.
+        if CRASH_RE.search(text) or ERROR_MSG_RE.search(text):
+            gate, gate_name = started[-1] if started else ("", "")
+            return {
+                "determined": True,
+                "state": "crashed",
+                "gate": gate,
+                "gate_name": gate_name,
+                "reason": _crash_reason(text),
+                "source": f"logs/{log.name}",
+                "run_path": _rel(log, run_dir),
+            }
+        if failed:
+            return {
+                "determined": True,
+                "state": "blocked",
+                "gate": failed[0],
+                "gate_name": "",
+                "reason": (failed[2] or "").strip(),
+                "source": f"logs/{log.name}",
+                "run_path": _rel(log, run_dir),
+            }
+    return {
+        "determined": False,
+        "state": "undetermined",
+        "gate": "",
+        "gate_name": "",
+        "reason": "",
+        "source": ", ".join(f"logs/{p.name}" for p in logs),
+        "run_path": ", ".join(_rel(p, run_dir) for p in logs),
+    }
+
+
+def derive_run_status(run_dir: Path, brand_dir: Path, meta: dict, replica_report: dict) -> dict:
+    """Read the run's REAL outcome off disk, for disclosure on the bundle page.
+
+    Sources, in order of authority: `brand/flow-report.json` (the orchestrator's own
+    record) → the flow log(s) → the replica report beside the published page. The run
+    `manifest.json` is never treated as authoritative for status or score; it is only
+    compared, so a stale or over-optimistic manifest surfaces as a disagreement
+    instead of silently setting the headline.
+
+    Verdict is one of `passed` / `not-passed` / `undetermined`. `undetermined` is used
+    whenever the evidence does not support a conclusion — absence of a recorded
+    failure is never read as a pass.
+    """
+    run_manifest = meta.get("manifest") or {}
+    report, report_path = _read_flow_report(run_dir, brand_dir)
+    facts: list[dict] = []
+
+    if report:
+        gate_state = "completed" if (report.get("ok") and report.get("status") == "completed") else "blocked"
+        gate = {
+            "determined": True,
+            "state": gate_state,
+            "gate": report.get("blockedGate") or "",
+            "gate_name": "",
+            "reason": next(
+                (g.get("reason", "") for g in report.get("gates", []) if not g.get("ok")), ""
+            ),
+            "source": report_path or "flow-report.json",
+        }
+        cleared = [g.get("gate") for g in report.get("gates", []) if g.get("ok")]
+        if gate_state == "completed":
+            facts.append(
+                {
+                    "text": f"The orchestrator completed and cleared every gate ({', '.join(cleared) or 'none recorded'}).",
+                    "source": gate["source"],
+                }
+            )
+        else:
+            blocked = gate["gate"] or "an unnamed gate"
+            facts.append(
+                {
+                    "text": f"The orchestrator stopped at gate {blocked}"
+                    + (f": {gate['reason']}" if gate["reason"] else "."),
+                    "source": gate["source"],
+                }
+            )
+    else:
+        gate = _parse_flow_logs(run_dir)
+        facts.append(
+            {
+                "text": "The orchestrator writes a flow report when it finishes its gate spine, and this run "
+                "has none — so the run never reached the end of that spine.",
+                "source": "brand/flow-report.json (missing)",
+            }
+        )
+        if gate["state"] == "crashed":
+            where = f"gate {gate['gate']}" + (f" ({gate['gate_name']})" if gate["gate_name"] else "")
+            facts.append(
+                {
+                    "text": f"The last recorded flow run crashed at {where}"
+                    + (f": {gate['reason']}." if gate["reason"] else "."),
+                    "source": gate["source"],
+                }
+            )
+        elif gate["state"] == "blocked":
+            facts.append(
+                {
+                    "text": f"The last recorded flow run was blocked at gate {gate['gate']}"
+                    + (f": {gate['reason']}." if gate["reason"] else "."),
+                    "source": gate["source"],
+                }
+            )
+        else:
+            facts.append(
+                {
+                    "text": "Gate status could not be determined from run logs — no flow log records a gate "
+                    "outcome, and no conclusion is drawn from that absence.",
+                    "source": gate["source"] or "no flow log found",
+                }
+            )
+
+    # Replica fidelity: the report beside the published page, against whichever bar
+    # the run declared. No bar on disk means no pass/fail claim about fidelity.
+    overall = replica_report.get("overall")
+    bar = (report or {}).get("replicaBar")
+    bar_source = report_path if bar is not None else None
+    if bar is None:
+        bar = (run_manifest.get("replica") or {}).get("bar")
+        bar_source = "manifest.json (declared bar)" if bar is not None else None
+    fidelity = {"overall": overall, "bar": bar, "bar_source": bar_source, "meets_bar": None, "bands_below_bar": []}
+    if overall is not None and bar is not None:
+        fidelity["meets_bar"] = overall >= bar
+        facts.append(
+            {
+                "text": f"Replica fidelity is {overall} against this run's {bar:.2f} bar"
+                + (" — the bar is met." if fidelity["meets_bar"] else " — below the bar."),
+                "source": "replica/replica-report.json",
+            }
+        )
+    elif overall is not None:
+        facts.append(
+            {
+                "text": f"Replica fidelity is {overall}; the run declares no bar to compare it against.",
+                "source": "replica/replica-report.json",
+            }
+        )
+    if overall is not None and bar is not None and not fidelity["meets_bar"]:
+        scored = [b for b in replica_report.get("bands", []) if isinstance(b.get("score"), (int, float))]
+        # A band whose source height is 0 has nothing to diff against, so its score is
+        # an artifact of the pairing rather than a fidelity signal. Counted, not ranked.
+        unmeasurable = [b for b in scored if not (b.get("srcHeight") or 0) > 0]
+        weak = sorted((b for b in scored if b["score"] < bar and b not in unmeasurable), key=lambda b: b["score"])
+        fidelity["bands_below_bar"] = [
+            {
+                "id": b.get("id", ""),
+                "label": (b.get("label") or "").split("—")[0].strip() or b.get("id", ""),
+                "score": b["score"],
+            }
+            for b in weak
+        ]
+        fidelity["bands_unmeasurable"] = [b.get("id", "") for b in unmeasurable]
+        worst = ", ".join(f"{b['label'] or b['id']} {b['score']}" for b in fidelity["bands_below_bar"][:3])
+        if worst:
+            facts.append(
+                {
+                    "text": f"The gate did flag the weakest sections numerically: {worst}. Low band scores are "
+                    "where the composed page diverges most from the source"
+                    + (
+                        f" ({len(unmeasurable)} band"
+                        + (" with" if len(unmeasurable) == 1 else "s with")
+                        + " no measurable source height "
+                        + ("is" if len(unmeasurable) == 1 else "are")
+                        + " left out of this list)."
+                        if unmeasurable
+                        else "."
+                    ),
+                    "source": "replica/replica-report.md",
+                }
+            )
+
+    # The run manifest is compared, never trusted.
+    disagreements: list[str] = []
+    claims_done = run_manifest.get("status") == "completed" or run_manifest.get("pipeline_run_completed") is True
+    if claims_done and gate["state"] != "completed":
+        disagreements.append(
+            f'the run manifest records status "{run_manifest.get("status")}" / '
+            f"pipeline_run_completed {json.dumps(run_manifest.get('pipeline_run_completed'))}, "
+            "which the gate evidence above does not support"
+        )
+    manifest_overall = (run_manifest.get("replica") or {}).get("overall")
+    if overall is not None and manifest_overall is not None and abs(manifest_overall - overall) > 1e-4:
+        disagreements.append(
+            f"the manifest's replica score ({manifest_overall}) predates the replica that is published here "
+            f"({overall} in the report beside the page)"
+        )
+    if disagreements:
+        facts.append(
+            {
+                "text": "Do not trust the run manifest over the report beside the page: "
+                + "; and ".join(disagreements)
+                + ".",
+                "source": "logs/manifest.json",
+            }
+        )
+
+    # Any gate artifact that carries its own verdict, reported as-is.
+    quality = brand_dir / "harness" / "harness-quality.json"
+    if quality.is_file():
+        try:
+            qdata = json.loads(quality.read_text())
+        except Exception:  # noqa: BLE001
+            qdata = {}
+        if "ok" in qdata:
+            flow_log = run_dir / (gate.get("run_path") or "")
+            newer = flow_log.is_file() and quality.stat().st_mtime > flow_log.stat().st_mtime
+            facts.append(
+                {
+                    "text": f"The harness quality artifact on disk reports ok={json.dumps(qdata['ok'])}"
+                    + (
+                        " — it was written after the flow log above, so it reflects a later rebuild "
+                        "rather than a passing flow run."
+                        if newer
+                        else "."
+                    ),
+                    "source": "harness/harness-quality.json",
+                }
+            )
+
+    failed_fidelity = fidelity["meets_bar"] is False
+    if gate["state"] == "completed" and not failed_fidelity:
+        verdict = "passed"
+        headline = (
+            "This run passed its own quality gates. The artifacts below are the output of that "
+            "passing run, published for browsing and review."
+        )
+    elif gate["state"] in ("crashed", "blocked") or failed_fidelity:
+        verdict = "not-passed"
+        headline = (
+            "This run did not pass its own quality gates. The artifacts below are its current best "
+            "output, published for browsing and review — not a certified-good build."
+        )
+    else:
+        verdict = "undetermined"
+        headline = (
+            "Whether this run passed its own quality gates could not be determined from what is on "
+            "disk. Treat the artifacts below as unverified output, published for browsing and review."
+        )
+
+    return {
+        "verdict": verdict,
+        "headline": headline,
+        "flow_report": {"present": report is not None, "path": report_path},
+        "gate_outcome": gate,
+        "fidelity": fidelity,
+        "manifest_disagreements": disagreements,
+        "facts": facts,
+    }
+
+
+def scan_foreign_strings(out_dir: Path, brand: str, run_name: str) -> list[dict]:
+    """Report scaffold defaults and other brands' names surviving in the bundle.
+
+    Cross-brand leakage has shipped before (a foreign hero offset, a scaffold page
+    title), so a published bundle is scanned for: the scaffold placeholder tokens
+    above, and the names of the OTHER runs in this repo. Matches are classified, not
+    judged — `page` hits in visible markup matter, hits inside a media filename or a
+    changelog usually do not — and nothing is rewritten here: content fixes belong to
+    whichever generator emitted the string.
+    """
+    brand_words = {w for w in re.split(r"[^a-z0-9]+", f"{brand} {run_name}".lower()) if len(w) > 2}
+    tokens = set(SCAFFOLD_TOKENS)
+    runs_root = REPO_ROOT / "runs"
+    if runs_root.is_dir():
+        for run in runs_root.iterdir():
+            if not run.is_dir() or run.name.startswith(".") or run.name == run_name:
+                continue
+            token = re.sub(r"[-_]?v?\d+$", "", run.name.lower())
+            if token and len(token) > 3 and token not in brand_words:
+                tokens.add(token)
+    # Media file names carry third-party brands legitimately (a customer logo), and
+    # the generated apps refer to the same files by id — the name minus extension and
+    # minus the curation index prefix. All three spellings count as "asset name".
+    asset_names: set[str] = set()
+    for asset in (out_dir / "assets").glob("*"):
+        stem = asset.stem.lower()
+        asset_names.update({asset.name.lower(), stem, re.sub(r"^\d+-", "", stem)})
+    # The bundle's own generated entry points are skipped: their content is derived
+    # from the payload (published.json even carries these findings), so including them
+    # would just report the report.
+    generated = {"index.html", "README.md", "published.json", "verify.json"}
+    findings: list[dict] = []
+    for path in sorted(out_dir.rglob("*")):
+        if not path.is_file() or path.suffix.lower() not in TEXT_SUFFIXES:
+            continue
+        if path.parent == out_dir and path.name in generated:
+            continue
+        text = path.read_text(errors="replace")
+        comments = [
+            (m.start(), m.end())
+            for m in re.finditer(r"/\*.*?\*/|<!--.*?-->", text, re.S)
+        ]
+        for token in sorted(tokens):
+            for m in re.finditer(rf"(?<![a-z0-9]){re.escape(token)}(?![a-z0-9])", text, re.I):
+                run_of_path = re.search(r"[\w.~%+-]*$", text[max(0, m.start() - 120) : m.start()]).group(0) + re.match(
+                    r"[\w.~%+-]*", text[m.start() :]
+                ).group(0)
+                near = run_of_path.lower()
+                # Only a match embedded in a longer file-name-ish run counts as an asset
+                # name; a bare word in prose ("Remote's spacing rung") must not be
+                # excused just because some media file happens to contain it.
+                kind = (
+                    "asset-name"
+                    if len(near) > len(token) and any(name in near or near in name for name in asset_names)
+                    else "page"
+                    if path.suffix.lower() in PAGE_SUFFIXES
+                    else "data"
+                    if path.suffix.lower() in DATA_SUFFIXES
+                    else "provenance"
+                )
+                findings.append(
+                    {
+                        "token": token,
+                        "file": str(path.relative_to(out_dir)),
+                        "kind": kind,
+                        "in_comment": any(start <= m.start() < end for start, end in comments),
+                        "context": " ".join(text[max(0, m.start() - 60) : m.start() + 60].split())[:140],
+                    }
+                )
+    return findings
+
+
+def report_foreign_strings(findings: list[dict]) -> None:
+    """Print the cross-brand / scaffold scan, loudest category first.
+
+    Nothing here fails the export: a hit in a changelog is expected provenance, and a
+    hit in rendered markup needs a generator-side fix that this script must not make.
+    """
+    if not findings:
+        print("  foreign strings: none found (scaffold defaults, other run names)")
+        return
+    order = {"page": 0, "data": 1, "asset-name": 2, "provenance": 3}
+    groups: dict[tuple, list[dict]] = {}
+    for f in findings:
+        groups.setdefault((f["kind"], f["in_comment"], f["token"]), []).append(f)
+    print(f"  foreign strings: {len(findings)} match(es) in {len({f['file'] for f in findings})} file(s) — review only:")
+    for (kind, in_comment, token), hits in sorted(
+        groups.items(), key=lambda kv: (order.get(kv[0][0], 9), -len(kv[1]))
+    ):
+        files = sorted({h["file"] for h in hits})
+        shown = ", ".join(files[:3]) + (f" +{len(files) - 3} more" if len(files) > 3 else "")
+        print(f"    [{kind}{' comment' if in_comment else ''}] '{token}' ×{len(hits)} in {shown}")
+        print(f"      {hits[0]['context']}")
+
+
 def load_run_meta(run_dir: Path) -> dict:
     meta: dict = {"name": run_dir.name}
     for fname, keys in (("manifest.json", None), ("studio-project.json", None)):
@@ -233,7 +653,7 @@ def export(run_dir: Path, out_dir: Path) -> dict:
         ],
     )
     lanes: list[dict] = []
-    replica_overall = None
+    replica_report: dict = {}
 
     # ── replica: the composed rebuild of the source page, plus its fidelity proof
     replica_src = brand_dir / "compose" / "replica"
@@ -256,14 +676,13 @@ def export(run_dir: Path, out_dir: Path) -> dict:
             copy_plain(replica_src / name, out_dir / "replica" / name)
         for diff in sorted((replica_src / "diff").glob("*.png")):
             copy_plain(diff, out_dir / "replica" / "diff" / diff.name)
-        report = {}
-        try:
-            report = json.loads((replica_src / "replica-report.json").read_text())
-        except Exception:  # noqa: BLE001
-            pass
         # The report next to the page is the truth for the page being published;
         # the run manifest can predate a later replica rebuild.
-        replica_overall = report.get("overall")
+        try:
+            replica_report = json.loads((replica_src / "replica-report.json").read_text())
+        except Exception:  # noqa: BLE001
+            replica_report = {}
+        report = replica_report
         lanes.append(
             {
                 "kind": "replica",
@@ -389,12 +808,14 @@ def export(run_dir: Path, out_dir: Path) -> dict:
         "title": meta["title"],
         "source_url": meta["source_url"],
         "published_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "replica_overall": replica_overall,
+        "replica_overall": replica_report.get("overall"),
+        "status": derive_run_status(run_dir, brand_dir, meta, replica_report),
         "lanes": lanes,
         "facts": facts,
         "logs": logs,
         "assets_published": pool.count,
         "assets_unresolved": sorted(pool.missing),
+        "foreign_strings": scan_foreign_strings(out_dir, meta["brand"], run_dir.name),
         "run_manifest": meta.get("manifest", {}),
     }
     finalize(manifest, out_dir)
@@ -438,6 +859,14 @@ th, td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line);
 th { color:var(--muted); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.08em; }
 td code { color:var(--ink); }
 .meta { display:flex; flex-wrap:wrap; gap:8px 20px; color:var(--muted); font-size:13px; margin:14px 0 0; }
+.status { margin:26px 0 0; padding:18px 20px; border-radius:14px; background:#16161c;
+          border:1px solid var(--line); border-left:4px solid var(--st); }
+.status.warn { --st:#d99a34; } .status.ok { --st:#34d399; } .status.unknown { --st:#8b8b96; }
+.status .kicker { font-size:11px; text-transform:uppercase; letter-spacing:.12em; color:var(--st); font-weight:700; }
+.status .headline { margin:6px 0 0; font-size:15px; font-weight:600; color:var(--ink); }
+.status ul { margin:12px 0 0; padding:0 0 0 18px; font-size:13px; color:#d4d4d8; }
+.status li { margin-top:7px; }
+.status .src { color:#71717a; font-size:11px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
 .note { color:var(--muted); font-size:13px; max-width:70ch; }
 footer { margin-top:48px; color:#71717a; font-size:12px; }
 """
@@ -445,6 +874,48 @@ footer { margin-top:48px; color:#71717a; font-size:12px; }
 
 def _e(text) -> str:
     return html.escape(str(text if text is not None else ""))
+
+
+_STATUS_STYLE = {
+    "passed": ("ok", "Run status — gates passed"),
+    "not-passed": ("warn", "Run status — gates not passed"),
+    "undetermined": ("unknown", "Run status — undetermined"),
+}
+
+
+def render_status_html(status: dict) -> str:
+    """The provenance block: what the run's own gates actually said.
+
+    Placed above the artifact links, because the artifacts look the same whether or
+    not the run passed. Factual and calm by design — this is a disclosure, not a
+    warning banner.
+    """
+    if not status:
+        return ""
+    css_class, kicker = _STATUS_STYLE.get(status.get("verdict", ""), _STATUS_STYLE["undetermined"])
+    items = "".join(
+        f'<li>{_e(f["text"])} <span class="src">{_e(f.get("source", ""))}</span></li>'
+        for f in status.get("facts", [])
+    )
+    return (
+        f'<section class="status {css_class}">'
+        f'<div class="kicker">{_e(kicker)}</div>'
+        f'<p class="headline">{_e(status.get("headline", ""))}</p>'
+        + (f"<ul>{items}</ul>" if items else "")
+        + "</section>"
+    )
+
+
+def render_status_markdown(status: dict) -> list[str]:
+    if not status:
+        return []
+    _, kicker = _STATUS_STYLE.get(status.get("verdict", ""), _STATUS_STYLE["undetermined"])
+    lines = [f"## {kicker}", "", status.get("headline", ""), ""]
+    for fact in status.get("facts", []):
+        source = fact.get("source", "")
+        lines.append(f"- {fact['text']}" + (f" (`{source}`)" if source else ""))
+    lines.append("")
+    return lines
 
 
 def render_landing(manifest: dict, out_dir: Path) -> str:
@@ -492,15 +963,17 @@ def render_landing(manifest: dict, out_dir: Path) -> str:
 <h1>{_e(manifest["brand"])} — published extraction results</h1>
 <p class="sub">Everything below was generated from screenshots and DOM/CSS measurements of the
 source site. No hand-written page code: the design system is extracted into facts, and the pages
-are composed back out of those facts as proof the facts are complete.</p>
+are composed back out of those facts, so the pages double as a check on the facts.</p>
 <div class="meta">
   <span>source: {source_link}</span>
   <span>run: <code>{_e(manifest["run"])}</code></span>
   <span>published: {_e(manifest["published_at"])}</span>
-  {f'<span>replica fidelity: <strong>{_e(replica)}</strong></span>' if replica is not None else ''}
-  {f'<span>schema validation: {_e(validation.get("c1_c28_errors", 0))} errors / {_e(validation.get("c1_c28_warnings", 0))} warnings</span>' if validation else ''}
+  {f'<span>replica fidelity (report): <strong>{_e(replica)}</strong></span>' if replica is not None else ''}
+  {f'<span>schema validation (run manifest): {_e(validation.get("c1_c28_errors", 0))} errors / {_e(validation.get("c1_c28_warnings", 0))} warnings</span>' if validation else ''}
   <span>media: {_e(manifest["assets_published"])} files</span>
 </div>
+
+{render_status_html(manifest.get("status") or {})}
 
 <h2>Rendered results</h2>
 <div class="grid">{"".join(cards)}</div>
@@ -534,9 +1007,10 @@ def render_readme(manifest: dict, out_dir: Path) -> str:
         f"- bundle size: {fmt_size(size_of(out_dir))} · {manifest['assets_published']} media files",
     ]
     if replica is not None:
-        lines.append(f"- replica fidelity score: {replica}")
+        lines.append(f"- replica fidelity score: {replica} (from the report beside the published page)")
+    lines += [""]
+    lines += render_status_markdown(manifest.get("status") or {})
     lines += [
-        "",
         "Browse it through the local Studio server (`./start-studio.sh`, port 1500):",
         "",
         f"    http://127.0.0.1:1500/{out_dir.relative_to(REPO_ROOT).as_posix()}/index.html",
@@ -584,7 +1058,8 @@ def write_published_index(root: Path) -> None:
         f'<article class="card"><div class="body">'
         f'<h3><a href="{_e(b["name"])}/index.html">{_e(b["brand"])} →</a></h3>'
         f'<p>{_e(b.get("source_url") or "")}<br>published {_e(b.get("published_at"))} · '
-        f'{fmt_size(b.get("bytes", 0))} · {len(b.get("lanes", []))} rendered lanes</p>'
+        f'{fmt_size(b.get("bytes", 0))} · {len(b.get("lanes", []))} rendered lanes<br>'
+        f'gates: <strong>{_e((b.get("status") or {}).get("verdict", "undetermined"))}</strong></p>'
         "</div></article>"
         for b in bundles
     )
@@ -623,8 +1098,13 @@ def verify(out_dir: Path, manifest: dict, base_url: str | None) -> dict:
         return {}
 
     full_pages = ["index.html"] + [lane["path"] for lane in manifest["lanes"]]
-    pages = full_pages + sorted(
-        str(p.relative_to(out_dir)) for p in (out_dir / "harness" / "layouts").glob("*.html")
+    # The landing page is checked LAST, because its thumbnails are the screenshots
+    # taken while checking the lanes — verified before they exist, it would always
+    # report its own previews as broken images.
+    pages = (
+        [lane["path"] for lane in manifest["lanes"]]
+        + sorted(str(p.relative_to(out_dir)) for p in (out_dir / "harness" / "layouts").glob("*.html"))
+        + ["index.html"]
     )
     rel_root = out_dir.relative_to(REPO_ROOT).as_posix()
     results: list[dict] = []
@@ -638,6 +1118,10 @@ def verify(out_dir: Path, manifest: dict, base_url: str | None) -> dict:
             return {}
         ctx = browser.new_context(viewport={"width": 1440, "height": 900}, device_scale_factor=1)
         for rel in pages:
+            if rel == "index.html":
+                # Re-render with the previews now on disk, so what gets checked is what
+                # ships (finalize() rewrites it again only to update the size figures).
+                (out_dir / "index.html").write_text(render_landing(manifest, out_dir), encoding="utf-8")
             page = ctx.new_page()
             failed: list[str] = []
             errors: list[str] = []
@@ -753,12 +1237,17 @@ def main(argv: list[str] | None = None) -> int:
     manifest = export(run_dir, out_dir)
     for lane in manifest["lanes"]:
         print(f"  lane: {lane['kind']:<10} {lane['path']}")
+    status = manifest.get("status") or {}
+    print(f"  run status: {status.get('verdict')} — {status.get('headline', '')[:80]}…")
+    for fact in status.get("facts", []):
+        print(f"    · {fact['text']} [{fact.get('source', '')}]")
     print(f"  brand facts: {len(manifest['facts'])} files")
     print(f"  media: {manifest['assets_published']} files, {fmt_size(size_of(out_dir / 'assets'))}")
     if manifest["assets_unresolved"]:
         print(f"  warn: {len(manifest['assets_unresolved'])} references did not resolve to a file:")
         for name in manifest["assets_unresolved"][:10]:
             print(f"    {name}")
+    report_foreign_strings(manifest.get("foreign_strings") or [])
 
     report = verify(out_dir, manifest, args.base_url) if args.verify else {}
     # Verification produces the lane previews, so the entry points are rewritten

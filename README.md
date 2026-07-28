@@ -300,6 +300,12 @@ It copies the replica, harness, catalog, framework build, brand fact files, logs
 referenced media; rewrites every asset reference to the bundle's own `assets/`; then loads each
 page in headless Chromium and records the result in the bundle's `verify.json`.
 
+Each bundle also states the **real outcome of the run that produced it** — read off disk from the
+orchestrator's `flow-report.json`, the flow logs and the replica report, never from the run
+manifest's own claim — as a status block above the artifact links, in the bundle `README.md`, in
+`published.json` (`status`), and as a badge on the Studio dashboard. A run whose gates did not pass
+says so; a run whose logs are inconclusive says that instead of claiming success.
+
 ### Public GitHub Pages mirror
 
 The same bundles are served publicly, so results can be shared with a link instead of a clone:
