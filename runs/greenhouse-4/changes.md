@@ -596,25 +596,34 @@ absent, which is correct.
 | project | tracked subset | new bytes |
 | --- | --- | --- |
 | `greenhouse` | 12.0 MB | 12.0 MB |
-| `greenhouse-4` | 34.5 MB | 0.7 MB |
+| `greenhouse-4` | 34.5 MB | 0.6 MB |
 | `greenhouse-v2` | 59.6 MB | 53.4 MB |
 | `hubspot` | 19.0 MB | 19.0 MB |
-| `hubspot-v2` | 68.0 MB | 9.9 MB |
+| `hubspot-v2` | 68.0 MB | 9.7 MB |
 | `hubspot-v3` | 21.9 MB | 21.9 MB |
 | `hubspot-v4` | 13.2 MB | 13.2 MB |
 | `relume-test` | 14.4 MB | 14.4 MB |
-| `remote` | 49.3 MB | 5.4 MB |
+| `remote` | 49.3 MB | 5.1 MB |
 | `woodwave` | 124.8 MB | 124.8 MB |
-| `woodwave-v2` | 18.1 MB | 19.2 MB |
-| **total** | **434.9 MB** | **293 MB** |
+| `woodwave-v2` | 18.1 MB | 18.1 MB |
+| **total** | **434.9 MB** | **292.3 MB** |
 
 `hubspot-v2` and `remote` cost so little because 248 MB of them was already
 tracked from before the ignore rule; what they were missing was the catalog, the
 source capture and a handful of lane assets. `woodwave` is the outlier and it is
 not fat with waste — it is ten composed page lanes, each carrying the media its
-own page references. Git stores identical blobs once, so the 293 MB of new files
-is **162 MB of distinct content** in history; the rest is the working-tree cost
-of lane-relative asset copies. Clone measured at **2.5 GB** (867 MB of it `.git`).
+own page references. Git stores identical blobs once, so the 292 MB of new files
+is **163 MB of distinct content** in history; the rest is the working-tree cost
+of lane-relative asset copies. Clone measured at **2.7 GB** (866 MB of it `.git`),
+up from the 2.0 GB it was before any of this.
+
+One bookkeeping error worth recording: `--stage` had already put the run files in
+the index when the tool commit was made, and `git commit` with no pathspec takes
+the whole index. So `030543b` ("ship only the run files a Studio page actually
+shows") carries the 2933 tracked run files, and `333b892` ("a clone gets eleven
+real Studio projects") carries only the `.gitignore`. The two messages describe
+each other's contents. Already pushed and not worth rewriting history over; stage
+last, or commit with an explicit pathspec.
 
 ### Two tracking rules earned their keep
 
