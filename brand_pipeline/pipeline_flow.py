@@ -251,16 +251,31 @@ def gate_g3_harness(brand_dir: Path, *, build: bool = True,
             catalog_stale = True
 
     built: list[str] = []
-    if build and (not preview.is_file() or stale):
-        _run_module_cli("render_components_preview",
-                        [str(brand_yaml), "-o", str(preview.parent)])
-        if preview.is_file():
-            built.append("components-preview")
-    if build and (catalog_stale or not (catalog.is_file() and catalog_json.is_file())):
-        _run_module_cli("render_catalog",
-                        [str(brand_yaml), "-o", str(catalog.parent)])
-        if catalog.is_file():
-            built.append("catalog")
+    log_dir = _flow_log_dir(brand_dir)
+    try:
+        if build and (not preview.is_file() or stale):
+            _run_module_cli("render_components_preview",
+                            [str(brand_yaml), "-o", str(preview.parent)],
+                            log_dir=log_dir)
+            if preview.is_file():
+                built.append("components-preview")
+        if build and (catalog_stale or not (catalog.is_file() and catalog_json.is_file())):
+            _run_module_cli("render_catalog",
+                            [str(brand_yaml), "-o", str(catalog.parent)],
+                            log_dir=log_dir)
+            if catalog.is_file():
+                built.append("catalog")
+    except ModuleCliError as exc:
+        # A build that died is a BLOCKED gate, not an exception escaping the flow:
+        # letting it propagate skips write_flow_report entirely, so the run keeps no
+        # record of the failure at all. Record the child's full output here.
+        return GateResult(
+            "G3", GATE_NAMES["G3"], False, "blocked", str(exc),
+            {"previewPath": _rel(preview), "built": built,
+             "failedModule": exc.module, "exitCode": exc.returncode,
+             "childLog": _rel(exc.log_path) if exc.log_path else None,
+             "childOutput": exc.output},
+            time.time() - t0)
 
     if not preview.is_file():
         return GateResult(
@@ -640,19 +655,83 @@ def assert_generation_allowed(brand_dir: Path,
     return detail
 
 
-# ── module CLI helper ─────────────────────────────────────────────────────────
+# ── child-process output: readable console, COMPLETE record ───────────────────
+#
+# A gate that shells out owns the child's diagnosis. Truncating that output into an
+# exception message destroys the only copy of it: a harness-quality failure whose
+# issue list is cut off after the header cannot be acted on once the process is gone.
+# So every child's output is written IN FULL to a log beside the run's other logs,
+# and the message an operator reads carries a generous excerpt plus the log path.
+MODULE_CLI_EXCERPT_CHARS = 4000
+REPORT_REASON_CHARS = 200
 
-def _run_module_cli(module: str, argv: list[str]) -> None:
+
+def _flow_log_dir(brand_dir: Path) -> Path:
+    """Where this lane's ``*.log`` files live — the run root for a
+    ``runs/<lane>/brand`` layout, else the lane dir itself. This is the directory
+    the bundle publisher already collects logs from, so a gate log ships with the
+    run it explains."""
+    bd = Path(brand_dir)
+    return bd.parent if bd.name == "brand" else bd
+
+
+def _write_child_log(log_dir: Path | None, module: str, cmd: list[str],
+                     returncode: int, output: str) -> Path | None:
+    """Persist a child process's COMPLETE output. Best-effort: a log we cannot
+    write must never be the reason a gate reports something other than the real
+    failure."""
+    if log_dir is None:
+        return None
+    try:
+        log_dir = Path(log_dir)
+        log_dir.mkdir(parents=True, exist_ok=True)
+        path = log_dir / f"{module}.log"
+        path.write_text(
+            f"# {module} — exit {returncode} at {_now()}\n"
+            f"# {' '.join(cmd)}\n\n{output}")
+        return path
+    except Exception:
+        return None
+
+
+class ModuleCliError(RuntimeError):
+    """A sibling module's CLI exited non-zero. Carries the child's full output and
+    the path it was written to, so a caller can record the complete failure rather
+    than an excerpt of it."""
+
+    def __init__(self, module: str, returncode: int, output: str,
+                 log_path: Path | None):
+        self.module = module
+        self.returncode = returncode
+        self.output = output
+        self.log_path = log_path
+        excerpt = output.strip()
+        elided = ""
+        if len(excerpt) > MODULE_CLI_EXCERPT_CHARS:
+            elided = (f"\n… [{len(excerpt) - MODULE_CLI_EXCERPT_CHARS} more "
+                      f"characters elided]")
+            excerpt = excerpt[:MODULE_CLI_EXCERPT_CHARS]
+        where = f" — full output: {_rel(log_path)}" if log_path else ""
+        super().__init__(
+            f"{module} failed (exit {returncode}){where}: {excerpt}{elided}")
+
+
+def _run_module_cli(module: str, argv: list[str], *,
+                    log_dir: Path | None = None) -> None:
     """Invoke a sibling render module's CLI in a subprocess (their main() reads
     sys.argv directly). Mirrors compose_replica's subprocess call to
-    onbrand_check."""
+    onbrand_check.
+
+    On failure the child's combined output is written to ``<log_dir>/<module>.log``
+    in full and raised as a :class:`ModuleCliError` carrying both."""
     import subprocess
     cmd = [sys.executable, str(_HERE / f"{module}.py"), *argv]
     proc = subprocess.run(cmd, capture_output=True, text=True)
     if proc.returncode != 0:
-        raise RuntimeError(
-            f"{module} failed (exit {proc.returncode}): "
-            f"{(proc.stderr or proc.stdout or '').strip()[:400]}")
+        output = "".join(part for part in (proc.stdout, proc.stderr) if part)
+        raise ModuleCliError(
+            module, proc.returncode, output,
+            _write_child_log(log_dir, module, cmd, proc.returncode, output))
 
 
 def _rel(p: Path) -> str:
@@ -708,7 +787,11 @@ def write_flow_report(result: FlowResult) -> Path:
         "|---|---|---|---|---|",
     ]
     for g in result.gates:
-        reason = (g.reason or "").replace("|", "\\|")[:200]
+        # The .md is the READABLE view; flow-report.json keeps every reason in full.
+        # Say so when a cell is clipped rather than letting it read as the whole story.
+        reason = (g.reason or "").replace("|", "\\|").replace("\n", " ")
+        if len(reason) > REPORT_REASON_CHARS:
+            reason = reason[:REPORT_REASON_CHARS] + f" … (full reason in {FLOW_REPORT_JSON})"
         lines.append(f"| {g.gate} | {g.name} | {g.status} | "
                      f"{g.duration_s:.2f}s | {reason} |")
     g4 = next((g for g in result.gates if g.gate == "G4"), None)
@@ -953,7 +1036,11 @@ def _run_extraction(brand: str, capture: Path | None, *, stages: str = "all",
                     log=print) -> None:
     """Invoke the real extraction stage runner (run_brand_extraction.py) for a
     fresh capture. Subprocess so its module-level sys.path juggling and stage
-    imports stay isolated from the orchestrator process."""
+    imports stay isolated from the orchestrator process.
+
+    The child's output is TEE'd: streamed live (this stage is long, so an operator
+    needs to watch it) and written in full to ``run_brand_extraction.log`` beside
+    the run's other logs, so the failure is still readable after the process ends."""
     import subprocess
     cmd = [sys.executable, str(REPO_ROOT / "run_brand_extraction.py"),
            "--brand", brand, "--stages", stages, "--model", model,
@@ -965,8 +1052,16 @@ def _run_extraction(brand: str, capture: Path | None, *, stages: str = "all",
         cmd.append("--force-author")
     if force_author_stage:
         cmd += ["--force-author-stage", force_author_stage]
-    proc = subprocess.run(cmd)
-    if proc.returncode != 0:
+    lines: list[str] = []
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT, text=True, bufsize=1)
+    for line in proc.stdout or ():
+        lines.append(line)
+        log(line.rstrip("\n"))
+    returncode = proc.wait()
+    log_path = _write_child_log(RUNS_DIR / brand, "run_brand_extraction", cmd,
+                                returncode, "".join(lines))
+    if returncode != 0:
         detail = ""
         author_report = RUNS_DIR / brand / "brand" / "author-report.json"
         if author_report.is_file():
@@ -976,9 +1071,10 @@ def _run_extraction(brand: str, capture: Path | None, *, stages: str = "all",
                     detail = f"; author gate: {reason}"
             except Exception:
                 pass
+        where = (f" — full output: {_rel(log_path)}" if log_path
+                 else " — see run_brand_extraction output above")
         raise RuntimeError(
-            f"extraction failed (exit {proc.returncode}) — see run_brand_extraction "
-            f"output above{detail}")
+            f"extraction failed (exit {returncode}){where}{detail}")
 
 
 def _run_generation_gate(brand_dir: Path, *, brief: Path | None, style: str,

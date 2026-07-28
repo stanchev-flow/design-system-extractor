@@ -23,6 +23,9 @@ Design rules (why this is safe to run on any lane):
 * EVIDENCE-DERIVED, NOT SECTION-NAMED. Every value is computed from the pattern's
   own grounding / rect / token evidence (generic surface/register/rhythm rules),
   never from a hard-coded per-section constant or a section-specific token name.
+* PAGE-QUALIFIED. A pattern is measured from the band its own ``provenance[]`` /
+  ``sourcePages[]`` name, so a multi-page lane never reads one page's geometry onto
+  another page's pattern. An ambiguous provenance token fills nothing.
 * DEGRADE QUIETLY. Missing/…malformed evidence for a field simply leaves that field
   absent (the composer's structural default is the honest degrade).
 
@@ -31,8 +34,8 @@ standalone for a re-author). It returns a per-pattern diff summary for telemetry
 """
 from __future__ import annotations
 
-import glob
 import re
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -81,48 +84,164 @@ def register_for_size(px: float | None) -> str | None:
 
 
 # ── evidence loaders ──────────────────────────────────────────────────────────────
+#
+# BAND IDENTITY IS PAGE-QUALIFIED. A lane may capture several pages, and two pages
+# routinely both have a ``section-01``. The rest of the pipeline already settled this:
+# ``tools/extract/project_sections_to_patterns.load_bands`` names a band
+# ``<page>-<grounding file stem>`` and stamps that same string into a pattern's
+# ``provenance[]`` (plus the page set into ``sourcePages[]``). This module reads the
+# evidence through that one convention instead of a bare section NUMBER, because a
+# number-keyed index silently attributes one page's measured geometry to another
+# page's pattern — a worse failure than filling nothing.
 
-def _load_grounding(brand_dir: Path) -> dict[int, dict]:
-    """{section index: grounding doc} keyed off the ``section-NN-*.yaml`` filename."""
-    out: dict[int, dict] = {}
-    gdir = brand_dir / "evidence" / "grounding"
-    if not gdir.is_dir() or yaml is None:
-        return out
-    for f in sorted(glob.glob(str(gdir / "section-*.yaml"))):
-        m = re.search(r"section-(\d+)", Path(f).name)
-        if not m:
-            continue
-        try:
-            out[int(m.group(1))] = yaml.safe_load(Path(f).read_text()) or {}
-        except Exception:
-            continue
-    return out
+@dataclass(frozen=True)
+class GroundedBand:
+    """One grounded source band: its page-qualified slug, page, section index, doc."""
+    slug: str
+    page: str            # "" for a single-page lane (no evidence/pages/ tree)
+    index: int | None    # the section ordinal WITHIN its page
+    doc: dict
 
 
-def _load_section_rects(brand_dir: Path) -> dict[int, dict]:
-    """{section index: rect doc} from the measured band census."""
-    p = brand_dir / "evidence" / "section-rects.json"
-    if not p.is_file():
-        return {}
+def _section_index(text: str) -> int | None:
+    m = re.search(r"section-(\d+)", str(text))
+    return int(m.group(1)) if m else None
+
+
+def _page_names(brand_dir: Path) -> list[str]:
+    """The captured page keys, longest first so a page name that prefixes another
+    ("talent" vs "talent-sourcing") never claims the longer one's bands."""
+    pdir = brand_dir / "evidence" / "pages"
+    if not pdir.is_dir():
+        return []
+    return sorted((p.name for p in pdir.iterdir() if p.is_dir()),
+                  key=len, reverse=True)
+
+
+def _read_yaml(path: Path) -> dict | None:
     try:
-        data = json.loads(p.read_text())
+        doc = yaml.safe_load(path.read_text())
     except Exception:
-        return {}
-    out: dict[int, dict] = {}
-    for s in data.get("sections") or []:
-        if isinstance(s, dict) and "index" in s:
-            out[int(s["index"])] = s
+        return None
+    return doc if isinstance(doc, dict) else {}
+
+
+def _load_grounding(brand_dir: Path) -> dict[str, GroundedBand]:
+    """{page-qualified band slug: :class:`GroundedBand`} for every grounded band.
+
+    Reads BOTH evidence shapes a lane can ship:
+
+    * ``evidence/pages/<page>/grounding/*.yaml`` — the per-page capture (complete),
+      slug ``<page>-<stem>``, page known from the directory.
+    * ``evidence/grounding/*.yaml`` — the lane-canonical bundle. On a single-page
+      lane the stem IS the slug and the page is unknown (""); on a multi-page lane
+      the merge already prefixes the page, so the stem is the same slug the per-page
+      tree produced and the page is recovered from that prefix.
+
+    Overlapping slugs are the same band written twice, so the per-page tree (the
+    authoritative, unabridged capture) wins.
+    """
+    out: dict[str, GroundedBand] = {}
+    brand_dir = Path(brand_dir)
+    if yaml is None:
+        return out
+    pages = _page_names(brand_dir)
+    for page in pages:
+        gdir = brand_dir / "evidence" / "pages" / page / "grounding"
+        if not gdir.is_dir():
+            continue
+        for f in sorted(gdir.glob("*.yaml")):
+            doc = _read_yaml(f)
+            if doc is None:
+                continue
+            slug = f"{page}-{f.stem}"
+            out[slug] = GroundedBand(slug, page, _section_index(f.stem), doc)
+    gdir = brand_dir / "evidence" / "grounding"
+    if gdir.is_dir():
+        for f in sorted(gdir.glob("*.yaml")):
+            if f.stem in out:
+                continue
+            doc = _read_yaml(f)
+            if doc is None:
+                continue
+            page = next((p for p in pages if f.stem.startswith(f"{p}-")), "")
+            index = _section_index(f.stem[len(page) + 1:] if page else f.stem)
+            out[f.stem] = GroundedBand(f.stem, page, index, doc)
     return out
 
 
-def _provenance_index(pattern: dict) -> int | None:
-    """The source section index a pattern was extracted from (``provenance[0]`` like
-    ``section-04``). Returns None when the pattern carries no section provenance."""
-    for p in pattern.get("provenance") or []:
-        m = re.search(r"section-(\d+)", str(p))
-        if m:
-            return int(m.group(1))
+def _load_section_rects(brand_dir: Path) -> dict[str, dict[int, dict]]:
+    """{page: {section index: rect doc}} from the measured band censuses.
+
+    The "" page holds the lane-canonical ``evidence/section-rects.json``. On a
+    multi-page lane that file is ONE page's census promoted to canonical, so a band
+    that knows its page must read its own page's file and never fall back to the
+    canonical one — the fallback is exactly the cross-page mis-attribution this
+    index exists to prevent.
+    """
+    brand_dir = Path(brand_dir)
+    out: dict[str, dict[int, dict]] = {}
+
+    def _read(path: Path) -> dict[int, dict]:
+        rows: dict[int, dict] = {}
+        try:
+            data = json.loads(path.read_text())
+        except Exception:
+            return rows
+        for s in data.get("sections") or []:
+            if isinstance(s, dict) and "index" in s:
+                try:
+                    rows[int(s["index"])] = s
+                except (TypeError, ValueError):
+                    continue
+        return rows
+
+    canonical = brand_dir / "evidence" / "section-rects.json"
+    if canonical.is_file():
+        out[""] = _read(canonical)
+    for page in _page_names(brand_dir):
+        p = brand_dir / "evidence" / "pages" / page / "section-rects.json"
+        if p.is_file():
+            out[page] = _read(p)
+    return out
+
+
+def resolve_pattern_band(pattern: dict,
+                         bands: dict[str, GroundedBand]) -> GroundedBand | None:
+    """The grounded band a pattern was extracted from, or None.
+
+    Matching follows ``project_sections_to_patterns.coverage``: a provenance token
+    names a band when it equals the band slug or is a slug prefix ending at a
+    segment boundary. Tokens are tried in provenance order (a pattern recurring
+    across pages is measured from its FIRST source), and a token that resolves to
+    more than one band is REFUSED rather than guessed — an ambiguous token would
+    attribute one page's geometry to another page's pattern.
+    """
+    pages = {str(p) for p in (pattern.get("sourcePages") or []) if p}
+    for token in (pattern.get("provenance") or []):
+        token = str(token)
+        hits = [b for b in bands.values()
+                if b.slug == token or b.slug.startswith(f"{token}-")]
+        if not hits and pages:
+            # A bare token on a page-qualified lane: re-read it against the pages
+            # the pattern already declares, rather than against every page.
+            hits = [b for b in bands.values()
+                    for pg in pages
+                    if b.slug == f"{pg}-{token}"
+                    or b.slug.startswith(f"{pg}-{token}-")]
+        if pages and len(hits) > 1:
+            hits = [b for b in hits if b.page in pages] or hits
+        if len(hits) == 1:
+            return hits[0]
     return None
+
+
+def _rect_for_band(rects: dict[str, dict[int, dict]],
+                   band: GroundedBand) -> dict:
+    """The measured rect for a band, read from ITS OWN page's census."""
+    if band.index is None:
+        return {}
+    return rects.get(band.page, {}).get(band.index, {})
 
 
 # ── the per-field derivations ──────────────────────────────────────────────────────
@@ -349,7 +468,7 @@ def enrich_layout_library(doc: dict, brand_dir: Path,
     summary ``{pattern_id: [added fact keys]}``. Idempotent + fill-absent-only, so a
     fully-authored library is unchanged."""
     brand_dir = Path(brand_dir)
-    grounding = _load_grounding(brand_dir)
+    bands = _load_grounding(brand_dir)
     rects = _load_section_rects(brand_dir)
     summary: dict[str, list[str]] = {}
     for pat in doc.get("patterns") or []:
@@ -357,13 +476,32 @@ def enrich_layout_library(doc: dict, brand_dir: Path,
             continue
         if str(pat.get("origin") or "").lower() not in ("extracted", "", "creation"):
             continue  # designed-from-signals patterns are not measured
-        idx = _provenance_index(pat)
-        if idx is None or idx not in grounding:
+        band = resolve_pattern_band(pat, bands)
+        if band is None:
             continue
-        added = enrich_pattern(pat, grounding[idx], rects.get(idx, {}), fields=fields)
+        added = enrich_pattern(pat, band.doc, _rect_for_band(rects, band),
+                               fields=fields)
         if added:
             summary[str(pat.get("id"))] = added
     return summary
+
+
+def unresolved_patterns(doc: dict, brand_dir: Path) -> list[str]:
+    """Ids of extracted patterns whose provenance names no single grounded band.
+
+    A DETECTION aid, not a repair: an extracted pattern that resolves to nothing
+    silently forfeits every measured fact, which is precisely the failure a bare
+    section-number index used to hide on a page-qualified lane."""
+    bands = _load_grounding(Path(brand_dir))
+    out: list[str] = []
+    for pat in doc.get("patterns") or []:
+        if not isinstance(pat, dict):
+            continue
+        if str(pat.get("origin") or "").lower() not in ("extracted", "", "creation"):
+            continue
+        if resolve_pattern_band(pat, bands) is None:
+            out.append(str(pat.get("id")))
+    return out
 
 
 # ── CLI: enrich a lane's layout-library in place ─────────────────────────────────
@@ -388,6 +526,10 @@ def main(argv=None) -> int:
         print(f"[measured-geometry] {pid}: +{', '.join(keys)}")
     if not summary:
         print("[measured-geometry] no facts added (already complete or no evidence)")
+    orphans = unresolved_patterns(doc, brand_dir)
+    if orphans:
+        print(f"[measured-geometry] {len(orphans)} extracted pattern(s) resolve to no "
+              f"grounded band (no measured facts available): {', '.join(orphans)}")
     if not args.dry_run:
         path.write_text(yaml.safe_dump(doc, sort_keys=False, allow_unicode=True,
                                        width=100))

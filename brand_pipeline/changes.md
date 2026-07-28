@@ -154,3 +154,146 @@ this environment. They reproduce on files this change does not touch.
   provider directly.
 - Existing per-run `package.json` copies still carry `build:nocheck`; only new runs
   scaffold without it.
+
+# Page-qualified measured geometry + diagnosable gate failures (2026-07-28)
+
+## Intent
+
+Two silent-failure bugs, both of which destroyed information rather than producing
+a wrong answer loudly.
+
+1. **Measured band geometry was discarded on every page-qualified lane.**
+   `measured_geometry._load_grounding` globbed `evidence/grounding/section-*.yaml`
+   and keyed the result on the bare section NUMBER. A single-page lane names its
+   grounding `section-NN-*.yaml`, so that worked. A multi-page lane names it
+   `<page>-section-NN-*.yaml` (and keeps the unabridged capture under
+   `evidence/pages/<page>/grounding/`), so the glob matched nothing, the index came
+   back empty, every pattern was skipped at the `idx not in grounding` guard, and
+   100% of measured `bandPadding` / `bandRhythm` / `deviceGeometry` was dropped.
+   Fixing only the glob would have swapped one bug for a worse one: two pages
+   routinely both have a `section-01`, so a number-only key collides and attributes
+   one page's geometry to another page's pattern — wrong output instead of no
+   output, and invisible either way.
+
+2. **A failing gate's diagnosis did not survive the child process.**
+   `pipeline_flow._run_module_cli` clipped the child's stderr to 400 characters, so
+   a real harness-quality failure was cut off immediately after its header and the
+   issue list existed nowhere. The same call also raised straight out of
+   `gate_g3_harness` and past `write_flow_report`, so the run kept no record at all.
+
+## Source changes
+
+- `brand_pipeline/measured_geometry.py`
+  - Band identity is now the PAGE-QUALIFIED slug the rest of the pipeline already
+    uses — `tools/extract/project_sections_to_patterns.load_bands` names a band
+    `<page>-<grounding stem>` and stamps that same string into `provenance[]` plus
+    the page set into `sourcePages[]`. No third convention was invented.
+  - `_load_grounding` returns `{slug: GroundedBand(slug, page, index, doc)}` and
+    reads BOTH shapes: `evidence/pages/<page>/grounding/*.yaml` (page from the
+    directory) and the flat `evidence/grounding/*.yaml` (page recovered from the
+    merge's prefix when the lane has a page tree, else `""`). Overlapping slugs are
+    the same band twice; the per-page capture wins. Page keys are matched
+    longest-first so `a` cannot claim `a-b`'s bands.
+  - `_load_section_rects` is keyed `{page: {index: rect}}`. On a multi-page lane the
+    lane-canonical `evidence/section-rects.json` is ONE page's census promoted, so a
+    band that knows its page reads its own page's file and never falls back to the
+    canonical one. This was a second, independent mis-attribution: the measured hero
+    aspect was reading the canonical page's band heights for every page.
+  - `resolve_pattern_band` matches provenance tokens the same way
+    `project_sections_to_patterns.coverage` does (equality or a slug prefix ending at
+    a segment boundary), tries tokens in provenance order so a recurring pattern is
+    measured from its first source, disambiguates a bare token through
+    `sourcePages[]`, and REFUSES a token that resolves to more than one band.
+  - `unresolved_patterns` (new) + a CLI line: detection for extracted patterns that
+    resolve to no single band and therefore forfeit every measured fact.
+  - `_provenance_index` removed (replaced by the slug resolution above).
+- `brand_pipeline/pipeline_flow.py`
+  - `_run_module_cli(..., log_dir=)` writes the child's COMPLETE combined output to
+    `<run root>/<module>.log` and raises `ModuleCliError` carrying the output, the
+    exit code and the log path. `MODULE_CLI_EXCERPT_CHARS = 4000` bounds only the
+    console message, which now also names the log.
+  - `_flow_log_dir` puts gate logs beside the run's other `*.log` files (the run root
+    for a `runs/<lane>/brand` layout), which is where the bundle publisher already
+    collects them. Log names avoid `flow` so they don't shadow the publisher's
+    `*flow*.log` selection.
+  - `gate_g3_harness` catches `ModuleCliError` and returns a BLOCKED `GateResult`
+    carrying `failedModule` / `exitCode` / `childLog` / `childOutput`, so the failure
+    reaches `flow-report.json` instead of escaping before the report is written.
+  - `_run_extraction` tees the extraction runner's output: still streamed live (the
+    stage is long) and now also written to `run_brand_extraction.log`. It previously
+    kept no record and pointed at "output above".
+  - `write_flow_report` marks a clipped markdown reason cell and points at the JSON,
+    which holds every reason in full. `gate_g2_validation` already summarized in
+    `reason` while keeping the complete list in `detail`; left as is.
+
+## Tests
+
+- `brand_pipeline/tests/test_measured_geometry_page_scope.py` (new, 16 tests) —
+  page-prefixed loading, bare single-page names still loading, flat-merge page
+  recovery, longest-page-prefix wins, two pages sharing a section number attributed
+  correctly, no cross-page bleed, per-page rect census, ambiguous bare token refused,
+  `sourcePages` disambiguation, recurring pattern measured from its first source, and
+  committed-lane guards for both lane shapes.
+- `brand_pipeline/tests/test_gate_failure_diagnostics.py` (new, 8 tests) — full child
+  output in the log, message no longer clipped at 400 chars, oversized output elided
+  in the message but whole in the log and on the exception, unwritable log dir does
+  not mask the real failure, G3 records the failure as blocked, `run_flow` writes a
+  report containing the complete child output.
+
+```bash
+./venv/bin/python -m unittest \
+  brand_pipeline.tests.test_measured_geometry_page_scope \
+  brand_pipeline.tests.test_gate_failure_diagnostics \
+  brand_pipeline.tests.test_measured_geometry \
+  brand_pipeline.tests.test_pipeline_flow                       # 117 passed
+PLAYWRIGHT_BROWSERS_PATH="$HOME/Library/Caches/ms-playwright" \
+  ./venv/bin/python -m unittest discover -s brand_pipeline/tests -t . -p 'test_*.py'
+                                                                # 2074 passed
+```
+
+## Verification
+
+- A page-qualified lane (`greenhouse-4`, pages `home` / `compare` /
+  `talent-sourcing`): `_load_grounding` went 0 → 26 bands. All 17 extracted patterns
+  resolve, each to a band on a page its own `sourcePages[]` declares, 0 unresolved.
+  Enrichment goes 0 → 17 patterns / 40 facts under `FIDELITY_FIELDS`
+  (17 `bandPadding`, 14 `bandRhythm`, 9 `deviceGeometry.columnGap`).
+- Every filled `bandPadding` was traced back to the `approxPaddingPx` of the band its
+  own provenance names — 17/17 exact.
+- Collision proof: in that lane section numbers 0-5 are shared by three pages and 6-8
+  by two, so a number-only key would have collided on EVERY band.
+- Rect page-awareness proof: a `compare` band at index 5 measures its own 713.7px
+  band height; the canonical (home) census would have given it 629.5px.
+- Single-page lanes did not regress: `hubspot-v3` / `hubspot-v4` resolve the same 10
+  bands as the old index and stay fill-absent-only complete (empty diff under
+  `FIDELITY_FIELDS`, 10 patterns under `ALL_FIELDS`, unchanged). `hubspot-v2`,
+  `woodwave-v2` and `remote` name bands with non-`section-NN` provenance, matched
+  nothing before and match nothing now — deliberately, since fuzzy matching would be
+  a new source of mis-attribution.
+- No lane artifacts were rewritten; every check ran on in-memory copies.
+
+## Not measured
+
+The rendering / replica-score impact of the newly-flowing facts was NOT measured.
+Scoring it means running the composer and replica modules, which were being edited
+concurrently in this working tree, so any number would be attributable to those
+in-flight changes rather than to this one. Prior measurement put consuming measured
+`bandPadding` at roughly +0.005 overall on one run, with at least one band where the
+composer OVER-responds and withholding the fact scored better. This change makes the
+facts available and correctly attributed; whether the composer should consume all of
+them is a separate calibration question and is deliberately left open rather than
+gated off here.
+
+## Follow-ups
+
+- `brand_pipeline/render_components_preview.py` cannot record a harness-quality
+  FAILURE. `main` raises at line 3378 when `harness_quality_issues` returns anything,
+  and only writes `harness-quality.json` afterwards at lines 3382-3394 with all six
+  checks hardcoded `True`. So the artifact is structurally always a pass, and G3's
+  `quality.get("ok") is not True` branch can only ever fire on a MISSING or stale
+  file, never on a recorded failure. It should write the report with `ok: false` and
+  the real per-check results before failing. Left alone here: that file is owned by
+  another agent in this working tree.
+- Lanes whose provenance tokens are role names rather than `section-NN` slugs
+  (`hubspot-v2`, `woodwave-v2`, `remote`) get no measured geometry at all. That is
+  pre-existing and unchanged, but `unresolved_patterns` now makes it visible.
