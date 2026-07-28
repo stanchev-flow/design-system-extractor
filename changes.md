@@ -1,5 +1,56 @@
 # Changes
 
+## 2026-07-28 — Published bundles served publicly on GitHub Pages (indexing discouraged)
+
+The tracked bundles under `artifacts/published/` could only be browsed by cloning the repo and
+starting the Studio. They are now also served as a public static site, so a result can be shared
+with a link: <https://stanchev-flow.github.io/design-system-extractor/>.
+
+- **`.github/workflows/deploy-pages.yml` (new).** Deploys `artifacts/published/` on every push to
+  `main`, plus `workflow_dispatch` for manual redeploys. Pinned to `actions/checkout@v7.0.1`,
+  `actions/configure-pages@v6.0.0`, `actions/upload-pages-artifact@v5.0.0`,
+  `actions/deploy-pages@v5.0.0` (exact patch tags, not floating majors — the versions in GitHub's
+  own docs and `static.yml` starter workflow are Node 20-era and emit deprecation warnings).
+  `permissions: contents: read / pages: write / id-token: write`, `concurrency: pages` with
+  `cancel-in-progress: false`, `environment: github-pages`. No build step: the bundles are already
+  static, so the workflow only copies and uploads.
+  - **Why a workflow and not branch publishing.** Branch-based Pages only serves a branch root or
+    `/docs`, never an arbitrary subdirectory. Copying the bundle into `/docs` would fork a 20 MB
+    generated artifact into two places that drift, so the Actions Pages source uploads
+    `artifacts/published/` directly instead. The bundle was not moved, copied or duplicated.
+- **Indexing discouraged, at deploy time only.** The workflow writes `robots.txt` (`Disallow: /`)
+  into the staged copy and injects `<meta name="robots" content="noindex, nofollow">` after the
+  `<head>` tag of every HTML file (23/23 injected on the first deploy, 0 skipped). This happens on
+  the staged `_site/` copy, never on the committed bundle, because `tools/publish_run_bundle.py`
+  rewrites that subtree on every export and a hand-edit there would be clobbered. **Follow-up for
+  the export owner:** emitting the meta tag from the export script is the cleaner long-term home,
+  which would leave the workflow responsible for `robots.txt` alone.
+  - **This is not access control.** `robots.txt` and `noindex` ask well-behaved crawlers not to
+    list the site; anyone with the URL still reads everything, the repo is public, and crawlers
+    that ignore `robots.txt` are unaffected. GitHub Pages serves no custom headers, so
+    `X-Robots-Tag` is not available.
+- **Repo setting.** Pages enabled via `gh api -X POST repos/:owner/:repo/pages -f
+  build_type=workflow` (project page at `/design-system-extractor/`, HTTPS enforced). Repository
+  visibility, branch protection and every other setting untouched.
+- **Verified live** (headless Chromium against the deployed site, run 30391749405): bundle index,
+  `greenhouse-4/` landing, `replica/`, `harness/`, `catalog/`, `framework/` and the harness layout
+  sub-pages all 200 with zero 4xx sub-requests, zero failed requests, zero console errors, zero
+  broken images and CSS applied. The framework lane renders 3215 chars of text with 13 images and
+  0 broken, so the historical blank-framework failure mode is absent under the project-page path.
+  `robots.txt` serves and the noindex meta is present on all six pages.
+- **Known cosmetic defect, left for the export owner.** `greenhouse-4/replica/index.html` (line
+  2193) and `greenhouse-4/harness/index.html` (line 2229) each carry 38 root-absolute footer
+  sitemap links (`href="/platform"`, `href="/pricing"`, … `href="/legal"`), replicated from the
+  source site. Under a project page these resolve against the origin
+  (`https://stanchev-flow.github.io/platform`) and 404 when clicked. No asset reference is
+  affected — the bundle contains zero absolute `src=`, zero absolute `<link href=`, and zero
+  absolute `url(...)` — so nothing renders wrong; only those dead footer links are unclickable.
+  They were deliberately not hand-fixed: the export rewrites that subtree on every run.
+- **Untouched:** `artifacts/published/**`, `tools/publish_run_bundle.py`, `studio_server.py`,
+  `tests/test_published_bundle.py`, the `runs/` ignore rule, and everything under concurrent edit
+  by other work. `viewer.html` regeneration does not apply — no change here touches `viewer.html`,
+  `run_pipeline.py`, viewer layout or viewer data shape.
+
 ## 2026-07-28 — Published run results: shareable bundles in the repo + Studio discovery
 
 `runs/` is gitignored (2.8 GB; greenhouse-4 alone is 325 MB), so a finished run was only

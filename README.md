@@ -300,6 +300,32 @@ It copies the replica, harness, catalog, framework build, brand fact files, logs
 referenced media; rewrites every asset reference to the bundle's own `assets/`; then loads each
 page in headless Chromium and records the result in the bundle's `verify.json`.
 
+### Public GitHub Pages mirror
+
+The same bundles are served publicly, so results can be shared with a link instead of a clone:
+
+```text
+https://stanchev-flow.github.io/design-system-extractor/                       # all bundles
+https://stanchev-flow.github.io/design-system-extractor/greenhouse-4/index.html
+```
+
+Deployment is automatic: `.github/workflows/deploy-pages.yml` runs on every push to `main`, stages
+`artifacts/published/` and publishes it. Nothing is built — the bundles are already static. Trigger
+a redeploy by hand with `gh workflow run deploy-pages.yml` (or Actions → *Deploy published bundle to
+Pages* → *Run workflow*); pushing an unrelated commit to `main` also redeploys.
+
+**Indexing is discouraged, but the site is not private.** The workflow writes `robots.txt`
+(`Disallow: /`) and injects `<meta name="robots" content="noindex, nofollow">` into every page of the
+staged copy, so well-behaved search engines will not crawl or list the site. That is a request, not
+access control: anyone with the URL can read everything, the repo itself is public, and crawlers that
+ignore `robots.txt` are unaffected. Do not publish a bundle containing anything that must stay
+private.
+
+The noindex signals are applied to the deploy-time copy because `artifacts/published/` is generated
+output — `tools/publish_run_bundle.py` rewrites that subtree on every export, so a hand-edit there
+would be clobbered. Emitting the meta tag from the export script would be the cleaner long-term
+home for it.
+
 ## Prompt And Versioning Rules
 
 Before changing or testing pipeline prompts, create a new `runs/vNNN/` folder and put the updated prompt files there. Completed run folders are the record of what happened, so do not edit old prompt snapshots to retroactively fix a run.
