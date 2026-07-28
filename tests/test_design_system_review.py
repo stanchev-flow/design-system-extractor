@@ -12,6 +12,7 @@ from run_pipeline import (
     generate_website_html,
     normalize_design_system_section_review,
     parse_provider_list,
+    resolve_provider_list,
     strip_source_provenance_for_site_generation,
     split_design_system_review_sections,
 )
@@ -127,9 +128,30 @@ This generated appendix should not be reviewed.
             self.assertIn("Detailed Section Grounding Reference", combined)
             self.assertIn("Nav heading case: uppercase", combined)
 
-    def test_provider_list_filters_disabled_gemini(self) -> None:
+    def test_provider_list_drops_retired_gemini_but_reports_it(self) -> None:
+        selection = resolve_provider_list("claude\ngemini\ngpt54\n")
+
+        self.assertEqual(list(selection.providers), ["claude", "gpt55"])
+        # Dropping it silently is what let a version folder asking for gemini look
+        # like it had built gemini. The run needs the fact to disclose it.
+        self.assertEqual(list(selection.retired), ["gemini"])
         self.assertEqual(parse_provider_list("claude\ngemini\ngpt54\n"), ["claude", "gpt55"])
-        self.assertEqual(parse_provider_list("gemini\n"), ["gpt55"])
+
+    def test_a_list_of_only_retired_providers_is_refused_not_substituted(self) -> None:
+        with self.assertRaises(ValueError) as caught:
+            resolve_provider_list("gemini\n")
+
+        message = str(caught.exception)
+        self.assertIn("gemini", message)
+        self.assertIn("claude, gpt55", message)
+        # The substitution it replaces would have been gpt55, unasked for.
+        self.assertIn("site-generation-providers.txt", message)
+
+    def test_an_empty_provider_list_is_refused_too(self) -> None:
+        with self.assertRaises(ValueError) as caught:
+            resolve_provider_list("# nothing selected\n\n")
+
+        self.assertIn("names no provider at all", str(caught.exception))
 
     def test_gemini_site_generation_is_blocked(self) -> None:
         with self.assertRaisesRegex(ValueError, "Gemini site generation is disabled"):

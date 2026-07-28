@@ -458,7 +458,7 @@ If port 1500 is already taken (e.g. by a plain `http.server`), stop that process
 
 ### Framework site generation (React + Tailwind v4) — opt-in on the CLI
 
-**Framework generation is off in the CLI baseline and on in the Studio.** `config.default.yaml` — always loaded first — sets `framework-generation-enabled: false`, because brand compose (token CSS + static HTML) is the canonical CLI path; `--framework-sites` is the per-run opt-in. The Studio needs no flag: its base config `config-anthropic.yaml` sets the key to `true` because the Studio's path is framework-first. When framework generation is on, the run builds React + Tailwind v4 + shadcn-style sites and **skips** vanilla one-shot HTML (`site-claude.html` / `site-gpt55.html`); to also generate vanilla HTML, set `vanilla-site-generation-enabled: true` in config or pass `--vanilla-sites`.
+**Framework generation is off in the CLI baseline and on in the Studio.** `config.default.yaml` — always loaded first — sets `framework-generation-enabled: false`, because brand compose (token CSS + static HTML) is the canonical CLI path; `--framework-sites` is the per-run opt-in. The Studio needs no flag: its base config `config-anthropic.yaml` sets the key to `true` because the Studio's path is framework-first. Framework generation builds React + Tailwind v4 + shadcn-style sites; vanilla one-shot HTML (`site-claude.html` / `site-gpt55.html`) is a separate lane with its own switch, `vanilla-site-generation-enabled` or `--vanilla-sites`.
 
 This path scaffolds a real Vite package per run item (`runs/{version}/{item}/single/framework-{claude|gpt55}/`), syncs DTCG tokens from the design-system YAML front matter, asks the LLM for `src/App.tsx` (shadcn-style components), runs `npm ci && npm run build` (vite-plugin-singlefile), and copies the result to viewable HTML:
 
@@ -468,9 +468,13 @@ runs/{version}/{item}/single/site-claude-framework.html
 runs/{version}/{item}/single/framework/          # full source package
 ```
 
-Defaults in `config.default.yaml`: `framework-generation-enabled: false`, `vanilla-site-generation-enabled: false`. That `false` is pinned by `brand_pipeline/tests/test_brand_signal_composition.py::FrameworkDefaultOff`. Studio projects are written with `framework-generation-enabled: true` into `runs/.studio/{version}.config.yaml`. (`AppConfig`'s dataclass default is `True`, but that only applies to a config constructed without `load_config()`, and `load_config()` always reads `config.default.yaml`.)
+Defaults in `config.default.yaml`: `framework-generation-enabled: false`, `vanilla-site-generation-enabled: false`. The framework `false` is pinned by `brand_pipeline/tests/test_brand_signal_composition.py::FrameworkDefaultOff`. Studio projects are written with `framework-generation-enabled: true` into `runs/.studio/{version}.config.yaml`. (`AppConfig`'s dataclass default is `True`, but that only applies to a config constructed without `load_config()`, and `load_config()` always reads `config.default.yaml`.)
+
+**Each key switches off its own lane, so the shipped baseline enables neither, and a flagless run is refused before it spends anything.** Pass `--framework-sites`, `--vanilla-sites`, or both — or set the matching key in a `--config` override. (`vanilla-site-generation-enabled` used to suppress the vanilla lane only while framework generation was on, so under the baseline a flagless run emitted vanilla HTML the config had switched off. The key is now authoritative and the run says so instead.)
 
 You do not have to remember any of this at the terminal. Every run prints its site-generation lanes up front and again at the end — which lane produced what, which was skipped, and for a skipped lane the config key and the flag that would enable it — and records the same facts under `site_generation_lanes` in the run's `manifest.json`. A run that produces no site output at all exits non-zero (`--design-only`, `--surface-map-only` and `--assets-only` are exempt).
+
+A generation that fails writes no `site-*.html` at all: it leaves `site-{provider}.error.html` with the error and a machine-readable `site-{provider}.failure.json` beside it, so a failure is never read as a page by anything globbing for site HTML. And a provider named in `site-generation-providers.txt` that the pipeline no longer builds (`gemini`) is reported as retired rather than dropped in silence; a list naming only retired providers is refused rather than answered with a provider the run never asked for.
 
 ```bash
 # Full pipeline with framework sites (--framework-sites is the CLI opt-in, and

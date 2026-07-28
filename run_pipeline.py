@@ -22,6 +22,7 @@ import shutil
 import subprocess
 import sys
 import time
+from dataclasses import dataclass
 from datetime import datetime
 from io import BytesIO
 from pathlib import Path
@@ -156,6 +157,16 @@ ALLOWED_SITE_GENERATION_PROVIDERS = ("claude", "gpt55")
 # Framework-first default: one framework build (Claude). Add gpt55 to site-generation-providers.txt if needed.
 DEFAULT_SITE_GENERATION_PROVIDERS = ("claude",)
 DISABLED_SITE_GENERATION_PROVIDERS = {"gemini"}
+# How a lane outcome reads in run-steps.json, so that surface agrees with the lane
+# summary and manifest.json rather than reporting "completed" for a submitted step.
+LANE_OUTCOME_STEP_STATUS = {
+    OUTCOME_PRODUCED: "completed",
+    OUTCOME_FAILED: "failed",
+    OUTCOME_SKIPPED_GATE: "skipped",
+    OUTCOME_SKIPPED_DISABLED: "skipped",
+    OUTCOME_SKIPPED_NO_INPUT: "skipped",
+    OUTCOME_SKIPPED_NOT_REQUESTED: "skipped",
+}
 DEFAULT_SITE_GENERATION_SKILLS = ("motion-design-gsap",)
 DISABLED_SITE_GENERATION_SKILLS = {"shader-effects", "abstract-three-webgl", "threejs", "three-js"}
 SITE_MATCH_SCORE_WEIGHTS = {
@@ -3313,9 +3324,29 @@ def grounding_document_is_complete(text: str) -> bool:
     return len(tail.splitlines()) >= 2
 
 
-def parse_provider_list(text: str) -> list[str]:
-    """Parse a version-scoped provider list."""
-    providers: list[str] = []
+@dataclass(frozen=True)
+class ProviderSelection:
+    """What a version's provider list asked for, and what of it still builds.
+
+    ``retired`` is kept rather than discarded so the run can say which requested
+    providers it is not going to build. A run that quietly swapped one provider
+    for another would make every comparison drawn from it worthless.
+    """
+
+    providers: tuple[str, ...]
+    retired: tuple[str, ...]
+
+
+def resolve_provider_list(text: str) -> ProviderSelection:
+    """Resolve a version-scoped provider list into what the run will build.
+
+    A retired provider (one the generators no longer implement) is dropped from
+    the build list but reported, so the run can disclose it. If dropping leaves
+    nothing to build this refuses: substituting an unrequested provider would let
+    a run claim it compared what its own config named.
+    """
+    requested: list[str] = []
+    retired: list[str] = []
     for raw_line in text.splitlines():
         line = raw_line.split("#", 1)[0].strip().lower()
         if not line:
@@ -3325,12 +3356,13 @@ def parse_provider_list(text: str) -> list[str]:
             if item == "gpt54":
                 item = "gpt55"
             if item in DISABLED_SITE_GENERATION_PROVIDERS:
+                retired.append(item)
                 continue
             if item:
-                providers.append(item)
+                requested.append(item)
 
     allowed = set(ALLOWED_SITE_GENERATION_PROVIDERS)
-    invalid = [provider for provider in providers if provider not in allowed]
+    invalid = [provider for provider in requested if provider not in allowed]
     if invalid:
         raise ValueError(
             "Unsupported provider(s) in site-generation-providers.txt: "
@@ -3338,10 +3370,28 @@ def parse_provider_list(text: str) -> list[str]:
         )
 
     ordered_unique: list[str] = []
-    for provider in providers:
+    for provider in requested:
         if provider not in ordered_unique:
             ordered_unique.append(provider)
-    return ordered_unique or ["gpt55"]
+    if not ordered_unique:
+        supported = ", ".join(ALLOWED_SITE_GENERATION_PROVIDERS)
+        detail = (
+            "it lists only retired provider(s): " + ", ".join(sorted(set(retired)))
+            if retired
+            else "it names no provider at all"
+        )
+        raise ValueError(
+            f"site-generation-providers.txt selects no provider this pipeline can "
+            f"build — {detail}. The pipeline builds {supported}. Running one of those "
+            f"instead would mean the run did not build what it was asked for; name a "
+            f"supported provider in the file to say what it should build."
+        )
+    return ProviderSelection(tuple(ordered_unique), tuple(dict.fromkeys(retired)))
+
+
+def parse_provider_list(text: str) -> list[str]:
+    """The providers a version's list resolves to. See :func:`resolve_provider_list`."""
+    return list(resolve_provider_list(text).providers)
 
 
 def extract_json_object(text: str) -> dict | None:
@@ -4211,12 +4261,18 @@ def is_generated_site_html(site_path: Path | None) -> bool:
         return False
     if not html:
         return False
+    # A run that failed leaves a failure sidecar and no file at the real name, so
+    # the marker settles it without reading the markup. The content checks below
+    # still matter for run folders written before that was true.
+    if site_failure_marker_path(site_path).exists():
+        return False
     lowered = html.lower()
     return (
         "skipped for this run" not in lowered
         and "not available for this version" not in lowered
         and "not available for this mode" not in lowered
         and "<h1>error</h1>" not in lowered
+        and "<h1>framework error</h1>" not in lowered
         and "<body>error</body>" not in lowered
     )
 
@@ -6014,6 +6070,76 @@ def site_output_needs_regeneration(path: Path) -> bool:
     return not html_document_is_complete(text)
 
 
+SITE_FAILURE_SCHEMA_VERSION = "site-generation-failure.v1"
+
+
+def site_failure_marker_path(output_path: Path) -> Path:
+    """The sidecar that records a failed generation for ``output_path``."""
+    return output_path.with_name(output_path.stem + ".failure.json")
+
+
+def site_failure_page_path(output_path: Path) -> Path:
+    """Where the diagnostic error page for ``output_path`` is kept."""
+    return output_path.with_name(output_path.stem + ".error.html")
+
+
+def write_site_failure_artifacts(
+    output_path: Path,
+    *,
+    lane: str,
+    provider: str,
+    stage: str,
+    error: str,
+) -> Path:
+    """Record a failed generation without leaving anything at the real site name.
+
+    A failure used to be written as error-page HTML into ``site-<provider>.html``
+    itself, so every consumer that globbed for site HTML — the Studio's lane
+    previews, the tracked Studio subset, anything downstream — read a failure as a
+    page unless it opened the file and sniffed the markup. The error text is still
+    kept, under ``site-<provider>.error.html``, alongside a machine-readable
+    ``site-<provider>.failure.json``; the real name is left absent so a failure is
+    distinguishable by filename alone.
+
+    Any file already at the real name is removed, because it is not this run's
+    output either: leaving a page from a previous run in place would move the
+    ambiguity rather than remove it. The previous behaviour destroyed that file
+    too, by overwriting it with the placeholder.
+    """
+    error_page = site_failure_page_path(output_path)
+    error_page.write_text(f"<html><body><h1>Error</h1><p>{error}</p></body></html>")
+    site_failure_marker_path(output_path).write_text(
+        json.dumps(
+            {
+                "schemaVersion": SITE_FAILURE_SCHEMA_VERSION,
+                "lane": lane,
+                "provider": provider,
+                "stage": stage,
+                "expectedOutput": output_path.name,
+                "errorPage": error_page.name,
+                "error": error,
+                "timestamp": datetime.now().isoformat(),
+            },
+            indent=2,
+        )
+        + "\n"
+    )
+    if output_path.exists() and not output_path.is_dir():
+        output_path.unlink()
+    return error_page
+
+
+def clear_site_failure_artifacts(output_path: Path) -> None:
+    """Drop a previous run's failure record once this one has real output.
+
+    Called wherever a lane target reports something other than a failure, so a
+    stale marker can never make a page that exists look like a failure.
+    """
+    for path in (site_failure_marker_path(output_path), site_failure_page_path(output_path)):
+        if path.exists() and not path.is_dir():
+            path.unlink()
+
+
 def design_system_review_needs_regeneration(path: Path) -> bool:
     """Return True when a design-system review artifact is missing or unusable."""
     if not path.exists():
@@ -6125,9 +6251,11 @@ def run_pipeline(
     framework_allow_ungated = bool(
         getattr(config, "framework_generation_allow_ungated", False)
     )
-    skip_vanilla_html = bool(framework_sites and sites_only) or (
-        framework_generation_enabled and not vanilla_site_generation_enabled
-    )
+    # vanilla-site-generation-enabled governs its own lane, whatever the framework
+    # lane is doing. It used to suppress vanilla only while framework generation
+    # was on, so under the CLI baseline (framework off) the lane ran regardless of
+    # the key — a flagless run emitted HTML the config had switched off.
+    skip_vanilla_html = bool(framework_sites and sites_only) or not vanilla_site_generation_enabled
 
     if assets_only:
         log(f"Backfilling generated site assets for: {version_dir}")
@@ -6353,12 +6481,23 @@ def run_pipeline(
         with open(design_system_conversion_review_prompt_path, "w") as f:
             f.write(design_system_conversion_review_prompt + "\n")
 
+    retired_site_generation_providers: tuple[str, ...] = ()
     if site_generation_providers_path.exists():
-        site_generation_providers = parse_provider_list(site_generation_providers_path.read_text())
+        selection = resolve_provider_list(site_generation_providers_path.read_text())
+        site_generation_providers = list(selection.providers)
+        retired_site_generation_providers = selection.retired
         log("Using custom site generation providers from version folder")
     else:
         site_generation_providers = list(DEFAULT_SITE_GENERATION_PROVIDERS)
         log("Using default site generation providers")
+    if retired_site_generation_providers:
+        # Named up front, because the file this run rewrites below will no longer
+        # mention them and the run must not look like it built what it dropped.
+        log(
+            "Retired site generation provider(s) requested and NOT built: "
+            + ", ".join(retired_site_generation_providers)
+            + f" — this pipeline builds {', '.join(ALLOWED_SITE_GENERATION_PROVIDERS)}"
+        )
     with open(site_generation_providers_path, "w") as f:
         f.write("\n".join(site_generation_providers) + "\n")
 
@@ -6571,6 +6710,8 @@ def run_pipeline(
         set for a lane that actually wrote a site — that is what the summary and
         the manifest count as produced output.
         """
+        if outcome == OUTCOME_PRODUCED:
+            clear_site_failure_artifacts(output_path)
         lane_ledger.record(
             lane,
             provider_name,
@@ -6583,6 +6724,21 @@ def run_pipeline(
                 else ""
             ),
         )
+
+    def provider_not_built_reason(provider_name: str) -> str:
+        """Why a lane built nothing for one provider.
+
+        A retired provider is not the same fact as an unrequested one: the file
+        does name it, and saying it was "not in the list" would send the reader to
+        edit a file that already says what they meant.
+        """
+        if provider_name in retired_site_generation_providers:
+            return (
+                f"{provider_name} is named in site-generation-providers.txt but is "
+                f"retired and was not built; this pipeline builds "
+                f"{', '.join(ALLOWED_SITE_GENERATION_PROVIDERS)}"
+            )
+        return f"{provider_name} is not in this run's site-generation-providers.txt"
 
     def gen_site(
         generation_input: str,
@@ -6675,8 +6831,13 @@ def run_pipeline(
                     return
             except Exception as recovery_error:
                 log(f"  {label} — pre-style-sync recovery failed: {recovery_error}")
-        with open(output_path, "w") as f:
-            f.write(f"<html><body><h1>Error</h1><p>{last_error}</p></body></html>")
+        write_site_failure_artifacts(
+            output_path,
+            lane=LANE_VANILLA,
+            provider=provider_name,
+            stage="site_generation",
+            error=str(last_error),
+        )
         record_lane(
             LANE_VANILLA, provider_name, output_path, OUTCOME_FAILED, str(last_error)
         )
@@ -6770,8 +6931,17 @@ def run_pipeline(
                     log(f"  {label} — framework retry after error: {e}")
                 else:
                     log(f"  {label} — framework ERROR: {e}")
-        with open(output_path, "w") as f:
-            f.write(f"<html><body><h1>Framework Error</h1><p>{last_error}</p></body></html>")
+        write_site_failure_artifacts(
+            output_path,
+            lane=LANE_FRAMEWORK,
+            provider=provider_name,
+            stage=(
+                "framework_site_generation_gate"
+                if gate_blocked
+                else "framework_site_generation"
+            ),
+            error=str(last_error),
+        )
         record_lane(
             LANE_FRAMEWORK,
             provider_name,
@@ -6782,6 +6952,7 @@ def run_pipeline(
 
     def write_site_skipped_output(output_path: Path, provider_label: str):
         """Write a placeholder when a generator is disabled for this run."""
+        clear_site_failure_artifacts(output_path)
         with open(output_path, "w") as f:
             f.write(
                 "<html><body><p>"
@@ -7044,6 +7215,13 @@ def run_pipeline(
         mode_dir.mkdir(exist_ok=True)
         tag = f"{name}/single"
         step_status = lambda step, status, meta=None: update_step_status(mode_dir, step, status, meta)
+
+        def record_step_from_lane(step: str, lane: str, provider_name: str, item: str) -> None:
+            """Set a generation step's status from the lane outcome it recorded."""
+            outcome = lane_ledger.outcome_for(lane, provider_name, item)
+            status = LANE_OUTCOME_STEP_STATUS.get(outcome, "failed")
+            meta = None if outcome == OUTCOME_PRODUCED else {"laneOutcome": outcome or "unrecorded"}
+            step_status(step, status, meta)
 
         try:
             output_dir = str(mode_dir)
@@ -7572,8 +7750,7 @@ def run_pipeline(
                                 provider_name,
                                 output_path,
                                 OUTCOME_SKIPPED_NOT_REQUESTED,
-                                f"{provider_name} is not in this run's "
-                                "site-generation-providers.txt",
+                                provider_not_built_reason(provider_name),
                             )
                 if framework_generation_enabled:
                     for provider_name, filename, label in framework_provider_targets:
@@ -7599,8 +7776,7 @@ def run_pipeline(
                                 provider_name,
                                 output_path,
                                 OUTCOME_SKIPPED_NOT_REQUESTED,
-                                f"{provider_name} is not in this run's "
-                                "site-generation-providers.txt",
+                                provider_not_built_reason(provider_name),
                             )
                 futures.append(("review", "design-system review", pool.submit(run_design_system_review)))
                 futures.append(("conversion-review", "design-system conversion review", pool.submit(run_design_system_conversion_review)))
@@ -7628,13 +7804,24 @@ def run_pipeline(
                         else:
                             raise
 
+                # Derived from what the lane target reported, not from the future
+                # having returned: a generator that failed and wrote a failure
+                # record used to be marked completed here anyway, so run-steps.json
+                # disagreed with the lane summary and the manifest.
                 for provider_name, _, _ in provider_targets:
                     if provider_name in enabled_providers and not skip_vanilla_html:
-                        step_status(f"site_generation_{provider_name}", "completed")
+                        record_step_from_lane(
+                            f"site_generation_{provider_name}", LANE_VANILLA, provider_name, name
+                        )
                 if framework_generation_enabled:
                     for provider_name, _, _ in framework_provider_targets:
                         if provider_name in enabled_providers:
-                            step_status(f"framework_site_generation_{provider_name}", "completed")
+                            record_step_from_lane(
+                                f"framework_site_generation_{provider_name}",
+                                LANE_FRAMEWORK,
+                                provider_name,
+                                name,
+                            )
 
             step_status("run_complete", "completed")
             log(f"  {tag} — complete")
@@ -7645,14 +7832,27 @@ def run_pipeline(
             if site_generation_source != "grounding" and not design_system_artifact_path(mode_dir).exists():
                 with open(mode_dir / "design-system.md", "w") as f:
                     f.write(f"# Error\n\nFailed to generate: {e}\n")
-            for fname in (
-                "site-claude.html",
-                "site-gemini.html",
-                "site-gpt55.html",
+            # A provider that already reported its own outcome owns its files; the
+            # rest failed with the item, and each says so in a sidecar rather than
+            # in a page named as if generation had succeeded.
+            for provider_name, fname in (
+                ("claude", "site-claude.html"),
+                ("gemini", "site-gemini.html"),
+                ("gpt55", "site-gpt55.html"),
             ):
-                if not (mode_dir / fname).exists():
-                    with open(mode_dir / fname, "w") as f:
-                        f.write(f"<html><body><h1>Error</h1><p>{e}</p></body></html>")
+                output_path = mode_dir / fname
+                if skip_vanilla_html or provider_name not in site_generation_providers:
+                    continue
+                if output_path.exists() or site_failure_marker_path(output_path).exists():
+                    continue
+                write_site_failure_artifacts(
+                    output_path,
+                    lane=LANE_VANILLA,
+                    provider=provider_name,
+                    stage="process_single_mode",
+                    error=str(e),
+                )
+                record_lane(LANE_VANILLA, provider_name, output_path, OUTCOME_FAILED, str(e))
             review_json_path = mode_dir / "design-system-review.json"
             review_md_path = mode_dir / "design-system-review.md"
             if not review_json_path.exists():
@@ -7801,8 +8001,7 @@ def run_pipeline(
                         provider_name,
                         output_path,
                         OUTCOME_SKIPPED_NOT_REQUESTED,
-                        f"{provider_name} is not in this run's "
-                        "site-generation-providers.txt",
+                        provider_not_built_reason(provider_name),
                     )
                     return
                 if not site_output_needs_regeneration(output_path):
@@ -7869,8 +8068,7 @@ def run_pipeline(
                         provider_name,
                         output_path,
                         OUTCOME_SKIPPED_NOT_REQUESTED,
-                        f"{provider_name} is not in this run's "
-                        "site-generation-providers.txt",
+                        provider_not_built_reason(provider_name),
                     )
                     return
                 if not site_output_needs_regeneration(output_path):

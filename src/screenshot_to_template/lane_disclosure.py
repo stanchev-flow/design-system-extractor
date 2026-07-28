@@ -194,6 +194,10 @@ def plan_site_generation_lanes(
     the config key is true OR ``--framework-sites`` was passed, and the vanilla
     lane is skipped exactly when ``skip_vanilla_html`` is true there.
 
+    Each lane's key is authoritative for its own lane. Both keys false is
+    therefore a legitimate combination that enables nothing, and the caller is
+    expected to refuse such a run rather than let it produce nothing in silence.
+
     ``design_only`` / ``surface_map_only`` are modes that deliberately stop before
     site HTML, so both lanes come back disabled with the mode as the reason.
     """
@@ -208,9 +212,7 @@ def plan_site_generation_lanes(
     # This is run_pipeline's skip_vanilla_html, kept as one expression so the two
     # can be compared line by line.
     sites_only_framework_refresh = bool(framework_flag and sites_only)
-    skip_vanilla = sites_only_framework_refresh or (
-        framework_enabled and not vanilla_requested
-    )
+    skip_vanilla = sites_only_framework_refresh or not vanilla_requested
 
     if framework_flag:
         framework_reason = f"{framework_spec.enable_flag} was passed"
@@ -225,22 +227,11 @@ def plan_site_generation_lanes(
             "drop --framework-sites to also refresh vanilla HTML"
         )
     elif skip_vanilla:
-        vanilla_reason = _disabled_reason(
-            vanilla_spec, "framework generation is on for this run"
-        )
+        vanilla_reason = _disabled_reason(vanilla_spec)
     elif vanilla_flag:
         vanilla_reason = f"{vanilla_spec.enable_flag} was passed"
-    elif vanilla_config_value:
-        vanilla_reason = f"{vanilla_spec.config_key} is true in the resolved config"
     else:
-        # The honest description of the interlock: vanilla-site-generation-enabled
-        # only suppresses this lane while framework generation is on, so with
-        # framework off the vanilla lane runs regardless of its own key.
-        vanilla_reason = (
-            f"framework generation is off, so the vanilla lane runs as the only "
-            f"site-generation lane ({vanilla_spec.config_key} is false, but that "
-            f"key only suppresses vanilla while framework generation is on)"
-        )
+        vanilla_reason = f"{vanilla_spec.config_key} is true in the resolved config"
 
     mode_reason = ""
     if design_only:
@@ -344,6 +335,19 @@ class LaneLedger:
     def targets(self) -> list[LaneTarget]:
         with self._lock:
             return list(self._targets)
+
+    def outcome_for(self, lane: str, provider: str, item: str) -> str | None:
+        """The outcome one lane target reported, or ``None`` if it reported none.
+
+        Lets a second surface — the per-run step statuses — be derived from the
+        same records as the summary and the manifest, instead of assuming a step
+        completed because it was submitted.
+        """
+        with self._lock:
+            for target in reversed(self._targets):
+                if (target.lane, target.provider, target.item) == (lane, provider, item):
+                    return target.outcome
+        return None
 
     # ── derivation ───────────────────────────────────────────────────────────
 

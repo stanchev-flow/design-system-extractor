@@ -456,3 +456,208 @@ Staged file-by-file — `run_pipeline.py`,
 `brand_pipeline/compose_replica.py`, `studio_server.py`, `tools/track_studio_subset.py`,
 `runs/hubspot-v2/` and `evals/matrix/runs/` in this tree. None of it was staged. No
 secrets in the diff; no key, token, or URL was added.
+
+## 2026-07-29 — A run builds the lane it was asked for, or says it did not
+
+Three of the silent-success paths the lane-disclosure work above catalogued. All three
+are the same shape: a component declines to do what it was asked, and the layer above
+reports success. Each is fixed by making the component's own decision reachable to the
+reader, and each outcome goes through the existing `LaneLedger`, so the console summary,
+`manifest.json` and now `run-steps.json` cannot disagree.
+
+### `vanilla-site-generation-enabled: false` now switches the vanilla lane off
+
+`run_pipeline.py` computed
+`skip_vanilla_html = (framework_sites and sites_only) or (framework_generation_enabled and not vanilla_site_generation_enabled)`.
+The key therefore only suppressed the vanilla lane **while framework generation was on**.
+Under the CLI baseline — `config.default.yaml` sets `framework-generation-enabled:
+false` — the vanilla lane ran regardless of what its own key said, which is why a
+flagless recipe still emitted HTML and looked successful. The second clause is now just
+`not vanilla_site_generation_enabled`, mirrored in
+`lane_disclosure.plan_site_generation_lanes`.
+
+This is a deliberate behaviour change, and it makes the up-front refusal reachable:
+each key governs its own lane, so both false is a run with no enabled lane, which is
+exactly what the guard added above refuses. **Verified end-to-end, not assumed** — a
+flagless `run_pipeline.py --screenshots-dir … --version …` against a temp `--runs-dir`
+now prints both lanes' reasons and exits 1 before any model work, and the same run with
+`--vanilla-sites` reports `vanilla one-shot HTML — ENABLED; will build
+site-claude.html` and proceeds.
+
+What depends on the old behaviour, checked before changing:
+
+| config | framework | vanilla | effect of this change |
+|---|---|---|---|
+| `config.default.yaml` (CLI baseline) | false | false | **changed** — a flagless run is refused instead of emitting vanilla HTML |
+| `config-anthropic.yaml` (Studio base) | true | false | none — framework on, vanilla skipped, as before |
+| `runs/.studio/{greenhouse,greenhouse-4,woodwave}.config.yaml` | true | false | none |
+| `studio_server.make_run_config()` (every new Studio project) | true | false | none |
+
+Every config in the repo that sets `vanilla-site-generation-enabled: false` also sets
+`framework-generation-enabled: true`, except the CLI baseline. So no Studio project and
+no tracked run config loses output or newly hard-fails; the only changed invocation is
+the flagless CLI one, which is the invocation the change is about.
+`studio_server.framework_first_mode()` (`fw and not vanilla`) is unaffected.
+
+The 16-case truth table in `tests/test_lane_disclosure.py` no longer asserts the
+interlock. It now asserts the reachability: each lane is enabled exactly when its own
+key or flag says so, and "no lane enabled" is exactly the all-false corner.
+`README.md`'s description of the key was accurate as a config value and misleading
+about behaviour; it now states that each key switches off its own lane and that the
+shipped baseline therefore enables neither.
+
+### A failed generation no longer writes a page
+
+`gen_site`, `gen_framework_site` and `process_single_mode`'s outer `except` all wrote
+error-page HTML into the real `site-*.html` names, so a failed item left files that
+anything globbing for site HTML read as genuine output. Three new module-level helpers
+in `run_pipeline.py` replace that:
+
+- `write_site_failure_artifacts()` writes the error text to
+  `site-{provider}.error.html` and a machine-readable
+  `site-{provider}.failure.json` (schema `site-generation-failure.v1`: lane, provider,
+  stage, expected output, error, timestamp), and leaves **nothing** at the real name.
+  A failure is now distinguishable by filename alone, with no HTML parsing.
+- Any file already at the real name is removed, because it is not this run's output
+  either — leaving a previous run's page in place would move the ambiguity rather than
+  remove it. The old code destroyed that file too, by overwriting it.
+- `clear_site_failure_artifacts()` drops a stale marker, called from `record_lane` on
+  `produced` and from `write_site_skipped_output`, so a later success can never be
+  misread as the earlier failure.
+
+`is_generated_site_html()` consults the marker before the markup, and gained
+`<h1>framework error</h1>` — the framework variant of the placeholder was not in its
+marker list, so a framework error page counted as generated output. No such file exists
+on disk, so nothing was actually misclassified; the gap was latent and is now closed.
+
+Also fixed, because leaving it would have shipped a contradiction: after the generator
+pool, `run-steps.json` marked `site_generation_{provider}` **completed** for every
+submitted provider, including ones that had just failed and written an error page. That
+is visible in `runs/v171`, where two items record `site_generation_gemini: completed`
+next to a 503/499 error page. Step status is now derived from the lane target's recorded
+outcome (`LaneLedger.outcome_for()` + a total `LANE_OUTCOME_STEP_STATUS` map), so the
+third surface agrees with the other two.
+
+### A retired provider is disclosed, and never substituted
+
+`parse_provider_list` dropped `gemini` silently and fell back to `["gpt55"]` for an
+otherwise-empty list, so a version folder asking for `gemini` got GPT-5.5 with no
+warning. `gemini` is genuinely retired, not vestigial: `generate_website_html` raises
+"Gemini site generation is disabled for future pipeline runs." for it, and
+`ALLOWED_SITE_GENERATION_PROVIDERS` is `("claude", "gpt55")`. (The `GoogleProvider`
+class stays — it is still used for analysis and image work. Only site generation is
+retired.)
+
+`resolve_provider_list()` now returns a `ProviderSelection` carrying both what will be
+built and what was dropped:
+
+- A retired provider alongside supported ones is still dropped — old version folders
+  keep working — but it is **reported**: the run logs "Retired site generation
+  provider(s) requested and NOT built: gemini", and its lane target's reason says it is
+  named in the file but retired, instead of the previous "not in this run's
+  `site-generation-providers.txt`", which would have sent the reader to edit a file that
+  already said what they meant.
+- A list that resolves to nothing is **refused**. Substituting `gpt55` would let a run
+  claim it compared what its own config named. Refusing covers both the retired-only
+  case and a file that names no provider at all.
+
+`parse_provider_list` stays as the list-returning wrapper for existing callers.
+
+### Forensics: did any run silently get GPT-5.5 instead of Gemini?
+
+**No.** Read-only check; no run data was modified, re-run, or cleaned up.
+
+Exactly two run folders name `gemini` in `site-generation-providers.txt` — `runs/v170`
+and `runs/v171` — and both genuinely ran Gemini. `token-usage.jsonl` in every item of
+both records `site_generation_gemini | google | gemini-3.1-pro-preview`; `run-steps.json`
+records the step; and the outputs are 25–55 KB pages with `site-gemini.assets.json`
+sidecars. The `["gpt55"]` fallback could not have fired for either: both files also name
+`claude` and `gpt55`, so the parsed list was never empty. Independent confirmation that
+neither was re-run after `gemini` was retired: `run_pipeline` rewrites
+`site-generation-providers.txt` with the parsed list on every run, and both files still
+say `gemini`.
+
+Everything else checked, all clear:
+
+- `v172`–`v178`, `v200-hatch`–`v202-hatch`, `v300-mine`, `v301-mine`, `greenhouse`,
+  `woodwave`: `claude gpt55` or `claude`. No gemini.
+- `hubspot-sol`, `hubspot-sol-clean-v2`, `style-calibration`, `claude-distillation`,
+  and the other brand lanes (`greenhouse-4`, `greenhouse-v2`, `hubspot`, `hubspot-v2`,
+  `hubspot-v3`, `hubspot-v4`, `relume-test`, `remote`, `woodwave-v2`) have no
+  `site-generation-providers.txt` at all, so they used
+  `DEFAULT_SITE_GENERATION_PROVIDERS = ("claude",)` and never requested gemini.
+- `evals/matrix/runs/` holds one round (`2026-07-14-baseline`) and no provider list.
+
+So no recorded comparison in this repo compared something other than what it claimed.
+One thing that is *not* a substitution but reads like one in the logs: the gemini lane's
+`site_style_sync_gemini` step runs on `openai/gpt-5.5`. Style sync is a separate model
+by design; the site generator itself was Gemini.
+
+### Forensics: has any scoring or eval path been consuming error-page HTML?
+
+**No.** No score recorded in this repo was computed over an error page.
+
+- `evaluate_site_match()` is the only thing that scores site HTML, and its only caller
+  is `tools/run_design_system_prompt_bakeoff.py`, which raises on
+  `not html_document_is_complete(html)` before scoring. There are **zero**
+  `site-*-review.json` artifacts anywhere under `runs/`, so it has not produced a score
+  in this repo at all. `tools/generate_version_scoreboard.py` reads those same
+  non-existent files.
+- The eval matrix (`tools/run_eval_matrix.py`, `evals/matrix/`) runs its gate battery on
+  `runs/<brand>/brand/compose/<brief>/index.html`. It never opens `site-*.html`. Neither
+  does `tools/publish_run_bundle.py`, nor anything in `brand_pipeline/`.
+- What the masquerade *did* affect is display and publishing, not scoring: the Studio's
+  `site_rel()` picked the file on existence alone and served an error page as the lane
+  preview, the viewer embedded it as the lane's output, and
+  `tools/track_studio_subset.py`'s `*/single/**` rule copied it into the published
+  subset. All three now see no file, and the `.failure.json` travels with the subset.
+
+The error pages currently on disk, for the record: `runs/v171/.../site-gemini.html` for
+`2025-12-19_88524-function-100-healthy-years` (Gemini 503) and `2026-02-20_bradford`
+(Gemini 499), and all three vanilla providers in `runs/v200-hatch/hatch/single/`
+(missing `OPENAI_API_KEY`) and `runs/v202-hatch/hatch/single/` (empty design-system
+synthesis). Left exactly as they are.
+
+### Verification
+
+```
+./venv/bin/python -m pytest tests/ -q                      # 356 passed
+./venv/bin/python -m pytest brand_pipeline/tests -q        # see below
+./venv/bin/python run_pipeline.py --screenshots-dir /tmp/… --runs-dir /tmp/…
+                                                           # exit 1, no lane enabled
+./venv/bin/python run_pipeline.py … --vanilla-sites --sites-only
+                                                           # vanilla ENABLED, exit 1 (no input)
+```
+
+`tests/test_site_output_honesty.py` (new, 12 tests) covers the failure artifacts, the
+marker beating the markup, the legacy framework error page, an offline `--sites-only`
+run whose generator raises (real page absent, `.error.html` and `.failure.json` written,
+lane target `failed`, exit 1), the retired-provider reason reaching the manifest, and
+the shipped defaults refusing the run. `tests/test_lane_disclosure.py` gained the
+rewritten truth table, the two vanilla-key cases, `outcome_for()` and the step-status
+map. `tests/test_design_system_review.py` and `tests/test_runtime_defaults.py` swap the
+old `parse_provider_list("gemini\n") == ["gpt55"]` assertions for the refusal.
+
+`brand_pipeline/tests` currently fails well above the 9 Playwright errors this repo has
+been quoting, because other agents have uncommitted work across twelve
+`brand_pipeline/` modules in this tree, and consecutive whole-suite runs disagree with
+each other (32 failed / 15 errors, then 17) as those files change mid-run. So the
+comparison was made against a fixed subset instead of a moving total: the ten failing
+files were run with `run_pipeline.py` and `lane_disclosure.py` reverted to `HEAD`, and
+again with this change applied. Both runs: **13 failed, 170 passed, 4 errors** —
+identical. None of those tests import `run_pipeline` or `lane_disclosure` either. This
+change adds no `brand_pipeline` failure.
+
+`viewer.html` regenerated per `AGENTS.md`; its content is unchanged, because the stub
+bakes in no default version and nothing here alters `manifest["screenshots"]`.
+
+Staged file-by-file — `run_pipeline.py`,
+`src/screenshot_to_template/lane_disclosure.py`, `tests/test_lane_disclosure.py`,
+`tests/test_site_output_honesty.py`, `tests/test_design_system_review.py`,
+`tests/test_runtime_defaults.py`, `README.md` and `docs/changes.md` — because other
+agents have uncommitted work in `brand_pipeline/`, `studio_server.py`, `tools/extract/`,
+`tools/track_studio_subset.py`, `tests/test_studio_http_routes.py`,
+`src/screenshot_to_template/{site_assets,source_colors,source_style_ledger}.py`,
+`run_brand_extraction.py`, `runs/hubspot-v2/` and `evals/matrix/runs/` in this tree.
+None of it was staged, and `git commit` was given explicit paths. No secrets in the
+diff; no key, token, or URL was added.

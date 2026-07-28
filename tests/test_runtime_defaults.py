@@ -55,7 +55,10 @@ class RuntimeDefaultTests(unittest.TestCase):
         self.assertEqual(DEFAULT_SITE_GENERATION_PROVIDERS, ("claude",))
         self.assertIn("gpt55", ALLOWED_SITE_GENERATION_PROVIDERS)
         self.assertEqual(parse_provider_list("claude gpt55\n"), ["claude", "gpt55"])
-        self.assertEqual(parse_provider_list("gemini\n"), ["gpt55"])
+        # A list that names only a retired provider is refused rather than
+        # silently answered with gpt55, which the run was never asked to build.
+        with self.assertRaises(ValueError):
+            parse_provider_list("gemini\n")
 
 
 if __name__ == "__main__":
