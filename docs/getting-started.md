@@ -9,8 +9,8 @@ contain. Verified end to end on a clean clone of `origin/main`.
   and `src/screenshot_to_template/models/__init__.py` use PEP 701 f-strings, which
   earlier interpreters cannot parse at all. macOS ships Python 3.9, so the system
   interpreter will not work — check with `python3 --version` before anything else.
-- Roughly 3 GB of disk for the clone. Most of that is two legacy runs that are still
-  tracked (see [What a clone gives you](#what-a-clone-gives-you)).
+- Roughly 2 GB of disk for the clone. A good part of that is two legacy runs that are
+  still tracked (see [What a clone gives you](#what-a-clone-gives-you)).
 - An API key only if you intend to run the pipeline. Browsing published results
   needs none.
 
@@ -18,7 +18,7 @@ contain. Verified end to end on a clean clone of `origin/main`.
 
 ```bash
 git clone <repo-url>
-cd design-system-extractor-mine
+cd design-system-extractor
 
 python3 --version                    # must be 3.12+
 python3 -m venv venv
