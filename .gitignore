@@ -11,7 +11,13 @@ node_modules/
 dist/
 *.tsbuildinfo
 
-# Large generated artifacts (runs, screenshots, viewer data) — regenerate locally
+# Large generated artifacts (runs, screenshots, viewer data) — regenerate locally.
+#
+# runs/remote/ and runs/hubspot-v2/ were committed before this rule existed and
+# are still tracked (~248 MB). They are frozen legacy snapshots, not current
+# output: do not treat them as up to date, and do not use them as the template
+# for what a run should contain. Untracking them is a separate, unmade decision.
+# For shareable results, publish a bundle into artifacts/published/ instead.
 runs/
 screenshots/
 viewer-data/

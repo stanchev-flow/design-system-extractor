@@ -1,5 +1,10 @@
 # Screenshot to Template - Default Configuration
 # Override any of these in your own config file passed via --config
+#
+# This file is the CLI baseline: it is always loaded first, then a --config file
+# is merged over it. `config-anthropic.yaml` is the Studio's base config and
+# intentionally differs from this file (notably framework-generation-enabled),
+# so the two are not expected to match. See docs/getting-started.md.
 
 provider: openai
 model: gpt-5.5
@@ -8,6 +13,10 @@ site-asset-generation-enabled: true
 # Framework generation (opt-in): React + Tailwind token skin. Off by default —
 # brand compose (token CSS + static HTML) is the canonical product path.
 # When enabled, do NOT use shadcn-as-shipped skin; prefer headless behavior + owned tokens.
+# Pinned false by brand_pipeline/tests/test_brand_signal_composition.py. The
+# Studio opts in via config-anthropic.yaml; the CLI opts in per-run with
+# --framework-sites. Note that AppConfig's dataclass default is True, which only
+# applies when a config is constructed without load_config().
 framework-generation-enabled: false
 # Framework generation is FAIL-CLOSED: it refuses to run for a brand lane that
 # has not cleared the ordered gates (G1 extraction → G2 validation → G3 harness →

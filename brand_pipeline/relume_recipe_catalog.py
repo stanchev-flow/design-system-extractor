@@ -791,7 +791,9 @@ def match_recipes(
     return [recipe for _, _, _, recipe in ranked]
 
 
-def render_recipe_guidance(recipes: Iterable[dict], *, limit: int = 10) -> str:
+def render_recipe_guidance(recipes: Iterable[dict], *, limit: int = 3) -> str:
+    # The cap is the default: any larger value is rejected, so a bigger default
+    # would make every call that omits `limit` raise.
     if limit > 3:
         raise ValueError("prompt-facing Relume selection is hard-capped at top-k=3")
     selected = list(recipes)[:limit]
@@ -806,6 +808,10 @@ def render_recipe_guidance(recipes: Iterable[dict], *, limit: int = 10) -> str:
         "the listed responsive transitions; do not reduce them to desktop-only geometry.",
         "Relume contributes topology ONLY. Brand tokens, surfaces, spacing, components, "
         "media and copy bind after selection. No source visual or concrete value is available. "
+        # Mirrors source.selectionPrecedence in the catalog: the prompt has to state
+        # the precedence it declares, or a candidate can silently outrank a fact.
+        "In any conflict, active brand facts + active style structure ALWAYS win, then "
+        "brand neverDo and physics rules; drop the candidate, never the brand fact. "
         "Measured brand patterns > designed-from-brand patterns > compatible brand/style "
         "archetypes > this fallback. Stamp a chosen fallback with "
         "`structureProvenance: relume-fallback` and its `structureRecipeId`.",

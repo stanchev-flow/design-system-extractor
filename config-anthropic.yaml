@@ -15,6 +15,12 @@ site-asset-generation-enabled: false
 surface-map-mode: contract
 run-reviews: false
 
+# Deliberately the opposite of config.default.yaml, which keeps framework
+# generation off for plain CLI runs. This file is the Studio's base config
+# (studio_server.py) and the Studio's product path is framework-first, so every
+# Studio project inherits framework generation ON. Generation is still
+# fail-closed behind the ordered gates; see framework-generation-allow-ungated
+# in config.default.yaml, which this file deliberately does not override.
 framework-generation-enabled: true
 vanilla-site-generation-enabled: false
 

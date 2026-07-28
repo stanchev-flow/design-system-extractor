@@ -4633,20 +4633,35 @@ def generate_viewer(runs_dir: Path, output_path: Path):
     # sidebar. viewer.html becomes a thin redirect so the URL keeps working and
     # there is a single source of truth. We still build _build_viewer_html data
     # payloads above for any external consumers, but ship a redirect stub here.
-    initial_json = json.dumps(initial_version or "")
+    #
+    # The stub deliberately bakes in no default version. It used to default to
+    # whichever project happened to be newest on the generating machine, which is
+    # a dead link for anyone else since runs/ is gitignored. With no version in
+    # the query string it lands on /studio, which lists the projects that do
+    # exist. Opened as a file:// URL there is no server to redirect to at all, so
+    # it explains itself instead of navigating to a broken absolute path.
     html = (
         "<!doctype html><html><head><meta charset=\"utf-8\">"
-        "<title>Redirecting to canvas…</title>"
+        "<title>Design System Studio</title>"
         "<meta name=\"color-scheme\" content=\"dark light\">"
         "<style>body{font-family:system-ui,-apple-system,sans-serif;background:#0a0a0b;"
         "color:#e5e5e5;display:grid;place-items:center;height:100vh;margin:0}"
-        "a{color:#34d399}</style>"
-        "<script>(function(){var q=new URLSearchParams(location.search);"
-        "var v=q.get('version')||q.get('v')||" + initial_json + ";"
-        "var target=v?('/project/'+encodeURIComponent(v)):'/studio';"
-        "location.replace(target);})();</script></head>"
-        "<body><div>Opening the unified canvas… "
-        "<a href=\"/studio\">open Studio</a></div></body></html>"
+        "div{max-width:34rem;padding:1.5rem;line-height:1.6}"
+        "a{color:#34d399}code{color:#fbbf24}</style>"
+        "<script>(function(){"
+        "if(location.protocol!=='http:'&&location.protocol!=='https:'){return;}"
+        "var q=new URLSearchParams(location.search);"
+        "var v=q.get('version')||q.get('v')||'';"
+        "location.replace(v?('/project/'+encodeURIComponent(v)):'/studio');"
+        "})();</script></head>"
+        "<body><div><p>This page only redirects into the Studio canvas, which "
+        "needs the Studio server running.</p>"
+        "<p>Start it with <code>./start-studio.sh</code>, then open "
+        "<a href=\"http://localhost:1500/studio\">localhost:1500/studio</a>. "
+        "Add <code>?version=&lt;project&gt;</code> here to jump straight to one "
+        "project.</p>"
+        "<p>Setup instructions: <code>docs/getting-started.md</code></p>"
+        "</div></body></html>"
     )
 
     with open(output_path, "w") as f:
@@ -6036,7 +6051,21 @@ def run_pipeline(
     load_api_keys()
 
     version_dir = RUNS_DIR / version
-    version_dir.mkdir(parents=True, exist_ok=True)
+
+    # Validate the input before creating the run directory. Creating it first left
+    # an empty runs/<version>/ behind on every bad path, which the Studio then
+    # listed as a phantom project.
+    if not screenshots_dir.is_dir():
+        log(f"Screenshots directory not found: {screenshots_dir}")
+        log("  screenshots/ is gitignored, so a fresh clone has no source captures.")
+        log("  Capture one, then point the run at it:")
+        log(
+            "    python tools/extract/capture_page.py "
+            "--url https://example.com --out screenshots/<brand>/<page>"
+        )
+        log("    python run_pipeline.py --screenshots-dir screenshots/<brand>/<page>")
+        log("  See docs/getting-started.md for the full setup.")
+        sys.exit(1)
 
     # Find all screenshots
     screenshot_files = sorted([
@@ -6046,7 +6075,10 @@ def run_pipeline(
 
     if not screenshot_files:
         log(f"No screenshots found in {screenshots_dir}")
+        log("  Expected at least one .jpg/.jpeg/.png/.webp file in that directory.")
         sys.exit(1)
+
+    version_dir.mkdir(parents=True, exist_ok=True)
 
     log(f"Pipeline run: {version}")
     log(f"Screenshots: {len(screenshot_files)}")

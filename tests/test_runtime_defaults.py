@@ -3,6 +3,7 @@ import unittest
 from pathlib import Path
 
 from run_pipeline import (
+    ALLOWED_SITE_GENERATION_PROVIDERS,
     DEFAULT_SITE_GENERATION_PROVIDERS,
     apply_version_model_overrides,
     parse_provider_list,
@@ -48,8 +49,12 @@ class RuntimeDefaultTests(unittest.TestCase):
             self.assertEqual((version_dir / "section-detection-model.txt").read_text().strip(), "gpt-5.5")
             self.assertEqual((version_dir / "section-detection-reasoning-effort.txt").read_text().strip(), "high")
 
-    def test_site_generation_default_keeps_both_final_site_models(self) -> None:
-        self.assertEqual(DEFAULT_SITE_GENERATION_PROVIDERS, ("claude", "gpt55"))
+    def test_site_generation_default_is_a_single_claude_build(self) -> None:
+        # Framework-first: one build by default. gpt55 is still allowed, but has
+        # to be asked for in site-generation-providers.txt.
+        self.assertEqual(DEFAULT_SITE_GENERATION_PROVIDERS, ("claude",))
+        self.assertIn("gpt55", ALLOWED_SITE_GENERATION_PROVIDERS)
+        self.assertEqual(parse_provider_list("claude gpt55\n"), ["claude", "gpt55"])
         self.assertEqual(parse_provider_list("gemini\n"), ["gpt55"])
 
 

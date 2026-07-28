@@ -1,0 +1,214 @@
+# Getting started
+
+Setup for a fresh clone, and an honest account of what the clone does and does not
+contain. Verified end to end on a clean clone of `origin/main`.
+
+## Requirements
+
+- **Python 3.12 or newer.** This is a hard floor, not a preference: `run_pipeline.py`
+  and `src/screenshot_to_template/models/__init__.py` use PEP 701 f-strings, which
+  earlier interpreters cannot parse at all. macOS ships Python 3.9, so the system
+  interpreter will not work — check with `python3 --version` before anything else.
+- Roughly 3 GB of disk for the clone. Most of that is two legacy runs that are still
+  tracked (see [What a clone gives you](#what-a-clone-gives-you)).
+- An API key only if you intend to run the pipeline. Browsing published results
+  needs none.
+
+## Install
+
+```bash
+git clone <repo-url>
+cd design-system-extractor-mine
+
+python3 --version                    # must be 3.12+
+python3 -m venv venv
+./venv/bin/pip install -e '.[dev]'
+./venv/bin/playwright install chromium
+```
+
+**Check that version before creating the venv.** On macOS, `python3` on your `PATH` is
+often Apple's `/usr/bin/python3`, which is 3.9 — building the venv with it produces a
+venv that cannot run this project. If `python3 --version` is older than 3.12, name the
+interpreter explicitly:
+
+```bash
+python3.13 -m venv venv              # or python3.12 / python3.14 / brew's python3
+```
+
+`pip install -r requirements.txt` does the same thing as `pip install -e '.[dev]'` —
+that file just points at `pyproject.toml` so there is one dependency list.
+
+The `playwright install chromium` step is not optional if you plan to run anything:
+about 29 modules drive a headless browser, including page capture, computed-style
+measurement, replica rendering and much of the test suite. It downloads roughly
+150 MB into a per-user cache (`~/Library/Caches/ms-playwright` on macOS).
+
+> If `PLAYWRIGHT_BROWSERS_PATH` is set in your environment — some sandboxes and CI
+> images set it — Playwright will look for browsers somewhere they are not, and fail
+> with "Executable doesn't exist". The repo convention is to unset it for the
+> command: `env -u PLAYWRIGHT_BROWSERS_PATH ./venv/bin/python …`. You will see that
+> prefix in a lot of the docstrings and changelogs.
+
+API keys, if you need them:
+
+```bash
+cp .env.example .env.local     # then fill in the keys you actually use
+```
+
+`.env.local` is gitignored and is read automatically by `run_pipeline.py`. Only
+`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY` and `GEMINI_API_KEY` are
+picked up.
+
+## Check the install
+
+```bash
+./venv/bin/python -m pytest tests/ -q
+```
+
+`tests/` is the suite to trust on a fresh clone: it takes seconds, needs no browser, no
+API key and no run data, and should be fully green. If it is not, something about the
+install is wrong.
+
+**`brand_pipeline/tests/` will not pass on a clone, and that is not your fault.** It
+takes a couple of minutes, renders in Chromium, and a large part of it reads local run
+output under `runs/` — which is gitignored, so the files simply are not there
+(`FileNotFoundError: runs/<brand>/brand/brand.yaml` and similar). On a clean clone
+roughly 90 of its ~2000 tests fail or error for that reason. It is a suite for someone
+who has run the pipeline locally, not an install check. Run it with
+`env -u PLAYWRIGHT_BROWSERS_PATH ./venv/bin/python -m pytest brand_pipeline/tests/ -q`.
+
+## What a clone gives you
+
+Tracked, so you get it:
+
+- All the source: pipeline, `brand_pipeline/`, extraction tools, prompts, contracts.
+- `artifacts/published/` — self-contained exports of finished runs. Currently one:
+  `greenhouse-4`.
+- `runs/remote/` and `runs/hubspot-v2/` — about 248 MB of run output committed before
+  `runs/` was gitignored. They are frozen legacy snapshots, not current output, and
+  the ignore rule means nothing else in `runs/` travels with the repo.
+
+Not tracked, so you do not get it:
+
+- **`screenshots/`** — every source capture. This is the input the pipeline needs, and
+  none of it is in the repo.
+- **`runs/`** beyond those two legacy folders — all real run output.
+- **`viewer-data/`** — the viewer's payload files.
+
+Practical consequences:
+
+- The Studio project list shows only `remote` and `hubspot-v2` plus whatever is in
+  `artifacts/published/`. That is not a bug.
+- `viewer.html` is a stub that redirects into the Studio canvas. Opened as a file it
+  cannot redirect anywhere and says so; served by the Studio with no `?version=`, it
+  lands on `/studio`.
+- Re-running the pipeline against a source site means capturing that site yourself
+  first. See [Re-running the pipeline](#re-running-the-pipeline).
+
+## Browse the published results with no server
+
+Open `artifacts/published/greenhouse-4/index.html` in a browser. The bundle is
+self-contained and needs no server, no API key and no browser install. Everything that
+run produced is reachable from there: the generated site, design system, tokens,
+harness, replica with its fidelity report and diffs, and the raw logs.
+
+Read `artifacts/published/greenhouse-4/README.md` first. It is blunt about that run's
+status, and worth taking at face value: the run **did not pass its own gates** — it
+crashed at G3 (harness) and its replica fidelity is 0.7437 against a declared 0.90
+bar. The bundle is published for browsing and review, not as a certified-good build.
+Its README also flags that the run's own `manifest.json` claims `completed`, which the
+gate evidence does not support — trust the reports beside the page, not the manifest.
+
+## Run the Studio
+
+```bash
+./start-studio.sh                 # http://localhost:1500/studio
+```
+
+The Studio serves the viewer, `runs/**`, the published bundles, and the project API on
+one port. Set `STUDIO_PORT` to move it. Don't substitute `python3 -m http.server` —
+that has no `/studio` route.
+
+`start-studio.sh` refuses to start on a missing venv, an interpreter older than 3.12,
+or a venv without dependencies installed, and tells you which. That is deliberate: the
+Studio launches every pipeline run with its own interpreter, so a Studio started on the
+wrong Python looks perfectly healthy right up until a run dies with a SyntaxError.
+
+Two things worth knowing:
+
+- **The Studio UI loads Tailwind from `https://cdn.tailwindcss.com`.** With no network
+  it works but renders unstyled. Nothing is vendored.
+- The Run button starts a real pipeline run, with the cost and duration described
+  below.
+
+## Configuration
+
+`config.default.yaml` is the CLI baseline, always loaded first; a `--config` file is
+merged over it. The two shipped configs differ on purpose:
+
+| | `config.default.yaml` (CLI) | `config-anthropic.yaml` (Studio base) |
+| --- | --- | --- |
+| `framework-generation-enabled` | `false` | `true` |
+| provider | `openai` / `gpt-5.5` | `anthropic` / `claude-opus-4-8` |
+
+Plain CLI runs stop at brand compose — token CSS plus static HTML — which is the
+canonical product path. The Studio's path is framework-first, so every Studio project
+inherits framework generation on. `false` in `config.default.yaml` is pinned by
+`brand_pipeline/tests/test_brand_signal_composition.py`; per-run opt-in on the CLI is
+`--framework-sites`.
+
+Framework generation is fail-closed behind ordered gates (G1 extraction → G2
+validation → G3 harness → G4 replica ≥ bar) and will refuse for a lane that has not
+cleared them. `framework-generation-allow-ungated` exists to override that knowingly;
+leave it alone unless you mean it.
+
+One wrinkle: `AppConfig`'s dataclass default for `framework_generation_enabled` is
+`True`. It only applies when a config is built without `load_config()`, which always
+reads `config.default.yaml` and so always lands on `false`.
+
+## Re-running the pipeline
+
+Read this before starting one.
+
+The source captures are not in the repo, so you cannot reproduce a published run from
+a clone alone. The sequence is:
+
+```bash
+# 1. capture the source pages (one per page)
+env -u PLAYWRIGHT_BROWSERS_PATH ./venv/bin/python tools/extract/capture_page.py \
+    --url https://example.com --out screenshots/<brand>/<page> --name <page>
+
+# 2. mine + ground the captures
+#    the exact recipe used for the published run is committed at
+#    artifacts/published/greenhouse-4/logs/extract_pages.sh
+```
+
+`extract_pages.sh` is the real recipe, not a sketch: per page it runs `mine_dom`,
+`mine_css`, `mine_motion`, `measure_computed`, `slice_sections`, `curate_assets`, then
+vision grounding over the crops. It expects captures at `screenshots/<brand>/<page>`
+and writes into `runs/<brand>/brand/`.
+
+Set expectations honestly:
+
+- **Hours of wall clock** for a multi-page brand.
+- **A real API bill.** Grounding is high-effort vision calls over every section crop
+  of every page, and generation stages are large model calls on top of that.
+- **Nondeterministic output.** Two runs of the same source do not produce the same
+  design system or the same fidelity score.
+- **A run can finish and still not be good.** `greenhouse-4`, the run published in
+  this repo, did not clear its own gates. Check the gate evidence, not the manifest.
+
+If you just want to see what the pipeline produces, the published bundle is the cheap
+answer and needs no server, no key and no browser install.
+
+## When something breaks
+
+| Symptom | Cause |
+| --- | --- |
+| `SyntaxError` in `run_pipeline.py` | Interpreter older than 3.12. |
+| Studio refuses to start with a Python version message | Same, caught early. Rebuild `venv` on 3.12+. |
+| `ModuleNotFoundError: playwright` | `pip install -e '.[dev]'` not run, or run against the wrong interpreter. |
+| `Executable doesn't exist … chromium` | `playwright install chromium` not run, or `PLAYWRIGHT_BROWSERS_PATH` points elsewhere. |
+| `Screenshots directory not found` | Expected on a clone — `screenshots/` is gitignored. Capture first. |
+| Studio shows only two projects | Expected. `runs/` is gitignored. |
+| Studio renders unstyled | No network; its Tailwind comes from a CDN. |

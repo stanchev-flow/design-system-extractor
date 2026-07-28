@@ -1,0 +1,12 @@
+# pyproject.toml is the single source of truth for dependencies. This file
+# exists so that `pip install -r requirements.txt` works for anyone who reaches
+# for it first; it installs the project itself (editable) plus the test extras.
+#
+# Requires Python 3.12+ — see pyproject.toml for why.
+#
+# One more step is needed afterwards, once per machine, to download the
+# headless browser that capture/measure/replica rendering depends on:
+#
+#   playwright install chromium
+#
+-e .[dev]
