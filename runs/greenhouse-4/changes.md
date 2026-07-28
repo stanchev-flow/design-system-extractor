@@ -634,6 +634,18 @@ files, and `--check` reports any local reference from a tracked page that would
 still 404 in a clone. The only two it still reports are files that do not exist
 on the author's disk either.
 
+### A lane can be a symlink, and the tracker was walking past them
+The first clone showed `woodwave` with **27** lanes against **56** locally. The
+missing 29 are `brand/variants/*` entries whose `index.html` and `assets` are
+symlinks into `experiments/woodwave-{hybrid,showcase,harvest,ab}/` — already
+tracked, already in every clone, and invisible because `classify_run()` skipped
+every symlink it walked past. A symlink whose target resolves inside the repo is
+now tracked as the link (git stores it for nothing); one that leaves the repo is
+dropped with that as the reason; and a path reached by walking THROUGH a symlinked
+directory is skipped, because git refuses those and the bytes belong to whatever
+the link points at. woodwave gains 58 links and zero bytes, and the clone now
+shows all 56 lanes.
+
 ### Five runs had no Studio identity
 `greenhouse-v2`, `hubspot-v2`, `hubspot-v3`, `hubspot-v4` and `woodwave-v2` had no
 `studio-project.json`, so they listed with a raw directory name and no link back
@@ -648,16 +660,41 @@ now sits at the capture root, which is the shape the resolver already looks for.
 Both cards render, and all eleven now have a real thumbnail.
 
 ### Clean-clone verification
-Fresh `git clone` of `origin/main` into `/tmp`, venv on 3.14, Studio on port 1577,
-headless Chromium over the dashboard, all eleven project pages, and all 111 lanes
-they advertise, recording every request that 404'd or failed. The identical walk
-was run against the author's Studio on 1500 for comparison.
+Fresh `git clone` of `origin/main` into `/tmp`, venv on 3.14 (`python3` on this
+machine is 3.9 and cannot build a working venv), `pip install -e '.[dev]'`,
+`playwright install chromium`. Then a Studio from the clone and headless Chromium
+over the dashboard, all eleven project pages, and all **118 lanes** they advertise,
+recording every request that 404'd or failed. The identical walk was run against
+the author's own Studio for comparison, and every brand-doc tab body was fetched
+from `/api/rundoc`.
 
+**A trap worth recording:** this is a shared working tree and other agents leave
+Studios bound to spare ports. A server that fails to bind exits silently, the
+probe succeeds against whoever already owns the port, and the "clone" run quietly
+verifies the author's checkout instead — which looks like perfect parity because
+it IS the author's checkout. The tell was a dashboard listing 29 projects when the
+clone's `runs/` holds 11. The verifier now asserts the project list equals the
+clone's own run directories before it believes anything.
+
+- `pytest tests/` on the clone: 198 passed. `git status` clean after install.
 - dashboard: 11 cards, every thumbnail 200, zero failed requests
 - every project page: zero failed requests
+- every lane: zero failed requests except the four classes below
 - Source pane resolves for all ten projects that have a capture (`relume-test` is
   a wireframe lane and has none, locally too)
-- catalogs, document tabs, asset counts and lane counts match local exactly
+- brand-doc tabs: 55 across the eleven projects, **zero empty or failing**
+- asset galleries: greenhouse-4 68, hubspot-v2/v3/v4 66, greenhouse-v2 64,
+  greenhouse 39, remote 34, woodwave 19, woodwave-v2 16. `hubspot` and
+  `relume-test` report 0 because neither has an asset manifest on disk either.
+
+Differences from the author's own Studio, all of them accounted for:
+
+| difference | why |
+| --- | --- |
+| `greenhouse` and `woodwave` each lose the `Ledger` doc | `single/source-style-ledger.yaml` records this checkout's absolute path |
+| `greenhouse-4` shows 3 lanes not 5, `greenhouse-v2` 6 not 7 | the extra ones are framework builds registered in the untracked `runs/.studio/framework-builds.json`; they are dead links locally too, so the clone has fewer dead links, not fewer working ones |
+
+Everything else — lane counts, catalogs, tabs, asset counts, thumbnails — matches.
 
 Failures, all of which reproduce identically against the author's own Studio:
 
@@ -670,9 +707,10 @@ Failures, all of which reproduce identically against the author's own Studio:
 
 ### Held back for embedding this checkout's absolute path
 237 files, 2.8 MB, across all eleven lanes. Consequences a teammate sees: no
-Author report tab on `greenhouse-v2`/`hubspot-v3`/`hubspot-v4`, no Replica
-fidelity tab on `greenhouse-4`/`greenhouse-v2`/`hubspot-v4`/`woodwave-v2`, and no
-Changelog tab on `relume-test`. `compose_replica.py` now writes that field
+Author report tab on `greenhouse-v2`, no Replica fidelity tab on
+`greenhouse-4`/`greenhouse-v2`/`hubspot-v4`/`woodwave-v2`, no Changelog tab on
+`relume-test`, and no Ledger doc on `greenhouse`/`woodwave`.
+`compose_replica.py` now writes that field
 repo-relative, so re-scoring unblocks the replica reports; `author-stage-status.json`,
 `composition.json`, `onbrand-report.md` and the battery `report.json`s need the
 same treatment at their producers. Secret scan over the whole tracked set
