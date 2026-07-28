@@ -1,5 +1,87 @@
 # Changes
 
+## 2026-07-28 — The published site opens on the generated site, not on the pipeline
+
+The published bundles were built for review, so they opened on a status disclosure and a table of
+every artifact. Asked for "a browsable version of generated stuff, not middle process needed", the
+hierarchy was inverted: the deliverable is the front page and the process is one link away. Nothing
+was deleted — every artifact that was reachable before is still reachable.
+
+- **`tools/publish_run_bundle.py` — new entry points.** The framework build now lands at the bundle
+  root as `index.html` (it used to be `framework/index.html`; that directory still carries the
+  build's own `framework-report.json` and `brand-assets.json`). The old landing page moved to
+  `pipeline.html` **unchanged in content**: same status block in the same position above the same
+  lane cards, brand-facts table and logs table, plus backlinks to the site and to the brand list.
+  `published.json` gained `site` (`{kind, path, source}`, null when a run produced no site) and
+  `details`.
+- **Asset paths re-derived, never assumed.** Moving the page from `framework/` to the bundle root
+  changes its depth, so its 224 media references had to be recomputed: `copy_page()` already
+  derives the prefix from the destination, so the site's refs became bare `assets/…`. A new
+  `repoint_assets()` does the same for an already-exported page written out again somewhere else,
+  and only moves a reference whose file actually exists in the pool it is pointed at — so external
+  URLs (the build's Google Fonts links) and unknown names are left exactly as they were.
+- **Published root serves the newest brand's site.** `artifacts/published/index.html` is that
+  bundle's site re-pathed for the root depth (refs become `<bundle>/assets/…`), because a bare URL
+  should open the deliverable rather than a chooser. `brands.html` lists every bundle with a site
+  link and a details link, and the root's footer gains a link to it only when more than one bundle
+  exists. Ordering is `published_at` desc with the name as tie-break — read off disk, nothing
+  hardcoded. With no site anywhere, both the root and the bundle fall back to the details page.
+- **One provenance line on the clean page.** A single inline-styled `<footer
+  id="published-provenance">` before `</body>`: what the site was generated from, one clause on
+  what the run's gates said, and a "Pipeline details" link. It is verdict-driven from the same
+  derivation as before (`derive_run_status()` is untouched), never claims the build is certified,
+  and re-stamping is idempotent. Its styles are single-quoted on purpose — a double quote inside a
+  `style="…"` value terminates the attribute, which is how the first draft broke.
+- **`studio_server.py`.** `published_bundles()` now returns `details_url` alongside `url` (falling
+  back to `pipeline.html` for bundles that predate the field); the dashboard band gives each card an
+  "Open site" and a "Pipeline details" link; the project sidebar (and so `/api/build-index`) lists
+  both; the header button reads "Published sites".
+- **Verification.** Re-exported `runs/greenhouse-4` and loaded 24 pages in headless Chromium over
+  `file://` and over a local Studio — the 4 lanes, 17 layout pages, the details page and the two
+  published-root pages: every page loads, zero broken images, zero 4xx sub-requests, zero console
+  errors. The relocated site renders 3,351 characters and 13 resolving images at the bundle root and
+  identically at the published root. All 24 HTML pages carry the robots meta. Re-running the export
+  changes only the timestamp-bearing entry points.
+
+## 2026-07-28 — The public preview is gone; the bundle is a local artifact
+
+Access-gating a GitHub Pages site to invited people needs GitHub Enterprise Cloud, which this plan
+does not have — publishing from a private repo still yields a fully public site. Since a bundle
+faithfully reproduces a real company's imagery and copy, the preview was cancelled outright.
+
+- **Pages site deleted.** `DELETE /repos/:owner/:repo/pages` returned `204`; the API now 404s for
+  both the site and its builds, and every path under the old URL 404s (the bare root served a
+  ten-minute Fastly cache before expiring). `.github/workflows/deploy-pages.yml` is removed — the
+  repo has no workflows left — so no push to `main` can resurrect it. No other repo setting was
+  touched: visibility, branch protection and everything else are unchanged.
+- **The bundle stays**, and keeps the restructure above: it is verified self-contained, browses off
+  `file://` with no server, and is the thing to zip and hand to someone.
+- **Machine-local paths scrubbed at the source.** A clean-clone audit found 145 occurrences of the
+  absolute repo path in tracked bundle files — 79 in `brand/asset-placements.json`, 38 across ten
+  `logs/*.log`, 24 in `verify.json`, 3 across `framework/framework-report.json` and
+  `brand-assets.json`. `copy_page()`, `copy_plain()` (for text suffixes only) and the generated
+  entry points now run `redact_local_paths()`, which swaps the repo root for `<repo>` and the home
+  directory for `<home>`, longest prefix first. Only the prefix goes, so
+  `<repo>/runs/greenhouse-4/brand/x.yaml:12` is still a usable debugging reference, and the
+  placeholders need no JSON escaping. The re-exported bundle contains zero occurrences. The same
+  pattern exists widely under `experiments/` and was deliberately left alone.
+- **`noindex` kept, purpose restated.** With nothing deployed it has no crawler to answer to; it
+  stays because it costs nothing and is the right default if a bundle is ever served. The comment
+  and the README no longer describe it as protecting a live site.
+- **Docs.** `README.md` replaces the "Public GitHub Pages mirror" section with why there is
+  deliberately no mirror, and documents opening the bundle straight off disk. `docs/getting-started.md`
+  is owned elsewhere and was not touched.
+- **Tests.** `tests/test_published_bundle.py` 26 → 42: a `FrontPageTests` class covering the site at
+  the root, the provenance line per verdict, the details page still carrying the full disclosure,
+  path re-derivation at both depths (including third-party URLs surviving it), multi-bundle root
+  behaviour, the no-framework fallback and idempotent stamping; plus a `LocalPathRedactionTests`
+  class covering prefix precedence, `file://` URLs, JSON validity and a full export being clean.
+- **Carried in, not authored here.** The re-export picked up concurrent replica/typography work from
+  `runs/greenhouse-4/` — replica fidelity moved 0.7437 → 0.8733, still under the 0.90 bar, so the
+  disclosed verdict is unchanged. The bundle is internally consistent and fully verified as
+  committed; the payload was not hand-restored, because that would leave `published.json` describing
+  files that were no longer there.
+
 ## 2026-07-28 — No brand's name from a past run reaches another brand's generated output
 
 The cross-brand scan added with the published bundles found 21 references to other brands

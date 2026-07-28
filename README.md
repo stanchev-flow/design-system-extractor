@@ -280,14 +280,31 @@ Pipeline walkthrough pages can be generated with:
 
 ### Published run results
 
-`runs/` is gitignored, so finished runs are shared as small tracked bundles under
-`artifacts/published/<run>/`. Each bundle is self-contained (relative asset paths only) and the
-Studio serves it directly, so a fresh clone can browse the results with no local run data:
+Finished runs are also exported as small, self-contained bundles under
+`artifacts/published/<run>/`. Every path inside a bundle is relative, so it browses three ways with
+no setup: through the Studio, straight off disk (`open artifacts/published/index.html` — no server),
+or zipped and handed to someone. **They are browsed locally. There is no public site** — see below.
+
+**A bundle leads with the generated site, not with the pipeline.** `index.html` is the run's
+framework build served as a real page; every artifact behind it — the replica, the harness and its
+layout pages, the catalog, the brand fact files, the logs and the run's full gate-status
+disclosure — is on `pipeline.html`, reached from one small footer link on the site:
 
 ```text
-http://127.0.0.1:1500/artifacts/published/            # all bundles
-http://127.0.0.1:1500/artifacts/published/greenhouse-4/index.html
+# through the Studio (./start-studio.sh)
+http://127.0.0.1:1500/artifacts/published/                          # the newest brand's site
+http://127.0.0.1:1500/artifacts/published/brands.html               # every published brand
+http://127.0.0.1:1500/artifacts/published/greenhouse-4/index.html   # that brand's site
+http://127.0.0.1:1500/artifacts/published/greenhouse-4/pipeline.html
+
+# or with no server at all
+open artifacts/published/index.html
 ```
+
+The published root serves the **newest** bundle's site, re-written for that depth (the asset prefix
+is derived from where the page lands, never inherited). Other brands stay one link away on
+`brands.html`, which lists a site link and a details link for each. A run that produced no
+framework build falls back to opening on its details page, so a bundle never opens to a 404.
 
 Publish (or re-publish) a run:
 
@@ -296,39 +313,42 @@ Publish (or re-publish) a run:
   --base-url http://127.0.0.1:1500
 ```
 
-It copies the replica, harness, catalog, framework build, brand fact files, logs and only the
+It copies the framework build, replica, harness, catalog, brand fact files, logs and only the
 referenced media; rewrites every asset reference to the bundle's own `assets/`; then loads each
-page in headless Chromium and records the result in the bundle's `verify.json`.
+page in headless Chromium — including the published-root copy of the site — and records the result
+in the bundle's `verify.json`.
 
 Each bundle also states the **real outcome of the run that produced it** — read off disk from the
 orchestrator's `flow-report.json`, the flow logs and the replica report, never from the run
-manifest's own claim — as a status block above the artifact links, in the bundle `README.md`, in
-`published.json` (`status`), and as a badge on the Studio dashboard. A run whose gates did not pass
-says so; a run whose logs are inconclusive says that instead of claiming success.
+manifest's own claim. In full it lives above the artifact links on `pipeline.html`, in the bundle
+`README.md`, in `published.json` (`status`), and as a badge on the Studio dashboard. The generated
+site itself carries a one-line version of it in its footer, next to the link to the full
+disclosure. A run whose gates did not pass says so; a run whose logs are inconclusive says that
+instead of claiming success. Nothing anywhere claims a build is certified.
 
-### Public GitHub Pages mirror
+### There is deliberately no public mirror
 
-The same bundles are served publicly, so results can be shared with a link instead of a clone:
+These bundles were briefly served on GitHub Pages. **That site has been deleted and the deploy
+workflow removed**, so a push to `main` cannot bring it back. Two reasons, and both still hold:
 
-```text
-https://stanchev-flow.github.io/design-system-extractor/                       # all bundles
-https://stanchev-flow.github.io/design-system-extractor/greenhouse-4/index.html
-```
+- **The material is not ours to republish.** A bundle faithfully reproduces a real company's
+  imagery, copy and layout — that is the point of the extraction, and it is exactly what should not
+  sit on a public URL.
+- **This plan cannot gate access.** Restricting a Pages site to invited people with repo read
+  access needs GitHub Enterprise Cloud. Without it, publishing from a private repo still produces a
+  fully public site, so "share with the team" and "publish to the world" are the same button.
 
-Deployment is automatic: `.github/workflows/deploy-pages.yml` runs on every push to `main`, stages
-`artifacts/published/` and publishes it. Nothing is built — the bundles are already static. Trigger
-a redeploy by hand with `gh workflow run deploy-pages.yml` (or Actions → *Deploy published bundle to
-Pages* → *Run workflow*); pushing an unrelated commit to `main` also redeploys.
+Distribution is local instead: clone the repo, run the Studio, browse the bundle — or open it
+straight off disk, or zip the directory and send it.
 
-**Indexing is discouraged, but the site is not private.** `tools/publish_run_bundle.py` emits
-`<meta name="robots" content="noindex, nofollow">` into every page it writes, so the committed
-bundle carries the signal itself, and the workflow writes `robots.txt` (`Disallow: /`). That is a
-request, not access control: anyone with the URL can read everything, the repo itself is public, and
-crawlers that ignore `robots.txt` are unaffected. Do not publish a bundle containing anything that
-must stay private.
+`tools/publish_run_bundle.py` still writes `<meta name="robots" content="noindex, nofollow">` into
+every page it emits. With nothing deployed it has no crawler to talk to; it is kept because it costs
+nothing and would be the right default if a bundle is ever served somewhere. It was never access
+control, and it is not one now.
 
-The workflow's own meta-injection step is now redundant — the export is the canonical home for the
-tag, and `robots.txt` is the only thing the deploy still needs to add.
+Bundles also carry no machine-local paths: the export rewrites the absolute repo/home prefix in
+every text file it copies to `<repo>`/`<home>`, so run logs and result JSON stay useful for
+debugging without naming anyone's filesystem.
 
 ## Prompt And Versioning Rules
 
