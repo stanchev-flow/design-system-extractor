@@ -1,5 +1,46 @@
 # Changes
 
+## 2026-07-28 — Published run results: shareable bundles in the repo + Studio discovery
+
+`runs/` is gitignored (2.8 GB; greenhouse-4 alone is 325 MB), so a finished run was only
+browsable on the machine that produced it. Runs can now be PUBLISHED: a small, tracked,
+self-contained export that the Studio serves as-is, so anyone who clones the repo gets the
+results without re-running the pipeline.
+
+- **`tools/publish_run_bundle.py` (new).** Exports one run's final artifacts into
+  `artifacts/published/<run>/`: the composed replica + fidelity report, the components/layout
+  harness (with every pattern page), the component catalog, the built framework app
+  (`dist/index.html`), the authored brand fact files, run logs + manifest + changelog, and ONE
+  deduped `assets/` dir holding only the media those pages actually reference. Writes a landing
+  `index.html`, a `README.md`, and a `published.json` manifest, plus a sibling
+  `artifacts/published/index.html` listing every bundle. Generic over brand/run — nothing about
+  a specific brand, lane name or port is hardcoded.
+  - **Relocation is the substance.** The run's pages reference media three different ways
+    (`assets/x` beside the page, `assets/x` from nested layout pages, and absolute
+    `/runs/<run>/brand/assets/x` from the Vite build). Every copied HTML/CSS file is rewritten to
+    the bundle's single `assets/` dir via a *relative* path, so a bundle browses identically over
+    the Studio, over any static host, and from `file://`. A candidate reference is only rewritten
+    when it resolves to a real file, so third-party URLs are left alone.
+  - **Verification is part of the export.** Each page is then loaded in headless Chromium and
+    asserted to render content with no broken images, no 4xx and no console errors (`verify.json`);
+    the same pass produces the landing page's preview thumbnails. `--base-url` checks it through a
+    running Studio instead of `file://`; `--no-verify` opts out. Re-runnable: managed subtrees are
+    replaced each run, so stale files cannot survive.
+- **`studio_server.py` — published bundles are first-class.** `published_bundles()` discovers
+  `artifacts/published/*/published.json`, a "Published results" band renders on the dashboard
+  (the only results a fresh clone can show, since `runs/` is absent), a "Published results ↗"
+  header link opens the bundle index, and `project_build_links()` adds a `published` entry to the
+  matching project so it appears in the per-project sidebar and `/api/build-index`. New `published`
+  and `catalog` link kinds in both the server-side and client-side chip styles.
+- **First bundle: `artifacts/published/greenhouse-4/` (19.4 MB, 65 media files).**
+  `http://127.0.0.1:1500/artifacts/published/greenhouse-4/index.html`. 22/22 pages verified over
+  the Studio; the framework build renders 3215 chars of text with 13 images and 0 broken (the
+  earlier blank-framework failure mode is absent). Source captures, per-page crops, `evidence/`,
+  the framework app source and `node_modules` are deliberately left in the run dir.
+- **Untouched:** the `runs/` ignore rule, the original `runs/greenhouse-4/` tree, and
+  `viewer.html` (regeneration verified to be a byte-identical no-op — this change does not touch
+  the viewer data shape).
+
 ## 2026-07-22 — Generation-path fidelity batch (AS-83-driven): sticky column CONSUMED, headings register promoted, round-glyph gate
 
 Driven by the AS-83 fact-consumption audit + the css_fidelity diff (not by eye). Every change is

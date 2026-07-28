@@ -1,0 +1,31 @@
+Brand extraction: greenhouse-4
+Capture: /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/greenhouse-4
+Output:  runs/greenhouse-4/brand
+
+[run ] validate: validate_brand_evidence --brand-dir /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/greenhouse-4/brand --min-logo-assets 3
+WARN  C5: dom-mine observed ~70 module sections but only 6 non-chrome layouts were authored — check extraction breadth.
+WARN  C24: style-scale.yaml is STALE — sourceDigest sha256:8ac31397b60e != current brand.yaml sha256:04bd4f4aec58; re-run the normalizer so derived steps track the facts.
+WARN  C25: signature 'serif-mint-hero' kind '' is not a known rule kind (accent-scope, shape-motif, spacing-habit, surface-habit, type-treatment) — the signature auditor cannot verify it.
+WARN  C25: signature 'serif-mint-hero' needs mode: always|never — a signature is a machine-checkable rule, not prose.
+WARN  C25: signature 'serif-mint-hero' carries no check params — author the machine-checkable form (the claim is the prose companion, the check is the rule).
+WARN  C25: signature 'serif-mint-hero' cites no evidence provenance — every signature must name the sections/computed facts that license it.
+WARN  C25: signature 'green-blue-pill-duo' kind '' is not a known rule kind (accent-scope, shape-motif, spacing-habit, surface-habit, type-treatment) — the signature auditor cannot verify it.
+WARN  C25: signature 'green-blue-pill-duo' needs mode: always|never — a signature is a machine-checkable rule, not prose.
+WARN  C25: signature 'green-blue-pill-duo' carries no check params — author the machine-checkable form (the claim is the prose companion, the check is the rule).
+WARN  C25: signature 'green-blue-pill-duo' cites no evidence provenance — every signature must name the sections/computed facts that license it.
+WARN  C25: signature 'dark-green-bookend' kind '' is not a known rule kind (accent-scope, shape-motif, spacing-habit, surface-habit, type-treatment) — the signature auditor cannot verify it.
+WARN  C25: signature 'dark-green-bookend' needs mode: always|never — a signature is a machine-checkable rule, not prose.
+WARN  C25: signature 'dark-green-bookend' carries no check params — author the machine-checkable form (the claim is the prose companion, the check is the rule).
+WARN  C25: signature 'dark-green-bookend' cites no evidence provenance — every signature must name the sections/computed facts that license it.
+ERROR C4: layoutCopy entries do not consume required content slot roles: stats.items
+ERROR C7: navbar.surface.bg missing — the chrome bar color must be measured, not defaulted.
+ERROR C7: navbar: no presentation evidence (neither `presentation:` nor `measured.link` facts) — casing/separators/CTA treatment must come from the source (grounding `chrome` block + computed styles), or the renderer's habits leak in.
+ERROR C7: navbar.logo declared but not renderable — carry `src` (on-disk asset), `kind: svg` + markup/srcContract pointer, or drop the dict so the wordmark text device renders.
+ERROR C7: footer.legal uses `copyright:` but the composers read `legal.text` (component_render.footer_content) — rename the key or the legal line silently disappears.
+ERROR C11: pattern 'cta' composes a srcless placeholder plate (c-image-ph markup) — bind a real asset to the media slot or drop the slot.
+ERROR C11: pattern 'hero' composes a srcless placeholder plate (c-image-ph markup) — bind a real asset to the media slot or drop the slot.
+ERROR C21: navbar.primary entry 'Platform' has no destination href and no menu — an in-bar CONTROL flattened into the nav-destination tier; classify it under navbar.utility (kind/role/glyph/dropdown anatomy) or mark utilityNotObserved: true.
+ERROR C21: navbar.primary entry 'Why Greenhouse' has no destination href and no menu — an in-bar CONTROL flattened into the nav-destination tier; classify it under navbar.utility (kind/role/glyph/dropdown anatomy) or mark utilityNotObserved: true.
+ERROR C21: navbar.primary entry 'Resources' has no destination href and no menu — an in-bar CONTROL flattened into the nav-destination tier; classify it under navbar.utility (kind/role/glyph/dropdown anatomy) or mark utilityNotObserved: true.
+ERROR C27: pattern 'hero' slot 'mediaCluster' binds '030-689610cd7418c453485571fd-home-hero-m-clusters-of-three-solutions-workflows-with-photos-of-ui-and-people-working-402x.png' which media-assets.yaml does not register — the registry is the superset; register the file (or its logical asset).
+[FAIL] /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/greenhouse-4/brand: 11 error(s), 14 warning(s), 0 note(s)

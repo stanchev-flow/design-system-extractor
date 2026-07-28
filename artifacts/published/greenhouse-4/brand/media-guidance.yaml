@@ -1,0 +1,21 @@
+schemaVersion: media-guidance.v1
+photographyFingerprint:
+  notObserved: true
+  reason: "Measured stats give only mid luminance and moderate saturation with mixed dominant hues; temperatureCast and finish were not consistently measurable across the photographic family, so no reliable fingerprint could be derived."
+tagRules:
+  award-badge:
+    assetSemantics:
+      kind: badge-review-award
+    usageRights: third-party-mark
+  decorative:
+    assetSemantics:
+      kind: photograph
+    usageRights: own
+  feature-icon:
+    assetSemantics:
+      kind: spot-icon
+    usageRights: own
+  logo:
+    assetSemantics:
+      kind: logo-third-party
+    usageRights: third-party-mark

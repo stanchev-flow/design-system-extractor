@@ -1,0 +1,305 @@
+{
+ "schemaVersion": "replica-composition.v1",
+ "order": [
+  "hero",
+  "featuresThreeColumnCard",
+  "logoWall",
+  "featureGrid",
+  "cta"
+ ],
+ "sections": [
+  {
+   "id": "hero",
+   "useCase": "hero",
+   "archetype": "centered-copy-with-floating-media",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "archetypeRef": "centered-copy-with-floating-media",
+   "seededFrom": {
+    "lib": "project",
+    "id": "hero"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 primary-heading",
+     "textLen": "short",
+     "sizeClass": "hero",
+     "contract": "heading",
+     "copy": {
+      "heading": "The only hiring platform you\u2019ll ever need"
+     }
+    },
+    {
+     "name": "body",
+     "role": "body \u2014 intro-body",
+     "textLen": "medium",
+     "sizeClass": "body",
+     "contract": "paragraph",
+     "copy": {
+      "text": "Save more, hire with confidence and move faster with AI-powered tools that streamline every step of the hiring process \u2013 from sourcing to onboarding.",
+      "body": "Save more, hire with confidence and move faster with AI-powered tools that streamline every step of the hiring process \u2013 from sourcing to onboarding."
+     }
+    },
+    {
+     "name": "primaryAction",
+     "role": "primaryAction \u2014 primary-action",
+     "textLen": "word",
+     "sizeClass": "control",
+     "width": "hug",
+     "contract": "button",
+     "copy": {
+      "label": "Request a demo"
+     }
+    },
+    {
+     "name": "ghostAction",
+     "role": "ghostAction \u2014 secondary-action",
+     "textLen": "short",
+     "sizeClass": "control",
+     "width": "hug",
+     "contract": "button",
+     "copy": {
+      "label": "Request a demo"
+     }
+    },
+    {
+     "name": "mediaCluster",
+     "role": "mediaCluster \u2014 decorative-media-cluster",
+     "z": "front",
+     "mediaAspect": "freeform",
+     "contract": "image",
+     "asset": {
+      "src": "030-689610cd7418c453485571fd-home-hero-m-clusters-of-three-solutions-workflows-with-photos-of-ui-and-people-working-402x.png",
+      "alt": "Greenhouse mediaCluster"
+     }
+    }
+   ],
+   "treatments": [
+    {
+     "kind": "ghost-word",
+     "target": "heading",
+     "note": "'only' rendered in italic serif within the heading"
+    }
+   ],
+   "_requiresHydration": true
+  },
+  {
+   "id": "featuresThreeColumnCard",
+   "useCase": "features",
+   "archetype": "three-column-cards",
+   "surfaceIntent": "surface/inverse",
+   "novelty": "reuse",
+   "archetypeRef": "three-column-cards",
+   "seededFrom": {
+    "lib": "project",
+    "id": "featuresThreeColumnCard"
+   },
+   "slots": [
+    {
+     "name": "items",
+     "role": "items \u2014 features-card-list",
+     "contract": "card",
+     "copy": [
+      {
+       "heading": "Greenhouse AI",
+       "text": "Hiring needs more than faster automation. It needs to be completely reimagined. Explore the next wave of AI capabilities from Greenhouse, built to help teams cut through noise, strengthen signal and make structured hiring easier to execute \u2013 without losing human judgment.",
+       "asset": "033-6a298fd15eb091333bcbe885-d-en-cg-home-two-office-workers-discussing-content-on-tablet-bright-space.png",
+       "alt": "033 6a298fd15eb091333bcbe885 d en cg home two office workers discussing content on tablet bright space"
+      },
+      {
+       "heading": "Real Talent",
+       "text": "Greenhouse Real Talent\u2122 brings triple layers of trust to hiring with candidate fraud detection, identity verification and candidate matching software, so you can make more confident hiring decisions.",
+       "asset": "034-6a063cdddfe47d8d3429a902-d-en-cg-home-real-talent-fraud-detection-candidate-cards.avif",
+       "alt": "034 6a063cdddfe47d8d3429a902 d en cg home real talent fraud detection candidate cards"
+      },
+      {
+       "heading": "MyGreenhouse",
+       "text": "MyGreenhouse is a powerful new candidate portal that transforms hiring from robotic to remarkable. It keeps candidates informed with real-time updates, surfaces new opportunities and makes applying seamless \u2013 while giving recruiters the insights to quickly identify top talent.",
+       "asset": "035-6a063cdcba100ecc20453980-d-en-cg-home-woman-in-suit-on-laptop-smiling-setup-job-alert-ui.avif",
+       "alt": "035 6a063cdcba100ecc20453980 d en cg home woman in suit on laptop smiling setup job alert ui"
+      }
+     ]
+    },
+    {
+     "name": "primaryAction",
+     "role": "primaryAction \u2014 outlined-action",
+     "contract": "button",
+     "copy": {
+      "label": "Request a demo",
+      "styleHint": "primary"
+     }
+    },
+    {
+     "name": "primaryAction-secondary",
+     "role": "secondary action",
+     "contract": "button",
+     "copy": {
+      "label": "Request a demo",
+      "styleHint": "outlined"
+     }
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true
+  },
+  {
+   "id": "logoWall",
+   "useCase": "logos",
+   "archetype": "split-copy-plus-logo-grid",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "archetypeRef": "split-copy-plus-logo-grid",
+   "seededFrom": {
+    "lib": "project",
+    "id": "logoWall"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 section-heading",
+     "textLen": "short",
+     "sizeClass": "display",
+     "contract": "heading",
+     "copy": {
+      "heading": "Great companies hire with Greenhouse"
+     }
+    },
+    {
+     "name": "primaryAction",
+     "role": "primaryAction \u2014 primary-action",
+     "textLen": "short",
+     "sizeClass": "control",
+     "width": "hug",
+     "contract": "button",
+     "copy": {
+      "label": "Request a demo"
+     }
+    },
+    {
+     "name": "logoGrid",
+     "role": "logoGrid \u2014 logo-grid",
+     "z": "back",
+     "mediaAspect": "landscape",
+     "contract": "logo",
+     "copy": [
+      "042-684b22ea4479a38eba02bb7a-nfl-240x74-20-1.png",
+      "043-66db2afc7f4ffa8dac7d63af-coursera-2024-02-22-193551-bfgg.avif",
+      "044-684b1591b49b84db80e1e68b-logo-anthropic.png",
+      "045-684b154b7f3a0b8ea13a87db-logo-datavant.png",
+      "046-6849817eafb5f7300bca18d3-revlon.png",
+      "047-66db2b583c8c62fd585f04a3-seatgeek-2024-02-22-193550-wvza.avif"
+     ]
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true
+  },
+  {
+   "id": "featureGrid",
+   "useCase": "features",
+   "archetype": "three-column-media-top-cards",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "archetypeRef": "three-column-media-top-cards",
+   "seededFrom": {
+    "lib": "project",
+    "id": "featureGrid"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 section-heading",
+     "contract": "heading",
+     "copy": {
+      "heading": "The best teams start with hiring \u2013 and the best hiring starts with Greenhouse"
+     }
+    },
+    {
+     "name": "itemMedia",
+     "role": "itemMedia \u2014 card-media-well",
+     "contract": "card",
+     "copy": [
+      {
+       "heading": "Everything you need to hire, in one platform",
+       "text": "Stop taking a risk with your recruiting budget and start saving money. Greenhouse offers an end-to-end solution with everything you need to make the best possible hires, consistently and quickly.",
+       "asset": "048-66ce09f23bfc5382e0a79e3a-content-gallery-1.webp",
+       "alt": "048 66ce09f23bfc5382e0a79e3a content gallery 1"
+      },
+      {
+       "heading": "Flex and scale with ease",
+       "text": "Greenhouse has everything you need for great hiring in one easy-to-use platform. Plus, you can connect with business tools you already use and customize a tech stack with our hundreds of pre-built integrations.",
+       "asset": "049-66ce09efcca27fafac5199b7-content-gallery-2.webp",
+       "alt": "049 66ce09efcca27fafac5199b7 content gallery 2"
+      },
+      {
+       "heading": "Future-proof your hiring",
+       "text": "Greenhouse has led the way in hiring innovation for over a decade \u2013 from pioneering structured hiring to our latest advances in AI and our candidate portal, we\u2019re always pushing what\u2019s possible.",
+       "asset": "050-66ce09ec544c15c6fafaf9aa-content-gallery-3.webp",
+       "alt": "050 66ce09ec544c15c6fafaf9aa content gallery 3"
+      }
+     ]
+    },
+    {
+     "name": "items",
+     "role": "items \u2014 feature-card-list (media-well -> heading -> body -> action)",
+     "contract": "card",
+     "copy": [
+      {
+       "heading": "Everything you need to hire, in one platform",
+       "text": "Stop taking a risk with your recruiting budget and start saving money. Greenhouse offers an end-to-end solution with everything you need to make the best possible hires, consistently and quickly."
+      },
+      {
+       "heading": "Flex and scale with ease",
+       "text": "Greenhouse has everything you need for great hiring in one easy-to-use platform. Plus, you can connect with business tools you already use and customize a tech stack with our hundreds of pre-built integrations."
+      },
+      {
+       "heading": "Future-proof your hiring",
+       "text": "Greenhouse has led the way in hiring innovation for over a decade \u2013 from pioneering structured hiring to our latest advances in AI and our candidate portal, we\u2019re always pushing what\u2019s possible."
+      }
+     ]
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true
+  },
+  {
+   "id": "cta",
+   "useCase": "cta",
+   "archetype": "full-bleed-dark-band-copy-left-art-right",
+   "surfaceIntent": "surface/inverse",
+   "novelty": "reuse",
+   "archetypeRef": "full-bleed-dark-band-copy-left-art-right",
+   "seededFrom": {
+    "lib": "project",
+    "id": "cta"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 section-heading",
+     "textLen": "short",
+     "sizeClass": "display",
+     "contract": "heading",
+     "copy": {
+      "heading": "Everything you need to get better at hiring"
+     }
+    },
+    {
+     "name": "primaryAction",
+     "role": "primaryAction \u2014 primary-action",
+     "textLen": "short",
+     "sizeClass": "control",
+     "width": "hug",
+     "contract": "button",
+     "copy": {
+      "label": "Request a demo"
+     }
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true
+  }
+ ],
+ "errors": {}
+}

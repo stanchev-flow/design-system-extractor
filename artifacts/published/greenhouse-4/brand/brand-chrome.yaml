@@ -1,0 +1,247 @@
+navbar:
+  utility:
+  - label: Skip to Content
+    href: '#main'
+  - label: Close mobile sub-navigation
+    href: '#'
+  primary:
+  - label: Platform
+    ariaLabel: Platform, open menu
+    hasMenu: true
+    groups:
+    - eyebrow: Platform
+      links:
+      - label: Only in Greenhouse
+        href: /platform
+    - eyebrow: Solutions
+      links:
+      - label: AI recruiting
+        href: /ai-recruiting
+      - label: Talent sourcing
+        href: /talent-sourcing
+      - label: Candidate experience
+        href: /candidate-experience
+      - label: Scalable workflows
+        href: /scalable-workflows
+      - label: Interviewing & decision-making
+        href: /interviewing-decision-making
+      - label: Talent matching
+        href: /real-talent-candidate-matching
+      - label: Onboarding
+        href: /onboarding
+      - label: Reporting & insights
+        href: /reporting-insights
+      - label: Integrations
+        href: https://integrations.greenhouse.com/
+    - eyebrow: Greenhouse for
+      links:
+      - label: Early-stage business
+        href: /early-stage
+      - label: Scaling company
+        href: /scaling-company
+      - label: Modern enterprise
+        href: /enterprise
+      - label: Job seekers
+        href: https://my.greenhouse.com/
+    - eyebrow: What's new
+      links:
+      - label: Latest product features
+        href: /greenhouse-latest-features
+    role: dropdown-trigger
+    utilityNotObserved: true
+  - label: Why Greenhouse
+    ariaLabel: Why Greenhouse, open menu
+    hasMenu: true
+    groups:
+    - eyebrow: Why Greenhouse
+      links:
+      - label: How we compare
+        href: /compare
+      - label: Return on your hiring investment
+        href: /roi-with-greenhouse
+      - label: Your partner in success
+        href: /customer-success
+    role: dropdown-trigger
+    utilityNotObserved: true
+  - label: Resources
+    ariaLabel: Resources, open menu
+    hasMenu: true
+    groups:
+    - eyebrow: Types
+      links:
+      - label: Blog
+        href: /blog
+      - label: Guidance
+        href: /guidance
+      - label: Events & Webinars
+        href: /events
+    role: dropdown-trigger
+    utilityNotObserved: true
+  featuredContent:
+  - eyebrow: Awards & accolades
+    cta:
+      label: Learn more
+      href: /blog/g2-2026-awards-best-software-spring
+  - eyebrow: People first
+    cta:
+      label: Read the blog
+      href: /blog/the-future-belongs-to-people-first-companies-constructing-a-people-first-culture
+  - eyebrow: Webinar
+    cta:
+      label: Watch on demand
+      href: /events/beyond-ai-hype-a-framework-for-evaluating-ai-in-a-hiring-platform
+  actions:
+  - role: nav-tertiary
+    label: Sign In
+    href: https://app.greenhouse.io/users/sign_in
+  - role: primary-blue
+    label: Request a demo
+    href: /demo
+  surface:
+    bg: '#ffffff'
+    color: '#15372c'
+    note: chrome bar effective bg (header background-color measured transparent over the white page canvas;
+      ink navLink rgb(21,55,44))
+  measured:
+    link:
+      fontSize: 14
+      fontWeight: 400
+      color: rgb(21, 55, 44)
+      fontFamily: Untitled Sans
+      lineHeight: 20px
+      _provenance: computed-styles.json chrome.navLink
+footer:
+  columns:
+  - heading: Platform
+    links:
+    - label: Only in Greenhouse
+      href: /platform
+    - label: Latest product features
+      href: /greenhouse-latest-features
+    - label: Pricing
+      href: /pricing
+    - label: Security
+      href: /security
+    - label: Ethical principles
+      href: /ethical-principles
+    - label: AI principles
+      href: /ai-principles
+    - label: Bias audit statement
+      href: /bias-audit-statement
+    - label: APIs
+      href: /api
+  - heading: Solutions
+    links:
+    - label: AI recruiting
+      href: /ai-recruiting
+    - label: Talent sourcing
+      href: /talent-sourcing
+    - label: Scalable workflows
+      href: /scalable-workflows
+    - label: Candidate experience
+      href: /candidate-experience
+    - label: Interviewing & decision-making
+      href: /interviewing-decision-making
+    - label: Talent matching
+      href: /real-talent-candidate-matching
+    - label: Onboarding
+      href: /onboarding
+    - label: Reporting & insights
+      href: /reporting-insights
+    - label: Integrations
+      href: https://integrations.greenhouse.com/
+  - heading: Why Greenhouse
+    links:
+    - label: How we compare
+      href: /compare
+    - label: Return on your hiring investment
+      href: /roi-with-greenhouse
+    - label: Your partner in success
+      href: /customer-success
+  - heading: Greenhouse for
+    links:
+    - label: Early-stage business
+      href: /early-stage
+    - label: Scaling company
+      href: /scaling-company
+    - label: Enterprise
+      href: /enterprise
+    - label: Job seekers
+      href: https://my.greenhouse.com/
+  - heading: Resources
+    links:
+    - label: Blog
+      href: /blog
+    - label: Guidance
+      href: /guidance
+    - label: Customer stories
+      href: /customer-stories
+    - label: Hiring glossary
+      href: /resources/glossary
+  - heading: About
+    links:
+    - label: Company
+      href: /company
+    - label: Press & awards
+      href: /press
+    - label: Newsroom
+      href: /newsroom
+    - label: Careers
+      href: /careers
+    - label: Contact
+      href: /contact
+  - heading: Community
+    links:
+    - label: Events & webinars
+      href: /events
+    - label: Open
+      href: /greenhouse-open-thank-you
+    - label: Talent Makers
+      href: /talent-makers
+    - label: Newsletter
+      href: /newsletter
+    - label: Partnerships
+      href: /greenhouse-partner-resource-center
+  - heading: Support
+    links:
+    - label: Learn Greenhouse
+      href: https://learn.greenhouse.io/
+    - label: Customer support
+      href: https://support.greenhouse.io/hc/en-us
+    - label: Developer resources
+      href: https://developers.greenhouse.io/
+  newsletter:
+    heading: Modern Recruiter newsletter
+    body: Our bi-weekly newsletter full of inspiration, podcasts, trends and news.
+    fieldLabel: Email address
+    action:
+      label: Subscribe
+      role: outline-inverse
+  localeSelector:
+    prompt: Choose your language
+    options:
+    - label: English (US)
+      current: true
+    - label: English (UK)
+    - label: Deutsch
+  social:
+  - network: Facebook
+    href: https://www.facebook.com/greenhouse.io/
+  - network: LinkedIn
+    href: https://www.linkedin.com/company/greenhouse-inc-/
+  - network: YouTube
+    href: https://www.youtube.com/channel/UCwLlhrx5lFssgTwKCHEuC8g
+  - network: Instagram
+    href: https://www.instagram.com/greenhousesoftware/
+  - network: TikTok
+    href: https://www.tiktok.com/@greenhouse_software
+  legal:
+    links:
+    - label: Cookie preferences
+    - label: Privacy policy
+      href: /privacy-policy
+    - label: Terms of service
+      href: /legal
+    text: © 2026 Greenhouse Software, Inc. All rights reserved. Greenhouse, the G Logo, "Hire for what's
+      next," "The/your all-together hiring platform," "Talent Makers," "Real Talent" and "Strong Yes"
+      are among the trademarks of Greenhouse Software, Inc.

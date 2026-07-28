@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "published-bundle.v1",
+  "name": "greenhouse-4",
+  "run": "runs/greenhouse-4",
+  "brand": "Greenhouse",
+  "title": "Greenhouse 4",
+  "source_url": "https://www.greenhouse.com/",
+  "published_at": "2026-07-28T19:05:27Z",
+  "replica_overall": 0.7437,
+  "lanes": [
+    {
+      "kind": "replica",
+      "label": "Composed replica of the source page",
+      "path": "replica/index.html",
+      "note": "Rebuilt from the extracted facts alone. Fidelity score 0.7437 against the source capture; per-band scores and the punch list are in replica-report.md.",
+      "extras": [
+        {
+          "label": "Fidelity report (markdown)",
+          "path": "replica/replica-report.md"
+        },
+        {
+          "label": "Full-page render (PNG)",
+          "path": "replica/replica-fullpage.png"
+        }
+      ]
+    },
+    {
+      "kind": "harness",
+      "label": "Components & layout harness",
+      "path": "harness/index.html",
+      "note": "Primitives, surfaces, blocks and every measured layout pattern rendered from the design system. Each pattern is also a standalone page under harness/layouts/."
+    },
+    {
+      "kind": "catalog",
+      "label": "Component catalog",
+      "path": "catalog/index.html",
+      "note": "Machine-readable inventory of the components the extraction declared."
+    },
+    {
+      "kind": "framework",
+      "label": "Framework build (React + Vite, single file)",
+      "path": "framework/index.html",
+      "note": "The opt-in framework lane: a real React + Tailwind app generated from the same facts, built to one self-contained HTML file. Source stays in the run dir (runs/greenhouse-4/brand/framework/single/framework-claude)."
+    }
+  ],
+  "facts": [
+    {
+      "path": "brand/brand.yaml",
+      "note": "Authored brand facts: tokens, surfaces, components, section patterns."
+    },
+    {
+      "path": "brand/brand.md",
+      "note": "The same design system as a readable document."
+    },
+    {
+      "path": "brand/layout-library.yaml",
+      "note": "Measured layout patterns (one entry per composable section shape)."
+    },
+    {
+      "path": "brand/section-copy.yaml",
+      "note": "Verbatim copy captured per section."
+    },
+    {
+      "path": "brand/media-assets.yaml",
+      "note": "Media registry: every asset with role, geometry and section binding."
+    },
+    {
+      "path": "brand/brand-chrome.yaml",
+      "note": "Measured nav/footer facts (links are captured, never invented)."
+    },
+    {
+      "path": "brand/style-scale.yaml",
+      "note": "Normalised type/space scales."
+    },
+    {
+      "path": "brand/voice-facts.yaml",
+      "note": "Voice evidence extracted from the source copy."
+    },
+    {
+      "path": "brand/voice.md",
+      "note": "Voice guidance derived from those facts."
+    },
+    {
+      "path": "brand/assets-manifest.json",
+      "note": "Curated asset manifest (source URL \u2192 local file, with tags)."
+    },
+    {
+      "path": "brand/media-guidance.yaml",
+      "note": "Art-direction guidance for generated media slots."
+    },
+    {
+      "path": "brand/asset-placements.json",
+      "note": "Measured on-page placements for each asset."
+    }
+  ],
+  "logs": [
+    {
+      "path": "logs/author.log"
+    },
+    {
+      "path": "logs/catalog-build.log"
+    },
+    {
+      "path": "logs/extract-evidence.log"
+    },
+    {
+      "path": "logs/extract-ground.log"
+    },
+    {
+      "path": "logs/flow-g3g4.log"
+    },
+    {
+      "path": "logs/framework-build.log"
+    },
+    {
+      "path": "logs/framework-vite.log"
+    },
+    {
+      "path": "logs/harness-build.log"
+    },
+    {
+      "path": "logs/replica-build.log"
+    },
+    {
+      "path": "logs/replica-home-only.log"
+    },
+    {
+      "path": "logs/validate-final.log"
+    },
+    {
+      "path": "logs/validate-post-fix.log"
+    },
+    {
+      "path": "logs/validate-post-fix2.log"
+    },
+    {
+      "path": "logs/validate-post-fix3.log"
+    },
+    {
+      "path": "logs/validate-pre-fix.log"
+    }
+  ],
+  "assets_published": 65,
+  "assets_unresolved": [],
+  "run_manifest": {
+    "project": "greenhouse-4",
+    "brand": "Greenhouse",
+    "status": "completed",
+    "pipeline_run_completed": true,
+    "extraction_kind": "fresh-multipage-from-existing-captures",
+    "source_url": "https://www.greenhouse.com/",
+    "capture": "screenshots/greenhouse-4",
+    "composition": "brand-signal (2026-07-28)",
+    "source_pages": [
+      {
+        "key": "home",
+        "url": "https://www.greenhouse.com/",
+        "role": "primary/replica-target"
+      },
+      {
+        "key": "talent-sourcing",
+        "url": "https://www.greenhouse.com/talent-sourcing",
+        "role": "feature/product page"
+      },
+      {
+        "key": "compare",
+        "url": "https://www.greenhouse.com/compare",
+        "role": "comparison page"
+      }
+    ],
+    "validation": {
+      "c1_c28_errors": 0,
+      "c1_c28_warnings": 14
+    },
+    "replica": {
+      "overall": 0.8206,
+      "bar": 0.9,
+      "primaryViewportHealth": 1.0,
+      "primaryViewport": 1440,
+      "report": "brand/compose/replica/replica-report.json"
+    },
+    "framework": {
+      "enabled": true,
+      "path": "brand/framework/index.html",
+      "skin": "token",
+      "shadcn_defaults": false,
+      "radix": false
+    },
+    "screenshots": [
+      {
+        "name": "greenhouse-4",
+        "brand_yaml": "brand/brand.yaml",
+        "harness": "brand/harness/index.html",
+        "components_preview": "brand/components-preview/index.html",
+        "catalog": "brand/catalog/index.html",
+        "replica": "brand/compose/replica/index.html",
+        "replica_fullpage": "brand/compose/replica/replica-fullpage.png",
+        "framework": "brand/framework/index.html",
+        "source_fullpage": "../../screenshots/greenhouse-4/home/home-fullpage.png"
+      }
+    ],
+    "notes": "Fresh multi-page extract from existing captures. Studio project Greenhouse 4. Framework lane is opt-in token skin (no shadcn defaults; native chrome, no Radix)."
+  },
+  "bytes": 20359253
+}

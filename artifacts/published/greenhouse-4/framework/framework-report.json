@@ -1,0 +1,12 @@
+{
+  "status": "completed",
+  "framework_dir": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/greenhouse-4/brand/framework/single/framework-claude",
+  "output_html": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/greenhouse-4/brand/framework/single/site-claude-framework.html",
+  "tokens_synced": true,
+  "files_written": [
+    "src/App.tsx"
+  ],
+  "chrome_files": [],
+  "chrome_contract": "",
+  "notes": "Composed the exact 5 measured home sections (mint hero with floating media, dark three-column AI/Real Talent/MyGreenhouse cards, split logo wall, muted media-top feature grid, dark CTA band) with inline nav/footer built from verbatim chrome facts since only BrandMark exists on disk."
+}

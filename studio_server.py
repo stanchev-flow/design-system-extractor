@@ -47,6 +47,10 @@ import yaml
 PROJECT_DIR = Path(__file__).resolve().parent
 RUNS_DIR = PROJECT_DIR / "runs"
 SCREENSHOTS_DIR = PROJECT_DIR / "screenshots"
+# Tracked, self-contained exports of finished runs (tools/publish_run_bundle.py).
+# runs/ is gitignored, so for anyone who has not run the pipeline locally these
+# bundles are the only results the Studio can show.
+PUBLISHED_DIR = PROJECT_DIR / "artifacts" / "published"
 STUDIO_DIR = RUNS_DIR / ".studio"
 BASE_CONFIG = PROJECT_DIR / "config-anthropic.yaml"
 PY = sys.executable
@@ -703,6 +707,65 @@ def framework_builds(version: str) -> list[dict]:
     return out
 
 
+def published_bundles() -> list[dict]:
+    """Every published result bundle under artifacts/published/, newest first.
+
+    Each bundle ships a `published.json` manifest describing its rendered lanes;
+    this reads them as-is (no filesystem guessing) and normalizes each lane into a
+    build link with a Studio-servable URL. Generic over brand: discovery is purely
+    by directory, and a bundle with an unreadable manifest is skipped rather than
+    breaking the dashboard.
+    """
+    out: list[dict] = []
+    for manifest_path in sorted(PUBLISHED_DIR.glob("*/published.json")):
+        try:
+            data = json.loads(manifest_path.read_text())
+        except Exception:  # noqa: BLE001
+            continue
+        base = "/" + str(manifest_path.parent.relative_to(PROJECT_DIR)).replace("\\", "/")
+        links = [
+            {
+                "kind": lane.get("kind") if lane.get("kind") in _KIND_STYLE else "published",
+                "label": lane.get("label") or lane.get("path", ""),
+                "url": f"{base}/{lane.get('path', '')}",
+                "external": False,
+            }
+            for lane in data.get("lanes", [])
+            if lane.get("path")
+        ]
+        out.append(
+            {
+                "name": data.get("name") or manifest_path.parent.name,
+                "title": data.get("title") or data.get("brand") or manifest_path.parent.name,
+                "brand": data.get("brand", ""),
+                "source_url": data.get("source_url", ""),
+                "published_at": data.get("published_at", ""),
+                "bytes": data.get("bytes", 0),
+                "run": data.get("run", ""),
+                "url": f"{base}/index.html",
+                "links": links,
+            }
+        )
+    return sorted(out, key=lambda b: b.get("published_at", ""), reverse=True)
+
+
+def published_links(version: str) -> list[dict]:
+    """Published-bundle links belonging to one project (matched by run or name)."""
+    out: list[dict] = []
+    for bundle in published_bundles():
+        if version not in (bundle["name"], Path(bundle.get("run", "")).name):
+            continue
+        out.append(
+            {
+                "kind": "published",
+                "label": f"Published bundle — {bundle['title']} (shareable)",
+                "url": bundle["url"],
+                "external": False,
+            }
+        )
+    return out
+
+
 def project_build_links(version: str) -> list[dict]:
     """Flat, grouped-ready list of EVERY accessible build link for one project.
 
@@ -757,6 +820,9 @@ def project_build_links(version: str) -> list[dict]:
     # External framework builds (registry-driven, port-dependent).
     for fb in framework_builds(version):
         out.append({"kind": "framework", "label": fb["label"], "url": fb["url"], "external": True})
+
+    # The tracked, shareable export of this project's final results, when one exists.
+    out.extend(published_links(version))
 
     return out
 
@@ -1929,6 +1995,8 @@ _KIND_STYLE = {
     "sections": ("Sections", "text-fuchsia-300"),
     "variant": ("Variant", "text-indigo-300"),
     "framework": ("Framework", "text-orange-300"),
+    "catalog": ("Catalog", "text-cyan-300"),
+    "published": ("Published", "text-lime-300"),
 }
 
 
@@ -2006,6 +2074,44 @@ def render_build_index_html() -> str:
     return "".join(blocks) or '<div class="text-zinc-500 text-xs">No builds discovered.</div>'
 
 
+def _fmt_bytes(num: int) -> str:
+    for unit, div in (("GB", 1 << 30), ("MB", 1 << 20), ("KB", 1 << 10)):
+        if num >= div:
+            return f"{num / div:.1f} {unit}"
+    return f"{num} B"
+
+
+def render_published_html() -> str:
+    """Server-render the 'Published results' band for the dashboard.
+
+    These bundles live in the repo (unlike runs/), so this band is what a fresh
+    clone sees. Hidden entirely when nothing has been published yet.
+    """
+    bundles = published_bundles()
+    if not bundles:
+        return ""
+    cards = []
+    for b in bundles:
+        lanes = ", ".join(_KIND_STYLE.get(l["kind"], ("link",))[0].lower() for l in b["links"]) or "—"
+        meta = " · ".join(x for x in (b["published_at"][:10], _fmt_bytes(b["bytes"])) if x)
+        cards.append(
+            f'<a href="{_esc_attr(b["url"])}" target="_blank" rel="noopener" '
+            'class="card p-4 block hover:border-lime-400/40 transition-colors">'
+            '<div class="flex items-center justify-between gap-2 mb-1">'
+            f'<div class="font-semibold truncate">{_esc_attr(b["title"])}</div>'
+            '<span class="badge b-done">published</span></div>'
+            f'<div class="text-xs text-zinc-500 truncate">{_esc_attr(b["source_url"] or b["run"])}</div>'
+            f'<div class="text-xs text-zinc-400 mt-2">{_esc_attr(lanes)}</div>'
+            f'<div class="text-[11px] text-zinc-600 mt-1">{_esc_attr(meta)}</div></a>'
+        )
+    return (
+        '<h2 class="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-1">Published results</h2>'
+        '<p class="text-xs text-zinc-500 mb-3">Self-contained exports of finished runs — committed to the repo, '
+        'so they browse without any local run data.</p>'
+        f'<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">{"".join(cards)}</div>'
+    )
+
+
 def render_dashboard() -> str:
     return (PAGE_HEAD + """
 <div class="flex min-h-screen">
@@ -2016,6 +2122,7 @@ def render_dashboard() -> str:
       <p class="text-sm text-zinc-400 mt-1">Add a site, run the full extraction pipeline, and explore the design system, contract, and brand assets.</p>
     </div>
     <div class="flex gap-2">
+      <a href="/artifacts/published/" target="_blank" class="btn btn-ghost">Published results ↗</a>
       <a href="/viewer.html" target="_blank" class="btn btn-ghost">Open comparison viewer ↗</a>
       <button id="new-btn" class="btn btn-primary">+ New project</button>
     </div>
@@ -2058,6 +2165,8 @@ def render_dashboard() -> str:
     </div>
     <pre id="job-log" class="text-xs text-zinc-300 bg-black/40 rounded-lg p-3 max-h-80 overflow-auto"></pre>
   </div>
+
+  __PUBLISHED__
 
   <h2 class="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3">Projects</h2>
   <div id="projects" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
@@ -2169,6 +2278,8 @@ const KIND_STYLE = {
   sections:  ["Sections",  "text-fuchsia-300"],
   variant:   ["Variant",   "text-indigo-300"],
   framework: ["Framework", "text-orange-300"],
+  catalog:   ["Catalog",   "text-cyan-300"],
+  published: ["Published", "text-lime-300"],
 };
 function linkRow(l) {
   const style = KIND_STYLE[l.kind] || ["Link", "text-zinc-300"];
@@ -2207,7 +2318,9 @@ async function loadBuildIndex() {
 }
 document.getElementById("bi-refresh").onclick = loadBuildIndex;
 loadBuildIndex();
-</script></body></html>""").replace("__BUILD_INDEX__", render_build_index_html())
+</script></body></html>""").replace("__BUILD_INDEX__", render_build_index_html()).replace(
+        "__PUBLISHED__", render_published_html()
+    )
 
 
 def render_detail(version: str) -> str:

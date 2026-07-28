@@ -1,0 +1,173 @@
+======== EVIDENCE home ========
+[done] dom-mine: 46 module sections, 23 button families, 24 eyebrow candidates -> runs/greenhouse-4/brand/evidence/pages/home/dom-sections.json
+  000-www-greenhouse-com.shared.444928708.min.css: 7044 rules
+  001-css.css: 35 rules
+  002-onetrust-banner-preferences.css: 84 rules
+  003-marketo-bigmarker-forms.css: 102 rules
+  004-forms2.css: 112 rules
+  005-forms2-theme-glow.css: 23 rules
+  <inline-style-00>: 1 rules
+  <inline-style-01>: 1 rules
+  <inline-style-02>: 1 rules
+  <inline-style-03>: 3 rules
+  <inline-style-04>: 1 rules
+  <inline-style-05>: 5 rules
+  <inline-style-07>: 1 rules
+  <inline-style-08>: 2 rules
+  <inline-style-09>: 1 rules
+  <inline-style-10>: 9 rules
+  <inline-style-11>: 1 rules
+  <inline-style-12>: 797 rules
+  <inline-style-13>: 11 rules
+  <inline-style-14>: 10 rules
+  <inline-style-15>: 8 rules
+  <inline-style-16>: 60 rules
+  <inline-style-17>: 2 rules
+  <inline-style-18>: 2 rules
+  <inline-style-19>: 2 rules
+  <inline-style-20>: 2 rules
+  <inline-style-21>: 4 rules
+  <inline-style-22>: 2 rules
+  <inline-style-23>: 2 rules
+  <inline-style-24>: 2 rules
+  <inline-style-25>: 4 rules
+  <inline-style-26>: 2 rules
+  <inline-style-27>: 4 rules
+  <inline-style-28>: 2 rules
+  <inline-style-29>: 4 rules
+  <inline-style-30>: 2 rules
+  <inline-style-31>: 2 rules
+  <inline-style-32>: 2 rules
+  <inline-style-33>: 4 rules
+  <inline-style-34>: 2 rules
+  <inline-style-35>: 2 rules
+  <inline-style-36>: 8 rules
+  <inline-style-37>: 4 rules
+[done] css-mine: 8372 rules from 43 sheets -> css-rules.json; 229 hover rules -> css-facts.json
+[done] motion-audit: 83 transition rules, 4 animation rules, 6 keyframes, 0 motion vars -> motion-audit.json
+[done] measure: 24 action families, 6 section rects (doc 5032px), 4 tier ladders -> computed-styles.json + section-rects.json
+  section-00-text-with-image-base-component-is-showing.png  y 0-925  (925px)
+  section-01-div.png  y 1009-1690  (681px)
+  section-02-div.png  y 1642-2476  (834px)
+  section-03-div.png  y 2428-3382  (954px)
+  section-04-cta-bg-green-750-component-is-showing.png  y 3334-4011  (677px)
+  section-05-footer.png  y 3963-5031  (1068px)
+[done] slice: 6 crops (rects) -> runs/greenhouse-4/brand/evidence/pages/home/crops
+/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/tools/extract/curate_assets.py:250: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+  px = list(small.getdata())
+/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/tools/extract/curate_assets.py:254: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+  hsv = list(small.convert("HSV").getdata())
+  extracted 0 inline SVGs (deduped)
+[done] curate: 37 assets in runs/greenhouse-4/brand/assets -> assets-manifest.json
+[done] media draft: 37 logical assets (32 with measured stats) -> media-assets-draft.yaml
+======== DONE EVIDENCE home ========
+======== EVIDENCE talent-sourcing ========
+[done] dom-mine: 24 module sections, 18 button families, 25 eyebrow candidates -> runs/greenhouse-4/brand/evidence/pages/talent-sourcing/dom-sections.json
+  000-www-greenhouse-com.shared.444928708.min.css: 7044 rules
+  001-css.css: 35 rules
+  002-onetrust-banner-preferences.css: 84 rules
+  003-marketo-bigmarker-forms.css: 102 rules
+  004-forms2.css: 112 rules
+  005-forms2-theme-glow.css: 23 rules
+  <inline-style-00>: 1 rules
+  <inline-style-01>: 1 rules
+  <inline-style-02>: 1 rules
+  <inline-style-03>: 3 rules
+  <inline-style-04>: 1 rules
+  <inline-style-05>: 5 rules
+  <inline-style-08>: 2 rules
+  <inline-style-09>: 1 rules
+  <inline-style-10>: 9 rules
+  <inline-style-11>: 1 rules
+  <inline-style-12>: 797 rules
+  <inline-style-13>: 11 rules
+  <inline-style-14>: 10 rules
+  <inline-style-15>: 8 rules
+  <inline-style-16>: 60 rules
+  <inline-style-17>: 2 rules
+  <inline-style-18>: 4 rules
+  <inline-style-19>: 6 rules
+  <inline-style-20>: 2 rules
+  <inline-style-21>: 2 rules
+  <inline-style-22>: 2 rules
+  <inline-style-23>: 2 rules
+  <inline-style-24>: 8 rules
+  <inline-style-25>: 4 rules
+[done] css-mine: 8343 rules from 30 sheets -> css-rules.json; 220 hover rules -> css-facts.json
+[done] motion-audit: 83 transition rules, 4 animation rules, 6 keyframes, 0 motion vars -> motion-audit.json
+[done] measure: 19 action families, 10 section rects (doc 9340px), 4 tier ladders -> computed-styles.json + section-rects.json
+  section-00-text-with-image.png  y 17-936  (919px)
+  section-01-text-with-image-component-is-showing.png  y 888-1736  (848px)
+  section-02-text-with-image-component-is-showing.png  y 1688-2536  (848px)
+  section-03-text-with-image-component-is-showing.png  y 2488-3336  (848px)
+  section-04-text-with-image-component-is-showing.png  y 3288-4136  (848px)
+  section-05-text-with-image-component-is-showing.png  y 4088-4983  (895px)
+  section-06-content-gallery-component-is-showing.png  y 4935-5890  (955px)
+  section-07-statistics-component-is-showing.png  y 5842-6430  (588px)
+  section-08-side-by-side-2-component-is-showing.png  y 6382-7690  (1308px)
+  section-09-cta-bg-green-750-component-is-showing.png  y 7642-8319  (677px)
+  section-10-footer.png  y 8271-9339  (1068px)
+[done] slice: 11 crops (rects) -> runs/greenhouse-4/brand/evidence/pages/talent-sourcing/crops
+/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/tools/extract/curate_assets.py:250: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+  px = list(small.getdata())
+/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/tools/extract/curate_assets.py:254: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+  hsv = list(small.convert("HSV").getdata())
+  extracted 0 inline SVGs (deduped)
+[done] curate: 27 assets in runs/greenhouse-4/brand/assets -> assets-manifest.json
+[done] media draft: 27 logical assets (22 with measured stats) -> media-assets-draft.yaml
+======== DONE EVIDENCE talent-sourcing ========
+======== EVIDENCE compare ========
+[done] dom-mine: 31 module sections, 19 button families, 39 eyebrow candidates -> runs/greenhouse-4/brand/evidence/pages/compare/dom-sections.json
+  000-www-greenhouse-com.shared.444928708.min.css: 7044 rules
+  001-css.css: 35 rules
+  002-onetrust-banner-preferences.css: 84 rules
+  003-marketo-bigmarker-forms.css: 102 rules
+  004-forms2.css: 112 rules
+  005-forms2-theme-glow.css: 23 rules
+  <inline-style-00>: 1 rules
+  <inline-style-01>: 1 rules
+  <inline-style-02>: 1 rules
+  <inline-style-03>: 3 rules
+  <inline-style-04>: 1 rules
+  <inline-style-05>: 5 rules
+  <inline-style-08>: 2 rules
+  <inline-style-09>: 1 rules
+  <inline-style-10>: 9 rules
+  <inline-style-11>: 1 rules
+  <inline-style-12>: 797 rules
+  <inline-style-13>: 11 rules
+  <inline-style-14>: 10 rules
+  <inline-style-15>: 8 rules
+  <inline-style-16>: 60 rules
+  <inline-style-17>: 2 rules
+  <inline-style-18>: 1 rules
+  <inline-style-19>: 4 rules
+  <inline-style-20>: 6 rules
+  <inline-style-21>: 2 rules
+  <inline-style-22>: 5 rules
+  <inline-style-23>: 4 rules
+  <inline-style-24>: 2 rules
+  <inline-style-25>: 2 rules
+  <inline-style-26>: 8 rules
+  <inline-style-27>: 4 rules
+[done] css-mine: 8351 rules from 32 sheets -> css-rules.json; 219 hover rules -> css-facts.json
+[done] motion-audit: 83 transition rules, 4 animation rules, 6 keyframes, 0 motion vars -> motion-audit.json
+[done] measure: 20 action families, 8 section rects (doc 8102px), 4 tier ladders -> computed-styles.json + section-rects.json
+  section-00-div.png  y 0-896  (896px)
+  section-01-bg-grey.png  y 848-2120  (1272px)
+  section-02-video-component.png  y 2192-3245  (1053px)
+  section-03-div.png  y 3317-4316  (999px)
+  section-04-side-by-side-2-component-is-showing.png  y 4268-5142  (874px)
+  section-05-div-block-145-component-is-showing.png  y 5094-5856  (762px)
+  section-06-content-gallery-component-is-showing.png  y 5808-6452  (644px)
+  section-07-cta-bg-green-750-component-is-showing.png  y 6404-7081  (677px)
+  section-08-footer.png  y 7033-8101  (1068px)
+[done] slice: 9 crops (rects) -> runs/greenhouse-4/brand/evidence/pages/compare/crops
+/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/tools/extract/curate_assets.py:250: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+  px = list(small.getdata())
+/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/tools/extract/curate_assets.py:254: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+  hsv = list(small.convert("HSV").getdata())
+  extracted 0 inline SVGs (deduped)
+[done] curate: 28 assets in runs/greenhouse-4/brand/assets -> assets-manifest.json
+[done] media draft: 28 logical assets (22 with measured stats) -> media-assets-draft.yaml
+======== DONE EVIDENCE compare ========

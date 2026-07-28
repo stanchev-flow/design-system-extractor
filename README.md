@@ -278,6 +278,28 @@ Pipeline walkthrough pages can be generated with:
   --output v177-roma-pipeline-walkthrough.html
 ```
 
+### Published run results
+
+`runs/` is gitignored, so finished runs are shared as small tracked bundles under
+`artifacts/published/<run>/`. Each bundle is self-contained (relative asset paths only) and the
+Studio serves it directly, so a fresh clone can browse the results with no local run data:
+
+```text
+http://127.0.0.1:1500/artifacts/published/            # all bundles
+http://127.0.0.1:1500/artifacts/published/greenhouse-4/index.html
+```
+
+Publish (or re-publish) a run:
+
+```bash
+./venv/bin/python tools/publish_run_bundle.py --run runs/greenhouse-4 \
+  --base-url http://127.0.0.1:1500
+```
+
+It copies the replica, harness, catalog, framework build, brand fact files, logs and only the
+referenced media; rewrites every asset reference to the bundle's own `assets/`; then loads each
+page in headless Chromium and records the result in the bundle's `verify.json`.
+
 ## Prompt And Versioning Rules
 
 Before changing or testing pipeline prompts, create a new `runs/vNNN/` folder and put the updated prompt files there. Completed run folders are the record of what happened, so do not edit old prompt snapshots to retroactively fix a run.

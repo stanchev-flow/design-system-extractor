@@ -1,0 +1,219 @@
+schema: style-scale.v1
+brand: greenhouse-4
+sourceDigest: sha256:4d9e472d1916
+inputs:
+  brandYaml: brand.yaml
+  computedStyles: evidence/computed-styles.json
+  motionSpec: voice.motionSpec
+law: derived layer — raw evidence and brand.yaml stay untouched; a measured fact ALWAYS beats
+  a derived step; the replica lane never consumes this file
+type:
+  basePx: 16.0
+  ratio: 1.125
+  followsScale: true
+  fitQuality:
+    rmse: 0.0361
+    worstErrPct: 5.7
+    verdict: approximate
+  stepsPx:
+  - 14.2
+  - 16.0
+  - 18.0
+  - 20.2
+  - 22.8
+  - 25.6
+  - 28.8
+  - 32.4
+  - 36.5
+  - 41.1
+  - 46.2
+  - 52.0
+  - 58.5
+  - 65.8
+  - 74.0
+  fits:
+  - name: display-hero
+    measuredPx: 70.0
+    stepPx: 74.0
+    k: 13
+    errPct: 5.7
+    corroboratedBy:
+    - h1
+  - name: h1
+    measuredPx: 70.0
+    stepPx: 74.0
+    k: 13
+    errPct: 5.7
+    corroboratedBy:
+    - h1
+  - name: h2
+    measuredPx: 46.0
+    stepPx: 46.2
+    k: 9
+    errPct: 0.4
+    corroboratedBy:
+    - h2
+  - name: footer-sitemap-link
+    measuredPx: 20.0
+    stepPx: 20.2
+    k: 2
+    errPct: 1.2
+    corroboratedBy: null
+  - name: body
+    measuredPx: 19.0
+    stepPx: 18.0
+    k: 1
+    errPct: 5.3
+    corroboratedBy:
+    - h3
+    - p
+  - name: h3
+    measuredPx: 19.0
+    stepPx: 18.0
+    k: 1
+    errPct: 5.3
+    corroboratedBy:
+    - h3
+    - p
+  - name: h4
+    measuredPx: 16.0
+    stepPx: 16.0
+    k: 0
+    errPct: 0.0
+    corroboratedBy:
+    - h4
+  - name: nav-link
+    measuredPx: 16.0
+    stepPx: 16.0
+    k: 0
+    errPct: 0.0
+    corroboratedBy:
+    - h4
+  - name: control-text
+    measuredPx: 15.0
+    stepPx: 14.2
+    k: -1
+    errPct: 5.2
+    corroboratedBy: null
+  - name: eyebrow
+    measuredPx: 14.0
+    stepPx: 14.2
+    k: -1
+    errPct: 1.6
+    corroboratedBy:
+    - body
+  provenance:
+    method: 'parsimony modular-ratio fit: the COARSEST candidate ratio (1.618 > 1.5 > 1.414
+      > 1.333 > 1.25 > 1.2 > 1.125) whose RMSE clears 0.025 wins (a denser ratio fits anything
+      — vacuous quantization); min-RMSE fallback when none clears. Inputs are the brand''s
+      measured type ladder (tokens.type sizeRem at the canonical tier + button sizeRem), corroborated
+      against evidence/computed-styles.json rendered px'
+    inputs:
+    - name: body
+      px: 19.0
+    - name: control-text
+      px: 15.0
+    - name: display-hero
+      px: 70.0
+    - name: eyebrow
+      px: 14.0
+    - name: footer-sitemap-link
+      px: 20.0
+    - name: h1
+      px: 70.0
+    - name: h2
+      px: 46.0
+    - name: h3
+      px: 19.0
+    - name: h4
+      px: 16.0
+    - name: nav-link
+      px: 16.0
+space:
+  baseUnitPx: 4
+  followsScale: true
+  fitQuality:
+    coverage: 1.0
+    verdict: good
+  stepsPx:
+  - 24
+  - 32
+  - 40
+  - 44
+  - 60
+  - 100
+  - 120
+  multiples:
+  - 6.0
+  - 8.0
+  - 10.0
+  - 11.0
+  - 15.0
+  - 25.0
+  - 30.0
+  sectionRhythmPx:
+  - 100
+  - 120
+  outliers: []
+  excluded:
+  - name: container-max
+    px: 1440.0
+    class: containment (width family)
+  - name: radius-global
+    px: 24.0
+    class: radius alias (corner family)
+  provenance:
+    method: largest base unit (8 preferred, else 4) carrying ≥90% of the measured rhythm ladder
+      (tokens.spacing lengths ≤200px, media tiers / measures / containment / radius aliases
+      classified out); steps are the measured multiples present, never invented rungs
+    inputs:
+    - name: body-to-cta
+      px: 60.0
+    - name: eyebrow-to-heading
+      px: 24.0
+    - name: heading-to-body
+      px: 44.0
+    - name: module-gap
+      px: 40.0
+    - name: panel-padding
+      px: 32.0
+    - name: section-padding-dark
+      px: 100.0
+    - name: section-padding-light
+      px: 120.0
+radius:
+  modes: []
+  policy: uniform
+  special: null
+  provenance:
+    method: tokens.radius grouped by value; policy is descriptive (pill-controls when the
+      button radius dwarfs the plate radius)
+    inputs: []
+grid:
+  contentMaxPx: 1440.0
+  columns: null
+  note: columns omitted — not a measured fact for this brand (the registration grid is pipeline
+    structure); widths carry their token provenance
+  provenance:
+    contentMaxPx: tokens.spacing.container-max
+    gutterPx: tokens.spacing.column-to-column
+    cardGapPx: tokens.spacing.grid-gap
+motion:
+  rungsMs:
+  - 150
+  - 300
+  - 500
+  bandMs:
+    min: 150
+    max: 500
+  easing: cubic-bezier(0.645, 0.045, 0.355, 1)
+  provenance:
+    method: voice.motionSpec.durations (measured motion census) — the band is the measured
+      envelope, no invented tiers
+    inputs:
+    - name: base
+      ms: 300
+    - name: fast
+      ms: 150
+    - name: slow
+      ms: 500

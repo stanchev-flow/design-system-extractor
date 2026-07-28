@@ -1,0 +1,225 @@
+{
+ "schemaVersion": "replica-report.v1",
+ "overall": 0.7437,
+ "bands": [
+  {
+   "id": "page-nav",
+   "label": "navbar (chrome header)",
+   "score": 0.0,
+   "structure": 0.0,
+   "pixel": 0.0,
+   "height": 0.0,
+   "srcHeight": 0,
+   "replicaHeight": 77,
+   "pair": null,
+   "note": "band missing on one side"
+  },
+  {
+   "id": "sec-0",
+   "label": "hero \u2014 The only hiring platform you\u2019ll",
+   "structure": 0.8465,
+   "pixel": 0.8317,
+   "height": 0.4956,
+   "score": 0.7719,
+   "widthFidelity": 0.9135,
+   "srcContentFrac": 0.975,
+   "replicaContentFrac": 0.8906,
+   "srcHeight": 900,
+   "replicaHeight": 1816,
+   "pair": "diff/sec-0.png"
+  },
+  {
+   "id": "sec-1",
+   "label": "featureGrid \u2014 Greenhouse introduces Voice AI following our acquisition of Ezra AI Labs, bringing conversational AI to the hiring proce",
+   "structure": 0.3126,
+   "pixel": 0.3012,
+   "height": 0.1581,
+   "score": 0.2783,
+   "widthFidelity": 0.755,
+   "srcContentFrac": 0.7125,
+   "replicaContentFrac": 0.9437,
+   "srcHeight": 132,
+   "replicaHeight": 835,
+   "pair": "diff/sec-1.png"
+  },
+  {
+   "id": "sec-2",
+   "label": "logoWall \u2014 Real Talent",
+   "structure": 0.8204,
+   "pixel": 0.8145,
+   "height": 0.7161,
+   "score": 0.7977,
+   "widthFidelity": 0.6418,
+   "srcContentFrac": 0.8375,
+   "replicaContentFrac": 0.5375,
+   "srcHeight": 634,
+   "replicaHeight": 454,
+   "pair": "diff/sec-2.png"
+  },
+  {
+   "id": "sec-3",
+   "label": "stats \u2014 Great companies hire with Greenhouse",
+   "structure": 0.8724,
+   "pixel": 0.8675,
+   "height": 0.9413,
+   "score": 0.8847,
+   "widthFidelity": 0.8046,
+   "srcContentFrac": 0.7594,
+   "replicaContentFrac": 0.9437,
+   "srcHeight": 786,
+   "replicaHeight": 835,
+   "pair": "diff/sec-3.png"
+  },
+  {
+   "id": "sec-4",
+   "label": "testimonial \u2014 The best teams start with hiring \u2013 and the best hiring starts with Greenhouse",
+   "structure": 0.2962,
+   "pixel": 0.2867,
+   "height": 0.3735,
+   "score": 0.3088,
+   "widthFidelity": 0.7079,
+   "srcContentFrac": 0.8344,
+   "replicaContentFrac": 0.5906,
+   "srcHeight": 905,
+   "replicaHeight": 338,
+   "pair": "diff/sec-4.png"
+  },
+  {
+   "id": "sec-5",
+   "label": "cta \u2014 Everything you need to get better at hiring",
+   "structure": 0.9533,
+   "pixel": 0.9478,
+   "height": 0.5365,
+   "score": 0.8683,
+   "widthFidelity": 0.6667,
+   "srcContentFrac": 0.3937,
+   "replicaContentFrac": 0.5906,
+   "srcHeight": 630,
+   "replicaHeight": 338,
+   "pair": "diff/sec-5.png"
+  },
+  {
+   "id": "footer",
+   "label": "footer (closing bookend)",
+   "structure": 0.9688,
+   "pixel": 0.9615,
+   "height": 0.8428,
+   "score": 0.9414,
+   "widthFidelity": 0.4398,
+   "srcContentFrac": 0.8313,
+   "replicaContentFrac": 0.3656,
+   "srcHeight": 1043,
+   "replicaHeight": 879,
+   "pair": "diff/footer.png"
+  }
+ ],
+ "perViewport": [
+  {
+   "viewport": 1440,
+   "scrollWidth": 1440,
+   "overflowPx": 0,
+   "bands": 7,
+   "heroHeight": 1816,
+   "footerColumns": 5,
+   "docHeight": 5150,
+   "overflowEl": "",
+   "screenshot": "replica-fullpage-1440.png",
+   "responsivenessHealth": 1.0,
+   "primary": true
+  },
+  {
+   "viewport": 1920,
+   "scrollWidth": 1920,
+   "overflowPx": 0,
+   "bands": 7,
+   "heroHeight": 1816,
+   "footerColumns": 5,
+   "docHeight": 5184,
+   "overflowEl": "",
+   "screenshot": "replica-fullpage-1920.png",
+   "responsivenessHealth": 1.0,
+   "primary": false
+  },
+  {
+   "viewport": 960,
+   "scrollWidth": 1144,
+   "overflowPx": 184,
+   "bands": 7,
+   "heroHeight": 1511,
+   "footerColumns": 6,
+   "docHeight": 5056,
+   "overflowEl": "c-foot-cols",
+   "screenshot": "replica-fullpage-960.png",
+   "responsivenessHealth": 0.6167,
+   "primary": false
+  },
+  {
+   "viewport": 375,
+   "scrollWidth": 1044,
+   "overflowPx": 669,
+   "bands": 7,
+   "heroHeight": 1072,
+   "footerColumns": 6,
+   "docHeight": 6411,
+   "overflowEl": "c-foot-cols",
+   "screenshot": "replica-fullpage-375.png",
+   "responsivenessHealth": 0.5,
+   "primary": false
+  }
+ ],
+ "punchList": [
+  {
+   "section": "hero",
+   "capability": "fidelity below threshold",
+   "score": 0.7719,
+   "note": "band renders taller (1816px vs 900px)"
+  },
+  {
+   "section": "featureGrid",
+   "capability": "fidelity below threshold",
+   "score": 0.2783,
+   "note": "band renders taller (835px vs 132px); coarse layout structure diverges (module geometry / art direction); surface color / texture diverges"
+  },
+  {
+   "section": "logoWall",
+   "capability": "content width diverges",
+   "score": 0.7977,
+   "note": "content span 0.54 of band vs source 0.84 (width fidelity 0.64) \u2014 check hug/measure collapse or over-wide container"
+  },
+  {
+   "section": "logoWall",
+   "capability": "fidelity below threshold",
+   "score": 0.7977,
+   "note": "band renders shorter (454px vs 634px)"
+  },
+  {
+   "section": "testimonial",
+   "capability": "content width diverges",
+   "score": 0.3088,
+   "note": "content span 0.59 of band vs source 0.83 (width fidelity 0.71) \u2014 check hug/measure collapse or over-wide container"
+  },
+  {
+   "section": "testimonial",
+   "capability": "fidelity below threshold",
+   "score": 0.3088,
+   "note": "band renders shorter (338px vs 905px); coarse layout structure diverges (module geometry / art direction); surface color / texture diverges"
+  },
+  {
+   "section": "cta",
+   "capability": "content width diverges",
+   "score": 0.8683,
+   "note": "content span 0.59 of band vs source 0.39 (width fidelity 0.67) \u2014 check hug/measure collapse or over-wide container"
+  },
+  {
+   "section": "page",
+   "capability": "display font ('Untitled Serif', Georgia, serif)",
+   "note": "not self-hosted and not Google-loadable \u2014 headings render in the declared fallback stack; extract the woff2 files into assets/fonts/",
+   "score": null
+  }
+ ],
+ "inputDigest": "ca63a5ddba5a1787de1f5361df474685abac514a6eff1bb053cc0aa3944fc525",
+ "sourceShot": "screenshots/greenhouse-4/home/home-fullpage.png",
+ "sourceHeight": 5031,
+ "replicaHeight": 5150,
+ "brand": "Greenhouse"
+}

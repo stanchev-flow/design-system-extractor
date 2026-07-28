@@ -1,0 +1,264 @@
+{
+  "checked_at": "2026-07-28T19:05:57Z",
+  "base": "http://127.0.0.1:1500",
+  "pages": [
+    {
+      "page": "index.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/index.html",
+      "text": 3091,
+      "nodes": 232,
+      "images": 4,
+      "broken": [
+        "previews/replica.png",
+        "previews/harness.png",
+        "previews/catalog.png",
+        "previews/framework.png"
+      ],
+      "failed_requests": [
+        "404 http://127.0.0.1:1500/artifacts/published/greenhouse-4/previews/catalog.png",
+        "404 http://127.0.0.1:1500/artifacts/published/greenhouse-4/previews/framework.png",
+        "404 http://127.0.0.1:1500/artifacts/published/greenhouse-4/previews/harness.png",
+        "404 http://127.0.0.1:1500/artifacts/published/greenhouse-4/previews/replica.png"
+      ],
+      "console_errors": [
+        "Failed to load resource: the server responded with a status of 404 (File not found)",
+        "Failed to load resource: the server responded with a status of 404 (File not found)",
+        "Failed to load resource: the server responded with a status of 404 (File not found)",
+        "Failed to load resource: the server responded with a status of 404 (File not found)"
+      ],
+      "ok": false
+    },
+    {
+      "page": "replica/index.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/replica/index.html",
+      "text": 3130,
+      "nodes": 194,
+      "images": 13,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "harness/index.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/harness/index.html",
+      "text": 44042,
+      "nodes": 2095,
+      "images": 0,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "catalog/index.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/catalog/index.html",
+      "text": 27492,
+      "nodes": 835,
+      "images": 0,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "framework/index.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/framework/index.html",
+      "text": 3215,
+      "nodes": 233,
+      "images": 13,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "harness/layouts/content.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/harness/layouts/content.html",
+      "text": 188,
+      "nodes": 17,
+      "images": 1,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "harness/layouts/cta.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/harness/layouts/cta.html",
+      "text": 60,
+      "nodes": 15,
+      "images": 0,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "harness/layouts/ctaSplit5050.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/harness/layouts/ctaSplit5050.html",
+      "text": 65,
+      "nodes": 18,
+      "images": 1,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "harness/layouts/featureGrid.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/harness/layouts/featureGrid.html",
+      "text": 780,
+      "nodes": 29,
+      "images": 3,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "harness/layouts/features.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/harness/layouts/features.html",
+      "text": 416,
+      "nodes": 14,
+      "images": 0,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "harness/layouts/featuresHeadingBodyTop.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/harness/layouts/featuresHeadingBodyTop.html",
+      "text": 179,
+      "nodes": 19,
+      "images": 1,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "harness/layouts/featuresHeadingFullWidth.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/harness/layouts/featuresHeadingFullWidth.html",
+      "text": 323,
+      "nodes": 29,
+      "images": 2,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "harness/layouts/featuresSectionHeadingTop.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/harness/layouts/featuresSectionHeadingTop.html",
+      "text": 39,
+      "nodes": 12,
+      "images": 0,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "harness/layouts/featuresSplit5050.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/harness/layouts/featuresSplit5050.html",
+      "text": 42,
+      "nodes": 18,
+      "images": 1,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "harness/layouts/featuresSplit5050Media.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/harness/layouts/featuresSplit5050Media.html",
+      "text": 54,
+      "nodes": 15,
+      "images": 1,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "harness/layouts/featuresThreeColumnCard.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/harness/layouts/featuresThreeColumnCard.html",
+      "text": 829,
+      "nodes": 31,
+      "images": 3,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "harness/layouts/gallery.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/harness/layouts/gallery.html",
+      "text": 295,
+      "nodes": 26,
+      "images": 3,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "harness/layouts/hero.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/harness/layouts/hero.html",
+      "text": 246,
+      "nodes": 25,
+      "images": 1,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "harness/layouts/heroSplit5050.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/harness/layouts/heroSplit5050.html",
+      "text": 317,
+      "nodes": 29,
+      "images": 1,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "harness/layouts/logoWall.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/harness/layouts/logoWall.html",
+      "text": 53,
+      "nodes": 34,
+      "images": 6,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "harness/layouts/stats.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/harness/layouts/stats.html",
+      "text": 199,
+      "nodes": 23,
+      "images": 0,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    },
+    {
+      "page": "harness/layouts/testimonial.html",
+      "url": "http://127.0.0.1:1500/artifacts/published/greenhouse-4/harness/layouts/testimonial.html",
+      "text": 33,
+      "nodes": 16,
+      "images": 0,
+      "broken": [],
+      "failed_requests": [],
+      "console_errors": [],
+      "ok": true
+    }
+  ],
+  "ok": false
+}

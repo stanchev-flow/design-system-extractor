@@ -1,0 +1,29 @@
+[flow] G3 harness …
+Traceback (most recent call last):
+  File "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/run_pipeline_flow.py", line 218, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/run_pipeline_flow.py", line 182, in main
+    result = pf.run_flow(
+        brand,
+    ...<19 lines>...
+        repair_hook=build_converge_hook(args),
+    )
+  File "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/brand_pipeline/pipeline_flow.py", line 753, in run_flow
+    gr = gate_g3_harness(brand_dir, build=build_harness,
+                         studio_url=studio_url)
+  File "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/brand_pipeline/pipeline_flow.py", line 255, in gate_g3_harness
+    _run_module_cli("render_components_preview",
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    [str(brand_yaml), "-o", str(preview.parent)])
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/brand_pipeline/pipeline_flow.py", line 540, in _run_module_cli
+    raise RuntimeError(
+        f"{module} failed (exit {proc.returncode}): "
+        f"{(proc.stderr or proc.stdout or '').strip()[:400]}")
+RuntimeError: render_components_preview failed (exit 1): Traceback (most recent call last):
+  File "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/brand_pipeline/render_components_preview.py", line 3407, in <module>
+    main()
+    ~~~~^^
+  File "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/brand_pipeline/render_components_preview.py", line 3365, in main
+    raise RuntimeError("harness quality failed:
