@@ -3038,12 +3038,20 @@ def compose_info_band(doc, layout, ctx, rendered, style_ctx):
         # a mark row is a flex strip, not an image — no mask frame around it.
         media_cell = (media_html if mark_row
                       else f'<div class="c-image-mask">{media_html}</div>') + badge_html
+        media_col = (f'<div class="cs-split-media{media_cls}"{media_style}>'
+                     f'{media_cell}</div>')
+        copy_col = ('<div class="cs-split-body">\n      '
+                    f'{header_html}{band_body}{tail}\n    </div>')
+        # DECLARED COLUMN ORDER (fid16 2026-07, stamped `_copySide`): a band whose
+        # structural label states which side the copy reads on draws that order.
+        # `.cs-split` is a two-track grid, so DOM order IS column order. Undeclared
+        # bands keep the historical media-first order, byte-identical.
+        cols = ([copy_col, media_col] if layout.get("_copySide") == "left"
+                else [media_col, copy_col])
         return f"""<section class="cs-section cs-split-sec"{sec_style}>
   <div class="cs-split">
-    <div class="cs-split-media{media_cls}"{media_style}>{media_cell}</div>
-    <div class="cs-split-body">
-      {header_html}{band_body}{tail}
-    </div>
+    {cols[0]}
+    {cols[1]}
   </div>
 </section>"""
     # The dark info-band heading rides the brand's DISPLAY tier by default (same

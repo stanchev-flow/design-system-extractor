@@ -86,6 +86,49 @@ _TWO_COLUMN_WORDS = (
     "two-col", "copy-left", "copy left", "copy-right", "copy right",
     "comparison", "compare", " versus ", " vs ")
 
+# generic STRUCTURAL vocabulary for a LAYERED media composition: copy with media
+# floating/scattered/orbiting AROUND it rather than sitting in its own column.
+# Layout descriptors only — never brand, palette, or content names.
+_COLLAGE_WORDS = (
+    "collage", "floating", "scattered", "orbiting", "layered", "overlapping",
+    "overlap", "montage", "cluster", "off-grid", "offset media")
+
+# WHICH SIDE the copy column sits on in a two-column band. A structural label that
+# states the order ("copy-left … art-right") is a measured fact about the source's
+# reading direction; a split composed in the opposite order mirrors the whole band.
+# Both spellings of every phrase (hyphen and space) so a projected archetype name
+# and an author's prose read the same. Generic layout vocabulary only.
+_COPY_FIRST_WORDS = (
+    "copy-left", "copy left", "text-left", "text left", "heading-left",
+    "heading left", "media-right", "media right", "art-right", "art right",
+    "image-right", "image right", "grid-right", "grid right", "panel-right",
+    "panel right", "logo-grid right", "photo-right", "photo right")
+_MEDIA_FIRST_WORDS = (
+    "copy-right", "copy right", "text-right", "text right", "heading-right",
+    "heading right", "media-left", "media left", "art-left", "art left",
+    "image-left", "image left", "grid-left", "grid left", "panel-left",
+    "panel left", "photo-left", "photo left")
+
+
+def _declared_copy_side(*probes: str) -> str | None:
+    """``left``/``right`` for the COPY column when a structural label states it.
+
+    None when the label states no order, so the composer keeps its historical
+    column order and nothing changes for bands that never declared one.
+    """
+    probe = " ".join(str(p or "") for p in probes).lower()
+    first = min((probe.find(w) for w in _COPY_FIRST_WORDS if w in probe), default=-1)
+    second = min((probe.find(w) for w in _MEDIA_FIRST_WORDS if w in probe), default=-1)
+    if first < 0 and second < 0:
+        return None
+    if second < 0:
+        return "left"
+    if first < 0:
+        return "right"
+    # both spellings present (e.g. "copy left / art right") — the earlier phrase
+    # names the leading column, which is the one the source reads first.
+    return "left" if first <= second else "right"
+
 # a short numeric FIGURE (percent / count / abbreviated magnitude) — the label of a
 # stat/metric column. Palette- and brand-agnostic (numerals are universal).
 _STAT_FIGURE_RE = re.compile(
@@ -195,6 +238,45 @@ def _is_hero_like(archetype: str, section: dict, slots: list[dict]) -> bool:
     has_media = any(_is_media_slot(s) for s in slots)
     has_cta = any(str(s.get("contract") or "").lower() == "button" for s in slots)
     return has_heading and (has_media or has_cta)
+
+
+def _declared_structural_archetype(archetype: str, section: dict,
+                                   slots: list[dict]) -> str | None:
+    """The drawable archetype the section's own DECLARED structure already states.
+
+    Distinct from ``_infer_drawable_archetype``, which picks a shell for a section
+    that declared nothing usable. Here the structural intent is written into the
+    archetype label itself — "split …", "copy-left … art-right", "… floating
+    media" — by an author or by the extraction that projected a measured band.
+    Honouring it PRESERVES a measured fact rather than inventing a shell, so it is
+    deliberately NOT gated behind ``_has_brand_anatomy``: keeping a section's
+    slots and drawing them in the columns its source used are not in conflict.
+    Without this, a label that literally says two columns renders as one and the
+    page becomes the stack of narrow single-column modules the generic-flow
+    safety net exists to avoid.
+
+    Returns a drawable ``ARCHETYPE_COMPOSERS`` key, or None when the label states
+    no structure the renderer can honour.
+    """
+    probe = " ".join([str(archetype or ""),
+                      str(section.get("useCase") or "")]).lower()
+    has_media = any(_is_media_slot(s) for s in slots)
+    # A layered/floating media composition is a collage, not a column split: the
+    # media does not occupy a column of its own, so a two-column shell would
+    # squeeze copy that the source ran at full measure.
+    if has_media and any(w in probe for w in _COLLAGE_WORDS):
+        return "collage"
+    if any(w in probe for w in _TWO_COLUMN_WORDS):
+        # a real counterweight must exist for the second column to hold anything;
+        # a logo collection counts (a logo grid beside copy is a column).
+        has_list = any(str(s.get("contract") or "").lower() in ("list", "table")
+                       for s in slots)
+        has_logos = any(str(s.get("contract") or "").lower() == "logo"
+                        and isinstance(s.get("copy"), list) and len(s["copy"]) >= 2
+                        for s in slots)
+        if has_media or has_list or has_logos:
+            return "split"
+    return None
 
 
 def _infer_drawable_archetype(section: dict, slots: list[dict],
@@ -2013,7 +2095,10 @@ def composition_to_layout(section: dict) -> dict:
     # full width, 2–3x too tall). Fact-gated (see _is_hero_like); drawable-archetype
     # heroes and every other section are byte-identical.
     if archetype not in _BESPOKE_ARCHETYPES and _is_hero_like(archetype, section, slots):
-        archetype = "stack"
+        # the declared structure still chooses WHICH hero shell: a hero whose label
+        # states a layered/floating media composition is a collage, and flattening
+        # it into the centered stack re-stacks that media below the copy.
+        archetype = _declared_structural_archetype(archetype, section, slots) or "stack"
         section = {**section, "useCase": "hero"}
     has_card_collection = any(
         str(slot.get("contract") or "").lower() == "card"
@@ -2054,10 +2139,16 @@ def composition_to_layout(section: dict) -> dict:
         # through the card device even when the author describes the outer band
         # as split/row/band; generic-flow flattens module assets into prose.
         renderer_archetype = "cards"
-    elif has_logo_collection and archetype not in _BESPOKE_ARCHETYPES:
-        renderer_archetype = _GENERIC_FLOW
     elif archetype in _BESPOKE_ARCHETYPES:
         renderer_archetype = archetype
+    elif _declared_structural_archetype(archetype, section, slots):
+        # A DECLARED structure outranks both the logo-collection degrade and the
+        # brand-anatomy degrade below: those two exist to stop an INVENTED shell
+        # from flattening measured anatomy, and a structure the section states
+        # about itself is not invented.
+        renderer_archetype = _declared_structural_archetype(archetype, section, slots)
+    elif has_logo_collection:
+        renderer_archetype = _GENERIC_FLOW
     else:
         # NON-DRAWABLE archetype. When brand anatomy already specifies slots/contracts,
         # keep a slot-faithful generic-flow rather than inventing a multi-column shell.
@@ -2258,6 +2349,14 @@ def composition_to_layout(section: dict) -> dict:
     side = side or str(((section.get("knobs") or {}).get("mediaSide")) or "").lower() or None
     if side in ("left", "right"):
         layout["_floatSide"] = side
+    # DECLARED COLUMN ORDER: a two-column band whose structural label states which
+    # side the copy reads on stamps it, so the split composer draws the source's
+    # reading order instead of its own historical media-first order.
+    copy_side = _declared_copy_side(declared_archetype, section.get("useCase"),
+                                    (section.get("_patternLayout") or {}).get("structure")
+                                    if isinstance(section.get("_patternLayout"), dict) else "")
+    if copy_side:
+        layout["_copySide"] = copy_side
     # composition provenance (advisory, stamped on the section wrapper via data-* if desired)
     layout["_composition"] = {"useCase": section.get("useCase"), "novelty": novelty,
                               "archetype": declared_archetype}
@@ -2275,8 +2374,13 @@ def composition_to_layout(section: dict) -> dict:
     # a hero is a STACK hero, or (AS-37) a SPLIT hero that declares the inset art-panel
     # device — the panel grid subsumes the split's two-column intent, so it routes to
     # the hero composer's panel variant instead of the info-band split.
+    # A hero that declares LAYERED media normalizes to the collage family (its
+    # media does not occupy a track of its own). It is still a hero: it must keep
+    # the hero composer's copy payload and scale, or a section the source opened
+    # with loses its hero register the moment its structure is honoured.
     is_hero = use_case == "hero" and (
-        archetype == "stack" or (archetype == "split" and art_panel is not None))
+        archetype in ("stack", "collage")
+        or (archetype == "split" and art_panel is not None))
     _conversion_cases = {"cta", "conversion", "newsletter", "signup", "subscribe", "contact"}
     # a stack that binds a logo-contract slot is a logo-wall-role section even when it
     # also carries an action (e.g. a partner/badge strip closed by one pill): the

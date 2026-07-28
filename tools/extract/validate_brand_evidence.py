@@ -190,6 +190,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import math
@@ -1932,8 +1933,184 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
     _check_style_scale(rep, brand_dir)
     _check_signatures(rep, doc)
     _check_media_assets(rep, brand_dir, lib_doc)
+    _check_measured_fact_consumption(rep, brand_dir, doc, lib_doc)
+    _check_structural_gate(rep, brand_dir)
 
     return rep
+
+
+# C29 — MEASURED-FACT CONSUMPTION (fid16 2026-07). Three ways a lane can carry the
+# right evidence and still rebuild the wrong page, none of which the replica gate's
+# averaged-pixel score can see:
+#
+#   a) CENSUS DIVERGENCE — the measured section census and the authored section
+#      census disagree, so a band diff pairs source sections against replica
+#      sections that rebuild something else and still reports plausible numbers.
+#   b) SURFACE CONTRADICTION — an authored `surfaceIntent` paints a band against
+#      the ground its own grounding measured, usually because a nested
+#      component-level surface was read as the section's surface.
+#   c) UNCONSUMED MEASURED GEOMETRY — the grounding measured band padding, band
+#      rhythm or column gap that never reached the pattern library, so the
+#      composer falls back to site averages for a band whose real register is
+#      recorded.
+#
+# All advisory: each names a repair in the authoring/derivation path, and a lane
+# with no per-page grounding simply has nothing to check.
+def _check_structural_gate(rep: Report, brand_dir: Path) -> None:
+    """C30 — the last measured replica must be a FAITHFUL COMPARISON, not just a
+    close average.
+
+    The replica's similarity number is a mean absolute error between two images,
+    so a rebuild can score well while pairing a different census of bands or
+    drawing single-track layouts for multi-track sections. ``compose_replica``
+    now records those categorical signals; this row makes them BLOCKING, so the
+    similarity bar stops being the only thing a lane has to clear.
+
+    Silent when no replica has been scored yet (nothing to judge).
+    """
+    report = brand_dir / "compose" / "replica" / "replica-report.json"
+    if not report.is_file():
+        return
+    try:
+        data = json.loads(report.read_text())
+    except Exception:
+        return
+    gate = data.get("structuralGate")
+    if not isinstance(gate, dict) or not gate.get("signals"):
+        rep.note("C31", "the recorded replica predates the structural gate — "
+                        "re-score it to get band-count, layout-family and "
+                        "content-span agreement.")
+        return
+    for reason in (gate.get("blocking") or []):
+        rep.error("C31", f"replica structural gate: {reason}")
+    if gate.get("ok"):
+        rep.note("C31", "replica structural gate: band count, layout family and "
+                        "content span all agree with the measured source")
+
+
+def _check_measured_fact_consumption(rep: Report, brand_dir: Path, doc: dict,
+                                     lib_doc: dict) -> None:
+    try:
+        import project_sections_to_patterns as proj
+    except ImportError:  # invoked outside tools/extract on sys.path
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "project_sections_to_patterns",
+            Path(__file__).resolve().parent / "project_sections_to_patterns.py")
+        if spec is None or spec.loader is None:
+            return
+        proj = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(proj)
+
+    if not (brand_dir / "evidence" / "pages").is_dir():
+        rep.note("C29", "no per-page grounding under evidence/pages — measured-fact "
+                        "consumption unchecked (single-file evidence bundle).")
+        return
+    bands = proj.load_bands(brand_dir)
+    if not bands:
+        return
+    proj.coverage(bands, doc, lib_doc)
+    nodes = [n for n in ((doc.get("layouts") or []) + (lib_doc.get("patterns") or []))
+             if isinstance(n, dict)]
+
+    # (a) census divergence: measured content bands vs bands an authored node claims
+    content = [b for b in bands if b["role"] not in proj.CHROME_ROLES]
+    uncovered = [b["slug"] for b in content if not b.get("claimedBy")]
+    if uncovered:
+        rep.warn("C29a", f"{len(uncovered)} measured content band(s) are claimed by no "
+                         f"authored layout/pattern: {', '.join(uncovered[:6])}"
+                         + (" …" if len(uncovered) > 6 else "")
+                         + " — the replica scores those bands against nothing, and "
+                           "every census-ordered pairing downstream is short a "
+                           "section. Run project_sections_to_patterns.py "
+                           "--author-missing.")
+    # per-page: a page whose bands are wholly unclaimed dilutes a multi-page union
+    by_page: dict[str, list[dict]] = {}
+    for b in content:
+        by_page.setdefault(b["page"], []).append(b)
+    for page, pbands in sorted(by_page.items()):
+        claimed = sum(1 for b in pbands if b.get("claimedBy"))
+        if pbands and claimed < len(pbands):
+            rep.note("C29a", f"page '{page}': {claimed}/{len(pbands)} measured content "
+                             "bands claimed by an authored section.")
+
+    # (b) authored surfaceIntent vs the ground its own grounding measured
+    polarity = proj.dominant_ground_polarity(bands)
+    roster = proj.surface_roster(doc)
+    by_slug = {b["slug"]: b for b in bands}
+    for node in nodes:
+        if str(node.get("origin") or "") != "extracted":
+            continue
+        tokens = [str(t) for t in (node.get("provenance") or [])]
+        band = next((by_slug[s] for t in tokens for s in by_slug
+                     if s == t or s.startswith(f"{t}-")), None)
+        if band is None:
+            continue
+        surfaces = (band["grounding"] or {}).get("surfaces")
+        ground = proj.section_ground_surface(surfaces)
+        derived = proj.derive_surface_intent(surfaces, polarity, roster)
+        if proj.surface_intent_contradicts(
+                node.get("surfaceIntent"), derived,
+                measured_bg=(ground or {}).get("bgApprox"), roster=roster):
+            rep.warn("C29b", f"'{node.get('id')}' declares surfaceIntent "
+                             f"'{node.get('surfaceIntent')}' but its own grounding "
+                             f"measures a section ground of "
+                             f"'{(ground or {}).get('bgApprox')}' (role "
+                             f"'{(ground or {}).get('role')}', parent "
+                             f"'{(ground or {}).get('parent')}') which resolves to "
+                             f"'{derived}' — a nested component surface was probably "
+                             "read as the section's surface. Run "
+                             "project_sections_to_patterns.py --reconcile-surfaces.")
+    # a surface ROLE named after a section or content use case is a token-naming
+    # defect: the same measured ground cannot be reused anywhere else without
+    # reading as a lie. Generic surface relationships only.
+    for role in roster:
+        leaf = str(role).split("/")[-1].lower()
+        if leaf in _SECTION_NAMED_SURFACE_LEAVES:
+            rep.warn("C29b", f"surface role '{role}' is named after a section or "
+                             "content use case — surface roles must name a reusable "
+                             "ground relationship (primary / muted / inverse / "
+                             "accent / panel …) so the same measured ground can be "
+                             "applied outside that one section.")
+
+    # (c) measured geometry the evidence carries but the pattern library does not.
+    #     Asked of the ENRICHER itself, against a throwaway copy, so this row lists
+    #     exactly the facts a repair run would add — never a fact no tool can fill.
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent
+                               / "brand_pipeline"))
+        import measured_geometry as mg
+    except ImportError:
+        return
+    probe = copy.deepcopy(lib_doc)
+    try:
+        fillable = mg.enrich_layout_library(probe, brand_dir,
+                                            fields=mg.FIDELITY_FIELDS)
+    except Exception as exc:   # advisory row must never take the validator down
+        rep.note("C29c", f"measured-geometry probe skipped: {type(exc).__name__}: {exc}")
+        return
+    fillable = {pid: keys for pid, keys in (fillable or {}).items() if keys}
+    if fillable:
+        listed = "; ".join(f"{pid} (+{', '.join(keys)})"
+                           for pid, keys in list(fillable.items())[:6])
+        rep.warn("C29c", f"{len(fillable)} extracted pattern(s) leave measured geometry "
+                         f"unconsumed: {listed}"
+                         + (" …" if len(fillable) > 6 else "")
+                         + " — the grounding measured these but the pattern library "
+                           "does not carry them, so the composer sizes those bands "
+                           "from site averages instead of their own measured "
+                           "register. Run brand_pipeline/measured_geometry.py "
+                           "<layout-library.yaml>.")
+
+
+# Surface-role leaf names that describe WHERE a ground was seen rather than WHAT
+# relationship it is. Kept as a small, generic list of section/content words —
+# never brand or palette words.
+_SECTION_NAMED_SURFACE_LEAVES = {
+    "hero", "footer", "navbar", "nav", "header", "cta", "promo", "testimonial",
+    "pricing", "faq", "gallery", "stats", "logos", "banner", "newsletter",
+    "about", "contact", "features",
+}
 
 
 # C24 — derived-scale artifact (pass1 2026-07, style-scale.v1). The QUANTIZATION

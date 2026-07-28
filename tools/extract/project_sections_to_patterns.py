@@ -42,6 +42,250 @@ import yaml
 
 CHROME_ROLES = {"footer", "nav", "navbar", "header", "chrome"}
 
+# ── section surface derivation ────────────────────────────────────────────────────
+#
+# A section's `surfaceIntent` describes the band the SECTION paints from edge to
+# edge. It is not a summary of every surface the crop contains: a section that
+# holds one dark panel is still a light section with a dark panel in it.
+#
+# THE RULE (generic, palette-agnostic):
+#
+#   1. A section's own surface is its GROUND: the outermost surface the grounding
+#      records as sitting on the page. Only a page-parented surface can be the
+#      ground.
+#   2. Any surface whose `parent` names another surface role is NESTED, and
+#      therefore component-level — a panel, a card, a media well — however
+#      strongly it contrasts with the section around it. A nested surface can
+#      never set the section's surface intent; its contrast is carried by that
+#      component's own surface variant.
+#   3. When more than one surface is page-parented, `canvas` outranks `band`:
+#      `canvas` is the role the grounding contract uses for a section's own
+#      ground, so a `band` recorded beside a canvas is a full-bleed panel drawn
+#      inside the section, not the section itself.
+#   4. The section's intent then NAMES the role in the brand's own surface roster
+#      whose recorded background is nearest the ground the section measured. The
+#      roster is the brand's own measured vocabulary, so this picks a real
+#      surface relationship rather than guessing one, and it works for any
+#      palette because the only comparison is ground-to-ground within one brand.
+#   5. When the roster offers nothing close enough to trust, the ground reads
+#      INVERSE if its contrast polarity — the direction between its recorded
+#      ground colour and the ink recorded on it — runs opposite to the polarity
+#      most of the page's section grounds use, and PRIMARY otherwise. That makes
+#      "inverse" mean "against this brand's prevailing ground", which holds for a
+#      light-grounded brand and a dark-grounded one alike, with no absolute
+#      lightness threshold and no reference to any particular palette.
+
+# ordered by authority as a section ground; anything absent here is nested-only
+_GROUND_ROLE_RANK = {"canvas": 0, "band": 1, "chrome-bar": 2, "inset-panel": 3}
+_PAGE_PARENTS = {"", "page", "root", "document", "body", "none", "null", "viewport"}
+_HEX_RE = re.compile(r"#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b")
+
+
+def _rgb(note: str | None) -> tuple[int, int, int] | None:
+    """The first hex triplet in a grounding/token colour note, as RGB."""
+    m = _HEX_RE.search(str(note or ""))
+    if not m:
+        return None
+    h = m.group(1)
+    if len(h) == 3:
+        h = "".join(c * 2 for c in h)
+    return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))  # type: ignore[return-value]
+
+
+def _ground_distance(a: str | None, b: str | None) -> float | None:
+    """0.0 (identical) → 1.0 (opposite corners of the RGB cube), or None.
+
+    A plain RGB distance is deliberate: the comparison is always between two
+    grounds of the SAME brand, so it needs to rank candidates, not model
+    perception. No hue, lightness, or palette assumption is baked in.
+    """
+    ca, cb = _rgb(a), _rgb(b)
+    if ca is None or cb is None:
+        return None
+    return (sum((x - y) ** 2 for x, y in zip(ca, cb)) ** 0.5) / (255 * 3 ** 0.5)
+
+
+# How near a roster ground must sit to the measured ground to be trusted as THE
+# role that section uses, and how much nearer it must be than the authored role
+# before a reconcile overwrites a human/model choice. Both are ratios of the RGB
+# cube diagonal, so they carry no palette assumption.
+GROUND_MATCH_TOLERANCE = 0.06
+GROUND_MATCH_MARGIN = 0.10
+
+
+def surface_roster(doc: dict) -> dict[str, str]:
+    """{role: recorded background} for the brand's own measured surface roles.
+
+    Alias roles (``canonicalAliasOf``) are dropped: they name the same measured
+    ground as their canonical role, so keeping them would make the nearest-ground
+    choice depend on dict order rather than on evidence.
+    """
+    surfaces = ((doc.get("tokens") or {}).get("surfaces") or {})
+    out: dict[str, str] = {}
+    for role, spec in surfaces.items():
+        if not isinstance(spec, dict) or spec.get("canonicalAliasOf"):
+            continue
+        bg = spec.get("bg")
+        if _rgb(bg) is not None:
+            out[str(role)] = str(bg)
+    return out
+
+
+def nearest_surface_role(ground_bg: str | None,
+                         roster: dict[str, str]) -> tuple[str | None, float]:
+    """The roster role whose recorded ground is nearest ``ground_bg``.
+
+    Ties break on roster order, which is the brand artifact's own ordering, so
+    the choice is reproducible rather than dependent on iteration accidents.
+    """
+    best, best_d = None, 1.0
+    for role, bg in roster.items():
+        d = _ground_distance(ground_bg, bg)
+        if d is not None and d < best_d:
+            best, best_d = role, d
+    return best, best_d
+
+
+def _luminance(note: str | None) -> float | None:
+    """sRGB relative luminance of the first colour in a grounding colour note.
+
+    Grounding records plain hex, gradients (``gradient(#a -> #b)``) and
+    image fills (``image-fill: <description>``). A gradient is read from its
+    first stop; an image fill has no resolvable ground colour and returns None
+    so callers fall back rather than guess.
+    """
+    m = _HEX_RE.search(str(note or ""))
+    if not m:
+        return None
+    h = m.group(1)
+    if len(h) == 3:
+        h = "".join(c * 2 for c in h)
+    def _lin(v: int) -> float:
+        s = v / 255.0
+        return s / 12.92 if s <= 0.04045 else ((s + 0.055) / 1.055) ** 2.4
+    r, g, b = (int(h[i:i + 2], 16) for i in (0, 2, 4))
+    return 0.2126 * _lin(r) + 0.7152 * _lin(g) + 0.0722 * _lin(b)
+
+
+def _is_page_parented(surface: dict) -> bool:
+    return str(surface.get("parent") or "").strip().lower() in _PAGE_PARENTS
+
+
+def section_ground_surface(surfaces) -> dict | None:
+    """The section's OWN surface — see THE RULE above (steps 1-3).
+
+    Returns None when the grounding records no page-parented surface at all, in
+    which case the section has no measured ground and callers keep the default.
+    """
+    if not isinstance(surfaces, list):
+        return None
+    ranked = [
+        (_GROUND_ROLE_RANK[str(s.get("role") or "").strip().lower()], i, s)
+        for i, s in enumerate(surfaces)
+        if isinstance(s, dict)
+        and str(s.get("role") or "").strip().lower() in _GROUND_ROLE_RANK
+        and _is_page_parented(s)
+    ]
+    if not ranked:
+        return None
+    ranked.sort(key=lambda t: (t[0], t[1]))   # role authority, then reading order
+    return ranked[0][2]
+
+
+def surface_polarity(surface: dict | None, margin: float = 0.12) -> int | None:
+    """Contrast DIRECTION of one surface: +1 light-ink-on-dark, -1 dark-ink-on-light.
+
+    None when either colour is unresolvable (an image fill) or the two sit too
+    close together to read a direction. Palette-agnostic by construction: it
+    reports only which side of its own ground the ink sits on.
+    """
+    if not isinstance(surface, dict):
+        return None
+    bg = _luminance(surface.get("bgApprox"))
+    ink = _luminance(surface.get("inkApprox"))
+    if bg is None or ink is None or abs(ink - bg) < margin:
+        return None
+    return 1 if ink > bg else -1
+
+
+def dominant_ground_polarity(bands: list[dict]) -> int | None:
+    """The polarity most of this brand's SECTION grounds use — the page's ground.
+
+    Derived from the brand's own evidence rather than assumed, so "inverse"
+    means "against this brand's prevailing ground" whichever way that runs.
+    Chrome bands are excluded: a page's opening and closing bookends routinely
+    invert against the page and would skew the reading of the sections.
+    """
+    votes = [p for p in (
+        surface_polarity(section_ground_surface(
+            (b.get("grounding") or {}).get("surfaces")))
+        for b in bands if str(b.get("role") or "") not in CHROME_ROLES
+    ) if p is not None]
+    if not votes:
+        return None
+    return 1 if sum(1 for v in votes if v > 0) * 2 > len(votes) else -1
+
+
+# Surface roles that paint the band AGAINST the page's prevailing ground. The
+# derivation resolves only this polarity, so a reconcile must leave any other
+# authored intent (a muted or panelled ground on the prevailing polarity) alone
+# rather than flattening a richer, non-contradicting reading.
+INVERTING_INTENTS = {"surface/inverse", "surface/inverse-strong", "surface/accent",
+                     "surface/overlay"}
+
+
+def surface_intent_contradicts(authored: str | None, derived: str,
+                               *, measured_bg: str | None = None,
+                               roster: dict[str, str] | None = None) -> bool:
+    """True when the authored intent disagrees with the section's MEASURED ground.
+
+    Two disagreements count, and only these two, so a reconcile corrects real
+    errors without flattening a richer authored reading the evidence does not
+    contradict:
+
+      POLARITY — the authored role paints against the brand's prevailing ground
+      while the measured ground sits with it, or the reverse.
+      GROUND DISTANCE — the derived role's recorded ground sits close to the one
+      the section measured while the authored role's sits materially further
+      away, meaning the band is painted on the wrong measured surface.
+    """
+    authored_role = str(authored or "").strip()
+    inverts = authored_role in INVERTING_INTENTS
+    if inverts != (derived in INVERTING_INTENTS):
+        return True
+    if not roster or not measured_bg or derived == authored_role:
+        return False
+    d_derived = _ground_distance(measured_bg, roster.get(derived))
+    d_authored = _ground_distance(measured_bg, roster.get(authored_role))
+    if d_derived is None or d_authored is None:
+        return False
+    return (d_derived <= GROUND_MATCH_TOLERANCE
+            and d_authored - d_derived >= GROUND_MATCH_MARGIN)
+
+
+def derive_surface_intent(surfaces, dominant: int | None = None,
+                          roster: dict[str, str] | None = None) -> str:
+    """The surface role the SECTION'S OWN ground uses — THE RULE, steps 4-5.
+
+    With a brand surface roster, the intent NAMES the role whose recorded ground
+    is nearest the ground this section measured. Without one (or with nothing
+    close enough to trust) it degrades to the coarse polarity reading: a ground
+    painting against the brand's prevailing ground is inverse, otherwise primary.
+    """
+    ground = section_ground_surface(surfaces)
+    if ground is None:
+        return "surface/primary"
+    if roster:
+        role, dist = nearest_surface_role(ground.get("bgApprox"), roster)
+        if role and dist <= GROUND_MATCH_TOLERANCE:
+            return role
+    polarity = surface_polarity(ground)
+    if polarity is None:
+        role = str(ground.get("role") or "").strip().lower()
+        return "surface/inverse" if role == "band" else "surface/primary"
+    reference = dominant if dominant in (1, -1) else -1
+    return "surface/inverse" if polarity != reference else "surface/primary"
+
 
 def _slug(text: str, limit: int = 60) -> str:
     s = re.sub(r"[^a-z0-9]+", "-", str(text or "").lower()).strip("-")
@@ -273,7 +517,9 @@ def _layout_id(role: str, band: dict, taken: set[str]) -> str:
 
 
 def project_band(band: dict, rows: list[dict], asset_roles: dict[str, str],
-                 taken: set[str]) -> tuple[dict, dict, dict]:
+                 taken: set[str], *,
+                 ground_polarity: int | None = None,
+                 roster: dict[str, str] | None = None) -> tuple[dict, dict, dict]:
     """(layout, pattern, copy) projected from ONE grounded band."""
     g = band["grounding"]
     role = str(g.get("sectionRole") or "section")
@@ -286,9 +532,7 @@ def project_band(band: dict, rows: list[dict], asset_roles: dict[str, str],
     slots = text + media + _action_slots(g)
     layout_block = g.get("layout") if isinstance(g.get("layout"), dict) else {}
     surfaces = g.get("surfaces") if isinstance(g.get("surfaces"), list) else []
-    band_surface = next((s for s in surfaces
-                         if isinstance(s, dict) and s.get("role") == "band"), None)
-    surface_intent = "surface/inverse" if band_surface else "surface/primary"
+    surface_intent = derive_surface_intent(surfaces, ground_polarity, roster)
 
     described = _archetype(g, media)
     layout = {
@@ -376,6 +620,10 @@ def build_parser() -> argparse.ArgumentParser:
                     help="project uncovered bands into the brand artifacts")
     ap.add_argument("--reconcile-copy", action="store_true",
                     help="repoint every layout's copy at the band it claims")
+    ap.add_argument("--reconcile-surfaces", action="store_true",
+                    help="re-derive every extracted layout/pattern's surfaceIntent "
+                         "from the band its provenance names (section ground, not "
+                         "nested component surfaces)")
     return ap
 
 
@@ -409,6 +657,13 @@ def main(argv=None) -> int:
     print(f"coverage: {len(content) - len(uncovered)}/{len(content)} content bands "
           f"claimed by an authored layout")
 
+    ground_polarity = dominant_ground_polarity(bands)
+    roster = surface_roster(doc)
+    print(f"section grounds: prevailing contrast polarity "
+          f"{'light-ink-on-dark' if ground_polarity == 1 else 'dark-ink-on-light'} "
+          f"— a section inverts only against this; "
+          f"{len(roster)} measured surface role(s) available to match grounds against")
+
     changed = False
     if args.author_missing and uncovered:
         taken = {str(l.get("id")) for l in (doc.get("layouts") or [])}
@@ -420,7 +675,9 @@ def main(argv=None) -> int:
         seen: dict[tuple, dict] = {}
         for band in uncovered:
             rows = rows_by_section.get(band["slug"], [])
-            layout, pattern, bcopy = project_band(band, rows, asset_roles, taken)
+            layout, pattern, bcopy = project_band(
+                band, rows, asset_roles, taken,
+                ground_polarity=ground_polarity, roster=roster)
             sig = (layout["useCase"],
                    (pattern.get("layout") or {}).get("columns"),
                    tuple(s["name"] for s in layout["slots"]))
@@ -439,6 +696,30 @@ def main(argv=None) -> int:
             print(f"  [author] {layout['id']:16} <- {band['slug']} "
                   f"({len(layout['slots'])} slots, {len(rows)} measured assets)")
         changed = True
+
+    if args.reconcile_surfaces:
+        by_slug = {b["slug"]: b for b in bands}
+        for node in (doc.get("layouts") or []) + (lib.get("patterns") or []):
+            if not isinstance(node, dict) or node.get("origin") != "extracted":
+                continue
+            tokens = [str(t) for t in (node.get("provenance") or [])]
+            band = next((by_slug[s] for t in tokens for s in by_slug
+                         if s == t or s.startswith(f"{t}-")), None)
+            if band is None:
+                continue
+            surfaces = (band["grounding"] or {}).get("surfaces")
+            fresh = derive_surface_intent(surfaces, ground_polarity, roster)
+            ground = section_ground_surface(surfaces)
+            if not surface_intent_contradicts(
+                    node.get("surfaceIntent"), fresh,
+                    measured_bg=(ground or {}).get("bgApprox"), roster=roster):
+                continue
+            print(f"  [surface] {str(node.get('id')):16} "
+                  f"{node.get('surfaceIntent')} -> {fresh} "
+                  f"(ground role={str((ground or {}).get('role'))}, "
+                  f"parent={str((ground or {}).get('parent'))})")
+            node["surfaceIntent"] = fresh
+            changed = True
 
     if args.reconcile_copy:
         by_slug = {b["slug"]: b for b in bands}

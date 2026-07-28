@@ -119,7 +119,15 @@ class InferDrawableArchetype(unittest.TestCase):
         self.assertIn("stat", contracts)
         self.assertNotIn("caption", contracts)
 
-    def test_hero_described_by_non_drawable_label_routes_to_hero_stack(self):
+    def test_hero_declaring_floating_media_routes_to_the_collage_family(self):
+        """A hero whose declared label states LAYERED media is drawn as a collage,
+        not a single-track stack (fid16 2026-07).
+
+        The declared structure is a measured fact about the source band, so
+        honouring it preserves evidence. Layered media is deliberately NOT a
+        column split: the media does not occupy a track of its own, so a
+        two-column shell would squeeze copy that ran at full measure.
+        """
         section = {
             "id": "hero", "archetype": "centered-copy-with-floating-media",
             "useCase": "Full-bleed opening hero: centered copy with floating media",
@@ -133,9 +141,9 @@ class InferDrawableArchetype(unittest.TestCase):
             ],
         }
         layout = cfc.composition_to_layout(section)
-        self.assertEqual(layout["archetype"], "stack")
+        self.assertEqual(layout["archetype"], "collage")
         # the hero path (not the conversion stack) owns the mapping — it attaches the
-        # hero SECTION_COPY payload the stack-hero composer reads.
+        # hero SECTION_COPY payload the hero composers read.
         self.assertIn("_sectionCopy", layout)
         # provenance keeps the DECLARED label, not the normalized "stack".
         self.assertEqual(layout["_composition"]["archetype"],

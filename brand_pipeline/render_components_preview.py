@@ -1984,6 +1984,12 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
         "treatments": treatments,
         "_requiresHydration": layout.get("requiresHydration") is True,
     }
+    # The pattern's MEASURED layout block (structure prose, columns, container width,
+    # measured gap) rides through so the adapter can read structural facts the
+    # archetype NAME alone does not carry — e.g. which side a two-column band reads
+    # its copy on. Advisory and private: consumed by the adapter, never serialized.
+    if isinstance(pat.get("layout"), dict):
+        section["_patternLayout"] = dict(pat["layout"])
     # the brand's DECLARED module-grid track count rides §4.6.5 (sysfix 2026-07:
     # gridRules.columns was extracted but never consumed — a measured 3-up card grid
     # demoed as the harvested 7/5 stagger). Cards archetype only: split "1fr 1fr" and

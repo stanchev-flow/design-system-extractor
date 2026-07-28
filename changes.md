@@ -1,5 +1,119 @@
 # Changes
 
+## 2026-07-28 — The replica gate scores the right census, and stops being gameable
+
+The replica gate reported a number that was not measuring the comparison it claimed.
+For a multi-page brand, composition applied a page filter and scoring did not, so the
+diff paired source band *i* against the *i*-th entry of a longer, unfiltered list: four
+of seven bands were scored against sections that were never composed (two of them
+belonging to other capture pages), two replica bands were used twice, and one composed
+band was never scored at all. Every one of those produced a plausible-looking score.
+
+Measured on the greenhouse-4 homepage, viewport 1440×900, through the repo's own
+`build_replica_page` / `shoot_replica` / `band_similarity` (`0.5·structure + 0.3·pixel +
+0.2·height`, all Pillow RGB mean-absolute-error): **0.7437 → 0.8724**. The pairing fix
+alone is +0.062 with zero rendering change; the section-ground surface rule is +0.046;
+honouring declared layered-media structure on the opening band is +0.017.
+
+- **The scoring pair list takes the same page filter as composition.** `compose_replica`
+  built its scoring pairs from an unfiltered `source_order_sections` call. It now passes
+  the composition's `page`, so the two censuses come from one call with one filter.
+- **A census divergence now fails loudly instead of scoring.** `assert_pairing_census`
+  compares the composed section list against the scoring pair list by IDENTITY and
+  ORDER, not cardinality, and raises `PairingCensusError` naming which sections are
+  scored-but-never-composed and composed-but-never-scored. A cardinality-only check
+  would have passed the exact failure above, since an equal-length list drawn from a
+  different filter is what reads as a real score.
+- **Source bands are aligned by provenance, not by position.** A measured band with no
+  authored pattern used to shift every later pairing by one. Alignment now anchors each
+  authored section to its measured band through the crops manifest's y-ranges, and an
+  unauthored band is scored as unauthored (weight at 0.0) rather than absorbed into a
+  neighbour — failing to rebuild a measured section is a fidelity failure, not an
+  exemption.
+- **Page chrome is excluded by declaration, never by accident.** When the source
+  evidence measured no header band of its own, the chrome pixels sit inside the first
+  content band and there is nothing separable to diff. The nav is now excluded
+  explicitly, named in the band census and the punch list, instead of scoring a silent
+  0.0. The measure-stage gap is recorded rather than absorbed.
+- **A section's surface comes from its own page-parented ground.** Authoring took the
+  most contrasting surface in a section's grounding as the section's surface, so a
+  nested component-level panel flipped a whole band's `surfaceIntent`. The derivation
+  now reads role authority plus parentage: the section's ground is its page-parented
+  surface, a nested surface of any polarity is a component-level variant, and the
+  intent names the brand surface role whose recorded ground sits nearest the one the
+  section measured — degrading to a polarity reading only when nothing is close enough
+  to trust. Palette-agnostic by construction: "inverse" means "against this brand's
+  prevailing ground", derived from the brand's own evidence, whichever way that runs.
+- **A declared structure is honoured instead of collapsed.** `_has_brand_anatomy`
+  returns true for every projected pattern, so the multi-column inference was
+  unreachable for exactly the lane it was written for, and archetype labels that state
+  their own structure landed in single-column flow. A declared structure is now read
+  before that gate: side-placement vocabulary with a real counterweight draws as a
+  split, and declared layered media draws as a collage — which is not a column split,
+  because layered media occupies no track of its own. A band declaring layered media
+  keeps its opening-section copy payload and register, at a measured cost of 0.0009.
+- **The renderer never opens a track it cannot fill.** A section carrying nothing that
+  could occupy a second track keeps its single-track family; the divergence against the
+  measured band is reported by the structural gate, which names the missing counterweight
+  as a projection gap rather than blaming routing.
+- **The gate no longer rests on an averaged error alone.** A mean absolute error is
+  blind by construction to the failures that matter in a rebuild: a solid rectangle of
+  the right ground scores very high against a real band, blank padding raises a score
+  for zero content, and making a band structurally more correct can lower it.
+  `compose_replica` now records three categorical/geometric signals next to the score —
+  band-count agreement (both directions), archetype-family agreement against each
+  band's measured track multiplicity, and height-weighted content-span fidelity — with
+  floors of 1.0, 1.0 and 0.80. Full agreement is the only principled floor for the two
+  categorical facts; content span is a ratio, and 0.80 is about one container-width step.
+- **The signals decide, not just report.** They are persisted under `structuralGate` in
+  `replica-report.json`, printed, tabled in the markdown report, folded into
+  `compose_replica`'s own gate mode (`--fail-under` now also fails on a structural
+  divergence, with `--allow-structural-divergence` for diagnostic runs), and consumed
+  by a blocking validator row. The similarity number itself is left alone, so it stays
+  comparable across runs and keeps working as the coarse tripwire.
+- **Content span is measured per row, not per column mean.** A tall band holding a short
+  centred stack averaged its own content away and read as empty, which understated the
+  diagnostic badly (one footer 0.44 → 0.95, one band 0.00 → 0.66) and would have failed
+  faithful bands once folded into a gate. Deviation is now counted per row with a
+  minimum-rows floor to keep resampling ringing out.
+- **Four new validator rows.** `C29a` measured content bands claimed by no authored
+  node, per page as well as overall, so a multi-page union cannot hide an unauthored
+  page; `C29b` an authored `surfaceIntent` contradicting the section's grounding canvas,
+  and surface roles named after a section or content use case rather than a reusable
+  ground relationship; `C29c` measured geometry present in grounding but absent from the
+  pattern library, asked of the enricher itself against a throwaway copy so the row
+  lists only facts a repair run would actually add; `C31` a recorded replica whose
+  structural gate failed — blocking, so a lane cannot clear the similarity bar while
+  comparing the wrong census.
+- **Position on the 0.90 bar.** Kept as a coarse regression tripwire: it still blocks
+  woodwave-v2 (0.7499) and passes hubspot-v2 (0.9556) and remote (0.9509). But all three
+  precedent lanes are single-page, so the bar has never been calibrated for a multi-page
+  union, where the score is diluted by whichever page was shot and by off-page patterns
+  that the page filter now correctly withholds from both composition and scoring. Rather
+  than re-tune a number that has no multi-page precedent, the structural signals were
+  made page-scoped and blocking on their own: a multi-page lane must now agree with the
+  shot page's census band for band, whatever the diluted average happens to say.
+- **Cross-lane regression.** hubspot-v2 0.9556 and remote 0.9509 are unchanged and pass
+  all three signals; woodwave-v2 fails the tripwire as before, and its 0.7673 → 0.7499
+  is not attributable to this work — re-scoring it through the pre-fix pairing path
+  reproduces the identical band table, so the delta is drift between the committed
+  report and a fresh re-shoot.
+- **Regression tests** in `brand_pipeline/tests/test_fid16_replica_census_gate.py` (33):
+  the page-filtered pair list, the count-divergence guard including the equal-length
+  different-identity case, the page-parented ground rule stated twice with the polarity
+  reversed, declared-structure routing, every gate signal, the per-row content-span
+  measure, and the validator rows. `brand_pipeline/tests/` + `tests/`: 2379 passed.
+- **Known gaps, not fixed here.** greenhouse-4 still fails two structural signals for
+  real reasons upstream of this work: one measured content band has no authored pattern
+  at all, and one band's measured secondary occupant was never projected into slots, so
+  its section has nothing to place in a second track. Both are authoring-census gaps and
+  are now named by the gate instead of being averaged over. Residual band defects noted
+  in the punch list (card border/shadow, card headings at body register, outlined pill
+  CTAs collapsing to bare text) are unaddressed. Folding the signals into the flow's own
+  G4 pass/fail is a one-line change in `brand_pipeline/pipeline_flow.py`
+  (`ok = overall >= bar and (last_report.get("structuralGate") or {}).get("ok", True)`),
+  left alone because that file is owned by concurrent work.
+
 ## 2026-07-28 — Font identity is derived from brand facts, and undelivered faces are recorded
 
 A declared font family was being treated as a delivered one. Three independent places

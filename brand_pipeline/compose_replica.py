@@ -196,6 +196,173 @@ def _is_chrome(layout: dict) -> bool:
             or str(layout.get("id") or "") in CHROME_IDS)
 
 
+# ── pairing census: the composed page and the scoring pair list must agree ────────
+
+class PairingCensusError(RuntimeError):
+    """The sections that were COMPOSED and the sections being SCORED diverge.
+
+    Raised loudly on purpose. The band diff pairs source section *i* against the
+    *i*-th entry of the scoring pair list, so any divergence between the list
+    that drove composition and the list that drives scoring silently compares
+    unrelated bands and still produces a plausible-looking overall number. A
+    wrong score that looks reasonable is worse than a crash.
+    """
+
+
+def assert_pairing_census(composed_order: list[str],
+                          pairs: list[tuple[dict, dict]]) -> None:
+    """Fail loudly unless the scoring pair list IS the composed section list.
+
+    ``composed_order`` is what ``build_replica_page`` actually rendered (in DOM
+    order); ``pairs`` is what the diff will score against the source bands.
+    Identity is checked, not just cardinality: an equal-length list drawn from a
+    different filter is exactly the failure mode that reads as a real score.
+    """
+    scored_order = [str((layout or {}).get("id")) for layout, _ in pairs]
+    composed = [str(x) for x in (composed_order or [])]
+    if composed == scored_order:
+        return
+    detail = [
+        f"composed {len(composed)} section(s): {composed}",
+        f"scoring   {len(scored_order)} section(s): {scored_order}",
+    ]
+    if len(composed) != len(scored_order):
+        detail.append(
+            "COUNT DIVERGENCE — the diff pairs source band i against scoring "
+            "entry i, so every band from the first mismatch onward is scored "
+            "against the wrong replica section.")
+    only_scored = [x for x in scored_order if x not in set(composed)]
+    only_composed = [x for x in composed if x not in set(scored_order)]
+    if only_scored:
+        detail.append(f"scored but never composed: {only_scored} "
+                      "(these have no replica band; the diff will fall back to a "
+                      "positional band that belongs to a different section)")
+    if only_composed:
+        detail.append(f"composed but never scored: {only_composed}")
+    raise PairingCensusError(
+        "compose_replica: composed-section census != scoring-pair census. "
+        + " | ".join(detail)
+        + " | Both lists must come from the same source_order_sections() call "
+          "with the same `page` filter.")
+
+
+# ── source-band alignment: authored provenance → measured section rect ────────────
+
+def _page_evidence_dir(brand_dir: Path, page: str | None) -> Path:
+    """The per-page evidence dir when the capture set has one, else the root."""
+    if page:
+        cand = brand_dir / "evidence" / "pages" / page
+        if cand.is_dir():
+            return cand
+    return brand_dir / "evidence"
+
+
+def _load_crops_manifest(brand_dir: Path, page: str | None) -> dict | None:
+    p = _page_evidence_dir(brand_dir, page) / "crops" / "crops-manifest.json"
+    if not p.is_file():
+        p = brand_dir / "evidence" / "crops" / "crops-manifest.json"
+    if not p.is_file():
+        return None
+    try:
+        return json.loads(p.read_text())
+    except Exception:
+        return None
+
+
+def crop_index_to_band(crops: dict, s_secs: list[dict],
+                       viewport_w: int | None = None) -> dict[int, int]:
+    """Map each CROP ordinal to the measured section band it covers.
+
+    Crop ordinals and section-rect ordinals are NOT the same index space: the
+    slicer prepends measured page chrome as its own crop and drops rects below
+    its minimum-height floor, so the two sequences drift apart on any page whose
+    measured bands and sliced crops disagree about what counts as a section.
+    The crops manifest records each crop's y-range in SOURCE SCREENSHOT space —
+    the same space the section rects live in — so vertical overlap is the only
+    trustworthy link between an authored section index and a scorable band.
+
+    Returns {crop index: index into ``s_secs``} for crops that cover exactly one
+    band best; a crop whose strongest overlap is negligible is left unmapped.
+    """
+    img_w = ((crops.get("imageSize") or {}).get("w")) or viewport_w or 0
+    scale = (img_w / viewport_w) if (img_w and viewport_w) else 1.0
+    spans = []
+    for i, s in enumerate(s_secs):
+        r = s.get("rect") or {}
+        y0 = float(r.get("y", 0)) * scale
+        spans.append((i, y0, y0 + float(r.get("h", 0)) * scale))
+    out: dict[int, int] = {}
+    for c in crops.get("crops") or []:
+        try:
+            ci = int(c.get("index"))
+            cy0, cy1 = float(c.get("yTop")), float(c.get("yBottom"))
+        except (TypeError, ValueError):
+            continue
+        best, best_ov = None, 0.0
+        for i, y0, y1 in spans:
+            ov = min(cy1, y1) - max(cy0, y0)
+            if ov > best_ov:
+                best, best_ov = i, ov
+        # a crop must cover most of the band it claims: the slicer pads every
+        # crop by a fixed margin, so a neighbour always overlaps a little.
+        if best is None:
+            continue
+        _, y0, y1 = spans[best]
+        if best_ov <= 0 or best_ov < 0.5 * max(1.0, y1 - y0):
+            continue
+        out[ci] = best
+    return out
+
+
+def align_source_bands(brand_dir: Path, pairs: list[tuple[dict, dict]],
+                       s_secs: list[dict], *, page: str | None = None,
+                       viewport_w: int | None = None) -> tuple[list[int | None], dict]:
+    """Which measured source band each scoring pair rebuilds.
+
+    Returns ``(aligned, census)`` where ``aligned[i]`` indexes ``s_secs`` for
+    ``pairs[i]`` (or None when that pair cannot be anchored).
+
+    PROVENANCE-ANCHORED when every pair carries a resolvable source-section
+    ordinal and those ordinals resolve to distinct bands through the crops
+    manifest. That is the only mode that survives a capture whose crop ordinals
+    and measured-band ordinals differ, and it is what makes an unauthored source
+    band visible as unauthored instead of shifting every later pairing by one.
+
+    POSITIONAL otherwise (authoring lanes that name sections rather than
+    numbering them): pair *i* takes band *i*, the historical behaviour.
+    """
+    census: dict = {"mode": "positional", "notes": []}
+    n = len(pairs)
+    crops = _load_crops_manifest(brand_dir, page)
+    if crops:
+        idx_by_crop = crop_index_to_band(crops, s_secs, viewport_w)
+        ordinals: list[int | None] = []
+        for layout, pat in pairs:
+            prov = _provenance_list(layout, pat)
+            got = [_provenance_section_index(t) for t in prov]
+            got = [g for g in got if g < 10_000]
+            ordinals.append(min(got) if got else None)
+        resolved = [idx_by_crop.get(o) if o is not None else None for o in ordinals]
+        anchored = [r for r in resolved if r is not None]
+        if len(anchored) == n and len(set(anchored)) == n:
+            census["mode"] = "provenance-anchored"
+            census["sectionOrdinals"] = ordinals
+            unauthored = [i for i in range(len(s_secs)) if i not in set(anchored)]
+            if unauthored:
+                census["notes"].append(
+                    f"{len(unauthored)} measured source band(s) have no authored "
+                    f"pattern (index {unauthored}) — scored as unauthored, not "
+                    "absorbed into a neighbour")
+            return resolved, census
+        if anchored:
+            census["notes"].append(
+                f"provenance anchoring unavailable ({len(anchored)}/{n} pairs "
+                f"resolved, {len(set(anchored))} distinct) — falling back to "
+                "positional band pairing")
+    aligned: list[int | None] = [i if i < len(s_secs) else None for i in range(n)]
+    return aligned, census
+
+
 # ── 1) compose the replica page ───────────────────────────────────────────────────
 
 def build_replica_page(brand_yaml: Path, out_dir: Path, *, page: str | None = None) -> dict:
@@ -283,10 +450,19 @@ def build_replica_page(brand_yaml: Path, out_dir: Path, *, page: str | None = No
     finally:
         cs.LAYOUT_COPY = saved_layout_copy
 
+    # The DRAWABLE family each section actually resolved to (after adaptation),
+    # recorded so the structural gate can compare it against the family the
+    # source's own measured geometry implies. Without this the report can only
+    # say how closely two images average out, never whether the replica used the
+    # same KIND of layout as the thing it claims to rebuild.
+    families = {l.get("id"): l.get("archetype") for l in adapted_layouts
+                if isinstance(l, dict)}
     (out_dir / "composition.json").write_text(json.dumps(
         {"schemaVersion": "replica-composition.v1", "order": order,
-         "sections": comp_sections, "errors": errors}, indent=1) + "\n")
-    return {"order": order, "doc": page_doc, "errors": errors}
+         "sections": comp_sections, "drawableArchetypes": families,
+         "errors": errors}, indent=1) + "\n")
+    return {"order": order, "doc": page_doc, "errors": errors,
+            "drawableArchetypes": families}
 
 
 # ── 2) screenshot with a scroll pass + live section rects ─────────────────────────
@@ -574,20 +750,37 @@ def band_similarity(src_im, rep_im) -> dict:
             "srcHeight": hs, "replicaHeight": hr}
 
 
-def _content_span(im, sample_w: int = 320, threshold: float = 8.0) -> float:
+def _content_span(im, sample_w: int = 320, threshold: float = 8.0,
+                  min_rows: int = 2) -> float:
     """FRACTION of the band width occupied by content: columns of the downsampled
-    grayscale crop whose mean deviates from the band's background (estimated from
-    the outermost columns — section content is inset from the page edges) by more
-    than ``threshold`` gray levels. 0.0 when the band reads empty/uniform."""
+    grayscale crop that DEVIATE from the band's background (estimated from the
+    outermost columns — section content is inset from the page edges) by more
+    than ``threshold`` gray levels on at least ``min_rows`` rows. 0.0 when the
+    band reads empty/uniform.
+
+    Deviation is counted PER ROW rather than against the column's mean: a tall
+    band holding a short centered stack averages its content away, so a
+    column-mean test reports a genuinely occupied band as empty (and, folded
+    into a gate, would fail a faithful band for being sparse). Requiring several
+    deviating rows keeps resampling ringing and single-pixel noise out.
+    """
     from PIL import Image
     g = im.convert("L")
     h = max(4, round(sample_w * g.height / g.width))
     g = g.resize((sample_w, h), Image.LANCZOS)
     px = g.tobytes()  # mode L: one byte per pixel, row-major
-    col_means = [sum(px[x::sample_w]) / h for x in range(sample_w)]
-    edge = col_means[:6] + col_means[-6:]
-    bg = sorted(edge)[len(edge) // 2]
-    content = [x for x, m in enumerate(col_means) if abs(m - bg) > threshold]
+    edge_cols = list(range(6)) + list(range(sample_w - 6, sample_w))
+    edge_px = sorted(px[y * sample_w + x] for y in range(h) for x in edge_cols)
+    bg = edge_px[len(edge_px) // 2]
+    content = []
+    for x in range(sample_w):
+        hits = 0
+        for y in range(h):
+            if abs(px[y * sample_w + x] - bg) > threshold:
+                hits += 1
+                if hits >= min_rows:
+                    content.append(x)
+                    break
     if not content:
         return 0.0
     return (content[-1] - content[0] + 1) / sample_w
@@ -775,7 +968,22 @@ def build_report(out_dir: Path, rows: list[dict], punch: list[dict],
                 f"| {v.get('viewport')} | {role} | {v.get('responsivenessHealth')} | "
                 f"{over_cell} | {v.get('bands')} | {v.get('heroHeight')}px | "
                 f"{v.get('footerColumns')} | {v.get('docHeight')}px | {shot} |")
-    lines += ["", f"![strip](diff/strip.png)", "", "## Renderer-gap punch list", ""]
+    lines += ["", f"![strip](diff/strip.png)", ""]
+    gate = meta.get("structuralGate") or {}
+    if gate.get("signals"):
+        lines += ["## Structural gate", "",
+                  "Signals the averaged-MAE score cannot carry: whether the "
+                  "rebuild used the same number of bands, the same kind of "
+                  "layout, and the same content span as the source.", "",
+                  "| signal | value | floor | ok | detail |",
+                  "| --- | --- | --- | --- | --- |"]
+        for name, sig in gate["signals"].items():
+            lines.append(f"| {name} | {sig.get('value')} | {sig.get('floor')} | "
+                         f"{'yes' if sig.get('ok') else '**no**'} | "
+                         f"{sig.get('detail')} |")
+        lines += ["", f"**Structural gate: "
+                      f"{'pass' if gate.get('ok') else 'FAIL'}**", ""]
+    lines += ["## Renderer-gap punch list", ""]
     if punch:
         for i, p in enumerate(punch, 1):
             score = f" (score {p['score']:.3f})" if p.get("score") is not None else ""
@@ -791,10 +999,199 @@ def build_report(out_dir: Path, rows: list[dict], punch: list[dict],
          "punchList": punch, **meta}, indent=1) + "\n")
 
 
+# ── structural gate: the signals an averaged-MAE score cannot carry ───────────────
+#
+# The similarity score is a mean absolute error between two images. That makes it
+# blind, by construction, to the failures that matter most in a rebuild: a solid
+# rectangle of the right background colour scores very high against a real band;
+# blank padding raises a band's score for zero content; and making a band
+# structurally MORE correct can lower it, because moving content into a second
+# column raises per-pixel error faster than the height term rewards it. A gate
+# built on that number alone is therefore gameable in the exact direction that
+# looks like progress. These signals are categorical or geometric instead: they
+# ask whether the rebuild used the same NUMBER of bands, the same KIND of layout,
+# and the same CONTENT SPAN as the thing it claims to reproduce — none of which
+# can be bought with a flat fill.
+#
+# Families that place content in more than one horizontal track, and families
+# that place it in a single track. ``collage`` and ``banded`` appear in both:
+# neither is a column grid, so either multiplicity can be faithful.
+_MULTI_TRACK_FAMILIES = {"split", "media-split", "interlock", "cards",
+                         "collage", "banded"}
+_SINGLE_TRACK_FAMILIES = {"stack", "stack-fullbleed", "generic-flow", "overlay",
+                          "collage", "banded"}
+# A rebuild that claims to be 1:1 must pair every measured content band exactly
+# once, and honor each band's measured track multiplicity: both are categorical
+# facts, so the only principled floor is full agreement. Content span is a
+# ratio, and a 0.80 floor is about one container-width step of error — tighter
+# than that would flag ordinary inset/gutter differences.
+GATE_FLOORS = {"bandCountAgreement": 1.0,
+               "archetypeFamilyAgreement": 1.0,
+               "contentSpanFidelity": 0.80}
+
+
+def _measured_tracks(pat: dict | None) -> int | None:
+    """Measured horizontal track count for a pattern, or None when unmeasured."""
+    layout = (pat or {}).get("layout")
+    if not isinstance(layout, dict):
+        return None
+    try:
+        cols = int(layout.get("columns"))
+    except (TypeError, ValueError):
+        return None
+    return cols if cols > 0 else None
+
+
+_COUNTERWEIGHT_CONTRACTS = {"media", "image", "logo", "list", "table", "card",
+                            "quote", "stat", "video", "chart"}
+
+
+def _has_counterweight_slot(pat: dict | None, layout: dict | None) -> bool:
+    """Does this section carry anything a SECOND horizontal track could hold?
+
+    Generic by contract kind — a media panel, a repeated collection, a list or a
+    table — never by section name or brand vocabulary.
+    """
+    for node in (pat, layout):
+        for slot in ((node or {}).get("slots") or []):
+            if not isinstance(slot, dict):
+                continue
+            probe = f"{slot.get('contract') or ''} {slot.get('role') or ''}".lower()
+            if any(w in probe for w in _COUNTERWEIGHT_CONTRACTS):
+                return True
+    return False
+
+
+def structural_gate(rows: list[dict], align_census: dict,
+                    families: dict | None,
+                    pairs: list[tuple[dict, dict]]) -> dict:
+    """Non-MAE fidelity signals for the scored replica (see block comment above).
+
+    Returns ``{"ok": bool, "signals": {...}, "blocking": [...]}``. The signals
+    are reported ALONGSIDE ``overall``, never folded into it: the similarity
+    number stays comparable across runs and keeps working as a coarse regression
+    tripwire, while these say whether it is measuring the right comparison.
+    """
+    content_rows = [r for r in rows
+                    if r.get("id") not in ("page-nav",) and r.get("scored", True)]
+    signals: dict[str, dict] = {}
+
+    # 1) BAND-COUNT AGREEMENT — measured content bands paired 1:1 with authored
+    #    sections. Counted in BOTH directions: a measured band no authored
+    #    section rebuilds, and an authored section no measured band anchors, are
+    #    each a census divergence. Both are invisible to the score, which simply
+    #    averages over whatever pairs it was handed.
+    unauthored = [r.get("id") for r in content_rows if r.get("unauthored")]
+    ordinals = align_census.get("sectionOrdinals")
+    unpaired_authored = ([str((pairs[i][0] or {}).get("id"))
+                          for i, band in enumerate(ordinals or [])
+                          if band is None and i < len(pairs)]
+                         if isinstance(ordinals, list) else [])
+    denom = len(content_rows) + len(unpaired_authored)
+    diverged = len(unauthored) + len(unpaired_authored)
+    count_val = ((denom - diverged) / denom) if denom else 1.0
+    signals["bandCountAgreement"] = {
+        "value": round(count_val, 4),
+        "floor": GATE_FLOORS["bandCountAgreement"],
+        "ok": count_val >= GATE_FLOORS["bandCountAgreement"],
+        "scoredBands": len(content_rows), "authoredSections": len(pairs),
+        "unauthoredBands": unauthored, "unpairedSections": unpaired_authored,
+        "detail": ("every measured content band is rebuilt by exactly one "
+                   "authored section" if not diverged else
+                   f"{diverged} of {denom} band slots diverge"
+                   + (f" — measured but unauthored: {unauthored}" if unauthored else "")
+                   + (f" — authored but unanchored: {unpaired_authored}"
+                      if unpaired_authored else "")
+                   + "; the score averages over a census that does not match "
+                     "the source page"),
+    }
+
+    # 2) ARCHETYPE-FAMILY AGREEMENT — the composed drawable family honors each
+    #    band's MEASURED track multiplicity. Catches multi-column source
+    #    sections collapsed into single-column flow (and the converse), which
+    #    the averaged metric can even reward.
+    families = families or {}
+    agree = 0
+    checked = 0
+    mismatches: list[str] = []
+    unknown: list[str] = []
+    for layout, pat in pairs:
+        lid = str((layout or {}).get("id"))
+        fam = families.get(lid) or (layout or {}).get("archetype")
+        tracks = _measured_tracks(pat)
+        if not fam or tracks is None:
+            unknown.append(lid)
+            continue
+        checked += 1
+        allowed = (_MULTI_TRACK_FAMILIES if tracks >= 2 else _SINGLE_TRACK_FAMILIES)
+        if str(fam) in allowed:
+            agree += 1
+        else:
+            why = ""
+            if tracks >= 2 and not _has_counterweight_slot(pat, layout):
+                # The renderer cannot draw a second track with nothing in it, so
+                # a single-track family is the correct RENDERING of an authored
+                # section that carries no counterweight. The divergence is then
+                # upstream: the measured band's secondary occupant (media panel,
+                # list, logo collection, decorative treatment) was never carried
+                # into the authored slots.
+                why = (" — the authored section carries no slot able to occupy "
+                       "the secondary track, so the measured band's second "
+                       "occupant was lost in projection, not in routing")
+            mismatches.append(f"{lid}: measured {tracks} track(s) composed as "
+                              f"'{fam}'{why}")
+    fam_val = (agree / checked) if checked else 1.0
+    signals["archetypeFamilyAgreement"] = {
+        "value": round(fam_val, 4),
+        "floor": GATE_FLOORS["archetypeFamilyAgreement"],
+        "ok": fam_val >= GATE_FLOORS["archetypeFamilyAgreement"],
+        "checked": checked, "agreed": agree,
+        "unmeasured": unknown,
+        "mismatches": mismatches,
+        "detail": ("composed layout families honor the measured track "
+                   "multiplicity of every band" if not mismatches else
+                   "; ".join(mismatches)),
+    }
+
+    # 3) CONTENT-SPAN FIDELITY — folded INTO the gate rather than reported
+    #    beside it. Height-weighted so a tall collapsed band cannot hide behind
+    #    several short faithful ones.
+    spans = [(r.get("widthFidelity"), r.get("srcHeight") or 0) for r in content_rows
+             if isinstance(r.get("widthFidelity"), (int, float))]
+    weight = sum(h for _, h in spans)
+    span_val = (sum(v * h for v, h in spans) / weight) if weight else \
+               (sum(v for v, _ in spans) / len(spans) if spans else 1.0)
+    worst = sorted(((r.get("widthFidelity"), r.get("id")) for r in content_rows
+                    if isinstance(r.get("widthFidelity"), (int, float))))[:3]
+    signals["contentSpanFidelity"] = {
+        "value": round(span_val, 4),
+        "floor": GATE_FLOORS["contentSpanFidelity"],
+        "ok": span_val >= GATE_FLOORS["contentSpanFidelity"],
+        "worstBands": [{"id": bid, "widthFidelity": round(float(v), 4)}
+                       for v, bid in worst],
+        "detail": ("rebuilt content occupies the measured share of each band"
+                   if span_val >= GATE_FLOORS["contentSpanFidelity"] else
+                   "rebuilt content spans a different share of the band than "
+                   "the source — a collapsed or over-wide container leaves most "
+                   "of the band as matching background, so the averaged metric "
+                   "barely registers it"),
+    }
+
+    blocking = [f"{k}: {v['value']} < floor {v['floor']} ({v['detail']})"
+                for k, v in signals.items() if not v["ok"]]
+    return {"ok": not blocking, "signals": signals, "blocking": blocking,
+            "bandCensusNotes": list(align_census.get("notes") or [])}
+
+
 def run_diff(brand_dir: Path, out_dir: Path, doc: dict,
              pairs: list[tuple[dict, dict]], replica_rects: dict,
-             source_shot: Path | None) -> tuple[list[dict], list[dict], float, dict]:
+             source_shot: Path | None, *,
+             composed_order: list[str] | None = None,
+             families: dict | None = None,
+             page: str | None = None) -> tuple[list[dict], list[dict], float, dict]:
     from PIL import Image
+    if composed_order is not None:
+        assert_pairing_census(composed_order, pairs)
     src_shot_path, src_bands = load_source_bands(brand_dir)
     src_shot_path = source_shot or src_shot_path
     if not src_shot_path or not Path(src_shot_path).is_file():
@@ -815,45 +1212,90 @@ def run_diff(brand_dir: Path, out_dir: Path, doc: dict,
     s_secs = [b for b in src_bands if b["kind"] == "section"]
     s_foot = next((b for b in src_bands if b["kind"] == "footer"), None)
 
+    src_rects_doc = json.loads(
+        (_page_evidence_dir(brand_dir, page) / "section-rects.json").read_text()) \
+        if (_page_evidence_dir(brand_dir, page) / "section-rects.json").is_file() else {}
+    viewport_w = ((src_rects_doc.get("viewport") or {}).get("w")) or None
+    aligned, align_census = align_source_bands(brand_dir, pairs, s_secs,
+                                               page=page, viewport_w=viewport_w)
+    pair_for_band: dict[int, int] = {b: p for p, b in enumerate(aligned)
+                                     if b is not None}
     layout_by_pos = [layout.get("id") for layout, _ in pairs]
-    matched: list[tuple[str, str, dict | None, dict | None]] = []
-    matched.append(("page-nav", "navbar (chrome header)", s_nav, r_nav))
+
+    matched: list[tuple[str, str, dict | None, dict | None, str | None]] = []
+    # PAGE CHROME: only scorable when the source evidence measured a header band
+    # of its own. When it did not, the source's chrome pixels are inside the
+    # first content band and there is nothing separable to diff against — the
+    # nav is then EXCLUDED DELIBERATELY (named in the census + punch list),
+    # never scored as a silent 0.
+    if s_nav is None:
+        align_census["notes"].append(
+            "source chrome census has no measured header band — the page nav is "
+            "excluded from scoring by declaration (its source pixels sit inside "
+            "the first content band); fix the measure stage to score it")
+        matched.append(("page-nav", "navbar (chrome header)", None, r_nav,
+                        "excluded: no measured source header band"))
+    else:
+        matched.append(("page-nav", "navbar (chrome header)", s_nav, r_nav, None))
+    unauthored_bands: list[str] = []
     for i, s in enumerate(s_secs):
-        lid = layout_by_pos[i] if i < len(layout_by_pos) else f"(unmapped-{i})"
+        pi = pair_for_band.get(i)
+        if pi is None:
+            unauthored_bands.append(f"sec-{i}")
+            matched.append((f"sec-{i}", f"(unauthored) — {s.get('layout') or ''}"
+                            .strip(" —"), s, None,
+                            "no authored pattern rebuilds this measured source "
+                            "band — the authoring census is short a section"))
+            continue
+        lid = layout_by_pos[pi]
         r = next((b for b in r_content if b.get("layout") == lid),
-                 r_content[i] if i < len(r_content) else None)
-        matched.append((f"sec-{i}", f"{lid} — {s.get('layout') or ''}".strip(" —"), s, r))
-    matched.append(("footer", "footer (closing bookend)", s_foot, r_foot))
+                 r_content[pi] if pi < len(r_content) else None)
+        matched.append((f"sec-{i}", f"{lid} — {s.get('layout') or ''}".strip(" —"),
+                        s, r, None))
+    matched.append(("footer", "footer (closing bookend)", s_foot, r_foot, None))
 
     rows, pair_paths = [], []
     diff_dir = out_dir / "diff"
     diff_dir.mkdir(parents=True, exist_ok=True)
-    for bid, label, s, r in matched:
+    for bid, label, s, r, excluded in matched:
+        if excluded is not None and s is None:
+            rows.append({"id": bid, "label": label, "score": 0.0, "structure": 0.0,
+                         "pixel": 0.0, "height": 0.0, "srcHeight": 0,
+                         "replicaHeight": int((r or {}).get("rect", {}).get("h", 0)),
+                         "pair": None, "scored": False, "note": excluded})
+            continue
         if not s or not r:
             rows.append({"id": bid, "label": label, "score": 0.0, "structure": 0.0,
                          "pixel": 0.0, "height": 0.0,
                          "srcHeight": int((s or {}).get("rect", {}).get("h", 0)),
                          "replicaHeight": int((r or {}).get("rect", {}).get("h", 0)),
-                         "pair": None,
-                         "note": "band missing on one side"})
+                         "pair": None, "scored": True,
+                         "unauthored": bid in unauthored_bands,
+                         "note": excluded or "band missing on one side"})
             continue
         sc = _crop_band(src_im, s["rect"])
         rc = _crop_band(rep_im, r["rect"])
         if sc is None or rc is None:
             rows.append({"id": bid, "label": label, "score": 0.0, "structure": 0.0,
                          "pixel": 0.0, "height": 0.0, "srcHeight": 0,
-                         "replicaHeight": 0, "pair": None, "note": "empty crop"})
+                         "replicaHeight": 0, "pair": None, "scored": True,
+                         "note": "empty crop"})
             continue
         m = band_similarity(sc, rc)
         pair_p = diff_dir / f"{bid}.png"
         side_by_side(sc, rc, pair_p, label)
         pair_paths.append(pair_p)
-        rows.append({"id": bid, "label": label, **m,
+        rows.append({"id": bid, "label": label, **m, "scored": True,
                      "pair": str(pair_p.relative_to(out_dir))})
     build_strip(pair_paths, diff_dir / "strip.png")
 
-    total_h = sum(r["srcHeight"] for r in rows) or 1
-    overall = round(sum(r["score"] * r["srcHeight"] for r in rows) / total_h, 4)
+    # Height-weighted over the bands the source actually offers for scoring. An
+    # explicitly EXCLUDED band contributes neither score nor weight; an
+    # unauthored source band contributes its weight at 0.0, because failing to
+    # rebuild a measured section is a fidelity failure, not an exemption.
+    scored_rows = [r for r in rows if r.get("scored", True)]
+    total_h = sum(r["srcHeight"] for r in scored_rows) or 1
+    overall = round(sum(r["score"] * r["srcHeight"] for r in scored_rows) / total_h, 4)
 
     # punch list: known capability gaps (evidence-detected) + low-scoring bands
     layout_by_id = {layout.get("id"): (layout, pat) for layout, pat in pairs}
@@ -903,10 +1345,20 @@ def run_diff(brand_dir: Path, out_dir: Path, doc: dict,
         row = next((r for r in rows if r["id"] in ("page-nav",)
                     and g["section"] == "navbar"), None)
         punch.append({**g, "score": (row or {}).get("score")})
+    for note in align_census.get("notes") or []:
+        punch.append({"section": "page", "capability": "band census",
+                      "score": None, "note": note})
+
+    gate = structural_gate(rows, align_census, families, pairs)
+    for reason in gate["blocking"]:
+        punch.append({"section": "page", "capability": "structural gate",
+                      "score": None, "note": reason})
 
     meta = {"inputDigest": projection_input_digest(brand_dir),
             "sourceShot": str(src_shot_path),
-            "sourceHeight": src_im.height, "replicaHeight": rep_im.height}
+            "sourceHeight": src_im.height, "replicaHeight": rep_im.height,
+            "bandAlignment": align_census,
+            "structuralGate": gate}
     return rows, punch, overall, meta
 
 
@@ -929,7 +1381,11 @@ def build_parser() -> argparse.ArgumentParser:
                     type=lambda s: [int(v) for v in s.split(",") if v.strip()],
                     help="csv responsiveness-ladder widths (default 1440,1920,960,375)")
     ap.add_argument("--fail-under", type=float, default=None,
-                    help="exit 1 when the overall score is below this (gate mode)")
+                    help="exit 1 when the overall score is below this (gate mode); "
+                         "in gate mode a structural-gate failure also exits 1")
+    ap.add_argument("--allow-structural-divergence", action="store_true",
+                    help="gate mode: enforce the score bar only, and report the "
+                         "structural signals without failing on them")
     ap.add_argument("--page", default=None,
                     help="multi-page brands: only compose patterns whose provenance "
                          "belongs to this capture page (e.g. home). Auto-detected "
@@ -984,9 +1440,15 @@ def main(argv=None) -> int:
 
     doc = built["doc"]
     patterns = rp.load_layout_library(brand_yaml)
-    pairs = source_order_sections(cp.load_doc(brand_yaml), patterns)
+    # SAME page filter as composition (fid16 2026-07): the diff pairs source band
+    # i against scoring entry i, so an unfiltered scoring list silently scores
+    # bands against sections that were never composed — see assert_pairing_census.
+    pairs = source_order_sections(cp.load_doc(brand_yaml), patterns, page=page)
     rows, punch, overall, meta = run_diff(brand_dir, out_dir, doc, pairs, rects,
-                                          args.source_shot)
+                                          args.source_shot,
+                                          composed_order=built["order"],
+                                          families=built.get("drawableArchetypes"),
+                                          page=page)
     meta["brand"] = (doc.get("brand") or {}).get("name")
     for lid, err in built["errors"].items():
         punch.insert(0, {"section": lid, "capability": "section failed to compose",
@@ -1008,9 +1470,30 @@ def main(argv=None) -> int:
     build_report(out_dir, rows, punch, overall, meta, per_viewport)
     print(f"[replica] overall score {overall:.3f}; {len(punch)} punch-list entries -> "
           f"replica-report.md")
-    if args.fail_under is not None and overall < args.fail_under:
-        print(f"[replica] FAIL: overall {overall:.3f} < --fail-under {args.fail_under}")
-        return 1
+    gate = meta.get("structuralGate") or {}
+    for name, sig in (gate.get("signals") or {}).items():
+        mark = "ok  " if sig.get("ok") else "FAIL"
+        print(f"[replica] {mark} {name} {sig.get('value')} "
+              f"(floor {sig.get('floor')})")
+    if gate and not gate.get("ok"):
+        print("[replica] STRUCTURAL GATE FAILED — the similarity score above is "
+              "not measuring a faithful comparison:")
+        for reason in gate.get("blocking") or []:
+            print(f"[replica]   - {reason}")
+    # GATE MODE. The similarity bar is a coarse tripwire on an averaged error,
+    # and a rebuild can clear it while comparing the wrong census or drawing the
+    # wrong kind of layout — so in gate mode BOTH must hold. Score-only gating
+    # stays available with --allow-structural-divergence for diagnostic runs.
+    if args.fail_under is not None:
+        if overall < args.fail_under:
+            print(f"[replica] FAIL: overall {overall:.3f} < --fail-under "
+                  f"{args.fail_under}")
+            return 1
+        if gate and not gate.get("ok") and not args.allow_structural_divergence:
+            print("[replica] FAIL: structural gate — the score cleared "
+                  f"{args.fail_under} but the rebuild is not a faithful "
+                  "comparison (see the signals above)")
+            return 1
     return 0
 
 
