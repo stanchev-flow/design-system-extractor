@@ -127,6 +127,57 @@ def _copy(src: Path, dest: Path, force: bool, entries: list, origin: str, tag: s
                     "bytes": dest.stat().st_size, "tagGuess": tag})
 
 
+def page_key_for_capture(capture: Path | None, html_path: Path | None) -> str | None:
+    """Capture dir (or saved-page stem) → the page key evidence is filed under.
+
+    Multi-page brands curate one capture at a time into the SAME brand dir; the
+    key is what lets the merged manifest say which page an asset came from.
+    """
+    for cand in (capture, html_path.parent if html_path else None):
+        if cand is None:
+            continue
+        name = Path(cand).name.strip()
+        if name and not name.endswith("_files"):
+            return name
+    return Path(html_path).stem if html_path else None
+
+
+def merge_manifest_entries(existing: list[dict], fresh: list[dict],
+                           page: str | None) -> list[dict]:
+    """Union curated entries by dest, accumulating the pages an asset appears on.
+
+    curate_assets is run ONCE PER CAPTURE PAGE against one brand dir. Writing the
+    manifest from only the current run's entries silently drops every previously
+    curated page (the files stay on disk with no provenance row), so downstream
+    asset binding sees files it cannot attribute. Merging keeps one row per file
+    with a pages[] union.
+    """
+    by_dest: dict[str, dict] = {}
+    for is_fresh, batch in ((False, existing), (True, fresh)):
+        for e in batch:
+            dest = str(e.get("dest") or "")
+            if not dest:
+                continue
+            row = by_dest.get(dest)
+            if row is None:
+                row = {k: v for k, v in e.items() if k not in {"page", "pages"}}
+                row["pages"] = []
+                by_dest[dest] = row
+            else:
+                for k, v in e.items():
+                    if k not in {"page", "pages"}:
+                        row.setdefault(k, v)
+            seen = [str(p) for p in (e.get("pages") or []) if p]
+            if e.get("page"):
+                seen.append(str(e["page"]))
+            if is_fresh and page:
+                seen.append(page)
+            for p in seen:
+                if p not in row["pages"]:
+                    row["pages"].append(p)
+    return [by_dest[d] for d in sorted(by_dest)]
+
+
 def curate_from_manifest(manifest: dict, files_dir: Path | None, html_path: Path | None,
                          out: Path, force: bool) -> list[dict]:
     entries: list[dict] = []
@@ -160,7 +211,11 @@ def curate_auto(files_dir: Path | None, html_path: Path | None, out: Path,
         for p in sorted(files_dir.rglob("*")):
             if not p.is_file() or p.suffix.lower() not in RASTER_EXTS:
                 continue
-            if p.stat().st_size < min_bytes or SKIP_NAME_RE.search(p.name):
+            # the byte floor screens out raster spacers/tracking pixels; vectors
+            # are legitimately tiny (a 700-byte social mark is a real logo), so
+            # holding them to the same floor silently drops a whole icon row.
+            floor = 0 if p.suffix.lower() == ".svg" else min_bytes
+            if p.stat().st_size < floor or SKIP_NAME_RE.search(p.name):
                 continue
             dest_name = sanitize(p.name)
             _copy(p, out / dest_name, force, entries, "files", tag_guess(dest_name))
@@ -336,6 +391,7 @@ def build_media_draft(assets_dir: Path, entries: list[dict]) -> dict:
             "provenance": {
                 "source": ("inline-svg" if str(canon.get("origin")) == "inline-svg"
                            else "capture-files"),
+                "pages": sorted({p for e in group for p in (e.get("pages") or [])}),
                 "sections": [], "confidence": "low"},
             "tagGuess": tag,
         }
@@ -382,6 +438,11 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--min-bytes", type=int, default=800,
                     help="--auto: skip files smaller than this (default 800)")
     ap.add_argument("--force", action="store_true", help="overwrite existing curated files")
+    ap.add_argument("--page", help="capture page key stamped on entries[].pages "
+                                   "(default: the capture dir name)")
+    ap.add_argument("--reset-manifest", action="store_true",
+                    help="rewrite assets-manifest.json from this run only instead "
+                         "of merging with previously curated pages")
     ap.add_argument("--no-media-draft", action="store_true",
                     help="skip the media-assets-draft.yaml emission (media semantics)")
     return ap
@@ -412,17 +473,29 @@ def main(argv=None) -> int:
     by_dest: dict[str, dict] = {}
     for e in entries:
         by_dest.setdefault(e["dest"], e)
+
+    page = args.page or page_key_for_capture(args.capture, html_path)
     manifest_path = args.brand_dir / "assets-manifest.json"
+    prior: list[dict] = []
+    if manifest_path.is_file() and not args.reset_manifest:
+        try:
+            prior = json.loads(manifest_path.read_text()).get("entries") or []
+        except Exception:
+            prior = []
+    merged = merge_manifest_entries(prior, list(by_dest.values()), page)
     manifest_path.write_text(json.dumps(
         {"schemaVersion": SCHEMA,
          "note": ("Curated capture assets — starting point for the authored "
                   "assets-tagged.json (agent refines tags/labels; "
-                  "tools/refine_assets_vision.py can vision-check them)."),
-         "entries": sorted(by_dest.values(), key=lambda e: e["dest"])}, indent=1))
-    print(f"[done] curate: {len(by_dest)} assets in {out} -> {manifest_path.name}")
+                  "tools/refine_assets_vision.py can vision-check them). "
+                  "entries[].pages lists every capture page the file was "
+                  "curated from; multi-page runs accumulate."),
+         "pagesCurated": sorted({p for e in merged for p in e.get("pages") or []}),
+         "entries": merged}, indent=1))
+    print(f"[done] curate: {len(by_dest)} assets from page={page or '?'} "
+          f"-> {len(merged)} total in {manifest_path.name}")
     if not args.no_media_draft:
-        emit_media_draft(args.brand_dir, sorted(by_dest.values(),
-                                                key=lambda e: e["dest"]))
+        emit_media_draft(args.brand_dir, merged)
     return 0
 
 

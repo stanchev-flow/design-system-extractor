@@ -39,7 +39,7 @@ export function Section({
 }: SectionProps) {
   return (
     <section
-      className={cn(surfaceVariants({ surface }), tight ? "py-16" : "py-24", className)}
+      className={cn(surfaceVariants({ surface }), tight ? "py-12" : "py-[var(--space-section-padding,4rem)]", className)}
       {...props}
     >
       {contained ? <Container>{children}</Container> : children}

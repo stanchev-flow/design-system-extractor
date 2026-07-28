@@ -137,6 +137,62 @@ names.
 | `video-poster` | still poster frame paired with a video asset |
 | `animation` | lottie/rive/animated-image asset |
 
+### 2.2 `placements[]` / `compositionRoles` / `reusePolicy` — MEASURED deployment
+
+Where the asset was **observed rendering** on the captured pages. Written by
+`tools/extract/bind_media_assets.py` from the measured placement evidence
+(`tools/extract/mine_asset_placements.py`), never authored by hand and never
+guessed from filenames.
+
+```yaml
+  placements:                         # [] = never observed rendering
+    - page: <capture page key>
+      section: <canonical section slug|null>   # null = chrome, not a content band
+      zone: header|footer|main
+      role: <composition role §2.2.1>
+      occurrences: <n>
+      rendered: { w: <px>, h: <px> }  # measured at the capture tier
+      fractionOfSection: <0..1|null>  # share of the band's width it covers
+      visible: true|false             # false = responsive alternate, still bound
+      alt: <string|null>
+  compositionRoles: [<role>, …]       # the distinct roles across placements[]
+  reusePolicy: site-chrome|cross-page|page-specific|unplaced
+  standsInFor:                        # OPTIONAL — the runtime media this still replaces
+    - { kind: lottie|video, ref: <url> }
+```
+
+**Why this exists (normative):** without measured placement a consumer can only
+rank candidates by role guess and aspect ratio, which reliably lands proof-strip
+marks in hero wells and testimonial portraits in card grids. A slot binds the
+asset that was **measured in that band**; when no bound asset exists the slot
+declares its gap (asset-request) and renders nothing. `reusePolicy: unplaced`
+means curated but UNPROVEN — a generator must not reach for it.
+
+#### 2.2.1 composition role enum (geometric, brand-agnostic)
+
+Roles are derived from measured geometry — band coverage, the count of
+comparably sized siblings in the band, and the chrome/content zone — so the
+table transfers to any brand unchanged. No section, palette, or content
+knowledge lives in it.
+
+| role | measured signal |
+|---|---|
+| `full-bleed-backdrop` | covers essentially the whole band |
+| `section-lead-media` | the single dominant media well of a content band |
+| `card-media-well` | one of N comparably sized wells in a repeating row/grid |
+| `proof-strip-mark` | one of ≥3 mark-height siblings in a row |
+| `badge-cluster-mark` | as above, where the kind is an award/compliance/store badge |
+| `inline-spot-icon` | icon-family asset at mark scale beside copy |
+| `chrome-nav-media` | rendered inside header/nav |
+| `chrome-footer-mark` | rendered inside the footer |
+| `responsive-alternate` | bound to a band but hidden at the measured tier |
+
+Measured proof-strip membership also CORRECTS an unrefined kind/rights guess to
+`logo-third-party` / `third-party-mark` (stamped `kindCorrectedBy:
+measured-placement`) — a mark in a customer row is someone else's trademark even
+when its filename never says "logo". Entries already refined by an authoring
+pass are never overwritten.
+
 ## 3. `mediaComposition` — arrangement grammar (shared with §4.4g / §4.6.7)
 
 Declared on a MEDIA-BEARING SLOT (a layout-library pattern `contentShape.slots[]`

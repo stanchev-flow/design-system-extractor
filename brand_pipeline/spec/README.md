@@ -21,11 +21,13 @@ Brand Extractor (pipeline)
 DEFERRED:  Page Composer (compose_page.py)  •  Webflow Assembler (webflow-library-aisb + MCP)
 ```
 
-**Render substrate:** the build target **NOW** is **static Tailwind + shadcn** (HTML on
-a Tailwind CDN). The **Webflow Assembler is DEFERRED**. `brand.yaml` stays library-agnostic;
-the Tailwind/shadcn renderer maps intent → classes, and the future Webflow Assembler maps
-the same intent → components. Substrate-specific ids live only in the optional, non-canonical
-`targetMappings:` block — never on canonical nodes.
+**Render substrate:** the canonical product path **NOW** is **brand compose** —
+owned token CSS + static HTML (`brand_pipeline` compose/render). Framework React
+generation is **opt-in** (`framework-generation-enabled: false` by default) and must
+use **headless behavior + owned token skin** — never shadcn-as-shipped. The
+**Webflow Assembler is DEFERRED**. `brand.yaml` stays library-agnostic; renderers map
+intent → owned CSS / optional thin wrappers. Substrate-specific ids live only in the
+optional, non-canonical `targetMappings:` block — never on canonical nodes.
 
 | file | what it specifies |
 |---|---|

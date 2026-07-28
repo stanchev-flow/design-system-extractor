@@ -324,15 +324,15 @@ def lint_wireframe_quality(comp: dict, wireframe: dict) -> list[tuple[str, str, 
                          "conversion job requires a rendered action"))
         if wf.get("proofRequired") and not (contracts & _VISUAL_CONTRACTS):
             hits.append((sid, "section-completeness",
-                         "proof/story job requires proof, media, or a component cluster"))
+                         "brand-required proof section needs proof, media, or a component cluster"))
+        # No universal visual-anchor / consecutive-sparse bans — those homogenize brands.
+        # Track sparse runs for diagnostics only when brand signals set maxConsecutiveTextOnly.
         anchored = bool(wf.get("visualAnchor")) or bool(wf.get("licensedTextOnly"))
         sparse = 0 if anchored else sparse + 1
-        if not anchored:
-            hits.append((sid, "visual-anchor",
-                         "substantive section has no visual anchor or licensed text-only monument"))
-        if sparse > 1:
+        max_sparse = (wireframe.get("page") or {}).get("maxConsecutiveTextOnly")
+        if isinstance(max_sparse, int) and sparse > max_sparse:
             hits.append((sid, "page-rhythm",
-                         "consecutive visually sparse substantive sections are forbidden"))
+                         f"exceeds brand maxConsecutiveTextOnly={max_sparse}"))
         if str(sec.get("useCase") or "").lower() == "hero":
             counter = str((sec.get("alignment") or {}).get("counterweight") or "")
             if counter:

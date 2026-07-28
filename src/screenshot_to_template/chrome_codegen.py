@@ -79,7 +79,7 @@ def render_site_nav_tsx(contract: dict[str, Any]) -> str:
         kind = act.get("kind") or "link"
         if kind in ("button", "cta") and not href:
             action_items.append(
-                f'        <Button variant="primary" size="sm">{label}</Button>'
+                f'        <button type="button" className="btn" data-variant="primary" data-size="sm">{label}</button>'
             )
         elif href:
             action_items.append(
@@ -87,22 +87,21 @@ def render_site_nav_tsx(contract: dict[str, Any]) -> str:
             )
         else:
             action_items.append(
-                f'        <Button variant="ghost" size="sm">{label}</Button>'
+                f'        <button type="button" className="btn" data-variant="ghost" data-size="sm">{label}</button>'
             )
     actions_block = "\n".join(action_items)
 
-    return f"""import {{ Button }} from "@/components/ui/button";
-import {{ Container }} from "@/components/ui/section";
-import {{ BrandMark }} from "@/components/chrome/BrandMark";
+    return f"""import {{ BrandMark }} from "@/components/chrome/BrandMark";
 
-/** Auto-generated from source URL chrome contract — do not invent alternate nav links. */
+/** Auto-generated from source URL chrome contract — do not invent alternate nav links.
+ *  Token skin only — no shadcn Card/Button imports. */
 export function SiteNav() {{
   return (
     <header
       className="{sticky_cls} border-b border-border-divider bg-surface-primary/95 backdrop-blur"
       data-chrome="nav"
     >
-      <Container className="flex h-16 items-center {nav_justify} gap-6">
+      <div className="mx-auto flex h-16 w-full max-w-[1120px] items-center {nav_justify} gap-6 px-6 md:px-10">
         {logo_block}
         <nav className="hidden items-center gap-6 md:flex" aria-label="Primary">
 {links_block}
@@ -110,7 +109,7 @@ export function SiteNav() {{
         <div className="flex items-center gap-3">
 {actions_block}
         </div>
-      </Container>
+      </div>
     </header>
   );
 }}
@@ -149,7 +148,7 @@ def render_site_footer_tsx(contract: dict[str, Any]) -> str:
         col_blocks.append(
             "        <div>\n"
             + title
-            + "          <ul className=\"space-y-2\">\n"
+            + "          <ul className=\"flex flex-col gap-[0.5rem]\">\n"
             + "\n".join(link_lines)
             + "\n          </ul>\n"
             "        </div>"
@@ -162,20 +161,23 @@ def render_site_footer_tsx(contract: dict[str, Any]) -> str:
 
     cols_joined = "\n".join(col_blocks)
 
-    return f"""import {{ Section }} from "@/components/ui/section";
-import {{ BrandMark }} from "@/components/chrome/BrandMark";
+    return f"""import {{ BrandMark }} from "@/components/chrome/BrandMark";
 
-/** Auto-generated from source URL chrome contract — preserve column grouping and hrefs. */
+/** Auto-generated from source URL chrome contract — preserve column grouping and hrefs.
+ *  Token skin only — flush inverse band, no shadcn Section/Card. */
 export function SiteFooter() {{
   return (
-    <Section surface="inverse" contained className="!py-16" data-chrome="footer">
-      <div className="grid gap-10 md:grid-cols-[1.2fr_repeat(auto-fit,minmax(140px,1fr))]">
-        <div className="space-y-4">
+    <footer
+      className="bg-surface-inverse text-text-on-inverse py-[var(--space-section-padding,4rem)]"
+      data-chrome="footer"
+    >
+      <div className="mx-auto grid w-full max-w-[1120px] gap-10 px-6 md:grid-cols-[1.2fr_repeat(auto-fit,minmax(140px,1fr))] md:px-10">
+        <div className="flex flex-col gap-4">
           {logo_block}
         </div>
 {cols_joined}
       </div>
-    </Section>
+    </footer>
   );
 }}
 """
@@ -330,18 +332,17 @@ def render_site_nav_tsx_v2(contract: dict[str, Any]) -> str:
     cta_items = [_cta_button_tsx_v2(c) for c in ctas if str(c.get("label") or "").strip()]
     cta_block = "\n".join(cta_items)
 
-    return f"""import {{ Container }} from "@/components/ui/section";
-import {{ BrandMark }} from "@/components/chrome/BrandMark";
+    return f"""import {{ BrandMark }} from "@/components/chrome/BrandMark";
 
 /** Auto-generated from browser chrome contract (source_chrome.v2). Real top-level
- *  nav, real CTA styling, no invented arrows. Do not add or rename links. */
+ *  nav, real CTA styling, no invented arrows. Token skin only — no shadcn imports. */
 export function SiteNav() {{
   return (
     <header
       className="{sticky_cls}{header_surface}"
       data-chrome="nav"
     >
-      <Container className="flex h-16 items-center justify-between gap-6">
+      <div className="mx-auto flex h-16 w-full max-w-[1120px] items-center justify-between gap-6 px-6 md:px-10">
         {logo_block}
         <nav className="hidden items-center gap-7 lg:flex" aria-label="Primary">
 {links_block}
@@ -349,7 +350,7 @@ export function SiteNav() {{
         <div className="flex items-center gap-3">
 {cta_block}
         </div>
-      </Container>
+      </div>
     </header>
   );
 }}
@@ -387,28 +388,30 @@ def render_site_footer_tsx_v2(contract: dict[str, Any]) -> str:
         col_blocks.append(
             "        <div>\n"
             + title
-            + '          <ul className="space-y-2">\n'
+            + '          <ul className="flex flex-col gap-[0.5rem]">\n'
             + "\n".join(link_lines)
             + "\n          </ul>\n        </div>"
         )
 
     cols_joined = "\n".join(col_blocks) or '        <p className="text-body text-text-on-inverse-muted">Footer.</p>'
 
-    return f"""import {{ Section }} from "@/components/ui/section";
-import {{ BrandMark }} from "@/components/chrome/BrandMark";
+    return f"""import {{ BrandMark }} from "@/components/chrome/BrandMark";
 
 /** Auto-generated from browser chrome contract (source_chrome.v2). Preserve column
- *  grouping, headings, and hrefs from the source site. */
+ *  grouping, headings, and hrefs. Token skin only — no shadcn Section/Card. */
 export function SiteFooter() {{
   return (
-    <Section surface="inverse" contained className="!py-16" data-chrome="footer">
-      <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.4fr_repeat(auto-fit,minmax(130px,1fr))]">
-        <div className="space-y-4">
+    <footer
+      className="bg-surface-inverse text-text-on-inverse py-[var(--space-section-padding,4rem)]"
+      data-chrome="footer"
+    >
+      <div className="mx-auto grid w-full max-w-[1120px] gap-10 px-6 md:grid-cols-2 md:px-10 lg:grid-cols-[1.4fr_repeat(auto-fit,minmax(130px,1fr))]">
+        <div className="flex flex-col gap-4">
           {logo_block}
         </div>
 {cols_joined}
       </div>
-    </Section>
+    </footer>
   );
 }}
 """

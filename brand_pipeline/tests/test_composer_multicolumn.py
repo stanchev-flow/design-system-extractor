@@ -90,7 +90,7 @@ class InferDrawableArchetype(unittest.TestCase):
         }
         self.assertEqual(cfc.composition_to_layout(section)["archetype"], "split")
 
-    def test_numeric_stat_list_stays_generic_flow_as_stat_band(self):
+    def test_numeric_list_does_not_invent_stats_without_brand_license(self):
         section = {
             "id": "stats", "archetype": "three-column-number-over-caption",
             "useCase": "big number over caption columns",
@@ -101,8 +101,20 @@ class InferDrawableArchetype(unittest.TestCase):
         }
         layout = cfc.composition_to_layout(section)
         self.assertEqual(layout["archetype"], "generic-flow")
-        # the numeric list must be mapped to the horizontal STAT band, never a
-        # vertical caption/paragraph fold.
+        contracts = [m.get("contract") for m in layout.get("blockMapping") or []]
+        self.assertNotIn("stat", contracts)
+
+    def test_brand_licensed_numeric_list_maps_to_stat_band(self):
+        section = {
+            "id": "stats", "archetype": "three-column-number-over-caption",
+            "useCase": "big number over caption columns",
+            "proofRequired": True,
+            "slots": [{"name": "items", "role": "stat-column-list", "contract": "list",
+                       "copy": [{"label": "25%", "title": "25%", "text": "Reduction"},
+                                {"label": "39%", "title": "39%", "text": "Lower spend"},
+                                {"label": "92%", "title": "92%", "text": "Fewer firms"}]}],
+        }
+        layout = cfc.composition_to_layout(section)
         contracts = [m.get("contract") for m in layout.get("blockMapping") or []]
         self.assertIn("stat", contracts)
         self.assertNotIn("caption", contracts)

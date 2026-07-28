@@ -2,9 +2,9 @@
 """Deterministic page wireframing between copy intent and composition rendering.
 
 ``wireframe.v1`` records page cadence and each section's semantic skeleton before
-the renderer sees primitives.  It is deliberately brand-agnostic: choices are
-derived from copy shape, section job, declared brand pattern provenance, and
-available media—not from brand names, colors, or page-specific CSS.
+the renderer sees primitives. Density / proof requirements come from per-brand
+``compositionSignals`` (measured layouts) when present — never from universal SaaS
+"every section needs a visual anchor" rules.
 """
 from __future__ import annotations
 
@@ -676,6 +676,15 @@ def renderer_capability(section: dict, slot: dict) -> tuple[bool, str]:
 def plan_wireframe(composition: dict, brand_dir: Path | str | None = None) -> dict:
     """Build a deterministic, machine-checkable whole-page ``wireframe.v1``."""
     brand, registry = _brand_context(composition, brand_dir)
+    cosig = None
+    try:
+        import composition_signals as _cosig
+        cosig = _cosig
+    except Exception:
+        cosig = None
+    if cosig is not None and brand and not isinstance(brand.get("compositionSignals"), dict) and (
+            brand.get("layouts") or []):
+        brand = cosig.attach_signals_to_doc(brand)
     container_width = _container_width(brand)
     fit_context = {
         "container_width": container_width,
@@ -687,6 +696,8 @@ def plan_wireframe(composition: dict, brand_dir: Path | str | None = None) -> di
     for index, section in enumerate(composition.get("sections") or []):
         if not isinstance(section, dict):
             continue
+        if cosig is not None and brand:
+            section = cosig.apply_signals_to_section(section, brand)
         slots = _slots(section)
         sid = str(section.get("id") or f"section-{index + 1}")
         use_case = str(section.get("useCase") or "features").lower()
@@ -766,7 +777,10 @@ def plan_wireframe(composition: dict, brand_dir: Path | str | None = None) -> di
             "requiredSlots": required,
             "optionalSlots": optional,
             "ctaRequired": use_case == "cta",
-            "proofRequired": use_case in {"hero", "testimonial", "logos"},
+            # proofRequired is brand-signal gated (compositionSignals / layout presence),
+            # never a global useCase bucket that forces stats/media onto every brand.
+            "proofRequired": bool(section.get("proofRequired")) if "proofRequired" in section
+            else False,
             "collections": collections,
             "testimonial": testimonial,
             "responsive": {"collapse": "single-column", "preserveGrouping": True},
@@ -779,7 +793,15 @@ def plan_wireframe(composition: dict, brand_dir: Path | str | None = None) -> di
                 for s in slots if isinstance(s.get("noCompatibleAsset"), dict)
             ],
             "rendererCapabilities": capabilities,
-            "licensedTextOnly": False,
+            # Text-only is legal unless the brand/section explicitly requires proof.
+            "licensedTextOnly": (
+                bool(section.get("licensedTextOnly"))
+                or (
+                    not visuals
+                    and use_case not in {"cta", "footer"}
+                    and not bool(section.get("proofRequired"))
+                )
+            ),
             "sparseRun": sparse_run,
         })
 
@@ -789,7 +811,8 @@ def plan_wireframe(composition: dict, brand_dir: Path | str | None = None) -> di
             "storyRhythm": [s["job"] for s in planned],
             "densitySequence": [s["density"] for s in planned],
             "surfaceSequence": [s["surfaceRole"] for s in planned],
-            "maxConsecutiveTextOnly": 1,
+            # Per-brand density; no universal ban on consecutive text-forward sections.
+            "maxConsecutiveTextOnly": None,
             "brandPrecedence": [
                 "measured-pattern-or-recipe",
                 "designed-from-brand-component-or-pattern",
@@ -817,8 +840,14 @@ def validate_wireframe(wireframe: dict, composition: dict | None = None) -> list
                if isinstance(c, dict) and not c.get("consumable")]
         errors += [f"{sid}: required slot {c.get('slot')} is not consumable: {c.get('path')}"
                    for c in bad]
-        if not section.get("visualAnchor") and not section.get("licensedTextOnly"):
-            errors.append(f"{sid}: substantive section has no visual anchor/component cluster")
+        # Visual anchors are optional unless the brand compositionSignals / section flags
+        # require proof. Text-forward sections must not fail the hard wireframe gate.
+        if (section.get("proofRequired")
+                and not section.get("visualAnchor")
+                and not section.get("licensedTextOnly")):
+            errors.append(
+                f"{sid}: brand-required proof section has no visual anchor/component cluster"
+            )
         if section.get("ctaRequired") and not section.get("conversionRole") == "primary":
             errors.append(f"{sid}: conversion section lacks a primary conversion role")
         for collection in section.get("collections") or []:
@@ -869,6 +898,11 @@ def validate_wireframe(wireframe: dict, composition: dict | None = None) -> list
             if testimonial.get("assetStatus") not in {"bound", "requested"}:
                 errors.append(f"{sid}: testimonial media must bind or emit an asset request")
     for left, right in zip(sections, sections[1:]):
+        # Consecutive text-forward sections are legal by default. Only enforce when the
+        # brand page signals set an explicit maxConsecutiveTextOnly integer.
+        max_sparse = (wireframe.get("page") or {}).get("maxConsecutiveTextOnly")
+        if not isinstance(max_sparse, int):
+            continue
         if (not left.get("visualAnchor") and not left.get("licensedTextOnly")
                 and not right.get("visualAnchor") and not right.get("licensedTextOnly")):
             errors.append(f"{left.get('id')}→{right.get('id')}: consecutive visually empty sections")

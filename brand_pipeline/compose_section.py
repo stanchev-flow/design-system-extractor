@@ -150,7 +150,7 @@ def brand_wildcard_copy(doc) -> dict:
 
 # ── brand asset inventory (AS-34: active-brand-only default art + recursive discovery) ─
 
-IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".svg", ".webp", ".gif")
+IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".svg", ".webp", ".gif", ".avif")
 
 # private doc key carrying the ACTIVE brand's on-disk image inventory (attached by the
 # render entrypoints via attach_asset_inventory; in-memory only, never written back).
@@ -2627,12 +2627,20 @@ def compose_stack_hero(doc, layout, ctx, rendered, style_ctx):
     overlap_media = _pick(rendered, "overlap")
     hero_html = hero_media["html"] if hero_media else ""
     overlap_html = overlap_media["html"] if overlap_media else ""
+    # A hero media block that resolved to NO src renders the placeholder plate. The
+    # section has no such picture, so the honest composition omits the device rather
+    # than reserving a black rectangle for art the brand never had. Brands whose
+    # default art does resolve keep their collage byte-identically.
+    hero_html = "" if "c-image-ph" in hero_html else hero_html
+    overlap_html = "" if "c-image-ph" in overlap_html else overlap_html
 
     collage = f"""    <div class="cs-collage">
       {hero_html}
       {overlap_html}
     </div>
     <div class="cs-spacer"></div>"""
+    if not hero_html.strip() and not overlap_html.strip():
+        collage = ""
 
     # STACKED archetype hero (spec/archetype-library.md): a genre-skeleton section
     # whose composition declares NO overlap device renders the plain stack — the
@@ -6439,8 +6447,13 @@ SCAFFOLD_BASE_CSS = """.cs-section { background: var(--c-paper); color: var(--c-
 SCAFFOLD_HERO_CSS = """.cs-section { min-height: auto; }
 .cs-slot { display: flex; flex-direction: column; align-items: center; }
 .cs-eyebrow-wrap { margin-bottom: var(--c-eyebrow-gap); text-align: center; }
+/* TITLE-OVER-MEDIA PULL is a FACT-GATED device, not the stack hero's default seam:
+   --c-title-overlap is emitted (component_vars) only for a layout whose own
+   overlapRules declare `titleOverMediaTop`. A layout with no such fact resolves the
+   0rem fallback, so its title sits ABOVE the media on the section's own block rhythm
+   instead of straddling its top edge with a borrowed magnitude. */
 .cs-title { position: relative; z-index: 2; text-align: center;
-  margin-bottom: var(--c-title-overlap); }
+  margin-bottom: var(--c-title-overlap, 0rem); }
 .cs-collage { position: relative; width: 100%; max-width: 80rem; margin: 0 auto; }
 /* ALIGNMENT: the overlap depth/offsets keep their measured % magnitudes but round() the
    USED value to an exact --baseline multiple, so the overlap registers to the shared
@@ -8946,6 +8959,20 @@ def relational_ladder_css(doc) -> str:
 .cs-faq {{ max-width: var(--space-header-measure, 52rem); }}"""
 
 
+def title_overlap_offset(layout) -> str | None:
+    """The layout's OWN measured title-over-media pull (`overlapRules.offsets.
+    titleOverMediaTop`), or None when it declares no such device.
+
+    Single source for both render lanes (this module's single-section `build_document`
+    and `compose_page.section_vars`): the page lane used to omit the argument entirely,
+    so `component_vars`' literal default straddled every brand's hero title over its
+    media whether or not the source did. A layout with no offset fact returns None and
+    the `.cs-title` scaffold resolves its no-overlap fallback."""
+    offsets = ((layout or {}).get("overlapRules") or {}).get("offsets") or {}
+    value = offsets.get("titleOverMediaTop")
+    return value if value not in (None, "") else None
+
+
 def root_vars(doc, surf, *, display_size, title_overlap, surface_role=None) -> str:
     """Emit the document :root for the single-section path. Carries the gate-readable
     legacy brand vars (`--bg/--text/--accent/--font-heading/--font-body/--display-size/
@@ -9127,7 +9154,7 @@ def build_document(doc, layout, brand_yaml, style_ctx: RenderContext) -> str:
     name = doc["brand"]["name"]
     gf = google_fonts_link(loadable_proxies(doc))
     disp_size = f"{base_size(type_role(doc, 'display-hero')) or 6}rem"
-    overlap = (layout.get("overlapRules", {}) or {}).get("offsets", {}).get("titleOverMediaTop")
+    overlap = title_overlap_offset(layout)
     # layer-1 generated tokens block (token-layer 2026-07): the measured brand values every
     # var() below resolves against. Fail-loud on missing REQUIRED tokens (DECISIONS.md #2).
     tokens_bundle = tokens_css.build_page_tokens(doc, style_ctx, brand_yaml_path=brand_yaml)

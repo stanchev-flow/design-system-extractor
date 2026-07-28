@@ -9,17 +9,18 @@ import { cn } from "@/lib/utils";
     - photographic media cards are high-contrast with no border
   Each is a distinct variant so they never blur together.
 */
-const cardVariants = cva("rounded-panel", {
+const cardVariants = cva("", {
   variants: {
     variant: {
-      floating: "bg-surface-primary shadow-card p-6",
+      // Token-owned skin: no stock shadow / rounded-lg SaaS defaults.
+      floating: "bg-surface-primary p-6",
       soft: "bg-surface-soft p-8",
       inverse: "bg-surface-inverse text-text-on-inverse p-8",
       media: "bg-surface-media text-text-on-media overflow-hidden",
       outline: "border border-border-hairline bg-surface-primary p-6",
     },
   },
-  defaultVariants: { variant: "floating" },
+  defaultVariants: { variant: "soft" },
 });
 
 export interface CardProps

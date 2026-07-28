@@ -240,5 +240,56 @@ class ContainerLawTest(unittest.TestCase):
                       "var(--space-container-max, 86rem))", block)
 
 
+class TitleOverMediaGateTest(unittest.TestCase):
+    """The title-over-media pull is a MEASURED device, not a shared default.
+
+    Regression: `component_vars` shipped one brand's measured `-2.75rem`
+    `titleOverMediaTop` as its signature default and the page lane never passed the
+    argument, so every brand's hero title straddled its media on the full-page lane
+    while the single-section lane (which did read the fact) rendered no pull.
+    """
+
+    DOC = {"brand": {"name": "F"},
+           "tokens": {"colors": {"text/on-primary": {"value": "#111111"}},
+                      "surfaces": {"surface/primary": {
+                          "bg": "#ffffff", "textPrimary": "text/on-primary"}},
+                      "type": {"body": {"family": "Inter", "sizeRem": {"base": 1.0}}},
+                      "spacing": {}}}
+
+    def _page_block(self, layout):
+        surf = self.DOC["tokens"]["surfaces"]["surface/primary"]
+        return cp.section_vars(self.DOC, "#sec-0", surf, display_size="4rem",
+                               accent_on=False, surf_role="surface/primary",
+                               style_ctx=None,
+                               title_overlap=cs.title_overlap_offset(layout))
+
+    def test_offset_fact_is_read_the_same_way_by_both_lanes(self):
+        declared = {"id": "a", "overlapRules": {
+            "offsets": {"titleOverMediaTop": "~-2.75rem"}}}
+        self.assertEqual(cs.title_overlap_offset(declared), "~-2.75rem")
+        for silent in ({"id": "b"}, {"id": "c", "overlapRules": {}},
+                       {"id": "d", "overlapRules": {"offsets": {}}},
+                       {"id": "e", "overlapRules": {
+                           "offsets": {"titleOverMediaTop": None}}}):
+            self.assertIsNone(cs.title_overlap_offset(silent), silent["id"])
+
+    def test_declaring_layout_keeps_its_measured_pull_on_the_page_lane(self):
+        block = self._page_block({"id": "a", "overlapRules": {
+            "offsets": {"titleOverMediaTop": "~-2.75rem"}}})
+        self.assertIn("--c-title-overlap: -2.75rem;", block)
+
+    def test_factless_layout_gets_no_pull_on_either_lane(self):
+        layout = {"id": "b"}
+        self.assertNotIn("--c-title-overlap", self._page_block(layout))
+        self.assertNotIn("--c-title-overlap", cs.root_vars(
+            self.DOC, self.DOC["tokens"]["surfaces"]["surface/primary"],
+            display_size="4rem", title_overlap=cs.title_overlap_offset(layout),
+            surface_role="surface/primary"))
+
+    def test_scaffold_resolves_no_pull_without_the_var(self):
+        self.assertIn("margin-bottom: var(--c-title-overlap, 0rem);",
+                      cs.SCAFFOLD_HERO_CSS)
+
+
 if __name__ == "__main__":
     unittest.main()

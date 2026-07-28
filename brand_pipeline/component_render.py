@@ -151,7 +151,7 @@ def _tier_ref(doc, role, attr, default):
 
 
 def component_vars(doc, surf, *, selector=":root", display_size=None,
-                   title_overlap="-2.75rem", eyebrow_gap=None, surface_role=None) -> str:
+                   title_overlap=None, eyebrow_gap=None, surface_role=None) -> str:
     """Emit the `--c-*` custom properties for ONE surface — layer 2 of the token
     contract (token-layer-2026-07): every right-hand side is a var() REFERENCE into the
     generated layer-1 block (tokens_css.build_page_tokens), never a Python-interpolated
@@ -228,6 +228,17 @@ def component_vars(doc, surf, *, selector=":root", display_size=None,
     # OPTIONAL (DECISIONS.md #5) — absence emits nothing and the media devices fall back
     # to intrinsic ratios (aspect-ratio drops unresolved: device disabled, never another
     # brand's ratio).
+    # TITLE-OVER-MEDIA PULL (fact-gated, like the aspect palette below): the negative
+    # `.cs-title` margin that lifts a display title over the top edge of the media beneath
+    # it is a MEASURED device (layout `overlapRules.offsets.titleOverMediaTop`). Only a
+    # layout whose own facts declare that device gets the var; the old unconditional
+    # `-2.75rem` literal was ONE brand's measured straddle offset applied to every brand
+    # and every section, so factless heroes rendered a borrowed title/media overlap that
+    # their source never had. Absence emits nothing and `.cs-title` resolves its own
+    # no-overlap fallback (device disabled, never another brand's magnitude) — the same
+    # discipline as the deleted _MOTION_DEFAULTS.
+    overlap_css = (f"\n  --c-title-overlap: {css_len(title_overlap, '0rem')};"
+                   if title_overlap not in (None, "") else "")
     _pal = ((doc.get("tokens", {}) or {}).get("imagery", {}) or {}).get("aspectPalette", {}) or {}
     aspect_css = "".join(
         f"\n  --c-aspect-{_slug(k)}: var(--aspect-{_slug(k)});" for k, v in _pal.items()
@@ -332,8 +343,7 @@ def component_vars(doc, surf, *, selector=":root", display_size=None,
   --c-case-heading: {_tier_ref(doc, 'h2', 'case', 'none')};
   --c-case-eyebrow: {_tier_ref(doc, 'eyebrow', 'case', 'none')};
   --c-case-control: {_tier_ref(doc, 'control-text', 'case', 'none')};
-  --c-eyebrow-gap: {eyebrow_gap};
-  --c-title-overlap: {css_len(title_overlap, '-2.75rem')};{aspect_css}{btn_css}{input_css}{foot_css}{tier_css}
+  --c-eyebrow-gap: {eyebrow_gap};{overlap_css}{aspect_css}{btn_css}{input_css}{foot_css}{tier_css}
 }}"""
 
 

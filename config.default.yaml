@@ -5,8 +5,10 @@ provider: openai
 model: gpt-5.5
 reasoning-effort: high
 site-asset-generation-enabled: true
-# Framework-first: React + Tailwind v4 + shadcn-style per run item → site-*-framework.html
-framework-generation-enabled: true
+# Framework generation (opt-in): React + Tailwind token skin. Off by default —
+# brand compose (token CSS + static HTML) is the canonical product path.
+# When enabled, do NOT use shadcn-as-shipped skin; prefer headless behavior + owned tokens.
+framework-generation-enabled: false
 # Vanilla one-shot HTML (site-claude.html / site-gpt55.html). Off by default; use --vanilla-sites to enable.
 vanilla-site-generation-enabled: false
 site-asset-image-model: gpt-image-2

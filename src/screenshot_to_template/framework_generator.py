@@ -1,9 +1,11 @@
-"""Framework-based site generation: React + Tailwind v4 + shadcn-style components.
+"""Framework-based site generation: React + Tailwind v4 + owned token skin.
 
-Scaffolds a per-run Vite package from handoff/scaffold/framework-site, syncs
-tokens from the design-system YAML front matter, asks an LLM for App.tsx (and
-optional CSS), builds with vite-plugin-singlefile, and copies dist/index.html
-into the pipeline's single/ folder for viewer embedding.
+Opt-in path (framework-generation-enabled defaults false). Scaffolds a per-run
+Vite package from handoff/scaffold/framework-site, syncs tokens from the
+design-system YAML front matter, asks an LLM for App.tsx (and optional CSS),
+builds with vite-plugin-singlefile, and copies dist/index.html into the
+pipeline's single/ folder for viewer embedding. Do not ship shadcn-as-shipped
+skin — headless behavior + brand tokens only.
 """
 
 from __future__ import annotations
@@ -253,13 +255,31 @@ def summarize_brand_assets_manifest(manifest_path: Path | None) -> str:
         return ""
     by_role = data.get("byRole") if isinstance(data.get("byRole"), dict) else {}
     counts = {role: len(items) for role, items in by_role.items() if isinstance(items, list) and items}
-    if not counts:
+    by_section = data.get("bySection") if isinstance(data.get("bySection"), dict) else {}
+    if not counts and not by_section:
         return ""
     lines = [f"- source: {data.get('source', 'pipeline')}"]
+
+    # A MEASURED bundle knows which assets each source band used. Naming those
+    # bands is what lets a generation reproduce the page instead of picking
+    # plausible-looking art, so they lead the summary.
+    if by_section:
+        lines.append("- measured section bindings (use sectionAssets(<section>) "
+                     "— these are the assets the source band actually used, in "
+                     "visual order):")
+        for section, ids in sorted(by_section.items()):
+            lines.append(f"  - {section}: {len(ids)} asset(s)")
     for role, count in sorted(counts.items(), key=lambda x: (-x[1], x[0])):
-        lines.append(f"- {role}: {count} asset(s)")
+        lines.append(f"- role {role}: {count} asset(s)")
+    api = ("sectionAssets(section), roleAssets(role, n), assetById(id), bestSrc"
+           if by_section else "roleAssets(role, n), assetById(id), bestSrc")
     return (
-        "Brand assets manifest (use @/brand/assets — heroMedia, avatars, logoWall, bestSrc):\n"
+        f"Brand assets manifest (import from @/brand/assets — {api}).\n"
+        "Bind every media slot to the section it came from; only reach for "
+        "roleAssets when composing a band the source does not have. Never "
+        "invent a role or section name that is not listed here, and leave a "
+        "slot EMPTY when nothing is bound to it — a wrong image reads as a "
+        "worse defect than a missing one.\n"
         + "\n".join(lines)
     )
 
@@ -600,12 +620,25 @@ def generate_framework_files(
             "- Do NOT invent alternate nav/footer links, labels, or hrefs.\n"
             "- Compose ONLY the body (hero → sections → pre-footer CTA). Bookend with <SiteNav /> and <SiteFooter />.\n\n"
         )
+    # The chrome components exist only when a source chrome contract was
+    # extracted. Naming the files that are actually on disk keeps the model from
+    # importing a module that was never written — an import of a missing chrome
+    # file fails the vite build outright.
+    chrome_dir = framework_dir / "src" / "components" / "chrome"
+    on_disk = sorted(p.stem for p in chrome_dir.glob("*.tsx")) if chrome_dir.is_dir() else []
+    chrome_line = (
+        f"- src/components/chrome/{{{','.join(on_disk)}}}.tsx — the ONLY chrome modules "
+        "that exist; importing any other chrome file fails the build\n"
+        if on_disk else
+        "- src/components/chrome/ has no nav/footer module: author the nav and footer "
+        "inline in App.tsx from the brand's own measured chrome facts\n"
+    )
     scaffold_summary = (
         "Scaffold layout (already on disk — import these paths):\n"
         "- src/App.tsx (replace entirely)\n"
         "- src/index.css (@theme already synced — do NOT replace the file unless adding 1–2 missing keys)\n"
         "- src/components/ui/{button,badge,card,arrow-link,input,icon-button,section,stat}.tsx\n"
-        "- src/components/chrome/{SiteNav,SiteFooter,BrandMark}.tsx when source chrome exists\n"
+        f"{chrome_line}"
         "- src/brand/assets.ts + brand-assets.json\n"
         "Button data-variant values: primary | secondary | ghost | onMedia only (no outline/primaryInverse).\n"
         "Buttons have NO trailing arrow by default. Only pass `withArrow` when the source "

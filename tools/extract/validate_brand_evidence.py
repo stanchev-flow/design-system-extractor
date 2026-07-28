@@ -150,6 +150,11 @@ Checks (E = error, W = warning):
         contracts, mediaComposition modes/triggers are in the closed enums, and
         every file bound in pattern slots' assets: lists is REGISTERED (no
         orphan bound assets)
+  C27 E placement integrity (fact-gated on evidence/asset-placements.json):
+        every file MEASURED rendering on a capture page must be registered, a
+        slot may only bind an asset whose measured placements prove it belongs
+        in that kind of band, and an asset bound by a pattern must not be
+        `reusePolicy: unplaced` (curated but never observed = unproven)
   C28 W variant dedupe sanity (advisory): byte-identical files under two
         separate logical assets should collapse into one entry's variants[];
         a variant out-resolving its canonical (higher pixel count) warns —
@@ -553,8 +558,10 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
                         expected, aliases = "body", ("subhead", "text")
                     elif any(word in label for word in ("action", "cta", "button", "link")):
                         expected, aliases = "cta", ("ghost", "action")
+                    # a quote LIST voices its quotes per item; the item vocabulary
+                    # is the same `body`-aliased shape the payload level accepts.
                     item_quote = expected == "quote" and any(
-                        isinstance(item, dict) and item.get("quote")
+                        isinstance(item, dict) and any(item.get(k) for k in ("quote", "body"))
                         for item in (payload.get("items") or []))
                     if expected and not item_quote \
                             and not any(payload.get(key) for key in (expected, *aliases)):
@@ -1821,6 +1828,72 @@ def _check_signatures(rep: Report, doc: dict) -> None:
 # (mediaComposition layer refs, mask refs, componentRef contracts, orphan bound
 # assets). C28 = variant-dedupe sanity (advisory). Vocabulary imports from
 # brand_pipeline/media_semantics.py — the single code home for the enums.
+# C27 placement arm — the registry against the MEASURED placement evidence.
+# Fact-gated: brands captured before the placement pass simply skip it.
+def _check_placement_integrity(rep: Report, brand_dir: Path, entries: list[dict],
+                               lib_patterns: list[dict], ms) -> None:
+    ev = brand_dir / "evidence" / "asset-placements.json"
+    if not ev.is_file():
+        rep.note("C27", "evidence/asset-placements.json absent — measured asset "
+                        "placement not mined (tools/extract/"
+                        "mine_asset_placements.py); slot bindings are unproven.")
+        return
+    try:
+        placed = json.loads(ev.read_text()).get("placements") or []
+    except Exception as exc:
+        rep.error("C27", f"asset-placements.json does not parse: {exc}")
+        return
+
+    by_file: dict[str, dict] = {}
+    for a in entries:
+        for f in [a.get("file")] + [(v or {}).get("file")
+                                    for v in (a.get("variants") or [])]:
+            if f:
+                by_file[Path(str(f)).name] = a
+    missing = sorted({str(p.get("asset")) for p in placed
+                      if str(p.get("asset")) not in by_file})
+    for name in missing:
+        rep.error("C27", f"{name} was MEASURED rendering on the capture but "
+                         "media-assets.yaml does not register it — the registry "
+                         "is the superset of what the pages actually use; an "
+                         "unregistered asset is invisible to every consumer.")
+
+    # A slot may only bind an asset the evidence proves belongs in that KIND of
+    # band. The two failures worth erroring on are structural, not stylistic:
+    # binding art that was never observed rendering, and pulling chrome-only or
+    # proof-row marks into a content media well.
+    for p in lib_patterns:
+        pid = str(p.get("id") or "?")
+        shape = p.get("contentShape") if isinstance(p.get("contentShape"), dict) else {}
+        for slot in (shape.get("slots") or []):
+            if not isinstance(slot, dict):
+                continue
+            sname = str(slot.get("name") or "slot")
+            for f in (slot.get("assets") or []):
+                entry = by_file.get(Path(str(f)).name)
+                if entry is None:
+                    continue                     # already reported by the C27 arm above
+                roles = [str(r) for r in (entry.get("compositionRoles") or [])]
+                if str(entry.get("reusePolicy")) == "unplaced":
+                    rep.error("C27", f"pattern '{pid}' slot '{sname}' binds {f!r} "
+                                     "which was never observed rendering on any "
+                                     "captured page (reusePolicy: unplaced) — bind "
+                                     "a measured asset or declare the slot's gap.")
+                    continue
+                if roles and all(r.startswith("chrome-") for r in roles):
+                    rep.error("C27", f"pattern '{pid}' slot '{sname}' binds {f!r}, "
+                                     "measured only on chrome surfaces "
+                                     f"({', '.join(roles)}) — chrome art is not "
+                                     "content media.")
+                elif ms.role_demands_image(sname) and roles and \
+                        set(roles) <= {"proof-strip-mark", "badge-cluster-mark",
+                                       "inline-spot-icon"}:
+                    rep.error("C27", f"pattern '{pid}' slot '{sname}' is a lead/"
+                                     f"hero media role but binds {f!r}, measured "
+                                     f"only as {', '.join(roles)} — a row mark is "
+                                     "not a media well (spec §2.2).")
+
+
 def _check_media_assets(rep: Report, brand_dir: Path, lib_doc: dict) -> None:
     path = brand_dir / "media-assets.yaml"
     if not path.exists():
@@ -2000,6 +2073,8 @@ def _check_media_assets(rep: Report, brand_dir: Path, lib_doc: dict) -> None:
                     rep.error("C27", f"pattern '{pid}' slot '{sname}' layer {i} "
                                      "carries neither assetRef nor componentRef — "
                                      "a layer binds exactly one.")
+
+    _check_placement_integrity(rep, brand_dir, entries, lib_patterns, ms)
 
     # C28 — variant-dedupe sanity (advisory).
     by_digest: dict[str, list[str]] = {}

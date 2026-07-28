@@ -1,18 +1,25 @@
-import { bestSrc, getByRole } from "@/brand/assets";
+import { bestSrc, brandLogo, brandName } from "@/brand/assets";
 
-/** Resolves navigation/logo from harvested brand assets, with text fallback. */
-export function BrandMark({ fallback = "Brand" }: { fallback?: string }) {
-  const asset =
-    getByRole("navigation/logo")[0] ??
-    getByRole("navigation")[0] ??
-    getByRole("footer")[0];
+/** Resolves the brand's own mark from harvested assets, with text fallback.
+ *  The fallback is the BRAND's name: an extraction that never captured a
+ *  wordmark should still read as this brand, not as the word "Brand". */
+export function BrandMark({
+  fallback,
+  className = "",
+}: {
+  fallback?: string;
+  className?: string;
+} = {}) {
+  const label = fallback || brandName || "Brand";
+  const asset = brandLogo();
+  const text = `text-h3 font-serif tracking-tight ${className}`.trim();
   if (!asset) {
-    return <span className="text-h3 font-serif tracking-tight">{fallback}</span>;
+    return <span className={text}>{label}</span>;
   }
   if (asset.inlineSvg) {
     return (
       <span
-        className="inline-flex h-8 w-auto [&_svg]:h-full [&_svg]:w-auto"
+        className={`inline-flex h-8 w-auto [&_svg]:h-full [&_svg]:w-auto ${className}`.trim()}
         dangerouslySetInnerHTML={{ __html: asset.inlineSvg }}
         aria-hidden
       />
@@ -20,13 +27,13 @@ export function BrandMark({ fallback = "Brand" }: { fallback?: string }) {
   }
   const src = bestSrc(asset);
   if (!src) {
-    return <span className="text-h3 font-serif tracking-tight">{fallback}</span>;
+    return <span className={text}>{label}</span>;
   }
   return (
     <img
       src={src}
-      alt={asset.alt || fallback}
-      className="h-8 w-auto max-w-[200px] object-contain"
+      alt={asset.alt || label}
+      className={`h-8 w-auto max-w-[200px] object-contain ${className}`.trim()}
     />
   );
 }

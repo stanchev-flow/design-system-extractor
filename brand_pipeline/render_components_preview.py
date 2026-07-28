@@ -1570,6 +1570,13 @@ def _layout_needs_asset_hydration(doc, layout) -> bool:
     rendered before the brand's copy layers were authored."""
     if not isinstance(layout, dict):
         return False
+    # A DESCRIPTIVE archetype ("two-column-cards") is extraction vocabulary, not a
+    # renderer key: composed directly it misses the dispatch table and degrades to
+    # the hero composer, which tops the band up with invented hero+overlap
+    # photography (empty plates). The adapter resolves a descriptive name to a
+    # drawable one, so such a layout goes through it whatever else it declares.
+    if str(layout.get("archetype") or "stack").lower() not in cs.ARCHETYPE_COMPOSERS:
+        return True
     if layout.get("blockMapping") and layout.get("requiresHydration") is not True:
         return False
     if any(isinstance(s, dict) and s.get("assets") for s in (layout.get("slots") or [])):
@@ -1967,6 +1974,11 @@ def _demo_section_for_pattern(doc, pat, layout) -> dict:
         "archetype": archetype,
         "surfaceIntent": str(pat.get("surfaceIntent") or "any"),
         "novelty": "reuse",
+        # A pattern that names its archetype binds its whole anatomy in slots, so
+        # the adapter must not top up a media-less hero with the legacy invented
+        # hero+overlap photography pair. Dropping the ref here made every
+        # measured text-forward hero demo render two placeholder plates.
+        **({"archetypeRef": str(pat["archetypeRef"])} if pat.get("archetypeRef") else {}),
         "seededFrom": {"lib": "project", "id": pid},
         "slots": slots,
         "treatments": treatments,

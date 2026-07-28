@@ -13,7 +13,9 @@
 #   - `variants` (optional): the named shapes a brand may pick from / prohibit
 #
 # Render substrates project the SAME intent differently:
-#   - Tailwind/shadcn renderer  : intent -> utility classes + shadcn markup (build target NOW)
+#   - Brand-compose renderer  : intent -> owned token CSS + static HTML (build target NOW)
+#   - Framework React (opt-in) : headless behavior + owned token skin (never shadcn-as-shipped)
+#   - Webflow Assembler        : intent -> Webflow components (DEFERRED)
 #   - Webflow assembler (DEFERRED): intent -> library components + variables
 # The contract itself stays substrate-free; substrate names live only in render code /
 # the optional brand.yaml `targetMappings:` annotation block, never here.

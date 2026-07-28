@@ -48,6 +48,7 @@ if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
 import archetype_library as al     # noqa: E402  (genre skeleton normalization — fact-gated)
+import composition_signals as cosig  # noqa: E402  (per-brand slot/proof signals)
 import compose_page as cp          # noqa: E402
 import compose_section as cs       # noqa: E402
 import style_scale                 # noqa: E402  (derived-scale consumption, pass1)
@@ -120,8 +121,10 @@ def _declared_column_count(probe: str) -> int:
 
 def _numeric_stat_list(slots: list[dict]) -> bool:
     """True when a repeated LIST collection reads as a STAT/figure band (the majority
-    of its items' labels are short numerals) — those belong in the horizontal stat
-    band (generic-flow), never a caption stack or a card grid."""
+    of its items' labels are short numerals). Used only as a HINT for drawable
+    archetype inference — never as a license to invent a stat device. Mapping to the
+    real ``stat`` renderer requires an explicit ``stat``/``stat-block``/``metric``
+    contract or a brand compositionSignals proof/stat presence fact."""
     for s in slots:
         if str(s.get("contract") or "").lower() != "list":
             continue
@@ -133,6 +136,48 @@ def _numeric_stat_list(slots: list[dict]) -> bool:
         if figures * 2 >= len(items):
             return True
     return False
+
+
+def _has_brand_anatomy(section: dict) -> bool:
+    """True when the section carries measured / library anatomy we must preserve
+    (slots + contracts), not collapse into a SaaS-generic shell."""
+    if section.get("_preserveAnatomy") is True:
+        return True
+    if section.get("archetypeRef"):
+        return True
+    seeded = section.get("seededFrom")
+    if isinstance(seeded, dict) and seeded.get("id"):
+        return True
+    if str(section.get("structureProvenance") or "") in {
+        "measured-brand-pattern", "brand-layout", "layout-library",
+    }:
+        return True
+    signals = section.get("_compositionSignals")
+    if isinstance(signals, dict) and (signals.get("slotRecipe") or signals.get("slots")):
+        return True
+    return False
+
+
+def _brand_wants_stat_device(section: dict) -> bool:
+    """Stat/figure bands only when the brand or section explicitly licenses them —
+    never because a numeric list 'looks like' SaaS proof."""
+    if section.get("proofRequired") is True:
+        return True
+    signals = section.get("_compositionSignals")
+    if isinstance(signals, dict):
+        presence = signals.get("presence") or signals.get("devices") or {}
+        if isinstance(presence, dict) and (
+                presence.get("stat") or presence.get("proof") or presence.get("metrics")):
+            return True
+        if signals.get("wantsStat") is True:
+            return True
+    knobs = section.get("knobs") if isinstance(section.get("knobs"), dict) else {}
+    if knobs.get("stat") or knobs.get("stats"):
+        return True
+    return any(
+        str(s.get("contract") or "").lower() in ("stat", "stat-block", "metric")
+        for s in _slots(section)
+    )
 
 
 def _is_hero_like(archetype: str, section: dict, slots: list[dict]) -> bool:
@@ -1973,9 +2018,17 @@ def composition_to_layout(section: dict) -> dict:
     has_card_collection = any(
         str(slot.get("contract") or "").lower() == "card"
         and len(_repeatable_copy(slot)) >= 2 for slot in slots)
+    # The vocabulary a slot uses to DECLARE a card device: "card-grid" and
+    # "card-carousel" name the container, "card-list"/"card-collection" name the
+    # run. A named run only counts when it carries per-card ART, because that is
+    # the anatomy generic-flow would flatten; a text-only card run keeps the flow
+    # it has always rendered through.
     explicit_card_device = any(
         any(word in f"{slot.get('name', '')} {slot.get('role', '')}".lower()
             for word in ("card-grid", "card-carousel"))
+        or (any(word in f"{slot.get('name', '')} {slot.get('role', '')}".lower()
+                for word in ("card-list", "card-collection", "card-media", "media-well"))
+            and (_rows_carry_media(slot.get("copy")) or slot.get("assets")))
         for slot in slots)
     has_logo_collection = any(
         str(slot.get("contract") or "").lower() == "logo"
@@ -1987,7 +2040,15 @@ def composition_to_layout(section: dict) -> dict:
     # flags promotion-eligibility, not a different render path). Only an archetype WITHOUT a
     # bespoke composer (none of the six today) degrades to the generic-flow safety net so it
     # still renders its exact slots instead of erroring.
-    if section.get("_requiresHydration") is True \
+    # Prefer a brand-declared drawable archetype / compositionSignals preferred shell
+    # over brand-agnostic inference that collapses measured anatomy into cards/split.
+    brand_pref = None
+    signals = section.get("_compositionSignals")
+    if isinstance(signals, dict):
+        brand_pref = str(signals.get("preferredArchetype") or signals.get("archetype") or "").strip()
+    if brand_pref in _BESPOKE_ARCHETYPES:
+        renderer_archetype = brand_pref
+    elif section.get("_requiresHydration") is True \
             and has_card_collection and explicit_card_device:
         # A repeated measured card collection is substantive anatomy. Route it
         # through the card device even when the author describes the outer band
@@ -1998,12 +2059,13 @@ def composition_to_layout(section: dict) -> dict:
     elif archetype in _BESPOKE_ARCHETYPES:
         renderer_archetype = archetype
     else:
-        # NON-DRAWABLE archetype (a descriptive/structural label the renderer has no
-        # bespoke composer for). Rather than collapse every module into the single-
-        # column generic-flow safety net, infer the closest DRAWABLE archetype from
-        # the section's own anatomy facts so multi-column module geometry survives.
-        renderer_archetype = _infer_drawable_archetype(
-            section, slots, has_card_collection) or _GENERIC_FLOW
+        # NON-DRAWABLE archetype. When brand anatomy already specifies slots/contracts,
+        # keep a slot-faithful generic-flow rather than inventing a multi-column shell.
+        if _has_brand_anatomy(section):
+            renderer_archetype = _GENERIC_FLOW
+        else:
+            renderer_archetype = _infer_drawable_archetype(
+                section, slots, has_card_collection) or _GENERIC_FLOW
 
     grid, overlap = _treatments_to_rules(section)
     layout: dict = {
@@ -2248,6 +2310,9 @@ def composition_to_layout(section: dict) -> dict:
     is_faq = archetype == "stack" and not is_hero and not is_conversion \
         and (use_case == "faq" or _knobs.get("faq") is not None)
     if archetype == "stack" and not is_hero and not is_conversion and not is_faq:
+        # Non-hero stack has no dedicated composer (stack CSS/composer = hero). Route to
+        # generic-flow for rendering, but preserve slot contracts when brand anatomy is
+        # present (see mapping below) instead of inventing SaaS devices.
         renderer_archetype = _GENERIC_FLOW
         layout["archetype"] = _GENERIC_FLOW
 
@@ -2259,6 +2324,8 @@ def composition_to_layout(section: dict) -> dict:
         # A section that binds ANY logo-contract slot is a logo-wall-role section: flag it
         # so the generic-flow composer stamps the resolved device (image strip / text
         # captions / empty) for the gate's logo-wall-integrity check (AS-33).
+        preserve = _has_brand_anatomy(section)
+        wants_stat = _brand_wants_stat_device(section)
         if any((s.get("contract") or "").lower().startswith("logo")
                for s in _slots(section)):
             layout["_logoWall"] = True
@@ -2272,6 +2339,20 @@ def composition_to_layout(section: dict) -> dict:
         for s in _slots(section):
             c_low = (s.get("contract") or "").lower()
             copyval = s.get("copy")
+            # Brand-anatomy sections: pass slots through as declared contracts so
+            # measured slot recipes survive (section → slots → components).
+            if preserve and c_low not in (
+                    "logo", "logo-strip", "link", "cta", "stat", "stat-block", "metric",
+                    "table", "testimonial", "quote", "label", "subheading"):
+                if isinstance(copyval, list) and c_low == "list" and wants_stat and len(
+                        _repeatable_copy(s)) >= 2 and sum(
+                        1 for it in _repeatable_copy(s) if _is_stat_figure(
+                            _text(it, "label", "title", "value", "figure"))
+                        ) * 2 >= len(_repeatable_copy(s)):
+                    pass  # fall through to explicit stat fold below
+                else:
+                    mapping.append(_slot_to_mapping(s))
+                    continue
             if isinstance(copyval, list):
                 items = _repeatable_copy(s)
                 if c_low.startswith("logo"):
@@ -2318,16 +2399,12 @@ def composition_to_layout(section: dict) -> dict:
                                         "role": f"stat {i + 1}", "contract": "stat",
                                         "usage": {"value": value, "label": label},
                                         "group": str(s.get("name") or "stats")})
-                elif c_low == "list" and len(items) >= 2 and sum(
+                elif (c_low == "list" and wants_stat and len(items) >= 2 and sum(
                         1 for it in items if _is_stat_figure(
                             _text(it, "label", "title", "value", "figure"))
-                        ) * 2 >= len(items):
-                    # NUMERIC list = a STAT/figure band (composer-collapse fix 2026-07):
-                    # a repeated list whose items are majority short numerals is a row of
-                    # figure columns, not a vertical ruled list. Route each to the REAL
-                    # stat renderer (value at the display register, label on the body
-                    # register) so generic-flow bands them horizontally — the same device
-                    # a `stat` contract uses. Non-numeric lists keep the caption/body fold.
+                        ) * 2 >= len(items)):
+                    # NUMERIC list → stat band ONLY when the brand/section licenses a
+                    # proof/stat device. Otherwise keep the authored list contract.
                     for i, m in enumerate(items):
                         value = str(_text(m, "label", "title", "value", "figure")
                                     or "").strip()
@@ -2557,6 +2634,13 @@ def composition_to_layout(section: dict) -> dict:
     return layout
 
 
+def _rows_carry_media(rows) -> bool:
+    """True when a repeatable copy list carries per-item media bindings."""
+    return isinstance(rows, list) and any(
+        isinstance(row, dict) and any(row.get(k) for k in ("asset", "avatar", "media"))
+        for row in rows)
+
+
 def adapt_brand_section(section: dict, doc: dict) -> tuple[dict, dict, dict | None]:
     """Adapt ONE (sanitized) composition section against the ACTIVE BRAND — the single
     shared lane path (fid10 2026-07). ``compose_replica`` and ``render_composition``
@@ -2588,6 +2672,11 @@ def adapt_brand_section(section: dict, doc: dict) -> tuple[dict, dict, dict | No
     ``layout['_archetypeNotes']``. Sections without the ref pass through untouched.
     """
     section, art_notes = al.apply_archetype_skeleton(section, doc)
+    # Stamp per-brand compositionSignals so slot preservation / proof-stat licensing
+    # read THIS brand's measured anatomy instead of SaaS globals.
+    if not isinstance(doc.get("compositionSignals"), dict) and (doc.get("layouts") or []):
+        doc = cosig.attach_signals_to_doc(doc)
+    section = cosig.apply_signals_to_section(section, doc)
     layout = composition_to_layout(section)
     # carry the section's useCase onto the layout (top-level, informational — the
     # composers read layout["_composition"]["useCase"], so this is byte-neutral for
@@ -2650,9 +2739,24 @@ def adapt_brand_section(section: dict, doc: dict) -> tuple[dict, dict, dict | No
     authored_items = authored.get("items") if isinstance(authored.get("items"), list) else None
     composer_items = composer_copy.get("items") \
         if isinstance(composer_copy.get("items"), list) else composer_copy.get("cards")
+    if not _rows_carry_media(composer_items):
+        # Not every translator folds a card run's MEDIA into _composerCopy (the
+        # generic flow leaves it on the slot, and text-only translator copy would
+        # pass a plain list check while carrying no binding at all). The section's
+        # own card slot is the same structural evidence.
+        composer_items = next(
+            (s["copy"] for s in _slots(section)
+             if str(s.get("contract") or "").lower() == "card"
+             and _rows_carry_media(s.get("copy"))),
+            composer_items)
+    # A slot bound to the CARD contract IS the measured card device: its per-item
+    # art is a measured binding, so authored words must not drop it. Naming the
+    # device in the slot role ("card-grid") is one way to declare it, not the only
+    # one — a projected card run declares it by contract instead.
     measured_card_device = section.get("_requiresHydration") is True and any(
-        any(word in f"{slot.get('name', '')} {slot.get('role', '')}".lower()
-            for word in ("card-grid", "card-carousel"))
+        str(slot.get("contract") or "").lower() == "card"
+        or any(word in f"{slot.get('name', '')} {slot.get('role', '')}".lower()
+               for word in ("card-grid", "card-carousel"))
         for slot in _slots(section))
     if measured_card_device and authored_items is not None and isinstance(composer_items, list):
         enriched = []

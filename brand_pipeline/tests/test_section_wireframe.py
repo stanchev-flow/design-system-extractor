@@ -62,7 +62,8 @@ class WireframePlannerTest(unittest.TestCase):
         wf = sw.plan_wireframe({"sections": [sec]})
         self.assertEqual(sw.validate_wireframe(wf, {"sections": [sec]}), [])
 
-    def test_consecutive_empty_sections_fail_rhythm(self):
+    def test_text_forward_sections_are_legal_without_visual_anchor(self):
+        """Brand-local rule: text-only sections must not fail the hard wireframe gate."""
         sections = [
             {"id": f"s{i}", "useCase": "features", "archetype": "stack",
              "slots": [{"name": "heading", "role": "heading",
@@ -70,8 +71,21 @@ class WireframePlannerTest(unittest.TestCase):
             for i in range(2)
         ]
         wf = sw.plan_wireframe({"sections": sections})
-        errors = sw.validate_wireframe(wf, {"sections": sections})
-        self.assertTrue(any("consecutive visually empty" in e for e in errors))
+        self.assertEqual(sw.validate_wireframe(wf, {"sections": sections}), [])
+        for planned in wf["sections"]:
+            self.assertTrue(planned.get("licensedTextOnly"))
+            self.assertFalse(planned.get("proofRequired"))
+
+    def test_brand_proof_required_still_enforced_when_flagged(self):
+        sec = {
+            "id": "proof", "useCase": "features", "archetype": "stack",
+            "proofRequired": True,
+            "slots": [{"name": "heading", "role": "heading",
+                       "contract": "heading", "copy": "Numbers that prove it."}],
+        }
+        wf = sw.plan_wireframe({"sections": [sec]})
+        errors = sw.validate_wireframe(wf, {"sections": [sec]})
+        self.assertTrue(any("brand-required proof" in e for e in errors))
 
     def test_required_slot_consumption_fails(self):
         comp = {"sections": [item_section()]}

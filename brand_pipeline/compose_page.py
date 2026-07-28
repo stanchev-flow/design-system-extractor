@@ -318,14 +318,21 @@ def _hex_rgb(value: str) -> tuple | None:
     return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16))
 
 
-def section_vars(doc, sel, surf, *, display_size, accent_on, surf_role, style_ctx) -> str:
+def section_vars(doc, sel, surf, *, display_size, accent_on, surf_role, style_ctx,
+                 title_overlap=None) -> str:
     """Per-section surface-scoped --c-* values (the shared c-* classes read these). For
     every section except the accent layout, the committed accent collapses to ink so no
     accent ever lands on a light/non-hero surface. Vertical rhythm (section padding +
     inter-block gaps) is emitted per surface via ``rhythm_vars_css`` — brand spacing
-    tokens preferred, else the active style's spacing scale."""
+    tokens preferred, else the active style's spacing scale.
+
+    ``title_overlap`` is the section layout's OWN measured title-over-media pull
+    (``cs.title_overlap_offset``); None (chrome bars, and every layout that declares no
+    such device) emits no ``--c-title-overlap`` so the `.cs-title` scaffold keeps its
+    no-overlap fallback. This argument used to be omitted here, which is how the
+    single-section lane's fact-gated device became an unconditional page-lane default."""
     block = cr.component_vars(doc, surf, selector=sel, display_size=display_size,
-                              surface_role=surf_role)
+                              surface_role=surf_role, title_overlap=title_overlap)
     extra = [cs.rhythm_vars_css(doc, style_ctx, surf_role, selector=sel)]
     if not accent_on:
         extra.append(f"{sel} {{ --c-accent: var(--c-ink); }}")
@@ -546,7 +553,8 @@ def compose_section_block(doc, layout, idx, style_ctx, brand_yaml=None, accent_i
     if idx == 0:  # the hero display tier carries the poster scale
         disp = page_display_size(doc, style_ctx)
     vars_css = section_vars(doc, sel, surf, display_size=disp, accent_on=accent_on,
-                            surf_role=role, style_ctx=style_ctx)
+                            surf_role=role, style_ctx=style_ctx,
+                            title_overlap=cs.title_overlap_offset(layout))
     # declared eyebrow register (brand-schema layout.eyebrowRegister): the section's
     # theme-scope family lands as a #sec-N-scoped --c-eyebrow-color (same mechanism
     # as the single-section path in cs.build_document).

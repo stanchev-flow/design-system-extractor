@@ -75,20 +75,80 @@ CHROME_IDS = {"navbar", "footer"}
 
 # ── source order: layout-library provenance → brand layouts (capture order) ──────
 
-def source_order_sections(doc: dict, patterns: list[dict]) -> list[tuple[dict, dict]]:
-    """(layout, pattern) pairs in SOURCE ORDER. Every pattern's ``provenance[0]``
-    names the brand layout extracted from that source section; the brand's
-    ``layouts[]`` are authored in capture order (the extraction skill's census
-    walk), so ordering by layout position IS the source page order. Fails loud on
-    a pattern whose provenance doesn't resolve — a replica with silently dropped
-    sections would prove nothing."""
+def _provenance_list(layout: dict | None, pat: dict | None) -> list[str]:
+    """Prefer pattern provenance; fall back to the brand layout's own list."""
+    for src in (pat, layout):
+        if not isinstance(src, dict):
+            continue
+        prov = [str(p) for p in (src.get("provenance") or []) if p]
+        if prov:
+            return prov
+    return []
+
+
+def _declared_pages(layout: dict | None, pat: dict | None) -> set[str]:
+    """The capture pages a section DECLARES it came from (``sourcePages``)."""
+    pages: set[str] = set()
+    for src in (pat, layout):
+        if isinstance(src, dict):
+            pages |= {str(p).strip().lower()
+                      for p in (src.get("sourcePages") or []) if str(p).strip()}
+    return pages
+
+
+def _provenance_page_key(token: str) -> str | None:
+    """``home-section-03-…`` / ``talent-sourcing-section-07`` → page key.
+
+    The fallback for artifacts authored before ``sourcePages`` was declared.
+    """
+    t = str(token or "").strip().lower()
+    if not t or t in {"footer", "chrome.footer"} or t.endswith("-footer"):
+        return None
+    if "-section-" in t:
+        return t.split("-section-", 1)[0]
+    return None
+
+
+def brand_source_pages(doc: dict, patterns: list[dict]) -> list[str]:
+    """Every capture page this brand's sections declare — the page-lane keys."""
+    pages: set[str] = set()
+    for node in list(doc.get("layouts") or []) + list(patterns or []):
+        if isinstance(node, dict):
+            pages |= _declared_pages(node, None)
+    return sorted(pages)
+
+
+def _provenance_section_index(token: str) -> int:
+    """``home-section-03-div`` → 3; unknown → large sentinel for stable sort."""
+    import re
+    m = re.search(r"-section-(\d+)", str(token or "").lower())
+    return int(m.group(1)) if m else 10_000
+
+
+def source_order_sections(
+    doc: dict,
+    patterns: list[dict],
+    *,
+    page: str | None = None,
+) -> list[tuple[dict, dict]]:
+    """(layout, pattern) pairs in SOURCE ORDER.
+
+    For single-page brands, ``layouts[]`` capture order matches the page. For
+    MULTI-PAGE brands the union includes other pages (e.g. stats from
+    talent-sourcing) — pass ``page='home'`` when the replica target is the
+    homepage screenshot so off-page patterns are excluded and remaining
+    sections sort by provenance section index, not authored-array order.
+    """
     layouts = [l for l in (doc.get("layouts") or [])
                if isinstance(l, dict) and not _is_chrome(l)]
     by_id = {l.get("id"): i for i, l in enumerate(layouts)}
-    pairs: list[tuple[int, dict, dict]] = []
+    page_key = (page or "").strip().lower() or None
+    pairs: list[tuple[int, int, dict, dict]] = []
     unmapped: list[str] = []
+    skipped_other_page: list[str] = []
     for pat in patterns:
-        prov = [str(p) for p in (pat.get("provenance") or []) if p]
+        layout = rp.layout_for_pattern(doc, pat.get("id"))
+        prov = _provenance_list(layout if isinstance(layout, dict) else None, pat)
         # Footer chrome is rendered once by compose_page from the measured
         # ``footer`` contract. Some authoring lanes also project the footer crop
         # into a layout-library pattern; treating that pattern as an ordinary
@@ -96,22 +156,39 @@ def source_order_sections(doc: dict, patterns: list[dict]) -> list[tuple[dict, d
         if any(p.lower() in {"footer", "chrome.footer"} or
                p.lower().endswith("-footer") for p in prov):
             continue
+        if page_key:
+            pages = _declared_pages(layout if isinstance(layout, dict) else None, pat)
+            if not pages:
+                pages = {p for p in (_provenance_page_key(t) for t in prov) if p}
+            if pages and page_key not in pages:
+                skipped_other_page.append(str(pat.get("id")))
+                continue
         lid = next((p for p in prov if p in by_id), None)
         if lid is None:
-            # fall back to the first layout whose patternRef points here
-            layout = rp.layout_for_pattern(doc, pat.get("id"))
+            if not isinstance(layout, dict):
+                layout = rp.layout_for_pattern(doc, pat.get("id"))
             lid = (layout or {}).get("id")
         if lid is None or lid not in by_id:
             unmapped.append(str(pat.get("id")))
             continue
-        pairs.append((by_id[lid], layouts[by_id[lid]], pat))
-    if unmapped:
+        layout = layouts[by_id[lid]]
+        sec_i = min((_provenance_section_index(p) for p in prov), default=10_000)
+        order_key = sec_i if page_key else by_id[lid]
+        pairs.append((order_key, by_id[lid], layout, pat))
+    if unmapped and not page_key:
         raise SystemExit(
             f"compose_replica: pattern(s) with no resolvable source section: "
             f"{', '.join(unmapped)} — every layout-library pattern must carry "
             "provenance naming its source layout (or a patternRef back-link).")
-    pairs.sort(key=lambda t: t[0])
-    return [(layout, pat) for _, layout, pat in pairs]
+    if page_key and skipped_other_page:
+        print(f"[replica] page={page_key}: skipped off-page patterns: "
+              f"{', '.join(skipped_other_page)}")
+    if page_key and not pairs:
+        raise SystemExit(
+            f"compose_replica: page={page_key!r} matched no patterns — check "
+            "layout/pattern provenance (expected tokens like 'home-section-00').")
+    pairs.sort(key=lambda t: (t[0], t[1]))
+    return [(layout, pat) for _, _, layout, pat in pairs]
 
 
 def _is_chrome(layout: dict) -> bool:
@@ -121,16 +198,21 @@ def _is_chrome(layout: dict) -> bool:
 
 # ── 1) compose the replica page ───────────────────────────────────────────────────
 
-def build_replica_page(brand_yaml: Path, out_dir: Path) -> dict:
+def build_replica_page(brand_yaml: Path, out_dir: Path, *, page: str | None = None) -> dict:
     """Compose the full source-order page into ``out_dir/index.html`` via the same
     demo-hydration + composition-adapter path the components preview's pattern
     demos use, then ``compose_page.build_page`` (page nav + closing footer).
-    Returns {"order": [...], "sections": [...], "errors": {...}}."""
+    Returns {"order": [...], "sections": [...], "errors": {...}}.
+
+    ``page`` (e.g. ``home``) limits composition to patterns whose provenance
+    belongs to that capture page — required for multi-page brand unions whose
+    replica target is a single screenshot.
+    """
     doc = cp.load_doc(brand_yaml)
     patterns = rp.load_layout_library(brand_yaml)
     if not patterns:
         raise SystemExit(f"compose_replica: no layout-library patterns beside {brand_yaml}")
-    pairs = source_order_sections(doc, patterns)
+    pairs = source_order_sections(doc, patterns, page=page)
 
     brand_dir = brand_yaml.parent
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -848,7 +930,29 @@ def build_parser() -> argparse.ArgumentParser:
                     help="csv responsiveness-ladder widths (default 1440,1920,960,375)")
     ap.add_argument("--fail-under", type=float, default=None,
                     help="exit 1 when the overall score is below this (gate mode)")
+    ap.add_argument("--page", default=None,
+                    help="multi-page brands: only compose patterns whose provenance "
+                         "belongs to this capture page (e.g. home). Auto-detected "
+                         "from --source-shot path when omitted.")
     return ap
+
+
+def _infer_page_from_source_shot(source_shot: Path | None,
+                                 known_pages: list[str]) -> str | None:
+    """screenshots/.../home/home-fullpage.png → 'home'.
+
+    Matched against the pages the BRAND declares, never a hardcoded list, so the
+    inference works for any capture set. The longest match wins so a page key
+    that contains another ('talent-sourcing' vs 'talent') can't be shadowed.
+    """
+    if source_shot is None or not known_pages:
+        return None
+    parts = [p.lower() for p in Path(source_shot).parts]
+    stem = Path(source_shot).stem.lower()
+    for key in sorted(known_pages, key=len, reverse=True):
+        if key in parts or stem.startswith(f"{key}-") or stem == key:
+            return key
+    return None
 
 
 def main(argv=None) -> int:
@@ -857,8 +961,11 @@ def main(argv=None) -> int:
     brand_dir = brand_yaml.parent
     out_dir = (args.out or (brand_dir / "compose" / "replica")).resolve()
     w, h = (int(x) for x in args.viewport.lower().split("x"))
+    page = args.page or _infer_page_from_source_shot(
+        args.source_shot,
+        brand_source_pages(cp.load_doc(brand_yaml), rp.load_layout_library(brand_yaml)))
 
-    built = build_replica_page(brand_yaml, out_dir)
+    built = build_replica_page(brand_yaml, out_dir, page=page)
     print(f"[replica] composed {len(built['order'])} sections -> {out_dir / 'index.html'}")
     if built["errors"]:
         for lid, err in built["errors"].items():

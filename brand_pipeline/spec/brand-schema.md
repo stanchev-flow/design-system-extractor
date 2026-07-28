@@ -49,8 +49,10 @@ brand.md     ── human-readable projection. NEVER hand-edited.
 slot role, primitive/block contract, token semantics, responsive ladder, surface
 intent — and never bake in substrate names. Substrates project the same intent:
 
-- **Tailwind/shadcn renderer** (the build target **NOW**): intent → utility classes
-  + shadcn markup, static HTML on a Tailwind CDN.
+- **Brand compose renderer** (the build target **NOW**): intent → owned token CSS +
+  static HTML (`compose_section` / `component_render`). Framework React is opt-in and
+  must not ship shadcn-as-shipped skin.
+- **Future Webflow Assembler** (DEFERRED): intent → Webflow components.
 - **Webflow Assembler** (**DEFERRED**): intent → library components + variables.
 
 Any substrate-specific identifiers (Webflow variable ids, collection/mode ids,

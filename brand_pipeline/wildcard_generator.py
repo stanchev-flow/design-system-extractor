@@ -228,7 +228,7 @@ def use_case_map(doc, brand_yaml: Path) -> dict[str, str]:
 SECTION_LADDER: dict[str, dict[int, tuple[str, str]]] = {
     "hero": {
         1: ("deeper title-over-media overlap",
-            ".cs-title { margin-bottom: calc(var(--c-title-overlap) * 1.6); }"),
+            ".cs-title { margin-bottom: calc(var(--c-title-overlap, 0rem) * 1.6); }"),
         2: ("overlap photo crank — bigger, lower, nearly colliding",
             ".c-image--overlap.is-abs { width: 46%; bottom: -38%; right: 1%; }"),
         3: ("LEFT-ANCHORED hero — inverts the hero's own sanctioned centering",

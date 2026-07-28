@@ -1,17 +1,33 @@
 import data from "./brand-assets.json";
 
 /*
-  Role-based asset resolver with SLOT-AWARE RANKING.
+  Asset resolver — MEASURED BINDING FIRST.
 
-  A generated page asks for assets by the ROLE they play ("a hero media",
-  "testimonial avatars", "the logo wall"). Each request carries a SlotSpec —
-  the preferred asset types plus the geometry the slot wants (ideal aspect,
-  minimum width). Candidates are scored on type fit + aspect closeness + size
-  adequacy, so each slot gets the BEST-fitting brand asset, not just the first.
+  When the bundle comes from a brand extraction, every asset carries the
+  sections it was measured rendering in. A page asks for the assets of a BAND
+  (`sectionAssets("home-section-02-div")`) and gets exactly what the source used,
+  in the source's visual order.
+
+  Only when a composition is genuinely NEW (no source band to copy) does it fall
+  back to `roleAssets`, which returns assets by the geometric role they were
+  measured playing — a proof-strip mark stays a proof-strip mark and never gets
+  promoted into a hero well because its aspect ratio happened to look right.
+
+  Assets with `reusePolicy: "unplaced"` were curated but never observed
+  rendering, so they are UNPROVEN and are withheld from every lookup.
 */
+
+export interface AssetPlacement {
+  page: string;
+  section: string | null;
+  zone: string;
+  role: string;
+  visible: boolean;
+}
 
 export interface BrandAsset {
   id: string;
+  file?: string;
   type: string;
   role: string;
   label: string;
@@ -23,100 +39,94 @@ export interface BrandAsset {
   width: number | null;
   height: number | null;
   aspect: number | null;
-}
-
-interface SlotSpec {
-  roles: string[];
-  prefTypes: string[];
-  idealAspect?: number;
-  minWidth?: number;
+  usageRights?: string;
+  reusePolicy?: string;
+  compositionRoles?: string[];
+  placements?: AssetPlacement[];
 }
 
 type ByRole = Record<string, BrandAsset[]>;
 
-const byRole = (data as { byRole: ByRole }).byRole;
-export const brandSource = (data as { source: string }).source;
+const bundle = data as {
+  source?: string;
+  brand?: { name?: string; wordmarkUrl?: string };
+  assets?: BrandAsset[];
+  bySection?: Record<string, string[]>;
+  byRole?: ByRole;
+};
 
-export function getByRole(role: string): BrandAsset[] {
-  return byRole[role] ?? [];
+const byRole: ByRole = bundle.byRole ?? {};
+const bySection = bundle.bySection ?? {};
+const allAssets = bundle.assets ?? Object.values(byRole).flat();
+const byId = new Map(allAssets.map((a) => [a.id, a]));
+// The brand artifacts (layout slots, section inventories) name assets by FILE,
+// while the bundle keys them by id. Both identify the same asset, so a lookup
+// accepts either — a resolver that fails on the artifact's own vocabulary just
+// silently drops the image.
+const byFile = new Map(
+  allAssets.flatMap((a) => (a.file ? ([[a.file, a]] as [string, BrandAsset][]) : []))
+);
+
+export const brandSource = bundle.source ?? "";
+/** The brand's own name — the honest wordmark fallback when no mark was curated. */
+export const brandName = bundle.brand?.name ?? "";
+/** The chrome wordmark file, when the extraction captured one. */
+export const brandWordmarkUrl = bundle.brand?.wordmarkUrl ?? "";
+
+function renderable(a: BrandAsset | undefined): a is BrandAsset {
+  return !!a && !!(a.url || a.inlineSvg) && a.reusePolicy !== "unplaced";
+}
+
+/** The assets MEASURED in one source band, in the source's visual order. */
+export function sectionAssets(section: string): BrandAsset[] {
+  return (bySection[section] ?? []).map((id) => byId.get(id)).filter(renderable);
+}
+
+/** Assets measured playing a given composition role (for NEW compositions). */
+export function roleAssets(role: string, limit?: number): BrandAsset[] {
+  const out = (byRole[role] ?? []).filter(renderable);
+  return limit ? out.slice(0, limit) : out;
+}
+
+/** One asset by its registry id OR its filename (both name the same asset). */
+export function assetById(ref: string): BrandAsset | null {
+  const a = byId.get(ref) ?? byFile.get(ref);
+  return renderable(a) ? a : null;
+}
+
+/** The brand's OWN mark — identified by kind, never by which surface it sat on.
+ *  Picking "the first chrome image" would hand back a nav menu thumbnail. */
+export function brandLogo(): BrandAsset | null {
+  if (brandWordmarkUrl) {
+    return {
+      id: "brand-wordmark",
+      type: "logo-own",
+      role: "navigation/logo",
+      label: brandName,
+      alt: brandName,
+      url: brandWordmarkUrl,
+      displayUrl: brandWordmarkUrl,
+      inlineSvg: "",
+      iconOrIllustration: "na",
+      width: null,
+      height: null,
+      aspect: null,
+    };
+  }
+  const own = allAssets.filter(
+    (a) => renderable(a) && (a.type === "logo-own" || a.role === "navigation/logo")
+  );
+  if (own.length) return own[0];
+  const legacy = (byRole["navigation/logo"] ?? byRole["navigation"] ?? []).filter(renderable);
+  return legacy[0] ?? null;
+}
+
+/** Third-party marks may only appear as attribution/proof, never as decoration. */
+export function isThirdPartyMark(a: BrandAsset | null | undefined): boolean {
+  return !!a && a.usageRights === "third-party-mark";
 }
 
 export function bestSrc(a: BrandAsset | null | undefined): string {
   if (!a) return "";
   return a.displayUrl || a.url || "";
-}
-
-function score(a: BrandAsset, spec: SlotSpec): number {
-  let s = 0;
-
-  // Type fit: earlier in prefTypes ranks higher; unlisted types are penalized.
-  const ti = spec.prefTypes.indexOf(a.type);
-  s += ti >= 0 ? (spec.prefTypes.length - ti) * 2 : -2;
-
-  // Aspect closeness (only when we measured real dimensions).
-  if (spec.idealAspect && a.aspect) {
-    const closeness = 1 - Math.min(1, Math.abs(a.aspect - spec.idealAspect) / spec.idealAspect);
-    s += closeness * 4;
-  }
-
-  // Size adequacy: reward meeting the slot's minimum, lightly reward bigger.
-  if (a.width) {
-    if (spec.minWidth) s += a.width >= spec.minWidth ? 1.5 : -1;
-    s += Math.min(1, a.width / 1600);
-  }
-
-  return s;
-}
-
-function rank(spec: SlotSpec, limit?: number): BrandAsset[] {
-  const seen = new Set<string>();
-  const pool: BrandAsset[] = [];
-  for (const role of spec.roles) {
-    for (const a of getByRole(role)) {
-      if (a.url && !seen.has(a.id)) {
-        seen.add(a.id);
-        pool.push(a);
-      }
-    }
-  }
-  const scored = pool.map((a, i) => ({ a, i, s: score(a, spec) }));
-  scored.sort((x, y) => y.s - x.s || x.i - y.i); // stable tie-break by source order
-  const out = scored.map((x) => x.a);
-  return limit ? out.slice(0, limit) : out;
-}
-
-export function heroMedia(): BrandAsset | null {
-  return (
-    rank(
-      { roles: ["hero", "card/feature", "content", "background"], prefTypes: ["illustration", "photo"], idealAspect: 1.4, minWidth: 600 },
-      1
-    )[0] ?? null
-  );
-}
-
-export function avatars(limit = 3): BrandAsset[] {
-  return rank(
-    { roles: ["testimonial/avatar", "content"], prefTypes: ["avatar", "photo"], idealAspect: 1.0 },
-    limit
-  );
-}
-
-export function logoWall(limit = 12): BrandAsset[] {
-  return rank({ roles: ["logo-wall", "content"], prefTypes: ["logo"] }, limit);
-}
-
-export function ctaBackground(): BrandAsset | null {
-  return (
-    rank(
-      { roles: ["background", "card/feature", "hero", "content"], prefTypes: ["background", "photo"], idealAspect: 1.8, minWidth: 1000 },
-      1
-    )[0] ?? null
-  );
-}
-
-export function featureMedia(limit = 3): BrandAsset[] {
-  return rank(
-    { roles: ["card/feature", "hero", "content"], prefTypes: ["illustration", "photo"], idealAspect: 1.3 },
-    limit
-  );
 }

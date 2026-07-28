@@ -172,6 +172,98 @@ def eligible_render_mode(kind: str | None, fit: str | None) -> str:
     return f
 
 
+# ── MEASURED PLACEMENT vocabulary (spec §2.2) ────────────────────────────────────────
+#
+# Where an asset was OBSERVED on the captured pages, derived from measured
+# geometry by tools/extract/mine_asset_placements.py — never from filenames or
+# vibes. This is what stops a consumer from ranking assets by aspect ratio and
+# dropping a proof-row mark into a hero well: the registry can say "this file was
+# one of six equal marks in a strip", so a hero slot with no eligible asset
+# declares a gap instead of substituting.
+#
+# Roles are GEOMETRIC and brand-agnostic — coverage of the band, repeat count of
+# equal-sized siblings, and the chrome/content zone. No section, palette, or
+# content knowledge lives here, so other brands inherit the table unchanged.
+PLACEMENT_ZONES = frozenset({"header", "footer", "main"})
+
+COMPOSITION_ROLES = frozenset({
+    "full-bleed-backdrop",     # covers essentially the whole band
+    "section-lead-media",      # the single dominant media well of a content band
+    "card-media-well",         # one of N equal media wells in a repeating row/grid
+    "proof-strip-mark",        # one of a row of third-party marks
+    "badge-cluster-mark",      # one of a row of award/compliance/store badges
+    "inline-spot-icon",        # content-scale glyph beside copy
+    "chrome-nav-media",        # header/nav surface (menu thumbnails, nav marks)
+    "chrome-footer-mark",      # footer surface (social row, legal marks)
+    "responsive-alternate",    # bound to a band but hidden at the measured tier
+})
+
+# how widely the brand deploys the asset — the reuse contract a generator needs
+# before it may pull a file into a NEW composition.
+REUSE_POLICIES = frozenset({
+    "site-chrome",     # chrome surfaces: reusable anywhere that chrome appears
+    "cross-page",      # content asset observed on more than one captured page
+    "page-specific",   # observed on exactly one page — reuse changes its meaning
+    "unplaced",        # curated but never observed rendering; treat as UNPROVEN
+})
+
+_MARK_MAX_PX = 96          # icon/mark-scale ceiling on the measured tier
+_STRIP_MIN_SIBLINGS = 3    # a "row of marks" starts at three equal siblings
+_LEAD_MIN_FRACTION = 0.30  # a lead media well covers ≥30% of the band width
+_BACKDROP_FRACTION = 0.95  # a backdrop spans the band edge to edge
+
+
+def derive_composition_role(kind: str | None, placement: dict,
+                            siblings: int = 1) -> str:
+    """The generic composition role for ONE measured placement.
+
+    ``siblings`` is how many assets of comparable rendered size share the band —
+    the signal that separates a single lead media well from one cell of a
+    repeating grid or one mark in a proof strip.
+    """
+    zone = str(placement.get("zone") or "main")
+    if zone == "header":
+        return "chrome-nav-media"
+    if zone == "footer":
+        return "chrome-footer-mark"
+    if placement.get("hidden"):
+        return "responsive-alternate"
+    rendered = placement.get("rendered") or {}
+    frac = (placement.get("fractionOfSection") or {}).get("w")
+    w = rendered.get("w") or 0
+    h = rendered.get("h") or 0
+    if isinstance(frac, (int, float)) and frac >= _BACKDROP_FRACTION:
+        return "full-bleed-backdrop"
+    if max(w, h) <= _MARK_MAX_PX and str(kind or "") in {"spot-icon", "ui-glyph",
+                                                         "social-icon"}:
+        return "inline-spot-icon"
+    # A ROW of mark-height siblings is a proof/badge strip, and GEOMETRY decides
+    # that — not the asset kind. Kinds start life as filename guesses, so a
+    # customer mark whose file never says "logo" would otherwise be read as a
+    # card image and later reused as one; the band it sits in is the honest
+    # evidence. Card grids stay distinguishable because their cells are far
+    # taller than mark height.
+    if siblings >= _STRIP_MIN_SIBLINGS and 0 < h <= _MARK_MAX_PX:
+        return "badge-cluster-mark" if kind_family(kind) == "badge" \
+            else "proof-strip-mark"
+    if siblings >= 2:
+        return "card-media-well"
+    if isinstance(frac, (int, float)) and frac >= _LEAD_MIN_FRACTION:
+        return "section-lead-media"
+    return "card-media-well"
+
+
+def derive_reuse_policy(placements: list[dict]) -> str:
+    """The reuse contract implied by WHERE an asset was observed."""
+    if not placements:
+        return "unplaced"
+    zones = {str(p.get("zone") or "main") for p in placements}
+    if zones & {"header", "footer"}:
+        return "site-chrome"
+    pages = {str(p.get("page") or "") for p in placements if p.get("page")}
+    return "cross-page" if len(pages) > 1 else "page-specific"
+
+
 # ── loading + indexes (fact-gated) ───────────────────────────────────────────────────
 
 def load_media_assets(brand_dir: Path | str | None) -> dict | None:

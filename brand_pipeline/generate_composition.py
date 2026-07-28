@@ -53,6 +53,7 @@ if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
 
 import archetype_library as al      # noqa: E402  (genre structure library — data, not enum)
+import composition_signals as cosig  # noqa: E402  (per-brand layout → slot/proof signals)
 import layout_library as ll          # noqa: E402  (reuse-before-create: retrieval engine)
 import style_scale as ssc            # noqa: E402  (pass-1 derived-scale artifact loader)
 import styles as styles_mod          # noqa: E402  (the STYLE layer loader/merge)
@@ -545,16 +546,18 @@ _COPY_QUALITY_RULES = """- COPY QUALITY (HARD): copy is REAL, specific and non-r
   Omit "footer" from `sections` even when the brief mentions footer content."""
 
 _WIREFRAME_RULES = """
-- SECTION WIREFRAME (HARD; a deterministic wireframe.v1 planner validates before render):
-  - Every substantive section needs a painted visual anchor: media, proof/stat device,
-    meaningful component collection, action cluster, or an explicitly licensed text monument.
+- SECTION WIREFRAME (deterministic wireframe.v1 planner validates before render):
+  - Do NOT invent media, proof/stat devices, or action clusters just to satisfy a template.
+    Include them only when the brand layout library, compositionSignals, or brief requires them.
+  - Text-forward / text-only sections are legal when the brand evidence is text-forward.
+    Universal "every section needs a visual anchor" is forbidden — density rules are per-brand.
   - Preserve repeated semantic records as ONE array on a repeatable `feature-item`,
     `content-block`, `card`, or `testimonial` slot. Never emit their label/body fields as
     sibling primitives in one stack; the item is atomic and responsive collapse preserves it.
-  - A side-anchored hero names a real painted counterweight whose complete required slots
-    (media/proof/action) have a consuming renderer path. Unsupported skeletons are rejected.
-  - Conversion jobs render actions; proof/story jobs render proof, media, or a component
-    cluster. Avoid consecutive sparse/text-only sections and alternate density/surface cadence.
+  - A side-anchored hero that DECLARES a counterweight must name a real painted counterweight
+    whose required slots have a consuming renderer path. Unsupported skeletons are rejected.
+  - Conversion jobs that the brand/brief marks as conversion render actions. Do not force
+    proof onto hero/testimonial/logos unless that brand's compositionSignals require it.
 """
 
 
@@ -894,6 +897,12 @@ def build_prompt(brief_text: str, brand_yaml_path: Path | str, style_id: str,
     # every byte of the assembly below identical to the pre-pass-3 prompt.
     p1_block = pass1_facts_block(doc, Path(brand_yaml_path).parent)
     pass1_section = f"\n{p1_block}\n" if p1_block else ""
+    # Ensure compositionSignals exist for prompt + downstream adapters (derived from
+    # measured layouts; never invents universal SaaS rules).
+    if not isinstance(doc.get("compositionSignals"), dict):
+        doc = cosig.attach_signals_to_doc(doc)
+    signals_block = cosig.render_signals_prompt_block(doc)
+    signals_section = f"\n{signals_block}\n" if signals_block else ""
 
     # 0. BRAND ESSENCE — the one-line identity anchor LEADS the prompt so the model
     # composes toward the brand's look first (Claude-distillation #1). Prose FRAMING
@@ -929,7 +938,7 @@ three-tier precedence (base-style invariants → composition-rules → brand nev
 - spacing steps (pick a named step, never ad-hoc px): {' | '.join(facts['spacing_steps'])}
 - brand neverDo (HARD — a violation FAILS the gate):
 {chr(10).join(nd_lines)}
-{pass1_section}
+{pass1_section}{signals_section}
 ## Primitive palette (contracts/primitives.yaml — use only these keys)
 {chr(10).join(primitive_signatures())}
 
@@ -1877,7 +1886,7 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
         # anchors/cadence, and required-slot consumption.  The artifact is persisted
         # only for a buildable attempt; a failure is repairable and never reaches HTML.
         import section_wireframe as sw
-        wireframe = sw.plan_wireframe(comp)
+        wireframe = sw.plan_wireframe(comp, brand_dir=brand_yaml_path.parent)
         wire_errors = sw.validate_wireframe(wireframe, comp)
         advanced_hits = composition_lint.lint_wireframe_quality(comp, wireframe)
         if wire_errors or advanced_hits:
