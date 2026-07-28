@@ -27,6 +27,18 @@ python3 -m venv venv
 ./venv/bin/playwright install chromium
 ```
 
+**A plain `git clone` may die partway through.** At ~2.5 GB this repo is big enough that
+GitHub's HTTP/2 transfer gets cut off — `RPC failed; curl 92 HTTP/2 stream … CANCEL`,
+then `fatal: early EOF`, several minutes in, leaving nothing behind. It is not a
+corrupt repo and retrying as-is does not reliably help. Force HTTP/1.1 instead:
+
+```bash
+git -c http.version=HTTP/1.1 clone <repo-url>
+```
+
+That completes in about four minutes on a normal connection. `--depth 1` is **not** a
+workaround; the shallow fetch fails the same way.
+
 **Check that version before creating the venv.** On macOS, `python3` on your `PATH` is
 often Apple's `/usr/bin/python3`, which is 3.9 — building the venv with it produces a
 venv that cannot run this project. If `python3 --version` is older than 3.12, name the
@@ -110,10 +122,17 @@ Practical consequences:
 - `viewer.html` is a stub that redirects into the Studio canvas. Opened as a file it
   cannot redirect anywhere and says so; served by the Studio with no `?version=`, it
   lands on `/studio`.
-- A few tabs are missing on a few projects because the file behind them records the
-  absolute path of the machine that produced it, and this repo is public. Notably
-  there is no Author report on `greenhouse-v2`/`hubspot-v3`/`hubspot-v4` and no
-  Replica fidelity on `greenhouse-4`/`greenhouse-v2`/`hubspot-v4`/`woodwave-v2`.
+- A few document tabs a lane has locally are missing in a clone, and for two different
+  reasons. Walked tab by tab over HTTP against a clean clone of this commit: no **Author
+  report** on `greenhouse-v2`; no **Replica fidelity** on `greenhouse-v2`,
+  `greenhouse-4`, `hubspot-v3`, `hubspot-v4` or `woodwave-v2`; no **Validation** on
+  `greenhouse-4`; no **Changelog** on `relume-test`. Only two of those are about
+  privacy: `runs/greenhouse-v2/brand/author-report.json` and
+  `runs/relume-test/changes.md` record the absolute path of the machine that produced
+  them, and this repo is public. The rest carry no local paths — leaving them out is a
+  size decision, not a safety one. Every other tab, on every one of the eleven, a clone
+  has too. A tab with nothing behind it is not rendered at all, so these show up as an
+  absent pill rather than an empty pane.
 - Re-running the pipeline against a source site means capturing that site yourself
   first. See [Re-running the pipeline](#re-running-the-pipeline).
 
@@ -233,6 +252,7 @@ answer and needs no server, no key and no browser install.
 
 | Symptom | Cause |
 | --- | --- |
+| `fatal: early EOF` / `curl 92 … CANCEL` while cloning | HTTP/2 cutting off a 2.5 GB transfer. Clone with `git -c http.version=HTTP/1.1`. |
 | `SyntaxError` in `run_pipeline.py` | Interpreter older than 3.12. |
 | Studio refuses to start with a Python version message | Same, caught early. Rebuild `venv` on 3.12+. |
 | `ModuleNotFoundError: playwright` | `pip install -e '.[dev]'` not run, or run against the wrong interpreter. |
