@@ -1,6 +1,6 @@
 # AI Brand Studio
 
-> Evidence-first brand extraction + on-brand page generation. Lives at [webflow/ai-brand-studio](https://github.com/webflow/ai-brand-studio); originally forked from [webflow/design-system-extractor](https://github.com/webflow/design-system-extractor). The current architecture is the `brand_pipeline` flow diagrammed below ([HOW-IT-WORKS.md](HOW-IT-WORKS.md) has the full narrative); the legacy screenshot-runner docs are kept further down. See [Local changes](#local-changes) at the bottom for run recipes.
+> Evidence-first brand extraction + on-brand page generation. Lives at [webflow/ai-brand-studio](https://github.com/webflow/ai-brand-studio); originally forked from [webflow/design-system-extractor](https://github.com/webflow/design-system-extractor). The current architecture is the `brand_pipeline` flow diagrammed below ([HOW-IT-WORKS.md](HOW-IT-WORKS.md) has the full narrative); the legacy screenshot-runner docs are kept further down. Start at [docs/getting-started.md](docs/getting-started.md) to get a clone installed and running. See [Local changes](#local-changes) at the bottom for run recipes.
 
 ---
 
@@ -92,6 +92,8 @@ This work points at two high-level opportunities:
 The long-term shape is a library of extracted resources: color systems, type systems, imagery direction, graphics, section structures, interaction patterns, and component recipes that can be recombined into bespoke, good-looking sites for arbitrary prompts.
 
 ## Quick Start
+
+New clone? Follow [docs/getting-started.md](docs/getting-started.md) first — it is the verified setup path (Python 3.12+, dependencies, Playwright browsers, API keys). Everything below assumes that install is done.
 
 Use the repo virtual environment for local commands:
 
@@ -408,7 +410,7 @@ This fork adds the following on top of the upstream repository:
 
 ### Fork-specific files
 
-- **`config-anthropic.yaml`** — drop-in `--config` override that routes both `provider` and `section-detection-provider` to `anthropic/claude-opus-4-1-20250805`, sets `surface-map-mode: contract`, and disables site-asset generation. Useful when the OpenAI key is missing or when `gpt-5.5` with `reasoning-effort: high` exhausts its output budget on hidden reasoning tokens and returns an empty design-system synthesis ("Design system synthesis returned empty output"). The Anthropic route is the known-working path on this fork.
+- **`config-anthropic.yaml`** — drop-in `--config` override that routes both `provider` and `section-detection-provider` to `anthropic/claude-opus-4-8`, sets `surface-map-mode: contract`, disables site-asset generation, and turns framework generation on (it is also the Studio's base config). Useful when the OpenAI key is missing or when `gpt-5.5` with `reasoning-effort: high` exhausts its output budget on hidden reasoning tokens and returns an empty design-system synthesis ("Design system synthesis returned empty output"). The Anthropic route is the known-working path on this fork.
 - **`screenshots/hackathon-test/hatch.png`** — test fixture (Hatch product page screenshot, no source HTML sidecar so source-style extraction is skipped).
 
 ### Fork-specific runs
@@ -454,9 +456,9 @@ Use `studio_server.py` (via `./start-studio.sh`) for both the comparison viewer 
 
 If port 1500 is already taken (e.g. by a plain `http.server`), stop that process first (`lsof -i :1500`) or set `STUDIO_PORT=8800 ./start-studio.sh`.
 
-### Framework site generation (React + Tailwind v4) — default
+### Framework site generation (React + Tailwind v4) — opt-in on the CLI
 
-**Framework-first** is on by default: new runs build React + Tailwind v4 + shadcn-style sites and **skip** vanilla one-shot HTML (`site-claude.html` / `site-gpt55.html`). To also generate vanilla HTML, set `vanilla-site-generation-enabled: true` in config or pass `--vanilla-sites`.
+**Framework generation is off in the CLI baseline and on in the Studio.** `config.default.yaml` — always loaded first — sets `framework-generation-enabled: false`, because brand compose (token CSS + static HTML) is the canonical CLI path; `--framework-sites` is the per-run opt-in. The Studio needs no flag: its base config `config-anthropic.yaml` sets the key to `true` because the Studio's path is framework-first. When framework generation is on, the run builds React + Tailwind v4 + shadcn-style sites and **skips** vanilla one-shot HTML (`site-claude.html` / `site-gpt55.html`); to also generate vanilla HTML, set `vanilla-site-generation-enabled: true` in config or pass `--vanilla-sites`.
 
 This path scaffolds a real Vite package per run item (`runs/{version}/{item}/single/framework-{claude|gpt55}/`), syncs DTCG tokens from the design-system YAML front matter, asks the LLM for `src/App.tsx` (shadcn-style components), runs `npm ci && npm run build` (vite-plugin-singlefile), and copies the result to viewable HTML:
 
@@ -466,21 +468,17 @@ runs/{version}/{item}/single/site-claude-framework.html
 runs/{version}/{item}/single/framework/          # full source package
 ```
 
-Defaults in `config.default.yaml`: `framework-generation-enabled: true`, `vanilla-site-generation-enabled: false`. Studio projects inherit the same via `runs/.studio/{version}.config.yaml`.
+Defaults in `config.default.yaml`: `framework-generation-enabled: false`, `vanilla-site-generation-enabled: false`. That `false` is pinned by `brand_pipeline/tests/test_brand_signal_composition.py::FrameworkDefaultOff`. Studio projects are written with `framework-generation-enabled: true` into `runs/.studio/{version}.config.yaml`. (`AppConfig`'s dataclass default is `True`, but that only applies to a config constructed without `load_config()`, and `load_config()` always reads `config.default.yaml`.)
 
 ```bash
-# Full pipeline (framework only; vanilla skipped unless --vanilla-sites)
-./venv/bin/python run_pipeline.py \
-  --screenshots-dir "screenshots/hackathon-test" \
-  --version vNNN-mine
-
-# Force framework on a run that disabled it in saved config
+# Full pipeline with framework sites (--framework-sites is the CLI opt-in, and
+# also forces framework on for a run whose saved config disabled it)
 ./venv/bin/python run_pipeline.py --framework-sites \
   --screenshots-dir "screenshots/hackathon-test" \
   --version vNNN-mine
 
-# Also generate vanilla one-shot HTML
-./venv/bin/python run_pipeline.py --vanilla-sites \
+# Framework sites plus vanilla one-shot HTML
+./venv/bin/python run_pipeline.py --framework-sites --vanilla-sites \
   --screenshots-dir "screenshots/hackathon-test" \
   --version vNNN-mine
 

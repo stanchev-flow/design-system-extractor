@@ -203,3 +203,95 @@ STUDIO_PORT=1533 ./start-studio.sh                 # /studio → 200
 
 No expensive model or authoring stage was run. Framework generation was not invoked and
 the ungated override was not used.
+
+## 2026-07-28 — The README points at the setup doc and states the real framework default
+
+Closes the three follow-ups left open above, now that `README.md` is no longer being
+edited by another agent. Documentation and git bookkeeping only: no config value, no
+prompt, and no runtime behaviour changed.
+
+### The setup doc was unreachable from the README
+
+A new contributor lands on `README.md`, and nothing there led to
+`docs/getting-started.md`. Two one-line pointers, no duplicated instructions:
+
+- The intro blockquote now says to start at `docs/getting-started.md` to get a clone
+  installed and running.
+- `## Quick Start` opens by sending a new clone to that doc — Python 3.12+,
+  dependencies, Playwright browsers, API keys — and states that the commands below
+  assume the install is done. The Quick Start had always assumed `./venv/` existed
+  without ever saying where it comes from.
+
+### `README.md` claimed framework generation is on by default. It is off.
+
+Verified before writing, not taken on trust: `load_config()` returns
+`framework_generation_enabled=False` with no `--config`, and `True` for
+`config-anthropic.yaml`; `FrameworkDefaultOff` passes.
+
+- The heading "Framework site generation (React + Tailwind v4) — **default**" is now
+  "— **opt-in on the CLI**".
+- The section's opening claim, previously "**Framework-first** is on by default", now
+  reads: *"Framework generation is off in the CLI baseline and on in the Studio.
+  `config.default.yaml` — always loaded first — sets `framework-generation-enabled:
+  false`, because brand compose (token CSS + static HTML) is the canonical CLI path;
+  `--framework-sites` is the per-run opt-in. The Studio needs no flag: its base config
+  `config-anthropic.yaml` sets the key to `true` because the Studio's path is
+  framework-first."* The vanilla-skip behaviour is unchanged and now stated as
+  conditional on framework generation being on, which is what `run_pipeline.py`'s
+  `skip_vanilla_html` actually computes.
+- The defaults line (was `framework-generation-enabled: true`) states `false`, names the
+  test that pins it, says Studio project configs are *written* with `true` into
+  `runs/.studio/{version}.config.yaml` by `make_run_config()` rather than "inheriting the
+  same" as `config.default.yaml`, and disposes of the apparent contradiction of
+  `AppConfig`'s `True` dataclass default.
+
+### Two more stale claims found next to it, both fixed
+
+Both are demonstrably wrong against the files they describe, not judgement calls:
+
+1. The first run recipe in that code block was commented "Full pipeline (framework
+   only; vanilla skipped unless `--vanilla-sites`)" but passed no flags — with the
+   baseline default it builds no framework sites at all. It now passes
+   `--framework-sites`, and the separate "force framework on a run that disabled it"
+   recipe was folded into it, since with the real default those are the same command.
+   The "also generate vanilla" recipe passed `--vanilla-sites` alone, which yields
+   vanilla *only*; it now passes both flags to match its own description.
+2. `## Local Changes` said `config-anthropic.yaml` routes to
+   `anthropic/claude-opus-4-1-20250805`. The file says `claude-opus-4-8`. Corrected, and
+   the entry now also mentions that the file turns framework generation on and is the
+   Studio's base config.
+
+Nothing else in the README makes a claim about a default value: `provider: openai` /
+`model: gpt-5.5`, `site-asset-generation-enabled`, `surface-map-mode: contract` and
+`vanilla-site-generation-enabled: false` all check out against
+`config.default.yaml` and `config-anthropic.yaml` as loaded.
+
+### `src/screenshot_to_template.egg-info/` is untracked
+
+`git rm -r --cached src/screenshot_to_template.egg-info` — six files removed from the
+index, all six still on disk. `*.egg-info/` was already in `.gitignore`, and
+`git check-ignore -v` confirms line 18 of `.gitignore` is what catches them, so the
+directory `pip install -e .` rewrites no longer appears in `git status` at all.
+
+- `.gitignore`: the comment no longer tells the reader to expect a dirty tree and to
+  `git checkout --` the directory; it records that the tracked copy was untracked and
+  that a fresh clone now stays clean through install.
+- `docs/getting-started.md`: the "`git status` dirty right after install" row in the
+  symptom table said this was expected and harmless. It now says it should not happen,
+  and that anything dirty is the reader's own change.
+
+### Verification
+
+```
+./venv/bin/python -c "load_config().framework_generation_enabled"   # False
+./venv/bin/python -c "load_config('config-anthropic.yaml')…"        # True
+./venv/bin/python -m pytest brand_pipeline/tests/test_brand_signal_composition.py \
+  -k FrameworkDefaultOff -q                                        # 1 passed
+git check-ignore -v src/screenshot_to_template.egg-info/PKG-INFO    # .gitignore:18
+```
+
+Staged file-by-file — `README.md`, `.gitignore`, `docs/getting-started.md`,
+`docs/changes.md` and the six index deletions — because other agents have uncommitted
+work in `brand_pipeline/compose_replica.py`, `studio_server.py`, `tests/` and
+`runs/hubspot-v2/` in this tree. None of it was staged. No secrets in the diff; no key,
+token, or URL was added.
