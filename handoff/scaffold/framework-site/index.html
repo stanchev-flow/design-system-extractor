@@ -6,16 +6,13 @@
     <!-- Neutral scaffold default. scaffold_framework_project() stamps the brand's
          own title here per run; this placeholder must never read as a real brand. -->
     <title>Design system scaffold</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- SCAFFOLD DEFAULT webfont, not brand-derived: the framework lane does not yet
-         resolve this link from the brand's measured @font-face, so a generated app
-         can load a typeface its brand does not use. Fix belongs in the lane's
-         webfont handling, not here. -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- brand-webfont:start -->
+    <!-- No webfont by default. scaffold_framework_project() replaces this region with
+         the link the ACTIVE brand's own type facts resolve to, and leaves it empty
+         when the brand delivers its faces some other way or delivers none. A
+         hardcoded link here would let a generated app load a typeface its brand does
+         not use, which reads as correct and is not. -->
+    <!-- brand-webfont:end -->
   </head>
   <body>
     <div id="root"></div>

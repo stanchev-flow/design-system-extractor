@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import copy
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -259,11 +260,16 @@ class DeterminismChromeTests(unittest.TestCase):
 
 
 class FontStackShapeTests(unittest.TestCase):
-    """Regression: a DECLARED multi-member family stack (a self-hosted brand face that
-    already ships its own generic fallback, e.g. ``"HubSpot Sans", sans-serif``) must be
-    emitted VERBATIM — never re-wrapped in an extra layer of quotes (which produced one
-    invalid family name that fell through to a serif proxy), and the generic-family
-    classifier must not read the "serif" substring inside "sans-serif"."""
+    """The font stack is gated on DELIVERABILITY, never on the syntax of the family
+    declaration. A declared multi-member stack is emitted verbatim — never re-wrapped
+    in an extra layer of quotes (which produced one invalid family name) — and the
+    generic-family classifier must not read the "serif" substring inside "sans-serif".
+    But "it is written as a stack" was never evidence that the face ships: a stack
+    whose members the brand does not self-host renders as whatever generic it ends in,
+    so it gets the same substitution a bare family name gets."""
+
+    def _hosted(self, *families):
+        return set(families)
 
     def test_generic_family_not_fooled_by_sans_serif_suffix(self):
         self.assertEqual(tc._generic_family('"HubSpot Sans", sans-serif', ""),
@@ -273,13 +279,33 @@ class FontStackShapeTests(unittest.TestCase):
         self.assertEqual(tc._generic_family("Melodrama", "Playfair Display"), "serif")
         self.assertEqual(tc._generic_family("Satoshi", "Manrope"), "sans-serif")
 
-    def test_declared_stack_preserved_verbatim_no_proxy(self):
-        stack, used = tc._family_css('"HubSpot Sans", sans-serif', None)
-        self.assertEqual(stack, '"HubSpot Sans", sans-serif')
-        self.assertEqual(used, set())            # no off-brand Google proxy injected
+    def test_self_hosted_declared_stack_preserved_verbatim_no_proxy(self):
+        stack, used = tc._family_css('"Brandika Sans", sans-serif', None,
+                                     self_hosted=self._hosted("Brandika Sans"))
+        self.assertEqual(stack, '"Brandika Sans", sans-serif')
+        self.assertEqual(used, set())            # no off-brand proxy ahead of the face
         self.assertNotIn("', '", stack)          # not a re-wrapped single-token stack
-        multi, _ = tc._family_css('"A Serif Face", "B Serif", serif', None)
+        multi, used = tc._family_css('"A Serif Face", "B Serif", serif', None,
+                                     self_hosted=self._hosted("B Serif"))
         self.assertEqual(multi, '"A Serif Face", "B Serif", serif')
+        self.assertEqual(used, set())            # ANY self-hosted member delivers
+
+    def test_undeliverable_declared_stack_gets_a_substitution(self):
+        """The previously-broken case: a quoted multi-member stack with no self-hosted
+        face and no authored proxy used to be passed through untouched, so the page
+        rendered the declaration's own system fallback and nothing recorded it."""
+        stack, used = tc._family_css('"Brandika Sans", Arial, sans-serif', None)
+        self.assertEqual(stack, "\"Brandika Sans\", 'Lexend Deca', Arial, sans-serif")
+        self.assertEqual(used, {"Lexend Deca"})
+        serif, used = tc._family_css('"Brandika Serif", Georgia, serif', None)
+        self.assertEqual(serif, "\"Brandika Serif\", 'Source Serif 4', Georgia, serif")
+        self.assertEqual(used, {"Source Serif 4"})
+
+    def test_substitution_precedes_the_declarations_own_fallbacks(self):
+        """A declaration's fallback members are usually locally installed faces, so a
+        substitute appended behind them would never be reached."""
+        stack, _ = tc._family_css('"Brandika Serif", Georgia, serif', None)
+        self.assertLess(stack.index("Source Serif 4"), stack.index("Georgia"))
 
     def test_bare_family_legacy_emission_byte_stable(self):
         # single bare name keeps the historical single-quoted family + loadable proxy
@@ -289,21 +315,168 @@ class FontStackShapeTests(unittest.TestCase):
         stack, used = tc._family_css("Melodrama", "Playfair Display")
         self.assertEqual(stack, "'Melodrama', 'Playfair Display', serif")
         self.assertIn("Playfair Display", used)
+        # a self-hosted bare family keeps its proxy tail too: the face is first in the
+        # stack and wins, so nothing about the emission needs to change.
+        hosted, _ = tc._family_css("Melodrama", "Playfair Display",
+                                   self_hosted=self._hosted("Melodrama"))
+        self.assertEqual(hosted, "'Melodrama', 'Playfair Display', serif")
 
-    def test_emit_layer1_declared_stack_font_tokens(self):
+    def test_deliverable_families_reads_the_brand_registry(self):
+        doc = copy.deepcopy(FIXTURE)
+        doc["selfHostedFonts"] = [
+            {"family": "Brandika Sans",
+             "faces": [{"weight": 400, "files": ["BrandikaSans-Regular.woff2"]}]},
+            {"family": "Registered But Empty", "faces": [{"weight": 400, "files": []}]}]
+        self.assertEqual(tc.deliverable_families(doc), {"Brandika Sans"})
+        with tempfile.TemporaryDirectory() as td:
+            # registry present, files never captured -> a declaration, not a delivery
+            self.assertEqual(tc.deliverable_families(doc, td), set())
+            fonts = Path(td) / "assets" / "fonts"
+            fonts.mkdir(parents=True)
+            (fonts / "BrandikaSans-Regular.woff2").write_bytes(b"x")
+            self.assertEqual(tc.deliverable_families(doc, td), {"Brandika Sans"})
+
+    def test_emit_layer1_self_hosted_stack_font_tokens(self):
         doc = copy.deepcopy(FIXTURE)
         doc["tokens"]["type"]["body"]["family"] = '"Brandika Sans", sans-serif'
         doc["tokens"]["type"]["display-hero"]["family"] = '"Brandika Serif", serif'
+        doc["selfHostedFonts"] = [
+            {"family": f, "faces": [{"weight": 400, "files": [f"{f}.woff2"]}]}
+            for f in ("Brandika Sans", "Brandika Serif")]
         _, _, index, _, _ = tc.emit_layer1(doc)
         self.assertEqual(index["--font-body"], '"Brandika Sans", sans-serif')
         self.assertEqual(index["--font-display-hero"], '"Brandika Serif", serif')
         self.assertNotIn("Source Serif 4", index["--font-body"])   # no serif proxy
 
-    def test_declared_stack_role_loads_no_google_proxy(self):
+    def test_emit_layer1_undeliverable_stack_gets_substituted(self):
         doc = copy.deepcopy(FIXTURE)
         doc["tokens"]["type"]["body"]["family"] = '"Brandika Sans", sans-serif'
+        doc["tokens"]["type"]["display-hero"]["family"] = '"Brandika Serif", serif'
+        _, _, index, _, _ = tc.emit_layer1(doc)
+        self.assertIn("Lexend Deca", index["--font-body"])
+        self.assertIn("Source Serif 4", index["--font-display-hero"])
+
+    def test_self_hosted_stack_role_loads_no_webfont_proxy(self):
+        doc = copy.deepcopy(FIXTURE)
+        doc["tokens"]["type"]["body"]["family"] = '"Brandika Sans", sans-serif'
+        doc["selfHostedFonts"] = [
+            {"family": "Brandika Sans",
+             "faces": [{"weight": 400, "files": ["BrandikaSans-Regular.woff2"]}]}]
         _, used = tc.font_stack(doc, "body")
         self.assertEqual(used, set())
+
+    def test_one_family_gets_one_substitute_brand_wide(self):
+        """Captures routinely declare the same family with inconsistent trailing
+        generics; the same brand family must not render in two genres on one page."""
+        doc = copy.deepcopy(FIXTURE)
+        doc["tokens"]["type"]["display-hero"]["family"] = "'Brandika Serif', Georgia, serif"
+        doc["tokens"]["type"]["footer-sitemap-link"] = dict(
+            doc["tokens"]["type"]["body"],
+            family="'Brandika Serif', Georgia, sans-serif")
+        hero, _ = tc.font_stack(doc, "display-hero")
+        footer, _ = tc.font_stack(doc, "footer-sitemap-link")
+        self.assertIn("Source Serif 4", hero)
+        self.assertIn("Source Serif 4", footer)
+
+
+class TypographyDeliveryFactTests(unittest.TestCase):
+    """Undeliverable-and-unproxied must be a RECORDED fact, not a silent pass."""
+
+    def _doc(self, family, **role):
+        doc = copy.deepcopy(FIXTURE)
+        doc["tokens"]["type"]["body"] = dict(doc["tokens"]["type"]["body"],
+                                             family=family, **role)
+        return doc
+
+    def _row(self, doc, family, brand_dir=None):
+        rows = [r for r in tc.typography_delivery(doc, brand_dir)
+                if r["family"] == family]
+        self.assertTrue(rows, f"no delivery row for {family}")
+        return rows[0]
+
+    def test_self_hosted_family_is_recorded_as_delivered(self):
+        doc = self._doc('"Brandika Sans", sans-serif')
+        doc["selfHostedFonts"] = [
+            {"family": "Brandika Sans",
+             "faces": [{"weight": 400, "files": ["BrandikaSans-Regular.woff2"]}]}]
+        row = self._row(doc, "Brandika Sans")
+        self.assertEqual(row["status"], tc.DELIVERY_SELF_HOSTED)
+        self.assertTrue(row["selfHosted"])
+        self.assertEqual(row["roles"][:1], ["body"])
+
+    def test_undeliverable_family_records_its_substitution(self):
+        row = self._row(self._doc('"Brandika Sans", Arial, sans-serif'), "Brandika Sans")
+        self.assertEqual(row["status"], tc.DELIVERY_PROXY)
+        self.assertEqual(row["proxy"], "Lexend Deca")
+        self.assertEqual(row["proxySource"], "generic-default")
+        self.assertFalse(row["selfHosted"])
+
+    def test_declared_family_that_is_itself_a_webfont_needs_no_stand_in(self):
+        """A brand whose declared family is in the loadable webfont catalog gets that
+        family loaded — the row must say so rather than name a stand-in the page never
+        uses. Guards the composer's own rule (declared family first, proxy second)."""
+        loadable = sorted(tc._PROXY_GF)[0]
+        row = self._row(self._doc(loadable), loadable)
+        self.assertEqual(row["status"], tc.DELIVERY_PROXY)
+        self.assertEqual(row["proxy"], loadable)
+        self.assertEqual(row["proxySource"], "declared")
+        self.assertIn("loaded as a webfont", tc.delivery_note([row]))
+
+    def test_family_with_no_loadable_substitute_is_a_named_gap(self):
+        row = self._row(self._doc("Brandika Mono", renderProxy="Not A Loadable Face"),
+                        "Brandika Mono")
+        self.assertEqual(row["status"], tc.DELIVERY_UNAVAILABLE)
+        self.assertIn("does not render", row["note"])
+
+    def test_registered_but_uncaptured_files_are_not_a_delivery(self):
+        """A registry entry is a declaration; only files on disk are a delivery. The
+        bare family still carries its authored proxy, so the substitute is what
+        renders — and the row says so instead of claiming the brand face."""
+        doc = self._doc("Brandika Display", renderProxy="Lexend Deca")
+        doc["selfHostedFonts"] = [
+            {"family": "Brandika Display",
+             "faces": [{"weight": 400, "files": ["BrandikaDisplay.woff2"]}]}]
+        with tempfile.TemporaryDirectory() as td:
+            row = self._row(doc, "Brandika Display", td)
+        self.assertFalse(row["selfHosted"])
+        self.assertEqual(row["status"], tc.DELIVERY_PROXY)
+        self.assertIn("no face file present on disk", row["note"])
+
+    def test_registered_but_uncaptured_stack_has_nothing_left_to_render_it(self):
+        """The same gap in a declared multi-member stack: the stack is emitted whole
+        (its registry entry suppressed a substitute), the files never arrived, so the
+        page renders a system fallback and the row names that outcome."""
+        doc = self._doc('"Brandika Display", Georgia, serif')
+        doc["selfHostedFonts"] = [
+            {"family": "Brandika Display",
+             "faces": [{"weight": 400, "files": ["BrandikaDisplay.woff2"]}]}]
+        with tempfile.TemporaryDirectory() as td:
+            row = self._row(doc, "Brandika Display", td)
+        self.assertEqual(row["status"], tc.DELIVERY_UNAVAILABLE)
+        self.assertIn("no face file present on disk", row["note"])
+        self.assertIn("Brandika Display", tc.delivery_note([row]))
+
+    def test_delivery_note_discloses_only_undelivered_faces(self):
+        doc = self._doc('"Brandika Sans", sans-serif')
+        doc["selfHostedFonts"] = [
+            {"family": "Brandika Sans",
+             "faces": [{"weight": 400, "files": ["BrandikaSans-Regular.woff2"]}]}]
+        # every declared family self-hosted -> nothing to disclose, bytes unchanged
+        rows = [r for r in tc.typography_delivery(doc)
+                if r["status"] != tc.DELIVERY_SELF_HOSTED]
+        self.assertEqual(tc.delivery_note(
+            [r for r in tc.typography_delivery(doc) if r not in rows]), "")
+        note = tc.delivery_note(tc.typography_delivery(
+            self._doc('"Brandika Sans", Arial, sans-serif')))
+        self.assertIn("Brandika Sans -> Lexend Deca", note)
+
+    def test_manifest_carries_the_delivery_facts(self):
+        bundle = tc.build_page_tokens(self._doc('"Brandika Sans", Arial, sans-serif'))
+        families = {r["family"] for r in bundle.manifest["typographyDelivery"]}
+        self.assertIn("Brandika Sans", families)
+        self.assertEqual(bundle.manifest["typographyDelivery"],
+                         bundle.typography_delivery)
+        self.assertIn("typography delivery", bundle.css)
 
 
 class ButtonFontFactSchemaTests(unittest.TestCase):

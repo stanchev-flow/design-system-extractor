@@ -37,9 +37,24 @@
   --color-graphic-blue: #c1d7ff; /* --_theme---border--blue */
   --color-graphic-logo: #959494; /* rgb(149,148,148) */
 
-  /* ---- typography families (scaffold default stack; replaced per run) ---- */
-  --font-heading: "Instrument Sans", Georgia, system-ui, sans-serif;
-  --font-body: "Instrument Sans", Georgia, system-ui, sans-serif;
+  /* ---- typography (NEUTRAL scaffold default; stamped per run from brand facts)
+
+       These must never name a real typeface. An unstamped run then reads as
+       unbranded — recoverable — instead of wearing some previous brand's face,
+       which is not. scaffold_framework_project() replaces both stacks (and the
+       webfont link in index.html) from the active brand's own font facts.
+
+       The width axis is a real typographic fact for variable faces that carry
+       one, so it is a token rather than a constant: a brand whose measured face
+       has a condensed/expanded axis sets it, and everyone else inherits
+       `normal`. A hardcoded width narrows every generated app to one brand's
+       typography. ---- */
+  --font-heading: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-stretch-heading: normal;
+  --font-stretch-body: normal;
 
   /* ---- role type scale (size / line-height / tracking / weight) ---- */
   --text-h1: 56px;
@@ -119,13 +134,7 @@
   }
   body {
     font-family: var(--font-body);
-    /* SCAFFOLD DEFAULT width axis, carried over from a source whose typeface
-       shipped a SemiCondensed width. It is NOT token-driven and NOT gated on the
-       brand having a variable-width face, so it narrows every generated app's
-       body text. Left as-is deliberately (changing it changes rendering for
-       every lane); the fix is to drive font-stretch from the brand's measured
-       font facts, or drop it when no width axis was measured. */
-    font-stretch: 87.5%;
+    font-stretch: var(--font-stretch-body, normal);
     background-color: var(--color-surface-primary);
     color: var(--color-text-primary);
     font-size: 15px;
@@ -134,7 +143,7 @@
   /* Headings derive from page/section heading evidence only (typography rule). */
   h1, h2, h3 {
     font-family: var(--font-heading);
-    font-stretch: 82%;
+    font-stretch: var(--font-stretch-heading, normal);
   }
   ::selection {
     background: var(--color-accent-highlight);
@@ -167,7 +176,7 @@
     gap: 8px;
     white-space: nowrap;
     font-family: var(--font-body);
-    font-stretch: 87.5%;
+    font-stretch: var(--font-stretch-body, normal);
     font-weight: 500;
     font-size: var(--text-control);
     line-height: 1.2;

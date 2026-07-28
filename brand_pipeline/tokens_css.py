@@ -226,32 +226,95 @@ def _generic_family(family, proxy):
     return "serif" if any(h in base for h in _SERIF_HINTS) else "sans-serif"
 
 
-def _family_css(fam: str, render_proxy: str | None):
-    """Build a CSS font-family value + the set of Google proxies to load for a declared
-    family. Two shapes, both fact-gated and byte-stable:
+def deliverable_families(doc, brand_dir=None) -> set[str]:
+    """The families this brand can actually DELIVER as its own face.
 
-    * a BARE single family name (``Inter``, ``Melodrama``) keeps the historical
-      single-quoted emission plus an auto-loadable Google proxy so the preview reads
-      on-brand instead of a raw system fallback;
-    * a declared MULTI-MEMBER stack (``"HubSpot Sans", sans-serif`` — e.g. a
-      self-hosted brand face that already ships its own generic fallback) is preserved
-      VERBATIM. Its members are already valid family tokens, so they are emitted as-is
-      (never re-wrapped in an extra layer of quotes, which produced one invalid family
-      name) and NO off-brand auto-proxy is injected ahead of the brand's own face."""
-    generic = _generic_family(fam, render_proxy or "")
+    A face is deliverable when the brand REGISTERS it in ``selfHostedFonts`` with at
+    least one face file — that registry is what makes compose_section emit the
+    ``@font-face`` blocks and copy the files next to the render. When ``brand_dir`` is
+    given the registry is additionally checked against disk (``assets/fonts/``), so a
+    registry entry whose files were never captured is reported as what it is: a
+    declaration, not a delivery.
+
+    Brand-agnostic: nothing here knows any family name — it reads the brand's own
+    declarations only."""
+    hosted: set[str] = set()
+    entries = doc.get("selfHostedFonts") if isinstance(doc, dict) else None
+    fonts_dir = Path(brand_dir) / "assets" / "fonts" if brand_dir else None
+    for entry in (entries or []):
+        if not isinstance(entry, dict):
+            continue
+        fam = str(entry.get("family") or "").strip()
+        if not fam:
+            continue
+        files = [str(x).strip() for f in (entry.get("faces") or [])
+                 if isinstance(f, dict) for x in (f.get("files") or [])
+                 if isinstance(x, str) and str(x).strip()]
+        if not files:
+            continue
+        if fonts_dir is not None and not any((fonts_dir / n).exists() for n in files):
+            continue
+        hosted.add(fam)
+    return hosted
+
+
+def _stack_members(fam: str, hint: str = "") -> tuple[list[str], list[str], str]:
+    """Split a declared family value into (member tokens without the trailing CSS
+    generic, their unquoted names, the resolved generic keyword). ``hint`` is the
+    role's authored proxy, which the generic classifier reads for bare family names
+    that carry no generic keyword of their own."""
+    generic = _generic_family(fam, hint or "")
     members = _split_families(fam)
+    if members and _unquote_family(members[-1]).lower() in _CSS_GENERICS:
+        members = members[:-1]
+    return members, [_unquote_family(m) for m in members], generic
+
+
+def _family_css(fam: str, render_proxy: str | None, *, self_hosted=(), proxy_for=None):
+    """Build a CSS font-family value + the set of webfont proxies to load.
+
+    The decision is driven by whether the declared face is DELIVERABLE, never by the
+    syntax of the declaration. A declaration is only a claim; a face renders when the
+    brand self-hosts it (``selfHostedFonts`` — @font-face + copied files) or when a
+    loadable proxy is put in front of the declaration's own fallbacks.
+
+    * a BARE single family name keeps the historical single-quoted emission plus its
+      proxy (authored ``renderProxy``, else the generic's default), so it never
+      degrades to a raw system face;
+    * a declared MULTI-MEMBER stack is emitted with its members verbatim — they are
+      already valid family tokens and must not be re-wrapped in another layer of
+      quotes. When one of those members is self-hosted the stack DELIVERS its own
+      face and no substitute is injected ahead of it. When none is, the primary family
+      cannot render, so the proxy is the substitution actually doing the rendering and
+      is inserted DIRECTLY AFTER the primary family — a declaration's own fallback
+      members are usually locally installed faces, so a substitute appended behind
+      them would never be reached.
+
+    ``proxy_for`` (``substitution_map``) keeps one family's substitute identical across
+    every role that declares it, so a family whose declarations disagree about their
+    trailing generic cannot render as two different genres in one page.
+
+    Returns ``(css_value, proxies_to_load)``. An undeliverable family for which no
+    proxy exists returns no proxy at all: that is a real gap, and
+    ``typography_delivery`` records it rather than letting it pass silently."""
+    members, names, generic = _stack_members(fam, render_proxy or "")
+    hosted = {str(f) for f in (self_hosted or ())}
     used: set[str] = set()
-    is_stack = len(members) > 1 or "'" in fam or '"' in fam
+    is_stack = len(_split_families(fam)) > 1 or "'" in fam or '"' in fam
     if is_stack:
-        if members and _unquote_family(members[-1]).lower() in _CSS_GENERICS:
-            members = members[:-1]
         parts = list(members)
-        # only an explicitly AUTHORED proxy joins a declared stack (the auto proxy is
-        # for bare names that would otherwise fall back to a system font).
-        if render_proxy and _unquote_family(render_proxy) not in {
-                _unquote_family(m) for m in members}:
-            parts.append(f"'{render_proxy}'")
-            used.add(render_proxy)
+        if hosted & set(names):
+            # the stack delivers a brand face; an authored proxy stays a tail
+            # fallback behind it rather than a substitution.
+            if render_proxy and _unquote_family(render_proxy) not in names:
+                parts.append(f"'{render_proxy}'")
+                used.add(render_proxy)
+        else:
+            proxy = (render_proxy or (proxy_for or {}).get(names[0] if names else "")
+                     or _PROXY_FOR_GENERIC.get(generic))
+            if proxy and _unquote_family(proxy) not in names:
+                parts.insert(1, f"'{proxy}'")
+                used.add(proxy)
         parts.append(generic)
         return ", ".join(parts), used
     proxy = render_proxy or _PROXY_FOR_GENERIC.get(generic)
@@ -263,12 +326,158 @@ def _family_css(fam: str, render_proxy: str | None):
     return ", ".join(parts), used
 
 
-def font_stack(doc, role, fallback_family="sans-serif"):
+def font_stack(doc, role, fallback_family="sans-serif", *, self_hosted=None):
     t = type_role(doc, role)
     fam = t.get("family")
     if not fam:
         return fallback_family, set()
-    return _family_css(fam, t.get("renderProxy"))
+    hosted = deliverable_families(doc) if self_hosted is None else self_hosted
+    return _family_css(fam, t.get("renderProxy"), self_hosted=hosted,
+                       proxy_for=substitution_map(doc))
+
+
+# ── typography DELIVERY facts ─────────────────────────────────────────────────────
+# Every declared family resolves to exactly one of three outcomes, and each of them is
+# RECORDED (tokens.manifest.json + a tokens-CSS disclosure comment). A declared face
+# that renders as an unrecorded generic is the failure mode these facts close.
+DELIVERY_SELF_HOSTED = "self-hosted"     # brand ships the files; @font-face is emitted
+DELIVERY_PROXY = "proxy-substituted"     # a loadable stand-in renders in its place
+DELIVERY_UNAVAILABLE = "unavailable"     # knowingly not delivered — a named gap
+
+
+def declared_type_families(doc) -> dict[str, list[str]]:
+    """Declared family value -> the type roles that request it (order-stable)."""
+    out: dict[str, list[str]] = {}
+    types = (doc or {}).get("tokens", {}).get("type", {}) or {}
+    roles = list(_REQUIRED_TYPE_ROLES) + list(_OPTIONAL_TYPE_ROLES)
+    scale = types.get("scale")
+    native = scale if isinstance(scale, dict) else {
+        k: v for k, v in types.items()
+        if isinstance(v, dict) and ("family" in v or "sizeRem" in v)}
+    roles += [k for k in (native or {}) if k not in roles]
+    for role in roles:
+        t = type_role(doc, role)
+        fam = t.get("family") if isinstance(t, dict) else None
+        if not fam:
+            continue
+        out.setdefault(str(fam), [])
+        if role not in out[str(fam)]:
+            out[str(fam)].append(role)
+    return out
+
+
+def substitution_map(doc) -> dict[str, str]:
+    """Declared family name -> the ONE substitute that stands in for it brand-wide.
+
+    Captures routinely declare the same family with inconsistent trailing generics
+    across roles. Resolving the substitute per declaration would then render one brand
+    family in two different genres on the same page, so the first declaration that
+    resolves a substitute fixes it for that family. An authored ``renderProxy`` always
+    wins for the role that carries it."""
+    out: dict[str, str] = {}
+    for fam, roles in declared_type_families(doc).items():
+        authored = (type_role(doc, roles[0]) or {}).get("renderProxy")
+        _members, names, generic = _stack_members(fam, authored or "")
+        if not names or names[0] in out:
+            continue
+        proxy = authored or _PROXY_FOR_GENERIC.get(generic)
+        if proxy:
+            out[names[0]] = proxy
+    return out
+
+
+def typography_delivery(doc, brand_dir=None) -> list[dict]:
+    """How every declared type family is ACTUALLY delivered — the fact that turns a
+    silent generic fallback into a recorded outcome.
+
+    One row per declared family value: the primary family, the roles that request it,
+    whether the brand self-hosts it, the substitute that renders in its place, and the
+    resulting ``status`` (``self-hosted`` / ``proxy-substituted`` / ``unavailable``).
+    ``unavailable`` is not an error here — it is the honest record of a face this
+    project cannot redistribute and has no stand-in for.
+
+    The status is read off the stack this brand ACTUALLY emits, not recomputed beside
+    it: a substitute counts only where it lands ahead of the declaration's own
+    fallbacks, since a member behind a locally-installed face is never reached. The
+    one thing this adds on top of the emitters' view is disk truth — pass ``brand_dir``
+    and a family registered as self-hosted whose files were never captured is reported
+    as the gap it is instead of the delivery it claims to be."""
+    hosted = deliverable_families(doc, brand_dir)
+    registered = deliverable_families(doc)
+    substitutes = substitution_map(doc)
+    rows: list[dict] = []
+    for fam, roles in declared_type_families(doc).items():
+        proxy_authored = (type_role(doc, roles[0]) or {}).get("renderProxy")
+        _members, names, generic = _stack_members(fam, proxy_authored or "")
+        primary = names[0] if names else ""
+        emitted, used = _family_css(fam, proxy_authored, self_hosted=registered,
+                                    proxy_for=substitutes)
+        # the member immediately after the primary family is the only position a
+        # substitute can render from; anything further back sits behind a fallback.
+        out = _split_families(emitted)
+        front = _unquote_family(out[1]) if len(out) > 1 else ""
+        substitute = front if front in used and front in _PROXY_GF else ""
+        # a declared family that is ITSELF a loadable webfont needs no stand-in: the
+        # composer links the family the brand actually declared.
+        loadable_itself = bool(primary) and primary in _PROXY_GF
+        row = {
+            "family": primary,
+            "declared": fam,
+            "roles": roles,
+            "generic": generic,
+            "selfHosted": bool(hosted & set(names)),
+        }
+        if row["selfHosted"]:
+            row["status"] = DELIVERY_SELF_HOSTED
+        elif loadable_itself:
+            row["status"] = DELIVERY_PROXY
+            row["proxy"] = primary
+            row["proxySource"] = "declared"
+        elif substitute:
+            row["status"] = DELIVERY_PROXY
+            row["proxy"] = substitute
+            row["proxySource"] = ("declared" if substitute in names
+                                  else "authored" if proxy_authored
+                                  else "generic-default")
+            if registered & set(names):
+                row["note"] = ("registered in selfHostedFonts but no face file present "
+                               "on disk, so the substitute is what renders")
+        else:
+            row["status"] = DELIVERY_UNAVAILABLE
+            if registered & set(names):
+                row["note"] = ("registered in selfHostedFonts but no face file present "
+                               "on disk — no @font-face is emitted and the stack puts "
+                               "no substitute ahead of its own fallbacks")
+            elif proxy_authored or substitutes.get(primary):
+                row["proxy"] = proxy_authored or substitutes.get(primary)
+                row["note"] = ("a proxy is named but does not render: it is not a "
+                               "loadable webfont, or it sits behind the declaration's "
+                               "own fallbacks")
+        rows.append(row)
+    return sorted(rows, key=lambda r: (r["family"], r["declared"]))
+
+
+def delivery_note(rows: list[dict]) -> str:
+    """One-line disclosure for the tokens-CSS header. Empty when every declared family
+    is self-hosted (nothing to disclose), so fully self-hosting brands stay
+    byte-stable."""
+    parts, seen = [], set()
+    for r in rows:
+        if r.get("status") == DELIVERY_SELF_HOSTED or r["family"] in seen:
+            continue
+        seen.add(r["family"])
+        if r.get("status") == DELIVERY_PROXY and r.get("proxy") == r["family"]:
+            parts.append(f"{r['family']} (loaded as a webfont, not self-hosted)")
+        elif r.get("status") == DELIVERY_PROXY:
+            parts.append(f"{r['family']} -> {r['proxy']} ({r.get('proxySource', 'proxy')})")
+        elif r.get("note"):
+            parts.append(f"{r['family']} -> UNAVAILABLE ({r['note']})")
+        else:
+            parts.append(f"{r['family']} -> UNAVAILABLE (no self-hosted face, no loadable proxy)")
+    if not parts:
+        return ""
+    return ("/* typography delivery — declared families this brand does NOT self-host, "
+            "and what renders instead: " + "; ".join(parts) + ". */")
 
 
 def google_fonts_link(proxies):
@@ -295,6 +504,7 @@ class TokensBundle:
     missing: list[str]
     manifest: dict
     disabled_devices: list[str] = field(default_factory=list)
+    typography_delivery: list[dict] = field(default_factory=list)
 
 
 def _slug(name: str) -> str:
@@ -352,11 +562,13 @@ _REQUIRED_SURFACES = ("surface/primary", "surface/panel", "surface/inverse",
 _BP_MAX = (("tablet", "991px"), ("mobileL", "767px"), ("mobile", "479px"))
 
 
-def _emit_type_tier(role_slug: str, t: dict, lines, bp_lines, index):
+def _emit_type_tier(role_slug: str, t: dict, lines, bp_lines, index, self_hosted=(),
+                    proxy_for=None):
     """Emit the full --font/-size/-weight/-leading/-case/-tracking set for ONE tier."""
     fam = t.get("family")
     if fam:
-        stack, _ = _family_css(fam, t.get("renderProxy"))
+        stack, _ = _family_css(fam, t.get("renderProxy"), self_hosted=self_hosted,
+                               proxy_for=proxy_for)
         lines.append(f"  --font-{role_slug}: {stack};")
         index[f"--font-{role_slug}"] = stack
     size = t.get("sizeRem")
@@ -396,13 +608,24 @@ def emit_layer1(doc: dict) -> tuple[list[str], dict[str, list[str]], dict, list,
     ``:root``-body declarations, ``bp_lines`` the responsive ladder per breakpoint,
     ``index`` maps every emitted token to its resolved value, ``missing`` lists
     REQUIRED brand.yaml paths that failed to resolve, and ``disabled_devices`` names
-    the devices whose OPTIONAL tokens are absent."""
+    the devices whose OPTIONAL tokens are absent.
+
+    Font delivery is judged from the brand's ``selfHostedFonts`` REGISTRY alone, with
+    no disk access, because every other emitter of a font value (the legacy :root
+    vars, the composer's webfont-link decision) judges it the same way from the same
+    document — a stack that disagreed with the links beside it would name a face
+    nothing loads. Whether the registered files are actually on disk is a separate,
+    reported question: see ``typography_delivery``."""
     tokens = (doc or {}).get("tokens", {}) or {}
     lines: list[str] = []
     bp_lines: dict[str, list[str]] = {bp: [] for bp, _ in _BP_MAX}
     index: dict[str, str] = {}
     missing: list[str] = []
     disabled: list[str] = []
+    # which declared faces this brand can actually deliver — the font stacks below are
+    # gated on delivery, never on how the family value happens to be written.
+    self_hosted = deliverable_families(doc)
+    proxy_for = substitution_map(doc)
 
     # colors
     colors = tokens.get("colors") or {}
@@ -441,7 +664,7 @@ def emit_layer1(doc: dict) -> tuple[list[str], dict[str, list[str]], dict, list,
                                  "ghost-watermark": "ghost-watermark",
                                  "footer-sitemap-link": "footer-display-links"}[role])
             continue
-        _emit_type_tier(slug, t, lines, bp_lines, index)
+        _emit_type_tier(slug, t, lines, bp_lines, index, self_hosted, proxy_for)
         emitted_tiers.add(slug)
     types = tokens.get("type") or {}
     native = types.get("scale") if isinstance(types.get("scale"), dict) else {
@@ -453,7 +676,7 @@ def emit_layer1(doc: dict) -> tuple[list[str], dict[str, list[str]], dict, list,
         if slug in emitted_tiers:
             continue
         t = _normalize_scale_entry(node, fams) if "scale" in types else node
-        _emit_type_tier(slug, t, lines, bp_lines, index)
+        _emit_type_tier(slug, t, lines, bp_lines, index, self_hosted, proxy_for)
         emitted_tiers.add(slug)
 
     # spacing
@@ -570,7 +793,8 @@ def emit_layer1(doc: dict) -> tuple[list[str], dict[str, list[str]], dict, list,
             # body face). A declared family is composed via the shared stack builder.
             _bfont = b.get("font") or b.get("fontFamily")
             if _bfont:
-                stack, _ = _family_css(_bfont, None)
+                stack, _ = _family_css(_bfont, None, self_hosted=self_hosted,
+                                       proxy_for=proxy_for)
                 lines.append(f"  {prefix}-font: {stack};")
                 index[f"{prefix}-font"] = stack
             # measured DARK-SURFACE variant (fix1 2026-07 item-10): a family's
@@ -655,6 +879,7 @@ def build_page_tokens(doc: dict, style_ctx=None, *, brand_yaml_path=None) -> Tok
     DECISIONS.md #2). The css carries a deterministic manifest header (no timestamp,
     so regenerated pages stay byte-identical); the full manifest (with ``generated_at``
     + the resolved ``index``) is returned for ``write_manifest``."""
+    brand_dir = Path(brand_yaml_path).parent if brand_yaml_path else None
     lines, bp_lines, index, missing, disabled = emit_layer1(doc)
     brand = ((doc or {}).get("brand") or {}).get("name", "Brand")
     if missing:
@@ -676,7 +901,10 @@ def build_page_tokens(doc: dict, style_ctx=None, *, brand_yaml_path=None) -> Tok
               f" style={style_id or 'none'}; tokens={len(index)};"
               f" disabledDevices={','.join(disabled) or 'none'}."
               f" Regenerate via the compose CLI — never hand-edit. */")
-    css = header + "\n:root {\n" + "\n".join(lines) + "\n}\n" + _media_blocks(bp_lines)
+    delivery = typography_delivery(doc, brand_dir)
+    note = delivery_note(delivery)
+    css = (header + ("\n" + note if note else "")
+           + "\n:root {\n" + "\n".join(lines) + "\n}\n" + _media_blocks(bp_lines))
     manifest = {
         "brand": brand,
         "brand_yaml_sha256": sha,
@@ -686,10 +914,12 @@ def build_page_tokens(doc: dict, style_ctx=None, *, brand_yaml_path=None) -> Tok
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "token_count": len(index),
         "disabledDevices": disabled,
+        "typographyDelivery": delivery,
         "index": index,
     }
     return TokensBundle(css=css, index=index, missing=missing,
-                        manifest=manifest, disabled_devices=disabled)
+                        manifest=manifest, disabled_devices=disabled,
+                        typography_delivery=delivery)
 
 
 def write_manifest(out_dir, bundle: TokensBundle) -> Path:

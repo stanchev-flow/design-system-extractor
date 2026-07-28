@@ -73,6 +73,8 @@ footer:           # extracted footer chrome: columns/social + legal.text + measu
 contracts:        # refs to the shared universal catalogs (primitives.yaml, blocks.yaml)
 primitives:       # [] THIS brand's overrides/usage rules AGAINST the primitive contracts
 blocks:           # [] THIS brand's overrides/usage rules AGAINST the block contracts
+selfHostedFonts:  # [] faces this brand SHIPS: family + per-weight files under assets/fonts/
+fontAvailability: # [] how each declared type family is delivered — see §3.x / font-availability-schema.md
 layouts:          # [] archetype instances extracted from real sections (slots → blocks/media)
 compositionRules: # [] cross-cutting composition mechanics (overlap, stagger, z-order…)
 do:               # [] positive prescriptions (affirmative house style)
@@ -468,6 +470,56 @@ tokens:
 > when present and falls back to the style scale only where the brand is silent; section
 > vertical padding is applied symmetrically (top = bottom) unless the brand commits
 > otherwise. Capture spacing with the same provenance discipline as every other token.
+
+### 3.x Typography DELIVERY — `selfHostedFonts` + `fontAvailability`
+
+A `tokens.type.*.family` value is a claim about what the source used. It is not a
+promise that the family will render, and the two must never be conflated: a declared
+family with no shipped face and no loadable stand-in renders as whatever generic the
+declaration happens to end in, which looks like a working page and is not one. Two
+keys make the difference explicit.
+
+```yaml
+selfHostedFonts:            # faces this project SHIPS (files under <brand-dir>/assets/fonts/)
+  - family: DisplayFace     # must match a family named in a tokens.type stack
+    faces:
+      - weight: 400
+        files: [DisplayFace-Regular.woff2, DisplayFace-Regular.ttf]
+        # style: italic     # optional; normal when absent
+
+fontAvailability:           # how each DECLARED family is actually delivered (recorded fact)
+  - family: DisplayFace
+    status: self-hosted     # self-hosted | proxy-substituted | unavailable
+    capturedFontFace: true
+    roles: [display-hero, h1, h2]
+    licenseHint: null       # only ever set from supportable evidence; null means UNKNOWN
+```
+
+Rules:
+
+- **Deliverability, never syntax, decides what is emitted.** Whether a family value is
+  written bare or as a quoted multi-member stack says nothing about whether the face
+  ships. Only `selfHostedFonts` (with the files present) makes a face self-hosted.
+- **A declared family that this project cannot ship gets a recorded substitution or a
+  recorded gap** — never a silent generic. Register the substitute as `renderProxy` on
+  the type role, or record `status: unavailable`.
+- **Do not vendor a face the project is not licensed to redistribute.** A capture
+  reveals real font URLs; discovering them is evidence, not permission. Record the
+  substitution instead — that is the honest outcome, and it is a named replica gap.
+- The extraction pass that produces these facts is
+  `tools/extract/harvest_font_faces.py`; the delivery decision, the substitution
+  placement rule and the validator row are specified in
+  [`font-availability-schema.md`](font-availability-schema.md).
+
+**Width axis.** A condensed or expanded width is a per-role measured fact, expressed as
+`tokens.type.<role>.fontStretch` alongside that role's `letterSpacing` / `lineHeight` /
+`weight`. It is only meaningful for a face that carries the axis: applying one to a
+face without it makes the browser synthesise a distortion, so a brand that did not
+measure a width axis simply omits the key and renders at `normal`. It must never be a
+renderer or scaffold constant — a hardcoded width narrows every generated app to one
+brand's typography. The framework scaffold consumes it through
+`--font-stretch-heading` / `--font-stretch-body`. No capture pass records `fontStretch`
+yet; the consuming seam exists so that adding it upstream needs no renderer change.
 
 ## 4. `surfaceGrammar`, `layouts[]`, `compositionRules[]`, rule lists, `voice`, `recipePolicy`
 

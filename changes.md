@@ -1,5 +1,108 @@
 # Changes
 
+## 2026-07-28 — Font identity is derived from brand facts, and undelivered faces are recorded
+
+A declared font family was being treated as a delivered one. Three independent places
+made that mistake, and together they meant a generated page could render in a typeface
+nobody chose while no artifact said so. Measured, not inferred: the greenhouse-4 replica
+declared `'Untitled Serif', Georgia, serif` and `'Untitled Sans', Arial, sans-serif`,
+emitted no `@font-face` and no webfont link, and rendered in Georgia and Arial —
+advance-width probe, 1428.13px and 1423.16px for a fixed string, identical to the
+system faces measured alone. `document.fonts.check()` is not a detector here: it answers
+true through fallback resolution either way.
+
+This is a correctness and disclosure change, not a scoring one. The replica gate moved
+0.854 → 0.855 (A/B on the same input with only `tokens_css.py` swapped), which is noise:
+the structure term runs on a 64px-wide thumbnail where glyphs are unresolvable.
+
+- **The scaffold no longer carries a past brand's typography.** `index.html` shipped a
+  hardcoded Google Fonts link for one real typeface, `index.css` named that same family
+  in `--font-heading`/`--font-body`, and `body` carried `font-stretch: 87.5%` — one
+  source brand's SemiCondensed width axis applied unconditionally to every app the
+  scaffold ever generates. Families are now a neutral system stack, the link is a
+  replaceable `<!-- brand-webfont -->` region, and the width axis became
+  `var(--font-stretch-body, normal)` / `var(--font-stretch-heading, normal)`. An
+  unstamped scaffold now reads as unbranded, which is recoverable, rather than as some
+  other brand, which is not. `tokens/tokens.json` lost the same family for the same
+  reason.
+- **The width axis is a token, not a constant, and no brand sets it yet.** Making it
+  derived rather than deleted costs one accessor: `_width_axis()` reads `fontStretch`
+  off the type role and yields `normal` when absent, which is every brand today because
+  the capture pass does not record a width axis. The seam is what matters — when
+  measured evidence carries one it lands per role, and until then nothing is narrowed.
+  Deleting the declaration outright would have been equally correct today and would have
+  left the next person to rediscover where a width axis belongs.
+- **`framework_generator.py` resolves typography from brand facts.** New
+  `resolve_scaffold_typography()` follows the precedence `resolve_scaffold_brand_name()`
+  already established — the lane's asset manifest first, then the lane's `brand.yaml` —
+  and returns the heading/body stacks, the webfont link those stacks need, and the
+  per-family delivery facts, all through the same `tokens_css` resolvers the composers
+  use. `stamp_scaffold_typography()` writes both halves together (a family without its
+  link renders as a fallback; a link without the family loads bytes nobody uses), and
+  `carry_typography_declarations()` keeps them across the `@theme` rewrite that token
+  sync performs. With nothing derivable the neutral stack stays and no link is emitted.
+- **`tokens_css.py` decides on delivery, not on declaration syntax.** The old rule read
+  a quoted multi-member stack as evidence of self-hosting — "a self-hosted brand face
+  that already ships its own generic fallback" — and suppressed the only remaining
+  delivery mechanism whenever that guess was wrong, while a bare family name took a
+  different branch and did pick up a proxy. That asymmetry is why one lane loaded an
+  off-brand generic for a single role and another loaded nothing at all. Delivery is now
+  judged from the brand's own `selfHostedFonts` registry: a stack containing a
+  self-hosted member is emitted verbatim, and one containing none gets its substitute
+  inserted **directly after the primary family**, ahead of the declaration's own
+  fallbacks — a capture's fallback members are locally installed system faces, so a
+  substitute behind them resolves on no machine. `substitution_map()` gives each family
+  one substitute brand-wide, because captures routinely declare the same family with
+  inconsistent trailing generics and a per-declaration choice renders one family in two
+  genres on one page.
+- **Every declared family now resolves to a recorded outcome.** `typography_delivery()`
+  returns one row per declared family value — `self-hosted`, `proxy-substituted` or
+  `unavailable` — and it is read off the stack the brand actually emits rather than
+  recomputed beside it: a declared family that is itself in the loadable catalog is
+  delivered as itself, a substitute counts only where it lands ahead of the
+  declaration's fallbacks, and a `selfHostedFonts` entry whose files were never captured
+  is reported against disk rather than against the registry. The rows land in
+  `tokens.manifest.json` under `typographyDelivery` and, when anything is not
+  self-hosted, as a one-line disclosure comment in the tokens CSS header. Brands that
+  self-host everything emit no note and stay byte-stable.
+- **`tools/extract/harvest_font_faces.py` consumes evidence that was already being
+  captured.** `mine_css.py` has always dumped `@font-face` rules into
+  `evidence/pages/*/css-rules.json`; nothing read them, so `derive_facts` reduced fonts
+  to frequency censuses and no `selfHostedFonts` key was ever proposed. The harvester
+  writes `font-faces.json` (raw per-face observation: family, weight, style, sources
+  classified `remote`/`relative`/`data`) and `font-availability.json` (per family:
+  weights, styles, hosts, discovered URLs, `licenseHint`, plus the delivery decision
+  cross-referenced against the brand). `--emit-brand-snippet` writes a pasteable
+  `fontAvailability:` block. It downloads nothing: a discovered URL is provenance, and
+  `licenseHint` is set only from a serving host that exclusively distributes openly
+  licensed faces — every other host yields `null`, meaning unknown, never "not
+  redistributable". Commercial faces stay an explicitly recorded substitution, the same
+  resolution this project already took for Remote's Bossa.
+- **Schema documentation.** New `brand_pipeline/spec/font-availability-schema.md`
+  (the three outcomes, the rules that pick between them, both harvester documents,
+  the licensing limits, and the authoring path from substituted to self-hosted);
+  `brand-schema.md` gained `selfHostedFonts` and `fontAvailability` as top-level keys
+  with a Typography Delivery subsection.
+- **Verified by advance-width, per lane.** greenhouse-4 replica: was no faces loaded and
+  Arial/Georgia rendering, now Lexend Deca (1511.11px) and Source Serif 4 (1277.41px)
+  loaded and rendering; the harness matches. No regression where fonts already worked —
+  hubspot-v4 still renders self-hosted HubSpot Sans and HubSpot Serif, woodwave still
+  renders self-hosted Melodrama and linked Inter, remote still renders Inter and its
+  Bossa substitute. Across all 14 brand documents the only emitted font declarations
+  that changed are the three lanes that self-host nothing. The tracked scaffold builds
+  clean with zero references to any foreign family.
+
+Follow-up, deliberately not done here. (1) A validator row belongs in
+`validate_brand_evidence.py` — currently owned elsewhere — failing or warning when a
+`typography_delivery(doc, brand_dir)` row has `status: unavailable` and its family is
+absent from `fontAvailability:`, i.e. an undisclosed typography gap. (2) Composers
+resolve webfont links from the primary display and body roles only, so a family declared
+solely by another role can be recorded as substituted while its stand-in is not linked;
+widening that set is a composer-side change. (3) A registry entry whose files are missing
+still reads as self-hosted to the emitters, deliberately — a stack that disagreed with
+the links beside it would name a face nothing loads — so the discrepancy is reported
+rather than corrected in one emitter.
+
 ## 2026-07-28 — The published site opens on the generated site, not on the pipeline
 
 The published bundles were built for review, so they opened on a status disclosure and a table of

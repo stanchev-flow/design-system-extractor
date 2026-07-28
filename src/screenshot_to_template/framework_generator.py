@@ -422,10 +422,13 @@ def design_system_to_dtcg_tokens(front_matter: dict[str, Any]) -> dict[str, Any]
     typography = tokens.get("typography") if isinstance(tokens.get("typography"), dict) else {}
     families = typography.get("families") if isinstance(typography.get("families"), dict) else {}
 
-    heading_font = families.get("heading") or "Instrument Sans"
+    # No named-typeface default: an absent family means the design system did not
+    # measure one, and inventing a plausible face here is how a generated app ends up
+    # wearing a typeface its brand never used.
+    heading_font = families.get("heading") or ""
     body_font = families.get("body") or heading_font
     if isinstance(heading_font, list):
-        heading_font = heading_font[0] if heading_font else "Instrument Sans"
+        heading_font = heading_font[0] if heading_font else ""
     if isinstance(body_font, list):
         body_font = body_font[0] if body_font else heading_font
 
@@ -489,10 +492,15 @@ def design_system_to_dtcg_tokens(front_matter: dict[str, Any]) -> dict[str, Any]
                 "line-motif": {"$value": _token_color(graphic.get("lineMotif"), "#234a38")},
             },
         },
+        # The generic tail is a NEUTRAL system stack, never a named face: a concrete
+        # fallback family is a second typeface the brand did not choose, and it always
+        # wins over the brand's own face whenever that face fails to load.
         "font": {
             "$type": "fontFamily",
-            "heading": {"$value": [str(heading_font), "Georgia", "sans-serif"]},
-            "body": {"$value": [str(body_font), "Georgia", "sans-serif"]},
+            "heading": {"$value": ([str(heading_font)] if heading_font else [])
+                        + ["ui-sans-serif", "system-ui", "sans-serif"]},
+            "body": {"$value": ([str(body_font)] if body_font else [])
+                     + ["ui-sans-serif", "system-ui", "sans-serif"]},
         },
         "radius": {
             "$type": "dimension",
@@ -530,6 +538,7 @@ def sync_index_css_theme_from_design_system(
         sync_index_css_theme(index_css_path, design_system_to_dtcg_tokens(front_matter))
         return
     css = index_css_path.read_text(encoding="utf-8")
+    theme_block = carry_typography_declarations(css, theme_block)
     patched, count = re.subn(r"@theme\s*\{[^}]*\}", theme_block, css, count=1, flags=re.DOTALL)
     if count:
         index_css_path.write_text(patched, encoding="utf-8")
@@ -557,13 +566,14 @@ def sync_index_css_theme(index_css_path: Path, dtcg: dict[str, Any]) -> None:
             return str(node.get("$value", default))
         return default
 
-    heading = val(font, "heading", "Instrument Sans, Georgia, sans-serif")
+    heading = val(font, "heading", NEUTRAL_FONT_STACK)
     body = val(font, "body", heading)
     if isinstance(font.get("heading", {}).get("$value"), list):
         heading = ", ".join(f'"{f}"' if " " in str(f) else str(f) for f in font["heading"]["$value"])
     if isinstance(font.get("body", {}).get("$value"), list):
         body = ", ".join(f'"{f}"' if " " in str(f) else str(f) for f in font["body"]["$value"])
 
+    css = index_css_path.read_text(encoding="utf-8")
     theme_block = f"""@theme {{
   --color-surface-primary: {val(surface, 'primary', '#ffffff')};
   --color-surface-secondary: {val(surface, 'secondary', '#f5f7f6')};
@@ -638,7 +648,7 @@ def sync_index_css_theme(index_css_path: Path, dtcg: dict[str, Any]) -> None:
   --spacing-section-tight: {val(space, 'section-y-tight', '64px')};
 }}"""
 
-    css = index_css_path.read_text(encoding="utf-8")
+    theme_block = carry_typography_declarations(css, theme_block)
     patched, count = re.subn(r"@theme\s*\{[^}]*\}", theme_block, css, count=1, flags=re.DOTALL)
     if count:
         index_css_path.write_text(patched, encoding="utf-8")
@@ -668,6 +678,157 @@ def resolve_scaffold_brand_name(
         if isinstance(name, str) and name.strip():
             return name.strip()
     return ""
+
+
+# A stack of system faces only — every generated app that has no derivable brand
+# typography lands here. It cannot be mistaken for a real typeface, which is the
+# point: an unbranded app is recoverable, an app wearing another brand's face is not.
+NEUTRAL_FONT_STACK = ('ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, '
+                      '"Helvetica Neue", Arial, sans-serif')
+
+# The region of the scaffold's index.html that carries the brand's webfont link.
+_WEBFONT_REGION_RE = re.compile(
+    r"(<!-- brand-webfont:start -->)(.*?)(<!-- brand-webfont:end -->)", re.DOTALL)
+
+# The @theme declarations that carry brand typography. Once the scaffold has been
+# stamped from brand facts these must survive a later token sync — the design-system
+# theme block is authored per run and does not always carry a family.
+_TYPOGRAPHY_THEME_PROPS = ("--font-heading", "--font-body",
+                           "--font-stretch-heading", "--font-stretch-body")
+
+
+def _import_tokens_css():
+    """tokens_css lives in brand_pipeline/ and is imported as a top-level module by
+    every other caller. It is dependency-free (stdlib only), so the framework lane can
+    resolve font stacks through the SAME resolver the composers use instead of growing
+    a second, divergent notion of what a brand's typeface is."""
+    tokens_dir = str(PROJECT_DIR / "brand_pipeline")
+    if tokens_dir not in sys.path:
+        sys.path.insert(0, tokens_dir)
+    import tokens_css  # noqa: PLC0415
+
+    return tokens_css
+
+
+def _width_axis(type_role: dict[str, Any] | None) -> str:
+    """A measured width axis for one type role, or ``normal``.
+
+    A condensed/expanded width is a real typographic fact, but only for a face that
+    actually carries the axis — applying one to a face without it makes the browser
+    synthesise a distortion. So it is read from the role's own measured
+    ``fontStretch`` (same naming as its ``letterSpacing`` / ``lineHeight`` siblings)
+    and is ``normal`` for every brand that did not measure one. Nothing in the capture
+    pass records it yet; this is the seam that consumes it when it does."""
+    value = (type_role or {}).get("fontStretch")
+    text = str(value).strip() if value not in (None, "") else ""
+    return text or "normal"
+
+
+def resolve_scaffold_typography(
+    brand_assets_manifest: Path | None = None,
+    brand_dir: Path | None = None,
+) -> dict[str, Any]:
+    """The typography this framework app should render in, derived from brand facts.
+
+    Same input precedence as ``resolve_scaffold_brand_name``: the asset manifest the
+    lane already hands the scaffold, then the lane's authored ``brand.yaml``. The first
+    document that carries ``tokens.type`` families wins.
+
+    Returns the heading/body font stacks, the webfont ``<link>`` markup those stacks
+    need in order to actually load, and the per-family delivery facts. With nothing
+    derivable it returns the neutral system stack and NO link: a generated app must
+    never load or name a typeface its brand does not use, and a plausible-looking wrong
+    font is worse than an obviously generic one because nobody goes looking for it."""
+    neutral: dict[str, Any] = {
+        "heading": NEUTRAL_FONT_STACK,
+        "body": NEUTRAL_FONT_STACK,
+        "stretchHeading": "normal",
+        "stretchBody": "normal",
+        "webfontLink": "",
+        "delivery": [],
+        "source": "",
+    }
+    for path, reader in ((brand_assets_manifest, json.loads),
+                         ((brand_dir / "brand.yaml") if brand_dir else None, yaml.safe_load)):
+        if not path or not Path(path).is_file():
+            continue
+        try:
+            doc = reader(Path(path).read_text(encoding="utf-8")) or {}
+        except Exception:
+            continue
+        if not isinstance(doc, dict):
+            continue
+        tc = _import_tokens_css()
+        if not tc.declared_type_families(doc):
+            continue
+        heading, heading_proxies = tc.font_stack(doc, "display-hero", NEUTRAL_FONT_STACK)
+        body, body_proxies = tc.font_stack(doc, "body", NEUTRAL_FONT_STACK)
+        return {
+            "heading": heading,
+            "body": body,
+            "stretchHeading": _width_axis(tc.type_role(doc, "display-hero")),
+            "stretchBody": _width_axis(tc.type_role(doc, "body")),
+            "webfontLink": tc.google_fonts_link(heading_proxies | body_proxies),
+            "delivery": tc.typography_delivery(doc, Path(path).parent),
+            "source": str(path),
+        }
+    return neutral
+
+
+def stamp_scaffold_typography(target_dir: Path, typography: dict[str, Any]) -> None:
+    """Give the copied scaffold the ACTIVE brand's typeface and the link that loads it.
+
+    Both halves have to move together: a family declared without the webfont that
+    delivers it renders as a system fallback with nothing recording that it did, and a
+    webfont link without the family loads bytes nobody uses."""
+    index_html = target_dir / "index.html"
+    if index_html.is_file():
+        text = index_html.read_text(encoding="utf-8")
+        link = typography.get("webfontLink") or ""
+        body = ("\n    " + link.replace("\n", "\n    ") + "\n    " if link
+                else "\n    <!-- brand delivers no webfont-loaded face -->\n    ")
+        patched, count = _WEBFONT_REGION_RE.subn(
+            lambda m: m.group(1) + body + m.group(3), text, count=1)
+        if count:
+            index_html.write_text(patched, encoding="utf-8")
+
+    index_css = target_dir / "src" / "index.css"
+    if not index_css.is_file():
+        return
+    css = index_css.read_text(encoding="utf-8")
+    for prop, value in (("--font-heading", typography.get("heading")),
+                        ("--font-body", typography.get("body")),
+                        ("--font-stretch-heading", typography.get("stretchHeading")),
+                        ("--font-stretch-body", typography.get("stretchBody"))):
+        if not value:
+            continue
+        css, _ = re.subn(rf"(\s*){re.escape(prop)}:[^;]*;", rf"\g<1>{prop}: {value};",
+                         css, count=1)
+    index_css.write_text(css, encoding="utf-8")
+
+
+def carry_typography_declarations(existing_css: str, theme_block: str) -> str:
+    """Carry the brand-stamped typography declarations into a regenerated @theme block.
+
+    Token sync rewrites the whole @theme from the run's design-system YAML, which is
+    authored per run and need not carry a family at all. Without this the sync would
+    silently drop the brand-derived stacks that ``stamp_scaffold_typography`` wrote and
+    leave ``font-family: var(--font-body)`` pointing at nothing."""
+    current = re.search(r"@theme\s*\{[^}]*\}", existing_css, flags=re.DOTALL)
+    if not current:
+        return theme_block
+    carried = []
+    for prop in _TYPOGRAPHY_THEME_PROPS:
+        found = re.search(rf"{re.escape(prop)}:\s*([^;]+);", current.group(0))
+        if found:
+            carried.append(f"  {prop}: {found.group(1).strip()};")
+    if not carried:
+        return theme_block
+    kept = "\n".join(carried)
+    without = "\n".join(
+        line for line in theme_block.splitlines()
+        if not any(line.strip().startswith(f"{p}:") for p in _TYPOGRAPHY_THEME_PROPS))
+    return without.rstrip().removesuffix("}").rstrip() + "\n\n" + kept + "\n}"
 
 
 def stamp_scaffold_brand_identity(target_dir: Path, brand_name: str) -> None:
@@ -724,6 +885,8 @@ def scaffold_framework_project(
 
     stamp_scaffold_brand_identity(
         target_dir, resolve_scaffold_brand_name(brand_assets_manifest, brand_dir))
+    stamp_scaffold_typography(
+        target_dir, resolve_scaffold_typography(brand_assets_manifest, brand_dir))
     return target_dir
 
 
