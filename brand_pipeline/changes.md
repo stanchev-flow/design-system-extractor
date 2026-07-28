@@ -297,3 +297,167 @@ gated off here.
 - Lanes whose provenance tokens are role names rather than `section-NN` slugs
   (`hubspot-v2`, `woodwave-v2`, `remote`) get no measured geometry at all. That is
   pre-existing and unchanged, but `unresolved_patterns` now makes it visible.
+
+# Honest harness verdict + measured bands on the hand-authored lanes (2026-07-28)
+
+Closes both follow-ups above.
+
+## Intent
+
+Two records that could not tell the truth about themselves.
+
+1. **The harness gate artifact was a structural pass.** `harness-quality.json` was
+   written only after the failure check, asserting `ok: true` with all six checks
+   hardcoded `True`. So a lane whose harness genuinely failed crashed the flow and left
+   an artifact beside it reading `ok=true` (this happened, and it misdirected several
+   investigations), and G3's `quality.get("ok") is not True` branch was unreachable for
+   a real failure — it could only fire on a missing or stale file.
+2. **Three shipped lanes resolved no measured band geometry at all.** `hubspot-v2`,
+   `woodwave-v2` and `remote` composed with no `bandPadding` / `bandRhythm` /
+   `deviceGeometry` for their whole history.
+
+## Why the three lanes' provenance differed
+
+Two authoring conventions ship in the repo, and only one put a band IDENTIFIER in
+`provenance[]`:
+
+- **Projected** (`hubspot-v3`, `hubspot-v4`, `greenhouse-4`): the deterministic
+  projector stamps the band slug itself, so provenance resolves directly.
+- **Hand-authored** (`hubspot-v2`, `woodwave-v2`, `remote` — `source: creation`, rich
+  prose intents, `changelog[]`/`scope` fields the projector never writes): the
+  authoring pass wrote a semantic ROLE label there instead — a name for what the band
+  does, not for which band it was.
+
+Those labels cannot be made into band keys. They match no slug, and the role vocabulary
+the grounding itself declares (`sectionRole`) repeats across many bands — 8 bands share
+one role in `remote`, 3 in `hubspot-v2`, 2 in `woodwave-v2` — so resolving through role
+names is ambiguous by construction. Ordinal/positional alignment was rejected for the
+same reason: it happens to hold on two of the three lanes and demonstrably breaks on
+the third, where two patterns' role labels do not match their bands' declared roles.
+
+What those patterns DO declare is the band itself, in their own `changelog[].note`,
+using the same ordinal token the projector uses. All 26 extracted patterns across the
+three lanes declare exactly one, and on `woodwave-v2` the declared reference is right
+where a role-name or positional guess would have been wrong. That is an explicit
+author-written reference, so it is read as a second provenance channel rather than
+migrating the lanes' stored artifacts (which are the record of what happened) or
+changing the authoring side.
+
+## Source changes
+
+- `brand_pipeline/render_components_preview.py`
+  - `HARNESS_CHECKS` + `HarnessQuality`: the verdict is now a structure carrying each
+    check's own outcome and the issues behind it, instead of a flat list a writer could
+    only ever summarize as a hardcoded pass. `fail()` refuses an unknown check name, so
+    a typo cannot silently drop an issue out of the artifact.
+  - `harness_quality()` (new) attributes every existing issue to exactly one of the six
+    checks; `harness_quality_issues()` is kept as the flat-list view. No check was
+    added, removed, or relaxed.
+  - `main` writes `harness-quality.json` BEFORE acting on the verdict, so a failure is
+    recorded with `ok: false`, the real per-check booleans and the issues list. The
+    build still raises on a failing verdict; the harness `index.html` is still left
+    unwritten. The passing form is unchanged apart from the new `issues: []`.
+- `brand_pipeline/measured_geometry.py`
+  - `declared_band_tokens()` (new): the band a hand-authored pattern names in its own
+    authoring notes. Notes naming more than one band are REFUSED, not ordered into a
+    guess — unlike `provenance[]`, note order carries no first-source contract.
+  - `resolve_pattern_band()` reads `provenance[]` first, then falls back to the declared
+    reference. Both channels go through the same exact matching (`_band_for_token`,
+    factored out unchanged) and refuse an ambiguous token. No fuzzy or nearest-slug
+    matching was added anywhere.
+  - `_rect_for_band()` no longer trusts a band's ordinal as a census index. A band's
+    ordinal counts the chrome bands cropped alongside it while the census lists content
+    sections only, so on a lane whose page header became its own crop every band was
+    measured against its NEIGHBOUR. The indexed row is now accepted only when its own
+    class-list identity agrees with the band's, and otherwise the band is looked up by
+    that identity, uniquely or not at all. `_identity` / `_same_band` / `_band_identity`
+    compare the identity the two artifacts share, allowing for their different name
+    truncation lengths but nothing else.
+
+## Effect
+
+- All five lanes now resolve every extracted pattern; `unresolved_patterns` returns
+  empty for `greenhouse-4`, `hubspot-v3`, `hubspot-v4`, `hubspot-v2`, `woodwave-v2` and
+  `remote`. Under `FIDELITY_FIELDS` the three hand-authored lanes gain 17 / 11 / 14
+  measured facts respectively; the projected lanes gain nothing (fill-absent-only, they
+  are already complete).
+- The ordinal-offset fix corrects real mis-attribution on two lanes: every `hubspot-v2`
+  band was reading its neighbour's rect (its hero measured 260px instead of its own
+  772px), and one `greenhouse-4` band read the wrong row too.
+
+## Fidelity measurement (honest read)
+
+Measured on copies, before and after, with the same working tree. The three lanes'
+stored libraries are NOT enriched, so these numbers are what a re-author would produce,
+not a change to the lanes as they stand today.
+
+| lane | bar | before | after | delta |
+| --- | --- | --- | --- | --- |
+| `hubspot-v2` | 0.90 | 0.9556 | 0.9535 | −0.0021 |
+| `remote` | 0.90 | 0.9509 | 0.9516 | +0.0007 |
+| `woodwave-v2` | 0.90 | 0.7499 | 0.7626 | +0.0127 |
+
+`woodwave-v2` still correctly fails its bar; no lane crosses its bar in either
+direction. Per-fact isolation puts the entire movement on ONE fact:
+
+| lane | padding only | rhythm + gap + aspect only | all |
+| --- | --- | --- | --- |
+| `hubspot-v2` | −0.0021 | 0.0000 | −0.0021 |
+| `remote` | +0.0005 | +0.0002 | +0.0007 |
+| `woodwave-v2` | −0.0039 | +0.0165 | +0.0127 |
+
+`bandRhythm` / `columnGap` / `heroMediaAspect` are neutral-to-positive on every lane.
+`bandPadding` is the contested fact: net-negative on two lanes and marginally positive
+on the third, and per band it swings both ways (+0.0689 on one, −0.0524 on another).
+This is the named residual the previous entry recorded — the composer OVER-responds to
+measured band padding — now reproduced on three more lanes.
+
+Deliberately NOT gated off. `FIDELITY_FIELDS` is unchanged and `bandPadding` stays in
+it: the resolver is correct, the data is correctly attributed, and suppressing a
+correctly-measured fact to protect a score would hide the composer gap rather than fix
+it. The consumption needs separate calibration at the composition level (how the band
+renderer scales measured padding against its own container rhythm), which is where the
+remaining spread lives.
+
+## Tests
+
+- `brand_pipeline/tests/test_harness_quality_record.py` (new, 16 tests) — the passing
+  report form, one failing check leaving the other five true, issues preserved in
+  detection order, an unknown check name refused, all six checks proven individually
+  reachable (the direct guard against a hardcoded pass), the real writer recording a
+  failing verdict on disk while still raising and leaving `index.html` unwritten, and
+  G3 blocking on a RECORDED failure — the branch that was previously unreachable.
+- `brand_pipeline/tests/test_measured_geometry_declared_bands.py` (new, 25 tests) — the
+  declared-reference channel, provenance winning over it, role labels alone resolving
+  nothing, ambiguity refused four ways (two notes disagreeing, two bands sharing an
+  ordinal, one ordinal on two pages, two declared pages sharing an ordinal), the
+  ordinal-offset rect fix with its own refusal cases, committed-lane guards for all
+  three hand-authored lanes, and a guard that the projected lane never starts depending
+  on the fallback.
+- `brand_pipeline/tests/test_measured_geometry_page_scope.py` — two committed-lane
+  assertions now strip the measured facts before enriching. They were asserting that
+  enrichment ADDS facts to `greenhouse-4`, which fails once that lane's authoring run
+  has already written them in (enrichment is fill-absent-only), so the assertion was
+  measuring the lane's on-disk state rather than the enricher. Its synthetic rect
+  census now carries `classes` as a real census does, which the identity check needs.
+
+```bash
+PLAYWRIGHT_BROWSERS_PATH="$HOME/Library/Caches/ms-playwright" \
+  ./venv/bin/python -m pytest brand_pipeline/tests tests -q -p no:randomly
+```
+
+## Reported, not changed
+
+- `brand_pipeline/pipeline_flow.py` (owned by another agent this pass) needs no change
+  to be correct: G3 already reads `ok` explicitly, treats `ok is not True` as stale so
+  the harness rebuilds, and records a dead build as a blocked gate. Both records now
+  agree instead of contradicting each other. One IMPROVEMENT is now possible and was
+  not taken: the blocked reason is still the generic "harness quality report failed or
+  does not match current brand data", although the artifact now carries the failing
+  check names and the issue list that could be surfaced in `reason` / `detail`.
+- `tools/publish_run_bundle.py` reads `ok` and reports it as-is, so it already handles
+  `ok=false`; no reader assumes the file's existence means success.
+- Authoring-side normalization (having the author write a resolvable band reference into
+  `provenance[]` in the first place) is untouched. `tools/extract/project_sections_to_patterns.py`
+  is owned by another agent and already does the right thing for projected lanes; the
+  hand-authored convention is only reachable by re-authoring those lanes.

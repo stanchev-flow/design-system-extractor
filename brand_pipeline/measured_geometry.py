@@ -26,6 +26,10 @@ Design rules (why this is safe to run on any lane):
 * PAGE-QUALIFIED. A pattern is measured from the band its own ``provenance[]`` /
   ``sourcePages[]`` name, so a multi-page lane never reads one page's geometry onto
   another page's pattern. An ambiguous provenance token fills nothing.
+* EXACTLY-NAMED. Hand-authored patterns carry a semantic role label in
+  ``provenance[]`` rather than a band slug, and declare the band itself in their
+  authoring notes instead; both channels resolve through the same exact match and
+  refuse an ambiguous token. There is no nearest-slug fallback anywhere.
 * DEGRADE QUIETLY. Missing/…malformed evidence for a field simply leaves that field
   absent (the composer's structural default is the honest degrade).
 
@@ -206,42 +210,137 @@ def _load_section_rects(brand_dir: Path) -> dict[str, dict[int, dict]]:
     return out
 
 
+# A band token as the pipeline writes it: the ordinal-qualified section name that
+# ``load_bands`` builds slugs from and the projector stamps into ``provenance[]``.
+_BAND_TOKEN = re.compile(r"\bsection-\d+\b")
+
+
+def declared_band_tokens(pattern: dict) -> list[str]:
+    """The band a HAND-AUTHORED pattern names in its own authoring notes, or [].
+
+    A projector-authored pattern puts the band slug straight into ``provenance[]``. A
+    hand-authored one puts a semantic ROLE label there instead — a name for what the
+    band does ("hero", a logo wall, a closing call to action), not an identifier for
+    which band it was. Those labels are not band keys and cannot become them: they
+    match no slug, and the role vocabulary the grounding itself declares repeats across
+    many bands, so resolving through role names would be ambiguous by construction.
+
+    What such a pattern DOES declare is the band, in its changelog notes, using the
+    same ordinal token the projector uses. That is an explicit author-written
+    reference, so it serves as a second provenance channel. Notes that name more than
+    one band are REFUSED rather than ordered into a guess: unlike ``provenance[]``,
+    whose order means "first source", a note mentioning two bands carries no such
+    contract, and picking one would attribute a band's geometry to a pattern that was
+    not extracted from it.
+    """
+    tokens: set[str] = set()
+    for entry in (pattern.get("changelog") or []):
+        if isinstance(entry, dict):
+            tokens.update(_BAND_TOKEN.findall(str(entry.get("note") or "")))
+    return sorted(tokens) if len(tokens) == 1 else []
+
+
+def _band_for_token(token: str, bands: dict[str, GroundedBand],
+                    pages: set[str]) -> GroundedBand | None:
+    """The single band a token names, or None when it names none or several.
+
+    Matching follows ``project_sections_to_patterns.coverage``: a token names a band
+    when it equals the band slug or is a slug prefix ending at a segment boundary.
+    Matching is exact — there is no nearest-slug fallback, because a near miss would
+    silently attribute one band's measured geometry to another, which is worse than
+    resolving nothing at all.
+    """
+    hits = [b for b in bands.values()
+            if b.slug == token or b.slug.startswith(f"{token}-")]
+    if not hits and pages:
+        # A bare token on a page-qualified lane: re-read it against the pages
+        # the pattern already declares, rather than against every page.
+        hits = [b for b in bands.values()
+                for pg in pages
+                if b.slug == f"{pg}-{token}"
+                or b.slug.startswith(f"{pg}-{token}-")]
+    if pages and len(hits) > 1:
+        hits = [b for b in hits if b.page in pages] or hits
+    return hits[0] if len(hits) == 1 else None
+
+
 def resolve_pattern_band(pattern: dict,
                          bands: dict[str, GroundedBand]) -> GroundedBand | None:
     """The grounded band a pattern was extracted from, or None.
 
-    Matching follows ``project_sections_to_patterns.coverage``: a provenance token
-    names a band when it equals the band slug or is a slug prefix ending at a
-    segment boundary. Tokens are tried in provenance order (a pattern recurring
-    across pages is measured from its FIRST source), and a token that resolves to
-    more than one band is REFUSED rather than guessed — an ambiguous token would
-    attribute one page's geometry to another page's pattern.
+    ``provenance[]`` is read first, in order, so a pattern recurring across pages is
+    measured from its FIRST source. A pattern whose provenance names no band falls
+    back to the band its authoring notes declare (see :func:`declared_band_tokens`),
+    which is how the hand-authored lanes name their source. Every channel resolves
+    through the same exact matching and refuses an ambiguous token rather than
+    guessing, so a pattern either gets the geometry of the band it came from or gets
+    none.
     """
     pages = {str(p) for p in (pattern.get("sourcePages") or []) if p}
-    for token in (pattern.get("provenance") or []):
-        token = str(token)
-        hits = [b for b in bands.values()
-                if b.slug == token or b.slug.startswith(f"{token}-")]
-        if not hits and pages:
-            # A bare token on a page-qualified lane: re-read it against the pages
-            # the pattern already declares, rather than against every page.
-            hits = [b for b in bands.values()
-                    for pg in pages
-                    if b.slug == f"{pg}-{token}"
-                    or b.slug.startswith(f"{pg}-{token}-")]
-        if pages and len(hits) > 1:
-            hits = [b for b in hits if b.page in pages] or hits
-        if len(hits) == 1:
-            return hits[0]
+    for token in [str(t) for t in (pattern.get("provenance") or [])] \
+            + declared_band_tokens(pattern):
+        band = _band_for_token(token, bands, pages)
+        if band is not None:
+            return band
     return None
+
+
+def _identity(text: str) -> str:
+    """A band label reduced to the identity its artifact names it by.
+
+    A band's crop is named ``section-<ordinal>-<slug of the band's own class list>``
+    and the grounding YAML inherits that name, while the rect census records the same
+    class list per row. This is therefore the one token that identifies a band in BOTH
+    artifacts — but the two names are truncated at different lengths, so identities
+    are compared with :func:`_same_band` rather than for equality.
+    """
+    return re.sub(r"[^a-z0-9]+", "-", str(text or "").lower()).strip("-")
+
+
+def _same_band(a: str, b: str) -> bool:
+    """Whether two band identities name the same band despite name truncation.
+
+    Truncation only ever shortens, so the shorter identity must be a prefix of the
+    longer one. This is not a similarity test: a differing character anywhere in the
+    shared span is a different band, and callers additionally require the match to be
+    unique before they use it.
+    """
+    return bool(a) and bool(b) and (a.startswith(b) or b.startswith(a))
+
+
+def _band_identity(band: GroundedBand) -> str:
+    """A band's identity as its own slug spells it (page prefix and ordinal removed)."""
+    stem = band.slug[len(band.page) + 1:] if band.page else band.slug
+    return _identity(re.sub(r"^section-\d+-?", "", stem))
 
 
 def _rect_for_band(rects: dict[str, dict[int, dict]],
                    band: GroundedBand) -> dict:
-    """The measured rect for a band, read from ITS OWN page's census."""
+    """The measured rect for a band, read from ITS OWN page's census.
+
+    The band's ordinal is NOT trusted as a census index. A band's ordinal counts the
+    chrome bands that were cropped with it (a page header is not one of the census's
+    content sections), so on a lane whose header became its own crop every ordinal is
+    shifted by one against the census, which measured each band against its neighbour.
+    The indexed row is therefore accepted only when its own identity agrees with the
+    band's, and otherwise the band is looked up BY identity. A band whose identity
+    names no single row measures nothing: a neighbouring band's rect is a wrong
+    answer, not a near one.
+    """
     if band.index is None:
         return {}
-    return rects.get(band.page, {}).get(band.index, {})
+    page_rects = rects.get(band.page, {})
+    wanted = _band_identity(band)
+
+    def _row_identity(row: dict) -> str:
+        return _identity(row.get("classes") or row.get("tag") or "section")
+
+    indexed = page_rects.get(band.index, {})
+    if indexed and _same_band(_row_identity(indexed), wanted):
+        return indexed
+    named = [row for row in page_rects.values()
+             if _same_band(_row_identity(row), wanted)]
+    return named[0] if len(named) == 1 else {}
 
 
 # ── the per-field derivations ──────────────────────────────────────────────────────

@@ -3233,18 +3233,80 @@ def _px_number(value) -> float | None:
     return float(match.group(1)) if match else None
 
 
-def harness_quality_issues(doc: dict, patterns: list[dict], composed: dict,
-                           out_dir: Path, page: str) -> list[str]:
-    """Hard rendered-substance checks for the Studio harness."""
-    issues: list[str] = []
+# The harness-substance checks the gate artifact reports, in report key order. Every
+# issue the gate can raise is attributed to exactly one of them, so the artifact can
+# say WHICH check failed instead of only that something did.
+HARNESS_CHECKS = (
+    "richSnapshot",
+    "controlGeometry",
+    "designedControlGrammar",
+    "tier2Substance",
+    "tier3SlotsAssetsDistinct",
+    "publicCopyProvenance",
+)
+
+HARNESS_QUALITY_SCHEMA = "harness-quality.v1"
+
+
+class HarnessQuality:
+    """The harness-substance verdict: per-check outcomes plus the issues behind them.
+
+    The verdict is a STRUCTURE rather than a bare issue list because the gate artifact
+    has to survive the failure it describes. While the only shape available was a flat
+    list, the writer could do nothing but assert a hardcoded pass, so `ok` was true by
+    construction and a real failure left no record at all — the flow crashed and the
+    artifact beside it still read as a pass.
+    """
+
+    def __init__(self) -> None:
+        self._found: list[tuple[str, str]] = []  # (check, issue) in detection order
+
+    def fail(self, check: str, issue: str) -> None:
+        # A typo'd check name would silently drop its issue out of the artifact, so an
+        # unknown name is a programming error, not a quietly-ignored key.
+        if check not in HARNESS_CHECKS:
+            raise KeyError(f"unknown harness check {check!r}")
+        self._found.append((check, issue))
+
+    @property
+    def ok(self) -> bool:
+        return not self._found
+
+    @property
+    def issues(self) -> list[str]:
+        """Every issue in detection order."""
+        return [issue for _, issue in self._found]
+
+    def checks(self) -> dict[str, bool]:
+        """Each check's OWN outcome (true when nothing was found against it)."""
+        failed = {check for check, _ in self._found}
+        return {check: check not in failed for check in HARNESS_CHECKS}
+
+    def report(self, input_digest: str) -> dict:
+        """The ``harness-quality.json`` payload for this verdict, pass or fail."""
+        return {
+            "schemaVersion": HARNESS_QUALITY_SCHEMA,
+            "ok": self.ok,
+            "inputDigest": input_digest,
+            "checks": self.checks(),
+            "issues": self.issues,
+        }
+
+
+def harness_quality(doc: dict, patterns: list[dict], composed: dict,
+                    out_dir: Path, page: str) -> HarnessQuality:
+    """Hard rendered-substance checks for the Studio harness, per check."""
+    quality = HarnessQuality()
     snapshot = (((doc.get("brand") or {}).get("snapshot") or {}).get("value")
                 if isinstance((doc.get("brand") or {}).get("snapshot"), dict)
                 else (doc.get("brand") or {}).get("snapshot"))
     if len(str(snapshot or "").strip()) < 120:
-        issues.append("brand snapshot is missing or not a rich factual narrative")
+        quality.fail("richSnapshot",
+                     "brand snapshot is missing or not a rich factual narrative")
     public_name = str((doc.get("brand") or {}).get("name") or "")
     if re.search(r"(?:^|[-_\s])v\d+$", public_name, re.I):
-        issues.append("public specimen copy uses a versioned run/lane id")
+        quality.fail("publicCopyProvenance",
+                     "public specimen copy uses a versioned run/lane id")
 
     for name, fam in (doc.get("buttons") or {}).items():
         if not isinstance(fam, dict) or name == "singleVariantConfirmed":
@@ -3259,13 +3321,16 @@ def harness_quality_issues(doc: dict, patterns: list[dict], composed: dict,
             pad = _px_number(tier.get("padY")) or 0
             expected.append(font + 2 * pad)
         if height and expected and height > 2 * max(expected):
-            issues.append(
+            quality.fail(
+                "controlGeometry",
                 f"buttons.{name}.height {height:g}px exceeds its measured control tier")
     if "btnf-round" in page and re.search(
             r'class="btnf btnf-round[^"]*"[^>]*>Get started free<', page):
-        issues.append("round control renders CTA text instead of bounded icon geometry")
+        quality.fail("controlGeometry",
+                     "round control renders CTA text instead of bounded icon geometry")
     if "border-radius: var(--radius, 0)" not in page:
-        issues.append("designed controls do not inherit the brand control radius")
+        quality.fail("designedControlGrammar",
+                     "designed controls do not inherit the brand control radius")
 
     custom_extracted = [
         (name, item) for name, item in (doc.get("blocks") or {}).items()
@@ -3274,7 +3339,9 @@ def harness_quality_issues(doc: dict, patterns: list[dict], composed: dict,
     ]
     for name, item in custom_extracted:
         if _measured_block_renderer(item) is None:
-            issues.append(f"Tier 2 measured block '{name}' has no real specimen renderer")
+            quality.fail(
+                "tier2Substance",
+                f"Tier 2 measured block '{name}' has no real specimen renderer")
 
     signatures = set()
     layouts = {
@@ -3288,13 +3355,16 @@ def harness_quality_issues(doc: dict, patterns: list[dict], composed: dict,
             if isinstance(slot, dict)
         ]
         if not slots:
-            issues.append(f"Tier 3 pattern '{pid}' has no canonical slots")
+            quality.fail("tier3SlotsAssetsDistinct",
+                         f"Tier 3 pattern '{pid}' has no canonical slots")
         layout = layouts.get(pid)
         if not isinstance(layout, dict) or not (layout.get("slots") or layout.get("blockMapping")):
-            issues.append(f"Tier 3 pattern '{pid}' has no populated brand layout")
+            quality.fail("tier3SlotsAssetsDistinct",
+                         f"Tier 3 pattern '{pid}' has no populated brand layout")
         info = composed.get(pid) or {}
         if not info.get("href"):
-            issues.append(f"Tier 3 pattern '{pid}' did not compose")
+            quality.fail("tier3SlotsAssetsDistinct",
+                         f"Tier 3 pattern '{pid}' did not compose")
             continue
         pattern_html = out_dir.joinpath(info["href"]).read_text(errors="replace")
         body_html = pattern_html.split("<body", 1)[-1]
@@ -3306,13 +3376,16 @@ def harness_quality_issues(doc: dict, patterns: list[dict], composed: dict,
         visible_text = re.sub(r"\s+", " ", html.unescape(visible_text)).strip()
         media_count = len(re.findall(r"<(?:img|video)\b", body_html))
         if not semantic or (len(visible_text) < 30 and media_count < 2):
-            issues.append(f"Tier 3 pattern '{pid}' rendered no substantive anatomy")
+            quality.fail("tier3SlotsAssetsDistinct",
+                         f"Tier 3 pattern '{pid}' rendered no substantive anatomy")
         if "Structural demo copy:" in pattern_html:
-            issues.append(
+            quality.fail(
+                "publicCopyProvenance",
                 f"Tier 3 pattern '{pid}' leaked generic fallback copy without source provenance")
         assets = [Path(str(asset)).name for slot in slots for asset in (slot.get("assets") or [])]
         if assets and not any(asset in pattern_html for asset in assets):
-            issues.append(f"Tier 3 pattern '{pid}' consumed none of its declared assets")
+            quality.fail("tier3SlotsAssetsDistinct",
+                         f"Tier 3 pattern '{pid}' consumed none of its declared assets")
         signatures.add((
             str(pattern.get("archetypeRef") or ""),
             tuple(str(slot.get("name") or slot.get("role") or "") for slot in slots),
@@ -3320,8 +3393,17 @@ def harness_quality_issues(doc: dict, patterns: list[dict], composed: dict,
             str(pattern.get("surfaceIntent") or ""),
         ))
     if patterns and len(signatures) < max(3, (len(patterns) + 1) // 2):
-        issues.append("Tier 3 patterns collapse to insufficiently distinct anatomy signatures")
-    return issues
+        quality.fail(
+            "tier3SlotsAssetsDistinct",
+            "Tier 3 patterns collapse to insufficiently distinct anatomy signatures")
+    return quality
+
+
+def harness_quality_issues(doc: dict, patterns: list[dict], composed: dict,
+                           out_dir: Path, page: str) -> list[str]:
+    """Every harness-substance issue, in detection order (empty when the harness
+    passes). The per-check verdict lives on :func:`harness_quality`."""
+    return harness_quality(doc, patterns, composed, out_dir, page).issues
 
 
 def main():
@@ -3373,25 +3455,20 @@ def main():
     input_digest = projection_input_digest(args.brand_yaml.parent)
     page = page.replace(
         "<html", f'<html data-projection-input-digest="{input_digest}"', 1)
-    issues = harness_quality_issues(doc, layout_patterns, composed, args.out, page)
-    if issues:
-        raise RuntimeError("harness quality failed:\n- " + "\n- ".join(issues))
+    quality = harness_quality(doc, layout_patterns, composed, args.out, page)
+    # The verdict is recorded BEFORE it is acted on. This artifact is the gate's only
+    # durable record of the harness's substance, and a record written solely on the
+    # success path can only ever say "pass" — G3's `ok is not True` branch was then
+    # unreachable for a real failure, and a lane that crashed here still shipped an
+    # artifact reading ok=true. The build still fails on a failing verdict; what
+    # changes is that the failure is now on disk with its per-check results.
+    (args.out / "harness-quality.json").write_text(
+        json.dumps(quality.report(input_digest), indent=2) + "\n")
+    if not quality.ok:
+        raise RuntimeError("harness quality failed:\n- " + "\n- ".join(quality.issues))
 
     out_file = args.out / "index.html"
     out_file.write_text(page)
-    (args.out / "harness-quality.json").write_text(json.dumps({
-        "schemaVersion": "harness-quality.v1",
-        "ok": True,
-        "inputDigest": input_digest,
-        "checks": {
-            "richSnapshot": True,
-            "controlGeometry": True,
-            "designedControlGrammar": True,
-            "tier2Substance": True,
-            "tier3SlotsAssetsDistinct": True,
-            "publicCopyProvenance": True,
-        },
-    }, indent=2) + "\n")
     cs.copy_fonts(args.brand_yaml.parent, args.out / "assets", doc)
 
     n_actions = sum(1 for k in prim_items if k in ACTION_KINDS)

@@ -81,11 +81,17 @@ def _pattern(pid: str, provenance: list[str],
     return pat
 
 
-def _write_rects(path: Path, rows: list[tuple[int, int, int]]) -> None:
+def _write_rects(path: Path, rows: list[tuple[int, int, int]],
+                 classes: str = "div") -> None:
+    """A measured band census. Rows carry ``classes`` exactly as a real census does:
+    that class list is what a band's crop (and so its grounding file) is named after,
+    and it is how a band is matched to its own row rather than to whatever row happens
+    to sit at its ordinal."""
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps({
         "schemaVersion": "section-rects.v1",
-        "sections": [{"index": i, "rect": {"x": 0, "y": 0, "w": w, "h": h}}
+        "sections": [{"index": i, "classes": classes,
+                      "rect": {"x": 0, "y": 0, "w": w, "h": h}}
                      for i, w, h in rows],
     }))
 
@@ -105,6 +111,23 @@ def _write_flat_band(brand_dir: Path, filename: str, doc: dict) -> None:
 
 def _pad(pattern: dict) -> dict:
     return (pattern.get("contentShape") or {}).get("bandPadding") or {}
+
+
+def _stripped(doc: dict) -> dict:
+    """A copy of a library with the measured facts removed.
+
+    Enrichment is fill-absent-only, so a lane whose shipped library was ALREADY
+    enriched by its authoring run legitimately gains nothing on a re-run. Asserting
+    that the enricher refills facts therefore has to start from a library that is
+    missing them, or the assertion measures the lane's current on-disk state instead
+    of the enricher's behaviour."""
+    out = copy.deepcopy(doc)
+    for pat in out.get("patterns") or []:
+        cs = pat.get("contentShape")
+        if isinstance(cs, dict):
+            for key in mg.ALL_FIELDS | {"deviceGeometry"}:
+                cs.pop(key, None)
+    return out
 
 
 # ── loading: both naming conventions ──────────────────────────────────────────
@@ -324,7 +347,7 @@ class CommittedLaneTests(unittest.TestCase):
             if pages and band.page:
                 self.assertIn(band.page, pages,
                               f"{pat['id']} measured from a page it does not declare")
-        summary = mg.enrich_layout_library(copy.deepcopy(doc), MULTI_PAGE_LANE,
+        summary = mg.enrich_layout_library(_stripped(doc), MULTI_PAGE_LANE,
                                            fields=mg.FIDELITY_FIELDS)
         self.assertEqual(len(summary), len(extracted),
                          "every extracted pattern should gain measured facts")
@@ -336,7 +359,7 @@ class CommittedLaneTests(unittest.TestCase):
             self.skipTest("multi-page lane not present")
         doc = yaml.safe_load((MULTI_PAGE_LANE / "layout-library.yaml").read_text())
         bands = mg._load_grounding(MULTI_PAGE_LANE)
-        enriched = copy.deepcopy(doc)
+        enriched = _stripped(doc)
         mg.enrich_layout_library(enriched, MULTI_PAGE_LANE,
                                  fields=mg.FIDELITY_FIELDS)
         checked = 0
