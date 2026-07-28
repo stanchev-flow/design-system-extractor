@@ -197,8 +197,31 @@ def rewrite_asset_refs(text: str, page: Path, out_dir: Path, pool: AssetPool, ne
 
 
 def normalise_title(text: str, title: str) -> str:
-    """Give a relocated page an honest <title> (Vite scaffolds keep a stale one)."""
+    """Give a relocated page an honest <title> (Vite scaffolds keep a stale one).
+
+    Still belt-and-braces after the framework scaffold learned to stamp its own
+    brand title: already-generated runs on disk carry the old placeholder, and the
+    lane title here ("<Brand> — composed replica") describes the page's role in the
+    bundle, which the generators have no reason to know."""
     return re.sub(r"<title>.*?</title>", f"<title>{html.escape(title)}</title>", text, count=1, flags=re.S)
+
+
+# Published bundles are a working record, not content anyone should find by search.
+# Emitted by the export so the committed bundle carries it, instead of only the
+# deploy-time staged copy. Asking crawlers is not access control: the repo and the
+# Pages site stay readable to anyone with the URL.
+ROBOTS_META = '<meta name="robots" content="noindex, nofollow">'
+HEAD_OPEN_RE = re.compile(r"<head\b[^>]*>", re.IGNORECASE)
+
+
+def inject_noindex(text: str) -> str:
+    """Add the robots meta right after <head>, idempotently."""
+    if 'name="robots"' in text:
+        return text
+    match = HEAD_OPEN_RE.search(text)
+    if not match:
+        return text
+    return f"{text[:match.end()]}\n{ROBOTS_META}{text[match.end():]}"
 
 
 def copy_page(src: Path, dest: Path, out_dir: Path, pool: AssetPool, *, title: str | None = None) -> None:
@@ -207,7 +230,7 @@ def copy_page(src: Path, dest: Path, out_dir: Path, pool: AssetPool, *, title: s
     text, _ = rewrite_asset_refs(text, dest, out_dir, pool, near=src.parent)
     if title:
         text = normalise_title(text, title)
-    dest.write_text(text, encoding="utf-8")
+    dest.write_text(inject_noindex(text), encoding="utf-8")
 
 
 def copy_plain(src: Path, dest: Path) -> bool:
@@ -956,6 +979,7 @@ def render_landing(manifest: dict, out_dir: Path) -> str:
     source_link = f'<a href="{_e(source)}" rel="noopener">{_e(source)}</a>' if source else "—"
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
+{ROBOTS_META}
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{_e(manifest["brand"])} — published extraction results</title>
 <style>{LANDING_CSS}</style></head>
@@ -1066,6 +1090,7 @@ def write_published_index(root: Path) -> None:
     (root / "index.html").write_text(
         f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
+{ROBOTS_META}
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Published extraction results</title><style>{LANDING_CSS}</style></head>
 <body><div class="wrap">

@@ -278,3 +278,80 @@ provenance mentions in `logs/changes.md` and the `fieldnote-design-system` packa
 
 **Verification** — 22/22 pages over `file://` and 22/22 over the Studio after the change
 (the landing page is now checked last, so its own lane previews exist when it is loaded).
+
+## 2026-07-28 — cross-brand commentary out of emitted output; scaffold brand defaults; C30
+
+The report-only scan above found 21 cross-brand references emitted by our own renderers
+into shipped CSS comments. They are gone from every rendered page in this bundle. Fixed at
+the renderer, comment text only — **no CSS value, selector or markup changed anywhere**.
+
+**Emitted comment sites rewritten brand-agnostically** (all were genuine engineering
+context, so the mechanic was kept and the run-specific anecdote dropped):
+- `compose_section.py` interlock mobile recrop — a plain landscape ratio coinciding with
+  some brand's measured aspect does not make it brand-derived
+- `compose_section.py` overlay bleed canvas — "never as an unconditional viewport-height
+  default" (was a named brand's era)
+- `compose_section.py` overlay panel display step — the 0.6 step is described as a
+  QUANTIZING ratio (an unrounded multiplier lands between measured type rungs); the two
+  brands' pixel arithmetic that motivated it is no longer shipped
+- `compose_section.py` testimonial pull-quote glyph — round rem values in a device clamp
+  coincide with some brands' spacing rungs without deriving from them
+- `compose_section.py` section-padding rhythm note — the AS-24 reason (an unwrapped
+  literal `var()` fallback reads as one brand's value inside another's page) with the
+  work-phase label removed
+- `compose_page.py` page section min-height — "never as an unconditional full-frame default"
+- `render_components_preview.py` NON-STRETCH stage alignment, measured button families,
+  buttons-on-surfaces band chrome — the last now states the general rule: an on-inverse
+  muted ink carries the hue of the surface it was measured against
+- `css_fidelity.py` fidelity-report heading — "Known acceptance divergences (recurring
+  source-vs-replica gaps)"; the listed properties were already generic
+- `framework_generator.py` emitted `@theme` alias comment — "the scaffold ui components'
+  own token names"
+
+**Scaffold brand defaults, fixed generator-side** (`handoff/scaffold/framework-site/`)
+- `package.json` + `package-lock.json` name → `design-system-scaffold`; description no
+  longer names a past extraction. Chosen NEUTRAL rather than brand-templated: the package
+  name is never visible in the built single-file page, and package.json must stay in step
+  with the committed lock or `npm ci` refuses to run.
+- `index.html` `<title>` → `Design system scaffold`, and `scaffold_framework_project()`
+  now stamps `"<Brand> — design system"` from `brand-assets.json` (`brand.name`), falling
+  back to the lane's `brand.yaml`. No brand facts ⇒ the neutral placeholder stays, so an
+  unstamped run is unbranded rather than mis-branded.
+- The exporter's `<title>` normalisation in `publish_run_bundle.py` was KEPT: it still
+  guards already-generated runs, and the lane titles it writes ("… — composed replica")
+  describe the page's role in the bundle, which the generators have no reason to know.
+
+**C30 cross-brand leak check** (`tools/extract/validate_brand_evidence.py`) — fails when a
+generated artifact names a brand belonging to a different run. Vocabulary is derived from
+the lane names under `runs/` plus one documented fallback list (runs/ is git-ignored, so a
+fresh clone would otherwise derive nothing). Scoped to three regions that can never
+legitimately name another company: renderer-emitted comments, the generated `<title>`, and
+the generated npm package name/description. Visible page copy and data files are NOT
+scanned — a logo wall, testimonial or asset id names real customers on purpose, so
+`…-remote-logo.avif` and `alt="Remote"` must not fire. Brand names that are ordinary
+English words only count as proper nouns, possessives or with a provenance suffix
+(`remote-fix`), which is why this harness's own "diagonal-hatch plate" and "hatch
+fallback" comments stay clean.
+
+**Verification**
+- harness + 17 layout pages re-rendered, replica re-composed (`--skip-shoot --skip-ladder`):
+  the only diff versus the previously published pages is the comment text and the
+  exporter's `<title>`; `harness-quality.json` and `tokens.manifest.json` byte-identical
+- bundle re-exported: **0 `page` findings** in the export's own cross-brand scan (the 21
+  remaining matches are the legitimate customer logo and provenance mentions in
+  `logs/`), 22/22 pages verified over `file://`
+- C30 on this lane: 33 → 11 errors, all 11 inside `framework/` — the stale pre-fix
+  framework build. Framework generation is gated for this run and was not re-run; the
+  ungated override was not used. `framework/index.html` still carries one scaffold HTML
+  comment naming a past brand's typeface. It clears when the lane is rebuilt.
+
+**Left in place, deliberately**
+- `handoff/scaffold/framework-site/src/index.css` base layer sets `font-stretch: 87.5%`
+  (body) and `82%` (h1–h3), tuned for a past brand's SemiCondensed typeface and applied
+  unconditionally to every generated app. That is a brand-specific VALUE, not commentary,
+  so it was not changed; the comment beside it now says so explicitly.
+- `handoff/scaffold/framework-site/index.html` still hardcodes one Google Fonts link for a
+  past brand's typeface. Same reason, and webfont handling is being reviewed separately.
+- `handoff/scaffold/framework-site/src/brand/brand-assets.json` is a past brand's asset
+  manifest. It is overwritten per run when the lane passes one, so it only leaks if a run
+  scaffolds without a manifest.

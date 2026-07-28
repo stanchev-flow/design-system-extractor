@@ -1,6 +1,7 @@
 <!doctype html>
 <html data-projection-input-digest="ca63a5ddba5a1787de1f5361df474685abac514a6eff1bb053cc0aa3944fc525" lang="en">
 <head>
+<meta name="robots" content="noindex, nofollow">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Greenhouse — components &amp; layout harness</title>
@@ -540,7 +541,7 @@ body {
 .cmp-name { font-family: var(--font-heading); text-transform: var(--case-h2, none);
   font-size: var(--h3-size); line-height: 1.2em; color: var(--ink); }
 .cmp-intent { font-size: var(--body-size); color: var(--ink-muted); line-height: 1.5em; }
-/* NON-STRETCH stage alignment (AGENTS.md flex-column mechanic, remote-fix Phase C):
+/* NON-STRETCH stage alignment (AGENTS.md flex-column mechanic):
    flex-column children stretch by default, so content-hugging specimens (buttons,
    eyebrows, chips, arrow links) rendered edge-to-edge. The stage columns align
    flex-start and the container-ish specimens that genuinely need the full row
@@ -723,9 +724,9 @@ body {
   pointer-events: none; text-decoration: none; }
 
 /* ── measured button FAMILIES (filled-CTA brands): one specimen class per family,
-   values var()-chained into the layer-1 --button[-<family>]-* tokens (remote-fix
-   Phase C: the single-variant render hid the measured secondary/tertiary/text
-   families). inline-flex + stage flex-start = content-hugging by construction. */
+   values var()-chained into the layer-1 --button[-<family>]-* tokens (a
+   single-variant render hides the measured secondary/tertiary/text families).
+   inline-flex + stage flex-start = content-hugging by construction. */
 .btnf { display: inline-flex; align-items: center; gap: 0.5rem; align-self: flex-start;
   text-decoration: none; cursor: pointer; line-height: 1.15; white-space: nowrap;
   transition: background var(--ease) ease, color var(--ease) ease,
@@ -929,8 +930,9 @@ body {
    from the band surface's OWN paired ink token (--c-ink, re-scoped per band by the
    [data-surface-frame] alias block) with a muted variant mixed from that ink toward
    the band's own paper. Never a page-level gray and never a cross-family muted color
-   token (Remote's on-inverse-muted periwinkle was riding onto the maroon accent
-   band); the mix RATIOS are structural harness chrome, the colors are the brand's. */
+   token (an on-inverse muted ink carries the hue of the surface it was measured
+   against, so reusing it on a differently-toned band mismatches that band's own
+   ink); the mix RATIOS are structural harness chrome, the colors are the brand's. */
 .spec-band { background: var(--c-paper); color: var(--c-ink); padding: 1.75rem;
   margin-top: 1rem; display: flex; flex-direction: column; gap: 1.25rem;
   --spec-band-mut: color-mix(in srgb, var(--c-ink) 76%, var(--c-paper));

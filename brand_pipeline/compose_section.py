@@ -7321,7 +7321,8 @@ SCAFFOLD_INTERLOCK_CSS = """.cs-interlock { position: relative; display: grid;
 @media (max-width: 767px) {
   .cs-interlock { grid-template-columns: 1fr; }
   /* provenance: structural — mobile media recrop ratio (layout geometry, not a
-     brand token; coincidentally equals Remote's landscape aspect) */
+     brand token; a plain landscape ratio will coincide with some brands' own
+     measured aspect, which does not make it brand-derived) */
   .cs-interlock-media { aspect-ratio: 3 / 2; }
 }"""
 
@@ -7359,7 +7360,7 @@ SCAFFOLD_OVERLAY_CSS = """.cs-overlay-sec { position: relative; }
 .cs-ov-canvas { position: relative; margin: 0; min-height: calc(48 * var(--baseline)); }
 /* Bleed canvas is content-sized from the brand media / measured floor above. Viewport-tall
    bleed is applied only when brand responsive heightRule (viewport / viewport-minus-nav)
-   licenses it via component_render — never as a HubSpot-era unconditional 90svh default. */
+   licenses it via component_render — never as an unconditional viewport-height default. */
 .cs-ov-canvas > .c-image, .cs-ov-canvas > .c-image-ph {
   width: 100%; height: 100%; min-height: inherit; object-fit: cover; }
 .cs-ov--bleed .cs-ov-canvas > .c-image { aspect-ratio: auto; height: 100%; }
@@ -7393,11 +7394,11 @@ SCAFFOLD_OVERLAY_CSS = """.cs-overlay-sec { position: relative; }
   padding: calc(6 * var(--baseline)) calc(5 * var(--baseline)); }
 /* panel display steps DOWN from the section's own display alias — --c-display-size is
    always emitted per section (component_vars), so no literal fallback (AS-24).
-   0.6 (pass1 2026-07, scale_adherence finding): the old 0.62 landed hubspot's panel
-   heading at 49.6px — on NO ladder (measured h1 48 / derived step 52). 0.6 puts the
-   stepped-down rank on the brand's own h1 rung for the evidenced display:h1 ratios
-   (hubspot 80->48 = h1; remote 46->27.6 ~= h3 28) — quantized new geometry, audited
-   per brand by the scale gate. */
+   The 0.6 step is a QUANTIZING ratio (pass1 2026-07, scale_adherence finding): an
+   unrounded multiplier lands the stepped-down heading between the brand's measured
+   type rungs, so the panel reads at a size no ladder declares. A round step puts the
+   stepped-down rank back onto a measured rung across the observed display:heading
+   ratios — geometry quantized here, then audited per brand by the scale gate. */
 .cs-ov-panel .c-heading--display { font-size: calc(0.6 * var(--c-display-size));
   max-width: 14ch; }
 /* sidebar rail: the full-height panel column (ref 3) — space-between stack. */
@@ -7545,7 +7546,8 @@ SCAFFOLD_FLOW_CSS = """.cs-flow { display: flex; flex-direction: column;
   line-height: var(--type-h4-line-height, var(--c-heading-line)); color: var(--c-ink); }
 .cs-testimonial-mark { color: var(--c-accent); font-family: var(--c-font-display);
   /* provenance: structural — decorative pull-quote glyph scale (a device size
-     ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */
+     ceiling, not a brand type tier; round rem values in a device clamp will
+     coincide with some brands' spacing rungs without deriving from them) */
   font-size: clamp(2.5rem, 5cqw, 4rem); line-height: 0.8; margin-bottom: 1rem; }
 .cs-testimonial .c-person { margin-top: var(--space-quote-to-attribution,
   var(--c-block-gap)); }
@@ -9118,8 +9120,8 @@ def style_override_css(style_ctx: RenderContext) -> str:
 /* Vertical padding comes from the rhythm scale / brand tokens (symmetric top=bottom),
    not ad-hoc literals; horizontal stays the style's asymmetric cqw inset. The rhythm
    vars are guaranteed by rhythm_vars_css on every render path, so the references are
-   fallback-free (AS-24 / remote-fix blocker-4: a literal fallback is unwrapped by the
-   provenance scanner and collides cross-brand). */
+   fallback-free (AS-24: a literal var() fallback is unwrapped by the provenance
+   scanner and then reads as one brand's measured value inside another's page). */
 .cs-section {{ padding: var(--c-section-pad-top) 12cqw
                         var(--c-section-pad-bottom) 6cqw; }}
 {style_density_css(style_ctx)}

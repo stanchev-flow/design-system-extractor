@@ -7,7 +7,8 @@
   --text-h1 -> text-h1, --radius-panel -> rounded-panel, etc.
 */
 @theme {
-  /* ---- color: surface (values read from Hatch source CSS) ---- */
+  /* ---- color: surface (scaffold defaults; the whole @theme block is replaced
+       per run from the brand's own design system) ---- */
   --color-surface-primary: #ffffff;
   --color-surface-secondary: #f5f7f6; /* --_theme---background-slate */
   --color-surface-inverse: #0f281b; /* brand deep green */
@@ -36,7 +37,7 @@
   --color-graphic-blue: #c1d7ff; /* --_theme---border--blue */
   --color-graphic-logo: #959494; /* rgb(149,148,148) */
 
-  /* ---- typography families (real @font-face: Instrument Sans) ---- */
+  /* ---- typography families (scaffold default stack; replaced per run) ---- */
   --font-heading: "Instrument Sans", Georgia, system-ui, sans-serif;
   --font-body: "Instrument Sans", Georgia, system-ui, sans-serif;
 
@@ -118,7 +119,12 @@
   }
   body {
     font-family: var(--font-body);
-    /* Hatch ships Instrument Sans SemiCondensed; approximate the width axis. */
+    /* SCAFFOLD DEFAULT width axis, carried over from a source whose typeface
+       shipped a SemiCondensed width. It is NOT token-driven and NOT gated on the
+       brand having a variable-width face, so it narrows every generated app's
+       body text. Left as-is deliberately (changing it changes rendering for
+       every lane); the fix is to drive font-stretch from the brand's measured
+       font facts, or drop it when no width axis was measured. */
     font-stretch: 87.5%;
     background-color: var(--color-surface-primary);
     color: var(--color-text-primary);

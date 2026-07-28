@@ -1146,7 +1146,7 @@ def build_docs(brand: str, divs: list[dict], matches: list[dict], acc: dict,
         f"- source: `{meta.get('joinedEvidence')}`",
         f"- **{len(divs)} divergences** — critical {counts['critical']}, "
         f"high {counts['high']}, medium {counts['medium']}, low {counts['low']}", "",
-        "## Known hubspot-v3 acceptance divergences", "",
+        "## Known acceptance divergences (recurring source-vs-replica gaps)", "",
     ]
     labels = {
         "button_hover_transform": "button `translateY(-1px)` hover-transform (source has none)",

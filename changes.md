@@ -1,5 +1,72 @@
 # Changes
 
+## 2026-07-28 — No brand's name from a past run reaches another brand's generated output
+
+The cross-brand scan added with the published bundles found 21 references to other brands
+emitted by our own renderers into shipped CSS comments — "never as a HubSpot-era unconditional
+90svh default", "coincidentally equals a Remote spacing rung", "remote-fix Phase C". Nothing was
+visible to a page reader and no styling was wrong, but one brand's tuning anecdote was shipping
+inside every other brand's artifact, and per `AGENTS.md` that commentary should never have been
+brand-specific. Same class as the WoodWave hero offset, one severity down.
+
+- **Fixed at the renderers, comment text only.** Nine emitted comment sites across
+  `brand_pipeline/compose_section.py`, `compose_page.py`, `render_components_preview.py`,
+  `css_fidelity.py` and `src/screenshot_to_template/framework_generator.py` now state the
+  underlying mechanic with no brand name and no run-specific arithmetic. Every one carried real
+  engineering context, so the rule was kept and only the anecdote dropped: a viewport-height
+  default is unconditional-or-licensed regardless of which brand exposed it; a stepped-down
+  display multiplier has to be a quantizing ratio or it lands between measured type rungs; an
+  on-inverse muted ink carries the hue of the surface it was measured against. **No CSS value,
+  selector or markup changed** — the re-rendered harness differs from the previously published
+  page only in that comment text.
+- **Scaffold brand defaults, fixed generator-side.** `handoff/scaffold/framework-site/` shipped a
+  past brand's `<title>` and an npm package named after it, so every generated framework app
+  inherited that identity. The package is now the neutral `design-system-scaffold` (in
+  `package.json` and the lock, which must agree or `npm ci` refuses to run) and the title is a
+  neutral placeholder that `scaffold_framework_project()` stamps per run from the brand's own
+  `brand-assets.json`/`brand.yaml`. Neutral over templated for the package name: it is never
+  visible in the built page, and a neutral default cannot be mistaken for a real brand. The
+  exporter's `<title>` normalisation stays — it still guards already-generated runs, and the
+  bundle-role titles it writes are not something a generator can know.
+- **C30 cross-brand leak, in the existing validator.** `tools/extract/validate_brand_evidence.py`
+  now fails when a generated artifact names a brand belonging to a different run. Vocabulary is
+  derived from the lane names under `runs/`, minus the brand under validation, plus one clearly
+  commented fallback list (needed because `runs/` is git-ignored, so a fresh clone would derive an
+  empty vocabulary and the check would silently pass).
+  - **Scoped to three regions that can never legitimately name another company:**
+    renderer-emitted comments, the generated `<title>`, and the generated npm package
+    name/description. Visible page copy and data files are deliberately not scanned, because a
+    logo wall, a testimonial or an asset id names real customers on purpose — `remote-logo.avif`
+    and `alt="Remote"` are correct output, not leaks.
+  - **Precision over recall on ambiguous words.** Brand names that are also ordinary English
+    (`remote`, `hatch`) only count as proper nouns, possessives, or with a provenance suffix
+    (`remote-fix`). Measured on real output: the harness's own "diagonal-hatch plate" and "hatch
+    fallback" comments and React's `disableRemotePlayback` produce zero findings, while all 21
+    real leaks were caught. A check that fires on ordinary words gets switched off by whoever
+    trips it first.
+  - Verified both directions: 0 findings against greenhouse-4's re-rendered output and against a
+    framework lane freshly scaffolded from the fixed scaffold; true positives when a foreign brand
+    is injected into a copy of a real generated page. 11 regression tests including the
+    `remote-logo.avif` false-positive case.
+- **`noindex` moved into the export** (the follow-up left below). `tools/publish_run_bundle.py`
+  emits `<meta name="robots" content="noindex, nofollow">` into every page it writes — 22/22 HTML
+  files in the greenhouse-4 bundle — so the committed bundle carries it instead of only the
+  deploy-time staged copy. The workflow's injection step is now redundant and can be reduced to
+  writing `robots.txt`; `.github/workflows/` was not touched.
+- **Left in place, reported not hidden.** `handoff/scaffold/framework-site/src/index.css` sets
+  `font-stretch: 87.5%` on `body` and `82%` on `h1`–`h3`, tuned for a past brand's SemiCondensed
+  typeface and applied unconditionally to every generated app, and `index.html` hardcodes that
+  brand's Google Fonts link. Those are brand-specific **values**, not commentary: changing them
+  changes rendering for every lane, so they were left alone with the comment beside them now
+  saying exactly that. greenhouse-4's published `framework/index.html` is a pre-fix build and
+  still carries one such comment; its lane is gated and was not regenerated (no ungated override).
+- **Pre-existing C30 debt on the legacy lanes.** `hubspot-v2`, `remote` and `woodwave-v2` have
+  pages rendered before this fix, so C30 reports their stale commentary.
+  `test_g2_validation_zero_errors_all_three` now asserts zero evidence-contract errors and that
+  every C30 hit on those lanes is commentary (a foreign brand in a title or package identity would
+  still fail). Re-rendering them was rejected: the harness and replica writers also rewrite the
+  `harness-quality.json` / `replica-report.json` fixtures the G3/G4 tests deliberately depend on.
+
 ## 2026-07-28 — Published bundles carry the run's real gate outcome, not just its artifacts
 
 A published bundle looked identical whether or not the run that produced it passed its own gates: a
@@ -69,7 +136,8 @@ with a link: <https://stanchev-flow.github.io/design-system-extractor/>.
   the staged `_site/` copy, never on the committed bundle, because `tools/publish_run_bundle.py`
   rewrites that subtree on every export and a hand-edit there would be clobbered. **Follow-up for
   the export owner:** emitting the meta tag from the export script is the cleaner long-term home,
-  which would leave the workflow responsible for `robots.txt` alone.
+  which would leave the workflow responsible for `robots.txt` alone. *(Done — see the
+  2026-07-28 cross-brand entry at the top; the workflow's injection step is now redundant.)*
   - **This is not access control.** `robots.txt` and `noindex` ask well-behaved crawlers not to
     list the site; anyone with the URL still reads everything, the repo is public, and crawlers
     that ignore `robots.txt` are unaffected. GitHub Pages serves no custom headers, so

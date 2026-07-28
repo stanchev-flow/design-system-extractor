@@ -21,7 +21,7 @@ CANONICAL ORDERED GATES (each individually re-runnable + idempotent):
 
   G1  extraction complete  — every evidence + authored artifact the downstream
                              gates read is present on disk.
-  G2  validation           — validate_brand_evidence (C1–C28) → 0 ERRORS. Warnings
+  G2  validation           — validate_brand_evidence (C1–C30) → 0 ERRORS. Warnings
                              and notes are allowed and recorded. Block on errors.
   G3  harness built+reachable — the components-preview spec book exists at the
                              canonical lane path (Studio serves it there); the
@@ -180,11 +180,11 @@ def gate_g1_extraction(brand_dir: Path) -> GateResult:
         time.time() - t0)
 
 
-# ── G2: validation (C1–C28) ───────────────────────────────────────────────────
+# ── G2: validation (C1–C30) ───────────────────────────────────────────────────
 
 def gate_g2_validation(brand_dir: Path, *, allow_no_vision: bool = False,
                        min_logo_assets: int = 3, smoke: bool = True) -> GateResult:
-    """Run the C1–C28 evidence contract. PASS iff 0 ERRORS (warnings + notes are
+    """Run the C1–C30 evidence contract. PASS iff 0 ERRORS (warnings + notes are
     recorded, never blocking). Blocks on any error, naming them."""
     t0 = time.time()
     try:
@@ -202,7 +202,7 @@ def gate_g2_validation(brand_dir: Path, *, allow_no_vision: bool = False,
         "" if ok else f"{len(rep.errors)} validation error(s): "
                       + "; ".join(rep.errors[:6]),
         {"errors": rep.errors, "warnings": rep.warnings, "notes": rep.notes,
-         "checks": "C1-C28"},
+         "checks": "C1-C30"},
         time.time() - t0)
 
 

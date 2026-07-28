@@ -2,7 +2,7 @@
 
 - source site: https://www.greenhouse.com/
 - run of record: `runs/greenhouse-4` (gitignored; this directory is the shareable export)
-- published: 2026-07-28T19:31:15Z
+- published: 2026-07-28T20:09:17Z
 - bundle size: 19.4 MB · 65 media files
 - replica fidelity score: 0.7437 (from the report beside the published page)
 

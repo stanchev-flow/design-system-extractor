@@ -5,7 +5,7 @@
   "brand": "Greenhouse",
   "title": "Greenhouse 4",
   "source_url": "https://www.greenhouse.com/",
-  "published_at": "2026-07-28T19:31:15Z",
+  "published_at": "2026-07-28T20:09:17Z",
   "replica_overall": 0.7437,
   "status": {
     "verdict": "not-passed",
@@ -316,104 +316,6 @@
       "context": ".avif\",\"displayUrl\":\"../assets/040-67abc305add47300764f9fd2-remote-logo.avif\",\"inlineSvg\":\"\",\"iconOrIllustration\":\"na\",\""
     },
     {
-      "token": "remote",
-      "file": "harness/index.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "ON-STRETCH stage alignment (AGENTS.md flex-column mechanic, remote-fix Phase C): flex-column children stretch by defa"
-    },
-    {
-      "token": "remote",
-      "file": "harness/index.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "ar()-chained into the layer-1 --button[-<family>]-* tokens (remote-fix Phase C: the single-variant render hid the mea"
-    },
-    {
-      "token": "remote",
-      "file": "harness/index.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "e-level gray and never a cross-family muted color token (Remote's on-inverse-muted periwinkle was riding onto the mar"
-    },
-    {
-      "token": "remote",
-      "file": "harness/layouts/content.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
-    },
-    {
-      "token": "remote",
-      "file": "harness/layouts/cta.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
-    },
-    {
-      "token": "remote",
-      "file": "harness/layouts/ctaSplit5050.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
-    },
-    {
-      "token": "remote",
-      "file": "harness/layouts/features.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
-    },
-    {
-      "token": "remote",
-      "file": "harness/layouts/featuresHeadingBodyTop.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
-    },
-    {
-      "token": "remote",
-      "file": "harness/layouts/featuresSectionHeadingTop.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
-    },
-    {
-      "token": "remote",
-      "file": "harness/layouts/featuresSplit5050.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
-    },
-    {
-      "token": "remote",
-      "file": "harness/layouts/featuresSplit5050Media.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
-    },
-    {
-      "token": "remote",
-      "file": "harness/layouts/logoWall.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
-    },
-    {
-      "token": "remote",
-      "file": "harness/layouts/stats.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
-    },
-    {
-      "token": "remote",
-      "file": "harness/layouts/testimonial.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
-    },
-    {
       "token": "fieldnote",
       "file": "logs/changes.md",
       "kind": "provenance",
@@ -440,6 +342,27 @@
       "kind": "asset-name",
       "in_comment": false,
       "context": "rator-side fix, not an export fix; 11 are the legitimate `\u2026-remote-logo.avif` customer logo; 5 are provenance mentions i"
+    },
+    {
+      "token": "remote",
+      "file": "logs/changes.md",
+      "kind": "asset-name",
+      "in_comment": false,
+      "context": "timonial or asset id names real customers on purpose, so `\u2026-remote-logo.avif` and `alt=\"Remote\"` must not fire. Brand na"
+    },
+    {
+      "token": "remote",
+      "file": "logs/changes.md",
+      "kind": "provenance",
+      "in_comment": false,
+      "context": "eal customers on purpose, so `\u2026-remote-logo.avif` and `alt=\"Remote\"` must not fire. Brand names that are ordinary Englis"
+    },
+    {
+      "token": "remote",
+      "file": "logs/changes.md",
+      "kind": "provenance",
+      "in_comment": false,
+      "context": "as proper nouns, possessives or with a provenance suffix (`remote-fix`), which is why this harness's own \"diagonal-hatc"
     },
     {
       "token": "woodwave",
@@ -475,55 +398,6 @@
       "kind": "provenance",
       "in_comment": false,
       "context": "This will stop working in the next major version of npm. > fieldnote-design-system@0.1.0 build:nocheck > vite build vi"
-    },
-    {
-      "token": "hubspot",
-      "file": "replica/index.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "minus-nav) licenses it via component_render \u2014 never as a HubSpot-era unconditional 90svh default. */ .cs-ov-canvas >"
-    },
-    {
-      "token": "hubspot",
-      "file": "replica/index.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "ass1 2026-07, scale_adherence finding): the old 0.62 landed hubspot's panel heading at 49.6px \u2014 on NO ladder (measure"
-    },
-    {
-      "token": "hubspot",
-      "file": "replica/index.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "brand's own h1 rung for the evidenced display:h1 ratios (hubspot 80->48 = h1; remote 46->27.6 ~= h3 28) \u2014 quantized n"
-    },
-    {
-      "token": "hubspot",
-      "file": "replica/index.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "nse it (component_render / band_height_css) \u2014 never as a HubSpot-era unconditional full-frame default. */ .cs-section"
-    },
-    {
-      "token": "remote",
-      "file": "replica/index.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "out geometry, not a brand token; coincidentally equals Remote's landscape aspect) */ .cs-interlock-media { aspect"
-    },
-    {
-      "token": "remote",
-      "file": "replica/index.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "or the evidenced display:h1 ratios (hubspot 80->48 = h1; remote 46->27.6 ~= h3 28) \u2014 quantized new geometry, audited"
-    },
-    {
-      "token": "remote",
-      "file": "replica/index.html",
-      "kind": "page",
-      "in_comment": true,
-      "context": "ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */ font-size: clamp(2.5rem, 5cqw, 4re"
     }
   ],
   "run_manifest": {
@@ -585,5 +459,5 @@
     ],
     "notes": "Fresh multi-page extract from existing captures. Studio project Greenhouse 4. Framework lane is opt-in token skin (no shadcn defaults; native chrome, no Radix)."
   },
-  "bytes": 20379045
+  "bytes": 20383088
 }

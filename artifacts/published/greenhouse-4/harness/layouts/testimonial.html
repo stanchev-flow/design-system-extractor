@@ -1,6 +1,7 @@
 <!doctype html>
 <html data-projection-input-digest="ca63a5ddba5a1787de1f5361df474685abac514a6eff1bb053cc0aa3944fc525" lang="en" data-pattern="testimonial" data-pattern-lib="project" data-pattern-match="ref">
 <head>
+<meta name="robots" content="noindex, nofollow">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Greenhouse - testimonial (composed from catalog)</title>
@@ -843,7 +844,8 @@ span.c-foot-wordmark { background: currentColor;
   line-height: var(--type-h4-line-height, var(--c-heading-line)); color: var(--c-ink); }
 .cs-testimonial-mark { color: var(--c-accent); font-family: var(--c-font-display);
   /* provenance: structural — decorative pull-quote glyph scale (a device size
-     ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */
+     ceiling, not a brand type tier; round rem values in a device clamp will
+     coincide with some brands' spacing rungs without deriving from them) */
   font-size: clamp(2.5rem, 5cqw, 4rem); line-height: 0.8; margin-bottom: 1rem; }
 .cs-testimonial .c-person { margin-top: var(--space-quote-to-attribution,
   var(--c-block-gap)); }

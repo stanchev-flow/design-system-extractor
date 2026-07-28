@@ -320,17 +320,15 @@ Deployment is automatic: `.github/workflows/deploy-pages.yml` runs on every push
 a redeploy by hand with `gh workflow run deploy-pages.yml` (or Actions → *Deploy published bundle to
 Pages* → *Run workflow*); pushing an unrelated commit to `main` also redeploys.
 
-**Indexing is discouraged, but the site is not private.** The workflow writes `robots.txt`
-(`Disallow: /`) and injects `<meta name="robots" content="noindex, nofollow">` into every page of the
-staged copy, so well-behaved search engines will not crawl or list the site. That is a request, not
-access control: anyone with the URL can read everything, the repo itself is public, and crawlers that
-ignore `robots.txt` are unaffected. Do not publish a bundle containing anything that must stay
-private.
+**Indexing is discouraged, but the site is not private.** `tools/publish_run_bundle.py` emits
+`<meta name="robots" content="noindex, nofollow">` into every page it writes, so the committed
+bundle carries the signal itself, and the workflow writes `robots.txt` (`Disallow: /`). That is a
+request, not access control: anyone with the URL can read everything, the repo itself is public, and
+crawlers that ignore `robots.txt` are unaffected. Do not publish a bundle containing anything that
+must stay private.
 
-The noindex signals are applied to the deploy-time copy because `artifacts/published/` is generated
-output — `tools/publish_run_bundle.py` rewrites that subtree on every export, so a hand-edit there
-would be clobbered. Emitting the meta tag from the export script would be the cleaner long-term
-home for it.
+The workflow's own meta-injection step is now redundant — the export is the canonical home for the
+tag, and `robots.txt` is the only thing the deploy still needs to add.
 
 ## Prompt And Versioning Rules
 

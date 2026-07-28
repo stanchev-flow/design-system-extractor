@@ -28,6 +28,7 @@ import re
 import shutil
 import subprocess
 import sys
+from html import escape as html_escape
 from pathlib import Path
 from typing import Any
 
@@ -317,7 +318,7 @@ def build_v1_theme_block(front_matter: dict[str, Any]) -> str:
 
   --shadow-floating: {shadow_val};
 
-  /* aliases for scaffold ui components (Hatch-era token names) */
+  /* aliases for the scaffold ui components' own token names */
   --color-surface-soft: var(--color-accent-soft);
   --color-border-hairline: var(--color-border-divider);
   --color-accent: var(--color-accent-primary);
@@ -643,11 +644,60 @@ def sync_index_css_theme(index_css_path: Path, dtcg: dict[str, Any]) -> None:
         index_css_path.write_text(patched, encoding="utf-8")
 
 
+def resolve_scaffold_brand_name(
+    brand_assets_manifest: Path | None = None,
+    brand_dir: Path | None = None,
+) -> str:
+    """The brand this framework app is being generated for, or "".
+
+    Read from the asset manifest the lane already hands the scaffold
+    (``brand-assets.json`` carries ``brand.name``), falling back to the lane's
+    authored ``brand.yaml``. Returns "" when neither is available, which leaves
+    the scaffold's own neutral placeholder in place — a wrong-but-neutral title
+    is recoverable, a previous brand's title in a new brand's page is not."""
+    for path, reader in ((brand_assets_manifest, json.loads),
+                         ((brand_dir / "brand.yaml") if brand_dir else None, yaml.safe_load)):
+        if not path or not Path(path).is_file():
+            continue
+        try:
+            doc = reader(Path(path).read_text(encoding="utf-8")) or {}
+        except Exception:
+            continue
+        brand = doc.get("brand") if isinstance(doc, dict) else None
+        name = brand.get("name") if isinstance(brand, dict) else brand
+        if isinstance(name, str) and name.strip():
+            return name.strip()
+    return ""
+
+
+def stamp_scaffold_brand_identity(target_dir: Path, brand_name: str) -> None:
+    """Give the copied scaffold the ACTIVE brand's page title.
+
+    The scaffold ships a neutral placeholder title, so an unstamped run is merely
+    unbranded rather than mis-branded. Only ``index.html`` is rewritten: the npm
+    package name stays the scaffold's neutral ``design-system-scaffold`` because
+    it is never user-visible in the built single-file page and because
+    package.json has to stay in step with the committed package-lock for
+    ``npm ci``."""
+    if not brand_name:
+        return
+    index_html = target_dir / "index.html"
+    if not index_html.is_file():
+        return
+    text = index_html.read_text(encoding="utf-8")
+    title = html_escape(f"{brand_name} — design system")
+    patched, count = re.subn(r"<title>.*?</title>", f"<title>{title}</title>",
+                            text, count=1, flags=re.DOTALL)
+    if count:
+        index_html.write_text(patched, encoding="utf-8")
+
+
 def scaffold_framework_project(
     target_dir: Path,
     *,
     scaffold_dir: Path | None = None,
     brand_assets_manifest: Path | None = None,
+    brand_dir: Path | None = None,
 ) -> Path:
     """Copy the framework template into target_dir (fresh each run)."""
     source = scaffold_dir or DEFAULT_SCAFFOLD_DIR
@@ -668,10 +718,12 @@ def scaffold_framework_project(
             shutil.copy2(item, dest)
 
     if brand_assets_manifest and brand_assets_manifest.exists():
-        brand_dir = target_dir / "src" / "brand"
-        brand_dir.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(brand_assets_manifest, brand_dir / "brand-assets.json")
+        assets_dir = target_dir / "src" / "brand"
+        assets_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(brand_assets_manifest, assets_dir / "brand-assets.json")
 
+    stamp_scaffold_brand_identity(
+        target_dir, resolve_scaffold_brand_name(brand_assets_manifest, brand_dir))
     return target_dir
 
 
@@ -956,6 +1008,7 @@ def generate_framework_site(
     scaffold_framework_project(
         framework_dir,
         brand_assets_manifest=brand_assets_manifest,
+        brand_dir=lane,
     )
     tokens = apply_tokens_from_design_system(framework_dir, generation_markdown)
     # Prefer the richer browser-extracted v2 contract; fall back to static v1.

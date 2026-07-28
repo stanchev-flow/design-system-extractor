@@ -429,7 +429,7 @@ def page_scaffold_css() -> str:
         " padding: var(--c-nav-pad-block) var(--c-section-pad-x); }",
         "/* page: sections size to content. Viewport/tall opening height is applied only",
         "   when brand responsive facts or measured bandHeight license it (component_render /",
-        "   band_height_css) — never as a HubSpot-era unconditional full-frame default. */",
+        "   band_height_css) — never as an unconditional full-frame default. */",
         ".cs-section { min-height: auto; }",
     ]
     return "\n".join(parts)

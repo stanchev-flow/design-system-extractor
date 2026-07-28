@@ -167,6 +167,18 @@ Checks (E = error, W = warning):
         text, and nav wordmarks. Marker-gated: fires only for slugs carrying
         version/scratch markers (-v3, -test, -wip); a lane legitimately named
         after the brand (runs/remote -> "Remote") is not a leak
+  C30 E cross-brand leak (2026-07): a generated artifact must not name a
+        FOREIGN brand — a brand belonging to a different run in this repo.
+        Vocabulary is derived from the lane names under runs/ (plus a small
+        documented fallback list, since runs/ is git-ignored), minus the brand
+        under validation. SCOPED to the three regions that can never
+        legitimately name another company: renderer-emitted comments, the
+        generated `<title>`, and the generated npm package name/description.
+        Visible page copy and data files are NOT scanned — a logo wall,
+        testimonial, or asset id names real customers on purpose. Brand names
+        that are ordinary English words (`remote`, `hatch`) only count as
+        proper nouns, possessives, or with a provenance suffix (`remote-fix`),
+        so "remote font" and "cross-hatch" stay clean
 
 Importable API (used by brand_pipeline/tests/test_brand_evidence_contract.py):
     report = validate_brand_dir(brand_dir, contracts_path=..., ...)
@@ -203,6 +215,37 @@ LITERAL_UNICODE_ESCAPE = re.compile(r"\\u[0-9a-fA-F]{4}")
 # Generated-artifact dirs C12 scans for escape hygiene. `framework` holds the
 # React lane's package + its built single-file page.
 GENERATED_ARTIFACT_DIRS = ("components-preview", "chrome", "framework")
+# Generated page dirs C30 scans for foreign-brand commentary. Wider than the C12
+# set because the composed replica / harness / catalog pages are where the
+# renderers' own CSS commentary lands.
+CROSS_BRAND_SCAN_DIRS = GENERATED_ARTIFACT_DIRS + ("harness", "compose", "catalog")
+# THE ONE HARDCODED PLACE (C30). Brand vocabulary is derived from the lane names
+# under runs/ first; this list backs that up, because runs/ is git-ignored (a
+# fresh clone derives an empty vocabulary and the check would silently pass) and
+# because some lanes were named `vNNN-<brand>` rather than `<brand>`. Add a name
+# here when a brand's tuning history enters the repo under a versioned lane name.
+KNOWN_REPO_BRAND_NAMES = ("hubspot", "remote", "woodwave", "greenhouse", "hatch",
+                          "fieldnote")
+# Brand names that are also ordinary English / CSS vocabulary. A bare lowercase
+# hit is NOT evidence of a cross-brand reference for these ("remote font",
+# "cross-hatch", "mine the corpus"), so they only count when written the way a
+# brand reference is written: as a proper noun, as a possessive, or carrying an
+# internal provenance suffix. Precision over recall — a check that cries wolf on
+# ordinary words gets switched off by the next person who trips it.
+AMBIGUOUS_BRAND_WORDS = {"remote", "hatch", "mine", "style", "sol", "test"}
+# Provenance suffixes that turn an ordinary word into a tuning-history reference
+# ("remote-fix Phase C", "hubspot-era default").
+BRAND_PROVENANCE_SUFFIXES = "fix|fixes|era|parity|only|default|defaults|punchlist|lane"
+# A run of characters that looks like a file name or an asset id, e.g.
+# "remote-logo.avif" or "040-67abc305add47300764f9fd2-remote-logo". Media files
+# carry third-party brands LEGITIMATELY (a customer logo in a logo wall), and the
+# generated apps reference the same files by id, so these runs are removed from a
+# region before it is matched.
+ASSET_NAMEISH = re.compile(
+    r"[\w.~%+/-]*\.(?:avif|png|jpe?g|svg|webp|gif|ico|mp4|webm|woff2?|ttf|otf"
+    r"|css|js|mjs|json|ya?ml|html?|md)\b"
+    r"|(?<![\w-])[0-9a-f]{16,}[\w-]*",
+    re.IGNORECASE)
 # Never scan installed dependencies: a minified vendor bundle legitimately
 # carries \uXXXX regex literals (React's XML-name char classes alone account for
 # ~50), which is exactly why the escape scan is scoped to authored source.
@@ -408,6 +451,127 @@ def _check_escape_hygiene(rep: "Report", brand_dir: Path) -> None:
                                      "do NOT decode \\uXXXX, so it renders "
                                      "verbatim. Author the character itself (e.g. "
                                      "'’', '—').")
+
+
+def foreign_brand_vocabulary(brand_dir: Path, brand_name: str = "",
+                             runs_root: Path | None = None) -> list[str]:
+    """Brand names belonging to OTHER runs in this repo, as lowercase tokens.
+
+    Derived from the lane directory names under ``runs/`` (the same derivation the
+    publish scan uses: drop a trailing version marker, keep the rest of the lane
+    name), unioned with :data:`KNOWN_REPO_BRAND_NAMES`, minus every word of the
+    brand under validation and its own lane slug. Keeping the WHOLE lane name as
+    the token (``hubspot-sol``, not ``sol``) is what makes the vocabulary specific
+    enough to be usable.
+    """
+    own_words = {w for w in re.split(r"[^a-z0-9]+",
+                                     f"{brand_name} {brand_dir.resolve().parent.name}".lower())
+                 if len(w) > 2}
+    tokens: set[str] = set()
+    runs_root = runs_root if runs_root is not None else REPO_ROOT / "runs"
+    if runs_root.is_dir():
+        for run in runs_root.iterdir():
+            if not run.is_dir() or run.name.startswith("."):
+                continue
+            token = re.sub(r"[-_]?v?\d+$", "", run.name.lower())
+            if len(token) > 3:
+                tokens.add(token)
+    tokens.update(KNOWN_REPO_BRAND_NAMES)
+    return sorted(t for t in tokens
+                  if t not in own_words
+                  and not any(w in t.split("-") for w in own_words))
+
+
+def _foreign_brand_patterns(tokens: list[str]) -> list[tuple[str, re.Pattern]]:
+    """One matcher per foreign brand token, strict for ambiguous English words."""
+    patterns: list[tuple[str, re.Pattern]] = []
+    for token in tokens:
+        head = token.split("-")[0]
+        if head in AMBIGUOUS_BRAND_WORDS:
+            # proper noun ("a Remote spacing rung"), possessive ("Remote's"), or a
+            # provenance suffix ("remote-fix Phase C") — never the bare lowercase
+            # word, which is ordinary prose.
+            proper = re.escape(token.title() if "-" not in token else token)
+            patterns.append((token, re.compile(
+                rf"(?<![A-Za-z0-9]){proper}(?![A-Za-z0-9])"
+                rf"|(?<![a-zA-Z0-9]){re.escape(token)}['\u2019]s(?![a-z0-9])"
+                rf"|(?<![a-zA-Z0-9]){re.escape(token)}-(?:{BRAND_PROVENANCE_SUFFIXES})"
+                rf"(?![a-z0-9])",
+                re.IGNORECASE if "-" in token else 0)))
+        else:
+            patterns.append((token, re.compile(
+                rf"(?<![a-z0-9]){re.escape(token)}(?![a-z0-9])", re.IGNORECASE)))
+    return patterns
+
+
+def _cross_brand_regions(path: Path, text: str) -> list[tuple[str, str]]:
+    """(label, text) regions of a generated artifact C30 is allowed to match in.
+
+    Deliberately NOT the whole file. Visible page content legitimately names other
+    companies (a logo wall, a testimonial, a customer quote) and data files
+    legitimately carry those companies' asset ids, so scanning everything would
+    report the brand's own evidence as a defect. What can never legitimately name
+    another brand is: developer commentary the renderers emit, a generated page
+    title, and the generated npm package identity.
+    """
+    if path.name == "package.json":
+        try:
+            pkg = json.loads(text)
+        except Exception:
+            return []
+        return [(f"package.json {k}", str(pkg.get(k) or ""))
+                for k in ("name", "description") if pkg.get(k)]
+    regions = [("comment", m.group(0))
+               for m in re.finditer(r"/\*.*?\*/|<!--.*?-->", text, re.S)]
+    regions += [("<title>", m.group(1))
+                for m in re.finditer(r"<title[^>]*>(.*?)</title>", text, re.S | re.I)]
+    return regions
+
+
+def _check_foreign_brand_leak(rep: "Report", brand_dir: Path, brand_name: str) -> None:
+    """C30 — a foreign brand's name must not reach a generated artifact.
+
+    The failure this blocks: a renderer carried a tuning anecdote from an earlier
+    brand's run in an emitted CSS comment ("never as a <Brand>-era unconditional
+    viewport default"), so every later brand shipped that brand's name inside its
+    own pages; and a Vite scaffold's placeholder ``<title>`` / package name rode
+    through into a real brand's framework build. Both are commentary and scaffold
+    defaults, which is exactly what :func:`_cross_brand_regions` scopes to.
+    """
+    tokens = foreign_brand_vocabulary(brand_dir, brand_name)
+    if not tokens:
+        return
+    patterns = _foreign_brand_patterns(tokens)
+    for gen in CROSS_BRAND_SCAN_DIRS:
+        gen_dir = brand_dir / gen
+        if not gen_dir.is_dir():
+            continue
+        for f in _walk_authored(gen_dir):
+            if f.suffix.lower() not in {".html", ".htm", ".css", ".js", ".mjs", ".json"}:
+                continue
+            if f.suffix.lower() == ".json" and f.name != "package.json":
+                continue
+            text = f.read_text(errors="replace")
+            # one error per (file, foreign brand): the same comment is emitted into
+            # every layout page, and a per-occurrence report would bury the fix.
+            seen: set[str] = set()
+            for label, region in _cross_brand_regions(f, text):
+                # asset names and asset ids are legitimate third-party references
+                scrubbed = ASSET_NAMEISH.sub(" ", region)
+                for token, pattern in patterns:
+                    m = pattern.search(scrubbed)
+                    if not m or token in seen:
+                        continue
+                    seen.add(token)
+                    quoted = " ".join(
+                        scrubbed[max(0, m.start() - 50):m.start() + 60].split())
+                    rep.error("C30", f"{f.relative_to(brand_dir)}: {label} names the "
+                                     f"foreign brand/lane '{token}' — "
+                                     f"…{quoted}… . Another run's brand name must "
+                                     "never ship inside this brand's artifact: "
+                                     "state the rule generically in the emitted "
+                                     "text and keep run-specific history in the "
+                                     "renderer's own Python comments.")
 
 
 def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = None,
@@ -1002,6 +1166,15 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
 
     # C12 — escape hygiene in generated artifacts already living in the brand dir
     _check_escape_hygiene(rep, brand_dir)
+
+    # C30 — cross-brand leak: another run's brand name inside THIS brand's
+    # generated pages (emitted renderer commentary, page titles, scaffold package
+    # identity). Same class as the foreign hero offset that shipped as a default.
+    _brand_block = doc.get("brand")
+    _check_foreign_brand_leak(
+        rep, brand_dir,
+        str((_brand_block or {}).get("name") if isinstance(_brand_block, dict)
+            else _brand_block or "").strip())
 
     # C13 — motion evidence: the brand's timing system is part of the extraction
     # contract (the motion-audit gap). tokens.motion must carry at least one

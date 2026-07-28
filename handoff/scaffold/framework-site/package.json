@@ -1,9 +1,9 @@
 {
-  "name": "fieldnote-design-system",
+  "name": "design-system-scaffold",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Maintainable, handoff-ready design system generated from the v301-mine extraction (grounded_service_growth_system). Tokens -> Tailwind v4 theme -> shadcn-style React components.",
+  "description": "Maintainable, handoff-ready design system generated from a brand extraction. Tokens -> Tailwind v4 theme -> shadcn-style React components.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

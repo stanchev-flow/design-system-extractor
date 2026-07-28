@@ -1180,6 +1180,109 @@ class BrandEvidenceContractTests(unittest.TestCase):
         rep = self._validate()
         self.assertEqual([e for e in rep.errors if e.startswith("C12")], [])
 
+    # ── C30 cross-brand leak (2026-07) ───────────────────────────────────────
+    #
+    # Every assertion below uses a brand from KNOWN_REPO_BRAND_NAMES rather than a
+    # runs/ lane name, so the tests hold in a fresh clone (runs/ is git-ignored).
+
+    @staticmethod
+    def _c30(rep):
+        return [e for e in rep.errors if e.startswith("C30")]
+
+    def _write_generated(self, rel: str, text: str) -> Path:
+        path = self.brand_dir / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+        return path
+
+    def test_foreign_brand_in_emitted_css_comment_fails_c30(self):
+        self._write_generated(
+            "harness/index.html",
+            "<html><style>/* never as a HubSpot-era unconditional default */\n"
+            ".a { min-height: auto; }</style></html>")
+        rep = self._validate()
+        self.assertFalse(rep.ok)
+        self.assertTrue(any("hubspot" in e for e in self._c30(rep)), rep.errors)
+
+    def test_foreign_brand_possessive_in_replica_comment_fails_c30(self):
+        self._write_generated(
+            "compose/replica/index.html",
+            "<html><style>/* coincidentally equals WoodWave's landscape aspect */\n"
+            ".b { aspect-ratio: 3 / 2; }</style></html>")
+        self.assertTrue(any("woodwave" in e for e in self._c30(self._validate())))
+
+    def test_foreign_brand_proper_noun_of_common_word_fails_c30(self):
+        # "Remote" is an ordinary English word, so only the proper-noun spelling
+        # counts — this is the spelling the leaked comments actually used.
+        self._write_generated(
+            "harness/layouts/cta.html",
+            "<html><style>/* equals a Remote spacing rung */\n.c { gap: 1rem; }"
+            "</style></html>")
+        self.assertTrue(any("remote" in e for e in self._c30(self._validate())))
+
+    def test_foreign_brand_provenance_suffix_fails_c30(self):
+        self._write_generated(
+            "harness/index.html",
+            "<html><style>/* stage alignment (remote-fix Phase C) */\n"
+            ".d { align-items: flex-start; }</style></html>")
+        self.assertTrue(any("remote" in e for e in self._c30(self._validate())))
+
+    def test_scaffold_brand_in_generated_title_fails_c30(self):
+        self._write_generated(
+            "framework/index.html",
+            "<html><head><title>Fieldnote — service teams</title></head></html>")
+        self.assertTrue(any("fieldnote" in e for e in self._c30(self._validate())))
+
+    def test_scaffold_brand_in_generated_package_name_fails_c30(self):
+        self._write_generated("framework/single/app/package.json", json.dumps(
+            {"name": "fieldnote-design-system", "version": "0.1.0"}))
+        self.assertTrue(any("fieldnote" in e for e in self._c30(self._validate())))
+
+    def test_customer_logo_asset_reference_passes_c30(self):
+        # remote-logo.avif is a LEGITIMATE asset: Remote is a real customer of one
+        # of the brands we extract, and its logo belongs in that brand's logo wall.
+        # Neither the markup that binds it nor a comment naming the file is a leak.
+        self._write_generated(
+            "harness/layouts/logoWall.html",
+            "<html><style>/* logo strip art: 040-67abc305-remote-logo.avif */"
+            "</style><body><img src='../assets/040-67abc305-remote-logo.avif'"
+            " alt='Remote'><p>Trusted by Remote and others</p></body></html>")
+        self.assertEqual(self._c30(self._validate()), [])
+
+    def test_ordinary_words_in_generated_comments_pass_c30(self):
+        # The real harness emits all of these: "diagonal-hatch plate", "hatch
+        # fallback", and remote/mine/style as plain vocabulary. A check that fired
+        # on them would be switched off by the next person who tripped it.
+        self._write_generated(
+            "harness/index.html",
+            "<html><style>/* a diagonal-hatch plate derived from the surface's own\n"
+            "   tokens; error = hatch fallback. Remotely hosted webfonts and remote\n"
+            "   asset urls are resolved by the lane; mine the corpus for style\n"
+            "   habits. */\n.e { background-image: none; }</style></html>")
+        self.assertEqual(self._c30(self._validate()), [])
+
+    def test_own_brand_name_in_generated_output_passes_c30(self):
+        self._mutate_brand(lambda d: d["brand"].update({"name": "HubSpot"}))
+        self._write_generated(
+            "harness/index.html",
+            "<html><head><title>HubSpot — harness</title></head>"
+            "<style>/* HubSpot's measured rung */</style></html>")
+        self.assertEqual(self._c30(self._validate()), [])
+
+    def test_visible_page_copy_is_not_scanned_by_c30(self):
+        # Deliberate scope limit: a testimonial or customer quote naming another
+        # company is the brand's own evidence, not a renderer leak. C29 covers the
+        # brand-identity-copy class.
+        self._write_generated(
+            "compose/replica/index.html",
+            "<html><body><blockquote>Why HubSpot chose us</blockquote></body></html>")
+        self.assertEqual(self._c30(self._validate()), [])
+
+    def test_c30_vocabulary_excludes_the_brand_under_validation(self):
+        vocab = vbe.foreign_brand_vocabulary(self.brand_dir, "WoodWave Gallery")
+        self.assertNotIn("woodwave", vocab)
+        self.assertIn("hubspot", vocab)
+
     # ── C16 chrome depth facts (fid4 2026-07) ────────────────────────────────
 
     @staticmethod
