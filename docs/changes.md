@@ -767,3 +767,94 @@ purpose.
 Only `docs/getting-started.md` was staged. `docs/changes.md` carries 205 uncommitted
 lines from another agent, so this section is recorded here but deliberately not
 committed with it. No secrets in the diff; no key, token or URL was added.
+
+## 2026-07-29 — History rewritten: `experiments/` purged, checkout path scrubbed
+
+**Every commit SHA in this repository changed on this date.** History was rewritten with
+`git filter-repo` and force-pushed, so any SHA cited in this file or any other doc from
+before 2026-07-29 no longer resolves — including `3a41077` above, and the `1932b5d`,
+`9ed7860`, `c8e7b5f`, `c839b4b`, `64d41c8`, `3d6f84d` and `089a968` cited in the root
+`changes.md`, `HANDOFF-2026-07-02.md` and `brand_pipeline/spec/convergence-loop.md`.
+They are left as written rather than rewritten: the prose around them describes what
+changed and why, which is still true, and inventing replacement SHAs would imply a
+mapping that was never recorded. Read them as "an earlier commit", not as something to
+`git show`. Anyone holding a clone from before this date has to re-clone; a pull will be
+rejected as a non-fast-forward, which is the intended behaviour rather than a fault.
+
+### Why
+
+Two problems, one fix. `experiments/` was 1,977 tracked files and 981 MB packed — the
+single largest thing in the repo, and the reason `.git` was 953 MB and a clone regularly
+died mid-transfer. 189 of those files also embedded this checkout's absolute path, which
+is a username this public repo does not publish. Untracking would have fixed neither:
+the blobs stay in history and stay fetchable. The repo was about to be shared for the
+first time and nobody held a clone yet, so the rewrite was cheap then and would only
+have got more expensive.
+
+### What the rewrite did
+
+- Removed `experiments/` from all 99 commits (`--path experiments/ --invert-paths`).
+- Replaced the author's home-directory prefix with `/Users/redacted` in every blob in
+  every commit (`--replace-text`). The literal string is not repeated here, so that this
+  file does not reintroduce what it documents. This scrub was needed on top of the
+  purge: the leak was **not**
+  confined to `experiments/`. 44 tracked files under `runs/hubspot-v2/` and
+  `runs/remote/` carried it too, and one of them —
+  `runs/hubspot-v2/brand/assets-manifest.json` — is a file the Studio's Assets tab
+  reads, so deleting it was not an option. Scrubbing the string keeps every one of them
+  working; all 35 JSON and every YAML file among them still parse.
+
+Verified afterwards by streaming all 3,814 blobs in the rewritten history (587 MB of
+content, reachable and unreachable alike) and searching each for the string: zero hits.
+Checking the tip alone would not have been enough.
+
+### Preserving woodwave's lanes
+
+`woodwave` reached 28 of its variant lanes through 56 tracked symlinks into
+`experiments/`, and a 29th — the anchored hero-variants page — was served straight from
+`experiments/woodwave-hero-gallery/`, which the Studio degrades to an absent lane rather
+than a 404, so losing it would have been silent.
+
+All 29 were materialized as ordinary tracked files under `runs/` first, following the
+rule `tools/track_studio_subset.py` already applies: each page plus the assets it
+actually references, not the directory behind the symlink. That is 457 files and 51.7 MB
+in the working tree, but only about 6.9 MB of distinct content, because the same fonts
+and photographs recur across lanes and git stores each blob once. Shipping the
+directories wholesale would have cost 74 MB for 22 MB of files nothing requests. None of
+the 457 files contains the absolute path, so the leak was not relocated from
+`experiments/` into `runs/`.
+
+The hero page went under `brand/hero-gallery/` rather than `brand/variants/`, which the
+Studio scans automatically — putting it there would have listed the lane twice and moved
+woodwave's variant count off 42.
+
+### Result
+
+| | before | after |
+|---|---|---|
+| `.git` (fresh mirror) | 934 MB | 415 MB |
+| clone `.git` | — | 417 MB |
+| clone on disk | ~2.5 GB | ~1.1 GB |
+| tracked files | 11,236 | 9,259 |
+| tracked `runs/` files | 8,554 | 8,554 |
+
+`runs/` came through the rewrite with a byte-identical path set. Against the
+pre-materialization commit it is +429 / −28, and every one of those paths is inside the
+lanes named above.
+
+`experiments/` is now in `.gitignore` so it cannot be re-added by a stray `git add -A`,
+while staying on disk where the variant lanes are produced.
+
+### Left alone
+
+`viewer-image.html` (25 MB, tracked) was **not** purged. It is the live output of
+`run_image_pipeline.py --viewer-only`, which writes that exact path, and `README.md`
+documents it, so it is a generated artifact of a working tool rather than dead weight.
+It contains no local paths. Purging it would have cut the clone by a further 25 MB and
+broken a documented entry point; if that trade is wanted it should be a deliberate
+decision about whether the image-crop pipeline is still current.
+
+The `backup/*` tags and the six `experiment/shadcn-*` branches were rewritten locally
+but not published: `origin` has only ever had `main`, and a repo being shared for the
+first time is not the place to publish six stale spikes as a side effect. The
+pre-rewrite state is kept as a verified `git bundle` outside the working tree.

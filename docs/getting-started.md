@@ -9,9 +9,9 @@ contain. Verified end to end on a clean clone of `origin/main`.
   and `src/screenshot_to_template/models/__init__.py` use PEP 701 f-strings, which
   earlier interpreters cannot parse at all. macOS ships Python 3.9, so the system
   interpreter will not work — check with `python3 --version` before anything else.
-- Roughly 2.5 GB of disk for the clone. A good part of that is run output committed
-  so the Studio has something to show (see
-  [What a clone gives you](#what-a-clone-gives-you)).
+- Roughly 1.1 GB of disk for the clone — about 420 MB of git history and 690 MB
+  checked out. Most of the checkout is run output committed so the Studio has
+  something to show (see [What a clone gives you](#what-a-clone-gives-you)).
 - An API key only if you intend to run the pipeline. Browsing published results
   needs none.
 
@@ -27,17 +27,18 @@ python3 -m venv venv
 ./venv/bin/playwright install chromium
 ```
 
-**A plain `git clone` may die partway through.** At ~2.5 GB this repo is big enough that
-GitHub's HTTP/2 transfer gets cut off — `RPC failed; curl 92 HTTP/2 stream … CANCEL`,
-then `fatal: early EOF`, several minutes in, leaving nothing behind. It is not a
-corrupt repo and retrying as-is does not reliably help. Force HTTP/1.1 instead:
+**If the clone dies partway through, force HTTP/1.1.** The transfer used to be 2.5 GB,
+big enough that GitHub's HTTP/2 stream was routinely cut off — `RPC failed; curl 92
+HTTP/2 stream … CANCEL`, then `fatal: early EOF`, minutes in, leaving nothing behind.
+History was rewritten on 2026-07-29 and the transfer is now around 420 MB, which should
+clone normally. If it still fails, the failure is transport, not a corrupt repo, and
+retrying as-is does not reliably help:
 
 ```bash
 git -c http.version=HTTP/1.1 clone <repo-url>
 ```
 
-That completes in about four minutes on a normal connection. `--depth 1` is **not** a
-workaround; the shallow fetch fails the same way.
+`--depth 1` is **not** a workaround; the shallow fetch fails the same way.
 
 **Check that version before creating the venv.** On macOS, `python3` on your `PATH` is
 often Apple's `/usr/bin/python3`, which is 3.9 — building the venv with it produces a
@@ -102,7 +103,9 @@ Tracked, so you get it:
   `greenhouse`, `greenhouse-4`, `greenhouse-v2`, `hubspot`, `hubspot-v2`, `hubspot-v3`,
   `hubspot-v4`, `relume-test`, `remote`, `woodwave`, `woodwave-v2`. Start the Studio
   and they are all there, with thumbnails, source captures, catalogs, replica and
-  harness lanes, composed pages and their media. About 435 MB of the clone.
+  harness lanes, composed pages and their media. About 630 MB of the clone.
+  `woodwave` carries the most lanes (58) because its variant pages are tracked
+  individually — see the note on `experiments/` below.
 
 Not tracked, so you do not get it:
 
@@ -118,6 +121,15 @@ Not tracked, so you do not get it:
   **`_archive/`**, per-page diff crops, and every extra viewport re-shoot of a lane.
 - **The experiment lanes and pipeline version folders** (`hubspot-sol`,
   `style-calibration`, `v170`–`v178`, …). Brand lanes only.
+- **`experiments/`** — the ablation and bakeoff scratch trees. This was tracked until
+  2026-07-29, when it was removed from history: it was 1,977 files and by far the
+  largest thing in the repo, and 189 of those files recorded the absolute path of the
+  machine that produced them. `woodwave` reached 28 of its variant lanes through
+  symlinks into it, so those pages and the media they load are now tracked under
+  `runs/woodwave/brand/variants/` directly and every lane still opens. The re-gate
+  helpers that read the tree (`tools/phase0_regate.py`, `tools/batch1_regate.py`,
+  `tools/contam_baseline.py`) cannot run from a clone — they replay experiments whose
+  inputs are not published.
 - **`viewer-data/`** — the viewer's payload files.
 
 Practical consequences:
