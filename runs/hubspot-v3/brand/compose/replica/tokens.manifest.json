@@ -4,13 +4,46 @@
   "style_id": "",
   "style_md_sha256": "",
   "generator_version": "1.0.0",
-  "generated_at": "2026-07-27T15:17:57+00:00",
+  "generated_at": "2026-07-28T23:46:05+00:00",
   "token_count": 177,
   "disabledDevices": [
     "counter-display",
     "ghost-watermark",
     "shadows",
     "aspect-palette"
+  ],
+  "typographyDelivery": [
+    {
+      "family": "HubSpot Sans",
+      "declared": "\"HubSpot Sans\", sans-serif",
+      "roles": [
+        "h3",
+        "body",
+        "eyebrow",
+        "control-text",
+        "footer-sitemap-link",
+        "h4",
+        "h5",
+        "h6",
+        "small",
+        "micro"
+      ],
+      "generic": "sans-serif",
+      "selfHosted": true,
+      "status": "self-hosted"
+    },
+    {
+      "family": "HubSpot Serif Page Header Human",
+      "declared": "\"HubSpot Serif Page Header Human\", \"HubSpot Serif\", serif",
+      "roles": [
+        "display-hero",
+        "h1",
+        "h2"
+      ],
+      "generic": "serif",
+      "selfHosted": true,
+      "status": "self-hosted"
+    }
   ],
   "index": {
     "--color-surface-primary": "#fcfcfa",

@@ -1,13 +1,13 @@
 # Interaction-Contract Baseline Report
 
-Generated: 2026-07-14T16:31:17+00:00 — auditor v1.0.0 — mode: strict
+Generated: 2026-07-28T23:58:25+00:00 — auditor v1.0.0 — mode: strict
 Contracts: `brand_pipeline/spec/interaction-contracts.md` (WAI-ARIA APG primary; Base UI secondary; Radix tertiary)
 
 ## Audited lanes
 
 | lane | file | mtime (UTC) | sha256/12 |
 |---|---|---|---|
-| compose/hero-archetypes/demo | `/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/demo/index.html` | 2026-07-14T16:27:43+00:00 | `a5a7c5656fb4` |
+| compose/hero-archetypes/demo | `runs/hubspot-v2/brand/compose/hero-archetypes/demo/index.html` | 2026-07-14T20:04:58+00:00 | `6be813ca88b5` |
 
 If a lane is re-rendered by another agent, re-run the audit; the mtime/sha above identify exactly which HTML was measured.
 
@@ -21,30 +21,30 @@ If a lane is re-rendered by another agent, re-run the audit; the mtime/sha above
 
 | check | family | severity | layer | status | detail |
 |---|---|---|---|---|---|
-| IC-NAV-05 | nav | advisory | static | **advisory** | anchor with role=button in nav chrome — promises Space activation anchors don't have (line 2291) |
-| IC-FORM-01 | form | required | static | **pass** | control 'demo-hero-first-name' is programmatically labelled (line 2309) |
-| IC-FORM-01 | form | required | static | **pass** | control 'demo-hero-work-email' is programmatically labelled (line 2313) |
-| IC-FORM-01 | form | required | static | **pass** | control 'demo-hero-company-size' is programmatically labelled (line 2317) |
-| IC-FORM-02 | form | required | static | **pass** | form has a real submit button (line 2320) |
-| IC-FORM-03 | form | required | static | **pass** | label is associated with a real control (line 2308) |
-| IC-FORM-03 | form | required | static | **pass** | label is associated with a real control (line 2312) |
-| IC-FORM-03 | form | required | static | **pass** | label is associated with a real control (line 2316) |
+| IC-NAV-05 | nav | advisory | static | **advisory** | anchor with role=button in nav chrome — promises Space activation anchors don't have (line 2349) |
+| IC-FORM-01 | form | required | static | **pass** | control 'demo-hero-first-name' is programmatically labelled (line 2375) |
+| IC-FORM-01 | form | required | static | **pass** | control 'demo-hero-work-email' is programmatically labelled (line 2379) |
+| IC-FORM-01 | form | required | static | **pass** | control 'demo-hero-company-size' is programmatically labelled (line 2383) |
+| IC-FORM-02 | form | required | static | **pass** | form has a real submit button (line 2386) |
+| IC-FORM-03 | form | required | static | **pass** | label is associated with a real control (line 2374) |
+| IC-FORM-03 | form | required | static | **pass** | label is associated with a real control (line 2378) |
+| IC-FORM-03 | form | required | static | **pass** | label is associated with a real control (line 2382) |
 | IC-FORM-07 | form | required | behavioral | **pass** | all visible form controls have browser-computed labels |
-| IC-LANG-01 | lang | required | static | **pass** | toggle is a native <summary> inside <details> (line 2281) |
-| IC-LANG-02 | lang | required | static | **pass** | toggle has an accessible name (line 2281) |
+| IC-LANG-01 | lang | required | static | **pass** | toggle is a native <summary> inside <details> (line 2339) |
+| IC-LANG-02 | lang | required | static | **pass** | toggle has an accessible name (line 2339) |
 | IC-LANG-05 | lang | required | behavioral | **pass** | Enter opens (open=True), Space toggles back=True |
 | IC-LANG-06 | lang | required | behavioral | **pass** | Escape closes the language dropdown |
 | IC-LANG-07 | lang | advisory | behavioral | **pass** | open dropdown items are in the Tab order |
-| IC-NAV-01 | nav | required | static | **pass** | trigger 'Products' is a native button (line 2285) |
-| IC-NAV-01 | nav | required | static | **pass** | trigger 'Solutions' is a native button (line 2287) |
-| IC-NAV-01 | nav | required | static | **pass** | trigger 'Resources' is a native button (line 2289) |
-| IC-NAV-02 | nav | required | static | **pass** | trigger 'Products' carries aria-expanded (line 2285) |
-| IC-NAV-02 | nav | required | static | **pass** | trigger 'Solutions' carries aria-expanded (line 2287) |
-| IC-NAV-02 | nav | required | static | **pass** | trigger 'Resources' carries aria-expanded (line 2289) |
+| IC-NAV-01 | nav | required | static | **pass** | trigger 'Products' is a native button (line 2343) |
+| IC-NAV-01 | nav | required | static | **pass** | trigger 'Solutions' is a native button (line 2345) |
+| IC-NAV-01 | nav | required | static | **pass** | trigger 'Resources' is a native button (line 2347) |
+| IC-NAV-02 | nav | required | static | **pass** | trigger 'Products' carries aria-expanded (line 2343) |
+| IC-NAV-02 | nav | required | static | **pass** | trigger 'Solutions' carries aria-expanded (line 2345) |
+| IC-NAV-02 | nav | required | static | **pass** | trigger 'Resources' carries aria-expanded (line 2347) |
 | IC-NAV-03 | nav | required | static | **pass** | no ARIA menu/menubar roles in site nav |
-| IC-NAV-04 | nav | advisory | static | **pass** | trigger references its panel via aria-controls (line 2285) |
-| IC-NAV-04 | nav | advisory | static | **pass** | trigger references its panel via aria-controls (line 2287) |
-| IC-NAV-04 | nav | advisory | static | **pass** | trigger references its panel via aria-controls (line 2289) |
+| IC-NAV-04 | nav | advisory | static | **pass** | trigger references its panel via aria-controls (line 2343) |
+| IC-NAV-04 | nav | advisory | static | **pass** | trigger references its panel via aria-controls (line 2345) |
+| IC-NAV-04 | nav | advisory | static | **pass** | trigger references its panel via aria-controls (line 2347) |
 | IC-NAV-06 | nav | required | behavioral | **pass** | Tab reaches nav triggers, login, and language switcher |
 | IC-NAV-07 | nav | required | behavioral | **pass** | hover opens panel=True, keyboard focus opens panel=True |
 | IC-NAV-08 | nav | required | behavioral | **pass** | Escape closes the open panel and keeps focus in nav |

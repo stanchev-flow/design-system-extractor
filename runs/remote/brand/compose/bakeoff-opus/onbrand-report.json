@@ -9,10 +9,11 @@
   },
   "neverDo_allowed": [],
   "fidelity": {
-    "pass": true,
+    "pass": false,
     "checks": {
-      "Surface = brand surface/primary (#eff0f0)": true,
+      "Surface = a brand surface role (creative-mode scope)": false,
       "Display family present (Bossa)": true,
+      "Authored display heading present (creative-mode scope)": true,
       "Brand assets present (not placeholder)": true
     }
   },
@@ -31,7 +32,7 @@
   },
   "invariants": {
     "mode": "hard",
-    "pass": true,
+    "pass": false,
     "checks": {
       "single-accent": true,
       "primitive-only": true,
@@ -46,12 +47,21 @@
       "media-registration": true,
       "interaction-contrast": true,
       "token-provenance": true,
-      "logo-wall-integrity": true
+      "logo-wall-integrity": true,
+      "knob-consumption": false,
+      "content-redundancy": true,
+      "media-binding": true,
+      "mark-legality": true,
+      "slot-role-eligibility": true,
+      "anatomy-tab-controls": true,
+      "anatomy-stat-items": true,
+      "fact-consumption": false,
+      "fact-consumption:responsive.nav.collapse": false
     },
     "details": {
       "text-contrast": "184 text elements measured against their effective background (surface + decoration layer); worst = sec-0/c-button('Book a demo') at 4.91 (floor 4.5); skipped=89",
       "decoration-salience": "no decoration layers (ghost word / watermark) in this render"
     }
   },
-  "overall": true
+  "overall": false
 }

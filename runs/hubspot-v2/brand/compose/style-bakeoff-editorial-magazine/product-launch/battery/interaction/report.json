@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-14T20:18:44+00:00",
+  "generated_at": "2026-07-28T23:52:00+00:00",
   "auditor_version": "1.0.0",
   "spec": "brand_pipeline/spec/interaction-contracts.md",
   "mode": "strict",
@@ -15,7 +15,7 @@
   "lanes": [
     {
       "lane": "compose/style-bakeoff-editorial-magazine/product-launch",
-      "path": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-editorial-magazine/product-launch/index.html",
+      "path": "runs/hubspot-v2/brand/compose/style-bakeoff-editorial-magazine/product-launch/index.html",
       "audited_mtime": "2026-07-14T20:16:53+00:00",
       "sha256_12": "2d437f200aac",
       "findings": [

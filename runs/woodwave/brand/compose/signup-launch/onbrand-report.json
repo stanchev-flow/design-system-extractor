@@ -22,19 +22,21 @@
       "Surface = brand surface/inverse (#3A2F23)": true,
       "Display family present (Melodrama)": false,
       "Heading copy from source present": true,
-      "Brand accent surfaced (#E9DC8C)": true,
+      "Brand accent surfaced (#edd580)": false,
       "Brand media present (expect ~2)": true,
       "Brand assets present (not placeholder)": true
     }
   },
   "slop": {
-    "pass": true,
+    "pass": false,
     "checks": {
       "No default/system display font": true,
-      "No off-palette hex colors": true,
+      "No off-palette hex colors": false,
       "No lorem/placeholder copy": true,
       "All brand image assets present": true,
       "Rounding matches brand radius scale": true,
+      "No foreign-brand content literals (alt/aria/title)": true,
+      "No foreign-brand asset references": true,
       "Webfonts loaded (no silent system fallback)": true
     }
   },
@@ -46,7 +48,22 @@
       "primitive-only": false,
       "rhythm": true,
       "data-composition": true,
-      "slot-resolution": true
+      "slot-resolution": true,
+      "text-contrast": true,
+      "decoration-salience": true,
+      "occlusion": true,
+      "band-attribution": true,
+      "alignment-resolution": true,
+      "media-registration": true,
+      "interaction-contrast": true,
+      "token-provenance": true,
+      "logo-wall-integrity": true,
+      "fact-consumption": false,
+      "fact-consumption:layout.surfaceIntent": false
+    },
+    "details": {
+      "text-contrast": "30 text elements measured against their effective background (surface + decoration layer); worst = -/cx-hero-eyebrow('Introducing') at 7.19 (floor 4.5); skipped=0",
+      "decoration-salience": "1 decoration layer(s) all within the salience ceiling (<= 1.19); loudest = -/cx-edit-ghost('EVERYTHING') at ratio 1.124 (luminance delta 0.1033)"
     }
   },
   "overall": false

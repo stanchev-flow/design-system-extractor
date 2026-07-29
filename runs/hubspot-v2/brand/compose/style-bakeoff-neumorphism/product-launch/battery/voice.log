@@ -1,4 +1,4 @@
-$ /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/venv/bin/python -m brand_pipeline.voice_audit /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-neumorphism/product-launch --brand /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand --strict --out /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-neumorphism/product-launch/battery/voice
+$ venv/bin/python -m brand_pipeline.voice_audit runs/hubspot-v2/brand/compose/style-bakeoff-neumorphism/product-launch --brand runs/hubspot-v2/brand --strict --out runs/hubspot-v2/brand/compose/style-bakeoff-neumorphism/product-launch/battery/voice
 
 --- stdout ---
 [voice-audit] compose/style-bakeoff-neumorphism/product-launch: PASS (sentence-length, exclamations, banned-hype, heading-casing)

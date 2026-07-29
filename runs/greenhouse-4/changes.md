@@ -735,3 +735,114 @@ one hit, the words "token-provenance" in a fidelity report. Nothing key-shaped.
 given, so pass **every** tracked project, not just the new one. Staging skips any
 tracked path with uncommitted edits rather than committing someone else's
 in-progress work, and prints what it skipped.
+
+## 2026-07-29 — the remaining producers record repo-relative paths
+
+Continues `compose_replica.py`'s `report_path()` fix above to every other producer
+that was holding artifacts back. **237 files / 2.8 MB → 67 files / 853.6 KB**;
+170 files / 1.9 MB become trackable.
+
+### One shared helper, not sixteen copies (`src/screenshot_to_template/repo_paths.py`)
+The producers span three import worlds — `brand_pipeline/` (`sys.path`-manipulating
+scripts), `tools/extract/`, and repo-root entry points — so the helper went into the
+installed package, which all three can already import, rather than being copy-pasted
+or re-homed into `brand_pipeline/`. It is a pair:
+
+| function | direction |
+| --- | --- |
+| `report_path(p)` | how an artifact should RECORD a path: repo-relative inside the repo, untouched outside it |
+| `resolve_report_path(recorded)` | the inverse, for a reader resolving a recorded path back against the repo root |
+
+`compose_replica.report_path()` is left in place and unchanged; a test asserts the
+two agree so the duplication cannot drift.
+
+### The producers
+| producer | field(s) that carried the checkout path |
+| --- | --- |
+| `spacing_audit.py` | `brandDir`, `lanes[].html` |
+| `signature_audit.py` | `brandDir`, `lanes[].html`, `lanes[].lane` |
+| `section_rules_audit.py` | `brandDir`, `lanes[].html`, `lanes[].lane` |
+| `voice_audit.py` | `brandDir`, `lanes[].html`, `lanes[].lane` |
+| `conversion_audit.py` | `lanes[].lane` |
+| `interaction_audit.py` | `lanes[].path` |
+| `css_fidelity.py` | `meta.replicaIndex`, `meta.joinedEvidence`, the four tier-audit `source`s |
+| `onbrand_check.py` | the active-STYLE-layer sentence and both "Next steps" commands |
+| `tokens_css.py` | the `TokenGenerationError` message's `(source: …)` |
+| `source_colors.py` | `source_html`, `assets[].local_path` |
+| `site_assets.py` | `html` |
+| `source_style_ledger.py` | READ side: resolves a recorded `source_html` via `resolve_report_path()` |
+| `mine_dom.py` | `source` |
+| `curate_assets.py` | `entries[].source` |
+| `validate_brand_evidence.py` | the verdict line and every C1/C2 message |
+| `run_brand_extraction.py` | the `Capture:` header and each echoed stage argv |
+
+`spacing_audit.py` needed one extra move: its annotation pass re-opened the lane
+from the value it had just written, so the real `Path` is now kept beside the report
+in `html_by_lane` instead of being re-derived from the recorded string.
+
+### The leak that was not a field at all
+Three `onbrand-console.txt` captures and a battery `onbrand.log` embedded the path
+via a **`DeprecationWarning`**: `re.split(r"[;{}]", val, 1)` in `onbrand_check.py`
+passes `maxsplit` positionally, and CPython prints the warning with the module's
+absolute `__file__`. Passing it by keyword removes the warning and the leak. A test
+guards every audited producer against the same shape.
+
+### Regenerated (local computation only — no provider call, no gate override)
+| artifact | how |
+| --- | --- |
+| `validate-final.log` | `run_brand_extraction.py` validate stage, `greenhouse-4` |
+| `replica-report.{json,md}` ×7 | re-score at `brand/compose/replica` |
+| `css-diff.{json,md}` ×3 | `css_fidelity.py` |
+| 34 battery transcripts + their `report.{json,md}` | replayed from each `*.log`'s recorded `$ …` line |
+| 7 interaction audits with no transcript | argv reconstructed from the report's own `lanes[].path` + `mode` |
+| 39 `onbrand-report*.md` | argv reconstructed from the report itself: the "Re-run this gate" line carries `--layout`, the STYLE-layer line the `--style` file, a HARD section-5 heading means `--composition`, and a "declared one-off exception" row means `--allow` |
+
+The on-brand replays keep every `OVERALL` verdict but do rewrite prose and some row
+labels, because the gate has evolved since those reports were written (its fidelity
+rows are now creative-mode-scoped). Same for `validate-final.log`, whose
+`greenhouse-4` verdict now reads FAIL where the stored log read PASS — the published
+bundle still holds the original.
+
+### Blocked on a model call, so not regenerated
+`composition.json` (39), `author-stage-status.json` (3), `author-report.json`,
+`manifest.json`, `assembled-prompt.txt` — all authored by an LLM stage. Producers
+for the author/manifest side are owned elsewhere; `composition.json`'s producer is
+owned by a concurrent change. A human would re-run the authoring stage of
+`run_pipeline.py` for the affected project.
+
+### Fixed at the producer but deliberately not regenerated
+| artifact | why |
+| --- | --- |
+| `assets-manifest.json` (`hubspot-v2`) | re-running `curate_assets.py` discards hand-curation that is not reproducible from the tool |
+| `source-style-ledger.yaml`, `source-colors.{json,md}` (`greenhouse`, `woodwave`) | only a full extraction pass rewrites them, and that pass reaches a provider |
+| `_baseline-replica/replica-report.{json,md}` (`hubspot-v4`) | re-scoring rebuilds the page too, and that page is a frozen baseline |
+
+### Not regenerable at all
+`remote`'s `bakeoff-opus/normalized-gates` reports and two of the three
+`onbrand-console.txt` captures: the `index.html` they gated is no longer in the lane.
+`normalized-gates.json` / `normalization-run.json` come from one-off scripts that
+live inside the run folder itself. `framework-report.json` and the
+`*.framework.json` / `*.assets.json` files come from `framework_generator.py`, owned
+by a concurrent change — note the tracker gained a
+`brand/framework/framework-report.json` include rule mid-flight, which is why that
+one file appears held back here without ever having been in the 237 baseline.
+`runs/relume-test/changes.md` named a **sibling checkout** outside this repo, so
+`report_path()` would correctly leave it alone; the prose now describes it instead.
+
+### Verification
+`tests/test_repo_paths.py` (new) covers the helper pair and its agreement with
+`compose_replica`. `tests/test_producer_report_paths.py` (new) covers each producer:
+behavioural where the producer runs without a browser (against a temp repo root),
+structural where it does not — an AST check that no path field is built with bare
+`str()` and that the on-brand gate never interpolates `render_dir` or
+`style.source_path` into prose unwrapped. Each guard is paired with a test proving
+the guard catches the regression it guards.
+
+    ./venv/bin/python -m pytest tests/ -q
+    369 passed, 1 warning, 49 subtests passed in 10.09s
+
+Which Studio tabs this unblocks: **Replica fidelity** on every project that has one
+(all 7 `brand/compose/replica/replica-report.*` pairs now pass the gate) and
+**Changelog** on `relume-test`. Still blocked: **Author report** on `greenhouse-v2`
+(model-authored) and the **Ledger** doc on `greenhouse`/`woodwave` (needs an
+extraction pass).

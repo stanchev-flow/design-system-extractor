@@ -1930,6 +1930,44 @@ span.c-foot-wordmark { background: currentColor;
 #sec-2 { --c-section-pad-top: 7.5rem; --c-section-pad-bottom: 7.5rem; --c-section-pad: 7.5rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
 #sec-2 { --c-accent: var(--c-ink); }
 #sec-3 {
+  --c-paper: var(--surface-surface-muted);
+  --c-ink: var(--color-text-primary);
+  --c-ink-muted: var(--color-text-on-primary-muted);
+  --c-accent: var(--color-text-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--size-display-hero-base);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h1-size: var(--size-h1-base);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-h4-size: var(--size-h4-base);
+  --c-h5-size: 1.25rem;
+  --c-h6-size: 1.125rem;
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 0.875rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-h1-font: var(--font-h1);
+  --c-h2-font: var(--font-h2);
+  --c-h3-font: var(--font-h3);
+  --c-h4-font: var(--font-h4);
+}
+#sec-3 { --c-section-pad-top: 7.5rem; --c-section-pad-bottom: 7.5rem; --c-section-pad: 7.5rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
+#sec-3 { --c-accent: var(--c-ink); }
+#sec-4 {
   --c-paper: var(--surface-surface-primary);
   --c-ink: var(--color-text-primary);
   --c-ink-muted: var(--color-text-primary);
@@ -1965,11 +2003,9 @@ span.c-foot-wordmark { background: currentColor;
   --c-h3-font: var(--font-h3);
   --c-h4-font: var(--font-h4);
 }
-#sec-3 { --c-section-pad-top: 7.5rem; --c-section-pad-bottom: 7.5rem; --c-section-pad: 7.5rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
-#sec-3 { --c-accent: var(--c-ink); }
-/* per-section placement (composition.v1 §4.6.5) */
-#sec-3 { --grid-cols: 3; --col: calc((100% - 2 * var(--grid-gutter, 6rem)) / 3); }
-#sec-4 {
+#sec-4 { --c-section-pad-top: 7.5rem; --c-section-pad-bottom: 7.5rem; --c-section-pad: 7.5rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
+#sec-4 { --c-accent: var(--c-ink); }
+#sec-5 {
   --c-paper: var(--surface-surface-inverse);
   --c-ink: var(--color-text-on-inverse);
   --c-ink-muted: var(--color-text-on-inverse);
@@ -2005,8 +2041,432 @@ span.c-foot-wordmark { background: currentColor;
   --c-h3-font: var(--font-h3);
   --c-h4-font: var(--font-h4);
 }
-#sec-4 { --c-section-pad-top: 6.25rem; --c-section-pad-bottom: 6.25rem; --c-section-pad: 6.25rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
-#sec-4 { --c-eyebrow-color: var(--c-ink); /* accent 2.86:1 on this surface — eyebrow rides primary ink */ }
+#sec-5 { --c-section-pad-top: 6.25rem; --c-section-pad-bottom: 6.25rem; --c-section-pad: 6.25rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
+#sec-5 { --c-eyebrow-color: var(--c-ink); /* accent 2.86:1 on this surface — eyebrow rides primary ink */ }
+#sec-6 {
+  --c-paper: var(--surface-surface-inverse);
+  --c-ink: var(--color-text-on-inverse);
+  --c-ink-muted: var(--color-text-on-inverse);
+  --c-accent: var(--color-accent-blue);
+  --c-hairline: var(--color-text-on-inverse);
+  --c-link-hover: var(--color-text-on-inverse);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--size-display-hero-base);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h1-size: var(--size-h1-base);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-h4-size: var(--size-h4-base);
+  --c-h5-size: 1.25rem;
+  --c-h6-size: 1.125rem;
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 0.875rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-h1-font: var(--font-h1);
+  --c-h2-font: var(--font-h2);
+  --c-h3-font: var(--font-h3);
+  --c-h4-font: var(--font-h4);
+}
+#sec-6 { --c-section-pad-top: 6.25rem; --c-section-pad-bottom: 6.25rem; --c-section-pad: 6.25rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
+#sec-6 { --c-accent: var(--c-ink); }
+#sec-7 {
+  --c-paper: var(--surface-surface-primary);
+  --c-ink: var(--color-text-primary);
+  --c-ink-muted: var(--color-text-primary);
+  --c-accent: var(--color-accent-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--size-display-hero-base);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h1-size: var(--size-h1-base);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-h4-size: var(--size-h4-base);
+  --c-h5-size: 1.25rem;
+  --c-h6-size: 1.125rem;
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 0.875rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-h1-font: var(--font-h1);
+  --c-h2-font: var(--font-h2);
+  --c-h3-font: var(--font-h3);
+  --c-h4-font: var(--font-h4);
+}
+#sec-7 { --c-section-pad-top: 7.5rem; --c-section-pad-bottom: 7.5rem; --c-section-pad: 7.5rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
+#sec-7 { --c-accent: var(--c-ink); }
+#sec-8 {
+  --c-paper: var(--surface-surface-primary);
+  --c-ink: var(--color-text-primary);
+  --c-ink-muted: var(--color-text-primary);
+  --c-accent: var(--color-accent-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--size-display-hero-base);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h1-size: var(--size-h1-base);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-h4-size: var(--size-h4-base);
+  --c-h5-size: 1.25rem;
+  --c-h6-size: 1.125rem;
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 0.875rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-h1-font: var(--font-h1);
+  --c-h2-font: var(--font-h2);
+  --c-h3-font: var(--font-h3);
+  --c-h4-font: var(--font-h4);
+}
+#sec-8 { --c-section-pad-top: 7.5rem; --c-section-pad-bottom: 7.5rem; --c-section-pad: 7.5rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
+#sec-8 { --c-accent: var(--c-ink); }
+#sec-9 {
+  --c-paper: var(--surface-surface-primary);
+  --c-ink: var(--color-text-primary);
+  --c-ink-muted: var(--color-text-primary);
+  --c-accent: var(--color-accent-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--size-display-hero-base);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h1-size: var(--size-h1-base);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-h4-size: var(--size-h4-base);
+  --c-h5-size: 1.25rem;
+  --c-h6-size: 1.125rem;
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 0.875rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-h1-font: var(--font-h1);
+  --c-h2-font: var(--font-h2);
+  --c-h3-font: var(--font-h3);
+  --c-h4-font: var(--font-h4);
+}
+#sec-9 { --c-section-pad-top: 7.5rem; --c-section-pad-bottom: 7.5rem; --c-section-pad: 7.5rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
+#sec-9 { --c-accent: var(--c-ink); }
+#sec-10 {
+  --c-paper: var(--surface-surface-primary);
+  --c-ink: var(--color-text-primary);
+  --c-ink-muted: var(--color-text-primary);
+  --c-accent: var(--color-accent-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--size-display-hero-base);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h1-size: var(--size-h1-base);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-h4-size: var(--size-h4-base);
+  --c-h5-size: 1.25rem;
+  --c-h6-size: 1.125rem;
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 0.875rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-h1-font: var(--font-h1);
+  --c-h2-font: var(--font-h2);
+  --c-h3-font: var(--font-h3);
+  --c-h4-font: var(--font-h4);
+}
+#sec-10 { --c-section-pad-top: 7.5rem; --c-section-pad-bottom: 7.5rem; --c-section-pad: 7.5rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
+#sec-10 { --c-accent: var(--c-ink); }
+#sec-11 {
+  --c-paper: var(--surface-surface-primary);
+  --c-ink: var(--color-text-primary);
+  --c-ink-muted: var(--color-text-primary);
+  --c-accent: var(--color-accent-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--size-display-hero-base);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h1-size: var(--size-h1-base);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-h4-size: var(--size-h4-base);
+  --c-h5-size: 1.25rem;
+  --c-h6-size: 1.125rem;
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 0.875rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-h1-font: var(--font-h1);
+  --c-h2-font: var(--font-h2);
+  --c-h3-font: var(--font-h3);
+  --c-h4-font: var(--font-h4);
+}
+#sec-11 { --c-section-pad-top: 7.5rem; --c-section-pad-bottom: 7.5rem; --c-section-pad: 7.5rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
+#sec-11 { --c-accent: var(--c-ink); }
+/* per-section placement (composition.v1 §4.6.5) */
+#sec-11 { --grid-cols: 3; --col: calc((100% - 2 * var(--grid-gutter, 6rem)) / 3); }
+#sec-12 {
+  --c-paper: var(--surface-surface-inverse);
+  --c-ink: var(--color-text-on-inverse);
+  --c-ink-muted: var(--color-text-on-inverse);
+  --c-accent: var(--color-accent-blue);
+  --c-hairline: var(--color-text-on-inverse);
+  --c-link-hover: var(--color-text-on-inverse);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--size-display-hero-base);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h1-size: var(--size-h1-base);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-h4-size: var(--size-h4-base);
+  --c-h5-size: 1.25rem;
+  --c-h6-size: 1.125rem;
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 0.875rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-h1-font: var(--font-h1);
+  --c-h2-font: var(--font-h2);
+  --c-h3-font: var(--font-h3);
+  --c-h4-font: var(--font-h4);
+}
+#sec-12 { --c-section-pad-top: 6.25rem; --c-section-pad-bottom: 6.25rem; --c-section-pad: 6.25rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
+#sec-12 { --c-accent: var(--c-ink); }
+#sec-13 {
+  --c-paper: var(--surface-surface-primary);
+  --c-ink: var(--color-text-primary);
+  --c-ink-muted: var(--color-text-primary);
+  --c-accent: var(--color-accent-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--size-display-hero-base);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h1-size: var(--size-h1-base);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-h4-size: var(--size-h4-base);
+  --c-h5-size: 1.25rem;
+  --c-h6-size: 1.125rem;
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 0.875rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-h1-font: var(--font-h1);
+  --c-h2-font: var(--font-h2);
+  --c-h3-font: var(--font-h3);
+  --c-h4-font: var(--font-h4);
+}
+#sec-13 { --c-section-pad-top: 7.5rem; --c-section-pad-bottom: 7.5rem; --c-section-pad: 7.5rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
+#sec-13 { --c-accent: var(--c-ink); }
+/* per-section placement (composition.v1 §4.6.5) */
+#sec-13 { --grid-cols: 3; --col: calc((100% - 2 * var(--grid-gutter, 6rem)) / 3); }
+#sec-14 {
+  --c-paper: var(--surface-surface-primary);
+  --c-ink: var(--color-text-primary);
+  --c-ink-muted: var(--color-text-primary);
+  --c-accent: var(--color-accent-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--size-display-hero-base);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h1-size: var(--size-h1-base);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-h4-size: var(--size-h4-base);
+  --c-h5-size: 1.25rem;
+  --c-h6-size: 1.125rem;
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 0.875rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-h1-font: var(--font-h1);
+  --c-h2-font: var(--font-h2);
+  --c-h3-font: var(--font-h3);
+  --c-h4-font: var(--font-h4);
+}
+#sec-14 { --c-section-pad-top: 7.5rem; --c-section-pad-bottom: 7.5rem; --c-section-pad: 7.5rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
+#sec-14 { --c-accent: var(--c-ink); }
+#sec-15 {
+  --c-paper: var(--surface-surface-primary);
+  --c-ink: var(--color-text-primary);
+  --c-ink-muted: var(--color-text-primary);
+  --c-accent: var(--color-accent-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--size-display-hero-base);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h1-size: var(--size-h1-base);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-h4-size: var(--size-h4-base);
+  --c-h5-size: 1.25rem;
+  --c-h6-size: 1.125rem;
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 0.875rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-h1-font: var(--font-h1);
+  --c-h2-font: var(--font-h2);
+  --c-h3-font: var(--font-h3);
+  --c-h4-font: var(--font-h4);
+}
+#sec-15 { --c-section-pad-top: 7.5rem; --c-section-pad-bottom: 7.5rem; --c-section-pad: 7.5rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
+#sec-15 { --c-accent: var(--c-ink); }
+#sec-16 {
+  --c-paper: var(--surface-surface-primary);
+  --c-ink: var(--color-text-primary);
+  --c-ink-muted: var(--color-text-primary);
+  --c-accent: var(--color-accent-primary);
+  --c-hairline: var(--color-border-hairline-on-primary);
+  --c-link-hover: var(--color-text-primary);
+  --c-font-heading: var(--font-display-hero);
+  --c-font-body: var(--font-body);
+  --c-display-size: var(--size-display-hero-base);
+  --c-display-lh: var(--leading-display-hero);
+  --c-display-ls: var(--tracking-display-hero);
+  --c-display-weight: var(--weight-display-hero);
+  --c-heading-weight: var(--weight-h2);
+  --c-h1-size: var(--size-h1-base);
+  --c-h2-size: var(--size-h2-base);
+  --c-h3-size: var(--size-h3-base);
+  --c-h4-size: var(--size-h4-base);
+  --c-h5-size: 1.25rem;
+  --c-h6-size: 1.125rem;
+  --c-body-size: var(--size-body-base);
+  --c-body-weight: var(--weight-body);
+  --c-eyebrow-size: var(--size-eyebrow-base);
+  --c-eyebrow-ls: var(--tracking-eyebrow);
+  --c-control-size: var(--size-control-text-base);
+  --c-control-ls: var(--tracking-control-text);
+  --c-nav-size: 0.875rem;
+  --c-case-heading: var(--case-h2);
+  --c-case-eyebrow: var(--case-eyebrow);
+  --c-case-control: var(--case-control-text);
+  --c-eyebrow-gap: var(--space-eyebrow-to-heading);
+  --c-h1-font: var(--font-h1);
+  --c-h2-font: var(--font-h2);
+  --c-h3-font: var(--font-h3);
+  --c-h4-font: var(--font-h4);
+}
+#sec-16 { --c-section-pad-top: 7.5rem; --c-section-pad-bottom: 7.5rem; --c-section-pad: 7.5rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
+#sec-16 { --c-accent: var(--c-ink); }
+/* per-section placement (composition.v1 §4.6.5) */
+#sec-16 { --grid-cols: 2; --col: calc((100% - 1 * var(--grid-gutter, 6rem)) / 2); }
 #page-nav {
   --c-paper: var(--surface-surface-primary);
   --c-ink: var(--color-text-primary);
@@ -2045,7 +2505,7 @@ span.c-foot-wordmark { background: currentColor;
 }
 #page-nav { --c-section-pad-top: 7.5rem; --c-section-pad-bottom: 7.5rem; --c-section-pad: 7.5rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
 #page-nav { --c-accent: var(--c-ink); }
-#sec-5 {
+#sec-17 {
   --c-paper: var(--surface-surface-inverse-strong);
   --c-ink: var(--color-text-on-inverse);
   --c-ink-muted: var(--color-text-on-inverse);
@@ -2081,8 +2541,8 @@ span.c-foot-wordmark { background: currentColor;
   --c-h3-font: var(--font-h3);
   --c-h4-font: var(--font-h4);
 }
-#sec-5 { --c-section-pad-top: 6.25rem; --c-section-pad-bottom: 6.25rem; --c-section-pad: 6.25rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
-#sec-5 { --c-accent: var(--c-ink); }
+#sec-17 { --c-section-pad-top: 6.25rem; --c-section-pad-bottom: 6.25rem; --c-section-pad: 6.25rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
+#sec-17 { --c-accent: var(--c-ink); }
 
 </style>
 </head>
@@ -2099,9 +2559,9 @@ span.c-foot-wordmark { background: currentColor;
 <section class="cs-section cs-collage-sec">
   <div class="cs-collage-grid">
     <div class="cs-ghost" aria-hidden="true"></div>
-    <div class="cs-collage-head"><div class="c-header"><h1 class="c-heading c-heading--display">The only hiring platform you’ll ever need</h1></div></div>
+    <div class="cs-collage-head"><div class="c-header"><p class="c-eyebrow">Proven leadership</p><h1 class="c-heading c-heading--display">The only hiring platform you’ll ever need</h1></div></div>
     <figure class="cs-collage-media">
-      <div class="c-image-mask"><img class="c-image" src="assets/030-689610cd7418c453485571fd-home-hero-m-clusters-of-three-solutions-workflows-with-photos-of-ui-and-people-working-402x.png" alt="Greenhouse mediaCluster"></div>
+      <div class="c-image-mask"><img class="c-image" src="assets/030-689610cd7418c453485571fd-home-hero-m-clusters-of-three-solutions-workflows-with-photos-of-ui-and-people-working-402x.png" alt=""></div>
       <p class="c-caption"></p>
     </figure>
     <div class="cs-collage-body">
@@ -2111,53 +2571,7 @@ span.c-foot-wordmark { background: currentColor;
   </div>
 </section>
 </div>
-<div id="sec-1" class="cs-surface" data-layout="featuresThreeColumnCard" data-surface="surface/primary" data-pattern="featuresThreeColumnCard" data-pattern-lib="project" data-pattern-match="ref">
-<section class="cs-section cs-modules-sec" style="--c-section-pad-top: 2.5rem; --c-section-pad-bottom: 2.5rem;">
-  <div class="cs-modules cs-modules--cols" style="--grid-cols: 3">
-    <article class="cs-module">
-      <figure class="cs-module-media" style="aspect-ratio: 16 / 10;"><img class="c-image" src="assets/033-6a298fd15eb091333bcbe885-d-en-cg-home-two-office-workers-discussing-content-on-tablet-bright-space.png" alt="033 6a298fd15eb091333bcbe885 d en cg home two office workers discussing content on tablet bright space"></figure>
-      <p class="c-caption">Greenhouse AI</p>
-      <p class="c-paragraph" style="--c-measure:44ch">Hiring needs more than faster automation. It needs to be completely reimagined. Explore the next wave of AI capabilities from Greenhouse, built to help teams cut through noise, strengthen signal and make structured hiring easier to execute – without losing human judgment.</p>
-      
-      
-    </article>
-    <article class="cs-module">
-      <figure class="cs-module-media" style="aspect-ratio: 16 / 10;"><img class="c-image" src="assets/034-6a063cdddfe47d8d3429a902-d-en-cg-home-real-talent-fraud-detection-candidate-cards.avif" alt="034 6a063cdddfe47d8d3429a902 d en cg home real talent fraud detection candidate cards"></figure>
-      <p class="c-caption">Real Talent</p>
-      <p class="c-paragraph" style="--c-measure:44ch">Greenhouse Real Talent™ brings triple layers of trust to hiring with candidate fraud detection, identity verification and candidate matching software, so you can make more confident hiring decisions.</p>
-      
-      
-    </article>
-    <article class="cs-module">
-      <figure class="cs-module-media" style="aspect-ratio: 16 / 10;"><img class="c-image" src="assets/035-6a063cdcba100ecc20453980-d-en-cg-home-woman-in-suit-on-laptop-smiling-setup-job-alert-ui.avif" alt="035 6a063cdcba100ecc20453980 d en cg home woman in suit on laptop smiling setup job alert ui"></figure>
-      <p class="c-caption">MyGreenhouse</p>
-      <p class="c-paragraph" style="--c-measure:44ch">MyGreenhouse is a powerful new candidate portal that transforms hiring from robotic to remarkable. It keeps candidates informed with real-time updates, surfaces new opportunities and makes applying seamless – while giving recruiters the insights to quickly identify top talent.</p>
-      
-      
-    </article>
-  </div>
-  <div class="cs-modules-actions"><a class="c-arrow-link" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a><a class="c-arrow-link" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div>
-</section>
-</div>
-<div id="sec-2" class="cs-surface" data-layout="logoWall" data-surface="surface/primary" data-pattern="logoWall" data-pattern-lib="project" data-pattern-match="ref">
-<section class="cs-section cs-split-sec" style="--c-section-pad-top: 8.75rem; --c-section-pad-bottom: 7.5rem;">
-  <div class="cs-split">
-    <div class="cs-split-body">
-      <div class="c-header"><h2 class="c-heading c-heading--h2">Great companies hire with Greenhouse</h2></div>
-    <div class="cs-hero-actions"><a class="c-arrow-link" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div>
-    </div>
-    <div class="cs-split-media"><div class="cs-logo-strip">
-      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/042-684b22ea4479a38eba02bb7a-nfl-240x74-20-1.png" alt="042 684b22ea4479a38eba02bb7a nfl 240x74 20 1"></a></div>
-      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/043-66db2afc7f4ffa8dac7d63af-coursera-2024-02-22-193551-bfgg.avif" alt="043 66db2afc7f4ffa8dac7d63af coursera 2024 02 22 193551 bfgg"></a></div>
-      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/044-684b1591b49b84db80e1e68b-logo-anthropic.png" alt="044 684b1591b49b84db80e1e68b logo anthropic"></a></div>
-      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/045-684b154b7f3a0b8ea13a87db-logo-datavant.png" alt="045 684b154b7f3a0b8ea13a87db logo datavant"></a></div>
-      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/046-6849817eafb5f7300bca18d3-revlon.png" alt="046 6849817eafb5f7300bca18d3 revlon"></a></div>
-      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/047-66db2b583c8c62fd585f04a3-seatgeek-2024-02-22-193550-wvza.avif" alt="047 66db2b583c8c62fd585f04a3 seatgeek 2024 02 22 193550 wvza"></a></div>
-    </div></div>
-  </div>
-</section>
-</div>
-<div id="sec-3" class="cs-surface" data-layout="featureGrid" data-surface="surface/primary" data-pattern="featureGrid" data-pattern-lib="project" data-pattern-match="ref">
+<div id="sec-1" class="cs-surface" data-layout="featureGrid" data-surface="surface/primary" data-pattern="featureGrid" data-pattern-lib="project" data-pattern-match="ref">
 <section class="cs-section cs-modules-sec" style="--c-section-pad-top: 2.5rem; --c-section-pad-bottom: 5rem;">
   <div class="cs-modules-intro"><div class="c-header"><h2 class="c-heading c-heading--h2">The best teams start with hiring – and the best hiring starts with Greenhouse</h2></div></div>
   <div class="cs-modules cs-modules--cols" style="--grid-cols: 3">
@@ -2185,7 +2599,44 @@ span.c-foot-wordmark { background: currentColor;
   </div>
 </section>
 </div>
-<div id="sec-4" class="cs-surface" data-layout="cta" data-surface="surface/inverse" data-pattern="cta" data-pattern-lib="project" data-pattern-match="ref">
+<div id="sec-2" class="cs-surface" data-layout="logoWall" data-surface="surface/primary" data-pattern="logoWall" data-pattern-lib="project" data-pattern-match="ref">
+<section class="cs-section cs-split-sec" style="--c-section-pad-top: 8.75rem; --c-section-pad-bottom: 7.5rem;">
+  <div class="cs-split">
+    <div class="cs-split-body">
+      <div class="c-header"><h2 class="c-heading c-heading--h2">Great companies hire with Greenhouse</h2></div>
+    <div class="cs-hero-actions"><a class="c-arrow-link" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div>
+    </div>
+    <div class="cs-split-media"><div class="cs-logo-strip">
+      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/042-684b22ea4479a38eba02bb7a-nfl-240x74-20-1.png" alt="042 684b22ea4479a38eba02bb7a nfl 240x74 20 1"></a></div>
+      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/043-66db2afc7f4ffa8dac7d63af-coursera-2024-02-22-193551-bfgg.avif" alt="043 66db2afc7f4ffa8dac7d63af coursera 2024 02 22 193551 bfgg"></a></div>
+      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/044-684b1591b49b84db80e1e68b-logo-anthropic.png" alt="044 684b1591b49b84db80e1e68b logo anthropic"></a></div>
+      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/045-684b154b7f3a0b8ea13a87db-logo-datavant.png" alt="045 684b154b7f3a0b8ea13a87db logo datavant"></a></div>
+      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/046-6849817eafb5f7300bca18d3-revlon.png" alt="046 6849817eafb5f7300bca18d3 revlon"></a></div>
+      <div class="cs-logo-strip-item"><a class="c-logo c-logo--img" href="#"><img class="c-logo-img" src="assets/047-66db2b583c8c62fd585f04a3-seatgeek-2024-02-22-193550-wvza.avif" alt="047 66db2b583c8c62fd585f04a3 seatgeek 2024 02 22 193550 wvza"></a></div>
+    </div></div>
+  </div>
+</section>
+</div>
+<div id="sec-3" class="cs-surface" data-layout="stats" data-surface="surface/muted" data-pattern="stats" data-pattern-lib="project" data-pattern-match="ref">
+<section class="cs-section cs-flow-sec" style="--c-section-pad-top: 8.125rem; --c-section-pad-bottom: 8.125rem;">
+  <div class="cs-flow">
+    <div class="cs-stat-band" style="--cs-stat-cols: 3">
+      <div class="cs-stat-band-item"><div class="c-stat"><span class="c-stat-value">25%</span><span class="c-stat-label">Reduction in Major League Baseball’s time to hire vs. industry standard when using Greenhouse.</span></div></div>
+      <div class="cs-stat-band-item"><div class="c-stat"><span class="c-stat-value">39%</span><span class="c-stat-label">Lower spending on third-party recruiting</span></div></div>
+      <div class="cs-stat-band-item"><div class="c-stat"><span class="c-stat-value">92%</span><span class="c-stat-label">Reduction in candidate search firms used for Inizio</span></div></div>
+    </div>
+  </div>
+</section>
+</div>
+<div id="sec-4" class="cs-surface" data-layout="testimonial" data-surface="surface/primary" data-pattern="testimonial" data-pattern-lib="project" data-pattern-match="ref">
+<section class="cs-section cs-flow-sec" style="--c-section-pad-top: 8.75rem; --c-section-pad-bottom: 7.5rem;">
+  <div class="cs-flow">
+    <div class="cs-flow-item" data-row="heading"><h2 class="c-heading c-heading--h2">What customers are saying</h2></div>
+    <div class="cs-flow-item"><article class="c-card"><div class="c-card-body"><h2 class="c-heading c-heading--h3">Heading</h2></div></article></div>
+  </div>
+</section>
+</div>
+<div id="sec-5" class="cs-surface" data-layout="cta" data-surface="surface/inverse" data-pattern="cta" data-pattern-lib="project" data-pattern-match="ref">
 <section class="cs-section cs-flow-sec" style="--c-section-pad-top: 11.25rem; --c-section-pad-bottom: 10rem;">
   <div class="cs-flow">
     <div class="cs-flow-item" data-row="heading"><h2 class="c-heading c-heading--h2 c-heading--accent">Everything you need to get better at hiring</h2></div>
@@ -2193,7 +2644,192 @@ span.c-foot-wordmark { background: currentColor;
   </div>
 </section>
 </div>
-<div id="sec-5" class="cs-surface" data-layout="closing-bookend" data-surface="surface/inverse-strong">
+<div id="sec-6" class="cs-surface" data-layout="heroSplit5050" data-surface="surface/inverse" data-pattern="heroSplit5050" data-pattern-lib="project" data-pattern-match="ref">
+<section class="cs-section cs-split-sec">
+  <div class="cs-split-intro">
+    <div class="cs-eyebrow-wrap"><p class="c-eyebrow">Why Greenhouse</p></div>
+    <h2 class="c-heading c-heading--h2">What makes Greenhouse the best hiring platform</h2>
+    <p class="c-paragraph" style="--c-measure:50ch">Greenhouse is the only hiring platform you&#x27;ll ever need. From sourcing to interviewing to onboarding, Greenhouse saves you money by helping you make the best hires, faster, every time.</p>
+    <div class="cs-hero-actions"><a class="c-arrow-link c-arrow-link--accent" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a><a class="c-arrow-link c-arrow-link--accent" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a><a class="c-arrow-link c-arrow-link--accent" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a><a class="c-arrow-link c-arrow-link--accent" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div>
+  </div>
+  <div class="cs-split cs-split--panel">
+    <div class="cs-split-media"><div class="c-image-mask"><img class="c-image c-image--hero" src="assets/030-689610cd7418c453485571fd-home-hero-m-clusters-of-three-solutions-workflows-with-photos-of-ui-and-people-working-402x.png" alt="Greenhouse editorial photography"></div></div>
+    <div class="cs-panel">
+      
+      <div class="c-rows c-rows--table"><div class="c-table-wrap"><table class="c-table c-table--comparison"><colgroup><col class="c-table-label-col"><col class="c-table-value-col"></colgroup><tbody><tr><th scope="row">Source smarter</th></tr><tr><th scope="row">Make decisions faster</th></tr><tr><th scope="row">Hire with confidence</th></tr><tr><th scope="row">Welcome to Greenhouse!</th><td>How can we help improve your hiring? This chat may be recorded and we may send you emails to follow up on our discussion here. Please see our Privacy Policy for more information.</td></tr><tr><th scope="row">Julia Mendoza</th><td>Julia&#x27;s collaborative mindset aligns well with the company&#x27;s values. (Sources)</td></tr></tbody></table></div></div>
+      
+    </div>
+  </div>
+</section>
+</div>
+<div id="sec-7" class="cs-surface" data-layout="features" data-surface="surface/primary" data-pattern="features" data-pattern-lib="project" data-pattern-match="ref">
+<section class="cs-section cs-flow-sec" style="--c-section-pad-top: 7.5rem; --c-section-pad-bottom: 5rem;">
+  <div class="cs-flow">
+    <div class="cs-flow-item" data-row="heading"><h2 class="c-heading c-heading--h2">Your one-and-done hiring platform</h2></div>
+    <div class="cs-flow-item cs-flow-item--prose" data-row="body"><p class="c-paragraph">What makes businesses thrive or fail? The people working there day to day. That&#x27;s why companies spend so much time and money on hiring.
+
+With Greenhouse, you won&#x27;t need to gamble that time and money on new solutions as technology evolves. For 10+ years, we&#x27;ve been the industry leader in solving the challenges companies face in making high-quality hires – in one scalable platform.</p></div>
+  </div>
+</section>
+</div>
+<div id="sec-8" class="cs-surface" data-layout="featuresHeadingBodyTop" data-surface="surface/primary" data-pattern="featuresHeadingBodyTop" data-pattern-lib="project" data-pattern-match="ref">
+<section class="cs-section cs-split-sec" style="--c-section-pad-top: 6.875rem; --c-section-pad-bottom: 2.5rem;">
+  <div class="cs-split">
+    <div class="cs-split-body">
+      <div class="c-header"><p class="c-eyebrow">Proven leadership</p><h2 class="c-heading c-heading--h2">How we compare</h2></div>
+    <p class="c-paragraph" style="--c-measure:50ch">Demonstrated industry leadership</p>
+    <p class="c-paragraph" style="--c-measure:50ch">When it comes to choosing your next ATS, it pays dividends to do your due diligence. Take a deep dive into how the Greenhouse platform compares.</p>
+    </div>
+    <div class="cs-split-media"><div class="c-image-mask"><img class="c-image" src="assets/032-6a4bfc62b24be85dc1ffa3a6-single-20platform-20image.png" alt="Greenhouse items"></div></div>
+  </div>
+</section>
+</div>
+<div id="sec-9" class="cs-surface" data-layout="featuresSectionHeadingTop" data-surface="surface/primary" data-pattern="featuresSectionHeadingTop" data-pattern-lib="project" data-pattern-match="ref">
+<section class="cs-section cs-flow-sec" style="--c-section-pad-top: 2.5rem; --c-section-pad-bottom: 5rem;">
+  <div class="cs-flow">
+    <div class="cs-flow-item" data-row="heading"><h2 class="c-heading c-heading--h2">Why the top companies choose Greenhouse</h2></div>
+  </div>
+</section>
+</div>
+<div id="sec-10" class="cs-surface" data-layout="content" data-surface="surface/primary" data-pattern="content" data-pattern-lib="project" data-pattern-match="ref">
+<section class="cs-section cs-split-sec">
+  <div class="cs-split-intro">
+    <div class="cs-eyebrow-wrap"><p class="c-eyebrow"></p></div>
+    <h2 class="c-heading c-heading--h2">We’re the #1 ATS on G2</h2>
+    <p class="c-paragraph" style="--c-measure:50ch">We’ve cemented our market leadership as the top ATS for enterprise, mid-market and Europe based on universal high ratings and customer trust in our hiring software.</p>
+  </div>
+  <div class="cs-split cs-split--panel">
+    <div class="cs-split-media"><div class="c-image-mask"><img class="c-image" src="assets/041-675b1b254dcfbdcac88895be-greenhouse-g2-grid-report.avif" alt="Greenhouse media"></div></div>
+    <div class="cs-panel">
+      
+      <div class="c-rows c-rows--table"><div class="c-table-wrap"><table class="c-table c-table--comparison"><colgroup><col class="c-table-label-col"><col class="c-table-value-col"></colgroup><tbody><tr><th scope="row">Contenders</th></tr><tr><th scope="row">Leaders</th></tr><tr><th scope="row">High performers</th></tr><tr><th scope="row">Satisfaction</th></tr><tr><th scope="row">Market presence</th></tr></tbody></table></div></div>
+      
+    </div>
+  </div>
+</section>
+</div>
+<div id="sec-11" class="cs-surface" data-layout="gallery" data-surface="surface/primary" data-pattern="gallery" data-pattern-lib="project" data-pattern-match="ref">
+<section class="cs-section cs-modules-sec" style="--c-section-pad-top: 1.25rem; --c-section-pad-bottom: 2.5rem;">
+  <div class="cs-modules cs-modules--cols" style="--grid-cols: 3">
+    <article class="cs-module">
+      <figure class="cs-module-media" style="aspect-ratio: 16 / 10;"><img class="c-image" src="assets/042-6a1895bc83e54d86cbd45bbe-d-us-awards-image-g2-ent-leader-summer-2026-on-marigold-background.png" alt="042 6a1895bc83e54d86cbd45bbe d us awards image g2 ent leader summer 2026 on marigold background"></figure>
+      <p class="c-caption">Top ATS for Enterprise</p>
+      <p class="c-paragraph" style="--c-measure:44ch">Enterprise Grid Report for Applicant Tracking Systems (ATS) | Summer 2026</p>
+      
+      
+    </article>
+    <article class="cs-module">
+      <figure class="cs-module-media" style="aspect-ratio: 16 / 10;"><img class="c-image" src="assets/043-6a1895bc8f2d9491ce3db846-d-us-awards-image-g2-mm-leader-summer-2026-on-marigold-background.png" alt="043 6a1895bc8f2d9491ce3db846 d us awards image g2 mm leader summer 2026 on marigold background"></figure>
+      <p class="c-caption">Top ATS for Mid-Market</p>
+      <p class="c-paragraph" style="--c-measure:44ch">Mid-Market Grid Report for Applicant Tracking Systems (ATS) | Summer 2026</p>
+      
+      
+    </article>
+    <article class="cs-module">
+      <figure class="cs-module-media" style="aspect-ratio: 16 / 10;"><img class="c-image" src="assets/044-6a1895bc5ecfc15c4fdec10a-d-us-awards-image-g2-leader-europe-summer-2026-on-marigold-background.png" alt="044 6a1895bc5ecfc15c4fdec10a d us awards image g2 leader europe summer 2026 on marigold background"></figure>
+      <p class="c-caption">Top ATS in Europe</p>
+      <p class="c-paragraph" style="--c-measure:44ch">Europe Regional Grid Report for Applicant Tracking Systems (ATS) | Summer 2026</p>
+      
+      
+    </article>
+  </div>
+</section>
+</div>
+<div id="sec-12" class="cs-surface" data-layout="ctaSplit5050" data-surface="surface/inverse" data-pattern="ctaSplit5050" data-pattern-lib="project" data-pattern-match="ref">
+<section class="cs-section cs-split-sec" style="--c-section-pad-top: 11.25rem; --c-section-pad-bottom: 11.25rem;">
+  <div class="cs-split">
+    <div class="cs-split-body">
+      <div class="c-header"><h2 class="c-heading c-heading--h2">Greenhouse increases recruiter efficiency by 36%</h2></div>
+    <div class="cs-hero-actions"><a class="c-arrow-link c-arrow-link--accent" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div>
+    </div>
+    <div class="cs-split-media"><div class="c-image-mask"><img class="c-image" src="assets/045-66ccc7a3c9045b79b105b8c6-prefooter-image11-402x.avif" alt="Greenhouse media"></div></div>
+  </div>
+</section>
+</div>
+<div id="sec-13" class="cs-surface" data-layout="featuresThreeColumnCard" data-surface="surface/primary" data-pattern="featuresThreeColumnCard" data-pattern-lib="project" data-pattern-match="ref">
+<section class="cs-section cs-modules-sec" style="--c-section-pad-top: 2.5rem; --c-section-pad-bottom: 2.5rem;">
+  <div class="cs-modules cs-modules--cols" style="--grid-cols: 3">
+    <article class="cs-module">
+      <figure class="cs-module-media" style="aspect-ratio: 16 / 10;"><img class="c-image" src="assets/033-6a298fd15eb091333bcbe885-d-en-cg-home-two-office-workers-discussing-content-on-tablet-bright-space.png" alt="033 6a298fd15eb091333bcbe885 d en cg home two office workers discussing content on tablet bright space"></figure>
+      <p class="c-caption">Greenhouse AI</p>
+      <p class="c-paragraph" style="--c-measure:44ch">Hiring needs more than faster automation. It needs to be completely reimagined. Explore the next wave of AI capabilities from Greenhouse, built to help teams cut through noise, strengthen signal and make structured hiring easier to execute – without losing human judgment.</p>
+      
+      
+    </article>
+    <article class="cs-module">
+      <figure class="cs-module-media" style="aspect-ratio: 16 / 10;"><img class="c-image" src="assets/034-6a063cdddfe47d8d3429a902-d-en-cg-home-real-talent-fraud-detection-candidate-cards.avif" alt="034 6a063cdddfe47d8d3429a902 d en cg home real talent fraud detection candidate cards"></figure>
+      <p class="c-caption">Real Talent</p>
+      <p class="c-paragraph" style="--c-measure:44ch">Greenhouse Real Talent™ brings triple layers of trust to hiring with candidate fraud detection, identity verification and candidate matching software, so you can make more confident hiring decisions.</p>
+      
+      
+    </article>
+    <article class="cs-module">
+      <figure class="cs-module-media" style="aspect-ratio: 16 / 10;"><img class="c-image" src="assets/035-6a063cdcba100ecc20453980-d-en-cg-home-woman-in-suit-on-laptop-smiling-setup-job-alert-ui.avif" alt="035 6a063cdcba100ecc20453980 d en cg home woman in suit on laptop smiling setup job alert ui"></figure>
+      <p class="c-caption">MyGreenhouse</p>
+      <p class="c-paragraph" style="--c-measure:44ch">MyGreenhouse is a powerful new candidate portal that transforms hiring from robotic to remarkable. It keeps candidates informed with real-time updates, surfaces new opportunities and makes applying seamless – while giving recruiters the insights to quickly identify top talent.</p>
+      
+      
+    </article>
+  </div>
+  <div class="cs-modules-actions"><a class="c-arrow-link" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a><a class="c-arrow-link" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div>
+</section>
+</div>
+<div id="sec-14" class="cs-surface" data-layout="featuresSplit5050" data-surface="surface/primary" data-pattern="featuresSplit5050" data-pattern-lib="project" data-pattern-match="ref">
+<section class="cs-section cs-split-sec">
+  <div class="cs-split-intro">
+    <div class="cs-eyebrow-wrap"><p class="c-eyebrow"></p></div>
+    <h2 class="c-heading c-heading--h2">Find top talent with ease</h2>
+    <div class="cs-hero-actions"><a class="c-arrow-link" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div>
+  </div>
+  <div class="cs-split cs-split--panel">
+    <div class="cs-split-media"><div class="c-image-mask"><img class="c-image" src="assets/032-676afa936f2bdcaefd2b096b-collage-of-job-ad-market-ui-and-partner-campaign-ui-with-fingerprint-leaf-m.avif" alt="Greenhouse media"></div></div>
+    <div class="cs-panel">
+      
+      <div class="c-rows c-rows--table"><div class="c-table-wrap"><table class="c-table c-table--comparison"><colgroup><col class="c-table-label-col"><col class="c-table-value-col"></colgroup><tbody><tr><th scope="row">Job listings at scale</th><td>– Post and promote open roles across 1,000+ large and niche job boards</td></tr><tr><th scope="row">Capture contact info</th><td>– Easily and automatically get accurate prospect contact information</td></tr><tr><th scope="row">DE&amp;I hiring goals</th><td>– Discover and attract a more diverse field of top talent</td></tr><tr><th scope="row">Project Manager</th><td>2023-06-12</td></tr><tr><th scope="row">Designer 2</th><td>2023-07-22</td></tr><tr><th scope="row">Senior Engineer</th><td>Campaign paused</td></tr></tbody></table></div></div>
+      
+    </div>
+  </div>
+</section>
+</div>
+<div id="sec-15" class="cs-surface" data-layout="featuresSplit5050Media" data-surface="surface/primary" data-pattern="featuresSplit5050Media" data-pattern-lib="project" data-pattern-match="ref">
+<section class="cs-section cs-split-sec">
+  <div class="cs-split-intro">
+    <div class="cs-eyebrow-wrap"><p class="c-eyebrow"></p></div>
+    <h2 class="c-heading c-heading--h2">Make the right first impression with your careers page</h2>
+  </div>
+  <div class="cs-split cs-split--panel">
+    <div class="cs-split-media"><div class="c-image-mask"><img class="c-image" src="assets/035-66feddedc6644300cc8975d4-collage-of-company-job-board-page-on-desktop-and-mobile-with-fingerprint-leaf-png.webp" alt="Greenhouse media"></div></div>
+    <div class="cs-panel">
+      
+      <div class="c-rows c-rows--table"><div class="c-table-wrap"><table class="c-table c-table--comparison"><colgroup><col class="c-table-label-col"><col class="c-table-value-col"></colgroup><tbody><tr><th scope="row">Branded careers pages</th><td>– Define and promote your unique employer brand and company culture</td></tr><tr><th scope="row">Job board integration</th><td>– Easily integrate your Greenhouse job board into your company website</td></tr><tr><th scope="row">Personalized social posts</th><td>– Tailor active and passive social media outreach, all in Greenhouse</td></tr></tbody></table></div></div>
+      
+    </div>
+  </div>
+</section>
+</div>
+<div id="sec-16" class="cs-surface" data-layout="featuresHeadingFullWidth" data-surface="surface/primary" data-pattern="featuresHeadingFullWidth" data-pattern-lib="project" data-pattern-match="ref">
+<section class="cs-section cs-modules-sec" style="--c-section-pad-top: 8.125rem; --c-section-pad-bottom: 7.5rem;">
+  <div class="cs-modules-intro"><div class="c-header"><h2 class="c-heading c-heading--h2">More hiring solutions</h2></div></div>
+  <div class="cs-modules cs-modules--cols" style="--grid-cols: 2">
+    <article class="cs-module">
+      <figure class="cs-module-media" style="aspect-ratio: 16 / 10;"><img class="c-image" src="assets/043-6a0e3ad39c65e202b43df73c-d-en-sbs-greenhouse-candidate-engagement-ui.avif" alt="043 6a0e3ad39c65e202b43df73c d en sbs greenhouse candidate engagement ui"></figure>
+      <p class="c-caption">Candidate experience</p>
+      <p class="c-paragraph" style="--c-measure:44ch">Deliver an excellent candidate experience with easy applications, engaging interviews and a fair and transparent hiring process.</p>
+      
+      
+    </article>
+    <article class="cs-module">
+      <figure class="cs-module-media" style="aspect-ratio: 16 / 10;"><img class="c-image" src="assets/044-6a0e3ad247f2a601a20756cb-d-en-sbs-greenhouse-integrations-ui.avif" alt="044 6a0e3ad247f2a601a20756cb d en sbs greenhouse integrations ui"></figure>
+      <p class="c-caption">Integrations</p>
+      <p class="c-paragraph" style="--c-measure:44ch">With 500+ pre-built integrations, you can easily connect Greenhouse with the industry&#x27;s best tools.</p>
+      
+      
+    </article>
+  </div>
+  <div class="cs-modules-actions"><a class="c-arrow-link" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a><a class="c-arrow-link" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div>
+</section>
+</div>
+<div id="sec-17" class="cs-surface" data-layout="closing-bookend" data-surface="surface/inverse-strong">
 <section class="cs-section cs-footer-sec">
 <div class="c-footer"><nav class="c-foot-cols" aria-label="Sitemap"><div class="c-foot-col"><span class="c-foot-col-head">Platform</span><a class="c-foot-col-link" href="/platform">Only in Greenhouse</a><a class="c-foot-col-link" href="/greenhouse-latest-features">Latest product features</a><a class="c-foot-col-link" href="/pricing">Pricing</a><a class="c-foot-col-link" href="/security">Security</a><a class="c-foot-col-link" href="/ethical-principles">Ethical principles</a><a class="c-foot-col-link" href="/ai-principles">AI principles</a><a class="c-foot-col-link" href="/bias-audit-statement">Bias audit statement</a><a class="c-foot-col-link" href="/api">APIs</a></div><div class="c-foot-col"><span class="c-foot-col-head">Solutions</span><a class="c-foot-col-link" href="/ai-recruiting">AI recruiting</a><a class="c-foot-col-link" href="/talent-sourcing">Talent sourcing</a><a class="c-foot-col-link" href="/scalable-workflows">Scalable workflows</a><a class="c-foot-col-link" href="/candidate-experience">Candidate experience</a><a class="c-foot-col-link" href="/interviewing-decision-making">Interviewing &amp; decision-making</a><a class="c-foot-col-link" href="/real-talent-candidate-matching">Talent matching</a><a class="c-foot-col-link" href="/onboarding">Onboarding</a><a class="c-foot-col-link" href="/reporting-insights">Reporting &amp; insights</a><a class="c-foot-col-link" href="https://integrations.greenhouse.com/">Integrations</a></div><div class="c-foot-col"><span class="c-foot-col-head">Why Greenhouse</span><a class="c-foot-col-link" href="/compare">How we compare</a><a class="c-foot-col-link" href="/roi-with-greenhouse">Return on your hiring investment</a><a class="c-foot-col-link" href="/customer-success">Your partner in success</a></div><div class="c-foot-col"><span class="c-foot-col-head">Greenhouse for</span><a class="c-foot-col-link" href="/early-stage">Early-stage business</a><a class="c-foot-col-link" href="/scaling-company">Scaling company</a><a class="c-foot-col-link" href="/enterprise">Enterprise</a><a class="c-foot-col-link" href="https://my.greenhouse.com/">Job seekers</a></div><div class="c-foot-col"><span class="c-foot-col-head">Resources</span><a class="c-foot-col-link" href="/blog">Blog</a><a class="c-foot-col-link" href="/guidance">Guidance</a><a class="c-foot-col-link" href="/customer-stories">Customer stories</a><a class="c-foot-col-link" href="/resources/glossary">Hiring glossary</a></div><div class="c-foot-col"><span class="c-foot-col-head">About</span><a class="c-foot-col-link" href="/company">Company</a><a class="c-foot-col-link" href="/press">Press &amp; awards</a><a class="c-foot-col-link" href="/newsroom">Newsroom</a><a class="c-foot-col-link" href="/careers">Careers</a><a class="c-foot-col-link" href="/contact">Contact</a></div><div class="c-foot-col"><span class="c-foot-col-head">Community</span><a class="c-foot-col-link" href="/events">Events &amp; webinars</a><a class="c-foot-col-link" href="/greenhouse-open-thank-you">Open</a><a class="c-foot-col-link" href="/talent-makers">Talent Makers</a><a class="c-foot-col-link" href="/newsletter">Newsletter</a><a class="c-foot-col-link" href="/greenhouse-partner-resource-center">Partnerships</a></div><div class="c-foot-col"><span class="c-foot-col-head">Support</span><a class="c-foot-col-link" href="https://learn.greenhouse.io/">Learn Greenhouse</a><a class="c-foot-col-link" href="https://support.greenhouse.io/hc/en-us">Customer support</a><a class="c-foot-col-link" href="https://developers.greenhouse.io/">Developer resources</a></div></nav><div class="c-foot-bar"><p class="c-foot-legal">© 2026 Greenhouse Software, Inc. All rights reserved. Greenhouse, the G Logo, &quot;Hire for what&#x27;s next,&quot; &quot;The/your all-together hiring platform,&quot; &quot;Talent Makers,&quot; &quot;Real Talent&quot; and &quot;Strong Yes&quot; are among the trademarks of Greenhouse Software, Inc.</p><nav class="c-foot-policy" aria-label="Legal"><a class="c-foot-policy-link" href="#">Cookie preferences</a><a class="c-foot-policy-link" href="/privacy-policy">Privacy policy</a><a class="c-foot-policy-link" href="/legal">Terms of service</a></nav><nav class="c-foot-social" aria-label="Social"><a class="c-foot-social-link" href="https://www.facebook.com/greenhouse.io/">Facebook</a>  <a class="c-foot-social-link" href="https://www.linkedin.com/company/greenhouse-inc-/">Linkedin</a>  <a class="c-foot-social-link" href="https://www.youtube.com/channel/UCwLlhrx5lFssgTwKCHEuC8g">Youtube</a>  <a class="c-foot-social-link" href="https://www.instagram.com/greenhousesoftware/">Instagram</a>  <a class="c-foot-social-link" href="https://www.tiktok.com/@greenhouse_software">Tiktok</a></nav></div></div>
 </section>

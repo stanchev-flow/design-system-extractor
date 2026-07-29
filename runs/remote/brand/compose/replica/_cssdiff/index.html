@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lexend+Deca:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style id="tokens">
 /* Remote — generated design tokens (layer 1). Source: brand.yaml sha256=3e5434ecf431; generator tokens_css.py v1.0.0; style=none; tokens=256; disabledDevices=counter-display,ghost-watermark,footer-display-links. Regenerate via the compose CLI — never hand-edit. */
+/* typography delivery — declared families this brand does NOT self-host, and what renders instead: Bossa -> Lexend Deca (authored); Inter (loaded as a webfont, not self-hosted). */
 :root {
   --color-ink-primary: #141415;
   --color-ink-body: #383a3d;
@@ -301,7 +302,7 @@ body { min-height: 100%; container-type: size; container-name: frame; }
   --display-size: 2.875rem;
   --radius: 0.625rem;
   --font-heading: 'Bossa', 'Lexend Deca', sans-serif;
-  --font-body: 'Inter', 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
   /* brand-constant aliases for the collage ghost + the cream split panel (layer-1 refs) */
   --c-ghost: var(--color-text-ghost-on-primary);
   --c-panel: var(--surface-surface-panel);
@@ -723,7 +724,11 @@ p { text-wrap-style: balance; }
   height: var(--c-button-height, auto);
   padding: var(--c-button-pad, 0.8em 1.6em); /* provenance: structural — em-relative
      control inset fallback (shape, not magnitude: scales with the button's own size) */
-  border-radius: var(--c-button-radius, var(--radius)); border: none;
+  /* measured control border (sysfix 2026-07): the primary rides the base rule, so its
+     measured `buttons.primary.border` (e.g. a transparent 2px reserve keeping the filled
+     and outline families the same box, or a hairline stroke) must flow through here.
+     Fallback `none` keeps brands without a primary border fact byte-identical. */
+  border-radius: var(--c-button-radius, var(--radius)); border: var(--c-button-border, none);
   transition: background var(--c-motion-fast) var(--c-ease),
               color var(--c-motion-fast) var(--c-ease),
               transform var(--c-motion-fast) var(--c-ease); }
@@ -1059,6 +1064,26 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 }
 .cs-nav-lang-item[aria-current] { background: rgb(20, 20, 21); color: rgb(255, 255, 255); }
 @media (max-width: 991px) { .cs-nav-util { display: none; } }
+/* nav mobile collapse (fact-gated: responsive.nav.collapse) — below the measured 1200px breakpoint the desktop utility + primary rows collapse to a logo + burger mobile bar; the burger is display:none at/above it so desktop is byte-identical. */
+#page-nav .cs-nav-burger { display: none; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; padding: 0; border: 0; background: none; color: currentColor; cursor: pointer; flex: 0 0 auto; }
+#page-nav .cs-nav-burger-box { position: relative; display: block; width: 1.5rem; height: 1rem; }
+#page-nav .cs-nav-burger-line, #page-nav .cs-nav-burger-line::before, #page-nav .cs-nav-burger-line::after { position: absolute; left: 0; width: 100%; height: 2px; background: currentColor; }
+#page-nav .cs-nav-burger-line { top: 50%; transform: translateY(-50%); }
+#page-nav .cs-nav-burger-line::before { content: ""; top: -0.5rem; }
+#page-nav .cs-nav-burger-line::after { content: ""; top: 0.5rem; }
+#page-nav .cs-nav-drawer { display: none; flex-direction: column; gap: 0.25rem; width: 100%; padding: 0.5rem 0; }
+#page-nav .cs-nav-drawer[hidden] { display: none; }
+#page-nav .cs-nav-drawer:not([hidden]) { display: flex; }
+#page-nav .cs-nav-drawer-link { color: currentColor; text-decoration: none; padding: 0.5rem 0; }
+@media (max-width: 1199px) {
+  #page-nav .cs-nav-tier--utility { display: none; }
+  #page-nav .cs-navlinks { display: none; }
+  #page-nav .cs-nav-util { display: none; }
+  #page-nav .cs-nav-actions { display: none; }
+  #page-nav .cs-nav .c-button--navcta { display: none; }
+  #page-nav .cs-nav-burger { display: inline-flex; }
+}
+
 .cs-section { background: var(--c-paper); color: var(--c-ink);
   padding: var(--c-section-pad-top) var(--c-section-pad-x)
            var(--c-section-pad-bottom); }
@@ -1118,11 +1143,16 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-panelcar,
 .cs-footer-sec > .c-footer {
   width: 100%; max-width: var(--content-measure, 86rem); margin-inline: auto; }
-.cs-section { min-height: 100cqh; }
+.cs-section { min-height: auto; }
 .cs-slot { display: flex; flex-direction: column; align-items: center; }
 .cs-eyebrow-wrap { margin-bottom: var(--c-eyebrow-gap); text-align: center; }
+/* TITLE-OVER-MEDIA PULL is a FACT-GATED device, not the stack hero's default seam:
+   --c-title-overlap is emitted (component_vars) only for a layout whose own
+   overlapRules declare `titleOverMediaTop`. A layout with no such fact resolves the
+   0rem fallback, so its title sits ABOVE the media on the section's own block rhythm
+   instead of straddling its top edge with a borrowed magnitude. */
 .cs-title { position: relative; z-index: 2; text-align: center;
-  margin-bottom: var(--c-title-overlap); }
+  margin-bottom: var(--c-title-overlap, 0rem); }
 .cs-collage { position: relative; width: 100%; max-width: 80rem; margin: 0 auto; }
 /* ALIGNMENT: the overlap depth/offsets keep their measured % magnitudes but round() the
    USED value to an exact --baseline multiple, so the overlap registers to the shared
@@ -1567,7 +1597,8 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 @media (max-width: 767px) {
   .cs-interlock { grid-template-columns: 1fr; }
   /* provenance: structural — mobile media recrop ratio (layout geometry, not a
-     brand token; coincidentally equals Remote's landscape aspect) */
+     brand token; a plain landscape ratio will coincide with some brands' own
+     measured aspect, which does not make it brand-derived) */
   .cs-interlock-media { aspect-ratio: 3 / 2; }
 }
 .cs-media-split { display: grid;
@@ -1594,10 +1625,9 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
    the shared measure by design (a release, not a private containment copy). */
 .cs-ov--bleed .cs-ov-frame { max-width: none; }
 .cs-ov-canvas { position: relative; margin: 0; min-height: calc(48 * var(--baseline)); }
-/* FULL-HEIGHT bleed hero (2026-07): a full-bleed photo hero fills the viewport like
-   the source, not a short wide band. The hero image must COVER this taller canvas —
-   its authored wide aspect-ratio would otherwise pin it to a short strip. */
-.cs-ov--bleed .cs-ov-canvas { min-height: min(90svh, 54rem); }
+/* Bleed canvas is content-sized from the brand media / measured floor above. Viewport-tall
+   bleed is applied only when brand responsive heightRule (viewport / viewport-minus-nav)
+   licenses it via component_render — never as an unconditional viewport-height default. */
 .cs-ov-canvas > .c-image, .cs-ov-canvas > .c-image-ph {
   width: 100%; height: 100%; min-height: inherit; object-fit: cover; }
 .cs-ov--bleed .cs-ov-canvas > .c-image { aspect-ratio: auto; height: 100%; }
@@ -1631,11 +1661,11 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   padding: calc(6 * var(--baseline)) calc(5 * var(--baseline)); }
 /* panel display steps DOWN from the section's own display alias — --c-display-size is
    always emitted per section (component_vars), so no literal fallback (AS-24).
-   0.6 (pass1 2026-07, scale_adherence finding): the old 0.62 landed hubspot's panel
-   heading at 49.6px — on NO ladder (measured h1 48 / derived step 52). 0.6 puts the
-   stepped-down rank on the brand's own h1 rung for the evidenced display:h1 ratios
-   (hubspot 80->48 = h1; remote 46->27.6 ~= h3 28) — quantized new geometry, audited
-   per brand by the scale gate. */
+   The 0.6 step is a QUANTIZING ratio (pass1 2026-07, scale_adherence finding): an
+   unrounded multiplier lands the stepped-down heading between the brand's measured
+   type rungs, so the panel reads at a size no ladder declares. A round step puts the
+   stepped-down rank back onto a measured rung across the observed display:heading
+   ratios — geometry quantized here, then audited per brand by the scale gate. */
 .cs-ov-panel .c-heading--display { font-size: calc(0.6 * var(--c-display-size));
   max-width: 14ch; }
 /* sidebar rail: the full-height panel column (ref 3) — space-between stack. */
@@ -1703,7 +1733,7 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-band { position: relative; }
 .cs-band--top .cs-band-media { margin: 0; }
 .cs-band--top .c-image, .cs-band--top .c-image-ph { width: 100%;
-  height: calc(56 * var(--baseline)); object-fit: cover; display: block; }
+  height: auto; display: block; object-fit: cover; }
 /* the on-photo caption rides a small solid panel CHIP (sanctioned panel-over-media) —
    never bare text on the photograph. */
 .cs-band-chip { position: absolute; top: calc(5 * var(--baseline));
@@ -1718,7 +1748,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   display: flex; flex-direction: column; gap: var(--c-block-gap);
   padding-top: var(--c-block-gap); }
 @media (max-width: 767px) {
-  .cs-band--top .c-image, .cs-band--top .c-image-ph { height: calc(36 * var(--baseline)); }
   .cs-band-straddler { width: 100% !important; margin-inline: 0 !important;
     --c-seam-rise: calc(6 * var(--baseline)); } }
 .cs-flow { display: flex; flex-direction: column;
@@ -1752,7 +1781,8 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   line-height: var(--type-h4-line-height, var(--c-heading-line)); color: var(--c-ink); }
 .cs-testimonial-mark { color: var(--c-accent); font-family: var(--c-font-display);
   /* provenance: structural — decorative pull-quote glyph scale (a device size
-     ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */
+     ceiling, not a brand type tier; round rem values in a device clamp will
+     coincide with some brands' spacing rungs without deriving from them) */
   font-size: clamp(2.5rem, 5cqw, 4rem); line-height: 0.8; margin-bottom: 1rem; }
 .cs-testimonial .c-person { margin-top: var(--space-quote-to-attribution,
   var(--c-block-gap)); }
@@ -2065,9 +2095,10 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
    so it reads as a bar flush above the hero, not padded inside it. */
 #page-nav { background: var(--c-paper); color: var(--c-ink); }
 #page-nav .cs-nav { margin-bottom: 0; padding: var(--c-nav-pad-block) var(--c-section-pad-x); }
-/* page: only the opening section is full-frame; others size to content. */
+/* page: sections size to content. Viewport/tall opening height is applied only
+   when brand responsive facts or measured bandHeight license it (component_render /
+   band_height_css) — never as an unconditional full-frame default. */
 .cs-section { min-height: auto; }
-#sec-0 .cs-section { min-height: 100cqh; }
 /* ── INSET ART-PANEL hero (AS-37) ─────────────────────
    The hero lives INSIDE one rounded panel painted with the brand's own art asset.
    Radius rides the brand token chain (panel tier, else the global radius); rhythm
@@ -2115,7 +2146,14 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-conversion-band-art { position: absolute; inset: 0; width: 100%; height: 100%;
   object-fit: cover; z-index: 0; }
 .cs-conversion-sec--band > .cs-conversion { position: relative; z-index: 1; }
-.cs-module--plate { background: var(--c-panel); color: var(--c-panel-ink);
+.cs-module--plate {
+  /* CARD SURFACE (fid 2026-07, inset-card-on-canvas): the plate paints the brand's
+     DECLARED container surface. Default is the page panel role (--c-panel); a brand
+     whose card/container surface is a DISTINCT role from the page panel (e.g. white
+     cards floating on a warmer off-white canvas) re-points --c-card-plate-bg at that
+     role via the module-grid scope. Fact-gated: absent override ⇒ --c-panel, byte-
+     identical for brands whose container role already IS the page panel. */
+  background: var(--c-card-plate-bg, var(--c-panel)); color: var(--c-panel-ink);
   --c-ink: var(--c-panel-ink); --c-accent: var(--c-panel-ink);
   /* re-scope the MUTED ink to the panel too — body/caption text uses
      --c-ink-muted, not --c-ink; without this a plate that sits after an inverse
@@ -2127,7 +2165,13 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   /* plate inset rides the brand's measured panel-padding token when authored
      (fid6 2026-07); the 4-baseline structural default is unchanged without it. */
   --c-plate-pad: var(--space-panel-padding, calc(4 * var(--baseline)));
-  border-radius: var(--radius-card, 0); padding: var(--c-plate-pad); }
+  border-radius: var(--radius-card, 0); padding: var(--c-plate-pad);
+  /* CARD OUTLINE (inset-card-on-canvas): a container surface whose grammar declares
+     a resting hairline border renders it so the card reads as an outlined plate on a
+     low-contrast canvas (the classic white-card-on-cream anatomy). Fact-gated —
+     --c-card-plate-border defaults to `none`, so shadow-elevated / borderless card
+     families (and every current plated brand) stay byte-identical. */
+  border: var(--c-card-plate-border, none); }
 /* FULL-BLEED MEDIA WELL (fid6 2026-07): a plated module's leading media frame runs
    flush to the card's top + side edges (rounded top corners only — the classic card
    anatomy the capture shows: media well INSIDE the plate, bleeding to its edges);
@@ -2167,6 +2211,13 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-modules--edgecut .cs-module-headrow .cs-module-media--mark {
   height: var(--cs-headrow-mark, 1.5rem); flex: 0 0 auto; width: auto; }
 .cs-module-headrow .c-heading { margin: 0; flex: 1 1 auto; }
+/* CARD HEADER RULE (inset-card-on-canvas): a hairline separating the icon+title
+   header from the card body — rendered only when the brand's card grammar declares
+   `headerDivider` (the <hr> is emitted fact-gated), so control-less card families
+   never gain a rule. Rides the plate's own re-scoped hairline; vertical rhythm is the
+   anatomy ladder's owl margin (header→rule→body), so it never double-counts spacing. */
+.cs-modules .cs-module-divider { border: 0; height: 0;
+  border-top: 1px solid var(--c-hairline); width: 100%; }
 
 .cs-marquee { display: block; overflow: hidden; max-width: none;
   /* pin the viewport box to its column (a flex item would otherwise size to the
@@ -2323,7 +2374,14 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 @media (max-width: 767px) {
   .cs-modules--edgecut { gap: 1.25rem; }
   .cs-modules--edgecut > .cs-module { flex-basis: min(86cqw, 24rem); } }
-.cs-module--plate { background: var(--c-panel); color: var(--c-panel-ink);
+.cs-module--plate {
+  /* CARD SURFACE (fid 2026-07, inset-card-on-canvas): the plate paints the brand's
+     DECLARED container surface. Default is the page panel role (--c-panel); a brand
+     whose card/container surface is a DISTINCT role from the page panel (e.g. white
+     cards floating on a warmer off-white canvas) re-points --c-card-plate-bg at that
+     role via the module-grid scope. Fact-gated: absent override ⇒ --c-panel, byte-
+     identical for brands whose container role already IS the page panel. */
+  background: var(--c-card-plate-bg, var(--c-panel)); color: var(--c-panel-ink);
   --c-ink: var(--c-panel-ink); --c-accent: var(--c-panel-ink);
   /* re-scope the MUTED ink to the panel too — body/caption text uses
      --c-ink-muted, not --c-ink; without this a plate that sits after an inverse
@@ -2335,7 +2393,13 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   /* plate inset rides the brand's measured panel-padding token when authored
      (fid6 2026-07); the 4-baseline structural default is unchanged without it. */
   --c-plate-pad: var(--space-panel-padding, calc(4 * var(--baseline)));
-  border-radius: var(--radius-card, 0); padding: var(--c-plate-pad); }
+  border-radius: var(--radius-card, 0); padding: var(--c-plate-pad);
+  /* CARD OUTLINE (inset-card-on-canvas): a container surface whose grammar declares
+     a resting hairline border renders it so the card reads as an outlined plate on a
+     low-contrast canvas (the classic white-card-on-cream anatomy). Fact-gated —
+     --c-card-plate-border defaults to `none`, so shadow-elevated / borderless card
+     families (and every current plated brand) stay byte-identical. */
+  border: var(--c-card-plate-border, none); }
 /* FULL-BLEED MEDIA WELL (fid6 2026-07): a plated module's leading media frame runs
    flush to the card's top + side edges (rounded top corners only — the classic card
    anatomy the capture shows: media well INSIDE the plate, bleeding to its edges);
@@ -2375,6 +2439,13 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-modules--edgecut .cs-module-headrow .cs-module-media--mark {
   height: var(--cs-headrow-mark, 1.5rem); flex: 0 0 auto; width: auto; }
 .cs-module-headrow .c-heading { margin: 0; flex: 1 1 auto; }
+/* CARD HEADER RULE (inset-card-on-canvas): a hairline separating the icon+title
+   header from the card body — rendered only when the brand's card grammar declares
+   `headerDivider` (the <hr> is emitted fact-gated), so control-less card families
+   never gain a rule. Rides the plate's own re-scoped hairline; vertical rhythm is the
+   anatomy ladder's owl margin (header→rule→body), so it never double-counts spacing. */
+.cs-modules .cs-module-divider { border: 0; height: 0;
+  border-top: 1px solid var(--c-hairline); width: 100%; }
 
 /* ANIMATED DISCLOSURE (shared source, AS-47): state fade on the brand's fast tier,
    marker turn + panel height on the structural-collapse tier, brand primary curve. */
@@ -2486,7 +2557,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-square: var(--aspect-square);
@@ -2563,7 +2633,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-square: var(--aspect-square);
@@ -2648,7 +2717,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-square: var(--aspect-square);
@@ -2728,7 +2796,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-square: var(--aspect-square);
@@ -2808,7 +2875,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-square: var(--aspect-square);
@@ -2891,7 +2957,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-square: var(--aspect-square);
@@ -2979,7 +3044,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-square: var(--aspect-square);
@@ -3064,7 +3128,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-square: var(--aspect-square);
@@ -3154,7 +3217,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-square: var(--aspect-square);
@@ -3237,7 +3299,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-square: var(--aspect-square);
@@ -3320,7 +3381,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-square: var(--aspect-square);
@@ -3380,7 +3440,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-square: var(--aspect-square);
@@ -3418,7 +3477,7 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 <div class="cs-utility-banner"><p class="cs-utility-banner-text">Do you know how to say &quot;global payroll&quot; in Dutch?</p> <a class="cs-utility-banner-cta" href="https://cta-service-cms2.hubspot.com/web-interactives/public/v1/track/click?encryptedPayload=AVxigLIucnZ%2FuDlroWspoAljcm5TdX81GxVbVGD0zgclLyckVpOcZTPOIdY5qTPbjYzTK3auuzqOa2A%2FeznaGCO6CeEm6hj41NU6Mqb%2B9TNGrPe%2Bs8eOE%2BhKpkCRQspqxYpYSdcFzSQvne9eGKcovcQ%2B%2Bczm0J3m1CWx1UG7OEvljzctcEw%3D&amp;portalId=7405301&amp;webInteractiveId=559713706623&amp;webInteractiveContentId=213867283760&amp;containerType=BANNER&amp;campaignId=5c6d3931-2111-4e4a-a180-dd5bd59c1fb0&amp;pageUrl=https%3A%2F%2Fremote.com%2F&amp;pageTitle=Remote+%E2%80%94+Global+Employment+Infrastructure+%7C+EOR%2C+Payroll+%26+Compliance%2C+Worldwide&amp;referrer=&amp;userAgent=Mozilla%2F5.0+%28Macintosh%3B+Intel+Mac+OS+X+10_15_7%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F149.0.0.0+Safari%2F537.36&amp;hutk=0e46dfcbe23c8a229f37f0d22f061c37&amp;hssc=36654911.1.1782938074776&amp;hstc=36654911.0e46dfcbe23c8a229f37f0d22f061c37.1782908167706.1782908167706.1782938074776.2&amp;pageId=186057898075&amp;analyticsPageId=186057898075&amp;hsfp=6ef84b617352e3459274c7707b8dc7d0&amp;canonicalUrl=https%3A%2F%2Fremote.com&amp;contentType=standard-page" style="text-decoration: underline; text-underline-offset: 2px; font-weight: 700; color: rgb(255, 255, 255)">Take the quiz →</a><button class="cs-utility-banner-close" type="button" aria-label="Dismiss" style="color: rgb(250, 250, 250)"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 2L14 14M14 2L2 14"/></svg></button></div>
 </div>
 <div id="page-nav" class="cs-surface" data-surface="surface/primary">
-<nav class="cs-nav"><a class="c-logo c-logo--img" href="https://remote.com/"><img class="c-logo-img" src="assets/nav-logo.svg" alt="Remote home" width="94" height="30"></a><span class="cs-navlinks"><span class="cs-nav-tab"><button type="button" class="c-arrow-link cs-nav-trigger" aria-expanded="false" aria-controls="cs-mega-1" style="gap:0">Products<span class="cs-nav-chev" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></button><div class="cs-mega" id="cs-mega-1"><div class="cs-mega-inner"><div class="cs-mega-main"><div class="cs-mega-group"><h4 class="cs-mega-head">Global Employment</h4><ul><li><a class="cs-mega-link" href="https://remote.com/global-hr/global-payroll"><span class="cs-mega-link-icon"><img src="assets/nav-icon-global-payroll-run.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Global Payroll Run</span><span class="cs-mega-link-desc"><span>Run compliant payroll easily</span></span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/global-hr/employer-of-record"><span class="cs-mega-link-icon"><img src="assets/nav-icon-employer-of-record.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Employer of Record</span><span class="cs-mega-link-desc"><span>Expand globally with zero entity cost</span></span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/global-hr/contractor-of-record"><span class="cs-mega-link-icon"><img src="assets/nav-icon-contractor-of-record.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Contractor of Record</span><span class="cs-mega-link-desc"><span>Compliantly engage contractors worldwide</span></span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/global-hr/contractor-management"><span class="cs-mega-link-icon"><img src="assets/nav-icon-contractor-management.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Contractor Management</span><span class="cs-mega-link-desc"><span>Onboard and manage contractors globally</span></span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/global-hr/professional-employer-organization"><span class="cs-mega-link-icon"><img src="assets/nav-icon-peo.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">PEO</span><span class="cs-mega-link-desc"><span>Outsource complex employment tasks</span></span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Infrastructure</h4><ul><li><a class="cs-mega-link cs-desc-hover" href="https://embedded.remote.com/"><span class="cs-mega-link-icon"><img src="assets/nav-icon-remote-embedded.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Remote Embedded</span><span class="cs-mega-link-desc"><span>Seamlessly integrate HR into workflows</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/hr-core"><span class="cs-mega-link-icon"><img src="assets/nav-icon-platform.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Platform</span><span class="cs-mega-link-desc"><span>Manage your global HR core</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/remote-mcp"><span class="cs-mega-link-icon"><img src="assets/nav-icon-connect.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Connect</span><span class="cs-mega-link-desc"><span>Connect your AI tools with Remote</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/integrations-for-customers"><span class="cs-mega-link-icon"><img src="assets/nav-icon-integrations.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Integrations</span><span class="cs-mega-link-desc"><span>Streamline processes with essential business tools</span></span></span></a></li></ul></div></div><div class="cs-mega-aside"><div class="cs-mega-group"><h4 class="cs-mega-head">Services</h4><ul><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/ask-an-expert"><span><span class="cs-mega-link-title">Ask an Expert</span><span class="cs-mega-link-desc"><span>Get expert help on global HR &amp; compliance</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/background-checks"><span><span class="cs-mega-link-title">Background Checks</span><span class="cs-mega-link-desc"><span>Simplify your candidate screening processes</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/hr-compliance"><span><span class="cs-mega-link-title">Compliance Watchtower</span><span class="cs-mega-link-desc"><span>Stay ahead of compliance risks</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/device-management"><span><span class="cs-mega-link-title">Device Management</span><span class="cs-mega-link-desc"><span>Provision and track IT devices globally</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/global-entity-setup"><span><span class="cs-mega-link-title">Entity Setup</span><span class="cs-mega-link-desc"><span>Establish compliant entities fast</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/global-mobility"><span><span class="cs-mega-link-title">Mobility &amp; Relocation</span><span class="cs-mega-link-desc"><span>Relocate employees with ease</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/global-benefits"><span><span class="cs-mega-link-title">Benefits</span><span class="cs-mega-link-desc"><span>Manage employee benefits with ease</span></span></span></a></li></ul></div></div></div></div></span> <span class="cs-nav-tab"><button type="button" class="c-arrow-link cs-nav-trigger" aria-expanded="false" aria-controls="cs-mega-2" style="gap:0">Solutions<span class="cs-nav-chev" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></button><div class="cs-mega" id="cs-mega-2"><div class="cs-mega-inner"><div class="cs-mega-main"><div class="cs-mega-group"><h4 class="cs-mega-head">Global Coverage</h4><ul><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/country-explorer"><span class="cs-mega-link-icon"><img src="assets/nav-icon-country-explorer.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Country Explorer</span><span class="cs-mega-link-desc"><span>Find global employment support by country</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/us-state-explorer?service=all"><span class="cs-mega-link-icon"><img src="assets/nav-icon-us-state-explorer.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">US State Explorer</span><span class="cs-mega-link-desc"><span>Simplify hiring across all US states</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/resources/compare-remote"><span class="cs-mega-link-icon"><img src="assets/nav-icon-compare-remote.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Compare Remote</span><span class="cs-mega-link-desc"><span>See how we stack up against others</span></span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Growth Stage</h4><ul><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/startups"><span class="cs-mega-link-icon"><img src="assets/nav-icon-startups.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Startups</span><span class="cs-mega-link-desc"><span>Agile global HR &amp; payroll solutions for growing companies</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/midsize"><span class="cs-mega-link-icon"><img src="assets/nav-icon-mid-market.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Mid-Market</span><span class="cs-mega-link-desc"><span>Expand teams with tailored HR solutions</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/enterprise"><span class="cs-mega-link-icon"><img src="assets/nav-icon-enterprise.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Enterprise</span><span class="cs-mega-link-desc"><span>Global HR for large businesses</span></span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Partner with us</h4><ul><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/remote-api"><span class="cs-mega-link-icon"><img src="assets/nav-icon-strategic-technology-partners.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Strategic Technology Partners</span><span class="cs-mega-link-desc"><span>Flexibly embed global HR into your platform</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/partners"><span class="cs-mega-link-icon"><img src="assets/nav-icon-become-a-partner.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Become a Partner</span><span class="cs-mega-link-desc"><span>Explore partnership opportunities with us</span></span></span></a></li></ul></div></div><div class="cs-mega-aside"><div class="cs-mega-aside-card"><h4 class="cs-mega-head">Case Studies</h4><a class="cs-mega-card" href="/resources/case-studies/scaling-global-talent-with-ease-how-flowla-achieves-100-hr-visibility-with-remote"><img src="assets/nav-card-solutions.webp" alt="flowela-header@2x.webp" /><p class="cs-mega-card-title">Scaling global talent with ease: How Flowla achieves 100% HR visibility with Remote</p><span class="cs-mega-card-cta">Learn more &rarr;</span></a></div></div></div></div></span> <span class="cs-nav-tab"><button type="button" class="c-arrow-link cs-nav-trigger" aria-expanded="false" aria-controls="cs-mega-3" style="gap:0">Resources<span class="cs-nav-chev" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></button><div class="cs-mega" id="cs-mega-3"><div class="cs-mega-inner"><div class="cs-mega-main"><div class="cs-mega-group"><h4 class="cs-mega-head">Tools &amp; Calculators</h4><ul><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/resources/employee-misclassification-risk-tool"><span class="cs-mega-link-icon"><img src="assets/nav-icon-misclassification-risk-calculator.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Misclassification risk calculator</span><span class="cs-mega-link-desc"><span>Check employee misclassification risk by country</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/resources/employee-cost-calculator"><span class="cs-mega-link-icon"><img src="assets/nav-icon-employee-cost-calculator.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Employee cost calculator</span><span class="cs-mega-link-desc"><span>Calculate total employee costs in any country</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/resources/contractor-payout-explorer"><span class="cs-mega-link-icon"><img src="assets/nav-icon-contractor-payout-calculator.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Contractor payout calculator</span><span class="cs-mega-link-desc"><span>Explore currency options and payout speeds for global contractors</span></span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Learn with Remote</h4><ul><li><a class="cs-mega-link" href="https://remote.com/resources/research"><span><span class="cs-mega-link-title">Research &amp; Guides</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/resources/case-studies"><span><span class="cs-mega-link-title">Case studies</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/resources/hr-glossary"><span><span class="cs-mega-link-title">HR Glossary</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/resources/checklists-templates"><span><span class="cs-mega-link-title">Checklists &amp; Templates</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/resources/job-descriptions"><span><span class="cs-mega-link-title">Job Description Library</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/resources/webinars"><span><span class="cs-mega-link-title">Webinars</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/events"><span><span class="cs-mega-link-title">Events</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/news"><span><span class="cs-mega-link-title">Newsroom</span></span></a></li><li><a class="cs-mega-link" href="https://support.remote.com/hc/en-us/sections/34243549052685-Talent-Insights"><span><span class="cs-mega-link-title">Salary &amp; Talent Insights</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/resources/insights-center"><span><span class="cs-mega-link-title">Insights center</span></span></a></li><li><a class="cs-mega-link" href="https://support.remote.com/"><span><span class="cs-mega-link-title">Get support</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/resources"><span><span class="cs-mega-link-title">See all resources</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Blog</h4><ul><li><a class="cs-mega-link" href="https://remote.com/blog/tag/payroll"><span><span class="cs-mega-link-title">Global Payroll</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/blog/tag/eor-peo"><span><span class="cs-mega-link-title">EOR &amp; PEO</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/blog/tag/contractor-management"><span><span class="cs-mega-link-title">Contractor Management</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/blog/tag/compliance"><span><span class="cs-mega-link-title">Compliance</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/blog/tag/taxes"><span><span class="cs-mega-link-title">Taxes</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/blog/tag/relocation"><span><span class="cs-mega-link-title">Work visas &amp; permits</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/blog/changelog"><span><span class="cs-mega-link-title">Changelog</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/blog"><span><span class="cs-mega-link-title">Explore the blog</span></span></a></li></ul></div></div><div class="cs-mega-aside"><div class="cs-mega-aside-card"><h4 class="cs-mega-head">Blog Posts</h4><a class="cs-mega-card" href="/blog/the-most-complex-global-payroll-market-isn-t-the-one-you-d-guess"><img src="assets/nav-card-resources.webp" alt="CFO Global Payroll Forecast" /><p class="cs-mega-card-title">The most complex global payroll market isn&#x27;t the one you&#x27;d guess</p><span class="cs-mega-card-cta">Learn more &rarr;</span></a></div></div></div></div></span> <a class="c-arrow-link" href="https://remote.com/pricing" style="gap:0">Pricing</a></span><span class="cs-nav-util"><a class="cs-nav-util-link" href="https://employ.remote.com/sign-in"><span class="cs-nav-util-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M12 3.8a5.3 5.3 0 1 1 0 10.6 5.3 5.3 0 0 1 0-10.6m0 1a4.3 4.3 0 1 0 0 8.6 4.3 4.3 0 0 0 0-8.6" clip-rule="evenodd"></path><path fill="currentColor" fill-rule="evenodd" d="M12 1.3c5.98 0 10.7 4.827 10.7 10.7 0 5.98-4.827 10.7-10.7 10.7-5.98 0-10.7-4.827-10.7-10.7S6.02 1.3 12 1.3M7.2 16.8c-1.101 0-2.06.938-2.097 2.033A9.65 9.65 0 0 0 12 21.7a9.7 9.7 0 0 0 6.872-2.844A2.4 2.4 0 0 0 16.5 16.8zM12 2.3c-5.42 0-9.7 4.373-9.7 9.7 0 2.207.736 4.249 1.981 5.885.433-1.198 1.597-2.085 2.92-2.085H16.5c1.437 0 2.667.894 3.164 2.156A9.65 9.65 0 0 0 21.7 12 9.68 9.68 0 0 0 12 2.3" clip-rule="evenodd"></path></svg></span><span>Login</span></a><details class="cs-nav-lang"><summary class="cs-nav-util-link" aria-label="Select language — current: English"><span class="cs-nav-util-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M12 1.3c5.976 0 10.8 4.824 10.8 10.8S17.976 22.9 12 22.9 1.2 18.076 1.2 12.1v-.01C1.305 6.13 6.016 1.3 12 1.3m-3.5 17c0 1.924 1.576 3.5 3.5 3.5s3.5-1.576 3.5-3.5v-5.8h-7zm-6.292-5.8a9.79 9.79 0 0 0 6.466 8.824A4.48 4.48 0 0 1 7.5 18.3v-5.8zM16.5 18.3a4.48 4.48 0 0 1-1.174 3.024 9.79 9.79 0 0 0 6.466-8.824H16.5zM8.668 2.883C5.102 4.18 2.532 7.508 2.228 11.5H7.5V5.9c0-1.158.443-2.218 1.168-3.017M12.5 2.4H12a3.51 3.51 0 0 0-3.5 3.5v5.6h7V5.8c0-1.754-1.31-3.22-3-3.464zm2.954.523A4.48 4.48 0 0 1 16.5 5.8v5.7h5.282a9.79 9.79 0 0 0-6.328-8.577" clip-rule="evenodd"></path></svg></span><span class="cs-nav-chev" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></summary><ul class="cs-nav-lang-menu"><li><a class="cs-nav-lang-item" href="/" hreflang="en-us" aria-current="true">English</a></li><li><a class="cs-nav-lang-item" href="/nl-nl" hreflang="nl-nl">Nederlands</a></li><li><a class="cs-nav-lang-item" href="/fr-fr" hreflang="fr-fr">Français</a></li><li><a class="cs-nav-lang-item" href="/de-de" hreflang="de-de">Deutsch</a></li><li><a class="cs-nav-lang-item" href="/es-es" hreflang="es-es">Español</a></li><li><a class="cs-nav-lang-item" href="/it-it" hreflang="it-it">Italiano</a></li><li><a class="cs-nav-lang-item" href="/pt-pt" hreflang="pt-pt">Português</a></li><li><a class="cs-nav-lang-item" href="/ja-jp" hreflang="ja-jp">日本語</a></li><li><a class="cs-nav-lang-item" href="/ko-kr" hreflang="ko-kr">한국어</a></li><li><a class="cs-nav-lang-item" href="/zh-cn" hreflang="zh-cn">中文（简体）</a></li></ul></details></span><a class="c-button c-button--navcta" role="button" style="--navcta-bg: rgb(35, 35, 37); --navcta-ink: rgb(255, 255, 255); --navcta-radius: 40px; --navcta-height: 48px; --navcta-pad-x: 24px; --navcta-size: 13px" href="">Book demo</a></nav>
+<nav class="cs-nav"><a class="c-logo c-logo--img" href="https://remote.com/"><img class="c-logo-img" src="assets/nav-logo.svg" alt="Remote home" width="94" height="30"></a><span class="cs-navlinks"><span class="cs-nav-tab"><button type="button" class="c-arrow-link cs-nav-trigger" aria-expanded="false" aria-controls="cs-mega-1" style="gap:0">Products<span class="cs-nav-chev" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></button><div class="cs-mega" id="cs-mega-1"><div class="cs-mega-inner"><div class="cs-mega-main"><div class="cs-mega-group"><h4 class="cs-mega-head">Global Employment</h4><ul><li><a class="cs-mega-link" href="https://remote.com/global-hr/global-payroll"><span class="cs-mega-link-icon"><img src="assets/nav-icon-global-payroll-run.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Global Payroll Run</span><span class="cs-mega-link-desc"><span>Run compliant payroll easily</span></span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/global-hr/employer-of-record"><span class="cs-mega-link-icon"><img src="assets/nav-icon-employer-of-record.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Employer of Record</span><span class="cs-mega-link-desc"><span>Expand globally with zero entity cost</span></span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/global-hr/contractor-of-record"><span class="cs-mega-link-icon"><img src="assets/nav-icon-contractor-of-record.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Contractor of Record</span><span class="cs-mega-link-desc"><span>Compliantly engage contractors worldwide</span></span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/global-hr/contractor-management"><span class="cs-mega-link-icon"><img src="assets/nav-icon-contractor-management.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Contractor Management</span><span class="cs-mega-link-desc"><span>Onboard and manage contractors globally</span></span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/global-hr/professional-employer-organization"><span class="cs-mega-link-icon"><img src="assets/nav-icon-peo.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">PEO</span><span class="cs-mega-link-desc"><span>Outsource complex employment tasks</span></span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Infrastructure</h4><ul><li><a class="cs-mega-link cs-desc-hover" href="https://embedded.remote.com/"><span class="cs-mega-link-icon"><img src="assets/nav-icon-remote-embedded.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Remote Embedded</span><span class="cs-mega-link-desc"><span>Seamlessly integrate HR into workflows</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/hr-core"><span class="cs-mega-link-icon"><img src="assets/nav-icon-platform.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Platform</span><span class="cs-mega-link-desc"><span>Manage your global HR core</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/remote-mcp"><span class="cs-mega-link-icon"><img src="assets/nav-icon-connect.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Connect</span><span class="cs-mega-link-desc"><span>Connect your AI tools with Remote</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/integrations-for-customers"><span class="cs-mega-link-icon"><img src="assets/nav-icon-integrations.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Integrations</span><span class="cs-mega-link-desc"><span>Streamline processes with essential business tools</span></span></span></a></li></ul></div></div><div class="cs-mega-aside"><div class="cs-mega-group"><h4 class="cs-mega-head">Services</h4><ul><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/ask-an-expert"><span><span class="cs-mega-link-title">Ask an Expert</span><span class="cs-mega-link-desc"><span>Get expert help on global HR &amp; compliance</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/background-checks"><span><span class="cs-mega-link-title">Background Checks</span><span class="cs-mega-link-desc"><span>Simplify your candidate screening processes</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/hr-compliance"><span><span class="cs-mega-link-title">Compliance Watchtower</span><span class="cs-mega-link-desc"><span>Stay ahead of compliance risks</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/device-management"><span><span class="cs-mega-link-title">Device Management</span><span class="cs-mega-link-desc"><span>Provision and track IT devices globally</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/global-entity-setup"><span><span class="cs-mega-link-title">Entity Setup</span><span class="cs-mega-link-desc"><span>Establish compliant entities fast</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/global-mobility"><span><span class="cs-mega-link-title">Mobility &amp; Relocation</span><span class="cs-mega-link-desc"><span>Relocate employees with ease</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/global-benefits"><span><span class="cs-mega-link-title">Benefits</span><span class="cs-mega-link-desc"><span>Manage employee benefits with ease</span></span></span></a></li></ul></div></div></div></div></span> <span class="cs-nav-tab"><button type="button" class="c-arrow-link cs-nav-trigger" aria-expanded="false" aria-controls="cs-mega-2" style="gap:0">Solutions<span class="cs-nav-chev" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></button><div class="cs-mega" id="cs-mega-2"><div class="cs-mega-inner"><div class="cs-mega-main"><div class="cs-mega-group"><h4 class="cs-mega-head">Global Coverage</h4><ul><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/country-explorer"><span class="cs-mega-link-icon"><img src="assets/nav-icon-country-explorer.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Country Explorer</span><span class="cs-mega-link-desc"><span>Find global employment support by country</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/us-state-explorer?service=all"><span class="cs-mega-link-icon"><img src="assets/nav-icon-us-state-explorer.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">US State Explorer</span><span class="cs-mega-link-desc"><span>Simplify hiring across all US states</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/resources/compare-remote"><span class="cs-mega-link-icon"><img src="assets/nav-icon-compare-remote.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Compare Remote</span><span class="cs-mega-link-desc"><span>See how we stack up against others</span></span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Growth Stage</h4><ul><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/startups"><span class="cs-mega-link-icon"><img src="assets/nav-icon-startups.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Startups</span><span class="cs-mega-link-desc"><span>Agile global HR &amp; payroll solutions for growing companies</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/midsize"><span class="cs-mega-link-icon"><img src="assets/nav-icon-mid-market.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Mid-Market</span><span class="cs-mega-link-desc"><span>Expand teams with tailored HR solutions</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/enterprise"><span class="cs-mega-link-icon"><img src="assets/nav-icon-enterprise.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Enterprise</span><span class="cs-mega-link-desc"><span>Global HR for large businesses</span></span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Partner with us</h4><ul><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/global-hr/remote-api"><span class="cs-mega-link-icon"><img src="assets/nav-icon-strategic-technology-partners.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Strategic Technology Partners</span><span class="cs-mega-link-desc"><span>Flexibly embed global HR into your platform</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/partners"><span class="cs-mega-link-icon"><img src="assets/nav-icon-become-a-partner.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Become a Partner</span><span class="cs-mega-link-desc"><span>Explore partnership opportunities with us</span></span></span></a></li></ul></div></div><div class="cs-mega-aside"><div class="cs-mega-aside-card"><h4 class="cs-mega-head">Case Studies</h4><a class="cs-mega-card" href="/resources/case-studies/scaling-global-talent-with-ease-how-flowla-achieves-100-hr-visibility-with-remote"><img src="assets/nav-card-solutions.webp" alt="flowela-header@2x.webp" /><p class="cs-mega-card-title">Scaling global talent with ease: How Flowla achieves 100% HR visibility with Remote</p><span class="cs-mega-card-cta">Learn more &rarr;</span></a></div></div></div></div></span> <span class="cs-nav-tab"><button type="button" class="c-arrow-link cs-nav-trigger" aria-expanded="false" aria-controls="cs-mega-3" style="gap:0">Resources<span class="cs-nav-chev" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></button><div class="cs-mega" id="cs-mega-3"><div class="cs-mega-inner"><div class="cs-mega-main"><div class="cs-mega-group"><h4 class="cs-mega-head">Tools &amp; Calculators</h4><ul><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/resources/employee-misclassification-risk-tool"><span class="cs-mega-link-icon"><img src="assets/nav-icon-misclassification-risk-calculator.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Misclassification risk calculator</span><span class="cs-mega-link-desc"><span>Check employee misclassification risk by country</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/resources/employee-cost-calculator"><span class="cs-mega-link-icon"><img src="assets/nav-icon-employee-cost-calculator.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Employee cost calculator</span><span class="cs-mega-link-desc"><span>Calculate total employee costs in any country</span></span></span></a></li><li><a class="cs-mega-link cs-desc-hover" href="https://remote.com/resources/contractor-payout-explorer"><span class="cs-mega-link-icon"><img src="assets/nav-icon-contractor-payout-calculator.svg" alt="" aria-hidden="true" /></span><span><span class="cs-mega-link-title">Contractor payout calculator</span><span class="cs-mega-link-desc"><span>Explore currency options and payout speeds for global contractors</span></span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Learn with Remote</h4><ul><li><a class="cs-mega-link" href="https://remote.com/resources/research"><span><span class="cs-mega-link-title">Research &amp; Guides</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/resources/case-studies"><span><span class="cs-mega-link-title">Case studies</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/resources/hr-glossary"><span><span class="cs-mega-link-title">HR Glossary</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/resources/checklists-templates"><span><span class="cs-mega-link-title">Checklists &amp; Templates</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/resources/job-descriptions"><span><span class="cs-mega-link-title">Job Description Library</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/resources/webinars"><span><span class="cs-mega-link-title">Webinars</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/events"><span><span class="cs-mega-link-title">Events</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/news"><span><span class="cs-mega-link-title">Newsroom</span></span></a></li><li><a class="cs-mega-link" href="https://support.remote.com/hc/en-us/sections/34243549052685-Talent-Insights"><span><span class="cs-mega-link-title">Salary &amp; Talent Insights</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/resources/insights-center"><span><span class="cs-mega-link-title">Insights center</span></span></a></li><li><a class="cs-mega-link" href="https://support.remote.com/"><span><span class="cs-mega-link-title">Get support</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/resources"><span><span class="cs-mega-link-title">See all resources</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Blog</h4><ul><li><a class="cs-mega-link" href="https://remote.com/blog/tag/payroll"><span><span class="cs-mega-link-title">Global Payroll</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/blog/tag/eor-peo"><span><span class="cs-mega-link-title">EOR &amp; PEO</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/blog/tag/contractor-management"><span><span class="cs-mega-link-title">Contractor Management</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/blog/tag/compliance"><span><span class="cs-mega-link-title">Compliance</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/blog/tag/taxes"><span><span class="cs-mega-link-title">Taxes</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/blog/tag/relocation"><span><span class="cs-mega-link-title">Work visas &amp; permits</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/blog/changelog"><span><span class="cs-mega-link-title">Changelog</span></span></a></li><li><a class="cs-mega-link" href="https://remote.com/blog"><span><span class="cs-mega-link-title">Explore the blog</span></span></a></li></ul></div></div><div class="cs-mega-aside"><div class="cs-mega-aside-card"><h4 class="cs-mega-head">Blog Posts</h4><a class="cs-mega-card" href="/blog/the-most-complex-global-payroll-market-isn-t-the-one-you-d-guess"><img src="assets/nav-card-resources.webp" alt="CFO Global Payroll Forecast" /><p class="cs-mega-card-title">The most complex global payroll market isn&#x27;t the one you&#x27;d guess</p><span class="cs-mega-card-cta">Learn more &rarr;</span></a></div></div></div></div></span> <a class="c-arrow-link" href="https://remote.com/pricing" style="gap:0">Pricing</a></span><span class="cs-nav-util"><a class="cs-nav-util-link" href="https://employ.remote.com/sign-in"><span class="cs-nav-util-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M12 3.8a5.3 5.3 0 1 1 0 10.6 5.3 5.3 0 0 1 0-10.6m0 1a4.3 4.3 0 1 0 0 8.6 4.3 4.3 0 0 0 0-8.6" clip-rule="evenodd"></path><path fill="currentColor" fill-rule="evenodd" d="M12 1.3c5.98 0 10.7 4.827 10.7 10.7 0 5.98-4.827 10.7-10.7 10.7-5.98 0-10.7-4.827-10.7-10.7S6.02 1.3 12 1.3M7.2 16.8c-1.101 0-2.06.938-2.097 2.033A9.65 9.65 0 0 0 12 21.7a9.7 9.7 0 0 0 6.872-2.844A2.4 2.4 0 0 0 16.5 16.8zM12 2.3c-5.42 0-9.7 4.373-9.7 9.7 0 2.207.736 4.249 1.981 5.885.433-1.198 1.597-2.085 2.92-2.085H16.5c1.437 0 2.667.894 3.164 2.156A9.65 9.65 0 0 0 21.7 12 9.68 9.68 0 0 0 12 2.3" clip-rule="evenodd"></path></svg></span><span>Login</span></a><details class="cs-nav-lang"><summary class="cs-nav-util-link" aria-label="Select language — current: English"><span class="cs-nav-util-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" fill-rule="evenodd" d="M12 1.3c5.976 0 10.8 4.824 10.8 10.8S17.976 22.9 12 22.9 1.2 18.076 1.2 12.1v-.01C1.305 6.13 6.016 1.3 12 1.3m-3.5 17c0 1.924 1.576 3.5 3.5 3.5s3.5-1.576 3.5-3.5v-5.8h-7zm-6.292-5.8a9.79 9.79 0 0 0 6.466 8.824A4.48 4.48 0 0 1 7.5 18.3v-5.8zM16.5 18.3a4.48 4.48 0 0 1-1.174 3.024 9.79 9.79 0 0 0 6.466-8.824H16.5zM8.668 2.883C5.102 4.18 2.532 7.508 2.228 11.5H7.5V5.9c0-1.158.443-2.218 1.168-3.017M12.5 2.4H12a3.51 3.51 0 0 0-3.5 3.5v5.6h7V5.8c0-1.754-1.31-3.22-3-3.464zm2.954.523A4.48 4.48 0 0 1 16.5 5.8v5.7h5.282a9.79 9.79 0 0 0-6.328-8.577" clip-rule="evenodd"></path></svg></span><span class="cs-nav-chev" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span></summary><ul class="cs-nav-lang-menu"><li><a class="cs-nav-lang-item" href="/" hreflang="en-us" aria-current="true">English</a></li><li><a class="cs-nav-lang-item" href="/nl-nl" hreflang="nl-nl">Nederlands</a></li><li><a class="cs-nav-lang-item" href="/fr-fr" hreflang="fr-fr">Français</a></li><li><a class="cs-nav-lang-item" href="/de-de" hreflang="de-de">Deutsch</a></li><li><a class="cs-nav-lang-item" href="/es-es" hreflang="es-es">Español</a></li><li><a class="cs-nav-lang-item" href="/it-it" hreflang="it-it">Italiano</a></li><li><a class="cs-nav-lang-item" href="/pt-pt" hreflang="pt-pt">Português</a></li><li><a class="cs-nav-lang-item" href="/ja-jp" hreflang="ja-jp">日本語</a></li><li><a class="cs-nav-lang-item" href="/ko-kr" hreflang="ko-kr">한국어</a></li><li><a class="cs-nav-lang-item" href="/zh-cn" hreflang="zh-cn">中文（简体）</a></li></ul></details></span><a class="c-button c-button--navcta" role="button" style="--navcta-bg: rgb(35, 35, 37); --navcta-ink: rgb(255, 255, 255); --navcta-radius: 40px; --navcta-height: 48px; --navcta-pad-x: 24px; --navcta-size: 13px" href="">Book demo</a><button type="button" class="cs-nav-burger" aria-label="Menu" aria-expanded="false" aria-controls="cs-nav-drawer"><span class="cs-nav-burger-box" aria-hidden="true"><span class="cs-nav-burger-line"></span></span></button><div id="cs-nav-drawer" class="cs-nav-drawer" hidden><a class="cs-nav-drawer-link" href="#">Products</a><a class="cs-nav-drawer-link" href="#">Solutions</a><a class="cs-nav-drawer-link" href="#">Resources</a><a class="cs-nav-drawer-link" href="https://remote.com/pricing">Pricing</a><a class="cs-nav-drawer-link" href="https://employ.remote.com/sign-in">Login</a><a class="cs-nav-drawer-link" href="#">Select language — current: English</a></div></nav>
 </div>
 <div id="sec-0" class="cs-surface" data-layout="hero" data-surface="surface/primary" data-pattern="hero-inset-noise-panel" data-pattern-lib="project" data-pattern-match="ref" data-align="left" data-align-source="pattern" data-align-counterweight="media">
 <section class="cs-section cs-hero-panel-sec">
@@ -3788,6 +3847,28 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
         });
       });
     }
+  });
+  /* mobile nav burger (nav responsive collapse): the disclosure control shown below
+     the measured breakpoint toggles the mobile drawer ([hidden] flips) and mirrors
+     aria-expanded; Escape closes and restores focus. CSS-only fallback: with JS off
+     the burger still shows (no overflow) and the drawer stays closed. */
+  document.querySelectorAll('.cs-nav-burger').forEach(function (btn) {
+    var drawer = document.getElementById(btn.getAttribute('aria-controls') || '');
+    if (!drawer) return;
+    var set = function (open) {
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) { drawer.removeAttribute('hidden'); } else { drawer.hidden = true; }
+    };
+    btn.addEventListener('click', function () {
+      set(btn.getAttribute('aria-expanded') !== 'true');
+    });
+    btn.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (btn.getAttribute('aria-expanded') === 'true') { set(false); btn.focus(); }
+    });
+    drawer.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { set(false); btn.focus(); }
+    });
   });
   /* Image placeholder lifecycle (AS-23): attribute absent = unresolved/loading,
      loaded = remove the hatch completely, error = retain the hatch fallback.

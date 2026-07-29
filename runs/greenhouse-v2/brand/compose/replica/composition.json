@@ -16,6 +16,7 @@
    "archetype": "centered-copy-with-floating-media",
    "surfaceIntent": "surface/tint",
    "novelty": "reuse",
+   "archetypeRef": "centered-copy-with-floating-media",
    "seededFrom": {
     "lib": "project",
     "id": "hero"
@@ -85,6 +86,7 @@
    "archetype": "three-column-media-top-cards",
    "surfaceIntent": "surface/primary",
    "novelty": "reuse",
+   "archetypeRef": "three-column-media-top-cards",
    "seededFrom": {
     "lib": "project",
     "id": "featureGrid"
@@ -143,6 +145,7 @@
    "archetype": "split-copy-and-logo-grid",
    "surfaceIntent": "surface/primary",
    "novelty": "reuse",
+   "archetypeRef": "split-copy-and-logo-grid",
    "seededFrom": {
     "lib": "project",
     "id": "logos"
@@ -190,6 +193,7 @@
    "archetype": "pill-filtered-comparison-card",
    "surfaceIntent": "surface/tint",
    "novelty": "reuse",
+   "archetypeRef": "pill-filtered-comparison-card",
    "seededFrom": {
     "lib": "project",
     "id": "comparison"
@@ -309,6 +313,7 @@
    "archetype": "three-column-number-over-caption",
    "surfaceIntent": "surface/muted",
    "novelty": "reuse",
+   "archetypeRef": "three-column-number-over-caption",
    "seededFrom": {
     "lib": "project",
     "id": "stats"
@@ -346,6 +351,7 @@
    "archetype": "three-column-quote-blocks",
    "surfaceIntent": "surface/primary",
    "novelty": "reuse",
+   "archetypeRef": "three-column-quote-blocks",
    "seededFrom": {
     "lib": "project",
     "id": "testimonial"
@@ -412,6 +418,7 @@
    "archetype": "copy-left-decorative-art-right",
    "surfaceIntent": "surface/inverse",
    "novelty": "reuse",
+   "archetypeRef": "copy-left-decorative-art-right",
    "seededFrom": {
     "lib": "project",
     "id": "ctaBand"
@@ -443,5 +450,14 @@
    "_requiresHydration": true
   }
  ],
+ "drawableArchetypes": {
+  "hero": "collage",
+  "featureGrid": "generic-flow",
+  "logos": "generic-flow",
+  "comparison": "split",
+  "stats": "generic-flow",
+  "testimonial": "generic-flow",
+  "ctaBand": "generic-flow"
+ },
  "errors": {}
 }

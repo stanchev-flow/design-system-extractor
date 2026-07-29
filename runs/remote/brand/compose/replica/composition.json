@@ -19,6 +19,7 @@
    "archetype": "split",
    "surfaceIntent": "any",
    "novelty": "reuse",
+   "archetypeRef": "split",
    "seededFrom": {
     "lib": "project",
     "id": "hero-inset-noise-panel"
@@ -108,6 +109,7 @@
    "archetype": "stack",
    "surfaceIntent": "primary",
    "novelty": "reuse",
+   "archetypeRef": "stack",
    "seededFrom": {
     "lib": "project",
     "id": "logo-marquee-strip"
@@ -160,6 +162,7 @@
    "archetype": "split",
    "surfaceIntent": "primary",
    "novelty": "reuse",
+   "archetypeRef": "split",
    "seededFrom": {
     "lib": "project",
     "id": "feature-accordion-deep-accent"
@@ -254,6 +257,7 @@
    "archetype": "split",
    "surfaceIntent": "primary",
    "novelty": "reuse",
+   "archetypeRef": "split",
    "seededFrom": {
     "lib": "project",
     "id": "infra-proof-split"
@@ -319,6 +323,7 @@
    "archetype": "stack",
    "surfaceIntent": "primary",
    "novelty": "reuse",
+   "archetypeRef": "stack",
    "seededFrom": {
     "lib": "project",
     "id": "cta-inline-banner"
@@ -369,6 +374,7 @@
    "archetype": "cards",
    "surfaceIntent": "primary",
    "novelty": "reuse",
+   "archetypeRef": "grid",
    "seededFrom": {
     "lib": "project",
     "id": "features-card-grid-navy-media"
@@ -442,6 +448,7 @@
    "archetype": "stack",
    "surfaceIntent": "primary",
    "novelty": "reuse",
+   "archetypeRef": "stack",
    "seededFrom": {
     "lib": "project",
     "id": "partner-proof-row"
@@ -523,6 +530,7 @@
    "archetype": "cards",
    "surfaceIntent": "primary",
    "novelty": "reuse",
+   "archetypeRef": "grid",
    "seededFrom": {
     "lib": "project",
     "id": "testimonial-card-row"
@@ -608,6 +616,7 @@
    "archetype": "stack",
    "surfaceIntent": "primary",
    "novelty": "reuse",
+   "archetypeRef": "stack",
    "seededFrom": {
     "lib": "project",
     "id": "badge-award-strip"
@@ -680,6 +689,7 @@
    "archetype": "stack",
    "surfaceIntent": "primary",
    "novelty": "reuse",
+   "archetypeRef": "stack",
    "seededFrom": {
     "lib": "project",
     "id": "cta-closing-noise"
@@ -731,5 +741,17 @@
    }
   }
  ],
+ "drawableArchetypes": {
+  "hero": "stack",
+  "logo-wall": "generic-flow",
+  "feature-accordion": "split",
+  "infra-panel": "split",
+  "banner-cta": "stack",
+  "workflow-cards": "cards",
+  "partner-logos": "generic-flow",
+  "testimonials": "cards",
+  "badge-strip": "generic-flow",
+  "closing-cta": "stack"
+ },
  "errors": {}
 }

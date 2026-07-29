@@ -747,7 +747,11 @@ p { text-wrap-style: balance; }
   height: var(--c-button-height, auto);
   padding: var(--c-button-pad, 0.8em 1.6em); /* provenance: structural — em-relative
      control inset fallback (shape, not magnitude: scales with the button's own size) */
-  border-radius: var(--c-button-radius, var(--radius)); border: none;
+  /* measured control border (sysfix 2026-07): the primary rides the base rule, so its
+     measured `buttons.primary.border` (e.g. a transparent 2px reserve keeping the filled
+     and outline families the same box, or a hairline stroke) must flow through here.
+     Fallback `none` keeps brands without a primary border fact byte-identical. */
+  border-radius: var(--c-button-radius, var(--radius)); border: var(--c-button-border, none);
   transition: background var(--c-motion-fast) var(--c-ease),
               color var(--c-motion-fast) var(--c-ease),
               transform var(--c-motion-fast) var(--c-ease); }
@@ -1139,11 +1143,16 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-panelcar,
 .cs-footer-sec > .c-footer {
   width: 100%; max-width: var(--content-measure, 86rem); margin-inline: auto; }
-.cs-section { min-height: 100cqh; }
+.cs-section { min-height: auto; }
 .cs-slot { display: flex; flex-direction: column; align-items: center; }
 .cs-eyebrow-wrap { margin-bottom: var(--c-eyebrow-gap); text-align: center; }
+/* TITLE-OVER-MEDIA PULL is a FACT-GATED device, not the stack hero's default seam:
+   --c-title-overlap is emitted (component_vars) only for a layout whose own
+   overlapRules declare `titleOverMediaTop`. A layout with no such fact resolves the
+   0rem fallback, so its title sits ABOVE the media on the section's own block rhythm
+   instead of straddling its top edge with a borrowed magnitude. */
 .cs-title { position: relative; z-index: 2; text-align: center;
-  margin-bottom: var(--c-title-overlap); }
+  margin-bottom: var(--c-title-overlap, 0rem); }
 .cs-collage { position: relative; width: 100%; max-width: 80rem; margin: 0 auto; }
 /* ALIGNMENT: the overlap depth/offsets keep their measured % magnitudes but round() the
    USED value to an exact --baseline multiple, so the overlap registers to the shared
@@ -1588,7 +1597,8 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 @media (max-width: 767px) {
   .cs-interlock { grid-template-columns: 1fr; }
   /* provenance: structural — mobile media recrop ratio (layout geometry, not a
-     brand token; coincidentally equals Remote's landscape aspect) */
+     brand token; a plain landscape ratio will coincide with some brands' own
+     measured aspect, which does not make it brand-derived) */
   .cs-interlock-media { aspect-ratio: 3 / 2; }
 }
 .cs-media-split { display: grid;
@@ -1615,10 +1625,9 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
    the shared measure by design (a release, not a private containment copy). */
 .cs-ov--bleed .cs-ov-frame { max-width: none; }
 .cs-ov-canvas { position: relative; margin: 0; min-height: calc(48 * var(--baseline)); }
-/* FULL-HEIGHT bleed hero (2026-07): a full-bleed photo hero fills the viewport like
-   the source, not a short wide band. The hero image must COVER this taller canvas —
-   its authored wide aspect-ratio would otherwise pin it to a short strip. */
-.cs-ov--bleed .cs-ov-canvas { min-height: min(90svh, 54rem); }
+/* Bleed canvas is content-sized from the brand media / measured floor above. Viewport-tall
+   bleed is applied only when brand responsive heightRule (viewport / viewport-minus-nav)
+   licenses it via component_render — never as an unconditional viewport-height default. */
 .cs-ov-canvas > .c-image, .cs-ov-canvas > .c-image-ph {
   width: 100%; height: 100%; min-height: inherit; object-fit: cover; }
 .cs-ov--bleed .cs-ov-canvas > .c-image { aspect-ratio: auto; height: 100%; }
@@ -1652,11 +1661,11 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   padding: calc(6 * var(--baseline)) calc(5 * var(--baseline)); }
 /* panel display steps DOWN from the section's own display alias — --c-display-size is
    always emitted per section (component_vars), so no literal fallback (AS-24).
-   0.6 (pass1 2026-07, scale_adherence finding): the old 0.62 landed hubspot's panel
-   heading at 49.6px — on NO ladder (measured h1 48 / derived step 52). 0.6 puts the
-   stepped-down rank on the brand's own h1 rung for the evidenced display:h1 ratios
-   (hubspot 80->48 = h1; remote 46->27.6 ~= h3 28) — quantized new geometry, audited
-   per brand by the scale gate. */
+   The 0.6 step is a QUANTIZING ratio (pass1 2026-07, scale_adherence finding): an
+   unrounded multiplier lands the stepped-down heading between the brand's measured
+   type rungs, so the panel reads at a size no ladder declares. A round step puts the
+   stepped-down rank back onto a measured rung across the observed display:heading
+   ratios — geometry quantized here, then audited per brand by the scale gate. */
 .cs-ov-panel .c-heading--display { font-size: calc(0.6 * var(--c-display-size));
   max-width: 14ch; }
 /* sidebar rail: the full-height panel column (ref 3) — space-between stack. */
@@ -1724,7 +1733,7 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-band { position: relative; }
 .cs-band--top .cs-band-media { margin: 0; }
 .cs-band--top .c-image, .cs-band--top .c-image-ph { width: 100%;
-  height: calc(56 * var(--baseline)); object-fit: cover; display: block; }
+  height: auto; display: block; object-fit: cover; }
 /* the on-photo caption rides a small solid panel CHIP (sanctioned panel-over-media) —
    never bare text on the photograph. */
 .cs-band-chip { position: absolute; top: calc(5 * var(--baseline));
@@ -1739,7 +1748,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   display: flex; flex-direction: column; gap: var(--c-block-gap);
   padding-top: var(--c-block-gap); }
 @media (max-width: 767px) {
-  .cs-band--top .c-image, .cs-band--top .c-image-ph { height: calc(36 * var(--baseline)); }
   .cs-band-straddler { width: 100% !important; margin-inline: 0 !important;
     --c-seam-rise: calc(6 * var(--baseline)); } }
 .cs-flow { display: flex; flex-direction: column;
@@ -1773,7 +1781,8 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   line-height: var(--type-h4-line-height, var(--c-heading-line)); color: var(--c-ink); }
 .cs-testimonial-mark { color: var(--c-accent); font-family: var(--c-font-display);
   /* provenance: structural — decorative pull-quote glyph scale (a device size
-     ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */
+     ceiling, not a brand type tier; round rem values in a device clamp will
+     coincide with some brands' spacing rungs without deriving from them) */
   font-size: clamp(2.5rem, 5cqw, 4rem); line-height: 0.8; margin-bottom: 1rem; }
 .cs-testimonial .c-person { margin-top: var(--space-quote-to-attribution,
   var(--c-block-gap)); }
@@ -2086,10 +2095,18 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
    so it reads as a bar flush above the hero, not padded inside it. */
 #page-nav { background: var(--c-paper); color: var(--c-ink); }
 #page-nav .cs-nav { margin-bottom: 0; padding: var(--c-nav-pad-block) var(--c-section-pad-x); }
-/* page: only the opening section is full-frame; others size to content. */
+/* page: sections size to content. Viewport/tall opening height is applied only
+   when brand responsive facts or measured bandHeight license it (component_render /
+   band_height_css) — never as an unconditional full-frame default. */
 .cs-section { min-height: auto; }
-#sec-0 .cs-section { min-height: 100cqh; }
-.cs-module--plate { background: var(--c-panel); color: var(--c-panel-ink);
+.cs-module--plate {
+  /* CARD SURFACE (fid 2026-07, inset-card-on-canvas): the plate paints the brand's
+     DECLARED container surface. Default is the page panel role (--c-panel); a brand
+     whose card/container surface is a DISTINCT role from the page panel (e.g. white
+     cards floating on a warmer off-white canvas) re-points --c-card-plate-bg at that
+     role via the module-grid scope. Fact-gated: absent override ⇒ --c-panel, byte-
+     identical for brands whose container role already IS the page panel. */
+  background: var(--c-card-plate-bg, var(--c-panel)); color: var(--c-panel-ink);
   --c-ink: var(--c-panel-ink); --c-accent: var(--c-panel-ink);
   /* re-scope the MUTED ink to the panel too — body/caption text uses
      --c-ink-muted, not --c-ink; without this a plate that sits after an inverse
@@ -2101,7 +2118,13 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   /* plate inset rides the brand's measured panel-padding token when authored
      (fid6 2026-07); the 4-baseline structural default is unchanged without it. */
   --c-plate-pad: var(--space-panel-padding, calc(4 * var(--baseline)));
-  border-radius: var(--radius-card, 0); padding: var(--c-plate-pad); }
+  border-radius: var(--radius-card, 0); padding: var(--c-plate-pad);
+  /* CARD OUTLINE (inset-card-on-canvas): a container surface whose grammar declares
+     a resting hairline border renders it so the card reads as an outlined plate on a
+     low-contrast canvas (the classic white-card-on-cream anatomy). Fact-gated —
+     --c-card-plate-border defaults to `none`, so shadow-elevated / borderless card
+     families (and every current plated brand) stay byte-identical. */
+  border: var(--c-card-plate-border, none); }
 /* FULL-BLEED MEDIA WELL (fid6 2026-07): a plated module's leading media frame runs
    flush to the card's top + side edges (rounded top corners only — the classic card
    anatomy the capture shows: media well INSIDE the plate, bleeding to its edges);
@@ -2141,6 +2164,13 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-modules--edgecut .cs-module-headrow .cs-module-media--mark {
   height: var(--cs-headrow-mark, 1.5rem); flex: 0 0 auto; width: auto; }
 .cs-module-headrow .c-heading { margin: 0; flex: 1 1 auto; }
+/* CARD HEADER RULE (inset-card-on-canvas): a hairline separating the icon+title
+   header from the card body — rendered only when the brand's card grammar declares
+   `headerDivider` (the <hr> is emitted fact-gated), so control-less card families
+   never gain a rule. Rides the plate's own re-scoped hairline; vertical rhythm is the
+   anatomy ladder's owl margin (header→rule→body), so it never double-counts spacing. */
+.cs-modules .cs-module-divider { border: 0; height: 0;
+  border-top: 1px solid var(--c-hairline); width: 100%; }
 
 .cs-edgecut { overflow-x: auto; scrollbar-width: none;
   margin-inline-end: calc(-1 * var(--c-section-pad-x, 0rem));
@@ -2184,7 +2214,14 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 @media (max-width: 767px) {
   .cs-modules--edgecut { gap: 1.25rem; }
   .cs-modules--edgecut > .cs-module { flex-basis: min(86cqw, 24rem); } }
-.cs-module--plate { background: var(--c-panel); color: var(--c-panel-ink);
+.cs-module--plate {
+  /* CARD SURFACE (fid 2026-07, inset-card-on-canvas): the plate paints the brand's
+     DECLARED container surface. Default is the page panel role (--c-panel); a brand
+     whose card/container surface is a DISTINCT role from the page panel (e.g. white
+     cards floating on a warmer off-white canvas) re-points --c-card-plate-bg at that
+     role via the module-grid scope. Fact-gated: absent override ⇒ --c-panel, byte-
+     identical for brands whose container role already IS the page panel. */
+  background: var(--c-card-plate-bg, var(--c-panel)); color: var(--c-panel-ink);
   --c-ink: var(--c-panel-ink); --c-accent: var(--c-panel-ink);
   /* re-scope the MUTED ink to the panel too — body/caption text uses
      --c-ink-muted, not --c-ink; without this a plate that sits after an inverse
@@ -2196,7 +2233,13 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   /* plate inset rides the brand's measured panel-padding token when authored
      (fid6 2026-07); the 4-baseline structural default is unchanged without it. */
   --c-plate-pad: var(--space-panel-padding, calc(4 * var(--baseline)));
-  border-radius: var(--radius-card, 0); padding: var(--c-plate-pad); }
+  border-radius: var(--radius-card, 0); padding: var(--c-plate-pad);
+  /* CARD OUTLINE (inset-card-on-canvas): a container surface whose grammar declares
+     a resting hairline border renders it so the card reads as an outlined plate on a
+     low-contrast canvas (the classic white-card-on-cream anatomy). Fact-gated —
+     --c-card-plate-border defaults to `none`, so shadow-elevated / borderless card
+     families (and every current plated brand) stay byte-identical. */
+  border: var(--c-card-plate-border, none); }
 /* FULL-BLEED MEDIA WELL (fid6 2026-07): a plated module's leading media frame runs
    flush to the card's top + side edges (rounded top corners only — the classic card
    anatomy the capture shows: media well INSIDE the plate, bleeding to its edges);
@@ -2236,6 +2279,13 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-modules--edgecut .cs-module-headrow .cs-module-media--mark {
   height: var(--cs-headrow-mark, 1.5rem); flex: 0 0 auto; width: auto; }
 .cs-module-headrow .c-heading { margin: 0; flex: 1 1 auto; }
+/* CARD HEADER RULE (inset-card-on-canvas): a hairline separating the icon+title
+   header from the card body — rendered only when the brand's card grammar declares
+   `headerDivider` (the <hr> is emitted fact-gated), so control-less card families
+   never gain a rule. Rides the plate's own re-scoped hairline; vertical rhythm is the
+   anatomy ladder's owl margin (header→rule→body), so it never double-counts spacing. */
+.cs-modules .cs-module-divider { border: 0; height: 0;
+  border-top: 1px solid var(--c-hairline); width: 100%; }
 /* SPLIT-PANEL CAROUSEL statics (fix1 2026-07 item-6): slide 1 visible, siblings
    hidden; round prev/next at the row edges; dot rail below. All chrome rides brand
    vars (hairline/ink/control radius); ships only where the device composed. */
@@ -2478,7 +2528,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -2563,7 +2612,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -2648,7 +2696,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -2733,7 +2780,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -2824,7 +2870,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -2912,7 +2957,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -2992,7 +3036,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -3072,7 +3115,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -3152,7 +3194,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -3231,7 +3272,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -3312,7 +3352,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -3372,7 +3411,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);

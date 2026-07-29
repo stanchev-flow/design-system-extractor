@@ -34,12 +34,14 @@
       "No lorem/placeholder copy": true,
       "All brand image assets present": true,
       "Rounding matches brand radius scale": true,
+      "No foreign-brand content literals (alt/aria/title)": true,
+      "No foreign-brand asset references": true,
       "Webfonts loaded (no silent system fallback)": true
     }
   },
   "invariants": {
     "mode": "advisory",
-    "pass": true,
+    "pass": false,
     "checks": {
       "single-accent": true,
       "primitive-only": true,
@@ -49,7 +51,14 @@
       "text-contrast": true,
       "decoration-salience": true,
       "occlusion": true,
-      "band-attribution": true
+      "band-attribution": true,
+      "alignment-resolution": false,
+      "media-registration": true,
+      "interaction-contrast": true,
+      "token-provenance": true,
+      "logo-wall-integrity": true,
+      "fact-consumption": false,
+      "fact-consumption:layout.surfaceIntent": false
     },
     "details": {
       "text-contrast": "4 text elements measured against their effective background (surface + decoration layer); worst = -/c-paragraph('We collect work that lis') at 8.78 (floor 4.5); skipped=0",

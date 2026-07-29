@@ -1,13 +1,13 @@
 # Interaction-Contract Baseline Report
 
-Generated: 2026-07-14T20:19:13+00:00 — auditor v1.0.0 — mode: strict
+Generated: 2026-07-28T23:52:05+00:00 — auditor v1.0.0 — mode: strict
 Contracts: `brand_pipeline/spec/interaction-contracts.md` (WAI-ARIA APG primary; Base UI secondary; Radix tertiary)
 
 ## Audited lanes
 
 | lane | file | mtime (UTC) | sha256/12 |
 |---|---|---|---|
-| compose/style-bakeoff-neumorphism/product-launch | `/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-neumorphism/product-launch/index.html` | 2026-07-14T20:17:15+00:00 | `78c3dc5ce200` |
+| compose/style-bakeoff-neumorphism/product-launch | `runs/hubspot-v2/brand/compose/style-bakeoff-neumorphism/product-launch/index.html` | 2026-07-14T20:17:15+00:00 | `78c3dc5ce200` |
 
 If a lane is re-rendered by another agent, re-run the audit; the mtime/sha above identify exactly which HTML was measured.
 

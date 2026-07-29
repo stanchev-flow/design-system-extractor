@@ -10,24 +10,26 @@
    "height": 1.0,
    "score": 0.977,
    "widthFidelity": 1.0,
-   "srcContentFrac": 0.75,
-   "replicaContentFrac": 0.75,
+   "srcContentFrac": 0.7562,
+   "replicaContentFrac": 0.7562,
    "srcHeight": 128,
    "replicaHeight": 128,
+   "scored": true,
    "pair": "diff/page-nav.png"
   },
   {
    "id": "sec-0",
    "label": "hero \u2014 Where go-to-market teams go to \n               grow scale close retain grow",
-   "structure": 0.9725,
+   "structure": 0.9726,
    "pixel": 0.9474,
    "height": 0.9715,
    "score": 0.9648,
    "widthFidelity": 1.0,
-   "srcContentFrac": 0.9406,
-   "replicaContentFrac": 0.9406,
+   "srcContentFrac": 1.0,
+   "replicaContentFrac": 1.0,
    "srcHeight": 772,
    "replicaHeight": 750,
+   "scored": true,
    "pair": "diff/sec-0.png"
   },
   {
@@ -38,10 +40,11 @@
    "height": 0.9457,
    "score": 0.9751,
    "widthFidelity": 1.0,
-   "srcContentFrac": 0.5969,
-   "replicaContentFrac": 0.5969,
+   "srcContentFrac": 0.6813,
+   "replicaContentFrac": 0.6813,
    "srcHeight": 261,
    "replicaHeight": 276,
+   "scored": true,
    "pair": "diff/sec-1.png"
   },
   {
@@ -51,25 +54,27 @@
    "pixel": 0.943,
    "height": 0.9447,
    "score": 0.9479,
-   "widthFidelity": 0.9384,
-   "srcContentFrac": 0.6594,
-   "replicaContentFrac": 0.6188,
+   "widthFidelity": 0.9915,
+   "srcContentFrac": 0.7375,
+   "replicaContentFrac": 0.7312,
    "srcHeight": 742,
    "replicaHeight": 701,
+   "scored": true,
    "pair": "diff/sec-2.png"
   },
   {
    "id": "sec-3",
    "label": "product-grid \u2014 Growing a business is hard. HubSpot makes it easier.",
-   "structure": 0.9813,
+   "structure": 0.9812,
    "pixel": 0.9668,
    "height": 0.9512,
    "score": 0.9709,
-   "widthFidelity": 0.9749,
-   "srcContentFrac": 0.6062,
-   "replicaContentFrac": 0.6219,
+   "widthFidelity": 0.9957,
+   "srcContentFrac": 0.7312,
+   "replicaContentFrac": 0.7281,
    "srcHeight": 1600,
    "replicaHeight": 1682,
+   "scored": true,
    "pair": "diff/sec-3.png"
   },
   {
@@ -79,25 +84,27 @@
    "pixel": 0.8902,
    "height": 0.9788,
    "score": 0.9158,
-   "widthFidelity": 0.8275,
-   "srcContentFrac": 0.7969,
-   "replicaContentFrac": 0.6594,
+   "widthFidelity": 0.9933,
+   "srcContentFrac": 0.9375,
+   "replicaContentFrac": 0.9313,
    "srcHeight": 992,
    "replicaHeight": 971,
+   "scored": true,
    "pair": "diff/sec-4.png"
   },
   {
    "id": "sec-5",
    "label": "integration-banner \u2014 Works with the tools you already use. 2,000+ integrations.",
-   "structure": 0.9332,
-   "pixel": 0.9228,
+   "structure": 0.9329,
+   "pixel": 0.9225,
    "height": 0.9706,
-   "score": 0.9375,
-   "widthFidelity": 1.0,
+   "score": 0.9373,
+   "widthFidelity": 0.9867,
    "srcContentFrac": 0.6937,
-   "replicaContentFrac": 0.6937,
+   "replicaContentFrac": 0.7031,
    "srcHeight": 330,
    "replicaHeight": 340,
+   "scored": true,
    "pair": "diff/sec-5.png"
   },
   {
@@ -108,10 +115,11 @@
    "height": 0.9375,
    "score": 0.9704,
    "widthFidelity": 1.0,
-   "srcContentFrac": 0.75,
-   "replicaContentFrac": 0.75,
+   "srcContentFrac": 0.7531,
+   "replicaContentFrac": 0.7531,
    "srcHeight": 240,
    "replicaHeight": 256,
+   "scored": true,
    "pair": "diff/sec-6.png"
   },
   {
@@ -121,11 +129,12 @@
    "pixel": 0.944,
    "height": 0.9902,
    "score": 0.9614,
-   "widthFidelity": 0.8424,
-   "srcContentFrac": 0.6344,
-   "replicaContentFrac": 0.5344,
+   "widthFidelity": 0.9735,
+   "srcContentFrac": 0.7063,
+   "replicaContentFrac": 0.6875,
    "srcHeight": 714,
    "replicaHeight": 707,
+   "scored": true,
    "pair": "diff/sec-7.png"
   },
   {
@@ -135,25 +144,27 @@
    "pixel": 0.9535,
    "height": 0.9,
    "score": 0.9498,
-   "widthFidelity": 0.9437,
-   "srcContentFrac": 0.6656,
-   "replicaContentFrac": 0.6281,
+   "widthFidelity": 0.9486,
+   "srcContentFrac": 0.6687,
+   "replicaContentFrac": 0.6344,
    "srcHeight": 216,
    "replicaHeight": 240,
+   "scored": true,
    "pair": "diff/sec-8.png"
   },
   {
    "id": "sec-9",
    "label": "closing-cta \u2014 Make impossible growth feel impossibly easy, with HubSpot",
-   "structure": 0.9784,
-   "pixel": 0.9599,
+   "structure": 0.9786,
+   "pixel": 0.9617,
    "height": 0.9791,
-   "score": 0.973,
-   "widthFidelity": 0.5682,
-   "srcContentFrac": 0.6875,
-   "replicaContentFrac": 0.3906,
+   "score": 0.9736,
+   "widthFidelity": 0.5708,
+   "srcContentFrac": 0.7063,
+   "replicaContentFrac": 0.4031,
    "srcHeight": 335,
    "replicaHeight": 328,
+   "scored": true,
    "pair": "diff/sec-9.png"
   },
   {
@@ -163,11 +174,12 @@
    "pixel": 0.9695,
    "height": 0.8659,
    "score": 0.9544,
-   "widthFidelity": 0.967,
-   "srcContentFrac": 0.6406,
-   "replicaContentFrac": 0.6625,
+   "widthFidelity": 0.979,
+   "srcContentFrac": 0.7281,
+   "replicaContentFrac": 0.7438,
    "srcHeight": 656,
    "replicaHeight": 568,
+   "scored": true,
    "pair": "diff/footer.png"
   }
  ],
@@ -218,7 +230,7 @@
    "bands": 12,
    "heroHeight": 861,
    "footerColumns": 5,
-   "docHeight": 10507,
+   "docHeight": 10587,
    "overflowEl": "cs-edgecut",
    "screenshot": "replica-fullpage-375.png",
    "responsivenessHealth": 0.5,
@@ -241,8 +253,8 @@
   {
    "section": "closing-cta",
    "capability": "content width diverges",
-   "score": 0.973,
-   "note": "content span 0.39 of band vs source 0.69 (width fidelity 0.57) \u2014 check hug/measure collapse or over-wide container"
+   "score": 0.9736,
+   "note": "content span 0.40 of band vs source 0.71 (width fidelity 0.57) \u2014 check hug/measure collapse or over-wide container"
   },
   {
    "section": "navbar",
@@ -252,8 +264,70 @@
   }
  ],
  "inputDigest": "92d60be505a237687e7cfa5bdfb3ed9a500a178b3db25d0982d8a44d79972a4d",
- "sourceShot": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/hubspot-v2/hubspot-fullpage.png",
+ "sourceShot": "screenshots/hubspot-v2/hubspot-fullpage.png",
  "sourceHeight": 6986,
  "replicaHeight": 6947,
+ "bandAlignment": {
+  "mode": "positional",
+  "notes": []
+ },
+ "structuralGate": {
+  "ok": true,
+  "signals": {
+   "bandCountAgreement": {
+    "value": 1.0,
+    "floor": 1.0,
+    "ok": true,
+    "scoredBands": 11,
+    "authoredSections": 10,
+    "unauthoredBands": [],
+    "unpairedSections": [],
+    "detail": "every measured content band is rebuilt by exactly one authored section"
+   },
+   "archetypeFamilyAgreement": {
+    "value": 1.0,
+    "floor": 1.0,
+    "ok": true,
+    "checked": 0,
+    "agreed": 0,
+    "unmeasured": [
+     "hero",
+     "logo-wall",
+     "platform-carousel",
+     "product-grid",
+     "agent-carousel",
+     "integration-banner",
+     "case-study-header",
+     "testimonial-tabs",
+     "badge-row",
+     "closing-cta"
+    ],
+    "mismatches": [],
+    "detail": "composed layout families honor the measured track multiplicity of every band"
+   },
+   "contentSpanFidelity": {
+    "value": 0.9691,
+    "floor": 0.8,
+    "ok": true,
+    "worstBands": [
+     {
+      "id": "sec-9",
+      "widthFidelity": 0.5708
+     },
+     {
+      "id": "sec-8",
+      "widthFidelity": 0.9486
+     },
+     {
+      "id": "sec-7",
+      "widthFidelity": 0.9735
+     }
+    ],
+    "detail": "rebuilt content occupies the measured share of each band"
+   }
+  },
+  "blocking": [],
+  "bandCensusNotes": []
+ },
  "brand": "HubSpot"
 }

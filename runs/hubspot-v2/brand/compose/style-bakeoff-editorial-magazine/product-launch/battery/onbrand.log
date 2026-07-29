@@ -1,8 +1,8 @@
-$ /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/venv/bin/python /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/brand_pipeline/onbrand_check.py /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/brand.yaml /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-editorial-magazine/product-launch --layout hero --style corporate-saas-clean --composition --report onbrand-report.md
+$ venv/bin/python brand_pipeline/onbrand_check.py runs/hubspot-v2/brand/brand.yaml runs/hubspot-v2/brand/compose/style-bakeoff-editorial-magazine/product-launch --layout hero --style corporate-saas-clean --composition --report onbrand-report.md
 
 --- stdout ---
-Wrote /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-editorial-magazine/product-launch/onbrand-report.md
-Wrote /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-editorial-magazine/product-launch/onbrand-report.json
+Wrote runs/hubspot-v2/brand/compose/style-bakeoff-editorial-magazine/product-launch/onbrand-report.md
+Wrote runs/hubspot-v2/brand/compose/style-bakeoff-editorial-magazine/product-launch/onbrand-report.json
 neverDo (hard):
   [PASS] never-heavy-headings
   [PASS] never-dark-mid-page
@@ -32,8 +32,15 @@ composition invariants (HARD):
   [PASS] archetype-physics:hero
   [PASS] knob-consumption
   [PASS] content-redundancy
-OVERALL: PASS
+  [PASS] media-binding
+  [PASS] mark-legality
+  [PASS] slot-role-eligibility
+  [PASS] anatomy-tab-controls
+  [PASS] anatomy-stat-items
+  [FAIL] fact-consumption
+  [FAIL] fact-consumption:responsive.nav.collapse
+OVERALL: FAIL
 
 --- stderr ---
 
---- exit=0 ---
+--- exit=2 ---

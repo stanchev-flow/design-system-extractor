@@ -9,11 +9,12 @@
    "pixel": 0.9185,
    "height": 1.0,
    "score": 0.9417,
-   "widthFidelity": 0.963,
-   "srcContentFrac": 0.8125,
-   "replicaContentFrac": 0.8438,
+   "widthFidelity": 0.85,
+   "srcContentFrac": 1.0,
+   "replicaContentFrac": 0.85,
    "srcHeight": 81,
    "replicaHeight": 81,
+   "scored": true,
    "pair": "diff/page-nav.png"
   },
   {
@@ -23,11 +24,12 @@
    "pixel": 0.9411,
    "height": 0.7983,
    "score": 0.92,
-   "widthFidelity": 0.9036,
-   "srcContentFrac": 0.875,
-   "replicaContentFrac": 0.7906,
+   "widthFidelity": 0.9384,
+   "srcContentFrac": 0.8625,
+   "replicaContentFrac": 0.8094,
    "srcHeight": 550,
    "replicaHeight": 689,
+   "scored": true,
    "pair": "diff/sec-0.png"
   },
   {
@@ -36,12 +38,13 @@
    "structure": 0.9563,
    "pixel": 0.9494,
    "height": 0.6289,
-   "score": 0.8888,
-   "widthFidelity": 0.9263,
-   "srcContentFrac": 0.9031,
-   "replicaContentFrac": 0.975,
+   "score": 0.8887,
+   "widthFidelity": 0.9719,
+   "srcContentFrac": 0.9719,
+   "replicaContentFrac": 1.0,
    "srcHeight": 256,
    "replicaHeight": 161,
+   "scored": true,
    "pair": "diff/sec-1.png"
   },
   {
@@ -51,11 +54,12 @@
    "pixel": 0.9659,
    "height": 0.9733,
    "score": 0.9733,
-   "widthFidelity": 1.0,
-   "srcContentFrac": 0.5844,
-   "replicaContentFrac": 0.5844,
+   "widthFidelity": 0.988,
+   "srcContentFrac": 0.775,
+   "replicaContentFrac": 0.7844,
    "srcHeight": 973,
    "replicaHeight": 947,
+   "scored": true,
    "pair": "diff/sec-2.png"
   },
   {
@@ -65,11 +69,12 @@
    "pixel": 0.9722,
    "height": 0.9804,
    "score": 0.9825,
-   "widthFidelity": 0.8798,
-   "srcContentFrac": 0.65,
-   "replicaContentFrac": 0.5719,
+   "widthFidelity": 1.0,
+   "srcContentFrac": 0.7344,
+   "replicaContentFrac": 0.7344,
    "srcHeight": 699,
    "replicaHeight": 713,
+   "scored": true,
    "pair": "diff/sec-3.png"
   },
   {
@@ -79,11 +84,12 @@
    "pixel": 0.9451,
    "height": 0.9714,
    "score": 0.9587,
-   "widthFidelity": 0.9175,
-   "srcContentFrac": 0.5563,
-   "replicaContentFrac": 0.6062,
+   "widthFidelity": 1.0,
+   "srcContentFrac": 0.8094,
+   "replicaContentFrac": 0.8094,
    "srcHeight": 509,
    "replicaHeight": 524,
+   "scored": true,
    "pair": "diff/sec-4.png"
   },
   {
@@ -93,11 +99,12 @@
    "pixel": 0.8864,
    "height": 0.9435,
    "score": 0.9085,
-   "widthFidelity": 1.0,
-   "srcContentFrac": 0.8125,
-   "replicaContentFrac": 0.8125,
+   "widthFidelity": 0.9962,
+   "srcContentFrac": 0.8156,
+   "replicaContentFrac": 0.8187,
    "srcHeight": 851,
    "replicaHeight": 902,
+   "scored": true,
    "pair": "diff/sec-5.png"
   },
   {
@@ -107,11 +114,12 @@
    "pixel": 0.9709,
    "height": 0.9071,
    "score": 0.9627,
-   "widthFidelity": 0.9,
-   "srcContentFrac": 0.3937,
-   "replicaContentFrac": 0.4375,
+   "widthFidelity": 0.9193,
+   "srcContentFrac": 0.5031,
+   "replicaContentFrac": 0.4625,
    "srcHeight": 560,
    "replicaHeight": 508,
+   "scored": true,
    "pair": "diff/sec-6.png"
   },
   {
@@ -121,11 +129,12 @@
    "pixel": 0.9358,
    "height": 0.9926,
    "score": 0.9577,
-   "widthFidelity": 0.8175,
-   "srcContentFrac": 0.8562,
-   "replicaContentFrac": 0.7,
+   "widthFidelity": 0.9062,
+   "srcContentFrac": 1.0,
+   "replicaContentFrac": 0.9062,
    "srcHeight": 805,
    "replicaHeight": 811,
+   "scored": true,
    "pair": "diff/sec-7.png"
   },
   {
@@ -136,10 +145,11 @@
    "height": 0.9789,
    "score": 0.95,
    "widthFidelity": 1.0,
-   "srcContentFrac": 0.7688,
-   "replicaContentFrac": 0.7688,
+   "srcContentFrac": 0.775,
+   "replicaContentFrac": 0.775,
    "srcHeight": 568,
    "replicaHeight": 556,
+   "scored": true,
    "pair": "diff/sec-8.png"
   },
   {
@@ -149,11 +159,12 @@
    "pixel": 0.9336,
    "height": 0.9864,
    "score": 0.9531,
-   "widthFidelity": 0.5785,
-   "srcContentFrac": 0.7562,
-   "replicaContentFrac": 0.4375,
+   "widthFidelity": 0.9062,
+   "srcContentFrac": 0.8,
+   "replicaContentFrac": 0.725,
    "srcHeight": 440,
    "replicaHeight": 434,
+   "scored": true,
    "pair": "diff/sec-9.png"
   },
   {
@@ -163,11 +174,12 @@
    "pixel": 0.956,
    "height": 0.9518,
    "score": 0.9618,
-   "widthFidelity": 0.9923,
-   "srcContentFrac": 0.8063,
+   "widthFidelity": 0.8125,
+   "srcContentFrac": 1.0,
    "replicaContentFrac": 0.8125,
    "srcHeight": 869,
    "replicaHeight": 913,
+   "scored": true,
    "pair": "diff/footer.png"
   }
  ],
@@ -233,12 +245,6 @@
    "note": "composite hero art \u2014 the source layers an illustration with floating product-UI chips; the composer binds one asset per media slot (no multi-layer collage of tagged crops)"
   },
   {
-   "section": "closing-cta",
-   "capability": "content width diverges",
-   "score": 0.9531,
-   "note": "content span 0.44 of band vs source 0.76 (width fidelity 0.58) \u2014 check hug/measure collapse or over-wide container"
-  },
-  {
    "section": "navbar",
    "capability": "mega-menu open panels",
    "note": "the brand declares mega-menu columns; the replica (and the source shot) render the closed bar only \u2014 open-panel fidelity is unexercised by this gate (diagnostic open-panel capture from the chrome preview: diff/chrome-mega-open.png)",
@@ -252,8 +258,70 @@
   }
  ],
  "inputDigest": "95e514cb1241f1e0a3f37a2c2d615396bdb4ca52b64d9656c77ce684b30226a1",
- "sourceShot": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/screenshots/remote-v2/remote-com-fullpage.png",
+ "sourceShot": "screenshots/remote-v2/remote-com-fullpage.png",
  "sourceHeight": 7253,
  "replicaHeight": 7288,
+ "bandAlignment": {
+  "mode": "positional",
+  "notes": []
+ },
+ "structuralGate": {
+  "ok": true,
+  "signals": {
+   "bandCountAgreement": {
+    "value": 1.0,
+    "floor": 1.0,
+    "ok": true,
+    "scoredBands": 11,
+    "authoredSections": 10,
+    "unauthoredBands": [],
+    "unpairedSections": [],
+    "detail": "every measured content band is rebuilt by exactly one authored section"
+   },
+   "archetypeFamilyAgreement": {
+    "value": 1.0,
+    "floor": 1.0,
+    "ok": true,
+    "checked": 0,
+    "agreed": 0,
+    "unmeasured": [
+     "hero",
+     "logo-wall",
+     "feature-accordion",
+     "infra-panel",
+     "banner-cta",
+     "workflow-cards",
+     "partner-logos",
+     "testimonials",
+     "badge-strip",
+     "closing-cta"
+    ],
+    "mismatches": [],
+    "detail": "composed layout families honor the measured track multiplicity of every band"
+   },
+   "contentSpanFidelity": {
+    "value": 0.9462,
+    "floor": 0.8,
+    "ok": true,
+    "worstBands": [
+     {
+      "id": "footer",
+      "widthFidelity": 0.8125
+     },
+     {
+      "id": "sec-7",
+      "widthFidelity": 0.9062
+     },
+     {
+      "id": "sec-9",
+      "widthFidelity": 0.9062
+     }
+    ],
+    "detail": "rebuilt content occupies the measured share of each band"
+   }
+  },
+  "blocking": [],
+  "bandCensusNotes": []
+ },
  "brand": "Remote"
 }

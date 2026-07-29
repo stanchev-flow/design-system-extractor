@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-14T13:22:37+00:00",
+  "generated_at": "2026-07-28T23:57:30+00:00",
   "auditor_version": "1.0.0",
   "spec": "brand_pipeline/spec/interaction-contracts.md",
   "mode": "strict",
@@ -15,9 +15,9 @@
   "lanes": [
     {
       "lane": "compose/hero-archetypes/homepage",
-      "path": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/homepage/index.html",
-      "audited_mtime": "2026-07-14T13:13:06+00:00",
-      "sha256_12": "e5709ed2fab8",
+      "path": "runs/hubspot-v2/brand/compose/hero-archetypes/homepage/index.html",
+      "audited_mtime": "2026-07-14T20:03:36+00:00",
+      "sha256_12": "964811d8232f",
       "findings": [
         {
           "check": "IC-NAV-01",
@@ -27,7 +27,7 @@
           "lane": "compose/hero-archetypes/homepage",
           "layer": "static",
           "message": "trigger 'Products' is a native button",
-          "line": 2212,
+          "line": 2276,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -38,7 +38,7 @@
           "lane": "compose/hero-archetypes/homepage",
           "layer": "static",
           "message": "trigger 'Products' carries aria-expanded",
-          "line": 2212,
+          "line": 2276,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -49,7 +49,7 @@
           "lane": "compose/hero-archetypes/homepage",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2212,
+          "line": 2276,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -60,7 +60,7 @@
           "lane": "compose/hero-archetypes/homepage",
           "layer": "static",
           "message": "trigger 'Solutions' is a native button",
-          "line": 2214,
+          "line": 2278,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -71,7 +71,7 @@
           "lane": "compose/hero-archetypes/homepage",
           "layer": "static",
           "message": "trigger 'Solutions' carries aria-expanded",
-          "line": 2214,
+          "line": 2278,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -82,7 +82,7 @@
           "lane": "compose/hero-archetypes/homepage",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2214,
+          "line": 2278,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -93,7 +93,7 @@
           "lane": "compose/hero-archetypes/homepage",
           "layer": "static",
           "message": "trigger 'Resources' is a native button",
-          "line": 2216,
+          "line": 2280,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -104,7 +104,7 @@
           "lane": "compose/hero-archetypes/homepage",
           "layer": "static",
           "message": "trigger 'Resources' carries aria-expanded",
-          "line": 2216,
+          "line": 2280,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -115,7 +115,7 @@
           "lane": "compose/hero-archetypes/homepage",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2216,
+          "line": 2280,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -137,7 +137,7 @@
           "lane": "compose/hero-archetypes/homepage",
           "layer": "static",
           "message": "anchor with role=button in nav chrome — promises Space activation anchors don't have",
-          "line": 2218,
+          "line": 2282,
           "snippet": "<a class=\"c-button c-button--navcta\" href=\"https://offers.hubspot.com/crm-platform-demo\" role=\"button\" style=\"--navcta-bg: rgb(255, 72, 0); --navcta-ink: rgb(25…"
         },
         {
@@ -148,7 +148,7 @@
           "lane": "compose/hero-archetypes/homepage",
           "layer": "static",
           "message": "toggle is a native <summary> inside <details>",
-          "line": 2208,
+          "line": 2272,
           "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"><svg aria-hidden=\"…"
         },
         {
@@ -159,7 +159,7 @@
           "lane": "compose/hero-archetypes/homepage",
           "layer": "static",
           "message": "toggle has an accessible name",
-          "line": 2208,
+          "line": 2272,
           "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"><svg aria-hidden=\"…"
         },
         {
@@ -452,9 +452,9 @@
     },
     {
       "lane": "compose/hero-archetypes/pricing",
-      "path": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/pricing/index.html",
-      "audited_mtime": "2026-07-14T13:13:21+00:00",
-      "sha256_12": "b20a64a419d2",
+      "path": "runs/hubspot-v2/brand/compose/hero-archetypes/pricing/index.html",
+      "audited_mtime": "2026-07-14T20:03:52+00:00",
+      "sha256_12": "adf22ee338af",
       "findings": [
         {
           "check": "IC-NAV-01",
@@ -464,7 +464,7 @@
           "lane": "compose/hero-archetypes/pricing",
           "layer": "static",
           "message": "trigger 'Products' is a native button",
-          "line": 2219,
+          "line": 2282,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -475,7 +475,7 @@
           "lane": "compose/hero-archetypes/pricing",
           "layer": "static",
           "message": "trigger 'Products' carries aria-expanded",
-          "line": 2219,
+          "line": 2282,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -486,7 +486,7 @@
           "lane": "compose/hero-archetypes/pricing",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2219,
+          "line": 2282,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -497,7 +497,7 @@
           "lane": "compose/hero-archetypes/pricing",
           "layer": "static",
           "message": "trigger 'Solutions' is a native button",
-          "line": 2221,
+          "line": 2284,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -508,7 +508,7 @@
           "lane": "compose/hero-archetypes/pricing",
           "layer": "static",
           "message": "trigger 'Solutions' carries aria-expanded",
-          "line": 2221,
+          "line": 2284,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -519,7 +519,7 @@
           "lane": "compose/hero-archetypes/pricing",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2221,
+          "line": 2284,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -530,7 +530,7 @@
           "lane": "compose/hero-archetypes/pricing",
           "layer": "static",
           "message": "trigger 'Resources' is a native button",
-          "line": 2223,
+          "line": 2286,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -541,7 +541,7 @@
           "lane": "compose/hero-archetypes/pricing",
           "layer": "static",
           "message": "trigger 'Resources' carries aria-expanded",
-          "line": 2223,
+          "line": 2286,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -552,7 +552,7 @@
           "lane": "compose/hero-archetypes/pricing",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2223,
+          "line": 2286,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -574,7 +574,7 @@
           "lane": "compose/hero-archetypes/pricing",
           "layer": "static",
           "message": "anchor with role=button in nav chrome — promises Space activation anchors don't have",
-          "line": 2225,
+          "line": 2288,
           "snippet": "<a class=\"c-button c-button--navcta\" href=\"https://offers.hubspot.com/crm-platform-demo\" role=\"button\" style=\"--navcta-bg: rgb(255, 72, 0); --navcta-ink: rgb(25…"
         },
         {
@@ -585,7 +585,7 @@
           "lane": "compose/hero-archetypes/pricing",
           "layer": "static",
           "message": "toggle is a native <summary> inside <details>",
-          "line": 2215,
+          "line": 2278,
           "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"><svg aria-hidden=\"…"
         },
         {
@@ -596,7 +596,7 @@
           "lane": "compose/hero-archetypes/pricing",
           "layer": "static",
           "message": "toggle has an accessible name",
-          "line": 2215,
+          "line": 2278,
           "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"><svg aria-hidden=\"…"
         },
         {
@@ -889,9 +889,9 @@
     },
     {
       "lane": "compose/hero-archetypes/product",
-      "path": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/product/index.html",
-      "audited_mtime": "2026-07-14T13:13:35+00:00",
-      "sha256_12": "016d959cc4ee",
+      "path": "runs/hubspot-v2/brand/compose/hero-archetypes/product/index.html",
+      "audited_mtime": "2026-07-14T20:04:08+00:00",
+      "sha256_12": "b4969618ae3e",
       "findings": [
         {
           "check": "IC-NAV-01",
@@ -901,7 +901,7 @@
           "lane": "compose/hero-archetypes/product",
           "layer": "static",
           "message": "trigger 'Products' is a native button",
-          "line": 2215,
+          "line": 2278,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -912,7 +912,7 @@
           "lane": "compose/hero-archetypes/product",
           "layer": "static",
           "message": "trigger 'Products' carries aria-expanded",
-          "line": 2215,
+          "line": 2278,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -923,7 +923,7 @@
           "lane": "compose/hero-archetypes/product",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2215,
+          "line": 2278,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -934,7 +934,7 @@
           "lane": "compose/hero-archetypes/product",
           "layer": "static",
           "message": "trigger 'Solutions' is a native button",
-          "line": 2217,
+          "line": 2280,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -945,7 +945,7 @@
           "lane": "compose/hero-archetypes/product",
           "layer": "static",
           "message": "trigger 'Solutions' carries aria-expanded",
-          "line": 2217,
+          "line": 2280,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -956,7 +956,7 @@
           "lane": "compose/hero-archetypes/product",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2217,
+          "line": 2280,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -967,7 +967,7 @@
           "lane": "compose/hero-archetypes/product",
           "layer": "static",
           "message": "trigger 'Resources' is a native button",
-          "line": 2219,
+          "line": 2282,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -978,7 +978,7 @@
           "lane": "compose/hero-archetypes/product",
           "layer": "static",
           "message": "trigger 'Resources' carries aria-expanded",
-          "line": 2219,
+          "line": 2282,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -989,7 +989,7 @@
           "lane": "compose/hero-archetypes/product",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2219,
+          "line": 2282,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -1011,7 +1011,7 @@
           "lane": "compose/hero-archetypes/product",
           "layer": "static",
           "message": "anchor with role=button in nav chrome — promises Space activation anchors don't have",
-          "line": 2221,
+          "line": 2284,
           "snippet": "<a class=\"c-button c-button--navcta\" href=\"https://offers.hubspot.com/crm-platform-demo\" role=\"button\" style=\"--navcta-bg: rgb(255, 72, 0); --navcta-ink: rgb(25…"
         },
         {
@@ -1022,7 +1022,7 @@
           "lane": "compose/hero-archetypes/product",
           "layer": "static",
           "message": "toggle is a native <summary> inside <details>",
-          "line": 2211,
+          "line": 2274,
           "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"><svg aria-hidden=\"…"
         },
         {
@@ -1033,7 +1033,7 @@
           "lane": "compose/hero-archetypes/product",
           "layer": "static",
           "message": "toggle has an accessible name",
-          "line": 2211,
+          "line": 2274,
           "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"><svg aria-hidden=\"…"
         },
         {
@@ -1326,9 +1326,9 @@
     },
     {
       "lane": "compose/hero-archetypes/about",
-      "path": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/about/index.html",
-      "audited_mtime": "2026-07-14T13:13:51+00:00",
-      "sha256_12": "507317c3556e",
+      "path": "runs/hubspot-v2/brand/compose/hero-archetypes/about/index.html",
+      "audited_mtime": "2026-07-14T20:04:24+00:00",
+      "sha256_12": "5ccf31e93fd1",
       "findings": [
         {
           "check": "IC-NAV-01",
@@ -1338,7 +1338,7 @@
           "lane": "compose/hero-archetypes/about",
           "layer": "static",
           "message": "trigger 'Products' is a native button",
-          "line": 2219,
+          "line": 2283,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -1349,7 +1349,7 @@
           "lane": "compose/hero-archetypes/about",
           "layer": "static",
           "message": "trigger 'Products' carries aria-expanded",
-          "line": 2219,
+          "line": 2283,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -1360,7 +1360,7 @@
           "lane": "compose/hero-archetypes/about",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2219,
+          "line": 2283,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -1371,7 +1371,7 @@
           "lane": "compose/hero-archetypes/about",
           "layer": "static",
           "message": "trigger 'Solutions' is a native button",
-          "line": 2221,
+          "line": 2285,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -1382,7 +1382,7 @@
           "lane": "compose/hero-archetypes/about",
           "layer": "static",
           "message": "trigger 'Solutions' carries aria-expanded",
-          "line": 2221,
+          "line": 2285,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -1393,7 +1393,7 @@
           "lane": "compose/hero-archetypes/about",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2221,
+          "line": 2285,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -1404,7 +1404,7 @@
           "lane": "compose/hero-archetypes/about",
           "layer": "static",
           "message": "trigger 'Resources' is a native button",
-          "line": 2223,
+          "line": 2287,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -1415,7 +1415,7 @@
           "lane": "compose/hero-archetypes/about",
           "layer": "static",
           "message": "trigger 'Resources' carries aria-expanded",
-          "line": 2223,
+          "line": 2287,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -1426,7 +1426,7 @@
           "lane": "compose/hero-archetypes/about",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2223,
+          "line": 2287,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -1448,7 +1448,7 @@
           "lane": "compose/hero-archetypes/about",
           "layer": "static",
           "message": "anchor with role=button in nav chrome — promises Space activation anchors don't have",
-          "line": 2225,
+          "line": 2289,
           "snippet": "<a class=\"c-button c-button--navcta\" href=\"https://offers.hubspot.com/crm-platform-demo\" role=\"button\" style=\"--navcta-bg: rgb(255, 72, 0); --navcta-ink: rgb(25…"
         },
         {
@@ -1459,7 +1459,7 @@
           "lane": "compose/hero-archetypes/about",
           "layer": "static",
           "message": "toggle is a native <summary> inside <details>",
-          "line": 2215,
+          "line": 2279,
           "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"><svg aria-hidden=\"…"
         },
         {
@@ -1470,7 +1470,7 @@
           "lane": "compose/hero-archetypes/about",
           "layer": "static",
           "message": "toggle has an accessible name",
-          "line": 2215,
+          "line": 2279,
           "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"><svg aria-hidden=\"…"
         },
         {
@@ -1763,9 +1763,9 @@
     },
     {
       "lane": "compose/hero-archetypes/blog",
-      "path": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/blog/index.html",
-      "audited_mtime": "2026-07-14T13:14:06+00:00",
-      "sha256_12": "d7b88c838b94",
+      "path": "runs/hubspot-v2/brand/compose/hero-archetypes/blog/index.html",
+      "audited_mtime": "2026-07-14T20:04:41+00:00",
+      "sha256_12": "bfda09b535c2",
       "findings": [
         {
           "check": "IC-NAV-01",
@@ -1775,7 +1775,7 @@
           "lane": "compose/hero-archetypes/blog",
           "layer": "static",
           "message": "trigger 'Products' is a native button",
-          "line": 2212,
+          "line": 2276,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -1786,7 +1786,7 @@
           "lane": "compose/hero-archetypes/blog",
           "layer": "static",
           "message": "trigger 'Products' carries aria-expanded",
-          "line": 2212,
+          "line": 2276,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -1797,7 +1797,7 @@
           "lane": "compose/hero-archetypes/blog",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2212,
+          "line": 2276,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -1808,7 +1808,7 @@
           "lane": "compose/hero-archetypes/blog",
           "layer": "static",
           "message": "trigger 'Solutions' is a native button",
-          "line": 2214,
+          "line": 2278,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -1819,7 +1819,7 @@
           "lane": "compose/hero-archetypes/blog",
           "layer": "static",
           "message": "trigger 'Solutions' carries aria-expanded",
-          "line": 2214,
+          "line": 2278,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -1830,7 +1830,7 @@
           "lane": "compose/hero-archetypes/blog",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2214,
+          "line": 2278,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -1841,7 +1841,7 @@
           "lane": "compose/hero-archetypes/blog",
           "layer": "static",
           "message": "trigger 'Resources' is a native button",
-          "line": 2216,
+          "line": 2280,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -1852,7 +1852,7 @@
           "lane": "compose/hero-archetypes/blog",
           "layer": "static",
           "message": "trigger 'Resources' carries aria-expanded",
-          "line": 2216,
+          "line": 2280,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -1863,7 +1863,7 @@
           "lane": "compose/hero-archetypes/blog",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2216,
+          "line": 2280,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -1885,7 +1885,7 @@
           "lane": "compose/hero-archetypes/blog",
           "layer": "static",
           "message": "anchor with role=button in nav chrome — promises Space activation anchors don't have",
-          "line": 2218,
+          "line": 2282,
           "snippet": "<a class=\"c-button c-button--navcta\" href=\"https://offers.hubspot.com/crm-platform-demo\" role=\"button\" style=\"--navcta-bg: rgb(255, 72, 0); --navcta-ink: rgb(25…"
         },
         {
@@ -1896,7 +1896,7 @@
           "lane": "compose/hero-archetypes/blog",
           "layer": "static",
           "message": "toggle is a native <summary> inside <details>",
-          "line": 2208,
+          "line": 2272,
           "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"><svg aria-hidden=\"…"
         },
         {
@@ -1907,7 +1907,7 @@
           "lane": "compose/hero-archetypes/blog",
           "layer": "static",
           "message": "toggle has an accessible name",
-          "line": 2208,
+          "line": 2272,
           "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"><svg aria-hidden=\"…"
         },
         {
@@ -2200,9 +2200,9 @@
     },
     {
       "lane": "compose/hero-archetypes/demo",
-      "path": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/demo/index.html",
-      "audited_mtime": "2026-07-14T13:21:04+00:00",
-      "sha256_12": "2dda283f11ea",
+      "path": "runs/hubspot-v2/brand/compose/hero-archetypes/demo/index.html",
+      "audited_mtime": "2026-07-14T20:04:58+00:00",
+      "sha256_12": "6be813ca88b5",
       "findings": [
         {
           "check": "IC-NAV-01",
@@ -2212,7 +2212,7 @@
           "lane": "compose/hero-archetypes/demo",
           "layer": "static",
           "message": "trigger 'Products' is a native button",
-          "line": 2280,
+          "line": 2343,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -2223,7 +2223,7 @@
           "lane": "compose/hero-archetypes/demo",
           "layer": "static",
           "message": "trigger 'Products' carries aria-expanded",
-          "line": 2280,
+          "line": 2343,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -2234,7 +2234,7 @@
           "lane": "compose/hero-archetypes/demo",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2280,
+          "line": 2343,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -2245,7 +2245,7 @@
           "lane": "compose/hero-archetypes/demo",
           "layer": "static",
           "message": "trigger 'Solutions' is a native button",
-          "line": 2282,
+          "line": 2345,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -2256,7 +2256,7 @@
           "lane": "compose/hero-archetypes/demo",
           "layer": "static",
           "message": "trigger 'Solutions' carries aria-expanded",
-          "line": 2282,
+          "line": 2345,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -2267,7 +2267,7 @@
           "lane": "compose/hero-archetypes/demo",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2282,
+          "line": 2345,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -2278,7 +2278,7 @@
           "lane": "compose/hero-archetypes/demo",
           "layer": "static",
           "message": "trigger 'Resources' is a native button",
-          "line": 2284,
+          "line": 2347,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -2289,7 +2289,7 @@
           "lane": "compose/hero-archetypes/demo",
           "layer": "static",
           "message": "trigger 'Resources' carries aria-expanded",
-          "line": 2284,
+          "line": 2347,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -2300,7 +2300,7 @@
           "lane": "compose/hero-archetypes/demo",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2284,
+          "line": 2347,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -2322,7 +2322,7 @@
           "lane": "compose/hero-archetypes/demo",
           "layer": "static",
           "message": "anchor with role=button in nav chrome — promises Space activation anchors don't have",
-          "line": 2286,
+          "line": 2349,
           "snippet": "<a class=\"c-button c-button--navcta\" href=\"https://offers.hubspot.com/crm-platform-demo\" role=\"button\" style=\"--navcta-bg: rgb(255, 72, 0); --navcta-ink: rgb(25…"
         },
         {
@@ -2333,7 +2333,7 @@
           "lane": "compose/hero-archetypes/demo",
           "layer": "static",
           "message": "toggle is a native <summary> inside <details>",
-          "line": 2276,
+          "line": 2339,
           "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"><svg aria-hidden=\"…"
         },
         {
@@ -2344,7 +2344,7 @@
           "lane": "compose/hero-archetypes/demo",
           "layer": "static",
           "message": "toggle has an accessible name",
-          "line": 2276,
+          "line": 2339,
           "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"><svg aria-hidden=\"…"
         },
         {
@@ -2420,9 +2420,9 @@
           "status": "pass",
           "lane": "compose/hero-archetypes/demo",
           "layer": "static",
-          "message": "control 'hero-demo-first-name' is programmatically labelled",
-          "line": 2306,
-          "snippet": "<input class=\"cs-input\" id=\"hero-demo-first-name\" name=\"first-name\" type=\"text\"/>"
+          "message": "control 'demo-hero-first-name' is programmatically labelled",
+          "line": 2375,
+          "snippet": "<input class=\"cs-input\" id=\"demo-hero-first-name\" name=\"first-name\" type=\"text\"/>"
         },
         {
           "check": "IC-FORM-01",
@@ -2431,9 +2431,9 @@
           "status": "pass",
           "lane": "compose/hero-archetypes/demo",
           "layer": "static",
-          "message": "control 'hero-demo-work-email' is programmatically labelled",
-          "line": 2310,
-          "snippet": "<input class=\"cs-input\" id=\"hero-demo-work-email\" name=\"work-email\" type=\"text\"/>"
+          "message": "control 'demo-hero-work-email' is programmatically labelled",
+          "line": 2379,
+          "snippet": "<input class=\"cs-input\" id=\"demo-hero-work-email\" name=\"work-email\" type=\"text\"/>"
         },
         {
           "check": "IC-FORM-01",
@@ -2442,9 +2442,9 @@
           "status": "pass",
           "lane": "compose/hero-archetypes/demo",
           "layer": "static",
-          "message": "control 'hero-demo-company-size' is programmatically labelled",
-          "line": 2314,
-          "snippet": "<input class=\"cs-input\" id=\"hero-demo-company-size\" name=\"company-size\" type=\"text\"/>"
+          "message": "control 'demo-hero-company-size' is programmatically labelled",
+          "line": 2383,
+          "snippet": "<input class=\"cs-input\" id=\"demo-hero-company-size\" name=\"company-size\" type=\"text\"/>"
         },
         {
           "check": "IC-FORM-02",
@@ -2454,7 +2454,7 @@
           "lane": "compose/hero-archetypes/demo",
           "layer": "static",
           "message": "form has a real submit button",
-          "line": 2317,
+          "line": 2386,
           "snippet": "<button class=\"c-button\" type=\"submit\">Book my demo</button>"
         },
         {
@@ -2465,8 +2465,8 @@
           "lane": "compose/hero-archetypes/demo",
           "layer": "static",
           "message": "label is associated with a real control",
-          "line": 2305,
-          "snippet": "<label class=\"cs-field-label\" for=\"hero-demo-first-name\">First name</label>"
+          "line": 2374,
+          "snippet": "<label class=\"cs-field-label\" for=\"demo-hero-first-name\">First name</label>"
         },
         {
           "check": "IC-FORM-03",
@@ -2476,8 +2476,8 @@
           "lane": "compose/hero-archetypes/demo",
           "layer": "static",
           "message": "label is associated with a real control",
-          "line": 2309,
-          "snippet": "<label class=\"cs-field-label\" for=\"hero-demo-work-email\">Work email</label>"
+          "line": 2378,
+          "snippet": "<label class=\"cs-field-label\" for=\"demo-hero-work-email\">Work email</label>"
         },
         {
           "check": "IC-FORM-03",
@@ -2487,8 +2487,8 @@
           "lane": "compose/hero-archetypes/demo",
           "layer": "static",
           "message": "label is associated with a real control",
-          "line": 2313,
-          "snippet": "<label class=\"cs-field-label\" for=\"hero-demo-company-size\">Company size</label>"
+          "line": 2382,
+          "snippet": "<label class=\"cs-field-label\" for=\"demo-hero-company-size\">Company size</label>"
         },
         {
           "check": "IC-FORM-04",
@@ -2714,9 +2714,9 @@
     },
     {
       "lane": "compose/hero-archetypes/developer",
-      "path": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/developer/index.html",
-      "audited_mtime": "2026-07-14T13:18:20+00:00",
-      "sha256_12": "abd1fff969ac",
+      "path": "runs/hubspot-v2/brand/compose/hero-archetypes/developer/index.html",
+      "audited_mtime": "2026-07-14T20:05:15+00:00",
+      "sha256_12": "5b0d343f96cb",
       "findings": [
         {
           "check": "IC-NAV-01",
@@ -2726,7 +2726,7 @@
           "lane": "compose/hero-archetypes/developer",
           "layer": "static",
           "message": "trigger 'Products' is a native button",
-          "line": 2216,
+          "line": 2282,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -2737,7 +2737,7 @@
           "lane": "compose/hero-archetypes/developer",
           "layer": "static",
           "message": "trigger 'Products' carries aria-expanded",
-          "line": 2216,
+          "line": 2282,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -2748,7 +2748,7 @@
           "lane": "compose/hero-archetypes/developer",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2216,
+          "line": 2282,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -2759,7 +2759,7 @@
           "lane": "compose/hero-archetypes/developer",
           "layer": "static",
           "message": "trigger 'Solutions' is a native button",
-          "line": 2218,
+          "line": 2284,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -2770,7 +2770,7 @@
           "lane": "compose/hero-archetypes/developer",
           "layer": "static",
           "message": "trigger 'Solutions' carries aria-expanded",
-          "line": 2218,
+          "line": 2284,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -2781,7 +2781,7 @@
           "lane": "compose/hero-archetypes/developer",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2218,
+          "line": 2284,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -2792,7 +2792,7 @@
           "lane": "compose/hero-archetypes/developer",
           "layer": "static",
           "message": "trigger 'Resources' is a native button",
-          "line": 2220,
+          "line": 2286,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -2803,7 +2803,7 @@
           "lane": "compose/hero-archetypes/developer",
           "layer": "static",
           "message": "trigger 'Resources' carries aria-expanded",
-          "line": 2220,
+          "line": 2286,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -2814,7 +2814,7 @@
           "lane": "compose/hero-archetypes/developer",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2220,
+          "line": 2286,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -2836,7 +2836,7 @@
           "lane": "compose/hero-archetypes/developer",
           "layer": "static",
           "message": "anchor with role=button in nav chrome — promises Space activation anchors don't have",
-          "line": 2222,
+          "line": 2288,
           "snippet": "<a class=\"c-button c-button--navcta\" href=\"https://offers.hubspot.com/crm-platform-demo\" role=\"button\" style=\"--navcta-bg: rgb(255, 72, 0); --navcta-ink: rgb(25…"
         },
         {
@@ -2847,7 +2847,7 @@
           "lane": "compose/hero-archetypes/developer",
           "layer": "static",
           "message": "toggle is a native <summary> inside <details>",
-          "line": 2212,
+          "line": 2278,
           "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"><svg aria-hidden=\"…"
         },
         {
@@ -2858,7 +2858,7 @@
           "lane": "compose/hero-archetypes/developer",
           "layer": "static",
           "message": "toggle has an accessible name",
-          "line": 2212,
+          "line": 2278,
           "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"><svg aria-hidden=\"…"
         },
         {
@@ -2935,7 +2935,7 @@
           "lane": "compose/hero-archetypes/developer",
           "layer": "static",
           "message": "control 'text' is programmatically labelled",
-          "line": 2232,
+          "line": 2298,
           "snippet": "<input aria-label=\"Search the docs — APIs, SDKs, CRM cards, Breeze agent tools\" class=\"c-field-input\" placeholder=\"Search the docs — APIs, SDKs, CRM cards, Bree…"
         },
         {
@@ -2946,7 +2946,7 @@
           "lane": "compose/hero-archetypes/developer",
           "layer": "static",
           "message": "label is associated with a real control",
-          "line": 2232,
+          "line": 2298,
           "snippet": "<label class=\"c-field\"><input aria-label=\"Search the docs — APIs, SDKs, CRM cards, Breeze agent tools\" class=\"c-field-input\" placeholder=\"Search the docs — APIs…"
         },
         {
@@ -3173,9 +3173,9 @@
     },
     {
       "lane": "compose/hero-archetypes/event",
-      "path": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/event/index.html",
-      "audited_mtime": "2026-07-14T13:14:55+00:00",
-      "sha256_12": "f777d9fd593f",
+      "path": "runs/hubspot-v2/brand/compose/hero-archetypes/event/index.html",
+      "audited_mtime": "2026-07-14T20:05:33+00:00",
+      "sha256_12": "c95790bf3283",
       "findings": [
         {
           "check": "IC-NAV-01",
@@ -3185,7 +3185,7 @@
           "lane": "compose/hero-archetypes/event",
           "layer": "static",
           "message": "trigger 'Products' is a native button",
-          "line": 2219,
+          "line": 2282,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -3196,7 +3196,7 @@
           "lane": "compose/hero-archetypes/event",
           "layer": "static",
           "message": "trigger 'Products' carries aria-expanded",
-          "line": 2219,
+          "line": 2282,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -3207,7 +3207,7 @@
           "lane": "compose/hero-archetypes/event",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2219,
+          "line": 2282,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -3218,7 +3218,7 @@
           "lane": "compose/hero-archetypes/event",
           "layer": "static",
           "message": "trigger 'Solutions' is a native button",
-          "line": 2221,
+          "line": 2284,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -3229,7 +3229,7 @@
           "lane": "compose/hero-archetypes/event",
           "layer": "static",
           "message": "trigger 'Solutions' carries aria-expanded",
-          "line": 2221,
+          "line": 2284,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -3240,7 +3240,7 @@
           "lane": "compose/hero-archetypes/event",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2221,
+          "line": 2284,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -3251,7 +3251,7 @@
           "lane": "compose/hero-archetypes/event",
           "layer": "static",
           "message": "trigger 'Resources' is a native button",
-          "line": 2223,
+          "line": 2286,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -3262,7 +3262,7 @@
           "lane": "compose/hero-archetypes/event",
           "layer": "static",
           "message": "trigger 'Resources' carries aria-expanded",
-          "line": 2223,
+          "line": 2286,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -3273,7 +3273,7 @@
           "lane": "compose/hero-archetypes/event",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2223,
+          "line": 2286,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -3295,7 +3295,7 @@
           "lane": "compose/hero-archetypes/event",
           "layer": "static",
           "message": "anchor with role=button in nav chrome — promises Space activation anchors don't have",
-          "line": 2225,
+          "line": 2288,
           "snippet": "<a class=\"c-button c-button--navcta\" href=\"https://offers.hubspot.com/crm-platform-demo\" role=\"button\" style=\"--navcta-bg: rgb(255, 72, 0); --navcta-ink: rgb(25…"
         },
         {
@@ -3306,7 +3306,7 @@
           "lane": "compose/hero-archetypes/event",
           "layer": "static",
           "message": "toggle is a native <summary> inside <details>",
-          "line": 2215,
+          "line": 2278,
           "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"><svg aria-hidden=\"…"
         },
         {
@@ -3317,7 +3317,7 @@
           "lane": "compose/hero-archetypes/event",
           "layer": "static",
           "message": "toggle has an accessible name",
-          "line": 2215,
+          "line": 2278,
           "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"><svg aria-hidden=\"…"
         },
         {

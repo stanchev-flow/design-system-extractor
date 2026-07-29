@@ -19,6 +19,7 @@
    "archetype": "stack",
    "surfaceIntent": "any",
    "novelty": "reuse",
+   "archetypeRef": "stack",
    "seededFrom": {
     "lib": "project",
     "id": "hero-photo-overlay"
@@ -118,6 +119,7 @@
    "archetype": "stack",
    "surfaceIntent": "primary",
    "novelty": "reuse",
+   "archetypeRef": "stack",
    "seededFrom": {
     "lib": "project",
     "id": "logo-proof-strip"
@@ -164,6 +166,7 @@
    "archetype": "split",
    "surfaceIntent": "primary",
    "novelty": "reuse",
+   "archetypeRef": "split",
    "seededFrom": {
     "lib": "project",
     "id": "platform-showcase-carousel"
@@ -249,6 +252,7 @@
    "archetype": "cards",
    "surfaceIntent": "primary",
    "novelty": "reuse",
+   "archetypeRef": "split",
    "seededFrom": {
     "lib": "project",
     "id": "product-grid-split"
@@ -409,6 +413,7 @@
    "archetype": "cards",
    "surfaceIntent": "accent",
    "novelty": "reuse",
+   "archetypeRef": "cards",
    "seededFrom": {
     "lib": "project",
     "id": "agent-card-carousel"
@@ -510,6 +515,7 @@
    "archetype": "split",
    "surfaceIntent": "primary",
    "novelty": "reuse",
+   "archetypeRef": "split",
    "seededFrom": {
     "lib": "project",
     "id": "integration-collage-banner"
@@ -566,6 +572,7 @@
    "archetype": "generic-flow",
    "surfaceIntent": "primary",
    "novelty": "reuse",
+   "archetypeRef": "split",
    "seededFrom": {
     "lib": "project",
     "id": "case-study-header-rail"
@@ -619,6 +626,7 @@
    "archetype": "split",
    "surfaceIntent": "primary",
    "novelty": "reuse",
+   "archetypeRef": "split",
    "seededFrom": {
     "lib": "project",
     "id": "testimonial-tab-stats"
@@ -692,6 +700,7 @@
    "archetype": "split",
    "surfaceIntent": "primary",
    "novelty": "reuse",
+   "archetypeRef": "stack",
    "seededFrom": {
     "lib": "project",
     "id": "award-badge-row"
@@ -736,6 +745,7 @@
    "archetype": "stack",
    "surfaceIntent": "inverse",
    "novelty": "reuse",
+   "archetypeRef": "stack",
    "seededFrom": {
     "lib": "project",
     "id": "closing-cta-dark"
@@ -780,5 +790,17 @@
    "_requiresHydration": false
   }
  ],
+ "drawableArchetypes": {
+  "hero": "stack",
+  "logo-wall": "generic-flow",
+  "platform-carousel": "split",
+  "product-grid": "cards",
+  "agent-carousel": "cards",
+  "integration-banner": "split",
+  "case-study-header": "generic-flow",
+  "testimonial-tabs": "split",
+  "badge-row": "split",
+  "closing-cta": "stack"
+ },
  "errors": {}
 }

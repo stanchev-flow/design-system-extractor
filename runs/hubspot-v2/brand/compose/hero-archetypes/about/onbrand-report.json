@@ -33,7 +33,7 @@
   },
   "invariants": {
     "mode": "hard",
-    "pass": true,
+    "pass": false,
     "checks": {
       "single-accent": true,
       "primitive-only": true,
@@ -51,12 +51,19 @@
       "logo-wall-integrity": true,
       "archetype-physics:about-mission-hero": true,
       "knob-consumption": true,
-      "content-redundancy": true
+      "content-redundancy": true,
+      "media-binding": true,
+      "mark-legality": true,
+      "slot-role-eligibility": true,
+      "anatomy-tab-controls": true,
+      "anatomy-stat-items": true,
+      "fact-consumption": false,
+      "fact-consumption:responsive.nav.collapse": false
     },
     "details": {
       "text-contrast": "74 text elements measured against their effective background (surface + decoration layer); worst = page-nav/c-button.c-button--navcta('Get a demo') at 3.4 (floor 4.5); skipped=72; 2 element(s) exempt as MEASURED brand pairs (#ff4800 on #ffffff; #ffffff on #ff4800)",
       "decoration-salience": "no decoration layers (ghost word / watermark) in this render"
     }
   },
-  "overall": true
+  "overall": false
 }

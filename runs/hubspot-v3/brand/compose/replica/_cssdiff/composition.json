@@ -19,6 +19,7 @@
    "archetype": "overlay",
    "surfaceIntent": "surface/inverse-teal",
    "novelty": "reuse",
+   "archetypeRef": "overlay",
    "seededFrom": {
     "lib": "project",
     "id": "full-bleed-photo-hero"
@@ -124,6 +125,7 @@
    "archetype": "row",
    "surfaceIntent": "surface/primary",
    "novelty": "reuse",
+   "archetypeRef": "row",
    "seededFrom": {
     "lib": "project",
     "id": "centered-heading-over-logo-row"
@@ -168,6 +170,7 @@
    "archetype": "split",
    "surfaceIntent": "surface/primary",
    "novelty": "reuse",
+   "archetypeRef": "split",
    "seededFrom": {
     "lib": "project",
     "id": "copy-left-illustration-right-carousel"
@@ -252,6 +255,7 @@
    "archetype": "split",
    "surfaceIntent": "surface/primary",
    "novelty": "reuse",
+   "archetypeRef": "split",
    "seededFrom": {
     "lib": "project",
     "id": "sticky-copy-with-card-grid"
@@ -404,6 +408,7 @@
    "archetype": "band",
    "surfaceIntent": "surface/accent-soft",
    "novelty": "reuse",
+   "archetypeRef": "band",
    "seededFrom": {
     "lib": "project",
     "id": "headrail-split-with-card-carousel"
@@ -490,6 +495,7 @@
    "archetype": "split",
    "surfaceIntent": "surface/primary",
    "novelty": "reuse",
+   "archetypeRef": "split",
    "seededFrom": {
     "lib": "project",
     "id": "copy-left-logo-collage-inset"
@@ -544,6 +550,7 @@
    "archetype": "band",
    "surfaceIntent": "surface/primary",
    "novelty": "reuse",
+   "archetypeRef": "band",
    "seededFrom": {
     "lib": "project",
     "id": "headrail-two-col-header"
@@ -591,6 +598,7 @@
    "archetype": "split",
    "surfaceIntent": "surface/primary",
    "novelty": "reuse",
+   "archetypeRef": "split",
    "seededFrom": {
     "lib": "project",
     "id": "tabbed-testimonial-with-stats"
@@ -673,6 +681,7 @@
    "archetype": "row",
    "surfaceIntent": "surface/primary",
    "novelty": "reuse",
+   "archetypeRef": "row",
    "seededFrom": {
     "lib": "project",
     "id": "heading-left-award-badges-right"
@@ -715,6 +724,7 @@
    "archetype": "band",
    "surfaceIntent": "surface/inverse-teal",
    "novelty": "reuse",
+   "archetypeRef": "band",
    "seededFrom": {
     "lib": "project",
     "id": "dark-band-cta"
@@ -757,5 +767,17 @@
    "_requiresHydration": true
   }
  ],
+ "drawableArchetypes": {
+  "full-bleed-photo-hero": "overlay",
+  "centered-heading-over-logo-row": "generic-flow",
+  "copy-left-illustration-right-carousel": "split",
+  "sticky-copy-with-card-grid": "split",
+  "headrail-split-with-card-carousel": "cards",
+  "copy-left-logo-collage-inset": "split",
+  "headrail-two-col-header": "generic-flow",
+  "tabbed-testimonial-with-stats": "split",
+  "heading-left-award-badges-right": "generic-flow",
+  "dark-band-cta": "generic-flow"
+ },
  "errors": {}
 }

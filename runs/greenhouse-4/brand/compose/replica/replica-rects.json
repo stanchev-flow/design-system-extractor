@@ -1,5 +1,5 @@
 {
- "docHeight": 4506,
+ "docHeight": 14746,
  "bands": [
   {
    "id": "page-nav",
@@ -20,18 +20,18 @@
     "x": 0,
     "y": 81,
     "w": 1440,
-    "h": 1059.796875
+    "h": 1101.796875
    }
   },
   {
    "id": "sec-1",
    "kind": "section",
-   "layout": "featuresThreeColumnCard",
+   "layout": "featureGrid",
    "rect": {
     "x": 0,
-    "y": 1140.796875,
+    "y": 1182.796875,
     "w": 1440,
-    "h": 664.734375
+    "h": 746.421875
    }
   },
   {
@@ -40,7 +40,7 @@
    "layout": "logoWall",
    "rect": {
     "x": 0,
-    "y": 1805.53125,
+    "y": 1929.21875,
     "w": 1440,
     "h": 570.59375
    }
@@ -48,32 +48,164 @@
   {
    "id": "sec-3",
    "kind": "section",
-   "layout": "featureGrid",
+   "layout": "stats",
    "rect": {
     "x": 0,
-    "y": 2376.125,
+    "y": 2499.8125,
     "w": 1440,
-    "h": 746.421875
+    "h": 404.09375
    }
   },
   {
    "id": "sec-4",
    "kind": "section",
-   "layout": "cta",
+   "layout": "testimonial",
    "rect": {
     "x": 0,
-    "y": 3122.546875,
+    "y": 2903.90625,
     "w": 1440,
-    "h": 478.796875
+    "h": 440.5
    }
   },
   {
    "id": "sec-5",
    "kind": "section",
+   "layout": "cta",
+   "rect": {
+    "x": 0,
+    "y": 3344.40625,
+    "w": 1440,
+    "h": 478.796875
+   }
+  },
+  {
+   "id": "sec-6",
+   "kind": "section",
+   "layout": "heroSplit5050",
+   "rect": {
+    "x": 0,
+    "y": 3823.203125,
+    "w": 1440,
+    "h": 1102.09375
+   }
+  },
+  {
+   "id": "sec-7",
+   "kind": "section",
+   "layout": "features",
+   "rect": {
+    "x": 0,
+    "y": 4925.296875,
+    "w": 1440,
+    "h": 598.328125
+   }
+  },
+  {
+   "id": "sec-8",
+   "kind": "section",
+   "layout": "featuresHeadingBodyTop",
+   "rect": {
+    "x": 0,
+    "y": 5523.625,
+    "w": 1440,
+    "h": 1368.0625
+   }
+  },
+  {
+   "id": "sec-9",
+   "kind": "section",
+   "layout": "featuresSectionHeadingTop",
+   "rect": {
+    "x": 0,
+    "y": 6891.6875,
+    "w": 1440,
+    "h": 179.796875
+   }
+  },
+  {
+   "id": "sec-10",
+   "kind": "section",
+   "layout": "content",
+   "rect": {
+    "x": 0,
+    "y": 7071.484375,
+    "w": 1440,
+    "h": 1104.3125
+   }
+  },
+  {
+   "id": "sec-11",
+   "kind": "section",
+   "layout": "gallery",
+   "rect": {
+    "x": 0,
+    "y": 8175.796875,
+    "w": 1440,
+    "h": 438.46875
+   }
+  },
+  {
+   "id": "sec-12",
+   "kind": "section",
+   "layout": "ctaSplit5050",
+   "rect": {
+    "x": 0,
+    "y": 8614.265625,
+    "w": 1440,
+    "h": 1273.96875
+   }
+  },
+  {
+   "id": "sec-13",
+   "kind": "section",
+   "layout": "featuresThreeColumnCard",
+   "rect": {
+    "x": 0,
+    "y": 9888.234375,
+    "w": 1440,
+    "h": 664.734375
+   }
+  },
+  {
+   "id": "sec-14",
+   "kind": "section",
+   "layout": "featuresSplit5050",
+   "rect": {
+    "x": 0,
+    "y": 10552.96875,
+    "w": 1440,
+    "h": 1214.34375
+   }
+  },
+  {
+   "id": "sec-15",
+   "kind": "section",
+   "layout": "featuresSplit5050Media",
+   "rect": {
+    "x": 0,
+    "y": 11767.3125,
+    "w": 1440,
+    "h": 1135.34375
+   }
+  },
+  {
+   "id": "sec-16",
+   "kind": "section",
+   "layout": "featuresHeadingFullWidth",
+   "rect": {
+    "x": 0,
+    "y": 12902.65625,
+    "w": 1440,
+    "h": 938.9375
+   }
+  },
+  {
+   "id": "sec-17",
+   "kind": "section",
    "layout": "closing-bookend",
    "rect": {
     "x": 0,
-    "y": 3601.34375,
+    "y": 13841.59375,
     "w": 1440,
     "h": 904.8125
    }

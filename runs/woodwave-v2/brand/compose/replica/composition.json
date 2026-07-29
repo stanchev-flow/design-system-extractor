@@ -15,6 +15,7 @@
    "archetype": "stack",
    "surfaceIntent": "any",
    "novelty": "reuse",
+   "archetypeRef": "stack",
    "seededFrom": {
     "lib": "project",
     "id": "hero-gallery-overlay"
@@ -64,6 +65,7 @@
    "archetype": "stack",
    "surfaceIntent": "primary",
    "novelty": "reuse",
+   "archetypeRef": "stack",
    "seededFrom": {
     "lib": "project",
     "id": "about-editorial-ghost"
@@ -144,6 +146,7 @@
    "archetype": "stack",
    "surfaceIntent": "any",
    "novelty": "reuse",
+   "archetypeRef": "stack",
    "seededFrom": {
     "lib": "project",
     "id": "gallery-slider-band"
@@ -233,6 +236,7 @@
    "archetype": "split",
    "surfaceIntent": "primary",
    "novelty": "reuse",
+   "archetypeRef": "split",
    "seededFrom": {
     "lib": "project",
     "id": "founder-story-watermark"
@@ -285,6 +289,7 @@
    "archetype": "split",
    "surfaceIntent": "inverse",
    "novelty": "reuse",
+   "archetypeRef": "split",
    "seededFrom": {
     "lib": "project",
     "id": "visit-map-card"
@@ -376,6 +381,7 @@
    "archetype": "stack",
    "surfaceIntent": "primary",
    "novelty": "reuse",
+   "archetypeRef": "stack",
    "seededFrom": {
     "lib": "project",
     "id": "newsletter-subscribe"
@@ -426,5 +432,13 @@
    }
   }
  ],
+ "drawableArchetypes": {
+  "hero": "stack",
+  "about": "generic-flow",
+  "gallery-slider": "generic-flow",
+  "founder-story": "split",
+  "visit": "split",
+  "newsletter": "stack"
+ },
  "errors": {}
 }

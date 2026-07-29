@@ -1,4 +1,4 @@
-$ node /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/brand_pipeline/slop_audit.mjs /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/index.html
+$ node brand_pipeline/slop_audit.mjs runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/index.html
 
 --- stdout ---
 PASS product-launch/index.html @1440px

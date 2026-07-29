@@ -1,17 +1,17 @@
 # Interaction-Contract Baseline Report
 
-Generated: 2026-07-10T19:05:29+00:00 — auditor v1.0.0 — mode: strict
+Generated: 2026-07-28T23:58:38+00:00 — auditor v1.0.0 — mode: strict
 Contracts: `brand_pipeline/spec/interaction-contracts.md` (WAI-ARIA APG primary; Base UI secondary; Radix tertiary)
 
 ## Audited lanes
 
 | lane | file | mtime (UTC) | sha256/12 |
 |---|---|---|---|
-| compose/bakeoff-sol | `/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/remote/brand/compose/bakeoff-sol/index.html` | 2026-07-10T19:01:40+00:00 | `47eb2489d73a` |
+| compose/bakeoff-sol | `runs/remote/brand/compose/bakeoff-sol/index.html` | 2026-07-10T19:01:40+00:00 | `47eb2489d73a` |
 
 If a lane is re-rendered by another agent, re-run the audit; the mtime/sha above identify exactly which HTML was measured.
 
-## Summary — 0 failing required cells, 2 advisory, 37 passing, 4 skipped
+## Summary — 0 failing required cells, 2 advisory, 37 passing, 7 skipped
 
 ### Most impactful gaps (required checks failing, by lane count)
 
@@ -110,4 +110,7 @@ If a lane is re-rendered by another agent, re-run the audit; the mtime/sha above
 | IC-CAR-05 | carousel | required | behavioral | **skip** | rail does not overflow at this viewport; keyboard-scroll probe not applicable |
 | IC-MARQ-01 | marquee | required | static | **skip** | no marquee detected in this lane |
 | IC-MARQ-03 | marquee | required | behavioral | **skip** | no marquee detected in this lane |
+| IC-TAB-01 | tabs | required | static | **skip** | no tab devices detected in this lane |
+| IC-TAB-05 | tabs | required | behavioral | **skip** | no tab devices detected in this lane |
+| IC-TAB-06 | tabs | required | behavioral | **skip** | no tab devices detected in this lane |
 

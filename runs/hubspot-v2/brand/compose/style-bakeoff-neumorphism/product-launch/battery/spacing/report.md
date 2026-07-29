@@ -1,6 +1,6 @@
 # Spacing-conformance baseline report
 
-Generated 2026-07-14T20:19:15Z · viewport 1440x900 · contract: `brand_pipeline/spec/spacing-conformance.md` · tolerance: max(2px, 10%) for rhythm; max(2px, 1%) for widths; drift = within 2x tolerance.
+Generated 2026-07-28T23:52:01Z · viewport 1440x900 · contract: `brand_pipeline/spec/spacing-conformance.md` · tolerance: max(2px, 10%) for rhythm; max(2px, 1%) for widths; drift = within 2x tolerance.
 
 Severity: `conform` pass · `drift` advisory · `wrong-step`/`off-ladder` **hard fail** · `unmapped` extraction gap (advisory, listed apart).
 
@@ -12,7 +12,7 @@ Severity: `conform` pass · `drift` advisory · `wrong-step`/`off-ladder` **hard
 
 ## compose/style-bakeoff-neumorphism/product-launch
 
-`/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-neumorphism/product-launch/index.html` (mtime 2026-07-14 21:17:15)
+`runs/hubspot-v2/brand/compose/style-bakeoff-neumorphism/product-launch/index.html` (mtime 2026-07-14 21:17:15)
 
 ### Unmapped relationships (extraction gaps — capture work, not render bugs)
 

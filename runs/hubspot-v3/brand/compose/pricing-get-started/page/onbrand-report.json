@@ -19,7 +19,7 @@
     "pass": false,
     "checks": {
       "No default/system display font": true,
-      "No off-palette hex colors": true,
+      "No off-palette hex colors": false,
       "No lorem/placeholder copy": true,
       "All brand image assets present": false,
       "Rounding matches brand radius scale": true,
@@ -30,7 +30,7 @@
   },
   "invariants": {
     "mode": "hard",
-    "pass": true,
+    "pass": false,
     "checks": {
       "single-accent": true,
       "primitive-only": true,
@@ -59,7 +59,17 @@
       "testimonial-integrity": true,
       "grid-fill": true,
       "media-binding": true,
-      "mark-legality": true
+      "mark-legality": true,
+      "slot-role-eligibility": true,
+      "anatomy-tab-controls": true,
+      "anatomy-stat-items": false,
+      "fact-consumption": false,
+      "fact-consumption:responsive.hero": false,
+      "fact-consumption:responsive.footer": false,
+      "fact-consumption:responsive.headings.lineHeights": false,
+      "fact-consumption:responsive.nav.collapse": false,
+      "fact-consumption:responsive.nav.panelSurface": false,
+      "fact-consumption:responsive.buttons.purgeHoverTransform": false
     },
     "details": {
       "text-contrast": "100 text elements measured against their effective background (surface + decoration layer); worst = page-nav/c-button.c-button--navcta('Get a demo') at 3.4 (floor 4.5); skipped=105; 5 element(s) exempt as MEASURED brand pairs (#ff4800 on #ffffff; #ffffff on #ff4800)",

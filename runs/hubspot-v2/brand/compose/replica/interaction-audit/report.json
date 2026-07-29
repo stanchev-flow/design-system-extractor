@@ -1,23 +1,23 @@
 {
-  "generated_at": "2026-07-10T22:57:23+00:00",
+  "generated_at": "2026-07-28T23:58:29+00:00",
   "auditor_version": "1.0.0",
   "spec": "brand_pipeline/spec/interaction-contracts.md",
   "mode": "strict",
   "summary": {
     "cells": {
-      "pass": 19,
+      "pass": 24,
       "fail": 0,
       "advisory": 2,
-      "skip": 12
+      "skip": 13
     },
     "required_check_failures": {}
   },
   "lanes": [
     {
       "lane": "compose/replica",
-      "path": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/replica/index.html",
-      "audited_mtime": "2026-07-10T22:57:01+00:00",
-      "sha256_12": "31ee59244f0a",
+      "path": "runs/hubspot-v2/brand/compose/replica/index.html",
+      "audited_mtime": "2026-07-28T23:45:48+00:00",
+      "sha256_12": "0e71c4b89402",
       "findings": [
         {
           "check": "IC-NAV-01",
@@ -27,7 +27,7 @@
           "lane": "compose/replica",
           "layer": "static",
           "message": "trigger 'Products' is a native button",
-          "line": 2694,
+          "line": 3458,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -38,7 +38,7 @@
           "lane": "compose/replica",
           "layer": "static",
           "message": "trigger 'Products' carries aria-expanded",
-          "line": 2694,
+          "line": 3458,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -49,7 +49,7 @@
           "lane": "compose/replica",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2694,
+          "line": 3458,
           "snippet": "<button aria-controls=\"cs-mega-1\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Products<span aria-hidden=\"true\" class=\"…"
         },
         {
@@ -60,7 +60,7 @@
           "lane": "compose/replica",
           "layer": "static",
           "message": "trigger 'Solutions' is a native button",
-          "line": 2694,
+          "line": 3460,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -71,7 +71,7 @@
           "lane": "compose/replica",
           "layer": "static",
           "message": "trigger 'Solutions' carries aria-expanded",
-          "line": 2694,
+          "line": 3460,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -82,7 +82,7 @@
           "lane": "compose/replica",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2694,
+          "line": 3460,
           "snippet": "<button aria-controls=\"cs-mega-2\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Solutions<span aria-hidden=\"true\" class=…"
         },
         {
@@ -93,7 +93,7 @@
           "lane": "compose/replica",
           "layer": "static",
           "message": "trigger 'Resources' is a native button",
-          "line": 2694,
+          "line": 3462,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -104,7 +104,7 @@
           "lane": "compose/replica",
           "layer": "static",
           "message": "trigger 'Resources' carries aria-expanded",
-          "line": 2694,
+          "line": 3462,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -115,7 +115,7 @@
           "lane": "compose/replica",
           "layer": "static",
           "message": "trigger references its panel via aria-controls",
-          "line": 2694,
+          "line": 3462,
           "snippet": "<button aria-controls=\"cs-mega-4\" aria-expanded=\"false\" class=\"c-arrow-link cs-nav-trigger\" style=\"gap:0\" type=\"button\">Resources<span aria-hidden=\"true\" class=…"
         },
         {
@@ -137,8 +137,8 @@
           "lane": "compose/replica",
           "layer": "static",
           "message": "anchor with role=button in nav chrome — promises Space activation anchors don't have",
-          "line": 2694,
-          "snippet": "<a class=\"c-button\" href=\"https://app.hubspot.com/signup-hubspot/crm\" role=\"button\">Get started free</a>"
+          "line": 3464,
+          "snippet": "<a class=\"c-button c-button--navcta\" href=\"https://offers.hubspot.com/crm-platform-demo\" role=\"button\" style=\"--navcta-bg: rgb(255, 72, 0); --navcta-ink: rgb(25…"
         },
         {
           "check": "IC-LANG-01",
@@ -148,8 +148,8 @@
           "lane": "compose/replica",
           "layer": "static",
           "message": "toggle is a native <summary> inside <details>",
-          "line": 2694,
-          "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"></span></summary>"
+          "line": 3454,
+          "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"><svg aria-hidden=\"…"
         },
         {
           "check": "IC-LANG-02",
@@ -159,8 +159,8 @@
           "lane": "compose/replica",
           "layer": "static",
           "message": "toggle has an accessible name",
-          "line": 2694,
-          "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"></span></summary>"
+          "line": 3454,
+          "snippet": "<summary aria-label=\"About\" class=\"cs-nav-util-link\"><span class=\"cs-nav-util-label\">About</span><span aria-hidden=\"true\" class=\"cs-nav-chev\"><svg aria-hidden=\"…"
         },
         {
           "check": "IC-LANG-03",
@@ -202,9 +202,9 @@
           "status": "pass",
           "lane": "compose/replica",
           "layer": "static",
-          "message": "rail is an accessible keyboard-scrollable region",
-          "line": 2842,
-          "snippet": "<div aria-label=\"Built-in AI agents that work for you 24/7.\" aria-roledescription=\"carousel\" class=\"cs-edgecut\" role=\"region\" tabindex=\"0\"><div class=\"cs-module…"
+          "message": "prev/next controls are buttons with accessible names",
+          "line": 3686,
+          "snippet": "<button aria-label=\"Previous\" class=\"cs-edgecut-arrow cs-edgecut-arrow--prev\" data-railbtn=\"prev\" type=\"button\"><svg aria-hidden=\"true\" fill=\"none\" height=\"12\" …"
         },
         {
           "check": "IC-CAR-02",
@@ -214,7 +214,7 @@
           "lane": "compose/replica",
           "layer": "static",
           "message": "container has aria-roledescription=carousel and a label",
-          "line": 2842,
+          "line": 3659,
           "snippet": "<div aria-label=\"Built-in AI agents that work for you 24/7.\" aria-roledescription=\"carousel\" class=\"cs-edgecut\" role=\"region\" tabindex=\"0\"><div class=\"cs-module…"
         },
         {
@@ -225,7 +225,7 @@
           "lane": "compose/replica",
           "layer": "static",
           "message": "no slide-level group/roledescription semantics",
-          "line": 2842,
+          "line": 3659,
           "snippet": "<div aria-label=\"Built-in AI agents that work for you 24/7.\" aria-roledescription=\"carousel\" class=\"cs-edgecut\" role=\"region\" tabindex=\"0\"><div class=\"cs-module…"
         },
         {
@@ -236,8 +236,96 @@
           "lane": "compose/replica",
           "layer": "static",
           "message": "no auto-rotation on this rail — pause-control contract not applicable",
-          "line": 2842,
+          "line": 3659,
           "snippet": "<div aria-label=\"Built-in AI agents that work for you 24/7.\" aria-roledescription=\"carousel\" class=\"cs-edgecut\" role=\"region\" tabindex=\"0\"><div class=\"cs-module…"
+        },
+        {
+          "check": "IC-CAR-01",
+          "family": "carousel",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/replica",
+          "layer": "static",
+          "message": "prev/next controls are buttons with accessible names",
+          "line": 3525,
+          "snippet": "<button aria-label=\"Previous slide\" class=\"cs-panelcar-arrow cs-panelcar-arrow--prev\" data-panelcar-prev=\"\" disabled=\"\" type=\"button\"><svg aria-hidden=\"true\" fi…"
+        },
+        {
+          "check": "IC-CAR-02",
+          "family": "carousel",
+          "severity": "advisory",
+          "status": "pass",
+          "lane": "compose/replica",
+          "layer": "static",
+          "message": "container has aria-roledescription=carousel and a label",
+          "line": 3500,
+          "snippet": "<div aria-label=\"HubSpot's Agentic Customer Platform\" aria-roledescription=\"carousel\" class=\"cs-panelcar cs-panelcar--railnav\" data-panelcar=\"\" style=\"--cs-pane…"
+        },
+        {
+          "check": "IC-CAR-03",
+          "family": "carousel",
+          "severity": "advisory",
+          "status": "pass",
+          "lane": "compose/replica",
+          "layer": "static",
+          "message": "slide containers use role=group + aria-roledescription=slide",
+          "line": 3500,
+          "snippet": "<div aria-label=\"HubSpot's Agentic Customer Platform\" aria-roledescription=\"carousel\" class=\"cs-panelcar cs-panelcar--railnav\" data-panelcar=\"\" style=\"--cs-pane…"
+        },
+        {
+          "check": "IC-CAR-04",
+          "family": "carousel",
+          "severity": "advisory",
+          "status": "skip",
+          "lane": "compose/replica",
+          "layer": "static",
+          "message": "no auto-rotation on this rail — pause-control contract not applicable",
+          "line": 3500,
+          "snippet": "<div aria-label=\"HubSpot's Agentic Customer Platform\" aria-roledescription=\"carousel\" class=\"cs-panelcar cs-panelcar--railnav\" data-panelcar=\"\" style=\"--cs-pane…"
+        },
+        {
+          "check": "IC-TAB-01",
+          "family": "tabs",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/replica",
+          "layer": "static",
+          "message": "tabs are native buttons with exactly one aria-selected",
+          "line": 3718,
+          "snippet": "<div aria-label=\"Case studies\" class=\"cs-tablist\" role=\"tablist\"> <button aria-controls=\"tabpanel-testimonial-tabs-0\" aria-selected=\"true\" class=\"cs-tab\" id=\"ta…"
+        },
+        {
+          "check": "IC-TAB-02",
+          "family": "tabs",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/replica",
+          "layer": "static",
+          "message": "tab↔panel aria-controls/aria-labelledby wiring is two-way",
+          "line": 3718,
+          "snippet": "<div aria-label=\"Case studies\" class=\"cs-tablist\" role=\"tablist\"> <button aria-controls=\"tabpanel-testimonial-tabs-0\" aria-selected=\"true\" class=\"cs-tab\" id=\"ta…"
+        },
+        {
+          "check": "IC-TAB-03",
+          "family": "tabs",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/replica",
+          "layer": "static",
+          "message": "roving tabindex + single visible focusable panel",
+          "line": 3718,
+          "snippet": "<div aria-label=\"Case studies\" class=\"cs-tablist\" role=\"tablist\"> <button aria-controls=\"tabpanel-testimonial-tabs-0\" aria-selected=\"true\" class=\"cs-tab\" id=\"ta…"
+        },
+        {
+          "check": "IC-TAB-04",
+          "family": "tabs",
+          "severity": "advisory",
+          "status": "pass",
+          "lane": "compose/replica",
+          "layer": "static",
+          "message": "tablist has an accessible name",
+          "line": 3718,
+          "snippet": "<div aria-label=\"Case studies\" class=\"cs-tablist\" role=\"tablist\"> <button aria-controls=\"tabpanel-testimonial-tabs-0\" aria-selected=\"true\" class=\"cs-tab\" id=\"ta…"
         },
         {
           "check": "IC-MARQ-01",
@@ -408,10 +496,32 @@
           "check": "IC-CAR-05",
           "family": "carousel",
           "severity": "required",
+          "status": "skip",
+          "lane": "compose/replica",
+          "layer": "behavioral",
+          "message": "rail does not overflow at this viewport; keyboard-scroll probe not applicable",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-TAB-05",
+          "family": "tabs",
+          "severity": "required",
           "status": "pass",
           "lane": "compose/replica",
           "layer": "behavioral",
-          "message": "rail focusable; ArrowRight scrolls: 0->186",
+          "message": "ArrowRight/ArrowLeft move focus and selection; the visible panel follows",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-TAB-06",
+          "family": "tabs",
+          "severity": "required",
+          "status": "pass",
+          "lane": "compose/replica",
+          "layer": "behavioral",
+          "message": "Home/End jump selection; click selects (pointer parity)",
           "line": null,
           "snippet": null
         },

@@ -1,12 +1,12 @@
 <!doctype html>
-<html data-projection-input-digest="5bb6b0bd71b3b4250187d91a860e405b83cd6ec81546ff53a54c6b5443892164" lang="en">
+<html data-projection-input-digest="38e52dd70b2a40dd475bb0599a5023f9ca6590ac5506f595efebe0f275de9668" lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HubSpot - full page (composed from catalog)</title>
 
 <style id="tokens">
-/* HubSpot — generated design tokens (layer 1). Source: brand.yaml sha256=d08adad3ff23; generator tokens_css.py v1.0.0; style=none; tokens=177; disabledDevices=counter-display,ghost-watermark,shadows,aspect-palette. Regenerate via the compose CLI — never hand-edit. */
+/* HubSpot — generated design tokens (layer 1). Source: brand.yaml sha256=99e61899228b; generator tokens_css.py v1.0.0; style=none; tokens=177; disabledDevices=counter-display,ghost-watermark,shadows,aspect-palette. Regenerate via the compose CLI — never hand-edit. */
 :root {
   --color-surface-primary: #fcfcfa;
   --color-surface-white: #ffffff;
@@ -149,20 +149,20 @@
   --button-fg: #ffffff;
   --button-bg-hover: #c93700;
   --button-fg-hover: #ffffff;
-  --button-border: none;
-  --button-pad: 16px 40px;
+  --button-border: 2px solid transparent;
+  --button-pad: 12px 24px;
   --button-radius: 8px;
-  --button-height: 68px;
+  --button-height: 56px;
   --button-weight: 500;
-  --button-size: 1.125rem;
+  --button-size: 1rem;
   --button-secondary-bg: #ffffff;
   --button-secondary-fg: #ff4800;
   --button-secondary-border: 2px solid #ff4800;
-  --button-secondary-pad: 16px 40px;
+  --button-secondary-pad: 12px 24px;
   --button-secondary-radius: 8px;
-  --button-secondary-height: 68px;
+  --button-secondary-height: 56px;
   --button-secondary-weight: 500;
-  --button-secondary-size: 1.125rem;
+  --button-secondary-size: 1rem;
   --button-tertiary-bg: #1f1f1f;
   --button-tertiary-fg: #ffffff;
   --button-tertiary-border: 2px solid transparent;
@@ -649,7 +649,11 @@ p { text-wrap-style: balance; }
   height: var(--c-button-height, auto);
   padding: var(--c-button-pad, 0.8em 1.6em); /* provenance: structural — em-relative
      control inset fallback (shape, not magnitude: scales with the button's own size) */
-  border-radius: var(--c-button-radius, var(--radius)); border: none;
+  /* measured control border (sysfix 2026-07): the primary rides the base rule, so its
+     measured `buttons.primary.border` (e.g. a transparent 2px reserve keeping the filled
+     and outline families the same box, or a hairline stroke) must flow through here.
+     Fallback `none` keeps brands without a primary border fact byte-identical. */
+  border-radius: var(--c-button-radius, var(--radius)); border: var(--c-button-border, none);
   transition: background var(--c-motion-fast) var(--c-ease),
               color var(--c-motion-fast) var(--c-ease),
               transform var(--c-motion-fast) var(--c-ease); }
@@ -1043,11 +1047,16 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-panelcar,
 .cs-footer-sec > .c-footer {
   width: 100%; max-width: var(--content-measure, 86rem); margin-inline: auto; }
-.cs-section { min-height: 100cqh; }
+.cs-section { min-height: auto; }
 .cs-slot { display: flex; flex-direction: column; align-items: center; }
 .cs-eyebrow-wrap { margin-bottom: var(--c-eyebrow-gap); text-align: center; }
+/* TITLE-OVER-MEDIA PULL is a FACT-GATED device, not the stack hero's default seam:
+   --c-title-overlap is emitted (component_vars) only for a layout whose own
+   overlapRules declare `titleOverMediaTop`. A layout with no such fact resolves the
+   0rem fallback, so its title sits ABOVE the media on the section's own block rhythm
+   instead of straddling its top edge with a borrowed magnitude. */
 .cs-title { position: relative; z-index: 2; text-align: center;
-  margin-bottom: var(--c-title-overlap); }
+  margin-bottom: var(--c-title-overlap, 0rem); }
 .cs-collage { position: relative; width: 100%; max-width: 80rem; margin: 0 auto; }
 /* ALIGNMENT: the overlap depth/offsets keep their measured % magnitudes but round() the
    USED value to an exact --baseline multiple, so the overlap registers to the shared
@@ -1492,7 +1501,8 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 @media (max-width: 767px) {
   .cs-interlock { grid-template-columns: 1fr; }
   /* provenance: structural — mobile media recrop ratio (layout geometry, not a
-     brand token; coincidentally equals Remote's landscape aspect) */
+     brand token; a plain landscape ratio will coincide with some brands' own
+     measured aspect, which does not make it brand-derived) */
   .cs-interlock-media { aspect-ratio: 3 / 2; }
 }
 .cs-media-split { display: grid;
@@ -1519,10 +1529,9 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
    the shared measure by design (a release, not a private containment copy). */
 .cs-ov--bleed .cs-ov-frame { max-width: none; }
 .cs-ov-canvas { position: relative; margin: 0; min-height: calc(48 * var(--baseline)); }
-/* FULL-HEIGHT bleed hero (2026-07): a full-bleed photo hero fills the viewport like
-   the source, not a short wide band. The hero image must COVER this taller canvas —
-   its authored wide aspect-ratio would otherwise pin it to a short strip. */
-.cs-ov--bleed .cs-ov-canvas { min-height: min(90svh, 54rem); }
+/* Bleed canvas is content-sized from the brand media / measured floor above. Viewport-tall
+   bleed is applied only when brand responsive heightRule (viewport / viewport-minus-nav)
+   licenses it via component_render — never as an unconditional viewport-height default. */
 .cs-ov-canvas > .c-image, .cs-ov-canvas > .c-image-ph {
   width: 100%; height: 100%; min-height: inherit; object-fit: cover; }
 .cs-ov--bleed .cs-ov-canvas > .c-image { aspect-ratio: auto; height: 100%; }
@@ -1556,11 +1565,11 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   padding: calc(6 * var(--baseline)) calc(5 * var(--baseline)); }
 /* panel display steps DOWN from the section's own display alias — --c-display-size is
    always emitted per section (component_vars), so no literal fallback (AS-24).
-   0.6 (pass1 2026-07, scale_adherence finding): the old 0.62 landed hubspot's panel
-   heading at 49.6px — on NO ladder (measured h1 48 / derived step 52). 0.6 puts the
-   stepped-down rank on the brand's own h1 rung for the evidenced display:h1 ratios
-   (hubspot 80->48 = h1; remote 46->27.6 ~= h3 28) — quantized new geometry, audited
-   per brand by the scale gate. */
+   The 0.6 step is a QUANTIZING ratio (pass1 2026-07, scale_adherence finding): an
+   unrounded multiplier lands the stepped-down heading between the brand's measured
+   type rungs, so the panel reads at a size no ladder declares. A round step puts the
+   stepped-down rank back onto a measured rung across the observed display:heading
+   ratios — geometry quantized here, then audited per brand by the scale gate. */
 .cs-ov-panel .c-heading--display { font-size: calc(0.6 * var(--c-display-size));
   max-width: 14ch; }
 /* sidebar rail: the full-height panel column (ref 3) — space-between stack. */
@@ -1628,7 +1637,7 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-band { position: relative; }
 .cs-band--top .cs-band-media { margin: 0; }
 .cs-band--top .c-image, .cs-band--top .c-image-ph { width: 100%;
-  height: calc(56 * var(--baseline)); object-fit: cover; display: block; }
+  height: auto; display: block; object-fit: cover; }
 /* the on-photo caption rides a small solid panel CHIP (sanctioned panel-over-media) —
    never bare text on the photograph. */
 .cs-band-chip { position: absolute; top: calc(5 * var(--baseline));
@@ -1643,7 +1652,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   display: flex; flex-direction: column; gap: var(--c-block-gap);
   padding-top: var(--c-block-gap); }
 @media (max-width: 767px) {
-  .cs-band--top .c-image, .cs-band--top .c-image-ph { height: calc(36 * var(--baseline)); }
   .cs-band-straddler { width: 100% !important; margin-inline: 0 !important;
     --c-seam-rise: calc(6 * var(--baseline)); } }
 .cs-flow { display: flex; flex-direction: column;
@@ -1677,7 +1685,8 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   line-height: var(--type-h4-line-height, var(--c-heading-line)); color: var(--c-ink); }
 .cs-testimonial-mark { color: var(--c-accent); font-family: var(--c-font-display);
   /* provenance: structural — decorative pull-quote glyph scale (a device size
-     ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */
+     ceiling, not a brand type tier; round rem values in a device clamp will
+     coincide with some brands' spacing rungs without deriving from them) */
   font-size: clamp(2.5rem, 5cqw, 4rem); line-height: 0.8; margin-bottom: 1rem; }
 .cs-testimonial .c-person { margin-top: var(--space-quote-to-attribution,
   var(--c-block-gap)); }
@@ -1990,9 +1999,10 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
    so it reads as a bar flush above the hero, not padded inside it. */
 #page-nav { background: var(--c-paper); color: var(--c-ink); }
 #page-nav .cs-nav { margin-bottom: 0; padding: var(--c-nav-pad-block) var(--c-section-pad-x); }
-/* page: only the opening section is full-frame; others size to content. */
+/* page: sections size to content. Viewport/tall opening height is applied only
+   when brand responsive facts or measured bandHeight license it (component_render /
+   band_height_css) — never as an unconditional full-frame default. */
 .cs-section { min-height: auto; }
-#sec-0 .cs-section { min-height: 100cqh; }
 .cs-module--plate {
   /* CARD SURFACE (fid 2026-07, inset-card-on-canvas): the plate paints the brand's
      DECLARED container surface. Default is the page panel role (--c-panel); a brand
@@ -2371,7 +2381,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-button-bg: var(--button-bg);
   --c-button-fg: var(--button-fg);
   --c-button-bg-hover: var(--button-bg-hover);
@@ -2428,7 +2437,7 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 @media (max-width: 599px) { #sec-0 :is(h1, .c-heading--display) { font-size: 48px; line-height: 1.1458; } }
 
 /* responsive hero primary button (fact-gated: layouts[].responsive.primaryButton) — measured control box (font-size/line-height/border/padding); the composer left it at the small control tier. */
-#sec-0 .c-button:not(.c-button--navcta) { font-size: 18px; line-height: 1.7778; padding: 16px 40px; border: 2px solid transparent; }
+#sec-0 .c-button:not(.c-button--navcta) { font-size: 16px; line-height: 1.75; padding: 12px 24px; border: 2px solid transparent; }
 
 #sec-1 {
   --c-paper: var(--surface-surface-primary);
@@ -2461,7 +2470,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-button-bg: var(--button-bg);
   --c-button-fg: var(--button-fg);
   --c-button-bg-hover: var(--button-bg-hover);
@@ -2539,7 +2547,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-button-bg: var(--button-bg);
   --c-button-fg: var(--button-fg);
   --c-button-bg-hover: var(--button-bg-hover);
@@ -2593,7 +2600,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-button-bg: var(--button-bg);
   --c-button-fg: var(--button-fg);
   --c-button-bg-hover: var(--button-bg-hover);
@@ -2670,7 +2676,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-button-bg: var(--button-bg);
   --c-button-fg: var(--button-fg);
   --c-button-bg-hover: var(--button-bg-hover);
@@ -2744,7 +2749,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-button-bg: var(--button-bg);
   --c-button-fg: var(--button-fg);
   --c-button-bg-hover: var(--button-bg-hover);
@@ -2817,7 +2821,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-button-bg: var(--button-bg);
   --c-button-fg: var(--button-fg);
   --c-button-bg-hover: var(--button-bg-hover);
@@ -2890,7 +2893,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-button-bg: var(--button-bg);
   --c-button-fg: var(--button-fg);
   --c-button-bg-hover: var(--button-bg-hover);
@@ -2944,7 +2946,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-button-bg: var(--button-bg);
   --c-button-fg: var(--button-fg);
   --c-button-bg-hover: var(--button-bg-hover);
@@ -2998,7 +2999,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-button-bg: var(--button-bg);
   --c-button-fg: var(--button-fg);
   --c-button-bg-hover: var(--button-bg-hover);
@@ -3071,7 +3071,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-button-bg: var(--button-bg);
   --c-button-fg: var(--button-fg);
   --c-button-bg-hover: var(--button-bg-hover);
@@ -3126,7 +3125,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-button-bg: var(--button-bg);
   --c-button-fg: var(--button-fg);
   --c-button-bg-hover: var(--button-bg-hover);
@@ -3211,114 +3209,20 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 </section>
 </div>
 <div id="sec-3" class="cs-surface" data-layout="sticky-copy-with-card-grid" data-surface="surface/primary" data-pattern="sticky-copy-with-card-grid" data-pattern-lib="project" data-pattern-match="ref" data-align="left" data-align-source="pattern">
-<section class="cs-section cs-modules-sec cs-modules-sec--siderail" style="--c-section-pad-top: 5rem; --c-section-pad-bottom: 5rem;">
-  <div class="cs-siderail">
-    <div class="cs-siderail-copy">
-      <div class="cs-modules-intro"><div class="c-header"><p class="c-eyebrow">Powered by AI</p><h2 class="c-heading c-heading--h2">Growing a business is hard. HubSpot makes it easier.</h2></div><p class="c-paragraph">Disconnected tools and data slow you down. HubSpot connects everything — and everyone — in one place to make growing a business easier than you think.</p></div>
-  <div class="cs-modules-actions"><a class="c-button" href="#" role="button" aria-label="Get a demo of HubSpot&#x27;s premium software">Get a demo</a><a class="c-button c-button--secondary" href="#" role="button" aria-label="Get started free with HubSpot&#x27;s free tools">Get started free</a></div>
-    </div>
-    <div class="cs-modules cs-modules--cols" style="--c-card-plate-bg: var(--surface-surface-white); --c-card-plate-border: 1px solid var(--c-panel-hairline)">
-    <article class="cs-module cs-module--plate cs-module--anatomy">
-      <div class="cs-module-headrow" style="--cs-headrow-mark: 1.5rem">
-        <figure class="cs-module-media cs-module-media--mark"><img class="c-image" src="assets/028-producticons-marketinghub-icon-orange.webp" alt="028 producticons marketinghub icon orange"></figure>
-        <h3 class="c-heading c-heading--h3">Marketing Hub®</h3>
-      </div>
-      <hr class="cs-module-divider" aria-hidden="true">
-      <p class="c-paragraph" style="--c-measure:44ch">Attract and convert the right leads. Run campaigns, personalize content, and track it all.</p>
-      
-      <a class="c-arrow-link" href="#">Learn more <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
-    </article>
-    <article class="cs-module cs-module--plate cs-module--anatomy">
-      <div class="cs-module-headrow" style="--cs-headrow-mark: 1.5rem">
-        <figure class="cs-module-media cs-module-media--mark"><img class="c-image" src="assets/029-producticons-saleshub-icon-orange.webp" alt="029 producticons saleshub icon orange"></figure>
-        <h3 class="c-heading c-heading--h3">Sales Hub®</h3>
-      </div>
-      <hr class="cs-module-divider" aria-hidden="true">
-      <p class="c-paragraph" style="--c-measure:44ch">Generate quality leads and close deals, faster. Automate prospecting, manage pipeline, and accelerate revenue growth.</p>
-      
-      <a class="c-arrow-link" href="#">Learn more <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
-    </article>
-    <article class="cs-module cs-module--plate cs-module--anatomy">
-      <div class="cs-module-headrow" style="--cs-headrow-mark: 1.5rem">
-        <figure class="cs-module-media cs-module-media--mark"><img class="c-image" src="assets/030-producticons-servicehub-icon-orange.webp" alt="030 producticons servicehub icon orange"></figure>
-        <h3 class="c-heading c-heading--h3">Service Hub®</h3>
-      </div>
-      <hr class="cs-module-divider" aria-hidden="true">
-      <p class="c-paragraph" style="--c-measure:44ch">Streamline and scale support to serve customers faster. Drive retention with actionable insights, customer health scores, and real-time usage data.</p>
-      
-      <a class="c-arrow-link" href="#">Learn more <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
-    </article>
-    <article class="cs-module cs-module--plate cs-module--anatomy">
-      <div class="cs-module-headrow" style="--cs-headrow-mark: 1.5rem">
-        <figure class="cs-module-media cs-module-media--mark"><img class="c-image" src="assets/031-producticons-contenthub-icon-orange.webp" alt="031 producticons contenthub icon orange"></figure>
-        <h3 class="c-heading c-heading--h3">Content Hub™</h3>
-      </div>
-      <hr class="cs-module-divider" aria-hidden="true">
-      <p class="c-paragraph" style="--c-measure:44ch">Create content that clicks with your audience. Build pages, publish content across channels, and stay on brand.</p>
-      
-      <a class="c-arrow-link" href="#">Learn more <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
-    </article>
-    <article class="cs-module cs-module--plate cs-module--anatomy">
-      <div class="cs-module-headrow" style="--cs-headrow-mark: 1.5rem">
-        <figure class="cs-module-media cs-module-media--mark"><img class="c-image" src="assets/032-producticons-datahub-icon-orange.webp" alt="032 producticons datahub icon orange"></figure>
-        <h3 class="c-heading c-heading--h3">Data Hub™</h3>
-      </div>
-      <hr class="cs-module-divider" aria-hidden="true">
-      <p class="c-paragraph" style="--c-measure:44ch">Turn scattered data into unified intelligence. Combine, clean, and activate your customer data across every team and tool.</p>
-      
-      <a class="c-arrow-link" href="#">Learn more <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
-    </article>
-    <article class="cs-module cs-module--plate cs-module--anatomy">
-      <div class="cs-module-headrow" style="--cs-headrow-mark: 1.5rem">
-        <figure class="cs-module-media cs-module-media--mark"><img class="c-image" src="assets/033-producticons-commercehub-icon-orange.webp" alt="033 producticons commercehub icon orange"></figure>
-        <h3 class="c-heading c-heading--h3">Revenue Hub™</h3>
-      </div>
-      <hr class="cs-module-divider" aria-hidden="true">
-      <p class="c-paragraph" style="--c-measure:44ch">Make it easy for customers to pay you. Send quotes, collect payments, and manage subscriptions.</p>
-      
-      <a class="c-arrow-link" href="#">Learn more <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
-    </article>
-    <article class="cs-module cs-module--plate cs-module--anatomy">
-      <div class="cs-module-headrow" style="--cs-headrow-mark: 1.5rem">
-        <figure class="cs-module-media cs-module-media--mark"><img class="c-image" src="assets/034-producticons-smartcrm-icon-orange.webp" alt="034 producticons smartcrm icon orange"></figure>
-        <h3 class="c-heading c-heading--h3">Smart CRM™</h3>
-      </div>
-      <hr class="cs-module-divider" aria-hidden="true">
-      <p class="c-paragraph" style="--c-measure:44ch">All your customer data in one place. Keep your data clean, connected, and actionable.</p>
-      
-      <a class="c-arrow-link" href="#">Learn more <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
-    </article>
-    <article class="cs-module cs-module--plate cs-module--anatomy">
-      <div class="cs-module-headrow" style="--cs-headrow-mark: 1.5rem">
-        <figure class="cs-module-media cs-module-media--mark"><img class="c-image" src="assets/035-breeze-20icon.svg" alt="035 breeze 20icon"></figure>
-        <h3 class="c-heading c-heading--h3">Breeze™</h3>
-      </div>
-      <hr class="cs-module-divider" aria-hidden="true">
-      <p class="c-paragraph" style="--c-measure:44ch">AI that works with you, and for you. Agents &amp; assistants everywhere you need them.</p>
-      
-      <a class="c-arrow-link" href="#">Learn more <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
-    </article>
-    <article class="cs-module cs-module--plate cs-module--anatomy">
-      <div class="cs-module-headrow" style="--cs-headrow-mark: 1.5rem">
-        <figure class="cs-module-media cs-module-media--mark"><img class="c-image" src="assets/009-small-business.svg" alt="009 small business"></figure>
-        <h3 class="c-heading c-heading--h3">Small Business Bundle</h3>
-      </div>
-      <hr class="cs-module-divider" aria-hidden="true">
-      <p class="c-paragraph" style="--c-measure:44ch">The Starter edition of each product, at one low price.</p>
-      
-      <a class="c-arrow-link" href="#">Learn more <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
-    </article>
-    <article class="cs-module cs-module--plate cs-module--anatomy">
-      <div class="cs-module-headrow" style="--cs-headrow-mark: 1.5rem">
-        <figure class="cs-module-media cs-module-media--mark"><img class="c-image" src="assets/027-ai-20sparkle.svg" alt="027 ai 20sparkle"></figure>
-        <h3 class="c-heading c-heading--h3">AEO (Beta)</h3>
-      </div>
-      <hr class="cs-module-divider" aria-hidden="true">
-      <p class="c-paragraph" style="--c-measure:44ch">See where your brand shows up in AI results. Get recommendations to improve your visibility.</p>
-      
-      <a class="c-arrow-link" href="#">Learn more <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
-    </article>
+<section class="cs-section cs-split-sec">
+  <div class="cs-split-intro">
+    <div class="cs-eyebrow-wrap"><p class="c-eyebrow">Powered by AI</p></div>
+    <h2 class="c-heading c-heading--h2">Growing a business is hard. HubSpot makes it easier.</h2>
+    <p class="c-paragraph" style="--c-measure:50ch">Disconnected tools and data slow you down. HubSpot connects everything — and everyone — in one place to make growing a business easier than you think.</p>
+    <div class="cs-hero-actions"><a class="c-button" href="#" role="button" aria-label="Get a demo of HubSpot&#x27;s premium software">Get a demo</a><a class="c-button c-button--secondary" href="#" role="button" aria-label="Get started free with HubSpot&#x27;s free tools">Get started free</a></div>
   </div>
+  <div class="cs-split cs-split--panel">
+    <div class="cs-split-media"><div class="c-image-mask"><img class="c-image c-image--hero" src="assets/after-full-bleed-photo-hero-direct.png" alt="HubSpot editorial photography"></div></div>
+    <div class="cs-panel">
+      
+      <div class="c-rows c-rows--table"><div class="c-table-wrap"><table class="c-table c-table--comparison"><colgroup><col class="c-table-label-col"><col class="c-table-value-col"></colgroup><tbody><tr><th scope="row">Marketing Hub®</th><td>Attract and convert the right leads. Run campaigns, personalize content, and track it all.</td></tr><tr><th scope="row">Sales Hub®</th><td>Generate quality leads and close deals, faster. Automate prospecting, manage pipeline, and accelerate revenue growth.</td></tr><tr><th scope="row">Service Hub®</th><td>Streamline and scale support to serve customers faster. Drive retention with actionable insights, customer health scores, and real-time usage data.</td></tr><tr><th scope="row">Content Hub™</th><td>Create content that clicks with your audience. Build pages, publish content across channels, and stay on brand.</td></tr><tr><th scope="row">Data Hub™</th><td>Turn scattered data into unified intelligence. Combine, clean, and activate your customer data across every team and tool.</td></tr><tr><th scope="row">Revenue Hub™</th><td>Make it easy for customers to pay you. Send quotes, collect payments, and manage subscriptions.</td></tr><tr><th scope="row">Smart CRM™</th><td>All your customer data in one place. Keep your data clean, connected, and actionable.</td></tr><tr><th scope="row">Breeze™</th><td>AI that works with you, and for you. Agents &amp; assistants everywhere you need them.</td></tr><tr><th scope="row">Small Business Bundle</th><td>The Starter edition of each product, at one low price.</td></tr><tr><th scope="row">AEO (Beta)</th><td>See where your brand shows up in AI results. Get recommendations to improve your visibility.</td></tr></tbody></table></div></div>
+      
+    </div>
   </div>
 </section>
 </div>

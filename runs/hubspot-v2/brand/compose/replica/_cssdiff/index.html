@@ -747,7 +747,11 @@ p { text-wrap-style: balance; }
   height: var(--c-button-height, auto);
   padding: var(--c-button-pad, 0.8em 1.6em); /* provenance: structural — em-relative
      control inset fallback (shape, not magnitude: scales with the button's own size) */
-  border-radius: var(--c-button-radius, var(--radius)); border: none;
+  /* measured control border (sysfix 2026-07): the primary rides the base rule, so its
+     measured `buttons.primary.border` (e.g. a transparent 2px reserve keeping the filled
+     and outline families the same box, or a hairline stroke) must flow through here.
+     Fallback `none` keeps brands without a primary border fact byte-identical. */
+  border-radius: var(--c-button-radius, var(--radius)); border: var(--c-button-border, none);
   transition: background var(--c-motion-fast) var(--c-ease),
               color var(--c-motion-fast) var(--c-ease),
               transform var(--c-motion-fast) var(--c-ease); }
@@ -1060,6 +1064,26 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 }
 .cs-nav-lang-item[aria-current] { background: var(--c-ink); color: var(--c-paper); }
 @media (max-width: 991px) { .cs-nav-util { display: none; } }
+/* nav mobile collapse (fact-gated: responsive.nav.collapse) — below the measured 1080px breakpoint the desktop utility + primary rows collapse to a logo + burger mobile bar; the burger is display:none at/above it so desktop is byte-identical. */
+#page-nav .cs-nav-burger { display: none; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; padding: 0; border: 0; background: none; color: currentColor; cursor: pointer; flex: 0 0 auto; }
+#page-nav .cs-nav-burger-box { position: relative; display: block; width: 1.5rem; height: 1rem; }
+#page-nav .cs-nav-burger-line, #page-nav .cs-nav-burger-line::before, #page-nav .cs-nav-burger-line::after { position: absolute; left: 0; width: 100%; height: 2px; background: currentColor; }
+#page-nav .cs-nav-burger-line { top: 50%; transform: translateY(-50%); }
+#page-nav .cs-nav-burger-line::before { content: ""; top: -0.5rem; }
+#page-nav .cs-nav-burger-line::after { content: ""; top: 0.5rem; }
+#page-nav .cs-nav-drawer { display: none; flex-direction: column; gap: 0.25rem; width: 100%; padding: 0.5rem 0; }
+#page-nav .cs-nav-drawer[hidden] { display: none; }
+#page-nav .cs-nav-drawer:not([hidden]) { display: flex; }
+#page-nav .cs-nav-drawer-link { color: currentColor; text-decoration: none; padding: 0.5rem 0; }
+@media (max-width: 1079px) {
+  #page-nav .cs-nav-tier--utility { display: none; }
+  #page-nav .cs-navlinks { display: none; }
+  #page-nav .cs-nav-util { display: none; }
+  #page-nav .cs-nav-actions { display: none; }
+  #page-nav .cs-nav .c-button--navcta { display: none; }
+  #page-nav .cs-nav-burger { display: inline-flex; }
+}
+
 .cs-section { background: var(--c-paper); color: var(--c-ink);
   padding: var(--c-section-pad-top) var(--c-section-pad-x)
            var(--c-section-pad-bottom); }
@@ -1119,11 +1143,16 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-panelcar,
 .cs-footer-sec > .c-footer {
   width: 100%; max-width: var(--content-measure, 86rem); margin-inline: auto; }
-.cs-section { min-height: 100cqh; }
+.cs-section { min-height: auto; }
 .cs-slot { display: flex; flex-direction: column; align-items: center; }
 .cs-eyebrow-wrap { margin-bottom: var(--c-eyebrow-gap); text-align: center; }
+/* TITLE-OVER-MEDIA PULL is a FACT-GATED device, not the stack hero's default seam:
+   --c-title-overlap is emitted (component_vars) only for a layout whose own
+   overlapRules declare `titleOverMediaTop`. A layout with no such fact resolves the
+   0rem fallback, so its title sits ABOVE the media on the section's own block rhythm
+   instead of straddling its top edge with a borrowed magnitude. */
 .cs-title { position: relative; z-index: 2; text-align: center;
-  margin-bottom: var(--c-title-overlap); }
+  margin-bottom: var(--c-title-overlap, 0rem); }
 .cs-collage { position: relative; width: 100%; max-width: 80rem; margin: 0 auto; }
 /* ALIGNMENT: the overlap depth/offsets keep their measured % magnitudes but round() the
    USED value to an exact --baseline multiple, so the overlap registers to the shared
@@ -1568,7 +1597,8 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 @media (max-width: 767px) {
   .cs-interlock { grid-template-columns: 1fr; }
   /* provenance: structural — mobile media recrop ratio (layout geometry, not a
-     brand token; coincidentally equals Remote's landscape aspect) */
+     brand token; a plain landscape ratio will coincide with some brands' own
+     measured aspect, which does not make it brand-derived) */
   .cs-interlock-media { aspect-ratio: 3 / 2; }
 }
 .cs-media-split { display: grid;
@@ -1595,10 +1625,9 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
    the shared measure by design (a release, not a private containment copy). */
 .cs-ov--bleed .cs-ov-frame { max-width: none; }
 .cs-ov-canvas { position: relative; margin: 0; min-height: calc(48 * var(--baseline)); }
-/* FULL-HEIGHT bleed hero (2026-07): a full-bleed photo hero fills the viewport like
-   the source, not a short wide band. The hero image must COVER this taller canvas —
-   its authored wide aspect-ratio would otherwise pin it to a short strip. */
-.cs-ov--bleed .cs-ov-canvas { min-height: min(90svh, 54rem); }
+/* Bleed canvas is content-sized from the brand media / measured floor above. Viewport-tall
+   bleed is applied only when brand responsive heightRule (viewport / viewport-minus-nav)
+   licenses it via component_render — never as an unconditional viewport-height default. */
 .cs-ov-canvas > .c-image, .cs-ov-canvas > .c-image-ph {
   width: 100%; height: 100%; min-height: inherit; object-fit: cover; }
 .cs-ov--bleed .cs-ov-canvas > .c-image { aspect-ratio: auto; height: 100%; }
@@ -1632,11 +1661,11 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   padding: calc(6 * var(--baseline)) calc(5 * var(--baseline)); }
 /* panel display steps DOWN from the section's own display alias — --c-display-size is
    always emitted per section (component_vars), so no literal fallback (AS-24).
-   0.6 (pass1 2026-07, scale_adherence finding): the old 0.62 landed hubspot's panel
-   heading at 49.6px — on NO ladder (measured h1 48 / derived step 52). 0.6 puts the
-   stepped-down rank on the brand's own h1 rung for the evidenced display:h1 ratios
-   (hubspot 80->48 = h1; remote 46->27.6 ~= h3 28) — quantized new geometry, audited
-   per brand by the scale gate. */
+   The 0.6 step is a QUANTIZING ratio (pass1 2026-07, scale_adherence finding): an
+   unrounded multiplier lands the stepped-down heading between the brand's measured
+   type rungs, so the panel reads at a size no ladder declares. A round step puts the
+   stepped-down rank back onto a measured rung across the observed display:heading
+   ratios — geometry quantized here, then audited per brand by the scale gate. */
 .cs-ov-panel .c-heading--display { font-size: calc(0.6 * var(--c-display-size));
   max-width: 14ch; }
 /* sidebar rail: the full-height panel column (ref 3) — space-between stack. */
@@ -1704,7 +1733,7 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-band { position: relative; }
 .cs-band--top .cs-band-media { margin: 0; }
 .cs-band--top .c-image, .cs-band--top .c-image-ph { width: 100%;
-  height: calc(56 * var(--baseline)); object-fit: cover; display: block; }
+  height: auto; display: block; object-fit: cover; }
 /* the on-photo caption rides a small solid panel CHIP (sanctioned panel-over-media) —
    never bare text on the photograph. */
 .cs-band-chip { position: absolute; top: calc(5 * var(--baseline));
@@ -1719,7 +1748,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   display: flex; flex-direction: column; gap: var(--c-block-gap);
   padding-top: var(--c-block-gap); }
 @media (max-width: 767px) {
-  .cs-band--top .c-image, .cs-band--top .c-image-ph { height: calc(36 * var(--baseline)); }
   .cs-band-straddler { width: 100% !important; margin-inline: 0 !important;
     --c-seam-rise: calc(6 * var(--baseline)); } }
 .cs-flow { display: flex; flex-direction: column;
@@ -1753,7 +1781,8 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   line-height: var(--type-h4-line-height, var(--c-heading-line)); color: var(--c-ink); }
 .cs-testimonial-mark { color: var(--c-accent); font-family: var(--c-font-display);
   /* provenance: structural — decorative pull-quote glyph scale (a device size
-     ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */
+     ceiling, not a brand type tier; round rem values in a device clamp will
+     coincide with some brands' spacing rungs without deriving from them) */
   font-size: clamp(2.5rem, 5cqw, 4rem); line-height: 0.8; margin-bottom: 1rem; }
 .cs-testimonial .c-person { margin-top: var(--space-quote-to-attribution,
   var(--c-block-gap)); }
@@ -2066,10 +2095,18 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
    so it reads as a bar flush above the hero, not padded inside it. */
 #page-nav { background: var(--c-paper); color: var(--c-ink); }
 #page-nav .cs-nav { margin-bottom: 0; padding: var(--c-nav-pad-block) var(--c-section-pad-x); }
-/* page: only the opening section is full-frame; others size to content. */
+/* page: sections size to content. Viewport/tall opening height is applied only
+   when brand responsive facts or measured bandHeight license it (component_render /
+   band_height_css) — never as an unconditional full-frame default. */
 .cs-section { min-height: auto; }
-#sec-0 .cs-section { min-height: 100cqh; }
-.cs-module--plate { background: var(--c-panel); color: var(--c-panel-ink);
+.cs-module--plate {
+  /* CARD SURFACE (fid 2026-07, inset-card-on-canvas): the plate paints the brand's
+     DECLARED container surface. Default is the page panel role (--c-panel); a brand
+     whose card/container surface is a DISTINCT role from the page panel (e.g. white
+     cards floating on a warmer off-white canvas) re-points --c-card-plate-bg at that
+     role via the module-grid scope. Fact-gated: absent override ⇒ --c-panel, byte-
+     identical for brands whose container role already IS the page panel. */
+  background: var(--c-card-plate-bg, var(--c-panel)); color: var(--c-panel-ink);
   --c-ink: var(--c-panel-ink); --c-accent: var(--c-panel-ink);
   /* re-scope the MUTED ink to the panel too — body/caption text uses
      --c-ink-muted, not --c-ink; without this a plate that sits after an inverse
@@ -2081,7 +2118,13 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   /* plate inset rides the brand's measured panel-padding token when authored
      (fid6 2026-07); the 4-baseline structural default is unchanged without it. */
   --c-plate-pad: var(--space-panel-padding, calc(4 * var(--baseline)));
-  border-radius: var(--radius-card, 0); padding: var(--c-plate-pad); }
+  border-radius: var(--radius-card, 0); padding: var(--c-plate-pad);
+  /* CARD OUTLINE (inset-card-on-canvas): a container surface whose grammar declares
+     a resting hairline border renders it so the card reads as an outlined plate on a
+     low-contrast canvas (the classic white-card-on-cream anatomy). Fact-gated —
+     --c-card-plate-border defaults to `none`, so shadow-elevated / borderless card
+     families (and every current plated brand) stay byte-identical. */
+  border: var(--c-card-plate-border, none); }
 /* FULL-BLEED MEDIA WELL (fid6 2026-07): a plated module's leading media frame runs
    flush to the card's top + side edges (rounded top corners only — the classic card
    anatomy the capture shows: media well INSIDE the plate, bleeding to its edges);
@@ -2121,6 +2164,13 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-modules--edgecut .cs-module-headrow .cs-module-media--mark {
   height: var(--cs-headrow-mark, 1.5rem); flex: 0 0 auto; width: auto; }
 .cs-module-headrow .c-heading { margin: 0; flex: 1 1 auto; }
+/* CARD HEADER RULE (inset-card-on-canvas): a hairline separating the icon+title
+   header from the card body — rendered only when the brand's card grammar declares
+   `headerDivider` (the <hr> is emitted fact-gated), so control-less card families
+   never gain a rule. Rides the plate's own re-scoped hairline; vertical rhythm is the
+   anatomy ladder's owl margin (header→rule→body), so it never double-counts spacing. */
+.cs-modules .cs-module-divider { border: 0; height: 0;
+  border-top: 1px solid var(--c-hairline); width: 100%; }
 
 .cs-edgecut { overflow-x: auto; scrollbar-width: none;
   margin-inline-end: calc(-1 * var(--c-section-pad-x, 0rem));
@@ -2164,7 +2214,14 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 @media (max-width: 767px) {
   .cs-modules--edgecut { gap: 1.25rem; }
   .cs-modules--edgecut > .cs-module { flex-basis: min(86cqw, 24rem); } }
-.cs-module--plate { background: var(--c-panel); color: var(--c-panel-ink);
+.cs-module--plate {
+  /* CARD SURFACE (fid 2026-07, inset-card-on-canvas): the plate paints the brand's
+     DECLARED container surface. Default is the page panel role (--c-panel); a brand
+     whose card/container surface is a DISTINCT role from the page panel (e.g. white
+     cards floating on a warmer off-white canvas) re-points --c-card-plate-bg at that
+     role via the module-grid scope. Fact-gated: absent override ⇒ --c-panel, byte-
+     identical for brands whose container role already IS the page panel. */
+  background: var(--c-card-plate-bg, var(--c-panel)); color: var(--c-panel-ink);
   --c-ink: var(--c-panel-ink); --c-accent: var(--c-panel-ink);
   /* re-scope the MUTED ink to the panel too — body/caption text uses
      --c-ink-muted, not --c-ink; without this a plate that sits after an inverse
@@ -2176,7 +2233,13 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   /* plate inset rides the brand's measured panel-padding token when authored
      (fid6 2026-07); the 4-baseline structural default is unchanged without it. */
   --c-plate-pad: var(--space-panel-padding, calc(4 * var(--baseline)));
-  border-radius: var(--radius-card, 0); padding: var(--c-plate-pad); }
+  border-radius: var(--radius-card, 0); padding: var(--c-plate-pad);
+  /* CARD OUTLINE (inset-card-on-canvas): a container surface whose grammar declares
+     a resting hairline border renders it so the card reads as an outlined plate on a
+     low-contrast canvas (the classic white-card-on-cream anatomy). Fact-gated —
+     --c-card-plate-border defaults to `none`, so shadow-elevated / borderless card
+     families (and every current plated brand) stay byte-identical. */
+  border: var(--c-card-plate-border, none); }
 /* FULL-BLEED MEDIA WELL (fid6 2026-07): a plated module's leading media frame runs
    flush to the card's top + side edges (rounded top corners only — the classic card
    anatomy the capture shows: media well INSIDE the plate, bleeding to its edges);
@@ -2216,6 +2279,13 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
 .cs-modules--edgecut .cs-module-headrow .cs-module-media--mark {
   height: var(--cs-headrow-mark, 1.5rem); flex: 0 0 auto; width: auto; }
 .cs-module-headrow .c-heading { margin: 0; flex: 1 1 auto; }
+/* CARD HEADER RULE (inset-card-on-canvas): a hairline separating the icon+title
+   header from the card body — rendered only when the brand's card grammar declares
+   `headerDivider` (the <hr> is emitted fact-gated), so control-less card families
+   never gain a rule. Rides the plate's own re-scoped hairline; vertical rhythm is the
+   anatomy ladder's owl margin (header→rule→body), so it never double-counts spacing. */
+.cs-modules .cs-module-divider { border: 0; height: 0;
+  border-top: 1px solid var(--c-hairline); width: 100%; }
 /* SPLIT-PANEL CAROUSEL statics (fix1 2026-07 item-6): slide 1 visible, siblings
    hidden; round prev/next at the row edges; dot rail below. All chrome rides brand
    vars (hairline/ink/control radius); ships only where the device composed. */
@@ -2458,7 +2528,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -2543,7 +2612,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -2628,7 +2696,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -2713,7 +2780,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -2804,7 +2870,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -2892,7 +2957,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -2972,7 +3036,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -3052,7 +3115,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -3132,7 +3194,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -3211,7 +3272,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -3292,7 +3352,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -3352,7 +3411,6 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-aspect-wide: var(--aspect-wide);
   --c-aspect-landscape: var(--aspect-landscape);
   --c-aspect-portrait: var(--aspect-portrait);
@@ -3403,7 +3461,7 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
   <path d="M16.29 22.43c-.29 0-.58-.11-.81-.33L5.19 11.81c-.45-.45-.45-1.17 0-1.62s1.17-.45 1.62 0l9.48 9.48 9.48-9.48c.45-.45 1.17-.45 1.62 0s.45 1.17 0 1.62L17.1 22.1c-.22.22-.52.33-.81.33"></path>
 </svg></span></button><div class="cs-mega" id="cs-mega-2"><div class="cs-mega-inner"><nav class="cs-mega-rail" aria-label="Categories"><ul><li class="cs-mega-rail-item cs-mega-rail-item--active"><span class="cs-mega-rail-label">By Use Case</span><span class="cs-mega-rail-chev" aria-hidden="true">&rsaquo;</span></li><li class="cs-mega-rail-item"><span class="cs-mega-rail-label">By Team Size</span><span class="cs-mega-rail-chev" aria-hidden="true">&rsaquo;</span></li><li class="cs-mega-rail-item"><span class="cs-mega-rail-label">Why HubSpot?</span><span class="cs-mega-rail-chev" aria-hidden="true">&rsaquo;</span></li></ul></nav><div class="cs-mega-main"><div class="cs-mega-group"><h4 class="cs-mega-head">Marketing</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/generate-leads"><span><span class="cs-mega-link-title">Generate leads</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/automate-marketing"><span><span class="cs-mega-link-title">Automate marketing</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Sales</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/build-sales-pipeline"><span><span class="cs-mega-link-title">Build pipeline</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/close-more-deals"><span><span class="cs-mega-link-title">Close deals</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Customer Service</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/scale-customer-service-support"><span><span class="cs-mega-link-title">Scale support</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/drive-customer-satisfaction"><span><span class="cs-mega-link-title">Drive retention</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Content</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/create-content-for-customer-journey"><span><span class="cs-mega-link-title">Create content</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/manage-content"><span><span class="cs-mega-link-title">Manage content</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Startups &amp; Small Businesses</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/find-and-reach-customers"><span><span class="cs-mega-link-title">Find and reach customers</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/grow-sales-and-get-paid-faster"><span><span class="cs-mega-link-title">Grow sales and get paid</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/use-case/understand-and-organize-customer-data"><span><span class="cs-mega-link-title">Organize customer data</span></span></a></li></ul></div></div><div class="cs-mega-aside"><div class="cs-mega-group"><h4 class="cs-mega-head">AI Agents</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/products/artificial-intelligence/ai-customer-service-agent"><span><span class="cs-mega-link-title">Resolve customer queries 24/7</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/products/sales/ai-prospecting-agent"><span><span class="cs-mega-link-title">Automate sales prospecting</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/products/artificial-intelligence/ai-data-agent"><span><span class="cs-mega-link-title">Research customers faster</span></span></a></li></ul></div></div></div></div></span> <a class="c-arrow-link" href="https://www.hubspot.com/pricing" style="gap:0">Pricing</a> <span class="cs-nav-tab"><button type="button" class="c-arrow-link cs-nav-trigger" aria-expanded="false" aria-controls="cs-mega-4" style="gap:0">Resources<span class="cs-nav-chev" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
   <path d="M16.29 22.43c-.29 0-.58-.11-.81-.33L5.19 11.81c-.45-.45-.45-1.17 0-1.62s1.17-.45 1.62 0l9.48 9.48 9.48-9.48c.45-.45 1.17-.45 1.62 0s.45 1.17 0 1.62L17.1 22.1c-.22.22-.52.33-.81.33"></path>
-</svg></span></button><div class="cs-mega" id="cs-mega-4"><div class="cs-mega-inner"><div class="cs-mega-main"><div class="cs-mega-group"><h4 class="cs-mega-head">Featured Links</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/spotlight"><span><span class="cs-mega-link-title">Spotlight: Product Updates</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/new"><span><span class="cs-mega-link-title">What&#x27;s New in HubSpot</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/why-choose-hubspot"><span><span class="cs-mega-link-title">Why Choose HubSpot?</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/sustainability"><span><span class="cs-mega-link-title">Sustainability</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Community &amp; Events</h4><ul><li><a class="cs-mega-link" href="https://www.inbound.com/"><span><span class="cs-mega-link-title">INBOUND Event</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/resources/webinar"><span><span class="cs-mega-link-title">Webinars</span></span></a></li><li><a class="cs-mega-link" href="https://community.hubspot.com/"><span><span class="cs-mega-link-title">HubSpot Community</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/hubspot-user-groups"><span><span class="cs-mega-link-title">HubSpot User Groups</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Partners</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/partners/solutions"><span><span class="cs-mega-link-title">Solutions Partner Program</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/partners/app"><span><span class="cs-mega-link-title">Technology Partner Program</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/partners/affiliates"><span><span class="cs-mega-link-title">Affiliate Partner Program</span></span></a></li><li><a class="cs-mega-link" href="https://academy.hubspot.com/education-partner-program"><span><span class="cs-mega-link-title">Education Partner Program</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/startups/partners"><span><span class="cs-mega-link-title">Startup Partner Program</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Education</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/loop-marketing"><span><span class="cs-mega-link-title">The Loop Marketing Playbook</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/inbound-marketing"><span><span class="cs-mega-link-title">What Is Inbound Marketing?</span></span></a></li><li><a class="cs-mega-link" href="https://blog.hubspot.com/"><span><span class="cs-mega-link-title">HubSpot Blogs</span></span></a></li><li><a class="cs-mega-link" href="https://academy.hubspot.com/"><span><span class="cs-mega-link-title">Free Courses &amp; Certifications</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/resources"><span><span class="cs-mega-link-title">Ebooks, Guides &amp; More</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Tools &amp; Services</h4><ul><li><a class="cs-mega-link" href="https://ecosystem.hubspot.com/marketplace/templates"><span><span class="cs-mega-link-title">Website Templates</span></span></a></li><li><a class="cs-mega-link" href="https://developers.hubspot.com/"><span><span class="cs-mega-link-title">Developer Tools</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/services/onboarding"><span><span class="cs-mega-link-title">Onboarding</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/services/premium-support"><span><span class="cs-mega-link-title">Premium Support</span></span></a></li><li><a class="cs-mega-link" href="https://ecosystem.hubspot.com/marketplace/solutions"><span><span class="cs-mega-link-title">Hire a Solutions Partner</span></span></a></li></ul></div></div></div></div></span></span><span class="cs-nav-actions"><a class="c-button c-button--navcta" role="button" style="--navcta-bg: rgb(255, 72, 0); --navcta-ink: rgb(255, 255, 255); --navcta-radius: 8px; --navcta-height: 42px; --navcta-pad-x: 16px; --navcta-size: 14px" href="https://offers.hubspot.com/crm-platform-demo">Get a demo</a><a class="c-button c-button--navcta" role="button" style="--navcta-bg: rgb(255, 255, 255); --navcta-ink: rgb(255, 72, 0); --navcta-border: 2px solid rgb(255, 72, 0); --navcta-radius: 8px; --navcta-height: 42px; --navcta-pad-x: 16px; --navcta-size: 14px" href="https://app.hubspot.com/signup-hubspot/crm">Get started free</a></span></div></nav>
+</svg></span></button><div class="cs-mega" id="cs-mega-4"><div class="cs-mega-inner"><div class="cs-mega-main"><div class="cs-mega-group"><h4 class="cs-mega-head">Featured Links</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/spotlight"><span><span class="cs-mega-link-title">Spotlight: Product Updates</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/new"><span><span class="cs-mega-link-title">What&#x27;s New in HubSpot</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/why-choose-hubspot"><span><span class="cs-mega-link-title">Why Choose HubSpot?</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/sustainability"><span><span class="cs-mega-link-title">Sustainability</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Community &amp; Events</h4><ul><li><a class="cs-mega-link" href="https://www.inbound.com/"><span><span class="cs-mega-link-title">INBOUND Event</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/resources/webinar"><span><span class="cs-mega-link-title">Webinars</span></span></a></li><li><a class="cs-mega-link" href="https://community.hubspot.com/"><span><span class="cs-mega-link-title">HubSpot Community</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/hubspot-user-groups"><span><span class="cs-mega-link-title">HubSpot User Groups</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Partners</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/partners/solutions"><span><span class="cs-mega-link-title">Solutions Partner Program</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/partners/app"><span><span class="cs-mega-link-title">Technology Partner Program</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/partners/affiliates"><span><span class="cs-mega-link-title">Affiliate Partner Program</span></span></a></li><li><a class="cs-mega-link" href="https://academy.hubspot.com/education-partner-program"><span><span class="cs-mega-link-title">Education Partner Program</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/startups/partners"><span><span class="cs-mega-link-title">Startup Partner Program</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Education</h4><ul><li><a class="cs-mega-link" href="https://www.hubspot.com/loop-marketing"><span><span class="cs-mega-link-title">The Loop Marketing Playbook</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/inbound-marketing"><span><span class="cs-mega-link-title">What Is Inbound Marketing?</span></span></a></li><li><a class="cs-mega-link" href="https://blog.hubspot.com/"><span><span class="cs-mega-link-title">HubSpot Blogs</span></span></a></li><li><a class="cs-mega-link" href="https://academy.hubspot.com/"><span><span class="cs-mega-link-title">Free Courses &amp; Certifications</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/resources"><span><span class="cs-mega-link-title">Ebooks, Guides &amp; More</span></span></a></li></ul></div><div class="cs-mega-group"><h4 class="cs-mega-head">Tools &amp; Services</h4><ul><li><a class="cs-mega-link" href="https://ecosystem.hubspot.com/marketplace/templates"><span><span class="cs-mega-link-title">Website Templates</span></span></a></li><li><a class="cs-mega-link" href="https://developers.hubspot.com/"><span><span class="cs-mega-link-title">Developer Tools</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/services/onboarding"><span><span class="cs-mega-link-title">Onboarding</span></span></a></li><li><a class="cs-mega-link" href="https://www.hubspot.com/services/premium-support"><span><span class="cs-mega-link-title">Premium Support</span></span></a></li><li><a class="cs-mega-link" href="https://ecosystem.hubspot.com/marketplace/solutions"><span><span class="cs-mega-link-title">Hire a Solutions Partner</span></span></a></li></ul></div></div></div></div></span></span><span class="cs-nav-actions"><a class="c-button c-button--navcta" role="button" style="--navcta-bg: rgb(255, 72, 0); --navcta-ink: rgb(255, 255, 255); --navcta-radius: 8px; --navcta-height: 42px; --navcta-pad-x: 16px; --navcta-size: 14px" href="https://offers.hubspot.com/crm-platform-demo">Get a demo</a><a class="c-button c-button--navcta" role="button" style="--navcta-bg: rgb(255, 255, 255); --navcta-ink: rgb(255, 72, 0); --navcta-border: 2px solid rgb(255, 72, 0); --navcta-radius: 8px; --navcta-height: 42px; --navcta-pad-x: 16px; --navcta-size: 14px" href="https://app.hubspot.com/signup-hubspot/crm">Get started free</a></span><button type="button" class="cs-nav-burger" aria-label="Menu" aria-expanded="false" aria-controls="cs-nav-drawer"><span class="cs-nav-burger-box" aria-hidden="true"><span class="cs-nav-burger-line"></span></span></button></div><div id="cs-nav-drawer" class="cs-nav-drawer" hidden><a class="cs-nav-drawer-link" href="#">Products</a><a class="cs-nav-drawer-link" href="#">Solutions</a><a class="cs-nav-drawer-link" href="https://www.hubspot.com/pricing">Pricing</a><a class="cs-nav-drawer-link" href="#">Resources</a><a class="cs-nav-drawer-link" href="#">English</a><a class="cs-nav-drawer-link" href="#">High Contrast</a><a class="cs-nav-drawer-link" href="https://help.hubspot.com/">Customer Support</a><a class="cs-nav-drawer-link" href="https://offers.hubspot.com/contact-sales">Contact Sales</a><a class="cs-nav-drawer-link" href="https://app.hubspot.com/login">Log in</a><a class="cs-nav-drawer-link" href="#">About</a><a class="cs-nav-drawer-link" href="#">Search</a></div></nav>
 </div>
 <div id="sec-0" class="cs-surface" data-layout="hero" data-surface="surface/photo-hero" data-pattern="hero-photo-overlay" data-pattern-lib="project" data-pattern-match="ref" data-align="centered" data-align-source="section">
 <section class="cs-section cs-hero-layered cs-hero-layered--flat" style="--c-section-pad-top: 11rem; --c-section-pad-bottom: 11rem; --c-eyebrow-gap: 0.625rem; --c-block-gap: 1.75rem; --cs-hero-foot-gap: 2.75rem; --cs-stack-measure: 49rem;">
@@ -3920,6 +3978,28 @@ button.cs-nav-trigger { -webkit-appearance: none; appearance: none;
     if (next) next.addEventListener('click', function () { show(current + 1); });
     dots.forEach(function (d, j) {
       d.addEventListener('click', function () { show(j); });
+    });
+  });
+  /* mobile nav burger (nav responsive collapse): the disclosure control shown below
+     the measured breakpoint toggles the mobile drawer ([hidden] flips) and mirrors
+     aria-expanded; Escape closes and restores focus. CSS-only fallback: with JS off
+     the burger still shows (no overflow) and the drawer stays closed. */
+  document.querySelectorAll('.cs-nav-burger').forEach(function (btn) {
+    var drawer = document.getElementById(btn.getAttribute('aria-controls') || '');
+    if (!drawer) return;
+    var set = function (open) {
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) { drawer.removeAttribute('hidden'); } else { drawer.hidden = true; }
+    };
+    btn.addEventListener('click', function () {
+      set(btn.getAttribute('aria-expanded') !== 'true');
+    });
+    btn.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (btn.getAttribute('aria-expanded') === 'true') { set(false); btn.focus(); }
+    });
+    drawer.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { set(false); btn.focus(); }
     });
   });
   /* Image placeholder lifecycle (AS-23): attribute absent = unresolved/loading,

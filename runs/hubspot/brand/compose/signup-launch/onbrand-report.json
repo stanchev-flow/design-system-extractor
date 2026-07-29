@@ -13,7 +13,8 @@
   "fidelity": {
     "pass": true,
     "checks": {
-      "Surface = brand surface/inverse (#1f1f1f)": true,
+      "Surface = a brand surface role (creative-mode scope)": true,
+      "Authored display heading present (creative-mode scope)": true,
       "Brand accent surfaced (#ff4800)": true,
       "Brand assets present (not placeholder)": true
     }
@@ -33,7 +34,7 @@
   },
   "invariants": {
     "mode": "hard",
-    "pass": true,
+    "pass": false,
     "checks": {
       "single-accent": true,
       "primitive-only": true,
@@ -48,12 +49,16 @@
       "media-registration": true,
       "interaction-contrast": true,
       "token-provenance": true,
-      "logo-wall-integrity": true
+      "logo-wall-integrity": true,
+      "knob-consumption": true,
+      "content-redundancy": true,
+      "anatomy-tab-controls": true,
+      "anatomy-stat-items": false
     },
     "details": {
       "text-contrast": "69 text elements measured against their effective background (surface + decoration layer); worst = sec-0/c-button('Start free') at 3.4 (floor 4.5); skipped=0; 2 element(s) exempt as MEASURED brand pairs (#ffffff on #ff4800)",
       "decoration-salience": "no decoration layers (ghost word / watermark) in this render"
     }
   },
-  "overall": true
+  "overall": false
 }

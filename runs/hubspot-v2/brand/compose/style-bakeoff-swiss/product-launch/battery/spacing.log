@@ -1,9 +1,9 @@
-$ /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/venv/bin/python /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/brand_pipeline/spacing_audit.py /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch --brand /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand --strict --no-shots --out /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/battery/spacing
+$ venv/bin/python brand_pipeline/spacing_audit.py runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch --brand runs/hubspot-v2/brand --strict --no-shots --out runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/battery/spacing
 
 --- stdout ---
 [spacing-audit] compose/style-bakeoff-swiss/product-launch: 73 measured — 63 conform / 3 drift / 0 wrong-step / 0 off-ladder / 7 unmapped
 [spacing-audit] compose/style-bakeoff-swiss/product-launch: scale adherence — 13 measured-fact / 1 on-scale / 0 OFF-SCALE
-[spacing-audit] report: /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/battery/spacing/report.md
+[spacing-audit] report: runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/battery/spacing/report.md
 
 --- stderr ---
 

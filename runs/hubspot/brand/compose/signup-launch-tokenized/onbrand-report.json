@@ -13,7 +13,8 @@
   "fidelity": {
     "pass": false,
     "checks": {
-      "Surface = brand surface/inverse (#1f1f1f)": true,
+      "Surface = a brand surface role (creative-mode scope)": true,
+      "Authored display heading present (creative-mode scope)": true,
       "Brand accent surfaced (#ff4800)": true,
       "Brand assets present (not placeholder)": false
     }
@@ -25,7 +26,9 @@
       "No off-palette hex colors": true,
       "No lorem/placeholder copy": true,
       "All brand image assets present": false,
-      "Rounding matches brand radius scale": false,
+      "Rounding matches brand radius scale": true,
+      "No foreign-brand content literals (alt/aria/title)": false,
+      "No foreign-brand asset references": true,
       "Webfonts loaded (no silent system fallback)": true
     }
   },
@@ -45,7 +48,12 @@
       "alignment-resolution": true,
       "media-registration": true,
       "interaction-contrast": true,
-      "token-provenance": false
+      "token-provenance": false,
+      "logo-wall-integrity": true,
+      "knob-consumption": true,
+      "content-redundancy": true,
+      "anatomy-tab-controls": true,
+      "anatomy-stat-items": true
     },
     "details": {
       "text-contrast": "37 text elements measured against their effective background (surface + decoration layer); worst = sec-0/c-eyebrow('Introducing') at 4.85 (floor 4.5); skipped=0",

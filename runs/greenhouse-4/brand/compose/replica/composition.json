@@ -2,10 +2,22 @@
  "schemaVersion": "replica-composition.v1",
  "order": [
   "hero",
-  "featuresThreeColumnCard",
-  "logoWall",
   "featureGrid",
-  "cta"
+  "logoWall",
+  "stats",
+  "testimonial",
+  "cta",
+  "heroSplit5050",
+  "features",
+  "featuresHeadingBodyTop",
+  "featuresSectionHeadingTop",
+  "content",
+  "gallery",
+  "ctaSplit5050",
+  "featuresThreeColumnCard",
+  "featuresSplit5050",
+  "featuresSplit5050Media",
+  "featuresHeadingFullWidth"
  ],
  "sections": [
   {
@@ -95,139 +107,6 @@
    }
   },
   {
-   "id": "featuresThreeColumnCard",
-   "useCase": "features",
-   "archetype": "three-column-cards",
-   "surfaceIntent": "surface/primary",
-   "novelty": "reuse",
-   "archetypeRef": "three-column-cards",
-   "seededFrom": {
-    "lib": "project",
-    "id": "featuresThreeColumnCard"
-   },
-   "slots": [
-    {
-     "name": "items",
-     "role": "items \u2014 features-card-list",
-     "contract": "card",
-     "copy": [
-      {
-       "heading": "Greenhouse AI",
-       "text": "Hiring needs more than faster automation. It needs to be completely reimagined. Explore the next wave of AI capabilities from Greenhouse, built to help teams cut through noise, strengthen signal and make structured hiring easier to execute \u2013 without losing human judgment.",
-       "asset": "033-6a298fd15eb091333bcbe885-d-en-cg-home-two-office-workers-discussing-content-on-tablet-bright-space.png",
-       "alt": "033 6a298fd15eb091333bcbe885 d en cg home two office workers discussing content on tablet bright space"
-      },
-      {
-       "heading": "Real Talent",
-       "text": "Greenhouse Real Talent\u2122 brings triple layers of trust to hiring with candidate fraud detection, identity verification and candidate matching software, so you can make more confident hiring decisions.",
-       "asset": "034-6a063cdddfe47d8d3429a902-d-en-cg-home-real-talent-fraud-detection-candidate-cards.avif",
-       "alt": "034 6a063cdddfe47d8d3429a902 d en cg home real talent fraud detection candidate cards"
-      },
-      {
-       "heading": "MyGreenhouse",
-       "text": "MyGreenhouse is a powerful new candidate portal that transforms hiring from robotic to remarkable. It keeps candidates informed with real-time updates, surfaces new opportunities and makes applying seamless \u2013 while giving recruiters the insights to quickly identify top talent.",
-       "asset": "035-6a063cdcba100ecc20453980-d-en-cg-home-woman-in-suit-on-laptop-smiling-setup-job-alert-ui.avif",
-       "alt": "035 6a063cdcba100ecc20453980 d en cg home woman in suit on laptop smiling setup job alert ui"
-      }
-     ]
-    },
-    {
-     "name": "primaryAction",
-     "role": "primaryAction \u2014 outlined-action",
-     "contract": "button",
-     "copy": {
-      "label": "Request a demo",
-      "styleHint": "primary"
-     }
-    },
-    {
-     "name": "primaryAction-secondary",
-     "role": "secondary action",
-     "contract": "button",
-     "copy": {
-      "label": "Request a demo",
-      "styleHint": "outlined"
-     }
-    }
-   ],
-   "treatments": [],
-   "_requiresHydration": true,
-   "_patternLayout": {
-    "structure": "3-column card grid, each card: media-well top -> heading -> body -> outlined CTA",
-    "columns": 3,
-    "alignment": "left",
-    "approxPaddingPx": {
-     "top": 40,
-     "bottom": 40
-    },
-    "gapPx": 80,
-    "containerWidth": "contained"
-   }
-  },
-  {
-   "id": "logoWall",
-   "useCase": "logos",
-   "archetype": "split-copy-plus-logo-grid",
-   "surfaceIntent": "surface/primary",
-   "novelty": "reuse",
-   "archetypeRef": "split-copy-plus-logo-grid",
-   "seededFrom": {
-    "lib": "project",
-    "id": "logoWall"
-   },
-   "slots": [
-    {
-     "name": "heading",
-     "role": "heading \u2014 section-heading",
-     "textLen": "short",
-     "sizeClass": "display",
-     "contract": "heading",
-     "copy": {
-      "heading": "Great companies hire with Greenhouse"
-     }
-    },
-    {
-     "name": "primaryAction",
-     "role": "primaryAction \u2014 primary-action",
-     "textLen": "short",
-     "sizeClass": "control",
-     "width": "hug",
-     "contract": "button",
-     "copy": {
-      "label": "Request a demo"
-     }
-    },
-    {
-     "name": "logoGrid",
-     "role": "logoGrid \u2014 logo-grid",
-     "z": "back",
-     "mediaAspect": "landscape",
-     "contract": "logo",
-     "copy": [
-      "042-684b22ea4479a38eba02bb7a-nfl-240x74-20-1.png",
-      "043-66db2afc7f4ffa8dac7d63af-coursera-2024-02-22-193551-bfgg.avif",
-      "044-684b1591b49b84db80e1e68b-logo-anthropic.png",
-      "045-684b154b7f3a0b8ea13a87db-logo-datavant.png",
-      "046-6849817eafb5f7300bca18d3-revlon.png",
-      "047-66db2b583c8c62fd585f04a3-seatgeek-2024-02-22-193550-wvza.avif"
-     ]
-    }
-   ],
-   "treatments": [],
-   "_requiresHydration": true,
-   "_patternLayout": {
-    "structure": "split copy left / 2x3 logo grid right with vertical rule",
-    "alignment": "left",
-    "columns": 2,
-    "containerWidth": "contained",
-    "approxPaddingPx": {
-     "top": 140,
-     "bottom": 120
-    },
-    "gapPx": 150
-   }
-  },
-  {
    "id": "featureGrid",
    "useCase": "features",
    "archetype": "three-column-media-top-cards",
@@ -307,6 +186,174 @@
    }
   },
   {
+   "id": "logoWall",
+   "useCase": "logos",
+   "archetype": "split-copy-plus-logo-grid",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "archetypeRef": "split-copy-plus-logo-grid",
+   "seededFrom": {
+    "lib": "project",
+    "id": "logoWall"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 section-heading",
+     "textLen": "short",
+     "sizeClass": "display",
+     "contract": "heading",
+     "copy": {
+      "heading": "Great companies hire with Greenhouse"
+     }
+    },
+    {
+     "name": "primaryAction",
+     "role": "primaryAction \u2014 primary-action",
+     "textLen": "short",
+     "sizeClass": "control",
+     "width": "hug",
+     "contract": "button",
+     "copy": {
+      "label": "Request a demo"
+     }
+    },
+    {
+     "name": "logoGrid",
+     "role": "logoGrid \u2014 logo-grid",
+     "z": "back",
+     "mediaAspect": "landscape",
+     "contract": "logo",
+     "copy": [
+      "042-684b22ea4479a38eba02bb7a-nfl-240x74-20-1.png",
+      "043-66db2afc7f4ffa8dac7d63af-coursera-2024-02-22-193551-bfgg.avif",
+      "044-684b1591b49b84db80e1e68b-logo-anthropic.png",
+      "045-684b154b7f3a0b8ea13a87db-logo-datavant.png",
+      "046-6849817eafb5f7300bca18d3-revlon.png",
+      "047-66db2b583c8c62fd585f04a3-seatgeek-2024-02-22-193550-wvza.avif"
+     ]
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true,
+   "_patternLayout": {
+    "structure": "split copy left / 2x3 logo grid right with vertical rule",
+    "alignment": "left",
+    "columns": 2,
+    "containerWidth": "contained",
+    "approxPaddingPx": {
+     "top": 140,
+     "bottom": 120
+    },
+    "gapPx": 150
+   }
+  },
+  {
+   "id": "stats",
+   "useCase": "Three equal centered columns; each column: big serif number -> description -> underlined text link.",
+   "archetype": "three-column-number-over-caption",
+   "surfaceIntent": "surface/muted",
+   "novelty": "reuse",
+   "archetypeRef": "three-column-number-over-caption",
+   "seededFrom": {
+    "lib": "project",
+    "id": "stats"
+   },
+   "slots": [
+    {
+     "name": "items",
+     "role": "items \u2014 stat-column-list: figure plus description and source citation",
+     "contract": "list",
+     "copy": [
+      {
+       "label": "25%",
+       "title": "25%",
+       "text": "Reduction in Major League Baseball\u2019s time to hire vs. industry standard when using Greenhouse."
+      },
+      {
+       "label": "39%",
+       "title": "39%",
+       "text": "Lower spending on third-party recruiting"
+      },
+      {
+       "label": "92%",
+       "title": "92%",
+       "text": "Reduction in candidate search firms used for Inizio"
+      }
+     ]
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true,
+   "_patternLayout": {
+    "structure": "3 equal centered stat stacks",
+    "alignment": "center",
+    "columns": 3,
+    "containerWidth": "contained",
+    "approxPaddingPx": {
+     "top": 130,
+     "bottom": 130
+    },
+    "gapPx": 60
+   }
+  },
+  {
+   "id": "testimonial",
+   "useCase": "testimonial",
+   "archetype": "three-column-quote-blocks",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "archetypeRef": "three-column-quote-blocks",
+   "seededFrom": {
+    "lib": "project",
+    "id": "testimonial"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 section-heading",
+     "textLen": "short",
+     "sizeClass": "display",
+     "contract": "heading",
+     "copy": {
+      "heading": "What customers are saying"
+     }
+    },
+    {
+     "name": "items",
+     "role": "items \u2014 testimonial-card-list (quote -> name -> meta)",
+     "contract": "card",
+     "copy": [
+      {
+       "heading": "",
+       "text": ""
+      },
+      {
+       "heading": "",
+       "text": ""
+      },
+      {
+       "heading": "",
+       "text": ""
+      }
+     ]
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true,
+   "_patternLayout": {
+    "structure": "heading top-left then 3-column testimonial row",
+    "alignment": "left",
+    "columns": 3,
+    "containerWidth": "contained",
+    "approxPaddingPx": {
+     "top": 140,
+     "bottom": 120
+    },
+    "gapPx": 64
+   }
+  },
+  {
    "id": "cta",
    "useCase": "cta",
    "archetype": "full-bleed-dark-band-copy-left-art-right",
@@ -352,14 +399,844 @@
      "bottom": 160
     }
    }
+  },
+  {
+   "id": "heroSplit5050",
+   "useCase": "hero",
+   "archetype": "two-column-cards",
+   "surfaceIntent": "surface/inverse",
+   "novelty": "reuse",
+   "archetypeRef": "two-column-cards",
+   "seededFrom": {
+    "lib": "project",
+    "id": "heroSplit5050"
+   },
+   "slots": [
+    {
+     "name": "eyebrow",
+     "role": "eyebrow \u2014 section-eyebrow",
+     "contract": "eyebrow",
+     "copy": {
+      "eyebrow": "Why Greenhouse"
+     }
+    },
+    {
+     "name": "heading",
+     "role": "heading \u2014 section-heading",
+     "textLen": "short",
+     "contract": "heading",
+     "copy": {
+      "heading": "What makes Greenhouse the best hiring platform"
+     }
+    },
+    {
+     "name": "body",
+     "role": "body \u2014 section-body",
+     "contract": "paragraph",
+     "copy": {
+      "text": "Greenhouse is the only hiring platform you'll ever need. From sourcing to interviewing to onboarding, Greenhouse saves you money by helping you make the best hires, faster, every time.",
+      "body": "Greenhouse is the only hiring platform you'll ever need. From sourcing to interviewing to onboarding, Greenhouse saves you money by helping you make the best hires, faster, every time."
+     }
+    },
+    {
+     "name": "items",
+     "role": "items \u2014 hero-item-list",
+     "contract": "list",
+     "copy": [
+      {
+       "label": "Source smarter",
+       "title": "Source smarter",
+       "text": ""
+      },
+      {
+       "label": "Make decisions faster",
+       "title": "Make decisions faster",
+       "text": ""
+      },
+      {
+       "label": "Hire with confidence",
+       "title": "Hire with confidence",
+       "text": ""
+      },
+      {
+       "label": "Welcome to Greenhouse!",
+       "title": "Welcome to Greenhouse!",
+       "text": "How can we help improve your hiring? This chat may be recorded and we may send you emails to follow up on our discussion here. Please see our Privacy Policy for more information."
+      },
+      {
+       "label": "Julia Mendoza",
+       "title": "Julia Mendoza",
+       "text": "Julia's collaborative mindset aligns well with the company's values. (Sources)"
+      }
+     ]
+    },
+    {
+     "name": "primaryAction",
+     "role": "primaryAction \u2014 outlined-action",
+     "contract": "button",
+     "copy": {
+      "label": "Request a demo",
+      "styleHint": "primary"
+     }
+    },
+    {
+     "name": "primaryAction-secondary",
+     "role": "secondary action",
+     "contract": "button",
+     "copy": {
+      "label": "Request a demo",
+      "styleHint": "outlined"
+     }
+    },
+    {
+     "name": "secondaryAction",
+     "role": "secondaryAction \u2014 filled-primary-action",
+     "contract": "button",
+     "copy": {
+      "label": "Request a demo",
+      "styleHint": "filled"
+     }
+    },
+    {
+     "name": "secondaryAction-secondary",
+     "role": "secondary action",
+     "contract": "button",
+     "copy": {
+      "label": "Request a demo"
+     }
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": false,
+   "_patternLayout": {
+    "structure": "split ~50/50, navbar across top, copy left on dark panel / product-UI collage right on mint band",
+    "columns": 2,
+    "alignment": "left",
+    "approxPaddingPx": {
+     "top": 130,
+     "bottom": 40
+    },
+    "containerWidth": "full-bleed"
+   }
+  },
+  {
+   "id": "features",
+   "useCase": "features",
+   "archetype": "three-column",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "archetypeRef": "three-column",
+   "seededFrom": {
+    "lib": "project",
+    "id": "features"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 section-heading",
+     "textLen": "short",
+     "contract": "heading",
+     "copy": {
+      "heading": "Your one-and-done hiring platform"
+     }
+    },
+    {
+     "name": "body",
+     "role": "body \u2014 section-body",
+     "contract": "paragraph",
+     "copy": {
+      "text": "What makes businesses thrive or fail? The people working there day to day. That's why companies spend so much time and money on hiring.\n\nWith Greenhouse, you won't need to gamble that time and money on new solutions as technology evolves. For 10+ years, we've been the industry leader in solving the challenges companies face in making high-quality hires \u2013 in one scalable platform.",
+      "body": "What makes businesses thrive or fail? The people working there day to day. That's why companies spend so much time and money on hiring.\n\nWith Greenhouse, you won't need to gamble that time and money on new solutions as technology evolves. For 10+ years, we've been the industry leader in solving the challenges companies face in making high-quality hires \u2013 in one scalable platform."
+     }
+    },
+    {
+     "name": "items",
+     "role": "items \u2014 features-item-list",
+     "contract": "list",
+     "copy": [
+      {
+       "label": "Increased hiring ROI",
+       "title": "Increased hiring ROI",
+       "text": "Consolidate your tech stack with a full workflow solution, from sourcing to onboarding \u00b7 Work smarter, not harder, with embedded AI tools that automate more of the process \u00b7 Make objective, data-driven hiring decisions for consistently better hires \u00b7 Get immediate insights into your hiring funnel, enabling quick adjustments and continuous improvement"
+      },
+      {
+       "label": "One easy-to-use platform",
+       "title": "One easy-to-use platform",
+       "text": "Manage every candidate touchpoint in one platform, from application to hire \u00b7 Keep data structured and accessible with advanced configurations \u00b7 Flex and scale your hiring capabilities with native solutions and integrations \u00b7 Ensure security, compliance and governance without added complexity"
+      },
+      {
+       "label": "Proven industry leadership",
+       "title": "Proven industry leadership",
+       "text": "Partner with an established leader and innovator in the hiring space for 10+ years \u00b7 Get personalized guidance and support, ensuring successful adoption and continuous improvement \u00b7 Access 24/7 resources and guidance to ensure your team is maximizing Greenhouse capabilities \u00b7 Stay ahead of technology trends, including 20+ AI features already in the platform, with more on the way"
+      }
+     ]
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": false,
+   "_patternLayout": {
+    "structure": "heading + intro copy stacked top, then 3-column feature list below, all left-aligned in contained canvas",
+    "columns": 3,
+    "alignment": "left",
+    "approxPaddingPx": {
+     "top": 120,
+     "bottom": 80
+    },
+    "gapPx": 90,
+    "containerWidth": "contained"
+   }
+  },
+  {
+   "id": "featuresHeadingBodyTop",
+   "useCase": "features",
+   "archetype": "two-column-with-media",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "archetypeRef": "two-column-with-media",
+   "seededFrom": {
+    "lib": "project",
+    "id": "featuresHeadingBodyTop"
+   },
+   "slots": [
+    {
+     "name": "eyebrow",
+     "role": "eyebrow \u2014 section-eyebrow",
+     "contract": "eyebrow",
+     "copy": {
+      "eyebrow": "Proven leadership"
+     }
+    },
+    {
+     "name": "heading",
+     "role": "heading \u2014 section-heading",
+     "textLen": "short",
+     "contract": "heading",
+     "copy": {
+      "heading": "How we compare"
+     }
+    },
+    {
+     "name": "subheading",
+     "role": "subheading \u2014 section-subheading",
+     "contract": "heading",
+     "copy": {
+      "heading": "How we compare"
+     }
+    },
+    {
+     "name": "body",
+     "role": "body \u2014 section-body",
+     "contract": "paragraph",
+     "copy": {
+      "text": "When it comes to choosing your next ATS, it pays dividends to do your due diligence. Take a deep dive into how the Greenhouse platform compares.",
+      "body": "When it comes to choosing your next ATS, it pays dividends to do your due diligence. Take a deep dive into how the Greenhouse platform compares."
+     }
+    },
+    {
+     "name": "items",
+     "role": "items \u2014 features-card-list",
+     "contract": "image",
+     "asset": {
+      "src": "032-6a4bfc62b24be85dc1ffa3a6-single-20platform-20image.png",
+      "alt": "Greenhouse items"
+     }
+    },
+    {
+     "name": "itemIcon",
+     "role": "itemIcon \u2014 inline-spot-icon",
+     "contract": "paragraph",
+     "copy": {
+      "text": "When it comes to choosing your next ATS, it pays dividends to do your due diligence. Take a deep dive into how the Greenhouse platform compares.",
+      "body": "When it comes to choosing your next ATS, it pays dividends to do your due diligence. Take a deep dive into how the Greenhouse platform compares."
+     }
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true,
+   "_patternLayout": {
+    "structure": "heading + body top, pill filter row, then split comparison card: table left / badge media right",
+    "columns": 2,
+    "alignment": "left",
+    "approxPaddingPx": {
+     "top": 110,
+     "bottom": 40
+    },
+    "gapPx": 40,
+    "containerWidth": "contained"
+   }
+  },
+  {
+   "id": "featuresSectionHeadingTop",
+   "useCase": "features",
+   "archetype": "three-column",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "archetypeRef": "three-column",
+   "seededFrom": {
+    "lib": "project",
+    "id": "featuresSectionHeadingTop"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 section-heading",
+     "textLen": "short",
+     "contract": "heading",
+     "copy": {
+      "heading": "Why the top companies choose Greenhouse"
+     }
+    },
+    {
+     "name": "items",
+     "role": "items \u2014 features-item-list",
+     "contract": "list",
+     "copy": [
+      {
+       "label": "Hiring the right people for the role, every time",
+       "title": "Hiring the right people for the role, every time",
+       "text": "Stronger candidate pools; Reputation for excellent candidate experience; Fair and confident hiring decisions based on objective criteria; Fill roles efficiently, predictably and consistently; Increased accountability and stakeholder buy-in; Recruiting teams empowered to be strategic advisors"
+      },
+      {
+       "label": "Navigating market changes in hiring with confidence",
+       "title": "Navigating market changes in hiring with confidence",
+       "text": "Less exposure to costly legal risks and compliance issues; Solutions that help you execute business plans with confidence; Less money spent on third-party consultants and implementation teams; Increased total employee lifetime value"
+      },
+      {
+       "label": "Maximizing hiring ROI while minimizing spend",
+       "title": "Maximizing hiring ROI while minimizing spend",
+       "text": "Decreased cost-per-hire and total recruiting spend; Attractive ROI across sourcing, teams and tech stacks; Recruiting teams can do more with less; Consistent achievement of company goals"
+      },
+      {
+       "label": "Staying secure and compliant",
+       "title": "Staying secure and compliant",
+       "text": "Lower legal and compliance costs; Streamlined workflows and automation to cut down on IT costs and overhead; Improved compliance audit success rates"
+      }
+     ]
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": false,
+   "_patternLayout": {
+    "structure": "section heading top-left, then 3-column grid of subheading + bulleted lists, second row starts a 4th group",
+    "columns": 3,
+    "alignment": "left",
+    "approxPaddingPx": {
+     "top": 40,
+     "bottom": 80
+    },
+    "gapPx": 40,
+    "containerWidth": "contained"
+   }
+  },
+  {
+   "id": "content",
+   "useCase": "content",
+   "archetype": "two-column-with-media",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "archetypeRef": "two-column-with-media",
+   "seededFrom": {
+    "lib": "project",
+    "id": "content"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 section-heading",
+     "textLen": "short",
+     "contract": "heading",
+     "copy": {
+      "heading": "We\u2019re the #1 ATS on G2"
+     }
+    },
+    {
+     "name": "body",
+     "role": "body \u2014 section-body",
+     "contract": "paragraph",
+     "copy": {
+      "text": "We\u2019ve cemented our market leadership as the top ATS for enterprise, mid-market and Europe based on universal high ratings and customer trust in our hiring software.",
+      "body": "We\u2019ve cemented our market leadership as the top ATS for enterprise, mid-market and Europe based on universal high ratings and customer trust in our hiring software."
+     }
+    },
+    {
+     "name": "items",
+     "role": "items \u2014 content-item-list",
+     "contract": "list",
+     "copy": [
+      {
+       "label": "Contenders",
+       "title": "Contenders",
+       "text": ""
+      },
+      {
+       "label": "Leaders",
+       "title": "Leaders",
+       "text": ""
+      },
+      {
+       "label": "High performers",
+       "title": "High performers",
+       "text": ""
+      },
+      {
+       "label": "Satisfaction",
+       "title": "Satisfaction",
+       "text": ""
+      },
+      {
+       "label": "Market presence",
+       "title": "Market presence",
+       "text": ""
+      }
+     ]
+    },
+    {
+     "name": "media",
+     "role": "media \u2014 section-lead-media",
+     "contract": "image",
+     "asset": {
+      "src": "041-675b1b254dcfbdcac88895be-greenhouse-g2-grid-report.avif",
+      "alt": "Greenhouse media"
+     }
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true,
+   "_patternLayout": {
+    "structure": "split ~50/50, copy left / media card right, thin vertical divider between",
+    "columns": 2,
+    "alignment": "left",
+    "approxPaddingPx": {
+     "top": 200,
+     "bottom": 200
+    },
+    "gapPx": 120,
+    "containerWidth": "contained"
+   }
+  },
+  {
+   "id": "gallery",
+   "useCase": "gallery",
+   "archetype": "three-column-cards",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "archetypeRef": "three-column-cards",
+   "seededFrom": {
+    "lib": "project",
+    "id": "gallery"
+   },
+   "slots": [
+    {
+     "name": "items",
+     "role": "items \u2014 gallery-card-list",
+     "contract": "card",
+     "copy": [
+      {
+       "heading": "Top ATS for Enterprise",
+       "text": "Enterprise Grid Report for Applicant Tracking Systems (ATS) | Summer 2026",
+       "asset": "042-6a1895bc83e54d86cbd45bbe-d-us-awards-image-g2-ent-leader-summer-2026-on-marigold-background.png",
+       "alt": "042 6a1895bc83e54d86cbd45bbe d us awards image g2 ent leader summer 2026 on marigold background"
+      },
+      {
+       "heading": "Top ATS for Mid-Market",
+       "text": "Mid-Market Grid Report for Applicant Tracking Systems (ATS) | Summer 2026",
+       "asset": "043-6a1895bc8f2d9491ce3db846-d-us-awards-image-g2-mm-leader-summer-2026-on-marigold-background.png",
+       "alt": "043 6a1895bc8f2d9491ce3db846 d us awards image g2 mm leader summer 2026 on marigold background"
+      },
+      {
+       "heading": "Top ATS in Europe",
+       "text": "Europe Regional Grid Report for Applicant Tracking Systems (ATS) | Summer 2026",
+       "asset": "044-6a1895bc5ecfc15c4fdec10a-d-us-awards-image-g2-leader-europe-summer-2026-on-marigold-background.png",
+       "alt": "044 6a1895bc5ecfc15c4fdec10a d us awards image g2 leader europe summer 2026 on marigold background"
+      }
+     ]
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true,
+   "_patternLayout": {
+    "structure": "3-up card row, each card = badge media-well on top -> heading -> underlined link",
+    "columns": 3,
+    "alignment": "left",
+    "approxPaddingPx": {
+     "top": 20,
+     "bottom": 40
+    },
+    "gapPx": 40,
+    "containerWidth": "contained"
+   }
+  },
+  {
+   "id": "ctaSplit5050",
+   "useCase": "cta",
+   "archetype": "two-column-with-media",
+   "surfaceIntent": "surface/inverse",
+   "novelty": "reuse",
+   "archetypeRef": "two-column-with-media",
+   "seededFrom": {
+    "lib": "project",
+    "id": "ctaSplit5050"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 section-heading",
+     "textLen": "short",
+     "contract": "heading",
+     "copy": {
+      "heading": "Greenhouse increases recruiter efficiency by 36%"
+     }
+    },
+    {
+     "name": "media",
+     "role": "media \u2014 section-lead-media",
+     "contract": "image",
+     "asset": {
+      "src": "045-66ccc7a3c9045b79b105b8c6-prefooter-image11-402x.avif",
+      "alt": "Greenhouse media"
+     }
+    },
+    {
+     "name": "primaryAction",
+     "role": "primaryAction \u2014 filled-primary-action",
+     "contract": "button",
+     "copy": {
+      "label": "Request a demo"
+     }
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true,
+   "_patternLayout": {
+    "structure": "split ~50/50, copy left / fingerprint-flower illustration right, full-bleed dark band",
+    "columns": 2,
+    "alignment": "left",
+    "approxPaddingPx": {
+     "top": 180,
+     "bottom": 180
+    },
+    "containerWidth": "full-bleed"
+   }
+  },
+  {
+   "id": "featuresThreeColumnCard",
+   "useCase": "features",
+   "archetype": "three-column-cards",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "archetypeRef": "three-column-cards",
+   "seededFrom": {
+    "lib": "project",
+    "id": "featuresThreeColumnCard"
+   },
+   "slots": [
+    {
+     "name": "items",
+     "role": "items \u2014 features-card-list",
+     "contract": "card",
+     "copy": [
+      {
+       "heading": "Greenhouse AI",
+       "text": "Hiring needs more than faster automation. It needs to be completely reimagined. Explore the next wave of AI capabilities from Greenhouse, built to help teams cut through noise, strengthen signal and make structured hiring easier to execute \u2013 without losing human judgment.",
+       "asset": "033-6a298fd15eb091333bcbe885-d-en-cg-home-two-office-workers-discussing-content-on-tablet-bright-space.png",
+       "alt": "033 6a298fd15eb091333bcbe885 d en cg home two office workers discussing content on tablet bright space"
+      },
+      {
+       "heading": "Real Talent",
+       "text": "Greenhouse Real Talent\u2122 brings triple layers of trust to hiring with candidate fraud detection, identity verification and candidate matching software, so you can make more confident hiring decisions.",
+       "asset": "034-6a063cdddfe47d8d3429a902-d-en-cg-home-real-talent-fraud-detection-candidate-cards.avif",
+       "alt": "034 6a063cdddfe47d8d3429a902 d en cg home real talent fraud detection candidate cards"
+      },
+      {
+       "heading": "MyGreenhouse",
+       "text": "MyGreenhouse is a powerful new candidate portal that transforms hiring from robotic to remarkable. It keeps candidates informed with real-time updates, surfaces new opportunities and makes applying seamless \u2013 while giving recruiters the insights to quickly identify top talent.",
+       "asset": "035-6a063cdcba100ecc20453980-d-en-cg-home-woman-in-suit-on-laptop-smiling-setup-job-alert-ui.avif",
+       "alt": "035 6a063cdcba100ecc20453980 d en cg home woman in suit on laptop smiling setup job alert ui"
+      }
+     ]
+    },
+    {
+     "name": "primaryAction",
+     "role": "primaryAction \u2014 outlined-action",
+     "contract": "button",
+     "copy": {
+      "label": "Request a demo",
+      "styleHint": "primary"
+     }
+    },
+    {
+     "name": "primaryAction-secondary",
+     "role": "secondary action",
+     "contract": "button",
+     "copy": {
+      "label": "Request a demo",
+      "styleHint": "outlined"
+     }
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true,
+   "_patternLayout": {
+    "structure": "3-column card grid, each card: media-well top -> heading -> body -> outlined CTA",
+    "columns": 3,
+    "alignment": "left",
+    "approxPaddingPx": {
+     "top": 40,
+     "bottom": 40
+    },
+    "gapPx": 80,
+    "containerWidth": "contained"
+   }
+  },
+  {
+   "id": "featuresSplit5050",
+   "useCase": "features",
+   "archetype": "two-column-with-media",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "archetypeRef": "two-column-with-media",
+   "seededFrom": {
+    "lib": "project",
+    "id": "featuresSplit5050"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 section-heading",
+     "textLen": "short",
+     "contract": "heading",
+     "copy": {
+      "heading": "Find top talent with ease"
+     }
+    },
+    {
+     "name": "items",
+     "role": "items \u2014 features-item-list",
+     "contract": "list",
+     "copy": [
+      {
+       "label": "Job listings at scale",
+       "title": "Job listings at scale",
+       "text": "\u2013 Post and promote open roles across 1,000+ large and niche job boards"
+      },
+      {
+       "label": "Capture contact info",
+       "title": "Capture contact info",
+       "text": "\u2013 Easily and automatically get accurate prospect contact information"
+      },
+      {
+       "label": "DE&I hiring goals",
+       "title": "DE&I hiring goals",
+       "text": "\u2013 Discover and attract a more diverse field of top talent"
+      },
+      {
+       "label": "Project Manager",
+       "title": "Project Manager",
+       "text": "2023-06-12"
+      },
+      {
+       "label": "Designer 2",
+       "title": "Designer 2",
+       "text": "2023-07-22"
+      },
+      {
+       "label": "Senior Engineer",
+       "title": "Senior Engineer",
+       "text": "Campaign paused"
+      }
+     ]
+    },
+    {
+     "name": "media",
+     "role": "media \u2014 section-lead-media",
+     "contract": "image",
+     "asset": {
+      "src": "032-676afa936f2bdcaefd2b096b-collage-of-job-ad-market-ui-and-partner-campaign-ui-with-fingerprint-leaf-m.avif",
+      "alt": "Greenhouse media"
+     }
+    },
+    {
+     "name": "primaryAction",
+     "role": "primaryAction \u2014 filled-primary-action",
+     "contract": "button",
+     "copy": {
+      "label": "Request a demo"
+     }
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true,
+   "_patternLayout": {
+    "structure": "split 50/50, product-UI mockups on dark canvas left / copy stack right",
+    "columns": 2,
+    "alignment": "left",
+    "approxPaddingPx": {
+     "top": 40,
+     "bottom": 40
+    },
+    "gapPx": 120,
+    "containerWidth": "full-bleed"
+   }
+  },
+  {
+   "id": "featuresSplit5050Media",
+   "useCase": "features",
+   "archetype": "two-column-with-media",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "archetypeRef": "two-column-with-media",
+   "seededFrom": {
+    "lib": "project",
+    "id": "featuresSplit5050Media"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 section-heading",
+     "textLen": "long",
+     "contract": "heading",
+     "copy": {
+      "heading": "Make the right first impression with your careers page"
+     }
+    },
+    {
+     "name": "items",
+     "role": "items \u2014 features-item-list",
+     "contract": "list",
+     "copy": [
+      {
+       "label": "Branded careers pages",
+       "title": "Branded careers pages",
+       "text": "\u2013 Define and promote your unique employer brand and company culture"
+      },
+      {
+       "label": "Job board integration",
+       "title": "Job board integration",
+       "text": "\u2013 Easily integrate your Greenhouse job board into your company website"
+      },
+      {
+       "label": "Personalized social posts",
+       "title": "Personalized social posts",
+       "text": "\u2013 Tailor active and passive social media outreach, all in Greenhouse"
+      }
+     ]
+    },
+    {
+     "name": "media",
+     "role": "media \u2014 section-lead-media",
+     "contract": "image",
+     "asset": {
+      "src": "035-66feddedc6644300cc8975d4-collage-of-company-job-board-page-on-desktop-and-mobile-with-fingerprint-leaf-png.webp",
+      "alt": "Greenhouse media"
+     }
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true,
+   "_patternLayout": {
+    "structure": "split ~50/50, media panel left (green canvas with product-UI mockups) / copy stack right",
+    "columns": 2,
+    "alignment": "left",
+    "approxPaddingPx": {
+     "top": 40,
+     "bottom": 40
+    },
+    "gapPx": 120,
+    "containerWidth": "full-bleed"
+   }
+  },
+  {
+   "id": "featuresHeadingFullWidth",
+   "useCase": "features",
+   "archetype": "two-column-cards",
+   "surfaceIntent": "surface/primary",
+   "novelty": "reuse",
+   "archetypeRef": "two-column-cards",
+   "seededFrom": {
+    "lib": "project",
+    "id": "featuresHeadingFullWidth"
+   },
+   "slots": [
+    {
+     "name": "heading",
+     "role": "heading \u2014 section-heading",
+     "textLen": "short",
+     "contract": "heading",
+     "copy": {
+      "heading": "More hiring solutions"
+     }
+    },
+    {
+     "name": "items",
+     "role": "items \u2014 features-card-list",
+     "contract": "card",
+     "copy": [
+      {
+       "heading": "Candidate experience",
+       "text": "Deliver an excellent candidate experience with easy applications, engaging interviews and a fair and transparent hiring process.",
+       "asset": "043-6a0e3ad39c65e202b43df73c-d-en-sbs-greenhouse-candidate-engagement-ui.avif",
+       "alt": "043 6a0e3ad39c65e202b43df73c d en sbs greenhouse candidate engagement ui"
+      },
+      {
+       "heading": "Integrations",
+       "text": "With 500+ pre-built integrations, you can easily connect Greenhouse with the industry's best tools.",
+       "asset": "044-6a0e3ad247f2a601a20756cb-d-en-sbs-greenhouse-integrations-ui.avif",
+       "alt": "044 6a0e3ad247f2a601a20756cb d en sbs greenhouse integrations ui"
+      }
+     ]
+    },
+    {
+     "name": "primaryAction",
+     "role": "primaryAction \u2014 outlined-action",
+     "contract": "button",
+     "copy": {
+      "label": "Request a demo",
+      "styleHint": "primary"
+     }
+    },
+    {
+     "name": "primaryAction-secondary",
+     "role": "secondary action",
+     "contract": "button",
+     "copy": {
+      "label": "Request a demo",
+      "styleHint": "outlined"
+     }
+    }
+   ],
+   "treatments": [],
+   "_requiresHydration": true,
+   "_patternLayout": {
+    "structure": "heading full-width top, then two equal columns split by a vertical divider; each column = media cluster top / copy stack bottom",
+    "columns": 2,
+    "alignment": "left",
+    "approxPaddingPx": {
+     "top": 130,
+     "bottom": 120
+    },
+    "gapPx": 80,
+    "containerWidth": "contained"
+   }
   }
  ],
  "drawableArchetypes": {
   "hero": "collage",
-  "featuresThreeColumnCard": "cards",
-  "logoWall": "split",
   "featureGrid": "cards",
-  "cta": "generic-flow"
+  "logoWall": "split",
+  "stats": "generic-flow",
+  "testimonial": "generic-flow",
+  "cta": "generic-flow",
+  "heroSplit5050": "split",
+  "features": "generic-flow",
+  "featuresHeadingBodyTop": "split",
+  "featuresSectionHeadingTop": "generic-flow",
+  "content": "split",
+  "gallery": "cards",
+  "ctaSplit5050": "split",
+  "featuresThreeColumnCard": "cards",
+  "featuresSplit5050": "split",
+  "featuresSplit5050Media": "split",
+  "featuresHeadingFullWidth": "cards"
  },
  "errors": {}
 }

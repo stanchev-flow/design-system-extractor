@@ -1,16 +1,49 @@
 {
   "brand": "HubSpot",
-  "brand_yaml_sha256": "d08adad3ff234efcdc0f37b1026cd52be4d6cf498dd0be0441d3c9400ff8261e",
+  "brand_yaml_sha256": "99e61899228bee449a66edfc3c170bf9c4dc3a73048db42348c38cf8314da9ee",
   "style_id": "",
   "style_md_sha256": "",
   "generator_version": "1.0.0",
-  "generated_at": "2026-07-22T20:09:43+00:00",
+  "generated_at": "2026-07-28T23:47:27+00:00",
   "token_count": 177,
   "disabledDevices": [
     "counter-display",
     "ghost-watermark",
     "shadows",
     "aspect-palette"
+  ],
+  "typographyDelivery": [
+    {
+      "family": "HubSpot Sans",
+      "declared": "\"HubSpot Sans\", sans-serif",
+      "roles": [
+        "h3",
+        "body",
+        "eyebrow",
+        "control-text",
+        "footer-sitemap-link",
+        "h4",
+        "h5",
+        "h6",
+        "small",
+        "micro"
+      ],
+      "generic": "sans-serif",
+      "selfHosted": true,
+      "status": "self-hosted"
+    },
+    {
+      "family": "HubSpot Serif Page Header Human",
+      "declared": "\"HubSpot Serif Page Header Human\", \"HubSpot Serif\", serif",
+      "roles": [
+        "display-hero",
+        "h1",
+        "h2"
+      ],
+      "generic": "serif",
+      "selfHosted": true,
+      "status": "self-hosted"
+    }
   ],
   "index": {
     "--color-surface-primary": "#fcfcfa",
@@ -161,20 +194,20 @@
     "--button-fg": "#ffffff",
     "--button-bg-hover": "#c93700",
     "--button-fg-hover": "#ffffff",
-    "--button-border": "none",
-    "--button-pad": "16px 40px",
+    "--button-border": "2px solid transparent",
+    "--button-pad": "12px 24px",
     "--button-radius": "8px",
-    "--button-height": "68px",
+    "--button-height": "56px",
     "--button-weight": "500",
-    "--button-size": "1.125rem",
+    "--button-size": "1rem",
     "--button-secondary-bg": "#ffffff",
     "--button-secondary-fg": "#ff4800",
     "--button-secondary-border": "2px solid #ff4800",
-    "--button-secondary-pad": "16px 40px",
+    "--button-secondary-pad": "12px 24px",
     "--button-secondary-radius": "8px",
-    "--button-secondary-height": "68px",
+    "--button-secondary-height": "56px",
     "--button-secondary-weight": "500",
-    "--button-secondary-size": "1.125rem",
+    "--button-secondary-size": "1rem",
     "--button-tertiary-bg": "#1f1f1f",
     "--button-tertiary-fg": "#ffffff",
     "--button-tertiary-border": "2px solid transparent",

@@ -1,20 +1,20 @@
 # Interaction-Contract Baseline Report
 
-Generated: 2026-07-14T16:51:59+00:00 — auditor v1.0.0 — mode: strict
+Generated: 2026-07-28T23:57:56+00:00 — auditor v1.0.0 — mode: strict
 Contracts: `brand_pipeline/spec/interaction-contracts.md` (WAI-ARIA APG primary; Base UI secondary; Radix tertiary)
 
 ## Audited lanes
 
 | lane | file | mtime (UTC) | sha256/12 |
 |---|---|---|---|
-| compose/hero-archetypes/_before-pass2/homepage | `/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/homepage/index.html` | 2026-07-14T15:29:12+00:00 | `ceb928e778c1` |
-| compose/hero-archetypes/_before-pass2/pricing | `/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/pricing/index.html` | 2026-07-14T15:29:12+00:00 | `55a359d3452a` |
-| compose/hero-archetypes/_before-pass2/product | `/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/product/index.html` | 2026-07-14T15:29:12+00:00 | `fa274ae72795` |
-| compose/hero-archetypes/_before-pass2/about | `/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/about/index.html` | 2026-07-14T15:29:12+00:00 | `e6ae9fb95298` |
-| compose/hero-archetypes/_before-pass2/blog | `/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/blog/index.html` | 2026-07-14T15:29:12+00:00 | `33d47aa1a912` |
-| compose/hero-archetypes/_before-pass2/demo | `/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/demo/index.html` | 2026-07-14T15:29:12+00:00 | `61dc80aea65d` |
-| compose/hero-archetypes/_before-pass2/developer | `/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/developer/index.html` | 2026-07-14T15:29:12+00:00 | `33d70b01b12f` |
-| compose/hero-archetypes/_before-pass2/event | `/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/event/index.html` | 2026-07-14T15:29:12+00:00 | `0dd0905f530b` |
+| compose/hero-archetypes/_before-pass2/homepage | `runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/homepage/index.html` | 2026-07-14T15:29:12+00:00 | `ceb928e778c1` |
+| compose/hero-archetypes/_before-pass2/pricing | `runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/pricing/index.html` | 2026-07-14T15:29:12+00:00 | `55a359d3452a` |
+| compose/hero-archetypes/_before-pass2/product | `runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/product/index.html` | 2026-07-14T15:29:12+00:00 | `fa274ae72795` |
+| compose/hero-archetypes/_before-pass2/about | `runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/about/index.html` | 2026-07-14T15:29:12+00:00 | `e6ae9fb95298` |
+| compose/hero-archetypes/_before-pass2/blog | `runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/blog/index.html` | 2026-07-14T15:29:12+00:00 | `33d47aa1a912` |
+| compose/hero-archetypes/_before-pass2/demo | `runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/demo/index.html` | 2026-07-14T15:29:12+00:00 | `61dc80aea65d` |
+| compose/hero-archetypes/_before-pass2/developer | `runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/developer/index.html` | 2026-07-14T15:29:12+00:00 | `33d70b01b12f` |
+| compose/hero-archetypes/_before-pass2/event | `runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/event/index.html` | 2026-07-14T15:29:12+00:00 | `0dd0905f530b` |
 
 If a lane is re-rendered by another agent, re-run the audit; the mtime/sha above identify exactly which HTML was measured.
 

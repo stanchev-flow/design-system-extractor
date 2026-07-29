@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-14T16:51:59+00:00",
+  "generated_at": "2026-07-28T23:57:56+00:00",
   "auditor_version": "1.0.0",
   "spec": "brand_pipeline/spec/interaction-contracts.md",
   "mode": "strict",
@@ -15,7 +15,7 @@
   "lanes": [
     {
       "lane": "compose/hero-archetypes/_before-pass2/homepage",
-      "path": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/homepage/index.html",
+      "path": "runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/homepage/index.html",
       "audited_mtime": "2026-07-14T15:29:12+00:00",
       "sha256_12": "ceb928e778c1",
       "findings": [
@@ -452,7 +452,7 @@
     },
     {
       "lane": "compose/hero-archetypes/_before-pass2/pricing",
-      "path": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/pricing/index.html",
+      "path": "runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/pricing/index.html",
       "audited_mtime": "2026-07-14T15:29:12+00:00",
       "sha256_12": "55a359d3452a",
       "findings": [
@@ -889,7 +889,7 @@
     },
     {
       "lane": "compose/hero-archetypes/_before-pass2/product",
-      "path": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/product/index.html",
+      "path": "runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/product/index.html",
       "audited_mtime": "2026-07-14T15:29:12+00:00",
       "sha256_12": "fa274ae72795",
       "findings": [
@@ -1326,7 +1326,7 @@
     },
     {
       "lane": "compose/hero-archetypes/_before-pass2/about",
-      "path": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/about/index.html",
+      "path": "runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/about/index.html",
       "audited_mtime": "2026-07-14T15:29:12+00:00",
       "sha256_12": "e6ae9fb95298",
       "findings": [
@@ -1763,7 +1763,7 @@
     },
     {
       "lane": "compose/hero-archetypes/_before-pass2/blog",
-      "path": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/blog/index.html",
+      "path": "runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/blog/index.html",
       "audited_mtime": "2026-07-14T15:29:12+00:00",
       "sha256_12": "33d47aa1a912",
       "findings": [
@@ -2200,7 +2200,7 @@
     },
     {
       "lane": "compose/hero-archetypes/_before-pass2/demo",
-      "path": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/demo/index.html",
+      "path": "runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/demo/index.html",
       "audited_mtime": "2026-07-14T15:29:12+00:00",
       "sha256_12": "61dc80aea65d",
       "findings": [
@@ -2714,7 +2714,7 @@
     },
     {
       "lane": "compose/hero-archetypes/_before-pass2/developer",
-      "path": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/developer/index.html",
+      "path": "runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/developer/index.html",
       "audited_mtime": "2026-07-14T15:29:12+00:00",
       "sha256_12": "33d70b01b12f",
       "findings": [
@@ -3173,7 +3173,7 @@
     },
     {
       "lane": "compose/hero-archetypes/_before-pass2/event",
-      "path": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/event/index.html",
+      "path": "runs/hubspot-v2/brand/compose/hero-archetypes/_before-pass2/event/index.html",
       "audited_mtime": "2026-07-14T15:29:12+00:00",
       "sha256_12": "0dd0905f530b",
       "findings": [

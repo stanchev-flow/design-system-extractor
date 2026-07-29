@@ -4,9 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Greenhouse - full page (composed from catalog)</title>
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style id="tokens">
 /* Greenhouse — generated design tokens (layer 1). Source: brand.yaml sha256=3afb41fa0e02; generator tokens_css.py v1.0.0; style=none; tokens=118; disabledDevices=counter-display,ghost-watermark,aspect-palette,filled-button. Regenerate via the compose CLI — never hand-edit. */
+/* typography delivery — declared families this brand does NOT self-host, and what renders instead: Untitled Sans -> Lexend Deca (generic-default); Untitled Serif -> Lexend Deca (generic-default). */
 :root {
   --color-text-primary: #15372c;
   --color-text-on-inverse: #ffffff;
@@ -28,35 +31,35 @@
   --surface-surface-inverse: #15372c;
   --surface-surface-panel: #ffffff;
   --surface-surface-inverse-strong: #15372c;
-  --font-display-hero: Untitled Serif, Georgia, sans-serif;
+  --font-display-hero: Untitled Serif, 'Lexend Deca', Georgia, sans-serif;
   --size-display-hero: 4.375rem;
   --size-display-hero-base: 4.375rem;
   --weight-display-hero: 400;
   --leading-display-hero: 1.05;
   --case-display-hero: none;
   --tracking-display-hero: -0.01em;
-  --font-h1: Untitled Serif, Georgia, sans-serif;
+  --font-h1: Untitled Serif, 'Lexend Deca', Georgia, sans-serif;
   --size-h1: 4.375rem;
   --size-h1-base: 4.375rem;
   --weight-h1: 400;
   --leading-h1: 1.05;
   --case-h1: none;
   --tracking-h1: -0.01em;
-  --font-h2: Untitled Serif, Georgia, sans-serif;
+  --font-h2: Untitled Serif, 'Lexend Deca', Georgia, sans-serif;
   --size-h2: 2.875rem;
   --size-h2-base: 2.875rem;
   --weight-h2: 400;
   --leading-h2: 1.18;
   --case-h2: none;
   --tracking-h2: -0.01em;
-  --font-h3: Untitled Sans, Arial, sans-serif;
+  --font-h3: Untitled Sans, 'Lexend Deca', Arial, sans-serif;
   --size-h3: 1.1875rem;
   --size-h3-base: 1.1875rem;
   --weight-h3: 400;
   --leading-h3: 1.7;
   --case-h3: none;
   --tracking-h3: normal;
-  --font-body: Untitled Sans, Arial, sans-serif;
+  --font-body: Untitled Sans, 'Lexend Deca', Arial, sans-serif;
   --size-body: 1.1875rem;
   --size-body-base: 1.1875rem;
   --weight-body: 400;
@@ -70,28 +73,28 @@
   --leading-eyebrow: 1.4em;
   --case-eyebrow: none;
   --tracking-eyebrow: 0.02em;
-  --font-control-text: Untitled Sans, Arial, sans-serif;
+  --font-control-text: Untitled Sans, 'Lexend Deca', Arial, sans-serif;
   --size-control-text: 0.9375rem;
   --size-control-text-base: 0.9375rem;
   --weight-control-text: 400;
   --leading-control-text: 1.0;
   --case-control-text: none;
   --tracking-control-text: normal;
-  --font-footer-sitemap-link: Untitled Serif, Georgia, sans-serif;
+  --font-footer-sitemap-link: Untitled Serif, 'Lexend Deca', Georgia, sans-serif;
   --size-footer-sitemap-link: 1.25rem;
   --size-footer-sitemap-link-base: 1.25rem;
   --weight-footer-sitemap-link: 400;
   --leading-footer-sitemap-link: 1.3;
   --case-footer-sitemap-link: none;
   --tracking-footer-sitemap-link: normal;
-  --font-h4: Untitled Sans, Arial, Helvetica, sans-serif;
+  --font-h4: Untitled Sans, 'Lexend Deca', Arial, Helvetica, sans-serif;
   --size-h4: 1.0rem;
   --size-h4-base: 1.0rem;
   --weight-h4: 600;
   --leading-h4: 1.5;
   --case-h4: none;
   --tracking-h4: normal;
-  --font-nav-link: Untitled Sans, Arial, sans-serif;
+  --font-nav-link: Untitled Sans, 'Lexend Deca', Arial, sans-serif;
   --size-nav-link: 1.0rem;
   --size-nav-link-base: 1.0rem;
   --weight-nav-link: 400;
@@ -160,8 +163,8 @@ body { min-height: 100%; container-type: size; container-name: frame; }
   --accent: #008561;
   --display-size: 4.375rem;
   --radius: 24px;
-  --font-heading: Untitled Serif, Georgia, sans-serif;
-  --font-body: Untitled Sans, Arial, sans-serif;
+  --font-heading: Untitled Serif, 'Lexend Deca', Georgia, sans-serif;
+  --font-body: Untitled Sans, 'Lexend Deca', Arial, sans-serif;
   /* brand-constant aliases for the collage ghost + the cream split panel (layer-1 refs) */
   --c-ghost: var(--color-text-ghost-on-primary);
   --c-panel: var(--surface-surface-panel);
@@ -753,11 +756,16 @@ span.c-foot-wordmark { background: currentColor;
 .cs-panelcar,
 .cs-footer-sec > .c-footer {
   width: 100%; max-width: var(--content-measure, 86rem); margin-inline: auto; }
-.cs-section { min-height: 100cqh; }
+.cs-section { min-height: auto; }
 .cs-slot { display: flex; flex-direction: column; align-items: center; }
 .cs-eyebrow-wrap { margin-bottom: var(--c-eyebrow-gap); text-align: center; }
+/* TITLE-OVER-MEDIA PULL is a FACT-GATED device, not the stack hero's default seam:
+   --c-title-overlap is emitted (component_vars) only for a layout whose own
+   overlapRules declare `titleOverMediaTop`. A layout with no such fact resolves the
+   0rem fallback, so its title sits ABOVE the media on the section's own block rhythm
+   instead of straddling its top edge with a borrowed magnitude. */
 .cs-title { position: relative; z-index: 2; text-align: center;
-  margin-bottom: var(--c-title-overlap); }
+  margin-bottom: var(--c-title-overlap, 0rem); }
 .cs-collage { position: relative; width: 100%; max-width: 80rem; margin: 0 auto; }
 /* ALIGNMENT: the overlap depth/offsets keep their measured % magnitudes but round() the
    USED value to an exact --baseline multiple, so the overlap registers to the shared
@@ -1202,7 +1210,8 @@ span.c-foot-wordmark { background: currentColor;
 @media (max-width: 767px) {
   .cs-interlock { grid-template-columns: 1fr; }
   /* provenance: structural — mobile media recrop ratio (layout geometry, not a
-     brand token; coincidentally equals Remote's landscape aspect) */
+     brand token; a plain landscape ratio will coincide with some brands' own
+     measured aspect, which does not make it brand-derived) */
   .cs-interlock-media { aspect-ratio: 3 / 2; }
 }
 .cs-media-split { display: grid;
@@ -1229,10 +1238,9 @@ span.c-foot-wordmark { background: currentColor;
    the shared measure by design (a release, not a private containment copy). */
 .cs-ov--bleed .cs-ov-frame { max-width: none; }
 .cs-ov-canvas { position: relative; margin: 0; min-height: calc(48 * var(--baseline)); }
-/* FULL-HEIGHT bleed hero (2026-07): a full-bleed photo hero fills the viewport like
-   the source, not a short wide band. The hero image must COVER this taller canvas —
-   its authored wide aspect-ratio would otherwise pin it to a short strip. */
-.cs-ov--bleed .cs-ov-canvas { min-height: min(90svh, 54rem); }
+/* Bleed canvas is content-sized from the brand media / measured floor above. Viewport-tall
+   bleed is applied only when brand responsive heightRule (viewport / viewport-minus-nav)
+   licenses it via component_render — never as an unconditional viewport-height default. */
 .cs-ov-canvas > .c-image, .cs-ov-canvas > .c-image-ph {
   width: 100%; height: 100%; min-height: inherit; object-fit: cover; }
 .cs-ov--bleed .cs-ov-canvas > .c-image { aspect-ratio: auto; height: 100%; }
@@ -1266,11 +1274,11 @@ span.c-foot-wordmark { background: currentColor;
   padding: calc(6 * var(--baseline)) calc(5 * var(--baseline)); }
 /* panel display steps DOWN from the section's own display alias — --c-display-size is
    always emitted per section (component_vars), so no literal fallback (AS-24).
-   0.6 (pass1 2026-07, scale_adherence finding): the old 0.62 landed hubspot's panel
-   heading at 49.6px — on NO ladder (measured h1 48 / derived step 52). 0.6 puts the
-   stepped-down rank on the brand's own h1 rung for the evidenced display:h1 ratios
-   (hubspot 80->48 = h1; remote 46->27.6 ~= h3 28) — quantized new geometry, audited
-   per brand by the scale gate. */
+   The 0.6 step is a QUANTIZING ratio (pass1 2026-07, scale_adherence finding): an
+   unrounded multiplier lands the stepped-down heading between the brand's measured
+   type rungs, so the panel reads at a size no ladder declares. A round step puts the
+   stepped-down rank back onto a measured rung across the observed display:heading
+   ratios — geometry quantized here, then audited per brand by the scale gate. */
 .cs-ov-panel .c-heading--display { font-size: calc(0.6 * var(--c-display-size));
   max-width: 14ch; }
 /* sidebar rail: the full-height panel column (ref 3) — space-between stack. */
@@ -1338,7 +1346,7 @@ span.c-foot-wordmark { background: currentColor;
 .cs-band { position: relative; }
 .cs-band--top .cs-band-media { margin: 0; }
 .cs-band--top .c-image, .cs-band--top .c-image-ph { width: 100%;
-  height: calc(56 * var(--baseline)); object-fit: cover; display: block; }
+  height: auto; display: block; object-fit: cover; }
 /* the on-photo caption rides a small solid panel CHIP (sanctioned panel-over-media) —
    never bare text on the photograph. */
 .cs-band-chip { position: absolute; top: calc(5 * var(--baseline));
@@ -1353,7 +1361,6 @@ span.c-foot-wordmark { background: currentColor;
   display: flex; flex-direction: column; gap: var(--c-block-gap);
   padding-top: var(--c-block-gap); }
 @media (max-width: 767px) {
-  .cs-band--top .c-image, .cs-band--top .c-image-ph { height: calc(36 * var(--baseline)); }
   .cs-band-straddler { width: 100% !important; margin-inline: 0 !important;
     --c-seam-rise: calc(6 * var(--baseline)); } }
 .cs-flow { display: flex; flex-direction: column;
@@ -1387,7 +1394,8 @@ span.c-foot-wordmark { background: currentColor;
   line-height: var(--type-h4-line-height, var(--c-heading-line)); color: var(--c-ink); }
 .cs-testimonial-mark { color: var(--c-accent); font-family: var(--c-font-display);
   /* provenance: structural — decorative pull-quote glyph scale (a device size
-     ceiling, not a brand type tier; coincidentally equals a Remote spacing rung) */
+     ceiling, not a brand type tier; round rem values in a device clamp will
+     coincide with some brands' spacing rungs without deriving from them) */
   font-size: clamp(2.5rem, 5cqw, 4rem); line-height: 0.8; margin-bottom: 1rem; }
 .cs-testimonial .c-person { margin-top: var(--space-quote-to-attribution,
   var(--c-block-gap)); }
@@ -1700,9 +1708,10 @@ span.c-foot-wordmark { background: currentColor;
    so it reads as a bar flush above the hero, not padded inside it. */
 #page-nav { background: var(--c-paper); color: var(--c-ink); }
 #page-nav .cs-nav { margin-bottom: 0; padding: var(--c-nav-pad-block) var(--c-section-pad-x); }
-/* page: only the opening section is full-frame; others size to content. */
+/* page: sections size to content. Viewport/tall opening height is applied only
+   when brand responsive facts or measured bandHeight license it (component_render /
+   band_height_css) — never as an unconditional full-frame default. */
 .cs-section { min-height: auto; }
-#sec-0 .cs-section { min-height: 100cqh; }
 
 /* ── RELATIONAL LADDER (AS-48): the brand's measured per-pair rhythm ─────────────
    Header/anatomy stacks are NO-GAP columns; every seam is a per-pair margin riding
@@ -1773,14 +1782,13 @@ span.c-foot-wordmark { background: currentColor;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-h1-font: var(--font-h1);
   --c-h2-font: var(--font-h2);
   --c-h3-font: var(--font-h3);
   --c-h4-font: var(--font-h4);
 }
 #sec-0 { --c-section-pad-top: 8.125rem; --c-section-pad-bottom: 8.125rem; --c-section-pad: 8.125rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
-#sec-0 { --c-eyebrow-color: var(--c-ink); /* accent 3.77:1 on this surface — eyebrow rides primary ink */ }
+#sec-0 { --c-accent: var(--c-ink); }
 #sec-1 {
   --c-paper: var(--surface-surface-primary);
   --c-ink: var(--color-text-primary);
@@ -1812,7 +1820,6 @@ span.c-foot-wordmark { background: currentColor;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-h1-font: var(--font-h1);
   --c-h2-font: var(--font-h2);
   --c-h3-font: var(--font-h3);
@@ -1820,8 +1827,6 @@ span.c-foot-wordmark { background: currentColor;
 }
 #sec-1 { --c-section-pad-top: 8.125rem; --c-section-pad-bottom: 8.125rem; --c-section-pad: 8.125rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
 #sec-1 { --c-accent: var(--c-ink); }
-/* per-section placement (composition.v1 §4.6.5) */
-#sec-1 { --grid-cols: 3; --col: calc((100% - 2 * var(--grid-gutter, 6rem)) / 3); }
 #sec-2 {
   --c-paper: var(--surface-surface-primary);
   --c-ink: var(--color-text-primary);
@@ -1853,7 +1858,6 @@ span.c-foot-wordmark { background: currentColor;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-h1-font: var(--font-h1);
   --c-h2-font: var(--font-h2);
   --c-h3-font: var(--font-h3);
@@ -1892,7 +1896,6 @@ span.c-foot-wordmark { background: currentColor;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-h1-font: var(--font-h1);
   --c-h2-font: var(--font-h2);
   --c-h3-font: var(--font-h3);
@@ -1931,7 +1934,6 @@ span.c-foot-wordmark { background: currentColor;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-h1-font: var(--font-h1);
   --c-h2-font: var(--font-h2);
   --c-h3-font: var(--font-h3);
@@ -1970,7 +1972,6 @@ span.c-foot-wordmark { background: currentColor;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-h1-font: var(--font-h1);
   --c-h2-font: var(--font-h2);
   --c-h3-font: var(--font-h3);
@@ -1978,8 +1979,6 @@ span.c-foot-wordmark { background: currentColor;
 }
 #sec-5 { --c-section-pad-top: 8.125rem; --c-section-pad-bottom: 8.125rem; --c-section-pad: 8.125rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
 #sec-5 { --c-accent: var(--c-ink); }
-/* per-section placement (composition.v1 §4.6.5) */
-#sec-5 { --grid-cols: 2; --col: calc((100% - 1 * var(--grid-gutter, 6rem)) / 2); }
 #sec-6 {
   --c-paper: var(--surface-surface-inverse);
   --c-ink: var(--color-text-on-inverse);
@@ -2011,14 +2010,12 @@ span.c-foot-wordmark { background: currentColor;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-h1-font: var(--font-h1);
   --c-h2-font: var(--font-h2);
   --c-h3-font: var(--font-h3);
   --c-h4-font: var(--font-h4);
 }
 #sec-6 { --c-section-pad-top: 8.125rem; --c-section-pad-bottom: 8.125rem; --c-section-pad: 8.125rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
-#sec-6 { --c-accent: var(--c-ink); }
 #page-nav {
   --c-paper: var(--surface-surface-primary);
   --c-ink: var(--color-text-primary);
@@ -2050,13 +2047,13 @@ span.c-foot-wordmark { background: currentColor;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-h1-font: var(--font-h1);
   --c-h2-font: var(--font-h2);
   --c-h3-font: var(--font-h3);
   --c-h4-font: var(--font-h4);
 }
 #page-nav { --c-section-pad-top: 8.125rem; --c-section-pad-bottom: 8.125rem; --c-section-pad: 8.125rem; --c-block-gap: 2.5rem; --c-module-gap: 6rem; --c-section-pad-x: 2.5rem; --c-nav-pad-block: 1.75rem; }
+#page-nav { --c-accent: var(--c-ink); }
 #sec-7 {
   --c-paper: var(--surface-surface-inverse-strong);
   --c-ink: var(--color-text-on-inverse);
@@ -2088,7 +2085,6 @@ span.c-foot-wordmark { background: currentColor;
   --c-case-eyebrow: var(--case-eyebrow);
   --c-case-control: var(--case-control-text);
   --c-eyebrow-gap: var(--space-eyebrow-to-heading);
-  --c-title-overlap: -2.75rem;
   --c-h1-font: var(--font-h1);
   --c-h2-font: var(--font-h2);
   --c-h3-font: var(--font-h3);
@@ -2109,50 +2105,27 @@ span.c-foot-wordmark { background: currentColor;
 <nav class="cs-nav"><span class="c-logo"><span class="c-glyph" aria-hidden="true">&#9697;</span> greenhouse</span><span class="cs-navlinks"><a class="c-arrow-link" href="#" style="gap:0">Platform</a> <a class="c-arrow-link" href="#" style="gap:0">Why Greenhouse</a> <a class="c-arrow-link" href="#" style="gap:0">Resources</a> <a class="c-arrow-link" href="#" style="gap:0">About</a> <a class="c-arrow-link" href="#" style="gap:0">Community</a></span><a class="c-arrow-link" href="#">Request a demo <span class="c-arrow" aria-hidden="true">&rarr;</span></a></nav>
 </div>
 <div id="sec-0" class="cs-surface" data-layout="hero" data-surface="surface/tint" data-pattern="hero" data-pattern-lib="project" data-pattern-match="ref">
-<section class="cs-section">
-  <div class="cs-slot">
-    <div class="cs-eyebrow-wrap"><p class="c-eyebrow">Why Greenhouse</p></div>
-    <div class="cs-title"><h1 class="c-heading c-heading--display">The only hiring platform you’ll ever need</h1></div>
-    <div class="cs-collage">
-      <img class="c-image" src="assets/030-689610cd7418c453485571fd-home-hero-m-clusters-of-three-solutions-workflows-with-photos-of-ui-and-people-working-402x.png" alt="">
-      
-    </div>
-    <div class="cs-spacer"></div>
-    <div class="cs-foot">
-      <p class="cs-sub">Save more, hire with confidence and move faster with AI-powered tools that streamline every step of the hiring process – from sourcing to onboarding.</p>
-      
-      <div class="cs-hero-actions"><a class="c-arrow-link" href="#">Explore platform <span class="c-arrow" aria-hidden="true">&rarr;</span></a><a class="c-arrow-link" href="#">Explore platform <span class="c-arrow" aria-hidden="true">&rarr;</span></a></div>
-      
-      
+<section class="cs-section cs-collage-sec">
+  <div class="cs-collage-grid">
+    <div class="cs-ghost" aria-hidden="true">Request a demo</div>
+    <div class="cs-collage-head"><div class="c-header"><p class="c-eyebrow">Why Greenhouse</p><h1 class="c-heading c-heading--display">The only hiring platform you’ll ever need</h1></div></div>
+    <figure class="cs-collage-media">
+      <div class="c-image-mask"><img class="c-image" src="assets/030-689610cd7418c453485571fd-home-hero-m-clusters-of-three-solutions-workflows-with-photos-of-ui-and-people-working-402x.png" alt=""></div>
+      <p class="c-caption"></p>
+    </figure>
+    <div class="cs-collage-body">
+      <p class="c-paragraph" style="--c-measure:34ch">Save more, hire with confidence and move faster with AI-powered tools that streamline every step of the hiring process – from sourcing to onboarding.</p>
+      <a class="c-arrow-link" href="#">Explore platform <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
     </div>
   </div>
 </section>
 </div>
 <div id="sec-1" class="cs-surface" data-layout="featureGrid" data-surface="surface/primary" data-pattern="featureGrid" data-pattern-lib="project" data-pattern-match="ref">
-<section class="cs-section cs-modules-sec">
-  <div class="cs-modules-intro"><div class="c-header"><h2 class="c-heading c-heading--h2">The best teams start with hiring – and the best hiring starts with Greenhouse</h2></div></div>
-  <div class="cs-modules cs-modules--cols" style="--grid-cols: 3">
-    <article class="cs-module">
-      <figure class="cs-module-media" style="aspect-ratio: 16 / 10;"><img class="c-image" src="assets/046-6849817eafb5f7300bca18d3-revlon.png" alt="Greenhouse — Greenhouse AI"></figure>
-      <p class="c-caption">Greenhouse AI</p>
-      <p class="c-paragraph" style="--c-measure:44ch">Hiring needs more than faster automation. It needs to be completely reimagined. Explore the next wave of AI capabilities from Greenhouse, built to help teams cut through noise, strengthen signal and make structured hiring easier to execute – without losing human judgment.</p>
-      
-      <a class="c-arrow-link" href="#">See AI features <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
-    </article>
-    <article class="cs-module">
-      <figure class="cs-module-media" style="aspect-ratio: 16 / 10;"><img class="c-image" src="assets/046-6849817eafb5f7300bca18d3-revlon.png" alt="Greenhouse — Real Talent"></figure>
-      <p class="c-caption">Real Talent</p>
-      <p class="c-paragraph" style="--c-measure:44ch">Greenhouse Real Talent™ brings triple layers of trust to hiring with candidate fraud detection, identity verification and candidate matching software, so you can make more confident hiring decisions.</p>
-      
-      <a class="c-arrow-link" href="#">See Real Talent <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
-    </article>
-    <article class="cs-module">
-      <figure class="cs-module-media" style="aspect-ratio: 16 / 10;"><img class="c-image" src="assets/046-6849817eafb5f7300bca18d3-revlon.png" alt="Greenhouse — MyGreenhouse"></figure>
-      <p class="c-caption">MyGreenhouse</p>
-      <p class="c-paragraph" style="--c-measure:44ch">MyGreenhouse is a powerful new candidate portal that transforms hiring from robotic to remarkable. It keeps candidates informed with real-time updates, surfaces new opportunities and makes applying seamless – while giving recruiters the insights to quickly identify top talent.</p>
-      
-      <a class="c-arrow-link" href="#">Identify top talent <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
-    </article>
+<section class="cs-section cs-flow-sec">
+  <div class="cs-flow">
+    <div class="cs-flow-item" data-row="heading"><h2 class="c-heading c-heading--h2">The best teams start with hiring – and the best hiring starts with Greenhouse</h2></div>
+    <div class="cs-flow-media" data-row="media"><img class="c-image" src="assets/046-6849817eafb5f7300bca18d3-revlon.png" alt="Greenhouse itemMedia"></div>
+    <div class="cs-flow-media" data-row="media"><article class="c-card"><div class="c-card-body"><h1 class="c-heading c-heading--display">Heading</h1></div></article></div>
   </div>
 </section>
 </div>
@@ -2197,21 +2170,13 @@ span.c-foot-wordmark { background: currentColor;
 </section>
 </div>
 <div id="sec-5" class="cs-surface" data-layout="testimonial" data-surface="surface/primary" data-pattern="testimonial" data-pattern-lib="project" data-pattern-match="ref">
-<section class="cs-section cs-modules-sec">
-  <div class="cs-modules-intro"><div class="c-header"><h2 class="c-heading c-heading--h2">What customers are saying</h2></div></div>
-  <div class="cs-modules cs-modules--cols" style="--grid-cols: 2">
-    <article class="cs-module cs-module--quote">
-      
-      <p class="c-paragraph" style="--c-measure:44ch">Greenhouse has been a game-changer for me, making candidate interviewing a breeze. Its intuitive interface and customizable features have enhanced efficiency and collaboration within my hiring team, ultimately leading to more informed hiring decisions.</p>
-      <div class="c-person"><span class="c-person-meta"><span class="c-person-name">Maciek K.</span></span></div>
-      
-    </article>
-    <article class="cs-module cs-module--quote">
-      
-      <p class="c-paragraph" style="--c-measure:44ch">What I like best about Greenhouse is its user-friendly interface, making the hiring process more efficient. The platform’s robust analytics and reporting tools provide valuable insights, helping to optimize recruiting strategies.</p>
-      <div class="c-person"><span class="c-person-meta"><span class="c-person-name">Verified user</span></span></div>
-      
-    </article>
+<section class="cs-section cs-flow-sec">
+  <div class="cs-flow">
+    <div class="cs-flow-item" data-row="heading"><h2 class="c-heading c-heading--h2">What customers are saying</h2></div>
+    <div class="cs-flow-item cs-flow-item--prose" data-row="body"><p class="c-paragraph"></p></div>
+    <div class="cs-flow-item cs-flow-item--prose" data-row="body"><p class="c-paragraph"></p></div>
+    <div class="cs-flow-item" data-row="eyebrow"><p class="c-eyebrow"></p></div>
+    <div class="cs-flow-item"><article class="c-card"><div class="c-card-body"><h2 class="c-heading c-heading--h3">Heading</h2></div></article></div>
   </div>
 </section>
 </div>

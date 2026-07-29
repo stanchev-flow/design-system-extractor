@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-10T19:05:29+00:00",
+  "generated_at": "2026-07-28T23:58:38+00:00",
   "auditor_version": "1.0.0",
   "spec": "brand_pipeline/spec/interaction-contracts.md",
   "mode": "strict",
@@ -8,14 +8,14 @@
       "pass": 37,
       "fail": 0,
       "advisory": 2,
-      "skip": 4
+      "skip": 7
     },
     "required_check_failures": {}
   },
   "lanes": [
     {
       "lane": "compose/bakeoff-sol",
-      "path": "/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/remote/brand/compose/bakeoff-sol/index.html",
+      "path": "runs/remote/brand/compose/bakeoff-sol/index.html",
       "audited_mtime": "2026-07-10T19:01:40+00:00",
       "sha256_12": "47eb2489d73a",
       "findings": [
@@ -603,6 +603,17 @@
           "snippet": "<div aria-label=\"Built for teams already operating across borders\" aria-roledescription=\"carousel\" class=\"cs-edgecut\" role=\"region\" tabindex=\"0\"><div class=\"cs-…"
         },
         {
+          "check": "IC-TAB-01",
+          "family": "tabs",
+          "severity": "required",
+          "status": "skip",
+          "lane": "compose/bakeoff-sol",
+          "layer": "static",
+          "message": "no tab devices detected in this lane",
+          "line": null,
+          "snippet": null
+        },
+        {
           "check": "IC-MARQ-01",
           "family": "marquee",
           "severity": "required",
@@ -962,6 +973,28 @@
           "lane": "compose/bakeoff-sol",
           "layer": "behavioral",
           "message": "rail does not overflow at this viewport; keyboard-scroll probe not applicable",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-TAB-05",
+          "family": "tabs",
+          "severity": "required",
+          "status": "skip",
+          "lane": "compose/bakeoff-sol",
+          "layer": "behavioral",
+          "message": "no tab devices detected in this lane",
+          "line": null,
+          "snippet": null
+        },
+        {
+          "check": "IC-TAB-06",
+          "family": "tabs",
+          "severity": "required",
+          "status": "skip",
+          "lane": "compose/bakeoff-sol",
+          "layer": "behavioral",
+          "message": "no tab devices detected in this lane",
           "line": null,
           "snippet": null
         },

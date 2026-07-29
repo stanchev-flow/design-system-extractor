@@ -1,6 +1,6 @@
 # Signature audit — signature_check + accent_budget
 
-Brand: `/Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand` — 4 declared signature(s) · viewport 1440x900 · 2026-07-14T20:18:16Z
+Brand: `runs/hubspot-v2/brand` — 4 declared signature(s) · viewport 1440x900 · 2026-07-28T23:52:18Z
 
 ## compose/style-bakeoff-swiss/product-launch — PASS
 

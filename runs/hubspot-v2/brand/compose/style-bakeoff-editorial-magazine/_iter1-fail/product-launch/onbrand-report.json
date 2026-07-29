@@ -9,11 +9,12 @@
   },
   "neverDo_allowed": [],
   "fidelity": {
-    "pass": false,
+    "pass": true,
     "checks": {
-      "Surface = brand surface/photo-hero (#55453e)": false,
+      "Surface = a brand surface role (creative-mode scope)": true,
       "Display family present (HubSpot Serif)": true,
-      "Brand accent surfaced (#ff4800)": false,
+      "Authored display heading present (creative-mode scope)": true,
+      "Brand accent surfaced (#ff4800)": true,
       "Brand assets present (not placeholder)": true
     }
   },
@@ -47,7 +48,16 @@
       "media-registration": true,
       "interaction-contrast": true,
       "token-provenance": true,
-      "logo-wall-integrity": true
+      "logo-wall-integrity": true,
+      "knob-consumption": true,
+      "content-redundancy": true,
+      "media-binding": true,
+      "mark-legality": true,
+      "slot-role-eligibility": true,
+      "anatomy-tab-controls": true,
+      "anatomy-stat-items": false,
+      "fact-consumption": false,
+      "fact-consumption:responsive.nav.collapse": false
     },
     "details": {
       "text-contrast": "94 text elements measured against their effective background (surface + decoration layer); worst = page-nav/c-button.c-button--navcta('Get a demo') at 3.4 (floor 4.5); skipped=72; 6 element(s) exempt as MEASURED brand pairs (#ff4800 on #ffffff; #ffffff on #ff4800)",

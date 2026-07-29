@@ -1,11 +1,11 @@
-$ /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/venv/bin/python /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/brand_pipeline/interaction_audit.py /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch --strict --out /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/battery/interaction
+$ venv/bin/python brand_pipeline/interaction_audit.py runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch --strict --out runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/battery/interaction
 
 --- stdout ---
 [static]     compose/style-bakeoff-swiss/product-launch … 0 required fails
-[behavioral] compose/style-bakeoff-swiss/product-launch … 0 required fails (3.5s)
+[behavioral] compose/style-bakeoff-swiss/product-launch … 0 required fails (3.3s)
 
-report: /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/battery/interaction/report.md
-report: /Users/redacted/Webflow/campaigns-hackathon/design-system-extractor-mine/runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/battery/interaction/report.json
+report: runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/battery/interaction/report.md
+report: runs/hubspot-v2/brand/compose/style-bakeoff-swiss/product-launch/battery/interaction/report.json
 failing required cells: 0
 
 --- stderr ---

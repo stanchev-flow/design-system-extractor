@@ -44,9 +44,9 @@
       "alignment-resolution": true,
       "media-registration": true,
       "interaction-contrast": true,
-      "token-provenance": true,
+      "token-provenance": false,
       "logo-wall-integrity": true,
-      "archetype-physics:sec-hero": true,
+      "archetype-physics:hero": true,
       "knob-consumption": true,
       "content-redundancy": true,
       "duplicate-copy": true,
@@ -67,7 +67,7 @@
       "fact-consumption": true
     },
     "details": {
-      "text-contrast": "1/109 text elements below WCAG-ish floor (display >= 3.0, body >= 4.5): sec-0/c-eyebrow('Introducing Breeze') #ff4800 on #002b28 = 4.49 (< 4.5 body); 8 element(s) exempt as MEASURED brand pairs (#ff4800 on #ffffff; #ffffff on #ff4800)",
+      "text-contrast": "1/132 text elements below WCAG-ish floor (display >= 3.0, body >= 4.5): sec-0/c-eyebrow('Introducing Breeze') #ff4800 on #002b28 = 4.49 (< 4.5 body); 7 element(s) exempt as MEASURED brand pairs (#ff4800 on #ffffff; #ffffff on #ff4800)",
       "decoration-salience": "no decoration layers (ghost word / watermark) in this render"
     }
   },
