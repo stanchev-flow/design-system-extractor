@@ -1,0 +1,1130 @@
+<!doctype html>
+<html lang="en" data-style="editorial-luxury" data-parallax-images="true">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WoodWave Gallery - full page (composed from catalog)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* self-hosted brand display face(s) — copied into assets/ for offline use */
+@font-face { font-family: 'Melodrama'; src: url('assets/Melodrama-Light.woff2') format('woff2'), url('assets/Melodrama-Light.ttf') format('truetype'); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Melodrama'; src: url('assets/Melodrama-Regular.woff2') format('woff2'), url('assets/Melodrama-Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Melodrama'; src: url('assets/Melodrama-Medium.woff2') format('woff2'), url('assets/Melodrama-Medium.ttf') format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Melodrama'; src: url('assets/Melodrama-Semibold.woff2') format('woff2'), url('assets/Melodrama-Semibold.ttf') format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Melodrama'; src: url('assets/Melodrama-Bold.woff2') format('woff2'), url('assets/Melodrama-Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+img { display: block; max-width: 100%; }
+/* iframe-safe container context: cq* length units resolve against this sized box. */
+html { background: var(--bg); height: 100%; }
+html, body { background: var(--bg); color: var(--text); font-family: var(--c-font-body);
+  -webkit-font-smoothing: antialiased; }
+body { min-height: 100%; container-type: size; container-name: frame; }
+.cs-surface { display: block; }
+:root {
+  /* gate-readable legacy brand vars (authoritative VALUES; page opens on #3A2F23) */
+  --bg: #3A2F23;
+  --text: #F5EDE2;
+  --accent: #edd580;
+  --display-size: clamp(8rem, 11cqw, 14.4rem);
+  --radius: 0rem;
+  --font-heading: 'Melodrama', 'Playfair Display', serif;
+  --font-body: 'Inter', 'Lexend Deca', sans-serif;
+  /* brand-constant aliases for the collage ghost + the cream split panel */
+  --c-ghost: rgba(31, 26, 20, 0.06);
+  --c-panel: #F7EFE6;
+  --c-panel-ink: #1F1A14;
+  --c-panel-hairline: rgba(31, 26, 20, 0.30);
+  /* ONE shared page grid + baseline (alignment quick wins) — mirrors
+     compose_section.root_vars: all section scaffolds place onto these SHARED tracks
+     and snap offsets to --baseline / --col, so adjacent sections register to the same
+     columns, edges and baselines. */
+  --grid-cols: 12;
+  --grid-gutter: 6rem;
+  --content-measure: 86rem;
+  --baseline: 0.5rem;
+  --col: calc((100% - 11 * var(--grid-gutter)) / 12);
+}
+
+/* ── shared catalog components (single source of truth) ── */
+.c-heading { font-family: var(--c-font-heading); color: var(--c-ink); margin: 0;
+  text-transform: uppercase; font-weight: var(--c-heading-weight, var(--c-display-weight)); }
+.c-heading--display { font-size: var(--c-display-size); line-height: var(--c-display-lh);
+  letter-spacing: var(--c-display-ls); }
+.c-heading--h2 { font-size: var(--c-h2-size); line-height: 1.3em; }
+.c-heading--h3 { font-size: var(--c-h3-size); line-height: 1.3em; }
+.c-heading--accent { color: var(--c-accent); }
+
+.c-eyebrow { font-family: var(--c-font-body); font-size: var(--c-eyebrow-size);
+  letter-spacing: var(--c-eyebrow-ls); text-transform: uppercase; color: var(--c-ink-muted);
+  margin: 0; }
+
+.c-image { display: block; width: 100%; border: none; box-shadow: none;
+  border-radius: var(--radius); object-fit: cover; }
+.c-image--hero { aspect-ratio: 1355 / 570; }
+.c-image--overlap { aspect-ratio: 785 / 620; }
+/* the CANONICAL mask-pan wrapper — wraps ONLY the <img>, never a sibling caption, so the
+   scroll-parallax scale/translate (parallax_css/parallax_script_tags) can never bleed into
+   caption text sitting beside it in the same figure/div. Structural, always present
+   (harmless when parallax is disabled: overflow:hidden around an unscaled, untransformed
+   image is visually a no-op — a plain wrapper). See brand-schema.md §4.4.1. */
+.c-image-mask { display: block; overflow: hidden; }
+/* placeholder used by the gallery when no real asset is bound (keeps the gallery
+   self-contained); composed sections always bind a real image src. */
+.c-image-ph { display: flex; align-items: center; justify-content: center;
+  background: var(--c-ink); color: var(--c-paper); border-radius: var(--radius);
+  aspect-ratio: 4 / 3; font-family: var(--c-font-body); font-size: var(--c-eyebrow-size);
+  letter-spacing: var(--c-eyebrow-ls); text-transform: uppercase; }
+
+.c-arrow-link { font-family: var(--c-font-body); font-size: var(--c-control-size);
+  letter-spacing: var(--c-control-ls); text-transform: uppercase; text-decoration: none;
+  color: var(--c-action-color, currentColor); display: inline-flex; align-items: center;
+  gap: 0.5rem; background: none; border: none; cursor: pointer; padding: 0; }
+.c-arrow-link--accent { color: var(--c-accent); }
+.c-arrow { transition: transform var(--c-motion-fast, 320ms) var(--c-ease, cubic-bezier(.22, 1, .36, 1)); }
+.c-arrow-link:hover .c-arrow { transform: translateX(0.35rem); }
+
+.c-logo { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--c-font-body);
+  font-weight: 600; font-size: var(--c-control-size); letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--c-logo-color, var(--c-accent)); }
+.c-logo .c-glyph { font-family: var(--c-font-heading); font-size: 1.1rem; }
+/* image logo (composed nav): the extracted brand logo as a plain linked <img>, no chip,
+   no border, no radius. Sized from the extracted 175x26 proportions (height-capped so it
+   scales down gracefully); width:auto keeps the aspect ratio. The WoodWave source SVG is
+   already the brand gold, so it reads on the dark hero surface with no filter needed. */
+.c-logo--img { display: inline-flex; align-items: center; text-decoration: none;
+  border: none; border-radius: 0; }
+.c-logo-img { display: block; height: 1.625rem; width: auto; max-width: 12rem; }
+
+/* header block: eyebrow -> heading (+ optional subhead/cta) typographic cluster */
+.c-header { display: flex; flex-direction: column; gap: var(--c-eyebrow-gap); }
+
+/* paragraph primitive: narrow offset body, Inter sentence case, generous leading. */
+.c-paragraph { font-family: var(--c-font-body); font-size: var(--c-body-size);
+  line-height: 1.55em; color: var(--c-ink-muted); max-width: var(--c-measure, 34ch); margin: 0; }
+
+/* caption primitive: muted uppercase margin micro-text (never over media). */
+.c-caption { font-family: var(--c-font-body); font-size: var(--c-eyebrow-size);
+  letter-spacing: var(--c-eyebrow-ls); text-transform: uppercase; color: var(--c-ink-muted);
+  margin: 0; }
+
+/* form block + underline field: NO box, NO fill, NO border — the single 1px rule is a
+   pseudo-element (height:1px+background), so it never reads as a boxed input or a section
+   hairline (honors WoodWave no-boxed-inputs / no-section-hairlines). */
+.c-form { display: flex; flex-direction: column; gap: var(--c-form-gap, 1.25rem); }
+.c-field { position: relative; display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 1rem; padding-bottom: 0.5rem; }
+.c-field::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: var(--c-hairline); }
+.c-field-text { font-family: var(--c-font-body); font-size: var(--c-body-size);
+  text-transform: uppercase; letter-spacing: var(--c-control-ls); color: var(--c-ink-muted); }
+
+/* ruled action rows (the divider primitive): label left, value/action right, separated by a
+   1px pseudo-rule INSIDE a panel only — never as a section seam. */
+.c-rows { display: flex; flex-direction: column; }
+.c-row { position: relative; display: flex; align-items: baseline; justify-content: space-between;
+  gap: 1rem; padding: 0.85rem 0; }
+.c-row::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px;
+  background: var(--c-hairline); }
+.c-row-label { font-family: var(--c-font-body); font-size: var(--c-control-size);
+  letter-spacing: var(--c-control-ls); text-transform: uppercase; color: var(--c-ink); }
+.c-row-value { font-family: var(--c-font-heading); font-size: var(--c-h3-size); color: var(--c-ink); }
+
+/* footer block (closing bookend): a CENTERED oversized didone slash sitemap + TEXT
+   social links (slash-separated, no icons) + a centered muted legal line. Reuses the
+   brand's typographic vocabulary — the sitemap is the heading (didone) treatment, the
+   social row is the control-text slash-link treatment, legal is muted micro-text. No
+   boxes, borders, shadows, or radius (honors WoodWave neverDo). cq/rem units only.
+   The whole cluster is CENTERED (flex centering + centered nav rows + centered legal),
+   and uses the rhythm scale's inter-block gap so its vertical spacing matches the page.
+   The sitemap link is a CONTAINED oversized clamp: clearly larger than body editorial
+   display, but right-sized for a footer context — never the gigantic ~80px it was. */
+.c-footer { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--c-block-gap, 2.5rem); }
+.c-foot-sitemap { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center;
+  gap: 0.4rem 1.5rem; max-width: 60rem; margin: 0 auto; }
+.c-foot-sitemap-link { font-family: var(--c-font-heading); text-transform: uppercase;
+  font-weight: var(--c-heading-weight, var(--c-display-weight));
+  font-size: var(--c-footer-link-size, clamp(1.75rem, 3.5cqw, 3rem));
+  line-height: 1.2em; color: var(--c-ink); text-decoration: none; }
+.c-foot-sep { color: var(--c-ink-muted); font-family: var(--c-font-heading); }
+.c-foot-social { display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 0.4rem 0.9rem; margin: 0 auto; }
+.c-foot-social-link { font-family: var(--c-font-body); font-size: var(--c-control-size);
+  letter-spacing: var(--c-control-ls); text-transform: uppercase; color: var(--c-ink-muted);
+  text-decoration: none; }
+.c-foot-social .c-foot-sep { font-family: var(--c-font-body); }
+.c-foot-legal { font-family: var(--c-font-body); font-size: var(--c-eyebrow-size);
+  letter-spacing: var(--c-eyebrow-ls); color: var(--c-ink-muted); margin: 0; }
+
+/* ── MOTION (calm / editorial) ── authored brand spec (brand.yaml voice.motionSpec):
+   expressive ease-out, durations ~320-620ms, NO bounce/spring/overshoot/snap. Easing +
+   durations come from the brand's --c-* motion vars (component_render.motion_vars_css),
+   each with an inline calm-editorial fallback so the rules still read if a caller omits
+   them. Motion is time + transform only — no viewport units, no new color/shadow/radius. */
+
+/* typographic links: an underline that DRAWS IN (scaleX 0->100%, origin left), NOT a
+   color swap — consistent with WoodWave's typographic-link aesthetic. The rule is a 1px
+   pseudo-element (height+background), never a border, so it adds no border/hairline. */
+.c-arrow-link, .c-foot-sitemap-link, .c-foot-social-link { position: relative; }
+.c-arrow-link::after, .c-foot-sitemap-link::after, .c-foot-social-link::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -0.08em; height: 1px;
+  background: currentColor; transform: scaleX(0); transform-origin: left center;
+  transition: transform var(--c-motion-base, 480ms) var(--c-ease, cubic-bezier(.22, 1, .36, 1)); }
+.c-arrow-link:hover::after, .c-arrow-link:focus-visible::after,
+.c-foot-sitemap-link:hover::after, .c-foot-sitemap-link:focus-visible::after,
+.c-foot-social-link:hover::after, .c-foot-social-link:focus-visible::after {
+  transform: scaleX(1); }
+
+/* calm scroll reveal: opacity + small translateY (no scale pop, no rotation). The hidden
+   initial state is GATED on `.cs-motion-ready` (added by the page's tiny IntersectionObserver
+   script) so content is fully visible if JS/IO is unavailable; `.is-in` reveals it. */
+.cs-motion-ready .cs-reveal {
+  opacity: 0; transform: translateY(var(--c-reveal-shift, 16px));
+  transition: opacity var(--c-motion-slow, 620ms) var(--c-ease, cubic-bezier(.22, 1, .36, 1)),
+              transform var(--c-motion-slow, 620ms) var(--c-ease, cubic-bezier(.22, 1, .36, 1));
+  transition-delay: calc(var(--cs-reveal-i, 0) * 60ms); will-change: opacity, transform; }
+.cs-motion-ready .cs-reveal.is-in { opacity: 1; transform: none; }
+
+/* respect prefers-reduced-motion: reduce — neutralize all transitions/reveals + the arrow
+   nudge, and force revealed content fully visible. */
+@media (prefers-reduced-motion: reduce) {
+  .c-arrow,
+  .c-arrow-link::after, .c-foot-sitemap-link::after, .c-foot-social-link::after,
+  .cs-motion-ready .cs-reveal { transition: none !important; animation: none !important; }
+  .c-arrow-link:hover .c-arrow { transform: none !important; }
+  .cs-reveal, .cs-motion-ready .cs-reveal { opacity: 1 !important; transform: none !important; }
+}
+
+:root { --c-ease: cubic-bezier(.22, 1, .36, 1); --c-motion-fast: 320ms; --c-motion-base: 480ms; --c-motion-slow: 620ms; --c-reveal-shift: 16px; }
+
+/* link hover (color-shift mode) -- SAFE default here; the real per-surface value (accent
+   on dark, ink on light) is set by component_vars/root_vars (anti-ai-slop.md AS-10). */
+:root { --c-link-hover: var(--c-ink); }
+.c-arrow-link, .c-foot-sitemap-link, .c-foot-social-link {
+  transition: color var(--c-motion-fast, 320ms) var(--c-ease, cubic-bezier(.22, 1, .36, 1)); }
+.c-arrow-link:hover, .c-arrow-link:focus-visible,
+.c-foot-sitemap-link:hover, .c-foot-sitemap-link:focus-visible,
+.c-foot-social-link:hover, .c-foot-social-link:focus-visible { color: var(--c-link-hover); }
+/* color-shift REPLACES the underline draw-in for these links (no double signal). */
+.c-arrow-link::after, .c-foot-sitemap-link::after, .c-foot-social-link::after { content: none; }
+
+.cs-section { background: var(--c-paper); color: var(--c-ink);
+  padding: var(--c-section-pad-top, 1.75rem) var(--c-section-pad-x, 2.5rem)
+           var(--c-section-pad-bottom, var(--c-section-pad, 6.25rem)); }
+.cs-nav { display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+  margin-bottom: clamp(2rem, 6cqw, 5rem); }
+.cs-navlinks { display: flex; gap: 0.55rem; flex: 1; justify-content: center; }
+.cs-navlinks .cs-sep { opacity: 0.55; }
+/* shared content container: ONE measure, identical section edges page-wide. */
+.cs-collage-grid, .cs-statement-grid, .cs-quote-grid, .cs-visit-panels,
+.cs-modules-intro, .cs-modules, .cs-interlock {
+  max-width: var(--content-measure, 86rem); margin-inline: auto; }
+/* shared 12-col registration grid (column-gap IS the shared gutter). */
+.cs-collage-grid, .cs-statement-grid, .cs-quote-grid, .cs-modules {
+  display: grid; grid-template-columns: repeat(var(--grid-cols, 12), minmax(0, 1fr));
+  column-gap: var(--grid-gutter, 6rem); }
+.cs-section { min-height: 100cqh; }
+.cs-slot { display: flex; flex-direction: column; align-items: center; }
+.cs-eyebrow-wrap { margin-bottom: var(--c-eyebrow-gap); text-align: center; }
+.cs-title { position: relative; z-index: 2; text-align: center;
+  margin-bottom: var(--c-title-overlap); }
+.cs-collage { position: relative; width: 100%; max-width: 80rem; margin: 0 auto; }
+/* ALIGNMENT: the overlap depth/offsets keep their measured % magnitudes but round() the
+   USED value to an exact --baseline multiple, so the overlap registers to the shared
+   baseline grid at any width instead of landing on an arbitrary fraction. */
+.c-image--overlap.is-abs { position: absolute;
+  width: round(nearest, 34%, var(--baseline, 0.5rem));
+  right: round(nearest, 4%, var(--baseline, 0.5rem));
+  bottom: round(nearest, -28%, var(--baseline, 0.5rem)); z-index: 1; }
+/* SPACER (anti-ai-slop.md AS-01/AS-03): reserves clearance below the collage for the
+   overlap image's bleed (bottom:-28% of a 34%-wide, 785:620 image inside a 1355:570
+   collage geometrically needs ~11.7% of the collage's OWN width, not a guessed round
+   number). The clamp() UPPER BOUND (9.5rem) is what actually matters here: it caps
+   growth once the collage hits its 80rem max-width, so the spacer stops scaling with
+   the full, uncapped section width on wide viewports — the way the old bare `22cqw`
+   (measured against `.cs-slot`, not the width-capped collage) kept growing forever. */
+.cs-spacer { height: clamp(4rem, 12cqw, 9.5rem); }
+.cs-foot { display: flex; flex-direction: column; align-items: center;
+  gap: var(--c-block-gap, 1.75rem); text-align: center; margin-top: var(--c-block-gap, 2.5rem); }
+.cs-sub { font-family: var(--c-font-body); font-size: 1rem; line-height: 1.55em;
+  color: var(--c-ink-muted); max-width: 42rem; }
+/* ── PLACED media layers (grid/overlap contract §4.6.5) ─────────────────────────
+   Only sections whose composition declared placement get these classes; the legacy
+   hero (.cs-collage without --layered) is byte-unchanged. z-ladder inside the layered
+   collage: back overlays(0) < base media(1) < mid(2) < front(3) < display title(4);
+   the corner-pinned media + background layer register to the SECTION frame. */
+.cs-hero-layered { position: relative; overflow: hidden; }
+.cs-hero-layered .cs-slot { position: relative; z-index: 2; }
+.cs-hero-layered .cs-title { z-index: 4; }
+.cs-collage--layered > .c-image, .cs-collage--layered > .c-image-ph {
+  position: relative; z-index: 1; margin-inline: auto; }
+.cs-ov { position: absolute; }
+.cs-ov .c-image, .cs-ov .c-image-ph { width: 100%; }
+/* z:back + width:full-bleed media = a true BACKGROUND layer behind the section copy —
+   the SANCTIONED text-on-media treatment. The scrim is a flat surface-toned wash (the
+   section's own --c-paper at high opacity) so text keeps AA contrast over the photo
+   (gate: text-contrast); never a gradient (brand neverDo no-gradients). */
+.cs-bg-layer { position: absolute; inset: 0; z-index: 0; }
+.cs-bg-layer .c-image { width: 100%; height: 100%; object-fit: cover; }
+.cs-bg-scrim { position: absolute; inset: 0;
+  background: color-mix(in srgb, var(--c-paper) 72%, transparent); }
+/* small z:front media pinned to a corner of the SECTION frame (alignTo.corner). */
+.cs-corner-media { position: absolute; }
+.cs-corner-media .c-image, .cs-corner-media .c-image-ph { width: 100%; }
+@media (max-width: 991px) { .cs-navlinks { display: none; } }
+@media (max-width: 767px) { .cs-section { padding: clamp(1.25rem, 5cqw, 1.75rem)
+    clamp(1.25rem, 5cqw, 1.75rem) clamp(1.5rem, 9cqw, 3rem); }
+  .c-image--overlap.is-abs { width: round(nearest, 46%, var(--baseline, 0.5rem));
+    right: round(nearest, 2%, var(--baseline, 0.5rem));
+    bottom: round(nearest, -18%, var(--baseline, 0.5rem)); }
+  /* mobile overlap geometry (46% wide, bottom:-18%) needs ~7.6% of collage width */
+  .cs-spacer { height: clamp(2.5rem, 8cqw, 5rem); } }
+.cs-collage-sec { position: relative; overflow: hidden; }
+.cs-ghost { position: absolute; right: -3cqw; top: 4%; z-index: 0;
+  font-family: var(--c-font-heading); text-transform: uppercase; font-weight: 400;
+  font-size: var(--c-ghost-size, clamp(10rem, 40cqw, 32rem)); line-height: 0.9;
+  color: var(--c-ghost, rgba(31,26,20,0.06));
+  pointer-events: none; white-space: nowrap; }
+/* SURFACE-AWARE ghost: the brand-constant --c-ghost is dark-ink-at-6% (cream tuned) —
+   invisible dark-on-dark on an inverse collage. Scoped to inverse surfaces only, so
+   every existing cream collage render is byte-unchanged; low-salience by construction
+   (8% of the surface's own ink — gate: decoration-salience). */
+[data-surface*="inverse"] .cs-ghost {
+  color: color-mix(in srgb, var(--c-ink) 8%, transparent); }
+/* placed onto the SHARED 12-col grid (tracks + gutter from SCAFFOLD_BASE_CSS): the old
+   private 1.08fr/0.92fr ratio maps to a 6/6 span split (the nearest whole-column spans),
+   so the head/media column and the body column register to shared page tracks. Row gap +
+   body drop are exact --baseline multiples (3rem = 6, 3.5rem = 7). */
+.cs-collage-grid { position: relative; z-index: 1;
+  row-gap: calc(6 * var(--baseline, 0.5rem)); align-items: start; }
+.cs-collage-head { grid-column: 1 / span 6; grid-row: 1; max-width: none; }
+/* the collage headline spans wider than the style's global display cap so it intrudes
+   toward the right rather than stacking one word per line on the far left. */
+.cs-collage-head .c-heading--display { max-width: 17ch; text-align: left; }
+.cs-collage-media { grid-column: 1 / span 6; grid-row: 2; display: flex;
+  flex-direction: column; gap: 0.75rem; margin: 0; align-self: end; }
+.cs-collage-media .c-image { width: 100%; }
+.cs-collage-body { grid-column: 7 / -1; grid-row: 1 / span 2; align-self: start;
+  display: flex; flex-direction: column;
+  gap: var(--c-block-gap, 1.75rem); max-width: 38ch;
+  padding-top: calc(7 * var(--baseline, 0.5rem)); }
+@media (max-width: 767px) { .cs-collage-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .cs-collage-head { grid-column: 1; grid-row: 1; }
+  .cs-collage-body { grid-column: 1; grid-row: 2; padding-top: 0; max-width: none; }
+  .cs-collage-media { grid-column: 1; grid-row: 3; align-self: start; }
+  .cs-ghost { font-size: clamp(5rem, 40cqw, 12rem); right: auto; left: -2cqw; } }
+.cs-split-intro { max-width: 100%; margin-bottom: 3.5rem; }
+.cs-split-intro .cs-eyebrow-wrap { margin-bottom: var(--c-eyebrow-gap); }
+/* the band heading is the didone DISPLAY tier; give it room to breathe (the style's
+   global 16ch display cap is too tight for this dark-band heading). */
+.cs-split-intro .c-heading--display { max-width: 22ch; }
+/* the split places onto 12 shared columns with a ZERO gutter (the flush hard cut is the
+   band's character): each half spans 6, so its seam registers to the grid's center line. */
+.cs-split { display: grid; grid-template-columns: repeat(var(--grid-cols, 12), minmax(0, 1fr));
+  gap: 0; align-items: stretch; }
+.cs-split-media { grid-column: 1 / span 6; display: flex; }
+.cs-split > .cs-panel { grid-column: 7 / -1; }
+.cs-split-media .c-image { width: 100%; height: 100%; object-fit: cover; }
+.cs-panel { background: var(--c-panel, #F7EFE6); color: var(--c-panel-ink, #1F1A14);
+  padding: 2.75rem 2.5rem; display: flex; flex-direction: column;
+  /* the cream panel keeps cream/ink coloring regardless of the dark parent band */
+  --c-ink: var(--c-panel-ink, #1F1A14); --c-accent: var(--c-panel-ink, #1F1A14);
+  --c-hairline: var(--c-panel-hairline, rgba(31,26,20,0.30)); }
+.cs-panel-title { margin-bottom: 1.25rem; }
+.cs-panel-foot { margin-top: 1.5rem; display: flex; justify-content: flex-end; }
+@media (max-width: 767px) { .cs-split { grid-template-columns: 1fr; }
+  .cs-split-media, .cs-split > .cs-panel { grid-column: 1; }
+  .cs-split-media .c-image { aspect-ratio: 4 / 3; } }
+.cs-gallery-sec { padding-left: 0; padding-right: 0; }
+.cs-gallery-utility { display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem; margin-bottom: 1.25rem; }
+.cs-gallery-media { margin: 0; }
+.cs-gallery-media .c-image { width: 100%; aspect-ratio: 16 / 7; object-fit: cover; display: block; }
+.cs-gallery-caption { padding: 1rem 2.5rem 0; }
+@media (max-width: 767px) { .cs-gallery-utility, .cs-gallery-caption { padding-left: 1.25rem;
+  padding-right: 1.25rem; } .cs-gallery-media .c-image { aspect-ratio: 4 / 5; } }
+.cs-modules-sec { position: relative; }
+.cs-modules-intro { margin-bottom: clamp(2.5rem, 6cqw, 5rem); }
+.cs-modules { row-gap: clamp(calc(4 * var(--baseline, 0.5rem)), 5cqw,
+  calc(7 * var(--baseline, 0.5rem))); align-items: start; }
+.cs-modules > .cs-module:nth-child(odd) { grid-column: 1 / span var(--c-span-a, 7); }
+.cs-modules > .cs-module:nth-child(even) { grid-column: span var(--c-span-b, 5) / -1; }
+.cs-module { display: flex; flex-direction: column; gap: 0.9rem; }
+/* the second (even) module is staggered downward so the columns never line up — the drop
+   is a whole number of baselines (registration, not a float). Chrome-less: NO
+   background/border/radius/shadow — depth from the stagger + whitespace only (so this is
+   an editorial module, not a prohibited cream card). */
+.cs-modules > .cs-module:nth-child(even) {
+  margin-block-start: var(--c-card-stagger, calc(7 * var(--baseline, 0.5rem))); }
+.cs-module-media { margin: 0; width: 100%; overflow: hidden; border-radius: 0; }
+.cs-module-media .c-image { width: 100%; height: 100%; }
+@media (max-width: 767px) { .cs-modules { grid-template-columns: 1fr; gap: 2.5rem; }
+  .cs-modules > .cs-module:nth-child(odd), .cs-modules > .cs-module:nth-child(even) {
+    grid-column: 1; margin-block-start: 0; } }
+.cs-interlock { position: relative; }
+.cs-interlock-media { float: var(--c-float-side, right);
+  width: var(--c-inset-width, calc(7 * var(--col) + 6 * var(--grid-gutter, 6rem)));
+  margin: var(--c-inset-margin, calc(1 * var(--baseline, 0.5rem)) 0
+          calc(2 * var(--baseline, 0.5rem)) calc(6 * var(--baseline, 0.5rem)));
+  aspect-ratio: 3 / 2; overflow: hidden; border-radius: 0; }
+.cs-interlock-media .c-image { width: 100%; height: 100%; }
+.cs-interlock-caption { display: block;
+  margin-bottom: var(--c-inset-drop, clamp(calc(9 * var(--baseline, 0.5rem)), 12cqw,
+    calc(22 * var(--baseline, 0.5rem)))); }
+.cs-interlock .c-heading--display { max-width: none; text-align: left;
+  font-size: clamp(2rem, 4.4cqw, 3.6rem); line-height: 1.06em; }
+.cs-interlock-clear { clear: both; }
+/* support/CTA foot cluster (rendered ONLY when the composition binds those slots —
+   ANCHORED-REPORT composer-gap #2 fix; legacy interlock sections emit no foot). */
+.cs-interlock-foot { display: flex; flex-direction: column; align-items: flex-start;
+  gap: var(--c-block-gap, 1.75rem); margin-top: var(--c-block-gap, 2.5rem); }
+@media (max-width: 767px) { .cs-interlock-media { float: none; width: 100%; margin: 0 0 1.75rem;
+  aspect-ratio: 3 / 2; } .cs-interlock-caption { margin-bottom: 1.25rem; } }
+.cs-flow { display: flex; flex-direction: column;
+  gap: var(--c-block-gap, 1.75rem); max-width: 72rem; align-items: flex-start; }
+.cs-flow-item { max-width: 62ch; }
+.cs-flow-media { width: 100%; }
+.cs-flow-media .c-image { width: 100%; height: auto; }
+@media (max-width: 767px) { .cs-flow { gap: clamp(1.25rem, 6cqw, 1.75rem); } }
+.cs-timeline-sec .cs-ghost--numerals { top: auto; bottom: -6%;
+  right: -1cqw; font-size: var(--c-ghost-size, clamp(9rem, 32cqw, 26rem)); letter-spacing: -0.01em; }
+@media (max-width: 767px) { .cs-timeline-sec .cs-ghost--numerals { bottom: auto; top: 2%; } }
+.cs-timeline-sec .cs-ghost--numerals { top: auto; bottom: -6%;
+  right: -1cqw; font-size: var(--c-ghost-size, clamp(9rem, 32cqw, 26rem)); letter-spacing: -0.01em; }
+@media (max-width: 767px) { .cs-timeline-sec .cs-ghost--numerals { bottom: auto; top: 2%; } }
+/* on the SHARED 12-col grid: the old private 0.9fr/1.1fr
+   ratio maps to a 5/7 span split (nearest whole-column spans preserving the
+   text-narrower-than-media asymmetry); tracks + gutter come from SCAFFOLD_BASE_CSS. */
+.cs-statement-grid { align-items: center; }
+.cs-statement-text { grid-column: 1 / span 5; display: flex; flex-direction: column;
+  gap: var(--c-block-gap, 1.75rem); max-width: 46ch; }
+.cs-statement-media { grid-column: 6 / -1; }
+.cs-statement-media .c-image { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+@media (max-width: 767px) { .cs-statement-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .cs-statement-text, .cs-statement-media { grid-column: 1; } }
+/* on the SHARED 12-col grid: the old private 0.9fr/1.1fr
+   ratio maps to a 5/7 span split (nearest whole-column spans preserving the
+   text-narrower-than-media asymmetry); tracks + gutter come from SCAFFOLD_BASE_CSS. */
+.cs-statement-grid { align-items: center; }
+.cs-statement-text { grid-column: 1 / span 5; display: flex; flex-direction: column;
+  gap: var(--c-block-gap, 1.75rem); max-width: 46ch; }
+.cs-statement-media { grid-column: 6 / -1; }
+.cs-statement-media .c-image { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+@media (max-width: 767px) { .cs-statement-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .cs-statement-text, .cs-statement-media { grid-column: 1; } }
+/* on the SHARED 12-col grid: the old private 1.2fr/0.8fr ratio
+   maps to a 7/5 span split (an almost exact match — 1.48 vs 1.5 — on the shared tracks);
+   tracks + gutter come from SCAFFOLD_BASE_CSS. */
+.cs-quote-grid { align-items: center; }
+.cs-quote-text { grid-column: 1 / span 7; display: flex; flex-direction: column;
+  gap: var(--c-block-gap, 1.75rem); }
+.cs-quote-text .c-heading--display { max-width: 20ch; }
+.cs-quote-media { grid-column: 8 / -1; display: flex; flex-direction: column; gap: 0.75rem; }
+.cs-quote-media .c-image { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; }
+@media (max-width: 767px) { .cs-quote-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .cs-quote-text, .cs-quote-media { grid-column: 1; } }
+/* on the SHARED 12-col grid: the old private 1.2fr/0.8fr ratio
+   maps to a 7/5 span split (an almost exact match — 1.48 vs 1.5 — on the shared tracks);
+   tracks + gutter come from SCAFFOLD_BASE_CSS. */
+.cs-quote-grid { align-items: center; }
+.cs-quote-text { grid-column: 1 / span 7; display: flex; flex-direction: column;
+  gap: var(--c-block-gap, 1.75rem); }
+.cs-quote-text .c-heading--display { max-width: 20ch; }
+.cs-quote-media { grid-column: 8 / -1; display: flex; flex-direction: column; gap: 0.75rem; }
+.cs-quote-media .c-image { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; }
+@media (max-width: 767px) { .cs-quote-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .cs-quote-text, .cs-quote-media { grid-column: 1; } }
+.cs-visit-grid { position: relative; }
+.cs-visit-media .c-image { width: 100%; aspect-ratio: 21 / 9; object-fit: cover; }
+/* the panel PAIR keeps its own tight two-track split (a component cluster, not a page
+   grid — a 6/6 span on the shared gutter would blow its 1.5rem seam to 6rem), but its
+   seam + inset snap to --baseline multiples (1.5rem = 3, 2.5rem = 5) and its container
+   registers to the shared measure via the SCAFFOLD_BASE_CSS container rule. (The old
+   `margin-top: -4.5rem` was dead — the later `margin: 0 auto` shorthand reset it —
+   so it is dropped rather than silently resurrected here.) */
+.cs-visit-panels { position: relative; z-index: 1; display: grid;
+  grid-template-columns: 1fr 1fr; gap: calc(3 * var(--baseline, 0.5rem));
+  padding: 0 calc(5 * var(--baseline, 0.5rem)); }
+.cs-visit-panels .cs-panel { box-shadow: none; }
+@media (max-width: 767px) { .cs-visit-panels { grid-template-columns: 1fr;
+  margin-top: calc(3 * var(--baseline, 0.5rem)); padding: 0 1.25rem; } }
+.cs-visit-grid { position: relative; }
+.cs-visit-media .c-image { width: 100%; aspect-ratio: 21 / 9; object-fit: cover; }
+/* the panel PAIR keeps its own tight two-track split (a component cluster, not a page
+   grid — a 6/6 span on the shared gutter would blow its 1.5rem seam to 6rem), but its
+   seam + inset snap to --baseline multiples (1.5rem = 3, 2.5rem = 5) and its container
+   registers to the shared measure via the SCAFFOLD_BASE_CSS container rule. (The old
+   `margin-top: -4.5rem` was dead — the later `margin: 0 auto` shorthand reset it —
+   so it is dropped rather than silently resurrected here.) */
+.cs-visit-panels { position: relative; z-index: 1; display: grid;
+  grid-template-columns: 1fr 1fr; gap: calc(3 * var(--baseline, 0.5rem));
+  padding: 0 calc(5 * var(--baseline, 0.5rem)); }
+.cs-visit-panels .cs-panel { box-shadow: none; }
+@media (max-width: 767px) { .cs-visit-panels { grid-template-columns: 1fr;
+  margin-top: calc(3 * var(--baseline, 0.5rem)); padding: 0 1.25rem; } }
+.cs-conversion-sec { display: flex; justify-content: center; }
+.cs-conversion { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--c-block-gap, 1.75rem); max-width: 46rem; width: 100%; --c-cta-measure: 40ch; }
+.cs-conversion .c-paragraph { max-width: var(--c-cta-measure); }
+.cs-conversion .c-form { margin: 0.75rem auto 0; max-width: var(--c-cta-measure); width: 100%; }
+.cs-conversion .c-field { width: 100%; }
+/* documented brand override (voice.md: "one of only two sanctioned centered stacks",
+   the other being the hero #sec-0): beats the active style's generic
+   `.c-heading--display { text-align:left; max-width:18ch }` default via higher
+   selector specificity, scoped ONLY to this section — every other section keeps the
+   style's asymmetric left-anchored default unchanged. */
+.cs-conversion-sec .c-heading--display { text-align: center; max-width: 34ch; }
+@media (max-width: 767px) { .cs-conversion { max-width: 100%; } }
+.cs-conversion-sec { display: flex; justify-content: center; }
+.cs-conversion { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--c-block-gap, 1.75rem); max-width: 46rem; width: 100%; --c-cta-measure: 40ch; }
+.cs-conversion .c-paragraph { max-width: var(--c-cta-measure); }
+.cs-conversion .c-form { margin: 0.75rem auto 0; max-width: var(--c-cta-measure); width: 100%; }
+.cs-conversion .c-field { width: 100%; }
+/* documented brand override (voice.md: "one of only two sanctioned centered stacks",
+   the other being the hero #sec-0): beats the active style's generic
+   `.c-heading--display { text-align:left; max-width:18ch }` default via higher
+   selector specificity, scoped ONLY to this section — every other section keeps the
+   style's asymmetric left-anchored default unchanged. */
+.cs-conversion-sec .c-heading--display { text-align: center; max-width: 34ch; }
+@media (max-width: 767px) { .cs-conversion { max-width: 100%; } }
+.cs-ruledlist-sec { display: flex; justify-content: center; }
+.cs-ruledlist { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--c-block-gap, 1.75rem); max-width: 46rem; width: 100%; --c-list-measure: 34rem; }
+.cs-ruledlist .c-paragraph { max-width: 40ch; }
+.cs-ruledlist .c-rows { max-width: var(--c-list-measure); width: 100%; text-align: left; }
+.cs-ruledlist-sec .c-heading--display { text-align: center; max-width: 34ch; }
+@media (max-width: 767px) { .cs-ruledlist { max-width: 100%; } }
+.cs-ruledlist-sec { display: flex; justify-content: center; }
+.cs-ruledlist { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--c-block-gap, 1.75rem); max-width: 46rem; width: 100%; --c-list-measure: 34rem; }
+.cs-ruledlist .c-paragraph { max-width: 40ch; }
+.cs-ruledlist .c-rows { max-width: var(--c-list-measure); width: 100%; text-align: left; }
+.cs-ruledlist-sec .c-heading--display { text-align: center; max-width: 34ch; }
+@media (max-width: 767px) { .cs-ruledlist { max-width: 100%; } }
+.cs-ruledlist-sec { display: flex; justify-content: center; }
+.cs-ruledlist { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--c-block-gap, 1.75rem); max-width: 46rem; width: 100%; --c-list-measure: 34rem; }
+.cs-ruledlist .c-paragraph { max-width: 40ch; }
+.cs-ruledlist .c-rows { max-width: var(--c-list-measure); width: 100%; text-align: left; }
+.cs-ruledlist-sec .c-heading--display { text-align: center; max-width: 34ch; }
+@media (max-width: 767px) { .cs-ruledlist { max-width: 100%; } }
+.cs-ruledlist-sec { display: flex; justify-content: center; }
+.cs-ruledlist { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--c-block-gap, 1.75rem); max-width: 46rem; width: 100%; --c-list-measure: 34rem; }
+.cs-ruledlist .c-paragraph { max-width: 40ch; }
+.cs-ruledlist .c-rows { max-width: var(--c-list-measure); width: 100%; text-align: left; }
+.cs-ruledlist-sec .c-heading--display { text-align: center; max-width: 34ch; }
+@media (max-width: 767px) { .cs-ruledlist { max-width: 100%; } }
+.cs-faq-sec { display: flex; justify-content: center; }
+.cs-faq { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--c-block-gap, 1.75rem); max-width: 52rem; width: 100%; }
+.cs-faq-sec .c-heading--display { text-align: center; max-width: 34ch; }
+.c-faq-list { width: 100%; text-align: left; }
+.c-faq-item { position: relative; padding: 1.5rem 0; }
+.c-faq-item::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px;
+  background: var(--c-hairline); }
+.c-faq-item:last-child { padding-bottom: 0; }
+.c-faq-q { font-family: var(--c-font-heading); font-size: var(--c-h3-size); color: var(--c-ink);
+  cursor: pointer; list-style: none; display: flex; align-items: baseline;
+  justify-content: space-between; gap: 1.5rem; }
+.c-faq-q::-webkit-details-marker { display: none; }
+.c-faq-icon { font-family: var(--c-font-body); font-size: 1.25rem; color: var(--c-ink-muted);
+  flex: 0 0 auto; transition: transform var(--c-motion-fast, 320ms) var(--c-ease, ease); }
+.c-faq-item[open] .c-faq-icon { transform: rotate(45deg); }
+.c-faq-a { font-family: var(--c-font-body); font-size: var(--c-body-size); line-height: 1.55em;
+  color: var(--c-ink-muted); max-width: 56ch; margin-top: 0.85rem; }
+@media (max-width: 767px) { .cs-faq { max-width: 100%; } .c-faq-q { font-size: var(--c-h3-size); } }
+.cs-faq-sec { display: flex; justify-content: center; }
+.cs-faq { display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: var(--c-block-gap, 1.75rem); max-width: 52rem; width: 100%; }
+.cs-faq-sec .c-heading--display { text-align: center; max-width: 34ch; }
+.c-faq-list { width: 100%; text-align: left; }
+.c-faq-item { position: relative; padding: 1.5rem 0; }
+.c-faq-item::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px;
+  background: var(--c-hairline); }
+.c-faq-item:last-child { padding-bottom: 0; }
+.c-faq-q { font-family: var(--c-font-heading); font-size: var(--c-h3-size); color: var(--c-ink);
+  cursor: pointer; list-style: none; display: flex; align-items: baseline;
+  justify-content: space-between; gap: 1.5rem; }
+.c-faq-q::-webkit-details-marker { display: none; }
+.c-faq-icon { font-family: var(--c-font-body); font-size: 1.25rem; color: var(--c-ink-muted);
+  flex: 0 0 auto; transition: transform var(--c-motion-fast, 320ms) var(--c-ease, ease); }
+.c-faq-item[open] .c-faq-icon { transform: rotate(45deg); }
+.c-faq-a { font-family: var(--c-font-body); font-size: var(--c-body-size); line-height: 1.55em;
+  color: var(--c-ink-muted); max-width: 56ch; margin-top: 0.85rem; }
+@media (max-width: 767px) { .cs-faq { max-width: 100%; } .c-faq-q { font-size: var(--c-h3-size); } }
+/* footer (closing bookend): centered cluster; symmetric scale-driven padding. */
+.cs-footer-sec { padding-top: var(--c-section-pad-top, var(--c-section-pad, 6.25rem)); text-align: center; }
+/* page-level navbar (hoisted out of the hero): a SLIM bar with its own modest
+   vertical padding + the section horizontal inset — it no longer inherits the
+   hero section's large padding-block-start. Its own margin-bottom is neutralized
+   so it reads as a bar flush above the hero, not padded inside it. */
+#page-nav { background: var(--c-paper); color: var(--c-ink); }
+#page-nav .cs-nav { margin-bottom: 0; padding: var(--c-nav-pad-block, 1.75rem) var(--c-section-pad-x, 2.5rem); }
+/* page: only the opening section is full-frame; others size to content. */
+.cs-section { min-height: auto; }
+#sec-0 .cs-section { min-height: 100cqh; }
+#sec-0 {
+  --c-paper: #3A2F23;
+  --c-ink: #F5EDE2;
+  --c-ink-muted: #C9BFB2;
+  --c-accent: #edd580;
+  --c-hairline: #C9BFB2;
+  --c-link-hover: #edd580;
+  --c-font-heading: 'Melodrama', 'Playfair Display', serif;
+  --c-font-body: 'Inter', 'Lexend Deca', sans-serif;
+  --c-display-size: clamp(8rem, 11cqw, 14.4rem);
+  --c-display-lh: 1.05em;
+  --c-display-ls: 0rem;
+  --c-display-weight: 500;
+  --c-heading-weight: 400;
+  --c-h2-size: 2.25rem;
+  --c-h3-size: 1.625rem;
+  --c-body-size: 0.875rem;
+  --c-eyebrow-size: 0.6875rem;
+  --c-eyebrow-ls: 0.08em;
+  --c-control-size: 0.875rem;
+  --c-control-ls: 0.08em;
+  --c-eyebrow-gap: 1.5rem;
+  --c-title-overlap: -2.75rem;
+}
+#sec-0 { --c-section-pad-top: 6.25rem; --c-section-pad-bottom: 6.25rem; --c-section-pad: 6.25rem; --c-block-gap: 5rem; --c-module-gap: 7.5rem; }
+/* pattern-driven special treatments + knobs (from the reused layout pattern) */
+#sec-0 { --c-stagger-offset: round(nearest, 18%, var(--baseline, 0.5rem)); --c-card-stagger: calc(7 * var(--baseline, 0.5rem)); }
+/* per-section placement (composition.v1 §4.6.5) */
+#sec-0 .cs-slot, #sec-0 .cs-eyebrow-wrap, #sec-0 .cs-title, #sec-0 .cs-foot { align-items: center; text-align: center; }
+#sec-0 .cs-collage { margin-inline: auto; }
+#sec-0 .c-heading--display { text-align: center; margin-inline: auto; }
+#sec-0 { --grid-cols: 12; --col: calc((100% - 11 * var(--grid-gutter)) / 12); --grid-gutter: 1.5rem; }
+#sec-1 {
+  --c-paper: #FAF0E8;
+  --c-ink: #1F1A14;
+  --c-ink-muted: #4A4239;
+  --c-accent: #1F1A14;
+  --c-hairline: rgba(31, 26, 20, 0.30);
+  --c-link-hover: #1F1A14;
+  --c-font-heading: 'Melodrama', 'Playfair Display', serif;
+  --c-font-body: 'Inter', 'Lexend Deca', sans-serif;
+  --c-display-size: 6rem;
+  --c-display-lh: 1.05em;
+  --c-display-ls: 0rem;
+  --c-display-weight: 500;
+  --c-heading-weight: 400;
+  --c-h2-size: 2.25rem;
+  --c-h3-size: 1.625rem;
+  --c-body-size: 0.875rem;
+  --c-eyebrow-size: 0.6875rem;
+  --c-eyebrow-ls: 0.08em;
+  --c-control-size: 0.875rem;
+  --c-control-ls: 0.08em;
+  --c-eyebrow-gap: 1.5rem;
+  --c-title-overlap: -2.75rem;
+}
+#sec-1 { --c-section-pad-top: 6.875rem; --c-section-pad-bottom: 6.875rem; --c-section-pad: 6.875rem; --c-block-gap: 5rem; --c-module-gap: 7.5rem; }
+#sec-1 { --c-accent: var(--c-ink); }
+/* pattern-driven special treatments + knobs (from the reused layout pattern) */
+#sec-1 { --c-stagger-offset: round(nearest, 18%, var(--baseline, 0.5rem)); --c-card-stagger: calc(7 * var(--baseline, 0.5rem)); }
+/* per-section placement (composition.v1 §4.6.5) */
+#sec-1 .cs-slot, #sec-1 .cs-eyebrow-wrap, #sec-1 .cs-title, #sec-1 .cs-foot { align-items: flex-start; text-align: left; }
+#sec-1 .cs-collage { margin-inline: 0 auto; }
+#sec-1 .c-heading--display { text-align: left; margin-inline: 0 auto; }
+#sec-1 { --c-float-side: right; }
+#sec-2 {
+  --c-paper: #FAF0E8;
+  --c-ink: #1F1A14;
+  --c-ink-muted: #4A4239;
+  --c-accent: #1F1A14;
+  --c-hairline: rgba(31, 26, 20, 0.30);
+  --c-link-hover: #1F1A14;
+  --c-font-heading: 'Melodrama', 'Playfair Display', serif;
+  --c-font-body: 'Inter', 'Lexend Deca', sans-serif;
+  --c-display-size: 6rem;
+  --c-display-lh: 1.05em;
+  --c-display-ls: 0rem;
+  --c-display-weight: 500;
+  --c-heading-weight: 400;
+  --c-h2-size: 2.25rem;
+  --c-h3-size: 1.625rem;
+  --c-body-size: 0.875rem;
+  --c-eyebrow-size: 0.6875rem;
+  --c-eyebrow-ls: 0.08em;
+  --c-control-size: 0.875rem;
+  --c-control-ls: 0.08em;
+  --c-eyebrow-gap: 1.5rem;
+  --c-title-overlap: -2.75rem;
+}
+#sec-2 { --c-section-pad-top: 6.875rem; --c-section-pad-bottom: 6.875rem; --c-section-pad: 6.875rem; --c-block-gap: 5rem; --c-module-gap: 7.5rem; }
+#sec-2 { --c-accent: var(--c-ink); }
+#sec-3 {
+  --c-paper: #FAF0E8;
+  --c-ink: #1F1A14;
+  --c-ink-muted: #4A4239;
+  --c-accent: #1F1A14;
+  --c-hairline: rgba(31, 26, 20, 0.30);
+  --c-link-hover: #1F1A14;
+  --c-font-heading: 'Melodrama', 'Playfair Display', serif;
+  --c-font-body: 'Inter', 'Lexend Deca', sans-serif;
+  --c-display-size: 6rem;
+  --c-display-lh: 1.05em;
+  --c-display-ls: 0rem;
+  --c-display-weight: 500;
+  --c-heading-weight: 400;
+  --c-h2-size: 2.25rem;
+  --c-h3-size: 1.625rem;
+  --c-body-size: 0.875rem;
+  --c-eyebrow-size: 0.6875rem;
+  --c-eyebrow-ls: 0.08em;
+  --c-control-size: 0.875rem;
+  --c-control-ls: 0.08em;
+  --c-eyebrow-gap: 1.5rem;
+  --c-title-overlap: -2.75rem;
+}
+#sec-3 { --c-section-pad-top: 6.875rem; --c-section-pad-bottom: 6.875rem; --c-section-pad: 6.875rem; --c-block-gap: 5rem; --c-module-gap: 7.5rem; }
+#sec-3 { --c-accent: var(--c-ink); }
+/* pattern-driven special treatments + knobs (from the reused layout pattern) */
+#sec-3 { --c-stagger-offset: round(nearest, 18%, var(--baseline, 0.5rem)); --c-card-stagger: calc(7 * var(--baseline, 0.5rem)); }
+/* per-section placement (composition.v1 §4.6.5) */
+#sec-3 .cs-slot, #sec-3 .cs-eyebrow-wrap, #sec-3 .cs-title, #sec-3 .cs-foot { align-items: flex-end; text-align: right; }
+#sec-3 .cs-collage { margin-inline: auto 0; }
+#sec-3 .c-heading--display { text-align: right; margin-inline: auto 0; }
+#sec-3 { --c-float-side: left; }
+#sec-4 {
+  --c-paper: #FAF0E8;
+  --c-ink: #1F1A14;
+  --c-ink-muted: #4A4239;
+  --c-accent: #1F1A14;
+  --c-hairline: rgba(31, 26, 20, 0.30);
+  --c-link-hover: #1F1A14;
+  --c-font-heading: 'Melodrama', 'Playfair Display', serif;
+  --c-font-body: 'Inter', 'Lexend Deca', sans-serif;
+  --c-display-size: 6rem;
+  --c-display-lh: 1.05em;
+  --c-display-ls: 0rem;
+  --c-display-weight: 500;
+  --c-heading-weight: 400;
+  --c-h2-size: 2.25rem;
+  --c-h3-size: 1.625rem;
+  --c-body-size: 0.875rem;
+  --c-eyebrow-size: 0.6875rem;
+  --c-eyebrow-ls: 0.08em;
+  --c-control-size: 0.875rem;
+  --c-control-ls: 0.08em;
+  --c-eyebrow-gap: 1.5rem;
+  --c-title-overlap: -2.75rem;
+}
+#sec-4 { --c-section-pad-top: 6.875rem; --c-section-pad-bottom: 6.875rem; --c-section-pad: 6.875rem; --c-block-gap: 5rem; --c-module-gap: 7.5rem; }
+#sec-4 { --c-accent: var(--c-ink); }
+/* pattern-driven special treatments + knobs (from the reused layout pattern) */
+#sec-4 { --c-stagger-offset: round(nearest, 18%, var(--baseline, 0.5rem)); --c-card-stagger: calc(7 * var(--baseline, 0.5rem)); }
+/* per-section placement (composition.v1 §4.6.5) */
+#sec-4 .cs-slot, #sec-4 .cs-eyebrow-wrap, #sec-4 .cs-title, #sec-4 .cs-foot { align-items: flex-start; text-align: left; }
+#sec-4 .cs-collage { margin-inline: 0 auto; }
+#sec-4 .c-heading--display { text-align: left; margin-inline: 0 auto; }
+#sec-5 {
+  --c-paper: #FAF0E8;
+  --c-ink: #1F1A14;
+  --c-ink-muted: #4A4239;
+  --c-accent: #1F1A14;
+  --c-hairline: rgba(31, 26, 20, 0.30);
+  --c-link-hover: #1F1A14;
+  --c-font-heading: 'Melodrama', 'Playfair Display', serif;
+  --c-font-body: 'Inter', 'Lexend Deca', sans-serif;
+  --c-display-size: 6rem;
+  --c-display-lh: 1.05em;
+  --c-display-ls: 0rem;
+  --c-display-weight: 500;
+  --c-heading-weight: 400;
+  --c-h2-size: 2.25rem;
+  --c-h3-size: 1.625rem;
+  --c-body-size: 0.875rem;
+  --c-eyebrow-size: 0.6875rem;
+  --c-eyebrow-ls: 0.08em;
+  --c-control-size: 0.875rem;
+  --c-control-ls: 0.08em;
+  --c-eyebrow-gap: 1.5rem;
+  --c-title-overlap: -2.75rem;
+}
+#sec-5 { --c-section-pad-top: 6.875rem; --c-section-pad-bottom: 6.875rem; --c-section-pad: 6.875rem; --c-block-gap: 5rem; --c-module-gap: 7.5rem; }
+#sec-5 { --c-accent: var(--c-ink); }
+/* per-section placement (composition.v1 §4.6.5) */
+#sec-5 .cs-slot, #sec-5 .cs-eyebrow-wrap, #sec-5 .cs-title, #sec-5 .cs-foot { align-items: flex-start; text-align: left; }
+#sec-5 .cs-collage { margin-inline: 0 auto; }
+#sec-5 .c-heading--display { text-align: left; margin-inline: 0 auto; }
+#sec-6 {
+  --c-paper: #FAF0E8;
+  --c-ink: #1F1A14;
+  --c-ink-muted: #4A4239;
+  --c-accent: #1F1A14;
+  --c-hairline: rgba(31, 26, 20, 0.30);
+  --c-link-hover: #1F1A14;
+  --c-font-heading: 'Melodrama', 'Playfair Display', serif;
+  --c-font-body: 'Inter', 'Lexend Deca', sans-serif;
+  --c-display-size: 6rem;
+  --c-display-lh: 1.05em;
+  --c-display-ls: 0rem;
+  --c-display-weight: 500;
+  --c-heading-weight: 400;
+  --c-h2-size: 2.25rem;
+  --c-h3-size: 1.625rem;
+  --c-body-size: 0.875rem;
+  --c-eyebrow-size: 0.6875rem;
+  --c-eyebrow-ls: 0.08em;
+  --c-control-size: 0.875rem;
+  --c-control-ls: 0.08em;
+  --c-eyebrow-gap: 1.5rem;
+  --c-title-overlap: -2.75rem;
+}
+#sec-6 { --c-section-pad-top: 6.875rem; --c-section-pad-bottom: 6.875rem; --c-section-pad: 6.875rem; --c-block-gap: 5rem; --c-module-gap: 7.5rem; }
+#sec-6 { --c-accent: var(--c-ink); }
+/* pattern-driven special treatments + knobs (from the reused layout pattern) */
+#sec-6 { --c-stagger-offset: round(nearest, 18%, var(--baseline, 0.5rem)); --c-card-stagger: calc(7 * var(--baseline, 0.5rem)); }
+/* per-section placement (composition.v1 §4.6.5) */
+#sec-6 .cs-slot, #sec-6 .cs-eyebrow-wrap, #sec-6 .cs-title, #sec-6 .cs-foot { align-items: flex-start; text-align: left; }
+#sec-6 .cs-collage { margin-inline: 0 auto; }
+#sec-6 .c-heading--display { text-align: left; margin-inline: 0 auto; }
+#sec-6 { --c-float-side: right; }
+#sec-7 {
+  --c-paper: #FAF0E8;
+  --c-ink: #1F1A14;
+  --c-ink-muted: #4A4239;
+  --c-accent: #1F1A14;
+  --c-hairline: rgba(31, 26, 20, 0.30);
+  --c-link-hover: #1F1A14;
+  --c-font-heading: 'Melodrama', 'Playfair Display', serif;
+  --c-font-body: 'Inter', 'Lexend Deca', sans-serif;
+  --c-display-size: 6rem;
+  --c-display-lh: 1.05em;
+  --c-display-ls: 0rem;
+  --c-display-weight: 500;
+  --c-heading-weight: 400;
+  --c-h2-size: 2.25rem;
+  --c-h3-size: 1.625rem;
+  --c-body-size: 0.875rem;
+  --c-eyebrow-size: 0.6875rem;
+  --c-eyebrow-ls: 0.08em;
+  --c-control-size: 0.875rem;
+  --c-control-ls: 0.08em;
+  --c-eyebrow-gap: 1.5rem;
+  --c-title-overlap: -2.75rem;
+}
+#sec-7 { --c-section-pad-top: 6.875rem; --c-section-pad-bottom: 6.875rem; --c-section-pad: 6.875rem; --c-block-gap: 5rem; --c-module-gap: 7.5rem; }
+#sec-7 { --c-accent: var(--c-ink); }
+/* per-section placement (composition.v1 §4.6.5) */
+#sec-7 .cs-slot, #sec-7 .cs-eyebrow-wrap, #sec-7 .cs-title, #sec-7 .cs-foot { align-items: flex-start; text-align: left; }
+#sec-7 .cs-collage { margin-inline: 0 auto; }
+#sec-7 .c-heading--display { text-align: left; margin-inline: 0 auto; }
+#sec-8 {
+  --c-paper: #FAF0E8;
+  --c-ink: #1F1A14;
+  --c-ink-muted: #4A4239;
+  --c-accent: #1F1A14;
+  --c-hairline: rgba(31, 26, 20, 0.30);
+  --c-link-hover: #1F1A14;
+  --c-font-heading: 'Melodrama', 'Playfair Display', serif;
+  --c-font-body: 'Inter', 'Lexend Deca', sans-serif;
+  --c-display-size: 6rem;
+  --c-display-lh: 1.05em;
+  --c-display-ls: 0rem;
+  --c-display-weight: 500;
+  --c-heading-weight: 400;
+  --c-h2-size: 2.25rem;
+  --c-h3-size: 1.625rem;
+  --c-body-size: 0.875rem;
+  --c-eyebrow-size: 0.6875rem;
+  --c-eyebrow-ls: 0.08em;
+  --c-control-size: 0.875rem;
+  --c-control-ls: 0.08em;
+  --c-eyebrow-gap: 1.5rem;
+  --c-title-overlap: -2.75rem;
+}
+#sec-8 { --c-section-pad-top: 6.875rem; --c-section-pad-bottom: 6.875rem; --c-section-pad: 6.875rem; --c-block-gap: 5rem; --c-module-gap: 7.5rem; }
+#sec-8 { --c-accent: var(--c-ink); }
+/* per-section placement (composition.v1 §4.6.5) */
+#sec-8 .cs-slot, #sec-8 .cs-eyebrow-wrap, #sec-8 .cs-title, #sec-8 .cs-foot { align-items: flex-start; text-align: left; }
+#sec-8 .cs-collage { margin-inline: 0 auto; }
+#sec-8 .c-heading--display { text-align: left; margin-inline: 0 auto; }
+#page-nav {
+  --c-paper: #3A2F23;
+  --c-ink: #F5EDE2;
+  --c-ink-muted: #C9BFB2;
+  --c-accent: #edd580;
+  --c-hairline: #C9BFB2;
+  --c-link-hover: #edd580;
+  --c-font-heading: 'Melodrama', 'Playfair Display', serif;
+  --c-font-body: 'Inter', 'Lexend Deca', sans-serif;
+  --c-display-size: 6rem;
+  --c-display-lh: 1.05em;
+  --c-display-ls: 0rem;
+  --c-display-weight: 500;
+  --c-heading-weight: 400;
+  --c-h2-size: 2.25rem;
+  --c-h3-size: 1.625rem;
+  --c-body-size: 0.875rem;
+  --c-eyebrow-size: 0.6875rem;
+  --c-eyebrow-ls: 0.08em;
+  --c-control-size: 0.875rem;
+  --c-control-ls: 0.08em;
+  --c-eyebrow-gap: 1.5rem;
+  --c-title-overlap: -2.75rem;
+}
+#page-nav { --c-section-pad-top: 6.25rem; --c-section-pad-bottom: 6.25rem; --c-section-pad: 6.25rem; --c-block-gap: 5rem; --c-module-gap: 7.5rem; }
+#sec-9 {
+  --c-paper: #1B150F;
+  --c-ink: #F5EDE2;
+  --c-ink-muted: #C9BFB2;
+  --c-accent: #edd580;
+  --c-hairline: #C9BFB2;
+  --c-link-hover: #edd580;
+  --c-font-heading: 'Melodrama', 'Playfair Display', serif;
+  --c-font-body: 'Inter', 'Lexend Deca', sans-serif;
+  --c-display-size: 6rem;
+  --c-display-lh: 1.05em;
+  --c-display-ls: 0rem;
+  --c-display-weight: 500;
+  --c-heading-weight: 400;
+  --c-h2-size: 2.25rem;
+  --c-h3-size: 1.625rem;
+  --c-body-size: 0.875rem;
+  --c-eyebrow-size: 0.6875rem;
+  --c-eyebrow-ls: 0.08em;
+  --c-control-size: 0.875rem;
+  --c-control-ls: 0.08em;
+  --c-eyebrow-gap: 1.5rem;
+  --c-title-overlap: -2.75rem;
+}
+#sec-9 { --c-section-pad-top: 6.25rem; --c-section-pad-bottom: 6.25rem; --c-section-pad: 6.25rem; --c-block-gap: 5rem; --c-module-gap: 7.5rem; }
+
+/* ===================================================================== */
+/* STYLE: editorial-luxury (structure) layered OVER brand (hues+fonts). */
+/* ===================================================================== */
+:root {
+  --radius: 0rem;
+  --display-size: clamp(8rem, 11cqw, 14.4rem);
+  --c-radius: 0rem;
+  --c-display-size: clamp(8rem, 11cqw, 14.4rem);
+  --c-display-lh: 0.944;
+  --c-display-ls: -0.01em;
+  --c-font-heading: 'Melodrama', Georgia, serif;
+  --c-font-body: 'Inter', system-ui, sans-serif;
+}
+/* density: asymmetric, left-anchored - never centered-everything. `.cs-conversion` is
+   DELIBERATELY excluded (see docstring) - it centers via its own scaffold CSS. */
+.cs-slot, .cs-foot, .cs-eyebrow-wrap, .cs-title {
+  align-items: flex-start; text-align: left; }
+.cs-collage { margin: 0; }
+.c-heading--display { text-align: left; max-width: 16ch; }
+/* single committed accent: the eyebrow slug carries it (gold only where --c-accent is
+   gold, i.e. the opening bookend); the display title is ALWAYS ink, never the accent. */
+.c-eyebrow { color: var(--c-accent); }
+.c-heading--accent { color: var(--c-ink); }
+
+
+/* ===================================================================== */
+/* HERO brand-over-style exception (#sec-0 ONLY) — see hero_brand_override_css(). */
+/* ===================================================================== */
+#sec-0 .cs-slot, #sec-0 .cs-eyebrow-wrap, #sec-0 .cs-title, #sec-0 .cs-foot {
+  align-items: center; text-align: center; }
+#sec-0 .cs-collage { margin-left: auto; margin-right: auto; }
+#sec-0 .c-heading--display { text-align: center; max-width: 18ch;
+  margin-left: auto; margin-right: auto;
+  /* HERO poster renders at the display-hero weight (Melodrama Medium 500); every other
+     section heading inherits the section heading weight (Melodrama Regular 400). */
+  font-weight: var(--c-display-weight); }
+#sec-0 .cs-title .c-heading--accent { color: var(--c-accent); }
+
+
+/* style-gate alias (inert): maps the composer's editorial display heading onto the gate's
+   canonical `.hv-title.is-display` selector (left-anchored, ink) — see fn docstring. */
+.hv-title.is-display { text-align: left; color: var(--text); }
+
+
+/* scroll-parallax (brand motion treatment; voice.motionSpec.imageParallax) */
+[data-parallax-images] .c-image-mask .c-image { transform: scale(1.12); will-change: transform; }
+@media (prefers-reduced-motion: reduce) {
+  [data-parallax-images] .c-image-mask .c-image { transform: none !important; }
+}
+
+</style>
+</head>
+<body>
+<!-- FULL PAGE composed from the brand catalog: each section's every slot is a catalog
+     component rendered by component_render.py (the SAME renderers the gallery uses),
+     arranged by its archetype assembler in compose_section.py. STYLE=radical-editorial
+     structure layered over per-section brand hues/fonts. -->
+<div id="page-nav" class="cs-surface" data-surface="surface/inverse">
+<nav class="cs-nav"><a class="c-logo c-logo--img" href="https://woodwavegallery.webflow.io/"><img class="c-logo-img" src="assets/nav-logo.svg" alt="WoodWave Gallery" width="175" height="26"></a><span class="cs-navlinks"><a class="c-arrow-link" href="https://woodwavegallery.webflow.io/#about" style="gap:0">about</a> <span class="cs-sep">/</span> <a class="c-arrow-link" href="https://woodwavegallery.webflow.io/#gallery" style="gap:0">gallery</a> <span class="cs-sep">/</span> <a class="c-arrow-link" href="https://woodwavegallery.webflow.io/#exhibition" style="gap:0">exhibition</a> <span class="cs-sep">/</span> <a class="c-arrow-link" href="https://woodwavegallery.webflow.io/#visit" style="gap:0">visit</a></span><a class="c-arrow-link" href="https://webflow.com/templates/html/woodwave-photography-website-template">buy tickets <span class="c-arrow" aria-hidden="true">&rarr;</span></a></nav>
+</div>
+<div id="sec-0" class="cs-surface" data-layout="hero" data-surface="surface/inverse" data-pattern="hero-display-over-staggered-media" data-pattern-lib="project">
+<section class="cs-section cs-hero-layered">
+  <div class="cs-bg-layer" aria-hidden="true"><img class="c-image c-image--hero" style="aspect-ratio: 3 / 1" src="assets/Web-gallery-1.jpg" alt="Warm timber gallery interior, full bleed"><div class="cs-bg-scrim"></div></div>
+  <div class="cs-slot">
+    <div class="cs-eyebrow-wrap"><p class="c-eyebrow">Contemporary Art · Landmark Timber Building</p></div>
+    <div class="cs-title"><h1 class="c-heading c-heading--display c-heading--accent">Space<br>As A Muse</h1></div>
+    <div class="cs-collage cs-collage--layered">
+      
+      <div class="cs-ov" style="width: calc(4 * var(--col) + 3 * var(--grid-gutter, 6rem)); bottom: calc(-1 * calc(4 * var(--baseline, 0.5rem))); right: round(nearest, 4%, var(--baseline, 0.5rem)); z-index: 2"><img class="c-image c-image--overlap" style="aspect-ratio: 3 / 4" src="assets/About-img-2.jpg" alt="Detail of timber architecture"></div>
+    </div>
+    <div class="cs-spacer"></div>
+    <div class="cs-foot">
+      <p class="cs-sub">An evolving exhibition of woodgrain, light, and the quiet geometry of the handmade.</p>
+      <a class="c-arrow-link" href="#">Buy Tickets <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
+    </div>
+  </div>
+</section>
+</div>
+<div id="sec-1" class="cs-surface" data-layout="about-manifesto" data-surface="surface/primary" data-pattern="about-anchored-statement" data-pattern-lib="project">
+<section class="cs-section cs-statement-sec">
+  <div class="cs-statement-grid">
+    <div class="cs-statement-text">
+      <div class="c-header"><h1 class="c-heading c-heading--display"></h1></div>
+      <p class="c-paragraph" style="--c-measure:50ch">Woodwave is a contemporary art gallery housed within a landmark timber structure. We treat the building not as a container but as a collaborator — its warmth, grain, and daylight shaping how each work is encountered.</p>
+      <a class="c-arrow-link" href="#">Learn more <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
+    </div>
+    <div class="cs-statement-media"><div class="c-image-mask"><img class="c-image" style="aspect-ratio: 3 / 4" src="assets/About-img-3.jpg" alt="Interior architectural view of the gallery"></div></div>
+  </div>
+</section>
+</div>
+<div id="sec-2" class="cs-surface" data-layout="gallery-showcase" data-surface="surface/primary" data-pattern="gallery-fullbleed-counter-band" data-pattern-lib="project">
+<section class="cs-section cs-gallery-sec">
+  <div class="cs-gallery-utility">
+    <span class="cs-gallery-eyebrow"><p class="c-eyebrow">Interior · East Wing</p></span>
+    <span class="cs-gallery-counter"><p class="c-caption">01 / 06</p></span>
+  </div>
+  <figure class="cs-gallery-media">
+    <div class="c-image-mask"><img class="c-image" style="aspect-ratio: 21 / 9" src="assets/About-img-4.jpg" alt="Full-bleed gallery interior showcase"></div>
+  </figure>
+  <div class="cs-gallery-caption"><p class="c-caption">The main hall, where daylight moves across the grain through the course of a day.</p></div>
+</section>
+</div>
+<div id="sec-3" class="cs-surface" data-layout="mission" data-surface="surface/primary" data-pattern="about-anchored-statement" data-pattern-lib="project">
+<section class="cs-section cs-statement-sec">
+  <div class="cs-statement-grid">
+    <div class="cs-statement-text">
+      <div class="c-header"><h1 class="c-heading c-heading--display"></h1></div>
+      <p class="c-paragraph" style="--c-measure:50ch">We present work spanning the late twentieth century to the present day, giving each piece the space, silence, and natural light it deserves. Our purpose is a quieter, slower encounter with contemporary art.</p>
+      <a class="c-arrow-link" href="#">Learn more <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
+    </div>
+    <div class="cs-statement-media"><div class="c-image-mask"><img class="c-image" style="aspect-ratio: 3 / 4" src="assets/About-img-5.jpg" alt="Quiet gallery corner with natural light"></div></div>
+  </div>
+</section>
+</div>
+<div id="sec-4" class="cs-surface" data-layout="heritage-timeline" data-surface="surface/primary" data-pattern="hero-display-over-staggered-media" data-pattern-lib="project">
+<section class="cs-section cs-conversion-sec">
+  <div class="cs-conversion">
+    <div class="c-header"><p class="c-eyebrow">1941 / 2023</p><h1 class="c-heading c-heading--display">1941 / 2023</h1></div>
+    <p class="c-paragraph" style="--c-measure:40ch">1941 / 2023</p>
+    <div class="c-form"><label class="c-field"><span class="c-field-text">you@company.com</span><a class="c-arrow-link" href="#">Start free <span class="c-arrow" aria-hidden="true">&rarr;</span></a></label></div>
+  </div>
+</section>
+</div>
+<div id="sec-5" class="cs-surface" data-layout="curator-quote" data-surface="surface/primary" data-pattern="curator-quote-portrait-collage" data-pattern-lib="project">
+<section class="cs-section cs-quote-sec">
+  <div class="cs-quote-grid">
+    <div class="cs-quote-text">
+      <div class="cs-eyebrow-wrap"><p class="c-eyebrow"></p></div>
+      <h1 class="c-heading c-heading--display"></h1>
+      <p class="c-paragraph" style="--c-measure:48ch"></p>
+    </div>
+    <figure class="cs-quote-media">
+      <div class="c-image-mask"><img class="c-image" style="aspect-ratio: 3 / 4" src="assets/About-img-2.jpg" alt="Portrait of the gallery&#x27;s chief curator"></div>
+      <p class="c-caption">Elin Marchetti — Chief Curator</p>
+    </figure>
+  </div>
+</section>
+</div>
+<div id="sec-6" class="cs-surface" data-layout="visit" data-surface="surface/primary" data-pattern="about-anchored-statement" data-pattern-lib="project">
+<section class="cs-section cs-statement-sec">
+  <div class="cs-statement-grid">
+    <div class="cs-statement-text">
+      <div class="c-header"><h1 class="c-heading c-heading--display"></h1></div>
+      <p class="c-paragraph" style="--c-measure:50ch">14 Timber Row, Old Harbour District. Open Tuesday–Sunday, 10:00–18:00. Late opening Thursdays until 21:00. Admission by timed ticket.</p>
+      <a class="c-arrow-link" href="#">Learn more <span class="c-arrow" aria-hidden="true">&rarr;</span></a>
+    </div>
+    <div class="cs-statement-media"><div class="c-image-mask"><img class="c-image" src="assets/Map.jpg" alt="Map showing the gallery location in the Old Harbour District"></div></div>
+  </div>
+</section>
+</div>
+<div id="sec-7" class="cs-surface" data-layout="newsletter" data-surface="surface/primary">
+<section class="cs-section cs-conversion-sec">
+  <div class="cs-conversion">
+    <div class="c-header"><p class="c-eyebrow">Stay Close</p><h1 class="c-heading c-heading--display">Notes From The Timber Hall</h1></div>
+    <p class="c-paragraph" style="--c-measure:40ch"></p>
+    <div class="c-form"><label class="c-field"><span class="c-field-text">you@company.com</span><a class="c-arrow-link" href="#">Subscribe <span class="c-arrow" aria-hidden="true">&rarr;</span></a></label></div>
+  </div>
+</section>
+</div>
+<div id="sec-8" class="cs-surface" data-layout="footer" data-surface="surface/primary">
+<section class="cs-section cs-conversion-sec">
+  <div class="cs-conversion">
+    <div class="c-header"><p class="c-eyebrow">Introducing</p><h1 class="c-heading c-heading--display">Start today</h1></div>
+    <p class="c-paragraph" style="--c-measure:40ch"></p>
+    <div class="c-form"><label class="c-field"><span class="c-field-text">you@company.com</span><a class="c-arrow-link" href="#">Start free <span class="c-arrow" aria-hidden="true">&rarr;</span></a></label></div>
+  </div>
+</section>
+</div>
+<div id="sec-9" class="cs-surface" data-layout="closing-bookend" data-surface="surface/inverse-strong">
+<section class="cs-section cs-footer-sec">
+<div class="c-footer"><nav class="c-foot-sitemap" aria-label="Sitemap"><a class="c-foot-sitemap-link" href="https://woodwavegallery.webflow.io/#about">ABOUT</a> <span class="c-foot-sep" aria-hidden="true">/</span> <a class="c-foot-sitemap-link" href="https://woodwavegallery.webflow.io/#gallery">GALLERY</a> <span class="c-foot-sep" aria-hidden="true">/</span> <a class="c-foot-sitemap-link" href="https://woodwavegallery.webflow.io/#exhibition">EXHIBITION</a> <span class="c-foot-sep" aria-hidden="true">/</span> <a class="c-foot-sitemap-link" href="https://woodwavegallery.webflow.io/#visit">VISIT</a> <span class="c-foot-sep" aria-hidden="true">/</span> <a class="c-foot-sitemap-link" href="https://woodwavegallery.webflow.io/#buy-tickets">BUY TICKETS</a></nav><nav class="c-foot-social" aria-label="Social"><a class="c-foot-social-link" href="https://instagram.com">INSTAGRAM</a> <span class="c-foot-sep" aria-hidden="true">/</span> <a class="c-foot-social-link" href="https://facebook.com">FACEBOOK</a> <span class="c-foot-sep" aria-hidden="true">/</span> <a class="c-foot-social-link" href="https://youtube.com">YOUTUBE</a> <span class="c-foot-sep" aria-hidden="true">/</span> <a class="c-foot-social-link" href="https://twitter.com">TWITTER</a></nav><p class="c-foot-legal">© 2023. woodwave gallery template</p></div>
+</section>
+</div>
+<script>
+(function () {
+  var root = document.documentElement;
+  var mq = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (mq && mq.matches) return;                      // reduced motion: no reveal, all visible
+  if (!('IntersectionObserver' in window)) return;   // no IO: leave content fully visible
+  var sel = '.cs-slot > *, .cs-collage-grid > *, .cs-split-intro, .cs-split, .cs-conversion, .c-footer';
+  var nodes = [].slice.call(document.querySelectorAll(sel));
+  if (!nodes.length) return;
+  root.classList.add('cs-motion-ready');             // gate: hidden initial state now applies
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+  nodes.forEach(function (n, i) {
+    n.classList.add('cs-reveal');
+    n.style.setProperty('--cs-reveal-i', String(i % 6));  // small per-target stagger
+    io.observe(n);
+  });
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  var mq = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (mq && mq.matches) return;                 // reduced motion: no parallax, all static
+  if (!window.gsap || !window.ScrollTrigger) return;
+  gsap.registerPlugin(ScrollTrigger);
+  var AMT = 6;                    // base yPercent unit (brand amount class)
+
+  // 1) MASK-PAN — one image per `.c-image-mask` wrapper, pans within its own frame. The
+  // wrapper (not the image) is the ScrollTrigger trigger AND the clip boundary, so the
+  // caption sitting outside the mask (a sibling in the parent figure) is never touched.
+  document.querySelectorAll('.c-image-mask').forEach(function (wrap) {
+    var img = wrap.querySelector('.c-image');
+    if (!img) return;
+    gsap.fromTo(img, { yPercent: -AMT }, { yPercent: AMT, ease: 'none',
+      scrollTrigger: { trigger: wrap, start: 'top bottom', end: 'bottom top', scrub: 0.5 } });
+  });
+
+  // 2) DEPTH — the hero's overlapping media pair moves at DIFFERENT rates (motion
+  // counterpart of the `overlap` special treatment; scoped to `.cs-collage` so it never
+  // catches a plain module photo that happens to reuse the same variant class).
+  var heroCollage = document.querySelector('.cs-collage');
+  if (heroCollage) {
+    var base = heroCollage.querySelector('.c-image--hero');
+    var front = heroCollage.querySelector('.c-image--overlap');
+    if (base) gsap.fromTo(base, { yPercent: -AMT * 0.4 }, { yPercent: AMT * 0.4, ease: 'none',
+      scrollTrigger: { trigger: heroCollage, start: 'top bottom', end: 'bottom top', scrub: 0.5 } });
+    if (front) gsap.fromTo(front, { yPercent: -AMT * 1.2 }, { yPercent: AMT * 1.2, ease: 'none',
+      scrollTrigger: { trigger: heroCollage, start: 'top bottom', end: 'bottom top', scrub: 0.5 } });
+  }
+})();
+</script>
+</body>
+</html>
