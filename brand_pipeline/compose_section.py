@@ -2481,7 +2481,7 @@ def _stack_hero_art_panel(doc, ctx, layout, rendered, panel, *, title_html,
         poster hero) renders in the caption register between body and actions;
       - a declared `alignment.anchor: centered` centers the panel's content column
         (the poster stance); side-anchored panels keep the editorial left column."""
-    art = panel.get("asset") or _hero_treatment_art(doc)
+    art = cr.asset_src(panel.get("asset")) or _hero_treatment_art(doc)
     bg_style = f' style="background-image: url(\'{cr.esc(art)}\')"' if art else ""
     body_html = body_slot["html"] if body_slot else (
         f'<p class="cs-sub">{cr.esc(copy["subhead"])}</p>' if copy["subhead"] else "")
@@ -4252,11 +4252,8 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
         # `assets/{'src': …}` path the fidelity gate flagged). Alt resolves from the
         # asset metadata, else the module caption + brand name — never a foreign-brand
         # literal baked into the composer.
-        raw = card.get("asset")
-        alt = card.get("alt")
-        if isinstance(raw, dict):
-            alt = alt or raw.get("alt")
-            raw = raw.get("src")
+        raw, bound_alt = cr.asset_binding(card.get("asset"))
+        alt = card.get("alt") or bound_alt
         # QUOTE/TESTIMONIAL card detection (W7, stress-playbook 2026-07): a module
         # carrying person attribution (name/role/avatar) is a quote card — it NEVER
         # inherits the defaultArt backfill; only an EXPLICITLY bound asset renders.
@@ -4270,8 +4267,7 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
         # brand default-art backfill byte-identically.
         cards_no_media = bool(layout.get("_cardsNoMedia"))
         if raw:
-            src = raw if str(raw).startswith(("assets/", "http://", "https://", "data:")) \
-                else f"assets/{raw}"
+            src = raw
         elif is_quote_card or cards_no_media:
             src = None            # text-first card: no media well at all
         else:
@@ -4313,11 +4309,7 @@ def compose_features_cards(doc, layout, ctx, rendered, style_ctx):
         # the caption device unchanged.
         person_html = ""
         if card.get("avatar") or card.get("name"):
-            av = str(card.get("avatar") or "").strip()
-            av_src = ""
-            if av:
-                av_src = av if av.startswith(("assets/", "http://", "https://", "data:")) \
-                    else f"assets/{av}"
+            av_src = cr.asset_src(card.get("avatar")) or ""
             avatar_img = (f'<img class="c-person-avatar" src="{cr.esc(av_src)}" '
                           f'alt="{cr.esc(card.get("name") or "")}">') if av_src else ""
             nm = (f'<span class="c-person-name">{cr.esc(card["name"])}</span>'
@@ -4747,14 +4739,9 @@ def compose_bento_grid(doc, layout, ctx, rendered, style_ctx):
         # negative-margin well the card plates use; AS-34: src must be authored
         # (inventory-validated upstream), never a composer default.
         media_html = ""
-        raw = card.get("asset")
-        alt = card.get("alt")
-        if isinstance(raw, dict):
-            alt = alt or raw.get("alt")
-            raw = raw.get("src")
-        if raw:
-            src = raw if str(raw).startswith(("assets/", "http://", "https://", "data:")) \
-                else f"assets/{raw}"
+        src, bound_alt = cr.asset_binding(card.get("asset"))
+        alt = card.get("alt") or bound_alt
+        if src:
             aspect = card.get("aspect") or "16 / 10"
             media_html = (f'<figure class="cs-bento-media" '
                           f'style="aspect-ratio: {cr.esc(str(aspect))};">'
@@ -4768,11 +4755,9 @@ def compose_bento_grid(doc, layout, ctx, rendered, style_ctx):
         # in the shared c-person register): a quote/host cell attributes itself.
         person_html = ""
         if card.get("name"):
-            av = str(card.get("avatar") or "").strip()
+            av_src = cr.asset_src(card.get("avatar"))
             avatar_img = ""
-            if av:
-                av_src = av if av.startswith(("assets/", "http://", "https://", "data:")) \
-                    else f"assets/{av}"
+            if av_src:
                 avatar_img = (f'<img class="c-person-avatar" src="{cr.esc(av_src)}" '
                               f'alt="{cr.esc(card.get("name") or "")}">')
             nm = f'<span class="c-person-name">{cr.esc(card["name"])}</span>'
@@ -4904,9 +4889,8 @@ def compose_media_split(doc, layout, ctx, rendered, style_ctx):
     editorial devices whose content-shape preconditions are not met."""
     copy = copy_for(layout, doc)
     lc = layout_copy_layer(layout, doc)
-    raw = copy.get("asset")
-    src = raw if str(raw or "").startswith("assets/") \
-        else (f"assets/{raw}" if raw else _composer_art(doc, layout, "hero"))
+    src, bound_alt = cr.asset_binding(copy.get("asset"))
+    src = src or _composer_art(doc, layout, "hero")
     brand_name = (doc.get("brand") or {}).get("name") or "Brand"
     eyebrow = copy.get("caption") or lc.get("eyebrow") or ""
     title = copy.get("statement") or lc.get("title") or lc.get("heading") or ""
@@ -4923,7 +4907,7 @@ def compose_media_split(doc, layout, ctx, rendered, style_ctx):
     cta_html = cr.render_arrow_link(
         doc, ctx, {"label": cta, "accent": False}) if cta else ""
     image_html = cr.render_image(doc, ctx, {
-        "src": src, "alt": copy.get("alt") or f"{brand_name} media",
+        "src": src, "alt": copy.get("alt") or bound_alt or f"{brand_name} media",
         "aspect": copy.get("mediaAspectCss"), "mediaRole": "split-media"})
     return f"""<section class="cs-section cs-media-split-sec">
   <div class="cs-media-split">
@@ -4960,12 +4944,12 @@ def compose_editorial_interlock(doc, layout, ctx, rendered, style_ctx):
     lc = layout_copy_layer(layout, doc)
     if not interlock_preconditions(copy, lc):
         return compose_media_split(doc, layout, ctx, rendered, style_ctx)
-    raw = copy.get("asset")
-    src = raw if str(raw or "").startswith("assets/") \
-        else (f"assets/{raw}" if raw else _composer_art(doc, layout, "hero"))
+    src, bound_alt = cr.asset_binding(copy.get("asset"))
+    src = src or _composer_art(doc, layout, "hero")
     _brand_name = (doc.get("brand") or {}).get("name") or "Brand"
     img_html = cr.render_image(doc, ctx, {
-        "src": src, "alt": copy.get("alt") or f"{_brand_name} photography",
+        "src": src,
+        "alt": copy.get("alt") or bound_alt or f"{_brand_name} photography",
         "aspect": copy.get("mediaAspectCss")})
     # two-line caption built on the c-caption primitive class (SSOT), <br> between lines.
     cap_lines = "<br>".join(cr.esc(ln) for ln in str(copy.get("caption", "")).split("\n") if ln.strip())
@@ -5020,14 +5004,12 @@ def compose_generic_flow(doc, layout, ctx, rendered, style_ctx):
             f'<span class="c-person-name">{cr.esc(name)}</span>'
             f'<span class="c-person-role">{cr.esc(role)}</span>'
             f'</span></div>')
-        asset = str(testimonial.get("asset") or "").strip()
+        src, bound_alt = cr.asset_binding(testimonial.get("asset"))
         media = ""
-        if asset:
-            src = asset if asset.startswith(("assets/", "http://", "https://", "data:")) \
-                else f"assets/{asset}"
+        if src:
             image = cr.render_image(doc, ctx, {
                 "src": src,
-                "alt": f"{name}, {role}".strip(", "),
+                "alt": bound_alt or f"{name}, {role}".strip(", "),
                 "mediaRole": "card-media",
             })
             media = f'<figure class="cs-testimonial-media">{image}</figure>'
@@ -5036,7 +5018,7 @@ def compose_generic_flow(doc, layout, ctx, rendered, style_ctx):
             '<span class="cs-testimonial-mark" data-accent-device="testimonial-quote-mark" '
             'aria-hidden="true">“</span>'
             if testimonial.get("accentLicensed") else "")
-        asset_state = "bound" if asset else "requested"
+        asset_state = "bound" if src else "requested"
         return f"""<section class="cs-section cs-testimonial-sec" data-testimonial-intent="true">
   <div class="cs-flow">
     <article class="cs-testimonial cs-testimonial--{cr.esc(anatomy)}"

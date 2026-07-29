@@ -52,7 +52,59 @@ from tokens_css import (  # noqa: E402
 
 
 def esc(value) -> str:
+    """Escape a SCALAR for an HTML attribute or text node.
+
+    A container reaching here is always a caller bug: ``str()`` on it yields a Python
+    repr, which the escape then makes look deliberate — that is how
+    ``src="assets/{'src': 'assets/x.webp'}"`` shipped in a composed page and 404'd.
+    An asset binding is a mapping, so refusing containers here means the composers
+    must go through ``asset_binding()``/``asset_src()`` to get their strings. Loud at
+    generation time beats a broken reference nobody notices."""
+    if isinstance(value, (dict, list, tuple, set)):
+        raise TypeError(
+            f"esc() takes a scalar, got {type(value).__name__}: {value!r}. "
+            "An asset binding must be unwrapped with asset_binding()/asset_src() "
+            "before it reaches markup.")
     return html.escape(str(value if value is not None else ""))
+
+
+# An asset src that already states where it lives — never re-prefixed with `assets/`.
+RESOLVED_SRC_PREFIXES = ("assets/", "http://", "https://", "data:", "//", "/")
+
+
+def asset_binding(value) -> tuple[str | None, str | None]:
+    """The canonical read of an asset binding → ``(src, alt)``, both strings or None.
+
+    A binding reaches a renderer in three shapes: a bare filename (`x.webp`), an
+    already-resolved path/URL, or the sanitizer's ``{"src": …, "alt": …}`` mapping
+    (`compose_from_composition._sanitize_assets` coerces bare strings into it, so the
+    mapping shape can appear anywhere downstream of sanitization). Every renderer
+    wants the same two strings out of all three, and each site that re-derived them
+    inline was one `isinstance` check away from interpolating the mapping itself.
+
+    A bare name is resolved against the page-relative `assets/` directory the
+    composers copy media into; anything already carrying a scheme or a path root is
+    returned untouched."""
+    alt = None
+    seen = 0
+    while isinstance(value, dict) and seen < 4:      # nested {asset: {src: …}} shapes
+        alt = alt or value.get("alt")
+        value = value.get("src") or value.get("asset") or value.get("uri")
+        seen += 1
+    alt = str(alt).strip() if alt is not None and str(alt).strip() else None
+    if isinstance(value, (list, tuple, set)):
+        return None, alt
+    src = str(value).strip() if value is not None else ""
+    if not src:
+        return None, alt
+    if not src.startswith(RESOLVED_SRC_PREFIXES):
+        src = f"assets/{src}"
+    return src, alt
+
+
+def asset_src(value) -> str | None:
+    """The resolved src of an asset binding — see ``asset_binding``."""
+    return asset_binding(value)[0]
 
 
 def _px(value) -> str:
@@ -2486,9 +2538,10 @@ def _mega_panel_fragment(menu: dict, panel_id: str = "") -> str:
     trigger's aria-controls points at — "" keeps the id off (gallery demos)."""
     def link_html(l: dict) -> str:
         icon = l.get("icon") if isinstance(l.get("icon"), dict) else {}
+        icon_src = asset_src(icon.get("asset"))
         icon_html = ""
-        if icon.get("asset"):
-            icon_html = (f'<span class="cs-mega-link-icon"><img src="{esc(str(icon["asset"]))}" '
+        if icon_src:
+            icon_html = (f'<span class="cs-mega-link-icon"><img src="{esc(icon_src)}" '
                          f'alt="" aria-hidden="true" /></span>')
         desc = str(l.get("description") or "")
         desc_html = (f'<span class="cs-mega-link-desc"><span>{esc(desc)}</span></span>'
@@ -2511,8 +2564,10 @@ def _mega_panel_fragment(menu: dict, panel_id: str = "") -> str:
     card_html = ""
     if card and (card.get("title") or card.get("image")):
         img = card.get("image") if isinstance(card.get("image"), dict) else {}
-        img_html = (f'<img src="{esc(str(img["asset"]))}" alt="{esc(img.get("alt") or "")}" />'
-                    if img.get("asset") else "")
+        img_src, img_bound_alt = asset_binding(img.get("asset"))
+        img_html = (f'<img src="{esc(img_src)}" '
+                    f'alt="{esc(img.get("alt") or img_bound_alt or "")}" />'
+                    if img_src else "")
         head = str(card.get("groupHeading") or "")
         head_html = f'<h4 class="cs-mega-head">{esc(head)}</h4>' if head else ""
         cta = card.get("cta") if isinstance(card.get("cta"), dict) else None
@@ -3624,7 +3679,8 @@ def render_image(doc, ctx: ComponentContext, props=None) -> str:
     # masked-media clip (media semantics 2026-07, spec/media-assets-schema.md §3):
     # the image clips inside a brand accent-shape/logo silhouette. Declared-only —
     # mask-less images keep the exact historical markup.
-    mask = props.get("mask")
+    mask = asset_src(props["mask"]) if isinstance(props.get("mask"), dict) \
+        else props.get("mask")
     if mask:
         style_parts.append(
             f"-webkit-mask-image: url('{mask}'); mask-image: url('{mask}'); "
@@ -3632,8 +3688,14 @@ def render_image(doc, ctx: ComponentContext, props=None) -> str:
             "-webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; "
             "-webkit-mask-position: center; mask-position: center")
     style = f' style="{esc("; ".join(style_parts))}"' if style_parts else ""
-    src = props.get("src")
-    alt = esc(props.get("alt", ""))
+    # the primitive accepts a binding in any of its three shapes and resolves it here,
+    # so a caller that forwards the sanitizer's {src, alt} mapping straight through
+    # still emits a real path instead of the mapping's repr.
+    src, bound_alt = asset_binding(props.get("src"))
+    # an EXPLICIT alt wins, including the empty alt that marks a decorative image;
+    # the binding's own alt only fills an absent one.
+    raw_alt = props.get("alt")
+    alt = esc((bound_alt or "") if raw_alt is None else raw_alt)
     if not src:
         return f'<div class="c-image-ph{mod}"{style}>{esc(props.get("placeholder", "IMAGE / RADIUS 0"))}</div>'
     # transparent-PNG-safe ART mode (fid2 2026-07): non-photographic art contains at
@@ -4197,7 +4259,7 @@ def render_footer(doc, ctx: ComponentContext, props=None) -> str:
                 # (fid9: previews don't ship an assets/ tree, so the path-relative
                 # ref would 404 there); the raw asset path stays the degrade for
                 # lanes that DO ship assets beside the page.
-                src = str(img.get("_dataUri") or img["asset"])
+                src = str(img.get("_dataUri") or "") or asset_src(img["asset"])
                 badge_items.append(
                     f'<a href="{esc(b.get("href") or "#")}">'
                     f'<img src="{esc(src)}" alt="{esc(img.get("alt") or "")}" /></a>')
