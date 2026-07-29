@@ -56,20 +56,14 @@ STUDIO_DIR = RUNS_DIR / ".studio"
 BASE_CONFIG = PROJECT_DIR / "config-anthropic.yaml"
 PY = sys.executable
 
-# Optional registry of EXTERNAL framework (e.g. shadcn) builds. These are separate
-# Vite apps served on their own ports — Studio can't serve them under runs/, so they
-# are surfaced as external-link entries only. Ports live in this file, never in code,
-# so a build can be re-pointed without touching the server. Shape (JSON array):
+# Optional, PER-MACHINE registry of framework (e.g. shadcn) builds a local dev
+# server is hosting. A Vite dev server exists only on the machine running it, so
+# nothing is ever seeded here and its absence is the normal case: framework lanes
+# are discovered from built output on disk (framework_build_page), and a
+# registration that resolves to neither is presented as a required local dev step
+# rather than as a link. Shape (JSON array):
 #   [{"version": "<project>", "label": "<human name>", "url": "http://localhost:PORT/"}]
 FRAMEWORK_BUILDS_REGISTRY = STUDIO_DIR / "framework-builds.json"
-# Seed used only to bootstrap the registry the first time it is missing, so the
-# feature is demonstrable out of the box. Once the file exists it is the source of
-# truth and this seed is ignored.
-_DEFAULT_FRAMEWORK_BUILDS = [
-    {"version": "greenhouse-v2", "label": "shadcn harness", "url": "http://localhost:5181/"},
-    {"version": "hubspot-v3", "label": "shadcn full page", "url": "http://localhost:5179/"},
-    {"version": "woodwave-v2", "label": "shadcn full page", "url": "http://localhost:5180/"},
-]
 
 sys.path.insert(0, str(PROJECT_DIR / "tools"))
 sys.path.insert(0, str(PROJECT_DIR / "src"))
@@ -125,6 +119,19 @@ def read_text(path: Path, limit: int | None = None) -> str:
         return text[:limit] if limit else text
     except Exception:
         return ""
+
+
+def has_content(path: Path) -> bool:
+    """True when `path` is a file with bytes in it.
+
+    A zero-byte or missing file counts as absent — the same rule the brand-document
+    tabs use (`brand_doc_files`), so anything the Studio advertises has something
+    behind it instead of resolving to a 404 or a blank frame.
+    """
+    try:
+        return path.is_file() and path.stat().st_size > 0
+    except OSError:
+        return False
 
 
 def run_complete_status(version: str) -> str | None:
@@ -436,7 +443,7 @@ def site_rel(version: str, item: str, provider: str, *, framework: bool = False)
     suffix = "-framework" if framework else ""
     applied = single / f"site-{provider}{suffix}.assets-applied.html"
     plain = single / f"site-{provider}{suffix}.html"
-    chosen = applied if applied.exists() else (plain if plain.exists() else None)
+    chosen = applied if has_content(applied) else (plain if has_content(plain) else None)
     if not chosen:
         return ""
     return "/" + str(chosen.relative_to(PROJECT_DIR)).replace("\\", "/")
@@ -456,7 +463,7 @@ def compose_pages(version: str) -> list[dict]:
     out: list[dict] = []
     for brief_dir in sorted(p for p in compose_dir.iterdir() if p.is_dir()):
         index = brief_dir / "index.html"
-        if not index.exists():
+        if not has_content(index):
             continue
         out.append(
             {
@@ -533,7 +540,7 @@ def brand_pages(version: str) -> dict:
         return {"replica": None, "generated": []}
     for lane_dir in sorted(p for p in compose_dir.iterdir() if p.is_dir()):
         index = lane_dir / "index.html"
-        if not index.exists():
+        if not has_content(index):
             continue
         is_replica = lane_dir.name.lower() == "replica"
         page = {
@@ -576,7 +583,7 @@ def variant_pages(version: str) -> list[dict]:
     out: list[dict] = []
     for sub in sorted(p for p in variants_dir.iterdir() if p.is_dir()):
         index = sub / "index.html"
-        if not index.exists():
+        if not has_content(index):
             continue
         label = _VARIANT_LABELS.get(sub.name.lower(), f"Variant {sub.name.upper()}")
         label_file = sub / "label.txt"
@@ -604,7 +611,7 @@ def harness_pages(version: str) -> list[dict]:
     lane's `shots/` dir when present.
     """
     index = RUNS_DIR / version / "brand" / "harness" / "index.html"
-    if not index.exists():
+    if not has_content(index):
         return []
     return [
         {
@@ -626,7 +633,7 @@ def sections_pages(version: str) -> list[dict]:
     `sections/shots/gallery.png` thumbnail, falling back to the generic lane thumb.
     """
     index = RUNS_DIR / version / "brand" / "sections" / "index.html"
-    if not index.exists():
+    if not has_content(index):
         return []
     gallery = index.parent / "shots" / "gallery.png"
     thumb = (
@@ -645,36 +652,161 @@ def sections_pages(version: str) -> list[dict]:
 
 
 def _load_framework_registry() -> list[dict]:
-    """Load (bootstrapping on first use) the external framework-builds registry.
+    """The per-machine framework dev-server registry, or [] when there isn't one.
 
-    Returns the parsed JSON array from `runs/.studio/framework-builds.json`. If the
-    file does not exist it is created with `_DEFAULT_FRAMEWORK_BUILDS` so the feature
-    is demonstrable; once present the file is the source of truth. Degrades to [] on
-    any read/parse error rather than crashing the payload.
+    Read-only: nothing is written and nothing is seeded, so a checkout with no
+    `runs/.studio/framework-builds.json` (it is gitignored, so that is every fresh
+    clone) simply has no dev-server registrations. Degrades to [] on any
+    read/parse error rather than crashing the payload.
     """
     try:
-        STUDIO_DIR.mkdir(parents=True, exist_ok=True)
-        if not FRAMEWORK_BUILDS_REGISTRY.exists():
-            FRAMEWORK_BUILDS_REGISTRY.write_text(
-                json.dumps(_DEFAULT_FRAMEWORK_BUILDS, indent=2) + "\n"
-            )
         data = json.loads(FRAMEWORK_BUILDS_REGISTRY.read_text())
     except Exception:
         return []
     return data if isinstance(data, list) else []
 
 
-def framework_builds(version: str) -> list[dict]:
-    """External framework (e.g. shadcn) builds for a project, from the registry.
+# Built framework output, in the order we prefer it — all relative to `runs/<version>/`.
+# `single/<app>/index.html` is deliberately NOT here: that is the Vite SOURCE entry
+# (a module script pointing at src/), which renders blank unless a dev server is
+# compiling it. Only a build product is servable by the Studio.
+_FRAMEWORK_BUILD_GLOBS = (
+    "brand/framework/index.html",
+    "brand/framework/dist/index.html",
+    "brand/framework/single/*/dist/index.html",
+    "*/single/framework/dist/index.html",
+)
 
-    Reads `runs/.studio/framework-builds.json` and returns the entries whose
-    `version` matches this project as external-link lane options (open in a new
-    tab). Ports come entirely from the registry file, never hardcoded here, so the
-    same code works for any project/port. Degrades to [] when the registry is
-    absent/empty or has no matching entry. Each entry is normalized to
-    `{"label", "url", "kind": "framework", "external": True, "port"}`.
+# Where a reader would run the dev server, if the built output is not there.
+_FRAMEWORK_DEV_GLOBS = (
+    "brand/framework/single/*/package.json",
+    "brand/framework/package.json",
+    "*/single/framework/package.json",
+)
+
+
+def _first_glob_hit(version: str, patterns: tuple[str, ...]) -> Path | None:
+    """First non-empty file matching `patterns` under `runs/<version>/`, in order.
+
+    `run_dir_for` is the traversal guard, and the globs only ever look inside the
+    run directory.
     """
+    vdir = run_dir_for(version)
+    if vdir is None:
+        return None
+    for pattern in patterns:
+        try:
+            hits = sorted(p for p in vdir.glob(pattern) if has_content(p))
+        except OSError:
+            hits = []
+        if hits:
+            return hits[0]
+    return None
+
+
+def framework_build_page(version: str) -> Path | None:
+    """The BUILT framework page for a project on disk, or None.
+
+    This is what makes the framework lane servable by the Studio on any machine
+    that has the run, instead of depending on a dev server that only exists where
+    the lane was built.
+    """
+    return _first_glob_hit(version, _FRAMEWORK_BUILD_GLOBS)
+
+
+def framework_dev_dir(version: str) -> Path | None:
+    """The framework app directory to run a dev server in, or None when absent."""
+    pkg = _first_glob_hit(version, _FRAMEWORK_DEV_GLOBS)
+    return pkg.parent if pkg else None
+
+
+def framework_dev_hint(version: str) -> str:
+    """Plain statement of what this checkout is missing for the framework lane."""
+    dev_dir = framework_dev_dir(version)
+    if dev_dir is not None:
+        rel = _rel_url(dev_dir).lstrip("/") or dev_dir.name
+        return f"no built output — run `npm run build` (or `npm run dev`) in {rel}"
+    return (
+        f"no framework build and no app to build — nothing under runs/{version}/ "
+        "holds this lane's source, so it cannot be served or rebuilt from here"
+    )
+
+
+def _studio_served_path(url: str) -> str:
+    """A registry URL rewritten as a same-origin Studio path, when it names a real file.
+
+    Registrations are sometimes made against the Studio itself
+    (`http://127.0.0.1:<port>/runs/...`), which stops resolving the moment the
+    Studio moves port or someone opens it from another host. When the path names a
+    file with content under PROJECT_DIR we return it relative, so the link works on
+    whatever origin the reader is on. Anything else — another port, a missing file,
+    a path escaping PROJECT_DIR — yields "".
+    """
+    path = urlparse(url).path if "://" in url else url
+    if not path.startswith("/"):
+        return ""
+    target = PROJECT_DIR / unquote(path).lstrip("/")
+    try:
+        if PROJECT_DIR.resolve() not in target.resolve().parents:
+            return ""
+    except OSError:
+        return ""
+    return path if has_content(target) else ""
+
+
+# A registration on one of these hosts names a server on THIS machine, which is
+# what makes it unverifiable: a Vite dev server exists only while someone is
+# running it. A genuinely remote origin the operator registered is somebody else's
+# uptime problem and stays an ordinary external link.
+_LOOPBACK_HOSTS = {"", "localhost", "127.0.0.1", "::1", "0.0.0.0"}
+
+
+def _is_local_dev_server(url: str) -> bool:
+    """True when a framework registration points at a server on this machine."""
+    return (urlparse(url).hostname or "").lower() in _LOOPBACK_HOSTS
+
+
+def _framework_entry(
+    label: str, url: str, *, external: bool, available: bool, port=None, hint: str = ""
+) -> dict:
+    name = f"Framework build{(' — ' + label) if label else ''}"
+    if not available:
+        name += " — needs a local dev server"
+    return {
+        "label": name,
+        "url": url,
+        "kind": "framework",
+        "external": external,
+        "port": port,
+        "available": available,
+        "hint": hint,
+    }
+
+
+def framework_builds(version: str) -> list[dict]:
+    """Framework (React/Vite) build lanes for a project — disk evidence first.
+
+    A link that silently goes nowhere is the failure this resolves, so every entry
+    is one of two honest states:
+
+      1. AVAILABLE — the built page exists under `runs/<version>/` and the Studio
+         serves it as an ordinary same-origin lane. Found from disk
+         (`framework_build_page`), so it needs no registration; a registry entry
+         that points at the same Studio-served file is normalized to a relative
+         URL and folded into this one entry rather than duplicating it.
+      2. UNAVAILABLE — a dev-server registration with no built output behind it.
+         A Vite dev server exists only on the machine running it, so instead of a
+         dead link the entry carries `url: ""`, `available: False` and a `hint`
+         naming the directory and command that would produce the lane.
+
+    Degrades to [] when a project has neither built output nor a registration.
+    Entries are `{"label", "url", "kind", "external", "port", "available", "hint"}`.
+    """
+    built = framework_build_page(version)
+    built_url = _rel_url(built) if built else ""
+
     out: list[dict] = []
+    dev_only: list[tuple[str, int | None]] = []
     for entry in _load_framework_registry():
         if not isinstance(entry, dict):
             continue
@@ -684,18 +816,34 @@ def framework_builds(version: str) -> list[dict]:
         if not url:
             continue
         name = str(entry.get("label", "")).strip()
-        port = urlparse(url).port
-        port_tag = f":{port}" if port else ""
-        label = f"Framework build{(' — ' + name) if name else ''} {port_tag} \u2197".strip()
-        out.append(
-            {
-                "label": label,
-                "url": url,
-                "kind": "framework",
-                "external": True,
-                "port": port,
-            }
+        served = _studio_served_path(url)
+        if served:
+            if served == built_url:
+                built_url = ""  # the same file; do not list it twice
+            out.append(_framework_entry(name, served, external=False, available=True))
+        elif _is_local_dev_server(url):
+            dev_only.append((name, urlparse(url).port))
+        else:
+            out.append(
+                _framework_entry(
+                    name, url, external=True, available=True, port=urlparse(url).port
+                )
+            )
+
+    if built_url:
+        out.insert(
+            0, _framework_entry("built output", built_url, external=False, available=True)
         )
+
+    # A dev-server registration is only worth surfacing when there is nothing
+    # servable to show; otherwise the entries above already ARE the lane, and
+    # naming a server the reader does not need to start is just noise.
+    if not out:
+        hint = framework_dev_hint(version)
+        out = [
+            _framework_entry(name, "", external=False, available=False, port=port, hint=hint)
+            for name, port in dev_only
+        ]
     return out
 
 
@@ -786,9 +934,9 @@ def project_build_links(version: str) -> list[dict]:
       - Studio-served entries (source, replica, generated, harness, sections,
         variants) are only included when their target actually exists on disk, so
         the sidebar never shows a dead link.
-      - Framework builds come from the registry and are always marked external
-        (`external=True`), since Studio can't verify a port is up — they open in a
-        new tab and are clearly port-labeled.
+      - Framework builds are served from built output on disk when there is any,
+        and otherwise carry `available: False` plus a `hint`, so the row states the
+        missing local dev step instead of linking nowhere.
 
     Generic over project: nothing here hardcodes a brand or port.
     """
@@ -829,9 +977,19 @@ def project_build_links(version: str) -> list[dict]:
     for page in variant_pages(version):
         out.append({"kind": "variant", "label": f"Variant: {page['label']}", "url": page["url"], "external": False})
 
-    # External framework builds (registry-driven, port-dependent).
+    # Framework builds. Served by the Studio when the built page is on disk;
+    # otherwise stated as a required local dev step rather than linked.
     for fb in framework_builds(version):
-        out.append({"kind": "framework", "label": fb["label"], "url": fb["url"], "external": True})
+        out.append(
+            {
+                "kind": "framework",
+                "label": fb["label"],
+                "url": fb["url"],
+                "external": fb["external"],
+                "available": fb["available"],
+                "hint": fb["hint"],
+            }
+        )
 
     # The tracked, shareable export of this project's final results, when one exists.
     out.extend(published_links(version))
@@ -877,12 +1035,26 @@ def hero_gallery_lanes(version: str) -> list[dict]:
     if version != "woodwave":
         return []
     index = PROJECT_DIR / "experiments" / "woodwave-hero-gallery" / "page-anchored" / "index.html"
-    if not index.exists():
+    if not has_content(index):
         return []
     return [{
         "label": "WoodWave — anchored hero variants (live)",
         "url": "/" + str(index.relative_to(PROJECT_DIR)).replace("\\", "/"),
     }]
+
+
+def lane_has_content(url: str) -> bool:
+    """True when a lane's Studio-served URL resolves to a file with bytes in it.
+
+    `url` is a site-relative path (e.g. "/runs/<v>/brand/chrome/index.html"). An
+    absolute URL belongs to another origin, which the Studio cannot vouch for, so
+    it passes through untouched and is classified elsewhere.
+    """
+    if not url:
+        return False
+    if "://" in url:
+        return True
+    return has_content(PROJECT_DIR / url.lstrip("/"))
 
 
 def static_brand_lanes(version: str) -> list[dict]:
@@ -892,11 +1064,13 @@ def static_brand_lanes(version: str) -> list[dict]:
     under runs/<version>/brand/. Generic over brand/version (never hardcodes one):
 
       - "Components preview" -> brand/components-preview/index.html
-        (render_components_preview.py output); listed only when present.
-      - "Exact nav/footer" -> brand/chrome/index.html
-        (produced by a separate stage). Always listed so the lane exists; if that
-        index.html is not present yet the URL 404s cleanly via the static handler
-        (graceful, no crash) and the lane simply shows the 404 placeholder.
+        (render_components_preview.py output)
+      - "Exact nav/footer" -> brand/chrome/index.html (produced by a separate stage)
+
+    Both are listed from DISK EVIDENCE only: a lane whose page is missing or
+    zero-byte is not advertised. The chrome lane used to be offered
+    unconditionally, so on every run that never generated one the dropdown carried
+    an entry that could only 404.
     """
     brand_dir = RUNS_DIR / version / "brand"
 
@@ -904,13 +1078,12 @@ def static_brand_lanes(version: str) -> list[dict]:
         return "/" + str(p.relative_to(PROJECT_DIR)).replace("\\", "/")
 
     out: list[dict] = []
-    preview = brand_dir / "components-preview" / "index.html"
-    if preview.exists():
-        out.append({"label": "Components preview", "url": rel(preview)})
-    # Always expose the chrome lane; it degrades to a clean 404 when its file is
-    # absent (the other worker produces it), rather than disappearing or crashing.
-    chrome = brand_dir / "chrome" / "index.html"
-    out.append({"label": "Exact nav/footer", "url": rel(chrome)})
+    for label, page in (
+        ("Components preview", brand_dir / "components-preview" / "index.html"),
+        ("Exact nav/footer", brand_dir / "chrome" / "index.html"),
+    ):
+        if has_content(page):
+            out.append({"label": label, "url": rel(page)})
     return out
 
 
@@ -942,6 +1115,10 @@ def _lane_mtime(url: str) -> float:
 def versioned_lanes(raw: list[dict]) -> list[dict]:
     """Attach a recency version prefix to every lane and return them newest-first.
 
+    A lane with no content behind it is dropped here, whatever built the list. Each
+    contributing function is supposed to check disk itself, and this is the backstop
+    that keeps one that forgets from putting a guaranteed 404 in the dropdown.
+
     Each input lane is `{"label", "url"}`. We rank all lanes by the mtime of their
     rendered output (oldest→newest) and assign a zero-padded sequential vNN so the
     HIGHEST vNN is the MOST CURRENT run. Labels become:
@@ -956,7 +1133,7 @@ def versioned_lanes(raw: list[dict]) -> list[dict]:
     lanes = [
         {"label": _strip_version_prefix(l["label"]), "url": l["url"], "mtime": _lane_mtime(l["url"])}
         for l in raw
-        if l.get("url")
+        if lane_has_content(l.get("url", ""))
     ]
     total = len(lanes)
     pad = max(2, len(str(total)))
@@ -1349,16 +1526,23 @@ def project_detail(version: str) -> dict:
     _raw_lanes += compose_pages(version)
     # Raw harness spec book + relume sections gallery are runs-served, so they slot
     # in as ordinary iframe lanes (the version prefix is applied by mtime like the
-    # rest). External framework builds are NOT added here — they live on other ports
-    # and are surfaced as external links in the payload / build index instead.
+    # rest).
     _harness = harness_pages(version)
     _sections = sections_pages(version)
     _raw_lanes += [{"label": p["label"], "url": p["url"]} for p in _harness]
     _raw_lanes += [{"label": p["label"], "url": p["url"]} for p in _sections]
     _raw_lanes += static_brand_lanes(version)
     _raw_lanes += hero_gallery_lanes(version)
-    lanes = versioned_lanes(_raw_lanes)
+    # A framework build whose BUILT page is on disk is an ordinary Studio-served
+    # lane, so it belongs in the dropdown like any other. One that needs a dev
+    # server has no url and is surfaced in the build links as a required step.
     _framework_builds = framework_builds(version)
+    _raw_lanes += [
+        {"label": fb["label"], "url": fb["url"]}
+        for fb in _framework_builds
+        if fb["available"] and not fb["external"]
+    ]
+    lanes = versioned_lanes(_raw_lanes)
 
     # On-brand review: per-section renders + links to the canonical brand docs.
     renders = brand_renders(version)
@@ -2091,19 +2275,33 @@ class StudioHandler(SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def _unknown_project_text(self, version: str) -> str:
+        """404 body for a text route asked about a project this checkout lacks.
+
+        Same information as `unknown_project_payload()`: an unknown project and a
+        project whose artifact was never generated are different answers, and
+        "not generated yet" for the first one sends the reader looking for a
+        pipeline stage that was never going to run here.
+        """
+        have = ", ".join(p["version"] for p in list_projects()) or "none"
+        return f"unknown project: {version}\n\nprojects in this checkout: {have}\n"
+
     def _send_brandfile(self, version: str, which: str) -> None:
         """Serve runs/<version>/brand/brand.{yaml,md} as raw text for inline viewing.
 
-        Generic over brand/version: any run with the files works. Resolves under
-        RUNS_DIR and refuses paths that escape it; a missing file yields 404 so the
-        client shows a graceful "not generated yet" placeholder.
+        Generic over brand/version: any run with the files works. `run_dir_for` is
+        the traversal guard and separates an unknown project from a project whose
+        brand file was never written; a missing file yields 404 so the client shows
+        a graceful "not generated yet" placeholder.
         """
         fname = {"yaml": "brand.yaml", "md": "brand.md"}.get(which, "")
         if not fname:
             return self._send_text("unknown file", status=400)
-        runs_root = RUNS_DIR.resolve()
-        target = (RUNS_DIR / version / "brand" / fname).resolve()
-        if runs_root not in target.parents or not target.is_file():
+        vdir = run_dir_for(version)
+        if vdir is None:
+            return self._send_text(self._unknown_project_text(version), status=404)
+        target = vdir / "brand" / fname
+        if not has_content(target):
             return self._send_text("not generated yet", status=404)
         return self._send_text(read_text(target))
 
@@ -2113,10 +2311,13 @@ class StudioHandler(SimpleHTTPRequestHandler):
         Bodies are fetched here rather than embedded in the project payload
         because the evidence dumps behind these tabs are large. `key` must name a
         registry entry, and the registry only ever globs inside `runs/<version>/`;
-        `run_dir_for` refuses a version that escapes RUNS_DIR.
+        `run_dir_for` refuses a version that escapes RUNS_DIR and tells an unknown
+        project apart from an ungenerated document.
         """
         if not any(d.key == key for d in BRAND_DOCS):
             return self._send_text("unknown doc", status=400)
+        if run_dir_for(version) is None:
+            return self._send_text(self._unknown_project_text(version), status=404)
         text = brand_doc_text(version, key)
         if not text.strip():
             return self._send_text("not generated yet", status=404)
@@ -2160,6 +2361,11 @@ class StudioHandler(SimpleHTTPRequestHandler):
             return self._send_rundoc(version, (qs.get("doc") or [""])[0])
         if path.startswith("/api/project/"):
             version = unquote(path.rsplit("/", 1)[-1])
+            # Same rule as the HTML route: a project with no run directory is a
+            # 404, not a 200 carrying an empty payload that reads like a real
+            # project with nothing generated in it.
+            if run_dir_for(version) is None:
+                return self._send_json(unknown_project_payload(version), 404)
             return self._send_json(project_detail(version))
         if path.startswith("/project/"):
             version = unquote(path.rsplit("/", 1)[-1])
@@ -2186,9 +2392,9 @@ class StudioHandler(SimpleHTTPRequestHandler):
 
     def _handle_rerun(self, version: str) -> None:
         version = slugify(version) if version else ""
-        vdir = RUNS_DIR / version
-        if not vdir.exists():
-            return self._send_json({"error": f"project not found: {version}"}, 404)
+        vdir = run_dir_for(version)
+        if vdir is None:
+            return self._send_json(unknown_project_payload(version), 404)
         meta_path = vdir / "studio-project.json"
         meta = {}
         if meta_path.exists():
@@ -2321,10 +2527,27 @@ def _render_build_link_rows(links: list[dict]) -> str:
 
     Shared by the global dashboard index and the per-project sidebar so the two
     never drift. Empty → a muted "no builds yet" placeholder.
+
+    An entry with nothing behind it (`available: False`, or no url) renders as a
+    STATEMENT, not an anchor: its `hint` says what local step would produce it. A
+    clickable link that goes nowhere reads as a broken build rather than as a
+    missing local dev server, which is what it usually is.
     """
     rows: list[str] = []
     for l in links:
         label, cls = _KIND_STYLE.get(l["kind"], ("Link", "text-zinc-300"))
+        if not l.get("url") or l.get("available") is False:
+            hint = l.get("hint") or "not available in this checkout"
+            rows.append(
+                '<div class="px-2 py-1.5">'
+                '<div class="flex items-center gap-2">'
+                f'<span class="text-[10px] uppercase tracking-wider {cls} shrink-0 opacity-60" style="width:74px">{label}</span>'
+                f'<span class="text-xs text-zinc-400 truncate flex-1" title="{_esc_attr(l["label"])}">{_esc_attr(l["label"])}</span>'
+                "</div>"
+                f'<div class="text-[10px] text-zinc-500 mt-0.5 break-words" style="margin-left:82px">{_esc_attr(hint)}</div>'
+                "</div>"
+            )
+            continue
         ext = ' <span class="text-[10px] text-orange-400">\u2197 external</span>' if l.get("external") else ""
         rows.append(
             f'<a href="{_esc_attr(l["url"])}" target="_blank" rel="noopener" '
@@ -2341,8 +2564,9 @@ def render_project_builds_html(version: str, title: str | None = None) -> str:
 
     Scoped to ONE project (its `project_build_links(version)`), labeled with the
     project name. Links are present in the initial HTML (no client fetch needed) and
-    only include targets that exist on disk; framework builds are external/port-
-    labeled from the registry. Generic over project — nothing brand-specific here.
+    only include targets that exist on disk; a framework build with no built output
+    behind it is stated rather than linked. Generic over project — nothing
+    brand-specific here.
     """
     links = project_build_links(version)
     name = title or version
@@ -2600,6 +2824,18 @@ const KIND_STYLE = {
 };
 function linkRow(l) {
   const style = KIND_STYLE[l.kind] || ["Link", "text-zinc-300"];
+  // Mirrors _render_build_link_rows(): an entry with nothing behind it is a
+  // statement of the missing local step, not an anchor that goes nowhere.
+  if (!l.url || l.available === false) {
+    const hint = l.hint || "not available in this checkout";
+    return `<div class="px-2 py-1.5">
+      <div class="flex items-center gap-2">
+        <span class="text-[10px] uppercase tracking-wider ${style[1]} shrink-0 opacity-60" style="width:74px">${style[0]}</span>
+        <span class="text-xs text-zinc-400 truncate flex-1" title="${escB(l.label)}">${escB(l.label)}</span>
+      </div>
+      <div class="text-[10px] text-zinc-500 mt-0.5 break-words" style="margin-left:82px">${escB(hint)}</div>
+    </div>`;
+  }
   const ext = l.external ? ' <span class="text-[10px] text-orange-400">↗ external</span>' : "";
   return `<a href="${escB(l.url)}" target="_blank" rel="noopener"
     class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-white/5 transition-colors group">
@@ -2638,6 +2874,23 @@ loadBuildIndex();
 </script></body></html>""").replace("__BUILD_INDEX__", render_build_index_html()).replace(
         "__PUBLISHED__", render_published_html()
     )
+
+
+def unknown_project_payload(version: str) -> dict:
+    """The JSON body for an API route asked about a project that is not here.
+
+    Mirrors `render_project_missing()`: names the version that was asked for and
+    lists what this checkout does have, because the usual way to get here is a
+    link or a script carried over from a machine whose `runs/` holds more.
+    """
+    return {
+        "error": f"unknown project: {version}",
+        "version": version,
+        "known_projects": [
+            {"version": p["version"], "title": p.get("title") or p["version"]}
+            for p in list_projects()
+        ],
+    }
 
 
 def render_project_missing(version: str) -> str:
