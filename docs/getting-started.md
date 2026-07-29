@@ -108,9 +108,12 @@ Not tracked, so you do not get it:
 
 - **Source captures beyond one full-page image per project.** The saved HTML page and
   its `_files` mirror stay out, so you cannot re-run extraction from the clone.
-- **`brand/framework/`** — the built Vite app for each lane, hundreds of megabytes.
-  The Studio links framework builds by dev-server port, so those links are dead in a
-  clone.
+- **The framework build *workspaces*** (`brand/framework/single/<app>/`) — Vite sources
+  and `node_modules`, hundreds of megabytes. The built page itself is a different
+  matter: it is a single self-contained file, so `greenhouse` and `greenhouse-4` do
+  ship theirs (~0.5 MB the pair) and the Studio serves them as ordinary lanes. Projects
+  with no build get a row saying so rather than a link to a dev server you are not
+  running.
 - **`brand/evidence/`** beyond the handful of files the document tabs read,
   **`_archive/`**, per-page diff crops, and every extra viewport re-shoot of a lane.
 - **The experiment lanes and pipeline version folders** (`hubspot-sol`,
@@ -258,7 +261,7 @@ answer and needs no server, no key and no browser install.
 | `ModuleNotFoundError: playwright` | `pip install -e '.[dev]'` not run, or run against the wrong interpreter. |
 | `Executable doesn't exist … chromium` | `playwright install chromium` not run, or `PLAYWRIGHT_BROWSERS_PATH` points elsewhere. |
 | `Screenshots directory not found` | Expected on a clone — only one full-page image per project is tracked. Capture first. |
-| A "Framework build" link opens nothing | Expected. Those point at `localhost:517x` dev servers that only exist on the machine that built the lane. |
-| A project's "Exact nav/footer" lane 404s | Expected. The Studio always offers the lane; only some runs generated one. |
+| A "Framework build" row is grey and not clickable | Working as intended. That project registered a dev server but has no built output, so the row states what to run instead of pretending to be a link. `greenhouse` and `greenhouse-4` ship a real build and do open. |
+| A project has no "Exact nav/footer" lane | Working as intended. The lane is offered only by the runs that generated one; it is no longer advertised where it could only 404. |
 | Studio renders unstyled | No network; its Tailwind comes from a CDN. |
 | `git status` dirty right after install | Should no longer happen: `src/screenshot_to_template.egg-info/` is untracked and ignored. Anything else dirty is your own change. |

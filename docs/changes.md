@@ -661,3 +661,109 @@ agents have uncommitted work in `brand_pipeline/`, `studio_server.py`, `tools/ex
 `run_brand_extraction.py`, `runs/hubspot-v2/` and `evals/matrix/runs/` in this tree.
 None of it was staged, and `git commit` was given explicit paths. No secrets in the
 diff; no key, token, or URL was added.
+
+## 2026-07-29 — Eleven projects, checked from a clone instead of from here
+
+An independent walk of the teammate promise — clone `origin/main`, follow
+`docs/getting-started.md`, start the Studio, see all eleven brand lanes — done in a
+fresh clone at `/tmp`, never against this working tree. Every claim below came from
+HTTP against the clone's own Studio on port 1599, plus Chromium for what actually
+renders. Verified at `3a41077`.
+
+### The install doc holds up; the clone step does not
+
+`python3` on this machine is 3.9.6, so the doc's interpreter warning is not
+hypothetical — it is the first thing a newcomer hits, and the doc catches it. From
+there `python3.14 -m venv venv`, `pip install -e '.[dev]'`, `playwright install
+chromium` all worked as written, `git status` was clean immediately after install, and
+`tests/` came back **222 passed, 19 subtests, in 12.7 s** with no browser and no key.
+
+The one step that does not work as written is the first one. **A plain `git clone`
+failed twice**, at 5:12 and 2:32, with `RPC failed; curl 92 HTTP/2 stream 5 was not
+closed cleanly: CANCEL` then `fatal: early EOF`, leaving no directory behind.
+`--depth 1` failed identically, so shallow is not an escape hatch. `git -c
+http.version=HTTP/1.1 clone` succeeded in 3:37 for the full 2.5 GB. Documented in
+`docs/getting-started.md`, in the install block and in the troubleshooting table,
+because a newcomer who hits this twice has no reason to suspect the transport.
+
+### Browsing needs no API key
+
+Started with no `.env.local`, and with `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`,
+`GOOGLE_API_KEY` and `GEMINI_API_KEY` all explicitly unset in the launching
+environment. The dashboard, all eleven project pages, every document tab, every
+generated lane and the published `greenhouse-4` bundle all served. No key prompt, no
+degraded mode, nothing in the server log. **Nothing in the read path touches a
+provider.** Keys are a generation concern only, which is what the doc claims.
+
+### All eleven, over HTTP and in a browser
+
+`/api/projects` in the clone returns exactly the eleven brand lanes and nothing else.
+Every one: `/project/<v>` 200, dashboard card carrying a real image (4 KB–5.9 MB,
+`image/*`), zero occurrences of "no preview" anywhere on the dashboard, and a live
+asset count where the run produced one.
+
+Crawled every lane, composed page, replica, harness, variant, static lane and
+published bundle each project offers — 131 pages — and then fetched every local asset
+each of them references, following linked CSS one level in. **Three broken references
+in total**, all on one page (below). Chromium confirms it: zero failed requests and
+zero console errors on ten of the eleven project pages.
+
+`greenhouse` and `relume-test` carry no `brand.yaml`, no `brand.md`, no assets
+manifest and no document tabs — but neither does this working tree. They are
+single-lane projects that never ran brand extraction, so that is the run's shape, not
+the clone's loss. Same for the "Exact nav/footer" lane, absent on eight of eleven:
+`brand/chrome/index.html` does not exist locally either.
+
+### What a teammate genuinely does not get
+
+Compared file by file against this tree's `runs/` for the same eleven projects.
+**Nothing exists in the clone that is not also here** — no phantom files. The
+local-only mass is what the doc already says it is: `brand/framework/` builds
+(~11,400 files per lane), `_archive/`, `captured page/*_files/` source mirrors,
+`brand/kit/`, per-page crops, `__pycache__`.
+
+Beyond that, the real teammate-visible gap is eight document tabs across seven
+projects, listed exactly in `docs/getting-started.md`. That list was wrong before this
+change in three ways: it claimed `hubspot-v3` and `hubspot-v4` have no Author report
+(both do), it omitted `hubspot-v3` from the Replica fidelity list, and it omitted
+`greenhouse-4` Validation and `relume-test` Changelog entirely. It also gave one
+reason for all of them — that the backing file records an absolute path — which holds
+only for `greenhouse-v2/brand/author-report.json` (49 occurrences) and
+`runs/relume-test/changes.md` (1). The five missing replica reports and
+`greenhouse-4/validate-final.log` contain none, so those are a size decision.
+
+The project list itself differs — eleven here versus twenty-nine locally — but the
+eighteen extra are the experiment and pipeline-version lanes the doc excludes on
+purpose.
+
+### Reported, not fixed
+
+- **This checkout's absolute path in 317 tracked files** (128 under `runs/`, 189 under
+  `experiments/`; none under `docs/`, `artifacts/` or the root HTML). Three reach a
+  teammate's screen: **Structural evidence** and **Replica fidelity** on `hubspot-v2`,
+  and **Replica fidelity** on `remote`, each rendering this machine's home directory
+  as the source-screenshot path. Left alone: another agent has
+  `src/screenshot_to_template/repo_paths.py`, `tests/test_producer_report_paths.py`
+  and `tools/verify_clone_parity.py` uncommitted in this tree, which is this exact
+  work, and a partial scrub would collide with it.
+- **`hubspot` → "Composed: signup-launch-tokenized" renders three broken images.** The
+  generator wrote a Python dict repr into the attribute —
+  `src="assets/{'src': 'assets/ProductIcons_DataHub_Icon_Orange.webp'}"` — for the
+  DataHub, SalesHub and SmartCRM icons. The real files are present and tracked; only
+  the markup is wrong. The file is byte-identical here, so this is a generation defect
+  every viewer sees, not a clone gap. Fixing it means re-running composition, and an
+  uncommitted `tests/test_asset_binding_markup.py` in this tree suggests it is already
+  claimed.
+- **Two thumbnail URLs are emitted unencoded.** `hubspot` and `remote` have a literal
+  space in the capture filename, and `/api/projects` returns it raw, so a strict HTTP
+  client cannot request it. Browsers percent-encode on the way out, so both cards
+  render — this is latent, not visible. The fix belongs in `studio_server.py`, which
+  has ~310 uncommitted lines from another agent.
+- **Five Replica fidelity tabs could be closed cheaply** (6–11 KB each, no local paths)
+  but were left untouched: `runs/*/brand/compose/replica/` is being actively rewritten
+  in this tree right now — the reports' mtimes moved during this session, and one
+  file's path leak disappeared between two reads.
+
+Only `docs/getting-started.md` was staged. `docs/changes.md` carries 205 uncommitted
+lines from another agent, so this section is recorded here but deliberately not
+committed with it. No secrets in the diff; no key, token or URL was added.
