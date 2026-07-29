@@ -1026,16 +1026,24 @@ def hero_gallery_lanes(version: str) -> list[dict]:
     onbrand_check --composition gates. SUPERSEDES the earlier free-invention hero gallery
     (experiments/woodwave-hero-gallery/page/), which is deliberately not surfaced.
 
-    Lives in a self-contained experiment dir (experiments/woodwave-hero-gallery/
-    page-anchored/) rather than under runs/, and is served by the static handler
-    (PROJECT_DIR root). Scoped to the woodwave project; degrades to [] when the page hasn't
-    been built yet. The vNN · MM-DD HH:MM version prefix is applied dynamically by
+    Served from under the run, falling back to the experiment dir that produced it.
+    The experiment tree is no longer tracked, so a lane served only from there was a
+    lane that existed for whoever built it and silently vanished for everyone else:
+    the page and the media it loads are now tracked under the run, and the
+    experiment path is kept only so a checkout that still has it keeps working.
+
+    Scoped to the woodwave project, and degrades to [] when neither location holds a
+    built page. The vNN · MM-DD HH:MM version prefix is applied dynamically by
     versioned_lanes() from the output mtime.
     """
     if version != "woodwave":
         return []
-    index = PROJECT_DIR / "experiments" / "woodwave-hero-gallery" / "page-anchored" / "index.html"
-    if not has_content(index):
+    candidates = (
+        RUNS_DIR / version / "brand" / "hero-gallery" / "page-anchored" / "index.html",
+        PROJECT_DIR / "experiments" / "woodwave-hero-gallery" / "page-anchored" / "index.html",
+    )
+    index = next((c for c in candidates if has_content(c)), None)
+    if index is None:
         return []
     return [{
         "label": "WoodWave — anchored hero variants (live)",
