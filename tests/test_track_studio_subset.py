@@ -66,13 +66,13 @@ def test_local_absolute_paths_are_held_back(tmp_path):
 
 def test_gitignore_opens_every_parent_before_naming_a_file():
     lines = tss.gitignore_block([_fake_plan(["runs/p/brand/catalog/catalog.json"])])
-    assert lines.index("!runs/") < lines.index("!runs/p/")
-    assert lines.index("!runs/p/") < lines.index("!runs/p/brand/")
-    assert lines.index("!runs/p/brand/") < lines.index("!runs/p/brand/catalog/")
+    assert lines.index("!/runs/") < lines.index("!/runs/p/")
+    assert lines.index("!/runs/p/") < lines.index("!/runs/p/brand/")
+    assert lines.index("!/runs/p/brand/") < lines.index("!/runs/p/brand/catalog/")
     # Each opened directory is immediately re-closed, so siblings stay ignored.
-    for opened in ("runs", "runs/p", "runs/p/brand", "runs/p/brand/catalog"):
+    for opened in ("/runs", "/runs/p", "/runs/p/brand", "/runs/p/brand/catalog"):
         assert lines.index(f"!{opened}/") + 1 == lines.index(f"{opened}/*")
-    assert lines[-1] == "!runs/p/brand/catalog/catalog.json"
+    assert lines[-1] == "!/runs/p/brand/catalog/catalog.json"
 
 
 def test_only_shown_images_survive(tmp_path):
@@ -130,6 +130,111 @@ def test_a_lane_that_is_a_link_into_the_repo_still_travels(tmp_path, monkeypatch
     ]
     # The file behind the link is counted where it lives, not twice.
     assert all("experiments" not in p.parts for p, _, _ in out["kept"])
+
+
+def test_the_built_framework_page_travels_but_its_workspace_does_not(tmp_path):
+    """The one file the Studio serves, out of a tree two orders of magnitude bigger."""
+    run = tmp_path / "proj"
+    fw = run / "brand" / "framework"
+    src = fw / "single" / "app"
+    (src / "src").mkdir(parents=True)
+    (fw / "index.html").write_text("<html>built</html>")
+    (fw / "framework-report.json").write_text("{}")
+    (src / "package.json").write_text("{}")
+    (src / "index.html").write_text("<html>vite entry</html>")
+    (src / "src" / "App.tsx").write_text("export default () => null")
+
+    result = tss.classify_run(run)
+    kept = {p.relative_to(run).as_posix() for p, _, _ in result["kept"]}
+    assert kept == {"brand/framework/index.html", "brand/framework/framework-report.json"}
+    reasons = {p.relative_to(run).as_posix(): why for p, _, why in result["dropped"]}
+    assert "WORKSPACE" in reasons["brand/framework/single/app/src/App.tsx"]
+    # the workspace's own entry page must never be mistaken for the build product
+    assert "brand/framework/single/app/index.html" in reasons
+
+
+def test_a_build_product_survives_the_workspace_it_was_built_in(tmp_path):
+    """`dist/` sits under the package.json, so the blanket drop would swallow it.
+
+    Both real runs put their framework build inside the workspace rather than
+    beside it, and the Studio serves it from there. A lane the server offers and
+    the tracker withholds is a lane that 404s in a clone.
+    """
+    run = tmp_path / "proj"
+    for rel in (
+        "brand/framework/single/app/dist/index.html",
+        "greenhouse/single/framework/dist/index.html",
+    ):
+        p = run / rel
+        p.parent.mkdir(parents=True)
+        (p.parent.parent / "package.json").write_text("{}")
+        (p.parent.parent / "vite.config.ts").write_text("export default {}")
+        p.write_text("<html>built</html>")
+
+    result = tss.classify_run(run)
+    kept = {p.relative_to(run).as_posix(): why for p, _, why in result["kept"]}
+    assert set(kept) == {
+        "brand/framework/single/app/dist/index.html",
+        "greenhouse/single/framework/dist/index.html",
+    }
+    assert all("built framework page" in why for why in kept.values())
+    dropped = {p.relative_to(run).as_posix() for p, _, _ in result["dropped"]}
+    assert "brand/framework/single/app/vite.config.ts" in dropped
+
+
+def test_a_bundled_app_reveals_the_media_it_loads_from_its_data_table(tmp_path, monkeypatch):
+    """A single-file build addresses its images from JSON, not from `src=` attributes.
+
+    Without this the framework page ships and every one of its images 404s — the
+    exact shape of the defect, one level down from the one the include rules fix.
+    """
+    repo = tmp_path
+    monkeypatch.setattr(tss, "REPO_ROOT", repo)
+    run = repo / "runs" / "proj"
+    fw = run / "brand" / "framework"
+    fw.mkdir(parents=True)
+    (run / "brand" / "assets").mkdir()
+    (run / "brand" / "assets" / "hero.webp").write_bytes(b"pixels")
+    (fw / "index.html").write_text(
+        '<html><script>const A=[{"id":"a1",'
+        '"url":"/runs/proj/brand/assets/hero.webp",'
+        '"displayUrl":"/runs/proj/brand/assets/hero.webp"}]</script></html>'
+    )
+
+    plan = {
+        "run_dir": run,
+        "run": tss.classify_run(run),
+        "run_kept_bytes": 0,
+        "capture": {"kept": [], "link": None},
+        "config": [],
+    }
+    added = tss.rescue_references([plan])
+    assert [p.name for p in added] == ["hero.webp"]
+    kept = {p.relative_to(run).as_posix() for p, _, _ in plan["run"]["kept"]}
+    assert "brand/assets/hero.webp" in kept
+
+
+def test_a_json_data_table_does_not_rescue_arbitrary_quoted_strings(tmp_path, monkeypatch):
+    """Only media-address keys count, so prose and ids stay out of the subset."""
+    repo = tmp_path
+    monkeypatch.setattr(tss, "REPO_ROOT", repo)
+    run = repo / "runs" / "proj"
+    lane = run / "brand" / "compose" / "page"
+    lane.mkdir(parents=True)
+    (run / "brand" / "assets").mkdir()
+    (run / "brand" / "assets" / "notes.md").write_text("x")
+    (lane / "index.html").write_text(
+        '<html><script>const M={"changelog":"/runs/proj/brand/assets/notes.md"}</script></html>'
+    )
+
+    plan = {
+        "run_dir": run,
+        "run": tss.classify_run(run),
+        "run_kept_bytes": 0,
+        "capture": {"kept": [], "link": None},
+        "config": [],
+    }
+    assert tss.rescue_references([plan]) == []
 
 
 def test_title_keeps_the_version_token_lowercase():

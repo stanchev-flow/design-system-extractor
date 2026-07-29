@@ -1,0 +1,333 @@
+{
+ "schemaVersion": "replica-report.v1",
+ "overall": 0.9183,
+ "bands": [
+  {
+   "id": "page-nav",
+   "label": "navbar (chrome header)",
+   "structure": 0.9831,
+   "pixel": 0.9725,
+   "height": 1.0,
+   "score": 0.9833,
+   "widthFidelity": 0.9793,
+   "srcContentFrac": 0.7562,
+   "replicaContentFrac": 0.7406,
+   "srcHeight": 128,
+   "replicaHeight": 128,
+   "scored": true,
+   "pair": "diff/page-nav.png"
+  },
+  {
+   "id": "sec-0",
+   "label": "full-bleed-photo-hero \u2014 Where go-to-market teams go to \n               grow scale close retain grow",
+   "structure": 0.9111,
+   "pixel": 0.899,
+   "height": 1.0,
+   "score": 0.9252,
+   "widthFidelity": 1.0,
+   "srcContentFrac": 1.0,
+   "replicaContentFrac": 1.0,
+   "srcHeight": 772,
+   "replicaHeight": 772,
+   "scored": true,
+   "pair": "diff/sec-0.png"
+  },
+  {
+   "id": "sec-1",
+   "label": "centered-heading-over-logo-row \u2014 299,000+ customers in over 135 countries grow their businesses with HubSpot.",
+   "structure": 0.976,
+   "pixel": 0.9694,
+   "height": 0.5601,
+   "score": 0.8908,
+   "widthFidelity": 0.9037,
+   "srcContentFrac": 0.6813,
+   "replicaContentFrac": 0.6156,
+   "srcHeight": 261,
+   "replicaHeight": 466,
+   "scored": true,
+   "pair": "diff/sec-1.png"
+  },
+  {
+   "id": "sec-2",
+   "label": "copy-left-illustration-right-carousel \u2014 HubSpot's Agentic Customer Platform",
+   "structure": 0.9329,
+   "pixel": 0.9259,
+   "height": 0.655,
+   "score": 0.8752,
+   "widthFidelity": 0.8941,
+   "srcContentFrac": 0.7375,
+   "replicaContentFrac": 0.6594,
+   "srcHeight": 742,
+   "replicaHeight": 486,
+   "scored": true,
+   "pair": "diff/sec-2.png"
+  },
+  {
+   "id": "sec-3",
+   "label": "sticky-copy-with-card-grid \u2014 Growing a business is hard. HubSpot makes it easier.",
+   "structure": 0.9629,
+   "pixel": 0.9547,
+   "height": 0.8056,
+   "score": 0.929,
+   "widthFidelity": 0.9701,
+   "srcContentFrac": 0.7312,
+   "replicaContentFrac": 0.7094,
+   "srcHeight": 1600,
+   "replicaHeight": 1289,
+   "scored": true,
+   "pair": "diff/sec-3.png"
+  },
+  {
+   "id": "sec-4",
+   "label": "headrail-split-with-card-carousel \u2014 Built-in AI agents that work for you 24/7.",
+   "structure": 0.889,
+   "pixel": 0.8738,
+   "height": 0.8508,
+   "score": 0.8768,
+   "widthFidelity": 0.9709,
+   "srcContentFrac": 0.9375,
+   "replicaContentFrac": 0.9656,
+   "srcHeight": 992,
+   "replicaHeight": 844,
+   "scored": true,
+   "pair": "diff/sec-4.png"
+  },
+  {
+   "id": "sec-5",
+   "label": "copy-left-logo-collage-inset \u2014 Works with the tools you already use. 2,000+ integrations.",
+   "structure": 0.9486,
+   "pixel": 0.9377,
+   "height": 0.9706,
+   "score": 0.9497,
+   "widthFidelity": 0.9867,
+   "srcContentFrac": 0.6937,
+   "replicaContentFrac": 0.7031,
+   "srcHeight": 330,
+   "replicaHeight": 340,
+   "scored": true,
+   "pair": "diff/sec-5.png"
+  },
+  {
+   "id": "sec-6",
+   "label": "headrail-two-col-header \u2014 Remarkable results for every size business.",
+   "structure": 0.9676,
+   "pixel": 0.9562,
+   "height": 0.7947,
+   "score": 0.9296,
+   "widthFidelity": 1.0,
+   "srcContentFrac": 0.7531,
+   "replicaContentFrac": 0.7531,
+   "srcHeight": 240,
+   "replicaHeight": 302,
+   "scored": true,
+   "pair": "diff/sec-6.png"
+  },
+  {
+   "id": "sec-7",
+   "label": "tabbed-testimonial-with-stats \u2014 section-7",
+   "structure": 0.9363,
+   "pixel": 0.922,
+   "height": 0.9818,
+   "score": 0.9411,
+   "widthFidelity": 0.9735,
+   "srcContentFrac": 0.7063,
+   "replicaContentFrac": 0.6875,
+   "srcHeight": 714,
+   "replicaHeight": 701,
+   "scored": true,
+   "pair": "diff/sec-7.png"
+  },
+  {
+   "id": "sec-8",
+   "label": "heading-left-award-badges-right \u2014 Voted #1 in 526 G2 Reports",
+   "structure": 0.9578,
+   "pixel": 0.9475,
+   "height": 0.6792,
+   "score": 0.899,
+   "widthFidelity": 0.7103,
+   "srcContentFrac": 0.6687,
+   "replicaContentFrac": 0.475,
+   "srcHeight": 216,
+   "replicaHeight": 318,
+   "scored": true,
+   "pair": "diff/sec-8.png"
+  },
+  {
+   "id": "sec-9",
+   "label": "dark-band-cta \u2014 Make impossible growth feel impossibly easy, with HubSpot",
+   "structure": 0.951,
+   "pixel": 0.9364,
+   "height": 0.7938,
+   "score": 0.9152,
+   "widthFidelity": 0.5708,
+   "srcContentFrac": 0.7063,
+   "replicaContentFrac": 0.4031,
+   "srcHeight": 335,
+   "replicaHeight": 422,
+   "scored": true,
+   "pair": "diff/sec-9.png"
+  },
+  {
+   "id": "footer",
+   "label": "footer (closing bookend)",
+   "structure": 0.9824,
+   "pixel": 0.9727,
+   "height": 0.8723,
+   "score": 0.9575,
+   "widthFidelity": 1.0,
+   "srcContentFrac": 0.7281,
+   "replicaContentFrac": 0.7281,
+   "srcHeight": 656,
+   "replicaHeight": 752,
+   "scored": true,
+   "pair": "diff/footer.png"
+  }
+ ],
+ "perViewport": [
+  {
+   "viewport": 1440,
+   "scrollWidth": 1440,
+   "overflowPx": 0,
+   "bands": 12,
+   "heroHeight": 772,
+   "footerColumns": 5,
+   "docHeight": 6820,
+   "overflowEl": "",
+   "screenshot": "replica-fullpage-1440.png",
+   "responsivenessHealth": 1.0,
+   "primary": true
+  },
+  {
+   "viewport": 1920,
+   "scrollWidth": 1920,
+   "overflowPx": 0,
+   "bands": 12,
+   "heroHeight": 952,
+   "footerColumns": 5,
+   "docHeight": 7012,
+   "overflowEl": "",
+   "screenshot": "replica-fullpage-1920.png",
+   "responsivenessHealth": 1.0,
+   "primary": false
+  },
+  {
+   "viewport": 960,
+   "scrollWidth": 960,
+   "overflowPx": 0,
+   "bands": 12,
+   "heroHeight": 664,
+   "footerColumns": 5,
+   "docHeight": 7155,
+   "overflowEl": "",
+   "screenshot": "replica-fullpage-960.png",
+   "responsivenessHealth": 1.0,
+   "primary": false
+  },
+  {
+   "viewport": 375,
+   "scrollWidth": 395,
+   "overflowPx": 20,
+   "bands": 12,
+   "heroHeight": 756,
+   "footerColumns": 1,
+   "docHeight": 10614,
+   "overflowEl": "cs-edgecut",
+   "screenshot": "replica-fullpage-375.png",
+   "responsivenessHealth": 0.8933,
+   "primary": false
+  }
+ ],
+ "punchList": [
+  {
+   "section": "full-bleed-photo-hero",
+   "capability": "composite hero art",
+   "score": 0.9252,
+   "note": "composite hero art \u2014 the source layers an illustration with floating product-UI chips; the composer binds one asset per media slot (no multi-layer collage of tagged crops)"
+  },
+  {
+   "section": "heading-left-award-badges-right",
+   "capability": "content width diverges",
+   "score": 0.899,
+   "note": "content span 0.47 of band vs source 0.67 (width fidelity 0.71) \u2014 check hug/measure collapse or over-wide container"
+  },
+  {
+   "section": "dark-band-cta",
+   "capability": "content width diverges",
+   "score": 0.9152,
+   "note": "content span 0.40 of band vs source 0.71 (width fidelity 0.57) \u2014 check hug/measure collapse or over-wide container"
+  },
+  {
+   "section": "navbar",
+   "capability": "mega-menu open panels",
+   "note": "the brand declares mega-menu columns; the replica (and the source shot) render the closed bar only \u2014 open-panel fidelity is unexercised by this gate",
+   "score": 0.9833
+  }
+ ],
+ "inputDigest": "38e52dd70b2a40dd475bb0599a5023f9ca6590ac5506f595efebe0f275de9668",
+ "sourceShot": "screenshots/hubspot-v3/hubspot-fullpage.png",
+ "sourceHeight": 6986,
+ "replicaHeight": 6820,
+ "bandAlignment": {
+  "mode": "positional",
+  "notes": []
+ },
+ "structuralGate": {
+  "ok": true,
+  "signals": {
+   "bandCountAgreement": {
+    "value": 1.0,
+    "floor": 1.0,
+    "ok": true,
+    "scoredBands": 11,
+    "authoredSections": 10,
+    "unauthoredBands": [],
+    "unpairedSections": [],
+    "detail": "every measured content band is rebuilt by exactly one authored section"
+   },
+   "archetypeFamilyAgreement": {
+    "value": 1.0,
+    "floor": 1.0,
+    "ok": true,
+    "checked": 0,
+    "agreed": 0,
+    "unmeasured": [
+     "full-bleed-photo-hero",
+     "centered-heading-over-logo-row",
+     "copy-left-illustration-right-carousel",
+     "sticky-copy-with-card-grid",
+     "headrail-split-with-card-carousel",
+     "copy-left-logo-collage-inset",
+     "headrail-two-col-header",
+     "tabbed-testimonial-with-stats",
+     "heading-left-award-badges-right",
+     "dark-band-cta"
+    ],
+    "mismatches": [],
+    "detail": "composed layout families honor the measured track multiplicity of every band"
+   },
+   "contentSpanFidelity": {
+    "value": 0.9402,
+    "floor": 0.8,
+    "ok": true,
+    "worstBands": [
+     {
+      "id": "sec-9",
+      "widthFidelity": 0.5708
+     },
+     {
+      "id": "sec-8",
+      "widthFidelity": 0.7103
+     },
+     {
+      "id": "sec-2",
+      "widthFidelity": 0.8941
+     }
+    ],
+    "detail": "rebuilt content occupies the measured share of each band"
+   }
+  },
+  "blocking": [],
+  "bandCensusNotes": []
+ },
+ "brand": "HubSpot"
+}

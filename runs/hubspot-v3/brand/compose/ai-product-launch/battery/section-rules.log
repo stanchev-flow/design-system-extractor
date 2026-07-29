@@ -1,0 +1,9 @@
+$ venv/bin/python brand_pipeline/section_rules_audit.py runs/hubspot-v3/brand/compose/ai-product-launch --brand runs/hubspot-v3/brand --strict --out runs/hubspot-v3/brand/compose/ai-product-launch/battery/section-rules
+
+--- stdout ---
+[section-rules] compose/ai-product-launch: PASS — 0 required fail(s), 0 advisory warn(s) (scope generative)
+[section-rules] report: runs/hubspot-v3/brand/compose/ai-product-launch/battery/section-rules/report.md
+
+--- stderr ---
+
+--- exit=0 ---

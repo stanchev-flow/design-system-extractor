@@ -1,0 +1,2967 @@
+{
+  "generatedAt": "2026-07-28T23:52:12Z",
+  "brandDir": "runs/hubspot-v2/brand",
+  "viewport": "1440x900",
+  "toleranceRule": "max(2px, 10%) for rhythm; max(2px, 1%) for widths; drift = within 2x tolerance",
+  "factbook": {
+    "steps": {
+      "action-group-gap": 16.0,
+      "badge-tier": 90.0,
+      "block-to-block": 40.0,
+      "body-to-cta": 40.0,
+      "column-to-column": 80.0,
+      "container-max": 1080.0,
+      "eyebrow-to-heading": 24.0,
+      "grid-gap": 32.0,
+      "heading-to-body": 32.0,
+      "list-item-gap": 16.0,
+      "logo-tier": 30.0,
+      "module-gap-editorial": 64.0,
+      "panel-padding": 32.0,
+      "radius-global": 8.0,
+      "section-padding-light": 64.0,
+      "section-y-lg": 96.0,
+      "section-y-sm": 40.0,
+      "section-y-xs": 24.0,
+      "stack-lg": 32.0,
+      "stack-md": 20.0
+    },
+    "scale": [
+      4.0,
+      8.0,
+      16.0,
+      24.0,
+      32.0,
+      40.0,
+      45.0
+    ],
+    "patternFacts": {
+      "agent-card-carousel": {
+        "deviceGeometry.columnGap": 17.0,
+        "deviceGeometry.cardActionGap": 32.0
+      },
+      "award-badge-row": {
+        "bandPadding.top": 40.0,
+        "bandPadding.bottom": 96.0,
+        "strip.gap.media": 12.0
+      },
+      "case-study-header-rail": {
+        "bandPadding.top": 64.0,
+        "bandPadding.bottom": 0.0
+      },
+      "closing-cta-dark": {
+        "actionGroup.gap": 24.0,
+        "stackMeasure": 992.0
+      },
+      "hero-photo-overlay": {
+        "bandPadding.top": 176.0,
+        "bandPadding.bottom": 176.0,
+        "stackMeasure": 784.0
+      },
+      "integration-collage-banner": {
+        "bandPadding.top": 64.0,
+        "bandPadding.bottom": 24.0,
+        "strip.gap.media": 20.0
+      },
+      "logo-proof-strip": {
+        "strip.gap.logos": 69.0
+      },
+      "product-grid-split": {
+        "deviceGeometry.cardActionGap": 48.0
+      },
+      "testimonial-tab-stats": {
+        "bandPadding.top": 40.0,
+        "bandPadding.bottom": 24.0
+      }
+    },
+    "chrome": {
+      "footer.contentMaxWidth": 1080.0,
+      "footer.grid.columnGap": 52.0,
+      "navbar.contentMaxWidth": 1080.0
+    }
+  },
+  "lanes": [
+    {
+      "lane": "compose/customer-story",
+      "html": "runs/hubspot-v2/brand/compose/customer-story/index.html",
+      "mtime": "2026-07-17 18:46:49",
+      "elapsedS": 1.1,
+      "pageHeight": 3967,
+      "counts": {
+        "conform": 82,
+        "drift": 0,
+        "wrong-step": 0,
+        "off-ladder": 0,
+        "unmapped": 6,
+        "hardFails": 0,
+        "total": 88
+      },
+      "measurements": [
+        {
+          "sec": "sec-0",
+          "layout": "hero",
+          "pattern": "hero-split-media-copy",
+          "bandRung": null,
+          "rel": "section.pad-top",
+          "value": 64,
+          "a": "section.cs-section.cs-split-sec",
+          "b": "div.cs-media-split.cs-caselead",
+          "rect": {
+            "x": 0,
+            "y": 128,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-0",
+          "layout": "hero",
+          "pattern": "hero-split-media-copy",
+          "bandRung": null,
+          "rel": "section.pad-bottom",
+          "value": 64,
+          "a": "div.cs-media-split.cs-caselead",
+          "b": "section.cs-section.cs-split-sec",
+          "rect": {
+            "x": 0,
+            "y": 568.2,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-0",
+          "layout": "hero",
+          "pattern": "hero-split-media-copy",
+          "bandRung": null,
+          "rel": "header.eyebrow-to-heading",
+          "value": 24,
+          "a": "p.c-eyebrow",
+          "b": "h1.c-heading.c-heading--display",
+          "rect": {
+            "x": 180,
+            "y": 209,
+            "w": 524,
+            "h": 24
+          },
+          "note": ".c-header",
+          "kind": "gap",
+          "measured": 24,
+          "declared": {
+            "name": "eyebrow-to-heading",
+            "px": 24.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-y-xs",
+            "px": 24.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-0",
+          "layout": "hero",
+          "pattern": "hero-split-media-copy",
+          "bandRung": null,
+          "rel": "card.inset",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": null,
+          "rect": null,
+          "note": "computed padding-left",
+          "kind": "inset",
+          "measured": 32,
+          "declared": {
+            "name": "panel-padding",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-0",
+          "layout": "hero",
+          "pattern": "hero-split-media-copy",
+          "bandRung": null,
+          "rel": "card.media-to-content",
+          "value": 32,
+          "a": "figure.cs-module-media",
+          "b": "div.cs-caselead-card-copy",
+          "rect": {
+            "x": 736,
+            "y": 336.17,
+            "w": 524,
+            "h": 32
+          },
+          "note": "full-bleed well seam",
+          "kind": "gap",
+          "measured": 32,
+          "declared": {
+            "name": "panel-padding",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-0",
+          "layout": "hero",
+          "pattern": "hero-split-media-copy",
+          "bandRung": null,
+          "rel": "header.stack-coherence",
+          "value": 0,
+          "a": "p.c-eyebrow",
+          "b": "p.c-eyebrow",
+          "rect": {
+            "x": 180,
+            "y": 192,
+            "w": 4,
+            "h": 17
+          },
+          "note": "coherent",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-0",
+          "layout": "hero",
+          "pattern": "hero-split-media-copy",
+          "bandRung": null,
+          "rel": "header.stack-coherence",
+          "value": 0,
+          "a": "p.c-eyebrow",
+          "b": "p.c-eyebrow",
+          "rect": {
+            "x": 768,
+            "y": 368.17,
+            "w": 4,
+            "h": 17
+          },
+          "note": "coherent",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-0",
+          "layout": "hero",
+          "pattern": "hero-split-media-copy",
+          "bandRung": null,
+          "rel": "container.width",
+          "value": 1080,
+          "a": "div.cs-media-split.cs-caselead",
+          "b": null,
+          "rect": {
+            "x": 180,
+            "y": 192,
+            "w": 1080,
+            "h": 60
+          },
+          "note": "",
+          "kind": "width",
+          "measured": 1080,
+          "declared": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-0",
+          "layout": "hero",
+          "pattern": "hero-split-media-copy",
+          "bandRung": null,
+          "rel": "container.centering",
+          "value": 0,
+          "a": "div.cs-media-split.cs-caselead",
+          "b": null,
+          "rect": null,
+          "note": "gutters 180px | 180px",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "story",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "section.pad-top",
+          "value": 64,
+          "a": "section.cs-section.cs-modules-sec",
+          "b": "div.cs-siderail",
+          "rect": {
+            "x": 0,
+            "y": 632.2,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "story",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "section.pad-bottom",
+          "value": 64,
+          "a": "div.cs-siderail",
+          "b": "section.cs-section.cs-modules-sec",
+          "rect": {
+            "x": 0,
+            "y": 1289.22,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "story",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "grid.column-gap",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": "article.cs-module.cs-module--plate",
+          "rect": {
+            "x": 919,
+            "y": 696.2,
+            "w": 32,
+            "h": 294.55
+          },
+          "note": ".cs-modules column",
+          "kind": "gap",
+          "measured": 32,
+          "declared": {
+            "name": "grid-gap",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "story",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "grid.row-gap",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": "article.cs-module.cs-module--plate",
+          "rect": {
+            "x": 610,
+            "y": 990.75,
+            "w": 650,
+            "h": 32
+          },
+          "note": ".cs-modules row",
+          "kind": "gap",
+          "measured": 32,
+          "declared": {
+            "name": "grid-gap",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "story",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.inset",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": null,
+          "rect": null,
+          "note": "computed padding-left",
+          "kind": "inset",
+          "measured": 32,
+          "declared": {
+            "name": "panel-padding",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "story",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.inset",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": null,
+          "rect": null,
+          "note": "computed padding-top",
+          "kind": "inset",
+          "measured": 32,
+          "declared": {
+            "name": "panel-padding",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "story",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.heading-to-body",
+          "value": 32,
+          "a": "h3.c-heading.c-heading--h5",
+          "b": "p.c-paragraph",
+          "rect": {
+            "x": 642,
+            "y": 852.36,
+            "w": 245,
+            "h": 32
+          },
+          "note": "",
+          "kind": "gap",
+          "measured": 32,
+          "declared": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "story",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.inset",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": null,
+          "rect": null,
+          "note": "computed padding-left",
+          "kind": "inset",
+          "measured": 32,
+          "declared": {
+            "name": "panel-padding",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "story",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.inset",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": null,
+          "rect": null,
+          "note": "computed padding-top",
+          "kind": "inset",
+          "measured": 32,
+          "declared": {
+            "name": "panel-padding",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "story",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.heading-to-body",
+          "value": 32,
+          "a": "h3.c-heading.c-heading--h5",
+          "b": "p.c-paragraph",
+          "rect": {
+            "x": 983,
+            "y": 852.36,
+            "w": 245,
+            "h": 32
+          },
+          "note": "",
+          "kind": "gap",
+          "measured": 32,
+          "declared": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "story",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.inset",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": null,
+          "rect": null,
+          "note": "computed padding-left",
+          "kind": "inset",
+          "measured": 32,
+          "declared": {
+            "name": "panel-padding",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "story",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.inset",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": null,
+          "rect": null,
+          "note": "computed padding-top",
+          "kind": "inset",
+          "measured": 32,
+          "declared": {
+            "name": "panel-padding",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "story",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.heading-to-body",
+          "value": 32,
+          "a": "h3.c-heading.c-heading--h5",
+          "b": "p.c-paragraph",
+          "rect": {
+            "x": 642,
+            "y": 1150.83,
+            "w": 327.59,
+            "h": 32
+          },
+          "note": "",
+          "kind": "gap",
+          "measured": 32,
+          "declared": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "story",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "actions.alignment",
+          "value": 0,
+          "a": "div.cs-modules-actions",
+          "b": null,
+          "rect": {
+            "x": 180,
+            "y": 951.2,
+            "w": 4,
+            "h": 40
+          },
+          "note": "stamped start; painted edges vs column 0px | 187px (column = widest sibling)",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "story",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "header.stack-coherence",
+          "value": 0,
+          "a": "h3.c-heading.c-heading--h5",
+          "b": "h3.c-heading.c-heading--h5",
+          "rect": {
+            "x": 642,
+            "y": 796.2,
+            "w": 4,
+            "h": 40
+          },
+          "note": "coherent",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "story",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "header.stack-coherence",
+          "value": 0,
+          "a": "h3.c-heading.c-heading--h5",
+          "b": "h3.c-heading.c-heading--h5",
+          "rect": {
+            "x": 983,
+            "y": 796.2,
+            "w": 4,
+            "h": 40
+          },
+          "note": "coherent",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "story",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "header.stack-coherence",
+          "value": 0,
+          "a": "h3.c-heading.c-heading--h5",
+          "b": "h3.c-heading.c-heading--h5",
+          "rect": {
+            "x": 642,
+            "y": 1122.75,
+            "w": 4,
+            "h": 28.08
+          },
+          "note": "coherent",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "story",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "container.width",
+          "value": 1080,
+          "a": "div.cs-siderail",
+          "b": null,
+          "rect": {
+            "x": 180,
+            "y": 696.2,
+            "w": 1080,
+            "h": 60
+          },
+          "note": "",
+          "kind": "width",
+          "measured": 1080,
+          "declared": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1",
+          "layout": "story",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "container.centering",
+          "value": 0,
+          "a": "div.cs-siderail",
+          "b": null,
+          "rect": null,
+          "note": "gutters 180px | 180px",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-2",
+          "layout": "results",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "section.pad-top",
+          "value": 64,
+          "a": "section.cs-section.cs-flow-sec",
+          "b": "div.cs-flow",
+          "rect": {
+            "x": 0,
+            "y": 1353.22,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-2",
+          "layout": "results",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "section.pad-bottom",
+          "value": 64,
+          "a": "div.cs-flow",
+          "b": "section.cs-section.cs-flow-sec",
+          "rect": {
+            "x": 0,
+            "y": 1647.63,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-2",
+          "layout": "results",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "block.header-to-content",
+          "value": 40,
+          "a": "div.cs-flow-item",
+          "b": "div.cs-stat-band",
+          "rect": {
+            "x": 180,
+            "y": 1527.22,
+            "w": 1080,
+            "h": 40
+          },
+          "note": ".cs-flow",
+          "kind": "gap",
+          "measured": 40,
+          "declared": {
+            "name": "block-to-block",
+            "px": 40.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-y-sm",
+            "px": 40.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-2",
+          "layout": "results",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "stat.column-gap",
+          "value": 80,
+          "a": "div.cs-stat-band-item",
+          "b": "div.cs-stat-band-item",
+          "rect": {
+            "x": 680,
+            "y": 1567.22,
+            "w": 80,
+            "h": 80.41
+          },
+          "note": ".cs-stat-band column",
+          "kind": "gap",
+          "measured": 80,
+          "declared": {
+            "name": "column-to-column",
+            "px": 80.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "column-to-column",
+            "px": 80.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-2",
+          "layout": "results",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "container.width",
+          "value": 1080,
+          "a": "div.cs-flow",
+          "b": null,
+          "rect": {
+            "x": 180,
+            "y": 1417.22,
+            "w": 1080,
+            "h": 60
+          },
+          "note": "",
+          "kind": "width",
+          "measured": 1080,
+          "declared": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-2",
+          "layout": "results",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "container.centering",
+          "value": 0,
+          "a": "div.cs-flow",
+          "b": null,
+          "rect": null,
+          "note": "gutters 180px | 180px",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-3",
+          "layout": "quote",
+          "pattern": "testimonial-tab-stats",
+          "bandRung": null,
+          "rel": "section.pad-top",
+          "value": 64,
+          "a": "section.cs-section.cs-testimonial-sec",
+          "b": "div.cs-flow",
+          "rect": {
+            "x": 0,
+            "y": 1711.63,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-3",
+          "layout": "quote",
+          "pattern": "testimonial-tab-stats",
+          "bandRung": null,
+          "rel": "section.pad-bottom",
+          "value": 64,
+          "a": "div.cs-flow",
+          "b": "section.cs-section.cs-testimonial-sec",
+          "rect": {
+            "x": 0,
+            "y": 2065.63,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-3",
+          "layout": "quote",
+          "pattern": "testimonial-tab-stats",
+          "bandRung": null,
+          "rel": "container.width",
+          "value": 1080,
+          "a": "div.cs-flow",
+          "b": null,
+          "rect": {
+            "x": 180,
+            "y": 1775.63,
+            "w": 1080,
+            "h": 60
+          },
+          "note": "",
+          "kind": "width",
+          "measured": 1080,
+          "declared": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-3",
+          "layout": "quote",
+          "pattern": "testimonial-tab-stats",
+          "bandRung": null,
+          "rel": "container.centering",
+          "value": 0,
+          "a": "div.cs-flow",
+          "b": null,
+          "rect": null,
+          "note": "gutters 180px | 180px",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "more-stories",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "section.pad-top",
+          "value": 64,
+          "a": "section.cs-section.cs-modules-sec",
+          "b": "div.cs-siderail",
+          "rect": {
+            "x": 0,
+            "y": 2129.63,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "more-stories",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "section.pad-bottom",
+          "value": 64,
+          "a": "div.cs-siderail",
+          "b": "section.cs-section.cs-modules-sec",
+          "rect": {
+            "x": 0,
+            "y": 2693.22,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "more-stories",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "grid.column-gap",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": "article.cs-module.cs-module--plate",
+          "rect": {
+            "x": 919,
+            "y": 2193.63,
+            "w": 32,
+            "h": 499.59
+          },
+          "note": ".cs-modules column",
+          "kind": "gap",
+          "measured": 32,
+          "declared": {
+            "name": "grid-gap",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "more-stories",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.inset",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": null,
+          "rect": null,
+          "note": "computed padding-left",
+          "kind": "inset",
+          "measured": 32,
+          "declared": {
+            "name": "panel-padding",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "more-stories",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.media-to-content",
+          "value": 32,
+          "a": "figure.cs-module-media",
+          "b": "p.c-eyebrow",
+          "rect": {
+            "x": 610,
+            "y": 2386.75,
+            "w": 309,
+            "h": 32
+          },
+          "note": "full-bleed well seam",
+          "kind": "gap",
+          "measured": 32,
+          "declared": {
+            "name": "panel-padding",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "more-stories",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.eyebrow-to-heading",
+          "value": 24,
+          "a": "p.c-eyebrow",
+          "b": "h3.c-heading.c-heading--h5",
+          "rect": {
+            "x": 642,
+            "y": 2435.75,
+            "w": 245,
+            "h": 24
+          },
+          "note": "",
+          "kind": "gap",
+          "measured": 24,
+          "declared": {
+            "name": "eyebrow-to-heading",
+            "px": 24.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-y-xs",
+            "px": 24.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "more-stories",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.heading-to-body",
+          "value": 32,
+          "a": "h3.c-heading.c-heading--h5",
+          "b": "p.c-paragraph",
+          "rect": {
+            "x": 642,
+            "y": 2487.83,
+            "w": 245,
+            "h": 32
+          },
+          "note": "",
+          "kind": "gap",
+          "measured": 32,
+          "declared": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "more-stories",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.inset",
+          "value": 32,
+          "a": "article.cs-module.cs-module--plate",
+          "b": null,
+          "rect": null,
+          "note": "computed padding-left",
+          "kind": "inset",
+          "measured": 32,
+          "declared": {
+            "name": "panel-padding",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "more-stories",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.media-to-content",
+          "value": 32,
+          "a": "figure.cs-module-media",
+          "b": "p.c-eyebrow",
+          "rect": {
+            "x": 951,
+            "y": 2386.75,
+            "w": 309,
+            "h": 32
+          },
+          "note": "full-bleed well seam",
+          "kind": "gap",
+          "measured": 32,
+          "declared": {
+            "name": "panel-padding",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "more-stories",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.eyebrow-to-heading",
+          "value": 24,
+          "a": "p.c-eyebrow",
+          "b": "h3.c-heading.c-heading--h5",
+          "rect": {
+            "x": 983,
+            "y": 2435.75,
+            "w": 245,
+            "h": 24
+          },
+          "note": "",
+          "kind": "gap",
+          "measured": 24,
+          "declared": {
+            "name": "eyebrow-to-heading",
+            "px": 24.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-y-xs",
+            "px": 24.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "more-stories",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.heading-to-body",
+          "value": 32,
+          "a": "h3.c-heading.c-heading--h5",
+          "b": "p.c-paragraph",
+          "rect": {
+            "x": 983,
+            "y": 2487.83,
+            "w": 245,
+            "h": 32
+          },
+          "note": "",
+          "kind": "gap",
+          "measured": 32,
+          "declared": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "heading-to-body",
+            "px": 32.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "more-stories",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "card.body-to-actions",
+          "value": 48,
+          "a": "p.c-paragraph",
+          "b": "a.c-arrow-link",
+          "rect": {
+            "x": 642,
+            "y": 2594.22,
+            "w": 245,
+            "h": 48
+          },
+          "note": "min across 2 equalized cards (pinned slack sanctioned by gridEqualize)",
+          "kind": "gap",
+          "measured": 48,
+          "declared": {
+            "name": "product-grid-split.deviceGeometry.cardActionGap",
+            "px": 48.0,
+            "source": "pattern:product-grid-split"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "product-grid-split.deviceGeometry.cardActionGap",
+            "px": 48.0,
+            "source": "pattern:product-grid-split"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "more-stories",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "header.stack-coherence",
+          "value": 0,
+          "a": "p.c-eyebrow",
+          "b": "p.c-eyebrow",
+          "rect": {
+            "x": 642,
+            "y": 2418.75,
+            "w": 4,
+            "h": 17
+          },
+          "note": "coherent",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "more-stories",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "header.stack-coherence",
+          "value": 0,
+          "a": "p.c-eyebrow",
+          "b": "p.c-eyebrow",
+          "rect": {
+            "x": 983,
+            "y": 2418.75,
+            "w": 4,
+            "h": 17
+          },
+          "note": "coherent",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "more-stories",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "container.width",
+          "value": 1080,
+          "a": "div.cs-siderail",
+          "b": null,
+          "rect": {
+            "x": 180,
+            "y": 2193.63,
+            "w": 1080,
+            "h": 60
+          },
+          "note": "",
+          "kind": "width",
+          "measured": 1080,
+          "declared": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4",
+          "layout": "more-stories",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "rel": "container.centering",
+          "value": 0,
+          "a": "div.cs-siderail",
+          "b": null,
+          "rect": null,
+          "note": "gutters 180px | 180px",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-5",
+          "layout": "logos",
+          "pattern": "logo-proof-strip",
+          "bandRung": null,
+          "rel": "section.pad-top",
+          "value": 64,
+          "a": "section.cs-section.cs-flow-sec",
+          "b": "div.cs-flow",
+          "rect": {
+            "x": 0,
+            "y": 2757.22,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-5",
+          "layout": "logos",
+          "pattern": "logo-proof-strip",
+          "bandRung": null,
+          "rel": "section.pad-bottom",
+          "value": 64,
+          "a": "div.cs-flow",
+          "b": "section.cs-section.cs-flow-sec",
+          "rect": {
+            "x": 0,
+            "y": 2969.13,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-5",
+          "layout": "logos",
+          "pattern": "logo-proof-strip",
+          "bandRung": null,
+          "rel": "block.header-to-content",
+          "value": 40,
+          "a": "div.cs-flow-item",
+          "b": "div.cs-logo-strip.cs-logo-strip--itembox",
+          "rect": {
+            "x": 199.5,
+            "y": 2853.13,
+            "w": 1041,
+            "h": 40
+          },
+          "note": ".cs-flow",
+          "kind": "gap",
+          "measured": 40,
+          "declared": {
+            "name": "block-to-block",
+            "px": 40.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-y-sm",
+            "px": 40.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-5",
+          "layout": "logos",
+          "pattern": "logo-proof-strip",
+          "bandRung": null,
+          "rel": "strip.gap",
+          "value": 69,
+          "a": "div.cs-logo-strip-item",
+          "b": "div.cs-logo-strip-item",
+          "rect": {
+            "x": 352.5,
+            "y": 2893.13,
+            "w": 69,
+            "h": 76
+          },
+          "note": "median of 4 inter-mark gaps",
+          "kind": "gap",
+          "measured": 69,
+          "declared": {
+            "name": "logo-proof-strip.strip.gap.logos",
+            "px": 69.0,
+            "source": "pattern:logo-proof-strip"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "logo-proof-strip.strip.gap.logos",
+            "px": 69.0,
+            "source": "pattern:logo-proof-strip"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-5",
+          "layout": "logos",
+          "pattern": "logo-proof-strip",
+          "bandRung": null,
+          "rel": "container.width",
+          "value": 1080,
+          "a": "div.cs-flow",
+          "b": null,
+          "rect": {
+            "x": 180,
+            "y": 2821.22,
+            "w": 1080,
+            "h": 60
+          },
+          "note": "",
+          "kind": "width",
+          "measured": 1080,
+          "declared": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-5",
+          "layout": "logos",
+          "pattern": "logo-proof-strip",
+          "bandRung": null,
+          "rel": "container.centering",
+          "value": 0,
+          "a": "div.cs-flow",
+          "b": null,
+          "rect": null,
+          "note": "gutters 180px | 180px",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-6",
+          "layout": "closing",
+          "pattern": "closing-cta-dark",
+          "bandRung": null,
+          "rel": "section.pad-top",
+          "value": 64,
+          "a": "section.cs-section.cs-conversion-sec",
+          "b": "div.cs-conversion",
+          "rect": {
+            "x": 0,
+            "y": 3033.13,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-6",
+          "layout": "closing",
+          "pattern": "closing-cta-dark",
+          "bandRung": null,
+          "rel": "section.pad-bottom",
+          "value": 64,
+          "a": "div.cs-conversion",
+          "b": "section.cs-section.cs-conversion-sec",
+          "rect": {
+            "x": 0,
+            "y": 3297.13,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-6",
+          "layout": "closing",
+          "pattern": "closing-cta-dark",
+          "bandRung": null,
+          "rel": "header.body-to-actions",
+          "value": 40,
+          "a": "div.c-header",
+          "b": "div.cs-conversion-actions",
+          "rect": {
+            "x": 180,
+            "y": 3201.13,
+            "w": 992,
+            "h": 40
+          },
+          "note": ".cs-conversion",
+          "kind": "gap",
+          "measured": 40,
+          "declared": {
+            "name": "body-to-cta",
+            "px": 40.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-y-sm",
+            "px": 40.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-6",
+          "layout": "closing",
+          "pattern": "closing-cta-dark",
+          "bandRung": null,
+          "rel": "actions.item-gap",
+          "value": 24,
+          "a": "a.c-button",
+          "b": "a.c-button.c-button--secondary",
+          "rect": {
+            "x": 316.42,
+            "y": 3241.13,
+            "w": 24,
+            "h": 56
+          },
+          "note": "median of 1 inter-action gap(s)",
+          "kind": "gap",
+          "measured": 24,
+          "declared": {
+            "name": "closing-cta-dark.actionGroup.gap",
+            "px": 24.0,
+            "source": "pattern:closing-cta-dark"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-y-xs",
+            "px": 24.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-6",
+          "layout": "closing",
+          "pattern": "closing-cta-dark",
+          "bandRung": null,
+          "rel": "actions.alignment",
+          "value": 0,
+          "a": "div.cs-conversion-actions",
+          "b": null,
+          "rect": {
+            "x": 180,
+            "y": 3241.13,
+            "w": 4,
+            "h": 40
+          },
+          "note": "stamped start; painted edges vs column 0px | 659px (column = widest sibling)",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-6",
+          "layout": "closing",
+          "pattern": "closing-cta-dark",
+          "bandRung": null,
+          "rel": "container.stack-width",
+          "value": 992,
+          "a": "h2.c-heading.c-heading--h2",
+          "b": null,
+          "rect": {
+            "x": 180,
+            "y": 3097.13,
+            "w": 992,
+            "h": 60
+          },
+          "note": "side-anchored: acting column = widest capped text child",
+          "kind": "width",
+          "measured": 992,
+          "declared": {
+            "name": "closing-cta-dark.stackMeasure",
+            "px": 992.0,
+            "source": "pattern:closing-cta-dark"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "closing-cta-dark.stackMeasure",
+            "px": 992.0,
+            "source": "pattern:closing-cta-dark"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-6",
+          "layout": "closing",
+          "pattern": "closing-cta-dark",
+          "bandRung": null,
+          "rel": "container.centering",
+          "value": 0,
+          "a": "div.cs-conversion",
+          "b": null,
+          "rect": null,
+          "note": "gutters 180px | 180px",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-7",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "section.pad-top",
+          "value": 64,
+          "a": "section.cs-section.cs-footer-sec",
+          "b": "div.c-footer.c-footer--cstack",
+          "rect": {
+            "x": 0,
+            "y": 3361.13,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-7",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "section.pad-bottom",
+          "value": 64,
+          "a": "div.c-footer.c-footer--cstack",
+          "b": "section.cs-section.cs-footer-sec",
+          "rect": {
+            "x": 0,
+            "y": 3902.86,
+            "w": 1440,
+            "h": 64
+          },
+          "note": "",
+          "kind": "inset",
+          "measured": 64,
+          "declared": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "section-padding-light",
+            "px": 64.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-7",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "container.width",
+          "value": 1080,
+          "a": "div.c-footer.c-footer--cstack",
+          "b": null,
+          "rect": {
+            "x": 180,
+            "y": 3425.13,
+            "w": 1080,
+            "h": 60
+          },
+          "note": "",
+          "kind": "width",
+          "measured": 1080,
+          "declared": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "container-max",
+            "px": 1080.0,
+            "source": "token"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-7",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "container.centering",
+          "value": 0,
+          "a": "div.c-footer.c-footer--cstack",
+          "b": null,
+          "rect": null,
+          "note": "gutters 180px | 180px",
+          "kind": "center",
+          "measured": 0,
+          "declared": {
+            "name": "centered",
+            "px": 0.0
+          },
+          "delta": 0,
+          "nearest": null,
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-7",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "footer.link-gap",
+          "value": 4,
+          "a": "a.c-foot-col-link",
+          "b": "a.c-foot-col-link",
+          "rect": {
+            "x": 220.7,
+            "y": 3468.83,
+            "w": 158.11,
+            "h": 4
+          },
+          "note": "median of 8 link gaps",
+          "kind": "gap",
+          "measured": 4,
+          "declared": null,
+          "delta": null,
+          "nearest": {
+            "name": "--spacing-xs",
+            "px": 4.0,
+            "source": "scale"
+          },
+          "severity": "unmapped",
+          "gate": "advisory"
+        },
+        {
+          "sec": "sec-7",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "footer.link-gap",
+          "value": 4,
+          "a": "a.c-foot-col-link",
+          "b": "a.c-foot-col-link",
+          "rect": {
+            "x": 430.81,
+            "y": 3444.33,
+            "w": 158.13,
+            "h": 4
+          },
+          "note": "median of 8 link gaps",
+          "kind": "gap",
+          "measured": 4,
+          "declared": null,
+          "delta": null,
+          "nearest": {
+            "name": "--spacing-xs",
+            "px": 4.0,
+            "source": "scale"
+          },
+          "severity": "unmapped",
+          "gate": "advisory"
+        },
+        {
+          "sec": "sec-7",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "footer.link-gap",
+          "value": 4,
+          "a": "a.c-foot-col-link",
+          "b": "a.c-foot-col-link",
+          "rect": {
+            "x": 640.94,
+            "y": 3468.83,
+            "w": 158.11,
+            "h": 4
+          },
+          "note": "median of 7 link gaps",
+          "kind": "gap",
+          "measured": 4,
+          "declared": null,
+          "delta": null,
+          "nearest": {
+            "name": "--spacing-xs",
+            "px": 4.0,
+            "source": "scale"
+          },
+          "severity": "unmapped",
+          "gate": "advisory"
+        },
+        {
+          "sec": "sec-7",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "footer.link-gap",
+          "value": 4,
+          "a": "a.c-foot-col-link",
+          "b": "a.c-foot-col-link",
+          "rect": {
+            "x": 851.05,
+            "y": 3468.83,
+            "w": 158.12,
+            "h": 4
+          },
+          "note": "median of 7 link gaps",
+          "kind": "gap",
+          "measured": 4,
+          "declared": null,
+          "delta": null,
+          "nearest": {
+            "name": "--spacing-xs",
+            "px": 4.0,
+            "source": "scale"
+          },
+          "severity": "unmapped",
+          "gate": "advisory"
+        },
+        {
+          "sec": "sec-7",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "footer.link-gap",
+          "value": 4,
+          "a": "a.c-foot-col-link",
+          "b": "a.c-foot-col-link",
+          "rect": {
+            "x": 1061.17,
+            "y": 3468.83,
+            "w": 158.11,
+            "h": 4
+          },
+          "note": "median of 1 link gaps",
+          "kind": "gap",
+          "measured": 4,
+          "declared": null,
+          "delta": null,
+          "nearest": {
+            "name": "--spacing-xs",
+            "px": 4.0,
+            "source": "scale"
+          },
+          "severity": "unmapped",
+          "gate": "advisory"
+        },
+        {
+          "sec": "sec-7",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "footer.link-gap",
+          "value": 4,
+          "a": "a.c-foot-col-link",
+          "b": "a.c-foot-col-link",
+          "rect": {
+            "x": 1061.17,
+            "y": 3535.73,
+            "w": 158.11,
+            "h": 4
+          },
+          "note": "median of 4 link gaps",
+          "kind": "gap",
+          "measured": 4,
+          "declared": null,
+          "delta": null,
+          "nearest": {
+            "name": "--spacing-xs",
+            "px": 4.0,
+            "source": "scale"
+          },
+          "severity": "unmapped",
+          "gate": "advisory"
+        },
+        {
+          "sec": "sec-7",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "footer.column-gap",
+          "value": 52,
+          "a": "div.c-foot-cell",
+          "b": "div.c-foot-cell",
+          "rect": {
+            "x": 378.81,
+            "y": 3425.13,
+            "w": 52,
+            "h": 267.73
+          },
+          "note": "directory columns",
+          "kind": "gap",
+          "measured": 52,
+          "declared": {
+            "name": "footer.grid.columnGap",
+            "px": 52.0,
+            "source": "chrome:footer"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "footer.grid.columnGap",
+            "px": 52.0,
+            "source": "chrome:footer"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-7",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "footer.column-gap",
+          "value": 52,
+          "a": "div.c-foot-cell",
+          "b": "div.c-foot-cell",
+          "rect": {
+            "x": 588.94,
+            "y": 3425.13,
+            "w": 52,
+            "h": 267.73
+          },
+          "note": "directory columns",
+          "kind": "gap",
+          "measured": 52,
+          "declared": {
+            "name": "footer.grid.columnGap",
+            "px": 52.0,
+            "source": "chrome:footer"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "footer.grid.columnGap",
+            "px": 52.0,
+            "source": "chrome:footer"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-7",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "footer.column-gap",
+          "value": 52,
+          "a": "div.c-foot-cell",
+          "b": "div.c-foot-cell",
+          "rect": {
+            "x": 799.05,
+            "y": 3425.13,
+            "w": 52,
+            "h": 267.73
+          },
+          "note": "directory columns",
+          "kind": "gap",
+          "measured": 52,
+          "declared": {
+            "name": "footer.grid.columnGap",
+            "px": 52.0,
+            "source": "chrome:footer"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "footer.grid.columnGap",
+            "px": 52.0,
+            "source": "chrome:footer"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-7",
+          "layout": "closing-bookend",
+          "pattern": null,
+          "bandRung": null,
+          "rel": "footer.column-gap",
+          "value": 52,
+          "a": "div.c-foot-cell",
+          "b": "div.c-foot-cell",
+          "rect": {
+            "x": 1009.17,
+            "y": 3425.13,
+            "w": 52,
+            "h": 267.73
+          },
+          "note": "directory columns",
+          "kind": "gap",
+          "measured": 52,
+          "declared": {
+            "name": "footer.grid.columnGap",
+            "px": 52.0,
+            "source": "chrome:footer"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "footer.grid.columnGap",
+            "px": 52.0,
+            "source": "chrome:footer"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-0\u2192sec-1",
+          "layout": "hero\u2192story",
+          "pattern": null,
+          "rel": "section.seam",
+          "value": 128,
+          "a": "sec-0",
+          "b": "sec-1",
+          "rect": {
+            "x": 0,
+            "y": 568.2,
+            "w": 1440,
+            "h": 128
+          },
+          "note": "",
+          "kind": "gap",
+          "measured": 128,
+          "declared": {
+            "name": "case-study-header-rail.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 128.0,
+            "source": "derived"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "case-study-header-rail.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 128.0,
+            "source": "derived"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-1\u2192sec-2",
+          "layout": "story\u2192results",
+          "pattern": null,
+          "rel": "section.seam",
+          "value": 128,
+          "a": "sec-1",
+          "b": "sec-2",
+          "rect": {
+            "x": 0,
+            "y": 1289.22,
+            "w": 1440,
+            "h": 128
+          },
+          "note": "",
+          "kind": "gap",
+          "measured": 128,
+          "declared": {
+            "name": "case-study-header-rail.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 128.0,
+            "source": "derived"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "case-study-header-rail.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 128.0,
+            "source": "derived"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-2\u2192sec-3",
+          "layout": "results\u2192quote",
+          "pattern": null,
+          "rel": "section.seam",
+          "value": 128,
+          "a": "sec-2",
+          "b": "sec-3",
+          "rect": {
+            "x": 0,
+            "y": 1647.63,
+            "w": 1440,
+            "h": 128
+          },
+          "note": "",
+          "kind": "gap",
+          "measured": 128,
+          "declared": {
+            "name": "case-study-header-rail.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 128.0,
+            "source": "derived"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "case-study-header-rail.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 128.0,
+            "source": "derived"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-3\u2192sec-4",
+          "layout": "quote\u2192more-stories",
+          "pattern": null,
+          "rel": "section.seam",
+          "value": 128,
+          "a": "sec-3",
+          "b": "sec-4",
+          "rect": {
+            "x": 0,
+            "y": 2065.63,
+            "w": 1440,
+            "h": 128
+          },
+          "note": "",
+          "kind": "gap",
+          "measured": 128,
+          "declared": {
+            "name": "case-study-header-rail.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 128.0,
+            "source": "derived"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "case-study-header-rail.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 128.0,
+            "source": "derived"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-4\u2192sec-5",
+          "layout": "more-stories\u2192logos",
+          "pattern": null,
+          "rel": "section.seam",
+          "value": 128,
+          "a": "sec-4",
+          "b": "sec-5",
+          "rect": {
+            "x": 0,
+            "y": 2693.22,
+            "w": 1440,
+            "h": 128
+          },
+          "note": "",
+          "kind": "gap",
+          "measured": 128,
+          "declared": {
+            "name": "case-study-header-rail.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 128.0,
+            "source": "derived"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "case-study-header-rail.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 128.0,
+            "source": "derived"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-5\u2192sec-6",
+          "layout": "logos\u2192closing",
+          "pattern": null,
+          "rel": "section.seam",
+          "value": 128,
+          "a": "sec-5",
+          "b": "sec-6",
+          "rect": {
+            "x": 0,
+            "y": 2969.13,
+            "w": 1440,
+            "h": 128
+          },
+          "note": "",
+          "kind": "gap",
+          "measured": 128,
+          "declared": {
+            "name": "case-study-header-rail.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 128.0,
+            "source": "derived"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "case-study-header-rail.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 128.0,
+            "source": "derived"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        },
+        {
+          "sec": "sec-6\u2192sec-7",
+          "layout": "closing\u2192closing-bookend",
+          "pattern": null,
+          "rel": "section.seam",
+          "value": 128,
+          "a": "sec-6",
+          "b": "sec-7",
+          "rect": {
+            "x": 0,
+            "y": 3297.13,
+            "w": 1440,
+            "h": 128
+          },
+          "note": "",
+          "kind": "gap",
+          "measured": 128,
+          "declared": {
+            "name": "case-study-header-rail.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 128.0,
+            "source": "derived"
+          },
+          "delta": 0.0,
+          "nearest": {
+            "name": "case-study-header-rail.bandPadding.top+case-study-header-rail.bandPadding.top",
+            "px": 128.0,
+            "source": "derived"
+          },
+          "severity": "conform",
+          "gate": "pass"
+        }
+      ],
+      "skips": [
+        {
+          "sec": "sec-2",
+          "layout": "results",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "what": ".c-stat pair",
+          "why": "no non-stat sibling gaps in the block"
+        },
+        {
+          "sec": "sec-2",
+          "layout": "results",
+          "pattern": "product-grid-split",
+          "bandRung": null,
+          "what": ".c-stat pair",
+          "why": "no non-stat sibling gaps in the block"
+        }
+      ],
+      "offenders": [],
+      "scale": {
+        "cells": [
+          {
+            "kind": "type",
+            "sec": "sec-0",
+            "layout": "hero",
+            "px": 14,
+            "count": 3,
+            "examples": [
+              "c-caption",
+              "c-eyebrow"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 14px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-1",
+            "layout": "story",
+            "px": 14,
+            "count": 1,
+            "examples": [
+              "c-eyebrow"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 14px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-4",
+            "layout": "more-stories",
+            "px": 14,
+            "count": 2,
+            "examples": [
+              "c-eyebrow"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 14px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-7",
+            "layout": "closing-bookend",
+            "px": 14,
+            "count": 1,
+            "examples": [
+              "c-foot-legal"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 14px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-0",
+            "layout": "hero",
+            "px": 16,
+            "count": 2,
+            "examples": [
+              "c-paragraph"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 16px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-1",
+            "layout": "story",
+            "px": 16,
+            "count": 4,
+            "examples": [
+              "c-button.c-button--secondary",
+              "c-paragraph"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 16px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-3",
+            "layout": "quote",
+            "px": 16,
+            "count": 1,
+            "examples": [
+              "c-paragraph"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 16px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-4",
+            "layout": "more-stories",
+            "px": 16,
+            "count": 2,
+            "examples": [
+              "c-paragraph"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 16px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-6",
+            "layout": "closing",
+            "px": 16,
+            "count": 2,
+            "examples": [
+              "c-button",
+              "c-button.c-button--secondary"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 16px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-1",
+            "layout": "story",
+            "px": 18,
+            "count": 3,
+            "examples": [
+              "c-heading.c-heading--h5"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 18px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-4",
+            "layout": "more-stories",
+            "px": 18,
+            "count": 2,
+            "examples": [
+              "c-heading.c-heading--h5"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 18px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-5",
+            "layout": "logos",
+            "px": 22,
+            "count": 1,
+            "examples": [
+              "c-heading.c-heading--h4"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 22px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-0",
+            "layout": "hero",
+            "px": 40,
+            "count": 1,
+            "examples": [
+              "c-heading.c-heading--h2"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 40px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-1",
+            "layout": "story",
+            "px": 40,
+            "count": 1,
+            "examples": [
+              "c-heading.c-heading--h2"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 40px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-2",
+            "layout": "results",
+            "px": 40,
+            "count": 1,
+            "examples": [
+              "c-heading.c-heading--h2"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 40px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-4",
+            "layout": "more-stories",
+            "px": 40,
+            "count": 1,
+            "examples": [
+              "c-heading.c-heading--h2"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 40px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-6",
+            "layout": "closing",
+            "px": 40,
+            "count": 1,
+            "examples": [
+              "c-heading.c-heading--h2"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 40px"
+          },
+          {
+            "kind": "type",
+            "sec": "sec-0",
+            "layout": "hero",
+            "px": 80,
+            "count": 1,
+            "examples": [
+              "c-heading.c-heading--display"
+            ],
+            "verdict": "measured",
+            "anchor": "type fact 80px"
+          }
+        ],
+        "counts": {
+          "measured": 18,
+          "on-scale": 0,
+          "off-scale": 0
+        },
+        "hardFails": 0
+      }
+    }
+  ],
+  "screenshots": []
+}

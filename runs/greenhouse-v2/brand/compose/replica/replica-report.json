@@ -1,0 +1,324 @@
+{
+ "schemaVersion": "replica-report.v1",
+ "overall": 0.7681,
+ "bands": [
+  {
+   "id": "page-nav",
+   "label": "navbar (chrome header)",
+   "score": 0.0,
+   "structure": 0.0,
+   "pixel": 0.0,
+   "height": 0.0,
+   "srcHeight": 0,
+   "replicaHeight": 80,
+   "pair": null,
+   "scored": false,
+   "note": "excluded: no measured source header band"
+  },
+  {
+   "id": "sec-0",
+   "label": "hero \u2014 The only hiring platform you\u2019ll",
+   "structure": 0.8759,
+   "pixel": 0.8628,
+   "height": 0.8021,
+   "score": 0.8572,
+   "widthFidelity": 0.7125,
+   "srcContentFrac": 1.0,
+   "replicaContentFrac": 0.7125,
+   "srcHeight": 900,
+   "replicaHeight": 1122,
+   "scored": true,
+   "pair": "diff/sec-0.png"
+  },
+  {
+   "id": "sec-1",
+   "label": "featureGrid \u2014 Greenhouse introduces Voice AI following our acquisition of Ezra AI Labs, bringing conversational AI to the hiring proce",
+   "structure": 0.2226,
+   "pixel": 0.2181,
+   "height": 0.1421,
+   "score": 0.2051,
+   "widthFidelity": 0.7724,
+   "srcContentFrac": 0.7688,
+   "replicaContentFrac": 0.5938,
+   "srcHeight": 132,
+   "replicaHeight": 929,
+   "scored": true,
+   "pair": "diff/sec-1.png"
+  },
+  {
+   "id": "sec-2",
+   "label": "logos \u2014 Real Talent",
+   "structure": 0.8221,
+   "pixel": 0.8175,
+   "height": 0.7492,
+   "score": 0.8061,
+   "widthFidelity": 0.7201,
+   "srcContentFrac": 0.8375,
+   "replicaContentFrac": 0.6031,
+   "srcHeight": 634,
+   "replicaHeight": 475,
+   "scored": true,
+   "pair": "diff/sec-2.png"
+  },
+  {
+   "id": "sec-3",
+   "label": "comparison \u2014 Great companies hire with Greenhouse",
+   "structure": 0.8776,
+   "pixel": 0.8718,
+   "height": 0.7049,
+   "score": 0.8413,
+   "widthFidelity": 0.8179,
+   "srcContentFrac": 0.7719,
+   "replicaContentFrac": 0.9437,
+   "srcHeight": 786,
+   "replicaHeight": 1115,
+   "scored": true,
+   "pair": "diff/sec-3.png"
+  },
+  {
+   "id": "sec-4",
+   "label": "stats \u2014 The best teams start with hiring \u2013 and the best hiring starts with Greenhouse",
+   "structure": 0.8744,
+   "pixel": 0.8536,
+   "height": 0.4464,
+   "score": 0.7826,
+   "widthFidelity": 0.8874,
+   "srcContentFrac": 0.8375,
+   "replicaContentFrac": 0.9437,
+   "srcHeight": 905,
+   "replicaHeight": 404,
+   "scored": true,
+   "pair": "diff/sec-4.png"
+  },
+  {
+   "id": "sec-5",
+   "label": "testimonial \u2014 Everything you need to get better at hiring",
+   "structure": 0.1583,
+   "pixel": 0.1557,
+   "height": 0.8698,
+   "score": 0.2998,
+   "widthFidelity": 0.4945,
+   "srcContentFrac": 0.8531,
+   "replicaContentFrac": 0.4219,
+   "srcHeight": 630,
+   "replicaHeight": 548,
+   "scored": true,
+   "pair": "diff/sec-5.png"
+  },
+  {
+   "id": "footer",
+   "label": "footer (closing bookend)",
+   "structure": 0.9716,
+   "pixel": 0.9645,
+   "height": 0.8955,
+   "score": 0.9543,
+   "widthFidelity": 0.9481,
+   "srcContentFrac": 0.8438,
+   "replicaContentFrac": 0.8,
+   "srcHeight": 1043,
+   "replicaHeight": 934,
+   "scored": true,
+   "pair": "diff/footer.png"
+  }
+ ],
+ "perViewport": [
+  {
+   "viewport": 1440,
+   "scrollWidth": 1440,
+   "overflowPx": 0,
+   "bands": 9,
+   "heroHeight": 1122,
+   "footerColumns": 5,
+   "docHeight": 6006,
+   "overflowEl": "",
+   "screenshot": "replica-fullpage-1440.png",
+   "responsivenessHealth": 1.0,
+   "primary": true
+  },
+  {
+   "viewport": 1920,
+   "scrollWidth": 1920,
+   "overflowPx": 0,
+   "bands": 9,
+   "heroHeight": 1156,
+   "footerColumns": 5,
+   "docHeight": 6060,
+   "overflowEl": "",
+   "screenshot": "replica-fullpage-1920.png",
+   "responsivenessHealth": 1.0,
+   "primary": false
+  },
+  {
+   "viewport": 960,
+   "scrollWidth": 1144,
+   "overflowPx": 184,
+   "bands": 9,
+   "heroHeight": 1562,
+   "footerColumns": 6,
+   "docHeight": 6608,
+   "overflowEl": "c-foot-cols",
+   "screenshot": "replica-fullpage-960.png",
+   "responsivenessHealth": 0.6167,
+   "primary": false
+  },
+  {
+   "viewport": 375,
+   "scrollWidth": 1044,
+   "overflowPx": 669,
+   "bands": 9,
+   "heroHeight": 1067,
+   "footerColumns": 6,
+   "docHeight": 5750,
+   "overflowEl": "c-foot-cols",
+   "screenshot": "replica-fullpage-375.png",
+   "responsivenessHealth": 0.5,
+   "primary": false
+  }
+ ],
+ "punchList": [
+  {
+   "section": "hero",
+   "capability": "composite hero art",
+   "score": 0.8572,
+   "note": "composite hero art \u2014 the source layers an illustration with floating product-UI chips; the composer binds one asset per media slot (no multi-layer collage of tagged crops)"
+  },
+  {
+   "section": "hero",
+   "capability": "content width diverges",
+   "score": 0.8572,
+   "note": "content span 0.71 of band vs source 1.00 (width fidelity 0.71) \u2014 check hug/measure collapse or over-wide container"
+  },
+  {
+   "section": "featureGrid",
+   "capability": "fidelity below threshold",
+   "score": 0.2051,
+   "note": "band renders taller (929px vs 132px); coarse layout structure diverges (module geometry / art direction); surface color / texture diverges"
+  },
+  {
+   "section": "logos",
+   "capability": "fidelity below threshold",
+   "score": 0.8061,
+   "note": "band renders shorter (475px vs 634px)"
+  },
+  {
+   "section": "comparison",
+   "capability": "fidelity below threshold",
+   "score": 0.8413,
+   "note": "band renders taller (1115px vs 786px)"
+  },
+  {
+   "section": "stats",
+   "capability": "fidelity below threshold",
+   "score": 0.7826,
+   "note": "band renders shorter (404px vs 905px)"
+  },
+  {
+   "section": "testimonial",
+   "capability": "content width diverges",
+   "score": 0.2998,
+   "note": "content span 0.42 of band vs source 0.85 (width fidelity 0.49) \u2014 check hug/measure collapse or over-wide container"
+  },
+  {
+   "section": "testimonial",
+   "capability": "fidelity below threshold",
+   "score": 0.2998,
+   "note": "coarse layout structure diverges (module geometry / art direction); surface color / texture diverges"
+  },
+  {
+   "section": "page",
+   "capability": "display font (Untitled Serif, Georgia, sans-serif)",
+   "note": "not self-hosted and not Google-loadable \u2014 headings render in the declared fallback stack; extract the woff2 files into assets/fonts/",
+   "score": null
+  },
+  {
+   "section": "page",
+   "capability": "band census",
+   "score": null,
+   "note": "provenance anchoring unavailable (5/7 pairs resolved, 4 distinct) \u2014 falling back to positional band pairing"
+  },
+  {
+   "section": "page",
+   "capability": "band census",
+   "score": null,
+   "note": "source chrome census has no measured header band \u2014 the page nav is excluded from scoring by declaration (its source pixels sit inside the first content band); fix the measure stage to score it"
+  },
+  {
+   "section": "page",
+   "capability": "structural gate",
+   "score": null,
+   "note": "contentSpanFidelity: 0.7845 < floor 0.8 (rebuilt content spans a different share of the band than the source \u2014 a collapsed or over-wide container leaves most of the band as matching background, so the averaged metric barely registers it)"
+  }
+ ],
+ "inputDigest": "dba5b79bb00761b02c9f8764eb4f6acda3dd251d8e0f1fa1239ec4b953b13a7d",
+ "sourceShot": "screenshots/greenhouse-v2/home/home-fullpage.png",
+ "sourceHeight": 5031,
+ "replicaHeight": 6006,
+ "bandAlignment": {
+  "mode": "positional",
+  "notes": [
+   "provenance anchoring unavailable (5/7 pairs resolved, 4 distinct) \u2014 falling back to positional band pairing",
+   "source chrome census has no measured header band \u2014 the page nav is excluded from scoring by declaration (its source pixels sit inside the first content band); fix the measure stage to score it"
+  ]
+ },
+ "structuralGate": {
+  "ok": false,
+  "signals": {
+   "bandCountAgreement": {
+    "value": 1.0,
+    "floor": 1.0,
+    "ok": true,
+    "scoredBands": 7,
+    "authoredSections": 7,
+    "unauthoredBands": [],
+    "unpairedSections": [],
+    "detail": "every measured content band is rebuilt by exactly one authored section"
+   },
+   "archetypeFamilyAgreement": {
+    "value": 1.0,
+    "floor": 1.0,
+    "ok": true,
+    "checked": 0,
+    "agreed": 0,
+    "unmeasured": [
+     "hero",
+     "featureGrid",
+     "logos",
+     "comparison",
+     "stats",
+     "testimonial",
+     "ctaBand"
+    ],
+    "mismatches": [],
+    "detail": "composed layout families honor the measured track multiplicity of every band"
+   },
+   "contentSpanFidelity": {
+    "value": 0.7845,
+    "floor": 0.8,
+    "ok": false,
+    "worstBands": [
+     {
+      "id": "sec-5",
+      "widthFidelity": 0.4945
+     },
+     {
+      "id": "sec-0",
+      "widthFidelity": 0.7125
+     },
+     {
+      "id": "sec-2",
+      "widthFidelity": 0.7201
+     }
+    ],
+    "detail": "rebuilt content spans a different share of the band than the source \u2014 a collapsed or over-wide container leaves most of the band as matching background, so the averaged metric barely registers it"
+   }
+  },
+  "blocking": [
+   "contentSpanFidelity: 0.7845 < floor 0.8 (rebuilt content spans a different share of the band than the source \u2014 a collapsed or over-wide container leaves most of the band as matching background, so the averaged metric barely registers it)"
+  ],
+  "bandCensusNotes": [
+   "provenance anchoring unavailable (5/7 pairs resolved, 4 distinct) \u2014 falling back to positional band pairing",
+   "source chrome census has no measured header band \u2014 the page nav is excluded from scoring by declaration (its source pixels sit inside the first content band); fix the measure stage to score it"
+  ]
+ },
+ "brand": "Greenhouse"
+}

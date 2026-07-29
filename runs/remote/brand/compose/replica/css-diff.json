@@ -1,0 +1,378 @@
+{
+ "schemaVersion": "css-diff.v1",
+ "brand": "remote",
+ "viewports": [
+  1920,
+  1440,
+  960,
+  375
+ ],
+ "primaryViewport": "1440",
+ "replicaIndex": "runs/remote/brand/compose/replica/_cssdiff/index.html",
+ "joinedEvidence": "runs/remote/brand/evidence/joined-evidence.json",
+ "totalDivergences": 19,
+ "severityCounts": {
+  "critical": 1,
+  "high": 9,
+  "medium": 9,
+  "low": 0
+ },
+ "acceptance": {
+  "button_hover_transform": false,
+  "hero_height_calc_vs_px": false,
+  "nav_panel_background": false,
+  "footer_responsive_columns": true
+ },
+ "headingTierAudit": {
+  "source": null,
+  "method": null,
+  "divergences": []
+ },
+ "tokenTierAudits": {
+  "spacing": {
+   "source": null,
+   "method": null,
+   "divergences": []
+  },
+  "radius": {
+   "source": null,
+   "method": null,
+   "divergences": []
+  },
+  "color": {
+   "source": null,
+   "method": null,
+   "divergences": []
+  }
+ },
+ "matches": [
+  {
+   "role": "hero",
+   "sourceKey": "section-00",
+   "sourceSelector": ".hero-module-scss-module__NmjvEq__section.hero-module-scss-module__NmjvEq__sectionDefault",
+   "ourSelector": "#sec-0",
+   "matched": true
+  },
+  {
+   "role": "nav",
+   "sourceKey": "chrome-header",
+   "sourceSelector": ".site-navigation-module-scss-module__PNKrMq__nav",
+   "ourSelector": "#page-nav",
+   "matched": true
+  },
+  {
+   "role": "footer",
+   "sourceKey": "chrome-footer",
+   "sourceSelector": ".site-footer-module-scss-module__qYa75a__footer",
+   "ourSelector": ".c-footer",
+   "matched": true
+  },
+  {
+   "role": "heading-h1",
+   "sourceKey": "heading-h1",
+   "sourceSelector": ".typography-module-scss-module___KGphG__h1.typography-module-scss-module___KGphG__reset-margin",
+   "ourSelector": "h1",
+   "matched": true
+  },
+  {
+   "role": "heading-h2",
+   "sourceKey": "heading-h2",
+   "sourceSelector": ".typography-module-scss-module___KGphG__h2.typography-module-scss-module___KGphG__reset-margin",
+   "ourSelector": "h2",
+   "matched": true
+  },
+  {
+   "role": "section-1",
+   "sourceKey": "section-01",
+   "sourceSelector": ".base-module-scss-module__sGIWqa__section",
+   "ourSelector": "#sec-1",
+   "matched": true
+  },
+  {
+   "role": "section-2",
+   "sourceKey": "section-02",
+   "sourceSelector": ".base-module-scss-module__sGIWqa__section",
+   "ourSelector": "#sec-2",
+   "matched": true
+  },
+  {
+   "role": "section-3",
+   "sourceKey": "section-03",
+   "sourceSelector": ".base-module-scss-module__sGIWqa__section",
+   "ourSelector": "#sec-3",
+   "matched": true
+  },
+  {
+   "role": "section-4",
+   "sourceKey": "section-04",
+   "sourceSelector": ".base-module-scss-module__sGIWqa__section",
+   "ourSelector": "#sec-4",
+   "matched": true
+  },
+  {
+   "role": "section-5",
+   "sourceKey": "section-05",
+   "sourceSelector": ".base-module-scss-module__sGIWqa__section",
+   "ourSelector": "#sec-5",
+   "matched": true
+  },
+  {
+   "role": "section-6",
+   "sourceKey": "section-06",
+   "sourceSelector": ".base-module-scss-module__sGIWqa__section",
+   "ourSelector": "#sec-6",
+   "matched": true
+  },
+  {
+   "role": "section-7",
+   "sourceKey": "section-07",
+   "sourceSelector": ".base-module-scss-module__sGIWqa__section",
+   "ourSelector": "#sec-7",
+   "matched": true
+  },
+  {
+   "role": "section-8",
+   "sourceKey": "section-08",
+   "sourceSelector": ".base-module-scss-module__sGIWqa__section",
+   "ourSelector": "#sec-8",
+   "matched": true
+  },
+  {
+   "role": "section-9",
+   "sourceKey": "section-09",
+   "sourceSelector": ".hero-module-scss-module__NmjvEq__section.hero-module-scss-module__NmjvEq__sectionDefault",
+   "ourSelector": "#sec-9",
+   "matched": true
+  }
+ ],
+ "divergences": [
+  {
+   "element": "footer",
+   "property": "responsive-columns",
+   "ours": "no @media layout reflow",
+   "source": "7 @media reflow rules (@media only screen and (min-width:1024px))",
+   "viewport": "all",
+   "severity": "critical",
+   "likelyCause": "missing-fact",
+   "kind": "behavior",
+   "frequency": 1,
+   "rankScore": 4.0
+  },
+  {
+   "element": "heading-h1",
+   "property": "font-size",
+   "ours": "46px",
+   "source": "56px",
+   "viewport": "1920",
+   "severity": "high",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 3,
+   "rankScore": 7.755
+  },
+  {
+   "element": "heading-h1",
+   "property": "font-size",
+   "ours": "46px",
+   "source": "28px",
+   "viewport": "960",
+   "severity": "high",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 3,
+   "rankScore": 7.755
+  },
+  {
+   "element": "heading-h1",
+   "property": "font-size",
+   "ours": "46px",
+   "source": "28px",
+   "viewport": "375",
+   "severity": "high",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 3,
+   "rankScore": 7.755
+  },
+  {
+   "element": "heading-h2",
+   "property": "font-size",
+   "ours": "36px",
+   "source": "46px",
+   "viewport": "1920",
+   "severity": "high",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 3,
+   "rankScore": 7.755
+  },
+  {
+   "element": "heading-h2",
+   "property": "font-size",
+   "ours": "36px",
+   "source": "22px",
+   "viewport": "960",
+   "severity": "high",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 3,
+   "rankScore": 7.755
+  },
+  {
+   "element": "heading-h2",
+   "property": "font-size",
+   "ours": "36px",
+   "source": "22px",
+   "viewport": "375",
+   "severity": "high",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 3,
+   "rankScore": 7.755
+  },
+  {
+   "element": "footer",
+   "property": "max-width",
+   "ours": "1169.28px",
+   "source": "none",
+   "viewport": "1440",
+   "severity": "high",
+   "likelyCause": "invented-default",
+   "kind": "property",
+   "frequency": 1,
+   "rankScore": 3.0
+  },
+  {
+   "element": "hero",
+   "property": "background-color",
+   "ours": "rgb(239, 240, 240)",
+   "source": "rgba(0, 0, 0, 0)",
+   "viewport": "1440",
+   "severity": "high",
+   "likelyCause": "invented-default",
+   "kind": "property",
+   "frequency": 1,
+   "rankScore": 3.0
+  },
+  {
+   "element": "nav",
+   "property": "background-color",
+   "ours": "rgb(239, 240, 240)",
+   "source": "rgba(0, 0, 0, 0)",
+   "viewport": "1440",
+   "severity": "high",
+   "likelyCause": "invented-default",
+   "kind": "property",
+   "frequency": 1,
+   "rankScore": 3.0
+  },
+  {
+   "element": "heading-h2",
+   "property": "line-height",
+   "ours": "46.8px",
+   "source": "55.2px",
+   "viewport": "1920",
+   "severity": "medium",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 4,
+   "rankScore": 6.0
+  },
+  {
+   "element": "heading-h2",
+   "property": "line-height",
+   "ours": "46.8px",
+   "source": "43.2px",
+   "viewport": "1440",
+   "severity": "medium",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 4,
+   "rankScore": 6.0
+  },
+  {
+   "element": "heading-h2",
+   "property": "line-height",
+   "ours": "46.8px",
+   "source": "33px",
+   "viewport": "960",
+   "severity": "medium",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 4,
+   "rankScore": 6.0
+  },
+  {
+   "element": "heading-h2",
+   "property": "line-height",
+   "ours": "46.8px",
+   "source": "33px",
+   "viewport": "375",
+   "severity": "medium",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 4,
+   "rankScore": 6.0
+  },
+  {
+   "element": "heading-h1",
+   "property": "line-height",
+   "ours": "55.2px",
+   "source": "67.2px",
+   "viewport": "1920",
+   "severity": "medium",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 3,
+   "rankScore": 5.17
+  },
+  {
+   "element": "heading-h1",
+   "property": "line-height",
+   "ours": "55.2px",
+   "source": "42px",
+   "viewport": "960",
+   "severity": "medium",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 3,
+   "rankScore": 5.17
+  },
+  {
+   "element": "heading-h1",
+   "property": "line-height",
+   "ours": "55.2px",
+   "source": "42px",
+   "viewport": "375",
+   "severity": "medium",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 3,
+   "rankScore": 5.17
+  },
+  {
+   "element": "footer",
+   "property": "color",
+   "ours": "rgb(20, 20, 21)",
+   "source": "rgb(0, 0, 0)",
+   "viewport": "1440",
+   "severity": "medium",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 1,
+   "rankScore": 2.0
+  },
+  {
+   "element": "nav",
+   "property": "color",
+   "ours": "rgb(20, 20, 21)",
+   "source": "rgb(0, 0, 0)",
+   "viewport": "1440",
+   "severity": "medium",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 1,
+   "rankScore": 2.0
+  }
+ ]
+}

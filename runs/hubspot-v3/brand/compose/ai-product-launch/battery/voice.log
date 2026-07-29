@@ -1,0 +1,8 @@
+$ venv/bin/python -m brand_pipeline.voice_audit runs/hubspot-v3/brand/compose/ai-product-launch --brand runs/hubspot-v3/brand --strict --out runs/hubspot-v3/brand/compose/ai-product-launch/battery/voice
+
+--- stdout ---
+[voice-audit] unknown voice facts schema None — skip
+
+--- stderr ---
+
+--- exit=0 ---

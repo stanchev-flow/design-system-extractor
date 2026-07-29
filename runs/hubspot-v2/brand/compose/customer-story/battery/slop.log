@@ -1,0 +1,9 @@
+$ node brand_pipeline/slop_audit.mjs runs/hubspot-v2/brand/compose/customer-story/index.html
+
+--- stdout ---
+PASS customer-story/index.html @1440px
+PASS customer-story/index.html @1180px
+
+--- stderr ---
+
+--- exit=0 ---

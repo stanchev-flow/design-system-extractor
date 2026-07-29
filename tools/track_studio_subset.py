@@ -79,6 +79,15 @@ INCLUDE_RULES: tuple[tuple[str, str], ...] = (
     ("brand/components-preview/**", "components preview lane"),
     ("brand/chrome/**", "exact nav/footer lane"),
     ("brand/render/**", "on-brand review panel (renders, crops, verdicts)"),
+    # The BUILT framework page only — never the workspace it was built from. A Vite
+    # single-file build is one self-contained HTML file (282 KB for the lane in this
+    # repo) beside a source tree two orders of magnitude larger, and the Studio now
+    # serves the build when it exists instead of linking a dev-server port. The
+    # `single/` workspace stays excluded by `brand/framework` in NOT_READ_REASONS,
+    # which only applies where no include rule matched.
+    ("brand/framework/index.html", "built framework lane page, served by the Studio"),
+    ("brand/framework/framework-report.json", "framework lane build report"),
+    ("brand/framework/*.png", "framework lane thumbnail (pruned to the one shown)"),
     # The brand-lane document tabs (`BRAND_DOCS` in studio_server.py). Named file
     # by file rather than by subtree: three of them sit inside brand/evidence/,
     # which is otherwise a many-megabyte extraction dump nothing serves, and the
@@ -123,13 +132,26 @@ EXCLUDE_RULES: tuple[tuple[str, str], ...] = (
 # those trees are 100x the size of everything else in the run put together.
 JS_WORKSPACE_MARKER = "package.json"
 
+# The exception to that: a workspace's BUILD PRODUCT is the one file in it worth
+# shipping, and it is the file the Studio serves. Keep these in step with
+# `_FRAMEWORK_BUILD_GLOBS` in studio_server.py — a lane the server offers and the
+# tracker withholds is a lane that 404s in a clone, which is the whole class of
+# defect this tool exists to prevent. The Vite SOURCE entry (`<app>/index.html`,
+# a module script pointing at src/) is deliberately not here: served statically it
+# renders blank, so shipping it would trade a 404 for an empty page.
+BUILD_PRODUCT_RULES: tuple[tuple[str, str], ...] = (
+    ("brand/framework/dist/index.html", "built framework page (dist layout)"),
+    ("brand/framework/single/*/dist/index.html", "built framework page (per-app dist)"),
+    ("*/single/framework/dist/index.html", "built framework page (run-item lane)"),
+)
+
 # Top-level run directories that are never read by the Studio. Listed explicitly
 # only so the report can explain the biggest line items instead of lumping them
 # into a generic "not read" bucket.
 NOT_READ_REASONS: dict[str, str] = {
     "_archive": "archived copy of an earlier run of the same project",
     "brand/evidence": "extraction evidence (page mirrors, crops, css dumps) — never served",
-    "brand/framework": "framework build tree; the Studio links builds by port, not by file",
+    "brand/framework": "framework build WORKSPACE; only the built page it produces ships",
     "brand/kit": "design-kit export — not read by the Studio",
     "brand/shots": "ad-hoc capture scratch — not read by the Studio",
     "brand/assets": "harvested source-asset pool; served pages carry their own copy",
@@ -219,6 +241,35 @@ def leaks_local_path(path: Path) -> bool:
     return any(marker in text for marker in LOCAL_PATH_MARKERS)
 
 
+def _symlink_include_reason(link: Path, run_dir: Path) -> str | None:
+    """Why a symlink is worth tracking, or None when the Studio never reads it.
+
+    A link to a FILE is judged by its own path. A link to a DIRECTORY has to be
+    judged by what is behind it: an include rule for a lane is written as
+    `brand/<lane>/**`, which by design does not match the lane directory itself,
+    so a lane that happens to be a link to a sibling lane matched nothing and was
+    dropped in silence — the Studio then offered the lane and served a 404.
+    """
+    rel = link.relative_to(run_dir).as_posix()
+    direct = next((why for pat, why in INCLUDE_RULES if _match(rel, pat)), None)
+    if direct is not None:
+        return direct
+    try:
+        if not link.is_dir():
+            return None
+        target = link.resolve()
+        for inner in target.rglob("*"):
+            if not inner.is_file():
+                continue
+            probe = f"{rel}/{inner.relative_to(target).as_posix()}"
+            why = next((w for pat, w in INCLUDE_RULES if _match(probe, pat)), None)
+            if why is not None:
+                return why
+    except OSError:
+        return None
+    return None
+
+
 def classify_run(run_dir: Path, *, allow_local_paths: bool = False) -> dict:
     """Split one run into kept files and excluded files, each with a reason.
 
@@ -233,8 +284,7 @@ def classify_run(run_dir: Path, *, allow_local_paths: bool = False) -> dict:
         if _under_symlink(path, run_dir):
             continue
         if path.is_symlink():
-            rel = path.relative_to(run_dir).as_posix()
-            why_include = next((why for pat, why in INCLUDE_RULES if _match(rel, pat)), None)
+            why_include = _symlink_include_reason(path, run_dir)
             if why_include is None or _in_js_workspace(path, run_dir):
                 continue
             # A lane can be a link to a sibling experiment rather than a copy of
@@ -252,7 +302,9 @@ def classify_run(run_dir: Path, *, allow_local_paths: bool = False) -> dict:
         rel = path.relative_to(run_dir).as_posix()
         size = path.stat().st_size
 
-        why_include = next((why for pat, why in INCLUDE_RULES if _match(rel, pat)), None)
+        why_build = next((why for pat, why in BUILD_PRODUCT_RULES if _match(rel, pat)), None)
+        why_include = why_build or next(
+            (why for pat, why in INCLUDE_RULES if _match(rel, pat)), None)
         if why_include is None:
             prefix = next(
                 (k for k in NOT_READ_REASONS if rel == k or rel.startswith(k + "/")), None
@@ -262,7 +314,7 @@ def classify_run(run_dir: Path, *, allow_local_paths: bool = False) -> dict:
             continue
 
         why_exclude = next((why for pat, why in EXCLUDE_RULES if _match(rel, pat)), None)
-        if why_exclude is None and _in_js_workspace(path, run_dir):
+        if why_exclude is None and why_build is None and _in_js_workspace(path, run_dir):
             why_exclude = "inside a JS build workspace (package.json) — rebuild locally"
         if why_exclude is None and not allow_local_paths and leaks_local_path(path):
             why_exclude = "embeds this checkout's absolute path — would leak it publicly"
@@ -514,8 +566,18 @@ def gitignore_block(plans: list[dict]) -> list[str]:
          re-exclusion pass is needed and nothing leaks in by accident.
 
     The `runs/` and `screenshots/` rules above this block stay exactly as they
-    are; `!runs/` re-includes only the directory entry so git can look inside it,
-    and the `runs/*` line immediately after restores the same coverage.
+    are; `!/runs/` re-includes only the directory entry so git can look inside it,
+    and the `/runs/*` line immediately after restores the same coverage.
+
+    Every emitted pattern is ANCHORED to the repo root with a leading slash. This
+    is load-bearing, not tidiness: in gitignore syntax a slash that appears only
+    at the END of a pattern does not anchor it, so a bare `!runs/` re-includes
+    every directory named `runs` at any depth in the repo. That silently undid the
+    `evals/matrix/runs/` rule and left 40 MB of eval output — which records this
+    checkout's absolute path — merely untracked rather than ignored, one `git add
+    -A` away from being published. Patterns that already contain an interior slash
+    are anchored by that slash; the leading one is added anyway so the rule is
+    uniform and the next pattern added here cannot reintroduce the hole.
     """
     files: set[str] = set()
     for p in plans:
@@ -530,9 +592,9 @@ def gitignore_block(plans: list[dict]) -> list[str]:
 
     lines: list[str] = []
     for anc in sorted(ancestors, key=lambda a: (a.count("/"), a)):
-        lines.append(f"!{anc}/")
-        lines.append(f"{anc}/*")
-    lines += [f"!{rel}" for rel in sorted(files)]
+        lines.append(f"!/{anc}/")
+        lines.append(f"/{anc}/*")
+    lines += [f"!/{rel}" for rel in sorted(files)]
     return lines
 
 
@@ -646,7 +708,14 @@ def _brand_source_url(project: str) -> str:
 # Local references a browser will actually fetch. Deliberately not a parser: the
 # point is to be over-inclusive about what might 404, not to model HTML.
 _REF_RE = re.compile(
-    r"""(?:src|href|poster|data-src)\s*=\s*["']([^"']+)["']|url\(\s*["']?([^"')]+)["']?\s*\)""",
+    r"""(?:src|href|poster|data-src)\s*=\s*["']([^"']+)["']"""
+    r"""|url\(\s*["']?([^"')]+)["']?\s*\)"""
+    # A bundled single-file app carries its media table as JSON inside a <script>,
+    # so its images are fetched from string VALUES rather than from attributes the
+    # two patterns above can see. Keyed on the media-address key names only, which
+    # keeps this over-inclusive about what might 404 without matching every quoted
+    # string in a page.
+    r"""|["'](?:url|src|href|poster|displayUrl|thumbnail)["']\s*:\s*["']([^"']+)["']""",
     re.IGNORECASE,
 )
 _EXTERNAL = ("http://", "https://", "//", "data:", "#", "mailto:", "tel:", "javascript:", "blob:")
@@ -659,7 +728,7 @@ def _page_references(plans: list[dict]):
             if path.suffix.lower() not in {".html", ".htm", ".css"}:
                 continue
             text = path.read_text(encoding="utf-8", errors="ignore")
-            for raw in sorted({m[0] or m[1] for m in _REF_RE.findall(text)}):
+            for raw in sorted({m[0] or m[1] or m[2] for m in _REF_RE.findall(text)}):
                 ref = unquote(raw.split("?")[0].split("#")[0]).strip()
                 if not ref or ref.startswith(_EXTERNAL):
                     continue

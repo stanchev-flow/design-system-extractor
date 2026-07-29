@@ -1,0 +1,68 @@
+{
+  "layout": "demo-staggered-cards",
+  "brand": "WoodWave Gallery",
+  "composition_mode": false,
+  "neverDo": {
+    "no-buttons": true,
+    "no-radius": true,
+    "no-shadows": true,
+    "no-gradients": true,
+    "no-cards-on-cream": true,
+    "no-accent-on-light": true,
+    "no-boxed-inputs": true,
+    "no-text-on-photos": true,
+    "no-section-hairlines": true,
+    "no-default-fonts": true,
+    "no-centered-everything": true
+  },
+  "neverDo_allowed": [],
+  "fidelity": {
+    "pass": true,
+    "checks": {
+      "Surface = brand surface/primary (#FAF0E8)": true,
+      "Display family present (Melodrama)": true,
+      "Brand media present (expect ~1)": true,
+      "Brand assets present (not placeholder)": true
+    }
+  },
+  "slop": {
+    "pass": false,
+    "checks": {
+      "No default/system display font": true,
+      "No off-palette hex colors": false,
+      "No lorem/placeholder copy": true,
+      "All brand image assets present": true,
+      "Rounding matches brand radius scale": true,
+      "No foreign-brand content literals (alt/aria/title)": true,
+      "No foreign-brand asset references": true,
+      "Webfonts loaded (no silent system fallback)": true
+    }
+  },
+  "invariants": {
+    "mode": "advisory",
+    "pass": false,
+    "checks": {
+      "single-accent": true,
+      "primitive-only": true,
+      "rhythm": false,
+      "data-composition": true,
+      "slot-resolution": true,
+      "text-contrast": false,
+      "decoration-salience": true,
+      "occlusion": true,
+      "band-attribution": true,
+      "alignment-resolution": false,
+      "media-registration": true,
+      "interaction-contrast": true,
+      "token-provenance": true,
+      "logo-wall-integrity": true,
+      "fact-consumption": false,
+      "fact-consumption:layout.surfaceIntent": false
+    },
+    "details": {
+      "text-contrast": "1/7 text elements below WCAG-ish floor (display >= 3.0, body >= 4.5): -/c-eyebrow('On view now') #e9dc8c on #faf0e8 = 1.24 (< 4.5 body)",
+      "decoration-salience": "no decoration layers (ghost word / watermark) in this render"
+    }
+  },
+  "overall": false
+}

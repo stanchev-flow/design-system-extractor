@@ -1,0 +1,9 @@
+$ node brand_pipeline/slop_audit.mjs runs/hubspot-v3/brand/compose/ai-product-launch/index.html
+
+--- stdout ---
+PASS ai-product-launch/index.html @1440px
+PASS ai-product-launch/index.html @1180px
+
+--- stderr ---
+
+--- exit=0 ---

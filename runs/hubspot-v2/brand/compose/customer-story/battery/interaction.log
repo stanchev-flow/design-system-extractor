@@ -1,0 +1,13 @@
+$ venv/bin/python brand_pipeline/interaction_audit.py runs/hubspot-v2/brand/compose/customer-story --strict --out runs/hubspot-v2/brand/compose/customer-story/battery/interaction
+
+--- stdout ---
+[static]     compose/customer-story … 0 required fails
+[behavioral] compose/customer-story … 0 required fails (3.2s)
+
+report: runs/hubspot-v2/brand/compose/customer-story/battery/interaction/report.md
+report: runs/hubspot-v2/brand/compose/customer-story/battery/interaction/report.json
+failing required cells: 0
+
+--- stderr ---
+
+--- exit=0 ---

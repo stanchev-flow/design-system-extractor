@@ -1,0 +1,10 @@
+$ venv/bin/python brand_pipeline/spacing_audit.py runs/hubspot-v2/brand/compose/customer-story --brand runs/hubspot-v2/brand --strict --no-shots --out runs/hubspot-v2/brand/compose/customer-story/battery/spacing
+
+--- stdout ---
+[spacing-audit] compose/customer-story: 88 measured — 82 conform / 0 drift / 0 wrong-step / 0 off-ladder / 6 unmapped
+[spacing-audit] compose/customer-story: scale adherence — 18 measured-fact / 0 on-scale / 0 OFF-SCALE
+[spacing-audit] report: runs/hubspot-v2/brand/compose/customer-story/battery/spacing/report.md
+
+--- stderr ---
+
+--- exit=0 ---

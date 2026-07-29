@@ -1,0 +1,67 @@
+{
+  "layout": "demo-staggered-cards",
+  "brand": "WoodWave Gallery",
+  "composition_mode": false,
+  "neverDo": {
+    "no-buttons": true,
+    "no-radius": true,
+    "no-shadows": true,
+    "no-gradients": true,
+    "no-cards-on-cream": true,
+    "no-accent-on-light": false,
+    "no-boxed-inputs": true,
+    "no-text-on-photos": true,
+    "no-section-hairlines": true,
+    "no-default-fonts": true,
+    "no-centered-everything": true
+  },
+  "neverDo_allowed": [],
+  "fidelity": {
+    "pass": false,
+    "checks": {
+      "Surface = brand surface/primary (#FAF0E8)": false,
+      "Display family present (Melodrama)": true,
+      "Brand media present (expect ~1)": true,
+      "Brand assets present (not placeholder)": true
+    }
+  },
+  "slop": {
+    "pass": true,
+    "checks": {
+      "No default/system display font": true,
+      "No off-palette hex colors": true,
+      "No lorem/placeholder copy": true,
+      "All brand image assets present": true,
+      "Rounding matches brand radius scale": true,
+      "No foreign-brand content literals (alt/aria/title)": true,
+      "No foreign-brand asset references": true,
+      "Webfonts loaded (no silent system fallback)": true
+    }
+  },
+  "invariants": {
+    "mode": "advisory",
+    "pass": true,
+    "checks": {
+      "single-accent": true,
+      "primitive-only": true,
+      "rhythm": true,
+      "data-composition": true,
+      "slot-resolution": true,
+      "text-contrast": true,
+      "decoration-salience": true,
+      "occlusion": true,
+      "band-attribution": true,
+      "alignment-resolution": true,
+      "media-registration": true,
+      "interaction-contrast": true,
+      "token-provenance": true,
+      "logo-wall-integrity": true,
+      "fact-consumption": true
+    },
+    "details": {
+      "text-contrast": "60 text elements measured against their effective background (surface + decoration layer); worst = sec-0/cs-sub('An evolving exhibition o') at 7.19 (floor 4.5); skipped=0",
+      "decoration-salience": "2 decoration layer(s) all within the salience ceiling (<= 1.19); loudest = sec-1/cs-ghost('About') at ratio 1.124 (luminance delta 0.1033)"
+    }
+  },
+  "overall": false
+}

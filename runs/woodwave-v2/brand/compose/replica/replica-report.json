@@ -1,0 +1,307 @@
+{
+ "schemaVersion": "replica-report.v1",
+ "overall": 0.7499,
+ "bands": [
+  {
+   "id": "page-nav",
+   "label": "navbar (chrome header)",
+   "structure": 0.9896,
+   "pixel": 0.977,
+   "height": 0.9444,
+   "score": 0.9768,
+   "widthFidelity": 1.0,
+   "srcContentFrac": 0.9062,
+   "replicaContentFrac": 0.9062,
+   "srcHeight": 102,
+   "replicaHeight": 108,
+   "scored": true,
+   "pair": "diff/page-nav.png"
+  },
+  {
+   "id": "sec-0",
+   "label": "hero \u2014 woodwavegallery",
+   "structure": 0.8938,
+   "pixel": 0.8802,
+   "height": 0.3515,
+   "score": 0.7813,
+   "widthFidelity": 0.9437,
+   "srcContentFrac": 0.9437,
+   "replicaContentFrac": 1.0,
+   "srcHeight": 1906,
+   "replicaHeight": 670,
+   "scored": true,
+   "pair": "diff/sec-0.png"
+  },
+  {
+   "id": "sec-1",
+   "label": "about \u2014 about",
+   "structure": 0.8586,
+   "pixel": 0.854,
+   "height": 0.2248,
+   "score": 0.7305,
+   "widthFidelity": 0.5993,
+   "srcContentFrac": 0.9125,
+   "replicaContentFrac": 0.5469,
+   "srcHeight": 3985,
+   "replicaHeight": 896,
+   "scored": true,
+   "pair": "diff/sec-1.png"
+  },
+  {
+   "id": "sec-2",
+   "label": "gallery-slider \u2014 gallery",
+   "structure": 0.7315,
+   "pixel": 0.7263,
+   "height": 0.5381,
+   "score": 0.6913,
+   "widthFidelity": 0.4656,
+   "srcContentFrac": 1.0,
+   "replicaContentFrac": 0.4656,
+   "srcHeight": 905,
+   "replicaHeight": 487,
+   "scored": true,
+   "pair": "diff/sec-2.png"
+  },
+  {
+   "id": "sec-3",
+   "label": "founder-story \u2014 WoodWave Gallery is a tribute to decades of creative excellence, fostering the flourishing of art from the late 20th cen",
+   "structure": 0.767,
+   "pixel": 0.7456,
+   "height": 0.5957,
+   "score": 0.7263,
+   "widthFidelity": 0.9897,
+   "srcContentFrac": 0.9,
+   "replicaContentFrac": 0.9094,
+   "srcHeight": 1620,
+   "replicaHeight": 965,
+   "scored": true,
+   "pair": "diff/sec-3.png"
+  },
+  {
+   "id": "sec-4",
+   "label": "visit \u2014 visit",
+   "structure": 0.76,
+   "pixel": 0.7547,
+   "height": 0.3746,
+   "score": 0.6813,
+   "widthFidelity": 1.0,
+   "srcContentFrac": 0.9125,
+   "replicaContentFrac": 0.9125,
+   "srcHeight": 2013,
+   "replicaHeight": 754,
+   "scored": true,
+   "pair": "diff/sec-4.png"
+  },
+  {
+   "id": "sec-5",
+   "label": "newsletter \u2014 stay updated",
+   "structure": 0.9639,
+   "pixel": 0.9543,
+   "height": 0.7808,
+   "score": 0.9244,
+   "widthFidelity": 0.9391,
+   "srcContentFrac": 0.7188,
+   "replicaContentFrac": 0.675,
+   "srcHeight": 739,
+   "replicaHeight": 577,
+   "scored": true,
+   "pair": "diff/sec-5.png"
+  },
+  {
+   "id": "footer",
+   "label": "footer (closing bookend)",
+   "structure": 0.9799,
+   "pixel": 0.9801,
+   "height": 0.2959,
+   "score": 0.8432,
+   "widthFidelity": 0.4651,
+   "srcContentFrac": 0.6719,
+   "replicaContentFrac": 0.3125,
+   "srcHeight": 1014,
+   "replicaHeight": 300,
+   "scored": true,
+   "pair": "diff/footer.png"
+  }
+ ],
+ "perViewport": [
+  {
+   "viewport": 1440,
+   "scrollWidth": 1440,
+   "overflowPx": 0,
+   "bands": 8,
+   "heroHeight": 670,
+   "footerColumns": 0,
+   "docHeight": 4757,
+   "overflowEl": "",
+   "screenshot": "replica-fullpage-1440.png",
+   "responsivenessHealth": 1.0,
+   "primary": true
+  },
+  {
+   "viewport": 1920,
+   "scrollWidth": 1920,
+   "overflowPx": 0,
+   "bands": 8,
+   "heroHeight": 670,
+   "footerColumns": 0,
+   "docHeight": 4757,
+   "overflowEl": "",
+   "screenshot": "replica-fullpage-1920.png",
+   "responsivenessHealth": 1.0,
+   "primary": false
+  },
+  {
+   "viewport": 960,
+   "scrollWidth": 960,
+   "overflowPx": 0,
+   "bands": 8,
+   "heroHeight": 670,
+   "footerColumns": 0,
+   "docHeight": 5340,
+   "overflowEl": "",
+   "screenshot": "replica-fullpage-960.png",
+   "responsivenessHealth": 1.0,
+   "primary": false
+  },
+  {
+   "viewport": 375,
+   "scrollWidth": 375,
+   "overflowPx": 0,
+   "bands": 8,
+   "heroHeight": 812,
+   "footerColumns": 0,
+   "docHeight": 6299,
+   "overflowEl": "",
+   "screenshot": "replica-fullpage-375.png",
+   "responsivenessHealth": 1.0,
+   "primary": false
+  }
+ ],
+ "punchList": [
+  {
+   "section": "hero",
+   "capability": "fidelity below threshold",
+   "score": 0.7813,
+   "note": "band renders shorter (670px vs 1906px)"
+  },
+  {
+   "section": "about",
+   "capability": "video static",
+   "score": 0.7305,
+   "note": "video static \u2014 the source embeds motion media; the composer renders a still"
+  },
+  {
+   "section": "about",
+   "capability": "content width diverges",
+   "score": 0.7305,
+   "note": "content span 0.55 of band vs source 0.91 (width fidelity 0.60) \u2014 check hug/measure collapse or over-wide container"
+  },
+  {
+   "section": "gallery-slider",
+   "capability": "carousel statics",
+   "score": 0.6913,
+   "note": "carousel statics \u2014 the source is an edge-cut sliding track (cards clipped at the viewport); the composer renders a contained grid"
+  },
+  {
+   "section": "gallery-slider",
+   "capability": "content width diverges",
+   "score": 0.6913,
+   "note": "content span 0.47 of band vs source 1.00 (width fidelity 0.47) \u2014 check hug/measure collapse or over-wide container"
+  },
+  {
+   "section": "founder-story",
+   "capability": "fidelity below threshold",
+   "score": 0.7263,
+   "note": "band renders shorter (965px vs 1620px); coarse layout structure diverges (module geometry / art direction)"
+  },
+  {
+   "section": "visit",
+   "capability": "video static",
+   "score": 0.6813,
+   "note": "video static \u2014 the source embeds motion media; the composer renders a still"
+  },
+  {
+   "section": "newsletter",
+   "capability": "video static",
+   "score": 0.9244,
+   "note": "video static \u2014 the source embeds motion media; the composer renders a still"
+  },
+  {
+   "section": "page",
+   "capability": "display font (Melodrama)",
+   "note": "not self-hosted and not Google-loadable \u2014 headings render in the declared fallback stack; extract the woff2 files into assets/fonts/",
+   "score": null
+  },
+  {
+   "section": "page",
+   "capability": "structural gate",
+   "score": null,
+   "note": "contentSpanFidelity: 0.7708 < floor 0.8 (rebuilt content spans a different share of the band than the source \u2014 a collapsed or over-wide container leaves most of the band as matching background, so the averaged metric barely registers it)"
+  }
+ ],
+ "inputDigest": "e9fea43140eb8895eeee58619abe13adc739c696d321f01a0ef6051a1ce54ca9",
+ "sourceShot": "screenshots/woodwave-v2/woodwave-fullpage.png",
+ "sourceHeight": 12182,
+ "replicaHeight": 4757,
+ "bandAlignment": {
+  "mode": "positional",
+  "notes": []
+ },
+ "structuralGate": {
+  "ok": false,
+  "signals": {
+   "bandCountAgreement": {
+    "value": 1.0,
+    "floor": 1.0,
+    "ok": true,
+    "scoredBands": 7,
+    "authoredSections": 6,
+    "unauthoredBands": [],
+    "unpairedSections": [],
+    "detail": "every measured content band is rebuilt by exactly one authored section"
+   },
+   "archetypeFamilyAgreement": {
+    "value": 1.0,
+    "floor": 1.0,
+    "ok": true,
+    "checked": 0,
+    "agreed": 0,
+    "unmeasured": [
+     "hero",
+     "about",
+     "gallery-slider",
+     "founder-story",
+     "visit",
+     "newsletter"
+    ],
+    "mismatches": [],
+    "detail": "composed layout families honor the measured track multiplicity of every band"
+   },
+   "contentSpanFidelity": {
+    "value": 0.7708,
+    "floor": 0.8,
+    "ok": false,
+    "worstBands": [
+     {
+      "id": "footer",
+      "widthFidelity": 0.4651
+     },
+     {
+      "id": "sec-2",
+      "widthFidelity": 0.4656
+     },
+     {
+      "id": "sec-1",
+      "widthFidelity": 0.5993
+     }
+    ],
+    "detail": "rebuilt content spans a different share of the band than the source \u2014 a collapsed or over-wide container leaves most of the band as matching background, so the averaged metric barely registers it"
+   }
+  },
+  "blocking": [
+   "contentSpanFidelity: 0.7708 < floor 0.8 (rebuilt content spans a different share of the band than the source \u2014 a collapsed or over-wide container leaves most of the band as matching background, so the averaged metric barely registers it)"
+  ],
+  "bandCensusNotes": []
+ },
+ "brand": "WoodWave Gallery"
+}

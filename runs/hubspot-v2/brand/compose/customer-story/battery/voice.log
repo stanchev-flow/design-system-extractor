@@ -1,0 +1,8 @@
+$ venv/bin/python -m brand_pipeline.voice_audit runs/hubspot-v2/brand/compose/customer-story --brand runs/hubspot-v2/brand --strict --out runs/hubspot-v2/brand/compose/customer-story/battery/voice
+
+--- stdout ---
+[voice-audit] compose/customer-story: PASS (sentence-length, exclamations, banned-hype, heading-casing)
+
+--- stderr ---
+
+--- exit=0 ---

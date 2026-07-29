@@ -1,0 +1,469 @@
+{
+ "schemaVersion": "css-diff.v1",
+ "brand": "hubspot-v2",
+ "viewports": [
+  1920,
+  1440,
+  960,
+  375
+ ],
+ "primaryViewport": "1440",
+ "replicaIndex": "runs/hubspot-v2/brand/compose/replica/_cssdiff/index.html",
+ "joinedEvidence": "runs/hubspot-v2/brand/evidence/joined-evidence.json",
+ "totalDivergences": 26,
+ "severityCounts": {
+  "critical": 2,
+  "high": 11,
+  "medium": 9,
+  "low": 4
+ },
+ "acceptance": {
+  "button_hover_transform": true,
+  "hero_height_calc_vs_px": true,
+  "nav_panel_background": false,
+  "footer_responsive_columns": true
+ },
+ "headingTierAudit": {
+  "source": null,
+  "method": null,
+  "divergences": []
+ },
+ "tokenTierAudits": {
+  "spacing": {
+   "source": null,
+   "method": null,
+   "divergences": []
+  },
+  "radius": {
+   "source": null,
+   "method": null,
+   "divergences": []
+  },
+  "color": {
+   "source": null,
+   "method": null,
+   "divergences": []
+  }
+ },
+ "matches": [
+  {
+   "role": "hero",
+   "sourceKey": "section-00",
+   "sourceSelector": "#homepage_page_header",
+   "ourSelector": "#sec-0",
+   "matched": true
+  },
+  {
+   "role": "nav",
+   "sourceKey": "chrome-header",
+   "sourceSelector": "#global-nav-header",
+   "ourSelector": "#page-nav",
+   "matched": true
+  },
+  {
+   "role": "footer",
+   "sourceKey": "chrome-footer",
+   "sourceSelector": ".global-footer.hsg-footer",
+   "ourSelector": ".c-footer",
+   "matched": true
+  },
+  {
+   "role": "button-primary",
+   "sourceKey": "action-40",
+   "sourceSelector": ".-large.-primary.cl-button.homepage-hero.wf-page-header_content-ctas-cta",
+   "ourSelector": "#sec-0 .c-button:not(.c-button--navcta)",
+   "matched": true
+  },
+  {
+   "role": "heading-h1",
+   "sourceKey": "heading-h1",
+   "sourceSelector": ".-custom-font-size.cl-h1.wf-page-header_heading",
+   "ourSelector": "h1",
+   "matched": true
+  },
+  {
+   "role": "heading-h2",
+   "sourceKey": "heading-h2",
+   "sourceSelector": ".global-nav-header-content-title",
+   "ourSelector": "h2",
+   "matched": true
+  },
+  {
+   "role": "section-1",
+   "sourceKey": "section-01",
+   "sourceSelector": "#widget_194002141486",
+   "ourSelector": "#sec-1",
+   "matched": true
+  },
+  {
+   "role": "section-2",
+   "sourceKey": "section-02",
+   "sourceSelector": "#widget_195064770155",
+   "ourSelector": "#sec-2",
+   "matched": true
+  },
+  {
+   "role": "section-3",
+   "sourceKey": "section-03",
+   "sourceSelector": "#widget_194002141487",
+   "ourSelector": "#sec-3",
+   "matched": true
+  },
+  {
+   "role": "section-4",
+   "sourceKey": "section-04",
+   "sourceSelector": "#widget_194002141488",
+   "ourSelector": "#sec-4",
+   "matched": true
+  },
+  {
+   "role": "section-5",
+   "sourceKey": "section-05",
+   "sourceSelector": ".-padding-bottom-xs.-padding-top-md.csol-section.wf-rotating-svg",
+   "ourSelector": "#sec-5",
+   "matched": true
+  },
+  {
+   "role": "section-6",
+   "sourceKey": "section-06",
+   "sourceSelector": "#widget_194002141490",
+   "ourSelector": "#sec-6",
+   "matched": true
+  },
+  {
+   "role": "section-7",
+   "sourceKey": "section-07",
+   "sourceSelector": ".-padding-bottom-xs.-padding-top-s.-statistics-variation.breeze-agents-tabbed-testimonials__section.csol-section",
+   "ourSelector": "#sec-7",
+   "matched": true
+  },
+  {
+   "role": "section-8",
+   "sourceKey": "section-08",
+   "sourceSelector": "#widget_194002141492",
+   "ourSelector": "#sec-8",
+   "matched": true
+  },
+  {
+   "role": "section-9",
+   "sourceKey": "section-09",
+   "sourceSelector": "#widget_1754602889014",
+   "ourSelector": "#sec-9",
+   "matched": true
+  }
+ ],
+ "divergences": [
+  {
+   "element": "footer",
+   "property": "responsive-columns",
+   "ours": "no @media layout reflow",
+   "source": "16 @media reflow rules (@media(width < 900px); @media(width >= 900px))",
+   "viewport": "all",
+   "severity": "critical",
+   "likelyCause": "missing-fact",
+   "kind": "behavior",
+   "frequency": 1,
+   "rankScore": 4.0
+  },
+  {
+   "element": "hero",
+   "property": "height-rule",
+   "ours": "750px (fixed px)",
+   "source": "calc(100dvh - var(--global-nav-header-height))",
+   "viewport": "all",
+   "severity": "critical",
+   "likelyCause": "missing-fact",
+   "kind": "behavior",
+   "frequency": 1,
+   "rankScore": 4.0
+  },
+  {
+   "element": "heading-h2",
+   "property": "font-size",
+   "ours": "22px",
+   "source": "18px",
+   "viewport": "1920",
+   "severity": "high",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 4,
+   "rankScore": 9.0
+  },
+  {
+   "element": "heading-h2",
+   "property": "font-size",
+   "ours": "22px",
+   "source": "18px",
+   "viewport": "1440",
+   "severity": "high",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 4,
+   "rankScore": 9.0
+  },
+  {
+   "element": "heading-h2",
+   "property": "font-size",
+   "ours": "22px",
+   "source": "18px",
+   "viewport": "960",
+   "severity": "high",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 4,
+   "rankScore": 9.0
+  },
+  {
+   "element": "heading-h2",
+   "property": "font-size",
+   "ours": "22px",
+   "source": "18px",
+   "viewport": "375",
+   "severity": "high",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 4,
+   "rankScore": 9.0
+  },
+  {
+   "element": "button-primary",
+   "property": "display",
+   "ours": "flex",
+   "source": "block",
+   "viewport": "1440",
+   "severity": "high",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 1,
+   "rankScore": 3.0
+  },
+  {
+   "element": "button-primary",
+   "property": "font-size",
+   "ours": "16px",
+   "source": "18px",
+   "viewport": "1440",
+   "severity": "high",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 1,
+   "rankScore": 3.0
+  },
+  {
+   "element": "button-primary",
+   "property": "transform:hover",
+   "ours": "translateY(-1px)",
+   "source": "none",
+   "viewport": "all",
+   "severity": "high",
+   "likelyCause": "invented-default",
+   "kind": "behavior",
+   "frequency": 1,
+   "rankScore": 3.0
+  },
+  {
+   "element": "footer",
+   "property": "max-width",
+   "ours": "1080px",
+   "source": "none",
+   "viewport": "1440",
+   "severity": "high",
+   "likelyCause": "invented-default",
+   "kind": "property",
+   "frequency": 1,
+   "rankScore": 3.0
+  },
+  {
+   "element": "heading-h1",
+   "property": "font-size",
+   "ours": "80px",
+   "source": "48px",
+   "viewport": "375",
+   "severity": "high",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 1,
+   "rankScore": 3.0
+  },
+  {
+   "element": "hero",
+   "property": "background-color",
+   "ours": "rgb(85, 69, 62)",
+   "source": "rgb(4, 39, 41)",
+   "viewport": "1440",
+   "severity": "high",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 1,
+   "rankScore": 3.0
+  },
+  {
+   "element": "section-4",
+   "property": "background-color",
+   "ours": "rgb(252, 198, 177)",
+   "source": "rgb(252, 222, 210)",
+   "viewport": "1440",
+   "severity": "high",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 1,
+   "rankScore": 3.0
+  },
+  {
+   "element": "heading-h2",
+   "property": "line-height",
+   "ours": "31.9px",
+   "source": "28px",
+   "viewport": "1920",
+   "severity": "medium",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 4,
+   "rankScore": 6.0
+  },
+  {
+   "element": "heading-h2",
+   "property": "line-height",
+   "ours": "31.9px",
+   "source": "28px",
+   "viewport": "1440",
+   "severity": "medium",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 4,
+   "rankScore": 6.0
+  },
+  {
+   "element": "heading-h2",
+   "property": "line-height",
+   "ours": "31.9px",
+   "source": "28px",
+   "viewport": "960",
+   "severity": "medium",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 4,
+   "rankScore": 6.0
+  },
+  {
+   "element": "heading-h2",
+   "property": "line-height",
+   "ours": "31.9px",
+   "source": "28px",
+   "viewport": "375",
+   "severity": "medium",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 4,
+   "rankScore": 6.0
+  },
+  {
+   "element": "button-primary",
+   "property": "line-height",
+   "ours": "normal",
+   "source": "32px",
+   "viewport": "1440",
+   "severity": "medium",
+   "likelyCause": "missing-fact",
+   "kind": "property",
+   "frequency": 1,
+   "rankScore": 2.0
+  },
+  {
+   "element": "button-primary",
+   "property": "padding",
+   "ours": "12px 24px",
+   "source": "16px 40px",
+   "viewport": "1440",
+   "severity": "medium",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 1,
+   "rankScore": 2.0
+  },
+  {
+   "element": "button-primary",
+   "property": "width",
+   "ours": "140.422px",
+   "source": "183.469px",
+   "viewport": "1440",
+   "severity": "medium",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 1,
+   "rankScore": 2.0
+  },
+  {
+   "element": "footer",
+   "property": "padding",
+   "ours": "0px",
+   "source": "48px 32px",
+   "viewport": "1440",
+   "severity": "medium",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 1,
+   "rankScore": 2.0
+  },
+  {
+   "element": "heading-h1",
+   "property": "line-height",
+   "ours": "95.2px",
+   "source": "55px",
+   "viewport": "375",
+   "severity": "medium",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 1,
+   "rankScore": 2.0
+  },
+  {
+   "element": "heading-h1",
+   "property": "font-family",
+   "ours": "\"HubSpot Serif\", \"Source Serif 4\", serif",
+   "source": "\"HubSpot Serif Page Header Human\", \"HubSpot Serif\", serif",
+   "viewport": "1920",
+   "severity": "low",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 4,
+   "rankScore": 3.0
+  },
+  {
+   "element": "heading-h1",
+   "property": "font-family",
+   "ours": "\"HubSpot Serif\", \"Source Serif 4\", serif",
+   "source": "\"HubSpot Serif Page Header Human\", \"HubSpot Serif\", serif",
+   "viewport": "1440",
+   "severity": "low",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 4,
+   "rankScore": 3.0
+  },
+  {
+   "element": "heading-h1",
+   "property": "font-family",
+   "ours": "\"HubSpot Serif\", \"Source Serif 4\", serif",
+   "source": "\"HubSpot Serif Page Header Human\", \"HubSpot Serif\", serif",
+   "viewport": "960",
+   "severity": "low",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 4,
+   "rankScore": 3.0
+  },
+  {
+   "element": "heading-h1",
+   "property": "font-family",
+   "ours": "\"HubSpot Serif\", \"Source Serif 4\", serif",
+   "source": "\"HubSpot Serif Page Header Human\", \"HubSpot Serif\", serif",
+   "viewport": "375",
+   "severity": "low",
+   "likelyCause": "wrong-value",
+   "kind": "property",
+   "frequency": 4,
+   "rankScore": 3.0
+  }
+ ]
+}

@@ -1,0 +1,9 @@
+$ venv/bin/python brand_pipeline/signature_audit.py runs/hubspot-v2/brand/compose/customer-story --brand runs/hubspot-v2/brand --strict --out runs/hubspot-v2/brand/compose/customer-story/battery/signature
+
+--- stdout ---
+[signature-audit] compose/customer-story: PASS · accent share 0.356%
+[signature-audit] report: runs/hubspot-v2/brand/compose/customer-story/battery/signature/report.md
+
+--- stderr ---
+
+--- exit=0 ---

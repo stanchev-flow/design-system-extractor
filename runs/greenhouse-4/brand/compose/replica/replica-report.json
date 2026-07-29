@@ -1,0 +1,319 @@
+{
+ "schemaVersion": "replica-report.v1",
+ "overall": 0.8541,
+ "bands": [
+  {
+   "id": "page-nav",
+   "label": "navbar (chrome header)",
+   "score": 0.0,
+   "structure": 0.0,
+   "pixel": 0.0,
+   "height": 0.0,
+   "srcHeight": 0,
+   "replicaHeight": 81,
+   "pair": null,
+   "scored": false,
+   "note": "excluded: no measured source header band"
+  },
+  {
+   "id": "sec-0",
+   "label": "hero \u2014 The only hiring platform you\u2019ll",
+   "structure": 0.8732,
+   "pixel": 0.8572,
+   "height": 0.8167,
+   "score": 0.8571,
+   "widthFidelity": 0.7125,
+   "srcContentFrac": 1.0,
+   "replicaContentFrac": 0.7125,
+   "srcHeight": 900,
+   "replicaHeight": 1102,
+   "scored": true,
+   "pair": "diff/sec-0.png"
+  },
+  {
+   "id": "sec-1",
+   "label": "featureGrid \u2014 Greenhouse introduces Voice AI following our acquisition of Ezra AI Labs, bringing conversational AI to the hiring proce",
+   "structure": 0.3248,
+   "pixel": 0.3154,
+   "height": 0.1769,
+   "score": 0.2924,
+   "widthFidelity": 0.8092,
+   "srcContentFrac": 0.7688,
+   "replicaContentFrac": 0.95,
+   "srcHeight": 132,
+   "replicaHeight": 746,
+   "scored": true,
+   "pair": "diff/sec-1.png"
+  },
+  {
+   "id": "sec-2",
+   "label": "logoWall \u2014 Real Talent",
+   "structure": 0.8172,
+   "pixel": 0.8138,
+   "height": 0.9006,
+   "score": 0.8329,
+   "widthFidelity": 0.9963,
+   "srcContentFrac": 0.8375,
+   "replicaContentFrac": 0.8406,
+   "srcHeight": 634,
+   "replicaHeight": 571,
+   "scored": true,
+   "pair": "diff/sec-2.png"
+  },
+  {
+   "id": "sec-3",
+   "label": "stats \u2014 Great companies hire with Greenhouse",
+   "structure": 0.948,
+   "pixel": 0.9426,
+   "height": 0.514,
+   "score": 0.8596,
+   "widthFidelity": 0.8179,
+   "srcContentFrac": 0.7719,
+   "replicaContentFrac": 0.9437,
+   "srcHeight": 786,
+   "replicaHeight": 404,
+   "scored": true,
+   "pair": "diff/sec-3.png"
+  },
+  {
+   "id": "sec-4",
+   "label": "testimonial \u2014 The best teams start with hiring \u2013 and the best hiring starts with Greenhouse",
+   "structure": 0.8699,
+   "pixel": 0.8677,
+   "height": 0.4862,
+   "score": 0.7925,
+   "widthFidelity": 0.4328,
+   "srcContentFrac": 0.8375,
+   "replicaContentFrac": 0.3625,
+   "srcHeight": 905,
+   "replicaHeight": 440,
+   "scored": true,
+   "pair": "diff/sec-4.png"
+  },
+  {
+   "id": "sec-5",
+   "label": "cta \u2014 Everything you need to get better at hiring",
+   "structure": 0.9611,
+   "pixel": 0.9571,
+   "height": 0.7603,
+   "score": 0.9198,
+   "widthFidelity": 0.663,
+   "srcContentFrac": 0.8531,
+   "replicaContentFrac": 0.5656,
+   "srcHeight": 630,
+   "replicaHeight": 479,
+   "scored": true,
+   "pair": "diff/sec-5.png"
+  },
+  {
+   "id": "footer",
+   "label": "footer (closing bookend)",
+   "structure": 0.9681,
+   "pixel": 0.9586,
+   "height": 0.8667,
+   "score": 0.945,
+   "widthFidelity": 0.9519,
+   "srcContentFrac": 0.8438,
+   "replicaContentFrac": 0.8031,
+   "srcHeight": 1043,
+   "replicaHeight": 904,
+   "scored": true,
+   "pair": "diff/footer.png"
+  }
+ ],
+ "perViewport": [
+  {
+   "viewport": 1440,
+   "scrollWidth": 1440,
+   "overflowPx": 0,
+   "bands": 19,
+   "heroHeight": 1102,
+   "footerColumns": 5,
+   "docHeight": 14746,
+   "overflowEl": "",
+   "screenshot": "replica-fullpage-1440.png",
+   "responsivenessHealth": 1.0,
+   "primary": true
+  },
+  {
+   "viewport": 1920,
+   "scrollWidth": 1920,
+   "overflowPx": 0,
+   "bands": 19,
+   "heroHeight": 1136,
+   "footerColumns": 5,
+   "docHeight": 14987,
+   "overflowEl": "",
+   "screenshot": "replica-fullpage-1920.png",
+   "responsivenessHealth": 1.0,
+   "primary": false
+  },
+  {
+   "viewport": 960,
+   "scrollWidth": 1144,
+   "overflowPx": 184,
+   "bands": 19,
+   "heroHeight": 1542,
+   "footerColumns": 6,
+   "docHeight": 14809,
+   "overflowEl": "c-foot-cols",
+   "screenshot": "replica-fullpage-960.png",
+   "responsivenessHealth": 0.6167,
+   "primary": false
+  },
+  {
+   "viewport": 375,
+   "scrollWidth": 1044,
+   "overflowPx": 669,
+   "bands": 19,
+   "heroHeight": 1067,
+   "footerColumns": 6,
+   "docHeight": 17237,
+   "overflowEl": "c-foot-cols",
+   "screenshot": "replica-fullpage-375.png",
+   "responsivenessHealth": 0.5,
+   "primary": false
+  }
+ ],
+ "punchList": [
+  {
+   "section": "hero",
+   "capability": "content width diverges",
+   "score": 0.8571,
+   "note": "content span 0.71 of band vs source 1.00 (width fidelity 0.71) \u2014 check hug/measure collapse or over-wide container"
+  },
+  {
+   "section": "featureGrid",
+   "capability": "fidelity below threshold",
+   "score": 0.2924,
+   "note": "band renders taller (746px vs 132px); coarse layout structure diverges (module geometry / art direction); surface color / texture diverges"
+  },
+  {
+   "section": "logoWall",
+   "capability": "fidelity below threshold",
+   "score": 0.8329,
+   "note": "inspect the side-by-side crop"
+  },
+  {
+   "section": "testimonial",
+   "capability": "content width diverges",
+   "score": 0.7925,
+   "note": "content span 0.36 of band vs source 0.84 (width fidelity 0.43) \u2014 check hug/measure collapse or over-wide container"
+  },
+  {
+   "section": "testimonial",
+   "capability": "fidelity below threshold",
+   "score": 0.7925,
+   "note": "band renders shorter (440px vs 905px)"
+  },
+  {
+   "section": "cta",
+   "capability": "content width diverges",
+   "score": 0.9198,
+   "note": "content span 0.57 of band vs source 0.85 (width fidelity 0.66) \u2014 check hug/measure collapse or over-wide container"
+  },
+  {
+   "section": "page",
+   "capability": "display font ('Untitled Serif', Georgia, serif)",
+   "note": "not self-hosted and not Google-loadable \u2014 headings render in the declared fallback stack; extract the woff2 files into assets/fonts/",
+   "score": null
+  },
+  {
+   "section": "page",
+   "capability": "band census",
+   "score": null,
+   "note": "provenance anchoring unavailable (12/17 pairs resolved, 5 distinct) \u2014 falling back to positional band pairing"
+  },
+  {
+   "section": "page",
+   "capability": "band census",
+   "score": null,
+   "note": "source chrome census has no measured header band \u2014 the page nav is excluded from scoring by declaration (its source pixels sit inside the first content band); fix the measure stage to score it"
+  },
+  {
+   "section": "page",
+   "capability": "structural gate",
+   "score": null,
+   "note": "archetypeFamilyAgreement: 0.6875 < floor 1.0 (stats: measured 3 track(s) composed as 'generic-flow'; testimonial: measured 3 track(s) composed as 'generic-flow'; cta: measured 2 track(s) composed as 'generic-flow' \u2014 the authored section carries no slot able to occupy the secondary track, so the measured band's second occupant was lost in projection, not in routing; features: measured 3 track(s) composed as 'generic-flow'; featuresSectionHeadingTop: measured 3 track(s) composed as 'generic-flow')"
+  },
+  {
+   "section": "page",
+   "capability": "structural gate",
+   "score": null,
+   "note": "contentSpanFidelity: 0.7604 < floor 0.8 (rebuilt content spans a different share of the band than the source \u2014 a collapsed or over-wide container leaves most of the band as matching background, so the averaged metric barely registers it)"
+  }
+ ],
+ "inputDigest": "31840f3341384296b95a6a7679f2de1d161a339f0446021678a4bef85906bf40",
+ "sourceShot": "screenshots/greenhouse-v2/home/home-fullpage.png",
+ "sourceHeight": 5031,
+ "replicaHeight": 14746,
+ "bandAlignment": {
+  "mode": "positional",
+  "notes": [
+   "provenance anchoring unavailable (12/17 pairs resolved, 5 distinct) \u2014 falling back to positional band pairing",
+   "source chrome census has no measured header band \u2014 the page nav is excluded from scoring by declaration (its source pixels sit inside the first content band); fix the measure stage to score it"
+  ]
+ },
+ "structuralGate": {
+  "ok": false,
+  "signals": {
+   "bandCountAgreement": {
+    "value": 1.0,
+    "floor": 1.0,
+    "ok": true,
+    "scoredBands": 7,
+    "authoredSections": 17,
+    "unauthoredBands": [],
+    "unpairedSections": [],
+    "detail": "every measured content band is rebuilt by exactly one authored section"
+   },
+   "archetypeFamilyAgreement": {
+    "value": 0.6875,
+    "floor": 1.0,
+    "ok": false,
+    "checked": 16,
+    "agreed": 11,
+    "unmeasured": [
+     "hero"
+    ],
+    "mismatches": [
+     "stats: measured 3 track(s) composed as 'generic-flow'",
+     "testimonial: measured 3 track(s) composed as 'generic-flow'",
+     "cta: measured 2 track(s) composed as 'generic-flow' \u2014 the authored section carries no slot able to occupy the secondary track, so the measured band's second occupant was lost in projection, not in routing",
+     "features: measured 3 track(s) composed as 'generic-flow'",
+     "featuresSectionHeadingTop: measured 3 track(s) composed as 'generic-flow'"
+    ],
+    "detail": "stats: measured 3 track(s) composed as 'generic-flow'; testimonial: measured 3 track(s) composed as 'generic-flow'; cta: measured 2 track(s) composed as 'generic-flow' \u2014 the authored section carries no slot able to occupy the secondary track, so the measured band's second occupant was lost in projection, not in routing; features: measured 3 track(s) composed as 'generic-flow'; featuresSectionHeadingTop: measured 3 track(s) composed as 'generic-flow'"
+   },
+   "contentSpanFidelity": {
+    "value": 0.7604,
+    "floor": 0.8,
+    "ok": false,
+    "worstBands": [
+     {
+      "id": "sec-4",
+      "widthFidelity": 0.4328
+     },
+     {
+      "id": "sec-5",
+      "widthFidelity": 0.663
+     },
+     {
+      "id": "sec-0",
+      "widthFidelity": 0.7125
+     }
+    ],
+    "detail": "rebuilt content spans a different share of the band than the source \u2014 a collapsed or over-wide container leaves most of the band as matching background, so the averaged metric barely registers it"
+   }
+  },
+  "blocking": [
+   "archetypeFamilyAgreement: 0.6875 < floor 1.0 (stats: measured 3 track(s) composed as 'generic-flow'; testimonial: measured 3 track(s) composed as 'generic-flow'; cta: measured 2 track(s) composed as 'generic-flow' \u2014 the authored section carries no slot able to occupy the secondary track, so the measured band's second occupant was lost in projection, not in routing; features: measured 3 track(s) composed as 'generic-flow'; featuresSectionHeadingTop: measured 3 track(s) composed as 'generic-flow')",
+   "contentSpanFidelity: 0.7604 < floor 0.8 (rebuilt content spans a different share of the band than the source \u2014 a collapsed or over-wide container leaves most of the band as matching background, so the averaged metric barely registers it)"
+  ],
+  "bandCensusNotes": [
+   "provenance anchoring unavailable (12/17 pairs resolved, 5 distinct) \u2014 falling back to positional band pairing",
+   "source chrome census has no measured header band \u2014 the page nav is excluded from scoring by declaration (its source pixels sit inside the first content band); fix the measure stage to score it"
+  ]
+ },
+ "brand": "Greenhouse"
+}

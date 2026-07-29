@@ -1,0 +1,13 @@
+$ venv/bin/python brand_pipeline/interaction_audit.py runs/hubspot-v3/brand/compose/ai-product-launch --strict --out runs/hubspot-v3/brand/compose/ai-product-launch/battery/interaction
+
+--- stdout ---
+[static]     compose/ai-product-launch … 0 required fails
+[behavioral] compose/ai-product-launch … 0 required fails (4.3s)
+
+report: runs/hubspot-v3/brand/compose/ai-product-launch/battery/interaction/report.md
+report: runs/hubspot-v3/brand/compose/ai-product-launch/battery/interaction/report.json
+failing required cells: 0
+
+--- stderr ---
+
+--- exit=0 ---
