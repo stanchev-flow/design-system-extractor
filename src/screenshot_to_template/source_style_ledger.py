@@ -29,6 +29,7 @@ from .source_colors import (
     normalize_color_literal,
     normalize_font_family_literal,
 )
+from .repo_paths import resolve_report_path
 
 
 CLOSE_COLOR_DISTANCE_THRESHOLD = 14.0
@@ -239,7 +240,7 @@ def extract_source_style_declarations(extracted: dict[str, Any]) -> list[dict[st
     source_html = extracted.get("source_html")
     if not isinstance(source_html, str) or not source_html:
         return []
-    source_path = Path(source_html)
+    source_path = resolve_report_path(source_html)
     if not source_path.exists():
         return []
 

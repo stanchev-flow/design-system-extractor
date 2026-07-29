@@ -35,6 +35,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
+from screenshot_to_template.repo_paths import report_path
 
 DEFAULT_VIEWPORT = (1440, 900)
 LANE_TIMEOUT_MS = 120_000
@@ -493,7 +494,8 @@ def run_audit(lane_paths: list[Path], brand_dir: Path, out_dir: Path | None,
     signatures = [s for s in (doc.get("signatures") or []) if isinstance(s, dict)]
     accent_devices = [d for d in (doc.get("accentDevices") or []) if isinstance(d, dict)]
     report = {"generatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-              "brandDir": str(brand_dir), "viewport": f"{viewport[0]}x{viewport[1]}",
+              "brandDir": report_path(brand_dir),
+              "viewport": f"{viewport[0]}x{viewport[1]}",
               "signatureCount": len(signatures), "lanes": []}
     if not signatures and not accent_devices:
         report["note"] = ("no signatures:/accentDevices: blocks — nothing to audit "
@@ -503,8 +505,8 @@ def run_audit(lane_paths: list[Path], brand_dir: Path, out_dir: Path | None,
     with sync_playwright() as pw:
         for html in lane_paths:
             lane = str(html.parent.relative_to(brand_dir)) \
-                if brand_dir in html.parents else str(html)
-            entry = {"lane": lane, "html": str(html)}
+                if brand_dir in html.parents else report_path(html)
+            entry = {"lane": lane, "html": report_path(html)}
             if not html.exists():
                 entry["error"] = "file not found"
             else:

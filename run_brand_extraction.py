@@ -35,6 +35,8 @@ import argparse
 import sys
 from pathlib import Path
 
+from screenshot_to_template.repo_paths import report_path
+
 PROJECT_DIR = Path(__file__).resolve().parent
 TOOLS_EXTRACT = PROJECT_DIR / "tools" / "extract"
 RUNS_DIR = PROJECT_DIR / "runs"
@@ -43,6 +45,17 @@ sys.path.insert(0, str(TOOLS_EXTRACT))
 
 ALL_STAGES = ("mine-dom", "mine-css", "mine-motion", "measure", "slice", "ground",
               "curate", "author", "validate")
+
+
+def echoed_argv(argv_tool: list[str]) -> str:
+    """A stage's argv as the RUN LOG should record it.
+
+    The argv handed to the tool stays absolute — the tools resolve real files
+    from it — but the echo is a text artifact that gets captured into
+    `validate-final.log` and friends, so paths inside the repo are named the way
+    the repo sees them (see `screenshot_to_template.repo_paths`).
+    """
+    return " ".join(report_path(a) if a.startswith("/") else a for a in argv_tool)
 
 
 def parse_args(argv=None) -> argparse.Namespace:
@@ -112,7 +125,7 @@ def main(argv=None) -> int:
     grounding_dir = evidence / "grounding"
 
     print(f"Brand extraction: {args.brand}")
-    print(f"Capture: {capture}")
+    print(f"Capture: {report_path(capture)}")
     print(f"Output:  {brand_dir.relative_to(PROJECT_DIR)}")
     print()
 
@@ -133,7 +146,7 @@ def main(argv=None) -> int:
     def run_stage(label: str, module_name: str, argv_tool: list[str]) -> None:
         import importlib
         mod = importlib.import_module(module_name)
-        print(f"[run ] {label}: {module_name} {' '.join(argv_tool)}")
+        print(f"[run ] {label}: {module_name} {echoed_argv(argv_tool)}")
         rc = mod.main(argv_tool)
         if rc:
             raise SystemExit(f"stage {label} failed (exit {rc})")
@@ -239,7 +252,7 @@ def main(argv=None) -> int:
                      "--min-logo-assets", str(args.min_logo_assets)]
         if args.allow_no_vision:
             tool_argv.append("--allow-no-vision")
-        print(f"[run ] validate: validate_brand_evidence {' '.join(tool_argv)}")
+        print(f"[run ] validate: validate_brand_evidence {echoed_argv(tool_argv)}")
         rc = vbe.main(tool_argv)
         if rc:
             return rc

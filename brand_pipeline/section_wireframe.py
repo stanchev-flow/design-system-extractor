@@ -16,6 +16,8 @@ from pathlib import Path
 
 import yaml
 
+from screenshot_to_template.repo_paths import resolve_report_path
+
 
 SCHEMA_VERSION = "wireframe.v1"
 ACTION_CONTRACTS = {"button", "cta", "form", "input"}
@@ -86,8 +88,11 @@ def _length_px(value, default: float) -> float:
 def _brand_context(composition: dict, brand_dir: Path | str | None = None) -> tuple[dict, dict | None]:
     """Load optional measured brand/layout and media facts; silence stays generic."""
     root = Path(brand_dir) if brand_dir else None
+    # `brand.ref` is recorded repo-relative by the composition generator (an absolute
+    # one names the machine that produced it, and is what a genuinely external path
+    # still looks like), so it is resolved against the repo root, not the cwd.
     ref = str(((composition.get("brand") or {}).get("ref") or "")).strip()
-    brand_path = Path(ref) if ref else None
+    brand_path = resolve_report_path(ref) if ref else None
     if root is None and brand_path:
         root = brand_path.parent
     doc: dict = {}

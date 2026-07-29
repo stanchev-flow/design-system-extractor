@@ -51,6 +51,8 @@ import sys
 from pathlib import Path
 from urllib.parse import unquote
 
+from screenshot_to_template.repo_paths import report_path
+
 SCHEMA = "assets-curation.v1"
 
 RASTER_EXTS = {".png", ".jpg", ".jpeg", ".webp", ".avif", ".gif", ".svg"}
@@ -123,7 +125,7 @@ def _copy(src: Path, dest: Path, force: bool, entries: list, origin: str, tag: s
         print(f"  [skip] {dest.name} exists")
     else:
         shutil.copy2(src, dest)
-    entries.append({"dest": dest.name, "source": str(src), "origin": origin,
+    entries.append({"dest": dest.name, "source": report_path(src), "origin": origin,
                     "bytes": dest.stat().st_size, "tagGuess": tag})
 
 

@@ -34,6 +34,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 
+from screenshot_to_template.repo_paths import report_path
+
 GENERATOR_VERSION = "1.0.0"
 
 # ── canonical token resolvers (moved verbatim from render_section.py) ────────────
@@ -886,7 +888,7 @@ def build_page_tokens(doc: dict, style_ctx=None, *, brand_yaml_path=None) -> Tok
         raise TokenGenerationError(
             f"{brand}: required brand token(s) missing — re-extract or author: "
             + "; ".join(missing)
-            + (f" (source: {brand_yaml_path})" if brand_yaml_path else ""))
+            + (f" (source: {report_path(brand_yaml_path)})" if brand_yaml_path else ""))
     sha = ""
     if brand_yaml_path and Path(brand_yaml_path).exists():
         sha = hashlib.sha256(Path(brand_yaml_path).read_bytes()).hexdigest()

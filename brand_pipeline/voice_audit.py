@@ -32,6 +32,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 
 import yaml
+from screenshot_to_template.repo_paths import report_path
 
 CHROME_CLASS_RX = re.compile(
     r"\b(cs-nav|c-foot|cs-mega|cs-utility-banner|cs-navlinks|spec-|sb-)")
@@ -203,7 +204,7 @@ def run_audit(lane_paths: list[Path], brand_dir: Path,
               out_dir: Path | None) -> dict:
     facts_path = brand_dir / "voice-facts.yaml"
     report = {"generatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-              "brandDir": str(brand_dir), "lanes": []}
+              "brandDir": report_path(brand_dir), "lanes": []}
     if not facts_path.exists():
         report["note"] = "no voice-facts.yaml — nothing to audit (fact-gated skip)"
         return report
@@ -214,8 +215,8 @@ def run_audit(lane_paths: list[Path], brand_dir: Path,
 
     for html in lane_paths:
         lane = str(html.parent.relative_to(brand_dir)) \
-            if brand_dir in html.parents else str(html)
-        entry = {"lane": lane, "html": str(html)}
+            if brand_dir in html.parents else report_path(html)
+        entry = {"lane": lane, "html": report_path(html)}
         if not html.exists():
             entry["error"] = "file not found"
         else:

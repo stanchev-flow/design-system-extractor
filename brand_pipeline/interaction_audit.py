@@ -40,6 +40,7 @@ from pathlib import Path
 
 from bs4 import BeautifulSoup
 from bs4.element import Tag
+from screenshot_to_template.repo_paths import report_path
 
 AUDITOR_VERSION = "1.0.0"
 PROJECT_DIR = Path(__file__).resolve().parent.parent
@@ -1432,7 +1433,7 @@ def main(argv: list[str] | None = None) -> int:
         stat = path.stat()
         lr = LaneResult(
             lane=lane,
-            path=str(path),
+            path=report_path(path),
             mtime_iso=datetime.fromtimestamp(stat.st_mtime, tz=timezone.utc).isoformat(timespec="seconds"),
             sha256_12=hashlib.sha256(html_text.encode("utf-8")).hexdigest()[:12],
         )

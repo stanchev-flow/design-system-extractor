@@ -202,6 +202,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 import yaml
+from screenshot_to_template.repo_paths import report_path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 DEFAULT_CONTRACTS = REPO_ROOT / "brand_pipeline" / "contracts" / "blocks.yaml"
@@ -586,16 +587,16 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
     # C1 — brand.yaml
     brand_yaml = brand_dir / "brand.yaml"
     if not brand_yaml.is_file():
-        rep.error("C1", f"{brand_yaml} missing — author it from the extraction "
-                        "evidence (layout-analyst pass) before validating.")
+        rep.error("C1", f"{report_path(brand_yaml)} missing — author it from the "
+                        "extraction evidence (layout-analyst pass) before validating.")
         return rep
     try:
         doc = _load_yaml(brand_yaml)
     except Exception as exc:
-        rep.error("C1", f"{brand_yaml} does not parse as YAML: {exc}")
+        rep.error("C1", f"{report_path(brand_yaml)} does not parse as YAML: {exc}")
         return rep
     if not isinstance(doc, dict):
-        rep.error("C1", f"{brand_yaml} top level is not a mapping")
+        rep.error("C1", f"{report_path(brand_yaml)} top level is not a mapping")
         return rep
     identity = doc.get("brand")
     if not isinstance(identity, dict):
@@ -606,8 +607,8 @@ def validate_brand_dir(brand_dir: Path | str, *, contracts_path: Path | None = N
 
     # C2 — every contract block type attempted (evidence or explicit notObserved)
     if not contracts_path.is_file():
-        rep.warn("C2", f"contracts file not found at {contracts_path} — block "
-                       "coverage not checked")
+        rep.warn("C2", f"contracts file not found at {report_path(contracts_path)} — "
+                       "block coverage not checked")
         contract_keys: list[str] = []
     else:
         contract_keys = _contract_block_keys(contracts_path)
@@ -2662,12 +2663,12 @@ def main(argv=None) -> int:
     for e in rep.errors:
         print(f"ERROR {e}")
     verdict = "PASS" if rep.ok else "FAIL"
-    print(f"[{verdict}] {brand_dir}: {len(rep.errors)} error(s), "
+    print(f"[{verdict}] {report_path(brand_dir)}: {len(rep.errors)} error(s), "
           f"{len(rep.warnings)} warning(s), {len(rep.notes)} note(s)")
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True)
         args.report.write_text(json.dumps(
-            {"brandDir": str(brand_dir), "ok": rep.ok, "errors": rep.errors,
+            {"brandDir": report_path(brand_dir), "ok": rep.ok, "errors": rep.errors,
              "warnings": rep.warnings, "notes": rep.notes}, indent=1))
     return 0 if rep.ok else 1
 

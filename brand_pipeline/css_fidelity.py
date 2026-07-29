@@ -46,6 +46,8 @@ import re
 import sys
 from pathlib import Path
 
+from screenshot_to_template.repo_paths import report_path
+
 _HERE = Path(__file__).resolve().parent
 if str(_HERE) not in sys.path:
     sys.path.insert(0, str(_HERE))
@@ -1267,27 +1269,30 @@ def run(brand_yaml: Path, out_dir: Path, viewports: tuple[int, ...],
     brand_name = brand_dir.parent.name
     meta = {
         "viewports": list(viewports),
-        "replicaIndex": str(index_html),
-        "joinedEvidence": str(brand_dir / "evidence" / "joined-evidence.json"),
+        "replicaIndex": report_path(index_html),
+        "joinedEvidence": report_path(brand_dir / "evidence" / "joined-evidence.json"),
     }
     meta["headingTierAudit"] = {
-        "source": str(brand_dir / "evidence" / "type-scale.json") if truth else None,
+        "source": report_path(brand_dir / "evidence" / "type-scale.json") if truth else None,
         "method": (truth or {}).get("method"),
         "divergences": heading_tier_divs,
     }
     meta["tokenTierAudits"] = {
         "spacing": {
-            "source": str(brand_dir / "evidence" / "spacing-scale.json") if spacing_truth else None,
+            "source": (report_path(brand_dir / "evidence" / "spacing-scale.json")
+                       if spacing_truth else None),
             "method": (spacing_truth or {}).get("method"),
             "divergences": spacing_tier_divs,
         },
         "radius": {
-            "source": str(brand_dir / "evidence" / "radius-scale.json") if radius_truth else None,
+            "source": (report_path(brand_dir / "evidence" / "radius-scale.json")
+                       if radius_truth else None),
             "method": (radius_truth or {}).get("method"),
             "divergences": radius_tier_divs,
         },
         "color": {
-            "source": str(brand_dir / "evidence" / "color-roles.json") if color_truth else None,
+            "source": (report_path(brand_dir / "evidence" / "color-roles.json")
+                       if color_truth else None),
             "method": (color_truth or {}).get("method"),
             "divergences": color_role_divs,
         },

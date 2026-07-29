@@ -45,6 +45,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
+from screenshot_to_template.repo_paths import report_path
 
 HERE = Path(__file__).resolve().parent
 CONTRACTS_PATH = HERE / "contracts" / "conversion-structure.yaml"
@@ -342,7 +343,7 @@ def _rendered_form_fields(lane_dir: Path, html: Path) -> int | None:
 
 def audit_lane(lane_dir: Path, contracts: dict,
                campaign_override: str | None = None) -> dict:
-    entry: dict = {"lane": str(lane_dir)}
+    entry: dict = {"lane": report_path(lane_dir)}
     comp_path = lane_dir / "composition.json"
     if not comp_path.exists():
         entry["note"] = "no composition.json — nothing to check"

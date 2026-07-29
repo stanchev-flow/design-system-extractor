@@ -46,6 +46,8 @@ from pathlib import Path
 
 import yaml
 
+from screenshot_to_template.repo_paths import report_path
+
 # The sibling pipeline modules live in this same directory; make them importable whether
 # this file is run as a script or imported as brand_pipeline.generate_composition.
 _HERE = Path(__file__).resolve().parent
@@ -970,7 +972,7 @@ three-tier precedence (base-style invariants → composition-rules → brand nev
         seed_refs = [f'{{"lib": "{p.lib or "project"}", "id": "{p.id}"}}' for p in seeds.patterns]
     seed_refs_line = "  ".join(seed_refs) if seed_refs else "(none matched — use null)"
 
-    brand_ref = str(brand_yaml_path)
+    brand_ref = report_path(brand_yaml_path)
 
     # real, on-disk brand image assets (the ONLY srcs the gate treats as present). The
     # renderer already defaults media slots to brand photography, so asset:null is safe.
@@ -1784,7 +1786,8 @@ def generate_composition(brief_text: str, brand_yaml_path: Path | str, style_id:
         try:
             comp = extract_json(raw)
             comp = normalize_top_level(comp, brief_id=brief_id,
-                                       brand_ref=str(brand_yaml_path), style_id=style_id)
+                                       brand_ref=report_path(brand_yaml_path),
+                                       style_id=style_id)
         except ValueError as exc:
             schema_errs = [f"(root): response was not parseable JSON — {exc}"]
             nd_hits, failures = [], []

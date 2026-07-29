@@ -46,6 +46,7 @@ from pathlib import Path
 
 import yaml
 from bs4 import BeautifulSoup
+from screenshot_to_template.repo_paths import report_path
 
 HERE = Path(__file__).resolve().parent
 RULES_PATH = HERE / "contracts" / "section-rules.yaml"
@@ -1982,7 +1983,7 @@ def run_audit(lane_paths: list[Path], brand_dir: Path, out_dir: Path | None,
         brand_doc = yaml.safe_load(by.read_text()) or {}
     report = {"generatedAt": datetime.now(timezone.utc)
               .strftime("%Y-%m-%dT%H:%M:%SZ"),
-              "brandDir": str(brand_dir),
+              "brandDir": report_path(brand_dir),
               "rules": len(rules_doc.get("rules") or []),
               "staticOnly": static_only, "lanes": []}
 
@@ -1996,8 +1997,8 @@ def run_audit(lane_paths: list[Path], brand_dir: Path, out_dir: Path | None,
         for html in lane_paths:
             lane_dir = html.parent
             lane = str(lane_dir.relative_to(brand_dir)) \
-                if brand_dir in lane_dir.parents else str(lane_dir)
-            entry: dict = {"lane": lane, "html": str(html)}
+                if brand_dir in lane_dir.parents else report_path(lane_dir)
+            entry: dict = {"lane": lane, "html": report_path(html)}
             if not html.exists():
                 entry["error"] = "file not found"
                 report["lanes"].append(entry)

@@ -24,6 +24,7 @@ from collections import Counter
 from pathlib import Path
 
 from bs4 import BeautifulSoup
+from screenshot_to_template.repo_paths import report_path
 
 SCHEMA = "dom-mine.v1"
 
@@ -201,7 +202,7 @@ def mine(html_path: Path) -> dict:
 
     return {
         "schemaVersion": SCHEMA,
-        "source": str(html_path),
+        "source": report_path(html_path),
         "topLevel": top_level,
         "sections": sections,
         "modeCensus": dict(mode_census.most_common(40)),

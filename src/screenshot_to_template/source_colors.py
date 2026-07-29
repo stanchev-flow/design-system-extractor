@@ -13,6 +13,8 @@ from urllib.parse import urljoin, urlparse
 
 import requests
 
+from .repo_paths import report_path
+
 
 STYLE_BLOCK_RE = re.compile(r"<style[^>]*>(.*?)</style>", re.IGNORECASE | re.DOTALL)
 SCRIPT_BLOCK_RE = re.compile(r"<script[^>]*>(.*?)</script>", re.IGNORECASE | re.DOTALL)
@@ -734,7 +736,7 @@ def _extract_font_faces(css_segments: list[tuple[str, str]], font_assets_dir: st
                         saved_entry = {
                             **entry,
                             "status": status,
-                            "local_path": str(local_path.resolve()),
+                            "local_path": report_path(local_path),
                             "relative_path": f"{assets_dir.name}/{filename}",
                         }
                         break
@@ -1061,7 +1063,7 @@ def extract_source_colors(source_html_path: str | Path, font_assets_dir: str | P
     font_faces = _extract_font_faces(css_segments, font_assets_dir=font_assets_dir)
 
     extracted = {
-        "source_html": str(source_html_path.resolve()),
+        "source_html": report_path(source_html_path),
         "style_block_count": style_block_count,
         "inline_style_count": inline_style_count,
         "resolved_custom_properties": resolved_props,

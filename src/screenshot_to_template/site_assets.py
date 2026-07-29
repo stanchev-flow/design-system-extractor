@@ -16,6 +16,7 @@ from bs4 import BeautifulSoup, Tag
 from PIL import Image
 
 from .config import AppConfig
+from .repo_paths import report_path
 from .models.google import GoogleProvider
 from .models.openai import OpenAIProvider
 
@@ -1385,7 +1386,7 @@ def _write_asset_manifest(
     payload = {
         "status": status,
         "model": model_name,
-        "html": str(html_path),
+        "html": report_path(html_path),
         "generated_count": len(replacements),
         "candidates": manifest_candidates,
     }

@@ -31,6 +31,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 
+from screenshot_to_template.repo_paths import report_path
+
 ROOT_REM_PX = 16.0          # composed lanes never restyle html font-size
 RHYTHM_MAX_PX = 200.0       # gap/inset facts live below this; width facts above
 DEFAULT_VIEWPORT = (1440, 900)   # canonical tier (meta.canonicalTier)
@@ -1742,6 +1744,9 @@ def run_audit(lane_paths: list[Path], brand_dir: Path, out_dir: Path,
     out_dir.mkdir(parents=True, exist_ok=True)
     lanes_out: list[dict] = []
     screenshots: list[dict] = []
+    # The report records lane files as the repo sees them, so the annotation pass
+    # below needs the real path kept beside it rather than re-derived from it.
+    html_by_lane: dict[str, Path] = {}
     # derived-scale gate inputs (pass1): present ⇒ generative lanes get scale cells
     scale = _style_scale.load_style_scale(brand_dir)
     type_facts = load_type_facts(brand_dir) if scale else []
@@ -1749,7 +1754,8 @@ def run_audit(lane_paths: list[Path], brand_dir: Path, out_dir: Path,
     with sync_playwright() as pw:
         for html in lane_paths:
             lane = _lane_name(html, brand_dir)
-            entry: dict = {"lane": lane, "html": str(html)}
+            html_by_lane[lane] = html
+            entry: dict = {"lane": lane, "html": report_path(html)}
             if not html.exists():
                 entry["error"] = "file not found"
                 lanes_out.append(entry)
@@ -1789,15 +1795,15 @@ def run_audit(lane_paths: list[Path], brand_dir: Path, out_dir: Path,
             if target and target.get("offenders"):
                 try:
                     screenshots = annotate_offenders(
-                        pw, Path(target["html"]), target["offenders"], out_dir,
-                        viewport, target["lane"], top=annotate_top)
+                        pw, html_by_lane[target["lane"]], target["offenders"],
+                        out_dir, viewport, target["lane"], top=annotate_top)
                 except Exception as exc:
                     screenshots = [{"file": "", "lane": target["lane"],
                                     "label": f"annotation failed: {exc}"[:200]}]
 
     report = shape_report(lanes_out, book, {
         "generatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "brandDir": str(brand_dir),
+        "brandDir": report_path(brand_dir),
         "viewport": f"{viewport[0]}x{viewport[1]}",
     })
     report["screenshots"] = screenshots

@@ -54,6 +54,7 @@ import sys
 from pathlib import Path
 
 import yaml
+from screenshot_to_template.repo_paths import report_path, resolve_report_path
 
 # Two-layer model: the STYLE loader lives beside this gate in brand_pipeline/.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -90,7 +91,7 @@ _CONTROL_SEL_RE = re.compile(
 
 def _border_shorthand_visible(val: str) -> bool:
     """True when a `border:` shorthand paints a visible full box (not none / 0-width)."""
-    v = re.split(r"[;{}]", val, 1)[0].strip().lower()
+    v = re.split(r"[;{}]", val, maxsplit=1)[0].strip().lower()
     if not v or v in ("none", "inherit", "initial", "unset"):
         return False
     if "none" in v:  # e.g. "0 none" / "medium none"
@@ -1383,7 +1384,9 @@ def check_media_bindings(render_dir, comp=None):
         return []
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     import media_semantics as ms  # noqa: E402
-    registry = ms.load_media_assets(Path(ref).parent)
+    # recorded repo-relative by the generator (see screenshot_to_template.repo_paths),
+    # so it resolves against the repo root rather than whatever cwd this runs in
+    registry = ms.load_media_assets(resolve_report_path(ref).parent)
     if registry is None:
         return []
     hits = ms.lint_media_bindings(comp, registry)
@@ -2229,7 +2232,8 @@ def render_report(doc, layout, nd, fid, slop, render_dir, allow=None, style=None
         verdict = "PASS" if style_clean else "PASS (advisory warnings)"
         w(f"## 4. Style definition — `{style.id}` — {verdict} (advisory, never gates OVERALL)")
         w("")
-        w(f"The active STYLE layer (`{style.source_path}`) supplies STRUCTURE + DEFAULTS; the "
+        w(f"The active STYLE layer (`{report_path(style.source_path)}`) supplies STRUCTURE + "
+          "DEFAULTS; the "
           "brand supplies hues + fonts AND wins on any value it explicitly sets. These are the "
           "style's core `Style definition` rules — brand-overridable defaults, NOT absolute "
           "non-negotiables. A deviation backed by a documented brand override (e.g. the hero "
@@ -2274,9 +2278,10 @@ def render_report(doc, layout, nd, fid, slop, render_dir, allow=None, style=None
       "fonts from Google Fonts and the source crop in `assets/`).")
     w("- A captured preview of the render is at `assets/_preview-render.png`; the source "
       "crop it was compared against is `assets/_source-*-crop.*`.")
-    w(f"- Re-generate: `python3 brand_pipeline/compose_section.py <brand.yaml> {lid} -o {render_dir}`.")
+    render_arg = report_path(render_dir)
+    w(f"- Re-generate: `python3 brand_pipeline/compose_section.py <brand.yaml> {lid} -o {render_arg}`.")
     layout_flag = f" --layout {lid}" if Path(render_dir).name != f"section-{lid}" else ""
-    w(f"- Re-run this gate: `python3 brand_pipeline/onbrand_check.py <brand.yaml> {render_dir}{layout_flag}`.")
+    w(f"- Re-run this gate: `python3 brand_pipeline/onbrand_check.py <brand.yaml> {render_arg}{layout_flag}`.")
     w("")
     return "\n".join(L).rstrip() + "\n", overall
 
